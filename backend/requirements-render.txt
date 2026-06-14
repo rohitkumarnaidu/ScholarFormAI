@@ -21,7 +21,7 @@ PyJWT==2.13.0
 python-jose==3.5.0
 passlib==1.7.4
 bcrypt==5.0.0
-cryptography==46.0.5
+cryptography==46.0.7
 
 # ─── Database / Supabase ───────────────────────────────────────────────────────
 supabase==2.27.3
