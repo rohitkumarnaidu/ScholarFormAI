@@ -11,19 +11,44 @@ updates:
     labels:
       - "dependencies"
       - "python"
-    reviewers:
-      - "scholarform/backend"
     allow:
       - dependency-type: "direct"
     ignore:
       - dependency-name: "chromadb"
+      - dependency-name: "docling-core"
+      - dependency-name: "pydantic"
     groups:
-      python-patch:
+      python-minor-patch:
         applies-to: version-updates
         patterns:
           - "*"
         update-types:
+          - "minor"
           - "patch"
+
+  - package-ecosystem: "docker"
+    directories:
+      - "/backend/docker"
+      - "/deploy/hf/grobid-service"
+      - "/deploy/hf/ocr-service"
+      - "/deploy/hf/docling-service"
+      - "/deploy/hf/nougat-service"
+      - "/deploy/hf/scibert-service"
+      - "/deploy/hf/docx-converter-service"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "docker"
+    groups:
+      docker-base-images:
+        patterns:
+          - "*"
+
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
@@ -32,26 +57,25 @@ updates:
       time: "09:00"
       timezone: "UTC"
     open-pull-requests-limit: 10
+    versioning-strategy: increase
     labels:
       - "dependencies"
       - "javascript"
-    reviewers:
-      - "scholarform/frontend"
     groups:
-      npm-patch:
+      npm-minor-patch:
         applies-to: version-updates
         patterns:
           - "*"
-        update-types:
-          - "patch"
-      npm-DevDependencies:
-        applies-to: version-updates
-        patterns:
-          - "*"
-        dependency-type: "development"
         update-types:
           - "minor"
           - "patch"
+      npm-major:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "major"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -64,6 +88,9 @@ updates:
       - "dependencies"
       - "ci"
     groups:
-      actions:
+      actions-minor-patch:
         patterns:
           - "*"
+        update-types:
+          - "minor"
+          - "patch"

@@ -74,7 +74,7 @@ litellm @ https://github.com/BerriAI/litellm/archive/refs/tags/v1.81.13.tar.gz
 openai==2.41.1
 groq
 anthropic
-langchain-core==1.2.14
+langchain-core==1.2.31
 langchain-openai==1.1.10
 langchain-community==0.3.30
 langchain==1.2.10
