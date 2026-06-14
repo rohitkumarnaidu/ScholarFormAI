@@ -249,7 +249,7 @@ pylatexenc==2.10
 PyMuPDF==1.26.7
 pyparsing==3.3.2
 pypdf==6.7.1
-pypdfium2==4.30.0
+pypdfium2==5.9.0
 PyPika==0.51.1
 pyproject_hooks==1.2.0
 pyroaring==1.0.3
