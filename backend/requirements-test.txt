@@ -68,7 +68,7 @@ numpy==1.26.4
 
 # ─── LLM Clients (light) ───────────────────────────────────────────────────────
 litellm @ https://github.com/BerriAI/litellm/archive/refs/tags/v1.81.13.tar.gz
-openai==2.21.0
+openai==2.41.1
 groq
 anthropic
 langchain-core==1.2.14
