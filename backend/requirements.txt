@@ -226,7 +226,7 @@ psutil==7.2.2
 psycopg==3.3.2
 psycopg-binary==3.3.2
 psycopg2-binary==2.9.11
-pulsar-client==3.10.0
+pulsar-client==3.12.0
 py-serializable==2.1.0
 pyarrow==23.0.1
 pyasn1==0.6.2
