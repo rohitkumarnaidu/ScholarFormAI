@@ -168,7 +168,7 @@ jobs:
       id-token: write
     steps:
       - name: Install cosign
-        uses: sigstore/cosign-installer@398d4b0eeef138046a0c10c8013a76f728fb906ac
+        uses: sigstore/cosign-installer@v4.1.2
 
       - name: Sign backend image
         run: |
@@ -185,17 +185,44 @@ jobs:
   generate-sbom:
     needs: [build-and-push-backend, build-and-push-worker]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     steps:
-      - name: Generate SBOM attestation
-        uses: actions/attest-sbom@c604332985a26aa8cf1bdc465b92731239ec6b9e
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: '3.12'
+
+      - name: Generate CycloneDX SBOM (Python)
+        run: |
+          pip install cyclonedx-bom
+          pip install -r backend/requirements.txt
+          pip freeze > /tmp/pip-freeze.txt
+          cyclonedx-py requirements /tmp/pip-freeze.txt --output-format json -o sbom/backend-sbom.json
+
+      - name: Generate CycloneDX SBOM (npm)
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npx --yes @cyclonedx/cyclonedx-npm --output-format JSON --output-file ../sbom/frontend-sbom.json
+
+      - name: Attest backend SBOM
+        uses: actions/attest@v4.1.0
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}
           subject-digest: ${{ needs.build-and-push-backend.outputs.digest }}
-          sbom-path: sbom/backend-sbom.json
+          predicate-type: "https://cyclonedx.org/bom"
+          predicate-path: sbom/backend-sbom.json
 
-      - name: Generate SBOM attestation (worker)
-        uses: actions/attest-sbom@c604332985a26aa8cf1bdc465b92731239ec6b9e
+      - name: Attest worker SBOM
+        uses: actions/attest@v4.1.0
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}
           subject-digest: ${{ needs.build-and-push-worker.outputs.digest }}
-          sbom-path: sbom/backend-sbom.json
+          predicate-type: "https://cyclonedx.org/bom"
+          predicate-path: sbom/backend-sbom.json
