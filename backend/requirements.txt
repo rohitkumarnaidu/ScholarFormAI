@@ -259,8 +259,8 @@ pybreaker==1.4.1
 pyclipper==1.4.0
 pycparser==3.0
 pydantic==2.12.5
-pydantic-settings==2.12.0
-pydantic_core==2.41.5
+pydantic-settings>=2.14.0
+pydantic_core>=2.41.5
 pydash==8.0.6
 pydeck==0.9.1
 pydyf==0.12.1

@@ -42,6 +42,22 @@ jobs:
               core.setFailed('No successful security runs found on this branch');
             }
 
+      - name: Check frontend-ci workflow status
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        with:
+          script: |
+            const runs = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'frontend-ci.yml',
+              branch: context.ref || 'main',
+              status: 'success',
+              per_page: 5
+            });
+            if (runs.data.workflow_runs.length === 0) {
+              core.setFailed('No successful frontend-ci runs found on this branch');
+            }
+
   pre-deploy-health:
     runs-on: ubuntu-latest
     needs: verify-ci-gates

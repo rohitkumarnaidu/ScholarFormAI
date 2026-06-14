@@ -2,15 +2,45 @@ name: deploy-staging
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Frontend CI"]
+    branches: [main]
+    types: [completed]
 
 permissions:
   contents: read
 
 jobs:
+  verify-frontend-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check frontend-ci conclusion
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        with:
+          script: |
+            if ('${{ github.event_name }}' === 'workflow_run') {
+              const conclusion = '${{ github.event.workflow_run.conclusion }}';
+              if (conclusion !== 'success') {
+                core.setFailed(`Frontend CI completed with status: ${conclusion}. Deploy blocked.`);
+              }
+              core.info(`Frontend CI passed (${conclusion}). Proceeding with deploy.`);
+            } else {
+              const runs = await github.rest.actions.listWorkflowRuns({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'frontend-ci.yml',
+                branch: 'main',
+                status: 'success',
+                per_page: 1
+              });
+              if (runs.data.workflow_runs.length === 0) {
+                core.setFailed('No successful frontend-ci run found on main branch. Deploy blocked.');
+              }
+              core.info(`Latest frontend-ci run #${runs.data.workflow_runs[0]?.run_number} passed. Proceeding.`);
+            }
+
   deploy-staging:
+    needs: verify-frontend-ci
     runs-on: ubuntu-latest
     environment: staging
     steps:
