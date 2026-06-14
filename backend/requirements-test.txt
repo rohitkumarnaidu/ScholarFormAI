@@ -9,7 +9,7 @@ slowapi==0.1.9
 # ─── Settings / Config ─────────────────────────────────────────────────────────
 pydantic==2.12.5
 pydantic-settings==2.12.0
-pydantic_core==2.41.5
+pydantic_core==2.47.0
 email-validator==2.3.0
 python-dotenv==1.2.1
 
