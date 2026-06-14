@@ -260,3 +260,24 @@ class AgentMemory:
                 "fields": list(set(c["field"] for c in self.corrections))
             }
         }
+
+    def format_memory_summary(self) -> str:
+        """Get memory summary as a human-readable string (safe for PromptTemplate)."""
+        summary = self.get_memory_summary()
+        lines = ["Patterns:"]
+        pat = summary.get("patterns", {})
+        if pat:
+            for ptype, data in pat.items():
+                lines.append(
+                    f"  - {ptype}: {data['successful_count']} successful, "
+                    f"{data['failed_count']} failed"
+                )
+        else:
+            lines.append("  (none)")
+        err = summary.get("errors", {})
+        lines.append(f"Errors: {err.get('total_errors', 0)} total, "
+                     f"{err.get('unique_types', 0)} unique types")
+        lines.append(f"Metrics tracked: {len(summary.get('metrics', {}))}")
+        corr = summary.get("corrections", {})
+        lines.append(f"Corrections: {corr.get('total_corrections', 0)} total")
+        return "\n".join(lines)

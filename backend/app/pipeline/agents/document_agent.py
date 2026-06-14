@@ -172,7 +172,7 @@ class DocumentAgent:
         
         # Add memory context to prompt if enabled
         if self.memory:
-            memory_summary = self.memory.get_memory_summary()
+            memory_summary = self.memory.format_memory_summary()
             system_prompt += f"\n\n## Memory Context\n{memory_summary}"
         
         # Add React formatting requirements
