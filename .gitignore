@@ -47,6 +47,9 @@ yarn-debug.log*
 yarn-error.log*
 .eslintcache
 
+# Graphify knowledge graph outputs
+graphify-out/
+
 # OS
 .DS_Store
 Thumbs.db
