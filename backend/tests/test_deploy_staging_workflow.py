@@ -12,9 +12,8 @@ def test_deploy_staging_workflow_exists_and_has_required_contract():
 
     assert "name: deploy-staging" in workflow_text
     assert "workflow_dispatch:" in workflow_text
-    assert "push:" in workflow_text
-    assert "branches:" in workflow_text
-    assert "- main" in workflow_text
+    assert "workflow_run:" in workflow_text
+    assert "Frontend CI" in workflow_text
     assert "/api/v1/health" in workflow_text
 
     required_secrets = [
