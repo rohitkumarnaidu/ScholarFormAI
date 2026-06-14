@@ -11,7 +11,7 @@ pydantic==2.12.5
 pydantic-settings>=2.14.0
 pydantic_core>=2.41.5
 email-validator==2.3.0
-python-dotenv==1.2.1
+python-dotenv==1.0.1
 
 # ─── Auth / Security ───────────────────────────────────────────────────────────
 PyJWT==2.11.0
