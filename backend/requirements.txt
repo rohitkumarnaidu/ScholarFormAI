@@ -244,7 +244,7 @@ pyflakes==3.4.0
 Pygments==2.19.2
 pyiceberg==0.10.0
 PyJWT==2.11.0
-stripe==8.10.0
+stripe==15.2.1
 pylatexenc==2.10
 PyMuPDF==1.26.7
 pyparsing==3.3.2
