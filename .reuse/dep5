@@ -1,0 +1,71 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: ScholarForm AI
+Upstream-Contact: Rohit Kumar Naidu <rohit@scholarform.ai>
+Source: https://github.com/rohitkumarnaidu/ScholarFormAI
+
+# Licensed under MIT for all project files unless otherwise noted.
+Files: *
+Copyright: 2026 ScholarForm AI Contributors
+License: MIT
+
+# License file itself
+Files: LICENSES/MIT.txt
+Copyright: 2026 ScholarForm AI Contributors
+License: MIT
+
+# Configuration files
+Files: .editorconfig .gitattributes .gitignore .dockerignore .secrets.baseline
+  .pre-commit-config.yaml .node-version .python-version .fossa.yml
+  renovate.json commitlint.config.js
+Copyright: 2026 ScholarForm AI Contributors
+License: MIT
+
+# Documentation
+Files: *.md docs/**/*.md
+Copyright: 2026 ScholarForm AI Contributors
+License: MIT
+
+# Backend source
+Files: backend/**/*.py
+Copyright: 2026 ScholarForm AI Contributors
+License: MIT
+
+# Frontend source
+Files: frontend/src/**/* frontend/app/**/* frontend/e2e/**/* frontend/lib/**/*
+Copyright: 2026 ScholarForm AI Contributors
+License: MIT
+
+# Scripts
+Files: scripts/**/*.py
+Copyright: 2026 ScholarForm AI Contributors
+License: MIT
+
+# Tests
+Files: backend/tests/**/*.py fuzz/**/*.py
+Copyright: 2026 ScholarForm AI Contributors
+License: MIT
+
+# Deploy configs
+Files: deploy/**/* render.yaml
+Copyright: 2026 ScholarForm AI Contributors
+License: MIT
+
+# GitHub configs
+Files: .github/**/*.yml .github/**/*.md .github/**/*.yaml
+Copyright: 2026 ScholarForm AI Contributors
+License: MIT
+
+# SBOM files
+Files: sbom/**/*.json
+Copyright: 2026 ScholarForm AI Contributors
+License: MIT
+
+# Examples
+Files: examples/**/*
+Copyright: 2026 ScholarForm AI Contributors
+License: MIT
+
+# Fuzz tests
+Files: fuzz/**/*.py
+Copyright: 2026 ScholarForm AI Contributors
+License: MIT

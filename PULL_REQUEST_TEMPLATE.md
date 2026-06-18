@@ -23,6 +23,7 @@ Closes #ISSUE_NUMBER
 - [ ] Backend unit tests (`pytest tests -m "not integration and not llm and not contract" -x -q`)
 - [ ] Frontend tests (`npm test`)
 - [ ] E2E tests (`npm run test:e2e` or `npm run test:e2e:headed`)
+- [ ] Security considerations documented (if applicable)
 - [ ] Manual testing (describe steps)
 
 ## Checklist
@@ -34,6 +35,7 @@ Closes #ISSUE_NUMBER
 - [ ] All existing tests pass locally
 - [ ] I have updated the documentation (if applicable)
 - [ ] My changes generate no new warnings or linter errors
+- [ ] My changes do not introduce new security vulnerabilities
 - [ ] I have added a CHANGELOG entry in `CHANGELOG.md`
 - [ ] I have read and agree to the [DCO](DEVELOPER_CERTIFICATE_OF_ORIGIN.md)
 
