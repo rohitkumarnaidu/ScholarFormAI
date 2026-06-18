@@ -60,10 +60,19 @@ git push origin v1.1.0-rc.1
 
 ### 4. Final Tag & Release
 
+Tags MUST be cryptographically signed using GPG or SSH signing:
+
 ```bash
-git tag v1.1.0
+# Configure GPG signing (one-time)
+git config --global user.signingkey <KEY_ID>
+git config --global tag.gpgsign true
+
+# Create and push a signed tag
+git tag -s v1.1.0 -m "ScholarForm AI v1.1.0"
 git push origin v1.1.0
 ```
+
+All release tags MUST be signed (`git tag -s`). Unsigned tags will be rejected by CI (`create-release.yml` verifies tag signature).
 
 - This triggers `create-release.yml` workflow **automatically**
 - The workflow does **everything** — no manual steps needed:
