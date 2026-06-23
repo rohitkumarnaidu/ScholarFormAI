@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Pipeline Orchestrator - Coordinates all processing stages.
 """
@@ -71,6 +74,16 @@ _MAX_CONCURRENT_JOBS = 5
 _pipeline_semaphore = threading.Semaphore(_MAX_CONCURRENT_JOBS)
 _ACQUIRE_TIMEOUT_SECONDS = float(settings.PIPELINE_ACQUIRE_TIMEOUT_SECONDS)
 
+# Lazy import to avoid forcing PIL at module load time
+_figure_analyzer_instance = None
+def _get_figure_analyzer():
+    global _figure_analyzer_instance
+    if _figure_analyzer_instance is None:
+        from app.pipeline.figures.analyzer import figure_analyzer
+        _figure_analyzer_instance = figure_analyzer
+    return _figure_analyzer_instance
+
+
 class PipelineOrchestrator:
     """
     Runs the full document processing pipeline from input file to final output.
@@ -94,6 +107,7 @@ class PipelineOrchestrator:
         # Week 2: Initialize GROBID and Docling clients
         self.grobid_client = GROBIDClient()
         self.docling_client = DoclingClient()
+        self.figure_analyzer = None  # lazy init in _run_figure_analysis_stage
         
     def _check_stage_interface(self, stage_instance: Any, method_name: str, stage_name: str):
         """
@@ -573,6 +587,35 @@ class PipelineOrchestrator:
         validator = DocumentValidator(contracts_dir=self.contracts_dir)
         return self._run_with_timeout(validator.process, 60, doc_obj)
 
+    def _run_figure_analysis_stage(self, doc_obj):
+        with safe_execution("Figure Quality Analysis"):
+            analyzer = _get_figure_analyzer()
+            results = []
+            for fig in getattr(doc_obj, "figures", []) or []:
+                export_path = None
+                if hasattr(fig, "export_path") and fig.export_path:
+                    export_path = fig.export_path
+                elif hasattr(fig, "image_data") and fig.image_data:
+                    export_path = getattr(fig, "export_path", None)
+                if not export_path or not os.path.exists(str(export_path)):
+                    results.append({"figure_id": getattr(fig, "figure_id", None), "valid": False, "error": "No export path"})
+                    continue
+                analysis = analyzer.analyze_image(str(export_path))
+                analysis["figure_id"] = getattr(fig, "figure_id", None)
+                downsampled = analyzer.downsample_if_needed(str(export_path))
+                if downsampled and downsampled != str(export_path):
+                    fig.export_path = downsampled
+                    analysis["downsampled"] = True
+                results.append(analysis)
+            if results:
+                metadata = doc_obj.metadata
+                if hasattr(metadata, "ai_hints") and isinstance(metadata.ai_hints, dict):
+                    metadata.ai_hints["figure_analysis"] = results
+                elif hasattr(metadata, "setdefault"):
+                    metadata.setdefault("ai_hints", {})
+                    metadata["ai_hints"]["figure_analysis"] = results
+            return doc_obj
+
     @retry_with_backoff(max_retries=2, backoff_factor=1.0)
     def _run_formatting_stage(self, doc_obj):
         formatter = Formatter(templates_dir=self.templates_dir, contracts_dir=self.contracts_dir)
@@ -887,6 +930,10 @@ class PipelineOrchestrator:
                 table_caption_matcher = TableCaptionMatcher()
                 self._check_stage_interface(table_caption_matcher, "process", "TableCaptionMatcher")
                 doc_obj = execute_with_retry(table_caption_matcher.process, doc_obj)
+                
+                # Figure quality analysis — non-blocking, attaches metadata for UI
+                if not runtime_flags.get("fast_mode", False):
+                    doc_obj = self._run_figure_analysis_stage(doc_obj)
                 
                 ref_parser = ReferenceParser()
                 self._check_stage_interface(ref_parser, "process", "ReferenceParser")
