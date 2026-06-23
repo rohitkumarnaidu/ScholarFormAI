@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: ScholarForm AI — Architecture
 description: System layers, request flows, middleware stack, and key architecture decisions
@@ -220,17 +224,30 @@ FastAPI /upload ──→ ClamAV scan ──→ Background Task
           ┌───────────────────────────────┘
           │
           ▼
-    GROBID / Docling / PyMuPDF (PDF parse)
-          │
-    SciBERT classification (optional)
-          │
-    NLP enhancement (YAKE / spaCy)
-          │
-    Template rules apply
-          │
+    Parser (GROBID / Docling / PyMuPDF)
+      │  └─ TableExtractor extracts docx tables
+      │  └─ Figure images extracted
+      │
+    Structure Detection / Classification
+      │
+    Caption Matching
+      │  ├─ TableCaptionMatcher — links "Table 1:" blocks to Table models
+      │  └─ CaptionMatcher — links "Figure 1:" blocks to Figure models
+      │
+    Figure Quality Analysis (optional)
+      │  └─ FigureAnalyzer — checks resolution, DPI, downsamples
+      │
+    Numbering & Validation
+      │  ├─ NumberingEngine — assigns sequential fig/table numbers
+      │  └─ DocumentValidator — validates cross-references
+      │
+    Formatting (DOCX assembly)
+      │  ├─ TableRenderer — renders Table models into python-docx
+      │  └─ FigureRenderer — renders Figure models with dynamic sizing
+      │
     DOCX + PDF export
-          │
+      │
     Supabase Storage upload
-          │
+      │
     SSE event → Browser
 ```

@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: ScholarForm AI — API Reference
 description: Complete v1 API reference with curl examples for all 19 endpoints

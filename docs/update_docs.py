@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 ScholarForm AI — Documentation Update Script
 Last Updated: June 2026

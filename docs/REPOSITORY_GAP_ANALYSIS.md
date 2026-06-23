@@ -1,4 +1,8 @@
-﻿# ScholarForm AI -- Repository Structure Gap Analysis
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
+# ScholarForm AI -- Repository Structure Gap Analysis
 
 > **Date:** 2026-06-13
 > **Scope:** Root-level and `.github/` governance files, plus `docs/` structure

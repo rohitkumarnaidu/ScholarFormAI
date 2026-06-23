@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: ScholarForm AI — Incident Postmortem Template
 description: Structured template for post-incident analysis documentation

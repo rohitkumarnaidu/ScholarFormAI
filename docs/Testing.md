@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: ScholarForm AI — Testing Strategy
 description: Testing frameworks, commands, CI pipelines, and coverage targets
@@ -11,7 +15,7 @@ last_updated: June 2026
 
 # ScholarForm AI — Testing Strategy
 
-> **Current State:** Backend coverage at ~21% (up from ~5%). Deep test suite (931+ tests) covers all core pipeline modules. Frontend uses vitest + Playwright E2E.
+> **Current State:** Backend coverage at ~21% (up from ~5%). Deep test suite (1000+ tests) covers all core pipeline modules. Frontend uses vitest + Playwright E2E.
 
 > **See also:** [Developer Onboarding](DEVELOPER_ONBOARDING.md), [CI/CD](Deployment.md)
 
@@ -90,9 +94,20 @@ Enterprise-grade deep test files with intensive mocking, targeting >80% per-modu
 | AgentPipeline | `test_agent_deep.py` | 120 | ~84% |
 | PdfParser | `test_pdf_parser_deep.py` | 71 | 88% |
 | RagEngine | `test_rag_engine_deep.py` | 87 | 91% |
-| **Total** | | **931** | |
+| TableCaptionMatcher | `test_tables.py` (caption_matcher) | 8 | 77% |
+| TableExtractor | `test_tables.py` (extractor) | 9 | 90% |
+| TableRenderer | `test_tables.py` (renderer) | 8 | 83% |
+| FigureCaptionMatcher | `test_figures.py` (caption_matcher) | 16 | 77% |
+| FigureAnalyzer | `test_figures.py` (analyzer) | 11 | 95% |
+| FigureRenderer | `test_figure_renderer.py` | 10 | 100% |
+| Phase 2 Smoke (16 endpoints) | `test_phase2_smoke.py` | 17 | N/A (contract) |
+| **Total (pipeline modules)** | | **1000** | |
+| **API contract suite** | `test_api_contracts.py` | 44 + 1 skipped | N/A (contract) |
+| **Phase 2 smoke suite** | `test_phase2_smoke.py` | 16 + 1 skipped | N/A (contract) |
 
-**Regression health:** `854/854` passed (all non-integration, non-llm tests).
+**Regression health:** All non-integration, non-llm, non-slow pipeline & contract tests passing.
+
+**2026-06-20 Update:** FigureAnalyzer wired into PipelineOrchestrator as optional quality stage (fast-mode safe). FastAPI pinned to 0.127.1 (0.128.0 broke `APIRouter` webhooks).
 
 ---
 
@@ -177,3 +192,4 @@ npm run test:e2e:headed    # headed
 2. Write deep tests for **exporter.py**, **synthesizer.py**, **document_generator.py**
 3. Raise project-wide coverage toward 50%
 4. Fill E2E critical path stubs with real DOM assertions
+5. Wire deep tests for orchestrator's `_run_figure_analysis_stage`

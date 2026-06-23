@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: ScholarForm AI — Runbook: High Error Rate
 description: P1 escalation for elevated API error rates exceeding SLO thresholds

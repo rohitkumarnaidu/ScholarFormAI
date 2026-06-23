@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: "ADR 007: Render as Deployment Platform"
 description: Decision to use Render Web Services for backend hosting

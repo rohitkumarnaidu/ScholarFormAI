@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # Enterprise GitHub Setup Guide
 
 **ScholarForm AI** — Complete GitHub configuration for enterprise open-source readiness.

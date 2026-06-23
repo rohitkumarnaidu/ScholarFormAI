@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: ScholarForm AI — AI Instructions
 description: LLM tiers, RAG pipeline, prompt rules, and fallback behavior

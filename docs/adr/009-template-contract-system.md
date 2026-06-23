@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: "ADR 009: Template Contract Validation System"
 description: Decision to use contract.yaml for template variable validation
