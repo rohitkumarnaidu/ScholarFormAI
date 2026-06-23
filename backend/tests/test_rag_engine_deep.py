@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Deep tests for RagEngine (rag_engine.py) — 80+ tests covering all internal methods,
 model loading, embedding, ChromaDB/native backends, persistence, seeding, and reset.
@@ -49,7 +52,12 @@ def _make_engine(
     else:
         patch_st = patch("sentence_transformers.SentenceTransformer", return_value=mock_model)
 
-    with patch_settings as ms, patch_model_store as mm, patch_st:
+    with (
+        patch_settings as ms,
+        patch_model_store as mm,
+        patch_st,
+        patch.dict(os.environ, {"RAG_EMBEDDING_PROVIDER": ""}, clear=False),
+    ):
         ms.LOW_MEMORY_MODE = low_memory
         ms.RAG_USE_TRANSFORMERS = use_transformers
         mm.is_loaded.return_value = model_store_is_loaded
@@ -128,20 +136,15 @@ class TestLoadChromadb:
         from app.pipeline.intelligence.rag_engine import _load_chromadb
         import app.pipeline.intelligence.rag_engine as rag_mod
 
-        was_there = "chromadb" in sys.modules
-        saved = sys.modules.pop("chromadb", None)
-        try:
-            with (
-                patch.object(rag_mod, "chromadb", None),
-                patch.object(rag_mod, "_CHROMADB_IMPORT_ATTEMPTED", False),
-                patch.object(rag_mod, "_CHROMADB_AVAILABLE", True),
-            ):
-                result = _load_chromadb()
-                assert result is None
-                assert rag_mod._CHROMADB_AVAILABLE is False
-        finally:
-            if was_there and saved is not None:
-                sys.modules["chromadb"] = saved
+        with (
+            patch.dict("sys.modules", {"chromadb": None}, clear=False),
+            patch.object(rag_mod, "chromadb", None),
+            patch.object(rag_mod, "_CHROMADB_IMPORT_ATTEMPTED", False),
+            patch.object(rag_mod, "_CHROMADB_AVAILABLE", True),
+        ):
+            result = _load_chromadb()
+            assert result is None
+            assert rag_mod._CHROMADB_AVAILABLE is False
 
 
 # ===================================================================
@@ -403,6 +406,7 @@ class TestInit:
             patch("app.services.model_store.model_store") as mm,
             patch("sentence_transformers.SentenceTransformer") as mst,
             patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None),
+            patch("app.pipeline.intelligence.rag_engine.chromadb", None),
         ):
             ms.LOW_MEMORY_MODE = False
             ms.RAG_USE_TRANSFORMERS = True

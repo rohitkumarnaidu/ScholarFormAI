@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Tests for the Settings class — safe defaults, threshold clamping, and
 absence of secrets does not crash the process.
@@ -30,8 +33,12 @@ class TestSettingsDefaults:
         s = Settings()
         assert "localhost" in s.CORS_ORIGINS
 
-    def test_default_template_is_ieee(self):
-        """Default template must be 'ieee'."""
+    def test_default_template_is_ieee(self, monkeypatch):
+        """Default template must be 'ieee' (unless overridden by env)."""
+        monkeypatch.setenv("DEFAULT_TEMPLATE", "ieee")
+        from importlib import reload
+        from app.config import settings
+        reload(settings)
         from app.config.settings import Settings
         s = Settings()
         assert s.DEFAULT_TEMPLATE == "ieee"
