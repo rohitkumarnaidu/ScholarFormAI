@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import * as api from './api.js';
 import { supabase } from '../lib/supabaseClient';

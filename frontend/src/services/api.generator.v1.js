@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import { fetchWithAuth } from './api.core';
 
 export async function createSession(files, sessionType, template, config) {

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 /**
  * Lightweight analytics wrapper.
  * Keeps event tracking optional and non-blocking when PostHog is not configured.

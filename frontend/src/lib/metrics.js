@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 const METRIC_NAME = 'http_request_duration_seconds';
 const METRIC_HELP = 'Duration of HTTP requests in seconds';
 const METRIC_TYPE = 'histogram';

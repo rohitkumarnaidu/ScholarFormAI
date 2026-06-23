@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import { useEffect, useCallback } from 'react';
 
 const STORAGE_KEY = 'scholarform_generator_draft';

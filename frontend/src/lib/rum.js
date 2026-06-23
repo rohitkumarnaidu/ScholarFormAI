@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 export const initRUM = () => {
     if (typeof window !== 'undefined') {
         // Placeholder for future Datadog/Sentry/Posthog RUM initialization
