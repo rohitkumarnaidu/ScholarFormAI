@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # Hugging Face Spaces Copy Map (12 URLs)
 
 This project now uses 6 service pairs (primary + shadow = 12 Space URLs).

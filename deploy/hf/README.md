@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # HF Deployment Templates
 
 This folder is only for Hugging Face Space deployment templates and copy guides.

@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # Quick Format Example
 
 Format a DOCX manuscript against any journal template with a single CLI command.
