@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: ScholarForm AI — OpenCode Skills
 description: Reusable skill definitions for AI-assisted ScholarForm AI workflows

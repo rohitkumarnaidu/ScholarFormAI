@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: ScholarForm AI — Monitoring & Alerting
 description: Prometheus metrics, Grafana dashboards, Sentry error tracking, and alert rules
