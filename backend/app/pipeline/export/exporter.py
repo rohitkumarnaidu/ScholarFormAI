@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Exporter Module - Handles saving of formatted documents.
 """
@@ -155,17 +158,27 @@ class Exporter:
             return None
 
     def export_latex(self, doc_obj: Document, output_path: str) -> Optional[str]:
-        """Export document to LaTeX format."""
         try:
             if not doc_obj.output_path:
                 return None
-            converted_path = self.latex_exporter.convert_to_latex(
-                doc_obj.output_path,
-                os.path.dirname(output_path),
-            )
-            if converted_path != output_path and os.path.exists(converted_path):
-                os.replace(converted_path, output_path)
-            return output_path
+            template_name = doc_obj.template.template_name if doc_obj.template else "default"
+            try:
+                converted_path = self.latex_exporter.convert_to_latex(
+                    doc_obj.output_path,
+                    os.path.dirname(output_path),
+                    template_name=template_name,
+                )
+                if converted_path != output_path and os.path.exists(converted_path):
+                    os.replace(converted_path, output_path)
+                return output_path
+            except RuntimeError:
+                converted_path = self.latex_exporter.export_from_document(
+                    doc_obj,
+                    os.path.dirname(output_path),
+                )
+                if converted_path != output_path and os.path.exists(converted_path):
+                    os.replace(converted_path, output_path)
+                return output_path
         except Exception as e:
             logger.warning("Exporter: LaTeX export failed: %s", e)
             return None
