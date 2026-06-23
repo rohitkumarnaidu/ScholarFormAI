@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # ScholarForm AI Adopters
 
 The following organizations and projects use ScholarForm AI in production or research.
