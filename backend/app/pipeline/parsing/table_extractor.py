@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Table Extractor — Microsoft Table Transformer for academic PDF tables.
 

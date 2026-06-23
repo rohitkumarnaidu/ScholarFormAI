@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 import logging
 from typing import List, Dict, Any
 from app.models.pipeline_document import PipelineDocument, ReviewStatus, ReviewMetadata

@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """PDF OCR module with fallback-first backend chain support."""
 
 from __future__ import annotations

@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 # generation pipeline package
 from .document_generator import DocumentGenerator
 from .prompt_builder import PromptBuilder

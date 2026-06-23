@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Table Caption Matcher - Production Grade Stage 3 Component.
 Links extracted Table objects to their corresponding caption blocks.
