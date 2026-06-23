@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Quick Production Validation - Using Existing Test Infrastructure
 Validates professional baseline format with available test documents.

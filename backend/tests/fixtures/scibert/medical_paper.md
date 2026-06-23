@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # Abstract
 We evaluate a clinical risk model for early sepsis detection. The model integrates vitals, labs, and medication history.
 

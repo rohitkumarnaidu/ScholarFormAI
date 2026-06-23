@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # Abstract
 We design a high efficiency hybrid converter for electric drives. The topology reduces switching losses at medium loads.
 

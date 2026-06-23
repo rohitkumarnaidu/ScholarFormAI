@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Production Stress Test - Final Baseline Validation
 Tests "none" template professional baseline format with real documents.

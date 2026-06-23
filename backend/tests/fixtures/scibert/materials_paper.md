@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # Abstract
 We fabricate carbon fiber composites with improved tensile strength. The process optimizes resin curing and fiber alignment.
 

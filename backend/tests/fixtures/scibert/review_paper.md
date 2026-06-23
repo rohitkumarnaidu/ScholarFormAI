@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # Abstract
 We review multimodal learning approaches for audio visual understanding. The survey synthesizes datasets, models, and evaluation practices.
 

@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Verification Script: Classifier Hardening
 Purpose: Verify isolation guards and front-matter safety limits in the Classifier.

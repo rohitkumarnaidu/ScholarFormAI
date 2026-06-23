@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # Abstract
 We measure quantum coherence in superconducting qubits under variable noise. The experiment quantifies decoherence time scales.
 

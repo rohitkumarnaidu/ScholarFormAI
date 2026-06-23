@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 POST-INTEGRATION PRODUCTION MONITORING SCRIPT
 Analyzes runtime behavior after NLP confidence integration.

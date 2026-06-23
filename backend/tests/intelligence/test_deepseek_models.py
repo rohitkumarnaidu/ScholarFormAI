@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 DeepSeek Model Comparison Test
 Compares deepseek-r1:8b vs deepseek-r1:0b for semantic reasoning quality.
