@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 global:
   scrape_interval: 15s
   evaluation_interval: 15s

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Backup verification script — checks that Supabase backups are accessible and valid.
 

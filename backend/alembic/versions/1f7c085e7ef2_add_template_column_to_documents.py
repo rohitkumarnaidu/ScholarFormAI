@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """add_template_column_to_documents
 
 Revision ID: 1f7c085e7ef2

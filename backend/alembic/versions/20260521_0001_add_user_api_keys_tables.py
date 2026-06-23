@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """add_user_api_keys_tables
 
 Revision ID: 20260521_0001

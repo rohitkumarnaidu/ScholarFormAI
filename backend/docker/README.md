@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # ScholarForm AI Docker Infrastructure
 
 This directory contains the full local infrastructure stack for the backend.
