@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 set -euo pipefail
 
 if [[ -f /opt/grobid/grobid.yaml ]]; then

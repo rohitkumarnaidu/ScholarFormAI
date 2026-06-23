@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # ScholarForm AI Examples
 
 This directory contains working examples to help you get started with ScholarForm AI.
