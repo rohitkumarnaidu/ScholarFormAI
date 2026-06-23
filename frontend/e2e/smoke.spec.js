@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import { test, expect } from '@playwright/test';
 
 test.describe('ScholarForm AI - Core Routes Smoke Tests', () => {
@@ -28,6 +31,9 @@ test.describe('ScholarForm AI - Core Routes Smoke Tests', () => {
 
         const editor = page.locator('.ProseMirror, .tiptap, [contenteditable="true"]').first();
         await expect(editor).toBeVisible({ timeout: 15000 });
+
+        const qualityScore = page.getByText(/quality|score|95/i);
+        await expect(qualityScore).toBeVisible();
     });
 
     test('Formatter - Results Page (/results) should load correctly', async ({ page }) => {
@@ -37,6 +43,9 @@ test.describe('ScholarForm AI - Core Routes Smoke Tests', () => {
 
         const bodyContent = await page.textContent('body');
         expect(bodyContent).toBeTruthy();
+
+        const downloadButton = page.getByRole('button', { name: /download|export/i });
+        await expect(downloadButton).toBeVisible();
     });
 
     test('Formatter - Live Preview Page (/live) should load correctly', async ({ page }) => {
@@ -46,6 +55,9 @@ test.describe('ScholarForm AI - Core Routes Smoke Tests', () => {
 
         const bodyContent = await page.textContent('body');
         expect(bodyContent).toBeTruthy();
+
+        const editorArea = page.locator('.ProseMirror, .tiptap, [contenteditable="true"], textarea').first();
+        await expect(editorArea).toBeVisible({ timeout: 10000 });
     });
 
     test('Generator - AI Agent Page (/agent) should load correctly', async ({ page }) => {
@@ -55,5 +67,8 @@ test.describe('ScholarForm AI - Core Routes Smoke Tests', () => {
 
         const bodyContent = await page.textContent('body');
         expect(bodyContent).toBeTruthy();
+
+        const chatInput = page.locator('textarea, input[type="text"], [contenteditable="true"]').first();
+        await expect(chatInput).toBeVisible({ timeout: 10000 });
     });
 });

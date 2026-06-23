@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import { test, expect } from '@playwright/test';
 
 const hasSupabaseUrl = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
@@ -152,10 +155,6 @@ test.describe('Accessibility Tests', () => {
         expect(headingIssues).toBeLessThanOrEqual(1);
     });
 
-    test('color contrast meets WCAG AA standards', async ({ page }) => {
-        test.skip(true, 'Color contrast checked in homepage aXe scan');
-    });
-
     test('aria roles are valid', async ({ page }) => {
         await page.goto('/');
         await expect(page.locator('body')).toBeVisible();
@@ -192,7 +191,5 @@ test.describe('Accessibility Tests', () => {
         expect(activeElement).toBeTruthy();
     });
 
-    test('error states use aria-live or role=alert on login page', async ({ page }) => {
-        test.skip(true, 'Error states only appear after form interaction; covered by integration tests');
-    });
+
 });
