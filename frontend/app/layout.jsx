@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import { Manrope } from 'next/font/google';
 import './globals.css';
 import ClientProviders from '@/src/components/layout/ClientProviders';

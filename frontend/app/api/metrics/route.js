@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import { NextResponse } from 'next/server';
 import registry from '@/src/lib/metrics';
 

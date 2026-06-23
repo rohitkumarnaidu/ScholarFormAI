@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
