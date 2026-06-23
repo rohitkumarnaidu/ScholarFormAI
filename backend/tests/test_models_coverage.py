@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Tests for ORM models: api_key, api_key_usage_log, block, figure, table, reference.
 """

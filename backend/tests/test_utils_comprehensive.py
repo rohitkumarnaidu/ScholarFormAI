@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Comprehensive tests for utility modules and services.
 Targets the biggest coverage gaps to push toward 90%.

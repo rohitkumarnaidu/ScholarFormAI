@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Tests for RateLimitMiddleware — comprehensive coverage of:
 - In-memory store behaviour

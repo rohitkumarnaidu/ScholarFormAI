@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Test Suite for RAG Engine
 Tests retrieval-augmented generation, ChromaDB integration, and fallback mechanisms.

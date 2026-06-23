@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Database Layer Tests
 Tests database connection, Supabase client operations, and graceful degradation.
