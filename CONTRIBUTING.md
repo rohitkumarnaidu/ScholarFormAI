@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # Contributing to ScholarForm AI
 
 First off, thanks for taking the time to contribute!

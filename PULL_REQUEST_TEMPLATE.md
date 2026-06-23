@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ## Description
 
 <!-- Provide a brief summary of the changes. Include the motivation and context. -->

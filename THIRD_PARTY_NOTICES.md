@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # Third-Party Notices
 
 ScholarForm AI uses the following third-party libraries and components.

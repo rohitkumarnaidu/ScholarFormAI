@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """Single source of truth for ScholarForm AI version.
 
 Canonical source: backend/pyproject.toml → version field.
