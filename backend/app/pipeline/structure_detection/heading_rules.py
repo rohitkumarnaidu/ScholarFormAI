@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Heading Detection Rules - Text and style heuristics for identifying headings.
 
@@ -356,15 +359,15 @@ def analyze_heading_candidate(
     # FALLBACK LOGIC: Keyword-Independent Heading Heuristic
     # If we haven't crossed threshold but it's short, isolated, and Title Case
     if confidence < 0.4:
-        # FORENSIC FIX: Disable raw index gap isolation heuristic
-        # With Step-100 sparse indices, (block.index - prev_block.index) > 1 is ALWAYS true
-        # This causes over-classification of short paragraphs as headings
-        # Conservative approach: Rely on other signals (style, keywords, numbering)
-        is_isolated = False
-        
-        # Alternative: Could use logical adjacency check if needed
-        # is_isolated = (block_index > 0 and block_index < len(all_blocks) - 1)
-        # But for now, disable isolation signal entirely
+        # Check isolation using sequential block_index (not sparse Document index)
+        # This replaces the old index-gap heuristic that over-fired with Step-100 gaps.
+        # Now uses content-aware adjacency: empty neighbours = isolated block.
+        is_isolated = (
+            block_index > 0
+            and block_index < len(all_blocks) - 1
+            and not all_blocks[block_index - 1].text.strip()
+            and not all_blocks[block_index + 1].text.strip()
+        )
         
         cap_ratio = get_capitalization_ratio(text)
         

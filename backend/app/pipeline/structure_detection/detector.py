@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Structure Detector - Main orchestrator for structure detection.
 
@@ -66,7 +69,7 @@ class StructureDetector(PipelineStage):
             # Access via ai_hints dict on DocumentMetadata model
             docling_layout = document.metadata.ai_hints.get("docling_layout")
             
-            heading_candidates = []
+            heading_candidates: list = []
             if docling_layout:
                 # path: Enhanced structure detection using Docling layout analysis
                 # Features: Bounding box aware, font size confident, logo tolerant
