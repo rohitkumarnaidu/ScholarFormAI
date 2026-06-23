@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: ScholarForm AI — Documentation Portal
 description: Central index for ScholarForm AI documentation — architecture, development, deployment, and operations

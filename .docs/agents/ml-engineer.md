@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: ScholarForm AI — ML Engineer Agent
 description: AI/ML Engineer — LLM integration, RAG pipeline, and model management

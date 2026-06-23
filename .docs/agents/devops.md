@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: ScholarForm AI — DevOps Agent
 description: DevOps Engineer — CI/CD, Docker, Render deployment, and monitoring

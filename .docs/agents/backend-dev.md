@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: ScholarForm AI — Backend Dev Agent
 description: Python/FastAPI Developer — API routes, services, database, and Celery tasks
