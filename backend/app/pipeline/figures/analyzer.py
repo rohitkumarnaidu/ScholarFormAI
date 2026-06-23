@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Figure Quality Analyzer
 Analyzes images for resolution, aspect ratio, and potential quality issues.
