@@ -1,7 +1,11 @@
-import React, { memo } from 'react';
-import Link from 'next/link';
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
 
-const TEMPLATE_OPTIONS = [
+import React, { memo, useState, useEffect } from 'react';
+import Link from 'next/link';
+import { fetchTemplates } from '../../services/api.templates';
+
+const FALLBACK_OPTIONS = [
     { value: 'none', label: 'None (No formatting)' },
     { value: 'ieee', label: 'IEEE' },
     { value: 'apa', label: 'APA (7th Edition)' },
@@ -28,6 +32,20 @@ const TemplateSelector = memo(function TemplateSelector({
     onCategoryChange,
     onTemplateSelect,
 }) {
+    const [templateOptions, setTemplateOptions] = useState(FALLBACK_OPTIONS);
+
+    useEffect(() => {
+        let cancelled = false;
+        fetchTemplates().then((templates) => {
+            if (cancelled) return;
+            const mapped = templates.map((t) => ({
+                value: t.id,
+                label: t.name,
+            }));
+            setTemplateOptions(mapped);
+        });
+        return () => { cancelled = true; };
+    }, []);
     const fileMetaText = file ? `${file.name} (${formatFileSize(file.size)})` : 'No file selected';
 
     return (
@@ -43,7 +61,7 @@ const TemplateSelector = memo(function TemplateSelector({
                             disabled={isProcessing}
                             className="template-selector-trigger w-full h-10 rounded-lg border border-slate-200 dark:border-slate-700/70 surface-ladder-border-10 bg-white surface-ladder-06 pl-3 pr-8 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none appearance-none disabled:opacity-50 transition-all font-medium cursor-pointer"
                         >
-                            {TEMPLATE_OPTIONS.map((option) => (
+                            {templateOptions.map((option) => (
                                 <option key={option.value} value={option.value}>
                                     {option.label}
                                 </option>
