@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import { useRef, useState } from 'react';
 import { submitFeedback } from '@/src/services/api';
 import { FeedbackSubmissionSchema, getFirstZodError } from '@/src/lib/schemas';

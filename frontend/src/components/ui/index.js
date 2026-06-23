@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 export { default as Button } from './Button';
 export { default as Card } from './Card';
 export { default as Skeleton } from './Skeleton';

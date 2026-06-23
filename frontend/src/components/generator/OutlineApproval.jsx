@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import React, { useCallback, useState, useEffect } from 'react';
 import { Edit2, Trash2, Plus, GripVertical, Check, X, RefreshCw, ArrowRight } from 'lucide-react';
 import { motion, Reorder } from 'framer-motion';

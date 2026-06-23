@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { Clock, Trash2, ChevronRight, File, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabaseClient';

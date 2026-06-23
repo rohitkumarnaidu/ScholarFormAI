@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import React, { useEffect, useState, useRef } from 'react';
 
 export default function Minimap({ content, targetRef }) {
