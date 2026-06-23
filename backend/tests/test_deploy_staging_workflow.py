@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -13,7 +16,7 @@ def test_deploy_staging_workflow_exists_and_has_required_contract():
     assert "name: deploy-staging" in workflow_text
     assert "workflow_dispatch:" in workflow_text
     assert "workflow_run:" in workflow_text
-    assert "Frontend CI" in workflow_text
+    assert "frontend-ci" in workflow_text or "Frontend CI" in workflow_text
     assert "/api/v1/health" in workflow_text
 
     required_secrets = [

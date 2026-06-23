@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Tests for API Key service, encryption, rate limiter, and feature flags.
 Covers the new Phase 2 implementation.
@@ -55,11 +58,16 @@ class TestEncryptionService:
         service = EncryptionService()
         enc1 = service.encrypt("same-plaintext")
         enc2 = service.encrypt("same-plaintext")
-        assert enc1 != enc2  # Fernet includes timestamp/IV
+        assert enc1 != enc2
 
 
 class TestApiKeyRateLimiter:
-    """Tests for per-key rate limiter."""
+    """Tests for per-key rate limiter using in-memory backend."""
+
+    @pytest.fixture(autouse=True)
+    def _no_redis(self):
+        with patch.object(ApiKeyRateLimiter, "_get_redis", return_value=None):
+            yield
 
     def test_within_limit_allowed(self):
         limiter = ApiKeyRateLimiter()
@@ -70,7 +78,7 @@ class TestApiKeyRateLimiter:
     def test_exceed_minute_limit(self):
         limiter = ApiKeyRateLimiter()
         key = "key-minute-test"
-        for _ in range(61):
+        for _ in range(60):
             limiter.check_rate_limit(key, per_minute=60, per_hour=1000, per_day=10000)
         result = limiter.check_rate_limit(key, per_minute=60, per_hour=1000, per_day=10000)
         assert result.allowed is False
@@ -80,7 +88,7 @@ class TestApiKeyRateLimiter:
     def test_exceed_hour_limit(self):
         limiter = ApiKeyRateLimiter()
         key = "key-hour-test"
-        for _ in range(1001):
+        for _ in range(1000):
             limiter.check_rate_limit(key, per_minute=10000, per_hour=1000, per_day=10000)
         result = limiter.check_rate_limit(key, per_minute=10000, per_hour=1000, per_day=10000)
         assert result.allowed is False
@@ -88,7 +96,7 @@ class TestApiKeyRateLimiter:
     def test_exceed_day_limit(self):
         limiter = ApiKeyRateLimiter()
         key = "key-day-test"
-        for _ in range(10001):
+        for _ in range(10000):
             limiter.check_rate_limit(key, per_minute=100000, per_hour=100000, per_day=10000)
         result = limiter.check_rate_limit(key, per_minute=100000, per_hour=100000, per_day=10000)
         assert result.allowed is False

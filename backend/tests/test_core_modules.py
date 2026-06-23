@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Tests for database session, supabase client, exceptions, and cache.
 """
@@ -84,8 +87,8 @@ class TestSupabaseClient:
         from app.db.supabase_client import get_supabase_client
         with patch("app.db.supabase_client.settings") as mock_settings:
             mock_settings.SUPABASE_URL = None
-            mock_settings.SUPABASE_ANON_KEY = None
-            result = get_supabase_client()
+            mock_settings.SUPABASE_SERVICE_ROLE_KEY = None
+            result = get_supabase_client(refresh=True)
             assert result is None
 
 
@@ -99,9 +102,10 @@ class TestRedisCache:
 
     def test_redis_cache_get_llm_result_miss(self):
         from app.cache.redis_cache import RedisCache
-        cache = RedisCache(redis_url=None)
-        result = cache.get_llm_result("nonexistent-key")
-        assert result is None
+        with patch.object(RedisCache, "_ensure_client", return_value=None):
+            cache = RedisCache(redis_url=None)
+            result = cache.get_llm_result("nonexistent-key")
+            assert result is None
 
     def test_redis_cache_set_llm_result_no_redis(self):
         from app.cache.redis_cache import RedisCache
@@ -121,9 +125,10 @@ class TestRedisCache:
 
     def test_redis_cache_health_no_redis(self):
         from app.cache.redis_cache import RedisCache
-        cache = RedisCache(redis_url=None)
-        health = cache.health()
-        assert health["status"] == "unavailable"
+        with patch.object(RedisCache, "_ensure_client", return_value=None):
+            cache = RedisCache(redis_url=None)
+            health = cache.health()
+            assert health["status"] == "unavailable"
 
     def test_get_redis_cache_singleton(self):
         from app.cache.redis_cache import get_redis_cache
