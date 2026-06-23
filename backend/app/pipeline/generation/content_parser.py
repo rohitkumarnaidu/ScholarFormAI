@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 # -*- coding: utf-8 -*-
 """
 ContentParser -- converts raw LLM response string into List[Block].

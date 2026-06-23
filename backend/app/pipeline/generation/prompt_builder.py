@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 # -*- coding: utf-8 -*-
 """
 PromptBuilder -- constructs LLM prompts for each supported document type.

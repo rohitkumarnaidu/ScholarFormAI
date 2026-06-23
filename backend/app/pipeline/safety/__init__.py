@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Safety Pipeline Module
 Provides decorators and utilities for operational resilience (Circuit Breakers, Retry Guards, Validators).

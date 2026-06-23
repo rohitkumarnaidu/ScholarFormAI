@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Cross-Reference Integrity Engine - Validates internal document links.
 Scans for Fig, Table, Eq, and Section references.

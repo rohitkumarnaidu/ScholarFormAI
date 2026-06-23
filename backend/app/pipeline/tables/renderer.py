@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Table Renderer - Renders Table models into python-docx tables.
 """

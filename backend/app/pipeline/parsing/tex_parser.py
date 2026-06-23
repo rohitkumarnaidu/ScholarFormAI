@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 r"""
 LaTeX Parser - Extract content from LaTeX (.tex) files.
 

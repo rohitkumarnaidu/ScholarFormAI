@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 RAG Engine — Local Retrieval-Augmented Generation for academic formatting guidelines.
 

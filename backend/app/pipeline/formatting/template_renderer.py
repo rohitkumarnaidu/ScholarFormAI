@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Template Renderer - Jinja2/docxtpl rendering for manuscript output.
 """

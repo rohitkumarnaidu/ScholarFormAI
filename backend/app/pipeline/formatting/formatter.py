@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Formatter Module - Applies structure and styles to create a Word document.
 
@@ -35,6 +38,7 @@ from app.pipeline.formatting.numbering import NumberingEngine
 from app.pipeline.formatting.reference_formatter import ReferenceFormatter
 from app.pipeline.formatting.template_renderer import TemplateRenderer
 from app.pipeline.tables.renderer import TableRenderer
+from app.pipeline.figures.renderer import FigureRenderer
 from app.pipeline.safety.safe_execution import safe_function, safe_execution
 
 class Formatter:
@@ -50,6 +54,7 @@ class Formatter:
         self.reference_formatter = ReferenceFormatter(self.contract_loader)
         self.template_renderer = TemplateRenderer(templates_dir=templates_dir)
         self.table_renderer = TableRenderer()
+        self.figure_renderer = FigureRenderer()
         
     def process(self, document: Document) -> Document:
         """Standard pipeline stage entry point."""
@@ -274,7 +279,7 @@ class Formatter:
                 )
                 
             elif item["type"] == "figure":
-                self._render_figure(word_doc, item["obj"], item["number"])
+                self.figure_renderer.render(word_doc, item["obj"], item["number"])
             elif item["type"] == "equation":
                 self._render_equation(word_doc, item["obj"])
             elif item["type"] == "table":
@@ -841,7 +846,7 @@ class Formatter:
 
         if source_document.figures:
             for number, figure in enumerate(source_document.figures, start=1):
-                self._render_figure(doc, figure, number)
+                self.figure_renderer.render(doc, figure, number)
         if source_document.equations:
             for equation in source_document.equations:
                 self._render_equation(doc, equation)
@@ -1256,116 +1261,13 @@ class Formatter:
 
     @safe_function(fallback_value=None, error_message="Image sizing failed")
     def _calculate_image_size(self, figure: Figure):
-        """
-        Calculate optimal image size based on actual dimensions and page constraints.
-        
-        Strategy:
-        1. Use figure.width/height if available (from Figure model)
-        2. Constrain to page width (6.5 inches for standard letter with 1" margins)
-        3. Maintain aspect ratio
-        4. Set reasonable min/max bounds
-        """
-        # Page constraints (standard letter: 8.5" wide, 1" margins each side = 6.5" usable)
-        MAX_WIDTH = Inches(6.5)
-        MAX_HEIGHT = Inches(9.0)  # Standard letter: 11" tall, 1" margins = 9" usable
-        MIN_WIDTH = Inches(2.0)   # Minimum for readability
-        DEFAULT_WIDTH = Inches(5.0)  # Good default for most images
-        
-        # If figure has dimensions, use them
-        if figure.width and figure.height:
-            # Convert to inches (assuming pixels at 96 DPI)
-            img_width_inches = Inches(figure.width / 96.0)
-            img_height_inches = Inches(figure.height / 96.0)
-            
-            # Calculate aspect ratio
-            aspect_ratio = figure.width / figure.height
-            
-            # Scale to fit within page width
-            if img_width_inches > MAX_WIDTH:
-                final_width = MAX_WIDTH
-                final_height = Inches(MAX_WIDTH.inches / aspect_ratio)
-            elif img_width_inches < MIN_WIDTH:
-                # Small images: scale up to minimum width
-                final_width = MIN_WIDTH
-                final_height = Inches(MIN_WIDTH.inches / aspect_ratio)
-            else:
-                # Image fits naturally
-                final_width = img_width_inches
-                final_height = img_height_inches
-            
-            # Ensure height doesn't exceed page
-            if final_height > MAX_HEIGHT:
-                final_height = MAX_HEIGHT
-                final_width = Inches(MAX_HEIGHT.inches * aspect_ratio)
-            
-            return final_width, final_height
-        else:
-            # No dimensions available: use smart default
-            # Default to 5 inches wide (good for most academic figures)
-            return DEFAULT_WIDTH, None  # Let python-docx maintain aspect ratio
+        """Delegate to FigureRenderer. TODO: Remove once all callers are migrated."""
+        return self.figure_renderer.calculate_image_size(figure)
 
     @safe_function(fallback_value=None, error_message="Figure rendering failed")
     def _render_figure(self, doc, figure: Figure, number: int):
-        """Render a figure with dynamic sizing based on image dimensions."""
-        # 1. Add image with dynamic sizing
-        if figure.export_path and os.path.exists(figure.export_path):
-            try:
-                # Calculate optimal size based on image dimensions
-                width, height = self._calculate_image_size(figure)
-                # Add image and get the paragraph containing it
-                paragraph = doc.add_paragraph()
-                run = paragraph.add_run()
-                run.add_picture(figure.export_path, width=width, height=height)
-                paragraph.alignment = 1  # Center the image
-            except Exception as e:
-                logger.warning("Failed to render figure from export_path: %s", e)
-                # Fallback: add placeholder text if image fails
-                p = doc.add_paragraph(f"[Image: {figure.export_path}]")
-                p.alignment = 1  # Center
-        elif figure.image_data:
-            # If we have image_data, use BytesIO (more reliable than temp files)
-            try:
-                from io import BytesIO
-                image_stream = BytesIO(figure.image_data)
-                # Calculate optimal size
-                width, height = self._calculate_image_size(figure)
-                # Add image to a paragraph and center it
-                paragraph = doc.add_paragraph()
-                run = paragraph.add_run()
-                if height:
-                    run.add_picture(image_stream, width=width, height=height)
-                else:
-                    run.add_picture(image_stream, width=width)
-                paragraph.alignment = 1  # Center the image
-                logger.info("Rendered figure %d from image_data (%d bytes)", number, len(figure.image_data))
-            except Exception as e:
-                logger.warning("Failed to render figure from image_data: %s", e)
-                # Fallback: add placeholder
-                p = doc.add_paragraph(f"[Figure {number} - Image rendering failed: {str(e)[:50]}]")
-                p.alignment = 1  # Center
-        else:
-            # If no image data or path, add a placeholder
-            p = doc.add_paragraph(f"[Figure {number} Placeholder - No image data]")
-            p.alignment = 1  # Center the placeholder too
-        
-        # 2. Add caption with bold prefix (check if prefix already exists)
-        if figure.caption_text:
-            caption_p = doc.add_paragraph(style="Caption")
-            # Check if caption already starts with "Figure N:" to avoid duplication
-            caption_lower = figure.caption_text.lower().strip()
-            if caption_lower.startswith(f"figure {number}:"):
-                # Caption already has prefix, just add it as-is with bold prefix
-                run = caption_p.add_run(f"Figure {number}: ")
-                run.bold = True
-                # Add the rest after the prefix
-                rest_text = figure.caption_text[len(f"Figure {number}:"):].strip()
-                caption_p.add_run(rest_text)
-            else:
-                # Caption doesn't have prefix, add it
-                run = caption_p.add_run(f"Figure {number}: ")
-                run.bold = True
-                caption_p.add_run(figure.caption_text)
-            caption_p.alignment = 1  # Center
+        """Delegate to FigureRenderer. TODO: Remove once all callers are migrated."""
+        return self.figure_renderer.render(doc, figure, number)
 
     def _is_bullet_list_item(self, text: str) -> bool:
         """Dynamically detect if text is a bullet list item."""
