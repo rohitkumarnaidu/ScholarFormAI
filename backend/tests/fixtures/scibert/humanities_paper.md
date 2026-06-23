@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # Abstract
 This study examines postcolonial narrative strategies in late twentieth century novels. We focus on voice, temporality, and memory.
 

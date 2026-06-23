@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # Abstract
 We analyze stress response in cultured fibroblasts using transcriptomic profiling. The study identifies pathways linked to mitochondrial regulation.
 

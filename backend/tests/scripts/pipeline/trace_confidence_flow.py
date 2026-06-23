@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 RUNTIME TRACE ANALYSIS - Confidence Engine Verification
 Traces NLP confidence flow through classifier to verify integration.

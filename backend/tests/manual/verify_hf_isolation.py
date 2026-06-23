@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 
 from app.models import PipelineDocument, Block, TextStyle, BlockType
 from app.pipeline.structure_detection.detector import StructureDetector

@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # Abstract
 We study graph transformers for reasoning over citation networks. Our model combines structural attention with scalable sampling.
 

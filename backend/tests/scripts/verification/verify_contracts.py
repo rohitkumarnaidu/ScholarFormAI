@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Contract Loading Verification Script
 Tests all 4 templates to ensure they load without errors.

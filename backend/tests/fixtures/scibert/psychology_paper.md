@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # Abstract
 We examine attention changes during a two year longitudinal study. Behavioral tasks and surveys track cognitive shifts.
 
