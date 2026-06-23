@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: Pipeline Architecture
 description: How the 12-stage formatting pipeline processes documents end-to-end

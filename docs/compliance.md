@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: Dependency Compliance & SBOM
 description: License compliance, SBOM generation, dependency audit procedures

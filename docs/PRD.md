@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: ScholarForm AI — Product Requirements Document (PRD)
 description: Product vision, user stories, acceptance criteria, and out-of-scope items

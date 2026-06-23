@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: ScholarForm AI — Queue and Remote Offload Plan (Deferred)
 description: Future queue-based architecture for heavy document processing tasks

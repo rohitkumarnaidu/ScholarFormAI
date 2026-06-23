@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: Tutorial — Format Your First Paper
 description: Step-by-step tutorial to format an academic manuscript with ScholarForm AI

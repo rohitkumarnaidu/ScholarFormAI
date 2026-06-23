@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: "ADR 006: Celery for Background Task Processing"
 description: Decision to use Celery with Redis broker for async task execution

@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: "ADR 004: FastAPI as Sole API Gateway"
 description: Decision to use FastAPI-only architecture without Spring Boot gateway

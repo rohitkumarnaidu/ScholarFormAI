@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 # ScholarForm AI — Branch Protection Rules
 
 This document defines the required branch protection settings for the `main` and `develop` branches. These rules must be configured in the GitHub repository settings under **Settings > Branches > Add branch protection rule**.

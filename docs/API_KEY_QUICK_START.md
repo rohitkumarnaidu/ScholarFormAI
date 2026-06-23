@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 title: ScholarForm AI — API Key Quick-Start Tutorial
 description: Add your own LLM provider keys to ScholarForm AI
