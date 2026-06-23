@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 API Key CRUD service for managing user-provided LLM provider keys.
 """

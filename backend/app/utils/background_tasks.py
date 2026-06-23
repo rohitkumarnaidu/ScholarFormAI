@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Background Task Utilities with Timeout Support.
 Prevents infinite loops and resource exhaustion in background tasks.

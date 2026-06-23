@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 # RESERVED: Celery task definitions for future distributed processing.
 # Not currently wired into the FastAPI runtime — kept for planned Redis/Celery migration.
 import logging

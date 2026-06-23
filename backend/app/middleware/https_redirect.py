@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 HTTPS Redirect Middleware — forces all HTTP requests to HTTPS.
 Adds HSTS header for browsers to remember HTTPS-only policy.

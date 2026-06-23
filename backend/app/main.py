@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 
 from datetime import datetime, timezone
 
@@ -596,6 +599,9 @@ async def lifespan(app: FastAPI):
 # ── App creation ──────────────────────────────────────────────────────────────
 # Disable Swagger/ReDoc in production to avoid exposing API internals
 _is_debug = getattr(settings, "DEBUG", False)
+# FastAPI compatibility: 0.128.0 removed support for APIRouter webhooks `on_startup`
+# keyword. Pinned to 0.127.1 (Starlette 0.50.0) until the v1 router chain is migrated
+# to the newer lifespan pattern. See AGENTS.md requirements for upgrade path.
 app = FastAPI(
     title="ScholarForm AI Backend",
     description="Backend API for ScholarForm AI with Supabase Auth",
