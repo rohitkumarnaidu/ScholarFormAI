@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 export default function GeneratorLoading() {
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6">
