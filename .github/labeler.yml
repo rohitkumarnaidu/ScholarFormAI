@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 # ScholarForm AI — Auto-labeler configuration
 # Matches PR file changes against path patterns
 
