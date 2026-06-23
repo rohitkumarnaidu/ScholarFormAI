@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 from types import SimpleNamespace
 from unittest.mock import patch
 

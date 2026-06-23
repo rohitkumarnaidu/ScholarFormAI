@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 import pytest
 
 from app.main import _normalize_request_path, _should_bypass_https_redirect

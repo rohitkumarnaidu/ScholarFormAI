@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Deep tests for Exporter (exporter.py) — ~45 tests covering all export formats,
 internal helpers, error handling, and edge cases.

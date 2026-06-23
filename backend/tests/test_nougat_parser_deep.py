@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Deep tests for NougatParser (nougat_parser.py) — 80+ tests covering all internal
 methods, remote parsing, local inference, model loading, retry logic, and output

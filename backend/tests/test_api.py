@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 API Integration Tests
 Tests FastAPI endpoints, authentication, and request handling.

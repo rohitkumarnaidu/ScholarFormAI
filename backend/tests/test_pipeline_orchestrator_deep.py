@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """Deep unit tests for PipelineOrchestrator — covers every uncovered path."""
 
 from __future__ import annotations

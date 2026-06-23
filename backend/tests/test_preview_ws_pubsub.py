@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 import concurrent.futures
 import json
 from unittest.mock import AsyncMock, patch

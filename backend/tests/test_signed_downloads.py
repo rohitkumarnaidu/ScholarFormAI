@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 from urllib.parse import urlparse, parse_qsl
 
 from app.services.document_service import DocumentService

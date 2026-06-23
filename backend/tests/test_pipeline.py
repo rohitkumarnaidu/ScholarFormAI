@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Pipeline Integration Tests
 Tests end-to-end pipeline execution and stage integration.
