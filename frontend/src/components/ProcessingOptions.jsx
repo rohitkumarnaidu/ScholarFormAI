@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 const EXPORT_FORMAT_OPTIONS = [
     { value: 'docx', label: 'DOCX (.docx)' },
     { value: 'pdf', label: 'PDF (.pdf)' },

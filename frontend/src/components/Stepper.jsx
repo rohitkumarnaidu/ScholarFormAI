@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Loader2, XCircle } from 'lucide-react';

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, User, Bot, Loader2, Sparkles, AlertCircle, Square } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';

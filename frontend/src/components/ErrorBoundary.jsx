@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import React from 'react';
 import { logFrontendError } from '@/src/services/api';
 
