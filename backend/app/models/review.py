@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 from enum import Enum
 from typing import Optional, List
 from pydantic import BaseModel, Field

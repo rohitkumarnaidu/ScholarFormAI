@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 llm_service.py — Unified LLM access layer powered by LiteLLM.
 """

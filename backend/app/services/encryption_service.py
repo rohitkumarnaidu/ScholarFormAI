@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Encryption service for securely storing user API keys.
 Uses Fernet symmetric encryption with key rotation support.

@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 A/B Testing Framework - Compare NVIDIA vs DeepSeek quality.
 

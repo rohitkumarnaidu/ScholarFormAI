@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 API Key management router — /api/v1/keys
 Handles CRUD for user-provided LLM provider API keys with rate limiting.

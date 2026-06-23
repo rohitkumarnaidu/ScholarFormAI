@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 
 from sqlalchemy import Column, String, DateTime, text, ForeignKey, Integer, JSON
 from sqlalchemy.dialects.postgresql import UUID

@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Block Model - Represents a text block (paragraph, heading, list item, etc.)
 

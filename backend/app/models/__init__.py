@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 from app.models.user import User
 from app.models.document import Document # Database model
 from app.models.document_result import DocumentResult

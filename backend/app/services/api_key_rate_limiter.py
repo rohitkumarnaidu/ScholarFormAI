@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 """
 Per-API-key rate limiter using Redis sliding window counters.
 Enforces per-minute, per-hour, and per-day limits with 429 responses.
