@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
+layout:
+  spacing: 1.0
+sections:
+  required:
+    - abstract
+    - introduction
+    - references
+  canonical_names:
+    intro: introduction
+    related work: related work
+references:
+  style: ieee
+  normalization:
+    journal_format: "{authors}, \"{title},\" {journal}, vol. {volume}, no. {issue}, pp. {pages}, {year}."
+    conference_format: "{authors}, \"{title},\" in {conference}, {year}, pp. {pages}."
+    default_format: "{authors}, {title}, {year}."
+    max_authors: 6
+    et_al_suffix: et al.
+publisher: none

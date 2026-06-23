@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
+layout:
+  spacing: 2.0
+sections:
+  required:
+    - abstract
+    - introduction
+    - conclusion
+    - references
+  canonical_names:
+    intro: introduction
+    related work: related work
+references:
+  style: ieee
+publisher: ieee
