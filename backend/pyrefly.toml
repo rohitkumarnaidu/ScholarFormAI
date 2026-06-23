@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 [python]
 python_interpreter = ".venv/Scripts/python.exe"
 python_version = "3.12"
