@@ -1,3 +1,7 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
+
 ---
 name: Feature Request
 about: Suggest an idea for ScholarForm AI

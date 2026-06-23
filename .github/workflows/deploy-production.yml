@@ -1,7 +1,14 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
 name: deploy-production
 
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Frontend CI"]
+    branches: [main]
+    types: [completed]
 
 permissions:
   contents: read
@@ -10,53 +17,58 @@ jobs:
   verify-ci-gates:
     runs-on: ubuntu-latest
     steps:
-      - name: Check backend-ci workflow status
+      - name: Resolve commit SHA
+        id: sha
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         with:
           script: |
-            const runs = await github.rest.actions.listWorkflowRuns({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'backend-ci.yml',
-              branch: context.ref || 'main',
-              status: 'success',
-              per_page: 5
-            });
-            if (runs.data.workflow_runs.length === 0) {
-              core.setFailed('No successful backend-ci runs found on this branch');
+            const sha = context.payload.workflow_run?.head_sha || context.sha;
+            core.info(`Target commit: ${sha}`);
+            core.setOutput('sha', sha);
+
+      - name: Verify required CI workflows passed for this commit
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        with:
+          script: |
+            const sha = '${{ steps.sha.outputs.sha }}';
+            const requiredWorkflows = ['backend-ci.yml', 'frontend-ci.yml', 'security.yml'];
+            let allPassed = true;
+
+            for (const workflow of requiredWorkflows) {
+              const { data } = await github.rest.actions.listWorkflowRuns({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: workflow,
+                head_sha: sha,
+                per_page: 1
+              });
+
+              if (data.workflow_runs.length === 0) {
+                core.info(`${workflow}: no run for this commit (path filter excluded) — OK`);
+              } else {
+                const run = data.workflow_runs[0];
+                const conclusion = run.conclusion;
+                core.info(`${workflow}: run #${run.run_number} — ${conclusion}`);
+                if (conclusion !== 'success') {
+                  core.setFailed(`${workflow} failed (${conclusion}) for commit ${sha}. Deploy blocked.`);
+                  allPassed = false;
+                }
+              }
             }
 
-      - name: Check security workflow status
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
-        with:
-          script: |
-            const runs = await github.rest.actions.listWorkflowRuns({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'security.yml',
-              branch: context.ref || 'main',
-              status: 'success',
-              per_page: 5
-            });
-            if (runs.data.workflow_runs.length === 0) {
-              core.setFailed('No successful security runs found on this branch');
+            if (allPassed) {
+              core.info('All required CI workflows passed. Proceeding with deploy.');
             }
 
-      - name: Check frontend-ci workflow status
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
-        with:
-          script: |
-            const runs = await github.rest.actions.listWorkflowRuns({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'frontend-ci.yml',
-              branch: context.ref || 'main',
-              status: 'success',
-              per_page: 5
-            });
-            if (runs.data.workflow_runs.length === 0) {
-              core.setFailed('No successful frontend-ci runs found on this branch');
-            }
+      - name: Check triggering workflow branch
+        if: github.event_name == 'workflow_run'
+        run: |
+          BRANCH="${{ github.event.workflow_run.head_branch }}"
+          if [ "$BRANCH" != "main" ]; then
+            echo "Triggered by branch $BRANCH, not main. Skipping production deploy."
+            exit 1
+          fi
+          echo "Triggered by main branch. Proceeding."
 
   pre-deploy-health:
     runs-on: ubuntu-latest
@@ -122,6 +134,44 @@ jobs:
             echo "ready=true" >> "$GITHUB_OUTPUT"
             echo "deploy_mode=${deploy_mode}" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Verify Render service exists
+        if: steps.preflight.outputs.ready == 'true' && steps.preflight.outputs.deploy_mode == 'api'
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY || vars.RENDER_API_KEY }}
+          RENDER_PROD_SERVICE_ID: ${{ secrets.RENDER_PROD_SERVICE_ID || vars.RENDER_PROD_SERVICE_ID }}
+        run: |
+          echo "Checking Render service ${RENDER_PROD_SERVICE_ID} exists..."
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" \
+            "https://api.render.com/v1/services/${RENDER_PROD_SERVICE_ID}" \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer ${RENDER_API_KEY}")
+          HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d: -f2)
+          if [[ "$HTTP_STATUS" != "200" ]]; then
+            echo "Render service ${RENDER_PROD_SERVICE_ID} not found (HTTP $HTTP_STATUS)."
+            exit 1
+          fi
+          SERVICE_NAME=$(echo "$RESPONSE" | grep -v "HTTP_STATUS" | python3 -c "import sys,json; print(json.load(sys.stdin).get('service','').get('name','unknown'))" 2>/dev/null || echo "unknown")
+          echo "Render service '${SERVICE_NAME}' (${RENDER_PROD_SERVICE_ID}) exists."
+
+      - name: Verify Vercel project exists
+        if: steps.preflight.outputs.ready == 'true'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN || vars.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID || vars.VERCEL_ORG_ID }}
+          VERCEL_PROD_PROJECT_ID: ${{ secrets.VERCEL_PROD_PROJECT_ID || vars.VERCEL_PROD_PROJECT_ID }}
+        run: |
+          echo "Checking Vercel project ${VERCEL_PROD_PROJECT_ID} exists..."
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" \
+            "https://api.vercel.com/v9/projects/${VERCEL_PROD_PROJECT_ID}" \
+            -H "Authorization: Bearer ${VERCEL_TOKEN}")
+          HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d: -f2)
+          if [[ "$HTTP_STATUS" != "200" ]]; then
+            echo "Vercel project ${VERCEL_PROD_PROJECT_ID} not found (HTTP $HTTP_STATUS)."
+            exit 1
+          fi
+          PROJECT_NAME=$(echo "$RESPONSE" | grep -v "HTTP_STATUS" | python3 -c "import sys,json; print(json.load(sys.stdin).get('name','unknown'))" 2>/dev/null || echo "unknown")
+          echo "Vercel project '${PROJECT_NAME}' (${VERCEL_PROD_PROJECT_ID}) exists."
 
       - name: Run database migrations
         if: steps.preflight.outputs.ready == 'true'
