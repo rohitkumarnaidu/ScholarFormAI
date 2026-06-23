@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import { test, expect } from '@playwright/test';
 
 const hasSupabaseUrl = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);

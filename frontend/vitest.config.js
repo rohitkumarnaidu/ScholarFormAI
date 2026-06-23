@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitest/config';
 

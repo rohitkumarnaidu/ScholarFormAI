@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 /**
  * B-RR-05 — Global A11y Focus & ARIA Tests
  * Verifies that interactive elements in key components expose correct
