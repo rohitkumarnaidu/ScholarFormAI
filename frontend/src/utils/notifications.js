@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 export const STORAGE_KEY = 'scholarform_notifications';
 
 const createId = () => {

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 /**
  * ReconnectingWebSocket wraps native WebSocket with automatic reconnection.
  * Retries use exponential backoff with jitter.

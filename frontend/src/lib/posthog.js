@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 let initialized = false;
 let initPromise = null;
 const pendingEvents = [];

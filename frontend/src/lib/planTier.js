@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
 // frontend/src/lib/planTier.js
 
 // TEMPORARY OVERRIDE: Set to true when we want to start charging or locking down features
