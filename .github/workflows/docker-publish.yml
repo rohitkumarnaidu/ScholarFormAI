@@ -115,7 +115,7 @@ jobs:
           sbom: true
 
       - name: Attest backend image
-        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}
           subject-digest: ${{ steps.build-backend.outputs.digest }}
@@ -157,7 +157,7 @@ jobs:
           sbom: true
 
       - name: Attest worker image
-        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}
           subject-digest: ${{ steps.build-worker.outputs.digest }}
@@ -197,7 +197,7 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
 
       - name: Set up Python
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
           python-version: '3.12'
 
@@ -215,7 +215,7 @@ jobs:
           npx --yes @cyclonedx/cyclonedx-npm --output-format JSON --output-file ../sbom/frontend-sbom.json
 
       - name: Attest backend SBOM
-        uses: actions/attest@v4.1.0
+        uses: actions/attest@v4.1.1
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}
           subject-digest: ${{ needs.build-and-push-backend.outputs.digest }}
@@ -223,7 +223,7 @@ jobs:
           predicate-path: sbom/backend-sbom.json
 
       - name: Attest worker SBOM
-        uses: actions/attest@v4.1.0
+        uses: actions/attest@v4.1.1
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}
           subject-digest: ${{ needs.build-and-push-worker.outputs.digest }}
