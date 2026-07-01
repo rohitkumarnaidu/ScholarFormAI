@@ -6,11 +6,12 @@ from unittest.mock import MagicMock, patch, PropertyMock
 from app.pipeline.parsing.nougat_parser import (
     NougatParser, _classify_nougat_line, _check_available_ram_gb, _pdf_to_images
 )
-from app.models import BlockType
 
 
 class TestNougatClassifyLine:
     def test_empty_line(self):
+        from app.models import BlockType
+
         assert _classify_nougat_line("") == BlockType.UNKNOWN
 
     def test_h1(self):

@@ -5,11 +5,13 @@ from __future__ import annotations
 import pytest
 from unittest.mock import MagicMock
 from app.pipeline.formatting.style_mapper import StyleMapper
+
 from app.models import Block, BlockType
 
 
 @pytest.fixture
 def mock_contract_loader():
+
     loader = MagicMock()
     loader.load.return_value = {
         "styles": {

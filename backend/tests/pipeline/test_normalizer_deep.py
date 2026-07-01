@@ -11,11 +11,12 @@ from __future__ import annotations
 from unittest.mock import patch, MagicMock
 import pytest
 from app.pipeline.normalization.normalizer import Normalizer, normalize_document
-from app.models import PipelineDocument, Block, BlockType, Table, TableCell, DocumentMetadata
 
 
 @pytest.fixture
 def normalizer():
+    from app.models import PipelineDocument, Block, BlockType, Table, TableCell, DocumentMetadata
+
     return Normalizer()
 
 

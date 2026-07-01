@@ -5,6 +5,8 @@ import pytest
 from unittest.mock import MagicMock, patch, PropertyMock
 from app.pipeline.parsing.pdf_parser import PdfParser
 
+from app.models import Block
+
 
 @pytest.fixture
 def pdf_parser():
@@ -130,12 +132,10 @@ class TestPdfParserHelpers:
 
     def test_should_attempt_ocr_fallback_true(self, pdf_parser):
         p, _ = pdf_parser
-        from app.models import Block
         assert p._should_attempt_ocr_fallback([Block(block_id="b1", index=0, text="hi")], 5) is True
 
     def test_should_attempt_ocr_fallback_false(self, pdf_parser):
         p, _ = pdf_parser
-        from app.models import Block
         text = "A" * 500
         assert p._should_attempt_ocr_fallback([Block(block_id="b1", index=0, text=text)], 5) is False
 
@@ -218,7 +218,6 @@ class TestPdfParserParse:
     def test_parse_extracts_content(self, tmp_path):
         f = tmp_path / "content.pdf"
         f.write_text("dummy")
-        from app.models import Block
         test_blocks = [Block(block_id="b1", index=0, text="Hello PDF world")]
         test_figures = []
         test_tables = []

@@ -4,6 +4,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, User, Bot, Loader2, Sparkles, AlertCircle, Square } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ModelSelector from './ModelSelector';
+import { useAuth } from '@/src/context/AuthContext';
 
 const formatSourceLabel = (source) => {
   if (!source) return 'Source';
@@ -115,11 +117,33 @@ const AgentChatPane = React.memo(({
   onSendMessage, 
   onStop,
   isTyping,
-  error 
+  error,
+  selectedModel: externalModel,
+  onModelChange 
 }) => {
   const [input, setInput] = useState('');
+  const [selectedModel, setSelectedModel] = useState(() => {
+    if (externalModel) return externalModel;
+    if (typeof window !== 'undefined') {
+      try { return localStorage.getItem('scholarform_selected_model') || ''; } catch (e) { /* localStorage unavailable */ }
+    }
+    return '';
+  });
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (externalModel && externalModel !== selectedModel) {
+      setSelectedModel(externalModel);
+    }
+  }, [externalModel, selectedModel]);
+
+  const handleModelChange = (model) => {
+    setSelectedModel(model);
+    if (onModelChange) onModelChange(model);
+    try { localStorage.setItem('scholarform_selected_model', model); } catch (e) { /* localStorage unavailable */ }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -165,10 +189,15 @@ const AgentChatPane = React.memo(({
             <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">ScholarForm Assistant</h2>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              Online
+              {selectedModel || 'Auto'}
             </p>
           </div>
         </div>
+        <ModelSelector
+          selectedModel={selectedModel}
+          onModelChange={handleModelChange}
+          userToken={user?.access_token}
+        />
       </div>
 
       {/* Message History */}

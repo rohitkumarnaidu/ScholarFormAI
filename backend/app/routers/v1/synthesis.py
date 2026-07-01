@@ -284,7 +284,7 @@ async def session_messages(
         result = await asyncio.to_thread(generate_with_fallback, [
             {"role": "system", "content": system},
             {"role": "user", "content": user_prompt},
-        ], temperature=0.3, max_tokens=800)
+        ], temperature=0.3, max_tokens=800, user_id=str(getattr(user, "id", user)))
         answer = (result.get("text") or "").strip()
 
         await _session_service.add_message(sessionId, "assistant", answer, token_count=0)

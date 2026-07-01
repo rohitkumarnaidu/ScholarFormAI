@@ -686,15 +686,44 @@ async def generation_messages(
         await _session_service.add_message(sessionId, "system", system, token_count=0)
         user_prompt = f"Question: {question}\n\nSources:\n{sanitize_for_llm(context)}"
         await abuse_detector.record_llm_call(str(getattr(user, "id", user)))
-        result = await asyncio.to_thread(
-            generate_with_fallback,
-            [
-                {"role": "system", "content": system},
-                {"role": "user", "content": user_prompt},
-            ],
-            temperature=0.3,
-            max_tokens=800,
-        )
+        selected_model = payload.model or None
+        if selected_model:
+            try:
+                from app.services.llm_service import generate_with_model, LLMUnavailableError
+                result = await asyncio.to_thread(
+                    generate_with_model,
+                    [
+                        {"role": "system", "content": system},
+                        {"role": "user", "content": user_prompt},
+                    ],
+                    model_name=selected_model,
+                    temperature=0.3,
+                    max_tokens=800,
+                    user_id=str(getattr(user, "id", user)),
+                )
+            except (LLMUnavailableError, Exception) as exc:
+                logger.warning("Model %s failed: %s - falling back to default", selected_model, exc)
+                result = await asyncio.to_thread(
+                    generate_with_fallback,
+                    [
+                        {"role": "system", "content": system},
+                        {"role": "user", "content": user_prompt},
+                    ],
+                    temperature=0.3,
+                    max_tokens=800,
+                    user_id=str(getattr(user, "id", user)),
+                )
+        else:
+            result = await asyncio.to_thread(
+                generate_with_fallback,
+                [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user_prompt},
+                ],
+                temperature=0.3,
+                max_tokens=800,
+                user_id=str(getattr(user, "id", user)),
+            )
         answer = (result.get("text") or "").strip()
 
         await _session_service.add_message(sessionId, "assistant", answer, token_count=0)

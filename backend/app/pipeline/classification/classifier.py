@@ -63,7 +63,7 @@ class ContentClassifier(PipelineStage):
             "laboratory", "center", "centre", "hospital", "clinic",
             "corp", "inc", "ltd", "gmbh", "foundation", "limited",
             "road", "st.", "street", "ave", "avenue", "box",
-            "email", "@", "ph.", "fax", "tel"
+            "email", "ph.", "fax", "tel"
         }
         
         # Keywords that exclude a block from being an AUTHOR

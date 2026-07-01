@@ -9,7 +9,7 @@ import logging
 import time
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Header, Query
+from fastapi import APIRouter, Depends, HTTPException, Header, Query, Response
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
@@ -21,7 +21,7 @@ from app.models.api_key import UserApiKey
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api/v1/keys", tags=["api-keys"])
+router = APIRouter(tags=["api-keys"])
 
 
 # --- Pydantic Schemas ---
@@ -81,6 +81,7 @@ class ProviderInfo(BaseModel):
 @router.post("", response_model=ApiKeyResponse, status_code=201)
 async def create_api_key(
     request: CreateApiKeyRequest,
+    response: Response,
     db: Session = Depends(get_db),
     user=Depends(get_current_user),
 ):
@@ -95,6 +96,9 @@ async def create_api_key(
             rate_limit_per_hour=request.rate_limit_per_hour,
             daily_quota=request.daily_quota,
         )
+        rate_limiter = get_api_key_rate_limiter()
+        result = rate_limiter.check_rate_limit(str(key.id))
+        apply_rate_limit_headers(response, result)
         return ApiKeyResponse(**key.to_dict(mask_key=True))
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -114,6 +118,7 @@ async def list_api_keys(
 @router.get("/{key_id}", response_model=ApiKeyResponse)
 async def get_api_key(
     key_id: str,
+    response: Response,
     db: Session = Depends(get_db),
     user=Depends(get_current_user),
 ):
@@ -121,6 +126,8 @@ async def get_api_key(
     key = service.get_key(key_id, str(user.id))
     if not key:
         raise HTTPException(status_code=404, detail="API key not found")
+    rate_limiter = get_api_key_rate_limiter()
+    apply_rate_limit_headers(response, rate_limiter.check_rate_limit(key_id))
     return ApiKeyResponse(**key.to_dict(mask_key=True))
 
 
@@ -128,6 +135,7 @@ async def get_api_key(
 async def update_api_key(
     key_id: str,
     request: UpdateApiKeyRequest,
+    response: Response,
     db: Session = Depends(get_db),
     user=Depends(get_current_user),
 ):
@@ -143,12 +151,15 @@ async def update_api_key(
     )
     if not key:
         raise HTTPException(status_code=404, detail="API key not found")
+    rate_limiter = get_api_key_rate_limiter()
+    apply_rate_limit_headers(response, rate_limiter.check_rate_limit(key_id))
     return ApiKeyResponse(**key.to_dict(mask_key=True))
 
 
 @router.delete("/{key_id}", status_code=204)
 async def delete_api_key(
     key_id: str,
+    response: Response,
     db: Session = Depends(get_db),
     user=Depends(get_current_user),
 ):
@@ -156,6 +167,8 @@ async def delete_api_key(
     deleted = service.delete_key(key_id, str(user.id))
     if not deleted:
         raise HTTPException(status_code=404, detail="API key not found")
+    rate_limiter = get_api_key_rate_limiter()
+    apply_rate_limit_headers(response, rate_limiter.check_rate_limit(key_id))
 
 
 @router.get("/usage", response_model=dict[str, UsageStatsResponse])
@@ -225,30 +238,45 @@ async def test_api_key(
 
     start = time.time()
     try:
-        if provider == "openai":
-            import httpx
-            async with httpx.AsyncClient(timeout=10) as client:
-                resp = await client.get(
-                    "https://api.openai.com/v1/models",
-                    headers={"Authorization": f"Bearer {api_key}"},
-                )
-                test_results["status"] = "valid" if resp.status_code == 200 else "invalid"
-                test_results["message"] = resp.text[:200] if resp.status_code != 200 else "Connection successful"
-        elif provider == "anthropic":
-            import httpx
-            async with httpx.AsyncClient(timeout=10) as client:
-                resp = await client.get(
-                    "https://api.anthropic.com/v1/models",
-                    headers={
-                        "x-api-key": api_key,
-                        "anthropic-version": "2023-06-01",
-                    },
-                )
-                test_results["status"] = "valid" if resp.status_code == 200 else "invalid"
-                test_results["message"] = resp.text[:200] if resp.status_code != 200 else "Connection successful"
+        from app.services.provider_registry import BUILTIN_PROVIDERS
+        info = BUILTIN_PROVIDERS.get(provider)
+        if info:
+            base = info.get("base_url", "")
+            api_base = base() if callable(base) else base
+        elif provider in {"openai", "anthropic", "groq", "deepseek", "openrouter", "google", "cohere", "mistral", "nvidia"}:
+            lookup = {
+                "openai": "https://api.openai.com/v1",
+                "anthropic": "https://api.anthropic.com/v1",
+                "groq": "https://api.groq.com/openai/v1",
+                "deepseek": "https://api.deepseek.com",
+                "openrouter": "https://openrouter.ai/api/v1",
+                "google": "https://generativelanguage.googleapis.com/v1beta",
+                "cohere": "https://api.cohere.com/v1",
+                "mistral": "https://api.mistral.ai/v1",
+                "nvidia": "https://integrate.api.nvidia.com/v1",
+            }
+            api_base = lookup[provider]
         else:
             test_results["status"] = "skipped"
-            test_results["message"] = f"Live testing not implemented for {provider}"
+            test_results["message"] = f"Unknown provider: {provider}"
+            test_results["response_time_ms"] = round((time.time() - start) * 1000, 2)
+            return test_results
+
+        import httpx
+        headers = {}
+        if provider == "anthropic":
+            headers["x-api-key"] = api_key
+            headers["anthropic-version"] = "2023-06-01"
+        else:
+            headers["Authorization"] = f"Bearer {api_key}"
+
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.get(
+                f"{api_base.rstrip('/')}/models" if provider != "ollama" else f"{api_base.rstrip('/')}/api/tags",
+                headers=headers,
+            )
+            test_results["status"] = "valid" if resp.status_code == 200 else "invalid"
+            test_results["message"] = resp.text[:200] if resp.status_code != 200 else "Connection successful"
     except Exception as e:
         test_results["status"] = "error"
         test_results["message"] = str(e)[:200]

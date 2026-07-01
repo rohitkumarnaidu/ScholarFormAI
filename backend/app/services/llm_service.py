@@ -85,6 +85,58 @@ def _normalize_model_name(model: str, provider: str) -> str:
         return raw_model
     return f"{provider}/{raw_model}"
 
+# ── User API key resolution (BYOK) ──────────────────────────────────────── #
+
+def resolve_user_api_key(
+    provider: str,
+    user_id: Optional[str] = None,
+) -> Optional[str]:
+    """
+    Resolve an API key for the given provider.
+
+    Priority:
+    1. If user_id is provided, check the user's stored ApiKeyService keys
+    2. Fall back to settings.*_API_KEY env var
+
+    Returns the raw API key string, or None if no key is configured.
+    """
+    provider_env_map = {
+        "openai": settings.OPENAI_API_KEY,
+        "anthropic": settings.ANTHROPIC_API_KEY,
+        "groq": settings.GROQ_API_KEY,
+        "nvidia": settings.NVIDIA_API_KEY,
+        "openrouter": settings.OPENROUTER_API_KEY,
+        "deepseek": settings.DEEPSEEK_API_KEY,
+        "google": settings.GOOGLE_API_KEY,
+        "cohere": settings.COHERE_API_KEY,
+        "mistral": settings.MISTRAL_API_KEY,
+    }
+
+    if user_id:
+        try:
+            from app.db.session import get_db
+            from app.services.api_key_service import ApiKeyService
+            from sqlalchemy.orm import Session
+
+            db: Session = next(get_db())
+            try:
+                service = ApiKeyService(db)
+                key = service.get_active_key(user_id, provider)
+                if key:
+                    raw = service.decrypt_key(key)
+                    if raw:
+                        return raw
+            finally:
+                db.close()
+        except Exception:
+            logger.warning("User API key lookup failed for %s/%s", provider, user_id, exc_info=True)
+
+    fallback = provider_env_map.get(provider.lower())
+    if fallback:
+        return fallback
+
+    return None
+
 # ── LiteLLM import (optional) ────────────────────────────────────────────── #
 try:
     # LiteLLM currently emits Python 3.14 deprecation warnings via transitive
@@ -316,14 +368,151 @@ def generate(
             logger.warning("LLM metrics recording failed: %s", e)
 
 
+def generate_with_model(
+    messages: List[Dict[str, str]],
+    model_name: str,
+    temperature: float = 0.3,
+    max_tokens: int = 2048,
+    user_id: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Generate a response using a specific model (not using fallback).
+    Resolves provider, API key (user key > env var), and base URL dynamically.
+
+    Args:
+        messages:    OpenAI-format message list
+        model_name:  Model string e.g. "gpt-4o", "claude-3-5-sonnet", "custom/my-model"
+        temperature: Sampling temperature
+        max_tokens:  Maximum tokens to generate
+        user_id:     Optional user ID for BYOK per-user key resolution
+
+    Returns:
+        {"text": str, "model": str, "provider": str}
+
+    Raises:
+        LLMUnavailableError: If the model cannot be reached.
+    """
+    from app.services.provider_registry import resolve_model_provider, get_provider_info
+
+    provider = resolve_model_provider(model_name)
+    if not provider:
+        raise LLMUnavailableError(f"Unknown model: {model_name}")
+
+    is_custom = provider.startswith("custom_")
+    api_key = resolve_user_api_key(provider, user_id) if not is_custom else None
+
+    provider_info = get_provider_info(provider) if not is_custom else None
+
+    kwargs = {
+        "messages": messages,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+    }
+
+    if is_custom:
+        from app.models.custom_provider import CustomProvider
+        from app.db.session import get_db
+        from sqlalchemy import select
+        from sqlalchemy.orm import Session
+
+        custom_id = provider.replace("custom_", "")
+        db: Session = next(get_db())
+        try:
+            cp = db.execute(
+                select(CustomProvider).where(CustomProvider.id == custom_id)
+            ).scalar_one_or_none()
+            if not cp:
+                raise LLMUnavailableError(f"Custom provider {custom_id} not found")
+
+            if cp.api_key_encrypted:
+                from app.services.encryption_service import get_encryption_service
+                encryption = get_encryption_service()
+                api_key = encryption.decrypt(cp.api_key_encrypted)
+                kwargs["api_key"] = api_key
+
+            base_url = cp.base_url
+            kwargs["api_base"] = base_url
+
+            raw_model = model_name
+            if "/" in model_name:
+                raw_model = model_name.split("/", 1)[1]
+            kwargs["model"] = raw_model
+
+            text = _generate_openai_compat(**kwargs)
+            return {"text": text, "model": model_name, "provider": provider}
+        finally:
+            db.close()
+
+    if api_key:
+        kwargs["api_key"] = api_key
+
+    if provider_info:
+        base = provider_info.get("base_url", "")
+        if callable(base):
+            base = base()
+        if base:
+            kwargs["api_base"] = base
+
+    model = _normalize_model_name(model_name, provider)
+    kwargs["model"] = model
+
+    try:
+        text = _call_with_provider_circuit(
+            provider,
+            lambda: generate(**kwargs),
+        )
+        if text:
+            return {"text": text, "model": model, "provider": provider}
+        raise LLMUnavailableError(f"{provider} returned empty response")
+    except Exception as exc:
+        try:
+            from app.middleware.prometheus_metrics import MetricsManager
+            MetricsManager.record_llm_failure(provider)
+        except Exception:
+            pass
+        raise LLMUnavailableError(f"{provider} failed: {exc}") from exc
+
+
+def _generate_openai_compat(**kwargs) -> str:
+    """Direct OpenAI-compatible call without LiteLLM."""
+    from openai import OpenAI
+    api_key = kwargs.get("api_key") or "none"
+    base_url = kwargs.get("api_base")
+    model = kwargs.get("model", "")
+    messages = kwargs.get("messages", [])
+    temperature = kwargs.get("temperature", 0.3)
+    max_tokens = kwargs.get("max_tokens", 2048)
+    timeout = kwargs.get("timeout", 15)
+
+    client = OpenAI(api_key=api_key, base_url=base_url)
+    resp = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        temperature=max(0.0, min(1.0, temperature)),
+        max_tokens=max_tokens,
+        timeout=timeout,
+    )
+    return resp.choices[0].message.content or "" if resp.choices else ""
+
+
 def generate_with_fallback(
     messages: List[Dict[str, str]],
     temperature: float = 0.3,
     max_tokens: int = 2048,
+    user_id: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
-    4-step fallback contract: NVIDIA -> Groq -> Ollama/DeepSeek -> raises
+    4-step fallback contract: NVIDIA -> Groq -> OpenRouter -> Ollama/DeepSeek -> raises
     LLMUnavailableError so callers can use rule-based heuristics.
+
+    Each tier resolves the API key from the user's stored keys first (via
+    resolve_user_api_key), falling back to settings.*_API_KEY env vars.
+
+    Args:
+        messages:    OpenAI-format message list
+        temperature: Sampling temperature
+        max_tokens:  Maximum tokens per generation
+        user_id:     Optional user ID for BYOK per-user key resolution
 
     Returns:
         {"text": str, "model": str, "tier": int}
@@ -334,8 +523,8 @@ def generate_with_fallback(
 
     provider_timeout = _provider_timeout_seconds()
 
-    # Tier 1: NVIDIA NIM
-    nvidia_key = settings.NVIDIA_API_KEY
+    # Tier 1: NVIDIA NIM — user key > env var
+    nvidia_key = resolve_user_api_key("nvidia", user_id) or settings.NVIDIA_API_KEY
     if nvidia_key:
         try:
             text = _call_with_provider_circuit(
@@ -359,9 +548,9 @@ def generate_with_fallback(
                 logger.warning("Metrics recording failed: %s", e)
             logger.warning("llm_service: Tier 1 (NVIDIA) failed: %s - trying Groq.", exc, extra=log_extra())
 
-    # Tier 2: Groq
+    # Tier 2: Groq — user key > env var
     groq_model = LLM_GROQ
-    groq_key = settings.GROQ_API_KEY
+    groq_key = resolve_user_api_key("groq", user_id) or settings.GROQ_API_KEY
     if groq_key:
         try:
             text = _call_with_provider_circuit(
@@ -386,8 +575,8 @@ def generate_with_fallback(
                 logger.warning("Metrics recording failed: %s", e)
             logger.warning("llm_service: Tier 2 (Groq) failed: %s - trying Ollama.", exc, extra=log_extra())
 
-            # Tier 3: OpenRouter (prefer when Groq is rate-limited)
-            openrouter_key = settings.OPENROUTER_API_KEY
+            # Tier 3: OpenRouter (prefer when Groq is rate-limited) — user key > env var
+            openrouter_key = resolve_user_api_key("openrouter", user_id) or settings.OPENROUTER_API_KEY
             if openrouter_key and (_is_rate_limit_error(exc) or not settings.GROQ_API_KEY):
                 try:
                     text = _call_with_provider_circuit(
@@ -416,7 +605,8 @@ def generate_with_fallback(
                         openrouter_exc,
                         extra=log_extra(),
                     )
-    elif settings.OPENROUTER_API_KEY:
+    elif resolve_user_api_key("openrouter", user_id) or settings.OPENROUTER_API_KEY:
+        openrouter_key = resolve_user_api_key("openrouter", user_id) or settings.OPENROUTER_API_KEY
         try:
             text = _call_with_provider_circuit(
                 "openrouter",
@@ -425,7 +615,7 @@ def generate_with_fallback(
                     model=LLM_OPENROUTER,
                     temperature=temperature,
                     max_tokens=max_tokens,
-                    api_key=settings.OPENROUTER_API_KEY,
+                    api_key=openrouter_key,
                     api_base=settings.OPENROUTER_API_BASE,
                     timeout=provider_timeout,
                 ),

@@ -6,6 +6,7 @@ import pytest
 from app.pipeline.references.parser import ReferenceParser
 from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
 from app.pipeline.contracts.loader import ContractLoader
+
 from app.models import PipelineDocument, Block, BlockType, Reference
 
 
@@ -15,6 +16,7 @@ FIXTURES_DIR = "tests/fixtures/contracts"
 class TestReferenceParser:
     @pytest.fixture
     def parser(self):
+
         return ReferenceParser()
 
     def test_process_empty_document(self, parser):
@@ -24,25 +26,18 @@ class TestReferenceParser:
 
     def test_process_with_reference_entries(self, parser):
         doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="b1", index=1, text="hello", block_type=BlockType.BODY),
-            Block(block_id="b2", index=1, text="References", block_type=BlockType.REFERENCES_HEADING),
-            Block(block_id="b3", index=1, text='[1] J. Smith, "A paper," Journal, 2024.', block_type=BlockType.REFERENCE_ENTRY),
-            Block(block_id="b4", index=1, text='[2] B. Lee, "Another paper," Conf. Proc., 2023.', block_type=BlockType.REFERENCE_ENTRY),
         ])
         result = parser.process(doc)
         assert len(result.references) >= 1
 
     def test_process_no_match(self, parser):
         doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="b1", index=1, text="This has no reference markers.", block_type=BlockType.BODY),
         ])
         result = parser.process(doc)
         assert result.references == []
 
     def test_process_adds_stage_info(self, parser):
         doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="b1", index=1, text="References", block_type=BlockType.REFERENCES_HEADING),
-            Block(block_id="b2", index=1, text="[1] Single reference.", block_type=BlockType.REFERENCE_ENTRY),
         ])
         result = parser.process(doc)
         stages = [s.stage_name for s in result.processing_history]

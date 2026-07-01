@@ -4,13 +4,14 @@
 from __future__ import annotations
 from unittest.mock import patch, MagicMock
 import pytest
-from app.models import PipelineDocument, Equation
 from app.utils.id_generator import generate_equation_id
 
 
 class TestEquationStandardizer:
     @pytest.fixture
     def standardizer(self):
+        from app.models import PipelineDocument, Equation
+
         with patch("app.pipeline.equations.standardizer.etree") as mock_etree:
             mock_etree.parse.return_value = MagicMock()
             mock_etree.XSLT.return_value = MagicMock()

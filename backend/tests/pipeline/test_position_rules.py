@@ -12,10 +12,11 @@ from app.pipeline.structure_detection.position_rules import (
     analyze_position,
     boost_heading_confidence_by_position,
 )
-from app.models import Block, BlockType
 
 
 def _b(text: str = "", index: int = 1, bid: str | None = None):
+    from app.models import Block, BlockType
+
     return Block(block_id=bid or f"b{index}", text=text, index=index, block_type=BlockType.BODY)
 
 

@@ -5,11 +5,12 @@ from __future__ import annotations
 import pytest
 from unittest.mock import MagicMock
 from app.pipeline.formatting.numbering import NumberingEngine
-from app.models import PipelineDocument, Block, BlockType, Figure, Table, Equation
 
 
 @pytest.fixture
 def mock_contract_loader():
+    from app.models import PipelineDocument, Block, BlockType, Figure, Table, Equation
+
     loader = MagicMock()
     loader.load.return_value = {
         "numbering": {},

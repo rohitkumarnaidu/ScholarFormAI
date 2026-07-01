@@ -44,11 +44,12 @@ export async function getSessionDocument(sessionId) {
     return fetchWithAuth(`/api/v1/generator/sessions/${sessionId}/document`, { method: 'GET' });
 }
 
-export async function sendMessage(sessionId, content) {
+export async function sendMessage(sessionId, content, model) {
+    const body = { content: typeof content === 'string' ? content : content.content, model: model || content.model };
     return fetchWithAuth(`/api/v1/generator/sessions/${sessionId}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content }),
+        body: JSON.stringify(body),
     });
 }
 

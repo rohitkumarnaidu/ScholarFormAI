@@ -10,7 +10,6 @@ from typing import List, Optional, Any, Dict
 from unittest.mock import MagicMock, PropertyMock
 from dataclasses import dataclass, field
 import pytest
-from app.models import PipelineDocument, Block, BlockType, Table, TableCell, Figure
 
 
 # ---------------------------------------------------------------------------
@@ -155,11 +154,13 @@ def temp_jpeg_image(tmp_path):
 
 @pytest.fixture
 def doc_empty():
+    from app.models import PipelineDocument
     return PipelineDocument(document_id="test_doc", blocks=[])
 
 
 @pytest.fixture
 def simple_table():
+    from app.models import Table, TableCell
     return Table(
         table_id="tbl_001",
         num_rows=2,
@@ -182,11 +183,13 @@ def simple_table():
 
 @pytest.fixture
 def simple_figure():
+    from app.models import Figure
     return Figure(figure_id="fig_001", index=0)
 
 
 @pytest.fixture
 def doc_with_blocks():
+    from app.models import PipelineDocument, Block, BlockType
     return PipelineDocument(
         document_id="doc_blocks",
         blocks=[

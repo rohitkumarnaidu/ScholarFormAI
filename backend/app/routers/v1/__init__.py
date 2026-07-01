@@ -7,12 +7,14 @@ from fastapi import APIRouter
 
 from . import (
     auth,
+    api_keys,
     billing,
     documents,
     feedback,
     generator,
     health,
     metrics,
+    providers,
     stream,
     synthesis,
     templates,
@@ -27,5 +29,7 @@ v1_router.include_router(generator.router, prefix="/generator", tags=["Generator
 v1_router.include_router(synthesis.router, prefix="/synthesis", tags=["Synthesis v1"])
 v1_router.include_router(feedback.router, prefix="/feedback", tags=["Feedback v1"])
 v1_router.include_router(metrics.router, prefix="/metrics", tags=["Metrics v1"])
+v1_router.include_router(providers.router, prefix="/providers")
+v1_router.include_router(api_keys.router, prefix="/keys")
 v1_router.include_router(stream.router, prefix="/stream", tags=["Streaming v1"])
 v1_router.include_router(billing.router)

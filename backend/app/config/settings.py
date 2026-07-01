@@ -230,9 +230,13 @@ class LLMSettings(BaseSettings):
     GROQ_API_BASE: str = ""
     OPENAI_API_KEY: Optional[str] = None
     ANTHROPIC_API_KEY: Optional[str] = None
+    DEEPSEEK_API_KEY: Optional[str] = None
     OPENROUTER_API_KEY: Optional[str] = None
     OPENROUTER_MODEL: str = "openai/gpt-4o-mini"
     OPENROUTER_API_BASE: str = "https://openrouter.ai/api/v1"
+    GOOGLE_API_KEY: Optional[str] = None
+    COHERE_API_KEY: Optional[str] = None
+    MISTRAL_API_KEY: Optional[str] = None
     OLLAMA_URL: str = ""
     OLLAMA_BASE_URL: str = ""
     LLM_PROVIDER_TIMEOUT_SECONDS: int = 15

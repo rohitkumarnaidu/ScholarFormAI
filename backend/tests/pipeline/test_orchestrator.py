@@ -12,15 +12,14 @@ import pytest
 from unittest.mock import patch, MagicMock, PropertyMock, call, ANY
 from pathlib import Path
 
-from app.models import (
-    PipelineDocument, DocumentMetadata, TemplateInfo, Block, BlockType,
-    Reference, Figure, Table,
-)
-from app.pipeline.orchestrator import PipelineOrchestrator
-
-
 @pytest.fixture
 def orch():
+    from app.pipeline.orchestrator import PipelineOrchestrator
+    from app.models import (
+    PipelineDocument, DocumentMetadata, TemplateInfo, Block, BlockType,
+    Reference, Figure, Table,
+    )
+
     with (
         patch("app.pipeline.orchestrator.InputConverter"),
         patch("app.pipeline.orchestrator.ContentAnalyzer"),
@@ -58,6 +57,7 @@ def doc_with_blocks():
 
 class TestOrchestratorInit:
     def test_init_defaults(self):
+        from app.pipeline.orchestrator import PipelineOrchestrator
         with (
             patch("app.pipeline.orchestrator.InputConverter"),
             patch("app.pipeline.orchestrator.ContentAnalyzer"),
@@ -78,6 +78,7 @@ class TestOrchestratorInit:
         assert o.docling_client is not None
 
     def test_init_custom_paths(self):
+        from app.pipeline.orchestrator import PipelineOrchestrator
         with (
             patch("app.pipeline.orchestrator.InputConverter"),
             patch("app.pipeline.orchestrator.ContentAnalyzer"),
@@ -92,6 +93,7 @@ class TestOrchestratorInit:
         assert o.temp_dir == "/custom/temp"
 
     def test_init_creates_temp_dir(self):
+        from app.pipeline.orchestrator import PipelineOrchestrator
         with (
             patch("app.pipeline.orchestrator.InputConverter"),
             patch("app.pipeline.orchestrator.ContentAnalyzer"),
@@ -123,31 +125,37 @@ class TestOrchestratorStageInterface:
 
 class TestOrchestratorCoerceBool:
     def test_none(self):
+        from app.pipeline.orchestrator import PipelineOrchestrator
         assert PipelineOrchestrator._coerce_bool(None, True) is True
         assert PipelineOrchestrator._coerce_bool(None, False) is False
 
     def test_bool_passthrough(self):
+        from app.pipeline.orchestrator import PipelineOrchestrator
         assert PipelineOrchestrator._coerce_bool(True, False) is True
         assert PipelineOrchestrator._coerce_bool(False, True) is False
 
     def test_int_float(self):
+        from app.pipeline.orchestrator import PipelineOrchestrator
         assert PipelineOrchestrator._coerce_bool(1, False) is True
         assert PipelineOrchestrator._coerce_bool(0, True) is False
         assert PipelineOrchestrator._coerce_bool(0.0, True) is False
 
     def test_string_true(self):
+        from app.pipeline.orchestrator import PipelineOrchestrator
         assert PipelineOrchestrator._coerce_bool("true", False) is True
         assert PipelineOrchestrator._coerce_bool("yes", False) is True
         assert PipelineOrchestrator._coerce_bool("1", False) is True
         assert PipelineOrchestrator._coerce_bool("on", False) is True
 
     def test_string_false(self):
+        from app.pipeline.orchestrator import PipelineOrchestrator
         assert PipelineOrchestrator._coerce_bool("false", True) is False
         assert PipelineOrchestrator._coerce_bool("no", True) is False
         assert PipelineOrchestrator._coerce_bool("0", True) is False
         assert PipelineOrchestrator._coerce_bool("off", True) is False
 
     def test_unknown(self):
+        from app.pipeline.orchestrator import PipelineOrchestrator
         assert PipelineOrchestrator._coerce_bool("maybe", True) is True
         assert PipelineOrchestrator._coerce_bool("maybe", False) is False
 

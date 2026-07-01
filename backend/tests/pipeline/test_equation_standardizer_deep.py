@@ -10,11 +10,11 @@ from __future__ import annotations
 from unittest.mock import patch, MagicMock
 import pytest
 from app.pipeline.equations.standardizer import EquationStandardizer, get_equation_standardizer
-from app.models import PipelineDocument, Equation
 
 
 @pytest.fixture
 def standardizer():
+
     return EquationStandardizer()
 
 
@@ -91,6 +91,8 @@ class TestOMMLToMathMLConversion:
 class TestXSLTLoading:
     def test_xslt_not_found_warns(self, tmp_path):
         import logging
+        from app.models import Equation
+
         xsl_path = str(tmp_path / "missing.xsl")
         s = EquationStandardizer(xsl_path=xsl_path)
         assert s._xslt is None

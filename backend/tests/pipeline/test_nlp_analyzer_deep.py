@@ -14,11 +14,12 @@ from app.pipeline.nlp.analyzer import (
     ContentAnalyzer, extract_keywords, _parse_keyword_payload,
     methods_detect_abstract, _get_keybert_model,
 )
-from app.models import PipelineDocument, Block, BlockType, DocumentMetadata
 
 
 @pytest.fixture
 def analyzer():
+    from app.models import PipelineDocument, Block, BlockType, DocumentMetadata
+
     return ContentAnalyzer()
 
 

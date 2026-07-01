@@ -11,7 +11,6 @@ import os
 import pytest
 from app.pipeline.figures.caption_matcher import CaptionMatcher, link_figures
 from app.pipeline.figures.analyzer import FigureAnalyzer
-from app.models import PipelineDocument, Block, BlockType, Figure
 
 
 # ===================================================================
@@ -21,6 +20,8 @@ from app.models import PipelineDocument, Block, BlockType, Figure
 class TestCaptionMatcher:
     @pytest.fixture
     def matcher(self):
+        from app.models import PipelineDocument, Block, BlockType, Figure
+
         return CaptionMatcher()
 
     def test_process_empty_document(self, matcher):

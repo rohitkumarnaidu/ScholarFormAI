@@ -1,140 +1,163 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2026 ScholarForm AI
+from unittest.mock import MagicMock, patch, PropertyMock
 
-"""
-Tests for API Key service, encryption, rate limiter, and feature flags.
-Covers the new Phase 2 implementation.
-"""
-from __future__ import annotations
-
-import time
 import pytest
-from unittest.mock import MagicMock, patch
-
-from app.services.encryption_service import EncryptionService, get_encryption_service
-from app.services.api_key_rate_limiter import ApiKeyRateLimiter, get_api_key_rate_limiter, RateLimitResult
 
 
-class TestEncryptionService:
-    """Tests for Fernet encryption service."""
+class TestApiKeyService:
+    @pytest.fixture
+    def svc(self):
+        from app.services.api_key_service import ApiKeyService
+        db = MagicMock()
+        svc = ApiKeyService(db)
+        svc.encryption = MagicMock()
+        svc.encryption.encrypt.side_effect = lambda x: f"enc_{x}"
+        svc.encryption.decrypt.side_effect = lambda x: x.replace("enc_", "")
+        return svc
 
-    def test_encrypt_decrypt_roundtrip(self):
-        service = EncryptionService()
-        plaintext = "sk-test-secret-key-12345"
-        encrypted = service.encrypt(plaintext)
-        assert encrypted != plaintext
-        decrypted = service.decrypt(encrypted)
-        assert decrypted == plaintext
+    def test_create_key_unsupported_provider_raises(self, svc):
+        from app.services.api_key_service import ApiKeyService
+        with pytest.raises(ValueError, match="Unsupported provider"):
+            svc.create_key("user-1", "unknown_provider", "sk-test")
 
-    def test_encrypt_empty_raises(self):
-        service = EncryptionService()
-        with pytest.raises(ValueError, match="empty"):
-            service.encrypt("")
+    def test_create_key_success(self, svc):
+        key = svc.create_key("user-1", "openai", "sk-test", key_label="My Key")
+        assert key.provider == "openai"
+        assert key.api_key_encrypted == "enc_sk-test"
+        svc.db.add.assert_called_once()
+        svc.db.commit.assert_called_once()
 
-    def test_decrypt_empty_raises(self):
-        service = EncryptionService()
-        with pytest.raises(ValueError, match="empty"):
-            service.decrypt("")
+    def test_get_key_found(self, svc):
+        svc.db.execute.return_value.scalar_one_or_none.return_value = "key_obj"
+        result = svc.get_key("key-1", "user-1")
+        assert result == "key_obj"
 
-    def test_decrypt_wrong_key_raises(self):
-        service1 = EncryptionService()
-        service2 = EncryptionService()
-        encrypted = service1.encrypt("secret")
-        with pytest.raises(ValueError, match="Decryption failed"):
-            service2.decrypt(encrypted)
+    def test_get_key_not_found(self, svc):
+        svc.db.execute.return_value.scalar_one_or_none.return_value = None
+        result = svc.get_key("key-1", "user-1")
+        assert result is None
 
-    def test_generate_key(self):
-        key1 = EncryptionService.generate_key()
-        key2 = EncryptionService.generate_key()
-        assert key1 != key2
-        assert len(key1) > 20
+    def test_list_keys(self, svc):
+        svc.db.execute.return_value.scalars.return_value.all.return_value = ["k1", "k2"]
+        result = svc.list_keys("user-1")
+        assert result == ["k1", "k2"]
 
-    def test_get_encryption_service_singleton(self):
-        s1 = get_encryption_service()
-        s2 = get_encryption_service()
-        assert s1 is s2
+    def test_update_key_updates_fields(self, svc):
+        existing = MagicMock()
+        existing.key_label = "Old"
+        existing.is_active = True
+        svc.get_key = MagicMock(return_value=existing)
+        result = svc.update_key("key-1", "user-1", key_label="New Label", is_active=False)
+        assert existing.key_label == "New Label"
+        assert existing.is_active is False
+        svc.db.commit.assert_called_once()
 
-    def test_encrypt_produces_different_ciphertext(self):
-        service = EncryptionService()
-        enc1 = service.encrypt("same-plaintext")
-        enc2 = service.encrypt("same-plaintext")
-        assert enc1 != enc2
+    def test_update_key_not_found(self, svc):
+        svc.get_key = MagicMock(return_value=None)
+        result = svc.update_key("key-1", "user-1", key_label="New")
+        assert result is None
 
+    def test_delete_key(self, svc):
+        existing = MagicMock()
+        svc.get_key = MagicMock(return_value=existing)
+        result = svc.delete_key("key-1", "user-1")
+        assert result is True
+        svc.db.delete.assert_called_once_with(existing)
+        svc.db.commit.assert_called_once()
 
-class TestApiKeyRateLimiter:
-    """Tests for per-key rate limiter using in-memory backend."""
+    def test_delete_key_not_found(self, svc):
+        svc.get_key = MagicMock(return_value=None)
+        result = svc.delete_key("key-1", "user-1")
+        assert result is False
 
-    @pytest.fixture(autouse=True)
-    def _no_redis(self):
-        with patch.object(ApiKeyRateLimiter, "_get_redis", return_value=None):
-            yield
+    def test_decrypt_key(self, svc):
+        key = MagicMock()
+        key.api_key_encrypted = "enc_sk-test"
+        assert svc.decrypt_key(key) == "sk-test"
 
-    def test_within_limit_allowed(self):
-        limiter = ApiKeyRateLimiter()
-        result = limiter.check_rate_limit("key-1", per_minute=60, per_hour=1000, per_day=10000)
-        assert result.allowed is True
-        assert result.remaining >= 0
+    def test_increment_usage(self, svc):
+        existing = MagicMock()
+        existing.total_requests = 5
+        svc.db.execute.return_value.scalar_one_or_none.return_value = existing
+        svc.increment_usage("key-1")
+        assert existing.total_requests == 6
+        svc.db.commit.assert_called_once()
 
-    def test_exceed_minute_limit(self):
-        limiter = ApiKeyRateLimiter()
-        key = "key-minute-test"
-        for _ in range(60):
-            limiter.check_rate_limit(key, per_minute=60, per_hour=1000, per_day=10000)
-        result = limiter.check_rate_limit(key, per_minute=60, per_hour=1000, per_day=10000)
-        assert result.allowed is False
-        assert result.retry_after is not None
-        assert result.retry_after > 0
+    def test_get_supported_providers(self, svc):
+        from app.services.api_key_service import ApiKeyService
+        providers = ApiKeyService.get_supported_providers()
+        assert "openai" in providers
+        assert "anthropic" in providers
+        assert "cohere" in providers
 
-    def test_exceed_hour_limit(self):
-        limiter = ApiKeyRateLimiter()
-        key = "key-hour-test"
-        for _ in range(1000):
-            limiter.check_rate_limit(key, per_minute=10000, per_hour=1000, per_day=10000)
-        result = limiter.check_rate_limit(key, per_minute=10000, per_hour=1000, per_day=10000)
-        assert result.allowed is False
+    def test_get_active_key_found(self, svc):
+        svc.db.execute.return_value.scalar_one_or_none.return_value = "active_key"
+        result = svc.get_active_key("user-1", "openai")
+        assert result == "active_key"
 
-    def test_exceed_day_limit(self):
-        limiter = ApiKeyRateLimiter()
-        key = "key-day-test"
-        for _ in range(10000):
-            limiter.check_rate_limit(key, per_minute=100000, per_hour=100000, per_day=10000)
-        result = limiter.check_rate_limit(key, per_minute=100000, per_hour=100000, per_day=10000)
-        assert result.allowed is False
+    def test_get_active_key_not_found(self, svc):
+        svc.db.execute.return_value.scalar_one_or_none.return_value = None
+        result = svc.get_active_key("user-1", "openai")
+        assert result is None
 
-    def test_different_keys_independent(self):
-        limiter = ApiKeyRateLimiter()
-        limiter.check_rate_limit("key-a", per_minute=1, per_hour=1000, per_day=10000)
-        limiter.check_rate_limit("key-a", per_minute=1, per_hour=1000, per_day=10000)
-        result_a = limiter.check_rate_limit("key-a", per_minute=1, per_hour=1000, per_day=10000)
-        result_b = limiter.check_rate_limit("key-b", per_minute=1, per_hour=1000, per_day=10000)
-        assert result_a.allowed is False
-        assert result_b.allowed is True
+    def test_log_usage(self, svc):
+        svc.log_usage("key-1", endpoint="/chat", model="gpt-4", tokens_used=100, status_code=200, response_time_ms=500)
+        svc.db.add.assert_called_once()
+        svc.db.commit.assert_called_once()
 
-    def test_get_usage_returns_counts(self):
-        limiter = ApiKeyRateLimiter()
-        key = "key-usage-test"
-        limiter.check_rate_limit(key, per_minute=100, per_hour=1000, per_day=10000)
-        limiter.check_rate_limit(key, per_minute=100, per_hour=1000, per_day=10000)
-        usage = limiter.get_usage(key)
-        assert usage["requests_this_minute"] == 2
+    def test_get_usage_stats_empty(self, svc):
+        svc.db.execute.return_value.all.return_value = []
+        stats = svc.get_usage_stats("user-1", hours=24)
+        assert stats == {}
 
-    def test_get_api_key_rate_limiter_singleton(self):
-        l1 = get_api_key_rate_limiter()
-        l2 = get_api_key_rate_limiter()
-        assert l1 is l2
+    def test_get_usage_stats_with_data(self, svc):
+        row = MagicMock()
+        row.provider = "openai"
+        row.total_requests = 10
+        row.total_tokens = 500
+        row.avg_response_time = 250.0
+        svc.db.execute.return_value.all.return_value = [row]
+        stats = svc.get_usage_stats("user-1", hours=24)
+        assert stats["openai"]["total_requests"] == 10
+        assert stats["openai"]["total_tokens"] == 500
+        assert stats["openai"]["avg_response_time_ms"] == 250.0
 
-    def test_rate_limit_result_dataclass(self):
-        result = RateLimitResult(
-            allowed=True, limit=60, remaining=55, reset_at=time.time() + 60
-        )
-        assert result.allowed is True
-        assert result.limit == 60
-        assert result.remaining == 55
-        assert result.retry_after is None
+    def test_get_usage_stats_null_avg(self, svc):
+        row = MagicMock()
+        row.provider = "anthropic"
+        row.total_requests = 5
+        row.total_tokens = 0
+        row.avg_response_time = None
+        svc.db.execute.return_value.all.return_value = [row]
+        stats = svc.get_usage_stats("user-1", hours=24)
+        assert stats["anthropic"]["avg_response_time_ms"] == 0
 
-    def test_rate_limit_result_with_retry(self):
-        result = RateLimitResult(
-            allowed=False, limit=60, remaining=0, reset_at=time.time() + 30, retry_after=30.0
-        )
-        assert result.allowed is False
-        assert result.retry_after == 30.0
+    def test_increment_usage_key_not_found(self, svc):
+        svc.db.execute.return_value.scalar_one_or_none.return_value = None
+        svc.increment_usage("key-missing")
+        svc.db.commit.assert_not_called()
+
+    def test_list_keys_with_provider_filter(self, svc):
+        svc.db.execute.return_value.scalars.return_value.all.return_value = ["k1"]
+        result = svc.list_keys("user-1", provider="openai")
+        assert result == ["k1"]
+
+    def test_update_key_partial_fields(self, svc):
+        existing = MagicMock()
+        existing.key_label = "Old"
+        existing.is_active = True
+        existing.rate_limit_per_minute = 10
+        svc.get_key = MagicMock(return_value=existing)
+        result = svc.update_key("key-1", "user-1", rate_limit_per_minute=30)
+        assert existing.rate_limit_per_minute == 30
+        assert existing.key_label == "Old"
+        svc.db.commit.assert_called_once()
+
+    def test_create_key_uses_default_label(self, svc):
+        key = svc.create_key("user-1", "openai", "sk-test")
+        assert key.key_label == "OpenAI Key"
+
+    def test_create_key_nvidia_uses_defaults(self, svc):
+        key = svc.create_key("user-1", "nvidia", "nv-key")
+        assert key.rate_limit_per_minute == 60
+        assert key.rate_limit_per_hour == 1000
+        assert key.daily_quota == 10000

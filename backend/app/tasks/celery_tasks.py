@@ -56,7 +56,11 @@ def process_document_task(document_id: str, use_agent: bool = True):
     logger.info("Starting async processing for document: %s", document_id)
 
     # ── Fetch document via supabase-py ─────────────────────────────────────────
-    doc_row = DocumentService.get_document(document_id)
+    try:
+        doc_row = asyncio.run(DocumentService.get_document(document_id))
+    except Exception:
+        logger.error("process_document_task: Document %s not found or DB unavailable.", document_id)
+        return False
     if doc_row is None:
         logger.error(
             "process_document_task: Document %s not found or DB unavailable.", document_id
@@ -65,11 +69,11 @@ def process_document_task(document_id: str, use_agent: bool = True):
 
     try:
         # ── Mark as PROCESSING ────────────────────────────────────────────────────
-        DocumentService.update_document(document_id, {
+        asyncio.run(DocumentService.update_document(document_id, {
             "status": "PROCESSING",
             "progress": 10,
             "current_stage": "Initializing agent orchestration...",
-        })
+        }))
 
         # ── Run pipeline ───────────────────────────────────────────────────────
         orchestrator = PipelineOrchestrator()
@@ -78,11 +82,11 @@ def process_document_task(document_id: str, use_agent: bool = True):
         processing_time = time.time() - start_time
 
         # ── Mark as COMPLETED ──────────────────────────────────────────────────
-        DocumentService.update_document(document_id, {
+        asyncio.run(DocumentService.update_document(document_id, {
             "status": "COMPLETED",
             "progress": 100,
             "current_stage": f"Processing complete in {processing_time:.1f}s",
-        })
+        }))
 
         logger.info("Document %s processed successfully in %.1fs", document_id, processing_time)
         return True
@@ -90,7 +94,10 @@ def process_document_task(document_id: str, use_agent: bool = True):
     except Exception as exc:
         logger.error("Async processing failed for %s: %s", document_id, exc, exc_info=True)
         # Mark as FAILED — never raises
-        DocumentService.mark_document_failed(document_id, str(exc))
+        try:
+            asyncio.run(DocumentService.mark_document_failed(document_id, str(exc)))
+        except Exception:
+            pass
         return False
 
 

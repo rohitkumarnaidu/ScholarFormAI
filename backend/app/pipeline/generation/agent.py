@@ -46,6 +46,7 @@ class AgentPipeline:
         session = await self.session_service.get_session(session_id)
         config: Dict[str, Any] = dict(session.get("config_json") or {}) if session else {}
         config["user_prompt"] = user_prompt
+        user_id = str(session.get("user_id")) if session and session.get("user_id") else None
         await self._update_status(
             session_id,
             status="processing",
@@ -104,7 +105,7 @@ class AgentPipeline:
 
         # Step 5: Outline Generation
         if await self._is_canceled(session_id): return
-        outline = await self._generate_outline(session_id, task_spec, template_rules, web_results)
+        outline = await self._generate_outline(session_id, task_spec, template_rules, web_results, user_id=user_id)
         await self._update_status(
             session_id,
             status="processing",
@@ -135,6 +136,7 @@ class AgentPipeline:
         config: Dict[str, Any] = dict(session.get("config_json") or {})
         outline = session.get("outline_json") or {}
         task_spec = config
+        user_id = str(session.get("user_id")) if session.get("user_id") else None
         template_rules = config.get("template_rules") or []
         if not template_rules:
             template_rules = self._retrieve_template_rules(task_spec.get("template"), task_spec.get("sections", []))
@@ -170,7 +172,7 @@ class AgentPipeline:
             }
             prompt = get_section_prompt(section_name, context)
             if await self._is_canceled(session_id): return
-            section_text = await self._generate_section(session_id, section_name, prompt)
+            section_text = await self._generate_section(session_id, section_name, prompt, user_id=user_id)
 
             sections_map[section_name] = section_text
             await self.session_service.save_document_version(
@@ -269,6 +271,7 @@ class AgentPipeline:
                 sections_map=sections_map,
                 references=references,
                 config=config,
+                user_id=user_id,
             )
             config["quality"] = quality
             config["output_path"] = docx_path
@@ -302,6 +305,7 @@ class AgentPipeline:
             return
 
         config: Dict[str, Any] = dict(session.get("config_json") or {})
+        user_id = str(session.get("user_id")) if session.get("user_id") else None
         latest_doc = await self.session_service.get_latest_document(session_id)
         content_json = (latest_doc or {}).get("content_json") or {}
         outline = content_json.get("outline") or session.get("outline_json") or {}
@@ -319,7 +323,7 @@ class AgentPipeline:
             f"Existing section draft:\n{sections_map.get(section_name, '')}\n\n"
             f"Recent context:\n{sanitize_for_llm(history)}"
         )
-        rewritten = await self._llm_text(session_id, system, user_prompt, max_tokens=1200)
+        rewritten = await self._llm_text(session_id, system, user_prompt, max_tokens=1200, user_id=user_id)
         await self._stream_chunks(
             session_id,
             event_type="writing_chunk",
@@ -455,6 +459,7 @@ class AgentPipeline:
         sections_map: Dict[str, str],
         references: List[str],
         config: Dict[str, Any],
+        user_id: Optional[str] = None,
     ) -> tuple[Dict[str, str], List[str], str, Dict[str, Any]]:
         min_words = self._min_words_for_length(task_spec.get("length"))
         low_sections = self._select_low_sections(sections_map, min_words=min_words, limit=3)
@@ -487,7 +492,7 @@ class AgentPipeline:
                 f"Goals:\n- Add missing details\n- Improve academic rigor\n- Ensure citations where appropriate\n"
                 f"Return only the revised section text."
             )
-            improved = await self._llm_text(session_id, system, user, max_tokens=1400)
+            improved = await self._llm_text(session_id, system, user, max_tokens=1400, user_id=user_id)
             sections_map[section_name] = improved
             await self._stream_chunks(
                 session_id,
@@ -596,6 +601,7 @@ class AgentPipeline:
         task_spec: Dict[str, Any],
         template_rules: List[Dict[str, Any]],
         web_results: List[Any],
+        user_id: Optional[str] = None,
     ) -> Dict[str, Any]:
         system = "You are an academic outline generator. Return JSON only."
         user = (
@@ -604,7 +610,7 @@ class AgentPipeline:
             f"Template rules: {json.dumps(template_rules, ensure_ascii=False)}\n"
             f"Web research: {json.dumps(web_results, ensure_ascii=False)[:3000]}"
         )
-        outline = await self._llm_json(session_id, system, user)
+        outline = await self._llm_json(session_id, system, user, user_id=user_id)
         if not outline:
             outline = {
                 "title": task_spec.get("title") or "Generated Paper",
@@ -623,10 +629,10 @@ class AgentPipeline:
         )
         return outline
 
-    async def _generate_section(self, session_id: str, section_name: str, prompt: str) -> str:
+    async def _generate_section(self, session_id: str, section_name: str, prompt: str, user_id: Optional[str] = None) -> str:
         system = f"You are an academic writing assistant. Draft the '{section_name}' section."
         user = sanitize_for_llm(prompt)
-        text = await self._llm_text(session_id, system, user, max_tokens=1400)
+        text = await self._llm_text(session_id, system, user, max_tokens=1400, user_id=user_id)
         await self._stream_chunks(
             session_id,
             event_type="writing_chunk",
@@ -726,7 +732,7 @@ class AgentPipeline:
         )
         return str(output_path)
 
-    async def _llm_text(self, session_id: str, system: str, user: str, max_tokens: int = 1200) -> str:
+    async def _llm_text(self, session_id: str, system: str, user: str, max_tokens: int = 1200, user_id: Optional[str] = None) -> str:
         result = await asyncio.to_thread(
             generate_with_fallback,
             [
@@ -735,13 +741,14 @@ class AgentPipeline:
             ],
             temperature=0.3,
             max_tokens=max_tokens,
+            user_id=user_id,
         )
         text = (result.get("text") or "").strip()
         await self._persist_llm_turn(session_id, system, user, text)
         return text
 
-    async def _llm_json(self, session_id: str, system: str, user: str) -> Optional[Dict[str, Any]]:
-        text = await self._llm_text(session_id, system, user, max_tokens=1200)
+    async def _llm_json(self, session_id: str, system: str, user: str, user_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
+        text = await self._llm_text(session_id, system, user, max_tokens=1200, user_id=user_id)
         if not text:
             return None
         json_text = self._extract_json(text)
@@ -754,6 +761,8 @@ class AgentPipeline:
 
     @staticmethod
     def _extract_json(text: str) -> Optional[str]:
+        if text is None:
+            return None
         cleaned = text.strip()
         if cleaned.startswith("```"):
             cleaned = cleaned.replace("```json", "").replace("```", "").strip()

@@ -4,12 +4,13 @@
 from __future__ import annotations
 import pytest
 from app.pipeline.normalization.normalizer import Normalizer
-from app.models import PipelineDocument, Block, BlockType, DocumentMetadata, Table
-from app.models.table import TableCell
 
 
 def _b(text: str, index: int, bid: str = None, bold: bool = False, font_size: float = 12.0):
     from app.models.block import TextStyle
+    from app.models import PipelineDocument, Block, BlockType, DocumentMetadata, Table
+    from app.models.table import TableCell
+
     return Block(
         block_id=bid or f"b{index}", text=text, index=index,
         block_type=BlockType.UNKNOWN,
