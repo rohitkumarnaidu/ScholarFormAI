@@ -32,6 +32,8 @@ const USER_SECONDARY_LINKS = [
   { href: '/batch-upload', label: 'Batch Upload', icon: 'upload' },
   { href: '/template-editor', label: 'Template Editor', icon: 'edit_document' },
   { href: '/results', label: 'Validation Results', icon: 'fact_check' },
+  { href: '/providers', label: 'Providers', icon: 'cloud' },
+  { href: '/api-keys', label: 'API Keys', icon: 'key' },
   { href: '/feedback', label: 'Feedback', icon: 'chat' },
 ];
 
@@ -174,6 +176,12 @@ const Sidebar = memo(function Sidebar({ section = 'shared', onClose, isCollapsed
       </nav>
 
       <div className={`pt-4 flex flex-col gap-2 ${isCollapsed ? 'items-center' : ''}`}>
+        {uiUser && (
+          <>
+            <NavItem href="/settings" label="Settings" icon="settings" active={isLinkActive(pathname, "/settings")} isCollapsed={isCollapsed} onNavigate={handleNavigation} />
+            <NavItem href="/contributing" label="Contributing" icon="code" active={isLinkActive(pathname, "/contributing")} isCollapsed={isCollapsed} onNavigate={handleNavigation} />
+          </>
+        )}
         <button
           onClick={() => handleNavigation(actionData.href)}
           title={isCollapsed ? actionData.label : undefined}

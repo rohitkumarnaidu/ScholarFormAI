@@ -18,15 +18,16 @@ from pathlib import Path
 
 import pytest
 
-from app.models import (
-    PipelineDocument, DocumentMetadata, TemplateInfo, Block, BlockType,
-    Reference, Figure, Table,
-)
 from app.pipeline.orchestrator import PipelineOrchestrator
 
 
 @pytest.fixture
 def orch():
+    from app.models import (
+    PipelineDocument, DocumentMetadata, TemplateInfo, Block, BlockType,
+    Reference, Figure, Table,
+    )
+
     with (
         patch("app.pipeline.orchestrator.InputConverter"),
         patch("app.pipeline.orchestrator.ContentAnalyzer"),

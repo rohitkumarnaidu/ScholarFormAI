@@ -5,12 +5,13 @@ from __future__ import annotations
 import pytest
 from pathlib import Path
 from app.pipeline.services.csl_engine import CSLEngine
-from app.models import Reference, ReferenceType
 
 
 @pytest.fixture
 def engine():
     # templates live at backend/app/templates/
+    from app.models import Reference, ReferenceType
+
     return CSLEngine(templates_dir=str(Path(__file__).resolve().parent.parent.parent / "app" / "templates"))
 
 

@@ -20,8 +20,6 @@ _mock_documents_impl._validate_magic_bytes = AsyncMock()
 _original_documents_impl = sys.modules.get('app.routers.v1.documents_impl')
 sys.modules['app.routers.v1.documents_impl'] = _mock_documents_impl
 
-from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
-
 OUTLINE = {"title": "Synthesis", "sections": [{"title": "Intro", "chunks": ["chunk1"]}]}
 SECTIONS = [{"title": "Intro", "content": "Generated content.", "citations": []}]
 REFERENCES = ["Author (2024). Title. Journal, 1(1), 1-10."]
@@ -74,6 +72,7 @@ def mock_crossref():
 
 @pytest.fixture
 def synt(mock_session_service, mock_vector_store, mock_llm, mock_orchestrator, mock_pubsub):
+    from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
     return MultiDocSynthesizer(
         session_service=mock_session_service,
         vector_store=mock_vector_store,
@@ -85,6 +84,7 @@ def synt(mock_session_service, mock_vector_store, mock_llm, mock_orchestrator, m
 
 class TestInit:
     def test_initializes(self, mock_session_service, mock_vector_store, mock_llm, mock_orchestrator, mock_pubsub):
+        from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
         s = MultiDocSynthesizer(
             session_service=mock_session_service, vector_store=mock_vector_store,
             llm_service=mock_llm, pipeline_orchestrator=mock_orchestrator, pubsub=mock_pubsub,

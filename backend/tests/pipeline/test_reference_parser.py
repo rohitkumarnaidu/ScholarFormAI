@@ -4,11 +4,12 @@
 from __future__ import annotations
 import pytest
 from app.pipeline.references.parser import ReferenceParser
-from app.models import PipelineDocument, Block, BlockType
 
 
 @pytest.fixture
 def parser():
+    from app.models import PipelineDocument, Block, BlockType
+
     return ReferenceParser()
 
 

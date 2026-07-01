@@ -9,7 +9,6 @@ from __future__ import annotations
 from unittest.mock import MagicMock, patch, PropertyMock
 import pytest
 from app.pipeline.figures.renderer import FigureRenderer
-from app.models import Figure
 
 
 class TestFigureAnalysisStage:
@@ -19,6 +18,8 @@ class TestFigureAnalysisStage:
     def doc_with_figure(self, tmp_path):
         from app.models import PipelineDocument
         from PIL import Image
+        from app.models import Figure
+
         img_path = tmp_path / "fig.png"
         img = Image.new("RGB", (800, 600), color=(255, 255, 255))
         img.save(str(img_path), dpi=(300, 300))

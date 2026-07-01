@@ -12,7 +12,6 @@ import pytest
 from app.pipeline.tables.caption_matcher import TableCaptionMatcher
 from app.pipeline.tables.extractor import TableExtractor
 from app.pipeline.tables.renderer import TableRenderer
-from app.models import PipelineDocument, Block, BlockType, Table, TableCell
 
 
 # ===================================================================
@@ -24,6 +23,8 @@ class TestTableCaptionMatcherDeep:
 
     @pytest.fixture
     def matcher(self):
+        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+
         return TableCaptionMatcher()
 
     # -- _find_references_start_index ---------------------------------

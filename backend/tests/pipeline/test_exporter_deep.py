@@ -13,11 +13,12 @@ from unittest.mock import patch, MagicMock, mock_open
 import pytest
 import json
 from app.pipeline.export.exporter import Exporter
-from app.models import PipelineDocument, Block, BlockType, DocumentMetadata
 
 
 @pytest.fixture
 def exporter():
+    from app.models import PipelineDocument, Block, BlockType, DocumentMetadata
+
     return Exporter()
 
 

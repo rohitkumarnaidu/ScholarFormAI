@@ -27,6 +27,7 @@ class SessionResponse(BaseModel):
 
 class MessageRequest(BaseModel):
     content: str
+    model: Optional[str] = None
 
 
 class MessageResponse(BaseModel):

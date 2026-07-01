@@ -75,3 +75,31 @@ def test_metrics_logic():
     
     assert 'agent_tools_usage_total{status="success",tool_name="test_tool"}' in content
     assert 'agent_llm_tokens_total{model="gpt-4",provider="openai",type="input"}' in content
+
+
+def test_monitoring_middleware_request_id_from_header():
+    """Test that MonitoringMiddleware uses x-request-id from header when present."""
+    response = client.get("/test", headers={"x-request-id": "custom-id-123"})
+    assert response.headers["X-Request-ID"] == "custom-id-123"
+
+
+def test_monitoring_middleware_error_logged():
+    """Test that MonitoringMiddleware logs errors."""
+    from unittest.mock import MagicMock, patch
+    middleware = MonitoringMiddleware(app)
+    request = MagicMock(spec=Request)
+    request.method = "POST"
+    request.url.path = "/fail"
+    request.headers.get.return_value = None
+    async def failing_call_next(req):
+        raise ValueError("Oops")
+    with patch("app.middleware.monitoring.logger") as mock_log:
+        import asyncio
+        try:
+            asyncio.run(middleware.dispatch(request, failing_call_next))
+        except ValueError:
+            pass
+        mock_log.error.assert_called_once()
+        log_msg = mock_log.error.call_args[0][0]
+        assert "Request failed" in log_msg
+        assert "Oops" in log_msg

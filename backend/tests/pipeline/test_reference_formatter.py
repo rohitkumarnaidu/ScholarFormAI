@@ -10,11 +10,12 @@ from app.pipeline.formatting.reference_formatter import (
     _reference_type_to_csl,
     ReferenceFormatter,
 )
-from app.models import Reference, ReferenceType
 
 
 class TestResolveCslPath:
     def test_none_publisher(self):
+        from app.models import Reference, ReferenceType
+
         assert _resolve_csl_path(None) is None
 
     def test_empty_publisher(self):

@@ -24,6 +24,8 @@ SUPPORTED_PROVIDERS = {
     "google": {"name": "Google AI", "default_rpm": 60, "default_rph": 1000, "default_daily": 10000},
     "cohere": {"name": "Cohere", "default_rpm": 40, "default_rph": 800, "default_daily": 8000},
     "mistral": {"name": "Mistral", "default_rpm": 60, "default_rph": 1000, "default_daily": 10000},
+    "openrouter": {"name": "OpenRouter", "default_rpm": 60, "default_rph": 1000, "default_daily": 10000},
+    "nvidia": {"name": "NVIDIA NIM", "default_rpm": 60, "default_rph": 1000, "default_daily": 10000},
 }
 
 

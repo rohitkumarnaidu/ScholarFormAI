@@ -14,18 +14,19 @@ from unittest.mock import patch, MagicMock, call
 
 import pytest
 
-from app.models import (
-    PipelineDocument,
-    DocumentMetadata,
-    Block,
-    BlockType,
-    Reference,
-)
 from app.pipeline.formatting.template_renderer import TemplateRenderer
 
 
 @pytest.fixture
 def renderer():
+    from app.models import (
+    PipelineDocument,
+    DocumentMetadata,
+    Block,
+    BlockType,
+    Reference,
+    )
+
     return TemplateRenderer(templates_dir="app/templates")
 
 

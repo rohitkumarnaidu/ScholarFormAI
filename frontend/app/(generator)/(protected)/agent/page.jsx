@@ -72,6 +72,8 @@ function AgentWorkspaceContent() {
     setLastPrompt,
     setDocumentSections,
     selectedTemplate,
+    selectedModel,
+    setSelectedModel,
     lastPrompt,
     handleStartSession,
     handleSendMessage,
@@ -185,6 +187,8 @@ function AgentWorkspaceContent() {
         onStop={handleStop}
         isTyping={isTyping}
         error={error}
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
       />
     </div>
   );

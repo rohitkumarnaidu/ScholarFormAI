@@ -11,15 +11,11 @@ from pathlib import Path
 from zipfile import ZipFile
 from xml.etree.ElementTree import Element, SubElement, tostring
 
-from app.models import (
-    PipelineDocument, DocumentMetadata, TemplateInfo, Block, BlockType, Figure, Table, TableCell,
-    Equation, TextStyle, Reference,
-)
-from app.pipeline.formatting.formatter import Formatter
-
-
 @pytest.fixture
 def formatter():
+    from app.pipeline.formatting.formatter import Formatter
+    from app.models import PipelineDocument, DocumentMetadata, TemplateInfo, Block, BlockType, Figure, Table, TableCell, Equation, TextStyle, Reference
+
     with (
         patch("app.pipeline.formatting.formatter.ContractLoader") as mock_cl,
         patch("app.pipeline.formatting.formatter.StyleMapper") as mock_sm,
@@ -39,6 +35,7 @@ def formatter():
 
 @pytest.fixture
 def minimal_doc():
+    from app.models import PipelineDocument, DocumentMetadata
     return PipelineDocument(
         document_id="doc1",
         blocks=[],
@@ -48,6 +45,7 @@ def minimal_doc():
 
 @pytest.fixture
 def doc_with_blocks():
+    from app.models import PipelineDocument, DocumentMetadata, Block, BlockType, Reference
     blocks = [
         Block(block_id="b1", index=1, block_type=BlockType.TITLE, text="Paper Title", section_name="abstract"),
         Block(block_id="b2", index=2, block_type=BlockType.BODY, text="Abstract text.", section_name="abstract"),
@@ -135,6 +133,7 @@ class TestFormatterProcess:
         mock_format.assert_called_once_with(doc_with_blocks, "none")
 
     def test_process_uses_template_name(self, formatter):
+        from app.models import PipelineDocument, DocumentMetadata, TemplateInfo
         doc = PipelineDocument(
             document_id="doc1",
             blocks=[],
@@ -246,6 +245,7 @@ class TestFormatterFormatLegacyPath:
         assert len(footnote_calls) == 0
 
     def test_format_legacy_adds_figures(self, formatter, doc_with_blocks):
+        from app.models import Figure
         formatter.numbering_engine.apply_numbering.side_effect = lambda doc, tmpl: doc
         doc_with_blocks.figures = [
             Figure(figure_id="f1", index=1, export_path="fig.png", caption_text="Figure caption",
@@ -264,6 +264,7 @@ class TestFormatterFormatLegacyPath:
         mock_rf.assert_called_once()
 
     def test_format_legacy_adds_equations(self, formatter, doc_with_blocks):
+        from app.models import Equation
         formatter.numbering_engine.apply_numbering.side_effect = lambda doc, tmpl: doc
         doc_with_blocks.equations = [
             Equation(equation_id="e1", text="x=1", index=5),
@@ -281,6 +282,7 @@ class TestFormatterFormatLegacyPath:
         mock_re.assert_called_once()
 
     def test_format_legacy_adds_tables(self, formatter, doc_with_blocks):
+        from app.models import Table
         formatter.numbering_engine.apply_numbering.side_effect = lambda doc, tmpl: doc
         doc_with_blocks.tables = [
             Table(table_id="t1", num_rows=2, num_cols=2, index=1, block_index=6, cells=[]),
@@ -360,26 +362,31 @@ class TestFormatterFormatLegacyPath:
 
 class TestFormatterBoolOptions:
     def test_coerce_bool_none(self):
+        from app.pipeline.formatting.formatter import Formatter
         assert Formatter._coerce_bool_option(None, True) is True
         assert Formatter._coerce_bool_option(None, False) is False
 
     def test_coerce_bool_passthrough(self):
+        from app.pipeline.formatting.formatter import Formatter
         assert Formatter._coerce_bool_option(True, False) is True
         assert Formatter._coerce_bool_option(False, True) is False
 
     def test_coerce_bool_int(self):
+        from app.pipeline.formatting.formatter import Formatter
         assert Formatter._coerce_bool_option(1, False) is True
         assert Formatter._coerce_bool_option(0, True) is False
         assert Formatter._coerce_bool_option(2.5, False) is True
         assert Formatter._coerce_bool_option(0.0, True) is False
 
     def test_coerce_bool_string_true(self):
+        from app.pipeline.formatting.formatter import Formatter
         assert Formatter._coerce_bool_option("true", False) is True
         assert Formatter._coerce_bool_option("yes", False) is True
         assert Formatter._coerce_bool_option("1", False) is True
         assert Formatter._coerce_bool_option("on", False) is True
 
     def test_coerce_bool_string_false(self):
+        from app.pipeline.formatting.formatter import Formatter
         assert Formatter._coerce_bool_option("false", True) is False
         assert Formatter._coerce_bool_option("no", True) is False
         assert Formatter._coerce_bool_option("0", True) is False
@@ -387,6 +394,7 @@ class TestFormatterBoolOptions:
         assert Formatter._coerce_bool_option("", True) is False
 
     def test_coerce_bool_unknown_string(self):
+        from app.pipeline.formatting.formatter import Formatter
         assert Formatter._coerce_bool_option("maybe", False) is True
 
     def test_resolve_bool_option_primary_key(self, formatter):
@@ -437,12 +445,14 @@ class TestFormatterReferences:
 
 class TestFormatterEquations:
     def test_render_equation(self, formatter):
+        from app.models import Equation
         doc = _make_word_doc()
         eqn = Equation(equation_id="e1", text="E=mc^2", number="1", index=1)
         formatter._render_equation(doc, eqn)
         doc.add_paragraph.assert_called_once()
 
     def test_render_equation_no_number(self, formatter):
+        from app.models import Equation
         doc = _make_word_doc()
         eqn = Equation(equation_id="e2", text="F=ma", number="", index=2)
         formatter._render_equation(doc, eqn)
@@ -829,30 +839,37 @@ class TestFormatterBlockRendering:
         formatter._render_block(doc, block, "ieee")
 
     def test_is_bullet_list_item_true(self):
+        from app.pipeline.formatting.formatter import Formatter
         assert Formatter._is_bullet_list_item(None, "- item") is True
         assert Formatter._is_bullet_list_item(None, "* item") is True
         assert Formatter._is_bullet_list_item(None, "\u2022 item") is True
 
     def test_is_bullet_list_item_false(self):
+        from app.pipeline.formatting.formatter import Formatter
         assert Formatter._is_bullet_list_item(None, "Normal text") is False
         assert Formatter._is_bullet_list_item(None, "") is False
 
     def test_is_numbered_list_item_true(self):
+        from app.pipeline.formatting.formatter import Formatter
         assert Formatter._is_numbered_list_item(None, "1. Item") is True
         assert Formatter._is_numbered_list_item(None, "1) Item") is True
         assert Formatter._is_numbered_list_item(None, "a) Item") is True
 
     def test_is_numbered_list_item_false(self):
+        from app.pipeline.formatting.formatter import Formatter
         assert Formatter._is_numbered_list_item(None, "Normal text") is False
         assert Formatter._is_numbered_list_item(None, "") is False
 
     def test_clean_list_text_bullet(self):
+        from app.pipeline.formatting.formatter import Formatter
         assert Formatter._clean_list_text(None, "- Item") == "Item"
 
     def test_clean_list_text_numbered(self):
+        from app.pipeline.formatting.formatter import Formatter
         assert Formatter._clean_list_text(None, "1. Item") == "Item"
 
     def test_clean_list_text_no_marker(self):
+        from app.pipeline.formatting.formatter import Formatter
         assert Formatter._clean_list_text(None, "Normal") == "Normal"
 
 
@@ -897,6 +914,7 @@ class TestFormatterSpacing:
         paragraph.paragraph_format.line_spacing = 1.5
 
     def test_apply_spacing_from_contract_invalid_line_spacing(self, formatter):
+        from app.models import Block, BlockType
         paragraph = MagicMock()
         block = Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Body")
         formatter.contract_loader.load.return_value = {
@@ -909,27 +927,32 @@ class TestFormatterSpacing:
 
 class TestFormatterFigures:
     def test_calculate_image_size_with_dimensions(self, formatter):
+        from app.models import Figure
         fig = Figure(figure_id="f1", index=1, export_path="test.png", width=800, height=600)
         w, h = formatter._calculate_image_size(fig)
         assert w is not None
 
     def test_calculate_image_size_no_dimensions(self, formatter):
+        from app.models import Figure
         fig = Figure(figure_id="f1", index=1, export_path="test.png")
         w, h = formatter._calculate_image_size(fig)
         assert w is not None
         assert h is None
 
     def test_calculate_image_size_small_image(self, formatter):
+        from app.models import Figure
         fig = Figure(figure_id="f1", index=1, export_path="test.png", width=50, height=30)
         w, h = formatter._calculate_image_size(fig)
         assert w is not None
 
     def test_calculate_image_size_wide_image(self, formatter):
+        from app.models import Figure
         fig = Figure(figure_id="f1", index=1, export_path="test.png", width=2000, height=200)
         w, h = formatter._calculate_image_size(fig)
         assert w is not None
 
     def test_render_figure_with_export_path(self, formatter):
+        from app.models import Figure
         doc = _make_word_doc()
         fig = Figure(figure_id="f1", index=1, export_path="test.png", caption_text="A test figure",
                      width=400, height=300)
@@ -939,6 +962,7 @@ class TestFormatterFigures:
         doc.add_paragraph.assert_called()
 
     def test_render_figure_export_path_fallback(self, formatter):
+        from app.models import Figure
         doc = _make_word_doc()
         fig = Figure(figure_id="f1", index=1, export_path="missing.png", caption_text="Missing fig",
                      width=400, height=300)
@@ -949,11 +973,13 @@ class TestFormatterFigures:
                     formatter._render_figure(doc, fig, 1)
 
     def test_render_figure_no_path_no_data(self, formatter):
+        from app.models import Figure
         doc = _make_word_doc()
         fig = Figure(figure_id="f1", index=1, caption_text="No image", export_path="")
         formatter._render_figure(doc, fig, 1)
 
     def test_render_figure_caption_with_prefix(self, formatter):
+        from app.models import Figure
         doc = _make_word_doc()
         fig = Figure(figure_id="f1", index=1, export_path="test.png", caption_text="Figure 1: A caption",
                      width=400, height=300)
@@ -962,6 +988,7 @@ class TestFormatterFigures:
         doc.add_paragraph.assert_called_with(style="Caption")
 
     def test_render_figure_caption_without_prefix(self, formatter):
+        from app.models import Figure
         doc = _make_word_doc()
         fig = Figure(figure_id="f1", index=1, export_path="test.png", caption_text="A description",
                      width=400, height=300)
@@ -969,6 +996,7 @@ class TestFormatterFigures:
             formatter._render_figure(doc, fig, 1)
 
     def test_render_figure_no_caption(self, formatter):
+        from app.models import Figure
         doc = _make_word_doc()
         fig = Figure(figure_id="f1", index=1, export_path="test.png", caption_text="",
                      width=400, height=300)
@@ -976,12 +1004,14 @@ class TestFormatterFigures:
             formatter._render_figure(doc, fig, 1)
 
     def test_render_figure_with_image_data(self, formatter):
+        from app.models import Figure
         doc = _make_word_doc()
         fig = Figure(figure_id="f1", index=1, image_data=b"fake_image_bytes", caption_text="From bytes",
                      width=400, height=300)
         formatter._render_figure(doc, fig, 1)
 
     def test_render_figure_with_image_data_fallback(self, formatter):
+        from app.models import Figure
         doc = _make_word_doc()
         fig = Figure(figure_id="f1", index=1, image_data=b"bad_bytes", caption_text="Fail")
         doc.add_paragraph.return_value.add_run.return_value.add_picture.side_effect = Exception("bad img")
@@ -992,6 +1022,7 @@ class TestFormatterFigures:
 
 class TestFormatterFootnotes:
     def test_build_footnote_lookup(self, formatter):
+        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = PipelineDocument(
             document_id="doc1",
             blocks=[
@@ -1010,6 +1041,7 @@ class TestFormatterFootnotes:
         assert lookup == {}
 
     def test_build_footnote_lookup_deduplicates(self, formatter):
+        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = PipelineDocument(
             document_id="doc1",
             blocks=[
@@ -1145,6 +1177,7 @@ class TestFormatterContract:
 
 class TestFormatterPostProcess:
     def test_post_process_with_docx(self, formatter):
+        from app.models import PipelineDocument, DocumentMetadata
         rendered = MagicMock()
         rendered.docx = MagicMock()
         doc = PipelineDocument(document_id="doc1", blocks=[], metadata=DocumentMetadata())
@@ -1156,6 +1189,7 @@ class TestFormatterPostProcess:
                             formatter._post_process_template_render(rendered, doc, "ieee", {})
 
     def test_post_process_no_docx(self, formatter):
+        from app.models import PipelineDocument, DocumentMetadata
         rendered = MagicMock()
         rendered.docx = None
         doc = PipelineDocument(document_id="doc1", blocks=[], metadata=DocumentMetadata())
@@ -1226,6 +1260,7 @@ class TestFormatterInlineContent:
         formatter._add_hyperlink(p, "Click here", "https://example.com")
 
     def test_replace_paragraph_inline_content(self, formatter):
+        from app.models import Block, BlockType
         p = MagicMock()
         p._p = MagicMock()
         block = Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Text with link",
@@ -1249,6 +1284,7 @@ class TestFormatterInlineContent:
 
 class TestFormatterRehydrate:
     def test_rehydrate_matched_paragraph(self, formatter):
+        from app.models import Block, BlockType, PipelineDocument, DocumentMetadata
         doc = _make_word_doc()
         block = Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Matched paragraph")
         doc.paragraphs = [MagicMock()]
@@ -1259,6 +1295,7 @@ class TestFormatterRehydrate:
                 formatter._rehydrate_template_render(doc, doc_obj, "ieee", {})
 
     def test_rehydrate_unmatched_renders_block(self, formatter):
+        from app.models import Block, BlockType, PipelineDocument, DocumentMetadata
         doc = _make_word_doc()
         block = Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Unmatched text",
                       metadata={"hyperlinks": [{"text": "link", "url": "https://example.com"}]})
@@ -1268,6 +1305,7 @@ class TestFormatterRehydrate:
                 formatter._rehydrate_template_render(doc, doc_obj, "ieee", {})
 
     def test_rehydrate_unmatched_reference_entry(self, formatter):
+        from app.models import Block, BlockType, PipelineDocument, DocumentMetadata
         doc = _make_word_doc()
         block = Block(block_id="b1", index=1, block_type=BlockType.REFERENCE_ENTRY, text="[1] Ref")
         doc_obj = PipelineDocument(document_id="doc1", blocks=[block], metadata=DocumentMetadata())
@@ -1276,6 +1314,7 @@ class TestFormatterRehydrate:
                 formatter._rehydrate_template_render(doc, doc_obj, "ieee", {})
 
     def test_rehydrate_skips_footnotes(self, formatter):
+        from app.models import Block, BlockType, PipelineDocument, DocumentMetadata
         doc = _make_word_doc()
         block = Block(block_id="b1", index=1, block_type=BlockType.FOOTNOTE, text="Skip footnote",
                       metadata={"is_footnote": True})
@@ -1285,6 +1324,7 @@ class TestFormatterRehydrate:
         mock_find.assert_not_called()
 
     def test_rehydrate_appends_figures(self, formatter):
+        from app.models import PipelineDocument, DocumentMetadata, Figure, Equation, Table
         doc = _make_word_doc()
         doc_obj = PipelineDocument(
             document_id="doc1", blocks=[], metadata=DocumentMetadata(),

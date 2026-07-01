@@ -5,11 +5,13 @@ import re
 import pytest
 from unittest.mock import MagicMock, patch
 from app.pipeline.parsing.md_parser import MarkdownParser
+
 from app.models import DocumentMetadata
 
 
 @pytest.fixture
 def parser():
+
     return MarkdownParser()
 
 

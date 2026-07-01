@@ -5,11 +5,12 @@ from __future__ import annotations
 import pytest
 from unittest.mock import MagicMock
 from app.pipeline.formatting.section_ordering import SectionOrderValidator
-from app.models import PipelineDocument, Block, BlockType
 
 
 @pytest.fixture
 def mock_contract_loader():
+    from app.models import PipelineDocument, Block, BlockType
+
     loader = MagicMock()
     loader.load.return_value = {
         "sections": {

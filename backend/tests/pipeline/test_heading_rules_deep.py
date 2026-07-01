@@ -12,11 +12,10 @@ from app.pipeline.structure_detection.heading_rules import (
     get_capitalization_ratio,
     analyze_heading_candidate,
 )
-from app.models import Block, BlockType
-from app.models.block import TextStyle
 
 
 def _b(
+
     text: str,
     index: int = 1,
     font_size: float = 12.0,

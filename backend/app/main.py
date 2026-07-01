@@ -340,13 +340,11 @@ def _load_optional_routers(target_app: FastAPI) -> None:
 
     from app.routers.v1 import v1_router
     from app.routers import preview
-    from app.routers.v1 import api_keys
 
     target_app.include_router(v1_router)
     target_app.include_router(preview.router)
-    target_app.include_router(api_keys.router)
     target_app.state._routers_loaded = True
-    logger.info("Startup: API routers loaded (including api-keys).")
+    logger.info("Startup: API routers loaded.")
 
 
 def _validate_startup() -> None:

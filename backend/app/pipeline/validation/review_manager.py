@@ -56,9 +56,10 @@ class ReviewManager:
             if conf < lowest_conf:
                 lowest_conf = conf
 
-            semantic_label = (
-                getattr(b, "semantic_intent", None)
-                or b.metadata.get("semantic_intent", "unknown section")
+            semantic_label = getattr(b, "semantic_intent", None) or (
+                b.metadata.get("semantic_intent", "unknown section")
+                if isinstance(getattr(b, "metadata", None), dict)
+                else "unknown section"
             )
 
             if conf < self.critical_threshold:

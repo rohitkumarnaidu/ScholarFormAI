@@ -156,6 +156,12 @@ ACTIVE_USERS = Gauge(
     "Active authenticated users in the last 5 minutes",
 )
 
+PROVIDER_OPERATIONS_TOTAL = Counter(
+    "provider_operations_total",
+    "Custom provider CRUD operations",
+    ["action", "status"],
+)
+
 PERSONA_EVENTS_TOTAL = Counter(
     "persona_events_total",
     "Persona-level KPI events by operation outcome",
@@ -289,6 +295,10 @@ class MetricsManager:
     @staticmethod
     def record_retry():
         AGENT_RETRIES_TOTAL.inc()
+
+    @staticmethod
+    def record_provider_operation(action: str, status: str = "success"):
+        PROVIDER_OPERATIONS_TOTAL.labels(action=action, status=status).inc()
 
     @staticmethod
     def record_persona_event(persona: str, event: str, outcome: str):

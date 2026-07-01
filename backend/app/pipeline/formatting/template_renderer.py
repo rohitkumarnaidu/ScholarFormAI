@@ -169,7 +169,10 @@ class TemplateRenderer:
         template_dir = self.templates_dir / style
         jinja_source = template_dir / "template.jinja2"
         if jinja_source.is_file():
-            return self._build_template_from_jinja_source(jinja_source)
+            try:
+                return self._build_template_from_jinja_source(jinja_source)
+            except Exception:
+                logger.warning("Failed to build template from jinja source, falling back.")
 
         candidate = template_dir / "template.docx"
         if candidate.is_file():

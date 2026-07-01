@@ -5,11 +5,12 @@ from __future__ import annotations
 import pytest
 from unittest.mock import MagicMock, patch
 from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
-from app.models import PipelineDocument, Reference, ReferenceType, TemplateInfo
 
 
 @pytest.fixture
 def mock_contract_loader():
+    from app.models import PipelineDocument, Reference, ReferenceType, TemplateInfo
+
     loader = MagicMock()
     loader.load.return_value = {
         "references": {

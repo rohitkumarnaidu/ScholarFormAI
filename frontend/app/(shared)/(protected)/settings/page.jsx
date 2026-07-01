@@ -276,14 +276,26 @@ export default function SettingsPage() {
                     </div>
                 </section>
 
-                {/* API Key (Future) */}
-                <section className="bg-glass-surface backdrop-blur-xl border border-glass-border  shadow-xl shadow-primary/5 mb-6 opacity-60 pointer-events-none select-none">
-                    <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-                        <span className="material-symbols-outlined text-primary">key</span>
-                        API Key Management
-                        <span className="text-xs px-2 py-0.5 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 rounded-full">Coming Soon</span>
-                    </h2>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Generate and manage API keys for programmatic access to ScholarForm AI.</p>
+                {/* API Key (BYOK) */}
+                <section className="bg-glass-surface backdrop-blur-xl border border-glass-border shadow-xl shadow-primary/5 mb-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary">key</span>
+                                API Key Management
+                            </h2>
+                            <p className="text-sm text-slate-500 dark:text-slate-400">
+                                Manage your LLM provider API keys for faster, unlimited processing.
+                            </p>
+                        </div>
+                        <a
+                            href="/api-keys"
+                            className="px-4 py-2 bg-primary hover:bg-primary-hover text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/25 transition-all flex items-center gap-2 active:scale-95"
+                        >
+                            <span className="material-symbols-outlined text-base">manage_keys</span>
+                            Manage Keys
+                        </a>
+                    </div>
                 </section>
 
                 {/* Feedback Banners */}

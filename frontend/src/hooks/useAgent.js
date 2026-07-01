@@ -29,6 +29,7 @@ export const useAgent = (initialSessionId = null) => {
   const [lastPrompt, setLastPrompt] = useState('');
   const [documentSections, setDocumentSections] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState('ieee');
+  const [selectedModel, setSelectedModel] = useState('');
 
   const deriveSessionState = useCallback((session) => {
     const status = session?.status || '';
@@ -158,6 +159,7 @@ export const useAgent = (initialSessionId = null) => {
     }
 
     const { prompt, template: validatedTemplate, config } = validation.data;
+    const mergedConfig = { ...(config || {}), ...(selectedModel ? { model: selectedModel } : {}) };
     setSessionState('parsing');
     setIsTyping(true);
     setError(null);
@@ -180,7 +182,7 @@ export const useAgent = (initialSessionId = null) => {
     }]);
 
     try {
-      const response = await createAgentSession(prompt, validatedTemplate, config || {});
+      const response = await createAgentSession(prompt, validatedTemplate, mergedConfig);
       const sessionId = response?.session_id || response?.id || response?.sessionId;
       if (!sessionId) throw new Error('No session ID returned from server.');
       
@@ -212,7 +214,7 @@ export const useAgent = (initialSessionId = null) => {
     setError(null);
 
     try {
-      const res = await sendMessage(activeSessionId, cleanText);
+      const res = await sendMessage(activeSessionId, cleanText, selectedModel);
       if (res && res.content) {
         setMessages(prev => [...prev, { 
           id: Date.now(), 
@@ -297,6 +299,8 @@ export const useAgent = (initialSessionId = null) => {
     setDocumentSections,
     selectedTemplate,
     setSelectedTemplate,
+    selectedModel,
+    setSelectedModel,
     loadSession,
     handleStartSession,
     handleSendMessage,
