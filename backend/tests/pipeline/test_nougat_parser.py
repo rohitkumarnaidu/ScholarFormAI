@@ -7,44 +7,52 @@ from app.pipeline.parsing.nougat_parser import (
     NougatParser, _classify_nougat_line, _check_available_ram_gb, _pdf_to_images
 )
 
-
 class TestNougatClassifyLine:
     def test_empty_line(self):
-        from app.models import BlockType
 
+        from app.models import BlockType
         assert _classify_nougat_line("") == BlockType.UNKNOWN
 
     def test_h1(self):
+        from app.models import BlockType
         assert _classify_nougat_line("# Title") == BlockType.HEADING_1
 
     def test_h2(self):
+        from app.models import BlockType
         assert _classify_nougat_line("## Section") == BlockType.HEADING_2
 
     def test_h3(self):
+        from app.models import BlockType
         assert _classify_nougat_line("### Subsection") == BlockType.HEADING_3
 
     def test_abstract(self):
+        from app.models import BlockType
         assert _classify_nougat_line("Abstract") == BlockType.ABSTRACT
 
     def test_references(self):
+        from app.models import BlockType
         assert _classify_nougat_line("References") == BlockType.HEADING_1
 
     def test_bibliography(self):
+        from app.models import BlockType
         assert _classify_nougat_line("Bibliography") == BlockType.HEADING_1
 
     def test_unordered_list(self):
+        from app.models import BlockType
         assert _classify_nougat_line("- item") == BlockType.LIST_ITEM
         assert _classify_nougat_line("* item") == BlockType.LIST_ITEM
 
     def test_ordered_list(self):
+        from app.models import BlockType
         assert _classify_nougat_line("1. item") == BlockType.LIST_ITEM
 
     def test_body(self):
+        from app.models import BlockType
         assert _classify_nougat_line("Normal sentence.") == BlockType.BODY
-
 
 class TestNougatParserInit:
     def test_init_with_remote_urls(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://nougat.example.com"]
             mock_s.PIPELINE_DOCLING_TIMEOUT_SECONDS = 30
@@ -54,6 +62,7 @@ class TestNougatParserInit:
             assert p._last_good_remote_url == "https://nougat.example.com"
 
     def test_init_with_single_url(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = []
             mock_s.NOUGAT_URL = "https://fallback.example.com"
@@ -63,6 +72,7 @@ class TestNougatParserInit:
             assert "fallback.example.com" in p.remote_base_urls[0]
 
     def test_init_no_remote_no_local_raises(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = []
             mock_s.NOUGAT_URL = None
@@ -73,15 +83,16 @@ class TestNougatParserInit:
                     NougatParser()
 
     def test_supports_format(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://example.com"]
             p = NougatParser()
             assert p.supports_format(".pdf")
             assert not p.supports_format(".docx")
 
-
 class TestNougatParserHelpers:
     def test_retry_backoff(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://example.com"]
             p = NougatParser()
@@ -91,6 +102,7 @@ class TestNougatParserHelpers:
             assert p._retry_backoff_seconds(5) == 8.0
 
     def test_ordered_urls_prefers_last_good(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://a.com", "https://b.com"]
             mock_s.PIPELINE_DOCLING_TIMEOUT_SECONDS = 25
@@ -101,6 +113,7 @@ class TestNougatParserHelpers:
             assert ordered[0] == "https://b.com"
 
     def test_mark_last_good_remote_url(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://a.com"]
             p = NougatParser()
@@ -108,6 +121,7 @@ class TestNougatParserHelpers:
             assert p._last_good_remote_url == "https://a.com"
 
     def test_extract_remote_text_from_dict(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://example.com"]
             p = NougatParser()
@@ -117,12 +131,14 @@ class TestNougatParserHelpers:
             assert p._extract_remote_text({"result": "ok"}) == "ok"
 
     def test_extract_remote_text_from_string(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://example.com"]
             p = NougatParser()
             assert p._extract_remote_text("direct text") == "direct text"
 
     def test_extract_remote_text_empty(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://example.com"]
             p = NougatParser()
@@ -130,10 +146,12 @@ class TestNougatParserHelpers:
             assert p._extract_remote_text({"markdown": ""}) == ""
 
     def test_check_ram(self):
+        from app.models import BlockType
         gb = _check_available_ram_gb()
         assert isinstance(gb, float)
 
     def test_new_document(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://example.com"]
             p = NougatParser()
@@ -141,9 +159,9 @@ class TestNougatParserHelpers:
             assert doc.document_id == "doc1"
             assert doc.original_filename == "file.pdf"
 
-
 class TestNougatParserParseNougatOutput:
     def test_empty_text(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://example.com"]
             p = NougatParser()
@@ -151,6 +169,7 @@ class TestNougatParserParseNougatOutput:
             assert p._parse_nougat_output("  ") == []
 
     def test_body_paragraph(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://example.com"]
             p = NougatParser()
@@ -159,6 +178,7 @@ class TestNougatParserParseNougatOutput:
             assert blocks[0].block_type == BlockType.BODY
 
     def test_heading(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://example.com"]
             p = NougatParser()
@@ -167,6 +187,7 @@ class TestNougatParserParseNougatOutput:
             assert blocks[0].metadata["heading_level"] == 1
 
     def test_equation_detection(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://example.com"]
             p = NougatParser()
@@ -174,6 +195,7 @@ class TestNougatParserParseNougatOutput:
             assert blocks[0].metadata.get("has_equation") is True
 
     def test_table_detection(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://example.com"]
             p = NougatParser()
@@ -181,15 +203,16 @@ class TestNougatParserParseNougatOutput:
             assert blocks[0].metadata.get("is_table") is True
 
     def test_parser_metadata(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://example.com"]
             p = NougatParser()
             blocks = p._parse_nougat_output("Text")
             assert blocks[0].metadata["parser"] == "nougat"
 
-
 class TestNougatParserParse:
     def test_parse_file_not_found(self):
+        from app.models import BlockType
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://example.com"]
             p = NougatParser()
@@ -197,6 +220,7 @@ class TestNougatParserParse:
                 p.parse("/nonexistent.pdf", "doc1")
 
     def test_parse_remote_success(self, tmp_path):
+        from app.models import BlockType
         f = tmp_path / "test.pdf"
         f.write_text("dummy")
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
@@ -207,6 +231,7 @@ class TestNougatParserParse:
                 assert doc.document_id == "doc1"
 
     def test_parse_remote_none_local_available(self, tmp_path):
+        from app.models import BlockType
         f = tmp_path / "test.pdf"
         f.write_text("dummy")
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
@@ -219,6 +244,7 @@ class TestNougatParserParse:
                         assert doc is not None
 
     def test_parse_remote_none_local_unavailable(self, tmp_path):
+        from app.models import BlockType
         f = tmp_path / "test.pdf"
         f.write_text("dummy")
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:

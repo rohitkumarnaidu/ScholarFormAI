@@ -11,68 +11,76 @@ from app.pipeline.formatting.reference_formatter import (
     ReferenceFormatter,
 )
 
-
 class TestResolveCslPath:
     def test_none_publisher(self):
-        from app.models import Reference, ReferenceType
 
+        from app.models import Reference, ReferenceType
         assert _resolve_csl_path(None) is None
 
     def test_empty_publisher(self):
+        from app.models import Reference, ReferenceType
         assert _resolve_csl_path("") is None
 
     def test_unknown_publisher(self):
+        from app.models import Reference, ReferenceType
         assert _resolve_csl_path("nonexistent_pub") is None
-
 
 class TestParseAuthorName:
     def test_comma_separated(self):
+        from app.models import Reference, ReferenceType
         result = _parse_author_name("Smith, J.")
         assert result["family"] == "Smith"
         assert result["given"] == "J."
 
     def test_space_separated(self):
+        from app.models import Reference, ReferenceType
         result = _parse_author_name("Jane Doe")
         assert result["family"] == "Doe"
         assert result["given"] == "Jane"
 
     def test_single_name(self):
+        from app.models import Reference, ReferenceType
         result = _parse_author_name("Aristotle")
         assert result["family"] == "Aristotle"
 
     def test_empty_name(self):
+        from app.models import Reference, ReferenceType
         result = _parse_author_name("")
         assert result["family"] == "Unknown"
 
     def test_only_spaces(self):
+        from app.models import Reference, ReferenceType
         result = _parse_author_name("   ")
         assert result["family"] == "Unknown"
 
     def test_comma_no_given(self):
+        from app.models import Reference, ReferenceType
         result = _parse_author_name("Aristotle,")
         assert result["family"] == "Aristotle"
 
-
 class TestReferenceTypeToCsl:
     def test_journal_article(self):
+        from app.models import Reference, ReferenceType
         ref = Reference(reference_id="r1", citation_key="k", raw_text="t", index=1,
                         reference_type=ReferenceType.JOURNAL_ARTICLE)
         assert _reference_type_to_csl(ref) == "article-journal"
 
     def test_book(self):
+        from app.models import Reference, ReferenceType
         ref = Reference(reference_id="r1", citation_key="k", raw_text="t", index=1,
                         reference_type=ReferenceType.BOOK)
         assert _reference_type_to_csl(ref) == "book"
 
     def test_unknown_type(self):
+        from app.models import Reference, ReferenceType
         ref = Reference(reference_id="r1", citation_key="k", raw_text="t", index=1,
                         reference_type=ReferenceType.UNKNOWN)
         assert _reference_type_to_csl(ref) == "article"
 
-
 class TestReferenceFormatter:
     @pytest.fixture
     def mock_contract_loader(self):
+        from app.models import Reference, ReferenceType
         loader = MagicMock()
         loader.load.return_value = {
             "references": {"style": "IEEE"},
@@ -80,6 +88,7 @@ class TestReferenceFormatter:
         return loader
 
     def test_format_ieee_legacy(self, mock_contract_loader):
+        from app.models import Reference, ReferenceType
         formatter = ReferenceFormatter(mock_contract_loader)
         ref = Reference(
             reference_id="r1", citation_key="k", raw_text="test", index=1,
@@ -94,6 +103,7 @@ class TestReferenceFormatter:
         assert "Test Journal" in result
 
     def test_format_ieee_legacy_no_authors(self, mock_contract_loader):
+        from app.models import Reference, ReferenceType
         formatter = ReferenceFormatter(mock_contract_loader)
         ref = Reference(
             reference_id="r1", citation_key="k", raw_text="test", index=1,
@@ -103,6 +113,7 @@ class TestReferenceFormatter:
         assert "[2]" in result
 
     def test_format_none_style(self, mock_contract_loader):
+        from app.models import Reference, ReferenceType
         formatter = ReferenceFormatter(mock_contract_loader)
         loader = MagicMock()
         loader.load.return_value = {
@@ -117,6 +128,7 @@ class TestReferenceFormatter:
         assert result == "Some raw reference"
 
     def test_format_reference_single(self, mock_contract_loader):
+        from app.models import Reference, ReferenceType
         formatter = ReferenceFormatter(mock_contract_loader)
         ref = Reference(
             reference_id="r1", citation_key="k", raw_text="test", index=1,
@@ -126,6 +138,7 @@ class TestReferenceFormatter:
         assert "Smith" in result
 
     def test_format_references_list(self, mock_contract_loader):
+        from app.models import Reference, ReferenceType
         formatter = ReferenceFormatter(mock_contract_loader)
         refs = [
             Reference(reference_id="r1", citation_key="k1", raw_text="t1", index=1,
@@ -137,6 +150,7 @@ class TestReferenceFormatter:
         assert len(results) == 2
 
     def test_format_non_ieee_non_none_style(self, mock_contract_loader):
+        from app.models import Reference, ReferenceType
         formatter = ReferenceFormatter(mock_contract_loader)
         loader = MagicMock()
         loader.load.return_value = {

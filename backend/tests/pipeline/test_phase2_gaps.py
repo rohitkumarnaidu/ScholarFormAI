@@ -20,7 +20,6 @@ import builtins
 import sys
 import pytest
 
-
 # =============================================================================
 # 1. app/pipeline/equations/standardizer.py  — remaining uncovered lines
 # =============================================================================
@@ -30,8 +29,8 @@ class TestEquationStandardizerGaps:
 
     def test_metadata_already_truthy(self):
         """Line 58-60: eqn.metadata is already truthy -> skip if-not branch."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.equations.standardizer import EquationStandardizer
-        from app.models import PipelineDocument, Equation
 
         s = EquationStandardizer()
         eq = Equation(equation_id="e1", index=0,
@@ -47,8 +46,8 @@ class TestEquationStandardizerGaps:
 
     def test_outer_exception_handler(self, caplog):
         """Lines 76-78: outer try/except when something blows up outside the per-equation loop."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.equations.standardizer import EquationStandardizer
-        from app.models import PipelineDocument, Equation
 
         s = EquationStandardizer()
         doc = PipelineDocument(document_id="d1", equations=[
@@ -66,6 +65,7 @@ class TestEquationStandardizerGaps:
 
     def test_nsmap_is_none(self):
         """Line 97: dom.nsmap is None (falsy) -> skip nsmap validation block."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.equations.standardizer import EquationStandardizer
         import lxml.etree as etree
 
@@ -82,6 +82,7 @@ class TestEquationStandardizerGaps:
 
     def test_omml_namespace_not_found(self, caplog):
         """Lines 100-101: nsmap has NO default ns key and OMML ns absent -> debug log."""
+        from app.models import PipelineDocument, Block, BlockType
         import logging
         caplog.set_level(logging.DEBUG)
         from app.pipeline.equations.standardizer import EquationStandardizer
@@ -102,6 +103,7 @@ class TestEquationStandardizerGaps:
 
     def test_generic_exception_in_conversion(self):
         """Lines 109-111: a non-XMLSyntaxError exception during xslt transform."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.equations.standardizer import EquationStandardizer
         import lxml.etree as etree
 
@@ -116,7 +118,6 @@ class TestEquationStandardizerGaps:
 
         assert result == ""
 
-
 # =============================================================================
 # 2. app/pipeline/parsing/md_parser.py  — remaining uncovered lines
 # =============================================================================
@@ -127,6 +128,7 @@ class TestMdParserGaps:
 
     def test_utf8_fallback_latin1_also_fails(self, tmp_path):
         """Lines 80-81: UTF-8 fails, then latin-1 fallback also raises -> ValueError."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.md_parser import MarkdownParser
 
         parser = MarkdownParser()
@@ -139,6 +141,7 @@ class TestMdParserGaps:
         original_open = __builtins__["open"] if isinstance(__builtins__, dict) else __builtins__.open
 
         def fake_open(*args, **kwargs):
+            from app.models import PipelineDocument, Block, BlockType
             nonlocal call_count
             call_count += 1
             if call_count == 1:
@@ -151,6 +154,7 @@ class TestMdParserGaps:
 
     def test_non_string_document_id(self, tmp_path):
         """Line 87: non-string document_id passed -> converted to str."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.md_parser import MarkdownParser
 
         parser = MarkdownParser()
@@ -162,6 +166,7 @@ class TestMdParserGaps:
 
     def test_unrecognized_frontmatter_key(self, tmp_path):
         """Line 141->130: frontmatter line with known key and also unknown key."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.md_parser import MarkdownParser
 
         parser = MarkdownParser()
@@ -172,8 +177,8 @@ class TestMdParserGaps:
 
     def test_frontmatter_exception_handler(self, caplog):
         """Lines 143-144: exception during frontmatter line parsing -> logged."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.md_parser import MarkdownParser
-        from app.models import DocumentMetadata
 
         parser = MarkdownParser()
         content = "---\ntitle: My Paper\n---\n\nBody"
@@ -182,6 +187,7 @@ class TestMdParserGaps:
         original_setattr = DocumentMetadata.__setattr__
 
         def failing_setattr(self, name, value):
+            from app.models import PipelineDocument, Block, BlockType
             if name == "title":
                 raise ValueError("bad value")
             return original_setattr(self, name, value)
@@ -194,6 +200,7 @@ class TestMdParserGaps:
 
     def test_paragraph_before_code_block(self, tmp_path):
         """Lines 164-165: paragraph text before a code block."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.md_parser import MarkdownParser
 
         parser = MarkdownParser()
@@ -208,6 +215,7 @@ class TestMdParserGaps:
 
     def test_paragraph_before_table(self, tmp_path):
         """Lines 199-200: paragraph text before a table."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.md_parser import MarkdownParser
 
         parser = MarkdownParser()
@@ -221,6 +229,7 @@ class TestMdParserGaps:
 
     def test_paragraph_before_blockquote(self, tmp_path):
         """Lines 230-231: paragraph text before a blockquote."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.md_parser import MarkdownParser
 
         parser = MarkdownParser()
@@ -234,6 +243,7 @@ class TestMdParserGaps:
 
     def test_paragraph_before_heading(self, tmp_path):
         """Lines 261-262: paragraph text before a heading."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.md_parser import MarkdownParser
 
         parser = MarkdownParser()
@@ -247,6 +257,7 @@ class TestMdParserGaps:
 
     def test_paragraph_before_hr(self, tmp_path):
         """Lines 286-287: paragraph text before a horizontal rule."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.md_parser import MarkdownParser
 
         parser = MarkdownParser()
@@ -261,6 +272,7 @@ class TestMdParserGaps:
 
     def test_paragraph_before_footnote(self, tmp_path):
         """Lines 294-295: paragraph text before a footnote definition."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.md_parser import MarkdownParser
 
         parser = MarkdownParser()
@@ -274,6 +286,7 @@ class TestMdParserGaps:
 
     def test_paragraph_before_image(self, tmp_path):
         """Lines 320-321: paragraph text before an image."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.md_parser import MarkdownParser
 
         parser = MarkdownParser()
@@ -287,6 +300,7 @@ class TestMdParserGaps:
 
     def test_math_block_protected(self):
         """Lines 373-374, 405: inline and display math protected in _strip_markdown."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.md_parser import MarkdownParser
 
         parser = MarkdownParser()
@@ -299,7 +313,6 @@ class TestMdParserGaps:
         result = parser._strip_markdown("$$\\int_a^b f(x) dx$$")
         assert "$$" in result
 
-
 # =============================================================================
 # 3. app/pipeline/parsing/html_parser.py  — remaining uncovered lines
 # =============================================================================
@@ -310,6 +323,7 @@ class TestHtmlParserGaps:
 
     def test_bs4_unavailable_at_import(self):
         """Lines 26-27: BS4_AVAILABLE is False at import time."""
+        from app.models import PipelineDocument, Block, BlockType
         keys = [k for k in sys.modules if "html_parser" in k or "bs4" in k]
         for k in keys:
             sys.modules.pop(k, None)
@@ -317,6 +331,7 @@ class TestHtmlParserGaps:
         original_import = builtins.__import__
 
         def selective_import(name, *args, **kwargs):
+            from app.models import PipelineDocument, Block, BlockType
             if name == "bs4":
                 raise ImportError("no bs4")
             return original_import(name, *args, **kwargs)
@@ -328,6 +343,7 @@ class TestHtmlParserGaps:
 
     def test_utf8_fallback_to_latin1(self, tmp_path):
         """Lines 83-87: UTF-8 decode fails, latin-1 succeeds."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
@@ -338,6 +354,7 @@ class TestHtmlParserGaps:
         call_count = 0
 
         def fake_open(*args, **kwargs):
+            from app.models import PipelineDocument, Block, BlockType
             nonlocal call_count
             call_count += 1
             if call_count == 1:
@@ -350,6 +367,7 @@ class TestHtmlParserGaps:
 
     def test_latin1_fallback_also_fails(self, tmp_path):
         """Lines 88-89: both UTF-8 and latin-1 open attempts fail -> ValueError."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
@@ -359,6 +377,7 @@ class TestHtmlParserGaps:
         call_count = 0
 
         def fake_open(*args, **kwargs):
+            from app.models import PipelineDocument, Block, BlockType
             nonlocal call_count
             call_count += 1
             if call_count == 1:
@@ -371,6 +390,7 @@ class TestHtmlParserGaps:
 
     def test_non_unicode_decode_error_open_exception(self, tmp_path):
         """Lines 90-91: a non-UnicodeDecodeError exception on first open."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
@@ -383,6 +403,7 @@ class TestHtmlParserGaps:
 
     def test_non_string_document_id(self, tmp_path):
         """Line 95: non-string document_id -> converted to str."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
@@ -394,6 +415,7 @@ class TestHtmlParserGaps:
 
     def test_empty_heading_skipped(self):
         """Line 166->161: empty heading text -> skipped."""
+        from app.models import PipelineDocument, Block, BlockType
         from bs4 import BeautifulSoup
         from app.pipeline.parsing.html_parser import HtmlParser
 
@@ -405,6 +427,7 @@ class TestHtmlParserGaps:
 
     def test_empty_paragraph_skipped(self):
         """Line 186->161: empty paragraph -> skipped."""
+        from app.models import PipelineDocument, Block, BlockType
         from bs4 import BeautifulSoup
         from app.pipeline.parsing.html_parser import HtmlParser
 
@@ -416,6 +439,7 @@ class TestHtmlParserGaps:
 
     def test_empty_href_skipped(self):
         """Line 198->196: <a> with empty href -> not added to links list."""
+        from app.models import PipelineDocument, Block, BlockType
         from bs4 import BeautifulSoup
         from app.pipeline.parsing.html_parser import HtmlParser
 
@@ -429,6 +453,7 @@ class TestHtmlParserGaps:
 
     def test_empty_list_item_skipped(self):
         """Line 217->161: <li> with empty text -> skipped."""
+        from app.models import PipelineDocument, Block, BlockType
         from bs4 import BeautifulSoup
         from app.pipeline.parsing.html_parser import HtmlParser
 
@@ -441,6 +466,7 @@ class TestHtmlParserGaps:
 
     def test_empty_code_block_skipped(self):
         """Line 239->161: <code>/<pre> with only whitespace -> skipped."""
+        from app.models import PipelineDocument, Block, BlockType
         from bs4 import BeautifulSoup
         from app.pipeline.parsing.html_parser import HtmlParser
 
@@ -453,6 +479,7 @@ class TestHtmlParserGaps:
 
     def test_code_block_no_language_class(self):
         """Line 246->251: <code> with no class -> defaults to 'plaintext'."""
+        from app.models import PipelineDocument, Block, BlockType
         from bs4 import BeautifulSoup
         from app.pipeline.parsing.html_parser import HtmlParser
 
@@ -465,6 +492,7 @@ class TestHtmlParserGaps:
 
     def test_code_block_non_matching_class(self):
         """Line 247->246: class exists but doesn't start with 'language-' -> continues loop."""
+        from app.models import PipelineDocument, Block, BlockType
         from bs4 import BeautifulSoup
         from app.pipeline.parsing.html_parser import HtmlParser
 
@@ -477,6 +505,7 @@ class TestHtmlParserGaps:
 
     def test_empty_table_row_skipped(self):
         """Line 269->266: <tr> with no cells or empty cells -> row_text empty, skipped."""
+        from app.models import PipelineDocument, Block, BlockType
         from bs4 import BeautifulSoup
         from app.pipeline.parsing.html_parser import HtmlParser
 
@@ -489,6 +518,7 @@ class TestHtmlParserGaps:
 
     def test_all_empty_table_skipped(self):
         """Line 272->161: table with all-empty rows -> no block created."""
+        from app.models import PipelineDocument, Block, BlockType
         from bs4 import BeautifulSoup
         from app.pipeline.parsing.html_parser import HtmlParser
 
@@ -500,6 +530,7 @@ class TestHtmlParserGaps:
 
     def test_element_extraction_catch_all(self):
         """Lines 302-303: exception during element extraction -> logged, continues."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.parsing.html_parser import HtmlParser, logger
         from unittest.mock import MagicMock
 
@@ -516,7 +547,6 @@ class TestHtmlParserGaps:
         blocks, figures = parser._extract_content(soup)
         assert len(blocks) == 0
 
-
 # =============================================================================
 # 4. app/pipeline/parsing/parser_factory.py  — remaining uncovered lines
 # =============================================================================
@@ -526,6 +556,7 @@ class TestParserFactoryGaps:
 
     def test_pdf_parser_import_error(self, caplog):
         """Lines 53-54: PdfParser raises ImportError -> logged at info level."""
+        from app.models import PipelineDocument, Block, BlockType
         with patch("app.pipeline.parsing.parser_factory.PdfParser", side_effect=ImportError("no pymupdf")):
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
                 mock_s.ENABLE_NOUGAT_PARSER = False
@@ -536,6 +567,7 @@ class TestParserFactoryGaps:
 
     def test_pdf_parser_non_import_exception(self, caplog):
         """Lines 55-56: PdfParser raises generic Exception -> logged at warning level."""
+        from app.models import PipelineDocument, Block, BlockType
         with patch("app.pipeline.parsing.parser_factory.PdfParser", side_effect=RuntimeError("init failed")):
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
                 mock_s.ENABLE_NOUGAT_PARSER = False
@@ -546,6 +578,7 @@ class TestParserFactoryGaps:
 
     def test_nougat_parser_exception(self, caplog):
         """Lines 67-68: NougatParser raises an Exception -> logged at warning level."""
+        from app.models import PipelineDocument, Block, BlockType
         # We need NougatParser to exist at import time but raise on instantiation.
         # Patch it at the nougat_parser module level so the factory's import succeeds.
         with patch("app.pipeline.parsing.nougat_parser.NougatParser", side_effect=RuntimeError("nougat fail")):
@@ -558,6 +591,7 @@ class TestParserFactoryGaps:
 
     def test_txt_parser_exception(self, caplog):
         """Lines 73-74: TxtParser raises Exception -> logged at warning level."""
+        from app.models import PipelineDocument, Block, BlockType
         with patch("app.pipeline.parsing.parser_factory.TxtParser", side_effect=RuntimeError("txt fail")):
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
                 mock_s.ENABLE_NOUGAT_PARSER = False
@@ -568,6 +602,7 @@ class TestParserFactoryGaps:
 
     def test_html_parser_import_error(self, caplog):
         """Lines 79-82: HtmlParser raises ImportError -> logged at info level with install hint."""
+        from app.models import PipelineDocument, Block, BlockType
         with patch("app.pipeline.parsing.parser_factory.HtmlParser", side_effect=ImportError("no bs4")):
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
                 mock_s.ENABLE_NOUGAT_PARSER = False
@@ -578,6 +613,7 @@ class TestParserFactoryGaps:
 
     def test_html_parser_non_import_exception(self, caplog):
         """Lines 83-84: HtmlParser raises generic Exception -> logged at warning level."""
+        from app.models import PipelineDocument, Block, BlockType
         with patch("app.pipeline.parsing.parser_factory.HtmlParser", side_effect=RuntimeError("html fail")):
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
                 mock_s.ENABLE_NOUGAT_PARSER = False
@@ -588,6 +624,7 @@ class TestParserFactoryGaps:
 
     def test_markdown_parser_exception(self, caplog):
         """Lines 89-90: MarkdownParser raises Exception -> logged at warning level."""
+        from app.models import PipelineDocument, Block, BlockType
         with patch("app.pipeline.parsing.parser_factory.MarkdownParser", side_effect=RuntimeError("md fail")):
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
                 mock_s.ENABLE_NOUGAT_PARSER = False
@@ -598,6 +635,7 @@ class TestParserFactoryGaps:
 
     def test_tex_parser_exception(self, caplog):
         """Lines 95-96: TexParser raises Exception -> logged at warning level."""
+        from app.models import PipelineDocument, Block, BlockType
         with patch("app.pipeline.parsing.parser_factory.TexParser", side_effect=RuntimeError("tex fail")):
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
                 mock_s.ENABLE_NOUGAT_PARSER = False
@@ -605,7 +643,6 @@ class TestParserFactoryGaps:
                 f = ParserFactory()
         names = {p.__class__.__name__ for p in f.parsers}
         assert "TexParser" not in names
-
 
 # =============================================================================
 # 5. app/pipeline/references/parser.py  — remaining uncovered lines
@@ -616,8 +653,8 @@ class TestReferenceParserGaps:
 
     def test_empty_reference_block_skipped(self):
         """Line 62: block with empty/whitespace-only text -> continue."""
-        from app.pipeline.references.parser import ReferenceParser
         from app.models import PipelineDocument, Block, BlockType
+        from app.pipeline.references.parser import ReferenceParser
 
         parser = ReferenceParser()
         blocks = [
@@ -634,8 +671,8 @@ class TestReferenceParserGaps:
 
     def test_inner_parse_single_reference_exception(self, caplog):
         """Lines 70-71: _parse_single_reference raises exception -> logged, continues."""
-        from app.pipeline.references.parser import ReferenceParser
         from app.models import PipelineDocument, Block, BlockType
+        from app.pipeline.references.parser import ReferenceParser
 
         parser = ReferenceParser()
         blocks = [
@@ -656,8 +693,8 @@ class TestReferenceParserGaps:
 
     def test_outer_process_exception(self, caplog):
         """Lines 74-81: outer try/except in process() -> error stage added, doc returned."""
-        from app.pipeline.references.parser import ReferenceParser
         from app.models import PipelineDocument, Block, BlockType
+        from app.pipeline.references.parser import ReferenceParser
         from unittest.mock import PropertyMock
 
         parser = ReferenceParser()
@@ -677,6 +714,7 @@ class TestReferenceParserGaps:
 
     def test_year_is_none_skips_venue_cleanup(self):
         """Line 148->150: year is None -> venue.replace(str(year), ...) is skipped."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
 
         # Reference with no year: no digits matching 19xx or 20xx
@@ -689,6 +727,7 @@ class TestReferenceParserGaps:
 
     def test_pp_in_venue(self):
         """Line 152: 'pp.' present in venue -> pass (no-op).
+        from app.models import PipelineDocument, Block, BlockType
 
         NOTE: year_pattern.findall returns capture groups only, so '2020' yields '20'.
         """
@@ -702,6 +741,7 @@ class TestReferenceParserGaps:
 
     def test_fallback_no_quotes_three_parts(self):
         """Lines 160-162: no quotes -> fallback by dot separation with >=3 parts.
+        from app.models import PipelineDocument, Block, BlockType
 
         The heuristic splits on '.' and treats parts[0]=authors, parts[1]=title, parts[2]=venue.
         """
@@ -717,6 +757,7 @@ class TestReferenceParserGaps:
 
     def test_doi_based_type_detection(self):
         """Line 174: DOI present -> type defaults to JOURNAL_ARTICLE even without venue keywords."""
+        from app.models import PipelineDocument, Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
 
         parser = ReferenceParser()
@@ -729,8 +770,8 @@ class TestReferenceParserGaps:
 
     def test_module_level_parse_references(self):
         """Lines 212-213: convenience function parse_references delegates to ReferenceParser."""
-        from app.pipeline.references.parser import parse_references
         from app.models import PipelineDocument, Block, BlockType
+        from app.pipeline.references.parser import parse_references
 
         blocks = [
             Block(block_id="b1", text="[1] A. Author, \"Title,\" Journal, 2020.", index=1,

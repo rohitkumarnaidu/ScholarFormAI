@@ -19,7 +19,6 @@ from app.pipeline.intelligence.semantic_parser import (
     HEURISTIC_ONLY_MODEL_NAMES,
 )
 
-
 def _sample_blocks() -> list[Block]:
     from app.models import Block, BlockType
     return [
@@ -28,9 +27,9 @@ def _sample_blocks() -> list[Block]:
         Block(block_id="b-3", index=2, block_type=BlockType.BODY, text="Conclusions and future work."),
     ]
 
-
 class TestInit:
     def test_default_init(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         assert p.model_name == "allenai/scibert_scivocab_uncased"
         assert p.tokenizer is None
@@ -38,6 +37,7 @@ class TestInit:
         assert p._is_loaded is False
 
     def test_config_from_settings(self):
+        from app.models import Block, BlockType
         with patch("app.pipeline.intelligence.semantic_parser.settings") as ms:
             ms.get_scibert_urls.return_value = ["https://scibert.example.com"]
             ms.SCIBERT_URL = "https://fallback.example.com"
@@ -52,6 +52,7 @@ class TestInit:
             assert p.remote_only is True
 
     def test_fallback_scibert_url(self):
+        from app.models import Block, BlockType
         with patch("app.pipeline.intelligence.semantic_parser.settings") as ms:
             ms.get_scibert_urls.return_value = []
             ms.SCIBERT_URL = "https://alt.example.com"
@@ -63,6 +64,7 @@ class TestInit:
             assert p.remote_base_urls == ["https://alt.example.com"]
 
     def test_no_urls_configured(self):
+        from app.models import Block, BlockType
         with patch("app.pipeline.intelligence.semantic_parser.settings") as ms:
             ms.get_scibert_urls.return_value = []
             ms.SCIBERT_URL = None
@@ -74,6 +76,7 @@ class TestInit:
             assert p.remote_base_urls == []
 
     def test_urls_stripped(self):
+        from app.models import Block, BlockType
         with patch("app.pipeline.intelligence.semantic_parser.settings") as ms:
             ms.get_scibert_urls.return_value = ["https://ex.com/  "]
             ms.SCIBERT_URL = None
@@ -84,9 +87,9 @@ class TestInit:
             p = SemanticParser()
             assert p.remote_base_urls == ["https://ex.com/  "]
 
-
 class TestLoadModel:
     def test_already_loaded_returns(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p._is_loaded = True
         with patch.object(p, "_load_local_model") as mock_llm:
@@ -94,6 +97,7 @@ class TestLoadModel:
             mock_llm.assert_not_called()
 
     def test_heuristic_only_model_name(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         for name in HEURISTIC_ONLY_MODEL_NAMES:
             p.model_name = name
@@ -104,6 +108,7 @@ class TestLoadModel:
             assert p._is_loaded is True
 
     def test_remote_urls_set_skips_local(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://scibert.example.com"]
         p._is_loaded = False
@@ -113,6 +118,7 @@ class TestLoadModel:
             mock_llm.assert_not_called()
 
     def test_local_loading_path(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = []
         p._is_loaded = False
@@ -121,9 +127,9 @@ class TestLoadModel:
             mock_llm.assert_called_once()
             assert p._is_loaded is True
 
-
 class TestLoadLocalModel:
     def test_transformers_not_available(self):
+        from app.models import Block, BlockType
         with patch("app.pipeline.intelligence.semantic_parser.AutoTokenizer", None):
             with patch("app.pipeline.intelligence.semantic_parser.AutoModel", None):
                 p = SemanticParser()
@@ -133,6 +139,7 @@ class TestLoadLocalModel:
                     assert p.model is None
 
     def test_reuses_from_model_store(self):
+        from app.models import Block, BlockType
         with patch("app.pipeline.intelligence.semantic_parser.AutoTokenizer") as mock_tok:
             with patch("app.pipeline.intelligence.semantic_parser.AutoModel") as mock_mod:
                 mock_store = MagicMock()
@@ -146,6 +153,7 @@ class TestLoadLocalModel:
                     mock_tok.from_pretrained.assert_not_called()
 
     def test_loads_from_huggingface(self):
+        from app.models import Block, BlockType
         with patch("app.pipeline.intelligence.semantic_parser.AutoTokenizer") as mock_tok:
             with patch("app.pipeline.intelligence.semantic_parser.AutoModel") as mock_mod:
                 mock_store = MagicMock()
@@ -157,6 +165,7 @@ class TestLoadLocalModel:
                     mock_mod.from_pretrained.assert_called_once()
 
     def test_exception_during_load(self):
+        from app.models import Block, BlockType
         with patch("app.pipeline.intelligence.semantic_parser.AutoTokenizer") as mock_tok:
             mock_tok.from_pretrained.side_effect = RuntimeError("OOM")
             mock_store = MagicMock()
@@ -167,9 +176,9 @@ class TestLoadLocalModel:
                 assert p.tokenizer is None
                 assert p.model is None
 
-
 class TestOrderedRemoteUrls:
     def test_no_last_good(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://a.com", "https://b.com"]
         p._last_good_remote_url = None
@@ -177,6 +186,7 @@ class TestOrderedRemoteUrls:
         assert ordered == ["https://a.com", "https://b.com"]
 
     def test_last_good_ttl_expired(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://a.com", "https://b.com"]
         p._last_good_remote_url = "https://b.com"
@@ -185,6 +195,7 @@ class TestOrderedRemoteUrls:
         assert ordered == ["https://a.com", "https://b.com"]
 
     def test_last_good_moved_to_front(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://a.com", "https://b.com", "https://c.com"]
         p._last_good_remote_url = "https://b.com"
@@ -194,6 +205,7 @@ class TestOrderedRemoteUrls:
         assert ordered[1:] == ["https://a.com", "https://c.com"]
 
     def test_last_good_not_in_list(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://a.com"]
         p._last_good_remote_url = "https://unknown.com"
@@ -201,104 +213,118 @@ class TestOrderedRemoteUrls:
         ordered = p._ordered_remote_urls()
         assert ordered == ["https://a.com"]
 
-
 class TestMarkLastGoodRemoteUrl:
     def test_sets_new_endpoint(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p._last_good_remote_url = None
         p._mark_last_good_remote_url("https://a.com", reason="test")
         assert p._last_good_remote_url == "https://a.com"
 
     def test_failover_logs_warning(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p._last_good_remote_url = "https://old.com"
         p._mark_last_good_remote_url("https://new.com", reason="failover")
         assert p._last_good_remote_url == "https://new.com"
         assert p._last_good_remote_at > 0
 
-
 class TestRetryBackoffSeconds:
     def test_attempt_1(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         assert p._retry_backoff_seconds(1) == 1.0
 
     def test_attempt_2(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         assert p._retry_backoff_seconds(2) == 2.0
 
     def test_attempt_3(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         assert p._retry_backoff_seconds(3) == 4.0
 
     def test_attempt_4_capped(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         assert p._retry_backoff_seconds(4) == 8.0
 
     def test_attempt_5_still_capped(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         assert p._retry_backoff_seconds(5) == 8.0
 
-
 class TestNormalizeRemotePrediction:
     def test_not_a_dict(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         assert p._normalize_remote_prediction("string") is None
         assert p._normalize_remote_prediction(123) is None
         assert p._normalize_remote_prediction(None) is None
 
     def test_no_label_found(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         assert p._normalize_remote_prediction({"confidence": 0.9}) is None
 
     def test_type_key(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         result = p._normalize_remote_prediction({"type": "abstract", "confidence": 0.9})
         assert result["type"] == "ABSTRACT"
         assert result["confidence"] == 0.9
 
     def test_label_key(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         result = p._normalize_remote_prediction({"label": "body", "score": 0.8})
         assert result["type"] == "BODY"
         assert result["confidence"] == 0.8
 
     def test_predicted_section_type_key(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         result = p._normalize_remote_prediction({"predicted_section_type": "heading", "confidence_score": 0.7})
         assert result["type"] == "HEADING"
         assert result["confidence"] == 0.7
 
     def test_section_key(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         result = p._normalize_remote_prediction({"section": "title"})
         assert result["type"] == "TITLE"
         assert result["confidence"] == 0.0
 
     def test_confidence_type_error(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         result = p._normalize_remote_prediction({"type": "body", "confidence": "not-a-number"})
         assert result["type"] == "BODY"
         assert result["confidence"] == 0.0
 
-
 class TestPredictBlockTypesRemote:
     def test_no_base_urls_returns_none(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = []
         assert p._predict_block_types_remote(["text"]) is None
 
     def test_empty_texts_returns_none(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://ex.com"]
         assert p._predict_block_types_remote([]) is None
 
     def test_successful_prediction(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://ex.com"]
         p.remote_max_retries = 1
         p.remote_predict_path = "/predict"
 
         def _mock_post(*args, **kwargs):
+            from app.models import Block, BlockType
             return SimpleNamespace(
                 status_code=200,
                 json=lambda: {"predictions": [{"type": "ABSTRACT", "confidence": 0.9}]},
@@ -310,6 +336,7 @@ class TestPredictBlockTypesRemote:
             assert result[0]["type"] == "ABSTRACT"
 
     def test_non_200_retry_then_break(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://ex.com"]
         p.remote_max_retries = 2
@@ -318,6 +345,7 @@ class TestPredictBlockTypesRemote:
         call_count = [0]
 
         def _mock_post(*args, **kwargs):
+            from app.models import Block, BlockType
             call_count[0] += 1
             return SimpleNamespace(status_code=503, json=lambda: {})
 
@@ -328,11 +356,13 @@ class TestPredictBlockTypesRemote:
                 assert result is None
 
     def test_non_retryable_status_breaks(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://ex.com"]
         p.remote_max_retries = 3
 
         def _mock_post(*args, **kwargs):
+            from app.models import Block, BlockType
             return SimpleNamespace(status_code=400, json=lambda: {})
 
         with patch("app.pipeline.intelligence.semantic_parser.requests.post", side_effect=_mock_post):
@@ -340,11 +370,13 @@ class TestPredictBlockTypesRemote:
             assert result is None
 
     def test_non_json_response(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://ex.com"]
         p.remote_max_retries = 1
 
         def _mock_post(*args, **kwargs):
+            from app.models import Block, BlockType
             return SimpleNamespace(status_code=200, json=lambda: (_ for _ in ()).throw(ValueError("no json")))
 
         with patch("app.pipeline.intelligence.semantic_parser.requests.post", side_effect=_mock_post):
@@ -352,11 +384,13 @@ class TestPredictBlockTypesRemote:
             assert result is None
 
     def test_payload_no_predictions_list(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://ex.com"]
         p.remote_max_retries = 1
 
         def _mock_post(*args, **kwargs):
+            from app.models import Block, BlockType
             return SimpleNamespace(status_code=200, json=lambda: {"other": "data"})
 
         with patch("app.pipeline.intelligence.semantic_parser.requests.post", side_effect=_mock_post):
@@ -364,11 +398,13 @@ class TestPredictBlockTypesRemote:
             assert result is None
 
     def test_payload_is_list(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://ex.com"]
         p.remote_max_retries = 1
 
         def _mock_post(*args, **kwargs):
+            from app.models import Block, BlockType
             return SimpleNamespace(status_code=200, json=lambda: [{"type": "BODY", "confidence": 0.8}])
 
         with patch("app.pipeline.intelligence.semantic_parser.requests.post", side_effect=_mock_post):
@@ -377,11 +413,13 @@ class TestPredictBlockTypesRemote:
             assert result[0]["type"] == "BODY"
 
     def test_normalization_failure_resets(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://ex.com"]
         p.remote_max_retries = 1
 
         def _mock_post(*args, **kwargs):
+            from app.models import Block, BlockType
             return SimpleNamespace(
                 status_code=200,
                 json=lambda: {"predictions": [{"type": "ABSTRACT", "confidence": 0.9}, {"notype": "data"}]},
@@ -392,11 +430,13 @@ class TestPredictBlockTypesRemote:
             assert result is None
 
     def test_length_mismatch(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://ex.com"]
         p.remote_max_retries = 1
 
         def _mock_post(*args, **kwargs):
+            from app.models import Block, BlockType
             return SimpleNamespace(
                 status_code=200,
                 json=lambda: {"predictions": [{"type": "BODY", "confidence": 0.8}]},
@@ -407,6 +447,7 @@ class TestPredictBlockTypesRemote:
             assert result is None
 
     def test_request_exception_retry(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://ex.com"]
         p.remote_max_retries = 2
@@ -414,6 +455,7 @@ class TestPredictBlockTypesRemote:
         call_count = [0]
 
         def _mock_post(*args, **kwargs):
+            from app.models import Block, BlockType
             call_count[0] += 1
             raise ConnectionError("timeout")
 
@@ -424,11 +466,13 @@ class TestPredictBlockTypesRemote:
                 assert result is None
 
     def test_generic_exception_retry(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://ex.com"]
         p.remote_max_retries = 2
 
         def _mock_post(*args, **kwargs):
+            from app.models import Block, BlockType
             raise RuntimeError("unexpected")
 
         with patch("app.pipeline.intelligence.semantic_parser.requests.post", side_effect=_mock_post):
@@ -437,6 +481,7 @@ class TestPredictBlockTypesRemote:
                 assert result is None
 
     def test_failover_to_next_endpoint(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = ["https://a.com", "https://b.com"]
         p.remote_max_retries = 1
@@ -444,6 +489,7 @@ class TestPredictBlockTypesRemote:
         call_log = []
 
         def _mock_post(*args, **kwargs):
+            from app.models import Block, BlockType
             call_log.append(kwargs.get("url", args[0] if args else ""))
             return SimpleNamespace(status_code=500, json=lambda: {})
 
@@ -453,37 +499,39 @@ class TestPredictBlockTypesRemote:
                 assert result is None
                 assert len(call_log) == 2
 
-
 class TestDetectBoundaries:
     def test_success(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         blocks = _sample_blocks()
         result = p.detect_boundaries(blocks)
         assert len(result) == 3
 
     def test_exception_safe(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         with patch.object(p, "_repair_fragmented_headings", side_effect=ValueError("broken")):
             result = p.detect_boundaries(_sample_blocks())
             assert len(result) == 3
 
-
 class TestReconcileFragmentedHeadings:
     def test_success(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         blocks = _sample_blocks()
         result = p.reconcile_fragmented_headings(blocks)
         assert len(result) == 3
 
     def test_exception_safe(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         with patch.object(p, "_repair_fragmented_headings", side_effect=ValueError("broken")):
             result = p.reconcile_fragmented_headings(_sample_blocks())
             assert len(result) == 3
 
-
 class TestAnalyzeBlocks:
     def test_non_english_path(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         blocks = _sample_blocks()
         with (
@@ -498,6 +546,7 @@ class TestAnalyzeBlocks:
         assert result[0]["detected_language"] == "de"
 
     def test_langdetect_exception(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         blocks = _sample_blocks()
         with (
@@ -511,6 +560,7 @@ class TestAnalyzeBlocks:
         assert result[0]["detected_language"] == "en"
 
     def test_empty_text_no_detect(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         b = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="")
         with (
@@ -523,6 +573,7 @@ class TestAnalyzeBlocks:
         assert result[0]["detected_language"] == "en"
 
     def test_fallback_prediction(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         blocks = _sample_blocks()
         with (
@@ -537,6 +588,7 @@ class TestAnalyzeBlocks:
         assert result[2]["predicted_section_type"] == "CONCLUSION"
 
     def test_heuristic_fallback_predictions(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         blocks = _sample_blocks()
         with (
@@ -548,15 +600,16 @@ class TestAnalyzeBlocks:
             result = p.analyze_blocks(blocks)
         assert len(result) == 3
 
-
 class TestPredictBlockType:
     def test_remote_first(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         with patch.object(p, "_predict_block_types_remote", return_value=[{"type": "ABSTRACT", "confidence": 0.9}]):
             result = p._predict_block_type("Abstract text")
             assert result["type"] == "ABSTRACT"
 
     def test_local_model_path(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = []
         p.remote_only = False
@@ -589,6 +642,7 @@ class TestPredictBlockType:
                     assert result["type"] == "BODY"
 
     def test_remote_only_no_local(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_only = True
         p.model = None
@@ -599,6 +653,7 @@ class TestPredictBlockType:
                 assert result["type"] == "BODY"
 
     def test_no_model_no_tokenizer_heuristic(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = []
         p.remote_only = False
@@ -610,6 +665,7 @@ class TestPredictBlockType:
                 assert result["type"] == "BODY"
 
     def test_label_index_out_of_bounds_uses_body(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = []
         p.remote_only = False
@@ -634,19 +690,21 @@ class TestPredictBlockType:
             assert result["type"] == "BODY"
             assert result["confidence"] == 0.9
 
-
 class TestPredictBlockTypesBatch:
     def test_empty_texts(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         assert p._predict_block_types_batch([]) == []
 
     def test_remote_predictions_used(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         with patch.object(p, "_predict_block_types_remote", return_value=[{"type": "BODY", "confidence": 0.8}]):
             result = p._predict_block_types_batch(["text"])
             assert result[0]["type"] == "BODY"
 
     def test_local_model_inference(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = []
         p.remote_only = False
@@ -673,6 +731,7 @@ class TestPredictBlockTypesBatch:
             assert result[0]["type"] == "REFERENCES"
 
     def test_local_model_exception_falls_to_heuristics(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = []
         p.remote_only = False
@@ -687,6 +746,7 @@ class TestPredictBlockTypesBatch:
                 assert result[0]["type"] == "BODY"
 
     def test_no_model_no_torch_heuristics(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         p.remote_base_urls = []
         p.remote_only = False
@@ -697,9 +757,9 @@ class TestPredictBlockTypesBatch:
                 result = p._predict_block_types_batch(["text"])
                 assert result[0]["type"] == "BODY"
 
-
 class TestPredictBlocksBatch:
     def test_scibert_enabled(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         with (
             patch("app.pipeline.intelligence.semantic_parser.should_enable_scibert", return_value=True),
@@ -711,6 +771,7 @@ class TestPredictBlocksBatch:
             mock_batch.assert_called_once_with(["text"])
 
     def test_scibert_disabled(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         with (
             patch("app.pipeline.intelligence.semantic_parser.should_enable_scibert", return_value=False),
@@ -721,131 +782,154 @@ class TestPredictBlocksBatch:
             mock_load.assert_not_called()
             mock_batch.assert_called_once_with(["text"])
 
-
 class TestHeuristicClassify:
     def test_abstract(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Abstract: This paper presents")
         assert r["type"] == "ABSTRACT"
 
     def test_references_keyword(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("References")
         assert r["type"] == "REFERENCES"
 
     def test_bibliography(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Bibliography")
         assert r["type"] == "REFERENCES"
 
     def test_references_numbered_pattern(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("[1] Smith et al.")
         assert r["type"] == "REFERENCES"
 
     def test_references_decimal_pattern(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("1. Introduction")
         assert r["type"] == "REFERENCES"
 
     def test_acknowledgements(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Acknowledgements")
         assert r["type"] == "ACKNOWLEDGEMENTS"
 
     def test_acknowledgments_alt(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Acknowledgments")
         assert r["type"] == "ACKNOWLEDGEMENTS"
 
     def test_methodology(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Methodology")
         assert r["type"] == "METHODOLOGY"
 
     def test_methods(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Methods")
         assert r["type"] == "METHODOLOGY"
 
     def test_conclusion(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Conclusion")
         assert r["type"] == "CONCLUSION"
 
     def test_conclusions(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Conclusions")
         assert r["type"] == "CONCLUSION"
 
     def test_introduction(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Introduction")
         assert r["type"] == "HEADING"
 
     def test_results(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Results")
         assert r["type"] == "HEADING"
 
     def test_discussion(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Discussion")
         assert r["type"] == "HEADING"
 
     def test_figure_caption(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Figure 1. Results")
         assert r["type"] == "FIGURE_CAPTION"
 
     def test_fig_caption(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Fig. 2. Architecture")
         assert r["type"] == "FIGURE_CAPTION"
 
     def test_table_caption(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Table 1. Data")
         assert r["type"] == "TABLE_CAPTION"
 
     def test_tab_caption(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Tab. 1. Stats")
         assert r["type"] == "TABLE_CAPTION"
 
     def test_uppercase_short_heading(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("INTRODUCTION")
         assert r["type"] == "HEADING"
 
     def test_long_text_returns_body(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("A" * 200)
         assert r["type"] == "BODY"
 
     def test_short_uppercase_heading(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("Short Heading")
         assert r["type"] == "HEADING"
 
     def test_empty_text(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("")
         assert r["type"] == "BODY"
 
     def test_confidence_default(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("some lowercase text that won't match heading heuristic at all because lowercase")
         assert r["confidence"] == 0.5
 
     def test_abstract_lowercase(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         r = p._heuristic_classify("abstract the manuscript")
         assert r["type"] == "ABSTRACT"
 
-
 class TestClassifyBlock:
     def test_use_transformer_scibert_enabled(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         with (
             patch("app.pipeline.intelligence.semantic_parser.should_enable_scibert", return_value=True),
@@ -856,6 +940,7 @@ class TestClassifyBlock:
             assert r["type"] == "ABSTRACT"
 
     def test_use_transformer_scibert_disabled(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         with (
             patch("app.pipeline.intelligence.semantic_parser.should_enable_scibert", return_value=False),
@@ -865,6 +950,7 @@ class TestClassifyBlock:
             mock_heur.assert_called_once_with("text")
 
     def test_no_transformer_heuristic(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         with (
             patch("app.pipeline.intelligence.semantic_parser.should_enable_scibert", return_value=True),
@@ -873,9 +959,9 @@ class TestClassifyBlock:
             r = p.classify_block("text", use_transformer=False)
             mock_heur.assert_called_once_with("text")
 
-
 class TestRepairFragmentedHeadings:
     def test_no_fragmentation(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         blocks = _sample_blocks()
         result = p._repair_fragmented_headings(blocks)
@@ -883,6 +969,7 @@ class TestRepairFragmentedHeadings:
         assert result[0].text == "Abstract of the manuscript."
 
     def test_number_followed_by_lowercase(self):
+        from app.models import Block, BlockType
         blocks = [
             Block(block_id="b1", index=0, block_type=BlockType.BODY, text="1"),
             Block(block_id="b2", index=1, block_type=BlockType.BODY, text="introduction to the paper"),
@@ -893,6 +980,7 @@ class TestRepairFragmentedHeadings:
         assert result[0].text == "1. introduction to the paper"
 
     def test_number_followed_by_uppercase(self):
+        from app.models import Block, BlockType
         blocks = [
             Block(block_id="b1", index=0, block_type=BlockType.BODY, text="2"),
             Block(block_id="b2", index=1, block_type=BlockType.BODY, text="Methods Section"),
@@ -904,6 +992,7 @@ class TestRepairFragmentedHeadings:
         assert result[1].text == "Methods Section"
 
     def test_non_digit_number_first_block(self):
+        from app.models import Block, BlockType
         blocks = [
             Block(block_id="b1", index=0, block_type=BlockType.BODY, text="Introduction"),
             Block(block_id="b2", index=1, block_type=BlockType.BODY, text="methods"),
@@ -913,19 +1002,21 @@ class TestRepairFragmentedHeadings:
         assert len(result) == 2
 
     def test_only_one_block(self):
+        from app.models import Block, BlockType
         p = SemanticParser()
         result = p._repair_fragmented_headings([_sample_blocks()[0]])
         assert len(result) == 1
 
-
 class TestGetSemanticParser:
     def test_returns_parser(self):
+        from app.models import Block, BlockType
         import app.pipeline.intelligence.semantic_parser as sp
         sp._semantic_parser = None
         p = get_semantic_parser()
         assert isinstance(p, SemanticParser)
 
     def test_singleton(self):
+        from app.models import Block, BlockType
         import app.pipeline.intelligence.semantic_parser as sp
         sp._semantic_parser = None
         p1 = get_semantic_parser()
