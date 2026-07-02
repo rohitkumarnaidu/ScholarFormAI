@@ -8,7 +8,6 @@ import pytest
 
 from app.pipeline.export.jats_generator import JATSGenerator
 
-
 def _make_doc(**overrides):
     from app.models import PipelineDocument, Block, BlockType, Equation, Reference
     from app.models.pipeline_document import DocumentMetadata, TemplateInfo
@@ -43,12 +42,12 @@ def _make_doc(**overrides):
     doc.template = defaults["template"]
     return doc
 
-
 class TestJATSGenerator:
 
     # ── to_xml ──────────────────────────────────────────────────────────
 
     def test_to_xml_basic(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         gen = JATSGenerator()
         xml = gen.to_xml(_make_doc())
         assert xml.startswith("<!DOCTYPE article")
@@ -59,12 +58,14 @@ class TestJATSGenerator:
         assert "<year>2024</year>" in xml
 
     def test_to_xml_no_blocks(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         gen = JATSGenerator()
         xml = gen.to_xml(_make_doc(blocks=[]))
         assert "<body/>" in xml
         assert "<back>" in xml
 
     def test_to_xml_empty_metadata(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.title = None
         doc.metadata.authors = []
@@ -79,6 +80,7 @@ class TestJATSGenerator:
         assert "<given-names>Unknown</given-names>" in xml
 
     def test_to_xml_special_chars(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.title = "Title & <Special> \"Chars\""
         gen = JATSGenerator()
@@ -86,12 +88,14 @@ class TestJATSGenerator:
         assert "Title" in xml
 
     def test_to_xml_no_references(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc(references=[])
         gen = JATSGenerator()
         xml = gen.to_xml(doc)
         assert "ref-list" not in xml
 
     def test_to_xml_unicode_text(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.authors = ["José García", "张伟"]
         gen = JATSGenerator()
@@ -101,6 +105,7 @@ class TestJATSGenerator:
     # ── _add_references ─────────────────────────────────────────────────
 
     def test_refs_empty_list(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc(references=[])
         gen = JATSGenerator()
         from lxml import etree
@@ -109,6 +114,7 @@ class TestJATSGenerator:
         assert len(list(parent)) == 0
 
     def test_refs_with_raw_text(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.references[0].raw_text = "[1] Smith et al. 2024"
         doc.references[0].metadata = {}
@@ -121,6 +127,7 @@ class TestJATSGenerator:
         assert ref_list[1][0].text == "[1] Smith et al. 2024"
 
     def test_refs_with_doi_in_metadata(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.references[0].metadata = {"doi": "10.1234/test"}
         gen = JATSGenerator()
@@ -132,6 +139,7 @@ class TestJATSGenerator:
         assert found
 
     def test_refs_without_raw_text(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.references[0].raw_text = None
         doc.references[0].metadata = {}
@@ -142,6 +150,7 @@ class TestJATSGenerator:
         assert parent[0][1][0].text == "Reference text unavailable"
 
     def test_refs_without_reference_id(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.references[0].reference_id = None
         doc.references[0].metadata = {}
@@ -152,6 +161,7 @@ class TestJATSGenerator:
         assert parent[0][1].attrib.get("id", "").startswith("ref_")
 
     def test_refs_no_doi_in_metadata(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.references[0].metadata = {"some_key": "value"}
         gen = JATSGenerator()
@@ -161,6 +171,7 @@ class TestJATSGenerator:
         assert len(parent[0][1][0].findall("pub-id")) == 0
 
     def test_refs_metadata_none(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.references[0].metadata = None
         gen = JATSGenerator()
@@ -171,6 +182,7 @@ class TestJATSGenerator:
     # ── _add_metadata ────────────────────────────────────────────────────
 
     def test_metadata_title_missing(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.title = None
         gen = JATSGenerator()
@@ -180,6 +192,7 @@ class TestJATSGenerator:
         assert "Untitled Manuscript" in etree.tostring(parent, encoding="unicode")
 
     def test_metadata_authors_empty(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.authors = []
         gen = JATSGenerator()
@@ -189,6 +202,7 @@ class TestJATSGenerator:
         assert "<given-names>Unknown</given-names>" in etree.tostring(parent, encoding="unicode")
 
     def test_metadata_single_author(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.authors = ["JohnDoe"]
         gen = JATSGenerator()
@@ -200,6 +214,7 @@ class TestJATSGenerator:
         assert "<given-names>JohnDoe</given-names>" in xml
 
     def test_metadata_author_name_parsing(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.authors = ["John A. Doe III"]
         gen = JATSGenerator()
@@ -209,6 +224,7 @@ class TestJATSGenerator:
         assert "<surname>III</surname>" in etree.tostring(parent, encoding="unicode")
 
     def test_metadata_pub_date_datetime(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         gen = JATSGenerator()
         from lxml import etree
         parent = etree.Element("front")
@@ -219,6 +235,7 @@ class TestJATSGenerator:
         assert "<day>15</day>" in xml
 
     def test_metadata_pub_date_string(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.publication_date = "2023-05-20"
         gen = JATSGenerator()
@@ -231,6 +248,7 @@ class TestJATSGenerator:
         assert "<day>20</day>" in xml
 
     def test_metadata_pub_date_string_malformed(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.publication_date = "invalid-date"
         gen = JATSGenerator()
@@ -240,6 +258,7 @@ class TestJATSGenerator:
         etree.tostring(parent, encoding="unicode")
 
     def test_metadata_pub_date_none(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.publication_date = None
         gen = JATSGenerator()
@@ -249,6 +268,7 @@ class TestJATSGenerator:
         assert "pub-date" not in etree.tostring(parent, encoding="unicode")
 
     def test_metadata_pub_date_string_partial(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.publication_date = "2023"
         gen = JATSGenerator()
@@ -260,6 +280,7 @@ class TestJATSGenerator:
         assert "<month>" not in xml
 
     def test_metadata_pub_date_string_two_parts(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.publication_date = "2023-08"
         gen = JATSGenerator()
@@ -271,6 +292,7 @@ class TestJATSGenerator:
         assert "<month>08</month>" in xml
 
     def test_volume_present(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         gen = JATSGenerator()
         from lxml import etree
         parent = etree.Element("front")
@@ -278,6 +300,7 @@ class TestJATSGenerator:
         assert "<volume>10</volume>" in etree.tostring(parent, encoding="unicode")
 
     def test_volume_absent(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.volume = None
         gen = JATSGenerator()
@@ -287,6 +310,7 @@ class TestJATSGenerator:
         assert "<volume>" not in etree.tostring(parent, encoding="unicode")
 
     def test_issue_present(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         gen = JATSGenerator()
         from lxml import etree
         parent = etree.Element("front")
@@ -294,6 +318,7 @@ class TestJATSGenerator:
         assert "<issue>2</issue>" in etree.tostring(parent, encoding="unicode")
 
     def test_issue_absent(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.issue = None
         gen = JATSGenerator()
@@ -303,6 +328,7 @@ class TestJATSGenerator:
         assert "<issue>" not in etree.tostring(parent, encoding="unicode")
 
     def test_abstract_present(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         gen = JATSGenerator()
         from lxml import etree
         parent = etree.Element("front")
@@ -312,6 +338,7 @@ class TestJATSGenerator:
         assert "This is a test abstract." in xml
 
     def test_abstract_absent(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.abstract = None
         gen = JATSGenerator()
@@ -323,6 +350,7 @@ class TestJATSGenerator:
     # ── _add_body ────────────────────────────────────────────────────────
 
     def test_body_no_blocks(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc(blocks=[])
         gen = JATSGenerator()
         from lxml import etree
@@ -331,8 +359,8 @@ class TestJATSGenerator:
         assert "<body/>" in etree.tostring(parent, encoding="unicode")
 
     def test_body_heading_block(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         from lxml import etree
-        from app.models import Block as BClass, BlockType
         doc = _make_doc()
         doc.blocks = [
             BClass(block_id="b1", index=1, block_type=BlockType.TITLE, text="Heading", section_name="title",
@@ -346,9 +374,9 @@ class TestJATSGenerator:
         assert "<title>" in xml
 
     def test_body_body_block(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         from lxml import etree
-        from app.models import Block as BClass, BlockType
         doc.blocks = [
             BClass(block_id="b1", index=1, block_type=BlockType.BODY, text="Body text", section_name="body",
                    metadata={"semantic_intent": "body"})
@@ -359,6 +387,7 @@ class TestJATSGenerator:
         assert "<p>" in etree.tostring(parent, encoding="unicode")
 
     def test_body_mixed_blocks(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         gen = JATSGenerator()
         from lxml import etree
         parent = etree.Element("body")
@@ -368,7 +397,7 @@ class TestJATSGenerator:
         assert "<p>" in xml
 
     def test_body_body_before_heading(self):
-        from app.models import Block as BClass, BlockType
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         from lxml import etree
         doc = _make_doc()
         doc.blocks = [
@@ -385,7 +414,7 @@ class TestJATSGenerator:
         assert "<sec>" in xml
 
     def test_body_block_no_semantic_intent(self):
-        from app.models import Block as BClass, BlockType
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         from lxml import etree
         doc = _make_doc()
         doc.blocks = [
@@ -398,7 +427,7 @@ class TestJATSGenerator:
         assert "<p>Default body</p>" in etree.tostring(parent, encoding="unicode")
 
     def test_body_equations_disp_formula(self):
-        from app.models import Equation as EClass
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         from lxml import etree
         doc = _make_doc()
         doc.equations = [
@@ -412,7 +441,7 @@ class TestJATSGenerator:
         assert "disp-formula" in etree.tostring(parent, encoding="unicode")
 
     def test_body_equations_inline_formula(self):
-        from app.models import Equation as EClass
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         from lxml import etree
         doc = _make_doc()
         doc.equations = [
@@ -426,7 +455,7 @@ class TestJATSGenerator:
         assert "inline-formula" in etree.tostring(parent, encoding="unicode")
 
     def test_body_equations_no_mathml(self):
-        from app.models import Equation as EClass
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         from lxml import etree
         doc = _make_doc()
         doc.equations = [
@@ -438,7 +467,7 @@ class TestJATSGenerator:
         etree.tostring(parent, encoding="unicode")
 
     def test_body_equation_malformed_mathml(self):
-        from app.models import Equation as EClass
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         from lxml import etree
         doc = _make_doc()
         doc.equations = [
@@ -451,7 +480,7 @@ class TestJATSGenerator:
         etree.tostring(parent, encoding="unicode")
 
     def test_body_multiple_equations(self):
-        from app.models import Equation as EClass
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         from lxml import etree
         doc = _make_doc()
         doc.equations = [
@@ -471,29 +500,34 @@ class TestJATSGenerator:
     # ── XML validity ─────────────────────────────────────────────────────
 
     def test_output_is_valid_xml(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         gen = JATSGenerator()
         from lxml import etree
         root = etree.fromstring(gen.to_xml(_make_doc()).encode())
         assert root.tag == "article"
 
     def test_output_has_namespaces(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         gen = JATSGenerator()
         xml = gen.to_xml(_make_doc())
         assert "http://www.w3.org/1998/Math/MathML" in xml
 
     def test_output_dtd_declaration(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         gen = JATSGenerator()
         xml = gen.to_xml(_make_doc())
         assert "DOCTYPE" in xml
         assert "JATS-archivearticle1.dtd" in xml
 
     def test_output_article_type_attribute(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         gen = JATSGenerator()
         from lxml import etree
         root = etree.fromstring(gen.to_xml(_make_doc()).encode())
         assert root.attrib.get("article-type") == "research-article"
 
     def test_output_dtd_version_attribute(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         gen = JATSGenerator()
         from lxml import etree
         root = etree.fromstring(gen.to_xml(_make_doc()).encode())
@@ -502,6 +536,7 @@ class TestJATSGenerator:
     # ── Edge cases ───────────────────────────────────────────────────────
 
     def test_metadata_volume_zero(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.volume = "0"
         gen = JATSGenerator()
@@ -511,6 +546,7 @@ class TestJATSGenerator:
         assert "<volume>0</volume>" in etree.tostring(parent, encoding="unicode")
 
     def test_metadata_long_author_list(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.authors = [f"Author {i}" for i in range(20)]
         gen = JATSGenerator()
@@ -521,6 +557,7 @@ class TestJATSGenerator:
         assert "Author" in xml
 
     def test_metadata_empty_keywords_no_crash(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.keywords = []
         gen = JATSGenerator()
@@ -528,6 +565,7 @@ class TestJATSGenerator:
         assert isinstance(xml, str)
 
     def test_no_affiliations(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.affiliations = []
         gen = JATSGenerator()
@@ -535,7 +573,7 @@ class TestJATSGenerator:
         assert isinstance(xml, str)
 
     def test_reference_list_multi(self):
-        from app.models import Reference as RClass
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.references = [
             RClass(reference_id="r1", block_id="r1", block_index=1, index=1,
@@ -551,7 +589,7 @@ class TestJATSGenerator:
         assert "[2] B" in xml
 
     def test_body_section_heading_without_text(self):
-        from app.models import Block as BClass, BlockType
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.blocks = [
             BClass(block_id="b1", index=1, block_type=BlockType.HEADING_1, text="",
@@ -562,6 +600,7 @@ class TestJATSGenerator:
         assert isinstance(xml, str)
 
     def test_publication_date_empty_string(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.publication_date = ""
         gen = JATSGenerator()
@@ -571,6 +610,7 @@ class TestJATSGenerator:
         assert "pub-date" not in etree.tostring(parent, encoding="unicode")
 
     def test_reference_raw_text_empty_string(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.references[0].raw_text = ""
         doc.references[0].metadata = {}
@@ -579,7 +619,7 @@ class TestJATSGenerator:
         assert isinstance(xml, str)
 
     def test_body_equation_empty_mathml_string(self):
-        from app.models import Equation as EClass
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.equations = [
             EClass(equation_id="eq1", index=1, block_id="b1", mathml="", is_block=True)
@@ -589,6 +629,7 @@ class TestJATSGenerator:
         assert isinstance(xml, str)
 
     def test_generator_multiple_calls(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         gen = JATSGenerator()
         xml1 = gen.to_xml(_make_doc(document_id="doc1"))
         xml2 = gen.to_xml(_make_doc(document_id="doc2"))
@@ -596,10 +637,10 @@ class TestJATSGenerator:
         assert isinstance(xml2, str)
 
     def test_metadata_journal_present(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
         doc.metadata.journal = "Test Journal"
         gen = JATSGenerator()
         xml = gen.to_xml(doc)
         assert isinstance(xml, str)
-
 

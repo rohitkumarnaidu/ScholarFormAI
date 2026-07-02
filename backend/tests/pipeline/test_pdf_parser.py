@@ -5,18 +5,16 @@ import pytest
 from unittest.mock import MagicMock, patch, PropertyMock
 from app.pipeline.parsing.pdf_parser import PdfParser
 
-from app.models import Block
-
-
 @pytest.fixture
 def pdf_parser():
+    from app.models import Block
     with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
         with patch("app.pipeline.parsing.pdf_parser.fitz") as mock_fitz:
             yield PdfParser(), mock_fitz
 
-
 @pytest.fixture
 def mock_page():
+    from app.models import Block
     page = MagicMock()
     page.rect = MagicMock(x0=0, y0=0, x1=612, y1=792)
     page.get_text.return_value = {"blocks": []}
@@ -24,31 +22,33 @@ def mock_page():
     page.find_tables.return_value = []
     return page
 
-
 class TestPdfParserInit:
     def test_init_available(self):
+        from app.models import Block
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             p = PdfParser()
             assert p.block_counter == 0
 
     def test_init_unavailable_raises(self):
+        from app.models import Block
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", False):
             with pytest.raises(ImportError, match="PyMuPDF"):
                 PdfParser()
 
-
 class TestPdfParserSupportsFormat:
     def test_supports_pdf(self, pdf_parser):
+        from app.models import Block
         p, _ = pdf_parser
         assert p.supports_format(".pdf")
 
     def test_not_supports_other(self, pdf_parser):
+        from app.models import Block
         p, _ = pdf_parser
         assert not p.supports_format(".docx")
 
-
 class TestPdfParserMetadata:
     def test_extract_metadata_with_all_fields(self, pdf_parser):
+        from app.models import Block
         p, mf = pdf_parser
         pdf_doc = MagicMock()
         pdf_doc.metadata = {
@@ -64,6 +64,7 @@ class TestPdfParserMetadata:
         assert "kw1" in meta.keywords
 
     def test_extract_metadata_empty(self, pdf_parser):
+        from app.models import Block
         p, mf = pdf_parser
         pdf_doc = MagicMock()
         pdf_doc.metadata = {}
@@ -71,41 +72,47 @@ class TestPdfParserMetadata:
         assert meta.title is None
 
     def test_extract_metadata_none(self, pdf_parser):
+        from app.models import Block
         p, mf = pdf_parser
         pdf_doc = MagicMock()
         pdf_doc.metadata = None
         meta = p._extract_metadata(pdf_doc)
         assert meta.title is None
 
-
 class TestPdfParserHelpers:
     def test_is_header_footer_top(self, pdf_parser):
+        from app.models import Block
         p, _ = pdf_parser
         page_rect = [0, 0, 612, 792]
         assert p._is_header_footer([0, 0, 100, 30], page_rect) is True
 
     def test_is_header_footer_bottom(self, pdf_parser):
+        from app.models import Block
         p, _ = pdf_parser
         page_rect = [0, 0, 612, 792]
         assert p._is_header_footer([0, 760, 100, 792], page_rect) is True
 
     def test_is_header_footer_middle(self, pdf_parser):
+        from app.models import Block
         p, _ = pdf_parser
         page_rect = [0, 0, 612, 792]
         assert p._is_header_footer([0, 200, 100, 300], page_rect) is False
 
     def test_normalize_margin_text(self, pdf_parser):
+        from app.models import Block
         p, _ = pdf_parser
         result = p._normalize_margin_text("Page 1 of 5")
         assert "page" not in result
 
     def test_sanitize_cell_text(self, pdf_parser):
+        from app.models import Block
         p, _ = pdf_parser
         assert p._sanitize_cell_text("hello\nworld") == "hello world"
         assert p._sanitize_cell_text(None) == ""
         assert p._sanitize_cell_text(42) == "42"
 
     def test_calculate_font_stats_empty(self, pdf_parser):
+        from app.models import Block
         p, mf = pdf_parser
         pdf_doc = MagicMock()
         pdf_doc.__len__.return_value = 1
@@ -116,6 +123,7 @@ class TestPdfParserHelpers:
         assert result == 11.0
 
     def test_calculate_font_stats_with_data(self, pdf_parser):
+        from app.models import Block
         p, mf = pdf_parser
         pdf_doc = MagicMock()
         pdf_doc.__len__.return_value = 1
@@ -131,15 +139,18 @@ class TestPdfParserHelpers:
         assert result == 12.0
 
     def test_should_attempt_ocr_fallback_true(self, pdf_parser):
+        from app.models import Block
         p, _ = pdf_parser
         assert p._should_attempt_ocr_fallback([Block(block_id="b1", index=0, text="hi")], 5) is True
 
     def test_should_attempt_ocr_fallback_false(self, pdf_parser):
+        from app.models import Block
         p, _ = pdf_parser
         text = "A" * 500
         assert p._should_attempt_ocr_fallback([Block(block_id="b1", index=0, text=text)], 5) is False
 
     def test_build_ocr_blocks(self, pdf_parser):
+        from app.models import Block
         p, _ = pdf_parser
         blocks = p._build_ocr_blocks("Hello world.\n\nSecond paragraph.", "tesseract")
         assert len(blocks) >= 1
@@ -147,11 +158,13 @@ class TestPdfParserHelpers:
         assert blocks[0].metadata.get("ocr_backend") == "tesseract"
 
     def test_build_ocr_blocks_empty(self, pdf_parser):
+        from app.models import Block
         p, _ = pdf_parser
         assert p._build_ocr_blocks("", "tesseract") == []
         assert p._build_ocr_blocks("  ", "tesseract") == []
 
     def test_build_table_model(self, pdf_parser):
+        from app.models import Block
         p, _ = pdf_parser
         table = p._build_table_model([["A", "B"], ["1", "2"]], 1, 100)
         assert table is not None
@@ -159,17 +172,19 @@ class TestPdfParserHelpers:
         assert table.num_cols == 2
 
     def test_build_table_model_empty(self, pdf_parser):
+        from app.models import Block
         p, _ = pdf_parser
         assert p._build_table_model([], 1, 100) is None
 
-
 class TestPdfParserParse:
     def test_parse_file_not_found(self, pdf_parser):
+        from app.models import Block
         p, _ = pdf_parser
         with pytest.raises(FileNotFoundError):
             p.parse("/nonexistent.pdf", "doc1")
 
     def test_parse_success(self, tmp_path, mock_page):
+        from app.models import Block
         f = tmp_path / "test.pdf"
         f.write_text("dummy")
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
@@ -186,6 +201,7 @@ class TestPdfParserParse:
                 assert doc.document_id == "doc1"
 
     def test_parse_encrypted(self, tmp_path):
+        from app.models import Block
         f = tmp_path / "enc.pdf"
         f.write_text("dummy")
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
@@ -199,6 +215,7 @@ class TestPdfParserParse:
                     p.parse(str(f), "doc1")
 
     def test_parse_encrypted_opens_with_password(self, tmp_path, mock_page):
+        from app.models import Block
         f = tmp_path / "enc2.pdf"
         f.write_text("dummy")
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
@@ -216,6 +233,7 @@ class TestPdfParserParse:
                 assert doc is not None
 
     def test_parse_extracts_content(self, tmp_path):
+        from app.models import Block
         f = tmp_path / "content.pdf"
         f.write_text("dummy")
         test_blocks = [Block(block_id="b1", index=0, text="Hello PDF world")]
@@ -235,6 +253,7 @@ class TestPdfParserParse:
                 assert "Hello" in doc.blocks[0].text
 
     def test_parse_with_header_footer_suppression(self, tmp_path):
+        from app.models import Block
         f = tmp_path / "hf.pdf"
         f.write_text("dummy")
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
@@ -272,6 +291,7 @@ class TestPdfParserParse:
                 assert len(doc.blocks) >= 1
 
     def test_parse_with_images(self, tmp_path):
+        from app.models import Block
         f = tmp_path / "img.pdf"
         f.write_text("dummy")
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
@@ -295,6 +315,7 @@ class TestPdfParserParse:
                 assert len(doc.figures) >= 1
 
     def test_parse_with_table(self, tmp_path):
+        from app.models import Block
         f = tmp_path / "tbl.pdf"
         f.write_text("dummy")
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):

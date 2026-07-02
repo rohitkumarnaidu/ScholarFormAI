@@ -6,11 +6,10 @@ import pytest
 from unittest.mock import MagicMock, patch
 from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
 
-
 @pytest.fixture
 def mock_contract_loader():
-    from app.models import PipelineDocument, Reference, ReferenceType, TemplateInfo
 
+    from app.models import PipelineDocument, Reference, ReferenceType, TemplateInfo
     loader = MagicMock()
     loader.load.return_value = {
         "references": {
@@ -25,9 +24,9 @@ def mock_contract_loader():
     }
     return loader
 
-
 @pytest.fixture
 def sample_ref():
+    from app.models import PipelineDocument, Reference, ReferenceType, TemplateInfo
     return Reference(
         reference_id="r1", citation_key="k1", raw_text="test", index=1,
         number=1, title="Deep Learning",
@@ -36,9 +35,9 @@ def sample_ref():
         reference_type=ReferenceType.JOURNAL_ARTICLE,
     )
 
-
 class TestReferenceFormatterEngine:
     def test_process_calls_format_all(self, mock_contract_loader, sample_ref):
+        from app.models import PipelineDocument, Reference, ReferenceType, TemplateInfo
         mock_csl = MagicMock()
         mock_csl.format_references.return_value = ["[1] Goodfellow, I. et al."]
         engine = ReferenceFormatterEngine(mock_contract_loader, csl_engine=mock_csl)
@@ -51,6 +50,7 @@ class TestReferenceFormatterEngine:
         assert result.references[0].formatted_text == "[1] Goodfellow, I. et al."
 
     def test_format_all_csl_success(self, mock_contract_loader, sample_ref):
+        from app.models import PipelineDocument, Reference, ReferenceType, TemplateInfo
         mock_csl = MagicMock()
         mock_csl.format_references.return_value = ["Formatted ref"]
         engine = ReferenceFormatterEngine(mock_contract_loader, csl_engine=mock_csl)
@@ -58,6 +58,7 @@ class TestReferenceFormatterEngine:
         assert result[0].formatted_text == "Formatted ref"
 
     def test_format_all_csl_length_mismatch_raises_fallback(self, mock_contract_loader, sample_ref):
+        from app.models import PipelineDocument, Reference, ReferenceType, TemplateInfo
         mock_csl = MagicMock()
         mock_csl.format_references.return_value = ["only one", "extra"]
         engine = ReferenceFormatterEngine(mock_contract_loader, csl_engine=mock_csl)
@@ -66,11 +67,13 @@ class TestReferenceFormatterEngine:
         assert result[0].formatted_text is not None
 
     def test_format_all_empty(self, mock_contract_loader):
+        from app.models import PipelineDocument, Reference, ReferenceType, TemplateInfo
         engine = ReferenceFormatterEngine(mock_contract_loader)
         result = engine.format_all([], "ieee")
         assert result == []
 
     def test_format_single_journal(self, mock_contract_loader, sample_ref):
+        from app.models import PipelineDocument, Reference, ReferenceType, TemplateInfo
         engine = ReferenceFormatterEngine(mock_contract_loader)
         rules = mock_contract_loader.load.return_value["references"]["normalization"]
         result = engine.format_single(sample_ref, rules)
@@ -79,6 +82,7 @@ class TestReferenceFormatterEngine:
         assert "MIT Press" in result
 
     def test_format_single_default(self, mock_contract_loader):
+        from app.models import PipelineDocument, Reference, ReferenceType, TemplateInfo
         engine = ReferenceFormatterEngine(mock_contract_loader)
         ref = Reference(
             reference_id="r2", citation_key="k2", raw_text="test", index=2,
@@ -90,6 +94,7 @@ class TestReferenceFormatterEngine:
         assert result is not None
 
     def test_format_single_et_al(self, mock_contract_loader):
+        from app.models import PipelineDocument, Reference, ReferenceType, TemplateInfo
         engine = ReferenceFormatterEngine(mock_contract_loader)
         ref = Reference(
             reference_id="r3", citation_key="k3", raw_text="test", index=3,
@@ -102,6 +107,7 @@ class TestReferenceFormatterEngine:
         assert "et al." in result
 
     def test_format_single_fallback_on_template_error(self, mock_contract_loader):
+        from app.models import PipelineDocument, Reference, ReferenceType, TemplateInfo
         engine = ReferenceFormatterEngine(mock_contract_loader)
         ref = Reference(
             reference_id="r4", citation_key="k4", raw_text="raw fallback", index=4,
@@ -111,6 +117,7 @@ class TestReferenceFormatterEngine:
         assert result == "raw fallback"
 
     def test_format_all_csl_fallback_no_rules(self, mock_contract_loader):
+        from app.models import PipelineDocument, Reference, ReferenceType, TemplateInfo
         loader = MagicMock()
         loader.load.return_value = {"references": {}}
         mock_csl = MagicMock()

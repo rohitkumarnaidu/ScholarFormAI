@@ -10,7 +10,6 @@ from unittest.mock import MagicMock, patch, PropertyMock
 import pytest
 from app.pipeline.figures.renderer import FigureRenderer
 
-
 class TestFigureAnalysisStage:
     """Tests for the orchestrator's _run_figure_analysis_stage integration."""
 
@@ -18,7 +17,6 @@ class TestFigureAnalysisStage:
     def doc_with_figure(self, tmp_path):
         from app.models import PipelineDocument
         from PIL import Image
-        from app.models import Figure
 
         img_path = tmp_path / "fig.png"
         img = Image.new("RGB", (800, 600), color=(255, 255, 255))
@@ -30,6 +28,7 @@ class TestFigureAnalysisStage:
         return doc
 
     def test_skipped_in_fast_mode(self):
+        from app.models import PipelineDocument
         from app.pipeline.orchestrator import _get_figure_analyzer
         analyzer = _get_figure_analyzer()
         assert analyzer is not None
@@ -37,6 +36,7 @@ class TestFigureAnalysisStage:
         assert hasattr(analyzer, "downsample_if_needed")
 
     def test_run_figure_analysis_stage_adds_metadata(self, doc_with_figure):
+        from app.models import PipelineDocument
         from app.pipeline.orchestrator import PipelineOrchestrator
         orch = PipelineOrchestrator(templates_dir="app/templates")
         result = orch._run_figure_analysis_stage(doc_with_figure)
@@ -71,13 +71,14 @@ class TestFigureAnalysisStage:
         result = orch._run_figure_analysis_stage(doc)
         assert "figure_analysis" not in (result.metadata.ai_hints or {})
 
-
 class TestFigureRenderer:
     @pytest.fixture
     def renderer(self):
+        from app.models import PipelineDocument
         return FigureRenderer()
 
     def test_calculate_image_size_with_dimensions(self, renderer):
+        from app.models import PipelineDocument
         fig = Figure(figure_id="f1", index=0, width=960, height=540)
         w, h = renderer.calculate_image_size(fig)
         assert w.inches > 0
@@ -85,18 +86,21 @@ class TestFigureRenderer:
         assert abs(w.inches / h.inches - 960 / 540) < 0.01
 
     def test_calculate_image_size_without_dimensions(self, renderer):
+        from app.models import PipelineDocument
         fig = Figure(figure_id="f1", index=0)
         w, h = renderer.calculate_image_size(fig)
         assert w.inches == 5.0
         assert h is None
 
     def test_render_placeholder_when_no_data(self, renderer):
+        from app.models import PipelineDocument
         doc = MagicMock()
         fig = Figure(figure_id="f1", index=0)
         renderer.render(doc, fig, 1)
         doc.add_paragraph.assert_called_with("[Figure 1 Placeholder - No image data]")
 
     def test_render_with_export_path(self, renderer, tmp_path):
+        from app.models import PipelineDocument
         img_path = tmp_path / "fig.png"
         img_path.write_bytes(b"fake")
         fig = Figure(figure_id="f1", index=0, export_path=str(img_path))
@@ -106,6 +110,7 @@ class TestFigureRenderer:
         paragraph.add_run.assert_called()
 
     def test_render_export_path_fallback(self, renderer):
+        from app.models import PipelineDocument
         fig = Figure(figure_id="f1", index=0, export_path="/nonexistent.png")
         doc = MagicMock()
         with patch("os.path.exists", return_value=True):
@@ -118,6 +123,7 @@ class TestFigureRenderer:
             doc.add_paragraph.assert_called()
 
     def test_render_with_image_data(self, renderer):
+        from app.models import PipelineDocument
         fig = Figure(figure_id="f1", index=0, image_data=b"fake_image_bytes")
         fig.width = 640
         fig.height = 480
@@ -127,6 +133,7 @@ class TestFigureRenderer:
         paragraph.add_run.assert_called()
 
     def test_render_image_data_fallback(self, renderer):
+        from app.models import PipelineDocument
         fig = Figure(figure_id="f1", index=0, image_data=b"bad")
         fig.width = 100
         fig.height = 100
@@ -141,6 +148,7 @@ class TestFigureRenderer:
         assert len(calls) >= 1
 
     def test_caption_added_with_number_prefix(self, renderer):
+        from app.models import PipelineDocument
         doc = MagicMock()
         fig = Figure(figure_id="f1", index=0, caption_text="Experimental results.")
         renderer.render(doc, fig, 1)
@@ -148,6 +156,7 @@ class TestFigureRenderer:
         assert len(cap_calls) >= 1
 
     def test_caption_with_existing_prefix(self, renderer):
+        from app.models import PipelineDocument
         doc = MagicMock()
         fig = Figure(figure_id="f1", index=0, caption_text="Figure 1: Accuracy over epochs.")
         renderer.render(doc, fig, 1)
@@ -155,6 +164,7 @@ class TestFigureRenderer:
         cap_para.add_run.assert_called()
 
     def test_caption_not_added_when_missing(self, renderer):
+        from app.models import PipelineDocument
         doc = MagicMock()
         fig = Figure(figure_id="f1", index=0)
         renderer.render(doc, fig, 1)

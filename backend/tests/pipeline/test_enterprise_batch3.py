@@ -6,29 +6,30 @@ from unittest.mock import patch, MagicMock, PropertyMock, ANY
 from pathlib import Path
 import pytest
 
-
 # ══════════════════════════════════════════════════════════════════════════════
 # parsing/base_parser.py
 # ══════════════════════════════════════════════════════════════════════════════
 
 class TestBaseParser:
     def test_cannot_instantiate_abstract(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.base_parser import BaseParser
         with pytest.raises(TypeError):
             BaseParser()
 
     def test_concrete_implementation(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.base_parser import BaseParser
         class ConcreteParser(BaseParser):
             def parse(self, file_path, document_id):
                 from app.models import PipelineDocument as Document
                 return Document(document_id=document_id, created_at=None, updated_at=None)
             def supports_format(self, file_extension):
+                from app.models import PipelineDocument as Document
                 return file_extension == ".txt"
         parser = ConcreteParser()
         assert parser.supports_format(".txt") is True
         assert parser.supports_format(".pdf") is False
-
 
 # ══════════════════════════════════════════════════════════════════════════════
 # parsing/txt_parser.py
@@ -36,6 +37,7 @@ class TestBaseParser:
 
 class TestTxtParser:
     def test_supports_format(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.txt_parser import TxtParser
         p = TxtParser()
         assert p.supports_format(".txt") is True
@@ -43,6 +45,7 @@ class TestTxtParser:
         assert p.supports_format("") is False
 
     def test_extract_blocks_paragraphs(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.txt_parser import TxtParser
         p = TxtParser()
         blocks = p._extract_blocks("First para.\n\nSecond para.\n\nThird para.")
@@ -52,6 +55,7 @@ class TestTxtParser:
         assert blocks[2].text == "Third para."
 
     def test_extract_blocks_empty(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.txt_parser import TxtParser
         p = TxtParser()
         assert p._extract_blocks("") == []
@@ -59,6 +63,7 @@ class TestTxtParser:
         assert p._extract_blocks("\n\n\n") == []
 
     def test_extract_blocks_heading_allcaps(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.txt_parser import TxtParser
         p = TxtParser()
         blocks = p._extract_blocks("INTRODUCTION\n\nThis is the body.")
@@ -66,6 +71,7 @@ class TestTxtParser:
         assert blocks[0].metadata.get("potential_heading") is True
 
     def test_extract_blocks_unordered_list(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.txt_parser import TxtParser
         p = TxtParser()
         blocks = p._extract_blocks("- Item one\n\n- Item two\n\n- Item three")
@@ -75,6 +81,7 @@ class TestTxtParser:
             assert b.metadata.get("list_type") == "unordered"
 
     def test_extract_blocks_ordered_list(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.txt_parser import TxtParser
         p = TxtParser()
         blocks = p._extract_blocks("1. First\n\n2. Second\n\n3. Third")
@@ -84,6 +91,7 @@ class TestTxtParser:
             assert b.metadata.get("list_type") == "ordered"
 
     def test_extract_blocks_email_detection(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.txt_parser import TxtParser
         p = TxtParser()
         blocks = p._extract_blocks("Contact author@example.com for info.")
@@ -91,6 +99,7 @@ class TestTxtParser:
         assert blocks[0].metadata.get("contains_email") is True
 
     def test_extract_blocks_url_detection(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.txt_parser import TxtParser
         p = TxtParser()
         blocks = p._extract_blocks("Visit https://example.com/page for details.")
@@ -98,12 +107,14 @@ class TestTxtParser:
         assert blocks[0].metadata.get("contains_url") is True
 
     def test_parse_file_not_found(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.txt_parser import TxtParser
         p = TxtParser()
         with pytest.raises(FileNotFoundError):
             p.parse("/nonexistent/file.txt", "doc123")
 
     def test_parse_success(self, tmp_path):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.txt_parser import TxtParser
         f = tmp_path / "test.txt"
         f.write_text("Hello world.\n\nSecond para.", encoding="utf-8")
@@ -113,13 +124,13 @@ class TestTxtParser:
         assert len(doc.blocks) == 2
         assert doc.blocks[0].text == "Hello world."
 
-
 # ══════════════════════════════════════════════════════════════════════════════
 # parsing/parser_factory.py
 # ══════════════════════════════════════════════════════════════════════════════
 
 class TestParserFactory:
     def test_get_parser_txt(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.parser_factory import ParserFactory
         f = ParserFactory()
         parser = f.get_parser("doc.txt")
@@ -127,12 +138,14 @@ class TestParserFactory:
         assert parser.supports_format(".txt")
 
     def test_get_parser_html(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.parser_factory import ParserFactory
         f = ParserFactory()
         if f.get_parser("doc.html"):
             assert f.get_parser("doc.html").supports_format(".html")
 
     def test_get_parser_md(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.parser_factory import ParserFactory
         f = ParserFactory()
         parser = f.get_parser("doc.md")
@@ -140,6 +153,7 @@ class TestParserFactory:
         assert parser.supports_format(".md")
 
     def test_get_parser_tex(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.parser_factory import ParserFactory
         f = ParserFactory()
         parser = f.get_parser("doc.tex")
@@ -147,12 +161,14 @@ class TestParserFactory:
         assert parser.supports_format(".tex")
 
     def test_get_parser_unsupported(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.parser_factory import ParserFactory
         f = ParserFactory()
         result = f.get_parser("doc.xyz")
         assert result is None
 
     def test_get_supported_formats(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.parser_factory import ParserFactory
         f = ParserFactory()
         formats = f.get_supported_formats()
@@ -160,12 +176,14 @@ class TestParserFactory:
         assert isinstance(formats, list)
 
     def test_get_parser_docx(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.parser_factory import ParserFactory
         f = ParserFactory()
         parser = f.get_parser("manuscript.docx")
         assert parser is not None
 
     def test_get_parser_pdf(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.parser_factory import ParserFactory
         f = ParserFactory()
         try:
@@ -174,13 +192,13 @@ class TestParserFactory:
         except ValueError:
             pass  # PDF parser may be unavailable without PyMuPDF
 
-
 # ══════════════════════════════════════════════════════════════════════════════
 # parsing/normalizer.py
 # ══════════════════════════════════════════════════════════════════════════════
 
 class TestNormalizer:
     def test_process_empty_document(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.normalization.normalizer import Normalizer
         doc = MagicMock()
         doc.blocks = []
@@ -198,6 +216,7 @@ class TestNormalizer:
         assert result is doc
 
     def test_normalize_metadata_title(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.normalization.normalizer import Normalizer
         meta = MagicMock()
         meta.title = "  Hello World  "
@@ -213,6 +232,7 @@ class TestNormalizer:
             assert result.title == "Hello World"
 
     def test_normalize_metadata_none_title(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.normalization.normalizer import Normalizer
         meta = MagicMock()
         meta.title = None
@@ -227,6 +247,7 @@ class TestNormalizer:
         assert result is meta
 
     def test_repair_common_corruptions(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         assert n._repair_common_corruptions("2ethodology") == "2 Methodology"
@@ -238,6 +259,7 @@ class TestNormalizer:
         assert n._repair_common_corruptions("8bstract") == "8 Abstract"
 
     def test_repair_no_change(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         assert n._repair_common_corruptions("Normal text here") == "Normal text here"
@@ -245,6 +267,7 @@ class TestNormalizer:
         assert n._repair_common_corruptions(None) is None
 
     def test_sanitize_empty_orphan_blocks(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.normalization.normalizer import Normalizer
         from app.models.block import BlockType
         n = Normalizer()
@@ -256,6 +279,7 @@ class TestNormalizer:
         assert len(result) == 0
 
     def test_sanitize_empty_orphan_with_anchor_kept(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.normalization.normalizer import Normalizer
         from app.models.block import BlockType
         n = Normalizer()
@@ -267,6 +291,7 @@ class TestNormalizer:
         assert len(result) == 1
 
     def test_calculate_median_font_size(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         b1 = MagicMock()
@@ -279,11 +304,13 @@ class TestNormalizer:
         assert result == 13.0
 
     def test_calculate_median_font_size_empty(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         assert n._calculate_median_font_size([]) is None
 
     def test_normalize_blocks_abstract_split(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.normalization.normalizer import Normalizer
         from app.models.block import BlockType
         n = Normalizer()
@@ -301,6 +328,7 @@ class TestNormalizer:
             assert len(result) >= 1
 
     def test_normalize_blocks_consecutive_duplicate(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.normalization.normalizer import Normalizer
         from app.models.block import BlockType
         from unittest.mock import PropertyMock
@@ -330,13 +358,13 @@ class TestNormalizer:
             result = n._normalize_blocks([b1, b2])
             assert len(result) == 1
 
-
 # ══════════════════════════════════════════════════════════════════════════════
 # parsing/md_parser.py (markdown)
 # ══════════════════════════════════════════════════════════════════════════════
 
 class TestMarkdownParser:
     def test_supports_format(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.md_parser import MarkdownParser
         p = MarkdownParser()
         assert p.supports_format(".md") is True
@@ -344,36 +372,41 @@ class TestMarkdownParser:
         assert p.supports_format(".txt") is False
 
     def test_strip_markdown_bold(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.md_parser import MarkdownParser
         p = MarkdownParser()
         assert p._strip_markdown("**bold** text") == "bold text"
 
     def test_strip_markdown_italic(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.md_parser import MarkdownParser
         p = MarkdownParser()
         assert p._strip_markdown("*italic* text") == "italic text"
 
     def test_strip_markdown_code(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.md_parser import MarkdownParser
         p = MarkdownParser()
         assert p._strip_markdown("`code` here") == "code here"
 
     def test_strip_markdown_links(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.md_parser import MarkdownParser
         p = MarkdownParser()
         assert p._strip_markdown("[text](http://example.com)") == "text"
 
     def test_strip_markdown_empty(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.md_parser import MarkdownParser
         p = MarkdownParser()
         assert p._strip_markdown("") == ""
 
     def test_parse_file_not_found(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.md_parser import MarkdownParser
         p = MarkdownParser()
         with pytest.raises(FileNotFoundError):
             p.parse("/nonexistent/file.md", "doc123")
-
 
 # ══════════════════════════════════════════════════════════════════════════════
 # parsing/tex_parser.py (LaTeX)
@@ -381,6 +414,7 @@ class TestMarkdownParser:
 
 class TestTexParser:
     def test_supports_format(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.tex_parser import TexParser
         p = TexParser()
         assert p.supports_format(".tex") is True
@@ -388,22 +422,26 @@ class TestTexParser:
         assert p.supports_format(".txt") is False
 
     def test_remove_comments(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.tex_parser import TexParser
         p = TexParser()
         assert p._remove_comments("Text % comment\nmore") == "Text \nmore"
 
     def test_remove_comments_escaped(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.tex_parser import TexParser
         p = TexParser()
         result = p._remove_comments(r"Text \% not comment\nmore")
         assert "not comment" in result
 
     def test_remove_comments_empty(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.tex_parser import TexParser
         p = TexParser()
         assert p._remove_comments("") == ""
 
     def test_clean_latex_basic(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.tex_parser import TexParser
         p = TexParser()
         result = p._clean_latex(r"\textbf{bold} text")
@@ -411,16 +449,17 @@ class TestTexParser:
         assert "textbf" not in result
 
     def test_clean_latex_empty(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.tex_parser import TexParser
         p = TexParser()
         assert p._clean_latex("") == ""
 
     def test_parse_file_not_found(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.tex_parser import TexParser
         p = TexParser()
         with pytest.raises(FileNotFoundError):
             p.parse("/nonexistent/file.tex", "doc123")
-
 
 # ══════════════════════════════════════════════════════════════════════════════
 # parsing/html_parser.py
@@ -428,6 +467,7 @@ class TestTexParser:
 
 class TestHtmlParser:
     def test_supports_format(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.html_parser import HtmlParser
         with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", True):
             p = HtmlParser()
@@ -436,12 +476,14 @@ class TestHtmlParser:
             assert p.supports_format(".txt") is False
 
     def test_init_raises_without_bs4(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.html_parser import HtmlParser
         with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", False):
             with pytest.raises(ImportError):
                 HtmlParser()
 
     def test_extract_metadata(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
         with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", True):
@@ -453,6 +495,7 @@ class TestHtmlParser:
             assert "Dr. Smith" in meta.authors
 
     def test_extract_metadata_abstract(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
         with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", True):
@@ -463,6 +506,7 @@ class TestHtmlParser:
             assert meta.abstract == "Paper abstract"
 
     def test_extract_metadata_keywords(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
         with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", True):
@@ -473,12 +517,12 @@ class TestHtmlParser:
             assert "ml" in meta.keywords
 
     def test_parse_file_not_found(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.html_parser import HtmlParser
         with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", True):
             p = HtmlParser()
             with pytest.raises(FileNotFoundError):
                 p.parse("/nonexistent/file.html", "doc123")
-
 
 # ══════════════════════════════════════════════════════════════════════════════
 # parsing/parser.py (DOCX) — standalone utility methods
@@ -486,6 +530,7 @@ class TestHtmlParser:
 
 class TestDocxParser:
     def test_supports_format(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         assert p.supports_format(".docx") is True
@@ -493,27 +538,29 @@ class TestDocxParser:
         assert p.supports_format(".pdf") is False
 
     def test_get_image_format_known(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.parser import DocxParser
-        from app.models import ImageFormat
         p = DocxParser()
         assert p._get_image_format("image/png") == ImageFormat.PNG
         assert p._get_image_format("image/jpeg") == ImageFormat.JPEG
         assert p._get_image_format("image/gif") == ImageFormat.GIF
 
     def test_get_image_format_unknown(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.parser import DocxParser
-        from app.models import ImageFormat
         p = DocxParser()
         assert p._get_image_format("image/webp") == ImageFormat.UNKNOWN
         assert p._get_image_format("") == ImageFormat.UNKNOWN
 
     def test_normalize_margin_text(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.pdf_parser import PdfParser
         p = PdfParser()
         assert p._normalize_margin_text("  hello  ") == "hello"
         assert p._normalize_margin_text("") == ""
 
     def test_sanitize_cell_text(self):
+        from app.models import PipelineDocument as Document
         from app.pipeline.parsing.pdf_parser import PdfParser
         p = PdfParser()
         assert p._sanitize_cell_text(" hello ") == "hello"

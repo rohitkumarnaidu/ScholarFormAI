@@ -15,7 +15,6 @@ from app.pipeline.export.latex_exporter import (
     _convert_via_pandoc,
 )
 
-
 def _make_doc(**overrides):
     from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
     from app.models.pipeline_document import DocumentMetadata, TemplateInfo
@@ -46,85 +45,101 @@ def _make_doc(**overrides):
     doc.template = defaults["template"]
     return doc
 
-
 # ── escape_latex ───────────────────────────────────────────────────────
 
 class TestEscapeLatex:
     def test_ampersand(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         assert escape_latex("a&b") == r"a\&b"
 
     def test_percent(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         assert escape_latex("100%") == r"100\%"
 
     def test_dollar(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         assert escape_latex("$10") == r"\$10"
 
     def test_hash(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         assert escape_latex("#1") == r"\#1"
 
     def test_underscore(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         assert escape_latex("a_b") == r"a\_b"
 
     def test_braces(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         assert escape_latex("{hello}") == r"\{hello\}"
 
     def test_tilde(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         assert r"\textasciitilde{}" in escape_latex("~test")
 
     def test_caret(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         assert r"\textasciicircum{}" in escape_latex("^test")
 
     def test_backslash(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         assert r"\textbackslash{}" in escape_latex("\\test")
 
     def test_all_chars(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         result = escape_latex("&%$#_{}~^\\")
         assert "\\&" in result
         assert "\\%" in result
         assert "\\$" in result
 
     def test_empty_string(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         assert escape_latex("") == ""
 
     def test_no_special_chars(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         assert escape_latex("hello world") == "hello world"
 
     def test_none_input(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         with pytest.raises(TypeError):
             escape_latex(None)
-
 
 # ── _resolve_pandoc_binary ─────────────────────────────────────────────
 
 class TestResolvePandoc:
     def test_env_var_set(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         with patch.dict(os.environ, {"PANDOC_PATH": "/custom/pandoc"}, clear=True):
             assert _resolve_pandoc_binary() == "/custom/pandoc"
 
     def test_env_var_empty(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         with patch.dict(os.environ, {"PANDOC_PATH": ""}, clear=True):
             with patch("shutil.which", return_value="/usr/bin/pandoc"):
                 assert _resolve_pandoc_binary() == "/usr/bin/pandoc"
 
     def test_env_not_set_pandoc_not_found(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         with patch.dict(os.environ, {}, clear=True):
             with patch("shutil.which", return_value=None):
                 assert _resolve_pandoc_binary() is None
 
     def test_env_var_whitespace_only(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         with patch.dict(os.environ, {"PANDOC_PATH": "  "}, clear=True):
             with patch("shutil.which", return_value="/usr/bin/pandoc"):
                 assert _resolve_pandoc_binary() == "/usr/bin/pandoc"
-
 
 # ── _convert_via_pandoc ────────────────────────────────────────────────
 
 class TestConvertViaPandoc:
     def test_pandoc_not_found(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         with patch("app.pipeline.export.latex_exporter._resolve_pandoc_binary", return_value=None):
             assert _convert_via_pandoc("in.docx", "out.tex", 120) is False
 
     def test_success(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         mock_result = MagicMock(returncode=0, stdout="", stderr="")
         with (
             patch("app.pipeline.export.latex_exporter._resolve_pandoc_binary", return_value="/usr/bin/pandoc"),
@@ -134,6 +149,7 @@ class TestConvertViaPandoc:
             assert _convert_via_pandoc("in.docx", "out.tex", 120) is True
 
     def test_failure_exit_code(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         mock_result = MagicMock(returncode=1, stdout="", stderr="error")
         with (
             patch("app.pipeline.export.latex_exporter._resolve_pandoc_binary", return_value="/usr/bin/pandoc"),
@@ -142,6 +158,7 @@ class TestConvertViaPandoc:
             assert _convert_via_pandoc("in.docx", "out.tex", 120) is False
 
     def test_success_but_output_missing(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         mock_result = MagicMock(returncode=0, stdout="", stderr="")
         with (
             patch("app.pipeline.export.latex_exporter._resolve_pandoc_binary", return_value="/usr/bin/pandoc"),
@@ -151,6 +168,7 @@ class TestConvertViaPandoc:
             assert _convert_via_pandoc("in.docx", "out.tex", 120) is False
 
     def test_timeout(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         with (
             patch("app.pipeline.export.latex_exporter._resolve_pandoc_binary", return_value="/usr/bin/pandoc"),
             patch("subprocess.run", side_effect=subprocess.TimeoutExpired(cmd="pandoc", timeout=120)),
@@ -158,23 +176,25 @@ class TestConvertViaPandoc:
             assert _convert_via_pandoc("in.docx", "out.tex", 120) is False
 
     def test_os_error(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         with (
             patch("app.pipeline.export.latex_exporter._resolve_pandoc_binary", return_value="/usr/bin/pandoc"),
             patch("subprocess.run", side_effect=OSError("not found")),
         ):
             assert _convert_via_pandoc("in.docx", "out.tex", 120) is False
 
-
 # ── LaTeXExporter.convert_to_latex ─────────────────────────────────────
 
 class TestConvertToLatex:
     def test_file_not_found(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         with patch("pathlib.Path.exists", return_value=False):
             with pytest.raises(RuntimeError, match="DOCX not found"):
                 exporter.convert_to_latex("/nonexistent/doc.docx", "/tmp/out")
 
     def test_pandoc_not_found(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         with (
             patch("pathlib.Path.exists", return_value=True),
@@ -184,6 +204,7 @@ class TestConvertToLatex:
                 exporter.convert_to_latex("/tmp/doc.docx", "/tmp/out")
 
     def test_conversion_success(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         with (
             patch("pathlib.Path.exists", return_value=True),
@@ -195,6 +216,7 @@ class TestConvertToLatex:
             assert result.endswith(".tex")
 
     def test_conversion_failure(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         with (
             patch("pathlib.Path.exists", return_value=True),
@@ -205,10 +227,12 @@ class TestConvertToLatex:
                 exporter.convert_to_latex("/tmp/doc.docx", "/tmp/out")
 
     def test_timeout_configurable(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter(timeout_seconds=300)
         assert exporter.timeout == 300
 
     def test_stem_from_filename(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         with (
             patch("pathlib.Path.exists", return_value=True),
@@ -219,11 +243,11 @@ class TestConvertToLatex:
             result = exporter.convert_to_latex("/tmp/my_manuscript.docx", "/tmp/out")
             assert "my_manuscript.tex" in result
 
-
 # ── LaTeXExporter.export_from_document ─────────────────────────────────
 
 class TestExportFromDocument:
     def test_default_template(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         with (
@@ -237,6 +261,7 @@ class TestExportFromDocument:
             assert result.endswith("manuscript.tex")
 
     def test_all_templates(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         for template_name in ["ieee", "acm", "apa", "springer", "nature", "elsevier", "mla", "chicago", "vancouver", "harvard", "default"]:
             exporter = LaTeXExporter()
             doc = _make_doc()
@@ -252,6 +277,7 @@ class TestExportFromDocument:
                 assert result.endswith(".tex")
 
     def test_template_name_none(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.template.template_name = None
@@ -266,6 +292,7 @@ class TestExportFromDocument:
             assert result.endswith(".tex")
 
     def test_template_missing(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.template = None
@@ -280,7 +307,7 @@ class TestExportFromDocument:
             assert result.endswith(".tex")
 
     def test_with_references(self):
-        from app.models import Reference
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc(references=[
             Reference(reference_id="r1", index=1, block_id="r1", block_index=1,
@@ -297,11 +324,11 @@ class TestExportFromDocument:
             result = exporter.export_from_document(doc, "/tmp/out")
             assert result.endswith(".tex")
 
-
 # ── _write_title_authors ───────────────────────────────────────────────
 
 class TestWriteTitleAuthors:
     def test_title_and_authors(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         lines = []
@@ -312,6 +339,7 @@ class TestWriteTitleAuthors:
         assert r"Bob Jones" in content
 
     def test_title_missing(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.metadata.title = None
@@ -320,6 +348,7 @@ class TestWriteTitleAuthors:
         assert r"\title{Untitled}" in "\n".join(lines)
 
     def test_authors_empty(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.metadata.authors = []
@@ -329,6 +358,7 @@ class TestWriteTitleAuthors:
         assert r"\maketitle" in "\n".join(lines)
 
     def test_authors_single(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.metadata.authors = ["Single Author"]
@@ -337,6 +367,7 @@ class TestWriteTitleAuthors:
         assert "Single Author" in "\n".join(lines)
 
     def test_date_present(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.metadata.publication_date = None
@@ -345,6 +376,7 @@ class TestWriteTitleAuthors:
         assert r"\date{\today}" in "\n".join(lines)
 
     def test_date_absent_uses_today(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.metadata.publication_date = None
@@ -353,6 +385,7 @@ class TestWriteTitleAuthors:
         assert r"\date{\today}" in "\n".join(lines)
 
     def test_date_datetime_formatted(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         from datetime import datetime
         exporter = LaTeXExporter()
         doc = _make_doc()
@@ -362,6 +395,7 @@ class TestWriteTitleAuthors:
         assert "2024" in "\n".join(lines)
 
     def test_special_chars_in_title(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.metadata.title = "Title with & and %"
@@ -371,11 +405,11 @@ class TestWriteTitleAuthors:
         assert r"\&" in content
         assert r"\%" in content
 
-
 # ── _write_abstract ────────────────────────────────────────────────────
 
 class TestWriteAbstract:
     def test_abstract_present(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         lines = []
@@ -385,6 +419,7 @@ class TestWriteAbstract:
         assert "This is a test." in content
 
     def test_abstract_absent(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.metadata.abstract = None
@@ -393,6 +428,7 @@ class TestWriteAbstract:
         assert r"\begin{abstract}" not in "\n".join(lines)
 
     def test_keywords_present(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         lines = []
@@ -400,6 +436,7 @@ class TestWriteAbstract:
         assert "Keywords:" in "\n".join(lines)
 
     def test_keywords_absent(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.metadata.keywords = []
@@ -408,6 +445,7 @@ class TestWriteAbstract:
         assert "Keywords:" not in "\n".join(lines)
 
     def test_special_chars_in_abstract(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.metadata.abstract = "Abstract with & and %"
@@ -417,15 +455,13 @@ class TestWriteAbstract:
         assert r"\&" in content
         assert r"\%" in content
 
-
 # ── _write_sections ────────────────────────────────────────────────────
 
 class TestWriteSections:
     def _make_section_doc(self, blocks_data):
         """Helper to build doc with custom blocks using real Block instances."""
-        from app.models import Block, BlockType
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         from app.models.pipeline_document import DocumentMetadata, TemplateInfo
-        from app.models import PipelineDocument
         doc = PipelineDocument(
             document_id="t1",
             blocks=[Block(**b) for b in blocks_data],
@@ -435,6 +471,7 @@ class TestWriteSections:
         return doc
 
     def test_heading_1(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         lines = []
@@ -442,6 +479,7 @@ class TestWriteSections:
         assert r"\section{Introduction}" in "\n".join(lines)
 
     def test_heading_2(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         lines = []
@@ -449,6 +487,7 @@ class TestWriteSections:
         assert r"\subsection{Sub Section}" in "\n".join(lines)
 
     def test_heading_3(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         lines = []
@@ -456,6 +495,7 @@ class TestWriteSections:
         assert r"\subsubsection{Sub Sub}" in "\n".join(lines)
 
     def test_body_text(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         lines = []
@@ -463,6 +503,7 @@ class TestWriteSections:
         assert "Body text." in "\n".join(lines)
 
     def test_reference_types_skipped(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         doc = self._make_section_doc([
             dict(block_id="r1", index=1, text="Ref text", block_type="reference_entry"),
         ])
@@ -472,6 +513,7 @@ class TestWriteSections:
         assert "Ref text" not in "\n".join(lines)
 
     def test_empty_text_skipped(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         doc = self._make_section_doc([
             dict(block_id="b1", index=1, text="", block_type="body"),
         ])
@@ -480,6 +522,7 @@ class TestWriteSections:
         exporter._write_sections(lines, doc)
 
     def test_figure_type_skipped(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.blocks = [MagicMock(block_id="b1", index=1, text="Fig text", block_type="figure")]
@@ -489,6 +532,7 @@ class TestWriteSections:
         assert "Fig text" not in content
 
     def test_table_type_skipped(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.blocks = [MagicMock(block_id="b1", index=1, text="Tbl text", block_type="table")]
@@ -497,6 +541,7 @@ class TestWriteSections:
         assert "Tbl text" not in "\n".join(lines)
 
     def test_unknown_type_as_plain_text(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.blocks = [MagicMock(block_id="b1", index=1, text="Plain", block_type="unknown_type")]
@@ -505,7 +550,7 @@ class TestWriteSections:
         assert "Plain" in "\n".join(lines)
 
     def test_blocks_sorted_by_index(self):
-        from app.models import Block, BlockType
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc(blocks=[
             Block(block_id="b2", index=2, block_type=BlockType.BODY, text="Second"),
@@ -516,11 +561,11 @@ class TestWriteSections:
         content = "\n".join(lines)
         assert content.index("First") < content.index("Second")
 
-
 # ── _write_figures ─────────────────────────────────────────────────────
 
 class TestWriteFigures:
     def test_no_figures(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         lines = []
@@ -528,7 +573,7 @@ class TestWriteFigures:
         assert len(lines) == 0
 
     def test_figure_with_caption_and_label(self):
-        from app.models import Figure
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc(figures=[
             Figure(figure_id="fig1", index=0, caption_text="A figure", label="fig:1"),
@@ -541,7 +586,7 @@ class TestWriteFigures:
         assert r"\label{fig:1}" in content
 
     def test_figure_with_image_data(self):
-        from app.models import Figure, ImageFormat
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc(figures=[
             Figure(figure_id="fig1", index=0, caption_text="Fig",
@@ -553,7 +598,7 @@ class TestWriteFigures:
         assert r"\includegraphics" in "\n".join(lines)
 
     def test_figure_no_image_data(self):
-        from app.models import Figure
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc(figures=[
             Figure(figure_id="fig1", index=0, caption_text="Only caption"),
@@ -563,7 +608,7 @@ class TestWriteFigures:
         assert r"\includegraphics" not in "\n".join(lines)
 
     def test_figure_without_label(self):
-        from app.models import Figure
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc(figures=[
             Figure(figure_id="fig1", index=0, caption_text="No label"),
@@ -573,7 +618,7 @@ class TestWriteFigures:
         assert r"\label" not in "\n".join(lines)
 
     def test_figure_caption_empty(self):
-        from app.models import Figure
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc(figures=[
             Figure(figure_id="fig1", index=0, caption_text=None),
@@ -582,12 +627,12 @@ class TestWriteFigures:
         exporter._write_figures(lines, doc)
         assert r"\caption{Figure}" in "\n".join(lines)
 
-
 # ── _write_tables ──────────────────────────────────────────────────────
 
 class TestWriteTables:
     def _make_table_mock(self, index=0, caption_text="Table", rows=None, rows_data=None):
         """Table model uses cells not rows; exporter accesses tbl.rows so use MagicMock."""
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         tbl = MagicMock()
         tbl.index = index
         tbl.caption_text = caption_text
@@ -595,6 +640,7 @@ class TestWriteTables:
         return tbl
 
     def test_no_tables(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         lines = []
@@ -602,6 +648,7 @@ class TestWriteTables:
         assert len(lines) == 0
 
     def test_table_with_rows(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.tables = [self._make_table_mock(rows=[["H1", "H2"], ["A", "B"]])]
@@ -614,6 +661,7 @@ class TestWriteTables:
         assert r"\caption{Table}" in content
 
     def test_table_without_rows(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.tables = [self._make_table_mock(rows=[])]
@@ -622,6 +670,7 @@ class TestWriteTables:
         assert r"\begin{tabular}" not in "\n".join(lines)
 
     def test_table_with_hline(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.tables = [self._make_table_mock(rows=[["A", "B"], ["C", "D"]])]
@@ -630,11 +679,11 @@ class TestWriteTables:
         hlines = [l for l in lines if r"\hline" in l]
         assert len(hlines) >= 2
 
-
 # ── _write_equations ───────────────────────────────────────────────────
 
 class TestWriteEquations:
     def test_no_equations(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         lines = []
@@ -642,7 +691,7 @@ class TestWriteEquations:
         assert len(lines) == 0
 
     def test_equation_with_text(self):
-        from app.models import Equation
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc(equations=[
             Equation(equation_id="eq1", index=1, block_id="b1",
@@ -655,7 +704,7 @@ class TestWriteEquations:
         assert "x = y" in content
 
     def test_equation_with_align(self):
-        from app.models import Equation
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc(equations=[
             Equation(equation_id="eq2", index=2, block_id="b2",
@@ -668,7 +717,7 @@ class TestWriteEquations:
         assert r"\begin{equation}" not in content
 
     def test_equation_empty_text(self):
-        from app.models import Equation
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc(equations=[
             Equation(equation_id="eq3", index=3, block_id="b3", text=""),
@@ -678,7 +727,7 @@ class TestWriteEquations:
         assert len(lines) == 0
 
     def test_equation_whitespace_only(self):
-        from app.models import Equation
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc(equations=[
             Equation(equation_id="eq4", index=4, block_id="b4", text="   "),
@@ -687,11 +736,11 @@ class TestWriteEquations:
         exporter._write_equations(lines, doc)
         assert len(lines) == 0
 
-
 # ── _write_bibtex ──────────────────────────────────────────────────────
 
 class TestWriteBibtex:
     def test_no_references(self):
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc()
         bib = MagicMock(spec=Path)
@@ -699,7 +748,7 @@ class TestWriteBibtex:
         bib.write_text.assert_not_called()
 
     def test_with_metadata_article(self):
-        from app.models import Reference
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc(references=[
             Reference(reference_id="r1", index=1, block_id="r1", block_index=1,
@@ -717,7 +766,7 @@ class TestWriteBibtex:
         assert "10.1234/test" in content
 
     def test_without_metadata_misc(self):
-        from app.models import Reference
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc(references=[
             Reference(reference_id="r1", index=1, block_id="r1", block_index=1,
@@ -731,7 +780,7 @@ class TestWriteBibtex:
         assert "@misc" in content
 
     def test_no_formatted_or_raw_text(self):
-        from app.models import Reference
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc(references=[
             Reference(reference_id="r1", index=1, block_id="r1", block_index=1,
@@ -743,7 +792,7 @@ class TestWriteBibtex:
         bib.write_text.assert_not_called()
 
     def test_multiple_references(self):
-        from app.models import Reference
+        from app.models import PipelineDocument, Block, BlockType, Equation, Reference, Table, Figure
         exporter = LaTeXExporter()
         doc = _make_doc(references=[
             Reference(reference_id="r1", index=1, block_id="r1", block_index=1,
