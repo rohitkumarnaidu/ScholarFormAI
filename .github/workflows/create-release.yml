@@ -220,7 +220,7 @@ jobs:
 
       - name: Create GitHub Release
         id: release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda
+        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b
         with:
           tag_name: ${{ github.ref_name }}
           name: ScholarForm AI ${{ github.ref_name }}
@@ -243,7 +243,7 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
 
       - name: Set up Python
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
           python-version: "3.12"
 
@@ -255,7 +255,7 @@ jobs:
           echo "SBOM generated with $COMPONENTS components"
 
       - name: Upload SBOM to release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda
+        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b
         with:
           tag_name: ${{ github.ref_name }}
           files: |
@@ -289,12 +289,12 @@ jobs:
           gh release download ${{ github.ref_name }} --pattern "sbom/release-sbom.json" --dir sbom/ 2>/dev/null || echo "SBOM not yet uploaded, skipping"
 
       - name: Attest release checksums
-        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373
         with:
           subject-path: release-checksums.txt
 
       - name: Attest SBOM
         if: ${{ hashFiles('sbom/release-sbom.json') != '' }}
-        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373
         with:
           subject-path: sbom/release-sbom.json
