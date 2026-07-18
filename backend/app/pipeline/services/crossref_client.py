@@ -13,8 +13,9 @@ This client interfaces with the CrossRef REST API to:
 Rate Limit: 50 requests/second (polite pool).
 """
 
+import asyncio
+import httpx
 import logging
-import requests
 import time
 from typing import Dict, Any, Optional
 from difflib import SequenceMatcher
@@ -44,21 +45,22 @@ class CrossRefClient:
         Args:
             email: Optional email for "Polite" pool usage (recommended).
         """
+        self._client = httpx.AsyncClient(timeout=10.0)
         self.headers = {}
         if email:
             self.headers["User-Agent"] = f"ScholarFormAI/1.0 (mailto:{email})"
         
         self.last_request_time = 0.0
 
-    def _wait_for_rate_limit(self):
+    async def _wait_for_rate_limit(self):
         """Ensure we respect the rate limit."""
         current_time = time.time()
         elapsed = current_time - self.last_request_time
         if elapsed < self.MIN_REQUEST_INTERVAL:
-            time.sleep(self.MIN_REQUEST_INTERVAL - elapsed)
+            await asyncio.sleep(self.MIN_REQUEST_INTERVAL - elapsed)
         self.last_request_time = time.time()
 
-    def validate_doi(self, doi: str) -> bool:
+    async def validate_doi(self, doi: str) -> bool:
         """
         Check if a DOI exists in CrossRef.
         
@@ -69,12 +71,12 @@ class CrossRefClient:
             True if DOI exists, False otherwise.
         """
         try:
-            self.get_metadata(doi)
+            await self.get_metadata(doi)
             return True
         except CrossRefException:
             return False
 
-    def get_metadata(self, doi: str) -> Dict[str, Any]:
+    async def get_metadata(self, doi: str) -> Dict[str, Any]:
         """
         Retrieve metadata for a DOI.
         
@@ -87,13 +89,13 @@ class CrossRefClient:
         Raises:
             CrossRefException: If DOI not found vs API error.
         """
-        self._wait_for_rate_limit()
+        await self._wait_for_rate_limit()
         
         clean_doi = doi.strip()
         url = f"{self.BASE_URL}{clean_doi}"
         
         try:
-            response = requests.get(url, headers=self.headers, timeout=10)
+            response = await self._client.get(url, headers=self.headers)
             
             if response.status_code == 200:
                 data = response.json()
@@ -103,7 +105,7 @@ class CrossRefClient:
             else:
                 raise CrossRefException(f"CrossRef API error: {response.status_code}")
                 
-        except requests.exceptions.RequestException as e:
+        except httpx.RequestError as e:
             raise CrossRefException(f"Network error: {str(e)}")
 
     def calculate_confidence(self, reference_data: Dict[str, Any], crossref_data: Dict[str, Any]) -> float:
