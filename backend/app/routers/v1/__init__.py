@@ -6,8 +6,9 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from . import (
-    auth,
+    activity,
     api_keys,
+    auth,
     billing,
     documents,
     feedback,
@@ -16,8 +17,10 @@ from . import (
     metrics,
     providers,
     stream,
+    suggestions,
     synthesis,
     templates,
+    webhooks,
 )
 
 v1_router = APIRouter(prefix="/api/v1")
@@ -33,3 +36,6 @@ v1_router.include_router(providers.router, prefix="/providers")
 v1_router.include_router(api_keys.router, prefix="/keys")
 v1_router.include_router(stream.router, prefix="/stream", tags=["Streaming v1"])
 v1_router.include_router(billing.router)
+v1_router.include_router(activity.router, prefix="/activity", tags=["Activity v1"])
+v1_router.include_router(suggestions.router, prefix="/suggestions", tags=["Suggestions v1"])
+v1_router.include_router(webhooks.router, prefix="/webhooks", tags=["Webhooks v1"])
