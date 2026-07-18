@@ -3,6 +3,7 @@
 
 from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, text
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from app.db.base import Base
 
 class ProcessingStatus(Base):
@@ -15,3 +16,5 @@ class ProcessingStatus(Base):
     progress_percentage = Column(Integer, nullable=True) # 0-100
     message = Column(String, nullable=True)
     updated_at = Column(DateTime(timezone=True), server_default=text("now()"), onupdate=text("now()"))
+
+    document = relationship("Document", back_populates="processing_statuses", lazy="joined")
