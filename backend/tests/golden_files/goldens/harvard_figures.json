@@ -1,0 +1,34 @@
+{
+  "section_count": 7,
+  "heading_hierarchy": [
+    {"text": "Introduction", "level": 1},
+    {"text": "Related Work", "level": 2},
+    {"text": "Methods", "level": 1},
+    {"text": "Results", "level": 1},
+    {"text": "Discussion", "level": 1},
+    {"text": "Conclusion", "level": 1}
+  ],
+  "template_metadata": {
+    "template_name": "harvard",
+    "title": "Figure-Group Layout Analysis for Multi-Panel Scientific Figures"
+  },
+  "reference_entries": [
+    "Allen, P. (2023) 'Multi-panel figure detection in scholarly articles', Journal of Visual Communication, 45(3), pp. 234-251.",
+    "Baker, S. and Chen, L. (2024) 'Layout preservation in automated document formatting', IEEE Transactions on Visualization, 30(2), pp. 112-128.",
+    "Carter, D., Singh, R. and Park, M. (2022) 'Figure-group integrity in publishing pipelines', International Journal of Document Analysis, 18(4), pp. 301-318.",
+    "Davies, H. and Kumar, A. (2023) 'Sub-figure label detection using convolutional networks', Pattern Recognition, 135, p. 109012.",
+    "Evans, N. (2024) 'Single-image extraction from compound scientific figures', J. Digital Libraries, 25(1), pp. 45-62.",
+    "Fernandez, G. and O'Brien, T. (2023) 'Figure analysis tools for automated publishing', Software: Practice and Experience, 53(8), pp. 1678-1695.",
+    "Harvard University Press (2025) Harvard referencing style guide, 5th edn. Cambridge, MA: Harvard University Press.",
+    "Garcia, M. and Lee, J. (2024) 'Grid layout detection in multi-panel figures', Computer Vision and Image Understanding, 238, p. 103876.",
+    "Hughes, D. and Patel, S. (2023) 'Large-scale evaluation of figure extraction accuracy', Scientometrics, 128(5), pp. 2891-2912.",
+    "Ito, K. and Svensson, E. (2024) 'Panel detection in biomedical visualisations', BMC Bioinformatics, 25(1), p. 112.",
+    "Jackson, F. and White, R. (2023) 'Freeform panel arrangement challenges', ACM Trans. Graph., 42(4), pp. 1-15.",
+    "Kim, S. and Thompson, L. (2024) 'Limitations of existing figure processing tools', J. Assoc. Inf. Sci. Technol., 75(2), pp. 189-204.",
+    "Liu, Y. and Ahmed, S. (2023) 'Deep learning for panel segmentation in compound figures', Neural Networks, 162, pp. 234-249."
+  ],
+  "reference_count": 13,
+  "figure_count": 5,
+  "sub_figure_count": 11,
+  "author_count": 2
+}

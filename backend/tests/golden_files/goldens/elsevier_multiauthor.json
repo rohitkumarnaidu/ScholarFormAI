@@ -1,0 +1,50 @@
+{
+  "section_count": 10,
+  "heading_hierarchy": [
+    {"text": "Introduction", "level": 1},
+    {"text": "Clinical Need", "level": 2},
+    {"text": "Methods", "level": 1},
+    {"text": "Study Design", "level": 2},
+    {"text": "Data Collection", "level": 2},
+    {"text": "Model Architecture", "level": 2},
+    {"text": "Statistical Analysis", "level": 2},
+    {"text": "Results", "level": 1},
+    {"text": "Overall Performance", "level": 2},
+    {"text": "Subgroup Analysis", "level": 2},
+    {"text": "Data Availability Statement", "level": 2},
+    {"text": "Discussion", "level": 1},
+    {"text": "Limitations", "level": 2},
+    {"text": "Conclusion", "level": 1}
+  ],
+  "template_metadata": {
+    "template_name": "elsevier",
+    "title": "Multi-Centre Clinical Validation of Transformer-Based Histopathology Classification"
+  },
+  "reference_entries": [
+    "[1] Esteva A, et al. Dermatologist-level classification of skin cancer with deep neural networks. Nature. 2017;542(7639):115-118.",
+    "[2] Campanella G, et al. Clinical-grade computational pathology using weakly supervised deep learning. Nat Med. 2019;25(8):1301-1309.",
+    "[3] Dosovitskiy A, et al. An image is worth 16x16 words: transformers for image recognition at scale. ICLR. 2021.",
+    "[4] Chen C, et al. TransUNet: transformers make strong encoders for medical image segmentation. arXiv:2102.04306. 2021.",
+    "[5] Liu Y, et al. A comparison of deep learning performance across healthcare systems. Lancet Digit Health. 2023;5(4):e218-e228.",
+    "[6] Topol EJ. High-performance medicine: the convergence of human and artificial intelligence. Nat Med. 2019;25(1):44-56.",
+    "[7] Rajpurkar P, et al. The need for rigorous evaluation of AI in clinical medicine. NEJM AI. 2024;1(1):AIra2300123.",
+    "[8] WHO Classification of Tumours Editorial Board. WHO classification of tumours of the breast. 5th ed. IARC; 2024.",
+    "[9] Elmore JG, et al. Diagnostic concordance among pathologists interpreting breast biopsy specimens. JAMA. 2015;313(11):1122-1132.",
+    "[10] Tizhoosh HR, Pantanowitz L. Artificial intelligence and digital pathology: challenges and opportunities. J Pathol Inform. 2018;9:38.",
+    "[11] Caron M, et al. Emerging properties in self-supervised vision transformers. ICCV. 2021.",
+    "[12] Lu MY, et al. Data-efficient and weakly supervised computational pathology on whole-slide images. Nat Biomed Eng. 2021;5(6):555-570.",
+    "[13] Bossuyt PM, et al. STARD 2015: an updated list of essential items for reporting diagnostic accuracy studies. BMJ. 2015;351:h5527.",
+    "[14] DeLong ER, et al. Comparing the areas under two or more correlated receiver operating characteristic curves. Biometrics. 1988;44(3):837-845.",
+    "[15] Van Calster B, et al. A calibration hierarchy for risk models. J Clin Epidemiol. 2016;74:167-176.",
+    "[16] Shen K, et al. External validation of pathology AI algorithms: a systematic review. Lancet Digit Health. 2024;6(2):e112-e124.",
+    "[17] Muehlematter UJ, et al. Approval of artificial intelligence and machine learning-based medical devices in the USA and Europe. JAMA Netw Open. 2021;4(10):e2128319."
+  ],
+  "reference_count": 17,
+  "author_count": 8,
+  "orcid_count": 8,
+  "corresponding_author": "Maria Santos (m.santos@pathol.usp.br)",
+  "has_data_availability": true,
+  "has_funding": true,
+  "has_declaration": true,
+  "table_count": 2
+}
