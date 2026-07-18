@@ -1,0 +1,28 @@
+{
+  "section_count": 6,
+  "heading_hierarchy": [
+    {"text": "Introduction", "level": 1},
+    {"text": "Table Design Principles", "level": 2},
+    {"text": "Results", "level": 1},
+    {"text": "Detailed Performance by Complexity", "level": 2},
+    {"text": "Discussion", "level": 1},
+    {"text": "Conclusion", "level": 1}
+  ],
+  "template_metadata": {
+    "template_name": "springer",
+    "title": "Multi-Column Table Representation in Structured Manuscripts"
+  },
+  "reference_entries": [
+    "[1] Muller H, Santos D. Table structure recognition in academic documents. Int J Doc Anal Recognit. 2023;26(2):145-162.",
+    "[2] Chen L, Park S. Multi-row header detection in PDF-tables. Pattern Recognit Lett. 2024;178:89-96.",
+    "[3] Kumar V, Rossi M, Andersson K, Patel N, Zhao J, Fernandez L. Hierarchical column grouping in scientific tables. IEEE Trans Vis Comput Graph. 2023;29(11):4521-4535.",
+    "[4] Springer Nature. Table formatting guidelines for proceedings and journals. Springer; 2025.",
+    "[5] Thompson R, Kim H, Ahmed S, Nielsen T. Comparative evaluation of table formatting tools. J Scholarly Publ. 2024;55(3):234-251.",
+    "[6] Wang X, Nguyen T. Merge-aware algorithms for document processing. Comput J. 2023;66(8):1892-1908.",
+    "[7] O'Brien C, Suzuki T, Patel D. Specialised table rendering for academic publishing. SoftwareX. 2024;25:101634.",
+    "[8] Andersson P, Chen Y. Deep learning approaches to table structure inference. Neural Comput. 2023;35(7):1456-1483."
+  ],
+  "reference_count": 8,
+  "table_count": 3,
+  "author_count": 4
+}

@@ -1,0 +1,42 @@
+{
+  "section_count": 7,
+  "heading_hierarchy": [
+    {"text": "Introduction", "level": 1},
+    {"text": "Methods", "level": 1},
+    {"text": "Dataset", "level": 2},
+    {"text": "Statistical Analysis", "level": 2},
+    {"text": "Results", "level": 1},
+    {"text": "Discussion", "level": 1},
+    {"text": "Conclusion", "level": 1}
+  ],
+  "template_metadata": {
+    "template_name": "vancouver",
+    "title": "Multi-Level Reference Analysis in Computational Biomedicine"
+  },
+  "reference_entries": [
+    "[1] Smith JA, Lee K. Deep citation networks in biomedical literature. J Biomed Inform. 2023;140:104321.",
+    "[2] Brown TL, Garcia M, Williams R, Chen X, Patel S, Kumar A, et al. Nested referencing patterns. Nature Methods. 2022;19(4):412-419.",
+    "[3] Johnson P. Tertiary citations in systematic reviews. BMC Med Res Methodol. 2021;21:156.",
+    "[4] Davis R, Thompson K. Fourth-level citation analysis. Stat Med. 2020;39(12):1789-1801.",
+    "[5] Kim S, Park J-H, Lee M, Tanaka A, O'Brien T, Hughes D, et al. Multi-level reference structures. PLoS One. 2024;19(3):e0298765.",
+    "[6] Wilson E, Anderson B, Taylor M, Clark J, Wright P, Hall R, et al. Deep citation indexing. J Am Med Inform Assoc. 2023;30(7):1234-1245.",
+    "[7] Martinez L, White S. Automated formatting for biomedical manuscripts. Bioinformatics. 2024;40(2):btae045.",
+    "[8] International Committee of Medical Journal Editors. Recommendations for the conduct, reporting, editing, and publication of scholarly work in medical journals. ICMJE. 2023.",
+    "[9] Zhang Y, Chen L, Wang H. Logistic regression in biomedical research. Am J Epidemiol. 2022;191(5):876-889.",
+    "[10] PubMed Central. Open access subset. National Library of Medicine; 2025.",
+    "[11] Landis JR, Koch GG. The measurement of observer agreement for categorical data. Biometrics. 1977;33(1):159-174.",
+    "[12] Page MJ, McKenzie JE, Bossuyt PM, Boutron I, Hoffmann TC, Mulrow CD, et al. The PRISMA 2020 statement. BMJ. 2021;372:n71.",
+    "[13] Pearson K. On the criterion that a given system of deviations from the probable in the case of a correlated system of variables is such that it can be reasonably supposed to have arisen from random sampling. Philos Mag. 1900;50(302):157-175.",
+    "[14] Fisher RA. Statistical methods for research workers. Oliver and Boyd; 1925.",
+    "[15] Lopez-Garcia G, Martinez-Ruiz A, Fernandez-Lopez P, Garcia-Torres M, Rodriguez-Sanchez L. Nested citation prevalence analysis. J Informetr. 2023;17(4):101456.",
+    "[16] Thomas H, Jackson O, Lee S, Wang Y, Park J, Brown F, et al. Tertiary citation depth in biomedical publications. Scientometrics. 2024;129(2):987-1004.",
+    "[17] Patrias K. Citing medicine: the NLM style guide for authors, editors, and publishers. 2nd ed. National Library of Medicine; 2007.",
+    "[18] O'Brien M, Walsh T, Kelly D, Murray P, Ryan J, Brennan A, et al. Reference chain depth in academic publishing. Learned Publishing. 2023;36(3):345-358.",
+    "[19] Harper R, Aerts J. Hierarchical reference displays for scientific literature. Inf Vis. 2024;23(1):45-61."
+  ],
+  "reference_count": 19,
+  "footnote_count": 3,
+  "equation_count": 3,
+  "author_count": 2,
+  "corresponding_author": "Akiko Tanaka (tanaka@compbio.u-tokyo.ac.jp)"
+}

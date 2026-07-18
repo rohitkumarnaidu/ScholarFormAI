@@ -1,0 +1,47 @@
+{
+  "section_count": 11,
+  "heading_hierarchy": [
+    {"text": "Abstract", "level": 1},
+    {"text": "Acknowledgements", "level": 1},
+    {"text": "Table of Contents", "level": 1},
+    {"text": "Introduction", "level": 1},
+    {"text": "Research Questions", "level": 2},
+    {"text": "Thesis Structure", "level": 2},
+    {"text": "Literature Review", "level": 1},
+    {"text": "Historical Background", "level": 2},
+    {"text": "Computational Approaches", "level": 2},
+    {"text": "Methodology", "level": 1},
+    {"text": "Corpus Preprocessing", "level": 2},
+    {"text": "Semantic Modelling", "level": 2},
+    {"text": "Results", "level": 1},
+    {"text": "Semantic Shift Scores", "level": 2},
+    {"text": "Case Studies", "level": 2},
+    {"text": "Discussion", "level": 1},
+    {"text": "Conclusion", "level": 1},
+    {"text": "Appendices", "level": 1},
+    {"text": "Appendix A: Corpus Metadata", "level": 2},
+    {"text": "Appendix B: Model Hyperparameters", "level": 2},
+    {"text": "Appendix C: Supplementary Results", "level": 2}
+  ],
+  "template_metadata": {
+    "template_name": "mla",
+    "title": "A Framework for Diachronic Corpus Analysis of Early Modern English Scientific Texts"
+  },
+  "reference_entries": [
+    "Barber, Charles. Early Modern English. Edinburgh UP, 1997.",
+    "Crystal, David. The Stories of English. Penguin, 2004.",
+    "Durkin, Philip. The Oxford Guide to Etymology. Oxford UP, 2009.",
+    "Hamilton, William L., et al. \"Diachronic Word Embeddings Reveal Statistical Laws of Semantic Change.\" Proceedings of ACL, 2016, pp. 1489-1501.",
+    "Kutuzov, Andrey, et al. \"Diachronic Word Embeddings and Semantic Shifts: A Survey.\" Proceedings of COLING, 2018, pp. 1384-1397.",
+    "Mikolov, Tomas, et al. \"Efficient Estimation of Word Representations in Vector Space.\" arXiv:1301.3781, 2013.",
+    "Nevalainen, Terttu. An Introduction to Early Modern English. Edinburgh UP, 2006.",
+    "Pennington, Jeffrey, et al. \"GloVe: Global Vectors for Word Representation.\" Proceedings of EMNLP, 2014, pp. 1532-1543.",
+    "Rogos-Hansen, Jacob. \"VARD: A Tool for the Normalisation of Historical English.\" Digital Scholarship in the Humanities, vol. 34, no. 2, 2019, pp. 432-445."
+  ],
+  "reference_count": 9,
+  "has_abstract": true,
+  "has_acknowledgements": true,
+  "has_appendices": true,
+  "has_toc": true,
+  "author_count": 1
+}
