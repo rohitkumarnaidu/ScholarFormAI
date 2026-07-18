@@ -1,0 +1,51 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Badge visual snapshots > completed status 1`] = `"<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">Completed</span>"`;
+
+exports[`Badge visual snapshots > failed status 1`] = `"<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300">Failed</span>"`;
+
+exports[`Badge visual snapshots > pending status 1`] = `"<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">Pending</span>"`;
+
+exports[`Badge visual snapshots > processing status 1`] = `"<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">Processing</span>"`;
+
+exports[`Button visual snapshots > danger variant 1`] = `"<button type="button" class="inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed bg-red-600 hover:bg-red-700 text-white border border-transparent shadow-lg shadow-red-600/20 h-10 px-4 text-sm"><span>Danger</span></button>"`;
+
+exports[`Button visual snapshots > loading state 1`] = `"<button type="button" disabled="" aria-busy="true" class="inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed bg-primary hover:bg-primary-hover text-white shadow-lg shadow-primary/25 border border-transparent h-10 px-4 text-sm"><span class="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" aria-hidden="true"></span><span>Loading</span></button>"`;
+
+exports[`Button visual snapshots > primary variant 1`] = `"<button type="button" class="inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed bg-primary hover:bg-primary-hover text-white shadow-lg shadow-primary/25 border border-transparent h-10 px-4 text-sm"><span>Primary</span></button>"`;
+
+exports[`Button visual snapshots > secondary variant 1`] = `"<button type="button" class="inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-white/15 hover:bg-slate-200 dark:hover:bg-white/20 h-10 px-4 text-sm"><span>Secondary</span></button>"`;
+
+exports[`Card visual snapshots > glass variant 1`] = `"<div class="rounded-2xl border p-4 sm:p-5 bg-glass-surface backdrop-blur-xl border-glass-border">Glass card content</div>"`;
+
+exports[`Card visual snapshots > normal variant 1`] = `"<div class="rounded-2xl border p-4 sm:p-5 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">Normal card content</div>"`;
+
+exports[`EmptyState visual snapshots > with action 1`] = `"<div class="w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 text-center"><div class="mx-auto mb-3 w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400"><span class="material-symbols-outlined">inbox</span></div><h3 class="text-base font-semibold text-slate-900 dark:text-slate-100">No documents</h3><p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Upload your first document.</p><div class="mt-4 flex justify-center"><button type="button" class="inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-white/15 hover:bg-slate-200 dark:hover:bg-white/20 h-10 px-4 text-sm"><span>Upload</span></button></div></div>"`;
+
+exports[`EmptyState visual snapshots > without action 1`] = `"<div class="w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 text-center"><div class="mx-auto mb-3 w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400"><span class="material-symbols-outlined">inbox</span></div><h3 class="text-base font-semibold text-slate-900 dark:text-slate-100">Nothing here</h3><p class="mt-1 text-sm text-slate-500 dark:text-slate-400">No items found.</p></div>"`;
+
+exports[`Input visual snapshots > normal state 1`] = `"<div class="w-full"><input id="_r_0_" aria-invalid="false" class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-300 dark:border-slate-700 focus:border-primary" placeholder="Enter text..."></div>"`;
+
+exports[`Input visual snapshots > with error 1`] = `"<div class="w-full"><input id="_r_1_" aria-invalid="true" aria-describedby="_r_1_-error" class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-red-500/60 focus:border-red-500" placeholder="Email"><p id="_r_1_-error" class="mt-1 text-xs text-red-600 dark:text-red-400">Invalid email address</p></div>"`;
+
+exports[`Input visual snapshots > with helper text 1`] = `"<div class="w-full"><input id="_r_2_" aria-invalid="false" class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-300 dark:border-slate-700 focus:border-primary" placeholder="Password"><p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Must be at least 8 characters</p></div>"`;
+
+exports[`Skeleton visual snapshots > large size 1`] = `"<div class="bg-slate-200 dark:bg-slate-800 animate-pulse rounded-lg" style="width: 400px; height: 200px;" aria-hidden="true"></div>"`;
+
+exports[`Skeleton visual snapshots > medium size 1`] = `"<div class="bg-slate-200 dark:bg-slate-800 animate-pulse rounded-lg" style="width: 200px; height: 16px;" aria-hidden="true"></div>"`;
+
+exports[`Skeleton visual snapshots > small size 1`] = `"<div class="bg-slate-200 dark:bg-slate-800 animate-pulse rounded-lg" style="width: 48px; height: 48px;" aria-hidden="true"></div>"`;
+
+exports[`StatusBadge visual snapshots > CANCELLED status 1`] = `"<span class="text-xs font-bold uppercase tracking-widest px-2 py-1 rounded bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200">Cancelled</span>"`;
+
+exports[`StatusBadge visual snapshots > COMPLETED status 1`] = `"<span class="text-xs font-bold uppercase tracking-widest px-2 py-1 rounded bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Completed</span>"`;
+
+exports[`StatusBadge visual snapshots > COMPLETED_WITH_WARNINGS status 1`] = `"<span class="text-xs font-bold uppercase tracking-widest px-2 py-1 rounded bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">Completed With Warnings</span>"`;
+
+exports[`StatusBadge visual snapshots > FAILED status 1`] = `"<span class="text-xs font-bold uppercase tracking-widest px-2 py-1 rounded bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Failed</span>"`;
+
+exports[`StatusBadge visual snapshots > PENDING status 1`] = `"<span class="text-xs font-bold uppercase tracking-widest px-2 py-1 rounded bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">Pending</span>"`;
+
+exports[`StatusBadge visual snapshots > PROCESSING status 1`] = `"<span class="text-xs font-bold uppercase tracking-widest px-2 py-1 rounded bg-primary/10 text-primary">Processing</span>"`;
+
+exports[`StatusBadge visual snapshots > STANDBY status 1`] = `"<span class="text-xs font-bold uppercase tracking-widest px-2 py-1 rounded bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">Standby</span>"`;
