@@ -6,8 +6,9 @@ import logging
 import warnings
 from typing import Optional
 
-from fastapi import HTTPException, status
+from fastapi import status
 from app.config.settings import settings
+from app.exceptions import AuthenticationError
 from app.security.jwks_verifier import verify_jwt
 
 logger = logging.getLogger(__name__)
@@ -50,9 +51,8 @@ except Exception as _exc:
 def _require_supabase():
     """Raise HTTP 503 if the Supabase client is not available."""
     if supabase is None:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Authentication service is not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY.",
+        raise AuthenticationError(
+            "Authentication service is not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY.",
         )
     return supabase
 
@@ -70,11 +70,7 @@ class AuthService:
     def get_user_id_from_payload(payload: dict) -> str:
         user_id = payload.get("sub")
         if not user_id:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token missing user identity (sub)",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
+            raise AuthenticationError("Token missing user identity (sub)")
         return user_id
 
     @staticmethod
