@@ -3,6 +3,7 @@
 
 from sqlalchemy import Column, String, DateTime, ForeignKey, text, JSON
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from app.db.base import Base
 
 class DocumentVersion(Base):
@@ -14,3 +15,5 @@ class DocumentVersion(Base):
     edited_structured_data = Column(JSON, nullable=True) # Snapshot of what was edited
     output_path = Column(String, nullable=True) # Path to the DOCX/PDF generated for this version
     created_at = Column(DateTime(timezone=True), server_default=text("now()"))
+
+    document = relationship("Document", back_populates="versions", lazy="joined")

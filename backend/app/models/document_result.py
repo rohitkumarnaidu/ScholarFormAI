@@ -3,6 +3,7 @@
 
 from sqlalchemy import Column, DateTime, ForeignKey, text
 from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy.orm import relationship
 from app.db.base import Base
 
 class DocumentResult(Base):
@@ -13,3 +14,5 @@ class DocumentResult(Base):
     structured_data = Column(JSONB, nullable=True) # Detected sections, citations, references
     validation_results = Column(JSONB, nullable=True) # Violations, suggested fixes
     created_at = Column(DateTime(timezone=True), server_default=text("now()"))
+
+    document = relationship("Document", back_populates="results", lazy="joined")

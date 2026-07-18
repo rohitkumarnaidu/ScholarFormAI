@@ -19,5 +19,6 @@ from app.models.pipeline_document import (
 )
 from app.models.document_version import DocumentVersion
 from app.models.api_key import UserApiKey
+from app.models.suggestion import Suggestion
 from app.models.api_key_usage_log import ApiKeyUsageLog
 from app.models.custom_provider import CustomProvider
