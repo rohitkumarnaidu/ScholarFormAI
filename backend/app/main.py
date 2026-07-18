@@ -14,6 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.encoders import jsonable_encoder
 from app.config.settings import settings
+from app.exceptions import ScholarFormError
 from app.middleware.request_id import RequestIdMiddleware, get_request_id
 from app.middleware.rate_limit import RateLimitMiddleware
 from app.middleware.tier_rate_limit import TierRateLimitMiddleware
@@ -621,6 +622,16 @@ if SLOWAPI_AVAILABLE and Limiter is not None and get_remote_address is not None:
     logger.info("SlowAPI global rate limiting enabled.")
 else:
     logger.warning("SlowAPI not available; falling back to custom middleware-only rate limiting.")
+
+
+@app.exception_handler(ScholarFormError)
+async def scholarform_exception_handler(request: Request, exc: ScholarFormError):
+    return build_error_response(
+        request,
+        status_code=exc.http_status,
+        code=DEFAULT_ERROR_CODES.get(exc.http_status, "API_ERROR"),
+        message=str(exc),
+    )
 
 
 @app.exception_handler(HTTPException)
