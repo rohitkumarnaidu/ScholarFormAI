@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { SynthesisDownloadSection, SynthesisQualityPanel } from '../../components/synthesis/SynthesisComponents';
@@ -74,9 +74,8 @@ describe('SynthesisQualityPanel', () => {
     });
 
     it('handles empty metrics array gracefully', () => {
-        const { container } = render(<SynthesisQualityPanel score={75} metrics={[]} />);
+        render(<SynthesisQualityPanel score={75} metrics={[]} />);
         expect(screen.getByText('75')).toBeInTheDocument();
-        const metricRows = container.querySelectorAll('.border-t ~ *');
     });
 
     it('renders score of 0 correctly', () => {
