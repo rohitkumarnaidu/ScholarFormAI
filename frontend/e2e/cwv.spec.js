@@ -33,8 +33,9 @@ async function collectWebVitals(page) {
             let clsValue = 0;
             const clsObserver = new PerformanceObserver((list) => {
                 for (const entry of list.getEntries()) {
-                    if (!entry.hadRecentInput) {
-                        clsValue += entry.value;
+                    const shiftEntry = /** @type {any} */(entry);
+                    if (!shiftEntry.hadRecentInput) {
+                        clsValue += shiftEntry.value;
                     }
                 }
                 results.cls = clsValue;
@@ -53,7 +54,8 @@ async function collectWebVitals(page) {
             // FID observer
             const fidObserver = new PerformanceObserver((list) => {
                 for (const entry of list.getEntries()) {
-                    results.fid = entry.processingStart - entry.startTime;
+                    const fidEntry = /** @type {any} */(entry);
+                    results.fid = fidEntry.processingStart - fidEntry.startTime;
                     break;
                 }
             });

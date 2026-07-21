@@ -15,7 +15,7 @@ import { GeneratorSessionsResponseSchema } from '../lib/schemas';
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 export const BASE_V1_URL = `${API_BASE_URL}/api/v1`;
 
-const generateIdempotencyHash = async (text) => {
+export const generateIdempotencyHash = async (text) => {
     if (typeof crypto !== 'undefined' && crypto.subtle) {
         const msgUint8 = new TextEncoder().encode(text);
         const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
@@ -36,7 +36,7 @@ const generateIdempotencyHash = async (text) => {
  * Get an idempotency key tied to a specific path and request body.
  * Caches it in sessionStorage for 5 minutes.
  */
-const getIdempotencyKey = async (path, bodyStr) => {
+export const getIdempotencyKey = async (path, bodyStr) => {
     try {
         const hashInput = `${path}:${bodyStr}`;
         const hash = await generateIdempotencyHash(hashInput);

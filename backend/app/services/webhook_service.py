@@ -10,8 +10,10 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import hmac
+import ipaddress
 import json
 import logging
+import urllib.parse
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 from uuid import uuid4
@@ -185,7 +187,33 @@ class WebhookService:
             hashlib.sha256,
         ).hexdigest()
 
+    def _validate_webhook_url(self, url: str) -> None:
+        parsed = urllib.parse.urlparse(url)
+        if parsed.scheme != "https":
+            raise ValueError(f"Only HTTPS URLs are allowed for webhooks, got '{parsed.scheme}'")
+        hostname = parsed.hostname.lower() if parsed.hostname else ""
+        if "." not in hostname or hostname == "localhost":
+            raise ValueError(f"Webhook URL hostname '{hostname}' is not allowed")
+        try:
+            addr = ipaddress.ip_address(hostname)
+            if addr.is_private or addr.is_loopback or addr.is_link_local or addr.is_multicast or addr.is_unspecified:
+                raise ValueError(f"Webhook URL resolves to a private/internal IP address")
+        except ValueError:
+            pass
+        try:
+            addrs = set()
+            import socket
+            for info in socket.getaddrinfo(hostname, None):
+                addrs.add(info[4][0])
+            for addr_str in addrs:
+                addr = ipaddress.ip_address(addr_str)
+                if addr.is_private or addr.is_loopback or addr.is_link_local or addr.is_multicast or addr.is_unspecified:
+                    raise ValueError(f"Webhook URL '{hostname}' resolves to a private/internal IP address")
+        except OSError:
+            raise ValueError(f"Could not resolve webhook URL hostname '{hostname}'")
+
     async def _deliver(self, url: str, payload: str, signature: str) -> Tuple[int, str]:
+        self._validate_webhook_url(url)
         import httpx
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.post(

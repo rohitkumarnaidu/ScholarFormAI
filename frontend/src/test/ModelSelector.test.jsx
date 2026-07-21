@@ -6,7 +6,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import ModelSelector from '../components/generator/ModelSelector';
 
-vi.mock('@/src/services/api.core', () => ({
+vi.mock('../utils/fetchWithRetry', () => ({
     fetchWithRetry: vi.fn(),
 }));
 
@@ -32,7 +32,7 @@ describe('ModelSelector', () => {
     });
 
     it('opens dropdown on click', async () => {
-        const { fetchWithRetry } = await import('@/src/services/api.core');
+        const { fetchWithRetry } = await import('../utils/fetchWithRetry');
         fetchWithRetry.mockResolvedValue({ ok: true, json: () => Promise.resolve({ providers: [] }) });
         render(<ModelSelector {...defaultProps} />);
         const button = screen.getByRole('button');
@@ -41,14 +41,14 @@ describe('ModelSelector', () => {
     });
 
     it('fetches providers on mount with token', async () => {
-        const { fetchWithRetry } = await import('@/src/services/api.core');
+        const { fetchWithRetry } = await import('../utils/fetchWithRetry');
         fetchWithRetry.mockResolvedValue({ ok: true, json: () => Promise.resolve({ providers: [] }) });
         render(<ModelSelector {...defaultProps} />);
         expect(fetchWithRetry).toHaveBeenCalled();
     });
 
     it('shows configured models in Available section', async () => {
-        const { fetchWithRetry } = await import('@/src/services/api.core');
+        const { fetchWithRetry } = await import('../utils/fetchWithRetry');
         fetchWithRetry.mockResolvedValue({
             ok: true,
             json: () => Promise.resolve({
@@ -65,7 +65,7 @@ describe('ModelSelector', () => {
     });
 
     it('selects a model on click', async () => {
-        const { fetchWithRetry } = await import('@/src/services/api.core');
+        const { fetchWithRetry } = await import('../utils/fetchWithRetry');
         const onModelChange = vi.fn();
         fetchWithRetry.mockResolvedValue({
             ok: true,
@@ -83,14 +83,14 @@ describe('ModelSelector', () => {
     });
 
     it('shows empty state when no models returned', async () => {
-        const { fetchWithRetry } = await import('@/src/services/api.core');
+        const { fetchWithRetry } = await import('../utils/fetchWithRetry');
         fetchWithRetry.mockResolvedValue({ ok: true, json: () => Promise.resolve({ providers: [] }) });
         render(<ModelSelector {...defaultProps} />);
         fireEvent.click(screen.getByRole('button'));
     });
 
     it('closes dropdown on outside click', async () => {
-        const { fetchWithRetry } = await import('@/src/services/api.core');
+        const { fetchWithRetry } = await import('../utils/fetchWithRetry');
         fetchWithRetry.mockResolvedValue({ ok: true, json: () => Promise.resolve({ providers: [] }) });
         render(<ModelSelector {...defaultProps} />);
         fireEvent.click(screen.getByRole('button'));

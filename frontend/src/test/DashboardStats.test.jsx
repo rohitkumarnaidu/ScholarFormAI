@@ -4,15 +4,16 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import DashboardStats, { StatCard } from '../components/dashboard/DashboardStats';
+import DashboardStats, { StatsCard as StatCard } from '../components/dashboard/DashboardStats';
 
 describe('StatCard', () => {
     const baseProps = {
         title: 'Total Documents',
         value: '12',
-        subtitle: 'All manuscripts processed',
+        description: 'All manuscripts processed',
         icon: 'description',
-        color: 'text-blue-600',
+        iconColor: 'text-blue-600',
+        bgColor: 'bg-blue-50',
     };
 
     it('renders title and value', () => {
@@ -22,7 +23,7 @@ describe('StatCard', () => {
     });
 
     it('renders subtitle when provided', () => {
-        render(<StatCard {...baseProps} subtitle="All manuscripts processed" />);
+        render(<StatCard {...baseProps} description="All manuscripts processed" />);
         expect(screen.getByText('All manuscripts processed')).toBeInTheDocument();
     });
 

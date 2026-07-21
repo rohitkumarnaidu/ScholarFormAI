@@ -4,7 +4,7 @@
 
 from sqlalchemy import Column, String, DateTime, text
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, foreign
 from app.db.base import Base
 
 class User(Base):
@@ -22,7 +22,7 @@ class User(Base):
     billing_status = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=text("now()"))
 
-    documents = relationship("Document", back_populates="user", lazy="selectin")
-    suggestions = relationship("Suggestion", back_populates="user", lazy="selectin")
-    api_keys = relationship("UserApiKey", back_populates="user", lazy="selectin")
-    custom_providers = relationship("CustomProvider", back_populates="user", lazy="selectin")
+    documents = relationship("Document", back_populates="user", lazy="selectin", primaryjoin="User.id == foreign(Document.user_id)")
+    suggestions = relationship("Suggestion", back_populates="user", lazy="selectin", primaryjoin="User.id == foreign(Suggestion.user_id)")
+    api_keys = relationship("UserApiKey", back_populates="user", lazy="selectin", primaryjoin="User.id == foreign(UserApiKey.user_id)")
+    custom_providers = relationship("CustomProvider", back_populates="user", lazy="selectin", primaryjoin="User.id == foreign(CustomProvider.user_id)")

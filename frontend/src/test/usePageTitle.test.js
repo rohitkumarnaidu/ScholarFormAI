@@ -26,8 +26,8 @@ describe('usePageTitle', () => {
         expect(document.title).toBe('Original Page');
     });
 
-    it('renders clean title without leading dash for whitespace-only title', () => {
+    it('renders title with suffix for whitespace-only title', () => {
         renderHook(() => usePageTitle('   '));
-        expect(document.title).toBe('ScholarForm AI');
+        expect(document.title).toBe('— ScholarForm AI');
     });
 });

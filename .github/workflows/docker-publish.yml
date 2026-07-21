@@ -79,6 +79,8 @@ jobs:
   build-and-push-backend:
     needs: prepare
     runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.set-digest.outputs.digest }}
     strategy:
       matrix:
         platform: [linux/amd64, linux/arm64]
@@ -114,6 +116,11 @@ jobs:
           provenance: mode=max
           sbom: true
 
+      - name: Export digest
+        id: set-digest
+        if: matrix.platform == 'linux/amd64'
+        run: echo "digest=${{ steps.build-backend.outputs.digest }}" >> "$GITHUB_OUTPUT"
+
       - name: Attest backend image
         uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32
         with:
@@ -124,6 +131,8 @@ jobs:
   build-and-push-worker:
     needs: prepare
     runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.build-worker.outputs.digest }}
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10

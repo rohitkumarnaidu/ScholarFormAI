@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timezone
 from sqlalchemy import Column, String, Integer, Boolean, DateTime, Text, JSON
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, foreign
 from app.db.base import Base
 
 
@@ -21,7 +21,7 @@ class CustomProvider(Base):
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
-    user = relationship("User", back_populates="custom_providers", lazy="joined", foreign_keys="CustomProvider.user_id")
+    user = relationship("User", back_populates="custom_providers", lazy="joined", primaryjoin="foreign(CustomProvider.user_id) == User.id")
 
     def __init__(self, **kwargs):
         now = datetime.now(timezone.utc)

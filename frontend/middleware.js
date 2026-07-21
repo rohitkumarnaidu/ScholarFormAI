@@ -129,5 +129,21 @@ export default async function middleware(request) {
 }
 
 export const config = {
-    matcher: ['/admin-dashboard/:path*'],
+    matcher: [
+        '/admin-dashboard/:path*',
+        '/dashboard/:path*',
+        '/upload/:path*',
+        '/batch-upload/:path*',
+        '/history/:path*',
+        '/results/:path*',
+        '/preview/:path*',
+        '/compare/:path*',
+        '/settings/:path*',
+        '/profile/:path*',
+        '/api-keys/:path*',
+        '/generate/:path*',
+        '/synthesis/:path*',
+        '/agent/:path*',
+        '/template-editor/:path*',
+    ],
 };

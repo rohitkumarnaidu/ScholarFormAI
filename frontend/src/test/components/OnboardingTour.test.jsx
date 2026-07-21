@@ -128,11 +128,11 @@ describe('OnboardingTour', () => {
 
     it('dismisses tour on backdrop click', async () => {
         const OnboardingTour = await getComponent();
-        render(<OnboardingTour />);
+        const { container } = render(<OnboardingTour />);
         await waitFor(() => {
             expect(screen.getByText(/Welcome to ScholarForm/)).toBeInTheDocument();
         });
-        const backdrop = screen.getByRole('dialog').querySelector('[class*="pointer-events-auto"]');
+        const backdrop = container.querySelector('[class*="pointer-events-auto"]');
         if (backdrop) fireEvent.click(backdrop);
         await waitFor(() => {
             expect(localStorage.getItem('onboarding_completed')).toBe('true');

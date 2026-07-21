@@ -132,20 +132,7 @@ from app.services.scibert_gate import should_enable_scibert
 _queue_depth_redis_client = None
 
 
-DEFAULT_ERROR_CODES = {
-    400: "BAD_REQUEST",
-    401: "UNAUTHORIZED",
-    403: "FORBIDDEN",
-    404: "NOT_FOUND",
-    409: "CONFLICT",
-    413: "PAYLOAD_TOO_LARGE",
-    422: "VALIDATION_ERROR",
-    429: "RATE_LIMITED",
-    500: "INTERNAL_SERVER_ERROR",
-    501: "NOT_IMPLEMENTED",
-    502: "BAD_GATEWAY",
-    503: "SERVICE_UNAVAILABLE",
-}
+from app.routers.v1._helpers import DEFAULT_ERROR_CODES
 
 
 def build_error_response(

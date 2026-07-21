@@ -65,9 +65,9 @@ describe('ThemeContext', () => {
         expect(result.current.systemTheme).toBe('light');
     });
 
-    it('provides systemPrefersDark boolean', () => {
+    it('provides systemTheme from next-themes', () => {
         const { result } = renderHook(() => useTheme(), { wrapper: ThemeProvider });
-        expect(typeof result.current.systemPrefersDark).toBe('boolean');
+        expect(typeof result.current.systemTheme).toBe('string');
     });
 
     it('renders ThemeProvider children', () => {

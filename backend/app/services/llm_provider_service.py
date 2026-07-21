@@ -28,10 +28,14 @@ def _ls():
 
     Existing tests patch names on ``app.services.llm_service`` (e.g.
     ``settings``, ``_call_with_provider_circuit``). Resolving those names
-    through the facade at call time preserves that backward compatibility
-    after the service was decomposed.
+    through the facade at call time preserves backward compatibility.
     """
-    return sys.modules["app.services.llm_service"]
+    module = sys.modules.get("app.services.llm_service")
+    if module is not None:
+        return module
+    # Fallback to direct import if facade hasn't been loaded yet (defensive)
+    import importlib
+    return importlib.import_module("app.services.llm_service")
 
 try:
     import pybreaker
@@ -72,25 +76,29 @@ _PROVIDER_BREAKERS: Dict[str, Any] = {}
 
 
 def _provider_breaker(provider: str):
-    if not _breaker_enabled() or pybreaker is None:
+    svc = _ls()
+    svc_pybreaker = getattr(svc, "pybreaker", pybreaker)
+    if not svc._breaker_enabled() or svc_pybreaker is None:
         return None
     if provider not in _PROVIDER_BREAKERS:
-        _PROVIDER_BREAKERS[provider] = pybreaker.CircuitBreaker(
-            fail_max=_breaker_fail_max(),
-            reset_timeout=_breaker_reset_seconds(),
+        _PROVIDER_BREAKERS[provider] = svc_pybreaker.CircuitBreaker(
+            fail_max=svc._breaker_fail_max(),
+            reset_timeout=svc._breaker_reset_seconds(),
             name=f"llm_{provider}",
         )
     return _PROVIDER_BREAKERS[provider]
 
 
 def _call_with_provider_circuit(provider: str, fn):
-    breaker = _provider_breaker(provider)
+    svc = _ls()
+    breaker = svc._provider_breaker(provider)
     if breaker is None:
         return fn()
     try:
         return breaker.call(fn)
     except Exception as exc:
-        if pybreaker is not None and isinstance(exc, pybreaker.CircuitBreakerError):
+        svc_pybreaker = getattr(svc, "pybreaker", pybreaker)
+        if svc_pybreaker is not None and isinstance(exc, svc_pybreaker.CircuitBreakerError):
             raise RuntimeError(f"{provider} circuit breaker open") from exc
         raise
 

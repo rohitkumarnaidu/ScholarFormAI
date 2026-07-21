@@ -2,9 +2,9 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-from sqlalchemy import Column, String, DateTime, text, ForeignKey, Integer, JSON
+from sqlalchemy import Column, String, DateTime, text, Integer, JSON
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, foreign
 from app.db.base import Base
 
 class Document(Base):
@@ -28,7 +28,7 @@ class Document(Base):
     created_at = Column(DateTime(timezone=True), server_default=text("now()"))
     updated_at = Column(DateTime(timezone=True), server_default=text("now()"), onupdate=text("now()"))
 
-    user = relationship("User", lazy="joined", foreign_keys="Document.user_id")
+    user = relationship("User", lazy="joined", primaryjoin="foreign(Document.user_id) == User.id")
     results = relationship("DocumentResult", back_populates="document", lazy="selectin")
     versions = relationship("DocumentVersion", back_populates="document", lazy="selectin")
     processing_statuses = relationship("ProcessingStatus", back_populates="document", lazy="selectin")

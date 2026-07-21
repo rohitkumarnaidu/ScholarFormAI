@@ -19,7 +19,7 @@ describe('fetchTemplates', () => {
         mockFetchWithAuth.mockResolvedValue({ templates: mockTemplates });
 
         const result = await fetchTemplates();
-        expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/v1/templates');
+        expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/v1/templates/builtin');
         expect(result).toEqual(mockTemplates);
     });
 
@@ -60,7 +60,7 @@ describe('getBuiltinTemplates', () => {
         mockFetchWithAuth.mockResolvedValue({ templates: mockTemplates });
 
         const result = await getBuiltinTemplates();
-        expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/v1/templates');
+        expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/v1/templates/builtin');
         expect(result).toEqual(mockTemplates);
     });
 
@@ -93,7 +93,7 @@ describe('searchCSLStyles', () => {
     it('calls fetchWithAuth without search param when query is empty', async () => {
         mockFetchWithAuth.mockResolvedValue({ styles: [] });
         await searchCSLStyles();
-        expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/v1/templates/csl?');
+        expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/v1/templates/csl?search=');
     });
 
     it('returns data from API', async () => {

@@ -33,8 +33,7 @@
         "diff": "^9.0.0",
         "framer-motion": "^12.35.2",
         "lucide-react": "^0.577.0",
-        "next": "^16.2.10",
-        "next-pwa": "^5.6.0",
+        "next": "^16.1.6",
         "next-themes": "^0.4.6",
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
@@ -66,5 +65,15 @@
         "tailwindcss": "^3.4.1",
         "typescript": "6.0.3",
         "vitest": "^4.1.8"
+    },
+    "overrides": {
+        "@babel/core": "^7.29.1",
+        "@babel/plugin-transform-modules-systemjs": "^7.29.4",
+        "@opentelemetry/core": "^2.8.0",
+        "brace-expansion": "^2.0.1",
+        "cross-spawn": "^7.0.6",
+        "path-to-regexp": "^8.0.0",
+        "serialize-javascript": "^6.0.2",
+        "uuid": "^11.1.0"
     }
 }

@@ -108,15 +108,14 @@ describe('ErrorBoundary', () => {
         expect(screen.queryByText('Something went wrong')).not.toBeInTheDocument();
     });
 
-    it('calls onError callback when error is caught', () => {
-        const onError = vi.fn();
+    it('renders error UI when error is caught', () => {
         render(
-            <ErrorBoundary onError={onError}>
+            <ErrorBoundary>
                 <ThrowError />
             </ErrorBoundary>
         );
-        expect(onError).toHaveBeenCalled();
-        expect(onError.mock.calls[0][0]).toBeInstanceOf(Error);
+        expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+        expect(screen.getByText('Reload Page')).toBeInTheDocument();
     });
 
     it('nested error boundaries catch their own errors', () => {

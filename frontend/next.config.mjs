@@ -3,14 +3,6 @@
 
 /** @type {import('next').NextConfig} */
 import { withSentryConfig } from "@sentry/nextjs";
-import withPWAInit from "next-pwa";
-
-const withPWA = withPWAInit({
-    dest: "public",
-    disable: process.env.NODE_ENV === 'development',
-    register: true,
-    skipWaiting: true,
-});
 
 const nextConfig = {
     reactStrictMode: true,
@@ -33,6 +25,23 @@ const nextConfig = {
                     { key: "X-Content-Type-Options", value: "nosniff" },
                     { key: "X-Frame-Options", value: "DENY" },
                     { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+                    { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains; preload" },
+                    { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
+                    {
+                        key: "Content-Security-Policy",
+                        value: [
+                            "default-src 'self'",
+                            "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://js.posthog.com https://*.posthog.com",
+                            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+                            "font-src 'self' https://fonts.gstatic.com data:",
+                            "img-src 'self' data: blob: https://*.supabase.co",
+                            "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://scholarform.onrender.com https://api.posthog.com https://*.posthog.com",
+                            "frame-src 'none'",
+                            "object-src 'none'",
+                            "base-uri 'self'",
+                            "form-action 'self'",
+                        ].join("; "),
+                    },
                 ],
             },
             {
@@ -59,7 +68,7 @@ const nextConfig = {
     },
 };
 
-export default withSentryConfig(withPWA(nextConfig), {
+export default withSentryConfig(nextConfig, {
     org: process.env.SENTRY_ORG,
     project: process.env.SENTRY_PROJECT,
     silent: !process.env.CI,

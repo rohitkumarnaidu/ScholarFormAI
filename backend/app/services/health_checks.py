@@ -92,7 +92,7 @@ def _reset_readiness_cache_for_tests() -> None:
     _health_cache_lock = None
 
 
-def _service_urls(setting_method_name: str, fallback_attr: str | None = None) -> list[str]:
+def _service_urls(setting_method_name: str) -> list[str]:
     resolver = getattr(settings, setting_method_name, None)
     if callable(resolver):
         try:
@@ -102,31 +102,15 @@ def _service_urls(setting_method_name: str, fallback_attr: str | None = None) ->
             resolved = []
         if isinstance(resolved, list):
             return [str(url).rstrip("/") for url in resolved if str(url).strip()]
-
-    if fallback_attr:
-        fallback_value = getattr(settings, fallback_attr, None)
-        if fallback_value:
-            return [str(fallback_value).rstrip("/")]
     return []
 
 
-def _service_health_path(service_name: str, default_path: str = "/") -> str:
-    resolver = getattr(settings, "get_service_health_path", None)
-    if callable(resolver):
-        try:
-            path = str(resolver(service_name)).strip()
-        except Exception as e:
-            logger.warning("Failed to resolve health path for %s: %s", service_name, e)
-            path = default_path
-    else:
-        path = default_path
-
-    if not path:
-        path = default_path
-    if not path.startswith("/"):
-        path = f"/{path}"
-    if len(path) > 1:
-        path = path.rstrip("/")
+def _service_health_path(service_name: str) -> str:
+    try:
+        path = settings.get_service_health_path(service_name)
+    except (ValueError, Exception) as e:
+        logger.warning("Failed to resolve health path for %s: %s", service_name, e)
+        path = "/"
     return path
 
 
@@ -202,7 +186,7 @@ async def _build_health_payload() -> tuple[dict, int]:
     from app.db.supabase_client import check_supabase_health
     from app.services.model_store import model_store
 
-    health_status = {
+    health_status: dict[str, Any] = {
         "status": "healthy",
         "version": "1.0.0",
         "components": {},
@@ -217,22 +201,24 @@ async def _build_health_payload() -> tuple[dict, int]:
         health_status["components"]["supabase_db"] = f"unhealthy: {str(exc)}"
         health_status["status"] = "degraded"
 
-    try:
-        async with httpx.AsyncClient(timeout=2) as client:
-            response = await client.get(f"{settings.OLLAMA_URL}/api/tags")
-            if response.status_code == 200:
-                health_status["components"]["ollama"] = "healthy"
-            else:
-                health_status["components"]["ollama"] = "unhealthy"
-                health_status["status"] = "degraded"
-    except httpx.RequestError as exc:
-        logger.warning("Ollama health check request failed: %s", exc)
-        health_status["components"]["ollama"] = "unavailable (fallback active)"
-        health_status["status"] = "degraded"
-    except Exception as exc:
-        logger.error("Ollama health check unexpected error: %s", exc)
-        health_status["components"]["ollama"] = "unavailable (fallback active)"
-        health_status["status"] = "degraded"
+    ollama_url = getattr(settings, "OLLAMA_URL", "") or getattr(settings, "OLLAMA_BASE_URL", "")
+    if ollama_url:
+        try:
+            async with httpx.AsyncClient(timeout=2) as client:
+                response = await client.get(f"{ollama_url}/api/tags")
+                if response.status_code == 200:
+                    health_status["components"]["ollama"] = "healthy"
+                else:
+                    health_status["components"]["ollama"] = "unhealthy"
+                    health_status["status"] = "degraded"
+        except httpx.RequestError as exc:
+            logger.warning("Ollama health check request failed: %s", exc)
+            health_status["components"]["ollama"] = "unavailable (fallback active)"
+            health_status["status"] = "degraded"
+        except Exception as exc:
+            logger.error("Ollama health check unexpected error: %s", exc)
+            health_status["components"]["ollama"] = "unavailable (fallback active)"
+            health_status["status"] = "degraded"
 
     try:
         if model_store.get_model("scibert_model") is not None:
@@ -256,6 +242,14 @@ async def _build_readiness_payload() -> tuple[dict, int]:
     dependency_status: dict[str, Any] = {}
 
     try:
+        from app.cache.redis_cache import redis_cache
+        redis_health = redis_cache.health()
+        checks["redis"] = redis_health["status"]
+    except Exception as exc:
+        logger.debug("Redis health check skipped: %s", exc)
+        checks["redis"] = "unavailable"
+
+    try:
         sb_health = check_supabase_health()
         checks["database"] = sb_health.get("status", "unknown")
         if sb_health.get("status") == "healthy":
@@ -273,8 +267,8 @@ async def _build_readiness_payload() -> tuple[dict, int]:
     if settings.GROBID_ENABLED:
         grobid_status = await _probe_service_targets(
             service_name="grobid",
-            urls=_service_urls("get_grobid_urls", "GROBID_URL"),
-            health_path=_service_health_path("grobid", "/api/isalive"),
+            urls=_service_urls("get_grobid_urls"),
+            health_path=_service_health_path("grobid"),
             timeout_seconds=2.0,
         )
         dependency_status["grobid"] = grobid_status
@@ -291,35 +285,35 @@ async def _build_readiness_payload() -> tuple[dict, int]:
 
     dependency_status["docling"] = await _probe_service_targets(
         service_name="docling",
-        urls=_service_urls("get_docling_urls", "DOCLING_URL"),
-        health_path=_service_health_path("docling", "/"),
+        urls=_service_urls("get_docling_urls"),
+        health_path=_service_health_path("docling"),
         timeout_seconds=2.0,
     )
     checks["docling"] = dependency_status["docling"]["status"]
 
     dependency_status["ocr"] = await _probe_service_targets(
         service_name="ocr",
-        urls=_service_urls("get_ocr_urls", "OCR_URL"),
-        health_path=_service_health_path("ocr", "/"),
+        urls=_service_urls("get_ocr_urls"),
+        health_path=_service_health_path("ocr"),
         timeout_seconds=2.0,
     )
     checks["ocr"] = dependency_status["ocr"]["status"]
 
     dependency_status["docx_converter"] = await _probe_service_targets(
         service_name="docx_converter",
-        urls=_service_urls("get_docx_converter_urls", "DOCX_CONVERTER_URL"),
-        health_path=_service_health_path("docx_converter", "/"),
+        urls=_service_urls("get_docx_converter_urls"),
+        health_path=_service_health_path("docx_converter"),
         timeout_seconds=2.0,
     )
     checks["docx_converter"] = dependency_status["docx_converter"]["status"]
 
-    nougat_urls = _service_urls("get_nougat_urls", "NOUGAT_URL")
+    nougat_urls = _service_urls("get_nougat_urls")
     if getattr(settings, "ENABLE_NOUGAT_PARSER", False):
         if nougat_urls:
             dependency_status["nougat"] = await _probe_service_targets(
                 service_name="nougat",
                 urls=nougat_urls,
-                health_path=_service_health_path("nougat", "/"),
+                health_path=_service_health_path("nougat"),
                 timeout_seconds=2.0,
             )
             checks["nougat"] = dependency_status["nougat"]["status"]
@@ -348,13 +342,13 @@ async def _build_readiness_payload() -> tuple[dict, int]:
         logger.error("LLM health check failed in readiness: %s", exc)
         checks["llm_status"] = "unknown"
 
-    scibert_urls = _service_urls("get_scibert_urls", "SCIBERT_URL")
+    scibert_urls = _service_urls("get_scibert_urls")
     if should_enable_scibert():
         if scibert_urls:
             dependency_status["scibert"] = await _probe_service_targets(
                 service_name="scibert",
                 urls=scibert_urls,
-                health_path=_service_health_path("scibert", "/"),
+                health_path=_service_health_path("scibert"),
                 timeout_seconds=2.0,
             )
             checks["scibert"] = dependency_status["scibert"]["status"]

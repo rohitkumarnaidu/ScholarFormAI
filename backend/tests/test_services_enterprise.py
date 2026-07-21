@@ -35,25 +35,27 @@ class TestDocumentServiceEnterprise:
     async def test_get_document_result_success(self, ds):
         mock_client = MagicMock()
         chain = MagicMock()
-        chain.execute.return_value = MagicMock(data={"id": "res-1", "document_id": "doc-1"})
+        doc_id = "550e8400-e29b-41d4-a716-446655440001"
+        chain.execute.return_value = MagicMock(data={"id": "res-1", "document_id": doc_id})
         chain.maybe_single.return_value = chain
         chain.eq.return_value = chain
         mock_client.table.return_value.select.return_value = chain
-        with patch("app.services.document_service.get_supabase_client", return_value=mock_client):
-            with patch.object(type(ds), "_should_query_document_tables", return_value=True):
-                result = await ds.get_document_result("doc-1")
-        assert result == {"id": "res-1", "document_id": "doc-1"}
+        with patch("app.services.document_crud_service.get_supabase_client", return_value=mock_client):
+            with patch("app.db.repositories.base.get_supabase_client", return_value=mock_client):
+                with patch("app.services.document_crud_service.DocumentCrudService._should_query_document_tables", return_value=True):
+                    result = await ds.get_document_result(doc_id)
+        assert result == {"id": "res-1", "document_id": doc_id}
 
     @pytest.mark.asyncio
     async def test_get_document_result_non_uuid(self, ds):
-        with patch.object(type(ds), "_should_query_document_tables", return_value=False):
+        with patch("app.services.document_crud_service.DocumentCrudService._should_query_document_tables", return_value=False):
             result = await ds.get_document_result("bad-id")
         assert result is None
 
     @pytest.mark.asyncio
     async def test_get_document_result_supabase_none(self, ds):
-        with patch("app.services.document_service.get_supabase_client", return_value=None):
-            with patch.object(type(ds), "_should_query_document_tables", return_value=True):
+        with patch("app.services.document_crud_service.get_supabase_client", return_value=None):
+            with patch("app.services.document_crud_service.DocumentCrudService._should_query_document_tables", return_value=True):
                 with pytest.raises(Exception):
                     await ds.get_document_result("550e8400-e29b-41d4-a716-446655440000")
 
@@ -66,21 +68,23 @@ class TestDocumentServiceEnterprise:
         mock_client.table.return_value.select.return_value = chain
         err = type("APIError", (Exception,), {})({"message": "fail"})
         chain.execute.side_effect = err
-        with patch("app.services.document_service.get_supabase_client", return_value=mock_client):
-            with patch.object(type(ds), "_should_query_document_tables", return_value=True):
-                with pytest.raises(Exception):
-                    await ds.get_document_result("doc-1")
+        with patch("app.services.document_crud_service.get_supabase_client", return_value=mock_client):
+            with patch("app.db.repositories.base.get_supabase_client", return_value=mock_client):
+                with patch("app.services.document_crud_service.DocumentCrudService._should_query_document_tables", return_value=True):
+                    with pytest.raises(Exception):
+                        await ds.get_document_result("550e8400-e29b-41d4-a716-446655440001")
 
     @pytest.mark.asyncio
     async def test_upsert_document_result_success(self, ds):
         mock_client = MagicMock()
         mock_client.table.return_value.upsert.return_value.execute.return_value = MagicMock()
-        with patch("app.services.document_service.get_supabase_client", return_value=mock_client):
-            await ds.upsert_document_result("doc-1", structured_data={"key": "val"}, validation_results={"ok": True})
+        with patch("app.services.document_crud_service.get_supabase_client", return_value=mock_client):
+            with patch("app.db.repositories.base.get_supabase_client", return_value=mock_client):
+                await ds.upsert_document_result("doc-1", structured_data={"key": "val"}, validation_results={"ok": True})
 
     @pytest.mark.asyncio
     async def test_upsert_document_result_supabase_none(self, ds):
-        with patch("app.services.document_service.get_supabase_client", return_value=None):
+        with patch("app.services.document_crud_service.get_supabase_client", return_value=None):
             with pytest.raises(Exception):
                 await ds.upsert_document_result("doc-1")
 
@@ -91,14 +95,15 @@ class TestDocumentServiceEnterprise:
         chain.execute.return_value = MagicMock(data=[{"phase": "parsing", "status": "done"}])
         chain.eq.return_value = chain
         mock_client.table.return_value.select.return_value = chain
-        with patch("app.services.document_service.get_supabase_client", return_value=mock_client):
-            with patch.object(type(ds), "_should_query_document_tables", return_value=True):
-                result = await ds.get_processing_statuses("doc-1")
+        with patch("app.services.document_crud_service.get_supabase_client", return_value=mock_client):
+            with patch("app.db.repositories.base.get_supabase_client", return_value=mock_client):
+                with patch("app.services.document_crud_service.DocumentCrudService._should_query_document_tables", return_value=True):
+                    result = await ds.get_processing_statuses("550e8400-e29b-41d4-a716-446655440001")
         assert result == [{"phase": "parsing", "status": "done"}]
 
     @pytest.mark.asyncio
     async def test_get_processing_statuses_non_uuid_returns_empty(self, ds):
-        with patch.object(type(ds), "_should_query_document_tables", return_value=False):
+        with patch("app.services.document_crud_service.DocumentCrudService._should_query_document_tables", return_value=False):
             result = await ds.get_processing_statuses("bad-id")
         assert result == []
 
@@ -106,12 +111,13 @@ class TestDocumentServiceEnterprise:
     async def test_upsert_processing_status_success(self, ds):
         mock_client = MagicMock()
         mock_client.table.return_value.upsert.return_value.execute.return_value = MagicMock()
-        with patch("app.services.document_service.get_supabase_client", return_value=mock_client):
-            await ds.upsert_processing_status("doc-1", "parsing", "running", progress_percentage=50, message="parsing doc")
+        with patch("app.services.document_crud_service.get_supabase_client", return_value=mock_client):
+            with patch("app.db.repositories.base.get_supabase_client", return_value=mock_client):
+                await ds.upsert_processing_status("doc-1", "parsing", "running", progress_percentage=50, message="parsing doc")
 
     @pytest.mark.asyncio
     async def test_upsert_processing_status_supabase_none(self, ds):
-        with patch("app.services.document_service.get_supabase_client", return_value=None):
+        with patch("app.services.document_crud_service.get_supabase_client", return_value=None):
             with pytest.raises(Exception):
                 await ds.upsert_processing_status("doc-1", "p", "s")
 
@@ -121,15 +127,15 @@ class TestDocumentServiceEnterprise:
         mock_client = MagicMock()
         err = type("E", (Exception,), {})('column "file_hash" does not exist (PGRST204)')
         mock_client.table.return_value.insert.return_value.execute.side_effect = [err, MagicMock(data=[{"id": "doc-1"}])]
-        with patch("app.services.document_service.get_supabase_client", return_value=mock_client):
-            DocumentService._supports_file_hash = None
-            result = await ds.create_document("doc-1", "user-1", "test.pdf", "ieee", file_hash="abc123")
+        with patch("app.services.document_crud_service.get_supabase_client", return_value=mock_client):
+            with patch("app.db.repositories.base.get_supabase_client", return_value=mock_client):
+                result = await ds.create_document("doc-1", "user-1", "test.pdf", "ieee", file_hash="abc123")
         assert result == {"id": "doc-1"}
-        assert DocumentService._supports_file_hash is False
+        assert DocumentService._instance._crud._supports_file_hash is False
 
     @pytest.mark.asyncio
     async def test_create_document_supabase_none(self, ds):
-        with patch("app.services.document_service.get_supabase_client", return_value=None):
+        with patch("app.services.document_crud_service.get_supabase_client", return_value=None):
             with pytest.raises(Exception):
                 await ds.create_document("doc-1", "user-1", "test.pdf", "ieee")
 
@@ -140,38 +146,41 @@ class TestDocumentServiceEnterprise:
         chain.eq.return_value = MagicMock(execute=MagicMock())
         chain.update.return_value = chain
         mock_client.table.return_value = chain
-        with patch("app.services.document_service.get_supabase_client", return_value=mock_client):
-            result = await ds.mark_document_completed("doc-1", "/tmp/out.pdf", raw_text="hello world")
+        with patch("app.services.document_crud_service.get_supabase_client", return_value=mock_client):
+            with patch("app.db.repositories.base.get_supabase_client", return_value=mock_client):
+                result = await ds.mark_document_completed("doc-1", "/tmp/out.pdf", raw_text="hello world")
         assert result is None
 
     @pytest.mark.asyncio
     async def test_delete_document_cleans_up_files(self, ds):
-        from app.services.document_service import DocumentService
-        with patch("app.services.document_service.os.path.isfile", return_value=True):
-            with patch("app.services.document_service.os.remove") as mock_remove:
-                with patch.object(DocumentService, "get_document", return_value={"id": "doc-1", "output_path": "/tmp/out.pdf", "original_file_path": "/tmp/in.pdf"}):
+        from app.db.repositories.document_repository import DocumentRepository
+        with patch("app.db.repositories.document_repository.os.path.isfile", return_value=True):
+            with patch("app.db.repositories.document_repository.os.remove") as mock_remove:
+                with patch.object(DocumentRepository, "get", return_value={"id": "doc-1", "output_path": "/tmp/out.pdf", "original_file_path": "/tmp/in.pdf"}):
                     mock_client = MagicMock()
                     chain = MagicMock()
                     chain.execute.return_value = MagicMock(data=[{"id": "doc-1"}])
                     chain.eq.return_value = chain
                     mock_client.table.return_value.delete.return_value = chain
-                    with patch("app.services.document_service.get_supabase_client", return_value=mock_client):
-                        result = await ds.delete_document("doc-1")
+                    with patch("app.services.document_crud_service.get_supabase_client", return_value=mock_client):
+                        with patch("app.db.repositories.base.get_supabase_client", return_value=mock_client):
+                            result = await ds.delete_document("doc-1")
         assert result is True
         assert mock_remove.call_count == 2
 
     @pytest.mark.asyncio
     async def test_delete_document_zero_rows_raises(self, ds):
-        from app.services.document_service import DocumentService
-        with patch.object(DocumentService, "get_document", return_value={"id": "doc-1"}):
+        from app.db.repositories.document_repository import DocumentRepository
+        with patch.object(DocumentRepository, "get", return_value={"id": "doc-1"}):
             mock_client = MagicMock()
             chain = MagicMock()
             chain.execute.return_value = MagicMock(data=[])
             chain.eq.return_value = chain
             mock_client.table.return_value.delete.return_value = chain
-            with patch("app.services.document_service.get_supabase_client", return_value=mock_client):
-                with pytest.raises(Exception):
-                    await ds.delete_document("doc-1")
+            with patch("app.services.document_crud_service.get_supabase_client", return_value=mock_client):
+                with patch("app.db.repositories.base.get_supabase_client", return_value=mock_client):
+                    with pytest.raises(Exception):
+                        await ds.delete_document("doc-1")
 
 
 # ═════════════════════════════════════════════════════════════════════════════ #
@@ -289,10 +298,9 @@ class TestLlmServiceEnterprise:
         assert len(key) == len("llm_cache:") + 64
 
     def test_generate_litellm_available(self):
-        import app.services.llm_service as llm_mod
-        with patch.object(llm_mod, "LITELLM_AVAILABLE", True):
-            with patch.object(llm_mod, "completion", create=True) as mock_completion:
-                with patch("app.cache.redis_cache.redis_cache") as mock_cache:
+        with patch("litellm.completion") as mock_completion:
+            with patch("app.cache.redis_cache.redis_cache") as mock_cache:
+                with patch("app.services.llm_service.LITELLM_AVAILABLE", True):
                     mock_cache.get_llm_result.return_value = None
                     mock_choice = MagicMock()
                     mock_choice.message.content = "Hello response"
@@ -302,10 +310,9 @@ class TestLlmServiceEnterprise:
                     assert result == "Hello response"
 
     def test_generate_litellm_empty_choices(self):
-        import app.services.llm_service as llm_mod
-        with patch.object(llm_mod, "LITELLM_AVAILABLE", True):
-            with patch.object(llm_mod, "completion", create=True) as mock_completion:
-                with patch("app.cache.redis_cache.redis_cache") as mock_cache:
+        with patch("litellm.completion") as mock_completion:
+            with patch("app.cache.redis_cache.redis_cache") as mock_cache:
+                with patch("app.services.llm_service.LITELLM_AVAILABLE", True):
                     mock_cache.get_llm_result.return_value = None
                     mock_completion.return_value = MagicMock(choices=[])
                     from app.services.llm_service import generate
@@ -637,9 +644,8 @@ class TestHealthChecksEnterprise:
         from app.services.health_checks import _service_urls
         with patch("app.services.health_checks.settings") as mock_s:
             mock_s.get_service_urls = None
-            mock_s.SOME_URL = "http://host:8000"
-            result = _service_urls("get_service_urls", "SOME_URL")
-            assert result == ["http://host:8000"]
+            result = _service_urls("get_service_urls")
+            assert result == []
 
     def test_service_urls_empty(self):
         from app.services.health_checks import _service_urls

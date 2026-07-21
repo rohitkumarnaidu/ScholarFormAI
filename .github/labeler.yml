@@ -1,71 +1,21 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2026 ScholarForm AI
-
-# ScholarForm AI — Auto-labeler configuration
-# Matches PR file changes against path patterns
-
-# Component labels
 backend:
-  - changed-files:
-      - any-glob-to-any-file: ["backend/**/*.py", "backend/**/*.toml", "backend/**/*.cfg"]
+- changed-files:
+  - any-glob-to-any-file: 'backend/**'
 
 frontend:
-  - changed-files:
-      - any-glob-to-any-file: ["frontend/**/*.js", "frontend/**/*.jsx", "frontend/**/*.ts", "frontend/**/*.tsx", "frontend/**/*.css"]
+- changed-files:
+  - any-glob-to-any-file: 'frontend/**'
 
-pipeline:
-  - changed-files:
-      - any-glob-to-any-file: ["backend/app/pipeline/**/*"]
+ci/cd:
+- changed-files:
+  - any-glob-to-any-file: '.github/**'
 
 documentation:
-  - changed-files:
-      - any-glob-to-any-file: ["**/*.md", "docs/**/*"]
-
-dependencies:
-  - changed-files:
-      - any-glob-to-any-file: ["backend/requirements*.txt", "frontend/package*.json", "frontend/yarn.lock"]
+- changed-files:
+  - any-glob-to-any-file: 'docs/**'
+  - any-glob-to-any-file: '*.md'
 
 docker:
-  - changed-files:
-      - any-glob-to-any-file: ["**/Dockerfile*", "**/.dockerignore", "docker-compose*"]
-
-ci-cd:
-  - changed-files:
-      - any-glob-to-any-file: [".github/**/*"]
-
-deployment:
-  - changed-files:
-      - any-glob-to-any-file: ["render.yaml", "deploy/**/*"]
-
-security:
-  - changed-files:
-      - any-glob-to-any-file: ["SECURITY.md", ".secrets.baseline", "backend/tests/security/**/*"]
-
-# Release labels
-release:
-  - changed-files:
-      - any-glob-to-any-file: ["CHANGELOG.md", "CITATION.cff"]
-
-tests:
-  - changed-files:
-      - any-glob-to-any-file: ["**/test_*.py", "**/*.spec.js", "**/e2e/**/*"]
-
-# Size-based labels
-size-small:
-  - changed-files:
-      - any-glob-to-any-file: ["**/*"]
-    changes-count:
-      - lte: 50
-
-size-medium:
-  - changed-files:
-      - any-glob-to-any-file: ["**/*"]
-    changes-count:
-      - gt: 50
-      - lte: 200
-
-size-large:
-  - changed-files:
-      - any-glob-to-any-file: ["**/*"]
-    changes-count:
-      - gt: 200
+- changed-files:
+  - any-glob-to-any-file: '**/Dockerfile'
+  - any-glob-to-any-file: '**/docker-compose*'
