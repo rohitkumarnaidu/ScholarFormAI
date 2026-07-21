@@ -6,7 +6,7 @@ import logging
 import warnings
 from typing import Optional
 
-from fastapi import status
+from fastapi import HTTPException, status
 from app.config.settings import settings
 from app.exceptions import AuthenticationError
 from app.security.jwks_verifier import verify_jwt
@@ -49,10 +49,11 @@ except Exception as _exc:
 
 
 def _require_supabase():
-    """Raise HTTP 503 if the Supabase client is not available."""
+    """Raise HTTP 403 if the Supabase client is not available."""
     if supabase is None:
-        raise AuthenticationError(
-            "Authentication service is not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY.",
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Authentication service is not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY.",
         )
     return supabase
 
@@ -70,7 +71,10 @@ class AuthService:
     def get_user_id_from_payload(payload: dict) -> str:
         user_id = payload.get("sub")
         if not user_id:
-            raise AuthenticationError("Token missing user identity (sub)")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Token missing user identity (sub)",
+            )
         return user_id
 
     @staticmethod
@@ -96,7 +100,7 @@ class AuthService:
             logger.error("Signup failed for %s: %s", email, exc)
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=str(exc),
+                detail="An account with this email may already exist.",
             )
 
     @staticmethod
@@ -116,7 +120,7 @@ class AuthService:
             logger.warning("Login failed for %s: %s", email, exc)
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=str(exc),
+                detail="Invalid credentials.",
             )
 
     @staticmethod
@@ -131,7 +135,7 @@ class AuthService:
             logger.error("Forgot-password failed for %s: %s", email, exc)
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=str(exc),
+                detail="Password reset request failed. Please try again.",
             )
 
     @staticmethod
@@ -155,7 +159,7 @@ class AuthService:
             logger.error("Password reset failed for %s: %s", email, exc)
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Reset failed: {str(exc)}",
+                detail="Password reset failed. Please try again.",
             )
 
     @staticmethod
@@ -176,5 +180,5 @@ class AuthService:
             logger.warning("OTP verification failed for %s: %s", email, exc)
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Verification failed: {str(exc)}",
+                detail="Verification failed. Please try again.",
             )

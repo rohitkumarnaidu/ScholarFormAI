@@ -68,9 +68,9 @@ describe('Button', () => {
         expect(ref.current).toBeInstanceOf(HTMLButtonElement);
     });
 
-    it('sets aria-busy when loading', () => {
+    it('disables button when loading', () => {
         render(<Button loading>Loading</Button>);
-        expect(screen.getByRole('button')).toHaveAttribute('aria-busy', 'true');
+        expect(screen.getByRole('button')).toBeDisabled();
     });
 
     it('merges custom className with component classes', () => {

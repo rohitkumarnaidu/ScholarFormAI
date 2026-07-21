@@ -1,48 +1,15 @@
-# ScholarForm AI CODEOWNERS
-#
-# Each line is a file pattern followed by one or more owners.
-# Order matters: last matching pattern takes precedence.
-
-# Global defaults
+# Default owners for everything
 * @rohitkumarnaidu
 
-# Backend
+# Backend changes
 /backend/ @rohitkumarnaidu
-backend/app/pipeline/ @rohitkumarnaidu
-backend/app/services/ @rohitkumarnaidu
-backend/app/tasks/ @rohitkumarnaidu
-backend/tests/ @rohitkumarnaidu
-/requirements.txt @rohitkumarnaidu
 
-# Frontend
+# Frontend changes
 /frontend/ @rohitkumarnaidu
-frontend/src/ @rohitkumarnaidu
-frontend/e2e/ @rohitkumarnaidu
 
-# Infrastructure
+# CI/CD changes
 /.github/ @rohitkumarnaidu
-/deploy/ @rohitkumarnaidu
-/render.yaml @rohitkumarnaidu
-Dockerfile* @rohitkumarnaidu
-docker-compose* @rohitkumarnaidu
 
 # Documentation
 /docs/ @rohitkumarnaidu
-/README.md @rohitkumarnaidu
-/CONTRIBUTING.md @rohitkumarnaidu
-/CHANGELOG.md @rohitkumarnaidu
-
-# Security
-/SECURITY.md @rohitkumarnaidu
-.github/ISSUE_TEMPLATE/bug_report.md @rohitkumarnaidu
-
-# Configuration
-.pre-commit-config.yaml @rohitkumarnaidu
-.secrets.baseline @rohitkumarnaidu
-.gitattributes @rohitkumarnaidu
-.editorconfig @rohitkumarnaidu
-
-# License & Legal
-/LICENSE @rohitkumarnaidu
-/GOVERNANCE.md @rohitkumarnaidu
-/MAINTAINERS.md @rohitkumarnaidu
+*.md @rohitkumarnaidu

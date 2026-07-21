@@ -20,6 +20,8 @@ from typing import Any, Iterable, Optional
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
 
+from app.common.constants import SERVICE_HEALTH_DEFAULTS
+
 logger = logging.getLogger(__name__)
 
 BACKEND_ROOT = Path(__file__).resolve().parents[2]
@@ -130,83 +132,7 @@ def _normalize_health_path(value: str | None, *, default_path: str) -> str:
     return normalized or default_path
 
 
-class _ServiceUrlMixin:
-    def get_grobid_urls(self) -> list[str]:
-        return _resolve_service_urls(
-            getattr(self, "GROBID_URLS", None),
-            (
-                getattr(self, "GROBID_URL", None),
-                getattr(self, "GROBID_BASE_URL", None),
-            ),
-            default_urls=(DEFAULT_GROBID_URL,),
-        )
-
-    def get_docling_urls(self) -> list[str]:
-        return _resolve_service_urls(
-            getattr(self, "DOCLING_URLS", None),
-            (getattr(self, "DOCLING_URL", None),),
-        )
-
-    def get_ocr_urls(self) -> list[str]:
-        return _resolve_service_urls(
-            getattr(self, "OCR_URLS", None),
-            (getattr(self, "OCR_URL", None),),
-        )
-
-    def get_docx_converter_urls(self) -> list[str]:
-        return _resolve_service_urls(
-            getattr(self, "DOCX_CONVERTER_URLS", None),
-            (getattr(self, "DOCX_CONVERTER_URL", None),),
-        )
-
-    def get_nougat_urls(self) -> list[str]:
-        return _resolve_service_urls(
-            getattr(self, "NOUGAT_URLS", None),
-            (getattr(self, "NOUGAT_URL", None),),
-        )
-
-    def get_scibert_urls(self) -> list[str]:
-        return _resolve_service_urls(
-            getattr(self, "SCIBERT_URLS", None),
-            (getattr(self, "SCIBERT_URL", None),),
-        )
-
-    def get_service_health_path(self, service_name: str) -> str:
-        normalized_name = service_name.strip().lower()
-        if normalized_name == "grobid":
-            return _normalize_health_path(
-                getattr(self, "GROBID_HEALTH_PATH", DEFAULT_GROBID_HEALTH_PATH),
-                default_path=DEFAULT_GROBID_HEALTH_PATH,
-            )
-        if normalized_name == "docling":
-            return _normalize_health_path(
-                getattr(self, "DOCLING_HEALTH_PATH", DEFAULT_GENERIC_HEALTH_PATH),
-                default_path=DEFAULT_GENERIC_HEALTH_PATH,
-            )
-        if normalized_name == "ocr":
-            return _normalize_health_path(
-                getattr(self, "OCR_HEALTH_PATH", DEFAULT_GENERIC_HEALTH_PATH),
-                default_path=DEFAULT_GENERIC_HEALTH_PATH,
-            )
-        if normalized_name == "docx_converter":
-            return _normalize_health_path(
-                getattr(self, "DOCX_CONVERTER_HEALTH_PATH", DEFAULT_GENERIC_HEALTH_PATH),
-                default_path=DEFAULT_GENERIC_HEALTH_PATH,
-            )
-        if normalized_name == "nougat":
-            return _normalize_health_path(
-                getattr(self, "NOUGAT_HEALTH_PATH", DEFAULT_GENERIC_HEALTH_PATH),
-                default_path=DEFAULT_GENERIC_HEALTH_PATH,
-            )
-        if normalized_name == "scibert":
-            return _normalize_health_path(
-                getattr(self, "SCIBERT_HEALTH_PATH", DEFAULT_GENERIC_HEALTH_PATH),
-                default_path=DEFAULT_GENERIC_HEALTH_PATH,
-            )
-        raise ValueError(f"Unknown service_name: {service_name!r}")
-
-
-class DatabaseSettings(_ServiceUrlMixin, BaseSettings):
+class DatabaseSettings(BaseSettings):
     SUPABASE_URL: Optional[str] = None
     SUPABASE_ANON_KEY: Optional[str] = None
     SUPABASE_JWKS_URL: Optional[str] = None
@@ -249,7 +175,7 @@ class LLMSettings(BaseSettings):
     }
 
 
-class PipelineSettings(_ServiceUrlMixin, BaseSettings):
+class PipelineSettings(BaseSettings):
     GROBID_URL: str = DEFAULT_GROBID_URL
     GROBID_BASE_URL: str = DEFAULT_GROBID_URL
     GROBID_URLS: str = ""
@@ -462,7 +388,7 @@ class DeploymentSettings(BaseSettings):
         return fv
 
 
-class Settings(_ServiceUrlMixin):
+class Settings:
     """Unified application settings composed from logical sub-configs."""
 
     def __init__(self) -> None:
@@ -504,26 +430,49 @@ class Settings(_ServiceUrlMixin):
         if self.RETENTION_DAYS <= 0:
             raise ValueError("RETENTION_DAYS must be > 0")
 
+    def _resolve_service_urls(self, urls_attr: str, fallback_attrs: tuple[str, ...], default_urls: tuple[str, ...] = ()) -> list[str]:
+        urls = getattr(self, urls_attr, None)
+        if urls:
+            return _dedupe(_split_urls(urls))
+        for attr in fallback_attrs:
+            value = getattr(self, attr, None)
+            normalized = _normalize_base_url(value)
+            if normalized:
+                return [normalized]
+        return list(default_urls)
+
     def get_grobid_urls(self) -> list[str]:
-        return self.pipeline.get_grobid_urls()
+        return self._resolve_service_urls("GROBID_URLS", ("GROBID_URL", "GROBID_BASE_URL"), (DEFAULT_GROBID_URL,))
 
     def get_docling_urls(self) -> list[str]:
-        return self.pipeline.get_docling_urls()
+        return self._resolve_service_urls("DOCLING_URLS", ("DOCLING_URL",))
 
     def get_ocr_urls(self) -> list[str]:
-        return self.pipeline.get_ocr_urls()
+        return self._resolve_service_urls("OCR_URLS", ("OCR_URL",))
 
     def get_docx_converter_urls(self) -> list[str]:
-        return self.pipeline.get_docx_converter_urls()
+        return self._resolve_service_urls("DOCX_CONVERTER_URLS", ("DOCX_CONVERTER_URL",))
 
     def get_nougat_urls(self) -> list[str]:
-        return self.pipeline.get_nougat_urls()
+        return self._resolve_service_urls("NOUGAT_URLS", ("NOUGAT_URL",))
 
     def get_scibert_urls(self) -> list[str]:
-        return self.pipeline.get_scibert_urls()
+        return self._resolve_service_urls("SCIBERT_URLS", ("SCIBERT_URL",))
 
     def get_service_health_path(self, service_name: str) -> str:
-        return self.pipeline.get_service_health_path(service_name)
+        key = service_name.strip().lower()
+        entry = {
+            "grobid": "GROBID_HEALTH_PATH",
+            "docling": "DOCLING_HEALTH_PATH",
+            "ocr": "OCR_HEALTH_PATH",
+            "docx_converter": "DOCX_CONVERTER_HEALTH_PATH",
+            "nougat": "NOUGAT_HEALTH_PATH",
+            "scibert": "SCIBERT_HEALTH_PATH",
+        }.get(key)
+        if entry is None:
+            raise ValueError(f"Unknown service_name: {service_name!r}")
+        default_path = SERVICE_HEALTH_DEFAULTS.get(key, "/")
+        return _normalize_health_path(getattr(self, entry, None), default_path=default_path)
 
 
 settings = Settings()

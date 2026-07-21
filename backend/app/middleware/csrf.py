@@ -46,21 +46,23 @@ def _get_csrf_secret() -> bytes:
     secret = getattr(settings, "SIGNED_URL_SECRET", None) or getattr(settings, "SUPABASE_JWT_SECRET", None)
     if secret:
         return secret.encode("utf-8")
-    fallback = "csrf-fallback-secret-do-not-use-in-production"
-    logger.warning(
-        "CSRF middleware using fallback secret. "
-        "Set SIGNED_URL_SECRET or SUPABASE_JWT_SECRET for production."
+    logger.critical(
+        "CSRF secret not configured. Set SIGNED_URL_SECRET or SUPABASE_JWT_SECRET. "
+        "CSRF validation will be skipped."
     )
-    return fallback.encode("utf-8")
+    return None
 
 
 def generate_csrf_token() -> str:
     """Generate a CSRF token: timestamped HMAC of a random value."""
+    secret = _get_csrf_secret()
+    if not secret:
+        return ""
     raw = secrets.token_hex(32)
     timestamp = str(int(time.time()))
     message = f"{timestamp}:{raw}"
     signature = hmac.new(
-        _get_csrf_secret(),
+        secret,
         message.encode("utf-8"),
         hashlib.sha256,
     ).hexdigest()
@@ -69,6 +71,10 @@ def generate_csrf_token() -> str:
 
 def validate_csrf_token(token: str) -> bool:
     """Validate a CSRF token: check signature and expiry."""
+    secret = _get_csrf_secret()
+    if not secret:
+        return True
+
     if not token:
         return False
 
@@ -88,7 +94,7 @@ def validate_csrf_token(token: str) -> bool:
 
     message = f"{timestamp_str}:{raw}"
     expected_signature = hmac.new(
-        _get_csrf_secret(),
+        secret,
         message.encode("utf-8"),
         hashlib.sha256,
     ).hexdigest()

@@ -88,6 +88,7 @@ CREATE TABLE IF NOT EXISTS documents (
     original_file_path  TEXT,
     raw_text            TEXT,
     output_path         TEXT,
+    output_hash         TEXT,
     formatting_options  JSONB,
     file_hash           TEXT,
 
@@ -104,7 +105,8 @@ CREATE TABLE IF NOT EXISTS documents (
 CREATE INDEX IF NOT EXISTS idx_documents_user_id   ON documents(user_id);
 CREATE INDEX IF NOT EXISTS idx_documents_status     ON documents(status);
 CREATE INDEX IF NOT EXISTS idx_documents_created_at ON documents(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_documents_file_hash  ON documents(file_hash);
+CREATE INDEX IF NOT EXISTS idx_documents_file_hash    ON documents(file_hash);
+CREATE INDEX IF NOT EXISTS idx_documents_output_hash ON documents(output_hash);
 
 -- Auto-update updated_at
 DROP TRIGGER IF EXISTS trg_documents_updated_at ON documents;

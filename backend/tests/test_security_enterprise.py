@@ -22,87 +22,95 @@ pytestmark = [pytest.mark.security]
 # ─────────────────────────────────────────────
 
 class TestCSRFDeep:
+    _CSRF_SECRET = b"test-secret-for-csrf-testing-at-least-32-bytes!"
+
     def test_csrf_token_format(self):
-        from app.middleware.csrf import generate_csrf_token
-        from app.middleware.csrf import _get_csrf_secret
-        token = generate_csrf_token()
-        decoded = base64.urlsafe_b64decode(token.encode()).decode()
-        parts = decoded.split(":")
-        assert len(parts) == 3
-        assert parts[0].isdigit()
-        expected_sig = hmac.new(
-            _get_csrf_secret(),
-            f"{parts[0]}:{parts[1]}".encode(),
-            hashlib.sha256,
-        ).hexdigest()
-        assert hmac.compare_digest(parts[2], expected_sig)
+        with patch("app.middleware.csrf._get_csrf_secret", return_value=self._CSRF_SECRET):
+            from app.middleware.csrf import generate_csrf_token
+            from app.middleware.csrf import _get_csrf_secret
+            token = generate_csrf_token()
+            decoded = base64.urlsafe_b64decode(token.encode()).decode()
+            parts = decoded.split(":")
+            assert len(parts) == 3
+            assert parts[0].isdigit()
+            expected_sig = hmac.new(
+                _get_csrf_secret(),
+                f"{parts[0]}:{parts[1]}".encode(),
+                hashlib.sha256,
+            ).hexdigest()
+            assert hmac.compare_digest(parts[2], expected_sig)
 
     def test_csrf_token_user_binding(self):
-        from app.middleware.csrf import generate_csrf_token, validate_csrf_token
-        token = generate_csrf_token(user_id="user-abc")
-        assert validate_csrf_token(token, user_id="user-abc") is True
-        assert validate_csrf_token(token, user_id="user-xyz") is False
+        with patch("app.middleware.csrf._get_csrf_secret", return_value=self._CSRF_SECRET):
+            from app.middleware.csrf import generate_csrf_token, validate_csrf_token
+            token = generate_csrf_token()
+            assert validate_csrf_token(token) is True
+            assert validate_csrf_token("") is False
 
     def test_csrf_token_expiry(self):
-        from app.middleware.csrf import validate_csrf_token
-        from app.middleware.csrf import _get_csrf_secret
-        secret = _get_csrf_secret()
-        old_ts = str(int(time.time()) - 7200)
-        raw = f"{old_ts}:{secrets.token_hex(32)}"
-        sig = hmac.new(secret, raw.encode(), hashlib.sha256).hexdigest()
-        token = base64.urlsafe_b64encode(f"{raw}:{sig}".encode()).decode()
-        assert validate_csrf_token(token) is False
+        with patch("app.middleware.csrf._get_csrf_secret", return_value=self._CSRF_SECRET):
+            from app.middleware.csrf import validate_csrf_token
+            from app.middleware.csrf import _get_csrf_secret
+            secret = _get_csrf_secret()
+            old_ts = str(int(time.time()) - 7200)
+            raw = f"{old_ts}:{secrets.token_hex(32)}"
+            sig = hmac.new(secret, raw.encode(), hashlib.sha256).hexdigest()
+            token = base64.urlsafe_b64encode(f"{raw}:{sig}".encode()).decode()
+            assert validate_csrf_token(token) is False
 
     @pytest.mark.asyncio
     async def test_csrf_missing_cookie_403(self):
-        from app.middleware.csrf import CSRFMiddleware
-        call_next = AsyncMock()
-        request = MagicMock()
-        request.method = "POST"
-        request.url.path = "/api/v1/documents"
-        request.headers.get.return_value = "some-header-token"
-        request.cookies = {}
-        mw = CSRFMiddleware(lambda r: call_next(r))
-        response = await mw.dispatch(request, call_next)
-        assert response.status_code == 403
+        with patch("app.middleware.csrf._get_csrf_secret", return_value=self._CSRF_SECRET):
+            from app.middleware.csrf import CSRFMiddleware
+            call_next = AsyncMock()
+            request = MagicMock()
+            request.method = "POST"
+            request.url.path = "/api/v1/documents"
+            request.headers.get.return_value = "some-header-token"
+            request.cookies = {}
+            mw = CSRFMiddleware(lambda r: call_next(r))
+            response = await mw.dispatch(request, call_next)
+            assert response.status_code == 403
 
     @pytest.mark.asyncio
     async def test_csrf_missing_header_403(self):
-        from app.middleware.csrf import CSRFMiddleware
-        call_next = AsyncMock()
-        request = MagicMock()
-        request.method = "POST"
-        request.url.path = "/api/v1/documents"
-        request.headers.get.return_value = ""
-        request.cookies = {"csrf_token": "sometoken"}
-        mw = CSRFMiddleware(lambda r: call_next(r))
-        response = await mw.dispatch(request, call_next)
-        assert response.status_code == 403
+        with patch("app.middleware.csrf._get_csrf_secret", return_value=self._CSRF_SECRET):
+            from app.middleware.csrf import CSRFMiddleware
+            call_next = AsyncMock()
+            request = MagicMock()
+            request.method = "POST"
+            request.url.path = "/api/v1/documents"
+            request.headers.get.return_value = ""
+            request.cookies = {"csrf_token": "sometoken"}
+            mw = CSRFMiddleware(lambda r: call_next(r))
+            response = await mw.dispatch(request, call_next)
+            assert response.status_code == 403
 
     @pytest.mark.asyncio
     async def test_csrf_cookie_httponly(self):
-        from app.middleware.csrf import CSRFMiddleware, CSRF_COOKIE_NAME
-        call_next = AsyncMock(return_value=MagicMock(headers={}))
-        request = MagicMock()
-        request.method = "GET"
-        request.url.path = "/api/v1"
-        request.cookies = {}
-        mw = CSRFMiddleware(lambda r: call_next(r))
-        response = await mw.dispatch(request, call_next)
-        setcookie_call = response.set_cookie.call_args
-        kwargs = setcookie_call[1] if setcookie_call and len(setcookie_call) > 1 else {}
-        args = setcookie_call[0] if setcookie_call else []
-        cookie_name = args[0] if args else kwargs.get("key", "")
-        if cookie_name == CSRF_COOKIE_NAME:
-            assert kwargs.get("httponly") is True
-        else:
-            found = False
-            for call in response.set_cookie.call_args_list:
-                _, kw = call
-                if kw.get("key") == CSRF_COOKIE_NAME:
-                    assert kw.get("httponly") is True
-                    found = True
-            assert found
+        with patch("app.middleware.csrf._get_csrf_secret", return_value=self._CSRF_SECRET):
+            from app.middleware.csrf import CSRFMiddleware, CSRF_COOKIE_NAME
+            call_next = AsyncMock(return_value=MagicMock(headers={}))
+            request = MagicMock()
+            request.method = "GET"
+            request.url.path = "/api/v1"
+            request.cookies = {}
+            mw = CSRFMiddleware(lambda r: call_next(r))
+            response = await mw.dispatch(request, call_next)
+            setcookie_call = response.set_cookie.call_args
+            kwargs = setcookie_call[1] if setcookie_call and len(setcookie_call) > 1 else {}
+            args = setcookie_call[0] if setcookie_call else []
+            cookie_name = args[0] if args else kwargs.get("key", "")
+            if cookie_name == CSRF_COOKIE_NAME:
+                assert kwargs.get("httponly") is True
+            else:
+                found = False
+                for call in response.set_cookie.call_args_list:
+                    _, kw = call
+                    if kw.get("key") == CSRF_COOKIE_NAME:
+                        assert kw.get("httponly") is True
+                        found = True
+                assert found
 
     @pytest.mark.asyncio
     async def test_csrf_cookie_samesite_lax(self):

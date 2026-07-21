@@ -10,7 +10,7 @@ from typing import Optional
 
 from sqlalchemy import Column, String, Integer, Boolean, DateTime, Text
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, foreign
 from app.db.base import Base
 
 
@@ -31,8 +31,8 @@ class UserApiKey(Base):
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
-    user = relationship("User", back_populates="api_keys", lazy="joined", foreign_keys="UserApiKey.user_id")
-    usage_logs = relationship("ApiKeyUsageLog", back_populates="api_key", lazy="selectin")
+    user = relationship("User", back_populates="api_keys", lazy="joined", primaryjoin="foreign(UserApiKey.user_id) == User.id")
+    usage_logs = relationship("ApiKeyUsageLog", back_populates="api_key", lazy="selectin", primaryjoin="UserApiKey.id == foreign(ApiKeyUsageLog.user_api_key_id)")
 
     def to_dict(self, mask_key: bool = True) -> dict:
         key_value = self.api_key_encrypted

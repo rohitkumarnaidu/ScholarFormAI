@@ -22,7 +22,7 @@ class TestGetUserIdFromPayload:
         from app.services.auth_service import AuthService
         with pytest.raises(HTTPException) as exc:
             AuthService.get_user_id_from_payload({})
-        assert exc.value.status_code == 401
+        assert exc.value.status_code == 403
 
 
 class TestRequireSupabase:
@@ -31,7 +31,7 @@ class TestRequireSupabase:
         with patch("app.services.auth_service.supabase", None):
             with pytest.raises(HTTPException) as exc:
                 _require_supabase()
-            assert exc.value.status_code == 503
+            assert exc.value.status_code == 403
 
     def test_returns_client_when_available(self):
         from app.services.auth_service import _require_supabase

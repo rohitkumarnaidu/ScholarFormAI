@@ -33,3 +33,27 @@ export async function fetchTemplates() {
         return FALLBACK_TEMPLATES;
     }
 }
+
+export async function getBuiltinTemplates() {
+    return fetchTemplates();
+}
+
+export async function searchCSLStyles(query) {
+    return fetchWithAuth(`/api/v1/templates/csl?search=${encodeURIComponent(query || '')}`);
+}
+
+export async function fetchCSLStyle(slug) {
+    return fetchWithAuth(`/api/v1/templates/csl/${encodeURIComponent(slug)}`);
+}
+
+export async function getCustomTemplates() {
+    return fetchWithAuth('/api/v1/templates/custom');
+}
+
+export async function saveCustomTemplate(data) {
+    return fetchWithAuth('/api/v1/templates/custom', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+}

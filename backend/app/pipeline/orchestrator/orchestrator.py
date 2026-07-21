@@ -18,6 +18,7 @@ from typing import Optional, Any
 from app.config.settings import settings
 from app.models import PipelineDocument, Block, BlockType
 from app.pipeline.orchestrator.stages import PipelineStages
+from app.pipeline.orchestrator.phases import PipelinePhases
 from app.pipeline.orchestrator.metrics import StageMetrics
 from app.pipeline.orchestrator.events import StageEventEmitter
 
@@ -161,170 +162,50 @@ class PipelineOrchestrator:
             with self._safety_net(f"Pipeline Job {job_id}"):
                 from app.pipeline.orchestrator import get_supabase_client
                 sb = get_supabase_client()
-                self._update_status(job_id, "UPLOAD", "COMPLETED", "File uploaded.", progress=5)
+
+                phases = PipelinePhases(self)
+
+                # ---- Phase 1: Upload ----
+                phases.phase_upload(job_id)
 
                 # ---- Phase 2: Extraction ----
-                self._update_status(job_id, "EXTRACTION", "PROCESSING", progress=10)
                 from app.pipeline.orchestrator import ParserFactory
                 factory = ParserFactory()
                 file_ext = os.path.splitext(input_path)[1].lower()
-                doc_obj = self._run_extraction_stage(factory, input_path, job_id, formatting_options, file_ext)
-                doc_obj = self.stages.apply_nougat_fallback(doc_obj, input_path, job_id, file_ext)
-                self.stages.set_template(doc_obj, template_name)
+                doc_obj = phases.phase_extraction(
+                    factory, input_path, job_id, formatting_options, file_ext, sb, template_name
+                )
 
-                raw_text = "\n".join(b.text for b in doc_obj.blocks)
-                if sb:
-                    sb.table("documents").update({
-                        "raw_text": raw_text,
-                        "original_file_path": input_path,
-                    }).eq("id", job_id).execute()
+                # ---- Phase 3: Structure Detection ----
+                doc_obj = phases.phase_structure_detection(doc_obj, job_id)
 
-                self._update_status(job_id, "EXTRACTION", "COMPLETED", "Text extracted.", progress=20)
-
-                # ---- AI Extraction (GROBID + Docling) ----
-                self._update_status(job_id, "EXTRACTION", "PROCESSING", "AI metadata extraction...", progress=22)
-                doc_obj = self.stages.extract_ai_metadata(doc_obj, input_path, file_ext, job_id)
-
-                # ---- Structure Detection ----
-                self._check_cancelled(job_id)
-                self._update_status(job_id, "EXTRACTION", "PROCESSING", "Detecting structure...", progress=28)
-                try:
-                    doc_obj = self._run_structure_detection(doc_obj)
-                    num_headings = len(getattr(doc_obj, 'detected_headings', []))
-                    logger.info("StructureDetector found %d headings for job %s", num_headings, job_id)
-                except Exception as sd_err:
-                    logger.warning("StructureDetector failed: %s. Proceeding.", sd_err)
-
-                # ---- Semantic Parsing (optional) ----
+                # ---- Phase 4: Semantic Parsing (optional) ----
                 if runtime_flags["semantic_parser"]:
-                    try:
-                        doc_obj = self._run_semantic_parsing(doc_obj)
-                    except Exception as e:
-                        logger.warning("Semantic parser failed: %s. Falling back.", e)
+                    doc_obj = phases.phase_semantic_parsing(doc_obj)
                 else:
                     logger.info("Fast mode: skipping semantic parser.")
 
-                # ---- Classification ----
-                self._update_status(job_id, "NLP_ANALYSIS", "PROCESSING", "Classifying content...", progress=40)
-                doc_obj = self._run_classification(doc_obj)
-                self.stages.sync_block_confidence(doc_obj)
+                # ---- Phase 5: Classification ----
+                doc_obj = phases.phase_classification(doc_obj, job_id)
 
-                # ---- Content analysis ----
-                self._check_stage_interface(self.analyzer, "process", "ContentAnalyzer")
-                from app.pipeline.safety.retry_guard import execute_with_retry
-                doc_obj = execute_with_retry(self.analyzer.process, doc_obj)
-                doc_obj = self.stages.analyze_content(doc_obj, job_id)
+                # ---- Phase 6: Content Analysis ----
+                doc_obj = phases.phase_content_analysis(doc_obj, job_id, runtime_flags)
 
-                # ---- Caption matching ----
-                doc_obj = self.stages.match_captions(doc_obj)
+                # ---- Phase 7: Validation ----
+                doc_obj, validation_results = phases.phase_validation(
+                    doc_obj, job_id, template_name, runtime_flags
+                )
 
-                # ---- Figure analysis (optional) ----
-                if not runtime_flags.get("fast_mode", False):
-                    doc_obj = self.stages.run_figure_analysis(doc_obj)
+                # ---- Phase 8: Formatting ----
+                doc_obj = phases.phase_formatting(doc_obj)
 
-                # ---- Reference processing ----
-                doc_obj = self.stages.process_references(doc_obj)
+                # ---- Phase 9: Export ----
+                output_path = phases.phase_export(doc_obj, input_path, job_id, sb)
 
-                self._update_status(job_id, "NLP_ANALYSIS", "COMPLETED", "Analysis complete.", progress=50)
-
-                # ---- Validation ----
-                self._update_status(job_id, "VALIDATION", "PROCESSING", progress=60)
-                if runtime_flags["crossref_enrichment"]:
-                    doc_obj = self.stages.run_crossref_validation(doc_obj)
-                else:
-                    logger.info("Fast mode: skipping CrossRef enrichment.")
-
-                self._update_status(job_id, "VALIDATION", "PROCESSING", "Applying styles...", progress=70)
-
-                # ---- AI Reasoning (optional) ----
-                semantic_advice = {}
-                if runtime_flags["ai_reasoning"]:
-                    semantic_advice = self.stages.run_ai_reasoning(doc_obj, template_name, job_id)
-                else:
-                    logger.info("Fast mode: skipping AI reasoning.")
-
-                if hasattr(doc_obj, 'metadata') and doc_obj.metadata:
-                    doc_obj.metadata.ai_hints["semantic_advice"] = semantic_advice
-
-                # ---- Validation ----
-                doc_obj = self._run_validation_stage(doc_obj)
-
-                # ---- Build quality summary ----
-                validation_results = {
-                    "is_valid": doc_obj.is_valid,
-                    "errors": doc_obj.validation_errors,
-                    "warnings": doc_obj.validation_warnings,
-                    "stats": doc_obj.get_stats(),
-                    "ai_semantic_audit": semantic_advice,
-                }
-                quality_summary = self._build_quality_summary(doc_obj, validation_results)
-                validation_results["quality_summary"] = quality_summary
-                validation_results["quality_score"] = quality_summary.get("quality_score")
-                self._log_quality_summary(job_id, quality_summary)
-
-                # ---- Formatting ----
-                doc_obj = self._run_formatting_stage(doc_obj)
-
-                # ---- Export ----
-                output_path = None
-                if hasattr(doc_obj, 'generated_doc') and doc_obj.generated_doc:
-                    output_path = self._export_document(doc_obj, input_path, job_id)
-                else:
-                    logger.critical("Formatter failed to produce generated_doc for job %s", job_id)
-                    if sb:
-                        sb.table("documents").update({
-                            "status": "FAILED",
-                            "error_message": "Formatting failed: No document artifact generated.",
-                        }).eq("id", job_id).execute()
-                    raise Exception("Formatting stage failed to generate output artifact.")
-
-                # ---- Persistence ----
-                self._update_status(job_id, "PERSISTENCE", "PROCESSING", progress=90)
-                from app.pipeline.orchestrator import AIExplainer
-                explainer = AIExplainer()
-                ai_explanations = explainer.explain_results(validation_results, template_name)
-                validation_results["ai_explanations"] = ai_explanations
-                from app.pipeline.orchestrator import build_structured_data
-                structured_data = build_structured_data(doc_obj)
-
-                doc_result_data = {
-                    "document_id": job_id,
-                    "structured_data": structured_data,
-                    "validation_results": validation_results,
-                    "created_at": "now()",
-                }
-                if sb:
-                    sb.table("document_results").insert(doc_result_data).execute()
-
-                output_ready = bool(output_path and os.path.exists(output_path))
-                if not output_ready and output_path and getattr(doc_obj, "generated_doc", None):
-                    output_ready = True
-
-                if output_ready:
-                    if output_path and os.path.exists(output_path):
-                        try:
-                            from app.services.document_service import DocumentService
-                            DocumentService.update_output_hash(job_id, PipelineStages.compute_sha256(output_path))
-                        except Exception as hash_exc:
-                            logger.warning("Failed to persist output hash: %s", hash_exc)
-                    if sb:
-                        sb.table("documents").update({
-                            "status": "COMPLETED",
-                            "output_path": output_path,
-                        }).eq("id", job_id).execute()
-                    self._update_status(job_id, "PERSISTENCE", "COMPLETED", "All results persisted.", progress=100)
-                    response["status"] = "success"
-                    response["message"] = "Processing complete."
-                    response["output_path"] = output_path
-                else:
-                    if sb:
-                        sb.table("documents").update({
-                            "status": "FAILED",
-                            "error_message": "Output file generation failed.",
-                        }).eq("id", job_id).execute()
-                    self._update_status(job_id, "PERSISTENCE", "COMPLETED", "Output generation failed.", progress=100)
-                    response["status"] = "error"
-                    response["message"] = "Processing failed: Output generation failed."
+                # ---- Phase 10: Persistence ----
+                response = phases.phase_persistence(
+                    doc_obj, job_id, sb, output_path, validation_results, template_name
+                )
 
         except asyncio.CancelledError:
             logger.info("Task %s cancelled by server reload/shutdown.", job_id)

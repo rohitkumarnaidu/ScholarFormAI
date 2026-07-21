@@ -70,6 +70,10 @@ def generate(
     stream: bool = False,
 ) -> str:
     """Send a chat completion request via LiteLLM (or direct HTTP fallback)."""
+    # Resolve config through facade so test patches on llm_service take effect
+    svc = _llm_service_module()
+    litellm_available = getattr(svc, "LITELLM_AVAILABLE", LITELLM_AVAILABLE)
+
     system_prompt, user_message = _extract_prompts(messages)
     api_key_prefix = None
     if api_key:
@@ -96,8 +100,9 @@ def generate(
     effective_timeout = int(timeout) if timeout is not None else _provider_timeout_seconds()
 
     try:
-        if not LITELLM_AVAILABLE:
-            result = _generate_fallback(
+        if not litellm_available:
+            svc_fallback = getattr(svc, "_generate_fallback", _generate_fallback)
+            result = svc_fallback(
                 messages, model, temperature, max_tokens,
                 effective_timeout, api_key, api_base,
             )
@@ -402,24 +407,29 @@ def invalidate_llm_cache(pattern: str) -> int:
 
 # ── Direct-client fallback (no litellm) ─────────────────────────────────── #
 def _generate_fallback(messages, model, temperature, max_tokens, timeout, api_key, api_base) -> str:
+    # Resolve through facade so test patches on llm_service._openai_compat apply
+    svc = _llm_service_module()
+    compat = getattr(svc, "_openai_compat", _openai_compat)
+    ollama_http_fn = getattr(svc, "_ollama_http", _ollama_http)
+
     if model.startswith("nvidia_nim/") or model.startswith("openai/") or model.startswith("gpt-"):
-        return _openai_compat(
+        return compat(
             messages, model, temperature, max_tokens,
             api_key or _settings().NVIDIA_API_KEY or _settings().OPENAI_API_KEY,
             api_base or ("https://integrate.api.nvidia.com/v1" if model.startswith("nvidia_nim/") else None),
         )
     elif model.startswith("groq/"):
-        return _openai_compat(
+        return compat(
             messages, model, temperature, max_tokens,
             api_key or _settings().GROQ_API_KEY, api_base or _settings().GROQ_API_BASE,
         )
     elif model.startswith("openrouter/"):
-        return _openai_compat(
+        return compat(
             messages, model, temperature, max_tokens,
             api_key or _settings().OPENROUTER_API_KEY, api_base or _settings().OPENROUTER_API_BASE,
         )
     elif model.startswith("ollama/"):
-        return _ollama_http(
+        return ollama_http_fn(
             messages, model.replace("ollama/", ""), temperature, max_tokens,
             api_base or _settings().OLLAMA_BASE_URL, timeout,
         )

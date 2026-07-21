@@ -14,6 +14,7 @@ The log directory is created safely at import time.
 setup_logging() is idempotent — safe to call multiple times.
 """
 
+import json
 import logging
 import logging.config
 import logging.handlers
@@ -38,6 +39,29 @@ except OSError as _exc:
         LOGS_DIR,
         _exc,
     )
+
+# ── JSON Formatter ──────────────────────────────────────────────────────────────
+class JsonFormatter(logging.Formatter):
+    def format(self, record):
+        log_entry = {
+            "timestamp": self.formatTime(record),
+            "level": record.levelname,
+            "logger": record.name,
+            "message": record.getMessage(),
+            "module": record.module,
+            "function": record.funcName,
+            "line": record.lineno,
+        }
+        if hasattr(record, "request_id"):
+            log_entry["request_id"] = record.request_id
+        if hasattr(record, "job_id"):
+            log_entry["job_id"] = record.job_id
+        if hasattr(record, "session_id"):
+            log_entry["session_id"] = record.session_id
+        if record.exc_info and record.exc_info[0]:
+            log_entry["exception"] = self.formatException(record.exc_info)
+        return json.dumps(log_entry, default=str)
+
 
 # ── Logging dict config ────────────────────────────────────────────────────────
 LOGGING_CONFIG = {
@@ -175,7 +199,12 @@ def setup_logging() -> logging.Logger:
         return logging.getLogger("app")
 
     try:
-        logging.config.dictConfig(LOGGING_CONFIG)
+        config = dict(LOGGING_CONFIG)
+        import os as _os
+        if _os.getenv("ENABLE_STRUCTURED_LOGGING", "").lower() in ("true", "1", "yes"):
+            config["formatters"]["json"] = {"()": "app.config.logging_config.JsonFormatter"}
+            config["handlers"]["console"]["formatter"] = "json"
+        logging.config.dictConfig(config)
         _logging_initialized = True
     except Exception as exc:
         # Last-resort fallback: basic config so the app can still log

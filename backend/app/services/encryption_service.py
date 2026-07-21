@@ -19,10 +19,14 @@ class EncryptionService:
     def __init__(self, key: str | None = None):
         self._key = key or os.environ.get("ENCRYPTION_KEY")
         if not self._key:
-            self._key = Fernet.generate_key().decode()
-            logger.warning(
-                "ENCRYPTION_KEY not set. Using auto-generated key. "
-                "Keys will not persist across restarts. Set ENCRYPTION_KEY in production."
+            logger.critical(
+                "ENCRYPTION_KEY is not set. The application will refuse to start because "
+                "encrypted data would be unrecoverable after restart. "
+                "Set the ENCRYPTION_KEY environment variable in production."
+            )
+            raise RuntimeError(
+                "ENCRYPTION_KEY environment variable is required. "
+                "Set ENCRYPTION_KEY to a valid Fernet key before starting the application."
             )
         if isinstance(self._key, str):
             self._key = self._key.encode()

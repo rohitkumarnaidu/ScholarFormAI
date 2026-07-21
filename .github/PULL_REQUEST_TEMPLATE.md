@@ -1,40 +1,19 @@
-<!-- SPDX-License-Identifier: MIT -->
-<!-- Copyright (c) 2026 ScholarForm AI -->
-
-
-<!-- Thanks for contributing to ScholarForm AI! Please fill out this template. -->
-
 ## Description
-
-Closes #ISSUE_NUMBER
-
-**Summary:** <!-- one or two sentences -->
+Please include a summary of the change and which issue is fixed.
 
 ## Type of Change
-
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Breaking change
-- [ ] Documentation
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Documentation update
 - [ ] Refactoring
-- [ ] Performance
-
-## Testing
-
-- [ ] Backend unit tests pass
-- [ ] Frontend tests pass
-- [ ] E2E tests pass
+- [ ] Performance improvement
+- [ ] Test update
 
 ## Checklist
-
-- [ ] Tests added/updated
-- [ ] Documentation updated
-- [ ] CHANGELOG entry added
-- [ ] No new linter warnings
-- [ ] DCO agreed
-
-## Screenshots (if applicable)
-
----
-
-*By submitting this pull request, I agree to the [Developer Certificate of Origin](DEVELOPER_CERTIFICATE_OF_ORIGIN.md).*
+- [ ] I have read the CONTRIBUTING.md document
+- [ ] My code follows the project's style guidelines
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] All new and existing tests pass
+- [ ] I have updated the documentation accordingly
+- [ ] I have added a changelog entry

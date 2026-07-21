@@ -6,6 +6,8 @@ from __future__ import annotations
 import logging
 
 from fastapi import APIRouter, Depends, Request
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.schemas.auth import (
     ForgotPasswordRequest,
@@ -22,6 +24,8 @@ from app.utils.logging_context import bind_request_context
 from ._helpers import run_enveloped
 
 logger = logging.getLogger(__name__)
+
+_limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter(dependencies=[Depends(bind_request_context)])
 
@@ -44,6 +48,7 @@ async def read_users_me(
 
 
 @router.post("/signup")
+@_limiter.limit("10/minute")
 async def signup(
     request: Request,
     payload: SignupRequest,
@@ -66,6 +71,7 @@ async def signup(
 
 
 @router.post("/login")
+@_limiter.limit("10/minute")
 async def login(
     request: Request,
     payload: LoginRequest,
@@ -86,6 +92,7 @@ async def login(
 
 
 @router.post("/forgot-password")
+@_limiter.limit("5/minute")
 async def forgot_password(
     request: Request,
     payload: ForgotPasswordRequest,
@@ -120,6 +127,7 @@ async def verify_otp(
 
 
 @router.post("/reset-password")
+@_limiter.limit("5/minute")
 async def reset_password(
     request: Request,
     payload: ResetPasswordRequest,

@@ -50,10 +50,10 @@ describe('ErrorBoundary', () => {
         );
 
         expect(screen.getByText('Something went wrong')).toBeInTheDocument();
-        expect(screen.getByText('Try Again')).toBeInTheDocument();
+        expect(screen.getByText('Reload Page')).toBeInTheDocument();
     });
 
-    it('recovers from error when "Try Again" is clicked', async () => {
+    it('recovers from error when "Reload Page" is clicked', async () => {
         const { rerender } = render(
             <ErrorBoundary>
                 <ThrowError />
@@ -68,7 +68,7 @@ describe('ErrorBoundary', () => {
                 <div>Recovered</div>
             </ErrorBoundary>
         );
-        fireEvent.click(screen.getByText('Try Again'));
+        fireEvent.click(screen.getByText('Reload Page'));
 
         expect(await screen.findByText('Recovered')).toBeInTheDocument();
         expect(screen.queryByText('Something went wrong')).not.toBeInTheDocument();

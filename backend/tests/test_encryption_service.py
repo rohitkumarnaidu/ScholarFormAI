@@ -55,9 +55,8 @@ class TestEncryptionService:
     def test_auto_generated_key_when_env_not_set(self):
         from app.services.encryption_service import EncryptionService
         with patch.dict("os.environ", {}, clear=True):
-            svc = EncryptionService(key=None)
-            assert svc._key is not None
-            assert svc.fernet is not None
+            with pytest.raises(RuntimeError, match="ENCRYPTION_KEY"):
+                EncryptionService(key=None)
 
     def test_encrypt_decrypt_roundtrip_various(self):
         from app.services.encryption_service import EncryptionService
@@ -69,9 +68,14 @@ class TestEncryptionService:
 class TestGetEncryptionService:
     def test_returns_singleton(self):
         from app.services.encryption_service import get_encryption_service
-        s1 = get_encryption_service()
-        s2 = get_encryption_service()
-        assert s1 is s2
+        with patch.dict("os.environ", {"ENCRYPTION_KEY": _FERNET_KEY}):
+            from app.services.encryption_service import get_encryption_service as gs
+            # Clear module cache to force fresh singleton
+            import app.services.encryption_service as es_mod
+            es_mod._encryption_service = None
+            s1 = gs()
+            s2 = gs()
+            assert s1 is s2
 
     def test_uses_env_key_when_no_arg(self):
         from app.services.encryption_service import EncryptionService

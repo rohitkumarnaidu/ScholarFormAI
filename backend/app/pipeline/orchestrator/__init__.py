@@ -60,12 +60,16 @@ from app.pipeline.orchestrator.orchestrator import (
 # Re-export figure analyzer helpers from stages
 from app.pipeline.orchestrator.stages import _get_figure_analyzer, _figure_analyzer_instance
 
+# Re-export phase implementations
+from app.pipeline.orchestrator.phases import PipelinePhases
+
 # Backward-compatible aliases for tests that import the old variable names
 _MAX_CONCURRENCY = _MAX_CONCURRENT_JOBS
 _ACQUIRE_TIMEOUT = _ACQUIRE_TIMEOUT_SECONDS
 
 __all__ = [
     "PipelineOrchestrator",
+    "PipelinePhases",
     "logger",
     "_MAX_CONCURRENT_JOBS",
     "_pipeline_semaphore",

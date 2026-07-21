@@ -14,36 +14,14 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from starlette.responses import Response
 
+from app.common.constants import ERROR_CODES as DEFAULT_ERROR_CODES, PERSONA_PATH_MAP
 from app.middleware.request_id import get_request_id
 from app.schemas.api_envelope import error_response, success_response
-
-DEFAULT_ERROR_CODES = {
-    400: "BAD_REQUEST",
-    401: "UNAUTHORIZED",
-    403: "FORBIDDEN",
-    404: "NOT_FOUND",
-    409: "CONFLICT",
-    413: "PAYLOAD_TOO_LARGE",
-    422: "VALIDATION_ERROR",
-    429: "RATE_LIMITED",
-    500: "INTERNAL_SERVER_ERROR",
-    501: "NOT_IMPLEMENTED",
-    502: "BAD_GATEWAY",
-    503: "SERVICE_UNAVAILABLE",
-}
-
-_PERSONA_PATH_MAP = {
-    "/api/v1/documents": "formatter",
-    "/api/v1/generator": "authoring",
-    "/api/v1/synthesis": "synthesis",
-    "/api/v1/billing": "billing",
-    "/api/v1/templates": "templates",
-}
 
 
 def _resolve_persona(path: str) -> str:
     normalized = str(path or "").lower()
-    for prefix, persona in _PERSONA_PATH_MAP.items():
+    for prefix, persona in PERSONA_PATH_MAP.items():
         if normalized.startswith(prefix):
             return persona
     return "platform"

@@ -31,7 +31,7 @@ jobs:
         with:
           script: |
             const sha = '${{ steps.sha.outputs.sha }}';
-            const requiredWorkflows = ['backend-ci.yml', 'frontend-ci.yml', 'security.yml'];
+            const requiredWorkflows = ['backend-ci.yml', 'frontend-ci.yml', 'codeql.yml'];
             let allPassed = true;
 
             for (const workflow of requiredWorkflows) {
@@ -217,6 +217,8 @@ jobs:
             echo "Deploy API returned HTTP $HTTP_STATUS. Check RENDER_API_KEY and RENDER_PROD_SERVICE_ID secrets."
             exit 1
           fi
+          DEPLOY_ID=$(echo "$BODY" | python3 -c "import sys,json; print(json.load(sys.stdin).get('id',''))" 2>/dev/null)
+          echo "deploy_id=$DEPLOY_ID" >> "$GITHUB_OUTPUT"
           echo "Deploy triggered successfully."
 
       - name: Wait for backend health
