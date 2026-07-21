@@ -13,13 +13,28 @@
 | [Discord / Slack](https://discord.gg/scholarform) *(TBD)* | Real-time chat, community | Best-effort |
 | [Stack Overflow](https://stackoverflow.com/questions/tagged/scholarform) *(TBD)* | Technical questions | Community-driven |
 
-## Commercial Support
+## Office Hours
+
+The core team holds weekly office hours for community members:
+
+| Day | Time (UTC) | Focus |
+|-----|------------|-------|
+| Monday | 15:00–16:00 | General Q&A, onboarding help |
+| Wednesday | 15:00–16:00 | Technical deep-dives, architecture discussions |
+| Friday | 15:00–16:00 | Contributor office hours (PR reviews, mentoring) |
+
+Office hours are held in the project's Discord/Slack voice channel. Schedule changes are announced in GitHub Discussions.
+
+## Professional Support
 
 For organizations requiring guaranteed SLAs, priority queue, or custom development:
 
-- **Email:** enterprise@scholarform.ai
-- **Response SLA:** 4 hours (business hours)
-- **Scope:** Onboarding, custom templates, deployment assistance, training
+| Tier | Response SLA | Scope | Contact |
+|------|-------------|-------|---------|
+| **Community** | 24-72 hours | Public issues, discussions | GitHub |
+| **Standard** | 8 business hours | Email support, bug fixes | enterprise@scholarform.ai |
+| **Premium** | 2 business hours | Priority queue, custom templates, deployment assistance, training, dedicated engineer | enterprise@scholarform.ai |
+| **Enterprise** | 1 hour | 24/7 support, custom development, SLA guarantees, on-premise deployment | enterprise@scholarform.ai |
 
 ## Before Opening an Issue
 

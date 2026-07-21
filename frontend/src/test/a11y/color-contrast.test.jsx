@@ -1,30 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import React from 'react';
+
 
 const originalGetComputedStyle = window.getComputedStyle;
 vi.stubGlobal('getComputedStyle', (el, pseudo) => {
     if (el._mockComputedStyle) return el._mockComputedStyle;
     return originalGetComputedStyle(el, pseudo);
 });
-
-function mockComputedStyle(el, styles) {
-    el._mockComputedStyle = {
-        getPropertyValue: (prop) => {
-            const map = {
-                'color': styles.color || '#000000',
-                'background-color': styles.bg || '#ffffff',
-                'font-size': styles.fontSize || '16px',
-                'font-weight': styles.fontWeight || '400',
-                'opacity': styles.opacity || '1',
-            };
-            return map[prop] || '';
-        },
-        ...Object.fromEntries(
-            Object.entries(styles).map(([key, val]) => [key, val])
-        ),
-    };
-}
 
 function luminance(hex) {
     const c = hex.replace('#', '');

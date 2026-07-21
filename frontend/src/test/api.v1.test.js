@@ -217,7 +217,7 @@ describe('getIdempotencyKey', () => {
     });
 
     it('returns cached key within TTL', async () => {
-        const { getIdempotencyKey: getKey, generateIdempotencyHash: hash } = await import('../services/api.v1');
+        const { getIdempotencyKey: getKey } = await import('../services/api.v1');
         const key1 = await getKey('/test', 'body');
         const key2 = await getKey('/test', 'body');
         expect(key2).toBe(key1);

@@ -13,7 +13,6 @@ vi.mock('../../lib/supabaseClient', () => ({
 
 describe('Open redirect prevention', () => {
     it('sanitizeRedirectPath prevents open redirects', async () => {
-        const auth = await import('../../services/api.auth');
         const getRedirectPath = (path) => {
             if (typeof path !== 'string') return '/dashboard';
             if (!path.startsWith('/') || path.startsWith('//')) return '/dashboard';

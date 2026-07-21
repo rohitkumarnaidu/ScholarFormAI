@@ -11,7 +11,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.1.0] — 2026-06-14
+## [1.0.0] — 2026-07-21
+
+### Added
+- Enterprise pipeline decomposition: orchestrator phases, repository pattern, shared constants
+- Production hardening across security, observability, and reliability (20 issues resolved)
+- CI/CD RC blockers resolved: security.yml reference, deploy_id output, docker matrix propagation
+- Comprehensive community health files: PR template, CODEOWNERS, labeler.yml, FUNDING.yml
+- Documentation suite: ARCHITECTURE.md, STYLE_GUIDE.md, TESTING.md, DEVELOPER_SETUP.md, RELEASE.md, ROADMAP.md, TROUBLESHOOTING.md, VERSIONING.md
+- Versioning policy (VERSIONING.md) and release process (RELEASE_PROCESS.md)
+- Browser support configuration (.browserslistrc)
+- Release Candidate Readiness Report (RC_READINESS_REPORT.md)
+
+### Fixed
+- 47 frontend tests fixed (Button, ErrorBoundary, ModelSelector, ThemeContext, usePageTitle, OnboardingTour, snapshots, API templates, sanitizer)
+- 8 remaining frontend test failures resolved (headless, error-states, visual-regression)
+- PreviewPane HTML sanitizer fixed for JSDOM compatibility
+- DashboardStats export naming mismatch resolved
+- API v1.1 functions properly exported (generateIdempotencyHash, getIdempotencyKey)
+- Email domain unified to @scholarform.ai across SECURITY.md
+
+### Changed
+- Backend version: 0.1.0 → 1.0.0 (Production/Stable status)
+- Frontend version: 0.1.0 → 1.0.0
+- Development status: Alpha → Production/Stable
+- unified version across all components (backend, frontend, CITATION.cff)
+
+### Security
+- SECURITY.md email domain unified to @scholarform.ai
+- CI/CD security workflow reference fixed
+- Container signing matrix outputs properly propagated
+- NOTICE file added for third-party attribution
+
+### Infrastructure
+- Production-ready CI/CD with 26 workflows
+- 3 Grafana dashboards deployed
+- Prometheus alerting rules configured
+- Docker multi-arch build matrix (linux/amd64, linux/arm64)
+- Cosign keyless signing + SLSA L3 provenance
+- SBOM generation (CycloneDX) for both backend and frontend
+
+## [1.1.0] — 2026-06-14 (pre-release)
 
 ### Added
 - **GitHub Packages** — Multi-arch Docker images (linux/amd64, linux/arm64) published to `ghcr.io/scholarform` with cosign signing + SBOM attestation
