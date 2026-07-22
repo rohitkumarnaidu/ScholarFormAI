@@ -114,4 +114,4 @@ pytest tests -m "not integration and not llm and not contract" -x -q
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*

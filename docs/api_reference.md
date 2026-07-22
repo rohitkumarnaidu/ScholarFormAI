@@ -10,7 +10,7 @@ version: "1.0"
 status: ⚠️ Deprecated
 owner: Docs Team
 review_cadence: annually
-last_updated: June 2026
+last_updated: July 2026
 ---
 
 # ⚠️ DEPRECATED — ScholarForm AI Legacy API Reference

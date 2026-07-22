@@ -61,7 +61,7 @@ sha256sum -c release-checksums.txt
 # 3. Pull and verify Docker image
 docker pull ghcr.io/scholarform/backend:v1.1.0
 cosign verify ghcr.io/scholarform/backend:v1.1.0 \
-  --certificate-identity-regexp "https://github.com/scholarform/scholarform.*" \
+  --certificate-identity-regexp "https://github.com/rohitkumarnaidu/ScholarFormAI.*" \
   --certificate-oidc-issuer "https://token.actions.githubusercontent.com"
 
 # 4. Verify npm package exists
@@ -72,7 +72,7 @@ curl -s https://api.scholarform.ai/api/v1/health/live | jq .
 
 # 6. Verify SLSA attestation
 gh attestation verify ghcr.io/scholarform/backend:v1.1.0 \
-  --repo scholarform/scholarform
+  --repo rohitkumarnaidu/ScholarFormAI
 ```
 
 ---
@@ -80,7 +80,7 @@ gh attestation verify ghcr.io/scholarform/backend:v1.1.0 \
 ## Manual Release (Fallback)
 
 If automation fails, create the release manually at:
-`https://github.com/scholarform/scholarform/releases/new`
+`https://github.com/rohitkumarnaidu/ScholarFormAI/releases/new`
 
 Use the body template from `RELEASE_PROCESS.md` section 4.1.
 

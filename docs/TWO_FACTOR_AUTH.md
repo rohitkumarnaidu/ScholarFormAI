@@ -57,4 +57,4 @@ If you lose access to your 2FA device:
 
 --- 
 
-*Last updated: June 2026*
+*Last updated: July 2026*

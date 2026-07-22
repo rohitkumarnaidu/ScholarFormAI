@@ -10,7 +10,7 @@ version: "1.0"
 status: ✅ Complete
 owner: Engineering Team
 review_cadence: quarterly
-last_updated: June 2026
+last_updated: July 2026
 ---
 
 # Pipeline Architecture
@@ -77,7 +77,7 @@ Optional (disabled by default: `USE_SCIBERT_CLASSIFICATION=false`):
 
 ### 8. Export
 - DOCX generation (primary, via `python-docx`)
-- PDF generation (planned for v1.1)
+- PDF generation
 
 ### 9. Deliver
 - Upload to Supabase Storage

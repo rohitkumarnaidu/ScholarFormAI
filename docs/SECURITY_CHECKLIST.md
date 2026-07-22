@@ -269,7 +269,7 @@ Controls for container security, dependency management, and CI/CD hardening.
   - **Reference:** `SECURITY_ARCHITECTURE.md §10.2`
 
 - [ ] **SLSA Level 3 attestation for releases**
-  - **Description:** Hermetic builds in ephemeral CI environments with signed provenance attestations available on every GitHub Release. Verification via `gh attestation verify ghcr.io/scholarform/backend:1.0.0 --repo scholarform/scholarform`.
+  - **Description:** Hermetic builds in ephemeral CI environments with signed provenance attestations available on every GitHub Release. Verification via `gh attestation verify ghcr.io/scholarform/backend:1.0.0 --repo rohitkumarnaidu/ScholarFormAI`.
   - **Verification:** Run the `gh attestation verify` command against the latest release — confirm provenance passes.
   - **Severity:** High
   - **Reference:** `SECURITY.md §SLSA`, `SECURITY_ARCHITECTURE.md §11`
@@ -329,14 +329,14 @@ Controls for outbound webhook authenticity, replay prevention, and delivery reli
 Controls for vulnerability reporting, disclosure process, and audit trail.
 
 - [ ] **Security vulnerability reporting process (SECURITY.md)**
-  - **Description:** Public `SECURITY.md` documents the reporting process: email `security@scholarform.com` (PGP-encrypted), response SLA, disclosure timeline, and out-of-scope items. `security.txt` at `/.well-known/security.txt` follows RFC 9116.
+  - **Description:** Public `SECURITY.md` documents the reporting process: email `security@scholarform.ai` (PGP-encrypted), response SLA, disclosure timeline, and out-of-scope items. `security.txt` at `/.well-known/security.txt` follows RFC 9116.
   - **Verification:** Confirm `https://scholarform.com/.well-known/security.txt` resolves. Confirm `SECURITY.md` exists at repository root.
   - **Severity:** High
   - **Reference:** `SECURITY.md §Reporting a Vulnerability`
 
 - [ ] **24h acknowledgement SLA for critical reports**
   - **Description:** Engineering team acknowledges security reports within 24 hours. Initial triage within 48 hours. Critical fixes deployed within 7 days from report. Scope: web app, API endpoints, auth mechanisms, file upload pipeline, template engine, third-party integrations.
-  - **Verification:** Submit a test report to `security@scholarform.com` — confirm automated acknowledgement within 24h. Review `SECURITY.md §Response SLA`.
+  - **Verification:** Submit a test report to `security@scholarform.ai` — confirm automated acknowledgement within 24h. Review `SECURITY.md §Response SLA`.
   - **Severity:** High
   - **Reference:** `SECURITY.md §Response SLA`
 
@@ -360,13 +360,13 @@ Controls for supply-chain security, license management, and legal attribution.
 
 - [ ] **OpenSSF Scorecard passing (10/10 on 14 of 16 checks)**
   - **Description:** The repository is evaluated weekly by OpenSSF Scorecard. 14 of 16 checks score 10/10. Known gaps: Contributors (5/10 — single contributor), Fuzzing (0/10 — not implemented). Binary Artifacts, Branch Protection, CI Tests, Code Review, Dependency Update Tool, License, Maintained, Packaging, Pinned Dependencies, SAST, Security Policy, Signed Releases, Token Permissions, Vulnerabilities all at 10/10.
-  - **Verification:** Check the Scorecard badge in `SECURITY.md` or run `npx openssf-scorecard --repo=github.com/scholarform/scholarform`.
+  - **Verification:** Check the Scorecard badge in `SECURITY.md` or run `npx openssf-scorecard --repo=github.com/rohitkumarnaidu/ScholarFormAI`.
   - **Severity:** Medium
   - **Reference:** `SECURITY.md §OpenSSF Scorecard`
 
 - [ ] **SLSA Level 3**
   - **Description:** All releases meet SLSA Level 3 requirements: hermetic builds in ephemeral CI environments, signed provenance attestations, no user-defined build steps. Verified via `gh attestation verify`.
-  - **Verification:** `gh attestation verify ghcr.io/scholarform/backend:<tag> --repo scholarform/scholarform` — confirm Level 3 attestation.
+  - **Verification:** `gh attestation verify ghcr.io/scholarform/backend:<tag> --repo rohitkumarnaidu/ScholarFormAI` — confirm Level 3 attestation.
   - **Severity:** High
   - **Reference:** `SECURITY.md §SLSA`
 

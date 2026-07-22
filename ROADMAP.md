@@ -6,7 +6,7 @@
 
 ## Current Status (July 2026)
 
-- **Version:** 1.1.0 (released June 14, 2026)
+- **Version:** 1.0.0 (released July 21, 2026)
 - **Backend coverage:** ~61% (1000+ deep tests)
 - **Documentation:** Enterprise-grade, 80+ files, 34 gaps closed
 - **CI/CD:** 24 GitHub Actions workflows, SLSA Level 3

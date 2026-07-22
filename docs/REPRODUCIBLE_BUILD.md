@@ -34,7 +34,7 @@ Builds are hermetic — they do not depend on external network resources beyond 
 All Docker images include SLSA Level 3 provenance attestations:
 
 ```bash
-gh attestation verify ghcr.io/scholarform/backend:1.0.0 --repo scholarform/scholarform
+gh attestation verify ghcr.io/scholarform/backend:1.0.0 --repo rohitkumarnaidu/ScholarFormAI
 ```
 
 ## Reproducibility Verification
@@ -66,4 +66,4 @@ diff local-requirements.txt requirements.txt
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*

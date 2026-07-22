@@ -605,7 +605,7 @@ SBOMs are generated in SPDX 2.3 and CycloneDX 1.5 formats, cryptographically sig
 ### SLSA
 
 - **SLSA Level 3:** Hermetic builds in ephemeral CI environments. Provenance attestations available on every GitHub Release.
-- Verification: `gh attestation verify ghcr.io/scholarform/backend:1.0.0 --repo scholarform/scholarform`
+- Verification: `gh attestation verify ghcr.io/scholarform/backend:1.0.0 --repo rohitkumarnaidu/ScholarFormAI`
 
 ### CVE Process
 
@@ -616,15 +616,15 @@ SBOMs are generated in SPDX 2.3 and CycloneDX 1.5 formats, cryptographically sig
 ### PGP Key
 
 - Fingerprint: `72F1 4C91 DA5F 98C0 EDE6 068F E675 B347 CCD2 9DA1`
-- Available for encrypted vulnerability reports to `security@scholarform.com`.
+- Available for encrypted vulnerability reports to `security@scholarform.ai`.
 
 ### Security.txt
 
 ```
-Contact: mailto:security@scholarform.com
+Contact: mailto:security@scholarform.ai
 Expires: 2027-06-13T00:00:00Z
 Canonical: https://scholarform.com/.well-known/security.txt
-Policy: https://github.com/scholarform/scholarform/SECURITY.md
+Policy: https://github.com/rohitkumarnaidu/ScholarFormAI/SECURITY.md
 ```
 
 ---

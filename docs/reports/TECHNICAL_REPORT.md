@@ -39,7 +39,7 @@ ScholarForm AI is a distributed document formatting platform employing a **micro
 ┌─────────────────────────────────────────────────────────────────┐
 │                  APPLICATION LAYER (Services)                    │
 │  ┌───────────────────────────────────────────────────────────┐  │
-│  │  25 Business Logic Services:                              │  │
+│  │  27 Business Logic Services:                              │  │
 │  │  • Auth / User / API Key / Session                        │  │
 │  │  • Document CRUD / Generation / Enhancement               │  │
 │  │  • LLM Proxy / Provider Registry / Model Store            │  │
@@ -86,7 +86,7 @@ ScholarFormAI/
 │   │   ├── routers/                 # 15 route modules (REST endpoints)
 │   │   ├── schemas/                 # Pydantic request/response models
 │   │   ├── security/                # JWKS JWT verifier
-│   │   ├── services/                # 25 business logic services
+│   │   ├── services/                # 27 business logic services
 │   │   ├── tasks/                   # Celery task definitions
 │   │   └── utils/                   # Shared utilities (pagination, serialization, etc.)
 │   ├── tests/                       # 95+ test files (~9,623 tests)

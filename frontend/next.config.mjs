@@ -68,17 +68,21 @@ const nextConfig = {
     },
 };
 
-export default withSentryConfig(nextConfig, {
-    org: process.env.SENTRY_ORG,
-    project: process.env.SENTRY_PROJECT,
-    silent: !process.env.CI,
-    telemetry: false,
-    widenClientFileUpload: true,
-    hideSourceMaps: true,
-    webpack: {
-        treeshake: {
-            removeDebugLogging: true,
+const config = process.env.SENTRY_AUTH_TOKEN
+    ? withSentryConfig(nextConfig, {
+        org: process.env.SENTRY_ORG,
+        project: process.env.SENTRY_PROJECT,
+        silent: !process.env.CI,
+        telemetry: false,
+        widenClientFileUpload: true,
+        hideSourceMaps: true,
+        webpack: {
+            treeshake: {
+                removeDebugLogging: true,
+            },
+            automaticVercelMonitors: false,
         },
-        automaticVercelMonitors: false,
-    },
-});
+    })
+    : nextConfig;
+
+export default config;

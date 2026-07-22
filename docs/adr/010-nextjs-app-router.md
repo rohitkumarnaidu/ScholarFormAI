@@ -10,7 +10,7 @@ version: "1.0"
 status: ✅ Accepted
 owner: Engineering Team
 review_cadence: never
-last_updated: June 2026
+last_updated: July 2026
 ---
 
 # ADR 010: Next.js App Router (Not Vite)

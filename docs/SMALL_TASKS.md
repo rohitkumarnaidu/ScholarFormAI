@@ -68,4 +68,4 @@ Maintainers will provide guidance and mentorship throughout the process. Don't h
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*

@@ -69,7 +69,7 @@
 
 ## Docker Hub
 
-- [ ] Publish official Docker image to Docker Hub (`scholarform/scholarform`)
+- [ ] Publish official Docker image to Docker Hub (`rohitkumarnaidu/ScholarFormAI`)
 - [ ] Update `README.md` with Docker Pull badge
 - [ ] Ensure Docker Compose files are in `backend/docker/docker-compose.yml`
 - [ ] Add Docker tags: `latest`, `1.0.0`, `1.0`, `stable`

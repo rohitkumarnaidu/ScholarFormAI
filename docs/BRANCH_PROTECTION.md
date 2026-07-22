@@ -123,4 +123,4 @@ gh api repos/$OWNER/$REPO/branches/main/protection/required_status_checks/contex
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*

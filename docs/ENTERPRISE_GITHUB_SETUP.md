@@ -104,7 +104,7 @@ npm install @scholarform/frontend
 
 **Python (GitHub Packages):**
 ```bash
-pip install scholarform-backend --index-url https://github.com/scholarform/scholarform
+pip install scholarform-backend --index-url https://github.com/rohitkumarnaidu/ScholarFormAI
 ```
 
 ### 2.4 Multi-Architecture Support
@@ -127,11 +127,11 @@ All container images are:
 ```bash
 # Verify attestation
 gh attestation verify ghcr.io/scholarform/backend:1.0.0 \
-  --repo scholarform/scholarform
+  --repo rohitkumarnaidu/ScholarFormAI
 
 # Verify signature
 cosign verify ghcr.io/scholarform/backend:1.0.0 \
-  --certificate-identity-regexp "https://github.com/scholarform/scholarform.*" \
+  --certificate-identity-regexp "https://github.com/rohitkumarnaidu/ScholarFormAI.*" \
   --certificate-oidc-issuer "https://token.actions.githubusercontent.com"
 ```
 
@@ -248,7 +248,7 @@ Every GitHub Release includes:
 After the Scorecard workflow runs, a badge can be displayed in the README:
 
 ```markdown
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/scholarform/scholarform/badge)](https://securityscorecards.dev/viewer/?uri=github.com/scholarform/scholarform)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/rohitkumarnaidu/ScholarFormAI/badge)](https://securityscorecards.dev/viewer/?uri=github.com/rohitkumarnaidu/ScholarFormAI)
 ```
 
 Scorecard evaluates:
@@ -420,7 +420,7 @@ GitHub displays a community profile checklist. Ensure these files exist:
 
 ### 8.2 CI/CD Dashboard
 
-Monitor at: `https://github.com/scholarform/scholarform/actions`
+Monitor at: `https://github.com/rohitkumarnaidu/ScholarFormAI/actions`
 
 Key workflows to watch:
 1. `backend-ci` — Failing tests signal regression
@@ -431,7 +431,7 @@ Key workflows to watch:
 
 ### 8.3 Release Dashboard
 
-Track releases at: `https://github.com/scholarform/scholarform/releases`
+Track releases at: `https://github.com/rohitkumarnaidu/ScholarFormAI/releases`
 
 ---
 
@@ -558,4 +558,4 @@ Configure in **Settings > Environments**:
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*

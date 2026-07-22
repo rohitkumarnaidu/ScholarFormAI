@@ -261,7 +261,7 @@
 
 | Gate | Script | Enforced | Status |
 |------|--------|----------|--------|
-| Unit/Component tests | `vitest run` | ✅ frontend-ci.yml | ✅ Pass (837/837) |
+| Unit/Component tests | `vitest run` | ✅ frontend-ci.yml | ✅ Pass (951/951) |
 | TypeScript check | `tsc --noEmit` | ✅ frontend-ci.yml | ✅ Config |
 | Linting | `eslint --max-warnings 0` | ✅ frontend-ci.yml | ✅ Clean |
 | Coverage | `vitest run --coverage` | ✅ frontend-ci.yml | ✅ Thresholds configured |
@@ -330,7 +330,7 @@ frontend-ci.yml:
 ## 12. Production Readiness Checklist
 
 ### Core Requirements
-- [x] All unit/component tests pass (837/837)
+- [x] All unit/component tests pass (951/951)
 - [x] All E2E tests pass (28/28)
 - [x] All quality gates configured in CI
 - [x] TypeScript check passes

@@ -10,7 +10,7 @@ version: "1.0"
 status: ✅ Complete
 owner: Docs Team
 review_cadence: quarterly
-last_updated: June 2026
+last_updated: July 2026
 ---
 
 # ScholarForm AI — Troubleshooting Guide
@@ -32,7 +32,7 @@ last_updated: June 2026
 ### Error: Invalid file type
 
 Cause:
-- Uploaded file is not `.docx`, `.pdf`, or `.tex`.
+- Uploaded file is not `.docx`, `.pdf`, `.md`, `.html`, or `.txt`.
 
 Fix:
 - Convert your document to one of the supported formats.

@@ -99,7 +99,7 @@ See [Code Review Standards](docs/CODE_REVIEW_STANDARDS.md) for full details.
 
 ### Code of Conduct Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at conduct@scholarform.com. All complaints will be reviewed and investigated.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at conduct@scholarform.ai. All complaints will be reviewed and investigated.
 
 ## Development Setup
 
