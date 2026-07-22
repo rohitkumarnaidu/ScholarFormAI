@@ -10,7 +10,7 @@ version: "1.0"
 status: ✅ Complete
 owner: Docs Team
 review_cadence: monthly
-last_updated: June 2026
+last_updated: July 2026
 ---
 
 # Glossary

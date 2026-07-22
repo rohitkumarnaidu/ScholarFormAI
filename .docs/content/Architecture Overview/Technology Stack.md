@@ -377,7 +377,7 @@ The technology stack exhibits strong modularity with clear dependency relationsh
 graph TB
 subgraph "Runtime Dependencies"
 Python312["Python 3.12.x"]
-Node18["Node.js 18+"]
+Node18["Node.js 20+"]
 end
 subgraph "Frontend Dependencies"
 Next16["Next.js 16"]

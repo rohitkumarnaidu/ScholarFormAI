@@ -92,7 +92,7 @@ Access ScholarForm AI at [https://scholarform.ai](https://scholarform.ai). Creat
 ### Self-Hosted (Docker)
 
 ```bash
-git clone https://github.com/scholarform/scholarform.git
+git clone https://github.com/rohitkumarnaidu/ScholarFormAI.git
 cd scholarform
 cp .env.example .env   # configure your environment
 docker compose up -d    # starts backend, frontend, workers, Redis, ChromaDB
@@ -103,7 +103,7 @@ Prerequisites: Docker Compose v2.20+, 4 GB RAM minimum.
 ### Local Development
 
 ```bash
-git clone https://github.com/scholarform/scholarform.git
+git clone https://github.com/rohitkumarnaidu/ScholarFormAI.git
 cd scholarform
 
 # Backend
@@ -176,11 +176,11 @@ We welcome community contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) to ge
 | Resource | Location |
 |----------|----------|
 | Homepage | [https://scholarform.ai](https://scholarform.ai) |
-| Repository | [https://github.com/scholarform/scholarform](https://github.com/scholarform/scholarform) |
-| Documentation | [https://github.com/scholarform/scholarform/docs](docs/) |
-| Issue Tracker | [https://github.com/scholarform/scholarform/issues](https://github.com/scholarform/scholarform/issues) |
+| Repository | [https://github.com/rohitkumarnaidu/ScholarFormAI](https://github.com/rohitkumarnaidu/ScholarFormAI) |
+| Documentation | [https://github.com/rohitkumarnaidu/ScholarFormAI/docs](docs/) |
+| Issue Tracker | [https://github.com/rohitkumarnaidu/ScholarFormAI/issues](https://github.com/rohitkumarnaidu/ScholarFormAI/issues) |
 | Security | [SECURITY.md](SECURITY.md) / `security@scholarform.ai` |
 | Changelog | [CHANGELOG.md](CHANGELOG.md) |
 | Roadmap | [ROADMAP.md](ROADMAP.md) |
 | Code of Conduct | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) |
-| Reusable | [CC BY-SA 4.0](LICENSE) |
+| Reusable | [MIT](LICENSE) |

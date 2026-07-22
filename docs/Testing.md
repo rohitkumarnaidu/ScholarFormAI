@@ -10,7 +10,7 @@ version: "1.0"
 status: 🔄 In Progress
 owner: QA Team
 review_cadence: quarterly
-last_updated: June 2026
+last_updated: July 2026
 ---
 
 # ScholarForm AI — Testing Strategy
@@ -79,7 +79,7 @@ mypy --config-file mypy.ini app
 | asyncio mode | ✅ `asyncio_mode = auto` set in `pytest.ini` |
 | Missing env vars at collection | ✅ Service-dependent tests have proper markers |
 
-### Deep Test Coverage (June 2026)
+### Deep Test Coverage (July 2026)
 
 Enterprise-grade deep test files with intensive mocking, targeting >80% per-module coverage:
 

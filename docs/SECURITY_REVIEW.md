@@ -74,10 +74,10 @@ See [SECURITY.md](../SECURITY.md) for the full vulnerability management process,
 
 | Date | Type | Findings | Status |
 |------|------|----------|--------|
-| June 2026 | SAST (CodeQL + Bandit) | 0 critical, 0 high | Clean |
-| June 2026 | Dependency scan | 0 critical CVEs | Clean |
-| June 2026 | Container scan (Trivy) | 0 critical, 0 high | Clean |
-| June 2026 | OpenSSF Scorecard | 14/16 checks at 10/10 | Active |
+| July 2026 | SAST (CodeQL + Bandit) | 0 critical, 0 high | Clean |
+| July 2026 | Dependency scan | 0 critical CVEs | Clean |
+| July 2026 | Container scan (Trivy) | 0 critical, 0 high | Clean |
+| July 2026 | OpenSSF Scorecard | 14/16 checks at 10/10 | Active |
 
 ## SLSA Provenance
 
@@ -89,4 +89,4 @@ A `security.txt` file is available at `https://scholarform.com/.well-known/secur
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*

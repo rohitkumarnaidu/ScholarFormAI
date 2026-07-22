@@ -8,7 +8,7 @@ This directory contains the full local infrastructure stack for the backend.
 
 Two Docker entry points exist on purpose:
 
-- `backend/docker-compose.yml`: lightweight backend-only stack for local API work.
+- `backend/docker/docker-compose.yml`: lightweight backend-only stack for local API work.
 - `backend/docker/docker-compose.yml`: fuller local stack with Grobid, Redis, ClamAV, and Celery workers.
 
 Docker build files and monitoring configs are also split by purpose:

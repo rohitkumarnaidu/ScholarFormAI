@@ -103,4 +103,4 @@ All production responses include the following security headers:
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*

@@ -29,4 +29,4 @@ The following organizations and projects use ScholarForm AI in production or res
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*

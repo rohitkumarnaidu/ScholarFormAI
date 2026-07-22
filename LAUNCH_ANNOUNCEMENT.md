@@ -21,7 +21,7 @@ It's not just formatting. ScholarForm AI understands document structure, validat
 
 - **12-Stage Formatter Pipeline** — Virus scan → MIME validation → parsing → structure detection → classification → formatting → equation handling → reference assembly → quality scoring → preview → export → audit. Every stage is modular and swappable.
 - **AI Agent Generator** — Generate a complete research document from a topic prompt. The agent proposes an outline, you approve, then it streams each section with citations, figures, and references.
-- **Multi-Doc RAG Synthesis** — Upload 2–10 source documents. ChromaDB-powered semantic retrieval merges them into one unified manuscript with coherent flow and deduplicated content.
+- **Multi-Doc RAG Synthesis** — Upload 2–6 source documents. ChromaDB-powered semantic retrieval merges them into one unified manuscript with coherent flow and deduplicated content.
 - **Real-Time Live Preview** — Split-pane editor with before/after diff via WebSocket/SSE. Edit formatted output inline and re-download.
 - **17 Journal Templates** — IEEE, APA, Springer, Nature, Elsevier, ACM, MLA, Chicago, Harvard, Vancouver, Numeric, plus custom and blank.
 - **Enterprise-Grade Security** — JWKS JWT authentication, CSRF protection, rate limiting, ClamAV virus scanning, dependency SBOMs, SLSA L3 provenance, Cosign-signed containers, OpenSSF Scorecard 10/10.
@@ -82,7 +82,7 @@ docker-compose up -d
 ## Call to Action
 
 - **Star on GitHub** → [github.com/rohitkumarnaidu/ScholarFormAI](https://github.com/rohitkumarnaidu/ScholarFormAI)
-- **Try the Demo** → [scholarform.ai](https://scholarform.ai) (coming soon)
+- **Try the Demo** → [scholarform.ai](https://scholarform.ai)
 - **Read the Docs** → See the `docs/` directory for 80+ documentation files
 - **Contribute** → We welcome PRs. See [`CONTRIBUTING.md`](CONTRIBUTING.md) and the [`ROADMAP.md`](docs/Roadmap.md).
 - **Report Issues** → [GitHub Issues](https://github.com/rohitkumarnaidu/ScholarFormAI/issues)

@@ -34,7 +34,7 @@ Rotating role among Core Team. Responsible for shepherding the release from bran
 ### 1. Branch & Changelog
 
 ```bash
-git checkout -b release/v1.1.0
+git checkout -b release/v1.0.0
 ```
 
 - Update `CHANGELOG.md` with all changes since last release
@@ -131,7 +131,7 @@ ScholarForm AI v1.1.0
 - [Security fixes]
 
 ### 📖 Full Changelog
-[Link to compare view: https://github.com/scholarform/scholarform/compare/v1.0.0...v1.1.0]
+[Link to compare view: https://github.com/rohitkumarnaidu/ScholarFormAI/compare/v1.0.0...v1.1.0]
 
 ---
 
@@ -152,14 +152,14 @@ docker pull ghcr.io/scholarform/celery-worker:latest
 **Verify image signature:**
 ```bash
 cosign verify ghcr.io/scholarform/backend:v1.1.0 \
-  --certificate-identity-regexp "https://github.com/scholarform/scholarform.*" \
+  --certificate-identity-regexp "https://github.com/rohitkumarnaidu/ScholarFormAI.*" \
   --certificate-oidc-issuer "https://token.actions.githubusercontent.com"
 ```
 
 **Verify build provenance:**
 ```bash
 gh attestation verify ghcr.io/scholarform/backend:v1.1.0 \
-  --repo scholarform/scholarform
+  --repo rohitkumarnaidu/ScholarFormAI
 ```
 
 ---
@@ -238,7 +238,7 @@ v1.1.0       →  Latest release ✅
 Release Drafter automatically drafts release notes on every push to `main`. The draft is available at:
 
 ```
-https://github.com/scholarform/scholarform/releases
+https://github.com/rohitkumarnaidu/ScholarFormAI/releases
 ```
 
 When the tag is pushed, `create-release.yml` uses the draft to populate the release body. **Review and edit the draft before publishing** if creating the release manually.
@@ -280,4 +280,4 @@ For critical bugs in production:
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*

@@ -151,7 +151,7 @@ graph LR
 
 ## Description
 
-This 16-stage document processing pipeline diagram shows:
+This 12-stage document processing pipeline diagram shows:
 
 - **Parser selection by file extension**: ParserFactory maps `.docx` → DocxParser, `.pdf` → PdfParser (with Nougat OCR fallback on empty extraction), `.txt` → TxtParser, `.html/.htm` → HtmlParser (BeautifulSoup4), `.md/.markdown` → MarkdownParser, `.tex/.latex` → TexParser. Non-native formats (`.doc`, `.odt`, `.rtf`) route through InputConverter → DOCX → DocxParser.
 - **Parallel GROBID + Docling**: Both run concurrently via `ThreadPoolExecutor(max_workers=2)` with 30s timeouts each. PyMuPDF fallback when both fail.

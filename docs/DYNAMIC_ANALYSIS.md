@@ -60,4 +60,4 @@ Assertions are enabled in development and CI testing. Production builds may disa
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*

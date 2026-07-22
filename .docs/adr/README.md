@@ -10,7 +10,7 @@ version: "1.0"
 status: ✅ Complete
 owner: Engineering
 review_cadence: never
-last_updated: June 2026
+last_updated: July 2026
 ---
 
 # Architecture Decision Records

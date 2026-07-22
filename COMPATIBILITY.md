@@ -73,11 +73,11 @@
 | Provider | Model | Status | Fallback Tier |
 |----------|-------|--------|---------------|
 | NVIDIA NIM | Llama 3.3 70B | ✅ Full | Primary |
-| Groq | Mixtral 8x7B | ✅ Full | Fallback 1 |
+| Groq | llama-3.3-70b-versatile | ✅ Full | Fallback 1 |
 | Ollama | DeepSeek, Llama | ✅ Full | Fallback 2 |
 | OpenAI | GPT-4, GPT-3.5 | 🔄 Untested | API-compatible; not in CI |
 | Anthropic | Claude | 🔄 Untested | API-compatible; not in CI |
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*

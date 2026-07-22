@@ -41,4 +41,4 @@ See [GOVERNANCE.md](GOVERNANCE.md) for the nomination and voting process.
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*

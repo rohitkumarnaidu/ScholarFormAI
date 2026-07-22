@@ -20,7 +20,7 @@ python format_paper.py --template ieee --input paper.docx --output formatted.doc
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--template` | `ieee` | Template name (ieee, apa, springer, elsevier, acm, nature) |
+| `--template` | `ieee` | Template name (acm, apa, chicago, elsevier, harvard, ieee, mla, modern_blue, modern_gold, modern_red, nature, none, numeric, portfolio, resume, springer, vancouver) |
 | `--input` | — | Path to input DOCX file |
 | `--output` | `formatted.docx` | Path for formatted output |
 | `--api-url` | `http://localhost:8000` | ScholarForm API base URL |

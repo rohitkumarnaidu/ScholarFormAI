@@ -154,7 +154,7 @@ flowchart TB
 ### Prerequisites
 
 - Python **3.12.x** (3.11 causes pytest import collisions)
-- Node.js **18+**
+- Node.js **20+ (LTS)**
 - Redis (for Celery + realtime features — optional for basic usage)
 
 ### 1. Backend

@@ -16,7 +16,7 @@ OCR ensures accessibility for scanned inputs, while AI provides advisory insight
   3. PyMuPDF (fast basic text parsing)
 - **AI Enrichment**: Optional advisory hints for section detection and readablity using NVIDIA NIM.
 - Deterministic document understanding (no AI / LLMs involved in core logic).
-- Template-aware formatting (IEEE, Springer).
+- Template-aware formatting (17 templates: acm, apa, chicago, elsevier, harvard, ieee, mla, modern_blue, modern_gold, modern_red, nature, none, numeric, portfolio, resume, springer, vancouver).
 - Backend runs exclusively on **FastAPI** (Python 3.12 required).
 
 ## Architecture
@@ -38,7 +38,7 @@ AI Enrichment → Classification → Figures → References → Validation → F
 
 **Request**:
 - `file`: manuscript (any supported format)
-- `template_name` (optional): `ieee` | `springer`
+- `template_name` (optional): `ieee` | `springer` | `acm` | `apa` | `chicago` | `elsevier` | `harvard` | `mla` | `modern_blue` | `modern_gold` | `modern_red` | `nature` | `none` | `numeric` | `portfolio` | `resume` | `vancouver`
 - `enable_ocr` (boolean, default: True): Auto-detect scanned PDFs
 - `enable_ai` (boolean, default: False): Enable advisory analysis flags
 

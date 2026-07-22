@@ -14,7 +14,7 @@ ScholarForm AI uses a **BDFL + Core Team** governance model, designed to balance
 
 The BDFL has final authority on all project decisions, including technical direction, feature acceptance, and conflict resolution.
 
-- **Current BDFL:** TBD (project founder)
+- **Current BDFL:** Rohit Kumar Naidu
 - **Scope:** API design decisions, breaking changes, strategic roadmap
 - **Limits:** The BDFL cannot unilaterally change this governance document or the project license without Core Team approval.
 
@@ -89,4 +89,4 @@ This governance model is based on the [BDFL model](https://en.wikipedia.org/wiki
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*

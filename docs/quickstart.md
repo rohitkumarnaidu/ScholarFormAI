@@ -10,7 +10,7 @@ version: "1.0"
 status: ✅ Complete
 owner: Docs Team
 review_cadence: monthly
-last_updated: June 2026
+last_updated: July 2026
 ---
 
 # Quickstart Guide
@@ -26,7 +26,7 @@ Get ScholarForm AI running in 5 minutes.
 ## 2. Clone & Setup Backend
 
 ```bash
-git clone https://github.com/scholarform/scholarform.git
+git clone https://github.com/rohitkumarnaidu/ScholarFormAI.git
 cd scholarform/backend
 
 # Create virtual environment

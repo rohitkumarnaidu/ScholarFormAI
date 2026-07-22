@@ -57,8 +57,8 @@ If you encounter accessibility barriers, please:
 
 1. Open a GitHub issue with the `accessibility` label.
 2. Include the page URL, the issue encountered, and your assistive technology setup.
-3. Alternatively, email accessibility@scholarform.com.
+3. Alternatively, email accessibility@scholarform.ai.
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*

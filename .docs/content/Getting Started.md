@@ -39,13 +39,13 @@ This guide helps you quickly set up and run the Automated Academic Manuscript Fo
 
 ## Prerequisites
 - Python 3.12.x (required for backend)
-- Node.js 18+ (required for frontend)
+- Node.js 20+ (required for frontend)
 - Docker (optional, recommended for full local stack)
 - Git (recommended for cloning the repository)
 
 Notes:
 - The backend enforces Python 3.12 via project configuration.
-- The frontend uses Next.js 14 with the App Router and requires Node.js 18+.
+- The frontend uses Next.js 14 with the App Router and requires Node.js 20+.
 
 **Section sources**
 - [backend/pyproject.toml:8](file://backend/pyproject.toml#L8)

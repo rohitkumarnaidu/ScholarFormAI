@@ -123,7 +123,7 @@ cosign verify ghcr.io/scholarform/backend:v1.1.0 \
   --certificate-oidc-issuer "https://token.actions.githubusercontent.com"
 
 # Verify provenance
-gh attestation verify ghcr.io/scholarform/backend:v1.1.0 --repo scholarform/scholarform
+gh attestation verify ghcr.io/scholarform/backend:v1.1.0 --repo rohitkumarnaidu/ScholarFormAI
 
 # Verify release integrity
 gh release download v1.1.0

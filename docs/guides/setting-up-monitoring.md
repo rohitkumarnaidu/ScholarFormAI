@@ -408,7 +408,7 @@ ScholarForm exposes three health endpoints:
 |----------|---------|-------------------|
 | `GET /health` | Basic liveness probe | `{"status": "ok"}` |
 | `GET /ready` | Readiness with dependency check | `{"status": "ok", "dependencies": {"db": "ok", "redis": "ok"}}` |
-| `GET /api/v1/health` | API v1 health with version info | `{"status": "ok", "version": "1.2.0"}` |
+| `GET /api/v1/health` | API v1 health with version info | `{"status": "ok", "version": "1.0.0"}` |
 
 ### Configure Uptime Checks (Better Uptime)
 

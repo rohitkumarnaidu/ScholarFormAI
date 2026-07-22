@@ -38,7 +38,7 @@ This guide walks through deploying ScholarForm AI to production across all requi
 
 | Service | Account Required | Tier | Est. Cost |
 |---------|-----------------|------|-----------|
-| [Render](https://render.com) | ✅ Sign up | Free or Starter ($7/mo) | $0–7/mo |
+| [Render](https://render.com) | ✅ Sign up | Professional ($20/mo) | $20/mo |
 | [Supabase](https://supabase.com) | ✅ Sign up | Free tier (50K rows) | $0/mo |
 | [Upstash Redis](https://upstash.com) | ✅ Sign up | Free tier (256MB) | $0/mo |
 | [Vercel](https://vercel.com) | ✅ Sign up | Hobby (free) | $0/mo |
@@ -226,10 +226,10 @@ FORCE_HTTPS=true
 After deployment completes, verify the health endpoint:
 
 ```bash
-curl https://scholarform-api.onrender.com/health
+curl https://scholarform-api.onrender.com/api/v1/health/live
 # Expected: {"status":"ok"}
 
-curl https://scholarform-api.onrender.com/ready
+curl https://scholarform-api.onrender.com/api/v1/health/ready
 # Expected: {"status":"ok","dependencies":{"db":"ok","redis":"ok"}}
 ```
 

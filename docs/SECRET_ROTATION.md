@@ -10,7 +10,7 @@ version: "1.0"
 status: ✅ Complete
 owner: DevOps Team
 review_cadence: quarterly
-last_updated: June 2026
+last_updated: July 2026
 ---
 
 # ScholarForm AI — Secret Rotation Policy

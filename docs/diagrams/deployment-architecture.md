@@ -13,7 +13,7 @@ graph TB
         VERCEL_CDN["CDN Cache<br/>_next/static: 1 year TTL"]
     end
 
-    subgraph RENDER["Render (Free Tier, 512MB)"]
+    subgraph RENDER["Render (Professional tier)"]
         direction TB
         WEB_SVC["Web Service<br/>Uvicorn app.main:app<br/>--workers WEB_CONCURRENCY<br/>Health: /api/v1/health/live"]
 
@@ -191,7 +191,7 @@ flowchart LR
 **Production deployment architecture** diagram shows:
 
 - **Vercel** (Hobby) serves the Next.js 16 frontend with SSR + static assets (1-year CDN cache for `_next/static`)
-- **Render** (Free tier, 512MB) runs two services: the web service (Uvicorn with `WEB_CONCURRENCY` workers, health check at `/api/v1/health/live`) and the Celery worker (two queues: `interactive` + `batch`, concurrency 2 each)
+- **Render** (Professional tier) runs two services: the web service (Uvicorn with `WEB_CONCURRENCY` workers, health check at `/api/v1/health/live`) and the Celery worker (two queues: `interactive` + `batch`, concurrency 2 each)
 - **Upstash Redis** (production) handles cache (LLM/CSL/session), pub/sub (SSE/WebSocket), and Celery broker/backend
 - **Supabase** (Free, 500MB) provides PostgreSQL 15+, Auth (JWT + RLS), and Storage
 - **HuggingFace Spaces** runs 6 service pairs (primary + shadow for high availability): GROBID (metadata extraction), Docling (layout analysis), RapidOCR, DOCX Converter (LibreOffice headless), Nougat (LaTeX PDF parser), and SciBERT (block-type classification). Each pair has automatic failover via `*_URLS` comma-separated env vars.

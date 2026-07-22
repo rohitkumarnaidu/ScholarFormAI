@@ -62,4 +62,4 @@ The project's heavy reliance on CI/CD automation reduces bus factor risk:
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*

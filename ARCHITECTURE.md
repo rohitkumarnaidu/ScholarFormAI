@@ -57,7 +57,7 @@ ScholarFormAI/
 │
 ├── deploy/                    # Prometheus, Grafana, Docker configs
 ├── docs/                      # 80+ documentation files
-└── .github/workflows/         # 24 CI/CD workflows
+└── .github/workflows/         # 26 CI/CD workflows
 ```
 
 ---

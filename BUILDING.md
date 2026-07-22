@@ -15,7 +15,7 @@
 
 ```bash
 # Clone
-git clone https://github.com/scholarform/scholarform.git
+git clone https://github.com/rohitkumarnaidu/ScholarFormAI.git
 cd scholarform
 
 # Backend
@@ -88,4 +88,4 @@ Our CI pipeline builds and tests every PR and push to `main`:
 
 ---
 
-*Last updated: June 2026*
+*Last updated: July 2026*
