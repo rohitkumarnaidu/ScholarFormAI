@@ -82,14 +82,13 @@ The platform has undergone 14 certification phases executed by 20 specialized ev
 
 | # | Criterion | Standard | Result | Evidence |
 |---|-----------|----------|--------|----------|
-| 4.1 | CI/CD workflows | All passing | ✅ PASS | 26 workflows |
+| 4.1 | CI/CD workflows | All passing | ✅ PASS | 25 workflows |
 | 4.2 | Docker multi-arch build | amd64 + arm64 | ✅ PASS | Matrix build |
 | 4.3 | Production deployment | Automated | ✅ PASS | Vercel + Render |
 | 4.4 | Rollback procedure | Documented | ✅ PASS | docs/runbooks/rollback.md |
 | 4.5 | Disaster recovery | Documented | ✅ PASS | docs/DISASTER_RECOVERY.md |
 | 4.6 | Monitoring dashboards | 3 Grafana dashboards | ✅ PASS | Provisioned |
 | 4.7 | Alerting | Prometheus + Alertmanager | ✅ PASS | Slack + PagerDuty |
-| 4.8 | Error tracking | Sentry configured | ✅ PASS | Backend + frontend |
 | 4.9 | Health probes | /health/live + /ready | ✅ PASS | Active |
 | 4.10 | Database migrations | Alembic | ✅ PASS | Versioned |
 

@@ -20,7 +20,7 @@ After 14 certification phases, 10,611+ passing tests, 20 production hardening fi
 | Security | ✅ Hardened | 490+ security tests, 0 critical/high findings |
 | Performance | ✅ Validated | All SLO targets met |
 | Documentation | ✅ Complete | 88-file enterprise suite |
-| Infrastructure | ✅ Production-ready | 26 CI/CD workflows, SLSA L3 |
+| Infrastructure | ✅ Production-ready | 25 CI/CD workflows, SLSA L3 |
 | Compliance | ✅ Certified | OpenSSF Scorecard (14/16 checks), SBOM |
 
 ---
@@ -55,8 +55,6 @@ After 14 certification phases, 10,611+ passing tests, 20 production hardening fi
 | Vector Store | ChromaDB | latest |
 | LLM Providers | NVIDIA NIM / Groq / Ollama | — |
 | PDF Parsing | GROBID / Docling / PyMuPDF | — |
-| Monitoring | Prometheus + Grafana + Sentry | — |
-| Analytics | PostHog | — |
 | Container | Docker (multi-arch: amd64 + arm64) | — |
 | Signing | Cosign (keyless OIDC) | — |
 | Provenance | SLSA L3 | — |
@@ -79,9 +77,9 @@ User Browser
              └─→ Hugging Face Spaces (AI Microservices)
                      ├─→ GROBID Service
                      ├─→ Docling Service
-                     ├─→ Nougat OCR Service
+                     ├─→ LLM-based PDF parsing Service
                      ├─→ PaddleOCR Service
-                     └─→ SciBERT Service
+                     └─→ LLMClassifier Service
 ```
 
 ---
@@ -96,7 +94,7 @@ User Browser
 | 2 | Virus Scanning (ClamAV) | ✅ Complete |
 | 3 | PDF Parsing (3-tier fallback: GROBID → Docling → PyMuPDF) | ✅ Complete |
 | 4 | Structure Detection | ✅ Complete |
-| 5 | Block Classification (SciBERT — optional) | ✅ Complete |
+| 5 | Block Classification (LLMClassifier — optional) | ✅ Complete |
 | 6 | NLP Enhancement (YAKE + spaCy) | ✅ Complete |
 | 7 | Caption Matching (Tables + Figures) | ✅ Complete |
 | 8 | Figure Quality Analysis (optional) | ✅ Complete |

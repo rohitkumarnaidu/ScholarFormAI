@@ -36,10 +36,8 @@
 | 1.1.6 | Production readiness certificate signed (all 6 signatories) | Release Engineering | ☐ | |
 | 1.1.7 | Final security scan (Trivy) on container images | Security Engineering | ☐ | |
 | 1.1.8 | Dependency audit (Renovate PRs merged) | Platform Engineering | ☐ | |
-| 1.1.9 | Sentry error tracking verified (backend + frontend) | Platform Engineering | ☐ | |
 | 1.1.10 | Grafana dashboards loading (application, infra, business) | Platform Engineering | ☐ | |
 | 1.1.11 | Prometheus alerting rules verified (test alert sent) | Platform Engineering | ☐ | |
-| 1.1.12 | PostHog analytics events firing correctly | Product Management | ☐ | |
 | 1.1.13 | Lighthouse CI score verified (90+ on all pages) | QA Engineering | ☐ | |
 
 ### 1.2 Infrastructure — Complete 12 Hours Before Launch
@@ -140,7 +138,6 @@
 
 | # | Task | Owner | Interval | Notes |
 |---|------|-------|----------|-------|
-| 2.2.1 | Monitor error rates (Sentry + Grafana) | Platform Engineering | Continuous | Threshold: < 0.1% error rate |
 | 2.2.2 | Monitor API latency (p50/p95/p99) | Platform Engineering | Every 15min | Threshold: p99 < 5s |
 | 2.2.3 | Monitor queue depth (Celery) | Platform Engineering | Every 15min | Threshold: < 20 pending |
 | 2.2.4 | Monitor database connections | Platform Engineering | Every 15min | Threshold: < 50/97 |
