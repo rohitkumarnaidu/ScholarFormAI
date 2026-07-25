@@ -9,6 +9,8 @@ from fastapi.responses import JSONResponse
 
 from app import __description__, __title__, __version__
 from app.api.routes import router as api_router
+from app.api.update_routes import router as update_router
+from app.api.issue_routes import router as issue_router
 from app.core.config import settings
 from app.core.errors import ErrorMiddleware
 from app.core.exceptions import AMFError
@@ -75,6 +77,8 @@ app.add_middleware(AuditLogMiddleware)
 app.add_middleware(ErrorMiddleware)
 
 app.include_router(api_router, prefix=settings.API_PREFIX)
+app.include_router(update_router, prefix=settings.API_PREFIX)
+app.include_router(issue_router, prefix=settings.API_PREFIX)
 
 
 @app.middleware("http")

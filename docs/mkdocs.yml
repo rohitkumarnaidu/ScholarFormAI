@@ -104,6 +104,14 @@ nav:
     - Overview: architecture/overview.md
     - Design Decisions: architecture/design.md
     - Data Flow: architecture/data-flow.md
+  - Issues:
+    - Developer Guide: issues/developer-guide.md
+    - User Guide: issues/user-guide.md
+    - Admin Guide: issues/admin-guide.md
+  - Updates:
+    - Developer Guide: updates/developer-guide.md
+    - User Guide: updates/user-guide.md
+    - Deployment Guide: updates/deployment-guide.md
   - Deployment:
     - Docker: deployment/docker.md
     - Kubernetes: deployment/kubernetes.md

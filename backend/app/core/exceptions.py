@@ -57,3 +57,8 @@ class RateLimitError(AMFError):
             status_code=429,
             details={"retry_after": retry_after},
         )
+
+
+class IssueReportError(AMFError):
+    def __init__(self, message: str = "Issue report error", details: dict | None = None):
+        super().__init__("ISSUE_REPORT_ERROR", message, status_code=400, details=details)

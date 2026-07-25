@@ -1,21 +1,20 @@
 import os
-from pathlib import Path
 
-from pydantic import ConfigDict
+from pydantic import ConfigDict, model_validator
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    ENVIRONMENT: str = "development"
-    DEBUG: bool = True
+    ENVIRONMENT: str = "production"
+    DEBUG: bool = False
     LOG_LEVEL: str = "info"
     MAX_UPLOAD_SIZE: int = 10 * 1024 * 1024
     UPLOAD_DIR: str = str(Path(__file__).parent.parent.parent / "uploads")
-    ALLOWED_ORIGINS: list[str] = ["*"]
+    ALLOWED_ORIGINS: list[str] = ["http://localhost:3000"]
     API_PREFIX: str = "/api/v1"
     VERSION: str = "1.0.0"
     DEFAULT_STYLE: str = "apa"
-    API_HOST: str = "0.0.0.0"
+    API_HOST: str = "127.0.0.1"
     API_PORT: int = 8000
 
     SENTRY_DSN: str | None = None
@@ -48,6 +47,21 @@ class Settings(BaseSettings):
         env_prefix="AMF_",
         case_sensitive=False,
     )
+
+    @model_validator(mode="after")
+    def _enforce_production_defaults(self) -> "Settings":
+        if self.ENVIRONMENT == "production":
+            if not self.SECRET_KEY:
+                raise ValueError(
+                    "AMF_SECRET_KEY must be set in production. "
+                    "Generate one with: python -c 'import secrets; print(secrets.token_urlsafe(32))'"
+                )
+            if self.ALLOWED_ORIGINS == ["*"]:
+                raise ValueError(
+                    "AMF_ALLOWED_ORIGINS must be restricted in production. "
+                    "Set to specific origins like: http://localhost:3000,https://yourdomain.com"
+                )
+        return self
 
 
 settings = Settings()
