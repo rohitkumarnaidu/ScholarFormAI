@@ -48,10 +48,10 @@ last_updated: July 2026
 
 ### 🎨 Codex-Identified Color Issues
 
-1. ⚠️ **Violet accent drift in live preview** — Some components (particularly in the live preview and generator UI) use `violet-*` tokens outside the defined `#136dec` blue design system. This creates visual inconsistency. A design system style guide is needed to enforce token usage.
-2. ⚠️ **Only one accent color family** — Academic tools should have warmer secondary tones.
-3. ⚠️ **No semantic color tokens** — No explicit `success/warning/error/info` colors defined in the design system.
-4. ⚠️ **No gradient definitions** in Tailwind config.
+1.  ️ **Violet accent drift in live preview** — Some components (particularly in the live preview and generator UI) use `violet-*` tokens outside the defined `#136dec` blue design system. This creates visual inconsistency. A design system style guide is needed to enforce token usage.
+2.  ️ **Only one accent color family** — Academic tools should have warmer secondary tones.
+3.  ️ **No semantic color tokens** — No explicit `success/warning/error/info` colors defined in the design system.
+4.  ️ **No gradient definitions** in Tailwind config.
 
 **Recommended Token Additions:**
 ```json
@@ -73,9 +73,9 @@ last_updated: July 2026
 | Element | Font | Notes |
 |---------|------|-------|
 | Display | Manrope (via CSS variable) | ✅ Good — modern, clean, academic-friendly |
-| Body | System UI stack (Tailwind default) | ⚠️ Should add Inter or Source Serif Pro |
+| Body | System UI stack (Tailwind default) |  ️ Should add Inter or Source Serif Pro |
 | Code | Monospace stack | ✅ Standard |
-| Document Preview | Custom serif rendering | ⚠️ Should match journal font expectations |
+| Document Preview | Custom serif rendering |  ️ Should match journal font expectations |
 
 ---
 
@@ -153,8 +153,8 @@ last_updated: July 2026
 
 ## Responsive Status
 
-- ⚠️ Viewport testing not done in audit
-- ⚠️ E2E responsive tests exist but are stubs
+-  ️ Viewport testing not done in audit
+-  ️ E2E responsive tests exist but are stubs
 - **Rating: 5/10** (needs manual testing on mobile/tablet)
 
 ---

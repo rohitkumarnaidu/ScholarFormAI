@@ -639,7 +639,7 @@ async def get_document(doc_id: str, request: Request):
 ### 10.3 Graceful Degradation
 
 - **External service failures** must not crash the request. Wrap calls in try/except and fall back (e.g., LLM 4-tier fallback: NVIDIA NIM → Groq → OpenRouter → Ollama; PDF parser cascade: GROBID → Docling → PyMuPDF → PyPDF2).
-- **Feature flags** enable graceful degradation: `DEFAULT_FAST_MODE=true` skips optional AI stages, `USE_SCIBERT_CLASSIFICATION=false` disables SciBERT.
+- **Feature flags** enable graceful degradation: `DEFAULT_FAST_MODE=true` skips optional AI stages, `USE_LLM_CLASSIFICATION=false` disables LLMClassifier.
 - **Circuit breaker** (`app/pipeline/safety/circuit_breaker.py`) wraps external calls with automatic open/close/half-open state transitions. Use `@circuit_breaker` decorator or raise `CircuitBreakerOpenException`.
 - **Celery tasks** catch and log errors without crashing the worker.
 - **Middleware** (`app/middleware/abuse_detector.py`, `app/middleware/rate_limit.py`) returns 429/403 responses on violation rather than raising unhandled exceptions.
@@ -808,7 +808,7 @@ frontend-ci.yml:
 | `LOW_MEMORY_MODE`            | `true`  | Reduce memory usage              |
 | `PRELOAD_AI_MODELS`          | `false` | Preload AI models on startup     |
 | `DEFAULT_FAST_MODE`          | `true`  | Skip optional AI pipeline stages |
-| `USE_SCIBERT_CLASSIFICATION` | `false` | Enable SciBERT classifier        |
+| `USE_LLM_CLASSIFICATION` | `false` | Enable LLMClassifier classifier        |
 | `TESTING`                    | —       | Set to `1` in test mode (short-circuits lifespan) |
 
 ### A.3 Useful Commands
