@@ -29,12 +29,6 @@ dependencies = [
     "pyyaml>=6.0.0",
 ]
 
-[project.urls]
-Homepage = "https://amf.dev"
-Documentation = "https://amf.dev/docs/cli"
-Repository = "https://github.com/amf/automated-manuscript-formatter"
-Changelog = "https://github.com/amf/automated-manuscript-formatter/blob/main/CHANGELOG.md"
-
 [project.optional-dependencies]
 dev = [
     "pytest>=8.3.0",
@@ -44,6 +38,7 @@ dev = [
 ]
 local = [
     "python-docx>=1.1.2",
+    "amf-backend",
 ]
 
 [project.scripts]

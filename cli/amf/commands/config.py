@@ -1,10 +1,9 @@
-from rich.console import Console
 from rich.table import Table
-from rich.panel import Panel
 
+from amf._console import get_console
 from amf.config import AMFConfig
 
-console = Console()
+console = get_console()
 
 
 def show_config():

@@ -15,6 +15,7 @@ def _make_mock_response(data: dict, status: int = 200):
     mr.status_code = status
     mr.json.return_value = data
     mr.raise_for_status.return_value = None
+    mr.content = b"mock docx content"
     return mr
 
 

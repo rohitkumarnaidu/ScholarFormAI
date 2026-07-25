@@ -6,7 +6,7 @@ RUN pip install mkdocs-material mkdocs-git-revision-date-localized-plugin mkdocs
 COPY . .
 RUN mkdocs build
 
-FROM nginx:alpine
+FROM nginx:1.27-alpine
 COPY --from=builder /app/site /usr/share/nginx/html
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \

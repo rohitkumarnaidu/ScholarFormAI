@@ -1,10 +1,11 @@
 import json
 from pathlib import Path
 
-from rich.console import Console
 from rich.panel import Panel
 
-console = Console()
+from amf._console import get_console
+
+console = get_console()
 
 MANUSCRIPT_TEMPLATE = """# {title}
 
