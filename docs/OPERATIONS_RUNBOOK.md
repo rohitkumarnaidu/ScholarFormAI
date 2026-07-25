@@ -69,7 +69,7 @@ last_updated: July 2026
            └────────────┘                           └──────────────┘
                     ▼              ▼              ▼           ▼
            ┌────────────┐ ┌──────────┐ ┌────────┐ ┌──────────────┐
-           │  Nougat     │ │ SciBERT │ │ Docx   │ │  Ollama /    │
+           │  LLMPDFParser     │ │ LLMClassifier │ │ Docx   │ │  Ollama /    │
            │  Parser     │ │ Classif.│ │ Conv.  │ │  Local LLM   │
            └────────────┘ └──────────┘ └────────┘ └──────────────┘
 ```
@@ -86,8 +86,8 @@ last_updated: July 2026
 | **ClamAV** | 3310 | Medium | AV scanning can be bypassed in degraded mode |
 | **Celery Workers** | - | **High** | Interactive + batch queues; synchronous fallback |
 | **LLM Providers** | - | **High** | NVIDIA NIM → Groq → OpenRouter → Ollama (4-tier) |
-| **Nougat** | - | Low | Disabled by default (ENABLE_NOUGAT_PARSER=false) |
-| **SciBERT** | - | Low | NLP classification fallback (USE_SCIBERT_CLASSIFICATION=false by default) |
+| **LLMPDFParser** | - | Low | Disabled by default (ENABLE_LLM_PDF_PARSER=false) |
+| **LLMClassifier** | - | Low | NLP classification fallback (USE_LLM_CLASSIFICATION=false by default) |
 
 ### Environment
 
@@ -275,7 +275,7 @@ All metrics served at `GET /metrics` via `prometheus_fastapi_instrumentator`. Cu
 
 - **Alert rules:** `deploy/prometheus/error_budget.yml` — evaluated every 15s
 - **Grafana:** Dashboard at `https://grafana.scholarform.ai/d/scholarform-production`
-- **Sentry:** Error tracking with 0.1 trace sample rate (`SENTRY_DSN`)
+- **Error tracking:** Handled via Prometheus metrics and structured logging (Sentry removed)
 - **Lighthouse CI:** Core Web Vitals (LCP <2.5s, FID <100ms, CLS <0.1)
 
 ---
@@ -944,7 +944,6 @@ curl -s https://api.scholarform.ai/api/v1/audit/logs?limit=50 | jq '.'
 |--------|---------|--------|-----|
 | Supabase | support@supabase.com | Dashboard → Help | Pro: 4hr response |
 | Render | support@render.com | Dashboard → Support | 2hr response (Pro) |
-| Sentry | support@sentry.io | Dashboard → Contact | Standard: 24hr |
 | GitHub | support@github.com | Premium: 4hr | Enterprise: 1hr |
 
 ### Communication Channels
