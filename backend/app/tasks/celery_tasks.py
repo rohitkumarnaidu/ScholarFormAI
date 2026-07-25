@@ -11,7 +11,6 @@ from celery.schedules import crontab
 from kombu import Queue
 from app.pipeline.orchestrator import PipelineOrchestrator
 from app.config.settings import settings
-from app.services.scibert_gate import persist_scibert_benchmark_result
 from app.tasks.cleanup import cleanup_stranded_uploads
 
 # ── Old ORM imports (kept for reference, replaced by DocumentService) ──────────
@@ -260,63 +259,4 @@ def cleanup_uploads_task(upload_dir: str = "uploads", retention_days: int | None
     }
 
 
-@celery_app.task(name="batch.scibert_benchmark")
-def scibert_benchmark_task(fixtures_dir: str | None = None):
-    """
-    Batch queue task: run SciBERT benchmark over stored fixtures.
-    """
-    import json
-    from pathlib import Path
-    from app.pipeline.intelligence.semantic_parser import SemanticParser
-    from app.pipeline.parsing.parser_factory import ParserFactory
 
-    base_dir = Path(fixtures_dir) if fixtures_dir else Path("tests") / "fixtures" / "scibert"
-    labels_path = base_dir / "labels.json"
-    if not labels_path.exists():
-        logger.warning("SciBERT benchmark fixtures not found at %s", labels_path)
-        return {"status": "missing_fixtures", "overall_f1": 0.0}
-
-    labels_data = json.loads(labels_path.read_text(encoding="utf-8"))
-    parser_factory = ParserFactory()
-    semantic_parser = SemanticParser()
-
-    def _macro_f1(y_true, y_pred):
-        labels = sorted(set(y_true) | set(y_pred))
-        f1s = []
-        for label in labels:
-            tp = sum(1 for t, p in zip(y_true, y_pred) if t == label and p == label)
-            fp = sum(1 for t, p in zip(y_true, y_pred) if t != label and p == label)
-            fn = sum(1 for t, p in zip(y_true, y_pred) if t == label and p != label)
-            if tp == 0 and fp == 0 and fn == 0:
-                continue
-            precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-            recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-            f1 = 0.0 if (precision + recall) == 0 else (2 * precision * recall) / (precision + recall)
-            f1s.append(f1)
-        return sum(f1s) / len(f1s) if f1s else 0.0
-
-    per_paper = {}
-    overall_true = []
-    overall_pred = []
-
-    for filename, meta in labels_data.items():
-        file_path = base_dir / filename
-        labels = meta["labels"] if isinstance(meta, dict) else meta
-        parser = parser_factory.get_parser(str(file_path))
-        if parser is None:
-            continue
-        document = parser.parse(str(file_path), document_id=filename)
-        predictions = semantic_parser.analyze_blocks(document.blocks)
-        predicted_labels = [p["predicted_section_type"] for p in predictions]
-        if len(predicted_labels) != len(labels):
-            logger.warning("Label mismatch for %s (expected %d, got %d)", filename, len(labels), len(predicted_labels))
-            continue
-        f1 = _macro_f1(labels, predicted_labels)
-        per_paper[filename] = f1
-        overall_true.extend(labels)
-        overall_pred.extend(predicted_labels)
-
-    overall_f1 = _macro_f1(overall_true, overall_pred)
-    persist_scibert_benchmark_result(overall_f1, source="celery_batch.scibert_benchmark")
-    logger.info("SciBERT benchmark complete. Overall F1=%.4f", overall_f1)
-    return {"status": "ok", "overall_f1": overall_f1, "per_paper": per_paper}

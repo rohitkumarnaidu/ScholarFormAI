@@ -58,7 +58,7 @@ class PipelinePhases:
         doc_obj = self.orchestrator._run_extraction_stage(
             factory, input_path, job_id, formatting_options, file_ext
         )
-        doc_obj = self.orchestrator.stages.apply_nougat_fallback(
+        doc_obj = self.orchestrator.stages.apply_llm_pdf_fallback(
             doc_obj, input_path, job_id, file_ext
         )
         self.orchestrator.stages.set_template(doc_obj, template_name)

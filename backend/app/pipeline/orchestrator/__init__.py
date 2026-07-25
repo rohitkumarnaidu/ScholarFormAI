@@ -22,7 +22,13 @@ logger = logging.getLogger(__name__)
 
 from app.config.settings import settings
 from app.db.supabase_client import get_supabase_client
-from app.pipeline.services import GROBIDClient, DoclingClient
+from app.pipeline.services import GROBIDClient
+try:
+    from app.pipeline.services.docling_client import DoclingClient
+except ImportError:
+    class DoclingClient:  # backward-compat stub
+        def is_available(self):
+            return False
 from app.pipeline.input_conversion.converter import InputConverter
 from app.pipeline.nlp.analyzer import ContentAnalyzer, extract_keywords
 from app.pipeline.contracts.loader import ContractLoader

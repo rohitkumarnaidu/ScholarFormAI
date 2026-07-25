@@ -51,7 +51,7 @@ def _suppress_docling_warnings():
         yield
 
 def _docling_enabled() -> bool:
-    if not settings.USE_DOCLING_FALLBACK:
+    if not getattr(settings, 'USE_DOCLING_FALLBACK', False):
         return False
     if settings.LOW_MEMORY_MODE:
         return False

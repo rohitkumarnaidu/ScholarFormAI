@@ -83,8 +83,6 @@ class PipelineOrchestrator:
         # External service clients
         from app.pipeline.orchestrator import GROBIDClient
         self.grobid_client = GROBIDClient()
-        from app.pipeline.orchestrator import DoclingClient
-        self.docling_client = DoclingClient()
 
         # Stage engine — all stage implementations delegated here
         self.stages = PipelineStages(
@@ -93,7 +91,6 @@ class PipelineOrchestrator:
             contracts_dir=self.contracts_dir,
             converter=self.converter,
             grobid_client=self.grobid_client,
-            docling_client=self.docling_client,
             run_with_timeout_fn=self._run_with_timeout,
         )
 
@@ -632,10 +629,6 @@ class PipelineOrchestrator:
             summary.get("review_status", "N/A"),
         )
         logger.info("Pipeline quality summary for job %s: %s", job_id, summary)
-
-    @staticmethod
-    def _should_skip_docling_for_digital_pdf(input_path: str) -> bool:
-        return PipelineStages.should_skip_docling_for_digital_pdf(input_path)
 
     @staticmethod
     def _extract_pymupdf_fallback_metadata(input_path: str) -> dict[str, Any]:

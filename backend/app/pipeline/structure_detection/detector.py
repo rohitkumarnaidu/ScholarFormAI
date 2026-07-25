@@ -65,27 +65,22 @@ class StructureDetector(PipelineStage):
             self.avg_font_size = self._calculate_avg_font_size(document.blocks)
             
             # Step 2: Detect heading candidates
-            # Week 2 Enhancements: Check for Docling layout data
-            # Access via ai_hints dict on DocumentMetadata model
-            docling_layout = document.metadata.ai_hints.get("docling_layout")
-            
+            # Check for LLM layout data (replaces Docling)
+            llm_layout = document.metadata.ai_hints.get("llm_layout")
+
             heading_candidates: list = []
-            if docling_layout:
-                # path: Enhanced structure detection using Docling layout analysis
-                # Features: Bounding box aware, font size confident, logo tolerant
+            if llm_layout:
                 logger.info(
-                    "Using Docling layout data for structure detection (%d elements)",
-                    len(docling_layout.get("elements", [])),
+                    "Using LLM layout data for structure detection (%d elements)",
+                    len(llm_layout.get("elements", [])),
                 )
-                heading_candidates = self._detect_structure_with_docling(document.blocks, docling_layout)
-            
-            # Fallback if Docling unavailable OR failed (returned empty/None)
+                heading_candidates = self._detect_structure_with_llm_layout(document.blocks, llm_layout)
+
             if not heading_candidates:
-                if docling_layout:
+                if llm_layout:
                     logger.warning(
-                        "Docling detection returned no results (or failed). Fallback to standard rule-based detection."
+                        "LLM layout detection returned no results. Fallback to standard rule-based detection."
                     )
-                # Fallback: Use standard rule-based detection
                 heading_candidates = self._detect_heading_candidates(document.blocks)
         
         # Step 3: Assign section names based on headings
@@ -381,19 +376,19 @@ class StructureDetector(PipelineStage):
                 last_level = block.level
 
 
-    @safe_function(fallback_value=[], error_message="Docling structure detection failed")
-    def _detect_structure_with_docling(self, blocks: List[Block], layout_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+    @safe_function(fallback_value=[], error_message="LLM layout structure detection failed")
+    def _detect_structure_with_llm_layout(self, blocks: List[Block], layout_data: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
-        Detect structure using Docling layout analysis data.
+        Detect structure using LLM layout analysis data (replaces Docling).
         
-        Uses bounding boxes and visual features for superior accuracy:
-        1. Title Detection: Ignores top logos/images using y-coordinates.
-        2. Heading Levels: Strictly based on font size hierarchy.
-        3. Header/Footer: Filters out elements in top/bottom margins.
+        Uses LLM-generated layout elements for superior accuracy:
+        1. Title Detection: Based on LLM-identified 'title' type.
+        2. Heading Levels: Based on LLM-assigned levels.
+        3. Header/Footer: Based on LLM-identified types.
         
         Args:
             blocks: Document blocks
-            layout_data: Docling layout dictionary
+            layout_data: LLM layout dictionary
             
         Returns:
             List of detected headings with metadata
@@ -412,7 +407,7 @@ class StructureDetector(PipelineStage):
         # 1. Parse Layout Elements
         elements = layout_data.get("elements", [])
         if not elements:
-            logger.warning("Docling layout data empty. Fallback to standard detection.")
+            logger.warning("LLM layout data empty. Fallback to standard detection.")
             return self._detect_heading_candidates(blocks)
 
         prepared_elements: List[Dict[str, Any]] = []
@@ -437,7 +432,7 @@ class StructureDetector(PipelineStage):
         max_font_size = max(font_sizes) if font_sizes else 0
         
         # 3. Match Blocks to Layout Elements (Fuzzy Match by Text)
-        # Note: Docling text might differ slightly from our normalized text
+        # Note: LLM layout text might differ from our normalized text
         # We use a simple containment or similarity check
         
         for block in blocks:
@@ -496,7 +491,7 @@ class StructureDetector(PipelineStage):
                     block.level = 0
                     block.metadata["is_heading_candidate"] = True
                     block.metadata["heading_confidence"] = 1.0
-                    block.metadata["heading_reasons"] = ["Docling: Title Detected"]
+                    block.metadata["heading_reasons"] = ["LLM Layout: Title Detected"]
                     block.metadata["semantic_intent"] = "TITLE"
                     block.metadata["level"] = 0 
                     
@@ -505,7 +500,7 @@ class StructureDetector(PipelineStage):
                         "block_id": block.block_id,
                         "level": 0,
                         "confidence": 1.0,
-                        "reasons": ["Docling: Title Detected"],
+                        "reasons": ["LLM Layout: Title Detected"],
                     })
                     found_title = True
                     continue
@@ -523,11 +518,11 @@ class StructureDetector(PipelineStage):
                     elif font_size >= max_font_size * 0.7: level = 3
                     else: level = 4
                 
-                block.block_type = BlockType.HEADING_1 # Base type, will be refined
+                block.block_type = BlockType.HEADING_1
                 block.level = level
                 block.metadata["is_heading_candidate"] = True
                 block.metadata["heading_confidence"] = matched_element.get("confidence", 0.9)
-                block.metadata["heading_reasons"] = [f"Docling: Heading (Size {font_size})"]
+                block.metadata["heading_reasons"] = [f"LLM Layout: Heading (Level {level})"]
                 block.metadata["semantic_intent"] = "HEADING"
                 block.metadata["level"] = level
                 
@@ -536,12 +531,11 @@ class StructureDetector(PipelineStage):
                     "block_id": block.block_id,
                     "level": level,
                     "confidence": 0.9,
-                    "reasons": [f"Docling: Heading (Size {font_size})"],
+                    "reasons": [f"LLM Layout: Heading (Level {level})"],
                 })
         
-        # If Docling found nothing (e.g. scanned doc without OCR), fallback
         if not candidates:
-            logger.warning("Docling found no structure. Fallback to standard detection.")
+            logger.warning("LLM layout found no structure. Fallback to standard detection.")
             return self._detect_heading_candidates(blocks)
              
         return candidates
