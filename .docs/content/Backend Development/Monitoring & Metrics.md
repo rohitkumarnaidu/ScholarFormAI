@@ -21,9 +21,7 @@
 - [prometheus.yml](file://backend/docker/prometheus/prometheus.yml)
 - [prometheus.yml](file://backend/ops/prometheus/prometheus.yml)
 - [docker-compose.yml](file://backend/docker/docker-compose.yml)
-- [sentry.client.config.js](file://frontend/sentry.client.config.js)
-- [sentry.server.config.js](file://frontend/sentry.server.config.js)
-- [sentry.edge.config.js](file://frontend/sentry.edge.config.js)
+
 - [test_database.py](file://backend/tests/test_database.py)
 - [llm_validator.py](file://backend/app/pipeline/safety/llm_validator.py)
 - [test_persona_kpi_dashboard.py](file://backend/tests/test_persona_kpi_dashboard.py)
@@ -51,7 +49,7 @@
 10. [Appendices](#appendices)
 
 ## Introduction
-This document describes the monitoring and metrics system for the Automated Academic Docx Manuscript Formatter. It covers Prometheus instrumentation, custom metrics collection, Grafana dashboards, health and readiness checks, alerting strategies, log aggregation, distributed tracing integration, and enhanced error filtering with Sentry. The system now includes persona-based KPI tracking, consolidated v1 metrics router, and enhanced real-time metrics capabilities. The monitoring architecture has been significantly enhanced with new Grafana dashboards for persona analytics and improved metrics collection infrastructure.
+This document describes the monitoring and metrics system for the Automated Academic Docx Manuscript Formatter. It covers Prometheus instrumentation, custom metrics collection, Grafana dashboards, health and readiness checks, alerting strategies, log aggregation, distributed tracing integration. The system now includes persona-based KPI tracking, consolidated v1 metrics router, enhanced real-time metrics capabilities. The monitoring architecture has been significantly enhanced with new Grafana dashboards for persona analytics and improved metrics collection infrastructure.
 
 ## Project Structure
 The monitoring stack integrates:
@@ -59,10 +57,7 @@ The monitoring stack integrates:
 - Grafana dashboards for pipeline, LLM, business KPIs, and persona analytics
 - Health and readiness endpoints for platform observability
 - Custom metrics for pipeline performance, queue depths, processing times, error rates, and persona-based KPIs
-- Enhanced Sentry error filtering that removes cancellation events and keyboard interrupts
-- Graceful degradation when Sentry SDK is unavailable
 - Optional persistence of model metrics to Supabase
-- Comprehensive frontend Sentry integration for client, server, and edge environments
 - **New**: Persona-based KPI tracking with automatic operation monitoring
 - **New**: Consolidated v1 metrics router for unified metrics access
 
@@ -74,44 +69,30 @@ B["Monitoring Middleware<br/>request logs, timing"]
 C["Prometheus Metrics Middleware<br/>custom metrics + persona KPIs"]
 D["Health/Readiness Services"]
 E["Model Metrics Persistence"]
-F["Sentry Error Filtering<br/>_sentry_before_send"]
-G["Graceful Degradation<br/>SENTRY_AVAILABLE check"]
-H["V1 Metrics Router<br/>/api/v1/metrics"]
+F["V1 Metrics Router<br/>/api/v1/metrics"]
 I["Persona KPI Recording<br/>automatic operation tracking"]
-end
-subgraph "Frontend"
-J["Sentry Client Config<br/>Browser Errors"]
-K["Sentry Server Config<br/>Server-side Errors"]
-L["Sentry Edge Config<br/>Edge Functions"]
 end
 subgraph "Observability"
 P["Prometheus Scrape Config"]
-G["Grafana Dashboards<br/>Pipeline + Persona KPIs"]
-S["Sentry Error Tracking"]
+Gr["Grafana Dashboards<br/>Pipeline + Persona KPIs"]
 end
 subgraph "External Systems"
 R["Redis/Celery Broker"]
 M["LLM Providers"]
 N["vLLM Adoption Metrics"]
-END
+end
 A --> B
 A --> C
 A --> D
 A --> E
 A --> F
-A --> G
-A --> H
-H --> I
-C --> P
-P --> G
-F --> S
-G --> S
+F --> I
 A --> R
 A --> M
 A --> N
-J --> S
-K --> S
-L --> S
+A --> P
+C --> P
+P --> Gr
 ```
 
 **Diagram sources**
@@ -126,10 +107,6 @@ L --> S
 - [prometheus.yml:5-16](file://backend/docker/prometheus/prometheus.yml#L5-L16)
 - [scholarform-overview.json:1-239](file://backend/ops/grafana/dashboards/scholarform-overview.json#L1-L239)
 - [scholarform-persona-kpis.json:1-142](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
-- [sentry.client.config.js:1-20](file://frontend/sentry.client.config.js#L1-L20)
-- [sentry.server.config.js:1-12](file://frontend/sentry.server.config.js#L1-L12)
-- [sentry.edge.config.js:1-11](file://frontend/sentry.edge.config.js#L1-L11)
-
 **Section sources**
 - [main.py:45-106](file://backend/app/main.py#L45-L106)
 - [prometheus_metrics.py:15-167](file://backend/app/middleware/prometheus_metrics.py#L15-L167)
@@ -142,9 +119,6 @@ L --> S
 - [prometheus.yml:5-16](file://backend/docker/prometheus/prometheus.yml#L5-L16)
 - [scholarform-overview.json:1-239](file://backend/ops/grafana/dashboards/scholarform-overview.json#L1-L239)
 - [scholarform-persona-kpis.json:1-142](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
-- [sentry.client.config.js:1-20](file://frontend/sentry.client.config.js#L1-L20)
-- [sentry.server.config.js:1-12](file://frontend/sentry.server.config.js#L1-L12)
-- [sentry.edge.config.js:1-11](file://frontend/sentry.edge.config.js#L1-L11)
 
 ## Core Components
 - Prometheus instrumentation and custom metrics:
@@ -153,11 +127,7 @@ L --> S
   - Queue depths (Celery), real-time connections (SSE/WebSocket)
   - Active users and ClamAV scan durations
   - **New**: Persona-based KPIs (persona_events_total, persona_operation_duration_seconds) with automatic operation tracking
-- Enhanced Sentry error filtering:
-  - Automatic filtering of asyncio.CancelledError and KeyboardInterrupt exceptions
-  - Prevention of noise in monitoring system from intentional cancellations
-  - Improved accuracy of error reporting for genuine issues
-  - Graceful degradation when Sentry SDK is unavailable
+
 - **Enhanced**: Consolidated metrics exposure:
   - V1 metrics router at /api/v1/metrics with unified endpoint structure
   - Database health, dashboard summaries, enhancements, and vLLM readiness monitoring
@@ -172,10 +142,7 @@ L --> S
 - Persistence and summaries:
   - Model metrics recorded and persisted asynchronously to Supabase
   - Agent vs legacy performance tracking stored locally and summarized
-- Frontend Sentry integration:
-  - Client-side error tracking with replay capabilities
-  - Server-side error tracking for API endpoints
-  - Edge function error tracking for serverless components
+
 
 **Section sources**
 - [prometheus_metrics.py:15-167](file://backend/app/middleware/prometheus_metrics.py#L15-L167)
@@ -189,12 +156,9 @@ L --> S
 - [pipeline.json:1-448](file://backend/docker/grafana/dashboards/pipeline.json#L1-L448)
 - [scholarform-overview.json:1-239](file://backend/ops/grafana/dashboards/scholarform-overview.json#L1-L239)
 - [main.py:47-66](file://backend/app/main.py#L47-L66)
-- [sentry.client.config.js:1-20](file://frontend/sentry.client.config.js#L1-L20)
-- [sentry.server.config.js:1-12](file://frontend/sentry.server.config.js#L1-L12)
-- [sentry.edge.config.js:1-11](file://frontend/sentry.edge.config.js#L1-L11)
 
 ## Architecture Overview
-The monitoring architecture integrates Prometheus scraping, custom metrics recording, and Grafana visualization. Enhanced Sentry error filtering prevents cancellation events from cluttering error reports. Graceful degradation ensures the system continues operating even when Sentry SDK is unavailable. Health and readiness endpoints provide operational signals. Optional Supabase persistence captures model performance for long-term analysis. The frontend includes comprehensive Sentry integration for client, server, and edge environments. **New persona-based KPI tracking automatically monitors all API operations with persona categorization.**
+The monitoring architecture integrates Prometheus scraping, custom metrics recording, and Grafana visualization. Health and readiness endpoints provide operational signals. Optional Supabase persistence captures model performance for long-term analysis. **New persona-based KPI tracking automatically monitors all API operations with persona categorization.**
 
 ```mermaid
 sequenceDiagram
@@ -203,8 +167,6 @@ participant V1Router as "V1 Metrics Router"
 participant App as "FastAPI App"
 participant PromMW as "Prometheus Metrics Middleware"
 participant Inst as "FastAPI Instrumentator"
-participant Sentry as "Sentry Error Filter"
-participant SentryInit as "Sentry Initialization"
 participant PersonaKPI as "Persona KPI Recorder"
 participant Prom as "Prometheus"
 participant Graf as "Grafana"
@@ -215,10 +177,6 @@ PromMW-->>App : Continue chain
 App->>Inst : Instrument route metrics
 App->>PersonaKPI : Record persona KPIs
 PersonaKPI-->>Prom : Update persona metrics
-App->>SentryInit : Initialize Sentry
-SentryInit-->>App : Check SENTRY_AVAILABLE
-App->>Sentry : Process exceptions
-Sentry-->>App : Filter cancellation events
 App-->>Client : Response
 App->>Prom : Expose /metrics
 Prom->>Prom : Scrape targets
@@ -352,68 +310,9 @@ V1Router-->>Client : {persistent_db_status, database_records, live_*}
 - [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
 - [model_metrics.py:148-181](file://backend/app/services/model_metrics.py#L148-L181)
 
-### Enhanced Sentry Error Filtering and Graceful Degradation
-The backend now includes sophisticated error filtering that prevents cancellation events and keyboard interrupts from appearing in Sentry error reports. The system implements graceful degradation when the Sentry SDK is unavailable, ensuring the application continues operating normally without error reporting functionality.
 
-**Updated** Enhanced error filtering with comprehensive _sentry_before_send function and graceful degradation for production stability
 
-```mermaid
-flowchart TD
-Start(["Exception Occurs"]) --> CheckHint["Check exception hint"]
-CheckHint --> TypeCheck{"Is instance of<br/>CancelledError or<br/>KeyboardInterrupt?"}
-TypeCheck --> |Yes| FilterOut["Filter out event<br/>(return None)"]
-TypeCheck --> |No| CheckTypes["Check exception types<br/>in event.values"]
-CheckTypes --> TypeFilter{"Type contains<br/>cancellederror or<br/>keyboardinterrupt?"}
-TypeFilter --> |Yes| FilterOut
-TypeFilter --> |No| AllowThrough["Allow event<br/>through"]
-FilterOut --> End(["Event filtered"])
-AllowThrough --> End
-subgraph "Graceful Degradation"
-InitStart(["Initialize Sentry"]) --> CheckSDK{"SENTRY_AVAILABLE?"}
-CheckSDK --> |No| SkipInit["Skip initialization<br/>with info log"]
-CheckSDK --> |Yes| CheckDSN{"Has SENTRY_DSN?"}
-CheckDSN --> |No| SkipInit
-CheckDSN --> |Yes| InitSuccess["Initialize Sentry<br/>with before_send filter"]
-SkipInit --> End2(["Continue without<br/>error reporting"])
-InitSuccess --> End2
-End2 --> End
-```
 
-**Diagram sources**
-- [main.py:45-106](file://backend/app/main.py#L45-L106)
-
-**Section sources**
-- [main.py:45-106](file://backend/app/main.py#L45-L106)
-
-### Frontend Sentry Integration
-The frontend includes comprehensive Sentry integration across three environments:
-- Client-side configuration with replay capabilities for user interaction analysis
-- Server-side configuration for API error tracking
-- Edge configuration for serverless function monitoring
-
-**Updated** Added comprehensive frontend Sentry configuration for client, server, and edge environments
-
-```mermaid
-flowchart TD
-ClientConfig["Client Config<br/>Browser Errors<br/>Replays"] --> SentryClient["Sentry Client"]
-ServerConfig["Server Config<br/>Server-side Errors"] --> SentryServer["Sentry Server"]
-EdgeConfig["Edge Config<br/>Edge Functions"] --> SentryEdge["Sentry Edge"]
-SentryClient --> CentralHub["Central Sentry Hub"]
-SentryServer --> CentralHub
-SentryEdge --> CentralHub
-CentralHub --> Analytics["Analytics & Reporting"]
-CentralHub --> Alerts["Alerts & Notifications"]
-```
-
-**Diagram sources**
-- [sentry.client.config.js:1-20](file://frontend/sentry.client.config.js#L1-L20)
-- [sentry.server.config.js:1-12](file://frontend/sentry.server.config.js#L1-L12)
-- [sentry.edge.config.js:1-11](file://frontend/sentry.edge.config.js#L1-L11)
-
-**Section sources**
-- [sentry.client.config.js:1-20](file://frontend/sentry.client.config.js#L1-L20)
-- [sentry.server.config.js:1-12](file://frontend/sentry.server.config.js#L1-L12)
-- [sentry.edge.config.js:1-11](file://frontend/sentry.edge.config.js#L1-L11)
 
 ### Metrics Exposure and Endpoints
 **Enhanced**: Unified v1 metrics router structure:
@@ -564,30 +463,21 @@ Key dependencies and relationships:
 - FastAPI instrumentation exposes /metrics
 - Prometheus scrapes the backend target defined in prometheus.yml
 - Grafana queries Prometheus for dashboards (including new persona KPI dashboard)
-- Enhanced Sentry error filtering prevents cancellation events from reaching monitoring
-- Graceful degradation ensures system continues without Sentry when SDK unavailable
 - **New**: V1 metrics router consolidates all metrics endpoints with unified structure
 - **New**: Persona KPI recording integrates with v1 router helper functions
 - Metrics router depends on Supabase client for DB health and counts
 - Health/Readiness services depend on external systems (DB, LLM providers, AI models)
 - Model metrics persistence depends on Supabase client and runs in background threads
-- Frontend Sentry configurations provide comprehensive error tracking across environments
-
 ```mermaid
 graph TB
-M["main.py<br/>Instrumentator /metrics<br/>_sentry_before_send<br/>Graceful Degradation"] --> PMW["prometheus_metrics.py<br/>MetricsManager + Persona KPIs"]
+M["main.py<br/>Instrumentator /metrics"] --> PMW["prometheus_metrics.py<br/>MetricsManager + Persona KPIs"]
 M --> HR["health_checks.py<br/>/health & /ready"]
 M --> V1R["v1/metrics.py<br/>Unified Metrics Router"]
-M --> SF["Sentry Filtering<br/>Cancellation Events"]
-M --> GD["Graceful Degradation<br/>SENTRY_AVAILABLE"]
 PMW --> PR["Prometheus"]
 V1R --> DB["Supabase Client"]
 HR --> EXT["External Services"]
 PMW --> SYS["System Metrics"]
 PMW --> PK["Persona KPIs"]
-SF --> MON["Monitoring Accuracy"]
-GD --> RES["System Resilience"]
-FC["Frontend Sentry<br/>Client/Server/Edge"] --> MON
 PK --> GDASH["Grafana Persona KPI Dashboard"]
 ```
 
@@ -597,9 +487,6 @@ PK --> GDASH["Grafana Persona KPI Dashboard"]
 - [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
 - [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
 - [main.py:45-106](file://backend/app/main.py#L45-L106)
-- [sentry.client.config.js:1-20](file://frontend/sentry.client.config.js#L1-L20)
-- [sentry.server.config.js:1-12](file://frontend/sentry.server.config.js#L1-L12)
-- [sentry.edge.config.js:1-11](file://frontend/sentry.edge.config.js#L1-L11)
 - [scholarform-persona-kpis.json:1-142](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
 
 **Section sources**
@@ -608,9 +495,6 @@ PK --> GDASH["Grafana Persona KPI Dashboard"]
 - [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
 - [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
 - [main.py:45-106](file://backend/app/main.py#L45-L106)
-- [sentry.client.config.js:1-20](file://frontend/sentry.client.config.js#L1-L20)
-- [sentry.server.config.js:1-12](file://frontend/sentry.server.config.js#L1-L12)
-- [sentry.edge.config.js:1-11](file://frontend/sentry.edge.config.js#L1-L11)
 - [scholarform-persona-kpis.json:1-142](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
 
 ## Performance Considerations
@@ -626,11 +510,7 @@ PK --> GDASH["Grafana Persona KPI Dashboard"]
   - Periodic updates reduce overhead while keeping queue metrics fresh
 - Caching:
   - Health and readiness payloads are cached with TTLs to reduce repeated checks
-- Error filtering efficiency:
-  - Sentry filtering reduces processing overhead by preventing cancellation events from being logged
-- Graceful degradation performance:
-  - Sentry SDK availability checks add minimal overhead during initialization
-  - Frontend Sentry configurations are conditional to avoid unnecessary initialization
+
 - **New**: Persona KPI recording overhead:
   - Minimal performance impact with try/except blocks around persona KPI recording
   - Automatic persona resolution uses simple string matching for efficiency
@@ -657,24 +537,7 @@ Common issues and resolutions:
   - Inspect pipeline P95 duration and step averages; correlate with queue depths and LLM cache hit rates
 - Real-time connection churn:
   - Monitor SSE/WS reconnect rates and active connections to detect client-side instability
-- **Sentry error filtering issues**:
-  - **Updated** Verify that cancellation events (asyncio.CancelledError, KeyboardInterrupt) are properly filtered out
-  - Check _sentry_before_send function configuration in main.py
-  - Ensure legitimate errors are still being reported while cancellations are suppressed
-  - Review Sentry dashboard to confirm reduced noise from intentional cancellations
-- **Sentry SDK availability issues**:
-  - **Updated** Check SENTRY_AVAILABLE flag during application startup
-  - Verify sentry_sdk import succeeds without ImportError
-  - Ensure graceful degradation logs indicate "Sentry SDK not installed. Skipping Sentry initialization."
-  - Confirm application continues operating normally without error reporting
-- **Frontend Sentry configuration issues**:
-  - **Updated** Verify NEXT_PUBLIC_SENTRY_DSN environment variable is set
-  - Check client/server/edge configurations initialize successfully
-  - Ensure replay integration is properly configured for client-side error analysis
-- **Graceful degradation testing**:
-  - **Updated** Test graceful degradation patterns in database connection failures
-  - Verify LLM validator provides error_return_value instead of crashing pipeline
-  - Confirm system stability under various error conditions
+
 - **Persona KPI tracking issues**:
   - **New** Verify persona resolution works correctly for different API paths
   - Check that persona_events_total and persona_operation_duration_seconds metrics are being recorded
@@ -697,7 +560,7 @@ Common issues and resolutions:
 - [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
 
 ## Conclusion
-The monitoring and metrics system provides comprehensive observability for the manuscript formatter pipeline. It combines Prometheus instrumentation, custom metrics, health/readiness endpoints, and Grafana dashboards. Enhanced Sentry error filtering with cancellation event suppression improves error reporting accuracy by reducing noise from intentional cancellations. Graceful degradation ensures system stability when Sentry SDK is unavailable. Comprehensive frontend Sentry integration provides error tracking across client, server, and edge environments. Optional Supabase persistence enables long-term analysis of model performance. **New persona-based KPI tracking automatically monitors all API operations with intelligent persona categorization, providing valuable insights into user behavior patterns. The consolidated v1 metrics router offers a unified interface for all monitoring endpoints. With proper alerting and capacity planning aligned to queue depths, LLM usage, and persona analytics, the system supports reliable production operations.**
+The monitoring and metrics system provides comprehensive observability for the manuscript formatter pipeline. It combines Prometheus instrumentation, custom metrics, health/readiness endpoints, and Grafana dashboards. Optional Supabase persistence enables long-term analysis of model performance. **New persona-based KPI tracking automatically monitors all API operations with intelligent persona categorization, providing valuable insights into user behavior patterns. The consolidated v1 metrics router offers a unified interface for all monitoring endpoints. With proper alerting and capacity planning aligned to queue depths, LLM usage, and persona analytics, the system supports reliable production operations.**
 
 ## Appendices
 
@@ -732,20 +595,13 @@ The monitoring and metrics system provides comprehensive observability for the m
   - Elevated error rate from HTTP instrumentor
   - Rising queue depths without corresponding worker throughput
   - Declining active users or generation jobs
-  - **Enhanced Sentry monitoring**: Reduced error volume due to cancellation filtering, allowing focus on genuine issues
-  - **Graceful degradation monitoring**: Track Sentry SDK availability and fallback behavior
+
   - **New**: Persona KPI monitoring: persona success rate drops, persona latency increases, persona throughput anomalies
   - **New**: vLLM adoption monitoring: readiness status changes, provider performance degradation
 
 ### Log Aggregation and Distributed Tracing
 - Structured logging can be enabled via settings for production environments
-- **Enhanced Sentry integration**:
-  - Backend: _sentry_before_send filters cancellation events and keyboard interrupts
-  - Frontend: Separate client/server configurations for comprehensive coverage
-  - Graceful degradation ensures system continues without error reporting when SDK unavailable
-  - Request IDs are attached to responses for correlation across services
-  - Replay integration for frontend error analysis
-  - Edge function monitoring for serverless components
+- Request IDs are attached to responses for correlation across services
 - **New**: Persona KPI correlation: automatic persona tagging for all monitored operations
 
 **Section sources**
@@ -753,9 +609,6 @@ The monitoring and metrics system provides comprehensive observability for the m
 - [main.py:40-59](file://backend/app/main.py#L40-L59)
 - [monitoring.py:17-50](file://backend/app/middleware/monitoring.py#L17-L50)
 - [main.py:45-106](file://backend/app/main.py#L45-L106)
-- [sentry.client.config.js:1-20](file://frontend/sentry.client.config.js#L1-L20)
-- [sentry.server.config.js:1-12](file://frontend/sentry.server.config.js#L1-L12)
-- [sentry.edge.config.js:1-11](file://frontend/sentry.edge.config.js#L1-L11)
 
 ### Enhanced Metric Retention and Capacity Planning
 - Retention policy:
@@ -782,10 +635,6 @@ The monitoring and metrics system provides comprehensive observability for the m
 - Use readiness probes to gate traffic until dependencies are ready
 - Set appropriate scrape intervals and alert thresholds
 - Back up and monitor dashboards and recording rules
-- **Implement enhanced error filtering**: Configure _sentry_before_send for optimal error reporting
-- **Monitor cancellation patterns**: Track cancellation events separately from other errors for system health insights
-- **Test graceful degradation**: Verify system stability under Sentry SDK unavailability and other failure scenarios
-- **Frontend monitoring**: Implement comprehensive Sentry configuration across client, server, and edge environments
 - **Resilient error handling**: Use graceful degradation patterns for all critical dependencies
 - **New**: Persona analytics monitoring: establish baseline persona success rates and latency targets
 - **New**: vLLM adoption tracking: monitor migration progress and performance benefits

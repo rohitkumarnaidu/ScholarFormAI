@@ -26,7 +26,7 @@
 - [useSessionEventStream.js](file://frontend/src/hooks/useSessionEventStream.js)
 - [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
 - [analytics.js](file://frontend/src/lib/analytics.js)
-- [posthog.js](file://frontend/src/lib/posthog.js)
+
 - [status.js](file://frontend/src/constants/status.js)
 - [notifications.js](file://frontend/src/utils/notifications.js)
 </cite>
@@ -78,7 +78,6 @@ LPS["useLivePreviewSocket.js"]
 end
 subgraph "Libraries & Utils"
 ANA["analytics.js"]
-PH["posthog.js"]
 STAT["status.js"]
 NOTIF["notifications.js"]
 end
@@ -93,8 +92,7 @@ PRE --> LPS
 SBA --> STAT
 VAL --> ANA
 UPM --> AUTH
-MET --> PH
-VAL --> PH
+
 ```
 
 **Diagram sources**
@@ -118,7 +116,7 @@ VAL --> PH
 - [useSessionEventStream.js](file://frontend/src/hooks/useSessionEventStream.js)
 - [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
 - [analytics.js](file://frontend/src/lib/analytics.js)
-- [posthog.js](file://frontend/src/lib/posthog.js)
+
 - [status.js](file://frontend/src/constants/status.js)
 - [notifications.js](file://frontend/src/utils/notifications.js)
 
@@ -142,7 +140,7 @@ VAL --> PH
 - [useSessionEventStream.js](file://frontend/src/hooks/useSessionEventStream.js)
 - [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
 - [analytics.js](file://frontend/src/lib/analytics.js)
-- [posthog.js](file://frontend/src/lib/posthog.js)
+
 - [status.js](file://frontend/src/constants/status.js)
 - [notifications.js](file://frontend/src/utils/notifications.js)
 
@@ -177,7 +175,7 @@ This section outlines the primary utility components and their responsibilities,
 - Metrics Displays
   - MetricsCard: Renders KPI-style metrics with trend indicators and tooltips.
   - Configuration: Accepts metric label/value, trend direction, color scheme, and click handler.
-  - Integration: Uses analytics and PostHog for event tracking and insights.
+   - Integration: Uses analytics for event tracking and insights.
 
 - Notifications
   - NotificationBell: Triggers notification center and badge count updates.
@@ -202,7 +200,7 @@ This section outlines the primary utility components and their responsibilities,
 - Validation Cards
   - ValidationCard: Summarizes validation results with actionable insights.
   - Configuration: Accepts results array, summary text, and remediation suggestions.
-  - Integration: Uses analytics and PostHog for validation events.
+   - Integration: Uses analytics for validation events.
 
 - Upgrade Modals
   - UpgradeModal: Prompts users to upgrade plans with feature highlights and CTA.
@@ -387,28 +385,24 @@ Tooltip --> Output["UI element"]
 ### Metrics Displays
 - Purpose: Present KPIs with trend indicators and interactive tooltips.
 - Reusability: Accepts label/value/trend and supports click handlers for drill-down.
-- Integration: Tracks interactions via analytics and PostHog.
+- Integration: Tracks interactions via analytics.
 
 ```mermaid
 sequenceDiagram
 participant User as "User"
 participant Card as "MetricsCard"
-participant Util as "PostHog"
 participant Analytics as "Analytics"
 User->>Card : Hover/Click
-Card->>Util : Capture event
 Card->>Analytics : Record metric interaction
 Card-->>User : Show tooltip/details
 ```
 
 **Diagram sources**
 - [MetricsCard.jsx](file://frontend/src/components/MetricsCard.jsx)
-- [posthog.js](file://frontend/src/lib/posthog.js)
 - [analytics.js](file://frontend/src/lib/analytics.js)
 
 **Section sources**
-- [MetricsCard.jsx](file://frontend/src/components/MetricsCard.jsx)
-- [posthog.js](file://frontend/src/lib/posthog.js)
+- [ValidationCard.jsx](file://frontend/src/components/ValidationCard.jsx)
 - [analytics.js](file://frontend/src/lib/analytics.js)
 
 ### Notifications
@@ -516,28 +510,24 @@ Render --> Output["UI element"]
 ### Validation Cards
 - Purpose: Summarize validation outcomes and suggest remediations.
 - Reusability: Accepts results array and summary text; supports expandable details.
-- Integration: Uses analytics and PostHog for validation events.
+- Integration: Uses analytics for validation events.
 
 ```mermaid
 sequenceDiagram
 participant User as "User"
 participant Card as "ValidationCard"
-participant Util as "PostHog"
 participant Analytics as "Analytics"
 User->>Card : View validation results
-Card->>Util : Track card open
 Card->>Analytics : Record validation event
 Card-->>User : Show summary and suggestions
 ```
 
 **Diagram sources**
 - [ValidationCard.jsx](file://frontend/src/components/ValidationCard.jsx)
-- [posthog.js](file://frontend/src/lib/posthog.js)
 - [analytics.js](file://frontend/src/lib/analytics.js)
 
 **Section sources**
 - [ValidationCard.jsx](file://frontend/src/components/ValidationCard.jsx)
-- [posthog.js](file://frontend/src/lib/posthog.js)
 - [analytics.js](file://frontend/src/lib/analytics.js)
 
 ### Upgrade Modals
@@ -577,7 +567,7 @@ EXD["ExportDialog.jsx"] --> DOCX["DocumentContext.jsx"]
 FBF["FeedbackForm.jsx"] --> AUTH["AuthContext.jsx"]
 HSI["HealthStatusIndicator.jsx"] --> STAT["status.js"]
 MET["MetricsCard.jsx"] --> ANA["analytics.js"]
-MET --> PH["posthog.js"]
+
 NFB["NotificationBell.jsx"] --> TCTX
 NFB --> THEME["ThemeContext.jsx"]
 OT["OnboardingTour.jsx"] --> THEME
@@ -586,7 +576,7 @@ PRE["Preview.jsx"] --> LPS["useLivePreviewSocket.js"]
 PRE --> DOCX
 SBA["StatusBadge.jsx"] --> STAT
 VAL["ValidationCard.jsx"] --> ANA
-VAL --> PH
+
 UPM["UpgradeModal.jsx"] --> AUTH
 UPM --> ANA
 ```
@@ -609,7 +599,7 @@ UPM --> ANA
 - [DocumentContext.jsx](file://frontend/src/context/DocumentContext.jsx)
 - [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
 - [analytics.js](file://frontend/src/lib/analytics.js)
-- [posthog.js](file://frontend/src/lib/posthog.js)
+
 - [status.js](file://frontend/src/constants/status.js)
 
 **Section sources**
@@ -630,7 +620,7 @@ UPM --> ANA
 - [DocumentContext.jsx](file://frontend/src/context/DocumentContext.jsx)
 - [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
 - [analytics.js](file://frontend/src/lib/analytics.js)
-- [posthog.js](file://frontend/src/lib/posthog.js)
+
 - [status.js](file://frontend/src/constants/status.js)
 
 ## Performance Considerations

@@ -260,7 +260,7 @@ E2E --> ProtectedLayouts
 
 ## Performance Considerations
 - Optimize package imports: Next.js configuration enables optimized imports for selected libraries to reduce bundle size.
-- Tree shaking and build optimization: Sentry and Webpack configurations improve production builds.
+- Tree shaking and build optimization: Webpack configurations improve production builds.
 - Navigation hydration: AuthGuard uses Suspense to avoid blocking renders while resolving session state.
 
 Recommendations:

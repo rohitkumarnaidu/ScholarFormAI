@@ -47,7 +47,7 @@ The frontend follows Next.js App Router conventions with a strict file-based rou
 - Client providers for state management and analytics
 - Tailwind CSS for styling with custom design tokens
 - TypeScript and ESLint for type safety and code quality
-- Sentry integration for build-time and runtime observability
+- Build-time and runtime observability
 
 ```mermaid
 graph TB
@@ -181,7 +181,7 @@ Providers --> Children["Render children"]
 ### Client Providers Pattern
 - Composition: React Query client, Theme provider, Toast provider, Auth provider, Document provider, FocusManager, and DynamicMeta.
 - Query client defaults: Stale time, window focus behavior, and retry policy configured for optimal UX.
-- Analytics: Initializes PostHog on mount and tracks page views per pathname.
+- Analytics: Tracks page views per pathname.
 - Hydration: Provider order ensures proper hydration of theme, auth, and UI state.
 
 ```mermaid
@@ -190,11 +190,9 @@ participant Root as "Root Layout"
 participant Providers as "ClientProviders"
 participant Theme as "ThemeContext"
 participant Auth as "AuthContext"
-participant PostHog as "PostHog Init"
 Root->>Providers : Render children
 Providers->>Theme : Wrap with ThemeProvider
 Providers->>Auth : Wrap with AuthProvider
-Providers->>PostHog : Initialize on mount
 Providers->>Providers : Setup query client defaults
 Providers-->>Root : Render nested providers
 ```
@@ -331,7 +329,7 @@ CSS --> Overrides["Component overrides for dark/light"]
 ### TypeScript, ESLint, and Build Configuration
 - TypeScript: Bundler module resolution, JSX transform, path aliases, and strictness settings.
 - ESLint: Recommended base rules, React and React Hooks plugins, ignores dist/node_modules/.next/coverage, and environment overrides for config files and tests.
-- Next.js config: React strict mode, transpile specific packages, optimize imports for heavy libraries, Sentry integration with build options.
+- Next.js config: React strict mode, transpile specific packages, optimize imports for heavy libraries.
 
 ```mermaid
 graph TB
@@ -342,7 +340,7 @@ ESLINT --> React["plugin:react/recommended"]
 ESLINT --> Hooks["plugin:react-hooks/recommended"]
 NEXT["next.config.mjs"] --> Strict["reactStrictMode"]
 NEXT --> Optimize["optimizePackageImports"]
-NEXT --> Sentry["withSentryConfig"]
+
 ```
 
 **Diagram sources**
@@ -363,7 +361,7 @@ Key external dependencies and their roles:
 - @tanstack/react-query: Client-side caching, invalidation, and background updates
 - lucide-react, framer-motion, react-resizable-panels: UI primitives and interactions
 - tailwindcss, postcss, autoprefixer: Styling pipeline and design system
-- @sentry/nextjs: Build-time and runtime error monitoring
+
 
 ```mermaid
 graph TB
@@ -372,7 +370,7 @@ Next --> SSR["SSR/SSG"]
 NextThemes["next-themes"] --> Theme["Theme management"]
 Supabase["@supabase/supabase-js"] --> Auth["Auth + Session"]
 ReactQuery["@tanstack/react-query"] --> Cache["Caching + Refetch"]
-Sentry["@sentry/nextjs"] --> Observability["Build/Runtime Monitoring"]
+
 Tailwind["tailwindcss"] --> Styles["Utility-first CSS"]
 PostCSS["postcss"] --> Autoprefixer["Prefixing"]
 ```
@@ -407,7 +405,7 @@ PostCSS["postcss"] --> Autoprefixer["Prefixing"]
 - [app/layout.jsx:1-84](file://frontend/app/layout.jsx#L1-L84)
 
 ## Conclusion
-The Next.js 14 application employs a clean, scalable structure leveraging the App Router’s route groups, centralized metadata and viewport configuration, and a robust client provider stack. The integration of next-themes, Supabase auth, React Query, and Tailwind establishes a strong foundation for theme persistence, user state management, data caching, and consistent styling. The project’s TypeScript and ESLint configurations enforce code quality, while next.config.mjs and Sentry optimize builds and observability. Following the guidelines below will help maintain and extend the application effectively.
+The Next.js 14 application employs a clean, scalable structure leveraging the App Router’s route groups, centralized metadata and viewport configuration, and a robust client provider stack. The integration of next-themes, Supabase auth, React Query, and Tailwind establishes a strong foundation for theme persistence, user state management, data caching, and consistent styling. The project’s TypeScript and ESLint configurations enforce code quality, while next.config.mjs optimizes builds and observability. Following the guidelines below will help maintain and extend the application effectively.
 
 ## Appendices
 

@@ -19,7 +19,6 @@
 - [frontend/src/services/api.core.js](file://frontend/src/services/api.core.js)
 - [frontend/src/lib/supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 - [frontend/src/lib/analytics.js](file://frontend/src/lib/analytics.js)
-- [frontend/src/lib/posthog.js](file://frontend/src/lib/posthog.js)
 </cite>
 
 ## Table of Contents
@@ -38,7 +37,7 @@
 This document explains the API integration patterns and service layer implementation for authentication, document operations, generation sessions, and template management. It covers request/response handling, error management, loading states, authentication integration, schema validation, analytics integration, performance monitoring, API client configuration, caching strategies, and offline handling. It also provides guidelines for extending API services and adding new endpoints.
 
 ## Project Structure
-The backend is a FastAPI application with modular routers and service layers. The frontend is a Next.js application with typed API clients and analytics integration. Authentication integrates with Supabase, and analytics integrate with PostHog.
+The backend is a FastAPI application with modular routers and service layers. The frontend is a Next.js application with typed API clients and analytics integration. Authentication integrates with Supabase.
 
 ```mermaid
 graph TB
@@ -57,7 +56,6 @@ subgraph "Frontend"
 FCore["API Core<br/>frontend/src/services/api.core.js"]
 FAUTH["Auth API<br/>frontend/src/services/api.auth.js"]
 FSb["Supabase Client<br/>frontend/src/lib/supabaseClient.js"]
-FPostHog["PostHog Wrapper<br/>frontend/src/lib/posthog.js"]
 Fanalytics["Analytics Wrapper<br/>frontend/src/lib/analytics.js"]
 end
 M --> RAuth
@@ -72,7 +70,6 @@ SDoc --> DB
 SGen --> DB
 FAUTH --> FCore
 FCore --> FSb
-Fanalytics --> FPostHog
 ```
 
 **Diagram sources**
@@ -88,7 +85,6 @@ Fanalytics --> FPostHog
 - [frontend/src/services/api.auth.js:1-39](file://frontend/src/services/api.auth.js#L1-L39)
 - [frontend/src/services/api.core.js:1-368](file://frontend/src/services/api.core.js#L1-L368)
 - [frontend/src/lib/supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
-- [frontend/src/lib/posthog.js:1-140](file://frontend/src/lib/posthog.js#L1-L140)
 - [frontend/src/lib/analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
 
 **Section sources**
@@ -101,7 +97,7 @@ Fanalytics --> FPostHog
 - Generator session service provides CRUD helpers for generator sessions, messages, and document versions with in-memory caches.
 - Templates router exposes built-in and custom template management plus CSL style search and fetch.
 - Frontend API core injects auth headers, retries, sanitizes payloads, parses responses, and logs errors.
-- Analytics wrappers integrate with PostHog for event capture and page views.
+- Analytics wrappers provide event capture and page views.
 
 **Section sources**
 - [backend/app/routers/auth.py:1-59](file://backend/app/routers/auth.py#L1-L59)
@@ -114,10 +110,9 @@ Fanalytics --> FPostHog
 - [frontend/src/services/api.auth.js:1-39](file://frontend/src/services/api.auth.js#L1-L39)
 - [frontend/src/services/api.core.js:1-368](file://frontend/src/services/api.core.js#L1-L368)
 - [frontend/src/lib/analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
-- [frontend/src/lib/posthog.js:1-140](file://frontend/src/lib/posthog.js#L1-L140)
 
 ## Architecture Overview
-The backend initializes middleware, routes, and monitoring. Routers delegate to services that interact with Supabase. The frontend composes typed API calls, manages auth headers, and handles errors and retries. Analytics are integrated via PostHog wrappers.
+The backend initializes middleware, routes, and monitoring. Routers delegate to services that interact with Supabase. The frontend composes typed API calls, manages auth headers, and handles errors and retries.
 
 ```mermaid
 sequenceDiagram
@@ -290,34 +285,7 @@ Log --> Throw["throw Error"]
 - [frontend/src/services/api.core.js:1-368](file://frontend/src/services/api.core.js#L1-L368)
 - [frontend/src/lib/supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
 
-### Analytics Integration (PostHog)
-- Lightweight wrappers initialize PostHog asynchronously, queue events when not ready, and flush pending events after initialization.
-- Event capture is non-blocking and optional.
 
-```mermaid
-sequenceDiagram
-participant FE as "Frontend"
-participant PG as "posthog.js"
-participant PH as "PostHog CDN"
-FE->>PG : capturePostHogEvent(name, props)
-alt not ready
-PG->>PG : enqueueEvent(name, props)
-else ready
-PG->>PH : window.posthog.capture(name, props)
-end
-PG->>PG : initPostHog() (once)
-PG->>PH : window.posthog.init(...)
-PG->>PG : flushPendingEvents()
-```
-
-**Diagram sources**
-- [frontend/src/lib/posthog.js:65-108](file://frontend/src/lib/posthog.js#L65-L108)
-- [frontend/src/lib/posthog.js:110-122](file://frontend/src/lib/posthog.js#L110-L122)
-- [frontend/src/lib/analytics.js:7-19](file://frontend/src/lib/analytics.js#L7-L19)
-
-**Section sources**
-- [frontend/src/lib/posthog.js:1-140](file://frontend/src/lib/posthog.js#L1-L140)
-- [frontend/src/lib/analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
 
 ## Dependency Analysis
 - Backend app wires middleware, CORS, rate limiting, security headers, and Prometheus metrics. Routers are included centrally.
@@ -340,7 +308,6 @@ SGen --> DB
 FE["api.core.js"] --> FSb["supabaseClient.js"]
 FE --> FAUTH["api.auth.js"]
 FE --> Fanalytics["analytics.js"]
-Fanalytics --> FPostHog["posthog.js"]
 ```
 
 **Diagram sources**
@@ -355,7 +322,6 @@ Fanalytics --> FPostHog["posthog.js"]
 - [frontend/src/services/api.core.js:1-368](file://frontend/src/services/api.core.js#L1-L368)
 - [frontend/src/lib/supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
 - [frontend/src/lib/analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
-- [frontend/src/lib/posthog.js:1-140](file://frontend/src/lib/posthog.js#L1-L140)
 
 **Section sources**
 - [backend/app/main.py:263-383](file://backend/app/main.py#L263-L383)
@@ -371,7 +337,7 @@ Fanalytics --> FPostHog["posthog.js"]
   - Supabase client initialization guards prevent runtime crashes in SSR environments.
 - Observability:
   - Prometheus metrics exposed via instrumentor.
-  - Sentry integration for error tracking.
+  - Error tracking.
   - Audit logs for write operations.
 
 **Section sources**
