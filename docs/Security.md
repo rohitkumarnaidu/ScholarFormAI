@@ -33,9 +33,9 @@ last_updated: July 2026
 | Virus Scanning (ClamAV) | `utils/virus_scanner.py` | 4.4KB | ✅ Implemented |
 | Request ID Tracking | `middleware/request_id.py` | 2.2KB | ✅ Implemented |
 | MIME + Magic Byte Validation | Inline in document router | — | ✅ Implemented |
-| RBAC Middleware | `middleware/rbac.py` | 708B | ⚠️ **Stub** |
-| Audit Logging | `services/audit_log_service.py` | 1.1KB | ⚠️ **Minimal** |
-| Signed Download URLs | In `document_service.py` | — | ⚠️ Needs live verification |
+| RBAC Middleware | `middleware/rbac.py` | 708B |  ️ **Stub** |
+| Audit Logging | `services/audit_log_service.py` | 1.1KB |  ️ **Minimal** |
+| Signed Download URLs | In `document_service.py` | — |  ️ Needs live verification |
 
 ---
 
