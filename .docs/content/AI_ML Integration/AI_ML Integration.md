@@ -8,14 +8,14 @@
 **Referenced Files in This Document**
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
 - [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
 - [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
 - [classifier.py](file://backend/app/pipeline/classification/classifier.py)
-- [test_scibert_benchmark.py](file://backend/tests/test_scibert_benchmark.py)
-- [test_scibert_gate.py](file://backend/tests/test_scibert_gate.py)
+- [test_classification.py](file://backend/tests/test_classification.py)
+- [test_classification_gate.py](file://backend/tests/test_classification_gate.py)
 - [test_vllm_adoption.py](file://backend/tests/test_vllm_adoption.py)
 - [test_rag_engine.py](file://backend/tests/test_rag_engine.py)
 - [test_reasoning_engine.py](file://backend/tests/test_reasoning_engine.py)
@@ -24,10 +24,10 @@
 
 ## Update Summary
 **Changes Made**
-- Added new SciBERT classification gating system with automated benchmark-based activation
+- Added new LLM-based classification gating system with automated benchmark-based activation
 - Integrated vLLM adoption tracking for Phase 4 rollout planning
 - Enhanced LLM service with improved model management, health checking, and caching capabilities
-- Updated model selection logic to incorporate automated gating for SciBERT classification
+- Updated model selection logic to incorporate automated gating for LLM-based classification
 - Added comprehensive monitoring and reporting for AI/ML infrastructure
 
 ## Table of Contents
@@ -46,7 +46,7 @@
 This document explains the AI/ML integration across the system, focusing on:
 - NVIDIA NIM integration with LiteLLM fallback
 - Local Ollama deployment for reasoning
-- SciBERT-based semantic classification with automated gating
+- LLM-based semantic classification with automated gating
 - Retrieval-Augmented Generation (RAG) with resilient embedding fallbacks
 - Reasoning engine orchestration with circuit breakers and rule-based fallbacks
 - Model management, caching, and persistence
@@ -56,7 +56,7 @@ This document explains the AI/ML integration across the system, focusing on:
 
 ## Project Structure
 The AI/ML stack spans services, pipeline intelligence, and classification layers:
-- Services: NVIDIA client, unified LLM service, model store, SciBERT gate, vLLM adoption tracker
+- Services: NVIDIA client, unified LLM service, model store, LLM Classification gate, vLLM adoption tracker
 - Intelligence: RAG engine, reasoning engine, semantic parser
 - Classification: Content classifier integrating semantic parsing
 - Tests: Benchmarks and integration tests for each component
@@ -66,7 +66,7 @@ graph TB
 subgraph "Services"
 NV["NVIDIA Client<br/>nvidia_client.py"]
 LLM["Unified LLM Service<br/>llm_service.py"]
-SCIBERT_GATE["SciBERT Gate<br/>scibert_gate.py"]
+SCIBERT_GATE["LLM Classification Gate<br/>classification_gate.py"]
 VLLM_ADOPTION["vLLM Adoption Tracker<br/>vllm_adoption.py"]
 end
 subgraph "Intelligence"
@@ -89,7 +89,7 @@ RE --> CL
 **Diagram sources**
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
 - [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
 - [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
@@ -99,7 +99,7 @@ RE --> CL
 **Section sources**
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
 - [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
 - [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
@@ -109,17 +109,17 @@ RE --> CL
 ## Core Components
 - NVIDIA NIM client with LiteLLM-backed generation and OpenAI-compatible fallback
 - Unified LLM service for provider-agnostic model invocation with enhanced health checking and caching
-- SciBERT classification gating system with automated benchmark-based activation
+- LLM Classification gating system with automated benchmark-based activation
 - vLLM adoption tracking for Phase 4 rollout planning with traffic-based activation
 - RAG engine with BGE embeddings, ChromaDB, and deterministic fallback
 - Reasoning engine with multi-tier LLM selection, retry guards, circuit breakers, and rule-based fallback
-- Semantic parser with SciBERT and heuristic fallback, integrated with automated gating
+- Semantic parser with LLM Classification and heuristic fallback, integrated with automated gating
 - Content classifier integrating structure detection and semantic parsing
 
 **Section sources**
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
 - [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
 - [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
@@ -128,7 +128,7 @@ RE --> CL
 
 ## Architecture Overview
 The AI/ML pipeline orchestrates structured reasoning and classification with automated model selection:
-- Input blocks are analyzed by the semantic parser with SciBERT gating (automatically enabled/disabled based on benchmark results)
+- Input blocks are analyzed by the semantic parser with LLM Classification gating (automatically enabled/disabled based on benchmark results)
 - The reasoning engine selects the best model tier (NVIDIA → Ollama → Rule-based) and generates instruction sets
 - The RAG engine retrieves publisher-specific guidelines for contextual grounding
 - The content classifier assigns semantic block types using structure and NLP signals
@@ -138,7 +138,7 @@ The AI/ML pipeline orchestrates structured reasoning and classification with aut
 sequenceDiagram
 participant Blocks as "Blocks"
 participant SP as "SemanticParser"
-participant SCIBERT_GATE as "SciBERT Gate"
+participant SCIBERT_GATE as "LLM Classification Gate"
 participant RE as "ReasoningEngine"
 participant NV as "NVIDIA Client"
 participant LLM as "LLM Service"
@@ -146,8 +146,8 @@ participant VLLM_ADOPTION as "vLLM Adoption"
 participant RAG as "RAG Engine"
 participant CL as "ContentClassifier"
 Blocks->>SP : "analyze_blocks()"
-SP->>SCIBERT_GATE : "should_enable_scibert()"
-SCIBERT_GATE-->>SP : "gate_state.enabled"
+SP->>CLASSIFICATION_GATE : "should_enable_classification()"
+CLASSIFICATION_GATE-->>SP : "gate_state.enabled"
 SP-->>RE : "semantic blocks"
 RE->>NV : "chat() via LLM Service"
 NV-->>RE : "NVIDIA response"
@@ -161,7 +161,7 @@ CL-->>CL : "assign BlockTypes"
 
 **Diagram sources**
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
@@ -235,8 +235,8 @@ LLMService --> RedisCache : "uses for caching"
 **Section sources**
 - [llm_service.py](file://backend/app/services/llm_service.py)
 
-### SciBERT Classification Gating System
-- Automated benchmark-based activation/deactivation of SciBERT classification
+### LLM Classification Gating System
+- Automated benchmark-based activation/deactivation of LLM classification
 - Persistent state management with configurable thresholds
 - Manual override support for development and testing
 - Integration with semantic parser for conditional model loading
@@ -244,10 +244,10 @@ LLMService --> RedisCache : "uses for caching"
 
 ```mermaid
 flowchart TD
-Start(["SciBERT Classification Request"]) --> CheckManual["Check Manual Override"]
-CheckManual --> |Enabled| Enable["Enable SciBERT"]
+Start(["LLM Classification Request"]) --> CheckManual["Check Manual Override"]
+CheckManual --> |Enabled| Enable["Enable LLM Classification"]
 CheckManual --> |Disabled| CheckAuto["Check Auto-Enable Setting"]
-CheckAuto --> |Disabled| Disable["Disable SciBERT"]
+CheckAuto --> |Disabled| Disable["Disable LLM Classification"]
 CheckAuto --> |Enabled| LoadState["Load Benchmark State"]
 LoadState --> CheckThreshold{"F1 >= Threshold?"}
 CheckThreshold --> |Yes| Enable
@@ -259,11 +259,11 @@ Persist --> Return["Return Decision"]
 ```
 
 **Diagram sources**
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
 
 **Section sources**
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
-- [test_scibert_gate.py](file://backend/tests/test_scibert_gate.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
+- [test_classification_gate.py](file://backend/tests/test_classification_gate.py)
 
 ### vLLM Adoption Tracking for Phase 4 Rollout
 - Traffic-based activation criteria for vLLM adoption
@@ -319,8 +319,8 @@ Validate --> |Invalid| RuleFallback
 **Section sources**
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 
-### Enhanced SciBERT Classification with Automated Gating
-- Loads SciBERT tokenizer and model lazily, reusing global model store when available
+### Enhanced Classification with Automated Gating
+- Loads classification model lazily, reusing global model store when available
 - Supports batch inference and heuristic fallback for non-English or unavailable models
 - Boundary repair for fragmented headings
 - Automated gating based on benchmark results and manual overrides
@@ -335,24 +335,24 @@ class SemanticParser {
 +_predict_block_types_batch(texts) List
 +_heuristic_classify(text) Dict
 +_repair_fragmented_headings(blocks) List
-+should_enable_scibert() bool
++should_enable_classification() bool
 }
-class SciBERTGate {
-+get_scibert_gate_state() Dict
-+should_enable_scibert() bool
-+persist_scibert_benchmark_result(overall_f1, source) Dict
+class ClassificationGate {
++get_gate_state() Dict
++should_enable_classification() bool
++persist_benchmark_result(overall_f1, source) Dict
 }
-SemanticParser --> SciBERTGate : "uses for gating"
+SemanticParser --> ClassificationGate : "uses for gating"
 ```
 
 **Diagram sources**
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
 
 **Section sources**
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
-- [test_scibert_benchmark.py](file://backend/tests/test_scibert_benchmark.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
+- [test_classification.py](file://backend/tests/test_classification.py)
 
 ### RAG Engine Implementation
 - Embedding models: BGE-M3 (primary), BGE-small (fallback), deterministic hash-based fallback
@@ -421,16 +421,16 @@ RE-->>CL : "normalized instruction set"
 
 ### Content Classifier Integration
 - Applies structure-based classification with GROBID metadata hints
-- Integrates SciBERT predictions when enabled and confident via automated gating
+- Integrates LLM Classification predictions when enabled and confident via automated gating
 - Applies regex and NLP confidence heuristics for UNKNOWN blocks
 - Language-aware classification with non-English content fallback
 
 ```mermaid
 flowchart TD
 Start(["Process Document"]) --> DetectLang["Detect Language"]
-DetectLang --> CheckSciBERT["Check SciBERT Gate"]
-CheckSciBERT --> |Enabled & English| Scibert["SciBERT batch predictions"]
-CheckSciBERT --> |Disabled or Non-English| Heuristic["Heuristic classification"]
+DetectLang --> CheckGate["Check Classification Gate"]
+CheckGate --> |Enabled & English| Classify["LLM batch predictions"]
+CheckGate --> |Disabled or Non-English| Heuristic["Heuristic classification"]
 Scibert --> Apply["Apply overrides if confident"]
 Heuristic --> Zones["Classify zones (frontmatter/body/references)"]
 Apply --> Zones
@@ -441,21 +441,21 @@ Regex --> Finalize["Finalize BlockTypes"]
 **Diagram sources**
 - [classifier.py](file://backend/app/pipeline/classification/classifier.py)
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
 
 **Section sources**
 - [classifier.py](file://backend/app/pipeline/classification/classifier.py)
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
 
 ## Dependency Analysis
 Key dependencies and relationships:
 - ReasoningEngine depends on NVIDIA client and LLM service; also integrates with RAG engine and vLLM adoption tracker
-- SemanticParser depends on SciBERT gate and ModelStore; used by ContentClassifier
-- SciBERT gate manages persistent state and integrates with semantic parser
+- SemanticParser depends on LLM Classification gate and ModelStore; used by ContentClassifier
+- LLM Classification gate manages persistent state and integrates with semantic parser
 - vLLM adoption tracker monitors traffic metrics for Phase 4 rollout planning
 - RAG engine depends on ChromaDB and a native JSON store; loads embedding models with fallbacks
-- Tests validate end-to-end behavior and benchmarks for SciBERT and vLLM adoption
+- Tests validate end-to-end behavior and benchmarks for LLM Classification and vLLM adoption
 
 ```mermaid
 graph LR
@@ -464,7 +464,7 @@ RE --> LLM["LLM Service"]
 RE --> RAG["RAG Engine"]
 RE --> VLLM_ADOPTION["vLLM Adoption"]
 CL["ContentClassifier"] --> SP["SemanticParser"]
-SP --> SCIBERT_GATE["SciBERT Gate"]
+SP --> SCIBERT_GATE["LLM Classification Gate"]
 SP --> MS["ModelStore"]
 SCIBERT_GATE --> FS["File System"]
 VLLM_ADOPTION --> METRICS["Prometheus Metrics"]
@@ -477,14 +477,14 @@ RAG --> CH["ChromaDB"]
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
 - [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
 - [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
 
 **Section sources**
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
 - [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
 - [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
 
@@ -496,7 +496,7 @@ RAG --> CH["ChromaDB"]
 - Deterministic fallback: Ensures minimal performance impact when transformers are unavailable
 - Native store: Cosine similarity fallback avoids heavy model calls when ChromaDB is down
 - Retry and circuit breaker: Prevent cascading failures and protect downstream consumers
-- SciBERT gating: Automated benchmark-based activation prevents unnecessary model loading
+- LLM Classification gating: Automated benchmark-based activation prevents unnecessary model loading
 - vLLM adoption tracking: Traffic-based activation ensures optimal resource utilization
 
 [No sources needed since this section provides general guidance]
@@ -506,32 +506,32 @@ Common issues and resolutions:
 - NVIDIA API key missing or invalid: Expect degraded mode with empty results; verify environment variables and provider credentials
 - LiteLLM unavailable: Fallback to direct OpenAI-compatible client; confirm network connectivity
 - Ollama unreachable: Expect rule-based fallback; verify base URL and model tags
-- SciBERT model load failures: Switch to heuristic-only mode; ensure dependencies are installed
-- SciBERT gate state corruption: Reset benchmark state file; verify file permissions
+- LLM Classification model load failures: Switch to heuristic-only mode; ensure dependencies are installed
+- LLM Classification gate state corruption: Reset benchmark state file; verify file permissions
 - vLLM adoption thresholds not met: Monitor traffic metrics; adjust thresholds as needed
 - LLM cache invalidation failures: Check Redis connectivity; verify cache key patterns
 - RAG ChromaDB compatibility errors: Engine automatically falls back to native JSON store; check NumPy compatibility
 - Invalid JSON schema from LLM: Circuit breaker triggers fallback; inspect prompt and output formatting
-- Benchmark failures: Validate fixture presence and model configuration for SciBERT
+- Benchmark failures: Validate fixture presence and model configuration for LLM Classification
 - Health check failures: Verify provider endpoints and authentication credentials
 
 **Section sources**
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
 - [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
 - [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
-- [test_scibert_benchmark.py](file://backend/tests/test_scibert_benchmark.py)
-- [test_scibert_gate.py](file://backend/tests/test_scibert_gate.py)
+- [test_classification.py](file://backend/tests/test_classification.py)
+- [test_classification_gate.py](file://backend/tests/test_classification_gate.py)
 - [test_vllm_adoption.py](file://backend/tests/test_vllm_adoption.py)
 - [test_rag_engine.py](file://backend/tests/test_rag_engine.py)
 - [test_reasoning_engine.py](file://backend/tests/test_reasoning_engine.py)
 - [test_nvidia_client.py](file://backend/tests/test_nvidia_client.py)
 
 ## Conclusion
-The system integrates NVIDIA NIM, local Ollama, SciBERT, and a robust RAG engine with layered fallbacks and automated model selection. The new SciBERT gating system provides intelligent activation based on benchmark results, while vLLM adoption tracking enables data-driven Phase 4 rollout planning. Enhanced LLM service capabilities include comprehensive health checking, caching, and monitoring. The system emphasizes reliability, observability, and performance through model reuse, deterministic fallbacks, circuit-breaking, and automated decision-making. Configuration flags enable cost-conscious operation, while tests and monitoring support continuous validation and improvement.
+The system integrates NVIDIA NIM, local Ollama, LLM Classification, and a robust RAG engine with layered fallbacks and automated model selection. The new LLM Classification gating system provides intelligent activation based on benchmark results, while vLLM adoption tracking enables data-driven Phase 4 rollout planning. Enhanced LLM service capabilities include comprehensive health checking, caching, and monitoring. The system emphasizes reliability, observability, and performance through model reuse, deterministic fallbacks, circuit-breaking, and automated decision-making. Configuration flags enable cost-conscious operation, while tests and monitoring support continuous validation and improvement.
 
 [No sources needed since this section summarizes without analyzing specific files]
 
@@ -548,38 +548,38 @@ The system integrates NVIDIA NIM, local Ollama, SciBERT, and a robust RAG engine
   - Flags: LLM_PROVIDER_TIMEOUT_SECONDS, EXTERNAL_CIRCUIT_BREAKER_ENABLED
   - Cache: LLM_CACHE_TTL_SECONDS, Redis integration
   - Security: MAX_LLM_INPUT_LENGTH, prompt injection patterns
-- SciBERT Gate
-  - Flags: USE_SCIBERT_CLASSIFICATION, SCIBERT_AUTO_ENABLE_FROM_BENCHMARK
-  - Thresholds: SCIBERT_MIN_BENCHMARK_F1, SCIBERT_BENCHMARK_STATE_PATH
+- LLM Classification Gate
+  - Flags: USE_LLM_CLASSIFICATION, AUTO_ENABLE_FROM_BENCHMARK
+  - Thresholds: MIN_BENCHMARK_F1, BENCHMARK_STATE_PATH
 - vLLM Adoption
   - Flags: VLLM_ADOPTION_ENABLED, VLLM_REQUESTS_PER_HOUR_THRESHOLD, VLLM_DAILY_TOKENS_THRESHOLD
   - Target: VLLM_TARGET_MODEL, VLLM_TARGET_GPU
 - RAG Engine
   - Flags: LOW_MEMORY_MODE, RAG_USE_TRANSFORMERS
   - Persistence: semantic_store directory, auto-seeding from default guidelines
-- SciBERT
-  - Flag: USE_SCIBERT_CLASSIFICATION
-  - Model: allenai/scibert_scivocab_uncased (with optional fine-tuning)
+- LLM Classification
+  - Flag: USE_LLM_CLASSIFICATION
+  - Model: LLM-based classification with configurable model backend
 - Tests
-  - SciBERT benchmark: SCIBERT_BENCHMARK_MODEL environment variable
+  - Classification benchmark: CLASSIFICATION_BENCHMARK_MODEL environment variable
   - vLLM adoption: Prometheus metrics integration
 
 **Section sources**
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
 - [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
 - [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [test_scibert_benchmark.py](file://backend/tests/test_scibert_benchmark.py)
+- [test_classification.py](file://backend/tests/test_classification.py)
 - [test_vllm_adoption.py](file://backend/tests/test_vllm_adoption.py)
 
 ### Cost Optimization Strategies
 - Prefer LiteLLM for unified provider routing and reduced latency
 - Use deterministic fallbacks to minimize compute costs when transformers are unavailable
 - Enable low-memory mode and disable transformer-based RAG when appropriate
-- Implement SciBERT gating to avoid unnecessary model loading
+- Implement LLM Classification gating to avoid unnecessary model loading
 - Monitor vLLM adoption metrics to optimize resource allocation
 - Leverage caching to reduce repeated API calls
 - Use circuit breakers to prevent cascading failures and protect downstream consumers
@@ -590,7 +590,7 @@ The system integrates NVIDIA NIM, local Ollama, SciBERT, and a robust RAG engine
 ### Monitoring and Observability
 - Model metrics recording for NVIDIA and Ollama tiers
 - Comprehensive LLM service metrics including cache hits/misses, request durations, and failures
-- SciBERT gate state monitoring and benchmark result tracking
+- LLM Classification gate state monitoring and benchmark result tracking
 - vLLM adoption metrics including request counts, token consumption, and rollout readiness
 - Logging for fallbacks, schema validation failures, and compatibility issues
 - Test suites validating behavior under various conditions
@@ -599,10 +599,10 @@ The system integrates NVIDIA NIM, local Ollama, SciBERT, and a robust RAG engine
 **Section sources**
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
-- [scibert_gate.py](file://backend/app/services/scibert_gate.py)
+- [classification_gate.py](file://backend/app/services/classification_gate.py)
 - [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
 - [test_reasoning_engine.py](file://backend/tests/test_reasoning_engine.py)
 - [test_rag_engine.py](file://backend/tests/test_rag_engine.py)
-- [test_scibert_benchmark.py](file://backend/tests/test_scibert_benchmark.py)
-- [test_scibert_gate.py](file://backend/tests/test_scibert_gate.py)
+- [test_classification.py](file://backend/tests/test_classification.py)
+- [test_classification_gate.py](file://backend/tests/test_classification_gate.py)
 - [test_vllm_adoption.py](file://backend/tests/test_vllm_adoption.py)

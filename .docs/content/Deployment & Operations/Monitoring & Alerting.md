@@ -32,7 +32,7 @@
 10. [Appendices](#appendices)
 
 ## Introduction
-This document describes the monitoring and alerting setup for the Manuscript Formatter platform. It covers the Prometheus monitoring stack configuration, Grafana dashboards, application-level metrics, infrastructure monitoring, and operational health checks. It also outlines alerting strategies, thresholds, notification channels, log aggregation, error tracking with Sentry, real-time performance monitoring, capacity planning, and proactive issue detection.
+This document describes the monitoring and alerting setup for the Manuscript Formatter platform. It covers the Prometheus monitoring stack configuration, Grafana dashboards, application-level metrics, infrastructure monitoring, and operational health checks. It also outlines alerting strategies, thresholds, notification channels, log aggregation, error tracking, real-time performance monitoring, capacity planning, and proactive issue detection.
 
 ## Project Structure
 The monitoring stack spans three layers:
@@ -447,9 +447,7 @@ The platform integrates Prometheus metrics, custom application instrumentation, 
 - Logging:
   - Structured logging with console, rotating file handlers, and filtered third-party loggers.
   - Request context filter attaches request_id/job_id/session_id to logs.
-- Error tracking:
-  - Sentry SDK initialized conditionally via environment variable.
-  - Integrations for FastAPI, Starlette, and Python logging.
+- Error tracking via application logs and Prometheus metrics.
 
 **Section sources**
 - [backend/app/config/logging_config.py:40-157](file://backend/app/config/logging_config.py#L40-L157)
