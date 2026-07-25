@@ -23,7 +23,7 @@ This document describes the support lifecycle for ScholarForm AI releases. It su
 |---------|--------|-----------------|-----------|-------------------|----------|
 | 1.0.x   | ✅ **Full Support (LTS)** | ✅ Yes | ✅ Yes | ✅ Yes (minor) | TBD |
 | 0.9.x   | ❌ End of Life | ❌ No | ❌ No | ❌ No | 2026-07-21 |
-| develop | ⚠️ CI-tested (Development) | ❌ No | ❌ No | ❌ No | N/A |
+| develop |  ️ CI-tested (Development) | ❌ No | ❌ No | ❌ No | N/A |
 
 ## Support Definitions
 
@@ -63,9 +63,9 @@ The EOL date for the 1.0.x line will be announced at least **90 days** in advanc
 
 | Branch | Support | Notes |
 |--------|---------|-------|
-| `main` | ✅ CI-tested | Production branch; all merges run full CI suite (26 workflows) |
-| `develop` | ⚠️ Pre-release | Runs CI but not deployed; may contain unreleased features |
-| `staging` | ⚠️ Pre-release | Deployed to staging environment for validation |
+| `main` | ✅ CI-tested | Production branch; all merges run full CI suite (25 workflows) |
+| `develop` |  ️ Pre-release | Runs CI but not deployed; may contain unreleased features |
+| `staging` |  ️ Pre-release | Deployed to staging environment for validation |
 | `feature/*` | ❌ No support | Temporary; deleted after merge |
 
 ## Policy Updates

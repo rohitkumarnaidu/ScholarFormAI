@@ -25,7 +25,7 @@ graph LR
     B --> C[staging]
     C --> D[main]
     E[hotfix/*] --> D
-    D --> F[release/*
+    D --> F[release/*]
     F --> D
 ```
 
@@ -128,7 +128,7 @@ Use for **non-urgent** bug fixes, dependency updates, and minor improvements.
 2. **Version bump**: Update `VERSION` file, `package.json`, `pyproject.toml`, and `CITATION.cff`.
 3. **Changelog**: Add entry to `CHANGELOG.md` under a new `[1.x.y]` heading.
 4. **PR**: Open PR from `release/v1.x.y` into `main`.
-5. **CI validation**: All 26 workflows must pass.
+5. **CI validation**: All 25 workflows must pass.
 6. **Review**: One maintainer approval required.
 7. **Merge** into `main`.
 8. **Tag**:

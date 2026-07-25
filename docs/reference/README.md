@@ -23,7 +23,7 @@ Technical reference for APIs, configuration, and architecture.
 |-----------|-------------|
 | [API Reference](../API.md) | Complete v1 API with curl examples |
 | [API Versioning](../API_VERSIONING.md) | Versioning policy and migration plan |
-| [API Reference (legacy)](../api_reference.md) | ⚠️ Deprecated — superseded by API.md |
+| [API Reference (legacy)](../api_reference.md) |  ️ Deprecated — superseded by API.md |
 
 ## Architecture & Data
 

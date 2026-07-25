@@ -626,8 +626,8 @@ Reads all `contract.yaml` files from `app/pipeline/contracts/{publisher}/` and c
 
 The global `ModelStore` at `app.services.model_store` caches:
 - `embedding_model` — SentenceTransformer instance
-- `scibert_tokenizer` — SciBERT tokenizer (SemanticParser)
-- `scibert_model` — SciBERT classification model (SemanticParser)
+- `LLMClassifier_tokenizer` — LLMClassifier tokenizer (SemanticParser)
+- `LLMClassifier_model` — LLMClassifier classification model (SemanticParser)
 
 RagEngine retrieves the cached embedding model via `model_store.get_model("embedding_model")` if available, avoiding redundant model loads.
 
@@ -637,7 +637,7 @@ RagEngine retrieves the cached embedding model via `model_store.get_model("embed
 
 ### 13.5 SemanticParser (Separate System)
 
-The `SemanticParser` (SciBERT-based) at `backend/app/pipeline/intelligence/semantic_parser.py` is a **separate system** from RagEngine. It classifies manuscript block types (HEADING, ABSTRACT, BODY, etc.) rather than retrieving guidelines. The two systems are orthogonal components of the formatting pipeline:
+The `SemanticParser` (LLM-based) at `backend/app/pipeline/intelligence/semantic_parser.py` is a **separate system** from RagEngine. It classifies manuscript block types (HEADING, ABSTRACT, BODY, etc.) rather than retrieving guidelines. The two systems are orthogonal components of the formatting pipeline:
 
 - **RagEngine** → Retrieves formatting rules (what the output should look like)
 - **SemanticParser** → Classifies document structure (what the input contains)
@@ -1293,7 +1293,7 @@ def rag_engine():
 Queries the RAG engine for formatting guidelines matching the given publisher and intent.
 
 ```bash
-curl -X POST https://api.scholarform.com/api/v1/rag/query \
+curl -X POST https://api.scholarform.ai/api/v1/rag/query \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <JWT_TOKEN>" \
   -d '{
@@ -1342,7 +1342,7 @@ curl -X POST https://api.scholarform.com/api/v1/rag/query \
 Indexes new guideline content into the vector store. Requires admin privileges.
 
 ```bash
-curl -X POST https://api.scholarform.com/api/v1/rag/index \
+curl -X POST https://api.scholarform.ai/api/v1/rag/index \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <ADMIN_JWT_TOKEN>" \
   -d '{
@@ -1373,7 +1373,7 @@ curl -X POST https://api.scholarform.com/api/v1/rag/index \
 Resets and clears the specified collection. Requires admin privileges.
 
 ```bash
-curl -X DELETE https://api.scholarform.com/api/v1/rag/collection/guidelines_bge_m3 \
+curl -X DELETE https://api.scholarform.ai/api/v1/rag/collection/guidelines_bge_m3 \
   -H "Authorization: Bearer <ADMIN_JWT_TOKEN>"
 ```
 

@@ -74,7 +74,7 @@ I built ScholarForm AI to solve a problem every academic knows: formatting manus
 
 **Security:** JWKS JWT auth, CSRF protection, ClamAV scanning, Cosign-signed multi-arch containers (amd64/arm64), SLSA L3 provenance, SBOMs, OpenSSF Scorecard.
 
-26 CI/CD workflows, 80+ docs, all MIT licensed.
+25 CI/CD workflows, 80+ docs, all MIT licensed.
 
 [github.com/rohitkumarnaidu/ScholarFormAI](https://github.com/rohitkumarnaidu/ScholarFormAI)
 
@@ -95,7 +95,7 @@ We released ScholarForm AI v1.0, an open-source platform for academic manuscript
 - **Agent-based document generation** — LLM agent (NVIDIA NIM Llama 3.3 70B / Groq fallback) proposes outlines, then streams each section with citations. Uses structured output + validation per section.
 - **Multi-doc RAG synthesis** — ChromaDB stores document embeddings; user uploads 2–10 docs, system retrieves + deduplicates + merges into one coherent manuscript.
 - **Quality scoring** — Semantic analysis of formatting compliance, citation completeness, structure correctness.
-- **SciBERT integration** — Optional document classification (via HF Space).
+- **LLMClassifier integration** — Optional document classification (via HF Space).
 - **3-tier LLM fallback:** NVIDIA NIM → Groq → DeepSeek R1 (Ollama, local/offline).
 
 **Pipeline:**
@@ -203,7 +203,6 @@ If you've ever submitted a paper to a journal, you know the pain. IEEE wants one
 | Database | Supabase (PostgreSQL + Auth + Storage) |
 | Realtime | Redis pub/sub → WebSocket / SSE |
 | PDF Pipeline | GROBID → Docling → PyMuPDF → PyPDF2 (4-tier) |
-| Observability | Prometheus, Grafana, Sentry, PostHog |
 | Deployment | Render, Docker, GitHub Container Registry |
 
 ### Getting Started
@@ -223,7 +222,7 @@ npm run dev
 
 ### Open Source & Security
 
-MIT licensed. 26 CI/CD workflows. Multi-arch container images (amd64/arm64) with Cosign signing. SLSA Level 3 build provenance. CycloneDX SBOMs for both backend and frontend. OpenSSF Scorecard evaluated.
+MIT licensed. 25 CI/CD workflows. Multi-arch container images (amd64/arm64) with Cosign signing. SLSA Level 3 build provenance. CycloneDX SBOMs for both backend and frontend. OpenSSF Scorecard evaluated.
 
 ### Get Involved
 

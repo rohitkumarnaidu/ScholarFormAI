@@ -473,32 +473,9 @@ Startup uses `safe_execution` to ensure no single failure blocks the application
 
 ## 9. Error Logging
 
-### 9.1 Sentry Integration
+### 9.1 Error Tracking (Sentry Removed)
 
-**File**: `main.py:66-125`
-
-Sentry is initialized at startup with the following configuration:
-
-```python
-sentry_sdk.init(
-    dsn=settings.SENTRY_DSN,
-    integrations=[
-        StarletteIntegration(transaction_style="endpoint"),
-        FastApiIntegration(transaction_style="endpoint"),
-        LoggingIntegration(level=logging.INFO, event_level=logging.ERROR),
-    ],
-    traces_sample_rate=0.1,
-    environment=os.getenv("ENVIRONMENT", "production"),
-    release=os.getenv("APP_VERSION", "1.0.0"),
-    send_default_pii=False,
-    before_send=_sentry_before_send,
-)
-```
-
-The `_sentry_before_send` filter (`main.py:81`) drops:
-- `asyncio.CancelledError`
-- `KeyboardInterrupt`
-These are expected operational noise, not actionable errors.
+Sentry error tracking has been removed. Error monitoring is handled via Prometheus metrics and structured logging.
 
 ### 9.2 Structured Logging
 

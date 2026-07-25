@@ -54,8 +54,8 @@ Identifies document sections (abstract, introduction, methods, results, discussi
 - Layout analysis (for PDFs)
 
 ### 4. Block Classification
-Optional (disabled by default: `USE_SCIBERT_CLASSIFICATION=false`):
-- SciBERT model classifies each block as IMRaD section type
+Optional (disabled by default: `USE_LLM_CLASSIFICATION=false`):
+- LLMClassifier model classifies each block as IMRaD section type
 - When disabled, rule-based classification is used
 
 ### 5. NLP Enhancement
@@ -90,13 +90,13 @@ Optional (disabled by default: `USE_SCIBERT_CLASSIFICATION=false`):
 All stages are async. Heavy stages (parsing, LLM calls) are offloaded to Celery workers. The HTTP request thread never blocks for >400ms.
 
 ### Graceful Degradation
-Each stage has a fallback. If SciBERT is unavailable, rule-based classification runs. If GROBID is down, Docling takes over. If no LLM is reachable, NLP enhancement is skipped.
+Each stage has a fallback. If LLMClassifier is unavailable, rule-based classification runs. If GROBID is down, Docling takes over. If no LLM is reachable, NLP enhancement is skipped.
 
 ### Observable
 Every stage emits structured logs with `request_id`, `stage`, `duration_ms`, and `status`. Prometheus metrics track stage-level latency and error rates.
 
 ### Configurable
-- `LOW_MEMORY_MODE=true` disables memory-heavy stages (GROBID, SciBERT)
+- `LOW_MEMORY_MODE=true` disables memory-heavy stages (GROBID, LLMClassifier)
 - `DEFAULT_FAST_MODE=true` skips optional enhancement stages
 - Individual stage flags control behavior without code changes
 

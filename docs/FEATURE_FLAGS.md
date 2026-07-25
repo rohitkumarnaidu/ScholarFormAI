@@ -151,9 +151,9 @@ logger.info("Enhancement profile: %s", enhancement_manager.profile.to_dict())
 | `GROBID_ENABLED` | `True` | `PipelineSettings` | Enable GROBID PDF parsing service |
 | `USE_DOCLING_FALLBACK` | `True` | `PipelineSettings` | Fall back to Docling when GROBID fails or is disabled |
 | `PYMUPDF_FALLBACK` | `True` | `PipelineSettings` | Fall back to PyMuPDF when Docling also fails |
-| `USE_SCIBERT_CLASSIFICATION` | `False` | `PipelineSettings` | Enable SciBERT-based section classification (disabled by default; requires GPU) |
-| `SCIBERT_AUTO_ENABLE_FROM_BENCHMARK` | `True` | `PipelineSettings` | Auto-enable SciBERT based on benchmark F1 score |
-| `ENABLE_NOUGAT_PARSER` | `False` | `PipelineSettings` | Enable Nougat LaTeX OCR parser |
+| `USE_LLM_CLASSIFICATION` | `False` | `PipelineSettings` | Enable LLM-based section classification (disabled by default; requires GPU) |
+| `LLM_CLASSIFIER_AUTO_ENABLE_FROM_BENCHMARK` | `True` | `PipelineSettings` | Auto-enable LLMClassifier based on benchmark F1 score |
+| `ENABLE_LLM_PDF_PARSER` | `False` | `PipelineSettings` | Enable LLMPDFParser LaTeX OCR parser |
 | `ENABLE_NVIDIA_REASONER` | `False` | `PipelineSettings` | Enable NVIDIA NIM reasoning pipeline stage |
 | `PRELOAD_AI_MODELS` | `True` | `PipelineSettings` | Preload AI models at startup (set `False` to reduce memory) |
 | `LOW_MEMORY_MODE` | `False` | `PipelineSettings` | Reduce memory footprint: disable model preloading, reduce batch sizes |
@@ -212,13 +212,13 @@ python scripts/generate_env_template.py
 | `GROBID_ENABLED` | `bool` | `True` | Enable GROBID PDF-to-XML service |
 | `USE_DOCLING_FALLBACK` | `bool` | `True` | Enable Docling as fallback PDF parser |
 | `PYMUPDF_FALLBACK` | `bool` | `True` | Enable PyMuPDF as third-tier fallback |
-| `USE_SCIBERT_CLASSIFICATION` | `bool` | `False` | Enable SciBERT ML classifier for section detection |
-| `SCIBERT_AUTO_ENABLE_FROM_BENCHMARK` | `bool` | `True` | Auto-enable SciBERT when benchmark F1 > `SCIBERT_MIN_BENCHMARK_F1` |
+| `USE_LLM_CLASSIFICATION` | `bool` | `False` | Enable LLMClassifier ML classifier for section detection |
+| `LLM_CLASSIFIER_AUTO_ENABLE_FROM_BENCHMARK` | `bool` | `True` | Auto-enable LLMClassifier when benchmark F1 > `LLM_CLASSIFIER_MIN_BENCHMARK_F1` |
 | `PRELOAD_AI_MODELS` | `bool` | `True` | Preload models into GPU memory at startup |
 | `LOW_MEMORY_MODE` | `bool` | `False` | Reduce memory usage; disables model preloading |
-| `DEFAULT_FAST_MODE` | `bool` | `False` | Skip optional AI stages (SciBERT, RAG, advanced analysis) |
+| `DEFAULT_FAST_MODE` | `bool` | `False` | Skip optional AI stages (LLMClassifier, RAG, advanced analysis) |
 | `RAG_USE_TRANSFORMERS` | `bool` | `True` | Use HuggingFace transformers for RAG embeddings |
-| `ENABLE_NOUGAT_PARSER` | `bool` | `False` | Enable Nougat LaTeX-based PDF parser |
+| `ENABLE_LLM_PDF_PARSER` | `bool` | `False` | Enable LLMPDFParser LaTeX-based PDF parser |
 | `ENABLE_NVIDIA_REASONER` | `bool` | `False` | Enable NVIDIA NIM reasoning step |
 | `PIPELINE_DOCLING_SKIP_DIGITAL_PDF` | `bool` | `False` | Skip Docling on born-digital PDFs |
 | `PIPELINE_DOCLING_FORCE` | `bool` | `False` | Always use Docling even when GROBID succeeds |

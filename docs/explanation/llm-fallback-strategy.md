@@ -83,7 +83,7 @@ Unhealthy providers are skipped in the routing chain until they pass a subsequen
 | AI Agent generation | NIM → Groq → Ollama | Degraded quality on fallback; user notified via SSE |
 | Multi-doc synthesis | NIM → Groq → Ollama | May increase latency; Ollama requires local GPU |
 | NLP enhancement | NIM → Groq | Skipped if all providers unavailable |
-| SciBERT classification | N/A (local model) | Falls back to rule-based classification |
+| LLMClassifier classification | N/A (local model) | Falls back to rule-based classification |
 
 ## Monitoring
 

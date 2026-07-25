@@ -65,7 +65,7 @@ Past maintainers who have stepped down but remain involved as advisors.
 - Manage frontend performance budgets
 
 ### DevOps Lead
-- Maintain CI/CD pipelines (26+ GitHub Actions workflows)
+- Maintain CI/CD pipelines (25+ GitHub Actions workflows)
 - Manage Render, Vercel, and Supabase deployments
 - Monitor production health and uptime
 - Manage secrets, certificates, and infrastructure-as-code
@@ -139,8 +139,8 @@ Maintainers are assigned to review rotations weekly:
 
 | Channel | Purpose | Access |
 |---------|---------|--------|
-| **GitHub Issues** | Bug reports, feature requests, questions | [github.com/rohitkumarnaidu/scholarform/issues](https://github.com/rohitkumarnaidu/scholarform/issues) |
-| **GitHub Discussions** | General discussion, Q&A, ideas | [github.com/rohitkumarnaidu/scholarform/discussions](https://github.com/rohitkumarnaidu/scholarform/discussions) |
+| **GitHub Issues** | Bug reports, feature requests, questions | [github.com/rohitkumarnaidu/ScholarFormAI/issues](https://github.com/rohitkumarnaidu/ScholarFormAI/issues) |
+| **GitHub Discussions** | General discussion, Q&A, ideas | [github.com/rohitkumarnaidu/ScholarFormAI/discussions](https://github.com/rohitkumarnaidu/ScholarFormAI/discussions) |
 | **Discord** | Real-time chat, maintainer coordination | Invite-only for maintainers; public channel for contributors |
 | **Email** | Security disclosures, legal, press | security@scholarform.ai |
 

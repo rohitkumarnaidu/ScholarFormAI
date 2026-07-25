@@ -11,7 +11,6 @@
 | Variable | Description | Required | Default | Example | Source |
 |---|---|---|---|---|---|
 | `DEBUG` | Enable debug mode (detailed error pages, relaxed CORS defaults, hot-reload) | No | `false` | `true` | `DeploymentSettings` (`backend/app/config/settings.py:387`) |
-| `APP_VERSION` | Application version tag; passed to Sentry as release identifier | No | `1.0.0` | `0.1.0` | `os.getenv("APP_VERSION", "1.0.0")` (`backend/app/main.py:121`); canonical version in `pyproject.toml:10` |
 | `ENCRYPTION_KEY` | 32-byte base64-encoded Fernet key for encrypting user API keys and sensitive data at rest. **Must be stable across restarts** or all encrypted data is lost. | **Production: Yes** | *(none)* | `cGxlYXNlLXJlcGxhY2UtbWUtd2l0aC1hLTI1Ni1iaXQta2V5LTEyMzQ1Njc4OTA=` | `encryption_service.py:20` via `os.environ.get("ENCRYPTION_KEY")` |
 | `ALGORITHM` | JWT signing algorithm used by Supabase auth verification | No | `HS256` | `HS256` | `SecuritySettings` (`settings.py:326`) |
 | `SIGNED_URL_SECRET` | Secret key for generating signed (pre-signed) document URLs | No | `None` | `a9f3c7b1d8e4f2a6c0b...` | `SecuritySettings` (`settings.py:328`) |
@@ -60,8 +59,6 @@ All keys are optional â€” the system uses a 4-tier fallback chain: NVIDIA NIM â†
 | `OLLAMA_BASE_URL` | Ollama base URL (alias for Ollama_URL) | No | `""` | `http://localhost:11434` | `LLMSettings` (`settings.py:241`) |
 | `LLM_PROVIDER_TIMEOUT_SECONDS` | Timeout per LLM provider request | No | `15` | `15` | `LLMSettings` (`settings.py:242`) |
 | `HF_TOKEN` | HuggingFace token (used for RAG embeddings inference API) | No | *(not in settings)* | `hf_lGwTAFTRkHbcMVGPhJ...` | `.env.template:18` |
-| `POSTHOG_API_KEY` | Server-side PostHog analytics API key | No | `""` | `phc_...` | `analytics_service.py:16` via `os.environ.get("POSTHOG_API_KEY")` |
-| `POSTHOG_HOST` | Server-side PostHog host URL | No | `https://app.posthog.com` | `https://eu.posthog.com` | `analytics_service.py:17` via `os.environ.get("POSTHOG_HOST")` |
 
 ---
 
@@ -72,9 +69,9 @@ All keys are optional â€” the system uses a 4-tier fallback chain: NVIDIA NIM â†
 | Variable | Description | Required | Default | Example | Source |
 |---|---|---|---|---|---|
 | `GROBID_ENABLED` | Enable GROBID PDF parsing | No | `true` | `true` | `PipelineSettings` (`settings.py:259`) |
-| `GROBID_URL` | GROBID service URL (used as first fallback) | No | `http://localhost:8070` | `https://rohith083-scholarform-grobid-shadow.hf.space` | `PipelineSettings` (`settings.py:253`) |
-| `GROBID_BASE_URL` | Alias for GROBID_URL | No | `http://localhost:8070` | `https://rohith083-scholarform-grobid-shadow.hf.space` | `PipelineSettings` (`settings.py:254`) |
-| `GROBID_URLS` | Comma-separated list of GROBID URLs for multi-instance fallback | No | `""` | `https://primary.hf.space,https://shadow.hf.space` | `PipelineSettings` (`settings.py:255`) |
+| `GROBID_URL` | GROBID service URL (used as first fallback) | No | `http://localhost:8070` | `http://localhost:8070` | `PipelineSettings` (`settings.py:253`) |
+| `GROBID_BASE_URL` | Alias for GROBID_URL | No | `http://localhost:8070` | `http://localhost:8070` | `PipelineSettings` (`settings.py:254`) |
+| `GROBID_URLS` | Comma-separated list of GROBID URLs for multi-instance fallback | No | `""` | `http://localhost:SERVICE_PORT,http://localhost:SERVICE_PORT` | `PipelineSettings` (`settings.py:255`) |
 | `GROBID_HEALTH_PATH` | Health check path for GROBID service | No | `/api/isalive` | `/api/isalive` | `PipelineSettings` (`settings.py:256`) |
 | `GROBID_TIMEOUT` | HTTP request timeout for GROBID (seconds) | No | `10` | `60` | `PipelineSettings` (`settings.py:257`) |
 | `GROBID_MAX_RETRIES` | Maximum retry attempts for GROBID calls | No | `3` | `3` | `PipelineSettings` (`settings.py:258`) |
@@ -85,33 +82,33 @@ All keys are optional â€” the system uses a 4-tier fallback chain: NVIDIA NIM â†
 
 | Variable | Description | Required | Default | Example | Source |
 |---|---|---|---|---|---|
-| `DOCLING_URL` | Docling service URL | No | `None` | `https://rohith083-scholarform-docling-shadow.hf.space` | `PipelineSettings` (`settings.py:263`) |
-| `DOCLING_URLS` | Comma-separated list of Docling URLs for multi-instance fallback | No | `""` | `https://primary.hf.space,https://shadow.hf.space` | `PipelineSettings` (`settings.py:264`) |
+| `DOCLING_URL` | Docling service URL | No | `None` | `http://localhost:5002` | `PipelineSettings` (`settings.py:263`) |
+| `DOCLING_URLS` | Comma-separated list of Docling URLs for multi-instance fallback | No | `""` | `http://localhost:SERVICE_PORT,http://localhost:SERVICE_PORT` | `PipelineSettings` (`settings.py:264`) |
 | `DOCLING_HEALTH_PATH` | Health check path for Docling service | No | `/` | `/` | `PipelineSettings` (`settings.py:265`) |
 
-### 4.3 SciBERT (Classification)
+### 4.3 LLMClassifier (Classification)
 
 | Variable | Description | Required | Default | Example | Source |
 |---|---|---|---|---|---|
-| `USE_SCIBERT_CLASSIFICATION` | Enable SciBERT-based heading/body classification | No | `false` | `true` | `PipelineSettings` (`settings.py:288`) |
-| `SCIBERT_URL` | SciBERT service URL | No | `None` | `https://rohith083-scholarform-scibert-shadow.hf.space` | `PipelineSettings` (`settings.py:275`) |
-| `SCIBERT_URLS` | Comma-separated list of SciBERT URLs | No | `""` | `https://primary.hf.space,https://shadow.hf.space` | `PipelineSettings` (`settings.py:276`) |
-| `SCIBERT_HEALTH_PATH` | Health check path for SciBERT | No | `/` | `/` | `PipelineSettings` (`settings.py:277`) |
-| `SCIBERT_AUTO_ENABLE_FROM_BENCHMARK` | Auto-enable SciBERT if benchmark F1 meets threshold | No | `true` | `true` | `PipelineSettings` (`settings.py:289`) |
-| `SCIBERT_MIN_BENCHMARK_F1` | Minimum F1 score to auto-enable SciBERT | No | `0.85` | `0.85` | `PipelineSettings` (`settings.py:290`) |
-| `SCIBERT_BENCHMARK_STATE_PATH` | File path to persist SciBERT benchmark state | No | `.metrics/scibert_benchmark_state.json` | `.metrics/scibert_benchmark_state.json` | `PipelineSettings` (`settings.py:291`) |
+| `USE_LLM_CLASSIFICATION` | Enable LLM-based heading/body classification | No | `false` | `true` | `PipelineSettings` (`settings.py:288`) |
+| `LLM_CLASSIFIER_URL` | LLMClassifier service URL | No | `None` | `http://localhost:SERVICE_PORT` | `PipelineSettings` (`settings.py:275`) |
+| `LLM_CLASSIFIER_URLS` | Comma-separated list of LLMClassifier URLs | No | `""` | `http://localhost:SERVICE_PORT,http://localhost:SERVICE_PORT` | `PipelineSettings` (`settings.py:276`) |
+| `LLM_CLASSIFIER_HEALTH_PATH` | Health check path for LLMClassifier | No | `/` | `/` | `PipelineSettings` (`settings.py:277`) |
+| `LLM_CLASSIFIER_AUTO_ENABLE_FROM_BENCHMARK` | Auto-enable LLMClassifier if benchmark F1 meets threshold | No | `true` | `true` | `PipelineSettings` (`settings.py:289`) |
+| `LLM_CLASSIFIER_MIN_BENCHMARK_F1` | Minimum F1 score to auto-enable LLMClassifier | No | `0.85` | `0.85` | `PipelineSettings` (`settings.py:290`) |
+| `classification_benchmark_STATE_PATH` | File path to persist LLMClassifier benchmark state | No | `.metrics/classification_benchmark_state.json` | `.metrics/classification_benchmark_state.json` | `PipelineSettings` (`settings.py:291`) |
 
 ### 4.4 Other Pipeline Services
 
 | Variable | Description | Required | Default | Example | Source |
 |---|---|---|---|---|---|
-| `OCR_URL` | OCR service URL | No | `None` | `https://rohith083-scholarform-ocr-shadow.hf.space` | `PipelineSettings` (`settings.py:266`) |
-| `OCR_URLS` | Comma-separated OCR URLs | No | `""` | `https://primary.hf.space,https://shadow.hf.space` | `PipelineSettings` (`settings.py:267`) |
-| `DOCX_CONVERTER_URL` | DOCX-to-PDF converter service URL (LibreOffice as a service) | No | `None` | `https://rohith083-scholarform-docx-converter-shadow.hf.space` | `PipelineSettings` (`settings.py:269`) |
-| `DOCX_CONVERTER_URLS` | Comma-separated DOCX converter URLs | No | `""` | `https://primary.hf.space,https://shadow.hf.space` | `PipelineSettings` (`settings.py:270`) |
-| `NOUGAT_URL` | Nougat OCR (math-aware) service URL | No | `None` | `https://rohith083-scholarform-nougat-shadow.hf.space` | `PipelineSettings` (`settings.py:272`) |
-| `NOUGAT_URLS` | Comma-separated Nougat URLs | No | `""` | `https://primary.hf.space,https://shadow.hf.space` | `PipelineSettings` (`settings.py:273`) |
-| `ENABLE_NOUGAT_PARSER` | Enable Nougat OCR parser as optional fallback | No | `false` | `true` | `PipelineSettings` (`settings.py:286`) |
+| `OCR_URL` | OCR service URL | No | `None` | `http://localhost:5003` | `PipelineSettings` (`settings.py:266`) |
+| `OCR_URLS` | Comma-separated OCR URLs | No | `""` | `http://localhost:SERVICE_PORT,http://localhost:SERVICE_PORT` | `PipelineSettings` (`settings.py:267`) |
+| `DOCX_CONVERTER_URL` | DOCX-to-PDF converter service URL (LibreOffice as a service) | No | `None` | `http://localhost:5004` | `PipelineSettings` (`settings.py:269`) |
+| `DOCX_CONVERTER_URLS` | Comma-separated DOCX converter URLs | No | `""` | `http://localhost:SERVICE_PORT,http://localhost:SERVICE_PORT` | `PipelineSettings` (`settings.py:270`) |
+| `LLM_PDF_PARSER_URL` | LLM-based PDF parsing (math-aware) service URL | No | `None` | `http://localhost:SERVICE_PORT` | `PipelineSettings` (`settings.py:272`) |
+| `LLM_PDF_PARSER_URLS` | Comma-separated LLMPDFParser URLs | No | `""` | `http://localhost:SERVICE_PORT,http://localhost:SERVICE_PORT` | `PipelineSettings` (`settings.py:273`) |
+| `ENABLE_LLM_PDF_PARSER` | Enable LLM-based PDF parsing parser as optional fallback | No | `false` | `true` | `PipelineSettings` (`settings.py:286`) |
 | `ENABLE_NVIDIA_REASONER` | Toggle NVIDIA reasoning tier for semantic instruction generation | No | `false` | `true` | `PipelineSettings` (`settings.py:287`) |
 
 ### 4.5 Pipeline Tuning & Performance
@@ -180,7 +177,6 @@ All keys are optional â€” the system uses a 4-tier fallback chain: NVIDIA NIM â†
 |---|---|---|---|---|---|
 | `FORCE_HTTPS` | Redirect all HTTP traffic to HTTPS (enforce in production) | No | `false` | `true` | `SecuritySettings` (`settings.py:329`) |
 | `GLOBAL_RATE_LIMIT_PER_MINUTE` | Global API rate limit (requests per minute per IP) | No | `120` | `120` | `DeploymentSettings` (`settings.py:389`) |
-| `SENTRY_DSN` | Sentry DSN for error tracking and performance monitoring | No | `None` | `https://key@oXXXX.ingest.us.sentry.io/XXXX` | `SecuritySettings` (`settings.py:334`) |
 | `CLAMAV_HOST` | ClamAV daemon host for virus scanning | No | `localhost` | `localhost` | `SecuritySettings` (`settings.py:330`) |
 | `CLAMAV_PORT` | ClamAV daemon port | No | `3310` | `3310` | `SecuritySettings` (`settings.py:331`) |
 | `STRIPE_API_KEY` | Stripe secret key for billing | No | `None` | `sk_live_...` | `SecuritySettings` (`settings.py:332`) |
@@ -259,14 +255,8 @@ All frontend variables are prefixed with `NEXT_PUBLIC_` (exposed to the browser)
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key for client-side auth | **Yes** | *(none)* | `eyJhbGciOiJIUzI1NiIs...` | `frontend/.env.example:3` |
 | `NEXT_PUBLIC_API_URL` | Backend FastAPI base URL for client-side API calls | **Yes** | *(none)* | `http://localhost:8000` | `frontend/.env.example:6` |
 | `NEXT_PUBLIC_API_BASE_URL` | Alternative API base URL (not used by core app code) | No | *(none)* | `http://localhost:8000/api/v1` | `frontend/.env.example:29` |
-| `NEXT_PUBLIC_POSTHOG_KEY` | PostHog analytics API key (client-side) | No | *(none)* | `phc_...` | `frontend/.env.example:10` |
-| `NEXT_PUBLIC_POSTHOG_HOST` | PostHog host URL | No | `https://app.posthog.com` | `https://app.posthog.com` | `frontend/.env.example:11`; `src/lib/posthog.js:10` |
-| `NEXT_PUBLIC_SENTRY_DSN` | Sentry DSN for client-side error tracking | No | *(none)* | `https://key@oXXXX.ingest.us.sentry.io/XXXX` | `sentry.client.config.js:6` |
 | `NEXT_PUBLIC_LATEX_EXPORT_ENABLED` | Toggle LaTeX export feature in the UI | No | `false` | `false` | `frontend/.env.example:7` |
 | `CDN_URL` | CDN URL prefix for static assets (assetPrefix + image remotePatterns) | No | `""` | `https://cdn.scholarform.ai` | `next.config.mjs:22` |
-| `SENTRY_ORG` | Sentry organization slug (Sentry webpack plugin) | No | *(none)* | `scholarform` | `next.config.mjs:63` |
-| `SENTRY_PROJECT` | Sentry project slug (Sentry webpack plugin) | No | *(none)* | `scholarform-frontend` | `next.config.mjs:64` |
-| `CI` | CI mode flag (Sentry silent mode toggle) | No | *(none)* | `true` | `next.config.mjs:65`; `frontend/.env.example:28` |
 | `PLAYWRIGHT_BASE_URL` | Base URL for Playwright E2E tests | No | *(none)* | `http://127.0.0.1:3001` | `frontend/.env.example:25` |
 | `VITE_APP_SKILLS` | Comma-separated skill names (documentation only) | No | *(none)* | `document-formatter,resume-formatter,...` | `frontend/.env.example:14` |
 | `VITE_APP_SKILLS_LINKS` | Semicolon-separated skill repository URLs (documentation only) | No | *(none)* | `https://github.com/...` | `frontend/.env.example:16` |

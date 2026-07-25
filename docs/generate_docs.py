@@ -3,8 +3,8 @@
 
 # -*- coding: utf-8 -*-
 """
-⚠️ DEPRECATED — ScholarForm AI Documentation Generator
-Last Updated: June 2026
+ ️ DEPRECATED — ScholarForm AI Documentation Generator
+Last Updated: July 2026
 
 This script generates a DOCX documentation file. It contains STALE INFORMATION
 and should NOT be used as a reference for the current codebase:
@@ -231,8 +231,8 @@ def getting_started():
 
     h2("2.2 Installation")
     h3("Step 1: Clone the Repository")
-    code("git clone https://github.com/rohitkumarnaidu/-Auto-AI-Automated-Academic-Docx-Manuscript-Formatter.git")
-    code("cd automated-manuscript-formatter")
+    code("git clone https://github.com/rohitkumarnaidu/ScholarFormAI.git")
+    code("cd ScholarFormAI")
 
     h3("Step 2: Set Up the Backend")
     code("cd backend")

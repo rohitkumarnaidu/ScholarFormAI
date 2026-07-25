@@ -40,7 +40,7 @@ ScholarForm AI uses **URL-based versioning** for API endpoints:
 ```
 Deprecation: true
 Sunset: Sat, 01 Jan 2028 00:00:00 GMT
-Link: <https://docs.scholarform.ai/api/v2-migration>; rel="successor-version"
+Link: <https://scholarform.onrender.com/api/v2-migration>; rel="successor-version"
 ```
 
 ---

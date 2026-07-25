@@ -32,8 +32,8 @@ last_updated: July 2026
 
 ### 1. Clone & Setup
 ```bash
-git clone https://github.com/rohitkumarnaidu/-Auto-AI-Automated-Academic-Docx-Manuscript-Formatter.git
-cd automated-manuscript-formatter
+git clone https://github.com/rohitkumarnaidu/ScholarFormAI.git
+cd ScholarFormAI
 
 # Backend
 cd backend
@@ -213,5 +213,5 @@ git push origin feature/your-feature-name
 | Tests hang | Check if Supabase/Redis is reachable |
 
 ### Getting Help
-- **Issues:** https://github.com/rohitkumarnaidu/-Auto-AI-Automated-Academic-Docx-Manuscript-Formatter/issues
-- **Discussions:** https://github.com/rohitkumarnaidu/-Auto-AI-Automated-Academic-Docx-Manuscript-Formatter/discussions
+- **Issues:** https://github.com/rohitkumarnaidu/ScholarFormAI/issues
+- **Discussions:** https://github.com/rohitkumarnaidu/ScholarFormAI/discussions

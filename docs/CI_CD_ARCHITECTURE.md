@@ -1,12 +1,12 @@
 # CI/CD Architecture
 
-> **ScholarForm AI** — Enterprise CI/CD pipeline built on 26 GitHub Actions workflows.
+> **ScholarForm AI** — Enterprise CI/CD pipeline built on 25 GitHub Actions workflows.
 
 ---
 
 ## Overview
 
-ScholarForm AI uses **GitHub Actions** as its sole CI/CD orchestrator (no Jenkins, GitLab CI, or CircleCI). The 26 workflows fall into five categories:
+ScholarForm AI uses **GitHub Actions** as its sole CI/CD orchestrator (no Jenkins, GitLab CI, or CircleCI). The 25 workflows fall into five categories:
 
 | Category | Workflows | Purpose |
 |----------|-----------|---------|
@@ -14,7 +14,7 @@ ScholarForm AI uses **GitHub Actions** as its sole CI/CD orchestrator (no Jenkin
 | **Frontend CI** | `frontend-ci.yml` | Audit, lint + typecheck + vitest, Lighthouse, Playwright E2E |
 | **Deployment** | `deploy-production.yml`, `deploy-staging.yml` | Render + Vercel deploy, health checks, auto-rollback |
 | **Security** | `codeql.yml`, `security.yml`, `scorecard.yml`, `dependency-review.yml`, `fuzzing.yml`, `cve-advisory.yml` | SAST, DAST, dependency scanning, fuzzing, supply-chain |
-| **Release & Ops** | `create-release.yml`, `docker-publish.yml`, `npm-publish.yml`, `python-publish.yml`, `sbom.yml`, `slsa-provenance.yml`, `merge-queue.yml`, `commitlint.yml`, `labeler.yml`, `release-drafter.yml`, `stale.yml`, `docs-freshness.yml`, `keepalive-free-tier.yml`, `e2e-production.yml`, `e2e-staging.yml`, `openapi-schema-check.yml` | Release orchestration, package publishing, housekeeping, monitoring |
+| **Release & Ops** | `create-release.yml`, `docker-publish.yml`, `npm-publish.yml`, `python-publish.yml`, `sbom.yml`, `slsa-provenance.yml`, `merge-queue.yml`, `commitlint.yml`, `labeler.yml`, `release-drafter.yml`, `stale.yml`, `docs-freshness.yml`, `keepalive-free-tier.yml`, `e2e-production.yml`, `e2e-staging.yml` | Release orchestration, package publishing, housekeeping, monitoring |
 
 ---
 
@@ -237,8 +237,7 @@ Uses `lewagon/wait-on-check-action` with 30s polling interval for each required 
 | **release-drafter.yml** | Push to main, PR events | Maintains a draft release updated on every main push, categorizes PRs by labels. Uses `.github/release-drafter.yml` with version resolution (major: breaking, minor: feature, patch: default). |
 | **sbom.yml** | Push to main (dep files), weekly Monday | Generates CycloneDX SBOM (Python + npm) + SPDX combined summary, opens a PR if changes detected. |
 | **docs-freshness.yml** | Weekly Monday 09:00 UTC, PR on docs | Flags docs >90d stale via frontmatter `last_updated`; checks for broken internal links (fails on broken). |
-| **openapi-schema-check.yml** | PR on backend Python files | Regenerates `docs/openapi.json` and fails the build if diff detected (ensures schema is committed). |
-| **keepalive-free-tier.yml** | Every 14 minutes (`*/14 * * * *`) | Pings Render backend live endpoint + all 6 Hugging Face microservice pairs (grobid, docling, OCR, docx-converter, nougat, scibert) with primary/shadow fallback probing to prevent Render free-tier cold starts. |
+| **keepalive-free-tier.yml** | Every 14 minutes (`*/14 * * * *`) | Pings Render backend live endpoint + all 6 Hugging Face microservice pairs (grobid, docling, OCR, docx-converter, LLMPDFParser, LLMClassifier) with primary/shadow fallback probing to prevent Render free-tier cold starts. |
 
 ### Dependabot Configuration
 

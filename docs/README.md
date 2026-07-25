@@ -57,7 +57,7 @@ last_updated: July 2026
 | [Database.md](Database.md) | ✅ | Data model, tables, indexes |
 | [API.md](API.md) | ✅ | Full v1 API reference with curl examples |
 | [API_VERSIONING.md](API_VERSIONING.md) | ✅ | Versioning policy and migration plan |
-| [api_reference.md](api_reference.md) | ⚠️ | Legacy API reference (superseded by API.md) |
+| [api_reference.md](api_reference.md) |  ️ | Legacy API reference (superseded by API.md) |
 | [GLOSSARY.md](GLOSSARY.md) | ✅ | Terminology reference for common terms |
 | [cheatsheet.md](cheatsheet.md) | ✅ | One-page quick-reference card |
 | [.docs-style-guide.md](.docs-style-guide.md) | ✅ | Documentation standards and conventions |
@@ -132,7 +132,7 @@ last_updated: July 2026
 | [POSTMORTEM_TEMPLATE.md](POSTMORTEM_TEMPLATE.md) | ✅ | Incident postmortem template |
 | [POSTMORTEM_TEMPLATE.md](TechStack.md) | ✅ | Technology stack reference |
 
-## 🛠️ Runbooks
+##  ️ Runbooks
 
 | Document | Status | Description |
 |----------|--------|-------------|
@@ -174,7 +174,7 @@ last_updated: July 2026
 | Mermaid diagrams | 0 | 0 | **2** |
 | CI freshness check | ❌ | ❌ | ✅ |
 | CHANGELOG.md at root | ❌ | ❌ | ✅ |
-| SECURITY.md at root | ⚠️ Basic | ⚠️ Basic | **✅ Enterprise** |
+| SECURITY.md at root |  ️ Basic |  ️ Basic | **✅ Enterprise** |
 | GLOSSARY.md | ❌ | ❌ | ✅ |
 | cheatsheet.md | ❌ | ❌ | ✅ |
 | .docs-style-guide.md | ❌ | ❌ | ✅ |
