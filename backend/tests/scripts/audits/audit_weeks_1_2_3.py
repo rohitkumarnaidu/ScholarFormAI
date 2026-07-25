@@ -134,7 +134,7 @@ def main():
             print(f"{GREEN}✅ VERIFIED{RESET}: Comma requirement removed from classifier.py")
             results["week3_agent_a"].append(True)
         else:
-            print(f"{YELLOW}⚠️  WARNING{RESET}: Comma requirement may still be present in classifier.py")
+            print(f"{YELLOW} ️  WARNING{RESET}: Comma requirement may still be present in classifier.py")
             results["week3_agent_a"].append(False)
     else:
         print(f"{RED}❌ MISSING{RESET}: classifier.py not found")
@@ -183,7 +183,7 @@ def main():
         print(f"\n{GREEN}🎉 ALL WEEKS COMPLETE! Ready to proceed to next phase.{RESET}")
         return 0
     elif overall_pct >= 80:
-        print(f"\n{YELLOW}⚠️  MOSTLY COMPLETE. Review missing items before proceeding.{RESET}")
+        print(f"\n{YELLOW} ️  MOSTLY COMPLETE. Review missing items before proceeding.{RESET}")
         return 1
     else:
         print(f"\n{RED}❌ INCOMPLETE. Significant work remaining.{RESET}")

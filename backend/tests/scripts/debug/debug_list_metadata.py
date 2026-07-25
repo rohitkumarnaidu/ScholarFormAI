@@ -49,7 +49,7 @@ def verify_list_extraction(path):
         lid = li.metadata.get("list_id")
         print(f"Item {i}: '{li.text[:20]}...' -> Level: {lvl}, ID: {lid}")
         if lvl is None or lid is None:
-            print(f"⚠️ Warning: Missing level/ID on item {i}")
+            print(f" ️ Warning: Missing level/ID on item {i}")
             # If style is 'List Bullet', Word might not add numPr unless it's a "real" list
             # But usually it does.
     
