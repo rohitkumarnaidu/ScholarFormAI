@@ -13,7 +13,7 @@ groups:
         annotations:
           summary: "ScholarForm backend is down"
           description: "Backend instance {{ $labels.instance }} has been unreachable for 2 minutes."
-          runbook: "https://github.com/scholarform/docs/RUNBOOKS/service-down.md"
+          runbook: "https://github.com/rohitkumarnaidu/ScholarFormAI/blob/main/docs/runbooks/service-down.md"
 
       # High Error Rate
       - alert: ScholarFormHighErrorRate
@@ -28,7 +28,7 @@ groups:
         annotations:
           summary: "High error rate on ScholarForm"
           description: "Error rate is {{ $value | humanizePercentage }} (threshold: 5%)."
-          runbook: "https://github.com/scholarform/docs/RUNBOOKS/high-error-rate.md"
+          runbook: "https://github.com/rohitkumarnaidu/ScholarFormAI/blob/main/docs/runbooks/high-error-rate.md"
 
       # High Latency
       - alert: ScholarFormHighLatency
@@ -41,7 +41,7 @@ groups:
         annotations:
           summary: "High p95 latency on ScholarForm"
           description: "p95 latency is {{ $value }}s (threshold: 5s)."
-          runbook: "https://github.com/scholarform/docs/RUNBOOKS/high-latency.md"
+          runbook: "https://github.com/rohitkumarnaidu/ScholarFormAI/blob/main/docs/runbooks/high-latency.md"
 
       # Database Connection Pool Exhaustion
       - alert: ScholarFormDBPoolExhausted
@@ -52,7 +52,7 @@ groups:
         annotations:
           summary: "Database connection pool nearly exhausted"
           description: "{{ $value }} active connections out of 20."
-          runbook: "https://github.com/scholarform/docs/RUNBOOKS/db-pool-exhausted.md"
+          runbook: "https://github.com/rohitkumarnaidu/ScholarFormAI/blob/main/docs/runbooks/db-pool-exhausted.md"
 
       # Redis Memory High
       - alert: ScholarFormRedisMemoryHigh
@@ -63,7 +63,7 @@ groups:
         annotations:
           summary: "Redis memory usage above 90%"
           description: "Redis memory at {{ $value | humanizePercentage }}."
-          runbook: "https://github.com/scholarform/docs/RUNBOOKS/redis-memory.md"
+          runbook: "https://github.com/rohitkumarnaidu/ScholarFormAI/blob/main/docs/runbooks/redis-memory.md"
 
       # Celery Queue Backlog
       - alert: ScholarFormQueueBacklog
@@ -74,7 +74,7 @@ groups:
         annotations:
           summary: "Celery interactive queue backlog"
           description: "{{ $value }} jobs queued in interactive queue."
-          runbook: "https://github.com/scholarform/docs/RUNBOOKS/queue-backlog.md"
+          runbook: "https://github.com/rohitkumarnaidu/ScholarFormAI/blob/main/docs/runbooks/queue-backlog.md"
 
       # API Key Rate Limit Exceeded Spike
       - alert: ScholarFormRateLimitSpike
@@ -95,4 +95,4 @@ groups:
         annotations:
           summary: "Disk space below 10%"
           description: "Only {{ $value | humanizePercentage }} disk space remaining."
-          runbook: "https://github.com/scholarform/docs/RUNBOOKS/disk-space.md"
+          runbook: "https://github.com/rohitkumarnaidu/ScholarFormAI/blob/main/docs/runbooks/disk-space.md"

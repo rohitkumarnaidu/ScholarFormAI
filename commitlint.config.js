@@ -46,7 +46,7 @@ const Configuration = {
     "body-max-line-length": [2, "always", 100],
   },
   helpUrl:
-    "https://github.com/scholarform/scholarform/blob/main/CONTRIBUTING.md#commit-message-guidelines",
+    "https://github.com/rohitkumarnaidu/ScholarFormAI/blob/main/CONTRIBUTING.md#commit-message-guidelines",
 };
 
 export default Configuration;
