@@ -61,73 +61,11 @@ except Exception:
     get_remote_address = None  # type: ignore[assignment]
     SLOWAPI_AVAILABLE = False
 
-# --- Sentry Error Tracking ---
-try:
-    import sentry_sdk
-    from sentry_sdk.integrations.fastapi import FastApiIntegration
-    from sentry_sdk.integrations.starlette import StarletteIntegration
-    from sentry_sdk.integrations.logging import LoggingIntegration
-
-    SENTRY_AVAILABLE = True
-except ImportError:
-    sentry_sdk = None
-    FastApiIntegration = None
-    StarletteIntegration = None
-    LoggingIntegration = None
-    SENTRY_AVAILABLE = False
-
-
-def _sentry_before_send(event, hint):
-    exc_info = (hint or {}).get("exc_info")
-    if exc_info:
-        exc_type, exc_value, _traceback = exc_info
-        if isinstance(exc_value, (asyncio.CancelledError, KeyboardInterrupt)):
-            return None
-        if exc_type:
-            try:
-                if issubclass(exc_type, (asyncio.CancelledError, KeyboardInterrupt)):
-                    return None
-            except TypeError:
-                pass
-
-    exception_values = event.get("exception", {}).get("values", [])
-    for value in exception_values:
-        exc_type_name = str(value.get("type") or "").lower()
-        if exc_type_name in {"cancellederror", "keyboardinterrupt"}:
-            return None
-
-    return event
-
-
-def _init_sentry() -> None:
-    if not SENTRY_AVAILABLE:
-        logger.info("Sentry SDK not installed. Skipping Sentry initialization.")
-        return
-    if not settings.SENTRY_DSN:
-        return
-    if sentry_sdk is None:
-        return
-
-    sentry_sdk.init(
-        dsn=settings.SENTRY_DSN,
-        integrations=[
-            StarletteIntegration(transaction_style="endpoint"),
-            FastApiIntegration(transaction_style="endpoint"),
-            LoggingIntegration(level=logging.INFO, event_level=logging.ERROR),
-        ],
-        traces_sample_rate=0.1,
-        environment=os.getenv("ENVIRONMENT", "production"),
-        release=os.getenv("APP_VERSION", "1.0.0"),
-        send_default_pii=False,
-        before_send=_sentry_before_send,
-    )
-    logger.info("Sentry initialized")
 # --------------------------------------------------------
 
 
 from app.pipeline.safety import safe_execution
 from app.services.enhancement_manager import enhancement_manager
-from app.services.scibert_gate import should_enable_scibert
 
 _queue_depth_redis_client = None
 
@@ -476,11 +414,6 @@ async def lifespan(app: FastAPI):
     # cleanup_task = asyncio.create_task(cleanup_old_uploads())
     cleanup_task = None
     queue_metrics_task = None
-    await _run_startup_step(
-        "sentry_init",
-        _init_sentry,
-        timeout_seconds=3.0,
-    )
 
     # ── STARTUP VALIDATION ──
     await _run_startup_step(
@@ -528,15 +461,6 @@ async def lifespan(app: FastAPI):
 
             logger.info("Startup: Pre-loading AI models into memory...")
             try:
-                if should_enable_scibert():
-                    from app.pipeline.intelligence.semantic_parser import get_semantic_parser
-
-                    parser = get_semantic_parser()
-                    parser._load_model()
-                    model_store.set_model("scibert_tokenizer", parser.tokenizer)
-                    model_store.set_model("scibert_model", parser.model)
-                    logger.info("SciBERT loaded.")
-
                 from app.pipeline.intelligence.rag_engine import get_rag_engine
 
                 rag = get_rag_engine()
