@@ -15,7 +15,7 @@ last_updated: July 2026
 
 # ScholarForm AI — Features List
 
-> **Codex Status Key:** ✅ Confirmed working | ⚠️ Files exist, needs runtime verification | ❌ Stub / not implemented  
+> **Codex Status Key:** ✅ Confirmed working |  ️ Files exist, needs runtime verification | ❌ Stub / not implemented  
 > **Source:** Codex 5.4 Audit. Items marked TODO in earlier plans but **confirmed done** are now marked ✅.
 
 > **See also:** [PRD](PRD.md), [Roadmap](Roadmap.md), [Testing](Testing.md)
@@ -46,10 +46,10 @@ last_updated: July 2026
 | LaTeX export | ❌ | `latex_exporter.py` is 743B stub — needs Pandoc subprocess |
 | Processing stepper animation | ✅ | `Stepper.jsx` (10.4KB) |
 | Quality score calculation | ✅ | `quality_score_service.py` (4.4KB) |
-| Quality score display on results page | ⚠️ | Exists; needs browser-level verification |
+| Quality score display on results page |  ️ | Exists; needs browser-level verification |
 | TipTap rich text editor on `/edit` | ✅ | **Codex-confirmed done** (was marked "needs verification" in earlier plans) |
 | Batch upload (`BatchUploadPanel.jsx`) | ✅ | 9.7KB — wired and complete |
-| Template editor save | ⚠️ | API connection needs runtime testing |
+| Template editor save |  ️ | API connection needs runtime testing |
 
 ---
 
@@ -64,8 +64,8 @@ last_updated: July 2026
 | `PreviewPane.jsx` | ✅ | 3.5KB |
 | `useLivePreviewSocket` hook | ✅ | 5.5KB |
 | `/formatter/live` page | ✅ | Route live |
-| AI sidebar | ⚠️ | Scaffolded; needs runtime testing |
-| Violet accent drift in live preview | ⚠️🎨 | Codex finding: some components use `violet-*` tokens outside the blue design system — needs a design system style guide |
+| AI sidebar |  ️ | Scaffolded; needs runtime testing |
+| Violet accent drift in live preview |  ️🎨 | Codex finding: some components use `violet-*` tokens outside the blue design system — needs a design system style guide |
 
 ---
 
@@ -79,7 +79,7 @@ last_updated: July 2026
 | SSE event streaming | ✅ | `v1/synthesis.py` (8.8KB) |
 | `MultiUploadPanel.jsx` | ✅ | 11.4KB |
 | `SynthesisStageTimeline.jsx` | ✅ | 6KB |
-| `api.synthesis.js` (frontend API bridge) | ⚠️ | Was 36B stub — now wired via synthesis hooks |
+| `api.synthesis.js` (frontend API bridge) |  ️ | Was 36B stub — now wired via synthesis hooks |
 
 ---
 
@@ -109,7 +109,7 @@ last_updated: July 2026
 | Groq fallback (Tier 2) | ✅ | **Codex-confirmed done** (was marked TODO in some plans) |
 | Ollama / DeepSeek (Tier 3) | ✅ | Local offline fallback |
 | LiteLLM abstraction | ✅ | Same client code across all providers |
-| SciBERT classification | ⚠️ | Disabled by default (`USE_SCIBERT_CLASSIFICATION=false`) |
+| LLMClassifier classification |  ️ | Disabled by default (`USE_LLM_CLASSIFICATION=false`) |
 | ChromaDB RAG | ✅ | Properly implemented |
 
 ---
@@ -126,8 +126,8 @@ last_updated: July 2026
 | Abuse detection | ✅ | `abuse_detector.py` (2.7KB) |
 | Virus scanning | ✅ | `virus_scanner.py` (4.4KB) — ClamAV |
 | Request ID correlation | ✅ | `request_id.py` (2.2KB) |
-| RBAC middleware | ⚠️ | `rbac.py` (708B) — stub, needs expansion |
-| Audit logging | ⚠️ | `audit_log_service.py` (1.1KB) — minimal |
+| RBAC middleware |  ️ | `rbac.py` (708B) — stub, needs expansion |
+| Audit logging |  ️ | `audit_log_service.py` (1.1KB) — minimal |
 
 ---
 
@@ -138,7 +138,7 @@ last_updated: July 2026
 | Dark/light mode | ✅ | `ThemeContext.jsx` (2.2KB) + `ThemeToggle` unified — **Codex-confirmed done** |
 | Onboarding tour | ✅ | `OnboardingTour.jsx` (6.8KB) |
 | Error boundary | ✅ | `ErrorBoundary.jsx` (3.6KB) |
-| Icon system consistency | ⚠️ | Codex finding: inconsistent icon sets (lucide-react vs heroicons vs radix icons) — needs audit and consolidation |
+| Icon system consistency |  ️ | Codex finding: inconsistent icon sets (lucide-react vs heroicons vs radix icons) — needs audit and consolidation |
 | Design token documentation | ❌ | Tailwind config exists; semantic token guide is missing |
 | `FeedbackForm.jsx` | ✅ | 8KB |
 | Notification bell | ✅ | |
@@ -152,7 +152,7 @@ last_updated: July 2026
 | Stripe webhook router | ✅ | `v1/billing.py` (3.8KB) |
 | Plan tier utility | ✅ | `planTier.js` (2.5KB) |
 | Upgrade modal | ✅ | `UpgradeModal.jsx` (3.7KB) |
-| Settings billing tab | ⚠️ | Exists; needs Stripe CLI verification |
+| Settings billing tab |  ️ | Exists; needs Stripe CLI verification |
 
 ---
 

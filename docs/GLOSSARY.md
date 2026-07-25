@@ -44,7 +44,7 @@ last_updated: July 2026
 | **RLS** | Row-Level Security — PostgreSQL feature used by Supabase to scope data access per user |
 | **RPO** | Recovery Point Objective — maximum acceptable data loss in a disaster (1 hour) |
 | **RTO** | Recovery Time Objective — maximum acceptable downtime in a disaster (4 hours) |
-| **SciBERT** | Scientific BERT model for classifying document sections (IMRaD) — disabled by default |
+| **LLMClassifier** | Scientific BERT model for classifying document sections (IMRaD) — disabled by default |
 | **SSE** | Server-Sent Events — HTTP-based streaming protocol used for real-time processing progress |
 | **Supabase** | Backend-as-a-Service providing PostgreSQL database, authentication, and file storage |
 | **Synthesis** | Feature that combines 2-6 source PDFs into a single coherent manuscript |

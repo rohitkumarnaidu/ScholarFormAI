@@ -188,7 +188,7 @@ npm run test:e2e:headed    # headed
 
 ## 5. Next Steps
 
-1. Write deep tests for **nougat_parser.py** (0% coverage)
+1. Write deep tests for **llm_pdf_parser.py** (0% coverage)
 2. Write deep tests for **exporter.py**, **synthesizer.py**, **document_generator.py**
 3. Raise project-wide coverage toward 50%
 4. Fill E2E critical path stubs with real DOM assertions
