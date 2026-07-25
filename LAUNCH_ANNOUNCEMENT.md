@@ -36,7 +36,7 @@ Next.js 16    →   FastAPI         →  Celery Workers     →  Supabase (Postg
 React 19         26 Pipeline         Redis Pub/Sub         Supabase Storage
 Tailwind CSS     34 REST Routes      ChromaDB (RAG)        Redis Cache
 TanStack Query   15 Route Modules    Prometheus/Grafana
-                 25 Services         Sentry/PostHog
+                 25 Services
 ```
 
 **LLM Tiering:** NVIDIA NIM (Llama 3.3 70B, primary) → Groq (fallback) → DeepSeek R1 via Ollama (local/offline)
@@ -50,7 +50,7 @@ ScholarForm AI is released under the **MIT license** — free to use, modify, an
 | Metric | Status |
 |--------|--------|
 | License | MIT |
-| CI/CD | 26 workflows, green |
+| CI/CD | 25 workflows, green |
 | Coverage | 61% backend, growing |
 | Containers | Multi-arch (amd64 + arm64), Cosign-signed |
 | SBOM | CycloneDX for backend + frontend |

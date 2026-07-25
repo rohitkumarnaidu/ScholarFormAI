@@ -77,7 +77,6 @@ alembic current  # Check current state
 DEBUG=true
 
 # Check server logs for traceback (Uvicorn prints to stdout)
-# Check Sentry if configured (SENTRY_DSN in .env)
 
 # Isolate the endpoint
 curl -v http://localhost:8000/api/v1/health
