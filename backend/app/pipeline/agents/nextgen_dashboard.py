@@ -199,7 +199,7 @@ class NextGenDashboard:
         if not self.transformer_detector:
             return """
             <div class="card">
-                <h2>🧠 Deep Learning (Transformers)</h2>
+                <h2>  Deep Learning (Transformers)</h2>
                 <p style="color: #999;">Not initialized</p>
             </div>
             """
@@ -208,7 +208,7 @@ class NextGenDashboard:
         
         return f"""
         <div class="card">
-            <h2>🧠 Deep Learning (Transformers)</h2>
+            <h2>  Deep Learning (Transformers)</h2>
             <div class="metric">
                 <span class="metric-label">Model:</span>
                 <span class="metric-value">{summary['model_name']}</span>
@@ -343,7 +343,7 @@ class NextGenDashboard:
         if not self.tool_marketplace:
             return """
             <div class="card">
-                <h2>🛠️ Tool Marketplace</h2>
+                <h2> ️ Tool Marketplace</h2>
                 <p style="color: #999;">Not initialized</p>
             </div>
             """
@@ -361,7 +361,7 @@ class NextGenDashboard:
         
         return f"""
         <div class="card">
-            <h2>🛠️ Tool Marketplace</h2>
+            <h2> ️ Tool Marketplace</h2>
             <div class="metric">
                 <span class="metric-label">Installed Tools:</span>
                 <span class="metric-value">{len(installed)}</span>
@@ -377,7 +377,7 @@ class NextGenDashboard:
             <h3>🎯 Next-Generation Capabilities</h3>
             <div class="stat-grid">
                 <div class="stat-item">
-                    <div class="stat-value">🧠</div>
+                    <div class="stat-value"> </div>
                     <div class="stat-label">Transformer Models</div>
                 </div>
                 <div class="stat-item">

@@ -35,7 +35,6 @@ class PipelineStages:
         contracts_dir: str,
         converter,
         grobid_client,
-        docling_client,
         run_with_timeout_fn=None,
     ):
         self.templates_dir = templates_dir
@@ -43,7 +42,6 @@ class PipelineStages:
         self.contracts_dir = contracts_dir
         self.converter = converter
         self.grobid_client = grobid_client
-        self.docling_client = docling_client
         self._run_with_timeout = run_with_timeout_fn
 
     # ------------------------------------------------------------------ #
@@ -65,30 +63,6 @@ class PipelineStages:
             if normalized in {"0", "false", "no", "off"}:
                 return False
         return default
-
-    @staticmethod
-    def should_skip_docling_for_digital_pdf(input_path: str) -> bool:
-        # Use function-level import to support test patching of app.pipeline.orchestrator.settings
-        from app.pipeline.orchestrator import settings as _s
-        force_docling = bool(_s.PIPELINE_DOCLING_FORCE)
-        if force_docling:
-            return False
-        auto_skip = bool(_s.PIPELINE_DOCLING_SKIP_DIGITAL_PDF)
-        if not auto_skip:
-            return False
-        try:
-            import fitz
-            with fitz.open(input_path) as pdf_doc:
-                if len(pdf_doc) == 0:
-                    return False
-                sample_pages = min(2, len(pdf_doc))
-                sample_chars = 0
-                for page_idx in range(sample_pages):
-                    text = (pdf_doc[page_idx].get_text("text") or "").strip()
-                    sample_chars += len(text)
-                return sample_chars >= 250
-        except Exception:
-            return False
 
     @staticmethod
     def extract_pymupdf_fallback_metadata(input_path: str) -> dict[str, Any]:
@@ -161,19 +135,19 @@ class PipelineStages:
         doc_obj.formatting_options = formatting_options
         return doc_obj
 
-    def apply_nougat_fallback(self, doc_obj, input_path, job_id, file_ext):
-        """Nougat OCR fallback for scanned PDFs with empty extraction."""
+    def apply_llm_pdf_fallback(self, doc_obj, input_path, job_id, file_ext):
+        """LLM-based PDF fallback for scanned PDFs with empty extraction."""
         if (not doc_obj.blocks or all(b.text.strip() == "" for b in doc_obj.blocks)) and file_ext == '.pdf':
             try:
-                from app.pipeline.parsing.nougat_parser import NougatParser
-                logger.info("Empty extraction for PDF — trying Nougat OCR fallback for job %s", job_id)
-                nougat = NougatParser()
-                nougat_doc = nougat.parse(input_path, job_id)
-                if nougat_doc.blocks and any(b.text.strip() for b in nougat_doc.blocks):
-                    doc_obj = nougat_doc
-                    logger.info("Nougat OCR produced %d blocks for job %s", len(doc_obj.blocks), job_id)
-            except Exception as nougat_exc:
-                logger.warning("Nougat OCR fallback failed for job %s: %s", job_id, nougat_exc)
+                from app.pipeline.parsing.llm_pdf_parser import LLMPDFParser
+                logger.info("Empty extraction for PDF — trying LLM PDF parser fallback for job %s", job_id)
+                llm_parser = LLMPDFParser()
+                llm_doc = llm_parser.parse(input_path, job_id)
+                if llm_doc.blocks and any(b.text.strip() for b in llm_doc.blocks):
+                    doc_obj = llm_doc
+                    logger.info("LLM PDF parser produced %d blocks for job %s", len(doc_obj.blocks), job_id)
+            except Exception as llm_exc:
+                logger.warning("LLM PDF parser fallback failed for job %s: %s", job_id, llm_exc)
         return doc_obj
 
     def set_template(self, doc_obj, template_name):
@@ -195,17 +169,17 @@ class PipelineStages:
             hasattr(doc_obj, 'metadata') and doc_obj.metadata
             and doc_obj.metadata.ai_hints.get('grobid_metadata')
         )
-        has_docling = (
+        has_layout = (
             hasattr(doc_obj, 'metadata') and doc_obj.metadata
-            and doc_obj.metadata.ai_hints.get('docling_layout')
+            and doc_obj.metadata.ai_hints.get('llm_layout')
         )
-        if has_grobid and has_docling:
+        if has_grobid and has_layout:
             logger.info("AI Extraction already completed (Agent V2). Skipping parallel pass.")
             return doc_obj
 
         executor = ThreadPoolExecutor(max_workers=2)
         future_grobid = None
-        future_docling = None
+        future_layout = None
         grobid_metadata = {}
         layout_result = {}
 
@@ -224,25 +198,22 @@ class PipelineStages:
                         logger.warning("GROBID extraction failed: %s", e)
                 return {}
 
-            def run_docling():
-                if not _s.USE_DOCLING_FALLBACK:
-                    logger.info("Docling fallback disabled (USE_DOCLING_FALLBACK=false).")
+            def run_llm_layout():
+                if not _s.ENABLE_LLM_PDF_PARSER:
+                    logger.info("LLM PDF parser disabled (ENABLE_LLM_PDF_PARSER=false).")
                     return {}
-                if self.should_skip_docling_for_digital_pdf(input_path):
-                    logger.info("Digital-native PDF detected; skipping Docling layout pass.")
-                    return {}
-                if self.docling_client.is_available():
-                    try:
-                        logger.info("Analyzing layout with Docling...")
-                        return self.docling_client.analyze_layout(input_path)
-                    except Exception as e:
-                        logger.warning("Docling analysis failed: %s", e)
+                try:
+                    from app.pipeline.parsing.llm_pdf_parser import LLMPDFParser
+                    logger.info("Analyzing layout with LLM PDF parser...")
+                    llm_parser = LLMPDFParser()
+                    return llm_parser.analyze_layout(input_path)
+                except Exception as e:
+                    logger.warning("LLM layout analysis failed: %s", e)
                 return {}
 
             future_grobid = executor.submit(run_grobid)
-            future_docling = executor.submit(run_docling)
+            future_layout = executor.submit(run_llm_layout)
             grobid_timeout = int(_s.PIPELINE_GROBID_TIMEOUT_SECONDS)
-            docling_timeout = int(_s.PIPELINE_DOCLING_TIMEOUT_SECONDS)
 
             try:
                 grobid_metadata = future_grobid.result(timeout=grobid_timeout)
@@ -253,14 +224,14 @@ class PipelineStages:
                 grobid_metadata = {}
 
             try:
-                layout_result = future_docling.result(timeout=docling_timeout)
+                layout_result = future_layout.result(timeout=grobid_timeout)
             except FuturesTimeoutError:
-                logger.warning("Docling analysis timed out after %ss", docling_timeout)
-                if future_docling:
-                    future_docling.cancel()
+                logger.warning("LLM layout analysis timed out after %ss", grobid_timeout)
+                if future_layout:
+                    future_layout.cancel()
                 layout_result = {}
         finally:
-            for fut in (future_grobid, future_docling):
+            for fut in (future_grobid, future_layout):
                 if fut is not None and not fut.done():
                     fut.cancel()
             executor.shutdown(wait=False, cancel_futures=True)
@@ -280,9 +251,9 @@ class PipelineStages:
             if not hasattr(doc_obj, 'metadata') or doc_obj.metadata is None:
                 from app.models import DocumentMetadata
                 doc_obj.metadata = DocumentMetadata()
-            doc_obj.metadata.ai_hints['docling_layout'] = layout_result
+            doc_obj.metadata.ai_hints['llm_layout'] = layout_result
             logger.info(
-                "Docling analyzed: %d elements found",
+                "LLM layout analyzed: %d elements found",
                 len(layout_result.get('elements', [])),
             )
 
