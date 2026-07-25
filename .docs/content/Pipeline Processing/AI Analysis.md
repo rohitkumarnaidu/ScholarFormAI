@@ -17,7 +17,7 @@
 - [default_guidelines.json](file://backend/app/pipeline/intelligence/default_guidelines.json)
 - [test_rag_engine.py](file://backend/tests/test_rag_engine.py)
 - [test_reasoning_engine.py](file://backend/tests/test_reasoning_engine.py)
-- [test_scibert_benchmark.py](file://backend/tests/test_scibert_benchmark.py)
+- [test_classification.py](file://backend/tests/test_classification.py)
 - [llm_validator.py](file://backend/app/pipeline/safety/llm_validator.py)
 - [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
 - [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
@@ -36,7 +36,7 @@
 10. [Appendices](#appendices)
 
 ## Introduction
-This document explains the AI analysis subsystem powering automated academic manuscript formatting. It covers the content analysis engine, semantic parsing, classification systems, RAG (Retrieval-Augmented Generation) engine, reasoning engine, and SciBERT-based classification. It also documents integration with external AI services (NVIDIA NIM, Groq, and Ollama), configuration options, performance optimization strategies, and troubleshooting approaches.
+This document explains the AI analysis subsystem powering automated academic manuscript formatting. It covers the content analysis engine, semantic parsing, classification systems, RAG (Retrieval-Augmented Generation) engine, reasoning engine, and LLM-based classification. It also documents integration with external AI services (NVIDIA NIM, Groq, and Ollama), configuration options, performance optimization strategies, and troubleshooting approaches.
 
 ## Project Structure
 The AI analysis components are organized into three main areas:
@@ -96,8 +96,8 @@ CFG --> CL
 ## Core Components
 - RAG Engine: Local retrieval with ChromaDB-backed embeddings and a deterministic fallback. Seeds default academic formatting guidelines and supports publisher-aware retrieval.
 - Reasoning Engine: Multi-tier LLM orchestration (NVIDIA NIM primary, Ollama fallback, rule-based safety net). Normalizes outputs into a canonical instruction set with confidence scoring.
-- Semantic Parser: SciBERT-based classification of document blocks with heuristic fallback and language detection.
-- Content Classifier: Rule-based classification enriched with SciBERT predictions and GROBID metadata.
+- Semantic Parser: LLM-based classification of document blocks with heuristic fallback and language detection.
+- Content Classifier: Rule-based classification enriched with LLM predictions and GROBID metadata.
 - Unified LLM Service: Provider-agnostic access to NVIDIA NIM, Groq, and Ollama with caching and health checks.
 - NVIDIA Client: Thin wrapper around NVIDIA APIs with LiteLLM integration and fallbacks.
 - Model Store: Global registry for preloaded AI models to reduce cold-start costs.
@@ -230,9 +230,9 @@ Operational highlights:
 - [circuit_breaker.py:1-164](file://backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
 - [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
 
-### Semantic Parser (SciBERT)
-The Semantic Parser performs transformer-based classification of document blocks:
-- SciBERT model loading with lazy initialization and ModelStore reuse.
+### Semantic Parser (LLM Classification)
+The Semantic Parser performs LLM-based classification of document blocks:
+- Model loading with lazy initialization and ModelStore reuse.
 - Language detection to restrict transformer inference to English documents.
 - Batch and single-block classification with softmax-based confidence.
 - Heuristic fallback when transformer inference is disabled or unavailable.
@@ -240,7 +240,7 @@ The Semantic Parser performs transformer-based classification of document blocks
 ```mermaid
 flowchart TD
 Start(["analyze_blocks(blocks)"]) --> DetectLang["Detect language (optional)"]
-DetectLang --> UseTransf{"USE_SCIBERT_CLASSIFICATION and English?"}
+DetectLang --> UseTransf{"USE_LLM_CLASSIFICATION and English?"}
 UseTransf --> |Yes| BatchPredict["Batch predict logits"]
 UseTransf --> |No| Heuristic["Heuristic classification"]
 BatchPredict --> Softmax["Softmax over labels"]
@@ -261,7 +261,7 @@ BuildOut --> End(["Return"])
 The Content Classifier assigns BlockType to blocks using:
 - Structure-detected headings and sections
 - GROBID metadata integration (titles, authors, affiliations)
-- SciBERT batch predictions with confidence thresholds
+- LLM batch predictions with confidence thresholds
 - Extensive rule sets for headings, references, footnotes, and appendices
 - NLP confidence integration to refine confidence scoring
 
@@ -275,9 +275,9 @@ Protected --> |No| Zone{"Zone: Frontmatter / Body / References"}
 Zone --> Frontmatter["Apply frontmatter rules (title, author, affiliation)"]
 Zone --> Body["Apply heading/body rules"]
 Zone --> References["Apply references rules"]
-Frontmatter --> SciBERT["Apply SciBERT overrides (confidence threshold)"]
-Body --> SciBERT
-References --> SciBERT
+Frontmatter --> LLM["Apply LLM overrides (confidence threshold)"]
+Body --> LLM
+References --> LLM
 SciBERT --> Fallback["Regex and NLP fallback"]
 Fallback --> Next
 Next --> Iterate
@@ -317,7 +317,7 @@ NV --> NVIDIAD["NVIDIA API"]
 
 ## Dependency Analysis
 The AI components depend on configuration, caching, and safety layers:
-- Settings drive feature toggles (USE_SCIBERT_CLASSIFICATION, LOW_MEMORY_MODE, RAG_USE_TRANSFORMERS, ENABLE_NVIDIA_REASONER) and timeouts.
+- Settings drive feature toggles (USE_LLM_CLASSIFICATION, LOW_MEMORY_MODE, RAG_USE_TRANSFORMERS, ENABLE_NVIDIA_REASONER) and timeouts.
 - Unified LLM service centralizes provider configuration and caching.
 - Safety decorators enforce schema compliance and resilience.
 
@@ -355,7 +355,7 @@ RG["retry_guard.py"] --> RE
 ## Performance Considerations
 - Model preloading: Enable PRELOAD_AI_MODELS to load models at startup and reuse via ModelStore.
 - Low-memory mode: Set LOW_MEMORY_MODE to force deterministic embeddings and disable transformers in RAG.
-- SciBERT gating: Toggle USE_SCIBERT_CLASSIFICATION to balance accuracy and speed.
+- Classification: Toggle USE_LLM_CLASSIFICATION to balance accuracy and speed.
 - RAG transformers: Disable RAG_USE_TRANSFORMERS to avoid heavy transformers in RAG.
 - LLM caching: Unified LLM service caches responses keyed by prompt/model/temperature to reduce latency.
 - Batch sizes: ReasoningEngine processes blocks in batches to optimize throughput.
@@ -390,10 +390,10 @@ Common issues and resolutions:
   - Cause: Excessive provider errors.
   - Resolution: Monitor recovery_timeout, adjust failure_threshold, or use fallback.
   - Evidence: [circuit_breaker.py:29-98](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L98)
-- SciBERT inference errors:
+- LLM classification errors:
   - Symptom: Fallback to heuristics.
-  - Cause: Missing transformers or non-English documents.
-  - Resolution: Ensure USE_SCIBERT_CLASSIFICATION and English language detection.
+  - Cause: Missing model or non-English documents.
+  - Resolution: Ensure USE_LLM_CLASSIFICATION and English language detection.
   - Evidence: [semantic_parser.py:116-132](file://backend/app/pipeline/intelligence/semantic_parser.py#L116-L132)
 
 **Section sources**
@@ -412,7 +412,7 @@ The AI analysis subsystem combines local RAG, robust reasoning, and transformer-
 
 ### Configuration Options
 Key settings affecting AI behavior:
-- USE_SCIBERT_CLASSIFICATION: Enable/disable SciBERT classification.
+- USE_LLM_CLASSIFICATION: Enable/disable LLM classification.
 - LOW_MEMORY_MODE: Force deterministic embeddings and disable transformers.
 - RAG_USE_TRANSFORMERS: Enable/disable transformers in RAG.
 - ENABLE_NVIDIA_REASONER: Enable NVIDIA NIM for reasoning.
@@ -431,9 +431,9 @@ Key settings affecting AI behavior:
 ### Tests and Benchmarks
 - RAG Engine tests validate ChromaDB/native fallback, persistence, and query ranking.
 - Reasoning Engine tests validate health checks, fallbacks, retries, and schema validation.
-- SciBERT benchmark evaluates macro-F1 against labeled fixtures.
+- Classification benchmark evaluates macro-F1 against labeled fixtures.
 
 **Section sources**
 - [test_rag_engine.py:1-355](file://backend/tests/test_rag_engine.py#L1-L355)
 - [test_reasoning_engine.py:1-220](file://backend/tests/test_reasoning_engine.py#L1-L220)
-- [test_scibert_benchmark.py:1-92](file://backend/tests/test_scibert_benchmark.py#L1-L92)
+- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)

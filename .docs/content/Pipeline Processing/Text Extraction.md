@@ -14,7 +14,7 @@
 - [html_parser.py](file://backend/app/pipeline/parsing/html_parser.py)
 - [md_parser.py](file://backend/app/pipeline/parsing/md_parser.py)
 - [tex_parser.py](file://backend/app/pipeline/parsing/tex_parser.py)
-- [nougat_parser.py](file://backend/app/pipeline/parsing/nougat_parser.py)
+- [llm_pdf_parser.py](file://backend/app/pipeline/parsing/llm_pdf_parser.py)
 - [ocr_engine.py](file://backend/app/pipeline/parsing/ocr_engine.py)
 - [pdf_ocr.py](file://backend/app/pipeline/ocr/pdf_ocr.py)
 - [grobid_client.py](file://backend/app/pipeline/services/grobid_client.py)
@@ -42,7 +42,7 @@ This document describes the text extraction system used in the automated manuscr
 The text extraction pipeline is organized around a factory-driven parser selection and a staged processing model:
 - Factory-driven parser selection for multiple input formats
 - Format-specific parsers for DOCX, PDF, TXT, HTML, Markdown, and LaTeX
-- OCR fallback for scanned PDFs using Tesseract/PaddleOCR and optional Nougat neural parsing
+- OCR fallback for scanned PDFs using Tesseract/PaddleOCR and optional LLMPDFParser neural parsing
 - Normalization and structure detection stages
 - Integrations with GROBID for metadata and Docling for layout analysis
 
@@ -57,7 +57,7 @@ TXT["TxtParser"]
 HTML["HtmlParser"]
 MD["MarkdownParser"]
 TEX["TexParser"]
-NOUGAT["NougatParser"]
+LLMPDF["LLMPDFParser"]
 end
 subgraph "Enhancements"
 EM["EnhancementManager"]
@@ -77,7 +77,7 @@ PF --> HTML
 PF --> MD
 PF --> TEX
 PDF --> OCR
-PDF --> NOUGAT
+PDF --> LLMPDF
 EM --> OCR
 EM --> SURYA
 DOCX --> NORM
@@ -100,7 +100,7 @@ STR --> GBD
 - [html_parser.py:39-120](file://backend/app/pipeline/parsing/html_parser.py#L39-L120)
 - [md_parser.py:35-113](file://backend/app/pipeline/parsing/md_parser.py#L35-L113)
 - [tex_parser.py:33-106](file://backend/app/pipeline/parsing/tex_parser.py#L33-L106)
-- [nougat_parser.py:150-303](file://backend/app/pipeline/parsing/nougat_parser.py#L150-L303)
+- [llm_pdf_parser.py:150-303](file://backend/app/pipeline/parsing/llm_pdf_parser.py#L150-L303)
 - [ocr_engine.py:48-290](file://backend/app/pipeline/parsing/ocr_engine.py#L48-L290)
 - [pdf_ocr.py:57-231](file://backend/app/pipeline/ocr/pdf_ocr.py#L57-L231)
 - [enhancement_manager.py:78-294](file://backend/app/services/enhancement_manager.py#L78-L294)
@@ -114,7 +114,7 @@ STR --> GBD
 - [base_parser.py:12-45](file://backend/app/pipeline/parsing/base_parser.py#L12-L45)
 
 ## Core Components
-- ParserFactory: Selects the appropriate parser based on file extension, with graceful handling for missing dependencies and optional Nougat support.
+- ParserFactory: Selects the appropriate parser based on file extension, with graceful handling for missing dependencies and optional LLMPDFParser support.
 - Format-specific parsers:
   - DocxParser: Extracts paragraphs, tables, figures, footnotes, headers/footers, and equations from DOCX.
   - PdfParser: Extracts text, tables, and images from PDF using PyMuPDF, with OCR fallback for sparse-text PDFs.
@@ -125,7 +125,7 @@ STR --> GBD
 - OCR subsystems:
   - PdfOCR: Backend chain for scanned PDF OCR using Tesseract and PaddleOCR.
   - OCREngine: Surya-based OCR/layout/reading order engine.
-  - NougatParser: Neural PDF parsing for academic documents with fallback model selection.
+  - LLMPDFParser: Neural PDF parsing for academic documents with fallback model selection.
 - Integrations:
   - DoclingClient: Layout analysis for bounding boxes, fonts, and structural elements.
   - GROBIDClient: Bibliographic metadata extraction from PDFs.
@@ -141,7 +141,7 @@ STR --> GBD
 - [html_parser.py:39-120](file://backend/app/pipeline/parsing/html_parser.py#L39-L120)
 - [md_parser.py:35-113](file://backend/app/pipeline/parsing/md_parser.py#L35-L113)
 - [tex_parser.py:33-106](file://backend/app/pipeline/parsing/tex_parser.py#L33-L106)
-- [nougat_parser.py:150-303](file://backend/app/pipeline/parsing/nougat_parser.py#L150-L303)
+- [llm_pdf_parser.py:150-303](file://backend/app/pipeline/parsing/llm_pdf_parser.py#L150-L303)
 - [ocr_engine.py:48-290](file://backend/app/pipeline/parsing/ocr_engine.py#L48-L290)
 - [pdf_ocr.py:57-231](file://backend/app/pipeline/ocr/pdf_ocr.py#L57-L231)
 - [docling_client.py:143-290](file://backend/app/pipeline/services/docling_client.py#L143-L290)
@@ -164,7 +164,7 @@ participant Client as "Caller"
 participant PF as "ParserFactory"
 participant Parser as "Format Parser"
 participant OCR as "PdfOCR"
-participant Nougat as "NougatParser"
+participant LLMPDF as "LLMPDFParser"
 participant Norm as "Normalizer"
 participant Str as "StructureDetector"
 participant Docling as "DoclingClient"
@@ -175,8 +175,8 @@ Client->>Parser : parse(file_path, document_id)
 Parser-->>Client : Document (blocks, figures, tables, metadata)
 Client->>OCR : extract_text(file_path, backends) (if needed)
 OCR-->>Client : OCR text blocks
-Client->>Nougat : parse(file_path, document_id) (if enabled)
-Nougat-->>Client : Document (blocks)
+Client->>LLMPDF : parse(file_path, document_id) (if enabled)
+LLMPDF-->>Client : Document (blocks)
 Client->>Norm : process(document)
 Norm-->>Client : Normalized Document
 Client->>Str : process(document)
@@ -190,7 +190,7 @@ Str-->>Client : Document with structure hints
 **Diagram sources**
 - [parser_factory.py:95-166](file://backend/app/pipeline/parsing/parser_factory.py#L95-L166)
 - [pdf_parser.py:164-218](file://backend/app/pipeline/parsing/pdf_parser.py#L164-L218)
-- [nougat_parser.py:231-303](file://backend/app/pipeline/parsing/nougat_parser.py#L231-L303)
+- [llm_pdf_parser.py:231-303](file://backend/app/pipeline/parsing/llm_pdf_parser.py#L231-L303)
 - [pdf_ocr.py:83-129](file://backend/app/pipeline/ocr/pdf_ocr.py#L83-L129)
 - [normalizer.py:51-107](file://backend/app/pipeline/normalization/normalizer.py#L51-L107)
 - [detector.py:47-122](file://backend/app/pipeline/structure_detection/detector.py#L47-L122)
@@ -224,7 +224,7 @@ class TxtParser
 class HtmlParser
 class MarkdownParser
 class TexParser
-class NougatParser
+class LLMPDFParser
 ParserFactory --> BaseParser : "selects"
 BaseParser <|-- DocxParser
 BaseParser <|-- PdfParser
@@ -232,7 +232,7 @@ BaseParser <|-- TxtParser
 BaseParser <|-- HtmlParser
 BaseParser <|-- MarkdownParser
 BaseParser <|-- TexParser
-BaseParser <|-- NougatParser
+BaseParser <|-- LLMPDFParser
 ```
 
 **Diagram sources**
@@ -340,8 +340,8 @@ Done --> End(["Document ready"])
 - [md_parser.py:35-443](file://backend/app/pipeline/parsing/md_parser.py#L35-L443)
 - [tex_parser.py:33-338](file://backend/app/pipeline/parsing/tex_parser.py#L33-L338)
 
-### Nougat Neural PDF Parser
-- Purpose: Superior extraction of academic PDFs using Meta AI’s Nougat model.
+### LLMPDFParser Neural PDF Parser
+- Purpose: Superior extraction of academic PDFs using LLM-based neural parsing’s Nougat model.
 - Behavior:
   - Lazy-load model on first use, choose base or small model based on available RAM.
   - Convert PDF to images (PyMuPDF or pdf2image fallback).
@@ -349,7 +349,7 @@ Done --> End(["Document ready"])
   - Build blocks with heading levels and metadata flags for equations/tables.
 
 **Section sources**
-- [nougat_parser.py:150-303](file://backend/app/pipeline/parsing/nougat_parser.py#L150-L303)
+- [llm_pdf_parser.py:150-303](file://backend/app/pipeline/parsing/llm_pdf_parser.py#L150-L303)
 
 ### OCR Engines and Fallback Mechanisms
 - PdfOCR:
@@ -395,7 +395,7 @@ Done --> End(["Document ready"])
 ## Dependency Analysis
 - ParserFactory depends on BaseParser and all format-specific parsers, enabling runtime selection and graceful degradation.
 - PdfParser integrates with EnhancementManager and PdfOCR for OCR fallback.
-- NougatParser depends on optional dependencies (torch, transformers, PIL, pypdf) and lazy-loads models.
+- LLMPDFParser depends on optional dependencies (torch, transformers, PIL, pypdf) and lazy-loads models.
 - Normalizer and StructureDetector depend on models and utilities for text normalization and metadata cleaning.
 - DoclingClient and GROBIDClient are optional integrations gated by settings and availability.
 
@@ -410,7 +410,7 @@ PF --> MD["MarkdownParser"]
 PF --> TEX["TexParser"]
 PDF --> EM["EnhancementManager"]
 EM --> OCR["PdfOCR"]
-PDF --> NOUGAT["NougatParser"]
+PDF --> LLMPDF["LLMPDFParser"]
 DOCX --> NORM["Normalizer"]
 PDF --> NORM
 TXT --> NORM
@@ -426,7 +426,7 @@ STR --> GBD["GROBIDClient"]
 - [parser_factory.py:25-166](file://backend/app/pipeline/parsing/parser_factory.py#L25-L166)
 - [pdf_parser.py:164-218](file://backend/app/pipeline/parsing/pdf_parser.py#L164-L218)
 - [enhancement_manager.py:78-294](file://backend/app/services/enhancement_manager.py#L78-L294)
-- [nougat_parser.py:179-227](file://backend/app/pipeline/parsing/nougat_parser.py#L179-L227)
+- [llm_pdf_parser.py:179-227](file://backend/app/pipeline/parsing/llm_pdf_parser.py#L179-L227)
 - [normalizer.py:51-107](file://backend/app/pipeline/normalization/normalizer.py#L51-L107)
 - [detector.py:47-122](file://backend/app/pipeline/structure_detection/detector.py#L47-L122)
 - [docling_client.py:192-290](file://backend/app/pipeline/services/docling_client.py#L192-L290)
@@ -439,7 +439,7 @@ STR --> GBD["GROBIDClient"]
 ## Performance Considerations
 - Minimize redundant processing:
   - Use ParserFactory to avoid hardcoding parser selection.
-  - Defer model loading (Nougat, Docling) until needed.
+  - Defer model loading (LLMPDFParser, Docling) until needed.
 - Optimize PDF parsing:
   - Limit font statistics sampling to a subset of pages.
   - Suppress repeated headers/footers to reduce downstream processing.
@@ -464,7 +464,7 @@ STR --> GBD["GROBIDClient"]
 - OCR failures:
   - PdfOCR raises OCRError with reasons; verify Poppler installation and backend availability.
   - For Surya-based OCR, ensure all required modules are installed and models are cached.
-- Nougat model loading:
+- LLMPDFParser model loading:
   - Inspect logs for ImportError or RuntimeError during model load; ensure sufficient RAM for base model.
 - Docling/layout issues:
   - DoclingClient returns empty layout when unavailable; verify USE_DOCLING_FALLBACK and environment constraints.
@@ -478,7 +478,7 @@ STR --> GBD["GROBIDClient"]
 **Section sources**
 - [pdf_parser.py:85-93](file://backend/app/pipeline/parsing/pdf_parser.py#L85-L93)
 - [pdf_ocr.py:53-129](file://backend/app/pipeline/ocr/pdf_ocr.py#L53-L129)
-- [nougat_parser.py:163-227](file://backend/app/pipeline/parsing/nougat_parser.py#L163-L227)
+- [llm_pdf_parser.py:163-227](file://backend/app/pipeline/parsing/llm_pdf_parser.py#L163-L227)
 - [docling_client.py:176-179](file://backend/app/pipeline/services/docling_client.py#L176-L179)
 - [grobid_client.py:41-51](file://backend/app/pipeline/services/grobid_client.py#L41-L51)
 - [normalizer.py:164-348](file://backend/app/pipeline/normalization/normalizer.py#L164-L348)
