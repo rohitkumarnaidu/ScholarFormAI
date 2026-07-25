@@ -33,13 +33,10 @@ class ParserFactory:
         # Try to initialize all parsers (some may fail if dependencies missing)
         self.parsers = []
         in_pytest = bool(os.environ.get("PYTEST_CURRENT_TEST"))
-        enable_nougat = bool(settings.ENABLE_NOUGAT_PARSER)
+        enable_llm_pdf_parser = bool(settings.ENABLE_LLM_PDF_PARSER)
 
-        # Keep fast PDF extraction as default. Nougat stays opt-in and is used
-        # as secondary OCR parser when explicitly enabled.
-        if in_pytest and not enable_nougat:
-            # Keep tests deterministic and fast unless explicitly enabled.
-            enable_nougat = False
+        if in_pytest and not enable_llm_pdf_parser:
+            enable_llm_pdf_parser = False
 
         # DOCX parser (always available - core functionality)
         try:
@@ -55,17 +52,17 @@ class ParserFactory:
         except Exception as e:
             logger.warning("PdfParser initialization failed: %s", e)
 
-        # Nougat parser is optional and used as OCR fallback when enabled.
-        if enable_nougat:
+        # LLM PDF parser replaces Nougat + Docling HF Space services
+        if enable_llm_pdf_parser:
             try:
-                from app.pipeline.parsing.nougat_parser import NougatParser
+                from app.pipeline.parsing.llm_pdf_parser import LLMPDFParser
 
-                self.parsers.append(NougatParser())
-                logger.info("NougatParser (Meta AI) enabled as optional PDF OCR fallback.")
+                self.parsers.append(LLMPDFParser())
+                logger.info("LLMPDFParser enabled as LLM-based PDF parser (replaces Nougat + Docling).")
             except ImportError:
-                logger.info("Nougat not available (install with: pip install nougat-ocr).")
+                logger.info("LLMPDFParser dependencies unavailable.")
             except Exception as e:
-                logger.warning("NougatParser initialization failed: %s.", e)
+                logger.warning("LLMPDFParser initialization failed: %s.", e)
 
         # Plain text parser (always available)
         try:
