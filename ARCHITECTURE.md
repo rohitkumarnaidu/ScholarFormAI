@@ -6,10 +6,10 @@ ScholarForm AI is a distributed document formatting platform with four major sub
 
 | Subsystem | Role | Hosting |
 |-----------|------|---------|
-| **Frontend** | Next.js 16 (App Router) — 36 pages, 28+ components | Vercel |
-| **Backend API** | FastAPI gateway + 34 REST endpoints + Celery workers | Render |
+| **Frontend** | Next.js 16 (App Router) — 38 pages, 28+ components | Vercel |
+| **Backend API** | FastAPI gateway + 93+ REST endpoints + Celery workers | Render |
 | **Database** | Supabase (PostgreSQL + Auth + Storage) | Supabase Cloud |
-| **AI Microservices** | GROBID, Docling, OCR, Nougat, SciBERT on Hugging Face Spaces | HF Spaces |
+| **AI Microservices** | GROBID (Docker), DOCX Converter (Docker) | Local Docker |
 
 ---
 
@@ -23,16 +23,16 @@ ScholarFormAI/
 │   │   ├── config/            # Pydantic settings, logging
 │   │   ├── db/                # SQLAlchemy + Supabase client
 │   │   ├── middleware/        # 11 middleware modules
-│   │   ├── models/            # 14 SQLAlchemy models
-│   │   ├── pipeline/          # 26 pipeline packages
-│   │   ├── routers/           # 15 route modules
+│   │   ├── models/            # 17+ data models
+│   │   ├── pipeline/          # 23 pipeline packages
+│   │   ├── routers/           # 19 route modules
 │   │   ├── schemas/           # Pydantic request/response schemas
 │   │   ├── security/          # JWKS JWT verifier
-│   │   ├── services/          # 25 business logic services
+│   │   ├── services/          # 39+ business logic services
 │   │   ├── tasks/             # Celery task definitions
 │   │   └── utils/             # Shared utilities
-│   ├── tests/                 # 95+ test files
-│   └── requirements.txt       # 382 packages
+│   ├── tests/                 # 500+ test files
+│   └── requirements.txt       # 414+ packages
 │
 ├── frontend/                  # Next.js 16 App Router
 │   ├── app/
@@ -42,22 +42,17 @@ ScholarFormAI/
 │   ├── src/
 │   │   ├── components/        # 28+ React components
 │   │   ├── context/           # 5 providers (Auth, Theme, Toast)
-│   │   ├── hooks/             # 12 custom hooks
+│   │   ├── hooks/             # 14 custom hooks
 │   │   ├── lib/               # Supabase client, analytics
 │   │   └── services/          # 13 API service modules
 │   └── e2e/                   # Playwright E2E tests
 │
-├── deploy/hf/                 # Hugging Face microservice configs
-│   ├── docling-service/       # IBM Docling PDF parser
-│   ├── docx-converter-service/
-│   ├── grobid-service/        # GROBID metadata extraction
-│   ├── nougat-service/        # Meta Nougat OCR
-│   ├── ocr-service/           # PaddleOCR
-│   └── scibert-service/       # AllenAI SciBERT classifier
-│
 ├── deploy/                    # Prometheus, Grafana, Docker configs
+│   └── services/              # GROBID and DOCX Converter Docker services
+│       ├── grobid-service/    # GROBID metadata extraction (Docker)
+│       └── docx-converter-service/
 ├── docs/                      # 80+ documentation files
-└── .github/workflows/         # 26 CI/CD workflows
+└── .github/workflows/         # 25 CI/CD workflows
 ```
 
 ---
@@ -82,9 +77,9 @@ User ──→ Frontend Upload
             ▼
     ┌─── Celery Background Task ──────────────────────────┐
     │                                                     │
-    │  1. PDF Parsing (GROBID → Docling → PyMuPDF)       │
+    │  1. PDF Parsing (Vision API → PyMuPDF+LLM → Raw)   │
     │  2. Structure Detection                             │
-    │  3. Block Classification (SciBERT - optional)       │
+    │  3. Block Classification (LLMClassifier - optional) │
     │  4. NLP Enhancement (YAKE + spaCy)                  │
     │  5. Caption Matching (Tables + Figures)             │
     │  6. Figure Quality Analysis (optional)              │
@@ -166,19 +161,19 @@ Upload 2-6 PDFs ──→ POST /api/v1/synthesis/sessions
 ```
 ┌─────────────────────────────────────────────────────────┐
 │              1. PARSING LAYER                           │
-│  GROBID (Docker) ──▶ Docling (primary) ──▶ PyMuPDF      │
-│  (metadata/struct)    (full layout)       (fallback)    │
+│  GROBID (Docker) ──▶ Vision API ──▶ PyMuPDF+LLM ──▶ Raw│
+│  (metadata/struct)    (primary)      (enrichment) (fallback)|
 └────────────────────────┬────────────────────────────────┘
                          ▼
 ┌─────────────────────────────────────────────────────────┐
 │              2. STRUCTURE & CLASSIFICATION               │
-│  Structure Detector → Block Classifier (SciBERT)        │
+│  Structure Detector → Block Classifier (LLMClassifier)  │
 │  Caption Matcher → Numbering Engine                     │
 └────────────────────────┬────────────────────────────────┘
                          ▼
 ┌─────────────────────────────────────────────────────────┐
 │              3. REASONING & ENHANCEMENT                  │
-│  NLP (YAKE/spaCy) → OCR (PaddleOCR/Nougat)              │
+│  NLP (YAKE/spaCy) → OCR (LocalOCRService/RapidOCR)      │
 │  → Quality Analysis → Semantic Classification           │
 └────────────────────────┬────────────────────────────────┘
                          ▼
@@ -224,8 +219,8 @@ All tiers abstracted behind **LiteLLM** — same client code for all providers.
 │  Render                                                      │
 │  ┌──────────────────────┐  ┌──────────────────────────────┐ │
 │  │  FastAPI (Uvicorn)   │  │  Celery Worker               │ │
-│  │  34 API endpoints    │  │  Background tasks            │ │
-│  │  Sentry + PostHog    │  │  Redis broker                │ │
+│  │  93+ API endpoints   │  │  Background tasks            │ │
+│  │  N/A                 │  │  Redis broker  │ │
 │  └──────────┬───────────┘  └──────────┬───────────────────┘ │
 └─────────────┼─────────────────────────┼──────────────────────┘
               │                         │
@@ -240,11 +235,11 @@ All tiers abstracted behind **LiteLLM** — same client code for all providers.
               │
               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│  Hugging Face Spaces (Optional Microservices)               │
-│  ┌──────────┐ ┌────────┐ ┌──────────┐ ┌────────┐ ┌──────┐ │
-│  │ GROBID   │ │Docling │ │   OCR    │ │ Nougat │ │SciBERT│ │
-│  │ Metadata │ │ Layout │ │ PaddleOCR│ │ Meta   │ │Class  │ │
-│  └──────────┘ └────────┘ └──────────┘ └────────┘ └──────┘ │
+│  Local Docker Services (Optional)                           │
+│  ┌────────────────────┐  ┌──────────────────────────────┐   │
+│  │ GROBID (Docker)    │  │ DOCX Converter (Docker)      │   │
+│  │ Metadata extraction│  │ Format conversion service    │   │
+│  └────────────────────┘  └──────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -260,7 +255,7 @@ All tiers abstracted behind **LiteLLM** — same client code for all providers.
 | **Upload** | ClamAV antivirus, MIME + magic byte + extension tri-validation |
 | **Storage** | AES-256 at rest (Supabase), Row-Level Security |
 | **CI/CD** | CodeQL, Trivy container scan, dependency audit, SLSA L3 |
-| **Monitoring** | Sentry error tracking, Prometheus metrics, audit logging |
+| **Monitoring** | Prometheus metrics, audit logging |
 
 ---
 
@@ -284,18 +279,17 @@ All tiers abstracted behind **LiteLLM** — same client code for all providers.
 | | Redis | 7.x |
 | | ChromaDB | latest |
 | **AI/ML** | LiteLLM | latest |
-| | SciBERT (optional) | allenai/scibert_scivocab_uncased |
+| | LLMClassifier (prompt-based) | user's LLM provider |
 | | spaCy | 3.x |
 | **PDF** | GROBID | 0.8 (optional, Docker) |
-| | Docling | IBM DS4SD |
 | | PyMuPDF | latest |
+| | PIL/iMagick | — |
 | **Deploy** | Vercel | — |
 | | Render | — |
 | | Docker | 24+ |
 | **Monitoring** | Prometheus | latest |
 | | Grafana | latest |
-| | Sentry | latest |
-| | PostHog | latest |
+
 
 ---
 
