@@ -19,7 +19,7 @@
 |-------------|----------|-------------------|-------|
 | 22.x | ✅ Full | ✅ Full | Recommended |
 | 20.x (LTS) | ✅ Full | ✅ Full | Minimum recommended |
-| 18.x | ⚠️ Partial | ⚠️ Partial | Next.js 16 requires 18.17+; may work |
+| 18.x |  ️ Partial |  ️ Partial | Next.js 16 requires 18.17+; may work |
 | < 18 | ❌ | ❌ | Next.js 16 requires 18.17+ |
 
 ## Browser Compatibility
@@ -30,7 +30,7 @@
 | Firefox 120+ | ✅ Full | ✅ Full | |
 | Safari 17+ | ✅ Full | ✅ Full | |
 | Edge 120+ | ✅ Full | ✅ Full | Chromium-based |
-| Chrome < 120 | ⚠️ Partial | ⚠️ Partial | Last 2 major versions supported |
+| Chrome < 120 |  ️ Partial |  ️ Partial | Last 2 major versions supported |
 | IE 11 | ❌ | ❌ | Not supported |
 
 ## Database Compatibility
@@ -39,7 +39,7 @@
 |----------|---------|--------|-------|
 | PostgreSQL | 15+ | ✅ Full | Supabase uses 15.x |
 | PostgreSQL | 14 | ✅ Full | |
-| PostgreSQL | < 14 | ⚠️ Partial | Some features may not work |
+| PostgreSQL | < 14 |  ️ Partial | Some features may not work |
 | SQLite | All | ❌ | Not supported; use PostgreSQL |
 
 ## Redis Compatibility
@@ -56,8 +56,8 @@
 |----|---------|-------------|------------|
 | Linux (Ubuntu 22.04+) | ✅ Full | ✅ Full | ✅ Recommended |
 | macOS 14+ | ✅ Full | ✅ Full | ✅ Full |
-| Windows 11 / Windows Server | ✅ Full | ✅ Full | ⚠️ Production not recommended |
-| Windows 10 | ✅ Full | ✅ Full | ⚠️ Production not recommended |
+| Windows 11 / Windows Server | ✅ Full | ✅ Full |  ️ Production not recommended |
+| Windows 10 | ✅ Full | ✅ Full |  ️ Production not recommended |
 
 ## Docker
 
@@ -65,8 +65,8 @@
 |----------|--------|-------|
 | Docker Engine 24+ | ✅ Full | |
 | Docker Compose v2 | ✅ Full | |
-| Podman | ⚠️ Untested | Should work; not in CI |
-| Kubernetes | ⚠️ Experimental | Render deployment only; no K8s native config |
+| Podman |  ️ Untested | Should work; not in CI |
+| Kubernetes |  ️ Experimental | Render deployment only; no K8s native config |
 
 ## LLM Provider Compatibility
 

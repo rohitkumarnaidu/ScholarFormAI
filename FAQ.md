@@ -22,11 +22,11 @@ Locally, no. In production, you can use the built-in Supabase auth or provide yo
 
 ### What Python version do I need?
 
-**Python 3.12.x only.** Python 3.11 causes pytest import collisions with FastAPI test clients. Python 3.13+ is not yet tested.
+**Python 3.12.x only.**
 
 ### What Node.js version do I need?
 
-Node.js 20+ (LTS). The frontend uses Next.js 16 (App Router), which requires Node 18.17+.
+Node.js 20+ (LTS). The frontend uses Next.js 16 (App Router), which requires Node 20+.
 
 ### Can I use Vite instead of Next.js?
 
