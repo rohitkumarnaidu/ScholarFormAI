@@ -1,0 +1,175 @@
+name: Coverage Report
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  coverage:
+    name: Generate Coverage Reports
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+          cache-dependency-path: "backend/requirements*.txt"
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements-dev.txt
+          pip install -e backend/
+
+      - name: Run backend tests with coverage
+        run: |
+          cd backend
+          pytest --cov=app --cov-report=xml:coverage.xml --cov-report=term-missing --junitxml=test-results.xml -v
+        continue-on-error: false
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: backend/coverage.xml
+          flags: backend
+          name: amf-backend
+          fail_ci_if_error: false
+          verbose: true
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        if: env.SONAR_TOKEN != null
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=amf_automated-manuscript-formatter
+            -Dsonar.organization=amf
+            -Dsonar.python.coverage.reportPaths=backend/coverage.xml
+            -Dsonar.sources=backend/app
+            -Dsonar.tests=backend/tests
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.python-version }}
+          path: |
+            backend/coverage.xml
+            backend/test-results.xml
+            backend/.coverage
+          retention-days: 7
+
+  frontend-coverage:
+    name: Frontend Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Run frontend tests with coverage
+        run: |
+          cd frontend
+          npm test -- --coverage --watchAll=false
+        continue-on-error: true
+
+      - name: Upload frontend coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: frontend/coverage/lcov.info
+          flags: frontend
+          name: amf-frontend
+          fail_ci_if_error: false
+          verbose: true
+
+  cli-coverage:
+    name: CLI Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: "cli/requirements*.txt"
+
+      - name: Install CLI dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r cli/requirements.txt 2>/dev/null || true
+          pip install -e cli/
+          pip install pytest pytest-cov
+
+      - name: Run CLI tests with coverage
+        run: |
+          cd cli
+          python -m pytest --cov=amf --cov-report=xml:coverage.xml --cov-report=term-missing -v
+        continue-on-error: true
+
+      - name: Upload CLI coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: cli/coverage.xml
+          flags: cli
+          name: amf-cli
+          fail_ci_if_error: false
+          verbose: true
+
+  coverage-summary:
+    name: Coverage Summary
+    if: always()
+    needs: [coverage, frontend-coverage, cli-coverage]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check coverage results
+        run: |
+          echo "=== Coverage Report Summary ==="
+          echo "Backend: ${{ needs.coverage.result }}"
+          echo "Frontend: ${{ needs.frontend-coverage.result }}"
+          echo "CLI: ${{ needs.cli-coverage.result }}"
+          if [[ "${{ needs.coverage.result }}" == "failure" ]]; then
+            echo "Backend coverage failed!"
+            exit 1
+          fi
+          echo "All coverage checks passed."

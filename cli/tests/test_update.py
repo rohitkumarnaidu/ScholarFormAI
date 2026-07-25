@@ -1,0 +1,175 @@
+"""Tests for update management CLI commands."""
+
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
+from click.testing import CliRunner
+
+from amf.main import cli
+
+
+@pytest.fixture
+def mock_update_service():
+    """Mock the UpdateService to avoid network calls."""
+    with patch("app.services.update_service.UpdateService") as MockService:
+        instance = MockService.return_value
+
+        instance.check_for_updates.return_value = {
+            "status": "up-to-date",
+            "current_version": "1.0.0",
+            "latest_version": "1.0.0",
+            "update": None,
+            "check_mode": "manual",
+            "checked_at": "2026-07-25T10:00:00",
+        }
+
+        instance.download_update.return_value = {
+            "success": True,
+            "version": "1.1.0",
+            "path": "/tmp/amf-1.1.0.zip",
+            "size": 1024000,
+            "checksum_valid": True,
+        }
+
+        instance.install_update.return_value = {
+            "success": True,
+            "version": "1.1.0",
+            "previous_version": "1.0.0",
+            "backup_path": "/tmp/backup",
+        }
+
+        instance.rollback.return_value = {
+            "success": True,
+            "version": "1.0.0",
+        }
+
+        instance.get_history.return_value = [
+            {
+                "version": "1.1.0",
+                "channel": "stable",
+                "installed_at": "2026-07-25T10:00:00",
+                "checksum": "abc",
+                "checksum_type": "sha256",
+                "success": True,
+                "error_message": None,
+                "rolled_back": False,
+                "rollback_version": None,
+            },
+            {
+                "version": "1.0.0",
+                "channel": "stable",
+                "installed_at": "2026-06-01T10:00:00",
+                "checksum": "def",
+                "checksum_type": "sha256",
+                "success": True,
+                "error_message": None,
+                "rolled_back": False,
+                "rollback_version": None,
+            },
+        ]
+
+        instance.get_channels.return_value = [
+            {"id": "stable", "name": "Stable", "description": "Production-ready", "recommended": True},
+            {"id": "beta", "name": "Beta", "description": "Pre-release", "recommended": False},
+        ]
+
+        instance.get_settings.return_value = {
+            "channel": "stable",
+            "auto_check": True,
+            "auto_download": False,
+            "auto_install": False,
+            "check_frequency_hours": 24,
+        }
+
+        instance.update_settings.return_value = {
+            "channel": "beta",
+            "auto_check": True,
+            "auto_download": True,
+            "auto_install": False,
+            "check_frequency_hours": 12,
+        }
+
+        yield instance
+
+
+def test_update_check(runner: CliRunner, mock_update_service):
+    result = runner.invoke(cli, ["update", "check"])
+    assert result.exit_code == 0
+    assert "up to date" in result.output.lower() or "current" in result.output.lower()
+
+
+def test_update_check_with_channel(runner: CliRunner, mock_update_service):
+    result = runner.invoke(cli, ["update", "check", "--channel", "beta"])
+    assert result.exit_code == 0
+
+
+def test_update_download(runner: CliRunner, mock_update_service):
+    mock_update_service.check_for_updates.return_value = {
+        "status": "update-available",
+        "current_version": "1.0.0",
+        "latest_version": "1.1.0",
+        "update": {"version": "1.1.0", "size": 1024000, "channel": "stable"},
+        "check_mode": "manual",
+        "checked_at": "2026-07-25T10:00:00",
+    }
+    result = runner.invoke(cli, ["update", "download"])
+    assert result.exit_code == 0
+
+
+def test_update_download_version(runner: CliRunner, mock_update_service):
+    mock_update_service.check_for_updates.return_value = {
+        "status": "update-available",
+        "current_version": "1.0.0",
+        "latest_version": "1.1.0",
+        "update": {"version": "1.1.0", "size": 1024000, "channel": "stable"},
+        "check_mode": "manual",
+        "checked_at": "2026-07-25T10:00:00",
+    }
+    result = runner.invoke(cli, ["update", "download", "--version", "1.1.0"])
+    assert result.exit_code == 0
+
+
+def test_update_install(runner: CliRunner, mock_update_service):
+    result = runner.invoke(cli, ["update", "install"])
+    assert result.exit_code == 0
+    assert "Installed" in result.output
+
+
+def test_update_rollback(runner: CliRunner, mock_update_service):
+    result = runner.invoke(cli, ["update", "rollback"])
+    assert result.exit_code == 0
+    assert "Rolled back" in result.output
+
+
+def test_update_history(runner: CliRunner, mock_update_service):
+    result = runner.invoke(cli, ["update", "history"])
+    assert result.exit_code == 0
+    assert "1.1.0" in result.output
+
+
+def test_update_channels(runner: CliRunner, mock_update_service):
+    result = runner.invoke(cli, ["update", "channels"])
+    assert result.exit_code == 0
+    assert "stable" in result.output
+
+
+def test_update_settings_show(runner: CliRunner, mock_update_service):
+    result = runner.invoke(cli, ["update", "settings"])
+    assert result.exit_code == 0
+    assert "channel" in result.output
+
+
+def test_update_settings_update(runner: CliRunner, mock_update_service):
+    result = runner.invoke(cli, ["update", "settings", "--channel", "beta", "--auto-download"])
+    assert result.exit_code == 0
+
+
+def test_update_release_notes(runner: CliRunner, mock_update_service):
+    result = runner.invoke(cli, ["update", "release-notes", "1.1.0"])
+    assert result.exit_code == 0
+
+
+def test_update_help(runner: CliRunner):
+    result = runner.invoke(cli, ["update", "--help"])
+    assert result.exit_code == 0

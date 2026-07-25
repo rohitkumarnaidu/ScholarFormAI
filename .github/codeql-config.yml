@@ -1,0 +1,31 @@
+# CodeQL Configuration for Automated Manuscript Formatter
+
+name: "AMF CodeQL Config"
+
+disable-default-queries: false
+
+queries:
+  - uses: security-extended
+  - uses: security-and-quality
+
+paths:
+  - backend
+  - frontend
+  - cli
+  - sdk
+
+paths-ignore:
+  - "**/node_modules"
+  - "**/__pycache__"
+  - "**/*.test.js"
+  - "**/*.test.ts"
+  - "**/*.spec.js"
+  - "**/*.spec.ts"
+  - "**/tests"
+  - "**/test_*.py"
+  - "**/vendor"
+  - "**/dist"
+  - "**/build"
+  - "**/.next"
+  - "**/*.min.js"
+  - "**/*.generated.*"

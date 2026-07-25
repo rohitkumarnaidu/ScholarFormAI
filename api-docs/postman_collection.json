@@ -1,0 +1,255 @@
+{
+  "info": {
+    "name": "AMF API",
+    "description": "Automated Manuscript Formatter API – format, validate, and preview academic manuscripts in multiple citation styles. Generate professionally styled DOCX documents from structured manuscript data.",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/health"
+        },
+        "description": "Check API health status and version information."
+      }
+    },
+    {
+      "name": "List Styles",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/v1/styles"
+        },
+        "description": "Retrieve all supported citation formatting styles."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Response is an array', function () { pm.expect(pm.response.json()).to.be.an('array'); });",
+              "pm.test('Each style has required fields', function () {",
+              "  const styles = pm.response.json();",
+              "  styles.forEach(s => {",
+              "    pm.expect(s).to.have.property('id');",
+              "    pm.expect(s).to.have.property('name');",
+              "    pm.expect(s).to.have.property('description');",
+              "  });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Style Details",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/v1/styles/{{style_id}}",
+          "variable": [
+            {
+              "key": "style_id",
+              "value": "apa"
+            }
+          ]
+        },
+        "description": "Get detailed information about a specific citation style."
+      }
+    },
+    {
+      "name": "Format Manuscript",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}/api/v1/format"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"manuscript\": {\n    \"title\": \"The Impact of Artificial Intelligence on Modern Research Methodologies\",\n    \"authors\": [\n      {\n        \"first_name\": \"Jane\",\n        \"last_name\": \"Smith\",\n        \"affiliation\": \"University of Research\",\n        \"email\": \"jane.smith@research.edu\",\n        \"orcid\": \"0000-0002-1234-5678\"\n      },\n      {\n        \"first_name\": \"John\",\n        \"last_name\": \"Doe\",\n        \"affiliation\": \"Institute of Technology\",\n        \"email\": \"john.doe@tech.edu\"\n      }\n    ],\n    \"abstract\": \"This study examines the transformative role of artificial intelligence in shaping contemporary research methodologies across multiple disciplines. We analyze how machine learning, natural language processing, and computer vision are revolutionizing data collection, analysis, and interpretation in academic research.\",\n    \"keywords\": [\"artificial intelligence\", \"research methodology\", \"machine learning\", \"data science\"],\n    \"sections\": [\n      {\n        \"heading\": \"Introduction\",\n        \"level\": 1,\n        \"content\": [\n          {\n            \"text\": \"Artificial intelligence (AI) has emerged as a transformative force in academic research, offering unprecedented capabilities for data analysis, pattern recognition, and hypothesis generation.\",\n            \"style\": \"normal\"\n          },\n          {\n            \"text\": \"This paper explores the various ways AI technologies are reshaping research methodologies across scientific disciplines.\",\n            \"style\": \"normal\"\n          }\n        ],\n        \"subsections\": []\n      },\n      {\n        \"heading\": \"Methodology\",\n        \"level\": 1,\n        \"content\": [\n          {\n            \"text\": \"We conducted a comprehensive literature review of AI applications in research methodology, analyzing over 200 peer-reviewed publications from the last decade.\",\n            \"style\": \"normal\"\n          }\n        ]\n      },\n      {\n        \"heading\": \"Results\",\n        \"level\": 1,\n        \"content\": [\n          {\n            \"text\": \"Our analysis reveals that AI-assisted research methodologies have improved data processing efficiency by an average of 60% while reducing human error rates significantly.\",\n            \"style\": \"normal\"\n          }\n        ]\n      },\n      {\n        \"heading\": \"Discussion\",\n        \"level\": 1,\n        \"content\": [\n          {\n            \"text\": \"The integration of AI in research methodologies presents both opportunities and challenges that must be carefully considered.\",\n            \"style\": \"normal\"\n          }\n        ]\n      }\n    ],\n    \"references\": [\n      {\n        \"authors\": [\n          {\n            \"first_name\": \"Alan\",\n            \"last_name\": \"Turing\"\n          }\n        ],\n        \"year\": \"1950\",\n        \"title\": \"Computing Machinery and Intelligence\",\n        \"journal\": \"Mind\",\n        \"volume\": \"59\",\n        \"issue\": \"236\",\n        \"pages\": \"433-460\",\n        \"doi\": \"10.1093/mind/LIX.236.433\"\n      },\n      {\n        \"authors\": [\n          {\n            \"first_name\": \"Geoffrey\",\n            \"last_name\": \"Hinton\"\n          },\n          {\n            \"first_name\": \"Yoshua\",\n            \"last_name\": \"Bengio\"\n          },\n          {\n            \"first_name\": \"Yann\",\n            \"last_name\": \"LeCun\"\n          }\n        ],\n        \"year\": \"2015\",\n        \"title\": \"Deep Learning\",\n        \"journal\": \"Nature\",\n        \"volume\": \"521\",\n        \"issue\": \"7553\",\n        \"pages\": \"436-444\",\n        \"doi\": \"10.1038/nature14539\"\n      }\n    ],\n    \"acknowledgments\": \"This research was supported by the National Science Foundation under grant NSF-2024-1234.\",\n    \"funding_statement\": \"This work was funded by the NSF grant NSF-2024-1234.\",\n    \"conflict_of_interest\": \"The authors declare no competing interests.\",\n    \"corresponding_author\": {\n      \"first_name\": \"Jane\",\n      \"last_name\": \"Smith\",\n      \"email\": \"jane.smith@research.edu\"\n    }\n  },\n  \"style_id\": \"apa\",\n  \"options\": {\n    \"output_format\": \"docx\",\n    \"page_size\": \"A4\",\n    \"font_family\": \"Times New Roman\",\n    \"font_size\": 12,\n    \"line_spacing\": 2.0,\n    \"include_toc\": false,\n    \"include_page_numbers\": true,\n    \"include_running_header\": true\n  }\n}"
+        },
+        "description": "Format a complete manuscript into a professionally styled DOCX document using the specified citation style.",
+        "response": [
+          {
+            "name": "Success",
+            "originalRequest": {},
+            "status": "OK",
+            "code": 200,
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": "{\n  \"download_url\": \"/api/v1/download/tmpabc123.docx\",\n  \"preview_url\": null,\n  \"pages\": 8,\n  \"metadata\": {\n    \"title\": \"The Impact of AI on Research\",\n    \"sections\": 4\n  },\n  \"style_applied\": \"apa\",\n  \"formatted_at\": \"2024-01-15T10:30:00Z\"\n}"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Response has download_url', function () { pm.expect(pm.response.json()).to.have.property('download_url'); });",
+              "pm.test('Response has pages', function () { pm.expect(pm.response.json().pages).to.be.a('number'); });",
+              "pm.test('Style applied matches request', function () { pm.expect(pm.response.json().style_applied).to.eql('apa'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Validate Manuscript",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}/api/v1/validate"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"manuscript\": {\n    \"title\": \"Test Manuscript\",\n    \"authors\": [\n      {\n        \"first_name\": \"Jane\",\n        \"last_name\": \"Smith\",\n        \"affiliation\": \"Test University\"\n      }\n    ],\n    \"abstract\": \"This is a test abstract for validation.\",\n    \"keywords\": [\"test\", \"validation\"],\n    \"sections\": [\n      {\n        \"heading\": \"Introduction\",\n        \"level\": 1,\n        \"content\": [\n          {\n            \"text\": \"This is the introduction.\"\n          }\n        ]\n      }\n    ],\n    \"references\": [\n      {\n        \"authors\": [{\"first_name\": \"Test\", \"last_name\": \"Author\"}],\n        \"year\": \"2024\",\n        \"title\": \"Test Reference\",\n        \"journal\": \"Test Journal\",\n        \"volume\": \"1\",\n        \"pages\": \"1-10\"\n      }\n    ]\n  },\n  \"style_id\": \"apa\"\n}"
+        },
+        "description": "Validate a manuscript against the requirements of a specific citation style."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Response has valid field', function () { pm.expect(pm.response.json()).to.have.property('valid'); });",
+              "pm.test('Response has errors array', function () { pm.expect(pm.response.json().errors).to.be.an('array'); });",
+              "pm.test('Response has warnings array', function () { pm.expect(pm.response.json().warnings).to.be.an('array'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Generate Preview",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}/api/v1/preview"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"manuscript\": {\n    \"title\": \"Preview Test\",\n    \"authors\": [\n      {\n        \"first_name\": \"Jane\",\n        \"last_name\": \"Smith\"\n      }\n    ],\n    \"abstract\": \"This is a preview abstract.\",\n    \"keywords\": [\"preview\", \"test\"],\n    \"sections\": [\n      {\n        \"heading\": \"Introduction\",\n        \"level\": 1,\n        \"content\": [\n          {\n            \"text\": \"Preview content here.\"\n          }\n        ]\n      }\n    ],\n    \"references\": []\n  },\n  \"style_id\": \"mla\"\n}"
+        },
+        "description": "Generate an HTML preview of a manuscript formatted in a specific citation style."
+      }
+    },
+    {
+      "name": "Format - Invalid Style",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}/api/v1/format"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"manuscript\": {\n    \"title\": \"Test\",\n    \"sections\": []\n  },\n  \"style_id\": \"nonexistent_style\"\n}"
+        },
+        "description": "Test error handling when an invalid style ID is provided (expects 404)."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 404', function () { pm.response.to.have.status(404); });",
+              "pm.test('Error message mentions style', function () { pm.expect(pm.response.text()).to.include('style'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Validate - Missing Title",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{base_url}}/api/v1/validate"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"manuscript\": {\n    \"title\": \"\",\n    \"authors\": [],\n    \"sections\": []\n  },\n  \"style_id\": \"apa\"\n}"
+        },
+        "description": "Test validation catches missing title (expects valid=false with MISSING_TITLE error)."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Validation fails', function () { pm.expect(pm.response.json().valid).to.be.false; });",
+              "pm.test('Has MISSING_TITLE error', function () {",
+              "  const errors = pm.response.json().errors;",
+              "  const codes = errors.map(e => e.code);",
+              "  pm.expect(codes).to.include('MISSING_TITLE');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          "// Set default content type for all requests",
+          "if (!pm.request.headers.get('Content-Type') && pm.request.method !== 'GET') {",
+          "  pm.request.headers.add({ key: 'Content-Type', value: 'application/json' });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "style_id",
+      "value": "apa",
+      "type": "string"
+    }
+  ]
+}
