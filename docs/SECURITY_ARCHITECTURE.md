@@ -589,7 +589,7 @@ SBOMs are generated in SPDX 2.3 and CycloneDX 1.5 formats, cryptographically sig
 | Branch Protection | 10/10 | ✅ |
 | CI Tests | 10/10 | ✅ |
 | Code Review | 10/10 | ✅ |
-| Contributors | 5/10 | ⚠️ Single contributor |
+| Contributors | 5/10 |  ️ Single contributor |
 | Dependency Update Tool | 10/10 | ✅ |
 | Fuzzing | 0/10 | ❌ Not implemented |
 | License | 10/10 | ✅ |
@@ -623,7 +623,7 @@ SBOMs are generated in SPDX 2.3 and CycloneDX 1.5 formats, cryptographically sig
 ```
 Contact: mailto:security@scholarform.ai
 Expires: 2027-06-13T00:00:00Z
-Canonical: https://scholarform.com/.well-known/security.txt
+Canonical: https://scholarform.ai/.well-known/security.txt
 Policy: https://github.com/rohitkumarnaidu/ScholarFormAI/SECURITY.md
 ```
 
@@ -649,7 +649,6 @@ Policy: https://github.com/rohitkumarnaidu/ScholarFormAI/SECURITY.md
 | `MAX_FILE_SIZE` | — | `62914560` (60MB) | Maximum upload file size |
 | `CLAMAV_HOST` | — | `localhost` | ClamAV daemon host |
 | `CLAMAV_PORT` | — | `3310` | ClamAV daemon port |
-| `SENTRY_DSN` | — | — | Sentry error tracking DSN |
 | `STRIPE_WEBHOOK_SECRET` | — | — | Stripe webhook signature verification |
 | `REDIS_URL` | — | `redis://localhost:6379` | Redis connection string |
 | `DEBUG` | — | `false` | Enables Swagger/ReDoc, relaxed CORS |
@@ -793,7 +792,6 @@ Run via: `python -m atheris fuzz/fuzz_document_title.py --corpus-dir fuzz/corpus
 | Abuse detector | Rapid creation, duplicate content, IP rotation | >10 docs/min or >5 IPs/token | Temporary API key suspension |
 | Supabase Auth logs | Failed login attempts, OTP brute force | >10 failed logins/email in 5 min | Temporary account lockout (15 min) |
 | Prometheus `http_requests_total` | 4xx/5xx rate anomalies | 5xx rate >1% for 5 min | Auto-scale or rollback deployment |
-| Sentry error tracking | Unhandled exceptions, validation errors | Any `SecurityError` or `PermissionError` | P0 incident, immediate triage |
 
 ### 14.2 Containment Procedures
 
@@ -852,7 +850,6 @@ The security event detection pipeline aggregates signals from multiple log sourc
 | Rate Limit       |────>│  Structured      |────>│  Correlation ID  |
 | Middleware       |     │  Logging         |     │  Pattern Matcher |
 | Supabase Auth    |────>│  (JSON/stdout)    |     │                  |
-| Sentry           |────>│                  |     │  +──────────────+│
 | Prometheus       |────>│                  |     │  │ SIEM Rules    ││
 | Render Logs      |────>│                  |     │  │ (15 patterns) ││
 +------------------+     +------------------+     │  +──────────────+│
@@ -897,7 +894,6 @@ Every request is assigned a `X-Request-Id` (UUID4) by `RequestIDMiddleware`. Thi
 | **Structured logging** | `request_id` field in every JSON log line | Log file / stdout |
 | **Celery tasks** | `request_id` forwarded in task kwargs | Task metadata |
 | **AuditLogService** | `request_id` stored in `audit_logs` table | Supabase/Postgres |
-| **Sentry** | `request_id` set as Sentry tag | Error event metadata |
 | **Prometheus** | `request_id` in `http_requests_total` label | Ephemeral (metric) |
 | **Supabase Auth** | `X-Request-Id` forwarded in Auth API calls | Auth logs |
 
@@ -1200,7 +1196,7 @@ git verify-commit HEAD
 - name: OWASP ZAP Scan
   uses: zaproxy/action-full-scan@v0.10.0
   with:
-    target: 'https://staging.scholarform.com'
+    target: 'https://staging.scholarform.ai'
     rules_file_name: '.zap/rules.tsv'
     cmd_options: '-a -j -t 60'
 ```
@@ -1277,7 +1273,7 @@ async def test_signup_login_flow(client, mock_supabase_auth):
 Creates a new user account with email and password.
 
 ```bash
-curl -X POST https://api.scholarform.com/api/v1/auth/signup \
+curl -X POST https://api.scholarform.ai/api/v1/auth/signup \
   -H "Content-Type: application/json" \
   -d '{
     "email": "researcher@university.edu",
@@ -1310,7 +1306,7 @@ curl -X POST https://api.scholarform.com/api/v1/auth/signup \
 Authenticates with email/password and returns a Supabase session containing access and refresh tokens.
 
 ```bash
-curl -X POST https://api.scholarform.com/api/v1/auth/login \
+curl -X POST https://api.scholarform.ai/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "researcher@university.edu",

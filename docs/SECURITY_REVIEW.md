@@ -85,7 +85,7 @@ All releases include SLSA Level 3 provenance attestations, ensuring build integr
 
 ## Security.txt
 
-A `security.txt` file is available at `https://scholarform.com/.well-known/security.txt` following RFC 9116.
+A `security.txt` file is available at `https://scholarform.ai/.well-known/security.txt` following RFC 9116.
 
 ---
 

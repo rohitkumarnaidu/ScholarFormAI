@@ -72,25 +72,25 @@ Controls for transport-layer security, content policy, and origin validation.
 
 - [ ] **CORS configured with specific origins (no wildcard in production)**
   - **Description:** `CORS_ORIGINS` env var supplies the allowed origin list. In production, must be an explicit comma-separated list. Development mode auto-appends loopback origins on ports 3000–3010, 4173, 5173. `allow_credentials=True` prevents wildcard usage (`backend/app/main.py:684–701`).
-  - **Verification:** Set `CORS_ORIGINS=https://app.scholarform.com` — confirm requests from `https://evil.com` receive no `Access-Control-Allow-Origin` header.
+  - **Verification:** Set `CORS_ORIGINS=https://app.scholarform.ai` — confirm requests from `https://evil.com` receive no `Access-Control-Allow-Origin` header.
   - **Severity:** High
   - **Reference:** `SECURITY_ARCHITECTURE.md §2.1`
 
 - [ ] **X-Frame-Options: DENY**
   - **Description:** All responses include `X-Frame-Options: DENY` to prevent clickjacking. Set by `HSTSMiddleware` and `SecurityHeadersMiddleware` redundantly.
-  - **Verification:** `curl -I https://api.scholarform.com/health | grep X-Frame-Options` — confirm `DENY`.
+  - **Verification:** `curl -I https://api.scholarform.ai/health | grep X-Frame-Options` — confirm `DENY`.
   - **Severity:** Medium
   - **Reference:** `SECURITY_ARCHITECTURE.md §2.5`
 
 - [ ] **X-Content-Type-Options: nosniff**
   - **Description:** All responses include `X-Content-Type-Options: nosniff` to prevent MIME-type sniffing attacks.
-  - **Verification:** `curl -I https://api.scholarform.com/health | grep X-Content-Type-Options` — confirm `nosniff`.
+  - **Verification:** `curl -I https://api.scholarform.ai/health | grep X-Content-Type-Options` — confirm `nosniff`.
   - **Severity:** Medium
   - **Reference:** `SECURITY_ARCHITECTURE.md §2.5`
 
 - [ ] **Permissions-Policy with restricted features**
   - **Description:** `Permissions-Policy` header set to `camera=(), microphone=(), geolocation=()` to disable unnecessary browser features.
-  - **Verification:** `curl -I https://api.scholarform.com/health | grep Permissions-Policy` — confirm camera, microphone, geolocation all disabled.
+  - **Verification:** `curl -I https://api.scholarform.ai/health | grep Permissions-Policy` — confirm camera, microphone, geolocation all disabled.
   - **Severity:** Low
   - **Reference:** `SECURITY_ARCHITECTURE.md §2.5`
 
@@ -216,7 +216,7 @@ Controls for client-side protection, session management, and secure rendering.
 
 - [ ] **Next.js security headers configuration**
   - **Description:** `next.config.mjs` applies global headers: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`. Static assets (`/_next/static/`, `/static/`) are cached with `public, max-age=31536000, immutable`.
-  - **Verification:** `curl -I https://app.scholarform.com | grep -E "(X-Content-Type-Options|X-Frame-Options|Referrer-Policy)"` — confirm all three headers present.
+  - **Verification:** `curl -I https://app.scholarform.ai | grep -E "(X-Content-Type-Options|X-Frame-Options|Referrer-Policy)"` — confirm all three headers present.
   - **Severity:** Medium
   - **Reference:** `SECURITY_ARCHITECTURE.md §9.1`
 
@@ -330,7 +330,7 @@ Controls for vulnerability reporting, disclosure process, and audit trail.
 
 - [ ] **Security vulnerability reporting process (SECURITY.md)**
   - **Description:** Public `SECURITY.md` documents the reporting process: email `security@scholarform.ai` (PGP-encrypted), response SLA, disclosure timeline, and out-of-scope items. `security.txt` at `/.well-known/security.txt` follows RFC 9116.
-  - **Verification:** Confirm `https://scholarform.com/.well-known/security.txt` resolves. Confirm `SECURITY.md` exists at repository root.
+  - **Verification:** Confirm `https://scholarform.ai/.well-known/security.txt` resolves. Confirm `SECURITY.md` exists at repository root.
   - **Severity:** High
   - **Reference:** `SECURITY.md §Reporting a Vulnerability`
 
@@ -405,7 +405,7 @@ Controls for supply-chain security, license management, and legal attribution.
 | Score | Rating | Action |
 |-------|--------|--------|
 | 100% | ✅ **Pass** | All controls verified. Ready for audit. |
-| 90–99% | ⚠️ **At Risk** | One or more controls unverified. Schedule verification. |
+| 90–99% |  ️ **At Risk** | One or more controls unverified. Schedule verification. |
 | 75–89% | 🔴 **Degraded** | Multiple controls missing. Block production deployment. |
 | < 75% | ❌ **Failing** | Significant security gaps. Immediate remediation required. |
 
