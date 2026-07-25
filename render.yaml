@@ -14,13 +14,9 @@ envVarGroups:
         value: "true"
       - key: GROBID_ENABLED
         value: "true"
-      - key: USE_DOCLING_FALLBACK
-        value: "true"
       - key: PYMUPDF_FALLBACK
         value: "true"
-      - key: PIPELINE_DOCLING_SKIP_DIGITAL_PDF
-        value: "false"
-      - key: PIPELINE_DOCLING_FORCE
+      - key: ENABLE_LOCAL_OCR
         value: "true"
       - key: ENHANCEMENTS_ENABLED
         value: "true"
@@ -43,10 +39,6 @@ envVarGroups:
       - key: ENHANCEMENT_QUEUE_PROVIDER
         value: "celery"
       - key: ENABLE_NVIDIA_REASONER
-        value: "true"
-      - key: ENABLE_NOUGAT_PARSER
-        value: "true"
-      - key: USE_SCIBERT_CLASSIFICATION
         value: "true"
       - key: ENABLE_STRUCTURED_LOGGING
         value: "true"
