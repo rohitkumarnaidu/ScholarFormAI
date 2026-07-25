@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-> ⚠️ **ARCHIVED** — This implementation plan is complete. All features have been implemented. See [ROADMAP.md](../Roadmap.md) for current status.
+>  ️ **ARCHIVED** — This implementation plan is complete. All features have been implemented. See [ROADMAP.md](../Roadmap.md) for current status.
 
 # ScholarForm AI — Complete End-to-End Implementation Plan
 
@@ -64,17 +64,17 @@
 
 | # | Module | Test Status | Action Needed |
 |---|--------|-------------|---------------|
-| G1 | `routers/v1/stream.py` | ⚠️ Only 2 basic tests | Add streaming edge cases, error handling, SSE reconnection |
-| G2 | `routers/v1/__init__.py` | ⚠️ Only migration tests | Add router registration & sub-router mount tests |
-| G3 | `models/equation.py` | ⚠️ Indirect sweep only | Add dedicated test file |
-| G4 | `models/figure.py` | ⚠️ Indirect sweep only | Add dedicated test file |
-| G5 | `models/table.py` | ⚠️ Indirect sweep only | Add dedicated test file |
-| G6 | `models/review.py` | ⚠️ Indirect sweep only | Add dedicated test file |
-| G7 | `models/suggestion.py` | ⚠️ Indirect sweep only | Add dedicated test file |
-| G8 | `routers/preview.py` | ⚠️ 12 tests, missing WebSocket path | Add WebSocket preview endpoint tests |
-| G9 | `security/jwks_verifier.py` | ⚠️ 2 direct tests | Add algorithm confusion, key rotation tests |
-| G10 | `tasks/celery_tasks.py` | ⚠️ 19 tests, no integration | Add task retry, error handling, timeout tests |
-| G11 | `tasks/cleanup.py` | ⚠️ No schedule verification | Add schedule-based test |
+| G1 | `routers/v1/stream.py` |  ️ Only 2 basic tests | Add streaming edge cases, error handling, SSE reconnection |
+| G2 | `routers/v1/__init__.py` |  ️ Only migration tests | Add router registration & sub-router mount tests |
+| G3 | `models/equation.py` |  ️ Indirect sweep only | Add dedicated test file |
+| G4 | `models/figure.py` |  ️ Indirect sweep only | Add dedicated test file |
+| G5 | `models/table.py` |  ️ Indirect sweep only | Add dedicated test file |
+| G6 | `models/review.py` |  ️ Indirect sweep only | Add dedicated test file |
+| G7 | `models/suggestion.py` |  ️ Indirect sweep only | Add dedicated test file |
+| G8 | `routers/preview.py` |  ️ 12 tests, missing WebSocket path | Add WebSocket preview endpoint tests |
+| G9 | `security/jwks_verifier.py` |  ️ 2 direct tests | Add algorithm confusion, key rotation tests |
+| G10 | `tasks/celery_tasks.py` |  ️ 19 tests, no integration | Add task retry, error handling, timeout tests |
+| G11 | `tasks/cleanup.py` |  ️ No schedule verification | Add schedule-based test |
 
 ### 1.4 Missing Features
 
@@ -82,14 +82,12 @@
 |---|---------|---------------|---------------|
 | F1 | **Staging deployment workflow** | ❌ Missing entirely | Create `deploy-staging.yml` |
 | F2 | **Grafana dashboard deployment** | ❌ JSON files exist in `ops/` but not deployed | Set up Grafana with provisioning |
-| F3 | **PostHog analytics integration** | ❌ Not implemented | Add analytics events for key user actions |
-| F4 | **Sentry end-to-end verification** | ⚠️ Configured but not validated | Create test error and verify |
 | F5 | **API v2 cursor pagination** | ⏳ ADR exists, not implemented | Design & implement paginated endpoints |
 | F6 | **Full-text search on documents** | ❌ Not implemented | Add PostgreSQL FTS index + API endpoint |
 | F7 | **Batch document operations** | ❌ Not implemented | Add batch status/delete/export endpoints |
 | F8 | **Webhook management system** | ❌ Not implemented | Register/manage outgoing webhooks |
 | F9 | **Document sharing/permissions** | ❌ Not implemented | Share docs with view/edit permissions |
-| F10 | **Nougat parser remote adapter** | ⏳ Deferred (Phase 3) | Build when traffic warrants |
+| F10 | **LLMPDFParser parser remote adapter** | ⏳ Deferred (Phase 3) | Build when traffic warrants |
 
 ### 1.5 Infrastructure Gaps
 
@@ -646,22 +644,22 @@ async def test_shared_document_accessible():
     assert response.status_code == 200
 ```
 
-#### Task 3.6 — Add PostHog Analytics Integration
+#### Task 3.6 — Add posthog Analytics Integration
 
 **Files:** `backend/app/services/analytics_service.py` (new), `backend/app/main.py`
 
 **Changes (MINIMAL — self-hosted or free tier):**
-1. Create `AnalyticsService` with PostHog client
+1. Create `AnalyticsService` with posthog client
 2. Add events: `upload_started`, `upload_completed`, `format_downloaded`, `agent_session_started`, `synthesis_started`
 3. Add middleware for automatic page view tracking
-4. Configure via env vars: `POSTHOG_API_KEY`, `POSTHOG_HOST`
+4. Configure via env vars (PostHog has been removed; use Prometheus metrics instead)
 
 #### Task 3.7 — Verify Sentry Integration End-to-End
 
 **Files:** `backend/app/main.py`, `.env.example`
 
 **Changes:**
-1. Add test route `POST /api/v1/debug/sentry-test` (admin-only) that raises a test exception
+1. Add test route `POST /api/v1/debug/Sentry-test` (admin-only) that raises a test exception
 2. Verify error appears in Sentry dashboard
 3. Document Sentry configuration in `Deployment.md`
 
@@ -673,7 +671,7 @@ async def test_shared_document_accessible():
 ☐ Full-text search endpoint returns results
 ☐ Batch document operations work
 ☐ Document sharing works (view/edit permissions)
-☐ PostHog analytics events firing for key actions
+☐ posthog analytics events firing for key actions
 ☐ Sentry verified end-to-end
 ```
 
@@ -887,7 +885,7 @@ CREATE INDEX IF NOT EXISTS idx_suggestions_document ON suggestions(document_id);
 |---------|-----------|--------------|------------------|
 | **API v2 Cursor Pagination** | ✅ COMPLETE — `routers/v2/`, `utils/pagination.py`, `schemas/pagination.py`, 23 tests | None | — |
 | **Webhook Management System** | ✅ COMPLETE — `routers/v1/webhooks.py`, `services/webhook_service.py`, `schemas/webhook.py`, `models/webhook.py`, 39 tests | None | — |
-| **Nougat Parser Remote Adapter** | ✅ COMPLETE — `nougat_parser.py`, HF Space Dockerfile, ParserFactory integration (existing) | HF Spaces deployment | — |
+| **LLMPDFParser Parser Remote Adapter** | ✅ COMPLETE — `llm_pdf_parser.py`, HF Space Dockerfile, ParserFactory integration (existing) | HF Spaces deployment | — |
 | **vLLM Phase 4 Adoption** | `docs/vllm_phase4_plan.md` | Traffic thresholds met | 2 weeks |
 | **Team/Organization Support** | Not started | Multi-user collaboration | 3 weeks |
 | **Bulk Document Import** | Not started | Queue mode activation | 1 week |

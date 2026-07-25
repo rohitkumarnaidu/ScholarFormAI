@@ -97,7 +97,7 @@ ScholarForm AI provides automated formatting and validation of academic manuscri
 - Frontend: React 19, Next.js 16 (App Router), Tailwind CSS
 - Backend: FastAPI, Supabase integration, pipeline orchestrator
 - Data store: Supabase Postgres tables (`documents`, `document_results`, `processing_status`, etc.)
-- AI/ML services: SciBERT, RAG engine, reasoning engine (NVIDIA and local fallback paths)
+- AI/ML services: LLMClassifier, RAG engine, reasoning engine (NVIDIA and local fallback paths)
 - External processors: LibreOffice, Pandoc, GROBID, Docling, OCR paths
 - Real-time updates: SSE endpoint with Redis Pub/Sub support
 

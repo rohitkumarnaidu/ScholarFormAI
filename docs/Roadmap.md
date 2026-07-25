@@ -10,7 +10,7 @@ version: "2.0"
 status: ✅ Complete
 owner: Product Team
 review_cadence: quarterly
-last_updated: June 13, 2026
+last_updated: July 2026
 ---
 
 # ScholarForm AI — Implementation Roadmap
@@ -121,10 +121,8 @@ last_updated: June 13, 2026
 |------|---------------|
 | Lock cloud topology | Vercel + Render + Supabase + Upstash documented in Deployment.md |
 | Staging environment live | URL in Deployment.md, health check passes |
-| Sentry.io error tracking | 5 test errors appear in Sentry dashboard |
 | Grafana dashboard (1 board) | Request rate + error rate + queue depth visible |
 | RBAC fully implemented | Admin, pro, free, guest roles enforced on all guarded routes |
-| Analytics integrated | PostHog events for: upload, download, agent_session_start |
 | Security audit | OWASP Top 10 checklist reviewed; no HIGH findings open |
 | Performance baseline | P99 upload ACK <400ms verified on staging |
 
