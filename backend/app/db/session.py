@@ -40,7 +40,7 @@ def _create_engine_safe() -> Optional[Engine]:
     db_url = settings.SUPABASE_DB_URL
     if not db_url:
         logger.warning(
-            "⚠️  SUPABASE_DB_URL is not set. "
+            " ️  SUPABASE_DB_URL is not set. "
             "Database-dependent endpoints will return 503 until it is configured."
         )
         return None
