@@ -15,7 +15,7 @@
 | R-011 | ChromaDB single-writer limitation (SQLite concurrency) | 🟡 Medium | Medium | Medium | Acceptable for single-user/session; Celery serializes writes to semantic store; evaluate pgvector for multi-user | Analyzed |
 | R-012 | LLM API provider dependency (vendor lock-in, rate limits, cost) | 🟡 Medium | Medium | High | 4-tier fallback (NVIDIA → Groq → OpenRouter → Ollama); user can BYO keys; cost monitoring dashboard | Mitigated |
 | R-013 | Supabase vendor lock-in (managed PostgreSQL, auth, storage) | 🟡 Medium | Low | Medium | PostgreSQL is standard; auth/storage wrappers abstracted in app/db/; migration path to raw PostgreSQL documented | Documented |
-| R-014 | HF Spaces cold start latency | 🟢 Low | High | Low | Not in critical path; optional inference; pre-warm script available for production | Documented |
+
 | R-015 | Celery queue backpressure under load | 🟡 Medium | Medium | High | RabbitMQ/Redis broker monitoring; worker auto-scaling in staging; task prioritization (interactive > batch) | Analyzed |
 | R-016 | Pydantic coverage measurement breakage (KeyError: root_model) | 🟡 Medium | High | Medium | Tests pass without --cov; CI uses continue-on-error coverage job; upstream pydantic issue tracked | Documented |
 | R-017 | Frontend test state contamination (17+ files fail only in full suite) | 🟢 Low | High | Low | Root cause identified (module-level mock leaks); mitigation documented; switch to --pool=fork when critical | Documented |

@@ -252,7 +252,7 @@ Licenses are reproduced below in accordance with their terms.
 | 237 | pluggy | 1.6.0 | MIT |  |
 | 238 | polyfactory | 3.2.0 | MIT |  |
 | 239 | postgrest | 2.27.3 | Unknown |  |
-| 240 | posthog | 5.4.0 | MIT | https://github.com/posthog/posthog-python |
+
 | 241 | preshed | 3.0.12 | MIT | https://github.com/explosion/preshed |
 | 242 | prettytable | 3.17.0 | Unknown |  |
 | 243 | prometheus-fastapi-instrumentator | 7.1.0 | ISC |  |
@@ -323,7 +323,7 @@ Licenses are reproduced below in accordance with their terms.
 | 308 | requests | 2.32.5 | Apache-2.0 | https://requests.readthedocs.io |
 | 309 | requests-oauthlib | 2.0.0 | ISC | https://github.com/requests/requests-oauthlib |
 | 310 | requests-toolbelt | 1.0.0 | Apache-2.0 | https://toolbelt.readthedocs.io/ |
-| 311 | responses | 0.25.8 | Apache-2.0 | https://github.com/getsentry/responses |
+
 | 312 | rfc3339-validator | 0.1.4 | MIT | https://github.com/naimetti/rfc3339-validator |
 | 313 | rfc3986-validator | 0.1.1 | MIT | https://github.com/naimetti/rfc3986-validator |
 | 314 | rfc3987-syntax | 1.1.0 | Unknown |  |
@@ -341,7 +341,7 @@ Licenses are reproduced below in accordance with their terms.
 | 326 | semchunk | 2.2.2 | MIT |  |
 | 327 | semver | 3.0.4 | MIT |  |
 | 328 | sentence-transformers | 5.4.1 | Apache-2.0 |  |
-| 329 | sentry-sdk | 2.51.0 | MIT | https://github.com/getsentry/sentry-python |
+
 | 330 | setuptools | 82.0.0 | Unknown |  |
 | 331 | shapely | 2.1.2 | BSD-3-Clause |  |
 | 332 | shellingham | 1.5.4 | ISC | https://github.com/sarugaku/shellingham |
@@ -627,23 +627,7 @@ Licenses are reproduced below in accordance with their terms.
 | 170 | @rollup/pluginutils | 5.3.0 | MIT |
 | 171 | @rollup/rollup-win32-x64-gnu | 4.57.1 | MIT |
 | 172 | @rollup/rollup-win32-x64-msvc | 4.57.1 | MIT |
-| 173 | @sentry-internal/browser-utils | 10.45.0 | MIT |
-| 174 | @sentry-internal/feedback | 10.45.0 | MIT |
-| 175 | @sentry-internal/replay | 10.45.0 | MIT |
-| 176 | @sentry-internal/replay-canvas | 10.45.0 | MIT |
-| 177 | @sentry/babel-plugin-component-annotate | 5.1.1 | MIT |
-| 178 | @sentry/browser | 10.45.0 | MIT |
-| 179 | @sentry/bundler-plugin-core | 5.1.1 | MIT |
-| 180 | @sentry/cli | 2.58.5 | MIT |
-| 181 | @sentry/cli-win32-x64 | 2.58.5 | MIT |
-| 182 | @sentry/core | 10.45.0 | MIT |
-| 183 | @sentry/nextjs | 10.45.0 | MIT |
-| 184 | @sentry/node | 10.45.0 | MIT |
-| 185 | @sentry/node-core | 10.45.0 | MIT |
-| 186 | @sentry/opentelemetry | 10.45.0 | MIT |
-| 187 | @sentry/react | 10.45.0 | MIT |
-| 188 | @sentry/vercel-edge | 10.45.0 | MIT |
-| 189 | @sentry/webpack-plugin | 5.1.1 | MIT |
+
 | 190 | @supabase/auth-js | 2.94.0 | MIT |
 | 191 | @supabase/functions-js | 2.94.0 | MIT |
 | 192 | @supabase/postgrest-js | 2.94.0 | MIT |
