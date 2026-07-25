@@ -19,8 +19,6 @@ ScholarForm AI is a Next.js-based academic manuscript formatting platform that a
 | Animation | Framer Motion | ^12.35.2 | Page transitions, micro-interactions |
 | Validation | Zod | ^4.3.6 | Runtime schema validation for forms, API responses, agent inputs |
 | Icons | Lucide React + Material Symbols | 0.577.0 + CDN | Icon system |
-| Error Tracking | Sentry | ^10.45.0 | Error monitoring via `@sentry/nextjs` |
-| Analytics | PostHog | 1.251.0 (CDN) | Product analytics, page views, custom events |
 | Testing | Vitest + Testing Library | ^4.1.8 | Unit/integration tests |
 | E2E Testing | Playwright | ^1.58.2 | Headless browser E2E tests |
 | A11y Testing | jest-axe | ^10.0.0 | Automated accessibility checks |
@@ -110,7 +108,7 @@ frontend/
 │   ├── components/
 │   │   ├── layout/                   # Shell components
 │   │   │   ├── AppShell.jsx          #   Header + Sidebar + main content orchestrator
-│   │   │   ├── ClientProviders.jsx   #   All context providers + PostHog init
+│   │   │   ├── ClientProviders.jsx   #   All context providers
 │   │   │   ├── AuthGuard.jsx         #   Client-side auth route guard
 │   │   │   ├── Header.jsx
 │   │   │   ├── Sidebar.jsx
@@ -170,8 +168,6 @@ frontend/
 │   ├── lib/                          # Utilities and third-party wrappers
 │   │   ├── supabaseClient.js         #   Supabase client factory (null-safe)
 │   │   ├── schemas.js                #   Zod schemas (forms, API responses, agent, synthesis)
-│   │   ├── analytics.js              #   Event tracking wrapper (PostHog)
-│   │   ├── posthog.js                #   PostHog script loader + capture
 │   │   ├── ReconnectingWebSocket.js  #   WebSocket with exponential backoff + jitter
 │   │   ├── planTier.js               #   User tier/ quota logic (guest, free, pro)
 │   │   ├── metrics.js                #   Front-end Prometheus histogram for RUM
@@ -187,7 +183,7 @@ frontend/
 │       └── navigation.js
 ├── public/                           # Static assets (PWA service worker injected by next-pwa)
 ├── middleware.js                      # Edge-level auth + 25-route matcher
-├── next.config.mjs                   # Sentry + PWA + headers + rewrites
+├── next.config.mjs                   # PWA + headers + rewrites
 ├── tailwind.config.js                # Custom theme, colors, glassmorphism
 ├── vitest.config.js                  # Vitest with jsdom, path aliases
 ├── eslint.config.js                  # Flat config (JS ESLint 9)
@@ -485,7 +481,6 @@ All primitives in `src/components/ui/`, re-exported via `index.js`:
 | `Header` | `components/layout/Header.jsx` | Fixed top bar (48px). Shows section title, sidebar toggle button, user menu. Always rendered. |
 | `Sidebar` | `components/layout/Sidebar.jsx` | Collapsible nav (240px expanded, 72px collapsed). Section-aware (formatter vs generator links). Mobile overlay mode. |
 | `AuthGuard` | `components/layout/AuthGuard.jsx` | Client-side route guard. Shows loading spinner while `AuthContext.loading`. Redirects unauthenticated to `/login?next=...`. Optional `requireAdmin` prop for admin routes. |
-| `ClientProviders` | `components/layout/ClientProviders.jsx` | Wraps children in all context providers + initializes PostHog + captures page views on pathname change. |
 | `FocusManager` | `components/layout/FocusManager.jsx` | Manages visible focus ring (`:focus-visible` vs `:focus`) for keyboard navigation. |
 | `DynamicMeta` | `components/layout/DynamicMeta.jsx` | Updates page meta tags dynamically. |
 
@@ -791,26 +786,11 @@ ESLint config includes separate overrides for:
 
 ## 11. Performance & Monitoring
 
-### Sentry (`@sentry/nextjs`)
+### Monitoring (Removed: Sentry, PostHog)
 
-Configured in `next.config.mjs` via `withSentryConfig`:
-- Organization and project from env vars (`SENTRY_ORG`, `SENTRY_PROJECT`)
-- Silent in non-CI environments
-- `widenClientFileUpload: true` — uploads source maps with full file paths
-- `hideSourceMaps: true` — hides source maps from Sentry UI
-- Webpack treeshaking: removes debug logging
-- `automaticVercelMonitors: false`
+Sentry error tracking and PostHog analytics have been removed. Error monitoring is handled via structured logging + Prometheus metrics.
 
-### PostHog Analytics
-
-Initialized in `ClientProviders.jsx` via `initPostHog()`:
-- CDN script loaded dynamically from `cdn.jsdelivr.net/npm/posthog-js@1.251.0`
-- `capture_pageview: false` (manually tracked via `capturePostHogPageView`)
-- `capture_pageleave: true`
-- `person_profiles: 'identified_only'`
-- Page views captured on every `pathname` change via `useEffect` in `ClientProviders`
-- Events queued if PostHog not yet loaded; flushed on init
-
+### Real User Monitoring (RUM)
 ### Real User Monitoring (RUM)
 
 Placeholder in `src/lib/rum.js` with `initRUM()`, `trackPageView()`, `trackEvent()` — ready for Datadog/Sentry RUM integration.
@@ -825,18 +805,12 @@ Enforced in CI pipeline with performance and accessibility thresholds.
 
 ## 12. Frontend Operations
 
-### 12.1 Sentry Error Tracking
+### 12.1 Error Tracking (Removed: Sentry)
 
-Configured in `next.config.mjs` via `withSentryConfig` (`@sentry/nextjs` v10):
+Error tracking is handled via Prometheus metrics (`/metrics`) and structured logging.
 
-- **Organization/project**: from `SENTRY_ORG` / `SENTRY_PROJECT` env vars
-- **Silent in non-CI**: `silent: !process.env.CI` to suppress noise in local dev
-- **Source maps**: `widenClientFileUpload: true` uploads with full paths; `hideSourceMaps: true` hides from Sentry UI
-- **Treeshaking**: `removeDebugLogging: true` strips `console.debug`/`console.log` in production builds
-- **Release tracking**: Sentry release tied to git SHA via `@sentry/nextjs` auto-injection; enables source-map correlation per deployment
-- **Vercel monitors**: `automaticVercelMonitors: false` — manual cron monitor setup only
+See: `api.core.js:sendFrontendErrorLog()` ? `POST /api/v1/metrics/log-error`
 
-**Error boundary integration** (`src/components/ErrorBoundary.jsx:14-17`): `componentDidCatch` calls `console.error` and invokes `this.props.onError` callback — client components pass `sendFrontendErrorLog()` from `api.metrics.js` to forward errors to `POST /api/v1/metrics/log-error`.
 
 ### 12.2 Real User Monitoring (RUM)
 
@@ -844,11 +818,10 @@ RUM infrastructure in `src/lib/rum.js` exposes three functions:
 
 | Function | Purpose |
 |----------|---------|
-| `initRUM()` | Initializes RUM agent (placeholder for Datadog/Sentry/PostHog) |
 | `trackPageView(pageName)` | Captures URL + timestamp per page view |
 | `trackEvent(eventName, properties)` | Captures custom events with metadata |
 
-**Web Vitals tracking**: `next/next-web-vitals` event in `app/layout.jsx` reports LCP, FID, CLS, INP to analytics pipeline. PostHog captures `web_vital` events automatically.
+**Web Vitals tracking**: `next/next-web-vitals` event in `app/layout.jsx` reports LCP, FID, CLS, INP to the RUM pipeline via Prometheus metrics.
 
 **API call timing**: `api.core.js` wraps `fetchWithAuth` with performance timing via `performance.mark()` / `performance.measure()`. Observations are stored in the Prometheus histogram (`src/lib/metrics.js`) through the `http_request_duration_seconds` metric.
 
@@ -883,7 +856,7 @@ Enforced in `frontend-ci.yml:108-114` as part of the Lighthouse job:
 - **Suppression**: `sendFrontendErrorLog()` in `api.core.js:427` accepts `{ suppressMonitoring: true }` option to skip logging for expected errors (e.g., 404s on optional resources)
 - **Error boundaries**: `app/(formatter)/error.jsx` and `app/(generator)/error.jsx` provide route-level error boundaries; `src/components/ErrorBoundary.jsx` provides a reusable class-based boundary for component subtrees
 - **Console error hygiene**: ESLint rule `no-console` allows only `console.warn` and `console.error`; `removeDebugLogging: true` in Sentry webpack config strips debug logs from production bundles
-- **PostHog error capture**: `capturePostHogPageView` in `ClientProviders.jsx` tracks error pages via pathname; custom events capture API failure rates
+- Errors are tracked via `sendFrontendErrorLog()` ? Prometheus metrics
 
 ## 13. Security Architecture
 
@@ -899,7 +872,7 @@ The platform currently lacks a full CSP `script-src` directive in `next.config.m
    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
    img-src 'self' data: blob: https://*.supabase.co;
    ```
-4. **PostHog/Sentry script loading**: CDN scripts (`cdn.jsdelivr.net/npm/posthog-js`, `jsdelivr.net/npm/@sentry/browser`) require `'strict-dynamic'` propagation from the nonced bootstrap script
+4. **Third-party script loading**: All external scripts should load via a nonced bootstrap script with `strict-dynamic` propagation
 
 **Current state**: `next.config.mjs` sets `X-Content-Type-Options`, `X-Frame-Options`, and `Referrer-Policy` only. CSP header is a known gap tracked in security hardening roadmap.
 
@@ -969,7 +942,7 @@ The frontend is deployed to Vercel (production from `main`, preview per branch):
 |-------------|---------|--------|---------|
 | Production | Push to `main` via `deploy-production.yml` | `app.scholarform.ai` | Frontend CI + Lighthouse + E2E |
 | Preview | PR to `main` | `<branch>.scholarform.vercel.app` | Frontend CI only |
-| Development | Push to `develop` | `dev.scholarform.vercel.app` | Lint + typecheck only |
+| Development | Push to `develop` | `dev.scholarform.onrender.com` | Lint + typecheck only |
 
 **Deployment workflow** (`.github/workflows/deploy-production.yml`):
 1. `verify-ci-gates` — confirms `backend-ci.yml`, `frontend-ci.yml`, `security.yml` all passed for the commit
@@ -982,7 +955,7 @@ The frontend is deployed to Vercel (production from `main`, preview per branch):
 - **Build command**: `npm run build`
 - **Output directory**: `.next`
 - **Node version**: 20.x
-- **Environment variables**: all `NEXT_PUBLIC_*` vars injected at build time; server-side vars (`SUPABASE_SERVICE_ROLE_KEY`, `CDN_URL`, `SENTRY_*`) injected at runtime
+- **Environment variables**: all `NEXT_PUBLIC_*` vars injected at build time; server-side vars (`SUPABASE_SERVICE_ROLE_KEY`, `CDN_URL`) injected at runtime
 
 ### 14.2 Feature Flags for Gradual Rollouts
 
@@ -1017,8 +990,6 @@ assetPrefix: process.env.CDN_URL || "",
 |--------|-------------|---------|---------|------------|
 | API URL | `http://localhost:8000` | Staging backend | Staging backend | Production backend |
 | Supabase project | Dev project | Dev project | Staging project | Production project |
-| PostHog key | (unset) | Staging key | Staging key | Production key |
-| Sentry | Disabled | Errors only | Errors + traces | Full monitoring |
 | CDN | Unset | Unset | CDN URL | CDN URL |
 | LaTeX export | `false` | `false` | Toggle | Toggle |
 | Debug mode | `true` | `false` | `false` | `false` |
@@ -1035,8 +1006,6 @@ assetPrefix: process.env.CDN_URL || "",
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | — | Supabase anonymous API key |
 | `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | Backend FastAPI base URL |
 | `NEXT_PUBLIC_LATEX_EXPORT_ENABLED` | `false` | Toggle LaTeX export support |
-| `NEXT_PUBLIC_POSTHOG_KEY` | — | PostHog project API key |
-| `NEXT_PUBLIC_POSTHOG_HOST` | `https://app.posthog.com` | PostHog ingestion host |
 | `NEXT_PUBLIC_API_BASE_URL` | (none) | API base URL (alternative/legacy) |
 
 ### Server-side Env Vars
@@ -1045,9 +1014,6 @@ assetPrefix: process.env.CDN_URL || "",
 |----------|---------|
 | `SUPABASE_SERVICE_ROLE_KEY` | Used by middleware.js for JWT verification |
 | `CDN_URL` | CDN origin for static asset prefix |
-| `SENTRY_ORG` | Sentry organization slug |
-| `SENTRY_PROJECT` | Sentry project name |
-| `CI` | Flag to control Sentry verbosity |
 
 ### Session Storage Keys
 
@@ -1065,38 +1031,23 @@ assetPrefix: process.env.CDN_URL || "",
 
 ## 16. Frontend Operations
 
-### 16.1 Sentry Source Map Upload & Debug IDs
+### 16.1 Source Map Upload (Sentry Removed)
 
-Source maps are uploaded to Sentry during the Vercel build via `@sentry/nextjs`'s `withSentryConfig` plugin. The upload pipeline:
+Source map upload via Sentry webpack plugin has been removed. Source maps are generated during build but not uploaded externally.
 
-```
-next build
-  → SentryWebpackPlugin collects .js.map files from .next/static/chunks/
-  → Uploads to https://sentry.io/api/0/organizations/{org}/releases/{release}/files/
-  → Release ID derived from git SHA (process.env.VERCEL_GIT_COMMIT_SHA || Sentry CLI)
-  → Source maps stripped from production bundles (hideSourceMaps: true)
-```
+**Key configuration** (`next.config.mjs`):
+- `devtool: process.env.NODE_ENV === "production" ? "hidden-source-map" : "inline-source-map"`
 
-**Debug ID injection**: Each JavaScript bundle includes a Sentry Debug ID comment (`//# debugId=<uuid>`) embedded by the webpack plugin at build time. This enables Sentry's **artifact bundles** feature — error stack traces are resolved against the exact deployed artifact without requiring version-to-version correlation.
-
-**Key configuration** (`next.config.mjs:80-95`):
-- `widenClientFileUpload: true` — uploads with full filesystem paths for IDE-like stack traces
-- `_routersDirs: ['app']` — includes App Router server components
-- `disableLogger: true` — strips Sentry's internal logging in production
-
-**Local development**: Source maps are served inline by the Next.js dev server (`devtool: 'inline-source-map'`). Sentry is silent outside CI (`silent: !process.env.CI`).
 
 ### 16.2 Real User Monitoring (RUM) with Web Vitals
 
-Web Vitals are collected via the `useReportWebVitals` hook in `app/layout.jsx` and reported to both PostHog and the internal metrics pipeline:
+Web Vitals are collected via the `useReportWebVitals` hook in `app/layout.jsx` and reported to both the internal metrics pipeline:
 
 ```javascript
 // app/layout.jsx — Web Vitals collection
 export function reportWebVitals(metric) {
   const { id, name, label, value, rating } = metric;
-  // PostHog capture
-  window.posthog?.capture('web_vital', { metric: name, value, rating, id });
-  // Internal RUM histogram
+// Internal RUM histogram
   window.__RUM_HISTOGRAM?.observe(`web_vital_${name}`, value, { rating });
 }
 ```
@@ -1111,402 +1062,12 @@ export function reportWebVitals(metric) {
 **RUM data flow**:
 
 ```
-Browser → useReportWebVitals → PostHog (product analytics)
+Browser ? useReportWebVitals ? src/lib/rum.js (trackEvent)
                               → src/lib/rum.js (trackEvent)
                                    → src/lib/metrics.js (Prometheus histogram)
                                         → GET /metrics → POST /api/v1/metrics/log-error
 ```
 
-**PostHog dashboard**: Pre-built dashboard panel surfaces p75 LCP, p75 FID, and p99 CLS over 7-day rolling windows. Alert threshold: p75 LCP > 3.0s triggers a Slack notification via PostHog action hooks.
-
-### 16.3 Build Size Budgets & Enforcement
-
-Budgets are enforced in `frontend-ci.yml` via a dedicated job step and additionally via Lighthouse budget assertions:
-
-| Asset Type | Budget | Enforcement Mechanism |
-|------------|--------|----------------------|
-| Total JS (all chunks) | < 5 MB | PowerShell `Get-ChildItem .next/static/chunks -Filter *.js \| Measure-Object -Property Length -Sum` |
-| Total CSS (all chunks) | < 200 KB | Same pattern on `.css` files |
-| First-load JS (critical route) | < 250 KB | Lighthouse `resource-summary` assertion |
-| Image assets (per page) | < 500 KB | Lighthouse `unused-javascript` audit |
-
-**Lighthouse budget assertions** (`lighthouserc.js:30-45`):
-
-```javascript
-budget: {
-  budgets: [
-    { path: '/*', resourceSizes: [
-      { resourceType: 'script', budget: 500 },     // KB
-      { resourceType: 'stylesheet', budget: 200 },  // KB
-    ]},
-    { path: '/dashboard', resourceSizes: [
-      { resourceType: 'total', budget: 2000 },      // KB — total page weight
-    ]},
-  ],
-},
-```
-
-**CI enforcement**: The budget check runs as a blocking step in `frontend-ci.yml`. Non-zero exit (`Measure-Object -Sum` exceeds threshold) fails the pipeline. The Lighthouse step runs in parallel and provides diagnostic output but does not independently block deployment (Lighthouse scores act as the blocking gate).
-
-### 16.4 Lighthouse CI Score Gates
-
-Defined in `lighthouserc.js` and enforced via `npx lhci autorun` in `frontend-ci.yml`:
-
-| Category | Minimum Score | Assertion Type | Failure Action |
-|----------|---------------|----------------|----------------|
-| Performance | 80 | `assert.lighthouse` | Blocking — fails pipeline |
-| Accessibility | 90 | `assert.lighthouse` | Blocking — fails pipeline |
-| Best Practices | 90 | `assert.lighthouse` | Blocking — fails pipeline |
-| SEO | 90 | `assert.lighthouse` | Blocking — fails pipeline |
-| PWA | 50 | `assert.lighthouse` | Non-blocking (informational) |
-
-**Collection strategy** (6 URLs, single run):
-
-```
-Landing (/)                → performance budget + a11y audit
-Dashboard (/dashboard)     → JS bundle + CLS check
-Upload (/upload)           → form interaction + dropzone
-Settings (/settings)       → form controls + contrast
-Live Preview (/live)       → WebSocket + dynamic content
-Agent (/agent)             → SSE streaming + chat UI
-```
-
-**Budget assertions** are collected alongside Lighthouse scores. Results upload to `temporary-public-storage` for diff review across commits. The LHCI GitHub action posts a comment on PRs with score deltas.
-
-### 16.5 Feature Flag Integration with Enhancement Manager
-
-Feature flags are managed through `UserPreferencesContext` + backend `/api/v1/features` endpoint, with planned integration to the `enhancement_manager` service for dynamic flag evaluation:
-
-```
-UserPreferencesContext (frontend)
-  → GET /api/v1/features (server-rendered initial flags injected via _next/data)
-  → EnhancementManager.evaluate(flag_name, user_context)
-      → Returns { enabled: bool, payload: object, reason: string }
-```
-
-| Flag | Type | Scope | Default | Purpose |
-|------|------|-------|---------|---------|
-| `latex_export` | `boolean` | Global env var | `false` | Toggle LaTeX download option |
-| `batch_upload` | `boolean` | User-level feature | `false` | Enable batch document upload |
-| `agent_v2_ui` | `boolean` | User-level (10% roll) | `false` | New agent chat interface |
-| `synthesis_advanced` | `boolean` | User-level (5% roll) | `false` | Multi-doc synthesis enhancements |
-| `export_pdf_direct` | `boolean` | Role-based (admin) | `false` | Server-side PDF export |
-
-**Evaluation flow**:
-
-```
-1. EnhancementManager.evaluate("agent_v2_ui", { user_id, tier, created_at })
-2.   → Check UserPreferencesContext override (if user manually opted in)
-3.   → Check role-based gating (admin routes bypass percentage rolls)
-4.   → Check percentage rollout (hash(user_id) % 100 < 10 → enabled)
-5.   → Return { enabled: true, payload: { ui_version: "v2" }, reason: "rollout_10pct" }
-```
-
-**Cross-reference**: See [Section 14.2](#142-feature-flags-for-gradual-rollouts) for basic env-var flags. For the full rollout strategy with canary releases, refer to [Section 18](#18-deployment-strategies).
-
----
-
-## 17. Security Expansion
-
-### 17.1 XSS Attack Surface Map
-
-The frontend processes untrusted content from four distinct sources. Each has specific sanitization and rendering guards:
-
-| Source | Input Fields | URL Params | API Responses | Rendering Context |
-|--------|-------------|------------|---------------|-------------------|
-| **User uploads** | File name, author metadata | — | Document content (HTML from backend) | `PreviewPane` via `dangerouslySetInnerHTML` + DOMPurify |
-| **AI generation** | Agent prompt text | — | Token chunks, outline JSON, stage messages | `TokenStream` via `sanitizeText()` + `React.createElement` |
-| **Template names** | Template search, custom template names | `?template=` query param | Template list from `/api/v1/templates` | Dropdown lists via React text children |
-| **User profile** | Bio, display name, organization | — | User metadata from Supabase | Settings form fields, header greeting |
-| **Feedback** | Feedback text, rating comments | — | Feedback summaries | Admin dashboard cards |
-| **Auth redirect** | — | `?next=` URL param | — | `router.push()` after login |
-
-**Attack → Defense mapping**:
-
-| Attack Vector | Defense Layer | Implementation |
-|---------------|--------------|----------------|
-| `<script>` in document content | DOMPurify (DOM-level) | `DOMPurify.sanitize(html, { ALLOWED_TAGS: ['p','br','strong','em','h1-h6','ul','ol','li','a','img','table','tr','td'] })` |
-| HTML entities in AI text | Server-side encoding | `sanitizePayload()` → `sanitizeText()` → entity decode + angle bracket removal |
-| `javascript:` in `<a href>` | DOMPurify + link protocol check | DOMPurify removes `javascript:` URIs by default; `ALLOWED_URI_REGEXP` enforces `https?://` only |
-| `onclick`/`onerror` handlers | DOMPurify attribute stripping | DOMPurify strips all event handler attributes |
-| Open redirect via `?next=` | `sanitizeRedirectPath()` | Rejects non-relative paths (no `//`, no `https:`, must start with `/`) |
-| CSS injection via template name | React JSX auto-escaping | Template names rendered as React text children, not `dangerouslySetInnerHTML` |
-| Exfiltration via `img` src | CSP `img-src` directive | See [Section 13.1](#131-content-security-policy-csp) |
-
-**Test coverage**: 161 lines in `src/test/security/xss.test.jsx`, 111 lines in `src/test/security/sanitization.test.jsx`.
-
-### 17.2 CSP Nonce Flow
-
-The Content Security Policy nonce flow prevents inline script injection by ensuring only scripts carrying the per-request nonce can execute:
-
-```
-                          Edge Middleware
-                          ───────────────
-Request → middleware.js
-            ├── crypto.randomBytes(16).toString('base64') → nonce
-            ├── res.headers.set('x-nonce', nonce)
-            └── NextResponse.next()
-
-                              │
-                              ▼
-                        App Router (server)
-                    ─────────────────────────────
-                    layout.jsx reads x-nonce header
-                    Injects into inline <script> tags:
-                    <script nonce={nonce}>...</script>
-
-                              │
-                              ▼
-                    Next.js generates full HTML
-                    CSP header injected via next.config.mjs:
-                    Content-Security-Policy:
-                      script-src 'strict-dynamic'
-                                'nonce-{nonce}'
-                                'unsafe-inline'
-                                https:;
-                      style-src 'self' 'unsafe-inline'
-                                https://fonts.googleapis.com;
-                      img-src  'self' data: blob:
-                                https://*.supabase.co;
-
-                              │
-                              ▼
-                          Browser
-                    Scripts without matching nonce
-                    are blocked by the CSP enforcement
-```
-
-**Third-party script handling**: PostHog (`cdn.jsdelivr.net/npm/posthog-js`) and Sentry (`jsdelivr.net/npm/@sentry/browser`) scripts must load via a nonced bootstrap script that propagates trust via `'strict-dynamic'`. The bootstrap script:
-
-```javascript
-// Injected via layout.jsx with server-side nonce
-var script = document.createElement('script');
-script.src = 'https://cdn.jsdelivr.net/npm/posthog-js@1.251.0';
-document.head.appendChild(script);
-```
-
-Because `'strict-dynamic'` allows any script dynamically created by a trusted script, the PostHog/Sentry CDN scripts inherit trust without requiring explicit nonces.
-
-**Current status**: CSP header is not yet deployed in production. The nonce infrastructure (middleware generation, layout injection) is implemented but the header itself is gated behind a feature flag. See [Section 13.1](#131-content-security-policy-csp) for the current header configuration.
-
-### 17.3 Dependency Vulnerability Scanning
-
-| Tool | Trigger | Scope | Action | CI Impact |
-|------|---------|-------|--------|-----------|
-| `npm audit` | Every push (CI) | Production + dev dependencies | Reports high/critical severity | Non-blocking (`continue-on-error: true`) |
-| Dependabot | Weekly schedule | npm ecosystem on `frontend/` | Auto-creates PRs with patches | Creates PR → triggers CI |
-| Renovate | Weekly schedule | All `package.json` deps | Auto-updates minor/patch versions | Creates PR → triggers CI + E2E |
-| `security.yml` | Push to main + weekly | Full SCA (npm audit + SAST) | Blocks on critical CVE in prod deps | Blocking (`--audit-level=critical`) |
-
-**Dependabot configuration** (`.github/dependabot.yml`):
-
-```yaml
-version: 2
-updates:
-  - package-ecosystem: "npm"
-    directory: "/frontend"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-    open-pull-requests-limit: 10
-    labels: ["dependencies", "security"]
-    allow:
-      - dependency-type: "production"
-```
-
-**Vulnerability response SLA**:
-
-| Severity | Patch Window | Action |
-|----------|-------------|--------|
-| Critical | 24 hours | Emergency patch release, hotfix branch |
-| High | 72 hours | Next scheduled release |
-| Moderate | Next sprint | Included in regular dependency update |
-| Low | Triage as time permits | Monitored but no immediate action |
-
-**Override policy**: Critical CVEs in production dependencies block CI at the pre-release gate. Override requires explicit approval from two maintainers with documented risk acceptance in `security.md`.
-
-### 17.4 API Key Storage Best Practices
-
-| Storage Location | Mechanism | XSS Exposure | Recommendation |
-|-----------------|-----------|-------------|----------------|
-| **Client-side (browser)** | `localStorage.getItem('supabase.auth.token')` | **Exposed** — accessible to any JS on the origin | Deprecated for auth tokens; acceptable for user-provided API keys (Anthropic, OpenAI, etc.) with user awareness |
-| **Server-side (backend)** | `user_api_keys` table (encrypted at REST) | **None** — never exposed to client JS | Preferred for service-level API keys (default for all provider integrations) |
-| **HttpOnly cookie** | `__Host-sb-token` (planned) | **None** — inaccessible to JavaScript | Planned migration path for auth tokens |
-
-**User-provided API key flow**:
-
-```
-User enters API key in Settings (/api-keys)
-  → POST /api/v1/keys (encrypted with Fernet before storage)
-  → Key stored in user_api_keys table (server-side)
-  → Frontend never sees the raw key again
-  → LLM calls use resolve_user_api_key() on the backend
-```
-
-**Client-side key storage guidance**: When users must provide their own API keys (e.g., for BYO provider), the frontend:
-1. Masks the key after initial entry (`sk-...XXXX`)
-2. Stores only an encrypted reference in localStorage under `scholarform_key_ref`
-3. Never renders the raw key in the UI after submission
-
-### 17.5 Auth Token Refresh Flow & Secure Storage
-
-The complete auth token lifecycle, from issuance to refresh to rotation:
-
-```
-1. INITIAL SIGN-IN
-   POST /api/v1/auth/login
-   → Backend returns { session: { access_token, refresh_token, expires_at } }
-   → AuthContext.signIn() → supabase.auth.setSession(session)
-   → Supabase JS SDK persists to localStorage: sb-<ref>-auth-token
-
-2. TOKEN REFRESH (automatic, SDK-managed)
-   ┌──────────────────────────────────────────────────┐
-   │ Access token expires (default: 3600s / 1 hour)   │
-   │ → Supabase SDK detects expiry via expires_at     │
-   │ → SDK calls supabase.auth.refreshSession()       │
-   │ → POST /auth/v1/token?grant_type=refresh_token   │
-   │ → New { access_token, refresh_token, expires_at } │
-   │ → SDK writes to localStorage                     │
-   │ → onAuthStateChange('TOKEN_REFRESHED') fires     │
-   │ → AuthContext.setUser(session.user)              │
-   └──────────────────────────────────────────────────┘
-
-3. MIDDLEWARE VERIFICATION (every request to protected route)
-   middleware.js:
-   ├── Parse cookie(s): sb-<ref>-auth-token[.0, .1, ...]
-   ├── Decode JWT payload → check exp
-   ├── Verify with supabaseAdmin.auth.getUser(token)
-   ├── Valid   → NextResponse.next()
-   └── Invalid → redirect to /login?reason=session_expired
-
-4. SESSION EXPIRY (no refresh possible)
-   → Refresh token expires (default: 30 days unless refresh_token_reuse_protected)
-   → supabase.auth.getSession() returns null
-   → AuthContext detects null → setIsLoggedIn(false), setUser(null)
-   → Protected routes redirect to /login?reason=session_expired
-   → localStorage cleared of sb-* keys
-
-5. PLANNED: HTTPONLY COOKIE MIGRATION
-   ┌─────────────────────────────────────────────────────────┐
-   │ Goal: Eliminate XSS token exfiltration                 │
-   │ Approach:                                               │
-   │ 1. Backend sets __Host-sb-token on sign-in              │
-   │    (Secure; HttpOnly; SameSite=Lax; Path=/; Max-Age=3600)│
-   │ 2. middleware.js reads __Host-sb-token cookie directly   │
-   │    (no Supabase SDK call needed)                        │
-   │ 3. Token refresh: POST /api/v1/auth/refresh              │
-   │    → Backend validates refresh_token from secure cookie  │
-   │    → Sets new __Host-sb-token with rotated refresh_token │
-   │ 4. Frontend never touches token storage                  │
-   └─────────────────────────────────────────────────────────┘
-```
-
-**Cross-reference**: See [Section 6.2](#62-auth-token-flow) for the current token flow architecture and [AGENTS.md](../../AGENTS.md#architectural-choices) for the reasoning behind localStorage vs. cookie decision.
-
----
-
-## 18. Deployment Strategies
-
-### 18.1 Vercel Preview Deployments for PRs
-
-Every pull request triggers an isolated preview deployment with its own URL. The preview environment mirrors production as closely as possible:
-
-```
-PR opened → frontend-ci.yml triggers
-  ├── Lint + typecheck
-  ├── Vitest (unit + integration)
-  ├── Build (next build)
-  ├── Lighthouse CI (scores posted as PR comment)
-  └── Deploy to Vercel Preview
-       └── URL: https://<branch>.scholarform.vercel.app
-
-PR updated → Preview deployment updates in-place (same URL)
-PR merged → Preview deployment auto-paused (Vercel GC)
-PR closed → Preview deployment auto-deleted (Vercel GC)
-```
-
-**Preview environment configuration**:
-
-| Setting | Preview Value | Notes |
-|---------|--------------|-------|
-| API URL | Staging backend (`https://api-staging.scholarform.ai`) | Same as staging |
-| Supabase | Dev project (isolated auth) | Separate from production user data |
-| Sentry | Disabled in preview (`silent: true`) | No alert noise from PRs |
-| PostHog | Staging key | Separate dashboard for PR traffic |
-| Feature flags | All enabled for testing | Override via `NEXT_PUBLIC_*` vars |
-| Auth mode | E2E test mode available | `scholarform_e2e_user` sessionStorage key |
-
-**Verification gates**: The CI pipeline waits for the Vercel deployment to reach `READY` status (polled via Vercel API), then runs a health check (`GET / → 200`). The PR comment includes a direct link to the preview URL with a Lighthouse score summary.
-
-### 18.2 Staging / Production Environment Parity
-
-| Aspect | Staging | Production | Parity Notes |
-|--------|---------|------------|--------------|
-| Next.js version | Same (`^16.1.6`) | Same | Locked via `package.json` |
-| Node version | 20.x | 20.x | Same `.nvmrc` |
-| Environment vars | `.env.staging` | `.env.production` | Injected via Vercel dashboard |
-| Build command | `npm run build` | `npm run build` | Same |
-| CDN | Disabled | `CDN_URL` set | Production only |
-| Sentry | Errors + traces | Full monitoring | Staging has reduced sampling |
-| PostHog | Staging project | Production project | Separate dashboards |
-| Feature flags | All enabled | Per-rollout | Staging has no percentage gates |
-| Backend | Staging deployment | Production deployment | Separate Render services |
-
-**Deployment promotion flow**:
-
-```
-develop (branch)
-  → Manual deploy to staging (Vercel CLI or dashboard)
-  → Smoke tests (Playwright E2E against staging)
-  → Health check monitoring (15-min soak)
-  → PR to main
-       → Frontend CI + Lighthouse + E2E on preview
-       → Merge to main
-            → Production deployment triggers automatically
-```
-
-**Database parity**: Staging Supabase project has sanitized production data (PII stripped), refreshed weekly. Auth users are separate — no production credentials work on staging.
-
-### 18.3 Canary Releases via Feature Flags
-
-Canary releases roll out features gradually using the `EnhancementManager` evaluation framework (see [Section 16.5](#165-feature-flag-integration-with-enhancement-manager)):
-
-| Phase | Exposure | Duration | Verification |
-|-------|----------|----------|-------------|
-| **Internal** | Development team + admins | 1–2 days | Manual QA + Sentry error review |
-| **Canary (5%)** | 5% of users (hash-based) | 2–3 days | Error rate, p95 latency, LCP delta |
-| **Expanded (25%)** | 25% of users | 3–5 days | A/B metric comparison |
-| **Broad (50%)** | 50% of users | 2–3 days | Performance regression check |
-| **GA (100%)** | All users | — | Feature flag removed, code permanent |
-
-**Canary selection algorithm**:
-
-```javascript
-// Deterministic user assignment based on user_id hash
-function isInCanary(userId, percentage) {
-  const hash = hashCode(userId);  // stable string hash
-  return (hash % 100) < percentage;
-}
-```
-
-**Rollback trigger**: If any of the following metrics deviate >10% from the control group within the canary window, the flag is immediately disabled (no code deploy needed):
-
-- p95 API response latency
-- Error rate (>0.5% increase)
-- LCP (>250ms increase)
-- User-reported feedback (via PostHog sentiment)
-
-### 18.4 A/B Testing Framework Integration
-
-A/B tests are managed through PostHog feature flags with automated statistical analysis:
-
-```
-User visits page
-  → PostHog flag evaluation (random assignment: control vs. treatment)
-  → Frontend applies variant (component, layout, or flow variation)
-  → PostHog captures custom events: 'ab_test_exposure', 'ab_test_conversion'
-  → PostHog calculates significance (chi-squared test, p < 0.05)
-  → Results surfaced in PostHog dashboard (7-day rolling window)
 ```
 
 **Integration pattern**:
@@ -1514,7 +1075,7 @@ User visits page
 ```javascript
 // src/components/ABTestGate.jsx
 function ABTestGate({ flag, control, treatment, fallback }) {
-  const { isFeatureEnabled, getFeatureFlag } = usePostHogFeatureFlags();
+  // Feature flags evaluated via provider
   const variant = getFeatureFlag(flag);
 
   if (variant === 'treatment') return treatment;
@@ -1876,7 +1437,7 @@ it('detects backend contract drift for job status', () => {
 ```bash
 # scripts/check-api-contract.sh (planned)
 curl -s $BACKEND_URL/openapi.json | npx openapi-typescript -o /tmp/api-types.ts
-diff <(npx ts-to-zod /tmp/api-types.ts) src/lib/schemas.js || echo "⚠️ Contract drift detected"
+diff <(npx ts-to-zod /tmp/api-types.ts) src/lib/schemas.js || echo " ️ Contract drift detected"
 ```
 
 ### 20.3 Integration Test Patterns for API Client Services

@@ -1,4 +1,4 @@
-# ScholarForm AI — Real-time Architecture
+# ScholarForm AI  Real-time Architecture
 
 ## 1. Overview
 
@@ -6,8 +6,8 @@ ScholarForm AI employs two complementary real-time paradigms:
 
 | Paradigm | Protocol | Transport | Use Cases |
 |----------|----------|-----------|-----------|
-| **SSE** (Server-Sent Events) | HTTP long-lived stream | `sse-starlette` → `EventSourceResponse` → `ReadableStream` reader → React state | Job status updates, token-by-token AI generation, session pipeline events, synthesis progress |
-| **WebSocket** | Bidirectional full-duplex | `ReconnectingWebSocket` (exponential backoff + jitter) → `websockets` (FastAPI) | Live preview collaborative rendering, real-time content analysis |
+| **SSE** (Server-Sent Events) | HTTP long-lived stream | `sse-starlette` ? `EventSourceResponse` ? `ReadableStream` reader ? React state | Job status updates, token-by-token AI generation, session pipeline events, synthesis progress |
+| **WebSocket** | Bidirectional full-duplex | `ReconnectingWebSocket` (exponential backoff + jitter) ? `websockets` (FastAPI) | Live preview collaborative rendering, real-time content analysis |
 
 **Core invariant**: All real-time events flow through a single `RedisPubSub` broker, enabling multi-worker broadcasting. SSE endpoints are read-only subscriptions; WebSocket endpoints are bidirectional. A shared `RealtimeEvent` dataclass provides a uniform event shape across both paradigms.
 
@@ -18,44 +18,44 @@ ScholarForm AI employs two complementary real-time paradigms:
 ### 2.1 Pipeline
 
 ```
-                    ┌──────────────────────────────────────────────┐
-                    │              Backend Process                 │
-                    │                                              │
-  AgentPipeline ──► │  make_event() ──► RedisPubSub.publish()      │
-  DocumentGenerator │       │              (channel: "job:{id}"    │
-  MultiDocSynth.    │       │               or "session:{id}")     │
-                    │       ▼                                      │
-                    │  Redis (or in-memory Queue fallback)         │
-                    │       │                                      │
-                    │       ▼                                      │
-                    │  RedisPubSub.subscribe(channel)               │
-                    │       │                                      │
-                    │       ▼                                      │
-                    │  async generator ──► sse_starlette            │
-                    │  EventSourceResponse                          │
-                    └──────┬───────────────────────────────────────┘
-                           │  text/event-stream
-                           ▼
-┌──────────────────────────────────────────────────────────────┐
-│                     Frontend                                 │
-│                                                              │
-│  EventSource (native browser API)                            │
-│       │                                                     │
-│       ▼                                                     │
-│  useSSEStream (base hook)                                    │
-│       │                                                     │
-│       ├── useGeneratorSessionStream (agent pipeline)         │
-│       ├── useSessionEventStream (general session, synthesis) │
-│       └── useSynthesisSessionStream (multi-doc synthesis)    │
-│                                                              │
-│  OR: ReadableStream reader (api.generation.js)               │
-│       └── streamGenerationStatus(fetch-based, no EventSource) │
-└──────────────────────────────────────────────────────────────┘
+                    +----------------------------------------------+
+                                  Backend Process                 
+                                                                  
+  AgentPipeline --?   make_event() --? RedisPubSub.publish()      
+  DocumentGenerator                      (channel: "job:{id}"    
+  MultiDocSynth.                          or "session:{id}")     
+                           ?                                      
+                      Redis (or in-memory Queue fallback)         
+                                                                 
+                           ?                                      
+                      RedisPubSub.subscribe(channel)               
+                                                                 
+                           ?                                      
+                      async generator --? sse_starlette            
+                      EventSourceResponse                          
+                    +----------------------------------------------+
+                             text/event-stream
+                           ?
++--------------------------------------------------------------+
+                     Frontend                                 
+                                                              
+  EventSource (native browser API)                            
+                                                            
+       ?                                                     
+  useSSEStream (base hook)                                    
+                                                            
+       +-- useGeneratorSessionStream (agent pipeline)         
+       +-- useSessionEventStream (general session, synthesis) 
+       +-- useSynthesisSessionStream (multi-doc synthesis)    
+                                                              
+  OR: ReadableStream reader (api.generation.js)               
+       +-- streamGenerationStatus(fetch-based, no EventSource) 
++--------------------------------------------------------------+
 ```
 
 **Key detail**: Two distinct SSE transport mechanisms exist on the frontend:
-- **`EventSource` API** (native browser, used by `useSSEStream` and all hooks) — preferred for session-based event streams.
-- **`ReadableStream` reader** (used by `streamGenerationStatus` in `api.generation.js`) — manual fetch with `text/event-stream` `Accept` header, manual SSE frame parsing, necessary when auth headers must be injected (native `EventSource` does not support custom headers).
+- **`EventSource` API** (native browser, used by `useSSEStream` and all hooks)  preferred for session-based event streams.
+- **`ReadableStream` reader** (used by `streamGenerationStatus` in `api.generation.js`)  manual fetch with `text/event-stream` `Accept` header, manual SSE frame parsing, necessary when auth headers must be injected (native `EventSource` does not support custom headers).
 
 ### 2.2 Event Data Model
 
@@ -102,49 +102,49 @@ The `event:` line maps to `RealtimeEvent.event_type`. The `data:` line is the fu
 
 | Event Name | Direction | Payload | Emitted By |
 |-----------|-----------|---------|------------|
-| `connected` | Server → Client | `{message: "Connected to session {id}"}` | `event_generator()` on connection open |
-| `stage_update` | Server → Client | `{stage, progress, message, ...extra}` | `AgentPipeline._emit_sse()` at each pipeline stage |
-| `stage_start` | Server → Client | `{name, progress, ...}` | Synthesis pipeline stage entrance |
-| `stage_complete` | Server → Client | `{name, progress, status:"done", ...}` | Synthesis pipeline stage completion |
-| `token` | Server → Client | `{content: "chunk text", stage, progress}` | `AgentPipeline._stream_chunks()` for token-by-token streaming |
-| `outline` | Server → Client | `{sections: [...], ...}` | Agent pipeline outline generation phase |
-| `complete` | Server → Client | `{session_id, status:"done", doc_path, ...}` | Pipeline completion |
-| `synthesis_complete` | Server → Client | Full document object | Multi-doc synthesis completion |
-| `error` | Server → Client | `{error, message, ...}` | Pipeline failure |
+| `connected` | Server ? Client | `{message: "Connected to session {id}"}` | `event_generator()` on connection open |
+| `stage_update` | Server ? Client | `{stage, progress, message, ...extra}` | `AgentPipeline._emit_sse()` at each pipeline stage |
+| `stage_start` | Server ? Client | `{name, progress, ...}` | Synthesis pipeline stage entrance |
+| `stage_complete` | Server ? Client | `{name, progress, status:"done", ...}` | Synthesis pipeline stage completion |
+| `token` | Server ? Client | `{content: "chunk text", stage, progress}` | `AgentPipeline._stream_chunks()` for token-by-token streaming |
+| `outline` | Server ? Client | `{sections: [...], ...}` | Agent pipeline outline generation phase |
+| `complete` | Server ? Client | `{session_id, status:"done", doc_path, ...}` | Pipeline completion |
+| `synthesis_complete` | Server ? Client | Full document object | Multi-doc synthesis completion |
+| `error` | Server ? Client | `{error, message, ...}` | Pipeline failure |
 
 #### Stream Job Events (`channel: job:{id}`)
 
 | Event Name | Direction | Payload | Emitted By |
 |-----------|-----------|---------|------------|
-| `connected` | Server → Client | `{message: "Connected to stream for job {id}"}` | `event_generator()` on connection open |
-| `status_update` | Server → Client | `{phase, status, message, progress, stage, ...}` | `DocumentGenerator._emit()` at each generation phase |
+| `connected` | Server ? Client | `{message: "Connected to stream for job {id}"}` | `event_generator()` on connection open |
+| `status_update` | Server ? Client | `{phase, status, message, progress, stage, ...}` | `DocumentGenerator._emit()` at each generation phase |
 
 #### AI Suggestion Events (inline generator, no pub/sub)
 
 | Event Name | Direction | Payload |
 |-----------|-----------|---------|
-| `status` | Server → Client | `{state: "started", sessionId, request_id}` |
-| `suggestion` | Server → Client | `{content: "chunked text", request_id}` (multiple chunks) |
-| `done` | Server → Client | `{done: true, latencyMs, model, tier, request_id}` |
-| `error` | Server → Client | `{error: "...", request_id}` |
+| `status` | Server ? Client | `{state: "started", sessionId, request_id}` |
+| `suggestion` | Server ? Client | `{content: "chunked text", request_id}` (multiple chunks) |
+| `done` | Server ? Client | `{done: true, latencyMs, model, tier, request_id}` |
+| `error` | Server ? Client | `{error: "...", request_id}` |
 
 ### 2.6 SSE Connection Lifecycle
 
 ```
 Client                          Server
-  │                               │
-  │── GET /api/v1/stream/{id} ──► │  (or /generator/sessions/{id}/events)
-  │                               │
-  │◄── event: connected ──────────│  yield {"event": "connected", "data": ...}
-  │                               │
-  │◄── event: stage_update ───────│  pub/sub message received
-  │◄── event: token ──────────────│
-  │◄── event: complete ───────────│
-  │                               │
-  │── [browser closes/error] ────►│
-  │                               │  request.is_disconnected() → True
-  │                               │  MetricsManager.sse_connection_closed()
-  │                               │  generator exits → stream ends
+                                 
+  -- GET /api/v1/stream/{id} --?   (or /generator/sessions/{id}/events)
+                                 
+  ?-- event: connected ----------  yield {"event": "connected", "data": ...}
+                                 
+  ?-- event: stage_update -------  pub/sub message received
+  ?-- event: token --------------
+  ?-- event: complete -----------
+                                 
+  -- [browser closes/error] ----?
+                                   request.is_disconnected() ? True
+                                   MetricsManager.sse_connection_closed()
+                                   generator exits ? stream ends
 ```
 
 Each SSE endpoint calls `MetricsManager.sse_connection_open()` on start and `MetricsManager.sse_connection_closed()` on teardown, enabling Prometheus monitoring of concurrent SSE connections.
@@ -159,31 +159,31 @@ Each SSE endpoint calls `MetricsManager.sse_connection_open()` on start and `Met
 
 ```
 Client                                      Server
-  │                                           │
-  │── new WebSocket(url) ──────────────────►  │
-  │                                           │  websocket.accept()
-  │◄── onopen ────────────────────────────────│
-  │    reconnectAttempt = 0                   │
-  │    isConnected = true                     │
-  │                                           │
-  │── send(JSON.stringify(payload)) ─────────►│  receive_text() → parse → render
-  │                                           │  publish to "preview:{sessionId}" channel
-  │◄── onmessage({html, warnings, ...}) ──────│  _forward_updates() forwards pub/sub
-  │                                           │
-  │── [connection lost]                       │
-  │    isConnected = false                    │
-  │    scheduleReconnect()                    │
-  │      │                                    │
-  │      ├── computeReconnectDelay(attempt)   │
-  │      │   expDelay = 1000 × 2^(attempt-1)  │
-  │      │   jitter = delay × [-0.3, +0.3]    │
-  │      │   capped at maxDelay=30000         │
-  │      │                                    │
-  │      └── setTimeout → open() ────────────►│  new WebSocket connection
-  │                                           │
-  │── close() ───────────────────────────────►│
-  │    forcedClose = true                     │
-  │    clearTimeout + ws.close()              │
+                                             
+  -- new WebSocket(url) ------------------?  
+                                               websocket.accept()
+  ?-- onopen --------------------------------
+      reconnectAttempt = 0                   
+      isConnected = true                     
+                                             
+  -- send(JSON.stringify(payload)) ---------?  receive_text() ? parse ? render
+                                               publish to "preview:{sessionId}" channel
+  ?-- onmessage({html, warnings, ...}) ------  _forward_updates() forwards pub/sub
+                                             
+  -- [connection lost]                       
+      isConnected = false                    
+      scheduleReconnect()                    
+                                            
+        +-- computeReconnectDelay(attempt)   
+           expDelay = 1000  2^(attempt-1)  
+           jitter = delay  [-0.3, +0.3]    
+           capped at maxDelay=30000         
+                                            
+        +-- setTimeout ? open() ------------?  new WebSocket connection
+                                             
+  -- close() -------------------------------?
+      forcedClose = true                     
+      clearTimeout + ws.close()              
 ```
 
 #### Reconnection parameters
@@ -193,7 +193,7 @@ Client                                      Server
 | `initialDelay` | 1000 ms | First retry delay |
 | `maxDelay` | 30000 ms | Ceiling for exponential backoff |
 | `factor` | 2 | Exponential growth factor |
-| `jitter` | 0.3 | Random ±30% jitter to avoid thundering herd |
+| `jitter` | 0.3 | Random 30% jitter to avoid thundering herd |
 | `maxRetries` | `Infinity` (default), 5 (synthesis) | Maximum reconnection attempts |
 
 #### Reconnect delay formula
@@ -214,19 +214,19 @@ Resulting sequence (approximate): 1000ms, 1400-2600ms, 2800-5200ms, 5600-10400ms
 
 **`GET /api/v1/ws/preview/{sessionId}`** (upgraded to WebSocket)
 
-#### Client → Server Message Format
+#### Client ? Server Message Format
 
 ```json
 {
   "content": "Full document text or HTML content",
   "templateId": "ieee",               // Template slug (or "template_id")
   "cursor": null,                      // Cursor position (reserved)
-  "checksum": "a1b2c3d4",             // simpleHash(content) — lightweight client-side hash
+  "checksum": "a1b2c3d4",             // simpleHash(content)  lightweight client-side hash
   "seq": 42                            // Monotonic message sequence number
 }
 ```
 
-#### Server → Client Message Format
+#### Server ? Client Message Format
 
 ```json
 {
@@ -253,10 +253,10 @@ No client pong is required; the heartbeat exists solely to keep intermediate pro
 Client `sendContent()` in `useLivePreviewSocket` implements a 200ms debounce:
 
 ```
-content change → clearTimeout(200ms) → setTimeout → send payload
-                                                    │
+content change ? clearTimeout(200ms) ? setTimeout ? send payload
+                                                    
                               if diff > 1000 chars: set isAnalyzing = true immediately
-                                                    │
+                                                    
                               if WebSocket not OPEN: store in pendingPayloadRef
                                                      replay on next onopen
 ```
@@ -300,23 +300,23 @@ This endpoint is exposed via `getPreviewHtml()` in `api.preview.v1.js`.
 The `RedisPubSub` class (`backend/app/realtime/pubsub.py`) abstracts Redis pub/sub with transparent in-memory fallback:
 
 ```
-         ┌─────────────────────┐
-         │   RedisPubSub        │
-         │   (singleton-per-    │
-         │    asyncio-loop)     │
-         └────────┬────────────┘
-                  │
-        ┌─────────┴──────────┐
-        ▼                    ▼
-┌──────────────┐   ┌────────────────┐
-│   Redis       │   │  In-memory      │
-│  (aioredis)   │   │  asyncio.Queue  │
-│               │   │  (fallback)     │
-│  channel:     │   │                 │
-│  "job:{id}"   │   │  channel → set  │
-│  "session:{id}"│   │  of Queues      │
-│  "preview:{id}"│   │                 │
-└──────────────┘   └────────────────┘
+         +---------------------+
+            RedisPubSub        
+            (singleton-per-    
+             asyncio-loop)     
+         +---------------------+
+                  
+        +--------------------+
+        ?                    ?
++--------------+   +----------------+
+   Redis            In-memory      
+  (aioredis)        asyncio.Queue  
+                    (fallback)     
+  channel:                         
+  "job:{id}"        channel ? set  
+  "session:{id}"     of Queues      
+  "preview:{id}"                    
++--------------+   +----------------+
 ```
 
 **Design choices:**
@@ -324,7 +324,7 @@ The `RedisPubSub` class (`backend/app/realtime/pubsub.py`) abstracts Redis pub/s
 - **Per-loop Redis client**: One `aioredis` client per asyncio event loop, tracked in `_redis_by_loop` keyed by `id(loop)`. This prevents "attached to a different loop" errors in multi-loop environments (e.g., Celery workers with custom event loops).
 - **Lazy connection**: Redis connection is established on first `publish` or `subscribe` call. `ping()` validates connectivity.
 - **Graceful degradation**: If Redis is unavailable (`REDIS_ENABLED=false`, `aioredis` import fails, connection/publish fails), `_force_fallback = True` silences further warnings and all pub/sub operations use `asyncio.Queue` in memory.
-- **Thread-safe publish**: `publish()` is safe to call from any thread — it uses `asyncio.Lock` and `loop.create_task()`/`asyncio.run()` as needed.
+- **Thread-safe publish**: `publish()` is safe to call from any thread  it uses `asyncio.Lock` and `loop.create_task()`/`asyncio.run()` as needed.
 
 ### 4.2 Channel Namespace Convention
 
@@ -347,7 +347,7 @@ async for event in _pubsub.subscribe("session:abc-123"):
 await _pubsub.publish("session:abc-123", event_dict)
 ```
 
-The `subscribe()` method is an `AsyncGenerator` — it yields messages until the generator is garbage collected or the client disconnects. Cleanup always calls `pubsub.unsubscribe()` and `pubsub.close()` (or `aclose()` for redis-py >= 4.6).
+The `subscribe()` method is an `AsyncGenerator`  it yields messages until the generator is garbage collected or the client disconnects. Cleanup always calls `pubsub.unsubscribe()` and `pubsub.close()` (or `aclose()` for redis-py >= 4.6).
 
 ### 4.4 In-Memory Fallback Behavior
 
@@ -366,7 +366,7 @@ subscribe("channel"):
       yield event
 ```
 
-Publishing to an in-memory channel fans out to all subscribed queues. If a queue is full (`QueueFull`), the event is silently dropped for that consumer. This fallback works within a single process only — multi-worker broadcasting requires Redis.
+Publishing to an in-memory channel fans out to all subscribed queues. If a queue is full (`QueueFull`), the event is silently dropped for that consumer. This fallback works within a single process only  multi-worker broadcasting requires Redis.
 
 ---
 
@@ -382,12 +382,12 @@ useSSEStream(sessionId, getEventsUrl, {
   maxRetries = Infinity,
   streamName = 'SSE',
   onMaxRetriesExceeded
-}) → { eventSource, status, reconnectCount, setStatus }
+}) ? { eventSource, status, reconnectCount, setStatus }
 ```
 
 **Behavior**:
 - Creates a native `EventSource` with the URL returned by `getEventsUrl(sessionId)`. Attaches `?token=` query param from Supabase auth session.
-- `status` transitions: `'idle'` → `'connecting'` → `'streaming'` (on first open) | `'reconnecting'` (on retry) → `'error'` (on failure).
+- `status` transitions: `'idle'` ? `'connecting'` ? `'streaming'` (on first open) | `'reconnecting'` (on retry) ? `'error'` (on failure).
 - Implements exponential backoff reconnect on `onerror` with configurable `maxRetries` (default `Infinity`).
 - On unmount: closes `EventSource`, clears reconnect timer.
 
@@ -406,7 +406,7 @@ const rawBackoff = maxRetries === Infinity
 ```javascript
 useGeneratorSessionStream(sessionId, callbacks = {
   onStageChange, onToken, onOutline, onComplete, onError
-}) → { status, stages, reconnectCount, latencyMs }
+}) ? { status, stages, reconnectCount, latencyMs }
 ```
 
 **Stream URL**: `${API_BASE_URL}/api/v1/generator/sessions/${id}/events`
@@ -414,12 +414,12 @@ useGeneratorSessionStream(sessionId, callbacks = {
 **Behavior**:
 - Wraps `useSSEStream` with `maxRetries: Infinity`, `streamName: 'GeneratorSession'`.
 - Registers five named `EventSource` event listeners:
-  - `connected` → measures connection latency (`latencyMs`), sets status to `'streaming'`.
-  - `stage` → accumulates stage records (upsert by `name`), invokes `onStageChange`.
-  - `token` → passes token content to `onToken` (handles both JSON and raw string payloads).
-  - `outline` → passes outline data to `onOutline`.
-  - `complete` → sets status `'done'`, invokes `onComplete`.
-  - `error` → sets status `'error'`, invokes `onError`.
+  - `connected` ? measures connection latency (`latencyMs`), sets status to `'streaming'`.
+  - `stage` ? accumulates stage records (upsert by `name`), invokes `onStageChange`.
+  - `token` ? passes token content to `onToken` (handles both JSON and raw string payloads).
+  - `outline` ? passes outline data to `onOutline`.
+  - `complete` ? sets status `'done'`, invokes `onComplete`.
+  - `error` ? sets status `'error'`, invokes `onError`.
 
 **State shape** (`stages`):
 ```javascript
@@ -437,12 +437,12 @@ useGeneratorSessionStream(sessionId, callbacks = {
 **Signature**:
 ```javascript
 useSessionEventStream(sessionId, getEventsUrl, streamName)
-  → { stages, currentStage, progress, isComplete, error }
+  ? { stages, currentStage, progress, isComplete, error }
 ```
 
 **Behavior**:
 - Wraps `useSSEStream` with `maxRetries: 5` (finite retries). On exhaustion: sets `error` with user-visible message.
-- Uses generic `eventSource.onmessage` (not named event listeners) — parses all incoming events as JSON stage objects.
+- Uses generic `eventSource.onmessage` (not named event listeners)  parses all incoming events as JSON stage objects.
 - Tracks `progress` (0-100) from any message with a `progress` field.
 - Sets `isComplete = true` when `progress >= 100`, `status === 'done'`, or `name === 'Template Rendering'` with `status === 'done'`.
 - Sets `error` when `status === 'error'`.
@@ -455,7 +455,7 @@ useSessionEventStream(sessionId, getEventsUrl, streamName)
 ```javascript
 useSynthesisSessionStream(sessionId, callbacks = {
   onConnected, onStageStart, onStageComplete, onSynthesisComplete, onError
-}) → { status, stages, reconnectCount, latencyMs }
+}) ? { status, stages, reconnectCount, latencyMs }
 ```
 
 **Stream URL**: `${API_BASE_URL}/api/v1/synthesis/sessions/${id}/events` (via `getSynthesisEventsEndpoint()`)
@@ -463,11 +463,11 @@ useSynthesisSessionStream(sessionId, callbacks = {
 **Behavior**:
 - Wraps `useSSEStream` with `maxRetries: 5`, `streamName: 'SynthesisSession'`.
 - Registers four named event listeners plus one generic listener:
-  - `connected` → latency measurement, invokes `onConnected`.
-  - `stage_start` → upserts stage with `status: 'in_progress'`, invokes `onStageStart`.
-  - `stage_complete` → marks stage `status: 'done'`, invokes `onStageComplete`.
-  - `synthesis_complete` → sets status `'done'`, invokes `onSynthesisComplete` with full document object.
-  - `error` → sets status `'error'`, invokes `onError`.
+  - `connected` ? latency measurement, invokes `onConnected`.
+  - `stage_start` ? upserts stage with `status: 'in_progress'`, invokes `onStageStart`.
+  - `stage_complete` ? marks stage `status: 'done'`, invokes `onStageComplete`.
+  - `synthesis_complete` ? sets status `'done'`, invokes `onSynthesisComplete` with full document object.
+  - `error` ? sets status `'error'`, invokes `onError`.
 
 ### 5.5 `useLivePreviewSocket`
 
@@ -476,15 +476,15 @@ useSynthesisSessionStream(sessionId, callbacks = {
 **Signature**:
 ```javascript
 useLivePreviewSocket(sessionId)
-  → { html, latencyMs, warnings, isConnected, isReconnecting, reconnectAttempt, isAnalyzing, sendContent }
+  ? { html, latencyMs, warnings, isConnected, isReconnecting, reconnectAttempt, isAnalyzing, sendContent }
 ```
 
 **Behavior**:
 - Creates `ReconnectingWebSocket` to `ws://{host}/api/v1/ws/preview/{sessionId}`.
-- `onopen` → sets `isConnected=true`, `isReconnecting=false`. Replays `pendingPayloadRef` if any queued during downtime.
-- `onmessage` → parses JSON, updates `html`, `warnings`, computes `latencyMs` from `sentAtRef`, sets `isAnalyzing=false`.
-- `onclose/onerror` → sets `isConnected=false`.
-- `onreconnect` → sets `isReconnecting=true`, increments `reconnectAttempt`.
+- `onopen` ? sets `isConnected=true`, `isReconnecting=false`. Replays `pendingPayloadRef` if any queued during downtime.
+- `onmessage` ? parses JSON, updates `html`, `warnings`, computes `latencyMs` from `sentAtRef`, sets `isAnalyzing=false`.
+- `onclose/onerror` ? sets `isConnected=false`.
+- `onreconnect` ? sets `isReconnecting=true`, increments `reconnectAttempt`.
 - `sendContent(content, templateId)`:
   - 200ms debounce via `setTimeout`.
   - If `abs(content.length - lastContentRef.length) > 1000`: immediately sets `isAnalyzing=true`.
@@ -508,7 +508,7 @@ useLivePreviewSocket(sessionId)
 
 ### 6.2 Timeout Handling
 
-- **Heartbeat (WebSocket)**: Server sends `{"type": "ping"}` every 20s. No client timeout — the heartbeat keeps the connection alive through proxies.
+- **Heartbeat (WebSocket)**: Server sends `{"type": "ping"}` every 20s. No client timeout  the heartbeat keeps the connection alive through proxies.
 - **SSE idle timeout**: No explicit server-side timeout. Client `EventSource` automatically reconnects on any connection drop.
 - **Debounce (WebSocket send)**: 200ms debounce on `sendContent`. Prevents flood during rapid typing.
 - **Pending payload replay**: WebSocket messages queued in `pendingPayloadRef` during disconnection are replayed on next `onopen`, ensuring zero update loss.
@@ -525,10 +525,10 @@ Two fallback paths exist:
 
 | Scenario | Mechanism |
 |----------|-----------|
-| **SSE connection lost mid-generation** | `EventSource` auto-reconnects. The `session:{id}` pub/sub channel persists — missed events are lost, but the latest state is available via HTTP GET (`getGenerationStatus`). |
+| **SSE connection lost mid-generation** | `EventSource` auto-reconnects. The `session:{id}` pub/sub channel persists  missed events are lost, but the latest state is available via HTTP GET (`getGenerationStatus`). |
 | **WebSocket drops during content analysis** | `pendingPayloadRef` stores the last unsent payload. Replayed on reconnect. `isAnalyzing` remains `true` until response arrives. |
 | **Client navigates away mid-stream** | `useEffect` cleanup closes `EventSource`/`WebSocket`. Backend detects disconnect via `request.is_disconnected()` (SSE) or `WebSocketDisconnect` exception. |
-| **Redis goes down mid-session** | `RedisPubSub._force_fallback = true`. In-memory `asyncio.Queue` takes over. Single-process only — multi-worker broadcasting lost until Redis recovers. |
+| **Redis goes down mid-session** | `RedisPubSub._force_fallback = true`. In-memory `asyncio.Queue` takes over. Single-process only  multi-worker broadcasting lost until Redis recovers. |
 | **Server crashes during generation** | Active SSE/WS connections drop. Client reconnects to new worker instance. Pipeline state persisted in Supabase (`generator_sessions` table) survives restart. |
 | **Supabase unavailable** | `DocumentGenerator` falls back to `_volatile_sessions` dict. Events still flow via pub/sub. State lost on process restart. |
 
@@ -583,10 +583,10 @@ Log context includes:
 | Connection overhead | 1 HTTP round trip | 1 HTTP upgrade round trip |
 | Message overhead | ~100 bytes/event (SSE framing) | ~20 bytes/frame (WebSocket framing) |
 | Max concurrent connections (single node) | 6 per domain (browser limit per host) | 255+ (no browser limit) |
-| Bidirectional | ❌ (server → client only) | ✅ (full duplex) |
+| Bidirectional | ? (server ? client only) | ? (full duplex) |
 | Automatic reconnection | Native `EventSource` | Custom `ReconnectingWebSocket` |
-| Custom headers | ❌ (requires `ReadableStream` fallback) | ✅ (though not used in current impl) |
-| Binary payloads | ❌ (text only) | ✅ (though not used) |
+| Custom headers | ? (requires `ReadableStream` fallback) | ? (though not used in current impl) |
+| Binary payloads | ? (text only) | ? (though not used) |
 
 ---
 
@@ -596,69 +596,69 @@ Log context includes:
 
 ```
 User                        Frontend                          Backend
- │                            │                                  │
- │── Click "Generate" ──────►│                                  │
- │                            │── POST /generator/sessions ─────►│  create session, dispatch
- │                            │◄── {session_id, status:"started"}│  background task
- │                            │                                  │
- │                            │── GET /generator/sessions/{id}/events ──►│  SSE connection
- │                            │◄── event: connected ──────────────│
- │                            │                                  │  AgentPipeline.run()
- │                            │◄── event: stage_update ──────────│  "Generating outline"
- │  progress bar updates ────│◄── event: outline ────────────────│  AgentPipeline outline phase
- │                            │◄── event: stage_update ──────────│  "Writing content"
- │                            │◄── event: token (chunked) ──────│  _stream_chunks()
- │  content appears live ────│◄── event: stage_update ──────────│  "Formatting"
- │                            │◄── event: complete ──────────────│  pipeline done
- │  "Download" button ───────│                                  │
- │                            │── GET /generator/sessions/{id}/download?format=docx ──►│
- │                            │◄── FileResponse (docx binary) ───│
+                                                               
+ -- Click "Generate" ------?                                  
+                             -- POST /generator/sessions -----?  create session, dispatch
+                             ?-- {session_id, status:"started"}  background task
+                                                               
+                             -- GET /generator/sessions/{id}/events --?  SSE connection
+                             ?-- event: connected --------------
+                                                                 AgentPipeline.run()
+                             ?-- event: stage_update ----------  "Generating outline"
+   progress bar updates ----?-- event: outline ----------------  AgentPipeline outline phase
+                             ?-- event: stage_update ----------  "Writing content"
+                             ?-- event: token (chunked) ------  _stream_chunks()
+   content appears live ----?-- event: stage_update ----------  "Formatting"
+                             ?-- event: complete --------------  pipeline done
+   "Download" button -------                                  
+                             -- GET /generator/sessions/{id}/download?format=docx --?
+                             ?-- FileResponse (docx binary) ---
 ```
 
 ### 8.2 Multi-Doc Synthesis (SSE)
 
 ```
 User                        Frontend                          Backend
- │                            │                                  │
- │── Upload 2-6 files ──────►│                                  │
- │                            │── POST /generator/sessions ─────►│  multi_doc session
- │                            │◄── {session_id, status:"started"}│
- │                            │                                  │
- │                            │── GET /synthesis/sessions/{id}/events ──►│  SSE connection
- │                            │◄── event: connected ──────────────│
- │                            │◄── event: stage_start ───────────│  Parsing documents
- │                            │◄── event: stage_complete ────────│  Parsing done
- │                            │◄── event: stage_start ───────────│  Extracting structure
- │                            │◄── event: stage_complete ────────│
- │                            │◄── event: stage_start ───────────│  Normalizing styles
- │                            │◄── event: stage_complete ────────│
- │                            │◄── event: synthesis_complete ────│  Final document ready
+                                                               
+ -- Upload 2-6 files ------?                                  
+                             -- POST /generator/sessions -----?  multi_doc session
+                             ?-- {session_id, status:"started"}
+                                                               
+                             -- GET /synthesis/sessions/{id}/events --?  SSE connection
+                             ?-- event: connected --------------
+                             ?-- event: stage_start -----------  Parsing documents
+                             ?-- event: stage_complete --------  Parsing done
+                             ?-- event: stage_start -----------  Extracting structure
+                             ?-- event: stage_complete --------
+                             ?-- event: stage_start -----------  Normalizing styles
+                             ?-- event: stage_complete --------
+                             ?-- event: synthesis_complete ----  Final document ready
 ```
 
 ### 8.3 Live Preview (WebSocket)
 
 ```
 User Types                     Frontend                          Backend
- │                            │                                  │
- │                            │── WebSocket /ws/preview/{id} ───►│  accept + create forward_task
- │                            │◄── {type:"ping", timestamp} ─────│  every 20s heartbeat
- │                            │                                  │
- │── types "Hello World" ───►│                                  │
- │                            │── (200ms debounce)                │
- │                            │── send({content, templateId,     │
- │                            │       checksum, seq}) ──────────►│  render_preview()
- │                            │                                  │  publish to "preview:{id}"
- │                            │◄── message({html, latencyMs,     │  _forward_updates()
- │                            │       warnings, version, seq}) ──│
- │  live preview updates ────│                                  │
- │                            │                                  │
- │── [connection drops]       │                                  │
- │     isReconnecting=true    │                                  │
- │                            │── [exponential backoff + jitter] │
- │                            │── new WebSocket connection ─────►│
- │                            │◄── onopen ───────────────────────│
- │     isConnected=true       │                                  │
- │                            │── send(pendingPayload) ─────────►│  replay last unsent update
+                                                               
+                             -- WebSocket /ws/preview/{id} ---?  accept + create forward_task
+                             ?-- {type:"ping", timestamp} -----  every 20s heartbeat
+                                                               
+ -- types "Hello World" ---?                                  
+                             -- (200ms debounce)                
+                             -- send({content, templateId,     
+                                    checksum, seq}) ----------?  render_preview()
+                                                                 publish to "preview:{id}"
+                             ?-- message({html, latencyMs,       _forward_updates()
+                                    warnings, version, seq}) --
+   live preview updates ----                                  
+                                                               
+ -- [connection drops]                                         
+      isReconnecting=true                                      
+                             -- [exponential backoff + jitter] 
+                             -- new WebSocket connection -----?
+                             ?-- onopen -----------------------
+      isConnected=true                                         
+                             -- send(pendingPayload) ---------?  replay last unsent update
 ```
 
 ---
@@ -668,22 +668,22 @@ User Types                     Frontend                          Backend
 | File | Role |
 |------|------|
 | `backend/app/realtime/events.py` | `RealtimeEvent` dataclass, `make_event()` factory |
-| `backend/app/realtime/pubsub.py` | `RedisPubSub` — Redis + in-memory queue fallback |
-| `backend/app/routers/v1/stream.py` | `GET /api/v1/stream/{jobId}` — job-level SSE, `emit_event()` helper |
-| `backend/app/routers/v1/generator.py` | `GET /sessions/{id}/events` — generator session SSE |
-| `backend/app/routers/v1/synthesis.py` | `GET /sessions/{id}/events` — synthesis session SSE |
-| `backend/app/routers/preview.py` | `WS /api/v1/ws/preview/{id}` — live preview WebSocket; `POST /api/v1/preview/live` — HTTP fallback; `GET /preview/{id}/ai-suggest` — AI suggestion SSE |
-| `backend/app/pipeline/generation/agent.py` | `_emit_sse()` and `_stream_chunks()` — pipeline event emission and token streaming |
-| `backend/app/pipeline/generation/document_generator.py` | `_emit()` — job-level status emission via `stream.emit_event()` |
+| `backend/app/realtime/pubsub.py` | `RedisPubSub`  Redis + in-memory queue fallback |
+| `backend/app/routers/v1/stream.py` | `GET /api/v1/stream/{jobId}`  job-level SSE, `emit_event()` helper |
+| `backend/app/routers/v1/generator.py` | `GET /sessions/{id}/events`  generator session SSE |
+| `backend/app/routers/v1/synthesis.py` | `GET /sessions/{id}/events`  synthesis session SSE |
+| `backend/app/routers/preview.py` | `WS /api/v1/ws/preview/{id}`  live preview WebSocket; `POST /api/v1/preview/live`  HTTP fallback; `GET /preview/{id}/ai-suggest`  AI suggestion SSE |
+| `backend/app/pipeline/generation/agent.py` | `_emit_sse()` and `_stream_chunks()`  pipeline event emission and token streaming |
+| `backend/app/pipeline/generation/document_generator.py` | `_emit()`  job-level status emission via `stream.emit_event()` |
 | `frontend/src/lib/ReconnectingWebSocket.js` | WebSocket wrapper with exponential backoff + jitter |
 | `frontend/src/hooks/useSSEStream.js` | Base SSE hook wrapping native `EventSource` |
 | `frontend/src/hooks/useGeneratorSessionStream.js` | Generator pipeline SSE hook |
 | `frontend/src/hooks/useSessionEventStream.js` | Generic session SSE hook (max 5 retries) |
 | `frontend/src/hooks/useSynthesisSessionStream.js` | Synthesis pipeline SSE hook |
 | `frontend/src/hooks/useLivePreviewSocket.js` | Live preview WebSocket hook with debounce + pending payload replay |
-| `frontend/src/services/api.generation.js` | `streamGenerationStatus()` — fetch-based SSE for job status; `getGenerationStatus()` — HTTP polling fallback |
-| `frontend/src/services/api.preview.v1.js` | `getPreviewHtml()` — HTTP POST fallback for preview; `getAiSuggestion()` — AI suggestion SSE |
-| `frontend/src/services/api.synthesis.js` | `getSynthesisEventsEndpoint()` — URL builder for synthesis SSE |
+| `frontend/src/services/api.generation.js` | `streamGenerationStatus()`  fetch-based SSE for job status; `getGenerationStatus()`  HTTP polling fallback |
+| `frontend/src/services/api.preview.v1.js` | `getPreviewHtml()`  HTTP POST fallback for preview; `getAiSuggestion()`  AI suggestion SSE |
+| `frontend/src/services/api.synthesis.js` | `getSynthesisEventsEndpoint()`  URL builder for synthesis SSE |
 
 ---
 
@@ -712,7 +712,7 @@ beforeEach(() => {
 - Store the returned mock (mockEs) to call onopen, onerror and verify close().
 - Set eadyState transitions manually (0 -> 1 -> 2) to simulate connection lifecycle.
 - Mock EventSource.CONNECTING = 0, OPEN = 1, CLOSED = 2 if the code under test references them.
-- For useSSEStream, the hook reads supabase.auth.getSession() on connect -- mock Supabase in parallel via i.mock('@/src/lib/supabaseClient').
+- For useSSEStream, the hook reads supabase.auth.getSession() on connect -- mock Supabase in parallel via vi.mock('@/src/lib/supabaseClient').
 
 **Simulating named events:**
 `javascript
@@ -726,7 +726,7 @@ mockEs.addEventListener.mock.calls.forEach(([event, handler]) => {
 
 ### 10.2 Mocking ReconnectingWebSocket Class
 
-rontend/src/lib/ReconnectingWebSocket.js exports a default class. Mock the module:
+Frontend/src/lib/ReconnectingWebSocket.js exports a default class. Mock the module:
 
 `javascript
 vi.mock('@/src/lib/ReconnectingWebSocket', () => ({
@@ -760,7 +760,7 @@ wsMock.onclose({});        // -> isConnected=false
 
 ### 10.3 Testing useSSEStream with Mocked Stream
 
-**Test plan** (expected test file: rontend/src/test/hooks/useSSEStream.test.js):
+**Test plan** (expected test file: Frontend/src/test/hooks/useSSEStream.test.js):
 
 1. **Connection lifecycle** -- assert status transitions: idle -> connecting -> streaming on onopen, then error -> econnecting on onerror.
 2. **Auth token injection** -- verify searchParams.set('token', ...) is called with the mocked access token.
@@ -799,14 +799,14 @@ describe('useSSEStream', () => {
 
 ### 10.4 Testing RedisPubSub with Mocked Redis Client
 
-ackend/app/realtime/pubsub.py. Use unittest.mock.patch to replace edis.asyncio:
+Backend/app/realtime/pubsub.py. Use unittest.mock.patch to replace edis.asyncio:
 
 | Test Case | Approach |
 |-----------|----------|
-| publish() uses Redis when enabled | ioredis.from_url().publish.assert_called_once() |
+| publish() uses Redis when enabled | ioredis.from_url().publish.assert_called_once() |
 | subscribe() yields messages from Redis | Mock pubsub.get_message() to return test events |
-| publish() falls back to in-memory when Redis is down | Patch ioredis.from_url to raise, verify _force_fallback=True |
-| subscribe() falls back to syncio.Queue | Deliver events via queue after Redis failure |
+| publish() falls back to in-memory when Redis is down | Patch ioredis.from_url to raise, verify _force_fallback=True |
+| subscribe() falls back to asyncio.Queue | Deliver events via queue after Redis failure |
 | Thread-safe publish from non-async context | Call publish() from sync thread, verify loop.create_task used |
 | Multiple subscribers on same channel | Two concurrent subscribe() generators both receive same event |
 | unsubscribe() cleans up queues | Queue removed from _fallback_channels |
@@ -952,7 +952,7 @@ SSE connections are long-lived HTTP streams. A sudden drop in active connections
 | Alert | PromQL | Threshold | Severity | Action |
 |-------|--------|-----------|----------|--------|
 | High SSE drop rate | `rate(sse_connection_closed_total[5m]) / (rate(sse_connection_open_total[5m]) + 1) > 0.05` | > 5% drop-to-open ratio | **Warning** | Check backend CPU, Redis connectivity, network partition |
-| Zero active SSE connections | `sse_connections_open == 0` | 0 for > 2 min | **Critical** | All SSE endpoints unreachable � immediate incident |
+| Zero active SSE connections | `sse_connections_open == 0` | 0 for > 2 min | **Critical** | All SSE endpoints unreachable  immediate incident |
 | SSE connection churn | `rate(sse_connection_open_total[5m]) > 20 AND rate(sse_connection_closed_total[5m]) > 20` | > 20/s open AND close | **Info** | Clients rapidly connecting/disconnecting |
 | Per-endpoint connection loss | `sse_connections_open{endpoint="generator"} == 0` | 0 for > 1 min | **Warning** | Generator SSE endpoint possibly down |
 
@@ -980,7 +980,7 @@ Mitigation: Server-side backoff hint sent on WS close frame
 **Server-side backoff hint**: When a storm is detected, the server includes a `retry_after` field in the WebSocket close frame:
 
 ```python
-# preview.py � storm mitigation
+# preview.py  storm mitigation
 if reconnect_storm_detected():
     await websocket.close(
         code=4000,
@@ -1080,7 +1080,7 @@ The WebSocket endpoint (`/api/v1/ws/preview/{sessionId}`) authenticates via JWT 
 | Method | Used? | Constraint |
 |--------|-------|------------|
 | **Query parameter** (`?token=<JWT>`) | ? Current implementation | Native `WebSocket` API does not support custom `Sec-WebSocket-Protocol` headers during handshake |
-| **Upgrade header** (`Authorization: Bearer <JWT>`) | ? Not possible | Browser `new WebSocket(url)` only accepts URL � no header injection |
+| **Upgrade header** (`Authorization: Bearer <JWT>`) | ? Not possible | Browser `new WebSocket(url)` only accepts URL  no header injection |
 | **Pre-authenticated WebSocket** | ? Planned | HTTP POST to establish session, return `ws_url` with short-lived ticket |
 
 **Token exposure risks and mitigations**:
@@ -1133,7 +1133,7 @@ Token expires during active WebSocket session
 **SSE token handling**: `useSSEStream` attaches `?token=` to the SSE URL. On `onerror`, if the error is due to a 401 response, the hook attempts a single token refresh before reconnecting. If refresh fails, the hook sets `status: 'auth_error'` and stops retrying:
 
 ```javascript
-// useSSEStream.js � token refresh on auth error
+// useSSEStream.js  token refresh on auth error
 const handleAuthError = async () => {
   try {
     const { data } = await supabase.auth.refreshSession();
@@ -1181,9 +1181,9 @@ class RateLimiter:
 ```
 
 **Metrics tracking**:
-- `ws_rate_limited_total{counter}` � total messages dropped due to rate limiting
-- `sse_rate_limited_total{counter}` � total SSE connections rejected
-- `ws_rate_limit_exceeded_connections{gauge}` � currently rate-limited connections
+- `ws_rate_limited_total{counter}`  total messages dropped due to rate limiting
+- `sse_rate_limited_total{counter}`  total SSE connections rejected
+- `ws_rate_limit_exceeded_connections{gauge}`  currently rate-limited connections
 
 ### 13.4 Connection Origin Validation
 
@@ -1232,7 +1232,7 @@ def _is_origin_allowed(origin: str | None) -> bool:
 | Test Case | Expected | Status |
 |-----------|----------|--------|
 | Valid origin `https://app.scholarform.ai` | Connection accepted | ? |
-| Valid wildcard origin `https://dev.scholarform.vercel.app` | Connection accepted | ? |
+| Valid wildcard origin `https://dev.scholarform.onrender.com` | Connection accepted | ? |
 | Missing Origin header | Connection rejected (4003) | ? |
 | Malicious origin `https://evil.com` | Connection rejected (4003) | ? |
 | Null origin (iframe/file) | Connection rejected (4003) | ? |
@@ -1249,7 +1249,7 @@ def _is_origin_allowed(origin: str | None) -> bool:
 
 | Load Balancer | Stickiness Configuration | Cookie Name | Duration |
 |---------------|------------------------|-------------|----------|
-| Render (default) | Built-in � no config needed | Render internal | Automatic |
+| Render (default) | Built-in  no config needed | Render internal | Automatic |
 | AWS ALB | `stickiness.enabled = true` | `AWSALB` | 1 day |
 | NGINX Plus | `sticky cookie` directive | `route` | Session duration |
 | Traefik | `stickiness.enabled = true` | `traefik` | Session duration |
@@ -1275,25 +1275,25 @@ Redis pub/sub is the backbone for cross-worker event broadcasting. The following
 
 ```
                     +-----------------------------+
-                    �           Redis              �
-                    �  +-----------------------+   �
-                    �  �  pub/sub channels:    �   �
-                    �  �  "job:{id}"           �   �
-                    �  �  "session:{id}"       �   �
-                    �  �  "preview:{id}"       �   �
-                    �  +-----------------------+   �
+                               Redis              
+                      +-----------------------+   
+                        pub/sub channels:       
+                        "job:{id}"              
+                        "session:{id}"          
+                        "preview:{id}"          
+                      +-----------------------+   
                     +-----------------------------+
-                               �
-            +------------------+------------------+
-            ?                  ?                  ?
-    +---------------+ +---------------+ +---------------+
-    �   Worker A    � �   Worker B    � �   Worker C    �
-    �  (Celery)     � �  (Web/API)    � �  (Web/API)    �
-    �               � �               � �               �
-    � AgentPipeline � � SSE clients   � � WS clients    �
-    � _emit_sse()   � � event_generator�� preview_ws()  �
-    � publish()     � � subscribe()   � � subscribe()   �
-    +---------------+ +---------------+ +---------------+
+                               
+             +------------------+------------------+
+                                                 
+     +---------------+ +---------------+ +---------------+
+        Worker A        Worker B        Worker C    
+       (Celery)        (Web/API)       (Web/API)    
+                                                    
+      AgentPipeline   SSE clients     WS clients    
+      _emit_sse()     event_generator preview_ws()  
+      publish()       subscribe()     subscribe()   
+     +---------------+ +---------------+ +---------------+
 ```
 
 **Key considerations for multi-worker Redis pub/sub**:
@@ -1301,15 +1301,15 @@ Redis pub/sub is the backbone for cross-worker event broadcasting. The following
 | Factor | Impact | Mitigation |
 |--------|--------|------------|
 | Redis connection count | Each worker maintains 1 Redis connection for pub/sub | Reuse connection via `_redis_by_loop` (one per event loop) |
-| Subscription fan-out | All workers receive all events on subscribed channels | Channel-scoped subscriptions per session/job � workers only subscribe to channels they serve |
-| Redis network bandwidth | Event serialization overhead | Events are small JSON (< 10 KB typical); 1000 events/s � 10 MB/s bandwidth |
-| Redis pub/sub reliability | No message persistence � lost if no subscriber | Jobs also persist state to Supabase; events are fire-and-forget for real-time UI |
+| Subscription fan-out | All workers receive all events on subscribed channels | Channel-scoped subscriptions per session/job  workers only subscribe to channels they serve |
+| Redis network bandwidth | Event serialization overhead | Events are small JSON (< 10 KB typical); 1000 events/s  10 MB/s bandwidth |
+| Redis pub/sub reliability | No message persistence  lost if no subscriber | Jobs also persist state to Supabase; events are fire-and-forget for real-time UI |
 | Connection recovery | Worker crash ? lost subscriptions | Workers re-subscribe on startup; SSE/WS clients reconnect automatically |
 
 **Subscription management**:
 
 ```python
-# pubsub.py � worker subscribes to channels on demand
+# pubsub.py  worker subscribes to channels on demand
 async def subscribe(self, channel: str) -> AsyncGenerator:
     """Subscribe to a channel and yield events."""
     async with self._lock:
@@ -1391,10 +1391,10 @@ Users: 400 SSE streams (agent/synthesis page views)
      + 100 WebSocket connections (live preview editors)
 
 Resource consumption:
-  CPU:  (400 � 0.05%) + (100 � 0.15%) = 20% + 15% = 35% of 1 core
-  Memory: (400 � 75 KB) + (100 � 140 KB) = 30 MB + 14 MB = 44 MB
+  CPU:  (400  0.05%) + (100  0.15%) = 20% + 15% = 35% of 1 core
+  Memory: (400  75 KB) + (100  140 KB) = 30 MB + 14 MB = 44 MB
   File descriptors: 500 (within default 1024 limit)
-  Network (outbound): (400 � 3 KB/s) + (100 � 6 KB/s) = 1.2 MB/s + 0.6 MB/s = 1.8 MB/s
+  Network (outbound): (400  3 KB/s) + (100  6 KB/s) = 1.2 MB/s + 0.6 MB/s = 1.8 MB/s
 
 Capacity: 1 web worker serves 500 mixed users at ~35% CPU (comfortable headroom)
 ```
@@ -1567,7 +1567,7 @@ expect(mockWs.forcedClose).toBe(true); // prevents auto-reconnect
 Backend tests use `unittest.mock.patch` to replace `aioredis` and verify pub/sub interactions without an actual Redis instance:
 
 ```python
-# conftest.py � RedisPubSub fixture
+# conftest.py  RedisPubSub fixture
 import pytest
 from unittest.mock import AsyncMock, patch, MagicMock
 from app.realtime.pubsub import RedisPubSub
@@ -1702,10 +1702,10 @@ async def test_multiple_subscribers(pubsub):
 
 Beyond basic mocking, the test suite uses structured event simulation for end-to-end flow validation:
 
-**SSE event sequence simulation** (Python � for backend streaming tests):
+**SSE event sequence simulation** (Python  for backend streaming tests):
 
 ```python
-# test_stream_events.py � simulate full SSE event sequence
+# test_stream_events.py  simulate full SSE event sequence
 @pytest.mark.asyncio
 async def test_full_event_sequence():
     events = [
@@ -1728,10 +1728,10 @@ async def test_full_event_sequence():
     assert "The quick brown fox" in generated[5]["data"]
 ```
 
-**WebSocket message sequence simulation** (Python � for preview tests):
+**WebSocket message sequence simulation** (Python  for preview tests):
 
 ```python
-# test_preview_ws.py � simulate WebSocket message exchange
+# test_preview_ws.py  simulate WebSocket message exchange
 @pytest.mark.asyncio
 async def test_preview_ws_exchange():
     from app.realtime.pubsub import RedisPubSub
@@ -1756,7 +1756,7 @@ async def test_preview_ws_exchange():
     assert "html" in send_calls[1][0][0]
 ```
 
-**SSE EventSource integration test** (JavaScript � real backend interaction):
+**SSE EventSource integration test** (JavaScript  real backend interaction):
 
 ```javascript
 // test/api.generation.integration.test.js
@@ -1832,7 +1832,7 @@ describe('WebSocket connection lifecycle', () => {
   it('completes full lifecycle: connect ? send ? receive ? reconnect ? close', async () => {
     const { result } = renderHook(() => useLivePreviewSocket('sess-1'));
 
-    // 1. Initial � not connected yet
+    // 1. Initial  not connected yet
     expect(result.current.isConnected).toBe(false);
 
     // 2. Connection established
@@ -1906,7 +1906,7 @@ async def test_pubsub_publish_subscribe_lifecycle(pubsub):
     await pubsub.unsubscribe("test:lifecycle")
     task.cancel()
 
-    # Verify cleanup � no more events delivered
+    # Verify cleanup  no more events delivered
     await pubsub.publish("test:lifecycle", {"event_type": "after_unsubscribe"})
     await asyncio.sleep(0.01)
     assert len(received_events) == 3  # No new events after unsubscribe

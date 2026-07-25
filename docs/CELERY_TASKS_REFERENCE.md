@@ -71,7 +71,7 @@ named with the `batch.` prefix land on the `batch` queue.
 | `process_agent_rewrite_task` | `interactive.process_agent_rewrite_async` | interactive | 3 | 600s / 900s | Rewrite a specific section with AI agent |
 | `process_edit_document_task` | `interactive.process_edit_document_async` | interactive | 3 | 600s / 900s | Process user edit submission (reformat flow) |
 | `cleanup_uploads_task` | `batch.cleanup_uploads` | batch | 3 | 600s / 900s | Remove expired uploaded files |
-| `scibert_benchmark_task` | `batch.scibert_benchmark` | batch | 3 | 600s / 900s | Run SciBERT performance benchmark over fixtures |
+| `classification_benchmark_task` | `batch.classification_benchmark` | batch | 3 | 600s / 900s | Run LLMClassifier performance benchmark over fixtures |
 
 > **Note:** All tasks inherit the global `task_soft_time_limit=600` and
 > `task_time_limit=900`. No per-task overrides are currently defined. If tighter
@@ -240,18 +240,18 @@ directories. Returns `{"deleted": int, "removed_dirs": int, "retention_days": in
 
 ---
 
-### `scibert_benchmark_task`
+### `classification_benchmark_task`
 
 | Attribute | Value |
 |-----------|-------|
-| Celery name | `batch.scibert_benchmark` |
+| Celery name | `batch.classification_benchmark` |
 | Queue | `batch` |
 | Signature | `(fixtures_dir: str | None = None)` |
 
-Runs a SciBERT section-classification benchmark against labeled fixtures. Uses
+Runs a LLMClassifier section-classification benchmark against labeled fixtures. Uses
 `ParserFactory` + `SemanticParser` to predict section types per paper, computes
 macro-averaged F1 across all papers, and persists the result via
-`persist_scibert_benchmark_result()`. Skips papers with label-length mismatches.
+`persist_classification_benchmark_result()`. Skips papers with label-length mismatches.
 Returns `{"status": "ok" | "missing_fixtures", "overall_f1": float, "per_paper": dict}`.
 
 ---

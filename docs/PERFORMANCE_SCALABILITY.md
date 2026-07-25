@@ -242,7 +242,7 @@ celery_app = Celery(
 | Queue | Task Prefix | Routing | Purpose |
 |---|---|---|---|
 | `interactive` | `interactive.*` | User-facing | Document processing, generation, synthesis, agent pipeline, edit flow |
-| `batch` | `batch.*` | Scheduled/Cron | Upload cleanup (daily 03:00 UTC), SciBERT benchmarking |
+| `batch` | `batch.*` | Scheduled/Cron | Upload cleanup (daily 03:00 UTC), LLMClassifier benchmarking |
 
 ### Task Settings
 
@@ -271,7 +271,7 @@ task_time_limit = 900          # 15 min hard limit (worker kills task)
 | Task | Schedule | Description |
 |---|---|---|
 | `cleanup_uploads_task` | Daily 03:00 UTC | Delete files > `RETENTION_DAYS` (default 30) |
-| `scibert_benchmark_task` | On-demand | Run F1 benchmark over test fixtures |
+| `classification_benchmark_task` | On-demand | Run F1 benchmark over test fixtures |
 
 ### Worker Configuration (`render.yaml`)
 
@@ -560,7 +560,7 @@ When `true`:
 | `RagEngine` | `resolve_optional_callable()` | AI reasoning stage (optional) |
 | `ReasoningEngine` | `resolve_optional_callable()` | AI reasoning stage (optional) |
 | `SemanticParser` | Imported inside `_run_semantic_parsing` | Semantic parsing stage (optional) |
-| `NougatParser` | Imported inside exception handler | OCR fallback (rare) |
+| `LLMPDFParser` | Imported inside exception handler | OCR fallback (rare) |
 | `LiteLLM` | Tried at module load, disabled on Python 3.14+ | LLM service startup |
 | `PyMuPDF` | Imported inside `_should_skip_docling_for_digital_pdf` | PDF processing |
 | GROBID/Docling clients | Created in `PipelineOrchestrator.__init__` | Pipeline initialization |
@@ -568,7 +568,7 @@ When `true`:
 ### PRELOAD_AI_MODELS
 
 - Default: `false` in production (render.yaml)
-- When `false`: AI models (SciBERT, sentence-transformers) are loaded on first use, not at startup
+- When `false`: AI models (LLMClassifier, sentence-transformers) are loaded on first use, not at startup
 - Reduces cold-start memory by ~2 GB
 
 ### File Cleanup
