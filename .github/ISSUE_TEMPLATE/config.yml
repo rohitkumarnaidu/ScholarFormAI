@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://amf.dev/docs
+    about: Check the docs first
+  - name: Discussions
+    url: https://github.com/amf/automated-manuscript-formatter/discussions
+    about: Questions and ideas

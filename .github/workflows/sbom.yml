@@ -1,0 +1,89 @@
+name: "SBOM Generation"
+
+on:
+  release:
+    types: [published]
+  push:
+    branches: [main]
+    paths:
+      - "backend/requirements*.txt"
+      - "cli/requirements*.txt"
+      - "sdk/requirements*.txt"
+      - "frontend/package*.json"
+      - "Dockerfile*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate-sbom:
+    name: Generate SPDX SBOM
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate SBOM for Backend (Python)
+        uses: anchore/sbom-action@v0.17
+        with:
+          path: ./backend
+          format: spdx-json
+          output-file: sbom-backend.spdx.json
+
+      - name: Generate SBOM for CLI (Python)
+        uses: anchore/sbom-action@v0.17
+        with:
+          path: ./cli
+          format: spdx-json
+          output-file: sbom-cli.spdx.json
+
+      - name: Generate SBOM for SDK (Python)
+        uses: anchore/sbom-action@v0.17
+        with:
+          path: ./sdk
+          format: spdx-json
+          output-file: sbom-sdk.spdx.json
+
+      - name: Generate SBOM for Frontend (npm)
+        uses: anchore/sbom-action@v0.17
+        with:
+          path: ./frontend
+          format: spdx-json
+          output-file: sbom-frontend.spdx.json
+
+      - name: Merge SBOMs
+        uses: anchore/sbom-action@v0.17
+        with:
+          path: .
+          format: spdx-json
+          output-file: sbom-merged.spdx.json
+
+      - name: Upload SBOM as Release Artifact
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./sbom-merged.spdx.json
+          asset_name: automated-manuscript-formatter-sbom.spdx.json
+          asset_content_type: application/json
+
+      - name: Upload SBOM as Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-${{ github.sha }}
+          path: |
+            sbom-backend.spdx.json
+            sbom-cli.spdx.json
+            sbom-sdk.spdx.json
+            sbom-frontend.spdx.json
+            sbom-merged.spdx.json
+          retention-days: 90

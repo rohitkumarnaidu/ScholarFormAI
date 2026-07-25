@@ -1,0 +1,101 @@
+# Dependabot configuration for Automated Manuscript Formatter
+# See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # Python backend dependencies
+  - package-ecosystem: "pip"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    reviewers:
+      - "amf/backend-maintainers"
+    labels:
+      - "dependencies"
+      - "python"
+      - "backend"
+    open-pull-requests-limit: 10
+    assignees:
+      - "amf/backend-maintainers"
+
+  # Python CLI dependencies
+  - package-ecosystem: "pip"
+    directory: "/cli"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    reviewers:
+      - "amf/cli-maintainers"
+    labels:
+      - "dependencies"
+      - "python"
+      - "cli"
+    open-pull-requests-limit: 10
+
+  # Python SDK dependencies
+  - package-ecosystem: "pip"
+    directory: "/sdk"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    reviewers:
+      - "amf/sdk-maintainers"
+    labels:
+      - "dependencies"
+      - "python"
+      - "sdk"
+    open-pull-requests-limit: 10
+
+  # npm frontend dependencies
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    reviewers:
+      - "amf/frontend-maintainers"
+    labels:
+      - "dependencies"
+      - "javascript"
+      - "frontend"
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+
+  # Docker dependencies
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    reviewers:
+      - "amf/infrastructure-maintainers"
+    labels:
+      - "dependencies"
+      - "docker"
+    open-pull-requests-limit: 5
+
+  # GitHub Actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    reviewers:
+      - "amf/infrastructure-maintainers"
+    labels:
+      - "dependencies"
+      - "ci"
+    open-pull-requests-limit: 10

@@ -1,0 +1,23 @@
+# Global owners
+* @amf/maintainers
+
+# Backend
+/backend/ @amf/backend-maintainers
+
+# Frontend
+/frontend/ @amf/frontend-maintainers
+
+# CLI
+/cli/ @amf/cli-maintainers
+
+# SDK
+/sdk/ @amf/sdk-maintainers
+
+# Documentation
+/docs/ @amf/docs-maintainers
+
+# CI/CD
+/.github/ @amf/infrastructure-maintainers
+
+# Security
+/SECURITY.md @amf/security-team

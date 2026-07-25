@@ -1,0 +1,12 @@
+Automated Manuscript Formatter (AMF)
+Copyright (c) 2026 Automated Manuscript Formatter Contributors
+
+This product includes software developed by:
+- The Automated Manuscript Formatter Project Contributors
+- FastAPI (https://fastapi.tiangolo.com/)
+- Next.js (https://nextjs.org/)
+- python-docx (https://python-docx.readthedocs.io/)
+
+This product is licensed under the MIT License. See LICENSE file for details.
+
+Third-party licenses are available in the THIRD_PARTY_LICENSES file.

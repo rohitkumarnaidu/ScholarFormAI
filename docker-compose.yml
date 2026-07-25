@@ -1,0 +1,59 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: amf-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - AMF_ENVIRONMENT=production
+      - AMF_DEBUG=false
+      - AMF_LOG_LEVEL=info
+      - AMF_MAX_UPLOAD_SIZE=10485760
+    volumes:
+      - uploads:/app/uploads
+      - ./backend/app:/app/app:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - amf-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:8000
+    container_name: amf-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - amf-network
+
+  docs:
+    build:
+      context: ./docs
+      dockerfile: Dockerfile
+    container_name: amf-docs
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    networks:
+      - amf-network
+
+networks:
+  amf-network:
+    driver: bridge
+
+volumes:
+  uploads:

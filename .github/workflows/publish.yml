@@ -1,0 +1,143 @@
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  id-token: write
+  contents: write
+  attestations: write
+
+jobs:
+  build:
+    name: Build packages
+    runs-on: ubuntu-latest
+    outputs:
+      digests: ${{ steps.build.outputs.digests }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build tools
+        run: pip install build
+
+      - name: Build all packages
+        id: build
+        run: |
+          digests="[]"
+          for dir in backend cli sdk; do
+            cd $dir
+            python -m build
+            cd ..
+            for whl in $dir/dist/*.whl; do
+              digests=$(echo "$digests" | python -c "
+import json, sys, hashlib
+d = json.load(sys.stdin)
+h = hashlib.sha256(open('$whl','rb').read()).hexdigest()
+d.append({'file': '$whl', 'hash': f'sha256:$h'})
+print(json.dumps(d))
+")
+            done
+          done
+          echo "digests=$digests" >> $GITHUB_OUTPUT
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: |
+            backend/dist/*
+            cli/dist/*
+            sdk/dist/*
+
+  publish-test:
+    name: Publish to Test PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: test-pypi
+      url: https://test.pypi.org/project/amf-backend
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+          path: dist
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+
+  publish:
+    name: Publish to PyPI
+    needs: publish-test
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/amf-backend
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+          path: dist
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+
+  sign:
+    name: Sign packages with Sigstore
+    needs: publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+          path: dist
+
+      - uses: sigstore/gh-action-sigstore-python@v3
+        with:
+          inputs: dist/*.tar.gz dist/*.whl
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: signed-packages
+          path: dist/
+
+  sbom:
+    name: Generate and attach SBOM
+    needs: publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install cyclonedx
+        run: pip install cyclonedx-bom
+
+      - name: Generate SBOM
+        run: |
+          mkdir -p sbom
+          cyclonedx-py requirements \
+            --pyproject backend/pyproject.toml \
+            --output sbom/backend.cdx.xml
+          cyclonedx-py requirements \
+            --pyproject cli/pyproject.toml \
+            --output sbom/cli.cdx.xml
+          cyclonedx-py requirements \
+            --pyproject sdk/pyproject.toml \
+            --output sbom/sdk.cdx.xml
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            sbom/*.xml

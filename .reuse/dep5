@@ -1,0 +1,24 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Automated Manuscript Formatter
+Upstream-Contact: AMF Team <team@amf.dev>
+Source: https://github.com/amf/automated-manuscript-formatter
+
+Files: *
+Copyright: 2024 AMF Team <team@amf.dev>
+License: MIT
+
+Files: LICENSES/MIT.txt
+Copyright: 2024 AMF Team <team@amf.dev>
+License: MIT
+
+Files: docs/*
+Copyright: 2024 AMF Team <team@amf.dev>
+License: MIT
+
+Files: examples/*
+Copyright: 2024 AMF Team <team@amf.dev>
+License: MIT
+
+Files: .github/*
+Copyright: 2024 AMF Team <team@amf.dev>
+License: MIT
