@@ -27,9 +27,12 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"],
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/contexts/*": ["./src/contexts/*"]
     }
   },
   "include": [
@@ -44,7 +47,8 @@
   "exclude": [
     "node_modules",
     "generate-tests.cjs",
-    "generate-tests.js"
+    "generate-tests.js",
+    "src/app"
   ]
 
 }
