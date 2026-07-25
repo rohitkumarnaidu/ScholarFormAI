@@ -20,9 +20,9 @@ describe('Skeleton', () => {
     });
 
     it('applies width and height as inline style', () => {
-        const { container } = render(<Skeleton width="200px" height="100px" />);
-        expect(container.firstChild).toHaveStyle('width: 200px');
-        expect(container.firstChild).toHaveStyle('height: 100px');
+        const { container } = render(<Skeleton width="200" height="100" />);
+        expect(container.firstChild).toHaveStyle('width: 200');
+        expect(container.firstChild).toHaveStyle('height: 100');
     });
 
     it('uses default rounded class', () => {
