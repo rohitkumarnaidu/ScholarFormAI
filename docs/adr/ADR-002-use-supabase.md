@@ -22,7 +22,7 @@ We chose **Supabase** as the single provider for database, auth, and storage.
 
 | Criterion | Supabase | Self-hosted PG + Auth0 | Neon | PlanetScale |
 |-----------|----------|----------------------|------|-------------|
-| Managed PostgreSQL | ✅ Built-in | ⚠️ Requires ops | ✅ Built-in | ⚠️ MySQL-based |
+| Managed PostgreSQL | ✅ Built-in |  ️ Requires ops | ✅ Built-in |  ️ MySQL-based |
 | Auth provider | ✅ Built-in | ✅ Auth0/Firebase | ❌ Separate | ❌ Separate |
 | File storage | ✅ Built-in | ❌ S3 needed | ❌ Separate | ❌ Separate |
 | Row-level security | ✅ Native | ❌ App-layer | ❌ Not native | ❌ Not native |

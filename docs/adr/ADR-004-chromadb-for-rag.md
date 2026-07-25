@@ -21,13 +21,13 @@ We chose **ChromaDB** over the alternatives.
 
 | Criterion | ChromaDB | Pinecone | Weaviate | pgvector |
 |-----------|----------|----------|----------|----------|
-| Local-first | ✅ Yes | ❌ Cloud-only | ⚠️ Hybrid | ✅ Yes |
-| No infra deps | ✅ Embedded | ❌ Requires API key | ❌ Requires Docker | ⚠️ Requires PG |
+| Local-first | ✅ Yes | ❌ Cloud-only |  ️ Hybrid | ✅ Yes |
+| No infra deps | ✅ Embedded | ❌ Requires API key | ❌ Requires Docker |  ️ Requires PG |
 | CI-friendly | ✅ Yes | ❌ Network access | ❌ Docker needed | ✅ Yes |
-| Python-native | ✅ First-class | ✅ SDK | ✅ SDK | ⚠️ Via SQLAlchemy |
-| HNSW indexing | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ IVFFlat |
-| Self-hostable | ✅ Trivial | ❌ No | ⚠️ Heavy | ✅ Trivial |
-| Multi-tenancy | ⚠️ Collection-per-tenant | ✅ Namespaces | ✅ Multi-tenancy | ✅ Row-level |
+| Python-native | ✅ First-class | ✅ SDK | ✅ SDK |  ️ Via SQLAlchemy |
+| HNSW indexing | ✅ Yes | ✅ Yes | ✅ Yes |  ️ IVFFlat |
+| Self-hostable | ✅ Trivial | ❌ No |  ️ Heavy | ✅ Trivial |
+| Multi-tenancy |  ️ Collection-per-tenant | ✅ Namespaces | ✅ Multi-tenancy | ✅ Row-level |
 
 Pinecone was rejected because it requires a cloud API key and network access, making CI tests impossible without external dependencies. Weaviate requires Docker, adding ~1.5GB of overhead for a vector store that is secondary to the main database. pgvector was a close contender but lacks native Python embedding management and requires adding vector operations to the existing PostgreSQL connection pool, which is already under load from document storage.
 

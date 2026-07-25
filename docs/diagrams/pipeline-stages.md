@@ -10,7 +10,7 @@ graph LR
     subgraph STAGE1["1. Parsing — ParserFactory (7 parsers)"]
         DP["DocxParser<br/>python-docx"]
         PP["PdfParser<br/>PyMuPDF (fitz)"]
-        NP["NougatParser<br/>OCR Fallback (scanned PDFs)"]
+        NP["LLMPDFParser<br/>OCR Fallback (scanned PDFs)"]
         TP["TxtParser"]
         HP["HtmlParser<br/>BeautifulSoup4"]
         MP["MarkdownParser"]
@@ -27,7 +27,7 @@ graph LR
     subgraph STAGE3["3. Core AI Pipeline"]
         ES["Equation Standardizer<br/>Detect & standardize math"]
         SD["StructureDetector<br/>Heading/section IDs<br/>@retry_with_backoff"]
-        SP["SemanticParser<br/>SciBERT → Heuristics<br/>(optional, fast_mode flag)"]
+        SP["SemanticParser<br/>LLMClassifier → Heuristics<br/>(optional, fast_mode flag)"]
         CC["ContentClassifier<br/>BlockType assignment<br/>12 labels"]
         NLP["ContentAnalyzer<br/>Keywords, language detection"]
     end
@@ -153,9 +153,9 @@ graph LR
 
 This 12-stage document processing pipeline diagram shows:
 
-- **Parser selection by file extension**: ParserFactory maps `.docx` → DocxParser, `.pdf` → PdfParser (with Nougat OCR fallback on empty extraction), `.txt` → TxtParser, `.html/.htm` → HtmlParser (BeautifulSoup4), `.md/.markdown` → MarkdownParser, `.tex/.latex` → TexParser. Non-native formats (`.doc`, `.odt`, `.rtf`) route through InputConverter → DOCX → DocxParser.
+- **Parser selection by file extension**: ParserFactory maps `.docx` → DocxParser, `.pdf` → PdfParser (with LLM-based PDF parsing fallback on empty extraction), `.txt` → TxtParser, `.html/.htm` → HtmlParser (BeautifulSoup4), `.md/.markdown` → MarkdownParser, `.tex/.latex` → TexParser. Non-native formats (`.doc`, `.odt`, `.rtf`) route through InputConverter → DOCX → DocxParser.
 - **Parallel GROBID + Docling**: Both run concurrently via `ThreadPoolExecutor(max_workers=2)` with 30s timeouts each. PyMuPDF fallback when both fail.
-- **Optional AI stages**: SemanticParser (SciBERT), CrossRef enrichment, RAG + ReasoningEngine, and FigureAnalyzer are all gated by `fast_mode` flag and runtime flags (`semantic_parser`, `crossref_enrichment`, `ai_reasoning`).
+- **Optional AI stages**: SemanticParser (LLMClassifier), CrossRef enrichment, RAG + ReasoningEngine, and FigureAnalyzer are all gated by `fast_mode` flag and runtime flags (`semantic_parser`, `crossref_enrichment`, `ai_reasoning`).
 - **Safety layer** wraps all stages: circuit breaker (pybreaker, 3-failure threshold, 60s recovery), retry guard (exponential backoff), LLM validator (Guardrails AI + prompt injection detection with 25+ regex patterns), and `safe_execution` error containment.
 - **LLM 4-tier fallback chain**: NVIDIA NIM → Groq → OpenRouter → Ollama (local DeepSeek R1), with per-provider circuit breakers and metrics recording via `MetricsManager`.
 - **Status & monitoring**: Every stage emits SSE events via Redis pub/sub, updates Supabase `processing_status` table, and computes quality summary at pipeline end.

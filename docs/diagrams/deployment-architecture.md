@@ -52,13 +52,13 @@ graph TB
             DOCX_PRIMARY["DOCX Converter Primary<br/>LibreOffice headless<br/>POST /convert"]
             DOCX_SHADOW["DOCX Converter Shadow<br/>Failover instance"]
         end
-        subgraph NOUGAT_PAIR["Nougat × 2"]
-            NOUG_PRIMARY["Nougat Primary<br/>facebook/nougat-small<br/>POST /parse"]
-            NOUG_SHADOW["Nougat Shadow<br/>Failover instance"]
+        subgraph LLMPDFParser_PAIR["LLMPDFParser × 2"]
+            NOUG_PRIMARY["LLMPDFParser Primary<br/>facebook/LLMPDFParser-small<br/>POST /parse"]
+            NOUG_SHADOW["LLMPDFParser Shadow<br/>Failover instance"]
         end
-        subgraph SCIBERT_PAIR["SciBERT × 2"]
-            SCI_PRIMARY["SciBERT Primary<br/>allenai/scibert_scivocab_uncased<br/>POST /predict"]
-            SCI_SHADOW["SciBERT Shadow<br/>Failover instance"]
+        subgraph LLMClassifier_PAIR["LLMClassifier × 2"]
+            SCI_PRIMARY["LLMClassifier Primary<br/>allenai/LLMClassifier_scivocab_uncased<br/>POST /predict"]
+            SCI_SHADOW["LLMClassifier Shadow<br/>Failover instance"]
         end
     end
 
@@ -77,7 +77,7 @@ graph TB
         PROMETHEUS["Prometheus<br/>Scrape: 15s interval<br/>Alerting rules: 8"]
         GRAFANA["Grafana<br/>10 Dashboard Panels"]
         ALERTMANAGER["Alertmanager<br/>→ PagerDuty / Slack"]
-        SENTRY["Sentry<br/>Error Tracking<br/>traces_sample_rate: 0.1"]
+        Sentry["Sentry<br/>Error Tracking<br/>traces_sample_rate: 0.1"]
     end
 
     subgraph EXTERNAL["External Dependencies"]
@@ -134,7 +134,7 @@ graph TB
     WEB_SVC -->|"/metrics"| PROMETHEUS
     PROMETHEUS --> GRAFANA
     PROMETHEUS --> ALERTMANAGER
-    WEB_SVC -.->|"errors"| SENTRY
+    WEB_SVC -.->|"errors"| Sentry
 ```
 
 ```mermaid
@@ -194,7 +194,7 @@ flowchart LR
 - **Render** (Professional tier) runs two services: the web service (Uvicorn with `WEB_CONCURRENCY` workers, health check at `/api/v1/health/live`) and the Celery worker (two queues: `interactive` + `batch`, concurrency 2 each)
 - **Upstash Redis** (production) handles cache (LLM/CSL/session), pub/sub (SSE/WebSocket), and Celery broker/backend
 - **Supabase** (Free, 500MB) provides PostgreSQL 15+, Auth (JWT + RLS), and Storage
-- **HuggingFace Spaces** runs 6 service pairs (primary + shadow for high availability): GROBID (metadata extraction), Docling (layout analysis), RapidOCR, DOCX Converter (LibreOffice headless), Nougat (LaTeX PDF parser), and SciBERT (block-type classification). Each pair has automatic failover via `*_URLS` comma-separated env vars.
+- **HuggingFace Spaces** runs 6 service pairs (primary + shadow for high availability): GROBID (metadata extraction), Docling (layout analysis), RapidOCR, DOCX Converter (LibreOffice headless), LLMPDFParser (LaTeX PDF parser), and LLMClassifier (block-type classification). Each pair has automatic failover via `*_URLS` comma-separated env vars.
 - **External dependencies**: LLM APIs (NVIDIA NIM, Groq, OpenRouter, DeepSeek), Stripe (billing webhooks), CrossRef API (citation validation)
 - **Monitoring**: Prometheus scrapes `/metrics` every 15s with 8 alerting rules, Grafana dashboard with 10 panels, Alertmanager → PagerDuty/Slack, and Sentry (0.1 trace sample rate)
 

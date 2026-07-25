@@ -131,7 +131,7 @@ Browser → POST /api/v1/documents/upload
 Background:
   → Parse (GROBID if enabled, else Docling, else PyMuPDF)
   → Structure Detection
-  → Block Classification (SciBERT — if USE_SCIBERT_CLASSIFICATION=true)
+  → Block Classification (LLMClassifier — if USE_LLM_CLASSIFICATION=true)
   → NLP Enhancement (YAKE/spaCy)
   → Validation
   → Format & Render (Template)
@@ -209,7 +209,7 @@ Browser → POST .../outline/approve
 | Abuse detection | `abuse_detector.py` | 2.7KB |
 | Request ID | `request_id.py` | 2.2KB |
 | Security headers (CSP, HSTS) | `security_headers.py` | 4.6KB |
-| RBAC | `rbac.py` | 708B ⚠️ stub |
+| RBAC | `rbac.py` | 708B  ️ stub |
 
 ---
 
