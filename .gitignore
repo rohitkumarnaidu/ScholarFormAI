@@ -63,7 +63,6 @@ Thumbs.db
 *.sublime-workspace
 
 # Logs
-# Logs
 *.log
 build_log.txt
 
@@ -92,11 +91,16 @@ frontend/devserver.*.log
 frontend/lint_output.txt
 
 
-# Local logs and test artifacts
-backend/logs/
+# Specific .txt exceptions (block global *.txt — only allow listed)
 *.txt
 !requirements.txt
-!docs/*.md
+!backend/requirements.txt
+!frontend/requirements.txt
+!deploy/services/**/requirements.txt
+!backend/runtime.txt
+!requirements-render.txt
+!requirements-test.txt
+!LICENSES/*.txt
 
 # Caches and DBs
 .mypy_cache/
@@ -104,18 +108,13 @@ backend/logs/
 *.sqlite3
 .env.local
 .env.test
-!docs/*.md
 
 # Security reports
 bandit_report.json
 docs/security/
 
-# GIT 37: Runtime artifacts — NOT tracked
-backend/uploads/
-backend/manual_tests/output/
+# Runtime artifacts — NOT tracked
 backend/logs/
-*.pyc
-__pycache__/
 .env
 
 # Semantic store runtime artifacts
@@ -138,16 +137,15 @@ docs/audits/2026-03-25-full-audit/
 !docs/audits/2026-03-25-full-audit/
 docs/audits/2026-03-25-full-audit/*
 !docs/audits/2026-03-25-full-audit/_audit_metadata.json
-
-
-*.txt
-!requirements-render.txt
-!LICENSES/*.txt
-!requirements-test.txt
-!backend/runtime.txt
-!deploy/hf/**/requirements.txt
 backend/generated_outputs/
 backend/tests_outputs/
+
+# Graphify temp files (generated during pipeline runs)
+.graphify_*
+.graphify_build.py
+
+# Generated wiki exports (not source)
+docs/wiki/
 
 # AI audit/report artifacts (generated, not source)
 /AUDIT*.md
