@@ -119,7 +119,7 @@ httplib2==0.31.2
 httptools==0.7.1
 httpx==0.28.1
 httpx-sse==0.4.3
-huggingface_hub==0.36.2
+huggingface_hub==1.24.0
 humanize==4.15.0
 hyperframe==6.1.0
 hypothesis==6.151.5
