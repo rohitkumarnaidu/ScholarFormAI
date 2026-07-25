@@ -10,7 +10,6 @@ from time import monotonic
 from typing import Any
 
 from app.config.settings import settings
-from app.services.scibert_gate import get_scibert_gate_state, should_enable_scibert
 
 logger = logging.getLogger(__name__)
 
@@ -184,7 +183,6 @@ async def _build_health_payload() -> tuple[dict, int]:
     import httpx
 
     from app.db.supabase_client import check_supabase_health
-    from app.services.model_store import model_store
 
     health_status: dict[str, Any] = {
         "status": "healthy",
@@ -221,13 +219,11 @@ async def _build_health_payload() -> tuple[dict, int]:
             health_status["status"] = "degraded"
 
     try:
-        if model_store.get_model("scibert_model") is not None:
-            health_status["components"]["ai_models"] = "loaded"
-        else:
-            health_status["components"]["ai_models"] = "not_loaded"
+        llm_classifier_available = bool(getattr(settings, "LLM_CLASSIFICATION_ENABLED", True))
+        health_status["components"]["llm_classifier"] = "enabled" if llm_classifier_available else "disabled"
     except Exception as exc:
-        logger.error("AI models health check failed: %s", exc)
-        health_status["components"]["ai_models"] = "error"
+        logger.error("LLM classifier health check failed: %s", exc)
+        health_status["components"]["llm_classifier"] = "error"
 
     status_code = 200 if health_status["status"] == "healthy" else 503
     return health_status, status_code
@@ -235,7 +231,6 @@ async def _build_health_payload() -> tuple[dict, int]:
 
 async def _build_readiness_payload() -> tuple[dict, int]:
     from app.db.supabase_client import check_supabase_health
-    from app.services.model_store import model_store
 
     checks: dict[str, Any] = {}
     is_ready = True
@@ -283,22 +278,6 @@ async def _build_readiness_payload() -> tuple[dict, int]:
         }
         checks["grobid"] = "disabled"
 
-    dependency_status["docling"] = await _probe_service_targets(
-        service_name="docling",
-        urls=_service_urls("get_docling_urls"),
-        health_path=_service_health_path("docling"),
-        timeout_seconds=2.0,
-    )
-    checks["docling"] = dependency_status["docling"]["status"]
-
-    dependency_status["ocr"] = await _probe_service_targets(
-        service_name="ocr",
-        urls=_service_urls("get_ocr_urls"),
-        health_path=_service_health_path("ocr"),
-        timeout_seconds=2.0,
-    )
-    checks["ocr"] = dependency_status["ocr"]["status"]
-
     dependency_status["docx_converter"] = await _probe_service_targets(
         service_name="docx_converter",
         urls=_service_urls("get_docx_converter_urls"),
@@ -307,32 +286,24 @@ async def _build_readiness_payload() -> tuple[dict, int]:
     )
     checks["docx_converter"] = dependency_status["docx_converter"]["status"]
 
-    nougat_urls = _service_urls("get_nougat_urls")
-    if getattr(settings, "ENABLE_NOUGAT_PARSER", False):
-        if nougat_urls:
-            dependency_status["nougat"] = await _probe_service_targets(
-                service_name="nougat",
-                urls=nougat_urls,
-                health_path=_service_health_path("nougat"),
-                timeout_seconds=2.0,
-            )
-            checks["nougat"] = dependency_status["nougat"]["status"]
-            if dependency_status["nougat"]["status"] != "ready":
-                is_ready = False
-        else:
-            dependency_status["nougat"] = {
-                "status": "local_or_unconfigured",
-                "checked_at": datetime.now(timezone.utc).isoformat(),
-                "last_probe": {"endpoint": None, "http_status": None, "error": "no_remote_urls"},
-            }
-            checks["nougat"] = "local_or_unconfigured"
-    else:
-        dependency_status["nougat"] = {
-            "status": "disabled",
+    try:
+        from app.services.local_ocr import local_ocr_service
+
+        ocr_available = local_ocr_service.is_available()
+        dependency_status["ocr"] = {
+            "status": "ready" if ocr_available else "unavailable",
+            "service": "local_ocr",
             "checked_at": datetime.now(timezone.utc).isoformat(),
-            "last_probe": {"endpoint": None, "http_status": None, "error": "disabled"},
         }
-        checks["nougat"] = "disabled"
+        checks["ocr"] = dependency_status["ocr"]["status"]
+    except Exception as exc:
+        dependency_status["ocr"] = {
+            "status": "unavailable",
+            "service": "local_ocr",
+            "error": str(exc),
+            "checked_at": datetime.now(timezone.utc).isoformat(),
+        }
+        checks["ocr"] = "unavailable"
 
     try:
         from app.services.llm_service import check_health as llm_check_health
@@ -342,41 +313,14 @@ async def _build_readiness_payload() -> tuple[dict, int]:
         logger.error("LLM health check failed in readiness: %s", exc)
         checks["llm_status"] = "unknown"
 
-    scibert_urls = _service_urls("get_scibert_urls")
-    if should_enable_scibert():
-        if scibert_urls:
-            dependency_status["scibert"] = await _probe_service_targets(
-                service_name="scibert",
-                urls=scibert_urls,
-                health_path=_service_health_path("scibert"),
-                timeout_seconds=2.0,
-            )
-            checks["scibert"] = dependency_status["scibert"]["status"]
-            checks["ai_models"] = "remote"
-            if dependency_status["scibert"]["status"] != "ready":
-                is_ready = False
-        else:
-            try:
-                if model_store.get_model("scibert_model") is not None:
-                    checks["ai_models"] = "loaded"
-                    checks["scibert"] = "local"
-                else:
-                    checks["ai_models"] = "not_loaded"
-                    checks["scibert"] = "local_unavailable"
-                    is_ready = False
-            except Exception as exc:
-                logger.error("Scibert local model check failed: %s", exc)
-                checks["ai_models"] = "error"
-                checks["scibert"] = "local_error"
-                is_ready = False
-    else:
-        checks["ai_models"] = "disabled"
-        checks["scibert_gate"] = get_scibert_gate_state()
-        dependency_status["scibert"] = {
-            "status": "disabled",
-            "checked_at": datetime.now(timezone.utc).isoformat(),
-            "last_probe": {"endpoint": None, "http_status": None, "error": "disabled"},
-        }
+    from app.services.classification_gate import should_enable_llm_classification
+
+    llm_classification_enabled = should_enable_llm_classification()
+    checks["llm_classification"] = "enabled" if llm_classification_enabled else "disabled"
+    dependency_status["llm_classification"] = {
+        "status": "enabled" if llm_classification_enabled else "disabled",
+        "checked_at": datetime.now(timezone.utc).isoformat(),
+    }
 
     payload = {
         "ready": is_ready,
