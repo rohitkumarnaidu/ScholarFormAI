@@ -4,7 +4,7 @@
 
 ---
 title: Guide — Setting Up Monitoring
-description: Complete monitoring setup guide with Prometheus, Grafana, Sentry, structured logging, and alerting
+description: Complete monitoring setup guide with Prometheus, Grafana, structured logging, and alerting
 sidebar_position: 4
 version: "1.0"
 status: ✅ Complete
@@ -29,7 +29,7 @@ This guide covers the complete monitoring and observability stack for ScholarFor
 │   /metrics      │  JSON dashboards  │  Backend + Frontend   │
 │   endpoint      │  + alert rules    │  exception capture    │
 ├─────────────────┼───────────────────┼───────────────────────┤
-│   PostHog       │  Structured Logs  │   Uptime Checks       │
+│   posthog       │  Structured Logs  │   Uptime Checks       │
 │  (Analytics)    │  (JSON stdout)    │   (Health endpoint)   │
 └─────────────────┴───────────────────┴───────────────────────┘
 ```
@@ -40,8 +40,6 @@ This guide covers the complete monitoring and observability stack for ScholarFor
 |-----------|---------|---------------|------|
 | **Prometheus** | Time-series metrics storage | 15 days (default) | Free (self-hosted) |
 | **Grafana** | Dashboard visualization + alerting | — | Free tier (cloud) |
-| **Sentry** | Error tracking and performance | 30 days (free) | Free (5K events/mo) |
-| **PostHog** | Product analytics, session recording | 7 days (free) | Free (1M events/mo) |
 | **Better Uptime** | External uptime monitoring | — | Free (1 check) |
 | **Render Logs** | Application log aggregation | 7 days | Included |
 
@@ -243,88 +241,8 @@ Panel descriptions:
 | **LLM Tier Usage** | `sum(llm_tier_usage_total) by (tier)` | Fallback > 10% = investigate |
 | **Circuit Breaker** | `circuit_breaker_state` | 1 = OPEN (alert) |
 
-## Step 3: Set Up Sentry for Error Tracking
 
-### Backend (Python/FastAPI)
-
-Install and configure:
-
-```bash
-pip install sentry-sdk
-```
-
-In `backend/app/main.py`:
-
-```python
-import sentry_sdk
-from sentry_sdk.integrations.fastapi import FastApiIntegration
-from sentry_sdk.integrations.logging import LoggingIntegration
-
-if settings.SENTRY_DSN:
-    sentry_sdk.init(
-        dsn=settings.SENTRY_DSN,
-        environment=settings.ENVIRONMENT,
-        traces_sample_rate=0.25,  # Sample 25% of requests
-        profiles_sample_rate=0.10,  # Sample 10% for profiling
-        integrations=[
-            FastApiIntegration(),
-            LoggingIntegration(level=logging.INFO, event_level=logging.ERROR),
-        ],
-        send_default_pii=False,
-    )
-```
-
-Verify Sentry is working:
-
-```bash
-# Create test error (admin only)
-curl -X POST https://api.scholarform.ai/api/v1/debug/sentry-test \
-  -H "Authorization: Bearer ADMIN_JWT"
-
-# Check https://sentry.io for the captured error
-```
-
-### Backend Environment Variables
-
-```bash
-SENTRY_DSN=https://public_key@o123.ingest.sentry.io/project_id
-```
-
-### Frontend (Next.js)
-
-Install:
-
-```bash
-cd frontend
-npm install @sentry/nextjs
-```
-
-Configure in `frontend/sentry.client.config.ts`:
-
-```typescript
-import * as Sentry from "@sentry/nextjs";
-
-Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  environment: process.env.NEXT_PUBLIC_VERCEL_ENV || "development",
-  tracesSampleRate: 0.25,
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0,
-  integrations: [Sentry.replayIntegration()],
-});
-```
-
-### Alert Rules in Sentry
-
-Configure these alert rules in Sentry:
-
-| Alert | Condition | Action |
-|-------|-----------|--------|
-| **New Error** | First occurrence of an issue | Email to team + Slack notification |
-| **Error Spike** | > 10 errors in 5 minutes | PagerDuty call + Slack |
-| **High Frequency** | Same error affects > 50 users in 1 hour | Email + Slack |
-
-## Step 4: Configure Structured Logging
+## Step 3: Configure Structured Logging
 
 ### JSON Log Format
 
@@ -398,7 +316,7 @@ For longer retention, configure a log drain:
 # Add HTTP endpoint (e.g., Logz.io, Datadog, Axiom)
 ```
 
-## Step 5: Set Up Uptime Monitoring
+## Step 4: Set Up Uptime Monitoring
 
 ### Health Check Endpoints
 
@@ -440,7 +358,7 @@ docker run -d --name uptime-kuma \
   louislam/uptime-kuma:1
 ```
 
-## Step 6: Configure Alerting
+## Step 4: Configure Alerting
 
 ### Prometheus Alert Rules
 
@@ -537,82 +455,7 @@ GF_UNIFIED_ALERTING_ENABLED=true
 
 ## Step 7: Set Up Real User Monitoring (RUM)
 
-### PostHog for Product Analytics
-
-1. Sign up at [posthog.com](https://posthog.com)
-2. Create a project and get your API key
-
-Backend setup (`backend/app/services/analytics_service.py`):
-
-```python
-from posthog import Posthog
-from app.config import settings
-
-posthog = Posthog(
-    project_api_key=settings.POSTHOG_API_KEY,
-    host=settings.POSTHOG_HOST or "https://app.posthog.com"
-)
-
-def track_event(user_id: str, event: str, properties: dict = None):
-    """Track a user event in PostHog."""
-    if settings.POSTHOG_API_KEY:
-        posthog.capture(user_id, event, properties)
-```
-
-Events to track:
-
-| Event | Properties | Purpose |
-|-------|------------|---------|
-| `upload_started` | template, file_size, file_type | Measure upload funnel |
-| `upload_completed` | duration_ms, success | Measure processing success |
-| `format_downloaded` | format (docx/pdf) | Measure export preferences |
-| `agent_session_started` | template, tone | Measure AI feature adoption |
-| `synthesis_started` | source_count, strategy | Measure multi-doc usage |
-| `synthesis_completed` | quality_score, duration_ms | Measure synthesis quality |
-| `template_created` | template_name | Measure custom template usage |
-
-Frontend setup:
-
-```bash
-cd frontend
-npm install posthog-js
-```
-
-```typescript
-// frontend/src/lib/posthog.ts
-import posthog from "posthog-js";
-
-if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
-  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
-    api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://app.posthog.com",
-    capture_pageview: true,
-    capture_pageleave: true,
-  });
-}
-
-export default posthog;
-```
-
-### Web Vitals Tracking (LCP, FID, CLS)
-
-Next.js automatically tracks Core Web Vitals. Configure reporting in `frontend/src/app/reportWebVitals.ts`:
-
-```typescript
-export function reportWebVitals(metric: any) {
-  if (process.env.NEXT_PUBLIC_POSTHOG_KEY) {
-    const posthog = require("../lib/posthog").default;
-    posthog.capture("web_vitals", metric);
-  }
-}
-```
-
-Target thresholds:
-
-| Metric | Good | Needs Improvement | Poor |
-|--------|------|-------------------|------|
-| **LCP** (Loading) | ≤ 2.5s | 2.5s – 4.0s | > 4.0s |
-| **FID** (Interactivity) | ≤ 100ms | 100ms – 300ms | > 300ms |
-| **CLS** (Visual Stability) | ≤ 0.1 | 0.1 – 0.25 | > 0.25 |
+RUM is handled via Prometheus metrics. See the frontend metrics pipeline for browser-based instrumentation.
 
 ## Dashboard Reference
 
@@ -654,7 +497,6 @@ avg_over_time(active_processing_jobs[15m])
 | `/metrics` returns 401 | Missing or expired admin JWT | Generate a new admin token or disable auth on `/metrics` in dev |
 | Prometheus can't scrape | Network access or TLS issues | Ensure `--web.listen-address=0.0.0.0:9090` or use a proxy |
 | Grafana shows "No data" | Datasource not connected or wrong URL | Verify Prometheus datasource in Grafana → Configuration → Data Sources |
-| Sentry not capturing errors | DSN misconfigured or `send_default_pii=false` blocking | Test with `/api/v1/debug/sentry-test`; check sentry_sdk.init() |
 | Logs not appearing in Render | Log drain misconfigured | Check Render → Service → Logs → Drain URL |
 
 ## Related Resources

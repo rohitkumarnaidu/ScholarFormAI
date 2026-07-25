@@ -17,7 +17,7 @@ last_updated: July 2026
 
 > **See also:** [Roadmap](../Roadmap.md), [Deployment Guide](../Deployment.md)
 
-This document captures deferred work. It does not enable queue mode or Nougat/SciBERT paths yet.
+This document captures deferred work. It does not enable queue mode or LLMPDFParser/LLMClassifier paths yet.
 
 ## Phase 2: Queue Mode (No Code Change Now)
 
@@ -40,21 +40,21 @@ Activation gate:
   - No deploy health-check timeouts
   - Stable Redis connectivity
 
-## Phase 3: Nougat and SciBERT Remote Offload Design
+## Phase 3: LLMPDFParser and LLMClassifier Remote Offload Design
 
 Current status:
 
-- `ENABLE_NOUGAT_PARSER=false`
-- `USE_SCIBERT_CLASSIFICATION=false`
+- `ENABLE_LLM_PDF_PARSER=false`
+- `USE_LLM_CLASSIFICATION=false`
 
 Design targets for next code phase:
 
-1. Add Nougat remote envs:
-   - `NOUGAT_URLS`
-   - `NOUGAT_HEALTH_PATH`
-2. Add SciBERT remote envs:
-   - `SCIBERT_URLS`
-   - `SCIBERT_HEALTH_PATH`
+1. Add LLMPDFParser remote envs:
+   - `LLM_PDF_PARSER_URLS`
+   - `LLMPDFParser_HEALTH_PATH`
+2. Add LLMClassifier remote envs:
+   - `LLM_CLASSIFIER_URLS`
+   - `LLM_CLASSIFIER_HEALTH_PATH`
 3. Implement URL-list precedence:
    - `*_URLS` first, fallback to single URL if list is empty.
 4. Implement retry and failover behavior:
@@ -62,7 +62,7 @@ Design targets for next code phase:
    - Primary to shadow failover
    - Short-lived cache of last-good endpoint
 5. Add keepalive coverage:
-   - Primary and shadow secrets for Nougat/SciBERT
+   - Primary and shadow secrets for LLMPDFParser/LLMClassifier
    - Scheduled health probing with timeout caps
 
 Safety policy:

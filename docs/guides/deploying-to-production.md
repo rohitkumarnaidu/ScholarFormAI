@@ -42,7 +42,6 @@ This guide walks through deploying ScholarForm AI to production across all requi
 | [Supabase](https://supabase.com) | ✅ Sign up | Free tier (50K rows) | $0/mo |
 | [Upstash Redis](https://upstash.com) | ✅ Sign up | Free tier (256MB) | $0/mo |
 | [Vercel](https://vercel.com) | ✅ Sign up | Hobby (free) | $0/mo |
-| [Sentry](https://sentry.io) | Optional | Free (5K events/mo) | $0/mo |
 | Custom domain | Optional | DNS provider | $10–20/yr |
 
 ### Local Tools
@@ -196,8 +195,7 @@ REDIS_URL=rediss://default:password@us1-redis.upstash.io:6379
 NVIDIA_API_KEY=nvapi-your-key
 GROQ_API_KEY=gsk_your-key
 
-# Optional but recommended
-SENTRY_DSN=https://key@o123.ingest.sentry.io/project
+# Optional
 LOG_LEVEL=INFO
 LOW_MEMORY_MODE=true
 PRELOAD_AI_MODELS=false
@@ -248,7 +246,6 @@ curl https://scholarform-api.onrender.com/api/v1/health/ready
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://your-project.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `your-anon-key` |
 | `NEXT_PUBLIC_API_BASE_URL` | `https://scholarform-api.onrender.com` |
-| `NEXT_PUBLIC_SENTRY_DSN` | (optional) Sentry DSN |
 
 ### Build & Deploy Settings
 
@@ -303,19 +300,18 @@ NEXT_PUBLIC_API_BASE_URL=https://api.scholarform.ai
 
 ## Step 7: Set Up Monitoring
 
-### Sentry Error Tracking
+### Error Tracking (Sentry Removed)
 
-1. Create a Sentry project for **Python (FastAPI)**
-2. Create a Sentry project for **Next.js**
-3. Set `SENTRY_DSN` on Render backend
-4. Deploy and verify:
+Sentry error tracking has been removed. Errors are monitored through Prometheus metrics and structured logging.
+
+To verify error tracking:
 
 ```bash
 # Trigger test error
-curl -X POST https://api.scholarform.ai/api/v1/debug/sentry-test \
+curl -X POST https://api.scholarform.ai/api/v1/debug/error-test \
   -H "Authorization: Bearer ADMIN_TOKEN"
 
-# Check Sentry dashboard for the error
+# Check metrics dashboard for the error
 ```
 
 ### Uptime Monitoring
@@ -450,7 +446,6 @@ See the [Rollback Runbook](../runbooks/rollback.md) for detailed procedures.
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `SENTRY_DSN` | Sentry error tracking DSN | — |
 | `LOG_LEVEL` | Logging verbosity | `INFO` |
 | `LOG_FORMAT` | Log output format | `text` |
 | `LOW_MEMORY_MODE` | Optimize for low memory | `true` |
@@ -463,8 +458,6 @@ See the [Rollback Runbook](../runbooks/rollback.md) for detailed procedures.
 | `GROBID_URL` | GROBID service URL | `http://localhost:8070` |
 | `GROBID_ENABLED` | Enable GROBID PDF parsing | `false` |
 | `CHROMA_PERSIST_DIR` | ChromaDB persistence path | `./chroma_db` |
-| `POSTHOG_API_KEY` | PostHog analytics API key | — |
-| `POSTHOG_HOST` | PostHog host URL | — |
 | `STRIPE_SECRET_KEY` | Stripe secret key | — |
 | `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret | — |
 
@@ -480,9 +473,6 @@ See the [Rollback Runbook](../runbooks/rollback.md) for detailed procedures.
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `NEXT_PUBLIC_SENTRY_DSN` | Sentry DSN for frontend | — |
-| `NEXT_PUBLIC_POSTHOG_KEY` | PostHog API key | — |
-| `NEXT_PUBLIC_POSTHOG_HOST` | PostHog host | — |
 
 ## Related Resources
 

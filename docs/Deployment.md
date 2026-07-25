@@ -81,8 +81,8 @@ RAG_USE_TRANSFORMERS=false
 ENHANCEMENT_QUEUE_ENABLED=false
 ENABLE_STRUCTURED_LOGGING=true
 ENABLE_FILE_CLEANUP=true
-ENABLE_NOUGAT_PARSER=false
-USE_SCIBERT_CLASSIFICATION=false
+ENABLE_LLM_PDF_PARSER=false
+USE_LLM_CLASSIFICATION=false
 ```
 
 ## Remote Service Routing
@@ -90,10 +90,10 @@ USE_SCIBERT_CLASSIFICATION=false
 URL list variables take precedence over single URL variables.
 
 ```env
-GROBID_URLS=https://<grobid-primary>.hf.space,https://<grobid-shadow>.hf.space
-DOCLING_URLS=https://<docling-primary>.hf.space,https://<docling-shadow>.hf.space
-OCR_URLS=https://<ocr-primary>.hf.space,https://<ocr-shadow>.hf.space
-DOCX_CONVERTER_URLS=https://<docx-primary>.hf.space,https://<docx-shadow>.hf.space
+GROBID_URLS=http://localhost:8070,http://localhost:8071
+DOCLING_URLS=http://localhost:5002,http://localhost:5002
+OCR_URLS=http://localhost:5003,http://localhost:5003
+DOCX_CONVERTER_URLS=http://localhost:5004,http://localhost:5004
 
 GROBID_HEALTH_PATH=/api/isalive
 DOCLING_HEALTH_PATH=/
@@ -167,4 +167,4 @@ Compatibility fallback remains supported:
 ## Deferred Scope (Not Enabled in This Phase)
 
 - Queue mode (`ENHANCEMENT_QUEUE_ENABLED=true`) remains off until a 7-day stability window is achieved.
-- Nougat/SciBERT remote offload is design-ready but not enabled by default.
+- LLMPDFParser/LLMClassifier remote offload is design-ready but not enabled by default.
