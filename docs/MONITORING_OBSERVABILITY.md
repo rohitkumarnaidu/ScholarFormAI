@@ -16,8 +16,6 @@ fourth (analytics) layer for product intelligence.
 |--------|------|------------|
 | Metrics | Prometheus + prometheus-fastapi-instrumentator | `/metrics` endpoint on backend |
 | Dashboards | Grafana | Provisioned via `ops/grafana/provisioning/` |
-| Error Tracking | Sentry (sentry-sdk + `@sentry/nextjs`) | Backend + frontend |
-| Product Analytics | PostHog | Frontend (`src/lib/posthog.js`) |
 | Structured Logging | `structlog` via `logging_config.py` | Rotating files + console |
 | Real User Monitoring | Lighthouse CI + Navigation Timing API | CI pipeline + frontend component |
 | Health Probes | `/health` (liveness) + `/ready` (readiness) | Exposed on FastAPI |
@@ -26,8 +24,6 @@ fourth (analytics) layer for product intelligence.
 graph TB
     subgraph Frontend
         RUM[Lighthouse CI / RUM]
-        PH[PostHog Analytics]
-        FE_SENTRY[Sentry JS SDK]
         LATENCY[LatencyObserver Component]
     end
 
@@ -37,14 +33,11 @@ graph TB
         MM[Monitoring Middleware]
         HC[Health Checks]
         LOG[Structured Logging]
-        BE_SENTRY[Sentry Python SDK]
     end
 
     subgraph Storage
         PROM_DB[(Prometheus)]
         GRAFANA[Grafana Dashboards]
-        SENTRY_DB[(Sentry)]
-        PH_DB[(PostHog)]
         LOG_FILES[(Rotating Logs)]
     end
 
@@ -52,15 +45,11 @@ graph TB
     FASTAPI --> MM
     FASTAPI --> HC
     FASTAPI --> LOG
-    FASTAPI --> BE_SENTRY
 
     PROM --> PROM_DB
     PROM_DB --> GRAFANA
 
-    FE_SENTRY --> SENTRY_DB
-    BE_SENTRY --> SENTRY_DB
 
-    PH --> PH_DB
     LATENCY --> FASTAPI
     RUM --> GRAFANA
 ```
@@ -295,94 +284,7 @@ Noisy libraries are throttled to reduce log volume:
 
 ---
 
-## 7. Sentry Integration
 
-### 7.1 Backend (`backend/app/main.py`)
-
-```python
-sentry_sdk.init(
-    dsn=settings.SENTRY_DSN,
-    integrations=[
-        StarletteIntegration(transaction_style="endpoint"),
-        FastApiIntegration(transaction_style="endpoint"),
-        LoggingIntegration(level=logging.INFO, event_level=logging.ERROR),
-    ],
-    traces_sample_rate=0.1,
-    environment=os.getenv("ENVIRONMENT", "production"),
-    release=os.getenv("APP_VERSION", "1.0.0"),
-    send_default_pii=False,
-    before_send=_sentry_before_send,
-)
-```
-
-Key properties:
-
-| Property | Value | Purpose |
-|----------|-------|---------|
-| `traces_sample_rate` | 0.1 | 10% trace sampling |
-| `before_send` | Filters `CancelledError`, `KeyboardInterrupt` | Reduces noise |
-| `send_default_pii` | `false` | Privacy compliance |
-| `release` | `APP_VERSION` env var | Links to source maps |
-
-### 7.2 Frontend (`frontend/next.config.mjs`)
-
-```js
-withSentryConfig(withPWA(nextConfig), {
-    org: process.env.SENTRY_ORG,
-    project: process.env.SENTRY_PROJECT,
-    silent: !process.env.CI,
-    widenClientFileUpload: true,
-    hideSourceMaps: true,
-    webpack: { treeshake: { removeDebugLogging: true } },
-});
-```
-
-### 7.3 Env Vars
-
-| Variable | Source | Required |
-|----------|--------|----------|
-| `SENTRY_DSN` | `backend/.env` | No (Sentry disabled if absent) |
-| `SENTRY_ORG` | `frontend/.env` | Yes for source maps |
-| `SENTRY_PROJECT` | `frontend/.env` | Yes for source maps |
-| `SENTRY_AUTH_TOKEN` | `frontend/.env` | Yes for upload |
-
----
-
-## 8. PostHog Analytics
-
-### 8.1 Client (`frontend/src/lib/posthog.js`)
-
-PostHog is loaded dynamically via CDN (`posthog-js@1.251.0`) with lazy
-initialization:
-
-- **Captures:** `$pageview`, `$pageleave`, arbitrary product events
-- **Person profiles:** `identified_only` (privacy-first)
-- **Queue:** events are queued if PostHog hasn't loaded yet; flushed on init
-- **Resilience:** a failed init retries once after 5s; analytics never blocks app boot
-
-### 8.2 Analytics Wrapper (`frontend/src/lib/analytics.js`)
-
-The `trackEvent()` wrapper is the app's single entry point:
-
-```js
-export async function trackEvent(eventName, properties = {}) {
-    const captured = capturePostHogEvent(eventName, properties, { queueIfNotReady: true });
-    if (!captured && isPostHogConfigured()) {
-        await initPostHog();
-        return capturePostHogEvent(eventName, properties, { queueIfNotReady: true });
-    }
-    return captured;
-}
-```
-
-### 8.3 Env Vars
-
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `NEXT_PUBLIC_POSTHOG_KEY` | — | API key (empty = disabled) |
-| `NEXT_PUBLIC_POSTHOG_HOST` | `https://app.posthog.com` | API host |
-
----
 
 ## 9. Real User Monitoring (RUM)
 
@@ -418,7 +320,7 @@ fetchWithRetry('/api/internal/metrics/record', {
 ### 9.3 RUM Infrastructure (`frontend/src/lib/rum.js`)
 
 The placeholder `initRUM()` function is ready for future integration with
-Datadog/Sentry/PostHog RUM. Currently emits debug logs with `trackPageView()`
+monitoring RUM. Currently emits debug logs with `trackPageView()`
 and `trackEvent()`.
 
 ### 9.4 Frontend Metrics Registry (`frontend/src/lib/metrics.js`)
@@ -446,7 +348,7 @@ sequenceDiagram
     participant Browser
     participant LH as Lighthouse CI
     participant LAT as LatencyObserver
-    participant PH as PostHog
+    participant PH as Analytics
     participant API as Backend API
     participant Prom as Prometheus
 
@@ -622,7 +524,7 @@ Defined in `backend/app/tasks/celery_tasks.py`:
 | Task | Queue | Schedule | Description |
 |------|-------|----------|-------------|
 | `batch.cleanup_uploads` | batch | Daily at 3:00 AM | Delete uploads older than retention window |
-| `batch.scibert_benchmark` | batch | On-demand | Run SciBERT classification benchmark over fixtures |
+| `batch.classification_benchmark` | batch | On-demand | Run LLMClassifier classification benchmark over fixtures |
 
 Both tasks emit structured logs with context variables and record metrics
 via `MetricsManager`.
@@ -647,26 +549,17 @@ celery_app.conf.update(
 
 | Variable | Source | Default | Description |
 |----------|--------|---------|-------------|
-| `SENTRY_DSN` | `SecuritySettings` | — | Sentry project DSN (unset = disabled) |
 | `ENABLE_STRUCTURED_LOGGING` | `DeploymentSettings` | `false` | Enable rotating file logging |
 | `FORCE_HTTPS` | `SecuritySettings` | `false` | HTTPS redirect + HSTS middleware |
 | `REDIS_ENABLED` | `CacheSettings` | `false` | Redis connection for queue depth |
 | `REDIS_URL` | `CacheSettings` | `redis://localhost:6379` | Redis connection string |
 | `READINESS_CACHE_TTL_SECONDS` | `CacheSettings` | `15` | Readiness probe cache TTL |
 | `HEALTH_CACHE_TTL_SECONDS` | `CacheSettings` | `15` | Health probe cache TTL |
-| `APP_VERSION` | Runtime env | `1.0.0` | Sentry release tag |
-| `ENVIRONMENT` | Runtime env | `production` | Sentry environment tag |
 
 ### 15.2 Frontend Env Vars
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `NEXT_PUBLIC_POSTHOG_KEY` | — | PostHog project API key |
-| `NEXT_PUBLIC_POSTHOG_HOST` | `https://app.posthog.com` | PostHog API host |
-| `NEXT_PUBLIC_SENTRY_DSN` | — | Sentry client DSN |
-| `SENTRY_ORG` | — | Sentry org slug |
-| `SENTRY_PROJECT` | — | Sentry project slug |
-| `SENTRY_AUTH_TOKEN` | — | Sentry auth for source maps |
 
 ---
 
@@ -678,9 +571,9 @@ graph LR
         LH[Lighthouse CI<br/>Score gates]
         RUM[RUM Placeholder<br/>src/lib/rum.js]
         MET[Client Metrics<br/>src/lib/metrics.js]
-        PH[PostHog<br/>src/lib/posthog.js]
+        PH[Analytics]
         LAT[LatencyObserver<br/>Component]
-        SENTRY_FE[Sentry JS SDK<br/>next.config.mjs]
+
     end
 
     subgraph "Backend Monitoring"
@@ -690,15 +583,15 @@ graph LR
         HC[Health Checks<br/>health_checks.py]
         LOG[Structured Logging<br/>logging_config.py]
         CTX[LogContext<br/>logging_context.py]
-        SENTRY_BE[Sentry Python SDK<br/>main.py]
+
         CELERY[Celery Tasks<br/>celery_tasks.py]
     end
 
     subgraph "Storage & Visualization"
         PG[Prometheus<br/>Server]
         GF[Grafana<br/>Provisioned Dashboards]
-        SENTRY[Sentry.io]
-        PHDB[PostHog Cloud]
+
+        PHDB[Analytics]
         FILES[Rotating Logs<br/>logs/app.log<br/>logs/errors.log]
     end
 
@@ -714,13 +607,10 @@ graph LR
     CELERY -->|structured logs| LOG
     LOG --> FILES
 
-    SENTRY_FE --> SENTRY
-    SENTRY_BE --> SENTRY
 
     PH --> PHDB
     HC -->|/health, /ready| MW
-
----
+```
 
 ## 17. API Reference
 
