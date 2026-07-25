@@ -6,8 +6,8 @@
 
 <cite>
 **Referenced Files in This Document**
-- [test_scibert_benchmark.py](file://backend/tests/test_scibert_benchmark.py)
-- [labels.json](file://backend/tests/fixtures/scibert/labels.json)
+- [test_classification.py](file://backend/tests/test_classification.py)
+- [labels.json](file://backend/tests/fixtures/classification/labels.json)
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
 - [test_deepseek_models.py](file://backend/tests/intelligence/test_deepseek_models.py)
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
@@ -52,7 +52,7 @@ The testing ecosystem spans backend unit/integration tests, manual verification 
 ```mermaid
 graph TB
 subgraph "Backend Tests"
-T1["SciBERT Benchmark<br/>test_scibert_benchmark.py"]
+T1["Classification Benchmark<br/>test_classification.py"]
 T2["DeepSeek Model Comparison<br/>test_deepseek_models.py"]
 T3["Load Scenarios<br/>locustfile.py"]
 T4["Stress Validation<br/>production_stress_test.py"]
@@ -76,7 +76,7 @@ M3 --> C1
 ```
 
 **Diagram sources**
-- [test_scibert_benchmark.py:1-92](file://backend/tests/test_scibert_benchmark.py#L1-L92)
+- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
 - [semantic_parser.py:1-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
 - [test_deepseek_models.py:1-171](file://backend/tests/intelligence/test_deepseek_models.py#L1-L171)
 - [reasoning_engine.py:1-774](file://backend/app/pipeline/intelligence/reasoning_engine.py#L1-L774)
@@ -96,8 +96,8 @@ M3 --> C1
 - Production stress validation ensures structural integrity and absence of rendering artifacts on real documents.
 
 **Section sources**
-- [test_scibert_benchmark.py:1-92](file://backend/tests/test_scibert_benchmark.py#L1-L92)
-- [labels.json:1-203](file://backend/tests/fixtures/scibert/labels.json#L1-L203)
+- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
+- [labels.json:1-203](file://backend/tests/fixtures/classification/labels.json#L1-L203)
 - [semantic_parser.py:1-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
 - [test_deepseek_models.py:1-171](file://backend/tests/intelligence/test_deepseek_models.py#L1-L171)
 - [reasoning_engine.py:1-774](file://backend/app/pipeline/intelligence/reasoning_engine.py#L1-L774)
@@ -114,7 +114,7 @@ The testing architecture integrates ML components with robust fallbacks and vali
 
 ```mermaid
 sequenceDiagram
-participant Bench as "SciBERT Benchmark"
+participant Bench as "Classification Benchmark"
 participant SP as "SemanticParser"
 participant PF as "ParserFactory"
 participant Doc as "Document"
@@ -127,7 +127,7 @@ Bench->>Bench : "compute macro-F1"
 ```
 
 **Diagram sources**
-- [test_scibert_benchmark.py:49-91](file://backend/tests/test_scibert_benchmark.py#L49-L91)
+- [test_classification.py:49-91](file://backend/tests/test_classification.py#L49-L91)
 - [semantic_parser.py:106-159](file://backend/app/pipeline/intelligence/semantic_parser.py#L106-L159)
 
 ```mermaid
@@ -168,7 +168,7 @@ WS-->>Locust : "Round-trip response"
 
 ## Detailed Component Analysis
 
-### SciBERT Benchmark Testing
+### Classification Benchmark Testing
 - Purpose: Validate semantic classification accuracy across scientific domains using macro-F1.
 - Data: Fixture-driven labels for multiple paper types.
 - Behavior: Enables/disables SciBERT via settings, loads a model (or heuristic-only), and computes per-paper and overall macro-F1.
@@ -188,13 +188,13 @@ Threshold --> |No| Fail["Test FAILED"]
 ```
 
 **Diagram sources**
-- [test_scibert_benchmark.py:49-91](file://backend/tests/test_scibert_benchmark.py#L49-L91)
-- [labels.json:1-203](file://backend/tests/fixtures/scibert/labels.json#L1-L203)
+- [test_classification.py:49-91](file://backend/tests/test_classification.py#L49-L91)
+- [labels.json:1-203](file://backend/tests/fixtures/classification/labels.json#L1-L203)
 - [semantic_parser.py:106-159](file://backend/app/pipeline/intelligence/semantic_parser.py#L106-L159)
 
 **Section sources**
-- [test_scibert_benchmark.py:1-92](file://backend/tests/test_scibert_benchmark.py#L1-L92)
-- [labels.json:1-203](file://backend/tests/fixtures/scibert/labels.json#L1-L203)
+- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
+- [labels.json:1-203](file://backend/tests/fixtures/classification/labels.json#L1-L203)
 - [semantic_parser.py:1-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
 
 ### DeepSeek Model Validation
@@ -315,7 +315,7 @@ Decide --> |No| Fix["Fix issues before freeze"]
 
 ```mermaid
 graph TB
-Bench["test_scibert_benchmark.py"] --> SP["semantic_parser.py"]
+Bench["test_classification.py"] --> SP["semantic_parser.py"]
 Bench --> PF["parser_factory (imported)"]
 Bench --> Labels["labels.json"]
 DeepSeek["test_deepseek_models.py"] --> RE["reasoning_engine.py"]
@@ -325,7 +325,7 @@ Manual --> RE
 ```
 
 **Diagram sources**
-- [test_scibert_benchmark.py:1-92](file://backend/tests/test_scibert_benchmark.py#L1-L92)
+- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
 - [semantic_parser.py:1-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
 - [test_deepseek_models.py:1-171](file://backend/tests/intelligence/test_deepseek_models.py#L1-L171)
 - [reasoning_engine.py:1-774](file://backend/app/pipeline/intelligence/reasoning_engine.py#L1-L774)
@@ -368,7 +368,7 @@ Manual --> RE
   - Backend Python version and asyncio mode; frontend missing dependencies; E2E stubs require real DOM assertions.
 
 **Section sources**
-- [test_scibert_benchmark.py:33-51](file://backend/tests/test_scibert_benchmark.py#L33-L51)
+- [test_classification.py:33-51](file://backend/tests/test_classification.py#L33-L51)
 - [test_deepseek_models.py:145-164](file://backend/tests/intelligence/test_deepseek_models.py#L145-L164)
 - [locustfile.py:26-50](file://backend/tests/load/locustfile.py#L26-L50)
 - [Testing.md:50-146](file://docs/Testing.md#L50-L146)
@@ -383,8 +383,8 @@ The system employs a layered testing strategy combining ML model benchmarks, mod
 - Metrics: Macro-F1 per paper and overall macro-F1 threshold enforced in tests.
 
 **Section sources**
-- [labels.json:1-203](file://backend/tests/fixtures/scibert/labels.json#L1-L203)
-- [test_scibert_benchmark.py:17-30](file://backend/tests/test_scibert_benchmark.py#L17-L30)
+- [labels.json:1-203](file://backend/tests/fixtures/classification/labels.json#L1-L203)
+- [test_classification.py:17-30](file://backend/tests/test_classification.py#L17-L30)
 
 ### Appendix B: Specialized Testing Tools
 - SciBERT benchmark: PyTest with fixture-driven evaluation.
@@ -394,7 +394,7 @@ The system employs a layered testing strategy combining ML model benchmarks, mod
 - Stress validation: Production-grade validation on real documents.
 
 **Section sources**
-- [test_scibert_benchmark.py:1-92](file://backend/tests/test_scibert_benchmark.py#L1-L92)
+- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
 - [test_deepseek_models.py:1-171](file://backend/tests/intelligence/test_deepseek_models.py#L1-L171)
 - [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)

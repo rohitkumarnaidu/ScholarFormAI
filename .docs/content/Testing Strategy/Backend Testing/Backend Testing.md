@@ -10,11 +10,11 @@
 - [pyproject.toml](file://backend/pyproject.toml)
 - [conftest.py](file://backend/tests/conftest.py)
 - [integration/conftest.py](file://backend/tests/integration/conftest.py)
-- [test_scibert_benchmark.py](file://backend/tests/test_scibert_benchmark.py)
+- [test_classification.py](file://backend/tests/test_classification.py)
 - [test_formatter_golden_files.py](file://backend/tests/test_formatter_golden_files.py)
 - [test_settings.py](file://backend/tests/test_settings.py)
 - [test_csl_fetcher_cache.py](file://backend/tests/test_csl_fetcher_cache.py)
-- [labels.json](file://backend/tests/fixtures/scibert/labels.json)
+- [labels.json](file://backend/tests/fixtures/classification/labels.json)
 - [settings.py](file://backend/app/config/settings.py)
 </cite>
 
@@ -38,7 +38,7 @@
 10. [Conclusion](#conclusion)
 
 ## Introduction
-This document describes the backend testing strategy and infrastructure for the ScholarForm AI project. It focuses on pytest-based unit and integration testing, marker-based categorization, configuration via pytest.ini and pyproject.toml, and practical guidance for writing, running, and maintaining reliable backend tests. The repository includes approximately 46 backend test files organized across unit, integration, golden file, security, and SciBERT benchmark categories, along with supporting fixtures and CI integration.
+This document describes the backend testing strategy and infrastructure for the ScholarForm AI project. It focuses on pytest-based unit and integration testing, marker-based categorization, configuration via pytest.ini and pyproject.toml, and practical guidance for writing, running, and maintaining reliable backend tests. The repository includes approximately 46 backend test files organized across unit, integration, golden file, security, and classification benchmark categories, along with supporting fixtures and CI integration.
 
 **Updated** Enhanced testing infrastructure now emphasizes comprehensive error scenario coverage with deterministic behavior through cache bypassing and improved settings validation focusing on sensible defaults.
 
@@ -47,7 +47,7 @@ The backend test suite is organized under the backend/tests directory with the f
 - Root-level pytest configuration and global fixtures
 - Integration tests with dedicated fixtures and collection modifiers
 - Golden file tests validating rendering outputs against expected structures
-- SciBERT benchmark tests evaluating semantic parsing performance
+- LLM classification benchmark tests evaluating semantic parsing performance
 - Settings validation tests ensuring sensible defaults and robust error handling
 - Cache management tests for CSL fetching and other service integrations
 - Additional categories such as security, performance, and contract tests
@@ -65,10 +65,10 @@ C["pyproject.toml<br/>Packaging metadata"] --> B
 D["tests/conftest.py<br/>Global fixtures, service checks, mocks"] --> B
 E["tests/integration/conftest.py<br/>Integration service checks, markers"] --> B
 F["Golden file tests<br/>test_formatter_golden_files.py"] --> B
-G["SciBERT benchmark<br/>test_scibert_benchmark.py"] --> B
+G["Classification benchmark<br/>test_classification.py"] --> B
 H["Settings validation<br/>test_settings.py"] --> B
 I["Cache management<br/>test_csl_fetcher_cache.py"] --> B
-J["Fixtures<br/>labels.json (SciBERT)"] --> G
+J["Fixtures<br/>labels.json (classification)"] --> G
 K["Configuration<br/>settings.py"] --> H
 ```
 
@@ -78,10 +78,10 @@ K["Configuration<br/>settings.py"] --> H
 - [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
 - [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
 - [test_formatter_golden_files.py:1-253](file://backend/tests/test_formatter_golden_files.py#L1-L253)
-- [test_scibert_benchmark.py:1-92](file://backend/tests/test_scibert_benchmark.py#L1-L92)
+- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
 - [test_settings.py:1-69](file://backend/tests/test_settings.py#L1-L69)
 - [test_csl_fetcher_cache.py:1-83](file://backend/tests/test_csl_fetcher_cache.py#L1-L83)
-- [labels.json:1-203](file://backend/tests/fixtures/scibert/labels.json#L1-L203)
+- [labels.json:1-203](file://backend/tests/fixtures/classification/labels.json#L1-L203)
 - [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
 
 **Section sources**
@@ -112,7 +112,7 @@ K["Configuration<br/>settings.py"] --> H
 - [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
 
 ## Architecture Overview
-The backend testing architecture centers on pytest with layered fixtures and environment-aware skipping. Integration tests are gated by service availability, while global fixtures standardize mocking and document construction. Golden file tests validate rendering outputs, and SciBERT benchmark tests evaluate semantic parsing accuracy. Enhanced error handling and cache management ensure deterministic behavior across all test scenarios.
+The backend testing architecture centers on pytest with layered fixtures and environment-aware skipping. Integration tests are gated by service availability, while global fixtures standardize mocking and document construction. Golden file tests validate rendering outputs, and classification benchmark tests evaluate semantic parsing accuracy. Enhanced error handling and cache management ensure deterministic behavior across all test scenarios.
 
 ```mermaid
 graph TB
@@ -128,7 +128,7 @@ I1["integration/conftest.py<br/>service checks, integration marker"]
 end
 subgraph "Test Suites"
 T1["Golden file tests"]
-T2["SciBERT benchmark"]
+T2["Classification benchmark"]
 T3["Settings validation"]
 T4["Cache management tests"]
 T5["Unit & Other Tests"]
@@ -137,7 +137,6 @@ P1 --> F1
 P2 --> F1
 F1 --> T5
 I1 --> T1
-I1 --> T2
 I1 --> T3
 I1 --> T4
 ```
@@ -148,7 +147,7 @@ I1 --> T4
 - [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
 - [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
 - [test_formatter_golden_files.py:1-253](file://backend/tests/test_formatter_golden_files.py#L1-L253)
-- [test_scibert_benchmark.py:1-92](file://backend/tests/test_scibert_benchmark.py#L1-L92)
+- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
 - [test_settings.py:1-69](file://backend/tests/test_settings.py#L1-L69)
 - [test_csl_fetcher_cache.py:1-83](file://backend/tests/test_csl_fetcher_cache.py#L1-L83)
 
@@ -220,12 +219,12 @@ Skip --> End
 ```
 
 **Diagram sources**
-- [test_scibert_benchmark.py:46-92](file://backend/tests/test_scibert_benchmark.py#L46-L92)
-- [labels.json:1-203](file://backend/tests/fixtures/scibert/labels.json#L1-L203)
+- [test_classification.py:46-92](file://backend/tests/test_classification.py#L46-L92)
+- [labels.json:1-203](file://backend/tests/fixtures/classification/labels.json#L1-L203)
 
 **Section sources**
-- [test_scibert_benchmark.py:1-92](file://backend/tests/test_scibert_benchmark.py#L1-L92)
-- [labels.json:1-203](file://backend/tests/fixtures/scibert/labels.json#L1-L203)
+- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
+- [labels.json:1-203](file://backend/tests/fixtures/classification/labels.json#L1-L203)
 
 ### Settings Validation Tests
 Purpose:
@@ -409,7 +408,7 @@ Common issues and resolutions:
 - Integration tests skipped unexpectedly
   - Cause: Required services (Redis, GROBID) unreachable.
   - Resolution: Verify REDIS_HOST/REDIS_PORT and GROBID_HOST/GROBID_PORT environment variables and service availability.
-- SciBERT benchmark failures
+- classification benchmark failures
   - Cause: Missing labels.json fixtures or unsupported parser for a sample.
   - Resolution: Ensure fixtures exist and a suitable parser is available; optionally set SCIBERT_BENCHMARK_MODEL to a reachable model.
 - Golden file mismatches
@@ -428,9 +427,9 @@ Common issues and resolutions:
 **Section sources**
 - [conftest.py:37-58](file://backend/tests/conftest.py#L37-L58)
 - [integration/conftest.py:24-33](file://backend/tests/integration/conftest.py#L24-L33)
-- [test_scibert_benchmark.py:34-36](file://backend/tests/test_scibert_benchmark.py#L34-L36)
+- [test_classification.py:34-36](file://backend/tests/test_classification.py#L34-L36)
 - [test_formatter_golden_files.py:237-253](file://backend/tests/test_formatter_golden_files.py#L237-L253)
 - [test_settings.py:62-69](file://backend/tests/test_settings.py#L62-L69)
 
 ## Conclusion
-The backend testing framework leverages pytest with carefully designed markers, global fixtures, and environment-aware gating to support reliable unit and integration testing. Golden file and SciBERT benchmark tests ensure rendering correctness and model performance, respectively. Enhanced error handling and cache management provide comprehensive coverage for error scenarios while maintaining deterministic behavior. Settings validation tests focus on sensible defaults rather than specific hardcoded values, ensuring robust operation across diverse environments. By adhering to the documented configuration and execution strategies, contributors can write, run, and maintain robust backend tests across diverse environments with comprehensive error handling coverage.
+The backend testing framework leverages pytest with carefully designed markers, global fixtures, and environment-aware gating to support reliable unit and integration testing. Golden file and classification benchmark tests ensure rendering correctness and model performance, respectively. Enhanced error handling and cache management provide comprehensive coverage for error scenarios while maintaining deterministic behavior. Settings validation tests focus on sensible defaults rather than specific hardcoded values, ensuring robust operation across diverse environments. By adhering to the documented configuration and execution strategies, contributors can write, run, and maintain robust backend tests across diverse environments with comprehensive error handling coverage.

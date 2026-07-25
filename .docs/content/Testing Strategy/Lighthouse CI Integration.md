@@ -213,7 +213,7 @@ The frontend configuration supports both development and CI environments:
 - React strict mode enabled for development error detection
 - Package optimization for tree-shaking heavy dependencies
 - Rewrites mapping metrics endpoint to API route
-- PWA integration with Sentry for error monitoring
+- PWA integration with error monitoring
 
 #### Testing Infrastructure
 - Vitest for unit testing with JSDOM environment

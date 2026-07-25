@@ -29,7 +29,7 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
-The Semantic Parser is a foundational Natural Language Processing (NLP) component responsible for structural analysis and semantic classification of manuscript blocks. It leverages a local SciBERT model to identify document sections such as abstracts, methodologies, conclusions, references, figures, tables, acknowledgments, and equations. The component operates as a safety-guarded interface adapter between the document pipeline and AI-powered classification, providing robust fallback mechanisms for reliability and performance.
+The Semantic Parser is a foundational Natural Language Processing (NLP) component responsible for structural analysis and semantic classification of manuscript blocks. It leverages LLM-based classification to identify document sections such as abstracts, methodologies, conclusions, references, figures, tables, acknowledgments, and equations. The component operates as a safety-guarded interface adapter between the document pipeline and AI-powered classification, providing robust fallback mechanisms for reliability and performance.
 
 ## Project Structure
 The Semantic Parser resides within the intelligence layer of the document processing pipeline and integrates with multiple pipeline stages:
@@ -83,7 +83,7 @@ The Semantic Parser consists of several key components working together to provi
 ### SemanticParser Class
 The main class implements:
 - Lazy model loading with global ModelStore integration
-- Dual-mode operation (transformer-based and heuristic fallback)
+- Dual-mode operation (LLM-based and heuristic fallback)
 - Fragmented heading repair logic
 - Batch and single-block classification
 - Safety guards against pipeline failures
@@ -195,9 +195,9 @@ class SemanticParser {
 }
 class ContentClassifier {
 +process(document) Document
--_predict_scibert_batch(blocks) List[Dict]
--_apply_scibert_predictions(blocks, predictions) void
--_map_scibert_label(label, block) tuple
+- _predict_classification_batch(blocks) List[Dict]
+- _apply_classification_predictions(blocks, predictions) void
+- _map_classification_label(label, block) tuple
 }
 class Block {
 +block_type BlockType

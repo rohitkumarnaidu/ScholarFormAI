@@ -97,7 +97,7 @@ BE_Celery -. "Planned migration" .-> BE_Cache
 ## Core Components
 - Frontend (Next.js)
   - App Router with 34 routes, Supabase client initialization, and real-time WebSocket integration for live preview.
-  - Optimizations include tree-shaking and Sentry integration for error tracking.
+   - Optimizations include tree-shaking for error tracking.
 - Backend (FastAPI)
   - Central application with middleware stack (rate limiting, tier-aware limits, security headers, request ID, Prometheus metrics).
   - Routers for documents, templates, generator, synthesis, billing, health, metrics, feedback, stream, preview, and generator.
@@ -334,7 +334,7 @@ Celery-->>API : Result
 - External Dependencies
   - PDF parsing: Docling (primary), GROBID (optional), PyMuPDF fallback.
   - LLMs: NVIDIA NIM, Groq, Ollama via LiteLLM abstraction.
-  - Monitoring: Prometheus metrics endpoint; Sentry for error tracking.
+   - Monitoring: Prometheus metrics endpoint for error tracking.
 
 ```mermaid
 graph TB
@@ -400,7 +400,7 @@ The Automated Academic Manuscript Formatter employs a robust FastAPI-only backen
 ## Appendices
 
 ### Technology Stack Summary
-- Frontend: Next.js 14, React 18+, Tailwind CSS, TipTap, Framer Motion, Supabase JS, Sentry, Vitest, Playwright.
+- Frontend: Next.js 14, React 18+, Tailwind CSS, TipTap, Framer Motion, Supabase JS, Vitest, Playwright.
 - Backend: Python 3.12, FastAPI, Uvicorn, Celery (planned), Redis, LiteLLM, Prometheus, Alembic, ChromaDB, Docling, pytest.
 - Infrastructure: Vercel (frontend), Render (backend), Supabase (PostgreSQL), Upstash Redis, ChromaDB, ClamAV, GROBID (optional).
 
