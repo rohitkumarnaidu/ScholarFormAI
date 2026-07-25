@@ -6,17 +6,15 @@ version: '3.8'
 services:
   # GROBID service for metadata extraction
   grobid:
-    image: lfoppiano/grobid:0.8.0
+    build:
+      context: ../../deploy/services/grobid
+      dockerfile: Dockerfile
     container_name: scholarform-grobid
     ports:
       - "8070:8070"
-    environment:
-      - GROBID_HEAP_SIZE=4096m
-    volumes:
-      - grobid-data:/opt/grobid/grobid-home/tmp
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8070/api/isalive" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8070/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -32,6 +30,22 @@ services:
       - redis-data:/data
     restart: unless-stopped
     command: redis-server --appendonly yes
+
+  # DOCX Converter service
+  docx-converter:
+    build:
+      context: ../../deploy/services/docx-converter
+      dockerfile: Dockerfile
+    container_name: scholarform-docx-converter
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   # ClamAV daemon for malware scanning
   clamav:
