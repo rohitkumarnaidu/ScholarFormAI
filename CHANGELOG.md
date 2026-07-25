@@ -44,7 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - NOTICE file added for third-party attribution
 
 ### Infrastructure
-- Production-ready CI/CD with 26 workflows
+- Production-ready CI/CD with 25 workflows
 - 3 Grafana dashboards deployed
 - Prometheus alerting rules configured
 - Docker multi-arch build matrix (linux/amd64, linux/arm64)

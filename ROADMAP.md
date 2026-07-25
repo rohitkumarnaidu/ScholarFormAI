@@ -46,10 +46,8 @@
 ### Phase 5: Launch Readiness
 - Lock cloud topology: Vercel + Render + Supabase + Upstash
 - Staging environment live with health check
-- Sentry.io error tracking configured
 - Grafana dashboard: request rate, error rate, queue depth
 - RBAC fully implemented for admin, pro, free, guest roles
-- PostHog analytics for upload, download, agent sessions
 - OWASP Top 10 security audit — zero HIGH findings
 - P99 upload ACK <400ms on staging
 
