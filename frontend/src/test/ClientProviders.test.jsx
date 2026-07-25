@@ -3,15 +3,6 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 import ClientProviders from '../components/layout/ClientProviders';
 
-vi.mock('next/navigation', () => ({
-    usePathname: vi.fn(() => '/'),
-}));
-
-vi.mock('@/src/lib/posthog', () => ({
-    initPostHog: vi.fn(),
-    capturePostHogPageView: vi.fn(),
-}));
-
 vi.mock('@/src/context/ThemeContext', () => ({
     ThemeProvider: ({ children }) => <div data-testid="theme">{children}</div>,
 }));

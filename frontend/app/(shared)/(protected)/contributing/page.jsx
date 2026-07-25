@@ -42,7 +42,7 @@ export default function ContributingPage() {
                             <span className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
                             <div>
                                 <p className="font-medium text-gray-900 dark:text-white">Clone and install</p>
-                                <pre className="mt-1 p-3 bg-gray-900 dark:bg-gray-950 text-gray-100 rounded-lg text-sm overflow-x-auto">git clone https://github.com/scholarform/scholarform-ai.git
+                                <pre className="mt-1 p-3 bg-gray-900 dark:bg-gray-950 text-gray-100 rounded-lg text-sm overflow-x-auto">git clone https://github.com/rohitkumarnaidu/ScholarFormAI.git
 cd scholarform-ai/backend
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt</pre>
