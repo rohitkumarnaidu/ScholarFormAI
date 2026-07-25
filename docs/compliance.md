@@ -6,7 +6,7 @@
 title: Dependency Compliance & SBOM
 description: License compliance, SBOM generation, dependency audit procedures
 sidebar_position: 55
-last_updated: June 14, 2026
+last_updated: July 2026
 ---
 
 # Dependency Compliance & SBOM
@@ -63,7 +63,7 @@ python scripts/audit_deps.py --sbom
 | Classification | Action |
 |---------------|--------|
 | MIT, BSD, Apache-2.0, ISC | ✅ Allowed |
-| MPL-2.0, LGPL-3.0 | ⚠️ Review required |
+| MPL-2.0, LGPL-3.0 |  ️ Review required |
 | AGPL-3.0, GPL-3.0 | ❌ Denied for direct deps; allowed for replaceable components (PyMuPDF, GROBID) |
 | Unknown / Proprietary | ❌ Blocked by CI |
 

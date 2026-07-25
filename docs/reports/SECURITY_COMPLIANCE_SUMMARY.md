@@ -151,7 +151,7 @@ ScholarForm AI v1.0.0 has undergone comprehensive security validation across 16 
 |-------------|-----------|-------|
 | Passing | ✅ READY | 98% |
 | Silver | ✅ READY | 97% |
-| Gold | ⚠️ Near Ready | 77% |
+| Gold |  ️ Near Ready | 77% |
 
 ### 4.3 Gold Gaps
 
@@ -253,7 +253,6 @@ cosign verify ghcr.io/scholarform/backend:v1.0.0 \
 
 | Header | Value | Source |
 |--------|-------|--------|
-| `Content-Security-Policy` | `default-src 'self'; script-src 'self' 'unsafe-eval' 'nonce-{random}'; connect-src 'self' https://*.supabase.co https://app.posthog.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co; font-src 'self' data:;` | `next.config.mjs` |
 | `Strict-Transport-Security` | `max-age=31536000; includeSubDomains; preload` | `next.config.mjs` |
 | `Permissions-Policy` | `camera=(), microphone=(), geolocation=(), interest-cohort=()` | `next.config.mjs` |
 | `X-Content-Type-Options` | `nosniff` | `next.config.mjs` |
@@ -269,10 +268,10 @@ cosign verify ghcr.io/scholarform/backend:v1.0.0 \
 | OWASP Top 10 (2021) | Full (A01–A10) | ✅ Covered |
 | OWASP AI Top 10 (LLM01–LLM10) | Full | ✅ Covered |
 | OWASP ASVS (Level 1) | Authentication, session, access control | ✅ Implemented |
-| GDPR | Data encryption, access controls, audit logging | ⚠️ Partial (v1.2) |
-| SOC 2 (Security Pillar) | Security monitoring, access controls, encryption | ⚠️ Baseline (audit pending) |
-| ISO 27001 | Risk management, security policy, incident response | ⚠️ Baseline (audit pending) |
-| NIST CSF | Identify, Protect, Detect, Respond, Recover | ⚠️ Baseline (mapping in progress) |
+| GDPR | Data encryption, access controls, audit logging |  ️ Partial (v1.2) |
+| SOC 2 (Security Pillar) | Security monitoring, access controls, encryption |  ️ Baseline (audit pending) |
+| ISO 27001 | Risk management, security policy, incident response |  ️ Baseline (audit pending) |
+| NIST CSF | Identify, Protect, Detect, Respond, Recover |  ️ Baseline (mapping in progress) |
 | OpenSSF Best Practices | Passing + Silver achieved | ✅ Achieved |
 | SLSA | Level 3 | ✅ Achieved |
 

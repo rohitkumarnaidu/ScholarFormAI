@@ -58,9 +58,9 @@ ScholarForm AI is a distributed document formatting platform employing a **micro
 │ ┌───────────────┐ │ │ Supabase     │ │ ┌────────────────┐ │
 │ │Parser Pipeline│ │ │ • PostgreSQL │ │ │GROBID Service  │ │
 │ │Structure Det. │ │ │ • Auth (JWT) │ │ │Docling Service │ │
-│ │Classifier     │ │ │ • Storage    │ │ │Nougat OCR      │ │
+│ │Classifier     │ │ │ • Storage    │ │ │LLM-based PDF parsing      │ │
 │ │Formatter      │ │ │ • RLS        │ │ │PaddleOCR       │ │
-│ │Validator      │ │ │              │ │ │SciBERT Service │ │
+│ │Validator      │ │ │              │ │ │LLMClassifier Service │ │
 │ │Exporter       │ │ │ Redis        │ │ └────────────────┘ │
 │ │Generator Agent│ │ │ • Celery     │ │                    │
 │ │Multi-Doc Synth│ │ │ • Rate Limit │ │ LLM Providers:     │
@@ -111,7 +111,7 @@ ScholarFormAI/
 ├── sbom/                            # CycloneDX SBOMs
 ├── scripts/                         # Build/audit/coverage utilities
 ├── fuzz/                            # Fuzz testing targets
-└── .github/workflows/              # 26 CI/CD workflows
+└── .github/workflows/              # 25 CI/CD workflows
 ```
 
 ---
@@ -146,7 +146,7 @@ ScholarFormAI/
 | Groq (fallback 1) | Ultra-low latency LLM inference via LPU architecture |
 | Ollama (fallback 2) | Local/on-premise LLM deployment for air-gapped environments |
 | GROBID + Docling (PDF) | 3-tier fallback pipeline for maximum PDF extraction reliability |
-| SciBERT (optional) | Domain-specific scientific text classification |
+| LLMClassifier (optional) | Domain-specific scientific text classification |
 | ChromaDB | Lightweight vector store for RAG-based multi-doc synthesis |
 
 ### 2.4 Infrastructure
@@ -174,7 +174,7 @@ Upload ──→ ┌────────────────────
            │    DOCX: python-docx                                 │
            │    MD/HTML/TEX: Dedicated parsers                    │
            │ 4. Structure Detection                                │
-           │ 5. Block Classification (SciBERT optional)           │
+           │ 5. Block Classification (LLMClassifier optional)           │
            │ 6. NLP Enhancement (YAKE keyword + spaCy NER)       │
            │ 7. Caption Matching (tables + figures)               │
            │ 8. Figure Quality Analysis (optional)                │
@@ -276,7 +276,6 @@ Prompt ──→ ┌────────────────────
 
 | Header | Value | Source |
 |--------|-------|--------|
-| `Content-Security-Policy` | `default-src 'self'; script-src 'self' 'unsafe-eval' 'nonce-{random}'; connect-src 'self' https://*.supabase.co https://app.posthog.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co; font-src 'self' data:;` | `frontend/next.config.mjs` |
 | `Strict-Transport-Security` | `max-age=31536000; includeSubDomains; preload` | `frontend/next.config.mjs` |
 | `Permissions-Policy` | `camera=(), microphone=(), geolocation=()`, etc. | `frontend/next.config.mjs` |
 | `X-Content-Type-Options` | `nosniff` | Backend middleware |
@@ -344,7 +343,7 @@ Prompt ──→ ┌────────────────────
 | E2E | `npm run test:e2e` | 28 spec files | ~5 min |
 | Performance | `pytest -k "performance or latency or throughput"` | ~28 tests | ~1 min |
 
-### 6.3 CI/CD Workflow Inventory (26 Workflows)
+### 6.3 CI/CD Workflow Inventory (25 Workflows)
 
 | Category | Workflows |
 |----------|-----------|
@@ -372,8 +371,6 @@ Prompt ──→ ┌────────────────────
 | ChromaDB | Render.com | Standard (2 vCPU, 4 GB) | Vertical |
 | File Storage | Supabase Storage | Pro (100 GB) | CDN-cached |
 | Monitoring | Grafana Cloud | Free (metrics) | — |
-| Error Tracking | Sentry | Team | — |
-| Analytics | PostHog | Cloud (self-host option) | — |
 
 ### 7.2 CI/CD Pipeline
 
@@ -397,9 +394,7 @@ Git Push ──→ ┌───────────────────�
 |--------|------|---------|
 | Metrics | Prometheus (+ FastAPI instrumentator) | Request rate, error rate, latency (p50/p95/p99), queue depth, memory |
 | Dashboards | Grafana (3 provisioned) | Application, infrastructure, business |
-| Error Tracking | Sentry (Python + JS SDK) | Exception rate, crash-free rate, user impact |
 | Logging | structlog (rotating files + console) | Structured JSON, correlated by request ID |
-| Analytics | PostHog | Upload/download events, agent sessions, user funnels |
 | RUM | Lighthouse CI | Core Web Vitals, FCP, LCP, CLS |
 | Health Probes | `/health/live` + `/health/ready` | Liveness + readiness + dependency checks |
 
