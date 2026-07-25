@@ -7,7 +7,6 @@
 <cite>
 **Referenced Files in This Document**
 - [rum.js](file://frontend/src/lib/rum.js)
-- [posthog.js](file://frontend/src/lib/posthog.js)
 - [analytics.js](file://frontend/src/lib/analytics.js)
 - [LatencyObserver.jsx](file://frontend/src/components/monitoring/LatencyObserver.jsx)
 - [route.js](file://frontend/app/api/internal/metrics/record/route.js)
@@ -34,7 +33,7 @@ This document describes the Real User Monitoring (RUM) implementation in the aut
 - Backend ingestion: receives and aggregates metrics via lightweight endpoints
 - Observability stack: exposes Prometheus-compatible metrics for monitoring dashboards and alerting
 
-The current implementation integrates PostHog for event tracking and uses the browser's Performance Navigation Timing API for page load measurements. It also includes a placeholder RUM module designed for future expansion to providers like Datadog or Sentry.
+The current implementation uses the browser's Performance Navigation Timing API for page load measurements. It also includes a placeholder RUM module designed for future expansion.
 
 ## Project Structure
 The RUM system spans both frontend and backend components:
@@ -45,7 +44,6 @@ The RUM system spans both frontend and backend components:
 graph TB
 subgraph "Frontend"
 LO["LatencyObserver.jsx<br/>Collects page load timings"]
-PH["posthog.js<br/>PostHog integration"]
 AN["analytics.js<br/>Event tracking wrapper"]
 APIR["/api/internal/metrics/record<br/>POST handler"]
 APIM["/api/metrics<br/>GET handler"]
@@ -56,8 +54,7 @@ PMW["prometheus_metrics.py<br/>Metrics definitions & helpers"]
 MMW["monitoring.py<br/>Request logging & tracing"]
 end
 LO --> APIR
-AN --> PH
-PH --> APIM
+AN --> APIM
 MET --> APIM
 PMW --> APIM
 MMW --> APIM
@@ -65,7 +62,6 @@ MMW --> APIM
 
 **Diagram sources**
 - [LatencyObserver.jsx:1-38](file://frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
-- [posthog.js:1-140](file://frontend/src/lib/posthog.js#L1-L140)
 - [analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
 - [route.js:1-22](file://frontend/app/api/internal/metrics/record/route.js#L1-L22)
 - [route.js:1-20](file://frontend/app/api/metrics/route.js#L1-L20)
@@ -75,7 +71,7 @@ MMW --> APIM
 
 **Section sources**
 - [rum.js:1-27](file://frontend/src/lib/rum.js#L1-L27)
-- [posthog.js:1-140](file://frontend/src/lib/posthog.js#L1-L140)
+- [posthog.js:1-140](file://frontend/src/lib/posthog.js#L1-L140) (legacy - no longer active)
 - [analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
 - [LatencyObserver.jsx:1-38](file://frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
 - [route.js:1-22](file://frontend/app/api/internal/metrics/record/route.js#L1-L22)
@@ -85,8 +81,7 @@ MMW --> APIM
 
 ## Core Components
 - RUM initialization and event tracking (placeholder): Provides initialization and event tracking functions for future RUM providers.
-- PostHog integration: Manages lazy initialization, event queuing, and pageview capture.
-- Analytics wrapper: Offers a non-blocking event tracking interface that delegates to PostHog when configured.
+- Analytics wrapper: Offers a non-blocking event tracking interface.
 - Latency observer: Captures page load durations using the Performance Navigation Timing API and reports them to the backend.
 - Frontend metrics registry: Defines a Prometheus-compatible histogram for HTTP request durations and registers default metrics.
 - Internal metrics recording endpoint: Receives latency observations and updates the frontend metrics registry.
@@ -95,7 +90,6 @@ MMW --> APIM
 
 **Section sources**
 - [rum.js:1-27](file://frontend/src/lib/rum.js#L1-L27)
-- [posthog.js:1-140](file://frontend/src/lib/posthog.js#L1-L140)
 - [analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
 - [LatencyObserver.jsx:1-38](file://frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
 - [metrics.js:1-19](file://frontend/src/lib/metrics.js#L1-L19)
@@ -130,28 +124,14 @@ APIM-->>Browser : "Prometheus metrics payload"
 ## Detailed Component Analysis
 
 ### Frontend RUM and Analytics
-- RUM module: Provides stubbed functions for initialization and event tracking, intended for future integration with providers like Datadog or Sentry.
-- PostHog integration: Handles lazy loading of the PostHog script, initialization with environment configuration, event queuing until client readiness, and pageview capture.
-- Analytics wrapper: Non-blocking event tracking that attempts immediate capture and initializes PostHog if configured but not yet ready.
-
-```mermaid
-flowchart TD
-Start(["Event or Page Load"]) --> CheckPH["Check PostHog availability"]
-CheckPH --> |Available| Capture["Capture event/pageview"]
-CheckPH --> |Not Available| Queue["Queue event if configured"]
-Queue --> InitPH["Lazy initialize PostHog if configured"]
-InitPH --> Flush["Flush queued events"]
+- RUM module: Provides stubbed functions for initialization and event tracking, intended for future expansion.
+- Analytics wrapper: Non-blocking event tracking interface.
 Capture --> End(["Complete"])
 Flush --> End
 ```
 
-**Diagram sources**
-- [posthog.js:65-108](file://frontend/src/lib/posthog.js#L65-L108)
-- [analytics.js:7-19](file://frontend/src/lib/analytics.js#L7-L19)
-
 **Section sources**
 - [rum.js:1-27](file://frontend/src/lib/rum.js#L1-L27)
-- [posthog.js:1-140](file://frontend/src/lib/posthog.js#L1-L140)
 - [analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
 
 ### Latency Observation and Ingestion
@@ -221,15 +201,14 @@ class MetricsManager {
 
 ## Dependency Analysis
 The RUM system exhibits clear separation of concerns:
-- Frontend instrumentation depends on PostHog for event tracking and on the internal metrics endpoint for latency reporting.
+- Frontend instrumentation depends on the internal metrics endpoint for latency reporting.
 - Backend metrics exposure depends on Prometheus client definitions and middleware registration.
 - The internal metrics recording endpoint bridges frontend latency observations with the frontend metrics registry.
 
 ```mermaid
 graph TB
 LO["LatencyObserver.jsx"] --> APIR["/api/internal/metrics/record"]
-AN["analytics.js"] --> PH["posthog.js"]
-PH --> APIM["/api/metrics"]
+AN["analytics.js"] --> APIM["/api/metrics"]
 MET["metrics.js"] --> APIM
 PMW["prometheus_metrics.py"] --> APIM
 MMW["monitoring.py"] --> APIM
@@ -239,7 +218,6 @@ MMW["monitoring.py"] --> APIM
 - [LatencyObserver.jsx:1-38](file://frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
 - [route.js:1-22](file://frontend/app/api/internal/metrics/record/route.js#L1-L22)
 - [analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
-- [posthog.js:1-140](file://frontend/src/lib/posthog.js#L1-L140)
 - [route.js:1-20](file://frontend/app/api/metrics/route.js#L1-L20)
 - [metrics.js:1-19](file://frontend/src/lib/metrics.js#L1-L19)
 - [prometheus_metrics.py:1-300](file://backend/app/middleware/prometheus_metrics.py#L1-L300)
@@ -252,22 +230,19 @@ MMW["monitoring.py"] --> APIM
 - [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
 
 ## Performance Considerations
-- Non-blocking instrumentation: PostHog initialization and event capture are designed to avoid blocking application startup.
-- Lazy loading: The PostHog script is loaded asynchronously, and events are queued until the client is ready.
+
 - Frontend metrics overhead: The internal metrics recording endpoint performs minimal work and uses a histogram with carefully chosen buckets for efficient aggregation.
 - Backend metrics granularity: The backend Prometheus middleware defines numerous metrics with appropriate bucket configurations to balance accuracy and cardinality.
 
 ## Troubleshooting Guide
-- PostHog not configured: Verify environment variables for PostHog key and host. The system checks for configuration and initializes lazily when available.
-- Events not appearing: Ensure the PostHog client is available before capturing events. The analytics wrapper will queue events and attempt to flush them after initialization.
+
 - Latency metrics missing: Confirm that the internal metrics recording endpoint is reachable and that the frontend metrics registry is properly registered.
 - Backend metrics not exposed: Ensure the metrics endpoint is accessible and that the Prometheus middleware is registered in the backend application.
 
 **Section sources**
-- [posthog.js:31-34](file://frontend/src/lib/posthog.js#L31-L34)
 - [analytics.js:7-19](file://frontend/src/lib/analytics.js#L7-L19)
 - [route.js:6-15](file://frontend/app/api/internal/metrics/record/route.js#L6-L15)
 - [route.js:6-15](file://frontend/app/api/metrics/route.js#L6-L15)
 
 ## Conclusion
-The RUM implementation provides a solid foundation for collecting real user performance and engagement signals. The frontend instrumentation leverages the Performance Navigation Timing API and integrates with PostHog for event tracking, while the backend offers comprehensive metrics exposure via Prometheus. The modular design allows for easy extension to additional RUM providers and enhanced monitoring capabilities.
+The RUM implementation provides a solid foundation for collecting real user performance and engagement signals. The frontend instrumentation leverages the Performance Navigation Timing API and integrates, while the backend offers comprehensive metrics exposure via Prometheus. The modular design allows for easy extension to additional RUM providers and enhanced monitoring capabilities.

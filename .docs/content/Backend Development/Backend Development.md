@@ -110,7 +110,7 @@ A --> M
 - [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
 
 ## Core Components
-- Application entrypoint initializes logging, Sentry, Prometheus metrics, CORS, rate limiting, security headers, HTTPS redirect, request ID, audit logging, and registers routers for v1, auth, documents, templates, metrics, feedback, stream, preview, and generator.
+- Application entrypoint initializes logging, Prometheus metrics, CORS, rate limiting, security headers, HTTPS redirect, request ID, audit logging, and registers routers for v1, auth, documents, templates, metrics, feedback, stream, preview, and generator.
 - Configuration loads environment variables with strict validation and boolean parsing helpers.
 - Database ORM base and document model define schema and relationships.
 - Document service encapsulates Supabase-py operations for CRUD and status/result management.
@@ -161,7 +161,7 @@ Orchestrator --> ExternalTools["External Tools<br/>GROBID, Docling, LibreOffice,
 ## Detailed Component Analysis
 
 ### Application Entry and Middleware
-- Initializes structured logging, Sentry, Prometheus metrics, CORS, rate limiting, security headers, HTTPS redirect, request ID, audit logging, router inclusion, and health/readiness endpoints.
+- Initializes structured logging, Prometheus metrics, CORS, rate limiting, security headers, HTTPS redirect, request ID, audit logging, router inclusion, and health/readiness endpoints.
 - Configures Redis-backed rate limiting with in-memory fallback and sliding window semantics.
 - Includes Prometheus metrics exposure and readiness/health endpoints.
 

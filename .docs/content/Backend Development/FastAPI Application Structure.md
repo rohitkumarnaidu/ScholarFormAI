@@ -35,7 +35,7 @@
 10. [Appendices](#appendices)
 
 ## Introduction
-This document explains the FastAPI application structure and initialization for the backend service. It covers application setup, environment-driven configuration, middleware stack (CORS, rate limiting, security headers, request ID tracking), lifespan context manager for startup/shutdown, dependency injection patterns, and modular router organization including API versioning. It also documents logging configuration, error tracking with Sentry, health and readiness probes, and development versus production considerations.
+This document explains the FastAPI application structure and initialization for the backend service. It covers application setup, environment-driven configuration, middleware stack (CORS, rate limiting, security headers, request ID tracking), lifespan context manager for startup/shutdown, dependency injection patterns, and modular router organization including API versioning. It also documents logging configuration, error tracking, health and readiness probes, and development versus production considerations.
 
 ## Project Structure
 The backend is organized around a FastAPI application factory with clear separation of concerns:
@@ -88,7 +88,7 @@ A --> M["Dependencies<br/>utils/dependencies.py"]
 - Dependency injection: Authentication and optional user extraction via FastAPI Depends and custom utilities.
 - Modular routing: Feature-based routers plus v1 API versioning.
 - Health and readiness: Probes backed by cached health checks and external service checks.
-- Logging and error tracking: Structured logging configuration and Sentry integration.
+- Logging and error tracking: Structured logging configuration.
 
 **Section sources**
 - [main.py:150-260](file://backend/app/main.py#L150-L260)
@@ -123,7 +123,6 @@ end
 subgraph "Infrastructure"
 CFG["Settings"]
 LOG["Logging"]
-SEN["Sentry"]
 EXT["External Services"]
 end
 APP --> MW1
@@ -412,13 +411,7 @@ App-->>Probe : JSON Response
 **Section sources**
 - [logging_config.py:163-185](file://backend/app/config/logging_config.py#L163-L185)
 
-### Error Tracking with Sentry
-- Sentry SDK initialized conditionally when DSN is present.
-- Integrations for FastAPI, Starlette, and Python logging.
-- Environment and release tags set from environment variables.
 
-**Section sources**
-- [main.py:40-60](file://backend/app/main.py#L40-L60)
 
 ### Development vs Production Configurations
 - HTTPS enforcement and HSTS header applied only when forced and not in debug mode.
@@ -496,7 +489,7 @@ App --> HC["Health Checks"]
 - [logging_config.py:163-185](file://backend/app/config/logging_config.py#L163-L185)
 
 ## Conclusion
-The FastAPI application is structured for scalability and maintainability, with environment-driven configuration, robust middleware, and modular routers. The lifespan context manager coordinates startup and shutdown tasks, while dependency injection and service layers keep business logic cohesive. Health and readiness probes, combined with Sentry and structured logging, support reliable operations across development and production.
+The FastAPI application is structured for scalability and maintainability, with environment-driven configuration, robust middleware, and modular routers. The lifespan context manager coordinates startup and shutdown tasks, while dependency injection and service layers keep business logic cohesive. Health and readiness probes, combined with structured logging, support reliable operations across development and production.
 
 ## Appendices
 - Runtime environment: Python 3.12 as defined by the project metadata.

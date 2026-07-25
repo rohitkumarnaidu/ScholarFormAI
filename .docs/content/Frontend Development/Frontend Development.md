@@ -330,7 +330,7 @@ EB-->>React : "Show friendly UI with Retry/Reload"
 
 ## Dependency Analysis
 External dependencies and build optimizations:
-- Next.js 16 with Sentry integration and Turbopack dev mode
+- Next.js 16 with Turbopack dev mode
 - React Query for caching and background synchronization
 - Supabase for auth and SSR-safe client creation
 - TailwindCSS with form and container query plugins
@@ -342,13 +342,9 @@ N["Next.js 16"]
 RQ["@tanstack/react-query"]
 SB["@supabase/supabase-js"]
 TW["TailwindCSS"]
-PH["PostHog"]
-SE["@sentry/nextjs"]
 N --> RQ
 N --> SB
 N --> TW
-N --> PH
-N --> SE
 ```
 
 **Diagram sources**
@@ -364,7 +360,7 @@ N --> SE
 ## Performance Considerations
 - React Query defaults: short stale time, limited retries, window focus refetch disabled to reduce unnecessary network calls
 - Optimizations: tree-shake heavy packages, optimize package imports for lucide-react and react-query
-- Build: Sentry configuration with treeshaking and debug logging removal
+- Build: treeshaking and debug logging removal
 - Real-time: Debounced WebSocket sends, exponential backoff, and SSE retry with capped attempts
 - Accessibility: Skip-to-main-content link, semantic markup, and focus management via FocusManager
 
