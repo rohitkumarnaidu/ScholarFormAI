@@ -120,7 +120,7 @@ PM["Prometheus Metrics"]
 ORCH["PipelineOrchestrator"]
 STAGE["Pipeline Stage (e.g., SemanticParser)"]
 SAFE["Safety Wrappers<br/>Retry/Validator/CB/SafeExec"]
-REMOTE["External Services<br/>(LLM, Docling, GROBID)"]
+REMOTE["External Services<br/>(LLM, GROBID)"]
 Client --> API
 API --> MON
 MON --> PM

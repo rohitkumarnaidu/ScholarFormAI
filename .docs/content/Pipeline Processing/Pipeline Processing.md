@@ -188,7 +188,7 @@ Orchestrator-->>Client : result
 - Stage 1: Input Conversion
   - Convert non-Docx inputs to DOCX using LibreOffice/Pandoc; optional OCR for scanned PDFs
 - Stage 2: Text Extraction
-  - Use ParserFactory to select parser; parse DOCX/PDF/HTML/MD/TX; optionally fallback to Nougat OCR for scanned PDFs
+  - Use ParserFactory to select parser; parse DOCX/PDF/HTML/MD/TX; optionally fallback to LLMPDFParser for scanned PDFs
 - Stage 3: AI Extraction (Parallel)
   - GROBID: extract metadata (title/authors/abstract/keywords)
   - Docling: extract layout (bounding boxes, font sizes, headings/tables/figures)
@@ -281,7 +281,7 @@ class PipelineOrchestrator {
 
 ### Text Extraction
 - ParserFactory selects parser based on file extension
-- PDF extraction: primary fast path via PyMuPDF; optional Nougat OCR fallback when enabled
+- PDF extraction: primary fast path via PyMuPDF; optional LLMPDFParser fallback when enabled
 - Other formats: DOCX, HTML, Markdown, TeX, TXT parsers
 
 **Section sources**
@@ -403,7 +403,7 @@ ORCH --> SSE["Real-time Events"]
 ## Troubleshooting Guide
 Common issues and resolutions:
 - Conversion failures: verify LibreOffice/Pandoc availability; check supported formats
-- Empty extraction for PDF: fallback to Nougat OCR when enabled; otherwise ensure text layer present
+- Empty extraction for PDF: fallback to LLMPDFParser when enabled; otherwise ensure text layer present
 - AI service unavailability: GROBID/Docling disabled or timed out; PyMuPDF fallback metadata used
 - ReasoningEngine failures: circuit breaker tripped; falls back to rule-based classification
 - Validation blocking: optional CrossRef checks disabled in fast mode; warnings logged instead of errors
