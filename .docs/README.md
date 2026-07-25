@@ -24,7 +24,7 @@ last_updated: July 2026
 | **Backend** | FastAPI structure, services, DB, auth, real-time | [content/Backend Development/](content/Backend Development/) |
 | **Frontend** | Next.js, components, state, real-time features | [content/Frontend Development/](content/Frontend Development/) |
 | **Pipeline** | Orchestrator, extraction, formatting, export | [content/Pipeline Processing/](content/Pipeline Processing/) |
-| **AI/ML** | NVIDIA NIM, Groq, Ollama, RAG, SciBERT | [content/AI_ML Integration/](content/AI_ML Integration/) |
+| **AI/ML** | NVIDIA NIM, Groq, Ollama, RAG, LLM Classification | [content/AI_ML Integration/](content/AI_ML Integration/) |
 | **Template System** | Architecture, creation, rendering, CSL | [content/Template System/](content/Template System/) |
 | **API Reference** | Endpoints for documents, templates, real-time | [content/API Reference/](content/API Reference/) |
 | **Database** | Schema, entities, ORM, migrations | [content/Database Design/](content/Database Design/) |

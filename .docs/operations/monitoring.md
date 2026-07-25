@@ -4,7 +4,7 @@
 
 ---
 title: ScholarForm AI — Monitoring & Alerting
-description: Prometheus metrics, Grafana dashboards, Sentry error tracking, and alert rules
+description: Prometheus metrics, Grafana dashboards, and alert rules
 sidebar_position: 2
 version: "1.0"
 status: ✅ Complete
@@ -41,14 +41,11 @@ sequenceDiagram
     participant App as "FastAPI App"
     participant Prom as "Prometheus"
     participant Graf as "Grafana"
-    participant Sentry as "Sentry"
     participant Alert as "Alert Manager"
     App->>Prom: /api/v1/metrics
-    App->>Sentry: Error events
     Prom->>Graf: Metrics data
     Graf->>Alert: Threshold breach
     Alert-->>App: Alert notification
-    Sentry-->>App: Error alert
     Note over App,Alert: Metrics: 15s scrape interval<br/>Alerts: evaluated every 1m
 ```
 
@@ -67,13 +64,6 @@ sequenceDiagram
 - **Pipeline Dashboard**: `backend/docker/grafana/dashboards/pipeline.json`
 - **System Metrics**: CPU, memory, disk, network
 - **Business Metrics**: Documents processed, users, error rates
-
-## Sentry
-
-- **Frontend DSN**: configured in `frontend/next.config.mjs`
-- **Backend DSN**: configured in `backend/.env`
-- **Error Grouping**: by exception type and location
-- **Performance Tracing**: 1/10 sample rate
 
 ## See Also
 

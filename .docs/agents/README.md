@@ -24,7 +24,7 @@ This directory defines specialized AI agent personas for OpenCode-assisted Schol
 | [Architect](architect.md) | System Architect | Architecture decisions, data flow, pipeline design |
 | [Backend Dev](backend-dev.md) | Python/FastAPI Developer | API routes, services, DB, Celery, middleware |
 | [Frontend Dev](frontend-dev.md) | Next.js/React Developer | Components, state, real-time features, styling |
-| [ML Engineer](ml-engineer.md) | AI/ML Engineer | LLM integration, RAG, SciBERT, model management |
+| [ML Engineer](ml-engineer.md) | AI/ML Engineer | LLM integration, RAG, classification, model management |
 | [DevOps](devops.md) | DevOps Engineer | CI/CD, Docker, Render, monitoring, security |
 | [QA](qa.md) | QA Engineer | Testing strategy, Playwright, pytest, contract tests |
 
