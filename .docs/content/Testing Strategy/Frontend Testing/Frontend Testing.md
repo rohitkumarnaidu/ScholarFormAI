@@ -95,7 +95,7 @@ E2E --> SERVICES
   - Component-level tests for AppShell and AuthGuard redirection logic
   - Hook-level tests for useGeneratorState with mocked services and timers
   - Service-level tests for API utilities including retry logic and sanitization
-  - Analytics wrapper tests validating PostHog initialization and event capture
+  - Analytics wrapper tests validating event capture
 
 **Section sources**
 - [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
@@ -299,9 +299,9 @@ flowchart TD
 Track["trackEvent(name, props)"] --> Empty{"Empty name?"}
 Empty --> |Yes| ReturnFalse["Return false"]
 Empty --> |No| Configured{"SDK configured?"}
-Configured --> |No| Capture["capturePostHogEvent returns false"]
+Configured --> |No| Capture["SDK returns false"]
 Configured --> |Yes| Init{"SDK ready?"}
-Init --> |No| LazyInit["initPostHog() called"]
+Init --> |No| LazyInit["SDK init called"]
 Init --> |Yes| Capture
 Capture --> ReturnBool["Return capture result"]
 ```

@@ -467,7 +467,7 @@ Common issues and resolutions:
 - 413 Payload Too Large: Reduce file size or split into chunks with specific size recommendations
 - 422 Validation Error: Fix input fields according to endpoint requirements with enhanced validation details
 - 429 Rate Limited: Implement exponential backoff and adhere to rate limits with improved rate limiting information
-- 500 Internal Server Error: Inspect logs and Sentry for unhandled exceptions with enhanced debugging capabilities
+- 500 Internal Server Error: Inspect logs for unhandled exceptions with enhanced debugging capabilities
 
 Operational checks:
 - Use /api/v1/health/ready to verify service readiness with enhanced diagnostics
