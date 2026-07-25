@@ -36,8 +36,9 @@ DEFAULT_LOCAL_CORS_ORIGINS = ",".join(
 )
 
 DEFAULT_GROBID_URL = "http://localhost:8070"
-DEFAULT_GROBID_HEALTH_PATH = "/api/isalive"
-DEFAULT_GENERIC_HEALTH_PATH = "/"
+DEFAULT_GROBID_HEALTH_PATH = "/health"
+DEFAULT_DOCX_CONVERTER_HEALTH_PATH = "/health"
+DEFAULT_DOCX_CONVERTER_URL = "http://localhost:8080"
 
 
 def _parse_boolish(value: Any, field_name: str) -> bool | Any:
@@ -180,41 +181,25 @@ class PipelineSettings(BaseSettings):
     GROBID_BASE_URL: str = DEFAULT_GROBID_URL
     GROBID_URLS: str = ""
     GROBID_HEALTH_PATH: str = DEFAULT_GROBID_HEALTH_PATH
+    DOCX_CONVERTER_HEALTH_PATH: str = DEFAULT_DOCX_CONVERTER_HEALTH_PATH
     GROBID_TIMEOUT: int = 10
     GROBID_MAX_RETRIES: int = 3
     GROBID_ENABLED: bool = True
-    USE_DOCLING_FALLBACK: bool = True
+    GROBID_SERVICE_URL: str = DEFAULT_GROBID_URL
     PYMUPDF_FALLBACK: bool = True
 
-    DOCLING_URL: Optional[str] = None
-    DOCLING_URLS: str = ""
-    DOCLING_HEALTH_PATH: str = DEFAULT_GENERIC_HEALTH_PATH
-    OCR_URL: Optional[str] = None
-    OCR_URLS: str = ""
-    OCR_HEALTH_PATH: str = DEFAULT_GENERIC_HEALTH_PATH
-    DOCX_CONVERTER_URL: Optional[str] = None
-    DOCX_CONVERTER_URLS: str = ""
-    DOCX_CONVERTER_HEALTH_PATH: str = DEFAULT_GENERIC_HEALTH_PATH
-    NOUGAT_URL: Optional[str] = None
-    NOUGAT_URLS: str = ""
-    NOUGAT_HEALTH_PATH: str = DEFAULT_GENERIC_HEALTH_PATH
-    SCIBERT_URL: Optional[str] = None
-    SCIBERT_URLS: str = ""
-    SCIBERT_HEALTH_PATH: str = DEFAULT_GENERIC_HEALTH_PATH
+    DOCX_CONVERTER_SERVICE_URL: str = DEFAULT_DOCX_CONVERTER_URL
+    ENABLE_LOCAL_OCR: bool = True
 
     PIPELINE_GROBID_TIMEOUT_SECONDS: int = 30
-    PIPELINE_DOCLING_TIMEOUT_SECONDS: int = 30
     PIPELINE_REASONING_TIMEOUT_SECONDS: int = 60
     PIPELINE_SEMANTIC_TIMEOUT_SECONDS: int = 30
     PIPELINE_ACQUIRE_TIMEOUT_SECONDS: float = 30.0
-    PIPELINE_DOCLING_SKIP_DIGITAL_PDF: bool = False
-    PIPELINE_DOCLING_FORCE: bool = False
-    ENABLE_NOUGAT_PARSER: bool = False
+    ENABLE_LLM_PDF_PARSER: bool = True
+    LLM_PDF_PARSER_VISION_API_ENABLED: bool = True
     ENABLE_NVIDIA_REASONER: bool = False
-    USE_SCIBERT_CLASSIFICATION: bool = False
-    SCIBERT_AUTO_ENABLE_FROM_BENCHMARK: bool = True
-    SCIBERT_MIN_BENCHMARK_F1: float = 0.85
-    SCIBERT_BENCHMARK_STATE_PATH: str = ".metrics/scibert_benchmark_state.json"
+    LLM_CLASSIFICATION_ENABLED: bool = True
+    LLM_CLASSIFICATION_FALLBACK_TO_RULES: bool = True
     PRELOAD_AI_MODELS: bool = True
     LOW_MEMORY_MODE: bool = False
     RAG_USE_TRANSFORMERS: bool = True
@@ -229,14 +214,13 @@ class PipelineSettings(BaseSettings):
 
     @field_validator(
         "GROBID_ENABLED",
-        "USE_DOCLING_FALLBACK",
         "PYMUPDF_FALLBACK",
-        "PIPELINE_DOCLING_SKIP_DIGITAL_PDF",
-        "PIPELINE_DOCLING_FORCE",
-        "ENABLE_NOUGAT_PARSER",
+        "ENABLE_LOCAL_OCR",
+        "ENABLE_LLM_PDF_PARSER",
+        "LLM_PDF_PARSER_VISION_API_ENABLED",
         "ENABLE_NVIDIA_REASONER",
-        "USE_SCIBERT_CLASSIFICATION",
-        "SCIBERT_AUTO_ENABLE_FROM_BENCHMARK",
+        "LLM_CLASSIFICATION_ENABLED",
+        "LLM_CLASSIFICATION_FALLBACK_TO_RULES",
         "LOW_MEMORY_MODE",
         "PRELOAD_AI_MODELS",
         "RAG_USE_TRANSFORMERS",
@@ -421,11 +405,6 @@ class Settings:
             self.GROBID_BASE_URL = DEFAULT_GROBID_URL
 
         self.GROBID_HEALTH_PATH = self.get_service_health_path("grobid")
-        self.DOCLING_HEALTH_PATH = self.get_service_health_path("docling")
-        self.OCR_HEALTH_PATH = self.get_service_health_path("ocr")
-        self.DOCX_CONVERTER_HEALTH_PATH = self.get_service_health_path("docx_converter")
-        self.NOUGAT_HEALTH_PATH = self.get_service_health_path("nougat")
-        self.SCIBERT_HEALTH_PATH = self.get_service_health_path("scibert")
 
         if self.RETENTION_DAYS <= 0:
             raise ValueError("RETENTION_DAYS must be > 0")
@@ -444,30 +423,14 @@ class Settings:
     def get_grobid_urls(self) -> list[str]:
         return self._resolve_service_urls("GROBID_URLS", ("GROBID_URL", "GROBID_BASE_URL"), (DEFAULT_GROBID_URL,))
 
-    def get_docling_urls(self) -> list[str]:
-        return self._resolve_service_urls("DOCLING_URLS", ("DOCLING_URL",))
-
-    def get_ocr_urls(self) -> list[str]:
-        return self._resolve_service_urls("OCR_URLS", ("OCR_URL",))
-
     def get_docx_converter_urls(self) -> list[str]:
-        return self._resolve_service_urls("DOCX_CONVERTER_URLS", ("DOCX_CONVERTER_URL",))
-
-    def get_nougat_urls(self) -> list[str]:
-        return self._resolve_service_urls("NOUGAT_URLS", ("NOUGAT_URL",))
-
-    def get_scibert_urls(self) -> list[str]:
-        return self._resolve_service_urls("SCIBERT_URLS", ("SCIBERT_URL",))
+        return self._resolve_service_urls("DOCX_CONVERTER_SERVICE_URL", ("DOCX_CONVERTER_SERVICE_URL",), (DEFAULT_DOCX_CONVERTER_URL,))
 
     def get_service_health_path(self, service_name: str) -> str:
         key = service_name.strip().lower()
         entry = {
             "grobid": "GROBID_HEALTH_PATH",
-            "docling": "DOCLING_HEALTH_PATH",
-            "ocr": "OCR_HEALTH_PATH",
             "docx_converter": "DOCX_CONVERTER_HEALTH_PATH",
-            "nougat": "NOUGAT_HEALTH_PATH",
-            "scibert": "SCIBERT_HEALTH_PATH",
         }.get(key)
         if entry is None:
             raise ValueError(f"Unknown service_name: {service_name!r}")

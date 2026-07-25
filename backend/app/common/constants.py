@@ -44,10 +44,7 @@ METRIC_LABELS: dict[str, dict[str, str]] = {
 ERROR_CODE_TO_HTTP: dict[str, int] = {v: k for k, v in ERROR_CODES.items()}
 
 SERVICE_HEALTH_DEFAULTS: dict[str, str] = {
-    "grobid": "/api/isalive",
-    "docling": "/",
+    "grobid": "/health",
     "ocr": "/",
-    "docx_converter": "/",
-    "nougat": "/",
-    "scibert": "/",
+    "docx_converter": "/health",
 }
