@@ -183,7 +183,6 @@ platformdirs
 pluggy
 polyfactory
 postgrest
-posthog
 preshed
 prometheus_client
 prompt_toolkit
