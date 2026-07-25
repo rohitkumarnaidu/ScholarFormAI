@@ -37,7 +37,7 @@ last_updated: July 2026
 | # | Finding | Source |
 |---|---------|--------|
 | 1 | **Python 3.11.9 local vs 3.12 required** — local env doesn't match repo contract | Codex |
-| 2 | **pytest import collision** — `tests/conftest.py` imports `app.models` → resolves to third-party `app` package → crashes in `nougat/albumentations` | Codex |
+| 2 | **pytest import collision** — `tests/conftest.py` imports `app.models` → resolves to third-party `app` package → crashes in `LLMPDFParser/albumentations` | Codex |
 | 3 | **Frontend build fails** — `generate-tests.js:212` invalid template literal | Both |
 | 4 | **Frontend vitest fails** — `@testing-library/dom` missing from devDependencies | Codex |
 | 5 | **RBAC middleware is stub** (708B) | Antigravity |
@@ -50,7 +50,6 @@ last_updated: July 2026
 | 12 | **No deploy-staging.yml** | Antigravity |
 | 13 | **Planning docs are outdated** — many "TODO" items are already done | Codex |
 | 14 | **34 page routes exist** but only ~25 are documented | Codex |
-| 15 | **No analytics/event tracking** — Mixpanel/PostHog not integrated | Antigravity |
 
 ---
 
@@ -62,9 +61,9 @@ last_updated: July 2026
 
 | # | Task | What Agent Does | User Input Needed? | Exit Criteria |
 |---|------|-----------------|-------------------|---------------|
-| 0.1 | **Recreate Python 3.12 environment** | Agent checks current Python version, creates new venv with Python 3.12, reinstalls requirements.txt | ⚠️ **YES — Agent asks user:** "Do you have Python 3.12 installed? If not, please install it from python.org. Which path is your Python 3.12 executable?" | `python --version` returns 3.12.x in the backend venv |
-| 0.2 | **Fix pytest import collision** | Agent inspects `tests/conftest.py`, identifies `app.models` import resolving to third-party `app` package. Fix: either (a) add `backend/` to sys.path in conftest, (b) restructure the import, or (c) uninstall conflicting `app` package | No | `pytest --collect-only -q` succeeds without nougat/albumentations crash |
-| 0.3 | **Fix nougat/albumentations crash path** | After fixing import resolution, if crash persists, agent pins or patches the dependency. May need to add nougat extras or fix version constraint | No | `pytest tests -m "not integration and not llm" -x -q` — collection succeeds |
+| 0.1 | **Recreate Python 3.12 environment** | Agent checks current Python version, creates new venv with Python 3.12, reinstalls requirements.txt |  ️ **YES — Agent asks user:** "Do you have Python 3.12 installed? If not, please install it from python.org. Which path is your Python 3.12 executable?" | `python --version` returns 3.12.x in the backend venv |
+| 0.2 | **Fix pytest import collision** | Agent inspects `tests/conftest.py`, identifies `app.models` import resolving to third-party `app` package. Fix: either (a) add `backend/` to sys.path in conftest, (b) restructure the import, or (c) uninstall conflicting `app` package | No | `pytest --collect-only -q` succeeds without LLMPDFParser/albumentations crash |
+| 0.3 | **Fix LLMPDFParser/albumentations crash path** | After fixing import resolution, if crash persists, agent pins or patches the dependency. May need to add LLMPDFParser extras or fix version constraint | No | `pytest tests -m "not integration and not llm" -x -q` — collection succeeds |
 | 0.4 | **Create `trusted-core` test profile** | Agent adds pytest markers in `pyproject.toml` or `pytest.ini`: `unit`, `integration`, `llm`, `service`. Ensures `pytest -m "not integration and not llm and not service"` only runs pure unit tests | No | Pure unit tests run without any external service |
 | 0.5 | **Run and verify backend unit tests** | Agent runs `pytest tests -m "not integration and not llm" -x -q --tb=short` and fixes any failing tests | No | All unit tests pass (green) |
 
@@ -150,9 +149,9 @@ last_updated: July 2026
 |---|------|-----------------|-------------------|---------------|
 | 3.1 | **Expand RBAC middleware** (708B → real) | Implement role checking: admin, pro, free. Add decorator `@require_role("admin")` | No | RBAC works for protected endpoints |
 | 3.2 | **Expand audit_log_service.py** (1.1KB → real) | Log all write operations with user, action, resource, IP, timestamp | No | Write ops produce audit log entries |
-| 3.3 | **Implement latex_exporter.py** (743B → real) | Add Pandoc subprocess call for DOCX → LaTeX conversion | ⚠️ **YES — Agent asks user:** "Do you want LaTeX export supported now, or should we hide it? If supported, do you have Pandoc installed?" | LaTeX export works OR is hidden from UI |
+| 3.3 | **Implement latex_exporter.py** (743B → real) | Add Pandoc subprocess call for DOCX → LaTeX conversion |  ️ **YES — Agent asks user:** "Do you want LaTeX export supported now, or should we hide it? If supported, do you have Pandoc installed?" | LaTeX export works OR is hidden from UI |
 | 3.4 | **Add GROBID $0 fallback** | Set `GROBID_ENABLED` config, ensure Docling fallback works in orchestrator.py, add `pymupdf` to requirements.txt | No | PDF parsing works without GROBID Docker |
-| 3.5 | **Create deploy-staging.yml** | Write GitHub Actions workflow for Render staging deployment | ⚠️ **YES — Agent asks user:** "What's your Render staging service name and deploy hook URL?" | Staging deploy workflow exists |
+| 3.5 | **Create deploy-staging.yml** | Write GitHub Actions workflow for Render staging deployment |  ️ **YES — Agent asks user:** "What's your Render staging service name and deploy hook URL?" | Staging deploy workflow exists |
 | 3.6 | **Fix environment config** | Add `GROBID_ENABLED`, `USE_DOCLING_FALLBACK`, `PYMUPDF_FALLBACK` to `.env.example` | No | .env.example is complete |
 
 ### Agent 2 — Frontend Gaps
@@ -163,7 +162,7 @@ last_updated: July 2026
 | 3.8 | **Fix globals.css bloat** | Replace 6337-line compiled Tailwind with only custom CSS. Let Tailwind JIT generate utilities. | No | globals.css is under 200 lines |
 | 3.9 | **Unify template source** | Source template list from backend API, not hardcoded array in frontend live preview | No | Template list is single source of truth |
 | 3.10 | **Consolidate component directories** | Move unique files from `frontend/components/` into `frontend/src/components/`, remove duplicate dir | No | Single component directory |
-| 3.11 | **Freeze TEX support contract** | ⚠️ **Agent asks user:** "Do you want TEX download visible now? It's partially implemented. We can either: (a) fully support it with tests, or (b) hide it until ready." | **YES** | TEX is either supported+tested or hidden |
+| 3.11 | **Freeze TEX support contract** |  ️ **Agent asks user:** "Do you want TEX download visible now? It's partially implemented. We can either: (a) fully support it with tests, or (b) hide it until ready." | **YES** | TEX is either supported+tested or hidden |
 | 3.12 | **Add semantic color tokens** | Add success/warning/error/info/secondary colors to tailwind.config.js | No | Design system has semantic tokens |
 
 **Phase 3 Exit Criteria:** All critical stubs are expanded. Contract drift is resolved.
@@ -176,12 +175,12 @@ last_updated: July 2026
 
 | # | Task | Agent | User Input Needed? | Exit Criteria |
 |---|------|-------|-------------------|---------------|
-| 4.1 | **Test with local Redis** | Agent 1 | ⚠️ **YES — Agent asks user:** "Can you start Redis locally? `docker run -d -p 6379:6379 redis:7-alpine`" | Preview cache + rate limiting work |
-| 4.2 | **Test with Supabase** | Agent 1 | ⚠️ **YES — Agent asks user:** "Are your Supabase credentials in .env? Can you confirm the project is accessible?" | Auth + DB operations work |
-| 4.3 | **Test Stripe sandbox** | Agent 1 | ⚠️ **YES — Agent asks user:** "Do you have Stripe test keys? Install Stripe CLI: `stripe listen --forward-to localhost:8000/api/v1/billing/webhook`" | Webhook handling works |
+| 4.1 | **Test with local Redis** | Agent 1 |  ️ **YES — Agent asks user:** "Can you start Redis locally? `docker run -d -p 6379:6379 redis:7-alpine`" | Preview cache + rate limiting work |
+| 4.2 | **Test with Supabase** | Agent 1 |  ️ **YES — Agent asks user:** "Are your Supabase credentials in .env? Can you confirm the project is accessible?" | Auth + DB operations work |
+| 4.3 | **Test Stripe sandbox** | Agent 1 |  ️ **YES — Agent asks user:** "Do you have Stripe test keys? Install Stripe CLI: `stripe listen --forward-to localhost:8000/api/v1/billing/webhook`" | Webhook handling works |
 | 4.4 | **Test Docling fallback** | Agent 1 | No | PDF parsing works with Docling when GROBID is off |
-| 4.5 | **Test full formatter flow** | Agent 2 | ⚠️ **YES — Agent asks user:** "Please start both backend and frontend locally. Then upload a sample DOCX file and select IEEE template." | Upload → process → results → download works |
-| 4.6 | **Test full agent flow** | Agent 2 | ⚠️ **YES — Agent asks user:** "Go to /agent page, type: 'Write a short paper about machine learning'. Does the outline appear?" | Prompt → outline → approve → write flow works |
+| 4.5 | **Test full formatter flow** | Agent 2 |  ️ **YES — Agent asks user:** "Please start both backend and frontend locally. Then upload a sample DOCX file and select IEEE template." | Upload → process → results → download works |
+| 4.6 | **Test full agent flow** | Agent 2 |  ️ **YES — Agent asks user:** "Go to /agent page, type: 'Write a short paper about machine learning'. Does the outline appear?" | Prompt → outline → approve → write flow works |
 
 **Phase 4 Exit Criteria:** Core service-backed flows are proven.
 
@@ -193,12 +192,11 @@ last_updated: July 2026
 
 | # | Task | Agent | User Input Needed? | Exit Criteria |
 |---|------|-------|-------------------|---------------|
-| 5.1 | **Lock deployment topology** | Both | ⚠️ **YES — Agent asks user:** "Confirm: Vercel (frontend), Render (backend), Supabase (auth/DB), Upstash (Redis). Correct?" | Deployment architecture documented |
-| 5.2 | **Set up Vercel deployment** | Agent 2 | ⚠️ **YES — Agent asks user:** "Please connect your GitHub repo to Vercel and share the project URL" | Frontend deploys to Vercel |
-| 5.3 | **Set up Render deployment** | Agent 1 | ⚠️ **YES — Agent asks user:** "Please create a Render web service and share the deploy hook URL" | Backend deploys to Render |
-| 5.4 | **Configure production env vars** | Both | ⚠️ **YES — Agent asks user:** "Set these env vars in Render: GROBID_ENABLED=false, FORCE_HTTPS=true, etc." | All env vars configured |
-| 5.5 | **Run production smoke test** | Both | ⚠️ **YES — Agent asks user:** "Visit the deployed URL and test: upload a document, check formatting" | Production works |
-| 5.6 | **Add monitoring (Sentry)** | Both | ⚠️ **YES — Agent asks user:** "Create a free Sentry project and share the DSN" | Error tracking active |
+| 5.1 | **Lock deployment topology** | Both |  ️ **YES — Agent asks user:** "Confirm: Vercel (frontend), Render (backend), Supabase (auth/DB), Upstash (Redis). Correct?" | Deployment architecture documented |
+| 5.2 | **Set up Vercel deployment** | Agent 2 |  ️ **YES — Agent asks user:** "Please connect your GitHub repo to Vercel and share the project URL" | Frontend deploys to Vercel |
+| 5.3 | **Set up Render deployment** | Agent 1 |  ️ **YES — Agent asks user:** "Please create a Render web service and share the deploy hook URL" | Backend deploys to Render |
+| 5.4 | **Configure production env vars** | Both |  ️ **YES — Agent asks user:** "Set these env vars in Render: GROBID_ENABLED=false, FORCE_HTTPS=true, etc." | All env vars configured |
+| 5.5 | **Run production smoke test** | Both |  ️ **YES — Agent asks user:** "Visit the deployed URL and test: upload a document, check formatting" | Production works |
 
 ---
 
@@ -207,7 +205,6 @@ last_updated: July 2026
 | # | Suggestion | Why | Priority |
 |---|-----------|-----|----------|
 | S1 | **Add OpenAPI schema auto-generation** | FastAPI generates it, just expose at `/docs` | HIGH — free, instant |
-| S2 | **Add PostHog free tier for analytics** | No analytics = flying blind on user behavior | HIGH |
 | S3 | **Add health check to deploy-production.yml** | Currently deploys without verifying the app starts | MEDIUM |
 | S4 | **Add Zod/Yup schema validation on frontend** | Backend validates, frontend doesn't — inconsistent | MEDIUM |
 | S5 | **Add `pre-commit` hooks** | Ruff + ESLint on commit = fewer CI failures | MEDIUM |

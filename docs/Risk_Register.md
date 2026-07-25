@@ -40,7 +40,7 @@ last_updated: July 2026
 | ID | Risk | Current State | Mitigation |
 |---|---|---|---|
 | R-09 | Temporary file accumulation | Controlled | `ENABLE_FILE_CLEANUP=true` with retention policy |
-| R-10 | Feature drift for Nougat/SciBERT paths | Controlled by default-off policy | Keep both toggles off until remote endpoint SLA is proven |
+| R-10 | Feature drift for LLMPDFParser/LLMClassifier paths | Controlled by default-off policy | Keep both toggles off until remote endpoint SLA is proven |
 
 ## Notes
 

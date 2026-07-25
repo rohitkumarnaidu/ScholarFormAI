@@ -27,7 +27,7 @@ Each criteria item is scored as follows:
 | Status | Points | Meaning |
 |--------|--------|---------|
 | ✅ Implemented | Full credit | Feature exists in production, tested, and documented |
-| ⚠️ Partial | Half credit | Feature exists but missing documentation, testing, or production hardening |
+|  ️ Partial | Half credit | Feature exists but missing documentation, testing, or production hardening |
 | ❌ Missing | 0 pts | Feature not implemented |
 
 **Score = (Sum of points earned) / (Total possible points) × Category weight**
@@ -154,20 +154,20 @@ Each criteria item is scored as follows:
 - [x] **Metrics endpoint** — `/api/v1/metrics` serving Prometheus format
 - [x] **Structured logging** — `logging_config.py` with JSON format, context binding
 - [x] **Request ID middleware** — `request_id.py` generates/propagates X-Request-ID
-- [x] **Sentry error tracking** — `sentry_sdk` configured with FastAPI/Starlette integrations
+- [x] **Error tracking** — Prometheus metrics + structured logging (Sentry removed)
 - [x] **Idempotency-Key support** — middleware logs and tracks idempotency keys
 - [ ] **Grafana dashboards deployed** — provisioning exists in `ops/grafana/` but not live
 - [ ] **Alert rules deployed** — YAML rules exist but not applied to Prometheus
-- [ ] **PostHog analytics** — not integrated (code references exist, not wired)
+- [ ] **Product analytics** — not integrated (PostHog has been removed)
 
 ---
 
 ## 5. Operations — 14 / 15 pts
 
-- [x] **CI/CD pipelines** — 26 GitHub Actions workflows covering lint, test, deploy, security scan
+- [x] **CI/CD pipelines** — 25 GitHub Actions workflows covering lint, test, deploy, security scan
 - [x] **render.yaml** — full Render config (web + Celery worker + Redis)
 - [x] **Alembic migrations** — 12 migration files, managed via `alembic upgrade head`
-- [x] **OpenAPI schema CI** — `openapi-schema-check.yml` validates schema is in sync
+- [ ] **OpenAPI schema CI** — `openapi-schema-check.yml` not yet created (planned in implementation plan)
 - [x] **Staging deployment** — `deploy-staging.yml` workflow
 - [x] **Production deployment** — `deploy-production.yml` workflow with quality gates
 - [x] **Runbooks** — 6+ runbooks: incident response, rollback, service-down, high-latency, high-error-rate, branch-protection
@@ -206,7 +206,7 @@ Each score point is backed by one of these evidence types:
 | ✅ Test coverage | `pytest` run report | Per PR |
 | ✅ Documentation | File exists in `docs/` | Per commit |
 | ✅ IaC config | `render.yaml`, workflow files | Per commit |
-| ⚠️ Partial tests | Test exists but coverage < 80% | Per PR |
+|  ️ Partial tests | Test exists but coverage < 80% | Per PR |
 | ❌ Missing | Pattern not found in codebase | Per commit |
 
 ### Verifiable Evidence Map
@@ -232,10 +232,10 @@ grep -c "MaxBodySizeMiddleware" backend/app/**/*.py     → Large payload protec
 # Observability — 12/15
 grep -c "prometheus" backend/app/**/*.py                → Prometheus metrics
 grep -c "logging_config" backend/app/**/*.py            → Structured logging
-grep -c "sentry_sdk" backend/app/**/*.py                → Sentry integration
+# Error tracking via Prometheus metrics (Sentry removed)
 
 # Operations — 14/15
-ls backend/.github/workflows/*.yml | wc -l              → 26 workflows
+ls backend/.github/workflows/*.yml | wc -l              → 25 workflows
 grep -c "alembic" backend/**/*.py                       → DB migrations
 grep -c "pre-commit" .pre-commit-config.yaml            → Pre-commit hooks
 
@@ -265,7 +265,6 @@ grep -c "from app.models import" backend/tests/**/*.py  → Lazy imports
 | Category | Current | Target | Actions | Effort |
 |----------|---------|--------|---------|--------|
 | Security | 24/25 | 25/25 | Penetration test findings; full resource-level RBAC audit | 3 days |
-| Observability | 14/15 | 15/15 | G6: PostHog analytics wired | 1 day |
 | Performance | 14/15 | 15/15 | Load testing under 10x peak traffic; query optimization | 2 days |
 | Reliability | 19/20 | 20/20 | Error boundary coverage walk-through | 2 days |
 | Operations | 14/15 | 15/15 | Automated DR test scheduling | 1 day |
@@ -291,7 +290,6 @@ grep -c "from app.models import" backend/tests/**/*.py  → Lazy imports
 | G3 | **Resource-level ownership on all endpoints** — some only check role | Security | Medium: potential data access across users | 2 days |
 | G4 | **Grafana dashboards not deployed** — JSON exists in `ops/` but inactive | Observability | Medium: no visual monitoring | 0.5 day |
 | G5 | **Alert rules not deployed** — YAML rules exist but not live | Observability | High: no automated alerting | 0.5 day |
-| G6 | **PostHog analytics not wired** — code references only | Observability | Low: no product analytics | 1 day |
 | G7 | **Async rate limiting gaps** — authenticated users bypass per-tier limits | Reliability | Medium: potential API abuse | 1 day |
 | G8 | **Automated backup verification** — DR plan exists but not tested | Operations | High: data loss risk unverified | 1 day |
 
@@ -307,7 +305,6 @@ grep -c "from app.models import" backend/tests/**/*.py  → Lazy imports
 | P1 | G2 — Account lockout | Implement 15-min lockout after 10 failures | Backend | 0.5 day |
 | P1 | G4 — Grafana dashboards | Deploy provisioning dashboards to Grafana | DevOps | 0.5 day |
 | P2 | G3 — Ownership coverage | Audit remaining endpoints; add resource-level checks | Backend | 2 days |
-| P2 | G6 — PostHog | Wire PostHog for key user events | Full-stack | 1 day |
 | P2 | G8 — Backup verification | Schedule quarterly DR test; document results | DevOps | 1 day |
 
 ---
