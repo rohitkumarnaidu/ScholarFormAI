@@ -12,7 +12,6 @@ The following organizations and projects use ScholarForm AI in production or res
 
 | Organization | Use Case | Deployment | Since |
 |-------------|----------|------------|-------|
-| ECLearnIX (Project Incubator) | Manuscript formatting pipeline | Self-hosted (Render) | 2026 |
 | _(Your org here)_ | — | — | — |
 
 ## Research Projects
