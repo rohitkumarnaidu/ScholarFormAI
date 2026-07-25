@@ -11,7 +11,7 @@
 - [llm_service.py](file://backend/app/services/llm_service.py)
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 - [model_store.py](file://backend/app/services/model_store.py)
-- [nougat_parser.py](file://backend/app/pipeline/parsing/nougat_parser.py)
+- [llm_pdf_parser.py](file://backend/app/pipeline/parsing/llm_pdf_parser.py)
 - [redis_cache.py](file://backend/app/cache/redis_cache.py)
 - [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
 - [docker-compose.yml](file://backend/docker/docker-compose.yml)
@@ -39,7 +39,7 @@ The Ollama-related functionality spans several modules:
 - Configuration: centralized environment-driven settings
 - LLM service: unified access layer with Ollama HTTP fallback
 - Reasoning engine: direct Ollama API calls for fallback scenarios
-- Model store: global registry for heavy models (including Nougat)
+- Model store: global registry for heavy models (including LLMPDFParser)
 - Caching: Redis-backed cache for LLM results
 - Metrics: Prometheus metrics for monitoring LLM performance
 - Docker: container orchestration for local services (Redis, Grobid, Celery workers)
@@ -90,7 +90,7 @@ A --> I
 - Settings: define Ollama base URL and related environment variables
 - LLM service: unified provider selection with Ollama HTTP fallback
 - Reasoning engine: direct HTTP calls to Ollama for fallback
-- Model store: global registry for heavy models (Nougat)
+- Model store: global registry for heavy models (LLMPDFParser)
 - Redis cache: LLM result caching
 - Prometheus metrics: LLM latency, TTFT, cache hits/misses
 - Docker compose: local service dependencies (Redis, Grobid, Celery)
@@ -159,7 +159,7 @@ Operational notes:
 ### Model Management
 - Unified LLM service supports model names prefixed with “ollama/”
 - Health checks verify presence of a DeepSeek model tag
-- Model store provides a thread-safe registry for heavy models (e.g., Nougat) to avoid repeated loads
+- Model store provides a thread-safe registry for heavy models (e.g., LLMPDFParser) to avoid repeated loads
 
 ```mermaid
 classDiagram
@@ -168,25 +168,25 @@ class ModelStore {
 +get_model(key)
 +is_loaded(key) bool
 }
-class NougatParser {
+class LLMPDFParser {
 +_ensure_model_loaded()
 +parse(...)
 }
-NougatParser --> ModelStore : "caches loaded models"
+LLMPDFParser --> ModelStore : "caches loaded models"
 ```
 
 **Diagram sources**
 - [model_store.py:4-32](file://backend/app/services/model_store.py#L4-L32)
-- [nougat_parser.py:179-216](file://backend/app/pipeline/parsing/nougat_parser.py#L179-L216)
+- [llm_pdf_parser.py:179-216](file://backend/app/pipeline/parsing/llm_pdf_parser.py#L179-L216)
 
 **Section sources**
 - [llm_service.py:359-391](file://backend/app/services/llm_service.py#L359-L391)
 - [model_store.py:4-32](file://backend/app/services/model_store.py#L4-L32)
-- [nougat_parser.py:179-216](file://backend/app/pipeline/parsing/nougat_parser.py#L179-L216)
+- [llm_pdf_parser.py:179-216](file://backend/app/pipeline/parsing/llm_pdf_parser.py#L179-L216)
 
 ### Resource Allocation Strategies
 - Low-memory mode and preloading toggles influence startup behavior
-- Nougat parser selects model variants based on available RAM
+- LLMPDFParser selects model variants based on available RAM
 - Device selection prefers CUDA when available
 
 Practical guidance:
@@ -196,8 +196,8 @@ Practical guidance:
 
 **Section sources**
 - [settings.py:380-413](file://backend/app/config/settings.py#L380-L413)
-- [nougat_parser.py:63-70](file://backend/app/pipeline/parsing/nougat_parser.py#L63-L70)
-- [nougat_parser.py:196-198](file://backend/app/pipeline/parsing/nougat_parser.py#L196-L198)
+- [llm_pdf_parser.py:63-70](file://backend/app/pipeline/parsing/llm_pdf_parser.py#L63-L70)
+- [llm_pdf_parser.py:196-198](file://backend/app/pipeline/parsing/llm_pdf_parser.py#L196-L198)
 
 ### Integration with LLM Service for Local Inference
 - Provider inference recognizes “ollama/” prefixed models

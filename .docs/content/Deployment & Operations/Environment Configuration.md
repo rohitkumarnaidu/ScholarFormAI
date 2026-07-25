@@ -191,9 +191,8 @@ The backend reads configuration from environment variables via a typed settings 
   - PIPELINE_ACQUIRE_TIMEOUT_SECONDS
   - PIPELINE_DOCLING_SKIP_DIGITAL_PDF
   - PIPELINE_DOCLING_FORCE
-  - ENABLE_NOUGAT_PARSER
-  - ENABLE_NVIDIA_REASONER
-  - USE_SCIBERT_CLASSIFICATION
+   - ENABLE_NVIDIA_REASONER
+   - USE_LLM_CLASSIFICATION
   - LOW_MEMORY_MODE
   - PRELOAD_AI_MODELS
   - RAG_USE_TRANSFORMERS
@@ -220,9 +219,7 @@ The frontend exposes environment variables with the NEXT_PUBLIC_ prefix for clie
   - NEXT_PUBLIC_API_URL
   - NEXT_PUBLIC_LATEX_EXPORT_ENABLED
 
-- Analytics
-  - NEXT_PUBLIC_POSTHOG_KEY
-  - NEXT_PUBLIC_POSTHOG_HOST
+- (removed: PostHog analytics no longer used)
 
 - Skills metadata (documentation/tracking)
   - VITE_APP_SKILLS

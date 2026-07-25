@@ -2,7 +2,7 @@
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
 
-# SciBERT Classification
+# Classification
 
 <cite>
 **Referenced Files in This Document**
@@ -10,7 +10,7 @@
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
 - [settings.py](file://backend/app/config/settings.py)
 - [model_store.py](file://backend/app/services/model_store.py)
-- [test_scibert_benchmark.py](file://backend/tests/test_scibert_benchmark.py)
+- [test_classification.py](file://backend/tests/test_classification.py)
 - [celery_tasks.py](file://backend/app/tasks/celery_tasks.py)
 - [README.md](file://backend/manual_tests/sample_inputs/README.md)
 </cite>
@@ -28,14 +28,14 @@
 10. [Appendices](#appendices)
 
 ## Introduction
-This document explains the SciBERT-based classification system used in the automated manuscript formatter. It covers how SciBERT integrates with a hybrid classification pipeline, how domain-specific labels are mapped to document block types, and how confidence scores and thresholds are applied. It also describes evaluation procedures, performance characteristics, and operational practices such as model loading, feature flags, and benchmarking.
+This document explains the LLM-based classification system used in the automated manuscript formatter. It covers how classification integrates with a hybrid classification pipeline, how domain-specific labels are mapped to document block types, and how confidence scores and thresholds are applied. It also describes evaluation procedures, performance characteristics, and operational practices such as model loading, feature flags, and benchmarking.
 
 ## Project Structure
 The classification system spans several modules:
-- A rule-based ContentClassifier that orchestrates classification across document zones (front matter, body, references) and optionally refines results with SciBERT.
-- A SemanticParser that loads and runs SciBERT for block-level classification and can fall back to deterministic heuristics.
+- A rule-based ContentClassifier that orchestrates classification across document zones (front matter, body, references) and optionally refines results with classification.
+- A SemanticParser that loads and runs classification for block-level classification and can fall back to deterministic heuristics.
 - A global ModelStore that caches loaded models for reuse across requests.
-- Configuration-driven feature flags and thresholds controlling SciBERT usage and confidence thresholds.
+- Configuration-driven feature flags and thresholds controlling classification usage and confidence thresholds.
 - Tests and tasks that evaluate macro-F1 performance against labeled fixtures.
 
 ```mermaid
@@ -47,7 +47,7 @@ MS["ModelStore<br/>model_store.py"]
 ST["Settings<br/>settings.py"]
 end
 subgraph "Tests/Tasks"
-T["SciBERT Benchmark Test<br/>test_scibert_benchmark.py"]
+T["Classification Benchmark Test<br/>test_classification.py"]
 CT["Celery Tasks<br/>celery_tasks.py"]
 end
 CC --> SP
@@ -63,7 +63,7 @@ CT --> SP
 - [semantic_parser.py:32-82](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L82)
 - [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
 - [settings.py:185-187](file://backend/app/config/settings.py#L185-L187)
-- [test_scibert_benchmark.py:49-92](file://backend/tests/test_scibert_benchmark.py#L49-L92)
+- [test_classification.py:49-92](file://backend/tests/test_classification.py#L49-L92)
 - [celery_tasks.py:241-268](file://backend/app/tasks/celery_tasks.py#L241-L268)
 
 **Section sources**
@@ -71,14 +71,14 @@ CT --> SP
 - [semantic_parser.py:1-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
 - [settings.py:118-187](file://backend/app/config/settings.py#L118-L187)
 - [model_store.py:1-33](file://backend/app/services/model_store.py#L1-L33)
-- [test_scibert_benchmark.py:1-92](file://backend/tests/test_scibert_benchmark.py#L1-L92)
+- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
 - [celery_tasks.py:241-268](file://backend/app/tasks/celery_tasks.py#L241-L268)
 
 ## Core Components
-- ContentClassifier: Applies deterministic rules across front matter, body, and references, then optionally refines with SciBERT batch predictions. It preserves structural anchors (e.g., TITLE) and guards protected regions (headers, footers, footnotes).
-- SemanticParser: Loads SciBERT tokenizer and model (optionally from a global ModelStore), performs batch inference, and maps logits to internal labels. Falls back to heuristics when disabled or unavailable.
-- ModelStore: Singleton registry caching SciBERT tokenizer and model for fast reuse.
-- Settings: Feature flag USE_SCIBERT_CLASSIFICATION and confidence thresholds (HEURISTIC_CONFIDENCE_HIGH/MEDIUM/LOW) control behavior.
+- ContentClassifier: Applies deterministic rules across front matter, body, and references, then optionally refines with classification batch predictions. It preserves structural anchors (e.g., TITLE) and guards protected regions (headers, footers, footnotes).
+- SemanticParser: Loads classification tokenizer and model (optionally from a global ModelStore), performs batch inference, and maps logits to internal labels. Falls back to heuristics when disabled or unavailable.
+- ModelStore: Singleton registry caching classification tokenizer and model for fast reuse.
+- Settings: Feature flag USE_LLM_CLASSIFICATION and confidence thresholds (HEURISTIC_CONFIDENCE_HIGH/MEDIUM/LOW) control behavior.
 - Tests/Tasks: Macro-F1 benchmark evaluates aggregated performance across labeled fixtures.
 
 **Section sources**
@@ -86,7 +86,7 @@ CT --> SP
 - [semantic_parser.py:32-82](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L82)
 - [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
 - [settings.py:118-187](file://backend/app/config/settings.py#L118-L187)
-- [test_scibert_benchmark.py:17-31](file://backend/tests/test_scibert_benchmark.py#L17-L31)
+- [test_classification.py:17-31](file://backend/tests/test_classification.py#L17-L31)
 
 ## Architecture Overview
 The classification pipeline combines structure-aware heuristics with optional transformer inference:
@@ -99,19 +99,19 @@ participant SP as "SemanticParser"
 participant MS as "ModelStore"
 participant ST as "Settings"
 Client->>CC : process(document)
-CC->>ST : read USE_SCIBERT_CLASSIFICATION
+CC->>ST : read USE_LLM_CLASSIFICATION
 alt Enabled
-CC->>SP : _predict_scibert_batch(blocks)
-SP->>MS : get_model("scibert_tokenizer"/"scibert_model")
+CC->>SP : _predict_classification_batch(blocks)
+SP->>MS : get_model("model_tokenizer"/"model")
 alt Loaded
 SP-->>CC : predictions[]
 else Not loaded
 SP->>SP : _load_model()
 SP-->>CC : predictions[]
 end
-CC->>CC : _apply_scibert_predictions(blocks, predictions)
+CC->>CC : _apply_classification_predictions(blocks, predictions)
 else Disabled
-CC-->>CC : skip SciBERT
+CC-->>CC : skip classification
 end
 CC->>CC : deterministic classification loop
 CC-->>Client : document with block types and confidences
@@ -130,8 +130,8 @@ CC-->>Client : document with block types and confidences
   - Front matter: Title, Authors, Affiliations, Acknowledgments, Funding, Conflict of Interest.
   - Body: Sections inferred from headings and context.
   - References: Headings and entries detected deterministically.
-- SciBERT integration:
-  - Batch inference is gated by USE_SCIBERT_CLASSIFICATION and English-language detection.
+- classification integration:
+  - Batch inference is gated by USE_LLM_CLASSIFICATION and English-language detection.
   - Predictions are persisted to block metadata and conditionally override low-specificity assignments.
   - Minimum confidence threshold is derived from settings.
 - Deterministic rules:
@@ -142,11 +142,11 @@ CC-->>Client : document with block types and confidences
 
 ```mermaid
 flowchart TD
-Start(["Start Classification"]) --> Flags["Check USE_SCIBERT_CLASSIFICATION"]
+Start(["Start Classification"]) --> Flags["Check USE_LLM_CLASSIFICATION"]
 Flags --> |Disabled| HeuristicsOnly["Apply deterministic rules"]
 Flags --> |Enabled| DetectLang["Detect language (en?)"]
 DetectLang --> |Not English| HeuristicsOnly
-DetectLang --> |English| LoadModel["Load SciBERT (ModelStore or HF)"]
+DetectLang --> |English| LoadModel["Load classification (ModelStore or HF)"]
 LoadModel --> Infer["Batch inference"]
 Infer --> Apply["Apply overrides if confidence >= threshold"]
 Apply --> HeuristicsOnly
@@ -202,14 +202,14 @@ SemanticParser --> ModelStore : "reuses models"
 - [semantic_parser.py:32-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
 
 ### ModelStore
-- Thread-safe singleton registry storing SciBERT tokenizer and model after initial load.
+- Thread-safe singleton registry storing classification tokenizer and model after initial load.
 - Enables reuse across requests and tasks.
 
 **Section sources**
 - [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
 
 ### Settings and Thresholds
-- USE_SCIBERT_CLASSIFICATION: feature flag to enable/disable transformer inference.
+- USE_LLM_CLASSIFICATION: feature flag to enable/disable transformer inference.
 - HEURISTIC_CONFIDENCE_HIGH/MEDIUM/LOW: baseline confidence values used by deterministic rules.
 - Language detection: optional dependency used to gate transformer inference.
 
@@ -219,7 +219,7 @@ SemanticParser --> ModelStore : "reuses models"
 ### Evaluation and Benchmarking
 - Macro-F1 benchmark aggregates per-paper F1 and asserts a minimum threshold.
 - Uses labeled fixtures to compare predicted vs. ground-truth labels.
-- Supports switching between a real SciBERT model and a heuristic fallback for local runs.
+- Supports switching between a real classification model and a heuristic fallback for local runs.
 
 ```mermaid
 sequenceDiagram
@@ -240,11 +240,11 @@ Test->>Test : assert score >= threshold
 ```
 
 **Diagram sources**
-- [test_scibert_benchmark.py:49-92](file://backend/tests/test_scibert_benchmark.py#L49-L92)
+- [test_classification.py:49-92](file://backend/tests/test_classification.py#L49-L92)
 - [semantic_parser.py:107-159](file://backend/app/pipeline/intelligence/semantic_parser.py#L107-L159)
 
 **Section sources**
-- [test_scibert_benchmark.py:1-92](file://backend/tests/test_scibert_benchmark.py#L1-L92)
+- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
 
 ### Celery Tasks and Batch Scoring
 - Celery tasks compute macro-F1 across multiple papers using fixtures and a configurable model path.
@@ -272,7 +272,7 @@ CC["ContentClassifier"] --> SP["SemanticParser"]
 SP --> MS["ModelStore"]
 SP --> ST["Settings"]
 CC --> ST
-T["SciBERT Benchmark Test"] --> SP
+T["Classification Benchmark Test"] --> SP
 CT["Celery Tasks"] --> SP
 ```
 
@@ -281,13 +281,13 @@ CT["Celery Tasks"] --> SP
 - [semantic_parser.py:44-82](file://backend/app/pipeline/intelligence/semantic_parser.py#L44-L82)
 - [model_store.py:19-29](file://backend/app/services/model_store.py#L19-L29)
 - [settings.py:185-187](file://backend/app/config/settings.py#L185-L187)
-- [test_scibert_benchmark.py:49-92](file://backend/tests/test_scibert_benchmark.py#L49-L92)
+- [test_classification.py:49-92](file://backend/tests/test_classification.py#L49-L92)
 - [celery_tasks.py:241-268](file://backend/app/tasks/celery_tasks.py#L241-L268)
 
 **Section sources**
 - [classifier.py:137-173](file://backend/app/pipeline/classification/classifier.py#L137-L173)
 - [semantic_parser.py:44-82](file://backend/app/pipeline/intelligence/semantic_parser.py#L44-L82)
-- [test_scibert_benchmark.py:49-92](file://backend/tests/test_scibert_benchmark.py#L49-L92)
+- [test_classification.py:49-92](file://backend/tests/test_classification.py#L49-L92)
 
 ## Performance Considerations
 - Lazy loading and ModelStore reuse reduce cold-start latency and memory footprint.
@@ -298,8 +298,8 @@ CT["Celery Tasks"] --> SP
 [No sources needed since this section provides general guidance]
 
 ## Troubleshooting Guide
-- SciBERT disabled or unavailable:
-  - Ensure USE_SCIBERT_CLASSIFICATION is enabled in settings.
+- classification disabled or unavailable:
+  - Ensure USE_LLM_CLASSIFICATION is enabled in settings.
   - Confirm model is present in ModelStore or can be loaded from Hugging Face.
 - Non-English documents:
   - Language detection may skip transformer inference; switch to heuristic-only mode.
@@ -311,10 +311,10 @@ CT["Celery Tasks"] --> SP
 **Section sources**
 - [classifier.py:137-173](file://backend/app/pipeline/classification/classifier.py#L137-L173)
 - [semantic_parser.py:44-82](file://backend/app/pipeline/intelligence/semantic_parser.py#L44-L82)
-- [test_scibert_benchmark.py:33-43](file://backend/tests/test_scibert_benchmark.py#L33-L43)
+- [test_classification.py:33-43](file://backend/tests/test_classification.py#L33-L43)
 
 ## Conclusion
-The SciBERT classification system blends robust deterministic heuristics with optional transformer inference. It is designed for reliability, performance, and maintainability, with clear feature flags, confidence thresholds, and evaluation mechanisms. The hybrid approach ensures strong performance across diverse academic documents while preserving structural anchors and minimizing risk.
+The classification classification system blends robust deterministic heuristics with optional transformer inference. It is designed for reliability, performance, and maintainability, with clear feature flags, confidence thresholds, and evaluation mechanisms. The hybrid approach ensures strong performance across diverse academic documents while preserving structural anchors and minimizing risk.
 
 [No sources needed since this section summarizes without analyzing specific files]
 
@@ -323,7 +323,7 @@ The SciBERT classification system blends robust deterministic heuristics with op
 ### Classification Pipeline and Confidence Scoring
 - Pipeline stages:
   - Deterministic classification across front matter, body, and references.
-  - Optional SciBERT refinement with confidence thresholding.
+  - Optional classification refinement with confidence thresholding.
   - NLP fallback to integrate semantic parser confidence.
 - Confidence scoring:
   - Structured thresholds for deterministic rules.
@@ -340,11 +340,11 @@ The SciBERT classification system blends robust deterministic heuristics with op
 
 **Section sources**
 - [semantic_parser.py:175-185](file://backend/app/pipeline/intelligence/semantic_parser.py#L175-L185)
-- [test_scibert_benchmark.py:17-31](file://backend/tests/test_scibert_benchmark.py#L17-L31)
+- [test_classification.py:17-31](file://backend/tests/test_classification.py#L17-L31)
 
 ### Threshold Tuning and Integration Examples
 - Threshold tuning:
-  - Adjust minimum confidence threshold for SciBERT overrides.
+  - Adjust minimum confidence threshold for classification overrides.
   - Calibrate deterministic thresholds (HEURISTIC_CONFIDENCE_HIGH/MEDIUM/LOW) for different zones.
 - Integration examples:
   - Use labeled fixtures to evaluate macro-F1 and iterate on thresholds.
@@ -353,11 +353,11 @@ The SciBERT classification system blends robust deterministic heuristics with op
 **Section sources**
 - [classifier.py:72-72](file://backend/app/pipeline/classification/classifier.py#L72-L72)
 - [settings.py:121-123](file://backend/app/config/settings.py#L121-L123)
-- [test_scibert_benchmark.py:39-43](file://backend/tests/test_scibert_benchmark.py#L39-L43)
+- [test_classification.py:39-43](file://backend/tests/test_classification.py#L39-L43)
 
 ### Model Versioning, Retraining, and Quality Assurance
 - Model versioning:
-  - Use distinct model_name values to select different SciBERT variants or fine-tuned heads.
+  - Use distinct model_name values to select different classification variants or fine-tuned heads.
 - Retraining procedures:
   - Prepare labeled datasets aligned with internal labels; evaluate with macro-F1 benchmark.
 - Quality assurance:
@@ -366,5 +366,5 @@ The SciBERT classification system blends robust deterministic heuristics with op
 
 **Section sources**
 - [semantic_parser.py:38-42](file://backend/app/pipeline/intelligence/semantic_parser.py#L38-L42)
-- [test_scibert_benchmark.py:49-92](file://backend/tests/test_scibert_benchmark.py#L49-L92)
+- [test_classification.py:49-92](file://backend/tests/test_classification.py#L49-L92)
 - [README.md:1-78](file://backend/manual_tests/sample_inputs/README.md#L1-L78)
