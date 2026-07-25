@@ -214,7 +214,6 @@ Total Score = (Sum of item scores) / (Total items × 3) × 100
 
 - [x] Health checks (liveness + readiness) validated
 - [x] Prometheus metrics configured
-- [x] Sentry error tracking configured
 - [x] Logging structured (request IDs, context propagation)
 - [x] Alerting rules configured
 - [x] Tracing (OpenTelemetry integration)

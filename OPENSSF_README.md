@@ -14,7 +14,7 @@
 |-------------|-----------|-------|
 | **Passing** | ✅ READY | 98% |
 | **Silver** | ✅ READY | 97% |
-| **Gold** | ⚠️ NEARLY READY | 77% |
+| **Gold** |  ️ NEARLY READY | 77% |
 
 ## Key Gold Gaps
 
