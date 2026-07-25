@@ -32,7 +32,7 @@ last_updated: July 2026
 | Document | Description |
 |----------|-------------|
 | [Disaster Recovery](../docs/DISASTER_RECOVERY.md) | DR procedures with RTO and RPO targets |
-| [Monitoring & Alerting](monitoring.md) | Prometheus, Grafana, and Sentry configuration |
+| [Monitoring & Alerting](monitoring.md) | Prometheus and Grafana configuration |
 | [Performance Benchmarks](performance-benchmarks.md) | Load test results and capacity planning |
 | [Infrastructure Setup](content/Deployment & Operations/Infrastructure Setup.md) | Infrastructure provisioning guide |
 
@@ -40,7 +40,7 @@ last_updated: July 2026
 
 - **Application Metrics**: Prometheus endpoint at `/api/v1/metrics`
 - **Dashboards**: Grafana (pipeline.json, system metrics)
-- **Error Tracking**: Sentry (frontend and backend)
+- **Error Tracking**: Prometheus & Grafana alerts
 - **Health Checks**: `/api/v1/health` and `/api/v1/ready`
 - **Uptime Monitoring**: Render built-in health checks
 

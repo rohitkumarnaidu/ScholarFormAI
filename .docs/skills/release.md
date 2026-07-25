@@ -53,7 +53,7 @@ CI triggers `create-release.yml` — ensure tag matches canonical version.
 
 - Staging: triggers automatically on merge to `main`
 - Production: merge `main` → `production` branch or trigger `deploy-production.yml`
-- Monitor: check Render dashboard, Sentry errors, and Grafana metrics
+- Monitor: check Render dashboard and Grafana metrics
 
 ### Release Pipeline
 

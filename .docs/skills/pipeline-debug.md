@@ -33,7 +33,7 @@ Input Conversion → Text Extraction → Structure Detection → Classification 
 |-------|---------|--------------|
 | Input Conversion | 400 Bad Request | Unsupported file format or corrupted file |
 | Text Extraction | Empty content | PDF parsing fallback exhausted |
-| Structure Detection | Missing sections | SciBERT classification disabled |
+| Structure Detection | Missing sections | LLM classification disabled |
 | Validation | Validation errors | Template contract mismatch |
 | Formatting | Template render error | Missing Jinja2 template variables |
 | Export | DOCX corrupt | python-docx version mismatch |
@@ -65,7 +65,7 @@ flowchart TD
     A["Job Failed"] --> B{"Which stage?"}
     B -->|"Input"| C["Check file type + size"]
     B -->|"Extraction"| D["Check PDF parser fallback"]
-    B -->|"Structure"| E["Check SciBERT config"]
+    B -->|"Structure"| E["Check LLM classification config"]
     B -->|"Validation"| F["Check template contract"]
     B -->|"Formatting"| G["Check Jinja2 variables"]
     B -->|"Export"| H["Check python-docx version"]
