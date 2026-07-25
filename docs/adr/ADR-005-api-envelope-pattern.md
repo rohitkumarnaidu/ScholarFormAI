@@ -45,11 +45,11 @@ On error, the envelope carries structured error information:
 
 | Criterion | Raw Response | Ad-hoc Envelope | Standard Envelope |
 |-----------|-------------|-----------------|-------------------|
-| Consistency across endpoints | ❌ Varies | ⚠️ Inconsistent | ✅ Uniform |
-| Machine-readable errors | ❌ Ad-hoc | ⚠️ Partial | ✅ Structured |
-| Request tracing | ❌ Missing | ⚠️ Sometimes | ✅ Always |
-| Version evolution | ❌ Breaking | ⚠️ Fragile | ✅ Compatible |
-| Client code simplicity | ✅ Simple | ⚠️ Mixed | ⚠️ Wrapper needed |
+| Consistency across endpoints | ❌ Varies |  ️ Inconsistent | ✅ Uniform |
+| Machine-readable errors | ❌ Ad-hoc |  ️ Partial | ✅ Structured |
+| Request tracing | ❌ Missing |  ️ Sometimes | ✅ Always |
+| Version evolution | ❌ Breaking |  ️ Fragile | ✅ Compatible |
+| Client code simplicity | ✅ Simple |  ️ Mixed |  ️ Wrapper needed |
 
 Raw responses were rejected because they force every client to implement bespoke error handling for each endpoint. An ad-hoc approach was rejected because it would inevitably drift over time as different engineers add endpoints. A standardized envelope enforced at the framework level (via FastAPI exception handlers and response models) guarantees consistency.
 

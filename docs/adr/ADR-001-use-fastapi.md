@@ -23,10 +23,10 @@ We chose **FastAPI** over the alternatives.
 | Criterion | FastAPI | Django | Flask | Starlette |
 |-----------|---------|--------|-------|-----------|
 | Native async | ✅ Built-in | ❌ Sync ORM | ❌ Extension | ✅ Built-in |
-| Pydantic integration | ✅ First-class | ❌ Separate lib | ❌ Separate lib | ⚠️ Manual |
+| Pydantic integration | ✅ First-class | ❌ Separate lib | ❌ Separate lib |  ️ Manual |
 | OpenAPI auto-doc | ✅ Automatic | ❌ DRF needed | ❌ Extension | ❌ Manual |
 | Performance | ⚡ ASGI-native | 🐌 WSGI | 🐌 WSGI | ⚡ ASGI-native |
-| Opinionated structure | ⚠️ Minimal | ✅ Batteries-included | ⚠️ Minimal | ❌ Too minimal |
+| Opinionated structure |  ️ Minimal | ✅ Batteries-included |  ️ Minimal | ❌ Too minimal |
 
 Django was ruled out due to its synchronous ORM and thread-per-request model, which conflicts with the async-heavy AI pipeline. Flask lacks native async and requires extensions for validation. Starlette is too low-level and would require building the validation layer from scratch. FastAPI provides the right balance of structure and flexibility.
 

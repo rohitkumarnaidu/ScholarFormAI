@@ -106,8 +106,8 @@ graph TB
         DOCLING["Docling<br/>Layout-Aware PDF Analysis"]
         OCR["RapidOCR<br/>Text Extraction"]
         DOCX_CONV["DOCX Converter<br/>LibreOffice Headless"]
-        NOUGAT["Nougat<br/>LaTeX/MD PDF Parser"]
-        SCIBERT["SciBERT<br/>Block-Type Classification<br/>12 Labels"]
+        LLMPDFParser["LLMPDFParser<br/>LaTeX/MD PDF Parser"]
+        LLMClassifier["LLMClassifier<br/>Block-Type Classification<br/>12 Labels"]
     end
 
     subgraph LLM_PROVIDERS["LLM Providers (10 built-in)"]
@@ -122,7 +122,7 @@ graph TB
         PROM_SRV["Prometheus<br/>Scrape interval: 15s"]
         GRAFANA["Grafana Dashboard<br/>10 Panels"]
         ALERTMANAGER["Alertmanager<br/>→ PagerDuty / Slack"]
-        SENTRY["Sentry<br/>Error Tracking"]
+        Sentry["Sentry<br/>Error Tracking"]
     end
 
     BROWSER --> FE
@@ -159,7 +159,7 @@ graph TB
     V1_ROUTERS --> HF_SPACES
     PROM_SRV --> GRAFANA
     PROM_SRV --> ALERTMANAGER
-    SENTRY -.-> V1_ROUTERS
+    Sentry -.-> V1_ROUTERS
 ```
 
 ## Description
@@ -172,5 +172,5 @@ This diagram shows the full ScholarForm AI system architecture across all deploy
 - **Celery worker** consumes two queues: `interactive` (user-facing, concurrency=2) and `batch` (bulk, concurrency=2), with Redis as the broker
 - **27 services** handle LLM orchestration (10 providers with 4-tier fallback), authentication, generation sessions, quality scoring, preview rendering, CrossRef validation, citation assembly, audit logging, and encryption
 - **Data layer** comprises PostgreSQL (Supabase for primary DB + auth + storage), Redis (cache + pub/sub + Celery broker), and ChromaDB (RAG vector store)
-- **6 HuggingFace Spaces service pairs** (primary + shadow for HA) run GROBID, Docling, OCR, DOCX Converter, Nougat, and SciBERT
+- **6 HuggingFace Spaces service pairs** (primary + shadow for HA) run GROBID, Docling, OCR, DOCX Converter, LLMPDFParser, and LLMClassifier
 - **Prometheus + Grafana** scrape metrics from the backend at 15s intervals with 8 alerting rules, plus Sentry for error tracking
