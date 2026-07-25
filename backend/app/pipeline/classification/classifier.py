@@ -18,7 +18,8 @@ from datetime import datetime, timezone
 from app.models import PipelineDocument as Document, Block, BlockType
 from app.pipeline.base import PipelineStage
 from app.config.settings import settings  # Import settings for dynamic thresholds
-from app.services.scibert_gate import should_enable_scibert
+from app.services.classification_gate import should_enable_llm_classification
+from app.pipeline.classification.llm_classifier import get_llm_classifier
 import logging
 
 logger = logging.getLogger(__name__)
@@ -46,7 +47,7 @@ class ContentClassifier(PipelineStage):
         self.footnote_patterns = [
             r'^\d+\s',       # "1 Some footnote text"
             r'^\[\d+\]',     # "[1] Footnote"
-            r'^†',           # Dagger footnote marker
+            r'^ ',           # Dagger footnote marker
             r'^‡',           # Double dagger
             r'^※',           # Reference mark
             r'^\*\s',        # Asterisk footnote
@@ -72,8 +73,8 @@ class ContentClassifier(PipelineStage):
             "laboratory", "center", "centre", "division"
         }
 
-        # SciBERT integration tuning
-        self.scibert_min_confidence = max(0.6, getattr(settings, "HEURISTIC_CONFIDENCE_MEDIUM", 0.6))
+        # LLM classification tuning
+        self.llm_min_confidence = max(0.6, getattr(settings, "HEURISTIC_CONFIDENCE_MEDIUM", 0.6))
 
     def _looks_like_heading(self, block: Block) -> bool:
         text = (block.text or "").strip()
@@ -99,7 +100,7 @@ class ContentClassifier(PipelineStage):
             return BlockType.HEADING_4, "HEADING_4"
         return BlockType.HEADING_1, "HEADING_1"
 
-    def _map_scibert_label(self, label: str, block: Block) -> tuple[BlockType, str]:
+    def _map_llm_label(self, label: str, block: Block) -> tuple[BlockType, str]:
         normalized = (label or "").strip().upper()
         text = (block.text or "").strip()
 
@@ -138,45 +139,21 @@ class ContentClassifier(PipelineStage):
         # Default fallback
         return BlockType.BODY, "BODY"
 
-    def _predict_scibert_batch(self, blocks: List[Block]) -> Optional[List[Dict[str, Any]]]:
-        if not should_enable_scibert():
+    def _predict_llm_batch(self, blocks: List[Block]) -> Optional[List[Dict[str, Any]]]:
+        if not should_enable_llm_classification():
             return None
         if not blocks:
             return []
 
         texts = [b.text or "" for b in blocks]
         try:
-            from app.pipeline.intelligence.semantic_parser import (
-                get_semantic_parser,
-                HAS_LANGDETECT,
-                detect_language,
-            )
-
-            if HAS_LANGDETECT:
-                combined_text = " ".join(t for t in texts[:10] if t)[:500]
-                if combined_text.strip():
-                    try:
-                        detected_lang = detect_language(combined_text)
-                    except Exception:
-                        detected_lang = "en"
-                    if detected_lang != "en":
-                        logger.info(
-                            "SciBERT classification skipped for non-English document (%s).",
-                            detected_lang,
-                        )
-                        return None
-
-            parser = get_semantic_parser()
-            parser._load_model()
-            if not parser.model or not parser.tokenizer:
-                logger.warning("SciBERT model unavailable; falling back to rule-based classification.")
-                return None
-            return parser.predict_blocks_batch(texts)
+            classifier = get_llm_classifier()
+            return classifier.classify_batch(texts)
         except Exception as exc:
-            logger.warning("SciBERT batch inference failed (%s). Falling back to rule-based classification.", exc)
+            logger.warning("LLM batch inference failed (%s). Falling back to rule-based classification.", exc)
             return None
 
-    def _apply_scibert_predictions(
+    def _apply_llm_predictions(
         self,
         blocks: List[Block],
         predictions: Optional[List[Dict[str, Any]]],
@@ -191,8 +168,8 @@ class ContentClassifier(PipelineStage):
             pred = predictions[i] or {}
             label = pred.get("type")
             if label:
-                block.metadata["scibert_prediction"] = label
-                block.metadata["scibert_confidence"] = pred.get("confidence")
+                block.metadata["llm_prediction"] = label
+                block.metadata["llm_confidence"] = pred.get("confidence")
 
         overrides = 0
         for i, block in enumerate(blocks):
@@ -207,7 +184,7 @@ class ContentClassifier(PipelineStage):
             except (TypeError, ValueError):
                 confidence = 0.0
 
-            if confidence < self.scibert_min_confidence:
+            if confidence < self.llm_min_confidence:
                 continue
 
             # Skip protected structural blocks
@@ -223,7 +200,7 @@ class ContentClassifier(PipelineStage):
             if block.block_type not in {BlockType.BODY, BlockType.UNKNOWN, BlockType.PARAGRAPH}:
                 continue
 
-            mapped_type, semantic_intent = self._map_scibert_label(label, block)
+            mapped_type, semantic_intent = self._map_llm_label(label, block)
             if mapped_type == BlockType.BODY and block.block_type == BlockType.BODY:
                 continue
 
@@ -232,11 +209,11 @@ class ContentClassifier(PipelineStage):
             block.classification_confidence = confidence
             block.metadata["semantic_intent"] = semantic_intent
             block.metadata["classification_confidence"] = confidence
-            block.metadata["classification_method"] = "scibert_batch"
+            block.metadata["classification_method"] = "llm_classifier"
             overrides += 1
 
         if overrides:
-            logger.info("SciBERT batch refinement applied to %d blocks.", overrides)
+            logger.info("LLM batch refinement applied to %d blocks.", overrides)
 
     def process(self, document: Document) -> Document:
         """
@@ -266,7 +243,7 @@ class ContentClassifier(PipelineStage):
         if not blocks:
             return document
 
-        scibert_predictions = self._predict_scibert_batch(blocks)
+        llm_predictions = self._predict_llm_batch(blocks)
 
         # 1. Identify key structural landmarks
         first_section_index = self._find_first_section_index(blocks)
@@ -563,8 +540,8 @@ class ContentClassifier(PipelineStage):
           except Exception as exc:
               logger.warning("ContentClassifier: failed to classify block %d: %s", i, exc)
 
-        # 2.5 Optional SciBERT refinement (batch predictions)
-        self._apply_scibert_predictions(blocks, scibert_predictions)
+        # 2.5 Optional LLM refinement (batch predictions)
+        self._apply_llm_predictions(blocks, llm_predictions)
 
         # 3. NLP Fallback for UNKNOWNs
         self._nlp_classify_fallback(blocks)
