@@ -2,8 +2,6 @@
 // Copyright (c) 2026 ScholarForm AI
 
 /** @type {import('next').NextConfig} */
-import { withSentryConfig } from "@sentry/nextjs";
-
 const nextConfig = {
     reactStrictMode: true,
     transpilePackages: ['react-resizable-panels'],
@@ -31,11 +29,11 @@ const nextConfig = {
                         key: "Content-Security-Policy",
                         value: [
                             "default-src 'self'",
-                            "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://js.posthog.com https://*.posthog.com",
+                            "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net",
                             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
                             "font-src 'self' https://fonts.gstatic.com data:",
                             "img-src 'self' data: blob: https://*.supabase.co",
-                            "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://scholarform.onrender.com https://api.posthog.com https://*.posthog.com",
+                            "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://scholarform.onrender.com",
                             "frame-src 'none'",
                             "object-src 'none'",
                             "base-uri 'self'",
@@ -68,21 +66,4 @@ const nextConfig = {
     },
 };
 
-const config = process.env.SENTRY_AUTH_TOKEN
-    ? withSentryConfig(nextConfig, {
-        org: process.env.SENTRY_ORG,
-        project: process.env.SENTRY_PROJECT,
-        silent: !process.env.CI,
-        telemetry: false,
-        widenClientFileUpload: true,
-        hideSourceMaps: true,
-        webpack: {
-            treeshake: {
-                removeDebugLogging: true,
-            },
-            automaticVercelMonitors: false,
-        },
-    })
-    : nextConfig;
-
-export default config;
+export default nextConfig;

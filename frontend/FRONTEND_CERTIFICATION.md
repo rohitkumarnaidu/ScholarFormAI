@@ -191,7 +191,7 @@
 | API rate limiting | ✅ | 429 handling with retry-after |
 | Idempotency keys | ✅ | SHA-256 hash for POST requests |
 | Fetch retry safety | ✅ FIXED | Only idempotent methods (GET/HEAD/OPTIONS) retried |
-| Error logging | ✅ | Sentry integration (client + edge + server) |
+| Error logging | ✅ | Client + server error logging |
 | Dependency scanning | ✅ | npm audit in CI + Dependabot weekly |
 | Content Security Policy | ✅ | Via middleware headers |
 | Clickjacking protection | ✅ | X-Frame-Options: DENY in middleware |
@@ -363,8 +363,7 @@ frontend-ci.yml:
 - [x] Retry safety (idempotent methods only)
 
 ### Monitoring
-- [x] Sentry error tracking (client + edge + server)
-- [x] PostHog analytics
+
 - [x] Real User Monitoring
 - [x] Performance metrics
 - [x] Health status endpoints
