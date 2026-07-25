@@ -11,12 +11,8 @@ import { DocumentProvider } from '@/src/context/DocumentContext';
 import { UserPreferencesProvider } from '@/src/context/UserPreferencesContext';
 import FocusManager from '@/src/components/layout/FocusManager';
 import DynamicMeta from '@/src/components/layout/DynamicMeta';
-import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
-import { capturePostHogPageView, initPostHog } from '@/src/lib/posthog';
-
+import { useState } from 'react';
 export default function ClientProviders({ children }) {
-    const pathname = usePathname();
     const [queryClient] = useState(() => new QueryClient({
         defaultOptions: {
             queries: {
@@ -26,15 +22,6 @@ export default function ClientProviders({ children }) {
             },
         },
     }));
-
-    useEffect(() => {
-        initPostHog();
-    }, []);
-
-    useEffect(() => {
-        if (!pathname) return;
-        capturePostHogPageView(pathname);
-    }, [pathname]);
 
     return (
         <QueryClientProvider client={queryClient}>
