@@ -64,7 +64,7 @@ def run_audit():
     if ret_code == 0:
         print("\n✅ ALL TESTS PASSED!")
     else:
-        print(f"\n⚠️ TESTS FAILED with exit code {ret_code}")
+        print(f"\n ️ TESTS FAILED with exit code {ret_code}")
 
 if __name__ == "__main__":
     run_audit()

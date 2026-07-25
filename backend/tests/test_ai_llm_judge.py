@@ -354,7 +354,7 @@ class TestEdgeCases:
 
     @pytest.mark.ai_quality
     def test_unicode_multi_language_output(self):
-        output = "Étude sur l'intelligence artificielle. 机器学习正在改变世界。"
+        output = "Étude sur l'intelligence artificielle. 机器学 正在改变世界。"
         expected = "Étude sur l'intelligence artificielle en français."
         result = _llm_judge_score(output, expected)
         assert 0.0 <= result["factuality"] <= 1.0

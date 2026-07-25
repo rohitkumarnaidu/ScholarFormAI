@@ -157,7 +157,7 @@ def trace_confidence_flow(docx_path: str):
     
     # C) Fallback running prematurely?
     if blocks_using_last_resort > 0:
-        print(f"⚠️  C) FALLBACK RUNNING PREMATURELY")
+        print(f" ️  C) FALLBACK RUNNING PREMATURELY")
         print(f"   {blocks_using_last_resort} blocks are using last resort fallback (0.5)")
         print(f"   This suggests NLP integration is NOT being used.")
     else:
@@ -186,7 +186,7 @@ def trace_confidence_flow(docx_path: str):
         print(f"   - {blocks_using_nlp_fallback} blocks are using NLP fallback")
         print(f"   - {deterministic_blocks} blocks use deterministic rules")
     elif blocks_with_nlp > 0 and blocks_using_nlp_fallback == 0:
-        print("⚠️  NLP PREDICTIONS PRESENT BUT NOT USED")
+        print(" ️  NLP PREDICTIONS PRESENT BUT NOT USED")
         print(f"   - {blocks_with_nlp} blocks have NLP predictions")
         print(f"   - 0 blocks are using NLP fallback")
         print("   - This suggests deterministic rules are matching all blocks")

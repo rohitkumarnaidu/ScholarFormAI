@@ -741,5 +741,5 @@ class TestRetrievalRobustness:
     @pytest.mark.ground_truth
     def test_query_unicode_accented(self, rag_engine):
         rag_engine.add_guideline("Elsevier", "formatting", "Elsevier formatting guidelines.")
-        results = rag_engine.query_guidelines("Elsevier", "förmàtting güidelines", top_k=3)
+        results = rag_engine.query_guidelines("Elsevier", "förm tting güidelines", top_k=3)
         assert isinstance(results, list)

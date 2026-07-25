@@ -104,7 +104,7 @@ def verify_all_contracts():
         elif result["loads"] and result.get("complete", False):
             status = "✅ COMPLETE"
         elif result["loads"]:
-            status = "⚠️  PARTIAL"
+            status = " ️  PARTIAL"
         else:
             status = "❌ FAILED"
         
@@ -116,7 +116,7 @@ def verify_all_contracts():
     if all_load and complete_count == 3:
         print("✅ ALL TEMPLATES PRODUCTION READY")
     else:
-        print("⚠️  CONTRACT INCOMPLETE")
+        print(" ️  CONTRACT INCOMPLETE")
     
     print("="*80)
     

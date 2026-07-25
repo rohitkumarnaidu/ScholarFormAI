@@ -30,7 +30,7 @@ def check_tables():
             missing = [t for t in expected if t not in tables]
             
             if missing:
-                print(f"\n⚠️  Warning: Some expected tables seem missing from public schema: {missing}")
+                print(f"\n ️  Warning: Some expected tables seem missing from public schema: {missing}")
             else:
                 print("\n✅ All core application tables appear to be present.")
 
@@ -45,7 +45,7 @@ def check_tables():
                 else:
                      print("❌ No tables found in 'auth' schema. (This is unexpected for Supabase)")
             except Exception as e:
-                print(f"⚠️  Could not query auth schema: {e}")
+                print(f" ️  Could not query auth schema: {e}")
 
     except Exception as e:
         print(f"❌ Error connecting to database: {e}")

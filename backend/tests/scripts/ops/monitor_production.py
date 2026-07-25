@@ -165,11 +165,11 @@ def analyze_production_behavior(docx_path: str):
         conf = block.classification_confidence
         
         if method == "fallback_with_nlp":
-            status = "✅" if conf > 0.5 else "⚠️"
+            status = "✅" if conf > 0.5 else " ️"
             print(f"  {status} Block {i}: NLP={nlp_conf:.3f}, Final={conf:.3f}, Method={method}")
     
     if nlp_used == 0:
-        print("  ⚠️  WARNING: No blocks using NLP confidence!")
+        print("   ️  WARNING: No blocks using NLP confidence!")
         print("  This suggests SemanticParser predictions are not being integrated.")
     print()
     
@@ -198,7 +198,7 @@ def analyze_production_behavior(docx_path: str):
             print("🎯 VERDICT: STABLE ✅")
             print("System is functioning correctly with NLP integration.")
         else:
-            print("⚠️  VERDICT: STABLE (NLP NOT INTEGRATED)")
+            print(" ️  VERDICT: STABLE (NLP NOT INTEGRATED)")
             print("System is stable but NLP predictions are not being used.")
     else:
         print("❌ VERDICT: UNSTABLE")

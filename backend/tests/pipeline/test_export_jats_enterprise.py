@@ -97,7 +97,7 @@ class TestJATSGenerator:
     def test_to_xml_unicode_text(self):
         from app.models import PipelineDocument, Block, BlockType, Equation, Reference
         doc = _make_doc()
-        doc.metadata.authors = ["José García", "张伟"]
+        doc.metadata.authors = ["José García", " 伟"]
         gen = JATSGenerator()
         xml = gen.to_xml(doc)
         assert "José" in xml

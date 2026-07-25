@@ -157,7 +157,7 @@ if __name__ == "__main__":
             models = response.json().get("models", [])
             print(f"   Available models: {[m['name'] for m in models]}")
         else:
-            print("⚠️  Ollama server responded but with error")
+            print(" ️  Ollama server responded but with error")
     except (requests.RequestException, OSError):
         print("❌ Ollama server not reachable at localhost:11434")
         print("   Please start Ollama: ollama serve")

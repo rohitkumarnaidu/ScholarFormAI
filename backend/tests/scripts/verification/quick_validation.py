@@ -88,7 +88,7 @@ try:
     print("✅ Caption deduplication verified")
     
 except Exception as e:
-    print(f"⚠️  Could not run grep scan: {e}")
+    print(f" ️  Could not run grep scan: {e}")
     print("   Manual verification required")
 
 # Structural integrity check

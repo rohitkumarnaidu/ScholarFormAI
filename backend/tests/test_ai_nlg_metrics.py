@@ -329,7 +329,7 @@ class TestNlgEdgeCases:
     @pytest.mark.ai_quality
     def test_unicode_different_texts(self):
         ref = "こんにちは世界"
-        cand = "你好世界"
+        cand = " 好世界"
         assert _rouge_n(ref, cand, n=1) >= 0.0
 
     @pytest.mark.ai_quality
