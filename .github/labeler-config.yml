@@ -1,0 +1,54 @@
+# Pull Request Labeler Configuration
+# See: https://github.com/actions/labeler
+
+backend:
+  - changed-files:
+      - any-glob-to-any-file: backend/**/*
+
+frontend:
+  - changed-files:
+      - any-glob-to-any-file: frontend/**/*
+
+cli:
+  - changed-files:
+      - any-glob-to-any-file: cli/**/*
+
+sdk:
+  - changed-files:
+      - any-glob-to-any-file: sdk/**/*
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: docs/**/*
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file: .github/**/*
+
+security:
+  - changed-files:
+      - any-glob-to-any-file: SECURITY.md
+  - changed-files:
+      - any-glob-to-any-file: .github/workflows/security.yml
+  - changed-files:
+      - any-glob-to-any-file: .github/workflows/codeql.yml
+  - changed-files:
+      - any-glob-to-any-file: .github/workflows/dependency-review.yml
+  - changed-files:
+      - any-glob-to-any-file: .github/workflows/scorecard.yml
+
+docker:
+  - changed-files:
+      - any-glob-to-any-file: Dockerfile*
+  - changed-files:
+      - any-glob-to-any-file: .dockerignore
+  - changed-files:
+      - any-glob-to-any-file: docker-compose*
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file: "**/requirements*.txt"
+  - changed-files:
+      - any-glob-to-any-file: "**/package*.json"
+  - changed-files:
+      - any-glob-to-any-file: "**/pyproject.toml"

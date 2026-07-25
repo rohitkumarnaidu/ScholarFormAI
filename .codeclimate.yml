@@ -1,0 +1,99 @@
+version: "2"
+
+plugins:
+  duplication:
+    enabled: true
+    config:
+      languages:
+        python:
+          python_version: 3
+          mass_threshold: 40
+        typescript:
+          mass_threshold: 50
+        javascript:
+          mass_threshold: 50
+  fixme:
+    enabled: true
+    config:
+      strings:
+        - TODO
+        - FIXME
+        - HACK
+        - XXX
+  markdownlint:
+    enabled: true
+  shellcheck:
+    enabled: true
+
+exclude_patterns:
+  - "**/node_modules/"
+  - "**/.venv/"
+  - "**/__pycache__/"
+  - "**/.pytest_cache/"
+  - "**/*.pyc"
+  - "**/dist/"
+  - "**/build/"
+  - "**/.next/"
+  - "**/coverage/"
+  - "**/vendor/"
+  - "**/*.min.js"
+  - "**/*.min.css"
+  - "**/migrations/"
+  - "**/tests/"
+  - "**/test_*.py"
+  - "**/conftest.py"
+  - "backend/tests/"
+  - "cli/tests/"
+  - "sdk/tests/"
+  - "frontend/src/**/*.test.*"
+  - "frontend/src/**/*.spec.*"
+  - "docs/"
+  - "examples/"
+  - "*.md"
+  - "*.yml"
+  - "*.yaml"
+  - "*.json"
+  - "*.config.js"
+  - ".github/"
+
+checks:
+  argument-count:
+    enabled: true
+    config:
+      threshold: 8
+  complex-logic:
+    enabled: true
+    config:
+      threshold: 6
+  file-lines:
+    enabled: true
+    config:
+      threshold: 500
+  method-complexity:
+    enabled: true
+    config:
+      threshold: 15
+  method-count:
+    enabled: true
+    config:
+      threshold: 30
+  method-lines:
+    enabled: true
+    config:
+      threshold: 80
+  nested-control-flow:
+    enabled: true
+    config:
+      threshold: 6
+  return-statements:
+    enabled: true
+    config:
+      threshold: 8
+  similar-code:
+    enabled: true
+    config:
+      threshold: 50
+  identical-code:
+    enabled: true
+    config:
+      threshold: 30
