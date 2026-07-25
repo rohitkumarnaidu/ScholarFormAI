@@ -40,7 +40,7 @@ export default function FeedbackWidget() {
     reset,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as any,
     defaultValues: { message: "", category: "general", rating: 0, anonymous: false },
   });
 

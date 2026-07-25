@@ -72,9 +72,9 @@ describe('Loading States', () => {
         });
 
         it('matches expected dimensions', () => {
-            const { container } = render(<Skeleton width="200" height="100" />);
-            expect(container.firstChild).toHaveStyle('width: 200');
-            expect(container.firstChild).toHaveStyle('height: 100');
+            const { container } = render(<Skeleton width="200px" height="100px" />);
+            expect(container.firstChild).toHaveStyle('width: 200px');
+            expect(container.firstChild).toHaveStyle('height: 100px');
         });
 
         it('has multiple variants', () => {
