@@ -3,7 +3,7 @@
 
 export const initRUM = () => {
     if (typeof window !== 'undefined') {
-        // Placeholder for future Datadog/Sentry/Posthog RUM initialization
+        // Placeholder for future RUM initialization
         console.debug('[RUM] Real User Monitoring initialized');
     }
 };
