@@ -44,7 +44,7 @@ def verify_migration(show_diff: bool = False) -> bool:
         if missing_tables:
             print(f"❌ Tables in models but missing in DB: {missing_tables}")
         if extra_tables:
-            print(f"⚠️  Tables in DB but not in models: {extra_tables}")
+            print(f" ️  Tables in DB but not in models: {extra_tables}")
 
         column_diffs = {}
         for table_name in model_tables & existing_tables:
