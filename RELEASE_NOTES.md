@@ -56,7 +56,7 @@ From journal submissions to grant proposals to portfolio documents, ScholarForm 
 - SBOM generation (CycloneDX) for backend and frontend
 
 ### Infrastructure & CI/CD
-- Production-ready CI/CD with 26 GitHub Actions workflows
+- Production-ready CI/CD with 25 GitHub Actions workflows
 - FastAPI backend (Uvicorn) + Next.js 16 frontend (App Router)
 - Celery background workers with Redis broker
 - ChromaDB vector store for RAG
