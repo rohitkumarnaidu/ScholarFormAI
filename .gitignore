@@ -1,0 +1,79 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+env/
+
+# Virtual environments
+.venv
+venv/
+env/
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+.vscode/
+.history/
+
+# OS
+.DS_Store
+Thumbs.db
+*.DS_Store
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Testing
+.coverage
+coverage/
+.coverage.*
+coverage.xml
+*.coverage
+htmlcov/
+.pytest_cache/
+junit.xml
+
+# Build
+.next/
+out/
+dist/
+build/
+
+# Runtime
+*.pid
+*.seed
+*.pid.lock
+
+# Documentation
+docs/site/
+site/
+
+# Docker
+.docker/
+
+# Uploads
+uploads/
+temp/
+*.docx
+*.pdf
+*.html

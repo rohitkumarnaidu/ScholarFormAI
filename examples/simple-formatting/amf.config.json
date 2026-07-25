@@ -1,0 +1,10 @@
+{
+  "style": "apa",
+  "output_dir": "./output",
+  "page_size": "A4",
+  "font_family": "Times New Roman",
+  "font_size": 12,
+  "line_spacing": 2.0,
+  "include_toc": false,
+  "include_page_numbers": true
+}
