@@ -62,7 +62,7 @@
 │                   │  │ Shadow   │  │ Shadow   │  │ Shadow       │   │       │
 │                   │  └──────────┘  └──────────┘  └──────────────┘   │       │
 │                   │  ┌──────────┐  ┌──────────┐  ┌──────────────┐   │       │
-│                   │  │ DOCX     │  │ Nougat   │  │ SciBERT      │   │       │
+│                   │  │ DOCX     │  │ LLMPDFParser   │  │ LLMClassifier      │   │       │
 │                   │  │ Converter│  │ Primary  │  │ Primary      │   │       │
 │                   │  │ Primary  │  │ Shadow   │  │ Shadow       │   │       │
 │                   │  │ Shadow   │  └──────────┘  └──────────────┘   │       │
@@ -91,8 +91,8 @@
 | **Docling (×2)** | HF Spaces | Free (2 vCPU) | Layout-aware PDF analysis |
 | **OCR (×2)** | HF Spaces | Free (2 vCPU) | RapidOCR text extraction |
 | **DOCX Converter (×2)** | HF Spaces | Free (2 vCPU) | LibreOffice format conversion |
-| **Nougat (×2)** | HF Spaces | Free (2 vCPU) | LaTeX/Markdown PDF parsing |
-| **SciBERT (×2)** | HF Spaces | Free (2 vCPU) | Block-type classification |
+| **LLMPDFParser (×2)** | HF Spaces | Free (2 vCPU) | LaTeX/Markdown PDF parsing |
+| **LLMClassifier (×2)** | HF Spaces | Free (2 vCPU) | Block-type classification |
 
 ### Communication Flow
 
@@ -170,7 +170,7 @@ Shared configuration is defined in `envVarGroups.shared-config` within `render.y
 | **Pipeline** | `GROBID_ENABLED=true`, `USE_DOCLING_FALLBACK=true`, `PYMUPDF_FALLBACK=true`, `PIPELINE_DOCLING_FORCE=true` |
 | **Enhancements** | `ENHANCEMENTS_ENABLED=true`, `ENHANCEMENT_OCR_ENABLED=true`, `ENHANCEMENT_KEYWORD_ENABLED=true` |
 | **Queue** | `ENHANCEMENT_QUEUE_ENABLED=true`, `ENHANCEMENT_QUEUE_PROVIDER=celery` |
-| **AI** | `ENABLE_NVIDIA_REASONER=true`, `ENABLE_NOUGAT_PARSER=true`, `USE_SCIBERT_CLASSIFICATION=true` |
+| **AI** | `ENABLE_NVIDIA_REASONER=true`, `ENABLE_LLM_PDF_PARSER=true`, `USE_LLM_CLASSIFICATION=true` |
 | **Security** | `FORCE_HTTPS=true`, `DEBUG=false`, `ENABLE_LEGACY_ROUTES=false` |
 | **Monitoring** | `ENABLE_STRUCTURED_LOGGING=true`, `ENABLE_FILE_CLEANUP=true` |
 | **Circuit Breaker** | `EXTERNAL_CIRCUIT_BREAKER_ENABLED=true` |
@@ -187,8 +187,8 @@ RAG_USE_TRANSFORMERS=false
 ENHANCEMENT_QUEUE_ENABLED=false
 ENABLE_STRUCTURED_LOGGING=true
 ENABLE_FILE_CLEANUP=true
-ENABLE_NOUGAT_PARSER=false
-USE_SCIBERT_CLASSIFICATION=false
+ENABLE_LLM_PDF_PARSER=false
+USE_LLM_CLASSIFICATION=false
 CROSSREF_MAX_WORKERS=1
 ```
 
@@ -225,8 +225,8 @@ Each AI service runs as a **primary** and **shadow** instance on HF Spaces for h
 | **Docling** | `rohith083-scholarform-docling-primary` | `rohith083-scholarform-docling-shadow` | `/` | `deploy/hf/docling-service/` |
 | **OCR** | `rohith083-scholarform-ocr-primary` | `rohith083-scholarform-ocr-shadow` | `/` | `deploy/hf/ocr-service/` |
 | **DOCX Converter** | `rohith083-scholarform-docx-converter-primary` | `rohith083-scholarform-docx-converter-shadow` | `/` | `deploy/hf/docx-converter-service/` |
-| **Nougat** | `rohith083-scholarform-nougat-primary` | `rohith083-scholarform-nougat-shadow` | `/` | `deploy/hf/nougat-service/` |
-| **SciBERT** | `rohith083-scholarform-scibert-primary` | `rohith083-scholarform-scibert-shadow` | `/` | `deploy/hf/scibert-service/` |
+| **LLMPDFParser** | `rohith083-scholarform-LLMPDFParser-primary` | `rohith083-scholarform-LLMPDFParser-shadow` | `/` | `deploy/hf/LLMPDFParser-service/` |
+| **LLMClassifier** | `rohith083-scholarform-LLMClassifier-primary` | `rohith083-scholarform-LLMClassifier-shadow` | `/` | `deploy/hf/LLMClassifier-service/` |
 
 ### 3.2 Service Details
 
@@ -270,26 +270,26 @@ cp -r deploy/hf/grobid-service/* /path/to/hf-space/
 - **Engine detection:** Checks for `soffice` binary at health check; returns 503 if missing
 - **Timeout:** 180 seconds per conversion
 
-#### Nougat (LaTeX/Markdown PDF Parser)
+#### LLMPDFParser (LaTeX/Markdown PDF Parser)
 
 - **Base image:** `python:3.10-slim`
 - **Framework:** FastAPI + HuggingFace Transformers
-- **Model:** `facebook/nougat-small` (configurable via `NOUGAT_MODEL`)
+- **Model:** `facebook/LLMPDFParser-small` (configurable via `LLMPDFParser_MODEL`)
 - **Dependencies:** `torch`, `transformers`, `PyMuPDF`, `Pillow`
 - **Endpoint:** `POST /parse` — accepts PDF, returns markdown
-- **Limits:** `NOUGAT_MAX_PAGES=30`, `NOUGAT_MAX_TOKENS=4096`
+- **Limits:** `LLMPDFParser_MAX_PAGES=30`, `LLMPDFParser_MAX_TOKENS=4096`
 - **Device:** Auto-detects CUDA; falls back to CPU
 - **Typical startup:** 2-5 minutes (model weight download + loading)
 
-#### SciBERT (Block-Type Classification)
+#### LLMClassifier (Block-Type Classification)
 
 - **Base image:** `python:3.10-slim`
 - **Framework:** FastAPI + HuggingFace Transformers
-- **Model:** `allenai/scibert_scivocab_uncased` (configurable via `SCIBERT_MODEL`)
+- **Model:** `allenai/LLMClassifier_scivocab_uncased` (configurable via `LLMClassifier_MODEL`)
 - **Dependencies:** `torch`, `transformers`
 - **Endpoint:** `POST /predict` — accepts JSON `{"texts": ["..."]}` returns classification per text
 - **Labels:** `HEADING`, `ABSTRACT`, `BODY`, `REFERENCES`, `FIGURE_CAPTION`, `TABLE_CAPTION`, `ACKNOWLEDGEMENTS`, `EQUATION`, `METHODOLOGY`, `CONCLUSION`, `AUTHOR_INFO`, `TITLE`
-- **Max length:** 512 tokens (configurable via `SCIBERT_MAX_LENGTH`)
+- **Max length:** 512 tokens (configurable via `LLMClassifier_MAX_LENGTH`)
 
 ### 3.3 Creating a New HF Space
 
@@ -297,10 +297,10 @@ For each service (primary and shadow):
 
 1. Create a new Docker Space on [Hugging Face Spaces](https://huggingface.co/spaces):
    - SDK: Docker
-   - Space Hardware: Free (2 vCPU + 16GB RAM recommended for Nougat/SciBERT)
+   - Space Hardware: Free (2 vCPU + 16GB RAM recommended for LLMPDFParser/LLMClassifier)
 2. Copy the template files from `deploy/hf/<service>/` into the Space repository
 3. Set environment variables in the Space settings if applicable
-4. The Space auto-builds and starts serving on `*.hf.space`
+4. The container starts serving on `localhost:SERVICE_PORT`
 5. Add the URL to the backend `.env.render` and GitHub Secrets
 
 ### 3.4 Failover Mechanism
@@ -309,8 +309,8 @@ The backend uses URL list variables for automatic failover:
 
 ```env
 # _URLS takes precedence over single _URL
-GROBID_URLS=https://primary.hf.space,https://shadow.hf.space
-GROBID_URL=https://shadow.hf.space    # fallback if URLS not set
+GROBID_URLS=http://localhost:SERVICE_PORT,http://localhost:SERVICE_PORT
+GROBID_URL=http://localhost:SERVICE_PORT    # fallback if URLS not set
 
 # Health check paths
 GROBID_HEALTH_PATH=/api/isalive
@@ -366,9 +366,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-key>
 NEXT_PUBLIC_API_URL=https://<render-service>.onrender.com
 NEXT_PUBLIC_LATEX_EXPORT_ENABLED=false
 
-# Analytics (optional)
-NEXT_PUBLIC_POSTHOG_KEY=<key>
-NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
+# Analytics (PostHog removed — use Prometheus metrics)
 ```
 
 ---
@@ -584,8 +582,8 @@ Each service has a URL list (primary + shadow) and a legacy single URL:
 | `DOCLING_URLS` / `DOCLING_URL` | comma-separated | `/` |
 | `OCR_URLS` / `OCR_URL` | comma-separated | `/` |
 | `DOCX_CONVERTER_URLS` / `DOCX_CONVERTER_URL` | comma-separated | `/` |
-| `NOUGAT_URLS` / `NOUGAT_URL` | comma-separated | `/` |
-| `SCIBERT_URLS` / `SCIBERT_URL` | comma-separated | `/` |
+| `LLM_PDF_PARSER_URLS` / `LLM_PDF_PARSER_URL` | comma-separated | `/` |
+| `LLM_CLASSIFIER_URLS` / `LLM_CLASSIFIER_URL` | comma-separated | `/` |
 
 **Rules:**
 - `*_URLS` takes precedence over `*_URL` when both are set
@@ -615,9 +613,9 @@ Each service has a URL list (primary + shadow) and a legacy single URL:
 | `PIPELINE_ACQUIRE_TIMEOUT_SECONDS` | 30 | Resource acquisition timeout |
 | `PIPELINE_DOCLING_SKIP_DIGITAL_PDF` | false | Skip Docling for digital-native PDFs |
 | `PIPELINE_DOCLING_FORCE` | true | Always run Docling |
-| `ENABLE_NOUGAT_PARSER` | true | Enable Nougat OCR parser |
+| `ENABLE_LLM_PDF_PARSER` | true | Enable LLM-based PDF parsing parser |
 | `ENABLE_NVIDIA_REASONER` | true | Enable NVIDIA reasoning tier |
-| `USE_SCIBERT_CLASSIFICATION` | true | Enable SciBERT block classification |
+| `USE_LLM_CLASSIFICATION` | true | Enable LLMClassifier block classification |
 
 #### Confidence Thresholds
 
@@ -661,7 +659,6 @@ Each service has a URL list (primary + shadow) and a legacy single URL:
 | `OLLAMA_URL` | Ollama endpoint (local only) |
 | `CLAMAV_HOST` | ClamAV host (optional) |
 | `EXTERNAL_CIRCUIT_BREAKER_ENABLED=true` | Enable circuit breaker for external services |
-| `SENTRY_DSN` | Sentry error tracking DSN |
 
 ### 7.3 Frontend Environment Variables
 
@@ -671,8 +668,6 @@ Each service has a URL list (primary + shadow) and a legacy single URL:
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anon key |
 | `NEXT_PUBLIC_API_URL` | Yes | Backend Render URL |
 | `NEXT_PUBLIC_LATEX_EXPORT_ENABLED` | No | LaTeX export toggle |
-| `NEXT_PUBLIC_POSTHOG_KEY` | No | PostHog analytics key |
-| `NEXT_PUBLIC_POSTHOG_HOST` | No | PostHog API host |
 | `CDN_URL` | No | CDN prefix for static assets |
 
 ### 7.4 GitHub Secrets
@@ -843,7 +838,7 @@ Before every production deployment:
 - [ ] Celery workers processing tasks
 - [ ] Supabase queries completing within normal latency
 - [ ] Redis cache TTLs respected
-- [ ] Sentry error rate unchanged
+- [ ] Error rate unchanged (monitoring via /metrics)
 - [ ] Error budget not consumed by deploy (SLO: 99.9%)
 
 ---
@@ -987,8 +982,8 @@ Internet
     │                       ├──▶ Docling
     │                       ├──▶ OCR
     │                       ├──▶ DOCX Converter
-    │                       ├──▶ Nougat
-    │                       └──▶ SciBERT
+    │                       ├──▶ LLMPDFParser
+    │                       └──▶ LLMClassifier
     │
     └──▶ Render Celery Worker
             │

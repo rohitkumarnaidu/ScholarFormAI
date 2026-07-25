@@ -429,8 +429,8 @@ Feature flags are managed via environment variables in Render. Key flags:
 | Flag | Default | Purpose |
 |------|---------|---------|
 | `ENHANCEMENT_QUEUE_ENABLED` | `false` | Enable Celery queue mode |
-| `ENABLE_NOUGAT_PARSER` | `false` | Enable Nougat PDF parser |
-| `USE_SCIBERT_CLASSIFICATION` | `false` | Enable SciBERT classification |
+| `ENABLE_LLM_PDF_PARSER` | `false` | Enable LLMPDFParser PDF parser |
+| `USE_LLM_CLASSIFICATION` | `false` | Enable LLMClassifier classification |
 | `LLM_FALLBACK_ENABLED` | `true` | Allow fallback between LLM providers |
 | `CLAMAV_ENABLED` | `true` | Enable ClamAV file scanning |
 | `CACHE_ENABLED` | `true` | Enable Redis result caching |
