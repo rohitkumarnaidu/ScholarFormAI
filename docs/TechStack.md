@@ -70,8 +70,8 @@ All heavy processing is intended to be remote in production. URL-list variables 
 | `ENHANCEMENT_QUEUE_ENABLED` | `false` |
 | `ENABLE_STRUCTURED_LOGGING` | `true` |
 | `ENABLE_FILE_CLEANUP` | `true` |
-| `ENABLE_NOUGAT_PARSER` | `false` |
-| `USE_SCIBERT_CLASSIFICATION` | `false` |
+| `ENABLE_LLM_PDF_PARSER` | `false` |
+| `USE_LLM_CLASSIFICATION` | `false` |
 
 ## CI/CD and Operations
 
@@ -85,4 +85,4 @@ All heavy processing is intended to be remote in production. URL-list variables 
 ## Planned Next Phase (Not enabled yet)
 
 - Queue mode activation after stability window.
-- Nougat and SciBERT remote URL adapters with primary/shadow support.
+- LLMPDFParser and LLMClassifier remote URL adapters with primary/shadow support.

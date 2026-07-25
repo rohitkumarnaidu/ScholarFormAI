@@ -7,13 +7,13 @@ title: ScholarForm AI — Legacy API Reference (Deprecated)
 description: Legacy API reference — superseded by API.md
 sidebar_position: 80
 version: "1.0"
-status: ⚠️ Deprecated
+status:  ️ Deprecated
 owner: Docs Team
 review_cadence: annually
 last_updated: July 2026
 ---
 
-# ⚠️ DEPRECATED — ScholarForm AI Legacy API Reference
+#  ️ DEPRECATED — ScholarForm AI Legacy API Reference
 
 > **DEPRECATED:** This file describes legacy API routes (without `/v1/` prefix) that are no longer the canonical API.  
 > **Use Instead:** [`docs/API.md`](API.md) — the current v1 API reference with runtime-verified endpoints.  

@@ -5,13 +5,13 @@
 ScholarForm AI is an enterprise-grade automated academic manuscript formatting platform. It transforms raw document uploads (DOCX, PDF, TXT, HTML, Markdown, TeX, LaTeX) into publication-ready, template-compliant outputs through a 16-stage AI-powered processing pipeline.
 
 The system integrates **5 AI/ML subsystems**:
-- **Document Understanding Pipeline** — parsing, structure detection, SciBERT semantic analysis, content classification, NLP analysis
+- **Document Understanding Pipeline** — parsing, structure detection, LLM-based classification analysis, content classification, NLP analysis
 - **LLM Tier System** — 10 built-in providers with 4-tier automatic fallback (NVIDIA NIM → Groq → OpenRouter → Ollama) + per-provider circuit breakers
 - **Intelligence Layer** — RAG engine (ChromaDB + sentence-transformers), reasoning engine for block-level AI classification
 - **Agent Subsystem** — LangChain-based document processing agents with 5 tools, memory, streaming, and direct fallback execution
 - **Safety Layer** — Circuit breakers, retry with exponential backoff, LLM output validation (Guardrails AI/pybreaker), safe execution decorators
 
-All AI stages are **optional and gracefully degrade**: if SciBERT is unavailable, heuristic classification takes over. If all LLM tiers fail, rule-based fallbacks produce deterministic output. If ChromaDB fails, a native JSON-store cosine-similarity fallback maintains retrieval.
+All AI stages are **optional and gracefully degrade**: if LLMClassifier is unavailable, heuristic classification takes over. If all LLM tiers fail, rule-based fallbacks produce deterministic output. If ChromaDB fails, a native JSON-store cosine-similarity fallback maintains retrieval.
 
 ---
 
@@ -27,7 +27,7 @@ graph TB
     subgraph Stage1["1. Parsing (ParserFactory)"]
         DP[DocxParser]
         PP[PdfParser<br/>PyMuPDF]
-        NP[NougatParser<br/>OCR Fallback]
+        NP[LLMPDFParser<br/>OCR Fallback]
         TP[TxtParser]
         HP[HtmlParser<br/>BeautifulSoup4]
         MP[MarkdownParser]
@@ -43,7 +43,7 @@ graph TB
     subgraph Stage3["3. AI Intelligence"]
         EQ[Equation Standardizer]
         SD[StructureDetector<br/>Heading/Section IDs]
-        SP[SemanticParser<br/>SciBERT / Heuristics]
+        SP[SemanticParser<br/>LLMClassifier / Heuristics]
         CC[ContentClassifier<br/>BlockType Assignment]
         NLP[ContentAnalyzer<br/>NLP & Keywords]
     end
@@ -132,12 +132,12 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 - **Parsers**:
   - `DocxParser` (`parsing/parser.py`) — python-docx extraction, always available
   - `PdfParser` (`parsing/pdf_parser.py`) — PyMuPDF (fitz), primary PDF path
-  - `NougatParser` (`parsing/nougat_parser.py`) — Meta AI Nougat OCR, opt-in via `ENABLE_NOUGAT_PARSER=true`, fallback for scanned PDFs when primary extraction yields empty blocks
+  - `LLMPDFParser` (`parsing/llm_pdf_parser.py`) — Meta AI LLM-based PDF parsing, opt-in via `ENABLE_LLM_PDF_PARSER=true`, fallback for scanned PDFs when primary extraction yields empty blocks
   - `TxtParser` (`parsing/txt_parser.py`) — plain text, always available
   - `HtmlParser` (`parsing/html_parser.py`) — BeautifulSoup4, requires `bs4`
   - `MarkdownParser` (`parsing/md_parser.py`) — markdown-to-text, always available
   - `TexParser` (`parsing/tex_parser.py`) — LaTeX regex extraction, always available
-- **Fallback**: Empty extraction triggers Nougat OCR fallback at `orchestrator.py:729`
+- **Fallback**: Empty extraction triggers LLM-based PDF parsing fallback at `orchestrator.py:729`
 
 #### Stage 3: GROBID Metadata Extraction
 - **File**: `app/pipeline/services/grobid_client.py`
@@ -149,7 +149,7 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 - **Default URL**: `http://localhost:8070`
 
 #### Stage 4: Docling Layout Analysis
-- **File**: `app/pipeline/services/docling_client.py`
+- **File**: `app/pipeline/services/llm_pdf_parser.py`
 - **Input**: PDF file path
 - **Output**: `ai_hints['docling_layout']` with detected elements (headings, paragraphs, tables, figures)
 - **Timeout**: `PIPELINE_DOCLING_TIMEOUT_SECONDS` (default 30s)
@@ -174,19 +174,19 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 - **Confidence thresholds**: `HEADING_STYLE_THRESHOLD` (0.8), `HEADING_FALLBACK_CONFIDENCE` (0.5)
 - **Decorated**: `@retry_with_backoff(max_retries=1, backoff_factor=1.0)` — `orchestrator.py:557`
 
-#### Stage 8: Semantic Parsing — SciBERT (Optional)
+#### Stage 8: Semantic Parsing — LLMClassifier (Optional)
 - **File**: `app/pipeline/intelligence/semantic_parser.py:57`
 - **Class**: `SemanticParser`
 - **Input**: `Block[]` from document
 - **Output**: Per-block `semantic_intent` and `nlp_confidence` in metadata
-- **Model**: `allenai/scibert_scivocab_uncased` (default), 12 classification labels
+- **Model**: `allenai/LLMClassifier_scivocab_uncased` (default), 12 classification labels
 - **Execution order**:
-  1. Remote SciBERT endpoint (`SCIBERT_URL`/`SCIBERT_URLS`) — POST JSON to `/predict`
-  2. Local SciBERT model via HuggingFace `transformers` — `AutoModelForSequenceClassification`
+  1. Remote LLMClassifier endpoint (`LLM_CLASSIFIER_URL`/`LLM_CLASSIFIER_URLS`) — POST JSON to `/predict`
+  2. Local LLMClassifier model via HuggingFace `transformers` — `AutoModelForSequenceClassification`
   3. Deterministic heuristics — keyword/pattern matching
 - **Labels**: HEADING, ABSTRACT, BODY, REFERENCES, FIGURE_CAPTION, TABLE_CAPTION, ACKNOWLEDGEMENTS, EQUATION, METHODOLOGY, CONCLUSION, AUTHOR_INFO, TITLE
-- **Gate**: `USE_SCIBERT_CLASSIFICATION=false` (disabled by default)
-- **SciBERT Gate**: `app/services/scibert_gate.should_enable_scibert()` — benchmarks F1 ≥ 0.85 before auto-enabling
+- **Gate**: `USE_LLM_CLASSIFICATION=false` (disabled by default)
+- **LLMClassifier Gate**: `app/services/LLMClassifier_gate.should_enable_LLMClassifier()` — benchmarks F1 ≥ 0.85 before auto-enabling
 - **Language detection**: Uses `langdetect`; falls to heuristics for non-English documents
 - **Head repair**: `_repair_fragmented_headings()` merges split number+text heading patterns
 
@@ -200,10 +200,10 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
   - References keywords → `BlockType.REFERENCE_ENTRY`
   - Heading candidates → `BlockType.HEADING_1`–`HEADING_4`
   - Front matter (pre-section) → Title/Author/Affiliation analysis
-  - Footnotes → `^(\d+ |\[\d+\]|†|‡|※|\*\s)` patterns
+  - Footnotes → `^(\d+ |\[\d+\]| |‡|※|\*\s)` patterns
   - Appendices → keyword-matched (appendix, annex, supplement)
   - Affiliations → 20+ indicator keywords (university, college, department, ...)
-- **SciBERT tuning**: Uses `HEURISTIC_CONFIDENCE_MEDIUM` (0.7) as minimum for SciBERT override
+- **LLMClassifier tuning**: Uses `HEURISTIC_CONFIDENCE_MEDIUM` (0.7) as minimum for LLMClassifier override
 
 #### Stage 10: NLP Analysis
 - **File**: `app/pipeline/nlp/analyzer.py`
@@ -324,7 +324,7 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 ```python
 {
     "fast_mode": False,          # Skips optional AI stages
-    "semantic_parser": True,     # Enables SciBERT parsing
+    "semantic_parser": True,     # Enables LLMClassifier parsing
     "crossref_enrichment": True, # Enables CrossRef lookups
     "ai_reasoning": True,        # Enables RAG + ReasoningEngine
 }
@@ -762,16 +762,16 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 
 **Stored models**:
 - `embedding_model` → SentenceTransformer for RAG
-- `scibert_tokenizer` → SciBERT tokenizer
-- `scibert_model` → SciBERT model
+- `LLMClassifier_tokenizer` → LLMClassifier tokenizer
+- `LLMClassifier_model` → LLMClassifier model
 - Future: Other models
 
 **Pre-loading**: `PRELOAD_AI_MODELS=true` (default) loads models at startup. `LOW_MEMORY_MODE=true` skips pre-loading and forces deterministic embedding fallback.
 
-**SciBERT Gate** (`app/services/scibert_gate.py`):
-- `should_enable_scibert()` → checks `USE_SCIBERT_CLASSIFICATION` env var
-- If `SCIBERT_AUTO_ENABLE_FROM_BENCHMARK=true`: Only enables if benchmark F1 ≥ `SCIBERT_MIN_BENCHMARK_F1` (0.85)
-- Benchmark state persisted in `.metrics/scibert_benchmark_state.json`
+**LLMClassifier Gate** (`app/services/classification_gate.py`):
+- `should_enable_LLMClassifier()` → checks `USE_LLM_CLASSIFICATION` env var
+- If `LLM_CLASSIFIER_AUTO_ENABLE_FROM_BENCHMARK=true`: Only enables if benchmark F1 ≥ `LLM_CLASSIFIER_MIN_BENCHMARK_F1` (0.85)
+- Benchmark state persisted in `.metrics/classification_benchmark_state.json`
 
 ### 10.2 Model Metrics
 
@@ -802,7 +802,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 - `MetricsManager.record_llm_cache_hit/miss(provider, model)` → cache efficiency
 - `MetricsManager.record_llm_failure(provider)` → failure tracking
 
-**Sentry** (`app/config/settings.py:334`): `SENTRY_DSN` optional configuration for error tracking.
+**Error Tracking**: Error tracking is handled via Prometheus metrics and structured logging. (Sentry was removed.)
 
 **Structured Logging**: `ENABLE_STRUCTURED_LOGGING` flag enables JSON log output. `log_extra()` utility adds context to log records.
 
@@ -849,15 +849,15 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 | `PIPELINE_GROBID_TIMEOUT_SECONDS` | `30` | GROBID stage timeout |
 | `PIPELINE_DOCLING_TIMEOUT_SECONDS` | `30` | Docling stage timeout |
 | `PIPELINE_REASONING_TIMEOUT_SECONDS` | `60` | AI reasoning stage timeout |
-| `PIPELINE_SEMANTIC_TIMEOUT_SECONDS` | `30` | SciBERT stage timeout |
+| `PIPELINE_SEMANTIC_TIMEOUT_SECONDS` | `30` | LLMClassifier stage timeout |
 | `PIPELINE_ACQUIRE_TIMEOUT_SECONDS` | `30.0` | Semaphore acquire timeout |
 | `PIPELINE_DOCLING_SKIP_DIGITAL_PDF` | `false` | Skip Docling for digital-native PDFs |
 | `PIPELINE_DOCLING_FORCE` | `false` | Force Docling even for digital PDFs |
-| `ENABLE_NOUGAT_PARSER` | `false` | Enable Nougat OCR parser |
+| `ENABLE_LLM_PDF_PARSER` | `false` | Enable LLM-based PDF parsing parser |
 | `ENABLE_NVIDIA_REASONER` | `false` | Enable NVIDIA NIM reasoning |
-| `USE_SCIBERT_CLASSIFICATION` | `false` | Enable SciBERT semantic parsing |
-| `SCIBERT_AUTO_ENABLE_FROM_BENCHMARK` | `true` | Auto-enable SciBERT based on F1 |
-| `SCIBERT_MIN_BENCHMARK_F1` | `0.85` | Minimum F1 for auto-enable |
+| `USE_LLM_CLASSIFICATION` | `false` | Enable LLM-based classification parsing |
+| `LLM_CLASSIFIER_AUTO_ENABLE_FROM_BENCHMARK` | `true` | Auto-enable LLMClassifier based on F1 |
+| `LLM_CLASSIFIER_MIN_BENCHMARK_F1` | `0.85` | Minimum F1 for auto-enable |
 | `PRELOAD_AI_MODELS` | `true` | Pre-load AI models at startup |
 | `LOW_MEMORY_MODE` | `false` | Low-memory mode (force deterministic embeddings) |
 | `RAG_USE_TRANSFORMERS` | `true` | Use sentence-transformers for RAG |
@@ -915,7 +915,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 | GROBID | 5–15s | 30s | REST call to local service |
 | Docling | 5–15s | 30s | REST call to local service |
 | Structure Detection | 0.5–2s | — | Retry once on failure |
-| Semantic Parser (SciBERT) | 10–30s | 30s | Local model: 0.5–2s/doc; Remote: +network |
+| Semantic Parser (LLMClassifier) | 10–30s | 30s | Local model: 0.5–2s/doc; Remote: +network |
 | Content Classification | 0.5–2s | — | Regex + keyword matching |
 | NLP Analysis | 0.5–3s | — | Keyword extraction |
 | Caption Matching | 1–5s | — | Includes vision analysis |
@@ -941,7 +941,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 
 | Component | RAM | Notes |
 |-----------|-----|-------|
-| SciBERT local model | ~1.5GB | Only loaded when `USE_SCIBERT_CLASSIFICATION=true` |
+| LLMClassifier local model | ~1.5GB | Only loaded when `USE_LLM_CLASSIFICATION=true` |
 | BGE-M3 embedding | ~2.2GB | Only loaded when `RAG_USE_TRANSFORMERS=true` and not `LOW_MEMORY_MODE` |
 | BGE-small-en-v1.5 | ~0.5GB | Lighter embedding fallback |
 | GROBID | ~1.5GB (external Docker) | Separate process |
@@ -958,7 +958,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 
 | Component | GPU | Notes |
 |-----------|-----|-------|
-| SciBERT | Optional (CPU: ~2s/doc) | Inference, no training |
+| LLMClassifier | Optional (CPU: ~2s/doc) | Inference, no training |
 | BGE-M3 embedding | Optional (CPU: ~1s/doc) | sentence-transformers on CPU is adequate |
 | NVIDIA NIM | External API | No local GPU needed |
 | Ollama | Optional (GPU: ~10× faster) | Local 8B model runs on CPU at ~5 tok/s |
@@ -970,8 +970,8 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 | Tier | RAM | AI Features Available |
 |------|-----|----------------------|
 | Minimal | 512MB + 2GB swap | No local models; deterministic embeddings; remote APIs only |
-| Standard | 4GB | Deterministic embeddings; SciBERT if enabled; remote LLMs |
-| AI-Enhanced | 8GB | BGE-M3 + SciBERT local; optional Ollama |
+| Standard | 4GB | Deterministic embeddings; LLMClassifier if enabled; remote LLMs |
+| AI-Enhanced | 8GB | BGE-M3 + LLMClassifier local; optional Ollama |
 | Full | 16GB+ | All local models + Ollama with 8B+ models |
 
 ### Service Dependencies
@@ -983,17 +983,17 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 | ChromaDB | Embedded | — | Runs in-process |
 | Redis | External | ~100MB | Render Redis / Upstash |
 | Supabase | External | — | Managed SaaS |
-| HF Spaces | Serverless | — | For SciBERT/GROBID endpoints |
+| HF Spaces | Serverless | — | For LLMClassifier/GROBID endpoints |
 
 ### Deployment Types
 
 **Render (primary)**: Web service + Celery worker + Redis. GROBID/Docling as external services.
 
-**HF Spaces**: GROBID, Docling, SciBERT as free-tier HF Spaces with auto-sleep.
+**HF Spaces**: GROBID, Docling, LLMClassifier as free-tier HF Spaces with auto-sleep.
 
 **Local dev**: All services via Docker Compose (GROBID, Docling, Redis). Models loaded on demand.
 
-**Production recommendation**: `LOW_MEMORY_MODE=true`, `PRELOAD_AI_MODELS=false`, `DEFAULT_FAST_MODE=true`, SciBERT via remote HF Space endpoint, GROBID via HF Space, LLMs via NVIDIA NIM/Groq API keys.
+**Production recommendation**: `LOW_MEMORY_MODE=true`, `PRELOAD_AI_MODELS=false`, `DEFAULT_FAST_MODE=true`, LLMClassifier via remote HF Space endpoint, GROBID via HF Space, LLMs via NVIDIA NIM/Groq API keys.
 
 ---
 
@@ -1340,8 +1340,8 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 
 | Risk | Mitigation |
 |------|------------|
-| HuggingFace model provenance | Models pinned to specific revisions (`allenai/scibert_scivocab_uncased`, `BAAI/bge-m3`); no wildcard model loading |
-| Nougat parser availability | Gated behind `ENABLE_NOUGAT_PARSER=true` (opt-in); installed from `transformers` registry, not arbitrary sources |
+| HuggingFace model provenance | Models pinned to specific revisions (`allenai/LLMClassifier_scivocab_uncased`, `BAAI/bge-m3`); no wildcard model loading |
+| LLMPDFParser parser availability | Gated behind `ENABLE_LLM_PDF_PARSER=true` (opt-in); installed from `transformers` registry, not arbitrary sources |
 | GROBID/Docling container validation | Docker images pinned to tags (`grobid/grobid:0.8.0`, `ds4sd/docling:latest`) — tag immutability verified in CI |
 | Python dependency verification | `requirements.txt` with exact versions; `pip install --require-hashes` in CI/CD |
 | LLM provider API key rotation | Keys stored in `user_api_keys` with `created_at`/`updated_at` timestamps; `EncryptionService` supports key rotation |
@@ -1354,10 +1354,10 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 
 | Tier | CPU | RAM | GPU | AI Features | Estimated Cost/Month |
 |------|-----|-----|-----|-------------|---------------------|
-| **Free / Dev** | 2 vCPU | 4GB | None | Deterministic embeddings; remote LLMs only; SciBERT via HF Spaces; GROBID via HF Spaces | $0–$25 (Render free tier) |
-| **Starter** | 2 vCPU | 8GB | None | BGE-small-en-v1.5 embeddings; remote LLMs; SciBERT via HF Spaces; GROBID via HF Spaces | $25–$75 (Render starter) |
-| **Production (Standard)** | 4 vCPU | 8GB | Optional T4 | BGE-M3 embeddings; NVIDIA NIM + Groq LLMs; SciBERT remote; GROBID self-hosted Docker | $150–$400 (Render pro + HF Spaces + API keys) |
-| **Production (AI-Enhanced)** | 8 vCPU | 16GB | T4 (16GB) | All local models: BGE-M3, SciBERT, Nougat OCR; Ollama 8B local fallback; GROBID + Docling self-hosted | $400–$1,200 (Render pro + GPU instance) |
+| **Free / Dev** | 2 vCPU | 4GB | None | Deterministic embeddings; remote LLMs only; LLMClassifier via HF Spaces; GROBID via HF Spaces | $0–$25 (Render free tier) |
+| **Starter** | 2 vCPU | 8GB | None | BGE-small-en-v1.5 embeddings; remote LLMs; LLMClassifier via HF Spaces; GROBID via HF Spaces | $25–$75 (Render starter) |
+| **Production (Standard)** | 4 vCPU | 8GB | Optional T4 | BGE-M3 embeddings; NVIDIA NIM + Groq LLMs; LLMClassifier remote; GROBID self-hosted Docker | $150–$400 (Render pro + HF Spaces + API keys) |
+| **Production (AI-Enhanced)** | 8 vCPU | 16GB | T4 (16GB) | All local models: BGE-M3, LLMClassifier, LLM-based PDF parsing; Ollama 8B local fallback; GROBID + Docling self-hosted | $400–$1,200 (Render pro + GPU instance) |
 | **Enterprise** | 16 vCPU | 32GB | A10G (24GB) | Full local stack + Ollama 70B local; redundant LLM tiers; GROBID + Docling clustered; Redis cluster; ChromaDB HA | $1,200–$4,000 (multi-instance + HA) |
 
 ### 19.2 Service Topology Per Tier
@@ -1376,7 +1376,7 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 ├─ Render Redis ────────────────────────────┤
 │ Pub/sub + LLM cache + rate limiting       │
 ├─ HF Spaces ───────────────────────────────┤
-│ GROBID (1.5GB) + Docling (2GB) + SciBERT  │
+│ GROBID (1.5GB) + Docling (2GB) + LLMClassifier  │
 │ Auto-sleep on idle                        │
 ├─ NVIDIA NIM API ──────────────────────────┤
 │ Primary LLM tier                          │
@@ -1394,11 +1394,11 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 │ FastAPI (16 vCPU, 32GB each)                 │
 │  LOW_MEMORY_MODE=false                       │
 │  PRELOAD_AI_MODELS=true                      │
-│  All local models: BGE-M3 + SciBERT          │
+│  All local models: BGE-M3 + LLMClassifier          │
 ├─ Celery Worker Pool (×2) ────────────────────┤
 │ Background pipeline (8 vCPU, 16GB each)      │
 ├─ GPU Worker ─────────────────────────────────┤
-│ A10G: Nougat OCR + Ollama 70B (local LLM)   │
+│ A10G: LLM-based PDF parsing + Ollama 70B (local LLM)   │
 ├─ Redis Cluster ──────────────────────────────┤
 │ 3 nodes: caching + pub/sub + rate limiting   │
 ├─ GROBID Cluster (×2) ────────────────────────┤
@@ -1431,7 +1431,7 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 | Component | Cold Start Issue | Mitigation |
 |-----------|-----------------|------------|
 | HF Spaces (GROBID/Docling) | 20–40s start on idle wake | `KEEP_WARM_PING_INTERVAL_SECONDS` (default 300) sends periodic health checks |
-| SciBERT local model | 5–10s model load time | `PRELOAD_AI_MODELS=true` loads at startup; `LOW_MEMORY_MODE` skips entirely |
+| LLMClassifier local model | 5–10s model load time | `PRELOAD_AI_MODELS=true` loads at startup; `LOW_MEMORY_MODE` skips entirely |
 | BGE-M3 embedding model | 8–15s load time | Pre-loaded via `ModelStore` singleton; lazy init on first `RagEngine` query if not pre-loaded |
 | ChromaDB collection creation | 1–2s first query | Collections created at startup via `RagEngine.__init__` `get_or_create_collection()` |
 | Docker container pull | 30–60s | Pull images during deployment; use `imagePullPolicy: IfNotPresent` in K8s |
@@ -1664,7 +1664,7 @@ def test_full_pipeline_matches_golden(golden_file_regression):
 | `elsarticle_paper_output.docx` | Elsevier formatting |
 | `resume_simple.docx` | Resume template |
 | `multi_doc_synthesis.docx` | 2-document synthesis output |
-| `scibert_classified.docx` | SciBERT classified document |
+| `LLMClassifier_classified.docx` | LLMClassifier classified document |
 | `rag_enriched.docx` | RAG-advised output |
 | `agent_generated.docx` | Agent-generated academic paper |
 | `crossref_validated.docx` | CrossRef-enriched references |
@@ -1954,7 +1954,7 @@ curl -s http://localhost:8000/api/v1/health/ready | jq .
 | ChromaDB contamination | Isolated collections per template | `where={"publisher": publisher.upper()}` filter in all queries | `test_rag_isolation*.py` |
 | Cache poisoning | Cache key includes user context | LLM cache key = `provider:model:prompt_hash` + `user_id` prefix | `test_cache_isolation*.py` |
 | Session hijacking | JWT validation per request | `get_current_user()` on every endpoint; token expiry check | `test_auth_middleware*.py` |
-| Supply chain | Pinned model revisions | `allenai/scibert_scivocab_uncased`, `BAAI/bge-m3` with specific revisions | `test_model_pinning*.py` |
+| Supply chain | Pinned model revisions | `allenai/LLMClassifier_scivocab_uncased`, `BAAI/bge-m3` with specific revisions | `test_model_pinning*.py` |
 | Supply chain | Dependency hash verification | `pip install --require-hashes` in CI/CD | `test_dependency_scan*.py` |
 | Cross-tenant leakage | Isolation per user/API key | `resolve_user_api_key()` enforces user ownership of API keys | `test_user_isolation*.py` |
 
@@ -2078,14 +2078,14 @@ Organized by functional domain. All variables are defined in `backend/app/config
 |----------|----------|---------|-------------|-----------------|
 | `DEFAULT_FAST_MODE` | No | `false` | Skip optional AI stages | `true` |
 | `GROBID_ENABLED` | No | `true` | Enable GROBID metadata extraction | `true` |
-| `GROBID_URL` | No | `http://localhost:8070` | GROBID service endpoint | `https://<user>-grobid.hf.space` |
+| `GROBID_URL` | No | `http://localhost:8070` | GROBID service endpoint | `http://localhost:8070` |
 | `GROBID_MAX_RETRIES` | No | `3` | GROBID retry count | `3` |
 | `PIPELINE_GROBID_TIMEOUT_SECONDS` | No | `30` | GROBID stage timeout | `30` |
 | `USE_DOCLING_FALLBACK` | No | `true` | Enable Docling layout analysis | `true` |
 | `PIPELINE_DOCLING_TIMEOUT_SECONDS` | No | `30` | Docling stage timeout | `30` |
 | `PIPELINE_DOCLING_SKIP_DIGITAL_PDF` | No | `false` | Skip Docling for digital-native PDFs | `true` |
 | `PYMUPDF_FALLBACK` | No | `true` | Enable lightweight metadata fallback | `true` |
-| `ENABLE_NOUGAT_PARSER` | No | `false` | Enable Nougat OCR (scanned PDFs) | `false` |
+| `ENABLE_LLM_PDF_PARSER` | No | `false` | Enable LLM-based PDF parsing (scanned PDFs) | `false` |
 | `PIPELINE_REASONING_TIMEOUT_SECONDS` | No | `60` | AI reasoning stage timeout | `60` |
 | `PIPELINE_ACQUIRE_TIMEOUT_SECONDS` | No | `30.0` | Semaphore acquire timeout | `30.0` |
 
@@ -2095,11 +2095,11 @@ Organized by functional domain. All variables are defined in `backend/app/config
 |----------|----------|---------|-------------|-----------------|
 | `PRELOAD_AI_MODELS` | No | `true` | Pre-load models at startup | `false` |
 | `LOW_MEMORY_MODE` | No | `false` | Skip local model loading, use deterministic embeddings | `true` |
-| `USE_SCIBERT_CLASSIFICATION` | No | `false` | Enable SciBERT semantic parsing | `false` |
-| `SCIBERT_URL` | No | `""` | Remote SciBERT endpoint | `https://<user>-scibert.hf.space` |
-| `SCIBERT_URLS` | No | `""` | Comma-separated SciBERT URL fallbacks | `""` |
-| `SCIBERT_AUTO_ENABLE_FROM_BENCHMARK` | No | `true` | Auto-enable based on F1 score | `false` |
-| `SCIBERT_MIN_BENCHMARK_F1` | No | `0.85` | Minimum F1 for auto-enable | `0.85` |
+| `USE_LLM_CLASSIFICATION` | No | `false` | Enable LLM-based classification parsing | `false` |
+| `LLM_CLASSIFIER_URL` | No | `""` | Remote LLMClassifier endpoint | `http://localhost:8001` |
+| `LLM_CLASSIFIER_URLS` | No | `""` | Comma-separated LLMClassifier URL fallbacks | `""` |
+| `LLM_CLASSIFIER_AUTO_ENABLE_FROM_BENCHMARK` | No | `true` | Auto-enable based on F1 score | `false` |
+| `LLM_CLASSIFIER_MIN_BENCHMARK_F1` | No | `0.85` | Minimum F1 for auto-enable | `0.85` |
 | `RAG_EMBEDDING_PROVIDER` | No | `""` | Embedding provider (`huggingface_api` or empty for local) | `huggingface_api` |
 | `RAG_EMBEDDING_MODEL` | No | `sentence-transformers/all-MiniLM-L6-v2` | HF model for remote API | `sentence-transformers/all-MiniLM-L6-v2` |
 | `RAG_HF_TIMEOUT_SECONDS` | No | `30` | HF API request timeout | `30` |
@@ -2135,7 +2135,6 @@ Organized by functional domain. All variables are defined in `backend/app/config
 
 | Variable | Required | Default | Description | Production Value |
 |----------|----------|---------|-------------|-----------------|
-| `SENTRY_DSN` | No | `""` | Sentry DSN for error tracking | `https://...@o...ingest.sentry.io/...` |
 | `ENABLE_STRUCTURED_LOGGING` | No | `false` | JSON log output | `true` |
 | `LOG_LEVEL` | No | `INFO` | Logging level (DEBUG/INFO/WARN/ERROR) | `INFO` |
 
@@ -2154,7 +2153,7 @@ graph TB
     subgraph SelfHosted["Self-Hosted / HF Spaces"]
         GROBID[GROBID<br/>Java, 1.5GB RAM]
         DOCLING[Docling<br/>Python, 2GB RAM]
-        SCIBERT[SciBERT<br/>HF Space]
+        LLMClassifier[LLMClassifier<br/>HF Space]
         OLLAMA[Ollama<br/>Optional, GPU]
     end
 
@@ -2180,7 +2179,7 @@ graph TB
     CELERY --> HF
     CELERY --> GROBID
     CELERY --> DOCLING
-    CELERY --> SCIBERT
+    CELERY --> LLMClassifier
     API --> SUPABASE
     CELERY --> SUPABASE
     CHROMA -.->|Fallback| HF
@@ -2191,7 +2190,7 @@ graph TB
     classDef frontend fill:#f3e5f5,stroke:#7b1fa2
 
     class NVIDIA,GROQ,OR,HF,SUPABASE external
-    class GROBID,DOCLING,SCIBERT,OLLAMA selfhosted
+    class GROBID,DOCLING,LLMClassifier,OLLAMA selfhosted
     class API,CELERY,CHROMA,REDIS app
     class NEXT frontend
 ```
@@ -2205,7 +2204,7 @@ For production deployments, follow this startup sequence to minimize errors duri
 3. **ChromaDB** (embedded — starts with backend but creates collections lazily)
 4. **GROBID** (start → wait for `http://localhost:8070/api/health` → 200 OK)
 5. **Docling** (start → wait for `/health` endpoint)
-6. **SciBERT HF Space** (starts on first request — use `KEEP_WARM_PING_INTERVAL_SECONDS=300` to prevent cold start)
+6. **LLMClassifier HF Space** (starts on first request — use `KEEP_WARM_PING_INTERVAL_SECONDS=300` to prevent cold start)
 7. **Ollama** (start → pull models → `ollama list` returns expected models)
 8. **Celery Worker** (start after all services — connects to Redis, waits for tasks)
 9. **FastAPI Web Service** (start last — health endpoint checks all dependencies before `ready` returns 200)

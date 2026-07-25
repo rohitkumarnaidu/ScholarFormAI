@@ -9,7 +9,7 @@
 
 - [ ] Ensure `README.md` has a clear, scannable header with badges and demo GIF/screenshot
 - [ ] Add a `docs/` link prominently in the README
-- [ ] Verify all CI badges are showing "passing" (26 workflows)
+- [ ] Verify all CI badges are showing "passing" (25 workflows)
 - [ ] Pin a "v1.0 Launch" issue as a discussion thread
 - [ ] Add `Open Source`, `AI`, `Academic` topics to the repo
 - [ ] Post `Show and Tell` in GitHub Discussions
@@ -117,7 +117,7 @@
 
 ### DevOps Weekly
 - [ ] Submit via [devopsweekly.com](https://devopsweekly.com)
-- [ ] Angle: "26 CI/CD workflows, Cosign-signed containers, SLSA L3 provenance, SBOMs, multi-arch Docker builds"
+- [ ] Angle: "25 CI/CD workflows, Cosign-signed containers, SLSA L3 provenance, SBOMs, multi-arch Docker builds"
 - [ ] Include architecture diagram link
 
 ### Changelog (podcast + newsletter)
@@ -169,7 +169,7 @@
 
 ## Pre-Launch Checks
 
-- [ ] All 26 CI/CD workflows green on `main`
+- [ ] All 25 CI/CD workflows green on `main`
 - [ ] `CHANGELOG.md` reflects v1.0 accurately
 - [ ] `README.md` badges are all correct
 - [ ] `CITATION.cff` version = 1.0.0, date = 2026-07-21

@@ -225,4 +225,4 @@ CREATE INDEX idx_feedback_user ON feedback(user_id, created_at DESC);
 
 ## Migration Tool
 - **Alembic** directory exists at `backend/alembic/`
-- Status: ⚠️ Need to verify migration versions match schema
+- Status:  ️ Need to verify migration versions match schema

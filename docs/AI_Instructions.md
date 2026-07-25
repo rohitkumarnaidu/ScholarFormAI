@@ -42,10 +42,10 @@ All LLM calls go through `services/llm_service.py` which uses LiteLLM for provid
 5. Query: embed question → top-5 similarity → build context → LLM answer with sources
 6. TTL: auto-delete collection after 24 hours
 
-## SciBERT Classifier
-- Model: allenai/scibert_scivocab_uncased
+## LLMClassifier Classifier
+- Model: allenai/LLMClassifier_scivocab_uncased
 - Purpose: Classify document sections (IMRaD)
-- Status: **DISABLED** (`USE_SCIBERT_CLASSIFICATION=false`)
+- Status: **DISABLED** (`USE_LLM_CLASSIFICATION=false`)
 - Needs: Fine-tuning on IMRaD/SciHED dataset for >85% F1
 
 ## Quality Scoring
