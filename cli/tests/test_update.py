@@ -8,12 +8,12 @@ from click.testing import CliRunner
 
 from amf.main import cli
 
-
 @pytest.fixture
 def mock_update_service():
     """Mock the UpdateService to avoid network calls."""
-    with patch("app.services.update_service.UpdateService") as MockService:
-        instance = MockService.return_value
+    with patch("amf.commands.update._get_update_service") as mock_get_service:
+        instance = MagicMock()
+        mock_get_service.return_value = instance
 
         instance.check_for_updates.return_value = {
             "status": "up-to-date",
