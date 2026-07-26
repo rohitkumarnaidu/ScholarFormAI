@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 ScholarForm AI
 
-/* eslint-env node */
+/* global module */
 module.exports = {
   ci: {
     collect: {
