@@ -16,14 +16,14 @@ vi.mock('../lib/supabaseClient', () => ({
 
 describe('api.auth', () => {
     it('signup posts to /api/v1/auth/signup', async () => {
-        await signup({ email: 'test@test.com', password: 'test123' });
+        await signup({ email: 'test@test.com', password: 'dummy-password-for-testing' });
         const { fetchWithAuth } = await import('../services/api.core');
         expect(fetchWithAuth).toHaveBeenCalledWith('/api/v1/auth/signup', expect.any(Object));
     });
 
     it('login posts to /api/v1/auth/login', async () => {
         const { fetchWithAuth } = await import('../services/api.core');
-        await login({ email: 'test@test.com', password: 'test123' });
+        await login({ email: 'test@test.com', password: 'dummy-password-for-testing' });
         expect(fetchWithAuth).toHaveBeenCalledWith('/api/v1/auth/login', expect.any(Object));
     });
 
