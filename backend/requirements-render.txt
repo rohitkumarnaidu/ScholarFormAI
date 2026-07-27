@@ -93,7 +93,7 @@ sentry-sdk[fastapi]==2.66.1
 # ─── Utilities ─────────────────────────────────────────────────────────────────
 celery==5.6.3
 kombu==5.6.2
-spacy==3.8.13
+spacy==3.8.14
 python-clamd
 anyio==4.14.2
 orjson==3.11.9
