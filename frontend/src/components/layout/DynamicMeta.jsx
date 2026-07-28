@@ -2,7 +2,7 @@
 // Copyright (c) 2026 ScholarForm AI
 
 'use client';
-import { useTheme } from '@/src/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 import { useEffect } from 'react';
 
 export default function DynamicMeta() {

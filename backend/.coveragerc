@@ -1,6 +1,12 @@
 [run]
 branch = True
 source = app
+omit =
+    */pydantic/*
+    *pydantic*
+    app/models/root_model_helpers.py
+    */site-packages/*
+disable_warnings = module-not-measured, no-data-collected, no-code, module-not-imported
 
 [report]
 fail_under = 90
@@ -10,3 +16,8 @@ exclude_lines =
     def __repr__
     raise NotImplementedError
     if __name__ == .__main__.:
+    class .*\(RootModel.*\):
+    class .*\(pydantic.RootModel.*\):
+    if TYPE_CHECKING:
+    @overload
+

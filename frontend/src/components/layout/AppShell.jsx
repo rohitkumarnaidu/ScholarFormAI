@@ -3,12 +3,12 @@
 
 'use client';
 
-import Header from '@/src/components/layout/Header';
-import Sidebar from '@/src/components/layout/Sidebar';
+import Header from '@/components/layout/Header';
+import Sidebar from '@/components/layout/Sidebar';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState, Suspense, useMemo, useCallback } from 'react';
-import OnboardingTour from '@/src/components/OnboardingTour';
-import { useAuth } from '@/src/context/AuthContext';
+import OnboardingTour from '@/components/OnboardingTour';
+import { useAuth } from '@/context/AuthContext';
 
 const AUTH_ROUTES = ['/login', '/signup', '/forgot-password', '/verify-otp', '/reset-password', '/auth/callback'];
 

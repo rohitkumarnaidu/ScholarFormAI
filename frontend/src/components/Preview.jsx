@@ -3,7 +3,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { isCompleted } from '../constants/status';
-import { getPreview } from '@/src/services/api';
+import { getPreview } from '@/services/api';
 
 function buildSectionChunks(structuredData) {
     if (!structuredData?.sections || typeof structuredData.sections !== 'object') {

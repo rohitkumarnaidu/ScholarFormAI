@@ -21,7 +21,7 @@ vi.mock('../components/generator/ModelSelector', () => ({
     ),
 }));
 
-vi.mock('@/src/context/AuthContext', () => ({
+vi.mock('@/context/AuthContext', () => ({
     useAuth: () => ({ user: { access_token: 'mock-token' } }),
 }));
 

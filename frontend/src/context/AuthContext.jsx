@@ -10,7 +10,7 @@ import {
     forgotPassword as apiForgotPassword,
     verifyOtp as apiVerifyOtp,
     resetPassword as apiResetPassword,
-} from '@/src/services/api';
+} from '@/services/api';
 
 const AuthContext = createContext();
 

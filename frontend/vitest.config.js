@@ -7,7 +7,15 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
     resolve: {
         alias: {
-            '@': fileURLToPath(new URL('./', import.meta.url)),
+            '@/app': fileURLToPath(new URL('./app', import.meta.url)),
+            '@/components': fileURLToPath(new URL('./src/components', import.meta.url)),
+            '@/context': fileURLToPath(new URL('./src/context', import.meta.url)),
+            '@/hooks': fileURLToPath(new URL('./src/hooks', import.meta.url)),
+            '@/services': fileURLToPath(new URL('./src/services', import.meta.url)),
+            '@/lib': fileURLToPath(new URL('./src/lib', import.meta.url)),
+            '@/utils': fileURLToPath(new URL('./src/utils', import.meta.url)),
+            '@/constants': fileURLToPath(new URL('./src/constants', import.meta.url)),
+            '@': fileURLToPath(new URL('./src', import.meta.url)),
             '@testing-library/react': fileURLToPath(new URL('./node_modules/@testing-library/react', import.meta.url)),
             '@testing-library/user-event': fileURLToPath(new URL('./node_modules/@testing-library/user-event', import.meta.url)),
             'next/navigation': fileURLToPath(new URL('./__mocks__/next/navigation.js', import.meta.url)),
@@ -17,6 +25,7 @@ export default defineConfig({
         jsx: 'automatic',
     },
     test: {
+        pool: 'forks',
         globals: true,
         environment: 'jsdom',
         setupFiles: './src/test/setup.js',

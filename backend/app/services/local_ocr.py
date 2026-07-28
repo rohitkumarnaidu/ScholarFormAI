@@ -49,9 +49,11 @@ class LocalOCRService:
         return items
 
     def is_available(self) -> bool:
+        if self._engine is not None:
+            return True
         try:
-            engine = self._get_engine()
-            return engine is not None
+            import importlib.util
+            return importlib.util.find_spec("rapidocr_onnxruntime") is not None
         except Exception:
             return False
 

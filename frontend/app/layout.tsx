@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
-import { Navbar } from '../components/Navbar';
-import { Footer } from '../components/Footer';
+import { Navbar } from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { Toaster } from 'sonner';
 import dynamic from 'next/dynamic';
 
-const UpdateBanner = dynamic(() => import('../components/UpdateBanner'), { ssr: false });
-const FeedbackWidget = dynamic(() => import('../components/FeedbackWidget'), { ssr: false });
-const CrashScreen = dynamic(() => import('../components/CrashScreen'), { ssr: false });
+const UpdateBanner = dynamic(() => import('@/components/UpdateBanner'), { ssr: false });
+const FeedbackWidget = dynamic(() => import('@/components/FeedbackWidget'), { ssr: false });
+const CrashScreen = dynamic(() => import('@/components/CrashScreen'), { ssr: false });
 
 const inter = Inter({
   subsets: ['latin'],

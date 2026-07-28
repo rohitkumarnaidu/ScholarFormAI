@@ -24,6 +24,28 @@ logger = logging.getLogger(__name__)
 router = APIRouter(dependencies=[Depends(bind_request_context)])
 
 
+@router.get("")
+async def get_metrics_summary(request: Request):
+    """Metrics summary endpoint returning aggregated system metrics overview."""
+    async def operation():
+        model_metrics = get_model_metrics()
+        ab_testing = get_ab_testing()
+        summary = model_metrics.get_summary() if hasattr(model_metrics, "get_summary") else {}
+        ab_summary = ab_testing.get_test_summary() if hasattr(ab_testing, "get_test_summary") else {}
+        return {
+            "status": "success",
+            "model_metrics": summary,
+            "ab_test_summary": ab_summary,
+        }
+
+    return await run_enveloped(
+        request,
+        operation,
+        logger=logger,
+        operation_name="metrics summary",
+    )
+
+
 @router.get("/db")
 async def get_database_metrics(
     request: Request,

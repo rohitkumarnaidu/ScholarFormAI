@@ -16,18 +16,18 @@ vi.mock('next/navigation', () => ({
     useSearchParams: () => new URLSearchParams(),
 }));
 
-vi.mock('@/src/lib/supabaseClient', () => ({ supabase: null }));
-vi.mock('@/src/context/AuthContext', () => ({
+vi.mock('@/lib/supabaseClient', () => ({ supabase: null }));
+vi.mock('@/context/AuthContext', () => ({
     useAuth: () => ({ user: null, isLoggedIn: false }),
 }));
-vi.mock('@/src/utils/notifications', () => ({
+vi.mock('@/utils/notifications', () => ({
     loadNotifications: () => [],
     saveNotifications: vi.fn(),
     STORAGE_KEY: 'sf_notifs',
 }));
 
 // ── NotificationBell ─────────────────────────────────────────
-import NotificationBell from '@/src/components/NotificationBell';
+import NotificationBell from '@/components/NotificationBell';
 
 describe('NotificationBell — A11y', () => {
     it('renders bell button with descriptive aria-label', () => {
@@ -65,7 +65,7 @@ describe('NotificationBell — A11y', () => {
 });
 
 // ── Stepper ───────────────────────────────────────────────────
-import Stepper from '@/src/components/Stepper';
+import Stepper from '@/components/Stepper';
 
 describe('Stepper — A11y', () => {
     it('renders a list with an accessible label', () => {
@@ -105,7 +105,7 @@ describe('Stepper — A11y', () => {
 });
 
 // ── ExportDialog ───────────────────────────────────────────────
-import ExportDialog from '@/src/components/ExportDialog';
+import ExportDialog from '@/components/ExportDialog';
 
 describe('ExportDialog — A11y', () => {
     it('has dialog role and aria-modal attributes', () => {
@@ -126,7 +126,7 @@ describe('ExportDialog — A11y', () => {
 });
 
 // ── UpgradeModal ───────────────────────────────────────────────
-import UpgradeModal from '@/src/components/UpgradeModal';
+import UpgradeModal from '@/components/UpgradeModal';
 
 describe('UpgradeModal — A11y', () => {
     it('has dialog role and aria-modal attributes', () => {

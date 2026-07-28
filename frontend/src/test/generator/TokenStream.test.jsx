@@ -9,7 +9,7 @@ vi.mock('framer-motion', () => ({
     AnimatePresence: ({ children }) => <>{children}</>,
 }));
 
-vi.mock('@/src/lib/supabaseClient', () => ({
+vi.mock('@/lib/supabaseClient', () => ({
     supabase: {
         auth: {
             getSession: vi.fn().mockResolvedValue({

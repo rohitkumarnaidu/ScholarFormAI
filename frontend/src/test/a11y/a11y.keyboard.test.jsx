@@ -8,17 +8,17 @@ vi.mock('next/navigation', () => ({
     useSearchParams: () => new URLSearchParams(),
 }));
 
-vi.mock('@/src/context/ThemeContext', () => ({
+vi.mock('@/context/ThemeContext', () => ({
     useTheme: () => ({ theme: 'light', toggleTheme: vi.fn(), systemTheme: null }),
     ThemeProvider: ({ children }) => <>{children}</>,
 }));
 
-vi.mock('@/src/lib/supabaseClient', () => ({ supabase: null }));
-vi.mock('@/src/context/AuthContext', () => ({
+vi.mock('@/lib/supabaseClient', () => ({ supabase: null }));
+vi.mock('@/context/AuthContext', () => ({
     useAuth: () => ({ user: null, isLoggedIn: false, loading: false }),
 }));
 
-vi.mock('@/src/utils/notifications', () => ({
+vi.mock('@/utils/notifications', () => ({
     loadNotifications: () => [],
     saveNotifications: vi.fn(),
     STORAGE_KEY: 'sf_notifs',
@@ -61,8 +61,8 @@ const Modal = ({ isOpen, onClose, children }) => {
     );
 };
 
-import NotificationBell from '@/src/components/NotificationBell';
-import ThemeToggle from '@/src/components/layout/header/ThemeToggle';
+import NotificationBell from '@/components/NotificationBell';
+import ThemeToggle from '@/components/layout/header/ThemeToggle';
 
 describe('Keyboard accessibility', () => {
     it('follows logical tab order through form elements', async () => {

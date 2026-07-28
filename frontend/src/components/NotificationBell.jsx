@@ -4,9 +4,9 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { loadNotifications, saveNotifications, STORAGE_KEY } from '@/src/utils/notifications';
-import { supabase } from '@/src/lib/supabaseClient';
-import { useAuth } from '@/src/context/AuthContext';
+import { loadNotifications, saveNotifications, STORAGE_KEY } from '@/utils/notifications';
+import { supabase } from '@/lib/supabaseClient';
+import { useAuth } from '@/context/AuthContext';
 
 export default function NotificationBell() {
     const [isOpen, setIsOpen] = useState(false);

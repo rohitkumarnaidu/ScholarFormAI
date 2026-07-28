@@ -3,23 +3,23 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
-import AppShell from '@/src/components/layout/AppShell';
-import { useAuth } from '@/src/context/AuthContext';
+import AppShell from '@/components/layout/AppShell';
+import { useAuth } from '@/context/AuthContext';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-vi.mock('@/src/context/AuthContext', () => ({
+vi.mock('@/context/AuthContext', () => ({
     useAuth: vi.fn(),
 }));
 
-vi.mock('@/src/components/layout/Header', () => ({
+vi.mock('@/components/layout/Header', () => ({
     default: () => <div data-testid="header" />,
 }));
 
-vi.mock('@/src/components/layout/Sidebar', () => ({
+vi.mock('@/components/layout/Sidebar', () => ({
     default: () => <div data-testid="sidebar" />,
 }));
 
-vi.mock('@/src/components/OnboardingTour', () => ({
+vi.mock('@/components/OnboardingTour', () => ({
     default: () => null,
 }));
 

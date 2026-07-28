@@ -3,9 +3,9 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useSessionEventStream } from '@/src/hooks/useSessionEventStream';
+import { useSessionEventStream } from '@/hooks/useSessionEventStream';
 
-vi.mock('@/src/lib/supabaseClient', () => ({
+vi.mock('@/lib/supabaseClient', () => ({
     supabase: {
         auth: {
             getSession: vi.fn().mockResolvedValue({

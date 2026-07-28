@@ -5,7 +5,7 @@
 
 import React, { memo } from 'react';
 import Link from 'next/link';
-import Skeleton from '@/src/components/ui/Skeleton';
+import Skeleton from '@/components/ui/Skeleton';
 
 const cx = (...classes) => classes.filter(Boolean).join(' ');
 

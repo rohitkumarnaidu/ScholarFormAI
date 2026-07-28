@@ -115,20 +115,26 @@ class SessionVectorStore:
         return name
 
     def _schedule_ttl_delete(self, session_id: str, ttl_seconds: int) -> None:
-        async def _schedule_async():
-            await asyncio.sleep(ttl_seconds)
-            try:
-                self.delete_collection(session_id)
-            except Exception:
-                logger.warning("SessionVectorStore: TTL delete failed for %s", session_id)
+        self._persist_redis_ttl(session_id, ttl_seconds)
+        # Volatile in-memory timers have been removed in favor of Redis TTL
+        # and the scheduled purge_expired_vector_sessions Celery task.
 
+    def _persist_redis_ttl(self, session_id: str, ttl_seconds: int) -> None:
+        """Persist vector session TTL key to Redis if available."""
         try:
-            loop = asyncio.get_running_loop()
-            loop.create_task(_schedule_async())
-        except RuntimeError:
-            timer = threading.Timer(ttl_seconds, self.delete_collection, args=(session_id,))
-            timer.daemon = True
-            timer.start()
+            from app.cache.redis_cache import redis_cache
+
+            r_client = redis_cache.client
+            if r_client:
+                key1 = f"vector_session:{session_id}:ttl"
+                r_client.setex(key1, int(ttl_seconds), "active")
+                raw_id = self._collection_name(session_id)[len("session_") :]
+                if raw_id != str(session_id):
+                    key2 = f"vector_session:{raw_id}:ttl"
+                    r_client.setex(key2, int(ttl_seconds), "active")
+                logger.info("Persisted Redis TTL for vector session %s (%ds)", session_id, ttl_seconds)
+        except Exception as exc:
+            logger.warning("SessionVectorStore: Failed to persist Redis TTL for %s: %s", session_id, exc)
 
     def add_chunks(self, session_id: str, chunks: List[Dict[str, Any]]) -> int:
         if not chunks:
@@ -204,3 +210,14 @@ class SessionVectorStore:
             client.delete_collection(name)
         except Exception as exc:
             logger.debug("SessionVectorStore: delete_collection failed for %s: %s", session_id, exc)
+        try:
+            from app.cache.redis_cache import redis_cache
+
+            r_client = redis_cache.client
+            if r_client:
+                r_client.delete(f"vector_session:{session_id}:ttl")
+                raw_id = name[len("session_") :]
+                if raw_id != str(session_id):
+                    r_client.delete(f"vector_session:{raw_id}:ttl")
+        except Exception:
+            pass

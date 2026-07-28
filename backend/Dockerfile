@@ -10,10 +10,10 @@ RUN groupadd -r amf && useradd -r -g amf -d /app -s /sbin/nologin amf
 
 WORKDIR /app
 
-COPY --from=builder /root/.local /root/.local
+COPY --from=builder --chown=amf:amf /root/.local /home/amf/.local
 COPY . .
 
-ENV PATH=/root/.local/bin:$PATH \
+ENV PATH=/home/amf/.local/bin:$PATH \
     AMF_ENVIRONMENT=production \
     AMF_DEBUG=false
 

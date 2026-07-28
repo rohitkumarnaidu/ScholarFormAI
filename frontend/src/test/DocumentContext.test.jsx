@@ -4,7 +4,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
-import { DocumentProvider, useDocument } from '@/src/context/DocumentContext';
+import { DocumentProvider, useDocument } from '@/context/DocumentContext';
 
 function DocumentStateProbe() {
     const { job, processing, startProcessing, finishProcessing, failProcessing } = useDocument();

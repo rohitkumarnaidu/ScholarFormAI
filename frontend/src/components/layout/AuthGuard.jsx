@@ -5,7 +5,7 @@
 
 import { useEffect, useMemo, Suspense } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useAuth } from '@/src/context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 
 const isAdminUser = (user) => (
     user?.app_metadata?.role === 'admin' ||

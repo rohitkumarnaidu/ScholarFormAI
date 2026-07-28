@@ -6,9 +6,9 @@
 import React, { memo, useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useAuth } from '@/src/context/AuthContext';
-import ThemeToggle from '@/src/components/layout/header/ThemeToggle';
-import NotificationBell from '@/src/components/NotificationBell';
+import { useAuth } from '@/context/AuthContext';
+import ThemeToggle from '@/components/layout/header/ThemeToggle';
+import NotificationBell from '@/components/NotificationBell';
 
 const HEADER_STYLE = {
     backgroundColor: 'rgba(255, 255, 255, 0.4)',

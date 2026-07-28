@@ -3,31 +3,31 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 import ClientProviders from '../components/layout/ClientProviders';
 
-vi.mock('@/src/context/ThemeContext', () => ({
+vi.mock('@/context/ThemeContext', () => ({
     ThemeProvider: ({ children }) => <div data-testid="theme">{children}</div>,
 }));
 
-vi.mock('@/src/context/AuthContext', () => ({
+vi.mock('@/context/AuthContext', () => ({
     AuthProvider: ({ children }) => <div data-testid="auth">{children}</div>,
 }));
 
-vi.mock('@/src/context/ToastContext', () => ({
+vi.mock('@/context/ToastContext', () => ({
     ToastProvider: ({ children }) => <div data-testid="toast">{children}</div>,
 }));
 
-vi.mock('@/src/context/DocumentContext', () => ({
+vi.mock('@/context/DocumentContext', () => ({
     DocumentProvider: ({ children }) => <div data-testid="document">{children}</div>,
 }));
 
-vi.mock('@/src/context/UserPreferencesContext', () => ({
+vi.mock('@/context/UserPreferencesContext', () => ({
     UserPreferencesProvider: ({ children }) => <div data-testid="prefs">{children}</div>,
 }));
 
-vi.mock('@/src/components/layout/FocusManager', () => ({
+vi.mock('@/components/layout/FocusManager', () => ({
     default: () => <div data-testid="focus" />,
 }));
 
-vi.mock('@/src/components/layout/DynamicMeta', () => ({
+vi.mock('@/components/layout/DynamicMeta', () => ({
     default: () => <div data-testid="meta" />,
 }));
 

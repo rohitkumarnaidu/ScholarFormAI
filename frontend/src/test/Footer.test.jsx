@@ -7,7 +7,7 @@ import Footer from '../components/Footer';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-vi.mock('@/src/services/api', () => ({
+vi.mock('@/services/api', () => ({
     useMetricsHealth: () => ({ data: { status: 'healthy', version: '1.0' } })
 }));
 

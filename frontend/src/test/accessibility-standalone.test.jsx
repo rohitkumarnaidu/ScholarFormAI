@@ -19,13 +19,13 @@ vi.mock('next/navigation', () => ({
     Link: ({ children, href }) => <a href={href}>{children}</a>,
 }));
 
-vi.mock('@/src/context/ThemeContext', () => ({
+vi.mock('@/context/ThemeContext', () => ({
     useTheme: () => ({ theme: 'light', toggleTheme: vi.fn(), systemTheme: null }),
     ThemeProvider: ({ children }) => <>{children}</>,
 }));
 
-vi.mock('@/src/lib/supabaseClient', () => ({ supabase: null }));
-vi.mock('@/src/context/AuthContext', () => ({
+vi.mock('@/lib/supabaseClient', () => ({ supabase: null }));
+vi.mock('@/context/AuthContext', () => ({
     useAuth: () => ({ user: null, isLoggedIn: false, loading: false }),
 }));
 
@@ -39,9 +39,9 @@ vi.stubGlobal('getComputedStyle', (el, pseudo) => {
 // ===================================================================
 // 1A — Color Contrast Tests
 // ===================================================================
-import Button from '@/src/components/ui/Button';
-import Input from '@/src/components/ui/Input';
-import Badge from '@/src/components/ui/Badge';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import Badge from '@/components/ui/Badge';
 
 describe('1A — Color Contrast', () => {
     it('primary button renders with accessible role and text', () => {
@@ -94,11 +94,11 @@ describe('1A — Color Contrast', () => {
 // ===================================================================
 // 1B — Keyboard Navigation Tests
 // ===================================================================
-import Sidebar from '@/src/components/layout/Sidebar';
-import ThemeToggle from '@/src/components/layout/header/ThemeToggle';
-import AgentChatPane from '@/src/components/generator/AgentChatPane';
-vi.mock('@/src/components/Toast', () => ({ default: () => <div role="alert">Toast</div> }));
-vi.mock('@/src/components/ui/Skeleton', () => ({ default: () => <div aria-hidden="true">Skeleton</div> }));
+import Sidebar from '@/components/layout/Sidebar';
+import ThemeToggle from '@/components/layout/header/ThemeToggle';
+import AgentChatPane from '@/components/generator/AgentChatPane';
+vi.mock('@/components/Toast', () => ({ default: () => <div role="alert">Toast</div> }));
+vi.mock('@/components/ui/Skeleton', () => ({ default: () => <div aria-hidden="true">Skeleton</div> }));
 
 describe('1B — Keyboard Navigation', () => {
     beforeEach(() => {
@@ -339,7 +339,7 @@ describe('1D — Semantic Structure', () => {
 // ===================================================================
 // 1E — Reduced Motion Tests
 // ===================================================================
-import Skeleton from '@/src/components/ui/Skeleton';
+import Skeleton from '@/components/ui/Skeleton';
 
 describe('1E — Reduced Motion', () => {
     let originalMatchMedia;

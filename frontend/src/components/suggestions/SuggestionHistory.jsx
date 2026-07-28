@@ -4,7 +4,7 @@
 'use client';
 
 import React, { memo, useState, useMemo, useCallback } from 'react';
-import EmptyState from '@/src/components/ui/EmptyState';
+import EmptyState from '@/components/ui/EmptyState';
 
 const cx = (...classes) => classes.filter(Boolean).join(' ');
 

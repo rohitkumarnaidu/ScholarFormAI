@@ -12,13 +12,13 @@ const { mockGetUser, mockGetSessions, mockDeleteSession } = vi.hoisted(() => ({
     mockDeleteSession: vi.fn(),
 }));
 
-vi.mock('@/src/lib/supabaseClient', () => ({
+vi.mock('@/lib/supabaseClient', () => ({
     supabase: {
         auth: { getUser: mockGetUser },
     },
 }));
 
-vi.mock('@/src/services/api.v1', () => ({
+vi.mock('@/services/api.v1', () => ({
     getGeneratorSessions: mockGetSessions,
     deleteGeneratorSession: mockDeleteSession,
 }));

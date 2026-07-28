@@ -5,7 +5,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Send, User, Bot, Loader2, Sparkles, AlertCircle, Square } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ModelSelector from './ModelSelector';
-import { useAuth } from '@/src/context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 
 const formatSourceLabel = (source) => {
   if (!source) return 'Source';

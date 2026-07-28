@@ -3,7 +3,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { useAgent } from '@/src/hooks/useAgent';
+import { useAgent } from '@/hooks/useAgent';
 
 const mocks = vi.hoisted(() => ({
     createAgentSession: vi.fn(),
@@ -16,7 +16,7 @@ const mocks = vi.hoisted(() => ({
     trackEvent: vi.fn(),
 }));
 
-vi.mock('@/src/services/api.generator.v1', () => ({
+vi.mock('@/services/api.generator.v1', () => ({
     createAgentSession: mocks.createAgentSession,
     getSession: mocks.getSession,
     getSessionMessages: mocks.getSessionMessages,
@@ -26,7 +26,7 @@ vi.mock('@/src/services/api.generator.v1', () => ({
     approveOutline: mocks.approveOutline,
 }));
 
-vi.mock('@/src/lib/analytics', () => ({
+vi.mock('@/lib/analytics', () => ({
     trackEvent: mocks.trackEvent,
 }));
 

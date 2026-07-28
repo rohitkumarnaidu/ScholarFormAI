@@ -3,17 +3,17 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import NotificationBell from '../components/NotificationBell';
 
-vi.mock('@/src/utils/notifications', () => ({
+vi.mock('@/utils/notifications', () => ({
     loadNotifications: vi.fn(() => []),
     saveNotifications: vi.fn(),
     STORAGE_KEY: 'scholarform_notifications',
 }));
 
-vi.mock('@/src/lib/supabaseClient', () => ({
+vi.mock('@/lib/supabaseClient', () => ({
     supabase: null,
 }));
 
-vi.mock('@/src/context/AuthContext', () => ({
+vi.mock('@/context/AuthContext', () => ({
     useAuth: vi.fn(() => ({ user: null })),
 }));
 

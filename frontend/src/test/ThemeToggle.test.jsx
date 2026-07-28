@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 
-vi.mock('@/src/context/ThemeContext', () => {
+vi.mock('@/context/ThemeContext', () => {
     const mockUseTheme = vi.fn(() => ({
         theme: 'light',
         toggleTheme: vi.fn(),

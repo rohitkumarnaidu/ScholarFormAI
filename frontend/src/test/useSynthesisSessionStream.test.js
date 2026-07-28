@@ -3,9 +3,9 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useSynthesisSessionStream } from '@/src/hooks/useSynthesisSessionStream';
+import { useSynthesisSessionStream } from '@/hooks/useSynthesisSessionStream';
 
-vi.mock('@/src/lib/supabaseClient', () => ({
+vi.mock('@/lib/supabaseClient', () => ({
     supabase: {
         auth: {
             getSession: vi.fn().mockResolvedValue({
@@ -15,7 +15,7 @@ vi.mock('@/src/lib/supabaseClient', () => ({
     },
 }));
 
-vi.mock('@/src/services/api.synthesis', () => ({
+vi.mock('@/services/api.synthesis', () => ({
     getSynthesisEventsEndpoint: vi.fn((id) => `http://test/api/v1/synthesis/sessions/${id}/events`),
 }));
 

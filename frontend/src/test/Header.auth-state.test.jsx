@@ -3,19 +3,19 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import Header from '@/src/components/layout/Header';
-import { useAuth } from '@/src/context/AuthContext';
+import Header from '@/components/layout/Header';
+import { useAuth } from '@/context/AuthContext';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-vi.mock('@/src/context/AuthContext', () => ({
+vi.mock('@/context/AuthContext', () => ({
     useAuth: vi.fn(),
 }));
 
-vi.mock('@/src/components/layout/header/ThemeToggle', () => ({
+vi.mock('@/components/layout/header/ThemeToggle', () => ({
     default: () => <div data-testid="theme-toggle" />,
 }));
 
-vi.mock('@/src/components/NotificationBell', () => ({
+vi.mock('@/components/NotificationBell', () => ({
     default: () => <div data-testid="notification-bell" />,
 }));
 

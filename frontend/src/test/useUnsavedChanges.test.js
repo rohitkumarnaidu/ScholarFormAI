@@ -3,7 +3,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import { useUnsavedChanges } from '@/src/hooks/useUnsavedChanges';
+import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
 
 describe('useUnsavedChanges', () => {
     beforeEach(() => {

@@ -18,7 +18,6 @@ from app.exceptions import ScholarFormError
 from app.middleware.request_id import RequestIdMiddleware, get_request_id
 from app.middleware.rate_limit import RateLimitMiddleware
 from app.middleware.tier_rate_limit import TierRateLimitMiddleware
-from app.services.health_checks import get_health_payload, get_readiness_payload
 from app.schemas.api_envelope import error_response
 from contextlib import asynccontextmanager
 from prometheus_fastapi_instrumentator import Instrumentator
@@ -70,7 +69,7 @@ from app.services.enhancement_manager import enhancement_manager
 _queue_depth_redis_client = None
 
 
-from app.routers.v1._helpers import DEFAULT_ERROR_CODES
+from app.common.constants import ERROR_CODES as DEFAULT_ERROR_CODES
 
 
 def build_error_response(
@@ -509,9 +508,8 @@ async def lifespan(app: FastAPI):
 # ── App creation ──────────────────────────────────────────────────────────────
 # Disable Swagger/ReDoc in production to avoid exposing API internals
 _is_debug = getattr(settings, "DEBUG", False)
-# FastAPI compatibility: 0.128.0 removed support for APIRouter webhooks `on_startup`
-# keyword. Pinned to 0.127.1 (Starlette 0.50.0) until the v1 router chain is migrated
-# to the newer lifespan pattern. See AGENTS.md requirements for upgrade path.
+# FastAPI standard configuration: v1 router chain and application event handlers use
+# standard lifespan context management (`lifespan=lifespan`). Compatible with FastAPI >= 0.128.0.
 app = FastAPI(
     title="ScholarForm AI Backend",
     description="Backend API for ScholarForm AI with Supabase Auth",
@@ -717,6 +715,8 @@ async def readiness_probe():
     Readiness probe for operational environments (K8s, Docker).
     Checks availability of critical dependencies and AI models.
     """
+    from app.services.health_checks import get_readiness_payload
+
     payload, status_code = await get_readiness_payload()
     return JSONResponse(content=payload, status_code=status_code)
 
@@ -732,6 +732,8 @@ async def health_check():
     optional dependencies are degraded; use /ready or /api/v1/health/ready
     for strict readiness.
     """
+    from app.services.health_checks import get_health_payload
+
     payload, _status_code = await get_health_payload()
     return JSONResponse(content=payload, status_code=200)
 

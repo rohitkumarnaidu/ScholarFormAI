@@ -1,125 +1,128 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+/**
+ * Unified API Client for ScholarForm AI
+ * Replaces 19 legacy untyped JS service modules.
+ */
 
-interface Author {
-  first_name: string;
-  last_name: string;
-  affiliation?: string;
-  email?: string;
-  orcid?: string;
-}
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
 
-interface Manuscript {
-  title: string;
-  authors?: Author[];
-  abstract?: string;
-  keywords?: string[];
-  sections: {
-    heading: string;
-    level: number;
-    content: { text: string; style?: string; alignment?: string }[];
-  }[];
-  references?: {
-    authors?: Author[];
-    year?: string;
-    title: string;
-    journal?: string;
-  }[];
-}
-
-interface FormatResponse {
-  download_url: string;
-  preview_url?: string;
-  pages: number;
-  metadata: Record<string, unknown>;
-  style_applied: string;
-  formatted_at: string;
-}
-
-interface StyleInfo {
+export interface User {
   id: string;
+  email: string;
   name: string;
-  version: string;
-  description: string;
-  citation_format: string;
-  is_builtin: boolean;
 }
 
-class ApiError extends Error {
-  constructor(
-    public status: number,
-    message: string,
-  ) {
-    super(message);
-    this.name = 'ApiError';
+export interface DocumentInfo {
+  id: string;
+  filename: string;
+  template: string;
+  status: string;
+  progress: number;
+  current_stage?: string;
+  error_message?: string;
+  created_at: string;
+  updated_at?: string;
+}
+
+export interface ListDocumentsResponse {
+  documents: DocumentInfo[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+export interface UploadResponse {
+  message: string;
+  job_id: string;
+  status: string;
+}
+
+export interface StatusResponse {
+  job_id: string;
+  status: string;
+  current_phase: string;
+  progress_percentage: number;
+  message: string;
+  updated_at?: string;
+  phases: any[];
+  quality?: any;
+}
+
+export class ApiClient {
+  private static async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    const token = localStorage.getItem('access_token');
+    const headers = new Headers(options.headers || {});
+    
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    if (!(options.body instanceof FormData) && !headers.has('Content-Type')) {
+      headers.set('Content-Type', 'application/json');
+    }
+
+    const config: RequestInit = {
+      ...options,
+      headers,
+    };
+
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.detail || `API Error: ${response.status} ${response.statusText}`);
+    }
+
+    // Some endpoints (like download) return blobs
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return response.json();
+    }
+    
+    return response.blob() as unknown as T;
+  }
+
+  // --- Auth & Users ---
+  static async getMe(): Promise<User> {
+    return this.request<User>('/auth/me');
+  }
+
+  // --- Documents ---
+  static async listDocuments(params?: { status?: string; limit?: number; offset?: number }): Promise<ListDocumentsResponse> {
+    const qs = new URLSearchParams();
+    if (params?.status) qs.append('status', params.status);
+    if (params?.limit) qs.append('limit', params.limit.toString());
+    if (params?.offset) qs.append('offset', params.offset.toString());
+    
+    return this.request<ListDocumentsResponse>(`/documents?${qs.toString()}`);
+  }
+
+  static async uploadDocument(file: File, options: Record<string, any> = {}): Promise<UploadResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    Object.entries(options).forEach(([key, value]) => {
+      formData.append(key, value.toString());
+    });
+
+    return this.request<UploadResponse>('/documents/upload', {
+      method: 'POST',
+      body: formData,
+    });
+  }
+
+  static async getStatus(jobId: string): Promise<StatusResponse> {
+    return this.request<StatusResponse>(`/documents/${jobId}/status`);
+  }
+
+  static async getPreview(jobId: string): Promise<{ html: string; style_applied: string }> {
+    return this.request<{ html: string; style_applied: string }>(`/documents/${jobId}/preview`);
+  }
+
+  static async deleteDocument(jobId: string): Promise<{ success: boolean }> {
+    return this.request<{ success: boolean }>(`/documents/${jobId}`, {
+      method: 'DELETE',
+    });
   }
 }
 
-async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const url = `${API_BASE}${path}`;
-  const response = await fetch(url, {
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    ...options,
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: response.statusText }));
-    throw new ApiError(response.status, error.message || 'Request failed');
-  }
-
-  return response.json();
-}
-
-export async function formatManuscript(
-  manuscript: Manuscript,
-  styleId: string = 'apa',
-  options?: Record<string, unknown>,
-): Promise<FormatResponse> {
-  return request<FormatResponse>('/api/v1/format', {
-    method: 'POST',
-    body: JSON.stringify({ manuscript, style_id: styleId, options }),
-  });
-}
-
-export async function formatAndDownload(
-  manuscript: Manuscript,
-  styleId: string = 'apa',
-  options?: Record<string, unknown>,
-): Promise<Blob> {
-  const url = `${API_BASE}/api/v1/format`;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ manuscript, style_id: styleId, options }),
-  });
-
-  if (!response.ok) throw new ApiError(response.status, 'Download failed');
-  return response.blob();
-}
-
-export async function validateManuscript(
-  manuscript: Manuscript,
-  styleId: string = 'apa',
-): Promise<{ valid: boolean; errors: any[]; warnings: any[] }> {
-  return request('/api/v1/validate', {
-    method: 'POST',
-    body: JSON.stringify({ manuscript, style_id: styleId }),
-  });
-}
-
-export async function getStyles(): Promise<StyleInfo[]> {
-  return request<StyleInfo[]>('/api/v1/styles');
-}
-
-export async function getStyle(styleId: string): Promise<StyleInfo> {
-  return request<StyleInfo>(`/api/v1/styles/${styleId}`);
-}
-
-export async function getPreview(
-  manuscript: Manuscript,
-  styleId: string = 'apa',
-): Promise<{ html: string; style_applied: string }> {
-  return request('/api/v1/preview', {
-    method: 'POST',
-    body: JSON.stringify({ manuscript, style_id: styleId }),
-  });
-}
+export default ApiClient;
