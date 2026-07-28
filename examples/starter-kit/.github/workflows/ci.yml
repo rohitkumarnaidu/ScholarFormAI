@@ -1,0 +1,45 @@
+name: ScholarForm AI CI Workflow
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  validate-and-format:
+    name: Validate and Format Manuscript
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies & AMF CLI
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pyyaml
+
+      - name: Validate Manuscript Structure
+        run: |
+          echo "Validating manuscript.md..."
+          test -f manuscript.md
+          test -f amf.config.json
+          test -f references.bib
+
+      - name: Create Output Directory
+        run: mkdir -p output
+
+      - name: Upload Formatted Manuscript Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: formatted-manuscripts
+          path: |
+            output/
+            manuscript.md
+            amf.config.json

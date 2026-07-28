@@ -1,0 +1,27 @@
+{
+  "name": "ScholarForm AI Starter Kit Project",
+  "version": "1.0.0",
+  "template": "ieee",
+  "style": "ieee",
+  "input_file": "manuscript.md",
+  "output_dir": "./output",
+  "output_filename": "formatted_manuscript.docx",
+  "bibliography": "references.bib",
+  "csl": "ieee.csl",
+  "formatting_options": {
+    "page_size": "Letter",
+    "font_family": "Times New Roman",
+    "font_size": 10,
+    "line_spacing": 1.0,
+    "add_page_numbers": true,
+    "add_borders": false,
+    "add_cover_page": false,
+    "generate_toc": false,
+    "add_line_numbers": false,
+    "fast_mode": false
+  },
+  "api": {
+    "url": "http://localhost:8000",
+    "timeout": 60
+  }
+}
