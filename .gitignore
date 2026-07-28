@@ -167,3 +167,7 @@ backend/coverage.json
 # Generated dotenv templates
 backend/.env.template
 frontend/.env.template
+
+# MkDocs generated site
+docs/site/
+

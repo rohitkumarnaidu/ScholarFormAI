@@ -53,7 +53,8 @@ def main():
     try:
         r = requests.get(f"{api_base}/api/v1/health", timeout=5)
         r.raise_for_status()
-        print(f"  API is healthy: {r.json()}")
+        health_data = r.json().get("data", r.json())
+        print(f"  API is healthy: {health_data}")
     except requests.RequestException as e:
         print(f"  API unreachable: {e}")
         print("  Start the backend: uvicorn app.main:app --reload --port 8000")
@@ -70,21 +71,34 @@ def main():
             timeout=60,
         )
     r.raise_for_status()
-    job_id = r.json().get("job_id")
+    resp = r.json()
+
+    # Handle api_envelope standard response data structure
+    if "data" in resp and isinstance(resp["data"], dict) and "job_id" in resp["data"]:
+        job_id = resp["data"]["job_id"]
+    else:
+        job_id = resp.get("job_id")
+
+    if not job_id:
+        print(f"Error: Response did not contain job_id: {resp}")
+        sys.exit(1)
+
     print(f"  Job ID: {job_id}")
 
     # 3. Poll for completion
     print("Formatting...")
     status = "processing"
-    while status not in ("completed", "failed"):
+    while status.lower() not in ("completed", "failed"):
         r = requests.get(f"{api_base}/api/v1/documents/{job_id}/status", headers=headers, timeout=10)
         r.raise_for_status()
-        data = r.json()
-        status = data.get("status", "unknown")
+        resp = r.json()
+        data = resp.get("data", resp)
+        status = str(data.get("status", "unknown")).lower()
         progress = data.get("progress", 0)
         print(f"  [{progress:3d}%] {status}", end="\r")
-        if status == "failed":
-            print(f"\n  Error: {data.get('error', 'Unknown error')}")
+        if status in ("failed", "error"):
+            error_details = data.get("error") or resp.get("error", "Unknown error")
+            print(f"\n  Error: {error_details}")
             sys.exit(1)
         time.sleep(1)
 

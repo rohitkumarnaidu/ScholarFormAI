@@ -27,24 +27,36 @@ class ScholarFormClient:
             self.session.headers["Authorization"] = f"Bearer {api_key}"
 
     def health(self):
-        return self.session.get(f"{self.api_url}/api/v1/health", timeout=5)
+        r = self.session.get(f"{self.api_url}/api/v1/health", timeout=5)
+        r.raise_for_status()
+        resp = r.json()
+        return resp.get("data", resp)
 
     def list_templates(self):
-        return self.session.get(f"{self.api_url}/api/v1/templates", timeout=10)
+        r = self.session.get(f"{self.api_url}/api/v1/templates", timeout=10)
+        r.raise_for_status()
+        resp = r.json()
+        return resp.get("data", resp)
 
-    def upload(self, filepath, template):
+    def upload(self, filepath, template="ieee"):
         with open(filepath, "rb") as f:
-            return self.session.post(
+            r = self.session.post(
                 f"{self.api_url}/api/v1/documents/upload",
                 files={"file": (Path(filepath).name, f)},
                 data={"template": template},
                 timeout=60,
             )
+        r.raise_for_status()
+        resp = r.json()
+        return resp.get("data", resp)
 
     def status(self, job_id):
-        return self.session.get(
+        r = self.session.get(
             f"{self.api_url}/api/v1/documents/{job_id}/status", timeout=10
         )
+        r.raise_for_status()
+        resp = r.json()
+        return resp.get("data", resp)
 
     def download(self, job_id, output_path, fmt="docx"):
         r = self.session.get(
@@ -61,15 +73,13 @@ class ScholarFormClient:
 
     def wait_for_completion(self, job_id, poll_interval=1):
         while True:
-            r = self.status(job_id)
-            r.raise_for_status()
-            data = r.json()
-            status = data.get("status", "unknown")
+            data = self.status(job_id)
+            status = str(data.get("status", "unknown")).lower()
             progress = data.get("progress", 0)
             print(f"  [{progress:3d}%] {status}")
             if status == "completed":
                 return data
-            if status == "failed":
+            if status in ("failed", "error"):
                 raise RuntimeError(data.get("error", "Formatting failed"))
             time.sleep(poll_interval)
 
@@ -86,15 +96,22 @@ def main():
     client = ScholarFormClient(api_url=args.api_url, api_key=args.api_key)
     output = args.output or f"formatted.{Path(args.file).stem}.docx"
 
-    print(f"Health check...")
-    r = client.health()
-    r.raise_for_status()
-    print(f"  OK: {r.json()['status']}")
+    print("Health check...")
+    health_data = client.health()
+    health_status = health_data.get("status", "healthy") if isinstance(health_data, dict) else "healthy"
+    print(f"  OK: {health_status}")
 
     print(f"Uploading {args.file}...")
-    r = client.upload(args.file, args.template)
-    r.raise_for_status()
-    job_id = r.json()["job_id"]
+    upload_data = client.upload(args.file, args.template)
+
+    # Handle api_envelope response
+    if isinstance(upload_data, dict) and "job_id" in upload_data:
+        job_id = upload_data["job_id"]
+    elif isinstance(upload_data, dict) and "jobId" in upload_data:
+        job_id = upload_data["jobId"]
+    else:
+        raise ValueError(f"Unexpected upload response data: {upload_data}")
+
     print(f"  Job ID: {job_id}")
 
     print("Formatting...")
