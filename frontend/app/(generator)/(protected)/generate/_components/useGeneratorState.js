@@ -4,16 +4,16 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useToast } from '@/src/context/ToastContext';
+import { useToast } from '@/context/ToastContext';
 import {
     generateDocument,
     streamGenerationStatus,
     downloadGeneratedDocument,
     getBuiltinTemplates,
-} from '@/src/services/api';
-import { useAutosave } from '@/src/hooks/useAutosave';
-import { useUnsavedChanges } from '@/src/hooks/useUnsavedChanges';
-import { GeneratorStartSchema, getFirstZodError } from '@/src/lib/schemas';
+} from '@/services/api';
+import { useAutosave } from '@/hooks/useAutosave';
+import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
+import { GeneratorStartSchema, getFirstZodError } from '@/lib/schemas';
 
 // ── Exported constants (used by MetadataStep) ───────────────────────────
 export const DEFAULT_PAPER_SECTIONS = [

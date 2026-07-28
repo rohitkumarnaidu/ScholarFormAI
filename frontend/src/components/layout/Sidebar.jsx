@@ -5,7 +5,7 @@
 
 import React, { memo, useMemo, useCallback } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useAuth } from '@/src/context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 
 const APP_GUEST_LINKS = [
   { href: '/upload', label: 'Upload', icon: 'upload_file' },

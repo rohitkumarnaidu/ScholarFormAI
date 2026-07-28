@@ -4,7 +4,7 @@
 'use client';
 
 import React, { memo, useMemo } from 'react';
-import Skeleton from '@/src/components/ui/Skeleton';
+import Skeleton from '@/components/ui/Skeleton';
 
 const cx = (...classes) => classes.filter(Boolean).join(' ');
 

@@ -7,6 +7,7 @@ import httpx
 from .exceptions import (
     AMFAuthenticationError,
     AMFConnectionError,
+    AMFError,
     AMFFormattingError,
     AMFNotFoundError,
     AMFRateLimitError,

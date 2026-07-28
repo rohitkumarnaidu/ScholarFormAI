@@ -3,7 +3,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useAutosave } from '@/src/hooks/useAutosave';
+import { useAutosave } from '@/hooks/useAutosave';
 
 const STORAGE_KEY = 'scholarform_generator_draft';
 

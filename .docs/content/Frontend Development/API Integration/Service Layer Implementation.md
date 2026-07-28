@@ -6,9 +6,8 @@
 
 <cite>
 **Referenced Files in This Document**
-- [index.js](file://frontend/dist/assets/index-J_KwUon_.js)
-- [vendor-router.js](file://frontend/dist/assets/vendor-router-naU-wgR8.js)
-- [vendor-supabase.js](file://frontend/dist/assets/vendor-supabase-CZ7auGd3.js)
+- [api.ts](file://frontend/src/lib/api.ts)
+- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 - [route.js](file://frontend/app/api/status/route.js)
 </cite>
 
@@ -38,28 +37,24 @@ The service layer is implemented as a cohesive module that exports a set of type
 ```mermaid
 graph TB
 subgraph "Frontend Service Layer"
-A["index.js<br/>Main service module"]
-B["vendor-router.js<br/>React Router utilities"]
-C["vendor-supabase.js<br/>Supabase client"]
+A["api.ts<br/>Main service module"]
+C["supabaseClient.js<br/>Supabase client"]
 end
 subgraph "Backend"
 D["Next.js API<br/>/app/api/status/route.js"]
 end
 A --> C
 A --> D
-B --> A
 ```
 
 **Diagram sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
-- [vendor-router.js:66-120](file://frontend/dist/assets/vendor-router-naU-wgR8.js#L66-L120)
-- [vendor-supabase.js:1-120](file://frontend/dist/assets/vendor-supabase-CZ7auGd3.js#L1-L120)
+- [api.ts](file://frontend/src/lib/api.ts)
+- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 - [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
 
 **Section sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
-- [vendor-router.js:66-120](file://frontend/dist/assets/vendor-router-naU-wgR8.js#L66-L120)
-- [vendor-supabase.js:1-120](file://frontend/dist/assets/vendor-supabase-CZ7auGd3.js#L1-L120)
+- [api.ts](file://frontend/src/lib/api.ts)
+- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 - [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
 
 ## Core Components
@@ -82,7 +77,7 @@ Key responsibilities:
 - React Query defaults and caching strategies
 
 **Section sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
+- [api.ts](file://frontend/src/lib/api.ts)
 
 ## Architecture Overview
 The service layer composes several libraries and utilities:
@@ -95,7 +90,7 @@ The service layer composes several libraries and utilities:
 ```mermaid
 sequenceDiagram
 participant UI as "UI Component"
-participant SRV as "Service Module (index.js)"
+participant SRV as "Service Module (api.ts)"
 participant AUTH as "Supabase Auth"
 participant API as "Next.js API"
 participant CACHE as "React Query Cache"
@@ -108,8 +103,8 @@ SRV-->>UI : Return normalized result
 ```
 
 **Diagram sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
-- [vendor-supabase.js:1-120](file://frontend/dist/assets/vendor-supabase-CZ7auGd3.js#L1-L120)
+- [api.ts](file://frontend/src/lib/api.ts)
+- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 - [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
 
 ## Detailed Component Analysis
@@ -137,10 +132,10 @@ Log --> Return
 ```
 
 **Diagram sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
+- [api.ts](file://frontend/src/lib/api.ts)
 
 **Section sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
+- [api.ts](file://frontend/src/lib/api.ts)
 
 ### Authentication and Authorization
 Authentication is handled centrally:
@@ -165,12 +160,12 @@ SRV-->>UI : Return result
 ```
 
 **Diagram sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
-- [vendor-supabase.js:1-120](file://frontend/dist/assets/vendor-supabase-CZ7auGd3.js#L1-L120)
+- [api.ts](file://frontend/src/lib/api.ts)
+- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 
 **Section sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
-- [vendor-supabase.js:1-120](file://frontend/dist/assets/vendor-supabase-CZ7auGd3.js#L1-L120)
+- [api.ts](file://frontend/src/lib/api.ts)
+- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 
 ### Payload Sanitization and Validation
 The service layer includes utilities for:
@@ -189,10 +184,10 @@ Validate --> Output["Sanitized payload"]
 ```
 
 **Diagram sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
+- [api.ts](file://frontend/src/lib/api.ts)
 
 **Section sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
+- [api.ts](file://frontend/src/lib/api.ts)
 
 ### Error Handling and Logging
 Error handling follows a consistent pattern:
@@ -211,10 +206,10 @@ Log --> Throw["Throw normalized error"]
 ```
 
 **Diagram sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
+- [api.ts](file://frontend/src/lib/api.ts)
 
 **Section sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
+- [api.ts](file://frontend/src/lib/api.ts)
 
 ### React Query Integration and Caching
 React Query is configured globally with:
@@ -248,10 +243,10 @@ QueryClient --> TemplatesQueries : "provides"
 ```
 
 **Diagram sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
+- [api.ts](file://frontend/src/lib/api.ts)
 
 **Section sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
+- [api.ts](file://frontend/src/lib/api.ts)
 
 ### Upload and Download Workflows
 Upload and download operations include:
@@ -279,10 +274,10 @@ SRV-->>UI : Blob URL for download
 ```
 
 **Diagram sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
+- [api.ts](file://frontend/src/lib/api.ts)
 
 **Section sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
+- [api.ts](file://frontend/src/lib/api.ts)
 
 ### Health Checks and Metrics
 Health checks and metrics endpoints:
@@ -292,7 +287,7 @@ Health checks and metrics endpoints:
 
 **Section sources**
 - [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
+- [api.ts](file://frontend/src/lib/api.ts)
 
 ## Dependency Analysis
 The service layer depends on:
@@ -304,7 +299,7 @@ The service layer depends on:
 
 ```mermaid
 graph TB
-SRV["Service Module (index.js)"]
+SRV["Service Module (api.ts)"]
 SUPA["Supabase Client"]
 RR["React Router"]
 RQ["React Query"]
@@ -318,15 +313,13 @@ SRV --> API
 ```
 
 **Diagram sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
-- [vendor-supabase.js:1-120](file://frontend/dist/assets/vendor-supabase-CZ7auGd3.js#L1-L120)
-- [vendor-router.js:66-120](file://frontend/dist/assets/vendor-router-naU-wgR8.js#L66-L120)
+- [api.ts](file://frontend/src/lib/api.ts)
+- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 - [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
 
 **Section sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
-- [vendor-supabase.js:1-120](file://frontend/dist/assets/vendor-supabase-CZ7auGd3.js#L1-L120)
-- [vendor-router.js:66-120](file://frontend/dist/assets/vendor-router-naU-wgR8.js#L66-L120)
+- [api.ts](file://frontend/src/lib/api.ts)
+- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 - [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
 
 ## Performance Considerations
@@ -345,7 +338,7 @@ Common issues and resolutions:
 - Error telemetry: Use backend metrics to diagnose service issues
 
 **Section sources**
-- [index.js:1-200](file://frontend/dist/assets/index-J_KwUon_.js#L1-L200)
+- [api.ts](file://frontend/src/lib/api.ts)
 
 ## Conclusion
 The frontend service layer provides a robust, centralized foundation for API interactions. It encapsulates authentication, error handling, retry logic, and React Query integration, enabling scalable and maintainable frontend development. The architecture supports efficient caching, reliable uploads/downloads, and seamless integration with backend services.

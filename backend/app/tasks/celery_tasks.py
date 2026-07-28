@@ -40,7 +40,11 @@ celery_app.conf.beat_schedule = {
         "task": "batch.cleanup_uploads",
         "schedule": crontab(hour=3, minute=0),
         "kwargs": {"upload_dir": "uploads"},
-    }
+    },
+    "purge-expired-vector-sessions-hourly": {
+        "task": "batch.purge_expired_vector_sessions",
+        "schedule": crontab(minute=0),
+    },
 }
 
 
@@ -257,6 +261,59 @@ def cleanup_uploads_task(upload_dir: str = "uploads", retention_days: int | None
         "removed_dirs": int(result.get("removed_dirs", 0)),
         "retention_days": int(result.get("retention_days", retention_days or settings.RETENTION_DAYS)),
     }
+
+
+@celery_app.task(name="batch.purge_expired_vector_sessions")
+def purge_expired_vector_sessions():
+    """
+    Batch queue task: Purge expired vector store sessions from ChromaDB
+    when their Redis TTL key (vector_session:{session_id}:ttl) is missing or expired.
+    Falls back gracefully when Redis or ChromaDB is absent/disabled.
+    """
+    try:
+        from app.services.session_vector_store import SessionVectorStore
+        from app.cache.redis_cache import redis_cache
+
+        r_client = redis_cache.client
+        if not r_client:
+            logger.info("purge_expired_vector_sessions: Redis unavailable or disabled. Skipping Redis-based purge.")
+            return {"purged_collections": 0, "status": "redis_unavailable"}
+
+        store = SessionVectorStore()
+        chroma = store._load_chroma()
+        if not chroma:
+            logger.warning("purge_expired_vector_sessions: chromadb unavailable. Skipping purge.")
+            return {"purged_collections": 0, "status": "chromadb_unavailable"}
+
+        try:
+            client = store._get_client()
+            collections = client.list_collections()
+        except Exception as exc:
+            logger.warning("purge_expired_vector_sessions: Failed listing ChromaDB collections: %s", exc)
+            return {"purged_collections": 0, "status": "error", "detail": str(exc)}
+
+        purged_count = 0
+        for col in collections:
+            col_name = getattr(col, "name", str(col))
+            if not col_name.startswith("session_"):
+                continue
+
+            session_id = col_name[len("session_") :]
+            redis_key = f"vector_session:{session_id}:ttl"
+
+            try:
+                if not r_client.exists(redis_key):
+                    store.delete_collection(session_id)
+                    purged_count += 1
+                    logger.info("purge_expired_vector_sessions: Purged expired vector store collection: %s", col_name)
+            except Exception as exc:
+                logger.warning("purge_expired_vector_sessions: Error checking/purging %s: %s", session_id, exc)
+
+        return {"purged_collections": purged_count, "status": "success"}
+    except Exception as exc:
+        logger.error("purge_expired_vector_sessions failed: %s", exc, exc_info=True)
+        return {"purged_collections": 0, "status": "error", "error": str(exc)}
+
 
 
 

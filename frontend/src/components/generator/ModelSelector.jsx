@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { fetchWithRetry } from '@/src/utils/fetchWithRetry';
+import { fetchWithRetry } from '@/utils/fetchWithRetry';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 

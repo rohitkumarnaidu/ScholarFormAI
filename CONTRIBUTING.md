@@ -133,17 +133,16 @@ pre-commit install
 ```
 backend/
   app/                    # FastAPI application
-    routers/              # API routes (34 endpoints)
-    services/             # Business logic (25 services)
+    routers/              # API route modules under /api/v1/
+    services/             # Business logic (48 service modules)
     pipeline/             # Document processing pipeline
     tasks/                # Celery background tasks
   tests/                  # Pytest test suite
-  db/                     # Database migrations & semantic store
+  db/                     # Database repositories & Supabase client
 
 frontend/
-  src/app/                # Next.js 16 App Router pages
-  src/components/         # React components
-  src/context/            # React context providers
+  app/                    # Next.js 16 App Router pages & route groups
+  src/                    # Shared React components, hooks, context, lib, services
   e2e/                    # Playwright E2E tests
 ```
 

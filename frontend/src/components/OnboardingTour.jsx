@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useAuth } from '@/src/context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 import { X, ChevronRight } from 'lucide-react';
 
 const TOUR_STEPS = [

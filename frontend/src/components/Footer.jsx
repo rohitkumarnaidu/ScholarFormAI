@@ -5,8 +5,8 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useMetricsHealth } from '@/src/services/api.hooks';
-import { subscribeNewsletter } from '@/src/services/api.core';
+import { useMetricsHealth } from '@/services/api.hooks';
+import { subscribeNewsletter } from '@/services/api.core';
 
 export default function Footer({ variant = 'app' }) {
     const { data: health } = useMetricsHealth({ staleTime: 60000, retry: false });

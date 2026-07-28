@@ -6,135 +6,104 @@
 http://localhost:8000/api/v1
 ```
 
-## Endpoints
+All responses follow the standard `api_envelope` schema (`APIResponse`).
 
-### `POST /format`
+---
 
-Format a manuscript into a styled DOCX file.
+## Response Envelope Schema
 
-**Request Body:**
+### Success Response
+
 ```json
 {
-  "manuscript": {
-    "title": "string (required)",
-    "authors": [
-      {
-        "first_name": "string",
-        "last_name": "string",
-        "affiliation": "string (optional)",
-        "email": "string (optional)",
-        "orcid": "string (optional)"
-      }
-    ],
-    "abstract": "string (optional)",
-    "keywords": ["string"],
-    "sections": [
-      {
-        "heading": "string",
-        "level": "integer (1-6)",
-        "content": [{"text": "string", "style": "string (optional)", "alignment": "string (optional)"}],
-        "subsections": ["Section (recursive)"]
-      }
-    ],
-    "references": [
-      {
-        "authors": ["Author"],
-        "year": "string",
-        "title": "string",
-        "journal": "string (optional)",
-        "volume": "string (optional)",
-        "issue": "string (optional)",
-        "pages": "string (optional)",
-        "doi": "string (optional)"
-      }
-    ],
-    "acknowledgments": "string (optional)",
-    "funding_statement": "string (optional)",
-    "conflict_of_interest": "string (optional)"
+  "data": { ... },
+  "error": null,
+  "request_id": "req-12345",
+  "timestamp": "2026-07-28T21:00:00Z"
+}
+```
+
+### Error Response
+
+```json
+{
+  "data": null,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Detailed error message",
+    "details": { ... }
   },
-  "style_id": "string (default: 'apa')",
-  "options": {
-    "output_format": "'docx' | 'pdf'",
-    "page_size": "'A4' | 'Letter' | 'Legal'",
-    "font_family": "string",
-    "font_size": "number",
-    "line_spacing": "number",
-    "margins": {"top": "number", "bottom": "number", "left": "number", "right": "number"},
-    "include_toc": "boolean",
-    "include_page_numbers": "boolean",
-    "include_running_header": "boolean"
-  }
+  "request_id": "req-12345",
+  "timestamp": "2026-07-28T21:00:00Z"
 }
 ```
 
-**Response:** `200 OK` — Binary DOCX file download
+---
 
-### `POST /validate`
+## Core v1 Endpoints
 
-Validate manuscript structure and style compliance.
+### Document Formatter
 
-**Request:**
-```json
-{
-  "manuscript": { "...": "Manuscript object" },
-  "style_id": "string"
-}
-```
+#### `POST /documents/upload`
+Upload and format a manuscript document.
+- **Content-Type:** `multipart/form-data`
+- **Fields:** `file` (binary), `template` (string), `options` (JSON string)
+- **Response:** `200 OK` with `{ "data": { "job_id": "...", "status": "processing" } }`
 
-**Response:**
-```json
-{
-  "valid": "boolean",
-  "errors": [{"code": "string", "message": "string", "location": "string (optional)", "severity": "'error' | 'warning'"}],
-  "warnings": ["ValidationIssue"],
-  "suggestions": ["string"]
-}
-```
+#### `GET /documents/{job_id}/status`
+Get real-time job processing progress and stage.
 
-### `POST /preview`
+#### `GET /documents/{job_id}/preview`
+Get rendered HTML and inline stylesheet for live document preview.
 
-Generate HTML preview of formatted manuscript.
+#### `GET /documents/{job_id}/compare`
+Get visual diff comparison payload between original input and formatted output.
 
-**Request:** Same as format.
+#### `GET /documents/{job_id}/download`
+Download formatted DOCX, PDF, or LaTeX output.
 
-**Response:**
-```json
-{
-  "html": "string (HTML content)",
-  "style_applied": "string"
-}
-```
+#### `POST /documents/{job_id}/edit`
+Save inline TipTap visual editor updates back to the document job.
 
-### `GET /styles`
+---
 
-List all available formatting styles.
+### Templates
 
-**Response:**
-```json
-[
-  {
-    "id": "string",
-    "name": "string",
-    "version": "string",
-    "description": "string",
-    "citation_format": "string",
-    "is_builtin": "boolean"
-  }
-]
-```
+#### `GET /templates`
+List all 17 available publication templates (IEEE, APA, Nature, Springer, Elsevier, etc.).
 
-### `GET /styles/{id}`
+#### `GET /templates/{name}`
+Retrieve specific template formatting rules and preview styles.
 
-Get details for a specific style.
+---
 
-**Response:** Single StyleInfo object.
+### AI Generator & Synthesis
+
+#### `POST /generator/sessions`
+Start a new AI paper generation session.
+
+#### `GET /generator/sessions/{id}/events`
+SSE event stream for real-time paper drafting and section generation progress.
+
+#### `POST /generator/sessions/{id}/messages`
+Send chat prompt or RAG query to active generator session.
+
+#### `POST /synthesis/sessions`
+Synthesize 2-6 source PDFs into a single unified review paper.
+
+---
 
 ## Error Codes
 
-| Code | HTTP | Description |
-|------|------|-------------|
-| VALIDATION_ERROR | 400 | Input validation failed |
-| STYLE_NOT_FOUND | 404 | Style not recognized |
-| FORMATTING_ERROR | 422 | Formatting engine error |
-| MANUSCRIPT_TOO_LARGE | 413 | File exceeds size limit |
-| RATE_LIMIT_EXCEEDED | 429 | Too many requests |
+| Code | HTTP Status | Description |
+|---|---|---|
+| `BAD_REQUEST` | 400 | Invalid request formatting |
+| `UNAUTHORIZED` | 401 | Missing or invalid auth credentials |
+| `FORBIDDEN` | 403 | Action not permitted for role |
+| `NOT_FOUND` | 404 | Target resource or job ID not found |
+| `CONFLICT` | 409 | Resource state conflict |
+| `PAYLOAD_TOO_LARGE` | 413 | Uploaded file size limit exceeded |
+| `VALIDATION_ERROR` | 422 | Manuscript structure validation failed |
+| `RATE_LIMITED` | 429 | Rate limit exceeded |
+| `INTERNAL_SERVER_ERROR` | 500 | Server-side execution exception |
+| `SERVICE_UNAVAILABLE` | 503 | Upstream AI provider or database unavailable |

@@ -22,6 +22,9 @@ if str(BACKEND_ROOT) not in sys.path:
 if Path.cwd() != BACKEND_ROOT:
     os.chdir(BACKEND_ROOT)
 
+os.environ["AMF_ENVIRONMENT"] = "test"
+os.environ["AMF_SECRET_KEY"] = "test-secret-key"
+
 from app.services import health_checks
 
 

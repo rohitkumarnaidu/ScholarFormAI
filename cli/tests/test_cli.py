@@ -58,3 +58,40 @@ def test_styles_list(runner: CliRunner):
     assert result.exit_code == 0
     assert "APA" in result.output
     assert "MLA" in result.output
+
+
+def test_manuscript_change_handler(sample_manuscript: Path, temp_dir: Path, unittest_mock=None):
+    from unittest.mock import MagicMock, patch
+    from amf.commands.format import ManuscriptChangeHandler
+    from watchdog.events import FileModifiedEvent
+
+    mock_client = MagicMock()
+    output_file = temp_dir / "out.docx"
+    handler = ManuscriptChangeHandler(mock_client, sample_manuscript, output_file, "apa", {})
+
+    with patch("amf.commands.format._format_single") as mock_format_single:
+        # Event for a different file should be ignored
+        other_event = FileModifiedEvent(str(temp_dir / "other.txt"))
+        handler.on_modified(other_event)
+        mock_format_single.assert_not_called()
+
+        # Event for directory should be ignored
+        dir_event = FileModifiedEvent(str(sample_manuscript.parent))
+        dir_event.is_directory = True
+        handler.on_modified(dir_event)
+        mock_format_single.assert_not_called()
+
+        # Event for the manuscript file should trigger reformatting
+        target_event = FileModifiedEvent(str(sample_manuscript))
+        handler.on_modified(target_event)
+        mock_format_single.assert_called_once_with(mock_client, sample_manuscript.resolve(), output_file, "apa", {})
+
+
+def test_format_watch_mode_invocation(runner: CliRunner, sample_manuscript: Path):
+    from unittest.mock import patch
+
+    with patch("amf.commands.format._format_and_watch") as mock_watch:
+        result = runner.invoke(cli, ["format", "-i", str(sample_manuscript), "-s", "apa", "-w"])
+        assert result.exit_code == 0
+        mock_watch.assert_called_once()
+

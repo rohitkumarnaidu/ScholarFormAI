@@ -3,7 +3,7 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { AuthProvider, useAuth } from '@/src/context/AuthContext';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
 
 const { authMock } = vi.hoisted(() => ({
     authMock: {
@@ -22,7 +22,7 @@ vi.mock('../lib/supabaseClient', () => ({
     },
 }));
 
-vi.mock('@/src/services/api', () => ({
+vi.mock('@/services/api', () => ({
     signup: vi.fn(),
     login: vi.fn(),
     forgotPassword: vi.fn(),

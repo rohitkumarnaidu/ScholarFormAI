@@ -3,7 +3,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useAgentEvents } from '@/src/hooks/useAgentEvents';
+import { useAgentEvents } from '@/hooks/useAgentEvents';
 
 const { mockEventSource } = vi.hoisted(() => ({
     mockEventSource: {
@@ -12,7 +12,7 @@ const { mockEventSource } = vi.hoisted(() => ({
     },
 }));
 
-vi.mock('@/src/lib/supabaseClient', () => ({
+vi.mock('@/lib/supabaseClient', () => ({
     supabase: {
         auth: {
             getSession: vi.fn().mockResolvedValue({

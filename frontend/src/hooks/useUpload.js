@@ -3,18 +3,18 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/src/context/AuthContext';
-import { useDocument } from '@/src/context/DocumentContext';
-import { isCompleted, isFailed, isProcessing as isStatusProcessing } from '@/src/constants/status';
+import { useAuth } from '@/context/AuthContext';
+import { useDocument } from '@/context/DocumentContext';
+import { isCompleted, isFailed, isProcessing as isStatusProcessing } from '@/constants/status';
 import {
     CHUNK_UPLOAD_THRESHOLD_BYTES,
     uploadChunked,
     uploadDocumentWithProgress,
     useDocumentStatus,
-} from '@/src/services/api';
-import { getRemainingQuota } from '@/src/lib/planTier';
-import { UploadStartSchema } from '@/src/lib/schemas';
-import { trackEvent } from '@/src/lib/analytics';
+} from '@/services/api';
+import { getRemainingQuota } from '@/lib/planTier';
+import { UploadStartSchema } from '@/lib/schemas';
+import { trackEvent } from '@/lib/analytics';
 
 /**
  * useUpload

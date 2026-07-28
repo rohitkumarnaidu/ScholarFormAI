@@ -7,7 +7,7 @@ import logging
 
 from fastapi import APIRouter, Depends, Request
 
-from app.services.health_checks import get_readiness_payload
+from app.core.health import health_checker
 from app.schemas.user import User
 from app.utils.dependencies import require_admin_user
 from app.utils.logging_context import bind_request_context
@@ -33,6 +33,7 @@ async def live(request: Request):
 @router.get("/ready")
 async def ready(request: Request):
     try:
+        from app.services.health_checks import get_readiness_payload
         payload, status_code = await get_readiness_payload()
     except Exception:
         logger.exception("Failed to build readiness payload")
@@ -44,6 +45,23 @@ async def ready(request: Request):
         )
 
     return build_success_response(request, payload, status_code=status_code)
+
+
+@router.get("/detailed")
+async def detailed_health(request: Request):
+    """Detailed health check endpoint calling HealthChecker.detailed()."""
+    try:
+        payload = health_checker.detailed()
+    except Exception:
+        logger.exception("Failed to build detailed health payload")
+        return build_error_response(
+            request,
+            status_code=500,
+            code="DETAILED_HEALTH_CHECK_FAILED",
+            message="Failed to evaluate detailed health state",
+        )
+
+    return build_success_response(request, payload)
 
 
 @router.get("/admin")

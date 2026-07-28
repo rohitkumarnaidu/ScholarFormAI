@@ -4,13 +4,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, act, cleanup } from '@testing-library/react';
 import React from 'react';
-import { UserPreferencesProvider, useUserPreferences } from '@/src/context/UserPreferencesContext';
+import { UserPreferencesProvider, useUserPreferences } from '@/context/UserPreferencesContext';
 
 const { mockUseAuth } = vi.hoisted(() => ({
     mockUseAuth: vi.fn(() => ({ user: null, isLoggedIn: false })),
 }));
 
-vi.mock('@/src/context/AuthContext', () => ({
+vi.mock('@/context/AuthContext', () => ({
     useAuth: () => mockUseAuth(),
 }));
 

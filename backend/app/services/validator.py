@@ -1,7 +1,8 @@
 import logging
 from typing import Any
 
-from app.api.models import Manuscript, ValidationIssue
+from app.api.models import ValidationIssue
+from app.domain.models import DomainManuscript
 from app.services.style_registry import StyleRegistry
 
 logger = logging.getLogger(__name__)
@@ -11,10 +12,13 @@ class ManuscriptValidator:
     def __init__(self):
         self.style_registry = StyleRegistry()
 
-    def validate(self, manuscript: Manuscript, style_id: str) -> dict[str, Any]:
-        errors = []
-        warnings = []
-        suggestions = []
+    def validate(self, manuscript: DomainManuscript | Any, style_id: str) -> dict[str, Any]:
+        if not isinstance(manuscript, DomainManuscript):
+            manuscript = DomainManuscript.from_pydantic(manuscript)
+
+        errors: list[ValidationIssue] = []
+        warnings: list[ValidationIssue] = []
+        suggestions: list[str] = []
 
         style = self.style_registry.get_style(style_id)
 
@@ -36,7 +40,10 @@ class ManuscriptValidator:
         }
 
     def _validate_title(
-        self, manuscript: Manuscript, errors: list[ValidationIssue], warnings: list[ValidationIssue]
+        self,
+        manuscript: DomainManuscript,
+        errors: list[ValidationIssue],
+        warnings: list[ValidationIssue],
     ):
         if not manuscript.title or not manuscript.title.strip():
             errors.append(
@@ -44,7 +51,6 @@ class ManuscriptValidator:
                     code="MISSING_TITLE", message="Manuscript title is required", severity="error"
                 )
             )
-
         elif len(manuscript.title) < 5:
             warnings.append(
                 ValidationIssue(
@@ -53,7 +59,6 @@ class ManuscriptValidator:
                     severity="warning",
                 )
             )
-
         elif len(manuscript.title) > 500:
             warnings.append(
                 ValidationIssue(
@@ -64,7 +69,10 @@ class ManuscriptValidator:
             )
 
     def _validate_authors(
-        self, manuscript: Manuscript, errors: list[ValidationIssue], warnings: list[ValidationIssue]
+        self,
+        manuscript: DomainManuscript,
+        errors: list[ValidationIssue],
+        warnings: list[ValidationIssue],
     ):
         if not manuscript.authors:
             errors.append(
@@ -89,7 +97,7 @@ class ManuscriptValidator:
 
     def _validate_abstract(
         self,
-        manuscript: Manuscript,
+        manuscript: DomainManuscript,
         style: Any,
         errors: list[ValidationIssue],
         warnings: list[ValidationIssue],
@@ -114,7 +122,7 @@ class ManuscriptValidator:
 
     def _validate_keywords(
         self,
-        manuscript: Manuscript,
+        manuscript: DomainManuscript,
         style: Any,
         warnings: list[ValidationIssue],
         suggestions: list[str],
@@ -138,7 +146,7 @@ class ManuscriptValidator:
 
     def _validate_sections(
         self,
-        manuscript: Manuscript,
+        manuscript: DomainManuscript,
         errors: list[ValidationIssue],
         warnings: list[ValidationIssue],
         suggestions: list[str],
@@ -153,7 +161,7 @@ class ManuscriptValidator:
             )
             return
 
-        headings = [s.heading.lower() for s in manuscript.sections]
+        headings = [(s.heading or s.title).lower() for s in manuscript.sections]
         required_headings = [
             "introduction",
             "method",
@@ -168,7 +176,8 @@ class ManuscriptValidator:
                 suggestions.append(f"Consider adding a '{req.capitalize()}' section")
 
         for section in manuscript.sections:
-            if not section.heading:
+            heading_text = section.heading or section.title
+            if not heading_text:
                 errors.append(
                     ValidationIssue(
                         code="EMPTY_SECTION", message="A section has no heading", severity="error"
@@ -176,7 +185,10 @@ class ManuscriptValidator:
                 )
 
     def _validate_references(
-        self, manuscript: Manuscript, errors: list[ValidationIssue], warnings: list[ValidationIssue]
+        self,
+        manuscript: DomainManuscript,
+        errors: list[ValidationIssue],
+        warnings: list[ValidationIssue],
     ):
         if not manuscript.references:
             warnings.append(
@@ -209,8 +221,11 @@ class ManuscriptValidator:
                     )
                 )
 
-    def _validate_metadata(self, manuscript: Manuscript, warnings: list[ValidationIssue]):
-        if manuscript.acknowledgments and len(manuscript.acknowledgments) > 1000:
+    def _validate_metadata(
+        self, manuscript: DomainManuscript, warnings: list[ValidationIssue]
+    ):
+        ack = manuscript.acknowledgments or manuscript.metadata.get("acknowledgments")
+        if ack and len(ack) > 1000:
             warnings.append(
                 ValidationIssue(
                     code="LONG_ACKNOWLEDGMENTS",

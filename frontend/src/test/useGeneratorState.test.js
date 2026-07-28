@@ -21,25 +21,25 @@ const {
     clearDraftMock: vi.fn(),
 }));
 
-vi.mock('@/src/context/ToastContext', () => ({
+vi.mock('@/context/ToastContext', () => ({
     useToast: () => ({ addToast: addToastMock, showToast: addToastMock }),
 }));
 
-vi.mock('@/src/services/api', () => ({
+vi.mock('@/services/api', () => ({
     generateDocument: generateDocumentMock,
     streamGenerationStatus: streamGenerationStatusMock,
     downloadGeneratedDocument: downloadGeneratedDocumentMock,
     getBuiltinTemplates: getBuiltinTemplatesMock,
 }));
 
-vi.mock('@/src/hooks/useAutosave', () => ({
+vi.mock('@/hooks/useAutosave', () => ({
     useAutosave: () => ({
         restoreDraft: () => null,
         clearDraft: clearDraftMock,
     }),
 }));
 
-vi.mock('@/src/hooks/useUnsavedChanges', () => ({
+vi.mock('@/hooks/useUnsavedChanges', () => ({
     useUnsavedChanges: vi.fn(),
 }));
 

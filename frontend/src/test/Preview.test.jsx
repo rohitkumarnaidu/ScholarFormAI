@@ -11,7 +11,7 @@ const { mockGetPreview, mockIsCompleted } = vi.hoisted(() => ({
     mockIsCompleted: vi.fn(() => true),
 }));
 
-vi.mock('@/src/services/api', () => ({
+vi.mock('@/services/api', () => ({
     getPreview: mockGetPreview,
 }));
 

@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { ArrowDownToLine, Eye, FileText, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { ManuscriptInput } from '../../components/ManuscriptInput';
-import { FormattingOptions } from '../../components/FormattingOptions';
-import { PreviewPanel } from '../../components/PreviewPanel';
+import { ManuscriptInput } from '@/components/ManuscriptInput';
+import { FormattingOptions } from '@/components/FormattingOptions';
+import { PreviewPanel } from '@/components/PreviewPanel';
 
 export default function FormatPage() {
   const [manuscriptText, setManuscriptText] = useState('');

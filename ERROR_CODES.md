@@ -1,57 +1,95 @@
-# Error Codes Reference
+# Error Codes & Response Envelope Reference
 
-## API Error Codes
+ScholarForm AI standardizes all error responses using the `api_envelope` schema (`APIResponse`).
 
-| Code | HTTP Status | Meaning |
-|------|-------------|---------|
-| `VALIDATION_ERROR` | 400 | Input validation failed |
-| `MISSING_TITLE` | 400 | Manuscript title is required |
-| `MISSING_AUTHORS` | 400 | At least one author required |
-| `MISSING_ABSTRACT` | 400 | Abstract required for style |
-| `MISSING_REFERENCE_TITLE` | 400 | Reference missing title |
-| `STYLE_NOT_FOUND` | 404 | Style ID not found |
-| `FORMATTING_ERROR` | 422 | Formatting engine error |
-| `UNSUPPORTED_FORMAT` | 400 | Input format not supported |
-| `MANUSCRIPT_TOO_LARGE` | 413 | File exceeds size limit |
-| `RATE_LIMIT_EXCEEDED` | 429 | Too many requests |
-| `INTERNAL_ERROR` | 500 | Unexpected server error |
+---
+
+## Standard Error Envelope Schema
+
+When an API error occurs, the server responds with an HTTP status code matching the error condition and an `APIResponse` error envelope:
+
+```json
+{
+  "data": null,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Manuscript validation failed: missing section headings.",
+    "details": {
+      "missing_fields": ["sections[0].heading"]
+    }
+  },
+  "request_id": "req-9b8a7c6d-4e5f",
+  "timestamp": "2026-07-28T21:00:00Z"
+}
+```
+
+---
+
+## System Error Codes (`backend/app/common/constants.py`)
+
+The machine-readable stable error codes and their associated HTTP status codes:
+
+| Error Code (`code`) | HTTP Status Code | Description |
+|---|---|---|
+| `BAD_REQUEST` | 400 | Malformed client request syntax or invalid parameters |
+| `UNAUTHORIZED` | 401 | Missing or invalid authentication bearer token |
+| `FORBIDDEN` | 403 | Authenticated user lacks necessary permissions |
+| `NOT_FOUND` | 404 | Target resource, document, or template ID not found |
+| `CONFLICT` | 409 | Resource state conflict (e.g., concurrent modifications) |
+| `PAYLOAD_TOO_LARGE` | 413 | Manuscript or upload file exceeds size threshold (60MB max) |
+| `VALIDATION_ERROR` | 422 | Manuscript structure or Pydantic validation failure |
+| `RATE_LIMITED` | 429 | Rate limit request quota exceeded |
+| `INTERNAL_SERVER_ERROR` | 500 | Unhandled internal server execution error |
+| `NOT_IMPLEMENTED` | 501 | Endpoint or feature is not yet supported |
+| `BAD_GATEWAY` | 502 | Upstream proxy or service integration gateway failure |
+| `SERVICE_UNAVAILABLE` | 503 | Downstream AI provider or database connectivity error |
+
+---
+
+## Validation Issue Codes (`ValidationIssue`)
+
+Specific issue codes returned inside manuscript structure validation reports:
+
+| Issue Code | Default Severity | Description |
+|---|---|---|
+| `MISSING_TITLE` | `error` | No manuscript title detected |
+| `SHORT_TITLE` | `warning` | Title length is below recommended threshold |
+| `LONG_TITLE` | `warning` | Title length exceeds style limits |
+| `MISSING_AUTHORS` | `error` | At least one author is required |
+| `INCOMPLETE_AUTHOR` | `warning` | Author missing affiliation or contact details |
+| `MISSING_ABSTRACT` | `error` | Abstract required by selected journal style |
+| `LONG_ABSTRACT` | `warning` | Abstract exceeds word count limit |
+| `MISSING_KEYWORDS` | `warning` | Keywords recommended for publication |
+| `TOO_MANY_KEYWORDS` | `warning` | Keyword count exceeds target threshold |
+| `MISSING_SECTIONS` | `warning` | Document lacks section headings |
+| `EMPTY_SECTION` | `error` | Section heading exists without content body |
+| `NO_REFERENCES` | `warning` | Bibliography list is empty |
+| `MISSING_REFERENCE_TITLE` | `error` | Reference entry missing title field |
+| `INCOMPLETE_REFERENCE` | `warning` | Reference missing journal, year, or page info |
+| `LONG_ACKNOWLEDGMENTS` | `warning` | Acknowledgments section exceeds length limits |
+
+---
+
+## SDK Exception Mapping (`amf_sdk.exceptions`)
+
+The Python SDK automatically maps HTTP response status codes to specific exception types:
+
+| Exception Class | HTTP Status | Mapped Error Condition |
+|---|---|---|
+| `AMFValidationError` | 400 | Invalid payload / `BAD_REQUEST` |
+| `AMFAuthenticationError` | 401 | Invalid token / `UNAUTHORIZED` |
+| `AMFNotFoundError` | 404 | Missing resource / `NOT_FOUND` |
+| `AMFFormattingError` | 422 | Processing failure / `VALIDATION_ERROR` |
+| `AMFRateLimitError` | 429 | Rate limit exceeded / `RATE_LIMITED` |
+| `AMFConnectionError` | 503 | Network failure / `SERVICE_UNAVAILABLE` |
+| `AMFTimeoutError` | 504 | Gateway timeout / `TIMEOUT` |
+
+---
 
 ## CLI Exit Codes
 
-| Code | Meaning |
-|------|---------|
-| 0 | Success |
-| 1 | General error |
-| 2 | Validation failed |
-
-## Validation Issue Codes
-
-| Code | Severity | Description |
-|------|----------|-------------|
-| `MISSING_TITLE` | error | No title found |
-| `SHORT_TITLE` | warning | Title too short |
-| `LONG_TITLE` | warning | Title too long |
-| `MISSING_AUTHORS` | error | No authors |
-| `INCOMPLETE_AUTHOR` | warning | Author missing name parts |
-| `MISSING_ABSTRACT` | error | Abstract required but missing |
-| `LONG_ABSTRACT` | warning | Abstract too long |
-| `MISSING_KEYWORDS` | warning | Keywords recommended |
-| `TOO_MANY_KEYWORDS` | warning | Too many keywords |
-| `MISSING_SECTIONS` | warning | No sections found |
-| `EMPTY_SECTION` | error | Section without heading |
-| `NO_REFERENCES` | warning | No references |
-| `MISSING_REFERENCE_TITLE` | error | Reference missing title |
-| `INCOMPLETE_REFERENCE` | warning | Reference missing details |
-| `LONG_ACKNOWLEDGMENTS` | warning | Acknowledgments too long |
-
-## SDK Error Classes
-
-| Exception | HTTP Status | When Raised |
-|-----------|-------------|-------------|
-| `AMFValidationError` | 400 | Invalid input |
-| `AMFAuthenticationError` | 401 | Invalid API key |
-| `AMFNotFoundError` | 404 | Resource not found |
-| `AMFFormattingError` | 422 | Formatting failed |
-| `AMFRateLimitError` | 429 | Rate limit hit |
-| `AMFConnectionError` | 503 | Connection failed |
-| `AMFTimeoutError` | 504 | Request timed out |
+| Exit Code | Meaning |
+|---|---|
+| `0` | Successful execution |
+| `1` | Command execution failure or uncaught exception |
+| `2` | Manuscript validation or lint check failure |

@@ -15,10 +15,14 @@ Internally delegates to proper Repository classes under
 from __future__ import annotations
 
 import asyncio
+import os
 import logging
 import uuid
+from datetime import datetime
 from typing import Optional, List, Dict, Any
 
+from fastapi import Request
+from app.schemas.user import User
 from app.db.supabase_client import get_supabase_client
 from app.db.repositories.document_repository import DocumentRepository
 from app.db.repositories.document_result_repository import DocumentResultRepository
@@ -338,3 +342,154 @@ class DocumentCrudService:
             raise DatabaseUnavailableError("Supabase client is not configured.")
 
         await self._statuses.upsert(doc_id, phase, status, progress_percentage, message)
+
+    async def list_documents_paginated(
+        self,
+        current_user: Optional[User] = None,
+        status: Optional[str] = None,
+        template: Optional[str] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None,
+        limit: int = 50,
+        offset: int = 0,
+    ) -> Dict[str, Any]:
+        """List documents for current user with filtering, pagination and formatting."""
+        from fastapi import HTTPException
+        import sys
+
+        def _get_impl_symbol(name: str, fallback: Any = None) -> Any:
+            try:
+                impl = sys.modules.get("app.routers.v1.documents_impl")
+                if impl is not None and hasattr(impl, name):
+                    val = getattr(impl, name)
+                    if val is not None:
+                        return val
+            except Exception:
+                pass
+            return fallback
+
+        require_db_fn = _get_impl_symbol("_require_db")
+        if require_db_fn is not None:
+            require_db_fn()
+
+        if not current_user:
+            return {"documents": [], "total": 0, "limit": limit, "offset": offset}
+
+        doc_service = _get_impl_symbol("DocumentService")
+        list_fn = doc_service.list_documents if (doc_service and hasattr(doc_service, "list_documents")) else self.list_documents
+        count_fn = doc_service.count_documents if (doc_service and hasattr(doc_service, "count_documents")) else self.count_documents
+
+        try:
+            documents = await list_fn(
+                user_id=str(current_user.id),
+                status=status,
+                template=template,
+                limit=limit,
+                offset=offset,
+            )
+            total = await count_fn(
+                user_id=str(current_user.id),
+                status=status,
+                template=template,
+            )
+
+            return {
+                "documents": [
+                    {
+                        "id": str(doc.get("id")),
+                        "filename": doc.get("filename"),
+                        "template": doc.get("template"),
+                        "status": doc.get("status"),
+                        "progress": doc.get("progress", 0),
+                        "current_stage": doc.get("current_stage"),
+                        "error_message": doc.get("error_message"),
+                        "created_at": doc.get("created_at"),
+                        "updated_at": doc.get("updated_at"),
+                    }
+                    for doc in documents
+                ],
+                "total": total,
+                "limit": limit,
+                "offset": offset,
+            }
+        except DatabaseUnavailableError:
+            raise HTTPException(status_code=503, detail="Database temporarily unavailable. Please retry later.")
+        except Exception as e:
+            logger.error("Error listing documents: %s", e)
+            raise HTTPException(status_code=500, detail="Internal server error")
+
+    async def delete_document_with_cleanup(
+        self,
+        request: Request,
+        job_id: str,
+        current_user: User,
+    ) -> Dict[str, Any]:
+        """Delete a document, audit log, and remove its associated files from disk."""
+        from fastapi import HTTPException
+        import sys
+
+        def _get_impl_symbol(name: str, fallback: Any = None) -> Any:
+            try:
+                impl = sys.modules.get("app.routers.v1.documents_impl")
+                if impl is not None and hasattr(impl, name):
+                    val = getattr(impl, name)
+                    if val is not None:
+                        return val
+            except Exception:
+                pass
+            return fallback
+
+        require_db_fn = _get_impl_symbol("_require_db")
+        if require_db_fn is not None:
+            require_db_fn()
+
+        doc_service = _get_impl_symbol("DocumentService")
+        get_doc_fn = doc_service.get_document if (doc_service and hasattr(doc_service, "get_document")) else self.get_document
+        del_doc_fn = doc_service.delete_document if (doc_service and hasattr(doc_service, "delete_document")) else self.delete_document
+        audit_svc = _get_impl_symbol("audit_log_service")
+        os_mod = _get_impl_symbol("os", os)
+
+        try:
+            doc = await get_doc_fn(job_id)
+            if not doc:
+                raise HTTPException(status_code=404, detail="Document not found")
+
+            if doc.get("user_id") is not None:
+                if str(doc["user_id"]) != str(current_user.id):
+                    raise HTTPException(status_code=403, detail="Not authorized to delete this document")
+
+            output_path = doc.get("output_path")
+            if output_path and os_mod.path.exists(output_path):
+                try:
+                    os_mod.remove(output_path)
+                except OSError as e:
+                    logger.warning("Failed to remove output file %s: %s", output_path, e)
+
+            original_path = doc.get("original_file_path")
+            if original_path and os_mod.path.exists(original_path):
+                try:
+                    os_mod.remove(original_path)
+                except OSError as e:
+                    logger.warning("Failed to remove uploaded file %s: %s", original_path, e)
+
+            await del_doc_fn(job_id, str(current_user.id))
+
+            if audit_svc and hasattr(audit_svc, "log"):
+                await audit_svc.log(
+                    user_id=str(current_user.id) if current_user else None,
+                    action="delete",
+                    resource_type="document",
+                    resource_id=str(job_id),
+                    ip_address=request.client.host if request.client else None,
+                    details={"filename": doc.get("filename")},
+                )
+
+            return {"status": "deleted", "job_id": job_id}
+
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error("Error deleting document %s: %s", job_id, e)
+            raise HTTPException(status_code=500, detail=f"Delete failed: {str(e)}")
+
+

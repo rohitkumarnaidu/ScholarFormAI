@@ -28,7 +28,7 @@ describe('DynamicMeta', () => {
     });
 
     it('sets theme-color meta for light mode', async () => {
-        const { useTheme } = await import('@/src/context/ThemeContext');
+        const { useTheme } = await import('@/context/ThemeContext');
         useTheme.mockReturnValue({ theme: 'light' });
 
         const meta = document.createElement('meta');

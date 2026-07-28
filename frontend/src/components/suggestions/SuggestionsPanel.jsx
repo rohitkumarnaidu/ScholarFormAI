@@ -4,7 +4,7 @@
 'use client';
 
 import React, { memo, useCallback, useEffect } from 'react';
-import Skeleton from '@/src/components/ui/Skeleton';
+import Skeleton from '@/components/ui/Skeleton';
 import SuggestionCard from './SuggestionCard';
 
 const SuggestionsPanel = memo(function SuggestionsPanel({

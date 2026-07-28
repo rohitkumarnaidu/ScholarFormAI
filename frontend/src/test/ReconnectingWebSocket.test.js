@@ -2,7 +2,7 @@
 // Copyright (c) 2026 ScholarForm AI
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import ReconnectingWebSocket from '@/src/lib/ReconnectingWebSocket';
+import ReconnectingWebSocket from '@/lib/ReconnectingWebSocket';
 
 describe('ReconnectingWebSocket', () => {
     let mockWs;

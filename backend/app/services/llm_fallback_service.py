@@ -198,14 +198,13 @@ def generate_with_model(
     }
 
     if is_custom:
-        from app.db.session import get_db
+        from app.db.session import SessionLocal
         from sqlalchemy import select
         from sqlalchemy.orm import Session
         from app.models.custom_provider import CustomProvider
 
         custom_id = provider.replace("custom_", "")
-        db: Session = next(get_db())
-        try:
+        with SessionLocal() as db:
             cp = db.execute(
                 select(CustomProvider).where(CustomProvider.id == custom_id)
             ).scalar_one_or_none()
@@ -221,15 +220,13 @@ def generate_with_model(
             base_url = cp.base_url
             kwargs["api_base"] = base_url
 
-            raw_model = model_name
-            if "/" in model_name:
-                raw_model = model_name.split("/", 1)[1]
-            kwargs["model"] = raw_model
+        raw_model = model_name
+        if "/" in model_name:
+            raw_model = model_name.split("/", 1)[1]
+        kwargs["model"] = raw_model
 
-            text = _ls._generate_openai_compat(**kwargs)
-            return {"text": text, "model": model_name, "provider": provider}
-        finally:
-            db.close()
+        text = _ls._generate_openai_compat(**kwargs)
+        return {"text": text, "model": model_name, "provider": provider}
 
     if api_key:
         kwargs["api_key"] = api_key

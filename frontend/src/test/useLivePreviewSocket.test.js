@@ -3,7 +3,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import useLivePreviewSocket from '@/src/hooks/useLivePreviewSocket';
+import useLivePreviewSocket from '@/hooks/useLivePreviewSocket';
 
 const { mockRws, constructorSpy } = vi.hoisted(() => ({
     mockRws: {
@@ -19,7 +19,7 @@ const { mockRws, constructorSpy } = vi.hoisted(() => ({
     constructorSpy: vi.fn(),
 }));
 
-vi.mock('@/src/lib/ReconnectingWebSocket', () => {
+vi.mock('@/lib/ReconnectingWebSocket', () => {
     function MockRwsConstructor(...args) {
         constructorSpy(...args);
         return mockRws;

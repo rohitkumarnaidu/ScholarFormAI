@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { AuthProvider, useAuth } from '@/src/context/AuthContext';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
 
 const { authMock, apiMock } = vi.hoisted(() => ({
     authMock: {
@@ -27,7 +27,7 @@ vi.mock('../lib/supabaseClient', () => ({
     },
 }));
 
-vi.mock('@/src/services/api', () => apiMock);
+vi.mock('@/services/api', () => apiMock);
 
 function ActionProbe() {
     const { user, isLoggedIn, loading, signUp, signIn, signInWithGoogle, forgotPassword, resetPassword, verifyOtp, signOut } = useAuth();

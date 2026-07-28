@@ -86,11 +86,42 @@ Show current configuration.
 amf config
 ```
 
+### `amf issue`
+
+Report and manage issue reports, bugs, and feature requests.
+
+```bash
+amf issue report -t "Title" -d "Description" -c bug -s high --attach-logs
+amf issue list --status new
+amf issue show ISS-1001
+amf issue comment ISS-1001 -b "Investigating"
+amf issue update ISS-1001 --status in-progress
+amf issue search "heading"
+amf issue stats
+amf issue labels
+amf issue backup
+```
+
+### `amf update`
+
+Check, download, apply, or rollback application updates.
+
+```bash
+amf update check --channel stable
+amf update download --version 1.2.0
+amf update install
+amf update rollback
+amf update history
+amf update channels
+amf update settings --auto-check
+amf update release-notes 1.2.0
+```
+
 ## Global Options
 
 | Option | Description |
 |--------|-------------|
 | `--version` | Show version |
 | `-v, --verbose` | Verbose output |
-| `-c, --config` | Custom config file |
+| `-c, --config` | Custom config file path |
 | `--help` | Show help |

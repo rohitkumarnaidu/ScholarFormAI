@@ -1,8 +1,10 @@
 import json
 import logging
 import sys
-import time
 from pathlib import Path
+
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
 
 from amf._client import BackendClient
 from amf._console import get_console, safe_progress
@@ -10,6 +12,23 @@ from amf.config import AMFConfig
 
 logger = logging.getLogger(__name__)
 console = get_console()
+
+
+class ManuscriptChangeHandler(FileSystemEventHandler):
+    """Event handler that triggers manuscript reformatting when the watched file changes."""
+
+    def __init__(self, client: BackendClient, input_file: Path, output_file: Path, style: str, options: dict):
+        super().__init__()
+        self.client = client
+        self.input_file = input_file.resolve()
+        self.output_file = output_file
+        self.style = style
+        self.options = options
+
+    def on_modified(self, event):
+        if not event.is_directory and Path(event.src_path).resolve() == self.input_file:
+            console.print("\n[dim]File changed. Reformatting...[/dim]")
+            _format_single(self.client, self.input_file, self.output_file, self.style, self.options)
 
 
 def run_format(input_path: str, output_path: str, style: str, options_str: str, watch: bool, verbose: bool):
@@ -63,14 +82,15 @@ def _format_and_watch(client: BackendClient, input_file: Path, output_file: Path
     console.print(f"[yellow]Watch mode enabled. Watching {input_file}...[/yellow]")
     console.print("Press Ctrl+C to stop.")
 
-    last_mtime = input_file.stat().st_mtime
+    event_handler = ManuscriptChangeHandler(client, input_file, output_file, style, options)
+    observer = Observer()
+    observer.schedule(event_handler, path=str(input_file.parent.resolve()), recursive=False)
+    observer.start()
+
     try:
-        while True:
-            current_mtime = input_file.stat().st_mtime
-            if current_mtime != last_mtime:
-                console.print(f"\n[dim]File changed. Reformatting...[/dim]")
-                _format_single(client, input_file, output_file, style, options)
-                last_mtime = current_mtime
-            time.sleep(1)
+        observer.join()
     except KeyboardInterrupt:
+        observer.stop()
         console.print("\n[yellow]Watch mode stopped.[/yellow]")
+    observer.join()
+

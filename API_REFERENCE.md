@@ -1,191 +1,234 @@
-# API Reference
+# ScholarForm AI — API Reference
 
 ## Base URL
 
 - Development: `http://localhost:8000`
-- Production: `https://your-domain.com`
+- Production: `https://api.scholarform.ai`
 
-All endpoints are prefixed with `/api/v1`.
+All modern endpoints are prefixed with `/api/v1`.
 
 ## Authentication
 
-Optional. Pass API key via header:
+Authentication is performed via Bearer tokens (Supabase JWT):
 
+```http
+Authorization: Bearer <your_access_token>
 ```
-Authorization: Bearer your-api-key
+
+Certain public routes (such as health checks, metrics, and template listings) do not require authentication headers.
+
+---
+
+## Response Envelope Standard (`api_envelope`)
+
+All `/api/v1` API responses use a standard response envelope schema (`APIResponse`).
+
+### Success Response Format
+
+```json
+{
+  "data": {
+    "job_id": "doc_987654321",
+    "status": "processing"
+  },
+  "error": null,
+  "request_id": "req-8f7a9c12-3b4e",
+  "timestamp": "2026-07-28T21:00:00Z"
+}
 ```
+
+### Error Response Format
+
+```json
+{
+  "data": null,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid manuscript structure or missing required section fields.",
+    "details": {
+      "missing_fields": ["title"]
+    }
+  },
+  "request_id": "req-8f7a9c12-3b4e",
+  "timestamp": "2026-07-28T21:00:00Z"
+}
+```
+
+---
 
 ## Endpoints
 
-### Health Check
+### Formatter & Document Management
 
-```
-GET /health
-```
+#### Upload & Process Document
+`POST /api/v1/documents/upload`
 
-Response:
+Uploads a manuscript file (DOCX, PDF, LaTeX, MD, HTML, TXT) for parsing and formatting.
+
+- **Content-Type:** `multipart/form-data`
+- **Body Params:**
+  - `file`: (binary, required) The manuscript file
+  - `template`: (string, optional, default `"ieee"`) Target template ID
+  - `options`: (JSON string, optional) Formatting configuration
+
+**Response Envelope Data:**
 ```json
 {
-  "status": "healthy",
-  "version": "1.0.0",
-  "service": "Automated Manuscript Formatter",
-  "uptime": 1234.56
-}
-```
-
-### Format Manuscript
-
-```
-POST /api/v1/format
-```
-
-Request body:
-```json
-{
-  "manuscript": {
-    "title": "The Impact of AI on Research",
-    "authors": [
-      {
-        "first_name": "Jane",
-        "last_name": "Smith",
-        "affiliation": "University of Research",
-        "email": "jane@research.edu"
-      }
-    ],
-    "abstract": "This study examines...",
-    "keywords": ["AI", "research"],
-    "sections": [
-      {
-        "heading": "Introduction",
-        "level": 1,
-        "content": [
-          {
-            "text": "This is the introduction paragraph.",
-            "style": "normal"
-          }
-        ],
-        "subsections": []
-      }
-    ],
-    "references": [
-      {
-        "authors": [{"first_name": "Alan", "last_name": "Turing"}],
-        "year": "1950",
-        "title": "Computing Machinery and Intelligence",
-        "journal": "Mind",
-        "volume": "59",
-        "issue": "236",
-        "pages": "433-460"
-      }
-    ]
+  "data": {
+    "job_id": "job_123456789",
+    "status": "processing",
+    "filename": "manuscript.docx",
+    "template": "ieee"
   },
-  "style_id": "apa",
-  "options": {
-    "output_format": "docx",
-    "page_size": "A4",
-    "font_family": "Times New Roman",
-    "font_size": 12,
-    "line_spacing": 2.0,
-    "include_toc": false,
-    "include_page_numbers": true
-  }
+  "error": null,
+  "request_id": "req-101",
+  "timestamp": "2026-07-28T21:00:00Z"
 }
 ```
 
-Response: `200 OK` — Binary DOCX file download
+#### Poll Processing Status
+`GET /api/v1/documents/{job_id}/status`
 
-### Validate Manuscript
+Retrieves the lifecycle and progress status of an active formatting job.
 
-```
-POST /api/v1/validate
-```
-
-Request:
+**Response Envelope Data:**
 ```json
 {
-  "manuscript": { "...": "..." },
-  "style_id": "apa"
+  "data": {
+    "job_id": "job_123456789",
+    "status": "completed",
+    "progress": 100,
+    "current_stage": "export",
+    "stages": ["upload", "validate", "format", "export"]
+  },
+  "error": null,
+  "request_id": "req-102",
+  "timestamp": "2026-07-28T21:00:05Z"
 }
 ```
 
-Response:
+#### Get Rendered HTML Preview
+`GET /api/v1/documents/{job_id}/preview`
+
+Renders and returns formatted manuscript HTML and inline CSS.
+
+**Response Envelope Data:**
 ```json
 {
-  "valid": true,
-  "errors": [],
-  "warnings": [
+  "data": {
+    "html": "<div class=\"manuscript-body\">...</div>",
+    "css": ".manuscript-body { font-family: 'Times New Roman'; }"
+  },
+  "error": null,
+  "request_id": "req-103",
+  "timestamp": "2026-07-28T21:00:06Z"
+}
+```
+
+#### Get Diff / Comparison
+`GET /api/v1/documents/{job_id}/compare`
+
+Returns side-by-side or unified diff data between original input and formatted output.
+
+#### Download Processed Document
+`GET /api/v1/documents/{job_id}/download`
+
+Downloads the formatted file.
+- **Query Params:** `format` (`docx`, `pdf`, `latex`)
+- **Returns:** Direct file attachment stream or download envelope payload.
+
+#### Submit Incremental Edits
+`POST /api/v1/documents/{job_id}/edit`
+
+Saves live visual editor (TipTap/ProseMirror) modifications back to the document job.
+
+---
+
+### Templates
+
+#### List Templates
+`GET /api/v1/templates`
+
+Lists all 17 supported academic templates.
+
+**Response Envelope Data:**
+```json
+{
+  "data": [
     {
-      "code": "MISSING_KEYWORDS",
-      "message": "Keywords are recommended for APA style",
-      "severity": "warning"
+      "id": "ieee",
+      "name": "IEEE Conference",
+      "citation_format": "numeric",
+      "description": "Two-column conference format"
+    },
+    {
+      "id": "apa",
+      "name": "APA 7th Edition",
+      "citation_format": "author-date",
+      "description": "American Psychological Association format"
     }
   ],
-  "suggestions": [
-    "Consider adding a 'Methodology' section"
-  ]
+  "error": null,
+  "request_id": "req-201",
+  "timestamp": "2026-07-28T21:00:00Z"
 }
 ```
 
-### Generate Preview
+---
 
-```
-POST /api/v1/preview
-```
+### AI Research Generator
 
-Request: Same as format but returns HTML.
+#### Create Generator Session
+`POST /api/v1/generator/sessions`
 
-Response:
-```json
-{
-  "html": "<!DOCTYPE html>...",
-  "style_applied": "apa"
-}
-```
+Initializes an interactive AI paper drafting session.
 
-### List Styles
+#### Stream Generator Events (SSE)
+`GET /api/v1/generator/sessions/{id}/events`
 
-```
-GET /api/v1/styles
-```
+Server-Sent Events endpoint streaming real-time paper generation events.
 
-Response:
-```json
-[
-  {
-    "id": "apa",
-    "name": "APA 7th Edition",
-    "version": "7.0",
-    "description": "American Psychological Association...",
-    "citation_format": "apa",
-    "is_builtin": true
-  }
-]
-```
+#### Send Session Message / Chat
+`POST /api/v1/generator/sessions/{id}/messages`
 
-### Get Style
+Appends prompt adjustments or queries to an ongoing generator session.
 
-```
-GET /api/v1/styles/{style_id}
-```
+---
 
-Response: Single style object with full configuration fields.
+### Multi-Doc Synthesis
+
+#### Create Synthesis Session
+`POST /api/v1/synthesis/sessions`
+
+Accepts multiple source PDFs (2-6 documents) for automated synthesis into a single manuscript.
+
+---
+
+### Health & Monitoring
+
+#### Health Check
+`GET /api/v1/health`
+
+Returns application service health states.
+
+#### Metrics Endpoint
+`GET /metrics`
+
+Exposes Prometheus system and operational metrics (unauthenticated).
+
+---
 
 ## Error Codes
 
-| Code | HTTP Status | Description |
-|------|-------------|-------------|
-| VALIDATION_ERROR | 400 | Input validation failed |
-| STYLE_NOT_FOUND | 404 | Style ID not recognized |
-| FORMATTING_ERROR | 422 | Formatting engine error |
-| MANUSCRIPT_TOO_LARGE | 413 | File exceeds size limit |
-| RATE_LIMIT_EXCEEDED | 429 | Too many requests |
-| INTERNAL_ERROR | 500 | Unexpected server error |
-
-## Rate Limiting
-
-- Format: 10 req/min
-- Validate: 30 req/min
-- Preview: 20 req/min
-- Styles: 60 req/min
-
-Rate limit headers are returned on all responses.
+| Error Code | HTTP Status | Description |
+|---|---|---|
+| `BAD_REQUEST` | 400 | Malformed request parameters or invalid JSON body |
+| `UNAUTHORIZED` | 401 | Missing or invalid authentication token |
+| `FORBIDDEN` | 403 | Insufficient permissions for requested resource |
+| `NOT_FOUND` | 404 | Resource, job, or template ID not found |
+| `CONFLICT` | 409 | Resource state conflict (e.g. duplicate job) |
+| `PAYLOAD_TOO_LARGE` | 413 | Uploaded file exceeds size limit |
+| `VALIDATION_ERROR` | 422 | Manuscript structure validation failed |
+| `RATE_LIMITED` | 429 | Rate limit quota exceeded |
+| `INTERNAL_SERVER_ERROR` | 500 | Unhandled server error |
+| `SERVICE_UNAVAILABLE` | 503 | Dependent downstream service (e.g. LLM provider) unavailable |

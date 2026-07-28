@@ -5,38 +5,38 @@ vi.mock('next/navigation', () => ({
     useRouter: vi.fn(() => ({ push: vi.fn() })),
 }));
 
-vi.mock('@/src/context/AuthContext', () => ({
+vi.mock('@/context/AuthContext', () => ({
     useAuth: vi.fn(() => ({ isLoggedIn: true, user: { plan_tier: 'free' } })),
 }));
 
-vi.mock('@/src/context/DocumentContext', () => ({
+vi.mock('@/context/DocumentContext', () => ({
     useDocument: vi.fn(() => ({ job: null, setJob: vi.fn() })),
 }));
 
-vi.mock('@/src/constants/status', () => ({
+vi.mock('@/constants/status', () => ({
     isCompleted: vi.fn(() => false),
     isFailed: vi.fn(() => false),
     isProcessing: vi.fn(() => false),
 }));
 
-vi.mock('@/src/services/api', () => ({
+vi.mock('@/services/api', () => ({
     CHUNK_UPLOAD_THRESHOLD_BYTES: 10485760,
     uploadChunked: vi.fn(() => Promise.resolve({ job_id: '123' })),
     uploadDocumentWithProgress: vi.fn(() => Promise.resolve({ job_id: '456' })),
     useDocumentStatus: vi.fn(() => ({ data: null, isLoading: false })),
 }));
 
-vi.mock('@/src/lib/planTier', () => ({
+vi.mock('@/lib/planTier', () => ({
     getRemainingQuota: vi.fn(() => ({ remaining: Infinity })),
 }));
 
-vi.mock('@/src/lib/schemas', () => ({
+vi.mock('@/lib/schemas', () => ({
     UploadStartSchema: {
         safeParse: vi.fn(() => ({ success: true, data: {} })),
     },
 }));
 
-vi.mock('@/src/lib/analytics', () => ({
+vi.mock('@/lib/analytics', () => ({
     trackEvent: vi.fn(),
 }));
 

@@ -21,7 +21,6 @@ from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 
 from app.services.document_crud_service import DocumentCrudService
-from app.services.document_pipeline_service import DocumentPipelineService
 from app.services.document_share_service import DocumentShareService
 
 logger = logging.getLogger(__name__)
@@ -35,11 +34,15 @@ class DocumentService:
     def __init__(
         self,
         crud: Optional[DocumentCrudService] = None,
-        pipeline: Optional[DocumentPipelineService] = None,
+        pipeline: Optional[Any] = None,
         share: Optional[DocumentShareService] = None,
     ) -> None:
         self._crud = crud or DocumentCrudService()
-        self._pipeline = pipeline or DocumentPipelineService(crud=self._crud)
+        if pipeline is None:
+            from app.services.document_pipeline_service import DocumentPipelineService
+            self._pipeline = DocumentPipelineService(crud=self._crud)
+        else:
+            self._pipeline = pipeline
         self._share = share or DocumentShareService()
 
     @classmethod

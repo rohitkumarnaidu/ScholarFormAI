@@ -17,16 +17,16 @@ vi.mock('next/navigation', () => ({
     useSearchParams: () => new URLSearchParams(),
 }));
 
-vi.mock('@/src/lib/supabaseClient', () => ({ supabase: null }));
-vi.mock('@/src/context/AuthContext', () => ({
+vi.mock('@/lib/supabaseClient', () => ({ supabase: null }));
+vi.mock('@/context/AuthContext', () => ({
     useAuth: () => ({ user: null, isLoggedIn: false, loading: false }),
 }));
 
-vi.mock('@/src/components/layout/header/ThemeToggle', () => ({
+vi.mock('@/components/layout/header/ThemeToggle', () => ({
     default: () => <div data-testid="theme-toggle">Theme</div>,
 }));
 
-vi.mock('@/src/components/NotificationBell', () => ({
+vi.mock('@/components/NotificationBell', () => ({
     default: () => <div data-testid="notification-bell">Bell</div>,
 }));
 
@@ -65,7 +65,7 @@ function setViewport(width) {
     });
 }
 
-import Header from '@/src/components/layout/Header';
+import Header from '@/components/layout/Header';
 
 // ===================================================================
 // 2A — Mobile Viewport Tests (< 768px)
@@ -218,7 +218,7 @@ describe('2B — Tablet Viewport', () => {
 // ===================================================================
 // 2C — Desktop Viewport Tests (>= 1024px)
 // ===================================================================
-import Sidebar from '@/src/components/layout/Sidebar';
+import Sidebar from '@/components/layout/Sidebar';
 
 describe('2C — Desktop Viewport', () => {
     beforeEach(() => {

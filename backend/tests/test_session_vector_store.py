@@ -1,6 +1,7 @@
 import pytest
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import MagicMock, patch, AsyncMock, PropertyMock
 import numpy as np
+from app.cache.redis_cache import redis_cache, RedisCache
 
 
 class TestDeterministicEmbeddingModel:
@@ -198,3 +199,87 @@ class TestSessionVectorStore:
                 store._schedule_ttl_delete("s1", 60)
             mock_timer.assert_called_once()
             mock_timer.return_value.start.assert_called_once()
+
+    def test_persist_redis_ttl_success(self, store):
+        mock_redis = MagicMock()
+        with patch.object(redis_cache, "_client", mock_redis), patch.object(redis_cache, "_initialized", True):
+            store._persist_redis_ttl("s1", 3600)
+            mock_redis.setex.assert_called_with("vector_session:s1:ttl", 3600, "active")
+
+    def test_persist_redis_ttl_with_hyphen(self, store):
+        mock_redis = MagicMock()
+        with patch.object(redis_cache, "_client", mock_redis), patch.object(redis_cache, "_initialized", True):
+            store._persist_redis_ttl("session-123", 3600)
+            assert mock_redis.setex.call_count == 2
+            mock_redis.setex.assert_any_call("vector_session:session-123:ttl", 3600, "active")
+            mock_redis.setex.assert_any_call("vector_session:session_123:ttl", 3600, "active")
+
+    def test_persist_redis_ttl_exception_handled(self, store):
+        with patch("app.cache.redis_cache.RedisCache.client", new_callable=PropertyMock, side_effect=Exception("Redis error")):
+            store._persist_redis_ttl("s1", 3600)
+
+    def test_delete_collection_cleans_redis_key(self, store):
+        mock_client = MagicMock()
+        store._client = mock_client
+        mock_redis = MagicMock()
+        with patch.object(redis_cache, "_client", mock_redis), patch.object(redis_cache, "_initialized", True):
+            store.delete_collection("s1")
+            mock_redis.delete.assert_called_with("vector_session:s1:ttl")
+
+
+class TestPurgeExpiredVectorSessionsTask:
+    def test_purge_redis_unavailable(self):
+        with patch.object(redis_cache, "_client", None), patch.object(redis_cache, "_initialized", True):
+            from app.tasks.celery_tasks import purge_expired_vector_sessions
+
+            res = purge_expired_vector_sessions()
+            assert res["status"] == "redis_unavailable"
+            assert res["purged_collections"] == 0
+
+    def test_purge_chromadb_unavailable(self):
+        mock_redis = MagicMock()
+        with patch.object(redis_cache, "_client", mock_redis), patch.object(redis_cache, "_initialized", True):
+            with patch("app.services.session_vector_store.SessionVectorStore._load_chroma", return_value=None):
+                from app.tasks.celery_tasks import purge_expired_vector_sessions
+
+                res = purge_expired_vector_sessions()
+                assert res["status"] == "chromadb_unavailable"
+
+    def test_purge_active_session_not_purged(self):
+        mock_redis = MagicMock()
+        mock_redis.exists.return_value = True
+        mock_col = MagicMock()
+        mock_col.name = "session_s1"
+        mock_chroma_client = MagicMock()
+        mock_chroma_client.list_collections.return_value = [mock_col]
+
+        with patch.object(redis_cache, "_client", mock_redis), patch.object(redis_cache, "_initialized", True):
+            with patch("app.services.session_vector_store.SessionVectorStore._load_chroma", return_value=MagicMock()):
+                with patch("app.services.session_vector_store.SessionVectorStore._get_client", return_value=mock_chroma_client):
+                    with patch("app.services.session_vector_store.SessionVectorStore.delete_collection") as mock_del:
+                        from app.tasks.celery_tasks import purge_expired_vector_sessions
+
+                        res = purge_expired_vector_sessions()
+                        assert res["status"] == "success"
+                        assert res["purged_collections"] == 0
+                        mock_del.assert_not_called()
+
+    def test_purge_expired_session_purged(self):
+        mock_redis = MagicMock()
+        mock_redis.exists.return_value = False
+        mock_col = MagicMock()
+        mock_col.name = "session_s1"
+        mock_chroma_client = MagicMock()
+        mock_chroma_client.list_collections.return_value = [mock_col]
+
+        with patch.object(redis_cache, "_client", mock_redis), patch.object(redis_cache, "_initialized", True):
+            with patch("app.services.session_vector_store.SessionVectorStore._load_chroma", return_value=MagicMock()):
+                with patch("app.services.session_vector_store.SessionVectorStore._get_client", return_value=mock_chroma_client):
+                    with patch("app.services.session_vector_store.SessionVectorStore.delete_collection") as mock_del:
+                        from app.tasks.celery_tasks import purge_expired_vector_sessions
+
+                        res = purge_expired_vector_sessions()
+                        assert res["status"] == "success"
+                        assert res["purged_collections"] == 1
+                        mock_del.assert_called_once_with("s1")
+

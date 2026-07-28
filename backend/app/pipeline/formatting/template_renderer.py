@@ -74,8 +74,8 @@ class TemplateRenderer:
         if not document:
             raise ValueError("document must not be None")
         template_name = (template_name or "ieee").strip() or "ieee"
+        template_path, is_temp = self._resolve_template_path_with_flag(template_name)
         try:
-            template_path = self._resolve_template_path(template_name)
             context = self.build_context(document)
             tpl = DocxTemplate(str(template_path))
             tpl.render(context)
@@ -83,6 +83,12 @@ class TemplateRenderer:
         except Exception as exc:
             logger.error("Failed to render template '%s': %s", template_name, exc)
             raise
+        finally:
+            if is_temp and template_path and template_path.exists():
+                try:
+                    template_path.unlink(missing_ok=True)
+                except Exception:
+                    pass
 
     def has_renderable_template(self, template_name: str) -> bool:
         """Return True when the template directory contains a docxtpl-capable source."""
@@ -165,24 +171,30 @@ class TemplateRenderer:
             raise
 
     def _resolve_template_path(self, template_name: str) -> Path:
+        path, _ = self._resolve_template_path_with_flag(template_name)
+        return path
+
+    def _resolve_template_path_with_flag(self, template_name: str) -> tuple[Path, bool]:
         style = (template_name or "ieee").lower()
         template_dir = self.templates_dir / style
         jinja_source = template_dir / "template.jinja2"
         if jinja_source.is_file():
             try:
-                return self._build_template_from_jinja_source(jinja_source)
+                temp_path = self._build_template_from_jinja_source(jinja_source)
+                return temp_path, True
             except Exception:
                 logger.warning("Failed to build template from jinja source, falling back.")
 
         candidate = template_dir / "template.docx"
         if candidate.is_file():
             if self._has_template_markers(candidate):
-                return candidate
+                return candidate, False
             logger.warning(
                 "Template '%s' has no Jinja markers. Using generated fallback template.",
                 candidate,
             )
-        return self._build_fallback_template()
+        fallback_path = self._build_fallback_template()
+        return fallback_path, True
 
     def _build_template_from_jinja_source(self, source_path: Path) -> Path:
         """Wrap a plain-text Jinja2 template source in a minimal DOCX container."""

@@ -87,8 +87,8 @@ flowchart TB
 
     subgraph BACKEND["BACKEND (FastAPI + Uvicorn)"]
         direction TB
-        B1["25 Services"]
-        B2["15 Route Modules"]
+        B1["48 Services"]
+        B2["16 Route Modules"]
         B3["26 Pipeline Packages"]
         B4["Agents | Classification<br/>Equations | Export<br/>Formatting | Figures<br/>Integrity | NLP | OCR<br/>Parsing | References<br/>Safety | Structure Detection<br/>Synthesis | Tables | Validation"]
     end
@@ -244,26 +244,26 @@ See [`docs/Testing.md`](docs/Testing.md) for the complete test strategy.
 │   ├── app/
 │   │   ├── main.py               # FastAPI application entry point
 │   │   ├── config/               # Pydantic settings, logging configuration
-│   │   ├── db/                   # SQLAlchemy models, Supabase client
+│   │   ├── db/                   # Repositories, models, Supabase client
 │   │   ├── middleware/           # Rate limiting, CSRF, RBAC, security headers
 │   │   ├── pipeline/            # 26 pipeline packages (agents, formatting, export, etc.)
-│   │   ├── routers/             # 15 route modules under /api/v1/
-│   │   ├── schemas/             # Pydantic request/response schemas
+│   │   ├── routers/             # 16 route modules under /api/v1/
+│   │   ├── schemas/             # Pydantic request/response schemas & api_envelope
 │   │   ├── security/            # JWKS JWT verification
-│   │   ├── services/            # 25 business logic services
+│   │   ├── services/            # 48 business logic services
 │   │   ├── tasks/               # Celery background task definitions
 │   │   └── utils/               # Shared utilities
 │   ├── tests/                   # 95+ test files (unit, integration, contract)
 │   └── requirements.txt         # Python dependencies
 │
 ├── frontend/
-│   ├── app/                     # Next.js App Router — 36 pages
+│   ├── app/                     # Next.js 16 App Router — pages & route groups
 │   ├── src/
-│   │   ├── components/          # 28+ React components
-│   │   ├── context/             # Auth, theme, toast, etc.
+│   │   ├── components/          # Shared React UI components
+│   │   ├── context/             # Auth, theme, toast context providers
 │   │   ├── hooks/               # Custom React hooks
-│   │   ├── lib/                 # Supabase client, analytics, schemas
-│   │   └── services/            # API service modules
+│   │   ├── lib/                 # Supabase client, constants, helpers
+│   │   └── services/            # API client service wrappers
 │   └── e2e/                     # Playwright E2E tests
 │
 ├── deploy/services/             # GROBID and DOCX Converter Docker services
