@@ -17,6 +17,34 @@ ScholarForm AI employs a comprehensive test harness spanning backend Python serv
 
 ---
 
+## Enterprise Testing Pyramid
+
+```mermaid
+flowchart TD
+    subgraph E2E ["E2E Integration Layer"]
+        PW["Playwright 1.58.2\n(Full User Workflow & Browser E2E)"]
+    end
+
+    subgraph Integration ["Integration & Contract Layer"]
+        BEInt["pytest -m integration\n(Redis / DB / OCR API Integration)"]
+        CLIInt["pytest cli/tests\n(AMF CLI Workflow Verification)"]
+    end
+
+    subgraph Unit ["Unit & Component Testing Layer"]
+        BEUnit["pytest -m 'not integration'\n(48 Service Modules & Routers)"]
+        FEUnit["Vitest 4.1.8\n(React 19 Components & Hooks)"]
+    end
+
+    E2E --> Integration
+    Integration --> Unit
+
+    style E2E fill:#1a3a5c,color:#fff
+    style Integration fill:#1a4a3c,color:#fff
+    style Unit fill:#4a2a5c,color:#fff
+```
+
+---
+
 ## 1. Backend Testing (`pytest`)
 
 ### Prerequisites
