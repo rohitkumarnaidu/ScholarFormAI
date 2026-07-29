@@ -151,7 +151,9 @@ Engine->>Native : iterate kb entries with matching publisher
 Engine->>Engine : compute cosine similarity
 Engine-->>Client : ranked [text,...]
 end
+end
 ```
+
 
 **Diagram sources**
 - [rag_engine.py:444-469](file://backend/app/pipeline/intelligence/rag_engine.py#L444-L469)

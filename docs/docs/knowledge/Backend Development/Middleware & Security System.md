@@ -313,7 +313,7 @@ Mechanics:
 
 ```mermaid
 flowchart TD
-Start(["record_*"]) --> Bucket["Compute bucket key (time/window)"]
+Start(["record_*"]) --> Bucket["Compute bucket key(time/window)"]
 Bucket --> TryRedis{"Redis available?"}
 TryRedis --> |Yes| Incr["INCR + EXPIRE if first"]
 TryRedis --> |No| Mem["In-memory eviction + append"]

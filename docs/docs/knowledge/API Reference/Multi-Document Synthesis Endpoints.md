@@ -127,7 +127,7 @@ S->>V : create_collection/add_chunks()
 S->>S : _cross_doc_analysis()
 S->>S : _generate_outline()
 S->>S : _generate_sections()
-S->>CR : validate_citation() per [REF : ...]
+S->>CR : validate_citation() per["REF : ..."]
 S->>CS : format_references()
 S->>F : process(PipelineDocument)
 F->>E : process(DOCX)

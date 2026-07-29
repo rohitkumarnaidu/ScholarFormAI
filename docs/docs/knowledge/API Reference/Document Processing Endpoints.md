@@ -113,7 +113,7 @@ participant D as "Documents Router"
 participant DS as "DocumentService"
 participant P as "PipelineOrchestrator"
 participant DB as "Supabase"
-C->>D : POST /api/v1/documents/upload (multipart/form-data)
+C->>D : POST /api/v1/documents/upload("multipart/form-data")
 D->>D : Validate extension/magic bytes/size
 D->>DS : create_document(...)
 DS->>DB : Insert document record

@@ -643,7 +643,7 @@ sequenceDiagram
     participant Envelope as Envelope Builder
     participant Logger
 
-    Client->>MW: HTTP Request (malformed / unauthorized / etc.)
+    Client->>MW: HTTP Request("malformed / unauthorized / etc.")
     MW->>MW: RateLimit check / Auth check / Body size check
 
     alt Rate limit exceeded (429)

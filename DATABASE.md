@@ -1,95 +1,21 @@
-# Database Guide
+# Database Documentation & Schema Specification
 
-## Current Status
+> **NOTICE**: ScholarForm AI database documentation has been consolidated into [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md).
 
-AMF v1.0 is **stateless** — no database is required. Manuscripts are processed in memory and formatted documents are stored temporarily as files on disk.
+---
 
-## Future Database Integration
+## Persistent Database Architecture
 
-### Planned Architecture (v2.0+)
+ScholarForm AI uses a multi-store persistence architecture:
 
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│  PostgreSQL │     │    Redis    │     |  Object Store│
-│  (Primary)  │     │  (Cache)    │     |  (S3/Swift)  │
-└─────────────┘     └─────────────┘     └─────────────┘
-       │                   │                   │
-       └───────────────────┼───────────────────┘
-                           │
-                    ┌──────▼──────┐
-                    │  AMF API    │
-                    └─────────────┘
-```
+1. **Supabase PostgreSQL (v15+)**: Primary relational database containing 16 operational tables (`profiles`, `documents`, `document_results`, `document_versions`, `processing_status`, `suggestions`, `user_api_keys`, `api_key_usage_log`, `custom_providers`, `generator_sessions`, `generator_messages`, `generator_documents`, `audit_log`, `webhook_subscriptions`, `webhook_delivery_logs`, `document_shares`).
+2. **Redis 7.x**: High-performance cache layer for GROBID extractions (1h TTL), LLM completions (24h TTL), rate limiting, and Celery task queuing.
+3. **ChromaDB**: Persistent local vector store for publisher style guidelines (`bge-m3` model) and per-session RAG context.
 
-### PostgreSQL Schema (Planned)
+For the complete Entity-Relationship Diagram (ERD), full 16-table schema references, index specifications, and Row Level Security (RLS) policies, please refer directly to:
 
-```sql
--- Users
-CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    email VARCHAR(255) UNIQUE NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
+👉 **[DATABASE_SCHEMA.md](DATABASE_SCHEMA.md)**
 
--- Projects
-CREATE TABLE projects (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id),
-    title VARCHAR(500) NOT NULL,
-    style_id VARCHAR(50) NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-);
+---
 
--- Manuscript Versions
-CREATE TABLE versions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
-    content JSONB NOT NULL,
-    formatted_path TEXT,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- API Keys
-CREATE TABLE api_keys (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id),
-    key_hash VARCHAR(64) NOT NULL,
-    name VARCHAR(100),
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    expires_at TIMESTAMPTZ
-);
-```
-
-### Redis Caching (Planned)
-
-```python
-# Cache formatted documents
-cache.set(f"format:{hash}", docx_bytes, ex=3600)
-
-# Cache style definitions
-cache.set(f"style:{style_id}", style_json, ex=86400)
-
-# Rate limiting
-cache.incr(f"ratelimit:{ip}:{endpoint}")
-```
-
-## Migration Path
-
-v1.0 → v2.0 migration:
-
-1. Set up PostgreSQL
-2. Set up Redis
-3. Run migrations
-4. Enable features incrementally
-5. Keep backward compatibility with stateless mode
-
-## Connection Configuration
-
-```bash
-# PostgreSQL
-AMF_DATABASE_URL=postgresql://user:pass@localhost:5432/amf
-
-# Redis
-AMF_REDIS_URL=redis://localhost:6379/0
-```
+*Last updated: July 2026*

@@ -48,8 +48,8 @@ subgraph "Streaming"
 SSE["RedisPubSub<br/>realtime/pubsub.py"]
 Callback["StreamingAgentCallback<br/>streaming_callback.py"]
 end
-subgraph "Auth & Limits"
-Auth["get_current_user<br/>dependencies.py"]
+subgraph AuthLimits ["Auth & Limits"]
+AuthGuard["get_current_user<br/>dependencies.py"]
 RL["RateLimitMiddleware<br/>rate_limit_middleware.py"]
 SecHdr["SecurityHeadersMiddleware<br/>security_headers_middleware.py"]
 end
@@ -57,9 +57,10 @@ V1Gen --> SessionSvc
 V1Gen --> Abuse
 V1Gen --> SSE
 Stream --> SSE
-V1Gen --> Auth
+V1Gen --> AuthGuard
 V1Gen --> RL
 V1Gen --> SecHdr
+
 ```
 
 **Diagram sources**

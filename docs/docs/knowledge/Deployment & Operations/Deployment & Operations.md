@@ -176,7 +176,7 @@ participant Render as "Render API"
 participant Prod as "Production Backend"
 participant Vercel as "Vercel"
 Dev->>GH : Push commit to main
-GH->>GH : Run backend-ci.yml (lint/test)
+GH->>GH : Run backend-ci.yml("lint/test")
 GH->>Render : POST /v1/services/{id}/deploys
 Render-->>GH : 200/201 Accepted
 GH->>Prod : GET /api/v1/health/

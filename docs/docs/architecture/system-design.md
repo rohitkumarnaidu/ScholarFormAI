@@ -1,15 +1,5 @@
 # ScholarForm AI — System Design & Subsystem Architecture
 
-## Table of Contents
-
-- [Architectural Principles](#architectural-principles)
-- [API Design & Standardized Response Envelopes](#api-design--standardized-response-envelopes)
-- [Generator & 4-Tier RAG LLM Fallback](#generator--4-tier-rag-llm-fallback)
-- [Citation Assembly & CSL Engine Architecture](#citation-assembly--csl-engine-architecture)
-- [Real-Time HTML/CSS Preview Renderer](#real-time-htmlcss-preview-renderer)
-- [Security Model & Observability](#security-model--observability)
-- [Related Documentation](#related-documentation)
-
 ## Architectural Principles
 
 ScholarForm AI is designed around four core software design principles to ensure scalability, maintainability, and enterprise reliability:
@@ -169,109 +159,21 @@ For each extracted citation key or DOI:
 
 ## Real-Time HTML/CSS Preview Renderer
 
-The `PreviewRenderer` service (`preview_renderer.py`) generates real-time HTML/CSS previews of formatted manuscripts for the frontend TipTap editor workspace.
-
-```mermaid
-flowchart LR
-    Input(["Raw Manuscript Text Blocks"])
-
-    subgraph Classify ["Block Classification"]
-        BC["Classify: Title · H1-H4 · Abstract· Paragraph · Caption · List"]
-    end
-
-    subgraph Cache ["Two-Tier Cache"]
-        direction TB
-        RedisHTML["Redis Cache\npreview:html:<sha256>\nTTL: 60s"]
-        RedisCSS["Redis Cache\npreview:css:<template_name>\nTTL: 3600s"]
-        MemCache["In-Memory TTL Dict\n(fallback when Redis unavailable)"]
-    end
-
-    subgraph Render ["Template-Specific Rendering"]
-        CSSInject["Inject Publisher CSS\n(IEEE two-column · Springer fonts · etc.)"]
-        HTMLBuild["Build Sanitized HTML String"]
-        XSSClean["DOMPurify / bleach sanitization\n(XSS prevention)"]
-    end
-
-    Output(["Sanitized HTML Preview → TipTap Editor"])
-
-    Input --> BC
-    BC --> CSSInject
-    CSSInject --> RedisCSS
-    RedisCSS --> HTMLBuild
-    HTMLBuild --> XSSClean
-    XSSClean --> RedisHTML
-    XSSClean --> MemCache
-    RedisHTML --> Output
-    MemCache --> Output
-```
-
-**Two-Tier Preview Caching:**
-- HTML preview outputs are cached in Redis under `preview:html:<sha256>` (60s TTL)
-- Template CSS styles are pre-compiled and cached under `preview:css:<template_name>` (3600s TTL)
-- When Redis is unavailable, an in-memory TTL dictionary serves as fallback
-
+The `PreviewRenderer` service (`preview_renderer.py`) generates real-time HTML/CSS previews of formatted manuscripts for the frontend TipTap editor workspace:
+- **Block Classification**: Classifies raw text lines into Title, Headings (H1-H4), Abstract, Paragraphs, Captions, and Lists.
+- **Template CSS Injection**: Injects publisher-specific preview stylesheets (e.g., IEEE two-column styles, Springer font specifications) stored in `app/templates/<template_name>/preview.css`.
+- **Two-Tier Preview Caching**: HTML preview outputs are cached in Redis under `preview:html:<sha256>` (60s TTL) with fallback to an in-memory TTL dictionary. Template CSS styles are pre-compiled and cached under `preview:css:<template_name>` (3600s TTL).
 
 ---
 
 ## Security Model & Observability
 
 ### Security Infrastructure
-
-> [!IMPORTANT]
-> All LLM API keys provided by users are encrypted at rest using Fernet symmetric encryption and are **never** logged, cached in plaintext, or exposed via API responses.
-
 - **Encryption at Rest**: User-provided LLM keys and custom provider credentials are encrypted using Fernet symmetric encryption (`encryption_service.py`).
 - **Input Sanitization**: Previews rendered in the frontend pass through HTML sanitization to prevent Cross-Site Scripting (XSS).
 - **Audit Logging**: Sensitive operations (document deletions, user role updates, API key creation) write structured audit events to `audit_log` via `audit_log_service.py`.
 
 ### Observability & Prometheus Metrics
-
-```mermaid
-flowchart LR
-    subgraph App ["FastAPI Application"]
-        Req["Incoming Requests"]
-        Instr["prometheus_fastapi_instrumentator\n(auto-instrumented middleware)"]
-        CustomM["Custom Metrics\n(pipeline stage durations, LLM latency, upload ACK time)"]
-    end
-
-    subgraph Exporters ["Metrics Export"]
-        MetricsEP["/metrics endpoint\n(Prometheus scrape target)"]
-    end
-
-    subgraph Backends ["Observability Backends"]
-        Prom["Prometheus\n(time-series storage)"]
-        Grafana["Grafana\n(dashboards & alerting)"]
-        Sentry["Sentry\n(exception tracking & error alerts)"]
-    end
-
-    Req --> Instr
-    Instr --> CustomM
-    CustomM --> MetricsEP
-    MetricsEP -->|"scrape every 15s"| Prom
-    Prom --> Grafana
-    Instr -->|"uncaught exceptions"| Sentry
-```
-
-**Key Metrics Tracked:**
-
-| Metric | Description |
-|--------|-------------|
-| `http_requests_total` | Request count by method, path, status code |
-| `http_request_duration_seconds` | Request latency histogram by route |
-| `pipeline_stage_duration_seconds` | Per-stage processing time (stages 1-12) |
-| `llm_request_duration_seconds` | LLM model response latency by provider |
-| `upload_ack_duration_seconds` | Time from upload receipt to 202 response |
-| `celery_task_runtime_seconds` | Celery background task execution time |
-
-
----
-
-## Related Documentation
-
-- [ARCHITECTURE.md](ARCHITECTURE.md) — System topology and security boundaries.
-- [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md) — Relational schema definitions and RLS policies.
-- [PIPELINE.md](PIPELINE.md) — 12-stage document ingestion sequence diagram.
-
----
-
-*Last updated: July 2026*
+- **Prometheus Metrics**: Exposed at `/metrics` via `prometheus_fastapi_instrumentator`.
+- **Key Metrics Tracked**: Request count and latency by persona (`formatter`, `authoring`, `synthesis`), pipeline stage duration, upload ACK response time, and LLM model response latency.
+- **Sentry Integration**: Active error logging via `sentry-sdk` for uncaught application exceptions.

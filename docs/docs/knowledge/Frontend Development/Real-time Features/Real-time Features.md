@@ -306,7 +306,7 @@ flowchart TD
 A["Input content + template"] --> B["Normalize template"]
 B --> C{"Template exists?"}
 C --> |No| D["Fallback to default + warn"]
-C --> |Yes| E["Load CSS (cache/redis/memory)"]
+C --> |Yes| E["Load CSS(cache/redis/memory)"]
 D --> E
 E --> F["Split blocks"]
 F --> G["Classify blocks"]

@@ -70,7 +70,7 @@ graph TB
         CI_SECURITY["security.yml<br/>Dependency scan + secret detection"]
         CD_PRODUCTION["deploy-production.yml<br/>verify-ci-gates → pre-deploy-health → deploy-production<br/>→ wait-health → post-deploy-verify → deploy-frontend"]
         CD_STAGING["deploy-staging.yml<br/>test → deploy (push to develop)"]
-        KEEPALIVE["Keepalive (cron: */14 * * * *)<br/>Pings Render + all 6 HF service pairs"]
+        KEEPALIVE["Keepalive(cron: */14 * * * *)<br/>Pings Render + all 6 HF service pairs"]
     end
 
     subgraph MONITORING["Monitoring Stack"]

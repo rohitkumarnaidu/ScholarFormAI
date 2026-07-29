@@ -333,7 +333,7 @@ CSS --> Overrides["Component overrides for dark/light"]
 
 ```mermaid
 graph TB
-TS["tsconfig.json"] --> Aliases["Path aliases (@/*)"]
+TS["tsconfig.json"] --> Aliases["Path aliases(@/*)"]
 TS --> JSX["React JSX transform"]
 ESLINT[".eslintrc.cjs"] --> Base["eslint:recommended"]
 ESLINT --> React["plugin:react/recommended"]

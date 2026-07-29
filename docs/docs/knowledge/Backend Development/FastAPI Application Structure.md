@@ -351,7 +351,7 @@ Router-->>Client : Response
 
 ```mermaid
 graph TB
-V1["v1_router (/api/v1)"] --> H["health"]
+V1["v1_router(/api/v1)"] --> H["health"]
 V1 --> D["documents"]
 V1 --> T["templates"]
 V1 --> G["generator"]

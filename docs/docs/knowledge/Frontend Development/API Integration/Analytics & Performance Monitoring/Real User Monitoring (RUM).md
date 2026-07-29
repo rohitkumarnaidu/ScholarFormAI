@@ -126,9 +126,12 @@ APIM-->>Browser : "Prometheus metrics payload"
 ### Frontend RUM and Analytics
 - RUM module: Provides stubbed functions for initialization and event tracking, intended for future expansion.
 - Analytics wrapper: Non-blocking event tracking interface.
-Capture --> End(["Complete"])
+```mermaid
+flowchart TD
+Capture --> End["Complete"]
 Flush --> End
 ```
+
 
 **Section sources**
 - [rum.js:1-27](file://frontend/src/lib/rum.js#L1-L27)

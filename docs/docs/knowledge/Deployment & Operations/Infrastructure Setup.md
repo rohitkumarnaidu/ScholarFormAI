@@ -135,7 +135,7 @@ DC->>API : Launch service
 DC->>Redis : Launch service
 DC->>Grobid : Launch service
 DC->>Clam : Launch service
-API->>Redis : Connect (broker/result)
+API->>Redis : Connect("broker/result")
 API->>Grobid : Fetch metadata
 API->>Clam : Scan uploads
 Dev-->>API : Send requests

@@ -170,7 +170,7 @@ flowchart TD
 Start(["verify_jwt(token)"]) --> CheckAlg["Check alg in header"]
 CheckAlg --> IsHS{"alg starts with HS?"}
 IsHS --> |Yes| DecodeSecret["Decode with SECRET (HS)"]
-IsHS --> |No| DecodeJWKS["Decode with JWKS (RS/EC/OKP)"]
+IsHS --> |No| DecodeJWKS["Decode with JWKS(RS/EC/OKP)"]
 DecodeJWKS --> KidFound{"kid present?"}
 KidFound --> |No| RetryFetch["Retry JWKS fetch"]
 KidFound --> |Yes| PubKey["Load JWK by kid"]

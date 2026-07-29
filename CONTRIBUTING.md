@@ -30,14 +30,14 @@ This project and everyone participating in it is governed by the [Code of Conduc
 
 ### Documentation Contributions
 
-1. All `.md` files must start with YAML frontmatter (see [Style Guide](docs/.docs-style-guide.md)).
+1. All `.md` files must start with YAML frontmatter (see [Style Guide](STYLE_GUIDE.md)).
 2. Keep `last_updated` current — set to the month of your change.
 3. Add `sidebar_position` based on the category ordering scheme.
 4. Every new page must be added to `docs/README.md` index.
 5. Code examples must be tested — if you add a curl command, verify it works against a running instance.
 6. Use Mermaid diagrams for architecture and flow documentation (not ASCII art or screenshots of code).
 7. **Broken links cause CI failure** — run the freshness check locally before pushing.
-8. See the full [Documentation Style Guide](docs/.docs-style-guide.md) for formatting conventions.
+8. See the full [Documentation Style Guide](STYLE_GUIDE.md) for formatting conventions.
 
 ### Developer Certificate of Origin
 

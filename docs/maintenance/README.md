@@ -21,11 +21,11 @@ This handbook covers the operational procedures for maintaining ScholarForm AI i
 
 ```mermaid
 graph LR
-    A[feature/*] --> B[develop]
+    A["feature/*"] --> B[develop]
     B --> C[staging]
     C --> D[main]
-    E[hotfix/*] --> D
-    D --> F[release/*]
+    E["hotfix/*"] --> D
+    D --> F["release/*"]
     F --> D
 ```
 

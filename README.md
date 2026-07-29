@@ -77,7 +77,7 @@ flowchart TB
         A5["Admin"]
     end
 
-    subgraph GATEWAY["API GATEWAY  FastAPI"]
+    subgraph GATEWAY["API GATEWAY — FastAPI"]
         G1["JWKS JWT Verify"]
         G2["Rate Limit"]
         G3["CORS"]
@@ -90,7 +90,7 @@ flowchart TB
         B1["48 Services"]
         B2["16 Route Modules"]
         B3["26 Pipeline Packages"]
-        B4["Agents | Classification<br/>Equations | Export<br/>Formatting | Figures<br/>Integrity | NLP | OCR<br/>Parsing | References<br/>Safety | Structure Detection<br/>Synthesis | Tables | Validation"]
+        B4["Agents - Classification<br/>Equations - Export<br/>Formatting - Figures<br/>Integrity - NLP - OCR<br/>Parsing - References<br/>Safety - Structure Detection<br/>Synthesis - Tables - Validation"]
     end
 
     subgraph INFRA["INFRASTRUCTURE"]
@@ -105,11 +105,13 @@ flowchart TB
         D3["Redis Cache"]
     end
 
-    BROWSER <--> GATEWAY
-    GATEWAY <--> BACKEND
-    BACKEND <--> I1
-    BACKEND <--> I2
-    BACKEND <--> I3
+    A2 <--> G1
+    A4 <--> G1
+    G1 <--> B1
+    G2 <--> B2
+    B1 <--> I1
+    B1 <--> I2
+    B1 <--> I3
     I1 <--> D1
     I1 <--> D2
     I2 <--> D3
@@ -121,6 +123,49 @@ flowchart TB
 - **LLM Tier 3:** DeepSeek R1 via Ollama (local/offline)
 - **PDF Parsing:** Vision API → PyMuPDF+LLM enrichment → Raw PyMuPDF (3-tier fallback)
 - **Realtime:** Redis pub/sub → WebSocket / SSE
+
+---
+
+## Quick-Start Flow
+
+```mermaid
+flowchart LR
+    subgraph Setup["1 — Setup (5 min)"]
+        Clone["git clone"]
+        Env["Copy .env files"]
+        Clone --> Env
+    end
+
+    subgraph Backend["2 — Backend"]
+        Venv["python -m venv .venv"]
+        Pip["pip install -r requirements.txt"]
+        Uvicorn["uvicorn app.main:app\n--reload --port 8000"]
+        Venv --> Pip --> Uvicorn
+    end
+
+    subgraph Frontend["3 — Frontend"]
+        NpmI["npm install"]
+        NpmDev["npm run dev\n(port 3000)"]
+        NpmI --> NpmDev
+    end
+
+    subgraph Use["4 — Use"]
+        Upload["Upload manuscript\nPDF / DOCX / LaTeX"]
+        Select["Select template\nIEEE / APA / Springer..."]
+        Download["Download formatted DOCX"]
+        Upload --> Select --> Download
+    end
+
+    Setup --> Backend
+    Setup --> Frontend
+    Backend --> Use
+    Frontend --> Use
+
+    style Setup fill:#1a3a5c,color:#fff
+    style Backend fill:#1a4a3c,color:#fff
+    style Frontend fill:#4a2a5c,color:#fff
+    style Use fill:#1a5c1a,color:#fff
+```
 
 ---
 
@@ -284,6 +329,33 @@ See [`docs/Testing.md`](docs/Testing.md) for the complete test strategy.
 | **PDF Processing** | PyMuPDF, GROBID, DOCX Converter |
 | **Monitoring** | Prometheus, Grafana |
 | **Deployment** | Docker, Render |
+
+```mermaid
+graph LR
+    subgraph FE["Frontend Layer"]
+        NextJS["Next.js 16\nReact 19\nTailwind CSS 3"]
+    end
+    subgraph BE["Backend Layer"]
+        FastAPI["FastAPI\nPython 3.12\nCelery"]
+    end
+    subgraph AI["AI / ML Layer"]
+        NIM["NVIDIA NIM\nTier 1"]
+        Groq["Groq\nTier 2"]
+        Ollama["Ollama\nTier 4"]
+    end
+    subgraph DB["Data Layer"]
+        Supabase["Supabase\nPostgreSQL"]
+        Redis["Redis 7.x"]
+        Chroma["ChromaDB"]
+    end
+    NextJS --> FastAPI
+    FastAPI --> NIM
+    FastAPI --> Groq
+    FastAPI --> Ollama
+    FastAPI --> Supabase
+    FastAPI --> Redis
+    FastAPI --> Chroma
+```
 
 ---
 

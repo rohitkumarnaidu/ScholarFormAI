@@ -2,6 +2,17 @@
 
 > **ScholarForm AI** — Enterprise CI/CD pipeline built on 25 GitHub Actions workflows.
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Pipeline Architecture Diagram](#pipeline-architecture-diagram)
+- [Backend CI](#backend-ci-backend-ciyml)
+- [Frontend CI](#frontend-ci-frontend-ciyml)
+- [Deployment Workflows](#deployment-workflows)
+- [Security Workflows](#security-workflows)
+- [Release & Ops Workflows](#release--ops-workflows)
+- [Merge Strategy](#merge-strategy)
+
 ---
 
 ## Overview
@@ -15,6 +26,87 @@ ScholarForm AI uses **GitHub Actions** as its sole CI/CD orchestrator (no Jenkin
 | **Deployment** | `deploy-production.yml`, `deploy-staging.yml` | Render + Vercel deploy, health checks, auto-rollback |
 | **Security** | `codeql.yml`, `security.yml`, `scorecard.yml`, `dependency-review.yml`, `fuzzing.yml`, `cve-advisory.yml` | SAST, DAST, dependency scanning, fuzzing, supply-chain |
 | **Release & Ops** | `create-release.yml`, `docker-publish.yml`, `npm-publish.yml`, `python-publish.yml`, `sbom.yml`, `slsa-provenance.yml`, `merge-queue.yml`, `commitlint.yml`, `labeler.yml`, `release-drafter.yml`, `stale.yml`, `docs-freshness.yml`, `keepalive-free-tier.yml`, `e2e-production.yml`, `e2e-staging.yml` | Release orchestration, package publishing, housekeeping, monitoring |
+
+---
+
+## Pipeline Architecture Diagram
+
+The diagram below shows the full CI/CD pipeline flow from a pull request to production deployment.
+
+```mermaid
+flowchart TD
+    subgraph Trigger["Trigger Events"]
+        PR["Pull Request to main"]
+        Push["Push to main"]
+        Tag["Release Tag vX.Y.Z"]
+    end
+
+    subgraph BackendCI["backend-ci.yml (Fan-Out)"]
+        Lint["lint\nruff + mypy + bandit"]
+        Audit["audit\npip-audit + safety"]
+        Test["test\npytest fast suite"]
+        Coverage["coverage\n--cov-fail-under=70"]
+        MigCheck["migration-check\nalembic check"]
+        AIQuality["ai-quality\n18 AI test files"]
+        Mutation["mutation\nmutation testing"]
+        Security["security\nSSRF + OWASP + JWT"]
+        PipelineErr["pipeline-error-path\ndeep orchestrator tests"]
+        Perf["performance\nbenchmark baseline"]
+        Lint --> AIQuality
+        Lint --> Mutation
+        Lint --> Security
+        Lint --> PipelineErr
+        Lint --> Perf
+    end
+
+    subgraph FrontendCI["frontend-ci.yml"]
+        FLint["audit + lint\nnpm audit + eslint"]
+        FTest["vitest run"]
+        FBuild["next build"]
+        FPlaywright["Playwright E2E\n6 critical journeys"]
+        FLighthouse["Lighthouse CI\nPerformance audit"]
+        FLint --> FTest --> FBuild --> FPlaywright
+        FBuild --> FLighthouse
+    end
+
+    subgraph SecurityCI["security.yml + codeql.yml"]
+        CodeQL["CodeQL SAST"]
+        Scorecard["OpenSSF Scorecard"]
+        DepReview["Dependency Review"]
+        Fuzzing["OSS-Fuzz"]
+        CVEAdvisory["CVE Advisory Scanner"]
+    end
+
+    subgraph Deploy["deploy-production.yml"]
+        BuildImage["Build & Push Docker Image"]
+        DeployRender["Deploy to Render\n(FastAPI Backend)"]
+        DeployVercel["Deploy to Vercel\n(Next.js Frontend)"]
+        HealthCheck["Health Check\n/api/v1/health"]
+        E2EProd["E2E Production Smoke Test"]
+        Rollback["Auto-Rollback\n(on failure)"]
+        BuildImage --> DeployRender
+        BuildImage --> DeployVercel
+        DeployRender --> HealthCheck
+        DeployVercel --> HealthCheck
+        HealthCheck -- Fail --> Rollback
+        HealthCheck -- Pass --> E2EProd
+    end
+
+    PR --> BackendCI
+    PR --> FrontendCI
+    PR --> SecurityCI
+    Push --> Deploy
+    Tag --> Deploy
+
+    style Trigger fill:#1a3a5c,color:#fff
+    style BackendCI fill:#1a4a3c,color:#fff
+    style FrontendCI fill:#4a2a5c,color:#fff
+    style SecurityCI fill:#5c1a1a,color:#fff
+    style Deploy fill:#1a5c1a,color:#fff
+```
+
+> [!NOTE]
+> All CI jobs run on `ubuntu-latest`. Backend jobs use Python 3.12 with cached pip dependencies per-job. Frontend jobs use Node.js 20 LTS with cached npm.
 
 ---
 

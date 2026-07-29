@@ -83,20 +83,20 @@ The central component of the virus scanning system is the `VirusScanner` class, 
 ```mermaid
 classDiagram
 class VirusScanner {
-+scan(file_path : str) Dict[str, str | bool]
-+scan_file(file_path : str) Dict[str, str | bool]
-+_scan_via_socket(candidate : str, host : int) Dict[str, str | bool]
-+_parse_scan_result(raw_result : str) Dict[str, str | bool]
++scan("file_path : str") Dict["str, str | bool"]
++scan_file("file_path : str") Dict["str, str | bool"]
++_scan_via_socket("candidate : str, host : int") Dict["str, str | bool"]
++_parse_scan_result("raw_result : str") Dict["str, str | bool"]
 }
 class AsyncVirusScanner {
-+scan(file_path : str) Dict[str, str | bool]
++scan("file_path : str") Dict["str, str | bool"]
 }
 class Settings {
 +CLAMAV_HOST : str
 +CLAMAV_PORT : int
 }
 class MetricsManager {
-+record_clamav_scan_duration(duration : float)
++record_clamav_scan_duration("duration : float")
 }
 VirusScanner --> Settings : "uses"
 VirusScanner --> MetricsManager : "records metrics"

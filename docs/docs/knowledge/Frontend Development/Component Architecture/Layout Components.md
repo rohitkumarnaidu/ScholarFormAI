@@ -101,7 +101,7 @@ Providers->>Theme : ThemeProvider
 Providers->>Auth : AuthProvider
 Providers->>Shell : Render AppShell
 Shell->>Header : Render Header (sticky)
-Shell->>Sidebar : Render Sidebar (desktop/mobile)
+Shell->>Sidebar : Render Sidebar("desktop/mobile")
 Browser->>Guard : Navigate to protected route
 Guard->>Auth : Check isLoggedIn/requireAdmin
 Guard-->>Browser : Redirect or render children

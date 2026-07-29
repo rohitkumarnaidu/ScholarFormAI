@@ -129,9 +129,9 @@ Orchestrator->>Redis : emit event status_update
 Orchestrator->>Supabase : update status VALIDATION/PROCESSING
 Orchestrator->>Supabase : update status PERSISTENCE/PROCESSING
 Orchestrator->>Supabase : insert document_results
-Orchestrator->>Supabase : update documents status (COMPLETED/FAILED)
+Orchestrator->>Supabase : update documents status("COMPLETED/FAILED")
 Orchestrator->>Redis : emit event status_update
-Orchestrator-->>Client : final response (success/error)
+Orchestrator-->>Client : final response("success/error")
 ```
 
 **Diagram sources**
