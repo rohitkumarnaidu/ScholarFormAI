@@ -1,32 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48" width="240" height="48">
-  <defs>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&amp;display=swap');
-    </style>
-  </defs>
-  <!-- auto_stories icon replica (open book) -->
-  <g transform="translate(0, 6)">
-    <!-- Left page -->
-    <path d="M4 6 C4 4.9 4.9 4 6 4 L18 4 L18 32 L6 32 C4.9 32 4 31.1 4 30 Z" fill="#2563eb" opacity="0.9"/>
-    <!-- Right page -->
-    <path d="M20 4 L32 4 C33.1 4 34 4.9 34 6 L34 30 C34 31.1 33.1 32 32 32 L20 32 Z" fill="#1d4ed8"/>
-    <!-- Spine -->
-    <rect x="18" y="4" width="2" height="28" fill="#1e3a5f"/>
-    <!-- Left page lines -->
-    <rect x="7" y="10" width="8" height="1.5" rx="0.75" fill="white" opacity="0.8"/>
-    <rect x="7" y="14" width="6" height="1.5" rx="0.75" fill="white" opacity="0.6"/>
-    <rect x="7" y="18" width="8" height="1.5" rx="0.75" fill="white" opacity="0.8"/>
-    <rect x="7" y="22" width="5" height="1.5" rx="0.75" fill="white" opacity="0.6"/>
-    <!-- Right page lines -->
-    <rect x="21" y="10" width="8" height="1.5" rx="0.75" fill="white" opacity="0.8"/>
-    <rect x="21" y="14" width="6" height="1.5" rx="0.75" fill="white" opacity="0.6"/>
-    <rect x="21" y="18" width="8" height="1.5" rx="0.75" fill="white" opacity="0.8"/>
-    <rect x="21" y="22" width="5" height="1.5" rx="0.75" fill="white" opacity="0.6"/>
-    <!-- Bottom curve (open book feel) -->
-    <path d="M4 30 Q19 36 34 30" fill="none" stroke="#1e3a5f" stroke-width="1.5" stroke-linecap="round"/>
-  </g>
-  <!-- "ScholarForm" text -->
-  <text x="42" y="32" font-family="Inter, system-ui, sans-serif" font-weight="900" font-size="20" fill="#1e3a5f" letter-spacing="-0.5">ScholarForm</text>
-  <!-- "AI" in blue accent -->
-  <text x="190" y="32" font-family="Inter, system-ui, sans-serif" font-weight="900" font-size="20" fill="#2563eb" letter-spacing="-0.5"> AI</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="44" height="44">
+  <!-- Open book icon matching app's "auto_stories" Material Symbol -->
+  <!-- Left page -->
+  <path d="M6 8 C6 6.9 6.9 6 8 6 L20 6 L20 36 L8 36 C6.9 36 6 35.1 6 34 Z" fill="white" opacity="0.92"/>
+  <!-- Right page -->
+  <path d="M22 6 L34 6 C35.1 6 36 6.9 36 8 L36 34 C36 35.1 35.1 36 34 36 L22 36 Z" fill="white" opacity="0.78"/>
+  <!-- Spine shadow -->
+  <rect x="19.5" y="6" width="3" height="30" rx="1" fill="white" opacity="0.4"/>
+  <!-- Left page text lines -->
+  <rect x="9"  y="13" width="8" height="1.8" rx="0.9" fill="#1e3a5f" opacity="0.6"/>
+  <rect x="9"  y="17" width="6" height="1.8" rx="0.9" fill="#1e3a5f" opacity="0.4"/>
+  <rect x="9"  y="21" width="8" height="1.8" rx="0.9" fill="#1e3a5f" opacity="0.6"/>
+  <rect x="9"  y="25" width="5" height="1.8" rx="0.9" fill="#1e3a5f" opacity="0.4"/>
+  <!-- Right page text lines -->
+  <rect x="23" y="13" width="8" height="1.8" rx="0.9" fill="#1e3a5f" opacity="0.6"/>
+  <rect x="23" y="17" width="6" height="1.8" rx="0.9" fill="#1e3a5f" opacity="0.4"/>
+  <rect x="23" y="21" width="8" height="1.8" rx="0.9" fill="#1e3a5f" opacity="0.6"/>
+  <rect x="23" y="25" width="5" height="1.8" rx="0.9" fill="#1e3a5f" opacity="0.4"/>
+  <!-- Bottom open curve -->
+  <path d="M6 34 Q21 40 36 34" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
 </svg>
