@@ -10,15 +10,15 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: indigo
-      accent: teal
+      primary: custom
+      accent: custom
       toggle:
         icon: material/weather-night
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: indigo
-      accent: teal
+      primary: custom
+      accent: custom
       toggle:
         icon: material/weather-sunny
         name: Switch to light mode
@@ -40,6 +40,10 @@ theme:
   font:
     text: Inter
     code: JetBrains Mono
+
+extra_css:
+  - stylesheets/extra.css
+
 
 plugins:
   - search
@@ -142,17 +146,45 @@ nav:
       - Service Layer: "knowledge/Backend Development/Service Layer Architecture.md"
       - Auth & Authorization: "knowledge/Backend Development/Authentication & Authorization.md"
       - Database & ORM: "knowledge/Backend Development/Database & ORM Design.md"
+      - Middleware & Security: "knowledge/Backend Development/Middleware & Security System.md"
       - Pipeline Processing: "knowledge/Backend Development/Pipeline Processing System.md"
       - Real-time Communication: "knowledge/Backend Development/Real-time Communication.md"
+      - Newsletter System: "knowledge/Backend Development/Newsletter Subscription System.md"
       - Monitoring & Metrics: "knowledge/Backend Development/Monitoring & Metrics.md"
     - Frontend:
       - Overview: "knowledge/Frontend Development/Frontend Development.md"
       - Next.js Structure: "knowledge/Frontend Development/Next.js Application Structure.md"
       - Routing: "knowledge/Frontend Development/Routing and Navigation.md"
-      - Component Architecture: "knowledge/Frontend Development/Component Architecture/Component Architecture.md"
-      - State Management: "knowledge/Frontend Development/State Management/State Management.md"
-      - Real-time Features: "knowledge/Frontend Development/Real-time Features/Real-time Features.md"
-      - API Integration: "knowledge/Frontend Development/API Integration/API Integration.md"
+      - Component Architecture:
+        - Overview: "knowledge/Frontend Development/Component Architecture/Component Architecture.md"
+        - Form Components: "knowledge/Frontend Development/Component Architecture/Form Components.md"
+        - Layout Components: "knowledge/Frontend Development/Component Architecture/Layout Components.md"
+        - UI Components: "knowledge/Frontend Development/Component Architecture/UI Components.md"
+        - Utility Components: "knowledge/Frontend Development/Component Architecture/Utility Components.md"
+        - Specialized Components: "knowledge/Frontend Development/Component Architecture/Specialized Components.md"
+      - State Management:
+        - Overview: "knowledge/Frontend Development/State Management/State Management.md"
+        - Context Providers: "knowledge/Frontend Development/State Management/Context Providers.md"
+        - Custom Hooks: "knowledge/Frontend Development/State Management/Custom Hooks.md"
+        - React Query: "knowledge/Frontend Development/State Management/React Query Integration.md"
+        - Real-time State: "knowledge/Frontend Development/State Management/Real-time State Management.md"
+      - Real-time Features:
+        - Overview: "knowledge/Frontend Development/Real-time Features/Real-time Features.md"
+        - Live Preview: "knowledge/Frontend Development/Real-time Features/Live Preview System.md"
+        - WebSocket: "knowledge/Frontend Development/Real-time Features/WebSocket Implementation.md"
+        - Streaming: "knowledge/Frontend Development/Real-time Features/Streaming Responses.md"
+        - Status Tracking: "knowledge/Frontend Development/Real-time Features/Status Updates & Progress Tracking.md"
+      - API Integration:
+        - Overview: "knowledge/Frontend Development/API Integration/API Integration.md"
+        - Auth Services: "knowledge/Frontend Development/API Integration/Authentication Services.md"
+        - Schema Validation: "knowledge/Frontend Development/API Integration/Schema Validation & Type Safety.md"
+        - Service Layer: "knowledge/Frontend Development/API Integration/Service Layer Implementation.md"
+        - Analytics & RUM: "knowledge/Frontend Development/API Integration/Analytics & Performance Monitoring/Analytics & Performance Monitoring.md"
+      - Agent Page: "knowledge/Agent Page Enhancements.md"
+      - Results Page: "knowledge/Results Page Redesign.md"
+      - Deep Learning Patterns: "knowledge/Deep Learning Patterns.md"
+      - Semantic Parser: "knowledge/Semantic Parser.md"
+      - Virus Scanner: "knowledge/Virus Scanner Enhancements.md"
     - AI & ML:
       - Overview: "knowledge/AI_ML Integration/AI_ML Integration.md"
       - RAG Engine: "knowledge/AI_ML Integration/RAG Engine.md"
@@ -168,7 +200,9 @@ nav:
       - Input Conversion: "knowledge/Pipeline Processing/Input Conversion.md"
       - Structure Detection: "knowledge/Pipeline Processing/Structure Detection.md"
       - Text Extraction: "knowledge/Pipeline Processing/Text Extraction.md"
+      - AI Analysis: "knowledge/Pipeline Processing/AI Analysis.md"
       - Formatting Engine: "knowledge/Pipeline Processing/Formatting Engine.md"
+      - Pipeline Services: "knowledge/Pipeline Processing/Pipeline Services.md"
       - Validation System: "knowledge/Pipeline Processing/Validation System.md"
       - Export System: "knowledge/Pipeline Processing/Export System.md"
       - Pipeline Safety: "knowledge/Pipeline Processing/Pipeline Safety.md"
@@ -203,10 +237,34 @@ nav:
       - Maintenance: "knowledge/Deployment & Operations/Maintenance & Troubleshooting.md"
     - Testing:
       - Overview: "knowledge/Testing Strategy/Testing Strategy.md"
-      - Backend Testing: "knowledge/Testing Strategy/Backend Testing/Backend Testing.md"
-      - Frontend Testing: "knowledge/Testing Strategy/Frontend Testing/Frontend Testing.md"
+      - Lighthouse CI: "knowledge/Testing Strategy/Lighthouse CI Integration.md"
       - Test Infrastructure: "knowledge/Testing Strategy/Test Infrastructure.md"
       - Best Practices: "knowledge/Testing Strategy/Testing Best Practices.md"
+      - Backend Testing:
+        - Overview: "knowledge/Testing Strategy/Backend Testing/Backend Testing.md"
+        - Unit Testing: "knowledge/Testing Strategy/Backend Testing/Unit Testing.md"
+        - Integration Testing: "knowledge/Testing Strategy/Backend Testing/Integration Testing.md"
+        - Contract Testing: "knowledge/Testing Strategy/Backend Testing/Contract Testing.md"
+        - Security Testing: "knowledge/Testing Strategy/Backend Testing/Security Testing.md"
+        - Specialized Testing: "knowledge/Testing Strategy/Backend Testing/Specialized Testing.md"
+        - Test Config & Setup: "knowledge/Testing Strategy/Backend Testing/Test Configuration & Setup.md"
+      - Frontend Testing:
+        - Overview: "knowledge/Testing Strategy/Frontend Testing/Frontend Testing.md"
+        - Playwright E2E: "knowledge/Testing Strategy/Frontend Testing/Playwright End-to-End Testing.md"
+        - Vitest Unit: "knowledge/Testing Strategy/Frontend Testing/Vitest Unit & Component Testing.md"
+      - Manual Testing:
+        - Overview: "knowledge/Testing Strategy/Manual Testing/Manual Testing Overview.md"
+        - Manual Testing: "knowledge/Testing Strategy/Manual Testing/Manual Testing.md"
+        - Pipeline Validation: "knowledge/Testing Strategy/Manual Testing/Pipeline Validation.md"
+        - Specialized Testing: "knowledge/Testing Strategy/Manual Testing/Specialized Testing.md"
+        - Test Data Management: "knowledge/Testing Strategy/Manual Testing/Test Data Management.md"
+        - Visual Testing:
+          - Overview: "knowledge/Testing Strategy/Manual Testing/Visual Testing/Visual Testing.md"
+          - Phase 1: "knowledge/Testing Strategy/Manual Testing/Visual Testing/Phase 1 Testing.md"
+          - Phase 2: "knowledge/Testing Strategy/Manual Testing/Visual Testing/Phase 2 Testing.md"
+          - Phase 3: "knowledge/Testing Strategy/Manual Testing/Visual Testing/Phase 3 Testing.md"
+          - Output Management: "knowledge/Testing Strategy/Manual Testing/Visual Testing/Visual Output Management.md"
+
   - Issues:
     - Developer Guide: issues/developer-guide.md
     - User Guide: issues/user-guide.md
