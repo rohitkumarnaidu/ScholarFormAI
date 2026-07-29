@@ -58,7 +58,11 @@ plugins:
 markdown_extensions:
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.highlight:
@@ -110,6 +114,7 @@ nav:
     - Using the SDK: guides/using-sdk.md
     - Validation: guides/validation.md
     - Custom Styles: guides/custom-styles.md
+    - Testing Guide: guides/testing.md
   - Tutorials:
     - Web UI Walkthrough: tutorials/web-ui.md
     - CLI Project Setup: tutorials/cli-project.md
@@ -130,6 +135,8 @@ nav:
     - Overview: architecture/overview.md
     - Design Decisions: architecture/design.md
     - Data Flow: architecture/data-flow.md
+    - AI RAG Engine: architecture/ai-rag.md
+    - System Design: architecture/system-design.md
   - Knowledge Base:
     - Getting Started: knowledge/Getting Started.md
     - Troubleshooting & FAQ: knowledge/Troubleshooting & FAQ.md
@@ -179,7 +186,9 @@ nav:
         - Auth Services: "knowledge/Frontend Development/API Integration/Authentication Services.md"
         - Schema Validation: "knowledge/Frontend Development/API Integration/Schema Validation & Type Safety.md"
         - Service Layer: "knowledge/Frontend Development/API Integration/Service Layer Implementation.md"
-        - Analytics & RUM: "knowledge/Frontend Development/API Integration/Analytics & Performance Monitoring/Analytics & Performance Monitoring.md"
+        - Analytics & RUM:
+          - Overview: "knowledge/Frontend Development/API Integration/Analytics & Performance Monitoring/Analytics & Performance Monitoring.md"
+          - Real User Monitoring: "knowledge/Frontend Development/API Integration/Analytics & Performance Monitoring/Real User Monitoring (RUM).md"
       - Agent Page: "knowledge/Agent Page Enhancements.md"
       - Results Page: "knowledge/Results Page Redesign.md"
       - Deep Learning Patterns: "knowledge/Deep Learning Patterns.md"
