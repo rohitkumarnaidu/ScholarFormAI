@@ -1,89 +1,127 @@
 /* ============================================================
    ScholarFormAI Docs — Custom theme matching the application
-   Colors sourced from frontend/tailwind.config.ts
-   Primary:  #1e3a5f (navy blue)
-   Accent:   #2d6a4f (forest green)
-   Blue-600: #2563eb (AI text / links)
+   Colors sourced directly from frontend/tailwind.config.ts
+   
+   App primary:  #1e3a5f  (navy blue — header bg both modes)
+   App blue:     #2563eb  (accent links, "AI" text in logo)
+   App green:    #2d6a4f  (forest green — tip boxes)
+   App slate-900:#0f172a  (dark mode page background)
    ============================================================ */
 
 /* ---------- Google Fonts ---------- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* ---------- Light mode overrides ---------- */
+/* ==========================================================
+   LIGHT MODE
+   scheme: default  |  primary: custom
+   ========================================================== */
 [data-md-color-scheme="default"] {
-  /* Primary = app navy #1e3a5f */
-  --md-primary-fg-color:          #1e3a5f;
-  --md-primary-fg-color--light:   #2a4f80;
-  --md-primary-fg-color--dark:    #152b45;
-  --md-primary-bg-color:          #ffffff;
+  /* Header background → app navy */
+  --md-primary-fg-color:              #1e3a5f;
+  --md-primary-fg-color--light:       #2a4f80;
+  --md-primary-fg-color--dark:        #152b45;
+  /* Text ON top of that header → white */
+  --md-primary-bg-color:              #ffffff;
+  --md-primary-bg-color--light:       rgba(255,255,255,0.7);
 
-  /* Accent = app blue #2563eb (matches "AI" text in logo) */
-  --md-accent-fg-color:           #2563eb;
-  --md-accent-fg-color--transparent: #2563eb1a;
+  /* Accent (links, active states, hover) → app blue */
+  --md-accent-fg-color:               #2563eb;
+  --md-accent-fg-color--transparent:  rgba(37,99,235,0.1);
 
-  /* Typeset links */
-  --md-typeset-a-color:           #2563eb;
+  /* Typeset link color */
+  --md-typeset-a-color:               #2563eb;
 
   /* Code blocks */
-  --md-code-bg-color:             #f1f5f9;
-  --md-code-fg-color:             #1e3a5f;
+  --md-code-bg-color:                 #f1f5f9;
+  --md-code-fg-color:                 #1e3a5f;
 }
 
-/* ---------- Dark mode overrides ---------- */
+/* ==========================================================
+   DARK MODE
+   scheme: slate  |  primary: custom
+   ========================================================== */
 [data-md-color-scheme="slate"] {
-  /* Slightly lighter navy for dark bg */
-  --md-primary-fg-color:          #3b82f6;
-  --md-primary-fg-color--light:   #60a5fa;
-  --md-primary-fg-color--dark:    #1d4ed8;
-  --md-primary-bg-color:          #0f172a;
+  /* Header background → same app navy (NOT bright blue) */
+  --md-primary-fg-color:              #1e3a5f;
+  --md-primary-fg-color--light:       #2a4f80;
+  --md-primary-fg-color--dark:        #152b45;
+  /* Text ON top of dark header → white */
+  --md-primary-bg-color:              #ffffff;
+  --md-primary-bg-color--light:       rgba(255,255,255,0.7);
 
-  /* Accent stays bright blue */
-  --md-accent-fg-color:           #60a5fa;
-  --md-accent-fg-color--transparent: #60a5fa1a;
+  /* Accent stays bright blue so it's visible on dark pages */
+  --md-accent-fg-color:               #60a5fa;
+  --md-accent-fg-color--transparent:  rgba(96,165,250,0.1);
 
-  --md-typeset-a-color:           #60a5fa;
+  /* Links in content */
+  --md-typeset-a-color:               #60a5fa;
 
-  /* Dark code blocks */
-  --md-code-bg-color:             #1e293b;
-  --md-code-fg-color:             #e2e8f0;
+  /* Page background → app slate-900 */
+  --md-default-bg-color:              #0f172a;
+  --md-default-bg-color--light:       #1e293b;
+  --md-default-bg-color--lighter:     #1e293b;
+  --md-default-bg-color--lightest:    #334155;
 
-  /* Overall dark background matches app's slate-900 */
-  --md-default-bg-color:          #0f172a;
-  --md-default-fg-color:          #e2e8f0;
+  /* Default text */
+  --md-default-fg-color:              #e2e8f0;
+  --md-default-fg-color--light:       #94a3b8;
+  --md-default-fg-color--lighter:     #64748b;
+  --md-default-fg-color--lightest:    #475569;
+
+  /* Code blocks in dark */
+  --md-code-bg-color:                 #1e293b;
+  --md-code-fg-color:                 #e2e8f0;
 }
 
-/* ---------- Logo sizing — show full-width SVG ---------- */
+/* ==========================================================
+   LOGO & HEADER TITLE
+   ========================================================== */
+/* Icon sizing */
 .md-header__button.md-logo {
-  padding: 4px 0;
+  padding: 4px 2px;
 }
 .md-header__button.md-logo img,
 .md-header__button.md-logo svg {
-  height: 38px;
-  width: auto;
-  max-width: 220px;
+  height: 34px;
+  width:  34px;
 }
 
-/* ---------- Hide default site name (logo already has text) ---------- */
-.md-header__title .md-header__topic:first-child .md-ellipsis {
-  display: none;
+/* Site name — keep it visible but style it */
+.md-header__title {
+  font-family: Inter, system-ui, sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.3px;
 }
 
-/* ---------- Navigation tabs: app-style underline ---------- */
+/* ==========================================================
+   NAV TABS — active underline
+   ========================================================== */
 .md-tabs__link--active,
 .md-tabs__link:hover {
-  color: #2563eb !important;
+  color: rgba(255,255,255,0.9) !important;
+  opacity: 1 !important;
 }
-.md-tabs__link--active::after {
-  background-color: #2563eb;
+[data-md-color-scheme="default"] .md-tabs {
+  background-color: #152b45;
+}
+[data-md-color-scheme="slate"] .md-tabs {
+  background-color: #152b45;
 }
 
-/* ---------- Sidebar active item ---------- */
+/* ==========================================================
+   SIDEBAR ACTIVE ITEM
+   ========================================================== */
 .md-nav__item--active > .md-nav__link {
   color: #2563eb;
   font-weight: 700;
 }
+[data-md-color-scheme="slate"] .md-nav__item--active > .md-nav__link {
+  color: #60a5fa;
+}
 
-/* ---------- Buttons / CTA ---------- */
+/* ==========================================================
+   BUTTONS
+   ========================================================== */
 .md-button {
   background-color: #1e3a5f;
   border-color: #1e3a5f;
@@ -93,27 +131,49 @@
   border-color: #2563eb;
 }
 
-/* ---------- Admonition accent colours ---------- */
+/* ==========================================================
+   ADMONITIONS — tip uses forest green
+   ========================================================== */
 .md-typeset .admonition.tip,
 .md-typeset details.tip {
   border-color: #2d6a4f;
 }
-.md-typeset .admonition.tip > .admonition-title,
-.md-typeset details.tip > summary {
-  background-color: #2d6a4f1a;
+.md-typeset .tip > .admonition-title,
+.md-typeset .tip > summary {
+  background-color: rgba(45,106,79,0.1);
 }
 .md-typeset .tip > .admonition-title::before,
 .md-typeset .tip > summary::before {
   color: #2d6a4f;
 }
 
-/* ---------- Scrollbar (subtle brand) ---------- */
+/* ==========================================================
+   SEARCH BOX
+   ========================================================== */
+.md-search__form {
+  border-radius: 8px;
+}
+
+/* ==========================================================
+   SCROLLBAR
+   ========================================================== */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-thumb { background: #2563eb40; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #2563eb80; }
+::-webkit-scrollbar-thumb {
+  background: rgba(37,99,235,0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(37,99,235,0.6);
+}
 
-/* ---------- Selection highlight ---------- */
-::selection { background: #2563eb30; }
+/* ==========================================================
+   SELECTION
+   ========================================================== */
+::selection { background: rgba(37,99,235,0.2); }
 
-/* ---------- Footer link ---------- */
+/* ==========================================================
+   FOOTER
+   ========================================================== */
+.md-footer { background-color: #152b45; }
+[data-md-color-scheme="slate"] .md-footer { background-color: #0a1628; }
 .md-footer-meta a { color: #60a5fa; }
