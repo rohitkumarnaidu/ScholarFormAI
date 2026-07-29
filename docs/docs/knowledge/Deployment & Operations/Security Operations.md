@@ -137,10 +137,10 @@ A->>SH : Apply security headers
 A->>RI : Attach/propagate request ID
 A->>RL : Enforce general rate limit
 A->>TRL : Enforce tier/daily limit for guests
-A->>JV : Verify JWT (JWKS/HMAC)
+A->>JV : Verify JWT("JWKS/HMAC")
 JV-->>A : Decoded token with user/role
 A->>RB : Enforce role-based access (if required)
-A->>AD : Record abuse metrics (generation/LLM)
+A->>AD : Record abuse metrics("generation/LLM")
 A->>AUD : Log write operations
 A->>VS : Scan uploaded files (if applicable)
 A-->>C : Response
@@ -301,7 +301,7 @@ participant App as "FastAPI App"
 participant AUD as "AuditLogService"
 Client->>App : Write Request
 App->>AUD : log_http_write(request, status)
-AUD-->>App : Acknowledged or Skipped (DB/Table)
+AUD-->>App : Acknowledged or Skipped("DB/Table")
 App-->>Client : Response
 ```
 

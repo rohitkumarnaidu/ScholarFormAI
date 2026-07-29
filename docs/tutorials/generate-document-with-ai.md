@@ -39,7 +39,7 @@ flowchart LR
     E --> F[Citation Assembly]
     F --> G[Quality Scoring]
     G --> H[Document Build]
-    H --> I[Export DOCX/PDF]
+    H --> I["Export DOCX/PDF"]
     
     style A fill:#1a56db,color:#fff
     style D fill:#f59e0b,color:#fff

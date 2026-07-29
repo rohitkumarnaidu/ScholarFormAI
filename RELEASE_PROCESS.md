@@ -112,7 +112,7 @@ ScholarForm AI v1.1.0
 
 #### Body Template
 
-```markdown
+````markdown
 ## 📦 ScholarForm AI v1.1.0
 
 ### What's Changed
@@ -205,7 +205,8 @@ See [MIGRATION_GUIDES.md](MIGRATION_GUIDES.md) for upgrade instructions.
 3. Deploy backend + worker
 4. Deploy frontend
 5. Verify health: `curl https://api.scholarform.ai/api/v1/health/live`
-```
+````
+
 
 #### Release Artifacts Checklist
 

@@ -1,6 +1,19 @@
 # ScholarForm AI — Python SDK Reference Guide
 
-The `amf-sdk` package provides Python bindings for accessing ScholarForm AI endpoints both synchronously (`AMFClient`) and asynchronously (`AsyncAMFClient`).
+## Table of Contents
+
+- [Installation](#installation)
+- [Architecture & Diagrams](#architecture--diagrams)
+  - [SDK Class Diagram](#1-sdk-class-diagram)
+  - [Async SDK Execution Sequence](#2-async-sdk-execution-sequence-diagram)
+  - [SDK Usage Workflow](#3-sdk-usage-workflow)
+- [Code Examples & Context Managers](#code-examples--context-managers)
+- [Pydantic v2 Models Reference](#10-pydantic-v2-models-reference-amf_sdkmodels)
+- [Exception Taxonomy](#exception-taxonomy-amf_sdkexceptions)
+
+---
+
+The `amf-sdk` package provides official Python bindings for accessing ScholarForm AI API endpoints both synchronously (`AMFClient`) and asynchronously (`AsyncAMFClient`).
 
 ---
 
@@ -12,119 +25,378 @@ pip install amf-sdk
 
 ---
 
-## Client Usage
+## Architecture & Diagrams
 
-### 1. Synchronous Client (`AMFClient`)
+### 1. SDK Class Diagram
+
+```mermaid
+classDiagram
+    class AMFClient {
+        +str base_url
+        +str api_key
+        +float timeout
+        -httpx.Client _client
+        +format_manuscript(manuscript, style, options) ManuscriptResult
+        +format_from_file(file_path, style, options) ManuscriptResult
+        +validate_manuscript(manuscript, style) ValidationResult
+        +get_styles() List~FormattingStyle~
+        +get_style(style_id) FormattingStyle
+        +get_preview(manuscript, style) str
+        +close() None
+    }
+
+    class AsyncAMFClient {
+        +str base_url
+        +str api_key
+        +float timeout
+        -httpx.AsyncClient _client
+        +format_manuscript(manuscript, style, options) ManuscriptResult
+        +validate_manuscript(manuscript, style) ValidationResult
+        +get_styles() List~FormattingStyle~
+        +get_style(style_id) FormattingStyle
+        +get_preview(manuscript, style) str
+        +close() None
+    }
+
+    class Manuscript {
+        +str title
+        +List~Author~ authors
+        +Optional~str~ abstract
+        +List~str~ keywords
+        +List~Section~ sections
+        +List~Reference~ references
+        +Optional~str~ acknowledgments
+    }
+
+    class Author {
+        +str first_name
+        +str last_name
+        +Optional~str~ affiliation
+        +Optional~str~ email
+        +Optional~str~ orcid
+    }
+
+    class Section {
+        +str heading
+        +int level
+        +List~Paragraph~ content
+        +List~Section~ subsections
+    }
+
+    class Paragraph {
+        +str text
+        +Optional~str~ style
+        +Optional~str~ alignment
+    }
+
+    class Reference {
+        +List~Author~ authors
+        +Optional~str~ year
+        +str title
+        +Optional~str~ journal
+        +Optional~str~ volume
+        +Optional~str~ issue
+        +Optional~str~ pages
+        +Optional~str~ doi
+    }
+
+    class ManuscriptResult {
+        +str download_url
+        +Optional~str~ preview_url
+        +int pages
+        +Dict metadata
+        +str style_applied
+        +datetime formatted_at
+    }
+
+    class ValidationResult {
+        +bool valid
+        +List~ValidationIssue~ errors
+        +List~ValidationIssue~ warnings
+        +List~str~ suggestions
+    }
+
+    class FormattingStyle {
+        +str id
+        +str name
+        +str version
+        +str description
+        +str citation_format
+        +str font_family
+        +int font_size
+        +float line_spacing
+        +float margin_inches
+        +bool is_builtin
+    }
+
+    class AMFError {
+        +str message
+        +int status_code
+        +Dict details
+    }
+
+    AMFClient ..> Manuscript : accepts
+    AMFClient ..> ManuscriptResult : returns
+    AMFClient ..> ValidationResult : returns
+    AMFClient ..> FormattingStyle : returns
+    AsyncAMFClient ..> Manuscript : accepts
+    AsyncAMFClient ..> ManuscriptResult : returns
+    AsyncAMFClient ..> ValidationResult : returns
+    AsyncAMFClient ..> FormattingStyle : returns
+    AMFClient ..> AMFError : raises
+    AsyncAMFClient ..> AMFError : raises
+```
+
+---
+
+### 2. Async SDK Execution Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor App as Async Python Application
+    participant SDK as "AsyncAMFClient (async_client.py)"
+    participant HTTP as httpx.AsyncClient
+    participant REST as "REST API("/api/v1/format")"
+    participant Model as ManuscriptResult Pydantic Model
+
+    App->>SDK: await client.format_manuscript(manuscript, style="ieee")
+    SDK->>SDK: manuscript.model_dump() payload construction
+    SDK->>HTTP: await self._client.post("/api/v1/format", json=payload)
+    HTTP->>REST: HTTP POST Request with Authorization Bearer
+    REST-->>HTTP: HTTP 200 OK Response Envelope (JSON)
+    HTTP-->>SDK: httpx.Response object
+    SDK->>SDK: _handle_response(response) validation
+    SDK->>Model: ManuscriptResult("**data") instantiation
+    Model-->>SDK: Validated ManuscriptResult instance
+    SDK-->>App: Return ManuscriptResult object
+```
+
+---
+
+### 3. SDK Usage Workflow
+
+This flowchart shows the recommended usage pattern for both sync and async clients — from initialization through error handling.
+
+```mermaid
+flowchart TD
+    Start(["Start: Python Application"]) --> Init
+
+    subgraph Init ["1. Client Initialization"]
+        direction LR
+        SyncClient["AMFClient\n(synchronous)"]
+        AsyncClient["AsyncAMFClient\n(asynchronous)"]
+    end
+
+    Init --> Auth["2. Authentication\nSet api_key= parameter\nor AMF_API_KEY env var"]
+    Auth --> Validate["3. (Optional) Validate Manuscript\nclient.validate_manuscript(manuscript, style)"]
+    Validate --> ValidCheck{"Validation\npassed?"}
+
+    ValidCheck -->|"Yes"| Format["4. Format Manuscript\nclient.format_manuscript(manuscript, style, options)"]
+    ValidCheck -->|"No - fix errors"| FixDoc["Fix validation errors\n(check ValidationResult.errors)"]
+    FixDoc --> Validate
+
+    Format --> ResultCheck{"API\nresponse?"}
+    ResultCheck -->|"200 OK"| Result["5. Consume ManuscriptResult\ndownload_url · preview_url · pages"]
+    ResultCheck -->|"429 Rate Limited"| RateLimit["Catch AMFRateLimitError\nRetry after retry_after seconds"]
+    ResultCheck -->|"4xx / 5xx"| Error["Catch AMFError\nLog status_code + details"]
+
+    Result --> Download["6. Download Formatted Document\nHTTP GET result.download_url"]
+    Download --> Close["7. Close Client\nclient.close() or exit context manager"]
+    Close --> Done(["Done ✅"])
+
+    RateLimit --> Format
+    Error --> Done
+```
+
+---
+
+## Code Examples & Context Managers
+
+### 1. Synchronous Usage (`AMFClient`)
 
 ```python
 from amf_sdk import AMFClient, Manuscript, Author, Section, Paragraph
 
-# Initialize client
-client = AMFClient(
-    base_url="http://localhost:8000",
-    api_key="your-api-key",
-    timeout=30.0,
-)
-
-# Context manager usage
-with AMFClient(api_key="your-api-key") as client:
+# Context manager handles HTTP client setup and clean teardown
+with AMFClient(base_url="http://localhost:8000", api_key="amf_secret_123") as client:
+    # 1. Fetch available styles
     styles = client.get_styles()
+    print(f"Available styles: {[s.id for s in styles]}")
+
+    # 2. Build structured manuscript object
+    manuscript = Manuscript(
+        title="Deep Learning in Academic Formatting",
+        authors=[
+            Author(
+                first_name="Alan",
+                last_name="Turing",
+                affiliation="Bletchley Park",
+                email="turing@example.org",
+            )
+        ],
+        abstract="This paper introduces automated styling algorithms.",
+        sections=[
+            Section(
+                heading="Introduction",
+                level=1,
+                content=[Paragraph(text="Formatting research papers is time consuming.")],
+            )
+        ],
+    )
+
+    # 3. Validate manuscript structure
+    val_result = client.validate_manuscript(manuscript, style="apa")
+    if val_result.valid:
+        # 4. Format manuscript and receive result
+        result = client.format_manuscript(manuscript, style="apa")
+        print(f"Formatted Output Download: {result.download_url}")
+        print(f"Total Pages: {result.pages}")
 ```
 
-### 2. Asynchronous Client (`AsyncAMFClient`)
+---
 
-The asynchronous client uses `httpx.AsyncClient` under the hood.
+### 2. Asynchronous Usage (`AsyncAMFClient`)
 
 ```python
 import asyncio
 from amf_sdk.async_client import AsyncAMFClient
 from amf_sdk import Manuscript, Author, Section, Paragraph
 
-async def main():
-    async with AsyncAMFClient(base_url="http://localhost:8000") as client:
-        # Get styles
+async def process_manuscripts_batch():
+    async with AsyncAMFClient(base_url="http://localhost:8000", timeout=45.0) as client:
+        # Fetch styles asynchronously
         styles = await client.get_styles()
-        print(f"Available styles: {[s.id for s in styles]}")
+        print(f"Fetched {len(styles)} styles asynchronously.")
 
         # Construct manuscript
         manuscript = Manuscript(
-            title="Async Manuscript Formatting",
-            authors=[Author(first_name="Jane", last_name="Doe", email="jane@example.com")],
+            title="Async Multi-Agent Architecture",
+            authors=[Author(first_name="Ada", last_name="Lovelace")],
             sections=[
                 Section(
-                    heading="Introduction",
+                    heading="Methodology",
                     level=1,
-                    content=[Paragraph(text="This document is processed asynchronously.")],
+                    content=[Paragraph(text="Concurrent request pipelines improve throughput.")],
                 )
             ],
         )
 
-        # Format manuscript asynchronously
+        # Format manuscript
         result = await client.format_manuscript(manuscript, style="ieee")
-        print(f"Result URL: {result.download_url}")
+        print(f"Async Download URL: {result.download_url}")
 
-asyncio.run(main())
+asyncio.run(process_manuscripts_batch())
 ```
 
 ---
 
-## API Client Method Reference
+## 10 Pydantic v2 Models Reference (`amf_sdk.models`)
 
-Both `AMFClient` (sync) and `AsyncAMFClient` (async) expose identical method interfaces:
+All data objects in the SDK are Pydantic v2 `BaseModel` subclasses:
 
-| Method Signature | Return Type | Description |
+| Model Class | Fields & Types | Description |
 |---|---|---|
-| `format_manuscript(manuscript, style="apa", options=None)` | `ManuscriptResult` | Post manuscript object or dictionary for formatting |
-| `format_from_file(file_path, style="apa", options=None)` | `ManuscriptResult` | Read text from file path and format as a manuscript |
-| `validate_manuscript(manuscript, style="apa")` | `ValidationResult` | Check structural and style rule compliance |
-| `get_styles()` | `List[FormattingStyle]` | Fetch list of all registered formatting styles |
-| `get_style(style_id)` | `FormattingStyle` | Fetch specific style parameters by ID |
-| `get_preview(manuscript, style="apa")` | `str` | Return rendered HTML preview string |
-| `close()` | `None` | Close underlying HTTP connection pool |
+| **`Author`** | `first_name: str`<br>`last_name: str`<br>`affiliation: Optional[str]`<br>`email: Optional[str]`<br>`orcid: Optional[str]` | Represents a author attribution entry |
+| **`Paragraph`** | `text: str`<br>`style: Optional[str]`<br>`alignment: Optional[str]` | Paragraph text node with optional inline styling |
+| **`Section`** | `heading: str`<br>`level: int = 1`<br>`content: List[Paragraph]`<br>`subsections: List[Section]` | Hierarchical section containing paragraphs and subsections |
+| **`Reference`** | `authors: List[Author]`<br>`year: Optional[str]`<br>`title: str`<br>`journal: Optional[str]`<br>`volume: Optional[str]`<br>`issue: Optional[str]`<br>`pages: Optional[str]`<br>`doi: Optional[str]` | Bibliography item citation details |
+| **`Manuscript`** | `title: str`<br>`authors: List[Author]`<br>`abstract: Optional[str]`<br>`keywords: List[str]`<br>`sections: List[Section]`<br>`references: List[Reference]`<br>`acknowledgments: Optional[str]` | Complete manuscript domain model |
+| **`FormattingOptions`** | `output_format: str = "docx"`<br>`page_size: str = "A4"`<br>`font_family: Optional[str]`<br>`font_size: Optional[float]`<br>`line_spacing: Optional[float]`<br>`include_toc: bool`<br>`include_page_numbers: bool`<br>`include_running_header: bool` | Custom formatting layout options |
+| **`FormattingStyle`** | `id: str`<br>`name: str`<br>`version: str`<br>`description: str`<br>`citation_format: str`<br>`font_family: str`<br>`font_size: int`<br>`line_spacing: float`<br>`margin_inches: float`<br>`is_builtin: bool` | Style rule specification parameters |
+| **`ManuscriptResult`** | `download_url: str`<br>`preview_url: Optional[str]`<br>`pages: int`<br>`metadata: Dict[str, Any]`<br>`style_applied: str`<br>`formatted_at: datetime` | Formatting execution result payload |
+| **`ValidationIssue`** | `code: str`<br>`message: str`<br>`location: Optional[str]`<br>`severity: str` | Individual error or warning item in validation report |
+| **`ValidationResult`** | `valid: bool`<br>`errors: List[ValidationIssue]`<br>`warnings: List[ValidationIssue]`<br>`suggestions: List[str]` | Document structural validation summary report |
 
 ---
 
-## Exception Hierarchy (`amf_sdk.exceptions`)
+## Exception Taxonomy (`amf_sdk.exceptions`)
 
-All SDK exceptions inherit from the base `AMFError` class.
+All SDK exceptions inherit from `AMFError`, providing consistent attributes (`message`, `status_code`, `details`). The class hierarchy is shown below:
 
+```mermaid
+classDiagram
+    class AMFError {
+        +str message
+        +int status_code
+        +Dict details
+        +__str__() str
+    }
+
+    class AMFValidationError {
+        +int status_code = 400
+        +Dict details
+        +note: "Malformed request body or invalid params"
+    }
+
+    class AMFAuthenticationError {
+        +int status_code = 401
+        +note: "Missing or invalid API key / JWT"
+    }
+
+    class AMFNotFoundError {
+        +int status_code = 404
+        +str resource
+        +note: "Job ID or style ID not found"
+    }
+
+    class AMFFormattingError {
+        +int status_code = 422
+        +Dict details
+        +note: "Formatting pipeline failure"
+    }
+
+    class AMFRateLimitError {
+        +int status_code = 429
+        +int retry_after
+        +note: "Rate limit exceeded"
+    }
+
+    class AMFConnectionError {
+        +int status_code = 503
+        +note: "Server unreachable / socket failure"
+    }
+
+    class AMFTimeoutError {
+        +int status_code = 504
+        +note: "HTTP request exceeded timeout"
+    }
+
+    AMFError <|-- AMFValidationError
+    AMFError <|-- AMFAuthenticationError
+    AMFError <|-- AMFNotFoundError
+    AMFError <|-- AMFFormattingError
+    AMFError <|-- AMFRateLimitError
+    AMFError <|-- AMFConnectionError
+    AMFError <|-- AMFTimeoutError
 ```
-AMFError (base class: Exception)
-├── AMFValidationError (status_code=400)
-├── AMFAuthenticationError (status_code=401)
-├── AMFNotFoundError (status_code=404)
-├── AMFFormattingError (status_code=422)
-├── AMFRateLimitError (status_code=429)
-├── AMFConnectionError (status_code=503)
-└── AMFTimeoutError (status_code=504)
+
+### Exception Details & HTTP Mapping
+
+| Exception Class | Status Code | Cause / Trigger | Extra Attributes |
+|---|---|---|---|
+| `AMFError` | 500 | Base exception class for all SDK errors | `message`, `status_code`, `details` |
+| `AMFValidationError` | 400 | Malformed request body or invalid parameters | `details` dict with field errors |
+| `AMFAuthenticationError` | 401 | Missing or invalid API key / bearer token | None |
+| `AMFNotFoundError` | 404 | Target manuscript job or style ID not found | `resource` name |
+| `AMFFormattingError` | 422 | Formatting pipeline failure or invalid structure | `details` dict with parser errors |
+| `AMFRateLimitError` | 429 | Rate limit exceeded | `details["retry_after"]` in seconds |
+| `AMFConnectionError` | 503 | Server unreachable or network socket failure | Default: `"Failed to connect to AMF API"` |
+| `AMFTimeoutError` | 504 | HTTP request exceeded configured timeout | Default: `"Request timed out"` |
+
+```python
+from amf_sdk import AMFClient
+from amf_sdk.exceptions import AMFValidationError, AMFRateLimitError, AMFError
+
+client = AMFClient(api_key="your-key")
+try:
+    result = client.format_manuscript(manuscript, style="apa")
+except AMFValidationError as e:
+    print(f"Validation failed ({e.status_code}): {e.message}")
+    print(f"Details: {e.details}")
+except AMFRateLimitError as e:
+    retry_after = e.details.get("retry_after", 60)
+    print(f"Rate limited. Retrying after {retry_after} seconds.")
+except AMFError as e:
+    print(f"SDK Error: {e}")
 ```
-
-### Exception Class Details
-
-| Exception Class | HTTP Status Code | Default Message / Attributes |
-|---|---|---|
-| `AMFError` | 500 | Base exception with `message`, `status_code`, and `details` dict |
-| `AMFValidationError` | 400 | Raised when request payload fails schema validation |
-| `AMFAuthenticationError` | 401 | Raised on invalid or missing API key |
-| `AMFNotFoundError` | 404 | Raised when target resource or style is not found |
-| `AMFFormattingError` | 422 | Raised when formatting engine encounters structural errors |
-| `AMFRateLimitError` | 429 | Includes `retry_after` parameter in `details` |
-| `AMFConnectionError` | 503 | Raised on HTTP network or connection failure |
-| `AMFTimeoutError` | 504 | Raised when request exceeds configured HTTP timeout |
-
----
-
-## Models Reference (`amf_sdk.models`)
-
-### Pydantic Models Overview
-
-- **`Author`**: `first_name`, `last_name`, `affiliation`, `email`, `orcid`
-- **`Paragraph`**: `text`, `style`, `alignment`
-- **`Section`**: `heading`, `level` (default 1), `content` (`List[Paragraph]`), `subsections` (`List[Section]`)
-- **`Reference`**: `authors` (`List[Author]`), `year`, `title`, `journal`, `volume`, `issue`, `pages`, `doi`
-- **`Manuscript`**: `title`, `authors`, `abstract`, `keywords`, `sections`, `references`, `acknowledgments`
-- **`FormattingOptions`**: `output_format` (`"docx"`), `page_size` (`"A4"`), `font_family`, `font_size`, `line_spacing`, `include_toc`, `include_page_numbers`, `include_running_header`
-- **`FormattingStyle`**: `id`, `name`, `version`, `description`, `citation_format`, `font_family`, `font_size`, `line_spacing`, `margin_inches`, `is_builtin`
-- **`ManuscriptResult`**: `download_url`, `preview_url`, `pages`, `metadata`, `style_applied`, `formatted_at`
-- **`ValidationIssue`**: `code`, `message`, `location`, `severity` (`"error"` / `"warning"`)
-- **`ValidationResult`**: `valid` (bool), `errors` (`List[ValidationIssue]`), `warnings` (`List[ValidationIssue]`), `suggestions` (`List[str]`)

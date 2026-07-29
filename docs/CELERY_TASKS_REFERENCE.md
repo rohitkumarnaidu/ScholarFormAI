@@ -2,6 +2,14 @@
 
 **Last updated:** 2026-07-17
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Task Queue Architecture](#task-queue-architecture)
+- [Configuration](#configuration)
+- [Task Categories](#task-categories)
+- [Task Routing](#task-routing)
+
 ---
 
 ## Overview
@@ -15,6 +23,69 @@ The Celery app is defined in `backend/app/tasks/celery_tasks.py` and consumes fr
 **two queues** — `interactive` (user-facing, high priority) and `batch` (background,
 low priority). The worker is deployed on Render as a separate service alongside the
 web process and a managed Redis instance.
+
+---
+
+## Task Queue Architecture
+
+```mermaid
+flowchart TD
+    subgraph Producers["Task Producers (FastAPI)"]
+        DocUpload["POST /api/v1/documents/upload\n→ format_document_task.delay()"]
+        GenSession["POST /api/v1/generator/sessions\n→ generate_section_task.delay()"]
+        SynthReq["POST /api/v1/synthesis\n→ synthesize_documents_task.delay()"]
+        Maintenance["Celery Beat Scheduler\n→ periodic maintenance tasks"]
+    end
+
+    subgraph Broker["Redis Broker"]
+        InteractiveQ[("interactive queue\n(high priority)")]
+        BatchQ[("batch queue\n(low priority)")]
+    end
+
+    subgraph Workers["Celery Workers"]
+        subgraph W1["Worker 1 — interactive"]
+            T1["format_document_task\n(soft 600s / hard 900s)"]
+            T2["generate_section_task\n(AI generation)"]
+            T3["synthesize_documents_task"]
+        end
+
+        subgraph W2["Worker 2 — batch"]
+            T4["batch_format_task\n(multi-doc batch)"]
+            T5["purge_expired_vector_sessions\n(ChromaDB cleanup)"]
+            T6["send_webhook_delivery\n(event notifications)"]
+        end
+    end
+
+    subgraph Results["Result Backend (Redis)"]
+        ResultStore[("celery-results\n(TTL 86400s)")]
+    end
+
+    DocUpload --> InteractiveQ
+    GenSession --> InteractiveQ
+    SynthReq --> InteractiveQ
+    Maintenance --> BatchQ
+
+    InteractiveQ --> T1
+    InteractiveQ --> T2
+    InteractiveQ --> T3
+
+    BatchQ --> T4
+    BatchQ --> T5
+    BatchQ --> T6
+
+    T1 --> ResultStore
+    T2 --> ResultStore
+    T3 --> ResultStore
+    T4 --> ResultStore
+
+    style Producers fill:#1a3a5c,color:#fff
+    style Broker fill:#4a2a5c,color:#fff
+    style Workers fill:#1a4a3c,color:#fff
+    style Results fill:#5c3a1a,color:#fff
+```
+
+> [!NOTE]
+> Tasks are configured with `task_acks_late=True` and `task_reject_on_worker_lost=True` to guarantee at-least-once delivery even if a worker dies mid-processing.
 
 ---
 

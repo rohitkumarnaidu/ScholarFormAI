@@ -428,11 +428,11 @@ def mock_enhancement_manager():
 graph TD
     A[get_flag request] --> B{REDIS_ENABLED?}
     B -->|Yes| C[Redis cache<br/>flag:{name}<br/>TTL: 5min]
-    B -->|No| D[In-memory cache<br/>_DEFAULT_FLAGS]
+    B -->|No| D["In-memory cache<br/>_DEFAULT_FLAGS"]
     C -->|Hit| E[Return cached value]
     C -->|Miss| D
     D -->|Found| E
-    D -->|Miss| F[Database<br/>_load_from_db]
+    D -->|Miss| F["Database<br/>_load_from_db"]
     F -->|Found| G[Update caches]
     F -->|Miss| H[Return default]
     G --> E

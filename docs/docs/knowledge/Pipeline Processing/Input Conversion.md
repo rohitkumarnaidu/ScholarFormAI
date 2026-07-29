@@ -112,10 +112,10 @@ participant PF as "ParserFactory"
 participant DP as "DocxParser"
 Client->>IC : convert_to_docx(input_path, job_id, enable_ocr)
 IC->>IC : detect extension and strategy
-alt pass-through (.docx/.doc/.odt/.rtf)
+alt pass-through(".docx/.doc/.odt/.rtf")
 IC->>LO : convert to DOCX (headless)
 LO-->>IC : input.docx
-else Pandoc (.md/.html/.txt/.tex)
+else Pandoc(".md/.html/.txt/.tex")
 IC->>PD : convert to DOCX
 PD-->>IC : input.docx
 else PDF

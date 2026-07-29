@@ -149,7 +149,7 @@ flowchart TD
 A["Incoming Request"] --> B{"Is /health?"}
 B --> |Yes| Z["Skip rate limit"]
 B --> |No| C{"Is upload endpoint?"}
-C --> |Yes| D["Compute rate subject (IP or IP:token_fingerprint)"]
+C --> |Yes| D["Compute rate subject(IP or IP:token_fingerprint)"]
 C --> |No| E["Compute rate subject (IP)"]
 D --> F["Incr in-memory window"]
 E --> F

@@ -3,27 +3,34 @@
 
 # -*- coding: utf-8 -*-
 """
- ️ DEPRECATED — ScholarForm AI Documentation Generator
+===============================================================================
+⚠️ DEPRECATED — ScholarForm AI DOCX Documentation Generator ⚠️
+===============================================================================
 Last Updated: July 2026
 
-This script generates a DOCX documentation file. It contains STALE INFORMATION
-and should NOT be used as a reference for the current codebase:
+NOTICE: Documentation source files for ScholarForm AI are now managed directly
+under:
+  1. Docusaurus documentation tree: docs/docs/ (e.g. docs/docs/api/reference.md,
+     docs/docs/cli/reference.md, docs/docs/sdk/guide.md, etc.)
+  2. Project root reference Markdown files (CLI_REFERENCE.md, SDK_GUIDE.md,
+     SYSTEM_DESIGN.md, API_REFERENCE.md, CONFIGURATION.md, ERROR_CODES.md,
+     TESTING.md, ARCHITECTURE.md, PROJECT.md, etc.)
+
+This script generates a legacy DOCX documentation file for offline distribution.
+It contains STALE ARCHITECTURE REFERENCES and should NOT be used as an authoritative
+source for the current codebase:
 
   STALE REFERENCES IN THIS FILE:
-  - References "Vite" as the frontend bundler (current: Next.js 14)
+  - References "Vite" as the frontend bundler (current: Next.js 16)
   - Uses VITE_* env var names (current: NEXT_PUBLIC_*)
   - References port 5173 (current: 3000 for Next.js dev server)
   - References Python 3.10 requirements (current: Python 3.12 pinned)
   - References "React SPA" architecture (current: Next.js App Router SSR)
 
-  AUTHORITATIVE DOCUMENTATION IS IN:
-  - docs/TechStack.md
-  - docs/Deployment.md
-  - docs/API.md
-  - README.md
-
-This script can still be run to generate a DOCX for distribution, but the
-generated content reflects an outdated architecture snapshot.
+AUTHORITATIVE DOCUMENTATION LOCATION:
+  - Primary Docs Site: docs/docs/
+  - System Specifications: Root reference markdown files (*.md)
+===============================================================================
 """
 
 from docx import Document

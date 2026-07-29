@@ -1,201 +1,303 @@
-# CLI Reference
+# ScholarForm AI — CLI Reference Guide
 
-## Installation
+## Installation & Setup
 
 ```bash
+# Standard CLI installation
 pip install amf-cli
 
-# For local formatting (without API server):
+# Installation with local fallback dependencies (offline mode)
 pip install amf-cli[local]
 ```
 
-## Usage
+## Synopsis
 
 ```bash
-amf [OPTIONS] COMMAND [ARGS]...
+amf [GLOBAL_OPTIONS] COMMAND [COMMAND_ARGS]...
 ```
 
 ### Global Options
 
-| Option | Description |
-|--------|-------------|
-| `--version` | Show version and exit |
-| `-v, --verbose` | Enable verbose output |
-| `-c, --config PATH` | Path to custom config file |
-| `--help` | Show help message |
+| Option | Type | Description |
+|---|---|---|
+| `--version` | Flag | Display CLI tool version (`amf 1.0.0`) and exit |
+| `-v, --verbose` | Flag | Enable verbose debug logging output |
+| `-c, --config PATH` | File Path | Specify path to custom JSON/TOML configuration file |
+| `--help` | Flag | Display CLI command usage help |
 
 ---
 
-## Commands
+## Command Execution Architecture & Sequence Diagrams
 
-### `format`
+### 1. Dual-Mode Document Format Execution Sequence
 
-Format a manuscript file into a styled DOCX document.
+The `amf` CLI automatically operates in **Dual-Mode**: it first attempts high-performance REST API execution via `BackendClient`. If the API server is unreachable, it seamlessly falls back to local Python service modules (`ManuscriptFormatter`, `ManuscriptParser`, `ManuscriptValidator`, `StyleRegistry`).
 
-```bash
-amf format -i manuscript.md -o output.docx -s apa
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as "CLI User / Terminal"
+    participant CLI as "AMF CLI (amf format)"
+    participant Client as "BackendClient (_client.py)"
+    participant API as "REST API("/api/v1/documents/upload")"
+    participant Local as "Local Services (app.services.formatter)"
+    participant FS as "File System (Output DOCX)"
+
+
+    User->>CLI: Run amf format -i manuscript.md -o output.docx -s apa
+    CLI->>Client: format(input_file, output_file, style, options)
+    Client->>API: POST /api/v1/documents/upload or /api/v1/format
+    
+    alt REST API Server Reachable (HTTP 200)
+        API-->>Client: Return JSON result payload & download_url
+        Client->>API: Download formatted DOCX file stream
+        API-->>Client: Binary DOCX content
+        Client->>FS: Write binary content to output.docx
+        Client-->>CLI: Format Success (Pages, Metadata)
+    else REST API Unavailable / Network Connection Failure
+        Client->>Client: Catch ConnectionError -> Log Fallback Warning
+        Client->>Local: Initialize ManuscriptFormatter & StyleRegistry
+        Local->>Local: Parse text & format DOCX locally
+        Local->>FS: Write output.docx directly to disk
+        Local-->>CLI: Local Format Success (Offline Mode)
+    end
+    
+    CLI-->>User: Display Rich Terminal Output & Summary
 ```
 
-| Option | Description |
-|--------|-------------|
-| `-i, --input PATH` | Input manuscript file (required) |
-| `-o, --output PATH` | Output DOCX file path |
-| `-s, --style TEXT` | Formatting style (default: `apa`) |
-| `-O, --options TEXT` | JSON string of formatting options |
-| `-w, --watch` | Watch mode — reformat on file changes |
+---
 
-### `validate`
+### 2. Issue Reporting Sequence
 
-Validate a manuscript's structure and style compliance.
+The `amf issue` command group allows users to report bugs, submit feedback, or request features directly from the terminal, with optional automatic system log attachment.
 
-```bash
-amf validate -i manuscript.md -s apa -o report.json
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as CLI User
+    participant Cmd as amf issue report
+    participant Collector as System Log Collector
+    participant API as "REST API("/api/v1/feedback")"
+    participant LocalStore as "Local Issue Backup("~/.amf/issues.json")"
+
+
+    User->>Cmd: amf issue report -t "Heading Bug" -d "H2 issue" -c bug -s high --attach-logs
+    alt --attach-logs specified
+        Cmd->>Collector: Gather recent CLI execution logs & environment metadata
+        Collector-->>Cmd: Compressed log payload
+    end
+    
+    Cmd->>API: POST /api/v1/feedback (Payload + Logs + Contact Info)
+    
+    alt REST API Online
+        API-->>Cmd: 201 Created with Issue ID (e.g. ISS-1001) & SLA status
+    else REST API Offline
+        Cmd->>LocalStore: Append issue report to local offline backup
+        LocalStore-->>Cmd: Saved locally (Pending sync)
+    end
+
+    Cmd-->>User: Print Formatted Issue Summary (ID, Status, SLA Timeline)
 ```
 
-| Option | Description |
-|--------|-------------|
-| `-i, --input PATH` | Input manuscript file (required) |
-| `-s, --style TEXT` | Style to validate against |
-| `-o, --output PATH` | Output validation report (JSON) |
+---
 
-### `preview`
+## Detailed Command Groups Reference (All 8 Click Command Groups)
 
-Generate an HTML preview of the formatted manuscript.
+### 1. `format` Command
+
+Format a manuscript document into a styled publication-ready DOCX file.
 
 ```bash
-amf preview -i manuscript.md -s apa --open
+amf format -i manuscript.md -o formatted.docx -s apa -O '{"include_toc": true}' -w
 ```
 
-| Option | Description |
-|--------|-------------|
-| `-i, --input PATH` | Input manuscript file (required) |
-| `-s, --style TEXT` | Formatting style |
-| `-o, --output PATH` | Output HTML file path |
-| `--open` | Open preview in browser |
+| Option | Flag | Description | Default |
+|---|---|---|---|
+| `-i` | `--input PATH` | Input manuscript file path (`.md`, `.docx`, `.pdf`, `.txt`) | **Required** |
+| `-o` | `--output PATH` | Output formatted DOCX file path | `<input_stem>_formatted.docx` |
+| `-s` | `--style TEXT` | Target formatting style ID (`apa`, `ieee`, `mla`, `chicago`, etc.) | `apa` |
+| `-O` | `--options JSON` | JSON string of formatting overrides | `{}` |
+| `-w` | `--watch` | Watch mode — automatically reformat on input file modification | `False` |
 
-### `styles`
+---
 
-List and manage formatting styles.
+### 2. `validate` Command
+
+Check manuscript structural compliance against journal or conference guidelines.
 
 ```bash
+amf validate -i manuscript.md -s ieee -o validation_report.json
+```
+
+| Option | Flag | Description | Default |
+|---|---|---|---|
+| `-i` | `--input PATH` | Input manuscript file path | **Required** |
+| `-s` | `--style TEXT` | Style rules to validate against | `apa` |
+| `-o` | `--output PATH` | File path to write JSON validation report | Terminal output |
+
+---
+
+### 3. `preview` Command
+
+Generate an interactive HTML rendering of the formatted manuscript.
+
+```bash
+amf preview -i manuscript.md -s apa -o preview.html --open
+```
+
+| Option | Flag | Description | Default |
+|---|---|---|---|
+| `-i` | `--input PATH` | Input manuscript file path | **Required** |
+| `-s` | `--style TEXT` | Target formatting style ID | `apa` |
+| `-o` | `--output PATH` | Output HTML file path | Terminal print |
+| `--open` | `--open` | Automatically open HTML preview in default web browser | `False` |
+
+---
+
+### 4. `styles` Command Group
+
+Inspect, query, and export built-in academic formatting styles.
+
+```bash
+# List all available styles
 amf styles list
-amf styles show apa
-amf styles export apa apa-style.json
+
+# Show detailed parameters for a specific style
+amf styles show ieee
+
+# Export style definition to a JSON file
+amf styles export ieee ./styles/ieee-custom.json
 ```
 
-### `init`
+| Subcommand | Arguments / Options | Description |
+|---|---|---|
+| `list` | None | List all 17 registered builtin citation & formatting styles |
+| `show` | `<name>` | Display font, margin, line spacing, and citation rules for style |
+| `export` | `<name> <file>` | Save style parameters as a JSON file |
 
-Create a new manuscript project with template files.
+---
+
+### 5. `init` Command
+
+Initialize a new manuscript project workspace with template files and configuration.
 
 ```bash
-amf init -n my-paper -s apa -o ./projects
+amf init -n my-research-paper -s ieee -o ./papers
 ```
 
-| Option | Description |
-|--------|-------------|
-| `-n, --name TEXT` | Project name (default: `my-manuscript`) |
-| `-s, --style TEXT` | Default formatting style |
-| `-o, --output PATH` | Output directory |
+| Option | Flag | Description | Default |
+|---|---|---|---|
+| `-n` | `--name TEXT` | Project name | `my-manuscript` |
+| `-s` | `--style TEXT` | Default project formatting style | `apa` |
+| `-o` | `--output PATH` | Output target directory | `.` |
 
-### `config`
+---
 
-Show current AMF configuration settings.
+### 6. `config` Command
+
+Display current active CLI configuration settings and file locations.
 
 ```bash
 amf config
 ```
 
-### `issue` / `issues`
-
-Report, manage, and track issues and feature feedback directly from the CLI.
-
-```bash
-# Report an issue
-amf issue report -t "Heading parsing error" -d "H2 headers are misclassified" -c bug -s high --attach-logs
-
-# List open issues
-amf issue list --status new --category bug
-
-# View issue details
-amf issue show ISS-1001
-
-# Add a comment
-amf issue comment ISS-1001 -b "Fix tested locally"
-
-# Update status or severity
-amf issue update ISS-1001 --status resolved
-
-# Search issues
-amf issue search "heading"
-
-# Show issue statistics and SLA compliance
-amf issue stats
-
-# View label taxonomy
-amf issue labels
-
-# Backup issue dataset
-amf issue backup
-```
-
-| Subcommand | Options & Arguments | Description |
-|---|---|---|
-| `report` | `-t/--title`, `-d/--description`, `-c/--category`, `-s/--severity`, `-n/--name`, `-e/--email`, `--anonymous`, `--attach-logs` | Submit a new issue report |
-| `list` | `--status`, `--category`, `--severity`, `--label`, `--search`, `-l/--limit` | List issues with filtering |
-| `show` | `<issue_id>` | Show detailed issue breakdown |
-| `comment` | `<issue_id>`, `-b/--body` | Add a comment to an existing issue |
-| `update` | `<issue_id>`, `--status`, `--severity`, `--assign`, `--milestone` | Update issue properties |
-| `search` | `<query>`, `-l/--limit` | Search issues across fields |
-| `stats` | None | Display issue metrics and SLA breaches |
-| `labels` | None | List defined labels and colors |
-| `backup` | None | Backup local issue data |
-
-### `update`
-
-Manage application update checking, downloads, installation, rollbacks, and release channels.
-
-```bash
-# Check for updates
-amf update check --channel stable
-
-# Download a specific version
-amf update download --version 1.2.0
-
-# Install downloaded update
-amf update install
-
-# Rollback to previous version
-amf update rollback
-
-# Show update history
-amf update history --limit 10
-
-# View release channels
-amf update channels
-
-# Update updater settings
-amf update settings --auto-check --channel stable
-
-# View release notes
-amf update release-notes 1.2.0
-```
-
-| Subcommand | Options & Arguments | Description |
-|---|---|---|
-| `check` | `--channel` | Check for available updates |
-| `download` | `--version` | Download update binary/package |
-| `install` | None | Apply downloaded update |
-| `rollback` | `--version` | Rollback to target version |
-| `history` | `--limit` | Display historical update log |
-| `channels` | None | List release channels (`stable`, `beta`, `nightly`) |
-| `settings` | `--channel`, `--auto-check/--no-auto-check`, `--auto-download`, `--auto-install` | Inspect or update updater settings |
-| `release-notes` | `<version>` | View release notes for version |
+Outputs the contents of `~/.amf/config.json` merged with environment variable defaults.
 
 ---
 
-## Configuration File
+### 7. `update` Command Group
 
-Location: `~/.amf/config.json` or `amf.config.json` in project root.
+Manage application update checks, binary downloads, installation, version rollbacks, and release channels.
+
+```bash
+# Check for available software updates
+amf update check --channel stable
+
+# Download a specific software version
+amf update download --version 1.2.0
+
+# Install downloaded update package
+amf update install
+
+# Rollback to a previous installed version
+amf update rollback --version 1.1.0
+
+# Display update history log
+amf update history --limit 10
+
+# View available release channels
+amf update channels
+
+# Update auto-update configuration settings
+amf update settings --channel stable --auto-check
+
+# View release notes for a version
+amf update release-notes 1.2.0
+```
+
+| Subcommand | Arguments / Options | Description |
+|---|---|---|
+| `check` | `--channel TEXT` | Check for available software updates on specified channel |
+| `download` | `--version TEXT` | Download update binary package for version |
+| `install` | None | Apply downloaded update binary |
+| `rollback` | `--version TEXT` | Rollback to target version |
+| `history` | `--limit INT` | View historical software updates log (default: 20 entries) |
+| `channels` | None | List release channels (`stable`, `beta`, `nightly`) |
+| `settings` | `--channel`, `--auto-check/--no-auto-check`, `--auto-download`, `--auto-install` | Update auto-updater preferences |
+| `release-notes` | `<version>` | View release notes for a specific version |
+
+---
+
+### 8. `issue` Command Group (`issue` / `issues`)
+
+Report, track, filter, comment on, and manage feedback and bug reports directly from the CLI.
+
+```bash
+# Submit a new issue report
+amf issue report -t "Table formatting bug" -d "Borders missing in IEEE" -c bug -s high --attach-logs
+
+# List open issues with filters
+amf issue list --status new --category bug --limit 10
+
+# Show issue details and discussion thread
+amf issue show ISS-1001
+
+# Add a comment to an issue
+amf issue comment ISS-1001 -b "Fix verified in v1.1.2"
+
+# Update issue status or severity
+amf issue update ISS-1001 --status resolved
+
+# Search issues across titles and descriptions
+amf issue search "table border"
+
+# Display issue statistics and SLA metrics
+amf issue stats
+
+# Display defined issue label taxonomy
+amf issue labels
+
+# Backup local issue dataset
+amf issue backup
+```
+
+| Subcommand | Arguments & Options | Description |
+|---|---|---|
+| `report` | `-t/--title`, `-d/--description`, `-c/--category`, `-s/--severity`, `-n/--name`, `-e/--email`, `--anonymous`, `--attach-logs` | Submit a new issue report to API or local store |
+| `list` | `--status`, `--category`, `--severity`, `--label`, `--search`, `-l/--limit` | Query and filter open issues |
+| `show` | `<issue_id>` | View complete issue details and comment thread |
+| `comment` | `<issue_id>`, `-b/--body` | Append a comment to an existing issue |
+| `update` | `<issue_id>`, `--status`, `--severity`, `--assign`, `--milestone` | Modify issue state, assignee, or milestone |
+| `search` | `<query>`, `-l/--limit` | Perform text search across issue dataset |
+| `stats` | None | View summary metrics, resolution rates, and SLA status |
+| `labels` | None | Display configured issue label tags |
+| `backup` | None | Create a JSON backup of issue data |
+
+---
+
+## Configuration File Format
+
+File path: `~/.amf/config.json` (Linux/macOS) or `%APPDATA%\amf\config.json` (Windows).
 
 ```json
 {
@@ -205,14 +307,20 @@ Location: `~/.amf/config.json` or `amf.config.json` in project root.
   "page_size": "A4",
   "font_family": "Times New Roman",
   "font_size": 12,
-  "line_spacing": 2.0
+  "line_spacing": 2.0,
+  "include_toc": false,
+  "include_page_numbers": true,
+  "include_running_header": true,
+  "verbose": false
 }
 ```
 
-## Exit Codes
+---
 
-| Code | Meaning |
-|------|---------|
-| 0 | Success |
-| 1 | General error / import error |
-| 2 | Validation failed |
+## Exit Codes Reference
+
+| Exit Code | Classification | Meaning |
+|---|---|---|
+| `0` | Success | Command executed successfully |
+| `1` | General Error | Runtime error, missing file, or REST API failure without local fallback |
+| `2` | Validation Failure | Manuscript failed validation rules or CLI configuration syntax error |

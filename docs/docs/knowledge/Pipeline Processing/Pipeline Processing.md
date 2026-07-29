@@ -154,7 +154,7 @@ Client->>Orchestrator : submit job (input_path, job_id, template, options)
 Orchestrator->>DB : update status UPLOAD
 Orchestrator->>Conv : convert_to_docx (if needed)
 Orchestrator->>PF : get_parser(input_path)
-Orchestrator->>PF : parse(input_path/docx, job_id)
+Orchestrator->>PF : parse("input_path/docx, job_id")
 Orchestrator->>G : process_header_document (parallel)
 Orchestrator->>D : analyze_layout (parallel)
 Orchestrator->>SD : detect structure

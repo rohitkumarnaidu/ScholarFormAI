@@ -181,8 +181,8 @@ FIGMATCH["CaptionMatcher"]
 TABMATCH["TableCaptionMatcher"]
 VALID["DocumentValidator"]
 FORM["Formatter"]
-OUT_JSON["JSON Outputs (normal/)"]
-OUT_DOCX["DOCX Outputs (visual/)"]
+OUT_JSON["JSON Outputs(normal/)"]
+OUT_DOCX["DOCX Outputs(visual/)"]
 U --> CMD
 CMD --> PARSER
 PARSER --> NORMALIZE

@@ -233,7 +233,7 @@ The Lighthouse CI integration has minimal external dependencies but relies on se
 graph LR
 subgraph "External Dependencies"
 A[LHCI CLI]
-B[Chrome/Chromium]
+B["Chrome/Chromium"]
 C[GitHub Actions Runner]
 end
 subgraph "Internal Dependencies"

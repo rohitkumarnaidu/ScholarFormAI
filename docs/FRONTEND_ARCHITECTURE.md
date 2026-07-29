@@ -1068,8 +1068,6 @@ Browser ? useReportWebVitals ? src/lib/rum.js (trackEvent)
                                         → GET /metrics → POST /api/v1/metrics/log-error
 ```
 
-```
-
 **Integration pattern**:
 
 ```javascript

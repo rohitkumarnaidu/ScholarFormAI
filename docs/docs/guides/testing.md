@@ -1,76 +1,6 @@
-<!-- SPDX-License-Identifier: MIT -->
-<!-- Copyright (c) 2026 ScholarForm AI -->
-
 # ScholarForm AI — Testing & Quality Assurance Guide
 
 ScholarForm AI employs a comprehensive test harness spanning backend Python service unit tests (`pytest`), frontend React component unit tests (`Vitest 4.1.8`), frontend end-to-end browser integration tests (`Playwright 1.58.2`), and CLI integration tests.
-
-## Table of Contents
-
-- [Test Architecture Overview](#test-architecture-overview)
-- [Test Suites Overview Matrix](#test-suites-overview-matrix)
-- [Backend Testing](#1-backend-testing-pytest)
-- [CLI Testing](#2-cli-testing-pytest)
-- [Frontend Unit Testing](#3-frontend-unit--component-testing-vitest-418)
-- [Frontend E2E Testing](#4-frontend-end-to-end-testing-playwright-158)
-- [CI/CD Pipeline & Coverage](#5-cicd-pipeline--coverage-requirements)
-
----
-
-## Test Architecture Overview
-
-### Test Pyramid
-
-```mermaid
-flowchart TD
-    subgraph Pyramid["ScholarForm AI Test Pyramid"]
-        E2E["🔺 E2E Tests\n(Playwright — 6 critical journeys)\nSlowest · Highest Confidence\nBrowser automation vs. full stack"]
-        Integration["🔶 Integration Tests\n(pytest -m integration)\nRequires: Redis + PostgreSQL + GROBID\nVerifies real inter-service contracts"]
-        Unit["🟩 Unit & Deep Mocking Tests\n(pytest fast suite + Vitest)\nFastest · No external dependencies\n900+ assertions · 9 deep modules"]
-    end
-
-    Unit --> Integration --> E2E
-
-    style E2E fill:#5c1a1a,color:#fff
-    style Integration fill:#5c3a1a,color:#fff
-    style Unit fill:#1a4a3c,color:#fff
-```
-
-### Test Execution Flow
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Dev as "Developer / CI Runner"
-    participant Ruff as "Ruff Linter"
-    participant Mypy as "Mypy Type Checker"
-    participant Pytest as "Pytest Backend"
-    participant Vitest as "Vitest Frontend"
-    participant Playwright as "Playwright E2E"
-    participant Coverage as "Coverage Reporter"
-
-    Dev->>Ruff: ruff check app --config ruff.toml
-    Ruff-->>Dev: ✅ No lint errors
-
-    Dev->>Mypy: mypy --config-file mypy.ini app
-    Mypy-->>Dev: ✅ Type checks passed
-
-    Dev->>Pytest: pytest tests -m "not integration and not llm" -x -q
-    Pytest-->>Dev: ✅ Unit tests passed (~45s)
-
-    Dev->>Pytest: pytest tests -m integration
-    Note over Pytest: Requires Docker: Redis + PG + GROBID
-    Pytest-->>Dev: ✅ Integration tests passed (~2min)
-
-    Dev->>Vitest: npm test (Vitest)
-    Vitest-->>Dev: ✅ Component tests passed (~15s)
-
-    Dev->>Playwright: npm run test:e2e
-    Playwright-->>Dev: ✅ E2E journeys passed (~1.5min)
-
-    Dev->>Coverage: pytest --cov=app --cov-report=term-missing
-    Coverage-->>Dev: 📊 Coverage Report (target ≥70%)
-```
 
 ---
 
@@ -230,12 +160,12 @@ npm run test:e2e:headed
 
 | # | E2E Test Suite | File Path | Scope |
 |---|---|---|---|
-| 1 | Guest Upload Journey | `e2e/upload-journey.spec.js` | Upload manuscript → Process → Download DOCX |
-| 2 | Authentication Flow | `e2e/auth-flow.spec.js` | Signup → Login → Dashboard redirect |
-| 3 | Template Formatter | `e2e/formatter-upload.spec.js` | Select IEEE template → Generate → DOCX export |
+| 1 | Guest Upload Journey | `e2e/upload-journey.spec.js` | Upload manuscript -> Process -> Download DOCX |
+| 2 | Authentication Flow | `e2e/auth-flow.spec.js` | Signup -> Login -> Dashboard redirect |
+| 3 | Template Formatter | `e2e/formatter-upload.spec.js` | Select IEEE template -> Generate -> DOCX export |
 | 4 | Live Preview SSE | `e2e/formatter-live-preview.spec.js` | WebSocket / SSE live document preview rendering |
-| 5 | AI Generator Chat | `e2e/generator-outline-approve.spec.js` | Create session → Generate outline → Approve → Draft |
-| 6 | Multi-Doc Synthesis | `e2e/generator-synthesis.spec.js` | Upload 2 PDFs → Synthesize review paper stream |
+| 5 | AI Generator Chat | `e2e/generator-outline-approve.spec.js` | Create session -> Generate outline -> Approve -> Draft |
+| 6 | Multi-Doc Synthesis | `e2e/generator-synthesis.spec.js` | Upload 2 PDFs -> Synthesize review paper stream |
 
 ---
 
@@ -243,60 +173,12 @@ npm run test:e2e:headed
 
 ### Automated GitHub Actions Workflows
 
-```mermaid
-flowchart LR
-    subgraph PR["Pull Request Trigger"]
-        Push["git push / PR opened"]
-    end
-
-    subgraph BackendCI["backend-ci.yml"]
-        BLint["ruff check\n+ ruff format"]
-        BType["mypy type check"]
-        BTest["pytest fast suite\n(-m 'not integration and not llm')"]
-        BCov["Coverage report\n(minimum 70%)"]
-        BLint --> BType --> BTest --> BCov
-    end
-
-    subgraph FrontendCI["frontend-ci.yml"]
-        FLint["eslint check"]
-        FTest["vitest run"]
-        FBuild["next build"]
-        FE2E["playwright test"]
-        FLint --> FTest --> FBuild --> FE2E
-    end
-
-    subgraph Security["security.yml"]
-        PipAudit["pip-audit"]
-        NpmAudit["npm audit"]
-        Trivy["Trivy container scan"]
-        CodeQL["CodeQL SAST"]
-        PipAudit --> NpmAudit --> Trivy --> CodeQL
-    end
-
-    Push --> BackendCI
-    Push --> FrontendCI
-    Push --> Security
-```
+- `backend-ci.yml`: Runs `ruff` linting, `mypy` type check, and `pytest` fast suite on PRs and pushes to `main`.
+- `frontend-ci.yml`: Runs `eslint`, `vitest run`, Next.js build, and `playwright test`.
+- `security.yml`: Runs dependency vulnerability scans (`pip-audit`, `npm audit`, Trivy, CodeQL).
 
 ### Code Coverage Policy
 
-| Scope | Minimum Coverage | Enforcement |
-|-------|-----------------|-------------|
-| **Global Backend** | **70%** line coverage | CI fail below threshold |
-| **Core Engine Modules** | **>80%** line coverage | CI warning |
-| **Frontend Components** | **>70%** line coverage | CI warning |
-
-> [!NOTE]
-> Coverage is measured using `pytest-cov` with the `--cov=app` flag. The `.coveragerc` file in `backend/` defines exclusion patterns for generated code, migrations, and test files.
-
----
-
-## Related Documentation
-
-- [ARCHITECTURE.md](ARCHITECTURE.md) — System topology
-- [docs/TESTING_ARCHITECTURE.md](docs/TESTING_ARCHITECTURE.md) — Full test infrastructure design
-- [docs/CI_CD_ARCHITECTURE.md](docs/CI_CD_ARCHITECTURE.md) — GitHub Actions workflows
-
----
-
-*Last updated: July 2026*
+- **Global Backend Coverage Minimum:** **70%** line coverage (enforced in CI).
+- **Core Engine Modules Coverage Target:** **>80%** line coverage.
+- **Frontend Component Coverage Target:** **>70%** line coverage.

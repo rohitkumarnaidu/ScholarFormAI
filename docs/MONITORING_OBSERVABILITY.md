@@ -1,7 +1,17 @@
 # Monitoring & Observability
 
-> **Last updated:** 2026-07-16  
+> **Last updated:** 2026-07-16
 > **Audience:** Platform engineers, SRE, on-call responders
+
+## Table of Contents
+
+- [Overview](#1-overview)
+- [Observability Stack Architecture](#observability-stack-architecture)
+- [Metrics (Prometheus)](#2-metrics-prometheus)
+- [Structured Logging](#3-structured-logging)
+- [Health Checks](#4-health-checks)
+- [Alerting Strategy](#alerting-strategy)
+- [SLO Definitions](#slo-definitions)
 
 ---
 
@@ -23,7 +33,7 @@ fourth (analytics) layer for product intelligence.
 ```mermaid
 graph TB
     subgraph Frontend
-        RUM[Lighthouse CI / RUM]
+        RUM["Lighthouse CI / RUM"]
         LATENCY[LatencyObserver Component]
     end
 
@@ -468,7 +478,7 @@ sequenceDiagram
 
     Client->>MW: HTTP Request (with X-Request-Id)
     MW->>MW: request.state.request_id = UUID
-    MW->>Logger: INFO "Request started [ID: abc]"
+    MW->>Logger: INFO "Request started["ID: abc"]"
 
     MW->>Route: call_next(request)
     Route->>Route: bind_request_context(request, job_id)
@@ -476,7 +486,7 @@ sequenceDiagram
     Route->>Route: reset_context(tokens)
     Route-->>MW: Response
 
-    MW->>Logger: INFO "Request completed [ID: abc] dur=1.2s"
+    MW->>Logger: INFO "Request completed["ID: abc"] dur=1.2s"
     MW->>Client: X-Request-Id: abc, X-Processing-Time: 1.2
 ```
 
@@ -568,31 +578,31 @@ celery_app.conf.update(
 ```mermaid
 graph LR
     subgraph "Frontend Monitoring"
-        LH[Lighthouse CI<br/>Score gates]
-        RUM[RUM Placeholder<br/>src/lib/rum.js]
-        MET[Client Metrics<br/>src/lib/metrics.js]
+        LH["Lighthouse CI<br/>Score gates"]
+        RUM["RUM Placeholder<br/>src/lib/rum.js"]
+        MET["Client Metrics<br/>src/lib/metrics.js"]
         PH[Analytics]
-        LAT[LatencyObserver<br/>Component]
+        LAT["LatencyObserver<br/>Component"]
 
     end
 
     subgraph "Backend Monitoring"
-        PROM[Prometheus<br/>Instrumentator]
-        MM[MetricsManager<br/>prometheus_metrics.py]
-        MW[MonitoringMiddleware<br/>monitoring.py]
-        HC[Health Checks<br/>health_checks.py]
-        LOG[Structured Logging<br/>logging_config.py]
-        CTX[LogContext<br/>logging_context.py]
+        PROM["Prometheus<br/>Instrumentator"]
+        MM["MetricsManager<br/>prometheus_metrics.py"]
+        MW["MonitoringMiddleware<br/>monitoring.py"]
+        HC["Health Checks<br/>health_checks.py"]
+        LOG["Structured Logging<br/>logging_config.py"]
+        CTX["LogContext<br/>logging_context.py"]
 
-        CELERY[Celery Tasks<br/>celery_tasks.py]
+        CELERY["Celery Tasks<br/>celery_tasks.py"]
     end
 
     subgraph "Storage & Visualization"
-        PG[Prometheus<br/>Server]
-        GF[Grafana<br/>Provisioned Dashboards]
+        PG["Prometheus<br/>Server"]
+        GF["Grafana<br/>Provisioned Dashboards"]
 
         PHDB[Analytics]
-        FILES[Rotating Logs<br/>logs/app.log<br/>logs/errors.log]
+        FILES["Rotating Logs<br/>logs/app.log<br/>logs/errors.log"]
     end
 
     LH -->|audit| GF
@@ -759,4 +769,4 @@ async def test_metrics_endpoint_returns_prometheus_format(client):
     assert response.headers["content-type"].startswith("text/plain")
     assert "# HELP" in response.text or response.text.startswith("http_")
 ```
-```
+

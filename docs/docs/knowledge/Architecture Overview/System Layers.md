@@ -344,11 +344,11 @@ UI_Start["User Upload/Action"] --> Validate["Client-side Zod Schemas"]
 Validate --> Submit["Fetch('/api/...')"]
 Submit --> Gateway["FastAPI Gateway"]
 Gateway --> Handlers["Routers & Handlers"]
-Handlers --> Data["Data Layer (PG/Redis/Chroma)"]
-Data --> External["External Services (Auth/CrossRef)"]
+Handlers --> Data["Data Layer(PG/Redis/Chroma)"]
+Data --> External["External Services(Auth/CrossRef)"]
 External --> Handlers
 Handlers --> Response["JSON/Streaming Response"]
-Response --> UI_Update["UI Update (Preview/Results)"]
+Response --> UI_Update["UI Update(Preview/Results)"]
 ```
 
 **Diagram sources**

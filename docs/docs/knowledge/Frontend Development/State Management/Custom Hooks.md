@@ -393,7 +393,7 @@ API-->>Agent : {session_id}
 Agent-->>UI : activeSessionId, state=parsing
 SSE->>API : EventSource(.../sessions/{id}/events)
 SSE-->>Agent : outline_chunk -> buffer JSON
-SSE-->>Agent : stage_update -> set state (outline_review/generating/complete)
+SSE-->>Agent : stage_update -> set state("outline_review/generating/complete")
 UI->>Agent : handleSendMessage(text)
 Agent->>API : sendMessage(activeSessionId, text)
 API-->>Agent : {content, sources}

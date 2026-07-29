@@ -895,32 +895,32 @@ python scripts/run_backup_drills.py --drill pitr
 graph TD
     subgraph Production
         PG[(PostgreSQL<br/>Supabase)]
-        FS[File Storage<br/>Supabase S3]
-        CH[ChromaDB<br/>semantic_store/]
-        CFG[Configuration<br/>.env + Render vars]
+        FS["File Storage<br/>Supabase S3"]
+        CH["ChromaDB<br/>semantic_store/"]
+        CFG["Configuration<br/>.env + Render vars"]
     end
 
     subgraph Backup Pipeline
-        WAL[WAL Archiving<br/>Continuous]
-        SNAP[Daily Snapshot<br/>02:00 UTC]
-        S3_V[S3 Versioning<br/>Real-time]
-        KB_JSON[kb.json<br/>Dual-write]
-        GPG[GPG Encryption<br/>On change]
+        WAL["WAL Archiving<br/>Continuous"]
+        SNAP["Daily Snapshot<br/>02:00 UTC"]
+        S3_V["S3 Versioning<br/>Real-time"]
+        KB_JSON["kb.json<br/>Dual-write"]
+        GPG["GPG Encryption<br/>On change"]
     end
 
     subgraph Storage
         WAL_S3[(WAL Archive<br/>S3 - Supabase managed)]
         SNAP_S3[(Snapshots<br/>S3 - Supabase managed)]
         S3_VERSIONS[(Object Versions<br/>S3)]
-        KB_FILE[kb.json<br/>semantic_store/]
-        GPG_FILE[.env.gpg<br/>Vault / 1Password]
+        KB_FILE["kb.json<br/>semantic_store/"]
+        GPG_FILE[".env.gpg<br/>Vault / 1Password"]
         GIT[(GitHub<br/>Code + Migrations)]
     end
 
     subgraph Verification
-        VB[verify_backup.py<br/>Weekly]
-        VM[verify_migration.py<br/>Weekly]
-        RD[Restore Drills<br/>Quarterly]
+        VB["verify_backup.py<br/>Weekly"]
+        VM["verify_migration.py<br/>Weekly"]
+        RD["Restore Drills<br/>Quarterly"]
     end
 
     PG --> WAL

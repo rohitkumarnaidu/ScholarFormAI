@@ -188,22 +188,22 @@ participant E2E as "End-to-End Tests"
 Dev->>GH : Push/PR to main
 GH->>GH : backend-ci.yml
 GH->>GH : frontend-ci.yml
-GH->>Sec : security.yml (PR/main/cron/dispatch)
+GH->>Sec : security.yml(PR/main/cron/dispatch)
 Sec-->>GH : Security report
-GH->>Stage : deploy-staging.yml (on main/dispatch)
+GH->>Stage : deploy-staging.yml(on main/dispatch)
 Stage->>Preflight : Validate secrets & detect mode
-Preflight-->>Stage : Mode detected (API/Hook)
+Preflight-->>Stage : Mode detected(API/Hook)
 Stage->>Render : Deploy via selected mode
 Render-->>Stage : HTTP 200/201 or error
 Stage->>BE : Health check + Locust SLO
-GH->>E2E : e2e-staging.yml (on dispatch/completion)
+GH->>E2E : e2e-staging.yml(on dispatch/completion)
 E2E-->>GH : Staging E2E results
 GH->>Prod : deploy-production.yml (on dispatch)
 Prod->>Preflight : Validate secrets & detect mode
 Prod->>Render : Deploy via selected mode
 Render-->>Prod : HTTP 200/201 or error
 Prod->>BE : Health check
-GH->>E2E : e2e-production.yml (on dispatch/completion)
+GH->>E2E : e2e-production.yml(on dispatch/completion)
 E2E-->>GH : Production E2E results
 ```
 
@@ -230,7 +230,7 @@ SetupPy --> PrepEnv["Prepare .env from .env.example"]
 PrepEnv --> InstallDeps["Install pip, requirements-render.txt, ruff, mypy, pytest"]
 InstallDeps --> Ruff["Run Ruff checks"]
 Ruff --> Mypy["Run MyPy (continue on error)"]
-Mypy --> Pytest["Run PyTest (exclude integration/slow)"]
+Mypy --> Pytest["Run PyTest(exclude integration/slow)"]
 Pytest --> End(["Workflow complete"])
 ```
 
@@ -297,7 +297,7 @@ flowchart TD
 Start(["PR/main/cron/dispatch"]) --> Checkout["Checkout code"]
 Checkout --> SetupPy["Setup Python 3.12"]
 SetupPy --> BuildImg["docker build backend image"]
-BuildImg --> Trivy["Trivy scan (critical/high)"]
+BuildImg --> Trivy["Trivy scan(critical/high)"]
 Trivy --> Bandit["Bandit scan (JSON report)"]
 Bandit --> OWASP["OWASP Dependency Check (fail on CVSS >= 7)"]
 OWASP --> End(["Security workflow complete"])
@@ -536,7 +536,7 @@ The CI/CD pipeline depends on:
 
 ```mermaid
 graph TB
-GH[".github/workflows/*"] --> RND["Render API/Webhook (Staging/Prod)"]
+GH[".github/workflows/*"] --> RND["Render API/Webhook(Staging/Prod)"]
 GH --> VCD["Vercel CLI (npx vercel@latest)"]
 SEC["security.yml"] --> IMG["backend/docker/Dockerfile"]
 DS["deploy-staging.yml"] --> IMG

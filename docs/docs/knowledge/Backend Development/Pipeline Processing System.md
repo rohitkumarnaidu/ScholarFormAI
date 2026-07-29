@@ -124,7 +124,7 @@ Orchestrator->>Formatter : "apply template/style"
 Formatter-->>Orchestrator : "generated_doc"
 Orchestrator->>Exporter : "export formatted output"
 Exporter-->>Orchestrator : "output_path"
-Orchestrator-->>Celery : "result (success/error)"
+Orchestrator-->>Celery : "result("success/error")"
 Celery-->>Client : "completion status"
 ```
 

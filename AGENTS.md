@@ -1,8 +1,62 @@
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Copyright (c) 2026 ScholarForm AI -->
+
 # AI Agents Development Guide
 
 ## Overview
 
-AMF (ScholarForm AI) supports AI agent integration through its API, CLI, and SDK. This guide explains how AI coding agents can effectively navigate and work with the ScholarForm AI codebase.
+ScholarForm AI (AMF) supports AI agent integration through its API, CLI, and SDK. This guide explains how AI coding agents can effectively navigate and work with the ScholarForm AI codebase, communicate across multi-agent workflows, and execute clean handoffs.
+
+---
+
+## Agent Communication & Handoff Protocol
+
+ScholarForm AI uses a multi-agent orchestration architecture. Agents communicate via structured messages and file-based state artifacts located in `.agents/<worker_id>/`.
+
+### Sequence Flow: Agent Communication & Delegation
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Parent as "Orchestrator / Parent Agent"
+    participant Worker as "Worker Agent("Implementer/QA")"
+    participant FS as "File System(".agents/ & Project Root")"
+    participant Auditor as "Forensic Auditor / QA Agent"
+
+
+    Parent->>Worker: Dispatch Task (Scope, Roles, Parent ID, Context)
+    Note over Worker: 1. Initialize ORIGINAL_REQUEST.md & BRIEFING.md<br/>2. Create progress.md (Liveness Heartbeat)
+    Worker->>FS: Log state in .agents/<worker>/
+    
+    loop Execution & Verification Cycle
+        Worker->>FS: Re-read files & apply minimal-change edits
+        Worker->>FS: Run build/test verification commands
+        Worker->>FS: Update progress.md heartbeat & BRIEFING.md
+    end
+
+    Note over Worker: 3. Generate Self-Contained Handoff Report
+    Worker->>FS: Write handoff.md("5 Components: Observation, Logic Chain, Caveats, Conclusion, Verification")
+    
+    Worker->>Auditor: Request Independent Verification
+    Auditor->>FS: Inspect handoff.md & execute Verification Method
+    Auditor-->>Worker: Verification Confirmation / Audit Pass
+    
+    Worker->>Parent: send_message (Completion Notice + handoff.md reference)
+```
+
+### 5-Component Handoff Protocol
+
+Every task transfer or completion handoff report (`handoff.md`) MUST contain these 5 required sections:
+
+| Component | Purpose & Contents | Verification Criteria |
+|-----------|--------------------|-----------------------|
+| **1. Observation** | Direct findings: file paths, line numbers, verbatim errors, tool outputs. | Quotes exact paths and lines from current codebase. |
+| **2. Logic Chain** | Step-by-step reasoning from observations to conclusions. | Each step explicitly links back to an observation. |
+| **3. Caveats** | Uninvestigated areas, assumptions, or risk factors. | Must state caveats or explicitly "No caveats." |
+| **4. Conclusion** | Actionable final assessment supported by logic chain. | Scoped to original request objectives. |
+| **5. Verification Method** | Commands and steps to independently verify the work. | Includes exact test/build commands (e.g. `pytest`, `npm test`). |
+
+---
 
 ## Repository Map
 
@@ -21,7 +75,7 @@ ScholarFormAI/
 ├── sdk/amf_sdk/async_client.py  # Asynchronous Python SDK client (AsyncAMFClient)
 ├── frontend/app/                # Next.js 16 App Router pages & route groups
 ├── frontend/src/                # Shared UI components, hooks, lib, contexts & services
-└── docs/                        # Docusaurus documentation framework
+└── docs/                        # Documentation framework
 ```
 
 ### Service Architecture & Dependencies
@@ -41,6 +95,8 @@ The service layer contains 48 dedicated modules in `backend/app/services/`:
 - **AI Generator & RAG**: `generator_session_service`, `generation_service`, `synthesis_service`, `session_vector_store`, `llm_fallback_service`, `llm_provider_service`, `llm_service`, `llm_key_service`, `classification_gate`, `provider_registry`, `nvidia_client`, `vllm_adoption`, `model_store`, `model_metrics`.
 - **Citation & Enhancements**: `citation_assembly_service`, `csl_service`, `crossref_client`, `enhancement_manager`, `suggestion_service`, `quality_score_service`.
 - **Platform & Infrastructure**: `auth_service`, `user_service`, `api_key_service`, `api_key_rate_limiter`, `audit_log_service`, `issue_service`, `update_service`, `feedback_service`, `activity_service`, `analytics_service`, `ab_testing`, `feature_flags`, `webhook_service`, `health_checks`, `encryption_service`.
+
+---
 
 ## Common Agent Tasks
 
@@ -68,6 +124,8 @@ The service layer contains 48 dedicated modules in `backend/app/services/`:
 3. Add tests in `cli/tests/test_cli.py`
 4. Update CLI docs in `CLI_REFERENCE.md` and `docs/docs/cli/reference.md`
 
+---
+
 ## Important Conventions
 
 - Python type hints required on all public functions
@@ -76,6 +134,8 @@ The service layer contains 48 dedicated modules in `backend/app/services/`:
 - Rich library for CLI terminal output
 - Conventional Commits for commit messages
 - Ruff for Python formatting
+
+---
 
 ## Agent-Optimized Documentation
 
@@ -87,4 +147,3 @@ The service layer contains 48 dedicated modules in `backend/app/services/`:
 - `CONFIGURATION.md` — Comprehensive settings reference matching Pydantic `Settings`
 - `TESTING.md` — Test guide and test runner specifications
 - `ERROR_CODES.md` — Error code reference aligned with `api_envelope`
-

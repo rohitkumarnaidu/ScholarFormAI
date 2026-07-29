@@ -236,7 +236,7 @@ participant Comp as "Component"
 participant Ctx as "Context"
 participant Hook as "Hook"
 participant Util as "Analytics/Utils"
-User->>Comp : Interact (click/toggle/change)
+User->>Comp : Interact("click/toggle/change")
 Comp->>Ctx : Update state (optional)
 Comp->>Hook : Subscribe to streams/events
 Hook-->>Comp : Data/state updates

@@ -118,7 +118,7 @@ Follow these steps to prepare and run the backend:
 ```mermaid
 flowchart TD
 A["cd backend"] --> B["Create venv<br/>python -m venv .venv"]
-B --> C["Activate venv<br/>.venv/bin/activate (Linux/Mac)<br/>.venv\\Scripts\\activate (Windows)"]
+B --> C["Activate venv<br/>.venv/bin/activate(Linux/Mac)<br/>.venv\\Scripts\\activate (Windows)"]
 C --> D["pip install -r requirements.txt"]
 D --> E["Configure backend/.env"]
 E --> F["uvicorn app.main:app --reload --port 8000"]

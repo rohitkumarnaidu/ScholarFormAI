@@ -117,7 +117,7 @@ CE->>FS : resolve_style_path(style, style_path)
 alt style_path provided
 FS-->>CE : styles.csl (explicit)
 else built-in mapping
-FS-->>CE : styles.csl (template/<style>)
+FS-->>CE : styles.csl("template/<style>")
 end
 CE->>CE : _format_with_citeproc()
 CE->>API : search_styles() (if needed)

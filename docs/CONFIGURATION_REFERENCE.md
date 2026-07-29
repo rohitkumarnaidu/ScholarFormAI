@@ -365,8 +365,8 @@ graph TD
     A[Configuration Request] --> B{pydantic-settings<br/>Field()}
     B --> C[Default Value<br/>Field(default=...)]
     C --> D{.env file<br/>backend/.env}
-    D --> E[Environment Variable<br/>os.environ / Render Dashboard]
-    E --> F[Runtime Override<br/>request.state / feature flag]
+    D --> E["Environment Variable<br/>os.environ / Render Dashboard"]
+    E --> F["Runtime Override<br/>request.state / feature flag"]
     F --> G[Effective Value]
 
     subgraph "Resolution Priority (low → high)"

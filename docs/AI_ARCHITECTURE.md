@@ -20,69 +20,69 @@ All AI stages are **optional and gracefully degrade**: if LLMClassifier is unava
 ```mermaid
 graph TB
     subgraph Input["Input Layer"]
-        UPLOAD[File Upload<br/>DOCX/PDF/TXT/MD/TeX/HTML]
-        IC[InputConverter<br/>.doc/.odt/.rtf → DOCX]
+        UPLOAD["File Upload<br/>DOCX/PDF/TXT/MD/TeX/HTML"]
+        IC["InputConverter<br/>.doc/.odt/.rtf → DOCX"]
     end
 
     subgraph Stage1["1. Parsing (ParserFactory)"]
         DP[DocxParser]
-        PP[PdfParser<br/>PyMuPDF]
-        NP[LLMPDFParser<br/>OCR Fallback]
+        PP["PdfParser<br/>PyMuPDF"]
+        NP["LLMPDFParser<br/>OCR Fallback"]
         TP[TxtParser]
-        HP[HtmlParser<br/>BeautifulSoup4]
+        HP["HtmlParser<br/>BeautifulSoup4"]
         MP[MarkdownParser]
         TEP[TexParser]
     end
 
     subgraph Stage2["2. Metadata & Layout"]
-        GRO[GROBID Client<br/>Metadata Extraction]
-        DOC[Docling Client<br/>Layout Analysis]
-        PYMF[PyMuPDF Fallback<br/>Metadata Only]
+        GRO["GROBID Client<br/>Metadata Extraction"]
+        DOC["Docling Client<br/>Layout Analysis"]
+        PYMF["PyMuPDF Fallback<br/>Metadata Only"]
     end
 
     subgraph Stage3["3. AI Intelligence"]
         EQ[Equation Standardizer]
-        SD[StructureDetector<br/>Heading/Section IDs]
-        SP[SemanticParser<br/>LLMClassifier / Heuristics]
-        CC[ContentClassifier<br/>BlockType Assignment]
-        NLP[ContentAnalyzer<br/>NLP & Keywords]
+        SD["StructureDetector<br/>Heading/Section IDs"]
+        SP["SemanticParser<br/>LLMClassifier / Heuristics"]
+        CC["ContentClassifier<br/>BlockType Assignment"]
+        NLP["ContentAnalyzer<br/>NLP & Keywords"]
     end
 
     subgraph Stage4["4. Content Analysis"]
-        CM[CaptionMatcher<br/>Figure Captions]
-        TCM[TableCaptionMatcher<br/>Table Captions]
-        FA[FigureAnalyzer<br/>Quality/DPI]
-        RP[ReferenceParser<br/>Reference Extraction]
+        CM["CaptionMatcher<br/>Figure Captions"]
+        TCM["TableCaptionMatcher<br/>Table Captions"]
+        FA["FigureAnalyzer<br/>Quality/DPI"]
+        RP["ReferenceParser<br/>Reference Extraction"]
     end
 
     subgraph Stage5["5. AI Reasoning & Enrichment"]
-        RAG[RagEngine<br/>ChromaDB + SBERT]
-        RE[ReasoningEngine<br/>LLM Instruction Sets]
-        CR[CrossRefClient<br/>Citation Validation]
+        RAG["RagEngine<br/>ChromaDB + SBERT"]
+        RE["ReasoningEngine<br/>LLM Instruction Sets"]
+        CR["CrossRefClient<br/>Citation Validation"]
     end
 
     subgraph Stage6["6. Validation & Formatting"]
-        DV[DocumentValidator<br/>Contract-Driven]
-        AIE[AIExplainer<br/>Validation Explanation]
-        FMT[Formatter<br/>StyleMapper/Numbering/Templates]
+        DV["DocumentValidator<br/>Contract-Driven"]
+        AIE["AIExplainer<br/>Validation Explanation"]
+        FMT["Formatter<br/>StyleMapper/Numbering/Templates"]
     end
 
     subgraph Stage7["7. Export"]
-        EX[Exporter<br/>DOCX/PDF/LaTeX/JATS/HTML/JSON/MD]
+        EX["Exporter<br/>DOCX/PDF/LaTeX/JATS/HTML/JSON/MD"]
     end
 
     subgraph LLM["LLM Provider Tier System"]
-        T1[NVIDIA NIM<br/>Llama 3.3 70B]
-        T2[Groq<br/>Llama3/Mixtral]
-        T3[OpenRouter<br/>Multi-Model]
-        T4[Ollama<br/>DeepSeek R1 Local]
+        T1["NVIDIA NIM<br/>Llama 3.3 70B"]
+        T2["Groq<br/>Llama3/Mixtral"]
+        T3["OpenRouter<br/>Multi-Model"]
+        T4["Ollama<br/>DeepSeek R1 Local"]
     end
 
     subgraph Safety["Safety Layer"]
-        CB[Circuit Breakers<br/>pybreaker]
-        RG[Retry Guard<br/>Exponential Backoff]
-        LV[LLM Validator<br/>Guardrails AI + Pydantic]
-        SE[SafeExecution<br/>Error Containment]
+        CB["Circuit Breakers<br/>pybreaker"]
+        RG["Retry Guard<br/>Exponential Backoff"]
+        LV["LLM Validator<br/>Guardrails AI + Pydantic"]
+        SE["SafeExecution<br/>Error Containment"]
     end
 
     UPLOAD --> IC
@@ -1004,19 +1004,19 @@ The AI pipeline uses a 4-tier test pyramid spanning unit → integration → gol
 ```mermaid
 graph TD
     subgraph Tier4["Tier 4: E2E (5%)"]
-        E2E[Playwright e2e tests<br/>Full pipeline smoke tests<br/>frontend/e2e/*.spec.ts]
+        E2E["Playwright e2e tests<br/>Full pipeline smoke tests<br/>frontend/e2e/*.spec.ts"]
     end
 
     subgraph Tier3["Tier 3: Golden File (15%)"]
-        GF[Golden file regression<br/>test_formatting_enterprise.py<br/>test_orchestrator.py]
+        GF["Golden file regression<br/>test_formatting_enterprise.py<br/>test_orchestrator.py"]
     end
 
     subgraph Tier2["Tier 2: Integration (30%)"]
-        INT[GROBID/Docling mock fixtures<br/>pipeline stage wiring tests<br/>test_enterprise_batch*.py]
+        INT["GROBID/Docling mock fixtures<br/>pipeline stage wiring tests<br/>test_enterprise_batch*.py"]
     end
 
     subgraph Tier1["Tier 1: Unit (50%)"]
-        UNIT[Mocked LLM/MagicMock chains<br/>Circuit breaker state tests<br/>RAG engine mock tests<br/>test_pipeline/*_test*.py]
+        UNIT["Mocked LLM/MagicMock chains<br/>Circuit breaker state tests<br/>RAG engine mock tests<br/>test_pipeline/*_test*.py"]
     end
 
     E2E --> GF --> INT --> UNIT
@@ -2151,21 +2151,21 @@ graph TB
     end
 
     subgraph SelfHosted["Self-Hosted / HF Spaces"]
-        GROBID[GROBID<br/>Java, 1.5GB RAM]
-        DOCLING[Docling<br/>Python, 2GB RAM]
-        LLMClassifier[LLMClassifier<br/>HF Space]
-        OLLAMA[Ollama<br/>Optional, GPU]
+        GROBID["GROBID<br/>Java, 1.5GB RAM"]
+        DOCLING["Docling<br/>Python, 2GB RAM"]
+        LLMClassifier["LLMClassifier<br/>HF Space"]
+        OLLAMA["Ollama<br/>Optional, GPU"]
     end
 
     subgraph App["ScholarForm Backend"]
         API[FastAPI Web Service]
         CELERY[Celery Worker]
-        CHROMA[ChromaDB<br/>Embedded]
-        REDIS[Redis<br/>Cache + Pub/Sub]
+        CHROMA["ChromaDB<br/>Embedded"]
+        REDIS["Redis<br/>Cache + Pub/Sub"]
     end
 
     subgraph Frontend["Frontend"]
-        NEXT[Next.js 16<br/>App Router]
+        NEXT["Next.js 16<br/>App Router"]
     end
 
     NEXT --> API

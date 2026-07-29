@@ -100,7 +100,7 @@ participant NV as "NVIDIA NIM API"
 participant RC as "Redis Cache"
 App->>NC : chat(messages, model, temperature, max_tokens, timeout)
 alt LiteLLM Available
-NC->>LLM : generate(messages, model=nvidia_nim/<model>, ...)
+NC->>LLM : generate("messages, model=nvidia_nim/<model>, ...")
 LLM->>RC : cache lookup
 alt Cache Miss
 LLM->>NV : completion(...)

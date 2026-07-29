@@ -432,7 +432,7 @@ DetectLang --> CheckGate["Check Classification Gate"]
 CheckGate --> |Enabled & English| Classify["LLM batch predictions"]
 CheckGate --> |Disabled or Non-English| Heuristic["Heuristic classification"]
 Scibert --> Apply["Apply overrides if confident"]
-Heuristic --> Zones["Classify zones (frontmatter/body/references)"]
+Heuristic --> Zones["Classify zones(frontmatter/body/references)"]
 Apply --> Zones
 Zones --> Regex["Regex and structural rules"]
 Regex --> Finalize["Finalize BlockTypes"]

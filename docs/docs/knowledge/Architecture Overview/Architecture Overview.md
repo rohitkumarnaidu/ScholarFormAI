@@ -58,7 +58,7 @@ BE_Main["FastAPI App (main.py)"]
 BE_MW["Middleware Stack"]
 BE_Routers["Routers (v1, auth, documents, etc.)"]
 BE_Orchestrator["Pipeline Orchestrator"]
-BE_Cache["Redis (Pub/Sub, Cache)"]
+BE_Cache["Redis(Pub/Sub, Cache)"]
 BE_DB["Supabase PostgreSQL"]
 BE_Celery["Celery Tasks (Planned)"]
 end
@@ -129,7 +129,7 @@ MW["Middleware Stack<br/>Rate Limit, Tier Limit, Security Headers, Prometheus"]
 Routers["Routers<br/>Documents, Templates, Generator, Synthesis, Health"]
 Orchestrator["Pipeline Orchestrator"]
 DB["Supabase PostgreSQL"]
-Cache["Redis (Pub/Sub, Cache)"]
+Cache["Redis(Pub/Sub, Cache)"]
 LLMs["LLM Providers"]
 PDF["PDF Parsers<br/>Docling, GROBID, PyMuPDF"]
 Storage["Supabase Storage"]
@@ -206,7 +206,7 @@ Fallback --> Structure
 Structure --> Classify["Classification"]
 Classify --> Validate["Validation"]
 Validate --> Format["Formatting"]
-Format --> Export["Export (DOCX/PDF)"]
+Format --> Export["Export(DOCX/PDF)"]
 Export --> SSE["Emit SSE Events"]
 SSE --> End(["Complete"])
 ```
@@ -310,7 +310,7 @@ participant API as "FastAPI"
 participant Celery as "Celery Worker"
 participant Orchestrator as "PipelineOrchestrator"
 participant DB as "Supabase DB"
-API->>Celery : Enqueue task (interactive/batch)
+API->>Celery : Enqueue task(interactive/batch)
 Celery->>DB : Fetch job/session
 Celery->>Orchestrator : Run pipeline
 Orchestrator->>DB : Persist status/results
@@ -341,7 +341,7 @@ graph TB
 FE["Frontend (Next.js)"]
 API["Backend (FastAPI)"]
 MW["Middleware"]
-RT["Real-time (Redis/SSE/WS)"]
+RT["Real-time(Redis/SSE/WS)"]
 DB["Supabase DB"]
 Cache["Redis"]
 Ext["External Services"]

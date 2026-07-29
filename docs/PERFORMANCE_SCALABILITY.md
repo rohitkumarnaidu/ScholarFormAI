@@ -747,16 +747,16 @@ When request volume exceeds thresholds:
 ```mermaid
 graph LR
     subgraph Client
-        B[Browser Cache<br/>ETag / Cache-Control]
+        B["Browser Cache<br/>ETag / Cache-Control"]
     end
     subgraph Edge
-        CDN[CDN Cache<br/>Vercel Edge / Cloudflare<br/>TTL: 5-60 min]
+        CDN["CDN Cache<br/>Vercel Edge / Cloudflare<br/>TTL: 5-60 min"]
     end
     subgraph Application
-        IPC[In-Process Cache<br/>dict / LRU<br/>TTL: 1-5 s]
+        IPC["In-Process Cache<br/>dict / LRU<br/>TTL: 1-5 s"]
     end
     subgraph Shared
-        R[Redis Cache<br/>flag: / llm_cache: / grobid:<br/>TTL: 5 min - 24 h]
+        R["Redis Cache<br/>flag: / llm_cache: / grobid:<br/>TTL: 5 min - 24 h"]
     end
     subgraph Persistent
         DB[(Supabase / PostgreSQL<br/>Source of Truth)]
