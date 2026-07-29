@@ -1,8 +1,8 @@
-site_name: Automated Manuscript Formatter
+site_name: "ScholarFormAI — Automated Manuscript Formatter"
 site_description: Enterprise-grade formatting of academic manuscripts into professionally styled DOCX documents
-site_url: https://amf.dev
-repo_url: https://github.com/amf/automated-manuscript-formatter
-repo_name: amf/automated-manuscript-formatter
+site_url: https://rohitkumarnaidu.github.io/ScholarFormAI/
+repo_url: https://github.com/rohitkumarnaidu/ScholarFormAI
+repo_name: rohitkumarnaidu/ScholarFormAI
 edit_uri: edit/main/docs/docs/
 
 theme:
@@ -28,12 +28,18 @@ theme:
     - navigation.tabs
     - navigation.sections
     - navigation.top
+    - navigation.footer
     - search.highlight
     - search.share
+    - search.suggest
     - content.tabs.link
     - content.code.copy
+    - content.code.annotate
   logo: assets/logo.svg
-  favicon: assets/favicon.ico
+  favicon: assets/logo.svg
+  font:
+    text: Inter
+    code: JetBrains Mono
 
 plugins:
   - search
@@ -61,15 +67,30 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - toc:
       permalink: true
+  - attr_list
+  - md_in_html
 
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/amf/automated-manuscript-formatter
+      link: https://github.com/rohitkumarnaidu/ScholarFormAI
+      name: ScholarFormAI on GitHub
   version:
     provider: mike
+  analytics:
+    feedback:
+      title: Was this page helpful?
+      ratings:
+        - icon: material/thumb-up-outline
+          name: This page was helpful
+          data: 1
+          note: Thanks for your feedback!
+        - icon: material/thumb-down-outline
+          name: This page could be improved
+          data: 0
+          note: Thanks for letting us know!
 
-copyright: Copyright &copy; 2026 Automated Manuscript Formatter
+copyright: Copyright &copy; 2026 ScholarFormAI — Automated Manuscript Formatter
 
 nav:
   - Home: index.md
@@ -105,6 +126,87 @@ nav:
     - Overview: architecture/overview.md
     - Design Decisions: architecture/design.md
     - Data Flow: architecture/data-flow.md
+  - Knowledge Base:
+    - Getting Started: knowledge/Getting Started.md
+    - Troubleshooting & FAQ: knowledge/Troubleshooting & FAQ.md
+    - Architecture:
+      - Overview: "knowledge/Architecture Overview/Architecture Overview.md"
+      - Data Flow: "knowledge/Architecture Overview/Data Flow Architecture.md"
+      - System Layers: "knowledge/Architecture Overview/System Layers.md"
+      - Technology Stack: "knowledge/Architecture Overview/Technology Stack.md"
+      - Middleware Stack: "knowledge/Architecture Overview/Middleware Stack.md"
+      - Request Flows: "knowledge/Architecture Overview/Request Flows.md"
+    - Backend:
+      - Overview: "knowledge/Backend Development/Backend Development.md"
+      - FastAPI Structure: "knowledge/Backend Development/FastAPI Application Structure.md"
+      - Service Layer: "knowledge/Backend Development/Service Layer Architecture.md"
+      - Auth & Authorization: "knowledge/Backend Development/Authentication & Authorization.md"
+      - Database & ORM: "knowledge/Backend Development/Database & ORM Design.md"
+      - Pipeline Processing: "knowledge/Backend Development/Pipeline Processing System.md"
+      - Real-time Communication: "knowledge/Backend Development/Real-time Communication.md"
+      - Monitoring & Metrics: "knowledge/Backend Development/Monitoring & Metrics.md"
+    - Frontend:
+      - Overview: "knowledge/Frontend Development/Frontend Development.md"
+      - Next.js Structure: "knowledge/Frontend Development/Next.js Application Structure.md"
+      - Routing: "knowledge/Frontend Development/Routing and Navigation.md"
+      - Component Architecture: "knowledge/Frontend Development/Component Architecture/Component Architecture.md"
+      - State Management: "knowledge/Frontend Development/State Management/State Management.md"
+      - Real-time Features: "knowledge/Frontend Development/Real-time Features/Real-time Features.md"
+      - API Integration: "knowledge/Frontend Development/API Integration/API Integration.md"
+    - AI & ML:
+      - Overview: "knowledge/AI_ML Integration/AI_ML Integration.md"
+      - RAG Engine: "knowledge/AI_ML Integration/RAG Engine.md"
+      - LLM Classification: "knowledge/AI_ML Integration/LLM Classification.md"
+      - Groq Fallback: "knowledge/AI_ML Integration/Groq Fallback System.md"
+      - NVIDIA NIM: "knowledge/AI_ML Integration/NVIDIA NIM Integration.md"
+      - Ollama Local: "knowledge/AI_ML Integration/Ollama Local Deployment.md"
+      - Model Management: "knowledge/AI_ML Integration/Model Management.md"
+      - Reasoning Engine: "knowledge/AI_ML Integration/Reasoning Engine.md"
+    - Pipeline Processing:
+      - Overview: "knowledge/Pipeline Processing/Pipeline Processing.md"
+      - Orchestrator: "knowledge/Pipeline Processing/Pipeline Orchestrator.md"
+      - Input Conversion: "knowledge/Pipeline Processing/Input Conversion.md"
+      - Structure Detection: "knowledge/Pipeline Processing/Structure Detection.md"
+      - Text Extraction: "knowledge/Pipeline Processing/Text Extraction.md"
+      - Formatting Engine: "knowledge/Pipeline Processing/Formatting Engine.md"
+      - Validation System: "knowledge/Pipeline Processing/Validation System.md"
+      - Export System: "knowledge/Pipeline Processing/Export System.md"
+      - Pipeline Safety: "knowledge/Pipeline Processing/Pipeline Safety.md"
+    - Template System:
+      - Overview: "knowledge/Template System/Template System.md"
+      - Architecture: "knowledge/Template System/Template Architecture.md"
+      - Academic Templates: "knowledge/Template System/Academic Templates.md"
+      - CSL Integration: "knowledge/Template System/CSL Integration.md"
+      - Rendering Engine: "knowledge/Template System/Template Rendering Engine.md"
+      - Creation Guide: "knowledge/Template System/Template Creation Guide.md"
+    - Database:
+      - Overview: "knowledge/Database Design/Database Design.md"
+      - Schema: "knowledge/Database Design/Database Schema.md"
+      - Entity Models: "knowledge/Database Design/Entity Models.md"
+      - Migrations: "knowledge/Database Design/Migration System.md"
+      - ORM Config: "knowledge/Database Design/ORM Configuration.md"
+    - API Reference:
+      - Overview: "knowledge/API Reference/API Reference.md"
+      - Document Processing: "knowledge/API Reference/Document Processing Endpoints.md"
+      - Document Generator: "knowledge/API Reference/Document Generator Endpoints.md"
+      - Multi-Document Synthesis: "knowledge/API Reference/Multi-Document Synthesis Endpoints.md"
+      - Real-time: "knowledge/API Reference/Real-time Communication Endpoints.md"
+      - Template Management: "knowledge/API Reference/Template Management Endpoints.md"
+      - Utilities & Admin: "knowledge/API Reference/Utility and Administrative Endpoints.md"
+    - Deployment:
+      - Overview: "knowledge/Deployment & Operations/Deployment & Operations.md"
+      - Infrastructure Setup: "knowledge/Deployment & Operations/Infrastructure Setup.md"
+      - CI/CD Pipeline: "knowledge/Deployment & Operations/CI_CD Pipeline.md"
+      - Environment Config: "knowledge/Deployment & Operations/Environment Configuration.md"
+      - Monitoring & Alerting: "knowledge/Deployment & Operations/Monitoring & Alerting.md"
+      - Security Operations: "knowledge/Deployment & Operations/Security Operations.md"
+      - Maintenance: "knowledge/Deployment & Operations/Maintenance & Troubleshooting.md"
+    - Testing:
+      - Overview: "knowledge/Testing Strategy/Testing Strategy.md"
+      - Backend Testing: "knowledge/Testing Strategy/Backend Testing/Backend Testing.md"
+      - Frontend Testing: "knowledge/Testing Strategy/Frontend Testing/Frontend Testing.md"
+      - Test Infrastructure: "knowledge/Testing Strategy/Test Infrastructure.md"
+      - Best Practices: "knowledge/Testing Strategy/Testing Best Practices.md"
   - Issues:
     - Developer Guide: issues/developer-guide.md
     - User Guide: issues/user-guide.md
@@ -118,6 +220,7 @@ nav:
     - Kubernetes: deployment/kubernetes.md
     - Cloud: deployment/cloud.md
     - Manual: deployment/manual.md
+  - Changelog: changelog/index.md
   - FAQ: faq/index.md
   - Community:
     - Contributing: community/contributing.md
