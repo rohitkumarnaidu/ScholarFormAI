@@ -1,5 +1,6 @@
 'use client';
 import { Component } from 'react';
+import { sendFrontendErrorLog } from '../services/api.core';
 
 export default class ErrorBoundary extends Component {
     constructor(props) {
@@ -13,6 +14,10 @@ export default class ErrorBoundary extends Component {
 
     componentDidCatch(error, info) {
         console.error('ErrorBoundary caught:', error, info);
+        sendFrontendErrorLog({
+            message: `React ErrorBoundary caught: ${error?.message || String(error)}`,
+            stack: error?.stack || info?.componentStack,
+        });
     }
 
     render() {

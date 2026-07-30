@@ -98,68 +98,121 @@ def update():
 
 
 @update.command("check")
-@click.option("--channel", help="Release channel to check")
+@click.option("--channel", help="Release channel to check (stable, beta, nightly, pre-release)")
+@click.option("--json", "json_output", is_flag=True, help="Output response in JSON format")
 @click.pass_context
-def update_check(ctx, channel):
+def update_check(ctx, channel, json_output):
     from amf.commands.update import run_update_check
-    run_update_check(channel, ctx.obj["verbose"])
+    run_update_check(channel, json_output, ctx.obj["verbose"])
+
+
+@update.command("channel")
+@click.argument("name", required=False)
+@click.option("--set", "set_channel", help="Set active release channel")
+@click.option("--json", "json_output", is_flag=True, help="Output response in JSON format")
+@click.pass_context
+def update_channel(ctx, name, set_channel, json_output):
+    from amf.commands.update import run_update_channel
+    channel_name = name or set_channel
+    run_update_channel(channel_name, json_output, ctx.obj["verbose"])
+
+
+@update.command("channels")
+@click.option("--json", "json_output", is_flag=True, help="Output response in JSON format")
+@click.pass_context
+def update_channels(ctx, json_output):
+    from amf.commands.update import run_update_channel
+    run_update_channel(None, json_output, ctx.obj["verbose"])
 
 
 @update.command("download")
 @click.option("--version", help="Specific version to download")
+@click.option("--retry", default=3, type=int, help="Maximum download retry attempts")
+@click.option("--json", "json_output", is_flag=True, help="Output response in JSON format")
 @click.pass_context
-def update_download(ctx, version):
+def update_download(ctx, version, retry, json_output):
     from amf.commands.update import run_update_download
-    run_update_download(version, ctx.obj["verbose"])
+    run_update_download(version, retry, json_output, ctx.obj["verbose"])
+
+
+@update.command("verify")
+@click.option("-f", "--file", "file_path", type=click.Path(exists=True), help="Path to asset file")
+@click.option("-c", "--checksum", help="Expected SHA-256 checksum digest")
+@click.option("-s", "--signature", help="ED25519/RSA digital signature string")
+@click.option("-k", "--public-key", help="Public key for signature verification")
+@click.option("--json", "json_output", is_flag=True, help="Output response in JSON format")
+@click.pass_context
+def update_verify(ctx, file_path, checksum, signature, public_key, json_output):
+    from amf.commands.update import run_update_verify
+    run_update_verify(file_path, checksum, signature, public_key, json_output, ctx.obj["verbose"])
 
 
 @update.command("install")
+@click.option("--version", help="Specific version tag to install")
+@click.option("-f", "--file", "file_path", type=click.Path(exists=True), help="Downloaded update payload file")
+@click.option("--json", "json_output", is_flag=True, help="Output response in JSON format")
 @click.pass_context
-def update_install(ctx):
+def update_install(ctx, version, file_path, json_output):
     from amf.commands.update import run_update_install
-    run_update_install(ctx.obj["verbose"])
+    run_update_install(version, file_path, json_output, ctx.obj["verbose"])
+
+
+@update.command("offline")
+@click.argument("archive_path", type=click.Path(exists=True))
+@click.option("-s", "--signature", help="ED25519/RSA digital signature string or file")
+@click.option("-k", "--public-key", help="Public key for signature verification")
+@click.option("--json", "json_output", is_flag=True, help="Output response in JSON format")
+@click.pass_context
+def update_offline(ctx, archive_path, signature, public_key, json_output):
+    from amf.commands.update import run_update_offline
+    run_update_offline(archive_path, signature, public_key, json_output, ctx.obj["verbose"])
 
 
 @update.command("rollback")
-@click.option("--version", help="Specific version to rollback to")
+@click.option("--version", help="Specific version tag to rollback to")
+@click.option("--json", "json_output", is_flag=True, help="Output response in JSON format")
 @click.pass_context
-def update_rollback(ctx, version):
+def update_rollback(ctx, version, json_output):
     from amf.commands.update import run_update_rollback
-    run_update_rollback(version, ctx.obj["verbose"])
+    run_update_rollback(version, json_output, ctx.obj["verbose"])
 
 
 @update.command("history")
-@click.option("--limit", default=20, type=int, help="Number of entries")
+@click.option("--limit", default=20, type=int, help="Number of history entries to show")
+@click.option("--json", "json_output", is_flag=True, help="Output response in JSON format")
 @click.pass_context
-def update_history(ctx, limit):
+def update_history(ctx, limit, json_output):
     from amf.commands.update import run_update_history
-    run_update_history(limit, ctx.obj["verbose"])
-
-
-@update.command("channels")
-@click.pass_context
-def update_channels(ctx):
-    from amf.commands.update import run_update_channels
-    run_update_channels(ctx.obj["verbose"])
+    run_update_history(limit, json_output, ctx.obj["verbose"])
 
 
 @update.command("settings")
-@click.option("--channel", help="Set release channel")
+@click.option("--channel", help="Set release channel (stable, beta, nightly, pre-release)")
 @click.option("--auto-check/--no-auto-check", default=None, help="Enable/disable auto-check")
 @click.option("--auto-download/--no-auto-download", default=None, help="Enable/disable auto-download")
 @click.option("--auto-install/--no-auto-install", default=None, help="Enable/disable auto-install")
+@click.option("--verify-signature/--no-verify-signature", default=None, help="Enable/disable signature verification")
+@click.option("--verify-checksum/--no-verify-checksum", default=None, help="Enable/disable checksum verification")
+@click.option("--reset", is_flag=True, help="Reset update settings to defaults")
+@click.option("--json", "json_output", is_flag=True, help="Output response in JSON format")
 @click.pass_context
-def update_settings(ctx, channel, auto_check, auto_download, auto_install):
+def update_settings(
+    ctx, channel, auto_check, auto_download, auto_install, verify_signature, verify_checksum, reset, json_output
+):
     from amf.commands.update import run_update_settings
-    run_update_settings(channel, auto_check, auto_download, auto_install, ctx.obj["verbose"])
+    run_update_settings(
+        channel, auto_check, auto_download, auto_install, verify_signature, verify_checksum, reset, json_output, ctx.obj["verbose"]
+    )
 
 
 @update.command("release-notes")
-@click.argument("version")
+@click.argument("version", required=False)
+@click.option("--json", "json_output", is_flag=True, help="Output response in JSON format")
 @click.pass_context
-def update_release_notes(ctx, version):
+def update_release_notes(ctx, version, json_output):
     from amf.commands.update import run_update_release_notes
-    run_update_release_notes(version, ctx.obj["verbose"])
+    run_update_release_notes(version, json_output, ctx.obj["verbose"])
+
 
 
 @cli.group()

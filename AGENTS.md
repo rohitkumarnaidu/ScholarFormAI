@@ -134,16 +134,15 @@ The service layer contains 48 dedicated modules in `backend/app/services/`:
 - Rich library for CLI terminal output
 - Conventional Commits for commit messages
 - Ruff for Python formatting
+- Canonical documentation stored strictly in `docs/docs/` (no loose markdown files in `docs/` root)
+- Verify documentation edits with `python -m mkdocs build --strict --config-file docs/mkdocs.yml`
 
 ---
 
 ## Agent-Optimized Documentation
 
-- `ARCHITECTURE.md` — System architecture overview
-- `SYSTEM_DESIGN.md` — Design decisions, Supabase DB, monitoring, and error handling
-- `API_REFERENCE.md` — Modern `/api/v1` route reference with `api_envelope`
-- `CLI_REFERENCE.md` — Complete CLI command reference including `issues` and `update`
-- `SDK_GUIDE.md` — Python SDK guide for `AMFClient` and `AsyncAMFClient`
-- `CONFIGURATION.md` — Comprehensive settings reference matching Pydantic `Settings`
-- `TESTING.md` — Test guide and test runner specifications
-- `ERROR_CODES.md` — Error code reference aligned with `api_envelope`
+All comprehensive documentation is consolidated within the MkDocs hierarchy in `docs/docs/`:
+- **Canonical Source**: `docs/docs/` contains 13 modular categories (`architecture/`, `api/`, `cli/`, `sdk/`, `guides/`, `operations/`, `reference/`, `reports/`, `tutorials/`, etc.).
+- **Root Reference Pointers**: Root files such as `ARCHITECTURE.md`, `API_REFERENCE.md`, `CLI_REFERENCE.md`, and `SDK_GUIDE.md` serve as thin reference pointers redirecting to their canonical `docs/docs/` equivalents.
+- **Strict Build Validation**: All docs modifications must pass `python -m mkdocs build --strict --config-file docs/mkdocs.yml` with zero broken link errors.
+

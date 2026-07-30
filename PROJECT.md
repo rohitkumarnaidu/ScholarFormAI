@@ -1,39 +1,36 @@
-# Project: ScholarFormAI Documentation Upgrade Mission
+# Project: ScholarFormAI Enterprise Update Management System
 
 ## Architecture Overview
-ScholarFormAI (AMF - Automated Docx Formatter) consists of:
-- Backend: FastAPI (`backend/app/main.py`), 16 API routers in `backend/app/routers/v1/`, 48 services in `backend/app/services/`, Pydantic v2 schemas (`api_envelope`), SQLAlchemy ORM models (Supabase PostgreSQL).
-- Frontend: Next.js 16 App Router in `frontend/app/`, UI components in `frontend/src/`.
-- CLI: Python Click CLI in `cli/amf/`.
-- SDK: Synchronous (`AMFClient`) and Asynchronous (`AsyncAMFClient`) Python SDK clients in `sdk/amf_sdk/`.
-- Documentation site: Docusaurus framework in `docs/`.
-
-## Enterprise Documentation Standards
-- **Mermaid Diagrams**: Every major architectural & reference document MUST contain valid, visually rich Mermaid diagrams (flowcharts, sequence diagrams, ERDs, class diagrams).
-- **No Text Collisions**: Node labels must cleanly escape special characters (`|`, `"`, `<br/>`).
-- **No Duplicate Files**: Obsolete files like `DATABASE.md` are replaced cleanly by `DATABASE_SCHEMA.md` without leftover duplicates or stale contradictions.
-- **Syntactic Integrity**: All code fences properly closed (` ```mermaid `, ` ```bash `, ` ```python `, ` ```json `).
+ScholarFormAI Enterprise Update Management System provides a unified, cross-platform update infrastructure covering:
+- **Backend API & Service Layer**: `backend/app/services/update_service.py`, `backend/app/routers/v1/updates.py`, database models/migrations for channels, releases, update history, and rollback tracking. Built on Pydantic v2 with standard `api_envelope` responses, GitHub Releases API integration (live + cached fallback), semver parsing/comparison, mandatory & security update flags, and SHA-256 + ED25519/RSA signature verification.
+- **Frontend Web UI**: Next.js 16 App Router UI in `frontend/app/` and `frontend/src/components/updates/`:
+  - `UpdateBanner.tsx` for global update notifications
+  - `DashboardUpdateWidget.tsx` for current status, channel, and direct update triggers
+  - `UpdateSettingsPage` (`frontend/app/settings/updates/page.tsx` or similar) for channel selection, schedule configuration, auto-update toggle, update history log, and manual check
+  - `DownloadProgressTracker.tsx` for background download & installation tracking
+- **CLI & Desktop Integration**:
+  - `cli/amf/commands/update.py` enhanced with `check`, `channel`, `download`, `verify`, `install`, `offline`, and `rollback` subcommands with retry/backoff resilience
+  - Desktop update integration hook / service bridge for native desktop application auto-updates
+- **Comprehensive Documentation**: 5 dedicated architecture & user guides in `docs/`: `UPDATE_ARCHITECTURE.md`, `UPDATE_SCHEMA.md`, `UPDATE_DEVELOPER_GUIDE.md`, `UPDATE_USER_GUIDE.md`, `UPDATE_DEPLOYMENT_GUIDE.md`.
+- **Test Suite & CI/CD Verification**: `backend/tests/test_updates.py` testing update channel management, semver logic, signature validation, GitHub fallback, and rollback flows.
 
 ## Milestones
 | # | Name | Scope | Dependencies | Status |
 |---|------|-------|-------------|--------|
-| 1 | Comprehensive Audit & Gap Analysis | Inventory 70 root docs, backend code, CLI/SDK, frontend, Docusaurus | none | DONE |
-| 2 | Base Repository & Standard Docs | README.md, AGENTS.md, CHANGELOG.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md | M1 | DONE |
-| 3 | System Architecture & Database Docs | ARCHITECTURE.md, SYSTEM_DESIGN.md, DATABASE_SCHEMA.md, PIPELINE.md | M1 | DONE |
-| 4 | API, CLI & SDK Reference Docs | API_REFERENCE.md, CLI_REFERENCE.md, SDK_GUIDE.md, CONFIGURATION.md, TESTING.md, ERROR_CODES.md | M1 | DONE |
-| 5 | Docusaurus Site & Doc Sync | Sync docs/docs/ tree with root references; create missing reference/guide pages | M2, M3, M4 | DONE |
-| 6 | E2E Verification & Forensic Audit | Verify markdown lint, Mermaid diagram syntax, code block fencing, audit gate | M5 | DONE |
+| 1 | Backend Service, Database & API | `update_service.py`, `routers/v1/updates.py`, models, DB migrations, semver, GitHub Releases fallback, cryptographic verification (SHA-256 + ED25519/RSA), Pydantic v2 schemas | none | IN_PROGRESS |
+| 2 | Frontend Web UI Components | Update Banner component, Dashboard Widget, Update Settings page, background download & progress tracking UI components | M1 | DONE |
+| 3 | CLI & Desktop Update Integration | Enhanced `cli/amf/commands/update.py` (check, channel, verify, retry/resilience download, offline update, rollback), Desktop bridge | M1 | IN_PROGRESS |
+| 4 | Technical Guides & Test Suites | 5 Architecture/User guides in `docs/` (`UPDATE_ARCHITECTURE.md`, `UPDATE_SCHEMA.md`, `UPDATE_DEVELOPER_GUIDE.md`, `UPDATE_USER_GUIDE.md`, `UPDATE_DEPLOYMENT_GUIDE.md`), `backend/tests/test_update_service.py` | M1, M2, M3 | IN_PROGRESS |
+| 5 | Empirical Challenge, Verification & Forensic Audit | `py_compile` backend validation, `npm run build` frontend validation, Challenger stress testing, Forensic Auditor integrity verification | M1, M2, M3, M4 | PLANNED |
 
 ## Code & File Layout
-- `.agents/orchestrator/`: Orchestrator state and handoff metadata
-- `.agents/teamwork_preview_explorer_m1_1/`: Explorer 1 metadata & audit handoff
-- `.agents/teamwork_preview_explorer_m1_2/`: Explorer 2 metadata & audit handoff
-- `.agents/teamwork_preview_explorer_m1_3/`: Explorer 3 metadata & audit handoff
-- `.agents/teamwork_preview_worker_m2/`: Worker M2 metadata & handoff
-- `.agents/teamwork_preview_worker_m3/`: Worker M3 metadata & handoff
-- `.agents/teamwork_preview_worker_m4/`: Worker M4 metadata & handoff
-- `.agents/teamwork_preview_worker_m5/`: Worker M5 metadata & handoff
-- `.agents/teamwork_preview_reviewer_1/`: Reviewer 1 metadata & review verdict
-- `.agents/teamwork_preview_reviewer_2/`: Reviewer 2 metadata & review verdict
-- `.agents/teamwork_preview_challenger_1/`: Challenger metadata & empirical audit
-- `.agents/teamwork_preview_auditor/`: Forensic Auditor metadata & CLEAN verdict
+- `backend/app/services/update_service.py`: Core update business logic, GitHub API caching, crypto verification, rollback tracking
+- `backend/app/routers/v1/updates.py`: FastAPI endpoints for update checking, listing channels, setting preferences, trigger update, rollback
+- `backend/app/schemas/update.py`: Pydantic v2 schemas adhering to `api_envelope`
+- `backend/app/models/update.py` / migrations: Supabase/SQLAlchemy update schema models
+- `frontend/src/components/updates/`: React components for Banner, Dashboard Widget, Progress Tracker
+- `frontend/app/settings/updates/page.tsx`: Next.js 16 Settings page
+- `cli/amf/commands/update.py`: Click CLI update commands
+- `backend/app/services/desktop_update_bridge.py`: Desktop application IPC / bridge hook
+- `docs/UPDATE_ARCHITECTURE.md`, `docs/UPDATE_SCHEMA.md`, `docs/UPDATE_DEVELOPER_GUIDE.md`, `docs/UPDATE_USER_GUIDE.md`, `docs/UPDATE_DEPLOYMENT_GUIDE.md`: Comprehensive guides
+- `backend/tests/test_updates.py`: Unit and integration test suite for backend update service

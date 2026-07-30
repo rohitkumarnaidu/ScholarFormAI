@@ -54,6 +54,87 @@ flowchart TD
 
 ---
 
+## Complete System Topology & Component Diagram
+
+The diagram below illustrates the end-to-end system topology of ScholarForm AI, mapping traffic flow from client tools through security middleware, API router aggregators, business services, multi-store persistence, and external AI services.
+
+```mermaid
+graph TB
+    subgraph Clients["Clients & SDK Layer"]
+        NextJS["Next.js 16 Web App<br/>(App Router / React 19)"]
+        CLI["Python Click CLI<br/>(amf CLI Tool)"]
+        SDK["Python SDK Clients<br/>(AMFClient & AsyncAMFClient)"]
+    end
+
+    subgraph Gateway["Gateway & Security Middleware"]
+        AuthMiddleware["JWKS JWT Authenticator<br/>(Supabase Auth Verification)"]
+        CORS["CORS & Security Headers<br/>(HSTS, CSP, Strict Origin)"]
+        RateLimiter["Rate Limiter & Quota Engine<br/>(Per-Minute & Daily Limits)"]
+        ClamAV["ClamAV Antivirus Scanner<br/>(Malware Upload Filter)"]
+    end
+
+    subgraph Routers["FastAPI Router Aggregator - /api/v1"]
+        DocsRouter["/documents Router<br/>(Upload, Format, Export, Shares)"]
+        GenRouter["/generator Router<br/>(AI Sessions, Messages, RAG)"]
+        SynthRouter["/synthesis Router<br/>(Multi-Doc RAG Synthesis)"]
+        CitationRouter["/citations Router<br/>(CSL Search & CrossRef Lookup)"]
+        WebhookRouter["/webhooks Router<br/>(Subscriptions & Delivery Logs)"]
+        AdminRouter["/users & /api-keys Router<br/>(User Management & Key Encryption)"]
+    end
+
+    subgraph Services["Core Service & Processing Layer"]
+        PipelineSvc["Document Pipeline Service<br/>(PipelineOrchestrator Coordination)"]
+        GenSvc["Generator Session Service<br/>(Outline & Interactive Authoring)"]
+        SynthSvc["Multi-Doc Synthesis Service<br/>(RAG Vector Context Merging)"]
+        CitationSvc["Citation Assembly & CSL Engine<br/>(CrossRef Lookup & CSL Formatting)"]
+        LLMFallback["4-Tier LLM Fallback Service<br/>(NVIDIA NIM -> Groq -> OpenRouter -> Ollama)"]
+        AuditSvc["Audit Log & Security Service<br/>(Event Logging & Activity Tracking)"]
+        PreviewRenderer["Preview Renderer Service<br/>(HTML/CSS Real-Time Styling)"]
+        CeleryWorkers["Celery Background Workers<br/>(Async Processing Pipeline)"]
+    end
+
+    subgraph Persistence["Persistence & State Layer"]
+        SupabasePG[("Supabase PostgreSQL<br/>(12 Relational Tables + RLS Policies)")]
+        RedisCache[("Redis 7.x Cache & Broker<br/>(Celery Queue, Cache, Rate Limits)")]
+        ChromaVector[("ChromaDB Vector Store<br/>(BGE-M3 & MiniLM Embeddings)")]
+    end
+
+    subgraph External["External Services & AI Providers"]
+        GROBID["GROBID Microservice (Docker)<br/>(TEI XML Metadata Parser)"]
+        CrossRef["CrossRef REST API<br/>(DOI Citation Validation)"]
+        NVIDIA["NVIDIA NIM API (Tier 1)<br/>(Llama 3.3 70B Instruct)"]
+        Groq["Groq API (Tier 2)<br/>(llama-3.3-70b-versatile)"]
+        OpenRouter["OpenRouter API (Tier 3)<br/>(Multi-Model Fallback)"]
+        Ollama["Ollama / DeepSeek (Tier 4)<br/>(Local / Self-Hosted R1)"]
+    end
+
+    NextJS --> AuthMiddleware
+    CLI --> AuthMiddleware
+    SDK --> AuthMiddleware
+
+    AuthMiddleware --> CORS
+    CORS --> RateLimiter
+    RateLimiter --> ClamAV
+    ClamAV --> DocsRouter
+
+    DocsRouter --> PipelineSvc
+    GenRouter --> GenSvc
+    SynthRouter --> SynthSvc
+    CitationRouter --> CitationSvc
+    WebhookRouter --> AuditSvc
+    AdminRouter --> AuditSvc
+
+    PipelineSvc --> CeleryWorkers
+    PipelineSvc --> PreviewRenderer
+    PipelineSvc --> SupabasePG
+    PipelineSvc --> GROBID
+
+    GenSvc --> LLMFallback
+    GenSvc --> ChromaVector
+```
+
+---
+
 ## Architecture Components
 
 ### Backend (FastAPI)

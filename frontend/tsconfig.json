@@ -27,12 +27,15 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["./src/*", "./*"],
       "@/components/*": ["./src/components/*"],
       "@/lib/*": ["./src/lib/*"],
       "@/utils/*": ["./src/utils/*"],
       "@/hooks/*": ["./src/hooks/*"],
-      "@/contexts/*": ["./src/contexts/*"]
+      "@/services/*": ["./src/services/*"],
+      "@/context/*": ["./src/context/*"],
+      "@/contexts/*": ["./src/contexts/*"],
+      "@/constants/*": ["./src/constants/*"]
     }
   },
   "include": [
@@ -50,5 +53,4 @@
     "generate-tests.js",
     "src/app"
   ]
-
 }
