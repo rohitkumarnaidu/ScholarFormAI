@@ -7,6 +7,7 @@ import { Toaster } from 'sonner';
 import UpdateBanner from '@/components/UpdateBanner';
 import FeedbackWidget from '@/components/FeedbackWidget';
 import CrashScreen from '@/components/CrashScreen';
+import ClientProviders from '@/components/layout/ClientProviders';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -53,13 +54,15 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
-        <Navbar />
-        <main className="min-h-screen">{children}</main>
-        <UpdateBanner />
-        <FeedbackWidget />
-        <Footer />
-        <Toaster position="top-right" richColors />
-        <CrashScreen />
+        <ClientProviders>
+          <Navbar />
+          <main className="min-h-screen">{children}</main>
+          <UpdateBanner />
+          <FeedbackWidget />
+          <Footer />
+          <Toaster position="top-right" richColors />
+          <CrashScreen />
+        </ClientProviders>
       </body>
     </html>
   );
