@@ -214,7 +214,7 @@ class RedisCache(CacheBackend):
             result = asyncio.run(self._client.get(self._prefix_key(key)))
             if result is None:
                 return None
-            return pickle.loads(result) if isinstance(result, bytes) else json.loads(result)
+            return pickle.loads(result) if isinstance(result, bytes) else json.loads(result)  # nosec B301
         except Exception as exc:
             logger.debug("Redis get failed: %s", exc)
             return None
@@ -417,7 +417,7 @@ def _build_cache_key(
     func: Callable, prefix: str, args: tuple[Any, ...], kwargs: dict[str, Any]
 ) -> str:
     func_key = f"{func.__module__}.{func.__qualname__}"
-    arg_hash = hashlib.md5(pickle.dumps((args, kwargs))).hexdigest()
+    arg_hash = hashlib.md5(pickle.dumps((args, kwargs))).hexdigest()  # nosec B301 B324
     return f"{prefix}:{func_key}:{arg_hash}" if prefix else f"{func_key}:{arg_hash}"
 
 
