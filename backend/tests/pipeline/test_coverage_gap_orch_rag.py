@@ -6,6 +6,9 @@ Coverage gap tests for PipelineOrchestrator and RagEngine.
 Targets uncovered branches, edge cases, and error handlers.
 """
 
+from app.models import PipelineDocument as Document
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
+from app.pipeline.formatting.formatter import Formatter
 from __future__ import annotations
 import os
 import json

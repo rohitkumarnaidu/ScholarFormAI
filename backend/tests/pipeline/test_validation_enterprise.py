@@ -9,8 +9,11 @@ Covers:
 - ReviewManager (review_manager.py) — all 5 paths (critical/review/ok, thresholds, limits)
 """
 
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
+from app.pipeline.formatting.formatter import Formatter
 from __future__ import annotations
 from unittest.mock import patch, MagicMock, PropertyMock
+from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata
 import pytest
 
 from app.pipeline.validation.validator_v3 import DocumentValidator, ValidationResult

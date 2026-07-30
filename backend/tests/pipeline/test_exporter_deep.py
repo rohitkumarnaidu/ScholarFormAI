@@ -8,6 +8,9 @@ export_latex, export_jats, format export, _build_export_payload,
 _get_export_formats, error handling.
 """
 
+from app.models import PipelineDocument as Document
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
+from app.pipeline.formatting.formatter import Formatter
 from __future__ import annotations
 from unittest.mock import patch, MagicMock, mock_open
 import pytest

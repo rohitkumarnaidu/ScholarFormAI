@@ -12,6 +12,10 @@ Targets uncovered lines identified by coverage analysis across 5 modules:
   5. app/pipeline/references/parser.py           (83.90% → 95%+)
 """
 
+from app.models import PipelineDocument as Document
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
+from app.pipeline.formatting.formatter import Formatter
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 from unittest.mock import patch, MagicMock, ANY
 from pathlib import Path

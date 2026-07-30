@@ -1,6 +1,10 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
+from app.models import PipelineDocument as Document
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
+from app.pipeline.formatting.formatter import Formatter
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 
 import io
@@ -19,6 +23,7 @@ from app.pipeline.parsing.parser import DocxParser, generate_figure_id, generate
 # ---------------------------------------------------------------------------
 
 def _make_run(
+    text: str = "",
     bold: bool | None = False,
     italic: bool | None = False,
     underline: bool | None = False,

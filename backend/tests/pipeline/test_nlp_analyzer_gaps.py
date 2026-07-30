@@ -5,6 +5,9 @@
 Gap-filling tests for NLP ContentAnalyzer to reach 100% line coverage.
 """
 
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
+from app.pipeline.formatting.formatter import Formatter
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 import importlib
 import sys
@@ -24,6 +27,7 @@ from app.pipeline.nlp.analyzer import (
     yake,
 )
 
+from app.models import PipelineDocument as Document
 def _doc(blocks=None) -> Document:
     from app.models import PipelineDocument as Document, Block, BlockType
     return Document(document_id="test-id", blocks=blocks or [])

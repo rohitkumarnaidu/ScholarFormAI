@@ -1,3 +1,4 @@
+import re
 import pytest
 import json
 from unittest.mock import MagicMock, patch, AsyncMock

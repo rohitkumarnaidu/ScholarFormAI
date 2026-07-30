@@ -7,6 +7,9 @@ Covers process(), section confidence estimation, caption quality,
 readability checks, keyword extraction (yake/basic/keybert), LLM keywords.
 """
 
+from app.models import PipelineDocument as Document
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
+from app.pipeline.formatting.formatter import Formatter
 from __future__ import annotations
 from unittest.mock import patch, MagicMock, PropertyMock
 import pytest

@@ -3,6 +3,10 @@
 
 """Targeted tests for uncovered lines in parser.py, pdf_parser.py, parser_factory.py, formatter_engine.py, safe_execution.py."""
 
+from app.models import PipelineDocument as Document
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
+from app.pipeline.formatting.formatter import Formatter
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 from unittest.mock import MagicMock, patch, PropertyMock, AsyncMock
 import pytest

@@ -7,6 +7,9 @@ Covers process(), metadata normalization, block repair/splitting/consolidation,
 table normalization, empty orphan sanitization, median font calculation.
 """
 
+from app.models import PipelineDocument as Document
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
+from app.pipeline.formatting.formatter import Formatter
 from __future__ import annotations
 from unittest.mock import patch, MagicMock
 import pytest

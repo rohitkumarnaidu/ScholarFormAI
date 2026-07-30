@@ -2,8 +2,12 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
+from app.pipeline.formatting.formatter import Formatter
 from __future__ import annotations
 from unittest.mock import MagicMock, patch, PropertyMock
+from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata
+from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata
 import pytest
 
 from app.pipeline.validation.validator_v3 import (
