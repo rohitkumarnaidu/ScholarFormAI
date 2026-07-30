@@ -115,6 +115,7 @@ flowchart TB
 Get started in under 5 minutes using Docker.
 
 ### Prerequisites
+
 - Docker & Docker Compose
 - Node.js 20+ (for local frontend dev)
 - Python 3.12+ (for local backend dev)
@@ -141,6 +142,7 @@ docker compose -f deploy/services/docker-compose.yml up -d
 ### 3. Local Development (Alternative)
 
 **Backend:**
+
 ```bash
 cd backend
 python -m venv .venv
@@ -150,6 +152,7 @@ uvicorn app.main:app --reload --port 8000
 ```
 
 **Frontend:**
+
 ```bash
 cd frontend
 npm install
@@ -182,6 +185,7 @@ Read the full [CLI Reference](docs/reference/CLI_REFERENCE.md).
 ## 🤖 AI & Multi-Agent Features
 
 We leverage advanced multi-agent workflows defined in [`AGENTS.md`](docs/reference/AGENTS.md):
+
 - **Forensic Auditor Agent:** Independently verifies citations, checks equations, and identifies hallucinated references.
 - **Synthesis Agent:** Merges structured data from ChromaDB into fluid, academically rigorous paragraphs.
 - **Layout Agent:** Maps abstract document structures into specific template directives (e.g., IEEE two-column margins).
@@ -215,6 +219,7 @@ ScholarFormAI/
 ## 🔐 Security & Compliance
 
 Enterprise readiness is built-in.
+
 - **SLSA Level 3:** Build provenance and signed artifacts.
 - **CodeQL & Scorecards:** Automated vulnerability scanning on every PR.
 - **Dependency Management:** Renovate + SBOM generation.

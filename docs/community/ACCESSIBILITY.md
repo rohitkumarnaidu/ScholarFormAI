@@ -40,6 +40,7 @@ We aim to meet WCAG 2.1 Level AA standards for the web interface.
 ## How to Report Issues
 
 If you encounter accessibility barriers, please:
+
 1. Open a GitHub issue with label `accessibility`
 2. Describe the barrier and your assistive technology
 3. Suggest how we can improve

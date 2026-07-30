@@ -17,7 +17,7 @@ This report provides a complete, structured catalog of technical debt (TD-001 th
 The table below catalogs all identified technical debt items, including their impact, severity level, affected file locations, architecture category, and estimated remediation effort (in story points / hours).
 
 | Debt ID | Debt Title | Impact Summary | Severity | Affected File(s) | Category | Remediation Effort |
-|---|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- | --- |
 | **TD-001** | Unmounted Core API Routes | Legacy `/format`, `/validate`, `/styles` endpoints in `api/routes.py` return 404 because they are unmounted in `main.py`. | **Critical** | `backend/app/main.py:262-274`, `backend/app/api/routes.py` | Architecture | 4 hrs (0.5 SP) |
 | **TD-002** | Generator DB Session Leaks | `next(get_db())` yields session without advancing generator, skipping `finally: db.close()`. | **Critical** | `backend/app/services/llm_fallback_service.py:207`, `llm_key_service.py:64` | Database | 2 hrs (0.25 SP) |
 | **TD-003** | Pytest `--cov` Coverage Failure | Running `pytest --cov` crashes with `KeyError: 'pydantic.root_model'`, breaking CI coverage tracking. | **Critical** | `backend/pytest.ini`, `.coveragerc` | Testing | 6 hrs (0.75 SP) |
@@ -67,61 +67,61 @@ The Enterprise Risk Register categorizes system risks into five critical operati
 ### 2.1 Security Risks
 
 - **RISK-SEC-01: Container Runtime Privilege Crash (Severity: High | Likelihood: High)**
-  - *Description:* `backend/Dockerfile` copies dependencies from `/root/.local` to stage 2, then executes as `USER amf`. Unprivileged non-root users cannot read `/root/.local` in strict OCI environments (Cloud Run, EKS), causing container crash loop on launch.
-  - *Remediation:* Update `Dockerfile` to copy to `/home/amf/.local` with `--chown=amf:amf`.
+    - *Description:* `backend/Dockerfile` copies dependencies from `/root/.local` to stage 2, then executes as `USER amf`. Unprivileged non-root users cannot read `/root/.local` in strict OCI environments (Cloud Run, EKS), causing container crash loop on launch.
+    - *Remediation:* Update `Dockerfile` to copy to `/home/amf/.local` with `--chown=amf:amf`.
 - **RISK-SEC-02: Silent Prompt Injection Guard Replacement Truncation (Severity: Medium | Likelihood: Medium)**
-  - *Description:* Re-entrant regex pattern replacement in `llm_provider_service.py` replaces injection attempts with `[CONTENT_FILTERED]`. String boundary shifts during multi-pass replacement can unexpectedly truncate document text without recording security audit logs.
-  - *Remediation:* Enforce single-pass tokenization filtering and record security violation audit logs in Supabase.
+    - *Description:* Re-entrant regex pattern replacement in `llm_provider_service.py` replaces injection attempts with `[CONTENT_FILTERED]`. String boundary shifts during multi-pass replacement can unexpectedly truncate document text without recording security audit logs.
+    - *Remediation:* Enforce single-pass tokenization filtering and record security violation audit logs in Supabase.
 - **RISK-SEC-03: Empty Secret Baseline Scanner (Severity: Low | Likelihood: Medium)**
-  - *Description:* `.secrets.baseline` contains empty results, allowing accidental commit of NVIDIA (`nvapi-`) or Groq API keys if developer pre-commit configuration is incomplete.
-  - *Remediation:* Audit secret baseline using `detect-secrets scan` and configure custom regex match rules for LLM provider key formats.
+    - *Description:* `.secrets.baseline` contains empty results, allowing accidental commit of NVIDIA (`nvapi-`) or Groq API keys if developer pre-commit configuration is incomplete.
+    - *Remediation:* Audit secret baseline using `detect-secrets scan` and configure custom regex match rules for LLM provider key formats.
 
 ---
 
 ### 2.2 Data Loss & Content Corruption Risks
 
 - **RISK-DATA-01: Manuscript Line-Break Stripping via Payload Sanitization (Severity: Critical | Likelihood: High)**
-  - *Description:* `removeControlChars` in `frontend/src/services/api.core.js` filters characters with ASCII code `< 32`. Newlines (`\n`), carriage returns (`\r`), and tabs (`\t`) are stripped. User manuscript text sent through `sanitizePayload` has all paragraph breaks flattened into a single unformatted line prior to server processing.
-  - *Remediation:* Amend `removeControlChars` filter to retain ASCII 10, 13, and 9.
+    - *Description:* `removeControlChars` in `frontend/src/services/api.core.js` filters characters with ASCII code `< 32`. Newlines (`\n`), carriage returns (`\r`), and tabs (`\t`) are stripped. User manuscript text sent through `sanitizePayload` has all paragraph breaks flattened into a single unformatted line prior to server processing.
+    - *Remediation:* Amend `removeControlChars` filter to retain ASCII 10, 13, and 9.
 - **RISK-DATA-02: Storage Exhaustion via Vector Store TTL Loss (Severity: Medium | Likelihood: High)**
-  - *Description:* Session vector store TTL deletion relies on in-memory timers (`threading.Timer`). Backend container restarts drop active timer instances, leaving ChromaDB vector store collections on disk permanently.
-  - *Remediation:* Implement persistent TTL session tracking in Redis or a scheduled background cleanup job.
+    - *Description:* Session vector store TTL deletion relies on in-memory timers (`threading.Timer`). Backend container restarts drop active timer instances, leaving ChromaDB vector store collections on disk permanently.
+    - *Remediation:* Implement persistent TTL session tracking in Redis or a scheduled background cleanup job.
 
 ---
 
 ### 2.3 Availability, Stability & Performance Risks
 
 - **RISK-AVAIL-01: Database Connection Pool Exhaustion via Generator Misuse (Severity: Critical | Likelihood: High)**
-  - *Description:* `next(get_db())` invoked in `llm_fallback_service.py` and `llm_key_service.py` advances the SQLAlchemy session generator without calling `.close()`, bypassing `finally: db.close()`. High traffic leads to rapid connection pool exhaustion and HTTP 500 errors.
-  - *Remediation:* Replace `next(get_db())` with `with SessionLocal() as db:` context managers.
+    - *Description:* `next(get_db())` invoked in `llm_fallback_service.py` and `llm_key_service.py` advances the SQLAlchemy session generator without calling `.close()`, bypassing `finally: db.close()`. High traffic leads to rapid connection pool exhaustion and HTTP 500 errors.
+    - *Remediation:* Replace `next(get_db())` with `with SessionLocal() as db:` context managers.
 - **RISK-AVAIL-02: Async Event Loop Thread Blocking (Severity: High | Likelihood: Medium)**
-  - *Description:* Synchronous CPU/IO tasks (`python-docx` file generation, `difflib.HtmlDiff`) execute directly inside `async def` endpoints (`format_manuscript`, `get_comparison_data`), blocking the main event loop thread and causing latency spikes across all concurrent requests.
-  - *Remediation:* Offload CPU-heavy synchronous calls using `await asyncio.to_thread(...)`.
+    - *Description:* Synchronous CPU/IO tasks (`python-docx` file generation, `difflib.HtmlDiff`) execute directly inside `async def` endpoints (`format_manuscript`, `get_comparison_data`), blocking the main event loop thread and causing latency spikes across all concurrent requests.
+    - *Remediation:* Offload CPU-heavy synchronous calls using `await asyncio.to_thread(...)`.
 - **RISK-AVAIL-03: Pytest Collection Timeout in CI Pipelines (Severity: High | Likelihood: High)**
-  - *Description:* Router lazy-loader initialization loop causes `pytest tests/` collection to take >600 seconds, causing CI build jobs to timeout and fail.
-  - *Remediation:* Refactor router discovery in `main.py` and add session-scoped pytest router pre-loading fixtures.
+    - *Description:* Router lazy-loader initialization loop causes `pytest tests/` collection to take >600 seconds, causing CI build jobs to timeout and fail.
+    - *Remediation:* Refactor router discovery in `main.py` and add session-scoped pytest router pre-loading fixtures.
 
 ---
 
 ### 2.4 Maintainability & Clean Architecture Risks
 
 - **RISK-MAINT-01: Domain Coupling in Monolithic Router Implementation (Severity: High | Likelihood: High)**
-  - *Description:* `documents_impl.py` (1,350 lines) directly performs virus scanning, file hashing, magic byte checking, Redis caching, database updates, and export compilation, preventing clean service reusability.
-  - *Remediation:* Decompose `documents_impl.py` into application services (`DocumentPipelineService`, `DocumentCrudService`, `DocumentExportService`).
+    - *Description:* `documents_impl.py` (1,350 lines) directly performs virus scanning, file hashing, magic byte checking, Redis caching, database updates, and export compilation, preventing clean service reusability.
+    - *Remediation:* Decompose `documents_impl.py` into application services (`DocumentPipelineService`, `DocumentCrudService`, `DocumentExportService`).
 - **RISK-MAINT-02: Frontend App Router Fragmentation (Severity: High | Likelihood: High)**
-  - *Description:* The codebase contains two App Router trees (`frontend/app` vs `frontend/src/app`). `tsconfig.json` excludes `src/app`, resulting in dead code and developer confusion.
-  - *Remediation:* Consolidate routing into `frontend/app/`, convert pages to TypeScript `.tsx`, and clean up `src/app`.
+    - *Description:* The codebase contains two App Router trees (`frontend/app` vs `frontend/src/app`). `tsconfig.json` excludes `src/app`, resulting in dead code and developer confusion.
+    - *Remediation:* Consolidate routing into `frontend/app/`, convert pages to TypeScript `.tsx`, and clean up `src/app`.
 
 ---
 
 ### 2.5 Community Onboarding & Developer Experience Risks
 
 - **RISK-COMM-01: Documentation Path & Route Mismatches (Severity: High | Likelihood: High)**
-  - *Description:* `AGENTS.md` and `API_REFERENCE.md` document invalid file paths (`api/routes.py`, `api/models.py`) and legacy routes (`POST /api/v1/format`), causing AI coding agents and external developers to generate incompatible code.
-  - *Remediation:* Synchronize `AGENTS.md`, `API_REFERENCE.md`, and `ERROR_CODES.md` with active FastAPI implementations.
+    - *Description:* `AGENTS.md` and `API_REFERENCE.md` document invalid file paths (`api/routes.py`, `api/models.py`) and legacy routes (`POST /api/v1/format`), causing AI coding agents and external developers to generate incompatible code.
+    - *Remediation:* Synchronize `AGENTS.md`, `API_REFERENCE.md`, and `ERROR_CODES.md` with active FastAPI implementations.
 - **RISK-COMM-02: Missing Environment Variable Documentation (Severity: Medium | Likelihood: High)**
-  - *Description:* `.env.example` omits LLM provider API keys (`NVIDIA_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`), hindering new developer setup.
-  - *Remediation:* Update `.env.example` with documented configuration keys for all supported AI providers.
+    - *Description:* `.env.example` omits LLM provider API keys (`NVIDIA_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`), hindering new developer setup.
+    - *Remediation:* Update `.env.example` with documented configuration keys for all supported AI providers.
 
 ---
 

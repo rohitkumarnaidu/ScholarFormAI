@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Trademark Policy
 
 ## Project Name
@@ -13,12 +12,14 @@
 You may use the ScholarForm AI name and logo to refer to the project without prior permission, provided you follow these guidelines:
 
 ### Permitted Uses
+
 - Referencing ScholarForm AI as the project name in publications, presentations, and websites
 - Using the logo in blog posts or tutorials about ScholarForm AI
 - Indicating that your product integrates with ScholarForm AI ("Works with ScholarForm AI")
 - Using the name in academic citations and bibliographies
 
 ### Prohibited Uses
+
 - Using "ScholarForm" as part of your own product or service name
 - Implying official endorsement or affiliation without written permission
 - Modifying or distorting the logo

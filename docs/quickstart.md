@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Quickstart Guide
 description: Get ScholarForm AI running in 5 minutes
 sidebar_position: 1
@@ -85,7 +85,7 @@ curl http://localhost:8000/api/v1/templates
 ## What's Next?
 
 | If you want to... | Go here |
-|-------------------|---------|
+| ------------------- | --------- |
 | Learn the full workflow | [User Guide](user_guide.md) |
 | Try the AI Agent | [Agent Docs](Agent.md) |
 | Create a template | [Template Creation](template_creation.md) |

@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # ScholarForm AI -- Repository Structure Gap Analysis
 
 > **Date:** 2026-06-13
@@ -16,7 +15,7 @@
 ### Root-level files present:
 
 | File | Status | Notes |
-|------|--------|-------|
+| ------ | -------- | ------- |
 | `README.md` | ✅ Present | Comprehensive project overview |
 | `LICENSE` | ✅ Present | MIT License |
 | `CONTRIBUTING.md` | ✅ Present | 111 lines, covers bug reports, features, PR process |
@@ -32,7 +31,7 @@
 ### `.github/` files present:
 
 | File | Status | Notes |
-|------|--------|-------|
+| ------ | -------- | ------- |
 | `.github/dependabot.yml` | ✅ Present | pip, npm, GitHub Actions |
 | `.github/ISSUE_TEMPLATE/bug_report.md` | ✅ Present | Structured template |
 | `.github/ISSUE_TEMPLATE/feature_request.md` | ✅ Present | Structured template |
@@ -50,7 +49,7 @@
 ### `docs/` structure present:
 
 | Path | Status | Notes |
-|------|--------|-------|
+| ------ | -------- | ------- |
 | `docs/README.md` | ✅ Present | Docs portal index |
 | `docs/architecture.md` | ✅ Present | System architecture (236 lines) |
 | `docs/user_guide.md` | ✅ Present | End-to-end workflows |
@@ -99,7 +98,7 @@
 #### P0 (Critical -- Must Have Before Public Launch)
 
 | # | Missing File | Reference Projects | Why It Matters | Effort |
-|---|-------------|-------------------|----------------|--------|
+| --- | ------------- | ------------------- | ---------------- | -------- |
 | 1 | `GOVERNANCE.md` | Airflow, K8s | Defines decision-making, voting, maintainer structure, conflict resolution. Essential for community trust. | Medium (2-3 hrs) |
 | 2 | `MAINTAINERS.md` or `TEAM.md` | Airflow (COMMITTERS), Django (AUTHORS), K8s (OWNERS) | Lists who maintains the project, their roles, areas of ownership. Enables community to know who to contact. | Low (30 min) |
 | 3 | `SUPPORT.md` | Kubernetes (root-level), Next.js (GH community) | Tells users where to get help (Discord, forums, Stack Overflow). GitHub shows this prominently. | Low (20 min) |
@@ -111,7 +110,7 @@
 #### P1 (High Priority -- Needed for Enterprise Credibility)
 
 | # | Missing File | Reference Projects | Why It Matters | Effort |
-|---|-------------|-------------------|----------------|--------|
+| --- | ------------- | ------------------- | ---------------- | -------- |
 | 8 | `.gitattributes` | K8s, Django, Airflow, Next.js | Normalizes line endings (CRLF vs LF), marks generated files, sets merge strategies. | Low (10 min) |
 | 9 | `CODEOWNERS` (.github/CODEOWNERS) | K8s (OWNERS), All enterprise orgs | Auto-assigns reviewers based on file patterns. Required for branch protection. | Low (20 min) |
 | 10 | `FUNDING.yml` (.github/FUNDING.yml) | FastAPI, Many projects | Enables GitHub Sponsors button. Shows financial sustainability. | Low (10 min) |
@@ -130,7 +129,7 @@
 #### P2 (Nice to Have)
 
 | # | Missing File | Reference Projects | Effort |
-|---|-------------|-------------------|--------|
+| --- | ------------- | ------------------- | -------- |
 | 22 | `TRADEMARKS.md` | Linux Foundation projects | Low (20 min) |
 | 23 | `COMPATIBILITY.md` | Airflow (in README table) | Low (30 min) |
 | 24 | `DEBUGGING.md` | Many projects | Medium (1-2 hrs) |
@@ -150,7 +149,7 @@
 ## 3. Reference Project Comparison Table
 
 | File / Feature | ScholarForm | Kubernetes | Django | Airflow | FastAPI | Next.js |
-|---------------|-------------|------------|--------|---------|---------|---------|
+| --------------- | ------------- | ------------ | -------- | --------- | --------- | --------- |
 | README.md | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | LICENSE | ✅ MIT | ✅ Apache-2.0 | ✅ BSD-3 | ✅ Apache-2.0 | ✅ MIT | ✅ MIT |
 | CONTRIBUTING.md | ✅ | ✅ | ✅ | ✅ | ✅ (GH) | ✅ |
@@ -186,7 +185,7 @@
 ### P0 (Must Have Before Public Launch) -- 7 items
 
 | # | Item | Type | Effort | Rationale |
-|---|------|------|--------|-----------|
+| --- | ------ | ------ | -------- | ----------- |
 | 1 | GOVERNANCE.md | Root file | 2-3 hrs | Without governance, no one trusts the projects future |
 | 2 | MAINTAINERS.md | Root file | 30 min | Community needs to know who runs the project |
 | 3 | SUPPORT.md | Root file | 20 min | GitHub prominently displays this; users need help channels |
@@ -198,7 +197,7 @@
 ### P1 (High Priority -- Enterprise Credibility) -- 14 items
 
 | # | Item | Type | Effort |
-|---|------|------|--------|
+| --- | ------ | ------ | -------- |
 | 8 | .gitattributes | Root file | 10 min |
 | 9 | CODEOWNERS | .github/ | 20 min |
 | 10 | FUNDING.yml | .github/ | 10 min |
@@ -217,7 +216,7 @@
 ### P2 (Nice to Have) -- 13 items
 
 | # | Item | Type | Effort |
-|---|------|------|--------|
+| --- | ------ | ------ | -------- |
 | 22 | TRADEMARKS.md | Root file | 20 min |
 | 23 | COMPATIBILITY.md | Root file | 30 min |
 | 24 | DEBUGGING.md | Root file | 1-2 hrs |
@@ -275,7 +274,7 @@
 ### Total Effort Estimate
 
 | Priority | Items | Estimated Total Effort |
-|----------|-------|----------------------|
+| ---------- | ------- | ---------------------- |
 | P0 | 7 items | ~2-3 days |
 | P1 | 14 items | ~3-5 days |
 | P2 | 13 items | ~2-3 days |
@@ -286,6 +285,7 @@
 ## 6. Recommended Implementation Roadmap
 
 ### Sprint 1 (Days 1-2) -- Foundation for Public Launch
+
 1. .gitattributes + .editorconfig (15 min)
 2. MAINTAINERS.md (30 min)
 3. GOVERNANCE.md (2-3 hrs)
@@ -296,6 +296,7 @@
 8. FUNDING.yml (10 min)
 
 ### Sprint 2 (Days 3-5) -- Developer & User Experience
+
 9. docs/quickstart.md (2-3 hrs)
 10. BUILDING.md (30 min)
 11. EXAMPLES/ directory with 3-5 examples (1-2 days)
@@ -304,6 +305,7 @@
 14. RELEASE_PROCESS.md (1-2 hrs)
 
 ### Sprint 3 (Days 6-8) -- Enterprise Readiness
+
 15. ADOPTERS.md (15 min) + begin collecting users
 16. MIGRATION_GUIDES.md (2-4 hrs)
 17. COMPATIBILITY.md (30 min)
@@ -312,6 +314,7 @@
 20. Refactor docs/ into Diataxis structure (tutorials/, guides/, reference/) (4-8 hrs)
 
 ### Sprint 4 (Days 9-11) -- Polish & Advanced
+
 21. TRADEMARKS.md (20 min)
 22. THIRD_PARTY_NOTICES.md (1 hr)
 23. DEBUGGING.md (1-2 hrs)
@@ -328,7 +331,7 @@
 ## 7. Completion Status — ALL 34 GAPS CLOSED ✅
 
 | Tier | Items | Status | Date Completed |
-|------|-------|--------|----------------|
+| ------ | ------- | -------- | ---------------- |
 | **P0** | 7 items + 7 quick wins | ✅ All 14 complete | June 13, 2026 |
 | **P1** | 14 items | ✅ All 14 complete | June 13, 2026 |
 | **P2** | 13 items | ✅ All 13 complete | June 13, 2026 |
@@ -337,7 +340,7 @@
 ### Additional Enterprise Upgrades (Beyond Gap Analysis)
 
 | Item | Status | Description |
-|------|--------|-------------|
+| ------ | -------- | ------------- |
 | `.github/workflows/dependency-review.yml` | ✅ | PR dependency license + severity scanning |
 | `.pre-commit-config.yaml` upgrade | ✅ | 18 hooks (was 8) — added JSON/TOML/XML check, large file, private key, line ending |
 | `.github/dependabot.yml` upgrade | ✅ | Labels, reviewers, schedules, timezone |

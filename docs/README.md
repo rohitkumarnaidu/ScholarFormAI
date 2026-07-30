@@ -2,6 +2,7 @@
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
 ---
+
 title: ScholarForm AI — Documentation Hub
 description: The beautiful, central landing page and Table of Contents for all documentation.
 sidebar_position: 0
@@ -14,7 +15,7 @@ last_updated: July 2026
 
 # 📚 ScholarForm AI — Documentation Hub
 
-Welcome to the **ScholarForm AI** documentation portal. This hub is your starting point for understanding, deploying, contributing to, and extending ScholarForm AI. 
+Welcome to the **ScholarForm AI** documentation portal. This hub is your starting point for understanding, deploying, contributing to, and extending ScholarForm AI.
 
 > **Quick Links:** [Overview](overview.md) • [Quickstart](quickstart.md) • [API Reference](API.md) • [Developer Setup](DEVELOPER_ONBOARDING.md) • [FAQ](../FAQ.md)
 

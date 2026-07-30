@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Template Creation Tutorial
 description: How to create, test, and deploy manuscript templates with contract.yaml
 sidebar_position: 11
@@ -16,6 +16,7 @@ last_updated: July 2026
 # ScholarForm AI — Template Creation Tutorial
 
 ## Table of Contents
+
 - [1. Create Template Folder](#1-create-template-folder)
 - [2. Add Jinja2 Tags in DOCX](#2-add-jinja2-tags-in-docx)
 - [3. Minimal Template Snippets](#3-minimal-template-snippets)

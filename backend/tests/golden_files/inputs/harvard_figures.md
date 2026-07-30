@@ -1,20 +1,21 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
 template: harvard
 title: Figure-Group Layout Analysis for Multi-Panel Scientific Figures
 authors:
-  - Oliver Thompson
-  - Sofia Martinez
+
+- Oliver Thompson
+- Sofia Martinez
 affiliations:
-  - Visual Analytics Lab, University of Cambridge
+- Visual Analytics Lab, University of Cambridge
 keywords:
-  - figure grouping
-  - sub-figures
-  - Harvard referencing
-  - multi-panel layout
+- figure grouping
+- sub-figures
+- Harvard referencing
+- multi-panel layout
+
 ---
 
 # Abstract

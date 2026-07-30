@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # API Scripts Examples
 
 Client scripts for interacting with ScholarForm API programmatically.

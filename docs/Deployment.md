@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Deployment Guide
 description: Production deployment guide for Render, Vercel, and CI/CD pipelines
 sidebar_position: 2
@@ -20,6 +20,7 @@ last_updated: July 2026
 ---
 
 ## Table of Contents
+
 - [Architecture (Strict $0)](#architecture-strict-0)
 - [Production Runtime Profile (Render 512MB)](#production-runtime-profile-render-512mb)
 - [Remote Service Routing](#remote-service-routing)
@@ -121,11 +122,11 @@ Compatibility fallback remains supported:
 - Workflow: `.github/workflows/keepalive-free-tier.yml`
 - Schedule: every 14 minutes (`*/14 * * * *`)
 - Probes:
-  - Render backend live endpoint
-  - HF primary/shadow endpoints for GROBID, Docling, OCR, DOCX converter
+    - Render backend live endpoint
+    - HF primary/shadow endpoints for GROBID, Docling, OCR, DOCX converter
 - Behavior:
-  - Compact health logs
-  - Fails the job if both primary and shadow fail for any service pair
+    - Compact health logs
+    - Fails the job if both primary and shadow fail for any service pair
 
 ## Required GitHub Secrets
 

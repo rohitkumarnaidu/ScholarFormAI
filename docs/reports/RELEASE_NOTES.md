@@ -20,16 +20,19 @@ From journal submissions to grant proposals to portfolio documents, ScholarForm 
 ## New in v1.0.0
 
 ### Document Formatter Pipeline
+
 - 12-stage processing pipeline: parse, structure, classify, NLP, validate, format, export
 - 17 built-in journal templates: IEEE, APA, ACM, Springer, Elsevier, Nature, Harvard, Chicago, MLA, Vancouver, Numeric, Modern Blue, Modern Gold, Modern Red, Resume, Portfolio, None
 - 3-tier PDF parsing fallback: GROBID → Docling → PyMuPDF
 
 ### AI Agent Generator
+
 - 11-step generation pipeline: task parsing, outline, writing, citations, quality, export
 - 3-tier LLM fallback: NVIDIA NIM → Groq → Ollama
 - Multi-doc synthesis engine with ChromaDB RAG and SSE streaming (2–6 PDF input)
 
 ### Live Preview Editor
+
 - TipTap rich text editor on the `/edit` page
 - WebSocket-backed live preview with <80ms render target
 - Dark/light mode with unified ThemeToggle
@@ -37,11 +40,13 @@ From journal submissions to grant proposals to portfolio documents, ScholarForm 
 - Guest upload flow (5/day limit)
 
 ### Authentication & Billing
+
 - Supabase Auth with JWT, OTP, and OAuth (Google/GitHub)
 - API key management with Fernet encryption
 - Stripe billing integration with tiered plans
 
 ### Security Hardening
+
 - ClamAV virus scanning on all file uploads
 - JWKS JWT verification against Supabase
 - Two-layer rate limiting (base + tier-aware token bucket)
@@ -56,6 +61,7 @@ From journal submissions to grant proposals to portfolio documents, ScholarForm 
 - SBOM generation (CycloneDX) for backend and frontend
 
 ### Infrastructure & CI/CD
+
 - Production-ready CI/CD with 25 GitHub Actions workflows
 - FastAPI backend (Uvicorn) + Next.js 16 frontend (App Router)
 - Celery background workers with Redis broker
@@ -67,6 +73,7 @@ From journal submissions to grant proposals to portfolio documents, ScholarForm 
 - Conventional Commits enforcement (commitlint, 12 types, 11 scopes)
 
 ### Quality & Testing
+
 - 47 frontend tests fixed (Button, ErrorBoundary, ModelSelector, ThemeContext, usePageTitle, OnboardingTour, snapshots, API templates, sanitizer)
 - E2E test stability improvements (auth, landing, dark-mode, selector fixes)
 - Python 3.12 version alignment (resolved pytest import collision)
@@ -74,6 +81,7 @@ From journal submissions to grant proposals to portfolio documents, ScholarForm 
 - PreviewPane HTML sanitizer fixed for JSDOM compatibility
 
 ### Documentation
+
 - 88-file enterprise-grade documentation suite
 - ARCHITECTURE.md, STYLE_GUIDE.md, TESTING.md, DEVELOPER_SETUP.md, RELEASE_PROCESS.md, ROADMAP.md, TROUBLESHOOTING.md, VERSIONING.md
 - 10 Architecture Decision Records (ADRs)
@@ -128,7 +136,7 @@ See [DEVELOPER_SETUP.md](DEVELOPER_SETUP.md) for detailed instructions.
 **Breaking changes from v0.9.0:**
 
 | Change | Migration |
-|--------|-----------|
+| -------- | ----------- |
 | Python 3.11 → 3.12 | Update your runtime to Python 3.12. The 3.11 line caused pytest import collisions. |
 | Database migrations | Run `alembic upgrade head` after pulling v1.0.0. New tables for API keys, billing, and synthesis sessions. |
 | Environment variables | New required vars: `STRIPE_SECRET_KEY`, `CLAMAV_HOST`, `CHROMADB_HOST`, `REDIS_URL`. See `.env.example`. |
@@ -137,11 +145,13 @@ See [DEVELOPER_SETUP.md](DEVELOPER_SETUP.md) for detailed instructions.
 | API key format | Existing legacy keys are rotated. Generate new keys via the dashboard. |
 
 **Deprecated in v0.9.x (removed in v1.0.0):**
+
 - Legacy `/api/v0/*` endpoints — migrate to `/api/v1/*`
 - Unauthenticated guest uploads (now limited to 5/day with account requirement)
 - The old single-stage formatter (replaced by the 12-stage pipeline)
 
 **Recommended upgrade path:**
+
 1. Review and update your `.env` file against `.env.example`
 2. Run database migrations
 3. Deploy updated containers
@@ -153,7 +163,7 @@ See [DEVELOPER_SETUP.md](DEVELOPER_SETUP.md) for detailed instructions.
 ## Known Issues
 
 | Issue | Impact | Status |
-|-------|--------|--------|
+| ------- | -------- | -------- |
 | RBAC middleware is a stub | No role-based access control enforcement | Planned for v1.1 |
 | Audit logging is minimal | Limited forensic trail for admin actions | Planned for v1.1 |
 | LaTeX exporter is a stub | LaTeX export may produce incomplete output | Planned for v1.1 |
@@ -174,7 +184,7 @@ We welcome community contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) to ge
 ## Links
 
 | Resource | Location |
-|----------|----------|
+| ---------- | ---------- |
 | Homepage | [https://scholarform.ai](https://scholarform.ai) |
 | Repository | [https://github.com/rohitkumarnaidu/ScholarFormAI](https://github.com/rohitkumarnaidu/ScholarFormAI) |
 | Documentation | [https://github.com/rohitkumarnaidu/ScholarFormAI/docs](docs/) |

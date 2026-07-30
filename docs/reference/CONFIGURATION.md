@@ -25,7 +25,7 @@ class Settings:
 ### 1. Database Settings (`DatabaseSettings`)
 
 | Environment Variable | Type | Default Value | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `SUPABASE_URL` | `Optional[str]` | `None` | Supabase project URL (`https://<project-ref>.supabase.co`) |
 | `SUPABASE_ANON_KEY` | `Optional[str]` | `None` | Supabase public anonymous API key |
 | `SUPABASE_JWKS_URL` | `Optional[str]` | `None` | Supabase JSON Web Key Set URL for JWT verification |
@@ -38,7 +38,7 @@ class Settings:
 ### 2. LLM Provider Settings (`LLMSettings`)
 
 | Environment Variable | Type | Default Value | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `NVIDIA_API_KEY` | `Optional[str]` | `None` | NVIDIA NIM Tier 1 LLM API key |
 | `NVIDIA_MODEL` | `str` | `""` | NVIDIA NIM model identifier |
 | `GROQ_API_KEY` | `Optional[str]` | `None` | Groq high-speed fallback LLM API key |
@@ -62,7 +62,7 @@ class Settings:
 ### 3. Pipeline & Document Parser Settings (`PipelineSettings`)
 
 | Environment Variable | Type | Default Value | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `GROBID_URL` | `str` | `"http://localhost:8070"` | GROBID TEI-XML extraction server URL |
 | `GROBID_BASE_URL` | `str` | `"http://localhost:8070"` | Alternative GROBID base URL |
 | `GROBID_URLS` | `str` | `""` | Comma-separated list of failover GROBID instance URLs |
@@ -94,7 +94,7 @@ class Settings:
 ### 4. Security & CORS Settings (`SecuritySettings`)
 
 | Environment Variable | Type | Default Value | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `ALGORITHM` | `str` | `"HS256"` | JWT signature algorithm |
 | `CORS_ORIGINS` | `str` | Localhost origins | Comma-separated list of allowed CORS frontend origins |
 | `SIGNED_URL_SECRET` | `Optional[str]` | `None` | Secret key for generating signed document download URLs |
@@ -110,7 +110,7 @@ class Settings:
 ### 5. Caching & Redis Settings (`CacheSettings`)
 
 | Environment Variable | Type | Default Value | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `REDIS_ENABLED` | `bool` | `False` | Enable Redis caching layer |
 | `REDIS_URL` | `str` | `"redis://localhost:6379"` | Primary Redis connection URI |
 | `REDIS_HOST` | `str` | `"localhost"` | Redis server host |
@@ -133,7 +133,7 @@ class Settings:
 ### 6. Deployment & Feature Settings (`DeploymentSettings`)
 
 | Environment Variable | Type | Default Value | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `DEBUG` | `bool` | `False` | Enable FastAPI debug mode and interactive OpenAPI UI |
 | `ENABLE_STRUCTURED_LOGGING` | `bool` | `False` | Output backend logs as structured JSON |
 | `GLOBAL_RATE_LIMIT_PER_MINUTE` | `int` | `120` | Global API rate limit cap per IP/user per minute |

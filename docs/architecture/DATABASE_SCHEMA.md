@@ -40,10 +40,11 @@ erDiagram
 ## Detailed Table Reference
 
 ### 1. `profiles` — User Account Profiles
+
 Extends Supabase `auth.users` with billing tiers, profile details, and role specifications.
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY`, `FK -> auth.users(id) ON DELETE CASCADE` | Mirrors Supabase Auth User ID. |
 | `email` | `TEXT` | Yes | Indexed | User primary email address. |
 | `full_name` | `TEXT` | Yes | — | Display name of the user. |
@@ -60,10 +61,11 @@ Extends Supabase `auth.users` with billing tiers, profile details, and role spec
 ---
 
 ### 2. `documents` — Core Document Processing Jobs
+
 Stores document formatting job metadata, upload status, file paths, and current pipeline stages.
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY DEFAULT gen_random_uuid()` | Unique document job identifier. |
 | `user_id` | `UUID` | Yes | Indexed | Owner user ID (`auth.users.id`). |
 | `filename` | `TEXT` | No | — | Original uploaded file name. |
@@ -81,21 +83,22 @@ Stores document formatting job metadata, upload status, file paths, and current 
 | `updated_at` | `TIMESTAMPTZ` | No | `DEFAULT NOW()` | Last progress update timestamp. |
 
 - **Indexes**:
-  - `idx_documents_user_id` on `user_id`
-  - `idx_documents_status` on `status`
-  - `idx_documents_created_at` on `created_at DESC`
-  - `idx_documents_file_hash` on `file_hash`
-  - `idx_documents_user_created` composite on `(user_id, created_at DESC)`
-  - `idx_documents_user_updated` composite on `(user_id, updated_at DESC)`
-  - `idx_documents_fts` GIN on `to_tsvector('english', raw_text)`
+    - `idx_documents_user_id` on `user_id`
+    - `idx_documents_status` on `status`
+    - `idx_documents_created_at` on `created_at DESC`
+    - `idx_documents_file_hash` on `file_hash`
+    - `idx_documents_user_created` composite on `(user_id, created_at DESC)`
+    - `idx_documents_user_updated` composite on `(user_id, updated_at DESC)`
+    - `idx_documents_fts` GIN on `to_tsvector('english', raw_text)`
 
 ---
 
 ### 3. `document_results` — Pipeline Structured Output
+
 Contains parsed document block structures, validation results, and quality summary metrics.
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY DEFAULT gen_random_uuid()` | Unique result record ID. |
 | `document_id` | `UUID` | No | `FK -> documents(id) ON DELETE CASCADE`, `UNIQUE` | One-to-one relationship with `documents`. |
 | `structured_data` | `JSONB` | Yes | — | Parsed manuscript blocks, sections, and references. |
@@ -108,10 +111,11 @@ Contains parsed document block structures, validation results, and quality summa
 ---
 
 ### 4. `document_versions` — Output Edit Snapshots
+
 Stores historic document version snapshots generated when users apply manual edits in the UI editor.
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY DEFAULT gen_random_uuid()` | Unique version ID. |
 | `document_id` | `UUID` | No | `FK -> documents(id) ON DELETE CASCADE` | Associated document ID. |
 | `version_number` | `TEXT` | No | — | Sequential version tag (e.g., `"v1"`, `"v2"`). |
@@ -124,10 +128,11 @@ Stores historic document version snapshots generated when users apply manual edi
 ---
 
 ### 5. `processing_status` — Per-Phase Pipeline Status
+
 Tracks individual pipeline phase progress (`UPLOAD`, `EXTRACTION`, `NLP_ANALYSIS`, `VALIDATION`, `PERSISTENCE`).
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY DEFAULT gen_random_uuid()` | Unique status record ID. |
 | `document_id` | `UUID` | No | `FK -> documents(id) ON DELETE CASCADE` | Parent document job ID. |
 | `phase` | `TEXT` | No | — | Phase name (`UPLOAD`, `EXTRACTION`, etc.). |
@@ -141,10 +146,11 @@ Tracks individual pipeline phase progress (`UPLOAD`, `EXTRACTION`, `NLP_ANALYSIS
 ---
 
 ### 6. `suggestions` — AI-Generated Editing Suggestions
+
 Holds AI-proposed manuscript text edits, clarity improvements, and user accept/reject decisions.
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY DEFAULT gen_random_uuid()` | Unique suggestion ID. |
 | `user_id` | `UUID` | No | Indexed | Requesting user ID. |
 | `document_id` | `UUID` | Yes | Indexed | Associated document ID. |
@@ -162,10 +168,11 @@ Holds AI-proposed manuscript text edits, clarity improvements, and user accept/r
 ---
 
 ### 7. `user_api_keys` — Encrypted User LLM Keys
+
 Stores Bring-Your-Own-Key (BYOK) credentials for custom LLM integration.
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY DEFAULT gen_random_uuid()` | Unique key record ID. |
 | `user_id` | `UUID` | No | Indexed | Owner user ID. |
 | `provider` | `VARCHAR(50)` | No | Indexed | Provider slug (`"openai"`, `"anthropic"`, `"groq"`). |
@@ -183,10 +190,11 @@ Stores Bring-Your-Own-Key (BYOK) credentials for custom LLM integration.
 ---
 
 ### 8. `api_key_usage_log` — Per-Key Telemetry & Audit
+
 Tracks execution metric logs for every request authorized by user API keys.
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY DEFAULT gen_random_uuid()` | Log entry ID. |
 | `user_api_key_id` | `UUID` | No | `FK -> user_api_keys(id) ON DELETE CASCADE` | Target API key ID. |
 | `endpoint` | `VARCHAR(200)` | Yes | — | API path invoked. |
@@ -201,10 +209,11 @@ Tracks execution metric logs for every request authorized by user API keys.
 ---
 
 ### 9. `custom_providers` — Custom LLM Endpoint Declarations
+
 Configures custom self-hosted or proxy OpenAI-compatible API base URLs.
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY DEFAULT gen_random_uuid()` | Custom provider record ID. |
 | `user_id` | `UUID` | No | Indexed | Owner user ID. |
 | `name` | `VARCHAR(100)` | No | — | User-visible display name. |
@@ -220,10 +229,11 @@ Configures custom self-hosted or proxy OpenAI-compatible API base URLs.
 ---
 
 ### 10. `generator_sessions` — AI Manuscript Authoring Sessions
+
 Manages state for AI manuscript generation workflows.
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY DEFAULT gen_random_uuid()` | Generator session ID. |
 | `user_id` | `TEXT` | Yes | — | User ID string. |
 | `session_type` | `TEXT` | No | `DEFAULT 'agent'` | Session mode (`agent`, `multi_doc`). |
@@ -237,10 +247,11 @@ Manages state for AI manuscript generation workflows.
 ---
 
 ### 11. `generator_messages` — AI Authoring Chat Messages
+
 Stores conversational exchanges during manuscript generation sessions.
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY DEFAULT gen_random_uuid()` | Message ID. |
 | `session_id` | `UUID` | No | `FK -> generator_sessions(id) ON DELETE CASCADE` | Associated generator session ID. |
 | `role` | `TEXT` | No | — | Message sender role (`user`, `assistant`, `system`). |
@@ -253,10 +264,11 @@ Stores conversational exchanges during manuscript generation sessions.
 ---
 
 ### 12. `generator_documents` — Generated Document Revisions
+
 Holds generated manuscript text artifacts produced by authoring sessions.
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY DEFAULT gen_random_uuid()` | Generated document ID. |
 | `session_id` | `UUID` | No | `FK -> generator_sessions(id) ON DELETE CASCADE` | Parent session ID. |
 | `content_json` | `JSONB` | Yes | — | Full manuscript JSON content. |
@@ -267,10 +279,11 @@ Holds generated manuscript text artifacts produced by authoring sessions.
 ---
 
 ### 13. `audit_log` — System Security Audit Trail
+
 Records security events, authentication attempts, API key creations, and document deletions.
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY DEFAULT gen_random_uuid()` | Audit record ID. |
 | `user_id` | `TEXT` | Yes | Indexed | Performing user ID or system actor. |
 | `action` | `TEXT` | No | — | Action slug (e.g., `"document.delete"`). |
@@ -281,17 +294,18 @@ Records security events, authentication attempts, API key creations, and documen
 | `created_at` | `TIMESTAMPTZ` | No | `DEFAULT NOW()` | Event logging timestamp. |
 
 - **Indexes**:
-  - `idx_audit_log_user_id` on `user_id`
-  - `idx_audit_log_timestamp` on `created_at DESC`
-  - `idx_audit_log_resource` composite on `(resource_type, resource_id)`
+    - `idx_audit_log_user_id` on `user_id`
+    - `idx_audit_log_timestamp` on `created_at DESC`
+    - `idx_audit_log_resource` composite on `(resource_type, resource_id)`
 
 ---
 
 ### 14. `webhook_subscriptions` — Outgoing Webhook Registrations
+
 Manages client webhook subscriptions for processing event notifications.
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY DEFAULT gen_random_uuid()` | Webhook subscription ID. |
 | `user_id` | `UUID` | No | Indexed | Subscriber user ID. |
 | `name` | `TEXT` | No | — | Webhook description label. |
@@ -303,16 +317,17 @@ Manages client webhook subscriptions for processing event notifications.
 | `updated_at` | `TIMESTAMPTZ` | No | `DEFAULT NOW()` | Modification timestamp. |
 
 - **Indexes**:
-  - `idx_webhook_subs_user_id` on `user_id`
-  - `idx_webhook_subs_active_events` GIN on `(is_active, events)`
+    - `idx_webhook_subs_user_id` on `user_id`
+    - `idx_webhook_subs_active_events` GIN on `(is_active, events)`
 
 ---
 
 ### 15. `webhook_delivery_logs` — Webhook Dispatch Delivery History
+
 Logs HTTP delivery attempts for outgoing webhooks.
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY DEFAULT gen_random_uuid()` | Log entry ID. |
 | `subscription_id` | `UUID` | No | `FK -> webhook_subscriptions(id) ON DELETE CASCADE` | Associated subscription ID. |
 | `event_type` | `TEXT` | No | — | Event type dispatched. |
@@ -328,10 +343,11 @@ Logs HTTP delivery attempts for outgoing webhooks.
 ---
 
 ### 16. `document_shares` — Collaborative Document Permissions
+
 Controls multi-user access permissions for shared document editing and viewing.
 
 | Column Name | Data Type | Nullable | Constraints & Defaults | Description |
-|-------------|-----------|----------|------------------------|-------------|
+| ------------- | ----------- | ---------- | ------------------------ | ------------- |
 | `id` | `UUID` | No | `PRIMARY KEY DEFAULT gen_random_uuid()` | Share record ID. |
 | `document_id` | `UUID` | No | `FK -> documents(id) ON DELETE CASCADE` | Shared document ID. |
 | `shared_with_user_id` | `TEXT` | No | Indexed | Recipient user ID string. |

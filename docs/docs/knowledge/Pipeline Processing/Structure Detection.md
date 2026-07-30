@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Structure Detection
 
 <cite>
@@ -21,6 +20,7 @@
 </cite>
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [Project Structure](#project-structure)
 3. [Core Components](#core-components)
@@ -32,7 +32,9 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
+
 This document explains the structure detection system that identifies headings, infers section boundaries, and builds hierarchical relationships for academic manuscripts. It covers:
+
 - Heading identification algorithms (keyword, numbering, style, parser hints)
 - Position-based heuristics for confidence boosting
 - Integration with external AI services (Docling layout analysis and GROBID metadata)
@@ -42,6 +44,7 @@ This document explains the structure detection system that identifies headings, 
 - Examples, rule configuration, and troubleshooting
 
 ## Project Structure
+
 The structure detection pipeline resides under backend/app/pipeline/structure_detection and integrates with the broader pipeline orchestration and external services.
 
 ```mermaid
@@ -74,6 +77,7 @@ HR --> STG
 ```
 
 **Diagram sources**
+
 - [detector.py:27-121](file://backend/app/pipeline/structure_detection/detector.py#L27-L121)
 - [heading_rules.py:1-397](file://backend/app/pipeline/structure_detection/heading_rules.py#L1-L397)
 - [position_rules.py:1-231](file://backend/app/pipeline/structure_detection/position_rules.py#L1-L231)
@@ -84,10 +88,12 @@ HR --> STG
 - [settings.py:118-124](file://backend/app/config/settings.py#L118-L124)
 
 **Section sources**
+
 - [__init__.py:1-6](file://backend/app/pipeline/structure_detection/__init__.py#L1-L6)
 - [orchestrator.py:466-470](file://backend/app/pipeline/orchestrator.py#L466-L470)
 
 ## Core Components
+
 - StructureDetector: Main orchestrator that computes average font size, detects heading candidates (rule-based and Docling-enhanced), assigns section names, builds hierarchy, canonicalizes section names, validates hierarchy, and records processing metadata.
 - Heading Rules Engine: Implements keyword matching, numbering pattern detection, style heuristics, parser hints, and fallback logic with dynamic thresholds.
 - Position Rules Engine: Provides positional cues (first block, isolation, blank-line counts, position ratio) and boosts confidence accordingly.
@@ -95,12 +101,14 @@ HR --> STG
 - External AI Services: Docling for layout-aware heading detection and GROBID for metadata enrichment.
 
 **Section sources**
+
 - [detector.py:27-121](file://backend/app/pipeline/structure_detection/detector.py#L27-L121)
 - [heading_rules.py:232-397](file://backend/app/pipeline/structure_detection/heading_rules.py#L232-L397)
 - [position_rules.py:147-231](file://backend/app/pipeline/structure_detection/position_rules.py#L147-L231)
 - [loader.py:59-74](file://backend/app/pipeline/contracts/loader.py#L59-L74)
 
 ## Architecture Overview
+
 The pipeline runs in stages. Structure detection is invoked after text extraction and optional AI metadata/layout passes. It enriches blocks with heading metadata and hierarchical relationships without assigning final semantic block types.
 
 ```mermaid
@@ -127,6 +135,7 @@ Orchestrator-->>User : Results
 ```
 
 **Diagram sources**
+
 - [orchestrator.py:635-779](file://backend/app/pipeline/orchestrator.py#L635-L779)
 - [detector.py:47-121](file://backend/app/pipeline/structure_detection/detector.py#L47-L121)
 - [docling_client.py:180-289](file://backend/app/pipeline/services/docling_client.py#L180-L289)
@@ -135,7 +144,9 @@ Orchestrator-->>User : Results
 ## Detailed Component Analysis
 
 ### StructureDetector
+
 Responsibilities:
+
 - Enforces normalization, computes average font size, and selects detection strategy.
 - Uses Docling layout data when available; otherwise applies rule-based heuristics.
 - Assigns section names to blocks based on the most recent heading.
@@ -144,6 +155,7 @@ Responsibilities:
 - Validates hierarchy for level jumps and records processing metadata.
 
 Key behaviors:
+
 - Docling path: Matches layout elements to blocks, infers heading levels from font size hierarchy, and filters out header/footer regions.
 - Rule-based path: Applies heading rules and position rules to compute confidence and levels.
 - Safety: Wrapped with safe execution to prevent crashes and log fallbacks.
@@ -167,15 +179,19 @@ Record --> End(["Return enriched document"])
 ```
 
 **Diagram sources**
+
 - [detector.py:47-121](file://backend/app/pipeline/structure_detection/detector.py#L47-L121)
 - [detector.py:381-544](file://backend/app/pipeline/structure_detection/detector.py#L381-L544)
 
 **Section sources**
+
 - [detector.py:47-121](file://backend/app/pipeline/structure_detection/detector.py#L47-L121)
 - [detector.py:381-544](file://backend/app/pipeline/structure_detection/detector.py#L381-L544)
 
 ### Heading Rules Engine
+
 Core logic:
+
 - Numbering pattern detection supports decimal and Roman numerals, inferring heading levels from depth.
 - Keyword matching against a curated list of academic section headings with strict length and prefix guards.
 - Style heuristics: font size outliers, boldness, upper-case tendency, and punctuation penalties.
@@ -184,6 +200,7 @@ Core logic:
 - Abstract safety: suppresses false positives immediately after “Abstract” until a strong new section marker appears.
 
 Dynamic thresholds:
+
 - Confidence thresholds are configurable via settings and clamped to [0,1].
 
 ```mermaid
@@ -208,9 +225,11 @@ P --> |Yes| R["Finalize reasons + level"]
 ```
 
 **Diagram sources**
+
 - [heading_rules.py:232-397](file://backend/app/pipeline/structure_detection/heading_rules.py#L232-L397)
 
 **Section sources**
+
 - [heading_rules.py:45-82](file://backend/app/pipeline/structure_detection/heading_rules.py#L45-L82)
 - [heading_rules.py:117-145](file://backend/app/pipeline/structure_detection/heading_rules.py#L117-L145)
 - [heading_rules.py:147-186](file://backend/app/pipeline/structure_detection/heading_rules.py#L147-L186)
@@ -218,7 +237,9 @@ P --> |Yes| R["Finalize reasons + level"]
 - [settings.py:118-124](file://backend/app/config/settings.py#L118-L124)
 
 ### Position-Based Heuristics
+
 Functions:
+
 - First non-empty block detection (strong indicator of title)
 - Isolation detection (line surrounded by blank lines)
 - Blank-line counts before/after a block
@@ -241,14 +262,17 @@ Boost --> Out["Return position info + adjusted confidence"]
 ```
 
 **Diagram sources**
+
 - [position_rules.py:15-198](file://backend/app/pipeline/structure_detection/position_rules.py#L15-L198)
 - [position_rules.py:201-231](file://backend/app/pipeline/structure_detection/position_rules.py#L201-L231)
 
 **Section sources**
+
 - [position_rules.py:15-198](file://backend/app/pipeline/structure_detection/position_rules.py#L15-L198)
 - [position_rules.py:201-231](file://backend/app/pipeline/structure_detection/position_rules.py#L201-L231)
 
 ### Integration with External AI Services
+
 - Docling: Provides layout elements with bounding boxes, font sizes, and types. StructureDetector matches Docling elements to blocks, infers heading levels from font size hierarchy, and ignores top regions (logo/header tolerance).
 - GROBID: Extracts metadata (title, authors, affiliations, abstract, keywords) and merges into ai_hints for downstream stages.
 - Orchestrator: Runs Docling and GROBID in parallel during extraction, with timeouts and fallbacks.
@@ -269,18 +293,21 @@ SD-->>Orchestrator : enriched document
 ```
 
 **Diagram sources**
+
 - [orchestrator.py:635-755](file://backend/app/pipeline/orchestrator.py#L635-L755)
 - [docling_client.py:180-289](file://backend/app/pipeline/services/docling_client.py#L180-L289)
 - [grobid_client.py:52-92](file://backend/app/pipeline/services/grobid_client.py#L52-L92)
 - [detector.py:70-86](file://backend/app/pipeline/structure_detection/detector.py#L70-L86)
 
 **Section sources**
+
 - [docling_client.py:143-178](file://backend/app/pipeline/services/docling_client.py#L143-L178)
 - [grobid_client.py:25-51](file://backend/app/pipeline/services/grobid_client.py#L25-L51)
 - [orchestrator.py:635-755](file://backend/app/pipeline/orchestrator.py#L635-L755)
 - [detector.py:67-86](file://backend/app/pipeline/structure_detection/detector.py#L67-L86)
 
 ### Canonical Section Names and Validation
+
 - Canonicalization: Uses publisher contracts to rename detected sections to standardized names.
 - Validation: Checks for excessive level jumps (e.g., jumping from level 1 to level 3) and marks blocks invalid with warnings.
 
@@ -295,20 +322,23 @@ W --> |No| OK["Keep valid"]
 ```
 
 **Diagram sources**
+
 - [detector.py:349-379](file://backend/app/pipeline/structure_detection/detector.py#L349-L379)
 - [loader.py:59-74](file://backend/app/pipeline/contracts/loader.py#L59-L74)
 
 **Section sources**
+
 - [detector.py:349-379](file://backend/app/pipeline/structure_detection/detector.py#L349-L379)
 - [loader.py:59-74](file://backend/app/pipeline/contracts/loader.py#L59-L74)
 
 ## Dependency Analysis
+
 - StructureDetector depends on:
-  - Heading rules for candidate detection
-  - Position rules for confidence boosting
-  - Contracts loader for canonicalization
-  - Docling/GROBID for layout/metadata hints
-  - Block model for metadata fields (level, parent_id, section_name, warnings)
+    - Heading rules for candidate detection
+    - Position rules for confidence boosting
+    - Contracts loader for canonicalization
+    - Docling/GROBID for layout/metadata hints
+    - Block model for metadata fields (level, parent_id, section_name, warnings)
 - Settings drive thresholds and pipeline behavior.
 
 ```mermaid
@@ -324,6 +354,7 @@ ORCH --> GR["GROBIDClient"]
 ```
 
 **Diagram sources**
+
 - [detector.py:16-25](file://backend/app/pipeline/structure_detection/detector.py#L16-L25)
 - [heading_rules.py:12-16](file://backend/app/pipeline/structure_detection/heading_rules.py#L12-L16)
 - [position_rules.py:11-12](file://backend/app/pipeline/structure_detection/position_rules.py#L11-L12)
@@ -333,6 +364,7 @@ ORCH --> GR["GROBIDClient"]
 - [orchestrator.py:58-94](file://backend/app/pipeline/orchestrator.py#L58-L94)
 
 **Section sources**
+
 - [detector.py:16-25](file://backend/app/pipeline/structure_detection/detector.py#L16-L25)
 - [heading_rules.py:12-16](file://backend/app/pipeline/structure_detection/heading_rules.py#L12-L16)
 - [position_rules.py:11-12](file://backend/app/pipeline/structure_detection/position_rules.py#L11-L12)
@@ -342,6 +374,7 @@ ORCH --> GR["GROBIDClient"]
 - [orchestrator.py:58-94](file://backend/app/pipeline/orchestrator.py#L58-L94)
 
 ## Performance Considerations
+
 - Docling path: Faster and more accurate for scanned or layout-rich PDFs; includes logo/header tolerance and font-size-based level inference.
 - Rule-based path: Robust fallback with minimal overhead; uses median font size to avoid outliers.
 - Position rules: Constant-time checks per block; negligible cost.
@@ -351,29 +384,34 @@ ORCH --> GR["GROBIDClient"]
 [No sources needed since this section provides general guidance]
 
 ## Troubleshooting Guide
+
 Common issues and resolutions:
+
 - No headings detected:
-  - Verify Docling availability and timeouts; confirm layout elements are present.
-  - Ensure blocks are normalized and not marked as header/footer.
-  - Check thresholds in settings if relying on style heuristics.
+    - Verify Docling availability and timeouts; confirm layout elements are present.
+    - Ensure blocks are normalized and not marked as header/footer.
+    - Check thresholds in settings if relying on style heuristics.
 - Incorrect heading levels:
-  - Review numbering patterns; ensure proper decimal/Roman formatting.
-  - Adjust style thresholds if overly strict.
+    - Review numbering patterns; ensure proper decimal/Roman formatting.
+    - Adjust style thresholds if overly strict.
 - Abstract false positives:
-  - Confirm abstract safety guard is active; avoid short lines immediately after “Abstract” unless they are strong new section markers.
+    - Confirm abstract safety guard is active; avoid short lines immediately after “Abstract” unless they are strong new section markers.
 - Section name mismatches:
-  - Validate publisher template selection; confirm canonical mapping exists.
+    - Validate publisher template selection; confirm canonical mapping exists.
 - Level jump warnings:
-  - Inspect hierarchy construction; ensure parent-child relationships align with intended nesting.
+    - Inspect hierarchy construction; ensure parent-child relationships align with intended nesting.
 
 Validation and confidence:
+
 - Blocks carry warnings and validity flags; inspect metadata for diagnostic messages.
 - Confidence scores are stored in block metadata for downstream review logic.
 
 **Section sources**
+
 - [detector.py:361-379](file://backend/app/pipeline/structure_detection/detector.py#L361-L379)
 - [heading_rules.py:291-326](file://backend/app/pipeline/structure_detection/heading_rules.py#L291-L326)
 - [settings.py:232-247](file://backend/app/config/settings.py#L232-L247)
 
 ## Conclusion
+
 The structure detection system combines robust rule-based heuristics with layout-aware AI assistance to reliably identify headings, infer section boundaries, and construct hierarchical relationships. It integrates seamlessly with the broader pipeline, supports publisher-specific canonicalization, and maintains resilience through safety wrappers and validation checks. Tunable thresholds and position-based confidence boosting enable fine-grained control for diverse document types.

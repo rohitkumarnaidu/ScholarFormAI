@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: "ADR 003: API Versioning Strategy"
 description: Decision to use URL-based versioning with /v1/ prefix
 sidebar_position: 42

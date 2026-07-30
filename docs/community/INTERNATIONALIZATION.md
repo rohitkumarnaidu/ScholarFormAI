@@ -3,6 +3,7 @@
 ## Current Status
 
 AMF currently supports English as the primary language for:
+
 - API responses and error messages
 - CLI output
 - Web UI text
@@ -24,11 +25,13 @@ AMF currently supports English as the primary language for:
 ## Planned i18n Support
 
 ### Phase 1 (Q4 2026)
+
 - CLI output translations
 - API error message translations
 - Documentation translations
 
 ### Phase 2 (Q1 2027)
+
 - Web UI translations via next-intl
 - Locale detection (Accept-Language header)
 - RTL support for Arabic, Hebrew, etc.
@@ -43,6 +46,7 @@ docs/docs/{locale}/
 ```
 
 To contribute:
+
 1. Create a translation file for your language
 2. Submit a PR with the translation
 3. Translation quality will be verified by native speakers
@@ -50,7 +54,7 @@ To contribute:
 ## Locale Support Roadmap
 
 | Language | CLI | API | Web UI | Docs |
-|----------|:---:|:---:|:------:|:----:|
+| ---------- | :---: | :---: | :------: | :----: |
 | English | ✅ | ✅ | ✅ | ✅ |
 | Spanish | 🔄 | 🔄 | 📋 | 📋 |
 | French | 🔄 | 🔄 | 📋 | 📋 |

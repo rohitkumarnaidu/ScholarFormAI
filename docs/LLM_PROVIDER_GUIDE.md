@@ -2,6 +2,7 @@
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
 ---
+
 title: ScholarForm AI — LLM Provider Integration Guide
 description: Comprehensive guide to LLM provider architecture, BYOK, custom providers, fallback chain, and configuration
 sidebar_position: 50
@@ -43,7 +44,7 @@ ScholarForm AI integrates with **10 built-in LLM providers** out of the box and 
 ### Key Capabilities
 
 | Feature | Description |
-|---------|-------------|
+| --------- | ------------- |
 | 10 Built-in Providers | OpenAI, Anthropic, Groq, DeepSeek, OpenRouter, Google, Cohere, Mistral, Ollama, NVIDIA NIM |
 | BYOK | Users store their own API keys, encrypted at rest, overriding environment defaults |
 | Custom Providers | CRUD API for any OpenAI-compatible endpoint (vLLM, TGI, local models) |
@@ -129,7 +130,7 @@ For these providers, calls route through `_generate_openai_compat()` when LiteLL
 ### Provider Table
 
 | ID | Name | Base URL | Models | Env Var | Default Model | Local |
-|----|------|----------|--------|---------|---------------|-------|
+| ---- | ------ | ---------- | -------- | --------- | --------------- | ------- |
 | `openai` | OpenAI | `https://api.openai.com/v1` | `gpt-4o`, `gpt-4o-mini`, `gpt-4-turbo`, `gpt-4`, `gpt-3.5-turbo`, `o1`, `o1-mini`, `o3-mini` | `OPENAI_API_KEY` | `gpt-4o-mini` | No |
 | `anthropic` | Anthropic | `https://api.anthropic.com/v1` | `claude-3-5-sonnet-20241022`, `claude-3-5-haiku-20241022`, `claude-3-opus-20240229`, `claude-3-sonnet-20240229` | `ANTHROPIC_API_KEY` | `claude-3-5-sonnet-20241022` | No |
 | `groq` | Groq | `https://api.groq.com/openai/v1` | `llama3-70b-8192`, `llama3-8b-8192`, `mixtral-8x7b-32768`, `gemma2-9b-it` | `GROQ_API_KEY` | `llama3-8b-8192` (or `GROQ_MODEL`) | No |
@@ -152,6 +153,7 @@ Models are identified by their provider prefix followed by `/` and the model nam
 - `gpt-4o` (bare name resolves to OpenAI)
 
 The function `resolve_model_provider()` in `provider_registry.py:269` maps a model name to its provider by checking:
+
 1. Provider-prefixed names (`groq/llama3-8b-8192`)
 2. Static model lists in `BUILTIN_PROVIDERS`
 3. Heuristic prefixes (`gpt-`, `claude`, `nvidia_nim/`)
@@ -205,7 +207,7 @@ Custom providers allow users to connect any **OpenAI-compatible** API endpoint (
 ### Data Model (`custom_provider.py`)
 
 | Field | Type | Description |
-|-------|------|-------------|
+| ------- | ------ | ------------- |
 | `id` | UUID | Primary key |
 | `user_id` | UUID | Owner of this provider |
 | `name` | String(100) | Display name |
@@ -237,6 +239,7 @@ Content-Type: application/json
 ```
 
 **Validation rules:**
+
 - Max **25 custom providers** per user
 - `base_url` must be `http`/`https` and is SSRF-protected (blocks private IPs, loopback, metadata endpoints)
 - `api_key` must be 8&ndash;2000 characters when provided
@@ -345,7 +348,7 @@ Raise LLMUnavailableError → Caller uses rule-based heuristics
 Each provider in the fallback chain has an independent **circuit breaker** (`pybreaker`):
 
 | Parameter | Env Var | Default |
-|-----------|---------|---------|
+| ----------- | --------- | --------- |
 | Enable/Disable | `EXTERNAL_CIRCUIT_BREAKER_ENABLED` | `True` |
 | Failure Threshold | `EXTERNAL_CIRCUIT_BREAKER_FAILURE_THRESHOLD` | 3 |
 | Reset Timeout | `EXTERNAL_CIRCUIT_BREAKER_RESET_SECONDS` | 60s |
@@ -377,7 +380,7 @@ Models are selected through one of three paths:
 The fallback chain uses predefined model constants from `llm_service.py:158-162`:
 
 | Constant | Value | Provider |
-|----------|-------|----------|
+| ---------- | ------- | ---------- |
 | `LLM_NVIDIA` | `nvidia_nim/{NVIDIA_MODEL}` | NVIDIA NIM |
 | `LLM_GROQ` | `groq/{GROQ_MODEL}` (or `groq/llama3-8b-8192`) | Groq |
 | `LLM_OPENROUTER` | `openrouter/{OPENROUTER_MODEL}` (or `openrouter/openai/gpt-4o-mini`) | OpenRouter |
@@ -434,7 +437,7 @@ The `key_configured` field indicates whether a usable key exists (either via env
 ### Model (`api_key.py`)
 
 | Field | Type | Default | Description |
-|-------|------|---------|-------------|
+| ------- | ------ | --------- | ------------- |
 | `id` | UUID (PK) | auto | Unique key identifier |
 | `user_id` | UUID | required | Owner |
 | `provider` | String(50) | required | Provider name (lowercase) |
@@ -452,7 +455,7 @@ The `key_configured` field indicates whether a usable key exists (either via env
 All under `/api/v1/keys`, authenticated, scoped to the requesting user.
 
 | Method | Path | Description |
-|--------|------|-------------|
+| -------- | ------ | ------------- |
 | `POST` | `/api/v1/keys` | Create a new API key (encrypted immediately) |
 | `GET` | `/api/v1/keys` | List all keys (filterable by `?provider=openai`) |
 | `GET` | `/api/v1/keys/{id}` | Get key details (key value masked) |
@@ -486,7 +489,7 @@ Rate limits are enforced per API key via `ApiKeyRateLimiter`:
 ### Supported Provider Defaults
 
 | Provider | RPM | RPH | Daily Quota |
-|----------|-----|-----|-------------|
+| ---------- | ----- | ----- | ------------- |
 | OpenAI | 60 | 1,000 | 10,000 |
 | Anthropic | 50 | 800 | 8,000 |
 | DeepSeek | 60 | 1,000 | 10,000 |
@@ -504,7 +507,7 @@ Rate limits are enforced per API key via `ApiKeyRateLimiter`:
 ### LLM API Keys
 
 | Env Var | Required | Description |
-|---------|----------|-------------|
+| --------- | ---------- | ------------- |
 | `OPENAI_API_KEY` | No | OpenAI API key |
 | `ANTHROPIC_API_KEY` | No | Anthropic API key |
 | `GROQ_API_KEY` | No | Groq API key |
@@ -518,7 +521,7 @@ Rate limits are enforced per API key via `ApiKeyRateLimiter`:
 ### Model Selection
 
 | Env Var | Default | Description |
-|---------|---------|-------------|
+| --------- | --------- | ------------- |
 | `NVIDIA_MODEL` | `""` | NVIDIA model string (e.g. `meta/llama-3.3-70b-instruct`) |
 | `GROQ_MODEL` | `""` | Groq model override (default: `llama3-8b-8192`) |
 | `OPENROUTER_MODEL` | `openai/gpt-4o-mini` | OpenRouter model override |
@@ -526,7 +529,7 @@ Rate limits are enforced per API key via `ApiKeyRateLimiter`:
 ### Base URLs
 
 | Env Var | Default | Description |
-|---------|---------|-------------|
+| --------- | --------- | ------------- |
 | `GROQ_API_BASE` | `""` | Custom Groq API base URL |
 | `OPENROUTER_API_BASE` | `https://openrouter.ai/api/v1` | OpenRouter API base URL |
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
@@ -541,7 +544,7 @@ Rate limits are enforced per API key via `ApiKeyRateLimiter`:
 ### Circuit Breaker
 
 | Env Var | Default | Description |
-|---------|---------|-------------|
+| --------- | --------- | ------------- |
 | `EXTERNAL_CIRCUIT_BREAKER_ENABLED` | `True` | Enable/disable circuit breakers |
 | `EXTERNAL_CIRCUIT_BREAKER_FAILURE_THRESHOLD` | `3` | Consecutive failures before opening |
 | `EXTERNAL_CIRCUIT_BREAKER_RESET_SECONDS` | `60` | Seconds before attempting half-open |
@@ -561,7 +564,7 @@ Rate limits are enforced per API key via `ApiKeyRateLimiter`:
 ### Advanced LLM Settings
 
 | Env Var | Default | Description |
-|---------|---------|-------------|
+| --------- | --------- | ------------- |
 | `ENABLE_NVIDIA_REASONER` | `False` | Enable NVIDIA reasoning model |
 | `PRELOAD_AI_MODELS` | `True` | Preload AI models at startup |
 | `VLLM_ADOPTION_ENABLED` | `True` | Enable vLLM auto-scaling logic |

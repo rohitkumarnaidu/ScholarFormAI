@@ -76,24 +76,29 @@ Describe methods.
 ## Formatting Options
 
 ### Page Size
+
 - **A4** (210 × 297 mm) — Standard for Europe/Asia
 - **Letter** (8.5 × 11 in) — Standard for North America
 - **Legal** (8.5 × 14 in) — Legal documents
 
 ### Font
+
 - Times New Roman (standard for most academic styles)
 - Arial, Calibri, Georgia, Palatino
 
 ### Line Spacing
+
 - 1.0 (single), 1.15, 1.5, 2.0 (double — standard for APA/MLA)
 
 ### Margins
+
 - Default: 1 inch (2.54 cm) on all sides
 - Adjustable from 0.5 to 2 inches
 
 ## Style-Specific Features
 
 ### APA 7th Edition
+
 - Running head on every page
 - Title page with author affiliation
 - Abstract on page 2
@@ -102,18 +107,21 @@ Describe methods.
 - Page numbers top right
 
 ### MLA 9th Edition
+
 - No title page (header with name/professor/class/date)
 - Last name + page numbers top right
 - Works Cited with hanging indent
 - 1-inch margins throughout
 
 ### Chicago 17th Edition
+
 - Title page
 - Notes-Bibliography style
 - Footnotes support
 - Bibliography with hanging indent
 
 ### IEEE
+
 - Two-column format (optional)
 - Numbered references [1], [2], etc.
 - 10pt font standard

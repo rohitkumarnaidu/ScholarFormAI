@@ -121,7 +121,7 @@ ScholarFormAI/
 ### 2.1 Frontend: Next.js 16 + React 19
 
 | Decision | Rationale |
-|----------|-----------|
+| ---------- | ----------- |
 | App Router (vs Pages Router) | Nested layouts, streaming SSR, React Server Components, improved SEO |
 | TanStack Query v5 | Declarative server state management, caching, pagination, optimistic updates |
 | Tailwind CSS v3 | Utility-first, rapid iteration, consistent design tokens |
@@ -131,7 +131,7 @@ ScholarFormAI/
 ### 2.2 Backend: FastAPI + Python 3.12
 
 | Decision | Rationale |
-|----------|-----------|
+| ---------- | ----------- |
 | FastAPI (vs Flask/Django) | Async-native, automatic OpenAPI docs, Pydantic validation, high throughput |
 | Celery + Redis | Distributed task queue for long-running pipeline jobs (15min timeout) |
 | SQLAlchemy + Alembic | Mature ORM with migration support, Supabase PostgreSQL compatibility |
@@ -141,7 +141,7 @@ ScholarFormAI/
 ### 2.3 AI/ML Stack
 
 | Decision | Rationale |
-|----------|-----------|
+| ---------- | ----------- |
 | NVIDIA NIM (primary) | Production-grade LLM inference with NVIDIA optimization |
 | Groq (fallback 1) | Ultra-low latency LLM inference via LPU architecture |
 | Ollama (fallback 2) | Local/on-premise LLM deployment for air-gapped environments |
@@ -152,7 +152,7 @@ ScholarFormAI/
 ### 2.4 Infrastructure
 
 | Decision | Rationale |
-|----------|-----------|
+| ---------- | ----------- |
 | Vercel (frontend) | Optimized Next.js hosting, edge functions, CDN |
 | Render (backend) | Managed Docker hosting, auto-deploy, SSL termination |
 | Supabase (database) | Managed PostgreSQL + Auth + Storage + RLS |
@@ -210,7 +210,7 @@ Prompt ──→ ┌────────────────────
 ### 3.3 Design Patterns
 
 | Pattern | Usage | Benefit |
-|---------|-------|---------|
+| --------- | ------- | --------- |
 | Pipeline Pattern | 12-stage formatter, 11-stage generator | Composability, stage isolation, testability |
 | 3-Tier Fallback | GROBID → Docling → PyMuPDF, NVIDIA → Groq → Ollama | Graceful degradation, no single point of failure |
 | Circuit Breaker | External service calls (LLM, Crossref, GROBID) | Prevents cascading failures |
@@ -227,7 +227,7 @@ Prompt ──→ ┌────────────────────
 ### 4.1 Latency Benchmarks
 
 | Operation | p50 | p95 | p99 | Target | Status |
-|-----------|-----|-----|-----|--------|--------|
+| ----------- | ----- | ----- | ----- | -------- | -------- |
 | Health Check | 3ms | 8ms | 15ms | < 10ms / < 50ms / < 100ms | ✅ |
 | Document Upload ACK | 120ms | 280ms | 350ms | < 500ms / < 2s / < 5s | ✅ |
 | Template Listing | 25ms | 55ms | 70ms | < 80ms p99 | ✅ |
@@ -241,7 +241,7 @@ Prompt ──→ ┌────────────────────
 ### 4.2 Throughput & Capacity
 
 | Metric | Measured | Target | Margin |
-|--------|----------|--------|--------|
+| -------- | ---------- | -------- | -------- |
 | Requests/second | 145 | 100 | +45% |
 | Concurrent users | 1,200 | 1,000 | +20% |
 | Documents processed/hour | 720 | 500 | +44% |
@@ -251,7 +251,7 @@ Prompt ──→ ┌────────────────────
 ### 4.3 Memory & Resource Usage
 
 | Component | Idle | Peak Load | Configuration |
-|-----------|------|-----------|---------------|
+| ----------- | ------ | ----------- | --------------- |
 | FastAPI (Uvicorn) | 85 MB | 210 MB | 4 workers (gunicorn) |
 | Celery Worker | 120 MB | 450 MB | 2 workers |
 | Redis | 25 MB | 80 MB | Managed |
@@ -264,7 +264,7 @@ Prompt ──→ ┌────────────────────
 ### 5.1 Defense-in-Depth Layers
 
 | Layer | Controls |
-|-------|----------|
+| ------- | ---------- |
 | **L6: Edge/Infrastructure** | TLS 1.3, Render firewall, Docker isolation, container vulnerability scanning |
 | **L5: Frontend** | Edge middleware (JWT verify), CSP (strict with nonce), HSTS preload, XSS prevention, `sanitizePayload` |
 | **L4: Backend Middleware** | CORS → RequestID → HTTPS Redirect/HSTS → SlowAPI → Rate Limit (sliding window) → Tier Rate (guest) → Security Headers → Max Body Size (60MB) → CSRF → Feature Flags → Monitoring → Lazy Router Loader → Audit Write Ops |
@@ -275,7 +275,7 @@ Prompt ──→ ┌────────────────────
 ### 5.2 Security Headers Inventory
 
 | Header | Value | Source |
-|--------|-------|--------|
+| -------- | ------- | -------- |
 | `Strict-Transport-Security` | `max-age=31536000; includeSubDomains; preload` | `frontend/next.config.mjs` |
 | `Permissions-Policy` | `camera=(), microphone=(), geolocation=()`, etc. | `frontend/next.config.mjs` |
 | `X-Content-Type-Options` | `nosniff` | Backend middleware |
@@ -334,7 +334,7 @@ Prompt ──→ ┌────────────────────
 ### 6.2 Test Profiles
 
 | Profile | Command | Coverage | Time |
-|---------|---------|----------|------|
+| --------- | --------- | ---------- | ------ |
 | Fast (unit only) | `pytest -m "not integration and not llm"` | ~8,000 tests | ~3 min |
 | Full (all non-LLM) | `pytest -m "not llm"` | ~9,500 tests | ~12 min |
 | Pipeline | `pytest tests/ -k "pipeline"` | ~7,300 tests | ~8 min |
@@ -346,7 +346,7 @@ Prompt ──→ ┌────────────────────
 ### 6.3 CI/CD Workflow Inventory (25 Workflows)
 
 | Category | Workflows |
-|----------|-----------|
+| ---------- | ----------- |
 | **CI** | backend-ci, frontend-ci, e2e-tests, integration-tests, lint-format |
 | **Security** | codeql, dependency-review, scorecards, fossa, trivy-scan, secrets-scan |
 | **Supply Chain** | slsa-provenance, cosign-verify, sbom-generate |
@@ -362,7 +362,7 @@ Prompt ──→ ┌────────────────────
 ### 7.1 Production Environment
 
 | Component | Provider | Plan | Scaling |
-|-----------|----------|------|---------|
+| ----------- | ---------- | ------ | --------- |
 | Frontend | Vercel | Pro | Auto (edge network) |
 | Backend API | Render.com | Professional | 2x Standard (4 vCPU, 8 GB) |
 | Celery Workers | Render.com | Professional | 2x Standard (4 vCPU, 8 GB) |
@@ -391,7 +391,7 @@ Git Push ──→ ┌───────────────────�
 ### 7.3 Monitoring & Observability
 
 | Pillar | Tool | Metrics |
-|--------|------|---------|
+| -------- | ------ | --------- |
 | Metrics | Prometheus (+ FastAPI instrumentator) | Request rate, error rate, latency (p50/p95/p99), queue depth, memory |
 | Dashboards | Grafana (3 provisioned) | Application, infrastructure, business |
 | Logging | structlog (rotating files + console) | Structured JSON, correlated by request ID |

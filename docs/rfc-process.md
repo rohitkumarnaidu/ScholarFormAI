@@ -23,29 +23,34 @@ Minor bug fixes, documentation typos, and routine dependency updates do not need
 ```
 
 ### 1. Proposal
+
 - Fork the repo or create a branch
 - Copy `RFC_TEMPLATE.md` to `docs/rfcs/YYYY-MM-DD-title.md`
 - Fill out the template and open a Pull Request
 - Label the PR with `rfc`
 
 ### 2. Discussion
+
 - Comment period: minimum 7 days for minor RFCs, 14 days for major ones
 - All community members may participate
 - The author revises the RFC based on feedback
 - Substantial changes reset the discussion timer
 
 ### 3. Review
+
 - Core maintainers perform final review
 - At least 2 maintainers must approve
 - Review criteria: alignment with project goals, feasibility, maintenance cost, community impact
 
 ### 4. Decision
+
 - **Accepted**: RFC is merged and enters implementation
 - **Rejected**: RFC is closed with explanation
 - **Deferred**: RFC is shelved for future reconsideration
 - **Superseded**: A newer RFC replaces this one
 
 ### 5. Implementation
+
 - Accepted RFCs are tracked in the project roadmap
 - Implementation may be split across multiple PRs
 - Each PR references the RFC in its description

@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Reproducible Builds
 
 ## Overview
@@ -42,6 +41,7 @@ gh attestation verify ghcr.io/scholarform/backend:1.0.0 --repo rohitkumarnaidu/S
 To verify a reproducible build locally:
 
 ### Docker
+
 ```bash
 cd backend
 docker build -t scholarform-backend:local -f docker/Dockerfile .
@@ -50,6 +50,7 @@ docker build -t scholarform-backend:local -f docker/Dockerfile .
 Compare the image digest with the CI-produced image from ghcr.io.
 
 ### Python environment
+
 ```bash
 cd backend
 pip install -r requirements.txt

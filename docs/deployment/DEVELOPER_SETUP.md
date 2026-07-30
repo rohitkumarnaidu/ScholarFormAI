@@ -7,7 +7,7 @@
 ## Prerequisites
 
 | Tool | Version | Notes |
-|------|---------|-------|
+| ------ | --------- | ------- |
 | Python | 3.12.x | 3.11 causes pytest import collisions; 3.13+ untested |
 | Node.js | 20+ (LTS) | 18.17+ minimum for Next.js 16 |
 | npm | 10+ | Comes with Node.js |
@@ -71,11 +71,13 @@ npm run build
 ### Backend (`backend/.env`)
 
 Copy from template:
+
 ```bash
 cp backend/.env.example backend/.env
 ```
 
 Minimum required variables:
+
 ```env
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=eyJhbG...
@@ -86,6 +88,7 @@ DEFAULT_FAST_MODE=true
 ```
 
 Optional AI keys (for LLM features):
+
 ```env
 NVIDIA_API_KEY=nvapi-...
 GROQ_API_KEY=gsk_...
@@ -107,21 +110,26 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbG...
 ## 5. Run Locally
 
 ### Terminal 1 — Backend
+
 ```bash
 cd backend
 .venv\Scripts\activate   # or source .venv/bin/activate
 uvicorn app.main:app --reload --port 8000
 ```
+
 API docs: http://localhost:8000/docs
 
 ### Terminal 2 — Frontend
+
 ```bash
 cd frontend
 npm run dev
 ```
+
 App: http://localhost:3000
 
 ### Verify
+
 ```bash
 curl http://localhost:8000/api/v1/health/live
 # → {"status":"ok","services":{...}}
@@ -132,12 +140,14 @@ curl http://localhost:8000/api/v1/health/live
 ## 6. Docker Development
 
 ### Start Services (GROBID + support)
+
 ```bash
 cd backend/docker
 docker-compose up -d
 ```
 
 ### Build Images
+
 ```bash
 # Backend API
 docker build -t scholarform-api:latest -f backend/Dockerfile backend/
@@ -169,7 +179,7 @@ pre-commit install
 ## 8. Common Issues
 
 | Problem | Solution |
-|---------|----------|
+| --------- | ---------- |
 | `Python 3.11` — pytest import errors | Install Python 3.12.x |
 | `ModuleNotFoundError` | `pip install -r requirements-dev.txt` |
 | CORS errors | Check `ALLOWED_ORIGINS` in backend `.env` |

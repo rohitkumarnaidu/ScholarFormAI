@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Release Checklist — Quick Reference
 
 ## How to Create a Release
@@ -24,24 +23,29 @@ The `create-release.yml` workflow handles the rest.
 When you push a `v*` tag, the **release page is automatically populated** with:
 
 ### 1. Release Notes
+
 Auto-generated from the GitHub Releases API using conventional commit types.
 
 ### 2. Docker Images Section
+
 ```bash
 docker pull ghcr.io/scholarform/backend:v1.1.0
 docker pull ghcr.io/scholarform/celery-worker:v1.1.0
 ```
+
 Plus `cosign verify` and `gh attestation verify` commands.
 
 ### 3. Packages Section
+
 ```bash
 npm install @scholarform/frontend@1.1.0
 pip install scholarform-backend==1.1.0
 ```
 
 ### 4. Release Assets
+
 | Asset | Auto-attached? |
-|-------|---------------|
+| ------- | --------------- |
 | `release-checksums.txt` | ✅ |
 | `backend-sbom.json` | ✅ |
 | `frontend-sbom.json` | ✅ |
@@ -89,7 +93,7 @@ Use the body template from `RELEASE_PROCESS.md` section 4.1.
 ## Quick Troubleshooting
 
 | Symptom | Cause | Fix |
-|---------|-------|-----|
+| --------- | ------- | ----- |
 | Workflow didn't trigger | Tag not pushed or wrong format | `git push origin v1.1.0` |
 | Release body is empty | GitHub API rate limit | Re-run workflow manually |
 | SBOM not attached | SBOM file not found | Ensure `sbom/` directory exists |

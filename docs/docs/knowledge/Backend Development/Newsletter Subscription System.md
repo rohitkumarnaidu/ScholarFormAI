@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Newsletter Subscription System
 
 <cite>
@@ -12,6 +11,7 @@
 </cite>
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [System Architecture](#system-architecture)
 3. [Core Components](#core-components)
@@ -66,6 +66,7 @@ Service --> UI
 ```
 
 **Diagram sources**
+
 - [Footer.jsx:13-26](file://frontend/src/components/Footer.jsx#L13-L26)
 - [route.js:3-27](file://frontend/app/api/v1/marketing/newsletter/route.js#L3-L27)
 - [api.core.js:383-392](file://frontend/src/services/api.core.js#L383-L392)
@@ -101,6 +102,7 @@ NewsletterService --> APIRoute : "calls"
 ```
 
 **Diagram sources**
+
 - [Footer.jsx:8-26](file://frontend/src/components/Footer.jsx#L8-L26)
 - [api.core.js:377-392](file://frontend/src/services/api.core.js#L377-L392)
 - [route.js:3-27](file://frontend/app/api/v1/marketing/newsletter/route.js#L3-L27)
@@ -121,9 +123,11 @@ Idle --> Idle : user interaction
 ```
 
 **Diagram sources**
+
 - [Footer.jsx:10-26](file://frontend/src/components/Footer.jsx#L10-L26)
 
 **Section sources**
+
 - [Footer.jsx:1-170](file://frontend/src/components/Footer.jsx#L1-L170)
 - [api.core.js:377-392](file://frontend/src/services/api.core.js#L377-L392)
 
@@ -156,6 +160,7 @@ Footer-->>User : Show success message
 ```
 
 **Diagram sources**
+
 - [Footer.jsx:13-26](file://frontend/src/components/Footer.jsx#L13-L26)
 - [api.core.js:383-392](file://frontend/src/services/api.core.js#L383-L392)
 - [route.js:3-27](file://frontend/app/api/v1/marketing/newsletter/route.js#L3-L27)
@@ -165,6 +170,7 @@ Footer-->>User : Show success message
 The subscription form incorporates several design patterns to enhance user experience and prevent common input errors. The form validates email format in real-time and provides immediate visual feedback through color-coded borders and placeholder text changes.
 
 **Section sources**
+
 - [Footer.jsx:94-127](file://frontend/src/components/Footer.jsx#L94-L127)
 
 ## API Endpoint Analysis
@@ -186,6 +192,7 @@ ReturnSuccess --> End
 ```
 
 **Diagram sources**
+
 - [route.js:3-27](file://frontend/app/api/v1/marketing/newsletter/route.js#L3-L27)
 
 ### Response Structure and Error Handling
@@ -193,6 +200,7 @@ ReturnSuccess --> End
 The API endpoint implements a consistent response pattern that returns either success or error information along with appropriate HTTP status codes. The implementation handles malformed requests, invalid email formats, and unexpected processing errors.
 
 **Section sources**
+
 - [route.js:1-28](file://frontend/app/api/v1/marketing/newsletter/route.js#L1-L28)
 
 ## Data Flow and Processing
@@ -225,6 +233,7 @@ ErrorResponse --> End
 ```
 
 **Diagram sources**
+
 - [Footer.jsx:13-26](file://frontend/src/components/Footer.jsx#L13-L26)
 - [route.js:14-15](file://frontend/app/api/v1/marketing/newsletter/route.js#L14-L15)
 
@@ -233,6 +242,7 @@ ErrorResponse --> End
 The frontend service layer provides a unified interface for API communication, implementing retry logic, authentication header injection, and error normalization. The service ensures consistent behavior across different API endpoints while maintaining separation of concerns.
 
 **Section sources**
+
 - [api.core.js:307-370](file://frontend/src/services/api.core.js#L307-L370)
 
 ## Error Handling and Validation
@@ -254,6 +264,7 @@ Server-side validation provides comprehensive email format validation and return
 The system implements standardized error response patterns that provide meaningful feedback to users while maintaining security and preventing information leakage.
 
 **Section sources**
+
 - [Footer.jsx:15](file://frontend/src/components/Footer.jsx#L15)
 - [route.js:7-12](file://frontend/app/api/v1/marketing/newsletter/route.js#L7-L12)
 

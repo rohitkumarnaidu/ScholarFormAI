@@ -20,7 +20,7 @@
 ScholarForm AI uses **GitHub Actions** as its sole CI/CD orchestrator (no Jenkins, GitLab CI, or CircleCI). The 25 workflows fall into five categories:
 
 | Category | Workflows | Purpose |
-|----------|-----------|---------|
+| ---------- | ----------- | --------- |
 | **Backend CI** | `backend-ci.yml` | Lint, audit, test, coverage, AI quality, mutation, security, pipeline error-path, migration check, performance |
 | **Frontend CI** | `frontend-ci.yml` | Audit, lint + typecheck + vitest, Lighthouse, Playwright E2E |
 | **Deployment** | `deploy-production.yml`, `deploy-staging.yml` | Render + Vercel deploy, health checks, auto-rollback |
@@ -131,7 +131,7 @@ migration-check (independent)
 ```
 
 | Job | Description | Notes |
-|-----|-------------|-------|
+| ----- | ------------- | ------- |
 | **lint** | Ruff (E9/F63/F7/F82), mypy (continue-on-error), Bandit SAST | `--config ruff.toml` |
 | **audit** | `pip-audit` + `safety` CVE scans | Both non-fatal, `--require-license --desc` |
 | **test** | Pytest (unit+service markers), property-based, observability, contract | `-m "not integration and not llm and not contract"` |
@@ -162,7 +162,7 @@ test-and-lint ──┬── lighthouse
 ```
 
 | Job | Steps | Description |
-|-----|-------|-------------|
+| ----- | ------- | ------------- |
 | **audit** | `npm ci` → `npm audit --audit-level=high` | `continue-on-error: true`; independent of other jobs |
 | **test-and-lint** | `npm ci` → TypeScript typecheck → ESLint → vitest with coverage → security tests | Uploads coverage artifact (7-day retention) |
 | **lighthouse** | (needs: test-and-lint) → build → bundle size check (< 5MB JS) → Lighthouse CI | Enforces Core Web Vitals via `lhci autorun` |
@@ -193,7 +193,7 @@ verify-ci-gates ──→ pre-deploy-health ──→ deploy-production
 ```
 
 | Job | Purpose |
-|-----|---------|
+| ----- | --------- |
 | **verify-ci-gates** | Resolves commit SHA, verifies `backend-ci.yml`, `frontend-ci.yml`, and `security.yml` all passed for the target commit. Skips workflows excluded by path filters. Blocks deploy if any CI failed. |
 | **pre-deploy-health** | Checks current production `/api/v1/health/live` returns 200. Warns but does not block. |
 | **deploy-production** | Full deploy sequence: |
@@ -241,8 +241,8 @@ Both `e2e-production.yml` and `e2e-staging.yml` trigger on successful deployment
 
 - **Trigger**: PR to main
 - **Action**: `actions/dependency-review-action` with license allow/deny lists
-  - **Allowed**: MIT, BSD, Apache-2.0, ISC, Python-2.0, MPL-2.0, Unlicense, CC0-1.0, 0BSD
-  - **Denied**: AGPL-3.0, GPL-3.0, GPL-2.0, LGPL-3.0, BSL-1.0
+    - **Allowed**: MIT, BSD, Apache-2.0, ISC, Python-2.0, MPL-2.0, Unlicense, CC0-1.0, 0BSD
+    - **Denied**: AGPL-3.0, GPL-3.0, GPL-2.0, LGPL-3.0, BSL-1.0
 - `fail-on-severity: high`, `warn-only: false`
 
 ### `fuzzing.yml`
@@ -256,8 +256,8 @@ Both `e2e-production.yml` and `e2e-staging.yml` trigger on successful deployment
 
 - **Trigger**: Weekly schedule (Monday 07:00 UTC)
 - **Two jobs**:
-  - `create-advisory` — queries Dependabot API for open critical/high alerts, creates GitHub Issues with structured CVE templates
-  - `dependency-scan` — runs `pip-audit` and `npm audit`, uploads JSON reports as artifacts
+    - `create-advisory` — queries Dependabot API for open critical/high alerts, creates GitHub Issues with structured CVE templates
+    - `dependency-scan` — runs `pip-audit` and `npm audit`, uploads JSON reports as artifacts
 
 ---
 
@@ -272,7 +272,7 @@ verify ──→ release-notes ──→ create ──→ sbom ──→ attest
 ```
 
 | Job | Details |
-|-----|---------|
+| ----- | --------- |
 | **verify** | Extracts version from tag (`v*`), runs `python scripts/sync_version.py --check` to ensure tag matches `pyproject.toml`, detects pre-release (`rc`, `beta`, `alpha`, `preview`) |
 | **release-notes** | Generates changelog from `git log` (categorized: features, fixes, docs, security, maintenance), uses GitHub Release Notes API as authoritative source, builds release body with Docker pull instructions, cosign verify commands, gh attestation commands, and asset table |
 | **create** | Generates SHA256 checksums, creates GitHub Release via `softprops/action-gh-release` with SBOM and checksum assets |
@@ -297,7 +297,7 @@ prepare ─┬── build-and-push-backend (matrix: amd64 + arm64) ─┬──
 ```
 
 | Job | Architecture | Details |
-|-----|-------------|---------|
+| ----- | ------------- | --------- |
 | **prepare** | — | Extracts version, generates Docker metadata tags via `docker/metadata-action` (semver, latest, sha) for both `ghcr.io/$REPO/backend` and `ghcr.io/$REPO/celery-worker` |
 | **build-and-push-backend** | linux/amd64 + linux/arm64 (matrix) | QEMU + Buildx, GHA cache, `provenance: mode=max`, `sbom: true`, attested via `actions/attest-build-provenance` |
 | **build-and-push-worker** | linux/amd64 | Same as backend, includes `CELERY_WORKER=true` build-arg, `target: runtime` |
@@ -311,6 +311,7 @@ prepare ─┬── build-and-push-backend (matrix: amd64 + arm64) ─┬──
 **Trigger**: `merge_group` checks_requested event.
 
 Validates:
+
 1. No merge conflicts (`git merge-base --is-ancestor HEAD origin/main`)
 2. Backend CI (lint, test, ai-quality) passed for merge SHA
 3. Security checks passed
@@ -322,7 +323,7 @@ Uses `lewagon/wait-on-check-action` with 30s polling interval for each required 
 ## Housekeeping & Automation
 
 | Workflow | Trigger | Function |
-|----------|---------|----------|
+| ---------- | --------- | ---------- |
 | **stale.yml** | Schedule M-F 08:00 UTC | Marks issues/PRs stale after 60d (30d for PRs), closes after 14d. Exempts security, bug, roadmap, pinned, priority-critical, priority-high labels. |
 | **labeler.yml** | PR opened/synchronize/reopened | Auto-labels PRs by changed files against `.github/labeler.yml` patterns (backend, frontend, pipeline, docs, deps, docker, ci-cd, deployment, security, release, tests, size). |
 | **commitlint.yml** | PR opened/synchronize/reopened/edited | Validates PR title and all commits against conventional commit spec via `@commitlint/config-conventional`. |
@@ -334,6 +335,7 @@ Uses `lewagon/wait-on-check-action` with 30s polling interval for each required 
 ### Dependabot Configuration
 
 Managed via `.github/dependabot.yml`:
+
 - **pip** (backend): weekly Monday 09:00 UTC, grouped minor/patch, ignores `chromadb`, `docling-core`, `pydantic`
 - **docker** (7 Dockerfiles): weekly Monday 09:00 UTC, grouped
 - **npm** (frontend): weekly Monday 09:00 UTC, separated minor/patch and major groups
@@ -344,7 +346,7 @@ Managed via `.github/dependabot.yml`:
 ## Package Publishing
 
 | Workflow | Trigger | Registry |
-|----------|---------|----------|
+| ---------- | --------- | ---------- |
 | **npm-publish.yml** | Release published | GitHub Packages (`@$OWNER/frontend`), with build provenance attestation |
 | **python-publish.yml** | Release published | PyPI (token) + GitHub Packages, with build provenance attestation |
 | **slsa-provenance.yml** | Release published | Attests all release artifacts via `actions/attest-build-provenance` for SLSA-compatible provenance |
@@ -364,14 +366,17 @@ Managed via `.github/dependabot.yml`:
 ### Parallel vs Sequential Job Design
 
 **Fan-out pattern**: Backend `lint` gates 5 downstream jobs (`ai-quality`, `mutation`, `security`, `pipeline-error-path`, `performance`). This pattern:
+
 - Prevents resource waste: lint failure kills all 5 downstream jobs immediately
 - Minimizes wall-clock time: non-dependent jobs (`test`, `audit`, `coverage`, `migration-check`) start concurrently with lint
 - Enables targeted parallelism: the 5 downstream jobs run in parallel on separate runners
 
 **Sequential deployment gating**: The production deploy requires 3 sequential gate jobs before the deploy job:
+
 ```
 verify-ci-gates → pre-deploy-health → deploy(health poll → migrations → backends → wait → verify → frontend)
 ```
+
 This ensures CI green, current prod healthy, and all preflight validations pass before touching production.
 
 **Frontend CI linear chain**: `test-and-lint` must succeed before `lighthouse` and `playwright-e2e` run — no point running Lighthouse on code that fails typecheck, or E2E on code that fails unit tests.
@@ -394,6 +399,7 @@ This ensures CI green, current prod healthy, and all preflight validations pass 
 ### Merge Queue
 
 The `merge-queue.yml` workflow validates merge group checks before GitHub allows merging into main. This provides:
+
 - Atomic merge commits with passing CI
 - Prevention of semantic merge conflicts
 - Branch protection without requiring `Require branches to be up to date` (which causes noise on long-lived branches)
@@ -401,10 +407,12 @@ The `merge-queue.yml` workflow validates merge group checks before GitHub allows
 ### Release Orchestration
 
 The 5-job release pipeline (`verify → release-notes → create → sbom → attest`) is intentionally sequential:
+
 - Each job produces artifacts consumed by the next (version → changelog → release → SBOM → attestation)
 - `attest` only runs for stable releases (not pre-release), avoiding wasted OIDC token exchange for RC/beta tags
 - Version consistency enforced at the start: tag must match `python scripts/sync_version.py --show` output, preventing tag-vs-manifest mismatches
 \n
+
 ## Deployment CI/CD Diagram
 
 ```mermaid

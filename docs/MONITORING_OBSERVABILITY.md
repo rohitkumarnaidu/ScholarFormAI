@@ -23,7 +23,7 @@ fourth (analytics) layer for product intelligence.
 ### Tech Stack
 
 | Pillar | Tool | Deployment |
-|--------|------|------------|
+| -------- | ------ | ------------ |
 | Metrics | Prometheus + prometheus-fastapi-instrumentator | `/metrics` endpoint on backend |
 | Dashboards | Grafana | Provisioned via `ops/grafana/provisioning/` |
 | Structured Logging | `structlog` via `logging_config.py` | Rotating files + console |
@@ -90,7 +90,7 @@ Backend metrics are collected via two mechanisms:
 metrics without importing raw Prometheus objects. Key methods:
 
 | Category | Method | Metric |
-|----------|--------|--------|
+| ---------- | -------- | -------- |
 | Pipeline | `record_pipeline_start()` | `pipeline_requests_total{status="active"}`, `active_processing_jobs++` |
 | Pipeline | `record_pipeline_completion(duration, success)` | `pipeline_duration_seconds`, `active_processing_jobs--` |
 | Pipeline | `record_step_duration(step, duration)` | `pipeline_step_duration_seconds` |
@@ -162,7 +162,7 @@ sequenceDiagram
 ### 3.2 Pipeline Performance
 
 | Metric | Type | Labels | Buckets | Purpose |
-|--------|------|--------|---------|---------|
+| -------- | ------ | -------- | --------- | --------- |
 | `pipeline_requests_total` | Counter | `status` (active/completed/failed) | — | Pipeline throughput |
 | `pipeline_duration_seconds` | Histogram | `status` (success/error) | 1, 5, 10, 30, 60, 120, 300, 600, 1800 | Total pipeline time |
 | `pipeline_stage_duration_ms` | Histogram | `stage` | 10, 25, 50, 100, 250, 500, 1K, 2.5K, 5K, 10K, 30K, 60K | Per-stage timing |
@@ -171,7 +171,7 @@ sequenceDiagram
 ### 3.3 LLM Performance
 
 | Metric | Type | Labels | Purpose |
-|--------|------|--------|---------|
+| -------- | ------ | -------- | --------- |
 | `llm_requests_total` | Counter | `provider`, `model`, `status` | LLM call volume |
 | `llm_failures_total` | Counter | `provider` | Failure count by provider |
 | `llm_duration_ms` | Histogram | `provider`, `model` | Latency (25ms–60s) |
@@ -182,7 +182,7 @@ sequenceDiagram
 ### 3.4 System Health
 
 | Metric | Type | Description |
-|--------|------|-------------|
+| -------- | ------ | ------------- |
 | `active_processing_jobs` | Gauge | Concurrent pipeline jobs |
 | `celery_queue_depth{queue="interactive"}` | Gauge | Interactive Celery backlog |
 | `celery_queue_depth{queue="batch"}` | Gauge | Batch Celery backlog |
@@ -199,7 +199,7 @@ Eight Prometheus alert rules are defined in
 `deploy/prometheus/error_budget.yml`:
 
 | Alert | Expression | For | Severity | Threshold |
-|-------|-----------|-----|----------|-----------|
+| ------- | ----------- | ----- | ---------- | ----------- |
 | `ScholarFormServiceDown` | `up{job="scholarform"} == 0` | 2m | **critical** | Instance unreachable |
 | `ScholarFormHighErrorRate` | 5xx / total >= 5% | 5m | warning | > 5% error rate |
 | `ScholarFormHighLatency` | p95 latency > 5s | 5m | warning | > 5s p95 |
@@ -219,7 +219,7 @@ The production dashboard (`deploy/grafana/dashboards/scholarform-production.json
 UID `scholarform-production`) consists of **10 panels**:
 
 | # | Panel | Type | Queries | Grid Position |
-|---|-------|------|---------|---------------|
+| --- | ------- | ------ | --------- | --------------- |
 | 1 | API Request Rate | Time series | `rate(http_requests_total[5m])` | (0,0) 12×8 |
 | 2 | Error Rate | Time series | `rate(5xx)/rate(total)*100` with thresholds | (12,0) 12×8 |
 | 3 | Response Latency (p50/p95/p99) | Time series | Three `histogram_quantile` queries | (0,8) 24×8 |
@@ -248,7 +248,7 @@ Defined in `backend/app/config/logging_config.py`. Uses Python's `logging.config
 with three outputs:
 
 | Handler | Level | Formatter | Target | Rotation |
-|---------|-------|-----------|--------|----------|
+| --------- | ------- | ----------- | -------- | ---------- |
 | `console` | INFO | `default` | stdout | — |
 | `file` | DEBUG | `detailed` | `logs/app.log` | 10 MB × 5 |
 | `error_file` | ERROR | `detailed` | `logs/errors.log` | 10 MB × 5 |
@@ -284,7 +284,7 @@ route handlers) or the `log_context()` context manager for background tasks.
 Noisy libraries are throttled to reduce log volume:
 
 | Logger | Level | Handler |
-|--------|-------|---------|
+| -------- | ------- | --------- |
 | `uvicorn` | INFO | console only |
 | `uvicorn.access` | INFO | console only |
 | `sqlalchemy` | WARNING | file only |
@@ -293,8 +293,6 @@ Noisy libraries are throttled to reduce log volume:
 | `sentence_transformers` | WARNING | file only |
 
 ---
-
-
 
 ## 9. Real User Monitoring (RUM)
 
@@ -305,7 +303,7 @@ Six pages are audited: `/`, `/dashboard`, `/upload`, `/settings`, `/live`, `/age
 **Assertions (hard gates):**
 
 | Category | Minimum Score |
-|----------|---------------|
+| ---------- | --------------- |
 | Performance | 80 |
 | Accessibility | 90 |
 | Best Practices | 90 |
@@ -345,7 +343,7 @@ the API layer to capture real user request latency.
 Provides normalized health and dashboard data to the frontend:
 
 | Function | Endpoint | Purpose |
-|----------|----------|---------|
+| ---------- | ---------- | --------- |
 | `getMetricsHealth()` | `GET /api/v1/health/ready` | Normalized health with AI/DB/provider status |
 | `getMetricsDashboard()` | `GET /api/v1/metrics/dashboard` | Live KPIs with model comparison |
 | `getMetricsDb()` | `GET /api/v1/metrics/db` | Database-level metrics |
@@ -439,7 +437,7 @@ Three `contextvars` track the execution context across async boundaries
 (`backend/app/utils/logging_context.py`):
 
 | Variable | ContextVar | Set By |
-|----------|-----------|--------|
+| ---------- | ----------- | -------- |
 | `request_id` | `_request_id_ctx` | `MonitoringMiddleware` (from header or UUID4) |
 | `job_id` | `_job_id_ctx` | `bind_request_context()` in route handlers |
 | `session_id` | `_session_id_ctx` | `bind_request_context()` in generator routes |
@@ -558,7 +556,7 @@ celery_app.conf.update(
 ### 15.1 Backend Env Vars
 
 | Variable | Source | Default | Description |
-|----------|--------|---------|-------------|
+| ---------- | -------- | --------- | ------------- |
 | `ENABLE_STRUCTURED_LOGGING` | `DeploymentSettings` | `false` | Enable rotating file logging |
 | `FORCE_HTTPS` | `SecuritySettings` | `false` | HTTPS redirect + HSTS middleware |
 | `REDIS_ENABLED` | `CacheSettings` | `false` | Redis connection for queue depth |
@@ -645,7 +643,7 @@ pipeline_duration_seconds_bucket{status="success",le="1.0"} 0
 ### Health Endpoints
 
 | Endpoint | Method | Purpose | Auth | Response |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `GET /health` | GET | Liveness probe | No | `{"status":"healthy","version":"1.0.0","components":{...}}` — always 200 |
 | `GET /ready` | GET | Readiness probe | No | `{"ready":true,"checks":{...}}` — 200 if healthy, 503 if degraded |
 | `GET /api/v1/health/live` | GET | K8s/Render liveness | No | 200 with minimal payload |
@@ -671,7 +669,7 @@ Payload:
 ### Frontend Metrics API
 
 | Function | Endpoint | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `getMetricsHealth()` | `GET /api/v1/health/ready` | Normalized health with AI/DB/provider status |
 | `getMetricsDashboard()` | `GET /api/v1/metrics/dashboard` | Live KPIs with model comparison |
 | `getMetricsDb()` | `GET /api/v1/metrics/db` | Database-level metrics |
@@ -769,4 +767,3 @@ async def test_metrics_endpoint_returns_prometheus_format(client):
     assert response.headers["content-type"].startswith("text/plain")
     assert "# HELP" in response.text or response.text.startswith("http_")
 ```
-

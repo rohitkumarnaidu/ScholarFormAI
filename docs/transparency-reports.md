@@ -15,7 +15,7 @@ ScholarFormAI publishes quarterly transparency reports covering:
 Reports are published quarterly:
 
 | Quarter | Period | Published By |
-|---------|--------|-------------|
+| --------- | -------- | ------------- |
 | Q1 | Jan–Mar | April 15 |
 | Q2 | Apr–Jun | July 15 |
 | Q3 | Jul–Sep | October 15 |
@@ -82,4 +82,3 @@ Reports are published quarterly:
 
 Thanks to all contributors, moderators, and community members who made this quarter possible.
 ```
-

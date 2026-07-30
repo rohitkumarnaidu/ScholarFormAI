@@ -3,6 +3,7 @@
 ## Why Validate?
 
 Validation catches common issues before formatting:
+
 - Missing required sections (abstract, keywords)
 - Structural problems (empty sections, unheaded content)
 - Reference completeness (missing DOIs, incomplete entries)
@@ -32,7 +33,7 @@ curl -X POST http://localhost:8000/api/v1/validate \
 ## Error Severity
 
 | Severity | Meaning |
-|----------|---------|
+| ---------- | --------- |
 | `error` | Must be fixed before formatting |
 | `warning` | Recommended to fix |
 | `suggestion` | Optional improvement |

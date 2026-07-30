@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Monitoring & Metrics
 
 <cite>
@@ -28,7 +27,9 @@
 </cite>
 
 ## Update Summary
+
 **Changes Made**
+
 - Enhanced monitoring system with new Grafana dashboards (scholarform-persona-kpis.json)
 - Added persona-based KPI tracking with dedicated metrics (persona_events_total, persona_operation_duration_seconds)
 - Consolidated metrics functionality into new v1 metrics router (/api/v1/metrics)
@@ -37,6 +38,7 @@
 - Updated metrics exposure endpoints to use v1 router structure
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [Project Structure](#project-structure)
 3. [Core Components](#core-components)
@@ -49,10 +51,13 @@
 10. [Appendices](#appendices)
 
 ## Introduction
+
 This document describes the monitoring and metrics system for the Automated Academic Docx Manuscript Formatter. It covers Prometheus instrumentation, custom metrics collection, Grafana dashboards, health and readiness checks, alerting strategies, log aggregation, distributed tracing integration. The system now includes persona-based KPI tracking, consolidated v1 metrics router, enhanced real-time metrics capabilities. The monitoring architecture has been significantly enhanced with new Grafana dashboards for persona analytics and improved metrics collection infrastructure.
 
 ## Project Structure
+
 The monitoring stack integrates:
+
 - Prometheus scraping of the FastAPI application's /metrics endpoint
 - Grafana dashboards for pipeline, LLM, business KPIs, and persona analytics
 - Health and readiness endpoints for platform observability
@@ -96,6 +101,7 @@ P --> Gr
 ```
 
 **Diagram sources**
+
 - [main.py:45-106](file://backend/app/main.py#L45-L106)
 - [prometheus_metrics.py:15-167](file://backend/app/middleware/prometheus_metrics.py#L15-L167)
 - [monitoring.py:13-51](file://backend/app/middleware/monitoring.py#L13-L51)
@@ -121,30 +127,31 @@ P --> Gr
 - [scholarform-persona-kpis.json:1-142](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
 
 ## Core Components
+
 - Prometheus instrumentation and custom metrics:
-  - Pipeline request volume, durations, and step durations
-  - Agent tool usage, LLM token consumption, TTFT, cache hits/misses, failures
-  - Queue depths (Celery), real-time connections (SSE/WebSocket)
-  - Active users and ClamAV scan durations
-  - **New**: Persona-based KPIs (persona_events_total, persona_operation_duration_seconds) with automatic operation tracking
+    - Pipeline request volume, durations, and step durations
+    - Agent tool usage, LLM token consumption, TTFT, cache hits/misses, failures
+    - Queue depths (Celery), real-time connections (SSE/WebSocket)
+    - Active users and ClamAV scan durations
+    - **New**: Persona-based KPIs (persona_events_total, persona_operation_duration_seconds) with automatic operation tracking
 
 - **Enhanced**: Consolidated metrics exposure:
-  - V1 metrics router at /api/v1/metrics with unified endpoint structure
-  - Database health, dashboard summaries, enhancements, and vLLM readiness monitoring
-  - Frontend error logging with automatic tool usage tracking
+    - V1 metrics router at /api/v1/metrics with unified endpoint structure
+    - Database health, dashboard summaries, enhancements, and vLLM readiness monitoring
+    - Frontend error logging with automatic tool usage tracking
 - Health and readiness:
-  - Health endpoint aggregates DB, LLM providers, and AI models
-  - Readiness endpoint validates DB, external services, and model availability
+    - Health endpoint aggregates DB, LLM providers, and AI models
+    - Readiness endpoint validates DB, external services, and model availability
 - **Enhanced**: Grafana dashboards:
-  - Pipeline dashboard for throughput, latency, and step breakdown
-  - Overview dashboard for RPS, error rate, latency, pipeline, LLM, real-time, and business KPIs
-  - **New**: Persona KPI dashboard for persona-based analytics (throughput, latency, success rates)
+    - Pipeline dashboard for throughput, latency, and step breakdown
+    - Overview dashboard for RPS, error rate, latency, pipeline, LLM, real-time, and business KPIs
+    - **New**: Persona KPI dashboard for persona-based analytics (throughput, latency, success rates)
 - Persistence and summaries:
-  - Model metrics recorded and persisted asynchronously to Supabase
-  - Agent vs legacy performance tracking stored locally and summarized
-
+    - Model metrics recorded and persisted asynchronously to Supabase
+    - Agent vs legacy performance tracking stored locally and summarized
 
 **Section sources**
+
 - [prometheus_metrics.py:15-167](file://backend/app/middleware/prometheus_metrics.py#L15-L167)
 - [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
 - [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
@@ -158,6 +165,7 @@ P --> Gr
 - [main.py:47-66](file://backend/app/main.py#L47-L66)
 
 ## Architecture Overview
+
 The monitoring architecture integrates Prometheus scraping, custom metrics recording, and Grafana visualization. Health and readiness endpoints provide operational signals. Optional Supabase persistence captures model performance for long-term analysis. **New persona-based KPI tracking automatically monitors all API operations with persona categorization.**
 
 ```mermaid
@@ -185,6 +193,7 @@ Graf-->>Client : Render panels (including Persona KPIs)
 ```
 
 **Diagram sources**
+
 - [main.py:273-274](file://backend/app/main.py#L273-L274)
 - [prometheus_metrics.py:135-142](file://backend/app/middleware/prometheus_metrics.py#L135-L142)
 - [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
@@ -196,7 +205,9 @@ Graf-->>Client : Render panels (including Persona KPIs)
 ## Detailed Component Analysis
 
 ### Enhanced Prometheus Metrics Middleware with Persona KPIs
+
 Defines and records custom metrics for:
+
 - Pipeline: total requests, duration histograms, per-step durations
 - Agents: tool usage, retries, LLM token consumption, TTFT, cache stats, failures
 - System: active processing jobs, queue depths, real-time connections, ClamAV scans, active users
@@ -229,14 +240,18 @@ class MetricsManager {
 ```
 
 **Diagram sources**
+
 - [prometheus_metrics.py:144-300](file://backend/app/middleware/prometheus_metrics.py#L144-L300)
 
 **Section sources**
+
 - [prometheus_metrics.py:15-167](file://backend/app/middleware/prometheus_metrics.py#L15-L167)
 - [prometheus_metrics.py:144-300](file://backend/app/middleware/prometheus_metrics.py#L144-L300)
 
 ### Persona-Based KPI Tracking System
+
 **New**: Automatic persona KPI recording for all API operations with intelligent persona categorization:
+
 - Automatic persona resolution from URL paths (formatter, authoring, synthesis, billing, templates, platform)
 - Operation name sanitization for metric labels
 - Outcome tracking (success/error) with automatic latency recording
@@ -258,15 +273,19 @@ Track --> Metrics["Update persona_events_total<br/>and persona_operation_duratio
 ```
 
 **Diagram sources**
+
 - [_helpers.py:32-68](file://backend/app/routers/v1/_helpers.py#L32-L68)
 - [prometheus_metrics.py:291-299](file://backend/app/middleware/prometheus_metrics.py#L291-L299)
 
 **Section sources**
+
 - [_helpers.py:32-68](file://backend/app/routers/v1/_helpers.py#L32-L68)
 - [prometheus_metrics.py:291-299](file://backend/app/middleware/prometheus_metrics.py#L291-L299)
 
 ### Enhanced V1 Metrics Router
+
 **New**: Consolidated metrics functionality in unified v1 router:
+
 - Database health monitoring with authentication requirements
 - Frontend error logging with automatic tool usage tracking
 - Health checks with LLM provider status
@@ -301,21 +320,21 @@ V1Router-->>Client : {persistent_db_status, database_records, live_*}
 ```
 
 **Diagram sources**
+
 - [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
 - [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
 - [model_metrics.py:148-181](file://backend/app/services/model_metrics.py#L148-L181)
 
 **Section sources**
+
 - [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
 - [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
 - [model_metrics.py:148-181](file://backend/app/services/model_metrics.py#L148-L181)
 
-
-
-
-
 ### Metrics Exposure and Endpoints
+
 **Enhanced**: Unified v1 metrics router structure:
+
 - /api/v1/metrics/db: Database health and document count (admin-only)
 - /api/v1/metrics/log-error: Frontend error logging with automatic tool usage tracking
 - /api/v1/metrics/health: Aggregated health across DB, LLM providers, and AI models
@@ -348,16 +367,19 @@ V1Router-->>Client : {persistent_db_status, database_records, live_*}
 ```
 
 **Diagram sources**
+
 - [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
 - [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
 - [model_metrics.py:148-181](file://backend/app/services/model_metrics.py#L148-L181)
 
 **Section sources**
+
 - [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
 - [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
 - [model_metrics.py:148-181](file://backend/app/services/model_metrics.py#L148-L181)
 
 ### Health and Readiness
+
 - Health endpoint aggregates DB, LLM providers, and AI models; returns 200 healthy or 503 degraded
 - Readiness endpoint validates DB, external services, and model loading; used by orchestrators for startup gating
 
@@ -378,15 +400,19 @@ Degraded --> End
 ```
 
 **Diagram sources**
+
 - [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
 - [health_checks.py:130-192](file://backend/app/services/health_checks.py#L130-L192)
 
 **Section sources**
+
 - [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
 - [health_checks.py:130-192](file://backend/app/services/health_checks.py#L130-L192)
 
 ### Enhanced Grafana Dashboards
+
 **Enhanced**: Multiple dashboard configurations:
+
 - Pipeline dashboard: request rate by status, active jobs gauge, P95 pipeline duration, tool usage distribution, average step duration
 - Overview dashboard: RPS, error rate, latency; pipeline completed/failed rates and queue depth; LLM TTFT, tokens/sec, cache hit rate; SSE/WS connections; active users and generation jobs
 - **New**: Persona KPI dashboard: persona-based throughput, latency (p95), and success rates with automatic persona categorization
@@ -412,16 +438,19 @@ PK --> PK3["Timeseries: Persona Success Rate"]
 ```
 
 **Diagram sources**
+
 - [pipeline.json:101-426](file://backend/docker/grafana/dashboards/pipeline.json#L101-L426)
 - [scholarform-overview.json:39-202](file://backend/ops/grafana/dashboards/scholarform-overview.json#L39-L202)
 - [scholarform-persona-kpis.json:20-105](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L20-L105)
 
 **Section sources**
+
 - [pipeline.json:1-448](file://backend/docker/grafana/dashboards/pipeline.json#L1-L448)
 - [scholarform-overview.json:1-239](file://backend/ops/grafana/dashboards/scholarform-overview.json#L1-L239)
 - [scholarform-persona-kpis.json:1-142](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
 
 ### Model Metrics Persistence and Summaries
+
 - Records model usage, latency, success/failure, and optional quality scores
 - Asynchronously persists to Supabase; disables persistence if table not found
 - Provides summaries and comparisons for model performance and fallback rates
@@ -439,27 +468,35 @@ Persist --> Done(["Done"])
 ```
 
 **Diagram sources**
+
 - [model_metrics.py:60-137](file://backend/app/services/model_metrics.py#L60-L137)
 
 **Section sources**
+
 - [model_metrics.py:23-181](file://backend/app/services/model_metrics.py#L23-L181)
 
 ### Agent vs Legacy Performance Tracking
+
 - Tracks processing runs, tool usage, retries, and quality metrics
 - Stores metrics in JSONL and maintains a summary with speed, quality, and reliability comparisons
 
 **Section sources**
+
 - [metrics.py:15-260](file://backend/app/pipeline/agents/metrics.py#L15-L260)
 
 ### Queue Depth Metrics and Periodic Updates
+
 - Periodically reads Redis queue lengths and updates Celery queue depth metrics
 - Runs on a background task during app lifespan
 
 **Section sources**
+
 - [main.py:117-147](file://backend/app/main.py#L117-L147)
 
 ## Dependency Analysis
+
 Key dependencies and relationships:
+
 - FastAPI instrumentation exposes /metrics
 - Prometheus scrapes the backend target defined in prometheus.yml
 - Grafana queries Prometheus for dashboards (including new persona KPI dashboard)
@@ -468,6 +505,7 @@ Key dependencies and relationships:
 - Metrics router depends on Supabase client for DB health and counts
 - Health/Readiness services depend on external systems (DB, LLM providers, AI models)
 - Model metrics persistence depends on Supabase client and runs in background threads
+
 ```mermaid
 graph TB
 M["main.py<br/>Instrumentator /metrics"] --> PMW["prometheus_metrics.py<br/>MetricsManager + Persona KPIs"]
@@ -482,6 +520,7 @@ PK --> GDASH["Grafana Persona KPI Dashboard"]
 ```
 
 **Diagram sources**
+
 - [main.py:273-274](file://backend/app/main.py#L273-L274)
 - [prometheus_metrics.py:144-300](file://backend/app/middleware/prometheus_metrics.py#L144-L300)
 - [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
@@ -490,6 +529,7 @@ PK --> GDASH["Grafana Persona KPI Dashboard"]
 - [scholarform-persona-kpis.json:1-142](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
 
 **Section sources**
+
 - [main.py:273-274](file://backend/app/main.py#L273-L274)
 - [prometheus_metrics.py:144-300](file://backend/app/middleware/prometheus_metrics.py#L144-L300)
 - [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
@@ -498,24 +538,26 @@ PK --> GDASH["Grafana Persona KPI Dashboard"]
 - [scholarform-persona-kpis.json:1-142](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
 
 ## Performance Considerations
+
 - Scraping cadence and intervals:
-  - Prometheus scrape interval configured to 5s for the backend job
-  - Global evaluation interval at 15s
+    - Prometheus scrape interval configured to 5s for the backend job
+    - Global evaluation interval at 15s
 - Metric cardinality:
-  - Use label selectors and bucket configurations judiciously to avoid excessive series
-  - **New**: Persona KPIs add persona and operation dimensions but use sanitized labels to control cardinality
+    - Use label selectors and bucket configurations judiciously to avoid excessive series
+    - **New**: Persona KPIs add persona and operation dimensions but use sanitized labels to control cardinality
 - Background persistence:
-  - Model metrics persistence runs in a background thread to avoid blocking the pipeline
+    - Model metrics persistence runs in a background thread to avoid blocking the pipeline
 - Queue depth updates:
-  - Periodic updates reduce overhead while keeping queue metrics fresh
+    - Periodic updates reduce overhead while keeping queue metrics fresh
 - Caching:
-  - Health and readiness payloads are cached with TTLs to reduce repeated checks
+    - Health and readiness payloads are cached with TTLs to reduce repeated checks
 
 - **New**: Persona KPI recording overhead:
-  - Minimal performance impact with try/except blocks around persona KPI recording
-  - Automatic persona resolution uses simple string matching for efficiency
+    - Minimal performance impact with try/except blocks around persona KPI recording
+    - Automatic persona resolution uses simple string matching for efficiency
 
 **Section sources**
+
 - [prometheus.yml:5-16](file://backend/docker/prometheus/prometheus.yml#L5-L16)
 - [model_metrics.py:101-137](file://backend/app/services/model_metrics.py#L101-L137)
 - [main.py:138-147](file://backend/app/main.py#L138-L147)
@@ -524,31 +566,34 @@ PK --> GDASH["Grafana Persona KPI Dashboard"]
 - [_helpers.py:54-68](file://backend/app/routers/v1/_helpers.py#L54-L68)
 
 ## Troubleshooting Guide
+
 Common issues and resolutions:
+
 - No metrics in Grafana:
-  - Verify Prometheus scrape job target matches backend address and port
-  - Confirm /metrics endpoint is reachable and returns text/plain
-  - **New**: Check persona KPI dashboard exists and references persona_events_total and persona_operation_duration_seconds metrics
+    - Verify Prometheus scrape job target matches backend address and port
+    - Confirm /metrics endpoint is reachable and returns text/plain
+    - **New**: Check persona KPI dashboard exists and references persona_events_total and persona_operation_duration_seconds metrics
 - Missing Supabase table for model metrics:
-  - Persistence disables itself after detecting missing table; ensure table exists or adjust expectations
+    - Persistence disables itself after detecting missing table; ensure table exists or adjust expectations
 - Health/Readiness degraded:
-  - Check DB connectivity, LLM provider availability, and AI model loading status
+    - Check DB connectivity, LLM provider availability, and AI model loading status
 - High error rate or latency spikes:
-  - Inspect pipeline P95 duration and step averages; correlate with queue depths and LLM cache hit rates
+    - Inspect pipeline P95 duration and step averages; correlate with queue depths and LLM cache hit rates
 - Real-time connection churn:
-  - Monitor SSE/WS reconnect rates and active connections to detect client-side instability
+    - Monitor SSE/WS reconnect rates and active connections to detect client-side instability
 
 - **Persona KPI tracking issues**:
-  - **New** Verify persona resolution works correctly for different API paths
-  - Check that persona_events_total and persona_operation_duration_seconds metrics are being recorded
-  - Ensure automatic KPI recording occurs in v1 router operations
-  - Validate persona KPI dashboard queries return expected results
+    - **New** Verify persona resolution works correctly for different API paths
+    - Check that persona_events_total and persona_operation_duration_seconds metrics are being recorded
+    - Ensure automatic KPI recording occurs in v1 router operations
+    - Validate persona KPI dashboard queries return expected results
 - **V1 metrics router issues**:
-  - **New** Verify /api/v1/metrics endpoints are properly routed through v1 router
-  - Check authentication requirements for admin-only endpoints
-  - Ensure frontend error logging endpoint properly increments tool usage metrics
+    - **New** Verify /api/v1/metrics endpoints are properly routed through v1 router
+    - Check authentication requirements for admin-only endpoints
+    - Ensure frontend error logging endpoint properly increments tool usage metrics
 
 **Section sources**
+
 - [prometheus.yml:5-16](file://backend/docker/prometheus/prometheus.yml#L5-L16)
 - [model_metrics.py:123-135](file://backend/app/services/model_metrics.py#L123-L135)
 - [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
@@ -560,12 +605,15 @@ Common issues and resolutions:
 - [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
 
 ## Conclusion
+
 The monitoring and metrics system provides comprehensive observability for the manuscript formatter pipeline. It combines Prometheus instrumentation, custom metrics, health/readiness endpoints, and Grafana dashboards. Optional Supabase persistence enables long-term analysis of model performance. **New persona-based KPI tracking automatically monitors all API operations with intelligent persona categorization, providing valuable insights into user behavior patterns. The consolidated v1 metrics router offers a unified interface for all monitoring endpoints. With proper alerting and capacity planning aligned to queue depths, LLM usage, and persona analytics, the system supports reliable production operations.**
 
 ## Appendices
 
 ### Enhanced Metrics Exposure Endpoints
+
 **Updated**: V1 router structure:
+
 - /api/v1/metrics/db: Database health and document count (admin-only)
 - /api/v1/metrics/log-error: Frontend error logging with automatic tool usage tracking
 - /api/v1/metrics/health: Aggregated health status
@@ -575,10 +623,12 @@ The monitoring and metrics system provides comprehensive observability for the m
 - /metrics: Prometheus scrape endpoint
 
 **Section sources**
+
 - [prometheus_metrics.py:135-142](file://backend/app/middleware/prometheus_metrics.py#L135-L142)
 - [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
 
 ### Enhanced Custom Metric Definitions
+
 - Pipeline: requests_total, pipeline_duration_seconds, pipeline_step_duration_seconds
 - Agent: agent_tools_usage_total, agent_llm_tokens_total, agent_retries_total
 - LLM: llm_failures_total, llm_ttft_seconds, llm_cache_hits_total, llm_cache_misses_total, llm_request_duration_seconds
@@ -586,43 +636,49 @@ The monitoring and metrics system provides comprehensive observability for the m
 - **New**: Persona KPIs: persona_events_total (persona, event, outcome), persona_operation_duration_seconds (persona, operation)
 
 **Section sources**
+
 - [prometheus_metrics.py:15-167](file://backend/app/middleware/prometheus_metrics.py#L15-L167)
 
 ### Enhanced Alerting Strategies
-- Suggested alerts:
-  - High pipeline failure rate or sustained P95 latency increases
-  - Low LLM cache hit rate or frequent failures
-  - Elevated error rate from HTTP instrumentor
-  - Rising queue depths without corresponding worker throughput
-  - Declining active users or generation jobs
 
-  - **New**: Persona KPI monitoring: persona success rate drops, persona latency increases, persona throughput anomalies
-  - **New**: vLLM adoption monitoring: readiness status changes, provider performance degradation
+- Suggested alerts:
+    - High pipeline failure rate or sustained P95 latency increases
+    - Low LLM cache hit rate or frequent failures
+    - Elevated error rate from HTTP instrumentor
+    - Rising queue depths without corresponding worker throughput
+    - Declining active users or generation jobs
+
+    - **New**: Persona KPI monitoring: persona success rate drops, persona latency increases, persona throughput anomalies
+    - **New**: vLLM adoption monitoring: readiness status changes, provider performance degradation
 
 ### Log Aggregation and Distributed Tracing
+
 - Structured logging can be enabled via settings for production environments
 - Request IDs are attached to responses for correlation across services
 - **New**: Persona KPI correlation: automatic persona tagging for all monitored operations
 
 **Section sources**
+
 - [settings.py:26-28](file://backend/app/config/settings.py#L26-L28)
 - [main.py:40-59](file://backend/app/main.py#L40-L59)
 - [monitoring.py:17-50](file://backend/app/middleware/monitoring.py#L17-L50)
 - [main.py:45-106](file://backend/app/main.py#L45-L106)
 
 ### Enhanced Metric Retention and Capacity Planning
+
 - Retention policy:
-  - File cleanup scheduled periodically based on settings; configure retention_days accordingly
+    - File cleanup scheduled periodically based on settings; configure retention_days accordingly
 - Capacity planning insights:
-  - Monitor queue_depth and active_processing_jobs to size Celery workers
-  - Track LLM tokens_total and cache hit rates to right-size provider resources
-  - Observe pipeline step durations to optimize slowest stages
-  - **Enhanced error monitoring**: Reduced error volume allows better focus on genuine performance issues
-  - **Graceful degradation monitoring**: Track system resilience under various failure conditions
-  - **New**: Persona KPI insights: identify high-value personas, optimize for top-performing persona categories
-  - **New**: vLLM adoption metrics: monitor readiness progress and performance improvements
+    - Monitor queue_depth and active_processing_jobs to size Celery workers
+    - Track LLM tokens_total and cache hit rates to right-size provider resources
+    - Observe pipeline step durations to optimize slowest stages
+    - **Enhanced error monitoring**: Reduced error volume allows better focus on genuine performance issues
+    - **Graceful degradation monitoring**: Track system resilience under various failure conditions
+    - **New**: Persona KPI insights: identify high-value personas, optimize for top-performing persona categories
+    - **New**: vLLM adoption metrics: monitor readiness progress and performance improvements
 
 **Section sources**
+
 - [settings.py:128-131](file://backend/app/config/settings.py#L128-L131)
 - [main.py:106-114](file://backend/app/main.py#L106-L114)
 - [main.py:138-147](file://backend/app/main.py#L138-L147)
@@ -630,6 +686,7 @@ The monitoring and metrics system provides comprehensive observability for the m
 - [scholarform-persona-kpis.json:88-105](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L88-L105)
 
 ### Enhanced Production Monitoring Best Practices
+
 - Enforce HTTPS and HSTS headers in production
 - Configure CORS origins carefully
 - Use readiness probes to gate traffic until dependencies are ready
@@ -641,6 +698,7 @@ The monitoring and metrics system provides comprehensive observability for the m
 - **New**: V1 router validation: ensure all metrics endpoints are properly exposed and accessible
 
 **Section sources**
+
 - [main.py:303-313](file://backend/app/main.py#L303-L313)
 - [settings.py:76-82](file://backend/app/config/settings.py#L76-L82)
 - [health_checks.py:130-192](file://backend/app/services/health_checks.py#L130-L192)

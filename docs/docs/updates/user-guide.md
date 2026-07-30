@@ -72,7 +72,7 @@ amf update settings --auto-download --auto-install
 AMF offers four release channels:
 
 | Channel | Stability | Use Case |
-|---------|-----------|----------|
+| --------- | ----------- | ---------- |
 | **Stable** | Production-ready | Recommended for all users |
 | **Beta** | Mostly stable | Try new features before stable release |
 | **Nightly** | May be unstable | Latest development builds |
@@ -112,6 +112,7 @@ amf update history --limit 50
 ```
 
 The history shows:
+
 - Version number
 - Channel
 - Installation date

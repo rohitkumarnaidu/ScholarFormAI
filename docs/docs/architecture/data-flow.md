@@ -4,6 +4,7 @@
 # Data Flow Architecture
 
 ## Table of Contents
+
 - [Format Request Flow](#format-request-flow)
 - [Validation Flow](#validation-flow)
 - [Preview Flow](#preview-flow)

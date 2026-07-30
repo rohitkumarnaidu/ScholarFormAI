@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Security Review
 
 ## Overview
@@ -11,7 +10,7 @@ ScholarForm AI performs regular security reviews to identify vulnerabilities, as
 ## Review Cadence
 
 | Review Type | Frequency | Performer |
-|-------------|-----------|-----------|
+| ------------- | ----------- | ----------- |
 | Internal security review | Quarterly | Project maintainers |
 | SAST scan (CodeQL + Bandit) | Every push | Automated (CI) |
 | Dependency vulnerability scan | Weekly (Dependabot) + Every push (pip-audit, npm audit) | Automated |
@@ -49,7 +48,7 @@ The software is designed to meet the following security requirements:
 ScholarForm AI implements the following secure design principles (per Saltzer & Schroeder):
 
 | Principle | Implementation |
-|-----------|---------------|
+| ----------- | --------------- |
 | Economy of mechanism | Simple architecture: FastAPI → Supabase + Redis. Minimal attack surface. |
 | Fail-safe defaults | Access denied by default; explicit grants required. |
 | Complete mediation | All API requests pass through auth middleware. File access checked per-request. |
@@ -73,7 +72,7 @@ See [SECURITY.md](../SECURITY.md) for the full vulnerability management process,
 ## Recent Review Findings
 
 | Date | Type | Findings | Status |
-|------|------|----------|--------|
+| ------ | ------ | ---------- | -------- |
 | July 2026 | SAST (CodeQL + Bandit) | 0 critical, 0 high | Clean |
 | July 2026 | Dependency scan | 0 critical CVEs | Clean |
 | July 2026 | Container scan (Trivy) | 0 critical, 0 high | Clean |

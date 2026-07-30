@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: "ADR 001: Python-First Runtime"
 description: Decision to use Python as the primary backend runtime
 sidebar_position: 40

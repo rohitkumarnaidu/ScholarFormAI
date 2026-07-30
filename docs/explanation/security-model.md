@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: Security Model
 description: Defense-in-depth security architecture from upload to delivery
 sidebar_position: 5
@@ -61,29 +61,35 @@ graph TD
 ## Layer Details
 
 ### Layer 1: Network
+
 - **TLS 1.3** enforced for all external communication
 - **CORS** — strict origin allowlist; no wildcard in production
 - **HSTS** — `max-age=31536000; includeSubDomains`
 
 ### Layer 2: Edge
+
 - **Rate Limiting** — per-IP token bucket + per-API-key tier-aware rate limit
 - **CSP** — restricts script/style sources; reports violations via report-only mode
 
 ### Layer 3: Authentication
+
 - **JWKS JWT Verify** — all authenticated routes verify JWT against Supabase JWKS endpoint
 - **RBAC** — roles: admin, pro, free, guest (stub in v1.0; expanded in v1.1)
 
 ### Layer 4: Input Validation
+
 - **Tri-Validation** — file is checked by MIME type, magic bytes, AND file extension
 - **ClamAV** — all uploaded files scanned before any processing begins
 - **Size Limit** — 50MB maximum upload; enforced at middleware level
 
 ### Layer 5: Application
+
 - **Jinja2 Sandbox** — template rendering uses restricted Jinja2 environment (no unsafe calls)
 - **API Key Encryption** — keys encrypted with Fernet (symmetric AES-128-CBC) at rest
 - **Audit Logging** — all authenticated actions logged with `request_id`, `user_id`, timestamp
 
 ### Layer 6: Data
+
 - **Supabase RLS** — Row-Level Security scopes all queries to authenticated user
 - **Encryption at Rest** — AES-256 for database (Supabase) and file storage (buckets)
 - **PITR** — continuous database backup; restore to any point in last 7 days
@@ -91,7 +97,7 @@ graph TD
 ## Threat Model
 
 | Threat | Mitigation | Layer |
-|--------|------------|-------|
+| -------- | ------------ | ------- |
 | Malicious file upload | ClamAV + tri-validation | 4 |
 | SQL injection | Parameterized queries + RLS | 3, 6 |
 | XSS | CSP + React DOM escaping | 2, 5 |

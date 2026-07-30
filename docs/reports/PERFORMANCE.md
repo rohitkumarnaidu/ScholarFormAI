@@ -5,7 +5,7 @@
 ### Formatting Speed
 
 | Manuscript Size | APA | MLA | Chicago | IEEE |
-|----------------|:---:|:---:|:-------:|:----:|
+| ---------------- | :---: | :---: | :-------: | :----: |
 | 10 pages (2,500 words) | 0.8s | 0.7s | 0.9s | 0.6s |
 | 50 pages (12,500 words) | 2.1s | 1.9s | 2.3s | 1.7s |
 | 100 pages (25,000 words) | 3.8s | 3.5s | 4.1s | 3.2s |
@@ -16,7 +16,7 @@
 ### API Response Times
 
 | Endpoint | p50 | p95 | p99 |
-|----------|:---:|:---:|:---:|
+| ---------- | :---: | :---: | :---: |
 | `POST /format` (50 pages) | 2.1s | 3.4s | 4.5s |
 | `POST /validate` | 120ms | 250ms | 400ms |
 | `POST /preview` | 150ms | 300ms | 500ms |

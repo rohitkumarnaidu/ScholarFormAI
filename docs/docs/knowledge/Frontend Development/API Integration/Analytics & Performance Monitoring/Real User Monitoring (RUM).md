@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Real User Monitoring (RUM)
 
 <cite>
@@ -17,6 +16,7 @@
 </cite>
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [Project Structure](#project-structure)
 3. [Core Components](#core-components)
@@ -28,7 +28,9 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
+
 This document describes the Real User Monitoring (RUM) implementation in the automated academic manuscript formatter. The system captures frontend performance metrics and user interactions to provide insights into real-world usage patterns and performance characteristics. The implementation consists of three primary layers:
+
 - Frontend instrumentation: collects page load timings and user interaction events
 - Backend ingestion: receives and aggregates metrics via lightweight endpoints
 - Observability stack: exposes Prometheus-compatible metrics for monitoring dashboards and alerting
@@ -36,7 +38,9 @@ This document describes the Real User Monitoring (RUM) implementation in the aut
 The current implementation uses the browser's Performance Navigation Timing API for page load measurements. It also includes a placeholder RUM module designed for future expansion.
 
 ## Project Structure
+
 The RUM system spans both frontend and backend components:
+
 - Frontend: instrumentation libraries, latency observer, and API routes for metric ingestion
 - Backend: Prometheus metrics middleware and monitoring middleware for request telemetry
 
@@ -61,6 +65,7 @@ MMW --> APIM
 ```
 
 **Diagram sources**
+
 - [LatencyObserver.jsx:1-38](file://frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
 - [analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
 - [route.js:1-22](file://frontend/app/api/internal/metrics/record/route.js#L1-L22)
@@ -70,6 +75,7 @@ MMW --> APIM
 - [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
 
 **Section sources**
+
 - [rum.js:1-27](file://frontend/src/lib/rum.js#L1-L27)
 - [posthog.js:1-140](file://frontend/src/lib/posthog.js#L1-L140) (legacy - no longer active)
 - [analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
@@ -80,6 +86,7 @@ MMW --> APIM
 - [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
 
 ## Core Components
+
 - RUM initialization and event tracking (placeholder): Provides initialization and event tracking functions for future RUM providers.
 - Analytics wrapper: Offers a non-blocking event tracking interface.
 - Latency observer: Captures page load durations using the Performance Navigation Timing API and reports them to the backend.
@@ -89,6 +96,7 @@ MMW --> APIM
 - Backend monitoring middleware: Adds request ID generation, timing, and logging for observability.
 
 **Section sources**
+
 - [rum.js:1-27](file://frontend/src/lib/rum.js#L1-L27)
 - [analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
 - [LatencyObserver.jsx:1-38](file://frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
@@ -98,6 +106,7 @@ MMW --> APIM
 - [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
 
 ## Architecture Overview
+
 The RUM architecture combines frontend instrumentation with backend ingestion and metrics exposure:
 
 ```mermaid
@@ -116,6 +125,7 @@ APIM-->>Browser : "Prometheus metrics payload"
 ```
 
 **Diagram sources**
+
 - [LatencyObserver.jsx:1-38](file://frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
 - [route.js:1-22](file://frontend/app/api/internal/metrics/record/route.js#L1-L22)
 - [metrics.js:1-19](file://frontend/src/lib/metrics.js#L1-L19)
@@ -124,20 +134,23 @@ APIM-->>Browser : "Prometheus metrics payload"
 ## Detailed Component Analysis
 
 ### Frontend RUM and Analytics
+
 - RUM module: Provides stubbed functions for initialization and event tracking, intended for future expansion.
 - Analytics wrapper: Non-blocking event tracking interface.
+
 ```mermaid
 flowchart TD
 Capture --> End["Complete"]
 Flush --> End
 ```
 
-
 **Section sources**
+
 - [rum.js:1-27](file://frontend/src/lib/rum.js#L1-L27)
 - [analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
 
 ### Latency Observation and Ingestion
+
 - Latency observer: Uses the Performance Navigation Timing API to measure page load duration and sends the data to the internal metrics recording endpoint.
 - Internal metrics recording endpoint: Parses incoming metrics and records them in the frontend metrics registry as a histogram observation.
 - Frontend metrics registry: Exposes a Prometheus-compatible histogram for HTTP request durations and registers default metrics.
@@ -153,16 +166,19 @@ REG-->>APIR : "OK"
 ```
 
 **Diagram sources**
+
 - [LatencyObserver.jsx:8-26](file://frontend/src/components/monitoring/LatencyObserver.jsx#L8-L26)
 - [route.js:6-15](file://frontend/app/api/internal/metrics/record/route.js#L6-L15)
 - [metrics.js:8-15](file://frontend/src/lib/metrics.js#L8-L15)
 
 **Section sources**
+
 - [LatencyObserver.jsx:1-38](file://frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
 - [route.js:1-22](file://frontend/app/api/internal/metrics/record/route.js#L1-L22)
 - [metrics.js:1-19](file://frontend/src/lib/metrics.js#L1-L19)
 
 ### Backend Metrics Exposure
+
 - Backend Prometheus metrics middleware: Defines counters, histograms, and gauges for pipeline operations, agent tool usage, LLM performance, and system health.
 - Backend monitoring middleware: Adds request ID generation, timing, and logging for improved observability.
 
@@ -196,14 +212,18 @@ class MetricsManager {
 ```
 
 **Diagram sources**
+
 - [prometheus_metrics.py:184-300](file://backend/app/middleware/prometheus_metrics.py#L184-L300)
 
 **Section sources**
+
 - [prometheus_metrics.py:1-300](file://backend/app/middleware/prometheus_metrics.py#L1-L300)
 - [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
 
 ## Dependency Analysis
+
 The RUM system exhibits clear separation of concerns:
+
 - Frontend instrumentation depends on the internal metrics endpoint for latency reporting.
 - Backend metrics exposure depends on Prometheus client definitions and middleware registration.
 - The internal metrics recording endpoint bridges frontend latency observations with the frontend metrics registry.
@@ -218,6 +238,7 @@ MMW["monitoring.py"] --> APIM
 ```
 
 **Diagram sources**
+
 - [LatencyObserver.jsx:1-38](file://frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
 - [route.js:1-22](file://frontend/app/api/internal/metrics/record/route.js#L1-L22)
 - [analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
@@ -227,6 +248,7 @@ MMW["monitoring.py"] --> APIM
 - [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
 
 **Section sources**
+
 - [route.js:1-22](file://frontend/app/api/internal/metrics/record/route.js#L1-L22)
 - [route.js:1-20](file://frontend/app/api/metrics/route.js#L1-L20)
 - [prometheus_metrics.py:1-300](file://backend/app/middleware/prometheus_metrics.py#L1-L300)
@@ -243,9 +265,11 @@ MMW["monitoring.py"] --> APIM
 - Backend metrics not exposed: Ensure the metrics endpoint is accessible and that the Prometheus middleware is registered in the backend application.
 
 **Section sources**
+
 - [analytics.js:7-19](file://frontend/src/lib/analytics.js#L7-L19)
 - [route.js:6-15](file://frontend/app/api/internal/metrics/record/route.js#L6-L15)
 - [route.js:6-15](file://frontend/app/api/metrics/route.js#L6-L15)
 
 ## Conclusion
+
 The RUM implementation provides a solid foundation for collecting real user performance and engagement signals. The frontend instrumentation leverages the Performance Navigation Timing API and integrates, while the backend offers comprehensive metrics exposure via Prometheus. The modular design allows for easy extension to additional RUM providers and enhanced monitoring capabilities.

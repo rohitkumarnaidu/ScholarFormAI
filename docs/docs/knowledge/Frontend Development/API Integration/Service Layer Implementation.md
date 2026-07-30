@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Service Layer Implementation
 
 <cite>
@@ -12,6 +11,7 @@
 </cite>
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [Project Structure](#project-structure)
 3. [Core Components](#core-components)
@@ -23,10 +23,13 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
+
 This document describes the frontend service layer architecture used by the application. It focuses on the API service patterns, request/response handling, error management, caching, retry mechanisms, and integration with React Query for state management. The service layer centralizes HTTP communication, authentication headers, payload sanitization, and robust error reporting.
 
 ## Project Structure
+
 The service layer is implemented as a cohesive module that exports a set of typed API functions and React Query hooks. It integrates with Supabase for authentication and with a Next.js API for health checks and metrics. The module exposes:
+
 - HTTP client helpers for GET/POST/DELETE with retry and debounced requests
 - Authentication-aware fetch wrappers
 - Payload sanitization utilities
@@ -48,17 +51,21 @@ A --> D
 ```
 
 **Diagram sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 - [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 - [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
 
 **Section sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 - [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 - [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
 
 ## Core Components
+
 The service layer centers around a primary module exporting:
+
 - HTTP helpers: `_`, `Z`, `C`, `$`, `X`
 - Upload helpers: `Ot`, `It`
 - Document operations: `te`, `vt`, `Ae`, `Rt`, `Ct`, `At`, `Dt`, `De`, `Lt`
@@ -69,6 +76,7 @@ The service layer centers around a primary module exporting:
 - Utilities: `ee`, `Re`, `Ce`, `k`, `Q`, `Oe`, `M`
 
 Key responsibilities:
+
 - Centralized HTTP client with retry/backoff and exponential backoff
 - Authentication header injection via Supabase session
 - Request debouncing for frequent polling endpoints
@@ -77,10 +85,13 @@ Key responsibilities:
 - React Query defaults and caching strategies
 
 **Section sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 
 ## Architecture Overview
+
 The service layer composes several libraries and utilities:
+
 - Supabase client for authentication and session management
 - React Router for navigation and route handling
 - React Query for caching, refetching, and state synchronization
@@ -103,6 +114,7 @@ SRV-->>UI : Return normalized result
 ```
 
 **Diagram sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 - [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 - [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
@@ -110,7 +122,9 @@ SRV-->>UI : Return normalized result
 ## Detailed Component Analysis
 
 ### HTTP Client and Retry Strategy
+
 The service layer defines a robust HTTP client with:
+
 - Exponential backoff retry for transient failures
 - Network-aware retry conditions
 - Timeout and cancellation support
@@ -132,13 +146,17 @@ Log --> Return
 ```
 
 **Diagram sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 
 **Section sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 
 ### Authentication and Authorization
+
 Authentication is handled centrally:
+
 - Supabase session retrieval and access token injection
 - Automatic Authorization header addition to outgoing requests
 - Auth state change listeners for real-time updates
@@ -160,15 +178,19 @@ SRV-->>UI : Return result
 ```
 
 **Diagram sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 - [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 
 **Section sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 - [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 
 ### Payload Sanitization and Validation
+
 The service layer includes utilities for:
+
 - Removing sensitive keys from payloads
 - Normalizing strings and trimming whitespace
 - Filtering out null/undefined values
@@ -184,13 +206,17 @@ Validate --> Output["Sanitized payload"]
 ```
 
 **Diagram sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 
 **Section sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 
 ### Error Handling and Logging
+
 Error handling follows a consistent pattern:
+
 - Normalize HTTP errors and network failures
 - Map common status codes to user-friendly messages
 - Log frontend errors to backend metrics endpoint
@@ -206,13 +232,17 @@ Log --> Throw["Throw normalized error"]
 ```
 
 **Diagram sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 
 **Section sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 
 ### React Query Integration and Caching
+
 React Query is configured globally with:
+
 - Default staleTime and refetchOnWindowFocus behavior
 - Retry configuration for queries
 - Query builders for documents, templates, and status
@@ -243,13 +273,17 @@ QueryClient --> TemplatesQueries : "provides"
 ```
 
 **Diagram sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 
 **Section sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 
 ### Upload and Download Workflows
+
 Upload and download operations include:
+
 - Chunked upload support for large files
 - Progress callbacks for upload status
 - Blob downloads with automatic URL revocation
@@ -274,23 +308,30 @@ SRV-->>UI : Blob URL for download
 ```
 
 **Diagram sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 
 **Section sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 
 ### Health Checks and Metrics
+
 Health checks and metrics endpoints:
+
 - Health status polling via Next.js API
 - Metrics dashboard and database health endpoints
 - Error logging to backend metrics
 
 **Section sources**
+
 - [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
 - [api.ts](file://frontend/src/lib/api.ts)
 
 ## Dependency Analysis
+
 The service layer depends on:
+
 - Supabase for authentication and session management
 - React Router for navigation and route handling
 - React Query for caching and state management
@@ -313,16 +354,19 @@ SRV --> API
 ```
 
 **Diagram sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 - [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 - [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
 
 **Section sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 - [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
 - [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
 
 ## Performance Considerations
+
 - Use React Query’s staleTime to minimize redundant network calls
 - Enable retry with exponential backoff for transient failures
 - Debounce frequent polling endpoints to reduce load
@@ -330,7 +374,9 @@ SRV --> API
 - Cache blobs and revoke URLs promptly to free memory
 
 ## Troubleshooting Guide
+
 Common issues and resolutions:
+
 - Authentication errors: Verify session validity and re-authenticate if needed
 - Network failures: Inspect retry logs and adjust retry configuration
 - Upload/download failures: Validate file types, sizes, and format parameters
@@ -338,7 +384,9 @@ Common issues and resolutions:
 - Error telemetry: Use backend metrics to diagnose service issues
 
 **Section sources**
+
 - [api.ts](file://frontend/src/lib/api.ts)
 
 ## Conclusion
+
 The frontend service layer provides a robust, centralized foundation for API interactions. It encapsulates authentication, error handling, retry logic, and React Query integration, enabling scalable and maintainable frontend development. The architecture supports efficient caching, reliable uploads/downloads, and seamless integration with backend services.

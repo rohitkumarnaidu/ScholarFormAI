@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Product Requirements Document (PRD)
 description: Product vision, user stories, acceptance criteria, and out-of-scope items
 sidebar_position: 55
@@ -32,14 +32,14 @@ ScholarForm AI is a web-based academic manuscript formatting and AI document gen
 ### Product 1 — Document Formatter
 
 | Mode | Description | Status (Codex-verified) |
-|------|-------------|------------------------|
+| ------ | ------------- | ------------------------ |
 | **Mode A: Upload & Format** | Upload any document → select journal template → download formatted DOCX/PDF | ~60% Done (core pipeline works; quality score display & template save need live testing) |
 | **Mode B: Live Preview Editor** | Split-screen TipTap editor with real-time HTML preview, template switching, AI sidebar | ~85% Files ✅ TipTap confirmed on `/edit`; WebSocket needs runtime QA |
 
 ### Product 2 — AI Document Generator
 
 | Mode | Description | Status (Codex-verified) |
-|------|-------------|------------------------|
+| ------ | ------------- | ------------------------ |
 | **Mode A: Multi-Doc Synthesis** | Upload 2-6 papers → AI reads all → removes duplicates → generates synthesis | ~80% Files; `api.synthesis.js` was 36B stub (now wired) |
 | **Mode B: AI Agent** | Chat-based: user describes paper → AI plans → generates outline → writes sections → refines | ~90% Files; end-to-end flow needs live LLM testing |
 
@@ -48,7 +48,7 @@ ScholarForm AI is a web-based academic manuscript formatting and AI document gen
 ## Target Users
 
 | Persona | Need | Key Flow |
-|---------|------|---------|
+| --------- | ------ | --------- |
 | **PhD Student** | Format thesis for IEEE/ACM submission | Upload → Select IEEE → Download formatted |
 | **Research Professor** | Generate literature review from multiple papers | Multi-upload → Synthesis → Review → Export |
 | **Undergraduate** | Write a first research paper guided by AI | Chat with Agent → Outline → Generate → Edit |
@@ -60,7 +60,7 @@ ScholarForm AI is a web-based academic manuscript formatting and AI document gen
 ## KPIs
 
 | Metric | Target |
-|--------|--------|
+| -------- | -------- |
 | Guest → Signup conversion | >15% |
 | Upload → Download completion rate | >80% |
 | Average generation quality score | >70% |
@@ -99,7 +99,7 @@ The master plan projected 25 frontend routes. As of the Codex audit there are **
 ## Quality Ratings (Codex 5.4 Audit, March 2026)
 
 | Dimension | Score | Notes |
-|-----------|-------|-------|
+| ----------- | ------- | ------- |
 | QA / Testing | **3/10** | 93 E2E files but most are stubs (<700 bytes each) |
 | DevEx | **4/10** | Good architecture, but build issues logged × 13 |
 | Documentation | **3/10** → **7/10** (target) | This reset addresses the gap |

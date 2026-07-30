@@ -10,7 +10,7 @@ Welcome to the **ScholarForm AI Examples & Templates** repository. This folder c
 ## 📁 Subdirectory Index (All 9 Example Kits)
 
 | Example Subdirectory | Focus / Description | Primary Tech / Tools |
-|----------------------|---------------------|----------------------|
+| ---------------------- | --------------------- | ---------------------- |
 | 🚀 [**starter-kit**](starter-kit/README.md) | Ready-to-use project repository containing manuscript, config, bibtex, Makefile, and GitHub CI workflow. | Markdown, BibTeX, Makefile, GitHub Actions |
 | ⚡ [**quick-format**](quick-format/README.md) | Single-command CLI python script (`format_paper.py`) for uploading, monitoring, and downloading formatted papers. | Python 3, `requests` |
 | 🤖 [**api-scripts**](api-scripts/README.md) | Dual-language programmatic clients (`scholarform_client.py`, `scholarform_client.js`) handling `api_envelope` standards. | Python 3, Node.js (ES2022/Fetch) |
@@ -28,14 +28,17 @@ Welcome to the **ScholarForm AI Examples & Templates** repository. This folder c
 Most examples communicate with a running ScholarForm AI backend.
 
 ### 1. Start the ScholarForm AI Backend
+
 ```bash
 # From repository root
 cd backend
 python -m uvicorn app.main:app --reload --port 8000
 ```
+
 Verify the backend is running by navigating to `http://localhost:8000/api/v1/health` or inspecting the OpenAPI docs at `http://localhost:8000/docs`.
 
 ### 2. Environment Requirements
+
 - **Python 3.12+** (with `requests`, `pyyaml`)
 - **Node.js 18+** (for JavaScript API scripts)
 - **Make** & **Bash** (optional, for automation scripts and Makefile build targets)
@@ -45,6 +48,7 @@ Verify the backend is running by navigating to `http://localhost:8000/api/v1/hea
 ## 🚀 Quick Start Guide
 
 ### Option A: Create a New Paper with Starter Kit
+
 ```bash
 # Copy starter kit to your workspace
 cp -r examples/starter-kit my-new-paper
@@ -58,12 +62,14 @@ make format
 ```
 
 ### Option B: Quick Format an Existing Paper
+
 ```bash
 cd examples/quick-format
 python format_paper.py --template ieee --input paper.docx --output formatted.docx
 ```
 
 ### Option C: Run Python or Node.js API Clients
+
 ```bash
 cd examples/api-scripts
 

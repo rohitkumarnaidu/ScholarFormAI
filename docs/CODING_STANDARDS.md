@@ -90,6 +90,7 @@ ruff-format app                            # format
 ```
 
 **Rules of thumb:**
+
 - Prefer readability over brevity — ruff's `SIM` suggestions are advisory, not mandatory.
 - `E402` (module-level import not at top) is tolerated in `__init__.py`, lazy-import shims, and `conftest.py` where sys.path manipulation precedes imports.
 - Use `# noqa: F401` sparingly — only for re-exports in `__init__.py`.
@@ -172,6 +173,7 @@ from __future__ import annotations
 ```
 
 This enables:
+
 - Forward-reference type annotations (no `from __future__` string-quoting needed)
 - PEP 604 union syntax (`str | None` instead of `Optional[str]`)
 - Lazy evaluation at module load (improves startup time)
@@ -238,6 +240,7 @@ if TYPE_CHECKING:
 | Files checked             | `app`       | `mypy.ini`    |
 
 **Rules:**
+
 - **All public API functions require type annotations** on parameters and return values.
 - Private helpers (`_`-prefixed) should also be annotated.
 - Use `str | None` over `Optional[str]` (PEP 604).
@@ -276,24 +279,28 @@ Pyright runs in VS Code via `pyrightconfig.json` at `typeCheckingMode: basic`. I
 **Every source file** must begin with an SPDX license identifier:
 
 **Python:**
+
 ```python
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 ```
 
 **JavaScript/JSX/TSX:**
+
 ```js
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 ScholarForm AI
 ```
 
 **YAML/TOML/Config:**
+
 ```yaml
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 ```
 
 **Markdown:**
+
 ```html
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
@@ -347,6 +354,7 @@ def generate_with_fallback(prompt: str, user_id: str | None = None) -> str:
 ### 7.2 Backend — pytest
 
 **pytest.ini settings:**
+
 ```ini
 asyncio_mode = auto       # no @pytest.mark.asyncio needed
 testpaths = tests
@@ -379,6 +387,7 @@ addopts = -v --tb=short -p no:langsmith_plugin --timeout=120
 | `performance`  | Performance/load tests                                       |
 
 **Running tests:**
+
 ```bash
 # Fast unit tests only (no external deps)
 pytest tests -m "not integration and not llm and not slow" -x -q
@@ -420,6 +429,7 @@ pytest tests --cov=app --cov-fail-under=70
 - E2E tests in `frontend/e2e/` with Playwright.
 
 **Commands:**
+
 ```bash
 npm run test            # vitest run
 npm run test:coverage   # vitest run --coverage
@@ -442,6 +452,7 @@ npm run test:e2e:headed # Playwright with UI
 All commits must follow the [Conventional Commits](https://www.conventionalcommits.org/) specification.
 
 **Format:**
+
 ```
 <type>(<scope>): <subject>
 
@@ -484,6 +495,7 @@ All commits must follow the [Conventional Commits](https://www.conventionalcommi
 | `docker`    | Docker configuration                       |
 
 **Rules** (enforced by commitlint):
+
 - `scope-empty`: **never** (scope is required).
 - `subject-case`: `lower-case`.
 - `subject-full-stop`: never (no trailing period).
@@ -491,6 +503,7 @@ All commits must follow the [Conventional Commits](https://www.conventionalcommi
 - `body-max-line-length`: **100** characters.
 
 **Examples:**
+
 ```
 feat(backend): add 4-tier LLM fallback chain
 fix(pipeline): handle empty reference list in CSL engine
@@ -594,6 +607,7 @@ Exception
 ```
 
 **Usage pattern:**
+
 ```python
 def get_document(doc_id: str) -> PipelineDocument:
     result = db.fetch(doc_id)
@@ -620,6 +634,7 @@ class APIError(BaseModel):
 ```
 
 **Helper functions:**
+
 ```python
 from app.schemas.api_envelope import success_response, error_response
 
@@ -760,22 +775,26 @@ async def list_documents():
 ## 13. Enterprise Refactoring Conventions
 
 ### Exception Hierarchy
+
 - All business exceptions must inherit from `ScholarFormError` (in `app/exceptions.py`)
 - DO NOT raise `HTTPException` from services — use domain exceptions with `http_status`
 - Global exception handler in `main.py` maps domain exceptions to HTTP responses
 
 ### Service Layer
+
 - Services must NOT import pipeline modules directly — use service facades
 - Service facades live in `app/services/` and provide async methods with full type annotations
 - Each service facade has a single responsibility (e.g., `GenerationService`, not `AIService`)
 
 ### Pipeline Architecture
+
 - Pipeline stages implement `StageContract` protocol
 - Stages are stateless — all state lives in `PipelineDocument`
 - Each stage has `execute()`, `validate()`, and `rollback()` methods
 - Orchestrator coordinates stages but contains no stage logic
 
 ### Imports
+
 - No lazy imports (imports inside function bodies) — use proper module restructuring instead
 - No circular imports — extract shared dependencies to `app/common/` if needed
 - Import at module level only

@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Template Creation Guide (DOCX + Jinja2)
 
 This guide explains how to create a new manuscript template that works with the `docxtpl` renderer.

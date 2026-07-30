@@ -80,7 +80,7 @@ ScholarForm AI uses ChromaDB as the primary vector store for retrieval-augmented
 RagEngine maintains **two parallel stores** on every write:
 
 | Store | Technology | Purpose |
-|-------|-----------|---------|
+| ------- | ----------- | --------- |
 | **ChromaDB** | `chromadb.PersistentClient` | Primary retrieval (cosine similarity + metadata filtering) |
 | **Native (kb.json)** | JSON array + NumPy | Failover retrieval; portable snapshot; testing |
 
@@ -97,7 +97,7 @@ On first instantiation (empty store), RagEngine loads `default_guidelines.json` 
 ### 3.1 Collections
 
 | Collection Name | Embedding Dimension | Model | Purpose |
-|----------------|-------------------|-------|---------|
+| ---------------- | ------------------- | ------- | --------- |
 | `guidelines_bge_m3` | 1024 | `BAAI/bge-m3` | Primary collection (best quality) |
 | `publisher_guidelines` | 384 | `BAAI/bge-small-en-v1.5` | Legacy/fallback collection |
 
@@ -144,7 +144,7 @@ Example: `"IEEE_abstract_-1234567890"`
 RagEngine implements a **4-tier fallback chain**:
 
 | Tier | Model | Dimension | Requirements | Quality |
-|------|-------|-----------|-------------|---------|
+| ------ | ------- | ----------- | ------------- | --------- |
 | 1 (Best) | `BAAI/bge-m3` | 1024 | sentence-transformers, ~2 GB RAM | Excellent — multilingual (8192 token ctx) |
 | 2 | HuggingFace Inference API | 384 (MiniLM) or 1024 (BGE) | `HF_TOKEN`, internet | Good — remote, no local RAM cost |
 | 3 | `BAAI/bge-small-en-v1.5` | 384 | sentence-transformers, ~500 MB RAM | Moderate — English-only |
@@ -196,7 +196,7 @@ The global `ModelStore` caches loaded SentenceTransformer instances. RagEngine c
 ### 5.1 Data Sources
 
 | Source | File Format | Contents | Trigger |
-|--------|------------|----------|---------|
+| -------- | ------------ | ---------- | --------- |
 | `default_guidelines.json` | JSON `{"guidelines": [...]}` | 44 curated rules, 11 publishers × 4 sections | Auto-seed on empty store |
 | Contract YAML files | YAML (`pipeline/contracts/{publisher}/contract.yaml`) | Sections, styles, references per publisher | `ingest_guidelines.py` script |
 | Runtime `add_guideline()` | Direct API call | Ad-hoc user guidelines | User upload / custom rules |
@@ -282,6 +282,7 @@ results = self.collection.query(
 ```
 
 Key details:
+
 - `query_texts` — ChromaDB computes the embedding internally using the collection's embedding function.
 - `where` — Metadata filter scopes results to the target publisher. **Important:** publisher values are uppercased at write time (`publisher.upper()`), so queries must also uppercase.
 - ChromaDB's default distance metric is **cosine** (L2-normalized dot product).
@@ -340,7 +341,7 @@ This is performed by the formatting pipeline (not RagEngine itself).
 ### 7.1 Public Methods
 
 | Method | Parameters | Returns | Description |
-|--------|-----------|---------|-------------|
+| -------- | ----------- | --------- | ------------- |
 | `add_guideline()` | `publisher`, `section`, `text`, `metadata=None` | `None` | Adds a guideline to both ChromaDB and native store |
 | `query_guidelines()` | `publisher`, `intent`, `top_k=3` | `List[str]` | Retrieves top-K guideline texts |
 | `query_rules()` | `template_name`, `section_name`, `top_k=2` | `List[Dict]` | Phase-2 adapter for PipelineOrchestrator |
@@ -372,6 +373,7 @@ engine = RagEngine(
 ScholarForm currently uses a **single shared vector store** rather than per-user session stores. All guidelines share one collection (or kb.json) within a persist directory.
 
 **Rationale:**
+
 - Guidelines are publisher-specific, not user-specific — all users benefit from the same formatting rules.
 - Per-user customization is handled via `metadata.source` (e.g., `"user"`) rather than separate stores.
 
@@ -397,7 +399,7 @@ engine = RagEngine(persist_directory=f"db/semantic_store/sessions/{user_id}")
 ### 9.1 Query Latency
 
 | Backend | Cold Start (first query) | Steady State (p50) | Steady State (p95) |
-|---------|------------------------|-------------------|-------------------|
+| --------- | ------------------------ | ------------------- | ------------------- |
 | ChromaDB | ~2–5 s (embedding model load) | 10–30 ms | 50–100 ms |
 | Native (kb.json) | ~1 s (JSON load) | 5–15 ms | 25–50 ms |
 | Deterministic hash | ~50 ms | 1–5 ms | 10 ms |
@@ -405,7 +407,7 @@ engine = RagEngine(persist_directory=f"db/semantic_store/sessions/{user_id}")
 ### 9.2 Indexing / Write Performance
 
 | Operation | ChromaDB | Native |
-|-----------|----------|--------|
+| ----------- | ---------- | -------- |
 | Single `add_guideline` | ~50–150 ms (embedding + write) | ~20–50 ms |
 | Batch ingest (50 items) | ~2–5 s | ~1–2 s |
 | Collection reset | ~100 ms | ~10 ms |
@@ -413,7 +415,7 @@ engine = RagEngine(persist_directory=f"db/semantic_store/sessions/{user_id}")
 ### 9.3 Batch Sizes
 
 | Context | Recommended `top_k` | Notes |
-|---------|--------------------|-------|
+| --------- | -------------------- | ------- |
 | LLM prompt assembly | 2–3 | Keeps context windows manageable |
 | Pipeline formatting | 2 | `query_rules` default |
 | Debug/verification | 5–10 | Console-logging scenarios |
@@ -422,7 +424,7 @@ engine = RagEngine(persist_directory=f"db/semantic_store/sessions/{user_id}")
 ### 9.4 Memory Footprint
 
 | Component | RAM Usage | Notes |
-|-----------|-----------|-------|
+| ----------- | ----------- | ------- |
 | BAAI/bge-m3 model | ~1.8–2.2 GB | Largest single dependency |
 | BAAI/bge-small-en-v1.5 | ~400–600 MB | Recommended for constrained envs |
 | Deterministic fallback | ~20 KB | No model loaded |
@@ -486,7 +488,7 @@ Used by `ingest_guidelines.py` before full re-ingestion from contract YAML files
 ### 11.1 Environment Variables
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- | --------- | ------------- |
 | `RAG_USE_TRANSFORMERS` | `true` | Set to `false` to skip sentence-transformers loading (use HF API or deterministic fallback) |
 | `LOW_MEMORY_MODE` | `false` | When `true`, forces `RAG_USE_TRANSFORMERS=false` and prefers HF API |
 | `PRELOAD_AI_MODELS` | `true` | Pre-loads embedding model at startup into ModelStore |
@@ -546,7 +548,7 @@ DEFAULT_FAST_MODE=true
 RagEngine handles ChromaDB failures gracefully at every level:
 
 | Failure Point | Behavior | Log Level |
-|--------------|----------|-----------|
+| -------------- | ---------- | ----------- |
 | `chromadb` import error | Falls back to native store | WARNING |
 | ChromaDB PersistentClient init fails | Falls back to native store | WARNING |
 | ChromaDB `collection.query()` call fails | Catches exception, retries via native fallback | WARNING |
@@ -554,6 +556,7 @@ RagEngine handles ChromaDB failures gracefully at every level:
 | ChromaDB `collection.delete()` in `reset()` | Falls through (native reset continues) | WARNING |
 
 Known compatibility error substrings that trigger graceful fallback:
+
 - `unable to infer type`
 - `chroma_db_impl`
 - `np.float_`
@@ -576,7 +579,7 @@ if not hasattr(np, 'int_'):
 ### 12.3 Embedding Model Failure
 
 | Scenario | Fallback |
-|----------|----------|
+| ---------- | ---------- |
 | sentence-transformers not installed | Deterministic hash |
 | BAAI/bge-m3 fails to load | BAAI/bge-small-en-v1.5 |
 | Both transformer models fail | Deterministic hash |
@@ -625,6 +628,7 @@ Reads all `contract.yaml` files from `app/pipeline/contracts/{publisher}/` and c
 ### 13.3 ModelStore
 
 The global `ModelStore` at `app.services.model_store` caches:
+
 - `embedding_model` — SentenceTransformer instance
 - `LLMClassifier_tokenizer` — LLMClassifier tokenizer (SemanticParser)
 - `LLMClassifier_model` — LLMClassifier classification model (SemanticParser)
@@ -651,7 +655,7 @@ The `SemanticParser` (LLM-based) at `backend/app/pipeline/intelligence/semantic_
 RagEngine is tested through mock-isolated unit tests that patch external dependencies at the import boundary:
 
 | Test Focus | Approach | Key Files |
-|-----------|----------|-----------|
+| ----------- | ---------- | ----------- |
 | **Query accuracy** | Feed known query/response pairs; verify top-K results match expected guidelines | `tests/pipeline/test_rag_engine_comprehensive.py` |
 | **Embedding fallback** | Mock primary embedding model to raise; verify fallback chain activates | `tests/pipeline/test_rag_engine_deep.py` |
 | **ChromaDB failure** | Mock ChromaDB `collection.query()` to raise; verify native fallback returns correct results | `tests/pipeline/test_rag_engine_gaps_final.py` |
@@ -676,7 +680,7 @@ RagEngine is tested through mock-isolated unit tests that patch external depende
 ### RAG Engine Public Interface
 
 | Method | Parameters | Returns | Description |
-|--------|-----------|---------|-------------|
+| -------- | ----------- | --------- | ------------- |
 | `add_guideline()` | `publisher: str`, `section: str`, `text: str`, `metadata: Optional[Dict]` | `None` | Adds a guideline to both ChromaDB and native store. Publisher uppercased automatically. |
 | `query_guidelines()` | `publisher: str`, `intent: str`, `top_k: int = 3`, `filters: Optional[Dict]` | `List[str]` | Retrieves top-K guideline texts, filtered by publisher. Supports additional metadata filters. |
 | `query_rules()` | `template_name: str`, `section_name: str`, `top_k: int = 2` | `List[Dict]` | Phase-2 adapter for PipelineOrchestrator. Wraps results with metadata dict format. |
@@ -710,7 +714,7 @@ RAG data is embedded in the application process; there is no separate RAG micros
 ### Embedding Model Supply Chain
 
 | Risk | Mitigation |
-|------|-----------|
+| ------ | ----------- |
 | **Model version drift** | Model IDs pinned to specific versions (e.g., `BAAI/bge-m3`). No wildcard or `latest` tags in production. |
 | **Model tampering** | SentenceTransformer models loaded from HuggingFace with SHA-256 verification where possible. |
 | **Remote API compromise** | HuggingFace Inference API calls use `HTTPS` with `HF_TOKEN` authentication. Response validation via type checking and dimension matching. |
@@ -723,7 +727,7 @@ RAG data is embedded in the application process; there is no separate RAG micros
 ### Monitoring
 
 | Metric | Source | Alert Threshold | Severity |
-|--------|--------|----------------|----------|
+| -------- | -------- | ---------------- | ---------- |
 | `rag_chromadb_health` | ChromaDB connection status | `0` (disconnected) | Critical |
 | `rag_query_latency_p50` | Query duration, 50th percentile | > 200ms | Warning |
 | `rag_query_latency_p95` | Query duration, 95th percentile | > 500ms | Critical |
@@ -734,7 +738,7 @@ RAG data is embedded in the application process; there is no separate RAG micros
 ### Alerts
 
 | Condition | Action |
-|-----------|--------|
+| ----------- | -------- |
 | ChromaDB connection failure | Fall back to `kb.json` native store; alert on-call engineer |
 | Query latency > 500ms (p95) | Investigate embedding model performance; consider dimension reduction |
 | Collection size approaching disk limit | Archive old guidelines; purge `source=auto-seed` entries for rarely-used publishers |
@@ -744,7 +748,7 @@ RAG data is embedded in the application process; there is no separate RAG micros
 ### Backup
 
 | Artifact | Frequency | Retention | Method |
-|----------|-----------|-----------|--------|
+| ---------- | ----------- | ----------- | -------- |
 | `kb.json` | On every `add_guideline()` write | 30 days | S3/cloud storage snapshot; self-contained portable format |
 | `chroma.sqlite3` | Daily | 7 days | Periodic file copy (requires RagEngine idle) |
 | `default_guidelines.json` | On deploy | Immutable | Version-controlled in git (`backend/app/pipeline/intelligence/default_guidelines.json`) |
@@ -760,7 +764,7 @@ Restore procedure: Copy `kb.json` to target environment's `db/semantic_store/` d
 ChromaDB uses `chromadb.PersistentClient` which writes to a local directory. Deployment must ensure:
 
 | Environment | Storage Path | Persistence Strategy |
-|-------------|-------------|---------------------|
+| ------------- | ------------- | --------------------- |
 | **Production (Render)** | `/var/data/semantic_store/` | Render disk volume attached to web service |
 | **Development** | `backend/db/semantic_store/` | Local filesystem |
 | **CI/CD (pytest)** | `tempfile.mkdtemp()` | Ephemeral (recreated per test run) |
@@ -788,7 +792,7 @@ Replicas are synced by S3 + `kb.json` snapshot distribution. Not currently deplo
 ### Resource Requirements
 
 | Component | Memory | Disk | CPU |
-|-----------|--------|------|-----|
+| ----------- | -------- | ------ | ----- |
 | ChromaDB PersistentClient | ~10 MB | ~10 MB | Minimal |
 | BAAI/bge-m3 (loaded) | ~2 GB | ~2 GB (model cache) | Moderate (GPU preferred) |
 | BAAI/bge-small-en-v1.5 | ~500 MB | ~500 MB | Low |
@@ -803,7 +807,7 @@ Replicas are synced by S3 + `kb.json` snapshot distribution. Not currently deplo
 RagEngine exposes internal health state via `_is_chromadb_available` flag, which is checked before every query. External monitoring integrates with the application health endpoint:
 
 | Health Check | Endpoint / Method | Expected Response | Frequency |
-|-------------|------------------|-------------------|-----------|
+| ------------- | ------------------ | ------------------- | ----------- |
 | ChromaDB connection | `rag_engine._is_chromadb_available` | `True` | Every query |
 | Embedding model loaded | `model_store.is_loaded("embedding_model")` | `True` | Every 60s |
 | kb.json integrity | File exists + valid JSON parse | No exception | Every startup |
@@ -811,6 +815,7 @@ RagEngine exposes internal health state via `_is_chromadb_available` flag, which
 | Embedding dimension match | `len(embedding) == expected_dim` | True for all entries | Every ingest |
 
 **Prometheus metrics exposed:**
+
 ```python
 # From MetricsManager
 rag_chromadb_health{status="connected"} 1
@@ -826,7 +831,7 @@ rag_ingestion_duration_seconds 2.5
 ### 19.2 Embedding Model Load Status Tracking
 
 | Metric | Source | Check Frequency | Healthy State |
-|--------|--------|----------------|---------------|
+| -------- | -------- | ---------------- | --------------- |
 | `model_store.embedding_model` | `ModelStore.get_model("embedding_model")` | Every query | Returns SentenceTransformer instance |
 | `model_store.is_loaded("embedding_model")` | `ModelStore` | Every 60s | `True` |
 | `_is_reusable_embedding_model()` | RagEngine | Every query | Returns `(True, dimension)` |
@@ -834,6 +839,7 @@ rag_ingestion_duration_seconds 2.5
 | `rag_embedding_dimension` | Prometheus gauge | On model load | 384 or 1024 |
 
 **Model load status Prometheus gauge:**
+
 ```python
 # From MetricsManager
 rag_embedding_model_loaded{model="bge-m3"} 1
@@ -846,13 +852,14 @@ rag_embedding_model_errors_total{model="bge-m3"} 0
 Latency is measured from `query_guidelines()` entry to return, including embedding computation and ChromaDB query time:
 
 | Percentile | ChromaDB | Native (kb.json) | Deterministic Hash | Alert Threshold |
-|-----------|----------|-------------------|-------------------|----------------|
+| ----------- | ---------- | ------------------- | ------------------- | ---------------- |
 | **p50** | 15 ms | 8 ms | 3 ms | > 200 ms (Warning) |
 | **p95** | 120 ms | 45 ms | 10 ms | > 500 ms (Critical) |
 | **p99** | 350 ms | 120 ms | 25 ms | > 1000 ms (Critical) |
 | **Max observed** | 2.1 s (cold start) | 1.2 s (cold start) | 50 ms | — |
 
 **Prometheus metric recording:**
+
 ```python
 # From MetricsManager
 MetricsManager.record_histogram("rag_query_latency", duration_seconds, {
@@ -864,7 +871,7 @@ MetricsManager.record_histogram("rag_query_latency", duration_seconds, {
 ### 19.4 Collection Size and Document Count Monitoring
 
 | Metric | Source | Collection | Alert Threshold |
-|--------|--------|-----------|-----------------|
+| -------- | -------- | ----------- | ----------------- |
 | `rag_collection_size` | `collection.count()` | Prometheus gauge | > 10,000 (Warning) |
 | `rag_collection_disk_bytes` | ChromaDB SQLite file size | Prometheus gauge | > 100 MB (Warning) |
 | `rag_kb_json_size_bytes` | `kb.json` file size | Prometheus gauge | > 50 MB (Warning) |
@@ -872,6 +879,7 @@ MetricsManager.record_histogram("rag_query_latency", duration_seconds, {
 | `rag_ingestion_total` | Cumulative ingest count | Prometheus counter | Monitored for trend |
 
 **Monitoring commands:**
+
 ```bash
 # Check collection size via Python
 python -c "
@@ -888,7 +896,7 @@ du -sh backend/db/semantic_store/
 ### 19.5 Alert Thresholds for Performance Degradation
 
 | Condition | Severity | Alert | Auto-Remediation |
-|-----------|----------|-------|------------------|
+| ----------- | ---------- | ------- | ------------------ |
 | ChromaDB query latency p95 > 500ms | Critical | PagerDuty + Slack | Fall back to native store |
 | ChromaDB connection failure | Critical | PagerDuty + Slack | Switch to kb.json native store |
 | Embedding model load failure | Critical | PagerDuty | Fall back to deterministic hash |
@@ -909,13 +917,14 @@ du -sh backend/db/semantic_store/
 ScholarForm uses a **single shared vector store** with metadata-based isolation rather than per-tenant collections:
 
 | Isolation Strategy | Current | Future (if needed) |
-|-------------------|---------|-------------------|
+| ------------------- | --------- | ------------------- |
 | **Metadata filtering** | `where={"publisher": publisher.upper()}` | Same approach, extended with `tenant_id` field |
 | **Per-tenant collection** | Not used | `client.get_or_create_collection(f"tenant_{tenant_id}")` |
 | **Per-tenant persist dir** | Not used | `RagEngine(persist_directory=f"db/semantic_store/tenants/{tenant_id}")` |
 | **kb.json per tenant** | Single `kb.json` | `kb_{tenant_id}.json` files |
 
 **Why shared collection is safe:**
+
 - Guidelines are publisher-specific, not user-specific — all users query the same formatting rules
 - Per-user customization is tracked via `metadata.source` field (`"user"` vs `"auto-seed"` vs `"contract-ingest"`)
 - ChromaDB `where` filters enforce publisher scoping at query time
@@ -924,7 +933,7 @@ ScholarForm uses a **single shared vector store** with metadata-based isolation 
 ### 20.2 Embedding Model Provenance and Supply Chain Validation
 
 | Risk | Mitigation | Verification |
-|------|-----------|-------------|
+| ------ | ----------- | ------------- |
 | **Model version drift** | Model IDs pinned to specific versions (e.g., `BAAI/bge-m3`) | `rag_embedding_model` config check on startup |
 | **Model tampering** | SentenceTransformer models loaded from HuggingFace with SHA-256 verification | `huggingface_hub.snapshot_download` with revision pinning |
 | **Remote API compromise** | HuggingFace Inference API uses HTTPS + `HF_TOKEN` auth | Response type checking + dimension matching |
@@ -934,13 +943,14 @@ ScholarForm uses a **single shared vector store** with metadata-based isolation 
 ### 20.3 Data Sanitization Before Embedding
 
 | Data Source | PII Risk | Sanitization | Responsibility |
-|-------------|----------|-------------|---------------|
+| ------------- | ---------- | ------------- | --------------- |
 | `default_guidelines.json` | None (curated publisher rules) | N/A — no user content | System |
 | Contract YAML files | None (publisher metadata) | N/A — no user content | System |
 | Runtime `add_guideline()` | High (user-provided text) | Caller must strip PII before calling | Application code |
 | User-uploaded documents | High | PII redaction via `sanitizeText()` in `api.core.js` | Frontend + backend |
 
 **PII redaction guidelines for `add_guideline()` callers:**
+
 ```python
 # Before calling add_guideline(), strip:
 # - Email addresses: re.sub(r'[\w.+-]+@[\w-]+\.[\w.-]+', '[EMAIL]', text)
@@ -953,7 +963,7 @@ rag.add_guideline(publisher="USER", section="custom", text=sanitized_text)
 ### 20.4 Access Control for RAG Query Endpoints
 
 | Access Level | Can Query | Can Ingest | Can Reset | Auth Required |
-|-------------|-----------|------------|-----------|---------------|
+| ------------- | ----------- | ------------ | ----------- | --------------- |
 | **Anonymous** | No | No | No | N/A |
 | **Free user** | Yes (via pipeline) | No | No | Bearer JWT |
 | **Pro user** | Yes (via pipeline) | No | No | Bearer JWT |
@@ -961,6 +971,7 @@ rag.add_guideline(publisher="USER", section="custom", text=sanitized_text)
 | **Service** | Yes (direct API) | Yes (via ingest script) | Yes | Service role key |
 
 **Access control enforcement:**
+
 - RAG query endpoints are not directly exposed as HTTP APIs — all access goes through `PipelineOrchestrator` which requires authentication
 - The `ingest_guidelines.py` script requires `SUPABASE_SERVICE_ROLE_KEY` for admin-level operations
 - `reset()` is a privileged operation — only callable from admin scripts, not from any API endpoint
@@ -968,13 +979,14 @@ rag.add_guideline(publisher="USER", section="custom", text=sanitized_text)
 ### 20.4 Encryption at Rest for Vector Data
 
 | Data Store | Encryption Method | Key Management |
-|------------|------------------|----------------|
+| ------------ | ------------------ | ---------------- |
 | **chroma.sqlite3** | Filesystem-level encryption (LUKS/dm-crypt on Render disk volume) | Render-managed disk encryption |
 | **kb.json** | Application-level encryption optional; filesystem permissions restrict access | POSIX file permissions (0600) |
 | **Model cache** (`~/.cache/huggingface/`) | Filesystem-level encryption | Render disk volume encryption |
 | **Backup (S3)** | Server-side encryption (SSE-S3) | AWS-managed KMS key |
 
 **Production deployment checklist:**
+
 - [ ] Render disk volume encryption enabled (default for all Render disks)
 - [ ] `kb.json` file permissions set to `0600` (owner read/write only)
 - [ ] Model cache directory permissions: `0700` for application user
@@ -984,13 +996,14 @@ rag.add_guideline(publisher="USER", section="custom", text=sanitized_text)
 ### 20.5 Encryption at Rest for Vector Data
 
 | Data Store | Encryption Method | Key Management | Rotation |
-|------------|------------------|----------------|----------|
+| ------------ | ------------------ | ---------------- | ---------- |
 | **chroma.sqlite3** | Render disk volume encryption (LUKS/dm-crypt) | Render-managed | Automatic on volume rebuild |
 | **kb.json** | Filesystem permissions (0600) + optional application-level AES-256-GCM | `ENCRYPTION_KEY` env var | Manual (key rotation procedure) |
 | **Model cache** | Render disk volume encryption | Render-managed | Automatic |
 | **S3 backup** | SSE-S3 (AES-256) | AWS-managed | Automatic key rotation |
 
 **Application-level encryption for kb.json (optional):**
+
 ```python
 from cryptography.fernet import Fernet
 
@@ -1009,13 +1022,14 @@ def encrypt_kb_json(kb_path: Path, key: bytes) -> None:
 ### 21.1 Persistent Volume Configuration for ChromaDB
 
 | Environment | Storage Path | Volume Type | Size | Backup Strategy |
-|-------------|-------------|-------------|------|-----------------|
+| ------------- | ------------- | ------------- | ------ | ----------------- |
 | **Production (Render)** | `/var/data/semantic_store/` | Render disk volume (SSD) | 10 GB | Daily S3 snapshot |
 | **Staging** | `/var/data/semantic_store/` | Render disk volume (SSD) | 5 GB | Weekly S3 snapshot |
 | **Development** | `backend/db/semantic_store/` | Local filesystem | N/A | Git-ignored |
 | **CI/CD** | `tempfile.mkdtemp()` | Ephemeral | N/A | Not persisted |
 
 **Render disk volume configuration:**
+
 ```yaml
 # render.yaml
 services:
@@ -1028,6 +1042,7 @@ services:
 ```
 
 **Startup verification:**
+
 ```python
 # In app.main.py startup
 semantic_store_path = Path("/var/data/semantic_store")
@@ -1039,13 +1054,14 @@ if not os.access(semantic_store_path, os.W_OK):
 ### 21.2 S3/Cloud Storage Backup Strategy for Embeddings
 
 | Artifact | Backup Frequency | Retention | Storage Class | Encryption |
-|----------|-----------------|-----------|---------------|------------|
+| ---------- | ----------------- | ----------- | --------------- | ------------ |
 | `kb.json` | On every `add_guideline()` write | 30 days | S3 Standard | SSE-S3 |
 | `chroma.sqlite3` | Daily (cron) | 7 days | S3 Standard-IA | SSE-S3 |
 | Full `semantic_store/` dir | Weekly | 90 days | S3 Glacier | SSE-S3 |
 | `default_guidelines.json` | On deploy | Immutable (git) | Git LFS | Repo-level |
 
 **Backup script (`scripts/backup_semantic_store.py`):**
+
 ```bash
 # Manual backup
 python scripts/backup_semantic_store.py \
@@ -1060,6 +1076,7 @@ python scripts/restore_semantic_store.py \
 ```
 
 **S3 bucket policy:**
+
 ```json
 {
   "Version": "2012-10-17",
@@ -1087,6 +1104,7 @@ replica_rag = RagEngine(persist_directory="db/semantic_store/replica")
 ```
 
 **Replica sync mechanism:**
+
 1. Primary writes to ChromaDB + `kb.json` on every `add_guideline()`
 2. After each ingest batch, `kb.json` is uploaded to S3
 3. Replicas poll S3 for new `kb.json` versions (configurable interval: 60s)
@@ -1098,13 +1116,14 @@ replica_rag = RagEngine(persist_directory="db/semantic_store/replica")
 ### 21.4 Memory and Disk Resource Requirements
 
 | Deployment Profile | Memory | Disk | CPU | Recommended For |
-|-------------------|--------|------|-----|-----------------|
+| ------------------- | -------- | ------ | ----- | ----------------- |
 | **Minimal** (deterministic hash) | 256 MB | 100 MB | 0.5 vCPU | CI/CD, testing, low-memory envs |
 | **Lightweight** (bge-small-en-v1.5) | 1 GB | 1 GB | 1 vCPU | Staging, low-traffic prod |
 | **Standard** (bge-m3) | 3 GB | 3 GB | 2 vCPU | Production (recommended) |
 | **High-throughput** (bge-m3 + replicas) | 4 GB per instance | 5 GB per instance | 4 vCPU | High-traffic production |
 
 **Render resource configuration:**
+
 ```yaml
 # render.yaml
 services:
@@ -1128,7 +1147,7 @@ services:
 ### 21.4 Backup Verification Procedures
 
 | Check | Frequency | Method | Success Criteria |
-|-------|-----------|--------|-----------------|
+| ------- | ----------- | -------- | ----------------- |
 | kb.json integrity | Daily | `python -c "import json; json.load(open('kb.json'))"` | No JSON decode error |
 | ChromaDB health | Daily | `rag.collection.count()` returns > 0 | Document count matches expected |
 | S3 backup exists | Daily | `aws s3 ls s3://bucket/kb.json --region us-east-1` | File exists and is non-empty |
@@ -1137,6 +1156,7 @@ services:
 | Full disaster recovery | Monthly | Restore from S3 to fresh environment | Full pipeline formatting passes |
 
 **Automated verification script:**
+
 ```bash
 #!/bin/bash
 # verify_backup.sh — run daily via cron
@@ -1183,7 +1203,7 @@ def mock_embedding_model():
 **Key mocking patterns:**
 
 | Dependency | Patch Target | Mock Return Value |
-|-----------|-------------|-------------------|
+| ----------- | ------------- | ------------------- |
 | `chromadb` | `app.pipeline.intelligence.rag_engine.chromadb` | `MagicMock(PersistentClient=MagicMock())` |
 | `sentence_transformers` | `app.pipeline.intelligence.rag_engine.sentence_transformers` | `MagicMock(SentenceTransformer=MagicMock())` |
 | `huggingface_hub` | `app.pipeline.intelligence.rag_engine.huggingface_hub` | `MagicMock()` |
@@ -1195,7 +1215,7 @@ def mock_embedding_model():
 `tests/golden_files/` contains 10 publisher-specific golden files for regression testing:
 
 | Golden File | Publisher | Queries | Expected Results |
-|-------------|-----------|---------|-----------------|
+| ------------- | ----------- | --------- | ----------------- |
 | `golden_ieee.json` | IEEE | 5 queries (abstract, section_order, references, figures, headings) | Top-2 guidelines per query |
 | `golden_apa.json` | APA | 5 queries | Top-2 guidelines per query |
 | `golden_springer.json` | Springer | 4 queries | Top-2 guidelines per query |
@@ -1208,6 +1228,7 @@ def mock_embedding_model():
 | `golden_vancouver.json` | Vancouver | 4 queries | Top-2 guidelines per query |
 
 **Golden test fixture format:**
+
 ```json
 {
   "publisher": "IEEE",
@@ -1227,7 +1248,7 @@ def mock_embedding_model():
 ### 22.3 Vector Search Accuracy Testing Methodology
 
 | Test Type | Methodology | Metric | Target |
-|-----------|-------------|--------|--------|
+| ----------- | ------------- | -------- | -------- |
 | **Relevance@K** | For each golden query, check if expected result is in top-K | Recall@K | >= 0.95 (K=3) |
 | **Mean Reciprocal Rank (MRR)** | Average of reciprocal rank of first relevant result | MRR | >= 0.90 |
 | **Publisher filter accuracy** | Query with publisher filter; verify no cross-publisher results | Precision | 1.0 |
@@ -1236,6 +1257,7 @@ def mock_embedding_model():
 | **Fallback parity** | Compare ChromaDB vs native results for same query | Jaccard similarity | >= 0.80 |
 
 **Accuracy test pattern:**
+
 ```python
 def test_query_accuracy(rag_engine, golden_data):
     for query in golden_data["queries"]:
@@ -1255,7 +1277,7 @@ def test_query_accuracy(rag_engine, golden_data):
 ### 22.4 Integration Test Patterns with Test ChromaDB Instance
 
 | Test Pattern | Description | File |
-|-------------|-------------|------|
+| ------------- | ------------- | ------ |
 | **Temp directory isolation** | Each test creates a `tempfile.mkdtemp()` persist directory | `test_rag_engine_comprehensive.py` |
 | **Auto-seed verification** | Initialize with empty dir; verify `default_guidelines.json` loaded | `test_rag_engine_deep.py` |
 | **Dual-store consistency** | Add guideline; verify both ChromaDB and kb.json contain entry | `test_rag_engine_comprehensive.py` |
@@ -1266,6 +1288,7 @@ def test_query_accuracy(rag_engine, golden_data):
 | **Empty store behavior** | Initialize with empty dir; verify auto-seeding | `test_rag_engine_deep.py` |
 
 **Integration test fixture:**
+
 ```python
 @pytest.fixture
 def rag_engine():
@@ -1304,6 +1327,7 @@ curl -X POST https://api.scholarform.ai/api/v1/rag/query \
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1354,6 +1378,7 @@ curl -X POST https://api.scholarform.ai/api/v1/rag/index \
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1378,6 +1403,7 @@ curl -X DELETE https://api.scholarform.ai/api/v1/rag/collection/guidelines_bge_m
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1395,12 +1421,13 @@ curl -X DELETE https://api.scholarform.ai/api/v1/rag/collection/guidelines_bge_m
 ### 23.3 Rate Limiting and Auth Requirements
 
 | Endpoint | Method | Auth Required | Rate Limit | Role Required |
-|----------|--------|---------------|------------|---------------|
+| ---------- | -------- | --------------- | ------------ | --------------- |
 | `/api/v1/rag/query` | POST | Bearer JWT | 60/min (free), 300/min (pro) | Any authenticated |
 | `/api/v1/rag/index` | POST | Bearer JWT | 10/min | Admin |
 | `/api/v1/rag/collection/{id}` | DELETE | Bearer JWT | 5/min | Admin |
 
 **Rate limiting headers returned:**
+
 ```http
 X-RateLimit-Limit: 60
 X-RateLimit-Remaining: 58
@@ -1408,6 +1435,7 @@ X-RateLimit-Reset: 1689600000
 ```
 
 **Authentication requirements:**
+
 - All RAG API endpoints require `Authorization: Bearer <JWT>` header
 - Index and delete operations additionally require `role: admin` in JWT claims
 - Anonymous requests receive HTTP 401 with `AUTH_REQUIRED` error code
@@ -1417,7 +1445,6 @@ X-RateLimit-Reset: 1689600000
 
 *Last updated: July 2026*
 
-
 ## Related Documentation
 
 - [AI Architecture](AI_ARCHITECTURE.md)
@@ -1426,4 +1453,3 @@ X-RateLimit-Reset: 1689600000
 - [Chroma RAG Architecture](CHROMA_RAG_ARCHITECTURE.md)
 - [Database Architecture](DATABASE_ARCHITECTURE.md)
 - [API Reference](API.md)
-

@@ -3,7 +3,7 @@
 ## Environment Variables
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- | --------- | ------------- |
 | `AMF_ENVIRONMENT` | `development` | Runtime environment |
 | `AMF_DEBUG` | `true` | Debug mode |
 | `AMF_LOG_LEVEL` | `info` | Logging level |

@@ -1,27 +1,28 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
 template: vancouver
 title: Multi-Level Reference Analysis in Computational Biomedicine
 authors:
-  - Akiko Tanaka
-  - James Rodriguez
+
+- Akiko Tanaka
+- James Rodriguez
 affiliations:
-  - Department of Computational Biomedicine, University of Tokyo
-  - Centre for Health Informatics, University of Manchester
+- Department of Computational Biomedicine, University of Tokyo
+- Centre for Health Informatics, University of Manchester
 keywords:
-  - computational biomedicine
-  - citation analysis
-  - Vancouver style
+- computational biomedicine
+- citation analysis
+- Vancouver style
 footnotes:
-  - "This work was supported by JSPS KAKENHI Grant No. 24K12345."
-  - "Presented in part at the 2025 International Conference on Biomedical Informatics."
+- "This work was supported by JSPS KAKENHI Grant No. 24K12345."
+- "Presented in part at the 2025 International Conference on Biomedical Informatics."
 corresponding_author: Akiko Tanaka (tanaka@compbio.u-tokyo.ac.jp)
 orcid:
-  - 0000-0002-1234-5678
-  - 0000-0003-8765-4321
+- 0000-0002-1234-5678
+- 0000-0003-8765-4321
+
 ---
 
 # Abstract

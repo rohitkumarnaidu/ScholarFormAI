@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Technology Stack
 description: All technologies, libraries, and services powering the platform
 sidebar_position: 3
@@ -20,7 +20,7 @@ last_updated: July 2026
 ## Frontend
 
 | Component | Stack |
-|---|---|
+| --- | --- |
 | Framework | Next.js (App Router) |
 | UI | React + Tailwind CSS |
 | State/API usage | Fetch + React hooks |
@@ -30,7 +30,7 @@ last_updated: July 2026
 ## Backend
 
 | Component | Stack |
-|---|---|
+| --- | --- |
 | Runtime | Python 3.12 |
 | API framework | FastAPI + Uvicorn |
 | Background tasks | Celery (present, queue mode currently off) |
@@ -42,7 +42,7 @@ last_updated: July 2026
 ## Remote Heavy Services (Hugging Face Spaces)
 
 | Service | Routing model | Health path |
-|---|---|---|
+| --- | --- | --- |
 | GROBID | Primary + Shadow via `GROBID_URLS` | `/api/isalive` |
 | Docling | Primary + Shadow via `DOCLING_URLS` | `/` |
 | OCR | Primary + Shadow via `OCR_URLS` | `/` |
@@ -53,7 +53,7 @@ All heavy processing is intended to be remote in production. URL-list variables 
 ## Deployment Topology (Strict $0)
 
 | Layer | Provider |
-|---|---|
+| --- | --- |
 | Frontend | Vercel |
 | Backend | Render free web service (512MB) |
 | DB/Auth/Storage | Supabase free tier |
@@ -63,7 +63,7 @@ All heavy processing is intended to be remote in production. URL-list variables 
 ## Runtime Profile (Render 512MB)
 
 | Variable | Value |
-|---|---|
+| --- | --- |
 | `LOW_MEMORY_MODE` | `true` |
 | `PRELOAD_AI_MODELS` | `false` |
 | `RAG_USE_TRANSFORMERS` | `false` |
@@ -76,7 +76,7 @@ All heavy processing is intended to be remote in production. URL-list variables 
 ## CI/CD and Operations
 
 | Area | Current behavior |
-|---|---|
+| --- | --- |
 | Production deploy | Manual (`workflow_dispatch`) |
 | Backend health gate | `/api/v1/health/live` |
 | Keepalive | Every 14 minutes for backend + HF primary/shadow pairs |

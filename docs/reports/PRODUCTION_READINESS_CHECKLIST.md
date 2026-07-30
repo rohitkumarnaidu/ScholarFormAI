@@ -14,7 +14,7 @@
 Each checklist item is scored on a 3-point scale:
 
 | Score | Meaning | Criteria |
-|-------|---------|----------|
+| ------- | --------- | ---------- |
 | **3** (Fully Met) | ✅ Complete | Automated tests + documented process + CI enforcement |
 | **2** (Partially Met) | ◐ Adequate | Tests exist but gap in documentation or enforcement |
 | **1** (Not Met) | ❌ Gap | Missing tests, documentation, or enforcement |
@@ -26,6 +26,7 @@ Total Score = (Sum of item scores) / (Total items × 3) × 100
 ```
 
 **Current calculation:** 57 items scored (45 base + 12 sub-items). All 57 items scored at 3 (Fully Met), except:
+
 - `--cov` local coverage measurement (2 — CI measures separately but local is broken)
 - Full `pytest tests/` quick run (2 — times out, must use targeted sweeps)
 - External contributor review (2 — internal review only)
@@ -35,7 +36,7 @@ Total Score = (Sum of item scores) / (Total items × 3) × 100
 ### Quality Gates
 
 | Level | Score Range | Action Required |
-|-------|-------------|----------------|
+| ------- | ------------- | ---------------- |
 | 🟢 **Production Ready** | 95-100 | Standard maintenance |
 | 🟡 **Conditional Pass** | 80-94 | Address specific gaps before deployment |
 | 🔴 **Not Ready** | <80 | Block deployment until gaps resolved |
@@ -45,7 +46,7 @@ Total Score = (Sum of item scores) / (Total items × 3) × 100
 ## Cross-References
 
 | Related Document | Description |
-|-----------------|-------------|
+| ----------------- | ------------- |
 | `docs/SECURITY_CHECKLIST.md` | Full security compliance — OWASP, SSRF, webhooks, encryption, rate limiting |
 | `docs/MONITORING_OBSERVABILITY.md` | Monitoring, alerting, logging, tracing, SLO/SLI definitions |
 | docs/deployment/DEPLOYMENT.md | Deployment workflow, environment setup, rollback procedures |

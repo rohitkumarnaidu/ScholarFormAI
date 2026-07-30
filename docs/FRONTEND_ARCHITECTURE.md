@@ -9,7 +9,7 @@ ScholarForm AI is a Next.js-based academic manuscript formatting platform that a
 ## 2. Technology Stack
 
 | Category | Technology | Version | Purpose |
-|----------|-----------|---------|---------|
+| ---------- | ----------- | --------- | --------- |
 | Framework | Next.js | ^16.1.6 | App Router, server components, Turbopack dev |
 | UI Library | React | ^19.2.7 | Component model, hooks, concurrent features |
 | Styling | Tailwind CSS 3 | ^3.4.1 | Utility-first CSS via PostCSS |
@@ -197,7 +197,7 @@ frontend/
 ### Path Aliases (`jsconfig.json`)
 
 | Alias | Resolves To |
-|-------|-------------|
+| ------- | ------------- |
 | `@/` | `./` (project root) |
 | `@/components/*` | `./src/components/*` then `./components/*` |
 | `@/context/*` | `./src/context/*` |
@@ -262,7 +262,7 @@ The `middleware.js` file runs at the Edge for every matching route. It:
 **25 protected route patterns** matched by the `config.matcher` array:
 
 | Group | Routes |
-|-------|--------|
+| ------- | -------- |
 | Formatter | `/dashboard/*`, `/upload/*`, `/history/*`, `/batch-upload/*`, `/templates/*`, `/template-editor/*`, `/edit/*`, `/preview/*`, `/compare/*`, `/processing/*`, `/results/*`, `/live/*`, `/download/*` |
 | Generator | `/agent/*`, `/generate/*`, `/multi-upload/*`, `/synthesis/*` |
 | Shared protected | `/settings/*`, `/profile/*`, `/feedback/*`, `/notifications/*`, `/api-keys/*`, `/providers/*`, `/contributing/*` |
@@ -313,7 +313,7 @@ QueryClientProvider
 ```
 
 | Context | Purpose | Key State |
-|---------|---------|-----------|
+| --------- | --------- | ----------- |
 | `AuthContext` | User authentication lifecycle | `user`, `isLoggedIn`, `loading` |
 | `ThemeContext` | Dark/light mode with Supabase sync | `theme`, `toggleTheme`, `systemPrefersDark` |
 | `ToastContext` | Non-blocking notification toasts | `showToast(type, msg, duration)`, `dismiss(id)` |
@@ -321,6 +321,7 @@ QueryClientProvider
 | `UserPreferencesContext` | User settings (persisted to localStorage + Supabase) | `preferences`, `setPreference(key, value)` |
 
 **Auth flow** (`AuthProvider`):
+
 1. On mount: calls `supabase.auth.getSession()` for fast local JWT check, then `supabase.auth.getUser()` for server verification
 2. Rejects cached sessions that fail server verification by calling `supabase.auth.signOut({ scope: 'local' })`
 3. Listens to `onAuthStateChange` for `SIGNED_IN`, `SIGNED_OUT`, `TOKEN_REFRESHED` events
@@ -339,7 +340,7 @@ QueryClientProvider
 Defined in `api.hooks.js`:
 
 | Hook | Query Key | Endpoint | Caching |
-|------|-----------|----------|---------|
+| ------ | ----------- | ---------- | --------- |
 | `useDocuments(params)` | `['documents', normalizedParams]` | `GET /api/v1/documents` | Default (staleTime 10s) |
 | `useDocumentStatus(jobId)` | `['document-status', jobId]` | `GET /api/v1/documents/{id}/status` | Configurable `refetchInterval` |
 | `useMetricsHealth()` | `['metrics-health']` | `GET /api/v1/health/ready` | `retry: false`, no refetch on focus |
@@ -347,6 +348,7 @@ Defined in `api.hooks.js`:
 | `useJobStatusSSE(jobId, opts)` | Hybrid SSE + poll fallback | `GET /api/v1/stream/{id}` or `GET /api/v1/documents/{id}/status` | SSE with 2500ms fallback polling |
 
 **QueryClient defaults** (set in `ClientProviders.jsx`):
+
 - `staleTime: 10000` (10s)
 - `refetchOnWindowFocus: false`
 - `retry: 1`
@@ -354,7 +356,7 @@ Defined in `api.hooks.js`:
 ### 5.3 Custom Hooks (14 total)
 
 | Hook | File | Purpose | Key Return Values |
-|------|------|---------|-------------------|
+| ------ | ------ | --------- | ------------------- |
 | `useAgent()` | `useAgent.js` | Agent session lifecycle (start, message, stop, approve outline, load existing) | `activeSessionId`, `messages[]`, `sessionState`, `outlineData`, `isTyping`, `error` |
 | `useAgentEvents()` | `useAgentEvents.js` | Manages EventSource for agent SSE events (`outline_chunk`, `stage_update`) | Side-effect only; populates outline, messages, session state |
 | `useAutosave()` | `useAutosave.js` | Auto-saves generator form to localStorage every 10s; restores drafts <24h old | `restoreDraft()`, `clearDraft()` |
@@ -463,7 +465,7 @@ Layer 1: api.core.js (base transport)
 All primitives in `src/components/ui/`, re-exported via `index.js`:
 
 | Component | Props | Notes |
-|-----------|-------|-------|
+| ----------- | ------- | ------- |
 | `Button` | `variant`, `size`, `loading`, `disabled`, `icon` | Supports loading spinner, multiple variants |
 | `Card` | `title`, `subtitle`, `children`, `className` | Container card with optional header |
 | `Input` | `label`, `error`, `icon`, `type` | Form input with label and error state |
@@ -476,7 +478,7 @@ All primitives in `src/components/ui/`, re-exported via `index.js`:
 ### 7.2 Layout Components
 
 | Component | Location | Role |
-|-----------|----------|------|
+| ----------- | ---------- | ------ |
 | `AppShell` | `components/layout/AppShell.jsx` | Top-level shell: renders Header + Sidebar + main content area. Manages desktop/mobile sidebar toggle. Detects auth routes, landing routes, and sidebar routes. Redirects logged-in users from `/` to `/dashboard`. Applies glassmorphism background (`backdrop-blur-xl`). |
 | `Header` | `components/layout/Header.jsx` | Fixed top bar (48px). Shows section title, sidebar toggle button, user menu. Always rendered. |
 | `Sidebar` | `components/layout/Sidebar.jsx` | Collapsible nav (240px expanded, 72px collapsed). Section-aware (formatter vs generator links). Mobile overlay mode. |
@@ -489,7 +491,7 @@ All primitives in `src/components/ui/`, re-exported via `index.js`:
 Key feature components (non-layout) found across the app:
 
 | Area | Components |
-|------|------------|
+| ------ | ------------ |
 | Generator wizard | `_components/StepIndicator.jsx`, `TemplateStep.jsx`, `DocTypeStep.jsx`, `MetadataStep.jsx`, `GenerateStep.jsx`, `useGeneratorState.js` |
 | Landing page | `components/LandingSections.jsx` |
 | Toast/Feedback | `components/Toast.jsx`, `components/ConfirmDialog.jsx` |
@@ -515,6 +517,7 @@ useSSEStream(sessionId, getEventsUrl, { maxRetries, streamName })
 ```
 
 Additional SSE:
+
 - `streamGenerationStatus()` in `api.generation.js` — a ReadableStream-based SSE reader (not `EventSource`) that connects to `/api/v1/stream/{jobId}`. Parses `event:` and `data:` lines from fetch body. Used by `useJobStatusSSE` hook for document processing status. Falls back to polling `useDocumentStatus` when `ReadableStream` is unavailable.
 - `getAiSuggestion()` in `api.preview.v1.js` — returns an `EventSource` for `/api/v1/preview/{sessionId}/ai-suggest`.
 
@@ -523,6 +526,7 @@ Additional SSE:
 ### 8.2 WebSocket
 
 `ReconnectingWebSocket` (`src/lib/ReconnectingWebSocket.js`) wraps the native `WebSocket` API with:
+
 - Automatic reconnection with **exponential backoff + jitter** (default: initialDelay=1000ms, maxDelay=30000ms, factor=2, jitter=0.3)
 - Configurable `maxRetries` (default: Infinity)
 - Optional `shouldReconnect` filter callback
@@ -547,7 +551,7 @@ HTTP fallback available via `getPreviewHtml(content, templateId)` in `api.previe
 ### Custom Theme (`tailwind.config.js`)
 
 | Token | Value |
-|-------|-------|
+| ------- | ------- |
 | `font-display` | `var(--font-manrope)`, "Manrope", sans-serif |
 | `border-radius` | Default: 0.5rem, lg: 1rem, xl: 1.5rem, 2xl: 2rem |
 | `transition-timing` | `spring: cubic-bezier(0.175, 0.885, 0.32, 1.275)` |
@@ -555,7 +559,7 @@ HTTP fallback available via `getPreviewHtml(content, templateId)` in `api.previe
 ### Color Palette
 
 | Token | Light | Dark |
-|-------|-------|------|
+| ------- | ------- | ------ |
 | `background` | `#f6f6f8` | `#09090b` |
 | `primary` | `#136dec` | `#136dec` |
 | `primary-hover` | `#0f5bbd` | `#0f5bbd` |
@@ -580,7 +584,7 @@ Used on the Header, Sidebar, and mobile sidebar overlay to create a frosted-glas
 ### Diff Highlighting
 
 | Token | Background | Text |
-|-------|-----------|------|
+| ------- | ----------- | ------ |
 | `diff-add` | `#dcfce7` | `#166534` |
 | `diff-remove` | `#fee2e2` | `#991b1b` |
 | `diff-mod` | `#fef9c3` | `#854d0e` |
@@ -602,7 +606,7 @@ Used on the Header, Sidebar, and mobile sidebar overlay to create a frosted-glas
 ### Test Runners
 
 | Layer | Tool | Configuration |
-|-------|------|---------------|
+| ------- | ------ | --------------- |
 | Unit/Integration | Vitest v4 | `vitest.config.js` |
 | E2E | Playwright | `playwright.config.js` |
 | Accessibility | jest-axe | Via `@testing-library/jest-dom` |
@@ -635,6 +639,7 @@ it('prevents open redirects', async () => {
 ```
 
 **Common mock patterns** (from 50+ test files):
+
 - `next/navigation`: mock `useRouter`, `usePathname`, `useSearchParams`, `Link`
 - `framer-motion`: mock with `({ children }) => <>{children}</>` wrapper
 - `lucide-react`: mock each icon as `() => <svg />` or `({ size }) => <span data-size={size} />`
@@ -755,6 +760,7 @@ it('Button does not have accessibility violations', async () => {
 ```
 
 **Dedicated a11y test files**:
+
 - `src/test/accessibility-standalone.test.jsx` — 409 lines covering color contrast, keyboard nav, ARIA, semantic structure, reduced motion
 - `src/test/a11y/a11y.keyboard.test.jsx` — 12 keyboard navigation tests (tab order, focus trapping, Escape to dismiss)
 - `src/test/a11y/color-contrast.test.jsx` — 10 WCAG AA contrast ratio tests using `getComputedStyle` stubs
@@ -775,6 +781,7 @@ it('Button does not have accessibility violations', async () => {
 ### ESLint + Testing
 
 ESLint config includes separate overrides for:
+
 - Test files (`src/test/`, `*.test.*`): adds `globals.jest`, `vi: readonly`
 - E2E files (`e2e/`): adds `globals.node`, allows unused `page` param
 
@@ -791,6 +798,7 @@ ESLint config includes separate overrides for:
 Sentry error tracking and PostHog analytics have been removed. Error monitoring is handled via structured logging + Prometheus metrics.
 
 ### Real User Monitoring (RUM)
+
 ### Real User Monitoring (RUM)
 
 Placeholder in `src/lib/rum.js` with `initRUM()`, `trackPageView()`, `trackEvent()` — ready for Datadog/Sentry RUM integration.
@@ -811,7 +819,6 @@ Error tracking is handled via Prometheus metrics (`/metrics`) and structured log
 
 See: `api.core.js:sendFrontendErrorLog()` ? `POST /api/v1/metrics/log-error`
 
-
 ### 12.2 Real User Monitoring (RUM)
 
 RUM infrastructure in `src/lib/rum.js` exposes three functions:
@@ -830,13 +837,14 @@ RUM infrastructure in `src/lib/rum.js` exposes three functions:
 Defined in `lighthouserc.js` with gates enforced in `frontend-ci.yml`:
 
 | Category | Minimum Score | Effect |
-|----------|---------------|--------|
+| ---------- | --------------- | -------- |
 | Performance | 80 | Pipeline failure if below |
 | Accessibility | 90 | Pipeline failure if below |
 | Best Practices | 90 | Pipeline failure if below |
 | SEO | 90 | Pipeline failure if below |
 
 **Configuration** (`lighthouserc.js:8-28`):
+
 - 6 URLs collected per run (landing, dashboard, upload, settings, live, agent)
 - Server started via `npm run start`
 - Results uploaded to `temporary-public-storage` for review
@@ -867,11 +875,13 @@ The platform currently lacks a full CSP `script-src` directive in `next.config.m
 1. **Server-side nonce generation**: middleware (`middleware.js`) generates a cryptographically random nonce per request using `crypto.randomBytes(16).toString('base64')`
 2. **Nonce injection**: nonce is passed to Next.js via `res.headers.set('x-nonce', nonce)` and consumed in `app/layout.jsx` via `dangerouslySetInnerHTML` on inline `<script>` tags
 3. **CSP header**:
+
    ```
    script-src 'strict-dynamic' 'nonce-{nonce}' 'unsafe-inline' https:;
    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
    img-src 'self' data: blob: https://*.supabase.co;
    ```
+
 4. **Third-party script loading**: All external scripts should load via a nonced bootstrap script with `strict-dynamic` propagation
 
 **Current state**: `next.config.mjs` sets `X-Content-Type-Options`, `X-Frame-Options`, and `Referrer-Policy` only. CSP header is a known gap tracked in security hardening roadmap.
@@ -879,7 +889,7 @@ The platform currently lacks a full CSP `script-src` directive in `next.config.m
 ### 13.2 XSS Attack Surface Map
 
 | Attack Vector | Source | Defense | Test Coverage |
-|---------------|--------|---------|---------------|
+| --------------- | -------- | --------- | --------------- |
 | User-generated content in preview | Document content uploaded via `uploadDocument()` → rendered in `PreviewPane` | `sanitizeText()` (angle bracket removal) + DOMPurify in `PreviewPane` | `src/test/security/xss.test.jsx` (161 lines) |
 | AI-generated text rendering | Agent/synthesis output from SSE stream → rendered in `TokenStream`, `AgentChatPane` | `sanitizePayload()` recursive entity decoding + `sanitizeText()` | `src/test/security/sanitization.test.jsx` (111 lines) |
 | Profile/bio fields | User profile data in settings | `sanitizeText()` on display | `src/test/security/sanitization.test.jsx:59-80` |
@@ -888,6 +898,7 @@ The platform currently lacks a full CSP `script-src` directive in `next.config.m
 | Template names | Custom template names from API | `sanitizePayload()` on response parsing | Implicit (Zod validation) |
 
 **Sanitization chain** (`api.core.js`):
+
 1. `sanitizeText(str)` — removes angle brackets (`<>`), control characters (`\x00-\x1F\x7F`), decodes HTML entities
 2. `sanitizePayload(obj)` — recursively walks object values, applying `sanitizeText` to all string fields
 3. `PreviewPane` — applies `dangerouslySetInnerHTML` only after DOMPurify.sanitize() on server-rendered HTML
@@ -902,7 +913,7 @@ The platform currently lacks a full CSP `script-src` directive in `next.config.m
 ### 13.4 Auth Token Storage & XSS Implications
 
 | Storage | Mechanism | XSS Risk | Rationale |
-|---------|-----------|----------|-----------|
+| --------- | ----------- | ---------- | ----------- |
 | localStorage | `sb-<ref>-auth-token` (Supabase default) | **HIGH** — accessible to any JS executing on the same origin | Migrating to httpOnly cookies is tracked; `sanitizePayload` mitigates token exfiltration via XSS by stripping `<script>` from all rendered content |
 | httpOnly cookie (planned) | `__Host-sb-token` with `Secure; HttpOnly; SameSite=Lax; Path=/` | **NONE** — inaccessible to JavaScript | Preferred approach; requires server-side token refresh endpoint and `middleware.js` cookie injection |
 | sessionStorage | `sb-<ref>-auth-token` chunked cookies | **MODERATE** — scoped to tab, but accessible to JS | Used for E2E test mode (`scholarform_e2e_user`); lower persistence window reduces exfiltration window |
@@ -928,9 +939,9 @@ npm run start     → next start (production server)
 - **Transpilation**: `react-resizable-panels` transpiled (ESM-only package)
 - **Optimized imports**: `lucide-react`, `framer-motion`, `@tanstack/react-query` via `experimental.optimizePackageImports`
 - **Security headers**:
-  - `X-Content-Type-Options: nosniff`
-  - `X-Frame-Options: DENY`
-  - `Referrer-Policy: strict-origin-when-cross-origin`
+    - `X-Content-Type-Options: nosniff`
+    - `X-Frame-Options: DENY`
+    - `Referrer-Policy: strict-origin-when-cross-origin`
 - **Cache policy**: `_next/static/*` and `static/*` → `public, max-age=31536000, immutable`
 - **Rewrite**: `/metrics` → `/api/metrics`
 
@@ -939,18 +950,20 @@ npm run start     → next start (production server)
 The frontend is deployed to Vercel (production from `main`, preview per branch):
 
 | Environment | Trigger | Domain | CI Gate |
-|-------------|---------|--------|---------|
+| ------------- | --------- | -------- | --------- |
 | Production | Push to `main` via `deploy-production.yml` | `app.scholarform.ai` | Frontend CI + Lighthouse + E2E |
 | Preview | PR to `main` | `<branch>.scholarform.vercel.app` | Frontend CI only |
 | Development | Push to `develop` | `dev.scholarform.onrender.com` | Lint + typecheck only |
 
 **Deployment workflow** (`.github/workflows/deploy-production.yml`):
+
 1. `verify-ci-gates` — confirms `backend-ci.yml`, `frontend-ci.yml`, `security.yml` all passed for the commit
 2. `pre-deploy-health` — health-check the currently running production backend (`GET /api/v1/health/live`)
 3. `deploy-production` — runs `npx vercel deploy --prod --yes --token ${VERCEL_TOKEN}` with `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` from secrets
 4. Post-deploy verification — re-checks backend health; auto-rollback via Render API on failure
 
 **Vercel project configuration** (set via `vercel.json` or Vercel dashboard):
+
 - **Framework preset**: Next.js
 - **Build command**: `npm run build`
 - **Output directory**: `.next`
@@ -962,7 +975,7 @@ The frontend is deployed to Vercel (production from `main`, preview per branch):
 Feature flags are managed through a combination of mechanisms:
 
 | Mechanism | Example | Scope |
-|-----------|---------|-------|
+| ----------- | --------- | ------- |
 | `NEXT_PUBLIC_*` env vars | `NEXT_PUBLIC_LATEX_EXPORT_ENABLED=false` | Build-time, global |
 | Backend feature flags | `GET /api/v1/features` response | User-level, runtime |
 | `UserPreferencesContext` | `fastMode`, `statusUpdates` | User-level, persisted to Supabase |
@@ -987,7 +1000,7 @@ assetPrefix: process.env.CDN_URL || "",
 ### 14.4 Environment-Specific Configuration
 
 | Config | Development | Preview | Staging | Production |
-|--------|-------------|---------|---------|------------|
+| -------- | ------------- | --------- | --------- | ------------ |
 | API URL | `http://localhost:8000` | Staging backend | Staging backend | Production backend |
 | Supabase project | Dev project | Dev project | Staging project | Production project |
 | CDN | Unset | Unset | CDN URL | CDN URL |
@@ -1001,7 +1014,7 @@ assetPrefix: process.env.CDN_URL || "",
 ### Environment Variables (`NEXT_PUBLIC_*`)
 
 | Variable | Default | Purpose |
-|----------|---------|---------|
+| ---------- | --------- | --------- |
 | `NEXT_PUBLIC_SUPABASE_URL` | — | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | — | Supabase anonymous API key |
 | `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | Backend FastAPI base URL |
@@ -1018,7 +1031,7 @@ assetPrefix: process.env.CDN_URL || "",
 ### Session Storage Keys
 
 | Key | Purpose |
-|-----|---------|
+| ----- | --------- |
 | `scholarform_currentJob` | Current formatting job (DocumentProvider persistence) |
 | `scholarform_job` | Legacy job key |
 | `scholarform_active_job` | Legacy active job key |
@@ -1036,8 +1049,8 @@ assetPrefix: process.env.CDN_URL || "",
 Source map upload via Sentry webpack plugin has been removed. Source maps are generated during build but not uploaded externally.
 
 **Key configuration** (`next.config.mjs`):
-- `devtool: process.env.NODE_ENV === "production" ? "hidden-source-map" : "inline-source-map"`
 
+- `devtool: process.env.NODE_ENV === "production" ? "hidden-source-map" : "inline-source-map"`
 
 ### 16.2 Real User Monitoring (RUM) with Web Vitals
 
@@ -1053,7 +1066,7 @@ export function reportWebVitals(metric) {
 ```
 
 | Metric | Target (Good) | Threshold (Needs Improvement) | Collection |
-|--------|---------------|-------------------------------|------------|
+| -------- | --------------- | ------------------------------- | ------------ |
 | LCP (Largest Contentful Paint) | ≤ 2.5s | 2.5s – 4.0s | `useReportWebVitals` |
 | FID (First Input Delay) / INP | ≤ 100ms | 100ms – 300ms | `useReportWebVitals` |
 | CLS (Cumulative Layout Shift) | ≤ 0.1 | 0.1 – 0.25 | `useReportWebVitals` |
@@ -1083,7 +1096,7 @@ function ABTestGate({ flag, control, treatment, fallback }) {
 ```
 
 | Test Type | Example | Metric | Duration | Min Sample |
-|-----------|---------|--------|----------|------------|
+| ----------- | --------- | -------- | ---------- | ------------ |
 | UI variant | "Generate" button placement | Click-through rate | 14 days | 10,000 users/variant |
 | Flow variant | Stepped vs. single-page upload | Completion rate | 21 days | 5,000 users/variant |
 | Content variant | Hero section CTA text | Sign-up conversion | 14 days | 8,000 users/variant |
@@ -1118,7 +1131,7 @@ frontend/
 **`__mocks__` guidelines**:
 
 | Mock Target | File | Pattern |
-|-------------|------|---------|
+| ------------- | ------ | --------- |
 | `next/navigation` | `__mocks__/next/navigation.js` | Export `useRouter`, `usePathname`, `useSearchParams`, `Link` |
 | `next/dynamic` | Inline in test | `vi.mock('next/dynamic', () => () => ({ children }) => <>{children}</>)` |
 | `framer-motion` | Inline in test | `vi.mock('framer-motion', () => ({ motion: { div: ({children}) => <>{children}</> } }))` |
@@ -1142,7 +1155,7 @@ vi.mock('next/navigation', () => ({
 State contamination occurs when a test leaves side effects (mocked globals, context state, DOM state, timers) that affect subsequent tests. The following cleanup patterns are enforced across all test files:
 
 | Contamination Source | Cleanup Pattern | Enforcement |
-|---------------------|-----------------|-------------|
+| --------------------- | ----------------- | ------------- |
 | Mock call counts | `clearMocks: true` in `vitest.config.js` | Global — all mocks reset between tests |
 | Mock implementations | `vi.resetAllMocks()` in `afterEach` | Manual — per-file pattern |
 | `sessionStorage` / `localStorage` | `beforeEach(() => { sessionStorage.clear(); localStorage.clear(); })` | Manual — required for storage-dependent tests |
@@ -1220,6 +1233,7 @@ describe('ComponentName', () => {
 ```
 
 **Key conventions**:
+
 - Use `@testing-library/user-event` (not `fireEvent`) for realistic interaction simulation
 - Prefer `screen.getByRole()` queries (accessibility-first) over `getByTestId`
 - Use `waitFor` for async state changes (loading spinners, API responses)
@@ -1323,6 +1337,7 @@ test('live preview sends content and receives rendered HTML', async ({ page }) =
 ```
 
 **Configuration** (`playwright.config.js`):
+
 - FullyParallel: `true` (all test files run in parallel)
 - Workers: 4 (CI), 1 (headed local)
 - Retries: 2 (CI), 0 (local)
@@ -1383,6 +1398,7 @@ describe('GeneratorSessionsResponseSchema', () => {
 ```
 
 **All schemas tested** (from `src/test/schemas.test.js`):
+
 - `JobStatusResponseSchema` — status transitions, progress bounds (0-100), phase validation
 - `DocumentListResponseSchema` — pagination, sorting, empty response
 - `GeneratorSessionsResponseSchema` — session lifecycle states, stage progression
@@ -1395,7 +1411,7 @@ describe('GeneratorSessionsResponseSchema', () => {
 Contract drift occurs when the backend API response structure changes without a corresponding frontend schema update. Detection happens at three levels:
 
 | Level | Detection Mechanism | Action |
-|-------|-------------------|--------|
+| ------- | ------------------- | -------- |
 | **Runtime** | `parseApiResponse(schema, data)` in `api.core.js` | Throws `SchemaValidationError` with field-level mismatch details |
 | **Test time** | Schema tests against recorded API responses (fixtures) | Fails CI if fixtures don't match schemas |
 | **CI time** | TypeScript type generation from OpenAPI spec | Fails CI if generated types differ from Zod schemas |
@@ -1505,7 +1521,7 @@ describe('api.documents integration', () => {
 **Integration test patterns reference**:
 
 | Service | Test File | Key Scenarios |
-|---------|-----------|---------------|
+| --------- | ----------- | --------------- |
 | `api.auth` | `api.auth.test.js` | Signup → login → refresh → logout chain; error mapping |
 | `api.documents` | `api.documents.test.js` | Upload progress, chunked upload, status polling, download |
 | `api.templates` | `api.templates.test.js` | Built-in cache fallback, CSL search, custom template CRUD |
@@ -1515,6 +1531,7 @@ describe('api.documents integration', () => {
 
 **Cross-reference**: See [Section 6](#6-api-client-architecture) for the API client layer design and [Section 10.1](#101-testing-patterns) for general mocking patterns. Full test coverage details in [COVERAGE_GAP_REPORT.md](../../COVERAGE_GAP_REPORT.md).
 \n
+
 ## Frontend Architecture Diagram
 
 ```mermaid
@@ -1527,7 +1544,6 @@ graph TD
     classDef default fill:#1f2937,stroke:#10b981,stroke-width:2px,color:#f9fafb;
 ```
 
-
 ## Related Documentation
 
 - [AI Architecture](AI_ARCHITECTURE.md)
@@ -1536,4 +1552,3 @@ graph TD
 - [Chroma RAG Architecture](CHROMA_RAG_ARCHITECTURE.md)
 - [Database Architecture](DATABASE_ARCHITECTURE.md)
 - [API Reference](API.md)
-

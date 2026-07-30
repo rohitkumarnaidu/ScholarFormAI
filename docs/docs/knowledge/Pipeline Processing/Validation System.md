@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Validation System
 
 <cite>
@@ -24,6 +23,7 @@
 </cite>
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [Project Structure](#project-structure)
 3. [Core Components](#core-components)
@@ -36,9 +36,11 @@
 10. [Appendices](#appendices)
 
 ## Introduction
+
 This document describes the validation system that ensures document integrity, correctness, and readiness for downstream processing. It covers the document validation engine, quality assurance processes, automated review mechanisms, validation rules, error detection algorithms, confidence-based scoring, the AI explainer for validation decisions, review management workflows, and integration with external validation services. It also includes examples of validation reports, common validation errors, and remediation strategies.
 
 ## Project Structure
+
 The validation system is implemented as part of the backend pipeline and integrates with contracts, integrity engines, external services, and review management.
 
 ```mermaid
@@ -75,6 +77,7 @@ RG --> XC
 ```
 
 **Diagram sources**
+
 - [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
 - [review_manager.py:7-117](file://backend/app/pipeline/validation/review_manager.py#L7-L117)
 - [ai_explainer.py:3-47](file://backend/app/pipeline/validation/ai_explainer.py#L3-L47)
@@ -88,6 +91,7 @@ RG --> XC
 - [document_result.py:5-13](file://backend/app/models/document_result.py#L5-L13)
 
 **Section sources**
+
 - [validator_v3.py:1-277](file://backend/app/pipeline/validation/validator_v3.py#L1-L277)
 - [review_manager.py:1-117](file://backend/app/pipeline/validation/review_manager.py#L1-L117)
 - [ai_explainer.py:1-47](file://backend/app/pipeline/validation/ai_explainer.py#L1-L47)
@@ -101,6 +105,7 @@ RG --> XC
 - [document_result.py:1-13](file://backend/app/models/document_result.py#L1-L13)
 
 ## Core Components
+
 - DocumentValidator: Orchestrates validation checks, aggregates results, and updates document state.
 - SectionOrderValidator: Enforces required sections and ordering according to publisher contracts.
 - CrossReferenceEngine: Detects dangling internal references (figures, tables, equations, sections).
@@ -110,6 +115,7 @@ RG --> XC
 - Safety utilities: Guardrails-based LLM output validation and retry/backoff for reliability.
 
 **Section sources**
+
 - [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
 - [section_ordering.py:12-42](file://backend/app/pipeline/formatting/section_ordering.py#L12-L42)
 - [cross_ref.py:22-63](file://backend/app/pipeline/integrity/cross_ref.py#L22-L63)
@@ -120,7 +126,9 @@ RG --> XC
 - [retry_guard.py:10-63](file://backend/app/pipeline/safety/retry_guard.py#L10-L63)
 
 ## Architecture Overview
+
 The validation pipeline runs as a pipeline stage after parsing, normalization, structure detection, and classification. It performs:
+
 - Section completeness and ordering checks driven by contracts
 - Figure/table caption presence checks
 - Internal cross-reference integrity checks
@@ -161,6 +169,7 @@ Validator-->>Parser : "updated PipelineDocument with validation results"
 ```
 
 **Diagram sources**
+
 - [validator_v3.py:62-145](file://backend/app/pipeline/validation/validator_v3.py#L62-L145)
 - [cross_ref.py:22-63](file://backend/app/pipeline/integrity/cross_ref.py#L22-L63)
 - [section_ordering.py:12-42](file://backend/app/pipeline/formatting/section_ordering.py#L12-L42)
@@ -170,13 +179,16 @@ Validator-->>Parser : "updated PipelineDocument with validation results"
 ## Detailed Component Analysis
 
 ### DocumentValidator
+
 Responsibilities:
+
 - Runs a suite of validation checks and aggregates errors/warnings
 - Updates document state with validation outcome and processing metrics
 - Integrates external DOI validation and confidence computation
 - Triggers confidence-based review flags
 
 Key behaviors:
+
 - Section completeness/ordering via contract-driven validator
 - Figure/table caption presence checks
 - Internal cross-reference integrity checks
@@ -224,6 +236,7 @@ DocumentValidator --> ReviewManager : "uses"
 ```
 
 **Diagram sources**
+
 - [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
 - [section_ordering.py:12-42](file://backend/app/pipeline/formatting/section_ordering.py#L12-L42)
 - [cross_ref.py:22-63](file://backend/app/pipeline/integrity/cross_ref.py#L22-L63)
@@ -231,9 +244,11 @@ DocumentValidator --> ReviewManager : "uses"
 - [review_manager.py:29-116](file://backend/app/pipeline/validation/review_manager.py#L29-L116)
 
 **Section sources**
+
 - [validator_v3.py:62-145](file://backend/app/pipeline/validation/validator_v3.py#L62-L145)
 
 ### SectionOrderValidator and Contracts
+
 - Loads publisher-specific contracts to determine required sections and expected order
 - Compares detected sections to required and ordered lists to detect missing or misordered sections
 
@@ -249,18 +264,21 @@ Violations --> End(["Done"])
 ```
 
 **Diagram sources**
+
 - [section_ordering.py:12-42](file://backend/app/pipeline/formatting/section_ordering.py#L12-L42)
 - [loader.py:16-38](file://backend/app/pipeline/contracts/loader.py#L16-L38)
 - [contract.yaml (IEEE):4-24](file://backend/app/pipeline/contracts/ieee/contract.yaml#L4-L24)
 - [contract.yaml (APA):4-26](file://backend/app/pipeline/contracts/apa/contract.yaml#L4-L26)
 
 **Section sources**
+
 - [section_ordering.py:12-42](file://backend/app/pipeline/formatting/section_ordering.py#L12-L42)
 - [loader.py:16-38](file://backend/app/pipeline/contracts/loader.py#L16-L38)
 - [contract.yaml (IEEE):4-24](file://backend/app/pipeline/contracts/ieee/contract.yaml#L4-L24)
 - [contract.yaml (APA):4-26](file://backend/app/pipeline/contracts/apa/contract.yaml#L4-L26)
 
 ### CrossReferenceEngine
+
 Detects dangling internal references by scanning body text for references to figures, tables, equations, and sections, then validating against extracted items.
 
 ```mermaid
@@ -288,12 +306,15 @@ Next3 --> Iterate
 ```
 
 **Diagram sources**
+
 - [cross_ref.py:22-63](file://backend/app/pipeline/integrity/cross_ref.py#L22-L63)
 
 **Section sources**
+
 - [cross_ref.py:22-63](file://backend/app/pipeline/integrity/cross_ref.py#L22-L63)
 
 ### CrossRefClient and DOI Validation
+
 Validates DOIs and calculates confidence by comparing local reference metadata with CrossRef metadata. Implements rate limiting and safe error handling.
 
 ```mermaid
@@ -318,14 +339,17 @@ end
 ```
 
 **Diagram sources**
+
 - [crossref_client.py:55-171](file://backend/app/pipeline/services/crossref_client.py#L55-L171)
 - [validator_v3.py:220-266](file://backend/app/pipeline/validation/validator_v3.py#L220-L266)
 
 **Section sources**
+
 - [crossref_client.py:55-171](file://backend/app/pipeline/services/crossref_client.py#L55-L171)
 - [validator_v3.py:220-266](file://backend/app/pipeline/validation/validator_v3.py#L220-L266)
 
 ### ReviewManager and Confidence-Based Review
+
 Flags content for human-in-the-loop review based on confidence thresholds derived from block classification confidence, NLP confidence, and AI reasoning confidence.
 
 ```mermaid
@@ -348,14 +372,17 @@ SetMeta --> End(["Done"])
 ```
 
 **Diagram sources**
+
 - [review_manager.py:29-116](file://backend/app/pipeline/validation/review_manager.py#L29-L116)
 - [review.py:5-18](file://backend/app/models/review.py#L5-L18)
 
 **Section sources**
+
 - [review_manager.py:29-116](file://backend/app/pipeline/validation/review_manager.py#L29-L116)
 - [review.py:5-18](file://backend/app/models/review.py#L5-L18)
 
 ### AIExplainer
+
 Generates natural language explanations for validation results based on categories inferred from error messages.
 
 ```mermaid
@@ -373,21 +400,27 @@ Append --> End(["Return explanations"])
 ```
 
 **Diagram sources**
+
 - [ai_explainer.py:18-46](file://backend/app/pipeline/validation/ai_explainer.py#L18-L46)
 
 **Section sources**
+
 - [ai_explainer.py:18-46](file://backend/app/pipeline/validation/ai_explainer.py#L18-L46)
 
 ### Safety and Reliability
+
 - Guardrails-based LLM output validation with graceful fallbacks
 - Retry with exponential backoff for external service calls
 
 **Section sources**
+
 - [llm_validator.py:46-122](file://backend/app/pipeline/safety/llm_validator.py#L46-L122)
 - [retry_guard.py:10-63](file://backend/app/pipeline/safety/retry_guard.py#L10-L63)
 
 ## Dependency Analysis
+
 The validation system exhibits clear layering:
+
 - Pipeline stage (DocumentValidator) depends on integrity and ordering validators, external clients, and review manager
 - Contract loading enables publisher-specific validation rules
 - External services are encapsulated behind safe clients with rate limiting and error handling
@@ -408,6 +441,7 @@ RM --> RS["ReviewStatus/ReviewMetadata"]
 ```
 
 **Diagram sources**
+
 - [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
 - [section_ordering.py:9-10](file://backend/app/pipeline/formatting/section_ordering.py#L9-L10)
 - [loader.py:12-14](file://backend/app/pipeline/contracts/loader.py#L12-L14)
@@ -418,11 +452,13 @@ RM --> RS["ReviewStatus/ReviewMetadata"]
 - [review.py:5-18](file://backend/app/models/review.py#L5-L18)
 
 **Section sources**
+
 - [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
 - [loader.py:12-14](file://backend/app/pipeline/contracts/loader.py#L12-L14)
 - [crossref_client.py:25-46](file://backend/app/pipeline/services/crossref_client.py#L25-L46)
 
 ## Performance Considerations
+
 - External DOI validation is optional in fast mode to reduce latency and API load.
 - Rate limiting is enforced for CrossRef API calls to respect service limits.
 - Safe execution wrappers ensure individual check failures do not halt the pipeline.
@@ -431,7 +467,9 @@ RM --> RS["ReviewStatus/ReviewMetadata"]
 [No sources needed since this section provides general guidance]
 
 ## Troubleshooting Guide
+
 Common validation errors and remediation strategies:
+
 - Missing required sections: Ensure sections required by the target publisher are present and correctly titled. Canonical names are mapped by contracts.
 - Out-of-order sections: Reorder sections according to the expected order defined in the contract.
 - Dangling internal references: Confirm all figure/table/equation references correspond to actual items in the document.
@@ -440,14 +478,17 @@ Common validation errors and remediation strategies:
 - Invalid or low-confidence DOIs: Correct the DOI or rely on manual verification if external validation fails.
 
 Integration testing and manual validation:
+
 - Integration tests demonstrate successful DOI validation and confidence assignment.
 - Manual validation pipeline test saves structured validation results to JSON for inspection.
 
 **Section sources**
+
 - [test_crossref_integration.py:35-82](file://backend/tests/integration/test_crossref_integration.py#L35-L82)
 - [run_validation.py:22-74](file://backend/manual_tests/normal/phase1/run_validation.py#L22-L74)
 
 ## Conclusion
+
 The validation system provides robust, contract-driven checks, integrity enforcement, optional external DOI validation, and confidence-based review flags. It integrates safety measures to maintain pipeline stability and offers actionable explanations to guide remediation. The modular design supports extensibility for additional publishers and validation rules.
 
 [No sources needed since this section summarizes without analyzing specific files]
@@ -455,7 +496,9 @@ The validation system provides robust, contract-driven checks, integrity enforce
 ## Appendices
 
 ### Validation Report Example
+
 A typical validation report includes:
+
 - is_valid: Boolean indicating overall validity
 - errors: List of critical issues
 - warnings: List of potential issues
@@ -463,6 +506,7 @@ A typical validation report includes:
 - timestamp: UTC timestamp of validation completion
 
 Example structure:
+
 - is_valid: true/false
 - errors: ["Missing required section: abstract", "Dangling reference: 'Figure 5'"]
 - warnings: ["References section found but no reference entries parsed", "Reference 'RefKey' missing publication year"]
@@ -470,10 +514,12 @@ Example structure:
 - timestamp: "2026-01-01T00:00:00Z"
 
 **Section sources**
+
 - [validator_v3.py:25-32](file://backend/app/pipeline/validation/validator_v3.py#L25-L32)
 - [run_validation.py:53-68](file://backend/manual_tests/normal/phase1/run_validation.py#L53-L68)
 
 ### Quality Improvement Suggestions
+
 - Use fast mode for initial passes to accelerate processing; enable external validation in later stages.
 - Monitor confidence scores and route low-confidence blocks to human review.
 - Leverage AI explanations to guide targeted improvements.

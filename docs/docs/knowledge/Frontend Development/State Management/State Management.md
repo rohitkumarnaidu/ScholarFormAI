@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # State Management
 
 <cite>
@@ -24,6 +23,7 @@
 </cite>
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [Project Structure](#project-structure)
 3. [Core Components](#core-components)
@@ -35,7 +35,9 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
+
 This document explains the state management patterns and data flow across the frontend. It covers:
+
 - Context providers for authentication, document processing, theme, toasts, and user preferences
 - Local state management with useState/useReducer
 - Real-time integrations via Server-Sent Events (SSE) and WebSockets
@@ -44,7 +46,9 @@ This document explains the state management patterns and data flow across the fr
 - Synchronization across components and performance optimizations
 
 ## Project Structure
+
 The frontend organizes state around React Context providers and custom hooks:
+
 - Context providers encapsulate global state and expose actions
 - Hooks orchestrate API calls, SSE/WebSocket streams, and local state
 - Services abstract API endpoints and utilities
@@ -92,6 +96,7 @@ AC --> API
 ```
 
 **Diagram sources**
+
 - [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
 - [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
 - [ThemeContext.jsx:57-70](file://frontend/src/context/ThemeContext.jsx#L57-L70)
@@ -108,6 +113,7 @@ AC --> API
 - [useUnsavedChanges.js:9-23](file://frontend/src/hooks/useUnsavedChanges.js#L9-L23)
 
 **Section sources**
+
 - [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
 - [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
 - [ThemeContext.jsx:57-70](file://frontend/src/context/ThemeContext.jsx#L57-L70)
@@ -124,6 +130,7 @@ AC --> API
 - [useUnsavedChanges.js:9-23](file://frontend/src/hooks/useUnsavedChanges.js#L9-L23)
 
 ## Core Components
+
 - Authentication state: centralized in AuthContext with Supabase integration, session guards, and OTP/passwordless flows
 - Document processing state: managed in DocumentContext with hydration from sessionStorage and optimistic updates
 - Theme and user preferences: synchronized with Supabase user metadata and persisted locally for guests
@@ -132,6 +139,7 @@ AC --> API
 - Upload workflow: useUpload orchestrates file selection, chunked uploads, progress, and status polling
 
 **Section sources**
+
 - [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
 - [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
 - [ThemeContext.jsx:57-70](file://frontend/src/context/ThemeContext.jsx#L57-L70)
@@ -148,7 +156,9 @@ AC --> API
 - [useUnsavedChanges.js:9-23](file://frontend/src/hooks/useUnsavedChanges.js#L9-L23)
 
 ## Architecture Overview
+
 The system combines:
+
 - Context providers for global state
 - Custom hooks for domain-specific flows (agent, uploads, streams)
 - Supabase for authentication and user metadata
@@ -183,6 +193,7 @@ WS-->>UI : "html,warnings,latency"
 ```
 
 **Diagram sources**
+
 - [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
 - [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
 - [UserPreferencesContext.jsx:8-66](file://frontend/src/context/UserPreferencesContext.jsx#L8-L66)
@@ -192,7 +203,9 @@ WS-->>UI : "html,warnings,latency"
 ## Detailed Component Analysis
 
 ### Authentication State Management (AuthContext)
+
 AuthContext centralizes authentication state and integrates with Supabase:
+
 - Initializes from cached session and verifies tokens
 - Guards against race conditions during sign-in/sign-up
 - Manages OTP/passwordless flows and redirects
@@ -222,13 +235,17 @@ Ignore --> Done
 ```
 
 **Diagram sources**
+
 - [AuthContext.jsx:65-178](file://frontend/src/context/AuthContext.jsx#L65-L178)
 
 **Section sources**
+
 - [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
 
 ### Document Processing State (DocumentContext)
+
 DocumentContext manages the active job and history:
+
 - Hydrates active job from sessionStorage on mount
 - Persists job to sessionStorage on changes
 - Optimistically updates history on new jobs
@@ -247,13 +264,16 @@ FailState --> PersistFail["Persist to sessionStorage"]
 ```
 
 **Diagram sources**
+
 - [DocumentContext.jsx:57-88](file://frontend/src/context/DocumentContext.jsx#L57-L88)
 - [DocumentContext.jsx:90-121](file://frontend/src/context/DocumentContext.jsx#L90-L121)
 
 **Section sources**
+
 - [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
 
 ### Theme and Preferences (ThemeContext, UserPreferencesContext)
+
 - ThemeContext synchronizes UI theme with user metadata and persists changes back to Supabase
 - UserPreferencesContext loads preferences from Supabase metadata for logged-in users or localStorage for guests, and syncs changes back to Supabase when available
 
@@ -274,15 +294,19 @@ UPC-->>UI : "preferences updated"
 ```
 
 **Diagram sources**
+
 - [UserPreferencesContext.jsx:41-56](file://frontend/src/context/UserPreferencesContext.jsx#L41-L56)
 - [ThemeContext.jsx:24-48](file://frontend/src/context/ThemeContext.jsx#L24-L48)
 
 **Section sources**
+
 - [ThemeContext.jsx:57-70](file://frontend/src/context/ThemeContext.jsx#L57-L70)
 - [UserPreferencesContext.jsx:8-66](file://frontend/src/context/UserPreferencesContext.jsx#L8-L66)
 
 ### Notifications (ToastContext)
+
 ToastContext provides a queue of transient notifications with auto-dismiss and progress indication:
+
 - Enforces a cap on concurrent toasts
 - Manages per-toast timers and cleanup
 - Renders a container and individual toast items
@@ -297,14 +321,17 @@ Remove --> Cleanup["Clear timeout"]
 ```
 
 **Diagram sources**
+
 - [ToastContext.jsx:19-34](file://frontend/src/context/ToastContext.jsx#L19-L34)
 
 **Section sources**
+
 - [ToastContext.jsx:9-104](file://frontend/src/context/ToastContext.jsx#L9-L104)
 
 ### Real-Time Streams and Sessions
 
 #### SSE Streams (useSessionEventStream, useGeneratorSessionStream, useSynthesisSessionStream)
+
 - useSessionEventStream connects to SSE endpoints, tracks stages, progress, and completion
 - useGeneratorSessionStream and useSynthesisSessionStream reuse the generic stream hook with specific endpoints
 - Implements exponential backoff and error propagation
@@ -327,16 +354,19 @@ Hook->>SSE : "close() on unmount"
 ```
 
 **Diagram sources**
+
 - [useSessionEventStream.js:20-96](file://frontend/src/hooks/useSessionEventStream.js#L20-L96)
 - [useGeneratorSessionStream.js:5-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
 - [useSynthesisSessionStream.js:5-12](file://frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
 
 **Section sources**
+
 - [useSessionEventStream.js:4-101](file://frontend/src/hooks/useSessionEventStream.js#L4-L101)
 - [useGeneratorSessionStream.js:5-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
 - [useSynthesisSessionStream.js:5-12](file://frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
 
 #### Agent Session Events (useAgentEvents)
+
 - Subscribes to SSE events for outline chunks and stage updates
 - Parses incremental outline JSON and transitions session state accordingly
 - Integrates with agent session lifecycle
@@ -356,12 +386,15 @@ AE->>AG : "fetchSessionData/fetchLatestDocument"
 ```
 
 **Diagram sources**
+
 - [useAgentEvents.js:23-156](file://frontend/src/hooks/useAgentEvents.js#L23-L156)
 
 **Section sources**
+
 - [useAgentEvents.js:7-163](file://frontend/src/hooks/useAgentEvents.js#L7-L163)
 
 #### Live Preview WebSocket (useLivePreviewSocket)
+
 - Establishes a WebSocket connection for live HTML previews
 - Implements debounced sending with checksums and reconnect logic
 - Tracks latency and warnings
@@ -381,12 +414,15 @@ LP->>LP : "isReconnecting/reconnectAttempt"
 ```
 
 **Diagram sources**
+
 - [useLivePreviewSocket.js:44-133](file://frontend/src/hooks/useLivePreviewSocket.js#L44-L133)
 
 **Section sources**
+
 - [useLivePreviewSocket.js:28-137](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
 
 ### Upload Workflow and Job State (useUpload)
+
 - Validates inputs, handles chunked uploads for large files, and progressive uploads for small files
 - Polls job status via a dedicated hook and updates UI state
 - Persists active job to sessionStorage and navigates on completion
@@ -410,21 +446,26 @@ Terminal --> |Failed| FailState["Update job.error"]
 ```
 
 **Diagram sources**
+
 - [useUpload.js:224-342](file://frontend/src/hooks/useUpload.js#L224-L342)
 - [useUpload.js:89-196](file://frontend/src/hooks/useUpload.js#L89-L196)
 
 **Section sources**
+
 - [useUpload.js:22-361](file://frontend/src/hooks/useUpload.js#L22-L361)
 
 ### Local State Utilities
+
 - useAutosave: periodically saves form data and step to localStorage with expiry
 - useUnsavedChanges: warns users on unload when there are unsaved changes
 
 **Section sources**
+
 - [useAutosave.js:5-37](file://frontend/src/hooks/useAutosave.js#L5-L37)
 - [useUnsavedChanges.js:9-23](file://frontend/src/hooks/useUnsavedChanges.js#L9-L23)
 
 ## Dependency Analysis
+
 - Contexts depend on each other indirectly via shared services and hooks
 - Hooks depend on Supabase for auth tokens and on API services for data
 - SSE/WebSocket hooks depend on Supabase session tokens when present
@@ -446,6 +487,7 @@ USS --> SSE["SSE"]
 ```
 
 **Diagram sources**
+
 - [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
 - [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
 - [UserPreferencesContext.jsx:8-66](file://frontend/src/context/UserPreferencesContext.jsx#L8-L66)
@@ -458,6 +500,7 @@ USS --> SSE["SSE"]
 - [useLivePreviewSocket.js:28-137](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
 
 **Section sources**
+
 - [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
 - [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
 - [UserPreferencesContext.jsx:8-66](file://frontend/src/context/UserPreferencesContext.jsx#L8-L66)
@@ -470,6 +513,7 @@ USS --> SSE["SSE"]
 - [useLivePreviewSocket.js:28-137](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
 
 ## Performance Considerations
+
 - Minimize re-renders by memoizing callbacks with useCallback and avoiding unnecessary object/array allocations
 - Use shallow comparisons for props and state to reduce downstream re-renders
 - Debounce high-frequency updates (e.g., live preview content) to balance responsiveness and throughput
@@ -479,22 +523,24 @@ USS --> SSE["SSE"]
 - Persist only essential state to sessionStorage/localStorage to avoid quota issues
 
 ## Troubleshooting Guide
+
 - Authentication loops or stale state:
-  - Verify onAuthStateChange guards and signingInRef usage
-  - Confirm getSession/getUser verification and local storage cleanup
+    - Verify onAuthStateChange guards and signingInRef usage
+    - Confirm getSession/getUser verification and local storage cleanup
 - SSE/WebSocket disconnections:
-  - Inspect error handlers and exponential backoff logic
-  - Ensure token injection via query param when applicable
+    - Inspect error handlers and exponential backoff logic
+    - Ensure token injection via query param when applicable
 - Upload stalls or incorrect progress:
-  - Validate refetch intervals and polling logic
-  - Check chunked upload thresholds and abort controller usage
+    - Validate refetch intervals and polling logic
+    - Check chunked upload thresholds and abort controller usage
 - Toast not dismissing:
-  - Confirm timer cleanup and queue limits
+    - Confirm timer cleanup and queue limits
 - Live preview not updating:
-  - Verify checksum differences and debounce timing
-  - Check reconnect attempts and pending payload replay
+    - Verify checksum differences and debounce timing
+    - Check reconnect attempts and pending payload replay
 
 **Section sources**
+
 - [AuthContext.jsx:140-178](file://frontend/src/context/AuthContext.jsx#L140-L178)
 - [useSessionEventStream.js:76-96](file://frontend/src/hooks/useSessionEventStream.js#L76-L96)
 - [useUpload.js:75-96](file://frontend/src/hooks/useUpload.js#L75-L96)
@@ -502,7 +548,9 @@ USS --> SSE["SSE"]
 - [useLivePreviewSocket.js:91-102](file://frontend/src/hooks/useLivePreviewSocket.js#L91-L102)
 
 ## Conclusion
+
 The frontend employs a layered state management strategy:
+
 - Context providers encapsulate cross-cutting concerns (auth, theme, preferences, notifications)
 - Document and upload workflows combine local state with server-driven updates
 - Real-time integrations (SSE/WebSocket) provide responsive feedback with robust reconnection

@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] — 2026-06-14
 
 ### ✨ Added
+
 - **GitHub Packages** — Multi-arch Docker images (`linux/amd64`, `linux/arm64`) published to `ghcr.io/scholarform` with cosign signing + SBOM attestation
 - **GitHub Packages (npm)** — Frontend published as `@scholarform/frontend`
 - **GitHub Packages (PyPI)** — Backend published to GitHub Packages PyPI registry
@@ -29,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Merge queue** — Multi-workflow CI validation before merge
 
 ### 🔒 Security
+
 - OpenSSF Scorecard: 10/10 on 14 of 16 checks
 - CodeQL analysis on every push with security-and-quality query suite
 - Cosign keyless OIDC signing for all container images
@@ -36,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Trivy filesystem scan in CI
 
 ### 🏗️ Infrastructure
+
 - 11 new GitHub Actions workflows (total: 24)
 - Docker multi-arch build matrix with QEMU + Buildx
 - GitHub Container Registry (`ghcr.io`) integration
@@ -45,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] — 2026-07-21
 
 ### ✨ Added
+
 - Enterprise pipeline decomposition: orchestrator phases, repository pattern, shared constants
 - Production hardening across security, observability, and reliability (20 issues resolved)
 - CI/CD RC blockers resolved: security.yml reference, deploy_id output, docker matrix propagation
@@ -54,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release Candidate Readiness Report
 
 ### 🐛 Fixed
+
 - 47 frontend tests fixed (Button, ErrorBoundary, ModelSelector, ThemeContext, usePageTitle, OnboardingTour)
 - PreviewPane HTML sanitizer fixed for JSDOM compatibility
 - DashboardStats export naming mismatch resolved
@@ -61,16 +66,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Email domain unified to `@scholarform.ai` across `SECURITY.md`
 
 ### 🔄 Changed
+
 - Backend version: `0.1.0` → `1.0.0` (Production/Stable)
 - Frontend version: `0.1.0` → `1.0.0`
 - Development status: Alpha → **Production/Stable**
 
 ### 🔒 Security
+
 - CI/CD security workflow reference fixed
 - Container signing matrix outputs properly propagated
 - NOTICE file added for third-party attribution
 
 ### 🏗️ Infrastructure
+
 - Production-ready CI/CD with 25 workflows
 - 3 Grafana dashboards deployed
 - Prometheus alerting rules configured
@@ -83,6 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0-rc.1] — 2026-06-13
 
 ### ✨ Added
+
 - Document formatter pipeline (12-stage: parse → structure → classify → NLP → validate → format → export)
 - 17 built-in journal templates (IEEE, APA, ACM, Springer, Elsevier, Nature, Harvard, Chicago, MLA, Vancouver, and more)
 - AI Agent generator (11-step pipeline: task parsing → outline → writing → citations → quality → export)
@@ -97,6 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Guest upload flow (5/day limit)
 
 ### 🔒 Security
+
 - ClamAV virus scanning on uploads
 - JWKS JWT verification against Supabase
 - Two-layer rate limiting (base + tier-aware)
@@ -104,6 +114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MIME + magic byte + extension tri-validation
 
 ### 🏗️ Infrastructure
+
 - FastAPI backend with Uvicorn on Render
 - Next.js 16 (App Router) frontend on Vercel
 - Celery background workers with Redis broker
@@ -116,6 +127,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.9.0] — 2026-03-18
 
 ### ✨ Added
+
 - Initial public beta release
 - Core formatter pipeline with 8-stage processing
 - 15 journal templates
@@ -124,6 +136,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Frontend with 34 App Router routes
 
 ### ⚠️ Known Issues
+
 - Python 3.11.9 caused pytest import collision — required 3.12
 - 93 E2E test files existed but most were <700B stubs
 - RBAC middleware was stub (708B)

@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: Guide — Deploying to Production
 description: Complete deployment guide for ScholarForm AI to Render, Vercel, and Supabase
 sidebar_position: 3
@@ -37,7 +37,7 @@ This guide walks through deploying ScholarForm AI to production across all requi
 ## Prerequisites
 
 | Service | Account Required | Tier | Est. Cost |
-|---------|-----------------|------|-----------|
+| --------- | ----------------- | ------ | ----------- |
 | [Render](https://render.com) | ✅ Sign up | Professional ($20/mo) | $20/mo |
 | [Supabase](https://supabase.com) | ✅ Sign up | Free tier (50K rows) | $0/mo |
 | [Upstash Redis](https://upstash.com) | ✅ Sign up | Free tier (256MB) | $0/mo |
@@ -97,7 +97,7 @@ cp frontend/.env.example frontend/.env.production
 From your Supabase project dashboard → **Settings** → **API**:
 
 | Variable | Where to Find |
-|----------|---------------|
+| ---------- | --------------- |
 | `SUPABASE_URL` | Settings → API → Project URL |
 | `SUPABASE_ANON_KEY` | Settings → API → anon/public key |
 | `SUPABASE_SERVICE_KEY` | Settings → API → service_role key |
@@ -166,7 +166,7 @@ redis-cli -u "rediss://default:password@us1-steady-whale-12345.upstash.io:6379" 
 3. Configure:
 
 | Setting | Value |
-|---------|-------|
+| --------- | ------- |
 | **Name** | `scholarform-api` |
 | **Region** | Same as Supabase/Upstash |
 | **Branch** | `main` |
@@ -212,7 +212,7 @@ FORCE_HTTPS=true
 3. Configure:
 
 | Setting | Value |
-|---------|-------|
+| --------- | ------- |
 | **Name** | `scholarform-worker` |
 | **Start Command** | `celery -A app.tasks.celery_tasks worker -Q interactive,batch --concurrency=2` |
 | **Plan** | Starter ($7/mo) |
@@ -242,7 +242,7 @@ curl https://scholarform-api.onrender.com/api/v1/health/ready
 ### Configure Environment Variables
 
 | Variable | Value |
-|----------|-------|
+| ---------- | ------- |
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://your-project.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `your-anon-key` |
 | `NEXT_PUBLIC_API_BASE_URL` | `https://scholarform-api.onrender.com` |
@@ -250,7 +250,7 @@ curl https://scholarform-api.onrender.com/api/v1/health/ready
 ### Build & Deploy Settings
 
 | Setting | Value |
-|---------|-------|
+| --------- | ------- |
 | **Framework** | Next.js |
 | **Build Command** | `npm run build` |
 | **Output Directory** | `.next` (auto-detected) |
@@ -423,7 +423,7 @@ See the [Rollback Runbook](../runbooks/rollback.md) for detailed procedures.
 ### Backend (Required)
 
 | Variable | Description | Example |
-|----------|-------------|---------|
+| ---------- | ------------- | --------- |
 | `ENVIRONMENT` | Environment name | `production` |
 | `SUPABASE_URL` | Supabase project URL | `https://abc123.supabase.co` |
 | `SUPABASE_ANON_KEY` | Supabase anonymous key | `eyJhbGciOi...` |
@@ -435,7 +435,7 @@ See the [Rollback Runbook](../runbooks/rollback.md) for detailed procedures.
 ### Backend (LLM Providers — at least one required)
 
 | Variable | Description | Example |
-|----------|-------------|---------|
+| ---------- | ------------- | --------- |
 | `NVIDIA_API_KEY` | NVIDIA NIM API key | `nvapi-abc123...` |
 | `GROQ_API_KEY` | Groq API key | `gsk_abc123...` |
 | `OPENAI_API_KEY` | OpenAI API key | `sk-abc123...` |
@@ -445,7 +445,7 @@ See the [Rollback Runbook](../runbooks/rollback.md) for detailed procedures.
 ### Backend (Optional)
 
 | Variable | Description | Default |
-|----------|-------------|---------|
+| ---------- | ------------- | --------- |
 | `LOG_LEVEL` | Logging verbosity | `INFO` |
 | `LOG_FORMAT` | Log output format | `text` |
 | `LOW_MEMORY_MODE` | Optimize for low memory | `true` |
@@ -464,7 +464,7 @@ See the [Rollback Runbook](../runbooks/rollback.md) for detailed procedures.
 ### Frontend (Required)
 
 | Variable | Description | Example |
-|----------|-------------|---------|
+| ---------- | ------------- | --------- |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | `https://abc123.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key | `eyJhbGciOi...` |
 | `NEXT_PUBLIC_API_BASE_URL` | Backend API URL | `https://api.scholarform.ai` |
@@ -477,7 +477,7 @@ See the [Rollback Runbook](../runbooks/rollback.md) for detailed procedures.
 ## Related Resources
 
 | Resource | Description |
-|----------|-------------|
+| ---------- | ------------- |
 | [Deployment Guide (Legacy)](../Deployment.md) | Original deployment documentation |
 | [Disaster Recovery](../DISASTER_RECOVERY.md) | Backup, restore, and DR procedures |
 | [Monitoring Setup](setting-up-monitoring.md) | Complete monitoring configuration guide |

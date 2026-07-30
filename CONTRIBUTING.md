@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Contributing to ScholarForm AI
 
 First off, thanks for taking the time to contribute!
@@ -79,15 +78,19 @@ See [Code Review Standards](docs/CODE_REVIEW_STANDARDS.md) for full details.
    - Python: Ruff linting, type annotations via mypy
    - Frontend: ESLint with `--max-warnings 0`
 6. **Write tests** — we maintain 70%+ coverage. Run:
+
    ```bash
    cd backend
    pytest tests -m "not integration and not llm" -x -q --cov=app
    ```
+
 7. **Lint your code**:
+
    ```bash
    cd backend && ruff check app --config ruff.toml
    cd frontend && npm run lint
    ```
+
 8. **Commit using conventional commits**:
    - `feat:` new feature
    - `fix:` bug fix

@@ -20,20 +20,21 @@ Alternatives evaluated: Pinecone (managed), Weaviate (self-hosted), pgvector (Po
 We chose **ChromaDB** over the alternatives.
 
 | Criterion | ChromaDB | Pinecone | Weaviate | pgvector |
-|-----------|----------|----------|----------|----------|
-| Local-first | ✅ Yes | ❌ Cloud-only |  ️ Hybrid | ✅ Yes |
-| No infra deps | ✅ Embedded | ❌ Requires API key | ❌ Requires Docker |  ️ Requires PG |
+| ----------- | ---------- | ---------- | ---------- | ---------- |
+| Local-first | ✅ Yes | ❌ Cloud-only | ️ Hybrid | ✅ Yes |
+| No infra deps | ✅ Embedded | ❌ Requires API key | ❌ Requires Docker | ️ Requires PG |
 | CI-friendly | ✅ Yes | ❌ Network access | ❌ Docker needed | ✅ Yes |
-| Python-native | ✅ First-class | ✅ SDK | ✅ SDK |  ️ Via SQLAlchemy |
-| HNSW indexing | ✅ Yes | ✅ Yes | ✅ Yes |  ️ IVFFlat |
-| Self-hostable | ✅ Trivial | ❌ No |  ️ Heavy | ✅ Trivial |
-| Multi-tenancy |  ️ Collection-per-tenant | ✅ Namespaces | ✅ Multi-tenancy | ✅ Row-level |
+| Python-native | ✅ First-class | ✅ SDK | ✅ SDK | ️ Via SQLAlchemy |
+| HNSW indexing | ✅ Yes | ✅ Yes | ✅ Yes | ️ IVFFlat |
+| Self-hostable | ✅ Trivial | ❌ No | ️ Heavy | ✅ Trivial |
+| Multi-tenancy | ️ Collection-per-tenant | ✅ Namespaces | ✅ Multi-tenancy | ✅ Row-level |
 
 Pinecone was rejected because it requires a cloud API key and network access, making CI tests impossible without external dependencies. Weaviate requires Docker, adding ~1.5GB of overhead for a vector store that is secondary to the main database. pgvector was a close contender but lacks native Python embedding management and requires adding vector operations to the existing PostgreSQL connection pool, which is already under load from document storage.
 
 ## Consequences
 
 **Positive:**
+
 - Zero infrastructure dependencies — ChromaDB runs as an embedded library, making the RAG pipeline testable in CI without Docker or network access
 - Sub-100ms retrieval for guideline chunks under 10K documents with HNSW indexing
 - Persistent client option stores data on disk, surviving restarts in development
@@ -42,6 +43,7 @@ Pinecone was rejected because it requires a cloud API key and network access, ma
 - Easy to reset or rebuild indexes — simply delete the on-disk storage directory
 
 **Negative:**
+
 - Not designed for production-scale workloads — embedding operations block the event loop without careful async wrapping
 - No built-in replication or sharding — a single ChromaDB instance is a single point of failure
 - Metadata filtering is limited compared to Weaviate's rich filter DSL
@@ -52,6 +54,7 @@ Pinecone was rejected because it requires a cloud API key and network access, ma
 ## Compliance
 
 This decision has been implemented and is verified by:
+
 - `backend/tests/test_chroma_minimal.py` — ChromaDB CRUD and persistence
 - `backend/tests/test_vector_db_security.py` — collection-level isolation
 - `backend/tests/pipeline/test_rag_engine.py` — RAG pipeline with ChromaDB

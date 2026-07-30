@@ -21,8 +21,8 @@ The alternatives considered were: self-hosted PostgreSQL + separate Auth0/Fireba
 We chose **Supabase** as the single provider for database, auth, and storage.
 
 | Criterion | Supabase | Self-hosted PG + Auth0 | Neon | PlanetScale |
-|-----------|----------|----------------------|------|-------------|
-| Managed PostgreSQL | ✅ Built-in |  ️ Requires ops | ✅ Built-in |  ️ MySQL-based |
+| ----------- | ---------- | ---------------------- | ------ | ------------- |
+| Managed PostgreSQL | ✅ Built-in | ️ Requires ops | ✅ Built-in | ️ MySQL-based |
 | Auth provider | ✅ Built-in | ✅ Auth0/Firebase | ❌ Separate | ❌ Separate |
 | File storage | ✅ Built-in | ❌ S3 needed | ❌ Separate | ❌ Separate |
 | Row-level security | ✅ Native | ❌ App-layer | ❌ Not native | ❌ Not native |
@@ -34,6 +34,7 @@ Self-hosting PostgreSQL was rejected due to the operational cost of managing rep
 ## Consequences
 
 **Positive:**
+
 - Single vendor for DB, auth, storage, and real-time — reduces integration surface area
 - Row-level security (RLS) policies enforce multi-tenant isolation at the database level, not just the application layer
 - Supabase Realtime enables push-based progress updates for long-running formatting jobs
@@ -42,6 +43,7 @@ Self-hosting PostgreSQL was rejected due to the operational cost of managing rep
 - Supabase Auth supports OAuth (Google, GitHub) and email/password with minimal configuration
 
 **Negative:**
+
 - Vendor lock-in — migrating away requires rewriting auth and storage layers
 - Connection pooling limitations on the free/Pro tier require careful connection management
 - Not all PostgreSQL features are available (e.g., extensions must be on Supabase's allowlist)
@@ -52,6 +54,7 @@ Self-hosting PostgreSQL was rejected due to the operational cost of managing rep
 ## Compliance
 
 This decision has been implemented and is verified by:
+
 - `backend/tests/test_supabase_client.py` — Supabase client initialization and operations
 - `backend/tests/test_routers_auth.py` — JWT verification via Supabase Auth
 - `backend/tests/test_security_enterprise.py` — Row-Level Security verification

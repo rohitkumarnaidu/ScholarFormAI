@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Technology Stack
 
 <cite>
@@ -23,6 +22,7 @@
 </cite>
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [Project Structure](#project-structure)
 3. [Core Components](#core-components)
@@ -34,10 +34,13 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
+
 This document provides a comprehensive technology stack overview for the Automated Academic Manuscript Formatter. It covers the complete frontend/backend ecosystem, infrastructure dependencies, AI/ML services, and operational considerations. The stack emphasizes scientific document processing, real-time collaboration, and scalable AI-driven workflows.
 
 ## Project Structure
+
 The project follows a clear separation of concerns:
+
 - Frontend: Next.js 16 application with App Router, TypeScript, and modern UI libraries
 - Backend: FastAPI application with Uvicorn ASGI server, Celery workers, and comprehensive pipeline modules
 - Infrastructure: Dockerized services for GROBID, Redis, ClamAV, and optional ChromaDB
@@ -85,6 +88,7 @@ BE_DB --> INF_ClamAV
 ```
 
 **Diagram sources**
+
 - [next.config.mjs:1-27](file://frontend/next.config.mjs#L1-L27)
 - [package.json:17-36](file://frontend/package.json#L17-L36)
 - [pyproject.toml:5-9](file://backend/pyproject.toml#L5-L9)
@@ -96,6 +100,7 @@ BE_DB --> INF_ClamAV
 - [requirements.md:30](file://backend/requirements.md#L30-L31)
 
 **Section sources**
+
 - [TechStack.md:1-122](file://docs/TechStack.md#L1-L122)
 - [package.json:17-36](file://frontend/package.json#L17-L36)
 - [pyproject.toml:5-9](file://backend/pyproject.toml#L5-L9)
@@ -104,9 +109,11 @@ BE_DB --> INF_ClamAV
 - [docker-compose.yml:41-67](file://backend/docker/docker-compose.yml#L41-L67)
 
 ## Core Components
+
 The technology stack is built around several core pillars:
 
 ### Frontend Technologies
+
 - Next.js 16 with App Router for SSR, static generation, and API routes
 - React 19 with TypeScript for type-safe component development
 - Tailwind CSS 3.4.19 for utility-first styling
@@ -116,6 +123,7 @@ The technology stack is built around several core pillars:
 - Supabase JS SDK for authentication and database operations
 
 ### Backend Technologies
+
 - Python 3.12.x runtime with FastAPI 14 as the primary API framework
 - Uvicorn ASGI server for production deployments
 - Celery with Redis as the message broker for asynchronous task processing
@@ -126,12 +134,14 @@ The technology stack is built around several core pillars:
 - Sentence-transformers for embedding generation
 
 ### AI/ML Infrastructure
+
 - Multi-tier LLM provider abstraction supporting NVIDIA NIM, Groq, and Ollama
 - GROBID for bibliographic metadata extraction
 - ClamAV for malware scanning of uploaded documents
 - LiteLLM for unified LLM provider interface
 
 **Section sources**
+
 - [TechStack.md:7-49](file://docs/TechStack.md#L7-L49)
 - [package.json:17-36](file://frontend/package.json#L17-L36)
 - [pyproject.toml:5-9](file://backend/pyproject.toml#L5-L9)
@@ -140,6 +150,7 @@ The technology stack is built around several core pillars:
 - [requirements.md:30](file://backend/requirements.md#L30-L31)
 
 ## Architecture Overview
+
 The system employs a microservices-like architecture with clear separation between frontend, backend, and infrastructure components:
 
 ```mermaid
@@ -164,12 +175,14 @@ API-->>Client : Formatted Document
 ```
 
 **Diagram sources**
+
 - [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
 - [supabase_client.py:107-124](file://backend/app/db/supabase_client.py#L107-L124)
 - [docling_client.py:143-179](file://backend/app/pipeline/services/docling_client.py#L143-L179)
 - [grobid_client.py:25-51](file://backend/app/pipeline/services/grobid_client.py#L25-L51)
 
 The architecture supports:
+
 - Real-time document processing with caching layers
 - Multi-provider AI inference with fallback mechanisms
 - Scalable background task processing via Celery
@@ -178,6 +191,7 @@ The architecture supports:
 ## Detailed Component Analysis
 
 ### Frontend Framework (Next.js 16)
+
 The frontend leverages Next.js 16 with modern development practices:
 
 ```mermaid
@@ -206,21 +220,25 @@ React19 --> UIComponents : "renders"
 ```
 
 **Diagram sources**
+
 - [next.config.mjs:4-11](file://frontend/next.config.mjs#L4-L11)
 - [package.json:17-36](file://frontend/package.json#L17-L36)
 
 Key features include:
+
 - App Router for improved routing and data fetching
 - Automatic code splitting and tree shaking
 - Built-in API routes for backend integration
 - Optimized build pipeline with Turbopack support
 
 **Section sources**
+
 - [TechStack.md:7-25](file://docs/TechStack.md#L7-L25)
 - [next.config.mjs:1-27](file://frontend/next.config.mjs#L1-L27)
 - [package.json:17-36](file://frontend/package.json#L17-L36)
 
 ### Backend Framework (FastAPI + Uvicorn)
+
 The backend utilizes FastAPI for robust API development:
 
 ```mermaid
@@ -252,15 +270,18 @@ FastAPI --> Pipeline : "manages"
 ```
 
 **Diagram sources**
+
 - [pyproject.toml:5-9](file://backend/pyproject.toml#L5-L9)
 - [docker-compose.yml:41-67](file://backend/docker/docker-compose.yml#L41-L67)
 
 **Section sources**
+
 - [TechStack.md:29-51](file://docs/TechStack.md#L29-L51)
 - [pyproject.toml:5-9](file://backend/pyproject.toml#L5-L9)
 - [docker-compose.yml:41-67](file://backend/docker/docker-compose.yml#L41-L67)
 
 ### Database Layer (Supabase PostgreSQL)
+
 Supabase provides a comprehensive database solution:
 
 ```mermaid
@@ -278,15 +299,18 @@ Storage --> Files["Uploaded/Generated Files"]
 ```
 
 **Diagram sources**
+
 - [settings.py:76-82](file://backend/app/config/settings.py#L76-L82)
 - [supabase_client.py:49-83](file://backend/app/db/supabase_client.py#L49-L83)
 
 **Section sources**
+
 - [TechStack.md:83-84](file://docs/TechStack.md#L83-L84)
 - [settings.py:76-82](file://backend/app/config/settings.py#L76-L82)
 - [supabase_client.py:107-124](file://backend/app/db/supabase_client.py#L107-L124)
 
 ### Caching and Queue Management (Redis)
+
 Redis serves multiple roles in the system:
 
 ```mermaid
@@ -308,15 +332,18 @@ RedisBroker --> CeleryWorkers
 ```
 
 **Diagram sources**
+
 - [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
 - [docker-compose.yml:22-32](file://backend/docker/docker-compose.yml#L22-L32)
 
 **Section sources**
+
 - [TechStack.md:37](file://docs/TechStack.md#L37)
 - [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
 - [docker-compose.yml:22-32](file://backend/docker/docker-compose.yml#L22-L32)
 
 ### AI/ML Integration Layer
+
 The system integrates multiple AI providers with fallback mechanisms:
 
 ```mermaid
@@ -335,14 +362,17 @@ QualityCheck --> FinalResult["Final Formatted Document"]
 ```
 
 **Diagram sources**
+
 - [TechStack.md:54-62](file://docs/TechStack.md#L54-L62)
 - [settings.py:142-154](file://backend/app/config/settings.py#L142-L154)
 
 **Section sources**
+
 - [TechStack.md:54-62](file://docs/TechStack.md#L54-L62)
 - [settings.py:142-154](file://backend/app/config/settings.py#L142-L154)
 
 ### PDF Processing Pipeline
+
 The system implements a three-tier PDF processing approach:
 
 ```mermaid
@@ -361,16 +391,19 @@ Metadata --> Formatting["Formatting Engine"]
 ```
 
 **Diagram sources**
+
 - [TechStack.md:65-74](file://docs/TechStack.md#L65-L74)
 - [docling_client.py:143-179](file://backend/app/pipeline/services/docling_client.py#L143-L179)
 - [grobid_client.py:25-51](file://backend/app/pipeline/services/grobid_client.py#L25-L51)
 
 **Section sources**
+
 - [TechStack.md:65-74](file://docs/TechStack.md#L65-L74)
 - [docling_client.py:143-179](file://backend/app/pipeline/services/docling_client.py#L143-L179)
 - [grobid_client.py:25-51](file://backend/app/pipeline/services/grobid_client.py#L25-L51)
 
 ## Dependency Analysis
+
 The technology stack exhibits strong modularity with clear dependency relationships:
 
 ```mermaid
@@ -413,6 +446,7 @@ Node18 --> SupabaseJS
 ```
 
 **Diagram sources**
+
 - [pyproject.toml:5-9](file://backend/pyproject.toml#L5-L9)
 - [package.json:17-36](file://frontend/package.json#L17-L36)
 - [requirements.md:51-54](file://backend/requirements.md#L51-L54)
@@ -420,57 +454,69 @@ Node18 --> SupabaseJS
 - [requirements.md:249](file://backend/requirements.md#L249)
 
 **Section sources**
+
 - [requirements.md:1-377](file://backend/requirements.md#L1-L377)
 - [package.json:17-36](file://frontend/package.json#L17-L36)
 - [pyproject.toml:5-9](file://backend/pyproject.toml#L5-L9)
 
 ## Performance Considerations
+
 The technology stack incorporates several performance optimization strategies:
 
 ### Caching Strategy
+
 - Redis-based caching for LLM responses and processed document results
 - Configurable TTL values for different cache types
 - Graceful degradation when cache is unavailable
 
 ### Asynchronous Processing
+
 - Celery workers handle background tasks with separate queues
 - Interactive vs batch processing separation
 - Task prioritization and resource allocation
 
 ### AI Provider Optimization
+
 - Multi-tier LLM provider selection with fallback mechanisms
 - Provider-specific optimization configurations
 - Cost-effective inference strategies
 
 ### Database Optimization
+
 - Supabase PostgreSQL with proper indexing
 - Connection pooling and session management
 - Efficient query patterns for document metadata
 
 ## Troubleshooting Guide
+
 Common issues and their resolutions:
 
 ### Environment Configuration
+
 - Verify Python 3.12.x compatibility for backend services
 - Ensure all required environment variables are properly configured
 - Check Redis connectivity for caching and queue operations
 
 ### Service Dependencies
+
 - Confirm GROBID service availability for bibliographic extraction
 - Validate Docling installation for layout analysis
 - Monitor ClamAV service for malware scanning
 
 ### Performance Issues
+
 - Monitor Redis cache hit rates and adjust TTL values
 - Scale Celery workers based on processing load
 - Optimize AI provider configurations for latency
 
 **Section sources**
+
 - [settings.py:248-257](file://backend/app/config/settings.py#L248-L257)
 - [redis_cache.py:34-38](file://backend/app/cache/redis_cache.py#L34-L38)
 - [supabase_client.py:126-144](file://backend/app/db/supabase_client.py#L126-L144)
 
 ## Conclusion
+
 The Automated Academic Manuscript Formatter employs a modern, scalable technology stack designed for academic document processing. The combination of Next.js 16 for frontend development, FastAPI for backend services, and comprehensive AI/ML integration provides a robust foundation for automated manuscript formatting. The multi-tier architecture ensures reliability through caching, queue management, and provider fallback mechanisms, while the modular design facilitates maintainability and future enhancements.
 
 The stack's emphasis on scientific document processing, real-time collaboration, and scalable AI workflows positions it well for production deployment and continued evolution in the academic publishing domain.

@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Live Preview System
 
 <cite>
@@ -18,6 +17,7 @@
 </cite>
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [Project Structure](#project-structure)
 3. [Core Components](#core-components)
@@ -30,9 +30,11 @@
 10. [Appendices](#appendices)
 
 ## Introduction
+
 This document describes the live preview system that powers real-time HTML rendering during manuscript authoring. It covers the WebSocket-based communication, the React hooks and components that manage state and rendering, the debounced content sending mechanism, latency tracking, warning propagation, optimistic rendering, and performance optimizations. It also provides guidance for extending the system and handling edge cases such as large content updates.
 
 ## Project Structure
+
 The live preview system spans frontend React components and hooks, a WebSocket client with reconnection logic, and backend endpoints for live preview rendering and event forwarding.
 
 ```mermaid
@@ -60,6 +62,7 @@ H --> E
 ```
 
 **Diagram sources**
+
 - [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
 - [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
 - [SplitEditor.jsx:1-204](file://frontend/src/components/live-preview/SplitEditor.jsx#L1-L204)
@@ -71,6 +74,7 @@ H --> E
 - [api.core.js](file://frontend/src/services/api.core.js)
 
 **Section sources**
+
 - [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
 - [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
 - [SplitEditor.jsx:1-204](file://frontend/src/components/live-preview/SplitEditor.jsx#L1-L204)
@@ -79,6 +83,7 @@ H --> E
 - [preview.py:51-75](file://backend/app/routers/preview.py#L51-L75)
 
 ## Core Components
+
 - useLivePreviewSocket: Manages WebSocket connection, debounced content sending, latency measurement, warnings, and optimistic UI state.
 - ReconnectingWebSocket: Provides exponential backoff with jitter and lifecycle callbacks for reconnection.
 - SplitEditor: Resizable two-pane editor and preview, integrates with the WebSocket hook and TipTap editor.
@@ -86,6 +91,7 @@ H --> E
 - Backend preview router: Exposes live preview rendering and WebSocket channels for real-time updates.
 
 Key responsibilities:
+
 - State management: HTML content, latencyMs, warnings, connection status, reconnect attempts, and analysis state.
 - Content synchronization: Debounced sending of HTML content with checksum and sequence number.
 - Optimistic rendering: Immediate UI updates while awaiting server response.
@@ -93,6 +99,7 @@ Key responsibilities:
 - Warning display: Warnings received via WebSocket are surfaced to the UI.
 
 **Section sources**
+
 - [useLivePreviewSocket.js:28-136](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L136)
 - [ReconnectingWebSocket.js:5-148](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
 - [SplitEditor.jsx:97-204](file://frontend/src/components/live-preview/SplitEditor.jsx#L97-L204)
@@ -100,6 +107,7 @@ Key responsibilities:
 - [preview.py:51-75](file://backend/app/routers/preview.py#L51-L75)
 
 ## Architecture Overview
+
 The live preview system uses a WebSocket connection to stream rendered HTML from the backend to the frontend. The frontend sends content periodically (debounced) with metadata, and the backend responds with HTML and optional warnings. The UI remains responsive by optimistic rendering and preserving scroll position.
 
 ```mermaid
@@ -122,6 +130,7 @@ Editor-->>User : Updated preview
 ```
 
 **Diagram sources**
+
 - [useLivePreviewSocket.js:106-133](file://frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
 - [useLivePreviewSocket.js:68-81](file://frontend/src/hooks/useLivePreviewSocket.js#L68-L81)
 - [SplitEditor.jsx:115-118](file://frontend/src/components/live-preview/SplitEditor.jsx#L115-L118)
@@ -130,7 +139,9 @@ Editor-->>User : Updated preview
 ## Detailed Component Analysis
 
 ### useLivePreviewSocket Hook
+
 Responsibilities:
+
 - Establishes a WebSocket connection to the backend preview endpoint derived from the API base URL and session ID.
 - Maintains internal state for HTML content, latencyMs, warnings, connection status, reconnection state, and analysis state.
 - Implements a debounced content sender that batches frequent updates, computes a lightweight checksum, and tracks sequence numbers.
@@ -139,6 +150,7 @@ Responsibilities:
 - Handles reconnection lifecycle with exponential backoff and jitter.
 
 Implementation highlights:
+
 - WebSocket URL construction converts HTTP(S) to WS(S) and appends the session path.
 - A simple hash function avoids external dependencies for content validation.
 - The debounce timer clears previous timers to coalesce rapid edits.
@@ -164,21 +176,26 @@ ForceAnalyzing --> End
 ```
 
 **Diagram sources**
+
 - [useLivePreviewSocket.js:106-133](file://frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
 - [useLivePreviewSocket.js:8-14](file://frontend/src/hooks/useLivePreviewSocket.js#L8-L14)
 
 **Section sources**
+
 - [useLivePreviewSocket.js:28-136](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L136)
 - [useLivePreviewSocket.js:8-14](file://frontend/src/hooks/useLivePreviewSocket.js#L8-L14)
 
 ### ReconnectingWebSocket Class
+
 Responsibilities:
+
 - Wraps native WebSocket with automatic reconnection using exponential backoff and jitter.
 - Emits lifecycle events: onopen, onmessage, onclose, onerror, onreconnect.
 - Prevents reconnect loops by honoring maxRetries and optional shouldReconnect predicate.
 - Provides controlled close and send helpers.
 
 Behavior:
+
 - Computes delay with jitter bounded by initialDelay, factor, maxDelay, and jitter ratio.
 - Schedules reconnect after close/error unless forced closed.
 - Tracks reconnectAttempt and exposes it to consumers.
@@ -209,13 +226,17 @@ class ReconnectingWebSocket {
 ```
 
 **Diagram sources**
+
 - [ReconnectingWebSocket.js:5-148](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
 
 **Section sources**
+
 - [ReconnectingWebSocket.js:5-148](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
 
 ### SplitEditor Component
+
 Responsibilities:
+
 - Provides a resizable two-pane layout with an editor on the left and a preview pane on the right.
 - Integrates TipTap editor with placeholder and starter kit.
 - Calls the WebSocket hook’s sendContent on editor updates.
@@ -223,6 +244,7 @@ Responsibilities:
 - Displays analysis indicator in the preview header.
 
 Key interactions:
+
 - Editor onUpdate triggers sendContent with current HTML and templateId.
 - PreviewPane receives html and isAnalyzing props to show overlay and preserve scroll.
 
@@ -240,21 +262,26 @@ Split-->>User : PreviewPane updates
 ```
 
 **Diagram sources**
+
 - [SplitEditor.jsx:106-129](file://frontend/src/components/live-preview/SplitEditor.jsx#L106-L129)
 - [SplitEditor.jsx:115-118](file://frontend/src/components/live-preview/SplitEditor.jsx#L115-L118)
 - [useLivePreviewSocket.js:106-133](file://frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
 
 **Section sources**
+
 - [SplitEditor.jsx:97-204](file://frontend/src/components/live-preview/SplitEditor.jsx#L97-L204)
 
 ### PreviewPane Component
+
 Responsibilities:
+
 - Renders sanitized HTML in a document-like container with Tailwind-based prose styles.
 - Preserves and restores scroll position across updates to prevent jank.
 - Displays an "Analyzing…" overlay when isLoading is true.
 - Sanitizes HTML to remove script tags and event handlers.
 
 Optimizations:
+
 - Scroll restoration uses refs and layout effects to maintain perceived continuity.
 - Sanitization reduces XSS risk from backend-generated HTML.
 
@@ -270,26 +297,34 @@ HideOverlay --> Exit
 ```
 
 **Diagram sources**
+
 - [PreviewPane.jsx:20-81](file://frontend/src/components/live-preview/PreviewPane.jsx#L20-L81)
 
 **Section sources**
+
 - [PreviewPane.jsx:20-81](file://frontend/src/components/live-preview/PreviewPane.jsx#L20-L81)
 
 ### Backend Preview Router
+
 Responsibilities:
+
 - Provides a live preview endpoint that renders HTML from content and templateId.
 - Streams warnings and latencyMs in the response.
 - Supports WebSocket channels for real-time updates and heartbeats.
 
 Integration:
+
 - The frontend consumes the WebSocket endpoint via useLivePreviewSocket.
 - The live endpoint can be used for synchronous preview rendering elsewhere.
 
 **Section sources**
+
 - [preview.py:51-75](file://backend/app/routers/preview.py#L51-L75)
 
 ## Dependency Analysis
+
 The live preview system exhibits clear separation of concerns:
+
 - Frontend hooks depend on a WebSocket library and backend routes.
 - Components depend on the hook for state and callbacks.
 - Backend routes depend on preview rendering services.
@@ -307,6 +342,7 @@ Page --> PreviewAPI["api.preview.v1.js"]
 ```
 
 **Diagram sources**
+
 - [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
 - [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
 - [SplitEditor.jsx:1-204](file://frontend/src/components/live-preview/SplitEditor.jsx#L1-L204)
@@ -318,6 +354,7 @@ Page --> PreviewAPI["api.preview.v1.js"]
 - [api.core.js](file://frontend/src/services/api.core.js)
 
 **Section sources**
+
 - [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
 - [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
 - [SplitEditor.jsx:1-204](file://frontend/src/components/live-preview/SplitEditor.jsx#L1-L204)
@@ -326,6 +363,7 @@ Page --> PreviewAPI["api.preview.v1.js"]
 - [preview.py:51-75](file://backend/app/routers/preview.py#L51-L75)
 
 ## Performance Considerations
+
 - Debounced content sending: Limits network traffic by aggregating rapid edits over a short interval.
 - Lightweight checksum: Detects significant content changes to trigger analysis state without heavy hashing.
 - Optimistic rendering: Updates the preview immediately upon user input, improving perceived responsiveness.
@@ -337,7 +375,9 @@ Page --> PreviewAPI["api.preview.v1.js"]
 [No sources needed since this section provides general guidance]
 
 ## Troubleshooting Guide
+
 Common issues and remedies:
+
 - Socket disconnects: The hook sets connection flags and triggers reconnection. Inspect reconnectAttempt and isReconnecting to diagnose.
 - No preview updates: Verify that sendContent is invoked on editor updates and that the WebSocket is OPEN.
 - Stuck "Analyzing": Ensure onmessage is received and latencyMs is updated; confirm that isAnalyzing is cleared.
@@ -346,11 +386,13 @@ Common issues and remedies:
 - Template mismatch: Ensure templateId is passed correctly to sendContent and the backend renderer.
 
 **Section sources**
+
 - [useLivePreviewSocket.js:44-102](file://frontend/src/hooks/useLivePreviewSocket.js#L44-L102)
 - [useLivePreviewSocket.js:106-133](file://frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
 - [PreviewPane.jsx:4-11](file://frontend/src/components/live-preview/PreviewPane.jsx#L4-L11)
 
 ## Conclusion
+
 The live preview system combines a robust WebSocket transport with a responsive frontend UI to deliver near-instant feedback during manuscript editing. Its debounced updates, optimistic rendering, and scroll-preserving preview pane provide a smooth authoring experience, while checksums and sequence numbers support reliable content validation. The backend route supports both WebSocket streaming and synchronous rendering, enabling flexible integrations.
 
 [No sources needed since this section summarizes without analyzing specific files]
@@ -358,6 +400,7 @@ The live preview system combines a robust WebSocket transport with a responsive 
 ## Appendices
 
 ### Extending the Preview System
+
 - Add cursor position tracking: Extend the payload to include cursor coordinates and synchronize them in the backend.
 - Implement content diff detection: Compare checksums and send diffs instead of full content for large documents.
 - Introduce throttling: Adjust debounce timing and batch sizes based on document size and device capabilities.
@@ -367,6 +410,7 @@ The live preview system combines a robust WebSocket transport with a responsive 
 [No sources needed since this section provides general guidance]
 
 ### Handling Edge Cases
+
 - Very large content updates: Increase debounce interval and consider chunking content to reduce latency spikes.
 - Frequent reconnects: Tune backoff parameters and add retry limits to prevent resource exhaustion.
 - Malformed messages: The hook ignores malformed frames; ensure backend consistently sends valid JSON.

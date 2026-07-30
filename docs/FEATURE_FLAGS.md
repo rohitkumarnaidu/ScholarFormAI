@@ -13,29 +13,29 @@ last_updated: July 2026
 
 - [Overview](#overview)
 - [Feature Flag Service](#feature-flag-service)
-  - [Resolution Order](#resolution-order)
-  - [Singleton Access](#singleton-access)
+    - [Resolution Order](#resolution-order)
+    - [Singleton Access](#singleton-access)
 - [Feature Flag Middleware](#feature-flag-middleware)
-  - [Response Header Injection](#response-header-injection)
+    - [Response Header Injection](#response-header-injection)
 - [Enhancement Manager](#enhancement-manager)
-  - [EnhancementProfile](#enhancementprofile)
-  - [Capability Discovery](#capability-discovery)
-  - [Fallback Dispatching](#fallback-dispatching)
+    - [EnhancementProfile](#enhancementprofile)
+    - [Capability Discovery](#capability-discovery)
+    - [Fallback Dispatching](#fallback-dispatching)
 - [Available Flags](#available-flags)
-  - [Pipeline Flags](#pipeline-flags)
-  - [Security Flags](#security-flags)
-  - [Cache Flags](#cache-flags)
-  - [Deployment Flags](#deployment-flags)
-  - [Enhancement Flags](#enhancement-flags)
+    - [Pipeline Flags](#pipeline-flags)
+    - [Security Flags](#security-flags)
+    - [Cache Flags](#cache-flags)
+    - [Deployment Flags](#deployment-flags)
+    - [Enhancement Flags](#enhancement-flags)
 - [Configuration Reference](#configuration-reference)
-  - [Pipeline Settings](#pipeline-settings)
-  - [Security Settings](#security-settings)
-  - [Cache Settings](#cache-settings)
-  - [Deployment Settings](#deployment-settings)
+    - [Pipeline Settings](#pipeline-settings)
+    - [Security Settings](#security-settings)
+    - [Cache Settings](#cache-settings)
+    - [Deployment Settings](#deployment-settings)
 - [Usage](#usage)
-  - [Checking Flags in Code](#checking-flags-in-code)
-  - [Per-Request Override](#per-request-override)
-  - [Enhancement Manager Dispatch](#enhancement-manager-dispatch)
+    - [Checking Flags in Code](#checking-flags-in-code)
+    - [Per-Request Override](#per-request-override)
+    - [Enhancement Manager Dispatch](#enhancement-manager-dispatch)
 - [Frontend Integration](#frontend-integration)
 - [See Also](#see-also)
 
@@ -103,7 +103,7 @@ This allows frontend clients and debugging proxies to inspect the active flags w
 The immutable `EnhancementProfile` dataclass captures the full capability state:
 
 | Field | Type | Description |
-|-------|------|-------------|
+| ------- | ------ | ------------- |
 | `enabled` | `bool` | Master enhancement toggle |
 | `queue_enabled` | `bool` | Celery background queue enabled |
 | `queue_provider` | `str` | Resolved provider (`"celery"`, `"local"`) |
@@ -147,7 +147,7 @@ logger.info("Enhancement profile: %s", enhancement_manager.profile.to_dict())
 ### Pipeline Flags
 
 | Flag | Default | Setting Class | Description |
-|------|---------|--------------|-------------|
+| ------ | --------- | -------------- | ------------- |
 | `GROBID_ENABLED` | `True` | `PipelineSettings` | Enable GROBID PDF parsing service |
 | `USE_DOCLING_FALLBACK` | `True` | `PipelineSettings` | Fall back to Docling when GROBID fails or is disabled |
 | `PYMUPDF_FALLBACK` | `True` | `PipelineSettings` | Fall back to PyMuPDF when Docling also fails |
@@ -169,14 +169,14 @@ logger.info("Enhancement profile: %s", enhancement_manager.profile.to_dict())
 ### Cache Flags
 
 | Flag | Default | Setting Class | Description |
-|------|---------|--------------|-------------|
+| ------ | --------- | -------------- | ------------- |
 | `REDIS_ENABLED` | `False` | `CacheSettings` | Enable Redis for caching and Celery broker/backend |
 | `VLLM_ADOPTION_ENABLED` | `True` | `DeploymentSettings` | Enable vLLM auto-scaling decision engine |
 
 ### Deployment Flags
 
 | Flag | Default | Setting Class | Description |
-|------|---------|--------------|-------------|
+| ------ | --------- | -------------- | ------------- |
 | `ENABLE_FILE_CLEANUP` | `True` | `DeploymentSettings` | Enable periodic cleanup of uploaded and generated files |
 | `EXTERNAL_CIRCUIT_BREAKER_ENABLED` | `True` | `DeploymentSettings` | Enable circuit breaker for external service calls |
 | `DEBUG` | `False` | `DeploymentSettings` | Enable debug mode (also enables `X-Feature-Flags` header) |
@@ -185,7 +185,7 @@ logger.info("Enhancement profile: %s", enhancement_manager.profile.to_dict())
 ### Enhancement Flags
 
 | Flag | Default | Setting Class | Description |
-|------|---------|--------------|-------------|
+| ------ | --------- | -------------- | ------------- |
 | `ENHANCEMENTS_ENABLED` | `True` | `DeploymentSettings` | Master toggle for all enhancement capabilities |
 | `ENHANCEMENT_QUEUE_ENABLED` | `False` | `DeploymentSettings` | Enable Celery background task queue |
 | `ENHANCEMENT_QUEUE_PROVIDER` | `"auto"` | `DeploymentSettings` | Queue provider (`"auto"`, `"celery"`, `"local"`) |
@@ -208,7 +208,7 @@ python scripts/generate_env_template.py
 ### Pipeline Settings
 
 | Env Variable | Type | Default | Description |
-|-------------|------|---------|-------------|
+| ------------- | ------ | --------- | ------------- |
 | `GROBID_ENABLED` | `bool` | `True` | Enable GROBID PDF-to-XML service |
 | `USE_DOCLING_FALLBACK` | `bool` | `True` | Enable Docling as fallback PDF parser |
 | `PYMUPDF_FALLBACK` | `bool` | `True` | Enable PyMuPDF as third-tier fallback |
@@ -237,7 +237,7 @@ python scripts/generate_env_template.py
 ### Cache Settings
 
 | Env Variable | Type | Default | Description |
-|-------------|------|---------|-------------|
+| ------------- | ------ | --------- | ------------- |
 | `REDIS_ENABLED` | `bool` | `False` | Enable Redis for caching and Celery broker |
 | `REDIS_URL` | `str` | `"redis://localhost:6379"` | Redis connection URL |
 | `REDIS_HOST` | `str` | `"localhost"` | Redis host (fallback when URL not used) |
@@ -247,7 +247,7 @@ python scripts/generate_env_template.py
 ### Deployment Settings
 
 | Env Variable | Type | Default | Description |
-|-------------|------|---------|-------------|
+| ------------- | ------ | --------- | ------------- |
 | `ENABLE_FILE_CLEANUP` | `bool` | `True` | Periodic file cleanup for uploaded/generated files |
 | `DEBUG` | `bool` | `False` | Enable debug mode (also injects `X-Feature-Flags` header) |
 | `ENABLE_STRUCTURED_LOGGING` | `bool` | `False` | JSON-structured log output |
@@ -368,7 +368,7 @@ api.interceptors.response.use((response) => {
 Flags control frontend behavior such as:
 
 | Flag | Frontend Impact |
-|------|-----------------|
+| ------ | ----------------- |
 | `new_upload_flow` | Route to new vs. legacy upload wizard |
 | `dark_mode_beta` | Enable dark mode toggle in settings |
 | `ai_suggestions` | Show/hide AI-suggestion panel |
@@ -415,7 +415,7 @@ def mock_enhancement_manager():
 ### Flag Resolution Tests
 
 | Test Pattern | Description |
-|---|---|
+| --- | --- |
 | `test_flag_default_fallback` | Verify default value is returned when no source has the flag |
 | `test_flag_env_override` | Verify environment variable takes precedence over default |
 | `test_flag_redis_cache` | Verify Redis cached value is preferred over DB value |
@@ -445,7 +445,7 @@ graph TD
 Flags are configured per-environment through a layered approach:
 
 | Layer | Local Dev | Staging | Production |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `.env` file | `backend/.env` | `backend/.env.render` | Render Dashboard |
 | Redis overrides | Optional local Redis | Shared staging Redis | Production Upstash Redis |
 | Per-request | `request.state.feature_flags` | Same | Same |
@@ -474,7 +474,7 @@ curl -s https://api.scholarform.ai/api/v1/flags | jq .
 ## API Coverage
 
 | Endpoint | Method | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `/api/v1/flags` | GET | Retrieve all effective flags (frontend polling) |
 | `/api/v1/flags/{name}` | GET | Retrieve a single flag value |
 | `/api/v1/flags` | POST | Create or update a flag (admin) |

@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # ScholarForm AI Brand Assets
 
 This directory contains ScholarForm AI logos and brand assets.
@@ -9,7 +8,7 @@ This directory contains ScholarForm AI logos and brand assets.
 ## Logo Variants
 
 | File | Description |
-|------|-------------|
+| ------ | ------------- |
 | `scholarform-logo.svg` | Full logo (wordmark + icon) |
 | `scholarform-icon.svg` | Icon only |
 | `scholarform-logo-dark.svg` | Dark background variant |

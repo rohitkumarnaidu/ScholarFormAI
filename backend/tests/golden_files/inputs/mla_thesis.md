@@ -1,22 +1,23 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
 template: mla
 title: A Framework for Diachronic Corpus Analysis of Early Modern English Scientific Texts
 authors:
-  - Rebecca Hamilton
+
+- Rebecca Hamilton
 affiliations:
-  - Department of English Linguistics, University of Edinburgh
+- Department of English Linguistics, University of Edinburgh
 keywords:
-  - diachronic linguistics
-  - corpus analysis
-  - early modern English
-  - MLA style
-  - PhD thesis
+- diachronic linguistics
+- corpus analysis
+- early modern English
+- MLA style
+- PhD thesis
 abstract: "This thesis presents a computational framework for analysing diachronic linguistic change in early modern English scientific texts (1500-1700). Using a 5-million-word corpus drawn from the Early English Books Online database, we apply distributional semantic models to track semantic shift in technical vocabulary across two centuries of scientific writing."
 acknowledgements: "I thank my supervisor, Prof. James Whitaker, for his invaluable guidance throughout this research. I am grateful to the University of Edinburgh's School of Philosophy, Psychology and Language Sciences for funding. Special thanks to the EEBO-TCP project for making their corpus publicly available."
+
 ---
 
 # Abstract

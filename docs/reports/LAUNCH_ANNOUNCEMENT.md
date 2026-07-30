@@ -48,7 +48,7 @@ TanStack Query   15 Route Modules    Prometheus/Grafana
 ScholarForm AI is released under the **MIT license** — free to use, modify, and distribute. We're building this in the open, with a community-first governance model.
 
 | Metric | Status |
-|--------|--------|
+| -------- | -------- |
 | License | MIT |
 | CI/CD | 25 workflows, green |
 | Coverage | 61% backend, growing |
@@ -74,6 +74,7 @@ npm run dev
 Open `http://localhost:3000` and upload your first manuscript.
 
 **Docker:**
+
 ```bash
 cd backend/docker
 docker-compose up -d

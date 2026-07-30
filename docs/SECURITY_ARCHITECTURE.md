@@ -58,9 +58,9 @@ The middleware stack is registered in `backend/app/main.py:686–761`. Order is 
 - **Origin validation:** Reads `CORS_ORIGINS` from environment via `_build_cors_origins()`. In production, `CORS_ORIGINS` must be set explicitly — no wildcard.
 - **Dev port fallback:** When `DEBUG=true`, automatically appends loopback origins on common dev ports (3000–3010, 4173, 5173) to prevent CORS preflight failures during local development.
 - **Strict configuration:**
-  - `allow_credentials=True`
-  - Allowed methods: `GET`, `POST`, `PUT`, `DELETE`, `OPTIONS`
-  - Allowed headers: `Authorization`, `Content-Type`, `X-Requested-With`, `Accept`, `X-Request-Id`, `X-CSRF-Token`, `Idempotency-Key`
+    - `allow_credentials=True`
+    - Allowed methods: `GET`, `POST`, `PUT`, `DELETE`, `OPTIONS`
+    - Allowed headers: `Authorization`, `Content-Type`, `X-Requested-With`, `Accept`, `X-Request-Id`, `X-CSRF-Token`, `Idempotency-Key`
 
 ### 2.2 Request ID Middleware
 
@@ -80,12 +80,12 @@ Registered first after CORS so every request receives a unique trace ID.
 Only activated when `FORCE_HTTPS=true` and `DEBUG=false` (`main.py:707–710`).
 
 - **HTTPSRedirectMiddleware:**
-  - Redirects HTTP → HTTPS with HTTP 307 preserving method and body.
-  - Skips redirect for health check endpoints (`/health`, `/ready`, etc.) and localhost requests.
+    - Redirects HTTP → HTTPS with HTTP 307 preserving method and body.
+    - Skips redirect for health check endpoints (`/health`, `/ready`, etc.) and localhost requests.
 - **HSTSMiddleware:**
-  - Adds `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload` (1 year).
-  - Also sets `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin` on HTTPS responses.
-  - Configurable `max_age`, `include_subdomains`, and `preload` flags.
+    - Adds `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload` (1 year).
+    - Also sets `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin` on HTTPS responses.
+    - Configurable `max_age`, `include_subdomains`, and `preload` flags.
 
 ### 2.4 Rate Limiting (3 layers)
 
@@ -121,7 +121,7 @@ Three independent rate-limiting mechanisms stack to provide defense in depth:
 Applied after rate limiting so blocked requests never leak information.
 
 | Header | Value | Purpose |
-|--------|-------|---------|
+| -------- | ------- | --------- |
 | `X-Content-Type-Options` | `nosniff` | Prevent MIME-type sniffing |
 | `X-Frame-Options` | `DENY` | Prevent clickjacking |
 | `X-XSS-Protection` | `1; mode=block` | Legacy XSS filter |
@@ -135,14 +135,14 @@ A cryptographically random 16-byte nonce (`secrets.token_urlsafe(16)`) is genera
 
 - **Docs routes** (`/docs`, `/redoc`, `/openapi.json`): Relaxed CSP allowing CDN resources for Swagger UI/ReDoc rendering.
 - **All other routes:** Strict CSP:
-  - `default-src 'self'`
-  - `script-src 'self' 'nonce-{nonce}'`
-  - `style-src 'self' 'nonce-{nonce}'`
-  - `img-src 'self' data: blob:`
-  - `font-src 'self' data:`
-  - `connect-src 'self' https://*.supabase.co wss://*.supabase.co`
-  - `frame-src 'self' blob:`
-  - `object-src 'self' blob:`
+    - `default-src 'self'`
+    - `script-src 'self' 'nonce-{nonce}'`
+    - `style-src 'self' 'nonce-{nonce}'`
+    - `img-src 'self' data: blob:`
+    - `font-src 'self' data:`
+    - `connect-src 'self' https://*.supabase.co wss://*.supabase.co`
+    - `frame-src 'self' blob:`
+    - `object-src 'self' blob:`
 
 ### 2.6 Max Body Size
 
@@ -226,6 +226,7 @@ ScholarForm uses **Supabase Auth** as the sole identity provider:
 - Chunked token reassembly from up to N cookie parts.
 
 **Edge cases handled:**
+
 - Expired tokens → redirect to `/login?reason=session_expired&next={path}`.
 - Missing tokens → redirect to `/login?reason=auth_required`.
 - Invalid tokens → redirect to `/login?reason=invalid_token`.
@@ -237,11 +238,11 @@ ScholarForm uses **Supabase Auth** as the sole identity provider:
 
 - **Auto-refresh:** The `withAuthHeader` helper calls `supabase.auth.getSession()` on every API request, allowing Supabase to automatically refresh expiring tokens.
 - **401 → logout (`handleUnauthorizedSession`):**
-  - Debounces concurrent 401 responses per endpoint via `AUTH_RECOVERY_IN_FLIGHT` map.
-  - Calls `supabase.auth.signOut({ scope: 'local' })` to clear session.
-  - Wipes Supabase auth cookies from `localStorage` and `sessionStorage`.
-  - Dispatches `scholarform:session-expired` custom event.
-  - Redirects to `/login?next={currentPath}` preserving the return URL.
+    - Debounces concurrent 401 responses per endpoint via `AUTH_RECOVERY_IN_FLIGHT` map.
+    - Calls `supabase.auth.signOut({ scope: 'local' })` to clear session.
+    - Wipes Supabase auth cookies from `localStorage` and `sessionStorage`.
+    - Dispatches `scholarform:session-expired` custom event.
+    - Redirects to `/login?next={currentPath}` preserving the return URL.
 - **Retry with backoff:** Safe methods (GET, HEAD, OPTIONS) are retried up to 2 times with exponential backoff (500ms, 1000ms) on retryable status codes (408, 429, 500, 502, 503, 504).
 - **Offline detection:** Write operations (POST/PUT/DELETE/PATCH) check `navigator.onLine` before sending.
 
@@ -250,7 +251,7 @@ ScholarForm uses **Supabase Auth** as the sole identity provider:
 All auth routes are mounted at `/api/v1/auth/` via router prefix in `v1/__init__.py`:
 
 | Endpoint | Method | Auth Required | Description |
-|----------|--------|---------------|-------------|
+| ---------- | -------- | --------------- | ------------- |
 | `/api/v1/auth/signup` | POST | No | Create account with email, password, optional full_name and institution |
 | `/api/v1/auth/login` | POST | No | Authenticate with email/password, returns Supabase session |
 | `/api/v1/auth/forgot-password` | POST | No | Request OTP-based password reset email |
@@ -271,8 +272,8 @@ All auth routes are mounted at `/api/v1/auth/` via router prefix in `v1/__init__
 - **JWKS endpoint discovery:** Resolves `SUPABASE_JWKS_URL` or derives from `SUPABASE_URL`.
 - **Caching:** JWKS keys cached for 60 minutes (`_CACHE_TTL_SECONDS`) with thread-safe lock.
 - **Algorithm hardening:**
-  - If `SUPABASE_JWT_SECRET` + `SUPABASE_URL` are configured, HS* tokens are **rejected** to prevent algorithm confusion attacks.
-  - Supports RSA, EC, and OKP key types.
+    - If `SUPABASE_JWT_SECRET` + `SUPABASE_URL` are configured, HS* tokens are **rejected** to prevent algorithm confusion attacks.
+    - Supports RSA, EC, and OKP key types.
 - **Verification flow (`verify_jwt`):**
   1. Parse unverified header to extract `kid` and `alg`.
   2. If HS* and JWKS not configured → decode with shared secret.
@@ -311,15 +312,15 @@ All v1/v2 API responses use a consistent envelope:
 - **Backend:** Pydantic v2 models with type constraints, field validators, and `mode="before"` coercions for boolean fields.
 - **Frontend:** Zod schemas for runtime response validation via `parseApiResponse()` — catches contract drift between frontend and backend.
 - **Sanitization (`api.core.js`):**
-  - `sanitizeText()`: Strips control characters, decodes HTML entities, removes `< >` characters.
-  - `sanitizePayload()`: Recursively sanitizes all string values in objects/arrays.
-  - Sensitive fields (password, OTP, token, secret) are trimmed but not HTML-sanitized to preserve format.
+    - `sanitizeText()`: Strips control characters, decodes HTML entities, removes `< >` characters.
+    - `sanitizePayload()`: Recursively sanitizes all string values in objects/arrays.
+    - Sensitive fields (password, OTP, token, secret) are trimmed but not HTML-sanitized to preserve format.
 - **Triple file validation:** MIME type + magic bytes + file extension verification on uploads (referenced in `SECURITY.md`).
 
 ### 5.3 Rate Limiting Details
 
 | Layer | Algorithm | Window | Scope | Backend |
-|-------|-----------|--------|-------|---------|
+| ------- | ----------- | -------- | ------- | --------- |
 | SlowAPI | Token bucket | Per-minute | Global (per-IP) | In-memory |
 | RateLimitMiddleware | Sliding window | 60s | Per-IP + per-token (uploads) | In-memory + Redis |
 | TierRateLimitMiddleware | Daily counter | UTC day | Guest IP (5/day), free (60/min), pro (300/min) | Redis + in-memory |
@@ -337,9 +338,9 @@ Upload limits are further hardened with token fingerprinting — the same user o
 - **Algorithm:** Fernet (AES-128-CBC with HMAC-SHA256 authentication) via `cryptography.fernet`.
 - **Purpose:** Encrypts user API keys at rest in the `user_api_keys` table.
 - **Key management:**
-  - `ENCRYPTION_KEY` environment variable (Fernet key, 32-byte base64-encoded).
-  - Must be set in production — `_validate_startup()` raises `RuntimeError` if missing and `DEBUG=false`.
-  - Key rotation supported via `EncryptionService.generate_key()` static method.
+    - `ENCRYPTION_KEY` environment variable (Fernet key, 32-byte base64-encoded).
+    - Must be set in production — `_validate_startup()` raises `RuntimeError` if missing and `DEBUG=false`.
+    - Key rotation supported via `EncryptionService.generate_key()` static method.
 - **Error handling:** `InvalidToken` exceptions are caught and surfaced as `ValueError` to prevent data corruption from key mismatch.
 - **Singleton pattern:** `get_encryption_service()` returns a lazily-initialized singleton.
 
@@ -416,7 +417,7 @@ Upload limits are further hardened with token fingerprinting — the same user o
 25+ regex patterns organized into 12 categories:
 
 | Category | Patterns | Example |
-|----------|----------|---------|
+| ---------- | ---------- | --------- |
 | Instruction override | 2 | `ignore all previous instructions`, `you are now a` |
 | System tag injection | 2 | `system:`, `new instructions:` |
 | API key/secret redaction | 2 | `sk-...`, `api_key...`, `password:...` |
@@ -456,6 +457,7 @@ headers: [
 ```
 
 Static asset caching:
+
 - `/_next/static/(.*)`: `Cache-Control: public, max-age=31536000, immutable`
 - `/static/(.*)`: `Cache-Control: public, max-age=31536000, immutable`
 
@@ -485,7 +487,7 @@ Three layers of XSS defense:
 ### 10.2 Dependency Security
 
 | Tool | Scope | Frequency |
-|------|-------|-----------|
+| ------ | ------- | ----------- |
 | Renovate | Automated dependency updates | Weekly |
 | Dependabot | Vulnerability alerts + auto-PR | Continuous |
 | `pip-audit` | Python dependency CVEs | Every CI run |
@@ -499,7 +501,7 @@ Three layers of XSS defense:
 ### 10.3 CI/CD Security
 
 | Measure | Implementation | Level |
-|---------|---------------|-------|
+| --------- | --------------- | ------- |
 | SLSA Level 3 | Hermetic builds in ephemeral CI, signed provenance | Supply chain |
 | CodeQL | Python + JavaScript analysis on every push | SAST |
 | Trivy | Container scan for CRITICAL/HIGH CVEs | Container |
@@ -513,13 +515,14 @@ Three layers of XSS defense:
 #### SAST Gate Configuration
 
 | Tool | Scan Type | Trigger | Config File | Blocking? |
-|------|-----------|---------|-------------|-----------|
+| ------ | ----------- | --------- | ------------- | ----------- |
 | **CodeQL** | Python + JavaScript semantic analysis | Every push to `main`, PRs to `main` | `.github/codeql/codeql-config.yml` | Yes (critical/high findings) |
 | **Bandit** | Python AST-based security scan | Every CI run | `backend/.bandit` (or `ruff` with security rules) | Yes (any `HIGH` severity) |
 | **Trivy** | Container image CVE scan | Every build (post-image) | `trivy.yaml` | Yes (any `CRITICAL` CVE) |
 | **Semgrep** | Custom rule-based SAST | Weekly full scan | `.semgrep/rules/` | No (informational, trend tracking) |
 
 **CodeQL query suites used:**
+
 - `security-extended` (Python + JavaScript)
 - `security-and-quality` (all languages)
 - Custom queries for prompt injection patterns
@@ -527,7 +530,7 @@ Three layers of XSS defense:
 #### Dependency Scanning
 
 | Tool | Scope | Schedule | Action on Finding |
-|------|-------|----------|-------------------|
+| ------ | ------- | ---------- | ------------------- |
 | **Dependabot** | npm + pip + Docker | Continuous | Auto-PR with fix version; CRITICAL auto-merge after CI passes |
 | **Renovate** | All ecosystem deps | Weekly (Sunday 02:00 UTC) | Grouped PR per ecosystem; automerge minor/patch with passing CI |
 | **pip-audit** | `requirements.txt` PURLs | Every CI run | Fail CI on any known CVE with CVSS >= 7.0 |
@@ -539,6 +542,7 @@ Three layers of XSS defense:
 #### Secret Scanning
 
 **Pre-commit hook** (Python `detect-secrets`):
+
 ```yaml
 - repo: https://github.com/Yelp/detect-secrets
   rev: v1.5.0
@@ -549,12 +553,14 @@ Three layers of XSS defense:
 ```
 
 **Baseline management:**
+
 - `.secrets.baseline` committed with explicitly verified false positives.
 - Update baseline: `detect-secrets scan --baseline .secrets.baseline --update`
 - Audit baseline: `detect-secrets audit .secrets.baseline`
 - Pre-commit rejects any unverified secret not in baseline.
 
 **GitHub push protection:**
+
 - Enabled in repository Settings → Code security & analysis → Secret scanning → Push protection.
 - Blocks pushes containing supported secret patterns (AWS keys, GitHub tokens, npm tokens, etc.).
 - Bypass requires explicit reason (test, false positive, etc.).
@@ -584,12 +590,12 @@ SBOMs are generated in SPDX 2.3 and CycloneDX 1.5 formats, cryptographically sig
 ### OpenSSF Scorecard
 
 | Check | Score | Status |
-|-------|-------|--------|
+| ------- | ------- | -------- |
 | Binary Artifacts | 10/10 | ✅ |
 | Branch Protection | 10/10 | ✅ |
 | CI Tests | 10/10 | ✅ |
 | Code Review | 10/10 | ✅ |
-| Contributors | 5/10 |  ️ Single contributor |
+| Contributors | 5/10 | ️ Single contributor |
 | Dependency Update Tool | 10/10 | ✅ |
 | Fuzzing | 0/10 | ❌ Not implemented |
 | License | 10/10 | ✅ |
@@ -634,7 +640,7 @@ Policy: https://github.com/rohitkumarnaidu/ScholarFormAI/SECURITY.md
 ### Environment Variables
 
 | Variable | Required | Default | Purpose |
-|----------|----------|---------|---------|
+| ---------- | ---------- | --------- | --------- |
 | `ENCRYPTION_KEY` | **Yes** (prod) | — | Fernet key for API key encryption |
 | `CSRF_SECRET` | **Yes** | — | HMAC secret for CSRF tokens |
 | `SUPABASE_JWT_SECRET` | **Yes** | — | JWT verification secret |
@@ -659,7 +665,7 @@ Policy: https://github.com/rohitkumarnaidu/ScholarFormAI/SECURITY.md
 ### Derived / Computed Settings
 
 | Setting | Source | Value |
-|---------|--------|-------|
+| --------- | -------- | ------- |
 | `HSTS max-age` | `HSTSMiddleware` | 31536000 (1 year) |
 | `Max body size` | `MaxBodySizeMiddleware` | 60MB |
 | `CSRF token expiry` | `csrf.py` | 3600 seconds |
@@ -692,7 +698,7 @@ The application validates critical security configuration at startup:
 Tests OWASP-style payloads against backend endpoints:
 
 | Attack Vector | Payloads | Targets |
-|---------------|----------|---------|
+| --------------- | ---------- | --------- |
 | XSS | `<script>alert('XSS')</script>`, `<img src=x onerror=alert(1)>`, `<svg onload=alert(document.domain)>`, `javascript:alert(1)`, `<body onload=...>`, `<iframe src='javascript:...'>`, `\"><script>...</script>` | Document content, template names, metadata fields |
 | SQL injection | `' OR '1'='1`, `' OR 1=1 --`, `'; DROP TABLE documents; --`, `' UNION SELECT ...`, `admin'--`, `1' ORDER BY 1--` | Query parameters, path parameters |
 | Path traversal | `../../../etc/passwd`, `..%2f..%2f..%2f`, `....//....//....//etc/passwd` | File download endpoints, template file paths |
@@ -705,7 +711,7 @@ Tests OWASP-style payloads against backend endpoints:
 Validates `_sanitize_url()` in `backend/app/routers/v1/providers.py` blocks private/internal IP ranges:
 
 | Test Class | Coverage | Assertions |
-|-----------|----------|------------|
+| ----------- | ---------- | ------------ |
 | `TestSSRFPrivateRangeBlocking` | RFC 1918 ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) | `pytest.raises` with "host not allowed" |
 | `TestSSRFLoopbackBlocking` | 127.0.0.0/8, ::1 | Blocked with scheme + host validation |
 | `TestSSRFMetadataBlocking` | 169.254.169.254, metadata.google.internal, 100.100.100.200 | Blocked via explicit blocklist |
@@ -719,7 +725,7 @@ Validates `_sanitize_url()` in `backend/app/routers/v1/providers.py` blocks priv
 Tests the abuse detector service against:
 
 | Scenario | Input | Expected Action |
-|----------|-------|----------------|
+| ---------- | ------- | ---------------- |
 | Rapid document creation | >10 POSTs in 60s | Rate limit triggered, HTTP 429 |
 | Duplicate content upload | Same sha256 hash within 5 min | Deduplication, HTTP 200 with cached result |
 | Malformed file upload | Corrupted .docx header | Rejected with HTTP 422 |
@@ -731,7 +737,7 @@ Tests the abuse detector service against:
 **File:** `backend/tests/security/test_webhook_security.py`
 
 | Test Case | Mechanism | Assertion |
-|-----------|-----------|-----------|
+| ----------- | ----------- | ----------- |
 | HMAC signature verification | `X-Webhook-Signature` header with HMAC-SHA256 | Valid signature accepted, invalid rejected |
 | Timing-safe comparison | `hmac.compare_digest()` usage | No timing side-channel leakage |
 | Replay window enforcement | Timestamp in payload + 5 min window | Old events rejected |
@@ -745,7 +751,7 @@ Tests the abuse detector service against:
 **File:** `backend/tests/test_middleware_csrf.py`
 
 | Test | Scenario |
-|------|----------|
+| ------ | ---------- |
 | `test_csrf_token_generation` | Verify HMAC-SHA256 token format, timestamp, random value |
 | `test_csrf_validation_passes` | Matching `X-CSRF-Token` header + cookie |
 | `test_csrf_validation_fails` | Mismatched token returns HTTP 403 |
@@ -759,7 +765,7 @@ Tests the abuse detector service against:
 **File:** `backend/tests/test_middleware_rate_limit.py`
 
 | Test | Scenario |
-|------|----------|
+| ------ | ---------- |
 | `test_sliding_window_enforcement` | 120 requests in 60s: 120th passes, 121st blocked |
 | `test_upload_isolation` | Upload endpoint has separate counter (10/min) |
 | `test_health_never_limited` | `/health` bypasses rate limiter |
@@ -785,7 +791,7 @@ Run via: `python -m atheris fuzz/fuzz_document_title.py --corpus-dir fuzz/corpus
 ### 14.1 Security Event Detection
 
 | Detection Source | What It Monitors | Alert Threshold | Action |
-|-----------------|------------------|-----------------|--------|
+| ----------------- | ------------------ | ----------------- | -------- |
 | Audit log (`AuditLogService`) | All write operations (POST/PUT/DELETE/PATCH) | Any 401/403 spike >5/min | Notify security team via PagerDuty |
 | Rate limit middleware | Request spikes per IP | Any IP exceeding 3x normal rate | Flag IP, optional auto-block |
 | Tier rate limit | Guest daily allowance exhaustion | Same IP hitting guest limit 3 consecutive days | Rate limit escalation, CAPTCHA challenge |
@@ -796,7 +802,7 @@ Run via: `python -m atheris fuzz/fuzz_document_title.py --corpus-dir fuzz/corpus
 ### 14.2 Containment Procedures
 
 | Scenario | Immediate Action | Triage Action | Recovery |
-|----------|-----------------|---------------|----------|
+| ---------- | ----------------- | --------------- | ---------- |
 | Compromised API key | `UPDATE user_api_keys SET is_revoked=true WHERE id=X` | Rotate key, notify user | User regenerates key via dashboard |
 | Compromised user account | `UPDATE auth.users SET banned_until=now()+interval'24h' WHERE id=X` | Force session logout via `supabase.auth.admin.signOut()` | User resets password, re-authenticates |
 | IP-based attack | Add IP to `BLOCKED_IPS` DenySet in `RateLimitMiddleware` | Verify attack pattern in audit logs | Remove from blocklist after 24h or manual review |
@@ -807,6 +813,7 @@ Run via: `python -m atheris fuzz/fuzz_document_title.py --corpus-dir fuzz/corpus
 ### 14.3 Key Rotation Procedures
 
 **`ENCRYPTION_KEY` rotation:**
+
 ```
 1. Generate new key: python -c "from app.services.encryption_service import EncryptionService; print(EncryptionService.generate_key())"
 2. Set ENCRYPTION_KEY_NEW in environment alongside existing ENCRYPTION_KEY
@@ -820,12 +827,14 @@ Run via: `python -m atheris fuzz/fuzz_document_title.py --corpus-dir fuzz/corpus
 ```
 
 **JWKS rotation:**
+
 - JWKS is managed by Supabase Auth — no direct rotation needed in application code.
 - Cached JWKS keys expire after 60 minutes (`_CACHE_TTL_SECONDS` in `jwks_verifier.py`).
 - On key rotation upstream, the next JWKS fetch automatically picks up the new key.
 - Old `kid` entries remain in cache until TTL expires, preventing validation gaps during rotation.
 
 **Supabase JWT secret rotation:**
+
 ```
 1. In Supabase Dashboard: Project Settings → API → JWT Secret → Regenerate
 2. Update SUPABASE_JWT_SECRET in all environment configs (Render, .env, CI secrets)
@@ -867,7 +876,7 @@ The security event detection pipeline aggregates signals from multiple log sourc
 **SIEM correlation patterns (15 rules):**
 
 | Rule ID | Pattern | Correlation Window | Severity | Action |
-|---------|---------|-------------------|----------|--------|
+| --------- | --------- | ------------------- | ---------- | -------- |
 | SIEM-001 | Same IP → 401 on 3+ different user accounts | 5 min | High | Rate limit escalation, CAPTCHA |
 | SIEM-002 | Same token → requests from 5+ distinct IPs | 60 s | Critical | Temporary token suspension |
 | SIEM-003 | Upload endpoint 413 errors from same IP | 10 min | Medium | Log, monitor for pattern |
@@ -889,7 +898,7 @@ The security event detection pipeline aggregates signals from multiple log sourc
 Every request is assigned a `X-Request-Id` (UUID4) by `RequestIDMiddleware`. This ID propagates through all downstream services:
 
 | Service Layer | Correlation ID Usage | Persistence |
-|--------------|---------------------|-------------|
+| -------------- | --------------------- | ------------- |
 | **FastAPI middleware** | `request_id` bound via `bind_request_context` | Per-request scope |
 | **Structured logging** | `request_id` field in every JSON log line | Log file / stdout |
 | **Celery tasks** | `request_id` forwarded in task kwargs | Task metadata |
@@ -909,19 +918,21 @@ ORDER BY timestamp ASC
 ### 15.3 Escalation Paths and On-Call Rotations
 
 | Severity | Definition | Initial Response | Escalation (15 min) | Escalation (30 min) |
-|----------|-----------|-----------------|---------------------|---------------------|
+| ---------- | ----------- | ----------------- | --------------------- | --------------------- |
 | **P0** | Service down, data breach, auth compromise | On-call engineer | Engineering lead | CTO |
 | **P1** | Major feature degraded, high error rate | On-call engineer | Engineering lead | VP Engineering |
 | **P2** | Partial degradation, non-critical | On-call engineer (next business day) | Team lead | — |
 | **P3** | Minor issue, cosmetic | Ticket triaged within 3 business days | — | — |
 
 **On-call schedule:**
+
 - **Primary:** 1 engineer (weekly rotation, Mon 09:00 UTC → Mon 09:00 UTC)
 - **Secondary:** 1 engineer (same rotation, offset by 12h for follow-the-sun coverage)
 - **Escalation:** Engineering lead (24/7, phone reachable)
 - **Handoff:** Weekly on Monday 09:00 UTC via PagerDuty automated handoff + Slack #ops-handoff summary
 
 **Communication channels:**
+
 - **P0/P1:** PagerDuty → Slack #incidents (auto-create channel) → Zoom bridge
 - **P2:** Slack #ops channel → GitHub issue within 1 hour
 - **P3:** GitHub issue with `security` label → triaged in weekly security review
@@ -937,6 +948,7 @@ Every security incident follows the structured postmortem template at `docs/POST
 5. **Blameless retrospective (within 2 weeks):** Team-wide review, update runbooks
 
 **Required postmortem sections:**
+
 - Incident ID, date, severity, duration
 - Timeline of events (from detection to resolution)
 - Root cause analysis (5 Whys methodology)
@@ -979,6 +991,7 @@ gantt
 ```
 
 **Key metrics targeted:**
+
 - **Time to acknowledge:** < 5 min (P0/P1)
 - **Time to contain:** < 15 min (P0), < 30 min (P1)
 - **Time to resolve:** < 60 min (P0), < 4h (P1)
@@ -991,13 +1004,14 @@ gantt
 ### 16.1 SAST Gate Configuration
 
 | Tool | Scan Type | Trigger | Config File | Blocking? | Rules |
-|------|-----------|---------|-------------|-----------|-------|
+| ------ | ----------- | --------- | ------------- | ----------- | ------- |
 | **ruff** | Python lint + security rules | Every CI run | `backend/ruff.toml` | Yes (E9, F63, F7, F82) | Security-related rules: S (flake8-bandit), INP, RUF100 |
 | **Bandit** | Python AST security scan | Every CI run | `backend/.bandit` | Yes (any HIGH) | All built-in plugins; custom excludes for test files |
 | **CodeQL** | Python + JS semantic analysis | Push to main, PRs | `.github/codeql/codeql-config.yml` | Yes (critical/high) | `security-extended` + `security-and-quality` suites |
 | **Semgrep** | Custom rule-based SAST | Weekly full scan | `.semgrep/rules/` | No (trend tracking) | 12 custom rules for prompt injection, SSRF, auth bypass |
 
 **ruff security rules enabled:**
+
 ```toml
 # backend/ruff.toml (security section)
 [lint]
@@ -1013,6 +1027,7 @@ select = [
 ```
 
 **CI gate behavior:**
+
 - `ruff check app --config ruff.toml` — blocking, fails CI on any finding
 - `mypy --config-file mypy.ini app` — non-blocking (continue-on-error in CI)
 - `bandit -r app/ -f json -o bandit-report.json` — blocking on HIGH severity
@@ -1021,7 +1036,7 @@ select = [
 ### 16.2 Dependency Scanning Enforcement
 
 | Tool | Scope | Schedule | Gate Behavior |
-|------|-------|----------|---------------|
+| ------ | ------- | ---------- | --------------- |
 | **pip-audit** | `requirements.txt` (Python) | Every CI run | Fail on CVSS >= 7.0; warn on < 7.0 |
 | **npm audit** | `package-lock.json` (JS) | Every CI run | Fail on moderate+ advisory |
 | **Dependabot** | npm + pip + Docker | Continuous | Auto-PR; CRITICAL auto-merge after CI |
@@ -1030,6 +1045,7 @@ select = [
 | **FOSSA** | License compliance | Weekly | Block on GPL/AGPL copyleft |
 
 **pip-audit CI step:**
+
 ```yaml
 - name: Audit Python dependencies
   run: |
@@ -1040,6 +1056,7 @@ select = [
 ```
 
 **npm audit CI step:**
+
 ```yaml
 - name: Audit npm dependencies
   run: |
@@ -1050,6 +1067,7 @@ select = [
 ### 16.3 Secret Scanning
 
 **Pre-commit hook** (`detect-secrets`):
+
 ```yaml
 - repo: https://github.com/Yelp/detect-secrets
   rev: v1.5.0
@@ -1060,6 +1078,7 @@ select = [
 ```
 
 **Baseline management workflow:**
+
 ```bash
 # Scan and update baseline
 detect-secrets scan --baseline .secrets.baseline --update
@@ -1072,6 +1091,7 @@ detect-secrets scan --baseline .secrets.baseline
 ```
 
 **GitHub push protection:**
+
 - Enabled in repository Settings → Code security & analysis → Secret scanning → Push protection
 - Blocks pushes containing supported secret patterns (AWS keys, GitHub tokens, npm tokens, etc.)
 - Bypass requires explicit reason (test, false positive, etc.)
@@ -1097,13 +1117,14 @@ SBOMs are generated in SPDX 2.3 and CycloneDX 1.5 formats, cryptographically sig
 ### 16.5 Container Image Scanning
 
 | Stage | Tool | Scope | Action |
-|-------|------|-------|--------|
+| ------- | ------ | ------- | -------- |
 | **Build** | Trivy (filesystem) | Dockerfile, OS packages | Fail on CRITICAL CVE |
 | **Post-build** | Trivy (image) | Full container image | Fail on CRITICAL, warn on HIGH |
 | **Registry** | GitHub Advanced Security | Container registry scan | Alert on any new CVE |
 | **Runtime** | Render container health | Running container | Auto-restart on health check failure |
 
 **Trivy CI configuration:**
+
 ```yaml
 - name: Scan container image
   uses: aquasecurity/trivy-action@master
@@ -1118,13 +1139,14 @@ SBOMs are generated in SPDX 2.3 and CycloneDX 1.5 formats, cryptographically sig
 ### 16.6 Signed Commits and Tag Verification
 
 | Practice | Implementation | Enforcement |
-|----------|---------------|-------------|
+| ---------- | --------------- | ------------- |
 | **Commit signing** | GPG or SSH signing via `git commit -S` | Branch protection rule: "Require signed commits" |
 | **Tag signing** | `git tag -s v1.2.0 -m "v1.2.0"` | Release workflow verifies tag signature |
 | **CI verification** | `git verify-commit HEAD` in CI pipeline | Fails build if commit is unsigned |
 | **Release attestation** | `gh attestation create` with OIDC | Verifiable via `gh attestation verify` |
 
 **Developer setup:**
+
 ```bash
 # Configure GPG signing
 git config --global user.signingkey KEYID
@@ -1143,7 +1165,7 @@ git verify-commit HEAD
 ### 17.1 Test File Reference
 
 | Test File | Lines | Focus | Coverage |
-|-----------|-------|-------|----------|
+| ----------- | ------- | ------- | ---------- |
 | `backend/tests/security/test_injection.py` | 185 | XSS, SQLi, path traversal, command injection | 4 attack vectors × 6+ payloads each |
 | `backend/tests/security/test_ssrf_gaps.py` | 138 | Private IP, loopback, metadata, DNS rebinding | 5 test classes, RFC 1918 ranges |
 | `backend/tests/security/test_abuse_detector.py` | — | Rapid creation, duplicate content, IP rotation | 5 abuse scenarios |
@@ -1165,12 +1187,13 @@ git verify-commit HEAD
 ### 17.2 Fuzz Testing Methodology
 
 | Fuzz Target | File | Engine | Corpus | Run Command |
-|-------------|------|--------|--------|-------------|
+| ------------- | ------ | -------- | -------- | ------------- |
 | Document title parser | `fuzz/fuzz_document_title.py` | Atheris (libFuzzer) | `fuzz/corpus_title/` (50 seed files) | `python -m atheris fuzz/fuzz_document_title.py --corpus-dir fuzz/corpus_title` |
 | Metadata parser | `fuzz/fuzz_metadata_parser.py` | Atheris | `fuzz/corpus_metadata/` (30 seed JSON files) | `python -m atheris fuzz/fuzz_metadata_parser.py --corpus-dir fuzz/corpus_metadata` |
 | Template renderer | `fuzz/fuzz_template_renderer.py` | Atheris | `fuzz/corpus_template/` (20 seed docx files) | `python -m atheris fuzz/fuzz_template_renderer.py --corpus-dir fuzz/corpus_template` |
 
 **Methodology:**
+
 1. **Seed corpus:** Start with valid inputs (real document titles, metadata JSON, template files)
 2. **Mutation:** Atheris applies byte-level mutations (bit flips, byte swaps, arithmetic, splicing)
 3. **Coverage-guided:** libFuzzer tracks code coverage to explore new paths
@@ -1178,6 +1201,7 @@ git verify-commit HEAD
 5. **CI integration:** Fuzz targets run for 60 seconds per PR in CI; 24-hour runs weekly
 
 **Coverage targets:**
+
 - Document title parser: 85%+ branch coverage
 - Metadata parser: 90%+ branch coverage
 - Template renderer: 75%+ branch coverage
@@ -1185,13 +1209,14 @@ git verify-commit HEAD
 ### 17.3 Penetration Testing Scope and Schedule
 
 | Test Type | Frequency | Scope | Performer |
-|-----------|-----------|-------|-----------|
+| ----------- | ----------- | ------- | ----------- |
 | **Automated DAST** | Every release | All 39 API endpoints, auth flows, file upload | OWASP ZAP in CI |
 | **Manual pentest** | Quarterly | Full application (backend + frontend + infra) | External firm (currently: None — planned Q3 2026) |
 | **Bug bounty** | Continuous (invite-only) | Public API surface, auth, data access | HackerOne private program |
 | **Red team** | Annually | Full stack including social engineering | External firm |
 
 **DAST CI integration:**
+
 ```yaml
 - name: OWASP ZAP Scan
   uses: zaproxy/action-full-scan@v0.10.0
@@ -1202,6 +1227,7 @@ git verify-commit HEAD
 ```
 
 **Pentest scope boundaries:**
+
 - **In scope:** All API endpoints under `/api/v1/` and `/api/v2/`, authentication flows, file upload/download, template rendering, webhook delivery, RAG query endpoints
 - **Out of scope:** Third-party services (Supabase, Render, Stripe, HuggingFace), physical security, social engineering (except annual red team)
 - **Excluded findings:** Missing `X-XSS-Protection` header (deprecated), missing `X-Permitted-Cross-Domain-Policies`, cookie without `SameSite=Strict` on non-sensitive cookies
@@ -1209,7 +1235,7 @@ git verify-commit HEAD
 ### 17.4 Unit Tests for Security Middleware
 
 | Middleware | Test File | Key Assertions |
-|-----------|-----------|----------------|
+| ----------- | ----------- | ---------------- |
 | **SSRF protection** | `test_ssrf_gaps.py` | Private IPs blocked, public IPs allowed, scheme restriction, DNS rebinding note |
 | **CSRF protection** | `test_middleware_csrf.py` | Token format, validation pass/fail, exempt paths, bearer exemption, expiry, secret fallback |
 | **Rate limiting** | `test_middleware_rate_limit.py` | Sliding window, upload isolation, health bypass, Redis fallback, tier limits, IP fingerprinting |
@@ -1225,7 +1251,7 @@ git verify-commit HEAD
 ### 17.5 Integration Tests for Auth Flows
 
 | Test Scenario | Endpoints Tested | Auth Required | Mocked Dependencies |
-|---------------|-----------------|---------------|---------------------|
+| --------------- | ----------------- | --------------- | --------------------- |
 | Successful signup → login → me | `POST /signup`, `POST /login`, `GET /me` | No → No → Yes | Supabase Auth client |
 | Duplicate email signup | `POST /signup` | No | Supabase Auth client (returns 422) |
 | Invalid credentials login | `POST /login` | No | Supabase Auth client (returns 401) |
@@ -1237,6 +1263,7 @@ git verify-commit HEAD
 | CSRF token on auth endpoints | `POST /login` with/without CSRF | No | CSRF middleware |
 
 **Test pattern (pytest):**
+
 ```python
 async def test_signup_login_flow(client, mock_supabase_auth):
     # Signup
@@ -1284,6 +1311,7 @@ curl -X POST https://api.scholarform.ai/api/v1/auth/signup \
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1315,6 +1343,7 @@ curl -X POST https://api.scholarform.ai/api/v1/auth/login \
 ```
 
 **Response (200):**
+
 ```json
 {
   "success": true,
@@ -1340,6 +1369,7 @@ curl -X POST https://api.scholarform.ai/api/v1/auth/login \
 Token refresh is handled **client-side** via the Supabase SDK (`supabase.auth.getSession()`), not via a dedicated backend endpoint. The SDK automatically calls the Supabase Auth `/token?grant_type=refresh_token` endpoint when the access token is near expiry.
 
 **Client-side refresh flow (frontend):**
+
 ```javascript
 // frontend/src/services/api.core.js
 const { data: { session } } = await supabase.auth.getSession();
@@ -1349,6 +1379,7 @@ if (session?.access_token) {
 ```
 
 **Token format:**
+
 - **Type:** JWT (JSON Web Token)
 - **Algorithm:** HS256 (symmetric) or RS256/ES256 (asymmetric via JWKS)
 - **Expiry:** Access token: 3600 seconds (1 hour); Refresh token: 30 days
@@ -1356,6 +1387,7 @@ if (session?.access_token) {
 - **Refresh mechanism:** Supabase SDK auto-refreshes when `exp` is within 10% of expiry; refresh token is rotated on each use (old refresh token invalidated)
 
 **Manual refresh (if using REST directly):**
+
 ```bash
 curl -X POST https://<project>.supabase.co/auth/v1/token \
   -H "Content-Type: application/json" \
@@ -1376,12 +1408,14 @@ await supabase.auth.signOut({ scope: 'local' });
 ```
 
 **What logout does:**
+
 1. Calls `supabase.auth.signOut({ scope: 'local' })` to clear session from `localStorage` and `sessionStorage`
 2. Wipes Supabase auth cookies (`sb-{ref}-auth-token`)
 3. Dispatches `scholarform:session-expired` custom event
 4. Redirects to `/login?next={currentPath}`
 
 **Server-side session invalidation (for compromised tokens):**
+
 ```bash
 # Admin API (requires service_role key)
 curl -X POST https://<project>.supabase.co/auth/v1/admin/users/<user_id>/logout \
@@ -1428,6 +1462,7 @@ sequenceDiagram
 
 *Last updated: July 2026*
 \n
+
 ## Authentication Flow Diagram
 
 ```mermaid

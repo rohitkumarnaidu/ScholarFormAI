@@ -5,6 +5,7 @@
 ScholarForm AI employs Retrieval-Augmented Generation (RAG) powered by **ChromaDB** to retrieve publisher-specific academic formatting guidelines and session context at runtime.
 
 The RAG subsystem enables:
+
 - **Rule Retrieval**: Injects exact publisher rules (IEEE, APA, Springer, Nature, ACM, Elsevier, etc.) into LLM prompts for block classification, reasoning, and styling.
 - **Session RAG Context**: Maintains conversational history and document synthesis context during interactive paper drafting sessions.
 - **Dual-Backend Resilience**: Operates a primary ChromaDB persistent vector store alongside a zero-dependency native JSON/NumPy (`kb.json`) vector store fallback.
@@ -44,7 +45,7 @@ flowchart TD
 The `RagEngine` maintains **two parallel stores** on every write operation:
 
 | Store | Technology | Purpose & Mechanics |
-|---|---|---|
+| --- | --- | --- |
 | **Primary Store** | `chromadb.PersistentClient` | High-performance vector retrieval using HNSW indexing and metadata filtering (`publisher`, `section`). Persists to disk at `backend/db/semantic_store/`. |
 | **Native Failover** | `kb.json` + NumPy | Pure Python/NumPy cosine similarity calculation. Guarantees RAG capability even if ChromaDB or native C/SQLite dependencies fail. |
 
@@ -64,7 +65,7 @@ flowchart LR
 ### Embedding Tiers Specifications
 
 | Tier | Model Identifier | Vector Dimension | Memory Footprint | Description |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | **Tier 1** | `BAAI/bge-m3` | 1024d | ~2.0 GB RAM | Primary model; superior multilingual and long-context performance |
 | **Tier 2** | HuggingFace Inference API | 384d / 1024d | Remote API | Offloads model memory when `LOW_MEMORY_MODE=true` |
 | **Tier 3** | `BAAI/bge-small-en-v1.5` | 384d | ~500 MB RAM | Lightweight English transformer fallback |
@@ -77,7 +78,7 @@ flowchart LR
 ### 1. Vector Store Collections
 
 | Collection Name | Dimension | Primary Embedding Model | Scope |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `guidelines_bge_m3` | 1024d | `BAAI/bge-m3` | Publisher formatting guidelines (IEEE, APA, Nature, etc.) |
 | `publisher_guidelines` | 384d | `BAAI/bge-small-en-v1.5` | Legacy / lightweight collection fallback |
 | `session_<session_id>` | 384d | `multi-qa-MiniLM-L6-v2` | Per-session interactive paper drafting context |
@@ -141,7 +142,7 @@ rules = rag.query_rules(template_name="IEEE", section_name="abstract", top_k=2)
 ## Resilience & Degraded Modes Summary
 
 | Scenario | System Reaction / Fallback Mode |
-|---|---|
+| --- | --- |
 | **ChromaDB library crash / SQLite lock** | Switches to `kb.json` native store using NumPy cosine similarity |
 | **Out of GPU/RAM memory** | Activates Tier 2 HuggingFace API or Tier 3 `bge-small` |
 | **No Internet & No PyTorch** | Activates Tier 4 Deterministic BLAKE2b Hash vector model |

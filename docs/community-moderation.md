@@ -5,6 +5,7 @@
 ScholarFormAI is committed to providing a welcoming, inclusive, and harassment-free experience for everyone. This policy outlines how the [Code of Conduct](../CODE_OF_CONDUCT.md) is enforced.
 
 All community members are expected to:
+
 - Use welcoming and inclusive language
 - Be respectful of differing viewpoints and experiences
 - Gracefully accept constructive criticism
@@ -42,7 +43,7 @@ Reports are acknowledged within 24 hours and investigated within 72 hours.
 ## Moderation Actions
 
 | Action | Description | Duration | Appealable |
-|--------|-------------|----------|------------|
+| -------- | ------------- | ---------- | ------------ |
 | **Warning** | Formal notice with explanation of the violation | Permanent record | Yes |
 | **Temporary Ban** | Removal from community spaces | 7-30 days | Yes |
 | **Permanent Ban** | Indefinite removal from all community spaces | Permanent | Yes (after 6 months) |

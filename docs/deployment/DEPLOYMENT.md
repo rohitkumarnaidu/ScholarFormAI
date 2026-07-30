@@ -92,7 +92,7 @@ flowchart TD
 ## Prerequisites
 
 | Requirement | Minimum Version | Purpose |
-|-------------|----------------|---------|
+| ------------- | ---------------- | --------- |
 | **Docker** | 24.x | Container runtime |
 | **Docker Compose** | v2.x | Multi-service orchestration |
 | **Python** | 3.12.x | Backend runtime |
@@ -126,6 +126,7 @@ docker compose -f deploy/services/docker-compose.yml ps
 ```
 
 Services will be available at:
+
 - **GROBID**: `http://localhost:8070`
 - **DOCX Converter**: `http://localhost:8080`
 
@@ -526,7 +527,7 @@ flowchart LR
 ```
 
 | Component | Scaling Method | State |
-|-----------|---------------|-------|
+| ----------- | --------------- | ------- |
 | **FastAPI Backend** | Horizontal (add replicas) | Stateless |
 | **Celery Workers** | Horizontal (add replicas per queue) | Stateless |
 | **Frontend (Next.js)** | CDN / Vercel Edge | Stateless |
@@ -539,7 +540,7 @@ flowchart LR
 ## Health Checks & Monitoring
 
 | Endpoint | Expected Response | Description |
-|----------|-------------------|-------------|
+| ---------- | ------------------- | ------------- |
 | `GET /api/v1/health` | `{"status": "ok"}` | Liveness probe |
 | `GET /api/v1/health/ready` | `{"status": "ready"}` | Readiness probe (checks DB + Redis) |
 | `GET /metrics` | Prometheus text format | Metrics scrape target |
@@ -585,7 +586,7 @@ docker cp scholarform-backend:/app/db/chroma ./chroma-backup-$(date +%Y%m%d)
 ## Troubleshooting
 
 | Symptom | Likely Cause | Resolution |
-|---------|-------------|------------|
+| --------- | ------------- | ------------ |
 | `Connection refused :8000` | Backend not running | `uvicorn app.main:app --reload` |
 | `Celery worker not processing` | Redis unreachable | Check `REDIS_URL` and Redis service health |
 | `GROBID timeout on PDF parse` | GROBID container unhealthy | `docker restart grobid` |

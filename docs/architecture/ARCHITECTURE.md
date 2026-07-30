@@ -20,7 +20,7 @@ ScholarForm AI (AMF - Automated Docx Formatter) is an enterprise-grade distribut
 ### Major Subsystems
 
 | Subsystem | Technology | Purpose / Role | Hosting / Runtime |
-|-----------|------------|----------------|-------------------|
+| ----------- | ------------ | ---------------- | ------------------- |
 | **Frontend Web App** | Next.js 16 (App Router), React 19, Tailwind CSS 3 | Interactive UI for formatting, AI authoring, document management, and real-time previews. | Vercel Edge Platform |
 | **API Gateway & Service Layer** | FastAPI, Uvicorn, Celery, Pydantic v2 | 93+ REST API endpoints, JWT/API key authentication, async job orchestration, and service execution. | Render / Container Service |
 | **Relational Database** | Supabase PostgreSQL (v15+) | Primary OLTP persistence — profiles, documents, versions, results, audit logs, API keys, sessions. | Supabase Cloud |
@@ -129,27 +129,32 @@ graph TB
 ## Subsystem Responsibilities
 
 ### 1. Client & Frontend Subsystem
+
 - **Next.js 16 Web App**: App Router architecture with 38 pages and 28+ React 19 components. Provides document uploading, live side-by-side HTML preview rendering (TipTap integration), interactive AI manuscript generator workspace, and billing/key management.
 - **Python Click CLI (`amf`)**: Command-line tools supporting programmatic format jobs, issue reporting, update checks, and pipeline automation.
 - **Python SDK (`amf_sdk`)**: Synchronous (`AMFClient`) and asynchronous (`AsyncAMFClient`) Python clients enabling headless integration into research workflows.
 
 ### 2. API Gateway & Middleware Layer
+
 - **FastAPI Core**: Uvicorn-served async gateway using strict request validation via Pydantic v2 schemas and standard `api_envelope` responses (`APIResponse`).
 - **JWKS JWT Verification**: Verifies incoming Bearer tokens using public keys dynamically fetched from Supabase Auth endpoints.
 - **Rate Limiting & Security Controls**: Enforces per-minute and per-day request limits (`api_key_rate_limiter.py`). Passes incoming uploads through ClamAV antivirus and magic-byte validation.
 
 ### 3. Service & Pipeline Core
+
 - **Pipeline Orchestrator (`app.pipeline.orchestrator`)**: Slim coordination layer managing document ingestion, extraction, structure detection, classification, NLP enrichment, validation, python-docx layout formatting, and export.
 - **Generator Session Service (`generator_session_service.py`)**: Powers AI manuscript creation, outline negotiation, section drafting, and RAG retrieval.
 - **Citation Assembly Service (`citation_assembly_service.py`)**: Extracts raw citations, fetches metadata from CrossRef, and formats references via the CSL Engine.
 - **LLM Fallback Engine (`llm_fallback_service.py`)**: 4-tier model dispatcher ensuring high availability across LLM providers with automatic circuit breaker failover.
 
 ### 4. Persistence Subsystem
+
 - **Supabase PostgreSQL**: Primary relational store holding 12 operational tables protected by Row Level Security (RLS) policies.
 - **Redis Cache & Broker**: Low-latency caching for GROBID extractions (1h TTL) and LLM completions (24h TTL), combined with Celery background task queuing.
 - **ChromaDB Vector Store**: Local vector database holding academic publisher guidelines (`BAAI/bge-m3` model) and per-session conversational context (`multi-qa-MiniLM-L6-v2`).
 
 ### 5. External Microservices
+
 - **GROBID (Docker)**: TEI XML parsing engine for extracting titles, authors, abstracts, and reference structures from academic PDFs.
 - **CrossRef REST API**: External service for validating DOIs and retrieving accurate bibliographic records.
 - **LLM Provider APIs**: External inference APIs (NVIDIA NIM, Groq, OpenRouter) and local Ollama instances.
@@ -303,7 +308,7 @@ sequenceDiagram
 ## Tech Stack & Runtime Versions
 
 | Layer | Technology | Version | Purpose |
-|-------|-----------|---------|---------|
+| ------- | ----------- | --------- | --------- |
 | **Frontend** | Next.js | 16.x | App Router Web Application |
 | | React | 19.x | UI Component Engine |
 | | Tailwind CSS | 3.x | Styling Framework |
@@ -338,7 +343,7 @@ sequenceDiagram
 ## Middleware Stack (Execution Order)
 
 | Middleware | File | Size |
-|-----------|------|------|
+| ----------- | ------ | ------ |
 | Prometheus metrics | `prometheus_metrics.py` | 7KB |
 | Rate limit (base) | `rate_limit.py` | 6.9KB |
 | Tier-aware rate limit | `tier_rate_limit.py` | 4.1KB |
@@ -350,7 +355,7 @@ sequenceDiagram
 ## Key Architecture Decisions
 
 | Decision | Rationale |
-|---------|---------|
+| --------- | --------- |
 | **No Spring Boot gateway** | FastAPI handles all middleware. Spring Boot was never built; it's obsolete in the requirements. |
 | **No DOCX on live preview** | HTML/CSS only for <80ms latency — generating DOCX is too slow for real-time. |
 | **No LLM during typing** | LLM fires only on explicit user action (not keystroke). |

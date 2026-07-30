@@ -57,21 +57,28 @@ flowchart TD
 ## Architecture Components
 
 ### Backend (FastAPI)
+
 The backend REST API is built with **FastAPI** on Python 3.12+, providing asynchronous request handling, OpenAPI documentation generation, and strict type safety via Pydantic v2.
+
 - **Service Layer**: 48 modular service files under `backend/app/services/` handling business logic.
 - **Routing**: 16 dedicated v1 route modules under `backend/app/routers/v1/`.
 
 ### Frontend (Next.js)
+
 The frontend interface uses **Next.js 16 (App Router)** with React 19, TypeScript, and Tailwind CSS.
+
 - **Real-Time Preview**: Implements SSE (Server-Sent Events) and WebSockets for live visual feedback during manuscript formatting.
 - **State Management**: React Query combined with React Context for responsive client-side state.
 
 ### CLI (Click + Rich)
+
 The terminal-based command-line tool `amf` enables automated batch processing, CI/CD integration, and scriptable manuscript formatting.
+
 - Supports dual-mode execution (local direct processing or remote REST API communication).
 - Integrated issue reporting (`amf issues`) and self-updating (`amf update`).
 
 ### Python SDK (`amf_sdk`)
+
 The official Python client library provides both synchronous (`AMFClient`) and asynchronous (`AsyncAMFClient`) interfaces using `httpx` for seamless integration into custom Python workflows and Jupyter notebooks.
 
 ---

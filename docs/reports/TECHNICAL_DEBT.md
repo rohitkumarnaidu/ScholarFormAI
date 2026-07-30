@@ -1,7 +1,7 @@
 # Technical Debt Register — ScholarForm AI
 
 | ID | Item | Severity | Category | Effort to Fix | Notes |
-|----|------|----------|----------|---------------|-------|
+| ---- | ------ | ---------- | ---------- | --------------- | ------- |
 | TD-001 | Router TestClient tests need lifespan bypass | 🟡 Medium | Test Infrastructure | 2 days | TestClient hangs >180s with full lifespan; workaround exists |
 | TD-002 | asyncio deprecation warnings (30k+) | 🟢 Low | Dependencies | 1 day | Upgrade pytest-asyncio; fix datetime.utcnow() calls |
 | TD-003 | Pydantic v2.13+ KeyError with --cov | 🟡 Medium | Dependencies | Unknown | Affects coverage measurement only; upstream pydantic issue |
@@ -21,6 +21,7 @@
 | TD-017 | Test collection timeout when running full suite (pytest tests/ >600s) | 🟡 Medium | Test Infrastructure | 1 week | 13 router files each trigger _ensure_v1_router (~15s each); must run targeted subsets; cache router on first load | Open |
 
 ### Enterprise Audit & Refactoring (July 2026)
+
 - **P0 Security vulnerabilities**: 5 high-severity CVEs → All resolved
 - **Layer violations**: 16 router→pipeline direct imports → 0 remaining
 - **HTTPException in services**: 7 instances → 0 remaining (all use ScholarFormError)

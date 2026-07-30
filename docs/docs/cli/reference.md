@@ -19,7 +19,7 @@ amf [GLOBAL_OPTIONS] COMMAND [COMMAND_ARGS]...
 ### Global Options
 
 | Option | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `--version` | Flag | Display CLI tool version (`amf 1.0.0`) and exit |
 | `-v, --verbose` | Flag | Enable verbose debug logging output |
 | `-c, --config PATH` | File Path | Specify path to custom JSON/TOML configuration file |
@@ -112,7 +112,7 @@ amf format -i manuscript.md -o formatted.docx -s apa -O '{"include_toc": true}' 
 ```
 
 | Option | Flag | Description | Default |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `-i` | `--input PATH` | Input manuscript file path (`.md`, `.docx`, `.pdf`, `.txt`) | **Required** |
 | `-o` | `--output PATH` | Output formatted DOCX file path | `<input_stem>_formatted.docx` |
 | `-s` | `--style TEXT` | Target formatting style ID (`apa`, `ieee`, `mla`, `chicago`, etc.) | `apa` |
@@ -130,7 +130,7 @@ amf validate -i manuscript.md -s ieee -o validation_report.json
 ```
 
 | Option | Flag | Description | Default |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `-i` | `--input PATH` | Input manuscript file path | **Required** |
 | `-s` | `--style TEXT` | Style rules to validate against | `apa` |
 | `-o` | `--output PATH` | File path to write JSON validation report | Terminal output |
@@ -146,7 +146,7 @@ amf preview -i manuscript.md -s apa -o preview.html --open
 ```
 
 | Option | Flag | Description | Default |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `-i` | `--input PATH` | Input manuscript file path | **Required** |
 | `-s` | `--style TEXT` | Target formatting style ID | `apa` |
 | `-o` | `--output PATH` | Output HTML file path | Terminal print |
@@ -170,7 +170,7 @@ amf styles export ieee ./styles/ieee-custom.json
 ```
 
 | Subcommand | Arguments / Options | Description |
-|---|---|---|
+| --- | --- | --- |
 | `list` | None | List all 17 registered builtin citation & formatting styles |
 | `show` | `<name>` | Display font, margin, line spacing, and citation rules for style |
 | `export` | `<name> <file>` | Save style parameters as a JSON file |
@@ -186,7 +186,7 @@ amf init -n my-research-paper -s ieee -o ./papers
 ```
 
 | Option | Flag | Description | Default |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `-n` | `--name TEXT` | Project name | `my-manuscript` |
 | `-s` | `--style TEXT` | Default project formatting style | `apa` |
 | `-o` | `--output PATH` | Output target directory | `.` |
@@ -236,7 +236,7 @@ amf update release-notes 1.2.0
 ```
 
 | Subcommand | Arguments / Options | Description |
-|---|---|---|
+| --- | --- | --- |
 | `check` | `--channel TEXT` | Check for available software updates on specified channel |
 | `download` | `--version TEXT` | Download update binary package for version |
 | `install` | None | Apply downloaded update binary |
@@ -282,7 +282,7 @@ amf issue backup
 ```
 
 | Subcommand | Arguments & Options | Description |
-|---|---|---|
+| --- | --- | --- |
 | `report` | `-t/--title`, `-d/--description`, `-c/--category`, `-s/--severity`, `-n/--name`, `-e/--email`, `--anonymous`, `--attach-logs` | Submit a new issue report to API or local store |
 | `list` | `--status`, `--category`, `--severity`, `--label`, `--search`, `-l/--limit` | Query and filter open issues |
 | `show` | `<issue_id>` | View complete issue details and comment thread |
@@ -320,7 +320,7 @@ File path: `~/.amf/config.json` (Linux/macOS) or `%APPDATA%\amf\config.json` (Wi
 ## Exit Codes Reference
 
 | Exit Code | Classification | Meaning |
-|---|---|---|
+| --- | --- | --- |
 | `0` | Success | Command executed successfully |
 | `1` | General Error | Runtime error, missing file, or REST API failure without local fallback |
 | `2` | Validation Failure | Manuscript failed validation rules or CLI configuration syntax error |

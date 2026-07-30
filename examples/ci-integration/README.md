@@ -87,13 +87,13 @@ format:
 ```makefile
 # Format all manuscripts
 format-all:
-	@for file in $(wildcard manuscripts/*.md); do \
-		echo "Formatting $$file..."; \
-		amf format -i "$$file" -s apa -o "formatted/$$(basename $$file .md).docx"; \
-	done
+ @for file in $(wildcard manuscripts/*.md); do \
+  echo "Formatting $$file..."; \
+  amf format -i "$$file" -s apa -o "formatted/$$(basename $$file .md).docx"; \
+ done
 
 validate-all:
-	@for file in $(wildcard manuscripts/*.md); do \
-		amf validate -i "$$file" -s apa; \
-	done
+ @for file in $(wildcard manuscripts/*.md); do \
+  amf validate -i "$$file" -s apa; \
+ done
 ```

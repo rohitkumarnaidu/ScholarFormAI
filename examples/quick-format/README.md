@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Quick Format Example
 
 Format a DOCX manuscript against any journal template with a single CLI command.
@@ -19,7 +18,7 @@ python format_paper.py --template ieee --input paper.docx --output formatted.doc
 ## Options
 
 | Flag | Default | Description |
-|------|---------|-------------|
+| ------ | --------- | ------------- |
 | `--template` | `ieee` | Template name (acm, apa, chicago, elsevier, harvard, ieee, mla, modern_blue, modern_gold, modern_red, nature, none, numeric, portfolio, resume, springer, vancouver) |
 | `--input` | — | Path to input DOCX file |
 | `--output` | `formatted.docx` | Path for formatted output |

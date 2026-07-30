@@ -34,7 +34,7 @@ registry.register_style(journal_style)
 ## Style Properties
 
 | Property | Type | Description |
-|----------|------|-------------|
+| ---------- | ------ | ------------- |
 | `font_family` | str | Font for body text |
 | `font_size` | int | Body text size in points |
 | `line_spacing` | float | Line spacing multiplier |

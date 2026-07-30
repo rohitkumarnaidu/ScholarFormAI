@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: Why FastAPI Only
 description: Explaining the decision to use FastAPI as the sole backend gateway
 sidebar_position: 2
@@ -42,6 +42,7 @@ Each network hop adds 1-5ms latency. For a live preview endpoint targeting <80ms
 ### 3. Operational Cost
 
 A Spring Boot gateway would require:
+
 - A JVM runtime (additional ~200MB RAM)
 - A separate Render web service or container
 - Additional CI pipeline to build and deploy

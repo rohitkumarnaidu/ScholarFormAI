@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Database & Data Model
 description: All tables, columns, indexes, and relationships
 sidebar_position: 4
@@ -18,6 +18,7 @@ last_updated: July 2026
 > **See also:** [Architecture](architecture.md), [API Reference](API.md), [ADRs](adr/)
 
 ## Table of Contents
+
 - [PostgreSQL (Supabase)](#postgresql-supabase)
 - [Supabase Storage Buckets](#supabase-storage-buckets)
 - [ChromaDB Collections](#chromadb-collections)
@@ -83,16 +84,18 @@ erDiagram
 ### Core Tables
 
 #### `users` (Supabase Auth — auto-managed)
+
 | Column | Type | Notes |
-|--------|------|-------|
+| -------- | ------ | ------- |
 | id | UUID | PK, auto from Supabase Auth |
 | email | TEXT | Unique |
 | plan_tier | TEXT | 'free', 'pro', 'team' |
 | created_at | TIMESTAMPTZ | Auto |
 
 #### `api_keys`
+
 | Column | Type | Notes |
-|--------|------|-------|
+| -------- | ------ | ------- |
 | id | UUID | PK |
 | user_id | UUID | FK &rarr; users |
 | key_hash | TEXT | SHA-256 hash of the API key |
@@ -105,8 +108,9 @@ erDiagram
 | created_at | TIMESTAMPTZ | |
 
 #### `documents`
+
 | Column | Type | Notes |
-|--------|------|-------|
+| -------- | ------ | ------- |
 | id | UUID | PK |
 | user_id | UUID | FK &rarr; users (nullable for guests) |
 | filename | TEXT | Original filename |
@@ -120,8 +124,9 @@ erDiagram
 | updated_at | TIMESTAMPTZ | |
 
 #### `templates` (metadata registry)
+
 | Column | Type | Notes |
-|--------|------|-------|
+| -------- | ------ | ------- |
 | name | TEXT | PK, machine name (e.g. `ieee`) |
 | display_name | TEXT | Human-readable |
 | description | TEXT | |
@@ -133,8 +138,9 @@ erDiagram
 | updated_at | TIMESTAMPTZ | |
 
 #### `feedback`
+
 | Column | Type | Notes |
-|--------|------|-------|
+| -------- | ------ | ------- |
 | id | UUID | PK |
 | user_id | UUID | FK &rarr; users |
 | document_id | UUID | FK &rarr; documents (nullable) |
@@ -145,8 +151,9 @@ erDiagram
 | created_at | TIMESTAMPTZ | |
 
 #### `generator_sessions`
+
 | Column | Type | Notes |
-|--------|------|-------|
+| -------- | ------ | ------- |
 | id | UUID | PK |
 | user_id | UUID | FK &rarr; users |
 | session_type | TEXT | 'multi_doc', 'agent' |
@@ -158,8 +165,9 @@ erDiagram
 | updated_at | TIMESTAMPTZ | |
 
 #### `generator_messages`
+
 | Column | Type | Notes |
-|--------|------|-------|
+| -------- | ------ | ------- |
 | id | UUID | PK |
 | session_id | UUID | FK &rarr; generator_sessions |
 | role | TEXT | 'user', 'assistant', 'system' |
@@ -169,8 +177,9 @@ erDiagram
 | created_at | TIMESTAMPTZ | |
 
 #### `generator_documents`
+
 | Column | Type | Notes |
-|--------|------|-------|
+| -------- | ------ | ------- |
 | id | UUID | PK |
 | session_id | UUID | FK &rarr; generator_sessions |
 | content_json | JSONB | Structured document content |
@@ -179,8 +188,9 @@ erDiagram
 | created_at | TIMESTAMPTZ | |
 
 #### `audit_logs`
+
 | Column | Type | Notes |
-|--------|------|-------|
+| -------- | ------ | ------- |
 | id | UUID | PK |
 | user_id | UUID | FK &rarr; users |
 | action | TEXT | e.g. 'document.create', 'session.delete' |
@@ -191,6 +201,7 @@ erDiagram
 | created_at | TIMESTAMPTZ | |
 
 ### Indexes (Recommended)
+
 ```sql
 CREATE INDEX idx_documents_user_created ON documents(user_id, created_at DESC);
 CREATE INDEX idx_documents_status ON documents(status);
@@ -202,21 +213,24 @@ CREATE INDEX idx_feedback_user ON feedback(user_id, created_at DESC);
 ```
 
 ## Supabase Storage Buckets
+
 | Bucket | Purpose | RLS |
-|--------|---------|-----|
+| -------- | --------- | ----- |
 | `uploads` | Original uploaded documents | User can only read own |
 | `formatted` | Processed output documents | User can only read own |
 | `generated` | AI-generated documents | User can only read own |
 
 ## ChromaDB Collections
+
 | Collection | Purpose | Embedding Model |
 |------------|---------|-----------------|
 | `session_{id}` | Per-session RAG vectors | multi-qa-MiniLM-L6-v2 |
 | TTL: 24 hours | Auto-cleanup | |
 
 ## Redis Cache Keys
+
 | Key Pattern | TTL | Purpose |
-|-------------|-----|---------|
+| ------------- | ----- | --------- |
 | `preview:{session_id}` | 5 min | Live preview cache |
 | `llm:cache:{prompt_hash}` | configurable | LLM prompt/response cache |
 | `rate:{user_id}:{window}` | 1 min | Rate limiting counters |
@@ -224,5 +238,6 @@ CREATE INDEX idx_feedback_user ON feedback(user_id, created_at DESC);
 | `template:{name}:css` | 24 hr | Template CSS pre-warm |
 
 ## Migration Tool
+
 - **Alembic** directory exists at `backend/alembic/`
 - Status:  ️ Need to verify migration versions match schema

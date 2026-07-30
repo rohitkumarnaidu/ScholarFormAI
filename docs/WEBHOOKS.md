@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Webhooks
 description: Outgoing event webhook system — subscription management, HMAC-SHA256 signed delivery, retry policy, and security
 sidebar_position: 12
@@ -20,23 +20,23 @@ ScholarForm AI provides an outgoing webhook system that notifies your services w
 - [Overview](#overview)
 - [Event Types](#event-types)
 - [Subscription Management](#subscription-management)
-  - [Create a Subscription](#create-a-subscription)
-  - [List Subscriptions](#list-subscriptions)
-  - [Get a Subscription](#get-a-subscription)
-  - [Update a Subscription](#update-a-subscription)
-  - [Delete a Subscription](#delete-a-subscription)
+    - [Create a Subscription](#create-a-subscription)
+    - [List Subscriptions](#list-subscriptions)
+    - [Get a Subscription](#get-a-subscription)
+    - [Update a Subscription](#update-a-subscription)
+    - [Delete a Subscription](#delete-a-subscription)
 - [Delivery](#delivery)
-  - [HTTP Request Format](#http-request-format)
-  - [Retry Policy](#retry-policy)
-  - [Delivery Timeout](#delivery-timeout)
+    - [HTTP Request Format](#http-request-format)
+    - [Retry Policy](#retry-policy)
+    - [Delivery Timeout](#delivery-timeout)
 - [Signature Verification](#signature-verification)
-  - [Node.js Verification](#nodejs-verification)
-  - [Python Verification](#python-verification)
+    - [Node.js Verification](#nodejs-verification)
+    - [Python Verification](#python-verification)
 - [Security](#security)
-  - [Secret Encryption at Rest](#secret-encryption-at-rest)
-  - [Replay Protection](#replay-protection)
-  - [Origin Validation](#origin-validation)
-  - [SSRF Prevention](#ssrf-prevention)
+    - [Secret Encryption at Rest](#secret-encryption-at-rest)
+    - [Replay Protection](#replay-protection)
+    - [Origin Validation](#origin-validation)
+    - [SSRF Prevention](#ssrf-prevention)
 - [Testing](#testing)
 - [Delivery Logs](#delivery-logs)
 - [Rate Limits](#rate-limits)
@@ -69,7 +69,7 @@ The webhook API is available under both **v1** (`/api/v1/webhooks`) and **v2** (
 Webhook subscriptions filter events by type. Each subscription can listen for one or more event types. When an event occurs, ScholarForm AI dispatches it to **all active subscriptions** whose event list includes the matching type.
 
 | Event Type | Triggered When |
-|---|---|
+| --- | --- |
 | `document.uploaded` | A manuscript document has been successfully uploaded |
 | `document.completed` | Document processing pipeline has finished |
 | `document.failed` | Document processing failed |
@@ -113,7 +113,7 @@ Creates a new webhook subscription. The webhook secret is encrypted at rest befo
 ```
 
 | Field | Type | Required | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `name` | string | Yes | Human-readable label (1–200 characters) |
 | `url` | string (URL) | Yes | HTTPS endpoint to receive webhook payloads |
 | `events` | array[string] | Yes | Event types to subscribe to (min 1) |
@@ -219,7 +219,7 @@ Updates one or more fields of an existing subscription. Only provided fields are
 ```
 
 | Field | Type | Required | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `name` | string | No | New label (1–200 chars) |
 | `url` | string (URL) | No | New HTTPS endpoint |
 | `events` | array[string] | No | New event type list (min 1 if provided) |
@@ -265,7 +265,7 @@ When an event is triggered, ScholarForm AI dispatches it to all matching subscri
 **Headers:**
 
 | Header | Value | Description |
-|---|---|---|
+| --- | --- | --- |
 | `Content-Type` | `application/json` | Payload format |
 | `X-Webhook-Signature` | `sha256=<hex digest>` | HMAC-SHA256 of the raw JSON body |
 | `User-Agent` | `ScholarForm-Webhook/1.0` | Origin identifier |
@@ -288,7 +288,7 @@ The request body is a JSON object whose structure depends on the event type. All
 If a delivery fails (non-2xx response or network error), ScholarForm AI retries automatically:
 
 | Attempt | Delay Before Retry |
-|---|---|
+| --- | --- |
 | 1st delivery | Immediate |
 | 2nd attempt | 120 seconds |
 | 3rd attempt | 240 seconds |
@@ -449,7 +449,7 @@ POST /api/v1/webhooks/test
 ```
 
 | Field | Type | Default | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `event_type` | string | `"test.ping"` | The event type to simulate (must match a subscription's subscribed events) |
 | `payload` | object | `{"message": "test"}` | Arbitrary JSON payload to include in the delivery |
 
@@ -521,7 +521,7 @@ GET /api/v1/webhooks/{sub_id}/deliveries
 **Delivery log fields:**
 
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `id` | string | Unique log entry identifier |
 | `subscription_id` | string | The subscription that received this delivery |
 | `event_type` | string | The event type that was dispatched |
@@ -553,7 +553,7 @@ curl https://api.scholarform.ai/api/v1/webhooks/a1b2c3d4-e5f6-7890-abcd-ef123456
 Webhook dispatch is subject to the same rate limits as the rest of the ScholarForm AI API:
 
 | Tier | General Rate | Description |
-|---|---|---|
+| --- | --- | --- |
 | Free | 60 requests/min | Standard sliding-window rate limit |
 | Pro | 300 requests/min | Higher throughput for production workloads |
 | Health | Unlimited | Health endpoints exempt |
@@ -569,14 +569,14 @@ Rate limiting applies to the **subscription management API** (CRUD endpoints). W
 Webhook behavior is configured through environment variables in the backend service:
 
 | Variable | Default | Description |
-|---|---|---|
+| --- | --- | --- |
 | `STRIPE_WEBHOOK_SECRET` | `mock-webhook` | Stripe incoming webhook secret (for billing, not related to outgoing event webhooks) |
 | `ENCRYPTION_KEY` | (required) | Base64-encoded 32-byte key for encrypting webhook secrets at rest |
 
 There are no webhook-specific environment variables for the outgoing event system. The following are hardcoded in the `WebhookService`:
 
 | Parameter | Value | Location |
-|---|---|---|
+| --- | --- | --- |
 | Delivery timeout | 10 seconds | `httpx.AsyncClient(timeout=10.0)` in `_deliver()` |
 | Max retries | 2 retries (3 total attempts) | `for attempt in range(3)` in `dispatch_event()` |
 | Backoff base | `min(2^attempt * 60, 3600)` seconds | `_calculate_retry_delay()` |
@@ -594,7 +594,7 @@ The webhook system uses two database tables:
 ### `webhook_subscriptions`
 
 | Column | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `id` | uuid | Primary key |
 | `user_id` | uuid | Owner of the subscription |
 | `name` | varchar(200) | Human-readable label |
@@ -608,7 +608,7 @@ The webhook system uses two database tables:
 ### `webhook_delivery_logs`
 
 | Column | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `id` | uuid | Primary key |
 | `subscription_id` | uuid | FK to `webhook_subscriptions.id` |
 | `event_type` | varchar | The dispatched event type |

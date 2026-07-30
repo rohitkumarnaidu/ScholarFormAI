@@ -11,7 +11,7 @@
 ## Launch Overview
 
 | Attribute | Value |
-|-----------|-------|
+| ----------- | ------- |
 | **Product** | ScholarForm AI |
 | **Version** | 1.0.0 |
 | **Launch Window** | 2026-07-21 09:00 UTC – 2026-07-22 09:00 UTC |
@@ -27,7 +27,7 @@
 ### 1.1 Final Verification — Complete 24 Hours Before Launch
 
 | # | Task | Owner | Status | Notes |
-|---|------|-------|--------|-------|
+| --- | ------ | ------- | -------- | ------- |
 | 1.1.1 | All CI/CD workflows passing on `main` | Release Engineering | ☐ | |
 | 1.1.2 | All ~10,611+ tests passing (0 failures) | QA Engineering | ☐ | |
 | 1.1.3 | CodeQL + Dependency Review clean | Security Engineering | ☐ | |
@@ -43,7 +43,7 @@
 ### 1.2 Infrastructure — Complete 12 Hours Before Launch
 
 | # | Task | Owner | Status | Notes |
-|---|------|-------|--------|-------|
+| --- | ------ | ------- | -------- | ------- |
 | 1.2.1 | Production environment fully deployed | Platform Engineering | ☐ | |
 | 1.2.2 | Staging environment locked (no deploys) | Platform Engineering | ☐ | |
 | 1.2.3 | Database migrations applied (Alembic, no pending) | Platform Engineering | ☐ | |
@@ -63,7 +63,7 @@
 ### 1.3 Security — Complete 12 Hours Before Launch
 
 | # | Task | Owner | Status | Notes |
-|---|------|-------|--------|-------|
+| --- | ------ | ------- | -------- | ------- |
 | 1.3.1 | No critical/high security findings open | Security Engineering | ☐ | |
 | 1.3.2 | CSP nonce generation verified working | Security Engineering | ☐ | |
 | 1.3.3 | HSTS header present and valid | Security Engineering | ☐ | |
@@ -80,7 +80,7 @@
 ### 1.4 Communications — Complete 6 Hours Before Launch
 
 | # | Task | Owner | Status | Notes |
-|---|------|-------|--------|-------|
+| --- | ------ | ------- | -------- | ------- |
 | 1.4.1 | Launch announcement drafted and approved | Product Marketing | ☐ | See LAUNCH_ANNOUNCEMENT.md |
 | 1.4.2 | Status page message prepared (if needed) | Product Marketing | ☐ | |
 | 1.4.3 | Internal notification sent to team | Release Engineering | ☐ | |
@@ -93,7 +93,7 @@
 ### 1.5 Rollback Preparedness — Complete 4 Hours Before Launch
 
 | # | Task | Owner | Status | Notes |
-|---|------|-------|--------|-------|
+| --- | ------ | ------- | -------- | ------- |
 | 1.5.1 | Previous version tag identified and accessible | Platform Engineering | ☐ | Tag: `v1.0.0-rc` |
 | 1.5.2 | Rollback script tested in staging | Platform Engineering | ☐ | See docs/runbooks/rollback.md |
 | 1.5.3 | Database rollback migration (downgrade) verified | Platform Engineering | ☐ | |
@@ -104,7 +104,7 @@
 ### 1.6 Final Go/No-Go — T-1 Hour
 
 | # | Task | Owner | Status | Notes |
-|---|------|-------|--------|-------|
+| --- | ------ | ------- | -------- | ------- |
 | 1.6.1 | All pre-launch tasks complete (1.1–1.5) | Release Engineering | ☐ | |
 | 1.6.2 | Go/No-Go meeting convened | Release Engineering | ☐ | |
 | 1.6.3 | All signatories confirm readiness | All Leads | ☐ | |
@@ -117,7 +117,7 @@
 ### 2.1 Deployment Execution — T-0h
 
 | # | Task | Owner | Status | Notes |
-|---|------|-------|--------|-------|
+| --- | ------ | ------- | -------- | ------- |
 | 2.1.1 | Deploy backend to production (Render.com) | Platform Engineering | ☐ | |
 | 2.1.2 | Verify backend health endpoints (live + ready) | Platform Engineering | ☐ | |
 | 2.1.3 | Deploy Celery workers to production | Platform Engineering | ☐ | |
@@ -137,7 +137,7 @@
 ### 2.2 Monitoring — T+0h to T+4h (Intensive Observation)
 
 | # | Task | Owner | Interval | Notes |
-|---|------|-------|----------|-------|
+| --- | ------ | ------- | ---------- | ------- |
 | 2.2.2 | Monitor API latency (p50/p95/p99) | Platform Engineering | Every 15min | Threshold: p99 < 5s |
 | 2.2.3 | Monitor queue depth (Celery) | Platform Engineering | Every 15min | Threshold: < 20 pending |
 | 2.2.4 | Monitor database connections | Platform Engineering | Every 15min | Threshold: < 50/97 |
@@ -151,7 +151,7 @@
 ### 2.3 Validation — T+4h
 
 | # | Task | Owner | Status | Notes |
-|---|------|-------|--------|-------|
+| --- | ------ | ------- | -------- | ------- |
 | 2.3.1 | All monitoring dashboards green | Platform Engineering | ☐ | |
 | 2.3.2 | No spike in error rates or latency | Platform Engineering | ☐ | |
 | 2.3.3 | No security incidents | Security Engineering | ☐ | |
@@ -161,7 +161,7 @@
 ### 2.4 Launch Communications — T+4h
 
 | # | Task | Owner | Status | Notes |
-|---|------|-------|--------|-------|
+| --- | ------ | ------- | -------- | ------- |
 | 2.4.1 | Publish launch announcement | Product Marketing | ☐ | |
 | 2.4.2 | Post on social media channels | Product Marketing | ☐ | |
 | 2.4.3 | Update GitHub repository description/topics | Product Marketing | ☐ | |
@@ -171,7 +171,7 @@
 ### 2.5 Verification — T+12h
 
 | # | Task | Owner | Status | Notes |
-|---|------|-------|--------|-------|
+| --- | ------ | ------- | -------- | ------- |
 | 2.5.1 | Error rate < 0.1% for 12-hour window | Platform Engineering | ☐ | |
 | 2.5.2 | p99 latency within SLOs | Platform Engineering | ☐ | |
 | 2.5.3 | No unplanned database migrations | Platform Engineering | ☐ | |
@@ -185,7 +185,7 @@
 ### 3.1 Stabilization — T+24h
 
 | # | Task | Owner | Status | Notes |
-|---|------|-------|--------|-------|
+| --- | ------ | ------- | -------- | ------- |
 | 3.1.1 | Full metrics review with team | Platform Engineering | ☐ | |
 | 3.1.2 | Post-launch retrospective scheduled | Release Engineering | ☐ | |
 | 3.1.3 | All incidents (if any) documented | Platform Engineering | ☐ | |
@@ -197,7 +197,7 @@
 ### 3.2 Post-Launch Review — T+48h
 
 | # | Task | Owner | Status | Notes |
-|---|------|-------|--------|-------|
+| --- | ------ | ------- | -------- | ------- |
 | 3.2.1 | Release retrospective held | Release Engineering | ☐ | |
 | 3.2.2 | Lessons learned documented | Release Engineering | ☐ | |
 | 3.2.3 | Launch success metrics reviewed (see §6) | Product Management | ☐ | |
@@ -211,7 +211,7 @@
 Any ONE of the following conditions triggers an automatic rollback:
 
 | # | Condition | Threshold | Action | Timeout |
-|---|-----------|-----------|--------|---------|
+| --- | ----------- | ----------- | -------- | --------- |
 | 4.1 | Error rate exceeds threshold | > 5% over 5 minutes | Automatic rollback | 5 min |
 | 4.2 | p99 latency exceeds threshold | > 10s over 5 minutes | Automatic rollback | 5 min |
 | 4.3 | Availability drops below SLO | < 99.0% over 15 minutes | Automatic rollback | 15 min |
@@ -225,6 +225,7 @@ Any ONE of the following conditions triggers an automatic rollback:
 Refer to `docs/runbooks/rollback.md` for step-by-step rollback instructions.
 
 **Rollback contacts:**
+
 - **Primary:** Platform Engineering (on-call)
 - **Secondary:** Engineering Lead
 - **Decision authority:** Release Manager or Engineering Lead
@@ -236,7 +237,7 @@ Refer to `docs/runbooks/rollback.md` for step-by-step rollback instructions.
 ### Go Criteria (ALL must be true)
 
 | # | Criterion | Met? |
-|---|-----------|------|
+| --- | ----------- | ------ |
 | 5.1 | All pre-launch tasks completed (Section 1) | ☐ |
 | 5.2 | All CI/CD workflows passing on `main` | ☐ |
 | 5.3 | All ~10,611+ tests passing with 0 failures | ☐ |
@@ -251,7 +252,7 @@ Refer to `docs/runbooks/rollback.md` for step-by-step rollback instructions.
 ### No-Go Criteria (ANY ONE triggers hold)
 
 | # | Criterion | Triggered? |
-|---|-----------|-----------|
+| --- | ----------- | ----------- |
 | 5.11 | Any CI/CD workflow failing | ☐ |
 | 5.12 | Any test suite with failures (backend/frontend/E2E) | ☐ |
 | 5.13 | Any open critical or high security vulnerability | ☐ |
@@ -267,7 +268,7 @@ Refer to `docs/runbooks/rollback.md` for step-by-step rollback instructions.
 ### 6.1 Launch Day (T+24h)
 
 | Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
+| -------- | -------- | -------- | -------- |
 | API uptime | 100% | ☐ | ☐ |
 | Error rate | < 0.1% | ☐ | ☐ |
 | p99 latency | < 5s | ☐ | ☐ |
@@ -279,7 +280,7 @@ Refer to `docs/runbooks/rollback.md` for step-by-step rollback instructions.
 ### 6.2 First Week (T+7 days)
 
 | Metric | Target | Status |
-|--------|--------|--------|
+| -------- | -------- | -------- |
 | Total uploads | > 500 | ☐ |
 | Total registrations | > 250 | ☐ |
 | AI agent sessions | > 100 | ☐ |
@@ -292,7 +293,7 @@ Refer to `docs/runbooks/rollback.md` for step-by-step rollback instructions.
 ## Section 7: Launch Team Contacts
 
 | Role | Name/Team | Contact |
-|------|-----------|---------|
+| ------ | ----------- | --------- |
 | **Launch Manager** | Release Engineering | Via Slack #release-engineering |
 | **Platform Engineering (Primary)** | On-Call Engineer | Via PagerDuty |
 | **Platform Engineering (Secondary)** | Engineering Lead | Via Slack #engineering |

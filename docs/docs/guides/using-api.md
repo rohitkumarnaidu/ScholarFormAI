@@ -72,6 +72,7 @@ curl http://localhost:8000/api/v1/styles
 ## Error Handling
 
 All errors return:
+
 ```json
 {
   "error": "ERROR_CODE",

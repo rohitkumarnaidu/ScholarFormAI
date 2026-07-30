@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Code Review Standards
 
 ## Overview
@@ -19,7 +18,7 @@ Code review is a cornerstone of quality and secure coding practices at ScholarFo
 ### Review Timeline
 
 | Priority | Response Target |
-|----------|----------------|
+| ---------- | ---------------- |
 | Security fixes | 4 hours |
 | Critical bug fixes | 24 hours |
 | Standard PRs | 48 hours (business days) |
@@ -27,16 +26,19 @@ Code review is a cornerstone of quality and secure coding practices at ScholarFo
 ## What Reviewers Must Check
 
 ### Correctness
+
 - Does the code do what it claims?
 - Are edge cases handled?
 - Are error paths properly managed?
 
 ### Test Coverage
+
 - Are new features accompanied by tests?
 - Do all existing tests still pass?
 - Is coverage maintained above 70% (backend) and passing (frontend)?
 
 ### Security
+
 - Are inputs validated and sanitized?
 - Are there any hardcoded credentials or secrets?
 - Does the change follow the principle of least privilege?
@@ -44,17 +46,20 @@ Code review is a cornerstone of quality and secure coding practices at ScholarFo
 - Are authentication and authorization checks in place for protected routes?
 
 ### Style & Standards
+
 - Python: Does the code pass `ruff check` and mypy?
 - Frontend: Does the code pass ESLint with `--max-warnings 0`?
 - Are type annotations present for all public APIs?
 - Does the code follow the project's coding conventions?
 
 ### Documentation
+
 - Are public APIs documented?
 - Are changes reflected in relevant docs?
 - Is a CHANGELOG entry included?
 
 ### Performance
+
 - Are there obvious performance regressions?
 - Are database queries optimized (N+1 queries, missing indexes)?
 

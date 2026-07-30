@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Two-Factor Authentication (2FA) Policy
 
 ## Requirement
@@ -55,6 +54,6 @@ If you lose access to your 2FA device:
 2. Contact a GitHub organization owner to request a 2FA reset.
 3. Re-enable 2FA immediately after regaining access.
 
---- 
+---
 
 *Last updated: July 2026*

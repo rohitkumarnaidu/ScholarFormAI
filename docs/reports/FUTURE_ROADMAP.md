@@ -13,7 +13,7 @@
 This document outlines the strategic development roadmap for ScholarForm AI following the v1.0.0 production release. The roadmap is organized into three horizons — short-term (v1.1, next quarter), medium-term (v1.2, next 6 months), and long-term (v2.0, next 12 months) — each with defined themes, deliverables, and exit criteria.
 
 | Horizon | Version | Timeline | Theme |
-|---------|---------|----------|-------|
+| --------- | --------- | ---------- | ------- |
 | **H1** | v1.1 | Q3 2026 | Enterprise hardening & operations maturity |
 | **H2** | v1.2 | Q1 2027 | Collaboration & extensibility |
 | **H3** | v2.0 | Q3 2027 | Platform scale & ecosystem |
@@ -29,7 +29,7 @@ The v1.1 release focuses on closing remaining gaps from the v1.0 hardening cycle
 ### 1.1 RBAC Expansion
 
 | Feature | Current (v1.0) | Target (v1.1) | Priority |
-|---------|---------------|----------------|----------|
+| --------- | --------------- | ---------------- | ---------- |
 | RBAC middleware implementation | 708B stub | Full implementation | 🔴 Critical |
 | Role hierarchy | 3 tiers (free/pro/admin) | 5 tiers (guest/free/pro/enterprise/admin) | 🟡 High |
 | Permission model | Route-level only | Route + resource-level (document, template, API) | 🟡 High |
@@ -37,6 +37,7 @@ The v1.1 release focuses on closing remaining gaps from the v1.0 hardening cycle
 | Role delegation | Not supported | Admin → Manager delegation | 🟢 Medium |
 
 **Exit Criteria:**
+
 - [ ] RBAC middleware fully implemented with no stubs
 - [ ] 5-tier role hierarchy enforced across all 34 REST endpoints
 - [ ] Resource-level permissions for documents, templates, and API keys
@@ -46,7 +47,7 @@ The v1.1 release focuses on closing remaining gaps from the v1.0 hardening cycle
 ### 1.2 Audit Logging
 
 | Feature | Current (v1.0) | Target (v1.1) | Priority |
-|---------|---------------|----------------|----------|
+| --------- | --------------- | ---------------- | ---------- |
 | Write operation logging | Partial (not all services) | All write operations logged | 🔴 Critical |
 | Audit log service | 708B stub (existed) | Full implementation | 🔴 Critical |
 | Log retention policy | None implemented | 90-day retention + archive | 🟡 High |
@@ -55,6 +56,7 @@ The v1.1 release focuses on closing remaining gaps from the v1.0 hardening cycle
 | Compliance export | Not implemented | CSV/JSON export for compliance audits | 🟢 Medium |
 
 **Exit Criteria:**
+
 - [ ] All write operations across 25 services logged with actor, action, resource, timestamp
 - [ ] Audit log database table with 90-day rolling retention
 - [ ] Audit query API with filtering (user, action, resource, date range)
@@ -64,7 +66,7 @@ The v1.1 release focuses on closing remaining gaps from the v1.0 hardening cycle
 ### 1.3 WebSocket Stability
 
 | Feature | Current (v1.0) | Target (v1.1) | Priority |
-|---------|---------------|----------------|----------|
+| --------- | --------------- | ---------------- | ---------- |
 | Connection management | Basic | Reconnection with exponential backoff | 🔴 Critical |
 | Heartbeat/ping-pong | Not implemented | 30s heartbeat interval | 🟡 High |
 | Connection pool limits | Not enforced | Max 1000 concurrent connections | 🟡 High |
@@ -73,6 +75,7 @@ The v1.1 release focuses on closing remaining gaps from the v1.0 hardening cycle
 | Connection metrics | Not implemented | Grafana dashboard for WebSocket health | 🟢 Medium |
 
 **Exit Criteria:**
+
 - [ ] WebSocket reconnection with exponential backoff (max 30s)
 - [ ] Heartbeat interval at 30s with timeout detection
 - [ ] Max 1000 concurrent connections with 429 on overflow
@@ -83,7 +86,7 @@ The v1.1 release focuses on closing remaining gaps from the v1.0 hardening cycle
 ### 1.4 Operations Maturity
 
 | Initiative | Deliverable | Priority |
-|------------|-------------|----------|
+| ------------ | ------------- | ---------- |
 | Staging environment | Live staging environment with parity to production | 🔴 Critical |
 | Deploy staging workflow | GitHub Actions workflow for staging deployment | 🔴 Critical |
 | Load testing automation | Scheduled k6/Locust tests from CI | 🟡 High |
@@ -96,7 +99,7 @@ The v1.1 release focuses on closing remaining gaps from the v1.0 hardening cycle
 ### 1.5 Additional Features
 
 | Feature | Description | Priority |
-|---------|-------------|----------|
+| --------- | ------------- | ---------- |
 | LaTeX export | Implement Pandoc subprocess (from 743B stub) | 🟡 High |
 | globals.css optimization | Reduce 117KB compiled CSS bloat | 🟡 High |
 | api.synthesis.js wiring | Connect stub to real API calls | 🟡 High |
@@ -116,7 +119,7 @@ The v1.2 release focuses on enabling multi-user collaboration, publishing the AP
 ### 2.1 Collaborative Editing
 
 | Feature | Description | Priority |
-|---------|-------------|----------|
+| --------- | ------------- | ---------- |
 | Operational Transform (OT) | Real-time multi-user document editing with conflict resolution | 🔴 Critical |
 | Presence indicators | See who else is editing and their cursor position | 🟡 High |
 | Comment threads | Inline document comments with @mentions and replies | 🟡 High |
@@ -128,7 +131,7 @@ The v1.2 release focuses on enabling multi-user collaboration, publishing the AP
 ### 2.2 API v2
 
 | Feature | Description | Priority |
-|---------|-------------|----------|
+| --------- | ------------- | ---------- |
 | API versioning strategy | URL-based (`/api/v2/`) with 12-month deprecation window | 🔴 Critical |
 | GraphQL endpoint | Optional GraphQL for complex document queries | 🟡 High |
 | Webhook v2 | Configurable event filters, retry policies, dead letter queues | 🟡 High |
@@ -141,7 +144,7 @@ The v1.2 release focuses on enabling multi-user collaboration, publishing the AP
 ### 2.3 Plugin System
 
 | Feature | Description | Priority |
-|---------|-------------|----------|
+| --------- | ------------- | ---------- |
 | Plugin manifest standard | Declarative plugin descriptors (YAML/JSON schema) | 🔴 Critical |
 | Plugin lifecycle API | Install, enable, disable, uninstall endpoints | 🟡 High |
 | Sandboxed execution | WebAssembly-based plugin runtime for security isolation | 🟡 High |
@@ -153,7 +156,7 @@ The v1.2 release focuses on enabling multi-user collaboration, publishing the AP
 ### 2.4 Quality & Compliance
 
 | Initiative | Deliverable | Priority |
-|------------|-------------|----------|
+| ------------ | ------------- | ---------- |
 | Coverage measurement fix | Resolve `KeyError: 'pydantic.root_model'` for local `--cov` | 🟡 High |
 | Branch coverage | Enable and enforce branch coverage measurement | 🟡 High |
 | OpenSSF Gold badge | Achieve 90%+ Gold badge readiness | 🟡 High |
@@ -165,7 +168,7 @@ The v1.2 release focuses on enabling multi-user collaboration, publishing the AP
 ### 2.5 Infrastructure
 
 | Initiative | Description | Priority |
-|------------|-------------|----------|
+| ------------ | ------------- | ---------- |
 | Database read replicas | Supabase read replicas for reporting queries | 🟡 High |
 | CDN optimization | Edge caching for static previews and template assets | 🟡 High |
 | Multi-region deployment | US + EU regions for data residency compliance | 🟡 High |
@@ -183,7 +186,7 @@ The v2.0 release represents a major platform evolution with real-time collaborat
 ### 3.1 Real-Time Collaboration (Production Scale)
 
 | Feature | Description | Priority |
-|---------|-------------|----------|
+| --------- | ------------- | ---------- |
 | CRDT-based collaboration | Conflict-free Replicated Data Types for offline-capable editing | 🔴 Critical |
 | WebSocket horizontal scaling | Redis Pub/Sub + sticky sessions for multi-node WebSocket | 🔴 Critical |
 | Offline editing | Local-first architecture with sync-on-reconnect | 🟡 High |
@@ -195,7 +198,7 @@ The v2.0 release represents a major platform evolution with real-time collaborat
 ### 3.2 Enterprise SSO
 
 | Feature | Description | Priority |
-|---------|-------------|----------|
+| --------- | ------------- | ---------- |
 | SAML 2.0 / OIDC | Enterprise identity provider integration (Okta, Azure AD, Google Workspace) | 🔴 Critical |
 | SCIM provisioning | Automatic user provisioning and de-provisioning | 🔴 Critical |
 | Directory sync | LDAP/Active Directory integration for on-premise deployments | 🟡 High |
@@ -207,7 +210,7 @@ The v2.0 release represents a major platform evolution with real-time collaborat
 ### 3.3 Marketplace & Ecosystem
 
 | Feature | Description | Priority |
-|---------|-------------|----------|
+| --------- | ------------- | ---------- |
 | Public template marketplace | Community-contributed templates with ratings, reviews, versioning | 🔴 Critical |
 | AI model marketplace | Third-party LLM provider integration with autoscaling | 🟡 High |
 | Plugin distribution | Signed plugin distribution with versioning and dependency resolution | 🟡 High |
@@ -219,7 +222,7 @@ The v2.0 release represents a major platform evolution with real-time collaborat
 ### 3.4 Advanced AI Capabilities
 
 | Feature | Description | Priority |
-|---------|-------------|----------|
+| --------- | ------------- | ---------- |
 | Custom fine-tuned models | Domain-specific fine-tuning for academic formatting | 🔴 Critical |
 | Peer review simulation | AI-driven review of document structure, grammar, and citation quality | 🟡 High |
 | Reference auto-completion | Auto-complete from 200M+ papers via Semantic Scholar / Crossref | 🟡 High |
@@ -231,7 +234,7 @@ The v2.0 release represents a major platform evolution with real-time collaborat
 ### 3.5 Compliance & Certification
 
 | Initiative | Deliverable | Priority |
-|------------|-------------|----------|
+| ------------ | ------------- | ---------- |
 | SOC 2 Type II | Full SOC 2 audit with 6-month observation period | 🔴 Critical |
 | ISO 27001 certification | Formal ISO 27001 certification | 🔴 Critical |
 | GDPR full compliance | DPA, data portability, right to erasure, DPO appointment | 🔴 Critical |
@@ -243,7 +246,7 @@ The v2.0 release represents a major platform evolution with real-time collaborat
 ### 3.6 Breaking Changes (API v2 Migration)
 
 | Change | Impact | Mitigation |
-|--------|--------|------------|
+| -------- | -------- | ------------ |
 | API URL restructuring | `/api/v1/` → `/api/v2/` | 12-month parallel run with deprecation headers |
 | Webhook payload schema v2 | Enhanced event types and metadata | Schema version negotiation via Accept header |
 | Rate limit model v2 | Granular per-endpoint limits | Migration guide + transition period |
@@ -255,7 +258,7 @@ The v2.0 release represents a major platform evolution with real-time collaborat
 ## Resource Requirements
 
 | Horizon | Engineering | Infrastructure | Total Estimate |
-|---------|-------------|---------------|----------------|
+| --------- | ------------- | --------------- | ---------------- |
 | H1: v1.1 (Q3 2026) | 4–5 FTE | ~$500/month increase | ~$180K |
 | H2: v1.2 (Q1 2027) | 6–8 FTE | ~$2,000/month increase | ~$400K |
 | H3: v2.0 (Q3 2027) | 10–15 FTE | ~$5,000/month increase | ~$1.2M |
@@ -265,7 +268,7 @@ The v2.0 release represents a major platform evolution with real-time collaborat
 ## Risk & Dependencies
 
 | Risk | Horizon | Impact | Mitigation |
-|------|---------|--------|------------|
+| ------ | --------- | -------- | ------------ |
 | CRDT complexity leading to delays | H3 | High | Prototype evaluation in H2; fallback to OT |
 | SOC 2 audit timeline slip | H3 | High | Begin readiness assessment in H2 |
 | LLM provider pricing volatility | All | Medium | Maintain multi-provider fallback; local Ollama option |

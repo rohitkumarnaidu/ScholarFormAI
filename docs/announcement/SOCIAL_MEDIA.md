@@ -12,6 +12,7 @@ I'm excited to share that after months of development, **ScholarForm AI v1.0 is 
 **The problem is universal:** any researcher who has submitted a paper knows the pain of reformatting for each journal's style guide. It's tedious, error-prone, and a massive time sink.
 
 **What ScholarForm AI does:**
+
 - Upload any manuscript (DOCX, PDF, LaTeX, Markdown) → get a publisher-ready document in any of 17 journal templates
 - AI Agent generates complete research documents from a topic prompt
 - Multi-doc synthesis merges 2–10 source documents into one coherent manuscript
@@ -23,7 +24,7 @@ I'm excited to share that after months of development, **ScholarForm AI v1.0 is 
 
 Check it out, star the repo, or contribute: [link]
 
-#ScholarFormAI #OpenSource #AcademicWriting #ResearchTools #AI #MachineLearning #FastAPI #NextJS
+# ScholarFormAI #OpenSource #AcademicWriting #ResearchTools #AI #MachineLearning #FastAPI #NextJS
 
 ---
 
@@ -44,7 +45,7 @@ Built with FastAPI + Next.js 16 + Celery + ChromaDB + Supabase. MIT licensed. Co
 
 Star it on GitHub → github.com/rohitkumarnaidu/ScholarFormAI
 
-#OpenSource #AcademicWriting #Research #AI
+# OpenSource #AcademicWriting #Research #AI
 
 ---
 
@@ -64,6 +65,7 @@ I built ScholarForm AI to solve a problem every academic knows: formatting manus
 - **Real-time preview** with WebSocket/SSE diff
 
 **Stack:**
+
 - FastAPI backend with 34 REST endpoints
 - Next.js 16 (App Router) + React 19 + Tailwind
 - Celery workers + Redis pub/sub
@@ -161,6 +163,7 @@ Most solutions are proprietary SaaS (Overleaf, Manuscripts.ai, typeset.io). Scho
 **Security:** JWKS JWT auth, ClamAV scanning, Cosign-signed containers, SLSA L3, SBOMs.
 
 **What I'd love feedback on:**
+
 - The pipeline architecture (12 stages, all swappable)
 - The RAG approach for multi-doc synthesis
 - Template creation workflow
@@ -195,7 +198,7 @@ If you've ever submitted a paper to a journal, you know the pain. IEEE wants one
 ### The Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
+| ------- | ----------- |
 | Frontend | Next.js 16 (App Router), React 19, Tailwind CSS, TanStack Query |
 | Backend | FastAPI (34 REST endpoints), Celery workers |
 | AI/LLM | NVIDIA NIM (primary), Groq (fallback), Ollama (local) |
@@ -243,6 +246,7 @@ ScholarForm AI is an open-source, AI-powered platform purpose-built to eliminate
 Beyond formatting, the AI Agent generator drafts complete research papers from a topic prompt, and the Multi-Doc RAG engine merges 2–10 source documents into one coherent manuscript.
 
 **Key Features:**
+
 - 12-stage automated formatting pipeline
 - AI paper generation with outline approval + section streaming
 - Multi-document RAG synthesis with ChromaDB
@@ -267,6 +271,7 @@ Beyond formatting, the AI Agent generator drafts complete research papers from a
 > Would love your feedback, questions, and ideas for the next templates to add.
 
 **Links:**
+
 - GitHub: [github.com/rohitkumarnaidu/ScholarFormAI](https://github.com/rohitkumarnaidu/ScholarFormAI)
 - Website: [scholarform.ai](https://scholarform.ai)
 

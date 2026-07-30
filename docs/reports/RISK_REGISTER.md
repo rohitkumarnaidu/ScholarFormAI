@@ -1,7 +1,7 @@
 # Risk Register — ScholarForm AI
 
 | ID | Risk | Severity | Likelihood | Impact | Mitigation | Status |
-|----|------|----------|------------|--------|------------|--------|
+| ---- | ------ | ---------- | ------------ | -------- | ------------ | -------- |
 | R-001 | Coverage measurement broken (pydantic KeyError) | 🟡 Medium | High | Medium | Tests pass without --cov; CI measures independently | Documented |
 | R-002 | conftest mock_redis breaks isinstance checks | 🟡 Medium | High | Low | Patched via isinstance; alternative fixtures exist | Documented |
 | R-003 | ChromaDB falls back to SQLite (no persistence) | 🟡 Medium | Medium | Medium | Acceptable for staging; prod uses persistent volume | Mitigated |

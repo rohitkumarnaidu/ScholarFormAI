@@ -13,7 +13,7 @@
 ScholarForm AI v1.0.0 has undergone comprehensive security validation across 16 compliance dimensions. All critical and high-severity findings have been remediated. The platform achieves a strong security posture through defense-in-depth architecture, continuous scanning, supply chain security controls, and formal security testing with 490+ dedicated security tests.
 
 | Security Dimension | Status | Details |
-|--------------------|--------|---------|
+| -------------------- | -------- | --------- |
 | Vulnerability Management | ✅ **PASS** | 0 critical/high open findings |
 | Dependency Scanning | ✅ **PASS** | Renovate + Dependency Review + FOSSA |
 | SAST | ✅ **PASS** | CodeQL + ruff + mypy |
@@ -38,7 +38,7 @@ ScholarForm AI v1.0.0 has undergone comprehensive security validation across 16 
 ### 1.1 Vulnerability Remediation History
 
 | Severity | Open (Before Hardening) | Open (After Hardening) | Status |
-|----------|------------------------|------------------------|--------|
+| ---------- | ------------------------ | ------------------------ | -------- |
 | Critical | 3 | 0 | ✅ All closed |
 | High | 7 | 0 | ✅ All closed |
 | Medium | 6 | 2 (pre-existing) | ✅ Non-blocking |
@@ -47,7 +47,7 @@ ScholarForm AI v1.0.0 has undergone comprehensive security validation across 16 
 ### 1.2 Remediated Critical Findings
 
 | Finding | Component | Fix |
-|---------|-----------|-----|
+| --------- | ----------- | ----- |
 | Auth rate limiting missing | `routers/v1/auth.py` | Added SlowAPI: 10/min login, 5/min password reset |
 | CSRF hardcoded fallback secret | `middleware/csrf.py` | Returns None on missing secret, logs CRITICAL |
 | Encryption key auto-generated (data loss risk) | `services/encryption_service.py` | Raises RuntimeError if key missing |
@@ -56,7 +56,7 @@ ScholarForm AI v1.0.0 has undergone comprehensive security validation across 16 
 ### 1.3 Remediated High Findings
 
 | Finding | Component | Fix |
-|---------|-----------|-----|
+| --------- | ----------- | ----- |
 | Auth error info leak | `services/auth_service.py` | Generic error messages |
 | Webhook SSRF | `services/webhook_service.py` | HTTPS + domain validation + private IP rejection |
 | Frontend HSTS missing | `next.config.mjs` | max-age=31536000; includeSubDomains; preload |
@@ -72,7 +72,7 @@ ScholarForm AI v1.0.0 has undergone comprehensive security validation across 16 
 ### 2.1 Scanning Pipeline
 
 | Stage | Tool | Frequency | Scope |
-|-------|------|-----------|-------|
+| ------- | ------ | ----------- | ------- |
 | PR Dependency Review | GitHub Dependency Review | Every PR | Backend + frontend deps |
 | Automated Updates | Renovate Bot | Weekly | All dependencies |
 | License Compliance | FOSSA | Weekly | License compatibility audit |
@@ -83,7 +83,7 @@ ScholarForm AI v1.0.0 has undergone comprehensive security validation across 16 
 ### 2.2 Dependency Inventory
 
 | Component | Total Packages | Direct | Transitive |
-|-----------|---------------|--------|------------|
+| ----------- | --------------- | -------- | ------------ |
 | Backend (Python) | 382 | ~180 | ~202 |
 | Frontend (npm) | ~1,200 | ~85 | ~1,115 |
 | Docker Images | ~150 base pkgs | — | — |
@@ -103,7 +103,7 @@ ScholarForm AI v1.0.0 has undergone comprehensive security validation across 16 
 ### 3.1 Static Application Security Testing (SAST)
 
 | Tool | Focus | Result | Frequency |
-|------|-------|--------|-----------|
+| ------ | ------- | -------- | ----------- |
 | CodeQL | JavaScript + Python security queries | ✅ 0 alerts | Every push |
 | ruff | Python linter (E9, F63, F7, F82) | ✅ 0 errors | Every push |
 | mypy | Python type checker | ✅ Pass (continue-on-error) | Every push |
@@ -112,7 +112,7 @@ ScholarForm AI v1.0.0 has undergone comprehensive security validation across 16 
 ### 3.2 Dynamic Application Security Testing (DAST)
 
 | Area | Tool | Result |
-|------|------|--------|
+| ------ | ------ | -------- |
 | SSRF testing | Custom test suite (15 tests) | ✅ All private IP ranges blocked |
 | CSRF testing | Custom test suite (10 tests) | ✅ Token validation enforced |
 | Rate limiting enforcement | Custom test suite (12 tests) | ✅ All tiers enforced |
@@ -126,7 +126,7 @@ ScholarForm AI v1.0.0 has undergone comprehensive security validation across 16 
 ### 4.1 Scorecard Overview
 
 | Check | Score | Result |
-|-------|-------|--------|
+| ------- | ------- | -------- |
 | Binary-Artifacts | 10/10 | ✅ |
 | Branch-Protection | 10/10 | ✅ |
 | CI-Tests | 10/10 | ✅ |
@@ -148,15 +148,15 @@ ScholarForm AI v1.0.0 has undergone comprehensive security validation across 16 
 ### 4.2 OpenSSF Best Practices Badge
 
 | Badge Level | Readiness | Score |
-|-------------|-----------|-------|
+| ------------- | ----------- | ------- |
 | Passing | ✅ READY | 98% |
 | Silver | ✅ READY | 97% |
-| Gold |  ️ Near Ready | 77% |
+| Gold | ️ Near Ready | 77% |
 
 ### 4.3 Gold Gaps
 
 | Gap | Requirement | Current State | Plan |
-|-----|-------------|---------------|------|
+| ----- | ------------- | --------------- | ------ |
 | Coverage 90% | 90% statement coverage | ~61% (CI pipeline broken) | v1.2: Fix coverage measurement |
 | Branch coverage 80% | 80% branch coverage | Not measured | v1.2: Add branch coverage |
 | Contributors unassociated | 2+ unassociated contributors | Internal only | v1.2: Community outreach |
@@ -170,7 +170,7 @@ ScholarForm AI v1.0.0 has undergone comprehensive security validation across 16 
 ### 5.1 SLSA Attestation
 
 | Requirement | Level 3 | Status |
-|-------------|---------|--------|
+| ------------- | --------- | -------- |
 | Provenance exists | Required | ✅ Generated |
 | Provenance is authenticated | Required | ✅ Cosign keyless OIDC |
 | Provenance is non-forgeable | Required | ✅ SLSA attestation |
@@ -198,7 +198,7 @@ cosign verify ghcr.io/scholarform/backend:v1.0.0 \
 ## 6. Container Signing
 
 | Property | Value |
-|----------|-------|
+| ---------- | ------- |
 | Signing Tool | Cosign (v2) |
 | Key Type | Keyless (OIDC) |
 | OIDC Issuer | `https://token.actions.githubusercontent.com` |
@@ -212,7 +212,7 @@ cosign verify ghcr.io/scholarform/backend:v1.0.0 \
 ## 7. Secrets Scanning
 
 | Tool | Status | Configuration |
-|------|--------|---------------|
+| ------ | -------- | --------------- |
 | .secrets.baseline | ✅ Active | Pre-commit hook + CI |
 | detect-secrets | ✅ Active | Baseline committed to repo |
 | GitLeaks (CI) | ✅ Active | Pre-commit hook |
@@ -221,7 +221,7 @@ cosign verify ghcr.io/scholarform/backend:v1.0.0 \
 ### Secrets Storage
 
 | Secret Type | Storage Mechanism | Encryption |
-|-------------|-------------------|------------|
+| ------------- | ------------------- | ------------ |
 | LLM API Keys | `user_api_keys` table | Fernet (symmetric) |
 | Supabase Keys | Environment variables | Platform-level (Render/Vercel) |
 | Encryption Key | Environment variable | Required on startup |
@@ -236,7 +236,7 @@ cosign verify ghcr.io/scholarform/backend:v1.0.0 \
 ### 8.1 Backend Middleware Stack (11 Modules)
 
 | # | Middleware | File | Function |
-|---|-----------|------|----------|
+| --- | ----------- | ------ | ---------- |
 | 1 | CORS | `backend/app/main.py:684` | Origin validation, dev port fallback |
 | 2 | Request ID | `middleware/request_id.py` | Correlation ID on all requests |
 | 3 | HTTPS Redirect | `middleware/https_redirect.py` | Enforce HTTPS |
@@ -252,7 +252,7 @@ cosign verify ghcr.io/scholarform/backend:v1.0.0 \
 ### 8.2 Frontend Security Headers
 
 | Header | Value | Source |
-|--------|-------|--------|
+| -------- | ------- | -------- |
 | `Strict-Transport-Security` | `max-age=31536000; includeSubDomains; preload` | `next.config.mjs` |
 | `Permissions-Policy` | `camera=(), microphone=(), geolocation=(), interest-cohort=()` | `next.config.mjs` |
 | `X-Content-Type-Options` | `nosniff` | `next.config.mjs` |
@@ -264,14 +264,14 @@ cosign verify ghcr.io/scholarform/backend:v1.0.0 \
 ## 9. Compliance Frameworks
 
 | Framework | Coverage | Status |
-|-----------|----------|--------|
+| ----------- | ---------- | -------- |
 | OWASP Top 10 (2021) | Full (A01–A10) | ✅ Covered |
 | OWASP AI Top 10 (LLM01–LLM10) | Full | ✅ Covered |
 | OWASP ASVS (Level 1) | Authentication, session, access control | ✅ Implemented |
-| GDPR | Data encryption, access controls, audit logging |  ️ Partial (v1.2) |
-| SOC 2 (Security Pillar) | Security monitoring, access controls, encryption |  ️ Baseline (audit pending) |
-| ISO 27001 | Risk management, security policy, incident response |  ️ Baseline (audit pending) |
-| NIST CSF | Identify, Protect, Detect, Respond, Recover |  ️ Baseline (mapping in progress) |
+| GDPR | Data encryption, access controls, audit logging | ️ Partial (v1.2) |
+| SOC 2 (Security Pillar) | Security monitoring, access controls, encryption | ️ Baseline (audit pending) |
+| ISO 27001 | Risk management, security policy, incident response | ️ Baseline (audit pending) |
+| NIST CSF | Identify, Protect, Detect, Respond, Recover | ️ Baseline (mapping in progress) |
 | OpenSSF Best Practices | Passing + Silver achieved | ✅ Achieved |
 | SLSA | Level 3 | ✅ Achieved |
 
@@ -280,7 +280,7 @@ cosign verify ghcr.io/scholarform/backend:v1.0.0 \
 ## 10. Security Test Coverage
 
 | Security Category | Tests | Status |
-|-------------------|-------|--------|
+| ------------------- | ------- | -------- |
 | JWT verification | 22 | ✅ All pass |
 | RBAC enforcement | 19 | ✅ All pass |
 | API key encryption | 12 | ✅ All pass |

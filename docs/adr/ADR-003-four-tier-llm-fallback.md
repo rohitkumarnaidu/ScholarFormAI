@@ -42,6 +42,7 @@ raise AllProvidersExhaustedError()
 ## Consequences
 
 **Positive:**
+
 - 99.9%+ effective LLM availability — four independent providers with different infrastructures make simultaneous failure extremely unlikely
 - Cost optimization — NVIDIA NIM and Groq handle ~80% of requests on free tiers; Ollama handles simple formatting rules locally at zero cost
 - Data locality — sensitive manuscripts processed via Ollama never leave the machine; only anonymized formatting requests go to external providers
@@ -49,6 +50,7 @@ raise AllProvidersExhaustedError()
 - Circuit breaker pattern prevents cascading failures and provider hammering
 
 **Negative:**
+
 - Response time variance — fallback tiers (especially Ollama on CPU) are significantly slower than the primary tier
 - Inconsistent output — different models produce different formatting decisions, requiring a normalization layer
 - Increased complexity — the provider registry, key resolution, and circuit breaker add ~1500 lines of code
@@ -58,6 +60,7 @@ raise AllProvidersExhaustedError()
 ## Compliance
 
 This decision has been implemented and is verified by:
+
 - `backend/tests/test_llm_service.py` — `generate_with_fallback()` 4-tier chain
 - `backend/tests/test_llm_latency_sla.py` — P95 response time SLA across all tiers
 - `backend/tests/test_circuit_breaker.py` — circuit breaker state machine (closed/open/half-open)

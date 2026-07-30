@@ -17,6 +17,7 @@ Open [http://localhost:3000](http://localhost:3000).
 ## Step 3: Select Style
 
 Choose a citation style from the dropdown:
+
 - **APA 7th** — Social sciences, psychology, education
 - **MLA 9th** — Humanities, literature, arts
 - **Chicago 17th** — History, arts, humanities
@@ -30,6 +31,7 @@ Choose a citation style from the dropdown:
 ## Step 4: Configure Options
 
 Adjust formatting:
+
 - Page size (A4, Letter, Legal)
 - Font (Times New Roman, Arial, Calibri, etc.)
 - Font size (10-14pt)

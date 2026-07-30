@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: "ADR 005: ChromaDB for RAG Vector Storage"
 description: Decision to use ChromaDB for session-scoped document embeddings
 sidebar_position: 44

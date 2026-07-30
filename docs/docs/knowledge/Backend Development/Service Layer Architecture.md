@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Service Layer Architecture
 
 <cite>
@@ -20,6 +19,7 @@
 </cite>
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [Project Structure](#project-structure)
 3. [Core Components](#core-components)
@@ -31,10 +31,13 @@
 9. [Conclusion](#conclusion)
 
 ## Introduction
+
 This document describes the service layer architecture and business logic implementation for the automated manuscript formatter backend. It focuses on the service abstraction pattern, dependency injection mechanisms, and lifecycle management across core services such as document processing, authentication, LLM integration, enhancement management, and external API clients. It also explains service interfaces, error handling patterns, transaction management, caching strategies, configuration, testing approaches, and integration with the pipeline system. Additional topics include service isolation, fault tolerance, and monitoring requirements.
 
 ## Project Structure
+
 The service layer is organized under backend/app/services and integrates with pipeline orchestration, caching, and utilities. Key areas:
+
 - Services: document_service, auth_service, llm_service, enhancement_manager, crossref_client, nvidia_client
 - Pipeline: orchestrator coordinates processing stages and integrates external clients
 - Cache: redis_cache provides shared caching for LLM and GROBID results
@@ -70,6 +73,7 @@ NV --> LLM
 ```
 
 **Diagram sources**
+
 - [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
 - [auth_service.py:56-183](file://backend/app/services/auth_service.py#L56-L183)
 - [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
@@ -82,6 +86,7 @@ NV --> LLM
 - [grobid_client.py:25-317](file://backend/app/pipeline/services/grobid_client.py#L25-L317)
 
 **Section sources**
+
 - [document_service.py:1-560](file://backend/app/services/document_service.py#L1-L560)
 - [auth_service.py:1-183](file://backend/app/services/auth_service.py#L1-L183)
 - [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
@@ -95,6 +100,7 @@ NV --> LLM
 - [singleton.py:1-72](file://backend/app/utils/singleton.py#L1-L72)
 
 ## Core Components
+
 - DocumentService: Centralized database operations for documents, results, and processing status using Supabase client. Provides CRUD, status updates, and integrity helpers.
 - AuthService: Authentication service backed by Supabase Auth, JWT decoding, and user session management.
 - LLMService: Unified LLM access via LiteLLM with fallback to direct provider clients, input sanitization, caching, and metrics.
@@ -106,6 +112,7 @@ NV --> LLM
 - DoclingClient/GROBIDClient: Optional external clients for layout analysis and metadata extraction with availability checks and safe execution wrappers.
 
 **Section sources**
+
 - [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
 - [auth_service.py:56-183](file://backend/app/services/auth_service.py#L56-L183)
 - [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
@@ -118,7 +125,9 @@ NV --> LLM
 - [grobid_client.py:25-317](file://backend/app/pipeline/services/grobid_client.py#L25-L317)
 
 ## Architecture Overview
+
 The service layer follows a layered architecture:
+
 - Abstraction: Each service encapsulates a domain concern (documents, auth, LLM, enhancements, external APIs).
 - Dependency Injection: Services rely on configuration-driven settings and shared utilities (e.g., Redis cache, Supabase client).
 - Lifecycle Management: Services are initialized lazily or as singletons, with guarded fallbacks when dependencies are unavailable.
@@ -143,6 +152,7 @@ NV --> LLM
 ```
 
 **Diagram sources**
+
 - [orchestrator.py:73-1227](file://backend/app/pipeline/orchestrator.py#L73-L1227)
 - [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
 - [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
@@ -155,13 +165,16 @@ NV --> LLM
 ## Detailed Component Analysis
 
 ### DocumentService
+
 Responsibilities:
+
 - Manage document lifecycle: creation, updates, deletion, and archival cleanup.
 - Persist processing status per pipeline phase.
 - Store and retrieve document results and validation outcomes.
 - Integrity helpers: signed download URLs, output hash updates, and failure marking.
 
 Key patterns:
+
 - Supabase client access via a factory method.
 - Defensive programming: graceful degradation when optional schema fields are missing.
 - Logging with structured extras for observability.
@@ -189,18 +202,23 @@ class DocumentService {
 ```
 
 **Diagram sources**
+
 - [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
 
 **Section sources**
+
 - [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
 
 ### AuthService
+
 Responsibilities:
+
 - JWT decoding and verification.
 - User registration, login, password reset, and OTP verification via Supabase Auth.
 - Runtime availability checks and controlled failures when credentials are missing.
 
 Key patterns:
+
 - Conditional client initialization with warnings and graceful HTTP 503 when not configured.
 - Consistent error wrapping with HTTPException for API consumers.
 
@@ -218,19 +236,24 @@ class AuthService {
 ```
 
 **Diagram sources**
+
 - [auth_service.py:56-183](file://backend/app/services/auth_service.py#L56-L183)
 
 **Section sources**
+
 - [auth_service.py:1-183](file://backend/app/services/auth_service.py#L1-L183)
 
 ### LLMService
+
 Responsibilities:
+
 - Unified LLM access via LiteLLM with fallback to direct provider clients.
 - Input sanitization and injection guards.
 - LLM result caching with Redis and metrics emission.
 - Multi-tier fallback strategy for reliability.
 
 Key patterns:
+
 - Provider inference and per-provider API key/base resolution.
 - Streaming vs. cached generation decisions.
 - Health checks for providers and model availability.
@@ -247,20 +270,25 @@ LLMService --> RedisCache : "uses"
 ```
 
 **Diagram sources**
+
 - [llm_service.py:91-393](file://backend/app/services/llm_service.py#L91-L393)
 - [redis_cache.py:77-98](file://backend/app/cache/redis_cache.py#L77-L98)
 
 **Section sources**
+
 - [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
 - [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
 
 ### EnhancementManager
+
 Responsibilities:
+
 - Discover and profile optional capabilities (queues, OCR backends, keyword extraction).
 - Dispatch pipeline jobs to Celery when available, with graceful fallback to background tasks.
 - Maintain a stable profile derived from settings and runtime availability.
 
 Key patterns:
+
 - Feature-flag resolution and module availability checks.
 - Queue provider selection with Redis/Celery readiness.
 - Backend preference lists with automatic fallback.
@@ -292,18 +320,23 @@ EnhancementManager --> EnhancementProfile : "produces"
 ```
 
 **Diagram sources**
+
 - [enhancement_manager.py:78-294](file://backend/app/services/enhancement_manager.py#L78-L294)
 
 **Section sources**
+
 - [enhancement_manager.py:1-294](file://backend/app/services/enhancement_manager.py#L1-L294)
 
 ### CrossRefClient
+
 Responsibilities:
+
 - Validate raw citation strings against CrossRef API.
 - Distributed caching with Redis and in-memory fallback.
 - Rate-limit aware retries and bounded instance cache.
 
 Key patterns:
+
 - Redis ping and fallback to in-memory cache when unavailable.
 - Local instance cache with eviction to prevent unbounded growth.
 
@@ -319,20 +352,25 @@ CrossRefClient --> RedisCache : "uses"
 ```
 
 **Diagram sources**
+
 - [crossref_client.py:32-164](file://backend/app/services/crossref_client.py#L32-L164)
 - [redis_cache.py:45-76](file://backend/app/cache/redis_cache.py#L45-L76)
 
 **Section sources**
+
 - [crossref_client.py:1-164](file://backend/app/services/crossref_client.py#L1-L164)
 - [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
 
 ### NvidiaClient
+
 Responsibilities:
+
 - Integrate with NVIDIA NIM via LiteLLM or direct OpenAI client.
 - Provide higher-level methods for document structure analysis, figure analysis, and template compliance checks.
 - Graceful degraded mode when API key is missing.
 
 Key patterns:
+
 - Lazy initialization with fallback to direct client when LiteLLM is unavailable.
 - Vision preprocessing and compression for large images.
 
@@ -348,21 +386,26 @@ NvidiaClient --> LLMService : "delegates to"
 ```
 
 **Diagram sources**
+
 - [nvidia_client.py:30-260](file://backend/app/services/nvidia_client.py#L30-L260)
 - [llm_service.py:91-203](file://backend/app/services/llm_service.py#L91-L203)
 
 **Section sources**
+
 - [nvidia_client.py:1-260](file://backend/app/services/nvidia_client.py#L1-L260)
 - [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
 
 ### PipelineOrchestrator
+
 Responsibilities:
+
 - Orchestrate the end-to-end document processing pipeline.
 - Integrate external clients (Docling, GROBID) with timeouts and fallbacks.
 - Persist processing status and results to Supabase.
 - Compute quality metrics and explain validation outcomes.
 
 Key patterns:
+
 - Semaphore-based concurrency control to prevent resource exhaustion.
 - Retry guards and safe execution wrappers around optional stages.
 - Partial result persistence on failure for diagnostic and recovery.
@@ -386,26 +429,29 @@ Orchestrator-->>Client : result
 ```
 
 **Diagram sources**
+
 - [orchestrator.py:522-1092](file://backend/app/pipeline/orchestrator.py#L522-L1092)
 - [docling_client.py:192-284](file://backend/app/pipeline/services/docling_client.py#L192-L284)
 - [grobid_client.py:53-91](file://backend/app/pipeline/services/grobid_client.py#L53-L91)
 
 **Section sources**
+
 - [orchestrator.py:1-1227](file://backend/app/pipeline/orchestrator.py#L1-L1227)
 - [docling_client.py:1-482](file://backend/app/pipeline/services/docling_client.py#L1-L482)
 - [grobid_client.py:1-317](file://backend/app/pipeline/services/grobid_client.py#L1-L317)
 
 ## Dependency Analysis
+
 - Coupling:
-  - Services depend on configuration and shared utilities (settings, logging, Redis).
-  - PipelineOrchestrator depends on multiple services and external clients.
-  - LLMService and CrossRefClient depend on RedisCache for caching.
+    - Services depend on configuration and shared utilities (settings, logging, Redis).
+    - PipelineOrchestrator depends on multiple services and external clients.
+    - LLMService and CrossRefClient depend on RedisCache for caching.
 - Cohesion:
-  - Each service encapsulates a single responsibility (documents, auth, LLM, enhancements, external APIs).
+    - Each service encapsulates a single responsibility (documents, auth, LLM, enhancements, external APIs).
 - External dependencies:
-  - Supabase for persistence and JWT verification.
-  - Redis for caching and optional queues.
-  - Third-party providers (NVIDIA NIM, GROBID, Docling) with availability checks and safe execution.
+    - Supabase for persistence and JWT verification.
+    - Redis for caching and optional queues.
+    - Third-party providers (NVIDIA NIM, GROBID, Docling) with availability checks and safe execution.
 
 ```mermaid
 graph LR
@@ -420,6 +466,7 @@ EM["EnhancementManager"] --> ORCH
 ```
 
 **Diagram sources**
+
 - [orchestrator.py:73-1227](file://backend/app/pipeline/orchestrator.py#L73-L1227)
 - [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
 - [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
@@ -431,6 +478,7 @@ EM["EnhancementManager"] --> ORCH
 - [enhancement_manager.py:78-294](file://backend/app/services/enhancement_manager.py#L78-L294)
 
 **Section sources**
+
 - [orchestrator.py:1-1227](file://backend/app/pipeline/orchestrator.py#L1-L1227)
 - [document_service.py:1-560](file://backend/app/services/document_service.py#L1-L560)
 - [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
@@ -442,6 +490,7 @@ EM["EnhancementManager"] --> ORCH
 - [enhancement_manager.py:1-294](file://backend/app/services/enhancement_manager.py#L1-L294)
 
 ## Performance Considerations
+
 - Concurrency control: PipelineOrchestrator uses a semaphore to cap concurrent jobs and avoid OOM.
 - Caching: LLM and GROBID results cached in Redis to reduce latency and external API load.
 - Timeouts: Stages executed with bounded timeouts; timeouts trigger graceful cancellation and partial result persistence.
@@ -451,7 +500,9 @@ EM["EnhancementManager"] --> ORCH
 [No sources needed since this section provides general guidance]
 
 ## Troubleshooting Guide
+
 Common issues and mitigations:
+
 - Supabase client unavailable: DocumentService logs errors and returns None; ensure credentials and connectivity.
 - LLM unavailability: LLMService falls back through tiers and records metrics; verify provider keys and base URLs.
 - Redis unavailable: RedisCache disables caching gracefully; services continue operating.
@@ -460,6 +511,7 @@ Common issues and mitigations:
 - Authentication misconfiguration: AuthService returns HTTP 503 until credentials are provided.
 
 **Section sources**
+
 - [document_service.py:90-113](file://backend/app/services/document_service.py#L90-L113)
 - [llm_service.py:205-268](file://backend/app/services/llm_service.py#L205-L268)
 - [redis_cache.py:15-39](file://backend/app/cache/redis_cache.py#L15-L39)
@@ -468,4 +520,5 @@ Common issues and mitigations:
 - [orchestrator.py:212-234](file://backend/app/pipeline/orchestrator.py#L212-L234)
 
 ## Conclusion
+
 The service layer employs a robust abstraction pattern with clear separation of concerns, resilient fallbacks, and strong integration with configuration and infrastructure. The PipelineOrchestrator coordinates heterogeneous services and external clients while maintaining reliability through timeouts, retries, and partial result persistence. Caching and feature flags enable performance tuning and gradual rollout of enhancements. Monitoring and logging provide visibility into service health and pipeline progress.

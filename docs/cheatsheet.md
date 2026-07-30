@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Quick Reference
 description: One-page cheatsheet for common commands and key information
 sidebar_position: 95
@@ -85,7 +85,7 @@ git push origin feature/my-feature
 ## Key URLs
 
 | Resource | URL |
-|----------|-----|
+| ---------- | ----- |
 | Backend API | `http://localhost:8000` |
 | Swagger Docs | `http://localhost:8000/docs` |
 | Frontend | `http://localhost:3000` |

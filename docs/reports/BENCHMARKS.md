@@ -15,7 +15,7 @@ Benchmarks are performed on a standardized test environment:
 ### Single Manuscript
 
 | Style | 10 pages | 50 pages | 100 pages | 300 pages |
-|-------|:--------:|:--------:|:---------:|:---------:|
+| ------- | :--------: | :--------: | :---------: | :---------: |
 | APA | 0.8s | 2.1s | 3.8s | 8.5s |
 | MLA | 0.7s | 1.9s | 3.5s | 7.9s |
 | Chicago | 0.9s | 2.3s | 4.1s | 9.2s |
@@ -26,7 +26,7 @@ Benchmarks are performed on a standardized test environment:
 ### Throughput (concurrent requests)
 
 | Concurrent Users | Avg Response | Throughput |
-|:----------------:|:------------:|:----------:|
+| :----------------: | :------------: | :----------: |
 | 1 | 2.1s | 28 req/min |
 | 5 | 3.4s | 88 req/min |
 | 10 | 5.2s | 115 req/min |
@@ -46,7 +46,7 @@ Benchmarks are performed on a standardized test environment:
 ### Validation Endpoint
 
 | Percentile | Time |
-|:----------:|:----:|
+| :----------: | :----: |
 | p50 | 120ms |
 | p75 | 180ms |
 | p95 | 250ms |
@@ -55,7 +55,7 @@ Benchmarks are performed on a standardized test environment:
 ## Docker Performance
 
 | Metric | Native | Docker |
-|--------|:------:|:------:|
+| -------- | :------: | :------: |
 | Format time (50p) | 1.9s | 2.1s |
 | Memory (idle) | 85MB | 95MB |
 | Memory (formatting) | 180MB | 195MB |

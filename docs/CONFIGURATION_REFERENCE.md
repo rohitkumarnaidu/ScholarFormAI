@@ -9,7 +9,7 @@
 ## 1. Core
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `DEBUG` | Enable debug mode (detailed error pages, relaxed CORS defaults, hot-reload) | No | `false` | `true` | `DeploymentSettings` (`backend/app/config/settings.py:387`) |
 | `ENCRYPTION_KEY` | 32-byte base64-encoded Fernet key for encrypting user API keys and sensitive data at rest. **Must be stable across restarts** or all encrypted data is lost. | **Production: Yes** | *(none)* | `cGxlYXNlLXJlcGxhY2UtbWUtd2l0aC1hLTI1Ni1iaXQta2V5LTEyMzQ1Njc4OTA=` | `encryption_service.py:20` via `os.environ.get("ENCRYPTION_KEY")` |
 | `ALGORITHM` | JWT signing algorithm used by Supabase auth verification | No | `HS256` | `HS256` | `SecuritySettings` (`settings.py:326`) |
@@ -25,7 +25,7 @@
 ## 2. Database (Supabase)
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `SUPABASE_URL` | Supabase project URL (REST endpoint) | **Yes** | `None` | `https://fnpguxbnycsllvttttlk.supabase.co` | `DatabaseSettings` (`settings.py:210`) |
 | `SUPABASE_ANON_KEY` | Supabase anon/public key (RLS-enforced, client-safe) | **Yes** | `None` | `eyJhbGciOiJIUzI1NiIs...` | `DatabaseSettings` (`settings.py:211`) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (bypasses RLS — server-side only, never expose to client) | **Yes** | `None` | `eyJhbGciOiJIUzI1NiIs...` | `DatabaseSettings` (`settings.py:214`) |
@@ -40,7 +40,7 @@
 All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM → Groq → OpenRouter → Ollama.
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `NVIDIA_API_KEY` | NVIDIA NIM API key (primary tier) | No | `None` | `nvapi-oz03OmEPyup-Doi5pIlFs...` | `LLMSettings` (`settings.py:226`) |
 | `NVIDIA_MODEL` | NVIDIA model identifier | No | `""` | `nvidia_nim/meta/llama-3.3-70b-instruct` | `LLMSettings` (`settings.py:227`) |
 | `GROQ_API_KEY` | Groq API key (fallback tier 2) | No | `None` | `gsk_Mxz6fhrmoJFcEeADqBG1...` | `LLMSettings` (`settings.py:228`) |
@@ -67,7 +67,7 @@ All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM �
 ### 4.1 Grobid (PDF parsing — primary)
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `GROBID_ENABLED` | Enable GROBID PDF parsing | No | `true` | `true` | `PipelineSettings` (`settings.py:259`) |
 | `GROBID_URL` | GROBID service URL (used as first fallback) | No | `http://localhost:8070` | `http://localhost:8070` | `PipelineSettings` (`settings.py:253`) |
 | `GROBID_BASE_URL` | Alias for GROBID_URL | No | `http://localhost:8070` | `http://localhost:8070` | `PipelineSettings` (`settings.py:254`) |
@@ -81,7 +81,7 @@ All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM �
 ### 4.2 Docling (PDF parsing — fallback)
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `DOCLING_URL` | Docling service URL | No | `None` | `http://localhost:5002` | `PipelineSettings` (`settings.py:263`) |
 | `DOCLING_URLS` | Comma-separated list of Docling URLs for multi-instance fallback | No | `""` | `http://localhost:SERVICE_PORT,http://localhost:SERVICE_PORT` | `PipelineSettings` (`settings.py:264`) |
 | `DOCLING_HEALTH_PATH` | Health check path for Docling service | No | `/` | `/` | `PipelineSettings` (`settings.py:265`) |
@@ -89,7 +89,7 @@ All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM �
 ### 4.3 LLMClassifier (Classification)
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `USE_LLM_CLASSIFICATION` | Enable LLM-based heading/body classification | No | `false` | `true` | `PipelineSettings` (`settings.py:288`) |
 | `LLM_CLASSIFIER_URL` | LLMClassifier service URL | No | `None` | `http://localhost:SERVICE_PORT` | `PipelineSettings` (`settings.py:275`) |
 | `LLM_CLASSIFIER_URLS` | Comma-separated list of LLMClassifier URLs | No | `""` | `http://localhost:SERVICE_PORT,http://localhost:SERVICE_PORT` | `PipelineSettings` (`settings.py:276`) |
@@ -101,7 +101,7 @@ All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM �
 ### 4.4 Other Pipeline Services
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `OCR_URL` | OCR service URL | No | `None` | `http://localhost:5003` | `PipelineSettings` (`settings.py:266`) |
 | `OCR_URLS` | Comma-separated OCR URLs | No | `""` | `http://localhost:SERVICE_PORT,http://localhost:SERVICE_PORT` | `PipelineSettings` (`settings.py:267`) |
 | `DOCX_CONVERTER_URL` | DOCX-to-PDF converter service URL (LibreOffice as a service) | No | `None` | `http://localhost:5004` | `PipelineSettings` (`settings.py:269`) |
@@ -114,7 +114,7 @@ All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM �
 ### 4.5 Pipeline Tuning & Performance
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `PRELOAD_AI_MODELS` | Pre-load AI models at startup (increases boot time, reduces first-request latency) | No | `true` | `false` | `PipelineSettings` (`settings.py:292`) |
 | `LOW_MEMORY_MODE` | Enable memory-conserving mode (recommended on Render free tier 512MB) | No | `false` | `true` | `PipelineSettings` (`settings.py:293`) |
 | `DEFAULT_FAST_MODE` | Skip optional/slower pipeline stages by default (opt-in for deep AI analysis) | No | `false` | `true` | `PipelineSettings` (`settings.py:295`) |
@@ -133,7 +133,7 @@ All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM �
 ### 4.6 Enhancement Layer
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `ENHANCEMENTS_ENABLED` | Master toggle for all enhancement features | No | `true` | `true` | `DeploymentSettings` (`settings.py:410`) |
 | `ENHANCEMENT_QUEUE_ENABLED` | Enable async enhancement queue (Celery) | No | `false` | `true` | `DeploymentSettings` (`settings.py:411`) |
 | `ENHANCEMENT_QUEUE_PROVIDER` | Queue provider: `auto`, `local`, or `celery` | No | `auto` | `celery` | `DeploymentSettings` (`settings.py:412`) |
@@ -146,7 +146,7 @@ All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM �
 ### 4.7 Heuristic & Heading Confidence
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `HEADING_STYLE_THRESHOLD` | Minimum style-match score (0–1) to classify a block as heading | No | `0.8` | `0.4` | `DeploymentSettings` (`settings.py:420`) |
 | `HEADING_FALLBACK_CONFIDENCE` | Confidence floor for heuristic heading detection | No | `0.5` | `0.45` | `DeploymentSettings` (`settings.py:421`) |
 | `HEURISTIC_CONFIDENCE_HIGH` | High-confidence threshold for heuristics | No | `0.9` | `0.95` | `DeploymentSettings` (`settings.py:422`) |
@@ -156,7 +156,7 @@ All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM �
 ### 4.8 RAG / Embeddings
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `RAG_USE_TRANSFORMERS` | Use local `sentence-transformers` vs HuggingFace Inference API | No | `true` | `false` | `PipelineSettings` (`settings.py:294`) |
 | `RAG_EMBEDDING_PROVIDER` | Embedding provider (e.g., `huggingface_api`) | No | *(not in settings)* | `huggingface_api` | `.env.render:92` |
 | `RAG_EMBEDDING_MODEL` | Embedding model identifier | No | *(not in settings)* | `sentence-transformers/all-MiniLM-L6-v2` | `.env.render:93` |
@@ -165,7 +165,7 @@ All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM �
 ### 4.9 Template / Output Defaults
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `DEFAULT_TEMPLATE` | Default manuscript template | No | `ieee` | `none`, `ieee`, `springer`, `apa` | `DeploymentSettings` (`settings.py:396`) |
 | `GENERATED_OUTPUT_DIR` | Directory for generated output files | No | `output` | `generated_outputs` | `DeploymentSettings` (`settings.py:395`) |
 
@@ -174,7 +174,7 @@ All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM �
 ## 5. Security
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `FORCE_HTTPS` | Redirect all HTTP traffic to HTTPS (enforce in production) | No | `false` | `true` | `SecuritySettings` (`settings.py:329`) |
 | `GLOBAL_RATE_LIMIT_PER_MINUTE` | Global API rate limit (requests per minute per IP) | No | `120` | `120` | `DeploymentSettings` (`settings.py:389`) |
 | `CLAMAV_HOST` | ClamAV daemon host for virus scanning | No | `localhost` | `localhost` | `SecuritySettings` (`settings.py:330`) |
@@ -197,7 +197,7 @@ All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM �
 ## 6. Storage / Uploads
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `MAX_FILE_SIZE` | Maximum uploaded file size in bytes (~57MB default) | No | `62914560` (60×1024×1024) | `52428800` (50MB) | `DeploymentSettings` (`settings.py:390`) |
 | `MAX_BATCH_FILES` | Maximum number of files per batch upload | No | `10` | `10` | `DeploymentSettings` (`settings.py:391`) |
 | `UPLOADS_PER_MINUTE` | Upload rate limit (uploads per minute per user) | No | `10` | `10` | `DeploymentSettings` (`settings.py:392`) |
@@ -211,7 +211,7 @@ All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM �
 ## 7. Redis / Cache
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `REDIS_ENABLED` | Enable Redis caching (disable for local dev without Redis) | No | `false` | `true` | `CacheSettings` (`settings.py:356`) |
 | `REDIS_URL` | Redis connection URL | No | `redis://localhost:6379` | `rediss://default:pass@host.upstash.io:6379` | `CacheSettings` (`settings.py:357`) |
 | `REDIS_HOST` | Redis host (legacy, used when REDIS_URL not set) | No | `localhost` | `dominant-insect-81050.upstash.io` | `CacheSettings` (`settings.py:358`) |
@@ -220,7 +220,7 @@ All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM �
 ### 7.1 Cache TTLs
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `LLM_CACHE_TTL_SECONDS` | LLM response cache TTL | No | `3600` | `3600` | `CacheSettings` (`settings.py:362`) |
 | `READINESS_CACHE_TTL_SECONDS` | Readiness probe cache TTL | No | `15` | `15` | `CacheSettings` (`settings.py:363`) |
 | `HEALTH_CACHE_TTL_SECONDS` | Health check cache TTL | No | `15` | `15` | `CacheSettings` (`settings.py:364`) |
@@ -237,7 +237,7 @@ All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM �
 ## 8. Celery / Task Queue
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `CELERY_BROKER_URL` | Celery message broker URL (typically Redis) | No | `redis://localhost:6379/0` | `rediss://default:pass@host.upstash.io:6379/0` | `CacheSettings` (`settings.py:360`) |
 | `CELERY_RESULT_BACKEND` | Celery result backend URL (typically same as broker) | No | `redis://localhost:6379/0` | `rediss://default:pass@host.upstash.io:6379/0` | `CacheSettings` (`settings.py:361`) |
 | `WORKER_CONCURRENCY` | Celery worker concurrency (number of concurrent tasks) | No | `2` | `2` | `render.yaml:83` (`-c ${WORKER_CONCURRENCY:-2}`) |
@@ -250,7 +250,7 @@ All keys are optional — the system uses a 4-tier fallback chain: NVIDIA NIM �
 All frontend variables are prefixed with `NEXT_PUBLIC_` (exposed to the browser). Set in `frontend/.env` or at build-time.
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL for client-side auth & data access | **Yes** | *(none)* | `https://fnpguxbnycsllvttttlk.supabase.co` | `frontend/.env.example:2` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key for client-side auth | **Yes** | *(none)* | `eyJhbGciOiJIUzI1NiIs...` | `frontend/.env.example:3` |
 | `NEXT_PUBLIC_API_URL` | Backend FastAPI base URL for client-side API calls | **Yes** | *(none)* | `http://localhost:8000` | `frontend/.env.example:6` |
@@ -269,7 +269,7 @@ All frontend variables are prefixed with `NEXT_PUBLIC_` (exposed to the browser)
 Set in `render.yaml` or via Render dashboard environment variables.
 
 | Variable | Description | Required | Default | Example | Source |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `PYTHON_VERSION` | Python runtime version for Render build | **Yes** | *(none)* | `3.12.2` | `render.yaml:8`; `.env.render:140` |
 | `PORT` | Port assigned by Render ($PORT injected at runtime) | — | *(Render auto)* | `10000` | `render.yaml:71` |
 | `ENABLE_LEGACY_ROUTES` | Toggle legacy API route support | No | `false` | `false` | `render.yaml:12`; `.env.render:143` |
@@ -389,7 +389,7 @@ graph TD
 The following variables from the original schema outline do **not** exist in this codebase. Each entry includes a remediation plan.
 
 | Variable | Status | Impact | Remediation |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `SECRET_KEY` | **Not present** | No impact — `SIGNED_URL_SECRET` serves URL signing; JWT verification uses Supabase JWKS | N/A — alternative exists |
 | `ALLOWED_HOSTS` | **Not present** | Low — host filtering delegated to Render reverse proxy + CORS | If self-hosting, add `ALLOWED_HOSTS` via `uvicorn --forwarded-allow-ips` |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | **Not present** | Low — token expiry managed by Supabase Auth dashboard | Configure via Supabase Dashboard → Authentication → Settings → JWT expiry |
