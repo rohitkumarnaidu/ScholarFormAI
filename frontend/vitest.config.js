@@ -35,6 +35,18 @@ export default defineConfig({
         exclude: [
             '_legacy_vite_archive/**',
         ],
+        coverage: {
+            provider: 'v8',
+            reporter: ['text', 'lcov', 'json-summary'],
+            reportsDirectory: './coverage',
+            exclude: [
+                'node_modules/**',
+                'src/test/**',
+                '**/*.{test,spec}.{js,jsx,ts,tsx}',
+                'e2e/**',
+                'coverage/**',
+            ],
+        },
     },
     server: {
         fs: {

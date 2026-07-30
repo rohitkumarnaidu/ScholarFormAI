@@ -37,8 +37,7 @@ jobs:
       - name: Install backend dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r backend/requirements-dev.txt
-          pip install -e backend/
+          pip install -r backend/requirements-test.txt
 
       - name: Run backend tests with coverage
         run: |
@@ -104,7 +103,7 @@ jobs:
       - name: Run frontend tests with coverage
         run: |
           cd frontend
-          npm test -- --coverage --watchAll=false
+          npm run test:coverage
         continue-on-error: true
 
       - name: Upload frontend coverage to Codecov
