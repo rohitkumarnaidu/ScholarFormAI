@@ -66,11 +66,11 @@ html {
 }
 
 ::selection {
-  background-color: theme('colors.primary.200');
-  color: theme('colors.primary.900');
+  background-color: theme('colors.primary-light');
+  color: theme('colors.primary-dark');
 }
 
 .dark ::selection {
-  background-color: theme('colors.primary.700');
-  color: theme('colors.primary.100');
+  background-color: theme('colors.primary-dark');
+  color: theme('colors.primary-light');
 }

@@ -5,6 +5,10 @@
 Test suite for tables pipeline: extractor, renderer, caption matcher.
 """
 
+from app.models import PipelineDocument as Document
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
+from app.pipeline.formatting.formatter import Formatter
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 from unittest.mock import patch, MagicMock, PropertyMock, call
 import pytest

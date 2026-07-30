@@ -30,6 +30,11 @@ export default {
             colors: {
                 "background-dark": "#09090b",
                 "background-light": "#f6f6f8",
+                "border": "hsl(var(--border, 214 32% 91%))",
+                "input": "hsl(var(--input, 214 32% 91%))",
+                "ring": "hsl(var(--ring, 210 50% 25%))",
+                "background": "hsl(var(--background, 210 40% 98%))",
+                "foreground": "hsl(var(--foreground, 222 47% 11%))",
                 "primary": "#136dec",
                 "primary-hover": "#0f5bbd",
                 "primary-light": "#4d94f8",

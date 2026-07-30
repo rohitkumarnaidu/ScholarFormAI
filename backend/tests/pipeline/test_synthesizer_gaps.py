@@ -6,6 +6,10 @@ Gap-filling tests for MultiDocSynthesizer — covers uncovered branches, edge ca
 and error paths not tested in existing deep suites.
 """
 
+from app.models import PipelineDocument as Document
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
+from app.pipeline.formatting.formatter import Formatter
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 
 import json

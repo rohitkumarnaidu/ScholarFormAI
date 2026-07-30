@@ -6,6 +6,10 @@ Deep test suite for tables pipeline: caption matcher, extractor, renderer.
 Targets uncovered branches and edge cases to push coverage >85% / >90%.
 """
 
+from app.models import PipelineDocument as Document
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
+from app.pipeline.formatting.formatter import Formatter
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 from unittest.mock import patch, MagicMock, call
 import pytest

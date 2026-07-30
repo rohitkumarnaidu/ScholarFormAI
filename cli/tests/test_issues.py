@@ -11,8 +11,9 @@ from amf.main import cli
 
 @pytest.fixture
 def mock_issue_service():
-    with patch("app.services.issue_service.IssueService") as MockSvc:
-        instance = MockSvc.return_value
+    with patch("amf.commands.issues._get_service") as mock_get_service:
+        instance = MagicMock()
+        mock_get_service.return_value = instance
         instance.submit_issue.return_value = {
             "id": "test-id", "tracking_number": "AMF-250726-0001",
             "title": "Test", "description": "Testing",

@@ -6,6 +6,10 @@ Comprehensive gap-filling tests for RagEngine — covers uncovered branches,
 edge cases in HF API embedding, ChromaDB/native backends, and model loading.
 """
 
+from app.models import PipelineDocument as Document
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
+from app.pipeline.formatting.formatter import Formatter
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 
 import json

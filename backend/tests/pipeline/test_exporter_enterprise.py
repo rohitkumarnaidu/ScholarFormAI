@@ -8,6 +8,9 @@ Covers all 11 methods, 48 branches, error/edge paths
 with zero external dependencies (all mocks).
 """
 
+from app.models import PipelineDocument as Document
+from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
+from app.pipeline.formatting.formatter import Formatter
 from __future__ import annotations
 import json
 import os
