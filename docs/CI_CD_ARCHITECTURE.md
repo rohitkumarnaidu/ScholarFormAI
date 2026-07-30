@@ -404,3 +404,16 @@ The 5-job release pipeline (`verify → release-notes → create → sbom → at
 - Each job produces artifacts consumed by the next (version → changelog → release → SBOM → attestation)
 - `attest` only runs for stable releases (not pre-release), avoiding wasted OIDC token exchange for RC/beta tags
 - Version consistency enforced at the start: tag must match `python scripts/sync_version.py --show` output, preventing tag-vs-manifest mismatches
+\n
+## Deployment CI/CD Diagram
+
+```mermaid
+graph LR
+    Code[Git Commit] --> Build[Build Images]
+    Build --> Test[Run Tests/Lint]
+    Test --> Security[SAST/SCA Scans]
+    Security --> Push[Push to Registry]
+    Push --> Deploy[Deploy to Render/CloudRun]
+    Deploy --> Monitor[Observability & Logs]
+    classDef default fill:#1f2937,stroke:#14b8a6,stroke-width:2px,color:#f9fafb;
+```

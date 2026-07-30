@@ -41,7 +41,7 @@ Closes #ISSUE_NUMBER
 - [ ] My changes generate no new warnings or linter errors
 - [ ] My changes do not introduce new security vulnerabilities
 - [ ] I have added a CHANGELOG entry in `CHANGELOG.md`
-- [ ] I have read and agree to the [DCO](DEVELOPER_CERTIFICATE_OF_ORIGIN.md)
+- [ ] I have read and agree to the [DCO](../community/DEVELOPER_CERTIFICATE_OF_ORIGIN.md)
 
 ## Screenshots (if applicable)
 

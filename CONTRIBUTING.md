@@ -30,18 +30,18 @@ This project and everyone participating in it is governed by the [Code of Conduc
 
 ### Documentation Contributions
 
-1. All `.md` files must start with YAML frontmatter (see [Style Guide](STYLE_GUIDE.md)).
+1. All `.md` files must start with YAML frontmatter (see [Style Guide](docs/guides/STYLE_GUIDE.md)).
 2. Keep `last_updated` current — set to the month of your change.
 3. Add `sidebar_position` based on the category ordering scheme.
 4. Every new page must be added to `docs/README.md` index.
 5. Code examples must be tested — if you add a curl command, verify it works against a running instance.
 6. Use Mermaid diagrams for architecture and flow documentation (not ASCII art or screenshots of code).
 7. **Broken links cause CI failure** — run the freshness check locally before pushing.
-8. See the full [Documentation Style Guide](STYLE_GUIDE.md) for formatting conventions.
+8. See the full [Documentation Style Guide](docs/guides/STYLE_GUIDE.md) for formatting conventions.
 
 ### Developer Certificate of Origin
 
-All contributions must include a `Signed-off-by` trailer in every commit, certifying that you have read and agree to the [Developer Certificate of Origin](DEVELOPER_CERTIFICATE_OF_ORIGIN.md) (DCO). Use `git commit -s` to sign off automatically.
+All contributions must include a `Signed-off-by` trailer in every commit, certifying that you have read and agree to the [Developer Certificate of Origin](docs/community/DEVELOPER_CERTIFICATE_OF_ORIGIN.md) (DCO). Use `git commit -s` to sign off automatically.
 
 By signing off, you certify that you have the right to submit your contribution under the project's MIT license.
 
@@ -72,7 +72,7 @@ See [Code Review Standards](docs/CODE_REVIEW_STANDARDS.md) for full details.
 ### Pull Requests
 
 1. **Fork** the repo and create your branch from `main`.
-2. **Use the [pull request template](PULL_REQUEST_TEMPLATE.md)** — fill out the checklist.
+2. **Use the [pull request template](.github/PULL_REQUEST_TEMPLATE.md)** — fill out the checklist.
 3. **Sign off your commits** (`git commit -s`) to comply with the DCO.
 4. **Build the project first**: run `BUILDING.md` instructions to verify your environment.
 5. **Follow code conventions**:

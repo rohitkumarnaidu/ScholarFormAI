@@ -332,3 +332,61 @@ sequenceDiagram
 ---
 
 *Last updated: July 2026*
+
+---
+
+## Middleware Stack (Execution Order)
+
+| Middleware | File | Size |
+|-----------|------|------|
+| Prometheus metrics | `prometheus_metrics.py` | 7KB |
+| Rate limit (base) | `rate_limit.py` | 6.9KB |
+| Tier-aware rate limit | `tier_rate_limit.py` | 4.1KB |
+| Abuse detection | `abuse_detector.py` | 2.7KB |
+| Request ID | `request_id.py` | 2.2KB |
+| Security headers (CSP, HSTS) | `security_headers.py` | 4.6KB |
+| RBAC | `rbac.py` | 708B (stub) |
+
+## Key Architecture Decisions
+
+| Decision | Rationale |
+|---------|---------|
+| **No Spring Boot gateway** | FastAPI handles all middleware. Spring Boot was never built; it's obsolete in the requirements. |
+| **No DOCX on live preview** | HTML/CSS only for <80ms latency — generating DOCX is too slow for real-time. |
+| **No LLM during typing** | LLM fires only on explicit user action (not keystroke). |
+| **Redis pub/sub as backbone** | Single consistent pattern for SSE, WebSocket, and Celery task events. |
+| **LiteLLM abstraction** | Same client code for NVIDIA NIM, Groq, and Ollama. |
+| **Background tasks for >400ms ops** | Never block the HTTP request thread. |
+| **GROBID optional, Docling primary** | Render 512MB RAM constraint makes GROBID Docker (1.5GB) non-viable. 3-tier PDF fallback: GROBID (if `GROBID_ENABLED=true`) → Docling → PyMuPDF. |
+
+## Detailed Request Flows
+
+### Formatter Mode A — Upload & Format
+
+```
+Browser → POST /api/v1/documents/upload
+  → ClamAV virus scan
+  → MIME + magic byte + extension tri-validation
+  → Start background task (Celery/asyncio)
+  → Return job_id (< 400ms)
+
+Background:
+  → Parse (GROBID if enabled, else Docling, else PyMuPDF)
+  → Structure Detection
+  → Block Classification (LLMClassifier — if USE_LLM_CLASSIFICATION=true)
+  → NLP Enhancement (YAKE/spaCy)
+  → Validation
+  → Format & Render (Template)
+  → Export (DOCX/PDF)
+  → SSE events: { stage, progress } → frontend Stepper.jsx
+```
+
+### Formatter Mode B — Live Preview
+
+```
+Browser ↔ WebSocket /api/v1/preview/ws/{session_id}
+  → Client sends edited content + template choice
+  → Server: HTML render (target < 80ms — no DOCX generated!)
+  → Redis cache: preview:{session_id}
+  → Server sends rendered HTML/CSS back
+```

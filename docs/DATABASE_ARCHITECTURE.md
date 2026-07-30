@@ -682,3 +682,33 @@ Pipeline models (`Block`, `Figure`, `Table`, `Reference`, `Equation`) are Pydant
 ## 12. Non-PostgreSQL Tables (Supabase REST)
 
 The `schema.sql` and `migrations.sql` include `model_metrics` and `ab_test_results` — these are accessed exclusively through `supabase-py` REST calls, never through SQLAlchemy ORM. Both have RLS policies granting read access to authenticated users, while writes are performed by the backend service role.
+\n
+## Database Relationships Diagram
+
+```mermaid
+erDiagram
+    USERS ||--o{ DOCUMENTS : owns
+    USERS ||--o{ API_KEYS : has
+    DOCUMENTS ||--o{ GENERATION_SESSIONS : contains
+    GENERATION_SESSIONS ||--o{ AUDIT_LOGS : generates
+    USERS {
+        uuid id
+        string email
+    }
+    DOCUMENTS {
+        uuid id
+        uuid user_id
+        string status
+    }
+```
+
+
+## Related Documentation
+
+- [AI Architecture](AI_ARCHITECTURE.md)
+- [Frontend Architecture](FRONTEND_ARCHITECTURE.md)
+- [Realtime Architecture](REALTIME_ARCHITECTURE.md)
+- [Chroma RAG Architecture](CHROMA_RAG_ARCHITECTURE.md)
+- [Database Architecture](DATABASE_ARCHITECTURE.md)
+- [API Reference](API.md)
+

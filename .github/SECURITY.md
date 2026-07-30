@@ -39,4 +39,4 @@ We take security seriously. Please report vulnerabilities privately.
 
 We follow coordinated disclosure — please allow up to 90 days for a fix before public disclosure.
 
-See [docs/Security.md](../docs/Security.md) for full security documentation.
+See [SECURITY.md](../SECURITY.md) for full security documentation.

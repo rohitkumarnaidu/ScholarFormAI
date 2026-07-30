@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import StrEnum
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class CitationFormat(StrEnum):
@@ -18,6 +18,7 @@ class CitationFormat(StrEnum):
 
 
 class Author(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
     first_name: str
     last_name: str
     affiliation: str | None = None
@@ -26,6 +27,7 @@ class Author(BaseModel):
 
 
 class Paragraph(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
     text: str
     style: str | None = None
     alignment: str | None = None
@@ -34,6 +36,7 @@ class Paragraph(BaseModel):
 
 
 class Section(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
     heading: str
     level: int = 1
     content: list[Paragraph] = []
@@ -41,6 +44,7 @@ class Section(BaseModel):
 
 
 class Reference(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
     authors: list[Author] = []
     year: str | None = None
     title: str
@@ -56,6 +60,7 @@ class Reference(BaseModel):
 
 
 class Manuscript(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
     title: str
     authors: list[Author] = []
     abstract: str | None = None
@@ -69,6 +74,7 @@ class Manuscript(BaseModel):
 
 
 class FormattingOptions(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
     output_format: str = Field(default="docx", pattern="^(docx|pdf)$")
     page_size: str = Field(default="A4", pattern="^(A4|Letter|Legal)$")
     font_family: str | None = None
@@ -81,12 +87,14 @@ class FormattingOptions(BaseModel):
 
 
 class FormatRequest(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
     manuscript: Manuscript
     style_id: str = Field(default="apa", min_length=2, max_length=50)
     options: FormattingOptions | None = None
 
 
 class FormatResponse(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
     download_url: str
     preview_url: str | None = None
     pages: int = 0
@@ -96,11 +104,13 @@ class FormatResponse(BaseModel):
 
 
 class ValidateRequest(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
     manuscript: Manuscript
     style_id: str = Field(default="apa", min_length=2, max_length=50)
 
 
 class ValidationIssue(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
     code: str
     message: str
     location: str | None = None
@@ -108,6 +118,7 @@ class ValidationIssue(BaseModel):
 
 
 class ValidateResponse(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
     valid: bool
     errors: list[ValidationIssue] = []
     warnings: list[ValidationIssue] = []
@@ -115,6 +126,7 @@ class ValidateResponse(BaseModel):
 
 
 class StyleInfo(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
     id: str
     name: str
     version: str
@@ -125,17 +137,20 @@ class StyleInfo(BaseModel):
 
 
 class PreviewRequest(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
     manuscript: Manuscript
     style_id: str = "apa"
     options: FormattingOptions | None = None
 
 
 class PreviewResponse(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
     html: str
     style_applied: str
 
 
 class HealthResponse(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
     status: str
     version: str
     service: str

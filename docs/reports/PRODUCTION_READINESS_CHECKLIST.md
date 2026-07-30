@@ -48,7 +48,7 @@ Total Score = (Sum of item scores) / (Total items × 3) × 100
 |-----------------|-------------|
 | `docs/SECURITY_CHECKLIST.md` | Full security compliance — OWASP, SSRF, webhooks, encryption, rate limiting |
 | `docs/MONITORING_OBSERVABILITY.md` | Monitoring, alerting, logging, tracing, SLO/SLI definitions |
-| `docs/DEPLOYMENT_GUIDE.md` | Deployment workflow, environment setup, rollback procedures |
+| docs/deployment/DEPLOYMENT.md | Deployment workflow, environment setup, rollback procedures |
 | `docs/runbooks/rollback.md` | Rollback runbook for production incidents |
 | `docs/explanation/pipeline-architecture.md` | Document formatting pipeline overview |
 | `ENTERPRISE_CERTIFICATION.md` | Full enterprise certification report with test details |

@@ -179,8 +179,8 @@ We welcome community contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) to ge
 | Repository | [https://github.com/rohitkumarnaidu/ScholarFormAI](https://github.com/rohitkumarnaidu/ScholarFormAI) |
 | Documentation | [https://github.com/rohitkumarnaidu/ScholarFormAI/docs](docs/) |
 | Issue Tracker | [https://github.com/rohitkumarnaidu/ScholarFormAI/issues](https://github.com/rohitkumarnaidu/ScholarFormAI/issues) |
-| Security | [SECURITY.md](SECURITY.md) / `security@scholarform.ai` |
-| Changelog | [CHANGELOG.md](CHANGELOG.md) |
-| Roadmap | [ROADMAP.md](ROADMAP.md) |
-| Code of Conduct | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) |
-| Reusable | [MIT](LICENSE) |
+| Security | [SECURITY.md](../../SECURITY.md) / `security@scholarform.ai` |
+| Changelog | [CHANGELOG.md](../../CHANGELOG.md) |
+| Roadmap | [ROADMAP.md](../../Roadmap.md) |
+| Code of Conduct | [CODE_OF_CONDUCT.md](../../CODE_OF_CONDUCT.md) |
+| Reusable | [MIT](../../LICENSE) |

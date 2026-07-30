@@ -1913,3 +1913,14 @@ async def test_pubsub_publish_subscribe_lifecycle(pubsub):
 ```
 
 **Cross-reference**: See [FRONTEND_ARCHITECTURE.md Section 10.1](../../docs/FRONTEND_ARCHITECTURE.md#101-testing-patterns) for general frontend testing patterns, [FRONTEND_ARCHITECTURE.md Section 19.1](../../docs/FRONTEND_ARCHITECTURE.md#191-mocking-conventions) for mocking conventions, and [docs/COVERAGE_GAP_REPORT.md](../../COVERAGE_GAP_REPORT.md) for the real-time testing coverage breakdown.
+
+
+## Related Documentation
+
+- [AI Architecture](AI_ARCHITECTURE.md)
+- [Frontend Architecture](FRONTEND_ARCHITECTURE.md)
+- [Realtime Architecture](REALTIME_ARCHITECTURE.md)
+- [Chroma RAG Architecture](CHROMA_RAG_ARCHITECTURE.md)
+- [Database Architecture](DATABASE_ARCHITECTURE.md)
+- [API Reference](API.md)
+

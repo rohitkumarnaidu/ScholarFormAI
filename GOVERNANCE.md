@@ -1,92 +1,42 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # ScholarForm AI Governance
 
-## Project Stewardship Model
+This document describes the governance model for the ScholarForm AI open-source project.
 
-ScholarForm AI uses a **BDFL + Core Team** governance model, designed to balance rapid development velocity with community participation and long-term project health.
+## Core Team
 
-## Roles
+The Core Team is responsible for the overall direction of the project, technical decisions, and community management. Core Team members have merge rights to the repository and are expected to:
 
-### Benevolent Dictator for Life (BDFL)
+- Review pull requests within a reasonable timeframe (typically 48 hours during business days).
+- Guide the architectural and technical vision of the project.
+- Foster a welcoming and inclusive community.
+- Enforce the Code of Conduct.
 
-The BDFL has final authority on all project decisions, including technical direction, feature acceptance, and conflict resolution.
+New Core Team members are added by a two-thirds majority vote of the existing Core Team.
 
-- **Current BDFL:** Rohit Kumar Naidu
-- **Scope:** API design decisions, breaking changes, strategic roadmap
-- **Limits:** The BDFL cannot unilaterally change this governance document or the project license without Core Team approval.
+## Contributors
 
-### Core Team
+Contributors are community members who submit pull requests, open issues, help with documentation, or support other users. We value all contributions!
 
-Core Team members are trusted contributors who have demonstrated sustained, high-quality contribution to the project. Responsibilities include:
+- **Active Contributors**: Individuals who regularly contribute (e.g., multiple merged PRs, active issue triage). Active contributors may be nominated to join the Core Team.
+- **First-time Contributors**: Welcomed and encouraged. The Core Team will provide guidance to help new contributors get their first PR merged.
 
-- Reviewing and merging pull requests
-- Triaging and responding to issues
-- Guiding technical discussions and RFCs
-- Mentoring new contributors
-- Voting on governance changes and new Core Team members
+## Decision Making
 
-Core Team membership is granted by a ⅔ majority vote of the existing Core Team, with the BDFL holding veto power.
+Most technical decisions are made through consensus during the code review process or via GitHub Discussions. 
 
-### Committers
+For significant architectural changes or project-wide decisions:
+1. An issue or discussion thread is opened for public comment.
+2. The community is encouraged to provide feedback for at least 7 days.
+3. The Core Team will make a final decision based on consensus. If consensus cannot be reached, a simple majority vote among the Core Team will decide.
 
-Committers have write access to the repository but are not part of the Core Team. They are expected to:
+## Issue and PR Management
 
-- Self-review their own code (with Core Team oversight)
-- Participate in code reviews
-- Follow project conventions and style guides
+- **Triage**: The Core Team aims to triage new issues and PRs within 48 hours.
+- **Stale Issues**: Issues with no activity for 90 days will be marked as stale and closed after another 30 days unless activity resumes.
 
-Committer status is granted by any Core Team member via a lazy-consensus process (7-day objection period).
+## Changes to Governance
 
-### Contributors
-
-Anyone who submits a pull request, files a bug report, improves documentation, or participates in discussions is a contributor. No formal status required.
-
-## Decision-Making
-
-| Type | Process | Approver |
-|------|---------|----------|
-| Bug fixes, minor features | Standard PR review | 1 Core Team approval |
-| Major features | RFC + PR review | 2 Core Team approvals |
-| Breaking API changes | RFC + 2-week comment period | Core Team majority |
-| Governance changes | RFC + 4-week comment period | Core Team ⅔ majority + BDFL |
-| New Core Team members | Nomination + vote | Core Team ⅔ majority |
-| License changes | Community vote | Consensus |
-
-## RFC Process
-
-Significant changes (new features, architecture changes, breaking API changes) must go through the RFC process:
-
-1. **Discussion phase** — Open a GitHub Discussion with `[RFC]` prefix
-2. **Proposal phase** — Write a formal RFC in `docs/rfc/` as a pull request
-3. **Review phase** — 2-week minimum review period
-4. **Decision phase** — Core Team votes; outcome documented in the RFC PR
-
-All accepted RFCs are permanently archived in `docs/rfc/`.
-
-## Code of Conduct
-
-All interactions in ScholarForm AI spaces are governed by the [Code of Conduct](CODE_OF_CONDUCT.md). Violations should be reported to the Core Team.
-
-## Conflict Resolution
-
-Disagreements within the project should be escalated through these steps:
-
-1. Direct discussion between involved parties (on the PR/issue)
-2. Mediation by a Core Team member
-3. Core Team vote (simple majority)
-4. BDFL final ruling
-
-## Release Process
-
-See [RELEASE_PROCESS.md](RELEASE_PROCESS.md) for versioning, release scheduling, and publishing procedures.
-
-## Charter
-
-This governance model is based on the [BDFL model](https://en.wikipedia.org/wiki/Benevolent_dictator_for_life) used by projects such as Python, Django, and Linux (Linus Torvalds). It may be amended by a ⅔ majority vote of the Core Team.
-
----
-
-*Last updated: July 2026*
+Changes to this governance model can be proposed via a pull request and must be approved by a two-thirds majority of the Core Team.

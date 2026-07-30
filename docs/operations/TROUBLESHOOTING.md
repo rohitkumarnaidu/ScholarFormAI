@@ -115,9 +115,9 @@ GROBID requires ~1.5GB RAM. On low-memory instances, it auto-disables. The fallb
 |---------|---------|
 | [GitHub Issues](https://github.com/rohitkumarnaidu/ScholarFormAI/issues) | Bug reports, feature requests |
 | [GitHub Discussions](https://github.com/rohitkumarnaidu/ScholarFormAI/discussions) | Q&A, community help |
-| [FAQ](FAQ.md) | Frequently asked questions |
-| [SUPPORT](SUPPORT.md) | Support channels and SLAs |
-| [docs/troubleshooting.md](docs/troubleshooting.md) | User-facing troubleshooting |
+| [FAQ](../reference/FAQ.md) | Frequently asked questions |
+| [SUPPORT](../../SUPPORT.md) | Support channels and SLAs |
+| [docs/troubleshooting.md](../troubleshooting.md) | User-facing troubleshooting |
 
 ---
 
