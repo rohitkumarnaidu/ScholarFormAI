@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements-test.txt
+          pip install -r requirements-test.txt -r requirements-dev.txt
 
       - name: Ruff lint (critical errors only)
         run: python -m ruff check app --config ruff.toml --select E9,F63,F7,F82
