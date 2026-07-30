@@ -1427,3 +1427,20 @@ sequenceDiagram
 ---
 
 *Last updated: July 2026*
+\n
+## Authentication Flow Diagram
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant B as Backend
+    participant S as Supabase Auth
+    U->>F: Login (Email/SSO)
+    F->>S: Authenticate
+    S-->>F: JWT Tokens (Access & Refresh)
+    F->>B: API Request + Bearer JWT
+    B->>S: Validate Token
+    S-->>B: User Context
+    B-->>F: Protected Data
+```

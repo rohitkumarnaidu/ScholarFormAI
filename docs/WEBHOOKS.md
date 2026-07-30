@@ -624,7 +624,7 @@ The webhook system uses two database tables:
 ## See Also
 
 - [API Reference](API.md) — Complete API documentation with all endpoint examples
-- [API Versioning](API_VERSIONING.md) — Version policy and lifecycle
+- [API Versioning](archive/API_VERSIONING.md) — Version policy and lifecycle
 - [Configuration Reference](CONFIGURATION_REFERENCE.md) — All environment variables
 - [Security Architecture](SECURITY_ARCHITECTURE.md) — Platform security overview
 - [Disaster Recovery](DISASTER_RECOVERY.md) — DR procedures including webhook delivery guarantees

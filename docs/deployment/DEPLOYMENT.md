@@ -600,7 +600,7 @@ docker cp scholarform-backend:/app/db/chroma ./chroma-backup-$(date +%Y%m%d)
 - [CONFIGURATION.md](CONFIGURATION.md) — Full settings reference
 - [ARCHITECTURE.md](ARCHITECTURE.md) — System topology
 - [docs/CI_CD_ARCHITECTURE.md](docs/CI_CD_ARCHITECTURE.md) — CI/CD pipeline
-- [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md) — Detailed deployment runbook
+- [docs/deployment/DEPLOYMENT.md](DEPLOYMENT.md) — Detailed deployment runbook
 
 ---
 

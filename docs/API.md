@@ -19,7 +19,7 @@ last_updated: July 2026
 > **Auth:** `Authorization: Bearer <supabase_access_token>` on authenticated routes  
 > **Versioning:** `/api/v1/` prefix. Legacy routes (without `/v1/`) carry `Deprecation` response headers.
 
-> **See also:** [API Versioning](API_VERSIONING.md), [Architecture](architecture.md), [ADR 003](adr/003-api-versioning-strategy.md)
+> **See also:** [API Versioning](archive/API_VERSIONING.md), [Architecture](architecture.md), [ADR 003](adr/003-api-versioning-strategy.md)
 
 ---
 
@@ -354,3 +354,55 @@ curl http://localhost:8000/metrics
 ## Deprecated Endpoints
 
 Legacy routes (without `/v1/` prefix) are still active but return a `Deprecation` response header. See `backend/app/routers/deprecation.py`. Clients should migrate to `/api/v1/` paths.
+
+
+## Related Documentation
+
+- [AI Architecture](AI_ARCHITECTURE.md)
+- [Frontend Architecture](FRONTEND_ARCHITECTURE.md)
+- [Realtime Architecture](REALTIME_ARCHITECTURE.md)
+- [Chroma RAG Architecture](CHROMA_RAG_ARCHITECTURE.md)
+- [Database Architecture](DATABASE_ARCHITECTURE.md)
+- [API Reference](API.md)
+
+
+## Detailed Architecture & Workflows
+
+### Architecture Overview
+The API follows a unified layered design with all endpoints under `/api/v1`:
+- Single `v1_router` manages all endpoint routing with proper prefixing
+- Services orchestrate business logic and integrate with external systems
+- Pipelines handle document processing, generation, and synthesis
+- Real-time subsystem emits enhanced events via Redis Pub/Sub to SSE clients
+
+### API Flow Diagram
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant GW as API Gateway
+    participant S as Service
+    participant DB as Database
+    C->>GW: HTTP Request (api_envelope)
+    GW->>GW: Rate Limit & Auth Check
+    GW->>S: Route Request
+    S->>DB: Query Data
+    DB-->>S: Data
+    S-->>GW: Response Model (Pydantic)
+    GW-->>C: Standard JSON Response
+```
+
+### Authentication and Authorization
+- Base path: `/api/v1/auth`
+- Requires Supabase authentication; endpoints return user info or manage auth lifecycle
+- Protected endpoints require a valid session with enhanced error handling
+
+### Rate Limiting and Abuse Detection
+- Global rate limiter: 60 requests per minute with enhanced enforcement
+- Tier-based rate limiting: guest daily limit configurable with improved tier management
+- Abuse detection records generation requests and LLM calls with enhanced monitoring
+
+### Real-Time Communication (SSE)
+- Base path: `/api/v1/stream`
+- Clients establish an SSE connection to receive progress updates and notifications
+- Events are published to Redis channels and forwarded to connected clients with improved reliability

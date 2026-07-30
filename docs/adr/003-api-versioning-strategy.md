@@ -21,4 +21,4 @@ last_updated: July 2026
 
 **Consequences:** New features ship in `/api/v1` first. Legacy routes remain available until explicitly deprecated and removed.
 
-**See also:** [ADR 004: FastAPI as Sole API Gateway](004-fastapi-only-gateway.md), [docs/API_VERSIONING.md](../API_VERSIONING.md)
+**See also:** [ADR 004: FastAPI as Sole API Gateway](004-fastapi-only-gateway.md), [docs/archive/API_VERSIONING.md](../archive/API_VERSIONING.md)

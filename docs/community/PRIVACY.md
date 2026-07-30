@@ -40,4 +40,4 @@ For maximum privacy, self-host AMF using Docker Compose or manual deployment. Se
 
 ## Security
 
-See [SECURITY.md](SECURITY.md) for security practices and vulnerability reporting.
+See [SECURITY.md](../../SECURITY.md) for security practices and vulnerability reporting.

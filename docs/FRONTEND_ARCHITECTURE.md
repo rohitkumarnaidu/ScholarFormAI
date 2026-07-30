@@ -1514,3 +1514,26 @@ describe('api.documents integration', () => {
 | `api.metrics` | `api.metrics.test.js` | Health check, dashboard, error logging, feedback submission |
 
 **Cross-reference**: See [Section 6](#6-api-client-architecture) for the API client layer design and [Section 10.1](#101-testing-patterns) for general mocking patterns. Full test coverage details in [COVERAGE_GAP_REPORT.md](../../COVERAGE_GAP_REPORT.md).
+\n
+## Frontend Architecture Diagram
+
+```mermaid
+graph TD
+    Pages[App Router Pages] --> Layouts[Layouts & Nav]
+    Pages --> UI[React Components]
+    UI --> Context[Context Providers]
+    Context --> API[Next.js API Routes]
+    API --> Backend[Backend Services]
+    classDef default fill:#1f2937,stroke:#10b981,stroke-width:2px,color:#f9fafb;
+```
+
+
+## Related Documentation
+
+- [AI Architecture](AI_ARCHITECTURE.md)
+- [Frontend Architecture](FRONTEND_ARCHITECTURE.md)
+- [Realtime Architecture](REALTIME_ARCHITECTURE.md)
+- [Chroma RAG Architecture](CHROMA_RAG_ARCHITECTURE.md)
+- [Database Architecture](DATABASE_ARCHITECTURE.md)
+- [API Reference](API.md)
+

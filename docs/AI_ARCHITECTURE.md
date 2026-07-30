@@ -2232,3 +2232,30 @@ For production deployments, follow this startup sequence to minimize errors duri
 | `MONITORING_OBSERVABILITY.md` | `docs/` | Prometheus/Grafana setup for AI metrics |
 | `pipeline-architecture.md` | `docs/explanation/` | Detailed 16-stage pipeline walkthrough |
 | `creating-a-custom-template.md` | `docs/guides/` | Template system that AI reasoning retrieves |
+\n
+## AI Pipeline Diagram
+
+```mermaid
+graph LR
+    Input[Docx Upload] --> Parse[Parser/Grobid/OCR]
+    Parse --> Chunks[Text Chunking]
+    Chunks --> Embed[Embedding Model]
+    Embed --> VectorDB[(Vector Store)]
+    Query[User Query] --> EmbedQuery[Embed Query]
+    EmbedQuery --> Retrieve[Retrieve Chunks]
+    Retrieve --> Context[Context Builder]
+    Context --> LLM[LLM Generator]
+    LLM --> Formatter[Output Formatter]
+    classDef default fill:#1f2937,stroke:#ec4899,stroke-width:2px,color:#f9fafb;
+```
+
+
+## Related Documentation
+
+- [AI Architecture](AI_ARCHITECTURE.md)
+- [Frontend Architecture](FRONTEND_ARCHITECTURE.md)
+- [Realtime Architecture](REALTIME_ARCHITECTURE.md)
+- [Chroma RAG Architecture](CHROMA_RAG_ARCHITECTURE.md)
+- [Database Architecture](DATABASE_ARCHITECTURE.md)
+- [API Reference](API.md)
+

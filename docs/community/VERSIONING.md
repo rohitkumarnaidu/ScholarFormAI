@@ -55,7 +55,7 @@ Pre-release versions (alpha, beta, rc) indicate that the version is unstable and
 1. Mark as deprecated in CHANGELOG and docstrings
 2. Emit deprecation warning at runtime for one full MINOR version
 3. Remove in the next MAJOR version
-4. Document migration path in MIGRATION_GUIDES.md
+4. Document migration path in MIGRATION.md
 
 ## Version Bump Process
 

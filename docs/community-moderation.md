@@ -2,7 +2,7 @@
 
 ## Code of Conduct Enforcement
 
-ScholarFormAI is committed to providing a welcoming, inclusive, and harassment-free experience for everyone. This policy outlines how the [Code of Conduct](CODE_OF_CONDUCT.md) is enforced.
+ScholarFormAI is committed to providing a welcoming, inclusive, and harassment-free experience for everyone. This policy outlines how the [Code of Conduct](../CODE_OF_CONDUCT.md) is enforced.
 
 All community members are expected to:
 - Use welcoming and inclusive language

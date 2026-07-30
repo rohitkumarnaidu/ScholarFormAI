@@ -80,7 +80,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions require DCO sign-off (
 
 ### Do I need to sign a CLA?
 
-No. ScholarForm AI uses the [Developer Certificate of Origin](DEVELOPER_CERTIFICATE_OF_ORIGIN.md) (DCO) instead of a CLA. Just sign off your commits with `git commit -s`.
+No. ScholarForm AI uses the [Developer Certificate of Origin](../community/DEVELOPER_CERTIFICATE_OF_ORIGIN.md) (DCO) instead of a CLA. Just sign off your commits with `git commit -s`.
 
 ### What license does the project use?
 

@@ -14,7 +14,7 @@
 - [health_checks.py](file://backend/app/services/health_checks.py)
 - [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
 - [API.md](file://docs/API.md)
-- [api_reference.md](file://docs/api_reference.md)
+- [API.md](file://docs/API.md)
 - [003-api-versioning-strategy.md](file://docs/adr/003-api-versioning-strategy.md)
 </cite>
 
@@ -288,7 +288,7 @@ D-->>C : Response + Deprecation headers
 **Section sources**
 - [deprecation.py:11-52](file://backend/app/routers/deprecation.py#L11-L52)
 - [API.md:5,205-208:5-208](file://docs/API.md#L5-L208)
-- [api_reference.md:1-69](file://docs/api_reference.md#L1-L69)
+- [API.md:1-69](file://docs/API.md#L1-L69)
 - [003-api-versioning-strategy.md:1-10](file://docs/adr/003-api-versioning-strategy.md#L1-L10)
 
 ## Dependency Analysis

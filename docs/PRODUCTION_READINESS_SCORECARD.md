@@ -1,6 +1,6 @@
 # ScholarForm AI — Production Readiness Scorecard
 
-> **Target Score:** 88/100 (per `docs/COMPLETE_IMPLEMENTATION_PLAN.md`)
+> **Target Score:** 88/100 (per `docs/archive/COMPLETE_IMPLEMENTATION_PLAN.md`)
 > **Target Increase:** 95/100 (this quarter)
 > **Last Updated:** July 2026
 > **Scoring Method:** Each of 6 categories assessed against specific checklist items derived from codebase audit. Max 100 pts.
@@ -341,4 +341,4 @@ cd backend && ruff check app --config ruff.toml && mypy --config-file mypy.ini a
 | [SECURITY_CHECKLIST.md](SECURITY_CHECKLIST.md) | Security checklist items mapped to Security category |
 | [OPERATIONS_RUNBOOK.md](OPERATIONS_RUNBOOK.md) | Runbook completeness verified in Operations category |
 | [DISASTER_RECOVERY.md](DISASTER_RECOVERY.md) | DR plan assessed in Reliability category |
-| [COMPLETE_IMPLEMENTATION_PLAN.md](COMPLETE_IMPLEMENTATION_PLAN.md) | Master implementation plan with production readiness targets |
+| [COMPLETE_IMPLEMENTATION_PLAN.md](archive/COMPLETE_IMPLEMENTATION_PLAN.md) | Master implementation plan with production readiness targets |

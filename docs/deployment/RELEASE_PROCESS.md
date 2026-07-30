@@ -197,7 +197,7 @@ sha256sum -c release-checksums.txt
 
 ### ⬆️ Upgrading
 
-See [MIGRATION_GUIDES.md](MIGRATION_GUIDES.md) for upgrade instructions.
+See [MIGRATION.md](../operations/MIGRATION.md) for upgrade instructions.
 
 **Quick upgrade:**
 1. Pull new Docker images
@@ -255,7 +255,7 @@ When the tag is pushed, `create-release.yml` uses the draft to populate the rele
 - Create a new `v1.2.0` milestone in GitHub Issues
 - Move any unfinished issues from the released milestone
 - Update `docs/API.md` if API changes were made
-- Update `docs/MIGRATION_GUIDES.md` if migration steps are needed
+- Update `docs/operations/MIGRATION.md` if migration steps are needed
 
 ## Hotfix Process
 

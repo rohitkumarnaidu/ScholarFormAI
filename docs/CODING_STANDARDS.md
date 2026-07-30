@@ -500,7 +500,7 @@ security(auth): sanitize JWT claims before role assignment
 
 ### 8.2 Signed Commits (DCO)
 
-Every commit **must** be signed off to certify compliance with the [Developer Certificate of Origin](DEVELOPER_CERTIFICATE_OF_ORIGIN.md):
+Every commit **must** be signed off to certify compliance with the [Developer Certificate of Origin](community/DEVELOPER_CERTIFICATE_OF_ORIGIN.md):
 
 ```bash
 git commit -s          # adds Signed-off-by trailer
@@ -519,7 +519,7 @@ The `Signed-off-by` trailer must match the author's real name and email.
 
 ### 8.4 Pull Requests
 
-- Use the [pull request template](PULL_REQUEST_TEMPLATE.md).
+- Use the [pull request template](reference/PULL_REQUEST_TEMPLATE.md).
 - At least one Core Team member must approve.
 - All CI checks must pass.
 - Self-review before requesting review.

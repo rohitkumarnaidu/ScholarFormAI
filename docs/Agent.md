@@ -81,3 +81,33 @@ IDLE → TASK_PARSING → RESEARCHING → OUTLINING
   }
 }
 ```
+\n
+## Agent Workflow Diagram
+
+```mermaid
+sequenceDiagram
+    participant P as Orchestrator Agent
+    participant W as Worker Agent
+    participant A as Auditor Agent
+    P->>W: Assign Task
+    loop Execution
+        W->>W: Process Code/Files
+        W->>W: Run Tests
+    end
+    W->>P: Handoff Report
+    P->>A: Request Audit
+    A-->>P: Audit Result
+```
+\n
+## Memory Flow Diagram
+
+```mermaid
+graph TD
+    Event[Agent Event/Action] --> MemoryEngine[Memory Engine]
+    MemoryEngine --> ShortTerm[Short-Term Memory]
+    MemoryEngine --> LongTerm[Long-Term Storage]
+    LongTerm --> VectorDB[(Vector Embeddings)]
+    Query --> Retrieve[Memory Retrieval]
+    Retrieve --> AgentContext[Agent Context Window]
+    classDef default fill:#1f2937,stroke:#f59e0b,stroke-width:2px,color:#f9fafb;
+```

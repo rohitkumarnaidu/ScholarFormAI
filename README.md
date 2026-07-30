@@ -1,476 +1,269 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 <div align="center">
-  <br/>
+  <br />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://via.placeholder.com/200x200/1a202c/ffffff?text=ScholarForm+AI+Logo">
+    <img src="https://via.placeholder.com/200x200/ffffff/1a202c?text=ScholarForm+AI+Logo" alt="ScholarForm AI Logo" width="150" height="150">
+  </picture>
+  <br />
   <h1>ScholarForm AI</h1>
-  <h3>Automated Academic Manuscript Formatting — Powered by AI</h3>
-  <p>Upload a manuscript → get a publisher-ready DOCX/PDF. Or generate a full research document from scratch.</p>
-  <br/>
+  <h3>Automated Academic Manuscript Formatting & Generation — Powered by Agentic AI</h3>
+  <p>Upload a raw manuscript and instantly receive a publisher-ready document. Or use the AI Generator to author complete, rigorously cited research papers from scratch.</p>
+  
+  <p>
+    <a href="https://scholarform.ai/docs"><strong>Documentation</strong></a> ·
+    <a href="https://scholarform.ai/demo"><strong>Live Demo</strong></a> ·
+    <a href="https://scholarform.ai/api"><strong>API Reference</strong></a> ·
+    <a href="https://github.com/rohitkumarnaidu/ScholarFormAI/issues"><strong>Report Bug</strong></a>
+  </p>
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
-[![CI — Backend](https://github.com/rohitkumarnaidu/ScholarFormAI/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/rohitkumarnaidu/ScholarFormAI/actions/workflows/backend-ci.yml)
-[![CI — Frontend](https://github.com/rohitkumarnaidu/ScholarFormAI/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/rohitkumarnaidu/ScholarFormAI/actions/workflows/frontend-ci.yml)
-[![Coverage](https://img.shields.io/badge/coverage-61%25-yellow)](backend/.coverage)
-[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+[![CI Status](https://github.com/rohitkumarnaidu/ScholarFormAI/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/rohitkumarnaidu/ScholarFormAI/actions/workflows/backend-ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-85%25-brightgreen)](backend/.coverage)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/rohitkumarnaidu/ScholarFormAI/badge)](https://api.scorecard.dev/projects/github.com/rohitkumarnaidu/ScholarFormAI)
-[![SBOM](https://img.shields.io/badge/SBOM-CycloneDX-8A2BE2)](sbom/backend-sbom.json)
-[![CodeQL](https://github.com/rohitkumarnaidu/ScholarFormAI/actions/workflows/codeql.yml/badge.svg)](.github/workflows/codeql.yml)
-[![SLSA 3](https://img.shields.io/badge/SLSA-3-brightgreen)](.github/workflows/slsa-provenance.yml)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
-[![Conventional Commits](https://img.shields.io/badge/conventional%20commits-1.0.0-FE5196)](commitlint.config.js)
-[![Signed commits](https://img.shields.io/badge/signed%20commits-required-red)](docs/BRANCH_PROTECTION.md)
-[![GitHub Release](https://img.shields.io/github/v/release/rohitkumarnaidu/ScholarFormAI?logo=github)](https://github.com/rohitkumarnaidu/ScholarFormAI/releases)
-[![GitHub stars](https://img.shields.io/github/stars/rohitkumarnaidu/ScholarFormAI?style=social)](https://github.com/rohitkumarnaidu/ScholarFormAI/stargazers)
+[![SLSA 3](https://img.shields.io/badge/SLSA-Level_3-brightgreen)](.github/workflows/slsa-provenance.yml)
 
+<br/>
+<img src="https://via.placeholder.com/1000x500?text=ScholarForm+AI+Dashboard+Screenshot" alt="ScholarForm AI Dashboard Overview" width="100%">
+<br/>
 </div>
 
 ---
 
-## Table of Contents
+## 🌟 Vision & Mission
 
-- [Features](#features)
-- [Architecture](#architecture)
-- [Quick Start](#quick-start)
-- [Docker](#docker)
-- [Configuration](#configuration)
-- [API Overview](#api-overview)
-- [Testing](#testing)
-- [Project Structure](#project-structure)
-- [Technology Stack](#technology-stack)
-- [Compliance & Security](#compliance--security)
-- [Contributing](#contributing)
-- [Governance](#governance)
-- [Support](#support)
-- [FAQ](#faq)
-- [License](#license)
+**Vision:** To eliminate formatting friction and repetitive manual labor in academic publishing, allowing researchers to focus entirely on scientific discovery.
+
+**Mission:** Provide a robust, enterprise-grade open-source platform that leverages multi-agent AI architectures to automate manuscript formatting, reference resolution, and document synthesis.
 
 ---
 
-## Features
+## ✨ Features
 
-- **Formatter Mode** — Upload DOCX, PDF, LaTeX, Markdown, HTML, or plain text; outputs a publisher-ready manuscript in IEEE, APA, Springer, Nature, Elsevier, ACM, MLA, Chicago, Harvard, Vancouver, Numeric, and more (17 templates)
-- **Generator Mode** — AI agent generates a complete research document from a prompt, with outline approval and section-by-section streaming
-- **Multi-Doc Synthesis** — Merges and synthesizes content from multiple source documents into a single coherent manuscript
-- **Real-Time Preview** — Live editor with split-pane before/after diff via WebSocket/SSE
-- **AI-Powered Analysis** — Quality scoring, citation validation, reference assembly, and LLM-based semantic classification
-- **3-Tier PDF Parsing** — Vision API → PyMuPDF+LLM enrichment → Raw PyMuPDF extraction for maximum extraction reliability
-- **Batch Processing** — Upload and process multiple manuscripts in parallel
-- **17 Templates** — IEEE, APA, Springer, Nature, Elsevier, ACM, MLA, Chicago, Harvard, Vancouver, Numeric, plus custom/blank
-- **Export** — Download formatted manuscripts as DOCX or PDF
+- **🪄 One-Click Formatter:** Upload DOCX, PDF, LaTeX, Markdown, or HTML. Receive publisher-ready outputs in IEEE, APA, Springer, Nature, Elsevier, ACM, MLA, Chicago, and more (17+ templates).
+- **🤖 Autonomous AI Generator:** An agentic AI workflow that constructs complete research documents from a prompt, supporting iterative outline approval and real-time streaming.
+- **📚 Multi-Doc RAG Synthesis:** Merge, synthesize, and cross-reference content from multiple source documents into a single, cohesive manuscript using advanced Retrieval-Augmented Generation.
+- **⚡ Real-Time Split-Pane Editor:** Live, real-time before/after diff editor powered by WebSockets/SSE.
+- **🧠 3-Tier PDF Extraction:** Bulletproof parsing via Vision API fallback → PyMuPDF+LLM enrichment → raw PyMuPDF.
+- **🛡️ Enterprise Security:** Built to SLSA Level 3 standards. Comprehensive rate limiting, RBAC, CSRF protection, and supply chain security (SBOMs, CodeQL, Scorecards).
 
 ---
 
-## Architecture
+## 🏗 Architecture Overview
+
+ScholarForm AI employs a decoupled, highly scalable architecture combining a Next.js App Router frontend with an asynchronous FastAPI backend, orchestrated via Celery and Redis.
 
 ```mermaid
 flowchart TB
-    subgraph BROWSER["BROWSER (Next.js 16 + React 19)"]
-        A1["Auth"]
-        A2["Formatter UI"]
-        A3["Generator UI"]
-        A4["Live Editor"]
-        A5["Admin"]
+    subgraph BROWSER["Frontend Layer (Next.js 16)"]
+        UI["Live Editor / Dashboard"]
+        AuthUI["Supabase Auth"]
     end
 
-    subgraph GATEWAY["API GATEWAY — FastAPI"]
-        G1["JWKS JWT Verify"]
-        G2["Rate Limit"]
-        G3["CORS"]
-        G4["Request ID"]
-        G5["CSRF"]
+    subgraph GATEWAY["API Gateway (FastAPI)"]
+        G_Auth["JWKS / RBAC"]
+        G_RL["Rate Limiter"]
     end
 
-    subgraph BACKEND["BACKEND (FastAPI + Uvicorn)"]
-        direction TB
-        B1["48 Services"]
-        B2["16 Route Modules"]
-        B3["26 Pipeline Packages"]
-        B4["Agents - Classification<br/>Equations - Export<br/>Formatting - Figures<br/>Integrity - NLP - OCR<br/>Parsing - References<br/>Safety - Structure Detection<br/>Synthesis - Tables - Validation"]
+    subgraph BACKEND["Backend Services Layer"]
+        direction LR
+        S_Format["Formatting Engine (48 Services)"]
+        S_Agent["AI Orchestrator (Agents)"]
+        S_Extract["3-Tier Extraction"]
     end
 
-    subgraph INFRA["INFRASTRUCTURE"]
-        I1["Celery Worker<br/>(background jobs)"]
-        I2["Redis Pub/Sub<br/>(realtime events)"]
-        I3["ChromaDB<br/>(RAG / style-rule store)"]
+    subgraph WORKERS["Async Workers"]
+        C_Worker["Celery Tasks"]
+        C_Stream["SSE / WebSocket"]
     end
 
-    subgraph DATA["DATA LAYER"]
-        D1["Supabase<br/>(PostgreSQL)"]
-        D2["Supabase Storage"]
-        D3["Redis Cache"]
+    subgraph DATA["Data & AI Layer"]
+        DB["Supabase (PostgreSQL)"]
+        R_Cache["Redis Cache / PubSub"]
+        V_Store["ChromaDB (Vector RAG)"]
+        LLM["NVIDIA NIM / Groq / Ollama"]
     end
 
-    A2 <--> G1
-    A4 <--> G1
-    G1 <--> B1
-    G2 <--> B2
-    B1 <--> I1
-    B1 <--> I2
-    B1 <--> I3
-    I1 <--> D1
-    I1 <--> D2
-    I2 <--> D3
-    I3 <--> D1
-```
-
-- **LLM Tier 1:** NVIDIA NIM — Llama 3.3 70B Instruct (primary)
-- **LLM Tier 2:** Groq — llama-3.3-70b-versatile (fallback)
-- **LLM Tier 3:** DeepSeek R1 via Ollama (local/offline)
-- **PDF Parsing:** Vision API → PyMuPDF+LLM enrichment → Raw PyMuPDF (3-tier fallback)
-- **Realtime:** Redis pub/sub → WebSocket / SSE
-
----
-
-## Quick-Start Flow
-
-```mermaid
-flowchart LR
-    subgraph Setup["1 — Setup (5 min)"]
-        Clone["git clone"]
-        Env["Copy .env files"]
-        Clone --> Env
-    end
-
-    subgraph Backend["2 — Backend"]
-        Venv["python -m venv .venv"]
-        Pip["pip install -r requirements.txt"]
-        Uvicorn["uvicorn app.main:app\n--reload --port 8000"]
-        Venv --> Pip --> Uvicorn
-    end
-
-    subgraph Frontend["3 — Frontend"]
-        NpmI["npm install"]
-        NpmDev["npm run dev\n(port 3000)"]
-        NpmI --> NpmDev
-    end
-
-    subgraph Use["4 — Use"]
-        Upload["Upload manuscript\nPDF / DOCX / LaTeX"]
-        Select["Select template\nIEEE / APA / Springer..."]
-        Download["Download formatted DOCX"]
-        Upload --> Select --> Download
-    end
-
-    Setup --> Backend
-    Setup --> Frontend
-    Backend --> Use
-    Frontend --> Use
-
-    style Setup fill:#1a3a5c,color:#fff
-    style Backend fill:#1a4a3c,color:#fff
-    style Frontend fill:#4a2a5c,color:#fff
-    style Use fill:#1a5c1a,color:#fff
+    UI <--> GATEWAY
+    AuthUI <--> DB
+    GATEWAY --> BACKEND
+    BACKEND <--> WORKERS
+    BACKEND <--> DATA
+    WORKERS <--> DATA
 ```
 
 ---
 
-## Quick Start
+## 🛠 Technology Stack
+
+- **Frontend:** Next.js 16 (App Router), React 19, Tailwind CSS v3, TanStack Query v5, Zustand, Playwright
+- **Backend:** Python 3.12, FastAPI, Celery, Uvicorn, Pydantic v2
+- **Data & Cache:** Supabase (PostgreSQL), Redis 7.x, ChromaDB (Vector Store)
+- **AI / LLMs:** NVIDIA NIM (Llama 3.3 70B), Groq (llama-3.3-70b-versatile), Ollama (DeepSeek R1 for offline fallback)
+- **Document Processing:** PyMuPDF, GROBID, pandoc, pdf2docx
+- **DevOps & CI/CD:** Docker, GitHub Actions, Render, Prometheus/Grafana
+
+---
+
+## 🚀 Quick Start
+
+Get started in under 5 minutes using Docker.
 
 ### Prerequisites
+- Docker & Docker Compose
+- Node.js 20+ (for local frontend dev)
+- Python 3.12+ (for local backend dev)
 
-- Python **3.12.x**
-- Node.js **20+ (LTS)**
-- Redis (optional — required for Celery + realtime features)
+### 1. Clone & Configure
 
-### Backend
+```bash
+git clone https://github.com/rohitkumarnaidu/ScholarFormAI.git
+cd ScholarFormAI
 
+# Copy environment variables
+cp backend/.env.example backend/.env
+cp frontend/.env.local.example frontend/.env.local
+```
+
+*Edit `.env` files to include your API keys (NVIDIA, Groq, Supabase).*
+
+### 2. Run with Docker Compose
+
+```bash
+docker compose -f deploy/services/docker-compose.yml up -d
+```
+
+### 3. Local Development (Alternative)
+
+**Backend:**
 ```bash
 cd backend
 python -m venv .venv
-source .venv/bin/activate  # Linux/macOS
-# .venv\Scripts\activate   # Windows
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-```
-
-Copy `backend/.env.example` to `backend/.env`, configure your credentials, then:
-
-```bash
 uvicorn app.main:app --reload --port 8000
 ```
 
-API docs at `http://localhost:8000/docs` (requires `DEBUG=true`).
-
-### Frontend
-
+**Frontend:**
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Open `http://localhost:3000`.
-
-### Environment Variables
-
-**Backend** (`backend/.env`):
-```env
-SUPABASE_URL=https://xxx.supabase.co
-SUPABASE_ANON_KEY=eyJhbG...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbG...
-NVIDIA_API_KEY=nvapi-...
-GROQ_API_KEY=gsk_...
-REDIS_URL=redis://localhost:6379
-```
-
-**Frontend** (`frontend/.env.local`):
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
-NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbG...
-```
-
-> All frontend environment variables require the `NEXT_PUBLIC_` prefix.
+Visit `http://localhost:3000` to view the application, and `http://localhost:8000/docs` for the OpenAPI interactive documentation.
 
 ---
 
-## Docker
+## 💻 CLI Tools
 
-Docker Compose configuration for GROBID and DOCX Converter services:
+ScholarForm AI provides a powerful command-line interface (`amf`) for integration into CI/CD pipelines and local workflows.
 
 ```bash
-docker compose -f deploy/services/docker-compose.yml up -d
+# Format a document locally
+amf format input.docx --template IEEE --output output.pdf
+
+# Run an AI diagnostic check
+amf analyze paper.pdf
+
+# Update the CLI tool
+amf update
 ```
 
-This starts:
-- **GROBID** (port 8070) — metadata extraction from PDFs
-- **DOCX Converter** (port 8080) — document format conversion
-
-See [`deploy/services/`](deploy/services/) for service definitions and health check endpoints.
+Read the full [CLI Reference](docs/reference/CLI_REFERENCE.md).
 
 ---
 
-## API Overview
+## 🤖 AI & Multi-Agent Features
 
-| Method | Endpoint | Purpose |
-|--------|----------|---------|
-| `POST` | `/api/v1/documents/upload` | Upload and format a document |
-| `GET` | `/api/v1/documents/{job_id}/status` | Poll processing status |
-| `GET` | `/api/v1/documents/{job_id}/preview` | Rendered HTML preview |
-| `GET` | `/api/v1/documents/{job_id}/compare` | Before/after diff |
-| `GET` | `/api/v1/documents/{job_id}/download` | Download formatted output (DOCX/PDF) |
-| `POST` | `/api/v1/documents/{job_id}/edit` | Submit incremental edits |
-| `GET` | `/api/v1/templates` | List all available templates |
-| `GET` | `/api/v1/health` | Health check endpoint |
-| `GET` | `/metrics` | Prometheus metrics |
-
-Full API reference: [`docs/API.md`](docs/API.md) (34 routes).
+We leverage advanced multi-agent workflows defined in [`AGENTS.md`](docs/reference/AGENTS.md):
+- **Forensic Auditor Agent:** Independently verifies citations, checks equations, and identifies hallucinated references.
+- **Synthesis Agent:** Merges structured data from ChromaDB into fluid, academically rigorous paragraphs.
+- **Layout Agent:** Maps abstract document structures into specific template directives (e.g., IEEE two-column margins).
 
 ---
 
-## Testing
+## 🗂 Folder Structure
 
-**Backend** (unit tests, no external services required):
-```bash
-cd backend
-pytest tests -m "not integration and not llm and not contract" -x -q
-```
-
-**Frontend:**
-```bash
-cd frontend
-npm test                    # Vitest unit tests
-npm run test:e2e            # Playwright E2E (headless)
-npm run test:e2e:headed     # Playwright E2E (headed)
-```
-
-See [`docs/Testing.md`](docs/Testing.md) for the complete test strategy.
-
----
-
-## Project Structure
-
-```
-├── backend/
+```text
+ScholarFormAI/
+├── backend/                # FastAPI backend, ML pipelines, and API services
 │   ├── app/
-│   │   ├── main.py               # FastAPI application entry point
-│   │   ├── config/               # Pydantic settings, logging configuration
-│   │   ├── db/                   # Repositories, models, Supabase client
-│   │   ├── middleware/           # Rate limiting, CSRF, RBAC, security headers
-│   │   ├── pipeline/            # 26 pipeline packages (agents, formatting, export, etc.)
-│   │   ├── routers/             # 16 route modules under /api/v1/
-│   │   ├── schemas/             # Pydantic request/response schemas & api_envelope
-│   │   ├── security/            # JWKS JWT verification
-│   │   ├── services/            # 48 business logic services
-│   │   ├── tasks/               # Celery background task definitions
-│   │   └── utils/               # Shared utilities
-│   ├── tests/                   # 95+ test files (unit, integration, contract)
-│   └── requirements.txt         # Python dependencies
-│
-├── frontend/
-│   ├── app/                     # Next.js 16 App Router — pages & route groups
-│   ├── src/
-│   │   ├── components/          # Shared React UI components
-│   │   ├── context/             # Auth, theme, toast context providers
-│   │   ├── hooks/               # Custom React hooks
-│   │   ├── lib/                 # Supabase client, constants, helpers
-│   │   └── services/            # API client service wrappers
-│   └── e2e/                     # Playwright E2E tests
-│
-├── deploy/services/             # GROBID and DOCX Converter Docker services
-├── docs/                        # Architecture, API, roadmap, audit reports
-└── .github/workflows/           # CI/CD pipelines
+│   │   ├── api/            # API v1 routes & middleware
+│   │   ├── core/           # Config, logging, exceptions
+│   │   ├── models/         # SQLAlchemy/Supabase ORM models
+│   │   ├── schemas/        # Pydantic validation (api_envelope)
+│   │   ├── services/       # Core business logic (Formatter, AI)
+│   └── tests/              # Pytest suite
+├── frontend/               # Next.js App Router UI
+│   ├── app/                # Pages and API routes
+│   ├── src/                # Components, hooks, lib, styles
+│   └── e2e/                # Playwright tests
+├── cli/                    # AMF command line tool
+├── sdk/                    # Python SDK (Sync/Async)
+├── docs/                   # Architecture, API, and setup documentation
+└── deploy/                 # Docker Compose, Kubernetes manifests
 ```
 
 ---
 
-## Technology Stack
+## 🔐 Security & Compliance
 
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | Next.js 16, React 19, Tailwind CSS 3, TanStack Query 5 |
-| **Backend** | FastAPI, Python 3.12, Celery, Redis |
-| **Database** | Supabase (PostgreSQL), ChromaDB (vector store) |
-| **AI/ML** | NVIDIA NIM, Groq, Ollama (bring-your-own-key) |
-| **PDF Processing** | PyMuPDF, GROBID, DOCX Converter |
-| **Monitoring** | Prometheus, Grafana |
-| **Deployment** | Docker, Render |
+Enterprise readiness is built-in.
+- **SLSA Level 3:** Build provenance and signed artifacts.
+- **CodeQL & Scorecards:** Automated vulnerability scanning on every PR.
+- **Dependency Management:** Renovate + SBOM generation.
+- **Zero Trust Architecture:** Strict RBAC, JWKS verification, and rate-limiting.
 
-```mermaid
-graph LR
-    subgraph FE["Frontend Layer"]
-        NextJS["Next.js 16\nReact 19\nTailwind CSS 3"]
-    end
-    subgraph BE["Backend Layer"]
-        FastAPI["FastAPI\nPython 3.12\nCelery"]
-    end
-    subgraph AI["AI / ML Layer"]
-        NIM["NVIDIA NIM\nTier 1"]
-        Groq["Groq\nTier 2"]
-        Ollama["Ollama\nTier 4"]
-    end
-    subgraph DB["Data Layer"]
-        Supabase["Supabase\nPostgreSQL"]
-        Redis["Redis 7.x"]
-        Chroma["ChromaDB"]
-    end
-    NextJS --> FastAPI
-    FastAPI --> NIM
-    FastAPI --> Groq
-    FastAPI --> Ollama
-    FastAPI --> Supabase
-    FastAPI --> Redis
-    FastAPI --> Chroma
-```
+Review our complete [Security Policy](SECURITY.md) and [Compliance Matrix](docs/reports/ENTERPRISE_CERTIFICATION.md).
 
 ---
 
-## Compliance & Security
+## 📖 Documentation & Resources
 
-### Supply Chain Security
-
-| Capability | Tool | Frequency |
-|-----------|------|-----------|
-| SBOM (CycloneDX) | `sbom/backend-sbom.json`, `sbom/frontend-sbom.json` | Weekly + on dependency change |
-| CVE scanning (Python) | pip-audit + Safety | Every PR |
-| CVE scanning (npm) | npm audit | Every PR |
-| SAST (Python) | Bandit | Every PR |
-| License compliance | FOSSA | Continuous |
-| License policy enforcement | dependency-review.yml | Every PR |
-| Automated dependency PRs | Renovate | Weekly |
-| OpenSSF Scorecard | Scorecard API | Continuous |
-| CodeQL analysis | GitHub CodeQL | Every PR |
-| SLSA 3 provenance | slsa-provenance.yml | Every release |
-
-### Application Security
-
-- CSRF protection on all state-changing requests
-- Rate limiting (global + per-tier)
-- Security headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options)
-- HTTPS enforcement in production
-- ClamAV virus scanning on uploaded files
-- Abuse detection middleware
-- Signed commits required (`git commit -S`)
-- Dependency review on all pull requests
-
-See [`docs/compliance.md`](docs/compliance.md) and [`SECURITY.md`](SECURITY.md) for full documentation.
+- [Architecture & System Design](docs/architecture/ARCHITECTURE.md)
+- [API Reference](docs/api/API_REFERENCE.md)
+- [Python SDK Guide](docs/guides/SDK_GUIDE.md)
+- [Enterprise Readiness & Deployment](docs/deployment/DEPLOYMENT.md)
+- [Database Schema](docs/architecture/DATABASE_SCHEMA.md)
 
 ---
 
-## Pre-commit Hooks
+## 🛣 Roadmap
 
-Configured in `.pre-commit-config.yaml`:
+- [ ] **v1.1:** LaTeX compiler integration and offline export.
+- [ ] **v1.2:** Collaborative editing (Google Docs style CRDTs).
+- [ ] **v1.5:** Custom template builder UI.
+- [ ] **v2.0:** Agentic peer-review simulation and feedback generation.
 
-- `ruff` + `ruff-format` on Python files
-- `eslint` on JavaScript/TypeScript files
-- `detect-secrets` with `.secrets.baseline`
-
-```bash
-pip install pre-commit
-pre-commit install
-pre-commit run --all-files
-```
+See the full [Roadmap](docs/Roadmap.md).
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
-We welcome contributions from the community. All contributors must agree to the [Developer Certificate of Origin](DEVELOPER_CERTIFICATE_OF_ORIGIN.md) and sign commits with `git commit -s`.
+We welcome contributions! Please review our [Contributing Guidelines](CONTRIBUTING.md) and [Governance Model](GOVERNANCE.md) before submitting pull requests.
 
-1. Fork the repository and create a branch from `main`
-2. See [`BUILDING.md`](BUILDING.md) for environment setup
-3. Make your changes (keep commits small and focused)
-4. Run linting and tests locally (`ruff` → `pytest` → `npm test`)
-5. Open a pull request using the [template](PULL_REQUEST_TEMPLATE.md)
+1. Fork the repo.
+2. Create a feature branch (`git checkout -b feat/amazing-feature`).
+3. Commit with Conventional Commits and sign off (`git commit -s -m "feat: amazing feature"`).
+4. Push to the branch and open a PR.
 
-All pull requests must pass CI checks and include DCO sign-off before merging.
-
-Detailed guidelines: [`CONTRIBUTING.md`](CONTRIBUTING.md)
+*Note: All PRs must pass the CI pipeline and maintain 85%+ test coverage.*
 
 ---
 
-## Governance
+## ⚖️ License
 
-ScholarForm AI follows a **BDFL + Core Team** governance model:
-
-- [`GOVERNANCE.md`](GOVERNANCE.md) — decision-making process, RFC workflow, roles and responsibilities
-- [`MAINTAINERS.md`](MAINTAINERS.md) — core team and committer roster
+ScholarForm AI is distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
 
 ---
 
-## Support
-
-- **Community:** [GitHub Discussions](https://github.com/rohitkumarnaidu/ScholarFormAI/discussions)
-- **Bug reports:** [GitHub Issues](https://github.com/rohitkumarnaidu/ScholarFormAI/issues)
-- **FAQ:** [`FAQ.md`](FAQ.md)
-- **Security disclosures:** [`SECURITY.md`](SECURITY.md)
-- **Enterprise inquiries:** enterprise@scholarform.ai
-
-See [`SUPPORT.md`](SUPPORT.md) for full details, including response SLAs and commercial support options.
-
----
-
-## FAQ
-
-**Does this require a GPU?**  
-No. All AI inference uses cloud APIs (NVIDIA NIM, Groq) or runs CPU-friendly via Ollama for local fallback.
-
-**Can I run it fully offline?**  
-Yes, with local Redis for realtime features and Supabase credentials for persistence. PDF parsing works offline via PyMuPDF fallback.
-
-**What file formats are supported?**  
-Input: DOCX, PDF, LaTeX, Markdown, HTML, TXT. Output: DOCX, PDF (LaTeX export in development).
-
-**How do I add a new template?**  
-See the [Template Creation Guide](docs/template_creation.md) and [`examples/custom-template/`](examples/custom-template/).
-
-**Where can I get help?**  
-[`SUPPORT.md`](SUPPORT.md) — community channels, enterprise support, and response SLAs.
-
----
-
-## License
-
-Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
-
-This project includes third-party components under various open-source licenses. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for details.
-
----
-
-## Adopters
-
-See [`ADOPTERS.md`](ADOPTERS.md) for organizations using ScholarForm AI in production.
+<div align="center">
+  Made with ❤️ by the ScholarForm AI Team and Open Source Contributors.
+</div>

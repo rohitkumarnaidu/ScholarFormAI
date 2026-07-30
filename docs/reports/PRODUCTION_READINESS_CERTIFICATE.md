@@ -97,8 +97,8 @@ The platform has undergone 14 certification phases executed by 20 specialized ev
 | # | Criterion | Standard | Result | Evidence |
 |---|-----------|----------|--------|----------|
 | 5.1 | Architecture documentation | Complete | ✅ PASS | ARCHITECTURE.md |
-| 5.2 | API documentation | Complete | ✅ PASS | docs/api_reference.md |
-| 5.3 | Deployment guide | Complete | ✅ PASS | docs/DEPLOYMENT_GUIDE.md |
+| 5.2 | API documentation | Complete | ✅ PASS | docs/API.md |
+| 5.3 | Deployment guide | Complete | ✅ PASS | docs/deployment/DEPLOYMENT.md |
 | 5.4 | Testing documentation | Complete | ✅ PASS | TESTING.md |
 | 5.5 | Security documentation | Complete | ✅ PASS | SECURITY.md + docs/ |
 | 5.6 | Operations runbook | Complete | ✅ PASS | docs/OPERATIONS_RUNBOOK.md |
