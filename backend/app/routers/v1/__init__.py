@@ -21,7 +21,6 @@ from . import (
     suggestions,
     synthesis,
     templates,
-    updates,
     webhooks,
 )
 
@@ -42,4 +41,3 @@ v1_router.include_router(billing.router)
 v1_router.include_router(activity.router, prefix="/activity", tags=["Activity v1"])
 v1_router.include_router(suggestions.router, prefix="/suggestions", tags=["Suggestions v1"])
 v1_router.include_router(webhooks.router, prefix="/webhooks", tags=["Webhooks v1"])
-v1_router.include_router(updates.router, prefix="/updates", tags=["Updates v1"])

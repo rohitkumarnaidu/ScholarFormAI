@@ -28,11 +28,6 @@ export default {
                 'spring': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
             },
             colors: {
-                border: "hsl(var(--border, 214 32% 91%))",
-                input: "hsl(var(--input, 214 32% 91%))",
-                ring: "hsl(var(--ring, 210 50% 25%))",
-                background: "hsl(var(--background, 210 40% 98%))",
-                foreground: "hsl(var(--foreground, 222 47% 11%))",
                 "background-dark": "#09090b",
                 "background-light": "#f6f6f8",
                 "primary": "#136dec",

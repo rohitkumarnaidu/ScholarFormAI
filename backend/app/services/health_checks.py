@@ -199,14 +199,6 @@ async def _build_health_payload() -> tuple[dict, int]:
         health_status["components"]["supabase_db"] = f"unhealthy: {str(exc)}"
         health_status["status"] = "degraded"
 
-    try:
-        from app.cache.redis_cache import redis_cache
-        redis_health = redis_cache.health()
-        health_status["components"]["redis"] = redis_health.get("status", "unknown")
-    except Exception as exc:
-        health_status["components"]["redis"] = f"unhealthy: {str(exc)}"
-
-
     ollama_url = getattr(settings, "OLLAMA_URL", "") or getattr(settings, "OLLAMA_BASE_URL", "")
     if ollama_url:
         try:

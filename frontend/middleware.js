@@ -22,10 +22,11 @@ const decodeJwtPayload = (token) => {
     }
 };
 
-const getAdminRole = (userOrPayload) => {
-    if (!userOrPayload) return false;
-    const appRole = userOrPayload?.app_metadata?.role;
-    return appRole === 'admin';
+const getAdminRole = (payload) => {
+    if (!payload) return false;
+    const appRole = payload?.app_metadata?.role;
+    const userRole = payload?.user_metadata?.role;
+    return appRole === 'admin' || userRole === 'admin';
 };
 
 const verifyJwtWithSupabase = async (token) => {
@@ -96,9 +97,8 @@ export default async function middleware(request) {
     const token = extractAccessToken(request);
     if (!token) {
         const url = request.nextUrl.clone();
-        url.pathname = '/login';
+        url.pathname = '/dashboard';
         url.searchParams.set('reason', 'unauthorized');
-        url.searchParams.set('next', pathname);
         return NextResponse.redirect(url);
     }
 
@@ -118,18 +118,11 @@ export default async function middleware(request) {
         return NextResponse.redirect(url);
     }
 
-    const isAdminRoute = pathname.startsWith('/admin-dashboard') || pathname.startsWith('/admin');
-    if (isAdminRoute && !getAdminRole(verifiedUser)) {
-        if (pathname.startsWith('/api/')) {
-            return new NextResponse(
-                JSON.stringify({ success: false, message: 'Forbidden: Admin access required' }),
-                { status: 403, headers: { 'content-type': 'application/json' } }
-            );
-        }
-        const url = request.nextUrl.clone();
-        url.pathname = '/dashboard';
-        url.searchParams.set('reason', 'forbidden');
-        return NextResponse.redirect(url);
+    if (!getAdminRole(verifiedUser)) {
+        return new NextResponse(
+            JSON.stringify({ success: false, message: 'Forbidden: Admin access required' }),
+            { status: 403, headers: { 'content-type': 'application/json' } }
+        );
     }
 
     return NextResponse.next();

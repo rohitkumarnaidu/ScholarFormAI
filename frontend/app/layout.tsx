@@ -4,8 +4,11 @@ import './globals.css';
 import { Navbar } from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Toaster } from 'sonner';
-import GlobalClientWidgets from '@/components/GlobalClientWidgets';
-import ClientProviders from '@/components/layout/ClientProviders';
+import dynamic from 'next/dynamic';
+
+const UpdateBanner = dynamic(() => import('@/components/UpdateBanner'), { ssr: false });
+const FeedbackWidget = dynamic(() => import('@/components/FeedbackWidget'), { ssr: false });
+const CrashScreen = dynamic(() => import('@/components/CrashScreen'), { ssr: false });
 
 const inter = Inter({
   subsets: ['latin'],
@@ -52,13 +55,13 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
-        <ClientProviders>
-          <Navbar />
-          <main className="min-h-screen">{children}</main>
-          <GlobalClientWidgets />
-          <Footer />
-          <Toaster position="top-right" richColors />
-        </ClientProviders>
+        <Navbar />
+        <main className="min-h-screen">{children}</main>
+        <UpdateBanner />
+        <FeedbackWidget />
+        <Footer />
+        <Toaster position="top-right" richColors />
+        <CrashScreen />
       </body>
     </html>
   );

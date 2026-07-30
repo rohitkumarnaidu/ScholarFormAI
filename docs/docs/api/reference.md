@@ -10,48 +10,6 @@ ScholarForm AI exposes a RESTful API for manuscript formatting, paper generation
 
 ---
 
-## API Route Map
-
-The diagram below shows all 16 router modules grouped by domain and their relationship to backend services.
-
-```mermaid
-flowchart LR
-    subgraph Gateway["FastAPI Gateway /api/v1"]
-        direction TB
-        Docs["/documents\nUpload · Status · Preview\nDownload · Edit · Share"]
-        Gen["/generator\nSessions · Messages\nOutline · RAG"]
-        Synth["/synthesis\nMulti-doc merge\n& RAG synthesis"]
-        Cite["/citations\nCSL search\n& CrossRef lookup"]
-        Tmpl["/templates\nList · Get ·\nCustomize"]
-        Quality["/quality\nScore · Report"]
-        Hook["/webhooks\nSubscribe · Deliver\n& Logs"]
-        Users["/users\nProfile · Keys\n& Usage"]
-        Health["/health\nLiveness · Readiness"]
-    end
-
-    subgraph Services["Backend Services"]
-        PipelineSvc["DocumentPipelineService"]
-        GenSvc["GeneratorSessionService"]
-        SynthSvc["SynthesisService"]
-        CiteSvc["CitationAssemblyService"]
-        StyleReg["StyleRegistry"]
-        QualitySvc["QualityScoreService"]
-        WebhookSvc["WebhookService"]
-        UserSvc["UserService + APIKeyService"]
-    end
-
-    Docs --> PipelineSvc
-    Gen --> GenSvc
-    Synth --> SynthSvc
-    Cite --> CiteSvc
-    Tmpl --> StyleReg
-    Quality --> QualitySvc
-    Hook --> WebhookSvc
-    Users --> UserSvc
-```
-
----
-
 ## Request Lifecycle & Sequence Architecture
 
 All incoming API requests pass through FastAPI middleware (CORS, Rate Limiter, Authentication) before routing to specific v1 endpoint controllers and business services.

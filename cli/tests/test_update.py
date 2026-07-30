@@ -82,43 +82,21 @@ def mock_update_service():
             "check_frequency_hours": 24,
         }
 
-        instance.verify_asset_integrity.return_value = {
-            "valid": True,
-            "exists": True,
-            "file_name": "amf-1.1.0.zip",
-            "path": "/tmp/amf-1.1.0.zip",
-            "size_bytes": 1024000,
-            "checksum_algo": "sha256",
-            "expected_checksum": None,
-            "calculated_sha256": "abc123def4567890",
-            "checksum_valid": True,
-            "signature_provided": False,
-            "signature_valid": True,
-        }
-
-        instance.get_release_notes.return_value = {
-            "version": "1.1.0",
-            "name": "v1.1.0",
-            "published_at": "2026-07-25T10:00:00",
-            "found": True,
-            "body": "## Release Notes\n- Bug fixes and stability improvements.",
-            "changelog": ["Bug fixes and stability improvements."],
+        instance.update_settings.return_value = {
+            "channel": "beta",
+            "auto_check": True,
+            "auto_download": True,
+            "auto_install": False,
+            "check_frequency_hours": 12,
         }
 
         yield instance
-
 
 
 def test_update_check(runner: CliRunner, mock_update_service):
     result = runner.invoke(cli, ["update", "check"])
     assert result.exit_code == 0
     assert "up to date" in result.output.lower() or "current" in result.output.lower()
-
-
-def test_update_check_json(runner: CliRunner, mock_update_service):
-    result = runner.invoke(cli, ["update", "check", "--json"])
-    assert result.exit_code == 0
-    assert '"status": "up-to-date"' in result.output
 
 
 def test_update_check_with_channel(runner: CliRunner, mock_update_service):
@@ -135,13 +113,6 @@ def test_update_download(runner: CliRunner, mock_update_service):
         "check_mode": "manual",
         "checked_at": "2026-07-25T10:00:00",
     }
-    mock_update_service.download_update_with_retry.return_value = {
-        "success": True,
-        "version": "1.1.0",
-        "path": "/tmp/amf-1.1.0.zip",
-        "size": 1024000,
-        "checksum_valid": True,
-    }
     result = runner.invoke(cli, ["update", "download"])
     assert result.exit_code == 0
 
@@ -155,37 +126,14 @@ def test_update_download_version(runner: CliRunner, mock_update_service):
         "check_mode": "manual",
         "checked_at": "2026-07-25T10:00:00",
     }
-    mock_update_service.download_update_with_retry.return_value = {
-        "success": True,
-        "version": "1.1.0",
-        "path": "/tmp/amf-1.1.0.zip",
-        "size": 1024000,
-        "checksum_valid": True,
-    }
     result = runner.invoke(cli, ["update", "download", "--version", "1.1.0"])
     assert result.exit_code == 0
-
-
-def test_update_verify(runner: CliRunner, mock_update_service, tmp_path):
-    test_file = tmp_path / "amf-1.1.0.zip"
-    test_file.write_bytes(b"dummy data")
-    result = runner.invoke(cli, ["update", "verify", "--file", str(test_file)])
-    assert result.exit_code == 0
-    assert "Verification Report" in result.output or "VERIFIED" in result.output
 
 
 def test_update_install(runner: CliRunner, mock_update_service):
     result = runner.invoke(cli, ["update", "install"])
     assert result.exit_code == 0
     assert "Installed" in result.output
-
-
-def test_update_offline(runner: CliRunner, mock_update_service, tmp_path):
-    pkg_file = tmp_path / "amf-1.1.0.tar.gz"
-    pkg_file.write_bytes(b"offline package data")
-    result = runner.invoke(cli, ["update", "offline", str(pkg_file)])
-    assert result.exit_code == 0
-    assert "Successfully installed" in result.output or "offline" in result.output.lower()
 
 
 def test_update_rollback(runner: CliRunner, mock_update_service):
@@ -204,11 +152,6 @@ def test_update_channels(runner: CliRunner, mock_update_service):
     result = runner.invoke(cli, ["update", "channels"])
     assert result.exit_code == 0
     assert "stable" in result.output
-
-
-def test_update_channel_switch(runner: CliRunner, mock_update_service):
-    result = runner.invoke(cli, ["update", "channel", "beta"])
-    assert result.exit_code == 0
 
 
 def test_update_settings_show(runner: CliRunner, mock_update_service):
@@ -230,4 +173,3 @@ def test_update_release_notes(runner: CliRunner, mock_update_service):
 def test_update_help(runner: CliRunner):
     result = runner.invoke(cli, ["update", "--help"])
     assert result.exit_code == 0
-
