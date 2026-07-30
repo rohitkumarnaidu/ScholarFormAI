@@ -53,28 +53,6 @@ from app.schemas.user import (
     UserUpdateRequest,
 )
 
-# ── Update Management (v1) ───────────────────────────────────────────────────
-from app.schemas.update import (
-    UpdateCheckRequest,
-    UpdateInfoSchema,
-    UpdateCheckResponse,
-    UpdateDownloadRequest,
-    UpdateDownloadResponse,
-    UpdateInstallRequest,
-    UpdateInstallResponse,
-    UpdateRollbackRequest,
-    UpdateRollbackResponse,
-    UpdateVerifyRequest,
-    UpdateVerifyResponse,
-    UpdateSettingsSchema,
-    UpdateSettingsUpdateSchema,
-    ReleaseNotesSchema,
-    ChannelSchema,
-    VersionInfoSchema,
-    UpdateHistoryItemSchema,
-    UpdateHistoryResponse,
-)
-
 __all__ = [
     # Auth v1
     # Document v1
@@ -107,24 +85,4 @@ __all__ = [
     "User",
     "UserProfile",
     "UserUpdateRequest",
-    # Update v1
-    "UpdateCheckRequest",
-    "UpdateInfoSchema",
-    "UpdateCheckResponse",
-    "UpdateDownloadRequest",
-    "UpdateDownloadResponse",
-    "UpdateInstallRequest",
-    "UpdateInstallResponse",
-    "UpdateRollbackRequest",
-    "UpdateRollbackResponse",
-    "UpdateVerifyRequest",
-    "UpdateVerifyResponse",
-    "UpdateSettingsSchema",
-    "UpdateSettingsUpdateSchema",
-    "ReleaseNotesSchema",
-    "ChannelSchema",
-    "VersionInfoSchema",
-    "UpdateHistoryItemSchema",
-    "UpdateHistoryResponse",
 ]
-

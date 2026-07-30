@@ -77,6 +77,7 @@ const Sidebar = memo(function Sidebar({ section = 'shared', onClose, isCollapsed
   const isAdminUser = useMemo(() => Boolean(
     uiUser?.is_admin
     || uiUser?.app_metadata?.role === 'admin'
+    || uiUser?.user_metadata?.role === 'admin'
     || uiUser?.role === 'admin'
   ), [uiUser]);
 

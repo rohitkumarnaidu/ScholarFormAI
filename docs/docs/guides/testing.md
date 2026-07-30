@@ -43,42 +43,6 @@ flowchart TD
     style Unit fill:#4a2a5c,color:#fff
 ```
 
-### Test Execution Flow
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Dev as "Developer / CI Runner"
-    participant Ruff as "Ruff Linter"
-    participant Mypy as "Mypy Type Checker"
-    participant Pytest as "Pytest Backend"
-    participant Vitest as "Vitest Frontend"
-    participant Playwright as "Playwright E2E"
-    participant Coverage as "Coverage Reporter"
-
-    Dev->>Ruff: ruff check app --config ruff.toml
-    Ruff-->>Dev: ✅ No lint errors
-
-    Dev->>Mypy: mypy --config-file mypy.ini app
-    Mypy-->>Dev: ✅ Type checks passed
-
-    Dev->>Pytest: pytest tests -m "not integration and not llm" -x -q
-    Pytest-->>Dev: ✅ Unit tests passed (~45s)
-
-    Dev->>Pytest: pytest tests -m integration
-    Note over Pytest: Requires Docker: Redis + PG + GROBID
-    Pytest-->>Dev: ✅ Integration tests passed (~2min)
-
-    Dev->>Vitest: npm test (Vitest)
-    Vitest-->>Dev: ✅ Component tests passed (~15s)
-
-    Dev->>Playwright: npm run test:e2e
-    Playwright-->>Dev: ✅ E2E journeys passed (~1.5min)
-
-    Dev->>Coverage: pytest --cov=app --cov-report=term-missing
-    Coverage-->>Dev: 📊 Coverage Report (target ≥70%)
-```
-
 ---
 
 ## 1. Backend Testing (`pytest`)

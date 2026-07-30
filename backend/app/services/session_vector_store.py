@@ -6,12 +6,10 @@ from __future__ import annotations
 import asyncio
 import logging
 import threading
-import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from app.services.model_store import model_store
-from app.services.llm_provider_service import sanitize_for_llm
 
 logger = logging.getLogger(__name__)
 
@@ -106,9 +104,7 @@ class SessionVectorStore:
             return self._embedding_model
 
     def _collection_name(self, session_id: str) -> str:
-        safe = re.sub(r"[^a-zA-Z0-9_-]", "_", str(session_id or "")).strip("_")
-        if not safe:
-            safe = "default"
+        safe = str(session_id).replace("-", "_")
         return f"session_{safe}"
 
     def create_collection(self, session_id: str) -> str:
@@ -156,7 +152,6 @@ class SessionVectorStore:
             text = str(chunk.get("text") or "").strip()
             if not text:
                 continue
-            text = sanitize_for_llm(text)
             metadata = {
                 "source_doc": chunk.get("source_doc"),
                 "section": chunk.get("section"),
@@ -177,7 +172,6 @@ class SessionVectorStore:
     def query(self, session_id: str, question: str, top_k: int = 5) -> List[Dict[str, Any]]:
         if not question:
             return []
-        question = sanitize_for_llm(question)
         try:
             client = self._get_client()
             collection = client.get_or_create_collection(self._collection_name(session_id))

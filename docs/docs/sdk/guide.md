@@ -262,63 +262,17 @@ All data objects in the SDK are Pydantic v2 `BaseModel` subclasses:
 
 ## Exception Taxonomy (`amf_sdk.exceptions`)
 
-All SDK exceptions inherit from `AMFError`, providing consistent attributes (`message`, `status_code`, `details`). The class hierarchy is shown below:
+All SDK exceptions inherit from `AMFError`, providing consistent attributes (`message`, `status_code`, `details`).
 
-```mermaid
-classDiagram
-    class AMFError {
-        +str message
-        +int status_code
-        +Dict details
-        +__str__() str
-    }
-
-    class AMFValidationError {
-        +int status_code = 400
-        +Dict details
-        +note: "Malformed request body or invalid params"
-    }
-
-    class AMFAuthenticationError {
-        +int status_code = 401
-        +note: "Missing or invalid API key / JWT"
-    }
-
-    class AMFNotFoundError {
-        +int status_code = 404
-        +str resource
-        +note: "Job ID or style ID not found"
-    }
-
-    class AMFFormattingError {
-        +int status_code = 422
-        +Dict details
-        +note: "Formatting pipeline failure"
-    }
-
-    class AMFRateLimitError {
-        +int status_code = 429
-        +int retry_after
-        +note: "Rate limit exceeded"
-    }
-
-    class AMFConnectionError {
-        +int status_code = 503
-        +note: "Server unreachable / socket failure"
-    }
-
-    class AMFTimeoutError {
-        +int status_code = 504
-        +note: "HTTP request exceeded timeout"
-    }
-
-    AMFError <|-- AMFValidationError
-    AMFError <|-- AMFAuthenticationError
-    AMFError <|-- AMFNotFoundError
-    AMFError <|-- AMFFormattingError
-    AMFError <|-- AMFRateLimitError
-    AMFError <|-- AMFConnectionError
-    AMFError <|-- AMFTimeoutError
+```
+AMFError (base class: Exception)
+├── AMFValidationError        (status_code=400)
+├── AMFAuthenticationError   (status_code=401)
+├── AMFNotFoundError         (status_code=404)
+├── AMFFormattingError       (status_code=422)
+├── AMFRateLimitError        (status_code=429)
+├── AMFConnectionError       (status_code=503)
+└── AMFTimeoutError          (status_code=504)
 ```
 
 ### Exception Details & HTTP Mapping

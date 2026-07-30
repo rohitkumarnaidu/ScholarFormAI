@@ -159,39 +159,7 @@ For each extracted citation key or DOI:
 
 ## Real-Time HTML/CSS Preview Renderer
 
-The `PreviewRenderer` service (`preview_renderer.py`) generates real-time HTML/CSS previews of formatted manuscripts for the frontend TipTap editor workspace.
-
-```mermaid
-flowchart LR
-    Input(["Raw Manuscript Text Blocks"])
-
-    subgraph Classify ["Block Classification"]
-        BC["Classify: Title · H1-H4 · Abstract· Paragraph · Caption · List"]
-    end
-
-    subgraph Cache ["Two-Tier Cache"]
-        direction TB
-        RedisHTML["Redis Cache\npreview:html:<sha256>\nTTL: 60s"]
-        RedisCSS["Redis Cache\npreview:css:<template_name>\nTTL: 3600s"]
-        MemCache["In-Memory TTL Dict\n(fallback when Redis unavailable)"]
-    end
-
-    subgraph Render ["Template-Specific Rendering"]
-        CSSInject["Inject Publisher CSS\n(IEEE two-column · Springer fonts · etc.)"]
-        HTMLBuild["Build Sanitized HTML String"]
-        XSSClean["DOMPurify / bleach sanitization\n(XSS prevention)"]
-    end
-
-    Output(["Sanitized HTML Preview → TipTap Editor"])
-
-    Input --> BC
-    BC --> CSSInject
-    CSSInject --> RedisCSS
-    RedisCSS --> HTMLBuild
-    HTMLBuild --> XSSClean
-    XSSClean --> Output
-```
-
+The `PreviewRenderer` service (`preview_renderer.py`) generates real-time HTML/CSS previews of formatted manuscripts for the frontend TipTap editor workspace:
 - **Block Classification**: Classifies raw text lines into Title, Headings (H1-H4), Abstract, Paragraphs, Captions, and Lists.
 - **Template CSS Injection**: Injects publisher-specific preview stylesheets (e.g., IEEE two-column styles, Springer font specifications) stored in `app/templates/<template_name>/preview.css`.
 - **Two-Tier Preview Caching**: HTML preview outputs are cached in Redis under `preview:html:<sha256>` (60s TTL) with fallback to an in-memory TTL dictionary. Template CSS styles are pre-compiled and cached under `preview:css:<template_name>` (3600s TTL).

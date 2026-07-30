@@ -84,7 +84,7 @@ export default function AdminDashboard() {
     // Admin role guard
     const appRole = user?.app_metadata?.role;
     const metaRole = user?.user_metadata?.role;
-    const isAdmin = appRole === 'admin';
+    const isAdmin = appRole === 'admin' || metaRole === 'admin';
 
     useEffect(() => {
         if (user && !isAdmin) router.replace('/dashboard');
@@ -251,7 +251,7 @@ export default function AdminDashboard() {
                                 <TelemetryRow label="user_metadata.role" value={metaRole} highlight={!!metaRole} />
                                 <div className="pt-3 flex items-center justify-between">
                                     <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Effective role</span>
-                                    <RoleBadge role={isAdmin ? 'admin' : (appRole || 'user')} />
+                                    <RoleBadge role={isAdmin ? 'admin' : (appRole || metaRole || 'user')} />
                                 </div>
                             </div>
                         </div>

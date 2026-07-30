@@ -56,7 +56,7 @@ function LoginContent() {
         } else {
             // Check if user is an admin
             const userObj = data?.user || data?.session?.user;
-            const isAdmin = userObj?.app_metadata?.role === 'admin';
+            const isAdmin = userObj?.app_metadata?.role === 'admin' || userObj?.user_metadata?.role === 'admin';
 
             // Route admins to admin dashboard if no specific next path was requested
             const finalRedirectPath = (isAdmin && redirectPath === '/dashboard')
