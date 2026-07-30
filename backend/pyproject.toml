@@ -38,6 +38,7 @@ markers = [
     "integration: marks tests that require external services",
     "llm: marks tests that call LLM services",
     "slow: marks tests that take a long time",
+    "contract: marks tests that verify API contracts against external services",
 ]
 
 [tool.mypy]
