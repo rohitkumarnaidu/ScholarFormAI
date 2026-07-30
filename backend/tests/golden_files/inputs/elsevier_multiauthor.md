@@ -1,46 +1,47 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
 template: elsevier
 title: Multi-Centre Clinical Validation of Transformer-Based Histopathology Classification
 authors:
-  - Maria Santos
-  - Priya Kapoor
-  - David Chen
-  - Hassan Al-Rashid
-  - Ingrid Johansson
-  - Thomas Mueller
-  - Aisha Okafor
-  - Yuki Tanaka
+
+- Maria Santos
+- Priya Kapoor
+- David Chen
+- Hassan Al-Rashid
+- Ingrid Johansson
+- Thomas Mueller
+- Aisha Okafor
+- Yuki Tanaka
 affiliations:
-  - Department of Pathology, University of São Paulo
-  - Centre for AI in Medicine, Indian Institute of Technology Delhi
-  - Division of Computational Pathology, University of Cambridge
-  - College of Medicine, Qatar University
-  - Department of Medical Epidemiology, Karolinska Institutet
-  - Institute of Pathology, Charité Universitätsmedizin Berlin
-  - Faculty of Medical Sciences, University of Lagos
-  - Graduate School of Medicine, University of Tokyo
+- Department of Pathology, University of São Paulo
+- Centre for AI in Medicine, Indian Institute of Technology Delhi
+- Division of Computational Pathology, University of Cambridge
+- College of Medicine, Qatar University
+- Department of Medical Epidemiology, Karolinska Institutet
+- Institute of Pathology, Charité Universitätsmedizin Berlin
+- Faculty of Medical Sciences, University of Lagos
+- Graduate School of Medicine, University of Tokyo
 corresponding_author: Maria Santos (m.santos@pathol.usp.br)
 orcid:
-  - 0000-0001-2345-6789
-  - 0000-0002-3456-7890
-  - 0000-0003-4567-8901
-  - 0000-0004-5678-9012
-  - 0000-0005-6789-0123
-  - 0000-0006-7890-1234
-  - 0000-0007-8901-2345
-  - 0000-0008-9012-3456
+- 0000-0001-2345-6789
+- 0000-0002-3456-7890
+- 0000-0003-4567-8901
+- 0000-0004-5678-9012
+- 0000-0005-6789-0123
+- 0000-0006-7890-1234
+- 0000-0007-8901-2345
+- 0000-0008-9012-3456
 keywords:
-  - histopathology
-  - transformer
-  - clinical validation
-  - multi-centre study
-  - whole-slide imaging
+- histopathology
+- transformer
+- clinical validation
+- multi-centre study
+- whole-slide imaging
 data_availability: "The datasets generated and analysed during the current study are available in the TCGA repository (https://portal.gdc.cancer.gov/). Code is available at https://github.com/scholarform/histo-transformer. All other data are available from the corresponding author on reasonable request."
 funding: "This work was supported by the São Paulo Research Foundation (FAPESP) Grant No. 2024/12345-6, the Swedish Research Council Grant No. 2024-06789, and the German Research Foundation (DFG) Grant No. MU-4567/1."
+
 ---
 
 # Abstract
@@ -66,7 +67,7 @@ We conducted a retrospective, multi-centre diagnostic accuracy study following t
 Each centre contributed whole-slide images from three cancer types: breast carcinoma, prostate adenocarcinoma, and lung squamous cell carcinoma. The final dataset comprised 12,847 slides (Table 1).
 
 | Cancer Type | Centres | Slides | Positive % |
-|-------------|---------|--------|------------|
+| ------------- | --------- | -------- | ------------ |
 | Breast | 8 | 5,234 | 47.2% |
 | Prostate | 6 | 4,156 | 51.8% |
 | Lung | 5 | 3,457 | 43.6% |
@@ -88,7 +89,7 @@ The ViT-L/16 model achieved an AUC of 0.941 (95% CI: 0.928-0.954), with sensitiv
 ## Subgroup Analysis
 
 | Subgroup | AUC | 95% CI | n |
-|----------|-----|--------|---|
+| ---------- | ----- | -------- | --- |
 | Breast | 0.953 | 0.938-0.968 | 5,234 |
 | Prostate | 0.934 | 0.912-0.956 | 4,156 |
 | Lung | 0.928 | 0.901-0.955 | 3,457 |

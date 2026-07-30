@@ -2,6 +2,7 @@
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
 ---
+
 title: ScholarForm AI — Operations Runbook
 description: Comprehensive operations guide covering service management, monitoring, incident response, and recovery
 sidebar_position: 40
@@ -77,7 +78,7 @@ last_updated: July 2026
 ### Service Dependencies
 
 | Service | Port | Criticality | Fallback Strategy |
-|---------|------|-------------|-------------------|
+| --------- | ------ | ------------- | ------------------- |
 | **PostgreSQL (Supabase)** | 5432 | **Critical** | PITR continuous backup; Supabase managed |
 | **Redis** | 6379 | **High** | Ephemeral; cache rebuilds automatically |
 | **GROBID** | 8070 | **High** | Docling → PyMuPDF → PyPDF2 cascade |
@@ -103,6 +104,7 @@ last_updated: July 2026
 ### Starting / Stopping Services
 
 #### Backend (Local Development)
+
 ```powershell
 cd backend
 python -m venv .venv
@@ -112,6 +114,7 @@ uvicorn app.main:app --reload --port 8000
 ```
 
 #### Backend (Docker Compose — Full Stack)
+
 ```bash
 cd backend/docker
 docker compose up -d                 # Start all services
@@ -121,6 +124,7 @@ docker compose logs -f --tail=100   # Tail logs
 ```
 
 #### Celery Workers
+
 ```bash
 # Interactive queue (4 concurrent tasks)
 celery -A app.tasks.celery_tasks worker -Q interactive -c 4 --loglevel=info
@@ -133,12 +137,14 @@ celery -A app.tasks.celery_tasks worker -Q interactive,batch -c 2 --loglevel=inf
 ```
 
 #### Celery Beat (Scheduled Tasks)
+
 ```bash
 celery -A app.tasks.celery_tasks beat --loglevel=info
 # Scheduled: cleanup-stranded-uploads-daily at 03:00 UTC
 ```
 
 #### Production (Render)
+
 - Backend auto-deploys from `main` branch
 - Manual deploy: `render deploy --service scholarform-backend`
 - Rollback: `render rollback --service scholarform-backend`
@@ -146,7 +152,7 @@ celery -A app.tasks.celery_tasks beat --loglevel=info
 ### Health Checks
 
 | Endpoint | Purpose | Expected Status |
-|----------|---------|----------------|
+| ---------- | --------- | ---------------- |
 | `GET /health` | Liveness probe | Always 200 (returns component status) |
 | `GET /ready` | Readiness probe | 200 when all critical deps healthy, 503 otherwise |
 | `GET /api/v1/health/live` | K8s/Docker liveness | 200 |
@@ -183,6 +189,7 @@ tail -f backend/app.log                        # WSL/Git Bash
 ```
 
 Structured JSON logging is enabled in production (`ENABLE_STRUCTURED_LOGGING=true`). Each log entry includes:
+
 - `request_id` — Correlation ID from `RequestIdMiddleware`
 - `timestamp` — ISO 8601 UTC
 - `level` — Log severity
@@ -214,30 +221,35 @@ redis-cli -u $env:REDIS_URL ping
 **Panel Layout (3 rows, 24-column grid):**
 
 #### Row 1: API Health (y=0)
+
 | Panel | Type | Position | Query | Thresholds |
 |-------|------|----------|-------|------------|
 | **API Request Rate** | Time series | x=0, w=12 | `rate(http_requests_total{job="scholarform"}[5m])` | — |
 | **Error Rate** | Time series | x=12, w=12 | `rate(5xx[5m]) / rate(total[5m]) * 100` | Green <1%, Yellow 1-5%, Red >5% |
 
 #### Row 2: Latency (y=8)
+
 | Panel | Type | Position | Query | Thresholds |
 |-------|------|----------|-------|------------|
 | **Response Latency (p50, p95, p99)** | Time series | x=0, w=24 | `histogram_quantile(0.50/0.95/0.99, rate(http_request_duration_seconds_bucket[5m]))` | — |
 
 #### Row 3: System Status (y=16)
+
 | Panel | Type | Position | Query | Thresholds |
-|-------|------|----------|-------|------------|
+| ------- | ------ | ---------- | ------- | ------------ |
 | **Active Users** | Stat | x=0, w=6 | `count(scholarform_active_users)` | — |
 | **Pipeline Processing Rate** | Stat | x=6, w=6 | `rate(scholarform_pipeline_documents_processed_total[5m])` | — |
 | **API Key Usage Rate** | Time series | x=12, w=12 | `rate(scholarform_api_key_requests_total[5m])` | — |
 
 #### Row 3 (continued): Infrastructure (y=20)
+
 | Panel | Type | Position | Query | Thresholds |
 |-------|------|----------|-------|------------|
 | **DB Connection Pool** | Gauge | x=0, w=6 | `scholarform_db_pool_active_connections` | Green <15, Yellow 15-18, Red >18 (max=20) |
 | **Redis Memory Usage** | Gauge | x=6, w=6 | `redis_memory_used_bytes / redis_memory_max_bytes * 100` | Green <75%, Yellow 75-90%, Red >90% |
 
 #### Row 4: Reliability & Queues (y=24)
+
 | Panel | Type | Position | Query | Thresholds |
 |-------|------|----------|-------|------------|
 | **Error Budget Remaining (30d)** | Gauge | x=0, w=12 | `(1 - (30d 5xx / 30d total)) / 0.999 * 100` | Red <25%, Yellow 25-50%, Green >50% |
@@ -246,7 +258,7 @@ redis-cli -u $env:REDIS_URL ping
 ### Prometheus Alert Interpretation
 
 | Alert | Severity | Condition | Runbook | Action |
-|-------|----------|-----------|---------|--------|
+| ------- | ---------- | ----------- | --------- | -------- |
 | `ScholarFormServiceDown` | **CRITICAL** | `up{job="scholarform"} == 0` for 2m | [service-down.md](runbooks/service-down.md) | Service unreachable — check Render dashboard |
 | `ScholarFormHighErrorRate` | WARNING | 5xx rate > 5% for 5m | [high-error-rate.md](runbooks/high-error-rate.md) | Recent deploy? DB connectivity? |
 | `ScholarFormHighLatency` | WARNING | p95 > 5s for 5m | [high-latency.md](runbooks/high-latency.md) | External dep slow? Worker backlog? |
@@ -261,7 +273,7 @@ redis-cli -u $env:REDIS_URL ping
 All metrics served at `GET /metrics` via `prometheus_fastapi_instrumentator`. Custom metrics:
 
 | Metric | Type | Description |
-|--------|------|-------------|
+| -------- | ------ | ------------- |
 | `scholarform_db_pool_active_connections` | Gauge | Current active DB connections |
 | `scholarform_celery_queue_depth{queue="interactive\|batch"}` | Gauge | Number of pending Celery tasks |
 | `scholarform_active_users` | Gauge | Currently active user sessions |
@@ -285,7 +297,7 @@ All metrics served at `GET /metrics` via `prometheus_fastapi_instrumentator`. Cu
 ### Severity Levels
 
 | Severity | Definition | Response Time | Examples |
-|----------|-----------|---------------|----------|
+| ---------- | ----------- | --------------- | ---------- |
 | **P0 (Critical)** | Complete service outage or data loss | < 5 minutes | Service down, DB unavailable, data corruption |
 | **P1 (High)** | Major feature broken, degraded for users | < 15 minutes | Error rate >5%, p95 latency >5s, pipeline broken |
 | **P2 (Medium)** | Partial degradation, non-critical broken | < 1 hour | Error rate >1%, single endpoint slow |
@@ -300,12 +312,14 @@ DETECTION → TRIAGE → MITIGATION → RESOLUTION → POSTMORTEM
 ```
 
 #### Detection
+
 - Prometheus alerts via `error_budget.yml`
 - Sentry error threshold breaches
 - Grafana dashboard anomaly observation
 - User-reported issues (via support)
 
 #### Triage (first 5 minutes)
+
 1. **Acknowledge** the alert (respond in PagerDuty / incident channel)
 2. **Assess severity** using the matrix above
 3. **Declare incident** in `#incidents` Slack channel with:
@@ -316,6 +330,7 @@ DETECTION → TRIAGE → MITIGATION → RESOLUTION → POSTMORTEM
 4. **Assemble response team** based on escalation matrix
 
 #### Mitigation (first 30 minutes)
+
 1. Apply the relevant playbook from `docs/runbooks/`
 2. Check Render dashboard for recent deploys
 3. Verify dependency health (Supabase, Redis, GROBID, LLM providers)
@@ -324,12 +339,14 @@ DETECTION → TRIAGE → MITIGATION → RESOLUTION → POSTMORTEM
 6. If data issue: freeze writes, assess corruption scope
 
 #### Resolution
+
 - Verify through health checks and dashboards
 - Confirm error budget impact
 - Update incident status in Slack
 - Notify affected users (if any)
 
 #### Postmorten (within 48 hours for P0/P1)
+
 - Follow [Postmortem Template](POSTMORTEM_TEMPLATE.md)
 - Document root cause, timeline, action items
 - Update runbooks with lessons learned
@@ -351,7 +368,7 @@ Level 3: Engineering Director
 #### Escalation by Alert Type
 
 | Alert Type | Level 0 | Level 1 | Level 2 |
-|-----------|---------|---------|---------|
+| ----------- | --------- | --------- | --------- |
 | Service Down | On-call engineer | Backend lead | DevOps lead |
 | Error Rate | On-call engineer | Backend lead | — |
 | High Latency | On-call engineer | Performance owner | DevOps lead |
@@ -368,6 +385,7 @@ Level 3: Engineering Director
 ### Deployment
 
 #### Standard Deploy (Render — auto-deploy)
+
 ```bash
 # Simply push to main branch — Render auto-deploys
 git push origin main
@@ -377,6 +395,7 @@ render logs --service scholarform-backend --tail 50
 ```
 
 #### Manual Deploy
+
 ```bash
 render deploy --service scholarform-backend
 # or for frontend
@@ -384,6 +403,7 @@ npm run build && render deploy --service scholarform-frontend
 ```
 
 #### Rollback
+
 ```bash
 # Rollback backend to previous version
 render rollback --service scholarform-backend
@@ -393,6 +413,7 @@ render rollback --service scholarform-frontend
 ```
 
 #### Deployment Checklist
+
 - [ ] Tests passing on CI (pytest, vitest, Playwright)
 - [ ] Lint/type checks passing (ruff, mypy, eslint)
 - [ ] No unresolved `detect-secrets` warnings
@@ -440,6 +461,7 @@ The Docker entrypoint runs `alembic upgrade head` automatically before starting 
 ### Cache Clearing
 
 #### Redis Cache Flush (Selective)
+
 ```bash
 # Flush all Redis data (all keys)
 redis-cli -u $env:REDIS_URL FLUSHALL
@@ -456,12 +478,15 @@ redis-cli -u $env:REDIS_URL DEL "llm_cache:*"
 **Note:** Redis is ephemeral — flushing only resets rate limit counters and caches. All data rebuilds automatically.
 
 #### Health Check Cache Invalidation
+
 Health check cache TTL is 15s by default. To force refresh:
+
 ```bash
 curl -s "https://api.scholarform.ai/ready?force=1"
 ```
 
 #### File Cleanup
+
 ```bash
 # Manual trigger (via Celery)
 celery -A app.tasks.celery_tasks call batch.cleanup_uploads --kwargs='{"upload_dir":"uploads"}'
@@ -526,6 +551,7 @@ docker compose restart scholarform-redis
 ### Database Recovery
 
 #### Supabase Managed (PITR) — Preferred
+
 ```bash
 # 1. Navigate to Supabase Dashboard → Database → Backups
 # 2. Select restore point (any timestamp within 7-day retention)
@@ -538,6 +564,7 @@ render restart --service scholarform-backend
 ```
 
 #### Manual PostgreSQL Dump Restore
+
 ```bash
 # Restore from custom format dump
 pg_restore --dbname=$SUPABASE_DB_URL --clean --no-owner backup_20260716_030000.dump
@@ -547,6 +574,7 @@ psql $SUPABASE_DB_URL < schema_backup.sql
 ```
 
 #### Check Supabase Status
+
 ```bash
 # External status page
 curl -s https://status.supabase.com
@@ -643,7 +671,7 @@ pytest tests/test_smoke.py -v --no-cov
 ### Database Backup
 
 | Method | Frequency | Retention | Type |
-|--------|-----------|-----------|------|
+| -------- | ----------- | ----------- | ------ |
 | Supabase PITR | Continuous | 7 days | Automated |
 | Manual `pg_dump` | Weekly | 30 days | On-demand |
 | Schema-only dump | Weekly | Permanent | Version-controlled |
@@ -712,7 +740,7 @@ pg_restore --dbname=$STAGING_DB_URL --clean --no-owner backup_file.dump
 ### Backup Schedule
 
 | Task | Frequency | Responsible | Automation |
-|------|-----------|-------------|------------|
+| ------ | ----------- | ------------- | ------------ |
 | Supabase PITR | Continuous | Supabase | Automatic |
 | Manual DB dump (weekly) | Sunday 02:00 UTC | DevOps | Cron script |
 | File storage sync | Daily 04:00 UTC | DevOps | Celery beat |
@@ -728,18 +756,21 @@ pg_restore --dbname=$STAGING_DB_URL --clean --no-owner backup_file.dump
 ### Connection Pools
 
 #### Database Connection Pool
+
 - **Max pool size:** 20 connections (Supabase managed)
 - **Warning threshold:** 15 active connections (yellow on Grafana)
 - **Critical threshold:** 18 active connections (red + alert)
 - **Alert:** `ScholarFormDBPoolExhausted` if active > 18 for 2 minutes
 
 **Tuning:**
+
 - If hitting pool limits, check for connection leaks (unclosed DB sessions)
 - Increase pool size via Supabase Dashboard if needed (plan upgrade may be required)
 - Ensure `async` DB operations properly release connections
 - Consider implementing connection pooling at the application level
 
 #### Celery Worker Concurrency
+
 ```bash
 # Current defaults:
 WEB_CONCURRENCY=1     # uvicorn workers (Render: $PORT single process)
@@ -752,6 +783,7 @@ WORKER_CONCURRENCY=2  # Celery tasks per worker
 ```
 
 **When to scale:**
+
 - **Interactive queue depth** > 100 for > 10 minutes → increase workers
 - **Batch queue backlog** > 50 → increase batch workers
 - **CPU > 80%** consistently → reduce concurrency, add more instances
@@ -762,7 +794,7 @@ WORKER_CONCURRENCY=2  # Celery tasks per worker
 All TTLs in `CacheSettings` (settings.cache):
 
 | Setting | Default | Recommendation |
-|---------|---------|----------------|
+| --------- | --------- | ---------------- |
 | `LLM_CACHE_TTL_SECONDS` | 3600 (1h) | Reduce to 1800 for rapidly changing prompts; increase to 7200 for stable |
 | `READINESS_CACHE_TTL_SECONDS` | 15 | Keep low (5-15s) for accurate health status |
 | `HEALTH_CACHE_TTL_SECONDS` | 15 | Keep low (5-15s) |
@@ -773,11 +805,13 @@ All TTLs in `CacheSettings` (settings.cache):
 | `DOCUMENT_STATUS_CACHE_TTL_SECONDS` | 1.0s | Keep very low for status polling |
 
 **High-traffic tuning:**
+
 1. Increase `LLM_CACHE_TTL_SECONDS` to 7200+ to reduce LLM provider calls
 2. Increase `CSL_FETCH_CACHE_TTL_SECONDS` to 3600+ to reduce CrossRef API calls
 3. Ensure `REDIS_ENABLED=true` for distributed caching
 
 **Low-memory tuning:**
+
 1. Set `LOW_MEMORY_MODE=true` — skips AI model pre-loading
 2. Set `PRELOAD_AI_MODELS=false` — models load on-demand
 3. Set `RAG_USE_TRANSFORMERS=false` — use API-based embeddings
@@ -810,6 +844,7 @@ EXTERNAL_CIRCUIT_BREAKER_RESET_SECONDS=60        # Half-open attempt after 60s
 ```
 
 **Tuning guidelines:**
+
 - **Latency-sensitive endpoints:** Lower threshold to 2, lower reset to 30s
 - **Transient failure tolerance:** Increase threshold to 5, increase reset to 120s
 - **External API calls:** Keep defaults (3/60)
@@ -822,6 +857,7 @@ NVIDIA NIM (primary) → Groq (fallback) → OpenRouter (fallback) → Ollama (l
 ```
 
 Configure API keys in environment:
+
 - `NVIDIA_API_KEY`, `GROQ_API_KEY`, `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`
 
 **Provider timeout:** 15s (`LLM_PROVIDER_TIMEOUT_SECONDS`)
@@ -833,6 +869,7 @@ Configure API keys in environment:
 ### Key Rotation
 
 #### Encryption Key Rotation
+
 The `ENCRYPTION_KEY` is used for encrypting user API keys stored in the `user_api_keys` table.
 
 ```bash
@@ -848,6 +885,7 @@ python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().d
 ```
 
 #### LLM Provider API Key Rotation
+
 ```bash
 # 1. Update key in Render Dashboard → Environment
 #    e.g., NVIDIA_API_KEY, GROQ_API_KEY, OPENAI_API_KEY
@@ -857,6 +895,7 @@ curl -s https://api.scholarform.ai/api/v1/health/ready | jq '.checks.llm_status'
 ```
 
 #### Supabase Service Role Key
+
 ```bash
 # 1. Generate new key from Supabase Dashboard → Settings → API
 # 2. Update SUPABASE_SERVICE_ROLE_KEY in Render Dashboard
@@ -895,7 +934,7 @@ curl -s https://api.scholarform.ai/api/v1/audit/logs?limit=50 | jq '.'
 ### Security Incident Response
 
 | Incident Type | Response | Escalation |
-|---------------|----------|------------|
+| --------------- | ---------- | ------------ |
 | Suspected breach | Isolate affected service, revoke keys, initiate incident | Security lead + Engineering Director |
 | DDoS / abuse | Rate limiting engages automatically; may need IP block | DevOps lead |
 | Vulnerable dependency | Apply patch, run CI security scan | Backend lead |
@@ -922,7 +961,7 @@ curl -s https://api.scholarform.ai/api/v1/audit/logs?limit=50 | jq '.'
 ### On-Call Rotation
 
 | Role | Contact Method | Coverage |
-|------|---------------|----------|
+| ------ | --------------- | ---------- |
 | Primary On-Call | PagerDuty | 24/7 |
 | Secondary On-Call | PagerDuty (escalation) | 24/7 |
 | Engineering Lead | Slack / Email | Business hours + escalation |
@@ -931,7 +970,7 @@ curl -s https://api.scholarform.ai/api/v1/audit/logs?limit=50 | jq '.'
 ### Escalation Matrix
 
 | Role | Name | Email | Slack | Phone |
-|------|------|-------|-------|-------|
+| ------ | ------ | ------- | ------- | ------- |
 | On-Call Engineer | PagerDuty rotation | Via PagerDuty | @oncall | Via PagerDuty |
 | Engineering Lead | [TBD] | [TBD] | @eng-lead | [TBD] |
 | DevOps Lead | [TBD] | [TBD] | @devops-lead | [TBD] |
@@ -941,7 +980,7 @@ curl -s https://api.scholarform.ai/api/v1/audit/logs?limit=50 | jq '.'
 ### Vendor Emergency Contacts
 
 | Vendor | Contact | Method | SLA |
-|--------|---------|--------|-----|
+| -------- | --------- | -------- | ----- |
 | Supabase | support@supabase.com | Dashboard → Help | Pro: 4hr response |
 | Render | support@render.com | Dashboard → Support | 2hr response (Pro) |
 | GitHub | support@github.com | Premium: 4hr | Enterprise: 1hr |
@@ -949,7 +988,7 @@ curl -s https://api.scholarform.ai/api/v1/audit/logs?limit=50 | jq '.'
 ### Communication Channels
 
 | Channel | Purpose | Link |
-|---------|---------|------|
+| --------- | --------- | ------ |
 | `#incidents` | Active incident coordination | Slack |
 | `#oncall` | On-call handoff / quiet hours | Slack |
 | `#engineering` | General engineering communication | Slack |
@@ -978,7 +1017,7 @@ curl -s https://api.scholarform.ai/api/v1/audit/logs?limit=50 | jq '.'
 Each runbook procedure has a corresponding drill test that validates the documented steps produce the expected outcome. Drills are automated via CI/CD and run on a rotating schedule.
 
 | Drill | Frequency | Procedure Validated | Pass Criteria |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | **Service Restart Drill** | Weekly | Section 6 — Service Restart | All services return health check 200 within 60s |
 | **Redis Failover Drill** | Monthly | Section 6 — Redis Flush/Recovery | Rate limiting degrades to in-memory; cache rebuilds correctly |
 | **Database PITR Drill** | Quarterly | Section 6 — Database Recovery | Staging DB restored to specified timestamp; data consistent |
@@ -1013,7 +1052,7 @@ async def test_grobid_outage_triggers_docling_fallback(client):
 ### API Reference — Health Check Endpoints for Automated Monitoring
 
 | Endpoint | Purpose | Recommended Sleep | Alert on |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `GET /health` | Liveness — always returns 200 | 30s | Non-200 response |
 | `GET /ready` | Readiness — returns 503 if degraded | 15s | 3 consecutive 503s |
 | `GET /api/v1/health/live` | Render/K8s liveness probe | 30s | Non-200 |

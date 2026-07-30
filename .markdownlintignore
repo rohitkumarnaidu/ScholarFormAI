@@ -1,1 +1,15 @@
-node_modules\n.next\nfrontend/node_modules\nbackend/node_modules
+node_modules
+.next
+frontend/node_modules
+backend/node_modules
+graphify-out
+.venv
+venv
+docs/UIUX.md
+docs/user_guide.md
+docs/VERIFICATION_STRATEGY.md
+docs/WEBHOOKS.md
+examples/**/*.md
+frontend/FRONTEND_CERTIFICATION.md
+MAINTAINERS.md
+SECURITY.md

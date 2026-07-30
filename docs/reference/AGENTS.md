@@ -49,7 +49,7 @@ sequenceDiagram
 Every task transfer or completion handoff report (`handoff.md`) MUST contain these 5 required sections:
 
 | Component | Purpose & Contents | Verification Criteria |
-|-----------|--------------------|-----------------------|
+| ----------- | -------------------- | ----------------------- |
 | **1. Observation** | Direct findings: file paths, line numbers, verbatim errors, tool outputs. | Quotes exact paths and lines from current codebase. |
 | **2. Logic Chain** | Step-by-step reasoning from observations to conclusions. | Each step explicitly links back to an observation. |
 | **3. Caveats** | Uninvestigated areas, assumptions, or risk factors. | Must state caveats or explicitly "No caveats." |
@@ -91,6 +91,7 @@ routers/v1/ ──→ quality_score_service / audit_log_service / issue_service 
 ### Backend Service Layer (48 Modules)
 
 The service layer contains 48 dedicated modules in `backend/app/services/`:
+
 - **Document & Formatting**: `document_pipeline_service`, `document_crud_service`, `document_service`, `document_export_service`, `document_share_service`, `formatter`, `parser`, `validator`, `style_registry`, `preview_renderer`, `export_service`, `local_ocr`.
 - **AI Generator & RAG**: `generator_session_service`, `generation_service`, `synthesis_service`, `session_vector_store`, `llm_fallback_service`, `llm_provider_service`, `llm_service`, `llm_key_service`, `classification_gate`, `provider_registry`, `nvidia_client`, `vllm_adoption`, `model_store`, `model_metrics`.
 - **Citation & Enhancements**: `citation_assembly_service`, `csl_service`, `crossref_client`, `enhancement_manager`, `suggestion_service`, `quality_score_service`.

@@ -74,6 +74,7 @@ Content here.
 ## Plain Text
 
 For plain text, AMF attempts to detect structure from:
+
 - ALL-CAPS lines as section headings
 - First line as title
 - Line breaks as paragraph separators

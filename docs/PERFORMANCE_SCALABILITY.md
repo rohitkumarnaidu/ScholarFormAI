@@ -27,7 +27,7 @@
 ### Performance Requirements
 
 | Metric | Target | Source |
-|---|---|---|
+| --- | --- | --- |
 | API response (p50) | < 500 ms | `test_performance_regression.py` |
 | API response (p95) | < 2 s | Locust SLO gate |
 | Document parsing | < 2 s | `test_basic_document_parsing_performance` |
@@ -45,7 +45,7 @@
 ### Scalability Targets
 
 | Dimension | Target | Mechanism |
-|---|---|---|
+| --- | --- | --- |
 | Concurrent users | 200 | Horizontal web workers + Redis rate limiting |
 | Requests per second | 100 | Locust SLO gate (`TARGET_RPS=100`) |
 | Documents per minute | 10 uploads | `UPLOADS_PER_MINUTE=10` |
@@ -68,7 +68,7 @@
 ### Redis Cache (`backend/app/cache/redis_cache.py`)
 
 | Cache | Key Prefix | Default TTL | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | GROBID results | `grobid:` | 3600 s (1 h) | Content-hash-keyed parsed metadata |
 | LLM responses | `llm_cache:` | 86400 s (24 h) | SHA-256 of prompt+model+params |
 | Generator sessions | — | 2.0 s | Per-session data |
@@ -82,6 +82,7 @@
 | CSL fetch | — | 1800 s (30 min) | Citation style downloads |
 
 Configuration in `CacheSettings`:
+
 - `REDIS_ENABLED` — toggle Redis on/off
 - `REDIS_URL` — full connection string
 - `LLM_CACHE_TTL_SECONDS` — override LLM TTL (default 3600)
@@ -124,7 +125,7 @@ engine = create_engine(
 ```
 
 | Parameter | Value | Rationale |
-|---|---|---|
+| --- | --- | --- |
 | `pool_size` | 5 | Matches typical cloud Postgres connection limits |
 | `max_overflow` | 10 | Allows bursts up to 15 concurrent connections |
 | `pool_recycle` | 1800 s | Prevents stale SSL connections after idle periods |
@@ -170,7 +171,7 @@ _ACQUIRE_TIMEOUT_SECONDS = 30.0  # configurable via PIPELINE_ACQUIRE_TIMEOUT_SEC
 ### Per-Stage Timeouts
 
 | Stage | Timeout | Configuration | Retry |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | GROBID extraction | 30 s | `PIPELINE_GROBID_TIMEOUT_SECONDS` | 2 retries, backoff=1.0 |
 | Docling layout | 30 s | `PIPELINE_DOCLING_TIMEOUT_SECONDS` | 2 retries, backoff=1.0 |
 | Semantic parsing | 30 s | `PIPELINE_SEMANTIC_TIMEOUT_SECONDS` | 2 retries, backoff=1.0 |
@@ -240,7 +241,7 @@ celery_app = Celery(
 ### Queue Architecture
 
 | Queue | Task Prefix | Routing | Purpose |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `interactive` | `interactive.*` | User-facing | Document processing, generation, synthesis, agent pipeline, edit flow |
 | `batch` | `batch.*` | Scheduled/Cron | Upload cleanup (daily 03:00 UTC), LLMClassifier benchmarking |
 
@@ -257,7 +258,7 @@ task_time_limit = 900          # 15 min hard limit (worker kills task)
 ### Interactive Tasks (all share the same retry config)
 
 | Task | Description | Max Retries | Backoff |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `process_document_task` | Document pipeline via PipelineOrchestrator | 3 | 1s × 2^n, max 300s, jitter |
 | `process_generation_task` | Generate-from-scratch documents | 3 | Same |
 | `process_synthesis_task` | Multi-document synthesis | 3 | Same |
@@ -269,7 +270,7 @@ task_time_limit = 900          # 15 min hard limit (worker kills task)
 ### Batch Tasks
 
 | Task | Schedule | Description |
-|---|---|---|
+| --- | --- | --- |
 | `cleanup_uploads_task` | Daily 03:00 UTC | Delete files > `RETENTION_DAYS` (default 30) |
 | `classification_benchmark_task` | On-demand | Run F1 benchmark over test fixtures |
 
@@ -284,7 +285,7 @@ startCommand: celery -A app.tasks.celery_tasks worker \
 ```
 
 | Parameter | Value | Rationale |
-|---|---|---|
+| --- | --- | --- |
 | Queues | `interactive,batch` | Single worker listens to both |
 | Concurrency | 2 (default, env `WORKER_CONCURRENCY`) | One worker instance handles 2 concurrent tasks |
 | Prefetch multiplier | 1 | Fair scheduling — worker only prefetches 1 task at a time |
@@ -294,7 +295,7 @@ startCommand: celery -A app.tasks.celery_tasks worker \
 ### Dependencies (from `requirements.txt`)
 
 | Package | Version |
-|---|---|
+| --- | --- |
 | `celery` | 5.6.2 |
 | `redis` | 7.2.0 |
 | `kombu` | 5.6.2 |
@@ -321,7 +322,7 @@ Two layered rate limiters:
 ```
 
 | Parameter | Default | Configuration |
-|---|---|---|
+| --- | --- | --- |
 | Window | 60 s (fixed) | `WINDOW_SECONDS` |
 | Requests per minute (general) | 60 | `RateLimitMiddleware(requests_per_minute=60)` |
 | Uploads per minute | 10 | `UPLOADS_PER_MINUTE` env var |
@@ -329,6 +330,7 @@ Two layered rate limiters:
 | Redis key (upload) | `ratelimit:upload:{ip}:{token_fp}:{minute_bucket}` | Token-aware upload counting |
 
 **Behavior:**
+
 - In-memory store is **always** updated (source of truth for tests)
 - Redis is tried as cross-check for multi-worker accuracy
 - Final count = `max(in_memory_count, redis_count)`
@@ -338,7 +340,7 @@ Two layered rate limiters:
 ### TierRateLimitMiddleware (`backend/app/middleware/tier_rate_limit.py`)
 
 | User Type | Limit | Scope | Storage |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Guest (unauthenticated) | 5/day | POST `/api/v1/documents/upload` and `/api/v1/generator/sessions` | Redis + in-memory fallback |
 | Free-tier (authenticated) | 60/min | All POST endpoints | Redis 60s TTL |
 | Pro-tier (authenticated) | 300/min | All POST endpoints | Redis 60s TTL |
@@ -371,14 +373,14 @@ generate_with_fallback()
 ### Timeout Configuration
 
 | Setting | Default | Clamp |
-|---|---|---|
+| --- | --- | --- |
 | `LLM_PROVIDER_TIMEOUT_SECONDS` | 15 | `max(3, min(value, 60))` |
 | Per-call override | Via `timeout` param | Passed directly to LiteLLM |
 
 ### Circuit Breaker (`pybreaker`)
 
 | Parameter | Default | Config Key |
-|---|---|---|
+| --- | --- | --- |
 | Failure threshold | 3 | `EXTERNAL_CIRCUIT_BREAKER_FAILURE_THRESHOLD` |
 | Reset timeout | 60 s | `EXTERNAL_CIRCUIT_BREAKER_RESET_SECONDS` |
 | Enabled | True | `EXTERNAL_CIRCUIT_BREAKER_ENABLED` |
@@ -396,7 +398,7 @@ generate_with_fallback()
 ### Latency SLAs (mocked, unit tests)
 
 | Operation | Target | Test |
-|---|---|---|
+| --- | --- | --- |
 | `generate()` with cache hit | < 50 ms | `test_cached_llm_result_returns_in_under_50ms` |
 | `generate_with_fallback()` | < 5 s | `test_generate_with_fallback_cache_populated` |
 | `generate_with_model()` | < 3 s | `test_generate_with_model_returns_in_under_3s` |
@@ -415,6 +417,7 @@ generate_with_fallback()
 ### Metrics Recording
 
 Each LLM call records (via `MetricsManager`):
+
 - `record_llm_cache_hit(provider, model)`
 - `record_llm_cache_miss(provider, model)`
 - `record_llm_request(provider, model, success)`
@@ -435,7 +438,7 @@ Each LLM call records (via `MetricsManager`):
 ### Built-in Optimizations
 
 | Technique | Implementation |
-|---|---|
+| --- | --- |
 | Incremental Static Regeneration (ISR) | Automatic for static routes (templates, docs) |
 | Route Segment Caching | App Router data cache for fetch() calls |
 | Image Optimization | `next/image` with remote pattern allowlists |
@@ -455,7 +458,7 @@ Each LLM call records (via `MetricsManager`):
 ### Performance Budgets (CI Gates)
 
 | Metric | Budget |
-|---|---|
+| --- | --- |
 | Lighthouse Performance | ≥ 90 |
 | Lighthouse Accessibility | ≥ 90 |
 | Total bundle size (gzip) | < 300 KB |
@@ -477,7 +480,7 @@ Each LLM call records (via `MetricsManager`):
 Four user classes simulating real-world usage:
 
 | User Class | Concurrent Users | Task | SLO |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `UploadUser` | 100 | Upload 1-page DOCX | p99 ACK < 400 ms |
 | `StatusPollUser` | 100 | Poll `/api/v1/documents/{id}/status` | p99 < 100 ms |
 | `TemplatesUser` | 200 | GET `/api/v1/templates` | p99 < 80 ms |
@@ -500,7 +503,7 @@ Exit code is 1 (failure) if any SLO is violated.
 **`test_performance_baseline.py`** — Real code paths with warmup + percentiles:
 
 | Test Class | Operations | Iterations | Key Thresholds |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `TestDocumentServiceReal` | UUID validation, HMAC sign/verify, signed URL gen/verify | 100 | median < 150 µs |
 | `TestEncryptionPerformance` | Fernet encrypt/decrypt, large payload (100KB) | 100 | median < 500 µs, p95 < 1 ms |
 | `TestCSRFPerformance` | Token generate/validate, with/without user_id | 100 | median < 300 µs |
@@ -517,7 +520,7 @@ Exit code is 1 (failure) if any SLO is violated.
 **`test_performance_regression.py`** — Regression gates:
 
 | Test | Target | Description |
-|---|---|---|
+| --- | --- | --- |
 | `test_document_list_query_performance` | < 500 ms | Document listing with mocked DB |
 | `test_single_document_fetch_performance` | < 200 ms | Single doc fetch |
 | `test_document_search_performance` | < 1 s | Full-text search |
@@ -532,7 +535,7 @@ Exit code is 1 (failure) if any SLO is violated.
 ### Concurrent Processing Tests (`test_concurrent_processing.py`)
 
 | Test | Concurrency | Assertion |
-|---|---|---|
+| --- | --- | --- |
 | `test_ten_concurrent_processes_no_deadlock` | 10 jobs, 4 workers | All complete within 30s |
 | `test_pipeline_semaphore_limits_concurrent` | 20 jobs | Tracks max active |
 | `test_thread_pool_executor_cleanup` | 50 threads | No leaked futures |
@@ -548,13 +551,14 @@ Exit code is 1 (failure) if any SLO is violated.
 Environment variable: `LOW_MEMORY_MODE=false` (default)
 
 When `true`:
+
 - Forces `DEFAULT_FAST_MODE=true` (skips semantic parsing, crossref enrichment, AI reasoning, figure analysis)
 - Used in render.yaml's free-tier deployments
 
 ### Lazy Model Loading
 
 | Component | Loading Strategy | Trigger |
-|---|---|---|
+| --- | --- | --- |
 | `RedisCache._client` | Created on first `_ensure_client()` call | Any cache operation |
 | `FigureAnalyzer` | `_get_figure_analyzer()` lazy singleton | Figure analysis stage |
 | `RagEngine` | `resolve_optional_callable()` | AI reasoning stage (optional) |
@@ -574,7 +578,7 @@ When `true`:
 ### File Cleanup
 
 | Mechanism | Schedule | Effect |
-|---|---|---|
+| --- | --- | --- |
 | Celery `cleanup_uploads_task` | Daily 03:00 UTC | Deletes uploads > `RETENTION_DAYS` (default 30) |
 | `_persist_partial_result` | On pipeline failure | Saves partial state before cleanup |
 | `temp_dir` creation | Per `PipelineOrchestrator` init | `os.makedirs(self.temp_dir, exist_ok=True)` |
@@ -594,7 +598,7 @@ When `true`:
 ### Horizontal Scaling
 
 | Component | Scaling Unit | Max Instances | Mechanism |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Web (FastAPI) | Uvicorn worker | Configurable via `WEB_CONCURRENCY` (default 1) | Render web service auto-scaling |
 | Celery worker | Worker process | Configurable via `WORKER_CONCURRENCY` (default 2) | Render worker service auto-scaling |
 | Redis | Managed instance | Single | Render Redis (free plan, `allkeys-lru` eviction) |
@@ -603,7 +607,7 @@ When `true`:
 ### Auto-Scaling Triggers
 
 | Trigger | Action | Metric |
-|---|---|---|
+| --- | --- | --- |
 | Queue depth > 10 | Add Celery worker | Redis list length `celery` |
 | CPU > 80% | Add web instance | Render metrics |
 | Memory > 75% | Add web instance | Render metrics |
@@ -642,6 +646,7 @@ Internet ──▶ Load Balancer
 ### vLLM Adoption Path
 
 When request volume exceeds thresholds:
+
 - `VLLM_REQUESTS_PER_HOUR_THRESHOLD=2000`
 - `VLLM_DAILY_TOKENS_THRESHOLD=5000000`
 - Target model: `meta-llama/Meta-Llama-3.1-8B-Instruct`
@@ -654,7 +659,7 @@ When request volume exceeds thresholds:
 ### Prometheus Metrics (`backend/app/middleware/prometheus_metrics.py`)
 
 | Metric | Type | Labels |
-|---|---|---|
+| --- | --- | --- |
 | `pipeline_stage_duration_seconds` | Histogram | `stage` |
 | `llm_request_total` | Counter | `provider`, `model`, `success` |
 | `llm_duration_seconds` | Histogram | `provider`, `model` |
@@ -667,6 +672,7 @@ When request volume exceeds thresholds:
 ### Pipeline Stage Timing
 
 `_record_stage_transition()` captures start→end duration per stage:
+
 - Start: `PROCESSING` status
 - End: `COMPLETED` or `FAILED` status
 - Durations recorded via `MetricsManager.record_pipeline_stage_duration()`
@@ -674,7 +680,7 @@ When request volume exceeds thresholds:
 ### Health Endpoints
 
 | Endpoint | TTL Cache | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `/api/v1/health/live` | 15 s | Liveness probe (Render health check path) |
 | `/api/v1/health/ready` | 15 s | Readiness — checks DB, Redis, GROBID, Docling |
 
@@ -691,7 +697,7 @@ When request volume exceeds thresholds:
 ### Latency SLOs
 
 | Operation | p50 | p95 | p99 | Max |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | API general request | < 500 ms | < 2 s | < 5 s | 30 s |
 | Document upload ACK | < 200 ms | < 300 ms | < 400 ms | 1 s |
 | Template listing | < 30 ms | < 50 ms | < 80 ms | 200 ms |
@@ -707,7 +713,7 @@ When request volume exceeds thresholds:
 ### Throughput SLOs
 
 | Operation | Target | Measurement |
-|---|---|---|
+| --- | --- | --- |
 | API requests | 100 req/s | Locust `TARGET_RPS=100` |
 | Parallel pipeline jobs | 5 | `_MAX_CONCURRENT_JOBS` |
 | Uploads per minute | 10 | `UPLOADS_PER_MINUTE` |
@@ -719,7 +725,7 @@ When request volume exceeds thresholds:
 ### Availability SLOs
 
 | Component | Target | Degraded Behavior |
-|---|---|---|
+| --- | --- | --- |
 | Web API | 99.9% | — |
 | Redis | 99.5% | In-memory fallback for rate limiting + caching |
 | Database | 99.9% | Degraded mode (503 on DB endpoints) |
@@ -731,7 +737,7 @@ When request volume exceeds thresholds:
 ### Recovery Time Objectives (RTO)
 
 | Failure Scenario | RTO | Verification |
-|---|---|---|
+| --- | --- | --- |
 | Single web worker crash | < 5 s | Render auto-restart |
 | Celery worker crash | < 10 s | Render auto-restart + unacked tasks re-delivered |
 | Redis outage | < 1 s | Immediate in-memory degradation |
@@ -777,7 +783,7 @@ graph LR
 Measured via `test_performance_baseline.py` and Locust SLO gates under load (50 concurrent users, 100 req/s target):
 
 | Endpoint | p50 | p95 | p99 | Test Source |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `GET /api/v1/health/live` | < 15 ms | < 30 ms | < 50 ms | Locust `HealthCheckUser` |
 | `GET /api/v1/health/ready` | < 50 ms | < 100 ms | < 200 ms | Locust `HealthCheckUser` |
 | `GET /api/v1/templates` | < 30 ms | < 50 ms | < 80 ms | `test_templates_performance` |
@@ -812,7 +818,7 @@ LOCUST_TARGET_P95_MS=500 LOCUST_TARGET_RPS=100 \
 SLO gates exit with code 1 on violation:
 
 | Gate | Env Var | Default |
-|---|---|---|
+| --- | --- | --- |
 | P95 latency | `LOCUST_TARGET_P95_MS` | 500 ms |
 | Requests/sec | `LOCUST_TARGET_RPS` | 100 |
 | Max fail ratio | `LOCUST_MAX_FAIL_RATIO` | 0.0 |
@@ -840,7 +846,7 @@ for stat in top_stats[:10]:
 Test suite `test_performance_regression.py` enforces hard latency budgets in CI:
 
 | Test | Budget | Tool |
-|---|---|---|
+| --- | --- | --- |
 | `test_document_list_query_performance` | < 500 ms | pytest-benchmark |
 | `test_basic_document_parsing_performance` | < 2 s | pytest-benchmark |
 | `test_structure_detection_performance` | < 1 s | pytest-benchmark |

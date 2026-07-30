@@ -15,7 +15,7 @@ This document presents a detailed comparison of ScholarFormAI's architecture **B
 ## 1. Before vs. After Architecture Comparison Matrix
 
 | Architectural Component | BEFORE (Legacy State) | AFTER (Refactored Target State) | Strategic Benefit |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | **Backend API Routing** | Core endpoints (`/format`, `/validate`) unmounted in `main.py` & orphaned in `api/routes.py`. Download path URL mismatched. | Unmounted routes removed/refactored into active v1 router under `/api/v1/documents/upload`. Downloads return signed URLs. | 100% route mounting, zero orphaned endpoint code, predictable HTTP responses. |
 | **Database Session Management** | `next(get_db())` invoked in service layers, suspending generators without calling `finally: db.close()`. | All non-dependency services use `with SessionLocal() as db:` context managers. | Zero database connection leaks, stable connection pool under load. |
 | **Document Processing Monolith** | 1,350-line procedural file `documents_impl.py` handles HTTP, virus scanning, magic bytes, Redis status, DB, and exporters. | Decomposed into application services (`DocumentPipelineService`, `DocumentCrudService`, `DocumentExportService`). | Clean Architecture compliance, independent unit testability, domain reusability. |
@@ -43,13 +43,16 @@ This section outlines breaking changes and migration steps required for develope
 ### 2.1 API Contract Breaking Changes & Migration
 
 #### 1. Endpoint Path Standardization
+
 - **OLD Route:** `POST /format` or `POST /api/v1/format`
 - **NEW Route:** `POST /api/v1/documents/upload`
 - **Migration Action:** Update HTTP API requests to target `/api/v1/documents/upload` with `multipart/form-data` payload containing `file`, `target_style`, and optional options JSON.
 
 #### 2. Template Response Envelope Wrapping
+
 - **OLD Response (`GET /api/v1/styles`):** Returned raw JSON array `[ { "id": "apa", ... }, ... ]`.
 - **NEW Response (`GET /api/v1/templates/`):** Returns enveloped JSON object:
+
   ```json
   {
     "templates": [
@@ -62,9 +65,11 @@ This section outlines breaking changes and migration steps required for develope
     "total": 1
   }
   ```
+
 - **Migration Action:** Update client parsing logic to extract `response.data.templates` instead of expecting a top-level array.
 
 #### 3. Download URL Path Resolution
+
 - **OLD Response Field:** `download_url: "/api/v1/download/document.docx"` (Returned 404).
 - **NEW Response Field:** `download_url: "/api/v1/documents/job_12345/download"`
 - **Migration Action:** Use `download_url` directly as returned by the status API; signed tokens are automatically appended when requested.
@@ -74,7 +79,9 @@ This section outlines breaking changes and migration steps required for develope
 ### 2.2 Local Developer Setup & Environment Migration
 
 #### Step 1: Python Environment & Dependency Setup
+
 Ensure Python 3.12+ is active and install refreshed dependencies:
+
 ```powershell
 # Navigate to backend directory
 cd backend
@@ -89,7 +96,9 @@ pip install -e .[dev]
 ```
 
 #### Step 2: Environment Variable Configuration
+
 Copy `.env.example` to `.env` and configure required LLM provider keys:
+
 ```env
 # Server Configuration
 PORT=8000
@@ -108,7 +117,9 @@ OLLAMA_BASE_URL=http://localhost:11434
 ```
 
 #### Step 3: Frontend Environment Setup
+
 Navigate to `frontend/` and update Node modules and ESLint plugins:
+
 ```powershell
 cd ../frontend
 
@@ -127,12 +138,15 @@ npm test
 ### 2.3 Python SDK & CLI Upgrade Guide
 
 #### SDK Version 2.0 Migration
+
 Install the updated SDK package:
+
 ```powershell
 pip install -e sdk/
 ```
 
 ##### Synchronous Client Migration
+
 ```python
 # BEFORE (v1.x):
 from amf_sdk.client import AMFClient
@@ -158,6 +172,7 @@ with AMFClient(base_url="http://localhost:8000") as client:
 ```
 
 ##### Asynchronous Client Migration
+
 ```python
 # NEW AsyncAMFClient Usage (v2.0):
 import asyncio
@@ -179,10 +194,12 @@ To maintain high code quality standards, all new open-source contributions must 
 
 1. **Check Repository Layout:** Ensure all backend source files reside under `backend/app/`, frontend files under `frontend/app/` or `frontend/src/`, and metadata under `.agents/`. (Never commit source code to `.agents/`).
 2. **Include License Headers:** Ensure all newly created Python files include the standard SPDX header:
+
    ```python
    # SPDX-License-Identifier: MIT
    # Copyright (c. 2026 ScholarFormAI Contributors
    ```
+
 3. **Run Pre-Commit Hooks:** Execute `pre-commit run --all-files` before submitting pull requests.
 4. **Execute Verification Commands:**
    - Backend: `pytest --cov=app --cov-report=term-missing` (Must pass with 0 failures and >90% coverage).
@@ -191,7 +208,6 @@ To maintain high code quality standards, all new open-source contributions must 
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Migration Guides
 
 ## Version 0.9 → 1.0
@@ -199,21 +215,25 @@ To maintain high code quality standards, all new open-source contributions must 
 ### Breaking Changes
 
 #### Python version requirement
+
 - **Old:** Python 3.11 (incompatible, caused pytest import collisions)
 - **New:** Python 3.12.x required
 - **Migration:** `pip install -r requirements.txt` under Python 3.12
 
 #### Frontend framework
+
 - **Old:** Vite (referenced in various docs)
 - **New:** Next.js 16 App Router
 - **Migration:** None needed — if you were using the frontend, it was already Next.js. Documentation has been corrected.
 
 #### API routing
+
 - **Old:** Some routes under `/api/v1/` were inconsistently versioned
 - **New:** All routes now consistently under `/api/v1/` prefix
 - **Migration:** Update any hardcoded `/api/documents/` references to `/api/v1/documents/`
 
 #### Environment variables
+
 - **Old:** `VITE_*` prefixed frontend env vars
 - **New:** `NEXT_PUBLIC_*` prefixed frontend env vars
 - **Migration:** Rename `VITE_API_URL` → `NEXT_PUBLIC_API_URL`

@@ -9,7 +9,7 @@
 ScholarForm AI uses a **three-store architecture**:
 
 | Store | Purpose | Hosting | Connection |
-|-------|---------|---------|------------|
+| ------- | --------- | --------- | ------------ |
 | **PostgreSQL (Supabase)** | Primary OLTP — documents, users, billing, audit, webhooks | Supabase managed | `SUPABASE_DB_URL` (direct PG) + `supabase-py` (REST) |
 | **Redis** | Cache layer + Celery broker + rate limiting + token blacklist | Self-hosted / Upstash | `REDIS_URL` |
 | **ChromaDB** | Vector store for RAG — formatting guideline embeddings | Local `PersistentClient` | Filesystem at `db/semantic_store/` |
@@ -52,7 +52,7 @@ erDiagram
 #### `profiles` — User Profiles
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK → auth.users(id) ON DELETE CASCADE` | Mirrors Supabase Auth UID |
 | `email` | `TEXT` | Indexed | — |
 | `full_name` | `TEXT` | — | — |
@@ -68,7 +68,7 @@ erDiagram
 #### `documents` — Core Document Jobs
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK DEFAULT gen_random_uuid()` | — |
 | `user_id` | `UUID` | Indexed, nullable | References `auth.users.id` (app-level, no FK) |
 | `filename` | `TEXT` | `NOT NULL` | Original upload filename |
@@ -89,7 +89,7 @@ erDiagram
 #### `document_versions` — Output Snapshots
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK DEFAULT gen_random_uuid()` | — |
 | `document_id` | `UUID` | `FK → documents(id) ON DELETE CASCADE` | Indexed |
 | `version_number` | `TEXT` | `NOT NULL` | e.g., `"v1"`, `"v2-edited"` |
@@ -100,7 +100,7 @@ erDiagram
 #### `document_results` — Pipeline Structured Output
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK DEFAULT gen_random_uuid()` | — |
 | `document_id` | `UUID` | `FK → documents(id) ON DELETE CASCADE`, `UNIQUE` | One result per document |
 | `structured_data` | `JSONB` | Nullable | Sections, citations, references |
@@ -110,7 +110,7 @@ erDiagram
 #### `processing_status` — Per-Phase Pipeline Progress
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK DEFAULT gen_random_uuid()` | — |
 | `document_id` | `UUID` | `FK → documents(id) ON DELETE CASCADE` | Indexed |
 | `phase` | `TEXT` | `NOT NULL` | `UPLOAD │ EXTRACTION │ NLP_ANALYSIS │ VALIDATION │ PERSISTENCE` |
@@ -123,7 +123,7 @@ erDiagram
 #### `model_metrics` — LLM Telemetry
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK DEFAULT gen_random_uuid()` | — |
 | `model_name` | `TEXT` | `NOT NULL` | e.g., `"nvidia/llama-3.1"` |
 | `latency_ms` | `REAL` | `NOT NULL` | Response time |
@@ -135,7 +135,7 @@ erDiagram
 #### `ab_test_results` — A/B Provider Comparison
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK DEFAULT gen_random_uuid()` | — |
 | `nvidia_latency` | `REAL` | — | — |
 | `deepseek_latency` | `REAL` | — | — |
@@ -148,7 +148,7 @@ erDiagram
 #### `user_api_keys` — User-Provided LLM Keys
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK` | — |
 | `user_id` | `UUID` | `NOT NULL`, Indexed | References `auth.users.id` |
 | `provider` | `VARCHAR(50)` | `NOT NULL`, Indexed | e.g., `"openai"`, `"anthropic"` |
@@ -166,7 +166,7 @@ erDiagram
 #### `api_key_usage_log` — Per-Key Usage Analytics
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK` | — |
 | `user_api_key_id` | `UUID` | `NOT NULL`, Indexed | FK to `user_api_keys` |
 | `endpoint` | `VARCHAR(200)` | Nullable | API endpoint called |
@@ -179,7 +179,7 @@ erDiagram
 #### `custom_providers` — BYO Provider Endpoints
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK` | — |
 | `user_id` | `UUID` | `NOT NULL`, Indexed | — |
 | `name` | `VARCHAR(100)` | `NOT NULL` | Provider display name |
@@ -195,7 +195,7 @@ erDiagram
 #### `webhook_subscriptions` — Outgoing Webhooks
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK` | — |
 | `user_id` | `UUID` | `NOT NULL`, Indexed | — |
 | `name` | `TEXT` | `NOT NULL` | Webhook label |
@@ -210,7 +210,7 @@ erDiagram
 #### `webhook_delivery_logs` — Webhook Delivery History
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK` | — |
 | `subscription_id` | `UUID` | `NOT NULL` | FK to `webhook_subscriptions` |
 | `event_type` | `TEXT` | `NOT NULL` | — |
@@ -225,7 +225,7 @@ erDiagram
 #### `suggestions` — AI-Generated Edits
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK DEFAULT gen_random_uuid()` | — |
 | `user_id` | `UUID` | `NOT NULL`, Indexed | — |
 | `document_id` | `UUID` | Nullable, Indexed | — |
@@ -243,7 +243,7 @@ erDiagram
 #### `audit_log` — Security Audit Trail
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK DEFAULT gen_random_uuid()` | — |
 | `user_id` | `TEXT` | Nullable | Actor |
 | `action` | `TEXT` | `NOT NULL` | e.g., `"document.delete"` |
@@ -257,7 +257,7 @@ erDiagram
 #### `document_shares` — Collaborative Access
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK DEFAULT gen_random_uuid()` | — |
 | `document_id` | `UUID` | `FK → documents(id) ON DELETE CASCADE` | Indexed |
 | `shared_with_user_id` | `TEXT` | `NOT NULL` | Indexed |
@@ -270,7 +270,7 @@ erDiagram
 #### `generator_sessions` — AI Document Generation Sessions
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK` | Client-generated |
 | `user_id` | `TEXT` | Nullable | — |
 | `session_type` | `TEXT` | `NOT NULL DEFAULT 'agent'` | `agent │ multi_doc` |
@@ -284,7 +284,7 @@ erDiagram
 #### `generator_messages` — Chat Messages
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK DEFAULT gen_random_uuid()` | — |
 | `session_id` | `UUID` | `FK → generator_sessions(id) ON DELETE CASCADE` | Indexed |
 | `role` | `TEXT` | `NOT NULL` | `user │ assistant │ system` |
@@ -295,7 +295,7 @@ erDiagram
 #### `generator_documents` — Generated Document Versions
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | `id` | `UUID` | `PK DEFAULT gen_random_uuid()` | — |
 | `session_id` | `UUID` | `FK → generator_sessions(id) ON DELETE CASCADE` | Indexed |
 | `content_json` | `JSONB` | Nullable | Full document content |
@@ -312,7 +312,7 @@ ChromaDB runs as a local `PersistentClient` storing academic formatting guidelin
 ### 3.1 Persistence
 
 | Setting | Value |
-|---------|-------|
+| --------- | ------- |
 | **Client type** | `chromadb.PersistentClient` |
 | **Base path** | `<project_root>/db/semantic_store/` |
 | **Native fallback** | `kb.json` in the same directory |
@@ -321,7 +321,7 @@ ChromaDB runs as a local `PersistentClient` storing academic formatting guidelin
 ### 3.2 Collections
 
 | Collection Name | Embedding Model | Dimensions | Purpose |
-|----------------|-----------------|-----------|---------|
+| ---------------- | ----------------- | ----------- | --------- |
 | `guidelines_bge_m3` | `BAAI/bge-m3` (primary) | 1024 | Primary semantic search, 8192-token context, multilingual |
 | `publisher_guidelines` | `BAAI/bge-small-en-v1.5` (fallback) | 384 | Legacy collection, lighter model |
 
@@ -344,6 +344,7 @@ Each entry in ChromaDB (and the native `kb.json` fallback) follows:
 ```
 
 **Metadata filters** applied at query time:
+
 - `publisher` — uppercase publisher name (e.g., `"IEEE"`, `"SPRINGER"`)
 - `section` — lowercase section category (e.g., `"formatting"`, `"headings"`)
 
@@ -370,7 +371,7 @@ Redis is accessed via the `RedisCache` singleton (lazy-initialized, controlled b
 ### 4.1 Cache Key Namespaces
 
 | Key Pattern | Purpose | TTL | Example |
-|-------------|---------|-----|---------|
+| ------------- | --------- | ----- | --------- |
 | `grobid:<sha256>` | GROBID extraction cache | 3600s | `grobid:a1b2c3...` |
 | `llm:<cache_key>` | LLM response cache | 86400s (24h) | `llm:ieee_formatting` |
 | `blacklisted_token:<jti>` | JWT token blacklist | 3600s | `blacklisted_token:abc-123` |
@@ -378,13 +379,14 @@ Redis is accessed via the `RedisCache` singleton (lazy-initialized, controlled b
 ### 4.2 Celery Broker & Result Backend
 
 | Key Pattern | Purpose |
-|-------------|---------|
+| ------------- | --------- |
 | `celery` (default vhost) | Celery task queue |
 | `celery-task-meta-<task_id>` | Celery task result backend |
 | `_kombu.binding.celery` | Kombu binding metadata |
 | `unacked` | Unacknowledged message index |
 
 Configured via:
+
 ```python
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
@@ -467,7 +469,7 @@ The SQLAlchemy engine is reserved for Alembic migrations and query patterns that
 ### 6.1 Alembic Configuration
 
 | Setting | Value |
-|---------|-------|
+| --------- | ------- |
 | `script_location` | `backend/alembic/` |
 | `prepend_sys_path` | `.` (project root) |
 | `sqlalchemy.url` | Dynamic from `SUPABASE_DB_URL` env var |
@@ -477,7 +479,7 @@ The SQLAlchemy engine is reserved for Alembic migrations and query patterns that
 ### 6.2 Migration History (12 revisions)
 
 | Revision | Date | Description |
-|----------|------|-------------|
+| ---------- | ------ | ------------- |
 | `530ab1236474` | 2026-02-08 | **Baseline** — no-op placeholder, schema managed by Supabase |
 | `5ab5f4f9e36d` | 2026-02-08 | **Job state columns** — `progress`, `current_stage`, `error_message`, `updated_at` on documents; rename `document_result` → `document_results`, `document_version` → `document_versions`; add `profiles` table |
 | `1f7c085e7ef2` | 2026-02-13 | **Template column** — idempotent add of `template` to `documents` |
@@ -505,7 +507,7 @@ The SQLAlchemy engine is reserved for Alembic migrations and query patterns that
 ### 7.1 Primary Indexes
 
 | Table | Index Name | Columns | Type | Purpose |
-|-------|-----------|---------|------|---------|
+| ------- | ----------- | --------- | ------ | --------- |
 | `documents` | `idx_documents_user_id` | `user_id` | B-tree | User document listing |
 | `documents` | `idx_documents_status` | `status` | B-tree | Status filtering |
 | `documents` | `idx_documents_created_at` | `created_at DESC` | B-tree | Recent documents sort |
@@ -538,7 +540,7 @@ The SQLAlchemy engine is reserved for Alembic migrations and query patterns that
 ### 7.2 Unique Constraints
 
 | Table | Constraint | Columns | Purpose |
-|-------|-----------|---------|---------|
+| ------- | ----------- | --------- | --------- |
 | `document_results` | `uq_document_results_document_id` | `document_id` | One result per document |
 | `processing_status` | `uq_processing_status_doc_phase` | `(document_id, phase)` | One row per phase per document |
 | `document_shares` | `uq_document_shares` | `(document_id, shared_with_user_id)` | No duplicate shares |
@@ -550,7 +552,7 @@ The SQLAlchemy engine is reserved for Alembic migrations and query patterns that
 ### 8.1 PostgreSQL (SQLAlchemy Engine)
 
 | Setting | Value | Rationale |
-|---------|-------|-----------|
+| --------- | ------- | ----------- |
 | `pool_size` | 5 | Matches typical Supabase free/pro plan connection limits |
 | `max_overflow` | 10 | Allows burst traffic up to 15 concurrent connections |
 | `pool_timeout` | 30s | Clients wait up to 30s for a connection before failing |
@@ -576,6 +578,7 @@ The `/health` endpoint calls `check_db_health()` which executes `SELECT 1` again
 ### 9.1 PostgreSQL (Supabase Managed)
 
 Supabase provides:
+
 - **Daily automatic backups** on Pro/Team plans (7-day retention)
 - **Point-in-time recovery** (PITR) on Team plan (up to 7 days)
 - **Manual backups** via `pg_dump` or Supabase Dashboard
@@ -592,6 +595,7 @@ ChromaDB `PersistentClient` writes to the local filesystem at `db/semantic_store
 ### 9.3 Redis
 
 Redis is cache-only with configurable TTLs:
+
 - GROBID results: 1 hour
 - LLM responses: 24 hours
 - Token blacklist: matches token expiry (default 1 hour)
@@ -605,7 +609,7 @@ No persistence is configured (`REDIS_ENABLED=false` by default). Cache is warmab
 ### 10.1 Key Query Patterns
 
 | Pattern | Table(s) | Index Used | Strategy |
-|---------|----------|-----------|----------|
+| --------- | ---------- | ----------- | ---------- |
 | User's documents (sorted) | `documents` | `idx_documents_user_created` | Cursor pagination with `WHERE (user_id, created_at) < (?, ?)` |
 | Recent pipeline status | `processing_status` | `ix_processing_status_document_id` | Batch fetch per document |
 | Model dashboard | `model_metrics` | `idx_model_metrics_timestamp` | Windowed aggregation by model |
@@ -624,6 +628,7 @@ No persistence is configured (`REDIS_ENABLED=false` by default). Cache is warmab
 ### 10.3 Pagination
 
 **Cursor-based pagination** (v2 API):
+
 ```sql
 -- First page
 SELECT * FROM documents
@@ -647,6 +652,7 @@ Used for admin/small-table queries where cursor overhead is unnecessary.
 ### 10.4 JSONB Usage
 
 `formatting_options`, `structured_data`, `validation_results`, `config_json`, `content_json`, `outline_json`, `events`, `details`, `context`, `models` are all `JSONB` columns — benefiting from:
+
 - No schema migration for optional pipeline metadata
 - GIN indexing on webhook events for containment queries
 - Efficient partial reads via PostgREST column selection
@@ -654,7 +660,7 @@ Used for admin/small-table queries where cursor overhead is unnecessary.
 ### 10.5 Caching Strategy
 
 | Layer | What | TTL | Invalidation |
-|-------|------|-----|-------------|
+| ------- | ------ | ----- | ------------- |
 | Redis | GROBID extraction | 1h | Content-hash based, auto-expire |
 | Redis | LLM responses | 24h | `delete()` by key |
 | In-memory | Generator sessions | 2s | Write-through invalidation |
@@ -671,7 +677,7 @@ The in-memory cache (in `GeneratorSessionService`) uses `asyncio.Lock` for threa
 The codebase distinguishes between:
 
 | Layer | Technology | Purpose | Tables/Objects |
-|-------|-----------|---------|----------------|
+| ------- | ----------- | --------- | ---------------- |
 | **Database ORM** | `SQLAlchemy Base` | Persistence/CRUD | `User`, `Document`, `DocumentVersion`, `DocumentResult`, `ProcessingStatus`, `UserApiKey`, `ApiKeyUsageLog`, `CustomProvider`, `Suggestion` |
 | **Pipeline models** | `Pydantic BaseModel` | In-memory document processing | `Block`, `Figure`, `Table`, `Reference`, `Equation`, `PipelineDocument`, `ReviewMetadata`, `DocumentMetadata` |
 
@@ -683,6 +689,7 @@ Pipeline models (`Block`, `Figure`, `Table`, `Reference`, `Equation`) are Pydant
 
 The `schema.sql` and `migrations.sql` include `model_metrics` and `ab_test_results` — these are accessed exclusively through `supabase-py` REST calls, never through SQLAlchemy ORM. Both have RLS policies granting read access to authenticated users, while writes are performed by the backend service role.
 \n
+
 ## Database Relationships Diagram
 
 ```mermaid
@@ -702,7 +709,6 @@ erDiagram
     }
 ```
 
-
 ## Related Documentation
 
 - [AI Architecture](AI_ARCHITECTURE.md)
@@ -711,4 +717,3 @@ erDiagram
 - [Chroma RAG Architecture](CHROMA_RAG_ARCHITECTURE.md)
 - [Database Architecture](DATABASE_ARCHITECTURE.md)
 - [API Reference](API.md)
-

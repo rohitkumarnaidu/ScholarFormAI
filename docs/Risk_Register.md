@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Risk Register
 description: Risk inventory, severity ratings, and mitigation strategies
 sidebar_position: 37
@@ -20,7 +20,7 @@ last_updated: July 2026
 ## High Risks
 
 | ID | Risk | Current State | Mitigation |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | R-01 | Render free-tier memory pressure (512MB) | Active architectural constraint | Low-memory profile is enforced (`LOW_MEMORY_MODE=true`, `PRELOAD_AI_MODELS=false`, `RAG_USE_TRANSFORMERS=false`) |
 | R-02 | Upstream HF instability (timeouts, 502, partial payloads) | Active external dependency risk | Primary/shadow routing + failover for GROBID, plus scheduled keepalive checks for all service pairs |
 | R-03 | Production deploy hangs on unhealthy backend | Previously observed | Manual deploy workflow gates frontend deploy on backend `/api/v1/health/live` |
@@ -29,7 +29,7 @@ last_updated: July 2026
 ## Medium Risks
 
 | ID | Risk | Current State | Mitigation |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | R-05 | DB connectivity instability or temporary Supabase outages | Intermittent external risk | Health endpoints use degraded-mode handling; retries and structured logs are enabled |
 | R-06 | OCR/parser quality variability across remote services | Active quality risk | Multi-service topology with health probes; fallback chain remains available |
 | R-07 | Missing deep observability in some environments | Partial | Structured logging enabled; keep Prometheus/Grafana dashboards in repo and deploy where needed |
@@ -38,7 +38,7 @@ last_updated: July 2026
 ## Low Risks
 
 | ID | Risk | Current State | Mitigation |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | R-09 | Temporary file accumulation | Controlled | `ENABLE_FILE_CLEANUP=true` with retention policy |
 | R-10 | Feature drift for LLMPDFParser/LLMClassifier paths | Controlled by default-off policy | Keep both toggles off until remote endpoint SLA is proven |
 

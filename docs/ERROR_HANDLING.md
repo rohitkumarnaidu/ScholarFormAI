@@ -2,6 +2,7 @@
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
 ---
+
 title: ScholarForm AI — Error Handling Architecture
 description: Comprehensive reference for error handling patterns, API error envelope, status codes, and pipeline resilience
 sidebar_position: 12
@@ -97,7 +98,7 @@ class APIError(BaseModel):
 ### 2.3 Helper Functions
 
 | Function | Location | Purpose |
-|----------|----------|---------|
+| ---------- | ---------- | --------- |
 | `success_response(data, request_id)` | `api_envelope.py:34` | Build success envelope |
 | `error_response(code, message, request_id, details)` | `api_envelope.py:38` | Build error envelope |
 | `build_error_response(request, *, status_code, code, message, details)` | `main.py:152` | Full error JSON response with status code |
@@ -109,7 +110,7 @@ class APIError(BaseModel):
 The following status codes are used across the API. The mapping from status code to error code is defined in `DEFAULT_ERROR_CODES` (`main.py:136`).
 
 | Code | Name | Error Code | When Raised |
-|------|------|------------|-------------|
+| ------ | ------ | ------------ | ------------- |
 | 200 | OK | — | Successful GET, PUT, PATCH, DELETE |
 | 201 | Created | — | Successful POST (resource created) |
 | 204 | No Content | — | Successful DELETE, empty response |
@@ -158,7 +159,7 @@ DEFAULT_ERROR_CODES = {
 ```
 
 | Code | Meaning | Client Action |
-|------|---------|---------------|
+| ------ | --------- | --------------- |
 | `BAD_REQUEST` | Request malformed | Fix request syntax and retry |
 | `UNAUTHORIZED` | Not authenticated | Provide valid Bearer token or re-authenticate |
 | `FORBIDDEN` | Insufficient permissions | Request admin access |
@@ -179,7 +180,7 @@ DEFAULT_ERROR_CODES = {
 Custom exception classes live in `app/exceptions.py`. All service-layer code should raise these instead of returning `None` or empty collections on failure.
 
 | Exception | Raised When | Default Message |
-|-----------|-------------|----------------|
+| ----------- | ------------- | ---------------- |
 | `DatabaseUnavailableError` | Database connectivity failure | "Database is currently unavailable." |
 | `DocumentNotFoundError` | Requested document does not exist | "Document not found." (includes `doc_id` if provided) |
 | `AuthenticationError` | Authentication failure | "Authentication failed." |
@@ -243,6 +244,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 ```
 
 Key behaviors:
+
 - String details become the `message` field directly.
 - Structured details (list/dict) are placed in `details.detail`.
 - Custom response headers (e.g. `WWW-Authenticate`, `Retry-After`) are propagated.
@@ -321,7 +323,7 @@ Only idempotent methods (GET, HEAD, OPTIONS) are retried. Delay follows exponent
 ### 7.3 Friendly Error Message Mapping
 
 | Status / Condition | Message |
-|--------------------|---------|
+| -------------------- | --------- |
 | 401 (login endpoint) | "Invalid email or password." |
 | 401 (other) | "Your session has expired. Please log in again." |
 | 403 | "You do not have permission to perform this action." |
@@ -364,7 +366,7 @@ def risky_llm_call(prompt: str) -> dict:
 ```
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| ----------- | --------- | ------------- |
 | `failure_threshold` | 3 | Consecutive failures before circuit opens |
 | `recovery_timeout` | 60 | Seconds before transitioning to HALF_OPEN |
 | `fallback_function` | None | Optional fallback called when circuit is open |
@@ -484,7 +486,7 @@ When `ENABLE_STRUCTURED_LOGGING` is true, `app.config.logging_config.setup_loggi
 ### 9.3 Log Levels by Severity
 
 | Level | Usage | Example |
-|-------|-------|---------|
+| ------- | ------- | --------- |
 | `CRITICAL` | Data loss or security risk | Missing `ENCRYPTION_KEY` in production |
 | `ERROR` | Service failure | Startup validation failure, circuit breaker open |
 | `WARNING` | Degraded mode | Redis unavailable, GROBID probe failed, optional API key missing |
@@ -494,6 +496,7 @@ When `ENABLE_STRUCTURED_LOGGING` is true, `app.config.logging_config.setup_loggi
 ### 9.4 Logging Context
 
 All log messages include:
+
 - Module name (via `__name__`)
 - Request ID (via `get_request_id(request)` in middleware)
 - Timestamp (automatic via logging config)
@@ -516,7 +519,7 @@ Prometheus instrumentation is exposed at `/metrics` (`main.py:682`) via `prometh
 ### 10.2 Error Rate Alert Criteria
 
 | Alert | Threshold | Window | Action |
-|-------|-----------|--------|--------|
+| ------- | ----------- | -------- | -------- |
 | High 5xx rate | >5% of requests return 5xx | 5 minutes | Page on-call engineer |
 | Elevated 4xx rate | >20% of requests return 4xx | 5 minutes | Investigate client behavior changes |
 | Circuit breaker open | Any circuit breaker in OPEN state | Immediate | Alert engineer; check upstream services |

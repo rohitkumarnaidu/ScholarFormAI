@@ -7,12 +7,14 @@ We are committed to providing a welcoming, inclusive, and harassment-free experi
 ## Standards
 
 **Positive behavior:**
+
 - Demonstrating empathy and kindness
 - Respecting differing viewpoints
 - Giving and accepting feedback gracefully
 - Focusing on what's best for the community
 
 **Unacceptable behavior:**
+
 - Harassment, trolling, or insults
 - Discriminatory language or imagery
 - Publishing others' private information

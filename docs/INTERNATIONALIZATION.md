@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Internationalization (i18n)
 
 ## Overview
@@ -20,7 +19,7 @@ ScholarForm AI is designed with internationalization (i18n) in mind to enable ea
 The codebase follows i18n best practices:
 
 | Area | Practice |
-|------|----------|
+| ------ | ---------- |
 | User-facing strings | All user-facing strings are externalized to locale files (not hardcoded). |
 | Date/time formatting | Uses `Intl.DateTimeFormat` for locale-aware date/time formatting. |
 | Number formatting | Uses `Intl.NumberFormat` for locale-aware number, currency, and percentage formatting. |

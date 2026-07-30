@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Dynamic Analysis
 
 ## Overview
@@ -32,7 +31,7 @@ The software includes runtime assertions and validation checks throughout the co
 ## CI Dynamic Analysis
 
 | Tool | Scope | Trigger | Action on Failure |
-|------|-------|---------|-------------------|
+| ------ | ------- | --------- | ------------------- |
 | Atheris fuzz tests | Title parser, metadata parser | PR to main with fuzz changes | CI failure, must fix |
 | Trivy (container scan) | Docker images | PR to main, weekly | CI failure on CRITICAL/HIGH |
 | pip-audit | Python dependencies | Every push | CI failure on known CVEs |

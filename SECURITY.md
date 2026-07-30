@@ -129,6 +129,7 @@ AMF participates in a private bug bounty program. Rewards are offered for qualif
 | Low      | 0.1–3.9    | $50 – $250       |
 
 **To qualify:**
+
 - Vulnerability must be in the latest supported release
 - The report must include a clear reproduction
 - Previously reported or known issues are excluded

@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: "ADR 002: Redis Realtime Backbone"
 description: Decision to use Redis pub/sub as the realtime communication backbone
 sidebar_position: 41

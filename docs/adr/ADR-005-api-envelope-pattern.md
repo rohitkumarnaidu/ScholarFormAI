@@ -44,18 +44,19 @@ On error, the envelope carries structured error information:
 ```
 
 | Criterion | Raw Response | Ad-hoc Envelope | Standard Envelope |
-|-----------|-------------|-----------------|-------------------|
-| Consistency across endpoints | ❌ Varies |  ️ Inconsistent | ✅ Uniform |
-| Machine-readable errors | ❌ Ad-hoc |  ️ Partial | ✅ Structured |
-| Request tracing | ❌ Missing |  ️ Sometimes | ✅ Always |
-| Version evolution | ❌ Breaking |  ️ Fragile | ✅ Compatible |
-| Client code simplicity | ✅ Simple |  ️ Mixed |  ️ Wrapper needed |
+| ----------- | ------------- | ----------------- | ------------------- |
+| Consistency across endpoints | ❌ Varies | ️ Inconsistent | ✅ Uniform |
+| Machine-readable errors | ❌ Ad-hoc | ️ Partial | ✅ Structured |
+| Request tracing | ❌ Missing | ️ Sometimes | ✅ Always |
+| Version evolution | ❌ Breaking | ️ Fragile | ✅ Compatible |
+| Client code simplicity | ✅ Simple | ️ Mixed | ️ Wrapper needed |
 
 Raw responses were rejected because they force every client to implement bespoke error handling for each endpoint. An ad-hoc approach was rejected because it would inevitably drift over time as different engineers add endpoints. A standardized envelope enforced at the framework level (via FastAPI exception handlers and response models) guarantees consistency.
 
 ## Consequences
 
 **Positive:**
+
 - Single error-handling path in the frontend — a thin wrapper extracts `data` or throws on `error`, regardless of endpoint
 - `request_id` in every response enables distributed tracing across Celery workers, LLM providers, and database calls
 - Structured error codes (`RATE_LIMITED`, `VALIDATION_ERROR`, `NOT_FOUND`, etc.) support internationalized error messages on the frontend
@@ -64,6 +65,7 @@ Raw responses were rejected because they force every client to implement bespoke
 - FastAPI `response_model` and custom `Response` base class enforce the pattern at compile time, not just convention
 
 **Negative:**
+
 - Bandwidth overhead — every response includes envelope fields (~100 bytes), which adds up for paginated list responses with hundreds of items
 - Frontend requires a response interceptor or client wrapper to unwrap the envelope on every request
 - Error handling in middleware adds latency to every request path, even for success responses
@@ -73,6 +75,7 @@ Raw responses were rejected because they force every client to implement bespoke
 ## Compliance
 
 This decision has been implemented and is verified by:
+
 - `backend/tests/test_api_envelope.py` — envelope structure, error format, pagination
 - `backend/tests/test_routers_enterprise.py` — all 39 routes return consistent envelope
 - `backend/tests/test_error_handling.py` — structured error codes and `request_id`

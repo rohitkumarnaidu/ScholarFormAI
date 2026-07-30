@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Security
 description: Security controls, gaps, and hardening measures
 sidebar_position: 35
@@ -24,7 +24,7 @@ last_updated: July 2026
 ## Implemented Controls
 
 | Control | File | Size | Status |
-|---------|------|------|--------|
+| --------- | ------ | ------ | -------- |
 | JWKS JWT Verification | `security/jwks_verifier.py` | 5.4KB | ✅ Implemented |
 | Security Headers (CSP, HSTS) | `middleware/security_headers.py` | 4.6KB | ✅ Implemented |
 | Rate Limiting (base) | `middleware/rate_limit.py` | 6.9KB | ✅ Implemented |
@@ -33,9 +33,9 @@ last_updated: July 2026
 | Virus Scanning (ClamAV) | `utils/virus_scanner.py` | 4.4KB | ✅ Implemented |
 | Request ID Tracking | `middleware/request_id.py` | 2.2KB | ✅ Implemented |
 | MIME + Magic Byte Validation | Inline in document router | — | ✅ Implemented |
-| RBAC Middleware | `middleware/rbac.py` | 708B |  ️ **Stub** |
-| Audit Logging | `services/audit_log_service.py` | 1.1KB |  ️ **Minimal** |
-| Signed Download URLs | In `document_service.py` | — |  ️ Needs live verification |
+| RBAC Middleware | `middleware/rbac.py` | 708B | ️ **Stub** |
+| Audit Logging | `services/audit_log_service.py` | 1.1KB | ️ **Minimal** |
+| Signed Download URLs | In `document_service.py` | — | ️ Needs live verification |
 
 ---
 
@@ -44,6 +44,7 @@ last_updated: July 2026
 > **"Better scaffolded than plans claim"** — Codex 5.4 Audit
 
 **Strengths identified:**
+
 - Rate limiting is two-layer (base + tier-aware) — more sophisticated than most projects at this stage
 - JWKS verifier properly fetches public keys from Supabase JWKS endpoint
 - ClamAV integration is a proper daemon client (not a subprocess call)
@@ -51,6 +52,7 @@ last_updated: July 2026
 - Security headers include CSP — proactively reduces XSS attack surface
 
 **Gaps to address before live validation:**
+
 - RBAC middleware is 708B — too small to enforce real role-based access
 - Audit logging service is 1.1KB — likely only logs some events, not all write operations
 - Signed download URL verification not confirmed at runtime
@@ -60,7 +62,7 @@ last_updated: July 2026
 ## Security Gaps
 
 | Gap | Severity | Fix |
-|-----|----------|-----|
+| ----- | ---------- | ----- |
 | RBAC is a stub (708B) | 🔴 HIGH | Implement role-based checks for: `admin`, `pro`, `free`, `guest` |
 | Audit logging minimal (1.1KB) | 🔴 HIGH | Log all write ops with: user_id, action, resource_id, IP, timestamp |
 | No secrets scanning in CI | 🟡 MEDIUM | Add Gitleaks or TruffleHog to `security.yml` |
@@ -106,6 +108,7 @@ Browser → Supabase Auth (JWT issued)
 ## Known Risk: Subprocess Attack Surface
 
 `latex_exporter.py` (stub) and `document_service.py` invoke Pandoc and LibreOffice as subprocesses. These must have:
+
 1. Strict input whitelist (only allow DOCX/PDF/TeX extensions)
 2. No user-controlled string concatenation in subprocess args
 3. Timeout enforcement to prevent resource exhaustion

@@ -241,6 +241,7 @@ The **entity-relationship diagram** shows all database tables and their relation
 - **model_metrics** captures per-call latency/success/quality for all LLM providers.
 
 The **Redis data model** shows four functional areas:
+
 - **Cache layer** with configurable TTLs for LLM responses (1h), CSL searches (5min), CSL fetches (30min), and session/status data (1-2s)
 - **Pub/Sub channels** for real-time SSE and WebSocket event delivery
 - **Celery broker queues** (`interactive` and `batch`) plus result backend

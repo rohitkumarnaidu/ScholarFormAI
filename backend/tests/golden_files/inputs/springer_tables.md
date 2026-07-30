@@ -1,25 +1,26 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
 template: springer
 title: Multi-Column Table Representation in Structured Manuscripts
 authors:
-  - Fatima Al-Rashid
-  - Wei Zhang
-  - Michael Okafor
-  - Elena Petrova
+
+- Fatima Al-Rashid
+- Wei Zhang
+- Michael Okafor
+- Elena Petrova
 affiliations:
-  - Department of Computer Science, King Saud University
-  - Institute of Data Science, Tsinghua University
-  - Faculty of Engineering, University of Lagos
-  - Department of Information Systems, Saint Petersburg State University
+- Department of Computer Science, King Saud University
+- Institute of Data Science, Tsinghua University
+- Faculty of Engineering, University of Lagos
+- Department of Information Systems, Saint Petersburg State University
 keywords:
-  - table formatting
-  - Springer template
-  - merged cells
-  - multi-row headers
+- table formatting
+- Springer template
+- merged cells
+- multi-row headers
+
 ---
 
 # Abstract
@@ -39,7 +40,7 @@ We identified four key structural properties: (1) row span preservation, (2) col
 Table 1 shows the evaluation dataset characteristics.
 
 | Property | Value | 95% CI | p-value |
-|----------|-------|--------|---------|
+| ---------- | ------- | -------- | --------- |
 | Total tables analysed | 1,200 | — | — |
 | Unique cell merges | 847 | — | — |
 | Column header levels | 1-4 | — | — |
@@ -49,7 +50,7 @@ Table 1 shows the evaluation dataset characteristics.
 Table 2 presents the accuracy results across formatting pipelines.
 
 | Pipeline | Row Span | Column Span | Nested Headers | Footnotes |
-|----------|----------|-------------|----------------|-----------|
+| ---------- | ---------- | ------------- | ---------------- | ----------- |
 | ScholarForm Pro | 98.2% | 97.1% | 94.5% | 96.3% |
 | TemplateEngine 2.0 | 92.4% | 91.8% | 87.2% | 85.1% |
 | WordTidy 3.1 | 88.7% | 86.3% | 79.8% | 72.4% |
@@ -58,7 +59,7 @@ Table 2 presents the accuracy results across formatting pipelines.
 ## Detailed Performance by Complexity
 
 | Table Complexity | ScholarForm Pro | TemplateEngine | WordTidy | p (ANOVA) |
-|------------------|----------------|----------------|----------|-----------|
+| ------------------ | ---------------- | ---------------- | ---------- | ----------- |
 | Simple (≤5 cols) | 99.3% | 96.2% | 93.1% | <0.001 |
 | Medium (6-10 cols) | 97.8% | 91.5% | 86.4% | <0.001 |
 | Complex (merged) | 94.2% | 85.7% | 79.2% | <0.001 |

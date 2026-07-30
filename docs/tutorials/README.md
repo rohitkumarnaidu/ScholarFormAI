@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Tutorials
 description: Step-by-step learning tutorials for ScholarForm AI
 sidebar_position: 1
@@ -20,7 +20,7 @@ Learn ScholarForm AI step by step.
 ## Getting Started
 
 | Tutorial | Description | Time |
-|----------|-------------|------|
+| ---------- | ------------- | ------ |
 | [Quickstart](../quickstart.md) | 5-minute setup — clone to first formatted document | 5 min |
 | [Developer Onboarding](../DEVELOPER_ONBOARDING.md) | Full development environment setup | 15 min |
 | [API Key Setup](../API_KEY_QUICK_START.md) | Configure LLM provider keys | 10 min |

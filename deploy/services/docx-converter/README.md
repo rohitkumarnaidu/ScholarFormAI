@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: Scholarform Docx Converter
 emoji: "📊"
 colorFrom: purple
@@ -20,4 +20,3 @@ LibreOffice-based conversion service template.
 
 - `GET /`
 - `POST /convert?to=docx` (multipart file upload)
-

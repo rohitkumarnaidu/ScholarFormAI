@@ -46,7 +46,7 @@ flowchart TD
 ## Key Components
 
 | Component | File | Purpose |
-|-----------|------|---------|
+| ----------- | ------ | --------- |
 | `UpdateService` | `backend/app/services/update_service.py` | Version discovery, release caching, and cryptographic verification |
 | `update_routes.py` | `backend/app/api/update_routes.py` | REST endpoints for version checking and artifact metadata |
 | `update.py` (CLI) | `cli/amf/commands/update.py` | `amf update` command implementation with automatic rollback |

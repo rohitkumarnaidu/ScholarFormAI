@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: "ADR 011: Per-Section Equation Numbering"
 description: Switch from global flat equation numbering to per-section hierarchical numbering
 sidebar_position: 38
@@ -40,6 +40,7 @@ Extend `NumberingEngine.apply_numbering` to support a `scope: per_section | glob
 ## Compliance
 
 This decision has been implemented and is verified by:
+
 - `backend/tests/test_numbering.py` — `NumberingEngine.apply_numbering()` per-section scope
 - `backend/tests/test_equation_standardizer.py` — equation bracket and scope handling
 - `backend/tests/pipeline/test_equations.py` — pipeline integration with per-section numbering
@@ -50,6 +51,7 @@ This decision has been implemented and is verified by:
 - `backend/app/pipeline/formatting/cross_reference.py` — dotted identifier regex `r'\((\d+(?:\.\d+)*)\)'`
 
 **See also:**
+
 - [NumberingEngine](backend/app/pipeline/formatting/numbering.py) — source implementation
 - [CrossReferenceEngine](backend/app/pipeline/formatting/cross_reference.py) — dotted identifier support
 - [ADR 009: Template Contract System](009-template-contract-system.md) — `equations.scope` contract key

@@ -18,7 +18,7 @@ MAJOR.MINOR.PATCH[-PRERELEASE[.+BUILD]]
 All components share a single unified version number:
 
 | Component | Source |
-|-----------|--------|
+| ----------- | -------- |
 | Backend (`__version__`) | `backend/app/__init__.py` |
 | Backend (package) | `backend/pyproject.toml` |
 | Frontend | `frontend/package.json` |
@@ -28,7 +28,7 @@ All components share a single unified version number:
 ## Release Cadence
 
 | Release | Frequency | Support Window |
-|---------|-----------|---------------|
+| --------- | ----------- | --------------- |
 | Major | ~6-12 months | 18 months |
 | Minor | ~4-8 weeks | 12 months |
 | Patch | As needed | 6 months |

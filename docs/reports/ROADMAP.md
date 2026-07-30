@@ -17,6 +17,7 @@
 ## Short-Term (3 Months) — H2 2026
 
 ### Phase 2: Contract & Smoke Validation
+
 - Implement health, templates, upload E2E contract tests
 - WebSocket live preview smoke test
 - Agent outline → approve → generate E2E
@@ -24,6 +25,7 @@
 - Fill 20 critical-path Playwright test stubs
 
 ### Phase 3: Critical Gap Fixes
+
 - `api.synthesis.js` — wire from 36B stub to real API calls
 - `latex_exporter.py` — implement Pandoc subprocess (743B → full)
 - `rbac.py` — implement role-based access control (708B → full)
@@ -33,6 +35,7 @@
 - Consolidate duplicate `components/` directories
 
 ### Phase 4: Service-Backed Validation
+
 - Redis health check integration test
 - Supabase Auth signup → login → JWT E2E
 - Stripe webhook signature validation
@@ -44,6 +47,7 @@
 ## Medium-Term (6 Months) — H1 2027
 
 ### Phase 5: Launch Readiness
+
 - Lock cloud topology: Vercel + Render + Supabase + Upstash
 - Staging environment live with health check
 - Grafana dashboard: request rate, error rate, queue depth
@@ -52,6 +56,7 @@
 - P99 upload ACK <400ms on staging
 
 ### Feature Enhancements
+
 - LaTeX export via Pandoc
 - Citation network graph visualization
 - Template marketplace (community-contributed templates)
@@ -64,6 +69,7 @@
 ## Long-Term (12 Months) — 2027
 
 ### Platform Scale
+
 - **v2.0** — Breaking API changes (if needed)
 - Horizontal scaling for Celery workers
 - Read replica support for Supabase PostgreSQL
@@ -71,6 +77,7 @@
 - CDN for file storage delivery
 
 ### AI Capabilities
+
 - Custom fine-tuned models for academic formatting
 - Real-time collaborative AI editing suggestions
 - Automated peer review simulation
@@ -79,6 +86,7 @@
 - Multi-language manuscript support
 
 ### Enterprise
+
 - SSO/SAML authentication
 - Audit log export (SOC 2 compliant)
 - Custom deployment (VPC, private networking)
@@ -87,6 +95,7 @@
 - Admin console for user/team management
 
 ### Community
+
 - Plugin system for custom formaters
 - VS Code extension for local formatting
 - GitHub Actions integration (CI format check)

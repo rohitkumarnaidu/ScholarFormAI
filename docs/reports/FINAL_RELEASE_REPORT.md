@@ -15,7 +15,7 @@ ScholarForm AI v1.0.0 is an enterprise-grade academic manuscript formatting and 
 After 14 certification phases, 10,611+ passing tests, 20 production hardening fixes, and full enterprise refactoring, the platform is certified production-ready with a **Readiness Score of 98/100**.
 
 | Dimension | Status | Key Metric |
-|-----------|--------|------------|
+| ----------- | -------- | ------------ |
 | Test Coverage | ✅ Certified | 10,611+ tests, 0 failures |
 | Security | ✅ Hardened | 490+ security tests, 0 critical/high findings |
 | Performance | ✅ Validated | All SLO targets met |
@@ -30,7 +30,7 @@ After 14 certification phases, 10,611+ passing tests, 20 production hardening fi
 ### 1.1 Release Identification
 
 | Attribute | Value |
-|-----------|-------|
+| ----------- | ------- |
 | **Product** | ScholarForm AI |
 | **Version** | 1.0.0 |
 | **Codename** | Initial Production Release |
@@ -42,7 +42,7 @@ After 14 certification phases, 10,611+ passing tests, 20 production hardening fi
 ### 1.2 Technology Stack
 
 | Layer | Technology | Version |
-|-------|-----------|---------|
+| ------- | ----------- | --------- |
 | Frontend Framework | Next.js (App Router) | 16.x |
 | UI Library | React | 19.x |
 | Styling | Tailwind CSS | 3.x |
@@ -89,7 +89,7 @@ User Browser
 ### 2.1 Document Formatter Pipeline
 
 | Stage | Component | Status |
-|-------|-----------|--------|
+| ------- | ----------- | -------- |
 | 1 | File Upload & Validation (MIME + Magic Byte + Extension) | ✅ Complete |
 | 2 | Virus Scanning (ClamAV) | ✅ Complete |
 | 3 | PDF Parsing (3-tier fallback: GROBID → Docling → PyMuPDF) | ✅ Complete |
@@ -106,7 +106,7 @@ User Browser
 ### 2.2 AI Agent Generator Pipeline
 
 | Stage | Component | Status |
-|-------|-----------|--------|
+| ------- | ----------- | -------- |
 | 1 | Task Parsing | ✅ Complete |
 | 2 | Outline Generation | ✅ Complete |
 | 3 | Section-by-Section Writing | ✅ Complete |
@@ -119,7 +119,7 @@ User Browser
 ### 2.3 Supported Templates (17)
 
 | Template | Status |
-|----------|--------|
+| ---------- | -------- |
 | IEEE | ✅ |
 | APA | ✅ |
 | ACM | ✅ |
@@ -141,7 +141,7 @@ User Browser
 ### 2.4 Supported Input Formats
 
 | Format | Status |
-|--------|--------|
+| -------- | -------- |
 | DOCX | ✅ |
 | PDF | ✅ (3-tier fallback) |
 | LaTeX (.tex) | ✅ |
@@ -156,7 +156,7 @@ User Browser
 ### 3.1 Test Summary
 
 | Phase | Category | Tests | Status |
-|-------|----------|-------|--------|
+| ------- | ---------- | ------- | -------- |
 | Phase 0 | Pipeline import fix + foundation | 85 | ✅ All pass |
 | Phase 1 | Pipeline enterprise batch 1 | 85 | ✅ All pass |
 | Phase 2 | Pipeline enterprise batch 2 | 135 | ✅ All pass |
@@ -180,7 +180,7 @@ User Browser
 ### 3.2 Static Analysis
 
 | Tool | Result |
-|------|--------|
+| ------ | -------- |
 | ruff (E9, F63, F7, F82) | ✅ Passing |
 | mypy (type checking) | ✅ Passing (continue-on-error in CI) |
 | eslint (frontend) | ✅ 0 warnings, 0 errors |
@@ -198,7 +198,7 @@ User Browser
 ### 4.1 Vulnerability Management
 
 | Activity | Result |
-|----------|--------|
+| ---------- | -------- |
 | CodeQL Analysis | ✅ Passing |
 | Dependency Review | ✅ All clean |
 | FOSSA License Scan | ✅ Configured |
@@ -212,7 +212,7 @@ User Browser
 ### 4.2 Security Controls (20 Hardening Fixes Applied)
 
 | Category | Fixes | Key Items |
-|----------|-------|-----------|
+| ---------- | ------- | ----------- |
 | Auth Rate Limiting | 1 | 10/min on login, 5/min on password reset |
 | Auth Error Info Leak | 1 | Generic error messages (no Supabase leak) |
 | CSRF Hardcoded Secret | 1 | Returns None, logs CRITICAL |
@@ -228,7 +228,7 @@ User Browser
 ### 4.3 OWASP Coverage
 
 | Category | Coverage |
-|----------|----------|
+| ---------- | ---------- |
 | OWASP Top 10 (Web) | ✅ 490+ tests, all categories covered |
 | OWASP AI Top 10 (LLM01–LLM10) | ✅ Full coverage |
 | Prompt Injection Guard | ✅ 50+ injection patterns tested |
@@ -242,7 +242,7 @@ User Browser
 ### 5.1 Latency SLOs
 
 | Endpoint | Target | Status |
-|----------|--------|--------|
+| ---------- | -------- | -------- |
 | Health checks (p50) | < 10ms | ✅ Met |
 | Document upload ACK (p99) | < 400ms | ✅ Met |
 | Template listing (p99) | < 80ms | ✅ Met |
@@ -261,7 +261,7 @@ User Browser
 ### 5.3 Availability SLOs
 
 | Component | Target | Status |
-|-----------|--------|--------|
+| ----------- | -------- | -------- |
 | API Uptime | 99.9% | ✅ Achieved |
 | Frontend Uptime | 99.95% | ✅ Achieved |
 | Database Availability | 99.99% | ✅ Achieved (Supabase SLA) |
@@ -271,7 +271,7 @@ User Browser
 ## 6. Release Artifacts
 
 | Artifact | Location |
-|----------|----------|
+| ---------- | ---------- |
 | Docker Image (Backend) | `ghcr.io/scholarform/backend:v1.0.0` |
 | Docker Image (Celery Worker) | `ghcr.io/scholarform/celery-worker:v1.0.0` |
 | npm Package | `@scholarform/frontend@1.0.0` |
@@ -286,7 +286,7 @@ User Browser
 ## 7. Known Limitations
 
 | Issue | Severity | Planned Resolution |
-|-------|----------|-------------------|
+| ------- | ---------- | ------------------- |
 | RBAC middleware stub (708B implementation) | Low | v1.1 |
 | Audit log service not logging all write operations | Low | v1.1 |
 | `--cov` local coverage measurement broken (CI works) | Medium | v1.2 |
@@ -300,7 +300,7 @@ User Browser
 ## 8. Release Sign-Off
 
 | Role | Name | Date | Signature |
-|------|------|------|-----------|
+| ------ | ------ | ------ | ----------- |
 | Release Manager | Release Engineering Team | 2026-07-21 | ✅ |
 | QA Lead | QA Engineering Team | 2026-07-21 | ✅ |
 | Security Lead | Security Engineering Team | 2026-07-21 | ✅ |

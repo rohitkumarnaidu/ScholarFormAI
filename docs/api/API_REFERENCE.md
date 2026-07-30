@@ -129,7 +129,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ### Envelope Fields
 
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `data` | `Any \| null` | Response payload object when request succeeds; `null` on error |
 | `error` | `APIError \| null` | Structured error details when request fails; `null` on success |
 | `request_id` | `str` | Unique request correlation identifier for distributed tracing |
@@ -177,7 +177,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ### 1. Health Router (`/api/v1/health`)
 
 | Endpoint | Method | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/api/v1/health` | `GET` | No | Returns basic health status (`ok`) |
 | `/api/v1/health/live` | `GET` | No | Liveness probe endpoint for Kubernetes / Cloud Run |
 | `/api/v1/health/ready` | `GET` | No | Readiness probe checking Database, GROBID, and Redis connections |
@@ -189,7 +189,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ### 2. Auth Router (`/api/v1/auth`)
 
 | Endpoint | Method | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/api/v1/auth/me` | `GET` | Yes | Get currently authenticated user profile and subscription metadata |
 | `/api/v1/auth/signup` | `POST` | No | Register a new user account with email and password |
 | `/api/v1/auth/login` | `POST` | No | Authenticate credentials and return JWT bearer token |
@@ -210,7 +210,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ### 4. Documents Router (`/api/v1/documents`)
 
 | Endpoint | Method | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/api/v1/documents/upload` | `POST` | Optional | Upload manuscript file (`multipart/form-data`) for automated formatting |
 | `/api/v1/documents/upload/chunked` | `POST` | Optional | Initiate chunked upload session for large manuscripts (>10MB) |
 | `/api/v1/documents/{jobId}/status` | `GET` | Optional | Poll document processing progress and current pipeline stage |
@@ -228,7 +228,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ### 5. Templates Router (`/api/v1/templates`)
 
 | Endpoint | Method | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/api/v1/templates` | `GET` | No | List all 17 supported academic citation & formatting templates (IEEE, APA, Nature, etc.) |
 | `/api/v1/templates/csl/search` | `GET` | No | Search CSL (Citation Style Language) repository by keyword |
 | `/api/v1/templates/csl/fetch` | `GET` | No | Fetch CSL style XML definition by CSL identifier |
@@ -243,7 +243,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ### 6. AI Generator Router (`/api/v1/generator`)
 
 | Endpoint | Method | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/api/v1/generator/sessions` | `POST` | Yes | Initialize interactive AI paper drafting session (`202 Accepted`) |
 | `/api/v1/generator/sessions` | `GET` | Yes | List active and historical generator sessions for user |
 | `/api/v1/generator/sessions/{sessionId}` | `GET` | Yes | Get session details, paper topic, target style, and generated outline |
@@ -260,7 +260,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ### 7. Multi-Doc Synthesis Router (`/api/v1/synthesis`)
 
 | Endpoint | Method | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/api/v1/synthesis/sessions` | `POST` | Yes | Create multi-document synthesis session for 2-6 source PDFs (`202 Accepted`) |
 | `/api/v1/synthesis/sessions/{sessionId}` | `GET` | Yes | Get multi-document synthesis session status and comparative matrix |
 | `/api/v1/synthesis/sessions/{sessionId}/events` | `GET` | Yes | SSE stream broadcasting synthesis progress and section merging steps |
@@ -271,7 +271,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ### 8. Feedback Router (`/api/v1/feedback`)
 
 | Endpoint | Method | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/api/v1/feedback` | `POST` | Optional | Submit user rating, bug report, or feature feedback (`201 Created`) |
 | `/api/v1/feedback/summary` | `GET` | Admin | Get aggregate user satisfaction metrics and rating summaries |
 
@@ -280,7 +280,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ### 9. Metrics Router (`/api/v1/metrics` & `/metrics`)
 
 | Endpoint | Method | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/api/v1/metrics` | `GET` | Admin | Retrieve operational API throughput, average latency, and error counts |
 | `/api/v1/metrics/db` | `GET` | Admin | Retrieve database connection pool utilization and query performance statistics |
 | `/api/v1/metrics/log-error` | `POST` | Optional | Client-side error reporting endpoint for frontend telemetry |
@@ -291,7 +291,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ### 10. AI Providers Router (`/api/v1/providers`)
 
 | Endpoint | Method | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/api/v1/providers` | `GET` | Yes | List all registered LLM providers (NVIDIA NIM, Groq, OpenRouter, Ollama) |
 | `/api/v1/providers/health` | `GET` | Yes | Ping provider endpoints and check latency / key status |
 | `/api/v1/providers/builtin` | `GET` | Yes | List pre-configured system LLM providers |
@@ -309,7 +309,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ### 11. API Keys Router (`/api/v1/keys`)
 
 | Endpoint | Method | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/api/v1/keys` | `POST` | Yes | Generate new API key with specific scopes (`201 Created`) |
 | `/api/v1/keys` | `GET` | Yes | List active API keys associated with user account |
 | `/api/v1/keys/{key_id}` | `GET` | Yes | Get API key metadata and creation details |
@@ -333,7 +333,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ### 13. Billing Router (`/api/v1/billing`)
 
 | Endpoint | Method | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/api/v1/billing/webhook` | `POST` | Stripe | Webhook endpoint receiving Stripe payment and subscription events |
 | `/api/v1/billing/subscription` | `GET` | Yes | Get active subscription plan, usage quota, and billing cycle |
 | `/api/v1/billing/checkout-session` | `POST` | Yes | Create Stripe checkout session URL for upgrading tier |
@@ -344,7 +344,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ### 14. Activity Router (`/api/v1/activity`)
 
 | Endpoint | Method | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/api/v1/activity/recent` | `GET` | Yes | Fetch user's recent document processing and generation audit activity |
 | `/api/v1/activity/summary` | `GET` | Yes | Retrieve aggregate usage activity summary by period |
 
@@ -353,7 +353,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ### 15. AI Suggestions Router (`/api/v1/suggestions`)
 
 | Endpoint | Method | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/api/v1/suggestions/generate` | `POST` | Yes | Generate AI writing, grammar, and structural suggestions (`201 Created`) |
 | `/api/v1/suggestions/document/{document_id}` | `GET` | Yes | List pending AI suggestions for a document |
 | `/api/v1/suggestions/{suggestion_id}/accept` | `POST` | Yes | Accept a specific suggestion edit |
@@ -367,7 +367,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ### 16. Webhooks Router (`/api/v1/webhooks`)
 
 | Endpoint | Method | Auth | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/api/v1/webhooks` | `POST` | Yes | Register new outgoing webhook subscription (`201 Created`) |
 | `/api/v1/webhooks` | `GET` | Yes | List active user webhook subscriptions |
 | `/api/v1/webhooks/{sub_id}` | `GET` | Yes | Get webhook subscription details |
@@ -381,7 +381,7 @@ All responses from `/api/v1` endpoints strictly wrap payloads in a standardized 
 ## Standard Error Codes Summary
 
 | Error Code | HTTP Status | Description |
-|---|---|---|
+| --- | --- | --- |
 | `BAD_REQUEST` | 400 | Malformed client request parameters or invalid payload syntax |
 | `UNAUTHORIZED` | 401 | Missing or invalid authentication bearer token |
 | `FORBIDDEN` | 403 | Insufficient permissions for requested resource or operation |

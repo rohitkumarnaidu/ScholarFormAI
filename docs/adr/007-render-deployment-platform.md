@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: "ADR 007: Render as Deployment Platform"
 description: Decision to use Render Web Services for backend hosting
 sidebar_position: 46
@@ -24,7 +24,7 @@ The application requires a hosting platform that supports Python (FastAPI), Node
 Deploy on Render:
 
 | Component | Render Service | Plan |
-|-----------|---------------|------|
+| ----------- | --------------- | ------ |
 | Backend API | Web Service (Gunicorn + Uvicorn) | Starter |
 | Frontend | Static Site / Web Service | Free |
 | Celery Worker | Background Worker | Starter |

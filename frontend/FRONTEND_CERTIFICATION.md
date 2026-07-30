@@ -15,8 +15,9 @@
 ## 1. Architecture Audit
 
 ### Component Architecture
+
 | Metric | Status | Details |
-|--------|--------|---------|
+| -------- | -------- | --------- |
 | Component count | ✅ | 64 components across 10 domains |
 | UI primitives | ✅ | 8 reusable primitives (Button, Input, Card, Badge, Skeleton, EmptyState, ConfirmDialog, Minimap) |
 | Layout components | ✅ | AppShell, Header, Sidebar, AuthGuard, ClientProviders, FocusManager |
@@ -27,8 +28,9 @@
 | Service modules | ✅ | 14 API service files |
 
 ### State Management
+
 | Layer | Status | Details |
-|-------|--------|---------|
+| ------- | -------- | --------- |
 | React Context | ✅ | 5 providers composed in ClientProviders |
 | TanStack Query | ✅ | Server state with 10s staleTime |
 | Local state | ✅ | useState/useReducer in hooks |
@@ -36,8 +38,9 @@
 | URL search params | ✅ | Navigation state for redirects, guests, templates |
 
 ### Routing
+
 | Metric | Status | Details |
-|--------|--------|---------|
+| -------- | -------- | --------- |
 | Route groups | ✅ | 3 groups: (shared), (formatter), (generator) |
 | Protected routes | ✅ | AuthGuard + middleware for admin |
 | Dynamic routes | ✅ | jobs/[jobId]/[step] |
@@ -50,7 +53,7 @@
 ## 2. Component Coverage
 
 | Domain | Components | Tested | Coverage |
-|--------|-----------|--------|----------|
+| -------- | ----------- | -------- | ---------- |
 | UI Primitives | 8 | 8 | 100% |
 | Layout | 10 | 10 | 100% |
 | Generic/Utility | 18 | 18 | 100% |
@@ -70,7 +73,7 @@
 ## 3. Page Coverage
 
 | Route Group | Pages | Loading.jsx | Error.jsx | Auth Protected |
-|-------------|-------|-------------|-----------|----------------|
+| ------------- | ------- | ------------- | ----------- | ---------------- |
 | Shared (public) | 9 | ✅ | ✅ | N/A |
 | Shared (protected) | 9 | ✅ | ✅ | ✅ |
 | Formatter (public) | 9 | ✅ | ✅ | Partial |
@@ -84,8 +87,9 @@
 ## 4. Accessibility Audit (WCAG 2.2 AA)
 
 ### Automated Checks
+
 | Criterion | Status | Tool |
-|-----------|--------|------|
+| ----------- | -------- | ------ |
 | Color contrast | ✅ | Lighthouse CI (≥0.9 threshold) |
 | ARIA attributes | ✅ | Manual + jest-axe integration |
 | Semantic HTML | ✅ | Manual audit + accessibility-standalone.test.jsx |
@@ -100,8 +104,9 @@
 | Reduced motion | ✅ | prefers-reduced-motion media query tests |
 
 ### Manual Verification
+
 | Component | Issues Fixed | Status |
-|-----------|-------------|--------|
+| ----------- | ------------- | -------- |
 | Input.jsx | aria-invalid, aria-describedby | ✅ Fixed |
 | Toast.jsx | aria-live, role status/alert | ✅ Fixed |
 | Button.jsx | aria-busy on loading | ✅ Fixed |
@@ -112,6 +117,7 @@
 | ConfirmDialog | aria-modal="true", role="dialog" | ✅ Present |
 
 ### Remaining Low-Priority Items
+
 - Focus trap in OnboardingTour (medium complexity, tour is infrequently used)
 - Focus trap in context-based ConfirmDialog (mitigated by ui/ConfirmDialog existing)
 - Color contrast ratio for `text-slate-400` on light backgrounds (below AA ~2.8:1, low impact for non-critical text)
@@ -121,8 +127,9 @@
 ## 5. Test Coverage Report
 
 ### Unit/Component Tests
+
 | Metric | Count | Change |
-|--------|-------|--------|
+| -------- | ------- | -------- |
 | Test files | 116 | +2 (AuthContext.actions, visual-regression) |
 | Total tests | 951 | +127 from baseline |
 | Passing | 951 (100%) | 0 failures |
@@ -131,8 +138,9 @@
 | Test duration | ~42s | Optimized |
 
 ### Coverage by Tier (Latest)
+
 | Tier | Statements | Branches | Lines | Quality |
-|------|-----------|----------|-------|---------|
+| ------ | ----------- | ---------- | ------- | --------- |
 | UI components | 100% | 100% | 100% | Excellent |
 | Feature components | 82% | 75% | 85% | Good-Excellent |
 | Context providers | 74% | 60% | 76% | Improved (was 46%) |
@@ -144,16 +152,18 @@
 | Visual regression | — | — | — | 25 snapshots added |
 
 ### Coverage Highlights
+
 | Module | Before | After | Gain |
-|--------|--------|-------|------|
+| -------- | -------- | ------- | ------ |
 | **Services** | 43.78% / 30% | ~74% / ~62% | **+30pp / +32pp** |
 | **Contexts** | 46% / 26.6% | ~74% / ~60% | **+28pp / +33pp** |
 | **Components** | 56.62% / 49.59% | ~82% / ~75% | **+25pp / +25pp** |
 | **Overall** | 52.98% / 43.19% | **~77% / ~66%** | **+24pp / +23pp** |
 
 ### E2E Tests (Playwright)
+
 | Category | Tests | Status |
-|----------|-------|--------|
+| ---------- | ------- | -------- |
 | Auth flows | 7 | ✅ |
 | Upload/Templates | 5 | ✅ |
 | Dashboard/History | 3 | ✅ |
@@ -168,8 +178,9 @@
 | **Total** | **28** | **All passing** |
 
 ### Lighthouse CI
+
 | Page | Performance | Accessibility | Best Practices | SEO |
-|------|------------|---------------|----------------|-----|
+| ------ | ------------ | --------------- | ---------------- | ----- |
 | / | ≥ 0.8 | ≥ 0.9 | ≥ 0.9 | ≥ 0.9 |
 | /dashboard | ≥ 0.8 | ≥ 0.9 | ≥ 0.9 | ≥ 0.9 |
 | /upload | ≥ 0.8 | ≥ 0.9 | ≥ 0.9 | ≥ 0.9 |
@@ -182,7 +193,7 @@
 ## 6. Security Assessment
 
 | Layer | Status | Details |
-|-------|--------|---------|
+| ------- | -------- | --------- |
 | XSS prevention | ✅ | React auto-escaping + sanitizePayload |
 | CSRF protection | ✅ | Supabase handles + SameSite cookies |
 | Auth token in URL | ✅ FIXED | EventSource now uses withCredentials only |
@@ -197,6 +208,7 @@
 | Clickjacking protection | ✅ | X-Frame-Options: DENY in middleware |
 
 ### Security Fixes Applied This Session
+
 1. Removed auth token from SSE URL query string (api.preview.v1.js)
 2. Consolidated fetchWithRetry to prevent POST retries (utils/fetchWithRetry.js → re-export from api.core.js)
 3. Fixed sanitizeText to preserve newlines/tabs in multi-line content
@@ -207,7 +219,7 @@
 ## 7. Performance Assessment
 
 | Metric | Status | Details |
-|--------|--------|---------|
+| -------- | -------- | --------- |
 | Bundle splitting | ✅ | Dynamic imports (Minimap, SplitEditor) |
 | Tree shaking | ✅ | lucide-react, framer-motion optimized imports |
 | Image optimization | ✅ | Next.js Image component |
@@ -222,6 +234,7 @@
 | PWA support | ✅ | next-pwa with service worker |
 
 ### Performance Fixes Applied This Session
+
 1. Toast COLORS object moved outside component (prevents recreation on every render)
 2. Toast setTimeout properly cleaned up on dismiss/unmount
 3. Analytics retry mechanism for resilience
@@ -231,13 +244,14 @@
 ## 8. Responsive Design
 
 | Breakpoint | Behavior | Verified |
-|------------|----------|----------|
+| ------------ | ---------- | ---------- |
 | Mobile (<640px) | Hamburger sidebar, stacked layout, full-width forms | ✅ |
 | Tablet (640-1024px) | Collapsible sidebar, split panels, 2-column grids | ✅ |
 | Desktop (1024-1536px) | Full sidebar, max-width containers, multi-column | ✅ |
 | Ultra-wide (>1536px) | Max-width constrained, centered content | ✅ |
 
 ### Responsive Test Coverage
+
 - 14 dedicated responsive tests in `responsive-layout.test.jsx`
 - Viewport simulation via window.innerWidth mock
 - CSS class presence verification for all breakpoints
@@ -247,7 +261,7 @@
 ## 9. Cross-Browser Compatibility
 
 | Browser | Status | Verification |
-|---------|--------|-------------|
+| --------- | -------- | ------------- |
 | Chrome (latest) | ✅ | Primary dev + Playwright Chromium |
 | Edge (latest) | ✅ | Chromium-based, same engine |
 | Firefox (latest) | ✅ | Manual verification |
@@ -260,7 +274,7 @@
 ## 10. CI/CD Quality Gates
 
 | Gate | Script | Enforced | Status |
-|------|--------|----------|--------|
+| ------ | -------- | ---------- | -------- |
 | Unit/Component tests | `vitest run` | ✅ frontend-ci.yml | ✅ Pass (951/951) |
 | TypeScript check | `tsc --noEmit` | ✅ frontend-ci.yml | ✅ Config |
 | Linting | `eslint --max-warnings 0` | ✅ frontend-ci.yml | ✅ Clean |
@@ -273,6 +287,7 @@
 | Security review | .github/security.yml | ✅ | ✅ Active |
 
 ### CI/CD Pipeline
+
 ```
 frontend-ci.yml:
   ╔═══════════════╗
@@ -299,7 +314,7 @@ frontend-ci.yml:
 ### Issues Fixed This Session
 
 | # | Issue | Severity | File(s) | Resolution |
-|---|-------|----------|---------|------------|
+| --- | ------- | ---------- | --------- | ------------ |
 | 1 | Auth token leaked in URL | CRITICAL | api.preview.v1.js | Removed token param, use withCredentials only |
 | 2 | sanitizeText strips newlines | HIGH | api.core.js | Allow \n, \r, \t in control char filter |
 | 3 | COMPLETED_WITH_WARNINGS not in SSE | HIGH | api.hooks.js | Added status check |
@@ -330,6 +345,7 @@ frontend-ci.yml:
 ## 12. Production Readiness Checklist
 
 ### Core Requirements
+
 - [x] All unit/component tests pass (951/951)
 - [x] All E2E tests pass (28/28)
 - [x] All quality gates configured in CI
@@ -343,6 +359,7 @@ frontend-ci.yml:
 - [x] Cross-browser compatibility verified
 
 ### Performance
+
 - [x] Core Web Vitals tracked via Lighthouse CI
 - [x] Real User Monitoring via RUM module
 - [x] Bundle size optimized (tree-shaking, code-splitting)
@@ -352,6 +369,7 @@ frontend-ci.yml:
 - [x] Virtual scrolling for large lists
 
 ### Security
+
 - [x] Auth tokens not exposed in URLs
 - [x] Input sanitization prevents XSS
 - [x] CSRF protection via Supabase
@@ -369,6 +387,7 @@ frontend-ci.yml:
 - [x] Health status endpoints
 
 ### Code Quality
+
 - [x] Consistent component architecture
 - [x] Proper error boundaries at all levels
 - [x] Loading states for async operations
@@ -383,8 +402,9 @@ frontend-ci.yml:
 ## 13. Risk Register
 
 ### Resolved Risks
+
 | Risk | Severity | Resolution |
-|------|----------|------------|
+| ------ | ---------- | ------------ |
 | Auth token in URLs | Critical | Removed from query params |
 | Data corruption from sanitizeText | High | Newlines preserved |
 | Jobs stuck on COMPLETED_WITH_WARNINGS | High | Added to SSE handler |
@@ -396,8 +416,9 @@ frontend-ci.yml:
 | Mock state contamination in tests | Medium | clearMocks: true in vitest config |
 
 ### Accepted Low-Level Risks
+
 | Risk | Rationale |
-|------|-----------|
+| ------ | ----------- |
 | Some component files >500 lines | Low priority; no bugs reported from these files |
 | TypeScript not adopted | Codebase is JSX; no runtime errors from missing types |
 | Coverage at 77% not yet 90% | Exceeds 70% CI gate; cost to reach 90% exceeds benefit |
@@ -413,6 +434,7 @@ frontend-ci.yml:
 The ScholarForm AI frontend has been audited across 14 dimensions, including architecture, component coverage, accessibility, performance, security, test coverage, responsive design, cross-browser compatibility, and CI/CD quality gates.
 
 **Key metrics:**
+
 - **951 tests passing** (116 files, 0 failures) — +127 from baseline
 - **25 visual regression snapshots** added
 - **28 Playwright E2E specs** across Chromium, Firefox, WebKit + Mobile
@@ -435,7 +457,7 @@ The ScholarForm AI frontend has been audited across 14 dimensions, including arc
 ## 15. Audit Trail
 
 | Phase | Agent | Duration | Key Outputs |
-|-------|-------|----------|-------------|
+| ------- | ------- | ---------- | ------------- |
 | Phase 1 | Architecture Exploration | 1 cycle | Complete folder structure, architecture patterns |
 | Phase 2 | Component/Context/Services/Test Audit | 5 parallel agents | 25+ pages of audit findings |
 | Phase 3-10 | Critical Fixes + Test Improvement | 3 parallel agents | 15 critical/high fixes, 14+ new tests |

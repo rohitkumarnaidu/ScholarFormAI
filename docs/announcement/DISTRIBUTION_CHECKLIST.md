@@ -21,22 +21,26 @@
 ## Awesome Lists
 
 ### awesome-python
+
 - [ ] Submit PR adding ScholarForm AI under "Academic Tools" or "Document Processing"
 - [ ] Description: "Open-source AI-powered academic manuscript formatting with 17 journal templates"
 - [ ] Ensure repo has an `awesome`-friendly README (clear description, badges)
 
 ### awesome-selfhosted
+
 - [ ] Submit PR adding ScholarForm AI under "Document Management" or "Publishing"
 - [ ] Include Docker deployment instructions in `README.md`
 - [ ] Note that Ollama backend supports fully offline/self-hosted operation
 - [ ] Point to `deploy/` directory for Docker Compose configs
 
 ### awesome-academia
+
 - [ ] Submit PR as "Academic Writing Tools" or "Manuscript Preparation"
 - [ ] Highlight: 17 templates, multi-doc synthesis, AI generator
 - [ ] Include link to docs
 
 ### awesome-ai-papers (or similar)
+
 - [ ] Submit PR mentioning LLM pipeline (NVIDIA NIM, Groq, Ollama) and RAG (ChromaDB)
 
 ---
@@ -44,6 +48,7 @@
 ## Open Source Directories
 
 ### OpenSource.net (formerly SourceForge.net)
+
 - [ ] Create project page
 - [ ] Category: "Science and Engineering" → "Academic Publishing"
 - [ ] Tags: manuscript-formatting, academic-writing, ai, python, nextjs
@@ -51,18 +56,22 @@
 - [ ] Link to GitHub repo and documentation
 
 ### OSDN (Open Source Development Network)
+
 - [ ] Register project in "Academic / Education" category
 - [ ] Add Japanese translation of description if possible (large OSDN audience)
 
 ### SourceForge
+
 - [ ] Mirror the repo (or link to GitHub)
 - [ ] Set up file releases for tarballs if desired
 
 ### Bitbucket
+
 - [ ] Create a mirror repo (optional, some teams prefer Bitbucket)
 - [ ] Keep synced via GitHub Action
 
 ### GitLab (optional)
+
 - [ ] Mirror to GitLab.com for European reach
 
 ---
@@ -84,6 +93,7 @@
 ## Package Registries
 
 ### PyPI (Python Package Index)
+
 - [ ] Publish `scholarform-ai` or `scholarform-backend` package
 - [ ] Include CLI entry point if applicable
 - [ ] Ensure `pyproject.toml` has correct metadata (v1.0, license, classifiers)
@@ -91,6 +101,7 @@
 - [ ] Add installation instructions to README: `pip install scholarform-ai`
 
 ### npm
+
 - [ ] Publish `@scholarform/frontend` or `scholarform-ui`
 - [ ] Ensure `package.json` has correct metadata (version 1.0.0, license, keywords)
 - [ ] Include `README.md` in the package
@@ -101,38 +112,46 @@
 ## Newsletters
 
 ### Python Weekly
+
 - [ ] Submit via [pythonweekly.com/submit](https://pythonweekly.com/submit)
 - [ ] Subject: "ScholarForm AI v1.0 — Open-source academic manuscript formatting"
 - [ ] Body: 3–4 sentence summary with link to GitHub repo
 - [ ] Angle: "Built with FastAPI + Celery, this open-source tool formats academic papers to any journal style"
 
 ### JavaScript Weekly
+
 - [ ] Submit via [javascriptweekly.com/submit](https://javascriptweekly.com/submit)
 - [ ] Subject: "ScholarForm AI v1.0 — Next.js 16 + React 19 academic formatting platform"
 - [ ] Angle: "Showcases Next.js 16 App Router, React 19, TanStack Query, real-time WebSocket preview"
 
 ### This Week in React
+
 - [ ] Submit via [thisweekinreact.com](https://thisweekinreact.com)
 - [ ] Highlight: React 19, Next.js 16, Server Components, WebSocket streaming for live preview
 
 ### DevOps Weekly
+
 - [ ] Submit via [devopsweekly.com](https://devopsweekly.com)
 - [ ] Angle: "25 CI/CD workflows, Cosign-signed containers, SLSA L3 provenance, SBOMs, multi-arch Docker builds"
 - [ ] Include architecture diagram link
 
 ### Changelog (podcast + newsletter)
+
 - [ ] Submit as "Open Source Friday" candidate
 - [ ] Pitch: "Open-source tool that saves academics hours of formatting time — built with FastAPI, Next.js, and AI"
 
 ### PyCoder's Weekly
+
 - [ ] Submit via [pycoders.com/submit](https://pycoders.com/submit)
 - [ ] Python angle: FastAPI, Celery, ChromaDB, pipeline architecture, 382 packages
 
 ### Papers with Code (optional)
+
 - [ ] Create a "Papers with Code" entry for the RAG/agent systems
 - [ ] Category: "Natural Language Processing" → "Document Generation"
 
 ### Academic newsletters (optional)
+
 - [ ] Authentic Research (authentic-research.substack.com)
 - [ ] The Research Scientist (research-scientist.com)
 - [ ] Nature Briefing (nature.com/briefing/signup) — submit via their tip line
@@ -142,7 +161,7 @@
 ## Social Launch Sequence (Timeline)
 
 | Day | Action |
-|-----|--------|
+| ----- | -------- |
 | D-7 | Pre-announce to core contributors and beta testers |
 | D-3 | Submit to newsletters (most need 3-5 day lead time) |
 | D-1 | Submit to Product Hunt for scheduled launch |

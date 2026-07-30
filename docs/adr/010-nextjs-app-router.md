@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: "ADR 010: Next.js App Router (Not Vite)"
 description: Decision to use Next.js App Router over Vite for frontend
 sidebar_position: 49

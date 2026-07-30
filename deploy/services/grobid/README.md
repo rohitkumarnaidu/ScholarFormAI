@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: Scholarform Grobid
 emoji: "🌍"
 colorFrom: blue
@@ -28,4 +28,3 @@ Docker-based GROBID template with a lightweight proxy on port `7860` for Hugging
 - `grobid.yaml`
 - `proxy.py`
 - `start.sh`
-

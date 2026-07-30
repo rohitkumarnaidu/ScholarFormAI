@@ -5,6 +5,7 @@
 ScholarForm AI is an enterprise-grade automated academic manuscript formatting platform. It transforms raw document uploads (DOCX, PDF, TXT, HTML, Markdown, TeX, LaTeX) into publication-ready, template-compliant outputs through a 16-stage AI-powered processing pipeline.
 
 The system integrates **5 AI/ML subsystems**:
+
 - **Document Understanding Pipeline** — parsing, structure detection, LLM-based classification analysis, content classification, NLP analysis
 - **LLM Tier System** — 10 built-in providers with 4-tier automatic fallback (NVIDIA NIM → Groq → OpenRouter → Ollama) + per-provider circuit breakers
 - **Intelligence Layer** — RAG engine (ChromaDB + sentence-transformers), reasoning engine for block-level AI classification
@@ -119,6 +120,7 @@ Input File → ParserFactory → [GROBID + Docling parallel] → Equation Std �
 Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator.py:87`). Stages are sequential except GROBID/Docling which run in parallel. Every stage wraps failures in `safe_execution` to prevent cascading pipeline crashes.
 
 #### Stage 1: Upload & Validation
+
 - **File**: `app/routers/v1/documents_impl.py`
 - **Input**: Raw file bytes
 - **Output**: Validated file path on disk
@@ -126,20 +128,22 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 - **Accepted**: `.docx`, `.pdf`, `.txt`, `.html`, `.htm`, `.md`, `.markdown`, `.tex`, `.latex`, `.doc`, `.odt`, `.rtf`
 
 #### Stage 2: Document Parsing — ParserFactory (7 parsers)
+
 - **File**: `app/pipeline/parsing/parser_factory.py:28`
 - **Input**: File path with known extension
 - **Output**: `PipelineDocument` with `Block[]` (text, position, metadata)
 - **Parsers**:
-  - `DocxParser` (`parsing/parser.py`) — python-docx extraction, always available
-  - `PdfParser` (`parsing/pdf_parser.py`) — PyMuPDF (fitz), primary PDF path
-  - `LLMPDFParser` (`parsing/llm_pdf_parser.py`) — Meta AI LLM-based PDF parsing, opt-in via `ENABLE_LLM_PDF_PARSER=true`, fallback for scanned PDFs when primary extraction yields empty blocks
-  - `TxtParser` (`parsing/txt_parser.py`) — plain text, always available
-  - `HtmlParser` (`parsing/html_parser.py`) — BeautifulSoup4, requires `bs4`
-  - `MarkdownParser` (`parsing/md_parser.py`) — markdown-to-text, always available
-  - `TexParser` (`parsing/tex_parser.py`) — LaTeX regex extraction, always available
+    - `DocxParser` (`parsing/parser.py`) — python-docx extraction, always available
+    - `PdfParser` (`parsing/pdf_parser.py`) — PyMuPDF (fitz), primary PDF path
+    - `LLMPDFParser` (`parsing/llm_pdf_parser.py`) — Meta AI LLM-based PDF parsing, opt-in via `ENABLE_LLM_PDF_PARSER=true`, fallback for scanned PDFs when primary extraction yields empty blocks
+    - `TxtParser` (`parsing/txt_parser.py`) — plain text, always available
+    - `HtmlParser` (`parsing/html_parser.py`) — BeautifulSoup4, requires `bs4`
+    - `MarkdownParser` (`parsing/md_parser.py`) — markdown-to-text, always available
+    - `TexParser` (`parsing/tex_parser.py`) — LaTeX regex extraction, always available
 - **Fallback**: Empty extraction triggers LLM-based PDF parsing fallback at `orchestrator.py:729`
 
 #### Stage 3: GROBID Metadata Extraction
+
 - **File**: `app/pipeline/services/grobid_client.py`
 - **Input**: PDF file path
 - **Output**: `ai_hints['grobid_metadata']` dict with title, authors, abstract, DOI
@@ -149,6 +153,7 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 - **Default URL**: `http://localhost:8070`
 
 #### Stage 4: Docling Layout Analysis
+
 - **File**: `app/pipeline/services/llm_pdf_parser.py`
 - **Input**: PDF file path
 - **Output**: `ai_hints['docling_layout']` with detected elements (headings, paragraphs, tables, figures)
@@ -158,15 +163,18 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 - **Parallel execution**: GROBID and Docling run concurrently via `ThreadPoolExecutor(max_workers=2)` — `orchestrator.py:771`
 
 #### Stage 5: PyMuPDF Fallback
+
 - **File**: `orchestrator.py:392` (`_extract_pymupdf_fallback_metadata`)
 - **Triggered**: When both GROBID and Docling return empty AND `PYMUPDF_FALLBACK=true`
 - **Output**: Lightweight metadata (page count, title, author, sample text) extracted via `fitz`
 
 #### Stage 6: Equation Standardization
+
 - **File**: `app/pipeline/equations/standardizer.py`
 - **Process**: Detects and standardizes mathematical equation blocks
 
 #### Stage 7: Structure Detection
+
 - **File**: `app/pipeline/structure_detection/detector.py`
 - **Class**: `StructureDetector`
 - **Input**: `PipelineDocument` with raw blocks
@@ -175,6 +183,7 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 - **Decorated**: `@retry_with_backoff(max_retries=1, backoff_factor=1.0)` — `orchestrator.py:557`
 
 #### Stage 8: Semantic Parsing — LLMClassifier (Optional)
+
 - **File**: `app/pipeline/intelligence/semantic_parser.py:57`
 - **Class**: `SemanticParser`
 - **Input**: `Block[]` from document
@@ -191,21 +200,23 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 - **Head repair**: `_repair_fragmented_headings()` merges split number+text heading patterns
 
 #### Stage 9: Content Classification
+
 - **File**: `app/pipeline/classification/classifier.py:26`
 - **Class**: `ContentClassifier(PipelineStage)`
 - **Input**: Document with structure metadata
 - **Output**: Document with `BlockType` assigned per block
 - **Rules**:
-  - Abstract keywords → `BlockType.ABSTRACT_BODY`
-  - References keywords → `BlockType.REFERENCE_ENTRY`
-  - Heading candidates → `BlockType.HEADING_1`–`HEADING_4`
-  - Front matter (pre-section) → Title/Author/Affiliation analysis
-  - Footnotes → `^(\d+ |\[\d+\]| |‡|※|\*\s)` patterns
-  - Appendices → keyword-matched (appendix, annex, supplement)
-  - Affiliations → 20+ indicator keywords (university, college, department, ...)
+    - Abstract keywords → `BlockType.ABSTRACT_BODY`
+    - References keywords → `BlockType.REFERENCE_ENTRY`
+    - Heading candidates → `BlockType.HEADING_1`–`HEADING_4`
+    - Front matter (pre-section) → Title/Author/Affiliation analysis
+    - Footnotes → `^(\d+ |\[\d+\]| |‡|※|\*\s)` patterns
+    - Appendices → keyword-matched (appendix, annex, supplement)
+    - Affiliations → 20+ indicator keywords (university, college, department, ...)
 - **LLMClassifier tuning**: Uses `HEURISTIC_CONFIDENCE_MEDIUM` (0.7) as minimum for LLMClassifier override
 
 #### Stage 10: NLP Analysis
+
 - **File**: `app/pipeline/nlp/analyzer.py`
 - **Classes**: `ContentAnalyzer`, `extract_keywords()`
 - **Input**: Classified document blocks
@@ -213,24 +224,28 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 - **Keyword extraction**: From abstract text, persisted in `doc_obj.metadata.keywords`
 
 #### Stage 11: Caption Matching (Figures & Tables)
+
 - **Files**:
-  - `app/pipeline/figures/caption_matcher.py` — `CaptionMatcher(enable_vision=True)`
-  - `app/pipeline/tables/caption_matcher.py` — `TableCaptionMatcher()`
+    - `app/pipeline/figures/caption_matcher.py` — `CaptionMatcher(enable_vision=True)`
+    - `app/pipeline/tables/caption_matcher.py` — `TableCaptionMatcher()`
 - **Input**: Document with classified blocks
 - **Output**: Figures/tables associated with their captions, figure export paths
 
 #### Stage 12: Figure Quality Analysis
+
 - **File**: `app/pipeline/figures/analyzer.py` — `figure_analyzer`
 - **Input**: Document figures
 - **Output**: Per-figure quality analysis (DPI, dimensions, downsampling decisions)
 - **Active**: Only when `fast_mode=false`
 
 #### Stage 13: Reference Parsing
+
 - **File**: `app/pipeline/references/parser.py` — `ReferenceParser`
 - **Input**: Document blocks identified as references
 - **Output**: Structured `Reference[]` objects with parsed authors, title, DOI
 
 #### Stage 14: Reference Formatting (CSL)
+
 - **File**: `app/pipeline/references/formatter_engine.py:21`
 - **Class**: `ReferenceFormatterEngine`
 - **Input**: `Reference[]` + publisher name
@@ -240,6 +255,7 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 - **Config**: `contract.yaml` → `references.style` (e.g. "ieee", "apa"), `references.csl_style_path`
 
 #### Stage 15: CrossRef Enrichment (Optional)
+
 - **File**: `app/services/crossref_client.py` (services version) or `app/pipeline/services/crossref_client.py`
 - **Input**: Document references
 - **Output**: Per-reference `crossref_validation` metadata (DOI, authors, title, url)
@@ -247,9 +263,10 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 - **Workers**: `CROSSREF_MAX_WORKERS` (default 4) via `ThreadPoolExecutor`
 
 #### Stage 16: AI Reasoning — RAG + LLM (Optional)
+
 - **Files**:
-  - `app/pipeline/intelligence/rag_engine.py:233` — `RagEngine`
-  - `app/pipeline/intelligence/reasoning_engine.py:86` — `ReasoningEngine`
+    - `app/pipeline/intelligence/rag_engine.py:233` — `RagEngine`
+    - `app/pipeline/intelligence/reasoning_engine.py:86` — `ReasoningEngine`
 - **Input**: Context blocks (first 12), template name, section name
 - **Output**: `semantic_advice` dict with per-block instruction sets
 - **Flow**:
@@ -259,35 +276,39 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 - **Gate**: `runtime_flags['ai_reasoning']` → default disabled in fast mode
 
 #### Stage 17: Document Validation
+
 - **File**: `app/pipeline/validation/validator_v3.py:37`
 - **Class**: `DocumentValidator(PipelineStage)`
 - **Input**: Fully processed document
 - **Output**: `ValidationResult` (is_valid, errors[], warnings[], stats)
 - **Components**:
-  - `SectionOrderValidator` — checks section ordering per contract rules
-  - `CrossReferenceEngine` — validates internal cross-references
-  - `CrossRefClient` — validates citations against CrossRef API (in pipeline variant)
+    - `SectionOrderValidator` — checks section ordering per contract rules
+    - `CrossReferenceEngine` — validates internal cross-references
+    - `CrossRefClient` — validates citations against CrossRef API (in pipeline variant)
 - **Safety**: Every check wrapped in `@safe_function` — individual check failures degrade gracefully
 
 #### Stage 18: AI Explainer
+
 - **File**: `app/pipeline/validation/ai_explainer.py` — `AIExplainer`
 - **Input**: Validation results + template name
 - **Output**: Human-readable explanations embedded in `validation_results['ai_explanations']`
 
 #### Stage 19: Formatting
+
 - **File**: `app/pipeline/formatting/formatter.py:44`
 - **Class**: `Formatter`
 - **Input**: Validated `PipelineDocument`
 - **Output**: `Document.generated_doc` (python-docx `Document` object)
 - **Sub-components**:
-  - `StyleMapper` — maps `BlockType` → Word style names, driven by `contract.yaml`
-  - `NumberingEngine` — section/equation/figure/table numbering per contract rules
-  - `ReferenceFormatter` — formats reference blocks in Word document
-  - `TemplateRenderer` — Jinja2/docxtpl rendering from `.docx` templates
-  - `TableRenderer` — table generation from structured data
-  - `FigureRenderer` — figure embedding with DPI optimization
+    - `StyleMapper` — maps `BlockType` → Word style names, driven by `contract.yaml`
+    - `NumberingEngine` — section/equation/figure/table numbering per contract rules
+    - `ReferenceFormatter` — formats reference blocks in Word document
+    - `TemplateRenderer` — Jinja2/docxtpl rendering from `.docx` templates
+    - `TableRenderer` — table generation from structured data
+    - `FigureRenderer` — figure embedding with DPI optimization
 
 #### Stage 20: Export
+
 - **File**: `app/pipeline/export/exporter.py:22`
 - **Class**: `Exporter`
 - **Input**: Formatted `PipelineDocument` with `generated_doc`
@@ -299,15 +320,18 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 #### PipelineOrchestrator (`app/pipeline/orchestrator.py:87`)
 
 **Concurrency Control**:
+
 - Global semaphore `_pipeline_semaphore` limits concurrent jobs to `_MAX_CONCURRENT_JOBS = 5`
 - Semaphore acquire timeout: `PIPELINE_ACQUIRE_TIMEOUT_SECONDS` (default 30s)
 - Jobs exceeding the limit receive immediate "Server busy" response
 
 **Timeout Strategy**:
+
 - `_run_with_timeout(func, timeout_sec)` wraps sync stages in `ThreadPoolExecutor(max_workers=1)` with `future.result(timeout=...)`
 - Stage-specific timeouts: GROBID (30s), Docling (30s), Reasoning (60s), Semantic (30s), Validation (60s), Formatting (60s)
 
 **Error Propagation**:
+
 - `safe_execution` context managers suppress non-critical stage failures
 - Decorated `@retry_with_backoff` stages retry on failure before raising
 - Stage failures are logged and pipeline continues to next stage (non-fatal)
@@ -315,12 +339,14 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 - Cancelled jobs (`asyncio.CancelledError`) trigger graceful shutdown without stack traces
 
 **Status Reporting**:
+
 - Every stage transition updates Supabase `processing_status` table
 - SSE events emitted via `emit_event(document_id, "status_update", payload)` for real-time UI
 - Idempotent upsert pattern: select → insert/update
 - Transient DB errors retried 3× with exponential backoff (0.15s, 0.3s, 0.6s)
 
 **Runtime Flags** (`_resolve_runtime_flags`, line 343):
+
 ```python
 {
     "fast_mode": False,          # Skips optional AI stages
@@ -329,6 +355,7 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
     "ai_reasoning": True,        # Enables RAG + ReasoningEngine
 }
 ```
+
 - `fast_mode` defaults to `DEFAULT_FAST_MODE` (false in production, true in pytest/LOW_MEMORY_MODE)
 - All flags are overridable via `formatting_options` dict
 
@@ -347,7 +374,7 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 10 built-in providers defined in `BUILTIN_PROVIDERS` dict:
 
 | Provider | Base URL | Default Model | API Key Env Var |
-|----------|----------|---------------|-----------------|
+| ---------- | ---------- | --------------- | ----------------- |
 | `openai` | `https://api.openai.com/v1` | `gpt-4o-mini` | `OPENAI_API_KEY` |
 | `anthropic` | `https://api.anthropic.com/v1` | `claude-3-5-sonnet-20241022` | `ANTHROPIC_API_KEY` |
 | `groq` | `https://api.groq.com/openai/v1` | `llama3-8b-8192` | `GROQ_API_KEY` |
@@ -360,6 +387,7 @@ Each stage is orchestrated by `PipelineOrchestrator` (`app/pipeline/orchestrator
 | `nvidia` | `https://integrate.api.nvidia.com/v1` | `NVIDIA_MODEL` (configurable) | `NVIDIA_API_KEY` |
 
 **Key properties per provider**:
+
 - `env_key_actual`: Lambda that lazily reads from `settings`
 - `supports_custom_base_url`: Only `openrouter` and `ollama`
 - `is_local`: Only `ollama`
@@ -374,6 +402,7 @@ Start → Tier 1: NVIDIA NIM → Fail → Tier 2: Groq → Fail → Tier 3: Open
 ```
 
 Each tier:
+
 1. Resolves API key via `resolve_user_api_key(provider, user_id)` (BYOK) → fallback to env var
 2. Calls through provider-specific circuit breaker (`_call_with_provider_circuit`)
 3. Uses `generate()` which goes through LiteLLM → direct client fallback
@@ -387,12 +416,14 @@ Each tier:
 **File**: `app/services/llm_service.py:90` (`resolve_user_api_key`)
 
 Priority:
+
 1. User's stored encrypted key in `user_api_keys` table (via `ApiKeyService.get_active_key`)
 2. Environment variable default (`OPENAI_API_KEY`, etc.)
 
 **Encryption**: Keys stored encrypted in `user_api_keys` table. Decryption uses `EncryptionService` (Fernet symmetric encryption, `app/services/encryption_service.py`).
 
 **Resolution flow**:
+
 ```python
 resolve_user_api_key("nvidia", user_id="usr_123")
   → ApiKeyService.get_active_key("usr_123", "nvidia")
@@ -408,6 +439,7 @@ resolve_user_api_key("nvidia", user_id="usr_123")
 Custom (BYO) providers stored in `custom_providers` table, managed via `/api/v1/providers/custom` CRUD.
 
 **Schema**:
+
 - `id`, `user_id`, `name`, `base_url`, `api_key_encrypted`, `models`, `is_active`, `is_local`
 
 **Resolution**: When model string starts with `custom_`, the provider info is loaded from DB, API key decrypted, and call made via `_generate_openai_compat()` (direct OpenAI-compatible HTTP call).
@@ -417,21 +449,25 @@ Custom (BYO) providers stored in `custom_providers` table, managed via `/api/v1/
 ### 4.5 Circuit Breakers
 
 **Per-provider circuit breakers** in `llm_service.py:56-65` (`_provider_breaker`):
+
 - Uses `pybreaker.CircuitBreaker` when available
 - Configuration: `EXTERNAL_CIRCUIT_BREAKER_FAILURE_THRESHOLD` (3), `EXTERNAL_CIRCUIT_BREAKER_RESET_SECONDS` (60)
 - Gate: `EXTERNAL_CIRCUIT_BREAKER_ENABLED` (default `true`)
 - Each provider has its own breaker instance keyed by provider name e.g. `llm_nvidia`
 
 **Method-level circuit breakers** in `reasoning_engine.py:461-465`:
+
 ```python
 @circuit_breaker(failure_threshold=3, recovery_timeout=60, fallback_function=_instruction_set_circuit_fallback)
 def generate_instruction_set(self, ...)
 ```
+
 - When breaker opens, calls `_instruction_set_circuit_fallback` → `_rule_based_fallback`
 - States: CLOSED → OPEN (after N failures) → HALF_OPEN (after recovery_timeout) → CLOSED (on success)
 - Listener logs all state transitions
 
 **Fallback chain within ReasoningEngine**:
+
 ```
 generate_instruction_set()
   → NVIDIA (litellm) → if fail → DeepSeek/Ollama → if fail → Rule-based heuristics
@@ -450,6 +486,7 @@ generate_instruction_set()
 **Purpose**: Intelligent agent for orchestrating document processing. Can run as a LangChain ReAct agent or execute tools directly.
 
 **Initialization parameters**:
+
 - `llm_provider`: "openai", "anthropic", "ollama"
 - `llm_model`: Model name (e.g. "gpt-4")
 - `temperature`: Default 0.0 (deterministic)
@@ -458,11 +495,13 @@ generate_instruction_set()
 - `enable_streaming`: Default False
 
 **LLM Initialization**:
+
 1. Try legacy `ChatOpenAI` from LangChain (if Python < 3.14)
 2. Fall back to `CustomLLMFactory.create_llm()` (LiteLLM shim or LangChain)
 3. Test patched constructor support for mock interop
 
 **Fallback modes**:
+
 - **LangChain ReAct agent** (primary, Python < 3.14): Uses `create_react_agent` + `AgentExecutor` with max 10 iterations
 - **Direct tool execution** (Python ≥ 3.14 or LangChain unavailable): Runs 5 tools sequentially, collects results, returns analysis
 
@@ -473,7 +512,7 @@ generate_instruction_set()
 5 built-in tools in `app/pipeline/agents/tools/`:
 
 | Tool | File | Purpose |
-|------|------|---------|
+| ------ | ------ | --------- |
 | `MetadataExtractionTool` | `tools/metadata_tool.py` | GROBID-based metadata extraction |
 | `LayoutAnalysisTool` | `tools/layout_tool.py` | Document layout structure analysis |
 | `ValidationTool` | `tools/validation_tool.py` | Validate document structure |
@@ -481,6 +520,7 @@ generate_instruction_set()
 | `FigureAnalysisTool` | `tools/figure_tool.py` | Detect and analyze figures |
 
 **Custom tool framework** (`app/pipeline/agents/custom_tools.py:24`):
+
 - `ToolRegistry` class for dynamic tool registration
 - `register_custom_tool(name, description, input_schema, execute_fn)` → creates Pydantic-validated LangChain tool
 - Built-in examples: `create_citation_formatter_tool()`, `create_keyword_extractor_tool()`
@@ -492,12 +532,14 @@ generate_instruction_set()
 **Class**: `AgentMemory`
 
 **Storage**: JSON files on disk in `.agent_memory/` directory:
+
 - `patterns.json` — successful/failed processing strategies
 - `errors.json` — error occurrences with solutions
 - `metrics.json` — performance metrics (last 100 values kept)
 - `corrections.json` — user corrections for learning
 
 **API**:
+
 - `remember_pattern(pattern_type, context, success)` — stores processing patterns with dedup
 - `remember_error(error_type, message, solution)` — stores error knowledge
 - `get_best_pattern(pattern_type, context)` — retrieves best matching successful pattern
@@ -514,6 +556,7 @@ generate_instruction_set()
 **Supported providers**: openai, anthropic, ollama, nvidia, custom, litellm
 
 **Two backends**:
+
 1. **`_create_litellm`** (preferred): Creates `_LiteLLMShim` wrapper that exposes `.invoke(prompt)` → text via `llm_service.generate()`. Provider prefix mapping: `ollama → ollama/`, `nvidia → nvidia_nim/`
 2. **`_create_langchain`** (fallback): Uses LangChain `ChatOpenAI`, `ChatAnthropic`, or `Ollama` classes directly
 
@@ -532,10 +575,12 @@ generate_instruction_set()
 **Class**: `RagEngine`
 
 **Backends**:
+
 1. **ChromaDB** (primary): `PersistentClient(path=persist_directory)`, `get_or_create_collection(name)`
 2. **Native JSON** (fallback): `kb.json` file with cosine similarity search
 
 **Collections**:
+
 - `guidelines_bge_m3` — 1024-dim (BGE-M3)
 - `publisher_guidelines` — 384-dim (BGE-small-en-v1.5, legacy)
 
@@ -548,6 +593,7 @@ generate_instruction_set()
 **Embedding Model Loading** (`_load_embedding_model`, line 444):
 
 Priority:
+
 1. **Remote HuggingFace API** (`RAG_EMBEDDING_PROVIDER=huggingface_api`): Uses `_HuggingFaceAPIEmbeddingModel` → free HF Inference API. Requires `HF_TOKEN`. Saves ~1.5GB RAM.
 2. **ModelStore reuse**: Check if `embedding_model` already loaded in global `ModelStore`
 3. **BAAI/bge-m3** (1024d, 8192 tokens): Primary local model via `sentence-transformers`
@@ -555,6 +601,7 @@ Priority:
 5. **Deterministic hash** (`_DeterministicEmbeddingModel`, 256-dim): Token hashing via `blake2b` → normalized vector. Zero-dependency fallback.
 
 **Guideline Chunking**: `add_guideline(publisher, section, text, metadata)`:
+
 - Stored in ChromaDB with `publisher` and `section` metadata filters
 - Also stored in native `knowledge_base` list with computed embedding for fallback query
 
@@ -563,14 +610,17 @@ Priority:
 ### 6.3 RAG Engine API
 
 **Primary**: `query_guidelines(publisher, intent, top_k=3)` → `List[str]`
+
 1. ChromaDB query with `where={"publisher": publisher.upper()}` filter
 2. Fallback: Cosine similarity over native `knowledge_base`
 
 **Adapter**: `query_rules(template_name, section_name, top_k=2)` → `List[Dict]`
+
 - Wraps `query_guidelines` into `[{"text": ..., "metadata": ...}]` format
 - Used by `PipelineOrchestrator` at `orchestrator.py:1003`
 
 **Context Preparation** (in orchestrator, line 1002-1015):
+
 ```python
 for sec in ["abstract", "introduction", "references", "figures"]:
     guidelines = rag.query_guidelines(template_name, sec, top_k=2)
@@ -592,6 +642,7 @@ for sec in ["abstract", "introduction", "references", "figures"]:
 **Purpose**: End-to-end document generation from scratch (not formatting existing docs).
 
 **Flow** (`run_pipeline`, line 249):
+
 1. Build prompt via `PromptBuilder.build(doc_type, metadata, options)`
 2. Call LLM via `_llm_generate(prompt)` — NVIDIA → DeepSeek → rule-based skeleton
 3. Parse LLM output via `ContentParser.parse(response, doc_type)`
@@ -601,11 +652,13 @@ for sec in ["abstract", "introduction", "references", "figures"]:
 7. Compute SHA-256 hash, mark document complete
 
 **LLM fallback chain** (`_llm_generate`, line 446):
+
 ```
 LLM_NVIDIA.complete(prompt) → fail → LLM_DEEPSEEK.complete(prompt) → fail → _rule_based_skeleton()
 ```
 
 **Rule-based skeleton** (`_rule_based_skeleton`, line 484):
+
 - Generates placeholder JSON with title, abstract, introduction/body/conclusion
 - Supports `academic_paper` and `resume` doc types with different templates
 
@@ -618,6 +671,7 @@ LLM_NVIDIA.complete(prompt) → fail → LLM_DEEPSEEK.complete(prompt) → fail 
 **Class**: `PromptBuilder`
 
 **Supported doc_types**:
+
 - `academic_paper` — Title, Author, Affiliation, Abstract, Keywords, sections, References
 - `resume` — Name, Contact, Summary, Skills, Experience, Education
 - `portfolio` — Bio, Projects, Publications, research-focused
@@ -625,6 +679,7 @@ LLM_NVIDIA.complete(prompt) → fail → LLM_DEEPSEEK.complete(prompt) → fail 
 - `thesis` — Chapter-structured with candidate/university/degree metadata
 
 **Output format**: Strict JSON array instruction:
+
 ```json
 [{"type": "TITLE|ABSTRACT|HEADING_1|BODY|...", "content": "...", "level": 0}]
 ```
@@ -632,11 +687,13 @@ LLM_NVIDIA.complete(prompt) → fail → LLM_DEEPSEEK.complete(prompt) → fail 
 ### 7.3 Token Streaming
 
 **SSE-based streaming** in `MultiDocSynthesizer` (`_stream_chunks`, line 638):
+
 - Content chunked at 400 characters
 - Events published via Redis Pub/Sub to `session:{session_id}` channel
 - Event types: `stage_update`, `writing_chunk`, `outline_chunk`
 
 **Agent streaming** (`StreamingAgentCallback` in `app/pipeline/agents/streaming.py`):
+
 - Callback passed to LangChain `AgentExecutor`
 - Captures intermediate steps for real-time UI updates
 
@@ -647,15 +704,18 @@ LLM_NVIDIA.complete(prompt) → fail → LLM_DEEPSEEK.complete(prompt) → fail 
 **Class**: `QualityScorer`
 
 **Metrics**:
+
 - `template_compliance` (30%) — percentage of required sections present
 - `content_completeness` (30%) — sections with ≥100 words
 - `citation_score` (20%) — citations per section (regex patterns for `[1]`, `(Author, 2020)`)
 - `section_balance` (20%) — coefficient of variation of section lengths
 
 **Pipeline quality score** (orchestrator `_build_quality_summary`, line 444):
+
 ```
 quality = (avg_confidence × 0.60) + (structure_score × 0.25) + (asset_score × 0.15) - penalty
 ```
+
 Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0` (if figures/tables exist) else 0.65.
 
 ---
@@ -669,6 +729,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 **Purpose**: Synthesize 2–6 documents into a single coherent output.
 
 **8-stage pipeline** (`run()`, line 59):
+
 1. **Upload Validation**: Magic bytes, SHA-256 dedup, file type check, 2–6 file range
 2. **Per-Doc Extraction**: Parallel `_run_extraction_stage()` via `asyncio.to_thread` + `asyncio.as_completed`
 3. **Embedding**: `SessionVectorStore.create_collection(session_id)`, chunk at 1000 chars with 200-char overlap
@@ -691,19 +752,21 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 **Function**: `guard_llm_output(schema, error_return_value)`
 
 **Two modes**:
+
 1. **Guardrails AI** (preferred, Python < 3.14): Uses `guard = Guard.for_pydantic(output_class=schema)` → `guard.parse(raw_result_str)` for Pydantic schema compliance
 2. **Native fallback**: `validator_guard.validate_output()` with basic Pydantic validation
 
 **Prompt injection detection** in `llm_service.py:185-244`:
+
 - 25+ regex patterns covering:
-  - Ignore/forget/disregard previous instructions
-  - System prompt extraction
-  - API key/secret stealing
-  - Dangerous tool calls (`delete_all_documents`, `drop table`)
-  - Token smuggling (`base64 decode`, `hex decode`)
-  - Multi-language injection (Chinese, Arabic, Russian)
-  - XML/System tag injection (`<|im_start|>`, `<<SYS>>`)
-  - Emotional manipulation (`begging you`, `developer mode`)
+    - Ignore/forget/disregard previous instructions
+    - System prompt extraction
+    - API key/secret stealing
+    - Dangerous tool calls (`delete_all_documents`, `drop table`)
+    - Token smuggling (`base64 decode`, `hex decode`)
+    - Multi-language injection (Chinese, Arabic, Russian)
+    - XML/System tag injection (`<|im_start|>`, `<<SYS>>`)
+    - Emotional manipulation (`begging you`, `developer mode`)
 - Max input length: 8000 chars via `sanitize_for_llm()` (line 248)
 
 ### 9.2 Circuit Breaker Pattern
@@ -715,10 +778,12 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 **States**: CLOSED → OPEN → HALF_OPEN → CLOSED
 
 **Two implementations**:
+
 1. **pybreaker-backed** (preferred): Thread-safe, listener-based, `pybreaker.CircuitBreaker`
 2. **Legacy fallback** (no pybreaker): Manual counter with `time.time()` based reset
 
 **Behavior**:
+
 - OPEN: Calls blocked, fallback invoked if provided, else raises `CircuitBreakerOpenException`
 - HALF_OPEN: Single probe call allowed; success → CLOSED, failure → OPEN
 - Fallback chaining: If fallback also fails, returns `{}` (silent degradation)
@@ -742,6 +807,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 **Class**: `DocumentValidator`
 
 **YAML Contract System**: Validation rules driven by `contract.yaml` per publisher:
+
 - `SectionOrderValidator` — enforces section ordering rules
 - `CrossReferenceEngine` — validates internal refs (figure/table/equation numbers)
 - `CrossRefClient` — validates citations against CrossRef API
@@ -761,6 +827,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 **Singleton**: `model_store` — global in-memory registry for loaded models.
 
 **Stored models**:
+
 - `embedding_model` → SentenceTransformer for RAG
 - `LLMClassifier_tokenizer` → LLMClassifier tokenizer
 - `LLMClassifier_model` → LLMClassifier model
@@ -769,6 +836,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 **Pre-loading**: `PRELOAD_AI_MODELS=true` (default) loads models at startup. `LOW_MEMORY_MODE=true` skips pre-loading and forces deterministic embedding fallback.
 
 **LLMClassifier Gate** (`app/services/classification_gate.py`):
+
 - `should_enable_LLMClassifier()` → checks `USE_LLM_CLASSIFICATION` env var
 - If `LLM_CLASSIFIER_AUTO_ENABLE_FROM_BENCHMARK=true`: Only enables if benchmark F1 ≥ `LLM_CLASSIFIER_MIN_BENCHMARK_F1` (0.85)
 - Benchmark state persisted in `.metrics/classification_benchmark_state.json`
@@ -780,11 +848,13 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 **Interface**: `get_model_metrics()` → `ModelMetrics` singleton
 
 **Recorded**:
+
 - `record_call(provider, success, latency)` — per-call success/failure
 - `record_fallback(from_provider, to_provider, reason)` — fallback chain tracking
 - `record_metrics(name, value, metadata)` — generic metric storage
 
 **Prometheus integration**: `MetricsManager` records:
+
 - `llm_request{provider, model, success}` — counter
 - `llm_duration{provider, model}` — histogram
 - `llm_ttft{provider, model}` — time to first token
@@ -796,6 +866,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 ## 11. Monitoring & Observability
 
 **Prometheus Metrics** (`app/middleware/prometheus_metrics.py`):
+
 - `MetricsManager.record_pipeline_stage_duration(stage, duration)` → per-stage timing
 - `MetricsManager.record_llm_request(provider, model, success)` → LLM call counts
 - `MetricsManager.record_llm_duration(provider, model, duration)` → LLM latency
@@ -817,7 +888,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 ### LLM Provider Settings (`LLMSettings`, `settings.py:225`)
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- | --------- | ------------- |
 | `NVIDIA_API_KEY` | `None` | NVIDIA NIM API key |
 | `NVIDIA_MODEL` | `""` | NVIDIA model name (e.g. `meta/llama-3.3-70b-instruct`) |
 | `GROQ_API_KEY` | `None` | Groq API key |
@@ -839,7 +910,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 ### Pipeline AI Settings (`PipelineSettings`, `settings.py:252`)
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- | --------- | ------------- |
 | `GROBID_ENABLED` | `true` | Enable GROBID metadata extraction |
 | `GROBID_URL` | `http://localhost:8070` | GROBID service URL |
 | `GROBID_TIMEOUT` | `10s` | GROBID request timeout |
@@ -866,7 +937,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 ### RAG Settings (Environment Variables)
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- | --------- | ------------- |
 | `RAG_EMBEDDING_PROVIDER` | `""` | Embedding provider (e.g. `huggingface_api`) |
 | `RAG_EMBEDDING_MODEL` | `sentence-transformers/all-MiniLM-L6-v2` | HF model for remote API |
 | `RAG_EMBEDDING_API_URL` | `""` | Custom embedding API URL |
@@ -878,7 +949,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 ### Cache & Redis Settings (`CacheSettings`, `settings.py:355`)
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- | --------- | ------------- |
 | `REDIS_ENABLED` | `false` | Enable Redis caching |
 | `REDIS_URL` | `redis://localhost:6379` | Redis connection URL |
 | `LLM_CACHE_TTL_SECONDS` | `3600` | LLM response cache TTL |
@@ -888,7 +959,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 ### Circuit Breaker Settings (`DeploymentSettings`, `settings.py:386`)
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- | --------- | ------------- |
 | `EXTERNAL_CIRCUIT_BREAKER_ENABLED` | `true` | Enable per-provider circuit breakers |
 | `EXTERNAL_CIRCUIT_BREAKER_FAILURE_THRESHOLD` | `3` | Failures before circuit opens |
 | `EXTERNAL_CIRCUIT_BREAKER_RESET_SECONDS` | `60` | Recovery timeout |
@@ -896,7 +967,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 ### Confidence Thresholds
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- | --------- | ------------- |
 | `HEADING_STYLE_THRESHOLD` | `0.8` | Minimum confidence for heading detection |
 | `HEADING_FALLBACK_CONFIDENCE` | `0.5` | Fallback heading confidence |
 | `HEURISTIC_CONFIDENCE_HIGH` | `0.9` | High heuristic confidence |
@@ -910,7 +981,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 ### Stage Latency Estimates
 
 | Stage | Typical | Timeout | Notes |
-|-------|---------|---------|-------|
+| ------- | --------- | --------- | ------- |
 | ParserFactory | 0.5–3s | — | DOCX fastest, PDF PyMuPDF ~1s |
 | GROBID | 5–15s | 30s | REST call to local service |
 | Docling | 5–15s | 30s | REST call to local service |
@@ -940,7 +1011,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 ### Memory Usage
 
 | Component | RAM | Notes |
-|-----------|-----|-------|
+| ----------- | ----- | ------- |
 | LLMClassifier local model | ~1.5GB | Only loaded when `USE_LLM_CLASSIFICATION=true` |
 | BGE-M3 embedding | ~2.2GB | Only loaded when `RAG_USE_TRANSFORMERS=true` and not `LOW_MEMORY_MODE` |
 | BGE-small-en-v1.5 | ~0.5GB | Lighter embedding fallback |
@@ -957,7 +1028,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 ### GPU Requirements
 
 | Component | GPU | Notes |
-|-----------|-----|-------|
+| ----------- | ----- | ------- |
 | LLMClassifier | Optional (CPU: ~2s/doc) | Inference, no training |
 | BGE-M3 embedding | Optional (CPU: ~1s/doc) | sentence-transformers on CPU is adequate |
 | NVIDIA NIM | External API | No local GPU needed |
@@ -968,7 +1039,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 ### Memory Requirements
 
 | Tier | RAM | AI Features Available |
-|------|-----|----------------------|
+| ------ | ----- | ---------------------- |
 | Minimal | 512MB + 2GB swap | No local models; deterministic embeddings; remote APIs only |
 | Standard | 4GB | Deterministic embeddings; LLMClassifier if enabled; remote LLMs |
 | AI-Enhanced | 8GB | BGE-M3 + LLMClassifier local; optional Ollama |
@@ -977,7 +1048,7 @@ Where `structure_score = 1.0` (if headings exist) else 0.45, `asset_score = 1.0`
 ### Service Dependencies
 
 | Service | Type | RAM | Deployment |
-|---------|------|-----|------------|
+| --------- | ------ | ----- | ------------ |
 | GROBID | Docker (Java) | ~1.5GB | HF Spaces / Render / self-hosted |
 | Docling | Docker (Python) | ~2GB | HF Spaces / Render / self-hosted |
 | ChromaDB | Embedded | — | Runs in-process |
@@ -1027,6 +1098,7 @@ graph TD
 Each pipeline stage is tested in isolation with all external dependencies mocked at the import boundary.
 
 **Pattern — mock external service, test stage logic**:
+
 ```python
 from unittest.mock import patch, MagicMock
 
@@ -1048,6 +1120,7 @@ def test_semantic_parser_returns_labels(mock_model, mock_tokenizer):
 GROBID and Docling are Docker services. Tests use mock fixtures that return canned XML/JSON responses without launching containers.
 
 **Pattern — GROBID mock fixture**:
+
 ```python
 @pytest.fixture
 def mock_grobid_client():
@@ -1062,6 +1135,7 @@ def mock_grobid_client():
 ```
 
 **Key considerations**:
+
 - Patch the **source module**, not the consumer — `app.pipeline.services.grobid_client.GrobidClient`, not `app.pipeline.orchestrator.GrobidClient`
 - Async methods require `from unittest.mock import AsyncMock` and `mock.return_value = AsyncMock()` or `mock.side_effect = AsyncMock()`
 - Lazy imports inside function bodies (e.g. `from app.pipeline.orchestrator import PipelineOrchestrator`) require patching the source module path
@@ -1071,11 +1145,13 @@ def mock_grobid_client():
 ### 15.3 Golden File Regression Testing
 
 Formatting output is validated against golden (reference) DOCX files stored in `tests/fixtures/golden/`. A golden file test:
+
 1. Runs the format pipeline on a known input
 2. Compares output checksum or content structure against the golden reference
 3. Fails if the output diverges — preventing silent regressions
 
 **Pattern**:
+
 ```python
 def test_formatting_matches_golden(golden_file_regression):
     input_doc = load_fixture("simple_ieee_paper.json")
@@ -1090,6 +1166,7 @@ def test_formatting_matches_golden(golden_file_regression):
 LLM service calls (`generate_with_fallback`, `generate_with_model`) are replaced with `MagicMock` chains to avoid real API calls.
 
 **Pattern — mock LLM return value**:
+
 ```python
 @patch("app.services.llm_service.generate_with_fallback")
 def test_reasoning_engine_uses_llm_advice(mock_generate):
@@ -1100,12 +1177,14 @@ def test_reasoning_engine_uses_llm_advice(mock_generate):
 ```
 
 **Key MagicMock chain behaviors**:
+
 - Each attribute access creates a **new** `MagicMock` — chain segments must be separate for conditional `.eq()` filters
 - `model_copy` on `MagicMock` returns a `MagicMock` — set `.text` on the copy explicitly
 - Two different `MagicMock` instances are `!=` (identity check) — share mocks when tests compare objects
 - `patch.object(Cls, "method")` replaces the class attribute — `instance.method(args)` passes `self` to side_effect (3 params). Use `patch.object(instance, "method")` to get 2 params
 
 **MagicMock model_copy pattern**:
+
 ```python
 mock_resp = MagicMock()
 mock_resp.text = "original"
@@ -1118,6 +1197,7 @@ mock_resp.model_copy = lambda **kw: mock_copy
 Circuit breakers (`app/pipeline/safety/circuit_breaker.py`) are tested by forcing failure thresholds and verifying state transitions.
 
 **Pattern — state machine verification**:
+
 ```python
 def test_circuit_breaker_transitions_to_open():
     call_count = 0
@@ -1137,6 +1217,7 @@ def test_circuit_breaker_transitions_to_open():
 ```
 
 **Key behaviors**:
+
 - OPEN state: calls blocked, fallback invoked if provided
 - HALF_OPEN: single probe call allowed; success → CLOSED, failure → OPEN
 - `pybreaker.CircuitBreaker` (preferred) vs legacy manual counter fallback
@@ -1149,6 +1230,7 @@ def test_circuit_breaker_transitions_to_open():
 `RagEngine` (`app/pipeline/intelligence/rag_engine.py`) requires mocking ChromaDB and embedding model loading.
 
 **Pattern — mock ChromaDB + embedding fallback**:
+
 ```python
 @patch("app.pipeline.intelligence.rag_engine.RagEngine._load_embedding_model")
 @patch("chromadb.PersistentClient")
@@ -1164,6 +1246,7 @@ def test_rag_query_falls_back_to_native_store(mock_chroma, mock_embed):
 ```
 
 **Key behaviors**:
+
 - `RagEngine.__init__` calls `_load_embedding_model` which connects to HuggingFace — **must** patch this in tests
 - Data stored in `self.knowledge_base` (not `self.guidelines`)
 - `_is_reusable_embedding_model` returns `tuple[bool, Optional[int]]`, not just `bool`
@@ -1178,7 +1261,7 @@ def test_rag_query_falls_back_to_native_store(mock_chroma, mock_embed):
 All AI-related API endpoints are served under the `api/v1` prefix. Each endpoint is documented in its respective router file.
 
 | Endpoint | Method | Description | Router File |
-|----------|--------|-------------|-------------|
+| ---------- | -------- | ------------- | ------------- |
 | `/api/v1/generator/sessions` | `POST` | Create generation session (agent or multi-doc) | `routers/v1/generator.py:260` |
 | `/api/v1/generator/sessions` | `GET` | List user's generation sessions | `routers/v1/generator.py:426` |
 | `/api/v1/generator/sessions/{sessionId}` | `GET` | Get session status and metadata | `routers/v1/generator.py:444` |
@@ -1221,7 +1304,7 @@ All AI-related API endpoints are served under the `api/v1` prefix. Each endpoint
 The following counters and histograms are registered in `app/middleware/prometheus_metrics.py` and should be scraped for production monitoring:
 
 | Metric | Type | Labels | Source |
-|--------|------|--------|--------|
+| -------- | ------ | -------- | -------- |
 | `llm_requests_total` | Counter | `provider`, `model`, `success` | `llm_service.generate()` |
 | `llm_duration_seconds` | Histogram | `provider`, `model` | Per-LLM-call timing |
 | `llm_time_to_first_token` | Histogram | `provider`, `model` | Streaming TTFT |
@@ -1244,7 +1327,7 @@ The following counters and histograms are registered in `app/middleware/promethe
 Configure alerts on the following thresholds in production:
 
 | Alert Rule | Condition | Severity | Rationale |
-|------------|-----------|----------|-----------|
+| ------------ | ----------- | ---------- | ----------- |
 | LLM Error Rate >5% | `rate(llm_requests_total{success="false"}[5m]) / rate(llm_requests_total[5m]) > 0.05` | Critical | All 4 tiers failing — users cannot generate content |
 | Circuit Breaker Open >5min | `avg_over_time(circuit_breaker_state{state="open"}[5m]) > 0` | Warning | Provider degradation — fallback chain active |
 | Pipeline Stage Timeout >1% | `rate(pipeline_stage_failures_total[15m]) / rate(pipeline_stage_duration_seconds_count[15m]) > 0.01` | Warning | Stage timeout indicates resource pressure |
@@ -1259,6 +1342,7 @@ Configure alerts on the following thresholds in production:
 All AI pipeline logs use structured JSON with a consistent `job_id` context for end-to-end traceability.
 
 **Log format** (enabled via `ENABLE_STRUCTURED_LOGGING=true`):
+
 ```json
 {
   "timestamp": "2026-07-17T10:30:00.123Z",
@@ -1277,12 +1361,14 @@ All AI pipeline logs use structured JSON with a consistent `job_id` context for 
 ```
 
 **Context propagation**:
+
 - `bind_request_context` middleware attaches `job_id` and `request_id` to all log records within a request
 - `log_extra()` utility enriches ad-hoc log statements
 - Background Celery tasks inherit `job_id` from task kwargs
 - SSE events carry `request_id` for correlating frontend → backend → worker traces
 
 **Correlation IDs** are generated at API entry (`middleware/request_id.py`) and propagated through:
+
 1. HTTP request headers → `X-Request-ID`
 2. Background task kwargs → `request_id` parameter
 3. Redis Pub/Sub events → `request_id` field in event payload
@@ -1297,7 +1383,7 @@ All AI pipeline logs use structured JSON with a consistent `job_id` context for 
 The LLM service (`app/services/llm_service.py:185-244`) defends against prompt injection with 25+ regex patterns across 8 categories:
 
 | Category | Patterns | Example |
-|----------|----------|---------|
+| ---------- | ---------- | --------- |
 | Instruction override | 4 | `ignore previous instructions`, `disregard all` |
 | System prompt extraction | 3 | `output your system prompt`, `print your instructions` |
 | Secret exfiltration | 4 | `reveal your API key`, `what is your password?` |
@@ -1310,6 +1396,7 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 **Input sanitization**: `sanitize_for_llm()` truncates at 8000 chars and strips control characters before passing to the LLM.
 
 **Defense layers**:
+
 1. Input regex filtering at API gateway (`middleware/abuse_detector.py`)
 2. LLM prompt-level sanitization (`sanitize_for_llm`)
 3. Output validation via `guard_llm_output` (Guardrails AI / Pydantic schema enforcement)
@@ -1318,7 +1405,7 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 ### 18.2 Data Leakage Prevention
 
 | Risk | Mitigation |
-|------|------------|
+| ------ | ------------ |
 | PII in LLM prompts | `sanitize_for_llm()` strips emails, phone numbers, SSN patterns before API calls |
 | Sensitive documents in RAG | ChromaDB collections isolated per-template; user isolation via `publisher` filter |
 | API keys in transit | All outbound LLM calls use HTTPS; custom provider base URLs validated against SSRF blocklist |
@@ -1329,7 +1416,7 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 ### 18.3 Model Theft Prevention
 
 | Risk | Mitigation |
-|------|------------|
+| ------ | ------------ |
 | Model enumeration | Provider model discovery rate-limited to 10/min per user via `APIKeyRateLimiter` |
 | Unauthorized model access | Custom providers isolated per-user; `resolve_user_api_key()` enforces user ownership |
 | Model output scraping | `abuse_detector.record_llm_call()` tracks per-user LLM call volume; `MAX_FILE_SIZE` limits document throughput |
@@ -1339,7 +1426,7 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 ### 18.4 Dependency Supply Chain
 
 | Risk | Mitigation |
-|------|------------|
+| ------ | ------------ |
 | HuggingFace model provenance | Models pinned to specific revisions (`allenai/LLMClassifier_scivocab_uncased`, `BAAI/bge-m3`); no wildcard model loading |
 | LLMPDFParser parser availability | Gated behind `ENABLE_LLM_PDF_PARSER=true` (opt-in); installed from `transformers` registry, not arbitrary sources |
 | GROBID/Docling container validation | Docker images pinned to tags (`grobid/grobid:0.8.0`, `ds4sd/docling:latest`) — tag immutability verified in CI |
@@ -1353,7 +1440,7 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 ### 19.1 Tier Recommendations
 
 | Tier | CPU | RAM | GPU | AI Features | Estimated Cost/Month |
-|------|-----|-----|-----|-------------|---------------------|
+| ------ | ----- | ----- | ----- | ------------- | --------------------- |
 | **Free / Dev** | 2 vCPU | 4GB | None | Deterministic embeddings; remote LLMs only; LLMClassifier via HF Spaces; GROBID via HF Spaces | $0–$25 (Render free tier) |
 | **Starter** | 2 vCPU | 8GB | None | BGE-small-en-v1.5 embeddings; remote LLMs; LLMClassifier via HF Spaces; GROBID via HF Spaces | $25–$75 (Render starter) |
 | **Production (Standard)** | 4 vCPU | 8GB | Optional T4 | BGE-M3 embeddings; NVIDIA NIM + Groq LLMs; LLMClassifier remote; GROBID self-hosted Docker | $150–$400 (Render pro + HF Spaces + API keys) |
@@ -1363,6 +1450,7 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 ### 19.2 Service Topology Per Tier
 
 **Production (Standard) — recommended starting point**:
+
 ```
 ┌─ Render Web Service ─────────────────────┐
 │ FastAPI (4 vCPU, 8GB)                    │
@@ -1388,6 +1476,7 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 ```
 
 **Enterprise — maximum throughput and resilience**:
+
 ```
 ┌─ Load Balancer ──────────────────────────────┐
 ├─ Web Service Cluster (×3) ───────────────────┤
@@ -1418,7 +1507,7 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 ### 19.3 Horizontal Scaling Strategy
 
 | Constraint | Scaling Approach |
-|------------|------------------|
+| ------------ | ------------------ |
 | Semaphore limit (5 concurrent jobs) | Increase `_MAX_CONCURRENT_JOBS` with CPU/memory headroom; monitor `pipeline_stage_duration_seconds` for latency regression |
 | GROBID throughput (~1 req/s per instance) | Deploy multiple GROBID instances behind internal load balancer; configure `GROBID_URLS` for round-robin |
 | Docling memory (~2GB/instance) | Scale workers horizontally; each worker handles 1 Docling call at a time |
@@ -1429,7 +1518,7 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 ### 19.4 Cold Start Mitigation
 
 | Component | Cold Start Issue | Mitigation |
-|-----------|-----------------|------------|
+| ----------- | ----------------- | ------------ |
 | HF Spaces (GROBID/Docling) | 20–40s start on idle wake | `KEEP_WARM_PING_INTERVAL_SECONDS` (default 300) sends periodic health checks |
 | LLMClassifier local model | 5–10s model load time | `PRELOAD_AI_MODELS=true` loads at startup; `LOW_MEMORY_MODE` skips entirely |
 | BGE-M3 embedding model | 8–15s load time | Pre-loaded via `ModelStore` singleton; lazy init on first `RagEngine` query if not pre-loaded |
@@ -1445,7 +1534,7 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 Configure the following Grafana dashboard panels using the Prometheus metrics from Section 17.1:
 
 | Dashboard Panel | Metrics Used | Visualization | Refresh |
-|----------------|-------------|---------------|---------|
+| ---------------- | ------------- | --------------- | --------- |
 | **LLM Request Rate** | `rate(llm_requests_total[5m])` | Stacked bar chart by `provider` | 15s |
 | **LLM Error Rate** | `rate(llm_requests_total{success="false"}[5m]) / rate(llm_requests_total[5m])` | Time series with threshold line at 5% | 15s |
 | **P50/P95/P99 LLM Latency** | `histogram_quantile(0.50/0.95/0.99, rate(llm_duration_seconds[5m]))` | Three time series per provider | 30s |
@@ -1528,6 +1617,7 @@ groups:
 All AI pipeline components MUST emit structured JSON logs with the following consistent schema:
 
 **Required fields** (every log record):
+
 ```json
 {
   "timestamp": "2026-07-17T10:30:00.123Z",
@@ -1543,7 +1633,7 @@ All AI pipeline components MUST emit structured JSON logs with the following con
 **Stage-specific extra fields**:
 
 | Stage | Extra Fields | Example |
-|-------|-------------|---------|
+| ------- | ------------- | --------- |
 | ParserFactory | `parser`, `file_size`, `extension`, `block_count` | `{parser: "DocxParser", block_count: 142}` |
 | GROBID/Docling | `service`, `latency_ms`, `success`, `retry_count` | `{service: "GROBID", latency_ms: 1234}` |
 | LLM Call | `provider`, `model`, `latency_ms`, `tokens_in`, `tokens_out`, `cache_hit` | `{provider: "nvidia", tokens_out: 512}` |
@@ -1553,6 +1643,7 @@ All AI pipeline components MUST emit structured JSON logs with the following con
 | Agent | `tool_name`, `status`, `duration_ms`, `tier` | `{tool_name: "ValidationTool", status: "success"}` |
 
 **Performance-sensitive areas to log with `DEBUG` level** (enable via `LOG_LEVEL=DEBUG`):
+
 - Per-token streaming chunks (aggregated by event batch, not individual tokens)
 - ChromaDB query plans and collection stats
 - Thread pool queue wait times
@@ -1570,11 +1661,13 @@ async def check_health() -> Dict[str, str]:
 ```
 
 **Consumed by**:
+
 - `/api/v1/health/ready` — Kubernetes readiness probe (line 33)
 - `/api/v1/metrics/health` — admin AI health dashboard (line 114)
 - `/api/v1/providers/health` — per-provider configuration status (line 154)
 
 **Behavior**:
+
 - Pings NVIDIA NIM, Groq, and Ollama endpoints with lightweight requests
 - Returns circuit breaker state for each provider (open → "down", half-open → "degraded")
 - Reports embedding model availability from `ModelStore`
@@ -1590,6 +1683,7 @@ async def check_health() -> Dict[str, str]:
 Every LLM-dependent test must patch at the import boundary where the LLM call originates, not where it is consumed.
 
 **Mocking `generate_with_fallback`** (most common pattern):
+
 ```python
 from unittest.mock import patch, MagicMock
 
@@ -1601,6 +1695,7 @@ def test_reasoning_engine_uses_fallback(mock_gen):
 ```
 
 **Mocking `generate_with_model`** (specific provider, no fallback):
+
 ```python
 @patch("app.services.llm_service.generate_with_model")
 def test_generator_uses_nvidia(mock_gen):
@@ -1611,6 +1706,7 @@ def test_generator_uses_nvidia(mock_gen):
 ```
 
 **Mocking circuit breaker to test failure path**:
+
 ```python
 @patch("app.pipeline.safety.circuit_breaker.circuit_breaker", lambda **kw: lambda f: f)
 def test_pipeline_runs_without_breaker():
@@ -1620,6 +1716,7 @@ def test_pipeline_runs_without_breaker():
 ```
 
 **Mocking provider registry for custom provider tests**:
+
 ```python
 @patch("app.services.provider_registry.BUILTIN_PROVIDERS", {"test_provider": {...}})
 @patch("app.services.llm_service.resolve_user_api_key", return_value="sk-test")
@@ -1629,6 +1726,7 @@ def test_custom_provider_call(mock_key):
 ```
 
 **Key rules** (from `AGENTS.md`):
+
 - Lazy imports inside function bodies require patching the **source module**, not the consumer — e.g. `app.pipeline.orchestrator.PipelineOrchestrator` (source) vs `app.routers.v1.documents_impl.PipelineOrchestrator` (consumer)
 - `patch.object(Cls, "method")` replaces the CLASS attribute — `instance.method(args)` passes `self` to side_effect (3 params). Use `patch.object(instance, "method")` for 2 params
 - Async methods require `from unittest.mock import AsyncMock` and `mock.return_value = AsyncMock()` or `mock.side_effect = AsyncMock()`
@@ -1638,6 +1736,7 @@ def test_custom_provider_call(mock_key):
 Golden files are stored under `backend/tests/fixtures/golden/` and contain expected DOCX output structures.
 
 **Pattern** (full pipeline regression):
+
 ```python
 def test_full_pipeline_matches_golden(golden_file_regression):
     """Run the full 16-stage pipeline on a fixture input and compare output."""
@@ -1650,14 +1749,16 @@ def test_full_pipeline_matches_golden(golden_file_regression):
 ```
 
 **Golden file update workflow**:
+
 1. Run `pytest tests/pipeline/test_golden_files.py --update-golden` to regenerate all golden files
 2. Commit updated golden files alongside intentional output changes
 3. CI job `frontend-ci.yml` runs golden file tests **before** deploy — a golden mismatch blocks deployment
 4. Review golden diffs in PR — any divergence from expected output must be explained in the PR description
 
 **Current golden files** (10 files from Phase 10 AI Quality Expansion):
+
 | File | Coverage |
-|------|----------|
+| ------ | ---------- |
 | `ieee_paper_output.docx` | IEEE template formatting |
 | `apa_paper_output.docx` | APA 7th edition formatting |
 | `springer_paper_output.docx` | Springer LNCS template |
@@ -1672,6 +1773,7 @@ def test_full_pipeline_matches_golden(golden_file_regression):
 ### 21.3 Pipeline Test Patterns
 
 **Stage isolation pattern** — each stage tested with `safe_execution` wrapper mocked:
+
 ```python
 @patch("app.pipeline.safety.safe_execution.safe_execution")
 def test_stage_failure_does_not_crash_pipeline(mock_safe):
@@ -1683,6 +1785,7 @@ def test_stage_failure_does_not_crash_pipeline(mock_safe):
 ```
 
 **Semaphore acquisition pattern**:
+
 ```python
 @patch("app.pipeline.orchestrator._pipeline_semaphore")
 def test_pipeline_semaphore_timeout(mock_sem):
@@ -1692,6 +1795,7 @@ def test_pipeline_semaphore_timeout(mock_sem):
 ```
 
 **Cancellation pattern**:
+
 ```python
 @patch("app.pipeline.orchestrator.PipelineOrchestrator._check_cancelled")
 def test_pipeline_cancellation_during_stage(mock_cancel):
@@ -1702,6 +1806,7 @@ def test_pipeline_cancellation_during_stage(mock_cancel):
 ```
 
 **Concurrent job limit pattern**:
+
 ```python
 @patch("app.pipeline.orchestrator._MAX_CONCURRENT_JOBS", 5)
 def test_concurrent_job_limit_enforced():
@@ -1713,8 +1818,9 @@ def test_concurrent_job_limit_enforced():
 ```
 
 **Reference test files** (all under `backend/tests/pipeline/`):
+
 | File | Tests | Coverage |
-|------|-------|----------|
+| ------ | ------- | ---------- |
 | `test_enterprise_batch1.py` | 85 | StyleMapper, SectionOrderValidator, NumberingEngine, CrossReferenceEngine, ContractLoader, RetryGuard, SafeExecution, ValidateOutput, ReferenceNormalizer, SectionPrompts, EquationStandardizer, ContentParser, QualityScorer, TaskParser |
 | `test_enterprise_batch2.py` | 135 | AgentPipeline, DocumentGenerator, PromptBuilder, ReferenceFormatter, TemplateRenderer, Formatter, CircuitBreaker, LLMValidator, ReferenceFormatterEngine, ReferenceParser, ContentClassifier, HeadingRules, PositionRules, StructureDetector, RagEngine, MultiDocSynthesizer |
 | `test_enterprise_batch3.py` | 56 | BaseParser, TxtParser, MarkdownParser, TexParser, HtmlParser, ParserFactory, DocxParser, PdfParser, Normalizer |
@@ -1729,7 +1835,7 @@ def test_concurrent_job_limit_enforced():
 ### 21.4 Unit vs Integration vs E2E Decision Matrix
 
 | Component | Unit Test | Integration Test | E2E Test |
-|-----------|-----------|-----------------|----------|
+| ----------- | ----------- | ----------------- | ---------- |
 | PipelineOrchestrator | Isolated stage logic | Stage wiring + mock services | Full pipeline smoke (Playwright) |
 | RagEngine | ChromaDB patched + native store fallback | ChromaDB in-memory client | RAG query against real ChromaDB |
 | LLM Service | MagicMock return values | Circuit breaker state transitions | Real API call (opt-in, `@pytest.mark.llm`) |
@@ -1740,6 +1846,7 @@ def test_concurrent_job_limit_enforced():
 | Provider Registry | Provider list filtering | Custom provider CRUD | Provider test endpoint (Playwright) |
 
 **Test markers** (`pytest.ini`):
+
 - `@pytest.mark.unit` — No external deps, runs <100ms each
 - `@pytest.mark.integration` — Requires mocked services, runs <2s each
 - `@pytest.mark.pipeline` — Pipeline stage logic, runs <5s each
@@ -1749,6 +1856,7 @@ def test_concurrent_job_limit_enforced():
 - `@pytest.mark.e2e` — Full browser test (Playwright, requires running backend)
 
 **Run commands**:
+
 ```bash
 # Unit + integration (CI pipeline)
 pytest tests/pipeline/ -m "not llm and not slow and not e2e" -x -q
@@ -1772,7 +1880,7 @@ pytest tests/pipeline/ -m "llm" --run-llm
 All endpoints require Supabase JWT authentication via `get_current_user` dependency (`app/utils/dependencies.py:17`). The `get_optional_user` variant allows unauthenticated access for public endpoints.
 
 | Endpoint | Method | Auth | Rate Limit | Tier | Idempotent |
-|----------|--------|------|------------|------|------------|
+| ---------- | -------- | ------ | ------------ | ------ | ------------ |
 | `/api/v1/generator/sessions` | `POST` | Required | 10/min | Session | Yes (`idempotency_key`) |
 | `/api/v1/generator/sessions` | `GET` | Required | 120/min | Read | Yes |
 | `/api/v1/generator/sessions/{sessionId}` | `GET` | Required | 120/min | Read | Yes |
@@ -1807,12 +1915,14 @@ All endpoints require Supabase JWT authentication via `get_current_user` depende
 | `/api/v1/health/ready` | `GET` | Optional | 60/min | Read | Yes |
 
 **Rate limit tiers** (`api_key_service.py`):
+
 - Default: `GLOBAL_RATE_LIMIT_PER_MINUTE` = 120 (configurable in `.env`)
 - Per-API-key: `ApiKey.rate_limit_per_minute` (default 60, configurable 1–1000)
 - Admin endpoints: Tier 2 rate limiting (10/min for metrics dashboard)
 - SSE streams: No rate limit applied (connection-level throttling instead)
 
 **Auth implementation**:
+
 - All auth-protected endpoints use `user=Depends(get_current_user)` from `app/utils/dependencies.py:17`
 - `get_current_user` extracts the JWT from the `Authorization: Bearer <token>` header
 - Supabase JWT validation: decodes and verifies the token, fetches user from Supabase
@@ -1919,7 +2029,7 @@ curl -s http://localhost:8000/api/v1/health/ready | jq .
 ### 23.1 AI Pipeline Threat Model (STRIDE per Component)
 
 | Threat | Component Affected | Impact | Likelihood | Risk Score |
-|--------|-------------------|--------|------------|------------|
+| -------- | ------------------- | -------- | ------------ | ------------ |
 | **Prompt injection** (Tampering) | LLM Service, ReasoningEngine, Generator | Attacker bypasses instructions, exfiltrates system prompts | High | **Critical** |
 | **PII data leakage** (Information Disclosure) | Pipeline document content → LLM API calls | Sensitive manuscript data sent to 3rd-party LLM APIs | Medium | **High** |
 | **Model denial of service** (DoS) | Circuit breakers, LLM tier system | Thousands of cheap requests exhaust API quota or budget | High | **High** |
@@ -1936,7 +2046,7 @@ curl -s http://localhost:8000/api/v1/health/ready | jq .
 ### 23.2 Mitigation Matrix
 
 | Threat ID | Mitigation | Implementation | Verification |
-|-----------|-----------|---------------|-------------|
+| ----------- | ----------- | --------------- | ------------- |
 | Prompt injection | Multi-layer input sanitization | `sanitize_for_llm()` (25+ regex patterns, 8000-char limit, Section 18.1) | `test_prompt_injection*.py` |
 | Prompt injection | Output schema enforcement | `guard_llm_output()` with Guardrails AI / Pydantic | `test_llm_validator*.py` |
 | Prompt injection | Abuse detector at API gateway | `AbuseDetector.record_generation_request()` in `middleware/abuse_detector.py` | `test_abuse_detector*.py` |
@@ -2055,7 +2165,7 @@ Organized by functional domain. All variables are defined in `backend/app/config
 **LLM Provider Configuration** (Section 12 reference):
 
 | Variable | Required | Default | Sensitive | Runtime Change | Typical Production Value |
-|----------|----------|---------|-----------|----------------|--------------------------|
+| ---------- | ---------- | --------- | ----------- | ---------------- | -------------------------- |
 | `NVIDIA_API_KEY` | Yes* | `""` | Yes | No | `nvapi-...` |
 | `NVIDIA_MODEL` | No | `""` | No | No | `meta/llama-3.3-70b-instruct` |
 | `GROQ_API_KEY` | Yes* | `""` | Yes | No | `gsk_...` |
@@ -2075,7 +2185,7 @@ Organized by functional domain. All variables are defined in `backend/app/config
 **Pipeline Settings** (Section 12 reference):
 
 | Variable | Required | Default | Description | Production Value |
-|----------|----------|---------|-------------|-----------------|
+| ---------- | ---------- | --------- | ------------- | ----------------- |
 | `DEFAULT_FAST_MODE` | No | `false` | Skip optional AI stages | `true` |
 | `GROBID_ENABLED` | No | `true` | Enable GROBID metadata extraction | `true` |
 | `GROBID_URL` | No | `http://localhost:8070` | GROBID service endpoint | `http://localhost:8070` |
@@ -2092,7 +2202,7 @@ Organized by functional domain. All variables are defined in `backend/app/config
 **AI Model & Embedding Configuration**:
 
 | Variable | Required | Default | Description | Production Value |
-|----------|----------|---------|-------------|-----------------|
+| ---------- | ---------- | --------- | ------------- | ----------------- |
 | `PRELOAD_AI_MODELS` | No | `true` | Pre-load models at startup | `false` |
 | `LOW_MEMORY_MODE` | No | `false` | Skip local model loading, use deterministic embeddings | `true` |
 | `USE_LLM_CLASSIFICATION` | No | `false` | Enable LLM-based classification parsing | `false` |
@@ -2110,7 +2220,7 @@ Organized by functional domain. All variables are defined in `backend/app/config
 **Circuit Breaker & Safety**:
 
 | Variable | Required | Default | Description | Production Value |
-|----------|----------|---------|-------------|-----------------|
+| ---------- | ---------- | --------- | ------------- | ----------------- |
 | `EXTERNAL_CIRCUIT_BREAKER_ENABLED` | No | `true` | Enable per-provider circuit breakers | `true` |
 | `EXTERNAL_CIRCUIT_BREAKER_FAILURE_THRESHOLD` | No | `3` | Failures before circuit opens | `3` |
 | `EXTERNAL_CIRCUIT_BREAKER_RESET_SECONDS` | No | `60` | Recovery timeout | `60` |
@@ -2118,7 +2228,7 @@ Organized by functional domain. All variables are defined in `backend/app/config
 **Redis & Caching**:
 
 | Variable | Required | Default | Description | Production Value |
-|----------|----------|---------|-------------|-----------------|
+| ---------- | ---------- | --------- | ------------- | ----------------- |
 | `REDIS_ENABLED` | No | `false` | Enable Redis caching | `true` |
 | `REDIS_URL` | No | `redis://localhost:6379` | Redis connection URL | `rediss://default:...@...upstash.io` |
 | `LLM_CACHE_TTL_SECONDS` | No | `3600` | LLM response cache TTL | `3600` |
@@ -2134,7 +2244,7 @@ Organized by functional domain. All variables are defined in `backend/app/config
 **Observability**:
 
 | Variable | Required | Default | Description | Production Value |
-|----------|----------|---------|-------------|-----------------|
+| ---------- | ---------- | --------- | ------------- | ----------------- |
 | `ENABLE_STRUCTURED_LOGGING` | No | `false` | JSON log output | `true` |
 | `LOG_LEVEL` | No | `INFO` | Logging level (DEBUG/INFO/WARN/ERROR) | `INFO` |
 
@@ -2210,6 +2320,7 @@ For production deployments, follow this startup sequence to minimize errors duri
 9. **FastAPI Web Service** (start last — health endpoint checks all dependencies before `ready` returns 200)
 
 **Dependency failure handling**:
+
 - GROBID/Docling unavailable → pipeline proceeds without metadata extraction
 - All LLM providers down → pipeline returns rule-based formatted output (quality score reduced)
 - ChromaDB corruption → auto-rebuilds from `default_guidelines.json`
@@ -2221,7 +2332,7 @@ For production deployments, follow this startup sequence to minimize errors duri
 ## 25. Cross-Reference Index
 
 | External Document | Location | Relevance to AI Architecture |
-|-------------------|----------|------------------------------|
+| ------------------- | ---------- | ------------------------------ |
 | `AGENTS.md` | Root | Test patterns, mock strategies, pipeline import rules, provider system |
 | `ENTERPRISE_CERTIFICATION.md` | Root | Test counts, security posture for AI pipeline |
 | `COVERAGE_GAP_REPORT.md` | Root | Gap closure tracking across 38 AI-related categories |
@@ -2233,6 +2344,7 @@ For production deployments, follow this startup sequence to minimize errors duri
 | `pipeline-architecture.md` | `docs/explanation/` | Detailed 16-stage pipeline walkthrough |
 | `creating-a-custom-template.md` | `docs/guides/` | Template system that AI reasoning retrieves |
 \n
+
 ## AI Pipeline Diagram
 
 ```mermaid
@@ -2249,7 +2361,6 @@ graph LR
     classDef default fill:#1f2937,stroke:#ec4899,stroke-width:2px,color:#f9fafb;
 ```
 
-
 ## Related Documentation
 
 - [AI Architecture](AI_ARCHITECTURE.md)
@@ -2258,4 +2369,3 @@ graph LR
 - [Chroma RAG Architecture](CHROMA_RAG_ARCHITECTURE.md)
 - [Database Architecture](DATABASE_ARCHITECTURE.md)
 - [API Reference](API.md)
-

@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
->  ️ **ARCHIVED** — This implementation plan is complete. All features have been implemented. See [ROADMAP.md](../Roadmap.md) for current status.
+> ️ **ARCHIVED** — This implementation plan is complete. All features have been implemented. See [ROADMAP.md](../Roadmap.md) for current status.
 
 # ScholarForm AI — Complete End-to-End Implementation Plan
 
@@ -35,7 +35,7 @@
 ### 1.1 Critical Security Issues (Fix First)
 
 | # | Issue | Location | Severity | Impact |
-|---|-------|----------|----------|--------|
+| --- | ------- | ---------- | ---------- | -------- |
 | C1 | **CSRF cookie not httponly** — JavaScript can read CSRF token | `csrf.py:127` | 🔴 CRITICAL | Token theft via XSS |
 | C2 | **Entire `/api/v1/` CSRF-exempt** — all API routes unprotected | `csrf.py:33-36` | 🔴 CRITICAL | No CSRF protection for cookie auth |
 | C3 | **CSP allows `'unsafe-inline'` in script-src** — XSS protection broken | `security_headers.py:50,61` | 🔴 CRITICAL | Any injected script executes |
@@ -45,7 +45,7 @@
 ### 1.2 High-Priority Issues
 
 | # | Issue | Location | Severity |
-|---|-------|----------|----------|
+| --- | ------- | ---------- | ---------- |
 | H1 | **No JWT revocation/blacklist** — stolen tokens valid until expiry | `dependencies.py` | 🔴 HIGH |
 | H2 | **No auth endpoint rate limiting** — 120 req/min brute force possible | `rate_limit.py` | 🔴 HIGH |
 | H3 | **Celery tasks have no retry config** — transient failures cause permanent data loss | `celery_tasks.py` (all tasks) | 🔴 HIGH |
@@ -63,23 +63,23 @@
 ### 1.3 Test Coverage Gaps
 
 | # | Module | Test Status | Action Needed |
-|---|--------|-------------|---------------|
-| G1 | `routers/v1/stream.py` |  ️ Only 2 basic tests | Add streaming edge cases, error handling, SSE reconnection |
-| G2 | `routers/v1/__init__.py` |  ️ Only migration tests | Add router registration & sub-router mount tests |
-| G3 | `models/equation.py` |  ️ Indirect sweep only | Add dedicated test file |
-| G4 | `models/figure.py` |  ️ Indirect sweep only | Add dedicated test file |
-| G5 | `models/table.py` |  ️ Indirect sweep only | Add dedicated test file |
-| G6 | `models/review.py` |  ️ Indirect sweep only | Add dedicated test file |
-| G7 | `models/suggestion.py` |  ️ Indirect sweep only | Add dedicated test file |
-| G8 | `routers/preview.py` |  ️ 12 tests, missing WebSocket path | Add WebSocket preview endpoint tests |
-| G9 | `security/jwks_verifier.py` |  ️ 2 direct tests | Add algorithm confusion, key rotation tests |
-| G10 | `tasks/celery_tasks.py` |  ️ 19 tests, no integration | Add task retry, error handling, timeout tests |
-| G11 | `tasks/cleanup.py` |  ️ No schedule verification | Add schedule-based test |
+| --- | -------- | ------------- | --------------- |
+| G1 | `routers/v1/stream.py` | ️ Only 2 basic tests | Add streaming edge cases, error handling, SSE reconnection |
+| G2 | `routers/v1/__init__.py` | ️ Only migration tests | Add router registration & sub-router mount tests |
+| G3 | `models/equation.py` | ️ Indirect sweep only | Add dedicated test file |
+| G4 | `models/figure.py` | ️ Indirect sweep only | Add dedicated test file |
+| G5 | `models/table.py` | ️ Indirect sweep only | Add dedicated test file |
+| G6 | `models/review.py` | ️ Indirect sweep only | Add dedicated test file |
+| G7 | `models/suggestion.py` | ️ Indirect sweep only | Add dedicated test file |
+| G8 | `routers/preview.py` | ️ 12 tests, missing WebSocket path | Add WebSocket preview endpoint tests |
+| G9 | `security/jwks_verifier.py` | ️ 2 direct tests | Add algorithm confusion, key rotation tests |
+| G10 | `tasks/celery_tasks.py` | ️ 19 tests, no integration | Add task retry, error handling, timeout tests |
+| G11 | `tasks/cleanup.py` | ️ No schedule verification | Add schedule-based test |
 
 ### 1.4 Missing Features
 
 | # | Feature | Current State | Action Needed |
-|---|---------|---------------|---------------|
+| --- | --------- | --------------- | --------------- |
 | F1 | **Staging deployment workflow** | ❌ Missing entirely | Create `deploy-staging.yml` |
 | F2 | **Grafana dashboard deployment** | ❌ JSON files exist in `ops/` but not deployed | Set up Grafana with provisioning |
 | F5 | **API v2 cursor pagination** | ⏳ ADR exists, not implemented | Design & implement paginated endpoints |
@@ -92,7 +92,7 @@
 ### 1.5 Infrastructure Gaps
 
 | # | Area | Current State | Action Needed |
-|---|------|---------------|---------------|
+| --- | ------ | --------------- | --------------- |
 | I1 | **CI/CD** | 24 workflows exist, missing staging deploy | Add `deploy-staging.yml` |
 | I2 | **Monitoring** | Prometheus metrics defined, Grafana not deployed | Deploy dashboards from `ops/grafana/` |
 | I3 | **Alerting** | Alert rules in YAML, not deployed | Deploy to Prometheus |
@@ -113,12 +113,14 @@
 **Files:** `backend/app/middleware/csrf.py`
 
 **Changes:**
+
 1. **Set `httponly=True`** on CSRF cookie (line 127) — prevents JavaScript access to token
 2. **Remove blanket `/api/v1/` exemption** — exempt only individual endpoints that need it (webhooks, health)
 3. **Bind token to session** — include session/user ID in HMAC: `f"{user_id}:{timestamp}:{raw}"`
 4. **Add dedicated `CSRF_SECRET` setting** — never use hardcoded fallback `"csrf-fallback-secret-do-not-use-in-production"`
 
 **Test:**
+
 ```python
 async def test_csrf_cookie_httponly():
     client = TestClient(app)
@@ -141,12 +143,14 @@ async def test_csrf_allows_exempt_routes():
 **Files:** `backend/app/middleware/security_headers.py`
 
 **Changes:**
+
 1. **Replace `'unsafe-inline'` with nonce-based CSP** — generate unique `csp_nonce` per request
 2. **Add nonce to request state** — `request.state.csp_nonce = secrets.token_urlsafe(16)`
 3. **Restrict `connect-src`** — `wss://*.scholarform.ai` instead of wildcard `ws: wss:`
 4. **Apply nonce to docs routes** — allow Swagger/ReDoc CDN scripts via nonce
 
 **Test:**
+
 ```python
 async def test_csp_no_unsafe_inline():
     response = await client.get("/")
@@ -166,11 +170,13 @@ async def test_csp_restricted_websocket():
 **Files:** `backend/app/services/encryption_service.py`, `backend/app/config/settings.py`
 
 **Changes:**
+
 1. **Fail startup on missing `ENCRYPTION_KEY`** in production mode — raise `RuntimeError` instead of auto-generating
 2. **Add startup validation** in `main.py` startup — check `ENCRYPTION_KEY` is set
 3. **Add `ENCRYPTION_KEY` to required settings** — validate at app init
 
 **Test:**
+
 ```python
 async def test_encryption_fails_without_key(monkeypatch):
     monkeypatch.delenv("ENCRYPTION_KEY", raising=False)
@@ -189,11 +195,13 @@ async def test_encryption_roundtrip():
 **Files:** `backend/app/security/jwks_verifier.py`
 
 **Changes:**
+
 1. **When JWKS URL is configured, reject HS-algorithm tokens** — throw `InvalidTokenError`
 2. **Only allow HMAC verification when JWKS is unavailable** (testing/fallback)
 3. **Add logging for algorithm mismatch attempts**
 
 **Test:**
+
 ```python
 async def test_jwks_rejects_hs_when_rs_configured():
     # Simulate token with alg=HS256 when JWKS is configured
@@ -234,12 +242,14 @@ async def test_jwks_accepts_rs_token():
 **Files:** `backend/app/utils/dependencies.py`, `backend/app/cache/redis_cache.py`
 
 **Changes:**
+
 1. Add `is_token_blacklisted(token_jti: str) -> bool` to `RedisCache`
 2. Add `blacklist_token(token: str, ttl: int)` — stores token `jti` in Redis
 3. Check blacklist in `get_current_user()` — reject blacklisted tokens
 4. Add logout endpoint logic to blacklist current token
 
 **Test:**
+
 ```python
 async def test_blacklisted_token_rejected(mock_redis_cache):
     token = create_test_token()
@@ -253,11 +263,13 @@ async def test_blacklisted_token_rejected(mock_redis_cache):
 **Files:** `backend/app/middleware/tier_rate_limit.py`, `backend/app/middleware/rate_limit.py`
 
 **Changes:**
+
 1. Add `auth_rate_limiter` — 5 requests/minute per IP on login/signup
 2. Add `account_lockout` — 10 failed attempts = 15-minute lockout
 3. Add per-account rate limiting (10 attempts/hour per email)
 
 **Test:**
+
 ```python
 async def test_login_rate_limit():
     for _ in range(6):  # 6th should be blocked
@@ -277,12 +289,14 @@ async def test_account_lockout():
 **Files:** `backend/app/tasks/celery_tasks.py`
 
 **Changes:**
+
 1. Add `autoretry_for=(Exception,)` to ALL task definitions
 2. Add `max_retries=3`, `retry_backoff=True`, `retry_backoff_max=300`, `retry_jitter=True`
 3. Add `soft_time_limit=600`, `time_limit=900` to all tasks
 4. Fix `mark_document_failed` to be inside try block
 
 **Test:**
+
 ```python
 @celery_app.task(bind=True, max_retries=3)
 def my_task(self):
@@ -295,6 +309,7 @@ def my_task(self):
 **Files:** `backend/app/tasks/celery_tasks.py`
 
 **Changes:**
+
 1. Create `_run_async_in_task(coro)` helper — uses existing event loop or creates new one properly
 2. Replace all `asyncio.run(...)` calls with `_run_async_in_task(...)`
 3. Add error handling for nested event loop scenarios
@@ -304,6 +319,7 @@ def my_task(self):
 **Files:** `backend/app/middleware/tier_rate_limit.py`
 
 **Changes:**
+
 1. Add per-user rate limits based on resolved role:
    - Free: 60 requests/minute
    - Pro: 300 requests/minute
@@ -312,6 +328,7 @@ def my_task(self):
 3. Add `X-RateLimit-Remaining` header to responses
 
 **Test:**
+
 ```python
 async def test_free_user_rate_limited():
     user = create_test_user(role="free")
@@ -331,6 +348,7 @@ async def test_pro_user_higher_limit():
 **Files:** `backend/app/config/settings.py`, `backend/app/middleware/csrf.py`
 
 **Changes:**
+
 1. Add `CSRF_SECRET` to `SecuritySettings` in `settings.py`
 2. Remove hardcoded fallback `"csrf-fallback-secret-do-not-use-in-production"`
 3. Fail startup if `CSRF_SECRET` not set in production
@@ -340,6 +358,7 @@ async def test_pro_user_higher_limit():
 **Files:** `backend/app/services/auth_service.py`
 
 **Changes:**
+
 1. Replace `detail=str(exc)` with generic messages:
    - Login failure: `"Invalid email or password."`
    - Signup failure: `"Account creation failed. Please try again."`
@@ -351,6 +370,7 @@ async def test_pro_user_higher_limit():
 **Files:** `backend/app/middleware/security_headers.py`
 
 **Changes:**
+
 1. Replace `ws: wss:` with specific origins: `wss://*.scholarform.ai wss://*.vercel.app`
 2. Add development fallback: `ws://localhost:3000 ws://localhost:8000`
 
@@ -359,11 +379,13 @@ async def test_pro_user_higher_limit():
 **Files:** `backend/app/routers/v1/documents_impl.py`, `backend/app/routers/v1/generator.py` (and all data-accessing routers)
 
 **Changes:**
+
 1. Add `verify_resource_ownership(resource, user_id)` helper
 2. Check ownership on all document/generator/synthesis read+write operations
 3. Return 404 (not 403) for non-owned resources to avoid information leakage
 
 **Test:**
+
 ```python
 async def test_cannot_access_other_user_document():
     user_a = create_test_user()
@@ -378,6 +400,7 @@ async def test_cannot_access_other_user_document():
 **Files:** `backend/app/services/audit_log_service.py`, `backend/app/main.py`
 
 **Changes:**
+
 1. Add Prometheus metric `audit_log_available{1|0}`
 2. Add startup check: verify `audit_log` table exists
 3. Log critical warning if table is missing instead of warning
@@ -388,6 +411,7 @@ async def test_cannot_access_other_user_document():
 **Files:** `backend/app/tasks/celery_tasks.py`
 
 **Changes:**
+
 1. Add `validate_path_safety(path: str) -> bool` — ensures path is within allowed upload directories
 2. Validate all `file_paths` before processing
 3. Reject paths with `..`, symlinks, or absolute paths outside allowed base
@@ -397,6 +421,7 @@ async def test_cannot_access_other_user_document():
 **Files:** `backend/app/middleware/security_headers.py`
 
 **Changes:**
+
 1. Add streaming body read with size cap (don't rely solely on Content-Length)
 2. Use FastAPI's built-in `max_body_size` parameter on app creation
 
@@ -405,6 +430,7 @@ async def test_cannot_access_other_user_document():
 **Files:** `backend/app/middleware/abuse_detector.py`
 
 **Changes:**
+
 1. Integrate with rate limiter — dynamically adjust limits when abuse detected
 2. Add automatic IP blocklist after `N` violations
 3. Add temporary throttling (reduce limits by 50% for flagged users)
@@ -443,6 +469,7 @@ async def test_cannot_access_other_user_document():
 **Files:** `backend/tests/test_stream.py` (new/rewrite)
 
 **New tests to add (15+):**
+
 ```python
 - test_sse_connection_success          # Basic SSE connects
 - test_sse_connection_invalid_job      # 404 for non-existent job
@@ -464,6 +491,7 @@ async def test_cannot_access_other_user_document():
 **Files:** `backend/tests/test_v1_router_init.py` (new)
 
 **New tests to add (10+):**
+
 ```python
 - test_all_routers_registered          # All 14 sub-routers are mounted
 - test_router_prefixes                 # All routes under /api/v1/
@@ -478,6 +506,7 @@ async def test_cannot_access_other_user_document():
 **Files:** `backend/tests/test_models_equation.py`, `test_models_figure.py`, `test_models_table.py`, `test_models_review.py`, `test_models_suggestion.py` (new)
 
 **New tests per file (15+ each):**
+
 ```python
 - test_equation_creation               # Valid creation with all fields
 - test_equation_serialization          # JSON roundtrip
@@ -493,6 +522,7 @@ async def test_cannot_access_other_user_document():
 **Files:** `backend/tests/test_routers_preview.py` (extend)
 
 **New tests to add (10+):**
+
 ```python
 - test_ws_connection                   # WebSocket connects successfully
 - test_ws_authentication               # Unauthenticated rejected
@@ -507,6 +537,7 @@ async def test_cannot_access_other_user_document():
 **Files:** `backend/tests/test_jwks_verifier_deep.py` (new)
 
 **New tests to add (10+):**
+
 ```python
 - test_rs256_token_valid               # Valid RS256 JWT accepted
 - test_hs256_rejected_with_jwks        # HS256 rejected when JWKS present
@@ -523,6 +554,7 @@ async def test_cannot_access_other_user_document():
 **Files:** `backend/tests/test_celery_tasks_deep.py` (new/extend)
 
 **New tests to add (15+):**
+
 ```python
 - test_task_retry_on_transient_error   # Task retries on Exception
 - test_task_max_retries_exceeded       # Permanent failure after max retries
@@ -565,6 +597,7 @@ async def test_cannot_access_other_user_document():
 **Files:** `.github/workflows/deploy-staging.yml` (new)
 
 **Content:**
+
 ```yaml
 name: Deploy to Staging
 on:
@@ -593,6 +626,7 @@ jobs:
 **Files:** `ops/grafana/provisioning/dashboards/scholarform.yml` (new)
 
 **Changes:**
+
 1. Create provisioning YAML for Grafana
 2. Import existing dashboards from `ops/grafana/dashboards/`
 3. Add dashboard source configuration
@@ -602,11 +636,13 @@ jobs:
 **Files:** `backend/app/routers/v1/documents.py`, `backend/app/services/document_service.py`
 
 **Changes:**
+
 1. Add PostgreSQL GIN index migration for `documents.raw_text`
 2. Add `GET /api/v1/documents/search?q=...` endpoint
 3. Implement `DocumentService.search_documents(query, user_id, limit, offset)`
 
 **Test:**
+
 ```python
 async def test_search_returns_matching_docs():
     await create_document(user_id="u1", raw_text="machine learning paper")
@@ -619,6 +655,7 @@ async def test_search_returns_matching_docs():
 **Files:** `backend/app/routers/v1/documents.py`
 
 **Changes:**
+
 1. `POST /api/v1/documents/batch` — accepts `{document_ids: [...], action: "status"|"delete"|"export"}`
 2. Implement batch operations in `document_service.py`
 3. Add rate limiting for batch operations
@@ -628,12 +665,14 @@ async def test_search_returns_matching_docs():
 **Files:** `backend/app/routers/v1/documents.py`, `backend/app/services/document_service.py`
 
 **Changes:**
+
 1. Add `document_shares` table (document_id, shared_with_user_id, permission: view|edit, created_at)
 2. Add Alembic migration
 3. Endpoints: `POST /api/v1/documents/{id}/share`, `GET /api/v1/documents/shared-with-me`, `DELETE /api/v1/documents/{id}/share/{user_id}`
 4. Enforce permissions in `documents_impl.py` ownership checks
 
 **Test:**
+
 ```python
 async def test_shared_document_accessible():
     owner = create_test_user()
@@ -649,6 +688,7 @@ async def test_shared_document_accessible():
 **Files:** `backend/app/services/analytics_service.py` (new), `backend/app/main.py`
 
 **Changes (MINIMAL — self-hosted or free tier):**
+
 1. Create `AnalyticsService` with posthog client
 2. Add events: `upload_started`, `upload_completed`, `format_downloaded`, `agent_session_started`, `synthesis_started`
 3. Add middleware for automatic page view tracking
@@ -659,6 +699,7 @@ async def test_shared_document_accessible():
 **Files:** `backend/app/main.py`, `.env.example`
 
 **Changes:**
+
 1. Add test route `POST /api/v1/debug/Sentry-test` (admin-only) that raises a test exception
 2. Verify error appears in Sentry dashboard
 3. Document Sentry configuration in `Deployment.md`
@@ -689,6 +730,7 @@ async def test_shared_document_accessible():
 **Files:** `backend/app/pipeline/services/crossref_client.py`
 
 **Changes:**
+
 1. Replace `time.sleep()` with `asyncio.sleep()` in `_wait_for_rate_limit()` (line 58)
 2. Convert synchronous `requests` calls to `httpx.AsyncClient`
 3. Add connection pooling for HTTP sessions
@@ -698,6 +740,7 @@ async def test_shared_document_accessible():
 **Files:** `backend/app/tasks/celery_tasks.py`
 
 **Changes (already partially done in Phase 1.3 — verify):**
+
 1. `soft_time_limit=600` (10 minutes) on all tasks
 2. `time_limit=900` (15 minutes) hard limit
 3. Log warning when `SoftTimeLimitExceeded` caught
@@ -707,6 +750,7 @@ async def test_shared_document_accessible():
 **Files:** `backend/app/pipeline/intelligence/rag_engine.py`
 
 **Changes:**
+
 1. Use persistent ChromaDB client singleton instead of creating per-request
 2. Add connection pool settings for production ChromaDB (HTTP client)
 3. Set collection cache TTL
@@ -716,6 +760,7 @@ async def test_shared_document_accessible():
 **Files:** `backend/alembic/versions/2026xxxx_add_performance_indexes.py` (new migration)
 
 **Indexes to add:**
+
 ```sql
 CREATE INDEX IF NOT EXISTS idx_audit_log_user_id ON audit_log(user_id);
 CREATE INDEX IF NOT EXISTS idx_audit_log_timestamp ON audit_log(created_at DESC);
@@ -731,6 +776,7 @@ CREATE INDEX IF NOT EXISTS idx_suggestions_document ON suggestions(document_id);
 **Files:** `backend/tests/stress/test_production_stress.py` (extend)
 
 **Add:**
+
 1. Upload throughput test (10 concurrent uploads)
 2. Health endpoint P99 latency test
 3. Maximum blocks per document test (10K blocks)
@@ -760,6 +806,7 @@ CREATE INDEX IF NOT EXISTS idx_suggestions_document ON suggestions(document_id);
 **Files:** `ops/grafana/provisioning/datasources/prometheus.yml`, `ops/grafana/provisioning/dashboards/`
 
 **Changes:**
+
 1. Create provisioning config for Grafana
 2. Import 2 dashboards from `ops/grafana/dashboards/`:
    - `scholarform-overview.json` — request rate, error rate, latency, queue depth
@@ -771,6 +818,7 @@ CREATE INDEX IF NOT EXISTS idx_suggestions_document ON suggestions(document_id);
 **Files:** `ops/prometheus/alerts/scholarform-alerts.yml`
 
 **Changes (verify alerts are active):**
+
 1. High error rate: 5xx rate > 1% for 5 minutes → P0
 2. High latency: P95 > 1s for 5 minutes → P1
 3. Queue backup: Celery queue > 100 for 10 minutes → P1
@@ -783,6 +831,7 @@ CREATE INDEX IF NOT EXISTS idx_suggestions_document ON suggestions(document_id);
 **Files:** `backend/app/main.py`, `backend/app/middleware/monitoring.py`, `backend/app/middleware/https_redirect.py`
 
 **Changes:**
+
 1. Remove request ID logic from `MonitoringMiddleware` (duplicates `RequestIdMiddleware`)
 2. Register `HSTSMiddleware` class instead of inline app middleware closure
 3. Remove duplicate security headers in dev-mode
@@ -792,6 +841,7 @@ CREATE INDEX IF NOT EXISTS idx_suggestions_document ON suggestions(document_id);
 **Files:** `backend/app/middleware/audit_log_middleware.py` (extend)
 
 **Changes:**
+
 1. Add `security_event` log level for authentication failures, rate limit triggers, abuse detection
 2. Log all auth failures with IP, email (hashed), timestamp
 3. Log all rate limit threshold crossings
@@ -819,6 +869,7 @@ CREATE INDEX IF NOT EXISTS idx_suggestions_document ON suggestions(document_id);
 **Files:** All `.github/workflows/*.yml`
 
 **Changes:**
+
 1. Audit all 24 workflows for outdated actions
 2. Verify all secrets referenced exist in GitHub
 3. Add concurrency groups for deploy workflows
@@ -829,6 +880,7 @@ CREATE INDEX IF NOT EXISTS idx_suggestions_document ON suggestions(document_id);
 **Files:** `.github/workflows/openapi-schema-check.yml` (new)
 
 **Changes:**
+
 1. Generate OpenAPI schema from FastAPI on CI
 2. Check schema into repo as `docs/openapi.json`
 3. Add diff check on PR — fails if OpenAPI contract changes unexpectedly
@@ -838,6 +890,7 @@ CREATE INDEX IF NOT EXISTS idx_suggestions_document ON suggestions(document_id);
 **Files:** `.github/dependabot.yml`
 
 **Changes (verify/extend):**
+
 ```yaml
 - package-ecosystem: "pip"
   directory: "/backend"
@@ -857,6 +910,7 @@ CREATE INDEX IF NOT EXISTS idx_suggestions_document ON suggestions(document_id);
 **Files:** `.pre-commit-config.yaml`
 
 **Changes (verify:**
+
 1. ruff on backend/ (with --fix)
 2. ruff-format on backend/
 3. Frontend eslint via `scripts/run_frontend_eslint_precommit.py`
@@ -882,7 +936,7 @@ CREATE INDEX IF NOT EXISTS idx_suggestions_document ON suggestions(document_id);
 ### Completed
 
 | Feature | Design Doc | Dependencies | Estimated Effort |
-|---------|-----------|--------------|------------------|
+| --------- | ----------- | -------------- | ------------------ |
 | **API v2 Cursor Pagination** | ✅ COMPLETE — `routers/v2/`, `utils/pagination.py`, `schemas/pagination.py`, 23 tests | None | — |
 | **Webhook Management System** | ✅ COMPLETE — `routers/v1/webhooks.py`, `services/webhook_service.py`, `schemas/webhook.py`, `models/webhook.py`, 39 tests | None | — |
 | **LLMPDFParser Parser Remote Adapter** | ✅ COMPLETE — `llm_pdf_parser.py`, HF Space Dockerfile, ParserFactory integration (existing) | HF Spaces deployment | — |
@@ -932,6 +986,7 @@ npm run build
 #### Task 8.2 — Security Penetration Testing
 
 **Manual verification checklist:**
+
 ```markdown
 - [ ] CSRF: Submit POST without token → 403
 - [ ] CSRF: Submit POST with valid token → 200
@@ -1003,7 +1058,7 @@ npm run build
 ### Phase 0: Security
 
 | File | Change Type | Lines Changed | Complexity |
-|------|------------|---------------|------------|
+| ------ | ------------ | --------------- | ------------ |
 | `backend/app/middleware/csrf.py` | MODIFY | ~30 lines | MEDIUM |
 | `backend/app/middleware/security_headers.py` | MODIFY | ~25 lines | MEDIUM |
 | `backend/app/services/encryption_service.py` | MODIFY | ~5 lines | LOW |
@@ -1014,7 +1069,7 @@ npm run build
 ### Phase 1: Backend Hardening
 
 | File | Change Type | Lines Changed | Complexity |
-|------|------------|---------------|------------|
+| ------ | ------------ | --------------- | ------------ |
 | `backend/app/utils/dependencies.py` | MODIFY | ~10 lines | LOW |
 | `backend/app/cache/redis_cache.py` | MODIFY | ~15 lines | LOW |
 | `backend/app/middleware/tier_rate_limit.py` | MODIFY | ~40 lines | MEDIUM |
@@ -1028,7 +1083,7 @@ npm run build
 ### Phase 2: Tests
 
 | File | Change Type | Lines Changed | Complexity |
-|------|------------|---------------|------------|
+| ------ | ------------ | --------------- | ------------ |
 | `backend/tests/test_stream.py` | REWRITE | ~300 lines | HIGH |
 | `backend/tests/test_v1_router_init.py` | NEW | ~150 lines | LOW |
 | `backend/tests/test_models_equation.py` | NEW | ~200 lines | LOW |
@@ -1043,7 +1098,7 @@ npm run build
 ### Phase 3: Features
 
 | File | Change Type | Lines Changed | Complexity |
-|------|------------|---------------|------------|
+| ------ | ------------ | --------------- | ------------ |
 | `.github/workflows/deploy-staging.yml` | NEW | ~40 lines | LOW |
 | `ops/grafana/provisioning/dashboards/scholarform.yml` | NEW | ~15 lines | LOW |
 | `backend/app/routers/v1/documents.py` | MODIFY | ~50 lines | MEDIUM |
@@ -1055,7 +1110,7 @@ npm run build
 ### Phase 4: Performance
 
 | File | Change Type | Lines Changed | Complexity |
-|------|------------|---------------|------------|
+| ------ | ------------ | --------------- | ------------ |
 | `backend/app/pipeline/services/crossref_client.py` | MODIFY | ~15 lines | MEDIUM |
 | `backend/app/pipeline/intelligence/rag_engine.py` | MODIFY | ~10 lines | LOW |
 | `backend/alembic/versions/2026xxxx_add_performance_indexes.py` | NEW | ~60 lines | LOW |
@@ -1064,7 +1119,7 @@ npm run build
 ### Phase 5: Monitoring
 
 | File | Change Type | Lines Changed | Complexity |
-|------|------------|---------------|------------|
+| ------ | ------------ | --------------- | ------------ |
 | `ops/grafana/provisioning/datasources/prometheus.yml` | NEW | ~15 lines | LOW |
 | `backend/app/main.py` | MODIFY | ~10 lines | LOW |
 | `backend/app/middleware/monitoring.py` | MODIFY | ~5 lines | LOW |
@@ -1072,7 +1127,7 @@ npm run build
 ### Phase 6: DevOps
 
 | File | Change Type | Lines Changed | Complexity |
-|------|------------|---------------|------------|
+| ------ | ------------ | --------------- | ------------ |
 | `.github/workflows/openapi-schema-check.yml` | NEW | ~30 lines | LOW |
 | `.github/dependabot.yml` | MODIFY | ~10 lines | LOW |
 
@@ -1135,7 +1190,7 @@ npm run build
 ## 13. Risk Register
 
 | # | Risk | Likelihood | Impact | Mitigation | Phase |
-|---|------|-----------|--------|------------|-------|
+| --- | ------ | ----------- | -------- | ------------ | ------- |
 | R1 | CSRF fix breaks existing frontend requests | MEDIUM | HIGH | Test with frontend e2e before merging | P0 |
 | R2 | CSP nonce generation adds request overhead | LOW | LOW | <1μs per request | P0 |
 | R3 | JWT blacklist Redis unavailability blocks auth | LOW | HIGH | Fallback: allow token if Redis down (log warning) | P1 |
@@ -1152,7 +1207,7 @@ npm run build
 ## Implementation Summary
 
 | Phase | Focus | Duration | Agents | Total Tasks | Security Impact | Test Impact |
-|-------|-------|----------|--------|-------------|-----------------|-------------|
+| ------- | ------- | ---------- | -------- | ------------- | ----------------- | ------------- |
 | **P0** | Critical Security Fixes | Week 1 | Security Agent | 5 | Resolves 5/5 CRITICAL issues | ✅ Maintains |
 | **P1** | Backend Hardening | Week 2-3 | Backend Agent | 13 | Resolves 13/13 HIGH issues | ✅ Maintains |
 | **P2** | Test Coverage | Week 4 | Test Agent | 6 | 🟢 Low | 💪 +135 tests |
@@ -1164,6 +1219,7 @@ npm run build
 | **P8** | Final Verification | Week 11 | QA Agent | 4 | 🔴 CRITICAL | ✅ 1,800+ tests |
 
 **Bottom Line:**
+
 - **5 critical security fixes** → Week 1 (blocking)
 - **13 high-priority hardening tasks** → Week 2-3
 - **~135 new tests** → Week 4

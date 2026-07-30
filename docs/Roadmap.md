@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Implementation Roadmap
 description: Phased feature rollout plan across 5 phases (all complete)
 sidebar_position: 50
@@ -23,6 +23,7 @@ last_updated: July 2026
 ---
 
 ## Table of Contents
+
 - [Phase 0: Restore Truth & Fast Feedback](#phase-0-restore-truth--fast-feedback)
 - [Phase 1: Canonical Documentation Reset](#phase-1-canonical-documentation-reset)
 - [Phase 2: Contract & Smoke Validation](#phase-2-contract--smoke-validation)
@@ -35,7 +36,7 @@ last_updated: July 2026
 **Exit Criteria:** All Phase 0 items verified ✅
 
 | Task | Status | Exit Criterion |
-|------|--------|---------------|
+| ------ | -------- | --------------- |
 | Reconfigure Python 3.12 virtual environment | ✅ | `python --version` == 3.12.x |
 | Resolve pytest backend import collisions | ✅ | `pytest tests -m "not integration and not llm"` exits 0 |
 | Fix frontend JSX syntactic bugs | ✅ | `npm run build` exits 0 |
@@ -49,7 +50,7 @@ last_updated: July 2026
 **Exit Criterion:** A new contributor can bootstrap the project without being misled by any doc.
 
 | Task | Status | Exit Criterion |
-|------|--------|---------------|
+| ------ | -------- | --------------- |
 | Rewrite root `README.md` | ✅ | Correct ports (3000), Next.js, NEXT_PUBLIC_*, Python 3.12 |
 | Rewrite `docs/PRD.md` | ✅ | 34 routes, Codex verdict merged |
 | Update `docs/Features.md` | ✅ | TipTap, ThemeToggle, Groq confirmed |
@@ -72,7 +73,7 @@ last_updated: July 2026
 **Exit Criterion:** Every listed API endpoint returns expected response for a happy-path request.
 
 | Task | Exit Criterion |
-|------|---------------|
+| ------ | --------------- |
 | Implement `/api/v1/health` contract test | Returns `{status: "ok", services: {redis, db, chromadb}}` |
 | Implement `/api/v1/templates` contract test | Returns array of 17 template objects |
 | Implement upload & status & download happy path E2E | Playwright test green, DOCX downloaded |
@@ -88,7 +89,7 @@ last_updated: July 2026
 **Exit Criterion:** No stub files in the critical path.
 
 | Gap | Fix | Exit Criterion |
-|-----|-----|---------------|
+| ----- | ----- | --------------- |
 | `api.synthesis.js` was 36B stub | Wire to synthesis hooks | `multi-upload` page makes real API calls |
 | `latex_exporter.py` is 743B stub | Implement Pandoc subprocess | LaTeX download produces valid `.tex` file |
 | `rbac.py` is 708B stub | Implement role checks | Admin routes return 403 for free/guest users |
@@ -104,7 +105,7 @@ last_updated: July 2026
 **Exit Criterion:** All integrations smoke-tested with real services.
 
 | Service | Test | Exit Criterion |
-|---------|------|---------------|
+| --------- | ------ | --------------- |
 | Redis | `GET /api/v1/health` with Redis running | `services.redis: "ok"` |
 | Supabase | Auth signup & login & JWT | Valid JWT returned, /me endpoint works |
 | Stripe | `stripe listen --forward-to localhost:8000/api/v1/billing/webhook` | Webhook signature validated |
@@ -118,7 +119,7 @@ last_updated: July 2026
 **Exit Criterion:** System can be handed to a new engineer with confidence.
 
 | Task | Exit Criterion |
-|------|---------------|
+| ------ | --------------- |
 | Lock cloud topology | Vercel + Render + Supabase + Upstash documented in Deployment.md |
 | Staging environment live | URL in Deployment.md, health check passes |
 | Grafana dashboard (1 board) | Request rate + error rate + queue depth visible |
@@ -133,7 +134,7 @@ last_updated: July 2026
 Completed June 13, 2026.
 
 | Initiative | Description | Status |
-|-----------|-------------|--------|
+| ----------- | ------------- | -------- |
 | Governance files | GOVERNANCE.md, MAINTAINERS.md, SUPPORT.md | ✅ |
 | Community standards | PR template, DCO, CODEOWNERS, FUNDING.yml | ✅ |
 | Build & Release | BUILDING.md, RELEASE_PROCESS.md, MIGRATION_GUIDES.md | ✅ |
@@ -153,7 +154,7 @@ Completed June 13, 2026.
 Completed June 14, 2026.
 
 | Initiative | Description | Status |
-|-----------|-------------|--------|
+| ----------- | ------------- | -------- |
 | GitHub Container Registry | Multi-arch Docker images published to ghcr.io with cosign signing | ✅ |
 | GitHub Packages (npm) | Frontend published to GitHub Packages npm registry | ✅ |
 | GitHub Packages (PyPI) | Backend published to GitHub Packages PyPI registry | ✅ |
@@ -176,6 +177,7 @@ Completed June 14, 2026.
 ## Success Definition
 
 > A new engineer with no project context can:
+>
 > 1. Clone the repo
 > 2. Follow [`BUILDING.md`](../BUILDING.md) setup
 > 3. Run `pytest tests -m "not integration and not llm"` &rarr; PASS

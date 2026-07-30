@@ -2,6 +2,7 @@
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
 ---
+
 title: ScholarForm AI v1.0 — Operations Handbook
 description: Enterprise operations reference covering monitoring, logging, alerting, incident response, backup, deployment, on-call, maintenance, and runbooks
 version: "1.0"
@@ -46,7 +47,7 @@ ScholarForm AI exposes a `/api/v1/metrics` endpoint on the backend service, scra
 **Core Application Metrics:**
 
 | Metric | Type | Labels | Description |
-|--------|------|--------|-------------|
+| -------- | ------ | -------- | ------------- |
 | `http_requests_total` | Counter | `path, method, status` | Total HTTP requests |
 | `http_request_duration_seconds` | Histogram | `path, method` | Request latency buckets |
 | `celery_queue_depth` | Gauge | `queue` | Current Celery task queue depth |
@@ -62,7 +63,7 @@ ScholarForm AI exposes a `/api/v1/metrics` endpoint on the backend service, scra
 **Infrastructure Metrics (Render):**
 
 | Metric | Source | Description |
-|--------|--------|-------------|
+| -------- | -------- | ------------- |
 | `cpu_usage_percent` | Render dashboard | Container CPU utilization |
 | `memory_usage_bytes` | Render dashboard | Container memory utilization |
 | `disk_usage_bytes` | Render dashboard | Container disk usage |
@@ -74,16 +75,19 @@ ScholarForm AI exposes a `/api/v1/metrics` endpoint on the backend service, scra
 Three dashboards are provisioned in the Grafana instance at `https://grafana.scholarform.ai`:
 
 **Dashboard 1: Application Performance**
+
 - Panels: HTTP request rate (RPS), p50/p95/p99 latency, error rate %, top slowest endpoints, Celery queue depth, task duration heatmap, LLM provider latency comparison, circuit breaker states
 - Refresh: 30s
 - Time range default: Last 1 hour
 
 **Dashboard 2: Infrastructure Health**
+
 - Panels: CPU/memory/disk per service, instance count, deploy events timeline, database connection count, Redis memory used, ChromaDB collection sizes, Render status overlay
 - Refresh: 60s
 - Time range default: Last 24 hours
 
 **Dashboard 3: Business & SLOs**
+
 - Panels: Error budget burn rate, uptime %, documents processed (daily), average format time, active users (SSE connections), format success rate, LLM token usage (daily), per-endpoint SLO compliance
 - Refresh: 5m
 - Time range default: Last 7 days
@@ -100,7 +104,7 @@ The readiness endpoint checks: PostgreSQL connectivity, Redis ping, ChromaDB hea
 ### 1.4 SLIs & SLOs
 
 | SLI | Definition | Target (SLO) | Measurement Window |
-|-----|-----------|--------------|-------------------|
+| ----- | ----------- | -------------- | ------------------- |
 | API Availability | % of requests returning 2xx/4xx (not 5xx) | 99.9% | 30-day rolling |
 | API Latency (p95) | p95 of `http_request_duration_seconds` | < 1s | 30-day rolling |
 | Format Latency (p95) | p95 end-to-end document format time | < 10s | 30-day rolling |
@@ -124,7 +128,7 @@ All backend services export OpenTelemetry traces to the OpenTelemetry Collector 
 ### 2.2 Log Levels
 
 | Level | Usage | Examples |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `ERROR` | Service is degraded, action required | DB connection failure, LLM provider timeout, unhandled exceptions |
 | `WARN` | Potential issue, no immediate action | Circuit breaker opening, retry attempts, deprecation warnings |
 | `INFO` | Normal operational events | Request start/end, deployment events, user signup, document format |
@@ -179,7 +183,7 @@ Prometheus Alertmanager is configured at `https://alertmanager.scholarform.ai` w
 ### 3.2 Alert Severity Levels
 
 | Severity | Label | Response Time | Channel | Auto-Ack Window |
-|----------|-------|---------------|---------|-----------------|
+| ---------- | ------- | --------------- | --------- | ----------------- |
 | P0 — Critical | `severity="critical"` | < 5 minutes | PagerDuty + Slack #incidents | 2 minutes |
 | P1 — High | `severity="high"` | < 15 minutes | PagerDuty + Slack #incidents | 5 minutes |
 | P2 — Medium | `severity="medium"` | < 1 hour | Slack #incidents | 15 minutes |
@@ -188,7 +192,7 @@ Prometheus Alertmanager is configured at `https://alertmanager.scholarform.ai` w
 ### 3.3 Alert Rules
 
 | Alert Name | Severity | Condition | Duration |
-|-----------|----------|-----------|----------|
+| ----------- | ---------- | ----------- | ---------- |
 | `ScholarFormServiceDown` | P0 | `up{job="scholarform"} == 0` | 2m |
 | `ScholarFormHighErrorRate` | P1 | `rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05` | 5m |
 | `ScholarFormHighLatency` | P1 | `histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 5` | 5m |
@@ -222,7 +226,7 @@ See [On-Call](#7-on-call) section for detailed shift schedule and handoff proced
 ### 3.6 Escalation Policy
 
 | Level | Contact | Escalation After | Notes |
-|-------|---------|------------------|-------|
+| ------- | --------- | ------------------ | ------- |
 | L1 — Primary On-Call | DevOps Engineer | Immediate | First responder |
 | L2 — Secondary On-Call | DevOps Engineer | 15 min if P0 unacked | Backup responder |
 | L3 — Engineering Lead | Engineering Manager | 30 min if P0 unacked | Coordinates cross-team |
@@ -235,7 +239,7 @@ See [On-Call](#7-on-call) section for detailed shift schedule and handoff proced
 ### 4.1 Severity Definitions
 
 | Severity | Definition | Examples | Response Time |
-|----------|-----------|----------|---------------|
+| ---------- | ----------- | ---------- | --------------- |
 | **P0 — Critical** | Complete service outage or data loss. Core functionality unavailable to all users. | — All API endpoints returning 5xx — Database unreachable — LLM provider fully down — Data corruption detected | < 5 minutes |
 | **P1 — High** | Severe degradation of core functionality. Subset of users affected or SLO breach imminent. | — Error rate > 5% — p95 latency > 5s — Document formatting failures > 10% — Queue backlog > 100 tasks | < 15 minutes |
 | **P2 — Medium** | Partial degradation. Non-critical feature unavailable. No SLO breach. | — SSE connection instability — ClamAV scanning slow — Individual endpoint latency spike — Non-critical UI defect | < 1 hour |
@@ -270,6 +274,7 @@ For P0 incidents, the engineer who first responds assumes the **Incident Command
 ### 4.4 Communication Templates
 
 **Incident Declaration (Slack):**
+
 ```
 🚨 INCIDENT: [short name]
 Severity: P[0-3]
@@ -280,6 +285,7 @@ Status: Investigating
 ```
 
 **Incident Update:**
+
 ```
 Status: [Investigating / Mitigating / Resolved]
 Actions taken: [bullet list]
@@ -288,6 +294,7 @@ Next steps: [planned actions]
 ```
 
 **Incident Resolved:**
+
 ```
 ✅ INCIDENT RESOLVED: [short name]
 Duration: [X] minutes
@@ -311,7 +318,7 @@ Action items: [link to postmortem]
 ### 5.1 Database Backup Schedule
 
 | Data Store | Backup Type | Frequency | Retention | Method |
-|-----------|-------------|-----------|-----------|--------|
+| ----------- | ------------- | ----------- | ----------- | -------- |
 | PostgreSQL (Supabase) | Full | Daily | 30 days | Supabase automated backups + `pg_dump` to S3 |
 | PostgreSQL (Supabase) | WAL archiving | Continuous | 7 days | Point-in-time recovery enabled |
 | ChromaDB | Full (persistent) | Daily | 7 days | Filesystem snapshot + S3 copy |
@@ -332,6 +339,7 @@ aws s3 cp chroma-backup-*.tar.gz s3://scholarform-backups/chromadb/
 ```
 
 Restoration:
+
 ```bash
 aws s3 cp s3://scholarform-backups/chromadb/chroma-backup-<DATE>.tar.gz .
 tar -xzf chroma-backup-<DATE>.tar.gz -C $CHROMA_PERSIST_DIR
@@ -353,7 +361,7 @@ In the event of Redis data loss, the system degrades gracefully but queued Celer
 **DR Tiers:**
 
 | Tier | Scenario | RTO | RPO | Action |
-|------|----------|-----|-----|--------|
+| ------ | ---------- | ----- | ----- | -------- |
 | 1 | Single container failure | < 5 min | — | Render auto-restarts |
 | 2 | Availability zone failure | < 30 min | < 5 min | Render multi-region failover |
 | 3 | Full region failure | < 4 hours | < 24 hours | Restore from S3 backups to new Render region |
@@ -362,7 +370,7 @@ In the event of Redis data loss, the system degrades gracefully but queued Celer
 ### 5.5 RTO / RPO Targets
 
 | Component | RTO (Recovery Time Objective) | RPO (Recovery Point Objective) |
-|-----------|-------------------------------|-------------------------------|
+| ----------- | ------------------------------- | ------------------------------- |
 | API Service | < 5 minutes | N/A (stateless) |
 | PostgreSQL | < 1 hour | < 5 minutes (PITR) |
 | ChromaDB | < 2 hours | < 24 hours |
@@ -377,12 +385,13 @@ In the event of Redis data loss, the system degrades gracefully but queued Celer
 ### 6.1 Deployment Windows
 
 | Environment | Allowed Window | Approval | Notification |
-|-------------|---------------|----------|--------------|
+| ------------- | --------------- | ---------- | -------------- |
 | Development | Any time | Self-service | `#dev` Slack channel |
 | Staging | Mon–Thu 08:00–20:00 UTC | CI passes | `#deployments` Slack channel |
 | Production | Mon–Thu 10:00–16:00 UTC | PR review + CI + staging green | `#deployments` + `#incidents` Slack |
 
 **Blackout periods:** No production deployments during:
+
 - Major holidays (Christmas, New Year, etc.)
 - Black Friday / peak usage periods (academic term start)
 - Active incident resolution
@@ -427,7 +436,7 @@ Production deployments use Render's Blue-Green deployment model:
 Feature flags are managed via environment variables in Render. Key flags:
 
 | Flag | Default | Purpose |
-|------|---------|---------|
+| ------ | --------- | --------- |
 | `ENHANCEMENT_QUEUE_ENABLED` | `false` | Enable Celery queue mode |
 | `ENABLE_LLM_PDF_PARSER` | `false` | Enable LLMPDFParser PDF parser |
 | `USE_LLM_CLASSIFICATION` | `false` | Enable LLMClassifier classification |
@@ -462,6 +471,7 @@ Handoff occurs every Monday at 09:00 UTC. The outgoing on-call must:
 4. Ensure the incoming on-call has access to all relevant credentials and dashboards.
 
 Handoff template (posted in `#on-call-handoff`):
+
 ```
 **On-Call Handoff — Week of YYYY-MM-DD**
 Outgoing: @name
@@ -476,7 +486,7 @@ Notes: [anything incoming should know]
 ### 7.3 Escalation Contacts
 
 | Role | Contact | Escalation For |
-|------|---------|---------------|
+| ------ | --------- | --------------- |
 | Primary On-Call | PagerDuty schedule | All incidents |
 | Secondary On-Call | PagerDuty schedule | P0 unacked > 15min |
 | Engineering Lead | Slack @eng-lead | Cross-team coordination |
@@ -488,7 +498,7 @@ Notes: [anything incoming should know]
 During an incident, the on-call engineer should consult the relevant runbook:
 
 | Situation | Runbook |
-|-----------|---------|
+| ----------- | --------- |
 | Service down / unreachable | [Service Down Runbook](../runbooks/service-down.md) |
 | High error rate | [High Error Rate Runbook](../runbooks/high-error-rate.md) |
 | High latency | [High Latency Runbook](../runbooks/high-latency.md) |
@@ -502,7 +512,7 @@ During an incident, the on-call engineer should consult the relevant runbook:
 ### 8.1 Scheduled Maintenance Windows
 
 | Window | Frequency | Scope | User Impact |
-|--------|-----------|-------|-------------|
+| -------- | ----------- | ------- | ------------- |
 | Wed 02:00–04:00 UTC | Weekly | Database maintenance, dependency updates | None (graceful degradation) |
 | Sat 04:00–06:00 UTC | Monthly | ChromaDB re-index, Redis defrag | Potential brief queue delay |
 | Quarterly | Quarterly | Certificate rotation, dependency major upgrades | Scheduled downtime notice |
@@ -526,7 +536,7 @@ Migrations use Alembic with the following procedure:
 ### 8.3 Dependency Update Policy
 
 | Category | Update Cadence | Responsibility | Testing Required |
-|----------|---------------|----------------|-----------------|
+| ---------- | --------------- | ---------------- | ----------------- |
 | Security patches | Within 72 hours of CVE disclosure | DevOps | CI + staging |
 | Patch versions | Weekly (Wed maintenance window) | DevOps | CI |
 | Minor versions | Monthly | Engineering lead | CI + staging + QA |
@@ -539,7 +549,7 @@ Dependencies are scanned weekly via Dependabot (GitHub) and `safety` (Python). C
 ### 8.4 Certificate Rotation
 
 | Certificate | Renewal | Method | Responsible |
-|-------------|---------|--------|-------------|
+| ------------- | --------- | -------- | ------------- |
 | API TLS (Render) | Automatic (Let's Encrypt) | Render auto-renewal | Render |
 | Frontend TLS (Vercel) | Automatic | Vercel auto-renewal | Vercel |
 | Custom domain certs | 90 days | Let's Encrypt via Certbot | DevOps |
@@ -554,7 +564,7 @@ TLS certificate expiry is monitored via Prometheus `cert_expiry_days` metric wit
 All runbooks are located in `docs/runbooks/` and are maintained by the DevOps team with quarterly review cadence.
 
 | # | Runbook | Status | Description | Severity |
-|---|---------|--------|-------------|----------|
+| --- | --------- | -------- | ------------- | ---------- |
 | 1 | [Incident Response](../runbooks/incident-response.md) | ✅ Complete | Structured incident response from detection to postmortem | All |
 | 2 | [Service Down](../runbooks/service-down.md) | ✅ Complete | P0 outage response for complete service unavailability | P0 |
 | 3 | [High Error Rate](../runbooks/high-error-rate.md) | ✅ Complete | Elevated API error rates exceeding SLO thresholds | P1 |
@@ -564,6 +574,7 @@ All runbooks are located in `docs/runbooks/` and are maintained by the DevOps te
 | 7 | [Queue & Remote Offload Plan](../runbooks/queue-and-remote-offload-plan.md) | 📋 Planned | Future queue architecture for heavy document processing | — |
 
 **Related documents:**
+
 - [Disaster Recovery](../DISASTER_RECOVERY.md)
 - [Postmortem Template](../POSTMORTEM_TEMPLATE.md)
 - [Deployment Guide](../Deployment.md)

@@ -246,7 +246,7 @@ asyncio.run(process_manuscripts_batch())
 All data objects in the SDK are Pydantic v2 `BaseModel` subclasses:
 
 | Model Class | Fields & Types | Description |
-|---|---|---|
+| --- | --- | --- |
 | **`Author`** | `first_name: str`<br>`last_name: str`<br>`affiliation: Optional[str]`<br>`email: Optional[str]`<br>`orcid: Optional[str]` | Represents a author attribution entry |
 | **`Paragraph`** | `text: str`<br>`style: Optional[str]`<br>`alignment: Optional[str]` | Paragraph text node with optional inline styling |
 | **`Section`** | `heading: str`<br>`level: int = 1`<br>`content: List[Paragraph]`<br>`subsections: List[Section]` | Hierarchical section containing paragraphs and subsections |
@@ -278,7 +278,7 @@ AMFError (base class: Exception)
 ### Exception Details & HTTP Mapping
 
 | Exception Class | Status Code | Cause / Trigger | Extra Attributes |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `AMFError` | 500 | Base exception class for all SDK errors | `message`, `status_code`, `details` |
 | `AMFValidationError` | 400 | Malformed request body or invalid parameters | `details` dict with field errors |
 | `AMFAuthenticationError` | 401 | Missing or invalid API key / bearer token | None |

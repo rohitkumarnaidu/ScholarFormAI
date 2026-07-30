@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # AI/ML Integration
 
 <cite>
@@ -23,7 +22,9 @@
 </cite>
 
 ## Update Summary
+
 **Changes Made**
+
 - Added new LLM-based classification gating system with automated benchmark-based activation
 - Integrated vLLM adoption tracking for Phase 4 rollout planning
 - Enhanced LLM service with improved model management, health checking, and caching capabilities
@@ -31,6 +32,7 @@
 - Added comprehensive monitoring and reporting for AI/ML infrastructure
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [Project Structure](#project-structure)
 3. [Core Components](#core-components)
@@ -43,7 +45,9 @@
 10. [Appendices](#appendices)
 
 ## Introduction
+
 This document explains the AI/ML integration across the system, focusing on:
+
 - NVIDIA NIM integration with LiteLLM fallback
 - Local Ollama deployment for reasoning
 - LLM-based semantic classification with automated gating
@@ -55,7 +59,9 @@ This document explains the AI/ML integration across the system, focusing on:
 - Versioning, troubleshooting, and operational guidance
 
 ## Project Structure
+
 The AI/ML stack spans services, pipeline intelligence, and classification layers:
+
 - Services: NVIDIA client, unified LLM service, model store, LLM Classification gate, vLLM adoption tracker
 - Intelligence: RAG engine, reasoning engine, semantic parser
 - Classification: Content classifier integrating semantic parsing
@@ -87,6 +93,7 @@ RE --> CL
 ```
 
 **Diagram sources**
+
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
 - [classification_gate.py](file://backend/app/services/classification_gate.py)
@@ -97,6 +104,7 @@ RE --> CL
 - [classifier.py](file://backend/app/pipeline/classification/classifier.py)
 
 **Section sources**
+
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
 - [classification_gate.py](file://backend/app/services/classification_gate.py)
@@ -107,6 +115,7 @@ RE --> CL
 - [classifier.py](file://backend/app/pipeline/classification/classifier.py)
 
 ## Core Components
+
 - NVIDIA NIM client with LiteLLM-backed generation and OpenAI-compatible fallback
 - Unified LLM service for provider-agnostic model invocation with enhanced health checking and caching
 - LLM Classification gating system with automated benchmark-based activation
@@ -117,6 +126,7 @@ RE --> CL
 - Content classifier integrating structure detection and semantic parsing
 
 **Section sources**
+
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
 - [classification_gate.py](file://backend/app/services/classification_gate.py)
@@ -127,7 +137,9 @@ RE --> CL
 - [classifier.py](file://backend/app/pipeline/classification/classifier.py)
 
 ## Architecture Overview
+
 The AI/ML pipeline orchestrates structured reasoning and classification with automated model selection:
+
 - Input blocks are analyzed by the semantic parser with LLM Classification gating (automatically enabled/disabled based on benchmark results)
 - The reasoning engine selects the best model tier (NVIDIA → Ollama → Rule-based) and generates instruction sets
 - The RAG engine retrieves publisher-specific guidelines for contextual grounding
@@ -160,6 +172,7 @@ CL-->>CL : "assign BlockTypes"
 ```
 
 **Diagram sources**
+
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
 - [classification_gate.py](file://backend/app/services/classification_gate.py)
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
@@ -172,6 +185,7 @@ CL-->>CL : "assign BlockTypes"
 ## Detailed Component Analysis
 
 ### NVIDIA NIM Integration
+
 - Provides chat completions with model routing to NVIDIA NIM
 - Uses LiteLLM-backed generation when available; falls back to direct OpenAI-compatible client
 - Exposes higher-level helpers for document structure analysis, figure analysis, and template compliance checks
@@ -192,14 +206,17 @@ NvidiaClient --> LLMService : "uses when available"
 ```
 
 **Diagram sources**
+
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
 
 **Section sources**
+
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
 
 ### Enhanced LLM Service with Model Management and Health Checking
+
 - Unified provider-agnostic interface with LiteLLM integration
 - Enhanced health checking capabilities for all providers
 - Advanced caching with Redis integration and cache invalidation
@@ -230,12 +247,15 @@ LLMService --> RedisCache : "uses for caching"
 ```
 
 **Diagram sources**
+
 - [llm_service.py](file://backend/app/services/llm_service.py)
 
 **Section sources**
+
 - [llm_service.py](file://backend/app/services/llm_service.py)
 
 ### LLM Classification Gating System
+
 - Automated benchmark-based activation/deactivation of LLM classification
 - Persistent state management with configurable thresholds
 - Manual override support for development and testing
@@ -259,13 +279,16 @@ Persist --> Return["Return Decision"]
 ```
 
 **Diagram sources**
+
 - [classification_gate.py](file://backend/app/services/classification_gate.py)
 
 **Section sources**
+
 - [classification_gate.py](file://backend/app/services/classification_gate.py)
 - [test_classification_gate.py](file://backend/tests/test_classification_gate.py)
 
 ### vLLM Adoption Tracking for Phase 4 Rollout
+
 - Traffic-based activation criteria for vLLM adoption
 - Comprehensive metrics tracking for requests and token consumption
 - Automated rollout readiness assessment
@@ -289,13 +312,16 @@ NextSteps --> Return["Return Report"]
 ```
 
 **Diagram sources**
+
 - [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
 
 **Section sources**
+
 - [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
 - [test_vllm_adoption.py](file://backend/tests/test_vllm_adoption.py)
 
 ### Local Ollama Deployment and Fallback
+
 - The reasoning engine optionally initializes a local Ollama client and health-checks model availability
 - Falls back to rule-based classification when Ollama is unreachable
 - Integrates with the unified LLM service when available
@@ -314,12 +340,15 @@ Validate --> |Invalid| RuleFallback
 ```
 
 **Diagram sources**
+
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 
 **Section sources**
+
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 
 ### Enhanced Classification with Automated Gating
+
 - Loads classification model lazily, reusing global model store when available
 - Supports batch inference and heuristic fallback for non-English or unavailable models
 - Boundary repair for fragmented headings
@@ -346,15 +375,18 @@ SemanticParser --> ClassificationGate : "uses for gating"
 ```
 
 **Diagram sources**
+
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
 - [classification_gate.py](file://backend/app/services/classification_gate.py)
 
 **Section sources**
+
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
 - [classification_gate.py](file://backend/app/services/classification_gate.py)
 - [test_classification.py](file://backend/tests/test_classification.py)
 
 ### RAG Engine Implementation
+
 - Embedding models: BGE-M3 (primary), BGE-small (fallback), deterministic hash-based fallback
 - Backend: ChromaDB with native JSON fallback for compatibility
 - Auto-seeding from default guidelines when knowledge base is empty
@@ -374,13 +406,16 @@ NativeSim --> ReturnNative["Return results"]
 ```
 
 **Diagram sources**
+
 - [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
 
 **Section sources**
+
 - [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
 - [test_rag_engine.py](file://backend/tests/test_rag_engine.py)
 
 ### Reasoning Engine Orchestration
+
 - Multi-tier model selection: NVIDIA (primary) → Ollama (fallback) → Rule-based (final)
 - Enhanced with vLLM adoption tracking for Phase 4 rollout planning
 - Retry guards, circuit breakers, and JSON schema validation
@@ -412,14 +447,17 @@ RE-->>CL : "normalized instruction set"
 ```
 
 **Diagram sources**
+
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 - [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
 
 **Section sources**
+
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 - [test_reasoning_engine.py](file://backend/tests/test_reasoning_engine.py)
 
 ### Content Classifier Integration
+
 - Applies structure-based classification with GROBID metadata hints
 - Integrates LLM Classification predictions when enabled and confident via automated gating
 - Applies regex and NLP confidence heuristics for UNKNOWN blocks
@@ -439,17 +477,21 @@ Regex --> Finalize["Finalize BlockTypes"]
 ```
 
 **Diagram sources**
+
 - [classifier.py](file://backend/app/pipeline/classification/classifier.py)
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
 - [classification_gate.py](file://backend/app/services/classification_gate.py)
 
 **Section sources**
+
 - [classifier.py](file://backend/app/pipeline/classification/classifier.py)
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
 - [classification_gate.py](file://backend/app/services/classification_gate.py)
 
 ## Dependency Analysis
+
 Key dependencies and relationships:
+
 - ReasoningEngine depends on NVIDIA client and LLM service; also integrates with RAG engine and vLLM adoption tracker
 - SemanticParser depends on LLM Classification gate and ModelStore; used by ContentClassifier
 - LLM Classification gate manages persistent state and integrates with semantic parser
@@ -473,6 +515,7 @@ RAG --> CH["ChromaDB"]
 ```
 
 **Diagram sources**
+
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
@@ -482,6 +525,7 @@ RAG --> CH["ChromaDB"]
 - [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
 
 **Section sources**
+
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
 - [classification_gate.py](file://backend/app/services/classification_gate.py)
@@ -489,6 +533,7 @@ RAG --> CH["ChromaDB"]
 - [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
 
 ## Performance Considerations
+
 - Embedding model loading and reuse: Prefer global ModelStore to avoid repeated warm-up
 - Batch processing: ReasoningEngine batches blocks to reduce overhead
 - LiteLLM integration: Centralized provider routing reduces latency and simplifies fallbacks
@@ -502,7 +547,9 @@ RAG --> CH["ChromaDB"]
 [No sources needed since this section provides general guidance]
 
 ## Troubleshooting Guide
+
 Common issues and resolutions:
+
 - NVIDIA API key missing or invalid: Expect degraded mode with empty results; verify environment variables and provider credentials
 - LiteLLM unavailable: Fallback to direct OpenAI-compatible client; confirm network connectivity
 - Ollama unreachable: Expect rule-based fallback; verify base URL and model tags
@@ -516,6 +563,7 @@ Common issues and resolutions:
 - Health check failures: Verify provider endpoints and authentication credentials
 
 **Section sources**
+
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 - [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
@@ -531,6 +579,7 @@ Common issues and resolutions:
 - [test_nvidia_client.py](file://backend/tests/test_nvidia_client.py)
 
 ## Conclusion
+
 The system integrates NVIDIA NIM, local Ollama, LLM Classification, and a robust RAG engine with layered fallbacks and automated model selection. The new LLM Classification gating system provides intelligent activation based on benchmark results, while vLLM adoption tracking enables data-driven Phase 4 rollout planning. Enhanced LLM service capabilities include comprehensive health checking, caching, and monitoring. The system emphasizes reliability, observability, and performance through model reuse, deterministic fallbacks, circuit-breaking, and automated decision-making. Configuration flags enable cost-conscious operation, while tests and monitoring support continuous validation and improvement.
 
 [No sources needed since this section summarizes without analyzing specific files]
@@ -538,33 +587,35 @@ The system integrates NVIDIA NIM, local Ollama, LLM Classification, and a robust
 ## Appendices
 
 ### Configuration Options
+
 - NVIDIA NIM
-  - Environment variables: NVIDIA_API_KEY, NVIDIA_MODEL
-  - Behavior: LiteLLM-backed when available; direct client fallback
+    - Environment variables: NVIDIA_API_KEY, NVIDIA_MODEL
+    - Behavior: LiteLLM-backed when available; direct client fallback
 - Reasoning Engine
-  - Flags: ENABLE_NVIDIA_REASONER, PIPELINE_REASONING_TIMEOUT_SECONDS
-  - Ollama: OLLAMA_BASE_URL, fallback model selection with auto-discovery
+    - Flags: ENABLE_NVIDIA_REASONER, PIPELINE_REASONING_TIMEOUT_SECONDS
+    - Ollama: OLLAMA_BASE_URL, fallback model selection with auto-discovery
 - LLM Service
-  - Flags: LLM_PROVIDER_TIMEOUT_SECONDS, EXTERNAL_CIRCUIT_BREAKER_ENABLED
-  - Cache: LLM_CACHE_TTL_SECONDS, Redis integration
-  - Security: MAX_LLM_INPUT_LENGTH, prompt injection patterns
+    - Flags: LLM_PROVIDER_TIMEOUT_SECONDS, EXTERNAL_CIRCUIT_BREAKER_ENABLED
+    - Cache: LLM_CACHE_TTL_SECONDS, Redis integration
+    - Security: MAX_LLM_INPUT_LENGTH, prompt injection patterns
 - LLM Classification Gate
-  - Flags: USE_LLM_CLASSIFICATION, AUTO_ENABLE_FROM_BENCHMARK
-  - Thresholds: MIN_BENCHMARK_F1, BENCHMARK_STATE_PATH
+    - Flags: USE_LLM_CLASSIFICATION, AUTO_ENABLE_FROM_BENCHMARK
+    - Thresholds: MIN_BENCHMARK_F1, BENCHMARK_STATE_PATH
 - vLLM Adoption
-  - Flags: VLLM_ADOPTION_ENABLED, VLLM_REQUESTS_PER_HOUR_THRESHOLD, VLLM_DAILY_TOKENS_THRESHOLD
-  - Target: VLLM_TARGET_MODEL, VLLM_TARGET_GPU
+    - Flags: VLLM_ADOPTION_ENABLED, VLLM_REQUESTS_PER_HOUR_THRESHOLD, VLLM_DAILY_TOKENS_THRESHOLD
+    - Target: VLLM_TARGET_MODEL, VLLM_TARGET_GPU
 - RAG Engine
-  - Flags: LOW_MEMORY_MODE, RAG_USE_TRANSFORMERS
-  - Persistence: semantic_store directory, auto-seeding from default guidelines
+    - Flags: LOW_MEMORY_MODE, RAG_USE_TRANSFORMERS
+    - Persistence: semantic_store directory, auto-seeding from default guidelines
 - LLM Classification
-  - Flag: USE_LLM_CLASSIFICATION
-  - Model: LLM-based classification with configurable model backend
+    - Flag: USE_LLM_CLASSIFICATION
+    - Model: LLM-based classification with configurable model backend
 - Tests
-  - Classification benchmark: CLASSIFICATION_BENCHMARK_MODEL environment variable
-  - vLLM adoption: Prometheus metrics integration
+    - Classification benchmark: CLASSIFICATION_BENCHMARK_MODEL environment variable
+    - vLLM adoption: Prometheus metrics integration
 
 **Section sources**
+
 - [nvidia_client.py](file://backend/app/services/nvidia_client.py)
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
@@ -576,6 +627,7 @@ The system integrates NVIDIA NIM, local Ollama, LLM Classification, and a robust
 - [test_vllm_adoption.py](file://backend/tests/test_vllm_adoption.py)
 
 ### Cost Optimization Strategies
+
 - Prefer LiteLLM for unified provider routing and reduced latency
 - Use deterministic fallbacks to minimize compute costs when transformers are unavailable
 - Enable low-memory mode and disable transformer-based RAG when appropriate
@@ -588,6 +640,7 @@ The system integrates NVIDIA NIM, local Ollama, LLM Classification, and a robust
 [No sources needed since this section provides general guidance]
 
 ### Monitoring and Observability
+
 - Model metrics recording for NVIDIA and Ollama tiers
 - Comprehensive LLM service metrics including cache hits/misses, request durations, and failures
 - LLM Classification gate state monitoring and benchmark result tracking
@@ -597,6 +650,7 @@ The system integrates NVIDIA NIM, local Ollama, LLM Classification, and a robust
 - Prometheus metrics integration for comprehensive observability
 
 **Section sources**
+
 - [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
 - [llm_service.py](file://backend/app/services/llm_service.py)
 - [classification_gate.py](file://backend/app/services/classification_gate.py)

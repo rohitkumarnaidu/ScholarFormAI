@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # ScholarForm AI Release Process
 
 ## Versioning
@@ -17,7 +16,7 @@ Pre-release suffixes: `-alpha.N`, `-beta.N`, `-rc.N`.
 ## Release Cadence
 
 | Release Type | Cadence | Examples |
-|-------------|---------|----------|
+| ------------- | --------- | ---------- |
 | Major | ~6 months | 1.0.0, 2.0.0 |
 | Minor | ~6-8 weeks | 1.1.0, 1.2.0 |
 | Patch | As needed (hotfix) | 1.0.1, 1.0.2 |
@@ -82,7 +81,7 @@ All release tags MUST be signed (`git tag -s`). Unsigned tags will be rejected b
 - The workflow does **everything** — no manual steps needed:
 
 | Step | What Happens | Status |
-|------|-------------|--------|
+| ------ | ------------- | -------- |
 | 1 | Tag pushed → workflow triggered | ✅ |
 | 2 | Version verified against `pyproject.toml` + `package.json` | ✅ |
 | 3 | Release notes generated via GitHub API (categorized by conventional commits) | ✅ |
@@ -95,6 +94,7 @@ All release tags MUST be signed (`git tag -s`). Unsigned tags will be rejected b
 | 10 | SLSA provenance attestation generated | ✅ |
 
 > **You do not need to edit the release page manually.** The body is auto-generated with:
+>
 > - Release notes from merged PRs (via GitHub API + conventional commit categorization)
 > - Docker pull commands with cosign verify instructions
 > - Package install commands (npm + pip)
@@ -106,6 +106,7 @@ All release tags MUST be signed (`git tag -s`). Unsigned tags will be rejected b
 When a release is created (auto or manually), include the **following sections and artifacts** on the release page:
 
 #### Release Title Format
+
 ```
 ScholarForm AI v1.1.0
 ```
@@ -207,13 +208,12 @@ See [MIGRATION.md](../operations/MIGRATION.md) for upgrade instructions.
 5. Verify health: `curl https://api.scholarform.ai/api/v1/health/live`
 ````
 
-
 #### Release Artifacts Checklist
 
 Before publishing the release, verify these artifacts are **attached** to the release:
 
 | # | Artifact | Source | Auto-attached? |
-|---|----------|--------|---------------|
+| --- | ---------- | -------- | --------------- |
 | 1 | `release-checksums.txt` | CI generate | ✅ (create-release.yml) |
 | 2 | `scholarform-sbom-v1.1.0.json` | CI generate | ✅ (create-release.yml) |
 | 3 | `scholarform.intoto.jsonl` | SLSA workflow | ✅ (slsa-provenance.yml) |

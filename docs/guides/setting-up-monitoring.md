@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: Guide — Setting Up Monitoring
 description: Complete monitoring setup guide with Prometheus, Grafana, structured logging, and alerting
 sidebar_position: 4
@@ -37,7 +37,7 @@ This guide covers the complete monitoring and observability stack for ScholarFor
 ### Component Responsibilities
 
 | Component | Purpose | Data Retention | Cost |
-|-----------|---------|---------------|------|
+| ----------- | --------- | --------------- | ------ |
 | **Prometheus** | Time-series metrics storage | 15 days (default) | Free (self-hosted) |
 | **Grafana** | Dashboard visualization + alerting | — | Free tier (cloud) |
 | **Better Uptime** | External uptime monitoring | — | Free (1 check) |
@@ -55,6 +55,7 @@ curl http://localhost:8000/metrics \
 ```
 
 **Expected output (sample):**
+
 ```
 # HELP http_requests_total Total HTTP requests
 # TYPE http_requests_total counter
@@ -91,7 +92,7 @@ circuit_breaker_state{circuit="nvidia_nim"} 0
 ### Available Metrics
 
 | Metric | Type | Labels | Description |
-|--------|------|--------|-------------|
+| -------- | ------ | -------- | ------------- |
 | `http_requests_total` | Counter | method, endpoint, status | Total HTTP requests |
 | `http_request_duration_seconds` | Histogram | endpoint | Request latency distribution |
 | `pipeline_stage_duration_seconds` | Histogram | stage | Per-pipeline-stage duration |
@@ -231,7 +232,7 @@ The **ScholarForm Overview** dashboard includes:
 Panel descriptions:
 
 | Panel | Metric | Query | Threshold |
-|-------|--------|-------|-----------|
+| ------- | -------- | ------- | ----------- |
 | **Request Rate** | `sum(rate(http_requests_total[5m]))` | Per-endpoint breakdown | — |
 | **Error Rate** | `sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) * 100` | > 1% warning, > 5% critical |
 | **P50 Latency** | `histogram_quantile(0.5, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))` | < 100ms target |
@@ -240,7 +241,6 @@ Panel descriptions:
 | **Active Jobs** | `active_processing_jobs` | < 50 normal |
 | **LLM Tier Usage** | `sum(llm_tier_usage_total) by (tier)` | Fallback > 10% = investigate |
 | **Circuit Breaker** | `circuit_breaker_state` | 1 = OPEN (alert) |
-
 
 ## Step 3: Configure Structured Logging
 
@@ -292,7 +292,7 @@ Security events are logged at `WARNING` level with structured context:
 Events logged as security events:
 
 | Event | Level | Fields |
-|-------|-------|--------|
+| ------- | ------- | -------- |
 | Authentication failure | WARNING | email (hashed), client_ip, reason |
 | Rate limit exceeded | WARNING | user_id, endpoint, current_count, limit |
 | Abuse detected | WARNING | client_ip, pattern, score |
@@ -323,7 +323,7 @@ For longer retention, configure a log drain:
 ScholarForm exposes three health endpoints:
 
 | Endpoint | Purpose | Expected Response |
-|----------|---------|-------------------|
+| ---------- | --------- | ------------------- |
 | `GET /health` | Basic liveness probe | `{"status": "ok"}` |
 | `GET /ready` | Readiness with dependency check | `{"status": "ok", "dependencies": {"db": "ok", "redis": "ok"}}` |
 | `GET /api/v1/health` | API v1 health with version info | `{"status": "ok", "version": "1.0.0"}` |
@@ -334,7 +334,7 @@ ScholarForm exposes three health endpoints:
 2. Create a monitor:
 
 | Setting | Value |
-|---------|-------|
+| --------- | ------- |
 | **URL** | `https://api.scholarform.ai/health` |
 | **Check Interval** | 1 minute |
 | **Timeout** | 10 seconds |
@@ -344,7 +344,7 @@ ScholarForm exposes three health endpoints:
 3. Configure notification:
 
 | Channel | Trigger |
-|---------|---------|
+| --------- | --------- |
 | Email | On first failure |
 | Slack | On failure + recovery |
 | SMS | If down > 5 minutes |
@@ -439,7 +439,7 @@ groups:
 ### Alert Notification Channels
 
 | Channel | Setup | Cost |
-|---------|-------|------|
+| --------- | ------- | ------ |
 | **Slack** | Grafana → Alerting → Contact Points → Slack webhook URL | Free |
 | **Email** | Grafana → Alerting → Contact Points → SMTP config | Free |
 | **PagerDuty** | Grafana → Alerting → Contact Points → PagerDuty integration key | Paid |
@@ -481,7 +481,7 @@ avg_over_time(active_processing_jobs[15m])
 ### Alert Thresholds Summary
 
 | Alert | Severity | Threshold | Duration |
-|-------|----------|-----------|----------|
+| ------- | ---------- | ----------- | ---------- |
 | High Error Rate | CRITICAL | > 1% 5xx | 5 min |
 | High Latency (P95) | WARNING | > 1s | 5 min |
 | Queue Backup | WARNING | > 50 jobs | 10 min |
@@ -493,7 +493,7 @@ avg_over_time(active_processing_jobs[15m])
 ## Troubleshooting Monitoring
 
 | Issue | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `/metrics` returns 401 | Missing or expired admin JWT | Generate a new admin token or disable auth on `/metrics` in dev |
 | Prometheus can't scrape | Network access or TLS issues | Ensure `--web.listen-address=0.0.0.0:9090` or use a proxy |
 | Grafana shows "No data" | Datasource not connected or wrong URL | Verify Prometheus datasource in Grafana → Configuration → Data Sources |
@@ -502,7 +502,7 @@ avg_over_time(active_processing_jobs[15m])
 ## Related Resources
 
 | Resource | Description |
-|----------|-------------|
+| ---------- | ------------- |
 | [Deploying to Production Guide](deploying-to-production.md) | Full production deployment |
 | [Operations Runbook](../OPERATIONS_RUNBOOK.md) | Day-to-day operations |
 | [Incident Response Runbook](../runbooks/incident-response.md) | P0/P1 incident procedures |

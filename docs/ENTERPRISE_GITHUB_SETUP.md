@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Enterprise GitHub Setup Guide
 
 **ScholarForm AI** — Complete GitHub configuration for enterprise open-source readiness.
@@ -30,7 +29,7 @@
 Configure in **Settings > General**:
 
 | Setting | Value |
-|---------|-------|
+| --------- | ------- |
 | Visibility | Public |
 | Description | AI-powered academic manuscript formatter and research document generator |
 | Website | `https://scholarform.ai` |
@@ -39,7 +38,7 @@ Configure in **Settings > General**:
 ### 1.2 Repository Features
 
 | Feature | Setting |
-|---------|---------|
+| --------- | --------- |
 | Issues | ✅ Enabled |
 | Discussions | ✅ Enabled (Q&A, General, Ideas, Show and tell) |
 | Projects | ✅ Enabled (Beta) |
@@ -71,7 +70,7 @@ research-tools latex docx pdf-generation nlp
 ScholarForm AI publishes three package types:
 
 | Package | Registry | Source | Frequency |
-|---------|----------|--------|-----------|
+| --------- | ---------- | -------- | ----------- |
 | `ghcr.io/scholarform/backend` | GitHub Container Registry | `backend/docker/Dockerfile` | On release + main |
 | `ghcr.io/scholarform/celery-worker` | GitHub Container Registry | `backend/docker/Dockerfile` | On release + main |
 | `@scholarform/frontend` | GitHub npm Registry | `frontend/` | On release |
@@ -90,6 +89,7 @@ No additional secrets required — `GITHUB_TOKEN` has `packages: write` permissi
 ### 2.3 Consuming Packages
 
 **Docker:**
+
 ```bash
 docker pull ghcr.io/scholarform/backend:latest
 docker pull ghcr.io/scholarform/backend:1.0.0
@@ -97,12 +97,14 @@ docker pull ghcr.io/scholarform/celery-worker:latest
 ```
 
 **npm (GitHub Packages):**
+
 ```bash
 echo "@scholarform:registry=https://npm.pkg.github.com" >> .npmrc
 npm install @scholarform/frontend
 ```
 
 **Python (GitHub Packages):**
+
 ```bash
 pip install scholarform-backend --index-url https://github.com/rohitkumarnaidu/ScholarFormAI
 ```
@@ -112,7 +114,7 @@ pip install scholarform-backend --index-url https://github.com/rohitkumarnaidu/S
 Images are built for:
 
 | Architecture | Status |
-|-------------|--------|
+| ------------- | -------- |
 | `linux/amd64` | ✅ Supported |
 | `linux/arm64` | ✅ Supported |
 
@@ -170,6 +172,7 @@ Valid types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`
 Valid scopes: `backend`, `frontend`, `pipeline`, `auth`, `api`, `templates`, `docs`, `ci`, `deps`, `release`, `docker`
 
 Examples:
+
 ```
 feat(backend): add IEEE citation export
 fix(frontend): correct dark mode toggle state
@@ -180,7 +183,7 @@ security(pipeline): fix SSRF vulnerability in PDF parser
 ### 3.3 Version Resolution
 
 | Commit Type | Version Bump | Example |
-|-------------|-------------|---------|
+| ------------- | ------------- | --------- |
 | `feat` + `breaking` label | MAJOR | 1.0.0 → 2.0.0 |
 | `feat` | MINOR | 1.0.0 → 1.1.0 |
 | `fix` | PATCH | 1.0.0 → 1.0.1 |
@@ -191,7 +194,7 @@ security(pipeline): fix SSRF vulnerability in PDF parser
 ### 3.4 Release Types
 
 | Release Type | Pre-release Suffix | Example |
-|-------------|-------------------|---------|
+| ------------- | ------------------- | --------- |
 | Release Candidate | `-rc.N` | `v1.1.0-rc.1` |
 | Beta | `-beta.N` | `v1.1.0-beta.1` |
 | Alpha | `-alpha.N` | `v1.1.0-alpha.1` |
@@ -216,7 +219,7 @@ Every GitHub Release includes:
 ### 4.1 GitHub Security Features
 
 | Feature | Status | Description |
-|---------|--------|-------------|
+| --------- | -------- | ------------- |
 | Dependabot alerts | ✅ Enabled | Automated vulnerability alerts |
 | Dependabot security updates | ✅ Enabled | Auto-PR for vulnerable dependencies |
 | Secret scanning | ✅ Enabled | Push protection for secrets |
@@ -229,7 +232,7 @@ Every GitHub Release includes:
 ### 4.2 Required Secrets
 
 | Secret | Where | Used By |
-|--------|-------|---------|
+| -------- | ------- | --------- |
 | `GITHUB_TOKEN` | Auto (repo) | All workflows |
 | `SCORECARD_GIST_ID` | Actions secrets | Scorecard badge (optional) |
 | `GIST_SECRET` | Actions secrets | Badge update (optional) |
@@ -252,6 +255,7 @@ After the Scorecard workflow runs, a badge can be displayed in the README:
 ```
 
 Scorecard evaluates:
+
 - Binary artifacts, branch protection, CI tests, CII Best Practices
 - Code review, contributors, dangerous workflow, dependency update tools
 - Dependency review, fuzzing, license, maintained, packaging
@@ -261,7 +265,7 @@ Scorecard evaluates:
 ### 4.4 SLSA Level Targets
 
 | Level | Current | Target | Requirements |
-|-------|---------|--------|-------------|
+| ------- | --------- | -------- | ------------- |
 | SLSA 1 | ✅ | — | Provenance exists |
 | SLSA 2 | ✅ | — | Signed provenance |
 | SLSA 3 | ✅ | Q3 2026 | Hermetic, isolated builds |
@@ -269,7 +273,7 @@ Scorecard evaluates:
 ### 4.5 Security Response SLA
 
 | Severity | Response | Fix | Public Disclosure |
-|----------|----------|-----|-------------------|
+| ---------- | ---------- | ----- | ------------------- |
 | Critical | 24h | 7 days | 60 days |
 | High | 48h | 14 days | 60 days |
 | Medium | 72h | 30 days | 90 days |
@@ -282,7 +286,7 @@ Scorecard evaluates:
 ### 5.1 Label Taxonomy
 
 | Category | Labels | Description |
-|----------|--------|-------------|
+| ---------- | -------- | ------------- |
 | **Type** | `bug`, `feature`, `enhancement`, `documentation`, `security` | Issue type |
 | **Status** | `stale`, `pinned`, `blocked`, `needs-triage`, `in-progress` | Workflow state |
 | **Priority** | `priority-critical`, `priority-high`, `priority-medium`, `priority-low` | Severity |
@@ -310,7 +314,7 @@ Configured in `.github/PULL_REQUEST_TEMPLATE.md`:
 File `.github/CODEOWNERS` defines ownership:
 
 | Pattern | Owner |
-|---------|-------|
+| --------- | ------- |
 | `*` | `@rohitkumarnaidu` |
 | `/backend/` | `@rohitkumarnaidu` |
 | `/frontend/` | `@rohitkumarnaidu` |
@@ -323,7 +327,7 @@ File `.github/CODEOWNERS` defines ownership:
 Configured in `.github/workflows/stale.yml`:
 
 | Item | Stale After | Close After | Exemptions |
-|------|------------|-------------|------------|
+| ------ | ------------ | ------------- | ------------ |
 | Issues | 60 days | 14 days | `security`, `bug`, `enhancement`, `roadmap`, `pinned`, `priority-critical`, `priority-high` |
 | PRs | 30 days | 14 days | `security`, `dependencies`, `pinned`, `priority-critical` |
 
@@ -338,7 +342,7 @@ See [BRANCH_PROTECTION.md](BRANCH_PROTECTION.md) for full configuration.
 ### 6.2 Required Status Checks
 
 | Status Check | Backend CI | Frontend CI | Security | Commitlint | Dependabot | CodeQL | Scorecard | Dep Review |
-|-------------|:-----------:|:------------:|:--------:|:-----------:|:----------:|:------:|:---------:|:----------:|
+| ------------- | :-----------: | :------------: | :--------: | :-----------: | :----------: | :------: | :---------: | :----------: |
 | `main` | ✅ | ✅ | ✅ | ✅ | — | ✅ | ✅ | ✅ |
 | `develop` | ✅ | ✅ | — | ✅ | — | — | — | — |
 | `release/*` | ✅ | ✅ | ✅ | — | — | — | — | ✅ |
@@ -360,7 +364,7 @@ Required for `main` branch merges.
 ### 6.4 Auto-Merge Policy
 
 | PR Type | Auto-Merge | Method | Conditions |
-|---------|:----------:|--------|------------|
+| --------- | :----------: | -------- | ------------ |
 | Dependabot patch | ✅ | Squash | All checks pass |
 | Dependabot minor | ✅ | Squash | All checks pass |
 | Renovate patch | ✅ | Squash | All checks pass |
@@ -376,7 +380,7 @@ Required for `main` branch merges.
 GitHub displays a community profile checklist. Ensure these files exist:
 
 | File | Status | Location |
-|------|--------|----------|
+| ------ | -------- | ---------- |
 | README.md | ✅ | Root |
 | LICENSE | ✅ | Root (MIT) |
 | CONTRIBUTING.md | ✅ | Root |
@@ -390,7 +394,7 @@ GitHub displays a community profile checklist. Ensure these files exist:
 ### 7.2 Discussion Categories
 
 | Category | Description |
-|----------|-------------|
+| ---------- | ------------- |
 | Q&A | Questions about using ScholarForm AI |
 | General | General discussion, announcements |
 | Ideas | Feature proposals and ideas |
@@ -410,7 +414,7 @@ GitHub displays a community profile checklist. Ensure these files exist:
 ### 8.1 GitHub Health Metrics
 
 | Metric | Tool | Frequency |
-|--------|------|-----------|
+| -------- | ------ | ----------- |
 | OpenSSF Scorecard | Scorecard workflow | Weekly |
 | Dependabot alerts | GitHub UI | Real-time |
 | Code scanning alerts | CodeQL | On push |
@@ -423,6 +427,7 @@ GitHub displays a community profile checklist. Ensure these files exist:
 Monitor at: `https://github.com/rohitkumarnaidu/ScholarFormAI/actions`
 
 Key workflows to watch:
+
 1. `backend-ci` — Failing tests signal regression
 2. `security` — New vulnerabilities
 3. `scorecard` — Supply chain health
@@ -440,7 +445,7 @@ Track releases at: `https://github.com/rohitkumarnaidu/ScholarFormAI/releases`
 ### 9.1 Environments
 
 | Environment | Branch | Protection Rules | Deploy Workflow |
-|-------------|--------|-----------------|-----------------|
+| ------------- | -------- | ----------------- | ----------------- |
 | Production | main | CI gates required | `deploy-production.yml` |
 | Staging | develop | CI gates required | `deploy-staging.yml` |
 
@@ -451,7 +456,7 @@ Configure in **Settings > Environments**:
 #### Production Environment
 
 | Setting | Value |
-|---------|-------|
+| --------- | ------- |
 | Required reviewers | @rohitkumarnaidu |
 | Wait timer | 0 minutes |
 | Deployment branches | `main` |
@@ -466,7 +471,7 @@ Configure in **Settings > Environments**:
 #### Staging Environment
 
 | Setting | Value |
-|---------|-------|
+| --------- | ------- |
 | Deployment branches | `develop` |
 | Secret: `RENDER_API_KEY` | ✅ |
 | Secret: `RENDER_STAGING_SERVICE_ID` | ✅ |
@@ -479,7 +484,7 @@ Configure in **Settings > Environments**:
 ### 10.1 Pre-Launch Checklist
 
 | Task | Status | Verified By |
-|------|--------|-------------|
+| ------ | -------- | ------------- |
 | Branch protection rules configured | ☐ | |
 | Required status checks enabled | ☐ | |
 | Merge queue enabled | ☐ | |
@@ -498,7 +503,7 @@ Configure in **Settings > Environments**:
 ### 10.2 Release Checklist
 
 | Task | Responsibility |
-|------|---------------|
+| ------ | --------------- |
 | Verify all CI passes on release branch | Release Manager |
 | Update CHANGELOG.md | Release Manager |
 | Update CITATION.cff version | Release Manager |
@@ -515,7 +520,7 @@ Configure in **Settings > Environments**:
 ### 10.3 Post-Incident Checklist
 
 | Task | Owner |
-|------|-------|
+| ------ | ------- |
 | Create GitHub Advisory (if vulnerability) | Security Team |
 | Backport fix to supported versions | Release Manager |
 | Update CHANGELOG with security entry | Release Manager |
@@ -528,7 +533,7 @@ Configure in **Settings > Environments**:
 ## Appendix: Workflow Summary
 
 | Workflow | Trigger | Purpose | New/Existing |
-|----------|---------|---------|:------------:|
+| ---------- | --------- | --------- | :------------: |
 | `backend-ci.yml` | Push/PR to main | Backend lint, type, test | Existing |
 | `frontend-ci.yml` | Push/PR to main | Frontend lint, test, build | Existing |
 | `security.yml` | PR/schedule | SAST, dependency scanning | Existing |

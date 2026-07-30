@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Pipeline Processing System
 
 <cite>
@@ -14,7 +13,9 @@
 </cite>
 
 ## Update Summary
+
 **Changes Made**
+
 - Added comprehensive documentation for exponential backoff retry mechanisms in PipelineOrchestrator
 - Updated error handling and recovery section to include intelligent retry logic for transient Supabase errors
 - Enhanced database operations section with details about _run_with_retry function
@@ -22,6 +23,7 @@
 - Updated troubleshooting guide to include retry-related debugging information
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [Project Structure](#project-structure)
 3. [Core Components](#core-components)
@@ -34,10 +36,13 @@
 10. [Appendices](#appendices)
 
 ## Introduction
+
 This document describes the 12-stage pipeline processing system used to transform academic manuscripts into properly formatted outputs. The PipelineOrchestrator coordinates a modular set of stages that perform text extraction, metadata enrichment, structure detection, classification, validation, formatting, and persistence. It implements robust error handling, timeouts, concurrency controls, and real-time status updates to support large-scale document processing. The system now includes sophisticated exponential backoff retry mechanisms to handle transient database errors and improve reliability.
 
 ## Project Structure
+
 The pipeline is implemented in the backend under the pipeline package and integrates with models, services, and tasks:
+
 - Orchestrator: Central coordinator for the pipeline lifecycle and stage orchestration
 - Base stage interface: Defines the contract for all pipeline stages
 - Document model: Internal representation of the document and its components across stages
@@ -54,6 +59,7 @@ Orchestrator --> Services["External Services<br/>GROBID, Docling, Crossref, Expo
 ```
 
 **Diagram sources**
+
 - [celery_tasks.py:41-66](file://backend/app/tasks/celery_tasks.py#L41-L66)
 - [orchestrator.py:73-1281](file://backend/app/pipeline/orchestrator.py#L73-L1281)
 - [base.py:4-23](file://backend/app/pipeline/base.py#L4-L23)
@@ -61,6 +67,7 @@ Orchestrator --> Services["External Services<br/>GROBID, Docling, Crossref, Expo
 - [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
 
 **Section sources**
+
 - [celery_tasks.py:41-66](file://backend/app/tasks/celery_tasks.py#L41-L66)
 - [orchestrator.py:73-1281](file://backend/app/pipeline/orchestrator.py#L73-L1281)
 - [base.py:4-23](file://backend/app/pipeline/base.py#L4-L23)
@@ -68,12 +75,14 @@ Orchestrator --> Services["External Services<br/>GROBID, Docling, Crossref, Expo
 - [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
 
 ## Core Components
+
 - PipelineOrchestrator: Implements the end-to-end pipeline, stage coordination, timeouts, retries, cancellation checks, and persistence
 - PipelineStage (base): Abstract interface that all stages implement
 - PipelineDocument: Internal document model carrying content, metadata, formatting options, validation results, and processing history
 - RetryGuard: Provides exponential backoff retry mechanisms for resilient operations
 
 Key responsibilities:
+
 - Orchestrate sequential and parallel stages with intelligent retry logic
 - Enforce runtime flags (fast mode, semantic parser, crossref enrichment, AI reasoning)
 - Manage concurrency limits and timeouts
@@ -82,13 +91,16 @@ Key responsibilities:
 - Implement exponential backoff retry mechanisms for transient database errors
 
 **Section sources**
+
 - [orchestrator.py:73-1281](file://backend/app/pipeline/orchestrator.py#L73-L1281)
 - [base.py:4-23](file://backend/app/pipeline/base.py#L4-L23)
 - [pipeline_document.py:49-207](file://backend/app/models/pipeline_document.py#L49-L207)
 - [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
 
 ## Architecture Overview
+
 The pipeline follows a staged design with explicit phases and optional AI layers. It supports:
+
 - Direct parsing for supported formats
 - Conversion to DOCX for unsupported formats
 - Parallel extraction via GROBID and Docling for PDFs
@@ -129,6 +141,7 @@ Celery-->>Client : "completion status"
 ```
 
 **Diagram sources**
+
 - [celery_tasks.py:41-66](file://backend/app/tasks/celery_tasks.py#L41-L66)
 - [orchestrator.py:576-1146](file://backend/app/pipeline/orchestrator.py#L576-L1146)
 - [retry_guard.py:10-62](file://backend/app/pipeline/safety/retry_guard.py#L10-L62)
@@ -136,7 +149,9 @@ Celery-->>Client : "completion status"
 ## Detailed Component Analysis
 
 ### PipelineOrchestrator
+
 The orchestrator coordinates all pipeline stages, manages runtime flags, enforces timeouts, and persists results. It includes:
+
 - Semaphore-based concurrency control to limit simultaneous jobs
 - Safe execution wrappers and retry guards for resilience
 - Conditional execution flags (fast mode, semantic parser, crossref enrichment, AI reasoning)
@@ -169,16 +184,21 @@ class PipelineOrchestrator {
 ```
 
 **Diagram sources**
+
 - [orchestrator.py:73-1281](file://backend/app/pipeline/orchestrator.py#L73-L1281)
 
 **Section sources**
+
 - [orchestrator.py:73-1281](file://backend/app/pipeline/orchestrator.py#L73-L1281)
 
 ### Retry Guard and Exponential Backoff Mechanisms
+
 The system implements sophisticated retry mechanisms to handle transient failures:
 
 #### Stage-Level Retry Decorators
+
 Multiple pipeline stages are wrapped with retry decorators that provide exponential backoff:
+
 - `_run_extraction_stage`: 2 retries with 1.0s backoff factor
 - `_run_structure_detection`: 1 retry with 1.0s backoff factor  
 - `_run_semantic_parsing`: 2 retries with 1.0s backoff factor
@@ -187,7 +207,9 @@ Multiple pipeline stages are wrapped with retry decorators that provide exponent
 - `_run_formatting_stage`: 2 retries with 1.0s backoff factor
 
 #### Database Operation Retry Logic
+
 The `_run_with_retry` function provides intelligent retry logic for database operations:
+
 - **3 attempts total** with exponential backoff (0.15s, 0.30s, 0.60s delays)
 - **Transient error detection** for Supabase connection issues
 - **Automatic client refresh** to handle stale connections
@@ -214,10 +236,12 @@ Success3 --> |No| Fail
 ```
 
 **Diagram sources**
+
 - [orchestrator.py:127-150](file://backend/app/pipeline/orchestrator.py#L127-L150)
 - [retry_guard.py:10-62](file://backend/app/pipeline/safety/retry_guard.py#L10-L62)
 
 **Section sources**
+
 - [orchestrator.py:127-150](file://backend/app/pipeline/orchestrator.py#L127-L150)
 - [orchestrator.py:505-518](file://backend/app/pipeline/orchestrator.py#L505-L518)
 - [orchestrator.py:520-524](file://backend/app/pipeline/orchestrator.py#L520-L524)
@@ -228,6 +252,7 @@ Success3 --> |No| Fail
 - [retry_guard.py:10-62](file://backend/app/pipeline/safety/retry_guard.py#L10-L62)
 
 ### PipelineStage Base Interface
+
 All pipeline stages implement a uniform interface to ensure modularity and testability.
 
 ```mermaid
@@ -239,12 +264,15 @@ class PipelineStage {
 ```
 
 **Diagram sources**
+
 - [base.py:4-23](file://backend/app/pipeline/base.py#L4-L23)
 
 **Section sources**
+
 - [base.py:4-23](file://backend/app/pipeline/base.py#L4-L23)
 
 ### PipelineDocument Model
+
 The internal document model carries parsed content, assets, metadata, formatting options, validation outcomes, and processing history.
 
 ```mermaid
@@ -311,13 +339,17 @@ PipelineDocument --> ProcessingStage : "history"
 ```
 
 **Diagram sources**
+
 - [pipeline_document.py:49-207](file://backend/app/models/pipeline_document.py#L49-L207)
 
 **Section sources**
+
 - [pipeline_document.py:49-207](file://backend/app/models/pipeline_document.py#L49-L207)
 
 ### Stage Coordination and Control Flow
+
 The orchestrator defines a clear progression of stages with optional branches and parallelism:
+
 - Upload and job creation
 - Text extraction (direct or via DOCX conversion)
 - Optional Nougat OCR fallback for scanned PDFs
@@ -370,13 +402,17 @@ Persist --> End(["End"])
 ```
 
 **Diagram sources**
+
 - [orchestrator.py:576-1146](file://backend/app/pipeline/orchestrator.py#L576-L1146)
 
 **Section sources**
+
 - [orchestrator.py:576-1146](file://backend/app/pipeline/orchestrator.py#L576-L1146)
 
 ### Error Handling and Recovery
+
 The orchestrator implements layered safety with sophisticated retry mechanisms:
+
 - Concurrency limiting with rejection and status updates
 - **Exponential backoff retry guards around critical stages**
 - Timeout enforcement per stage with cancellation events
@@ -402,15 +438,19 @@ Success --> End
 ```
 
 **Diagram sources**
+
 - [orchestrator.py:586-598](file://backend/app/pipeline/orchestrator.py#L586-L598)
 - [orchestrator.py:1106-1146](file://backend/app/pipeline/orchestrator.py#L1106-L1146)
 
 **Section sources**
+
 - [orchestrator.py:586-598](file://backend/app/pipeline/orchestrator.py#L586-L598)
 - [orchestrator.py:1106-1146](file://backend/app/pipeline/orchestrator.py#L1106-L1146)
 
 ### Conditional Execution and Runtime Flags
+
 Runtime flags control optional stages:
+
 - fast_mode: Disables semantic parser, crossref enrichment, and AI reasoning by default
 - semantic_parser: Enables optional semantic parsing layer
 - crossref_enrichment: Enables optional CrossRef citation validation
@@ -419,21 +459,26 @@ Runtime flags control optional stages:
 These flags are resolved from formatting options and environment settings, with tests overriding defaults to ensure determinism.
 
 **Section sources**
+
 - [orchestrator.py:306-323](file://backend/app/pipeline/orchestrator.py#L306-L323)
 
 ### Timeout Handling and Concurrency Controls
+
 - Per-stage timeouts enforced via thread pool futures with cancellation events
 - Global semaphore limits concurrent pipeline executions
 - Configurable timeouts for GROBID, Docling, semantic parsing, and reasoning
 - Graceful shutdown handling for server reloads and cancellations
 
 **Section sources**
+
 - [orchestrator.py:266-287](file://backend/app/pipeline/orchestrator.py#L266-L287)
 - [orchestrator.py:69-72](file://backend/app/pipeline/orchestrator.py#L69-L72)
 - [orchestrator.py:745-769](file://backend/app/pipeline/orchestrator.py#L745-L769)
 
 ### Edit Reprocessing Flow
+
 The orchestrator supports an edit flow that:
+
 - Reconstructs a document from edited structured data
 - Re-validates and re-formats without re-extracting
 - Persists a new version while preserving previous versions
@@ -457,13 +502,17 @@ Orchestrator-->>Client : "success"
 ```
 
 **Diagram sources**
+
 - [orchestrator.py:1148-1281](file://backend/app/pipeline/orchestrator.py#L1148-L1281)
 
 **Section sources**
+
 - [orchestrator.py:1148-1281](file://backend/app/pipeline/orchestrator.py#L1148-L1281)
 
 ## Dependency Analysis
+
 The orchestrator depends on external services and internal modules:
+
 - ParserFactory for direct parsing and DOCX conversion
 - GROBIDClient and DoclingClient for metadata and layout extraction
 - Crossref client for citation validation
@@ -486,16 +535,19 @@ RetryGuard --> ExponentialBackoff["Exponential Backoff Logic"]
 ```
 
 **Diagram sources**
+
 - [orchestrator.py:19-38](file://backend/app/pipeline/orchestrator.py#L19-L38)
 - [orchestrator.py:58-61](file://backend/app/pipeline/orchestrator.py#L58-L61)
 - [retry_guard.py:10-62](file://backend/app/pipeline/safety/retry_guard.py#L10-L62)
 
 **Section sources**
+
 - [orchestrator.py:19-38](file://backend/app/pipeline/orchestrator.py#L19-L38)
 - [orchestrator.py:58-61](file://backend/app/pipeline/orchestrator.py#L58-L61)
 - [retry_guard.py:10-62](file://backend/app/pipeline/safety/retry_guard.py#L10-L62)
 
 ## Performance Considerations
+
 - Concurrency control: Limit simultaneous jobs to prevent resource exhaustion
 - Parallel extraction: Offload GROBID and Docling to separate threads with bounded timeouts
 - Fast mode: Disable optional AI layers to reduce latency during testing or constrained environments
@@ -506,7 +558,9 @@ RetryGuard --> ExponentialBackoff["Exponential Backoff Logic"]
 - **Client refresh: Automatic connection recovery reduces downtime from stale database connections**
 
 ## Troubleshooting Guide
+
 Common issues and remedies:
+
 - Too many concurrent jobs: The semaphore rejects new requests; reduce batch sizes or scale horizontally
 - Stage timeouts: Increase stage-specific timeout settings or disable optional stages
 - Cancellations: Server reloads or user cancellations are handled gracefully; check status updates
@@ -517,16 +571,19 @@ Common issues and remedies:
 - **Connection issues: Automatic client refresh handles stale connections; verify network stability**
 
 **Section sources**
+
 - [orchestrator.py:586-598](file://backend/app/pipeline/orchestrator.py#L586-L598)
 - [orchestrator.py:1106-1146](file://backend/app/pipeline/orchestrator.py#L1106-L1146)
 - [orchestrator.py:127-150](file://backend/app/pipeline/orchestrator.py#L127-L150)
 
 ## Conclusion
+
 The pipeline system is designed for reliability, scalability, and extensibility. The PipelineOrchestrator coordinates modular stages with robust error handling, timeouts, and real-time feedback. The implementation of exponential backoff retry mechanisms significantly improves resilience against transient database failures. Optional AI layers and runtime flags enable tuning for performance and quality. The edit reprocessing flow supports iterative refinement, and the document model provides a consistent representation across all stages.
 
 ## Appendices
 
 ### Pipeline Phases and Responsibilities
+
 - UPLOAD: Job initialization and status updates
 - EXTRACTION: Text extraction and optional OCR fallback
 - PARALLEL AI EXTRACTION: GROBID and Docling for PDFs
@@ -544,7 +601,9 @@ The pipeline system is designed for reliability, scalability, and extensibility.
 - PERSISTENCE: Final result storage and status updates
 
 ### Retry Mechanism Configuration
+
 **Stage-Level Retry Decorators:**
+
 - Extraction: 2 retries, 1.0s backoff factor
 - Structure Detection: 1 retry, 1.0s backoff factor
 - Semantic Parsing: 2 retries, 1.0s backoff factor
@@ -553,6 +612,7 @@ The pipeline system is designed for reliability, scalability, and extensibility.
 - Formatting: 2 retries, 1.0s backoff factor
 
 **Database Operation Retry Logic:**
+
 - Maximum 3 attempts with exponential backoff
 - Delays: 0.15s, 0.30s, 0.60s (2^n-1)
 - Transient error detection for Supabase

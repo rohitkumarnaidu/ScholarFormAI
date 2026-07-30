@@ -17,7 +17,7 @@ Comprehensive enterprise-grade validation of the entire ScholarForm AI platform
 (backend + frontend + AI pipeline) has been completed. All quality gates pass.
 
 | Metric | Value |
-|--------|-------|
+| -------- | ------- |
 | Backend module coverage | 199/199 (100%) — every `.py` module covered |
 | Backend total tests verified | **~9,623+ passing**, 0 failures, 0 unverified files |
 | Frontend test files | **~128** |
@@ -38,7 +38,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 ## 1. Test Coverage Summary Table
 
 | Phase | Category | Tests | Status |
-|-------|----------|-------|--------|
+| ------- | ---------- | ------- | -------- |
 | **Phase 0** | Pipeline import fix + foundation | 85 | ✅ All pass |
 | **Phase 1** | Pipeline enterprise batch 1 (StyleMapper, SectionOrderValidator, NumberingEngine, CrossReferenceEngine, ContractLoader, RetryGuard, SafeExecution, ValidateOutput, ReferenceNormalizer, SectionPrompts, EquationStandardizer, ContentParser, QualityScorer, TaskParser) | 85 | ✅ All pass |
 | **Phase 2** | Pipeline enterprise batch 2 (AgentPipeline, DocumentGenerator, PromptBuilder, ReferenceFormatter, TemplateRenderer, Formatter, CircuitBreaker, LLMValidator, ReferenceFormatterEngine, ReferenceParser, ContentClassifier, HeadingRules, PositionRules, StructureDetector, RagEngine, MultiDocSynthesizer) | 135 | ✅ All pass |
@@ -65,7 +65,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 ### 2.1 Security Test Expansion (+231 tests)
 
 | Security Category | Before | After | Gap Closed |
-|------------------|--------|-------|------------|
+| ------------------ | -------- | ------- | ------------ |
 | OWASP injection tests | SKIPPED (broken mocks) | 18 PASSING | ✅ Fixed |
 | AbuseDetector | 0 tests | 11 tests | ✅ Added |
 | MaxBodySize enforcement | 0 tests | 10 tests | ✅ Added |
@@ -77,7 +77,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 ### 2.2 OWASP Top 10 — Full Coverage
 
 | Category | Tests | Pass/Fail |
-|----------|-------|-----------|
+| ---------- | ------- | ----------- |
 | OWASP Top 10 for LLM (AI-specific) | 26 | ✅ All pass |
 | Prompt injection (50+ patterns) | 28 | ✅ All pass |
 | SQL/NoSQL injection | 18 | ✅ All pass |
@@ -93,7 +93,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 ### 2.3 OWASP AI Top 10 — Full Coverage
 
 | LLM01-LLM10 | Tests | Pass/Fail |
-|-------------|-------|-----------|
+| ------------- | ------- | ----------- |
 | LLM01: Prompt Injection | 28 | ✅ All pass |
 | LLM02: Insecure Output Handling | 12 | ✅ All pass |
 | LLM03: Training Data Poisoning | 8 | ✅ All pass |
@@ -109,7 +109,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 ### 2.4 Additional Security Validations
 
 | Category | Tests | Pass/Fail |
-|----------|-------|-----------|
+| ---------- | ------- | ----------- |
 | Vector DB security | 12 | ✅ All pass |
 | AI tool misuse | 10 | ✅ All pass |
 | Rate limiting | 50 | ✅ All pass |
@@ -130,7 +130,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 ### 3.1 AI Quality Test Expansion
 
 | Quality Dimension | Before | After | Status |
-|------------------|--------|-------|--------|
+| ------------------ | -------- | ------- | -------- |
 | LLM Judge / AI-as-judge | 0 tests | 20 tests | ✅ Added |
 | Semantic groundedness (embedding-based) | keyword-Jaccard only | embedding-based | ✅ Upgraded |
 | Bias/fairness evaluation | 0 tests | 25 tests | ✅ Added |
@@ -142,18 +142,21 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 | **Total AI quality** | **~269** | **~405+** | **All dimensions covered** |
 
 ### 3.2 LLM Judge / AI-as-Judge (20 tests)
+
 - Judge prompt correctness, rubric adherence, scoring consistency
 - Inter-rater reliability across multiple judge configurations
 - Edge cases: empty responses, hallucinated content, refusal to answer
 - Judge bias detection (position bias, verbosity bias)
 
 ### 3.3 Semantic Groundedness (embedding-based, 18 tests)
+
 - Upgraded from keyword-Jaccard overlap to embedding-based semantic similarity
 - Groundedness score thresholds validated against human-annotated test set
 - Faithfulness detection: contradictions, unsupported claims, source deviation
 - Cross-document groundedness consistency
 
 ### 3.4 Bias/Fairness Evaluation (25 tests)
+
 - Demographic parity across gender, ethnicity, age group prompts
 - Stereotype detection in academic content generation
 - Sentiment distribution analysis across demographic groups
@@ -161,6 +164,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 - Edge cases: ambiguous gender markers, cultural references, historical figures
 
 ### 3.5 Factual Accuracy (20 tests)
+
 - Verifiable claims checking against trusted knowledge base
 - Citation accuracy: do generated citations match actual sources?
 - Date/number/statistic precision verification
@@ -168,12 +172,14 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 - Factual confidence scoring with calibration curves
 
 ### 3.6 Response Consistency (15 tests)
+
 - Paraphrase invariance: same question → semantically equivalent answer
 - Contradiction detection across multi-turn conversations
 - Logical consistency: if A implies B and the model states A, it should not deny B
 - Stance stability: model maintains consistent position within a session
 
 ### 3.7 NLG Metrics (18 tests)
+
 - BLEU score thresholds for academic prose
 - ROUGE-L F1 evaluation for summary completeness
 - METEOR score for paraphrase-aware evaluation
@@ -181,6 +187,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 - Repetition detection (avoid verbatim phrase loops)
 
 ### 3.8 Golden Files & RAG Ground Truth
+
 - Golden files expanded from 5 to 10 covering all document types
 - RAG ground truth expanded from 20 to 50+ annotated query-passage pairs
 - Cross-encoder reranking quality validation
@@ -193,7 +200,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 ### 4.1 Frontend Test Expansion
 
 | Category | Before | After | Status |
-|----------|--------|-------|--------|
+| ---------- | -------- | ------- | -------- |
 | Component tests | 42 files, ~340 tests | 50+ files, ~440+ tests | ✅ Expanded |
 | Error/loading/empty state tests | 0 dedicated | 24 tests | ✅ Added |
 | Accessibility keyboard navigation | 0 dedicated | 12 tests | ✅ Added |
@@ -202,6 +209,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 | **New total** | **824 tests (114 files)** | **~988 tests (~128 files)** | **Expanded** |
 
 ### 4.2 New Frontend Component Tests
+
 - Detailed component rendering, interaction, and state management tests
 - Keyboard navigation flows (Tab, Enter, Escape, Arrow keys)
 - Screen reader announcements verified via aria-live regions
@@ -210,16 +218,19 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 - Empty state messaging and call-to-action display
 
 ### 4.3 Error/Loading/Empty State Tests (24 tests)
+
 - **Loading states:** spinner display, skeleton animation, progress indicator
 - **Error states:** error message rendering, retry button functionality, error boundary catch
 - **Empty states:** no-data messages, call-to-action visibility, first-use onboarding hints
 - **Network errors:** offline detection, reconnection banner, stale data indication
 
 ### 4.4 Accessibility Tests (22 tests)
+
 - **Keyboard navigation (12 tests):** Tab order, focus trapping in modals, Escape to close, Enter/Space activation, Arrow key navigation in lists, focus ring visibility
 - **Color contrast (10 tests):** WCAG AA (4.5:1) ratio validation for all text/background combinations, dark mode contrast check, focus indicator contrast
 
 ### 4.5 E2E Coverage (Playwright)
+
 - All existing 28 spec files maintained and passing
 - Additional E2E scenarios covering error recovery and degraded mode
 
@@ -230,7 +241,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 ### 5.1 Backend Expansion
 
 | Category | Before | After | Status |
-|----------|--------|-------|--------|
+| ---------- | -------- | ------- | -------- |
 | Middleware tests | Partial coverage | All middleware covered | ✅ Complete |
 | Concurrency/race condition | 0 tests | 16 tests | ✅ Added |
 | Idempotency validation | 0 tests | 12 tests | ✅ Added |
@@ -240,6 +251,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 | Response serialization edge cases | 0 tests | 20 tests | ✅ Added |
 
 ### 5.2 Middleware Coverage (all verified)
+
 - CORS middleware: origin validation, method restrictions, header exposure
 - Rate limiting middleware: per-endpoint, per-user, per-IP throttling
 - Authentication middleware: token expiry, malformed tokens, missing auth
@@ -248,6 +260,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 - Request body size enforcement: oversized body rejection
 
 ### 5.3 Concurrency & Race Condition Tests (16 tests)
+
 - Simultaneous document formatting requests
 - Concurrent AI provider fallback resolution
 - Parallel pipeline stage execution with shared state
@@ -256,6 +269,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 - Celery task deduplication under concurrent dispatch
 
 ### 5.4 Idempotency Tests (12 tests)
+
 - Document upload with idempotency key
 - Pipeline submission with retry idempotency
 - Webhook delivery (at-least-once with dedup)
@@ -263,6 +277,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 - API key rotation idempotency
 
 ### 5.5 Pipeline Edge Cases (18 tests)
+
 - Empty document submission
 - Corrupt DOCX file handling
 - Missing metadata (no title, no author, no date)
@@ -279,7 +294,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 ### 6.1 Performance Test Expansion
 
 | Benchmark | Before | After | Status |
-|-----------|--------|-------|--------|
+| ----------- | -------- | ------- | -------- |
 | Performance regression tests | 14 | 28 | ✅ Expanded |
 | Load testing framework | Locustfile (present) | Extended scenarios | ✅ Enhanced |
 | Memory performance tests | 4 passing, 6 skipped | 8 passing, 6 skipped | ✅ Improved |
@@ -288,6 +303,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 | Concurrent user simulation | Not measured | 4 scenarios | ✅ Added |
 
 ### 6.2 Performance Baselines
+
 - **API response time p50:** <200ms for formatting endpoints, <500ms for AI generation
 - **API response time p95:** <500ms for formatting, <2s for AI generation
 - **Pipeline throughput:** 10+ documents/minute under normal load
@@ -296,6 +312,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 - **Webhook delivery:** <1s p99 delivery time
 
 ### 6.3 Core Web Vitals (Frontend)
+
 - **LCP:** <2.5s (validated in Lighthouse CI)
 - **FID:** <100ms (validated via RUM simulation)
 - **CLS:** <0.1 (validated in layout stability tests)
@@ -307,7 +324,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 ### 7.1 Chaos Test Expansion
 
 | Chaos Scenario | Before | After | Status |
-|----------------|--------|-------|--------|
+| ---------------- | -------- | ------- | -------- |
 | Total chaos scenarios | 10 | 18 | ✅ Expanded |
 | Graceful degradation verified | 10 scenarios | 18 scenarios | ✅ All verified |
 | Recovery verified | 10 scenarios | 18 scenarios | ✅ All verified |
@@ -321,7 +338,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 ### 7.2 Extended Failure Scenarios
 
 | Failure Scenario | Graceful Degradation? | Recovery Verified? | RTO Measured |
-|-----------------|----------------------|-------------------|--------------|
+| ----------------- | ---------------------- | ------------------- | -------------- |
 | Supabase connection failure | ✅ Yes | ✅ Yes | <5s |
 | Redis unreachable | ✅ Yes | ✅ Yes | <3s |
 | AI provider (NVIDIA) outage | ✅ Yes (failover to Groq) | ✅ Yes | <10s |
@@ -342,6 +359,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 | **API key rotation during active session** | ✅ Yes (re-auth flow) | ✅ Yes | <10s |
 
 ### 7.3 Circuit Breaker Behavior (12 tests)
+
 - Closed → Open transition on consecutive failures
 - Half-open → Closed recovery after success
 - Half-open → Open re-trigger on continued failure
@@ -352,6 +370,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 - Bulkhead pattern: separate circuit for each provider tier
 
 ### 7.4 Degraded Mode Operation (18 tests)
+
 - Feature flags disable non-critical AI passes
 - Local embedding model fallback when remote unavailable
 - Template rendering without network access
@@ -365,7 +384,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 ## 8. CI/CD Quality Gates
 
 | Gate | Status | Enforcement |
-|------|--------|-------------|
+| ------ | -------- | ------------- |
 | Backend ruff linting | ✅ Passing | Blocking |
 | Backend mypy type checking | ✅ Passing | Continue-on-error |
 | Backend pytest (skip integration) | ✅ Passing | Blocking |
@@ -397,7 +416,7 @@ CI has its own measurement pipeline. See AGENTS.md and risk register for details
 ## 9. Risk Mitigation
 
 | Risk | Severity | Mitigation | Status |
-|------|----------|------------|--------|
+| ------ | ---------- | ------------ | -------- |
 | Coverage measurement broken (pydantic KeyError) | 🟡 Medium | Tests pass without --cov; CI has own measurement | Documented |
 | Full pytest collection timeout >600s | 🟡 Medium | Per-file targeted sweeps; architectural fix pending | Documented |
 | mock_redis autouse fixture contaminates isinstance | 🟢 Low | Patch builtins.isinstance at test time | Documented |
@@ -462,7 +481,7 @@ enterprise-grade validation across all dimensions:
 ### Test Count Summary
 
 | Category | Count |
-|----------|-------|
+| ---------- | ------- |
 | Backend pipeline non-gap tests | 5,159 |
 | Backend pipeline gap tests | 2,163 |
 | Backend non-pipeline (services/utils/middleware) | 1,209 |
@@ -480,7 +499,7 @@ enterprise-grade validation across all dimensions:
 ### Known Limitations (non-blocking)
 
 | Limitation | Impact | Workaround |
-|-----------|--------|-----------|
+| ----------- | -------- | ----------- |
 | `--cov` flag broken (`pydantic.root_model`) | Cannot measure line coverage locally | Tests pass without `--cov`; CI measures separately |
 | Full `pytest tests/` collection >600s timeout | Cannot run all tests in one pass | Targeted per-file sweeps |
 | `mock_redis` autouse fixture contaminates isinstance checks | Some tests patching isinstance | Documented pattern |

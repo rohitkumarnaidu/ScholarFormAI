@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Bus Factor & Access Continuity
 
 ## Bus Factor
@@ -11,7 +10,7 @@ The **bus factor** (also known as "truck factor") is the minimum number of proje
 ### Current Status
 
 | Role | Current Incumbent | Bus Factor Risk |
-|------|------------------|-----------------|
+| ------ | ------------------ | ----------------- |
 | BDFL / Project Lead | Rohit Kumar Naidu | 1 (single point of failure) |
 | Backend Core | Vacant | N/A |
 | Frontend Core | Vacant | N/A |
@@ -40,7 +39,7 @@ The project MUST be able to continue with minimal interruption if any one person
 ### Current Safeguards
 
 | Resource | Backup Plan |
-|----------|-------------|
+| ---------- | ------------- |
 | GitHub repository | Multiple admin accounts available |
 | npm package publishing | GitHub Actions CI automates publishing |
 | PyPI package publishing | GitHub Actions CI automates publishing |
@@ -54,7 +53,7 @@ The project MUST be able to continue with minimal interruption if any one person
 The project's heavy reliance on CI/CD automation reduces bus factor risk:
 
 | Function | Automation | Dependency on Single Person |
-|----------|-----------|---------------------------|
+| ---------- | ----------- | --------------------------- |
 | Testing | 25 CI workflows | Low (fully automated) |
 | Security scanning | Dependabot, CodeQL, Trivy, Scorecard | Low (fully automated) |
 | Release | create-release.yml, docker-publish.yml | Low (tag-triggered) |

@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Contributor Covenant Code of Conduct
 
 ## Our Pledge
@@ -57,18 +56,22 @@ All complaints will be reviewed and investigated promptly and fairly.
 Project maintainers will follow these Community Impact Guidelines:
 
 ### 1. Correction
+
 **Impact:** Use of inappropriate language or other behavior deemed unprofessional.
 **Consequence:** A private, written warning with clarity about the nature of the violation.
 
 ### 2. Warning
+
 **Impact:** A violation through a single incident or series of actions.
 **Consequence:** A warning with consequences for continued behavior.
 
 ### 3. Temporary Ban
+
 **Impact:** A serious violation of community standards.
 **Consequence:** A temporary ban from any sort of interaction or public communication.
 
 ### 4. Permanent Ban
+
 **Impact:** Demonstrating a pattern of violation of community standards.
 **Consequence:** A permanent ban from any sort of public interaction.
 

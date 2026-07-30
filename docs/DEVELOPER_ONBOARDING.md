@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Developer Onboarding Guide
 description: 15-minute development setup guide from clone to running locally
 sidebar_position: 50
@@ -14,11 +14,13 @@ last_updated: July 2026
 ---
 
 # ScholarForm AI — Developer Onboarding Guide
+
 **Audience:** New developers and open-source contributors
 
 ---
 
 ## Table of Contents
+
 - [Quick Start (15 minutes)](#quick-start-15-minutes)
 - [Architecture Overview](#architecture-overview)
 - [Key Directories](#key-directories)
@@ -31,6 +33,7 @@ last_updated: July 2026
 ## Quick Start (15 minutes)
 
 ### 1. Clone & Setup
+
 ```bash
 git clone https://github.com/rohitkumarnaidu/ScholarFormAI.git
 cd ScholarFormAI
@@ -47,6 +50,7 @@ npm install
 ```
 
 ### 2. Environment Variables
+
 ```bash
 # Copy example env files
 cp backend/.env.example backend/.env
@@ -61,6 +65,7 @@ SECRET_KEY=your-secret-key
 ```
 
 ### 3. Run Locally
+
 ```bash
 # Backend
 cd backend
@@ -72,6 +77,7 @@ npm run dev
 ```
 
 ### 4. Verify
+
 - Backend: http://localhost:8000/docs (Swagger UI)
 - Frontend: http://localhost:3000
 - Health: http://localhost:8000/api/v1/health/live
@@ -118,7 +124,7 @@ npm run dev
 ## Key Directories
 
 | Path | Purpose |
-|------|---------|
+| ------ | --------- |
 | `backend/app/routers/v1/` | API endpoint definitions |
 | `backend/app/services/` | Business logic services |
 | `backend/app/pipeline/` | Document processing pipeline |
@@ -135,11 +141,13 @@ npm run dev
 ## Development Workflow
 
 ### 1. Create a Branch
+
 ```bash
 git checkout -b feature/your-feature-name
 ```
 
 ### 2. Write Code + Tests
+
 ```bash
 # Backend tests
 cd backend
@@ -154,6 +162,7 @@ npx playwright test
 ```
 
 ### 3. Pre-commit Checks
+
 ```bash
 # Linting
 ruff check backend/app/
@@ -169,6 +178,7 @@ npx tsc --noEmit
 ```
 
 ### 4. Commit & Push
+
 ```bash
 git add .
 git commit -m "feat: add your feature description"
@@ -176,6 +186,7 @@ git push origin feature/your-feature-name
 ```
 
 ### 5. Create PR
+
 - Link to relevant issue
 - Include test results
 
@@ -184,13 +195,15 @@ git push origin feature/your-feature-name
 ## API Documentation
 
 ### Swagger UI
+
 - Local: http://localhost:8000/docs
 - Staging: https://staging.scholarform.ai/docs
 - Production: https://api.scholarform.ai/docs
 
 ### Key Endpoints
+
 | Method | Path | Description |
-|--------|------|-------------|
+| -------- | ------ | ------------- |
 | POST | `/api/v1/documents/upload` | Upload document for formatting |
 | GET | `/api/v1/templates` | List available templates |
 | POST | `/api/v1/generator/sessions` | Create AI generation session |
@@ -205,7 +218,7 @@ git push origin feature/your-feature-name
 ### Common Issues
 
 | Problem | Solution |
-|---------|----------|
+| --------- | ---------- |
 | `ModuleNotFoundError` | Run `pip install -r requirements-dev.txt` |
 | `SUPABASE_DB_URL not set` | Copy `.env.example` and fill in values |
 | CORS errors | Check `ALLOWED_ORIGINS` in backend `.env` |
@@ -213,5 +226,6 @@ git push origin feature/your-feature-name
 | Tests hang | Check if Supabase/Redis is reachable |
 
 ### Getting Help
+
 - **Issues:** https://github.com/rohitkumarnaidu/ScholarFormAI/issues
 - **Discussions:** https://github.com/rohitkumarnaidu/ScholarFormAI/discussions

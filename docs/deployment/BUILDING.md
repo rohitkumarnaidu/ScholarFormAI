@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Building ScholarForm AI From Source
 
 ## Prerequisites
@@ -71,7 +70,7 @@ npm run dev    # next dev --turbopack
 ## Build Outputs
 
 | Target | Output | Location |
-|--------|--------|----------|
+| -------- | -------- | ---------- |
 | Backend package | Python package | `backend/dist/` |
 | Frontend (dev) | Dev server | `http://localhost:3000` |
 | Frontend (prod) | Static export | `frontend/.next/` |

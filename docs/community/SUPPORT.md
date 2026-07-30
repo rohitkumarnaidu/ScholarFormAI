@@ -1,13 +1,12 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # ScholarForm AI Support
 
 ## Community Support (Free)
 
 | Channel | Purpose | Response Time |
-|---------|---------|---------------|
+| --------- | --------- | --------------- |
 | [GitHub Issues](https://github.com/rohitkumarnaidu/ScholarFormAI/issues) | Bug reports, feature requests, RFCs | 24-72 hours |
 | [GitHub Discussions](https://github.com/rohitkumarnaidu/ScholarFormAI/discussions) | Q&A, ideas, community help | 24-72 hours |
 | [Discord / Slack](https://discord.gg/scholarform) *(TBD)* | Real-time chat, community | Best-effort |
@@ -18,7 +17,7 @@
 The core team holds weekly office hours for community members:
 
 | Day | Time (UTC) | Focus |
-|-----|------------|-------|
+| ----- | ------------ | ------- |
 | Monday | 15:00–16:00 | General Q&A, onboarding help |
 | Wednesday | 15:00–16:00 | Technical deep-dives, architecture discussions |
 | Friday | 15:00–16:00 | Contributor office hours (PR reviews, mentoring) |
@@ -30,7 +29,7 @@ Office hours are held in the project's Discord/Slack voice channel. Schedule cha
 For organizations requiring guaranteed SLAs, priority queue, or custom development:
 
 | Tier | Response SLA | Scope | Contact |
-|------|-------------|-------|---------|
+| ------ | ------------- | ------- | --------- |
 | **Community** | 24-72 hours | Public issues, discussions | GitHub |
 | **Standard** | 8 business hours | Email support, bug fixes | enterprise@scholarform.ai |
 | **Premium** | 2 business hours | Priority queue, custom templates, deployment assistance, training, dedicated engineer | enterprise@scholarform.ai |

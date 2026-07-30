@@ -59,7 +59,7 @@ flowchart TD
 ## Key Components
 
 | Component | File | Purpose |
-|-----------|------|---------|
+| ----------- | ------ | --------- |
 | `IssueService` | `backend/app/services/issue_service.py` | Core business logic — CRUD, duplicate/spam detection, AI, GitHub sync, notifications |
 | `IssueReport` | `backend/app/services/issue_service.py` | Data class for a single issue report with all fields |
 | `issue_routes.py` | `backend/app/api/issue_routes.py` | 19 REST API endpoints |

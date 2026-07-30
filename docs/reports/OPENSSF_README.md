@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # OpenSSF Best Practices Badge — Readiness Report
 
 ## Project: ScholarForm AI

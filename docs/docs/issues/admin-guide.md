@@ -7,21 +7,25 @@ Access the admin dashboard at `/issues/admin` in the web UI.
 ### Tabs
 
 #### Overview
+
 - **Stats Cards**: Total, Open, Resolved, Critical issues
 - **Issues by Category**: Horizontal bar chart showing distribution
 - **Issues by Status**: Status distribution bars
 - **SLA Breaches**: Table of issues exceeding response time targets
 
 #### Labels
+
 - View all labels with color swatches
 - Create new labels (name, color, description)
 - Delete custom labels (built-in labels cannot be deleted)
 
 #### Milestones
+
 - View all milestones
 - Create new milestones (title, description, due date)
 
 #### Settings
+
 Configure all issue system settings (see below).
 
 ## Configuration
@@ -31,7 +35,7 @@ Configure all issue system settings (see below).
 Access via API or the admin dashboard settings tab.
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --------- | --------- | ------------- |
 | `github_sync_enabled` | `false` | Auto-create GitHub issues on submission |
 | `github_repo` | `amf/automated-manuscript-formatter` | GitHub repository for sync |
 | `github_token` | `null` | GitHub API token (required for sync) |
@@ -75,7 +79,7 @@ curl -X PUT http://localhost:8000/api/v1/issues/settings \
 SLA targets are configured per severity level:
 
 | Severity | Default SLA | Breach Alert |
-|----------|-------------|-------------|
+| ---------- | ------------- | ------------- |
 | Critical | 4 hours | Immediate |
 | High | 24 hours | Dashboard highlight |
 | Medium | 72 hours | Dashboard note |
@@ -93,6 +97,7 @@ curl http://localhost:8000/api/v1/issues/sla
 
 1. Generate a GitHub personal access token with `public_repo` scope
 2. Set the token and enable sync:
+
 ```bash
 curl -X PUT http://localhost:8000/api/v1/issues/settings \
   -d '{"settings": {"github_sync_enabled": true, "github_token": "ghp_...", "github_repo": "your-org/your-repo"}}'
@@ -113,6 +118,7 @@ curl -X PUT http://localhost:8000/api/v1/issues/settings \
 
 1. Create a Discord webhook in your server settings
 2. Set the URL:
+
 ```json
 {"settings": {"discord_webhook_url": "https://discord.com/api/webhooks/..."}}
 ```
@@ -123,6 +129,7 @@ Discord embeds include: title, description, status, severity, category, tracking
 
 1. Create a Slack webhook in your workspace
 2. Set the URL:
+
 ```json
 {"settings": {"slack_webhook_url": "https://hooks.slack.com/services/..."}}
 ```
@@ -132,11 +139,13 @@ Slack messages use Block Kit with header, fields, and GitHub link.
 ### Generic Webhooks
 
 Add multiple webhook URLs:
+
 ```json
 {"settings": {"webhook_urls": ["https://hooks.example.com/issue"]}}
 ```
 
 Payload format:
+
 ```json
 {
   "event": "new_issue|issue_updated|new_comment",
@@ -150,7 +159,7 @@ Payload format:
 ### Built-in Labels
 
 | Key | Name | Color | Description |
-|-----|------|-------|-------------|
+| ----- | ------ | ------- | ------------- |
 | `bug` | bug | `#d73a4a` | Something isn't working |
 | `feature` | enhancement | `#a2eeef` | New feature or request |
 | `feedback` | feedback | `#0e8a16` | General user feedback |
@@ -184,6 +193,7 @@ cp -r ~/.amf/issues_backup_20260725/* ~/.amf/issues/
 ## Spam Protection
 
 The system uses rate-limiting per source:
+
 - **Threshold**: N reports per source in M minutes (configurable)
 - **Action**: Issues exceeding the threshold are auto-closed as spam
 - **Source tracking**: Each report is tagged with its source (CLI, web, API, etc.)

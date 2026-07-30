@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Third-Party Notices
 
 ScholarForm AI uses the following third-party libraries and components.
@@ -12,108 +11,108 @@ Licenses are reproduced below in accordance with their terms.
 **435 total packages**
 
 | # | Package | Version | License | Homepage |
-|---|---------|---------|---------|----------|
+| --- | --------- | --------- | --------- | ---------- |
 | 1 | accelerate | 1.12.0 | Apache-2.0 | https://github.com/huggingface/accelerate |
-| 2 | aiofiles | 25.1.0 | Apache-2.0 |  |
-| 3 | aiohappyeyeballs | 2.6.1 | PSF |  |
-| 4 | aiohttp | 3.13.3 | MIT |  |
+| 2 | aiofiles | 25.1.0 | Apache-2.0 | |
+| 3 | aiohappyeyeballs | 2.6.1 | PSF | |
+| 4 | aiohttp | 3.13.3 | MIT | |
 | 5 | aiosignal | 1.4.0 | Apache-2.0 | https://github.com/aio-libs/aiosignal |
-| 6 | alembic | 1.18.4 | Unknown |  |
+| 6 | alembic | 1.18.4 | Unknown | |
 | 7 | amqp | 5.3.1 | BSD-3-Clause | http://github.com/celery/py-amqp |
-| 8 | annotated-doc | 0.0.4 | Unknown |  |
-| 9 | annotated-types | 0.7.0 | Unknown |  |
-| 10 | anthropic | 0.86.0 | MIT |  |
+| 8 | annotated-doc | 0.0.4 | Unknown | |
+| 9 | annotated-types | 0.7.0 | Unknown | |
+| 10 | anthropic | 0.86.0 | MIT | |
 | 11 | antlr4-python3-runtime | 4.9.3 | BSD-3-Clause | http://www.antlr.org |
-| 12 | anyio | 4.12.1 | Unknown |  |
-| 13 | arrow | 1.4.0 | Unknown |  |
+| 12 | anyio | 4.12.1 | Unknown | |
+| 13 | arrow | 1.4.0 | Unknown | |
 | 14 | asgiref | 3.11.1 | BSD-3-Clause | https://github.com/django/asgiref/ |
-| 15 | asyncpg | 0.31.0 | Unknown |  |
-| 16 | attrs | 25.4.0 | Unknown |  |
-| 17 | autoflake | 2.3.1 | MIT |  |
+| 15 | asyncpg | 0.31.0 | Unknown | |
+| 16 | attrs | 25.4.0 | Unknown | |
+| 17 | autoflake | 2.3.1 | MIT | |
 | 18 | backoff | 2.2.1 | MIT | https://github.com/litl/backoff |
 | 19 | bandit | 1.9.3 | Apache-2.0 | https://bandit.readthedocs.io/ |
-| 20 | bcrypt | 5.0.0 | Apache-2.0 |  |
-| 21 | beautifulsoup4 | 4.14.3 | MIT |  |
-| 22 | bidict | 0.23.1 | MPL-2.0 |  |
+| 20 | bcrypt | 5.0.0 | Apache-2.0 | |
+| 21 | beautifulsoup4 | 4.14.3 | MIT | |
+| 22 | bidict | 0.23.1 | MPL-2.0 | |
 | 23 | billiard | 4.2.4 | BSD-3-Clause | https://github.com/celery/billiard |
 | 24 | bleach | 6.3.0 | Apache-2.0 | https://github.com/mozilla/bleach |
-| 25 | blinker | 1.9.0 | Unknown |  |
+| 25 | blinker | 1.9.0 | Unknown | |
 | 26 | blis | 1.3.3 | BSD-3-Clause | https://github.com/explosion/cython-blis |
 | 27 | boolean.py | 5.0 | BSD-2-Clause | https://github.com/bastikr/boolean.py |
 | 28 | boto3 | 1.42.44 | Apache-2.0 | https://github.com/boto/boto3 |
 | 29 | botocore | 1.42.44 | Apache-2.0 | https://github.com/boto/botocore |
 | 30 | brotli | 1.2.0 | MIT | https://github.com/google/brotli |
-| 31 | build | 1.4.0 | Unknown |  |
-| 32 | CacheControl | 0.14.4 | Unknown |  |
-| 33 | cachetools | 6.2.6 | Unknown |  |
+| 31 | build | 1.4.0 | Unknown | |
+| 32 | CacheControl | 0.14.4 | Unknown | |
+| 33 | cachetools | 6.2.6 | Unknown | |
 | 34 | catalogue | 2.0.10 | MIT | https://github.com/explosion/catalogue |
 | 35 | celery | 5.6.2 | BSD-3-Clause | https://docs.celeryq.dev/ |
 | 36 | certifi | 2026.1.4 | MPL-2.0 | https://github.com/certifi/python-certifi |
-| 37 | cffi | 2.0.0 | Unknown |  |
-| 38 | charset-normalizer | 3.4.4 | MIT |  |
+| 37 | cffi | 2.0.0 | Unknown | |
+| 38 | charset-normalizer | 3.4.4 | MIT | |
 | 39 | chroma-hnswlib | 0.7.3 | Unknown | https://github.com/chroma-core/hnswlib |
-| 40 | chromadb | 1.5.8 | Unknown |  |
+| 40 | chromadb | 1.5.8 | Unknown | |
 | 41 | citeproc-py | 0.6.0 | BSD-2-Clause | https://github.com/brechtm/citeproc-py |
-| 42 | click | 8.2.0 | Unknown |  |
+| 42 | click | 8.2.0 | Unknown | |
 | 43 | click-didyoumean | 0.3.1 | MIT | https://github.com/click-contrib/click-didyoumean |
 | 44 | click-plugins | 1.1.1.2 | BSD-3-Clause | https://github.com/click-contrib/click-plugins |
 | 45 | click-repl | 0.3.0 | MIT | https://github.com/untitaker/click-repl |
-| 46 | cloudpathlib | 0.23.0 | Unknown |  |
-| 47 | colorama | 0.4.6 | Unknown |  |
+| 46 | cloudpathlib | 0.23.0 | Unknown | |
+| 47 | colorama | 0.4.6 | Unknown | |
 | 48 | colorlog | 6.10.1 | MIT | https://github.com/borntyping/python-colorlog |
 | 49 | confection | 0.1.5 | MIT | https://github.com/explosion/confection |
 | 50 | ConfigArgParse | 1.7.5 | MIT | https://github.com/bw2/ConfigArgParse |
 | 51 | coverage | 7.13.4 | Apache-2.0 | https://github.com/coveragepy/coveragepy |
-| 52 | cryptography | 46.0.5 | Unknown |  |
-| 53 | cssselect2 | 0.9.0 | Unknown |  |
-| 54 | cyclonedx-python-lib | 11.6.0 | Apache-2.0 |  |
+| 52 | cryptography | 46.0.5 | Unknown | |
+| 53 | cssselect2 | 0.9.0 | Unknown | |
+| 54 | cyclonedx-python-lib | 11.6.0 | Apache-2.0 | |
 | 55 | cymem | 2.0.13 | MIT | https://github.com/explosion/cymem |
 | 56 | dataclasses-json | 0.6.7 | MIT | https://github.com/lidatong/dataclasses-json |
-| 57 | datasketch | 1.10.0 | MIT |  |
+| 57 | datasketch | 1.10.0 | MIT | |
 | 58 | defusedxml | 0.7.1 | PSF | https://github.com/tiran/defusedxml |
 | 59 | Deprecated | 1.3.1 | MIT | https://github.com/laurent-laporte-pro/deprecated |
 | 60 | deprecation | 2.1.0 | Apache-2.0 | http://deprecation.readthedocs.io/ |
-| 61 | diff-match-patch | 20241021 | Unknown |  |
+| 61 | diff-match-patch | 20241021 | Unknown | |
 | 62 | dill | 0.4.1 | BSD-3-Clause | https://github.com/uqfoundation/dill |
 | 63 | distro | 1.9.0 | Apache-2.0 | https://github.com/python-distro/distro |
-| 64 | dnspython | 2.8.0 | ISC |  |
-| 65 | docling | 2.73.1 | Unknown |  |
-| 66 | docling-core | 2.65.1 | Unknown |  |
-| 67 | docling-ibm-models | 3.11.0 | Unknown |  |
-| 68 | docling-parse | 4.7.3 | Unknown |  |
-| 69 | docstring_parser | 0.17.0 | MIT |  |
+| 64 | dnspython | 2.8.0 | ISC | |
+| 65 | docling | 2.73.1 | Unknown | |
+| 66 | docling-core | 2.65.1 | Unknown | |
+| 67 | docling-ibm-models | 3.11.0 | Unknown | |
+| 68 | docling-parse | 4.7.3 | Unknown | |
+| 69 | docstring_parser | 0.17.0 | MIT | |
 | 70 | docx2txt | 0.9 | Unknown | https://github.com/ankushshah89/python-docx2txt |
 | 71 | docxtpl | 0.20.2 | GPL-2.0 | https://github.com/elapouya/python-docx-template |
-| 72 | duckdb | 1.5.2 | Unknown |  |
+| 72 | duckdb | 1.5.2 | Unknown | |
 | 73 | durationpy | 0.10 | MIT | https://github.com/icholy/durationpy |
 | 74 | ecdsa | 0.19.1 | MIT | http://github.com/tlsfuzzer/python-ecdsa |
 | 75 | email-validator | 2.3.0 | Unlicense | https://github.com/JoshData/python-email-validator |
 | 76 | et_xmlfile | 2.0.0 | MIT | https://foss.heptapod.net/openpyxl/et_xmlfile |
 | 77 | Faker | 37.12.0 | MIT | https://github.com/joke2k/faker |
-| 78 | fastapi | 0.136.0 | Unknown |  |
-| 79 | fastuuid | 0.14.0 | Unknown |  |
-| 80 | filelock | 3.20.3 | Unknown |  |
+| 78 | fastapi | 0.136.0 | Unknown | |
+| 79 | fastuuid | 0.14.0 | Unknown | |
+| 80 | filelock | 3.20.3 | Unknown | |
 | 81 | filetype | 1.2.0 | MIT | https://github.com/h2non/filetype.py |
 | 82 | firebase_admin | 7.1.0 | Apache-2.0 | https://firebase.google.com/docs/admin/setup/ |
-| 83 | Flask | 3.1.3 | Unknown |  |
-| 84 | flask-cors | 6.0.2 | Unknown |  |
+| 83 | Flask | 3.1.3 | Unknown | |
+| 84 | flask-cors | 6.0.2 | Unknown | |
 | 85 | Flask-Login | 0.6.3 | MIT | https://github.com/maxcountryman/flask-login |
 | 86 | flatbuffers | 25.12.19 | Apache-2.0 | https://google.github.io/flatbuffers/ |
 | 87 | flower | 2.0.1 | BSD-3-Clause | https://github.com/mher/flower |
 | 88 | fonttools | 4.61.1 | MIT | http://github.com/fonttools/fonttools |
 | 89 | fqdn | 1.5.1 | MPL-2.0 | https://github.com/ypcrts/fqdn |
 | 90 | frozenlist | 1.8.0 | Apache-2.0 | https://github.com/aio-libs/frozenlist |
-| 91 | fsspec | 2026.1.0 | Unknown |  |
-| 92 | GeoAlchemy2 | 0.19.0 | Unknown |  |
+| 91 | fsspec | 2026.1.0 | Unknown | |
+| 92 | GeoAlchemy2 | 0.19.0 | Unknown | |
 | 93 | geographiclib | 2.1 | MIT | https://geographiclib.sourceforge.io/Python/ |
-| 94 | geopandas | 1.1.3 | Unknown |  |
+| 94 | geopandas | 1.1.3 | Unknown | |
 | 95 | geopy | 2.4.1 | MIT | https://github.com/geopy/geopy |
 | 96 | gevent | 25.9.1 | MIT | http://www.gevent.org/ |
-| 97 | geventhttpclient | 2.3.9 | Unknown |  |
-| 98 | git-filter-repo | 2.47.0 | MIT |  |
+| 97 | geventhttpclient | 2.3.9 | Unknown | |
+| 98 | git-filter-repo | 2.47.0 | MIT | |
 | 99 | gitdb | 4.0.12 | BSD-3-Clause | https://github.com/gitpython-developers/gitdb |
 | 100 | google-ai-generativelanguage | 0.10.0 | Apache-2.0 | https://github.com/googleapis/google-cloud-python/tree/main/packages/google-ai-generativelanguage |
-| 101 | google-api-core | 2.29.0 | Apache-2.0 |  |
+| 101 | google-api-core | 2.29.0 | Apache-2.0 | |
 | 102 | google-api-python-client | 2.189.0 | Apache-2.0 | https://github.com/googleapis/google-api-python-client/ |
 | 103 | google-auth | 2.48.0 | Apache-2.0 | https://github.com/googleapis/google-auth-library-python |
 | 104 | google-auth-httplib2 | 0.3.0 | Apache-2.0 | https://github.com/GoogleCloudPlatform/google-auth-library-python-httplib2 |
@@ -122,136 +121,136 @@ Licenses are reproduced below in accordance with their terms.
 | 107 | google-cloud-storage | 3.9.0 | Apache-2.0 | https://github.com/googleapis/python-storage |
 | 108 | google-crc32c | 1.8.0 | Unknown | https://github.com/googleapis/python-crc32c |
 | 109 | google-resumable-media | 2.8.0 | Apache-2.0 | https://github.com/googleapis/google-resumable-media-python |
-| 110 | googleapis-common-protos | 1.72.0 | Apache-2.0 |  |
-| 111 | graphifyy | 0.7.14 | MIT |  |
-| 112 | greenlet | 3.3.1 | Unknown |  |
-| 113 | groq | 0.37.1 | Apache-2.0 |  |
-| 114 | grpcio | 1.78.0 | Unknown |  |
-| 115 | grpcio-status | 1.78.0 | Unknown |  |
-| 116 | guardrails-ai | 0.9.0 | Apache-2.0 |  |
-| 117 | guardrails-api-client | 0.4.0 | Apache-2.0 |  |
-| 118 | guardrails_hub_types | 0.0.4 | Apache-2.0 |  |
+| 110 | googleapis-common-protos | 1.72.0 | Apache-2.0 | |
+| 111 | graphifyy | 0.7.14 | MIT | |
+| 112 | greenlet | 3.3.1 | Unknown | |
+| 113 | groq | 0.37.1 | Apache-2.0 | |
+| 114 | grpcio | 1.78.0 | Unknown | |
+| 115 | grpcio-status | 1.78.0 | Unknown | |
+| 116 | guardrails-ai | 0.9.0 | Apache-2.0 | |
+| 117 | guardrails-api-client | 0.4.0 | Apache-2.0 | |
+| 118 | guardrails_hub_types | 0.0.4 | Apache-2.0 | |
 | 119 | h11 | 0.16.0 | MIT | https://github.com/python-hyper/h11 |
-| 120 | h2 | 4.3.0 | MIT |  |
-| 121 | hf-xet | 1.2.0 | Unknown |  |
+| 120 | h2 | 4.3.0 | MIT | |
+| 121 | hf-xet | 1.2.0 | Unknown | |
 | 122 | hiredis | 3.3.1 | MIT | https://github.com/redis/hiredis-py |
-| 123 | hpack | 4.1.0 | MIT |  |
-| 124 | httpcore | 1.0.9 | Unknown |  |
+| 123 | hpack | 4.1.0 | MIT | |
+| 124 | httpcore | 1.0.9 | Unknown | |
 | 125 | httplib2 | 0.31.2 | MIT | https://github.com/httplib2/httplib2 |
-| 126 | httptools | 0.7.1 | Unknown |  |
-| 127 | httpx | 0.28.1 | BSD-3-Clause |  |
-| 128 | httpx-sse | 0.4.3 | MIT |  |
+| 126 | httptools | 0.7.1 | Unknown | |
+| 127 | httpx | 0.28.1 | BSD-3-Clause | |
+| 128 | httpx-sse | 0.4.3 | MIT | |
 | 129 | huggingface_hub | 0.36.2 | Apache-2.0 | https://github.com/huggingface/huggingface_hub |
-| 130 | humanize | 4.15.0 | Unknown |  |
-| 131 | hyperframe | 6.1.0 | MIT |  |
+| 130 | humanize | 4.15.0 | Unknown | |
+| 131 | hyperframe | 6.1.0 | MIT | |
 | 132 | hypothesis | 6.112.0 | MPL-2.0 | https://hypothesis.works |
-| 133 | idna | 3.11 | Unknown |  |
+| 133 | idna | 3.11 | Unknown | |
 | 134 | importlib_metadata | 7.1.0 | Unknown | https://github.com/python/importlib_metadata |
-| 135 | importlib_resources | 6.5.2 | Unknown |  |
-| 136 | iniconfig | 2.3.0 | Unknown |  |
+| 135 | importlib_resources | 6.5.2 | Unknown | |
+| 136 | iniconfig | 2.3.0 | Unknown | |
 | 137 | isoduration | 20.11.0 | Unknown | https://github.com/bolsote/isoduration |
-| 138 | itsdangerous | 2.2.0 | Unknown |  |
-| 139 | jellyfish | 1.2.1 | Unknown |  |
-| 140 | Jinja2 | 3.1.6 | Unknown |  |
+| 138 | itsdangerous | 2.2.0 | Unknown | |
+| 139 | jellyfish | 1.2.1 | Unknown | |
+| 140 | Jinja2 | 3.1.6 | Unknown | |
 | 141 | jiter | 0.13.0 | Unknown | https://github.com/pydantic/jiter/ |
 | 142 | jmespath | 1.1.0 | MIT | https://github.com/jmespath/jmespath.py |
-| 143 | joblib | 1.5.3 | Unknown |  |
+| 143 | joblib | 1.5.3 | Unknown | |
 | 144 | jsonlines | 4.0.0 | BSD-3-Clause | https://github.com/wbolster/jsonlines |
 | 145 | jsonpatch | 1.33 | BSD-3-Clause | https://github.com/stefankoegl/python-json-patch |
 | 146 | jsonpointer | 3.0.0 | BSD-3-Clause | https://github.com/stefankoegl/python-json-pointer |
-| 147 | jsonref | 1.1.0 | MIT |  |
-| 148 | jsonschema | 4.26.0 | Unknown |  |
-| 149 | jsonschema-specifications | 2025.9.1 | Unknown |  |
+| 147 | jsonref | 1.1.0 | MIT | |
+| 148 | jsonschema | 4.26.0 | Unknown | |
+| 149 | jsonschema-specifications | 2025.9.1 | Unknown | |
 | 150 | kaggle | 1.5.16 | Apache-2.0 | https://github.com/Kaggle/kaggle-api |
-| 151 | kagglehub | 0.3.8 | Apache-2.0 |  |
-| 152 | keybert | 0.9.0 | MIT |  |
+| 151 | kagglehub | 0.3.8 | Apache-2.0 | |
+| 152 | keybert | 0.9.0 | MIT | |
 | 153 | kombu | 5.6.2 | BSD-3-Clause | https://kombu.readthedocs.io |
 | 154 | kubernetes | 35.0.0 | Apache-2.0 | https://github.com/kubernetes-client/python |
-| 155 | langchain | 1.2.15 | MIT |  |
-| 156 | langchain-classic | 1.0.4 | MIT |  |
-| 157 | langchain-community | 0.4.1 | MIT |  |
-| 158 | langchain-core | 1.3.0 | MIT |  |
-| 159 | langchain-groq | 1.1.2 | MIT |  |
-| 160 | langchain-huggingface | 1.2.2 | MIT |  |
+| 155 | langchain | 1.2.15 | MIT | |
+| 156 | langchain-classic | 1.0.4 | MIT | |
+| 157 | langchain-community | 0.4.1 | MIT | |
+| 158 | langchain-core | 1.3.0 | MIT | |
+| 159 | langchain-groq | 1.1.2 | MIT | |
+| 160 | langchain-huggingface | 1.2.2 | MIT | |
 | 161 | langchain-ollama | 0.2.3 | MIT | https://github.com/langchain-ai/langchain |
-| 162 | langchain-openai | 0.3.35 | MIT |  |
-| 163 | langchain-text-splitters | 1.1.2 | MIT |  |
-| 164 | langgraph | 1.1.9 | Unknown |  |
-| 165 | langgraph-checkpoint | 2.1.2 | Unknown |  |
-| 166 | langgraph-prebuilt | 1.0.10 | Unknown |  |
-| 167 | langgraph-sdk | 0.3.13 | Unknown |  |
+| 162 | langchain-openai | 0.3.35 | MIT | |
+| 163 | langchain-text-splitters | 1.1.2 | MIT | |
+| 164 | langgraph | 1.1.9 | Unknown | |
+| 165 | langgraph-checkpoint | 2.1.2 | Unknown | |
+| 166 | langgraph-prebuilt | 1.0.10 | Unknown | |
+| 167 | langgraph-sdk | 0.3.13 | Unknown | |
 | 168 | langsmith | 0.3.45 | MIT | https://smith.langchain.com/ |
-| 169 | lark | 1.3.1 | MIT |  |
-| 170 | latex2mathml | 3.78.1 | MIT |  |
-| 171 | lazy_imports | 1.2.0 | Apache-2.0 |  |
-| 172 | librt | 0.8.1 | MIT |  |
+| 169 | lark | 1.3.1 | MIT | |
+| 170 | latex2mathml | 3.78.1 | MIT | |
+| 171 | lazy_imports | 1.2.0 | Apache-2.0 | |
+| 172 | librt | 0.8.1 | MIT | |
 | 173 | license-expression | 30.4.4 | Apache-2.0 | https://github.com/aboutcode-org/license-expression |
-| 174 | limits | 5.8.0 | Unknown |  |
-| 175 | litellm | 1.81.13 | MIT |  |
-| 176 | locust | 2.43.3 | MIT |  |
+| 174 | limits | 5.8.0 | Unknown | |
+| 175 | litellm | 1.81.13 | MIT | |
+| 176 | locust | 2.43.3 | MIT | |
 | 177 | lxml | 6.0.2 | BSD-3-Clause | https://lxml.de/ |
 | 178 | Mako | 1.3.10 | MIT | https://www.makotemplates.org/ |
-| 179 | markdown-it-py | 4.0.0 | Unknown |  |
-| 180 | marko | 2.2.2 | MIT |  |
-| 181 | MarkupSafe | 3.0.3 | Unknown |  |
-| 182 | marshmallow | 3.26.2 | Unknown |  |
-| 183 | mcp | 1.23.0 | MIT |  |
-| 184 | mcp-chat-cli | 0.1.0 | Unknown |  |
-| 185 | mdurl | 0.1.2 | Unknown |  |
-| 186 | mmh3 | 5.2.0 | MIT |  |
+| 179 | markdown-it-py | 4.0.0 | Unknown | |
+| 180 | marko | 2.2.2 | MIT | |
+| 181 | MarkupSafe | 3.0.3 | Unknown | |
+| 182 | marshmallow | 3.26.2 | Unknown | |
+| 183 | mcp | 1.23.0 | MIT | |
+| 184 | mcp-chat-cli | 0.1.0 | Unknown | |
+| 185 | mdurl | 0.1.2 | Unknown | |
+| 186 | mmh3 | 5.2.0 | MIT | |
 | 187 | moto | 5.1.21 | Apache-2.0 | https://github.com/getmoto/moto |
 | 188 | mpire | 2.10.2 | MIT | https://github.com/sybrenjansen/mpire |
 | 189 | mpmath | 1.3.0 | BSD-3-Clause | http://mpmath.org/ |
-| 190 | msgpack | 1.1.2 | Unknown |  |
+| 190 | msgpack | 1.1.2 | Unknown | |
 | 191 | multidict | 6.7.1 | Apache-2.0 | https://github.com/aio-libs/multidict |
 | 192 | multiprocess | 0.70.19 | BSD-3-Clause | https://github.com/uqfoundation/multiprocess |
 | 193 | murmurhash | 1.0.15 | MIT | https://github.com/explosion/murmurhash |
-| 194 | mypy | 1.19.1 | MIT |  |
-| 195 | mypy_extensions | 1.1.0 | Unknown |  |
-| 196 | narwhals | 2.16.0 | MIT |  |
-| 197 | networkx | 3.6.1 | Unknown |  |
-| 198 | numpy | 2.4.4 | Unknown |  |
+| 194 | mypy | 1.19.1 | MIT | |
+| 195 | mypy_extensions | 1.1.0 | Unknown | |
+| 196 | narwhals | 2.16.0 | MIT | |
+| 197 | networkx | 3.6.1 | Unknown | |
+| 198 | numpy | 2.4.4 | Unknown | |
 | 199 | oauthlib | 3.3.1 | BSD-3-Clause | https://github.com/oauthlib/oauthlib |
-| 200 | ollama | 0.6.1 | Unknown |  |
+| 200 | ollama | 0.6.1 | Unknown | |
 | 201 | omegaconf | 2.3.0 | Unknown | https://github.com/omry/omegaconf |
 | 202 | onnxruntime | 1.24.1 | MIT | https://onnxruntime.ai |
-| 203 | openai | 2.21.0 | Apache-2.0 |  |
+| 203 | openai | 2.21.0 | Apache-2.0 | |
 | 204 | opencv-python | 4.13.0.92 | Apache-2.0 | https://github.com/opencv/opencv-python |
 | 205 | openpyxl | 3.1.5 | MIT | https://openpyxl.readthedocs.io |
-| 206 | opentelemetry-api | 1.25.0 | Apache-2.0 |  |
-| 207 | opentelemetry-exporter-otlp | 1.25.0 | Apache-2.0 |  |
-| 208 | opentelemetry-exporter-otlp-proto-common | 1.25.0 | Apache-2.0 |  |
-| 209 | opentelemetry-exporter-otlp-proto-grpc | 1.25.0 | Apache-2.0 |  |
-| 210 | opentelemetry-exporter-otlp-proto-http | 1.25.0 | Apache-2.0 |  |
-| 211 | opentelemetry-instrumentation | 0.46b0 | Unknown |  |
-| 212 | opentelemetry-instrumentation-asgi | 0.46b0 | Unknown |  |
-| 213 | opentelemetry-instrumentation-fastapi | 0.46b0 | Unknown |  |
-| 214 | opentelemetry-proto | 1.25.0 | Apache-2.0 |  |
-| 215 | opentelemetry-sdk | 1.25.0 | Apache-2.0 |  |
-| 216 | opentelemetry-semantic-conventions | 0.46b0 | Apache-2.0 |  |
-| 217 | opentelemetry-util-http | 0.46b0 | Unknown |  |
-| 218 | orjson | 3.11.7 | Unknown |  |
-| 219 | ormsgpack | 1.12.2 | Unknown |  |
+| 206 | opentelemetry-api | 1.25.0 | Apache-2.0 | |
+| 207 | opentelemetry-exporter-otlp | 1.25.0 | Apache-2.0 | |
+| 208 | opentelemetry-exporter-otlp-proto-common | 1.25.0 | Apache-2.0 | |
+| 209 | opentelemetry-exporter-otlp-proto-grpc | 1.25.0 | Apache-2.0 | |
+| 210 | opentelemetry-exporter-otlp-proto-http | 1.25.0 | Apache-2.0 | |
+| 211 | opentelemetry-instrumentation | 0.46b0 | Unknown | |
+| 212 | opentelemetry-instrumentation-asgi | 0.46b0 | Unknown | |
+| 213 | opentelemetry-instrumentation-fastapi | 0.46b0 | Unknown | |
+| 214 | opentelemetry-proto | 1.25.0 | Apache-2.0 | |
+| 215 | opentelemetry-sdk | 1.25.0 | Apache-2.0 | |
+| 216 | opentelemetry-semantic-conventions | 0.46b0 | Apache-2.0 | |
+| 217 | opentelemetry-util-http | 0.46b0 | Unknown | |
+| 218 | orjson | 3.11.7 | Unknown | |
+| 219 | ormsgpack | 1.12.2 | Unknown | |
 | 220 | overrides | 7.7.0 | Apache-2.0 | https://github.com/mkorpela/overrides |
 | 221 | packageurl-python | 0.17.6 | MIT | https://github.com/package-url/packageurl-python |
-| 222 | packaging | 25.0 | Unknown |  |
-| 223 | pandas | 3.0.2 | MIT |  |
+| 222 | packaging | 25.0 | Unknown | |
+| 223 | pandas | 3.0.2 | MIT | |
 | 224 | passlib | 1.7.4 | BSD-3-Clause | https://passlib.readthedocs.io |
-| 225 | pathspec | 1.0.4 | Unknown |  |
+| 225 | pathspec | 1.0.4 | Unknown | |
 | 226 | pdf2image | 1.17.0 | MIT | https://github.com/Belval/pdf2image |
-| 227 | pdfminer.six | 20251230 | Unknown |  |
+| 227 | pdfminer.six | 20251230 | Unknown | |
 | 228 | pdfplumber | 0.11.9 | Unknown | https://github.com/jsvine/pdfplumber |
-| 229 | pillow | 12.2.0 | Unknown |  |
-| 230 | pip | 26.1.2 | Unknown |  |
-| 231 | pip | 26.1.1 | Unknown |  |
+| 229 | pillow | 12.2.0 | Unknown | |
+| 230 | pip | 26.1.2 | Unknown | |
+| 231 | pip | 26.1.1 | Unknown | |
 | 232 | pip-api | 0.0.34 | Unknown | http://github.com/di/pip-api |
-| 233 | pip-licenses | 5.5.5 | Unknown |  |
+| 233 | pip-licenses | 5.5.5 | Unknown | |
 | 234 | pip-requirements-parser | 32.0.1 | MIT | https://github.com/nexB/pip-requirements-parser |
-| 235 | pip_audit | 2.10.0 | Unknown |  |
-| 236 | platformdirs | 4.7.0 | Unknown |  |
-| 237 | pluggy | 1.6.0 | MIT |  |
-| 238 | polyfactory | 3.2.0 | MIT |  |
-| 239 | postgrest | 2.27.3 | Unknown |  |
+| 235 | pip_audit | 2.10.0 | Unknown | |
+| 236 | platformdirs | 4.7.0 | Unknown | |
+| 237 | pluggy | 1.6.0 | MIT | |
+| 238 | polyfactory | 3.2.0 | MIT | |
+| 239 | postgrest | 2.27.3 | Unknown | |
 
 | 241 | preshed | 3.0.12 | MIT | https://github.com/explosion/preshed |
 | 242 | prettytable | 3.17.0 | Unknown |  |
@@ -454,7 +453,7 @@ Licenses are reproduced below in accordance with their terms.
 **702 total packages**
 
 | # | Package | Version | License |
-|---|---------|---------|---------|
+| --- | --------- | --------- | --------- |
 | 1 | @apideck/better-ajv-errors | 0.3.6 | MIT |
 | 2 | @babel/code-frame | 7.29.0 | MIT |
 | 3 | @babel/compat-data | 7.29.0 | MIT |
@@ -1145,7 +1144,7 @@ Licenses are reproduced below in accordance with their terms.
 ## Infrastructure Dependencies
 
 | Component | License | Use |
-|-----------|---------|-----|
+| ----------- | --------- | ----- |
 | PostgreSQL | PostgreSQL License | Database |
 | Redis | BSD-3-Clause | Cache + message broker |
 | Docker | Apache-2.0 | Container runtime |

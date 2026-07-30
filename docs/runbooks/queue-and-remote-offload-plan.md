@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Queue and Remote Offload Plan (Deferred)
 description: Future queue-based architecture for heavy document processing tasks
 sidebar_position: 7
@@ -36,9 +36,9 @@ Readiness package (to execute later):
 Activation gate:
 
 - Enable queue mode only after:
-  - No backend OOM incidents
-  - No deploy health-check timeouts
-  - Stable Redis connectivity
+    - No backend OOM incidents
+    - No deploy health-check timeouts
+    - Stable Redis connectivity
 
 ## Phase 3: LLMPDFParser and LLMClassifier Remote Offload Design
 

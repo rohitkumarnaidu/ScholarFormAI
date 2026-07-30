@@ -25,7 +25,7 @@ The platform has undergone 14 certification phases executed by 20 specialized ev
 ### 1. Quality Assurance Gates
 
 | # | Criterion | Standard | Result | Evidence |
-|---|-----------|----------|--------|----------|
+| --- | ----------- | ---------- | -------- | ---------- |
 | 1.1 | All automated tests passing | 100% pass rate | ✅ PASS | ~10,611+ tests, 0 failures |
 | 1.2 | Backend tests | 0 failures | ✅ PASS | ~9,623+ passing |
 | 1.3 | Frontend tests | 0 failures | ✅ PASS | ~988 passing |
@@ -45,7 +45,7 @@ The platform has undergone 14 certification phases executed by 20 specialized ev
 ### 2. Security Gates
 
 | # | Criterion | Standard | Result | Evidence |
-|---|-----------|----------|--------|----------|
+| --- | ----------- | ---------- | -------- | ---------- |
 | 2.1 | OWASP Top 10 coverage | Full coverage | ✅ PASS | 490+ security tests |
 | 2.2 | OWASP AI Top 10 coverage | Full coverage | ✅ PASS | All LLM01–LLM10 |
 | 2.3 | CodeQL analysis | No critical/high findings | ✅ PASS | Clean |
@@ -66,7 +66,7 @@ The platform has undergone 14 certification phases executed by 20 specialized ev
 ### 3. Performance Gates
 
 | # | Criterion | Standard | Result | Evidence |
-|---|-----------|----------|--------|----------|
+| --- | ----------- | ---------- | -------- | ---------- |
 | 3.1 | API response (p50) | < 500ms | ✅ PASS | ~120ms |
 | 3.2 | API response (p95) | < 2s | ✅ PASS | ~280ms |
 | 3.3 | Document upload ACK (p99) | < 400ms | ✅ PASS | ~350ms |
@@ -81,7 +81,7 @@ The platform has undergone 14 certification phases executed by 20 specialized ev
 ### 4. Infrastructure Gates
 
 | # | Criterion | Standard | Result | Evidence |
-|---|-----------|----------|--------|----------|
+| --- | ----------- | ---------- | -------- | ---------- |
 | 4.1 | CI/CD workflows | All passing | ✅ PASS | 25 workflows |
 | 4.2 | Docker multi-arch build | amd64 + arm64 | ✅ PASS | Matrix build |
 | 4.3 | Production deployment | Automated | ✅ PASS | Vercel + Render |
@@ -95,7 +95,7 @@ The platform has undergone 14 certification phases executed by 20 specialized ev
 ### 5. Documentation Gates
 
 | # | Criterion | Standard | Result | Evidence |
-|---|-----------|----------|--------|----------|
+| --- | ----------- | ---------- | -------- | ---------- |
 | 5.1 | Architecture documentation | Complete | ✅ PASS | ARCHITECTURE.md |
 | 5.2 | API documentation | Complete | ✅ PASS | docs/API.md |
 | 5.3 | Deployment guide | Complete | ✅ PASS | docs/deployment/DEPLOYMENT.md |
@@ -113,7 +113,7 @@ The platform has undergone 14 certification phases executed by 20 specialized ev
 ## Production Readiness Score
 
 | Score Component | Value |
-|----------------|-------|
+| ---------------- | ------- |
 | Items scored | 58 |
 | Fully met (3 pts) | 56 |
 | Partially met (2 pts) | 2 |
@@ -123,6 +123,7 @@ The platform has undergone 14 certification phases executed by 20 specialized ev
 | **Grade** | **PRODUCTION READY** |
 
 Minor items scored at 2 (partial) due to:
+
 1. Local `--cov` coverage measurement broken (CI measures separately)
 2. External contributor review pending for this specific release
 
@@ -135,7 +136,7 @@ Neither condition constitutes a production blocker.
 The undersigned certify that ScholarForm AI v1.0.0 meets all production readiness criteria and is authorized for production deployment.
 
 | Role | Name / Team | Date | Signature |
-|------|-------------|------|-----------|
+| ------ | ------------- | ------ | ----------- |
 | **Release Manager** | Release Engineering | 2026-07-21 | ✅ **SIGNED** |
 | **QA Lead** | QA Engineering | 2026-07-21 | ✅ **SIGNED** |
 | **Security Lead** | Security Engineering | 2026-07-21 | ✅ **SIGNED** |

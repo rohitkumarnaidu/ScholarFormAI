@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Virus Scanner Enhancements
 
 <cite>
@@ -16,6 +15,7 @@
 </cite>
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [System Architecture](#system-architecture)
 3. [Core Components](#core-components)
@@ -70,6 +70,7 @@ Service --> Database
 ```
 
 **Diagram sources**
+
 - [virus_scanner.py:128-134](file://backend/app/utils/virus_scanner.py#L128-L134)
 - [documents.py:24-25](file://backend/app/routers/documents.py#L24-L25)
 - [prometheus_metrics.py:184-300](file://backend/app/middleware/prometheus_metrics.py#L184-L300)
@@ -104,11 +105,13 @@ AsyncVirusScanner --|> VirusScanner
 ```
 
 **Diagram sources**
+
 - [virus_scanner.py:128-134](file://backend/app/utils/virus_scanner.py#L128-L134)
 - [virus_scanner.py:66-126](file://backend/app/utils/virus_scanner.py#L66-L126)
 - [settings.py:145-147](file://backend/app/config/settings.py#L145-L147)
 
 **Section sources**
+
 - [virus_scanner.py:128-134](file://backend/app/utils/virus_scanner.py#L128-L134)
 - [virus_scanner.py:66-126](file://backend/app/utils/virus_scanner.py#L66-L126)
 
@@ -141,10 +144,12 @@ end
 ```
 
 **Diagram sources**
+
 - [documents.py:85-96](file://backend/app/routers/documents.py#L85-L96)
 - [virus_scanner.py:66-126](file://backend/app/utils/virus_scanner.py#L66-L126)
 
 **Section sources**
+
 - [documents.py:85-96](file://backend/app/routers/documents.py#L85-L96)
 
 ## Virus Scanning Implementation
@@ -174,6 +179,7 @@ RaiseError --> End
 ```
 
 **Diagram sources**
+
 - [virus_scanner.py:93-114](file://backend/app/utils/virus_scanner.py#L93-L114)
 - [virus_scanner.py:21-39](file://backend/app/utils/virus_scanner.py#L21-L39)
 
@@ -182,13 +188,14 @@ RaiseError --> End
 The system processes scan results through a comprehensive parsing mechanism:
 
 | Result Type | Detection Method | Return Value |
-|-------------|------------------|--------------|
+| ------------- | ------------------ | -------------- |
 | Clean | ClamAV OK response | `{"clean": True, "result": "clean"}` |
 | Threat Found | ClamAV FOUND response | `{"clean": False, "result": "<threat_name>"}` |
 | Unavailable | ClamAV connection error | `{"clean": True, "result": "scan_skipped"}` |
 | Error | Unexpected response | Raises `RuntimeError` |
 
 **Section sources**
+
 - [virus_scanner.py:21-39](file://backend/app/utils/virus_scanner.py#L21-L39)
 - [virus_scanner.py:93-114](file://backend/app/utils/virus_scanner.py#L93-L114)
 
@@ -199,13 +206,14 @@ The system processes scan results through a comprehensive parsing mechanism:
 The virus scanner relies on centralized configuration management through the settings system:
 
 | Configuration Parameter | Type | Purpose | Default |
-|------------------------|------|---------|---------|
+| ------------------------ | ------ | --------- | --------- |
 | `CLAMAV_HOST` | String | ClamAV daemon hostname | Required |
 | `CLAMAV_PORT` | Integer | ClamAV daemon port | Required |
 | `MAX_FILE_SIZE` | Integer | Maximum file size limit | Configurable |
 | `ENABLE_FILE_CLEANUP` | Boolean | Automatic file cleanup | Configurable |
 
 **Section sources**
+
 - [settings.py:145-147](file://backend/app/config/settings.py#L145-L147)
 - [settings.py:367-368](file://backend/app/config/settings.py#L367-L368)
 
@@ -237,10 +245,12 @@ CB --> VS
 ```
 
 **Diagram sources**
+
 - [security_headers.py:18-66](file://backend/app/middleware/security_headers.py#L18-L66)
 - [circuit_breaker.py:29-97](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L97)
 
 **Section sources**
+
 - [security_headers.py:18-66](file://backend/app/middleware/security_headers.py#L18-L66)
 - [circuit_breaker.py:29-97](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L97)
 
@@ -260,13 +270,14 @@ The virus scanning system implements a multi-stage validation pipeline:
 The system provides comprehensive threat detection through multiple mechanisms:
 
 | Detection Method | Supported Threats | Accuracy |
-|------------------|-------------------|----------|
+| ------------------ | ------------------- | ---------- |
 | ClamAV Signature | Known malware variants | High |
 | Heuristic Analysis | Unknown threats | Medium |
 | Behavioral Monitoring | Suspicious patterns | Medium |
 | Size Limits | Resource exhaustion | High |
 
 **Section sources**
+
 - [documents.py:311-348](file://backend/app/routers/documents.py#L311-L348)
 
 ## Monitoring and Metrics
@@ -276,7 +287,7 @@ The system provides comprehensive threat detection through multiple mechanisms:
 The virus scanning system integrates with Prometheus metrics for comprehensive monitoring:
 
 | Metric Name | Type | Description | Buckets |
-|-------------|------|-------------|---------|
+| ------------- | ------ | ------------- | --------- |
 | `clamav_scan_duration_seconds` | Histogram | Scan duration distribution | 0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10 |
 | `upload_ack_duration_ms` | Histogram | Upload acknowledgment latency | Application-specific |
 | `pipeline_requests_total` | Counter | Total pipeline operations | Success/Error |
@@ -298,10 +309,12 @@ Prometheus-->>External : Serve metrics data
 ```
 
 **Diagram sources**
+
 - [virus_scanner.py:115-121](file://backend/app/utils/virus_scanner.py#L115-L121)
 - [prometheus_metrics.py:144-149](file://backend/app/middleware/prometheus_metrics.py#L144-L149)
 
 **Section sources**
+
 - [prometheus_metrics.py:144-149](file://backend/app/middleware/prometheus_metrics.py#L144-L149)
 - [virus_scanner.py:115-121](file://backend/app/utils/virus_scanner.py#L115-L121)
 
@@ -336,6 +349,7 @@ MT --> TimeoutScenarios
 ```
 
 **Diagram sources**
+
 - [test_api.py:385-416](file://backend/tests/test_api.py#L385-L416)
 
 ### Test Case Examples
@@ -343,13 +357,14 @@ MT --> TimeoutScenarios
 The testing framework includes specific scenarios for virus detection validation:
 
 | Test Scenario | Expected Outcome | Test Method |
-|---------------|------------------|-------------|
+| --------------- | ------------------ | ------------- |
 | Clean DOCX file | Scan result clean | Real ClamAV daemon |
 | Eicar test file | Malware detected | Mock ClamAV response |
 | Daemon unavailable | Scan skipped | Network timeout |
 | Connection refused | Scan skipped | Socket error |
 
 **Section sources**
+
 - [test_api.py:385-416](file://backend/tests/test_api.py#L385-L416)
 
 ## Performance Considerations
@@ -366,7 +381,7 @@ The virus scanning system utilizes asynchronous processing to minimize impact on
 ### Scalability Factors
 
 | Factor | Impact | Optimization Strategy |
-|--------|--------|----------------------|
+| -------- | -------- | ---------------------- |
 | Concurrent scans | Linear scaling | Thread pool management |
 | File size | Direct correlation | Streaming architecture |
 | Network latency | Indirect impact | Connection caching |
@@ -377,7 +392,7 @@ The virus scanning system utilizes asynchronous processing to minimize impact on
 ### Common Issues and Solutions
 
 | Issue | Symptoms | Solution |
-|-------|----------|----------|
+| ------- | ---------- | ---------- |
 | ClamAV daemon unreachable | Scan results show "scan_skipped" | Verify service status and network connectivity |
 | Slow scan performance | High latency in upload process | Optimize daemon configuration and network |
 | Memory exhaustion | Out of memory errors | Implement streaming and proper resource cleanup |
@@ -405,6 +420,7 @@ Key log entries for troubleshooting:
 - **Info**: "Virus scan completed in %.2f seconds"
 
 **Section sources**
+
 - [virus_scanner.py:89-114](file://backend/app/utils/virus_scanner.py#L89-L114)
 
 ## Conclusion

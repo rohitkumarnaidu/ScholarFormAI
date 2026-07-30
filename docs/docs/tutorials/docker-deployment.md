@@ -16,7 +16,7 @@ docker compose up -d
 ## Services
 
 | Service | Port | Description |
-|---------|------|-------------|
+| --------- | ------ | ------------- |
 | `backend` | 8000 | FastAPI backend |
 | `frontend` | 3000 | Next.js web UI |
 | `docs` | 8080 | Documentation site |

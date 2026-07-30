@@ -3,11 +3,13 @@
 ## System Requirements
 
 ### Minimum
+
 - 2 CPU cores
 - 2GB RAM
 - 10GB disk space
 
 ### Recommended
+
 - 4 CPU cores
 - 4GB RAM
 - 50GB SSD

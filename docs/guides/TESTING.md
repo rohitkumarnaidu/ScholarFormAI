@@ -77,7 +77,7 @@ sequenceDiagram
 ## Test Suites Overview Matrix
 
 | Test Suite | Tooling | Target Location | Command | Expected Duration |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | **Backend Unit & Deep Tests** | `pytest` | `backend/tests/` | `pytest tests -m "not integration and not llm"` | ~45 seconds |
 | **Backend Integration Tests** | `pytest` | `backend/tests/` | `pytest tests -m integration` | ~2 minutes |
 | **Backend LLM Tests** | `pytest` | `backend/tests/` | `pytest tests -m llm` | ~3 minutes |
@@ -124,7 +124,7 @@ mypy --config-file mypy.ini app
 ### Backend Pytest Markers
 
 | Marker | Dependencies | Description |
-|---|---|---|
+| --- | --- | --- |
 | `unit` | None | Isolated unit tests executed against mocks |
 | `integration` | Redis, Postgres, GROBID | Tests verifying real inter-service communication |
 | `llm` | Live API Keys (NVIDIA / Groq) | End-to-end tests querying external LLM APIs |
@@ -138,7 +138,7 @@ mypy --config-file mypy.ini app
 Modules ending in `_deep.py` use intensive mocking to achieve >80% branch and line coverage:
 
 | Module Under Test | Test File Location | Test Count | Target Line Coverage |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `DocxParser` | `tests/test_docx_parser_deep.py` | 108 | ~90% |
 | `Formatter` | `tests/test_formatter_deep.py` | 207 | ~88% |
 | `PipelineOrchestrator` | `tests/test_pipeline_orchestrator_deep.py` | 49 | ~82% |
@@ -229,7 +229,7 @@ npm run test:e2e:headed
 ### Critical E2E Journeys (`frontend/e2e/`)
 
 | # | E2E Test Suite | File Path | Scope |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | 1 | Guest Upload Journey | `e2e/upload-journey.spec.js` | Upload manuscript → Process → Download DOCX |
 | 2 | Authentication Flow | `e2e/auth-flow.spec.js` | Signup → Login → Dashboard redirect |
 | 3 | Template Formatter | `e2e/formatter-upload.spec.js` | Select IEEE template → Generate → DOCX export |
@@ -281,7 +281,7 @@ flowchart LR
 ### Code Coverage Policy
 
 | Scope | Minimum Coverage | Enforcement |
-|-------|-----------------|-------------|
+| ------- | ----------------- | ------------- |
 | **Global Backend** | **70%** line coverage | CI fail below threshold |
 | **Core Engine Modules** | **>80%** line coverage | CI warning |
 | **Frontend Components** | **>70%** line coverage | CI warning |

@@ -26,6 +26,7 @@ ScholarForm AI is designed around four core software design principles to ensure
 All routes under `/api/v1/` enforce a unified response envelope format.
 
 ### Success Response Envelope
+
 ```json
 {
   "data": {
@@ -41,6 +42,7 @@ All routes under `/api/v1/` enforce a unified response envelope format.
 ```
 
 ### Error Response Envelope
+
 ```json
 {
   "data": null,
@@ -96,14 +98,18 @@ flowchart TD
 ### Detailed Deep Dives: Generator & Fallback Components
 
 #### 1. ChromaDB Vector Retrieval
+
 Vector retrieval operates via `SessionVectorStore` and `SemanticStore` instances:
+
 - **Primary Collection (`guidelines_bge_m3`)**: Embedded with `BAAI/bge-m3` (1024 dimensions) to store publisher guidelines for IEEE, Springer, Nature, APA, and Elsevier.
 - **Session Collection (`session_<session_id>`)**: Embedded with `multi-qa-MiniLM-L6-v2` (384 dimensions) for transient per-session conversational context.
 - **Deterministic Embedding Fallback (`_DeterministicEmbeddingModel`)**: When transformer libraries are unavailable, a deterministic fallback generates 256-dimensional vector representations by performing BLAKE2b hashing on normalized token text followed by L2-norm normalization. Cosine similarity queries continue to execute seamlessly.
 - **Session TTL Management**: Sessions persist vector data to `db/session_store/` with a 24-hour TTL key stored in Redis (`vector_session:<session_id>:ttl`). A background Celery task (`purge_expired_vector_sessions`) automatically cleans up expired collections.
 
 #### 2. 4-Tier Model Fallback Logic (`llm_fallback_service.py`)
+
 Requests pass sequentially through four tiers:
+
 1. **Tier 1 (NVIDIA NIM)**: `nvidia_nim/meta/llama-3.3-70b-instruct` — Primary model offering ultra-low latency and instruction-following capability.
 2. **Tier 2 (Groq)**: `groq/llama-3.3-70b-versatile` — High-speed fallback executed when NVIDIA NIM returns 429, 5xx, or times out.
 3. **Tier 3 (OpenRouter)**: `openrouter/auto` — Multi-provider aggregator triggered if rate-limiting occurs on primary tiers.
@@ -147,7 +153,9 @@ flowchart LR
 ### Detailed Deep Dives: Citation & CSL Components
 
 #### 1. Citation Extraction Engine
+
 `CitationAssemblyService` scans input manuscript content using three compiled regex patterns:
+
 - `_AUTHOR_YEAR_PARENS`: Matches parenthetical author-year citations such as `(Smith et al., 2024)`.
 - `_AUTHOR_YEAR_BRACKETS`: Matches bracketed author-year citations such as `[Jones & Taylor, 2023]`.
 - `_NUMERIC_BRACKETS`: Matches numeric citation lists such as `[1, 2, 4]`.
@@ -155,12 +163,15 @@ flowchart LR
 Extracted keys are normalized (excess whitespace removed) and deduplicated while preserving first-appearance order.
 
 #### 2. CrossRef Metadata Lookup (`crossref_client.py`)
+
 For each extracted citation key or DOI:
+
 - An asynchronous query is dispatched to the CrossRef REST API (`https://api.crossref.org/works`).
 - Returned JSON responses are parsed into structured bibliographic metadata including title, author list, publication container, volume, issue, page numbers, publication year, and DOI.
 - Failures or unresolvable citations gracefully fall back to raw text preservation without crashing the pipeline.
 
 #### 3. CSL Citation Engine (`csl_engine.py`)
+
 - **CSL Style Loading**: XML style definitions (e.g., `ieee.csl`, `apa.csl`, `springer-lecture-notes-in-computer-science.csl`) are loaded via `csl_fetcher.py`.
 - **Reference Objects**: Bibliographic metadata is encapsulated into `Reference` model instances (`reference_id`, `citation_key`, `authors`, `title`, `doi`, `reference_type`).
 - **In-Text Replacement**: Raw in-text citations are dynamically replaced with formatted citation tags (e.g., converting `(Smith, 2024)` to `[1]`), and a fully formatted bibliography is generated for inclusion at the end of the manuscript.
@@ -206,10 +217,10 @@ flowchart LR
 ```
 
 **Two-Tier Preview Caching:**
+
 - HTML preview outputs are cached in Redis under `preview:html:<sha256>` (60s TTL)
 - Template CSS styles are pre-compiled and cached under `preview:css:<template_name>` (3600s TTL)
 - When Redis is unavailable, an in-memory TTL dictionary serves as fallback
-
 
 ---
 
@@ -255,14 +266,13 @@ flowchart LR
 **Key Metrics Tracked:**
 
 | Metric | Description |
-|--------|-------------|
+| -------- | ------------- |
 | `http_requests_total` | Request count by method, path, status code |
 | `http_request_duration_seconds` | Request latency histogram by route |
 | `pipeline_stage_duration_seconds` | Per-stage processing time (stages 1-12) |
 | `llm_request_duration_seconds` | LLM model response latency by provider |
 | `upload_ack_duration_seconds` | Time from upload receipt to 202 response |
 | `celery_task_runtime_seconds` | Celery background task execution time |
-
 
 ---
 

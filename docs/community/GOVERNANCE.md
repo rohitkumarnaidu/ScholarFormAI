@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # ScholarForm AI Governance
 
 ## Project Stewardship Model
@@ -47,7 +46,7 @@ Anyone who submits a pull request, files a bug report, improves documentation, o
 ## Decision-Making
 
 | Type | Process | Approver |
-|------|---------|----------|
+| ------ | --------- | ---------- |
 | Bug fixes, minor features | Standard PR review | 1 Core Team approval |
 | Major features | RFC + PR review | 2 Core Team approvals |
 | Breaking API changes | RFC + 2-week comment period | Core Team majority |

@@ -21,18 +21,19 @@ The team evaluated four candidates: Django, Flask, Starlette, and FastAPI.
 We chose **FastAPI** over the alternatives.
 
 | Criterion | FastAPI | Django | Flask | Starlette |
-|-----------|---------|--------|-------|-----------|
+| ----------- | --------- | -------- | ------- | ----------- |
 | Native async | ✅ Built-in | ❌ Sync ORM | ❌ Extension | ✅ Built-in |
-| Pydantic integration | ✅ First-class | ❌ Separate lib | ❌ Separate lib |  ️ Manual |
+| Pydantic integration | ✅ First-class | ❌ Separate lib | ❌ Separate lib | ️ Manual |
 | OpenAPI auto-doc | ✅ Automatic | ❌ DRF needed | ❌ Extension | ❌ Manual |
 | Performance | ⚡ ASGI-native | 🐌 WSGI | 🐌 WSGI | ⚡ ASGI-native |
-| Opinionated structure |  ️ Minimal | ✅ Batteries-included |  ️ Minimal | ❌ Too minimal |
+| Opinionated structure | ️ Minimal | ✅ Batteries-included | ️ Minimal | ❌ Too minimal |
 
 Django was ruled out due to its synchronous ORM and thread-per-request model, which conflicts with the async-heavy AI pipeline. Flask lacks native async and requires extensions for validation. Starlette is too low-level and would require building the validation layer from scratch. FastAPI provides the right balance of structure and flexibility.
 
 ## Consequences
 
 **Positive:**
+
 - Native `async def` endpoints enable concurrent LLM calls and database queries without thread pool overhead
 - Pydantic models serve double duty: request validation + OpenAPI schema generation, eliminating drift between docs and implementation
 - Automatic OpenAPI docs at `/docs` reduce onboarding time for new engineers
@@ -40,6 +41,7 @@ Django was ruled out due to its synchronous ORM and thread-per-request model, wh
 - ASGI compatibility allows future WebSocket support for real-time formatting progress
 
 **Negative:**
+
 - Smaller ecosystem than Django — some integrations (admin panels, CMS) require manual effort
 - Async ORM (SQLAlchemy async) adds complexity compared to Django ORM
 - Startup time is slower than Flask due to Pydantic model loading
@@ -48,6 +50,7 @@ Django was ruled out due to its synchronous ORM and thread-per-request model, wh
 ## Compliance
 
 This decision has been implemented and is verified by:
+
 - `backend/tests/test_main.py` — FastAPI application creation and lifespan
 - `backend/tests/test_routers_enterprise.py` — all 39 API routes served via FastAPI
 - `backend/tests/test_openapi_docs.py` — OpenAPI schema generation

@@ -36,6 +36,7 @@ amf issue report -t "Add dark mode" -d "Would be nice to have dark mode" -c feat
 ### From Error Dialogs
 
 When an error occurs, the error dialog shows:
+
 - **Dismiss** — close the dialog
 - **Copy Error** — copies the error details to clipboard
 - **Report Issue** — opens a pre-filled issue form
@@ -43,6 +44,7 @@ When an error occurs, the error dialog shows:
 ### From Crash Screens
 
 If the application crashes, the crash screen shows:
+
 - Error message with collapsible stack trace
 - **Report Crash** — submits system info, logs, and stack trace
 - **Reload Page** — refresh the application
@@ -51,6 +53,7 @@ If the application crashes, the crash screen shows:
 ### From the Feedback Widget
 
 A floating feedback button (bottom-left) lets you submit quick feedback:
+
 1. Click the feedback button
 2. Rate your experience (1–5 stars)
 3. Select a category

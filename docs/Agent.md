@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Agent Documentation
 description: AI agent pipeline with 11-step generation workflow
 sidebar_position: 21
@@ -16,12 +16,13 @@ last_updated: July 2026
 # ScholarForm AI — Agent Documentation
 
 ## Agent Pipeline Overview
+
 Generator Mode B uses an 11-step AI agent pipeline implemented in `pipeline/generation/agent.py` (34KB).
 
 ## The 11 Steps
 
 | Step | Name | Description |
-|------|------|-------------|
+| ------ | ------ | ------------- |
 | 1 | **Task Parsing** | LLM extracts requirements from user prompt (doc type, topic, length, template) |
 | 2 | **Web Research** | Optional: search academic sources for context |
 | 3 | **Outline Generation** | LLM generates structured outline in JSON mode |
@@ -35,6 +36,7 @@ Generator Mode B uses an 11-step AI agent pipeline implemented in `pipeline/gene
 | 11 | **Export** | Render to template DOCX |
 
 ## Agent State Machine
+
 ```
 IDLE → TASK_PARSING → RESEARCHING → OUTLINING
   → PENDING_APPROVAL → WRITING → CITING
@@ -44,6 +46,7 @@ IDLE → TASK_PARSING → RESEARCHING → OUTLINING
 ## Key Components
 
 ### Backend
+
 - `pipeline/generation/agent.py` — Main agent orchestrator
 - `pipeline/generation/task_parser.py` — NLP extraction
 - `pipeline/generation/section_prompts.py` — Per-section prompts
@@ -52,6 +55,7 @@ IDLE → TASK_PARSING → RESEARCHING → OUTLINING
 - `routers/v1/generator.py` — API endpoints
 
 ### Frontend
+
 - `AgentChatPane.jsx` — Chat interface (11KB)
 - `OutlineApproval.jsx` — Outline review/edit (10.7KB)
 - `TokenStream.jsx` — Token streaming display (11.3KB)
@@ -59,6 +63,7 @@ IDLE → TASK_PARSING → RESEARCHING → OUTLINING
 - `SessionHistory.jsx` — Past sessions (8KB)
 
 ## SSE Events
+
 ```json
 {"stage": "task_parsing", "progress": 10, "message": "Understanding your request..."}
 {"stage": "outlining", "progress": 25, "message": "Creating document outline..."}
@@ -68,6 +73,7 @@ IDLE → TASK_PARSING → RESEARCHING → OUTLINING
 ```
 
 ## Agent Configuration
+
 ```json
 {
   "session_type": "agent",
@@ -81,7 +87,9 @@ IDLE → TASK_PARSING → RESEARCHING → OUTLINING
   }
 }
 ```
+
 \n
+
 ## Agent Workflow Diagram
 
 ```mermaid
@@ -98,7 +106,9 @@ sequenceDiagram
     P->>A: Request Audit
     A-->>P: Audit Result
 ```
+
 \n
+
 ## Memory Flow Diagram
 
 ```mermaid

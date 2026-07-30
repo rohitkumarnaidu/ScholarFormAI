@@ -1,13 +1,12 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Maintainers
 
 ## Core Team
 
 | Name | Role | Area | GitHub | Contact |
-|------|------|------|--------|---------|
+| ------ | ------ | ------ | -------- | --------- |
 | Rohit Kumar Naidu | BDFL / Project Lead | Overall direction, architecture | [@rohitkumarnaidu](https://github.com/rohitkumarnaidu) | rohit@scholarform.ai |
 | _(open)_ | Core Team | Backend, pipeline, AI | @user | — |
 | _(open)_ | Core Team | Frontend, UX | @user | — |

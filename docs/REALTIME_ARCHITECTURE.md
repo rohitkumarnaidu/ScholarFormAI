@@ -54,6 +54,7 @@ ScholarForm AI employs two complementary real-time paradigms:
 ```
 
 **Key detail**: Two distinct SSE transport mechanisms exist on the frontend:
+
 - **`EventSource` API** (native browser, used by `useSSEStream` and all hooks)  preferred for session-based event streams.
 - **`ReadableStream` reader** (used by `streamGenerationStatus` in `api.generation.js`)  manual fetch with `text/event-stream` `Accept` header, manual SSE frame parsing, necessary when auth headers must be injected (native `EventSource` does not support custom headers).
 
@@ -90,7 +91,7 @@ The `event:` line maps to `RealtimeEvent.event_type`. The `data:` line is the fu
 ### 2.4 SSE Endpoints
 
 | Endpoint | Path | Stream Scope | Auth | Purpose |
-|----------|------|-------------|------|---------|
+| ---------- | ------ | ------------- | ------ | --------- |
 | **Stream job events** | `GET /api/v1/stream/{jobId}` | `job:{jobId}` channel | `Depends(get_current_user)` | General-purpose job status stream. Used by `streamGenerationStatus()` for generation polling fallback. |
 | **Generator session events** | `GET /api/v1/generator/sessions/{sessionId}/events` | `session:{sessionId}` channel | Ownership check via `verify_session_ownership` | Agent pipeline events: stage transitions, token chunks, outline proposals, completion. Used by `useGeneratorSessionStream`. |
 | **Synthesis session events** | `GET /api/v1/synthesis/sessions/{sessionId}/events` | `session:{sessionId}` channel | Ownership check via `verify_session_ownership` | Multi-doc synthesis pipeline events: stage_start, stage_complete, synthesis_complete. Used by `useSynthesisSessionStream`. |
@@ -101,7 +102,7 @@ The `event:` line maps to `RealtimeEvent.event_type`. The `data:` line is the fu
 #### Generator/Synthesis Pipeline Events (`channel: session:{id}`)
 
 | Event Name | Direction | Payload | Emitted By |
-|-----------|-----------|---------|------------|
+| ----------- | ----------- | --------- | ------------ |
 | `connected` | Server ? Client | `{message: "Connected to session {id}"}` | `event_generator()` on connection open |
 | `stage_update` | Server ? Client | `{stage, progress, message, ...extra}` | `AgentPipeline._emit_sse()` at each pipeline stage |
 | `stage_start` | Server ? Client | `{name, progress, ...}` | Synthesis pipeline stage entrance |
@@ -115,14 +116,14 @@ The `event:` line maps to `RealtimeEvent.event_type`. The `data:` line is the fu
 #### Stream Job Events (`channel: job:{id}`)
 
 | Event Name | Direction | Payload | Emitted By |
-|-----------|-----------|---------|------------|
+| ----------- | ----------- | --------- | ------------ |
 | `connected` | Server ? Client | `{message: "Connected to stream for job {id}"}` | `event_generator()` on connection open |
 | `status_update` | Server ? Client | `{phase, status, message, progress, stage, ...}` | `DocumentGenerator._emit()` at each generation phase |
 
 #### AI Suggestion Events (inline generator, no pub/sub)
 
 | Event Name | Direction | Payload |
-|-----------|-----------|---------|
+| ----------- | ----------- | --------- |
 | `status` | Server ? Client | `{state: "started", sessionId, request_id}` |
 | `suggestion` | Server ? Client | `{content: "chunked text", request_id}` (multiple chunks) |
 | `done` | Server ? Client | `{done: true, latencyMs, model, tier, request_id}` |
@@ -189,7 +190,7 @@ Client                                      Server
 #### Reconnection parameters
 
 | Parameter | Value | Description |
-|-----------|-------|-------------|
+| ----------- | ------- | ------------- |
 | `initialDelay` | 1000 ms | First retry delay |
 | `maxDelay` | 30000 ms | Ceiling for exponential backoff |
 | `factor` | 2 | Exponential growth factor |
@@ -281,6 +282,7 @@ When the WebSocket is disconnected and no pending reconnect is desired, the fron
 ```
 
 Returns:
+
 ```json
 {
   "html": "...",
@@ -329,7 +331,7 @@ The `RedisPubSub` class (`backend/app/realtime/pubsub.py`) abstracts Redis pub/s
 ### 4.2 Channel Namespace Convention
 
 | Channel Pattern | Used By | Purpose |
-|----------------|---------|---------|
+| ---------------- | --------- | --------- |
 | `job:{job_id}` | `stream.py` (emit_event), `DocumentGenerator._emit()` | Job-level status broadcasts |
 | `session:{session_id}` | `AgentPipeline._emit_sse()`, generator/synthesis event endpoints | Session-level pipeline stage updates |
 | `preview:{session_id}` | `preview.py` (preview_ws WebSocket) | Live preview rendering updates |
@@ -377,6 +379,7 @@ Publishing to an in-memory channel fans out to all subscribed queues. If a queue
 **File**: `frontend/src/hooks/useSSEStream.js`
 
 **Signature**:
+
 ```javascript
 useSSEStream(sessionId, getEventsUrl, {
   maxRetries = Infinity,
@@ -386,12 +389,14 @@ useSSEStream(sessionId, getEventsUrl, {
 ```
 
 **Behavior**:
+
 - Creates a native `EventSource` with the URL returned by `getEventsUrl(sessionId)`. Attaches `?token=` query param from Supabase auth session.
 - `status` transitions: `'idle'` ? `'connecting'` ? `'streaming'` (on first open) | `'reconnecting'` (on retry) ? `'error'` (on failure).
 - Implements exponential backoff reconnect on `onerror` with configurable `maxRetries` (default `Infinity`).
 - On unmount: closes `EventSource`, clears reconnect timer.
 
 **Reconnect formula** (inlined, not shared with WebSocket):
+
 ```javascript
 const rawBackoff = maxRetries === Infinity
   ? Math.min(Math.pow(2, attempt - 1) * 1000, 30000)   // infinite: 1s, 2s, 4s, 8s, 16s, 30s...
@@ -403,6 +408,7 @@ const rawBackoff = maxRetries === Infinity
 **File**: `frontend/src/hooks/useGeneratorSessionStream.js`
 
 **Signature**:
+
 ```javascript
 useGeneratorSessionStream(sessionId, callbacks = {
   onStageChange, onToken, onOutline, onComplete, onError
@@ -412,16 +418,18 @@ useGeneratorSessionStream(sessionId, callbacks = {
 **Stream URL**: `${API_BASE_URL}/api/v1/generator/sessions/${id}/events`
 
 **Behavior**:
+
 - Wraps `useSSEStream` with `maxRetries: Infinity`, `streamName: 'GeneratorSession'`.
 - Registers five named `EventSource` event listeners:
-  - `connected` ? measures connection latency (`latencyMs`), sets status to `'streaming'`.
-  - `stage` ? accumulates stage records (upsert by `name`), invokes `onStageChange`.
-  - `token` ? passes token content to `onToken` (handles both JSON and raw string payloads).
-  - `outline` ? passes outline data to `onOutline`.
-  - `complete` ? sets status `'done'`, invokes `onComplete`.
-  - `error` ? sets status `'error'`, invokes `onError`.
+    - `connected` ? measures connection latency (`latencyMs`), sets status to `'streaming'`.
+    - `stage` ? accumulates stage records (upsert by `name`), invokes `onStageChange`.
+    - `token` ? passes token content to `onToken` (handles both JSON and raw string payloads).
+    - `outline` ? passes outline data to `onOutline`.
+    - `complete` ? sets status `'done'`, invokes `onComplete`.
+    - `error` ? sets status `'error'`, invokes `onError`.
 
 **State shape** (`stages`):
+
 ```javascript
 [
   { name: "Generating outline", progress: 10, status: "in_progress" },
@@ -435,12 +443,14 @@ useGeneratorSessionStream(sessionId, callbacks = {
 **File**: `frontend/src/hooks/useSessionEventStream.js`
 
 **Signature**:
+
 ```javascript
 useSessionEventStream(sessionId, getEventsUrl, streamName)
   ? { stages, currentStage, progress, isComplete, error }
 ```
 
 **Behavior**:
+
 - Wraps `useSSEStream` with `maxRetries: 5` (finite retries). On exhaustion: sets `error` with user-visible message.
 - Uses generic `eventSource.onmessage` (not named event listeners)  parses all incoming events as JSON stage objects.
 - Tracks `progress` (0-100) from any message with a `progress` field.
@@ -452,6 +462,7 @@ useSessionEventStream(sessionId, getEventsUrl, streamName)
 **File**: `frontend/src/hooks/useSynthesisSessionStream.js`
 
 **Signature**:
+
 ```javascript
 useSynthesisSessionStream(sessionId, callbacks = {
   onConnected, onStageStart, onStageComplete, onSynthesisComplete, onError
@@ -461,36 +472,39 @@ useSynthesisSessionStream(sessionId, callbacks = {
 **Stream URL**: `${API_BASE_URL}/api/v1/synthesis/sessions/${id}/events` (via `getSynthesisEventsEndpoint()`)
 
 **Behavior**:
+
 - Wraps `useSSEStream` with `maxRetries: 5`, `streamName: 'SynthesisSession'`.
 - Registers four named event listeners plus one generic listener:
-  - `connected` ? latency measurement, invokes `onConnected`.
-  - `stage_start` ? upserts stage with `status: 'in_progress'`, invokes `onStageStart`.
-  - `stage_complete` ? marks stage `status: 'done'`, invokes `onStageComplete`.
-  - `synthesis_complete` ? sets status `'done'`, invokes `onSynthesisComplete` with full document object.
-  - `error` ? sets status `'error'`, invokes `onError`.
+    - `connected` ? latency measurement, invokes `onConnected`.
+    - `stage_start` ? upserts stage with `status: 'in_progress'`, invokes `onStageStart`.
+    - `stage_complete` ? marks stage `status: 'done'`, invokes `onStageComplete`.
+    - `synthesis_complete` ? sets status `'done'`, invokes `onSynthesisComplete` with full document object.
+    - `error` ? sets status `'error'`, invokes `onError`.
 
 ### 5.5 `useLivePreviewSocket`
 
 **File**: `frontend/src/hooks/useLivePreviewSocket.js`
 
 **Signature**:
+
 ```javascript
 useLivePreviewSocket(sessionId)
   ? { html, latencyMs, warnings, isConnected, isReconnecting, reconnectAttempt, isAnalyzing, sendContent }
 ```
 
 **Behavior**:
+
 - Creates `ReconnectingWebSocket` to `ws://{host}/api/v1/ws/preview/{sessionId}`.
 - `onopen` ? sets `isConnected=true`, `isReconnecting=false`. Replays `pendingPayloadRef` if any queued during downtime.
 - `onmessage` ? parses JSON, updates `html`, `warnings`, computes `latencyMs` from `sentAtRef`, sets `isAnalyzing=false`.
 - `onclose/onerror` ? sets `isConnected=false`.
 - `onreconnect` ? sets `isReconnecting=true`, increments `reconnectAttempt`.
 - `sendContent(content, templateId)`:
-  - 200ms debounce via `setTimeout`.
-  - If `abs(content.length - lastContentRef.length) > 1000`: immediately sets `isAnalyzing=true`.
-  - Builds payload with `content`, `templateId`, `cursor`, `checksum` (via `simpleHash`), `seq`.
-  - Stores payload in `pendingPayloadRef` for replay on reconnect.
-  - If socket is `OPEN`: sends immediately sets `sentAtRef` for latency timing.
+    - 200ms debounce via `setTimeout`.
+    - If `abs(content.length - lastContentRef.length) > 1000`: immediately sets `isAnalyzing=true`.
+    - Builds payload with `content`, `templateId`, `cursor`, `checksum` (via `simpleHash`), `seq`.
+    - Stores payload in `pendingPayloadRef` for replay on reconnect.
+    - If socket is `OPEN`: sends immediately sets `sentAtRef` for latency timing.
 
 ---
 
@@ -499,7 +513,7 @@ useLivePreviewSocket(sessionId)
 ### 6.1 Reconnection Strategy
 
 | Component | Strategy | Max Retries | Approach |
-|-----------|----------|-------------|----------|
+| ----------- | ---------- | ------------- | ---------- |
 | `useSSEStream` (native EventSource) | Exponential backoff (no jitter) | Configurable (default `Infinity`) | Reconnect via `setTimeout` on `onerror` |
 | `ReconnectingWebSocket` | Exponential backoff + 30% jitter | Configurable (default `Infinity`) | `scheduleReconnect()` on `onclose` (if not forced) |
 | `useSessionEventStream` | Wraps `useSSEStream` | 5 | Shows error message on exhaustion: "Lost connection to synthesis stream. Please refresh." |
@@ -524,7 +538,7 @@ Two fallback paths exist:
 ### 6.4 Edge Case Handling
 
 | Scenario | Mechanism |
-|----------|-----------|
+| ---------- | ----------- |
 | **SSE connection lost mid-generation** | `EventSource` auto-reconnects. The `session:{id}` pub/sub channel persists  missed events are lost, but the latest state is available via HTTP GET (`getGenerationStatus`). |
 | **WebSocket drops during content analysis** | `pendingPayloadRef` stores the last unsent payload. Replayed on reconnect. `isAnalyzing` remains `true` until response arrives. |
 | **Client navigates away mid-stream** | `useEffect` cleanup closes `EventSource`/`WebSocket`. Backend detects disconnect via `request.is_disconnected()` (SSE) or `WebSocketDisconnect` exception. |
@@ -541,13 +555,14 @@ Two fallback paths exist:
 All real-time connections are tracked via `MetricsManager` (Prometheus counters):
 
 | Metric | Instrumentation Point | Labels |
-|--------|----------------------|--------|
+| -------- | ---------------------- | -------- |
 | `sse_connection_open()` | `event_generator()` start in all SSE endpoints | (none) |
 | `sse_connection_closed()` | `event_generator()` `finally` block | (none) |
 | `ws_connection_open()` | `preview_ws()` after `websocket.accept()` | (none) |
 | `ws_connection_closed()` | `preview_ws()` `finally` block | (none) |
 
 These metrics enable dashboards for:
+
 - Current concurrent SSE and WebSocket connection counts
 - Connection churn rate (open/close per second)
 - Anomaly detection (e.g., sudden drop in connections indicating network issues)
@@ -561,6 +576,7 @@ logger.info("Client disconnected from stream %s", job_id, extra=log_extra(job_id
 ```
 
 Log context includes:
+
 - `job_id` / `session_id` (scoped to the stream)
 - `request_id` (propagated from the initial HTTP request via `get_request_id_context()`)
 - `stage`, `progress` (for SSE event emission)
@@ -568,7 +584,7 @@ Log context includes:
 ### 7.3 Connection Health Indicators
 
 | Indicator | Source | Expected Range |
-|-----------|--------|----------------|
+| ----------- | -------- | ---------------- |
 | SSE connection latency (`latencyMs`) | `useGeneratorSessionStream`, `useSynthesisSessionStream` | < 500ms |
 | WebSocket round-trip latency (`latencyMs`) | `useLivePreviewSocket` (time from `sentAtRef` to response) | < 200ms |
 | WebSocket `reconnectAttempt` | `useLivePreviewSocket` | 0 in steady state |
@@ -579,7 +595,7 @@ Log context includes:
 ### 7.4 Key Performance Characteristics
 
 | Aspect | SSE | WebSocket |
-|--------|-----|-----------|
+| -------- | ----- | ----------- |
 | Connection overhead | 1 HTTP round trip | 1 HTTP upgrade round trip |
 | Message overhead | ~100 bytes/event (SSE framing) | ~20 bytes/frame (WebSocket framing) |
 | Max concurrent connections (single node) | 6 per domain (browser limit per host) | 255+ (no browser limit) |
@@ -666,7 +682,7 @@ User Types                     Frontend                          Backend
 ## 9. Code Map
 
 | File | Role |
-|------|------|
+| ------ | ------ |
 | `backend/app/realtime/events.py` | `RealtimeEvent` dataclass, `make_event()` factory |
 | `backend/app/realtime/pubsub.py` | `RedisPubSub`  Redis + in-memory queue fallback |
 | `backend/app/routers/v1/stream.py` | `GET /api/v1/stream/{jobId}`  job-level SSE, `emit_event()` helper |
@@ -709,8 +725,10 @@ beforeEach(() => {
 `
 
 **Key practices:**
+
 - Store the returned mock (mockEs) to call onopen, onerror and verify close().
-- Set eadyState transitions manually (0 -> 1 -> 2) to simulate connection lifecycle.
+- Set
+eadyState transitions manually (0 -> 1 -> 2) to simulate connection lifecycle.
 - Mock EventSource.CONNECTING = 0, OPEN = 1, CLOSED = 2 if the code under test references them.
 - For useSSEStream, the hook reads supabase.auth.getSession() on connect -- mock Supabase in parallel via vi.mock('@/src/lib/supabaseClient').
 
@@ -762,7 +780,8 @@ wsMock.onclose({});        // -> isConnected=false
 
 **Test plan** (expected test file: Frontend/src/test/hooks/useSSEStream.test.js):
 
-1. **Connection lifecycle** -- assert status transitions: idle -> connecting -> streaming on onopen, then error -> econnecting on onerror.
+1. **Connection lifecycle** -- assert status transitions: idle -> connecting -> streaming on onopen, then error ->
+econnecting on onerror.
 2. **Auth token injection** -- verify searchParams.set('token', ...) is called with the mocked access token.
 3. **Reconnect backoff** -- after onerror, assert setTimeout is called with correct exponential delay (1s, 2s, 4s...).
 4. **Max retries exhaustion** -- with maxRetries=2, call onerror 3 times and verify onMaxRetriesExceeded fires.
@@ -799,13 +818,14 @@ describe('useSSEStream', () => {
 
 ### 10.4 Testing RedisPubSub with Mocked Redis Client
 
-Backend/app/realtime/pubsub.py. Use unittest.mock.patch to replace edis.asyncio:
+Backend/app/realtime/pubsub.py. Use unittest.mock.patch to replace
+edis.asyncio:
 
 | Test Case | Approach |
-|-----------|----------|
+| ----------- | ---------- |
 | publish() uses Redis when enabled | ioredis.from_url().publish.assert_called_once() |
 | subscribe() yields messages from Redis | Mock pubsub.get_message() to return test events |
-| publish() falls back to in-memory when Redis is down | Patch ioredis.from_url to raise, verify _force_fallback=True |
+| publish() falls back to in-memory when Redis is down | Patch ioredis.from_url to raise, verify_force_fallback=True |
 | subscribe() falls back to asyncio.Queue | Deliver events via queue after Redis failure |
 | Thread-safe publish from non-async context | Call publish() from sync thread, verify loop.create_task used |
 | Multiple subscribers on same channel | Two concurrent subscribe() generators both receive same event |
@@ -852,8 +872,11 @@ assert "event: stage_update" in str(frames[0])
 **WebSocket simulation (Python):**
 `python
 from fastapi.testclient import TestClient
+
 # TestClient does not support WebSocket with full lifespan >180s
+
 # Use starlette test client for isolated WebSocket tests:
+
 with client.websocket_connect("/api/v1/ws/preview/test-session") as ws:
     ws.send_json({"content": "test", "templateId": "ieee"})
     response = ws.receive_json()
@@ -876,11 +899,13 @@ with client.websocket_connect("/api/v1/ws/preview/test-session") as ws:
 **Origin validation:** preview_ws() validates the Origin header against the allowed CORS origins list. Connections from disallowed origins receive an immediate 403 close, preventing cross-site WebSocket hijacking (CSWSH).
 
 **Rate limiting for SSE endpoints (token bucket per user):**
+
 - Max 6 concurrent SSE connections per user (tracked server-side via MetricsManager).
 - New SSE connections limited to 10/minute per IP via RateLimitMiddleware.
 - Reconnection burst detection: >5 reconnects in 60s triggers a 30-second cooldown before accepting new SSE connections from that IP.
 
 **Reconnection amplification protection:** Exponential backoff with jitter prevents thundering herd:
+
 - useSSEStream: 1s, 2s, 4s, 8s... capped at 30s (no jitter).
 - ReconnectingWebSocket: 1s, 2-2.6s, 4-5.2s... capped at 30s (+-30% jitter).
 - Server-side: ws_reconnect_storms counter increments when >10 reconnections/sec detected across all clients.
@@ -890,17 +915,20 @@ with client.websocket_connect("/api/v1/ws/preview/test-session") as ws:
 All alert rules target a **5-minute evaluation window**.
 
 | Alert | PromQL Expression | Severity | Description |
-|-------|-------------------|----------|-------------|
-| SSE connection drop rate > 5% | ate(sse_connection_closed_total[5m]) / (rate(sse_connection_open_total[5m]) + 1) > 0.05 | **Warning** | Network issues or backend overload |
-| WS reconnection storm | ate(ws_connection_open_total[1m]) > 10 | **Critical** | Possible server restart or network partition |
+| ------- | ------------------- | ---------- | ------------- |
+| SSE connection drop rate > 5% |
+ate(sse_connection_closed_total[5m]) / (rate(sse_connection_open_total[5m]) + 1) > 0.05 | **Warning** | Network issues or backend overload |
+| WS reconnection storm |
+ate(ws_connection_open_total[1m]) > 10 | **Critical** | Possible server restart or network partition |
 | Pub/sub queue buildup | pubsub_queue_depth > 1000 | **Warning** | Consumer falling behind |
-| High SSE connection churn | ate(sse_connection_open_total[5m]) > 20 and rate(sse_connection_closed_total[5m]) > 20 | **Info** | Rapid open/close cycle |
+| High SSE connection churn |
+ate(sse_connection_open_total[5m]) > 20 and rate(sse_connection_closed_total[5m]) > 20 | **Info** | Rapid open/close cycle |
 | WS latency spike p95 | histogram_quantile(0.95, ws_latency_seconds_bucket) > 1.0 | **Warning** | Render pipeline bottleneck |
 
 **Prometheus metrics additions:**
 
 | Metric | Type | Labels | Instrumentation Point |
-|--------|------|--------|-----------------------|
+| -------- | ------ | -------- | ----------------------- |
 | sse_connections_open | Gauge | {endpoint} | event_generator() prologue in stream.py, generator.py, synthesis.py |
 | sse_connections_closed_total | Counter | {endpoint} | event_generator() finally block |
 | ws_connections_open | Gauge | {endpoint} | preview_ws() after websocket.accept() |
@@ -923,18 +951,20 @@ Worker A (ws://host1/ws/preview/{id})    Worker B (ws://host2/ws/preview/{id})
 Any worker handles any client. Workers subscribe to preview:{sessionId} on connect; _forward_updates() broadcasts to all subscribers.
 
 **SSE load balancing considerations:**
+
 - SSE uses long-lived HTTP connections (~200-500 per worker before resource contention).
 - Use **least-connections routing** (not round-robin) to avoid overloading a single worker.
 - Each SSE connection consumes an event loop slot and a Redis pub/sub subscription.
 
 **Redis pub/sub for cross-worker event broadcasting:**
+
 - publish("job:{job_id}", event) fans out to all workers subscribed to that channel.
 - In-memory fallback is **single-process only** -- multi-worker requires Redis. Configure REDIS_ENABLED=true in production.
 
 **Render free tier limits:**
 
 | Resource | Free Tier Limit | Impact |
-|----------|----------------|--------|
+| ---------- | ---------------- | -------- |
 | Concurrent connections | 15 (all protocols) | Max ~15 SSE streams + few WebSockets |
 | Bandwidth | 1 TB/month | Sufficient for text-only event streams |
 | Custom domains | :x: Not supported | Must use *.onrender.com |
@@ -950,7 +980,7 @@ Any worker handles any client. Workers subscribe to preview:{sessionId} on conne
 SSE connections are long-lived HTTP streams. A sudden drop in active connections indicates network issues, backend overload, or deployment disruptions:
 
 | Alert | PromQL | Threshold | Severity | Action |
-|-------|--------|-----------|----------|--------|
+| ------- | -------- | ----------- | ---------- | -------- |
 | High SSE drop rate | `rate(sse_connection_closed_total[5m]) / (rate(sse_connection_open_total[5m]) + 1) > 0.05` | > 5% drop-to-open ratio | **Warning** | Check backend CPU, Redis connectivity, network partition |
 | Zero active SSE connections | `sse_connections_open == 0` | 0 for > 2 min | **Critical** | All SSE endpoints unreachable  immediate incident |
 | SSE connection churn | `rate(sse_connection_open_total[5m]) > 20 AND rate(sse_connection_closed_total[5m]) > 20` | > 20/s open AND close | **Info** | Clients rapidly connecting/disconnecting |
@@ -972,7 +1002,7 @@ Mitigation: Server-side backoff hint sent on WS close frame
 ```
 
 | Condition | Metric | Response |
-|-----------|--------|----------|
+| ----------- | -------- | ---------- |
 | Normal reconnect | `ws_reconnect_storms_total = 0` | Standard exponential backoff |
 | Storm detected | `ws_reconnect_storms_total > 0` | Log warning, increase server-side `maxDelay` hint |
 | Sustained storm (>5 min) | `rate(ws_reconnect_storms_total[5m]) > 0` | Critical alert, auto-scale worker pool |
@@ -997,7 +1027,7 @@ if reconnect_storm_detected():
 The `pubsub_queue_depth` gauge tracks pending messages in both Redis and in-memory fallback queues:
 
 | Source | Metric Point | Warning Threshold | Critical Threshold |
-|--------|-------------|-------------------|--------------------|
+| -------- | ------------- | ------------------- | -------------------- |
 | Redis pub/sub | `XLEN job:{id}` via `RedisPubSub._pubsub_channels` | > 1000 | > 5000 |
 | In-memory fallback | `len(_fallback_channels["channel"])` queue sizes | > 100 | > 500 |
 
@@ -1023,7 +1053,7 @@ async def _report_queue_depth(self):
 Redis pub/sub channels do not buffer messages (they are fire-and-forget). However, the pub/sub client connections and pattern subscription state consume memory:
 
 | Resource | Consumption | Monitoring | Action at 80% |
-|----------|-------------|------------|---------------|
+| ---------- | ------------- | ------------ | --------------- |
 | Client connections | ~16 KB per connection | `connected_clients` metric | Scale horizontally |
 | Subscription state | ~1 KB per channel pattern | `pubsub_channels` metric | Prune stale channel patterns |
 | Redis memory (total) | Variable | `used_memory / maxmemory` | Increase `maxmemory` or scale cluster |
@@ -1048,7 +1078,7 @@ sum by (instance) (redis_connected_clients_total)
 A dedicated **Real-Time Connections** dashboard in Grafana tracks the following panels:
 
 | Panel | Metric | Visualization | Refresh |
-|-------|--------|---------------|---------|
+| ------- | -------- | --------------- | --------- |
 | Active SSE connections | `sse_connections_open` (sum by endpoint) | Time series bar chart | 15s |
 | Active WebSocket connections | `ws_connections_open` | Time series bar chart | 15s |
 | Connection churn rate | `rate(sse_connection_closed_total[5m])` + `rate(ws_connection_open_total[5m])` | Dual line chart | 30s |
@@ -1061,6 +1091,7 @@ A dedicated **Real-Time Connections** dashboard in Grafana tracks the following 
 | Alert firing count | Prometheus alert `ALERTS{alertname=~".*realtime.*"}` | Table | 15s |
 
 **Dashboard provisioning** (`deploy/grafana/dashboards/realtime-connections.json`):
+
 - Data source: Prometheus (backend metrics endpoint)
 - Time range default: Last 1 hour
 - Auto-refresh: 15s
@@ -1078,7 +1109,7 @@ A dedicated **Real-Time Connections** dashboard in Grafana tracks the following 
 The WebSocket endpoint (`/api/v1/ws/preview/{sessionId}`) authenticates via JWT passed as a query parameter. This is a pragmatic choice driven by browser API constraints:
 
 | Method | Used? | Constraint |
-|--------|-------|------------|
+| -------- | ------- | ------------ |
 | **Query parameter** (`?token=<JWT>`) | ? Current implementation | Native `WebSocket` API does not support custom `Sec-WebSocket-Protocol` headers during handshake |
 | **Upgrade header** (`Authorization: Bearer <JWT>`) | ? Not possible | Browser `new WebSocket(url)` only accepts URL  no header injection |
 | **Pre-authenticated WebSocket** | ? Planned | HTTP POST to establish session, return `ws_url` with short-lived ticket |
@@ -1086,7 +1117,7 @@ The WebSocket endpoint (`/api/v1/ws/preview/{sessionId}`) authenticates via JWT 
 **Token exposure risks and mitigations**:
 
 | Risk | Impact | Mitigation | Status |
-|------|--------|------------|--------|
+| ------ | -------- | ------------ | -------- |
 | Token in server access logs | JWT captured in URL path | Production logging redacts `?token=*` pattern | ? Implemented |
 | Token in browser history | JWT visible in `document.referrer` | Short token TTL (1h), Supabase auto-refresh | ? Implemented |
 | Token in Referer header | Leaked to third-party resources | `Referrer-Policy: strict-origin-when-cross-origin` | ? next.config.mjs |
@@ -1111,7 +1142,7 @@ Server preview_ws():
 ### 13.2 Token Validation & Expiry Handling
 
 | Token Property | Value | Enforcement |
-|----------------|-------|-------------|
+| ---------------- | ------- | ------------- |
 | Algorithm | `HS256` | Signature verified with `SUPABASE_JWT_SECRET` |
 | Expiry (`exp`) | 3600s (1 hour) from issuance | Rejected if `exp < now()`. Close code: 4001 |
 | Issued at (`iat`) | 30s grace period | Accepted if `iat - 30s < now() < exp` |
@@ -1153,7 +1184,7 @@ const handleAuthError = async () => {
 Rate limiting is enforced at two levels per connection:
 
 | Layer | Limit | Scope | Enforcement |
-|-------|-------|-------|-------------|
+| ------- | ------- | ------- | ------------- |
 | Connection rate | 6 concurrent SSE connections per user | User-level (server-side tracker) | Reject new SSE with 429 |
 | Message rate (WebSocket) | 30 messages/second per connection | Per-WebSocket session | Drop messages above limit, log warning |
 | Connection burst (SSE) | 10 new connections/minute per IP | IP-level (RateLimitMiddleware) | 30s cooldown on exceed |
@@ -1181,6 +1212,7 @@ class RateLimiter:
 ```
 
 **Metrics tracking**:
+
 - `ws_rate_limited_total{counter}`  total messages dropped due to rate limiting
 - `sse_rate_limited_total{counter}`  total SSE connections rejected
 - `ws_rate_limit_exceeded_connections{gauge}`  currently rate-limited connections
@@ -1223,6 +1255,7 @@ def _is_origin_allowed(origin: str | None) -> bool:
 ```
 
 **Security properties**:
+
 - **CSWSH prevention**: Malicious sites cannot initiate WebSocket connections on behalf of authenticated users because the Origin header won't match `ALLOWED_ORIGINS`
 - **DNS rebinding protection**: Origin validation against the final resolved hostname
 - **No `Access-Control-Allow-Origin` for WebSocket**: WebSocket handshake has its own Origin check, separate from CORS
@@ -1230,7 +1263,7 @@ def _is_origin_allowed(origin: str | None) -> bool:
 **Test coverage** (from `test_preview.py`):
 
 | Test Case | Expected | Status |
-|-----------|----------|--------|
+| ----------- | ---------- | -------- |
 | Valid origin `https://app.scholarform.ai` | Connection accepted | ? |
 | Valid wildcard origin `https://dev.scholarform.onrender.com` | Connection accepted | ? |
 | Missing Origin header | Connection rejected (4003) | ? |
@@ -1248,7 +1281,7 @@ def _is_origin_allowed(origin: str | None) -> bool:
 **Sticky sessions are NOT required** (see [Section 11.3](#113-scaling-guide)). All real-time state is managed through Redis pub/sub, so any worker can serve any client. However, if a load balancer enforces sticky sessions (e.g., AWS ALB):
 
 | Load Balancer | Stickiness Configuration | Cookie Name | Duration |
-|---------------|------------------------|-------------|----------|
+| --------------- | ------------------------ | ------------- | ---------- |
 | Render (default) | Built-in  no config needed | Render internal | Automatic |
 | AWS ALB | `stickiness.enabled = true` | `AWSALB` | 1 day |
 | NGINX Plus | `sticky cookie` directive | `route` | Session duration |
@@ -1299,7 +1332,7 @@ Redis pub/sub is the backbone for cross-worker event broadcasting. The following
 **Key considerations for multi-worker Redis pub/sub**:
 
 | Factor | Impact | Mitigation |
-|--------|--------|------------|
+| -------- | -------- | ------------ |
 | Redis connection count | Each worker maintains 1 Redis connection for pub/sub | Reuse connection via `_redis_by_loop` (one per event loop) |
 | Subscription fan-out | All workers receive all events on subscribed channels | Channel-scoped subscriptions per session/job  workers only subscribe to channels they serve |
 | Redis network bandwidth | Event serialization overhead | Events are small JSON (< 10 KB typical); 1000 events/s  10 MB/s bandwidth |
@@ -1325,13 +1358,14 @@ async def subscribe(self, channel: str) -> AsyncGenerator:
 SSE connections are long-lived HTTP streams. Load balancers must be configured to avoid prematurely terminating these connections:
 
 | Load Balancer | SSE Setting | Timeout | Notes |
-|---------------|-------------|---------|-------|
+| --------------- | ------------- | --------- | ------- |
 | Render Internal | Automatic | 5 minutes idle | Heartbeat every 20s prevents idle timeout |
 | AWS ALB | `idle_timeout.timeout_seconds = 300` | 5 minutes | Must exceed heartbeat interval |
 | NGINX | `proxy_read_timeout 300s;` | 5 minutes | Must exceed heartbeat interval |
 | Cloudflare | `proxy_read_timeout = 100s` (max 100) | 100s | Requires Cloudflare Stream for longer; heartbeat at 60s |
 
 **Recommended routing algorithm**: **Least connections** (not round-robin) because:
+
 - SSE connections are long-lived and resource-heavy (~200-500 per worker)
 - Round-robin can overload a worker that accumulates SSE connections from slow consumers
 - Least-connections distributes new SSE streams to workers with available capacity
@@ -1339,13 +1373,14 @@ SSE connections are long-lived HTTP streams. Load balancers must be configured t
 **Resource consumption per SSE connection**:
 
 | Resource | Consumption | Scaling Limit |
-|----------|-------------|---------------|
+| ---------- | ------------- | --------------- |
 | File descriptor | 1 per connection | OS limit (default 1024 per process on Render) |
 | Event loop task | 1 async generator task | Python asyncio limit (~10,000 tasks) |
 | Redis subscription | 1 pub/sub channel | Redis connection pool size |
 | Memory | ~50 KB per connection (buffers, task frame) | ~500 MB for 10,000 connections |
 
 **Optimization**: For high-scale deployments (> 1000 concurrent SSE connections), consider:
+
 1. **Batched subscriptions**: One Redis subscription per endpoint (not per session), filter events on the worker
 2. **Compression**: Enable gzip compression on SSE responses (reduces bandwidth by ~60%)
 3. **Connection pooling**: Reuse SSE connections across page navigations (keep `EventSource` alive in a shared provider)
@@ -1353,7 +1388,7 @@ SSE connections are long-lived HTTP streams. Load balancers must be configured t
 ### 14.4 Horizontal Scaling Limits & Bottlenecks
 
 | Component | Scaling Strategy | Bottleneck | Limit | Remediation |
-|-----------|-----------------|------------|-------|-------------|
+| ----------- | ----------------- | ------------ | ------- | ------------- |
 | SSE connections | Add more web workers | File descriptors per worker | ~500 connections/worker on Render free tier | Increase `fs.file-max`; use Render paid plan with 4096 FDs |
 | WebSocket connections | Add more web workers | Per-worker Event loop | ~1000 connections/worker | Add workers horizontally; consider dedicated WS process |
 | Redis pub/sub | Cluster or Elasticache | Network bandwidth | ~10K events/s per node | Partition channels across Redis clusters |
@@ -1376,7 +1411,7 @@ SSE connections are long-lived HTTP streams. Load balancers must be configured t
 Each concurrent real-time connection consumes server resources that must be factored into capacity planning:
 
 | Connection Type | CPU (per connection) | Memory (per connection) | Network (per connection) | File Descriptors |
-|----------------|---------------------|------------------------|--------------------------|------------------|
+| ---------------- | --------------------- | ------------------------ | -------------------------- | ------------------ |
 | SSE (idle) | ~0.01% core | ~50 KB | ~100 bytes/s (heartbeat) | 1 |
 | SSE (streaming) | ~0.1% core | ~100 KB | ~5 KB/s (token events) | 1 |
 | WebSocket (idle) | ~0.01% core | ~80 KB | ~200 bytes/s (ping/pong) | 1 |
@@ -1914,7 +1949,6 @@ async def test_pubsub_publish_subscribe_lifecycle(pubsub):
 
 **Cross-reference**: See [FRONTEND_ARCHITECTURE.md Section 10.1](../../docs/FRONTEND_ARCHITECTURE.md#101-testing-patterns) for general frontend testing patterns, [FRONTEND_ARCHITECTURE.md Section 19.1](../../docs/FRONTEND_ARCHITECTURE.md#191-mocking-conventions) for mocking conventions, and [docs/COVERAGE_GAP_REPORT.md](../../COVERAGE_GAP_REPORT.md) for the real-time testing coverage breakdown.
 
-
 ## Related Documentation
 
 - [AI Architecture](AI_ARCHITECTURE.md)
@@ -1923,4 +1957,3 @@ async def test_pubsub_publish_subscribe_lifecycle(pubsub):
 - [Chroma RAG Architecture](CHROMA_RAG_ARCHITECTURE.md)
 - [Database Architecture](DATABASE_ARCHITECTURE.md)
 - [API Reference](API.md)
-

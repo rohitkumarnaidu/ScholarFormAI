@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Small Tasks for New Contributors
 
 ## Overview
@@ -13,7 +12,7 @@ ScholarForm AI identifies small, well-scoped tasks that are suitable for new or 
 We use the following labels to help contributors find appropriate tasks:
 
 | Label | Description | Typical Time |
-|-------|-------------|-------------|
+| ------- | ------------- | ------------- |
 | `good first issue` | First-time contributor friendly | 1-3 hours |
 | `help wanted` | Tasks where maintainer guidance is available | 2-8 hours |
 | `small fix` | Targeted, well-defined change | < 2 hours |
@@ -33,18 +32,21 @@ We use the following labels to help contributors find appropriate tasks:
 ## Examples of Small Tasks
 
 ### Documentation
+
 - Fix a typo in documentation.
 - Add a code example to an API reference.
 - Improve a tutorial with screenshots.
 - Translate documentation to another language.
 
 ### Testing
+
 - Add unit tests for an existing function.
 - Add edge case tests for a utility.
 - Improve test coverage for a module.
 - Add Playwright E2E test for a user flow.
 
 ### Code
+
 - Add input validation for an API endpoint.
 - Fix a lint warning across the codebase.
 - Refactor a small function for clarity.
@@ -52,6 +54,7 @@ We use the following labels to help contributors find appropriate tasks:
 - Improve logging in a service.
 
 ### CI/CD
+
 - Add a new GitHub Actions workflow.
 - Improve caching in an existing workflow.
 - Add a new lint rule configuration.

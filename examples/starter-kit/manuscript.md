@@ -50,7 +50,7 @@ We benchmarked ScholarFormAI against standard manual editing and traditional tem
 ### Table 1: Formatting Accuracy and Processing Speed Comparison
 
 | Template Style | Parsing Accuracy (%) | Avg Processing Time (s) | User Satisfaction Score (1-5) |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | IEEE Two-Column | 98.6% | 2.4s | 4.9 |
 | Springer LNCS | 98.1% | 1.8s | 4.8 |
 | APA 7th Edition | 99.0% | 1.5s | 5.0 |

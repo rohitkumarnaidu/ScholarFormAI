@@ -5,6 +5,7 @@
 Working groups (WGs) are semi-autonomous teams focused on specific areas of ScholarFormAI. They enable parallel development, deep expertise, and community ownership of different parts of the project.
 
 Each working group:
+
 - Owns a specific domain (code, docs, community)
 - Makes decisions within its scope
 - Reports progress to the broader project
@@ -13,7 +14,7 @@ Each working group:
 ## Current Working Groups
 
 | Working Group | Scope | Lead | Meeting |
-|---------------|-------|------|---------|
+| --------------- | ------- | ------ | --------- |
 | **Backend** | API server, database, task queue, storage | TBD | Bi-weekly |
 | **Frontend** | Web UI, client SDKs, accessibility | TBD | Bi-weekly |
 | **AI/ML** | LLM integration, prompt engineering, RAG pipeline | TBD | Weekly |
@@ -39,7 +40,7 @@ Each working group:
 ## Meeting Cadence
 
 | WG | Frequency | Duration | Format |
-|----|-----------|----------|--------|
+| ---- | ----------- | ---------- | -------- |
 | Backend | Bi-weekly | 45 min | Async + sync |
 | Frontend | Bi-weekly | 45 min | Async + sync |
 | AI/ML | Weekly | 60 min | Sync |

@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Accessibility
 
 ## Statement
@@ -15,7 +14,7 @@ ScholarForm AI is committed to making its platform accessible to all users, incl
 The ScholarForm AI frontend follows the [Web Content Accessibility Guidelines (WCAG) 2.1](https://www.w3.org/TR/WCAG21/) at Level AA:
 
 | Guideline | Status | Implementation |
-|-----------|--------|---------------|
+| ----------- | -------- | --------------- |
 | Perceivable (1.1-1.4) | ✅ | Alt text on images, color contrast ratios, text alternatives |
 | Operable (2.1-2.5) | ✅ | Full keyboard navigation, focus indicators, skip links |
 | Understandable (3.1-3.3) | ✅ | Clear labels, error identification, consistent navigation |

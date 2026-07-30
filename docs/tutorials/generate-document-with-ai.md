@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: Tutorial — Generate a Document with AI
 description: Step-by-step tutorial to generate an academic manuscript using AI agent prompts
 sidebar_position: 3
@@ -20,7 +20,7 @@ This tutorial walks through generating a complete academic manuscript from a nat
 ## Prerequisites
 
 | Requirement | Details |
-|-------------|---------|
+| ------------- | --------- |
 | Running backend | Follow the [Quickstart](../quickstart.md) to get ScholarForm running locally |
 | LLM provider key | At least one of: NVIDIA NIM, Groq, or Ollama — see [API Key Setup](../API_KEY_QUICK_START.md) |
 | Python 3.12+ | For running code examples |
@@ -65,6 +65,7 @@ curl -X POST http://localhost:8000/api/v1/generator/sessions \
 ```
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -116,7 +117,7 @@ print(f"Session created: {session_id}")
 Choose which LLM powers the generation:
 
 | Parameter | Values | Default | Description |
-|-----------|--------|---------|-------------|
+| ----------- | -------- | --------- | ------------- |
 | `model` | `nvidia`, `groq`, `ollama`, `auto` | `auto` | Specific provider or auto-fallback |
 | `tone` | `academic`, `technical`, `general`, `creative` | `academic` | Writing style for generated content |
 | `temperature` | `0.0` – `1.0` | `0.7` | Creativity level (lower = more deterministic) |
@@ -128,7 +129,7 @@ Choose which LLM powers the generation:
 ### Provider Comparison
 
 | Provider | Strengths | Weaknesses | Cost | Best For |
-|----------|-----------|------------|------|----------|
+| ---------- | ----------- | ------------ | ------ | ---------- |
 | **NVIDIA NIM** | High quality, fast inference, 128K context | Requires API key, rate limited on free tier | Pay-per-use | Production, long documents |
 | **Groq** | Very fast inference, generous free tier | Smaller context window (32K), fewer model choices | Free tier available | Rapid prototyping |
 | **Ollama** | Local, no API key needed, privacy-preserving | Slower, requires GPU for good performance | Free | Development, sensitive data |
@@ -194,6 +195,7 @@ curl http://localhost:8000/api/v1/providers \
 ```
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -220,6 +222,7 @@ curl -N http://localhost:8000/api/v1/generator/sessions/sess_abc123/events \
 ```
 
 **Event stream:**
+
 ```
 event: stage_update
 data: {"stage": "generating_outline", "progress": 10, "message": "Analyzing prompt..."}
@@ -313,6 +316,7 @@ curl http://localhost:8000/api/v1/generator/sessions/sess_abc123/outline \
 ```
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -521,7 +525,7 @@ if __name__ == "__main__":
 ### Common AI Generation Issues
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `OUTLINE_GENERATION_FAILED` | LLM returned invalid JSON | Retry — transient model issue. Set `model: "groq"` as fallback |
 | `SECTION_WRITE_TIMEOUT` | Section took >120s to generate | Reduce `max_sections` or switch to a faster provider (Groq) |
 | `NO_PROVIDER_AVAILABLE` | All providers unreachable | Check your API keys and provider status at `/api/v1/providers` |
@@ -576,7 +580,7 @@ curl http://localhost:8000/api/v1/generator/sessions \
 ## Next Steps
 
 | Topic | Resource |
-|-------|----------|
+| ------- | ---------- |
 | Multi-doc synthesis | [Multi-Doc Synthesis Tutorial](multi-doc-synthesis.md) |
 | Format an existing paper | [Format Your First Paper](format-your-first-paper.md) |
 | Custom templates | [Custom Template Guide](../guides/creating-a-custom-template.md) |

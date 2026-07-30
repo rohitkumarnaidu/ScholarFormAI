@@ -41,16 +41,19 @@ User Manuscript
 ## Use Cases
 
 ### Citation Enhancement
+
 - Retrieve missing DOI information
 - Suggest additional relevant references
 - Validate citation format
 
 ### Section Recommendations
+
 - Suggest appropriate section structure
 - Recommend content based on similar papers
 - Identify missing required sections
 
 ### Style Compliance
+
 - Retrieve style-specific formatting rules
 - Compare against style guidelines
 - Suggest corrections

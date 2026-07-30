@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Debugging Guide
 
 ## Quick Diagnostics
@@ -178,7 +177,7 @@ docker stats
 ## Common Error Codes
 
 | Code | Meaning | Fix |
-|------|---------|-----|
+| ------ | --------- | ----- |
 | `E001` | Invalid file type | Upload .docx or .pdf only |
 | `E002` | File too large | Max 50MB per upload |
 | `E003` | Virus detected | Scan failed; check file |

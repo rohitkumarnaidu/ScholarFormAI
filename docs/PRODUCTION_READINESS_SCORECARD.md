@@ -12,7 +12,7 @@
 ### Weighting Rationale
 
 | Category | Weight | Rationale |
-|----------|--------|-----------|
+| ---------- | -------- | ----------- |
 | Security | 25 pts | Direct impact on user trust, compliance (SOC 2, ISO 27001), and data protection |
 | Reliability | 20 pts | Core to SaaS SLA commitments; downtime directly affects users |
 | Performance | 15 pts | User experience and cost efficiency at scale |
@@ -25,9 +25,9 @@
 Each criteria item is scored as follows:
 
 | Status | Points | Meaning |
-|--------|--------|---------|
+| -------- | -------- | --------- |
 | ✅ Implemented | Full credit | Feature exists in production, tested, and documented |
-|  ️ Partial | Half credit | Feature exists but missing documentation, testing, or production hardening |
+| ️ Partial | Half credit | Feature exists but missing documentation, testing, or production hardening |
 | ❌ Missing | 0 pts | Feature not implemented |
 
 **Score = (Sum of points earned) / (Total possible points) × Category weight**
@@ -45,7 +45,7 @@ Each criteria item is scored as follows:
 ## Score Summary
 
 | Category | Max | Score | % | Status |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | Security | 25 | 22 | 88% | ✅ |
 | Reliability | 20 | 17 | 85% | ✅ |
 | Performance | 15 | 13 | 87% | ✅ |
@@ -59,6 +59,7 @@ Each criteria item is scored as follows:
 ## 1. Security — 22 / 25 pts
 
 ### CSRF Protection (5 pts)
+
 - [x] **CSRF cookie httponly=True** — `csrf.py:158`
 - [x] **CSRF cookie samesite=lax** — `csrf.py:159`
 - [x] **CSRF cookie secure in production** — `csrf.py:160` (uses `not settings.DEBUG`)
@@ -69,12 +70,14 @@ Each criteria item is scored as follows:
 - [x] **Base64 + timestamp + HMAC format** — verifiable structure
 
 ### Content Security Policy (3 pts)
+
 - [x] **Nonce-based CSP** — `security_headers.py` generates `csp_nonce` per request
 - [x] **No `'unsafe-inline'`** — scripts use `'nonce-{csp_nonce}'`
 - [x] **Restricted `connect-src`** — `'self' https://*.supabase.co wss://*.supabase.co`
 - [x] **Docs routes relaxed** — Swagger/ReDoc CDN allowed via nonce
 
 ### Encryption (4 pts)
+
 - [x] **ENCRYPTION_KEY required in production** — `RuntimeError` if missing (`encryption_service.py:22`)
 - [x] **Encryption/decryption roundtrip** — verified by test
 - [x] **Different ciphertext per call** — Fernet uses unique IV per encryption
@@ -82,12 +85,14 @@ Each criteria item is scored as follows:
 - [x] **Key generation utility** — `EncryptionService.generate_key()` returns valid Fernet key
 
 ### JWT Security (4 pts)
+
 - [x] **JWT blacklist** — `RedisCache.blacklist_token()` + `is_token_blacklisted()`
 - [x] **Algorithm confusion prevention** — `jwks_verifier.py` rejects HS256 when JWKS configured
 - [x] **JWKS caching** — keys cached with expiry, auto-refresh on miss
 - [x] **Token expiry & issuer validation** — enforced in `verify_jwt`
 
 ### Rate Limiting (4 pts)
+
 - [x] **Tier-based rate limiting** — `TierRateLimitMiddleware` with free/pro/admin tiers
 - [x] **Redis-backed counters** — uses Redis incr with expiry for window tracking
 - [x] **Guest daily limit (5/day)** — configured for unauthenticated uploads
@@ -95,15 +100,18 @@ Each criteria item is scored as follows:
 - [ ] **Account lockout** — not yet implemented
 
 ### Ownership & Authorization (3 pts)
+
 - [x] **Session ownership verification** — `verify_session_ownership()` in generator.py and synthesis.py
 - [x] **Document ownership filtering** — `get_document(user_id=...)` filters by user
 - [x] **RBAC role hierarchy** — `resolve_user_role()` with `ROLE_HIERARCHY`
 - [ ] **Resource-level ownership on all endpoints** — some endpoints rely on role-only checks
 
 ### Path Traversal Protection (1 pt)
+
 - [x] **`validate_path_safety()`** — checks directory allowlist, `..` traversal, absolute paths, symlinks, empty paths, null bytes
 
 ### Security Headers (1 pt)
+
 - [x] **X-Content-Type-Options: nosniff**
 - [x] **X-Frame-Options: DENY**
 - [x] **X-XSS-Protection: 1; mode=block**
@@ -201,12 +209,12 @@ Each criteria item is scored as follows:
 Each score point is backed by one of these evidence types:
 
 | Evidence Type | Source | Refresh Cadence |
-|---------------|--------|-----------------|
+| --------------- | -------- | ----------------- |
 | ✅ Code implementation | `grep -r` pattern match in `backend/app/` | Per commit |
 | ✅ Test coverage | `pytest` run report | Per PR |
 | ✅ Documentation | File exists in `docs/` | Per commit |
 | ✅ IaC config | `render.yaml`, workflow files | Per commit |
-|  ️ Partial tests | Test exists but coverage < 80% | Per PR |
+| ️ Partial tests | Test exists but coverage < 80% | Per PR |
 | ❌ Missing | Pattern not found in codebase | Per commit |
 
 ### Verifiable Evidence Map
@@ -252,7 +260,7 @@ grep -c "from app.models import" backend/tests/**/*.py  → Lazy imports
 ### Quarter 1 Targets (Current → 95/100)
 
 | Category | Current | Target | Actions | Owner |
-|----------|---------|--------|---------|-------|
+| ---------- | --------- | -------- | --------- | ------- |
 | Security | 22/25 | 24/25 | G1: Auth brute-force protection (0.5d); G2: Account lockout (0.5d); G3: Ownership coverage (2d) | Backend |
 | Reliability | 17/20 | 19/20 | G7: Async rate limiting for all authenticated endpoints (1d) | Backend |
 | Performance | 13/15 | 14/15 | Frontend Lighthouse CI baseline (1d) | Frontend |
@@ -263,7 +271,7 @@ grep -c "from app.models import" backend/tests/**/*.py  → Lazy imports
 ### Quarter 2 Targets (95 → 97/100)
 
 | Category | Current | Target | Actions | Effort |
-|----------|---------|--------|---------|--------|
+| ---------- | --------- | -------- | --------- | -------- |
 | Security | 24/25 | 25/25 | Penetration test findings; full resource-level RBAC audit | 3 days |
 | Performance | 14/15 | 15/15 | Load testing under 10x peak traffic; query optimization | 2 days |
 | Reliability | 19/20 | 20/20 | Error boundary coverage walk-through | 2 days |
@@ -272,7 +280,7 @@ grep -c "from app.models import" backend/tests/**/*.py  → Lazy imports
 ### Quarter 3 Targets (97 → 100/100)
 
 | Category | Action | Effort |
-|----------|--------|--------|
+| ---------- | -------- | -------- |
 | All | SOC 2 Type I audit readiness | 1 week |
 | All | Third-party security audit | 1 week |
 | Security | Bug bounty program launch | 2 days |
@@ -284,7 +292,7 @@ grep -c "from app.models import" backend/tests/**/*.py  → Lazy imports
 ## Gap Analysis
 
 | # | Gap | Category | Impact | Effort |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | G1 | **Auth endpoint brute-force protection** — no login/signup rate limiter | Security | High: brute force password guessing | 1 day |
 | G2 | **Account lockout** — no 15-min lockout after 10 failed attempts | Security | Medium: credential stuffing | 1 day |
 | G3 | **Resource-level ownership on all endpoints** — some only check role | Security | Medium: potential data access across users | 2 days |
@@ -298,7 +306,7 @@ grep -c "from app.models import" backend/tests/**/*.py  → Lazy imports
 ## Remediation Plan
 
 | Priority | Gap | Action | Owner | Timeline |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | P0 | G7 — Rate limiting gaps | Add per-user rate limits to authenticated tiers; close bypass | Backend | 1 day |
 | P0 | G5 — Alert rules | Deploy Prometheus alerting rules from `ops/` | DevOps | 0.5 day |
 | P1 | G1 — Auth brute-force | Add 5 req/min IP-based limiter to login/signup | Backend | 0.5 day |
@@ -335,7 +343,7 @@ cd backend && ruff check app --config ruff.toml && mypy --config-file mypy.ini a
 ## Cross-References
 
 | Document | Purpose |
-|----------|---------|
+| ---------- | --------- |
 | [PRODUCTION_READINESS_CHECKLIST.md](../PRODUCTION_READINESS_CHECKLIST.md) | Detailed checklist items that feed into scorecard scoring |
 | [SLO_DEFINITIONS.md](SLO_DEFINITIONS.md) | SLO targets that scorecard reliability/performance scores verify |
 | [SECURITY_CHECKLIST.md](SECURITY_CHECKLIST.md) | Security checklist items mapped to Security category |

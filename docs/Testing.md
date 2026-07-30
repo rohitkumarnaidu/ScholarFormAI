@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Testing Strategy
 description: Testing frameworks, commands, CI pipelines, and coverage targets
 sidebar_position: 6
@@ -22,6 +22,7 @@ last_updated: July 2026
 ---
 
 ## Table of Contents
+
 - [1. Backend Profiles](#1-backend-profiles)
 - [2. Frontend Profiles](#2-frontend-profiles)
 - [3. Critical Test Paths](#3-critical-test-paths)
@@ -39,7 +40,7 @@ The ScholarForm AI testing harness uses segmented profiles to ensure fast feedba
 ### Test Markers
 
 | Marker | Requires | Description |
-|--------|---------|-------------|
+| -------- | --------- | ------------- |
 | `unit` | Nothing | Pure Python logic — no external connections |
 | `integration` | Docker (Redis, DB, GROBID) | Needs local infrastructure running |
 | `llm` | Live LLM API key | Requires NVIDIA NIM, Groq, or Ollama |
@@ -49,22 +50,26 @@ The ScholarForm AI testing harness uses segmented profiles to ensure fast feedba
 ### How to Run
 
 **Fast (no services needed):**
+
 ```bash
 cd backend
 pytest tests -m "not integration and not llm" -x -q
 ```
 
 **Deep tests for a specific module:**
+
 ```bash
 pytest tests/test_rag_engine_deep.py -v --tb=short -o "addopts="
 ```
 
 **Full suite (all services running):**
+
 ```bash
 cd backend && pytest
 ```
 
 **Lint and type-check:**
+
 ```bash
 cd backend
 ruff check app --config ruff.toml
@@ -74,7 +79,7 @@ mypy --config-file mypy.ini app
 ### Current Blocker Status
 
 | Blocker | Status |
-|---------|--------|
+| --------- | -------- |
 | Python 3.12 import collision | ✅ Resolved — CI runs 3.12.x |
 | asyncio mode | ✅ `asyncio_mode = auto` set in `pytest.ini` |
 | Missing env vars at collection | ✅ Service-dependent tests have proper markers |
@@ -84,7 +89,7 @@ mypy --config-file mypy.ini app
 Enterprise-grade deep test files with intensive mocking, targeting >80% per-module coverage:
 
 | Module | File | Tests | Coverage |
-|--------|------|-------|----------|
+| -------- | ------ | ------- | ---------- |
 | DocxParser | `test_docx_parser_deep.py` | 108 | ~90% |
 | PipelineOrchestrator | `test_pipeline_orchestrator_deep.py` | 49 | ~82% |
 | Formatter | `test_formatter_deep.py` | 207 | ~88% |
@@ -145,7 +150,7 @@ npm run test:e2e:headed    # headed
 ## 3. Critical Test Paths (Priority Order)
 
 | # | Flow | Test File |
-|---|------|----------|
+| --- | ------ | ---------- |
 | 1 | Guest upload → process → download | `frontend/e2e/upload-journey.spec.js` |
 | 2 | Auth: signup → login → dashboard | `frontend/e2e/auth-flow.spec.js` |
 | 3 | Template selection → DOCX export | `frontend/e2e/formatter-upload.spec.js` |
@@ -158,7 +163,7 @@ npm run test:e2e:headed    # headed
 ## 4. Test Infrastructure
 
 | Tool | Config |
-|------|--------|
+| ------ | -------- |
 | pytest | `pytest.ini` — `asyncio_mode = auto`, coverage fail-under=70 |
 | vitest | `vitest.config.js` in frontend root |
 | Playwright | `playwright.config.js` in frontend root |
@@ -177,7 +182,7 @@ npm run test:e2e:headed    # headed
 ## Performance Benchmarks (Test Suite)
 
 | Test Suite | Runtime | Concurrency | Environment |
-|-----------|---------|-------------|-------------|
+| ----------- | --------- | ------------- | ------------- |
 | Backend unit tests (fast) | ~45s | 4 workers | Local |
 | Backend full suite | ~6m | 4 workers | CI (skip integration) |
 | Frontend vitest | ~15s | Auto | Local/CI |

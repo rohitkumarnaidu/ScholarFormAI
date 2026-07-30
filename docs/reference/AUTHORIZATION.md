@@ -9,7 +9,7 @@ AMF v1.0 has **no authorization system**. All API endpoints are publicly accessi
 ### Role-Based Access Control (RBAC)
 
 | Role | Permissions |
-|------|-------------|
+| ------ | ------------- |
 | `admin` | Full access, user management, configuration |
 | `editor` | Format, validate, preview, create styles |
 | `user` | Format, validate, preview |
@@ -53,6 +53,7 @@ api_key = "sk_...{scopes: ['format', 'validate']}"
 ## OAuth 2.0 (Planned)
 
 Supported providers:
+
 - Google Scholar
 - ORCID
 - GitHub

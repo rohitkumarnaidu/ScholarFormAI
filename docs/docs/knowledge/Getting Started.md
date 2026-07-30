@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Getting Started
 
 <cite>
@@ -20,6 +19,7 @@
 </cite>
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [Prerequisites](#prerequisites)
 3. [Quick Links](#quick-links)
@@ -35,36 +35,44 @@
 13. [Conclusion](#conclusion)
 
 ## Introduction
+
 This guide helps you quickly set up and run the Automated Academic Manuscript Formatter locally. It covers prerequisites, environment configuration, backend and frontend startup, and basic usage for uploading documents, generating formatted outputs, and using AI agent features. It also includes verification steps and troubleshooting tips to resolve common setup issues.
 
 ## Prerequisites
+
 - Python 3.12.x (required for backend)
 - Node.js 20+ (required for frontend)
 - Docker (optional, recommended for full local stack)
 - Git (recommended for cloning the repository)
 
 Notes:
+
 - The backend enforces Python 3.12 via project configuration.
 - The frontend uses Next.js 14 with the App Router and requires Node.js 20+.
 
 **Section sources**
+
 - [backend/pyproject.toml:8](file://backend/pyproject.toml#L8)
 - [README.md:13](file://README.md#L13)
 - [backend/README.md:56](file://backend/README.md#L56)
 
 ## Quick Links
+
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000
 - OpenAPI Docs: http://localhost:8000/docs
 - Framework: Next.js 14 (App Router), not Vite
 
 **Section sources**
+
 - [README.md:9](file://README.md#L9)
 - [README.md:10](file://README.md#L10)
 - [README.md:12](file://README.md#L12)
 
 ## Project Structure
+
 The repository is organized into:
+
 - backend: FastAPI application, database, middleware, pipelines, and Docker configuration
 - frontend: Next.js 14 application with TypeScript, Tailwind CSS, and E2E tests
 - docs: API reference, architecture, deployment, and troubleshooting guides
@@ -92,6 +100,7 @@ DOCS_TRBL --> BE_MAIN
 ```
 
 **Diagram sources**
+
 - [backend/app/main.py:263](file://backend/app/main.py#L263)
 - [backend/pyproject.toml:1](file://backend/pyproject.toml#L1)
 - [backend/requirements.txt:1](file://backend/requirements.txt#L1)
@@ -102,11 +111,13 @@ DOCS_TRBL --> BE_MAIN
 - [docs/troubleshooting.md:1](file://docs/troubleshooting.md#L1)
 
 **Section sources**
+
 - [README.md:1](file://README.md#L1)
 - [backend/README.md:1](file://backend/README.md#L1)
 - [frontend/package.json:1](file://frontend/package.json#L1)
 
 ## Backend Setup
+
 Follow these steps to prepare and run the backend:
 
 1. Navigate to the backend directory
@@ -125,17 +136,20 @@ E --> F["uvicorn app.main:app --reload --port 8000"]
 ```
 
 **Diagram sources**
+
 - [README.md:87](file://README.md#L87)
 - [README.md:105](file://README.md#L105)
 - [backend/README.md:58](file://backend/README.md#L58)
 
 **Section sources**
+
 - [README.md:87](file://README.md#L87)
 - [README.md:105](file://README.md#L105)
 - [backend/README.md:58](file://backend/README.md#L58)
 - [backend/requirements.txt:1](file://backend/requirements.txt#L1)
 
 ## Frontend Setup
+
 Follow these steps to prepare and run the frontend:
 
 1. Navigate to the frontend directory
@@ -151,18 +165,22 @@ C --> D["npm run dev"]
 ```
 
 **Diagram sources**
+
 - [README.md:113](file://README.md#L113)
 - [README.md:117](file://README.md#L117)
 
 **Section sources**
+
 - [README.md:113](file://README.md#L113)
 - [README.md:117](file://README.md#L117)
 - [frontend/package.json:6](file://frontend/package.json#L6)
 
 ## Environment Variables
+
 Configure environment variables for both backend and frontend.
 
 Backend (.env):
+
 - Supabase credentials and JWT secret
 - NVIDIA and Groq API keys
 - Redis URL
@@ -171,10 +189,12 @@ Backend (.env):
 - Antivirus host
 
 Frontend (.env.local):
+
 - NEXT_PUBLIC_API_URL pointing to backend
 - Supabase public URL and anonymous key
 
 Syncing templates:
+
 - Use the provided script to generate .env.template files from code usage and .env.example defaults.
 
 ```mermaid
@@ -190,11 +210,13 @@ I --> K[".env.template (Frontend)"]
 ```
 
 **Diagram sources**
+
 - [README.md:35](file://README.md#L35)
 - [README.md:59](file://README.md#L59)
 - [scripts/generate_env_template.py:1](file://scripts/generate_env_template.py#L1)
 
 **Section sources**
+
 - [README.md:35](file://README.md#L35)
 - [README.md:59](file://README.md#L59)
 - [README.md:70](file://README.md#L70)
@@ -202,12 +224,15 @@ I --> K[".env.template (Frontend)"]
 - [scripts/generate_env_template.py:210](file://scripts/generate_env_template.py#L210)
 
 ## Development Server Startup
+
 Start both backend and frontend servers:
 
 Backend:
+
 - Use the uvicorn command with reload enabled on port 8000.
 
 Frontend:
+
 - Use the Next.js dev server on port 3000.
 
 ```mermaid
@@ -222,22 +247,27 @@ BE-->>FE : Returns formatted responses
 ```
 
 **Diagram sources**
+
 - [README.md:105](file://README.md#L105)
 - [README.md:117](file://README.md#L117)
 
 **Section sources**
+
 - [README.md:105](file://README.md#L105)
 - [README.md:117](file://README.md#L117)
 
 ## Basic Usage Examples
+
 This section demonstrates common workflows using the API and UI.
 
 Upload and format a document:
+
 - Use the upload endpoint to submit a supported file format.
 - Poll the status endpoint to track processing.
 - View a preview and download the formatted output.
 
 AI agent and synthesis:
+
 - Create a generator session (agent or synthesis).
 - Stream progress via the events endpoint.
 - Approve outlines and receive generated content.
@@ -261,18 +291,21 @@ API-->>FE : Binary file
 ```
 
 **Diagram sources**
+
 - [docs/API.md:34](file://docs/API.md#L34)
 - [docs/API.md:46](file://docs/API.md#L46)
 - [docs/API.md:54](file://docs/API.md#L54)
 - [docs/API.md:66](file://docs/API.md#L66)
 
 **Section sources**
+
 - [docs/API.md:34](file://docs/API.md#L34)
 - [docs/API.md:46](file://docs/API.md#L46)
 - [docs/API.md:54](file://docs/API.md#L54)
 - [docs/API.md:66](file://docs/API.md#L66)
 
 ## Verification Steps
+
 After starting both servers, verify the setup:
 
 - Backend health: GET /health should return OK and list Redis, DB, and ChromaDB statuses.
@@ -281,11 +314,13 @@ After starting both servers, verify the setup:
 - Environment variables: Confirm NEXT_PUBLIC_API_URL points to http://localhost:8000.
 
 **Section sources**
+
 - [docs/API.md:192](file://docs/API.md#L192)
 - [README.md:109](file://README.md#L109)
 - [README.md:121](file://README.md#L121)
 
 ## Architecture Overview
+
 High-level architecture for local development:
 
 ```mermaid
@@ -304,40 +339,45 @@ API -. optional .-> GROBID
 ```
 
 **Diagram sources**
+
 - [README.md:145](file://README.md#L145)
 - [backend/app/main.py:263](file://backend/app/main.py#L263)
 
 **Section sources**
+
 - [README.md:145](file://README.md#L145)
 - [backend/app/main.py:263](file://backend/app/main.py#L263)
 
 ## Troubleshooting Guide
+
 Common setup and runtime issues with resolutions:
 
 - Upload errors
-  - Invalid file type: Ensure the file is DOCX, PDF, or TEX.
-  - File too large: Reduce image sizes or split appendices.
+    - Invalid file type: Ensure the file is DOCX, PDF, or TEX.
+    - File too large: Reduce image sizes or split appendices.
 
 - Processing issues
-  - Status stuck on RUNNING: Refresh the page, check backend logs, and retry.
-  - Formatting failure: Try the “None” template, then retry with the target template.
+    - Status stuck on RUNNING: Refresh the page, check backend logs, and retry.
+    - Formatting failure: Try the “None” template, then retry with the target template.
 
 - Preview and download problems
-  - Empty or partial preview: Confirm the job reached COMPLETED status and retry.
-  - Download button fails: Ensure COMPLETED status, retry from the Download page, and try DOCX first.
+    - Empty or partial preview: Confirm the job reached COMPLETED status and retry.
+    - Download button fails: Ensure COMPLETED status, retry from the Download page, and try DOCX first.
 
 - Authentication and security
-  - 401 Unauthorized: Log out and log in again.
-  - CSRF token mismatch: Clear site cookies, refresh, and retry.
+    - 401 Unauthorized: Log out and log in again.
+    - CSRF token mismatch: Clear site cookies, refresh, and retry.
 
 - Debug commands
-  - Frontend: Run tests and build locally.
-  - Backend: Run targeted tests for template rendering and export pipeline.
+    - Frontend: Run tests and build locally.
+    - Backend: Run targeted tests for template rendering and export pipeline.
 
 Escalation checklist:
+
 - Include input file type and size, selected template, exact error message, job ID, browser and OS.
 
 **Section sources**
+
 - [docs/troubleshooting.md:5](file://docs/troubleshooting.md#L5)
 - [docs/troubleshooting.md:16](file://docs/troubleshooting.md#L16)
 - [docs/troubleshooting.md:29](file://docs/troubleshooting.md#L29)
@@ -349,4 +389,5 @@ Escalation checklist:
 - [docs/troubleshooting.md:140](file://docs/troubleshooting.md#L140)
 
 ## Conclusion
+
 You are now ready to develop and run the Automated Academic Manuscript Formatter locally. Use the backend and frontend development servers, configure environment variables, and follow the usage examples to upload documents, generate formatted outputs, and explore AI agent features. Refer to the troubleshooting guide for resolving common issues.

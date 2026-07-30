@@ -11,7 +11,9 @@
 ## 1. Executive Summary & Architecture Overview
 
 ### Background & Motivation
+
 Over successive development milestones, the ScholarForm AI codebase accumulated substantial documentation drift and duplication across three separate locations:
+
 1. **Root Directory**: 68 individual Markdown files, including full-length architectural reference manuals, PR templates, and technical reports.
 2. **Flat `docs/` Directory**: 85 loose Markdown files sitting directly in `docs/` duplicating information in root and `docs/docs/`.
 3. **Canonical `docs/docs/` Tree**: The standard MkDocs source directory (161 files) powering the online documentation platform.
@@ -19,9 +21,11 @@ Over successive development milestones, the ScholarForm AI codebase accumulated 
 This fragmented structure introduced severe maintenance overhead, risk of documentation drift, and broken inter-document links.
 
 ### Objective
+
 The primary goal of this deduplication effort was to establish a single, clean source of truth for all repository documentation while strictly preserving 100% of technical details, architectural diagrams, Pydantic schemas, and governance specifications.
 
 ### Key Architectural Decisions
+
 1. **Single Source of Truth (`docs/docs/`)**: All canonical technical, API, SDK, deployment, community, knowledge base, and report documentation now resides exclusively under `docs/docs/`.
 2. **Root Pointer Refactoring**: Standard root-level open-source files (`README.md`, `AGENTS.md`, `LICENSE`, `NOTICE`, `AUTHORS`, `CITATION.cff`, `PROJECT.md`, `CHANGELOG.md`) remain fully intact. All 52 non-canonical root Markdown files were converted into thin reference pointers using a standardized blockquote callout directing readers to the target canonical path in `docs/docs/`.
 3. **Flat `docs/` Loose File & Legacy Directory Elimination**: All 85 loose Markdown files in `docs/` were eliminated after additive merging of any unique diagrams, tables, or configuration parameters into `docs/docs/`. Root `docs/` contains **ZERO loose markdown files** and **ZERO legacy subdirectories** (only the canonical MkDocs source tree `docs/docs/` and standard build output `docs/site/` exist within `docs/`).
@@ -29,6 +33,7 @@ The primary goal of this deduplication effort was to establish a single, clean s
 5. **Strict Build Validation**: Validated via `python -m mkdocs build --strict --config-file docs/mkdocs.yml` to guarantee zero broken links, zero unindexed pages, and zero build warnings.
 
 ### Summary Results
+
 - **File Reduction**: Total documentation files decreased from **314 files to 307 files** (a net reduction of **7 files** / **2.2%**).
 - **Line Count Reduction**: Total line count decreased from **99,346 lines to 71,532 lines** (a net reduction of **27,814 lines** / **28.0%**).
 - **Storage Footprint Reduction**: Total storage footprint decreased from **4,350,298 bytes (4.35 MB) to 3,225,689 bytes (3.23 MB)** (a net reduction of **1,124,609 bytes** / **1.12 MB** / **25.9%**).
@@ -70,7 +75,9 @@ The following table details the precise file counts, line counts, and storage by
 The Master Mapping Table below accounts for all 314 original pre-deduplication files across root, flat `docs/`, and canonical `docs/docs/`.
 
 ### 3.1 Retained Canonical Root Files (8 Files)
+
 These standard open-source root files were retained directly at root:
+
 1. `README.md` — Project Overview & Quick Links
 2. `AGENTS.md` — AI Agent Development & Communication Protocol
 3. `LICENSE` — Software License (MIT)
@@ -81,6 +88,7 @@ These standard open-source root files were retained directly at root:
 8. `CHANGELOG.md` — Release History Log
 
 ### 3.2 Relocated Root Files & Templates (19 Files)
+
 | Source Root Path | Target Relocated Path | Reason / Action |
 | :--- | :--- | :--- |
 | `PULL_REQUEST_TEMPLATE.md` | `.github/PULL_REQUEST_TEMPLATE.md` | Standard GitHub PR template directory placement |
@@ -90,7 +98,7 @@ These standard open-source root files were retained directly at root:
 | `LAUNCH_ANNOUNCEMENT.md` | `docs/docs/reports/launch-announcement.md` | Product launch announcement report |
 | `MEMORY.md` | `docs/docs/reports/memory-spec.md` | Memory specification & architecture report |
 | `OPENSSF_README.md` | `docs/docs/reports/openssf-report.md` | OpenSSF security scorecard report |
-| `PRODUCTION_READINESS_CHECKLIST.md`| `docs/docs/reports/production-readiness.md` | Production readiness scorecard & checklist |
+| `PRODUCTION_READINESS_CHECKLIST.md` | `docs/docs/reports/production-readiness.md` | Production readiness scorecard & checklist |
 | `RELEASE_NOTES.md` | `docs/docs/reports/release-notes.md` | Release notes history |
 | `RISK_REGISTER.md` | `docs/docs/reports/risk-register.md` | Enterprise risk register report |
 | `ROADMAP.md` | `docs/docs/reports/roadmap.md` | Product roadmap report |
@@ -104,6 +112,7 @@ These standard open-source root files were retained directly at root:
 | `SECURITY_AUDIT.md` | `docs/docs/reports/security-audit.md` | Security audit report |
 
 ### 3.3 Root File Pointer Conversions (52 Files)
+
 The following 52 root files were refactored into thin pointer files directing users to canonical `docs/docs/` target files:
 
 | Root Pointer File | Target Canonical Path |
@@ -162,7 +171,9 @@ The following 52 root files were refactored into thin pointer files directing us
 | `VERSIONING.md` | `docs/docs/changelog/index.md` |
 
 ### 3.4 Deleted Flat `docs/*.md` Files (85 Loose Files Cleaned Up)
+
 All 85 loose Markdown files directly in `docs/` were deleted after additive merging of any unique content into `docs/docs/`:
+
 - `docs/.docs-style-guide.md` -> Consolidated into `docs/docs/guides/style-guide.md`
 - `docs/ACCESSIBILITY.md` -> Consolidated into `docs/docs/community/accessibility.md`
 - `docs/AI_ARCHITECTURE.md` -> Consolidated into `docs/docs/architecture/ai-rag.md`
@@ -250,6 +261,7 @@ All 85 loose Markdown files directly in `docs/` were deleted after additive merg
 - `docs/working-groups.md` -> Consolidated into `docs/docs/community/governance.md`
 
 ### 3.5 Original Canonical `docs/docs/` Files (161 Files)
+
 All 161 original files in `docs/docs/` were retained and expanded to **250 files** under `docs/docs/` (incorporating structured categories such as `knowledge/`, `reports/`, `community/`, `adr/`, `tutorials/`, `guides/`, and `runbooks/`).
 
 ---
@@ -276,11 +288,13 @@ To fulfill the mandatory zero-data-loss mandate, every diagram, table, Pydantic 
 ## 5. MkDocs Build & Link Verification Results
 
 ### Build Command
+
 ```bash
 python -m mkdocs build --strict --config-file docs/mkdocs.yml
 ```
 
 ### Execution Output & Performance Log
+
 ```text
 INFO    -  Cleaning site directory
 INFO    -  Building documentation to directory: C:\Hackathons\ECLearnIX\Automated Docx Formatter\ScholarFormAI\docs\site
@@ -288,6 +302,7 @@ INFO    -  Documentation built in 51.78 seconds
 ```
 
 ### Strict Mode Build Verification Summary
+
 - **Exit Code**: `0` (Success)
 - **Warnings Count**: `0`
 - **Errors Count**: `0`
@@ -296,7 +311,9 @@ INFO    -  Documentation built in 51.78 seconds
 - **Unindexed Navigation Pages**: `0`
 
 ### `docs/mkdocs.yml` Navigation Tree Integration
+
 Both the newly established `docs/docs/community/` section (13 pages) and the `docs/docs/reports/` section (19 pages) were fully indexed into the `nav:` tree of `docs/mkdocs.yml`:
+
 ```yaml
 nav:
   - Home: index.md

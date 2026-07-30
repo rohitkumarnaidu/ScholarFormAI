@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: Tutorial — Format Your First Paper
 description: Step-by-step tutorial to format an academic manuscript with ScholarForm AI
 sidebar_position: 2
@@ -37,6 +37,7 @@ curl http://localhost:8000/api/v1/templates
 ```
 
 You'll see something like:
+
 ```json
 [
   {"id": "ieee", "name": "IEEE", "journal": "IEEE Transactions"},
@@ -97,7 +98,7 @@ Compare the two outputs. Notice how headings, spacing, and citation styles diffe
 ## Next Steps
 
 | Topic | Resource |
-|-------|----------|
+| ------- | ---------- |
 | Custom templates | [Template Creation Guide](../template_creation.md) |
 | AI Agent generation | [Agent Documentation](../Agent.md) |
 | Multi-doc synthesis | [User Guide](../user_guide.md) |

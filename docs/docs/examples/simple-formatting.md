@@ -105,6 +105,7 @@ print(f"Output saved to: {response['output_path']}")
 ## 4. Expected Output Features
 
 The generated `output_apa7.docx` file will contain:
+
 - **Title Page**: Correctly formatted title, author affiliations, and running header.
 - **Abstract & Keywords**: Styled abstract section with 0.5-inch indents.
 - **Body & Headings**: Title 1, Heading 1, Heading 2 styled according to APA 7th rules (12pt Times New Roman, double-spaced).

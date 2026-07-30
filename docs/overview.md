@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Project Overview
 description: High-level overview of ScholarForm AI for new readers
 sidebar_position: 1
@@ -24,7 +24,7 @@ Every academic journal has different formatting requirements. Researchers waste 
 ## Core Capabilities
 
 | Feature | Description |
-|---------|-------------|
+| --------- | ------------- |
 | **Document Formatting** | Format any DOCX/PDF against 17+ journal templates via 12-stage pipeline |
 | **AI Agent Generation** | Generate complete manuscripts from a prompt (11-step pipeline) |
 | **Multi-Doc Synthesis** | Combine 2-6 source PDFs into a single coherent manuscript |
@@ -69,7 +69,7 @@ MIT License — free to use, modify, and distribute. See [LICENSE](../LICENSE).
 ## Next Steps
 
 | Topic | Resource |
-|-------|----------|
+| ------- | ---------- |
 | 5-minute quickstart | [Quickstart](quickstart.md) |
 | Full user workflow | [User Guide](user_guide.md) |
 | Architecture deep-dive | [Architecture](architecture.md) |

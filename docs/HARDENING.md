@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Hardening Mechanisms
 
 ## Overview
@@ -15,7 +14,7 @@ ScholarForm AI applies multiple hardening mechanisms to make software defects le
 All production responses include the following security headers:
 
 | Header | Value | Purpose |
-|--------|-------|---------|
+| -------- | ------- | --------- |
 | `Content-Security-Policy` | Restrictive CSP (script-src, style-src, img-src, connect-src, frame-src, report-uri) | Prevents XSS and data injection attacks |
 | `Strict-Transport-Security` | `max-age=31536000; includeSubDomains` | Enforces HTTPS |
 | `X-Content-Type-Options` | `nosniff` | Prevents MIME type sniffing |
@@ -59,7 +58,7 @@ All production responses include the following security headers:
 ### Network
 
 | Measure | Implementation |
-|---------|---------------|
+| --------- | --------------- |
 | TLS version | TLS 1.3 only (production) |
 | CORS | Strict origin allowlist, no wildcard in production |
 | HTTPS redirect | All HTTP requests redirected to HTTPS |
@@ -81,7 +80,7 @@ All production responses include the following security headers:
 ## CI/CD Hardening
 
 | Measure | Tool |
-|---------|------|
+| --------- | ------ |
 | SAST | CodeQL, Bandit |
 | Secret scanning | detect-secrets (pre-commit), GitHub secret scanning (push protection) |
 | Dependency scanning | pip-audit, npm audit, OWASP Dependency Check |

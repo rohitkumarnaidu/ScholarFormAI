@@ -33,7 +33,7 @@ ScholarForm AI categorizes machine-readable error codes using domain prefixes to
 ### 1. Authentication & Security (`AUTH_*`)
 
 | Error Code | HTTP Status | Description | Troubleshooting Action |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `AUTH_FAILED` | 401 | Bearer token verification failed | Re-authenticate and obtain fresh JWT |
 | `AUTH_TOKEN_EXPIRED` | 401 | JWT bearer token has expired | Request new access token via `/api/v1/auth/login` |
 | `AUTH_INVALID_CREDENTIALS` | 401 | Incorrect email or password provided | Check user login credentials |
@@ -44,7 +44,7 @@ ScholarForm AI categorizes machine-readable error codes using domain prefixes to
 ### 2. Document Operations (`DOC_*`)
 
 | Error Code | HTTP Status | Description | Troubleshooting Action |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `DOC_NOT_FOUND` | 404 | Target document or job ID not found | Verify job ID or document UUID |
 | `DOC_INVALID_FORMAT` | 400 | File format not supported | Upload supported file type (`.docx`, `.pdf`, `.md`, `.txt`) |
 | `DOC_EXCEEDS_SIZE_LIMIT` | 413 | Upload file exceeds 60MB limit | Compress images or split document |
@@ -55,7 +55,7 @@ ScholarForm AI categorizes machine-readable error codes using domain prefixes to
 ### 3. Formatter Engine (`FMT_*`)
 
 | Error Code | HTTP Status | Description | Troubleshooting Action |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `FMT_STYLE_NOT_FOUND` | 404 | Requested citation or template style not found | Check `/api/v1/templates` for valid style IDs |
 | `FMT_ENGINE_ERROR` | 500 | `python-docx` or layout rendering engine error | Report issue with sample document |
 | `FMT_RULE_VIOLATION` | 422 | Manuscript structure violates target style rules | Review validation report error details |
@@ -66,7 +66,7 @@ ScholarForm AI categorizes machine-readable error codes using domain prefixes to
 ### 4. AI Generator Session (`GEN_*`)
 
 | Error Code | HTTP Status | Description | Troubleshooting Action |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `GEN_SESSION_NOT_FOUND` | 404 | Generator session ID does not exist | Create new session via `/api/v1/generator/sessions` |
 | `GEN_STREAM_TIMEOUT` | 504 | SSE drafting stream timed out | Check downstream LLM provider status |
 | `GEN_PROMPT_INVALID` | 400 | Prompt input is empty or invalid | Provide non-empty topic description |
@@ -77,7 +77,7 @@ ScholarForm AI categorizes machine-readable error codes using domain prefixes to
 ### 5. RAG & Intelligence Engine (`RAG_*`)
 
 | Error Code | HTTP Status | Description | Troubleshooting Action |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `RAG_EMBEDDING_FAILED` | 503 | Sentence-transformers or embedding model error | Check `RAG_USE_TRANSFORMERS` setting |
 | `RAG_CONTEXT_EMPTY` | 422 | No relevant context found in vector store | Upload reference documents or broaden query |
 | `RAG_VECTOR_STORE_ERROR` | 500 | ChromaDB vector store read/write failure | Restart backend vector store service |
@@ -87,7 +87,7 @@ ScholarForm AI categorizes machine-readable error codes using domain prefixes to
 ### 6. Rate Limiting (`RATE_*`)
 
 | Error Code | HTTP Status | Description | Troubleshooting Action |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `RATE_LIMIT_EXCEEDED` | 429 | IP or key exceeded requests per minute limit | Wait for `Retry-After` seconds before retrying |
 | `RATE_QUOTA_EXHAUSTED` | 429 | Monthly tier upload quota exhausted | Upgrade subscription plan via `/api/v1/billing` |
 
@@ -96,7 +96,7 @@ ScholarForm AI categorizes machine-readable error codes using domain prefixes to
 ### 7. Citation & CSL Engine (`CITE_*`)
 
 | Error Code | HTTP Status | Description | Troubleshooting Action |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `CITE_CSL_FETCH_FAILED` | 503 | Failed to download CSL XML from repository | Check network connection or CSL style ID |
 | `CITE_CROSSREF_UNAVAILABLE` | 503 | CrossRef API lookup endpoint timed out | Set `CROSSREF_MAILTO` or retry later |
 | `CITE_PARSING_ERROR` | 422 | Malformed bib entry or DOI resolution failed | Validate reference DOI syntax |
@@ -106,7 +106,7 @@ ScholarForm AI categorizes machine-readable error codes using domain prefixes to
 ### 8. System & Infrastructure (`SYS_*`)
 
 | Error Code | HTTP Status | Description | Troubleshooting Action |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `SYS_INTERNAL_ERROR` | 500 | Unhandled internal backend exception | Inspect server error log / correlation request ID |
 | `SYS_SERVICE_UNAVAILABLE` | 503 | Database or Redis cache unavailable | Check backend service health (`/api/v1/health`) |
 | `SYS_MAINTENANCE_MODE` | 503 | System is down for scheduled maintenance | Retry request after maintenance window |
@@ -116,7 +116,7 @@ ScholarForm AI categorizes machine-readable error codes using domain prefixes to
 ## Standard System HTTP Status Mappings
 
 | Error Code (`code`) | HTTP Status | System Description |
-|---|---|---|
+| --- | --- | --- |
 | `BAD_REQUEST` | 400 | Malformed client request syntax or invalid parameters |
 | `UNAUTHORIZED` | 401 | Missing or invalid authentication bearer token |
 | `FORBIDDEN` | 403 | Authenticated user lacks permission for operation |
@@ -137,7 +137,7 @@ ScholarForm AI categorizes machine-readable error codes using domain prefixes to
 Structural validation issue codes returned in manuscript analysis reports:
 
 | Issue Code | Default Severity | Description |
-|---|---|---|
+| --- | --- | --- |
 | `MISSING_TITLE` | `error` | No manuscript title detected in input document |
 | `SHORT_TITLE` | `warning` | Title length is below recommended guidelines |
 | `LONG_TITLE` | `warning` | Title length exceeds style guidelines |
@@ -161,7 +161,7 @@ Structural validation issue codes returned in manuscript analysis reports:
 ### 1. Python SDK Mapping (`amf_sdk.exceptions`)
 
 | HTTP Status Code | SDK Exception Class | Extra Properties |
-|---|---|---|
+| --- | --- | --- |
 | `400` | `AMFValidationError` | `details: Dict[str, Any]` |
 | `401` | `AMFAuthenticationError` | None |
 | `404` | `AMFNotFoundError` | `resource: str` |
@@ -176,7 +176,7 @@ Structural validation issue codes returned in manuscript analysis reports:
 ### 2. CLI Exit Codes
 
 | Exit Code | Meaning | Typical Cause |
-|---|---|---|
+| --- | --- | --- |
 | `0` | Success | Command completed successfully |
 | `1` | Runtime Error | File not found, REST API connection error without local fallback |
 | `2` | Validation Failure | Manuscript failed validation rule checks or invalid CLI argument |

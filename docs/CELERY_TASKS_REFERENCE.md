@@ -92,7 +92,7 @@ flowchart TD
 ## Configuration
 
 | Parameter | Value | Source |
-|-----------|-------|--------|
+| ----------- | ------- | -------- |
 | Broker | `REDIS_URL` (default `redis://localhost:6379/0`) | `settings.CELERY_BROKER_URL` |
 | Result backend | `REDIS_URL` (same Redis, DB 0) | `settings.CELERY_RESULT_BACKEND` |
 | Result expiry | 1 day (Celery default `result_expires=86400`) | Implicit |
@@ -133,7 +133,7 @@ named with the `batch.` prefix land on the `batch` queue.
 ## Tasks Reference Table
 
 | Task | Celery Name | Queue | Max Retries | Soft / Hard Timeout | Description |
-|------|-------------|-------|-------------|---------------------|-------------|
+| ------ | ------------- | ------- | ------------- | --------------------- | ------------- |
 | `process_document_task` | `interactive.process_document_async` | interactive | 3 | 600s / 900s | Format a single uploaded document via agent orchestrator |
 | `process_generation_task` | `interactive.process_generation_async` | interactive | 3 | 600s / 900s | AI document generation from scratch |
 | `process_synthesis_task` | `interactive.process_synthesis_async` | interactive | 3 | 600s / 900s | Multi-document synthesis pipeline |
@@ -200,7 +200,7 @@ path traversal.
 ### `process_document_task`
 
 | Attribute | Value |
-|-----------|-------|
+| ----------- | ------- |
 | Celery name | `interactive.process_document_async` |
 | Queue | `interactive` |
 | Signature | `(document_id: str, use_agent: bool = True)` |
@@ -215,7 +215,7 @@ the validated input path, and updates the document status to `COMPLETED` or
 ### `process_generation_task`
 
 | Attribute | Value |
-|-----------|-------|
+| ----------- | ------- |
 | Celery name | `interactive.process_generation_async` |
 | Queue | `interactive` |
 | Signature | `(job_id: str)` |
@@ -228,7 +228,7 @@ and runs the generation pipeline for a from-scratch document job.
 ### `process_synthesis_task`
 
 | Attribute | Value |
-|-----------|-------|
+| ----------- | ------- |
 | Celery name | `interactive.process_synthesis_async` |
 | Queue | `interactive` |
 | Signature | `(session_id: str, file_paths: list[str], template: str)` |
@@ -247,7 +247,7 @@ pipeline. Each file path is validated through `validate_path_safety()`.
 ### `process_agent_pipeline_task`
 
 | Attribute | Value |
-|-----------|-------|
+| ----------- | ------- |
 | Celery name | `interactive.process_agent_pipeline_async` |
 | Queue | `interactive` |
 | Signature | `(session_id: str, user_prompt: str)` |
@@ -260,7 +260,7 @@ Runs the full agent-based document generation pipeline.
 ### `process_agent_resume_task`
 
 | Attribute | Value |
-|-----------|-------|
+| ----------- | ------- |
 | Celery name | `interactive.process_agent_resume_async` |
 | Queue | `interactive` |
 | Signature | `(session_id: str)` |
@@ -273,7 +273,7 @@ Resumes an `AgentPipeline` after the user approves the generated outline. Calls
 ### `process_agent_rewrite_task`
 
 | Attribute | Value |
-|-----------|-------|
+| ----------- | ------- |
 | Celery name | `interactive.process_agent_rewrite_async` |
 | Queue | `interactive` |
 | Signature | `(session_id: str, section_name: str, instruction: str)` |
@@ -286,7 +286,7 @@ Rewrites a single section of an agent-generated document. Calls
 ### `process_edit_document_task`
 
 | Attribute | Value |
-|-----------|-------|
+| ----------- | ------- |
 | Celery name | `interactive.process_edit_document_async` |
 | Queue | `interactive` |
 | Signature | `(job_id: str, edited_structured_data: dict, template_name: str = "IEEE")` |
@@ -299,7 +299,7 @@ chosen template. Returns `True` when `result["status"] == "success"`.
 ### `cleanup_uploads_task`
 
 | Attribute | Value |
-|-----------|-------|
+| ----------- | ------- |
 | Celery name | `batch.cleanup_uploads` |
 | Queue | `batch` |
 | Signature | `(upload_dir: str = "uploads", retention_days: int | None = None)` |
@@ -314,7 +314,7 @@ directories. Returns `{"deleted": int, "removed_dirs": int, "retention_days": in
 ### `classification_benchmark_task`
 
 | Attribute | Value |
-|-----------|-------|
+| ----------- | ------- |
 | Celery name | `batch.classification_benchmark` |
 | Queue | `batch` |
 | Signature | `(fixtures_dir: str | None = None)` |
@@ -376,7 +376,7 @@ The Celery worker is defined as a separate Render service in `render.yaml`:
 ```
 
 | Setting | Value | Rationale |
-|---------|-------|-----------|
+| --------- | ------- | ----------- |
 | Queues consumed | `interactive,batch` | Both queues served by a single worker pool |
 | Concurrency (`-c`) | `${WORKER_CONCURRENCY:-2}` | 2 processes by default; overridable via env var |
 | Prefetch multiplier | `1` | One task per worker at a time — prevents head-of-line blocking on long tasks |

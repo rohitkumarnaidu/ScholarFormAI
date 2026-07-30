@@ -25,9 +25,10 @@ Contributors are community members who submit pull requests, open issues, help w
 
 ## Decision Making
 
-Most technical decisions are made through consensus during the code review process or via GitHub Discussions. 
+Most technical decisions are made through consensus during the code review process or via GitHub Discussions.
 
 For significant architectural changes or project-wide decisions:
+
 1. An issue or discussion thread is opened for public comment.
 2. The community is encouraged to provide feedback for at least 7 days.
 3. The Core Team will make a final decision based on consensus. If consensus cannot be reached, a simple majority vote among the Core Team will decide.

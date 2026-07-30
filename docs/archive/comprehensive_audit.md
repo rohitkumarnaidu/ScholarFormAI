@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Comprehensive Project Audit Report
 description: Full project audit covering architecture, security, testing, and performance
 sidebar_position: 70
@@ -25,7 +25,7 @@ last_updated: July 2026
 ### Codex 5.4 Specific Findings (Merged)
 
 | Finding | Detail |
-|---------|--------|
+| --------- | -------- |
 | Python 3.11.9 issue | Python 3.11.9 causes `pytest` import collision — stdlib `pytest` shadows test runner. **Fix:** Pin to Python 3.12.x. |
 | Pytest import collision | `INTERNAL ERROR` during collection on Python 3.11.9. Resolved by upgrading to 3.12 + `asyncio_mode = "auto"`. |
 | `@testing-library/dom` | Required for vitest unit tests. Missing dep caused `npm test` failures. Must be added as devDependency. |
@@ -38,11 +38,11 @@ last_updated: July 2026
 ## 📊 Executive Summary
 
 | Metric | Score | Codex Update |
-|--------|-------|--------------|
+| -------- | ------- | -------------- |
 | **Overall Project Completion** | **62%** | Unchanged |
 | **Backend File Coverage** | **90%** (files exist) | Unchanged |
 | **Frontend File Coverage** | **88%** (files exist) | Unchanged |
-| **Runtime Verification** | ** ️ Unknown** (needs testing) | Phase 2 will address |
+| **Runtime Verification** | **️ Unknown** (needs testing) | Phase 2 will address |
 | **Code Quality (estimated)** | **6.5/10** | Unchanged |
 | **UI/UX Quality** | **7/10** | Unchanged |
 | **Production Readiness** | **3/10** | Unchanged |
@@ -60,16 +60,16 @@ last_updated: July 2026
 ### Module 0 — Critical Fixes (Week 1)
 
 | # | Fix | Plan Status | File Exists? | Completion | Notes |
-|---|-----|-------------|-------------|------------|-------|
-| 1 | Pin Python 3.12 | Required | ✅ Dockerfile exists |  ️ **Partial** | Need to verify runtime.txt/pyproject.toml pins exactly 3.12 |
+| --- | ----- | ------------- | ------------- | ------------ | ------- |
+| 1 | Pin Python 3.12 | Required | ✅ Dockerfile exists | ️ **Partial** | Need to verify runtime.txt/pyproject.toml pins exactly 3.12 |
 | 2 | Add Groq LLM Tier 3 | Required | ✅ [llm_service.py](../backend/app/services/llm_service.py) (15KB) | ✅ **Completed** | File is 15KB — substantial implementation |
 | 3 | ClamAV Virus Scanning | Required | ✅ [virus_scanner.py](../backend/app/utils/virus_scanner.py) (4.4KB) | ✅ **Completed** | File exists + docker-compose has ClamAV service |
 | 4 | Persist Generator Sessions | Required | ✅ [generator_session_service.py](../backend/app/services/generator_session_service.py) (6.8KB) | ✅ **Completed** | DB-backed service exists |
-| 5 | Fix Template Enum + Whitelist | Required | ✅ [document.py](../backend/app/schemas/document.py) (9.4KB) |  ️ **Needs Verification** | Need to confirm all 17 templates listed |
+| 5 | Fix Template Enum + Whitelist | Required | ✅ [document.py](../backend/app/schemas/document.py) (9.4KB) | ️ **Needs Verification** | Need to confirm all 17 templates listed |
 | 6 | Enforce HTTPS/HSTS | Required | ✅ [security_headers.py](../backend/app/middleware/security_headers.py) (4.6KB) | ✅ **Completed** | Dedicated middleware file |
-| 7 | DocumentService.delete_document() | Required | ✅ [document_service.py](../backend/app/services/document_service.py) (21.7KB) |  ️ **Needs Verification** | File is large, but need to verify delete method |
-| 8 | Re-enable GDPR Cleanup | Required | ✅ [cleanup.py](../backend/app/utils/cleanup.py) (2.3KB) |  ️ **Needs Verification** | File exists but need to check lifespan wiring |
-| 9 | Fix Integration Tests | Required | ✅ [conftest.py](../backend/tests/conftest.py) + integration/ dir |  ️ **Needs Verification** | Integration dir exists, need to test skip logic |
+| 7 | DocumentService.delete_document() | Required | ✅ [document_service.py](../backend/app/services/document_service.py) (21.7KB) | ️ **Needs Verification** | File is large, but need to verify delete method |
+| 8 | Re-enable GDPR Cleanup | Required | ✅ [cleanup.py](../backend/app/utils/cleanup.py) (2.3KB) | ️ **Needs Verification** | File exists but need to check lifespan wiring |
+| 9 | Fix Integration Tests | Required | ✅ [conftest.py](../backend/tests/conftest.py) + integration/ dir | ️ **Needs Verification** | Integration dir exists, need to test skip logic |
 
 **Frontend Module 0:**
 
@@ -85,7 +85,7 @@ last_updated: July 2026
 ### Module 1 — API v1 & Contract Stabilization
 
 | Item | File Exists? | Completion |
-|------|-------------|------------|
+| ------ | ------------- | ------------ |
 | Response Envelope Schema | ✅ [api_envelope.py](../backend/app/schemas/api_envelope.py) (1.4KB) | ✅ **Completed** |
 | Request ID Middleware | ✅ [request_id.py](../backend/app/middleware/request_id.py) (2.2KB) | ✅ **Completed** |
 | v1 Router Package | ✅ [__init__.py](../backend/app/routers/v1/__init__.py), health, docs, templates, generator, synthesis, billing | ✅ **Completed** |
@@ -97,8 +97,8 @@ last_updated: July 2026
 | v1/billing.py | ✅ 3.8KB | ✅ **Completed** |
 | Deprecation headers on legacy | ✅ [deprecation.py](../backend/app/routers/deprecation.py) (1.6KB) | ✅ **Completed** |
 | **Frontend:** api.v1.js | ✅ [api.v1.js](../frontend/src/services/api.v1.js) (6KB) | ✅ **Completed** |
-| **Frontend:** Request ID in api.core.js | ✅ [api.core.js](../frontend/src/services/api.core.js) (10.8KB) |  ️ **Needs Verification** |
-| **Frontend:** Env vars NEXT_PUBLIC_ | ✅ .env + .env.example |  ️ **Needs Verification** |
+| **Frontend:** Request ID in api.core.js | ✅ [api.core.js](../frontend/src/services/api.core.js) (10.8KB) | ️ **Needs Verification** |
+| **Frontend:** Env vars NEXT_PUBLIC_ | ✅ .env + .env.example | ️ **Needs Verification** |
 
 **Module 1 Summary: ✅ 85% Completed**
 
@@ -107,21 +107,21 @@ last_updated: July 2026
 ### Module 2 — Formatter Mode A Completion
 
 | Item | File Exists? | Completion |
-|------|-------------|------------|
+| ------ | ------------- | ------------ |
 | Golden Files Benchmark | ✅ [test_formatter_golden_files.py](../backend/tests/test_formatter_golden_files.py) (8.8KB) + golden_files/ dir | ✅ **Completed** |
-| docxtpl Renderer Fallback Fix |  ️ Need to verify in formatter.py |  ️ **Needs Verification** |
-| Preserve Hyperlinks |  ️ Need to verify in parser/formatter |  ️ **Needs Verification** |
-| Fix Footnote Placement |  ️ Need to verify |  ️ **Needs Verification** |
-| LaTeX Export | ✅ [latex_exporter.py](../backend/app/pipeline/export/latex_exporter.py) (743B) |  ️ **Partial** — file very small (743B), likely stub |
-| CrossRef Retry/Backoff | ✅ [crossref_client.py](../backend/app/services/crossref_client.py) (5.7KB) |  ️ **Needs Verification** |
+| docxtpl Renderer Fallback Fix | ️ Need to verify in formatter.py | ️ **Needs Verification** |
+| Preserve Hyperlinks | ️ Need to verify in parser/formatter | ️ **Needs Verification** |
+| Fix Footnote Placement | ️ Need to verify | ️ **Needs Verification** |
+| LaTeX Export | ✅ [latex_exporter.py](../backend/app/pipeline/export/latex_exporter.py) (743B) | ️ **Partial** — file very small (743B), likely stub |
+| CrossRef Retry/Backoff | ✅ [crossref_client.py](../backend/app/services/crossref_client.py) (5.7KB) | ️ **Needs Verification** |
 | Quality Score Service | ✅ [quality_score_service.py](../backend/app/services/quality_score_service.py) (4.4KB) | ✅ **Completed** |
-| GROBID in Docker Compose | ✅ docker-compose.yml exists |  ️ **Needs Verification** |
-| **Frontend:** TipTap on /edit | ✅ Edit page exists |  ️ **Needs Verification** |
-| **Frontend:** Template Editor Save | ✅ Template editor page exists |  ️ **Needs Verification** |
+| GROBID in Docker Compose | ✅ docker-compose.yml exists | ️ **Needs Verification** |
+| **Frontend:** TipTap on /edit | ✅ Edit page exists | ️ **Needs Verification** |
+| **Frontend:** Template Editor Save | ✅ Template editor page exists | ️ **Needs Verification** |
 | **Frontend:** Batch Upload Wiring | ✅ [BatchUploadPanel.jsx](../frontend/src/components/BatchUploadPanel.jsx) (9.7KB) | ✅ **Completed** |
-| **Frontend:** Quality Score Panel |  ️ Results page exists |  ️ **Needs Verification** |
-| **Frontend:** LaTeX Download Option |  ️ Download page exists |  ️ **Needs Verification** |
-| **Frontend:** Backend-Driven Stepper | ✅ [Stepper.jsx](../frontend/src/components/Stepper.jsx) (10.4KB) |  ️ **Needs Verification** |
+| **Frontend:** Quality Score Panel | ️ Results page exists | ️ **Needs Verification** |
+| **Frontend:** LaTeX Download Option | ️ Download page exists | ️ **Needs Verification** |
+| **Frontend:** Backend-Driven Stepper | ✅ [Stepper.jsx](../frontend/src/components/Stepper.jsx) (10.4KB) | ️ **Needs Verification** |
 
 **Module 2 Summary:  ️ 55% Completed, heavy verification needed**
 
@@ -130,7 +130,7 @@ last_updated: July 2026
 ### Module 3 — Formatter Mode B: Live Split Editor
 
 | Item | File Exists? | Completion |
-|------|-------------|------------|
+| ------ | ------------- | ------------ |
 | Realtime pubsub.py | ✅ [pubsub.py](../backend/app/realtime/pubsub.py) (4.3KB) | ✅ **Completed** |
 | Realtime events.py | ✅ [events.py](../backend/app/realtime/events.py) (1.1KB) | ✅ **Completed** |
 | Preview Renderer | ✅ [preview_renderer.py](../backend/app/services/preview_renderer.py) (15.6KB) | ✅ **Completed** |
@@ -148,10 +148,10 @@ last_updated: July 2026
 ### Module 4 — Generator Mode A: Multi-Doc Synthesis
 
 | Item | File Exists? | Completion |
-|------|-------------|------------|
+| ------ | ------------- | ------------ |
 | Generator Session Service | ✅ 6.8KB | ✅ **Completed** |
 | Session Vector Store | ✅ [session_vector_store.py](../backend/app/services/session_vector_store.py) (7.8KB) | ✅ **Completed** |
-| Generator Session Schema | ✅ [generator_session.py](../backend/app/schemas/generator_session.py) (1KB) |  ️ **Partial** — very small file |
+| Generator Session Schema | ✅ [generator_session.py](../backend/app/schemas/generator_session.py) (1KB) | ️ **Partial** — very small file |
 | Synthesizer Pipeline | ✅ [synthesizer.py](../backend/app/pipeline/synthesis/synthesizer.py) (24.2KB) | ✅ **Completed** |
 | v1/synthesis.py Router | ✅ 8.8KB | ✅ **Completed** |
 | **Frontend:** useGeneratorSessionStream | ✅ [useGeneratorSessionStream.js](../frontend/src/hooks/useGeneratorSessionStream.js) (3.2KB) | ✅ **Completed** |
@@ -169,7 +169,7 @@ last_updated: July 2026
 ### Module 5 — Generator Mode B: AI Agent
 
 | Item | File Exists? | Completion |
-|------|-------------|------------|
+| ------ | ------------- | ------------ |
 | Task Parser | ✅ [task_parser.py](../backend/app/pipeline/generation/task_parser.py) (6.2KB) | ✅ **Completed** |
 | Agent Pipeline | ✅ [agent.py](../backend/app/pipeline/generation/agent.py) (34KB) | ✅ **Completed** — most substantial file |
 | Section Prompts | ✅ [section_prompts.py](../backend/app/pipeline/generation/section_prompts.py) (3.4KB) | ✅ **Completed** |
@@ -190,14 +190,14 @@ last_updated: July 2026
 ### Module 6 — AI Accuracy & Performance
 
 | Item | File Exists? | Completion |
-|------|-------------|------------|
-| LLMClassifier Re-enablement | ✅ classification/ dir exists |  ️ **Needs Verification** |
+| ------ | ------------- | ------------ |
+| LLMClassifier Re-enablement | ✅ classification/ dir exists | ️ **Needs Verification** |
 | LLMClassifier Benchmark Test | ✅ [test_classification_benchmark.py](../backend/tests/test_classification_benchmark.py) (2.9KB) | ✅ **Completed** |
-| LLM Prompt/Result Cache |  ️ In llm_service.py |  ️ **Needs Verification** |
-| Queue Prioritization | ✅ [enhancement_manager.py](../backend/app/services/enhancement_manager.py) (10.2KB) |  ️ **Needs Verification** |
-| Structured Tracing | ✅ [logging_context.py](../backend/app/utils/logging_context.py) (3.4KB) |  ️ **Partial** |
-| **Frontend:** Quality Scorer UI |  ️ In results page |  ️ **Needs Verification** |
-| **Frontend:** LLM Provider Indicator |  ️ Unknown |  ️ **Needs Verification** |
+| LLM Prompt/Result Cache | ️ In llm_service.py | ️ **Needs Verification** |
+| Queue Prioritization | ✅ [enhancement_manager.py](../backend/app/services/enhancement_manager.py) (10.2KB) | ️ **Needs Verification** |
+| Structured Tracing | ✅ [logging_context.py](../backend/app/utils/logging_context.py) (3.4KB) | ️ **Partial** |
+| **Frontend:** Quality Scorer UI | ️ In results page | ️ **Needs Verification** |
+| **Frontend:** LLM Provider Indicator | ️ Unknown | ️ **Needs Verification** |
 
 **Module 6 Summary:  ️ 50% Completed**
 
@@ -206,20 +206,20 @@ last_updated: July 2026
 ### Module 7 — Security, Compliance, Billing
 
 | Item | File Exists? | Completion |
-|------|-------------|------------|
+| ------ | ------------- | ------------ |
 | JWKS JWT Verifier | ✅ [jwks_verifier.py](../backend/app/security/jwks_verifier.py) (5.4KB) | ✅ **Completed** |
-| Audit Log Service | ✅ [audit_log_service.py](../backend/app/services/audit_log_service.py) (1.1KB) |  ️ **Partial** — very small |
-| RBAC Middleware | ✅ [rbac.py](../backend/app/middleware/rbac.py) (708B) |  ️ **Partial** — tiny file |
+| Audit Log Service | ✅ [audit_log_service.py](../backend/app/services/audit_log_service.py) (1.1KB) | ️ **Partial** — very small |
+| RBAC Middleware | ✅ [rbac.py](../backend/app/middleware/rbac.py) (708B) | ️ **Partial** — tiny file |
 | Tier-Aware Rate Limiting | ✅ [tier_rate_limit.py](../backend/app/middleware/tier_rate_limit.py) (4.1KB) + [rate_limit.py](../backend/app/middleware/rate_limit.py) (6.9KB) | ✅ **Completed** |
 | CSP Hardening | ✅ [security_headers.py](../backend/app/middleware/security_headers.py) (4.6KB) | ✅ **Completed** |
-| Signed Download URLs | ✅ In document_service.py |  ️ **Needs Verification** |
+| Signed Download URLs | ✅ In document_service.py | ️ **Needs Verification** |
 | Stripe Billing Webhook | ✅ [v1/billing.py](../backend/app/routers/v1/billing.py) (3.8KB) | ✅ **Completed** |
 | Abuse Detection | ✅ [abuse_detector.py](../backend/app/middleware/abuse_detector.py) (2.7KB) | ✅ **Completed** |
 | Security CI Workflow | ✅ [security.yml](../.github/workflows/security.yml) (1KB) | ✅ **Completed** |
 | **Frontend:** planTier.js | ✅ [planTier.js](../frontend/src/lib/planTier.js) (2.5KB) | ✅ **Completed** |
 | **Frontend:** UpgradeModal | ✅ [UpgradeModal.jsx](../frontend/src/components/UpgradeModal.jsx) (3.7KB) | ✅ **Completed** |
-| **Frontend:** Billing Settings Tab |  ️ in settings page |  ️ **Needs Verification** |
-| **Frontend:** Admin Route Protection |  ️ Unknown |  ️ **Needs Verification** |
+| **Frontend:** Billing Settings Tab | ️ in settings page | ️ **Needs Verification** |
+| **Frontend:** Admin Route Protection | ️ Unknown | ️ **Needs Verification** |
 
 **Module 7 Summary:  ️ 70% Completed**
 
@@ -228,21 +228,21 @@ last_updated: July 2026
 ### Module 8 — Production Readiness
 
 | Item | File Exists? | Completion |
-|------|-------------|------------|
-| backend-ci.yml | ✅ (793B) |  ️ **Small** — may be minimal |
-| frontend-ci.yml | ✅ (492B) |  ️ **Small** — may be minimal |
-| e2e-staging.yml | ✅ e2e-production.yml (828B) |  ️ **Named differently** |
+| ------ | ------------- | ------------ |
+| backend-ci.yml | ✅ (793B) | ️ **Small** — may be minimal |
+| frontend-ci.yml | ✅ (492B) | ️ **Small** — may be minimal |
+| e2e-staging.yml | ✅ e2e-production.yml (828B) | ️ **Named differently** |
 | deploy-staging.yml | ❌ **Missing** | ❌ **Not Completed** |
 | deploy-production.yml | ✅ (1.6KB) | ✅ **Completed** |
 | security.yml | ✅ (1KB) | ✅ **Completed** |
 | Prometheus Metrics | ✅ [prometheus_metrics.py](../backend/app/middleware/prometheus_metrics.py) (7KB) | ✅ **Completed** |
 | Grafana Dashboards | ❌ No ops/ directory found | ❌ **Not Completed** |
-| Load Testing | ✅ tests/load/ dir exists |  ️ **Needs Verification** |
-| Runbooks | ✅ docs/runbooks/ dir exists |  ️ **Needs Verification** |
+| Load Testing | ✅ tests/load/ dir exists | ️ **Needs Verification** |
+| Runbooks | ✅ docs/runbooks/ dir exists | ️ **Needs Verification** |
 | ADR Documentation | ✅ docs/adr/ dir exists | ✅ **Completed** |
 | **Frontend:** E2E Tests (50+) | ✅ **93 test files** 🎉 | ✅ **Exceeded Target** |
 | **Frontend:** OnboardingTour | ✅ [OnboardingTour.jsx](../frontend/src/components/OnboardingTour.jsx) (6.8KB) | ✅ **Completed** |
-| **Frontend:** Responsive Audit |  ️ Need testing |  ️ **Needs Verification** |
+| **Frontend:** Responsive Audit | ️ Need testing | ️ **Needs Verification** |
 
 **Module 8 Summary:  ️ 60% Completed**
 
@@ -251,13 +251,13 @@ last_updated: July 2026
 ### Frontend Debt Cleanup
 
 | Task | Completion |
-|------|------------|
-| Remove Legacy Vite Archive |  ️ **Needs Verification** — check if `_legacy_vite_archive/` still exists |
+| ------ | ------------ |
+| Remove Legacy Vite Archive | ️ **Needs Verification** — check if `_legacy_vite_archive/` still exists |
 | Consolidate Context Paths | ✅ **Completed** — only `src/context/` exists (5 files) |
-| Deduplicate Components |  ️ Both `frontend/components/` AND `frontend/src/components/` exist |
+| Deduplicate Components | ️ Both `frontend/components/` AND `frontend/src/components/` exist |
 | Canonical API Client Imports | ✅ All in `src/services/` (15 files) |
-| Standardize Env Variables |  ️ **Needs Verification** |
-| Route Parity Test |  ️ **Needs npm run build + full navigation test** |
+| Standardize Env Variables | ️ **Needs Verification** |
+| Route Parity Test | ️ **Needs npm run build + full navigation test** |
 
 > [!WARNING]
 > **Duplicate component directories still exist!** `frontend/components/` exists alongside `frontend/src/components/`. This should be consolidated.
@@ -269,7 +269,7 @@ last_updated: July 2026
 ### 🔴 HIGH PRIORITY
 
 | # | Issue | Impact | Solution |
-|---|-------|--------|----------|
+| --- | ------- | -------- | ---------- |
 | 1 | **No deploy-staging.yml** | Can't auto-deploy to staging on merge to main | Create the workflow (Render deploy + health check) |
 | 2 | **No Grafana dashboards** | No monitoring before production | Create `ops/grafana/dashboards/scholarform-overview.json` |
 | 3 | **Many build error log files** in frontend | 13+ build/lint log files suggest ongoing build issues | Clean up logs, fix remaining build errors, verify `npm run build` passes |
@@ -284,7 +284,7 @@ last_updated: July 2026
 ### 🟡 MEDIUM PRIORITY
 
 | # | Issue | Impact | Solution |
-|---|-------|--------|----------|
+| --- | ------- | -------- | ---------- |
 | 1 | E2E tests are small (100-700 bytes each) | Many may be stubs | Verify tests actually contain assertions |
 | 2 | CI workflow files are small (500-1600B) | May be incomplete | Verify workflow steps are correct |
 | 3 | Backend test count: 46 files | Good coverage but unknown pass rate | Run `pytest` and verify |
@@ -298,7 +298,7 @@ last_updated: July 2026
 ### 👤 User Perspective
 
 | Aspect | Rating | Explanation |
-|--------|--------|-------------|
+| -------- | -------- | ------------- |
 | **First Impression / Visual Appeal** | **7/10** | Modern Next.js dark-mode capable UI with good component library |
 | **Ease of Upload & Format** | **7.5/10** | Core flow works (upload → process → download). Stepper animation is nice. |
 | **Live Preview Experience** | **6/10** | Components exist but untested in runtime; potential WebSocket issues |
@@ -312,7 +312,7 @@ last_updated: July 2026
 ### 👨‍💻 Developer Perspective
 
 | Aspect | Rating | Explanation |
-|--------|--------|-------------|
+| -------- | -------- | ------------- |
 | **Code Organization** | **8/10** | Excellent modular structure: routers/services/middleware/pipeline separation |
 | **Naming Conventions** | **7/10** | Consistent naming across files and directories |
 | **API Design** | **8/10** | v1 versioning, envelope pattern, deprecation headers — industry standard |
@@ -326,7 +326,7 @@ last_updated: July 2026
 ### 🤖 AI/ML Perspective
 
 | Aspect | Rating | Explanation |
-|--------|--------|-------------|
+| -------- | -------- | ------------- |
 | **LLM Integration** | **7/10** | Multi-tier fallback (NVIDIA → Groq → Ollama) is production-grade thinking |
 | **RAG Implementation** | **7/10** | ChromaDB + session_vector_store.py is properly designed |
 | **LLMClassifier Classifier** | **4/10** | Disabled by default; benchmark test exists but needs actual F1 validation |
@@ -338,7 +338,7 @@ last_updated: July 2026
 ### 📋 Manager/PM Perspective
 
 | Aspect | Rating | Explanation |
-|--------|--------|-------------|
+| -------- | -------- | ------------- |
 | **Timeline Adherence** | **6/10** | Most modules have code but many at "file exists, not tested" stage |
 | **Feature Completeness** | **6/10** | ~62% overall, with critical gaps in billing + monitoring |
 | **Risk Management** | **5/10** | No monitoring dashboards, unknown test pass rates |
@@ -351,7 +351,7 @@ last_updated: July 2026
 ### 🧪 Tester/QA Perspective
 
 | Aspect | Rating | Explanation |
-|--------|--------|-------------|
+| -------- | -------- | ------------- |
 | **Unit Test Coverage** | **6/10** | 46 test files, diverse coverage but unknown pass rate |
 | **Integration Tests** | **5/10** | Directory exists, need to run with services up |
 | **E2E Test Coverage** | **7/10** | 93 files exceeds the target of 50+ 🎉 |
@@ -365,7 +365,7 @@ last_updated: July 2026
 ### 🔒 Security Auditor Perspective
 
 | Aspect | Rating | Explanation |
-|--------|--------|-------------|
+| -------- | -------- | ------------- |
 | **Authentication** | **7/10** | JWKS verifier, Supabase Auth, AuthContext |
 | **Authorization** | **4/10** | RBAC middleware tiny (708B), needs expansion |
 | **Input Validation** | **7/10** | Virus scanner, MIME validation, file size limits |
@@ -380,7 +380,7 @@ last_updated: July 2026
 ### 🎨 UI/UX Designer Perspective
 
 | Aspect | Rating | Explanation |
-|--------|--------|-------------|
+| -------- | -------- | ------------- |
 | **Design System** | **6/10** | Tailwind config exists, globals.css is massive (117KB) |
 | **Component Library** | **7/10** | 23+ components with good separation of concerns |
 | **Animations** | **6/10** | framer-motion used in several components |
@@ -398,7 +398,7 @@ last_updated: July 2026
 ### Current Risk: "Can't Deploy Everything on One Platform"
 
 | Component | Recommended Host | Fallback | Cost |
-|-----------|-----------------|----------|------|
+| ----------- | ----------------- | ---------- | ------ |
 | **Frontend (Next.js)** | **Vercel** (free tier) | Netlify, GitHub Pages (SSG only) | Free |
 | **Backend (FastAPI)** | **Render** (free tier) | Railway, Fly.io, Hugging Face Spaces | Free-$7/mo |
 | **Redis** | **Upstash** (free tier) | Railway Redis, Render Redis | Free |
@@ -430,15 +430,15 @@ last_updated: July 2026
 ### Documents That Should Be Created
 
 | Document | Status | Priority |
-|----------|--------|----------|
+| ---------- | -------- | ---------- |
 | **PRD.md** | ❌ Not created | HIGH — essential for product clarity |
 | **Features.md** | ❌ Not created | HIGH |
 | **UIUX.md** | ❌ Not created | MEDIUM |
-| **TechStack.md** |  ️ Partial (in docs/architecture.md) | MEDIUM |
-| **Database.md** |  ️ Partial (in implementation plans) | HIGH |
-| **API.md** |  ️ Partial (docs/api_reference.md, 1.7KB — minimal) | HIGH |
-| **Architecture.md** |  ️ Exists (docs/architecture.md, 1.8KB — minimal) | MEDIUM |
-| **Security.md** |  ️ Partial (docs/security/ dir exists) | HIGH |
+| **TechStack.md** | ️ Partial (in docs/architecture.md) | MEDIUM |
+| **Database.md** | ️ Partial (in implementation plans) | HIGH |
+| **API.md** | ️ Partial (docs/api_reference.md, 1.7KB — minimal) | HIGH |
+| **Architecture.md** | ️ Exists (docs/architecture.md, 1.8KB — minimal) | MEDIUM |
+| **Security.md** | ️ Partial (docs/security/ dir exists) | HIGH |
 | **Deployment.md** | ✅ Exists (docs/deployment_guide.md, 2.7KB) | LOW |
 | **AI_Instructions.md** | ❌ Not created | MEDIUM |
 | **Agent.md** | ❌ Not created | LOW |
@@ -450,7 +450,7 @@ last_updated: July 2026
 ### 🔴 Coding Risks
 
 | Risk | Severity | Mitigation |
-|------|----------|------------|
+| ------ | ---------- | ------------ |
 | **WebSocket connection failures in production** | HIGH | Implement polling fallback; test with `wscat` before deploy |
 | **LLMClassifier model too large for free-tier hosting** | HIGH | Use Hugging Face Spaces or embed-only mode |
 | **Celery workers can't afford separate containers** | MEDIUM | Use asyncio background tasks as fallback |
@@ -460,7 +460,7 @@ last_updated: July 2026
 ### 🟡 Testing Risks
 
 | Risk | Severity | Mitigation |
-|------|----------|------------|
+| ------ | ---------- | ------------ |
 | **93 E2E tests are mostly stubs (< 700 bytes)** | HIGH | Prioritize top 20 critical paths; fill in real assertions |
 | **Backend tests may fail with missing services** | MEDIUM | Ensure `@pytest.mark.integration` skip logic works |
 | **No staging environment for E2E** | HIGH | Set up Render staging + Vercel preview deployments |
@@ -468,7 +468,7 @@ last_updated: July 2026
 ### 🔴 Deployment Risks
 
 | Risk | Severity | Mitigation |
-|------|----------|------------|
+| ------ | ---------- | ------------ |
 | **Render free tier cold starts (30+ seconds)** | HIGH | Use Render's paid tier or add a keep-alive ping |
 | **Supabase free tier row limits (50K rows)** | MEDIUM | Implement data retention/cleanup jobs |
 | **File storage limits** | MEDIUM | Implement 30-day GDPR cleanup; use Supabase Storage |
@@ -478,7 +478,7 @@ last_updated: July 2026
 ### 🟡 Integration Risks
 
 | Risk | Severity | Mitigation |
-|------|----------|------------|
+| ------ | ---------- | ------------ |
 | **Frontend ↔ Backend API contract mismatches** | MEDIUM | Generate OpenAPI spec; use it as source of truth |
 | **SSE event format mismatches** | MEDIUM | Standardize event envelope in `realtime/events.py` |
 | **Stripe webhook signature validation** | MEDIUM | Test with Stripe CLI in dev |
@@ -489,21 +489,25 @@ last_updated: July 2026
 ## 7. 💡 Innovative & Industry-Level Ideas
 
 ### Performance
+
 1. **Edge Caching**: Use Vercel Edge Config to cache template metadata globally
 2. **Streaming DOCX**: Stream DOCX bytes as sections complete (chunked transfer encoding)
 3. **WebAssembly Preview**: DOCX→HTML in browser via Mammoth.js in a Web Worker
 
 ### AI/ML
+
 4. **Personal Writing Profile**: Store per-user writing preferences in Supabase; fine-tune prompts per user
 5. **Citation Confidence Score**: Give each citation a 0-100 confidence based on DOI verification
 6. **Journal Auto-Recommendation**: Based on paper content, suggest best-fit journals
 
 ### UX
+
 7. **Collaborative Editing via Yjs**: Real-time multi-user editing with CRDT conflict resolution
 8. **Keyboard Shortcuts**: Power-user productivity (Ctrl+Enter to submit, Ctrl+S to save, etc.)
 9. **Submission Package Builder**: Cover letter + compliance checklist + response-to-reviewer draft
 
 ### Infrastructure
+
 10. **PWA with Offline Mode**: Service worker + background sync for uploads on bad connectivity
 11. **WebHook Notifications**: Notify users via email/Slack when long document processing finishes
 12. **API SDK Auto-Generation**: Use OpenAPI spec to auto-generate Python + JS client SDKs
@@ -513,6 +517,7 @@ last_updated: July 2026
 ## 8. 🗺️ Recommended Next Steps (Priority Order)
 
 ### Phase 1: Stabilization (1-2 days)
+
 1. ✅ Run `npm run build` on frontend — fix all errors
 2. ✅ Run `pytest tests/ -x` on backend — fix all failures  
 3. ✅ Clean up frontend root (remove 13 build/lint log files, proxy temp files)
@@ -520,6 +525,7 @@ last_updated: July 2026
 5. ✅ Verify all 17 templates returned by GET /api/templates
 
 ### Phase 2: Core Testing (2-3 days)
+
 6. Start backend + frontend locally, test each page manually
 7. Test the core user flow: upload → process → results → download
 8. Test the agent flow: prompt → outline → approve → write → download
@@ -527,6 +533,7 @@ last_updated: July 2026
 10. Run `pytest` with integration marker when services are available
 
 ### Phase 3: Critical Gaps (2-3 days)
+
 11. Expand `audit_log_service.py` from stub to production
 12. Expand `rbac.py` from stub to proper role checking
 13. Implement `latex_exporter.py` properly (Pandoc subprocess)
@@ -534,11 +541,13 @@ last_updated: July 2026
 15. Create `deploy-staging.yml` workflow
 
 ### Phase 4: Documentation (1-2 days)
+
 16. Create PRD.md, Features.md, Database.md
 17. Expand API.md with full endpoint documentation
 18. Create Security.md with current controls + gaps
 
 ### Phase 5: Deployment (2-3 days)
+
 19. Set up Render staging environment
 20. Set up Vercel preview deployments
 21. Test end-to-end with live services
@@ -551,31 +560,31 @@ last_updated: July 2026
 ### Backend Files (Total: ~80+ Python files)
 
 | Category | File Count | Total Size | Health |
-|----------|-----------|------------|--------|
+| ---------- | ----------- | ------------ | -------- |
 | Routers (legacy) | 10 | ~85KB | ✅ Solid |
 | Routers (v1) | 8 | ~47KB | ✅ Good |
-| Services | 18 | ~140KB |  ️ 2 stubs |
-| Middleware | 8 | ~33KB |  ️ 1 stub |
+| Services | 18 | ~140KB | ️ 2 stubs |
+| Middleware | 8 | ~33KB | ️ 1 stub |
 | Pipeline | 25+ dirs | ~200KB+ | ✅ Comprehensive |
-| Schemas | 6 | ~20KB |  ️ 1 minimal |
+| Schemas | 6 | ~20KB | ️ 1 minimal |
 | Security | 2 | ~5.4KB | ✅ Good |
 | Realtime | 3 | ~5.5KB | ✅ Good |
 | Utils | 10 | ~33KB | ✅ Good |
-| Tests | 46 files + 10 dirs | ~180KB+ |  ️ Unknown pass rate |
+| Tests | 46 files + 10 dirs | ~180KB+ | ️ Unknown pass rate |
 
 ### Frontend Files (Total: ~100+ files)
 
 | Category | File Count | Total Size | Health |
-|----------|-----------|------------|--------|
+| ---------- | ----------- | ------------ | -------- |
 | Pages (formatter) | 11 routes | Various | ✅ Good coverage |
 | Pages (generator) | 4 routes | Various | ✅ Good |
 | Pages (shared) | Multiple | Various | ✅ Good |
 | Components | 23+ | ~180KB | ✅ Comprehensive |
-| Services | 15 | ~70KB |  ️ 1 empty stub |
+| Services | 15 | ~70KB | ️ 1 empty stub |
 | Hooks | 7 | ~14KB | ✅ Good |
 | Contexts | 5 | ~24KB | ✅ Good |
 | Lib | 2 | ~3.7KB | ✅ Good |
-| E2E Tests | 93 | ~30KB |  ️ Mostly stubs |
+| E2E Tests | 93 | ~30KB | ️ Mostly stubs |
 | CSS | 2 | ~126KB | ✅ Comprehensive |
 
 ---
@@ -623,12 +632,12 @@ The Master Plan v4 FINAL (96KB DOCX, 50 sections, 10 parts) was read and cross-c
 ### Key Findings from Master Plan
 
 | Master Plan Section | Claim | Actual Status |
-|---------------------|-------|---------------|
+| --------------------- | ------- | --------------- |
 | **§4: "25% Done"** | Project was 25% complete at audit time | Now **~62%** (significant progress since audit) |
 | **§5: "75% remaining"** | 75% of work needs to be built | ~38% still remaining |
 | **§6: Risk Matrix** | All issues rated 6/10+ | Most files now exist, but runtime verification pending |
 | **§7: What works well** | Core formatter pipeline, template system, auth | ✅ Still intact — do NOT break these |
-| **§8: Test failures** | 54KB of failing integration tests |  ️ Backend pytest still has INTERNAL ERROR |
+| **§8: Test failures** | 54KB of failing integration tests | ️ Backend pytest still has INTERNAL ERROR |
 | **§9-12: Four modes** | Detailed pipeline specs for all 4 modes | All pipeline files exist (synthesizer.py, agent.py, etc.) |
 | **§14: FastAPI vs Spring Boot** | Decision to use both | Spring Boot gateway NOT built — FastAPI only |
 | **§15: 25 Routes** | All 25 frontend routes needed | ✅ Most routes exist in app/ directory |
@@ -645,7 +654,7 @@ The Master Plan v4 FINAL (96KB DOCX, 50 sections, 10 parts) was read and cross-c
 ### Items in Master Plan NOT Found in Codebase
 
 | Missing Item | Where Expected | Priority |
-|-------------|----------------|----------|
+| ------------- | ---------------- | ---------- |
 | Spring Boot Gateway | backend/gateway/ | LOW (can use FastAPI-only arch) |
 | Meilisearch integration | docker-compose + search service | LOW |
 | KeyLLM keyword extraction | pipeline/ or services/ | MEDIUM |
@@ -661,18 +670,20 @@ The Master Plan v4 FINAL (96KB DOCX, 50 sections, 10 parts) was read and cross-c
 ### Backend: `pytest tests/ -x -q` Result
 
 | Result | Details |
-|--------|---------|
+| -------- | --------- |
 | **Status** | ❌ **INTERNAL ERROR** during collection |
 | **Error Type** | SystemExit / asyncio mode issue |
 | **Root Cause** | Import errors or circular dependencies during test collection |
 | **Impact** | **No tests can run** until collection error is fixed |
 
 **Specific issues detected:**
+
 1. Import of `app` module triggers error during collection
 2. asyncio mode configuration issue (`mode=Mode.AUTO`)
 3. Likely missing environment variables or services (Redis, ChromaDB, Supabase)
 
 **Fix Required:**
+
 - Add `@pytest.mark.integration` skip decorators
 - Fix circular imports in conftest.py
 - Mock external services (Redis, ChromaDB, Supabase) in unit tests
@@ -681,7 +692,7 @@ The Master Plan v4 FINAL (96KB DOCX, 50 sections, 10 parts) was read and cross-c
 ### Frontend: `npm run build` Result
 
 | Result | Details |
-|--------|---------|
+| -------- | --------- |
 | **Status** | ❌ **FAILS** — TypeScript compilation error |
 | **Error File** | `generate-tests.js:212:32` |
 | **Error Type** | "Type error: Invalid character" |
@@ -689,6 +700,7 @@ The Master Plan v4 FINAL (96KB DOCX, 50 sections, 10 parts) was read and cross-c
 | **Impact** | **Cannot build for production** |
 
 **Specific error:**
+
 ```
 ./generate-tests.js:212:32
 Type error: Invalid character.
@@ -696,6 +708,7 @@ Type error: Invalid character.
 ```
 
 **Fix Required:**
+
 - Either fix the template literal syntax in `generate-tests.js`
 - Or exclude `generate-tests.js` from the TypeScript compiler (add to `tsconfig.json` exclude)
 - Or rename to `.cjs` and fix the syntax
@@ -710,7 +723,7 @@ Type error: Invalid character.
 ### Current Color Palette
 
 | Token | Hex | Preview | Usage |
-|-------|-----|---------|-------|
+| ------- | ----- | --------- | ------- |
 | primary | `#136dec` | 🔵 | CTAs, links, focus |
 | primary-hover | `#0f5bbd` | 🔵(darker) | Button hover |
 | primary-light | `#4d94f8` | 🔵(lighter) | Accents |
@@ -719,6 +732,7 @@ Type error: Invalid character.
 | background-light | `#f6f6f8` | ⬜ | Light mode bg |
 
 ### Color Issues
+
 1. **Only 1 accent color family** — just blue. No secondary, tertiary, or semantic colors.
 2. **No success/warning/error tokens** — will use raw hex values in components (inconsistent).
 3. **No gradient definitions** — modern SaaS uses gradients for headers and backgrounds.
@@ -726,18 +740,22 @@ Type error: Invalid character.
 5. **Glassmorphism CSS vars** exist but not in Tailwind config — unclear if used.
 
 ### Typography
+
 - **Display:** Manrope (via CSS variable) — ✅ Good modern academic choice
 - **Body:** System UI stack —  ️ Should add Inter or Source Serif Pro
 - **Code:** Monospace stack — ✅ Standard
 
 ### Critical CSS Issue 🚨
+
 **`globals.css` is 6,337 lines (117KB)** — this is **compiled Tailwind output** that should NOT be committed to git. It should be auto-generated by PostCSS during build. This causes:
+
 - 117KB initial CSS payload (bloated)
 - Duplicate reset/utility rules
 - Impossible to maintain manually
 - Conflicts with Tailwind JIT
 
 ### Recommended Color Palette Additions
+
 ```css
 --color-success: #22c55e;
 --color-warning: #f59e0b;
@@ -757,7 +775,7 @@ Type error: Invalid character.
 ### 🏗️ DevOps Engineer Perspective
 
 | Aspect | Rating | Explanation |
-|--------|--------|-------------|
+| -------- | -------- | ------------- |
 | **CI/CD Maturity** | **4/10** | 5 workflows exist but small, no staging deploy |
 | **Docker Setup** | **6/10** | Dockerfile + docker-compose exist, but not fully tested |
 | **Monitoring** | **3/10** | Prometheus middleware exists, no Grafana dashboards |
@@ -770,7 +788,7 @@ Type error: Invalid character.
 ### 📊 Data Analyst Perspective
 
 | Aspect | Rating | Explanation |
-|--------|--------|-------------|
+| -------- | -------- | ------------- |
 | **User Behavior Tracking** | **2/10** | No event tracking for funnels |
 | **A/B Testing** | **5/10** | ab_testing.py (9.3KB) exists! |
 | **Metrics Dashboard** | **2/10** | No analytics dashboard |
@@ -780,7 +798,7 @@ Type error: Invalid character.
 ### 🎯 Product Owner Perspective
 
 | Aspect | Rating | Explanation |
-|--------|--------|-------------|
+| -------- | -------- | ------------- |
 | **MVP Completeness** | **6/10** | Core formatter works, generator scaffolded |
 | **Competitive Parity** | **5/10** | Master Plan has deep competitor analysis done |
 | **User Onboarding** | **7/10** | OnboardingTour + guest access are good |
@@ -792,7 +810,7 @@ Type error: Invalid character.
 ### 🌐 Accessibility (a11y) Perspective
 
 | Aspect | Rating | Explanation |
-|--------|--------|-------------|
+| -------- | -------- | ------------- |
 | **Keyboard Navigation** | **4/10** | Unknown — needs testing |
 | **Screen Reader** | **3/10** | No aria-labels observed in quick scan |
 | **Color Contrast** | **5/10** | Primary blue on white may fail WCAG AAA |
@@ -807,7 +825,7 @@ Type error: Invalid character.
 ### Development Tools
 
 | Tool | Purpose | When to Use | Priority |
-|------|---------|-------------|----------|
+| ------ | --------- | ------------- | ---------- |
 | **Cursor** | AI-assisted debugging and code fixes | Fixing build errors, stub expansion | 🔴 HIGH |
 | **Figma** | Visual design mockups, design system documentation | Color palette, component library, responsive views | 🟡 MEDIUM |
 | **Storybook** | Component documentation and visual testing | After build passes — document each component | 🟡 MEDIUM |
@@ -817,10 +835,11 @@ Type error: Invalid character.
 | **Lighthouse** | Performance and accessibility audits | After build passes | 🟡 MEDIUM |
 
 ### Available Codex Skills (from Master Plan §42)
+
 The Master Plan identifies **37 Codex skills**. Key ones to use immediately:
 
 | Skill | Use |
-|-------|-----|
+| ------- | ----- |
 | document-formatter | Formatting standardization |
 | ocr-document-processor | PDF OCR extraction |
 | ui-ux-pro-max | Design system, color palettes, component building |
@@ -834,7 +853,7 @@ The Master Plan identifies **37 Codex skills**. Key ones to use immediately:
 ### Transformative Ideas
 
 | # | Feature | Impact | Effort | Description |
-|---|---------|--------|--------|-------------|
+| --- | --------- | -------- | -------- | ------------- |
 | 1 | **Natural Language Template Selection** | HIGH | LOW | "Format like Nature journal" → AI selects template |
 | 2 | **AI Plagiarism Check** | HIGH | MEDIUM | Compare against embedded corpus + web search |
 | 3 | **Smart Citation Suggestions** | HIGH | MEDIUM | As user writes, suggest relevant papers from CrossRef/Semantic Scholar |
@@ -855,7 +874,7 @@ The Master Plan identifies **37 Codex skills**. Key ones to use immediately:
 All documents created in this audit session:
 
 | Document | Path | Content |
-|----------|------|---------|
+| ---------- | ------ | --------- |
 | **PRD.md** | [PRD.md](file:///C:/Users/Dell/.gemini/antigravity/brain/171e5cc5-2510-4118-aa08-29e2b7847f5f/PRD.md) | Product vision, personas, KPIs, supported formats |
 | **Features.md** | [Features.md](file:///C:/Users/Dell/.gemini/antigravity/brain/171e5cc5-2510-4118-aa08-29e2b7847f5f/Features.md) | Complete feature list with status per mode |
 | **UIUX.md** | [UIUX.md](file:///C:/Users/Dell/.gemini/antigravity/brain/171e5cc5-2510-4118-aa08-29e2b7847f5f/UIUX.md) | Color palette, typography, component library, CSS issues |
@@ -873,7 +892,7 @@ All documents created in this audit session:
 ## 18. 📊 Final Scorecard
 
 | Perspective | Score | Key Gap |
-|-------------|-------|---------|
+| ------------- | ------- | --------- |
 | 👤 User | 6/10 | Runtime testing needed |
 | 👨‍💻 Developer | 6.5/10 | Build doesn't pass, tech debt |
 | 🤖 AI/ML | 6.5/10 | LLMClassifier disabled, accuracy untested |
@@ -895,13 +914,17 @@ All documents created in this audit session:
 ## 19. 🐳 GROBID Deployment Problem & $0 Solution
 
 ### The Problem
+
 GROBID runs in Docker and needs **~1.5GB RAM** (Java + ML models). On local dev, it works fine via `docker-compose`. But:
+
 - **Render free tier = 512MB RAM** → GROBID will **crash** or never start
 - If your laptop is off, GROBID Docker stops → production breaks
 - GROBID cannot be deployed on Render free tier at all
 
 ### Existing Code Already Handles This ✅
+
 The codebase **already has graceful GROBID fallback** in `orchestrator.py`:
+
 ```python
 if self.grobid_client.is_available():
     grobid_metadata = self.grobid_client.process_header_document(input_path)
@@ -909,7 +932,9 @@ else:
     logger.warning("GROBID result unavailable")
     grobid_metadata = {}
 ```
+
 And it **already imports Docling as a parallel extraction service**:
+
 ```python
 from app.pipeline.services import GROBIDClient, DoclingClient
 ```
@@ -917,13 +942,14 @@ from app.pipeline.services import GROBIDClient, DoclingClient
 ### $0 Solution: 3-Tier PDF Parsing Fallback
 
 | Tier | Tool | RAM Needed | Cost | Quality | Notes |
-|------|------|-----------|------|---------|-------|
+| ------ | ------ | ----------- | ------ | --------- | ------- |
 | **1 (Local)** | **GROBID** (Docker) | ~1.5GB | $0 | ⭐⭐⭐⭐⭐ | Best quality, local dev only |
 | **2 (Production)** | **Docling** (IBM, Python) | ~150MB | $0 | ⭐⭐⭐⭐ | Already integrated in codebase! |
 | **3 (Fallback)** | **PyMuPDF (fitz)** | ~30MB | $0 | ⭐⭐⭐ | Fast, good text extraction |
 | **4 (Emergency)** | **PyPDF2** | ~5MB | $0 | ⭐⭐ | Basic, always available |
 
 ### Environment Configuration
+
 ```env
 # Render production (.env)
 GROBID_ENABLED=false          # saves 1.5GB RAM
@@ -936,6 +962,7 @@ GROBID_URL=http://localhost:8070
 ```
 
 ### What Needs to Be Done
+
 1. Set `GROBID_ENABLED=false` in Render environment variables
 2. Verify `docling` is in `requirements.txt`
 3. Add `pymupdf` to `requirements.txt` as backup
@@ -952,7 +979,7 @@ GROBID_URL=http://localhost:8070
 ### Package Registries Audit
 
 | Registry | Packages Published | Signing | SBOM | SLSA |
-|----------|-------------------|---------|------|------|
+| ---------- | ------------------- | --------- | ------ | ------ |
 | ghcr.io | `scholarform/backend`, `scholarform/celery-worker` | Cosign keyless | CycloneDX | Level 3 |
 | npm.pkg.github.com | `@scholarform/frontend` | Provenance attest | — | — |
 | PyPI (GitHub) | `scholarform-backend` | Build provenance | — | — |
@@ -962,7 +989,7 @@ GROBID_URL=http://localhost:8070
 ### Workflows Audit (24 total)
 
 | Category | Count | Verified |
-|----------|-------|----------|
+| ---------- | ------- | ---------- |
 | CI (backend + frontend) | 2 | ✅ |
 | Security (CodeQL, Trivy, Bandit, OWASP, Scorecard) | 5 | ✅ |
 | Release (Drafter, Create, Docker, npm, PyPI) | 5 | ✅ |
@@ -976,7 +1003,7 @@ GROBID_URL=http://localhost:8070
 ### Security Controls Audit
 
 | Control | Tool | Enforcement | Status |
-|---------|------|-------------|--------|
+| --------- | ------ | ------------- | -------- |
 | Secret detection | detect-secrets | Pre-commit hook | ✅ |
 | SAST | Bandit | CI (per PR) | ✅ |
 | Container scanning | Trivy | CI (per PR) | ✅ |
@@ -1011,7 +1038,7 @@ Tag v1.0.0 → auto-release triggered
 ### Repository Health Audit
 
 | Metric | Value | Target | Status |
-|--------|-------|--------|--------|
+| -------- | ------- | -------- | -------- |
 | OpenSSF Scorecard | 14/16 checks at 10/10 | 10/10 | ✅ |
 | Community profile | 100% complete | 100% | ✅ |
 | Workflows passing | 24/24 | 24 | ✅ |

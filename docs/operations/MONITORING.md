@@ -7,6 +7,7 @@ curl http://localhost:8000/health
 ```
 
 Response:
+
 ```json
 {
   "status": "healthy",
@@ -19,7 +20,7 @@ Response:
 ## Key Metrics
 
 | Metric | Source | Description |
-|--------|--------|-------------|
+| -------- | -------- | ------------- |
 | Request rate | API middleware | Requests per second |
 | Response time | API middleware | p50/p95/p99 latency |
 | Error rate | API middleware | 4xx/5xx percentage |
@@ -66,15 +67,18 @@ Logs will be output in JSON format for integration with log aggregation tools:
 ## Alerts
 
 ### Critical
+
 - Service unreachable
 - Error rate > 5%
 - Response time > 10s for p95
 
 ### Warning
+
 - Response time > 3s for p95
 - Error rate > 1%
 - Disk usage > 80%
 
 ### Info
+
 - Unusual request patterns
 - Rate limit thresholds approached

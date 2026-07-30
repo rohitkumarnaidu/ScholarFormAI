@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Glossary
 description: Terminology reference for common terms used across the project
 sidebar_position: 90
@@ -16,7 +16,7 @@ last_updated: July 2026
 # Glossary
 
 | Term | Definition |
-|------|------------|
+| ------ | ------------ |
 | **ADR** | Architecture Decision Record — a document that captures an important architectural decision made along with its context and consequences |
 | **Agent** | AI-powered assistant that generates academic manuscripts through an 11-step pipeline (task parsing → outline → writing → citations → quality → export) |
 | **Alembic** | Database migration tool for SQLAlchemy used to manage schema changes |

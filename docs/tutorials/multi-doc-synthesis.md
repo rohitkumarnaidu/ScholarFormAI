@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: Tutorial — Multi-Document Synthesis
 description: Step-by-step tutorial to synthesize multiple source documents into a unified manuscript
 sidebar_position: 4
@@ -27,6 +27,7 @@ Multi-document synthesis combines content from multiple academic papers into one
 - **Create a meta-analysis** from multiple study reports
 
 The synthesis pipeline:
+
 1. Parses each source document independently
 2. Detects overlapping and complementary content
 3. Applies your chosen merge strategy (sequential, thematic, or priority-based)
@@ -57,7 +58,7 @@ flowchart TD
 ## Prerequisites
 
 | Requirement | Details |
-|-------------|---------|
+| ------------- | --------- |
 | Running backend | Follow the [Quickstart](../quickstart.md) |
 | LLM provider key | Required for synthesis — see [API Key Setup](../API_KEY_QUICK_START.md) |
 | Source documents | 2–6 academic papers in DOCX, PDF, TEX, HTML, or MD format |
@@ -131,7 +132,7 @@ Configure how the documents are merged.
 ### Merge Strategies
 
 | Strategy | Description | Best For |
-|----------|-------------|----------|
+| ---------- | ------------- | ---------- |
 | `sequential` | Append documents in order, preserving each doc's structure | Combining chapters from different authors |
 | `thematic` | Group content by topic across documents, deduplicating | Literature reviews, surveys |
 | `priority` | Use the first document as the primary structure, fill gaps from others | Extending an existing paper |
@@ -162,6 +163,7 @@ curl -X POST http://localhost:8000/api/v1/synthesis/sessions \
 ```
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -216,6 +218,7 @@ curl -N http://localhost:8000/api/v1/synthesis/sessions/syn_abc456/events \
 ```
 
 **Event stream:**
+
 ```
 event: stage_update
 data: {"stage": "parsing", "progress": 10, "message": "Parsing 3 source documents"}
@@ -281,6 +284,7 @@ curl http://localhost:8000/api/v1/synthesis/sessions/syn_abc456 \
 ```
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -306,7 +310,7 @@ curl http://localhost:8000/api/v1/synthesis/sessions/syn_abc456 \
 ### Quality Score Interpretation
 
 | Score | Meaning | Action |
-|-------|---------|--------|
+| ------- | --------- | -------- |
 | 0.9 – 1.0 | Excellent | Ready for download |
 | 0.7 – 0.9 | Good | Review for minor issues |
 | 0.5 – 0.7 | Fair | May need manual editing |
@@ -405,7 +409,7 @@ for fmt in ["docx", "pdf"]:
 ### Pre-processing Tips
 
 | Preparation | Benefit |
-|-------------|---------|
+| ------------- | --------- |
 | Remove duplicate sections | Reduces deduplication work |
 | Standardize heading levels | Improves structural merging |
 | Check reference completeness | Ensures citations resolve correctly |
@@ -415,7 +419,7 @@ for fmt in ["docx", "pdf"]:
 ### Optimal Strategy Selection
 
 | Scenario | Recommended Strategy | Why |
-|----------|---------------------|-----|
+| ---------- | --------------------- | ----- |
 | Writing a survey paper | `thematic` | Groups related content across sources |
 | Combining dissertation chapters | `sequential` | Preserves each chapter's structure |
 | Extending an existing draft | `priority` | Uses your draft as backbone |
@@ -516,7 +520,7 @@ if __name__ == "__main__":
 ## Troubleshooting
 
 | Error | Cause | Solution |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | `MINIMUM_DOCUMENTS_REQUIRED` | Fewer than 2 source documents | Upload at least 2 documents for synthesis |
 | `MAXIMUM_DOCUMENTS_EXCEEDED` | More than 6 documents | Select up to 6 documents per session |
 | `DOCUMENT_NOT_PARSED` | Source document still processing | Wait for each document to reach "completed" status |
@@ -537,7 +541,7 @@ if __name__ == "__main__":
 ## Next Steps
 
 | Topic | Resource |
-|-------|----------|
+| ------- | ---------- |
 | AI agent generation | [Generate Document with AI](generate-document-with-ai.md) |
 | Format an existing paper | [Format Your First Paper](format-your-first-paper.md) |
 | Custom templates | [Custom Template Guide](../guides/creating-a-custom-template.md) |

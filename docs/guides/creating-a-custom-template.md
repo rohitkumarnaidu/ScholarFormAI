@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: Guide — Creating a Custom Template
 description: How-to guide for building and registering custom journal templates
 sidebar_position: 2

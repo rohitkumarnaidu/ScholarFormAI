@@ -58,7 +58,7 @@ class CustomUpdateService(UpdateService):
 ## Environment Variables
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- | --------- | ------------- |
 | `UPDATE_REPO_OWNER` | `amf` | GitHub repository owner |
 | `UPDATE_REPO_NAME` | `automated-manuscript-formatter` | GitHub repository name |
 | `UPDATE_CHANNEL` | `stable` | Default release channel |

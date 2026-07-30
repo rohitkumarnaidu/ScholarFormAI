@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: LLM Fallback Strategy
 description: Multi-tier LLM provider failover design
 sidebar_position: 4
@@ -47,6 +47,7 @@ response = await llm_service.generate(
 ```
 
 LiteLLM handles:
+
 - Provider routing
 - Retry logic (3 attempts per provider)
 - Timeout handling (30s per call)
@@ -79,7 +80,7 @@ Unhealthy providers are skipped in the routing chain until they pass a subsequen
 ## Fallback Behavior by Feature
 
 | Feature | Provider | Fallback Behavior |
-|---------|----------|-------------------|
+| --------- | ---------- | ------------------- |
 | AI Agent generation | NIM → Groq → Ollama | Degraded quality on fallback; user notified via SSE |
 | Multi-doc synthesis | NIM → Groq → Ollama | May increase latency; Ollama requires local GPU |
 | NLP enhancement | NIM → Groq | Skipped if all providers unavailable |

@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Backup & Recovery
 description: Backup strategy, retention policies, recovery procedures, and RTO/RPO targets
 sidebar_position: 38
@@ -25,35 +25,35 @@ last_updated: July 2026
 
 - [RTO/RPO Targets](#rtorpo-targets)
 - [Backup Strategy](#backup-strategy)
-  - [PostgreSQL (Supabase Managed)](#1-postgresql-supabase-managed)
-  - [File Storage](#2-file-storage)
-  - [ChromaDB / RAG Vector Store](#3-chromadb--rag-vector-store)
-  - [Configuration & Secrets](#4-configuration--secrets)
-  - [Redis (Ephemeral)](#5-redis-ephemeral)
-  - [Code Repository](#6-code-repository)
-  - [Alembic Migrations](#7-alembic-migrations)
+    - [PostgreSQL (Supabase Managed)](#1-postgresql-supabase-managed)
+    - [File Storage](#2-file-storage)
+    - [ChromaDB / RAG Vector Store](#3-chromadb--rag-vector-store)
+    - [Configuration & Secrets](#4-configuration--secrets)
+    - [Redis (Ephemeral)](#5-redis-ephemeral)
+    - [Code Repository](#6-code-repository)
+    - [Alembic Migrations](#7-alembic-migrations)
 - [Backup Schedule](#backup-schedule)
 - [Retention Policy](#retention-policy)
 - [Recovery Procedures](#recovery-procedures)
-  - [Point-in-Time Recovery (PITR)](#point-in-time-recovery-pitr)
-  - [Full Restore from Latest Snapshot](#full-restore-from-latest-snapshot)
-  - [Cross-Region Failover](#cross-region-failover)
-  - [ChromaDB Rebuild from kb.json](#chromadb-rebuild-from-kbjson)
-  - [File Storage Recovery](#file-storage-recovery)
-  - [Configuration Recovery](#configuration-recovery)
+    - [Point-in-Time Recovery (PITR)](#point-in-time-recovery-pitr)
+    - [Full Restore from Latest Snapshot](#full-restore-from-latest-snapshot)
+    - [Cross-Region Failover](#cross-region-failover)
+    - [ChromaDB Rebuild from kb.json](#chromadb-rebuild-from-kbjson)
+    - [File Storage Recovery](#file-storage-recovery)
+    - [Configuration Recovery](#configuration-recovery)
 - [Testing & Validation](#testing--validation)
-  - [Backup Verification Script](#backup-verification-script)
-  - [Migration Verification Script](#migration-verification-script)
-  - [Restore Drills Schedule](#restore-drills-schedule)
-  - [Backup Monitoring](#backup-monitoring)
+    - [Backup Verification Script](#backup-verification-script)
+    - [Migration Verification Script](#migration-verification-script)
+    - [Restore Drills Schedule](#restore-drills-schedule)
+    - [Backup Monitoring](#backup-monitoring)
 - [Disaster Scenarios](#disaster-scenarios)
-  - [1. Database Corruption](#1-database-corruption)
-  - [2. Region Outage](#2-region-outage)
-  - [3. Accidental Data Deletion](#3-accidental-data-deletion)
-  - [4. Ransomware / Malicious Access](#4-ransomware--malicious-access)
-  - [5. Configuration Loss](#5-configuration-loss)
-  - [6. ChromaDB / RAG Store Loss](#6-chromadb--rag-store-loss)
-  - [7. File Storage Loss](#7-file-storage-loss)
+    - [1. Database Corruption](#1-database-corruption)
+    - [2. Region Outage](#2-region-outage)
+    - [3. Accidental Data Deletion](#3-accidental-data-deletion)
+    - [4. Ransomware / Malicious Access](#4-ransomware--malicious-access)
+    - [5. Configuration Loss](#5-configuration-loss)
+    - [6. ChromaDB / RAG Store Loss](#6-chromadb--rag-store-loss)
+    - [7. File Storage Loss](#7-file-storage-loss)
 - [Success Metrics & SLAs](#success-metrics--slas)
 - [Appendix: Backup Automation Scripts](#appendix-backup-automation-scripts)
 
@@ -64,7 +64,7 @@ last_updated: July 2026
 ScholarForm AI maintains tiered recovery targets aligned with service criticality:
 
 | Service Tier | RTO (Recovery Time Objective) | RPO (Recovery Point Objective) | Examples |
-|-------------|-------------------------------|-------------------------------|---------|
+| ------------- | ------------------------------- | ------------------------------- | --------- |
 | **Critical** | < 1 hour | < 5 minutes | PostgreSQL (user data, documents, API keys), Auth (Supabase Auth) |
 | **High** | < 2 hours | < 15 minutes | ChromaDB vector store, file storage (uploads/, output/) |
 | **Medium** | < 4 hours | < 1 hour | Configuration (.env, encrypted secrets), AI model store |
@@ -81,7 +81,7 @@ ScholarForm AI maintains tiered recovery targets aligned with service criticalit
 **Primary database** for all persistent data — user profiles, documents, API keys, billing records, audit logs, session state, and application metadata.
 
 | Property | Specification |
-|----------|--------------|
+| ---------- | -------------- |
 | **Provider** | Supabase (managed PostgreSQL 15.x) |
 | **Plan** | Pro / Team (PITR enabled) |
 | **Backup Method** | Continuous WAL archiving + daily snapshots |
@@ -101,7 +101,7 @@ ScholarForm AI maintains tiered recovery targets aligned with service criticalit
 **Key tables:**
 
 | Table | Content | Recovery Criticality |
-|-------|---------|---------------------|
+| ------- | --------- | --------------------- |
 | `profiles` | User profiles, preferences | Critical |
 | `documents` | Manuscript metadata, status, processing history | Critical |
 | `user_api_keys` | Encrypted provider API keys | Critical |
@@ -117,24 +117,27 @@ ScholarForm AI maintains tiered recovery targets aligned with service criticalit
 ScholarForm AI uses Supabase Storage (S3-compatible) for user-uploaded manuscripts and generated output files. Local disk storage (`uploads/`, `output/` directories) is used in development and self-hosted deployments.
 
 | Property | Specification |
-|----------|--------------|
+| ---------- | -------------- |
 | **Source** | Supabase Storage buckets (`uploads/`, `output/`) |
 | **Method** | S3 versioning + lifecycle policies |
 | **Encryption** | AES-256 server-side (SSE-S3) |
 | **Versioning** | Enabled on all buckets (retains all object versions) |
 
 **Uploads bucket (`uploads/`):**
+
 - Contains raw uploaded manuscripts (PDF, DOCX, TXT, etc.)
 - S3 versioning preserves all upload versions (deletes are recoverable)
 - Lifecycle rule transitions objects from Standard to Glacier after 30 days
 - Permanent deletion only after 365 days
 
 **Output bucket (`output/`):**
+
 - Contains generated formatted manuscripts and preview files
 - Versioning preserves previous formatting iterations
 - Lifecycle: Standard for 7 days, then Glacier for 90 days
 
 **Local file system (self-hosted):**
+
 - Managed via `settings.RETENTION_DAYS` (default: 30 days, configured in `DeploymentSettings`)
 - `_cleanup_expired_uploads()` runs at startup and every 24 hours via `_periodic_file_cleanup()`
 - Files older than `RETENTION_DAYS` are removed based on `st_mtime`
@@ -146,7 +149,7 @@ ScholarForm AI uses Supabase Storage (S3-compatible) for user-uploaded manuscrip
 ScholarForm AI uses ChromaDB with a dual-backend design for the formatting-guideline vector store.
 
 | Property | Specification |
-|----------|--------------|
+| ---------- | -------------- |
 | **Location** | `backend/db/semantic_store/` |
 | **Primary Store** | `chroma.sqlite3` + segment binary files (`*.bin`) |
 | **Portable Snapshot** | `kb.json` — human-readable, self-contained, cross-version portable |
@@ -154,6 +157,7 @@ ScholarForm AI uses ChromaDB with a dual-backend design for the formatting-guide
 | **Auto-Seed Source** | `backend/app/pipeline/intelligence/default_guidelines.json` |
 
 **Directory layout:**
+
 ```
 backend/db/semantic_store/
   ├── chroma.sqlite3          # ChromaDB SQLite metadata + index catalog
@@ -166,6 +170,7 @@ backend/db/semantic_store/
 ```
 
 **Why dual storage:**
+
 - **ChromaDB** provides fast cosine-similarity retrieval with metadata filtering.
 - **`kb.json`** is a portable, human-readable snapshot that can be used to rebuild ChromaDB on a different host, ChromaDB version, or embedding model.
 - The native `kb.json` fallback requires only NumPy (stdlib dot-product) — no ChromaDB dependency for recovery.
@@ -175,7 +180,7 @@ backend/db/semantic_store/
 ### 4. Configuration & Secrets
 
 | Component | Location | Backup Method | Encryption |
-|-----------|----------|--------------|------------|
+| ----------- | ---------- | -------------- | ------------ |
 | `.env` file | `backend/.env` | GPG-encrypted backup + Render env vars | AES-256 (GPG) |
 | `ENCRYPTION_KEY` | Render env vars + local .env | Stored in 1Password/LastPass vault | Vault-managed |
 | Render env vars | Render Dashboard | Manual export + encrypted archive | Per-policy encryption |
@@ -184,11 +189,13 @@ backend/db/semantic_store/
 
 **Encryption key criticality:**
 The `ENCRYPTION_KEY` (Fernet symmetric key) is used to encrypt user-provided API keys at rest in the `user_api_keys` table. If lost:
+
 - Existing encrypted API keys **cannot be decrypted**.
 - Users must re-enter their API keys.
 - On startup, `_validate_startup()` logs a critical warning and raises `RuntimeError` in production if `ENCRYPTION_KEY` is unset.
 
 **Backup command:**
+
 ```bash
 # Encrypt .env with GPG
 gpg --symmetric --cipher-algo AES256 backend/.env
@@ -198,13 +205,14 @@ gpg --symmetric --cipher-algo AES256 backend/.env
 ### 5. Redis (Ephemeral)
 
 | Property | Specification |
-|----------|--------------|
+| ---------- | -------------- |
 | **Use** | Caching, rate limiting, Celery broker, queue depth |
 | **Persistence** | AOF (Append-Only File) with fsync every second |
 | **Backup** | Not backed up — data is rebuildable |
 | **RTO** | < 5 minutes (restart or rebuild) |
 
 **Recovery on data loss:**
+
 1. Rate-limit counters reset (acceptable — max throughput temporarily higher).
 2. Cache entries recompute naturally as requests arrive.
 3. Celery task queue: interrupted tasks are marked FAILED on restart via `_reset_interrupted_jobs_on_startup()`.
@@ -213,7 +221,7 @@ gpg --symmetric --cipher-algo AES256 backend/.env
 ### 6. Code Repository
 
 | Property | Specification |
-|----------|--------------|
+| ---------- | -------------- |
 | **Host** | GitHub (`scholarform/automated-manuscript-formatter`) |
 | **Backup** | Every commit — permanent history |
 | **Recovery** | `git clone`, `git checkout <tag>` |
@@ -222,6 +230,7 @@ gpg --symmetric --cipher-algo AES256 backend/.env
 ### 7. Alembic Migrations
 
 Schema migrations are stored as Python scripts under `backend/alembic/versions/`. They serve as a recoverable record of every schema change:
+
 - **On PITR restore:** The restored snapshot already contains the schema and migration state — no migration replay needed.
 - **On blank-database restore:** Run `alembic upgrade head` to replay all migrations from scratch.
 - **Schema drift detection:** Run `python scripts/verify_migration.py` to compare the live schema against SQLAlchemy model definitions.
@@ -231,7 +240,7 @@ Schema migrations are stored as Python scripts under `backend/alembic/versions/`
 ## Backup Schedule
 
 | Component | Method | Frequency | Automation |
-|-----------|--------|-----------|------------|
+| ----------- | -------- | ----------- | ------------ |
 | PostgreSQL WAL archiving | Continuous streaming | Every transaction | Automatic (Supabase managed) |
 | PostgreSQL daily snapshot | `pg_dump` custom format | Daily at 02:00 UTC | Automatic (Supabase managed) |
 | PostgreSQL logical backup | `pg_dump` | Weekly (Sunday 03:00 UTC) | Cron job (`scripts/backup_db.sh`) |
@@ -248,7 +257,7 @@ Schema migrations are stored as Python scripts under `backend/alembic/versions/`
 **Cron schedule summary:**
 
 | Time (UTC) | Day | Task |
-|------------|-----|------|
+| ------------ | ----- | ------ |
 | 02:00 | Daily | PostgreSQL daily snapshot (Supabase managed) |
 | 03:00 | Sunday | Manual `pg_dump` cold backup |
 | 04:00 | Sunday | `scripts/verify_backup.py` |
@@ -261,7 +270,7 @@ Schema migrations are stored as Python scripts under `backend/alembic/versions/`
 ## Retention Policy
 
 | Data Category | Backup Type | Daily (7 days) | Weekly (4 weeks) | Monthly (12 months) | Annual |
-|--------------|------------|----------------|------------------|--------------------|--------|
+| -------------- | ------------ | ---------------- | ------------------ | -------------------- | -------- |
 | PostgreSQL (WAL) | Continuous | Available for PITR | Available for PITR | Available for PITR | — |
 | PostgreSQL (snapshot) | Full dump | Retention window | Kept (weekly) | Kept (monthly) | — |
 | File uploads | S3 versioning | 30-day window | — | — | 365-day permanent deletion |
@@ -274,6 +283,7 @@ Schema migrations are stored as Python scripts under `backend/alembic/versions/`
 | Code (Git) | GitHub | Per commit | — | — | Permanent |
 
 **File system retention details:**
+
 - Controlled by `RETENTION_DAYS` (default: 30) in `DeploymentSettings` (`backend/app/config/settings.py:394`).
 - Files in `uploads/` directory with `st_mtime` older than `RETENTION_DAYS * 86400` seconds are removed.
 - Cleanup runs at application startup and every 24 hours via `_periodic_file_cleanup()` asyncio task.
@@ -281,6 +291,7 @@ Schema migrations are stored as Python scripts under `backend/alembic/versions/`
 - **Note:** The periodic task is currently commented out in `backend/app/main.py:504`. Only the startup-time cleanup runs when `ENABLE_FILE_CLEANUP=true`.
 
 **S3 lifecycle rules:**
+
 ```
 uploads/ bucket:
   Current versions: 30 days Standard → Glacier → delete after 365 days
@@ -300,6 +311,7 @@ output/ bucket:
 **When to use:** Recover to a specific timestamp before data corruption, accidental deletion, or a bad migration.
 
 **Prerequisites:**
+
 - Supabase Pro or Team plan (PITR feature)
 - Supabase Dashboard access with Owner/Admin role
 - Retention window within the last 7 days (Supabase default)
@@ -307,6 +319,7 @@ output/ bucket:
 **Procedure:**
 
 1. **Assess the damage:**
+
    ```bash
    # Check current database health
    python backend/scripts/verify_backup.py
@@ -327,6 +340,7 @@ output/ bucket:
    - **Expected duration:** 5–15 minutes (dependent on database size and WAL volume)
 
 4. **Verify recovery:**
+
    ```bash
    python backend/scripts/verify_backup.py
    python backend/scripts/verify_migration.py
@@ -335,11 +349,13 @@ output/ bucket:
 5. **Restart backend services:**
    - Deployment automatically picks up the restored database after connection pool resets.
    - If the backend was connected during restore, force a restart:
+
      ```bash
      render restart --service scholarform-backend
      ```
 
 6. **Validate application state:**
+
    ```bash
    # Check health endpoints
    curl https://api.scholarform.ai/api/v1/health/live
@@ -362,6 +378,7 @@ output/ bucket:
    - Or via CLI: `supabase db dump --project-ref YOUR_PROJECT_REF -f latest_snapshot.sql`
 
 2. **Restore to target database:**
+
    ```bash
    # If restoring to a new Supabase project:
    psql "$SUPABASE_DB_URL" -f latest_snapshot.sql
@@ -371,6 +388,7 @@ output/ bucket:
    ```
 
 3. **Run migration verification:**
+
    ```bash
    python backend/scripts/verify_migration.py
    # If schema drift is detected:
@@ -378,6 +396,7 @@ output/ bucket:
    ```
 
 4. **Verify data integrity:**
+
    ```bash
    python backend/scripts/verify_backup.py
    # Check critical tables have expected row counts
@@ -401,6 +420,7 @@ output/ bucket:
    - Update `SUPABASE_URL` and `SUPABASE_DB_URL` in Render env vars to point to the new primary.
 
 3. **Deploy backend to secondary region:**
+
    ```bash
    render deploy --service scholarform-backend-secondary
    ```
@@ -410,6 +430,7 @@ output/ bucket:
    - DNS propagation may take 5–30 minutes (TTL-dependent).
 
 5. **Verify all services:**
+
    ```bash
    curl https://api.scholarform.ai/api/v1/health/live
    curl https://api.scholarform.ai/api/v1/health/ready
@@ -429,17 +450,20 @@ output/ bucket:
 **Procedure:**
 
 1. **Verify the kb.json exists and is valid:**
+
    ```bash
    # kb.json should exist at backend/db/semantic_store/kb.json
    python -c "import json; data=json.load(open('backend/db/semantic_store/kb.json')); print(f'{len(data)} guidelines loaded')"
    ```
 
 2. **Delete the ChromaDB store (optional, for full rebuild):**
+
    ```bash
    rm -rf backend/db/semantic_store/chroma.sqlite3 backend/db/semantic_store/*/
    ```
 
 3. **Rebuild ChromaDB from kb.json:**
+
    ```python
    # Run via Python or in a one-off script:
    from app.pipeline.intelligence.rag_engine import get_rag_engine
@@ -463,12 +487,14 @@ output/ bucket:
    ```
 
 4. **Alternative: Full re-ingest from contract YAML files:**
+
    ```bash
    cd backend
    python scripts/ingest_guidelines.py
    ```
 
 5. **Verify the rebuild:**
+
    ```python
    result = rag.query_guidelines("IEEE", "abstract formatting", top_k=3)
    print(f"Query returned {len(result)} results")
@@ -488,6 +514,7 @@ output/ bucket:
    - Or via API: `supabase storage cp --project-ref YOUR_PROJECT_REF s3://bucket/path/deleted-version-id s3://bucket/path/`
 
 2. **Bulk download (alternative):**
+
    ```bash
    supabase storage download --project-ref YOUR_PROJECT_REF --recursive / uploads_restore/
    ```
@@ -499,6 +526,7 @@ output/ bucket:
    - If the cleanup has already removed the file, recover from Supabase Storage.
 
 2. **Restore from Supabase Storage to local:**
+
    ```bash
    supabase storage download --project-ref YOUR_PROJECT_REF uploads/path/to/file ./uploads/
    ```
@@ -508,6 +536,7 @@ output/ bucket:
 **When to use:** `.env` file is lost, corrupted, or needs to be restored on a new deployment.
 
 1. **Recover from GPG-encrypted backup:**
+
    ```bash
    gpg --decrypt backend/.env.gpg > backend/.env
    ```
@@ -516,20 +545,24 @@ output/ bucket:
    - Render Dashboard → scholarform-backend → Environment
    - Copy all environment variables manually
    - Alternatively, use the Render API:
+
      ```bash
      render env list --service scholarform-backend --format json > .env
      ```
 
 3. **Generate a fresh .env from template:**
+
    ```bash
    python scripts/generate_env_template.py
    # Then populate from vault/1Password
    ```
 
 4. **Regenerate ENCRYPTION_KEY (last resort):**
+
    ```bash
    python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
    ```
+
    **Warning:** This invalidates all encrypted user API keys. Users must re-enter their keys.
 
 ---
@@ -543,6 +576,7 @@ output/ bucket:
 **Purpose:** Validates database connectivity, table integrity, and schema state for backup assurance.
 
 **Checks performed:**
+
 1. Database connection via `SUPABASE_DB_URL`
 2. Current timestamp retrieval (`SELECT NOW()`)
 3. Public table count (`information_schema.tables`)
@@ -550,6 +584,7 @@ output/ bucket:
 5. Presence of critical tables: `documents`, `profiles`, `user_api_keys`, `api_key_usage_log`
 
 **Usage:**
+
 ```bash
 cd backend
 python scripts/verify_backup.py
@@ -573,11 +608,13 @@ python scripts/verify_backup.py
 **Purpose:** Validates that the live database schema matches the SQLAlchemy model definitions. Detects drift before it becomes a restore issue.
 
 **Checks performed:**
+
 1. Compares model table set vs. database table set
 2. Compares column sets for each table (detects missing or extra columns)
 3. Ignores `alembic_version` table (expected to be present only in DB, not models)
 
 **Usage:**
+
 ```bash
 cd backend
 python scripts/verify_migration.py          # Pass/fail check
@@ -587,7 +624,7 @@ python scripts/verify_migration.py --diff    # Show detailed column differences
 ### Restore Drills Schedule
 
 | Frequency | Drill Type | Scope | Owner | Validation |
-|-----------|-----------|-------|-------|------------|
+| ----------- | ----------- | ------- | ------- | ------------ |
 | **Monthly** | Automated backup verification | DB connectivity, table integrity | DevOps | `verify_backup.py` exit code 0 |
 | **Quarterly** | PITR restore drill | Restore from 6-hour-old snapshot to staging | Engineering Lead | Verify data consistency, run smoke tests |
 | **Semi-annual** | Full DR walkthrough | Region failover, ChromaDB rebuild, config restore | Engineering Lead + DevOps | All recovery procedures tested end-to-end |
@@ -595,6 +632,7 @@ python scripts/verify_migration.py --diff    # Show detailed column differences
 
 **Drill documentation:**
 Each drill produces a report documenting:
+
 - Timestamp and duration of the drill
 - Deviations from the documented procedure
 - Actual RTO/RPO achieved vs. targets
@@ -603,7 +641,7 @@ Each drill produces a report documenting:
 ### Backup Monitoring
 
 | Metric | Source | Alert Threshold | Notification |
-|--------|--------|----------------|--------------|
+| -------- | -------- | ---------------- | -------------- |
 | Backup age | Supabase Dashboard | > 24 hours since last snapshot | PagerDuty (warning) |
 | WAL archiving lag | Supabase Dashboard | > 5 minutes | PagerDuty (critical) |
 | `verify_backup.py` failure | CI/CD cron | Non-zero exit | Slack #ops-alerts |
@@ -621,6 +659,7 @@ Each drill produces a report documenting:
 **Trigger:** Application bug writing malformed data, hardware fault at Supabase, physical corruption in PostgreSQL pages.
 
 **Symptoms:**
+
 - `verify_backup.py` reports query failures
 - Application returns 500 errors on data-read endpoints
 - PostgreSQL logs show `WARNING: page verification failed` or `ERROR: invalid page in block`
@@ -628,7 +667,7 @@ Each drill produces a report documenting:
 **Recovery procedure:**
 
 | Step | Action | Time Estimate |
-|------|--------|---------------|
+| ------ | -------- | --------------- |
 | 1 | Isolate corruption scope (identify affected tables/rows) | 10 minutes |
 | 2 | Determine safe restore timestamp (before corruption) | 5 minutes |
 | 3 | Initiate PITR restore to safe timestamp | 15 minutes |
@@ -645,6 +684,7 @@ Each drill produces a report documenting:
 **Trigger:** AWS/Azure/GCP region failure affecting Supabase or Render.
 
 **Symptoms:**
+
 - All services unreachable from primary region
 - Supabase Dashboard returns region-level errors
 - Render services show `DOWN` in primary region
@@ -652,7 +692,7 @@ Each drill produces a report documenting:
 **Recovery procedure:**
 
 | Step | Action | Time Estimate |
-|------|--------|---------------|
+| ------ | -------- | --------------- |
 | 1 | Confirm region outage (check status pages) | 5 minutes |
 | 2 | Activate secondary region DR plan | 10 minutes |
 | 3 | Promote cross-region read replica (if configured) | 15 minutes |
@@ -669,13 +709,14 @@ Each drill produces a report documenting:
 **Trigger:** User deletes documents, admin runs destructive query, API misuse.
 
 **Symptoms:**
+
 - User reports missing documents or profiles
 - Audit log shows `DELETE` operations from unexpected source
 
 **Recovery procedure:**
 
 | Step | Action | Time Estimate |
-|------|--------|---------------|
+| ------ | -------- | --------------- |
 | 1 | Identify deletion timestamp from audit logs | 5 minutes |
 | 2 | Determine if soft-delete data exists in trash | 5 minutes |
 | 3 | If not recoverable via application, initiate PITR | 15 minutes |
@@ -690,6 +731,7 @@ Each drill produces a report documenting:
 **Trigger:** Compromised credentials, insider threat, supply chain attack.
 
 **Symptoms:**
+
 - Unauthorized data access detected by monitoring
 - Files encrypted or deleted
 - Suspicious API key usage
@@ -697,7 +739,7 @@ Each drill produces a report documenting:
 **Recovery procedure:**
 
 | Step | Action | Time Estimate |
-|------|--------|---------------|
+| ------ | -------- | --------------- |
 | 1 | **Isolate** — immediately revoke compromised credentials | 5 minutes |
 | 2 | **Contain** — enable maintenance mode, block all non-critical traffic | 5 minutes |
 | 3 | **Assess** — identify scope of impacted data from audit logs | 15 minutes |
@@ -714,6 +756,7 @@ Each drill produces a report documenting:
 **Trigger:** `.env` file deletion, Render env var corruption, vault service outage.
 
 **Symptoms:**
+
 - Backend fails to start with `ENCRYPTION_KEY is not set` critical error
 - Missing API keys cause LLM fallback tiers to be unavailable
 - CORS misconfiguration blocks frontend requests
@@ -721,7 +764,7 @@ Each drill produces a report documenting:
 **Recovery procedure:**
 
 | Step | Action | Time Estimate |
-|------|--------|---------------|
+| ------ | -------- | --------------- |
 | 1 | Restore `.env` from GPG-encrypted backup | 5 minutes |
 | 2 | If encrypted backup unavailable, restore from Render Dashboard export | 10 minutes |
 | 3 | Regenerate `ENCRYPTION_KEY` only as last resort (invalidates user API keys) | 5 minutes |
@@ -735,6 +778,7 @@ Each drill produces a report documenting:
 **Trigger:** Disk failure on persist directory, accidental deletion of `db/semantic_store/`, ChromaDB version incompatibility after upgrade.
 
 **Symptoms:**
+
 - RAG queries return empty results
 - Application logs show `WARNING: ChromaDB query failed, falling back to native store`
 - If `kb.json` also missing: `WARNING: RAG engine returning empty results`
@@ -742,7 +786,7 @@ Each drill produces a report documenting:
 **Recovery procedure:**
 
 | Step | Action | Time Estimate |
-|------|--------|---------------|
+| ------ | -------- | --------------- |
 | 1 | Check if `kb.json` exists | 1 minute |
 | 2 | If `kb.json` exists, rebuild ChromaDB (see [ChromaDB Rebuild](#chromadb-rebuild-from-kbjson)) | 5 minutes |
 | 3 | If `kb.json` is also lost, re-run `ingest_guidelines.py` | 10 minutes |
@@ -756,6 +800,7 @@ Each drill produces a report documenting:
 **Trigger:** S3 bucket accidental deletion, misconfigured lifecycle policy, local disk failure (self-hosted).
 
 **Symptoms:**
+
 - Missing user uploads
 - Generated output files unavailable for download
 - `FileNotFoundError` in application logs
@@ -763,7 +808,7 @@ Each drill produces a report documenting:
 **Recovery procedure:**
 
 | Step | Action | Time Estimate |
-|------|--------|---------------|
+| ------ | -------- | --------------- |
 | 1 | Check S3 versioning — deleted objects may still exist as prior versions | 5 minutes |
 | 2 | Restore from S3 versioning via Supabase Storage Dashboard | 15 minutes |
 | 3 | If versioning was not enabled, restore from cross-region replication target | 30 minutes |
@@ -777,7 +822,7 @@ Each drill produces a report documenting:
 ### RTO/RPO Summary
 
 | Component | RTO Target | RPO Target | Achieved | Measurement |
-|-----------|-----------|-----------|----------|-------------|
+| ----------- | ----------- | ----------- | ---------- | ------------- |
 | PostgreSQL (PITR) | < 30 min | < 5 min | < 15 min | Drill timing |
 | PostgreSQL (snapshot) | < 45 min | < 24 h | < 30 min | Drill timing |
 | File storage (S3 versioning) | < 30 min | < 5 min | < 15 min | Restore test |
@@ -788,7 +833,7 @@ Each drill produces a report documenting:
 ### Backup Coverage
 
 | Metric | Target | Current | Measurement |
-|--------|--------|---------|-------------|
+| -------- | -------- | --------- | ------------- |
 | Backup success rate | 99.9% | 100% | `verify_backup.py` success rate |
 | Migration sync rate | 100% | 100% | `verify_migration.py` pass rate |
 | PITR availability | 99.95% | 99.99% | Supabase SLA |
@@ -839,6 +884,7 @@ Validates database availability and table integrity. Intended for CI/CD cron tri
 Validates SQLAlchemy schema vs. live database. Detects drift before it causes restore errors.
 
 **Flags:**
+
 - `--diff`: Show detailed column-level differences (default: pass/fail only)
 
 **Exit codes:** `0` = in sync, `1` = drift detected.
@@ -880,7 +926,7 @@ python scripts/run_backup_drills.py --drill pitr
 ```
 
 | Drill | Script | Frequency | Validates | Pass Criteria |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | DB connectivity | `verify_backup.py` | Weekly | DB reachable, critical tables exist | Exit code 0 |
 | Schema integrity | `verify_migration.py` | Weekly | SQLAlchemy models match live schema | Exit code 0 |
 | PITR restore | Manual drill | Quarterly | Staging DB restored to 6h-old snapshot | All smoke tests pass on restored DB |
@@ -987,7 +1033,7 @@ def test_migration_verification_detects_drift(monkeypatch):
 ### API Reference — Recovery Status Endpoints
 
 | Endpoint | Method | Purpose | Recovery Use |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `GET /health` | GET | Liveness check | Verify backend is running post-recovery |
 | `GET /ready` | GET | Readiness with dependency status | Verify DB, GROBID, Redis all healthy |
 | `GET /api/v1/health/live` | GET | Liveness probe | Automation-friendly health check |

@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Maintainers
 description: Maintainer roles, responsibilities, and processes
 sidebar_position: 1
@@ -18,7 +18,7 @@ last_updated: July 2026
 ## Core Team
 
 | Role | Name | Area | GitHub | Contact |
-|------|------|------|--------|---------|
+| ------ | ------ | ------ | -------- | --------- |
 | **Project Lead (BDFL)** | Rohit Kumar Naidu | Overall direction, architecture, releases | [@rohitkumarnaidu](https://github.com/rohitkumarnaidu) | rohit@scholarform.ai |
 | **Backend Lead** | _(open)_ | API design, pipeline, AI/ML services, database | — | — |
 | **Frontend Lead** | _(open)_ | Next.js app, component library, design system | — | — |
@@ -44,6 +44,7 @@ Past maintainers who have stepped down but remain involved as advisors.
 ## Role Responsibilities
 
 ### Project Lead
+
 - Define product vision and roadmap
 - Make final decisions on architecture, features, and releases
 - Maintain project governance and CODEOWNERS
@@ -51,6 +52,7 @@ Past maintainers who have stepped down but remain involved as advisors.
 - Resolve escalated conflicts
 
 ### Backend Lead
+
 - Maintain and evolve API design (v1, v2, future versions)
 - Oversee pipeline architecture (parsing, formatting, AI stages)
 - Review all backend PRs within 48 hours
@@ -58,6 +60,7 @@ Past maintainers who have stepped down but remain involved as advisors.
 - Ensure test coverage stays above 70%
 
 ### Frontend Lead
+
 - Maintain Next.js App Router architecture
 - Oversee component library and design system
 - Review all frontend PRs within 48 hours
@@ -65,6 +68,7 @@ Past maintainers who have stepped down but remain involved as advisors.
 - Manage frontend performance budgets
 
 ### DevOps Lead
+
 - Maintain CI/CD pipelines (25+ GitHub Actions workflows)
 - Manage Render, Vercel, and Supabase deployments
 - Monitor production health and uptime
@@ -72,6 +76,7 @@ Past maintainers who have stepped down but remain involved as advisors.
 - Conduct postmortems and incident reviews
 
 ### AI/ML Engineer
+
 - Maintain LLM provider integration (10 providers)
 - Optimize RAG pipeline (ChromaDB, embedding models)
 - Tune prompts, temperature, and fallback strategies
@@ -79,6 +84,7 @@ Past maintainers who have stepped down but remain involved as advisors.
 - Evaluate model quality and accuracy metrics
 
 ### Security Engineer
+
 - Maintain authentication and authorization systems
 - Manage encryption, key rotation, and secrets
 - Conduct regular security audits and pen tests
@@ -86,6 +92,7 @@ Past maintainers who have stepped down but remain involved as advisors.
 - Respond to vulnerability disclosures
 
 ### Docs Lead
+
 - Maintain all project documentation (docs/ directory)
 - Write and update tutorials, guides, and API reference
 - Ensure documentation accuracy and completeness
@@ -124,7 +131,7 @@ Past maintainers who have stepped down but remain involved as advisors.
 Maintainers are assigned to review rotations weekly:
 
 | Week | Backend Reviewer | Frontend Reviewer | Docs Reviewer |
-|------|------------------|-------------------|---------------|
+| ------ | ------------------ | ------------------- | --------------- |
 | 1 | Backend Lead | Frontend Lead | Docs Lead |
 | 2 | Backend Lead | _(open)_ | _(open)_ |
 | 3 | _(open)_ | Frontend Lead | Docs Lead |
@@ -138,7 +145,7 @@ Maintainers are assigned to review rotations weekly:
 ## Contact Channels
 
 | Channel | Purpose | Access |
-|---------|---------|--------|
+| --------- | --------- | -------- |
 | **GitHub Issues** | Bug reports, feature requests, questions | [github.com/rohitkumarnaidu/ScholarFormAI/issues](https://github.com/rohitkumarnaidu/ScholarFormAI/issues) |
 | **GitHub Discussions** | General discussion, Q&A, ideas | [github.com/rohitkumarnaidu/ScholarFormAI/discussions](https://github.com/rohitkumarnaidu/ScholarFormAI/discussions) |
 | **Discord** | Real-time chat, maintainer coordination | Invite-only for maintainers; public channel for contributors |
@@ -156,7 +163,7 @@ Issue filed → Triaged (72h) → Assigned to area lead →
 ## Related Documents
 
 | Document | Description |
-|----------|-------------|
+| ---------- | ------------- |
 | [GOVERNANCE.md](../GOVERNANCE.md) | Full governance model and voting procedures |
 | [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) | Community guidelines |
 | [CONTRIBUTING.md](../CONTRIBUTING.md) | Contribution guidelines |

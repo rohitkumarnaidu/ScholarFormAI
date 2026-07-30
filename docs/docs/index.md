@@ -47,7 +47,7 @@ AMF automates the tedious process of formatting academic manuscripts according t
 ## Supported Styles
 
 | Style | Version | Discipline |
-|-------|---------|------------|
+| ------- | --------- | ------------ |
 | APA | 7th Edition | Social Sciences, Psychology |
 | MLA | 9th Edition | Humanities, Literature |
 | Chicago | 17th Edition | History, Arts |

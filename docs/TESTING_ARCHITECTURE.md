@@ -14,7 +14,7 @@
 ScholarForm AI employs a **multi-layered, enterprise-grade testing strategy**:
 
 | Layer | Tool | Scope | Count |
-|-------|------|-------|-------|
+| ------- | ------ | ------- | ------- |
 | Unit | pytest + Vitest | Individual functions, components, pure logic | Majority |
 | Integration | pytest (marker-gated) | Service interactions, DB, external APIs | ~2,163 gap + router |
 | Pipeline | pytest (enterprise batches) | End-to-end formatting pipeline | 5,159 non-gap |
@@ -44,6 +44,7 @@ ScholarForm AI employs a **multi-layered, enterprise-grade testing strategy**:
 ### 2.1 Configuration
 
 **`backend/pytest.ini`:**
+
 ```ini
 [pytest]
 testpaths = tests
@@ -57,6 +58,7 @@ addopts = -v --tb=short -p no:langsmith_plugin --timeout=120
 - **`norecursedirs`** — skips `tests/scripts`, `tests/manual`, `manual_tests`
 
 **`backend/pyproject.toml` (test sections):**
+
 ```toml
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -70,7 +72,7 @@ markers = [
 ### 2.2 Custom Pytest Markers (16 total)
 
 | Marker | Purpose | CI Behavior |
-|--------|---------|-------------|
+| -------- | --------- | ------------- |
 | `integration` | External service (Redis, GROBID) | Skipped if services unreachable |
 | `llm` | Live LLM calls (NVIDIA, Ollama) | Skipped in CI |
 | `slow` | Long-running tests | Skipped in CI |
@@ -90,6 +92,7 @@ markers = [
 | `property` | Property-based (Hypothesis) | Run in CI |
 
 **Usage:**
+
 ```bash
 # Fast subset (CI default)
 pytest tests -m "not integration and not llm and not slow" -x -q
@@ -102,7 +105,7 @@ pytest tests -m "chaos" -v
 ### 2.3 Conftest Layers (4-layer architecture)
 
 | Layer | File | Scope | Key Responsibilities |
-|-------|------|-------|---------------------|
+| ------- | ------ | ------- | --------------------- |
 | **Root** | `backend/conftest.py` | Global | Patches `coverage.Coverage.start` to handle `pydantic.root_model KeyError` |
 | **Tests** | `backend/tests/conftest.py` | All tests | `mock_redis` (autouse), `reset_rate_limit_state`, `reset_health_check_caches`, `skip_integration_when_services_unavailable`, `minimal_doc`, `full_doc`, OpenAI sys.modules pre-patch, `_integration_service_status` |
 | **Pipeline** | `backend/tests/pipeline/conftest.py` | Pipeline tests | Overrides `mock_redis` with `patch.dict("sys.modules")`, `_patch_redis` (autouse), `b`/`sb` fixtures, imports `make_block`, `make_doc`, `make_sb` from `tests.helpers` |
@@ -116,6 +119,7 @@ Patches `coverage.Coverage.start` at load time to suppress `KeyError: 'pydantic.
 #### Tests conftest (`backend/tests/conftest.py`)
 
 **Environment setup:**
+
 - Sets `TESTING=1` before any app imports (short-circuits lifespan connections to Redis, GROBID, Sentry)
 - Pre-patches `sys.modules["openai"]` with a `MagicMock` ModuleType (prevents OpenAI SDK import chain hangs with `--cov`)
 - Adds `backend/` to `sys.path` and `chdir`s to `BACKEND_ROOT`
@@ -155,12 +159,14 @@ def reset_health_check_caches():
 | `full_doc` | Extends `minimal_doc` with keywords, affiliations, 1 reference, reference_entry block |
 
 **Service reachability helpers:**
+
 - `_service_reachable(host, port, timeout=0.5)` — TCP socket check
 - `_http_service_reachable(url, timeout=2.5)` — HTTP GET 200 check
 - `_integration_service_status()` — returns list of missing services (Redis, GROBID)
 - `skip_integration_when_services_unavailable` — autouse fixture, skips `@pytest.mark.integration` tests when services are down
 
 **Middleware stack helpers:**
+
 - `_walk_middleware_chain(root)` — walks Starlette's nested `.app` chain
 - `_reset_slowapi_storage(app)` — best-effort reset for SlowAPI in-memory counters
 
@@ -206,6 +212,7 @@ def make_sb() -> MagicMock:
 ### 2.5 Coverage Configuration
 
 **`backend/.coveragerc`:**
+
 ```ini
 [run]
 branch = True
@@ -222,6 +229,7 @@ precision = 2
 **Known issue:** `pytest --cov` produces `KeyError: 'pydantic.root_model'` during import tracing on pydantic >= 2.13.x. Tests pass cleanly without `--cov`. CI has separate coverage measurement pipeline.
 
 **Workaround in root conftest:**
+
 ```python
 def pytest_load_initial_conftests(early_config, parser):
     _orig_start = coverage.Coverage.start
@@ -235,6 +243,7 @@ def pytest_load_initial_conftests(early_config, parser):
 ```
 
 **Coverage thresholds (CI):**
+
 - Backend: 90% (blocking in CI, informational locally)
 - Frontend: 70% statements, 60% branches, 65% functions, 70% lines
 
@@ -269,6 +278,7 @@ export default defineConfig({
 ```
 
 **Setup file (`frontend/src/test/setup.js`):**
+
 ```javascript
 import '@testing-library/jest-dom/vitest'
 import { toHaveNoViolations } from 'jest-axe';
@@ -278,6 +288,7 @@ expect.extend(toHaveNoViolations);
 Extends `expect` with `jest-dom` matchers + `jest-axe` accessibility assertion helpers.
 
 **Key frontend testing conventions:**
+
 - `vi.mock()` with relative paths from `src/test/` for consistency
 - `await import(...)` for dynamic mock access (not `vi.mocked(require(...))`)
 - `next/dynamic` mock must render children via `default: () => ({children}) => <>{children}</>`
@@ -433,11 +444,13 @@ frontend/
 ### 5.2 `sys.modules` Contamination Protocol
 
 Any test file that injects mocks into `sys.modules` MUST:
+
 - Save originals before injection
 - Restore them after (preferably via `atexit.register`)
 - Use `sys.modules.pop()` not `sys.modules[key] = MagicMock()` for cleanup
 
 **Known contamination sources (now fixed):**
+
 - `test_document_generator.py` — autouse fixture replaced real module with `MagicMock()` in `sys.modules`
 - `test_reference_formatter_deep.py` — module-level `sys.modules["citeproc"] = MagicMock()` leaked permanently
 - `test_table_extractor.py` — injected `torch`/`PIL`/`transformers` MagicMock without restore
@@ -445,7 +458,7 @@ Any test file that injects mocks into `sys.modules` MUST:
 ### 5.3 Mock Patterns by Dependency
 
 | Dependency | Mock Strategy | Notes |
-|-----------|--------------|-------|
+| ----------- | -------------- | ------- |
 | `redis.Redis` | `patch.dict("sys.modules", {"redis": mock_mod})` | Pipeline conftest uses `patch.dict` to preserve `isinstance` |
 | `openai` | `sys.modules["openai"] = ModuleType("openai")` | Root conftest pre-patches at load time |
 | Supabase | `mock_sb.table().select().eq().execute().data` | `make_sb()` helper with full chain |
@@ -482,7 +495,7 @@ model_copy = lambda **kw: MagicMock(text=kw.get("update", {}).get("text", "fallb
 **10 golden file pairs** for regression testing, located at `backend/tests/golden_files/`:
 
 | Input (Markdown) | Golden (JSON) | Document Type |
-|-----------------|---------------|---------------|
+| ----------------- | --------------- | --------------- |
 | `apa.md` | `apa.json` | APA-style academic paper |
 | `ieee.md` | `ieee.json` | IEEE conference paper |
 | `acm.md` | `acm.json` | ACM journal article |
@@ -503,7 +516,7 @@ Each pair tests: title parsing, author extraction, section detection, citation f
 ### 7.1 Security Tests (~490+)
 
 | Category | Tests | Coverage |
-|----------|-------|----------|
+| ---------- | ------- | ---------- |
 | OWASP Top 10 | ~177 | SQLi, CSRF, SSRF, XSS, RBAC, security headers |
 | OWASP AI Top 10 (LLM01-LLM10) | 106 | Prompt injection, insecure output, data poisoning, DoS, supply chain, info disclosure, plugin design, excessive agency, overreliance, model theft |
 | SSRF protection | 15 | RFC 1918 ranges, loopback, link-local, URL validation |
@@ -516,7 +529,7 @@ Each pair tests: title parsing, author extraction, section detection, citation f
 ### 7.2 AI Quality Tests (~405+)
 
 | Dimension | Tests | Method |
-|-----------|-------|--------|
+| ----------- | ------- | -------- |
 | LLM Judge / AI-as-judge | 20 | Rubric adherence, scoring consistency, inter-rater reliability |
 | Semantic groundedness | 18 | Embedding-based cosine similarity (upgraded from keyword-Jaccard) |
 | Bias/fairness | 25 | Demographic parity, stereotype detection, intersectional bias |
@@ -529,7 +542,7 @@ Each pair tests: title parsing, author extraction, section detection, citation f
 ### 7.3 Chaos Engineering (74 tests)
 
 | Category | Tests | Details |
-|----------|-------|---------|
+| ---------- | ------- | --------- |
 | Failure scenarios | 18 | Supabase down, Redis unreachable, AI outage, Celery crash, network spike, DNS fail, TLS expiry, disk full, OOM, pool exhaustion, multi-service, etc. |
 | Circuit breaker | 12 | Closed→Open→Half-open→Closed transitions, isolation, bulkhead |
 | Degraded mode | 18 | Feature flags, local fallback, offline, read-only, stale cache |
@@ -541,7 +554,7 @@ Each pair tests: title parsing, author extraction, section detection, citation f
 ### 7.4 Performance Benchmarks (28 tests)
 
 | Benchmark | Target | Tests |
-|-----------|--------|-------|
+| ----------- | -------- | ------- |
 | API p50 response | <200ms formatting, <500ms AI | 4 |
 | API p95 response | <500ms formatting, <2s AI | 4 |
 | Pipeline throughput | 10+ docs/minute | 3 |
@@ -553,6 +566,7 @@ Each pair tests: title parsing, author extraction, section detection, citation f
 ### 7.5 Mutation Tests (15 tests)
 
 Key services tested with code mutations (removing validation, hashing, auth checks):
+
 - AuthService: password hashing, user existence, token validation, email check
 - DocumentService: ownership, rate limit, size limit, format validation
 - LLMService: API key, model validation, fallback chain, prompt guard
@@ -560,6 +574,7 @@ Key services tested with code mutations (removing validation, hashing, auth chec
 ### 7.6 Property-Based Tests (40 tests)
 
 Using Hypothesis strategies:
+
 - Schema round-trip serialization
 - Pagination bounds and ordering
 - Document metadata validation
@@ -578,6 +593,7 @@ Using Hypothesis strategies:
 ```
 
 **Backend CI (9 jobs):**
+
 1. **ruff lint** — E9,F63,F7,F82 only (blocking)
 2. **mypy type-check** — `--continue-on-error` (non-blocking)
 3. **pytest (unit + pipeline)** — `-m "not integration and not slow"` (blocking)
@@ -595,6 +611,7 @@ Using Hypothesis strategies:
 ```
 
 **Frontend CI (7 steps):**
+
 1. `npm ci` — clean install
 2. `npm run lint` — eslint (0 warnings, blocking)
 3. `npm run test` — vitest (blocking)
@@ -697,6 +714,7 @@ def test_route():
 ```
 
 **Known issues:**
+
 - TestClient with full lifespan hangs >180s when Redis/GROBID/Sentry unreachable
 - `_ensure_v1_router()` takes ~15s per TestClient test file (lazy init)
 - Move `from app.main import app` into fixtures to reduce collection time
@@ -707,7 +725,7 @@ def test_route():
 ## 10. Known Issues & Workarounds
 
 | Issue | Impact | Workaround |
-|-------|--------|-----------|
+| ------- | -------- | ----------- |
 | `pytest --cov` breaks (`KeyError: pydantic.root_model`) | Cannot measure line coverage locally | Tests pass without `--cov`; CI measures separately. Root conftest has runtime patch. |
 | Full `pytest tests/` collection >600s timeout | Cannot run all tests in one pass | Targeted per-file sweeps (`pytest tests/test_*.py -x`) |
 | `mock_redis` autouse contaminates `isinstance` checks | Some `isinstance(x, redis.Redis)` checks fail | Patch `builtins.isinstance` at test time, or use `patch.dict("sys.modules")` |

@@ -27,7 +27,7 @@ Our documentation is the best place to start if you are looking for guides, API 
 
 ## Security Vulnerabilities
 
-If you discover a security vulnerability, please do **NOT** open a public issue. 
+If you discover a security vulnerability, please do **NOT** open a public issue.
 Refer to our [Security Policy](SECURITY.md) for detailed instructions on how to securely report vulnerabilities.
 
 ## Enterprise Support

@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: Dependency Compliance & SBOM
 description: License compliance, SBOM generation, dependency audit procedures
 sidebar_position: 55
@@ -16,7 +16,7 @@ last_updated: July 2026
 ScholarForm AI maintains a comprehensive compliance program for third-party dependencies:
 
 | Activity | Frequency | Tool | Owner |
-|----------|-----------|------|-------|
+| ---------- | ----------- | ------ | ------- |
 | License inventory | Every commit | `scripts/generate_sbom.py` | DevEx |
 | CVE scanning (Python) | Every PR | pip-audit + safety | CI |
 | CVE scanning (npm) | Every PR | npm audit | CI |
@@ -29,7 +29,7 @@ ScholarForm AI maintains a comprehensive compliance program for third-party depe
 ## Files
 
 | File | Purpose |
-|------|---------|
+| ------ | --------- |
 | `THIRD_PARTY_NOTICES.md` | Human-readable license inventory (auto-generated) |
 | `sbom/backend-sbom.json` | CycloneDX SBOM for Python deps |
 | `sbom/frontend-sbom.json` | CycloneDX SBOM for npm deps |
@@ -61,9 +61,9 @@ python scripts/audit_deps.py --sbom
 ## License Policy
 
 | Classification | Action |
-|---------------|--------|
+| --------------- | -------- |
 | MIT, BSD, Apache-2.0, ISC | ✅ Allowed |
-| MPL-2.0, LGPL-3.0 |  ️ Review required |
+| MPL-2.0, LGPL-3.0 | ️ Review required |
 | AGPL-3.0, GPL-3.0 | ❌ Denied for direct deps; allowed for replaceable components (PyMuPDF, GROBID) |
 | Unknown / Proprietary | ❌ Blocked by CI |
 

@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # ScholarForm AI — Branch Protection Rules
 
 This document defines the required branch protection settings for the `main` and `develop` branches. These rules must be configured in the GitHub repository settings under **Settings > Branches > Add branch protection rule**.
@@ -11,7 +10,7 @@ This document defines the required branch protection settings for the `main` and
 ## `main` Branch — Production
 
 | Setting | Value |
-|---------|-------|
+| --------- | ------- |
 | **Require pull request reviews** | ✅ Enabled |
 | Required approving reviews | 1 (increases to 2 for backend/security paths) |
 | Dismiss stale reviews | ✅ Enabled |
@@ -30,7 +29,7 @@ This document defines the required branch protection settings for the `main` and
 ## `develop` Branch — Integration
 
 | Setting | Value |
-|---------|-------|
+| --------- | ------- |
 | **Require pull request reviews** | ✅ Enabled |
 | Required approving reviews | 1 |
 | Dismiss stale reviews | ✅ Enabled |
@@ -44,7 +43,7 @@ This document defines the required branch protection settings for the `main` and
 ## `release/*` Branches — Release Candidates
 
 | Setting | Value |
-|---------|-------|
+| --------- | ------- |
 | **Require pull request reviews** | ✅ Enabled |
 | Required approving reviews | 2 |
 | **Require status checks** | ✅ Enabled |
@@ -54,7 +53,7 @@ This document defines the required branch protection settings for the `main` and
 ## `hotfix/*` Branches — Emergency Fixes
 
 | Setting | Value |
-|---------|-------|
+| --------- | ------- |
 | **Require pull request reviews** | ✅ Enabled |
 | Required approving reviews | 1 (Core Team lead only) |
 | **Require status checks** | ✅ Enabled |
@@ -68,6 +67,7 @@ This document defines the required branch protection settings for the `main` and
 The following GitHub Actions workflows must be configured as required status checks:
 
 ### For `main` branch:
+
 1. `backend-ci` — Backend lint, type-check, and test suite
 2. `frontend-ci` — Frontend ESLint, vitest, and build
 3. `security` — Bandit, Trivy, and OWASP Dependency Check
@@ -79,6 +79,7 @@ The following GitHub Actions workflows must be configured as required status che
 9. `OpenSSF Scorecard / analysis` — Supply chain security score
 
 ### For `develop` branch:
+
 1. `backend-ci`
 2. `frontend-ci`
 3. `commitlint / pr-title`
@@ -91,7 +92,7 @@ The following GitHub Actions workflows must be configured as required status che
 Merge settings for Dependabot and Renovate PRs:
 
 | Type | Merge Method | Conditions |
-|------|-------------|------------|
+| ------ | ------------- | ------------ |
 | Patch dependencies | Squash merge | All checks pass + auto-approved |
 | Minor dependencies | Squash merge | All checks pass + 1 approval |
 | Major dependencies | Triage merge | Manual review required |

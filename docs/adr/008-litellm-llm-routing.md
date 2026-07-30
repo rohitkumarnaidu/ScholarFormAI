@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: "ADR 008: LiteLLM for LLM Routing and Fallback"
 description: Decision to use LiteLLM for multi-provider LLM abstraction
 sidebar_position: 47

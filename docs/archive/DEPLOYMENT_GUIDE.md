@@ -81,7 +81,7 @@
 ### Service Responsibilities
 
 | Component | Provider | Plan | Purpose |
-|-----------|----------|------|---------|
+| ----------- | ---------- | ------ | --------- |
 | **Web Service** | Render | Free (512MB) | FastAPI + Uvicorn HTTP server |
 | **Celery Worker** | Render | Free (512MB) | Background document processing |
 | **Redis** | Upstash | Free (30MB) | Cache, Celery broker/backend |
@@ -164,7 +164,7 @@ maxmemoryPolicy: allkeys-lru
 Shared configuration is defined in `envVarGroups.shared-config` within `render.yaml`:
 
 | Category | Key Variables |
-|----------|--------------|
+| ---------- | -------------- |
 | **Python** | `PYTHON_VERSION=3.12.2` |
 | **Memory** | `LOW_MEMORY_MODE=false`, `PRELOAD_AI_MODELS=false`, `RAG_USE_TRANSFORMERS=false` |
 | **Pipeline** | `GROBID_ENABLED=true`, `USE_DOCLING_FALLBACK=true`, `PYMUPDF_FALLBACK=true`, `PIPELINE_DOCLING_FORCE=true` |
@@ -220,7 +220,7 @@ Requires service ID (starts with `srv-`).
 Each AI service runs as a **primary** and **shadow** instance on HF Spaces for high availability. The backend uses `*_URLS` environment variables (comma-separated) for automatic failover.
 
 | Service | Primary URL | Shadow URL | Health Path | Template |
-|---------|------------|------------|-------------|----------|
+| --------- | ------------ | ------------ | ------------- | ---------- |
 | **GROBID** | `rohith083-scholarform-grobid-primary` | `rohith083-scholarform-grobid-shadow` | `/api/isalive` | `deploy/hf/grobid-service/` |
 | **Docling** | `rohith083-scholarform-docling-primary` | `rohith083-scholarform-docling-shadow` | `/` | `deploy/hf/docling-service/` |
 | **OCR** | `rohith083-scholarform-ocr-primary` | `rohith083-scholarform-ocr-shadow` | `/` | `deploy/hf/ocr-service/` |
@@ -319,6 +319,7 @@ DOCLING_HEALTH_PATH=/
 ```
 
 **Behavior:**
+
 1. Backend queries the first URL in the comma-separated list
 2. If request fails (timeout, 5xx, circuit breaker open), tries the next URL
 3. Marks failed endpoints temporarily (circuit breaker pattern with `pybreaker`)
@@ -376,14 +377,17 @@ NEXT_PUBLIC_LATEX_EXPORT_ENABLED=false
 ### 5.1 Prometheus Configuration
 
 **Deployment config** (`deploy/prometheus/error_budget.yml`):
+
 - Scrape interval: 15s
 - Alerting rules for error budget, latency, and resource exhaustion
 
 **Local dev config** (`backend/docker/prometheus/prometheus.yml`):
+
 - Scrapes `host.docker.internal:8000/metrics`
 - Label: `environment: 'dev'`
 
 **Ops provisioning** (`ops/grafana/provisioning/datasources/prometheus.yml`):
+
 ```yaml
 datasources:
   - name: Prometheus
@@ -396,7 +400,7 @@ datasources:
 ### 5.2 Prometheus Alerting Rules
 
 | Alert | Expression | Threshold | Severity | For |
-|-------|-----------|-----------|----------|-----|
+| ------- | ----------- | ----------- | ---------- | ----- |
 | **ServiceDown** | `up{job="scholarform"} == 0` | — | Critical | 2m |
 | **HighErrorRate** | `5xx rate / total rate` | > 5% | Warning | 5m |
 | **HighLatency** | `p95 latency` | > 5s | Warning | 5m |
@@ -411,6 +415,7 @@ datasources:
 **Dashboard:** `deploy/grafana/dashboards/scholarform-production.json`
 
 **Panels:**
+
 1. **API Request Rate** — `rate(http_requests_total[5m])` by method and path
 2. **Error Rate** — percentage of 5xx responses (thresholds: yellow at 1%, red at 5%)
 3. **Response Latency** — p50, p95, p99 latency with histogram quantiles
@@ -423,6 +428,7 @@ datasources:
 10. **Celery Queue Depth** — interactive and batch queue sizes
 
 **Provisioning** (`ops/grafana/provisioning/dashboards/scholarform.yml`):
+
 ```yaml
 providers:
   - name: "ScholarForm AI"
@@ -442,6 +448,7 @@ docker-compose up prometheus grafana
 ```
 
 For production, deploy Prometheus + Grafana on a separate VM or container service. Configure:
+
 1. Render backend's `/metrics` endpoint as a Prometheus target
 2. Grafana datasource pointing to the Prometheus instance
 3. Import `scholarform-production.json` dashboard
@@ -494,7 +501,7 @@ docker buildx build \
 Located at `backend/docker/docker-compose.yml`:
 
 | Service | Image | Purpose |
-|---------|-------|---------|
+| --------- | ------- | --------- |
 | `grobid` | `lfoppiano/grobid:0.8.0` | Local metadata extraction |
 | `redis` | `redis:7-alpine` | Cache + broker |
 | `clamav` | `clamav/clamav:latest` | Malware scanning |
@@ -509,6 +516,7 @@ docker-compose up --build
 ### 6.4 .dockerignore
 
 Both root-level `.dockerignore` and `backend/docker/.dockerignore` exclude:
+
 - `.git/`, `__pycache__/`, `*.pyc`
 - `.env`, `.secrets.baseline`
 - `tests/`, `docs/`, `*.md`
@@ -526,7 +534,7 @@ Both root-level `.dockerignore` and `backend/docker/.dockerignore` exclude:
 ### 7.1 Organization
 
 | File | Location | Purpose |
-|------|----------|---------|
+| ------ | ---------- | --------- |
 | `.env.example` | `backend/` | CI-safe mock values (all keys mocked) |
 | `.env.render` | `backend/` | Production secrets and URLs (git-crypted) |
 | `.env.template` | `backend/` | Template with all variables documented |
@@ -539,7 +547,7 @@ Both root-level `.dockerignore` and `backend/docker/.dockerignore` exclude:
 #### Database / Auth
 
 | Variable | Source | Description |
-|----------|--------|-------------|
+| ---------- | -------- | ------------- |
 | `SUPABASE_URL` | `.env.render` | Supabase project URL |
 | `SUPABASE_JWKS_URL` | `.env.render` | JWKS endpoint for JWT verification |
 | `SUPABASE_DB_URL` | Secret | Direct PostgreSQL connection string |
@@ -550,7 +558,7 @@ Both root-level `.dockerignore` and `backend/docker/.dockerignore` exclude:
 #### Security / CORS
 
 | Variable | Description |
-|----------|-------------|
+| ---------- | ------------- |
 | `ALGORITHM=HS256` | JWT signing algorithm |
 | `SIGNED_URL_SECRET` | Secret for signed URL generation |
 | `CORS_ORIGINS` | Comma-separated allowed origins |
@@ -560,7 +568,7 @@ Both root-level `.dockerignore` and `backend/docker/.dockerignore` exclude:
 #### LLM / AI Providers
 
 | Variable | Description |
-|----------|-------------|
+| ---------- | ------------- |
 | `NVIDIA_API_KEY` | NVIDIA NIM API key (primary tier) |
 | `NVIDIA_MODEL=nvidia_nim/meta/llama-3.3-70b-instruct` | Primary model |
 | `GROQ_API_KEY` | Groq API key (first fallback) |
@@ -576,7 +584,7 @@ Both root-level `.dockerignore` and `backend/docker/.dockerignore` exclude:
 Each service has a URL list (primary + shadow) and a legacy single URL:
 
 | Variable | Format | Health Path |
-|----------|--------|-------------|
+| ---------- | -------- | ------------- |
 | `GROBID_URLS` | `url1,url2` | `/api/isalive` |
 | `GROBID_URL` | single URL | — |
 | `DOCLING_URLS` / `DOCLING_URL` | comma-separated | `/` |
@@ -586,6 +594,7 @@ Each service has a URL list (primary + shadow) and a legacy single URL:
 | `LLM_CLASSIFIER_URLS` / `LLM_CLASSIFIER_URL` | comma-separated | `/` |
 
 **Rules:**
+
 - `*_URLS` takes precedence over `*_URL` when both are set
 - If the first URL in the list fails, the next is tried (failover)
 - Health check paths are separate per service
@@ -593,7 +602,7 @@ Each service has a URL list (primary + shadow) and a legacy single URL:
 #### Redis / Celery
 
 | Variable | Description |
-|----------|-------------|
+| ---------- | ------------- |
 | `REDIS_ENABLED=true` | Enable Redis cache |
 | `REDIS_URL` | Upstash Redis connection string (TLS) |
 | `REDIS_HOST` | Upstash hostname |
@@ -605,7 +614,7 @@ Each service has a URL list (primary + shadow) and a legacy single URL:
 #### Pipeline Tuning
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- | --------- | ------------- |
 | `PIPELINE_GROBID_TIMEOUT_SECONDS` | 25 | GROBID request timeout |
 | `PIPELINE_DOCLING_TIMEOUT_SECONDS` | 25 | Docling request timeout |
 | `PIPELINE_REASONING_TIMEOUT_SECONDS` | 28 | NVIDIA reasoner timeout |
@@ -620,7 +629,7 @@ Each service has a URL list (primary + shadow) and a legacy single URL:
 #### Confidence Thresholds
 
 | Variable | Default |
-|----------|---------|
+| ---------- | --------- |
 | `HEADING_STYLE_THRESHOLD` | 0.4 |
 | `HEADING_FALLBACK_CONFIDENCE` | 0.45 |
 | `HEURISTIC_CONFIDENCE_HIGH` | 0.95 |
@@ -630,7 +639,7 @@ Each service has a URL list (primary + shadow) and a legacy single URL:
 #### Cache TTLs
 
 | Variable | Default | Purpose |
-|----------|---------|---------|
+| ---------- | --------- | --------- |
 | `LLM_CACHE_TTL_SECONDS` | 3600 | LLM response cache |
 | `READINESS_CACHE_TTL_SECONDS` | 15 | Readiness probe cache |
 | `HEALTH_CACHE_TTL_SECONDS` | 15 | Health endpoint cache |
@@ -643,7 +652,7 @@ Each service has a URL list (primary + shadow) and a legacy single URL:
 #### Rate Limits / Upload
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| ---------- | --------- | ------------- |
 | `MAX_FILE_SIZE` | 52428800 | 50MB max upload |
 | `MAX_BATCH_FILES` | 10 | Max files per batch |
 | `UPLOADS_PER_MINUTE` | 10 | Rate limit per minute |
@@ -652,7 +661,7 @@ Each service has a URL list (primary + shadow) and a legacy single URL:
 #### Miscellaneous
 
 | Variable | Description |
-|----------|-------------|
+| ---------- | ------------- |
 | `CROSSREF_MAILTO` | Email for CrossRef API identification |
 | `DEFAULT_TEMPLATE=none` | Default formatting template |
 | `LIBREOFFICE_PATH` | Path to LibreOffice (local only) |
@@ -663,7 +672,7 @@ Each service has a URL list (primary + shadow) and a legacy single URL:
 ### 7.3 Frontend Environment Variables
 
 | Variable | Required | Description |
-|----------|----------|-------------|
+| ---------- | ---------- | ------------- |
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anon key |
 | `NEXT_PUBLIC_API_URL` | Yes | Backend Render URL |
@@ -675,7 +684,7 @@ Each service has a URL list (primary + shadow) and a legacy single URL:
 Required secrets for CI/CD workflows:
 
 | Secret | Workflow | Purpose |
-|--------|----------|---------|
+| -------- | ---------- | --------- |
 | `PROD_BACKEND_URL` | Production | Backend health check target |
 | `RENDER_API_KEY` | Both | Render API authentication |
 | `RENDER_PROD_SERVICE_ID` | Production | Render production service ID (`srv-*`) |
@@ -785,7 +794,7 @@ DOCX Converter:  GET / (primary + shadow)
 Before production deploy, these workflows must pass:
 
 | Workflow File | What It Checks |
-|--------------|----------------|
+| -------------- | ---------------- |
 | `backend-ci.yml` | `ruff` (E9,F63,F7,F82), `mypy` (continue-on-error), `pytest` (skip integration + slow) |
 | `frontend-ci.yml` | `npm ci` → `eslint` → `vitest` → `build` → Lighthouse → Playwright e2e |
 | `security.yml` | Dependency vulnerability scan, secret detection |
@@ -860,6 +869,7 @@ steps:
 ```
 
 Triggers when:
+
 - A `deploy` step succeeded (deploy completed without error)
 - A subsequent step failed (health check, post-deploy verification)
 
@@ -882,6 +892,7 @@ Or use Vercel Dashboard → Deployments → ⋮ → Rollback to this deployment.
 #### Backend Rollback
 
 **Via Render Dashboard:**
+
 1. Go to Render Dashboard → `scholarform-backend`
 2. Click "Manual Deploy" → "Revert to previous deploy"
 3. Select the last known-good deploy
@@ -928,7 +939,7 @@ alembic downgrade -1   # Revert one migration
 ### 11.1 Service Level Objectives
 
 | Metric | Target | Measurement Period |
-|--------|--------|-------------------|
+| -------- | -------- | ------------------- |
 | **Availability** | 99.9% (8h 46m max downtime/year) | 30-day rolling |
 | **Error Rate** | < 1% 5xx responses | 5-minute window |
 | **Latency p50** | < 2s | 5-minute window |
@@ -947,14 +958,14 @@ alembic downgrade -1   # Revert one migration
 - **Burned by:** Each 5xx response consumes a portion of the error budget
 - **Window:** 30-day rolling
 - **Alert thresholds:**
-  - Green: > 50% remaining
-  - Yellow: 25-50% remaining (watch)
-  - Red: < 25% remaining (critical — deploy freeze recommended)
+    - Green: > 50% remaining
+    - Yellow: 25-50% remaining (watch)
+    - Red: < 25% remaining (critical — deploy freeze recommended)
 
 ### 11.3 Burn Rate Alerts (from `deploy/prometheus/error_budget.yml`)
 
 | Alert | Condition | Response Time |
-|-------|-----------|--------------|
+| ------- | ----------- | -------------- |
 | `ScholarFormHighErrorRate` | Error rate > 5% for 5m | Immediate investigation |
 | `ScholarFormHighLatency` | p95 > 5s for 5m | Performance review |
 | `ScholarFormServiceDown` | `up == 0` for 2m | On-call pages |
@@ -995,7 +1006,7 @@ Internet
 ### A.2 File Reference Map
 
 | File | Content |
-|------|---------|
+| ------ | --------- |
 | `render.yaml` | Render service definitions |
 | `backend/docker/Dockerfile` | Production image build |
 | `backend/docker/docker-compose.yml` | Local full stack |
@@ -1074,7 +1085,7 @@ pytest tests/test_smoke.py -v --no-cov --timeout=30
 Smoke test coverage (`tests/test_smoke.py`):
 
 | Test | Endpoint / Operation | Expected |
-|---|---|---|
+| --- | --- | --- |
 | `test_health_endpoint` | `GET /api/v1/health/live` | 200 |
 | `test_readiness_endpoint` | `GET /api/v1/health/ready` | 200 (or 503 with degraded details) |
 | `test_upload_document` | `POST /api/v1/documents/upload` | 202 with job ID |
@@ -1107,7 +1118,7 @@ watch -n 30 "\
 ```
 
 | Metric | Canary Threshold | Action |
-|---|---|---|
+| --- | --- | --- |
 | Error rate delta | < 1% vs production | Promote |
 | p95 latency delta | < 200 ms vs production | Promote |
 | Error rate delta | >= 1% vs production | Rollback |
@@ -1116,7 +1127,7 @@ watch -n 30 "\
 ### API Reference — Deployment Health Check Endpoints
 
 | Endpoint | Method | Purpose | Used By |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `GET /api/v1/health/live` | GET | Liveness probe | Render health checker, CI/CD gate, Keepalive workflow |
 | `GET /api/v1/health/ready` | GET | Readiness with dependency status | Post-deploy verification, canary comparison |
 | `GET /health` | GET | Legacy liveness (always 200) | External monitoring |

@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 ---
+
 title: ScholarForm AI — Secret Rotation Policy
 description: Procedures for rotating API keys, JWT secrets, and database credentials
 sidebar_position: 36
@@ -14,6 +14,7 @@ last_updated: July 2026
 ---
 
 # ScholarForm AI — Secret Rotation Policy
+
 **Frequency:** Quarterly (90 days)
 
 > **See also:** [Security](Security.md), [Disaster Recovery](DISASTER_RECOVERY.md), [Deployment](Deployment.md)
@@ -23,7 +24,7 @@ last_updated: July 2026
 ## Secrets to Rotate
 
 | Secret | Location | Frequency | Owner |
-|--------|----------|-----------|-------|
+| -------- | ---------- | ----------- | ------- |
 | `SECRET_KEY` | Render env vars | 90 days | Engineering Lead |
 | `ENCRYPTION_KEY` | Render env vars | 90 days | Engineering Lead |
 | `SUPABASE_ANON_KEY` | Supabase + Render | 180 days | DevOps |
@@ -36,6 +37,7 @@ last_updated: July 2026
 ## Rotation Procedure
 
 ### 1. SECRET_KEY (JWT Signing)
+
 ```bash
 # Generate new key
 python -c "import secrets; print(secrets.token_hex(32))"
@@ -46,6 +48,7 @@ python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
 ### 2. ENCRYPTION_KEY (API Key Encryption)
+
 ```bash
 # Generate new Fernet key
 python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
@@ -55,6 +58,7 @@ python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().d
 ```
 
 ### 3. LLM API Keys
+
 ```bash
 # Generate new key from provider dashboard
 # Update in Render env vars
@@ -62,6 +66,7 @@ python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().d
 ```
 
 ### 4. Supabase Keys
+
 ```bash
 # Supabase dashboard → Settings → API
 # Generate new keys
@@ -100,6 +105,7 @@ jobs:
 ## Emergency Rotation
 
 If a secret is compromised:
+
 1. **Immediately** rotate the compromised secret
 2. **Audit** access logs for unauthorized usage
 3. **Notify** affected users if their data was at risk

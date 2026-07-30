@@ -5,6 +5,7 @@ This example demonstrates how to create, configure, and apply custom DOCX templa
 ## Overview
 
 While standard styles (APA, IEEE, MLA, Chicago) fulfill general publishing guidelines, institutional bodies, university graduate schools, and enterprise publishers frequently mandate specific styling rules:
+
 - Custom font pairings (e.g., Calibri / Georgia instead of Times New Roman).
 - Institutional header branding and logos.
 - Specialized table and blockquote shading.
