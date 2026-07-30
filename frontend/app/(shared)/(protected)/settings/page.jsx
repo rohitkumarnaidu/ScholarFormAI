@@ -14,6 +14,8 @@ import { useToast } from '@/src/context/ToastContext';
 import { ConfirmDialog } from '@/src/components/ui';
 import { fetchWithAuth } from '@/src/services/api.core';
 
+import { UpdateSettingsContent } from '@/app/settings/updates/page';
+
 const SETTINGS_KEY = 'scholarform_settings';
 
 const defaultSettings = {
@@ -210,6 +212,16 @@ export default function SettingsPage() {
                     >
                         Billing & Plan
                     </button>
+                    <button
+                        role="tab"
+                        aria-selected={activeTab === 'updates'}
+                        aria-controls="updates-panel"
+                        id="tab-updates"
+                        onClick={() => setActiveTab('updates')}
+                        className={`pb-4 px-4 text-sm font-medium transition-colors border-b-2 focus:outline-none focus:text-primary ${activeTab === 'updates' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'}`}
+                    >
+                        System Updates
+                    </button>
                 </div>
 
                 {activeTab === 'general' ? (
@@ -326,7 +338,7 @@ export default function SettingsPage() {
                     </button>
                 </div>
                 </div>
-                ) : (
+                ) : activeTab === 'billing' ? (
                 <div id="billing-panel" role="tabpanel" aria-labelledby="tab-billing" className="space-y-6 animate-in fade-in duration-300">
                     <section className="bg-glass-surface backdrop-blur-xl border border-glass-border shadow-xl shadow-primary/5 p-6 rounded-xl">
                         <div className="flex items-center justify-between mb-6">
@@ -386,6 +398,10 @@ export default function SettingsPage() {
                             </div>
                         )}
                     </section>
+                </div>
+                ) : (
+                <div id="updates-panel" role="tabpanel" aria-labelledby="tab-updates" className="animate-in fade-in duration-300">
+                    <UpdateSettingsContent />
                 </div>
                 )}
                 <ConfirmDialog 

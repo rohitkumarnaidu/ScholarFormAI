@@ -8,8 +8,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
 const isAdminUser = (user) => (
-    user?.app_metadata?.role === 'admin' ||
-    user?.user_metadata?.role === 'admin'
+    user?.app_metadata?.role === 'admin'
 );
 
 function AuthGuardInner({ children, requireAdmin }) {

@@ -110,6 +110,7 @@ async def forgot_password(
 
 
 @router.post("/verify-otp")
+@_limiter.limit("5/minute")
 async def verify_otp(
     request: Request,
     payload: VerifyOTPRequest,
