@@ -4,6 +4,7 @@
 """
 API Key Usage Log model for tracking per-key request analytics.
 """
+
 import uuid
 from datetime import datetime, timezone
 
@@ -25,4 +26,9 @@ class ApiKeyUsageLog(Base):
     response_time_ms = Column(Integer, nullable=True)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), index=True)
 
-    api_key = relationship("UserApiKey", back_populates="usage_logs", lazy="joined", primaryjoin="foreign(ApiKeyUsageLog.user_api_key_id) == UserApiKey.id")
+    api_key = relationship(
+        "UserApiKey",
+        back_populates="usage_logs",
+        lazy="joined",
+        primaryjoin="foreign(ApiKeyUsageLog.user_api_key_id) == UserApiKey.id",
+    )

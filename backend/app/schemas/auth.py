@@ -15,9 +15,7 @@ from pydantic import BaseModel, EmailStr, Field, field_validator, model_validato
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
-_PASSWORD_PATTERN = re.compile(
-    r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_\-#])[A-Za-z\d@$!%*?&_\-#]{8,}$"
-)
+_PASSWORD_PATTERN = re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_\-#])[A-Za-z\d@$!%*?&_\-#]{8,}$")
 
 
 def _validate_password_strength(password: str) -> str:
@@ -31,6 +29,7 @@ def _validate_password_strength(password: str) -> str:
 
 
 # ── Request Schemas ───────────────────────────────────────────────────────────
+
 
 class SignupRequest(BaseModel):
     """Request body for POST /api/v1/auth/signup."""
@@ -141,14 +140,13 @@ class ResetPasswordRequest(BaseModel):
 
 # ── Response Schemas ──────────────────────────────────────────────────────────
 
+
 class AuthTokenResponse(BaseModel):
     """Returned after a successful login."""
 
     access_token: str = Field(..., description="Supabase JWT access token.")
     token_type: str = Field(default="bearer", description="OAuth2 token type.")
-    expires_in: Optional[int] = Field(
-        None, description="Token lifetime in seconds (from Supabase)."
-    )
+    expires_in: Optional[int] = Field(None, description="Token lifetime in seconds (from Supabase).")
     user_id: Optional[str] = Field(None, description="Authenticated user UUID.")
     email: Optional[str] = Field(None, description="Authenticated user email.")
 

@@ -47,9 +47,7 @@ class ManuscriptValidator:
     ):
         if not manuscript.title or not manuscript.title.strip():
             errors.append(
-                ValidationIssue(
-                    code="MISSING_TITLE", message="Manuscript title is required", severity="error"
-                )
+                ValidationIssue(code="MISSING_TITLE", message="Manuscript title is required", severity="error")
             )
         elif len(manuscript.title) < 5:
             warnings.append(
@@ -179,9 +177,7 @@ class ManuscriptValidator:
             heading_text = section.heading or section.title
             if not heading_text:
                 errors.append(
-                    ValidationIssue(
-                        code="EMPTY_SECTION", message="A section has no heading", severity="error"
-                    )
+                    ValidationIssue(code="EMPTY_SECTION", message="A section has no heading", severity="error")
                 )
 
     def _validate_references(
@@ -221,9 +217,7 @@ class ManuscriptValidator:
                     )
                 )
 
-    def _validate_metadata(
-        self, manuscript: DomainManuscript, warnings: list[ValidationIssue]
-    ):
+    def _validate_metadata(self, manuscript: DomainManuscript, warnings: list[ValidationIssue]):
         ack = manuscript.acknowledgments or manuscript.metadata.get("acknowledgments")
         if ack and len(ack) > 1000:
             warnings.append(

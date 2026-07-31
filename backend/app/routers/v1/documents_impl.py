@@ -57,54 +57,75 @@ _SUPPORTED_EXPORT_FORMATS = _ps._SUPPORTED_EXPORT_FORMATS
 MAX_DAILY_UPLOADS = _ps.MAX_DAILY_UPLOADS
 _STATUS_CACHE_MISS = _ps._STATUS_CACHE_MISS
 
+
 # Helper functions delegating to service implementations while honouring local module patches (e.g. settings)
 def _document_status_ttl_seconds() -> float:
     return _ps._document_status_ttl_seconds(settings_override=settings)
 
+
 def _get_status_cache_lock() -> asyncio.Lock:
     return _ps._get_status_cache_lock()
+
 
 def _status_cache_key(job_id: str, current_user: Optional[User]) -> str:
     return _ps._status_cache_key(job_id, current_user)
 
+
 def _clone_status_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
     return _ps._clone_status_payload(payload)
+
 
 async def _get_cached_status_response(cache_key: str) -> Any:
     return await _ps._get_cached_status_response(cache_key, settings_override=settings)
 
-async def _get_stale_status_response(cache_key: str, *, max_stale_seconds: float = _ps._MAX_STALE_STATUS_SECONDS) -> Any:
-    return await _ps._get_stale_status_response(cache_key, max_stale_seconds=max_stale_seconds, settings_override=settings)
+
+async def _get_stale_status_response(
+    cache_key: str, *, max_stale_seconds: float = _ps._MAX_STALE_STATUS_SECONDS
+) -> Any:
+    return await _ps._get_stale_status_response(
+        cache_key, max_stale_seconds=max_stale_seconds, settings_override=settings
+    )
+
 
 async def _set_cached_status_response(cache_key: str, payload: Dict[str, Any]) -> None:
     await _ps._set_cached_status_response(cache_key, payload, settings_override=settings)
 
+
 def _reset_document_status_cache_for_tests() -> None:
     _ps._reset_document_status_cache_for_tests()
+
 
 def _require_db() -> None:
     _ps._require_db()
 
+
 def _compute_sha256(filepath: str) -> str:
     return DocumentExportService.compute_sha256(filepath)
+
 
 def _enforce_daily_upload_quota(current_user: Optional[User]) -> None:
     _ps._enforce_daily_upload_quota(current_user)
 
+
 def _record_upload_ack_duration(started_at: float) -> None:
     _ps._record_upload_ack_duration(started_at)
+
 
 def _normalize_provider_name(value: Any) -> Optional[str]:
     return _ps._normalize_provider_name(value)
 
+
 def _extract_quality_payload(result: Optional[Dict[str, Any]]) -> Dict[str, Any]:
     return _ps._extract_quality_payload(result)
+
 
 def _build_initial_status_payload(job_id: str) -> Dict[str, Any]:
     return _ps._build_initial_status_payload(job_id)
 
+
 async def _scan_uploaded_file(file_path: str) -> dict[str, str | bool]:
     return await _ps._scan_uploaded_file(file_path)
+
 
 async def _validate_magic_bytes(
     file: UploadFile,
@@ -116,6 +137,7 @@ async def _validate_magic_bytes(
 
 
 # ── Route Handlers (Delegating to Application Services) ────────────────────────
+
 
 async def upload_document_chunked(
     request: Request,

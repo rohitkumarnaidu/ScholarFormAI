@@ -191,9 +191,7 @@ def http_exception_to_error(request: Request, exc: HTTPException) -> JSONRespons
     else:
         message = str(detail)
 
-    request_id = getattr(request.state, "request_id", None) or getattr(
-        request.state, "correlation_id", None
-    )
+    request_id = getattr(request.state, "request_id", None) or getattr(request.state, "correlation_id", None)
 
     return format_error_response(
         error_code=error_code,
@@ -204,9 +202,7 @@ def http_exception_to_error(request: Request, exc: HTTPException) -> JSONRespons
     )
 
 
-def validation_error_to_response(
-    request: Request, exc: RequestValidationError | ValidationError
-) -> JSONResponse:
+def validation_error_to_response(request: Request, exc: RequestValidationError | ValidationError) -> JSONResponse:
     if isinstance(exc, RequestValidationError):
         errors = exc.errors()
     else:
@@ -224,9 +220,7 @@ def validation_error_to_response(
             }
         )
 
-    request_id = getattr(request.state, "request_id", None) or getattr(
-        request.state, "correlation_id", None
-    )
+    request_id = getattr(request.state, "request_id", None) or getattr(request.state, "correlation_id", None)
     return format_error_response(
         error_code="VALIDATION_ERROR",
         message="Request validation failed",
@@ -296,22 +290,16 @@ def create_error_handler(env: str = "production"):
         if isinstance(exc, (RequestValidationError, ValidationError)):
             return validation_error_to_response(request, exc)
         if isinstance(exc, StarletteHTTPException):
-            return http_exception_to_error(
-                request, HTTPException(status_code=exc.status_code, detail=exc.detail)
-            )
+            return http_exception_to_error(request, HTTPException(status_code=exc.status_code, detail=exc.detail))
 
         logger.exception("Unhandled exception: %s", exc)
-        request_id = getattr(request.state, "request_id", None) or getattr(
-            request.state, "correlation_id", None
-        )
+        request_id = getattr(request.state, "request_id", None) or getattr(request.state, "correlation_id", None)
 
         if env != "production":
             return format_error_response(
                 error_code="INTERNAL_ERROR",
                 message=str(exc),
-                details={"traceback": traceback.format_exc().split("\n")}
-                if env == "development"
-                else None,
+                details={"traceback": traceback.format_exc().split("\n")} if env == "development" else None,
                 status_code=500,
                 request_id=request_id,
             )

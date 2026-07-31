@@ -32,17 +32,15 @@ def with_timeout(timeout_seconds: int = 300):
         def my_background_task(arg1, arg2):
             # Task code here
     """
+
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         async def async_wrapper(*args, **kwargs):
             try:
-                return await asyncio.wait_for(
-                    func(*args, **kwargs),
-                    timeout=timeout_seconds
-                )
+                return await asyncio.wait_for(func(*args, **kwargs), timeout=timeout_seconds)
             except asyncio.TimeoutError:
                 logger.error("Task %s timed out after %s seconds", func.__name__, timeout_seconds)
-                job_id = kwargs.get('job_id') or (args[1] if len(args) > 1 else None)
+                job_id = kwargs.get("job_id") or (args[1] if len(args) > 1 else None)
                 if job_id:
                     _mark_job_as_failed(job_id, f"Processing timeout ({timeout_seconds}s exceeded)")
                 raise
@@ -62,12 +60,11 @@ def with_timeout(timeout_seconds: int = 300):
             async def run_with_timeout():
                 try:
                     return await asyncio.wait_for(
-                        loop.run_in_executor(None, func, *args, **kwargs),
-                        timeout=timeout_seconds
+                        loop.run_in_executor(None, func, *args, **kwargs), timeout=timeout_seconds
                     )
                 except asyncio.TimeoutError:
                     logger.error("Task %s timed out after %s seconds", func.__name__, timeout_seconds)
-                    job_id = kwargs.get('job_id') or (args[1] if len(args) > 1 else None)
+                    job_id = kwargs.get("job_id") or (args[1] if len(args) > 1 else None)
                     if job_id:
                         _mark_job_as_failed(job_id, f"Processing timeout ({timeout_seconds}s exceeded)")
                     raise
@@ -126,7 +123,7 @@ async def run_pipeline_with_timeout(
                 template_name=template_name,
                 formatting_options=formatting_options,
             ),
-            timeout=900.0  # 15 minutes max
+            timeout=900.0,  # 15 minutes max
         )
         logger.info("Pipeline completed successfully for job %s", job_id)
     except asyncio.TimeoutError:

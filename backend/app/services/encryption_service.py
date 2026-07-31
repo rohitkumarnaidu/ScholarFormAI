@@ -5,6 +5,7 @@
 Encryption service for securely storing user API keys.
 Uses Fernet symmetric encryption with key rotation support.
 """
+
 import os
 import base64
 import logging

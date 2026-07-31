@@ -200,7 +200,11 @@ class APA7Formatter:
             return entry.strip()
 
         elif reference_type == "thesis":
-            entry = f"{indent_str}{author_str} {year_str} {title_str} [Doctoral dissertation, {publisher or 'Unknown Institution'}]." if publisher else f"{indent_str}{author_str} {year_str} {title_str} [Doctoral dissertation]."
+            entry = (
+                f"{indent_str}{author_str} {year_str} {title_str} [Doctoral dissertation, {publisher or 'Unknown Institution'}]."
+                if publisher
+                else f"{indent_str}{author_str} {year_str} {title_str} [Doctoral dissertation]."
+            )
             if doi_str:
                 entry = f"{entry} {doi_str}"
             return entry.strip()
@@ -334,6 +338,7 @@ class APA7Formatter:
         Returns:
             Sorted list of reference dicts.
         """
+
         def sort_key(ref):
             authors = ref.get("authors", [])
             if authors:

@@ -34,9 +34,7 @@ class PipelinePhases:
     # ------------------------------------------------------------------ #
 
     def phase_upload(self, job_id: str) -> None:
-        self.orchestrator._update_status(
-            job_id, "UPLOAD", "COMPLETED", "File uploaded.", progress=5
-        )
+        self.orchestrator._update_status(job_id, "UPLOAD", "COMPLETED", "File uploaded.", progress=5)
 
     # ------------------------------------------------------------------ #
     #  Phase 2: Extraction                                                #
@@ -52,27 +50,21 @@ class PipelinePhases:
         sb,
         template_name: str,
     ):
-        self.orchestrator._update_status(
-            job_id, "EXTRACTION", "PROCESSING", progress=10
-        )
-        doc_obj = self.orchestrator._run_extraction_stage(
-            factory, input_path, job_id, formatting_options, file_ext
-        )
-        doc_obj = self.orchestrator.stages.apply_llm_pdf_fallback(
-            doc_obj, input_path, job_id, file_ext
-        )
+        self.orchestrator._update_status(job_id, "EXTRACTION", "PROCESSING", progress=10)
+        doc_obj = self.orchestrator._run_extraction_stage(factory, input_path, job_id, formatting_options, file_ext)
+        doc_obj = self.orchestrator.stages.apply_llm_pdf_fallback(doc_obj, input_path, job_id, file_ext)
         self.orchestrator.stages.set_template(doc_obj, template_name)
 
         raw_text = "\n".join(b.text for b in doc_obj.blocks)
         if sb:
-            sb.table("documents").update({
-                "raw_text": raw_text,
-                "original_file_path": input_path,
-            }).eq("id", job_id).execute()
+            sb.table("documents").update(
+                {
+                    "raw_text": raw_text,
+                    "original_file_path": input_path,
+                }
+            ).eq("id", job_id).execute()
 
-        self.orchestrator._update_status(
-            job_id, "EXTRACTION", "COMPLETED", "Text extracted.", progress=20
-        )
+        self.orchestrator._update_status(job_id, "EXTRACTION", "COMPLETED", "Text extracted.", progress=20)
 
         # AI Extraction (GROBID + Docling)
         self.orchestrator._update_status(
@@ -82,9 +74,7 @@ class PipelinePhases:
             "AI metadata extraction...",
             progress=22,
         )
-        doc_obj = self.orchestrator.stages.extract_ai_metadata(
-            doc_obj, input_path, file_ext, job_id
-        )
+        doc_obj = self.orchestrator.stages.extract_ai_metadata(doc_obj, input_path, file_ext, job_id)
 
         return doc_obj
 
@@ -94,9 +84,7 @@ class PipelinePhases:
 
     def phase_structure_detection(self, doc_obj, job_id: str):
         self.orchestrator._check_cancelled(job_id)
-        self.orchestrator._update_status(
-            job_id, "EXTRACTION", "PROCESSING", "Detecting structure...", progress=28
-        )
+        self.orchestrator._update_status(job_id, "EXTRACTION", "PROCESSING", "Detecting structure...", progress=28)
         try:
             doc_obj = self.orchestrator._run_structure_detection(doc_obj)
             num_headings = len(getattr(doc_obj, "detected_headings", []))
@@ -140,12 +128,8 @@ class PipelinePhases:
     #  Phase 6: Content Analysis                                          #
     # ------------------------------------------------------------------ #
 
-    def phase_content_analysis(
-        self, doc_obj, job_id: str, runtime_flags: dict
-    ):
-        self.orchestrator._check_stage_interface(
-            self.orchestrator.analyzer, "process", "ContentAnalyzer"
-        )
+    def phase_content_analysis(self, doc_obj, job_id: str, runtime_flags: dict):
+        self.orchestrator._check_stage_interface(self.orchestrator.analyzer, "process", "ContentAnalyzer")
         from app.pipeline.safety.retry_guard import execute_with_retry
 
         doc_obj = execute_with_retry(self.orchestrator.analyzer.process, doc_obj)
@@ -161,9 +145,7 @@ class PipelinePhases:
         # Reference processing
         doc_obj = self.orchestrator.stages.process_references(doc_obj)
 
-        self.orchestrator._update_status(
-            job_id, "NLP_ANALYSIS", "COMPLETED", "Analysis complete.", progress=50
-        )
+        self.orchestrator._update_status(job_id, "NLP_ANALYSIS", "COMPLETED", "Analysis complete.", progress=50)
 
         return doc_obj
 
@@ -178,24 +160,18 @@ class PipelinePhases:
         template_name: str,
         runtime_flags: dict,
     ) -> Tuple[Any, dict]:
-        self.orchestrator._update_status(
-            job_id, "VALIDATION", "PROCESSING", progress=60
-        )
+        self.orchestrator._update_status(job_id, "VALIDATION", "PROCESSING", progress=60)
         if runtime_flags["crossref_enrichment"]:
             doc_obj = self.orchestrator.stages.run_crossref_validation(doc_obj)
         else:
             logger.info("Fast mode: skipping CrossRef enrichment.")
 
-        self.orchestrator._update_status(
-            job_id, "VALIDATION", "PROCESSING", "Applying styles...", progress=70
-        )
+        self.orchestrator._update_status(job_id, "VALIDATION", "PROCESSING", "Applying styles...", progress=70)
 
         # AI Reasoning (optional)
         semantic_advice = {}
         if runtime_flags["ai_reasoning"]:
-            semantic_advice = self.orchestrator.stages.run_ai_reasoning(
-                doc_obj, template_name, job_id
-            )
+            semantic_advice = self.orchestrator.stages.run_ai_reasoning(doc_obj, template_name, job_id)
         else:
             logger.info("Fast mode: skipping AI reasoning.")
 
@@ -213,9 +189,7 @@ class PipelinePhases:
             "stats": doc_obj.get_stats(),
             "ai_semantic_audit": semantic_advice,
         }
-        quality_summary = self.orchestrator._build_quality_summary(
-            doc_obj, validation_results
-        )
+        quality_summary = self.orchestrator._build_quality_summary(doc_obj, validation_results)
         validation_results["quality_summary"] = quality_summary
         validation_results["quality_score"] = quality_summary.get("quality_score")
         self.orchestrator._log_quality_summary(job_id, quality_summary)
@@ -234,23 +208,19 @@ class PipelinePhases:
     #  Phase 9: Export                                                    #
     # ------------------------------------------------------------------ #
 
-    def phase_export(
-        self, doc_obj, input_path: str, job_id: str, sb
-    ) -> str:
+    def phase_export(self, doc_obj, input_path: str, job_id: str, sb) -> str:
         output_path = None
         if hasattr(doc_obj, "generated_doc") and doc_obj.generated_doc:
-            output_path = self.orchestrator._export_document(
-                doc_obj, input_path, job_id
-            )
+            output_path = self.orchestrator._export_document(doc_obj, input_path, job_id)
         else:
-            logger.critical(
-                "Formatter failed to produce generated_doc for job %s", job_id
-            )
+            logger.critical("Formatter failed to produce generated_doc for job %s", job_id)
             if sb:
-                sb.table("documents").update({
-                    "status": "FAILED",
-                    "error_message": "Formatting failed: No document artifact generated.",
-                }).eq("id", job_id).execute()
+                sb.table("documents").update(
+                    {
+                        "status": "FAILED",
+                        "error_message": "Formatting failed: No document artifact generated.",
+                    }
+                ).eq("id", job_id).execute()
             raise Exception("Formatting stage failed to generate output artifact.")
         return output_path
 
@@ -269,9 +239,7 @@ class PipelinePhases:
     ) -> dict:
         response = {"status": "processing", "job_id": job_id, "message": ""}
 
-        self.orchestrator._update_status(
-            job_id, "PERSISTENCE", "PROCESSING", progress=90
-        )
+        self.orchestrator._update_status(job_id, "PERSISTENCE", "PROCESSING", progress=90)
         from app.pipeline.orchestrator import AIExplainer
 
         explainer = AIExplainer()
@@ -298,16 +266,17 @@ class PipelinePhases:
             if output_path and os.path.exists(output_path):
                 try:
                     from app.services.document_service import DocumentService
-                    DocumentService.update_output_hash(
-                        job_id, PipelineStages.compute_sha256(output_path)
-                    )
+
+                    DocumentService.update_output_hash(job_id, PipelineStages.compute_sha256(output_path))
                 except Exception as hash_exc:
                     logger.warning("Failed to persist output hash: %s", hash_exc)
             if sb:
-                sb.table("documents").update({
-                    "status": "COMPLETED",
-                    "output_path": output_path,
-                }).eq("id", job_id).execute()
+                sb.table("documents").update(
+                    {
+                        "status": "COMPLETED",
+                        "output_path": output_path,
+                    }
+                ).eq("id", job_id).execute()
             self.orchestrator._update_status(
                 job_id,
                 "PERSISTENCE",
@@ -320,10 +289,12 @@ class PipelinePhases:
             response["output_path"] = output_path
         else:
             if sb:
-                sb.table("documents").update({
-                    "status": "FAILED",
-                    "error_message": "Output file generation failed.",
-                }).eq("id", job_id).execute()
+                sb.table("documents").update(
+                    {
+                        "status": "FAILED",
+                        "error_message": "Output file generation failed.",
+                    }
+                ).eq("id", job_id).execute()
             self.orchestrator._update_status(
                 job_id,
                 "PERSISTENCE",

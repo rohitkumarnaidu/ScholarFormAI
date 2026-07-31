@@ -4,6 +4,7 @@
 """
 Auto-scaling for dynamic specialist pool sizing.
 """
+
 import logging
 from typing import Dict, Any, List, Optional
 from concurrent.futures import ThreadPoolExecutor
@@ -13,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import psutil
+
     _PSUTIL_AVAILABLE = True
 except ImportError:
     _PSUTIL_AVAILABLE = False
@@ -49,15 +51,11 @@ class AutoScalingManager:
         if min_workers < 1:
             raise ValueError(f"min_workers must be >= 1, got {min_workers}")
         if max_workers < min_workers:
-            raise ValueError(
-                f"max_workers ({max_workers}) must be >= min_workers ({min_workers})"
-            )
+            raise ValueError(f"max_workers ({max_workers}) must be >= min_workers ({min_workers})")
         if not (0.0 < target_cpu_percent <= 100.0):
             raise ValueError(f"target_cpu_percent must be in (0, 100], got {target_cpu_percent}")
         if not (0.0 < target_memory_percent <= 100.0):
-            raise ValueError(
-                f"target_memory_percent must be in (0, 100], got {target_memory_percent}"
-            )
+            raise ValueError(f"target_memory_percent must be in (0, 100], got {target_memory_percent}")
 
         self.min_workers = min_workers
         self.max_workers = max_workers
@@ -90,7 +88,7 @@ class AutoScalingManager:
             return {
                 "cpu_percent": float(cpu_percent),
                 "memory_percent": float(memory.percent),
-                "memory_available_gb": float(memory.available / (1024 ** 3)),
+                "memory_available_gb": float(memory.available / (1024**3)),
                 "timestamp": time.time(),
             }
         except Exception as exc:
@@ -121,11 +119,7 @@ class AutoScalingManager:
                 return True
 
             # Scale up if CPU is moderate and memory is available
-            if (
-                cpu > 50
-                and mem < self.target_memory_percent
-                and self.current_workers < self.max_workers
-            ):
+            if cpu > 50 and mem < self.target_memory_percent and self.current_workers < self.max_workers:
                 return True
         except Exception as exc:
             logger.error("Error in should_scale_up: %s", exc)
@@ -241,12 +235,8 @@ class AutoScalingManager:
             recent_metrics = self.metrics_history[-10:] if self.metrics_history else []
             n = len(recent_metrics)
 
-            avg_cpu = (
-                sum(m.get("cpu_percent", 0.0) for m in recent_metrics) / n if n > 0 else 0.0
-            )
-            avg_memory = (
-                sum(m.get("memory_percent", 0.0) for m in recent_metrics) / n if n > 0 else 0.0
-            )
+            avg_cpu = sum(m.get("cpu_percent", 0.0) for m in recent_metrics) / n if n > 0 else 0.0
+            avg_memory = sum(m.get("memory_percent", 0.0) for m in recent_metrics) / n if n > 0 else 0.0
 
             return {
                 "current_workers": self.current_workers,
@@ -255,12 +245,8 @@ class AutoScalingManager:
                 "avg_cpu_percent": round(avg_cpu, 2),
                 "avg_memory_percent": round(avg_memory, 2),
                 "total_scaling_events": len(self.scaling_events),
-                "scale_up_count": sum(
-                    1 for e in self.scaling_events if e.get("type") == "scale_up"
-                ),
-                "scale_down_count": sum(
-                    1 for e in self.scaling_events if e.get("type") == "scale_down"
-                ),
+                "scale_up_count": sum(1 for e in self.scaling_events if e.get("type") == "scale_up"),
+                "scale_down_count": sum(1 for e in self.scaling_events if e.get("type") == "scale_down"),
             }
         except Exception as exc:
             logger.error("Error in get_statistics: %s", exc)

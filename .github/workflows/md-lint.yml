@@ -5,10 +5,16 @@ on:
     branches: [ main ]
     paths:
       - '**/*.md'
+      - '.markdownlint*.json'
+      - '.markdownlint*.jsonc'
+      - '.markdownlintignore'
   pull_request:
     branches: [ main ]
     paths:
       - '**/*.md'
+      - '.markdownlint*.json'
+      - '.markdownlint*.jsonc'
+      - '.markdownlintignore'
 
 jobs:
   markdownlint:
@@ -18,4 +24,21 @@ jobs:
       - name: Markdown Lint
         uses: DavidAnson/markdownlint-cli2-action@v16
         with:
-          globs: '**/*.md'
+          globs: |
+            **/*.md
+            !.agents/**
+            !.agent_memory/**
+            !graphify-out/**
+            !node_modules/**
+            !.next/**
+            !.venv/**
+            !.venv_cli/**
+            !**/node_modules/**
+            !frontend/coverage/**
+            !backend/htmlcov/**
+            !htmlcov/**
+            !sbom/**
+            !api-docs/**
+            !ops/**
+            !logo/**
+            !backend/docs/**

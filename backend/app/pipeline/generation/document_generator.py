@@ -5,6 +5,7 @@
 """
 DocumentGenerator -- orchestrator for generate-from-scratch jobs.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -126,13 +127,7 @@ class DocumentGenerator:
         sb = get_supabase_client()
         if sb is not None:
             try:
-                result = (
-                    sb.table("generator_sessions")
-                    .select("*")
-                    .eq("id", str(job_id))
-                    .maybe_single()
-                    .execute()
-                )
+                result = sb.table("generator_sessions").select("*").eq("id", str(job_id)).maybe_single().execute()
                 if result.data:
                     return result.data
             except Exception as exc:
@@ -244,7 +239,9 @@ class DocumentGenerator:
         else:
             self._volatile_sessions[job_id] = session_payload
 
-        self._emit(job_id, phase="QUEUED", status="PENDING", message="Generation job queued.", progress=0, stage="queued")
+        self._emit(
+            job_id, phase="QUEUED", status="PENDING", message="Generation job queued.", progress=0, stage="queued"
+        )
         return job_id
 
     async def run_pipeline(self, job_id: str) -> None:
@@ -308,9 +305,7 @@ class DocumentGenerator:
                 logger.warning("Failed to persist output hash for generation job %s: %s", job_id, exc)
 
             raw_text = "\n\n".join(
-                block.get("content", "").strip()
-                for block in raw_blocks
-                if str(block.get("content", "")).strip()
+                block.get("content", "").strip() for block in raw_blocks if str(block.get("content", "")).strip()
             )
             DocumentService.mark_document_completed(job_id, str(output_path), raw_text=raw_text)
             self._update(job_id, "done", 100, "Document ready for download!", output_path=str(output_path))
@@ -394,7 +389,11 @@ class DocumentGenerator:
         output_path: str | None = None,
         error: str | None = None,
     ) -> None:
-        status = "failed" if stage == "error" else ("done" if progress >= 100 else ("pending" if stage == "queued" else "processing"))
+        status = (
+            "failed"
+            if stage == "error"
+            else ("done" if progress >= 100 else ("pending" if stage == "queued" else "processing"))
+        )
         self.update_status(
             job_id,
             status=status,
@@ -417,7 +416,9 @@ class DocumentGenerator:
             updates["output_path"] = output_path
         DocumentService.update_document(job_id, updates)
 
-        phase_status = "FAILED" if doc_status == "FAILED" else ("COMPLETED" if doc_status == "COMPLETED" else "PROCESSING")
+        phase_status = (
+            "FAILED" if doc_status == "FAILED" else ("COMPLETED" if doc_status == "COMPLETED" else "PROCESSING")
+        )
         DocumentService.upsert_processing_status(
             job_id,
             phase=stage.upper(),

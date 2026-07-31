@@ -10,6 +10,7 @@ Extracted from the fat `llm_service.py`. Depends on
 breakers, caching, and sanitization; and on
 :mod:`app.services.llm_key_service` for BYOK key resolution.
 """
+
 from __future__ import annotations
 
 import logging
@@ -56,6 +57,7 @@ def _settings():
 
 class LLMUnavailableError(Exception):
     """Raised when all LLM tiers are exhausted."""
+
     pass
 
 
@@ -79,7 +81,10 @@ def generate(
     if api_key:
         api_key_prefix = api_key[:8] if len(api_key) > 8 else api_key
     key = _cache_key(
-        system_prompt, user_message, model, temperature,
+        system_prompt,
+        user_message,
+        model,
+        temperature,
         max_tokens=max_tokens,
         api_base=api_base,
         api_key_prefix=api_key_prefix,
@@ -103,8 +108,13 @@ def generate(
         if not litellm_available:
             svc_fallback = getattr(svc, "_generate_fallback", _generate_fallback)
             result = svc_fallback(
-                messages, model, temperature, max_tokens,
-                effective_timeout, api_key, api_base,
+                messages,
+                model,
+                temperature,
+                max_tokens,
+                effective_timeout,
+                api_key,
+                api_base,
             )
             if result and cache_enabled:
                 redis_cache.set_llm_result(key, result, ttl=_settings().LLM_CACHE_TTL_SECONDS)
@@ -152,6 +162,7 @@ def generate(
             kwargs["api_base"] = _settings().OPENROUTER_API_BASE
 
         from litellm import completion
+
         response = completion(**kwargs)
         choices = response.choices
         if not choices:
@@ -205,14 +216,13 @@ def generate_with_model(
 
         custom_id = provider.replace("custom_", "")
         with SessionLocal() as db:
-            cp = db.execute(
-                select(CustomProvider).where(CustomProvider.id == custom_id)
-            ).scalar_one_or_none()
+            cp = db.execute(select(CustomProvider).where(CustomProvider.id == custom_id)).scalar_one_or_none()
             if not cp:
                 raise LLMUnavailableError(f"Custom provider {custom_id} not found")
 
             if cp.api_key_encrypted:
                 from app.services.encryption_service import get_encryption_service
+
                 encryption = get_encryption_service()
                 api_key = encryption.decrypt(cp.api_key_encrypted)
                 kwargs["api_key"] = api_key
@@ -257,6 +267,7 @@ def generate_with_model(
 def _generate_openai_compat(**kwargs) -> str:
     """Direct OpenAI-compatible call without LiteLLM."""
     from openai import OpenAI
+
     api_key = kwargs.get("api_key") or "none"
     base_url = kwargs.get("api_base")
     model = kwargs.get("model", "")
@@ -300,8 +311,11 @@ def generate_with_fallback(
             text = _circuit(
                 "nvidia",
                 lambda: _generate(
-                    messages, model=LLM_NVIDIA, temperature=temperature,
-                    max_tokens=max_tokens, timeout=provider_timeout,
+                    messages,
+                    model=LLM_NVIDIA,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                    timeout=provider_timeout,
                 ),
             )
             if text:
@@ -318,8 +332,12 @@ def generate_with_fallback(
             text = _circuit(
                 "groq",
                 lambda: _generate(
-                    messages, model=groq_model, temperature=temperature,
-                    max_tokens=max_tokens, api_key=groq_key, timeout=provider_timeout,
+                    messages,
+                    model=groq_model,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                    api_key=groq_key,
+                    timeout=provider_timeout,
                 ),
             )
             if text:
@@ -335,9 +353,13 @@ def generate_with_fallback(
                     text = _circuit(
                         "openrouter",
                         lambda: _generate(
-                            messages, model=LLM_OPENROUTER, temperature=temperature,
-                            max_tokens=max_tokens, api_key=openrouter_key,
-                            api_base=_settings().OPENROUTER_API_BASE, timeout=provider_timeout,
+                            messages,
+                            model=LLM_OPENROUTER,
+                            temperature=temperature,
+                            max_tokens=max_tokens,
+                            api_key=openrouter_key,
+                            api_base=_settings().OPENROUTER_API_BASE,
+                            timeout=provider_timeout,
                         ),
                     )
                     if text:
@@ -345,16 +367,24 @@ def generate_with_fallback(
                         return {"text": text, "model": LLM_OPENROUTER, "tier": 3}
                 except Exception as openrouter_exc:
                     _record_failure("openrouter")
-                    logger.warning("llm_service: Tier 3 (OpenRouter) failed: %s - trying Ollama.", openrouter_exc, extra=log_extra())
+                    logger.warning(
+                        "llm_service: Tier 3 (OpenRouter) failed: %s - trying Ollama.",
+                        openrouter_exc,
+                        extra=log_extra(),
+                    )
     elif _resolve_key("openrouter", user_id) or _settings().OPENROUTER_API_KEY:
         openrouter_key = _resolve_key("openrouter", user_id) or _settings().OPENROUTER_API_KEY
         try:
             text = _circuit(
                 "openrouter",
                 lambda: _generate(
-                    messages, model=LLM_OPENROUTER, temperature=temperature,
-                    max_tokens=max_tokens, api_key=openrouter_key,
-                    api_base=_settings().OPENROUTER_API_BASE, timeout=provider_timeout,
+                    messages,
+                    model=LLM_OPENROUTER,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                    api_key=openrouter_key,
+                    api_base=_settings().OPENROUTER_API_BASE,
+                    timeout=provider_timeout,
                 ),
             )
             if text:
@@ -362,14 +392,19 @@ def generate_with_fallback(
                 return {"text": text, "model": LLM_OPENROUTER, "tier": 3}
         except Exception as openrouter_exc:
             _record_failure("openrouter")
-            logger.warning("llm_service: Tier 3 (OpenRouter) failed: %s - trying Ollama.", openrouter_exc, extra=log_extra())
+            logger.warning(
+                "llm_service: Tier 3 (OpenRouter) failed: %s - trying Ollama.", openrouter_exc, extra=log_extra()
+            )
 
     try:
         text = _circuit(
             "ollama",
             lambda: _generate(
-                messages, model=LLM_DEEPSEEK, temperature=temperature,
-                max_tokens=max_tokens, timeout=provider_timeout,
+                messages,
+                model=LLM_DEEPSEEK,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                timeout=provider_timeout,
             ),
         )
         if text:
@@ -411,40 +446,53 @@ def _generate_fallback(messages, model, temperature, max_tokens, timeout, api_ke
 
     if model.startswith("nvidia_nim/") or model.startswith("openai/") or model.startswith("gpt-"):
         return compat(
-            messages, model, temperature, max_tokens,
+            messages,
+            model,
+            temperature,
+            max_tokens,
             api_key or _settings().NVIDIA_API_KEY or _settings().OPENAI_API_KEY,
             api_base or ("https://integrate.api.nvidia.com/v1" if model.startswith("nvidia_nim/") else None),
         )
     elif model.startswith("groq/"):
         return compat(
-            messages, model, temperature, max_tokens,
-            api_key or _settings().GROQ_API_KEY, api_base or _settings().GROQ_API_BASE,
+            messages,
+            model,
+            temperature,
+            max_tokens,
+            api_key or _settings().GROQ_API_KEY,
+            api_base or _settings().GROQ_API_BASE,
         )
     elif model.startswith("openrouter/"):
         return compat(
-            messages, model, temperature, max_tokens,
-            api_key or _settings().OPENROUTER_API_KEY, api_base or _settings().OPENROUTER_API_BASE,
+            messages,
+            model,
+            temperature,
+            max_tokens,
+            api_key or _settings().OPENROUTER_API_KEY,
+            api_base or _settings().OPENROUTER_API_BASE,
         )
     elif model.startswith("ollama/"):
         return ollama_http_fn(
-            messages, model.replace("ollama/", ""), temperature, max_tokens,
-            api_base or _settings().OLLAMA_BASE_URL, timeout,
+            messages,
+            model.replace("ollama/", ""),
+            temperature,
+            max_tokens,
+            api_base or _settings().OLLAMA_BASE_URL,
+            timeout,
         )
     raise NotImplementedError(f"No fallback implementation for model: {model}")
 
 
 def _openai_compat(messages, model, temperature, max_tokens, api_key, base_url) -> str:
     from openai import OpenAI
-    raw_model = (
-        model.replace("nvidia_nim/", "")
-        .replace("openai/", "")
-        .replace("groq/", "")
-        .replace("openrouter/", "")
-    )
+
+    raw_model = model.replace("nvidia_nim/", "").replace("openai/", "").replace("groq/", "").replace("openrouter/", "")
     client = OpenAI(api_key=api_key or "none", base_url=base_url)
     resp = client.chat.completions.create(
-        model=raw_model, messages=messages,
-        temperature=max(0.0, min(1.0, temperature)), max_tokens=max_tokens,
+        model=raw_model,
+        messages=messages,
+        temperature=max(0.0, min(1.0, temperature)),
+        max_tokens=max_tokens,
     )
     return resp.choices[0].message.content or "" if resp.choices else ""
 
@@ -452,11 +500,16 @@ def _openai_compat(messages, model, temperature, max_tokens, api_key, base_url) 
 def _ollama_http(messages, model_name, temperature, max_tokens, base_url, timeout) -> str:
     import requests
     import json
+
     prompt = "\n".join(f"{m['role']}: {m['content']}" for m in messages)
     resp = requests.post(
         f"{base_url}/api/generate",
-        json={"model": model_name, "prompt": prompt, "stream": False,
-              "options": {"temperature": temperature, "num_predict": max_tokens}},
+        json={
+            "model": model_name,
+            "prompt": prompt,
+            "stream": False,
+            "options": {"temperature": temperature, "num_predict": max_tokens},
+        },
         timeout=timeout,
     )
     resp.raise_for_status()

@@ -38,13 +38,7 @@ def _lookup_user_id_by_customer(sb, customer_id: Optional[str]) -> Optional[str]
     if not customer_id:
         return None
     try:
-        result = (
-            sb.table("profiles")
-            .select("id")
-            .eq("stripe_customer_id", customer_id)
-            .maybe_single()
-            .execute()
-        )
+        result = sb.table("profiles").select("id").eq("stripe_customer_id", customer_id).maybe_single().execute()
         return result.data.get("id") if result and result.data else None
     except Exception as exc:
         logger.warning("Failed to lookup user by customer id: %s", exc)

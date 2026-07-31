@@ -34,6 +34,7 @@ _PROVIDER_LIST_CACHE: dict = {"data": None, "expires_at": 0.0}
 
 # ── Helpers ────────────────────────────────────────────────────────────── #
 
+
 def _sanitize_url(url: str) -> str:
     parsed = urlparse(url)
     if parsed.scheme in SSRF_BLOCKED_SCHEMES:
@@ -49,6 +50,7 @@ def _sanitize_url(url: str) -> str:
 def _record_provider_metrics(action: str, provider_name: str = "", status: str = "success") -> None:
     try:
         from app.middleware.prometheus_metrics import MetricsManager
+
         MetricsManager.record_provider_operation(action, status)
     except Exception:
         pass
@@ -57,10 +59,14 @@ def _record_provider_metrics(action: str, provider_name: str = "", status: str =
 async def _log_audit(user_id: str, action: str, resource_id: Optional[str], details: Optional[dict] = None) -> None:
     try:
         from app.services.audit_log_service import audit_log_service
+
         await audit_log_service.log(
-            user_id=user_id, action=action,
-            resource_type="provider", resource_id=resource_id,
-            ip_address=None, details=details or {},
+            user_id=user_id,
+            action=action,
+            resource_type="provider",
+            resource_id=resource_id,
+            ip_address=None,
+            details=details or {},
         )
     except Exception as exc:
         logger.debug("Audit log skipped: %s", exc)
@@ -71,6 +77,7 @@ def _get_user_id(user) -> str:
 
 
 # ── Schemas ────────────────────────────────────────────────────────────── #
+
 
 class CustomProviderCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
@@ -139,10 +146,12 @@ class SyncModelsRequest(BaseModel):
 
 # ── Endpoints ──────────────────────────────────────────────────────────── #
 
+
 @router.get("/health")
 async def provider_health():
     from app.services.provider_registry import BUILTIN_PROVIDERS
     from app.config.settings import settings
+
     results = {}
     for provider_id, info in BUILTIN_PROVIDERS.items():
         env_key = info.get("env_key")
@@ -184,14 +193,15 @@ async def discover_models(
     info = get_provider_info(provider_id)
 
     if info:
-        target_url = base_url or (info.get("base_url", "")() if callable(info.get("base_url")) else info.get("base_url", ""))
+        target_url = base_url or (
+            info.get("base_url", "")() if callable(info.get("base_url")) else info.get("base_url", "")
+        )
         key = resolve_user_api_key(provider_id, user_id) or info.get("env_key_actual", lambda: None)()
     else:
         from app.models.custom_provider import CustomProvider
         from sqlalchemy import select, and_
-        query = select(CustomProvider).where(
-            and_(CustomProvider.id == provider_id, CustomProvider.user_id == user_id)
-        )
+
+        query = select(CustomProvider).where(and_(CustomProvider.id == provider_id, CustomProvider.user_id == user_id))
         cp = db.execute(query).scalar_one_or_none()
         if not cp:
             raise HTTPException(status_code=404, detail="Provider not found")
@@ -202,6 +212,7 @@ async def discover_models(
         raise HTTPException(status_code=400, detail="No base URL available for this provider")
 
     import httpx
+
     headers = {}
     if key:
         headers["Authorization"] = f"Bearer {key}"
@@ -213,7 +224,12 @@ async def discover_models(
             if resp.status_code == 200:
                 models = [m["name"] for m in resp.json().get("models", [])]
                 return {"provider_id": provider_id, "models": models, "source": "ollama_api"}
-            return {"provider_id": provider_id, "models": [], "source": "ollama_api", "error": f"Status {resp.status_code}"}
+            return {
+                "provider_id": provider_id,
+                "models": [],
+                "source": "ollama_api",
+                "error": f"Status {resp.status_code}",
+            }
 
         api_base = target_url.rstrip("/")
         if not api_base.endswith("/v1"):
@@ -224,7 +240,12 @@ async def discover_models(
             data = resp.json()
             models = [m["id"] for m in data.get("data", [])] if "data" in data else []
             return {"provider_id": provider_id, "models": models, "source": "openai_compat"}
-        return {"provider_id": provider_id, "models": [], "source": "openai_compat", "error": f"Status {resp.status_code}"}
+        return {
+            "provider_id": provider_id,
+            "models": [],
+            "source": "openai_compat",
+            "error": f"Status {resp.status_code}",
+        }
     except Exception as e:
         return {"provider_id": provider_id, "models": [], "source": "error", "error": str(e)[:300]}
 
@@ -253,9 +274,11 @@ async def create_custom_provider(
     user_id = _get_user_id(user)
 
     from sqlalchemy import select, func
-    count = db.execute(
-        select(func.count()).select_from(CustomProvider).where(CustomProvider.user_id == user_id)
-    ).scalar() or 0
+
+    count = (
+        db.execute(select(func.count()).select_from(CustomProvider).where(CustomProvider.user_id == user_id)).scalar()
+        or 0
+    )
     if count >= MAX_CUSTOM_PROVIDERS_PER_USER:
         raise HTTPException(status_code=400, detail=f"Max {MAX_CUSTOM_PROVIDERS_PER_USER} custom providers per user")
 
@@ -286,6 +309,7 @@ async def list_custom_providers(
     user=Depends(get_current_user),
 ):
     from sqlalchemy import select
+
     user_id = _get_user_id(user)
     query = select(CustomProvider).where(CustomProvider.user_id == user_id).order_by(CustomProvider.created_at.desc())
     rows = db.execute(query).scalars().all()
@@ -300,9 +324,8 @@ async def get_custom_provider(
 ):
     user_id = _get_user_id(user)
     from sqlalchemy import select, and_
-    query = select(CustomProvider).where(
-        and_(CustomProvider.id == provider_id, CustomProvider.user_id == user_id)
-    )
+
+    query = select(CustomProvider).where(and_(CustomProvider.id == provider_id, CustomProvider.user_id == user_id))
     cp = db.execute(query).scalar_one_or_none()
     if not cp:
         raise HTTPException(status_code=404, detail="Custom provider not found")
@@ -317,10 +340,9 @@ async def update_custom_provider(
     user=Depends(get_current_user),
 ):
     from sqlalchemy import select, and_
+
     user_id = _get_user_id(user)
-    query = select(CustomProvider).where(
-        and_(CustomProvider.id == provider_id, CustomProvider.user_id == user_id)
-    )
+    query = select(CustomProvider).where(and_(CustomProvider.id == provider_id, CustomProvider.user_id == user_id))
     cp = db.execute(query).scalar_one_or_none()
     if not cp:
         raise HTTPException(status_code=404, detail="Custom provider not found")
@@ -355,10 +377,9 @@ async def delete_custom_provider(
     user=Depends(get_current_user),
 ):
     from sqlalchemy import select, and_
+
     user_id = _get_user_id(user)
-    query = select(CustomProvider).where(
-        and_(CustomProvider.id == provider_id, CustomProvider.user_id == user_id)
-    )
+    query = select(CustomProvider).where(and_(CustomProvider.id == provider_id, CustomProvider.user_id == user_id))
     cp = db.execute(query).scalar_one_or_none()
     if not cp:
         raise HTTPException(status_code=404, detail="Custom provider not found")
@@ -402,6 +423,7 @@ async def test_provider_connection(
             test_url = base() if callable(base) else base
         else:
             from sqlalchemy import select, and_
+
             user_id = _get_user_id(user)
             query = select(CustomProvider).where(
                 and_(CustomProvider.id == provider_id, CustomProvider.user_id == user_id)
@@ -414,6 +436,7 @@ async def test_provider_connection(
 
     try:
         import httpx
+
         async with httpx.AsyncClient(timeout=10) as client:
             headers = {}
             if test_key:
@@ -425,22 +448,41 @@ async def test_provider_connection(
                 if resp.status_code == 200:
                     models = [m["name"] for m in resp.json().get("models", [])]
                     _record_provider_metrics("test", provider_id, "valid")
-                    return {"status": "valid", "message": f"Ollama connected. {len(models)} models available.", "models_found": models, "response_time_ms": ms}
+                    return {
+                        "status": "valid",
+                        "message": f"Ollama connected. {len(models)} models available.",
+                        "models_found": models,
+                        "response_time_ms": ms,
+                    }
                 _record_provider_metrics("test", provider_id, "invalid")
-                return {"status": "invalid", "message": f"Ollama responded with status {resp.status_code}", "response_time_ms": ms}
+                return {
+                    "status": "invalid",
+                    "message": f"Ollama responded with status {resp.status_code}",
+                    "response_time_ms": ms,
+                }
 
             resp = await client.get(
                 f"{test_url}/models" if not test_url.endswith("/v1") else f"{test_url}/models",
-                headers=headers, timeout=10,
+                headers=headers,
+                timeout=10,
             )
             ms = round((time.time() - start) * 1000, 2)
             if resp.status_code == 200:
                 data = resp.json()
                 found = [m["id"] for m in data.get("data", [])] if "data" in data else []
                 _record_provider_metrics("test", provider_id, "valid")
-                return {"status": "valid", "message": f"Connected. {len(found)} models available.", "models_found": found[:20], "response_time_ms": ms}
+                return {
+                    "status": "valid",
+                    "message": f"Connected. {len(found)} models available.",
+                    "models_found": found[:20],
+                    "response_time_ms": ms,
+                }
             _record_provider_metrics("test", provider_id, "invalid")
-            return {"status": "invalid", "message": f"Status {resp.status_code}: {resp.text[:200]}", "response_time_ms": ms}
+            return {
+                "status": "invalid",
+                "message": f"Status {resp.status_code}: {resp.text[:200]}",
+                "response_time_ms": ms,
+            }
     except Exception as e:
         _record_provider_metrics("test", provider_id, "error")
         return {"status": "error", "message": str(e)[:300], "response_time_ms": round((time.time() - start) * 1000, 2)}

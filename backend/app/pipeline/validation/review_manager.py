@@ -7,26 +7,25 @@ from app.models.pipeline_document import PipelineDocument, ReviewStatus, ReviewM
 
 logger = logging.getLogger(__name__)
 
+
 class ReviewManager:
     """
     Evaluates AI confidence scores and flags sections for Human-In-The-Loop review.
     """
-    
+
     def __init__(self, review_threshold: float = 0.70, critical_threshold: float = 0.45):
         # Validate thresholds
         if critical_threshold >= review_threshold:
             raise ValueError(
-                f"critical_threshold ({critical_threshold}) must be less than "
-                f"review_threshold ({review_threshold})"
+                f"critical_threshold ({critical_threshold}) must be less than review_threshold ({review_threshold})"
             )
         if not (0.0 <= critical_threshold <= 1.0) or not (0.0 <= review_threshold <= 1.0):
             raise ValueError("Thresholds must be between 0.0 and 1.0")
-            
+
         self.review_threshold = review_threshold
         self.critical_threshold = critical_threshold
         logger.info(
-            f"ReviewManager initialized: review_threshold={review_threshold}, "
-            f"critical_threshold={critical_threshold}"
+            f"ReviewManager initialized: review_threshold={review_threshold}, critical_threshold={critical_threshold}"
         )
 
     def evaluate(self, doc_obj: PipelineDocument) -> PipelineDocument:
@@ -34,13 +33,11 @@ class ReviewManager:
         critical_flags = []
         review_flags = []
         lowest_conf = 1.0
-        
+
         # 1. Check Block Confidences
         for b in doc_obj.blocks:
             raw_conf = (
-                b.metadata.get("classification_confidence")
-                if isinstance(getattr(b, "metadata", None), dict)
-                else None
+                b.metadata.get("classification_confidence") if isinstance(getattr(b, "metadata", None), dict) else None
             )
             if raw_conf is None:
                 raw_conf = getattr(b, "classification_confidence", None)
@@ -63,11 +60,7 @@ class ReviewManager:
             )
 
             if conf < self.critical_threshold:
-                flag = (
-                    f"CRITICAL: low confidence ({conf:.2f}) on "
-                    f"{semantic_label} "
-                    f"[block: {b.block_id[:8]}]"
-                )
+                flag = f"CRITICAL: low confidence ({conf:.2f}) on {semantic_label} [block: {b.block_id[:8]}]"
                 critical_flags.append(flag)
                 logger.warning(f"Threshold violation: {flag}")
             elif conf < self.review_threshold:
@@ -88,11 +81,11 @@ class ReviewManager:
 
         # 3. Prioritize flags: CRITICAL first, then REVIEW
         all_flags = critical_flags + review_flags
-        
+
         # 4. Determine Final Status
         status = ReviewStatus.OK
         reason = None
-        
+
         if lowest_conf < self.critical_threshold:
             status = ReviewStatus.CRITICAL
             reason = "Multiple sections failed automated confidence checks."
@@ -104,17 +97,16 @@ class ReviewManager:
             status = ReviewStatus.REVIEW
             reason = "Some sections require human verification."
             logger.info(
-                f"Document flagged for REVIEW: {len(review_flags)} review items, "
-                f"lowest_confidence={lowest_conf:.2f}"
+                f"Document flagged for REVIEW: {len(review_flags)} review items, lowest_confidence={lowest_conf:.2f}"
             )
         else:
             logger.debug(f"Document passed review checks: lowest_confidence={lowest_conf:.2f}")
-            
+
         doc_obj.review = ReviewMetadata(
             status=status,
             flags=all_flags[:5],  # Limit to top 5 flags (CRITICAL prioritized)
             lowest_confidence=lowest_conf,
-            reason=reason
+            reason=reason,
         )
-        
+
         return doc_obj

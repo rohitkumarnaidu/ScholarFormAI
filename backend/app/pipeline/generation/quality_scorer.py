@@ -38,12 +38,7 @@ class QualityScorer:
         section_balance = self._section_balance(sections_map, required_sections)
         citations_score = self._citation_score(citation_count, max(len(required_sections), 1))
 
-        overall = (
-            template_compliance * 0.30
-            + completeness * 0.30
-            + citations_score * 0.20
-            + section_balance * 0.20
-        )
+        overall = template_compliance * 0.30 + completeness * 0.30 + citations_score * 0.20 + section_balance * 0.20
 
         return {
             "template_compliance": round(template_compliance, 2),

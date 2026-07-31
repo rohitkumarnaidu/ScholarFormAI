@@ -15,6 +15,7 @@ class StageEventEmitter:
         logger.debug("Stage started: %s (job=%s)", stage_name, job_id)
         try:
             from app.routers.v1.stream import emit_event
+
             emit_event(job_id, "stage_start", {"stage": stage_name})
         except Exception:
             pass
@@ -23,6 +24,7 @@ class StageEventEmitter:
         logger.debug("Stage progress: %s %d%% (job=%s)", stage_name, percent, job_id)
         try:
             from app.routers.v1.stream import emit_event
+
             emit_event(job_id, "stage_progress", {"stage": stage_name, "percent": percent})
         except Exception:
             pass
@@ -31,6 +33,7 @@ class StageEventEmitter:
         logger.debug("Stage completed: %s (job=%s)", stage_name, job_id)
         try:
             from app.routers.v1.stream import emit_event
+
             emit_event(job_id, "stage_complete", {"stage": stage_name})
         except Exception:
             pass
@@ -39,6 +42,7 @@ class StageEventEmitter:
         logger.error("Stage error: %s (job=%s): %s", stage_name, job_id, error)
         try:
             from app.routers.v1.stream import emit_event
+
             emit_event(job_id, "stage_error", {"stage": stage_name, "error": error})
         except Exception:
             pass

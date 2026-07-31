@@ -24,6 +24,7 @@ Internal implementation is distributed across:
 Private names are re-exported here so that existing test patches on
 ``app.services.llm_service.*`` continue to work after decomposition.
 """
+
 from __future__ import annotations
 
 import logging

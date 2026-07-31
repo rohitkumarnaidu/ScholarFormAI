@@ -5,6 +5,7 @@
 Per-API-key rate limiter using Redis sliding window counters.
 Enforces per-minute, per-hour, and per-day limits with 429 responses.
 """
+
 import time
 import logging
 from dataclasses import dataclass
@@ -46,6 +47,7 @@ class ApiKeyRateLimiter:
         if self._redis is None:
             try:
                 from app.cache.redis_cache import get_redis_cache
+
                 cache = get_redis_cache()
                 self._redis = cache.client
             except Exception:
@@ -150,20 +152,29 @@ class ApiKeyRateLimiter:
         if min_count > per_min:
             reset_at = (minute_window + 1) * 60
             return RateLimitResult(
-                allowed=False, limit=per_min, remaining=0,
-                reset_at=reset_at, retry_after=max(0, reset_at - now),
+                allowed=False,
+                limit=per_min,
+                remaining=0,
+                reset_at=reset_at,
+                retry_after=max(0, reset_at - now),
             )
         if hour_count > per_hour:
             reset_at = (hour_window + 1) * 3600
             return RateLimitResult(
-                allowed=False, limit=per_hour, remaining=0,
-                reset_at=reset_at, retry_after=max(0, reset_at - now),
+                allowed=False,
+                limit=per_hour,
+                remaining=0,
+                reset_at=reset_at,
+                retry_after=max(0, reset_at - now),
             )
         if day_count > per_day:
             reset_at = (day_window + 1) * 86400
             return RateLimitResult(
-                allowed=False, limit=per_day, remaining=0,
-                reset_at=reset_at, retry_after=max(0, reset_at - now),
+                allowed=False,
+                limit=per_day,
+                remaining=0,
+                reset_at=reset_at,
+                retry_after=max(0, reset_at - now),
             )
 
         return RateLimitResult(

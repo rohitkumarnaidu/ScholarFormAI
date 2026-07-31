@@ -11,6 +11,7 @@ The actual implementation now lives in:
   - :class:`DocumentPipelineService`  — orchestration / dispatch
   - :class:`DocumentShareService`     — sharing + permission checks
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -40,6 +41,7 @@ class DocumentService:
         self._crud = crud or DocumentCrudService()
         if pipeline is None:
             from app.services.document_pipeline_service import DocumentPipelineService
+
             self._pipeline = DocumentPipelineService(crud=self._crud)
         else:
             self._pipeline = pipeline
@@ -172,7 +174,13 @@ class DocumentService:
         file_hash: Optional[str] = None,
     ) -> Optional[Dict[str, Any]]:
         return await cls._get_instance()._crud.create_document(
-            doc_id, user_id, filename, template, original_file_path, formatting_options, file_hash,
+            doc_id,
+            user_id,
+            filename,
+            template,
+            original_file_path,
+            formatting_options,
+            file_hash,
         )
 
     @classmethod
@@ -227,7 +235,11 @@ class DocumentService:
         message: Optional[str] = None,
     ) -> None:
         return await cls._get_instance()._crud.upsert_processing_status(
-            doc_id, phase, status, progress_percentage, message,
+            doc_id,
+            phase,
+            status,
+            progress_percentage,
+            message,
         )
 
     # ═══════════════════════════════════════════════════════════════════════
@@ -263,13 +275,14 @@ class DocumentService:
         shared_by_user_id: str,
     ) -> Dict[str, Any]:
         return await cls._get_instance()._share.share_document(
-            document_id, shared_with_user_id, permission, shared_by_user_id,
+            document_id,
+            shared_with_user_id,
+            permission,
+            shared_by_user_id,
         )
 
     @classmethod
-    async def get_shared_documents(
-        cls, user_id: str, limit: int = 20, offset: int = 0
-    ) -> List[Dict[str, Any]]:
+    async def get_shared_documents(cls, user_id: str, limit: int = 20, offset: int = 0) -> List[Dict[str, Any]]:
         return await cls._get_instance()._share.get_shared_documents(user_id, limit, offset)
 
     @classmethod

@@ -15,6 +15,7 @@ from pydantic import BaseModel, Field, ConfigDict
 
 class FigureType(str, Enum):
     """Type of figure content."""
+
     DIAGRAM = "diagram"
     CHART = "chart"
     GRAPH = "graph"
@@ -26,6 +27,7 @@ class FigureType(str, Enum):
 
 class ImageFormat(str, Enum):
     """Image file format."""
+
     PNG = "png"
     JPEG = "jpeg"
     JPG = "jpg"
@@ -41,126 +43,76 @@ class ImageFormat(str, Enum):
 class Figure(BaseModel):
     """
     Represents a figure/image in the document.
-    
+
     Figures are extracted with their positioning, size, and caption information.
     The caption is matched to the figure by the caption_matcher.
     """
-    
+
     # Unique identifier
     figure_id: str = Field(..., description="Unique identifier (e.g., 'fig_001')")
-    
+
     # Sequential numbering (assigned by formatting stage)
     number: Optional[int] = Field(
-        default=None,
-        description="Sequential figure number in document (e.g., 1 for 'Figure 1')"
+        default=None, description="Sequential figure number in document (e.g., 1 for 'Figure 1')"
     )
-    
+
     # Image data
-    image_data: Optional[bytes] = Field(
-        default=None,
-        description="Raw binary image data extracted from document"
-    )
-    image_format: ImageFormat = Field(
-        default=ImageFormat.UNKNOWN,
-        description="Image format/extension"
-    )
-    
+    image_data: Optional[bytes] = Field(default=None, description="Raw binary image data extracted from document")
+    image_format: ImageFormat = Field(default=ImageFormat.UNKNOWN, description="Image format/extension")
+
     # Dimensions (in pixels or original units)
-    width: Optional[float] = Field(
-        default=None,
-        description="Image width in original units"
-    )
-    height: Optional[float] = Field(
-        default=None,
-        description="Image height in original units"
-    )
-    
+    width: Optional[float] = Field(default=None, description="Image width in original units")
+    height: Optional[float] = Field(default=None, description="Image height in original units")
+
     # Position in document
-    page_number: Optional[int] = Field(
-        default=None,
-        description="Page where figure appears"
-    )
-    index: int = Field(
-        ...,
-        description="Sequential position among all figures (0-based)"
-    )
-    
+    page_number: Optional[int] = Field(default=None, description="Page where figure appears")
+    index: int = Field(..., description="Sequential position among all figures (0-based)")
+
     # Caption information (matched by caption_matcher)
     caption_text: Optional[str] = Field(
-        default=None,
-        description="Full caption text (e.g., 'Figure 1: System Architecture')"
+        default=None, description="Full caption text (e.g., 'Figure 1: System Architecture')"
     )
-    caption_block_id: Optional[str] = Field(
-        default=None,
-        description="Block ID of the caption block"
-    )
-    
+    caption_block_id: Optional[str] = Field(default=None, description="Block ID of the caption block")
+
     # Parsed caption components
-    label: Optional[str] = Field(
-        default=None,
-        description="Figure label (e.g., 'Figure 1', 'Fig. 2')"
-    )
+    label: Optional[str] = Field(default=None, description="Figure label (e.g., 'Figure 1', 'Fig. 2')")
     title: Optional[str] = Field(
-        default=None,
-        description="Descriptive title from caption (e.g., 'System Architecture')"
+        default=None, description="Descriptive title from caption (e.g., 'System Architecture')"
     )
-    
+
     # Classification
-    figure_type: FigureType = Field(
-        default=FigureType.UNKNOWN,
-        description="Type of figure content"
-    )
-    
+    figure_type: FigureType = Field(default=FigureType.UNKNOWN, description="Type of figure content")
+
     # Cross-references
-    referenced_by: List[str] = Field(
-        default_factory=list,
-        description="List of block IDs that reference this figure"
-    )
-    
+    referenced_by: List[str] = Field(default_factory=list, description="List of block IDs that reference this figure")
+
     # Section context
-    section_name: Optional[str] = Field(
-        default=None,
-        description="Section where this figure appears"
-    )
-    
+    section_name: Optional[str] = Field(default=None, description="Section where this figure appears")
+
     # Validation
-    is_valid: bool = Field(
-        default=True,
-        description="Whether figure passed validation"
-    )
+    is_valid: bool = Field(default=True, description="Whether figure passed validation")
     warnings: List[str] = Field(
-        default_factory=list,
-        description="Validation warnings (e.g., missing caption, low resolution)"
+        default_factory=list, description="Validation warnings (e.g., missing caption, low resolution)"
     )
-    
+
     # Formatting metadata (assigned by formatting stage)
-    placement: Optional[str] = Field(
-        default=None,
-        description="Placement preference (e.g., 'top', 'bottom', 'here')"
-    )
-    
+    placement: Optional[str] = Field(default=None, description="Placement preference (e.g., 'top', 'bottom', 'here')")
+
     # File export information (assigned by export stage)
     export_filename: Optional[str] = Field(
-        default=None,
-        description="Filename for exported image (e.g., 'figure_1.png')"
+        default=None, description="Filename for exported image (e.g., 'figure_1.png')"
     )
-    export_path: Optional[str] = Field(
-        default=None,
-        description="Path where image was exported"
-    )
-    
+    export_path: Optional[str] = Field(default=None, description="Path where image was exported")
+
     # Extensibility
-    metadata: Dict[str, Any] = Field(
-        default_factory=dict,
-        description="Additional metadata"
-    )
-    
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
+
     model_config = ConfigDict(use_enum_values=True)
-    
+
     def has_caption(self) -> bool:
         """Check if figure has an associated caption."""
         return self.caption_text is not None and len(self.caption_text.strip()) > 0
-    
+
     def get_display_label(self) -> str:
         """Get display label for this figure."""
         if self.label:

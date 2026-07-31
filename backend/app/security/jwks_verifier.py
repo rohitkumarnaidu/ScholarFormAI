@@ -47,11 +47,7 @@ def _fetch_jwks() -> Dict[str, dict]:
         response = httpx.get(url, timeout=5.0)
         response.raise_for_status()
         payload = response.json()
-        keys = {
-            key.get("kid"): key
-            for key in payload.get("keys", [])
-            if key.get("kid")
-        }
+        keys = {key.get("kid"): key for key in payload.get("keys", []) if key.get("kid")}
         with _JWKS_LOCK:
             _JWKS_CACHE["keys"] = keys
             _JWKS_CACHE["fetched_at"] = time.time()

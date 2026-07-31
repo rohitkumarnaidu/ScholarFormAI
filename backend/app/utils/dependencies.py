@@ -14,10 +14,7 @@ logger = logging.getLogger(__name__)
 security = HTTPBearer(auto_error=False)
 
 
-def get_current_user(
-    request: Request,
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)
-) -> User:
+def get_current_user(request: Request, credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)) -> User:
     """
     FastAPI dependency to extract and verify the user from the Authorization Bearer header.
     """
@@ -49,6 +46,7 @@ def get_current_user(
 
         try:
             from app.middleware.prometheus_metrics import MetricsManager
+
             MetricsManager.record_user_activity(str(user_id))
         except Exception:
             pass
@@ -64,8 +62,7 @@ def get_current_user(
 
 
 def get_optional_user(
-    request: Request,
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer(auto_error=False))
+    request: Request, credentials: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer(auto_error=False))
 ) -> Optional[User]:
     """
     FastAPI dependency that returns a User if a valid Bearer token is present,
@@ -86,6 +83,7 @@ def get_optional_user(
         app_metadata = payload.get("app_metadata")
         try:
             from app.middleware.prometheus_metrics import MetricsManager
+
             MetricsManager.record_user_activity(str(user_id))
         except Exception:
             pass

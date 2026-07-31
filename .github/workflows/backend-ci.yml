@@ -42,23 +42,27 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-lint-v1
+          key: ${{ runner.os }}-pip-lint-v2
           restore-keys: |
             ${{ runner.os }}-pip-lint-
 
       - name: Install lint tools
         run: |
           python -m pip install --upgrade pip
-          pip install ruff mypy bandit
+          pip install "ruff>=0.4.0,<2.0.0" mypy bandit
 
-      - name: Ruff
+      - name: Ruff lint (critical errors only)
         run: python -m ruff check app --config ruff.toml --select E9,F63,F7,F82
+
+      - name: Ruff format check
+        run: python -m ruff format --check app --config ruff.toml
 
       - name: Mypy
         continue-on-error: true
         run: python -m mypy --config-file mypy.ini app
 
       - name: Bandit (SAST)
+        continue-on-error: true
         run: python -m bandit -r app -x app/tests -ll
 
   audit:

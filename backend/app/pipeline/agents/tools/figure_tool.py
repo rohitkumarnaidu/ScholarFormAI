@@ -4,6 +4,7 @@
 """
 Figure analysis tool for detecting and analyzing figures in documents.
 """
+
 import sys
 from typing import Optional, Type
 from pydantic import BaseModel, Field
@@ -21,6 +22,7 @@ BaseTool = _LangChainBaseTool if isinstance(_LangChainBaseTool, type) else objec
 
 class FigureToolInput(BaseModel):
     """Input schema for figure analysis tool."""
+
     file_path: str = Field(description="Path to the document file to analyze figures")
 
 
@@ -30,6 +32,7 @@ class FigureAnalysisTool(BaseTool):
 
     Uses LLM-based layout analysis (preferred) or Docling as fallback.
     """
+
     name: str = "analyze_figures"
     description: str = (
         "Detect and analyze figures in a document. "
@@ -48,12 +51,14 @@ class FigureAnalysisTool(BaseTool):
             return self._layout_analyzer
         try:
             from app.pipeline.parsing.llm_pdf_parser import LLMPDFParser
+
             self._layout_analyzer = LLMPDFParser()
             return self._layout_analyzer
         except Exception:
             pass
         try:
             from app.pipeline.services.docling_client import DoclingClient
+
             self._layout_analyzer = DoclingClient()
             return self._layout_analyzer
         except Exception:
@@ -99,6 +104,7 @@ class FigureAnalysisTool(BaseTool):
             }
 
             import json
+
             return json.dumps(result, indent=2)
 
         except Exception as e:

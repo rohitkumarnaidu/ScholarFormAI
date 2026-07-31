@@ -8,6 +8,7 @@ Extracted from the fat `document_service.py`. Handles the
 `document_shares` table: granting/revoking access, listing shared users,
 and checking permissions (owner or shared).
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -40,12 +41,19 @@ class DocumentShareService:
             client = get_supabase_client()
             if client is None:
                 raise RuntimeError("Supabase client not available.")
-            return client.table("document_shares").upsert({
-                "document_id": document_id,
-                "shared_with_user_id": shared_with_user_id,
-                "permission": permission,
-                "shared_by_user_id": shared_by_user_id,
-            }, on_conflict="document_id,shared_with_user_id").execute()
+            return (
+                client.table("document_shares")
+                .upsert(
+                    {
+                        "document_id": document_id,
+                        "shared_with_user_id": shared_with_user_id,
+                        "permission": permission,
+                        "shared_by_user_id": shared_by_user_id,
+                    },
+                    on_conflict="document_id,shared_with_user_id",
+                )
+                .execute()
+            )
 
         try:
             result = await asyncio.to_thread(run_share)
@@ -54,9 +62,7 @@ class DocumentShareService:
             logger.error("share_document(%s) failed: %s", document_id, exc)
             raise DatabaseUnavailableError(f"Failed to share document: {exc}") from exc
 
-    async def get_shared_documents(
-        self, user_id: str, limit: int = 20, offset: int = 0
-    ) -> List[Dict[str, Any]]:
+    async def get_shared_documents(self, user_id: str, limit: int = 20, offset: int = 0) -> List[Dict[str, Any]]:
         """Get documents shared with a user (joined with documents table)."""
         sb = get_supabase_client()
         if sb is None:
@@ -158,11 +164,13 @@ class DocumentShareService:
             return []
         try:
             result = await asyncio.to_thread(
-                lambda: get_supabase_client()
-                .table("document_shares")
-                .select("shared_with_user_id, permission, shared_by_user_id, created_at")
-                .eq("document_id", document_id)
-                .execute()
+                lambda: (
+                    get_supabase_client()
+                    .table("document_shares")
+                    .select("shared_with_user_id, permission, shared_by_user_id, created_at")
+                    .eq("document_id", document_id)
+                    .execute()
+                )
             )
             return result.data or []
         except Exception as exc:

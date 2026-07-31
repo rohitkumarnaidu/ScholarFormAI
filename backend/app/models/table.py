@@ -6,6 +6,7 @@ Table Model - Represents a table with rows, columns, and data.
 
 Tables are extracted by the tables/ pipeline stage.
 """
+
 import logging
 from typing import Optional, Dict, Any, List
 from pydantic import BaseModel, Field, field_validator
@@ -216,7 +217,10 @@ class Table(BaseModel):
         except Exception as exc:
             logger.error(
                 "Error in get_cell(%d, %d) for table '%s': %s",
-                row, col, self.table_id, exc,
+                row,
+                col,
+                self.table_id,
+                exc,
             )
         return None
 
@@ -245,6 +249,8 @@ class Table(BaseModel):
         except Exception as exc:
             logger.error(
                 "Error in get_row_data(%d) for table '%s': %s",
-                row, self.table_id, exc,
+                row,
+                self.table_id,
+                exc,
             )
         return []

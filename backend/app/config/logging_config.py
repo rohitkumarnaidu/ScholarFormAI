@@ -32,6 +32,7 @@ try:
 except OSError as _exc:
     # Fallback to a temp directory if the preferred path is not writable
     import tempfile
+
     LOGS_DIR = Path(tempfile.gettempdir()) / "scholarform_logs"
     LOGS_DIR.mkdir(parents=True, exist_ok=True)
     _bootstrap_logger.warning(
@@ -39,6 +40,7 @@ except OSError as _exc:
         LOGS_DIR,
         _exc,
     )
+
 
 # ── JSON Formatter ──────────────────────────────────────────────────────────────
 class JsonFormatter(logging.Formatter):
@@ -201,6 +203,7 @@ def setup_logging() -> logging.Logger:
     try:
         config = dict(LOGGING_CONFIG)
         import os as _os
+
         if _os.getenv("ENABLE_STRUCTURED_LOGGING", "").lower() in ("true", "1", "yes"):
             config["formatters"]["json"] = {"()": "app.config.logging_config.JsonFormatter"}
             config["handlers"]["console"]["formatter"] = "json"

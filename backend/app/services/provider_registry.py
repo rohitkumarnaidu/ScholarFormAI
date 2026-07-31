@@ -45,8 +45,14 @@ BUILTIN_PROVIDERS: Dict[str, Dict[str, Any]] = {
         "base_url": "https://api.openai.com/v1",
         "docs_url": "https://platform.openai.com/api-keys",
         "models": [
-            "gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-4",
-            "gpt-3.5-turbo", "o1", "o1-mini", "o3-mini",
+            "gpt-4o",
+            "gpt-4o-mini",
+            "gpt-4-turbo",
+            "gpt-4",
+            "gpt-3.5-turbo",
+            "o1",
+            "o1-mini",
+            "o3-mini",
         ],
         "env_key": "OPENAI_API_KEY",
         "env_key_actual": lambda: settings.OPENAI_API_KEY,
@@ -58,8 +64,10 @@ BUILTIN_PROVIDERS: Dict[str, Dict[str, Any]] = {
         "base_url": "https://api.anthropic.com/v1",
         "docs_url": "https://console.anthropic.com/settings/keys",
         "models": [
-            "claude-3-5-sonnet-20241022", "claude-3-5-haiku-20241022",
-            "claude-3-opus-20240229", "claude-3-sonnet-20240229",
+            "claude-3-5-sonnet-20241022",
+            "claude-3-5-haiku-20241022",
+            "claude-3-opus-20240229",
+            "claude-3-sonnet-20240229",
         ],
         "env_key": "ANTHROPIC_API_KEY",
         "env_key_actual": lambda: settings.ANTHROPIC_API_KEY,
@@ -71,8 +79,10 @@ BUILTIN_PROVIDERS: Dict[str, Dict[str, Any]] = {
         "base_url": "https://api.groq.com/openai/v1",
         "docs_url": "https://console.groq.com/keys",
         "models": [
-            "llama3-70b-8192", "llama3-8b-8192",
-            "mixtral-8x7b-32768", "gemma2-9b-it",
+            "llama3-70b-8192",
+            "llama3-8b-8192",
+            "mixtral-8x7b-32768",
+            "gemma2-9b-it",
         ],
         "env_key": "GROQ_API_KEY",
         "env_key_actual": lambda: settings.GROQ_API_KEY,
@@ -94,8 +104,10 @@ BUILTIN_PROVIDERS: Dict[str, Dict[str, Any]] = {
         "base_url": "https://openrouter.ai/api/v1",
         "docs_url": "https://openrouter.ai/keys",
         "models": [
-            "openai/gpt-4o", "openai/gpt-4o-mini",
-            "anthropic/claude-3.5-sonnet", "google/gemini-pro",
+            "openai/gpt-4o",
+            "openai/gpt-4o-mini",
+            "anthropic/claude-3.5-sonnet",
+            "google/gemini-pro",
             "meta-llama/llama-3.1-70b-instruct",
         ],
         "env_key": "OPENROUTER_API_KEY",
@@ -108,7 +120,9 @@ BUILTIN_PROVIDERS: Dict[str, Dict[str, Any]] = {
         "base_url": "https://generativelanguage.googleapis.com/v1beta",
         "docs_url": "https://aistudio.google.com/app/apikey",
         "models": [
-            "gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash",
+            "gemini-2.0-flash",
+            "gemini-1.5-pro",
+            "gemini-1.5-flash",
         ],
         "env_key": "GOOGLE_API_KEY",
         "env_key_actual": lambda: getattr(settings, "GOOGLE_API_KEY", None),
@@ -130,8 +144,10 @@ BUILTIN_PROVIDERS: Dict[str, Dict[str, Any]] = {
         "base_url": "https://api.mistral.ai/v1",
         "docs_url": "https://console.mistral.ai/api-keys/",
         "models": [
-            "mistral-large-latest", "mistral-small-latest",
-            "open-mistral-7b", "codestral-latest",
+            "mistral-large-latest",
+            "mistral-small-latest",
+            "open-mistral-7b",
+            "codestral-latest",
         ],
         "env_key": "MISTRAL_API_KEY",
         "env_key_actual": lambda: getattr(settings, "MISTRAL_API_KEY", None),
@@ -162,7 +178,12 @@ BUILTIN_PROVIDERS: Dict[str, Dict[str, Any]] = {
 }
 
 OPENAI_COMPATIBLE_PROVIDERS = {
-    "openai", "groq", "deepseek", "openrouter", "nvidia", "mistral",
+    "openai",
+    "groq",
+    "deepseek",
+    "openrouter",
+    "nvidia",
+    "mistral",
 }
 
 
@@ -179,6 +200,7 @@ def _get_user_configured_providers(db: Session, user_id: str) -> set[str]:
     try:
         from app.models.api_key import UserApiKey
         from sqlalchemy import select
+
         rows = db.execute(
             select(UserApiKey.provider).where(
                 UserApiKey.user_id == user_id,
@@ -211,17 +233,19 @@ def list_available_models(
         base_url = info.get("base_url", "")
         if callable(base_url):
             base_url = base_url()
-        result.append({
-            "provider_id": provider_id,
-            "name": info["name"],
-            "models": info.get("models", []),
-            "default_model": info.get("default_model", ""),
-            "base_url": base_url,
-            "docs_url": info.get("docs_url"),
-            "key_configured": key_configured,
-            "is_local": info.get("is_local", False),
-            "is_custom": False,
-        })
+        result.append(
+            {
+                "provider_id": provider_id,
+                "name": info["name"],
+                "models": info.get("models", []),
+                "default_model": info.get("default_model", ""),
+                "base_url": base_url,
+                "docs_url": info.get("docs_url"),
+                "key_configured": key_configured,
+                "is_local": info.get("is_local", False),
+                "is_custom": False,
+            }
+        )
 
     # Add user's custom providers from DB
     if db and user_id:
@@ -235,18 +259,20 @@ def list_available_models(
             )
             rows = db.execute(query).scalars().all()
             for cp in rows:
-                result.append({
-                    "provider_id": f"custom_{cp.id}",
-                    "name": cp.name,
-                    "models": cp.models or [],
-                    "default_model": (cp.models or [None])[0] or "",
-                    "base_url": cp.base_url,
-                    "docs_url": None,
-                    "key_configured": bool(cp.api_key_encrypted) or cp.is_local,
-                    "is_local": cp.is_local,
-                    "is_custom": True,
-                    "custom_provider_id": str(cp.id),
-                })
+                result.append(
+                    {
+                        "provider_id": f"custom_{cp.id}",
+                        "name": cp.name,
+                        "models": cp.models or [],
+                        "default_model": (cp.models or [None])[0] or "",
+                        "base_url": cp.base_url,
+                        "docs_url": None,
+                        "key_configured": bool(cp.api_key_encrypted) or cp.is_local,
+                        "is_local": cp.is_local,
+                        "is_custom": True,
+                        "custom_provider_id": str(cp.id),
+                    }
+                )
         except Exception as exc:
             logger.warning("Failed to load custom providers: %s", exc)
 

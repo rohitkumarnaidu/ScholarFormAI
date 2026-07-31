@@ -66,7 +66,8 @@ class AgentPipeline:
                 parser.last_turn.get("user", ""),
                 parser.last_turn.get("assistant", ""),
             )
-        if await self._is_canceled(session_id): return
+        if await self._is_canceled(session_id):
+            return
         config.update(task_spec)
         await self._update_status(
             session_id,
@@ -104,7 +105,8 @@ class AgentPipeline:
         )
 
         # Step 5: Outline Generation
-        if await self._is_canceled(session_id): return
+        if await self._is_canceled(session_id):
+            return
         outline = await self._generate_outline(session_id, task_spec, template_rules, web_results, user_id=user_id)
         await self._update_status(
             session_id,
@@ -171,7 +173,8 @@ class AgentPipeline:
                 "previous_sections": sections_map,
             }
             prompt = get_section_prompt(section_name, context)
-            if await self._is_canceled(session_id): return
+            if await self._is_canceled(session_id):
+                return
             section_text = await self._generate_section(session_id, section_name, prompt, user_id=user_id)
 
             sections_map[section_name] = section_text
@@ -312,9 +315,7 @@ class AgentPipeline:
         sections_map = self._normalize_sections(content_json.get("sections") or {})
 
         last_messages = await self.session_service.get_messages(session_id, limit=20)
-        history = "\n".join(
-            f"{m.get('role')}: {m.get('content')}" for m in last_messages if m.get("content")
-        )
+        history = "\n".join(f"{m.get('role')}: {m.get('content')}" for m in last_messages if m.get("content"))
 
         system = "You are an academic writing assistant. Rewrite the requested section only."
         user_prompt = (
@@ -477,7 +478,8 @@ class AgentPipeline:
         await self._emit_sse(session_id, stage="quality_boost", progress=96, message="Improving draft quality.")
 
         for section_name in low_sections:
-            if await self._is_canceled(session_id): return
+            if await self._is_canceled(session_id):
+                return
             context = {
                 "task_spec": task_spec,
                 "template_rules": template_rules,
@@ -629,7 +631,9 @@ class AgentPipeline:
         )
         return outline
 
-    async def _generate_section(self, session_id: str, section_name: str, prompt: str, user_id: Optional[str] = None) -> str:
+    async def _generate_section(
+        self, session_id: str, section_name: str, prompt: str, user_id: Optional[str] = None
+    ) -> str:
         system = f"You are an academic writing assistant. Draft the '{section_name}' section."
         user = sanitize_for_llm(prompt)
         text = await self._llm_text(session_id, system, user, max_tokens=1400, user_id=user_id)
@@ -732,7 +736,9 @@ class AgentPipeline:
         )
         return str(output_path)
 
-    async def _llm_text(self, session_id: str, system: str, user: str, max_tokens: int = 1200, user_id: Optional[str] = None) -> str:
+    async def _llm_text(
+        self, session_id: str, system: str, user: str, max_tokens: int = 1200, user_id: Optional[str] = None
+    ) -> str:
         result = await asyncio.to_thread(
             generate_with_fallback,
             [
@@ -747,7 +753,9 @@ class AgentPipeline:
         await self._persist_llm_turn(session_id, system, user, text)
         return text
 
-    async def _llm_json(self, session_id: str, system: str, user: str, user_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
+    async def _llm_json(
+        self, session_id: str, system: str, user: str, user_id: Optional[str] = None
+    ) -> Optional[Dict[str, Any]]:
         text = await self._llm_text(session_id, system, user, max_tokens=1200, user_id=user_id)
         if not text:
             return None
@@ -900,7 +908,9 @@ class AgentPipeline:
         try:
             session = await self.session_service.get_session(session_id)
             if session and session.get("status") in ("canceled", "stopping"):
-                logger.info(f"Agent task for session {session_id} detected cancellation status: {session.get('status')}")
+                logger.info(
+                    f"Agent task for session {session_id} detected cancellation status: {session.get('status')}"
+                )
                 return True
         except Exception as exc:
             logger.warning(f"Error checking cancellation status for session {session_id}: {exc}")

@@ -74,9 +74,7 @@ class ParserFactory:
         try:
             self.parsers.append(HtmlParser())
         except ImportError:
-            logger.info(
-                "HTML parsing not available (install beautifulsoup4: pip install beautifulsoup4)"
-            )
+            logger.info("HTML parsing not available (install beautifulsoup4: pip install beautifulsoup4)")
         except Exception as e:
             logger.warning("HtmlParser initialization failed: %s", e)
 

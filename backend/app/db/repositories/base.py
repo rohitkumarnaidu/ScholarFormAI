@@ -48,10 +48,7 @@ async def execute_with_transient_retry(
             return await asyncio.to_thread(operation)
         except Exception as exc:
             attempt += 1
-            should_retry = (
-                is_transient_supabase_error(exc)
-                and attempt < max_attempts
-            )
+            should_retry = is_transient_supabase_error(exc) and attempt < max_attempts
             if not should_retry:
                 raise
 

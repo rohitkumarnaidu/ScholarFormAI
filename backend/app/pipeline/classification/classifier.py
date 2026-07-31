@@ -24,53 +24,93 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class ContentClassifier(PipelineStage):
     """
     Assigns semantic BlockTypes to blocks based on structure and heuristics.
-    
+
     Rules:
     - Headings identified in structure detection get HEADING_* types (or specific ones like ABSTRACT_HEADING)
     - Content between headings gets BODY type (or specific ones like ABSTRACT_BODY)
     - Front matter (before first section) is analyzed for Title, Author, Affiliation
     - References section gets REFERENCE_ENTRY types
     """
-    
+
     def __init__(self):
         """Initialize the classifier."""
         # Keywords that indentify specific section types
         self.abstract_keywords = ["abstract", "summary", "resumen", "résumé"]
         self.keywords_keywords = ["keywords", "key words", "palabras clave", "mots-clés"]
-        self.acknowledgements_keywords = ["acknowledgements", "acknowledgments", "funding", "conflicts of interest", "author contributions", "declaration of interest"]
+        self.acknowledgements_keywords = [
+            "acknowledgements",
+            "acknowledgments",
+            "funding",
+            "conflicts of interest",
+            "author contributions",
+            "declaration of interest",
+        ]
         self.references_keywords = {"references", "bibliography", "works cited"}
-        
+
         # FEAT 49: Footnote and appendix detection patterns
         self.footnote_patterns = [
-            r'^\d+\s',       # "1 Some footnote text"
-            r'^\[\d+\]',     # "[1] Footnote"
-            r'^ ',           # Dagger footnote marker
-            r'^‡',           # Double dagger
-            r'^※',           # Reference mark
-            r'^\*\s',        # Asterisk footnote
+            r"^\d+\s",  # "1 Some footnote text"
+            r"^\[\d+\]",  # "[1] Footnote"
+            r"^ ",  # Dagger footnote marker
+            r"^‡",  # Double dagger
+            r"^※",  # Reference mark
+            r"^\*\s",  # Asterisk footnote
         ]
         self.appendix_keywords = [
-            "appendix", "annex", "annexure",
-            "supplement", "supplementary",
-            "supporting information", "supporting material",
+            "appendix",
+            "annex",
+            "annexure",
+            "supplement",
+            "supplementary",
+            "supporting information",
+            "supporting material",
         ]
-        
+
         # Heuristics for affiliation detection
         self.affiliation_indicators = {
-            "university", "college", "department", "institute", "school", 
-            "laboratory", "center", "centre", "hospital", "clinic",
-            "corp", "inc", "ltd", "gmbh", "foundation", "limited",
-            "road", "st.", "street", "ave", "avenue", "box",
-            "email", "ph.", "fax", "tel"
+            "university",
+            "college",
+            "department",
+            "institute",
+            "school",
+            "laboratory",
+            "center",
+            "centre",
+            "hospital",
+            "clinic",
+            "corp",
+            "inc",
+            "ltd",
+            "gmbh",
+            "foundation",
+            "limited",
+            "road",
+            "st.",
+            "street",
+            "ave",
+            "avenue",
+            "box",
+            "email",
+            "ph.",
+            "fax",
+            "tel",
         }
-        
+
         # Keywords that exclude a block from being an AUTHOR
         self.author_exclusion_keywords = {
-            "university", "college", "department", "institute", "school", 
-            "laboratory", "center", "centre", "division"
+            "university",
+            "college",
+            "department",
+            "institute",
+            "school",
+            "laboratory",
+            "center",
+            "centre",
+            "division",
         }
 
         # LLM classification tuning
@@ -87,11 +127,7 @@ class ContentClassifier(PipelineStage):
         return False
 
     def _resolve_heading_type(self, block: Block) -> tuple[BlockType, str]:
-        level = (
-            block.metadata.get("level")
-            or block.metadata.get("heading_level")
-            or block.level
-        )
+        level = block.metadata.get("level") or block.metadata.get("heading_level") or block.level
         if level == 2:
             return BlockType.HEADING_2, "HEADING_2"
         if level == 3:
@@ -231,9 +267,7 @@ class ContentClassifier(PipelineStage):
         except Exception as exc:
             logger.error("ContentClassifier.process failed: %s", exc, exc_info=True)
             document.add_processing_stage(
-                stage_name="classification",
-                status="error",
-                message=f"Classification failed: {exc}"
+                stage_name="classification", status="error", message=f"Classification failed: {exc}"
             )
             return document
 
@@ -255,327 +289,342 @@ class ContentClassifier(PipelineStage):
 
         # 2. Main Classification Loop
         for i, block in enumerate(blocks):
-          try:
-            # A) HARD ISOLATION GUARD: Skip protected structural blocks
-            # These must never receive semantic BlockType assignments
-            if (block.metadata.get("is_header") or
-                    block.metadata.get("is_footer") or
-                    block.metadata.get("is_footnote") or
-                    block.metadata.get("is_endnote")):
-                continue
+            try:
+                # A) HARD ISOLATION GUARD: Skip protected structural blocks
+                # These must never receive semantic BlockType assignments
+                if (
+                    block.metadata.get("is_header")
+                    or block.metadata.get("is_footer")
+                    or block.metadata.get("is_footnote")
+                    or block.metadata.get("is_endnote")
+                ):
+                    continue
 
-            # B) PROTECTED TYPE GUARD: Title fixed per structure detector
-            # TITLE is authoritative from Stage 1/Structure Detection
-            if block.block_type == BlockType.TITLE:
-                block.semantic_intent = "TITLE"
-                block.classification_confidence = 1.0
-                block.metadata["classification_method"] = "structure_title_preserved"
+                # B) PROTECTED TYPE GUARD: Title fixed per structure detector
+                # TITLE is authoritative from Stage 1/Structure Detection
+                if block.block_type == BlockType.TITLE:
+                    block.semantic_intent = "TITLE"
+                    block.classification_confidence = 1.0
+                    block.metadata["classification_method"] = "structure_title_preserved"
+                    if i < first_section_index:
+                        title_found = True
+                    continue
+
+                text = block.text.strip() if block.text else ""
+                if not text:
+                    continue
+
+                lower_text = text.lower()
+
+                # 3️⃣ FIGURE CAPTION RULE
+                if lower_text.startswith("figure ") or lower_text.startswith("fig. "):
+                    block.block_type = BlockType.FIGURE_CAPTION
+                    block.semantic_intent = "FIGURE_CAPTION"
+                    block.classification_confidence = 1.0
+                    block.metadata["semantic_intent"] = "FIGURE_CAPTION"
+                    block.metadata["classification_confidence"] = 1.0
+                    block.metadata["classification_method"] = "deterministic_figure_caption_rule"
+                    continue
+
+                # 4️⃣ TABLE CAPTION RULE
+                if lower_text.startswith("table ") or lower_text.startswith("tab. "):
+                    block.block_type = BlockType.TABLE_CAPTION
+                    block.semantic_intent = "TABLE_CAPTION"
+                    block.classification_confidence = 1.0
+                    block.metadata["semantic_intent"] = "TABLE_CAPTION"
+                    block.metadata["classification_confidence"] = 1.0
+                    block.metadata["classification_method"] = "deterministic_table_caption_rule"
+                    continue
+
+                # --- ZONE 1: Front Matter ---
                 if i < first_section_index:
-                    title_found = True
-                continue
+                    # 🆕 GROBID INTEGRATION: Check for GROBID metadata first
+                    # Access via ai_hints dict on DocumentMetadata model
+                    grobid_data = (document.metadata.ai_hints or {}).get("grobid_metadata", {})
 
-            text = block.text.strip() if block.text else ""
-            if not text:
-                continue
-
-            lower_text = text.lower()
-
-            # 3️⃣ FIGURE CAPTION RULE
-            if lower_text.startswith("figure ") or lower_text.startswith("fig. "):
-                block.block_type = BlockType.FIGURE_CAPTION
-                block.semantic_intent = "FIGURE_CAPTION"
-                block.classification_confidence = 1.0
-                block.metadata["semantic_intent"] = "FIGURE_CAPTION"
-                block.metadata["classification_confidence"] = 1.0
-                block.metadata["classification_method"] = "deterministic_figure_caption_rule"
-                continue
-
-            # 4️⃣ TABLE CAPTION RULE
-            if lower_text.startswith("table ") or lower_text.startswith("tab. "):
-                block.block_type = BlockType.TABLE_CAPTION
-                block.semantic_intent = "TABLE_CAPTION"
-                block.classification_confidence = 1.0
-                block.metadata["semantic_intent"] = "TABLE_CAPTION"
-                block.metadata["classification_confidence"] = 1.0
-                block.metadata["classification_method"] = "deterministic_table_caption_rule"
-                continue
-
-            # --- ZONE 1: Front Matter ---
-            if i < first_section_index:
-                # 🆕 GROBID INTEGRATION: Check for GROBID metadata first
-                # Access via ai_hints dict on DocumentMetadata model
-                grobid_data = (document.metadata.ai_hints or {}).get("grobid_metadata", {})
-                
-                if not title_found:
-                    # Prioritize GROBID title if available
-                    if grobid_data and grobid_data.get("title") and text in grobid_data.get("title", ""):
-                        block.block_type = BlockType.TITLE
-                        block.semantic_intent = "TITLE"
-                        block.classification_confidence = grobid_data.get("confidence", 0.9)
-                        block.metadata["semantic_intent"] = "TITLE"
-                        block.metadata["classification_confidence"] = grobid_data.get("confidence", 0.9)
-                        block.metadata["classification_method"] = "grobid_title"
-                        title_found = True
-                        logger.debug(f"GROBID title detected: {text[:50]}")
+                    if not title_found:
+                        # Prioritize GROBID title if available
+                        if grobid_data and grobid_data.get("title") and text in grobid_data.get("title", ""):
+                            block.block_type = BlockType.TITLE
+                            block.semantic_intent = "TITLE"
+                            block.classification_confidence = grobid_data.get("confidence", 0.9)
+                            block.metadata["semantic_intent"] = "TITLE"
+                            block.metadata["classification_confidence"] = grobid_data.get("confidence", 0.9)
+                            block.metadata["classification_method"] = "grobid_title"
+                            title_found = True
+                            logger.debug(f"GROBID title detected: {text[:50]}")
+                        else:
+                            # Fallback to position-based
+                            block.block_type = BlockType.TITLE
+                            block.semantic_intent = "TITLE"
+                            block.classification_confidence = 1.0
+                            block.metadata["semantic_intent"] = "TITLE"
+                            block.metadata["classification_confidence"] = 1.0
+                            block.metadata["classification_method"] = "position_front_first"
+                            title_found = True
                     else:
-                        # Fallback to position-based
-                        block.block_type = BlockType.TITLE
-                        block.semantic_intent = "TITLE"
-                        block.classification_confidence = 1.0
-                        block.metadata["semantic_intent"] = "TITLE"
-                        block.metadata["classification_confidence"] = 1.0
-                        block.metadata["classification_method"] = "position_front_first"
-                        title_found = True
-                else:
-                    # 🆕 GROBID AUTHOR/AFFILIATION DETECTION
-                    # Check if this block matches GROBID-extracted authors
-                    if grobid_data and grobid_data.get("authors"):
-                        is_grobid_author = self._match_grobid_author(text, grobid_data["authors"])
-                        is_grobid_affiliation = self._match_grobid_affiliation(text, grobid_data.get("affiliations", []))
-                        
-                        if is_grobid_author:
+                        # 🆕 GROBID AUTHOR/AFFILIATION DETECTION
+                        # Check if this block matches GROBID-extracted authors
+                        if grobid_data and grobid_data.get("authors"):
+                            is_grobid_author = self._match_grobid_author(text, grobid_data["authors"])
+                            is_grobid_affiliation = self._match_grobid_affiliation(
+                                text, grobid_data.get("affiliations", [])
+                            )
+
+                            if is_grobid_author:
+                                block.block_type = BlockType.AUTHOR
+                                block.semantic_intent = "AUTHOR"
+                                block.classification_confidence = grobid_data.get("confidence", 0.9)
+                                block.metadata["semantic_intent"] = "AUTHOR"
+                                block.metadata["classification_confidence"] = grobid_data.get("confidence", 0.9)
+                                block.metadata["classification_method"] = "grobid_author"
+                                logger.debug(f"GROBID author detected: {text[:50]}")
+                                continue
+
+                            if is_grobid_affiliation:
+                                block.block_type = BlockType.AFFILIATION
+                                block.semantic_intent = "AFFILIATION"
+                                block.classification_confidence = grobid_data.get("confidence", 0.9)
+                                block.metadata["semantic_intent"] = "AFFILIATION"
+                                block.metadata["classification_confidence"] = grobid_data.get("confidence", 0.9)
+                                block.metadata["classification_method"] = "grobid_affiliation"
+                                logger.debug(f"GROBID affiliation detected: {text[:50]}")
+                                continue
+
+                        # Fallback to existing regex rules if GROBID didn't match
+                        # 1️⃣ AUTHOR RULE (ENHANCED - No Hard Comma Requirement)
+                        # Detect based on capitalized words, with comma as confidence bonus
+                        cap_words = re.findall(r"\b[A-Z][A-Za-z]*\b", text)
+                        has_academic = any(kw in lower_text for kw in self.author_exclusion_keywords)
+
+                        # Base confidence from capitalized word count
+                        if 2 <= len(cap_words) <= 6 and not has_academic:
+                            confidence = 0.6  # Base confidence
+
+                            # SOFT BONUS: Comma presence increases confidence
+                            if "," in text:
+                                confidence += 0.1
+
                             block.block_type = BlockType.AUTHOR
                             block.semantic_intent = "AUTHOR"
-                            block.classification_confidence = grobid_data.get("confidence", 0.9)
+                            block.classification_confidence = confidence
                             block.metadata["semantic_intent"] = "AUTHOR"
-                            block.metadata["classification_confidence"] = grobid_data.get("confidence", 0.9)
-                            block.metadata["classification_method"] = "grobid_author"
-                            logger.debug(f"GROBID author detected: {text[:50]}")
+                            block.metadata["classification_confidence"] = confidence
+                            block.metadata["classification_method"] = "regex_author_rule_enhanced"
                             continue
-                        
-                        if is_grobid_affiliation:
+
+                        # 2️⃣ AFFILIATION RULE (LEGACY)
+                        # contain keywords: University, Department, Institute, College, Laboratory
+                        affiliation_keywords = ["University", "Department", "Institute", "College", "Laboratory"]
+                        if any(kw in text for kw in affiliation_keywords):
                             block.block_type = BlockType.AFFILIATION
                             block.semantic_intent = "AFFILIATION"
-                            block.classification_confidence = grobid_data.get("confidence", 0.9)
+                            block.classification_confidence = 0.7  # Lower confidence for regex
                             block.metadata["semantic_intent"] = "AFFILIATION"
-                            block.metadata["classification_confidence"] = grobid_data.get("confidence", 0.9)
-                            block.metadata["classification_method"] = "grobid_affiliation"
-                            logger.debug(f"GROBID affiliation detected: {text[:50]}")
+                            block.metadata["classification_confidence"] = 0.7
+                            block.metadata["classification_method"] = "regex_affiliation_rule"
                             continue
-                    
-                    # Fallback to existing regex rules if GROBID didn't match
-                    # 1️⃣ AUTHOR RULE (ENHANCED - No Hard Comma Requirement)
-                    # Detect based on capitalized words, with comma as confidence bonus
-                    cap_words = re.findall(r'\b[A-Z][A-Za-z]*\b', text)
-                    has_academic = any(kw in lower_text for kw in self.author_exclusion_keywords)
-                    
-                    # Base confidence from capitalized word count
-                    if 2 <= len(cap_words) <= 6 and not has_academic:
-                        confidence = 0.6  # Base confidence
-                        
-                        # SOFT BONUS: Comma presence increases confidence
-                        if ',' in text:
-                            confidence += 0.1
-                            
-                        block.block_type = BlockType.AUTHOR
-                        block.semantic_intent = "AUTHOR"
-                        block.classification_confidence = confidence
-                        block.metadata["semantic_intent"] = "AUTHOR"
-                        block.metadata["classification_confidence"] = confidence
-                        block.metadata["classification_method"] = "regex_author_rule_enhanced"
-                        continue
 
-                    # 2️⃣ AFFILIATION RULE (LEGACY)
-                    # contain keywords: University, Department, Institute, College, Laboratory
-                    affiliation_keywords = ["University", "Department", "Institute", "College", "Laboratory"]
-                    if any(kw in text for kw in affiliation_keywords):
-                        block.block_type = BlockType.AFFILIATION
-                        block.semantic_intent = "AFFILIATION"
-                        block.classification_confidence = 0.7  # Lower confidence for regex
-                        block.metadata["semantic_intent"] = "AFFILIATION"
-                        block.metadata["classification_confidence"] = 0.7
-                        block.metadata["classification_method"] = "regex_affiliation_rule"
-                        continue
+                        # 3️⃣ EMAIL/CORRESPONDENCE RULE (Strong Indicator)
+                        email_pattern = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
+                        if re.search(email_pattern, text):
+                            # If it looks like an affiliation too, prioritize affiliation
+                            if self._is_likely_affiliation(text):
+                                block.block_type = BlockType.AFFILIATION
+                                block.semantic_intent = "AFFILIATION"
+                                block.classification_confidence = 0.9  # High confidence due to email
+                                block.metadata["classification_method"] = "regex_email_affiliation"
+                            else:
+                                block.block_type = BlockType.AUTHOR
+                                block.semantic_intent = "AUTHOR"
+                                block.classification_confidence = 0.9  # High confidence due to email
+                                block.metadata["classification_method"] = "regex_email_author"
+                            continue
 
-                    
-                    # 3️⃣ EMAIL/CORRESPONDENCE RULE (Strong Indicator)
-                    email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-                    if re.search(email_pattern, text):
-                        # If it looks like an affiliation too, prioritize affiliation
-                        if self._is_likely_affiliation(text):
-                             block.block_type = BlockType.AFFILIATION
-                             block.semantic_intent = "AFFILIATION"
-                             block.classification_confidence = 0.9  # High confidence due to email
-                             block.metadata["classification_method"] = "regex_email_affiliation"
+                        # Fallback for Front Matter (keep existing heuristic if no deterministic rule matches)
+                        is_affiliation = self._is_likely_affiliation(text)
+                        if is_affiliation:
+                            block.block_type = BlockType.AFFILIATION
+                            block.semantic_intent = "AFFILIATION"
+                            block.metadata["semantic_intent"] = "AFFILIATION"
+                            block.classification_confidence = 0.75  # Boosted slightly for zone 1
                         else:
-                             block.block_type = BlockType.AUTHOR
-                             block.semantic_intent = "AUTHOR"
-                             block.classification_confidence = 0.9  # High confidence due to email
-                             block.metadata["classification_method"] = "regex_email_author"
-                        continue
+                            block.block_type = BlockType.AUTHOR
+                            block.semantic_intent = "AUTHOR"
+                            block.metadata["semantic_intent"] = "AUTHOR"
 
-                    # Fallback for Front Matter (keep existing heuristic if no deterministic rule matches)
-                    is_affiliation = self._is_likely_affiliation(text)
-                    if is_affiliation:
-                        block.block_type = BlockType.AFFILIATION
-                        block.semantic_intent = "AFFILIATION"
-                        block.metadata["semantic_intent"] = "AFFILIATION"
-                        block.classification_confidence = 0.75 # Boosted slightly for zone 1
+                            # Boost confidence if it looks like a clean name (2-3 words, capitalized)
+                            words = text.split()
+                            if 1 <= len(words) <= 4 and text.istitle():
+                                block.classification_confidence = 0.75
+                                block.metadata["classification_method"] = "heuristic_front_name_likely"
+                            else:
+                                block.classification_confidence = settings.HEURISTIC_CONFIDENCE_MEDIUM
+
+                        block.metadata["classification_confidence"] = block.classification_confidence
+                        block.metadata["classification_method"] = block.metadata.get(
+                            "classification_method", "heuristic_front"
+                        )
+
+                # --- ZONE 3: References ---
+                elif references_start_index is not None and i >= references_start_index:
+                    if i == references_start_index:
+                        block.block_type = BlockType.REFERENCES_HEADING
+                        block.semantic_intent = "REFERENCES_HEADING"
+                        block.classification_confidence = 1.0
+                        block.metadata["semantic_intent"] = "REFERENCES_HEADING"
+                        block.metadata["classification_confidence"] = 1.0
+                        block.metadata["classification_method"] = "structure_ref_heading"
                     else:
-                        block.block_type = BlockType.AUTHOR
-                        block.semantic_intent = "AUTHOR"
-                        block.metadata["semantic_intent"] = "AUTHOR"
-                        
-                        # Boost confidence if it looks like a clean name (2-3 words, capitalized)
-                        words = text.split()
-                        if 1 <= len(words) <= 4 and text.istitle():
-                             block.classification_confidence = 0.75
-                             block.metadata["classification_method"] = "heuristic_front_name_likely"
-                        else:
-                             block.classification_confidence = settings.HEURISTIC_CONFIDENCE_MEDIUM
-                             
-                    block.metadata["classification_confidence"] = block.classification_confidence
-                    block.metadata["classification_method"] = block.metadata.get("classification_method", "heuristic_front")
+                        if block.metadata.get("is_heading_candidate"):
+                            if block.level == 1:
+                                block.block_type = BlockType.HEADING_1
+                                block.semantic_intent = "HEADING_1"
+                                block.classification_confidence = 1.0
+                                block.metadata["semantic_intent"] = "HEADING_1"
+                                block.metadata["classification_confidence"] = 1.0
+                                continue
 
-            # --- ZONE 3: References ---
-            elif references_start_index is not None and i >= references_start_index:
-                if i == references_start_index:
-                    block.block_type = BlockType.REFERENCES_HEADING
-                    block.semantic_intent = "REFERENCES_HEADING"
-                    block.classification_confidence = 1.0
-                    block.metadata["semantic_intent"] = "REFERENCES_HEADING"
-                    block.metadata["classification_confidence"] = 1.0
-                    block.metadata["classification_method"] = "structure_ref_heading"
+                        block.block_type = BlockType.REFERENCE_ENTRY
+                        block.semantic_intent = "REFERENCE_ENTRY"
+                        block.classification_confidence = settings.HEURISTIC_CONFIDENCE_HIGH
+                        block.metadata["semantic_intent"] = "REFERENCE_ENTRY"
+                        block.metadata["classification_confidence"] = settings.HEURISTIC_CONFIDENCE_HIGH
+                        block.metadata["classification_method"] = "structure_ref_entry"
+
+                # --- ZONE 2: Body ---
                 else:
                     if block.metadata.get("is_heading_candidate"):
-                        if block.level == 1:
+                        level = block.metadata.get("level", 1)
+                        section_name = (block.section_name or "").lower()
+
+                        if any(k in section_name for k in self.abstract_keywords):
+                            block.block_type = BlockType.ABSTRACT_HEADING
+                            block.semantic_intent = "ABSTRACT_HEADING"
+                            block.metadata["semantic_intent"] = "ABSTRACT_HEADING"
+                            current_section_type = "abstract"
+                        elif any(k in section_name for k in self.keywords_keywords):
+                            block.block_type = BlockType.KEYWORDS_HEADING
+                            block.semantic_intent = "KEYWORDS_HEADING"
+                            block.metadata["semantic_intent"] = "KEYWORDS_HEADING"
+                            current_section_type = "keywords"
+                        elif any(k in section_name for k in self.acknowledgements_keywords):
+                            # Specialized classification for supplemental sections
+                            text_lower = block.text.lower()
+                            if "funding" in text_lower or "grant" in text_lower:
+                                block.block_type = BlockType.FUNDING
+                                block.semantic_intent = "FUNDING"
+                                current_section_type = "funding"
+                            elif "conflict" in text_lower or "interest" in text_lower:
+                                block.block_type = BlockType.CONFLICT_OF_INTEREST
+                                block.semantic_intent = "CONFLICT_OF_INTEREST"
+                                current_section_type = "conflict"
+                            else:
+                                block.block_type = BlockType.ACKNOWLEDGEMENTS
+                                block.semantic_intent = "ACKNOWLEDGEMENTS"
+                                current_section_type = "acknowledgements"
+                        # FEAT 49: Appendix detection
+                        elif any(k in section_name for k in self.appendix_keywords):
                             block.block_type = BlockType.HEADING_1
-                            block.semantic_intent = "HEADING_1"
-                            block.classification_confidence = 1.0
-                            block.metadata["semantic_intent"] = "HEADING_1"
-                            block.metadata["classification_confidence"] = 1.0
-                            continue 
-                    
-                    block.block_type = BlockType.REFERENCE_ENTRY
-                    block.semantic_intent = "REFERENCE_ENTRY"
-                    block.classification_confidence = settings.HEURISTIC_CONFIDENCE_HIGH
-                    block.metadata["semantic_intent"] = "REFERENCE_ENTRY"
-                    block.metadata["classification_confidence"] = settings.HEURISTIC_CONFIDENCE_HIGH
-                    block.metadata["classification_method"] = "structure_ref_entry"
-
-            # --- ZONE 2: Body ---
-            else:
-                if block.metadata.get("is_heading_candidate"):
-                    level = block.metadata.get("level", 1)
-                    section_name = (block.section_name or "").lower()
-                    
-                    if any(k in section_name for k in self.abstract_keywords):
-                        block.block_type = BlockType.ABSTRACT_HEADING
-                        block.semantic_intent = "ABSTRACT_HEADING"
-                        block.metadata["semantic_intent"] = "ABSTRACT_HEADING"
-                        current_section_type = "abstract"
-                    elif any(k in section_name for k in self.keywords_keywords):
-                        block.block_type = BlockType.KEYWORDS_HEADING
-                        block.semantic_intent = "KEYWORDS_HEADING"
-                        block.metadata["semantic_intent"] = "KEYWORDS_HEADING"
-                        current_section_type = "keywords"
-                    elif any(k in section_name for k in self.acknowledgements_keywords):
-                        # Specialized classification for supplemental sections
-                        text_lower = block.text.lower()
-                        if "funding" in text_lower or "grant" in text_lower:
-                            block.block_type = BlockType.FUNDING
-                            block.semantic_intent = "FUNDING"
-                            current_section_type = "funding"
-                        elif "conflict" in text_lower or "interest" in text_lower:
-                            block.block_type = BlockType.CONFLICT_OF_INTEREST
-                            block.semantic_intent = "CONFLICT_OF_INTEREST"
-                            current_section_type = "conflict"
+                            block.semantic_intent = "APPENDIX_HEADING"
+                            block.metadata["semantic_intent"] = "APPENDIX_HEADING"
+                            block.metadata["is_appendix"] = True
+                            current_section_type = "appendix"
                         else:
-                            block.block_type = BlockType.ACKNOWLEDGEMENTS
-                            block.semantic_intent = "ACKNOWLEDGEMENTS"
-                            current_section_type = "acknowledgements"
-                    # FEAT 49: Appendix detection
-                    elif any(k in section_name for k in self.appendix_keywords):
-                        block.block_type = BlockType.HEADING_1
-                        block.semantic_intent = "APPENDIX_HEADING"
-                        block.metadata["semantic_intent"] = "APPENDIX_HEADING"
-                        block.metadata["is_appendix"] = True
-                        current_section_type = "appendix"
+                            if level == 1:
+                                block.block_type = BlockType.HEADING_1
+                                block.semantic_intent = "HEADING_1"
+                                block.metadata["semantic_intent"] = "HEADING_1"
+                            elif level == 2:
+                                block.block_type = BlockType.HEADING_2
+                                block.semantic_intent = "HEADING_2"
+                                block.metadata["semantic_intent"] = "HEADING_2"
+                            elif level == 3:
+                                block.block_type = BlockType.HEADING_3
+                                block.semantic_intent = "HEADING_3"
+                                block.metadata["semantic_intent"] = "HEADING_3"
+                            else:
+                                block.block_type = BlockType.HEADING_4
+                                block.semantic_intent = "HEADING_4"
+                                block.metadata["semantic_intent"] = "HEADING_4"
+                            current_section_type = "generic"
+
+                        block.classification_confidence = 1.0
+                        block.metadata["classification_confidence"] = 1.0
+                        block.metadata["classification_method"] = "structure_heading"
                     else:
-                        if level == 1:
-                            block.block_type = BlockType.HEADING_1
-                            block.semantic_intent = "HEADING_1"
-                            block.metadata["semantic_intent"] = "HEADING_1"
-                        elif level == 2:
-                            block.block_type = BlockType.HEADING_2
-                            block.semantic_intent = "HEADING_2"
-                            block.metadata["semantic_intent"] = "HEADING_2"
-                        elif level == 3:
-                            block.block_type = BlockType.HEADING_3
-                            block.semantic_intent = "HEADING_3"
-                            block.metadata["semantic_intent"] = "HEADING_3"
+                        # PROACTIVE FIX: Propagate Footnote status from Parser
+                        if block.metadata.get("is_footnote"):
+                            block.block_type = BlockType.FOOTNOTE
+                            block.semantic_intent = "FOOTNOTE"
+                            block.metadata["semantic_intent"] = "FOOTNOTE"
+                            continue
+
+                        if current_section_type == "abstract":
+                            block.block_type = BlockType.ABSTRACT_BODY
+                            block.semantic_intent = "ABSTRACT_BODY"
+                            block.metadata["semantic_intent"] = "ABSTRACT_BODY"
+                        elif current_section_type == "keywords":
+                            block.block_type = BlockType.KEYWORDS_BODY
+                            block.semantic_intent = "KEYWORDS_BODY"
+                            block.metadata["semantic_intent"] = "KEYWORDS_BODY"
                         else:
-                            block.block_type = BlockType.HEADING_4
-                            block.semantic_intent = "HEADING_4"
-                            block.metadata["semantic_intent"] = "HEADING_4"
-                        current_section_type = "generic"
-                    
-                    block.classification_confidence = 1.0
-                    block.metadata["classification_confidence"] = 1.0
-                    block.metadata["classification_method"] = "structure_heading"
-                else:
-                    # PROACTIVE FIX: Propagate Footnote status from Parser
-                    if block.metadata.get("is_footnote"):
-                        block.block_type = BlockType.FOOTNOTE
-                        block.semantic_intent = "FOOTNOTE"
-                        block.metadata["semantic_intent"] = "FOOTNOTE"
-                        continue
+                            block.block_type = BlockType.BODY
+                            block.semantic_intent = "BODY"
+                            block.metadata["semantic_intent"] = "BODY"
+                        block.classification_confidence = settings.HEURISTIC_CONFIDENCE_HIGH
+                        block.metadata["classification_confidence"] = settings.HEURISTIC_CONFIDENCE_HIGH
+                        block.metadata["classification_method"] = "structure_context"
 
-                    if current_section_type == "abstract":
-                        block.block_type = BlockType.ABSTRACT_BODY
-                        block.semantic_intent = "ABSTRACT_BODY"
-                        block.metadata["semantic_intent"] = "ABSTRACT_BODY"
-                    elif current_section_type == "keywords":
-                        block.block_type = BlockType.KEYWORDS_BODY
-                        block.semantic_intent = "KEYWORDS_BODY"
-                        block.metadata["semantic_intent"] = "KEYWORDS_BODY"
-                    else:
-                        block.block_type = BlockType.BODY
-                        block.semantic_intent = "BODY"
-                        block.metadata["semantic_intent"] = "BODY"
-                    block.classification_confidence = settings.HEURISTIC_CONFIDENCE_HIGH
-                    block.metadata["classification_confidence"] = settings.HEURISTIC_CONFIDENCE_HIGH
-                    block.metadata["classification_method"] = "structure_context"
-
-          except Exception as exc:
-              logger.warning("ContentClassifier: failed to classify block %d: %s", i, exc)
+            except Exception as exc:
+                logger.warning("ContentClassifier: failed to classify block %d: %s", i, exc)
 
         # 2.5 Optional LLM refinement (batch predictions)
         self._apply_llm_predictions(blocks, llm_predictions)
 
         # 3. NLP Fallback for UNKNOWNs
         self._nlp_classify_fallback(blocks)
-                
-                
+
         # 4. Enhanced NLP Fallback (Integrate Regex & SemanticParser Confidence)
         # ARCHITECTURAL INTEGRATION: Use NLP confidence to improve scoring
         # while preserving deterministic structural classification.
         for block in blocks:
             # Skip protected structural blocks
-            if (block.metadata.get("is_header") or 
-                block.metadata.get("is_footer") or 
-                block.metadata.get("is_footnote") or 
-                block.metadata.get("is_endnote")):
+            if (
+                block.metadata.get("is_header")
+                or block.metadata.get("is_footer")
+                or block.metadata.get("is_footnote")
+                or block.metadata.get("is_endnote")
+            ):
                 continue
 
             # 4.1 Strong Regex Heuristics for Common Headings (Fix for DOCX "Low Confidence")
             text = block.text.strip()
             if not text:
                 continue
-                
+
             # Detect standard academic headings if not already classified as heading
             if block.block_type in [BlockType.UNKNOWN, BlockType.BODY]:
                 # Numbered headings: "1. Introduction", "2. Methods"
-                if re.match(r'^\d+\.\s+[A-Z][a-zA-Z\s]+$', text) and len(text) < 60:
+                if re.match(r"^\d+\.\s+[A-Z][a-zA-Z\s]+$", text) and len(text) < 60:
                     block.block_type = BlockType.HEADING_1
                     block.semantic_intent = "HEADING_1"
                     block.classification_confidence = 0.85
                     block.metadata["classification_method"] = "regex_numbered_heading"
                     continue
-                    
+
                 # Unnumbered standard headings
-                std_headings = ["introduction", "background", "methods", "methodology", 
-                                "results", "discussion", "conclusion", "conclusions", "references"]
+                std_headings = [
+                    "introduction",
+                    "background",
+                    "methods",
+                    "methodology",
+                    "results",
+                    "discussion",
+                    "conclusion",
+                    "conclusions",
+                    "references",
+                ]
                 if text.lower() in std_headings or text.lower().replace(":", "") in std_headings:
                     block.block_type = BlockType.HEADING_1
                     block.semantic_intent = "HEADING_1"
@@ -587,11 +636,11 @@ class ContentClassifier(PipelineStage):
                 # Structural fallback (deterministic, unchanged)
                 block.block_type = BlockType.BODY
                 block.semantic_intent = "BODY"
-                
+
                 # CONFIDENCE INTEGRATION: Use NLP confidence if available
                 # This does NOT change block_type, only improves confidence scoring
                 nlp_confidence = block.metadata.get("nlp_confidence", 0.0)
-                
+
                 if nlp_confidence > 0:
                     # Use NLP confidence (with minimum floor of 0.5)
                     confidence = max(nlp_confidence, 0.5)
@@ -603,7 +652,7 @@ class ContentClassifier(PipelineStage):
                     block.classification_confidence = settings.HEURISTIC_CONFIDENCE_LOW
                     block.metadata["classification_confidence"] = settings.HEURISTIC_CONFIDENCE_LOW
                     block.metadata["classification_method"] = "fallback_last_resort"
-                
+
         # Update processing history
         end_time = datetime.now(timezone.utc)
         duration_ms = int((end_time - start_time).total_seconds() * 1000)
@@ -612,16 +661,16 @@ class ContentClassifier(PipelineStage):
             stage_name="classification",
             status="success",
             message=f"Classified {len(blocks)} blocks",
-            duration_ms=duration_ms
+            duration_ms=duration_ms,
         )
 
         document.updated_at = datetime.now(timezone.utc)
         return document
-    
+
     def _find_first_section_index(self, blocks: List[Block]) -> int:
         """
         Find the index of the first heading block with safety limits.
-        
+
         If no headings exist, we limit the front-matter zone to a small prefix
         or until we hit a clear body paragraph (>300 chars).
         """
@@ -650,7 +699,7 @@ class ContentClassifier(PipelineStage):
             text = (block.text or "").strip()
             if len(text) > 300:
                 break
-                
+
             if block.metadata.get("is_heading_candidate"):
                 # Fix: Title is not a section start, so don't let it close the front matter zone
                 if block.block_type == BlockType.TITLE:
@@ -659,31 +708,29 @@ class ContentClassifier(PipelineStage):
 
             # Fallback heading detection: protects early major headings even when
             # structure detector is uncertain.
-            cleaned = re.sub(r'^\d+(?:\.\d+)*\.?\s*', '', text).strip().lower().rstrip(":")
+            cleaned = re.sub(r"^\d+(?:\.\d+)*\.?\s*", "", text).strip().lower().rstrip(":")
             if 1 <= len(cleaned.split()) <= 12 and len(cleaned) <= 90:
-                if re.match(r'^\d+(?:\.\d+)*\.?\s+[A-Z]', text):
+                if re.match(r"^\d+(?:\.\d+)*\.?\s+[A-Z]", text):
                     return i
                 if cleaned in fallback_heading_keywords:
                     return i
-        
-        # If no heading found within safety limits, return the end of 
+
+        # If no heading found within safety limits, return the end of
         # the potential metadata zone (not the end of the document).
         return min(12, len(blocks))
-        
+
     def _find_references_start_index(self, blocks: List[Block]) -> Optional[int]:
         """Find the index of the References heading."""
         for i, block in enumerate(blocks):
             if not block.metadata.get("is_heading_candidate"):
                 continue
-                
+
             # Check section name or text
             section = (block.section_name or "").lower()
             text = block.text.strip().lower()
-            
+
             # Simple check
-            if any(k in section for k in self.references_keywords) or \
-               any(k in text for k in self.references_keywords):
-                
+            if any(k in section for k in self.references_keywords) or any(k in text for k in self.references_keywords):
                 # Verify it's not a generic sentence like "See references for more info"
                 # Headings usually short.
                 if len(text) < 50:
@@ -694,25 +741,25 @@ class ContentClassifier(PipelineStage):
         """Heuristic check for affiliation content."""
         text_lower = text.lower()
         return any(indicator in text_lower for indicator in self.affiliation_indicators)
-    
+
     def _match_grobid_author(self, text: str, grobid_authors: List[Dict]) -> bool:
         """
         Check if block text matches any GROBID-extracted author.
-        
+
         Args:
             text: Block text to check
             grobid_authors: List of author dicts from GROBID
-            
+
         Returns:
             True if text matches an author name
         """
         text_lower = text.lower()
-        
+
         for author in grobid_authors:
             full_name = author.get("full_name", "").lower()
             given = author.get("given", "").lower()
             family = author.get("family", "").lower()
-            
+
             # Check if author name appears in text
             if full_name and full_name in text_lower:
                 return True
@@ -722,22 +769,22 @@ class ContentClassifier(PipelineStage):
                 # Check if it's not just a random word match
                 if len(family) > 3:  # Avoid matching short names
                     return True
-        
+
         return False
-    
+
     def _match_grobid_affiliation(self, text: str, grobid_affiliations: List[str]) -> bool:
         """
         Check if block text matches any GROBID-extracted affiliation.
-        
+
         Args:
             text: Block text to check
             grobid_affiliations: List of affiliation strings from GROBID
-            
+
         Returns:
             True if text matches an affiliation
         """
         text_lower = text.lower()
-        
+
         for affiliation in grobid_affiliations:
             if affiliation and affiliation.lower() in text_lower:
                 return True
@@ -749,9 +796,8 @@ class ContentClassifier(PipelineStage):
                 overlap = len(affiliation_words & text_words)
                 if affiliation_words and overlap / len(affiliation_words) > 0.7:
                     return True
-        
-        return False
 
+        return False
 
     def _nlp_classify_fallback(self, blocks: List[Block]):
         """
@@ -760,17 +806,19 @@ class ContentClassifier(PipelineStage):
         """
         for block in blocks:
             # Skip protected structural blocks from NLP fallback
-            if (block.metadata.get("is_header") or 
-                block.metadata.get("is_footer") or 
-                block.metadata.get("is_footnote") or 
-                block.metadata.get("is_endnote")):
+            if (
+                block.metadata.get("is_header")
+                or block.metadata.get("is_footer")
+                or block.metadata.get("is_footnote")
+                or block.metadata.get("is_endnote")
+            ):
                 continue
 
             if block.block_type == BlockType.UNKNOWN:
                 text = block.text.strip()
                 if not text:
                     continue
-                
+
                 # FEAT 49: Footnote pattern detection
                 is_footnote = any(re.match(pat, text) for pat in self.footnote_patterns)
                 if is_footnote:
@@ -781,13 +829,13 @@ class ContentClassifier(PipelineStage):
                     continue
 
                 # NLP Simulation: Check for Equation-like content
-                if re.search(r'[=+\-]{2,}|\\sum|\\alpha', text):
+                if re.search(r"[=+\-]{2,}|\\sum|\\alpha", text):
                     # FORENSIC FIX: Enable BlockType.EQUATION support
                     block.block_type = BlockType.EQUATION
                     block.semantic_intent = "EQUATION"
                     block.metadata["classification_method"] = "nlp_bert_high_confidence"
                     block.metadata["confidence"] = 0.92
-                
+
                 # NLP Simulation: Check for Table-like tab structures
                 elif text.count("\t") > 2 or text.count("|") > 2:
                     block.block_type = BlockType.BODY
@@ -799,10 +847,10 @@ class ContentClassifier(PipelineStage):
 def classify_content(document: Document) -> Document:
     """
     Classify content in a structured document.
-    
+
     Args:
         document: Document to classify
-    
+
     Returns:
         Document with classified blocks
     """

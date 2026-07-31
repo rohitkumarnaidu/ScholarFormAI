@@ -12,6 +12,7 @@ are async-safe and delegate to the supabase-py client.
 Internally delegates to proper Repository classes under
 ``app.db.repositories`` for maintainability.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -96,10 +97,7 @@ class DocumentCrudService:
                 return await asyncio.to_thread(operation)
             except Exception as exc:
                 attempt += 1
-                should_retry = (
-                    DocumentCrudService._is_transient_supabase_error(exc)
-                    and attempt < max_attempts
-                )
+                should_retry = DocumentCrudService._is_transient_supabase_error(exc) and attempt < max_attempts
                 if not should_retry:
                     raise
 
@@ -138,9 +136,7 @@ class DocumentCrudService:
 
     # ── Documents CRUD ───────────────────────────────────────────────────────
 
-    async def get_document(
-        self, doc_id: str, user_id: Optional[str] = None
-    ) -> Optional[Dict[str, Any]]:
+    async def get_document(self, doc_id: str, user_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
         doc_id = str(doc_id)
         if user_id:
             user_id = str(user_id)
@@ -212,8 +208,13 @@ class DocumentCrudService:
         self._documents._file_hash_warning_logged = self._file_hash_warning_logged
 
         result = await self._documents.create(
-            doc_id, user_id, filename, template,
-            original_file_path, formatting_options, file_hash,
+            doc_id,
+            user_id,
+            filename,
+            template,
+            original_file_path,
+            formatting_options,
+            file_hash,
         )
 
         # Reflect repository state back onto the service class.
@@ -222,9 +223,7 @@ class DocumentCrudService:
 
         return result
 
-    async def update_document(
-        self, doc_id: str, updates: Dict[str, Any]
-    ) -> Optional[Dict[str, Any]]:
+    async def update_document(self, doc_id: str, updates: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         doc_id = str(doc_id)
         sb = get_supabase_client()
         if sb is None:
@@ -233,9 +232,7 @@ class DocumentCrudService:
 
         return await self._documents.update(doc_id, updates)
 
-    async def delete_document(
-        self, document_id: str, user_id: Optional[str] = None
-    ) -> bool:
+    async def delete_document(self, document_id: str, user_id: Optional[str] = None) -> bool:
         doc_id = str(document_id)
         owner_id = str(user_id) if user_id else None
         sb = get_supabase_client()
@@ -376,8 +373,16 @@ class DocumentCrudService:
             return {"documents": [], "total": 0, "limit": limit, "offset": offset}
 
         doc_service = _get_impl_symbol("DocumentService")
-        list_fn = doc_service.list_documents if (doc_service and hasattr(doc_service, "list_documents")) else self.list_documents
-        count_fn = doc_service.count_documents if (doc_service and hasattr(doc_service, "count_documents")) else self.count_documents
+        list_fn = (
+            doc_service.list_documents
+            if (doc_service and hasattr(doc_service, "list_documents"))
+            else self.list_documents
+        )
+        count_fn = (
+            doc_service.count_documents
+            if (doc_service and hasattr(doc_service, "count_documents"))
+            else self.count_documents
+        )
 
         try:
             documents = await list_fn(
@@ -444,8 +449,14 @@ class DocumentCrudService:
             require_db_fn()
 
         doc_service = _get_impl_symbol("DocumentService")
-        get_doc_fn = doc_service.get_document if (doc_service and hasattr(doc_service, "get_document")) else self.get_document
-        del_doc_fn = doc_service.delete_document if (doc_service and hasattr(doc_service, "delete_document")) else self.delete_document
+        get_doc_fn = (
+            doc_service.get_document if (doc_service and hasattr(doc_service, "get_document")) else self.get_document
+        )
+        del_doc_fn = (
+            doc_service.delete_document
+            if (doc_service and hasattr(doc_service, "delete_document"))
+            else self.delete_document
+        )
         audit_svc = _get_impl_symbol("audit_log_service")
         os_mod = _get_impl_symbol("os", os)
 
@@ -491,5 +502,3 @@ class DocumentCrudService:
         except Exception as e:
             logger.error("Error deleting document %s: %s", job_id, e)
             raise HTTPException(status_code=500, detail=f"Delete failed: {str(e)}")
-
-

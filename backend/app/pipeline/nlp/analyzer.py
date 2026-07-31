@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import yake
+
     YAKE_AVAILABLE = True
 except ImportError:
     yake = None
@@ -31,12 +32,13 @@ _KEYBERT_MODEL = None
 
 from app.pipeline.base import PipelineStage
 
+
 class ContentAnalyzer(PipelineStage):
     """
     Analyzes document content to provide advisory hints.
     Does NOT modify content or block types.
     """
-    
+
     def __init__(self):
         self.nlp = None
 
@@ -46,10 +48,10 @@ class ContentAnalyzer(PipelineStage):
         Populates block.metadata["ai_hints"].
         """
         # Load model if strictly needed here, or use initialized one
-        
+
         for block in document.blocks:
             hints = {}
-            
+
             # 1. Section Confidence Estimation
             # Simple heuristic + Entity analysis if available
             section_conf = self._estimate_section_confidence(block)
@@ -69,13 +71,13 @@ class ContentAnalyzer(PipelineStage):
             if block.block_type == BlockType.ABSTRACT_BODY or methods_detect_abstract(block.text):
                 readability = self._check_readability(block.text)
                 hints["readability"] = readability
-                
+
             # Attach hints if any
             if hints:
                 if not block.metadata:
                     block.metadata = {}
                 block.metadata["ai_hints"] = hints
-                
+
         return document
 
     def _estimate_section_confidence(self, block: Block) -> Dict:
@@ -83,7 +85,7 @@ class ContentAnalyzer(PipelineStage):
         text = block.text.strip().lower()
         if not text:
             return None
-            
+
         # Rules
         headers = {
             "abstract": 0.95,
@@ -93,19 +95,15 @@ class ContentAnalyzer(PipelineStage):
             "results": 0.8,
             "discussion": 0.8,
             "conclusion": 0.8,
-            "references": 0.95, 
-            "bibliography": 0.95
+            "references": 0.95,
+            "bibliography": 0.95,
         }
-        
+
         # Exact match (ignoring numbering "1. Introduction")
-        clean = re.sub(r'^[\d\.]+\s*', '', text)
+        clean = re.sub(r"^[\d\.]+\s*", "", text)
         if clean in headers:
-            return {
-                "section": clean.title(),
-                "confidence": headers[clean],
-                "notes": ["Keyword match"]
-            }
-            
+            return {"section": clean.title(), "confidence": headers[clean], "notes": ["Keyword match"]}
+
         return None
 
     def _is_potential_caption(self, text: str) -> bool:
@@ -116,27 +114,28 @@ class ContentAnalyzer(PipelineStage):
         words = text.split()
         if len(words) < 5:
             return "Short"
-        
+
         vague_words = ["image", "chart", "diagram", "below", "above"]
         if any(w in text.lower() for w in vague_words) and len(words) < 10:
             return "Possibly Vague"
-            
+
         return "Good"
 
     def _check_readability(self, text: str) -> str:
         """Simple readability check."""
         # Sentence length
-        sentences = re.split(r'[.!?]+', text)
+        sentences = re.split(r"[.!?]+", text)
         sentences = [s for s in sentences if s.strip()]
         if not sentences:
             return "N/A"
-            
+
         avg_len = sum(len(s.split()) for s in sentences) / len(sentences)
         if avg_len > 30:
             return "Complex (Long Sentences)"
         elif avg_len < 8:
             return "Simple (Short Sentences)"
         return "Standard"
+
 
 def methods_detect_abstract(text: str) -> bool:
     """Helper to detect abstract-like text."""

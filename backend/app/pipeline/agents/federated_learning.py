@@ -4,6 +4,7 @@
 """
 Federated learning across multiple deployments.
 """
+
 import logging
 import json
 from typing import List, Dict, Any, Optional
@@ -14,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import requests as _requests
+
     _REQUESTS_AVAILABLE = True
 except ImportError:
     _requests = None  # type: ignore[assignment]
@@ -218,9 +220,7 @@ class FederatedLearningNode:
                     logger.info("Global model is already up to date (version %d)", current_version)
                 return True
             else:
-                logger.error(
-                    "Failed to pull global model: HTTP %d", response.status_code
-                )
+                logger.error("Failed to pull global model: HTTP %d", response.status_code)
                 return False
         except Exception as exc:
             logger.error("Failed to pull global model: %s", exc)

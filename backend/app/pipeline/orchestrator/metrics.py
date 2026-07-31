@@ -29,14 +29,13 @@ class StageMetrics:
         }
         try:
             from app.middleware.prometheus_metrics import MetricsManager
+
             MetricsManager.record_pipeline_stage_duration(stage_name, duration)
         except Exception:
             pass
 
     def get_summary(self) -> dict:
-        total_duration = sum(
-            r["duration_seconds"] for r in self._results.values() if r.get("duration_seconds")
-        )
+        total_duration = sum(r["duration_seconds"] for r in self._results.values() if r.get("duration_seconds"))
         failures = [k for k, v in self._results.items() if not v.get("success", True)]
         return {
             "stages": dict(self._results),

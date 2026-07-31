@@ -78,8 +78,7 @@ class StyleRegistry:
             name="MLA 9th Edition",
             version="9.0",
             description=(
-                "Modern Language Association 9th edition. "
-                "Standard for humanities, literature, and language arts."
+                "Modern Language Association 9th edition. Standard for humanities, literature, and language arts."
             ),
             citation_format="mla",
             font_family="Times New Roman",
@@ -97,8 +96,7 @@ class StyleRegistry:
             name="Chicago Manual of Style 17th Edition",
             version="17.0",
             description=(
-                "Chicago Manual of Style 17th edition (Notes & Bibliography). "
-                "Used in history, arts, and humanities."
+                "Chicago Manual of Style 17th edition (Notes & Bibliography). Used in history, arts, and humanities."
             ),
             citation_format="chicago",
             font_family="Times New Roman",
@@ -143,8 +141,7 @@ class StyleRegistry:
             name="Harvard Referencing Style",
             version="2023",
             description=(
-                "Harvard referencing style. "
-                "Widely used in UK and Australian universities across many disciplines."
+                "Harvard referencing style. Widely used in UK and Australian universities across many disciplines."
             ),
             citation_format="harvard",
             font_family="Times New Roman",
@@ -161,10 +158,7 @@ class StyleRegistry:
             id="vancouver",
             name="Vancouver Style",
             version="2023",
-            description=(
-                "Vancouver referencing style. "
-                "Standard for biomedical and health sciences journals."
-            ),
+            description=("Vancouver referencing style. Standard for biomedical and health sciences journals."),
             citation_format="vancouver",
             font_family="Times New Roman",
             font_size=12,
@@ -181,8 +175,7 @@ class StyleRegistry:
             name="Turabian 9th Edition",
             version="9.0",
             description=(
-                "Turabian style (based on Chicago). "
-                "Designed for student research papers, theses, and dissertations."
+                "Turabian style (based on Chicago). Designed for student research papers, theses, and dissertations."
             ),
             citation_format="chicago",
             font_family="Times New Roman",
@@ -203,10 +196,7 @@ class StyleRegistry:
             id="acs",
             name="ACS Style Guide",
             version="2023",
-            description=(
-                "American Chemical Society style. "
-                "Standard for chemistry and related sciences."
-            ),
+            description=("American Chemical Society style. Standard for chemistry and related sciences."),
             citation_format="acs",
             font_family="Times New Roman",
             font_size=12,
@@ -222,10 +212,7 @@ class StyleRegistry:
             id="ama",
             name="AMA Manual of Style 11th Edition",
             version="11.0",
-            description=(
-                "American Medical Association style. "
-                "Standard for medical research and health sciences."
-            ),
+            description=("American Medical Association style. Standard for medical research and health sciences."),
             citation_format="ama",
             font_family="Times New Roman",
             font_size=12,

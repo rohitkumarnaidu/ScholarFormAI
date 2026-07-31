@@ -37,8 +37,7 @@ try:
 except ImportError as exc:
     _load_error = str(exc)
     logger.info(
-        "Table Transformer dependencies not installed (%s). "
-        "Install with: pip install transformers torch timm Pillow",
+        "Table Transformer dependencies not installed (%s). Install with: pip install transformers torch timm Pillow",
         exc,
     )
 
@@ -126,9 +125,7 @@ class TableExtractor:
     # ------------------------------------------------------------------ #
     #  Public API
     # ------------------------------------------------------------------ #
-    def detect_tables(
-        self, image: "Image.Image", threshold: float = TABLE_DETECTION_THRESHOLD
-    ) -> List[Dict[str, Any]]:
+    def detect_tables(self, image: "Image.Image", threshold: float = TABLE_DETECTION_THRESHOLD) -> List[Dict[str, Any]]:
         """
         Detect table bounding boxes in a page image.
 
@@ -154,17 +151,13 @@ class TableExtractor:
         )[0]
 
         tables = []
-        for score, label, box in zip(
-            results["scores"], results["labels"], results["boxes"]
-        ):
+        for score, label, box in zip(results["scores"], results["labels"], results["boxes"]):
             bbox = box.cpu().tolist()
             tables.append(
                 {
                     "bbox": tuple(bbox),  # (x0, y0, x1, y1)
                     "score": round(score.item(), 4),
-                    "label": self._detection_model.config.id2label.get(
-                        label.item(), "table"
-                    ),
+                    "label": self._detection_model.config.id2label.get(label.item(), "table"),
                 }
             )
 
@@ -205,9 +198,7 @@ class TableExtractor:
 
         id2label = self._structure_model.config.id2label
 
-        for score, label_id, box in zip(
-            results["scores"], results["labels"], results["boxes"]
-        ):
+        for score, label_id, box in zip(results["scores"], results["labels"], results["boxes"]):
             label = id2label.get(label_id.item(), "unknown")
             bbox = box.cpu().tolist()
             entry = {"bbox": tuple(bbox), "score": round(score.item(), 4)}
@@ -239,9 +230,7 @@ class TableExtractor:
             "data": data,
         }
 
-    def extract_tables_from_page(
-        self, page_image: "Image.Image"
-    ) -> List[Dict[str, Any]]:
+    def extract_tables_from_page(self, page_image: "Image.Image") -> List[Dict[str, Any]]:
         """
         Full pipeline: detect tables in a page, then extract structure for each.
 
@@ -333,7 +322,10 @@ class TableExtractor:
             page_number=page_number,
             index=table_index,
             block_index=block_index,
-            metadata={"extractor": "table-transformer", "detection_score": table_data.get("detection", {}).get("score", 0)},
+            metadata={
+                "extractor": "table-transformer",
+                "detection_score": table_data.get("detection", {}).get("score", 0),
+            },
         )
 
 

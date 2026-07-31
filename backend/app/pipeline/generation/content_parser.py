@@ -10,6 +10,7 @@ Handles:
   - Plain JSON arrays
   - Partial / malformed responses (raises ValueError with clear message)
 """
+
 from __future__ import annotations
 
 import json
@@ -20,21 +21,40 @@ logger = logging.getLogger(__name__)
 
 # Allowlist of all valid block types the generator can produce
 VALID_BLOCK_TYPES = {
-    "TITLE", "AUTHOR_INFO", "AFFILIATION", "ABSTRACT", "KEYWORDS",
-    "SUMMARY", "CONTACT_INFO",
-    "HEADING_1", "HEADING_2", "HEADING_3",
-    "BODY", "BULLET", "BULLET_LIST",
-    "FIGURE_CAPTION", "TABLE_CAPTION",
-    "REFERENCE_ENTRY", "METHODOLOGY", "CONCLUSION",
+    "TITLE",
+    "AUTHOR_INFO",
+    "AFFILIATION",
+    "ABSTRACT",
+    "KEYWORDS",
+    "SUMMARY",
+    "CONTACT_INFO",
+    "HEADING_1",
+    "HEADING_2",
+    "HEADING_3",
+    "BODY",
+    "BULLET",
+    "BULLET_LIST",
+    "FIGURE_CAPTION",
+    "TABLE_CAPTION",
+    "REFERENCE_ENTRY",
+    "METHODOLOGY",
+    "CONCLUSION",
 }
 
 # Map any LLM variants onto canonical names
 TYPE_ALIASES: dict[str, str] = {
-    "H1": "HEADING_1", "H2": "HEADING_2", "H3": "HEADING_3",
-    "PARAGRAPH": "BODY", "TEXT": "BODY", "CONTENT": "BODY",
-    "LIST_ITEM": "BULLET", "BULLET_POINT": "BULLET",
-    "REF": "REFERENCE_ENTRY", "REFERENCE": "REFERENCE_ENTRY",
-    "AUTHOR": "AUTHOR_INFO", "AUTHORS": "AUTHOR_INFO",
+    "H1": "HEADING_1",
+    "H2": "HEADING_2",
+    "H3": "HEADING_3",
+    "PARAGRAPH": "BODY",
+    "TEXT": "BODY",
+    "CONTENT": "BODY",
+    "LIST_ITEM": "BULLET",
+    "BULLET_POINT": "BULLET",
+    "REF": "REFERENCE_ENTRY",
+    "REFERENCE": "REFERENCE_ENTRY",
+    "AUTHOR": "AUTHOR_INFO",
+    "AUTHORS": "AUTHOR_INFO",
     "AFFILIATION_INFO": "AFFILIATION",
     "CONTACT": "CONTACT_INFO",
 }
@@ -64,7 +84,7 @@ class ContentParser:
         """
         json_str = self._extract_json(llm_response)
         raw_list = self._load_json(json_str)
-        blocks   = [self._normalise(raw, idx) for idx, raw in enumerate(raw_list)]
+        blocks = [self._normalise(raw, idx) for idx, raw in enumerate(raw_list)]
         logger.info("ContentParser: parsed %d blocks for doc_type='%s'", len(blocks), doc_type)
         return blocks
 
@@ -80,7 +100,7 @@ class ContentParser:
         # Case 1: ```json ... ```
         if "```json" in text:
             start = text.index("```json") + len("```json")
-            end   = text.index("```", start)
+            end = text.index("```", start)
             return text[start:end].strip()
 
         # Case 2: ``` ... ```
@@ -100,10 +120,7 @@ class ContentParser:
         if bracket != -1:
             return text[bracket:]
 
-        raise ValueError(
-            "LLM response does not contain a JSON array. "
-            f"Response preview: {text[:200]!r}"
-        )
+        raise ValueError(f"LLM response does not contain a JSON array. Response preview: {text[:200]!r}")
 
     @staticmethod
     def _load_json(json_str: str) -> list[dict]:
@@ -113,10 +130,7 @@ class ContentParser:
             raise ValueError(f"Invalid JSON from LLM: {exc}. Preview: {json_str[:300]!r}") from exc
 
         if not isinstance(data, list):
-            raise ValueError(
-                f"Expected a JSON array, got {type(data).__name__}. "
-                f"Preview: {json_str[:200]!r}"
-            )
+            raise ValueError(f"Expected a JSON array, got {type(data).__name__}. Preview: {json_str[:200]!r}")
         return data
 
     @classmethod
@@ -133,11 +147,11 @@ class ContentParser:
             block_type = "BODY"
 
         content = str(raw.get("content", "")).strip()
-        level   = int(raw.get("level", 0))
+        level = int(raw.get("level", 0))
 
         return {
-            "type":     block_type,
-            "content":  content,
-            "level":    level,
+            "type": block_type,
+            "content": content,
+            "level": level,
             "metadata": raw.get("metadata", {}),
         }

@@ -11,6 +11,7 @@ The old SQLAlchemy ORM imports are kept as comments for reference.
 The SQLAlchemy ORM model (app/models/user.py) is still the canonical
 schema definition and is used by Alembic migrations.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -50,13 +51,7 @@ class UserService:
             client = get_supabase_client()
             if client is None:
                 raise RuntimeError("Supabase client not available.")
-            return (
-                client.table("profiles")
-                .select("*")
-                .eq("id", str(user_id))
-                .maybe_single()
-                .execute()
-            )
+            return client.table("profiles").select("*").eq("id", str(user_id)).maybe_single().execute()
 
         try:
             result = await asyncio.to_thread(run_query)
@@ -106,11 +101,7 @@ class UserService:
                 "institution": institution,
                 "role": role,
             }
-            return (
-                client.table("profiles")
-                .upsert(payload, on_conflict="id")
-                .execute()
-            )
+            return client.table("profiles").upsert(payload, on_conflict="id").execute()
 
         try:
             result = await asyncio.to_thread(run_upsert)
@@ -138,13 +129,7 @@ class UserService:
             client = get_supabase_client()
             if client is None:
                 raise RuntimeError("Supabase client not available.")
-            return (
-                client.table("profiles")
-                .select("*")
-                .eq("email", email)
-                .maybe_single()
-                .execute()
-            )
+            return client.table("profiles").select("*").eq("email", email).maybe_single().execute()
 
         try:
             result = await asyncio.to_thread(run_query)

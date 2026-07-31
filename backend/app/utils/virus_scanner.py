@@ -119,6 +119,7 @@ def scan_file(file_path: str) -> Dict[str, str | bool]:
         duration = time.perf_counter() - start_time
         try:
             from app.middleware.prometheus_metrics import MetricsManager
+
             MetricsManager.record_clamav_scan_duration(duration)
         except Exception:
             pass

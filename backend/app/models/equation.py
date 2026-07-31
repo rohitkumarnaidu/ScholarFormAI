@@ -16,32 +16,26 @@ class Equation(BaseModel):
     Represents an equation in the document.
     Supports both block (display) and inline equations.
     """
-    
+
     # Unique identifier
     equation_id: str = Field(..., description="Unique identifier (e.g., 'eqn_001')")
-    
+
     # Sequential numbering
-    number: Optional[str] = Field(
-        default=None,
-        description="Sequential number (e.g., '(1)')"
-    )
-    
+    number: Optional[str] = Field(default=None, description="Sequential number (e.g., '(1)')")
+
     # Content
     text: Optional[str] = Field(default=None, description="Plain text representation")
     mathml: Optional[str] = Field(default=None, description="MathML representation")
     omml: Optional[str] = Field(default=None, description="Office Math Markup Language (Word)")
-    
+
     # Positioning
     is_block: bool = Field(default=True, description="True if block/display equation, False if inline")
     index: int = Field(..., description="Sequential position in document")
     block_id: Optional[str] = Field(default=None, description="Parent block ID")
-    
+
     # Relation
-    referenced_by: List[str] = Field(
-        default_factory=list,
-        description="List of block IDs that reference this equation"
-    )
-    
+    referenced_by: List[str] = Field(default_factory=list, description="List of block IDs that reference this equation")
+
     # Metadata for formatting
     metadata: Dict[str, Any] = Field(default_factory=dict)
 

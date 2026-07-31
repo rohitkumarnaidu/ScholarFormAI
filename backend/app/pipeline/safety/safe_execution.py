@@ -9,16 +9,15 @@ from typing import Generator, Any
 # Configure logger
 logger = logging.getLogger(__name__)
 
+
 @contextlib.contextmanager
 def safe_execution(
-    operation_name: str,
-    error_return_value: Any = None,
-    log_level: int = logging.ERROR
+    operation_name: str, error_return_value: Any = None, log_level: int = logging.ERROR
 ) -> Generator[None, None, None]:
     """
     Context manager that catches ANY exception within the block,
     logs it with a traceback, and suppressing the crash.
-    
+
     Usage:
         with safe_execution("Critical Operation"):
             risky_code()
@@ -32,13 +31,16 @@ def safe_execution(
         # If the caller *needs* a return value, they should handle it inside the block
         # or check side effects.
 
+
 import functools
+
 
 def safe_function(fallback_value: Any = None, error_message: str = None):
     """
     Decorator that wraps a function in the safe_execution context.
     Returns fallback_value if an exception occurs.
     """
+
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -46,14 +48,18 @@ def safe_function(fallback_value: Any = None, error_message: str = None):
             with safe_execution(op_name, log_level=logging.ERROR):
                 return func(*args, **kwargs)
             return fallback_value
+
         return wrapper
+
     return decorator
+
 
 def safe_async_function(fallback_value: Any = None, error_message: str = None):
     """
     Decorator that wraps an ASYNC function in the safe_execution context.
     Returns fallback_value if an exception occurs.
     """
+
     def decorator(func):
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
@@ -72,5 +78,7 @@ def safe_async_function(fallback_value: Any = None, error_message: str = None):
                 # We need to ensure we return the fallback.
                 pass
             return fallback_value
+
         return wrapper
+
     return decorator

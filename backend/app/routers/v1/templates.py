@@ -228,11 +228,7 @@ async def _update_custom_template(
 
     try:
         result = (
-            sb.table("custom_templates")
-            .update(updates)
-            .eq("id", template_id)
-            .eq("user_id", str(user.id))
-            .execute()
+            sb.table("custom_templates").update(updates).eq("id", template_id).eq("user_id", str(user.id)).execute()
         )
         if not result.data:
             raise HTTPException(status_code=404, detail="Template not found")

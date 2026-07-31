@@ -2,7 +2,7 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from app.models.user import User
-from app.models.document import Document # Database model
+from app.models.document import Document  # Database model
 from app.models.document_result import DocumentResult
 from app.models.processing_status import ProcessingStatus
 from app.models.block import Block, BlockType, TextStyle, ListType
@@ -12,10 +12,10 @@ from app.models.reference import Reference, ReferenceType, CitationStyle
 from app.models.equation import Equation
 from app.models.review import ReviewStatus, ReviewMetadata
 from app.models.pipeline_document import (
-    DocumentMetadata, 
-    TemplateInfo, 
+    DocumentMetadata,
+    TemplateInfo,
     ProcessingStage as ProcessingHistory,
-    PipelineDocument
+    PipelineDocument,
 )
 from app.models.document_version import DocumentVersion
 from app.models.api_key import UserApiKey

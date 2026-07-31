@@ -20,7 +20,7 @@ from starlette.responses import Response
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     """Middleware that adds crucial security headers to all HTTP responses.
-    
+
     This helps mitigate various web vulnerabilities:
     - Content-Security-Policy: Restricts sources for executable scripts and embeds.
     - X-Content-Type-Options: Prevents MIME-sniffing attacks.
@@ -28,6 +28,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     - X-XSS-Protection: Enables legacy XSS filtering.
     - Strict-Transport-Security: Enforces HTTPS on the client side.
     """
+
     async def dispatch(self, request: Request, call_next) -> Response:
         response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
@@ -36,11 +37,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
         path = request.url.path or ""
-        is_docs_route = (
-            path.startswith("/docs")
-            or path.startswith("/redoc")
-            or path == "/openapi.json"
-        )
+        is_docs_route = path.startswith("/docs") or path.startswith("/redoc") or path == "/openapi.json"
 
         if is_docs_route:
             # FastAPI Swagger/ReDoc pages pull JS/CSS from CDN by default.
@@ -71,13 +68,14 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 class MaxBodySizeMiddleware:
     """Middleware that restricts the maximum payload size of incoming HTTP requests.
-    
+
     This protects the application against Denial of Service (DoS) attacks
     where an attacker sends an excessively large request body to consume
-    memory or exhaust server bandwidth. If the Content-Length header 
+    memory or exhaust server bandwidth. If the Content-Length header
     exceeds `max_size`, an HTTP 413 (Payload Too Large) is returned immediately
     without processing the rest of the request.
     """
+
     def __init__(self, app, max_size: int = 60 * 1024 * 1024):  # Default 60MB
         self.app = app
         self.max_size = max_size
@@ -90,6 +88,7 @@ class MaxBodySizeMiddleware:
                 try:
                     if int(content_length) > self.max_size:
                         from starlette.responses import JSONResponse
+
                         response = JSONResponse(
                             {"detail": f"Request body too large. Maximum is {self.max_size // (1024 * 1024)}MB."},
                             status_code=413,

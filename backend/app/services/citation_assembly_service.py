@@ -103,10 +103,7 @@ class CitationAssemblyService:
         reference_list = await self.format_references(citation_meta, citation_style)
 
         mapping = {citation: idx + 1 for idx, citation in enumerate(citations)}
-        updated_sections = {
-            name: self._replace_citations(text, mapping)
-            for name, text in content_sections.items()
-        }
+        updated_sections = {name: self._replace_citations(text, mapping) for name, text in content_sections.items()}
 
         return updated_sections, reference_list
 

@@ -4,6 +4,7 @@
 """
 General monitoring middleware for logging and tracing.
 """
+
 import time
 import logging
 from typing import Callable
@@ -12,11 +13,13 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 logger = logging.getLogger(__name__)
 
+
 class MonitoringMiddleware(BaseHTTPMiddleware):
     """
     Middleware for request timing and structured logging.
     Request ID is handled by RequestIdMiddleware — this only logs and measures.
     """
+
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         request_id = getattr(request.state, "request_id", "unknown")
         start_time = time.time()

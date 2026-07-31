@@ -13,9 +13,18 @@ from app.services.llm_fallback_service import LLMUnavailableError
 logger = logging.getLogger(__name__)
 
 CLASSIFICATION_LABELS = [
-    "HEADING", "ABSTRACT", "BODY", "REFERENCES", "FIGURE_CAPTION",
-    "TABLE_CAPTION", "ACKNOWLEDGEMENTS", "EQUATION", "METHODOLOGY",
-    "CONCLUSION", "AUTHOR_INFO", "TITLE",
+    "HEADING",
+    "ABSTRACT",
+    "BODY",
+    "REFERENCES",
+    "FIGURE_CAPTION",
+    "TABLE_CAPTION",
+    "ACKNOWLEDGEMENTS",
+    "EQUATION",
+    "METHODOLOGY",
+    "CONCLUSION",
+    "AUTHOR_INFO",
+    "TITLE",
 ]
 
 CLASSIFICATION_PROMPT = """You are an expert academic document classifier. Given a text block from a scholarly paper, classify it into one of these categories:
@@ -136,7 +145,7 @@ class LLMClassifier:
         return [{"type": "BODY", "confidence": 0.5} for _ in texts]
 
     def _parse_response(self, raw: str) -> Optional[Dict[str, Any]]:
-        match = re.search(r'\{[^}]+\}', raw)
+        match = re.search(r"\{[^}]+\}", raw)
         if match:
             try:
                 data = json.loads(match.group())
@@ -153,7 +162,7 @@ class LLMClassifier:
         return None
 
     def _parse_batch_response(self, raw: str) -> List[Dict[str, Any]]:
-        match = re.search(r'\[.*\]', raw, re.DOTALL)
+        match = re.search(r"\[.*\]", raw, re.DOTALL)
         if match:
             try:
                 data = json.loads(match.group())

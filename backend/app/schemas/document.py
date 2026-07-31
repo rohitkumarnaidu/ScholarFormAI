@@ -43,6 +43,7 @@ TemplateChoice = Literal[
 
 # ── Upload / Request Schemas ──────────────────────────────────────────────────
 
+
 class FormattingOptions(BaseModel):
     """Formatting preferences sent with the upload request."""
 
@@ -67,15 +68,14 @@ class DocumentUploadResponse(BaseModel):
 
 # ── Status Schemas ────────────────────────────────────────────────────────────
 
+
 class PhaseStatus(BaseModel):
     """Status of a single pipeline phase."""
 
     phase: str = Field(..., description="Pipeline stage name (e.g. 'parsing').")
     status: str = Field(..., description="Phase status: 'success', 'warning', 'failed'.")
     message: Optional[str] = Field(None, description="Human-readable phase message.")
-    progress: Optional[float] = Field(
-        None, ge=0, le=100, description="Phase progress percentage."
-    )
+    progress: Optional[float] = Field(None, ge=0, le=100, description="Phase progress percentage.")
     updated_at: Optional[datetime] = Field(None, description="Last update timestamp.")
 
 
@@ -89,12 +89,11 @@ class DocumentStatusResponse(BaseModel):
     progress_percentage: float = Field(0, ge=0, le=100)
     message: Optional[str] = Field(None, description="Status message or error detail.")
     updated_at: Optional[datetime] = None
-    phases: List[PhaseStatus] = Field(
-        default_factory=list, description="Detailed per-stage breakdown."
-    )
+    phases: List[PhaseStatus] = Field(default_factory=list, description="Detailed per-stage breakdown.")
 
 
 # ── ORM / DB Schemas ─────────────────────────────────────────────────────────
+
 
 class DocumentBase(BaseModel):
     """Shared fields for all document representations."""
@@ -123,9 +122,7 @@ class Document(DocumentBase):
     progress: Optional[float] = Field(None, ge=0, le=100, description="Overall progress percentage.")
     current_stage: Optional[str] = Field(None, description="Name of the currently active pipeline stage.")
     error_message: Optional[str] = Field(None, description="Error detail if status is FAILED.")
-    formatting_options: Optional[Dict[str, Any]] = Field(
-        None, description="Formatting options used for this job."
-    )
+    formatting_options: Optional[Dict[str, Any]] = Field(None, description="Formatting options used for this job.")
     created_at: datetime = Field(..., description="Job creation timestamp (UTC).")
     updated_at: Optional[datetime] = Field(None, description="Last update timestamp (UTC).")
 
@@ -159,6 +156,7 @@ class DocumentListResponse(BaseModel):
 
 # ── Preview / Compare Schemas ─────────────────────────────────────────────────
 
+
 class DocumentMetaSummary(BaseModel):
     """Minimal metadata included in preview and compare responses."""
 
@@ -171,12 +169,8 @@ class DocumentMetaSummary(BaseModel):
 class DocumentPreviewResponse(BaseModel):
     """Returned by GET /api/v1/documents/{job_id}/preview."""
 
-    structured_data: Optional[Dict[str, Any]] = Field(
-        None, description="Parsed and structured document content."
-    )
-    validation_results: Optional[Dict[str, Any]] = Field(
-        None, description="Validation errors and warnings."
-    )
+    structured_data: Optional[Dict[str, Any]] = Field(None, description="Parsed and structured document content.")
+    validation_results: Optional[Dict[str, Any]] = Field(None, description="Validation errors and warnings.")
     metadata: Optional[DocumentMetaSummary] = None
 
 
@@ -198,6 +192,7 @@ class DocumentCompareResponse(BaseModel):
 
 
 # Generation Schemas
+
 
 class SectionSpec(BaseModel):
     name: str

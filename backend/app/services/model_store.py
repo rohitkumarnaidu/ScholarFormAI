@@ -4,14 +4,16 @@
 from typing import Any, Optional
 from threading import Lock
 
+
 class ModelStore:
     """
     Thread-safe global registry for heavy AI models.
     Load once at startup, reuse across all requests.
     """
+
     _instance = None
     _lock = Lock()
-    
+
     def __new__(cls):
         with cls._lock:
             if cls._instance is None:
@@ -30,6 +32,7 @@ class ModelStore:
     def is_loaded(self, key: str) -> bool:
         """Check if a model is registered."""
         return key in self._models
+
 
 # Global singleton
 model_store = ModelStore()

@@ -53,9 +53,7 @@ async def get_db(request: Request) -> Any:
         from sqlalchemy import create_engine
         from sqlalchemy.orm import sessionmaker
 
-        engine = create_engine(
-            settings.DATABASE_URL, pool_pre_ping=True, pool_size=5, max_overflow=10
-        )
+        engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True, pool_size=5, max_overflow=10)
         session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
         db = session_local()
         try:

@@ -188,9 +188,10 @@ class ReferenceFormatter:
                     return result
             except Exception as exc:
                 logger.warning(
-                    "citeproc formatting failed for ref '%s' (publisher=%s): %s. "
-                    "Falling back to legacy formatter.",
-                    reference.reference_id, publisher, exc,
+                    "citeproc formatting failed for ref '%s' (publisher=%s): %s. Falling back to legacy formatter.",
+                    reference.reference_id,
+                    publisher,
+                    exc,
                 )
 
         # Fallback to legacy formatting
@@ -215,9 +216,7 @@ class ReferenceFormatter:
         """Format a single reference using citeproc-py."""
         csl_path = _resolve_csl_path(publisher)
         if not csl_path:
-            logger.debug(
-                "No CSL file found for publisher '%s'. Skipping citeproc.", publisher
-            )
+            logger.debug("No CSL file found for publisher '%s'. Skipping citeproc.", publisher)
             return None
 
         # Load or retrieve cached style
@@ -279,11 +278,7 @@ class ReferenceFormatter:
 
         # Light cleanup for "none" style: preserve original, normalize whitespace
         if style_rule == "none":
-            text = (
-                reference.raw_text
-                if hasattr(reference, "raw_text") and reference.raw_text
-                else str(reference)
-            )
+            text = reference.raw_text if hasattr(reference, "raw_text") and reference.raw_text else str(reference)
             text = " ".join(text.split())  # Remove duplicate spaces
             return text.strip()
 

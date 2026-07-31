@@ -8,10 +8,12 @@ from typing import Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
 
+
 class ContractLoader:
     """
     Loads and provides access to template contracts.
     """
+
     def __init__(self, contracts_dir: str = "app/templates"):
         self.contracts_dir = contracts_dir
         self._cache: Dict[str, Dict[str, Any]] = {}
@@ -32,7 +34,7 @@ class ContractLoader:
                 raise FileNotFoundError(f"Fallback contract 'none' not found. Original requested: {name}")
 
         try:
-            with open(contract_path, 'r') as f:
+            with open(contract_path, "r") as f:
                 contract = yaml.safe_load(f) or {}
                 contract = self._normalize_contract(contract, contract_path)
                 self._cache[name] = contract

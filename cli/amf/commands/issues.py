@@ -78,12 +78,11 @@ def run_issue_report(
     """Report a new issue."""
     try:
         service = _get_service()
+        from app.services.issue_service import IssueReport, IssueCategory, IssueSeverity, ReportSource
     except ImportError:
         console.print("[red]Error:[/red] Backend modules not available. Install the backend package.")
         console.print("  pip install -e backend/")
         sys.exit(1)
-
-    from app.services.issue_service import IssueReport, IssueCategory, IssueSeverity, ReportSource
 
     system_info = _get_system_info() if not anonymous else {}
     logs = ""

@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 
 # ── Engine factory ─────────────────────────────────────────────────────────────
 
+
 def _create_engine_safe() -> Optional[Engine]:
     """
     Create the SQLAlchemy engine.
@@ -40,8 +41,7 @@ def _create_engine_safe() -> Optional[Engine]:
     db_url = settings.SUPABASE_DB_URL
     if not db_url:
         logger.warning(
-            " ️  SUPABASE_DB_URL is not set. "
-            "Database-dependent endpoints will return 503 until it is configured."
+            " ️  SUPABASE_DB_URL is not set. Database-dependent endpoints will return 503 until it is configured."
         )
         return None
 
@@ -52,16 +52,15 @@ def _create_engine_safe() -> Optional[Engine]:
             pool_size=5,
             max_overflow=10,
             pool_timeout=30,
-            pool_recycle=1800,   # Recycle connections after 30 min (avoids stale SSL)
+            pool_recycle=1800,  # Recycle connections after 30 min (avoids stale SSL)
             pool_pre_ping=True,  # Verify connection health before use
-            echo=False,          # Set to True for SQL query debugging
+            echo=False,  # Set to True for SQL query debugging
         )
         logger.info("✅ Database engine created successfully.")
         return engine
     except Exception as exc:
         logger.error(
-            "❌ Failed to create database engine: %s. "
-            "DB endpoints will be unavailable.",
+            "❌ Failed to create database engine: %s. DB endpoints will be unavailable.",
             exc,
         )
         return None
@@ -71,13 +70,12 @@ engine: Optional[Engine] = _create_engine_safe()
 
 # SessionLocal is None when engine is None (degraded mode)
 SessionLocal: Optional[sessionmaker] = (
-    sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    if engine is not None
-    else None
+    sessionmaker(autocommit=False, autoflush=False, bind=engine) if engine is not None else None
 )
 
 
 # ── FastAPI dependency ─────────────────────────────────────────────────────────
+
 
 def get_db() -> Generator[Session, None, None]:
     """
@@ -115,6 +113,7 @@ def get_db() -> Generator[Session, None, None]:
 
 
 # ── Health-check helper ────────────────────────────────────────────────────────
+
 
 def check_db_health() -> dict:
     """

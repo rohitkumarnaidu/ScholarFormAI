@@ -87,7 +87,9 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
                 return int(count)
             except Exception as exc:
                 if not self._redis_warning_logged:
-                    logger.warning("Tier rate limit: Redis unavailable (%s). Using in-memory counts.", type(exc).__name__)
+                    logger.warning(
+                        "Tier rate limit: Redis unavailable (%s). Using in-memory counts.", type(exc).__name__
+                    )
                     self._redis_warning_logged = True
 
         memory_key = (subject, day_key)

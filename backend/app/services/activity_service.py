@@ -13,10 +13,17 @@ from app.exceptions import DatabaseUnavailableError
 
 logger = logging.getLogger(__name__)
 
-ACTIVITY_TYPES = frozenset({
-    "upload", "format", "download", "edit", "export",
-    "template_change", "batch_upload",
-})
+ACTIVITY_TYPES = frozenset(
+    {
+        "upload",
+        "format",
+        "download",
+        "edit",
+        "export",
+        "template_change",
+        "batch_upload",
+    }
+)
 
 
 class ActivityService:
@@ -77,10 +84,7 @@ class ActivityService:
             cls._table_available = True
         except Exception as exc:
             error_text = str(exc)
-            missing_table = (
-                "user_activity" in error_text
-                and "Could not find the table" in error_text
-            )
+            missing_table = "user_activity" in error_text and "Could not find the table" in error_text
             if missing_table:
                 cls._table_available = False
                 if not cls._table_warning_logged:
@@ -141,11 +145,7 @@ class ActivityService:
             client = get_supabase_client()
             if client is None:
                 raise RuntimeError("Supabase client not available.")
-            query = (
-                client.table("user_activity")
-                .select("*")
-                .eq("user_id", str(user_id))
-            )
+            query = client.table("user_activity").select("*").eq("user_id", str(user_id))
             if period_start:
                 query = query.gte("created_at", period_start.isoformat())
             return query.execute()

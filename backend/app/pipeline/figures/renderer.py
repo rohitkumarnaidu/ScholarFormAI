@@ -100,7 +100,7 @@ class FigureRenderer:
         if caption_lower.startswith(f"figure {number}:"):
             run = caption_p.add_run(f"Figure {number}: ")
             run.bold = True
-            rest_text = figure.caption_text[len(f"Figure {number}:"):].strip()
+            rest_text = figure.caption_text[len(f"Figure {number}:") :].strip()
             caption_p.add_run(rest_text)
         else:
             run = caption_p.add_run(f"Figure {number}: ")

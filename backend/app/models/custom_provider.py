@@ -19,9 +19,16 @@ class CustomProvider(Base):
     description = Column(String(500), nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
-    updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    updated_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc)
+    )
 
-    user = relationship("User", back_populates="custom_providers", lazy="joined", primaryjoin="foreign(CustomProvider.user_id) == User.id")
+    user = relationship(
+        "User",
+        back_populates="custom_providers",
+        lazy="joined",
+        primaryjoin="foreign(CustomProvider.user_id) == User.id",
+    )
 
     def __init__(self, **kwargs):
         now = datetime.now(timezone.utc)

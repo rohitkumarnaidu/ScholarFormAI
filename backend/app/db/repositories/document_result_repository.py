@@ -24,13 +24,7 @@ class DocumentResultRepository(BaseRepository):
 
         def run_query():
             client = self._get_client()
-            return (
-                client.table("document_results")
-                .select("*")
-                .eq("document_id", str(doc_id))
-                .maybe_single()
-                .execute()
-            )
+            return client.table("document_results").select("*").eq("document_id", str(doc_id)).maybe_single().execute()
 
         try:
             result = await execute_with_transient_retry(
@@ -66,9 +60,7 @@ class DocumentResultRepository(BaseRepository):
                 payload["structured_data"] = structured_data
             if validation_results is not None:
                 payload["validation_results"] = validation_results
-            return client.table("document_results").upsert(
-                payload, on_conflict="document_id"
-            ).execute()
+            return client.table("document_results").upsert(payload, on_conflict="document_id").execute()
 
         try:
             await asyncio.to_thread(run_upsert)

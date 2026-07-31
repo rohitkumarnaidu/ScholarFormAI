@@ -4,6 +4,7 @@
 """
 Next-generation analytics dashboard.
 """
+
 import logging
 from typing import Dict, Any, Optional
 from datetime import datetime
@@ -21,14 +22,14 @@ class NextGenDashboard:
     """
     Next-generation analytics dashboard with cutting-edge features.
     """
-    
+
     def __init__(
         self,
         transformer_detector: Optional[TransformerPatternDetector] = None,
         federated_node: Optional[FederatedLearningNode] = None,
         realtime_agent: Optional[RealTimeAdaptiveAgent] = None,
         autoscaling_manager: Optional[AutoScalingManager] = None,
-        tool_marketplace: Optional[ToolMarketplace] = None
+        tool_marketplace: Optional[ToolMarketplace] = None,
     ):
         """Initialize next-gen dashboard."""
         self.transformer_detector = transformer_detector
@@ -36,17 +37,17 @@ class NextGenDashboard:
         self.realtime_agent = realtime_agent
         self.autoscaling_manager = autoscaling_manager
         self.tool_marketplace = tool_marketplace
-    
+
     def generate_html(self, output_path: str) -> str:
         """Generate next-gen HTML dashboard."""
         html = self._build_html()
-        
-        with open(output_path, 'w', encoding='utf-8') as f:
+
+        with open(output_path, "w", encoding="utf-8") as f:
             f.write(html)
-        
+
         logger.info(f"Next-gen dashboard generated: {output_path}")
         return output_path
-    
+
     def _build_html(self) -> str:
         """Build HTML content."""
         return f"""
@@ -193,7 +194,7 @@ class NextGenDashboard:
 </body>
 </html>
 """
-    
+
     def _build_transformer_section(self) -> str:
         """Build transformer deep learning section."""
         if not self.transformer_detector:
@@ -203,37 +204,37 @@ class NextGenDashboard:
                 <p style="color: #999;">Not initialized</p>
             </div>
             """
-        
+
         summary = self.transformer_detector.get_summary()
-        
+
         return f"""
         <div class="card">
             <h2>  Deep Learning (Transformers)</h2>
             <div class="metric">
                 <span class="metric-label">Model:</span>
-                <span class="metric-value">{summary['model_name']}</span>
+                <span class="metric-value">{summary["model_name"]}</span>
             </div>
             <div class="metric">
                 <span class="metric-label">Device:</span>
-                <span class="badge badge-info">{summary['device'].upper()}</span>
+                <span class="badge badge-info">{summary["device"].upper()}</span>
             </div>
             <div class="metric">
                 <span class="metric-label">Cached Embeddings:</span>
-                <span class="metric-value">{summary['cached_embeddings']}</span>
+                <span class="metric-value">{summary["cached_embeddings"]}</span>
             </div>
             <div class="metric">
                 <span class="metric-label">Clusters:</span>
-                <span class="metric-value">{summary['n_clusters']}</span>
+                <span class="metric-value">{summary["n_clusters"]}</span>
             </div>
             <div class="metric">
                 <span class="metric-label">Status:</span>
-                <span class="badge badge-{'success' if summary['clusters_trained'] else 'warning'}">
-                    {'Trained' if summary['clusters_trained'] else 'Not Trained'}
+                <span class="badge badge-{"success" if summary["clusters_trained"] else "warning"}">
+                    {"Trained" if summary["clusters_trained"] else "Not Trained"}
                 </span>
             </div>
         </div>
         """
-    
+
     def _build_federated_section(self) -> str:
         """Build federated learning section."""
         if not self.federated_node:
@@ -243,33 +244,33 @@ class NextGenDashboard:
                 <p style="color: #999;">Not initialized</p>
             </div>
             """
-        
+
         status = self.federated_node.get_status()
-        
+
         return f"""
         <div class="card">
             <h2>🌐 Federated Learning</h2>
             <div class="metric">
                 <span class="metric-label">Node ID:</span>
-                <span class="metric-value">{status['node_id']}</span>
+                <span class="metric-value">{status["node_id"]}</span>
             </div>
             <div class="metric">
                 <span class="metric-label">Local Updates:</span>
-                <span class="metric-value">{status['local_updates']}</span>
+                <span class="metric-value">{status["local_updates"]}</span>
             </div>
             <div class="metric">
                 <span class="metric-label">Global Model Version:</span>
-                <span class="metric-value">v{status['global_model_version']}</span>
+                <span class="metric-value">v{status["global_model_version"]}</span>
             </div>
             <div class="metric">
                 <span class="metric-label">Coordinator:</span>
-                <span class="badge badge-{'success' if status['coordinator_connected'] else 'warning'}">
-                    {'Connected' if status['coordinator_connected'] else 'Offline'}
+                <span class="badge badge-{"success" if status["coordinator_connected"] else "warning"}">
+                    {"Connected" if status["coordinator_connected"] else "Offline"}
                 </span>
             </div>
         </div>
         """
-    
+
     def _build_realtime_section(self) -> str:
         """Build real-time adaptation section."""
         if not self.realtime_agent:
@@ -279,31 +280,31 @@ class NextGenDashboard:
                 <p style="color: #999;">Not initialized</p>
             </div>
             """
-        
+
         params = self.realtime_agent.get_current_params()
-        
+
         return f"""
         <div class="card">
             <h2>⚡ Real-Time Adaptation</h2>
             <div class="metric">
                 <span class="metric-label">Timeout:</span>
-                <span class="metric-value">{params['timeout']:.1f}s</span>
+                <span class="metric-value">{params["timeout"]:.1f}s</span>
             </div>
             <div class="metric">
                 <span class="metric-label">Retry Enabled:</span>
-                <span class="badge badge-{'success' if params['retry_enabled'] else 'warning'}">
-                    {'Yes' if params['retry_enabled'] else 'No'}
+                <span class="badge badge-{"success" if params["retry_enabled"] else "warning"}">
+                    {"Yes" if params["retry_enabled"] else "No"}
                 </span>
             </div>
             <div class="metric">
                 <span class="metric-label">Aggressive Mode:</span>
-                <span class="badge badge-{'warning' if params['aggressive_mode'] else 'info'}">
-                    {'Active' if params['aggressive_mode'] else 'Normal'}
+                <span class="badge badge-{"warning" if params["aggressive_mode"] else "info"}">
+                    {"Active" if params["aggressive_mode"] else "Normal"}
                 </span>
             </div>
         </div>
         """
-    
+
     def _build_autoscaling_section(self) -> str:
         """Build auto-scaling section."""
         if not self.autoscaling_manager:
@@ -313,31 +314,31 @@ class NextGenDashboard:
                 <p style="color: #999;">Not initialized</p>
             </div>
             """
-        
+
         stats = self.autoscaling_manager.get_statistics()
-        
+
         return f"""
         <div class="card">
             <h2>📊 Auto-Scaling</h2>
             <div class="metric">
                 <span class="metric-label">Current Workers:</span>
-                <span class="metric-value">{stats['current_workers']}</span>
+                <span class="metric-value">{stats["current_workers"]}</span>
             </div>
             <div class="metric">
                 <span class="metric-label">Range:</span>
-                <span class="metric-value">{stats['min_workers']} - {stats['max_workers']}</span>
+                <span class="metric-value">{stats["min_workers"]} - {stats["max_workers"]}</span>
             </div>
             <div class="metric">
                 <span class="metric-label">Avg CPU:</span>
-                <span class="metric-value">{stats['avg_cpu_percent']:.1f}%</span>
+                <span class="metric-value">{stats["avg_cpu_percent"]:.1f}%</span>
             </div>
             <div class="metric">
                 <span class="metric-label">Scaling Events:</span>
-                <span class="badge badge-info">{stats['total_scaling_events']}</span>
+                <span class="badge badge-info">{stats["total_scaling_events"]}</span>
             </div>
         </div>
         """
-    
+
     def _build_marketplace_section(self) -> str:
         """Build tool marketplace section."""
         if not self.tool_marketplace:
@@ -347,18 +348,18 @@ class NextGenDashboard:
                 <p style="color: #999;">Not initialized</p>
             </div>
             """
-        
+
         installed = self.tool_marketplace.get_installed_tools()
-        
+
         tools_html = ""
         for tool in installed[:5]:
             tools_html += f"""
             <div class="metric">
-                <span>{tool['name']}</span>
-                <span class="badge badge-purple">v{tool['version']}</span>
+                <span>{tool["name"]}</span>
+                <span class="badge badge-purple">v{tool["version"]}</span>
             </div>
             """
-        
+
         return f"""
         <div class="card">
             <h2> ️ Tool Marketplace</h2>
@@ -369,7 +370,7 @@ class NextGenDashboard:
             {tools_html}
         </div>
         """
-    
+
     def _build_insights_section(self) -> str:
         """Build insights section."""
         return """

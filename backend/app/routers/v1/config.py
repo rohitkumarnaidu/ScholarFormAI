@@ -21,6 +21,7 @@ router = APIRouter(dependencies=[Depends(bind_request_context)])
 @router.get("")
 async def get_public_config(request: Request) -> Dict[str, Any]:
     """Return public application configuration and settings."""
+
     async def operation():
         return {
             "environment": getattr(settings, "ENVIRONMENT", "production"),

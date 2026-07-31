@@ -34,6 +34,7 @@ async def live(request: Request):
 async def ready(request: Request):
     try:
         from app.services.health_checks import get_readiness_payload
+
         payload, status_code = await get_readiness_payload()
     except Exception:
         logger.exception("Failed to build readiness payload")

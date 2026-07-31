@@ -22,12 +22,12 @@ logger = logging.getLogger(__name__)
 
 
 class WebhookService:
-
     def __init__(self):
         self._client = None
 
     def _get_client(self):
         from app.db.supabase_client import get_supabase_client
+
         if self._client is None:
             self._client = get_supabase_client()
         return self._client
@@ -37,6 +37,7 @@ class WebhookService:
 
     def _encrypt_secret(self, plaintext: str) -> str:
         from app.services.encryption_service import get_encryption_service
+
         svc = get_encryption_service()
         if svc is None:
             raise RuntimeError("Encryption service not available")
@@ -44,6 +45,7 @@ class WebhookService:
 
     def _decrypt_secret(self, ciphertext: str) -> str:
         from app.services.encryption_service import get_encryption_service
+
         svc = get_encryption_service()
         if svc is None:
             raise RuntimeError("Encryption service not available")
@@ -72,11 +74,10 @@ class WebhookService:
         }
 
         try:
-            result = self._run_query(
-                lambda c: c.table("webhook_subscriptions").insert(payload)
-            )
+            result = self._run_query(lambda c: c.table("webhook_subscriptions").insert(payload))
             row = result.data[0] if result.data else payload
             from app.models.webhook import WebhookSubscription
+
             return WebhookSubscription.from_row(row)
         except Exception as exc:
             logger.error("Failed to create webhook subscription: %s", exc)
@@ -85,11 +86,13 @@ class WebhookService:
     def get_subscriptions(self, user_id: str) -> List[Dict[str, Any]]:
         try:
             result = self._run_query(
-                lambda c: c.table("webhook_subscriptions")
-                .select("*").eq("user_id", user_id).order("created_at", desc=True)
+                lambda c: (
+                    c.table("webhook_subscriptions").select("*").eq("user_id", user_id).order("created_at", desc=True)
+                )
             )
             rows = result.data if result.data else []
             from app.models.webhook import WebhookSubscription
+
             return [WebhookSubscription.from_row(r) for r in rows]
         except Exception as exc:
             logger.error("Failed to list webhook subscriptions: %s", exc)
@@ -98,8 +101,7 @@ class WebhookService:
     def get_subscription(self, user_id: str, sub_id: str) -> Optional[Dict[str, Any]]:
         try:
             result = self._run_query(
-                lambda c: c.table("webhook_subscriptions")
-                .select("*").eq("id", sub_id).maybe_single()
+                lambda c: c.table("webhook_subscriptions").select("*").eq("id", sub_id).maybe_single()
             )
             if not result or not result.data:
                 return None
@@ -107,6 +109,7 @@ class WebhookService:
             if str(row.get("user_id", "")) != user_id:
                 return None
             from app.models.webhook import WebhookSubscription
+
             return WebhookSubscription.from_row(row)
         except Exception as exc:
             logger.error("Failed to get webhook subscription: %s", exc)
@@ -135,12 +138,10 @@ class WebhookService:
             return existing
 
         try:
-            result = self._run_query(
-                lambda c: c.table("webhook_subscriptions")
-                .update(updates).eq("id", sub_id)
-            )
+            result = self._run_query(lambda c: c.table("webhook_subscriptions").update(updates).eq("id", sub_id))
             row = result.data[0] if result.data else {**existing, **updates}
             from app.models.webhook import WebhookSubscription
+
             return WebhookSubscription.from_row(row)
         except Exception as exc:
             logger.error("Failed to update webhook subscription: %s", exc)
@@ -154,10 +155,7 @@ class WebhookService:
         updates = {"is_active": False, "updated_at": self._utc_now_iso()}
 
         try:
-            self._run_query(
-                lambda c: c.table("webhook_subscriptions")
-                .update(updates).eq("id", sub_id)
-            )
+            self._run_query(lambda c: c.table("webhook_subscriptions").update(updates).eq("id", sub_id))
             return True
         except Exception as exc:
             logger.error("Failed to delete webhook subscription: %s", exc)
@@ -170,11 +168,17 @@ class WebhookService:
 
         try:
             result = self._run_query(
-                lambda c: c.table("webhook_delivery_logs")
-                .select("*").eq("subscription_id", sub_id).order("attempted_at", desc=True).limit(50)
+                lambda c: (
+                    c.table("webhook_delivery_logs")
+                    .select("*")
+                    .eq("subscription_id", sub_id)
+                    .order("attempted_at", desc=True)
+                    .limit(50)
+                )
             )
             rows = result.data if result.data else []
             from app.models.webhook import WebhookDeliveryLog
+
             return [WebhookDeliveryLog.from_row(r) for r in rows]
         except Exception as exc:
             logger.error("Failed to list delivery logs: %s", exc)
@@ -203,11 +207,18 @@ class WebhookService:
         try:
             addrs = set()
             import socket
+
             for info in socket.getaddrinfo(hostname, None):
                 addrs.add(info[4][0])
             for addr_str in addrs:
                 addr = ipaddress.ip_address(addr_str)
-                if addr.is_private or addr.is_loopback or addr.is_link_local or addr.is_multicast or addr.is_unspecified:
+                if (
+                    addr.is_private
+                    or addr.is_loopback
+                    or addr.is_link_local
+                    or addr.is_multicast
+                    or addr.is_unspecified
+                ):
                     raise ValueError(f"Webhook URL '{hostname}' resolves to a private/internal IP address")
         except OSError:
             raise ValueError(f"Could not resolve webhook URL hostname '{hostname}'")
@@ -215,6 +226,7 @@ class WebhookService:
     async def _deliver(self, url: str, payload: str, signature: str) -> Tuple[int, str]:
         self._validate_webhook_url(url)
         import httpx
+
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.post(
                 url,
@@ -229,7 +241,7 @@ class WebhookService:
             return response.status_code, body
 
     def _calculate_retry_delay(self, attempt: int) -> int:
-        return min(2 ** attempt * 60, 3600)
+        return min(2**attempt * 60, 3600)
 
     async def dispatch_event(self, event_type: str, payload: Dict[str, Any], user_id: Optional[str] = None) -> int:
         import httpx
@@ -238,7 +250,9 @@ class WebhookService:
             client = self._get_client()
             if client is None:
                 return []
-            query = client.table("webhook_subscriptions").select("*").eq("is_active", True).contains("events", event_type)
+            query = (
+                client.table("webhook_subscriptions").select("*").eq("is_active", True).contains("events", event_type)
+            )
             if user_id:
                 query = query.eq("user_id", user_id)
             result = query.execute()
@@ -314,5 +328,6 @@ class WebhookService:
             delivered += 1
 
         return delivered
+
 
 webhook_service = WebhookService()

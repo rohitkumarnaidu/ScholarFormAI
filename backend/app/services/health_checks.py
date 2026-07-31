@@ -238,6 +238,7 @@ async def _build_readiness_payload() -> tuple[dict, int]:
 
     try:
         from app.cache.redis_cache import redis_cache
+
         redis_health = redis_cache.health()
         checks["redis"] = redis_health["status"]
     except Exception as exc:
@@ -336,12 +337,7 @@ async def get_readiness_payload(*, force_refresh: bool = False) -> tuple[dict, i
 
     ttl_seconds = _readiness_ttl_seconds()
     now = monotonic()
-    if (
-        not force_refresh
-        and ttl_seconds > 0
-        and _readiness_cache_payload is not None
-        and now < _readiness_cache_expiry
-    ):
+    if not force_refresh and ttl_seconds > 0 and _readiness_cache_payload is not None and now < _readiness_cache_expiry:
         return _clone_payload(_readiness_cache_payload), _readiness_cache_status_code
 
     async with _get_readiness_cache_lock():
@@ -370,22 +366,12 @@ async def get_health_payload(*, force_refresh: bool = False) -> tuple[dict, int]
 
     ttl_seconds = _health_ttl_seconds()
     now = monotonic()
-    if (
-        not force_refresh
-        and ttl_seconds > 0
-        and _health_cache_payload is not None
-        and now < _health_cache_expiry
-    ):
+    if not force_refresh and ttl_seconds > 0 and _health_cache_payload is not None and now < _health_cache_expiry:
         return _clone_payload(_health_cache_payload), _health_cache_status_code
 
     async with _get_health_cache_lock():
         now = monotonic()
-        if (
-            not force_refresh
-            and ttl_seconds > 0
-            and _health_cache_payload is not None
-            and now < _health_cache_expiry
-        ):
+        if not force_refresh and ttl_seconds > 0 and _health_cache_payload is not None and now < _health_cache_expiry:
             return _clone_payload(_health_cache_payload), _health_cache_status_code
 
         payload, status_code = await _build_health_payload()

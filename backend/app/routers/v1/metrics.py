@@ -27,6 +27,7 @@ router = APIRouter(dependencies=[Depends(bind_request_context)])
 @router.get("")
 async def get_metrics_summary(request: Request):
     """Metrics summary endpoint returning aggregated system metrics overview."""
+
     async def operation():
         model_metrics = get_model_metrics()
         ab_testing = get_ab_testing()

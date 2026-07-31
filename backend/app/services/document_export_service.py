@@ -27,9 +27,12 @@ from app.pipeline.export.pdf_exporter import PDFExporter
 from app.schemas.user import User
 from app.services.document_crud_service import DocumentCrudService
 
+
 def _get_doc_service():
     from app.services.document_service import DocumentService
+
     return DocumentService
+
 
 logger = logging.getLogger(__name__)
 
@@ -184,10 +187,9 @@ class DocumentExportService:
         structured_data = result.get("structured_data")
         if structured_data and isinstance(structured_data, dict):
             blocks = structured_data.get("blocks") or structured_data.get("sections", [])
-            formatted_text = "\n\n".join([
-                block.get("text", "") for block in blocks
-                if isinstance(block, dict) and block.get("text")
-            ])
+            formatted_text = "\n\n".join(
+                [block.get("text", "") for block in blocks if isinstance(block, dict) and block.get("text")]
+            )
 
         html_diff = await asyncio.to_thread(
             difflib.HtmlDiff(wrapcolumn=80).make_file,
@@ -252,7 +254,9 @@ class DocumentExportService:
 
             if not os.path.exists(output_path):
                 logger.error("Output file missing on disk for job %s: %s", job_id, output_path)
-                raise HTTPException(status_code=404, detail="Output file not found on server. File may have been deleted.")
+                raise HTTPException(
+                    status_code=404, detail="Output file not found on server. File may have been deleted."
+                )
 
             if not has_signed_token:
                 if not settings.SIGNED_URL_SECRET:

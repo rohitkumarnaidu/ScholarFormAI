@@ -30,9 +30,11 @@ from prometheus_fastapi_instrumentator import Instrumentator
 import os
 import asyncio
 import logging
+
 # Optional structured logging for production environments.
 if settings.ENABLE_STRUCTURED_LOGGING:
     from app.config.logging_config import setup_logging
+
     setup_logging()
 
 # DISABLED: Auto-delete feature temporarily removed per user request
@@ -146,14 +148,12 @@ def _fetch_queue_depths() -> dict[str, int]:
         global _queue_depth_redis_client
         if _queue_depth_redis_client is None:
             import redis
+
             _queue_depth_redis_client = redis.Redis.from_url(
                 settings.REDIS_URL,
                 decode_responses=True,
             )
-        return {
-            queue: int(_queue_depth_redis_client.llen(queue) or 0)
-            for queue in ("interactive", "batch")
-        }
+        return {queue: int(_queue_depth_redis_client.llen(queue) or 0) for queue in ("interactive", "batch")}
     except Exception as exc:
         logger.debug("Queue depth fetch failed: %s", exc)
         _queue_depth_redis_client = None
@@ -165,6 +165,7 @@ async def _periodic_queue_depth_update(interval_seconds: int = 30) -> None:
         depths = await asyncio.to_thread(_fetch_queue_depths)
         try:
             from app.middleware.prometheus_metrics import MetricsManager
+
             for queue, depth in depths.items():
                 MetricsManager.set_celery_queue_depth(queue, depth)
         except Exception:
@@ -241,9 +242,7 @@ def _reset_interrupted_jobs_on_startup() -> None:
             logger.warning("Startup DB Link Status: UNCONFIGURED. App starting in degraded mode.")
     except Exception as exc:
         logger.warning("Startup DB Link Status: UNREACHABLE. Error: %s", exc)
-        logger.info(
-            "Note: App is starting in degraded mode. DB-dependent endpoints will fail at request-time."
-        )
+        logger.info("Note: App is starting in degraded mode. DB-dependent endpoints will fail at request-time.")
 
 
 def _refresh_enhancement_capabilities() -> None:
@@ -292,27 +291,24 @@ def _validate_startup() -> None:
     missing_optional = [name for name, value in optional_api_keys.items() if not value]
     if missing_optional:
         logger.warning(
-            "Startup validation: optional API keys not configured: %s. "
-            "LLM fallback tiers will be limited.",
+            "Startup validation: optional API keys not configured: %s. LLM fallback tiers will be limited.",
             ", ".join(missing_optional),
         )
 
     db_url = getattr(settings, "SUPABASE_DB_URL", None)
     if not db_url:
         logger.warning(
-            "Startup validation: SUPABASE_DB_URL not set. "
-            "Alembic migrations will not work until configured."
+            "Startup validation: SUPABASE_DB_URL not set. Alembic migrations will not work until configured."
         )
 
     if getattr(settings, "REDIS_ENABLED", False):
         redis_url = getattr(settings, "REDIS_URL", None)
         if not redis_url:
-            logger.error(
-                "Startup validation: REDIS_ENABLED=true but REDIS_URL is not set."
-            )
+            logger.error("Startup validation: REDIS_ENABLED=true but REDIS_URL is not set.")
         else:
             try:
                 import redis
+
                 client = redis.Redis.from_url(redis_url, socket_connect_timeout=2, socket_timeout=2)
                 client.ping()
                 logger.info("Startup validation: Redis connection OK at %s", redis_url)
@@ -328,6 +324,7 @@ def _validate_startup() -> None:
     if supabase_url and supabase_key:
         try:
             from app.db.supabase_client import check_supabase_health
+
             health = check_supabase_health()
             if health.get("status") == "healthy":
                 logger.info("Startup validation: Supabase database connection OK.")
@@ -338,14 +335,12 @@ def _validate_startup() -> None:
                 )
         except Exception as e:
             logger.warning(
-                "Startup validation: Supabase database connection failed: %s. "
-                "App will start in degraded mode.",
+                "Startup validation: Supabase database connection failed: %s. App will start in degraded mode.",
                 e,
             )
     else:
         logger.warning(
-            "Startup validation: Supabase credentials not fully configured. "
-            "DB-dependent endpoints will return 503."
+            "Startup validation: Supabase credentials not fully configured. DB-dependent endpoints will return 503."
         )
 
     logger.info("Startup validation complete.")
@@ -450,9 +445,7 @@ async def lifespan(app: FastAPI):
             )
         except asyncio.TimeoutError:
             app.state.grobid_startup_probe_ok = False
-            logger.warning(
-                "Startup step 'grobid_probe' timed out after 25.0s. Continuing in degraded mode."
-            )
+            logger.warning("Startup step 'grobid_probe' timed out after 25.0s. Continuing in degraded mode.")
 
         if settings.PRELOAD_AI_MODELS and not settings.LOW_MEMORY_MODE:
             # Phase 2: AI Model Pre-loading (optional, can be disabled for low-memory deploys)
@@ -472,8 +465,7 @@ async def lifespan(app: FastAPI):
                 logger.warning("AI Model Pre-load Warning: %s. Falling back to lazy-loading.", e)
         else:
             logger.info(
-                "Startup: Skipping AI model pre-load "
-                "(PRELOAD_AI_MODELS=%s, LOW_MEMORY_MODE=%s).",
+                "Startup: Skipping AI model pre-load (PRELOAD_AI_MODELS=%s, LOW_MEMORY_MODE=%s).",
                 settings.PRELOAD_AI_MODELS,
                 settings.LOW_MEMORY_MODE,
             )
@@ -582,6 +574,7 @@ async def request_validation_handler(request: Request, exc: RequestValidationErr
         details={"detail": exc.errors()},
     )
 
+
 # Prometheus instrumentation
 Instrumentator().instrument(app).expose(app, endpoint="/metrics", include_in_schema=False)
 
@@ -616,19 +609,23 @@ app.add_middleware(TierRateLimitMiddleware, guest_daily_limit=5)
 
 # Security Headers Middleware (CSP, X-Frame-Options, etc.)
 from app.middleware.security_headers import SecurityHeadersMiddleware, MaxBodySizeMiddleware
+
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(MaxBodySizeMiddleware, max_size=60 * 1024 * 1024)  # 60MB global limit
 
 # CSRF Protection Middleware
 from app.middleware.csrf import CSRFMiddleware
+
 app.add_middleware(CSRFMiddleware)
 
 # Feature Flag Middleware (dev only — adds X-Feature-Flags header)
 from app.middleware.feature_flags import FeatureFlagMiddleware
+
 app.add_middleware(FeatureFlagMiddleware)
 
 # Monitoring Middleware (adds request timing and structured logging)
 from app.middleware.monitoring import MonitoringMiddleware
+
 app.add_middleware(MonitoringMiddleware)
 
 _HTTPS_REDIRECT_EXEMPT_PATHS = {
@@ -684,9 +681,8 @@ else:
 @app.middleware("http")
 async def lazy_router_loader(request: Request, call_next):
     path = request.url.path or ""
-    if (
-        (path.startswith("/api/v1/") or path.startswith("/api/preview"))
-        and not getattr(app.state, "_routers_loaded", False)
+    if (path.startswith("/api/v1/") or path.startswith("/api/preview")) and not getattr(
+        app.state, "_routers_loaded", False
     ):
         await _ensure_routers_loaded(app)
     return await call_next(request)
@@ -697,6 +693,7 @@ async def audit_write_operations(request: Request, call_next):
     response = await call_next(request)
     try:
         from app.services.audit_log_service import audit_log_service
+
         await audit_log_service.log_http_write(
             request,
             status_code=response.status_code,
@@ -704,6 +701,7 @@ async def audit_write_operations(request: Request, call_next):
     except Exception as exc:
         logger.debug("Audit middleware skipped due to logging error: %s", exc)
     return response
+
 
 # Document Generator (generate from scratch — no upload needed)
 # Hard-cut migration: only /api/v1 routers are mounted from app.main.
@@ -720,9 +718,11 @@ async def readiness_probe():
     payload, status_code = await get_readiness_payload()
     return JSONResponse(content=payload, status_code=status_code)
 
+
 @app.get("/")
 async def root():
     return {"message": "ScholarForm AI Backend is running"}
+
 
 @app.get("/health")
 async def health_check():
@@ -736,5 +736,3 @@ async def health_check():
 
     payload, _status_code = await get_health_payload()
     return JSONResponse(content=payload, status_code=200)
-
-

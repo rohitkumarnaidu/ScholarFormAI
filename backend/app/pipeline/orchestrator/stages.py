@@ -21,6 +21,7 @@ def _get_figure_analyzer():
     global _figure_analyzer_instance
     if _figure_analyzer_instance is None:
         from app.pipeline.figures.analyzer import figure_analyzer
+
         _figure_analyzer_instance = figure_analyzer
     return _figure_analyzer_instance
 
@@ -122,7 +123,7 @@ class PipelineStages:
     @retry_with_backoff(max_retries=2, backoff_factor=1.0)
     def extract_parse_content(self, factory, input_path, job_id, formatting_options, file_ext):
         """Phase 2: Text extraction — parse or convert + parse."""
-        parser_supported_formats = ['.pdf', '.txt', '.html', '.htm', '.md', '.markdown', '.tex', '.latex']
+        parser_supported_formats = [".pdf", ".txt", ".html", ".htm", ".md", ".markdown", ".tex", ".latex"]
         if file_ext in parser_supported_formats:
             logger.info("Parsing %s directly with ParserFactory (no conversion)", file_ext)
             parser = factory.get_parser(input_path)
@@ -137,9 +138,10 @@ class PipelineStages:
 
     def apply_llm_pdf_fallback(self, doc_obj, input_path, job_id, file_ext):
         """LLM-based PDF fallback for scanned PDFs with empty extraction."""
-        if (not doc_obj.blocks or all(b.text.strip() == "" for b in doc_obj.blocks)) and file_ext == '.pdf':
+        if (not doc_obj.blocks or all(b.text.strip() == "" for b in doc_obj.blocks)) and file_ext == ".pdf":
             try:
                 from app.pipeline.parsing.llm_pdf_parser import LLMPDFParser
+
                 logger.info("Empty extraction for PDF — trying LLM PDF parser fallback for job %s", job_id)
                 llm_parser = LLMPDFParser()
                 llm_doc = llm_parser.parse(input_path, job_id)
@@ -154,6 +156,7 @@ class PipelineStages:
         """Set template info on document object."""
         if template_name:
             from app.models import TemplateInfo
+
             doc_obj.template = TemplateInfo(template_name=template_name)
 
     # ------------------------------------------------------------------ #
@@ -162,17 +165,13 @@ class PipelineStages:
 
     def extract_ai_metadata(self, doc_obj, input_path, file_ext, job_id):
         """Parallel GROBID + Docling extraction for PDF files."""
-        if file_ext != '.pdf':
+        if file_ext != ".pdf":
             return doc_obj
 
         has_grobid = (
-            hasattr(doc_obj, 'metadata') and doc_obj.metadata
-            and doc_obj.metadata.ai_hints.get('grobid_metadata')
+            hasattr(doc_obj, "metadata") and doc_obj.metadata and doc_obj.metadata.ai_hints.get("grobid_metadata")
         )
-        has_layout = (
-            hasattr(doc_obj, 'metadata') and doc_obj.metadata
-            and doc_obj.metadata.ai_hints.get('llm_layout')
-        )
+        has_layout = hasattr(doc_obj, "metadata") and doc_obj.metadata and doc_obj.metadata.ai_hints.get("llm_layout")
         if has_grobid and has_layout:
             logger.info("AI Extraction already completed (Agent V2). Skipping parallel pass.")
             return doc_obj
@@ -186,6 +185,7 @@ class PipelineStages:
         from app.pipeline.orchestrator import settings as _s
 
         try:
+
             def run_grobid():
                 if not _s.GROBID_ENABLED:
                     logger.info("GROBID fallback disabled (GROBID_ENABLED=false).")
@@ -204,6 +204,7 @@ class PipelineStages:
                     return {}
                 try:
                     from app.pipeline.parsing.llm_pdf_parser import LLMPDFParser
+
                     logger.info("Analyzing layout with LLM PDF parser...")
                     llm_parser = LLMPDFParser()
                     return llm_parser.analyze_layout(input_path)
@@ -237,24 +238,26 @@ class PipelineStages:
             executor.shutdown(wait=False, cancel_futures=True)
 
         if grobid_metadata and isinstance(grobid_metadata, dict):
-            if not hasattr(doc_obj, 'metadata') or doc_obj.metadata is None:
+            if not hasattr(doc_obj, "metadata") or doc_obj.metadata is None:
                 from app.models import DocumentMetadata
+
                 doc_obj.metadata = DocumentMetadata()
-            doc_obj.metadata.ai_hints['grobid_metadata'] = grobid_metadata
+            doc_obj.metadata.ai_hints["grobid_metadata"] = grobid_metadata
             logger.info(
                 "GROBID extracted: Title='%s', Authors=%d",
-                grobid_metadata.get('title', 'N/A'),
-                len(grobid_metadata.get('authors', [])),
+                grobid_metadata.get("title", "N/A"),
+                len(grobid_metadata.get("authors", [])),
             )
 
         if layout_result and isinstance(layout_result, dict):
-            if not hasattr(doc_obj, 'metadata') or doc_obj.metadata is None:
+            if not hasattr(doc_obj, "metadata") or doc_obj.metadata is None:
                 from app.models import DocumentMetadata
+
                 doc_obj.metadata = DocumentMetadata()
-            doc_obj.metadata.ai_hints['llm_layout'] = layout_result
+            doc_obj.metadata.ai_hints["llm_layout"] = layout_result
             logger.info(
                 "LLM layout analyzed: %d elements found",
-                len(layout_result.get('elements', [])),
+                len(layout_result.get("elements", [])),
             )
 
         if (
@@ -263,10 +266,12 @@ class PipelineStages:
             and not (layout_result and isinstance(layout_result, dict))
         ):
             from app.models import DocumentMetadata
+
             pymupdf_metadata = self.extract_pymupdf_fallback_metadata(input_path)
             if pymupdf_metadata:
-                if not hasattr(doc_obj, 'metadata') or doc_obj.metadata is None:
+                if not hasattr(doc_obj, "metadata") or doc_obj.metadata is None:
                     from app.models import DocumentMetadata
+
                     doc_obj.metadata = DocumentMetadata()
                 doc_obj.metadata.ai_hints["pymupdf_fallback"] = pymupdf_metadata
                 if not doc_obj.metadata.title and pymupdf_metadata.get("title"):
@@ -282,6 +287,7 @@ class PipelineStages:
     @retry_with_backoff(max_retries=1, backoff_factor=1.0)
     def detect_structure(self, doc_obj):
         from app.pipeline.orchestrator import StructureDetector
+
         detector = StructureDetector(contracts_dir=self.contracts_dir)
         return detector.process(doc_obj)
 
@@ -293,11 +299,14 @@ class PipelineStages:
     def run_semantic_parsing(self, doc_obj):
         from app.pipeline.orchestrator import settings as _s
         from app.pipeline.intelligence.semantic_parser import get_semantic_parser
+
         semantic_parser = get_semantic_parser()
         timeout = int(_s.PIPELINE_SEMANTIC_TIMEOUT_SECONDS)
         if self._run_with_timeout:
             semantic_blocks = self._run_with_timeout(
-                semantic_parser.analyze_blocks, timeout, doc_obj.blocks,
+                semantic_parser.analyze_blocks,
+                timeout,
+                doc_obj.blocks,
             )
         else:
             semantic_blocks = semantic_parser.analyze_blocks(doc_obj.blocks)
@@ -314,6 +323,7 @@ class PipelineStages:
     @retry_with_backoff(max_retries=2, backoff_factor=1.0)
     def run_classification(self, doc_obj):
         from app.pipeline.orchestrator import ContentClassifier
+
         classifier = ContentClassifier()
         return classifier.process(doc_obj)
 
@@ -325,6 +335,7 @@ class PipelineStages:
         """Content analysis: keyword extraction + caption matching."""
         try:
             from app.pipeline.nlp.analyzer import extract_keywords
+
             abstract_text = (getattr(doc_obj.metadata, "abstract", "") or "").strip()
             if not abstract_text:
                 for candidate in doc_obj.blocks:
@@ -357,6 +368,7 @@ class PipelineStages:
 
     def run_figure_analysis(self, doc_obj):
         from app.pipeline.orchestrator import safe_execution
+
         with safe_execution("Figure Quality Analysis"):
             analyzer = _get_figure_analyzer()
             results = []
@@ -367,7 +379,9 @@ class PipelineStages:
                 elif hasattr(fig, "image_data") and fig.image_data:
                     export_path = getattr(fig, "export_path", None)
                 if not export_path or not os.path.exists(str(export_path)):
-                    results.append({"figure_id": getattr(fig, "figure_id", None), "valid": False, "error": "No export path"})
+                    results.append(
+                        {"figure_id": getattr(fig, "figure_id", None), "valid": False, "error": "No export path"}
+                    )
                     continue
                 analysis = analyzer.analyze_image(str(export_path))
                 analysis["figure_id"] = getattr(fig, "figure_id", None)
@@ -402,6 +416,7 @@ class PipelineStages:
     def ref_normalizer(self):
         from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         from app.pipeline.contracts.loader import ContractLoader
+
         loader = ContractLoader(contracts_dir=self.contracts_dir)
         return ReferenceFormatterEngine(loader)
 
@@ -411,10 +426,12 @@ class PipelineStages:
 
     def run_crossref_validation(self, doc_obj):
         from app.pipeline.orchestrator import safe_execution
+
         with safe_execution("CrossRef Citation Validation"):
             try:
                 from app.pipeline.orchestrator import settings as _s
                 from app.services.crossref_client import get_crossref_client
+
                 crossref = get_crossref_client()
                 if hasattr(doc_obj, "references") and doc_obj.references:
                     logger.info("Validating %d references against CrossRef...", len(doc_obj.references))
@@ -447,6 +464,7 @@ class PipelineStages:
     def run_ai_reasoning(self, doc_obj, template_name, job_id):
         """RAG + LLM reasoning layer. Returns semantic_advice dict."""
         from app.pipeline.orchestrator import safe_execution, settings as _s
+
         semantic_advice = {}
         rag = self._resolve_rag_engine()
         reasoner = self._resolve_reasoning_engine()
@@ -462,11 +480,7 @@ class PipelineStages:
                     guidelines = rag.query_guidelines(template_name, sec, top_k=2) or []
                 elif hasattr(rag, "query_rules"):
                     rule_matches = rag.query_rules(template_name, sec, top_k=2) or []
-                    guidelines = [
-                        r.get("text", "")
-                        for r in rule_matches
-                        if isinstance(r, dict) and r.get("text")
-                    ]
+                    guidelines = [r.get("text", "") for r in rule_matches if isinstance(r, dict) and r.get("text")]
                 if guidelines:
                     rules_context += f"\n- {sec.title()}: {' '.join(guidelines)}"
 
@@ -482,6 +496,7 @@ class PipelineStages:
             if hasattr(reasoner, "generate_instruction_set"):
                 timeout_sec = int(_s.PIPELINE_REASONING_TIMEOUT_SECONDS)
                 import threading
+
                 cancel_event = threading.Event()
                 try:
                     if self._run_with_timeout:
@@ -498,9 +513,7 @@ class PipelineStages:
                             or {}
                         )
                     else:
-                        semantic_advice = reasoner.generate_instruction_set(
-                            context_blocks, rules_context, 1
-                        ) or {}
+                        semantic_advice = reasoner.generate_instruction_set(context_blocks, rules_context, 1) or {}
                 except TimeoutError:
                     logger.warning("AI reasoning timed out after %ss for job %s.", timeout_sec, job_id)
                     semantic_advice = {}
@@ -517,6 +530,7 @@ class PipelineStages:
     @staticmethod
     def _resolve_rag_engine():
         from app.utils.singleton import resolve_optional_callable
+
         return resolve_optional_callable(
             "app.pipeline.intelligence.rag_engine",
             "get_rag_engine",
@@ -525,6 +539,7 @@ class PipelineStages:
     @staticmethod
     def _resolve_reasoning_engine():
         from app.utils.singleton import resolve_optional_callable
+
         return resolve_optional_callable(
             "app.pipeline.intelligence.reasoning_engine",
             "get_reasoning_engine",
@@ -537,6 +552,7 @@ class PipelineStages:
     @retry_with_backoff(max_retries=2, backoff_factor=1.0)
     def run_validation(self, doc_obj):
         from app.pipeline.orchestrator import DocumentValidator
+
         validator = DocumentValidator(contracts_dir=self.contracts_dir)
         if self._run_with_timeout:
             return self._run_with_timeout(validator.process, 60, doc_obj)
@@ -549,6 +565,7 @@ class PipelineStages:
     @retry_with_backoff(max_retries=2, backoff_factor=1.0)
     def run_formatting(self, doc_obj):
         from app.pipeline.orchestrator import Formatter
+
         formatter = Formatter(templates_dir=self.templates_dir, contracts_dir=self.contracts_dir)
         if self._run_with_timeout:
             return self._run_with_timeout(formatter.process, 60, doc_obj)
@@ -560,6 +577,7 @@ class PipelineStages:
 
     def export_document(self, doc_obj, input_path, job_id):
         from app.pipeline.orchestrator import Exporter
+
         exporter = Exporter()
         out_dir = os.path.join("output", str(job_id))
         os.makedirs(out_dir, exist_ok=True)

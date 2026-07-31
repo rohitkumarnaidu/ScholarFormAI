@@ -2,6 +2,7 @@
 Analytics service for tracking user events.
 Uses PostHog when configured, falls back to structured logging.
 """
+
 import logging
 import os
 from datetime import datetime, timezone
@@ -20,6 +21,7 @@ class AnalyticsService:
         if self._enabled:
             try:
                 from posthog import Posthog
+
                 self._posthog = Posthog(
                     project_api_key=self._api_key,
                     host=self._host,

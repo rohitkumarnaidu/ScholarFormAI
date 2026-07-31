@@ -83,10 +83,7 @@ class CrossRefClient:
                     if items:
                         item = items[0]
                         authors = ", ".join(
-                            [
-                                f"{a.get('given', '')} {a.get('family', '')}".strip()
-                                for a in item.get("author", [])
-                            ]
+                            [f"{a.get('given', '')} {a.get('family', '')}".strip() for a in item.get("author", [])]
                         )
                         result = {
                             "doi": item.get("DOI"),

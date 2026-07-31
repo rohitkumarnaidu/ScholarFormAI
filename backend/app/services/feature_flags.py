@@ -12,6 +12,7 @@ Usage:
     else:
         # Show old upload flow
 """
+
 import os
 import json
 import logging
@@ -56,6 +57,7 @@ class FeatureFlagService:
         if self._redis:
             try:
                 import redis
+
                 r = self._redis if isinstance(self._redis, redis.Redis) else None
                 if r:
                     cached = r.get(f"flag:{name}")
@@ -110,6 +112,7 @@ class FeatureFlagService:
         if self._redis:
             try:
                 import redis
+
                 r = self._redis if isinstance(self._redis, redis.Redis) else None
                 if r:
                     r.setex(f"flag:{name}", 300, json.dumps(value))  # 5 min TTL

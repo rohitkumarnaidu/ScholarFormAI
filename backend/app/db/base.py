@@ -19,4 +19,5 @@ class Base(DeclarativeBase):
     class-based `DeclarativeBase` removes the deprecation warning
     introduced in SQLAlchemy 2.0 and ensures forward compatibility.
     """
+
     pass
