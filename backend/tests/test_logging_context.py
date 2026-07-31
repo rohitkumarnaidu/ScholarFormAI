@@ -144,3 +144,48 @@ class TestLoggingContext:
             await anext(agen)
         except StopAsyncIteration:
             pass
+
+    def test_extract_user_id_various_types(self):
+        from app.utils.logging_context import extract_user_id
+        class ObjWithId:
+            id = "user_obj_123"
+        class ObjWithoutId:
+            name = "no_id"
+
+        assert extract_user_id(None) is None
+        assert extract_user_id("user_str_999") == "user_str_999"
+        assert extract_user_id({"id": "dict_id_1"}) == "dict_id_1"
+        assert extract_user_id(ObjWithId()) == "user_obj_123"
+        assert extract_user_id(ObjWithoutId()) is None
+
+    def test_user_id_context_binding(self):
+        from app.utils.logging_context import log_context, get_user_id_context
+        with log_context(user_id="user_ctx_456"):
+            assert get_user_id_context() == "user_ctx_456"
+        assert get_user_id_context() is None
+
+    @pytest.mark.asyncio
+    async def test_bind_request_context_starlette_request_without_auth_middleware(self):
+        from starlette.requests import Request
+        from app.utils.logging_context import bind_request_context, get_user_id_context
+        request = Request({"type": "http", "headers": []})
+        agen = bind_request_context(request)
+        try:
+            await anext(agen)
+            assert get_user_id_context() is None
+        except StopAsyncIteration:
+            pass
+
+    def test_extract_user_id_unauthenticated_user_and_objects_without_id(self):
+        from starlette.authentication import UnauthenticatedUser
+        from app.utils.logging_context import extract_user_id
+
+        unauth_user = UnauthenticatedUser()
+        assert extract_user_id(unauth_user) is None
+
+        class CustomObjWithoutId:
+            def __init__(self):
+                self.name = "test"
+
+        assert extract_user_id(CustomObjWithoutId()) is None
+

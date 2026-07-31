@@ -151,7 +151,7 @@ class DatabaseSettings(BaseSettings):
 
 class LLMSettings(BaseSettings):
     NVIDIA_API_KEY: Optional[str] = None
-    NVIDIA_MODEL: str = ""
+    NVIDIA_MODEL: str = "nvidia_nim/meta/llama-3.3-70b-instruct"
     GROQ_API_KEY: Optional[str] = None
     GROQ_MODEL: str = ""
     GROQ_API_BASE: str = ""

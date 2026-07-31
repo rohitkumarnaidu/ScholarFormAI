@@ -34,8 +34,8 @@ def sanitize_string(value: str, max_length: int | None = None) -> str:
     if not isinstance(value, str):
         return ""
     value = CONTROL_CHARS_PATTERN.sub("", value)
-    value = HTML_TAG_PATTERN.sub("", value)
     value = SCRIPT_TAG_PATTERN.sub("", value)
+    value = HTML_TAG_PATTERN.sub("", value)
     value = value.strip()
     if max_length and len(value) > max_length:
         value = value[:max_length]
