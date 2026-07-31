@@ -126,7 +126,7 @@ class TestSSRFUrlParsingRobustness:
     def test_url_with_credentials_accepted_by_sanitize(self):
         from app.routers.v1.providers import _sanitize_url
         result = _sanitize_url("http://example.com/api")
-        assert "example.com" in result
+        assert result.startswith("http://example.com")
 
     def test_redirect_parameter_not_validated(self):
         """Query parameters are not validated as they represent
@@ -134,7 +134,7 @@ class TestSSRFUrlParsingRobustness:
         The httpx client does NOT follow redirects by default."""
         from app.routers.v1.providers import _sanitize_url
         result = _sanitize_url("http://external-api.com/callback?next=https://example.com/dashboard")
-        assert "external-api.com" in result
+        assert result.startswith("http://external-api.com")
 
     def test_sanitize_url_rejects_blank(self):
         from app.routers.v1.providers import _sanitize_url

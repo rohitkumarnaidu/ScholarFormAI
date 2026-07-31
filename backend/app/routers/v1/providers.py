@@ -369,6 +369,11 @@ async def discover_models(
             }
 
         api_base = _sanitize_url(target_url, allow_local=True).rstrip("/")
+        from urllib.parse import urlparse
+        parsed_api = urlparse(api_base)
+        if parsed_api.scheme not in ("http", "https") or not parsed_api.netloc:
+            raise ValueError("Invalid URL")
+        
         if not api_base.endswith("/v1"):
             api_base = api_base + "/v1"
         async with httpx.AsyncClient(timeout=10) as client:
