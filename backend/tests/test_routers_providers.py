@@ -6,6 +6,7 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.utils.dependencies import get_current_user
+from app.db.session import get_db
 
 
 @pytest.fixture
@@ -13,9 +14,10 @@ def client():
     mock_user = MagicMock()
     mock_user.id = "user-123"
     mock_user.role = "authenticated"
-    app.dependency_overrides[get_current_user] = lambda: mock_user
-
     mock_db = MagicMock(autospec=True)
+    app.dependency_overrides[get_current_user] = lambda: mock_user
+    app.dependency_overrides[get_db] = lambda: mock_db
+
     mock_encryption = MagicMock()
     mock_encryption.encrypt.return_value = "encrypted:key"
     mock_encryption.decrypt.return_value = "decrypted-key"

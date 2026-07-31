@@ -129,9 +129,12 @@ class TestSSRFUrlParsingRobustness:
         assert "example.com" in result
 
     def test_redirect_parameter_not_validated(self):
+        """Query parameters are not validated as they represent
+        data sent to the remote server, not the connection target.
+        The httpx client does NOT follow redirects by default."""
         from app.routers.v1.providers import _sanitize_url
-        result = _sanitize_url("http://evil.com/redirect?url=http://169.254.169.254/latest/meta-data")
-        assert "evil.com" in result
+        result = _sanitize_url("http://external-api.com/callback?next=https://example.com/dashboard")
+        assert "external-api.com" in result
 
     def test_sanitize_url_rejects_blank(self):
         from app.routers.v1.providers import _sanitize_url
