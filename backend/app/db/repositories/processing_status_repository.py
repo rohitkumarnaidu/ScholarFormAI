@@ -24,12 +24,7 @@ class ProcessingStatusRepository(BaseRepository):
 
         def run_query():
             client = self._get_client()
-            return (
-                client.table("processing_status")
-                .select("*")
-                .eq("document_id", str(doc_id))
-                .execute()
-            )
+            return client.table("processing_status").select("*").eq("document_id", str(doc_id)).execute()
 
         try:
             result = await execute_with_transient_retry(
@@ -67,9 +62,7 @@ class ProcessingStatusRepository(BaseRepository):
                 payload["progress_percentage"] = progress_percentage
             if message is not None:
                 payload["message"] = message
-            return client.table("processing_status").upsert(
-                payload, on_conflict="document_id,phase"
-            ).execute()
+            return client.table("processing_status").upsert(payload, on_conflict="document_id,phase").execute()
 
         try:
             await asyncio.to_thread(run_upsert)

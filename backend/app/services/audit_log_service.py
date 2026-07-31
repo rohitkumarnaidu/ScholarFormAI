@@ -98,10 +98,7 @@ class AuditLogService:
             self._audit_table_available = True
         except Exception as exc:
             error_text = str(exc)
-            missing_audit_table = (
-                "audit_log" in error_text
-                and "Could not find the table" in error_text
-            )
+            missing_audit_table = "audit_log" in error_text and "Could not find the table" in error_text
             if missing_audit_table:
                 self._audit_table_available = False
                 if not self._audit_table_warning_logged:

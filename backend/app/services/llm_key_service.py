@@ -8,6 +8,7 @@ Extracted from the fat `llm_service.py`. Resolves a provider API key from
 the user's stored encrypted keys first, then falls back to the environment
 configured in :data:`app.config.settings`.
 """
+
 from __future__ import annotations
 
 import logging

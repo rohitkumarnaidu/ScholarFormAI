@@ -189,12 +189,15 @@ def _dispatch_agent_task(background_tasks: BackgroundTasks, task_name: str, *arg
     if should_queue:
         if task_name == "pipeline":
             from app.tasks.celery_tasks import process_agent_pipeline_task
+
             process_agent_pipeline_task.delay(*args)
         elif task_name == "resume":
             from app.tasks.celery_tasks import process_agent_resume_task
+
             process_agent_resume_task.delay(*args)
         elif task_name == "rewrite":
             from app.tasks.celery_tasks import process_agent_rewrite_task
+
             process_agent_rewrite_task.delay(*args)
     else:
         if task_name == "pipeline":
@@ -270,10 +273,7 @@ async def start_generation(
                 raise HTTPException(status_code=422, detail="JSON requests are only supported for agent sessions.")
 
             user_prompt = str(
-                payload.get("prompt")
-                or payload.get("user_prompt")
-                or payload.get("content")
-                or ""
+                payload.get("prompt") or payload.get("user_prompt") or payload.get("content") or ""
             ).strip()
             if not user_prompt:
                 raise HTTPException(status_code=422, detail="Prompt is required for agent sessions.")
@@ -304,12 +304,7 @@ async def start_generation(
         form = await request.form()
         session_type = str(form.get("session_type") or "multi_doc")
         if session_type == "agent":
-            user_prompt = str(
-                form.get("prompt")
-                or form.get("user_prompt")
-                or form.get("content")
-                or ""
-            ).strip()
+            user_prompt = str(form.get("prompt") or form.get("user_prompt") or form.get("content") or "").strip()
             if not user_prompt:
                 raise HTTPException(status_code=422, detail="Prompt is required for agent sessions.")
 
@@ -642,9 +637,7 @@ async def generation_messages(
                 outline = session.get("outline_json") or {}
                 if isinstance(outline, dict):
                     sections = [
-                        s.get("title")
-                        for s in outline.get("sections", [])
-                        if isinstance(s, dict) and s.get("title")
+                        s.get("title") for s in outline.get("sections", []) if isinstance(s, dict) and s.get("title")
                     ]
             rewrite_section = _detect_section_rewrite(question, sections)
             if rewrite_section:
@@ -676,13 +669,8 @@ async def generation_messages(
                 }
         sources = _vector_store.query(sessionId, question, top_k=5)
 
-        context = "\n\n".join(
-            f"[{s.get('source_doc')} - {s.get('section')}] {s.get('text')}" for s in sources
-        )
-        system = (
-            "You are a scholarly assistant. Answer using the provided sources. "
-            "Cite sources inline in parentheses."
-        )
+        context = "\n\n".join(f"[{s.get('source_doc')} - {s.get('section')}] {s.get('text')}" for s in sources)
+        system = "You are a scholarly assistant. Answer using the provided sources. Cite sources inline in parentheses."
         await _session_service.add_message(sessionId, "system", system, token_count=0)
         user_prompt = f"Question: {question}\n\nSources:\n{sanitize_for_llm(context)}"
         await abuse_detector.record_llm_call(str(getattr(user, "id", user)))
@@ -690,6 +678,7 @@ async def generation_messages(
         if selected_model:
             try:
                 from app.services.llm_service import generate_with_model, LLMUnavailableError
+
                 result = await asyncio.to_thread(
                     generate_with_model,
                     [
@@ -742,10 +731,7 @@ async def generation_messages(
         return {
             "role": "assistant",
             "content": answer,
-            "sources": [
-                {"source_doc": s.get("source_doc"), "section": s.get("section")}
-                for s in sources
-            ],
+            "sources": [{"source_doc": s.get("source_doc"), "section": s.get("section")} for s in sources],
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
@@ -866,4 +852,3 @@ async def stop_session(
         logger=logger,
         operation_name="generation session stop",
     )
-

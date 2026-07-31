@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 try:
     from pdfminer.high_level import extract_text as pdf_extract_text
+
     PDFMINER_AVAILABLE = True
 except Exception:
     pdf_extract_text = None  # type: ignore[assignment]
@@ -19,6 +20,7 @@ except Exception:
 
 try:
     from pdf2image import convert_from_path
+
     PDF2IMAGE_AVAILABLE = True
 except Exception:
     convert_from_path = None  # type: ignore[assignment]
@@ -26,6 +28,7 @@ except Exception:
 
 try:
     import pytesseract
+
     TESSERACT_AVAILABLE = True
 except Exception:
     pytesseract = None  # type: ignore[assignment]
@@ -33,6 +36,7 @@ except Exception:
 
 try:
     from paddleocr import PaddleOCR
+
     PADDLE_AVAILABLE = True
 except Exception:
     PaddleOCR = None  # type: ignore[assignment]
@@ -40,6 +44,7 @@ except Exception:
 
 try:
     import numpy as np
+
     NUMPY_AVAILABLE = True
 except Exception:
     np = None  # type: ignore[assignment]
@@ -47,6 +52,7 @@ except Exception:
 
 try:
     from docx import Document
+
     DOCX_AVAILABLE = True
 except Exception:
     Document = None  # type: ignore[assignment]

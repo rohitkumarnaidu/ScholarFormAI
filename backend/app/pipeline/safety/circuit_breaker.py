@@ -10,6 +10,7 @@ Backward-compatible public API:
   circuit_breaker(failure_threshold, recovery_timeout, fallback_function)
   CircuitBreakerOpenException
 """
+
 import logging
 import functools
 from typing import Callable, Any, Optional
@@ -18,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import pybreaker
+
     _PYBREAKER = True
 except ImportError:
     _PYBREAKER = False
@@ -26,6 +28,7 @@ except ImportError:
 
 class CircuitBreakerOpenException(Exception):
     """Raised when the circuit is open and calls are blocked."""
+
     pass
 
 
@@ -36,6 +39,7 @@ def circuit_breaker(
 ):
     """Thread-safe circuit breaker decorator (pybreaker-powered when available)."""
     if _PYBREAKER:
+
         def decorator(func: Callable) -> Callable:
             _instance_attr = "_circuit_breaker_instances"
             _breaker_key = func.__qualname__
@@ -96,7 +100,9 @@ def circuit_breaker(
                             logger.error("Fallback also failed: %s", fb)
                             return {}
                     raise
+
             return wrapper
+
         return decorator
 
     # --- Legacy fallback (original non-thread-safe implementation) ---
@@ -162,5 +168,7 @@ def circuit_breaker(
                         logger.error("Fallback also failed: %s", fb)
                         return {}
                 raise
+
         return wrapper
+
     return decorator

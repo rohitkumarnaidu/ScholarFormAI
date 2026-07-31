@@ -42,8 +42,7 @@ try:
 except ImportError as exc:
     _load_error = str(exc)
     logger.info(
-        "Surya OCR not installed (%s). "
-        "Install with: pip install surya-ocr",
+        "Surya OCR not installed (%s). Install with: pip install surya-ocr",
         exc,
     )
 
@@ -57,10 +56,7 @@ class OCREngine:
 
     def __init__(self):
         if not SURYA_AVAILABLE:
-            raise ImportError(
-                f"Surya OCR unavailable: {_load_error}. "
-                "Install with: pip install surya-ocr"
-            )
+            raise ImportError(f"Surya OCR unavailable: {_load_error}. Install with: pip install surya-ocr")
         # Model state (lazy)
         self._det_model = None
         self._det_processor = None
@@ -181,9 +177,7 @@ class OCREngine:
 
         return pages
 
-    def detect_layout(
-        self, images: List[Any]
-    ) -> List[List[Dict[str, Any]]]:
+    def detect_layout(self, images: List[Any]) -> List[List[Dict[str, Any]]]:
         """
         Detect page layout regions (headers, figures, tables, text blocks).
 
@@ -198,9 +192,7 @@ class OCREngine:
 
         # Surya layout detection
         det_results = batch_text_detection(images, self._det_model, self._det_processor)
-        layout_results = batch_layout_detection(
-            images, self._det_model, self._det_processor, det_results
-        )
+        layout_results = batch_layout_detection(images, self._det_model, self._det_processor, det_results)
 
         pages = []
         for page_layout in layout_results:
@@ -217,9 +209,7 @@ class OCREngine:
 
         return pages
 
-    def detect_reading_order(
-        self, images: List[Any]
-    ) -> List[List[Dict[str, Any]]]:
+    def detect_reading_order(self, images: List[Any]) -> List[List[Dict[str, Any]]]:
         """
         Detect the correct reading order for multi-column pages.
 
@@ -235,9 +225,7 @@ class OCREngine:
         # Need text detections first
         det_results = batch_text_detection(images, self._det_model, self._det_processor)
 
-        order_results = batch_ordering(
-            images, det_results, self._order_model, self._order_processor
-        )
+        order_results = batch_ordering(images, det_results, self._order_model, self._order_processor)
 
         pages = []
         for page_order in order_results:

@@ -4,6 +4,7 @@
 """
 Real-time adaptation during processing.
 """
+
 import logging
 from typing import Dict, Any, Optional, Callable, List
 from datetime import datetime
@@ -168,15 +169,11 @@ class RealTimeAdaptiveAgent:
             # Adaptation 3: Tool selection
             if tool_count > 0 and not self.params.get("tool_priority"):
                 successful_tools: List[str] = [
-                    t["tool"]
-                    for t in tools_executed
-                    if isinstance(t, dict) and t.get("success")
+                    t["tool"] for t in tools_executed if isinstance(t, dict) and t.get("success")
                 ]
                 if successful_tools:
                     self.params["tool_priority"] = successful_tools
-                    self._notify_adaptation(
-                        "tool_priority_set", {"priority": successful_tools}
-                    )
+                    self._notify_adaptation("tool_priority_set", {"priority": successful_tools})
 
         except Exception as exc:
             logger.error("Error in _adapt_realtime: %s", exc)
@@ -203,9 +200,7 @@ class RealTimeAdaptiveAgent:
             error_count = len(self.current_metrics.get("errors_encountered", []))
 
             if elapsed > timeout:
-                logger.warning(
-                    "Timeout exceeded (%.1fs > %.1fs); stopping.", elapsed, timeout
-                )
+                logger.warning("Timeout exceeded (%.1fs > %.1fs); stopping.", elapsed, timeout)
                 return False
 
             if error_count > _MAX_ERRORS_BEFORE_STOP:

@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 class DocumentMetadata(BaseModel):
     """Metadata extracted from the document or provided by the user."""
+
     title: Optional[str] = None
     authors: List[str] = Field(default_factory=list)
     affiliations: List[str] = Field(default_factory=list)
@@ -36,12 +37,14 @@ class DocumentMetadata(BaseModel):
 
 class TemplateInfo(BaseModel):
     """Information about the scientific template used for formatting."""
+
     template_name: str
     template_version: Optional[str] = "1.0"
 
 
 class ProcessingStage(BaseModel):
     """Record of a single processing stage in the pipeline."""
+
     stage_name: str
     status: str
     message: Optional[str] = None
@@ -54,6 +57,7 @@ class PipelineDocument(BaseModel):
     Internal document model used throughout the pipeline.
     This is NOT the database model. It holds the full structured content.
     """
+
     document_id: str
     original_filename: Optional[str] = None
     source_path: Optional[str] = None
@@ -170,10 +174,7 @@ class PipelineDocument(BaseModel):
         if not section_name:
             return []
         try:
-            return [
-                b for b in self.blocks
-                if b.section_name and section_name.lower() in b.section_name.lower()
-            ]
+            return [b for b in self.blocks if b.section_name and section_name.lower() in b.section_name.lower()]
         except Exception as exc:
             logger.error("Error in get_blocks_in_section('%s'): %s", section_name, exc)
             return []

@@ -44,18 +44,21 @@ class SynthesisService:
     def _get_pubsub(self) -> Any:
         if self._pubsub is None:
             from app.realtime.pubsub import RedisPubSub
+
             self._pubsub = RedisPubSub()
         return self._pubsub
 
     def _get_orchestrator(self) -> Any:
         if self._orchestrator is None:
             from app.pipeline.orchestrator import PipelineOrchestrator
+
             self._orchestrator = PipelineOrchestrator()
         return self._orchestrator
 
     def _get_synthesizer(self) -> Any:
         if self._synthesizer is None:
             from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
             self._synthesizer = MultiDocSynthesizer(
                 session_service=self._session_service,
                 vector_store=self._vector_store,
@@ -154,9 +157,7 @@ class SynthesisService:
             "updated_at": session.get("updated_at"),
         }
 
-    async def verify_session_ownership(
-        self, session_id: str, user_id: str
-    ) -> dict[str, Any]:
+    async def verify_session_ownership(self, session_id: str, user_id: str) -> dict[str, Any]:
         """
         Verify that a user owns a synthesis session.
 

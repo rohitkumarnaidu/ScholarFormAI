@@ -62,9 +62,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             logger.warning("Rate limit exceeded for IP %s on %s", client_ip, path)
             return Response(
                 content='{"error":"RATE_LIMIT_EXCEEDED","message":"Rate limit exceeded. '
-                'Try again later.","retry_after":'
-                + str(int(self.window))
-                + "}",
+                'Try again later.","retry_after":' + str(int(self.window)) + "}",
                 status_code=429,
                 media_type="application/json",
                 headers={
@@ -98,9 +96,7 @@ class AuditLogMiddleware(BaseHTTPMiddleware):
         start_time = time.time()
         client_ip = request.client.host if request.client else "unknown"
         user_agent = request.headers.get("user-agent", "")
-        correlation_id = request.headers.get(
-            "X-Correlation-ID", request.headers.get("X-Request-ID", "")
-        )
+        correlation_id = request.headers.get("X-Correlation-ID", request.headers.get("X-Request-ID", ""))
         content_length = request.headers.get("content-length", "0")
 
         response = await call_next(request)
@@ -149,20 +145,14 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         response = await call_next(request)
 
-        csp_value = "; ".join(
-            f"{key} {' '.join(values)}" for key, values in self.csp_directives.items()
-        )
+        csp_value = "; ".join(f"{key} {' '.join(values)}" for key, values in self.csp_directives.items())
         response.headers["Content-Security-Policy"] = csp_value
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
-        response.headers["Strict-Transport-Security"] = (
-            "max-age=31536000; includeSubDomains; preload"
-        )
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-        response.headers["Permissions-Policy"] = (
-            "camera=(), microphone=(), geolocation=(), interest-cohort=()"
-        )
+        response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
         response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
         response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
         response.headers["Cross-Origin-Embedder-Policy"] = "require-corp"

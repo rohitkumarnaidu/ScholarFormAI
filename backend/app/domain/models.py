@@ -137,8 +137,7 @@ class DomainSection:
         level = getattr(section, "level", 1)
         raw_content = getattr(section, "content", [])
         content = [
-            DomainParagraph.from_pydantic(p) if hasattr(p, "text") or isinstance(p, str) else p
-            for p in raw_content
+            DomainParagraph.from_pydantic(p) if hasattr(p, "text") or isinstance(p, str) else p for p in raw_content
         ]
         raw_sub = getattr(section, "subsections", [])
         subsections = [cls.from_pydantic(s) for s in raw_sub]
@@ -164,9 +163,7 @@ class DomainSection:
             else:
                 pydantic_content.append(p)
 
-        pydantic_sub = [
-            s.to_pydantic() if isinstance(s, DomainSection) else s for s in self.subsections
-        ]
+        pydantic_sub = [s.to_pydantic() if isinstance(s, DomainSection) else s for s in self.subsections]
         return Section(
             heading=self.heading or self.title,
             level=self.level,
@@ -208,10 +205,7 @@ class DomainReference:
         if isinstance(ref, cls):
             return ref
         raw_authors = getattr(ref, "authors", [])
-        authors = [
-            DomainAuthor.from_pydantic(a) if not isinstance(a, DomainAuthor) else a
-            for a in raw_authors
-        ]
+        authors = [DomainAuthor.from_pydantic(a) if not isinstance(a, DomainAuthor) else a for a in raw_authors]
         year_val = getattr(ref, "year", None)
         return cls(
             id=getattr(ref, "id", None),
@@ -233,9 +227,7 @@ class DomainReference:
     def to_pydantic(self) -> Any:
         from app.api.models import Reference
 
-        pydantic_authors = [
-            a.to_pydantic() if isinstance(a, DomainAuthor) else a for a in self.authors
-        ]
+        pydantic_authors = [a.to_pydantic() if isinstance(a, DomainAuthor) else a for a in self.authors]
         return Reference(
             title=self.title,
             authors=pydantic_authors,
@@ -267,17 +259,12 @@ class DomainManuscript:
     corresponding_author: DomainAuthor | None = None
 
     def __post_init__(self):
-        self.authors = [
-            DomainAuthor.from_pydantic(a) if not isinstance(a, DomainAuthor) else a
-            for a in self.authors
-        ]
+        self.authors = [DomainAuthor.from_pydantic(a) if not isinstance(a, DomainAuthor) else a for a in self.authors]
         self.sections = [
-            DomainSection.from_pydantic(s) if not isinstance(s, DomainSection) else s
-            for s in self.sections
+            DomainSection.from_pydantic(s) if not isinstance(s, DomainSection) else s for s in self.sections
         ]
         self.references = [
-            DomainReference.from_pydantic(r) if not isinstance(r, DomainReference) else r
-            for r in self.references
+            DomainReference.from_pydantic(r) if not isinstance(r, DomainReference) else r for r in self.references
         ]
         if self.corresponding_author and not isinstance(self.corresponding_author, DomainAuthor):
             self.corresponding_author = DomainAuthor.from_pydantic(self.corresponding_author)
@@ -338,9 +325,7 @@ class DomainManuscript:
 
 def from_pydantic(obj: Any) -> Any:
     """Seamlessly convert an API model to its corresponding domain dataclass."""
-    if isinstance(
-        obj, (DomainManuscript, DomainAuthor, DomainSection, DomainReference, DomainParagraph)
-    ):
+    if isinstance(obj, (DomainManuscript, DomainAuthor, DomainSection, DomainReference, DomainParagraph)):
         return obj
 
     cls_name = type(obj).__name__

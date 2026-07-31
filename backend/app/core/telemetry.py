@@ -42,9 +42,7 @@ class Counter:
             lines = [f"# HELP {self.name} {self.help_text}", f"# TYPE {self.name} counter"]
             for label_values, value in self._values.items():
                 if self.label_names:
-                    labels_str = ",".join(
-                        f'{k}="{v}"' for k, v in zip(self.label_names, label_values)
-                    )
+                    labels_str = ",".join(f'{k}="{v}"' for k, v in zip(self.label_names, label_values))
                     lines.append(f"{self.name}{{{labels_str}}} {value}")
                 else:
                     lines.append(f"{self.name} {value}")
@@ -64,9 +62,7 @@ class Histogram:
         self.name = name
         self.help_text = help_text
         self.label_names = label_names or []
-        self.buckets = sorted(
-            buckets or [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0]
-        )
+        self.buckets = sorted(buckets or [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0])
         self._values: dict[tuple[str, ...], dict[str, float]] = defaultdict(
             lambda: {"sum": 0.0, "count": 0, **{str(b): 0 for b in self.buckets}}
         )
@@ -92,9 +88,7 @@ class Histogram:
             for label_values, entry in self._values.items():
                 labels_str = ""
                 if self.label_names:
-                    labels_str = ",".join(
-                        f'{k}="{v}"' for k, v in zip(self.label_names, label_values)
-                    )
+                    labels_str = ",".join(f'{k}="{v}"' for k, v in zip(self.label_names, label_values))
                 bucket_name = self.name
                 if labels_str:
                     bucket_name = f"{self.name}{{{labels_str}}}"
@@ -144,9 +138,7 @@ class Gauge:
                 return lines
             for label_values, value in self._values.items():
                 if self.label_names:
-                    labels_str = ",".join(
-                        f'{k}="{v}"' for k, v in zip(self.label_names, label_values)
-                    )
+                    labels_str = ",".join(f'{k}="{v}"' for k, v in zip(self.label_names, label_values))
                     lines.append(f"{self.name}{{{labels_str}}} {value}")
                 else:
                     lines.append(f"{self.name} {value}")
@@ -179,9 +171,7 @@ class MetricsCollector:
             buckets=[0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0, 30.0],
         )
         self.create_gauge("http_requests_active", "Number of active HTTP requests")
-        self.create_counter(
-            "errors_total", "Total number of errors", label_names=["type", "endpoint"]
-        )
+        self.create_counter("errors_total", "Total number of errors", label_names=["type", "endpoint"])
         self.create_counter(
             "http_request_size_bytes",
             "Total request size in bytes",
@@ -194,9 +184,7 @@ class MetricsCollector:
         )
         self.create_gauge("up", "Service up status")
 
-    def create_counter(
-        self, name: str, help_text: str, label_names: list[str] | None = None
-    ) -> Counter:
+    def create_counter(self, name: str, help_text: str, label_names: list[str] | None = None) -> Counter:
         full_name = f"{self.namespace}_{name}"
         with self._lock:
             if full_name in self._counters:
@@ -220,9 +208,7 @@ class MetricsCollector:
             self._histograms[full_name] = histogram
             return histogram
 
-    def create_gauge(
-        self, name: str, help_text: str, label_names: list[str] | None = None
-    ) -> Gauge:
+    def create_gauge(self, name: str, help_text: str, label_names: list[str] | None = None) -> Gauge:
         full_name = f"{self.namespace}_{name}"
         with self._lock:
             if full_name in self._gauges:
@@ -279,9 +265,7 @@ class MetricsCollector:
     def disable_system_metrics(self) -> None:
         self._system_metrics_enabled = False
 
-    def observe_request(
-        self, method: str, endpoint: str, status_code: int, duration: float
-    ) -> None:
+    def observe_request(self, method: str, endpoint: str, status_code: int, duration: float) -> None:
         status_group = f"{status_code // 100}xx"
         self.get_counter("http_requests_total").inc(
             labels={"method": method, "endpoint": endpoint, "status": status_group}

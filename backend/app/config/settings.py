@@ -409,7 +409,9 @@ class Settings:
         if self.RETENTION_DAYS <= 0:
             raise ValueError("RETENTION_DAYS must be > 0")
 
-    def _resolve_service_urls(self, urls_attr: str, fallback_attrs: tuple[str, ...], default_urls: tuple[str, ...] = ()) -> list[str]:
+    def _resolve_service_urls(
+        self, urls_attr: str, fallback_attrs: tuple[str, ...], default_urls: tuple[str, ...] = ()
+    ) -> list[str]:
         urls = getattr(self, urls_attr, None)
         if urls:
             return _dedupe(_split_urls(urls))
@@ -424,7 +426,9 @@ class Settings:
         return self._resolve_service_urls("GROBID_URLS", ("GROBID_URL", "GROBID_BASE_URL"), (DEFAULT_GROBID_URL,))
 
     def get_docx_converter_urls(self) -> list[str]:
-        return self._resolve_service_urls("DOCX_CONVERTER_SERVICE_URL", ("DOCX_CONVERTER_SERVICE_URL",), (DEFAULT_DOCX_CONVERTER_URL,))
+        return self._resolve_service_urls(
+            "DOCX_CONVERTER_SERVICE_URL", ("DOCX_CONVERTER_SERVICE_URL",), (DEFAULT_DOCX_CONVERTER_URL,)
+        )
 
     def get_service_health_path(self, service_name: str) -> str:
         key = service_name.strip().lower()

@@ -66,9 +66,7 @@ def get_section_prompt(section_name: str, context: Dict[str, Any]) -> str:
     previous_sections = context.get("previous_sections") or {}
 
     prev_payload = {
-        key: _truncate(value)
-        for key, value in previous_sections.items()
-        if isinstance(value, str) and value.strip()
+        key: _truncate(value) for key, value in previous_sections.items() if isinstance(value, str) and value.strip()
     }
 
     prompt_parts = [

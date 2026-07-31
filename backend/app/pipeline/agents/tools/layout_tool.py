@@ -4,6 +4,7 @@
 """
 Layout analysis tool using LLM (preferred) or Docling (fallback).
 """
+
 import sys
 from typing import Optional, Type
 from pydantic import BaseModel, Field
@@ -21,6 +22,7 @@ BaseTool = _LangChainBaseTool if isinstance(_LangChainBaseTool, type) else objec
 
 class LayoutToolInput(BaseModel):
     """Input schema for layout analysis tool."""
+
     file_path: str = Field(description="Path to the document file to analyze layout")
 
 
@@ -31,6 +33,7 @@ class LayoutAnalysisTool(BaseTool):
     Returns detailed information about text blocks, their positions,
     and hierarchical structure.
     """
+
     name: str = "analyze_layout"
     description: str = (
         "Analyze the layout and structure of a document. "
@@ -49,12 +52,14 @@ class LayoutAnalysisTool(BaseTool):
             return self._layout_analyzer
         try:
             from app.pipeline.parsing.llm_pdf_parser import LLMPDFParser
+
             self._layout_analyzer = LLMPDFParser()
             return self._layout_analyzer
         except Exception:
             pass
         try:
             from app.pipeline.services.docling_client import DoclingClient
+
             self._layout_analyzer = DoclingClient()
             return self._layout_analyzer
         except Exception:
@@ -73,7 +78,9 @@ class LayoutAnalysisTool(BaseTool):
                 return "ERROR: Failed to analyze document layout."
 
             elements = layout_data.get("elements", [])
-            headings = [e for e in elements if e.get("type", "").startswith("section_header") or e.get("type") == "heading"]
+            headings = [
+                e for e in elements if e.get("type", "").startswith("section_header") or e.get("type") == "heading"
+            ]
             paragraphs = [e for e in elements if e.get("type") == "paragraph"]
 
             result = {
@@ -96,6 +103,7 @@ class LayoutAnalysisTool(BaseTool):
             }
 
             import json
+
             return json.dumps(result, indent=2)
 
         except Exception as e:

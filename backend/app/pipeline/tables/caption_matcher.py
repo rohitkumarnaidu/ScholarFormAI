@@ -16,34 +16,34 @@ logger = logging.getLogger(__name__)
 from app.models import PipelineDocument as Document, Block, BlockType, Table
 from app.pipeline.base import PipelineStage
 
+
 class TableCaptionMatcher(PipelineStage):
     """
     Production-safe, deterministic, real-time table caption matcher.
-    
+
     Logic:
     - Identifies potential caption blocks starting with "Table" (case-insensitive).
     - Matches tables to captions within a proximity window (-2 above, +1 below).
     - Guarantees O(n) performance and respects structural boundaries.
     """
-    
+
     def __init__(self, search_window_above: int = 2, search_window_below: int = 1):
         """
         Initialize the matcher.
-        
+
         Args:
             search_window_above: Max blocks above table to search.
             search_window_below: Max blocks below table to search.
         """
         self.search_window_above = search_window_above
         self.search_window_below = search_window_below
-        
+
         # Regex for common table caption patterns (Production Grade)
-        # Matches: "Table 1:", "TABLE 2. Results", "Table 3 – Performance", 
+        # Matches: "Table 1:", "TABLE 2. Results", "Table 3 – Performance",
         # "Table 1.1:...", "Table I:...", "Table A:..."
         # Case-insensitive per requirements.
         self.caption_regex = re.compile(
-            r'^\s*Table\s+([0-9]+(\.[0-9]+)*|[IVXLCDM]+|[A-Z])([\s\.\:–-].*)?$',
-            re.IGNORECASE
+            r"^\s*Table\s+([0-9]+(\.[0-9]+)*|[IVXLCDM]+|[A-Z])([\s\.\:–-].*)?$", re.IGNORECASE
         )
 
     def process(self, document: Document) -> Document:
@@ -51,17 +51,17 @@ class TableCaptionMatcher(PipelineStage):
         Match captions to tables in the document.
         """
         start_time = datetime.now(timezone.utc)
-        
+
         try:
             blocks = document.blocks
             tables = document.tables
-            
+
             if not tables or not blocks:
                 return document
-                
+
             # 1. Performance Optimization: O(n) mapping of block_index -> Block
             ref_start_idx = self._find_references_start_index(blocks)
-            
+
             block_map: Dict[int, Block] = {}
             for block in blocks:
                 if block.is_heading() or block.block_type == BlockType.REFERENCES_HEADING:
@@ -71,16 +71,16 @@ class TableCaptionMatcher(PipelineStage):
                 block_map[block.index] = block
 
             list_index_map: Dict[int, int] = {block.index: i for i, block in enumerate(blocks)}
-            
+
             assigned_block_ids: Dict[str, bool] = {}
             match_count = 0
-            
+
             table_indices = sorted([t.block_index for t in tables])
-            
+
             for table in tables:
                 try:
                     table_idx = table.block_index
-                    
+
                     if table_idx not in list_index_map:
                         table_list_pos = None
                         for i, block in enumerate(blocks):
@@ -91,24 +91,24 @@ class TableCaptionMatcher(PipelineStage):
                             table_list_pos = len(blocks) - 1
                     else:
                         table_list_pos = list_index_map[table_idx]
-                    
+
                     prev_table_idx = -1
-                    next_table_idx = float('inf')
+                    next_table_idx = float("inf")
                     curr_pos = table_indices.index(table_idx)
                     if curr_pos > 0:
                         prev_table_idx = table_indices[curr_pos - 1]
                     if curr_pos < len(table_indices) - 1:
                         next_table_idx = table_indices[curr_pos + 1]
-                    
+
                     lower_pos = max(0, table_list_pos - self.search_window_above)
                     upper_pos = min(len(blocks) - 1, table_list_pos + self.search_window_below)
-                    
+
                     best_caption = None
-                    min_dist = float('inf')
-                    
+                    min_dist = float("inf")
+
                     for pos in range(lower_pos, upper_pos + 1):
                         candidate = blocks[pos]
-                        
+
                         if candidate.block_id in assigned_block_ids:
                             continue
                         if candidate.is_heading() or candidate.block_type == BlockType.REFERENCES_HEADING:
@@ -117,7 +117,7 @@ class TableCaptionMatcher(PipelineStage):
                             continue
                         if candidate.index <= prev_table_idx or candidate.index >= next_table_idx:
                             continue
-                        
+
                         text = (candidate.text or "").strip()
                         if self.caption_regex.match(text):
                             dist = abs(pos - table_list_pos)
@@ -139,27 +139,25 @@ class TableCaptionMatcher(PipelineStage):
                         if not table.caption_text:
                             table.metadata["caption_status"] = "Missing"
                 except Exception as exc:
-                    logger.warning("Failed to match caption for table '%s': %s", getattr(table, 'table_id', '?'), exc)
+                    logger.warning("Failed to match caption for table '%s': %s", getattr(table, "table_id", "?"), exc)
         except Exception as exc:
             logger.error("Table caption matching failed: %s", exc)
             document.add_processing_stage(
-                stage_name="table_caption_matching",
-                status="error",
-                message=f"Table caption matching failed: {exc}"
+                stage_name="table_caption_matching", status="error", message=f"Table caption matching failed: {exc}"
             )
             return document
-        
+
         # 4. Final Processing History Update
         end_time = datetime.now(timezone.utc)
         duration_ms = int((end_time - start_time).total_seconds() * 1000)
-        
+
         document.add_processing_stage(
             stage_name="table_caption_matching",
             status="success",
             message=f"Linked {match_count} captions to tables",
-            duration_ms=duration_ms
+            duration_ms=duration_ms,
         )
-        
+
         return document
 
     def _find_references_start_index(self, blocks: List[Block]) -> Optional[int]:
@@ -167,12 +165,13 @@ class TableCaptionMatcher(PipelineStage):
         for block in blocks:
             if block.block_type == BlockType.REFERENCES_HEADING:
                 return block.index
-            
+
             # Fallback keyword match if classifier hasn't run or missed it
             text = block.text.strip().lower()
             if text in ["references", "bibliography", "works cited"] and block.is_heading():
                 return block.index
         return None
+
 
 # Convenience function for orchestrator
 def match_table_captions(document: Document) -> Document:

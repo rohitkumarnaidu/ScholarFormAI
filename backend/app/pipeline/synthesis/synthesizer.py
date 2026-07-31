@@ -82,8 +82,7 @@ class MultiDocSynthesizer:
             # Stage 2: Per-Doc Extract
             extracted_docs = await self._extract_documents(session_id, valid_files)
             config["extracted_docs"] = [
-                {"filename": doc["filename"], "section_count": len(doc.get("sections", []))}
-                for doc in extracted_docs
+                {"filename": doc["filename"], "section_count": len(doc.get("sections", []))} for doc in extracted_docs
             ]
             await self._update_status(
                 session_id,
@@ -427,9 +426,7 @@ class MultiDocSynthesizer:
         for section in outline_sections:
             title = section["title"] if isinstance(section, dict) else str(section)
             sources = self.vector_store.query(session_id, title, top_k=4)
-            context = "\n\n".join(
-                f"[{s.get('source_doc')} - {s.get('section')}] {s.get('text')}" for s in sources
-            )
+            context = "\n\n".join(f"[{s.get('source_doc')} - {s.get('section')}] {s.get('text')}" for s in sources)
             system = (
                 "You are a synthesis engine. Use the provided sources and include citations "
                 "as [REF: query] for factual claims. Return plain text."
@@ -485,14 +482,13 @@ class MultiDocSynthesizer:
 
         if references:
             try:
-                formatted_refs = self.csl_engine.format_references(
-                    references, style=self._template_to_csl(template)
-                )
+                formatted_refs = self.csl_engine.format_references(references, style=self._template_to_csl(template))
             except Exception as exc:
                 logger.warning("CSL formatting failed; using raw references: %s", exc)
                 formatted_refs = [r.raw_text for r in references]
 
         for section in sections:
+
             def _replace(match):
                 query = match.group(1).strip()
                 num = query_to_num.get(query)
@@ -659,4 +655,3 @@ class MultiDocSynthesizer:
                 message=None,
                 payload=payload,
             )
-

@@ -5,6 +5,7 @@
 Local OCR service using RapidOCR (ONNX Runtime).
 Replaces the HF Space OCR service — runs directly in the backend process.
 """
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -22,6 +23,7 @@ class LocalOCRService:
     def _get_engine(self):
         if self._engine is None:
             from rapidocr_onnxruntime import RapidOCR
+
             self._engine = RapidOCR()
         return self._engine
 
@@ -41,11 +43,9 @@ class LocalOCRService:
 
         items = []
         for box, text, confidence in result:
-            items.append({
-                "text": text,
-                "confidence": float(confidence),
-                "bbox": box.tolist() if hasattr(box, 'tolist') else box
-            })
+            items.append(
+                {"text": text, "confidence": float(confidence), "bbox": box.tolist() if hasattr(box, "tolist") else box}
+            )
         return items
 
     def is_available(self) -> bool:
@@ -53,6 +53,7 @@ class LocalOCRService:
             return True
         try:
             import importlib.util
+
             return importlib.util.find_spec("rapidocr_onnxruntime") is not None
         except Exception:
             return False

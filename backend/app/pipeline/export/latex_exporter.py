@@ -108,7 +108,9 @@ def _convert_via_pandoc(docx_path: str, output_path: str, timeout: int) -> bool:
         if result.returncode == 0 and os.path.exists(output_path):
             logger.info("Pandoc conversion succeeded: %s", output_path)
             return True
-        logger.warning("Pandoc failed (exit %d): %s", result.returncode, (result.stderr or result.stdout or "").strip()[:500])
+        logger.warning(
+            "Pandoc failed (exit %d): %s", result.returncode, (result.stderr or result.stdout or "").strip()[:500]
+        )
     except subprocess.TimeoutExpired:
         logger.warning("Pandoc timed out after %ds", timeout)
     except OSError as exc:
@@ -126,9 +128,7 @@ class LaTeXExporter:
             raise RuntimeError(f"DOCX not found: {docx_path}")
 
         if not _resolve_pandoc_binary():
-            raise RuntimeError(
-                "Pandoc is not installed. Install Pandoc or set PANDOC_PATH to the binary location."
-            )
+            raise RuntimeError("Pandoc is not installed. Install Pandoc or set PANDOC_PATH to the binary location.")
 
         out_dir = Path(output_dir)
         out_dir.mkdir(parents=True, exist_ok=True)
@@ -158,7 +158,11 @@ class LaTeXExporter:
         lines.append(tpl["documentclass"])
         lines.append(tpl["packages"])
         lines.append(r"\usepackage[style=ieee]{biblatex}" if template_key in ("ieee",) else "")
-        lines.append(r"\addbibresource{" + stem + ".bib}" if tpl["bibliographystyle"] and not tpl["bibliographystyle"].startswith(r"\bibliographystyle") else "")
+        lines.append(
+            r"\addbibresource{" + stem + ".bib}"
+            if tpl["bibliographystyle"] and not tpl["bibliographystyle"].startswith(r"\bibliographystyle")
+            else ""
+        )
         lines.append(r"\begin{document}")
         lines.append("")
 
@@ -170,7 +174,11 @@ class LaTeXExporter:
         self._write_equations(lines, doc)
 
         if doc.references:
-            lines.append(r"\printbibliography" if not tpl["bibliographystyle"] or "biblatex" in tpl["packages"] else r"\bibliography{" + stem + "}")
+            lines.append(
+                r"\printbibliography"
+                if not tpl["bibliographystyle"] or "biblatex" in tpl["packages"]
+                else r"\bibliography{" + stem + "}"
+            )
             lines.append("")
 
         lines.append(r"\end{document}")

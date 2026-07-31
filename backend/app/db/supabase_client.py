@@ -118,10 +118,7 @@ def get_supabase_db():
     if client is None:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail=(
-                "Database is not configured. "
-                "Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY."
-            ),
+            detail=("Database is not configured. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY."),
         )
     return client
 

@@ -4,6 +4,7 @@
 """
 NVIDIA NIM API Client — now powered by LiteLLM internally.
 """
+
 from __future__ import annotations
 import base64
 import logging
@@ -17,6 +18,7 @@ logger = logging.getLogger(__name__)
 # Use unified LiteLLM service; fall back to direct OpenAI client if unavailable
 try:
     from app.services.llm_service import generate as _llm_generate, LLM_NVIDIA, LITELLM_AVAILABLE
+
     _USE_LLM_SERVICE = True
 except ImportError:
     _USE_LLM_SERVICE = False
@@ -25,6 +27,7 @@ except ImportError:
 
 try:
     from openai import OpenAI as _OpenAI
+
     _OPENAI_AVAILABLE = True
 except ImportError:
     _OPENAI_AVAILABLE = False
@@ -124,15 +127,15 @@ class NvidiaClient:
                 if not choices:
                     logger.warning("NvidiaClient.chat: API returned empty choices.")
                     return ""
-                
-                if hasattr(response, 'usage') and response.usage:
+
+                if hasattr(response, "usage") and response.usage:
                     logger.info(
                         "NVIDIA NIM usage: prompt=%s, completion=%s, total=%s tokens",
-                        getattr(response.usage, 'prompt_tokens', 0),
-                        getattr(response.usage, 'completion_tokens', 0),
-                        getattr(response.usage, 'total_tokens', 0)
+                        getattr(response.usage, "prompt_tokens", 0),
+                        getattr(response.usage, "completion_tokens", 0),
+                        getattr(response.usage, "total_tokens", 0),
                     )
-                
+
                 return choices[0].message.content or ""
             except Exception as exc:
                 logger.error("NvidiaClient.chat: direct API call failed: %s", exc)
@@ -149,7 +152,7 @@ class NvidiaClient:
             {
                 "role": "system",
                 "content": "You are an expert at analyzing academic manuscript structure. "
-                           "Identify sections like Abstract, Introduction, Methods, Results, Discussion, Conclusion, References.",
+                "Identify sections like Abstract, Introduction, Methods, Results, Discussion, Conclusion, References.",
             },
             {
                 "role": "user",
@@ -171,13 +174,13 @@ class NvidiaClient:
         try:
             # Determine media type from file extension
             ext = image_path.lower()
-            if ext.endswith(('.png',)):
+            if ext.endswith((".png",)):
                 media_type = "image/png"
-            elif ext.endswith(('.jpg', '.jpeg')):
+            elif ext.endswith((".jpg", ".jpeg")):
                 media_type = "image/jpeg"
-            elif ext.endswith(('.gif',)):
+            elif ext.endswith((".gif",)):
                 media_type = "image/gif"
-            elif ext.endswith(('.webp',)):
+            elif ext.endswith((".webp",)):
                 media_type = "image/webp"
             else:
                 media_type = "image/jpeg"  # Default fallback
@@ -188,12 +191,13 @@ class NvidiaClient:
             if len(raw_data) > 2_000_000:
                 from PIL import Image
                 import io
+
                 img = Image.open(io.BytesIO(raw_data))
                 if img.mode in ("RGBA", "P") and media_type == "image/jpeg":
                     img = img.convert("RGB")
                 img.thumbnail((1024, 1024))
                 buffer = io.BytesIO()
-                save_format = 'PNG' if media_type == 'image/png' else 'JPEG'
+                save_format = "PNG" if media_type == "image/png" else "JPEG"
                 img.save(buffer, format=save_format)
                 raw_data = buffer.getvalue()
 
@@ -213,11 +217,11 @@ class NvidiaClient:
                     ],
                 }
             ]
-            
+
             # API might throw or return empty string when key is missing/invalid
             result = self.chat(messages, model="llama-vision", temperature=0.5, max_tokens=512)
             return result if result else fallback_text
-            
+
         except Exception as exc:
             logger.warning("NvidiaClient.analyze_figure: vision analysis failed: %s", exc)
             return fallback_text

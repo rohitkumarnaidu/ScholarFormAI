@@ -195,9 +195,7 @@ def compute_quality_score(
     citation_score_pct = round(min(citation_count / citation_target, 1.0) * 100, 2)
 
     overall_score = round(
-        (template_compliance_pct * 0.4)
-        + (content_completeness_pct * 0.4)
-        + (citation_score_pct * 0.2),
+        (template_compliance_pct * 0.4) + (content_completeness_pct * 0.4) + (citation_score_pct * 0.2),
         2,
     )
     llm_provider_used = _extract_llm_provider(validation_results)

@@ -280,9 +280,7 @@ class UpdateService:
         return tuple(result[:3])
 
     def _compare_versions(self, v1: str, v2: str) -> int:
-        return (self._parse_version(v1) > self._parse_version(v2)) - (
-            self._parse_version(v1) < self._parse_version(v2)
-        )
+        return (self._parse_version(v1) > self._parse_version(v2)) - (self._parse_version(v1) < self._parse_version(v2))
 
     # ------------------------------------------------------------------
     # GitHub Releases integration
@@ -516,7 +514,9 @@ class UpdateService:
             if not match:
                 logger.error(
                     "Checksum mismatch for %s: expected=%s, actual=%s",
-                    file_path.name, expected, actual,
+                    file_path.name,
+                    expected,
+                    actual,
                 )
             return match
         except Exception as e:
@@ -550,7 +550,8 @@ class UpdateService:
                     shutil.copy2(str(item), str(backup_dir / item.name))
                 elif item.is_dir():
                     shutil.copytree(
-                        str(item), str(backup_dir / item.name),
+                        str(item),
+                        str(backup_dir / item.name),
                         ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".git"),
                     )
 
@@ -663,10 +664,30 @@ class UpdateService:
 
     def get_channels(self) -> list[dict[str, Any]]:
         return [
-            {"id": "stable", "name": "Stable", "description": "Production-ready releases. Recommended for all users.", "recommended": True},
-            {"id": "beta", "name": "Beta", "description": "Pre-release versions with new features. May contain bugs.", "recommended": False},
-            {"id": "nightly", "name": "Nightly", "description": "Daily builds with latest changes. Unstable.", "recommended": False},
-            {"id": "pre-release", "name": "Pre-release", "description": "Release candidates for testing before stable.", "recommended": False},
+            {
+                "id": "stable",
+                "name": "Stable",
+                "description": "Production-ready releases. Recommended for all users.",
+                "recommended": True,
+            },
+            {
+                "id": "beta",
+                "name": "Beta",
+                "description": "Pre-release versions with new features. May contain bugs.",
+                "recommended": False,
+            },
+            {
+                "id": "nightly",
+                "name": "Nightly",
+                "description": "Daily builds with latest changes. Unstable.",
+                "recommended": False,
+            },
+            {
+                "id": "pre-release",
+                "name": "Pre-release",
+                "description": "Release candidates for testing before stable.",
+                "recommended": False,
+            },
         ]
 
     def get_version_info(self) -> dict[str, Any]:

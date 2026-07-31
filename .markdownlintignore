@@ -5,6 +5,10 @@ backend/node_modules
 graphify-out
 .venv
 venv
+.venv_cli
+.venv_new
+.agents
+.agent_memory
 docs/UIUX.md
 docs/user_guide.md
 docs/VERIFICATION_STRATEGY.md
@@ -13,3 +17,9 @@ examples/**/*.md
 frontend/FRONTEND_CERTIFICATION.md
 MAINTAINERS.md
 SECURITY.md
+sbom/**/*.md
+api-docs/**/*.md
+ops/**/*.md
+backend/docs/**
+backend/htmlcov/**
+htmlcov/**

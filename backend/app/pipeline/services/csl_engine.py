@@ -86,14 +86,10 @@ class CSLEngine:
         style_folder = self.DEFAULT_STYLE_MAP.get(style_key, style_key)
         default_path = self.templates_dir / style_folder / "styles.csl"
         if not default_path.is_file():
-            raise FileNotFoundError(
-                f"Built-in CSL style file not found for style '{style_key}': {default_path}"
-            )
+            raise FileNotFoundError(f"Built-in CSL style file not found for style '{style_key}': {default_path}")
         return default_path
 
-    def format_reference(
-        self, reference: Reference, style: str = "ieee", style_path: Optional[str] = None
-    ) -> str:
+    def format_reference(self, reference: Reference, style: str = "ieee", style_path: Optional[str] = None) -> str:
         """Format a single reference."""
         formatted = self.format_references([reference], style=style, style_path=style_path)
         return formatted[0] if formatted else ""
@@ -117,15 +113,10 @@ class CSLEngine:
 
         return [self._format_fallback(ref, style=style) for ref in references]
 
-    def _format_with_citeproc(
-        self, references: List[Reference], style: str, style_path: Optional[str]
-    ) -> List[str]:
+    def _format_with_citeproc(self, references: List[Reference], style: str, style_path: Optional[str]) -> List[str]:
         """Format references with citeproc-py."""
         style_file = self.resolve_style_path(style=style, style_path=style_path)
-        csl_items = [
-            self._reference_to_csl_json(ref=ref, index=index)
-            for index, ref in enumerate(references, start=1)
-        ]
+        csl_items = [self._reference_to_csl_json(ref=ref, index=index) for index, ref in enumerate(references, start=1)]
 
         source = CiteProcJSON(csl_items)
         style_obj = CitationStylesStyle(str(style_file), validate=False)
@@ -137,8 +128,7 @@ class CSLEngine:
         rendered_entries = [str(entry).strip() for entry in bibliography.bibliography()]
         if len(rendered_entries) != len(references):
             raise CSLEngineError(
-                "CSL bibliography output length mismatch "
-                f"(expected {len(references)}, got {len(rendered_entries)})"
+                f"CSL bibliography output length mismatch (expected {len(references)}, got {len(rendered_entries)})"
             )
         return rendered_entries
 
@@ -270,9 +260,7 @@ class CSLEngine:
             else:
                 doi_text = f"https://doi.org/{doi_value}"
 
-        formatted = " ".join(
-            part for part in [authors, year_part, title, venue_text, doi_text] if part
-        ).strip()
+        formatted = " ".join(part for part in [authors, year_part, title, venue_text, doi_text] if part).strip()
         return formatted
 
     def _format_apa_authors(self, authors: List[str]) -> str:

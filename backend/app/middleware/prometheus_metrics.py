@@ -4,6 +4,7 @@
 """
 Prometheus metrics definition and middleware for the application.
 """
+
 import time
 import logging
 import threading
@@ -19,21 +20,21 @@ logger = logging.getLogger(__name__)
 PIPELINE_REQUESTS_TOTAL = Counter(
     "pipeline_requests_total",
     "Total number of pipeline requests",
-    ["status"]  # active, completed, failed
+    ["status"],  # active, completed, failed
 )
 
 PIPELINE_DURATION_SECONDS = Histogram(
     "pipeline_duration_seconds",
     "Time spent processing a pipeline request",
     ["status"],  # success, error
-    buckets=(1, 5, 10, 30, 60, 120, 300, 600, 1800)
+    buckets=(1, 5, 10, 30, 60, 120, 300, 600, 1800),
 )
 
 PIPELINE_STEPS_DURATION_SECONDS = Histogram(
     "pipeline_step_duration_seconds",
     "Time spent in specific pipeline steps",
     ["step"],
-    buckets=(0.1, 0.5, 1, 2, 5, 10, 30, 60)
+    buckets=(0.1, 0.5, 1, 2, 5, 10, 30, 60),
 )
 
 PIPELINE_STAGE_DURATION_MS = Histogram(
@@ -54,31 +55,21 @@ UPLOAD_ACK_DURATION_MS = Histogram(
 AGENT_TOOLS_USAGE_TOTAL = Counter(
     "agent_tools_usage_total",
     "Total usage of agent tools",
-    ["tool_name", "status"]  # success, error
+    ["tool_name", "status"],  # success, error
 )
 
 AGENT_LLM_TOKENS_TOTAL = Counter(
     "agent_llm_tokens_total",
     "Total LLM tokens consumed",
-    ["provider", "model", "type"]  # input, output
+    ["provider", "model", "type"],  # input, output
 )
 
-AGENT_RETRIES_TOTAL = Counter(
-    "agent_retries_total",
-    "Total number of agent retries triggered"
-)
+AGENT_RETRIES_TOTAL = Counter("agent_retries_total", "Total number of agent retries triggered")
 
 # System Metrics
-ACTIVE_PROCESSING_JOBS = Gauge(
-    "active_processing_jobs",
-    "Number of currently active processing jobs"
-)
+ACTIVE_PROCESSING_JOBS = Gauge("active_processing_jobs", "Number of currently active processing jobs")
 
-LLM_FAILURES_TOTAL = Counter(
-    "llm_failures_total",
-    "Total number of LLM API failures",
-    ["provider"]
-)
+LLM_FAILURES_TOTAL = Counter("llm_failures_total", "Total number of LLM API failures", ["provider"])
 
 LLM_TTFT_SECONDS = Histogram(
     "llm_ttft_seconds",
@@ -181,18 +172,20 @@ _active_user_lock = threading.Lock()
 
 # --- Middleware ---
 
+
 async def prometheus_metrics_middleware(request: Request, call_next: Callable) -> Response:
     """
     Middleware to handle /metrics endpoint and track basic request metrics.
     """
     if request.url.path == "/metrics":
         return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
-    
+
     return await call_next(request)
+
 
 class MetricsManager:
     """Helper class to record metrics from anywhere in the app."""
-    
+
     @staticmethod
     def record_pipeline_start():
         PIPELINE_REQUESTS_TOTAL.labels(status="active").inc()
@@ -226,7 +219,7 @@ class MetricsManager:
     def record_llm_usage(provider: str, model: str, input_tokens: int, output_tokens: int):
         AGENT_LLM_TOKENS_TOTAL.labels(provider=provider, model=model, type="input").inc(input_tokens)
         AGENT_LLM_TOKENS_TOTAL.labels(provider=provider, model=model, type="output").inc(output_tokens)
-    
+
     @staticmethod
     def record_llm_failure(provider: str):
         LLM_FAILURES_TOTAL.labels(provider=provider).inc()
@@ -291,7 +284,7 @@ class MetricsManager:
             for uid in expired:
                 _active_user_last_seen.pop(uid, None)
             ACTIVE_USERS.set(len(_active_user_last_seen))
-    
+
     @staticmethod
     def record_retry():
         AGENT_RETRIES_TOTAL.inc()

@@ -33,9 +33,7 @@ try:
         with warnings.catch_warnings():
             for pattern in _SUPABASE_WARNING_FILTERS:
                 warnings.filterwarnings("ignore", message=pattern, category=DeprecationWarning)
-            supabase: Optional[SupabaseClient] = create_client(
-                settings.SUPABASE_URL, settings.SUPABASE_ANON_KEY
-            )
+            supabase: Optional[SupabaseClient] = create_client(settings.SUPABASE_URL, settings.SUPABASE_ANON_KEY)
         logger.info("[OK] Supabase auth client initialized.")
     else:
         supabase = None
@@ -82,16 +80,18 @@ class AuthService:
         sb = _require_supabase()
         try:
             response = await asyncio.to_thread(
-                lambda: sb.auth.sign_up({
-                    "email": email,
-                    "password": password,
-                    "options": {
-                        "data": {
-                            "full_name": full_name,
-                            "institution": institution,
-                        }
-                    },
-                })
+                lambda: sb.auth.sign_up(
+                    {
+                        "email": email,
+                        "password": password,
+                        "options": {
+                            "data": {
+                                "full_name": full_name,
+                                "institution": institution,
+                            }
+                        },
+                    }
+                )
             )
             return response
         except HTTPException:
@@ -108,12 +108,20 @@ class AuthService:
         sb = _require_supabase()
         try:
             response = await asyncio.to_thread(
-                lambda: sb.auth.sign_in_with_password({
-                    "email": email,
-                    "password": password,
-                })
+                lambda: sb.auth.sign_in_with_password(
+                    {
+                        "email": email,
+                        "password": password,
+                    }
+                )
             )
-            return response.model_dump() if hasattr(response, "model_dump") else response.dict() if hasattr(response, "dict") else response
+            return (
+                response.model_dump()
+                if hasattr(response, "model_dump")
+                else response.dict()
+                if hasattr(response, "dict")
+                else response
+            )
         except HTTPException:
             raise
         except Exception as exc:
@@ -143,15 +151,15 @@ class AuthService:
         sb = _require_supabase()
         try:
             await asyncio.to_thread(
-                lambda: sb.auth.verify_otp({
-                    "email": email,
-                    "token": otp,
-                    "type": "recovery",
-                })
+                lambda: sb.auth.verify_otp(
+                    {
+                        "email": email,
+                        "token": otp,
+                        "type": "recovery",
+                    }
+                )
             )
-            response = await asyncio.to_thread(
-                lambda: sb.auth.update_user({"password": new_password})
-            )
+            response = await asyncio.to_thread(lambda: sb.auth.update_user({"password": new_password}))
             return response
         except HTTPException:
             raise
@@ -167,11 +175,13 @@ class AuthService:
         sb = _require_supabase()
         try:
             response = await asyncio.to_thread(
-                lambda: sb.auth.verify_otp({
-                    "email": email,
-                    "token": token,
-                    "type": "recovery",
-                })
+                lambda: sb.auth.verify_otp(
+                    {
+                        "email": email,
+                        "token": token,
+                        "type": "recovery",
+                    }
+                )
             )
             return response
         except HTTPException:

@@ -9,6 +9,7 @@ Public API unchanged:
   CustomLLMFactory.get_available_providers() -> List[str]
   CustomLLMFactory.get_recommended_models(provider) -> List[str]
 """
+
 from __future__ import annotations
 import os
 import sys
@@ -94,9 +95,8 @@ class CustomLLMFactory:
         Returns:
             LLM instance (LiteLLM shim or LangChain object)
         """
-        force_langchain = (
-            (provider == "openai" and _is_mocked_constructor(ChatOpenAI))
-            or (provider == "ollama" and _is_mocked_constructor(Ollama))
+        force_langchain = (provider == "openai" and _is_mocked_constructor(ChatOpenAI)) or (
+            provider == "ollama" and _is_mocked_constructor(Ollama)
         )
 
         if LITELLM_AVAILABLE and _llm_generate is not None and not force_langchain:
@@ -106,10 +106,10 @@ class CustomLLMFactory:
     @staticmethod
     def _create_litellm(provider: str, model: str, temperature: float, **kwargs):
         provider_prefixes = {
-            "openai":    lambda m: m,
+            "openai": lambda m: m,
             "anthropic": lambda m: m,
-            "ollama":    lambda m: f"ollama/{m}",
-            "nvidia":    lambda m: f"nvidia_nim/{m}",
+            "ollama": lambda m: f"ollama/{m}",
+            "nvidia": lambda m: f"nvidia_nim/{m}",
         }
         model_fn = provider_prefixes.get(provider)
         if model_fn is None:
@@ -131,8 +131,12 @@ class CustomLLMFactory:
                 if sys.version_info >= (3, 14):
                     raise ImportError("LangChain OpenAI backend disabled on Python 3.14+")
                 from langchain_openai import ChatOpenAI as llm_cls
-            return llm_cls(model=model, temperature=temperature, api_key=api_key,
-                              **{k: v for k, v in kwargs.items() if k != "api_key"})
+            return llm_cls(
+                model=model,
+                temperature=temperature,
+                api_key=api_key,
+                **{k: v for k, v in kwargs.items() if k != "api_key"},
+            )
         elif provider == "anthropic":
             if sys.version_info >= (3, 14):
                 raise ImportError("LangChain Anthropic backend disabled on Python 3.14+")
@@ -143,8 +147,12 @@ class CustomLLMFactory:
             api_key = kwargs.get("api_key") or settings.ANTHROPIC_API_KEY or os.getenv("ANTHROPIC_API_KEY")
             if not api_key:
                 raise ValueError("ANTHROPIC_API_KEY not set")
-            return ChatAnthropic(model=model, temperature=temperature, api_key=api_key,
-                                 **{k: v for k, v in kwargs.items() if k != "api_key"})
+            return ChatAnthropic(
+                model=model,
+                temperature=temperature,
+                api_key=api_key,
+                **{k: v for k, v in kwargs.items() if k != "api_key"},
+            )
         elif provider == "ollama":
             base_url = kwargs.get("base_url", settings.OLLAMA_BASE_URL)
             llm_cls = Ollama
@@ -152,8 +160,12 @@ class CustomLLMFactory:
                 if sys.version_info >= (3, 14):
                     raise ImportError("LangChain Ollama backend disabled on Python 3.14+")
                 from langchain_community.llms import Ollama as llm_cls
-            return llm_cls(model=model, temperature=temperature, base_url=base_url,
-                          **{k: v for k, v in kwargs.items() if k != "base_url"})
+            return llm_cls(
+                model=model,
+                temperature=temperature,
+                base_url=base_url,
+                **{k: v for k, v in kwargs.items() if k != "base_url"},
+            )
         elif provider == "custom":
             raise NotImplementedError("Custom LLM endpoints not yet implemented")
         else:
@@ -169,12 +181,14 @@ class CustomLLMFactory:
         if sys.version_info < (3, 14):
             try:
                 import langchain_anthropic  # noqa
+
                 if settings.ANTHROPIC_API_KEY:
                     providers.append("anthropic")
             except ImportError:
                 pass
         try:
             import requests
+
             r = requests.get(f"{settings.OLLAMA_BASE_URL}/api/tags", timeout=1)
             if r.status_code == 200:
                 providers.append("ollama")
@@ -187,11 +201,11 @@ class CustomLLMFactory:
     @staticmethod
     def get_recommended_models(provider: str) -> List[str]:
         return {
-            "openai":    ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo"],
+            "openai": ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo"],
             "anthropic": ["claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"],
-            "ollama":    ["deepseek-r1:8b", "llama2", "mistral", "codellama"],
-            "nvidia":    ["meta/llama-3.3-70b-instruct", "meta/llama-3.2-11b-vision-instruct"],
-            "litellm":   ["nvidia_nim/meta/llama-3.3-70b-instruct", "ollama/deepseek-r1", "gpt-4"],
+            "ollama": ["deepseek-r1:8b", "llama2", "mistral", "codellama"],
+            "nvidia": ["meta/llama-3.3-70b-instruct", "meta/llama-3.2-11b-vision-instruct"],
+            "litellm": ["nvidia_nim/meta/llama-3.3-70b-instruct", "ollama/deepseek-r1", "gpt-4"],
         }.get(provider, [])
 
 

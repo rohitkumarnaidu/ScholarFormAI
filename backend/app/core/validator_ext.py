@@ -82,13 +82,9 @@ def sanitize_manuscript(manuscript: Manuscript) -> Manuscript:
     if manuscript.acknowledgments:
         manuscript.acknowledgments = sanitize_string(manuscript.acknowledgments, max_length=5000)
     if manuscript.funding_statement:
-        manuscript.funding_statement = sanitize_string(
-            manuscript.funding_statement, max_length=2000
-        )
+        manuscript.funding_statement = sanitize_string(manuscript.funding_statement, max_length=2000)
     if manuscript.conflict_of_interest:
-        manuscript.conflict_of_interest = sanitize_string(
-            manuscript.conflict_of_interest, max_length=2000
-        )
+        manuscript.conflict_of_interest = sanitize_string(manuscript.conflict_of_interest, max_length=2000)
     if manuscript.corresponding_author:
         ca = manuscript.corresponding_author
         ca.first_name = sanitize_string(ca.first_name, max_length=100)
@@ -176,10 +172,7 @@ def validate_manuscript_size(manuscript: Manuscript) -> dict[str, Any]:
         errors.append(
             {
                 "code": "SECTION_DEPTH_EXCEEDED",
-                "message": (
-                    f"Section nesting depth ({max_depth}) exceeds "
-                    f"maximum ({MAX_SECTION_DEPTH})"
-                ),
+                "message": (f"Section nesting depth ({max_depth}) exceeds maximum ({MAX_SECTION_DEPTH})"),
                 "location": "sections",
             }
         )
@@ -330,18 +323,11 @@ def cross_field_validate(manuscript: Manuscript) -> dict[str, Any]:
                 }
             )
 
-    if (
-        manuscript.acknowledgments
-        and not manuscript.funding_statement
-        and not manuscript.conflict_of_interest
-    ):
+    if manuscript.acknowledgments and not manuscript.funding_statement and not manuscript.conflict_of_interest:
         issues.append(
             {
                 "code": "MISSING_DECLARATIONS",
-                "message": (
-                    "Acknowledgments present but no funding "
-                    "statement or conflict of interest"
-                ),
+                "message": ("Acknowledgments present but no funding statement or conflict of interest"),
                 "location": "metadata",
                 "severity": "info",
             }

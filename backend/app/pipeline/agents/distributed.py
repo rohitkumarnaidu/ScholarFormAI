@@ -4,6 +4,7 @@
 """
 Distributed processing with multi-agent coordination.
 """
+
 import logging
 from typing import List, Dict, Any, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -18,6 +19,7 @@ _TASK_TIMEOUT = 120
 
 class AgentRole(Enum):
     """Agent roles in distributed system."""
+
     COORDINATOR = "coordinator"
     METADATA_SPECIALIST = "metadata_specialist"
     LAYOUT_SPECIALIST = "layout_specialist"
@@ -28,6 +30,7 @@ class AgentRole(Enum):
 @dataclass
 class AgentTask:
     """Task for a specialist agent."""
+
     task_id: str
     role: AgentRole
     document_path: str
@@ -247,8 +250,7 @@ class DistributedCoordinator:
         try:
             return {
                 "specialists": {
-                    role.value: {"task_count": agent.task_count}
-                    for role, agent in self.specialists.items()
+                    role.value: {"task_count": agent.task_count} for role, agent in self.specialists.items()
                 },
                 "total_tasks": sum(a.task_count for a in self.specialists.values()),
             }

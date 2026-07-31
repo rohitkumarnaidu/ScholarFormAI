@@ -31,6 +31,7 @@ class FeedbackService:
     def _get_memory(self) -> Any:
         if self._memory is None:
             from app.pipeline.agents.memory import AgentMemory
+
             self._memory = AgentMemory()
         return self._memory
 

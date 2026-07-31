@@ -85,10 +85,17 @@ async def list_issues(
     service = _get_service()
     try:
         issues = service.list_issues(
-            status=status, category=category, severity=severity,
-            assigned_to=assigned_to, label=label, milestone=milestone,
-            search=search, sort_by=sort_by, sort_order=sort_order,
-            limit=limit, offset=offset,
+            status=status,
+            category=category,
+            severity=severity,
+            assigned_to=assigned_to,
+            label=label,
+            milestone=milestone,
+            search=search,
+            sort_by=sort_by,
+            sort_order=sort_order,
+            limit=limit,
+            offset=offset,
         )
         return IssueListResponse(issues=issues, total=len(issues), offset=offset, limit=limit)
     except Exception as e:
@@ -260,7 +267,9 @@ async def list_milestones():
 async def create_milestone(request: MilestoneCreateRequest):
     service = _get_service()
     try:
-        milestone = service.create_milestone(title=request.title, description=request.description, due_date=request.due_date)
+        milestone = service.create_milestone(
+            title=request.title, description=request.description, due_date=request.due_date
+        )
         logger.info("Milestone created: %s", request.title)
         return milestone
     except Exception as e:

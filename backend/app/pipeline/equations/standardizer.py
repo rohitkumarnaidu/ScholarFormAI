@@ -10,21 +10,22 @@ from app.utils.singleton import get_or_create
 
 logger = logging.getLogger(__name__)
 
+
 class EquationStandardizer:
     """
     Pipeline stage to standardize mathematical equations.
     Converts OMML (Word) to MathML and LaTeX.
     """
-    
+
     def __init__(self, xsl_path: str = None):
         if xsl_path is None:
             # Default to bundled XSL in the same directory
             base_dir = os.path.dirname(os.path.abspath(__file__))
             xsl_path = os.path.join(base_dir, "omml2mml.xsl")
-            
+
         self.xsl_path = xsl_path
         self._xslt = None
-        
+
         if os.path.exists(self.xsl_path):
             try:
                 xslt_doc = etree.parse(self.xsl_path)
@@ -71,14 +72,12 @@ class EquationStandardizer:
             doc_obj.add_processing_stage(
                 stage_name="equation_standardization",
                 status="success" if failure_count == 0 else "partial",
-                message=message
+                message=message,
             )
         except Exception as exc:
             logger.error("EquationStandardizer.process failed: %s", exc, exc_info=True)
             doc_obj.add_processing_stage(
-                stage_name="equation_standardization",
-                status="error",
-                message=f"Equation standardization failed: {exc}"
+                stage_name="equation_standardization", status="error", message=f"Equation standardization failed: {exc}"
             )
         return doc_obj
 
@@ -86,11 +85,11 @@ class EquationStandardizer:
         """Apply XSLT transformation to OMML string."""
         if not self._xslt:
             return ""
-            
+
         try:
             # Parse OMML string
             dom = etree.fromstring(omml_xml)
-            
+
             # Validate and normalize namespaces
             # Ensure OMML namespace is present
             omml_ns = "http://schemas.openxmlformats.org/officeDocument/2006/math"
@@ -102,7 +101,7 @@ class EquationStandardizer:
 
             # Apply XSLT transformation
             new_dom = self._xslt(dom)
-            return etree.tostring(new_dom, encoding='unicode', pretty_print=True)
+            return etree.tostring(new_dom, encoding="unicode", pretty_print=True)
         except etree.XMLSyntaxError as exc:
             logger.warning("EquationStandardizer: XML syntax error: %s", exc)
             return ""
@@ -110,8 +109,10 @@ class EquationStandardizer:
             logger.warning("EquationStandardizer: Conversion error: %s", exc)
             return ""
 
+
 # Singleton Instance
 _standardizer = None
+
 
 def get_equation_standardizer() -> EquationStandardizer:
     global _standardizer

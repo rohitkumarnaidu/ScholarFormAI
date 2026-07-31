@@ -5,6 +5,7 @@
 API Key management router — /api/v1/keys
 Handles CRUD for user-provided LLM provider API keys with rate limiting.
 """
+
 import logging
 import time
 from typing import Optional
@@ -25,6 +26,7 @@ router = APIRouter(tags=["api-keys"])
 
 
 # --- Pydantic Schemas ---
+
 
 class CreateApiKeyRequest(BaseModel):
     provider: str = Field(..., description="Provider name (openai, anthropic, deepseek, etc.)")
@@ -77,6 +79,7 @@ class ProviderInfo(BaseModel):
 
 
 # --- Endpoints ---
+
 
 @router.post("", response_model=ApiKeyResponse, status_code=201)
 async def create_api_key(
@@ -179,10 +182,7 @@ async def get_usage_stats(
 ):
     service = ApiKeyService(db)
     stats = service.get_usage_stats(user_id=str(user.id), hours=hours)
-    return {
-        provider: UsageStatsResponse(provider=provider, **data)
-        for provider, data in stats.items()
-    }
+    return {provider: UsageStatsResponse(provider=provider, **data) for provider, data in stats.items()}
 
 
 @router.get("/{key_id}/usage", response_model=dict)
@@ -214,10 +214,7 @@ async def get_key_usage(
 @router.get("/providers", response_model=dict[str, ProviderInfo])
 async def get_supported_providers():
     providers = ApiKeyService.get_supported_providers()
-    return {
-        name: ProviderInfo(**info)
-        for name, info in providers.items()
-    }
+    return {name: ProviderInfo(**info) for name, info in providers.items()}
 
 
 @router.post("/test", response_model=dict)
@@ -239,11 +236,22 @@ async def test_api_key(
     start = time.time()
     try:
         from app.services.provider_registry import BUILTIN_PROVIDERS
+
         info = BUILTIN_PROVIDERS.get(provider)
         if info:
             base = info.get("base_url", "")
             api_base = base() if callable(base) else base
-        elif provider in {"openai", "anthropic", "groq", "deepseek", "openrouter", "google", "cohere", "mistral", "nvidia"}:
+        elif provider in {
+            "openai",
+            "anthropic",
+            "groq",
+            "deepseek",
+            "openrouter",
+            "google",
+            "cohere",
+            "mistral",
+            "nvidia",
+        }:
             lookup = {
                 "openai": "https://api.openai.com/v1",
                 "anthropic": "https://api.anthropic.com/v1",
@@ -263,6 +271,7 @@ async def test_api_key(
             return test_results
 
         import httpx
+
         headers = {}
         if provider == "anthropic":
             headers["x-api-key"] = api_key

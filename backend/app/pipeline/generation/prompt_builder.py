@@ -8,6 +8,7 @@ PromptBuilder -- constructs LLM prompts for each supported document type.
 Supported doc_types:
   academic_paper | resume | portfolio | report | thesis
 """
+
 from __future__ import annotations
 
 
@@ -20,10 +21,10 @@ class PromptBuilder:
     def build(self, doc_type: str, metadata: dict, options: dict) -> str:
         builders = {
             "academic_paper": self._academic_paper_prompt,
-            "resume":         self._resume_prompt,
-            "portfolio":      self._portfolio_prompt,
-            "report":         self._report_prompt,
-            "thesis":         self._thesis_prompt,
+            "resume": self._resume_prompt,
+            "portfolio": self._portfolio_prompt,
+            "report": self._report_prompt,
+            "thesis": self._thesis_prompt,
         }
         fn = builders.get(doc_type)
         if fn is None:
@@ -39,11 +40,11 @@ class PromptBuilder:
         return (
             f"\nReturn ONLY a valid JSON array. No extra text, no markdown prose outside the array.\n"
             f"Each element must follow this exact schema:\n"
-            f'{{\n'
+            f"{{\n"
             f'  "type": "{types_str}",\n'
             f'  "content": "<text content>",\n'
             f'  "level": 0\n'
-            f'}}\n'
+            f"}}\n"
             f'("level" is only meaningful for HEADING_1 / HEADING_2 / HEADING_3.)\n'
         )
 
@@ -51,18 +52,15 @@ class PromptBuilder:
     # Academic Paper
     # ------------------------------------------------------------------
     def _academic_paper_prompt(self, metadata: dict, options: dict) -> str:
-        title      = metadata.get("title", "Untitled Paper")
-        authors    = ", ".join(metadata.get("authors", []))
-        affil      = metadata.get("affiliation", "")
-        abstract   = metadata.get("abstract", "")
-        keywords   = ", ".join(metadata.get("keywords", []))
-        language   = metadata.get("language", "English")
-        sections   = [
-            s["name"] for s in metadata.get("sections", []) if s.get("include", True)
-        ]
+        title = metadata.get("title", "Untitled Paper")
+        authors = ", ".join(metadata.get("authors", []))
+        affil = metadata.get("affiliation", "")
+        abstract = metadata.get("abstract", "")
+        keywords = ", ".join(metadata.get("keywords", []))
+        language = metadata.get("language", "English")
+        sections = [s["name"] for s in metadata.get("sections", []) if s.get("include", True)]
         if not sections:
-            sections = ["Introduction", "Methodology", "Results",
-                        "Discussion", "Conclusion", "References"]
+            sections = ["Introduction", "Methodology", "Results", "Discussion", "Conclusion", "References"]
         placeholder = options.get("include_placeholder_content", True)
         content_instr = (
             "Write 3-5 detailed placeholder paragraphs for every body section."
@@ -72,9 +70,17 @@ class PromptBuilder:
         word_target = options.get("word_count_target", 3000)
 
         block_types = [
-            "TITLE", "AUTHOR_INFO", "AFFILIATION", "ABSTRACT",
-            "KEYWORDS", "HEADING_1", "HEADING_2", "BODY",
-            "FIGURE_CAPTION", "TABLE_CAPTION", "REFERENCE_ENTRY",
+            "TITLE",
+            "AUTHOR_INFO",
+            "AFFILIATION",
+            "ABSTRACT",
+            "KEYWORDS",
+            "HEADING_1",
+            "HEADING_2",
+            "BODY",
+            "FIGURE_CAPTION",
+            "TABLE_CAPTION",
+            "REFERENCE_ENTRY",
         ]
 
         return (
@@ -103,29 +109,41 @@ class PromptBuilder:
     # Resume / CV
     # ------------------------------------------------------------------
     def _resume_prompt(self, metadata: dict, options: dict) -> str:
-        name    = metadata.get("name", "Candidate Name")
-        email   = metadata.get("email", "")
-        phone   = metadata.get("phone", "")
+        name = metadata.get("name", "Candidate Name")
+        email = metadata.get("email", "")
+        phone = metadata.get("phone", "")
         linkedin = metadata.get("linkedin", "")
         summary = metadata.get("summary", "")
-        skills  = ", ".join(metadata.get("skills", []))
-        edu     = metadata.get("education", [])
-        exp     = metadata.get("experience", [])
-        certs   = ", ".join(metadata.get("certifications", []))
+        skills = ", ".join(metadata.get("skills", []))
+        edu = metadata.get("education", [])
+        exp = metadata.get("experience", [])
+        certs = ", ".join(metadata.get("certifications", []))
 
-        edu_str = "; ".join(
-            f"{e.get('degree','Degree')} at {e.get('institution','Institution')} ({e.get('year','')})"
-            for e in edu
-        ) if edu else "Not provided"
+        edu_str = (
+            "; ".join(
+                f"{e.get('degree', 'Degree')} at {e.get('institution', 'Institution')} ({e.get('year', '')})"
+                for e in edu
+            )
+            if edu
+            else "Not provided"
+        )
 
-        exp_str = "; ".join(
-            f"{e.get('role','Role')} at {e.get('company','Company')} ({e.get('duration','')})"
-            for e in exp
-        ) if exp else "Not provided"
+        exp_str = (
+            "; ".join(
+                f"{e.get('role', 'Role')} at {e.get('company', 'Company')} ({e.get('duration', '')})" for e in exp
+            )
+            if exp
+            else "Not provided"
+        )
 
         block_types = [
-            "TITLE", "CONTACT_INFO", "SUMMARY",
-            "HEADING_1", "HEADING_2", "BODY", "BULLET",
+            "TITLE",
+            "CONTACT_INFO",
+            "SUMMARY",
+            "HEADING_1",
+            "HEADING_2",
+            "BODY",
+            "BULLET",
         ]
 
         return (
@@ -145,32 +163,40 @@ class PromptBuilder:
             f"- Start with TITLE (candidate name), then CONTACT_INFO, then SUMMARY.\n"
             f"- Sections in order: Skills, Experience, Education, Certifications, Publications (if applicable).\n"
             f"- Use HEADING_1 for each section, BODY for entries, BULLET for achievements.\n"
-            f"- Keep content concise, action-verb-led, professional.\n"
-            + self._json_instruction(block_types)
+            f"- Keep content concise, action-verb-led, professional.\n" + self._json_instruction(block_types)
         )
 
     # ------------------------------------------------------------------
     # Portfolio
     # ------------------------------------------------------------------
     def _portfolio_prompt(self, metadata: dict, options: dict) -> str:
-        name    = metadata.get("name", "Researcher Name")
-        field   = metadata.get("research_field", "")
-        bio     = metadata.get("bio", "")
+        name = metadata.get("name", "Researcher Name")
+        field = metadata.get("research_field", "")
+        bio = metadata.get("bio", "")
         projects = metadata.get("projects", [])
-        pubs    = metadata.get("publications", [])
+        pubs = metadata.get("publications", [])
 
-        proj_str = "; ".join(
-            f"{p.get('title','Project')} ({p.get('year','')}): {p.get('description','')}"
-            for p in projects
-        ) if projects else "Not provided"
+        proj_str = (
+            "; ".join(
+                f"{p.get('title', 'Project')} ({p.get('year', '')}): {p.get('description', '')}" for p in projects
+            )
+            if projects
+            else "Not provided"
+        )
 
-        pub_str = "; ".join(
-            f"{p.get('title','Paper')} - {p.get('venue','')}" for p in pubs
-        ) if pubs else "Not provided"
+        pub_str = (
+            "; ".join(f"{p.get('title', 'Paper')} - {p.get('venue', '')}" for p in pubs) if pubs else "Not provided"
+        )
 
         block_types = [
-            "TITLE", "AUTHOR_INFO", "ABSTRACT", "HEADING_1",
-            "HEADING_2", "BODY", "BULLET", "FIGURE_CAPTION",
+            "TITLE",
+            "AUTHOR_INFO",
+            "ABSTRACT",
+            "HEADING_1",
+            "HEADING_2",
+            "BODY",
+            "BULLET",
+            "FIGURE_CAPTION",
         ]
 
         return (
@@ -186,36 +212,48 @@ class PromptBuilder:
             f"- Start with TITLE (researcher name + role), AUTHOR_INFO, then ABSTRACT (research statement).\n"
             f"- Include sections: About, Research Interests, Key Projects, Publications, Achievements, Contact.\n"
             f"- Use HEADING_1 for major sections, HEADING_2 for project/paper titles, BODY for descriptions, BULLET for highlights.\n"
-            f"- Tone: professional, academic, engaging.\n"
-            + self._json_instruction(block_types)
+            f"- Tone: professional, academic, engaging.\n" + self._json_instruction(block_types)
         )
 
     # ------------------------------------------------------------------
     # Technical Report
     # ------------------------------------------------------------------
     def _report_prompt(self, metadata: dict, options: dict) -> str:
-        title     = metadata.get("title", "Technical Report")
-        authors   = ", ".join(metadata.get("authors", []))
-        org       = metadata.get("organization", "")
-        abstract  = metadata.get("abstract", "")
-        sections  = [
-            s["name"] for s in metadata.get("sections", []) if s.get("include", True)
-        ]
+        title = metadata.get("title", "Technical Report")
+        authors = ", ".join(metadata.get("authors", []))
+        org = metadata.get("organization", "")
+        abstract = metadata.get("abstract", "")
+        sections = [s["name"] for s in metadata.get("sections", []) if s.get("include", True)]
         if not sections:
             sections = [
-                "Executive Summary", "Introduction", "Background",
-                "Methodology", "Findings", "Recommendations", "Conclusion", "References",
+                "Executive Summary",
+                "Introduction",
+                "Background",
+                "Methodology",
+                "Findings",
+                "Recommendations",
+                "Conclusion",
+                "References",
             ]
         placeholder = options.get("include_placeholder_content", True)
         content_instr = (
             "Write 2-4 paragraphs of detailed placeholder content per section."
-            if placeholder else "Include headings and single-sentence placeholders only."
+            if placeholder
+            else "Include headings and single-sentence placeholders only."
         )
 
         block_types = [
-            "TITLE", "AUTHOR_INFO", "ABSTRACT", "KEYWORDS",
-            "HEADING_1", "HEADING_2", "HEADING_3", "BODY",
-            "BULLET", "TABLE_CAPTION", "REFERENCE_ENTRY",
+            "TITLE",
+            "AUTHOR_INFO",
+            "ABSTRACT",
+            "KEYWORDS",
+            "HEADING_1",
+            "HEADING_2",
+            "HEADING_3",
+            "BODY",
+            "BULLET",
+            "TABLE_CAPTION",
+            "REFERENCE_ENTRY",
         ]
 
         return (
@@ -239,26 +277,35 @@ class PromptBuilder:
     # Thesis Chapter
     # ------------------------------------------------------------------
     def _thesis_prompt(self, metadata: dict, options: dict) -> str:
-        title       = metadata.get("title", "Thesis Chapter")
-        candidate   = metadata.get("candidate_name", "")
-        university  = metadata.get("university", "")
-        degree      = metadata.get("degree", "")
+        title = metadata.get("title", "Thesis Chapter")
+        candidate = metadata.get("candidate_name", "")
+        university = metadata.get("university", "")
+        degree = metadata.get("degree", "")
         chapter_num = metadata.get("chapter_number", 1)
         chapter_title = metadata.get("chapter_title", "Introduction")
-        abstract    = metadata.get("abstract", "")
-        sections    = [
-            s["name"] for s in metadata.get("sections", []) if s.get("include", True)
-        ]
+        abstract = metadata.get("abstract", "")
+        sections = [s["name"] for s in metadata.get("sections", []) if s.get("include", True)]
         if not sections:
             sections = [
-                "Introduction", "Literature Review",
-                "Research Gap", "Objectives", "Summary",
+                "Introduction",
+                "Literature Review",
+                "Research Gap",
+                "Objectives",
+                "Summary",
             ]
 
         block_types = [
-            "TITLE", "AUTHOR_INFO", "ABSTRACT", "HEADING_1",
-            "HEADING_2", "HEADING_3", "BODY", "BULLET",
-            "FIGURE_CAPTION", "TABLE_CAPTION", "REFERENCE_ENTRY",
+            "TITLE",
+            "AUTHOR_INFO",
+            "ABSTRACT",
+            "HEADING_1",
+            "HEADING_2",
+            "HEADING_3",
+            "BODY",
+            "BULLET",
+            "FIGURE_CAPTION",
+            "TABLE_CAPTION",
+            "REFERENCE_ENTRY",
         ]
 
         return (
@@ -278,6 +325,5 @@ class PromptBuilder:
             f"- Include AUTHOR_INFO and ABSTRACT at the top if chapter_number == 1, otherwise skip.\n"
             f"- Use HEADING_1 for each section, HEADING_2 for subsections.\n"
             f"- Write 3-5 academic paragraphs per section.\n"
-            f"- End with 'References' section and 8-10 REFERENCE_ENTRY blocks.\n"
-            + self._json_instruction(block_types)
+            f"- End with 'References' section and 8-10 REFERENCE_ENTRY blocks.\n" + self._json_instruction(block_types)
         )

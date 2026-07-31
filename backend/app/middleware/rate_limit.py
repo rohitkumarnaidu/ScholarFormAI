@@ -12,6 +12,7 @@ Design goals:
   • Keep the module-level `redis` attribute so tests that patch it still work:
         with patch("app.middleware.rate_limit.redis", mock_redis): ...
 """
+
 from __future__ import annotations
 
 import time
@@ -48,6 +49,7 @@ def _ensure_redis():
 # ---------------------------------------------------------------------------
 # Middleware
 # ---------------------------------------------------------------------------
+
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """
@@ -88,9 +90,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         counter_store = self.upload_request_counts if is_upload else self.request_counts
         now = time.time()
         cutoff = now - self.WINDOW_SECONDS
-        counter_store[ip] = [
-            ts for ts in counter_store[ip] if ts > cutoff
-        ]
+        counter_store[ip] = [ts for ts in counter_store[ip] if ts > cutoff]
         counter_store[ip].append(now)
         return len(counter_store[ip])
 
@@ -131,10 +131,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         if request.url.path == "/health":
             return await call_next(request)
 
-        is_upload = (
-            request.url.path == "/api/v1/documents/upload"
-            and request.method == "POST"
-        )
+        is_upload = request.url.path == "/api/v1/documents/upload" and request.method == "POST"
 
         if is_upload:
             rate_subject = client_ip

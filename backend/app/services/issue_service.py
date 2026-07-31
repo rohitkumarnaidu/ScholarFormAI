@@ -183,27 +183,43 @@ class IssueReport:
     def to_dict(self) -> dict:
         return {
             "id": self.id,
-            "title": self.title, "description": self.description,
-            "category": self.category, "severity": self.severity, "status": self.status,
+            "title": self.title,
+            "description": self.description,
+            "category": self.category,
+            "severity": self.severity,
+            "status": self.status,
             "source": self.source,
-            "reporter_name": self.reporter_name, "reporter_email": self.reporter_email,
-            "anonymous": self.anonymous, "tracking_number": self.tracking_number,
-            "labels": self.labels, "assigned_to": self.assigned_to,
-            "milestone": self.milestone, "priority": self.priority,
-            "system_info": self.system_info, "browser_info": self.browser_info,
-            "device_info": self.device_info, "environment_info": self.environment_info,
+            "reporter_name": self.reporter_name,
+            "reporter_email": self.reporter_email,
+            "anonymous": self.anonymous,
+            "tracking_number": self.tracking_number,
+            "labels": self.labels,
+            "assigned_to": self.assigned_to,
+            "milestone": self.milestone,
+            "priority": self.priority,
+            "system_info": self.system_info,
+            "browser_info": self.browser_info,
+            "device_info": self.device_info,
+            "environment_info": self.environment_info,
             "app_version": self.app_version,
-            "attachments": self.attachments, "screenshots": self.screenshots,
-            "screen_recording": self.screen_recording, "logs": self.logs,
+            "attachments": self.attachments,
+            "screenshots": self.screenshots,
+            "screen_recording": self.screen_recording,
+            "logs": self.logs,
             "steps_to_reproduce": self.steps_to_reproduce,
-            "expected_behavior": self.expected_behavior, "actual_behavior": self.actual_behavior,
+            "expected_behavior": self.expected_behavior,
+            "actual_behavior": self.actual_behavior,
             "stack_trace": self.stack_trace,
-            "ai_category": self.ai_category, "ai_summary": self.ai_summary,
+            "ai_category": self.ai_category,
+            "ai_summary": self.ai_summary,
             "ai_suggested_fix": self.ai_suggested_fix,
             "duplicate_of": self.duplicate_of,
-            "comments": self.comments, "timeline": self.timeline,
-            "created_at": self.created_at, "updated_at": self.updated_at,
-            "resolved_at": self.resolved_at, "closed_at": self.closed_at,
+            "comments": self.comments,
+            "timeline": self.timeline,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "resolved_at": self.resolved_at,
+            "closed_at": self.closed_at,
             "github_issue_url": self.github_issue_url,
             "github_issue_number": self.github_issue_number,
             "email_notifications": self.email_notifications,
@@ -273,8 +289,10 @@ class IssueService:
 
     def _load_all(self):
         for attr, file_key in [
-            ("_issues", "issues_file"), ("_feedback", "feedback_file"),
-            ("_crashes", "crash_file"), ("_milestones", "milestones_file"),
+            ("_issues", "issues_file"),
+            ("_feedback", "feedback_file"),
+            ("_crashes", "crash_file"),
+            ("_milestones", "milestones_file"),
             ("_settings", "settings_file"),
         ]:
             path = getattr(self, file_key)
@@ -350,11 +368,13 @@ class IssueService:
         now = datetime.now(timezone.utc).isoformat()
         report.created_at = now
         report.updated_at = now
-        report.timeline.append({
-            "action": "created",
-            "timestamp": now,
-            "actor": report.reporter_name or "Anonymous",
-        })
+        report.timeline.append(
+            {
+                "action": "created",
+                "timestamp": now,
+                "actor": report.reporter_name or "Anonymous",
+            }
+        )
         if report.category not in report.labels:
             report.labels.append(report.category)
         data = report.to_dict()
@@ -409,14 +429,15 @@ class IssueService:
         if search:
             q = search.lower()
             result = [
-                i for i in result
+                i
+                for i in result
                 if q in i.get("title", "").lower()
                 or q in i.get("description", "").lower()
                 or q in i.get("tracking_number", "").lower()
             ]
         reverse = sort_order.lower() == "desc"
         result.sort(key=lambda x: x.get(sort_by, ""), reverse=reverse)
-        return result[offset:offset + limit]
+        return result[offset : offset + limit]
 
     def update_issue(self, issue_id: str, updates: dict) -> dict | None:
         issue = self.get_issue(issue_id)
@@ -428,13 +449,15 @@ class IssueService:
             if key in ("id", "created_at", "tracking_number"):
                 continue
             if key in issue and issue[key] != value:
-                timeline_entries.append({
-                    "action": f"changed_{key}",
-                    "from": str(issue.get(key, "")),
-                    "to": str(value),
-                    "timestamp": now,
-                    "actor": updates.get("_actor", "System"),
-                })
+                timeline_entries.append(
+                    {
+                        "action": f"changed_{key}",
+                        "from": str(issue.get(key, "")),
+                        "to": str(value),
+                        "timestamp": now,
+                        "actor": updates.get("_actor", "System"),
+                    }
+                )
             if key in issue:
                 issue[key] = value
         issue["updated_at"] = now
@@ -464,12 +487,14 @@ class IssueService:
         comment["timestamp"] = now
         issue.setdefault("comments", []).append(comment)
         issue["updated_at"] = now
-        issue["timeline"].append({
-            "action": "commented",
-            "timestamp": now,
-            "actor": comment.get("author", "Anonymous"),
-            "comment_id": comment["id"],
-        })
+        issue["timeline"].append(
+            {
+                "action": "commented",
+                "timestamp": now,
+                "actor": comment.get("author", "Anonymous"),
+                "comment_id": comment["id"],
+            }
+        )
         self._save_issues()
         self._dispatch_notifications(issue, "new_comment", comment=comment)
         return issue
@@ -533,7 +558,12 @@ class IssueService:
             by_category[c] = by_category.get(c, 0) + 1
             sev = issue.get("severity", "unknown")
             by_severity[sev] = by_severity.get(sev, 0) + 1
-            if s in (IssueStatus.NEW.value, IssueStatus.TRIAGED.value, IssueStatus.IN_PROGRESS.value, IssueStatus.NEEDS_INFO.value):
+            if s in (
+                IssueStatus.NEW.value,
+                IssueStatus.TRIAGED.value,
+                IssueStatus.IN_PROGRESS.value,
+                IssueStatus.NEEDS_INFO.value,
+            ):
                 open_count += 1
             if s == IssueStatus.RESOLVED.value:
                 resolved_count += 1
@@ -570,14 +600,16 @@ class IssueService:
                 created = datetime.fromisoformat(issue["created_at"])
                 elapsed = (now - created).total_seconds() / 3600
                 if elapsed > max_hours:
-                    breaches.append({
-                        "issue_id": issue["id"],
-                        "tracking_number": issue.get("tracking_number"),
-                        "severity": sev,
-                        "elapsed_hours": round(elapsed, 1),
-                        "sla_hours": max_hours,
-                        "breach_hours": round(elapsed - max_hours, 1),
-                    })
+                    breaches.append(
+                        {
+                            "issue_id": issue["id"],
+                            "tracking_number": issue.get("tracking_number"),
+                            "severity": sev,
+                            "elapsed_hours": round(elapsed, 1),
+                            "sla_hours": max_hours,
+                            "breach_hours": round(elapsed - max_hours, 1),
+                        }
+                    )
             except (ValueError, KeyError):
                 pass
         return breaches
@@ -591,9 +623,9 @@ class IssueService:
         window = self._settings.get("spam_window_minutes", 60)
         cutoff = time.time() - (window * 60)
         recent = [
-            i for i in self._issues
-            if i.get("source") == (report.source or "")
-            and self._ts_to_epoch(i.get("created_at", "")) > cutoff
+            i
+            for i in self._issues
+            if i.get("source") == (report.source or "") and self._ts_to_epoch(i.get("created_at", "")) > cutoff
         ]
         return len(recent) >= threshold
 
@@ -675,6 +707,7 @@ class IssueService:
             return
         try:
             import httpx
+
             headers = {
                 "Authorization": f"Bearer {token}",
                 "Accept": "application/vnd.github+json",
@@ -687,7 +720,9 @@ class IssueService:
             }
             resp = httpx.post(
                 f"https://api.github.com/repos/{repo}/issues",
-                json=body, headers=headers, timeout=15.0,
+                json=body,
+                headers=headers,
+                timeout=15.0,
             )
             resp.raise_for_status()
             gh_data = resp.json()
@@ -719,17 +754,23 @@ class IssueService:
         for url in webhooks:
             try:
                 import httpx
-                httpx.post(url, json={
-                    "event": event,
-                    "issue": issue_data,
-                    **kwargs,
-                }, timeout=10.0)
+
+                httpx.post(
+                    url,
+                    json={
+                        "event": event,
+                        "issue": issue_data,
+                        **kwargs,
+                    },
+                    timeout=10.0,
+                )
             except Exception as e:
                 logger.warning("Webhook dispatch failed for %s: %s", url, e)
         discord_url = self._settings.get("discord_webhook_url")
         if discord_url:
             try:
                 import httpx
+
                 embed = self._build_discord_embed(issue_data, event)
                 httpx.post(discord_url, json={"embeds": [embed]}, timeout=10.0)
             except Exception as e:
@@ -738,6 +779,7 @@ class IssueService:
         if slack_url:
             try:
                 import httpx
+
                 blocks = self._build_slack_blocks(issue_data, event)
                 httpx.post(slack_url, json={"blocks": blocks}, timeout=10.0)
             except Exception as e:
@@ -745,10 +787,16 @@ class IssueService:
 
     def _build_discord_embed(self, issue: dict, event: str) -> dict:
         color_map = {
-            "critical": 15158332, "high": 15105570, "medium": 16776960, "low": 5763719,
+            "critical": 15158332,
+            "high": 15105570,
+            "medium": 16776960,
+            "low": 5763719,
         }
         status_colors = {
-            "new": 3447003, "in-progress": 15844367, "resolved": 3066993, "closed": 10070709,
+            "new": 3447003,
+            "in-progress": 15844367,
+            "resolved": 3066993,
+            "closed": 10070709,
         }
         color = color_map.get(issue.get("severity"), status_colors.get(issue.get("status"), 5814783))
         tracking = issue.get("tracking_number", "")
@@ -772,18 +820,23 @@ class IssueService:
         blocks = [
             {"type": "header", "text": {"type": "plain_text", "text": f"{tracking}: {issue.get('title', '')}"}},
             {"type": "section", "text": {"type": "mrkdwn", "text": (issue.get("description", "") or "")[:300]}},
-            {"type": "section", "fields": [
-                {"type": "mrkdwn", "text": f"*Status:* {issue.get('status', '')}"},
-                {"type": "mrkdwn", "text": f"*Severity:* {issue.get('severity', '')}"},
-                {"type": "mrkdwn", "text": f"*Category:* {issue.get('category', '')}"},
-                {"type": "mrkdwn", "text": f"*Tracking:* `{tracking}`"},
-            ]},
+            {
+                "type": "section",
+                "fields": [
+                    {"type": "mrkdwn", "text": f"*Status:* {issue.get('status', '')}"},
+                    {"type": "mrkdwn", "text": f"*Severity:* {issue.get('severity', '')}"},
+                    {"type": "mrkdwn", "text": f"*Category:* {issue.get('category', '')}"},
+                    {"type": "mrkdwn", "text": f"*Tracking:* `{tracking}`"},
+                ],
+            },
         ]
         if issue.get("github_issue_url"):
-            blocks.append({
-                "type": "section",
-                "text": {"type": "mrkdwn", "text": f"<{issue['github_issue_url']}|View on GitHub>"},
-            })
+            blocks.append(
+                {
+                    "type": "section",
+                    "text": {"type": "mrkdwn", "text": f"<{issue['github_issue_url']}|View on GitHub>"},
+                }
+            )
         return blocks
 
     # ------------------------------------------------------------------

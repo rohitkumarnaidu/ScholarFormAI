@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 try:
     from docxtpl import DocxTemplate
+
     _DOCXTPL_AVAILABLE = True
 except ImportError:
     DocxTemplate = None  # type: ignore[assignment,misc]
@@ -68,9 +69,7 @@ class TemplateRenderer:
     def render(self, document: Document, template_name: str = "ieee") -> "DocxTemplate":
         """Render a template using document context."""
         if not _DOCXTPL_AVAILABLE:
-            raise ImportError(
-                "docxtpl is not installed. Run: pip install 'docxtpl>=1.0.0'"
-            )
+            raise ImportError("docxtpl is not installed. Run: pip install 'docxtpl>=1.0.0'")
         if not document:
             raise ValueError("document must not be None")
         template_name = (template_name or "ieee").strip() or "ieee"
@@ -223,10 +222,7 @@ class TemplateRenderer:
         has_markers = False
         try:
             with ZipFile(template_path) as zf:
-                xml_entries = [
-                    name for name in zf.namelist()
-                    if name.startswith("word/") and name.endswith(".xml")
-                ]
+                xml_entries = [name for name in zf.namelist() if name.startswith("word/") and name.endswith(".xml")]
 
                 for xml_name in xml_entries:
                     xml = zf.read(xml_name).decode("utf-8", errors="ignore")
@@ -255,10 +251,14 @@ class TemplateRenderer:
             doc = WordDocument()
             doc.add_paragraph("{{ title }}", style="Title")
             doc.add_paragraph("{% for author in authors %}{{ author }}{% if not loop.last %}, {% endif %}{% endfor %}")
-            doc.add_paragraph("{% for affiliation in affiliations %}{{ affiliation }}{% if not loop.last %}; {% endif %}{% endfor %}")
+            doc.add_paragraph(
+                "{% for affiliation in affiliations %}{{ affiliation }}{% if not loop.last %}; {% endif %}{% endfor %}"
+            )
             doc.add_paragraph("{% if abstract %}Abstract{% endif %}")
             doc.add_paragraph("{{ abstract }}")
-            doc.add_paragraph("Keywords: {% for keyword in keywords %}{{ keyword }}{% if not loop.last %}, {% endif %}{% endfor %}")
+            doc.add_paragraph(
+                "Keywords: {% for keyword in keywords %}{{ keyword }}{% if not loop.last %}, {% endif %}{% endfor %}"
+            )
             doc.add_paragraph("{% for section in sections %}")
             doc.add_paragraph("{{ section.heading }}")
             doc.add_paragraph("{% for paragraph in section.paragraphs %}{{ paragraph }}{% endfor %}")

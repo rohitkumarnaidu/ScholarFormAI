@@ -64,9 +64,7 @@ def resolve_user_role(current_user: Any) -> str:
 def require_role(role: str):
     required_role = _normalize_role(role)
     if required_role not in ROLE_HIERARCHY:
-        raise ValueError(
-            f"Unsupported role '{role}'. Expected one of: {', '.join(sorted(ROLE_HIERARCHY))}"
-        )
+        raise ValueError(f"Unsupported role '{role}'. Expected one of: {', '.join(sorted(ROLE_HIERARCHY))}")
 
     def _guard(current_user=Depends(get_current_user)):
         user_role = resolve_user_role(current_user)

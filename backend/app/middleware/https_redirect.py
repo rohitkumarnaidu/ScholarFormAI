@@ -5,6 +5,7 @@
 HTTPS Redirect Middleware — forces all HTTP requests to HTTPS.
 Adds HSTS header for browsers to remember HTTPS-only policy.
 """
+
 import logging
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request

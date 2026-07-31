@@ -27,9 +27,7 @@ logger = logging.getLogger(__name__)
 class ReferenceRenderer:
     """CSL citation list string formatting and bibliography rendering."""
 
-    def format_reference_string(
-        self, ref: DomainReference, style: FormattingStyle, index: int = 1
-    ) -> tuple[str, str]:
+    def format_reference_string(self, ref: DomainReference, style: FormattingStyle, index: int = 1) -> tuple[str, str]:
         """Returns (prefix, body_text) tuple for a reference entry."""
         numbered = "numbered" in style.reference_format
 
@@ -47,7 +45,11 @@ class ReferenceRenderer:
                     elif a.name:
                         formatted_authors.append(a.name)
                 authors_text = ", ".join(formatted_authors)
-            prefix = f"{authors_text} ({ref.year}). " if authors_text and ref.year else (f"{authors_text} " if authors_text else "")
+            prefix = (
+                f"{authors_text} ({ref.year}). "
+                if authors_text and ref.year
+                else (f"{authors_text} " if authors_text else "")
+            )
 
         title_text = ref.title or ""
         if ref.journal:
@@ -63,9 +65,7 @@ class ReferenceRenderer:
 
         return prefix, title_text
 
-    def render_references(
-        self, doc: Document, references: list[DomainReference], style: FormattingStyle
-    ):
+    def render_references(self, doc: Document, references: list[DomainReference], style: FormattingStyle):
         if not references:
             return
 
@@ -119,9 +119,7 @@ class DocumentLayoutEngine:
         style_obj = doc.styles["Normal"]
         style_obj.paragraph_format.line_spacing = style.line_spacing
 
-    def create_title_page(
-        self, doc: Document, manuscript: DomainManuscript, style: FormattingStyle
-    ):
+    def create_title_page(self, doc: Document, manuscript: DomainManuscript, style: FormattingStyle):
         for _ in range(3):
             doc.add_paragraph()
 
@@ -150,9 +148,7 @@ class DocumentLayoutEngine:
         if manuscript.corresponding_author:
             corr = manuscript.corresponding_author
             corr_name = (
-                f"{corr.first_name} {corr.last_name}".strip()
-                if (corr.first_name or corr.last_name)
-                else corr.name
+                f"{corr.first_name} {corr.last_name}".strip() if (corr.first_name or corr.last_name) else corr.name
             )
             corr_para = doc.add_paragraph()
             corr_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -167,9 +163,7 @@ class DocumentLayoutEngine:
 
         doc.add_page_break()
 
-    def add_running_header(
-        self, doc: Document, manuscript: DomainManuscript, style: FormattingStyle
-    ):
+    def add_running_header(self, doc: Document, manuscript: DomainManuscript, style: FormattingStyle):
         for section in doc.sections:
             header = section.header
             header.is_linked_to_previous = False
@@ -218,9 +212,7 @@ class DocumentLayoutEngine:
         for section in manuscript.sections:
             self.render_section(doc, section, style, 1)
 
-    def render_section(
-        self, doc: Document, section: DomainSection, style: FormattingStyle, level: int
-    ):
+    def render_section(self, doc: Document, section: DomainSection, style: FormattingStyle, level: int):
         heading_style = style.heading_styles.get(level, {})
         hs = doc.add_paragraph()
 
@@ -230,9 +222,7 @@ class DocumentLayoutEngine:
             "right": WD_ALIGN_PARAGRAPH.RIGHT,
             "justify": WD_ALIGN_PARAGRAPH.JUSTIFY,
         }
-        hs.alignment = align_map.get(
-            heading_style.get("alignment", "left"), WD_ALIGN_PARAGRAPH.LEFT
-        )
+        hs.alignment = align_map.get(heading_style.get("alignment", "left"), WD_ALIGN_PARAGRAPH.LEFT)
 
         heading_text = section.heading or section.title
         run = hs.add_run(heading_text)
@@ -247,9 +237,7 @@ class DocumentLayoutEngine:
         for subsection in section.subsections:
             self.render_section(doc, subsection, style, level + 1)
 
-    def render_paragraph(
-        self, doc: Document, para: DomainParagraph | Any, style: FormattingStyle
-    ):
+    def render_paragraph(self, doc: Document, para: DomainParagraph | Any, style: FormattingStyle):
         p = doc.add_paragraph()
         p.paragraph_format.first_line_indent = Inches(style.first_line_indent)
 
@@ -388,9 +376,7 @@ class PageEstimator:
 class HTMLPreviewRenderer:
     """Plaintext/HTML preview generation."""
 
-    def generate_html_preview(
-        self, manuscript: DomainManuscript | Manuscript, style: FormattingStyle
-    ) -> str:
+    def generate_html_preview(self, manuscript: DomainManuscript | Manuscript, style: FormattingStyle) -> str:
         if not isinstance(manuscript, DomainManuscript):
             manuscript = DomainManuscript.from_pydantic(manuscript)
 
@@ -417,19 +403,13 @@ class HTMLPreviewRenderer:
         parts.append(f"<h1>{escaped_title}</h1>")
         if manuscript.authors:
             formatted_authors = [
-                html.escape(
-                    f"{a.first_name} {a.last_name}".strip() if (a.first_name or a.last_name) else a.name
-                )
+                html.escape(f"{a.first_name} {a.last_name}".strip() if (a.first_name or a.last_name) else a.name)
                 for a in manuscript.authors
             ]
-            parts.append(
-                f"<p style='text-align:center;'>{', '.join(formatted_authors)}</p>"
-            )
+            parts.append(f"<p style='text-align:center;'>{', '.join(formatted_authors)}</p>")
 
         if manuscript.abstract:
-            parts.append(
-                f"<div class='abstract'><h2>Abstract</h2><p>{html.escape(manuscript.abstract)}</p></div>"
-            )
+            parts.append(f"<div class='abstract'><h2>Abstract</h2><p>{html.escape(manuscript.abstract)}</p></div>")
 
         if manuscript.keywords:
             parts.append(
@@ -449,9 +429,7 @@ class HTMLPreviewRenderer:
                     first_initial = (a.first_name[0] + ".") if a.first_name else ""
                     if last:
                         formatted_authors.append(
-                            f"{html.escape(last)}, {html.escape(first_initial)}"
-                            if first_initial
-                            else html.escape(last)
+                            f"{html.escape(last)}, {html.escape(first_initial)}" if first_initial else html.escape(last)
                         )
                     elif a.name:
                         formatted_authors.append(html.escape(a.name))
@@ -460,8 +438,7 @@ class HTMLPreviewRenderer:
                 title_str = html.escape(ref.title or "")
                 journal_str = html.escape(ref.journal or "")
                 parts.append(
-                    f"<p class='ref-entry'>{authors_str} ({year_str}). "
-                    f"{title_str}. <em>{journal_str}</em>.</p>"
+                    f"<p class='ref-entry'>{authors_str} ({year_str}). {title_str}. <em>{journal_str}</em>.</p>"
                 )
             parts.append("</div>")
 
@@ -491,9 +468,7 @@ class ManuscriptFormatter:
         html_renderer: HTMLPreviewRenderer | None = None,
     ):
         self.reference_renderer = reference_renderer or ReferenceRenderer()
-        self.layout_engine = layout_engine or DocumentLayoutEngine(
-            reference_renderer=self.reference_renderer
-        )
+        self.layout_engine = layout_engine or DocumentLayoutEngine(reference_renderer=self.reference_renderer)
         self.page_estimator = page_estimator or PageEstimator()
         self.html_renderer = html_renderer or HTMLPreviewRenderer()
 
@@ -518,9 +493,7 @@ class ManuscriptFormatter:
     def estimate_pages(self, target: DomainManuscript | Manuscript | str) -> int:
         return self.page_estimator.estimate_pages(target)
 
-    def generate_html_preview(
-        self, manuscript: DomainManuscript | Manuscript, style: FormattingStyle
-    ) -> str:
+    def generate_html_preview(self, manuscript: DomainManuscript | Manuscript, style: FormattingStyle) -> str:
         if not isinstance(manuscript, DomainManuscript):
             manuscript = DomainManuscript.from_pydantic(manuscript)
 

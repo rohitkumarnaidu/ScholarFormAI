@@ -76,9 +76,7 @@ class HealthChecker:
             engine = create_engine(db_url, connect_args={"connect_timeout": 3})
             with engine.connect() as conn:
                 conn.execute(text("SELECT 1"))
-            component.details = {
-                "database_url": db_url.split("@")[-1] if "@" in db_url else "configured"
-            }
+            component.details = {"database_url": db_url.split("@")[-1] if "@" in db_url else "configured"}
             logger.debug("Database health check passed")
         except ImportError:
             component.status = "skipped"
@@ -185,9 +183,7 @@ class HealthChecker:
     def readiness(self) -> dict[str, Any]:
         self.check_disk_usage()
         components = [c.to_dict() for c in self._components.values()]
-        critical_healthy = all(
-            c.status in ("healthy", "skipped") for c in self._components.values() if c.critical
-        )
+        critical_healthy = all(c.status in ("healthy", "skipped") for c in self._components.values() if c.critical)
         overall_status = "ready" if critical_healthy else "not_ready"
         degraded = any(c.status == "degraded" and not c.critical for c in self._components.values())
         if critical_healthy and degraded:

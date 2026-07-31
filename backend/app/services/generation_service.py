@@ -46,12 +46,14 @@ class GenerationService:
     def _get_orchestrator(self) -> Any:
         if self._orchestrator is None:
             from app.pipeline.orchestrator import PipelineOrchestrator
+
             self._orchestrator = PipelineOrchestrator()
         return self._orchestrator
 
     def _get_agent_pipeline(self) -> Any:
         if self._agent_pipeline is None:
             from app.pipeline.generation.agent import AgentPipeline
+
             self._agent_pipeline = AgentPipeline(
                 session_service=self._session_service,
                 pipeline_orchestrator=self._get_orchestrator(),
@@ -61,6 +63,7 @@ class GenerationService:
     def _get_generator(self) -> Any:
         if self._generator is None:
             from app.pipeline.generation.document_generator import get_generator
+
             self._generator = get_generator()
         return self._generator
 
@@ -92,13 +95,9 @@ class GenerationService:
 
         try:
             if background_tasks is not None:
-                background_tasks.add_task(
-                    self._get_agent_pipeline().run, session_id, user_prompt
-                )
+                background_tasks.add_task(self._get_agent_pipeline().run, session_id, user_prompt)
             else:
-                await asyncio.to_thread(
-                    self._get_agent_pipeline().run, session_id, user_prompt
-                )
+                await asyncio.to_thread(self._get_agent_pipeline().run, session_id, user_prompt)
         except Exception as exc:
             logger.error("Generation dispatch failed for %s: %s", session_id, exc)
             raise PipelineError(
@@ -185,9 +184,7 @@ class GenerationService:
 
         return {"status": "stopping", "session_id": session_id}
 
-    async def verify_session_ownership(
-        self, session_id: str, user_id: str
-    ) -> dict[str, Any]:
+    async def verify_session_ownership(self, session_id: str, user_id: str) -> dict[str, Any]:
         """
         Verify that a user owns a generation session.
 

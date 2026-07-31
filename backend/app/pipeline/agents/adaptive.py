@@ -4,6 +4,7 @@
 """
 Adaptive strategies that auto-tune based on metrics.
 """
+
 import logging
 from typing import Dict, Any, Optional, List
 from app.pipeline.agents.metrics import PerformanceTracker
@@ -112,32 +113,22 @@ class AdaptiveStrategy:
             # Adapt timeout based on average duration
             avg_duration = float(agent_stats.get("avg_duration", 60))
             new_timeout = avg_duration * 1.5
-            self.config["timeout_seconds"] = int(
-                self._clamp(new_timeout, _MIN_TIMEOUT, _MAX_TIMEOUT)
-            )
+            self.config["timeout_seconds"] = int(self._clamp(new_timeout, _MIN_TIMEOUT, _MAX_TIMEOUT))
 
             # Adapt fallback threshold based on fallback rate
             fallback_rate = float(agent_stats.get("fallback_rate", 0))
             if fallback_rate > 0.3:
                 self.config["fallback_threshold"] = round(
-                    self._clamp(
-                        self.config["fallback_threshold"] + 0.1, _MIN_FALLBACK, _MAX_FALLBACK
-                    ),
+                    self._clamp(self.config["fallback_threshold"] + 0.1, _MIN_FALLBACK, _MAX_FALLBACK),
                     3,
                 )
-                logger.info(
-                    "Increased fallback_threshold to %.3f", self.config["fallback_threshold"]
-                )
+                logger.info("Increased fallback_threshold to %.3f", self.config["fallback_threshold"])
             elif fallback_rate < 0.1:
                 self.config["fallback_threshold"] = round(
-                    self._clamp(
-                        self.config["fallback_threshold"] - 0.1, _MIN_FALLBACK, _MAX_FALLBACK
-                    ),
+                    self._clamp(self.config["fallback_threshold"] - 0.1, _MIN_FALLBACK, _MAX_FALLBACK),
                     3,
                 )
-                logger.info(
-                    "Decreased fallback_threshold to %.3f", self.config["fallback_threshold"]
-                )
+                logger.info("Decreased fallback_threshold to %.3f", self.config["fallback_threshold"])
 
         except Exception as exc:
             logger.error("Error during metric-based adaptation: %s", exc)
@@ -193,9 +184,7 @@ class AdaptiveStrategy:
             Recommended strategy dict (always valid)
         """
         if not isinstance(document_metadata, dict):
-            logger.warning(
-                "recommend_strategy received non-dict metadata: %s", type(document_metadata)
-            )
+            logger.warning("recommend_strategy received non-dict metadata: %s", type(document_metadata))
             document_metadata = {}
 
         # Check if we have ML patterns

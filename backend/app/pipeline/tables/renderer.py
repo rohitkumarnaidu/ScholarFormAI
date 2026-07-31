@@ -14,14 +14,15 @@ from app.models import Table
 
 logger = logging.getLogger(__name__)
 
+
 class TableRenderer:
     """
     Renders Table objects into a Word document.
     """
-    
+
     def __init__(self):
         pass
-        
+
     def render(self, doc, table_model: Table, number: int = None):
         """
         Render a Table model into the document with caption.
@@ -34,12 +35,12 @@ class TableRenderer:
             if table_model.caption_text:
                 caption_p = doc.add_paragraph(style="Caption")
                 table_num = number if number is not None else (table_model.index + 1)
-                
+
                 caption_lower = table_model.caption_text.lower().strip()
                 if caption_lower.startswith(f"table {table_num}:"):
                     run = caption_p.add_run(f"Table {table_num}: ")
                     run.bold = True
-                    rest_text = table_model.caption_text[len(f"Table {table_num}:"):].strip()
+                    rest_text = table_model.caption_text[len(f"Table {table_num}:") :].strip()
                     caption_p.add_run(rest_text)
                 else:
                     run = caption_p.add_run(f"Table {table_num}: ")
@@ -50,19 +51,19 @@ class TableRenderer:
             # 2. CREATE TABLE
             rows = len(table_model.rows)
             cols = len(table_model.rows[0]) if rows > 0 else 0
-            
+
             if cols == 0:
                 return
-                
+
             word_table = doc.add_table(rows=rows, cols=cols)
-            
+
             # 3. APPLY STYLE SAFELY
             try:
-                if 'Table Grid' in doc.styles:
-                    word_table.style = 'Table Grid'
+                if "Table Grid" in doc.styles:
+                    word_table.style = "Table Grid"
             except Exception as exc:
                 logger.debug("Could not apply 'Table Grid' style: %s", exc)
-            
+
             # 4. POPULATE CELLS
             for cell_model in table_model.cells:
                 try:
@@ -70,7 +71,7 @@ class TableRenderer:
                     if r < len(word_table.rows) and c < len(word_table.rows[r].cells):
                         word_cell = word_table.rows[r].cells[c]
                         word_cell.text = cell_model.text if cell_model.text else ""
-                        
+
                         # RECURSIVE RENDERING: Check for nested tables
                         nested_tables = cell_model.metadata.get("nested_tables", [])
                         for nested_tbl in nested_tables:
@@ -82,6 +83,5 @@ class TableRenderer:
                 except Exception as exc:
                     logger.warning("Failed to populate cell (%d,%d): %s", cell_model.row, cell_model.col, exc)
         except Exception as exc:
-            logger.error("Table rendering failed for table '%s': %s", getattr(table_model, 'table_id', '?'), exc)
+            logger.error("Table rendering failed for table '%s': %s", getattr(table_model, "table_id", "?"), exc)
             raise
-

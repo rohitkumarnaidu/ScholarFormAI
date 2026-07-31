@@ -7,6 +7,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, foreign
 from app.db.base import Base
 
+
 class Document(Base):
     __tablename__ = "documents"
 
@@ -15,16 +16,16 @@ class Document(Base):
     filename = Column(String, nullable=False)
     template = Column(String, nullable=True)
     status = Column(String, nullable=False)
-    original_file_path = Column(String, nullable=True) # Path to the uploaded file
-    raw_text = Column(String, nullable=True) # Extracted raw text
+    original_file_path = Column(String, nullable=True)  # Path to the uploaded file
+    raw_text = Column(String, nullable=True)  # Extracted raw text
     output_path = Column(String, nullable=True)
-    formatting_options = Column(JSON, nullable=True) # Stores { "page_size": "A4", "toc": true, ... }
-    
+    formatting_options = Column(JSON, nullable=True)  # Stores { "page_size": "A4", "toc": true, ... }
+
     # Job State Fields
     progress = Column(Integer, default=0)
     current_stage = Column(String, nullable=True)
     error_message = Column(String, nullable=True)
-    
+
     created_at = Column(DateTime(timezone=True), server_default=text("now()"))
     updated_at = Column(DateTime(timezone=True), server_default=text("now()"), onupdate=text("now()"))
 

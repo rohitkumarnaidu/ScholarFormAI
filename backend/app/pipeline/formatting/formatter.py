@@ -13,6 +13,7 @@ import os
 import re
 import yaml
 from copy import deepcopy
+
 try:
     from defusedxml import ElementTree as ET
 except ImportError:
@@ -41,11 +42,12 @@ from app.pipeline.tables.renderer import TableRenderer
 from app.pipeline.figures.renderer import FigureRenderer
 from app.pipeline.safety.safe_execution import safe_function, safe_execution
 
+
 class Formatter:
     """
     Formats the validated Document into a python-docx object based on a template.
     """
-    
+
     def __init__(self, templates_dir: str = "app/templates", contracts_dir: str = "app/pipeline/contracts"):
         self.templates_dir = templates_dir
         self.contract_loader = ContractLoader(contracts_dir=contracts_dir)
@@ -55,7 +57,7 @@ class Formatter:
         self.template_renderer = TemplateRenderer(templates_dir=templates_dir)
         self.table_renderer = TableRenderer()
         self.figure_renderer = FigureRenderer()
-        
+
     def process(self, document: Document) -> Document:
         """Standard pipeline stage entry point."""
         template_name = (
@@ -73,7 +75,7 @@ class Formatter:
         Apply formatting using contract-driven modular components.
         """
         if not template_name:
-            template_name = "none" # No default template - use neutral formatting
+            template_name = "none"  # No default template - use neutral formatting
         options = document.formatting_options or {}
         add_cover_page = self._resolve_bool_option(
             options,
@@ -108,11 +110,8 @@ class Formatter:
         template_key = template_name.lower()
         renderer_mode = str(options.get("template_engine", "auto")).strip().lower()
         footnote_lookup = self._build_footnote_lookup(document)
-        use_template_renderer = (
-            renderer_mode != "legacy"
-            and template_key != "none"
-        )
-            
+        use_template_renderer = renderer_mode != "legacy" and template_key != "none"
+
         # 1. Apply rules to model before rendering
         document = self.numbering_engine.apply_numbering(document, template_name)
         self._prepare_references(document, template_name)
@@ -133,22 +132,19 @@ class Formatter:
                 self._install_post_save_hook(rendered, footnote_lookup)
                 return rendered
             except TemplateError as exc:
-                logger.warning(
-                    "Falling back to python-docx renderer for template '%s'. Error: %s",
-                    template_name, exc
-                )
+                logger.warning("Falling back to python-docx renderer for template '%s'. Error: %s", template_name, exc)
         elif template_key != "none":
             logger.info(
                 "Falling back to python-docx renderer for template '%s' because no docxtpl-capable template was found.",
                 template_name,
             )
-        
+
         # 2. Load Resources
         # Note: template.docx is still the base for styles
         is_none = template_key == "none"
         template_path = os.path.join(self.templates_dir, template_name.lower(), "template.docx")
         contract_path = os.path.join(self.templates_dir, template_name.lower(), "contract.yaml")
-        
+
         if is_none:
             logger.info("No template specified (General Formatting). Using blank document.")
             word_doc = WordDocument()
@@ -157,13 +153,13 @@ class Formatter:
             word_doc = WordDocument()
         else:
             word_doc = WordDocument(template_path)
-            
+
         contract = self._load_contract(contract_path)
         style_map = contract.get("styles", {})
-        
+
         # 2. Add Content
         items_to_insert = []
-        
+
         # Add Blocks
         for block in document.blocks:
             # Skip parser-extracted structural artifacts from main body flow.
@@ -181,29 +177,25 @@ class Formatter:
             b_type = str(block.block_type).upper()
             if "FIGURE_CAPTION" in b_type or "TABLE_CAPTION" in b_type:
                 continue
-            
+
             # Special handling for references: if it's a reference entry, we might want to re-format it
             if block.block_type == BlockType.REFERENCE_ENTRY:
                 # Find matching reference object
                 ref = next((r for r in document.references if r.block_id == block.block_id), None)
                 if ref:
                     block.text = self.reference_formatter.format_reference(ref, template_name)
-            
-            items_to_insert.append({
-                "type": "block",
-                "index": block.index,
-                "obj": block
-            })
-            
+
+            items_to_insert.append({"type": "block", "index": block.index, "obj": block})
+
         # Add Figures (using index)
         # We need sequential numbering for captions: Figure 1, Figure 2, ...
         # The document.figures list is ordered by extraction.
         for i, fig in enumerate(document.figures):
             # i+1 is the sequential number
-            
+
             # fig.metadata["block_index"] is where it was found in parser.
             b_idx = fig.metadata.get("block_index", -1)
-            
+
             # We insert figure AFTER the block it was attached to
             # Use small offset to ensure it comes after the block
             # HARDENING FIX: Deterministic sub-offset for multiple figures same paragraph
@@ -211,65 +203,57 @@ class Formatter:
             # Example: 3 figures at index 100 -> 100.1, 100.101, 100.102
             # Maintains base offset (+0.1) and avoids equation collision (+0.2)
             sub_offset = i * 0.001  # Position-based sub-offset
-            items_to_insert.append({
-                "type": "figure",
-                "index": b_idx + 0.1 + sub_offset, 
-                "obj": fig,
-                "number": i + 1
-            })
+            items_to_insert.append({"type": "figure", "index": b_idx + 0.1 + sub_offset, "obj": fig, "number": i + 1})
 
-            
         # Add Equations
         for i, eqn in enumerate(document.equations):
             # FORENSIC FIX: Sort by block_index (position in text) not equation index (creation order)
             # Use small offset (+0.2) to place immediately after parent block
             sort_index = eqn.metadata.get("block_index", eqn.index)
-            items_to_insert.append({
-                "type": "equation",
-                "index": sort_index + 0.2,
-                "obj": eqn
-            })
-            
+            items_to_insert.append({"type": "equation", "index": sort_index + 0.2, "obj": eqn})
+
         # Add Tables
         for i, table in enumerate(document.tables):
-             items_to_insert.append({
-                "type": "table",
-                "index": table.block_index, # Fixed: Tables have global block_index
-                "obj": table,
-                "number": i + 1  # Sequential number for caption (Table 1, Table 2, ...)
-            })
-            
+            items_to_insert.append(
+                {
+                    "type": "table",
+                    "index": table.block_index,  # Fixed: Tables have global block_index
+                    "obj": table,
+                    "number": i + 1,  # Sequential number for caption (Table 1, Table 2, ...)
+                }
+            )
+
         # Sort by index
         items_to_insert.sort(key=lambda x: x["index"])
-        
+
         # 3. Render
         self._apply_initial_layout(word_doc, template_name)
         self._apply_page_size(word_doc, self._resolve_page_size(template_name, options))
-        
+
         # Cover page and TOC must be inserted before main content.
         if add_cover_page:
             self._add_cover_page(word_doc, document)
-            
+
         if add_toc:
             self._add_table_of_contents(word_doc)
 
         current_columns = None
-        
+
         for item in items_to_insert:
             if item["type"] == "block":
                 block = item["obj"]
-                
+
                 # Layout logic: Check if we need a column change
                 target_cols = self._get_target_columns(block, template_name)
                 if current_columns is not None and target_cols != current_columns:
                     # Switch layout: Add new section
                     new_section = word_doc.add_section()
                     self._set_columns(new_section, target_cols)
-                
+
                 if current_columns is None:
                     # Initialize first section
                     self._set_columns(word_doc.sections[0], target_cols)
-                    
+
                 current_columns = target_cols
                 self._render_block(
                     word_doc,
@@ -277,14 +261,14 @@ class Formatter:
                     template_name,
                     footnote_lookup=footnote_lookup,
                 )
-                
+
             elif item["type"] == "figure":
                 self.figure_renderer.render(word_doc, item["obj"], item["number"])
             elif item["type"] == "equation":
                 self._render_equation(word_doc, item["obj"])
             elif item["type"] == "table":
                 self.table_renderer.render(word_doc, item["obj"], item.get("number"))
-                
+
         # Apply section-level options after all content/sections are created.
         if add_page_numbers:
             self._remove_static_page_number_placeholders(word_doc)
@@ -295,7 +279,7 @@ class Formatter:
             self._add_line_numbers(word_doc)
         self._apply_global_line_spacing(word_doc, template_name, options)
         self._install_post_save_hook(word_doc, footnote_lookup)
-                
+
         return word_doc
 
     def _prepare_references(self, document: Document, template_name: str) -> None:
@@ -310,7 +294,7 @@ class Formatter:
                 ref.formatted_text = self.reference_formatter.format_reference(ref, template_name)
             except Exception as e:
                 logger.warning("Failed to format reference %s: %s", ref.block_id, e)
-                ref.formatted_text = ref.raw_text or ''
+                ref.formatted_text = ref.raw_text or ""
 
     @safe_function(fallback_value=None, error_message="Equation rendering failed")
     def _render_equation(self, doc, equation):
@@ -353,29 +337,25 @@ class Formatter:
         contract = self.contract_loader.load(publisher)
         layout = contract.get("layout", {})
         default = layout.get("default_columns", 1)
-        
+
         s_name = (block.section_name or "").lower()
         overrides = layout.get("section_overrides", {})
-        
+
         # Check canonical matching or direct matching
         for key, val in overrides.items():
             if key in s_name:
                 return val
-        
+
         return default
 
     def _apply_page_size(self, doc, size_name: str):
         """Sets the page size for all sections."""
         from docx.shared import Inches, Mm
-        
-        size_map = {
-            "Letter": (Inches(8.5), Inches(11)),
-            "A4": (Mm(210), Mm(297)),
-            "Legal": (Inches(8.5), Inches(14))
-        }
-        
+
+        size_map = {"Letter": (Inches(8.5), Inches(11)), "A4": (Mm(210), Mm(297)), "Legal": (Inches(8.5), Inches(14))}
+
         width, height = size_map.get(size_name, size_map["Letter"])
-        
+
         for section in doc.sections:
             section.page_width = width
             section.page_height = height
@@ -444,30 +424,31 @@ class Formatter:
     def _add_cover_page(self, doc, document_obj):
         """Adds a cover page with title and metadata."""
         # Insert a new paragraph at the very beginning
-        # Note: We can't easily prepend in python-docx, so we rely on this being called 
+        # Note: We can't easily prepend in python-docx, so we rely on this being called
         # BEFORE content addition if we want it first, OR we add a section break.
         # However, typically cover pages are separate sections at the start.
         # Since we call this early in `format()`, we can just add to the empty doc.
-        
+
         p = doc.add_paragraph()
-        p.alignment = 1 # Center
-        
+        p.alignment = 1  # Center
+
         # Title
         title = document_obj.metadata.title or document_obj.original_filename or "Untitled Document"
         run = p.add_run(title + "\n\n")
         run.bold = True
         run.font.size = Pt(24)
-        
+
         # Authors
         authors = ", ".join(document_obj.metadata.authors) if document_obj.metadata.authors else "Unknown Author"
         run = p.add_run(authors + "\n")
         run.font.size = Pt(14)
-        
+
         # Date
         from datetime import datetime
+
         run = p.add_run(datetime.now().strftime("%B %d, %Y"))
         run.font.size = Pt(12)
-        
+
         doc.add_page_break()
 
     def _add_table_of_contents(self, doc, prepend: bool = False, add_page_break: bool = True):
@@ -479,25 +460,25 @@ class Formatter:
         run.bold = True
         run.font.size = Pt(16)
         inserted.append(p)
-        
+
         # XML for TOC field
         paragraph = doc.add_paragraph()
         run = paragraph.add_run()
-        fldChar = OxmlElement('w:fldChar')
-        fldChar.set(qn('w:fldCharType'), 'begin')
+        fldChar = OxmlElement("w:fldChar")
+        fldChar.set(qn("w:fldCharType"), "begin")
         run._r.append(fldChar)
-        
-        instr = OxmlElement('w:instrText')
-        instr.set(qn('xml:space'), 'preserve')
+
+        instr = OxmlElement("w:instrText")
+        instr.set(qn("xml:space"), "preserve")
         instr.text = 'TOC \\o "1-3" \\h \\z \\u'
         run._r.append(instr)
-        
-        fldChar2 = OxmlElement('w:fldChar')
-        fldChar2.set(qn('w:fldCharType'), 'separate')
+
+        fldChar2 = OxmlElement("w:fldChar")
+        fldChar2.set(qn("w:fldCharType"), "separate")
         run._r.append(fldChar2)
-        
-        fldChar3 = OxmlElement('w:fldChar')
-        fldChar3.set(qn('w:fldCharType'), 'end')
+
+        fldChar3 = OxmlElement("w:fldChar")
+        fldChar3.set(qn("w:fldCharType"), "end")
         run._r.append(fldChar3)
         inserted.append(paragraph)
 
@@ -525,36 +506,36 @@ class Formatter:
                 continue
 
             run = p.add_run()
-            fldChar = OxmlElement('w:fldChar')
-            fldChar.set(qn('w:fldCharType'), 'begin')
+            fldChar = OxmlElement("w:fldChar")
+            fldChar.set(qn("w:fldCharType"), "begin")
             run._r.append(fldChar)
 
-            instr = OxmlElement('w:instrText')
-            instr.set(qn('xml:space'), 'preserve')
+            instr = OxmlElement("w:instrText")
+            instr.set(qn("xml:space"), "preserve")
             instr.text = "PAGE"
             run._r.append(instr)
 
-            fldChar2 = OxmlElement('w:fldChar')
-            fldChar2.set(qn('w:fldCharType'), 'end')
+            fldChar2 = OxmlElement("w:fldChar")
+            fldChar2.set(qn("w:fldCharType"), "end")
             run._r.append(fldChar2)
 
     def _add_page_borders(self, doc):
         """Adds page borders via OXML."""
         for section in doc.sections:
             sec_pr = section._sectPr
-            existing = sec_pr.xpath('./w:pgBorders')
+            existing = sec_pr.xpath("./w:pgBorders")
             for node in existing:
                 sec_pr.remove(node)
 
-            pg_borders = OxmlElement('w:pgBorders')
-            pg_borders.set(qn('w:offsetFrom'), 'page')
+            pg_borders = OxmlElement("w:pgBorders")
+            pg_borders.set(qn("w:offsetFrom"), "page")
 
-            for border_name in ('top', 'left', 'bottom', 'right'):
-                border = OxmlElement(f'w:{border_name}')
-                border.set(qn('w:val'), 'single')
-                border.set(qn('w:sz'), '4')
-                border.set(qn('w:space'), '24')
-                border.set(qn('w:color'), 'auto')
+            for border_name in ("top", "left", "bottom", "right"):
+                border = OxmlElement(f"w:{border_name}")
+                border.set(qn("w:val"), "single")
+                border.set(qn("w:sz"), "4")
+                border.set(qn("w:space"), "24")
+                border.set(qn("w:color"), "auto")
                 pg_borders.append(border)
 
             sec_pr.append(pg_borders)
@@ -563,11 +544,11 @@ class Formatter:
         """Enable line numbering for all sections."""
         for section in doc.sections:
             sec_pr = section._sectPr
-            existing = sec_pr.xpath('./w:lnNumType')
-            ln_num = existing[0] if existing else OxmlElement('w:lnNumType')
-            ln_num.set(qn('w:countBy'), str(max(1, int(count_by))))
-            ln_num.set(qn('w:start'), '1')
-            ln_num.set(qn('w:distance'), '360')
+            existing = sec_pr.xpath("./w:lnNumType")
+            ln_num = existing[0] if existing else OxmlElement("w:lnNumType")
+            ln_num.set(qn("w:countBy"), str(max(1, int(count_by))))
+            ln_num.set(qn("w:start"), "1")
+            ln_num.set(qn("w:distance"), "360")
             if not existing:
                 sec_pr.append(ln_num)
 
@@ -628,6 +609,7 @@ class Formatter:
 
         if as_cover_page:
             from datetime import datetime
+
             page_break = self._prepend_paragraph(doc)
             page_break.add_run().add_break(WD_BREAK.PAGE)
 
@@ -778,21 +760,14 @@ class Formatter:
         next_word_id = 1
 
         for block in sorted(document.blocks, key=lambda item: item.index):
-            if not (
-                block.block_type == BlockType.FOOTNOTE
-                or block.metadata.get("is_footnote")
-            ):
+            if not (block.block_type == BlockType.FOOTNOTE or block.metadata.get("is_footnote")):
                 continue
 
             footnote_text = (block.text or "").strip()
             if not footnote_text:
                 continue
 
-            raw_id = str(
-                block.metadata.get("footnote_id")
-                or block.metadata.get("endnote_id")
-                or next_word_id
-            )
+            raw_id = str(block.metadata.get("footnote_id") or block.metadata.get("endnote_id") or next_word_id)
             if raw_id in lookup:
                 continue
 
@@ -822,9 +797,7 @@ class Formatter:
                 continue
 
             clean_text = (block.text or "").strip()
-            has_inline_artifacts = bool(
-                block.metadata.get("hyperlinks") or block.metadata.get("footnote_refs")
-            )
+            has_inline_artifacts = bool(block.metadata.get("hyperlinks") or block.metadata.get("footnote_refs"))
             target_paragraph = self._find_matching_paragraph(doc, clean_text, used_paragraphs)
             if target_paragraph is not None:
                 used_paragraphs.add(id(target_paragraph))
@@ -1100,7 +1073,10 @@ class Formatter:
             root = Element("Relationships")
 
         for relationship in root.findall("./{*}Relationship"):
-            if relationship.get("Type") == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/footnotes":
+            if (
+                relationship.get("Type")
+                == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/footnotes"
+            ):
                 return ET.tostring(root, encoding="utf-8", xml_declaration=True)
 
         existing_ids = {relationship.get("Id") for relationship in root.findall("./{*}Relationship")}
@@ -1136,31 +1112,30 @@ class Formatter:
         """Helper to set column count on a python-docx section."""
         from docx.oxml import OxmlElement
         from docx.oxml.ns import qn
-        
+
         # Access underlying XML
         sectPr = section._sectPr
-        cols = sectPr.xpath('./w:cols')
+        cols = sectPr.xpath("./w:cols")
         if not cols:
-            cols = OxmlElement('w:cols')
+            cols = OxmlElement("w:cols")
             sectPr.append(cols)
         else:
             cols = cols[0]
-            
-        cols.set(qn('w:num'), str(count))
+
+        cols.set(qn("w:num"), str(count))
         # Ensure space between columns if > 1
         if count > 1:
-            cols.set(qn('w:space'), '720') # 0.5 inch (720 twips)
+            cols.set(qn("w:space"), "720")  # 0.5 inch (720 twips)
 
     def _load_contract(self, path: str) -> dict:
         if not os.path.exists(path):
             return {}
         try:
-            with open(path, 'r') as f:
+            with open(path, "r") as f:
                 return yaml.safe_load(f) or {}
         except Exception as e:
             logger.warning("Failed to load contract %s: %s", path, e)
             return {}
-
 
     @safe_function(fallback_value=None, error_message="Block rendering failed")
     def _render_block(self, doc, block, template_name, footnote_lookup: Optional[dict] = None):
@@ -1168,15 +1143,15 @@ class Formatter:
         # Skip rendering empty anchor blocks (preserve in pipeline)
         if block.text.strip() == "" and block.metadata.get("has_figure", False):
             return  # Block remains in pipeline for anchor stability
-        
+
         if block.text.strip() == "" and block.metadata.get("has_equation", False):
             return  # Block remains in pipeline for anchor stability
-        
+
         # DYNAMIC LIST DETECTION
         clean_text = block.text.strip()
         if not clean_text:
             return  # Skip empty blocks
-        
+
         try:
             # Check if this is a list item
             if self._is_bullet_list_item(clean_text):
@@ -1191,7 +1166,7 @@ class Formatter:
                 # Normal paragraph rendering
                 word_style = self.style_mapper.get_style_name(block, template_name)
                 p = doc.add_paragraph(style=word_style)
-            
+
             self._write_inline_content(
                 p,
                 clean_text,
@@ -1201,7 +1176,7 @@ class Formatter:
             )
             # Apply contract-driven spacing
             self._apply_spacing_from_contract(p, block, template_name)
-            
+
         except Exception as e:
             logger.warning("Block rendering failed, using fallback: %s", e)
             # Fallback if style missing
@@ -1220,18 +1195,17 @@ class Formatter:
 
         return p
 
-
     def _apply_spacing_from_contract(self, paragraph, block, template_name):
         """Apply spacing rules from contract to paragraph."""
         contract = self.contract_loader.load(template_name)
         layout = contract.get("layout", {})
         spacing_rules = layout.get("spacing", {})
-        
+
         if not spacing_rules:
             return  # No spacing rules in contract
-        
+
         # Determine block type and get appropriate spacing
-        if hasattr(block, 'is_heading') and block.is_heading():
+        if hasattr(block, "is_heading") and block.is_heading():
             spacing = spacing_rules.get("heading", {})
         elif str(block.block_type).upper() in ["FIGURE_CAPTION", "TABLE_CAPTION"]:
             # Use figure or table spacing for captions
@@ -1244,7 +1218,7 @@ class Formatter:
             spacing = spacing_rules.get("references", spacing_rules.get("heading", {}))
         else:
             spacing = spacing_rules.get("paragraph", {})
-        
+
         # Apply spacing if defined
         if spacing:
             before = spacing.get("before", 0)
@@ -1275,22 +1249,23 @@ class Formatter:
             return False
         stripped = text.lstrip()
         # Check for common bullet markers
-        return stripped.startswith(('\u2022', '-', '*', '\u00b7', '\u25e6', '\u25aa', '\u25ab'))
-    
+        return stripped.startswith(("\u2022", "-", "*", "\u00b7", "\u25e6", "\u25aa", "\u25ab"))
+
     def _is_numbered_list_item(self, text: str) -> bool:
         """Dynamically detect if text is a numbered list item."""
         if not text:
             return False
         import re
+
         # Match patterns like "1. ", "1) ", "a. ", "a) ", "i. ", "i) "
-        return bool(re.match(r'^\s*([0-9]+|[a-z]|[ivxlcdm]+)[\.)\s]\s+', text, re.IGNORECASE))
-    
+        return bool(re.match(r"^\s*([0-9]+|[a-z]|[ivxlcdm]+)[\.)\s]\s+", text, re.IGNORECASE))
+
     def _clean_list_text(self, text: str) -> str:
         """Remove list markers from text for proper Word list rendering."""
         import re
-        # Remove bullet markers
-        text = re.sub(r'^\s*[\u2022\-\*\u00b7\u25e6\u25aa\u25ab]\s+', '', text)
-        # Remove numbered markers
-        text = re.sub(r'^\s*([0-9]+|[a-z]|[ivxlcdm]+)[\.)\s]\s+', '', text, flags=re.IGNORECASE)
-        return text
 
+        # Remove bullet markers
+        text = re.sub(r"^\s*[\u2022\-\*\u00b7\u25e6\u25aa\u25ab]\s+", "", text)
+        # Remove numbered markers
+        text = re.sub(r"^\s*([0-9]+|[a-z]|[ivxlcdm]+)[\.)\s]\s+", "", text, flags=re.IGNORECASE)
+        return text

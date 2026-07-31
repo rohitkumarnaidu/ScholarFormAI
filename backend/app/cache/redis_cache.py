@@ -9,6 +9,7 @@ from typing import Optional, Any
 
 logger = logging.getLogger(__name__)
 
+
 class RedisCache:
     """
     Redis-based caching service for document processing results.
@@ -31,6 +32,7 @@ class RedisCache:
 
         try:
             from app.config.settings import settings
+
             redis_enabled = bool(getattr(settings, "REDIS_ENABLED", False))
         except Exception:
             redis_enabled = False
@@ -42,7 +44,11 @@ class RedisCache:
 
         try:
             from app.config.settings import settings
-            redis_url = getattr(settings, "REDIS_URL", None) or f"redis://{getattr(settings, 'REDIS_HOST', 'localhost')}:{int(getattr(settings, 'REDIS_PORT', 6379))}"
+
+            redis_url = (
+                getattr(settings, "REDIS_URL", None)
+                or f"redis://{getattr(settings, 'REDIS_HOST', 'localhost')}:{int(getattr(settings, 'REDIS_PORT', 6379))}"
+            )
             self._client = redis.Redis.from_url(
                 redis_url,
                 db=self._init_kwargs["db"],
@@ -93,11 +99,7 @@ class RedisCache:
 
         key = self._generate_key(file_content)
         try:
-            client.setex(
-                key,
-                ttl,
-                json.dumps(result)
-            )
+            client.setex(key, ttl, json.dumps(result))
             logger.info(f"Cached results for key: {key} (TTL: {ttl}s)")
         except Exception as e:
             logger.error(f"Error writing to Redis cache: {e}")
@@ -157,6 +159,7 @@ class RedisCache:
             return {"status": "available"}
         except Exception as e:
             return {"status": "unavailable", "detail": str(e)}
+
 
 # Global instance - lazily initialized on first use
 redis_cache = RedisCache()

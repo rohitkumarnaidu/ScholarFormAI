@@ -7,6 +7,7 @@ Custom exception classes for the Automated Manuscript Formatter.
 All service-layer code should raise these instead of swallowing errors
 or returning None/empty collections on failure.
 """
+
 from __future__ import annotations
 
 from fastapi import status
@@ -30,6 +31,7 @@ class ScholarFormError(Exception):
 
 class DatabaseUnavailableError(ScholarFormError):
     """Raised when a database operation fails due to connectivity or server issues."""
+
     http_status = status.HTTP_503_SERVICE_UNAVAILABLE
 
     def __init__(self, message: str = "Database is currently unavailable.") -> None:
@@ -38,6 +40,7 @@ class DatabaseUnavailableError(ScholarFormError):
 
 class DocumentNotFoundError(ScholarFormError):
     """Raised when a requested document does not exist."""
+
     http_status = status.HTTP_404_NOT_FOUND
 
     def __init__(self, doc_id: str | None = None) -> None:
@@ -48,11 +51,13 @@ class DocumentNotFoundError(ScholarFormError):
 
 class NotFoundError(ScholarFormError):
     """Raised when a requested resource does not exist."""
+
     http_status = status.HTTP_404_NOT_FOUND
 
 
 class AuthenticationError(ScholarFormError):
     """Raised when authentication fails or credentials are invalid."""
+
     http_status = status.HTTP_401_UNAUTHORIZED
 
     def __init__(self, message: str = "Authentication failed.") -> None:
@@ -61,6 +66,7 @@ class AuthenticationError(ScholarFormError):
 
 class RateLimitExceededError(ScholarFormError):
     """Raised when a rate limit has been exceeded."""
+
     http_status = status.HTTP_429_TOO_MANY_REQUESTS
 
     def __init__(self, message: str = "Rate limit exceeded. Please try again later.") -> None:
@@ -69,16 +75,19 @@ class RateLimitExceededError(ScholarFormError):
 
 class PipelineError(ScholarFormError):
     """Raised when a pipeline processing step fails."""
+
     http_status = status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 class ValidationError(ScholarFormError):
     """Raised when input validation fails."""
+
     http_status = status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 class FileStorageError(ScholarFormError):
     """Raised when a file storage operation fails."""
+
     http_status = status.HTTP_500_INTERNAL_SERVER_ERROR
 
     def __init__(self, message: str = "File storage operation failed.") -> None:
@@ -87,6 +96,7 @@ class FileStorageError(ScholarFormError):
 
 class ExternalServiceError(ScholarFormError):
     """Raised when an external service (LLM, GROBID, OCR, etc.) fails."""
+
     http_status = status.HTTP_502_BAD_GATEWAY
 
     def __init__(self, service: str | None = None, message: str = "External service call failed.") -> None:

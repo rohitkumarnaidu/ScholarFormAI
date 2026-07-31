@@ -4,6 +4,7 @@
 """
 Multi-document learning for cross-document insights.
 """
+
 import logging
 import json
 from typing import List, Dict, Any, Optional
@@ -139,11 +140,11 @@ class MultiDocumentLearner:
                 pattern["document_count"] += 1
                 n = pattern["document_count"]
                 pattern["avg_references"] = (
-                    (pattern["avg_references"] * (n - 1) + float(metrics.get("references_count", 0))) / n
-                )
+                    pattern["avg_references"] * (n - 1) + float(metrics.get("references_count", 0))
+                ) / n
                 pattern["avg_quality"] = (
-                    (pattern["avg_quality"] * (n - 1) + (1.0 if metrics.get("success", False) else 0.0)) / n
-                )
+                    pattern["avg_quality"] * (n - 1) + (1.0 if metrics.get("success", False) else 0.0)
+                ) / n
 
         # Venue patterns
         venue = str(metadata.get("venue", "unknown") or "unknown")
@@ -156,12 +157,8 @@ class MultiDocumentLearner:
         vp = self.insights["venue_patterns"][venue]
         vp["document_count"] += 1
         n = vp["document_count"]
-        vp["avg_references"] = (
-            (vp["avg_references"] * (n - 1) + float(metrics.get("references_count", 0))) / n
-        )
-        vp["avg_figures"] = (
-            (vp["avg_figures"] * (n - 1) + float(metrics.get("figures_count", 0))) / n
-        )
+        vp["avg_references"] = (vp["avg_references"] * (n - 1) + float(metrics.get("references_count", 0))) / n
+        vp["avg_figures"] = (vp["avg_figures"] * (n - 1) + float(metrics.get("figures_count", 0))) / n
 
         # Document type patterns
         doc_type = str(metadata.get("document_type", "unknown") or "unknown")
@@ -173,9 +170,7 @@ class MultiDocumentLearner:
         tp = self.insights["document_types"][doc_type]
         tp["count"] += 1
         n = tp["count"]
-        tp["avg_duration"] = (
-            (tp["avg_duration"] * (n - 1) + float(metrics.get("duration_seconds", 0))) / n
-        )
+        tp["avg_duration"] = (tp["avg_duration"] * (n - 1) + float(metrics.get("duration_seconds", 0))) / n
 
         # Quality trends
         self.insights["quality_trends"].append(

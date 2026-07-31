@@ -97,10 +97,7 @@ class EnhancementManager:
     def is_celery_queue_active(self) -> bool:
         profile = self.profile
         return (
-            profile.enabled
-            and profile.queue_enabled
-            and profile.queue_provider == "celery"
-            and profile.queue_available
+            profile.enabled and profile.queue_enabled and profile.queue_provider == "celery" and profile.queue_available
         )
 
     @staticmethod
@@ -268,8 +265,7 @@ class EnhancementManager:
                 return {"mode": "celery", "task_id": async_result.id}
             except Exception as exc:
                 logger.warning(
-                    "Celery synthesis dispatch failed for session %s (%s). "
-                    "Falling back to BackgroundTasks.",
+                    "Celery synthesis dispatch failed for session %s (%s). Falling back to BackgroundTasks.",
                     session_id,
                     exc,
                 )
@@ -292,9 +288,7 @@ class EnhancementManager:
             getattr(settings, "ENHANCEMENT_QUEUE_ENABLED", False),
             False,
         )
-        queue_provider_raw = str(
-            getattr(settings, "ENHANCEMENT_QUEUE_PROVIDER", "auto")
-        ).strip().lower()
+        queue_provider_raw = str(getattr(settings, "ENHANCEMENT_QUEUE_PROVIDER", "auto")).strip().lower()
         queue_provider = queue_provider_raw if queue_provider_raw in {"auto", "local", "celery"} else "auto"
         celery_available = _module_available("celery")
         redis_available = _module_available("redis")

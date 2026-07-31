@@ -52,9 +52,7 @@ class ReferenceFormatterEngine:
                 style_path=style_path,
             )
             if len(rendered) != len(references):
-                raise ValueError(
-                    f"CSL output length mismatch: expected {len(references)}, got {len(rendered)}"
-                )
+                raise ValueError(f"CSL output length mismatch: expected {len(references)}, got {len(rendered)}")
 
             for ref, formatted in zip(references, rendered):
                 ref.formatted_text = formatted

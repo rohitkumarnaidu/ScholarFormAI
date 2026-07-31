@@ -42,9 +42,7 @@ class DocumentRepository(BaseRepository):
 
     # ── Read ──────────────────────────────────────────────────────────────────
 
-    async def get(
-        self, doc_id: str, user_id: Optional[str] = None
-    ) -> Optional[Dict[str, Any]]:
+    async def get(self, doc_id: str, user_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
         doc_id = str(doc_id)
         if user_id:
             user_id = str(user_id)
@@ -60,9 +58,7 @@ class DocumentRepository(BaseRepository):
             return query.maybe_single().execute()
 
         try:
-            result = await execute_with_transient_retry(
-                "get_document", run_query, job_id=doc_id
-            )
+            result = await execute_with_transient_retry("get_document", run_query, job_id=doc_id)
             return result.data
         except APIError as e:
             logger.error("get_document(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
@@ -117,11 +113,7 @@ class DocumentRepository(BaseRepository):
 
         def run_query():
             client = self._get_client()
-            query = (
-                client.table("documents")
-                .select("id", count="exact")
-                .eq("user_id", str(user_id))
-            )
+            query = client.table("documents").select("id", count="exact").eq("user_id", str(user_id))
             if status:
                 query = query.eq("status", status.upper())
             if template:
@@ -197,10 +189,7 @@ class DocumentRepository(BaseRepository):
             payload["original_file_path"] = original_file_path
         if formatting_options:
             payload["formatting_options"] = formatting_options
-        include_file_hash = (
-            bool(file_hash)
-            and self._supports_file_hash is not False
-        )
+        include_file_hash = bool(file_hash) and self._supports_file_hash is not False
         if include_file_hash:
             payload["file_hash"] = file_hash
 
@@ -215,10 +204,7 @@ class DocumentRepository(BaseRepository):
             return result.data[0] if result.data else None
         except Exception as exc:
             err = str(exc)
-            missing_file_hash = (
-                "file_hash" in err
-                and ("schema cache" in err or "column" in err or "PGRST204" in err)
-            )
+            missing_file_hash = "file_hash" in err and ("schema cache" in err or "column" in err or "PGRST204" in err)
             if missing_file_hash and "file_hash" in payload:
                 try:
                     retry_payload = dict(payload)
@@ -250,12 +236,7 @@ class DocumentRepository(BaseRepository):
 
         def run_update():
             client = self._get_client()
-            return (
-                client.table("documents")
-                .update(updates)
-                .eq("id", str(doc_id))
-                .execute()
-            )
+            return client.table("documents").update(updates).eq("id", str(doc_id)).execute()
 
         try:
             result = await asyncio.to_thread(run_update)
@@ -267,9 +248,7 @@ class DocumentRepository(BaseRepository):
             logger.error("update_document(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
             raise DatabaseUnavailableError(f"Failed to update document: {e}") from e
 
-    async def delete(
-        self, document_id: str, user_id: Optional[str] = None
-    ) -> bool:
+    async def delete(self, document_id: str, user_id: Optional[str] = None) -> bool:
         doc_id = str(document_id)
         owner_id = str(user_id) if user_id else None
 
@@ -317,7 +296,9 @@ class DocumentRepository(BaseRepository):
                 raise ValueError("Document delete affected 0 rows")
             return True
         except Exception as exc:
-            logger.error("delete_document(%s, user=%s) failed: %s", doc_id, owner_id, exc, extra=log_extra(job_id=doc_id))
+            logger.error(
+                "delete_document(%s, user=%s) failed: %s", doc_id, owner_id, exc, extra=log_extra(job_id=doc_id)
+            )
             raise DatabaseUnavailableError(f"Failed to delete document: {exc}") from exc
 
     # ── Status mutations ──────────────────────────────────────────────────────
@@ -330,11 +311,18 @@ class DocumentRepository(BaseRepository):
 
         def run_update():
             client = self._get_client()
-            return client.table("documents").update({
-                "status": "FAILED",
-                "error_message": error_message,
-                "progress": 0,
-            }).eq("id", str(doc_id)).execute()
+            return (
+                client.table("documents")
+                .update(
+                    {
+                        "status": "FAILED",
+                        "error_message": error_message,
+                        "progress": 0,
+                    }
+                )
+                .eq("id", str(doc_id))
+                .execute()
+            )
 
         try:
             await asyncio.to_thread(run_update)
@@ -387,9 +375,8 @@ class DocumentRepository(BaseRepository):
             return True
         except Exception as exc:
             err = str(exc)
-            missing_output_hash = (
-                "output_hash" in err
-                and ("schema cache" in err or "column" in err or "PGRST204" in err)
+            missing_output_hash = "output_hash" in err and (
+                "schema cache" in err or "column" in err or "PGRST204" in err
             )
             if missing_output_hash:
                 self._supports_output_hash = False

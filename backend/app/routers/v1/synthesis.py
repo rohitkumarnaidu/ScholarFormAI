@@ -273,28 +273,26 @@ async def session_messages(
         await _session_service.add_message(sessionId, "user", question, token_count=0)
         sources = _vector_store.query(sessionId, question, top_k=5)
 
-        context = "\n\n".join(
-            f"[{s.get('source_doc')} - {s.get('section')}] {s.get('text')}" for s in sources
-        )
-        system = (
-            "You are a scholarly assistant. Answer using the provided sources. "
-            "Cite sources inline in parentheses."
-        )
+        context = "\n\n".join(f"[{s.get('source_doc')} - {s.get('section')}] {s.get('text')}" for s in sources)
+        system = "You are a scholarly assistant. Answer using the provided sources. Cite sources inline in parentheses."
         user_prompt = f"Question: {question}\n\nSources:\n{sanitize_for_llm(context)}"
-        result = await asyncio.to_thread(generate_with_fallback, [
-            {"role": "system", "content": system},
-            {"role": "user", "content": user_prompt},
-        ], temperature=0.3, max_tokens=800, user_id=str(getattr(user, "id", user)))
+        result = await asyncio.to_thread(
+            generate_with_fallback,
+            [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user_prompt},
+            ],
+            temperature=0.3,
+            max_tokens=800,
+            user_id=str(getattr(user, "id", user)),
+        )
         answer = (result.get("text") or "").strip()
 
         await _session_service.add_message(sessionId, "assistant", answer, token_count=0)
         return {
             "role": "assistant",
             "content": answer,
-            "sources": [
-                {"source_doc": s.get("source_doc"), "section": s.get("section")}
-                for s in sources
-            ],
+            "sources": [{"source_doc": s.get("source_doc"), "section": s.get("section")} for s in sources],
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
@@ -309,4 +307,3 @@ async def session_messages(
         logger=logger,
         operation_name="synthesis session message",
     )
-

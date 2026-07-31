@@ -8,6 +8,7 @@ normalization, prompt-injection sanitization, and caching helpers.
 Extracted from the fat `llm_service.py`. This module owns everything that
 does not depend on the multi-tier fallback chain or user-key resolution.
 """
+
 from __future__ import annotations
 
 import sys
@@ -35,7 +36,9 @@ def _ls():
         return module
     # Fallback to direct import if facade hasn't been loaded yet (defensive)
     import importlib
+
     return importlib.import_module("app.services.llm_service")
+
 
 try:
     import pybreaker
@@ -136,6 +139,7 @@ try:
         raise ImportError("LiteLLM disabled on Python >= 3.14.")
     import litellm
     from litellm import completion
+
     litellm.drop_params = True
     litellm.suppress_debug_info = True
     LITELLM_AVAILABLE = True
@@ -155,31 +159,43 @@ LLM_GPT4 = "gpt-4"
 
 # ── Prompt injection guard ───────────────────────────────────────────────── #
 _INJECTION_PATTERNS = [
-    re.compile(r'(?i)(ignore|forget|disregard)\s+(all\s+)?(previous|above|prior)\s+(instructions?|prompts?|rules?)'),
-    re.compile(r'(?i)you\s+are\s+now\s+(a|an)\s+'),
-    re.compile(r'(?i)system\s*:\s*'),
-    re.compile(r'(?i)new\s+instructions?\s*:'),
-    re.compile(r'(?i)\b(sk-|pk-|api[_-]?key)[a-zA-Z0-9_\-]{8,}\b'),
-    re.compile(r'(?i)password\s*:?\s*\S{8,}'),
-    re.compile(r'(?i)(?:repeat|output|show|print|reveal|leak|dump)\s+(?:your|the|system)\s+(?:prompt|instructions?|system\s+prompt|initial\s+prompt|message)'),
-    re.compile(r'(?i)(?:what\s+are|tell\s+me|show\s+me)\s+(?:your|the|system)\s+(?:instructions?|prompt|guidelines|system\s+prompt)'),
-    re.compile(r'(?i)(?:repeat|output|show|print|reveal|leak|dump)\s+(?:\w+\s+){0,4}(?:system\s+)?(?:prompt|instructions?|message)'),
-    re.compile(r'(?i)(?:delete_all_documents|drop\s+table|admin\s+tool)'),
-    re.compile(r'(?i)(?:delete|remove|wipe)\s+(?:all\s+)?(?:user|admin|account)\s+(?:accounts?|data|records?)'),
-    re.compile(r'(?i)(?:escalate|override)\s+(?:privileges?|permissions?|access|restrictions?)'),
-    re.compile(r'(?i)(?:decode\s+and\s+execute|base64\s+decode|hex\s+decode)\s*:'),
-    re.compile(r'(?i)(?:忽略所有|تجاهل جميع|Игнорируйте все)'),
-    re.compile(r'(?i)(?:<<\s*SYS\s*>>|<\|im_start\|>|<\|im_end\|>)'),
-    re.compile(r'(?i)(?:developer\s+mode|emergency\s+override|begging\s+you|i\s*\'\s*m\s+begging|as\s+a\s+system\s+administrator)'),
-    re.compile(r'(?i)(?:ignore|forget|disregard)\s+(?:all\s+)?(?:the\s+)?(?:rules?|instructions?|restrictions?|protocols?|guidelines?|formatting|everything)'),
-    re.compile(r'(?i)Q:\s*Ignore\s+all\s+previous'),
-    re.compile(r'(?i)<\s*instruction\s*>'),
-    re.compile(r'(?i)(?:developer\s+mode\s+enabled|respond\s+without\s+restrictions)'),
-    re.compile(r'(?i)(?:override|bypass)\s+(?:all\s+)?(?:safety|security)\s+(?:protocols?|restrictions?|rules?|measures?)'),
-    re.compile(r'(?i)ignore\s+(?:the\s+)?(?:system|your)\s+prompt'),
-    re.compile(r'(?i)(?:ignore|forget|disregard)\s+all\s+using'),
-    re.compile(r'(?i)ignore\s+restrictions'),
-    re.compile(r'(?i)ignore\s+all\s+previous\s+instructions\s*[:-]'),
+    re.compile(r"(?i)(ignore|forget|disregard)\s+(all\s+)?(previous|above|prior)\s+(instructions?|prompts?|rules?)"),
+    re.compile(r"(?i)you\s+are\s+now\s+(a|an)\s+"),
+    re.compile(r"(?i)system\s*:\s*"),
+    re.compile(r"(?i)new\s+instructions?\s*:"),
+    re.compile(r"(?i)\b(sk-|pk-|api[_-]?key)[a-zA-Z0-9_\-]{8,}\b"),
+    re.compile(r"(?i)password\s*:?\s*\S{8,}"),
+    re.compile(
+        r"(?i)(?:repeat|output|show|print|reveal|leak|dump)\s+(?:your|the|system)\s+(?:prompt|instructions?|system\s+prompt|initial\s+prompt|message)"
+    ),
+    re.compile(
+        r"(?i)(?:what\s+are|tell\s+me|show\s+me)\s+(?:your|the|system)\s+(?:instructions?|prompt|guidelines|system\s+prompt)"
+    ),
+    re.compile(
+        r"(?i)(?:repeat|output|show|print|reveal|leak|dump)\s+(?:\w+\s+){0,4}(?:system\s+)?(?:prompt|instructions?|message)"
+    ),
+    re.compile(r"(?i)(?:delete_all_documents|drop\s+table|admin\s+tool)"),
+    re.compile(r"(?i)(?:delete|remove|wipe)\s+(?:all\s+)?(?:user|admin|account)\s+(?:accounts?|data|records?)"),
+    re.compile(r"(?i)(?:escalate|override)\s+(?:privileges?|permissions?|access|restrictions?)"),
+    re.compile(r"(?i)(?:decode\s+and\s+execute|base64\s+decode|hex\s+decode)\s*:"),
+    re.compile(r"(?i)(?:忽略所有|تجاهل جميع|Игнорируйте все)"),
+    re.compile(r"(?i)(?:<<\s*SYS\s*>>|<\|im_start\|>|<\|im_end\|>)"),
+    re.compile(
+        r"(?i)(?:developer\s+mode|emergency\s+override|begging\s+you|i\s*\'\s*m\s+begging|as\s+a\s+system\s+administrator)"
+    ),
+    re.compile(
+        r"(?i)(?:ignore|forget|disregard)\s+(?:all\s+)?(?:the\s+)?(?:rules?|instructions?|restrictions?|protocols?|guidelines?|formatting|everything)"
+    ),
+    re.compile(r"(?i)Q:\s*Ignore\s+all\s+previous"),
+    re.compile(r"(?i)<\s*instruction\s*>"),
+    re.compile(r"(?i)(?:developer\s+mode\s+enabled|respond\s+without\s+restrictions)"),
+    re.compile(
+        r"(?i)(?:override|bypass)\s+(?:all\s+)?(?:safety|security)\s+(?:protocols?|restrictions?|rules?|measures?)"
+    ),
+    re.compile(r"(?i)ignore\s+(?:the\s+)?(?:system|your)\s+prompt"),
+    re.compile(r"(?i)(?:ignore|forget|disregard)\s+all\s+using"),
+    re.compile(r"(?i)ignore\s+restrictions"),
+    re.compile(r"(?i)ignore\s+all\s+previous\s+instructions\s*[:-]"),
 ]
 MAX_LLM_INPUT_LENGTH = 8000
 
@@ -189,7 +205,7 @@ def sanitize_for_llm(text: str) -> str:
     if not text:
         return text
     for pattern in _INJECTION_PATTERNS:
-        text = pattern.sub('[CONTENT_FILTERED]', text)
+        text = pattern.sub("[CONTENT_FILTERED]", text)
     if len(text) > MAX_LLM_INPUT_LENGTH:
         text = text[:MAX_LLM_INPUT_LENGTH] + "\n[... content truncated for safety ...]"
     return text
@@ -211,8 +227,7 @@ def _cache_key(
     api_key_prefix: Optional[str] = None,
 ) -> str:
     key_input = (
-        f"{model}:{temperature}:{max_tokens}:{api_base or ''}:{api_key_prefix or ''}:"
-        f"{system_prompt}:{user_message}"
+        f"{model}:{temperature}:{max_tokens}:{api_base or ''}:{api_key_prefix or ''}:{system_prompt}:{user_message}"
     )
     return "llm_cache:" + hashlib.sha256(key_input.encode()).hexdigest()
 
@@ -220,6 +235,7 @@ def _cache_key(
 def _record_cache_hit(provider: str, model: str) -> None:
     try:
         from app.middleware.prometheus_metrics import MetricsManager
+
         MetricsManager.record_llm_cache_hit(provider, model)
     except Exception as e:
         logger.warning("Metrics recording failed: %s", e)
@@ -228,6 +244,7 @@ def _record_cache_hit(provider: str, model: str) -> None:
 def _record_cache_miss(provider: str, model: str) -> None:
     try:
         from app.middleware.prometheus_metrics import MetricsManager
+
         MetricsManager.record_llm_cache_miss(provider, model)
     except Exception as e:
         logger.warning("Metrics recording failed: %s", e)
@@ -236,6 +253,7 @@ def _record_cache_miss(provider: str, model: str) -> None:
 def _record_metrics(provider: str, model: str, success: bool, duration: float) -> None:
     try:
         from app.middleware.prometheus_metrics import MetricsManager
+
         MetricsManager.record_llm_request(provider, model, success)
         MetricsManager.record_llm_duration(provider, model, duration)
         MetricsManager.record_llm_ttft(provider, model, duration)
@@ -246,6 +264,7 @@ def _record_metrics(provider: str, model: str, success: bool, duration: float) -
 def _record_failure(provider: str) -> None:
     try:
         from app.middleware.prometheus_metrics import MetricsManager
+
         MetricsManager.record_llm_failure(provider)
     except Exception:
         pass
@@ -276,6 +295,7 @@ async def check_health() -> Dict[str, str]:
 
     try:
         import httpx
+
         base_url = _ls().settings.OLLAMA_BASE_URL
         async with httpx.AsyncClient(timeout=2.0) as client:
             resp = await client.get(f"{base_url}/api/tags")

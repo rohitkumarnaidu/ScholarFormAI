@@ -217,12 +217,7 @@ class SuggestionService:
             client = get_supabase_client()
             if client is None:
                 raise RuntimeError("Supabase client not available.")
-            return (
-                client.table("suggestions")
-                .update(updates)
-                .eq("id", str(suggestion_id))
-                .execute()
-            )
+            return client.table("suggestions").update(updates).eq("id", str(suggestion_id)).execute()
 
         try:
             result = await asyncio.to_thread(run_update)
@@ -349,6 +344,7 @@ class SuggestionService:
                         break
 
                 if updated:
+
                     def run_update_result():
                         client = get_supabase_client()
                         if client is None:

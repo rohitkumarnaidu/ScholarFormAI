@@ -53,16 +53,12 @@ class ManuscriptParser:
             if not stripped:
                 continue
 
-            if stripped.lower().startswith("# abstract") or stripped.lower().startswith(
-                "## abstract"
-            ):
+            if stripped.lower().startswith("# abstract") or stripped.lower().startswith("## abstract"):
                 in_abstract = True
                 in_references = False
                 continue
 
-            if stripped.lower().startswith("# references") or stripped.lower().startswith(
-                "## references"
-            ):
+            if stripped.lower().startswith("# references") or stripped.lower().startswith("## references"):
                 in_abstract = False
                 in_references = True
                 continue
@@ -179,14 +175,8 @@ class ManuscriptParser:
         )
         for sec_type, heading, content in section_matches:
             level = 1 if sec_type == "section" else 2
-            paragraphs = [
-                DomainParagraph(text=p.strip())
-                for p in re.split(r"\n\s*\n", content.strip())
-                if p.strip()
-            ]
-            sections.append(
-                DomainSection(title=heading, heading=heading, level=level, content=paragraphs)
-            )
+            paragraphs = [DomainParagraph(text=p.strip()) for p in re.split(r"\n\s*\n", content.strip()) if p.strip()]
+            sections.append(DomainSection(title=heading, heading=heading, level=level, content=paragraphs))
 
         return DomainManuscript(
             title=title,

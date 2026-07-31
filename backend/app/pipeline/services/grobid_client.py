@@ -4,7 +4,7 @@
 """
 GROBID REST API Client for metadata extraction.
 
-GROBID (GeneRation Of BIbliographic Data) is a machine learning library for 
+GROBID (GeneRation Of BIbliographic Data) is a machine learning library for
 extracting, parsing, and restructuring raw documents into structured XML/TEI.
 
 This client replaces brittle regex-based metadata extraction with trained models
@@ -22,6 +22,7 @@ from requests import RequestException
 from urllib.parse import urlparse
 from typing import Any, Dict, List, Optional
 from pathlib import Path
+
 try:
     from defusedxml import ElementTree as ET
 except ImportError:
@@ -41,16 +42,16 @@ except Exception:
 
 class GROBIDClient:
     """REST API client for GROBID service."""
-    
+
     # TEI namespace for XML parsing
     TEI_NS = {"tei": "http://www.tei-c.org/ns/1.0"}
     TRANSIENT_HTTP_STATUSES = {408, 425, 429, 500, 502, 503, 504, 520, 522, 524}
     LAST_GOOD_ENDPOINT_TTL_SECONDS = 300.0
-    
+
     def __init__(self, base_url: Optional[str] = None):
         """
         Initialize GROBID client.
-        
+
         Args:
             base_url: Optional primary GROBID URL override.
         """
@@ -139,7 +140,7 @@ class GROBIDClient:
         if self.breaker is None:
             return requests.request(method, url, **kwargs)
         return self.breaker.call(lambda: requests.request(method, url, **kwargs))
-        
+
     def is_available(self) -> bool:
         """Check if GROBID service is running."""
         for base_url in self._ordered_base_urls():
@@ -158,15 +159,15 @@ class GROBIDClient:
             except Exception as exc:
                 logger.warning("GROBID health probe failed: url=%s error=%s", endpoint, exc)
         return False
-    
+
     @safe_function(fallback_value={}, error_message="GROBIDClient.process_header_document")
     def process_header_document(self, file_path: str) -> Dict[str, Any]:
         """
         Process document header/metadata using GROBID.
-        
+
         Args:
             file_path: Path to PDF file
-            
+
         Returns:
             Dictionary of extracted metadata
         """
@@ -322,14 +323,14 @@ class GROBIDClient:
         references = self.process_references(file_path)
         metadata["references"] = references if references else []
         return metadata
-    
+
     def _parse_tei_xml(self, xml_str: str) -> Dict[str, Any]:
         """
         Parse GROBID TEI XML output into structured metadata.
-        
+
         Args:
             xml_str: TEI XML string from GROBID
-            
+
         Returns:
             Structured metadata dictionary
         """
@@ -340,19 +341,19 @@ class GROBIDClient:
                 return self._empty_metadata()
 
             root = ET.fromstring(xml_str)  # nosec B314
-            
+
             # Extract title
             title = self._extract_title(root)
-            
+
             # Extract authors and affiliations
             authors, affiliations = self._extract_authors(root)
-            
+
             # Extract abstract
             abstract = self._extract_abstract(root)
-            
+
             # Extract keywords
             keywords = self._extract_keywords(root)
-            
+
             return {
                 "title": title,
                 "authors": authors,
@@ -361,72 +362,74 @@ class GROBIDClient:
                 "keywords": keywords,
                 "raw_xml": xml_str,
                 "source": "grobid",
-                "confidence": self._calculate_confidence(title, authors)
+                "confidence": self._calculate_confidence(title, authors),
             }
-            
+
         except ET.ParseError as e:
             preview = (xml_str or "")[:120].replace("\n", " ").replace("\r", " ")
             logger.warning("Failed to parse GROBID XML (%s). Payload preview: %s", str(e), preview)
             return self._empty_metadata()
-    
+
     def _extract_title(self, root: Element) -> str:
         """Extract document title from TEI XML."""
         title_elem = root.find(".//tei:titleStmt/tei:title[@type='main']", self.TEI_NS)
         if title_elem is not None and title_elem.text:
             return title_elem.text.strip()
-        
+
         # Fallback: try any title
         title_elem = root.find(".//tei:titleStmt/tei:title", self.TEI_NS)
         if title_elem is not None and title_elem.text:
             return title_elem.text.strip()
-        
+
         return ""
-    
+
     def _extract_authors(self, root: Element) -> tuple[List[Dict[str, str]], List[str]]:
         """
         Extract authors and affiliations from TEI XML.
-        
+
         Returns:
             Tuple of (authors_list, affiliations_list)
         """
         authors = []
         affiliations_set = set()
-        
+
         # Find all author elements
         author_elems = root.findall(".//tei:sourceDesc//tei:author", self.TEI_NS)
-        
+
         for author_elem in author_elems:
             # Extract name
             given_name = ""
             family_name = ""
-            
+
             persName = author_elem.find(".//tei:persName", self.TEI_NS)
             if persName is not None:
                 forename = persName.find(".//tei:forename[@type='first']", self.TEI_NS)
                 surname = persName.find(".//tei:surname", self.TEI_NS)
-                
+
                 if forename is not None and forename.text:
                     given_name = forename.text.strip()
                 if surname is not None and surname.text:
                     family_name = surname.text.strip()
-            
+
             # Extract affiliation
             affiliation = ""
             affiliation_elem = author_elem.find(".//tei:affiliation/tei:orgName[@type='institution']", self.TEI_NS)
             if affiliation_elem is not None and affiliation_elem.text:
                 affiliation = affiliation_elem.text.strip()
                 affiliations_set.add(affiliation)
-            
+
             if given_name or family_name:
-                authors.append({
-                    "given": given_name,
-                    "family": family_name,
-                    "full_name": f"{given_name} {family_name}".strip(),
-                    "affiliation": affiliation
-                })
-        
+                authors.append(
+                    {
+                        "given": given_name,
+                        "family": family_name,
+                        "full_name": f"{given_name} {family_name}".strip(),
+                        "affiliation": affiliation,
+                    }
+                )
+
         return authors, list(affiliations_set)
-    
+
     def _extract_abstract(self, root: Element) -> str:
         """Extract abstract from TEI XML."""
         abstract_elem = root.find(".//tei:profileDesc/tei:abstract", self.TEI_NS)
@@ -438,7 +441,7 @@ class GROBIDClient:
             elif abstract_elem.text:
                 return abstract_elem.text.strip()
         return ""
-    
+
     def _extract_keywords(self, root: Element) -> List[str]:
         """Extract keywords from TEI XML."""
         keywords = []
@@ -447,28 +450,28 @@ class GROBIDClient:
             if kw.text:
                 keywords.append(kw.text.strip())
         return keywords
-    
+
     def _calculate_confidence(self, title: str, authors: List[Dict]) -> float:
         """
         Calculate confidence score for extracted metadata.
-        
+
         Score based on:
         - Title presence and length
         - Number of authors
         - Completeness of author names
-        
+
         Returns:
             Confidence score (0.0 to 1.0)
         """
         score = 0.0
-        
+
         # Title check (40% weight)
         if title:
             if len(title) > 10:
                 score += 0.4
             else:
                 score += 0.2
-        
+
         # Authors check (40% weight)
         if authors:
             if len(authors) >= 1:
@@ -479,12 +482,12 @@ class GROBIDClient:
             complete_names = sum(1 for a in authors if a.get("given") and a.get("family"))
             if complete_names == len(authors):
                 score += 0.1
-        
+
         # Abstract/keywords (20% weight) - placeholder for future
         score += 0.2
-        
+
         return min(score, 1.0)
-    
+
     def _empty_metadata(self) -> Dict[str, Any]:
         """Return empty metadata structure."""
         return {
@@ -495,11 +498,12 @@ class GROBIDClient:
             "keywords": [],
             "raw_xml": "",
             "source": "grobid",
-            "confidence": 0.0
+            "confidence": 0.0,
         }
 
 
 class GROBIDException(ExternalServiceError):
     """Exception raised for GROBID service errors."""
+
     def __init__(self, message: str = "GROBID service call failed.") -> None:
         super().__init__(service="GROBID", message=message)

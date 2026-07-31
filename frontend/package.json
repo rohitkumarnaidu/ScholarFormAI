@@ -51,7 +51,9 @@
         "zod": "^4.4.3"
     },
     "devDependencies": {
-        "@eslint/js": "^9.39.4",
+        "@eslint/config-array": "^0.23.5",
+        "@eslint/eslintrc": "^3.3.1",
+        "@eslint/js": "^9.20.0",
         "@playwright/browser-chromium": "^1.60.0",
         "@playwright/test": "^1.58.2",
         "@tailwindcss/container-queries": "^0.1.1",
@@ -66,9 +68,9 @@
         "@types/react-dom": "^19.1.1",
         "@vitest/coverage-v8": "^4.0.18",
         "autoprefixer": "^10.4.17",
-        "eslint": "^8.57.1",
-        "eslint-plugin-react": "^7.37.5",
-        "eslint-plugin-react-hooks": "^7.1.1",
+        "eslint": "^9.7.0",
+        "eslint-plugin-react": "^7.37.0",
+        "eslint-plugin-react-hooks": "^5.2.0",
         "eslint-plugin-react-refresh": "^0.4.5",
         "globals": "^17.6.0",
         "jsdom": "^28.1.0",
@@ -80,6 +82,7 @@
     "overrides": {
         "sharp": "^0.35.0",
         "postcss": "^8.5.23",
-        "minimatch": "^9.0.0"
+        "minimatch": "^9.0.4",
+        "brace-expansion": "^2.0.1"
     }
 }

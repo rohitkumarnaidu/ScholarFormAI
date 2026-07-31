@@ -56,7 +56,7 @@ class ExportService:
         if normalized_format not in _SUPPORTED_EXPORT_FORMATS:
             raise ValidationError(
                 message=f"Unsupported export format '{export_format}'. "
-                        f"Supported: {', '.join(sorted(_SUPPORTED_EXPORT_FORMATS))}.",
+                f"Supported: {', '.join(sorted(_SUPPORTED_EXPORT_FORMATS))}.",
                 details={"format": export_format, "supported": list(_SUPPORTED_EXPORT_FORMATS)},
             )
 

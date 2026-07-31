@@ -4,6 +4,7 @@
 """
 API Key CRUD service for managing user-provided LLM provider keys.
 """
+
 import logging
 from datetime import datetime, timezone
 from typing import Optional
@@ -69,22 +70,20 @@ class ApiKeyService:
         return new_key
 
     def get_key(self, key_id: str, user_id: str) -> Optional[UserApiKey]:
-        result = self.db.execute(
-            select(UserApiKey).where(
-                and_(UserApiKey.id == key_id, UserApiKey.user_id == user_id)
-            )
-        )
+        result = self.db.execute(select(UserApiKey).where(and_(UserApiKey.id == key_id, UserApiKey.user_id == user_id)))
         return result.scalar_one_or_none()
 
     def get_active_key(self, user_id: str, provider: str) -> Optional[UserApiKey]:
         result = self.db.execute(
-            select(UserApiKey).where(
+            select(UserApiKey)
+            .where(
                 and_(
                     UserApiKey.user_id == user_id,
                     UserApiKey.provider == provider.lower(),
                     UserApiKey.is_active == True,
                 )
-            ).order_by(UserApiKey.updated_at.desc())
+            )
+            .order_by(UserApiKey.updated_at.desc())
         )
         return result.scalar_one_or_none()
 
@@ -141,9 +140,7 @@ class ApiKeyService:
 
     def increment_usage(self, key_id: str) -> None:
         """Increment total request count and update last_request_at."""
-        result = self.db.execute(
-            select(UserApiKey).where(UserApiKey.id == key_id)
-        )
+        result = self.db.execute(select(UserApiKey).where(UserApiKey.id == key_id))
         key = result.scalar_one_or_none()
         if key:
             key.total_requests += 1
@@ -179,6 +176,7 @@ class ApiKeyService:
         """Get usage statistics for a user's API keys over the last N hours."""
         cutoff = datetime.now(timezone.utc).replace(microsecond=0)
         from datetime import timedelta
+
         cutoff = cutoff - timedelta(hours=hours)
 
         result = self.db.execute(

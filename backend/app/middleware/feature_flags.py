@@ -4,6 +4,7 @@
 """
 Feature Flag Middleware — Injects feature flags into request state.
 """
+
 import logging
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -41,6 +42,7 @@ class FeatureFlagMiddleware(BaseHTTPMiddleware):
         # Add feature flags to response headers for debugging (dev only)
         if getattr(request.app, "debug", False):
             import json
+
             response.headers["X-Feature-Flags"] = json.dumps(flags)
 
         return response

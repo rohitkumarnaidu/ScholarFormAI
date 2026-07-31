@@ -65,18 +65,21 @@ def process_document_task(document_id: str, use_agent: bool = True):
         logger.error("process_document_task: Document %s not found or DB unavailable.", document_id)
         return False
     if doc_row is None:
-        logger.error(
-            "process_document_task: Document %s not found or DB unavailable.", document_id
-        )
+        logger.error("process_document_task: Document %s not found or DB unavailable.", document_id)
         return False
 
     try:
         # ── Mark as PROCESSING ────────────────────────────────────────────────────
-        asyncio.run(DocumentService.update_document(document_id, {
-            "status": "PROCESSING",
-            "progress": 10,
-            "current_stage": "Initializing agent orchestration...",
-        }))
+        asyncio.run(
+            DocumentService.update_document(
+                document_id,
+                {
+                    "status": "PROCESSING",
+                    "progress": 10,
+                    "current_stage": "Initializing agent orchestration...",
+                },
+            )
+        )
 
         # ── Run pipeline ───────────────────────────────────────────────────────
         orchestrator = PipelineOrchestrator()
@@ -85,11 +88,16 @@ def process_document_task(document_id: str, use_agent: bool = True):
         processing_time = time.time() - start_time
 
         # ── Mark as COMPLETED ──────────────────────────────────────────────────
-        asyncio.run(DocumentService.update_document(document_id, {
-            "status": "COMPLETED",
-            "progress": 100,
-            "current_stage": f"Processing complete in {processing_time:.1f}s",
-        }))
+        asyncio.run(
+            DocumentService.update_document(
+                document_id,
+                {
+                    "status": "COMPLETED",
+                    "progress": 100,
+                    "current_stage": f"Processing complete in {processing_time:.1f}s",
+                },
+            )
+        )
 
         logger.info("Document %s processed successfully in %.1fs", document_id, processing_time)
         return True
@@ -313,7 +321,3 @@ def purge_expired_vector_sessions():
     except Exception as exc:
         logger.error("purge_expired_vector_sessions failed: %s", exc, exc_info=True)
         return {"purged_collections": 0, "status": "error", "error": str(exc)}
-
-
-
-

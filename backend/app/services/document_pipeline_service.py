@@ -65,7 +65,7 @@ TEXT_EXTENSIONS = {".tex", ".txt", ".html", ".htm", ".md", ".markdown"}
 MAGIC_BYTES_MAP = {
     b"\x50\x4b\x03\x04": {".docx", ".odt"},
     b"\x50\x4b\x05\x06": {".docx", ".odt"},
-    b"\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1": {".doc"},
+    b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1": {".doc"},
     b"%PDF": {".pdf"},
     b"{\\rtf": {".rtf"},
 }
@@ -99,6 +99,7 @@ def _get_impl_symbol(name: str, fallback: Any = None) -> Any:
 
 
 # ── Cache Helpers ─────────────────────────────────────────────────────────────
+
 
 def _get_status_cache_lock() -> asyncio.Lock:
     global _status_cache_lock
@@ -152,7 +153,9 @@ async def _get_cached_status_response(cache_key: str, settings_override: Any = N
         return _clone_status_payload(payload)
 
 
-async def _get_stale_status_response(cache_key: str, *, max_stale_seconds: float = _MAX_STALE_STATUS_SECONDS, settings_override: Any = None) -> Any:
+async def _get_stale_status_response(
+    cache_key: str, *, max_stale_seconds: float = _MAX_STALE_STATUS_SECONDS, settings_override: Any = None
+) -> Any:
     ttl_seconds = _document_status_ttl_seconds(settings_override=settings_override)
     if ttl_seconds <= 0:
         return _STATUS_CACHE_MISS
@@ -185,9 +188,7 @@ async def _set_cached_status_response(cache_key: str, payload: Dict[str, Any], s
         )
         stale_cutoff = now - _MAX_STALE_STATUS_SECONDS
         stale_keys = [
-            key
-            for key, (expiry, _) in _status_response_cache.items()
-            if (expiry - ttl_seconds) < stale_cutoff
+            key for key, (expiry, _) in _status_response_cache.items() if (expiry - ttl_seconds) < stale_cutoff
         ]
         for key in stale_keys:
             _status_response_cache.pop(key, None)
@@ -202,6 +203,7 @@ def _reset_document_status_cache_for_tests() -> None:
 def _require_db() -> None:
     """Raise HTTP 503 when the Supabase client is not configured."""
     from app.db.supabase_client import get_supabase_client
+
     if get_supabase_client() is None:
         raise HTTPException(
             status_code=503,
@@ -245,7 +247,11 @@ def _extract_quality_payload(result: Optional[Dict[str, Any]]) -> Dict[str, Any]
     validation_results = (result or {}).get("validation_results") or {}
     quality_summary = validation_results.get("quality_summary") or {}
     quality = None
-    overall_score = validation_results.get("quality_score") or quality_summary.get("overall_score") or quality_summary.get("quality_score")
+    overall_score = (
+        validation_results.get("quality_score")
+        or quality_summary.get("overall_score")
+        or quality_summary.get("quality_score")
+    )
     template_compliance = quality_summary.get("template_compliance")
     if template_compliance is None:
         template_compliance = quality_summary.get("template_compliance_pct")
@@ -254,9 +260,8 @@ def _extract_quality_payload(result: Optional[Dict[str, Any]]) -> Dict[str, Any]
         content_quality = quality_summary.get("content_completeness_pct")
     citation_count = quality_summary.get("citation_count")
     missing_sections = quality_summary.get("missing_sections") or []
-    llm_provider_used = (
-        _normalize_provider_name(quality_summary.get("llm_provider_used"))
-        or _normalize_provider_name(validation_results.get("llm_provider_used"))
+    llm_provider_used = _normalize_provider_name(quality_summary.get("llm_provider_used")) or _normalize_provider_name(
+        validation_results.get("llm_provider_used")
     )
     if llm_provider_used is None:
         ai_semantic_audit = validation_results.get("ai_semantic_audit") or {}
@@ -264,10 +269,13 @@ def _extract_quality_payload(result: Optional[Dict[str, Any]]) -> Dict[str, Any]
             ai_semantic_audit.get("llm_provider") or ai_semantic_audit.get("model")
         )
 
-    if any(
-        value is not None
-        for value in (overall_score, template_compliance, content_quality, citation_count, llm_provider_used)
-    ) or missing_sections:
+    if (
+        any(
+            value is not None
+            for value in (overall_score, template_compliance, content_quality, citation_count, llm_provider_used)
+        )
+        or missing_sections
+    ):
         quality = {
             "overall_score": overall_score,
             "template_compliance": template_compliance,
@@ -422,11 +430,11 @@ class DocumentPipelineService:
             if file_ext not in ACCEPTED_EXTENSIONS:
                 raise HTTPException(
                     status_code=400,
-                    detail=f"Invalid file type '{file_ext}'. Allowed types: {', '.join(sorted(ACCEPTED_EXTENSIONS))}"
+                    detail=f"Invalid file type '{file_ext}'. Allowed types: {', '.join(sorted(ACCEPTED_EXTENSIONS))}",
                 )
 
             safe_filename = os.path.basename(file.filename)
-            if safe_filename != file.filename or '..' in file.filename:
+            if safe_filename != file.filename or ".." in file.filename:
                 raise HTTPException(status_code=400, detail="Invalid filename. Path traversal detected.")
 
             file_content = await file.read()
@@ -436,7 +444,7 @@ class DocumentPipelineService:
             if file_size > max_size:
                 raise HTTPException(
                     status_code=413,
-                    detail=f"File too large ({file_size / 1024 / 1024:.1f}MB). Maximum size is {max_size / 1024 / 1024:.0f}MB"
+                    detail=f"File too large ({file_size / 1024 / 1024:.1f}MB). Maximum size is {max_size / 1024 / 1024:.0f}MB",
                 )
 
             if file_size == 0:
@@ -544,6 +552,7 @@ class DocumentPipelineService:
             raise
         except Exception as e:
             import traceback
+
             logger.error(
                 "Upload error: %s\n%s",
                 e,
@@ -731,11 +740,7 @@ class DocumentPipelineService:
                 record_ack_fn(request_started_at)
                 return payload
 
-            payload = {
-                "status": "chunk_received",
-                "chunk_index": chunk_index,
-                "total_chunks": total_chunks
-            }
+            payload = {"status": "chunk_received", "chunk_index": chunk_index, "total_chunks": total_chunks}
             record_ack_fn(request_started_at)
             return payload
         except HTTPException:
@@ -774,11 +779,13 @@ class DocumentPipelineService:
             try:
                 ext = os.path.splitext(file.filename or "")[1].lower()
                 if ext not in ACCEPTED_EXTENSIONS:
-                    results.append({
-                        "filename": file.filename,
-                        "status": "rejected",
-                        "reason": f"Unsupported format: {ext}",
-                    })
+                    results.append(
+                        {
+                            "filename": file.filename,
+                            "status": "rejected",
+                            "reason": f"Unsupported format: {ext}",
+                        }
+                    )
                     continue
 
                 safe_name = f"{job_id}{ext}"
@@ -787,11 +794,13 @@ class DocumentPipelineService:
 
                 max_size = getattr(settings_obj, "MAX_FILE_SIZE", settings.MAX_FILE_SIZE)
                 if len(content) > max_size:
-                    results.append({
-                        "filename": file.filename,
-                        "status": "rejected",
-                        "reason": f"File exceeds {max_size // (1024 * 1024)}MB limit",
-                    })
+                    results.append(
+                        {
+                            "filename": file.filename,
+                            "status": "rejected",
+                            "reason": f"File exceeds {max_size // (1024 * 1024)}MB limit",
+                        }
+                    )
                     continue
 
                 content = await val_fn(file, content=content, file_ext=ext)
@@ -841,11 +850,13 @@ class DocumentPipelineService:
                     extra=log_extra(job_id=job_id),
                 )
 
-                results.append({
-                    "filename": file.filename,
-                    "job_id": job_id,
-                    "status": "processing",
-                })
+                results.append(
+                    {
+                        "filename": file.filename,
+                        "job_id": job_id,
+                        "status": "processing",
+                    }
+                )
 
             except Exception as e:
                 logger.error(
@@ -854,11 +865,13 @@ class DocumentPipelineService:
                     e,
                     extra=log_extra(job_id=job_id),
                 )
-                results.append({
-                    "filename": file.filename,
-                    "status": "failed",
-                    "reason": "An internal error occurred during batch processing.",
-                })
+                results.append(
+                    {
+                        "filename": file.filename,
+                        "status": "failed",
+                        "reason": "An internal error occurred during batch processing.",
+                    }
+                )
 
         await audit_svc.log(
             user_id=str(current_user.id) if current_user else None,
@@ -893,7 +906,11 @@ class DocumentPipelineService:
         audit_svc = _get_impl_symbol("audit_log_service", audit_log_service)
 
         try:
-            get_doc_fn = doc_service.get_document if (doc_service and hasattr(doc_service, "get_document")) else self._crud.get_document
+            get_doc_fn = (
+                doc_service.get_document
+                if (doc_service and hasattr(doc_service, "get_document"))
+                else self._crud.get_document
+            )
             doc = await get_doc_fn(job_id)
             if not doc:
                 raise HTTPException(status_code=404, detail="Document not found")
@@ -931,7 +948,9 @@ class DocumentPipelineService:
                 details={
                     "filename": doc.get("filename"),
                     "template": doc.get("template"),
-                    "edited_structured_data_keys": sorted((edited_data or {}).keys()) if isinstance(edited_data, dict) else [],
+                    "edited_structured_data_keys": sorted((edited_data or {}).keys())
+                    if isinstance(edited_data, dict)
+                    else [],
                 },
             )
 
@@ -962,9 +981,21 @@ class DocumentPipelineService:
             if cached_payload is not _STATUS_CACHE_MISS:
                 return cached_payload
 
-            get_doc_fn = doc_service.get_document if (doc_service and hasattr(doc_service, "get_document")) else self._crud.get_document
-            get_statuses_fn = doc_service.get_processing_statuses if (doc_service and hasattr(doc_service, "get_processing_statuses")) else self._crud.get_processing_statuses
-            get_result_fn = doc_service.get_document_result if (doc_service and hasattr(doc_service, "get_document_result")) else self._crud.get_document_result
+            get_doc_fn = (
+                doc_service.get_document
+                if (doc_service and hasattr(doc_service, "get_document"))
+                else self._crud.get_document
+            )
+            get_statuses_fn = (
+                doc_service.get_processing_statuses
+                if (doc_service and hasattr(doc_service, "get_processing_statuses"))
+                else self._crud.get_processing_statuses
+            )
+            get_result_fn = (
+                doc_service.get_document_result
+                if (doc_service and hasattr(doc_service, "get_document_result"))
+                else self._crud.get_document_result
+            )
 
             doc = await get_doc_fn(job_id)
             if not doc:
@@ -1027,9 +1058,8 @@ class DocumentPipelineService:
                 "current_phase": doc.get("current_stage") or "UPLOADED",
                 "phase": doc.get("current_stage") or "UPLOADED",
                 "progress_percentage": doc.get("progress") or 0,
-                "message": doc.get("error_message") or (
-                    (doc.get("current_stage") + "...") if doc.get("current_stage") else "Processing..."
-                ),
+                "message": doc.get("error_message")
+                or ((doc.get("current_stage") + "...") if doc.get("current_stage") else "Processing..."),
                 "updated_at": doc.get("updated_at") or doc.get("created_at"),
                 "phases": [
                     {
@@ -1064,8 +1094,16 @@ class DocumentPipelineService:
         doc_service = _get_impl_symbol("DocumentService")
         extract_quality_fn = _get_impl_symbol("_extract_quality_payload", _extract_quality_payload)
 
-        get_doc_fn = doc_service.get_document if (doc_service and hasattr(doc_service, "get_document")) else self._crud.get_document
-        get_result_fn = doc_service.get_document_result if (doc_service and hasattr(doc_service, "get_document_result")) else self._crud.get_document_result
+        get_doc_fn = (
+            doc_service.get_document
+            if (doc_service and hasattr(doc_service, "get_document"))
+            else self._crud.get_document
+        )
+        get_result_fn = (
+            doc_service.get_document_result
+            if (doc_service and hasattr(doc_service, "get_document_result"))
+            else self._crud.get_document_result
+        )
 
         doc = await get_doc_fn(job_id)
         if not doc:
@@ -1097,8 +1135,16 @@ class DocumentPipelineService:
         doc_service = _get_impl_symbol("DocumentService")
         extract_quality_fn = _get_impl_symbol("_extract_quality_payload", _extract_quality_payload)
 
-        get_doc_fn = doc_service.get_document if (doc_service and hasattr(doc_service, "get_document")) else self._crud.get_document
-        get_result_fn = doc_service.get_document_result if (doc_service and hasattr(doc_service, "get_document_result")) else self._crud.get_document_result
+        get_doc_fn = (
+            doc_service.get_document
+            if (doc_service and hasattr(doc_service, "get_document"))
+            else self._crud.get_document
+        )
+        get_result_fn = (
+            doc_service.get_document_result
+            if (doc_service and hasattr(doc_service, "get_document_result"))
+            else self._crud.get_document_result
+        )
 
         try:
             doc = await get_doc_fn(job_id)
@@ -1134,12 +1180,14 @@ class DocumentPipelineService:
             logger.error("Error retrieving preview for %s: %s", job_id, e)
             raise HTTPException(status_code=500, detail=f"Preview failed: {str(e)}")
 
-    async def start_processing(
-        self, doc_id: str, options: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    async def start_processing(self, doc_id: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Dispatch a document to the PipelineOrchestrator for formatting."""
         doc_service = _get_impl_symbol("DocumentService")
-        get_doc_fn = doc_service.get_document if (doc_service and hasattr(doc_service, "get_document")) else self._crud.get_document
+        get_doc_fn = (
+            doc_service.get_document
+            if (doc_service and hasattr(doc_service, "get_document"))
+            else self._crud.get_document
+        )
 
         doc = await get_doc_fn(doc_id)
         if doc is None:
@@ -1160,13 +1208,21 @@ class DocumentPipelineService:
     async def get_processing_status(self, doc_id: str) -> List[Dict[str, Any]]:
         """Return per-phase processing statuses for a document."""
         doc_service = _get_impl_symbol("DocumentService")
-        get_statuses_fn = doc_service.get_processing_statuses if (doc_service and hasattr(doc_service, "get_processing_statuses")) else self._crud.get_processing_statuses
+        get_statuses_fn = (
+            doc_service.get_processing_statuses
+            if (doc_service and hasattr(doc_service, "get_processing_statuses"))
+            else self._crud.get_processing_statuses
+        )
         return await get_statuses_fn(doc_id)
 
     async def cancel_processing(self, doc_id: str) -> Dict[str, Any]:
         """Cancel an in-flight processing job for a document."""
         doc_service = _get_impl_symbol("DocumentService")
-        mark_failed_fn = doc_service.mark_document_failed if (doc_service and hasattr(doc_service, "mark_document_failed")) else self._crud.mark_document_failed
+        mark_failed_fn = (
+            doc_service.mark_document_failed
+            if (doc_service and hasattr(doc_service, "mark_document_failed"))
+            else self._crud.mark_document_failed
+        )
 
         doc_id = str(doc_id)
         orchestrator_cls = _get_impl_symbol("PipelineOrchestrator", PipelineOrchestrator)
@@ -1186,7 +1242,11 @@ class DocumentPipelineService:
     async def get_result(self, doc_id: str) -> Optional[Dict[str, Any]]:
         """Return the stored processing result for a document."""
         doc_service = _get_impl_symbol("DocumentService")
-        get_result_fn = doc_service.get_document_result if (doc_service and hasattr(doc_service, "get_document_result")) else self._crud.get_document_result
+        get_result_fn = (
+            doc_service.get_document_result
+            if (doc_service and hasattr(doc_service, "get_document_result"))
+            else self._crud.get_document_result
+        )
         result = await get_result_fn(doc_id)
         if result is None:
             raise DocumentNotFoundError(doc_id)

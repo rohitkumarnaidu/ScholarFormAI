@@ -44,12 +44,14 @@ def _load_chromadb():
     _CHROMADB_IMPORT_ATTEMPTED = True
     try:
         import chromadb as chromadb_module  # type: ignore[import-not-found]
+
         chromadb = chromadb_module
         _CHROMADB_AVAILABLE = True
         return chromadb
     except Exception:
         _CHROMADB_AVAILABLE = False
         return None
+
 
 # --------------------------------------------------------------------------- #
 #  Constants
@@ -66,8 +68,8 @@ MODEL_DIMENSIONS = {
 }
 
 # Collection names — separate collections to avoid dimension mismatches
-COLLECTION_PRIMARY = "guidelines_bge_m3"       # 1024-d
-COLLECTION_FALLBACK = "publisher_guidelines"    # 384-d (legacy)
+COLLECTION_PRIMARY = "guidelines_bge_m3"  # 1024-d
+COLLECTION_FALLBACK = "publisher_guidelines"  # 384-d (legacy)
 
 
 class _DeterministicEmbeddingModel:
@@ -120,14 +122,12 @@ class _HuggingFaceAPIEmbeddingModel:
         # Pull URL directly from env if provided; normalize to feature-extraction endpoint.
         custom_url = os.getenv("RAG_EMBEDDING_API_URL", "").strip()
         self.api_url = self._normalize_embedding_api_url(custom_url, model_id)
-        
+
         self.token = os.getenv("HF_TOKEN")
         self.timeout_seconds = float(os.getenv("RAG_HF_TIMEOUT_SECONDS", "30"))
         self.max_retries = max(1, int(os.getenv("RAG_HF_MAX_RETRIES", "3")))
-        self.retry_backoff_seconds = max(
-            0.0, float(os.getenv("RAG_HF_RETRY_BACKOFF_SECONDS", "1.0"))
-        )
-        
+        self.retry_backoff_seconds = max(0.0, float(os.getenv("RAG_HF_RETRY_BACKOFF_SECONDS", "1.0")))
+
         # We need to know the dimension. all-MiniLM-L6-v2 is 384
         self.dimension = 384
         if "bge-m3" in model_id.lower():
@@ -135,10 +135,7 @@ class _HuggingFaceAPIEmbeddingModel:
 
     @staticmethod
     def _default_feature_extraction_url(model_id: str) -> str:
-        return (
-            f"https://router.huggingface.co/hf-inference/models/{model_id}"
-            "/pipeline/feature-extraction"
-        )
+        return f"https://router.huggingface.co/hf-inference/models/{model_id}/pipeline/feature-extraction"
 
     @classmethod
     def _normalize_embedding_api_url(cls, api_url: str, model_id: str) -> str:
@@ -146,10 +143,7 @@ class _HuggingFaceAPIEmbeddingModel:
             return cls._default_feature_extraction_url(model_id)
 
         normalized = api_url.rstrip("/")
-        if (
-            "router.huggingface.co/hf-inference/models/" in normalized
-            and "/pipeline/" not in normalized
-        ):
+        if "router.huggingface.co/hf-inference/models/" in normalized and "/pipeline/" not in normalized:
             fixed = normalized + "/pipeline/feature-extraction"
             logger.warning(
                 "RagEngine: RAG_EMBEDDING_API_URL missing pipeline path; using '%s'.",
@@ -167,7 +161,7 @@ class _HuggingFaceAPIEmbeddingModel:
             return []
 
         headers = {"Authorization": f"Bearer {self.token}"}
-        
+
         # The HF feature-extraction API expects a dict: {"inputs": [...texts...]}
         is_single = isinstance(texts, str)
         payload = {"inputs": [texts] if is_single else texts}
@@ -243,9 +237,7 @@ class RagEngine:
 
     def __init__(self, persist_directory: Optional[str] = None, auto_seed: Optional[bool] = None):
         if persist_directory is None:
-            base_dir = os.path.dirname(
-                os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            )
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
             self.persist_directory = os.path.join(base_dir, "db", "semantic_store")
         else:
             self.persist_directory = os.path.abspath(persist_directory)
@@ -278,9 +270,9 @@ class RagEngine:
         try:
             # NumPy 2.0+ removed np.float_, np.int_ etc. which ChromaDB may reference
             # Pre-patch to prevent AttributeError at import time
-            if not hasattr(np, 'float_'):
+            if not hasattr(np, "float_"):
                 np.float_ = np.float64  # Restore removed alias for compatibility
-            if not hasattr(np, 'int_'):
+            if not hasattr(np, "int_"):
                 np.int_ = np.int64
 
             chromadb_module = chromadb if chromadb is not None else _load_chromadb()
@@ -334,12 +326,12 @@ class RagEngine:
                 return
             if self.chroma_enabled and self.collection.count() > 0:
                 return
-                
+
             default_file = os.path.join(os.path.dirname(__file__), "default_guidelines.json")
             if not os.path.exists(default_file):
                 logger.warning("RagEngine: default_guidelines.json not found, cannot seed.")
                 return
-                
+
             logger.info("RagEngine: Knowledge base is empty. Seeding from default_guidelines.json...")
             with open(default_file, "r") as f:
                 payload = json.load(f)
@@ -360,10 +352,7 @@ class RagEngine:
                 if not publisher or not section or not text:
                     continue
                 self.add_guideline(
-                    publisher=str(publisher),
-                    section=str(section),
-                    text=str(text),
-                    metadata={"source": "auto-seed"}
+                    publisher=str(publisher), section=str(section), text=str(text), metadata={"source": "auto-seed"}
                 )
             logger.info("RagEngine: Auto-seeding complete.")
         except Exception as e:
@@ -449,10 +438,13 @@ class RagEngine:
 
         # Check for remote API override first
         provider = os.getenv("RAG_EMBEDDING_PROVIDER", "").lower()
-        if (settings.LOW_MEMORY_MODE or not settings.RAG_USE_TRANSFORMERS) and provider in ("huggingface_api", "hf_api"):
+        if (settings.LOW_MEMORY_MODE or not settings.RAG_USE_TRANSFORMERS) and provider in (
+            "huggingface_api",
+            "hf_api",
+        ):
             model_id = os.getenv("RAG_EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
             logger.info(f"RagEngine: RAG_USE_TRANSFORMERS=false. Using HuggingFace API remotely with '{model_id}'.")
-            
+
             hf_model = _HuggingFaceAPIEmbeddingModel(model_id=model_id)
             # Do a quick test
             probe = self._coerce_embedding_vector(hf_model.encode("healthcheck"))
@@ -466,11 +458,7 @@ class RagEngine:
                 logger.warning("RagEngine: HuggingFace API failed health check. Falling back to deterministic hash.")
 
         if settings.LOW_MEMORY_MODE or not settings.RAG_USE_TRANSFORMERS:
-            reason = (
-                "Low-memory mode enabled."
-                if settings.LOW_MEMORY_MODE
-                else "RAG_USE_TRANSFORMERS=false."
-            )
+            reason = "Low-memory mode enabled." if settings.LOW_MEMORY_MODE else "RAG_USE_TRANSFORMERS=false."
             self._activate_deterministic_embedding(model_store, reason)
             return
 
@@ -498,9 +486,7 @@ class RagEngine:
                     self.active_model_name,
                 )
                 return
-            logger.warning(
-                "RagEngine: Ignoring invalid embedding model from ModelStore and reloading."
-            )
+            logger.warning("RagEngine: Ignoring invalid embedding model from ModelStore and reloading.")
 
         # 2. Try loading BGE-M3 (primary)
         try:
@@ -516,9 +502,10 @@ class RagEngine:
             return
         except Exception as exc:
             logger.warning(
-                "RagEngine: Failed to load primary model '%s': %s. "
-                "Falling back to '%s'.",
-                PRIMARY_MODEL, exc, FALLBACK_MODEL,
+                "RagEngine: Failed to load primary model '%s': %s. Falling back to '%s'.",
+                PRIMARY_MODEL,
+                exc,
+                FALLBACK_MODEL,
             )
 
         # 3. Fallback to bge-small-en-v1.5
@@ -533,9 +520,9 @@ class RagEngine:
             )
         except Exception as exc:
             logger.error(
-                "RagEngine: Failed to load fallback model '%s': %s. "
-                "Using deterministic fallback.",
-                FALLBACK_MODEL, exc,
+                "RagEngine: Failed to load fallback model '%s': %s. Using deterministic fallback.",
+                FALLBACK_MODEL,
+                exc,
             )
             self._activate_deterministic_embedding(
                 model_store,
@@ -545,32 +532,24 @@ class RagEngine:
     # ------------------------------------------------------------------ #
     #  Public API
     # ------------------------------------------------------------------ #
-    def add_guideline(
-        self, publisher: str, section: str, text: str, metadata: Optional[Dict] = None
-    ):
+    def add_guideline(self, publisher: str, section: str, text: str, metadata: Optional[Dict] = None):
         """Add a guideline rule to the store."""
         full_metadata = metadata or {}
         full_metadata.update({"publisher": publisher.upper(), "section": section.lower()})
 
         if self.chroma_enabled:
             doc_id = f"{publisher}_{section}_{hash(text)}"
-            self.collection.add(
-                ids=[doc_id], documents=[text], metadatas=[full_metadata]
-            )
+            self.collection.add(ids=[doc_id], documents=[text], metadatas=[full_metadata])
 
         # Always update native store for consistent fallback
         if self.embedding_model is not None:
             embedding = self._coerce_embedding_vector(self.embedding_model.encode(text))
         else:
             embedding = []
-        self.knowledge_base.append(
-            {"text": text, "metadata": full_metadata, "embedding": embedding}
-        )
+        self.knowledge_base.append({"text": text, "metadata": full_metadata, "embedding": embedding})
         self._save_native()
 
-    def query_guidelines(
-        self, publisher: str, intent: str, top_k: int = 3
-    ) -> List[str]:
+    def query_guidelines(self, publisher: str, intent: str, top_k: int = 3) -> List[str]:
         """Retrieve the most relevant guideline text."""
         if self.chroma_enabled:
             try:
@@ -614,9 +593,7 @@ class RagEngine:
             logger.warning("RagEngine: Native query failed (%s). Returning empty list.", e)
             return []
 
-    def query_rules(
-        self, template_name: str, section_name: str, top_k: int = 2
-    ) -> List[Dict[str, Any]]:
+    def query_rules(self, template_name: str, section_name: str, top_k: int = 2) -> List[Dict[str, Any]]:
         """
         [PHASE-2 INTERFACE ADAPTER]
         Required by PipelineOrchestrator.
@@ -628,10 +605,7 @@ class RagEngine:
 
             guidelines = self.query_guidelines(publisher, intent, top_k=top_k)
 
-            return [
-                {"text": txt, "metadata": {"publisher": publisher, "section": intent}}
-                for txt in guidelines
-            ]
+            return [{"text": txt, "metadata": {"publisher": publisher, "section": intent}} for txt in guidelines]
         except Exception as e:
             logger.warning("RagEngine Guard: query_rules failed: %s. Returning empty list.", e)
             return []
@@ -653,9 +627,7 @@ class RagEngine:
         if self.chroma_enabled:
             try:
                 self.client.delete_collection(self._collection_name)
-                self.collection = self.client.get_or_create_collection(
-                    self._collection_name
-                )
+                self.collection = self.client.get_or_create_collection(self._collection_name)
             except Exception as e:
                 logger.warning("RagEngine: Failed to reset ChromaDB collection: %s", e)
                 pass

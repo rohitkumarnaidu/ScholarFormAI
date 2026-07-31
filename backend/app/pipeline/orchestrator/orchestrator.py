@@ -22,12 +22,14 @@ from app.pipeline.orchestrator.phases import PipelinePhases
 from app.pipeline.orchestrator.metrics import StageMetrics
 from app.pipeline.orchestrator.events import StageEventEmitter
 
+
 class _PackageLoggerProxy:
     """Forwards all logging calls to app.pipeline.orchestrator.logger at call time.
     This ensures test patches to that name are picked up dynamically."""
 
     def __getattr__(self, name):
         from app.pipeline.orchestrator import logger as _l
+
         return getattr(_l, name)
 
 
@@ -43,6 +45,7 @@ _ACQUIRE_TIMEOUT_SECONDS = float(settings.PIPELINE_ACQUIRE_TIMEOUT_SECONDS)
 
 def get_rag_engine():
     from app.utils.singleton import resolve_optional_callable
+
     return resolve_optional_callable(
         "app.pipeline.intelligence.rag_engine",
         "get_rag_engine",
@@ -51,6 +54,7 @@ def get_rag_engine():
 
 def get_reasoning_engine():
     from app.utils.singleton import resolve_optional_callable
+
     return resolve_optional_callable(
         "app.pipeline.intelligence.reasoning_engine",
         "get_reasoning_engine",
@@ -70,18 +74,23 @@ class PipelineOrchestrator:
 
         # Core services
         from app.pipeline.orchestrator import InputConverter
+
         self.converter = InputConverter()
         from app.pipeline.orchestrator import ContentAnalyzer
+
         self.analyzer = ContentAnalyzer()
         contracts_base = os.path.dirname(templates_dir)
         self.contracts_dir = os.path.join(contracts_base, "pipeline", "contracts")
         from app.pipeline.orchestrator import ContractLoader
+
         self.contract_loader = ContractLoader(contracts_dir=self.contracts_dir)
         from app.pipeline.orchestrator import ReferenceFormatterEngine
+
         self.ref_normalizer = ReferenceFormatterEngine(self.contract_loader)
 
         # External service clients
         from app.pipeline.orchestrator import GROBIDClient
+
         self.grobid_client = GROBIDClient()
 
         # Stage engine — all stage implementations delegated here
@@ -113,6 +122,7 @@ class PipelineOrchestrator:
     ) -> dict[str, Any]:
         """Execute full pipeline sequentially. Acquires semaphore first."""
         from app.pipeline.orchestrator import _pipeline_semaphore, _ACQUIRE_TIMEOUT_SECONDS
+
         if not _pipeline_semaphore.acquire(timeout=_ACQUIRE_TIMEOUT_SECONDS):
             logger.warning("Semaphore full. Job %s rejected.", job_id)
             self._update_status(job_id, "SYSTEM", "FAILED", "Server is busy.")
@@ -158,6 +168,7 @@ class PipelineOrchestrator:
         try:
             with self._safety_net(f"Pipeline Job {job_id}"):
                 from app.pipeline.orchestrator import get_supabase_client
+
                 sb = get_supabase_client()
 
                 phases = PipelinePhases(self)
@@ -167,6 +178,7 @@ class PipelineOrchestrator:
 
                 # ---- Phase 2: Extraction ----
                 from app.pipeline.orchestrator import ParserFactory
+
                 factory = ParserFactory()
                 file_ext = os.path.splitext(input_path)[1].lower()
                 doc_obj = phases.phase_extraction(
@@ -189,9 +201,7 @@ class PipelineOrchestrator:
                 doc_obj = phases.phase_content_analysis(doc_obj, job_id, runtime_flags)
 
                 # ---- Phase 7: Validation ----
-                doc_obj, validation_results = phases.phase_validation(
-                    doc_obj, job_id, template_name, runtime_flags
-                )
+                doc_obj, validation_results = phases.phase_validation(doc_obj, job_id, template_name, runtime_flags)
 
                 # ---- Phase 8: Formatting ----
                 doc_obj = phases.phase_formatting(doc_obj)
@@ -200,25 +210,26 @@ class PipelineOrchestrator:
                 output_path = phases.phase_export(doc_obj, input_path, job_id, sb)
 
                 # ---- Phase 10: Persistence ----
-                response = phases.phase_persistence(
-                    doc_obj, job_id, sb, output_path, validation_results, template_name
-                )
+                response = phases.phase_persistence(doc_obj, job_id, sb, output_path, validation_results, template_name)
 
         except asyncio.CancelledError:
             logger.info("Task %s cancelled by server reload/shutdown.", job_id)
             try:
                 self._update_status(job_id, "SYSTEM", "FAILED", "Interrupted by server shutdown", progress=0)
                 if sb:
-                    sb.table("documents").update({
-                        "status": "FAILED",
-                        "error_message": "Interrupted by server shutdown",
-                    }).eq("id", job_id).execute()
+                    sb.table("documents").update(
+                        {
+                            "status": "FAILED",
+                            "error_message": "Interrupted by server shutdown",
+                        }
+                    ).eq("id", job_id).execute()
             except Exception:
                 pass
             return {"status": "cancelled", "message": "Interrupted by server shutdown"}
 
         except Exception as e:
             import traceback
+
             error_msg = str(e)
             logger.error("Pipeline Error: %s", error_msg)
             if doc_obj is not None:
@@ -230,24 +241,29 @@ class PipelineOrchestrator:
                 logger.warning("Non-fatal error: %s", error_msg)
                 try:
                     from app.services.document_service import DocumentService
+
                     DocumentService.update_output_hash(job_id, PipelineStages.compute_sha256(output_path))
                 except Exception:
                     pass
                 self._update_status(job_id, "PERSISTENCE", "COMPLETED", "Completed with warnings.", progress=100)
                 if sb:
-                    sb.table("documents").update({
-                        "status": "COMPLETED_WITH_WARNINGS",
-                        "error_message": f"Validation Warning: {error_msg}",
-                        "output_path": output_path,
-                    }).eq("id", job_id).execute()
+                    sb.table("documents").update(
+                        {
+                            "status": "COMPLETED_WITH_WARNINGS",
+                            "error_message": f"Validation Warning: {error_msg}",
+                            "output_path": output_path,
+                        }
+                    ).eq("id", job_id).execute()
                 response["status"] = "success"
             else:
                 self._update_status(job_id, "PERSISTENCE", "FAILED", error_msg, progress=0)
                 if sb:
-                    sb.table("documents").update({
-                        "status": "FAILED",
-                        "error_message": error_msg,
-                    }).eq("id", job_id).execute()
+                    sb.table("documents").update(
+                        {
+                            "status": "FAILED",
+                            "error_message": error_msg,
+                        }
+                    ).eq("id", job_id).execute()
                 response["status"] = "error"
                 response["message"] = f"Pipeline failed: {error_msg}"
             logger.error("Pipeline Error Traceback: %s", traceback.format_exc())
@@ -268,6 +284,7 @@ class PipelineOrchestrator:
         job_id = str(job_id)
         try:
             from app.pipeline.orchestrator import get_supabase_client
+
             sb = get_supabase_client()
             if not sb:
                 raise Exception("Supabase client unavailable.")
@@ -293,16 +310,21 @@ class PipelineOrchestrator:
 
             self._update_status(job_id, "VALIDATION", "PROCESSING", "Re-validating...", progress=30)
             from app.pipeline.orchestrator import validate_document, safe_model_dump
+
             val_result = validate_document(pipeline_doc)
             validation_results = safe_model_dump(val_result)
 
             self._update_status(job_id, "VALIDATION", "PROCESSING", "Applying styles...", progress=60)
             from app.pipeline.orchestrator import Formatter
-            formatted_doc = Formatter(templates_dir=self.templates_dir, contracts_dir=self.contracts_dir).process(pipeline_doc)
+
+            formatted_doc = Formatter(templates_dir=self.templates_dir, contracts_dir=self.contracts_dir).process(
+                pipeline_doc
+            )
 
             output_path = None
             if formatted_doc:
                 from app.pipeline.orchestrator import Exporter
+
                 out_dir = os.path.join("output", f"{job_id}_edit")
                 os.makedirs(out_dir, exist_ok=True)
                 out_name = f"{os.path.splitext(filename)[0]}_edited.docx"
@@ -311,6 +333,7 @@ class PipelineOrchestrator:
                 Exporter().process(pipeline_doc)
                 try:
                     from app.services.document_service import DocumentService
+
                     DocumentService.update_output_hash(job_id, PipelineStages.compute_sha256(output_path))
                 except Exception:
                     pass
@@ -331,37 +354,47 @@ class PipelineOrchestrator:
                         next_version = f"v{last_num + 1}"
                     except Exception:
                         from datetime import datetime, timezone
+
                         next_version = f"v_{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
                 else:
                     next_version = "v1"
-                sb.table("document_versions").insert({
-                    "document_id": job_id,
-                    "version_number": next_version,
-                    "edited_structured_data": existing.data[0]["structured_data"],
-                    "output_path": source_output_path,
-                    "created_at": "now()",
-                }).execute()
-                sb.table("document_results").update({
-                    "structured_data": edited_structured_data,
-                    "validation_results": validation_results,
-                    "updated_at": "now()",
-                }).eq("document_id", job_id).execute()
+                sb.table("document_versions").insert(
+                    {
+                        "document_id": job_id,
+                        "version_number": next_version,
+                        "edited_structured_data": existing.data[0]["structured_data"],
+                        "output_path": source_output_path,
+                        "created_at": "now()",
+                    }
+                ).execute()
+                sb.table("document_results").update(
+                    {
+                        "structured_data": edited_structured_data,
+                        "validation_results": validation_results,
+                        "updated_at": "now()",
+                    }
+                ).eq("document_id", job_id).execute()
             else:
                 from app.pipeline.orchestrator import AIExplainer
+
                 explainer = AIExplainer()
                 ai_explanations = explainer.explain_results(validation_results, template_name)
                 validation_results["ai_explanations"] = ai_explanations
-                sb.table("document_results").insert({
-                    "document_id": job_id,
-                    "structured_data": edited_structured_data,
-                    "validation_results": validation_results,
-                    "created_at": "now()",
-                }).execute()
+                sb.table("document_results").insert(
+                    {
+                        "document_id": job_id,
+                        "structured_data": edited_structured_data,
+                        "validation_results": validation_results,
+                        "created_at": "now()",
+                    }
+                ).execute()
 
-            sb.table("documents").update({
-                "output_path": output_path,
-                "updated_at": "now()",
-            }).eq("id", job_id).execute()
+            sb.table("documents").update(
+                {
+                    "output_path": output_path,
+                    "updated_at": "now()",
+                }
+            ).eq("id", job_id).execute()
 
             self._update_status(job_id, "PERSISTENCE", "COMPLETED", "Edit re-formatted.", progress=100)
             return {"status": "success", "output_path": output_path}
@@ -375,6 +408,7 @@ class PipelineOrchestrator:
             return {"status": "cancelled", "message": "Edit interrupted by shutdown"}
         except Exception as e:
             import traceback
+
             logger.error("Edit flow error: %s", e)
             self._update_status(job_id, "PERSISTENCE", "FAILED", str(e), progress=0)
             return {"status": "error", "message": str(e)}
@@ -388,17 +422,25 @@ class PipelineOrchestrator:
         document_id = str(document_id)
         self._record_stage_transition(document_id, phase, status)
         from app.pipeline.orchestrator import get_supabase_client
+
         sb = get_supabase_client()
         if not sb:
             logger.warning("Supabase unavailable for status: %s -> %s", phase, status)
             return
         try:
+
             def _is_transient(exc: Exception) -> bool:
                 text = str(exc).lower()
-                return any(kw in text for kw in (
-                    "remoteprotocolerror", "server disconnected",
-                    "timeout", "connection reset", "connection aborted",
-                ))
+                return any(
+                    kw in text
+                    for kw in (
+                        "remoteprotocolerror",
+                        "server disconnected",
+                        "timeout",
+                        "connection reset",
+                        "connection aborted",
+                    )
+                )
 
             def _run_with_retry(op_name, callback, _sb=None):
                 nonlocal sb
@@ -412,12 +454,14 @@ class PipelineOrchestrator:
                         if not retryable:
                             raise
                         import time as _time
+
                         _time.sleep(0.15 * (2 ** (attempt - 1)))
                         refreshed = get_supabase_client(refresh=True)
                         if refreshed:
                             sb = refreshed
 
             from app.routers.v1.stream import emit_event
+
             data = {
                 "document_id": document_id,
                 "phase": phase,
@@ -427,18 +471,26 @@ class PipelineOrchestrator:
                 "updated_at": "now()",
             }
             existing = _run_with_retry(
-                "select", lambda: sb.table("processing_status")
-                .select("id").match({"document_id": document_id, "phase": phase}).execute()
+                "select",
+                lambda: (
+                    sb.table("processing_status")
+                    .select("id")
+                    .match({"document_id": document_id, "phase": phase})
+                    .execute()
+                ),
             )
             if existing.data:
                 _run_with_retry(
-                    "update", lambda: sb.table("processing_status")
-                    .update(data).match({"document_id": document_id, "phase": phase}).execute()
+                    "update",
+                    lambda: (
+                        sb.table("processing_status")
+                        .update(data)
+                        .match({"document_id": document_id, "phase": phase})
+                        .execute()
+                    ),
                 )
             else:
-                _run_with_retry(
-                    "insert", lambda: sb.table("processing_status").insert(data).execute()
-                )
+                _run_with_retry("insert", lambda: sb.table("processing_status").insert(data).execute())
 
             doc_data = {"current_stage": phase, "updated_at": "now()"}
             if status == "COMPLETED":
@@ -453,15 +505,23 @@ class PipelineOrchestrator:
             _run_with_retry(
                 "doc_update", lambda: sb.table("documents").update(doc_data).eq("id", document_id).execute()
             )
-            emit_event(document_id, "status_update", {
-                "phase": phase, "status": status, "message": message, "progress": progress,
-            })
+            emit_event(
+                document_id,
+                "status_update",
+                {
+                    "phase": phase,
+                    "status": status,
+                    "message": message,
+                    "progress": progress,
+                },
+            )
         except Exception as e:
             logger.error("Status update failed for job %s: %s", document_id, e)
 
     def _check_cancelled(self, job_id: str):
         try:
             from app.pipeline.orchestrator import get_supabase_client
+
             sb = get_supabase_client()
             if not sb:
                 return
@@ -480,6 +540,7 @@ class PipelineOrchestrator:
         logger.info("Persisting partial results for failed job %s", job_id)
         try:
             from app.pipeline.orchestrator import build_structured_data
+
             structured_data = build_structured_data(doc_obj, partial=True)
             existing = sb.table("document_results").select("id").eq("document_id", job_id).execute()
             payload = {
@@ -520,12 +581,14 @@ class PipelineOrchestrator:
             return
         try:
             from app.middleware.prometheus_metrics import MetricsManager
+
             MetricsManager.record_pipeline_stage_duration(stage_key[1].lower(), time.perf_counter() - started_at)
         except Exception:
             pass
 
     def _run_with_timeout(self, func, timeout_sec, *args, cancel_event=None, **kwargs):
         import concurrent.futures
+
         executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
         future = executor.submit(func, *args, **kwargs)
         try:
@@ -587,6 +650,7 @@ class PipelineOrchestrator:
         quality_score = round(quality_ratio * 100, 2)
 
         from app.pipeline.orchestrator import build_structured_data, compute_quality_score
+
         structured_data = build_structured_data(doc_obj, partial=True)
         template_name = (
             doc_obj.template.template_name
@@ -594,6 +658,7 @@ class PipelineOrchestrator:
             else "default"
         )
         from app.pipeline.orchestrator import compute_quality_score
+
         quality_metrics = compute_quality_score(structured_data, template_name, validation_results)
 
         return {
@@ -667,6 +732,7 @@ class PipelineOrchestrator:
 
     def _export_document(self, doc_obj, input_path, job_id):
         from app.pipeline.orchestrator import Exporter
+
         self._check_stage_interface(Exporter(), "process", "Exporter")
         return self.stages.export_document(doc_obj, input_path, job_id)
 
@@ -677,4 +743,5 @@ class PipelineOrchestrator:
     @staticmethod
     def _safety_net(label: str):
         from app.pipeline.safety import safe_execution
+
         return safe_execution(label)

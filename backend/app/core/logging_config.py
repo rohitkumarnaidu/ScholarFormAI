@@ -12,9 +12,7 @@ from typing import Any
 SENSITIVE_PATTERNS: list[Pattern] = [
     re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"),
     re.compile(r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b"),
-    re.compile(
-        r"(?i)(api[_-]?key|apikey|secret|password|token|auth|credential)[:=]\s*['\"]?\S+['\"]?"
-    ),
+    re.compile(r"(?i)(api[_-]?key|apikey|secret|password|token|auth|credential)[:=]\s*['\"]?\S+['\"]?"),
     re.compile(r"\b[A-Za-z0-9+/]{20,}={0,2}\b"),
 ]
 

@@ -38,6 +38,7 @@ logger = logging.getLogger(__name__)
 LITELLM_AVAILABLE = False
 try:
     from litellm import completion as litellm_completion
+
     LITELLM_AVAILABLE = True
 except ImportError:
     pass
@@ -48,11 +49,19 @@ def _has_vision_capability(model_name: str) -> bool:
     if not model_name:
         return False
     vision_prefixes = {
-        "gpt-4o", "gpt-4-vision", "gpt-4-turbo",
-        "claude-3", "claude-3.5", "claude-3-opus",
-        "claude-3-sonnet", "claude-3-haiku",
-        "claude-3.5-sonnet", "claude-3.5-haiku",
-        "gemini-2.0", "gemini-2.5", "gemini-1.5",
+        "gpt-4o",
+        "gpt-4-vision",
+        "gpt-4-turbo",
+        "claude-3",
+        "claude-3.5",
+        "claude-3-opus",
+        "claude-3-sonnet",
+        "claude-3-haiku",
+        "claude-3.5-sonnet",
+        "claude-3.5-haiku",
+        "gemini-2.0",
+        "gemini-2.5",
+        "gemini-1.5",
         "gemini-pro-vision",
     }
     model_lower = model_name.lower()
@@ -275,10 +284,7 @@ class LLMPDFParser(BaseParser):
         document.add_processing_stage(
             stage_name="parsing",
             status="success",
-            message=(
-                f"Parsed PDF with LLM Vision API ({model_name}): "
-                f"{len(all_blocks)} blocks from {num_pages} pages"
-            ),
+            message=(f"Parsed PDF with LLM Vision API ({model_name}): {len(all_blocks)} blocks from {num_pages} pages"),
         )
         document.metadata.ai_hints = document.metadata.ai_hints or {}
         document.metadata.ai_hints["parser"] = "llm_vision"
@@ -314,10 +320,7 @@ class LLMPDFParser(BaseParser):
         document.add_processing_stage(
             stage_name="parsing",
             status="success",
-            message=(
-                f"Parsed PDF with LLM text+structure analysis: "
-                f"{len(blocks)} blocks"
-            ),
+            message=(f"Parsed PDF with LLM text+structure analysis: {len(blocks)} blocks"),
         )
         document.metadata.ai_hints = document.metadata.ai_hints or {}
         document.metadata.ai_hints["parser"] = "llm_text"
@@ -361,13 +364,15 @@ class LLMPDFParser(BaseParser):
             if text.strip():
                 block_id = generate_block_id(self.block_counter)
                 self.block_counter += 1
-                all_blocks.append(Block(
-                    block_id=block_id,
-                    text=text.strip(),
-                    index=self.block_counter * 100,
-                    block_type=BlockType.BODY,
-                    page_number=page_num + 1,
-                ))
+                all_blocks.append(
+                    Block(
+                        block_id=block_id,
+                        text=text.strip(),
+                        index=self.block_counter * 100,
+                        block_type=BlockType.BODY,
+                        page_number=page_num + 1,
+                    )
+                )
         pdf_doc.close()
 
         document.blocks = all_blocks
@@ -375,10 +380,7 @@ class LLMPDFParser(BaseParser):
         document.add_processing_stage(
             stage_name="parsing",
             status="success",
-            message=(
-                f"Parsed PDF with raw PyMuPDF extraction: "
-                f"{len(all_blocks)} blocks"
-            ),
+            message=(f"Parsed PDF with raw PyMuPDF extraction: {len(all_blocks)} blocks"),
         )
         document.metadata.ai_hints = document.metadata.ai_hints or {}
         document.metadata.ai_hints["parser"] = "pymupdf_raw"

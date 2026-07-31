@@ -14,7 +14,14 @@ from app.pipeline.tables import TableCaptionMatcher, TableExtractor, TableRender
 from app.pipeline.orchestrator.orchestrator import PipelineOrchestrator
 
 __all__ = [
-    "CaptionMatcher", "link_figures", "FigureAnalyzer", "figure_analyzer", "FigureRenderer",
-    "TableCaptionMatcher", "TableExtractor", "TableRenderer", "match_table_captions",
+    "CaptionMatcher",
+    "link_figures",
+    "FigureAnalyzer",
+    "figure_analyzer",
+    "FigureRenderer",
+    "TableCaptionMatcher",
+    "TableExtractor",
+    "TableRenderer",
+    "match_table_captions",
     "PipelineOrchestrator",
 ]

@@ -8,6 +8,7 @@ Generates and validates CSRF tokens for state-changing requests (POST/PUT/PATCH/
 Cookie-based token storage with validation.
 Exempts API routes that use Bearer token auth.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -47,8 +48,7 @@ def _get_csrf_secret() -> bytes:
     if secret:
         return secret.encode("utf-8")
     logger.critical(
-        "CSRF secret not configured. Set SIGNED_URL_SECRET or SUPABASE_JWT_SECRET. "
-        "CSRF validation will be skipped."
+        "CSRF secret not configured. Set SIGNED_URL_SECRET or SUPABASE_JWT_SECRET. CSRF validation will be skipped."
     )
     return None
 
