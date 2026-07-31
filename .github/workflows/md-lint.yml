@@ -31,8 +31,8 @@ jobs:
             !graphify-out/**
             !node_modules/**
             !.next/**
-            !.venv/**
-            !.venv_cli/**
+            !**/.venv/**
+            !**/.venv_cli/**
             !**/node_modules/**
             !frontend/coverage/**
             !backend/htmlcov/**
