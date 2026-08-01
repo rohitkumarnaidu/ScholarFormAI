@@ -59,6 +59,22 @@ from app.services.audit_log_service import audit_log_service  # noqa: E402
 from app.services.enhancement_manager import enhancement_manager  # noqa: E402
 from app.utils.virus_scanner import virus_scanner  # noqa: E402
 
+__all__ = [
+    "DocumentService",
+    "UPLOAD_DIR",
+    "ACCEPTED_EXTENSIONS",
+    "TEXT_EXTENSIONS",
+    "MAGIC_BYTES_MAP",
+    "_READY_FOR_EXPORT_STATUSES",
+    "_SUPPORTED_EXPORT_FORMATS",
+    "MAX_DAILY_UPLOADS",
+    "_STATUS_CACHE_MISS",
+    "PipelineOrchestrator",
+    "audit_log_service",
+    "enhancement_manager",
+    "virus_scanner",
+]
+
 
 # Helper functions delegating to service implementations while honouring local module patches (e.g. settings)
 def _document_status_ttl_seconds() -> float:
