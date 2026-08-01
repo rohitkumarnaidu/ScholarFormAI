@@ -726,6 +726,7 @@ class TestParserFactoryCoverageGaps:
                     from app.pipeline.parsing.parser_factory import ParserFactory
                     ParserFactory()
 
+    @pytest.mark.skip(reason="NougatParser removed from parsing package")
     def test_init_nougat_parser_exception(self):
         with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
             mock_s.ENABLE_NOUGAT_PARSER = True
