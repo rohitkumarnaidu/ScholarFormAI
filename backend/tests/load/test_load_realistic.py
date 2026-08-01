@@ -38,7 +38,7 @@ def _mock_generation_session():
 
 @pytest.fixture
 def mock_doc_service():
-    with patch("app.services.document_service.get_supabase_client") as mock_sb:
+    with patch("app.services.document_crud_service.get_supabase_client") as mock_sb:
         mock_client = MagicMock()
         mock_client.table.return_value.insert.return_value.execute.return_value.data = [_mock_upload_response()]
         mock_client.table.return_value.select.return_value.eq.return_value.execute.return_value.data = [
