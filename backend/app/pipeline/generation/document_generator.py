@@ -24,7 +24,7 @@ from app.pipeline.export.exporter import Exporter
 from app.pipeline.formatting.formatter import Formatter
 from app.pipeline.generation.content_parser import ContentParser
 from app.pipeline.generation.prompt_builder import PromptBuilder
-from app.routers.v1.stream import emit_event
+
 from app.services.document_service import DocumentService
 from app.utils.singleton import get_or_create
 
@@ -440,6 +440,7 @@ class DocumentGenerator:
 
     def _emit(self, job_id: str, **payload: Any) -> None:
         try:
+            from app.routers.v1.stream import emit_event
             emit_event(job_id, "status_update", payload)
         except Exception as exc:
             logger.debug("SSE emission failed for generation job %s: %s", job_id, exc)

@@ -39,7 +39,11 @@ markers = [
     "llm: marks tests that call LLM services",
     "slow: marks tests that take a long time",
     "contract: marks tests that verify API contracts against external services",
+    "chaos: chaos testing",
+    "security: security testing",
+    "ai_quality: AI quality testing",
 ]
+asyncio_default_fixture_loop_scope = "function"
 
 [tool.mypy]
 python_version = "3.12"
