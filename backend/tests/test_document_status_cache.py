@@ -48,13 +48,13 @@ async def test_document_status_cache_hits_within_ttl(monkeypatch):
     user = SimpleNamespace(id="user-1")
 
     with patch(
-        "app.routers.v1.documents_impl.DocumentService.get_document",
+        "app.services.document_crud_service.DocumentCrudService.get_document",
         return_value=_mock_document(),
     ) as mock_get_doc, patch(
-        "app.routers.v1.documents_impl.DocumentService.get_processing_statuses",
+        "app.services.document_crud_service.DocumentCrudService.get_processing_statuses",
         return_value=[{"phase": "EXTRACTION", "status": "running", "message": "extracting"}],
     ) as mock_get_statuses, patch(
-        "app.routers.v1.documents_impl.DocumentService.get_document_result",
+        "app.services.document_crud_service.DocumentCrudService.get_document_result",
         return_value={"validation_results": {"quality_summary": {"quality_score": 0.8}}},
     ) as mock_get_result:
         first_payload = await legacy_documents.get_status("job-1", current_user=user)
@@ -73,13 +73,13 @@ async def test_document_status_cache_scoped_by_user(monkeypatch):
     intruder = SimpleNamespace(id="user-2")
 
     with patch(
-        "app.routers.v1.documents_impl.DocumentService.get_document",
+        "app.services.document_crud_service.DocumentCrudService.get_document",
         return_value=_mock_document(owner="user-1"),
     ) as mock_get_doc, patch(
-        "app.routers.v1.documents_impl.DocumentService.get_processing_statuses",
+        "app.services.document_crud_service.DocumentCrudService.get_processing_statuses",
         return_value=[{"phase": "EXTRACTION", "status": "running"}],
     ) as mock_get_statuses, patch(
-        "app.routers.v1.documents_impl.DocumentService.get_document_result",
+        "app.services.document_crud_service.DocumentCrudService.get_document_result",
         return_value=None,
     ) as mock_get_result:
         await legacy_documents.get_status("job-1", current_user=owner)
@@ -98,13 +98,13 @@ async def test_document_status_cache_expires_after_ttl(monkeypatch):
     user = SimpleNamespace(id="user-1")
 
     with patch(
-        "app.routers.v1.documents_impl.DocumentService.get_document",
+        "app.services.document_crud_service.DocumentCrudService.get_document",
         return_value=_mock_document(),
     ) as mock_get_doc, patch(
-        "app.routers.v1.documents_impl.DocumentService.get_processing_statuses",
+        "app.services.document_crud_service.DocumentCrudService.get_processing_statuses",
         return_value=[{"phase": "EXTRACTION", "status": "running"}],
     ) as mock_get_statuses, patch(
-        "app.routers.v1.documents_impl.DocumentService.get_document_result",
+        "app.services.document_crud_service.DocumentCrudService.get_document_result",
         return_value=None,
     ) as mock_get_result:
         await legacy_documents.get_status("job-1", current_user=user)
@@ -122,13 +122,13 @@ async def test_document_status_cache_fetches_result_for_terminal_status(monkeypa
     user = SimpleNamespace(id="user-1")
 
     with patch(
-        "app.routers.v1.documents_impl.DocumentService.get_document",
+        "app.services.document_crud_service.DocumentCrudService.get_document",
         return_value=_mock_document(status="COMPLETED"),
     ) as mock_get_doc, patch(
-        "app.routers.v1.documents_impl.DocumentService.get_processing_statuses",
+        "app.services.document_crud_service.DocumentCrudService.get_processing_statuses",
         return_value=[{"phase": "PERSISTENCE", "status": "done", "message": "saved"}],
     ) as mock_get_statuses, patch(
-        "app.routers.v1.documents_impl.DocumentService.get_document_result",
+        "app.services.document_crud_service.DocumentCrudService.get_document_result",
         return_value={"validation_results": {"quality_summary": {"quality_score": 0.91}}},
     ) as mock_get_result:
         await legacy_documents.get_status("job-1", current_user=user)
