@@ -69,3 +69,5 @@ def downgrade() -> None:
     op.drop_index("ix_user_api_keys_provider", table_name="user_api_keys")
     op.drop_index("ix_user_api_keys_user_id", table_name="user_api_keys")
     op.drop_table("user_api_keys")
+
+__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']

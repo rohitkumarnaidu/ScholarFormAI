@@ -75,3 +75,5 @@ def downgrade() -> None:
     op.drop_table("generator_messages")
     op.drop_table("generator_sessions")
 
+
+__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']

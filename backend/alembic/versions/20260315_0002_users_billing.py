@@ -57,3 +57,5 @@ def downgrade() -> None:
         op.drop_column("profiles", "stripe_customer_id")
     if "plan_tier" in existing:
         op.drop_column("profiles", "plan_tier")
+
+__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']

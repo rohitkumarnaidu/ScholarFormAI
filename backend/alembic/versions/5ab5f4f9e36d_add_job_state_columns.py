@@ -147,3 +147,5 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_profiles_email'), table_name='profiles')
     op.drop_table('profiles')
     # ### end Alembic commands ###
+
+__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']
