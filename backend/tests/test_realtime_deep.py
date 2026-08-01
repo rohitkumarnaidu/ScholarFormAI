@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import json
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 
 pytestmark = pytest.mark.asyncio
 
@@ -296,9 +298,7 @@ class TestRedisPubSubDisconnected:
         task = asyncio.create_task(gen.__anext__())
         await asyncio.sleep(0.05)
         task.cancel()
-        try:
+        with contextlib.suppress(asyncio.CancelledError, StopAsyncIteration):
             await task
-        except (asyncio.CancelledError, StopAsyncIteration):
-            pass
         await asyncio.sleep(0.05)
         assert len(pubsub._fallback_channels.get("ch", set())) == 0

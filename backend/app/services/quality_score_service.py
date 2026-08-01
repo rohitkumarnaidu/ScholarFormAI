@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Iterable, List, Set
-
+from collections.abc import Iterable
+from typing import Any
 
 _TEMPLATE_REQUIREMENTS = {
     "ieee": [
@@ -48,21 +48,21 @@ def _normalize(value: Any) -> str:
     return " ".join(str(value or "").strip().lower().split())
 
 
-def _flatten_aliases(alias_groups: Iterable[Set[str]]) -> List[str]:
-    flattened: List[str] = []
+def _flatten_aliases(alias_groups: Iterable[set[str]]) -> list[str]:
+    flattened: list[str] = []
     for alias_group in alias_groups:
         flattened.extend(sorted(alias_group))
     return flattened
 
 
-def _display_section_name(alias_group: Set[str]) -> str:
+def _display_section_name(alias_group: set[str]) -> str:
     alias = sorted(alias_group)[0] if alias_group else "Section"
     return " ".join(part.capitalize() for part in _normalize(alias).split())
 
 
-def _dedupe_preserve_order(values: Iterable[str]) -> List[str]:
-    seen: Set[str] = set()
-    ordered: List[str] = []
+def _dedupe_preserve_order(values: Iterable[str]) -> list[str]:
+    seen: set[str] = set()
+    ordered: list[str] = []
     for value in values:
         normalized = _normalize(value)
         if not normalized or normalized in seen:
@@ -91,8 +91,8 @@ def _infer_provider_from_model(model_name: Any) -> str | None:
     return None
 
 
-def _extract_missing_sections(validation_results: Dict[str, Any]) -> List[str]:
-    missing: List[str] = []
+def _extract_missing_sections(validation_results: dict[str, Any]) -> list[str]:
+    missing: list[str] = []
     for item in (validation_results.get("errors") or []) + (validation_results.get("warnings") or []):
         if not isinstance(item, str):
             continue
@@ -103,7 +103,7 @@ def _extract_missing_sections(validation_results: Dict[str, Any]) -> List[str]:
     return _dedupe_preserve_order(missing)
 
 
-def _extract_llm_provider(validation_results: Dict[str, Any]) -> str | None:
+def _extract_llm_provider(validation_results: dict[str, Any]) -> str | None:
     direct_provider = _normalize(validation_results.get("llm_provider_used"))
     if direct_provider:
         return direct_provider
@@ -116,8 +116,8 @@ def _extract_llm_provider(validation_results: Dict[str, Any]) -> str | None:
     return _infer_provider_from_model(semantic_audit.get("model"))
 
 
-def _collect_present_sections(structured_data: Dict[str, Any]) -> Set[str]:
-    present: Set[str] = set()
+def _collect_present_sections(structured_data: dict[str, Any]) -> set[str]:
+    present: set[str] = set()
     metadata = structured_data.get("metadata") or {}
     if _normalize(metadata.get("abstract")):
         present.add("abstract")
@@ -133,8 +133,8 @@ def _collect_present_sections(structured_data: Dict[str, Any]) -> Set[str]:
 
 
 def _section_has_content(
-    aliases: Set[str],
-    structured_data: Dict[str, Any],
+    aliases: set[str],
+    structured_data: dict[str, Any],
 ) -> bool:
     normalized_aliases = {_normalize(alias) for alias in aliases}
     metadata = structured_data.get("metadata") or {}

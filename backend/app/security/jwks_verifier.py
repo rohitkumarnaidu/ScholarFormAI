@@ -7,7 +7,7 @@ import json
 import logging
 import threading
 import time
-from typing import Any, Dict, Optional
+from typing import Any
 
 import httpx
 import jwt
@@ -19,14 +19,14 @@ logger = logging.getLogger(__name__)
 
 _CACHE_TTL_SECONDS = 60 * 60
 _JWKS_LOCK = threading.Lock()
-_JWKS_CACHE: Dict[str, Any] = {"keys": {}, "fetched_at": 0.0}
+_JWKS_CACHE: dict[str, Any] = {"keys": {}, "fetched_at": 0.0}
 
 
 class _RetryableJWTError(Exception):
     pass
 
 
-def _resolve_jwks_url() -> Optional[str]:
+def _resolve_jwks_url() -> str | None:
     if settings.SUPABASE_JWKS_URL:
         explicit = settings.SUPABASE_JWKS_URL.rstrip("/")
         if explicit.endswith("/auth/v1/keys"):
@@ -39,7 +39,7 @@ def _resolve_jwks_url() -> Optional[str]:
     return None
 
 
-def _fetch_jwks() -> Dict[str, dict]:
+def _fetch_jwks() -> dict[str, dict]:
     url = _resolve_jwks_url()
     if not url:
         return {}
@@ -57,7 +57,7 @@ def _fetch_jwks() -> Dict[str, dict]:
         return {}
 
 
-def _get_cached_keys(*, refresh: bool = False) -> Dict[str, dict]:
+def _get_cached_keys(*, refresh: bool = False) -> dict[str, dict]:
     with _JWKS_LOCK:
         cached = dict(_JWKS_CACHE.get("keys") or {})
         fetched_at = float(_JWKS_CACHE.get("fetched_at") or 0.0)
@@ -66,7 +66,7 @@ def _get_cached_keys(*, refresh: bool = False) -> Dict[str, dict]:
     return _fetch_jwks()
 
 
-def _decode_with_secret(token: str, *, expected_issuer: Optional[str]) -> dict:
+def _decode_with_secret(token: str, *, expected_issuer: str | None) -> dict:
     if not settings.SUPABASE_JWT_SECRET:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -81,7 +81,7 @@ def _decode_with_secret(token: str, *, expected_issuer: Optional[str]) -> dict:
         issuer=expected_issuer,
         options={
             "verify_exp": True,
-            "verify_iss": True if expected_issuer else False,
+            "verify_iss": bool(expected_issuer),
         },
     )
 
@@ -102,7 +102,7 @@ def _public_key_from_jwk(jwk: dict):
     )
 
 
-def _decode_with_jwks(token: str, *, expected_issuer: Optional[str], refresh: bool = False) -> dict:
+def _decode_with_jwks(token: str, *, expected_issuer: str | None, refresh: bool = False) -> dict:
     header = jwt.get_unverified_header(token)
     kid = header.get("kid")
     alg = header.get("alg") or "RS256"
@@ -124,7 +124,7 @@ def _decode_with_jwks(token: str, *, expected_issuer: Optional[str], refresh: bo
             issuer=expected_issuer,
             options={
                 "verify_exp": True,
-                "verify_iss": True if expected_issuer else False,
+                "verify_iss": bool(expected_issuer),
             },
         )
     except (jwt.InvalidSignatureError, jwt.InvalidKeyError, jwt.DecodeError) as exc:

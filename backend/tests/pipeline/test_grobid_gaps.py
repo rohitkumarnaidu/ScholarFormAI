@@ -11,7 +11,6 @@ from requests import RequestException
 
 from app.pipeline.services.grobid_client import GROBIDClient
 
-
 SAMPLE_TEI_XML = """<?xml version="1.0" encoding="UTF-8"?>
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
@@ -149,7 +148,8 @@ class TestGROBIDClientRequest:
     @patch("app.pipeline.services.grobid_client.pybreaker")
     def test_request_with_circuit_breaker(self, mock_pybreaker, mock_req, mock_settings):
         mock_settings.EXTERNAL_CIRCUIT_BREAKER_ENABLED = True
-        real_call = lambda fn: fn()
+        def real_call(fn):
+            return fn()
         mock_pybreaker.CircuitBreaker.return_value.call.side_effect = real_call
         c = GROBIDClient()
         assert c.breaker is not None

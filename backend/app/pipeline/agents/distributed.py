@@ -6,10 +6,10 @@ Distributed processing with multi-agent coordination.
 """
 
 import logging
-from typing import List, Dict, Any
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ class AgentTask:
     task_id: str
     role: AgentRole
     document_path: str
-    parameters: Dict[str, Any] = field(default_factory=dict)
+    parameters: dict[str, Any] = field(default_factory=dict)
 
 
 class SpecialistAgent:
@@ -42,7 +42,7 @@ class SpecialistAgent:
     Specialist agent for a specific task.
     """
 
-    def __init__(self, role: AgentRole, tools: List[Any]):
+    def __init__(self, role: AgentRole, tools: list[Any]):
         """
         Initialize specialist agent.
 
@@ -56,7 +56,7 @@ class SpecialistAgent:
         self.tools = tools or []
         self.task_count = 0
 
-    def process(self, task: AgentTask) -> Dict[str, Any]:
+    def process(self, task: AgentTask) -> dict[str, Any]:
         """
         Process a task.
 
@@ -90,7 +90,7 @@ class SpecialistAgent:
             logger.error("%s failed on task %s: %s", self.role.value, task.task_id, exc)
             return {"error": str(exc), "role": self.role.value, "task_id": task.task_id}
 
-    def _process_metadata(self, task: AgentTask) -> Dict[str, Any]:
+    def _process_metadata(self, task: AgentTask) -> dict[str, Any]:
         """Process metadata extraction."""
         return {
             "task_id": task.task_id,
@@ -102,7 +102,7 @@ class SpecialistAgent:
             },
         }
 
-    def _process_layout(self, task: AgentTask) -> Dict[str, Any]:
+    def _process_layout(self, task: AgentTask) -> dict[str, Any]:
         """Process layout analysis."""
         return {
             "task_id": task.task_id,
@@ -114,7 +114,7 @@ class SpecialistAgent:
             },
         }
 
-    def _process_validation(self, task: AgentTask) -> Dict[str, Any]:
+    def _process_validation(self, task: AgentTask) -> dict[str, Any]:
         """Process validation."""
         return {
             "task_id": task.task_id,
@@ -126,7 +126,7 @@ class SpecialistAgent:
             },
         }
 
-    def _process_references(self, task: AgentTask) -> Dict[str, Any]:
+    def _process_references(self, task: AgentTask) -> dict[str, Any]:
         """Process reference extraction."""
         return {
             "task_id": task.task_id,
@@ -154,7 +154,7 @@ class DistributedCoordinator:
         if max_workers < 1:
             raise ValueError(f"max_workers must be >= 1, got {max_workers}")
         self.max_workers = max_workers
-        self.specialists: Dict[AgentRole, SpecialistAgent] = {}
+        self.specialists: dict[AgentRole, SpecialistAgent] = {}
         self._initialize_specialists()
 
     def _initialize_specialists(self) -> None:
@@ -170,7 +170,7 @@ class DistributedCoordinator:
             except Exception as exc:
                 logger.error("Failed to initialize specialist for role %s: %s", role.value, exc)
 
-    def process_document(self, document_path: str) -> Dict[str, Any]:
+    def process_document(self, document_path: str) -> dict[str, Any]:
         """
         Process document using distributed agents.
 
@@ -211,7 +211,7 @@ class DistributedCoordinator:
             "success": success,
         }
 
-    def _process_parallel(self, tasks: List[AgentTask]) -> List[Dict[str, Any]]:
+    def _process_parallel(self, tasks: list[AgentTask]) -> list[dict[str, Any]]:
         """
         Process tasks in parallel.
 
@@ -221,7 +221,7 @@ class DistributedCoordinator:
         Returns:
             List of results (one per task, always)
         """
-        results: List[Dict[str, Any]] = []
+        results: list[dict[str, Any]] = []
 
         try:
             with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
@@ -245,7 +245,7 @@ class DistributedCoordinator:
 
         return results
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get processing statistics. Always returns a valid dict."""
         try:
             return {

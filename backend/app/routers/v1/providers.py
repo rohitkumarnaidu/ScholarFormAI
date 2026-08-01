@@ -1,7 +1,6 @@
 import ipaddress
 import logging
 import time
-from typing import Optional, Union
 from urllib.parse import urlparse
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
@@ -9,17 +8,17 @@ from pydantic import BaseModel, Field, field_validator
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.utils.dependencies import get_current_user
+from app.models.custom_provider import CustomProvider
+from app.services.api_key_rate_limiter import get_api_key_rate_limiter
+from app.services.encryption_service import get_encryption_service
+from app.services.llm_service import resolve_user_api_key
 from app.services.provider_registry import (
-    list_available_models,
+    cache_discovered_models,
     get_builtin_providers,
     get_provider_info,
-    cache_discovered_models,
+    list_available_models,
 )
-from app.services.llm_service import resolve_user_api_key
-from app.services.encryption_service import get_encryption_service
-from app.services.api_key_rate_limiter import get_api_key_rate_limiter
-from app.models.custom_provider import CustomProvider
+from app.utils.dependencies import get_current_user
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +42,7 @@ _PROVIDER_LIST_CACHE: dict = {"data": None, "expires_at": 0.0}
 # ── Helpers ────────────────────────────────────────────────────────────── #
 
 
-def _try_parse_ip(host_str: str) -> Optional[Union[ipaddress.IPv4Address, ipaddress.IPv6Address]]:
+def _try_parse_ip(host_str: str) -> ipaddress.IPv4Address | ipaddress.IPv6Address | None:
     if not host_str:
         return None
     h = host_str.strip()
@@ -54,7 +53,7 @@ def _try_parse_ip(host_str: str) -> Optional[Union[ipaddress.IPv4Address, ipaddr
     try:
         return ipaddress.ip_address(h)
     except ValueError:
-        pass
+        pass  # intentionally ignored
 
     # 2. Integer or Hex single value (e.g. 2130706433 or 0x7f000001)
     try:
@@ -67,7 +66,7 @@ def _try_parse_ip(host_str: str) -> Optional[Union[ipaddress.IPv4Address, ipaddr
             if 0 <= val <= 0xFFFFFFFF:
                 return ipaddress.IPv4Address(val)
     except Exception:
-        pass
+        pass  # intentionally ignored
 
     # 3. Dotted format with potential octal/hex/decimal parts (inet_aton style)
     parts = h.split(".")
@@ -100,19 +99,17 @@ def _try_parse_ip(host_str: str) -> Optional[Union[ipaddress.IPv4Address, ipaddr
                 if 0 <= numeric_parts[0] <= 255 and 0 <= numeric_parts[1] <= 16777215:
                     val = (numeric_parts[0] << 24) | numeric_parts[1]
                     return ipaddress.IPv4Address(val)
-            elif len(numeric_parts) == 1:
-                if 0 <= numeric_parts[0] <= 0xFFFFFFFF:
-                    return ipaddress.IPv4Address(numeric_parts[0])
+            elif len(numeric_parts) == 1 and 0 <= numeric_parts[0] <= 0xFFFFFFFF:
+                return ipaddress.IPv4Address(numeric_parts[0])
         except Exception:
-            pass
+            pass  # intentionally ignored
 
     return None
 
 
-def _is_ip_private_or_reserved(ip: Union[ipaddress.IPv4Address, ipaddress.IPv6Address]) -> bool:
-    if isinstance(ip, ipaddress.IPv6Address):
-        if ip.ipv4_mapped is not None:
-            ip = ip.ipv4_mapped
+def _is_ip_private_or_reserved(ip: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
+    if isinstance(ip, ipaddress.IPv6Address) and ip.ipv4_mapped is not None:
+        ip = ip.ipv4_mapped
 
     if isinstance(ip, ipaddress.IPv4Address):
         if ip in ipaddress.IPv4Network("0.0.0.0/8"):
@@ -160,22 +157,20 @@ def _sanitize_url(url: str, allow_local: bool = False) -> str:
     ):
         raise HTTPException(status_code=422, detail="URL host not allowed")
 
-    if not allow_local:
-        if (
-            host_lower in SSRF_BLOCKED_HOSTS
-            or host_lower == "localhost"
-            or host_lower.endswith(".localhost")
-        ):
-            raise HTTPException(status_code=422, detail="URL host not allowed")
+    if not allow_local and (
+        host_lower in SSRF_BLOCKED_HOSTS
+        or host_lower == "localhost"
+        or host_lower.endswith(".localhost")
+    ):
+        raise HTTPException(status_code=422, detail="URL host not allowed")
 
     # Always check IP-based addresses regardless of allow_local,
     # to block cloud metadata endpoints and other dangerous IPs.
     parsed_ip = _try_parse_ip(host)
-    if parsed_ip is not None:
-        if _is_ip_private_or_reserved(parsed_ip):
-            # Allow loopback IPs only when allow_local is True
-            if not (allow_local and parsed_ip.is_loopback):
-                raise HTTPException(status_code=422, detail="URL host not allowed")
+    if parsed_ip is not None and _is_ip_private_or_reserved(parsed_ip):
+        # Allow loopback IPs only when allow_local is True
+        if not (allow_local and parsed_ip.is_loopback):
+            raise HTTPException(status_code=422, detail="URL host not allowed")
 
     return url.rstrip("/")
 
@@ -186,10 +181,10 @@ def _record_provider_metrics(action: str, provider_name: str = "", status: str =
 
         MetricsManager.record_provider_operation(action, status)
     except Exception:
-        pass
+        pass  # intentionally ignored
 
 
-async def _log_audit(user_id: str, action: str, resource_id: Optional[str], details: Optional[dict] = None) -> None:
+async def _log_audit(user_id: str, action: str, resource_id: str | None, details: dict | None = None) -> None:
     try:
         from app.services.audit_log_service import audit_log_service
 
@@ -215,10 +210,10 @@ def _get_user_id(user) -> str:
 class CustomProviderCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     base_url: str = Field(..., min_length=1, max_length=500)
-    api_key: Optional[str] = Field(None, min_length=8, max_length=2000)
+    api_key: str | None = Field(None, min_length=8, max_length=2000)
     models: list[str] = Field(default_factory=list, max_length=100)
     is_local: bool = Field(False)
-    description: Optional[str] = Field(None, max_length=500)
+    description: str | None = Field(None, max_length=500)
 
     @field_validator("base_url")
     @classmethod
@@ -232,24 +227,24 @@ class CustomProviderCreate(BaseModel):
 
 
 class CustomProviderUpdate(BaseModel):
-    name: Optional[str] = Field(None, min_length=1, max_length=100)
-    base_url: Optional[str] = Field(None, min_length=1, max_length=500)
-    api_key: Optional[str] = Field(None, min_length=8, max_length=2000)
-    models: Optional[list[str]] = Field(None, max_length=100)
-    is_local: Optional[bool] = None
-    description: Optional[str] = None
-    is_active: Optional[bool] = None
+    name: str | None = Field(None, min_length=1, max_length=100)
+    base_url: str | None = Field(None, min_length=1, max_length=500)
+    api_key: str | None = Field(None, min_length=8, max_length=2000)
+    models: list[str] | None = Field(None, max_length=100)
+    is_local: bool | None = None
+    description: str | None = None
+    is_active: bool | None = None
 
     @field_validator("base_url")
     @classmethod
-    def validate_base_url(cls, v: Optional[str]) -> Optional[str]:
+    def validate_base_url(cls, v: str | None) -> str | None:
         if v is None:
             return v
         return _sanitize_url(v, allow_local=True)
 
     @field_validator("models")
     @classmethod
-    def validate_models(cls, v: Optional[list[str]]) -> Optional[list[str]]:
+    def validate_models(cls, v: list[str] | None) -> list[str] | None:
         if v is None:
             return v
         return [m.strip()[:200] for m in v if m.strip()]
@@ -261,15 +256,15 @@ class CustomProviderResponse(BaseModel):
     base_url: str
     models: list[str] = Field(default_factory=list)
     is_local: bool = False
-    description: Optional[str] = None
+    description: str | None = None
     is_active: bool = True
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: str | None = None
+    updated_at: str | None = None
 
 
 class SyncModelsRequest(BaseModel):
     models: list[str] = Field(..., max_length=100)
-    provider_id: Optional[str] = Field(None, max_length=200)
+    provider_id: str | None = Field(None, max_length=200)
 
     @field_validator("models")
     @classmethod
@@ -282,8 +277,8 @@ class SyncModelsRequest(BaseModel):
 
 @router.get("/health")
 async def provider_health():
-    from app.services.provider_registry import BUILTIN_PROVIDERS
     from app.config.settings import settings
+    from app.services.provider_registry import BUILTIN_PROVIDERS
 
     results = {}
     for provider_id, info in BUILTIN_PROVIDERS.items():
@@ -317,7 +312,7 @@ async def get_builtin():
 @router.get("/{provider_id}/models")
 async def discover_models(
     provider_id: str,
-    base_url: Optional[str] = Query(None, max_length=500),
+    base_url: str | None = Query(None, max_length=500),
     db: Session = Depends(get_db),
     user=Depends(get_current_user),
 ):
@@ -334,8 +329,9 @@ async def discover_models(
         )
         key = resolve_user_api_key(provider_id, user_id) or info.get("env_key_actual", lambda: None)()
     else:
+        from sqlalchemy import and_, select
+
         from app.models.custom_provider import CustomProvider
-        from sqlalchemy import select, and_
 
         query = select(CustomProvider).where(and_(CustomProvider.id == provider_id, CustomProvider.user_id == user_id))
         cp = db.execute(query).scalar_one_or_none()
@@ -355,8 +351,9 @@ async def discover_models(
 
     try:
         if "ollama" in provider_id.lower() or "11434" in target_url:
-            async with httpx.AsyncClient(timeout=10) as client:
-                resp = await client.get(f"{_sanitize_url(target_url, allow_local=True)}/api/tags")
+            safe_base = _sanitize_url(target_url, allow_local=True)
+            async with httpx.AsyncClient(base_url=safe_base, timeout=10) as client:
+                resp = await client.get("/api/tags")
             if resp.status_code == 200:
                 models = [m["name"] for m in resp.json().get("models", [])]
                 return {"provider_id": provider_id, "models": models, "source": "ollama_api"}
@@ -375,8 +372,8 @@ async def discover_models(
         
         if not api_base.endswith("/v1"):
             api_base = api_base + "/v1"
-        async with httpx.AsyncClient(timeout=10) as client:
-            resp = await client.get(f"{api_base}/models", headers=headers)
+        async with httpx.AsyncClient(base_url=api_base, timeout=10) as client:
+            resp = await client.get("/models", headers=headers)
         if resp.status_code == 200:
             data = resp.json()
             models = [m["id"] for m in data.get("data", [])] if "data" in data else []
@@ -414,7 +411,7 @@ async def create_custom_provider(
 ):
     user_id = _get_user_id(user)
 
-    from sqlalchemy import select, func
+    from sqlalchemy import func, select
 
     raw_count = db.execute(select(func.count()).select_from(CustomProvider).where(CustomProvider.user_id == user_id)).scalar()
     try:
@@ -465,7 +462,7 @@ async def get_custom_provider(
     db: Session = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    user_id = _get_user_id(user)
+    _get_user_id(user)
 def _format_custom_provider_response(cp: Any) -> CustomProviderResponse:
     d = None
     try:
@@ -474,7 +471,7 @@ def _format_custom_provider_response(cp: Any) -> CustomProviderResponse:
             if isinstance(res, dict):
                 d = res
     except Exception:
-        pass
+        pass  # intentionally ignored
 
     if not d:
         d = {
@@ -498,7 +495,7 @@ async def get_custom_provider(
     user=Depends(get_current_user),
 ):
     user_id = _get_user_id(user)
-    from sqlalchemy import select, and_
+    from sqlalchemy import and_, select
 
     query = select(CustomProvider).where(and_(CustomProvider.id == provider_id, CustomProvider.user_id == user_id))
     cp = db.execute(query).scalar_one_or_none()
@@ -514,7 +511,7 @@ async def update_custom_provider(
     db: Session = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    from sqlalchemy import select, and_
+    from sqlalchemy import and_, select
 
     user_id = _get_user_id(user)
     query = select(CustomProvider).where(and_(CustomProvider.id == provider_id, CustomProvider.user_id == user_id))
@@ -551,7 +548,7 @@ async def delete_custom_provider(
     db: Session = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    from sqlalchemy import select, and_
+    from sqlalchemy import and_, select
 
     user_id = _get_user_id(user)
     query = select(CustomProvider).where(and_(CustomProvider.id == provider_id, CustomProvider.user_id == user_id))
@@ -569,9 +566,9 @@ async def delete_custom_provider(
 async def test_provider_connection(
     request: Request,
     provider_id: str = Query(..., min_length=1, max_length=200),
-    base_url: Optional[str] = Query(None, max_length=500),
-    api_key: Optional[str] = Query(None, max_length=2000),
-    model: Optional[str] = Query(None, max_length=200),
+    base_url: str | None = Query(None, max_length=500),
+    api_key: str | None = Query(None, max_length=2000),
+    model: str | None = Query(None, max_length=200),
     db: Session = Depends(get_db),
     user=Depends(get_current_user),
 ):
@@ -597,7 +594,7 @@ async def test_provider_connection(
             base = info.get("base_url", "")
             test_url = base() if callable(base) else base
         else:
-            from sqlalchemy import select, and_
+            from sqlalchemy import and_, select
 
             user_id = _get_user_id(user)
             query = select(CustomProvider).where(
@@ -618,7 +615,8 @@ async def test_provider_connection(
                 headers["Authorization"] = f"Bearer {test_key}"
 
             if "ollama" in provider_id.lower() or (test_url and "11434" in test_url):
-                resp = await client.get(f"{test_url}/api/tags", timeout=10)
+                async with httpx.AsyncClient(base_url=test_url, timeout=10) as client:
+                    resp = await client.get("/api/tags")
                 ms = round((time.time() - start) * 1000, 2)
                 if resp.status_code == 200:
                     models = [m["name"] for m in resp.json().get("models", [])]
@@ -636,11 +634,9 @@ async def test_provider_connection(
                     "response_time_ms": ms,
                 }
 
-            resp = await client.get(
-                f"{test_url}/models" if not test_url.endswith("/v1") else f"{test_url}/models",
-                headers=headers,
-                timeout=10,
-            )
+            api_base = test_url if test_url.endswith("/v1") else f"{test_url}/v1"
+            async with httpx.AsyncClient(base_url=api_base, timeout=10) as client:
+                resp = await client.get("/models", headers=headers)
             ms = round((time.time() - start) * 1000, 2)
             if resp.status_code == 200:
                 data = resp.json()

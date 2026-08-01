@@ -6,7 +6,6 @@ from __future__ import annotations
 import asyncio
 import logging
 from types import SimpleNamespace
-from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
@@ -46,12 +45,12 @@ def _to_document_list_item(doc: dict) -> dict:
 @router.get("")
 async def list_documents(
     request: Request,
-    cursor: Optional[str] = Query(None, description="Base64-encoded cursor from previous page"),
+    cursor: str | None = Query(None, description="Base64-encoded cursor from previous page"),
     limit: int = Query(50, ge=1, le=100, description="Number of items per page"),
     order_by: str = Query("created_at", description="Column to order results by"),
     order_dir: str = Query("desc", description="Order direction: asc or desc"),
-    status: Optional[str] = Query(None, description="Filter by document status"),
-    template: Optional[str] = Query(None, description="Filter by template name"),
+    status: str | None = Query(None, description="Filter by document status"),
+    template: str | None = Query(None, description="Filter by template name"),
     current_user: User = Depends(get_current_user),
 ):
     _require_db()

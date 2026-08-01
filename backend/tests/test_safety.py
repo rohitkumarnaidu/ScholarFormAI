@@ -55,8 +55,9 @@ class TestRetryGuard:
 
 class TestValidateOutput:
     def test_pydantic_schema_dict_input(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.validator_guard import validate_output
 
         class TestSchema(BaseModel):
             name: str
@@ -80,8 +81,9 @@ class TestValidateOutput:
         assert result == {}
 
     def test_pydantic_validation_error_returns_fallback(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.validator_guard import validate_output
 
         class TestSchema(BaseModel):
             name: str
@@ -108,7 +110,7 @@ class TestSafeExecution:
     def test_context_manager_does_not_raise(self):
         from app.pipeline.safety.safe_execution import safe_execution
         with safe_execution("test_op"):
-            result = 1 + 1
+            pass
         assert True
 
     def test_context_manager_suppresses_exception(self):

@@ -9,6 +9,7 @@ to ensure consistent interface across the pipeline.
 """
 
 from abc import ABC, abstractmethod
+
 from app.models import PipelineDocument as Document
 
 

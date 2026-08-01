@@ -30,12 +30,11 @@ def client():
 
     with (
         patch("app.routers.v1.api_keys.get_db", return_value=mock_db),
-        patch("app.routers.v1.api_keys.ApiKeyService", return_value=mock_service),
+        patch("app.routers.v1.api_keys.ApiKeyService", return_value=mock_service),TestClient(app) as test_client
     ):
-        with TestClient(app) as test_client:
-            test_client.mock_service = mock_service
-            test_client.mock_user = mock_user
-            yield test_client
+        test_client.mock_service = mock_service
+        test_client.mock_user = mock_user
+        yield test_client
 
     app.dependency_overrides = {}
 
@@ -151,8 +150,9 @@ class TestDeleteApiKey:
 
 class TestUsageStats:
     def test_get_stats_direct(self):
-        from app.routers.v1.api_keys import get_usage_stats
         from unittest.mock import MagicMock
+
+        from app.routers.v1.api_keys import get_usage_stats
 
         service = MagicMock()
         service.get_usage_stats.return_value = {
@@ -164,10 +164,10 @@ class TestUsageStats:
         assert "openai" in result
 
     def test_get_key_usage_direct(self):
-        from app.routers.v1.api_keys import get_key_usage
+        import asyncio
         from unittest.mock import MagicMock
 
-        import asyncio
+        from app.routers.v1.api_keys import get_key_usage
 
         key = MagicMock()
         key.total_requests = 5
@@ -190,19 +190,18 @@ class TestUsageStats:
         assert result["key_id"] == "key-1"
 
     def test_get_key_usage_not_found_direct(self):
-        from app.routers.v1.api_keys import get_key_usage
+        import asyncio
         from unittest.mock import MagicMock
 
-        import asyncio
+        from app.routers.v1.api_keys import get_key_usage
 
         service = MagicMock()
         service.get_key.return_value = None
 
         with (
-            patch("app.routers.v1.api_keys.ApiKeyService", return_value=service),
+            patch("app.routers.v1.api_keys.ApiKeyService", return_value=service),pytest.raises(Exception)
         ):
-            with pytest.raises(Exception):
-                asyncio.run(get_key_usage(key_id="nonexistent", db=MagicMock(), user=MagicMock()))
+            asyncio.run(get_key_usage(key_id="nonexistent", db=MagicMock(), user=MagicMock()))
 
 
 class TestProviders:
@@ -213,8 +212,9 @@ class TestProviders:
                 "openai": {"name": "OpenAI", "default_rpm": 60, "default_rph": 1000, "default_daily": 10000},
             },
         ):
-            from app.routers.v1.api_keys import get_supported_providers
             import asyncio
+
+            from app.routers.v1.api_keys import get_supported_providers
             result = asyncio.run(get_supported_providers())
         assert "openai" in result
         assert result["openai"].default_rpm == 60

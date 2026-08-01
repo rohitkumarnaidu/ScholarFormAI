@@ -1,15 +1,18 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument, Block, BlockType, Figure, DocumentMetadata
-from app.models import PipelineDocument, Block, BlockType, Figure, DocumentMetadata
 from __future__ import annotations
-import time
-import threading
+
 import hashlib
 import sys
+import threading
+import time
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
+
+from app.models import Block, BlockType, DocumentMetadata, Figure, PipelineDocument
+
 
 @pytest.fixture
 def orch():
@@ -220,7 +223,7 @@ class TestOrchestratorMetrics:
 
     def test_record_stage_transition_completed(self, orch):
         orch._stage_start_times[("job1", "EXTRACTION")] = time.perf_counter() - 1.0
-        with patch("app.middleware.prometheus_metrics.MetricsManager") as mock_mm:
+        with patch("app.middleware.prometheus_metrics.MetricsManager"):
             orch._record_stage_transition("job1", "EXTRACTION", "COMPLETED")
         assert ("job1", "EXTRACTION") not in orch._stage_start_times
 
@@ -579,7 +582,7 @@ class TestOrchestratorPipelineStages:
         parser.parse.return_value = doc
         factory.get_parser.return_value = parser
         orch.converter.convert_to_docx.return_value = "/tmp/converted.docx"
-        result = orch._run_extraction_stage(factory, "/path/file.doc", "job1", {}, ".doc")
+        orch._run_extraction_stage(factory, "/path/file.doc", "job1", {}, ".doc")
         orch.converter.convert_to_docx.assert_called_with("/path/file.doc", "job1")
         factory.get_parser.assert_called_with("/tmp/converted.docx")
 
@@ -589,7 +592,7 @@ class TestOrchestratorPipelineStages:
         doc = MagicMock()
         parser.parse.return_value = doc
         factory.get_parser.return_value = parser
-        result = orch._run_extraction_stage(factory, "/path/file.docx", "job1", {}, ".docx")
+        orch._run_extraction_stage(factory, "/path/file.docx", "job1", {}, ".docx")
         orch.converter.convert_to_docx.assert_called_once()
 
     def test_run_structure_detection(self, orch):
@@ -660,10 +663,9 @@ class TestOrchestratorExport:
         doc = MagicMock()
         doc.output_path = None
         exporter_mock = MagicMock()
-        with patch("app.pipeline.orchestrator.Exporter", return_value=exporter_mock):
-            with patch("os.makedirs"):
-                with patch("os.path.abspath", return_value="/tmp/output/file_formatted.docx"):
-                    result = orch._export_document(doc, "/path/file.docx", "job1")
+        with patch("app.pipeline.orchestrator.Exporter", return_value=exporter_mock), patch("os.makedirs"):
+            with patch("os.path.abspath", return_value="/tmp/output/file_formatted.docx"):
+                result = orch._export_document(doc, "/path/file.docx", "job1")
         assert result == "/tmp/output/file_formatted.docx"
         assert doc.output_path == "/tmp/output/file_formatted.docx"
 
@@ -672,9 +674,8 @@ class TestOrchestratorExport:
         with patch("app.pipeline.orchestrator.Exporter") as mock_exp:
             exporter = mock_exp.return_value
             del exporter.process
-            with patch("os.makedirs"):
-                with pytest.raises(RuntimeError, match="Pipeline Stage Error"):
-                    orch._export_document(doc, "/path/file.docx", "job1")
+            with patch("os.makedirs"), pytest.raises(RuntimeError, match="Pipeline Stage Error"):
+                orch._export_document(doc, "/path/file.docx", "job1")
 
 
 # ── Run pipeline ────────────────────────────────────────────────────────────
@@ -683,7 +684,7 @@ class TestOrchestratorRunPipeline:
     def test_run_pipeline_busy_semaphore(self, orch):
         with patch("app.pipeline.orchestrator._pipeline_semaphore") as mock_sem:
             mock_sem.acquire.return_value = False
-            with patch.object(orch, "_update_status") as mock_us:
+            with patch.object(orch, "_update_status"):
                 result = orch.run_pipeline("/path/file.pdf", "job1")
         assert result["status"] == "failed"
         assert "busy" in result["reason"]
@@ -738,10 +739,10 @@ class TestOrchestratorRunPipelineInternal:
                             with patch.object(orch, "analyzer"):
                                 with patch.object(orch, "_update_status"):
                                     with patch("app.pipeline.orchestrator.execute_with_retry", side_effect=lambda fn, doc: doc):
-                                        with patch("app.pipeline.orchestrator.CaptionMatcher") as mock_cm:
-                                            with patch("app.pipeline.orchestrator.TableCaptionMatcher") as mock_tcm:
-                                                with patch("app.pipeline.orchestrator.ReferenceParser") as mock_rp:
-                                                    with patch("app.pipeline.orchestrator.AIExplainer") as mock_ae:
+                                        with patch("app.pipeline.orchestrator.CaptionMatcher"):
+                                            with patch("app.pipeline.orchestrator.TableCaptionMatcher"):
+                                                with patch("app.pipeline.orchestrator.ReferenceParser"):
+                                                    with patch("app.pipeline.orchestrator.AIExplainer"):
                                                         with patch("app.pipeline.orchestrator.build_structured_data", return_value={"data": "test"}):
                                                             with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 95.0}):
                                                                 with patch.object(orch, "_compute_sha256", return_value="abc123"):
@@ -770,9 +771,9 @@ class TestOrchestratorRunPipelineInternal:
                     with patch.object(orch, "_run_formatting_stage", return_value=doc):
                         with patch.object(orch, "_update_status"):
                             with patch("app.pipeline.orchestrator.execute_with_retry", side_effect=lambda fn, doc: doc):
-                                with patch("app.pipeline.orchestrator.CaptionMatcher") as mock_cm:
-                                    with patch("app.pipeline.orchestrator.TableCaptionMatcher") as mock_tcm:
-                                        with patch("app.pipeline.orchestrator.ReferenceParser") as mock_rp:
+                                with patch("app.pipeline.orchestrator.CaptionMatcher"):
+                                    with patch("app.pipeline.orchestrator.TableCaptionMatcher"):
+                                        with patch("app.pipeline.orchestrator.ReferenceParser"):
                                             with patch("app.pipeline.orchestrator.build_structured_data", return_value={}):
                                                 with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 0.0}):
                                                     with patch.object(orch, "_check_cancelled"):
@@ -804,10 +805,10 @@ class TestOrchestratorRunPipelineInternal:
                         with patch.object(orch, "_export_document", return_value=str(tmp_path / "out.docx")):
                             with patch.object(orch, "_update_status"):
                                 with patch("app.pipeline.orchestrator.execute_with_retry", side_effect=lambda fn, doc: doc):
-                                    with patch("app.pipeline.orchestrator.CaptionMatcher") as mock_cm:
-                                        with patch("app.pipeline.orchestrator.TableCaptionMatcher") as mock_tcm:
-                                            with patch("app.pipeline.orchestrator.ReferenceParser") as mock_rp:
-                                                with patch("app.pipeline.orchestrator.AIExplainer") as mock_ae:
+                                    with patch("app.pipeline.orchestrator.CaptionMatcher"):
+                                        with patch("app.pipeline.orchestrator.TableCaptionMatcher"):
+                                            with patch("app.pipeline.orchestrator.ReferenceParser"):
+                                                with patch("app.pipeline.orchestrator.AIExplainer"):
                                                     with patch("app.pipeline.orchestrator.build_structured_data", return_value={}):
                                                         with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 90.0}):
                                                             with patch.object(orch, "_compute_sha256", return_value="abc"):
@@ -903,7 +904,7 @@ class TestOrchestratorEditFlow:
                             pipeline_doc = MagicMock()
                             pipeline_doc.generated_doc = MagicMock()
                             fmt_instance.process.return_value = pipeline_doc
-                            with patch("app.pipeline.orchestrator.Exporter") as mock_exp:
+                            with patch("app.pipeline.orchestrator.Exporter"):
                                 with patch("os.makedirs"):
                                     with patch("os.path.splitext", return_value=("test", ".docx")):
                                         with patch("os.path.abspath", return_value="/tmp/output/test_edited.docx"):
@@ -953,7 +954,7 @@ class TestOrchestratorEditFlow:
                             pipeline_doc.generated_doc = MagicMock()
                             fmt_instance.process.return_value = pipeline_doc
                             with patch("app.pipeline.orchestrator.Exporter"):
-                                with patch("app.pipeline.orchestrator.AIExplainer") as mock_ae:
+                                with patch("app.pipeline.orchestrator.AIExplainer"):
                                     with patch("os.makedirs"):
                                         with patch("os.path.splitext", return_value=("test", ".docx")):
                                             with patch("os.path.abspath", return_value="/tmp/output/test_edited.docx"):

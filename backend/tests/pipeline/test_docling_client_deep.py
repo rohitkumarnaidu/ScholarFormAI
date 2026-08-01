@@ -1,6 +1,9 @@
 from __future__ import annotations
+
+from unittest.mock import MagicMock, PropertyMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock, PropertyMock
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -218,7 +221,7 @@ class TestDoclingClientExtractElements:
 
 class TestDoclingClientDetectHeadersFooters:
     def test_headers_and_footers(self):
-        from app.pipeline.services.docling_client import DoclingClient, BoundingBox, LayoutElement
+        from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
         c = DoclingClient()
         el1 = LayoutElement(text="Header", bbox=BoundingBox(0, 0, 100, 30), element_type="text")
         el2 = LayoutElement(text="Body", bbox=BoundingBox(0, 300, 100, 350), element_type="text")
@@ -237,7 +240,7 @@ class TestDoclingClientDetectHeadersFooters:
         assert footers == []
 
     def test_multiple_pages(self):
-        from app.pipeline.services.docling_client import DoclingClient, BoundingBox, LayoutElement
+        from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
         c = DoclingClient()
         p1_header = LayoutElement(text="P1 Header", bbox=BoundingBox(0, 0, 100, 20, page=1), element_type="text")
         p1_body = LayoutElement(text="P1 Body", bbox=BoundingBox(0, 200, 100, 400, page=1), element_type="text")
@@ -346,13 +349,13 @@ class TestDoclingClientCalculateConfidence:
         assert c._calculate_confidence([]) == 0.0
 
     def test_single_element(self):
-        from app.pipeline.services.docling_client import DoclingClient, BoundingBox, LayoutElement
+        from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
         c = DoclingClient()
         elem = LayoutElement(text="A", bbox=BoundingBox(0, 0, 10, 10), element_type="text", confidence=0.8)
         assert c._calculate_confidence([elem]) == 0.8
 
     def test_multiple_elements(self):
-        from app.pipeline.services.docling_client import DoclingClient, BoundingBox, LayoutElement
+        from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
         c = DoclingClient()
         e1 = LayoutElement(text="A", bbox=BoundingBox(0, 0, 10, 10), element_type="text", confidence=0.9)
         e2 = LayoutElement(text="B", bbox=BoundingBox(0, 0, 10, 10), element_type="text", confidence=0.7)
@@ -374,14 +377,14 @@ class TestDoclingClientEmptyLayout:
 
 class TestDoclingClientFindTitle:
     def test_no_candidates_returns_none(self):
-        from app.pipeline.services.docling_client import DoclingClient, BoundingBox, LayoutElement
+        from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
         c = DoclingClient()
         elem = LayoutElement(text="Logo", bbox=BoundingBox(0, 0, 100, 50), element_type="text")
         result = c.find_title_with_logo_tolerance([elem], logo_y_threshold=100)
         assert result is None
 
     def test_selects_largest_font(self):
-        from app.pipeline.services.docling_client import DoclingClient, BoundingBox, LayoutElement
+        from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
         c = DoclingClient()
         small = LayoutElement(text="Small", bbox=BoundingBox(0, 200, 100, 250), element_type="text", font_size=12)
         large = LayoutElement(text="Large", bbox=BoundingBox(0, 200, 100, 250), element_type="text", font_size=24)
@@ -395,7 +398,7 @@ class TestDoclingClientFindTitle:
         assert c.find_title_with_logo_tolerance([]) is None
 
     def test_font_size_none_handling(self):
-        from app.pipeline.services.docling_client import DoclingClient, BoundingBox, LayoutElement
+        from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
         c = DoclingClient()
         elem = LayoutElement(text="No font", bbox=BoundingBox(0, 200, 100, 250), element_type="text")
         result = c.find_title_with_logo_tolerance([elem], logo_y_threshold=50)
@@ -447,12 +450,12 @@ class TestBoundingBoxEdgeCases:
 
 class TestLayoutElementEdgeCases:
     def test_default_confidence(self):
-        from app.pipeline.services.docling_client import LayoutElement, BoundingBox
+        from app.pipeline.services.docling_client import BoundingBox, LayoutElement
         e = LayoutElement(text="Test", bbox=BoundingBox(0, 0, 10, 10), element_type="text")
         assert e.confidence == 1.0
 
     def test_is_bold_italic_defaults(self):
-        from app.pipeline.services.docling_client import LayoutElement, BoundingBox
+        from app.pipeline.services.docling_client import BoundingBox, LayoutElement
         e = LayoutElement(text="Test", bbox=BoundingBox(0, 0, 10, 10), element_type="text")
         assert e.is_bold is False
         assert e.is_italic is False

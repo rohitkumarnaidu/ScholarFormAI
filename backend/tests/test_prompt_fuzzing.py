@@ -10,7 +10,6 @@ Sections:
 
 import pytest
 
-
 # ===================================================================
 #  Mutation Helpers
 # ===================================================================
@@ -54,10 +53,7 @@ _INJECTION_PATTERNS_FUZZ = [
 
 def _contains_injection_attempt(text: str) -> bool:
     lowered = text.lower()
-    for pattern in _INJECTION_PATTERNS_FUZZ:
-        if pattern in lowered:
-            return True
-    return False
+    return any(pattern in lowered for pattern in _INJECTION_PATTERNS_FUZZ)
 
 
 # ===================================================================
@@ -87,7 +83,8 @@ class TestPromptMutation:
         assert "=== Paper Details ===" not in mutated
         assert "=== Instructions ===" not in mutated
         assert "Return ONLY" in mutated  # json instruction may survive
-        assert isinstance(mutated, str) and len(mutated) > 0
+        assert isinstance(mutated, str)
+        assert len(mutated) > 0
 
     @pytest.mark.unit
     @pytest.mark.ai_quality

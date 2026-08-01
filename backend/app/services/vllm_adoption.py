@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from typing import Any, Dict
+from datetime import UTC, datetime
+from typing import Any
 
 from app.config.settings import settings
 
@@ -30,7 +30,7 @@ def get_llm_tokens_total() -> float:
     return _counter_total(AGENT_LLM_TOKENS_TOTAL)
 
 
-def build_vllm_adoption_report() -> Dict[str, Any]:
+def build_vllm_adoption_report() -> dict[str, Any]:
     requests_total = get_llm_requests_total()
     tokens_total = get_llm_tokens_total()
 
@@ -68,5 +68,5 @@ def build_vllm_adoption_report() -> Dict[str, Any]:
                 "Promote to primary only after latency/cost SLO validation.",
             ],
         },
-        "evaluated_at": datetime.now(timezone.utc).isoformat(),
+        "evaluated_at": datetime.now(UTC).isoformat(),
     }

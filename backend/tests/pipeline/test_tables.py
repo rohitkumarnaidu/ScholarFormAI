@@ -6,8 +6,11 @@ Test suite for tables pipeline: extractor, renderer, caption matcher.
 """
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
+
+from unittest.mock import MagicMock, patch
+
 import pytest
+
 from app.pipeline.tables.caption_matcher import TableCaptionMatcher
 from app.pipeline.tables.extractor import TableExtractor
 from app.pipeline.tables.renderer import TableRenderer
@@ -29,7 +32,7 @@ class TestTableCaptionMatcher:
         assert result is doc
 
     def test_process_no_tables_returns_early(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=1, text="Results are in Table 1.", block_type=BlockType.BODY),
         ])
@@ -37,7 +40,7 @@ class TestTableCaptionMatcher:
         assert result is doc
 
     def test_process_with_tables_and_captions(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Table 1. Performance comparison.", block_type=BlockType.BODY),
@@ -51,7 +54,7 @@ class TestTableCaptionMatcher:
         assert result.tables[0].table_id == "t1"
 
     def test_adds_stage_info(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t",
             blocks=[Block(block_id="b1", index=0, text="Table 1. Testing.", block_type=BlockType.BODY)],
             tables=[Table(table_id="t1", num_rows=0, num_cols=0, index=0, block_index=0)],
@@ -66,7 +69,7 @@ class TestTableCaptionMatcher:
         assert matcher.search_window_below == 2
 
     def test_caption_above_table_is_matched(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Table 1. Accuracy metrics.", block_type=BlockType.BODY),
@@ -78,7 +81,7 @@ class TestTableCaptionMatcher:
         assert result.tables[0].caption_text is not None
 
     def test_multiple_tables_multiple_captions(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Table 1. First table.", block_type=BlockType.BODY),
@@ -96,7 +99,7 @@ class TestTableCaptionMatcher:
         assert result.tables[1].caption_text == "Table 2. Second table."
 
     def test_headings_are_not_captions(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Table 1. Introduction", block_type=BlockType.HEADING_1),

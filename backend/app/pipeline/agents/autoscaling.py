@@ -6,9 +6,9 @@ Auto-scaling for dynamic specialist pool sizing.
 """
 
 import logging
-from typing import Dict, Any, List
-from concurrent.futures import ThreadPoolExecutor
 import time
+from concurrent.futures import ThreadPoolExecutor
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -65,10 +65,10 @@ class AutoScalingManager:
         self.current_workers = min_workers
         self.executor = ThreadPoolExecutor(max_workers=min_workers)
 
-        self.metrics_history: List[Dict[str, float]] = []
-        self.scaling_events: List[Dict[str, Any]] = []
+        self.metrics_history: list[dict[str, float]] = []
+        self.scaling_events: list[dict[str, Any]] = []
 
-    def get_system_metrics(self) -> Dict[str, float]:
+    def get_system_metrics(self) -> dict[str, float]:
         """
         Get current system metrics.
 
@@ -100,7 +100,7 @@ class AutoScalingManager:
                 "timestamp": time.time(),
             }
 
-    def should_scale_up(self, metrics: Dict[str, float]) -> bool:
+    def should_scale_up(self, metrics: dict[str, float]) -> bool:
         """
         Determine if should scale up.
 
@@ -125,7 +125,7 @@ class AutoScalingManager:
             logger.error("Error in should_scale_up: %s", exc)
         return False
 
-    def should_scale_down(self, metrics: Dict[str, float]) -> bool:
+    def should_scale_down(self, metrics: dict[str, float]) -> bool:
         """
         Determine if should scale down.
 
@@ -229,7 +229,7 @@ class AutoScalingManager:
         self.auto_scale()
         return self.executor
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get scaling statistics. Always returns a valid dict."""
         try:
             recent_metrics = self.metrics_history[-10:] if self.metrics_history else []

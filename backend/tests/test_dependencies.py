@@ -1,13 +1,16 @@
 from __future__ import annotations
-import pytest
-from unittest.mock import patch, MagicMock
+
+from unittest.mock import MagicMock, patch
+
 import jwt
+import pytest
 
 
 class TestDependencies:
     def test_get_current_user_no_credentials(self):
-        from app.utils.dependencies import get_current_user
         from fastapi import HTTPException
+
+        from app.utils.dependencies import get_current_user
         request = MagicMock()
         request.query_params.get.return_value = None
         with pytest.raises(HTTPException) as exc:
@@ -15,8 +18,9 @@ class TestDependencies:
         assert exc.value.status_code == 401
 
     def test_get_current_user_query_token_rejected(self):
-        from app.utils.dependencies import get_current_user
         from fastapi import HTTPException
+
+        from app.utils.dependencies import get_current_user
         request = MagicMock()
         request.query_params.get.return_value = "some_token"
         with pytest.raises(HTTPException) as exc:
@@ -36,8 +40,9 @@ class TestDependencies:
                 assert user.email == "test@test.com"
 
     def test_get_current_user_expired_token(self):
-        from app.utils.dependencies import get_current_user
         from fastapi import HTTPException
+
+        from app.utils.dependencies import get_current_user
         credentials = MagicMock()
         credentials.credentials = "expired"
         request = MagicMock()
@@ -81,8 +86,9 @@ class TestDependencies:
         assert result is user
 
     def test_require_admin_user_non_admin(self):
-        from app.utils.dependencies import require_admin_user
         from fastapi import HTTPException
+
+        from app.utils.dependencies import require_admin_user
         user = MagicMock()
         user.role = "user"
         user.app_metadata = {}

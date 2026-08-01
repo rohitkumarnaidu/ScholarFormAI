@@ -7,11 +7,12 @@ Template Integration Tests
 Tests the integration of docxtpl template rendering with the pipeline.
 """
 
-import pytest
 from pathlib import Path
 
+import pytest
+
+from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
 from app.pipeline.formatting.template_renderer import TemplateRenderer
-from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
 
 
 @pytest.mark.integration
@@ -28,14 +29,14 @@ class TestTemplateIntegration:
         ieee_template = Path("app/templates/ieee/template.docx")
         assert ieee_template.exists(), "IEEE template should exist"
         
-        print(f"\n✅ IEEE template loaded")
+        print("\n✅ IEEE template loaded")
     
     def test_apa_template_loading(self, template_renderer):
         """Test APA template loading."""
         apa_template = Path("app/templates/apa/template.docx")
         assert apa_template.exists(), "APA template should exist"
         
-        print(f"\n✅ APA template loaded")
+        print("\n✅ APA template loaded")
     
     def test_template_rendering_with_content(self, template_renderer):
         """Test template rendering with document content."""

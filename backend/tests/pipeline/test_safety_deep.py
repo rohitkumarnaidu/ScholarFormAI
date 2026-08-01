@@ -2,8 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 from unittest.mock import MagicMock, patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -28,7 +31,7 @@ class TestCircuitBreaker:
 
     def test_pybreaker_failure_and_trip(self):
         with patch("app.pipeline.safety.circuit_breaker._PYBREAKER", True):
-            from app.pipeline.safety.circuit_breaker import circuit_breaker, CircuitBreakerOpenException
+            from app.pipeline.safety.circuit_breaker import CircuitBreakerOpenException, circuit_breaker
             call_count = [0]
 
             @circuit_breaker(failure_threshold=2, recovery_timeout=60)
@@ -69,7 +72,7 @@ class TestCircuitBreaker:
 
     def test_pybreaker_instance_isolation(self):
         with patch("app.pipeline.safety.circuit_breaker._PYBREAKER", True):
-            from app.pipeline.safety.circuit_breaker import circuit_breaker, CircuitBreakerOpenException
+            from app.pipeline.safety.circuit_breaker import CircuitBreakerOpenException, circuit_breaker
 
             class MyClass:
                 @circuit_breaker(failure_threshold=2, recovery_timeout=60)
@@ -109,7 +112,7 @@ class TestCircuitBreaker:
 
     def test_legacy_fallback_failure(self):
         with patch("app.pipeline.safety.circuit_breaker._PYBREAKER", False):
-            from app.pipeline.safety.circuit_breaker import circuit_breaker, CircuitBreakerOpenException
+            from app.pipeline.safety.circuit_breaker import CircuitBreakerOpenException, circuit_breaker
 
             @circuit_breaker(failure_threshold=1, recovery_timeout=60)
             def fail_func():
@@ -334,8 +337,9 @@ class TestSafeExecution:
 
 class TestValidatorGuard:
     def test_validate_output_pydantic_success(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.validator_guard import validate_output
 
         class TestSchema(BaseModel):
             name: str
@@ -349,8 +353,9 @@ class TestValidatorGuard:
         assert result["value"] == 42
 
     def test_validate_output_pydantic_validation_error(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.validator_guard import validate_output
 
         class TestSchema(BaseModel):
             name: str
@@ -363,8 +368,9 @@ class TestValidatorGuard:
         assert result == "error" or result == {}
 
     def test_validate_output_pydantic_instance(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.validator_guard import validate_output
 
         class TestSchema(BaseModel):
             name: str
@@ -432,8 +438,9 @@ class TestLLMValidator:
             assert my_func() == "ok"
 
     def test_guard_llm_output_returns_pydantic(self):
-        from app.pipeline.safety.llm_validator import guard_llm_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.llm_validator import guard_llm_output
 
         class TestModel(BaseModel):
             name: str
@@ -456,8 +463,9 @@ class TestLLMValidator:
             assert result["name"] == "test"
 
     def test_guard_llm_output_parse_exception(self):
-        from app.pipeline.safety.llm_validator import guard_llm_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.llm_validator import guard_llm_output
 
         class TestModel(BaseModel):
             name: str
@@ -478,8 +486,9 @@ class TestLLMValidator:
             assert result == {}
 
     def test_guard_llm_output_returns_native_pydantic(self):
-        from app.pipeline.safety.llm_validator import guard_llm_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.llm_validator import guard_llm_output
 
         class TestModel(BaseModel):
             name: str
@@ -493,8 +502,9 @@ class TestLLMValidator:
             assert result["name"] == "native"
 
     def test_guard_llm_output_returns_other_type(self):
-        from app.pipeline.safety.llm_validator import guard_llm_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.llm_validator import guard_llm_output
 
         class TestModel(BaseModel):
             name: str
@@ -508,8 +518,9 @@ class TestLLMValidator:
             assert result == 42
 
     def test_guard_llm_output_validation_none(self):
-        from app.pipeline.safety.llm_validator import guard_llm_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.llm_validator import guard_llm_output
 
         class TestModel(BaseModel):
             name: str
@@ -533,6 +544,7 @@ class TestLLMValidator:
 
     def test_fallback_validate_output_not_imported(self):
         import importlib
+
         import app.pipeline.safety.llm_validator
         with patch.dict("sys.modules", {"app.pipeline.safety.validator_guard": None}):
             importlib.reload(app.pipeline.safety.llm_validator)

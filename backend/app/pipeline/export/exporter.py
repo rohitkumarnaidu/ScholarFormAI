@@ -5,12 +5,13 @@
 Exporter Module - Handles saving of formatted documents.
 """
 
-import os
-import json
 import html as html_mod
+import json
 import logging
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+import os
+from datetime import UTC, datetime
+from typing import Any
+
 from app.models import PipelineDocument as Document
 from app.pipeline.export.jats_generator import JATSGenerator
 from app.pipeline.export.latex_exporter import LaTeXExporter
@@ -82,7 +83,7 @@ class Exporter:
         word_doc.save(output_path)
         return output_path
 
-    def export_json(self, doc_obj: Document, output_path: str) -> Optional[str]:
+    def export_json(self, doc_obj: Document, output_path: str) -> str | None:
         """Export document with metadata to JSON."""
         try:
             payload = self._build_export_payload(doc_obj)
@@ -94,7 +95,7 @@ class Exporter:
             logger.warning("Exporter: JSON export failed: %s", e)
             return None
 
-    def export_markdown(self, doc_obj: Document, output_path: str) -> Optional[str]:
+    def export_markdown(self, doc_obj: Document, output_path: str) -> str | None:
         """Export document with metadata and content to Markdown."""
         try:
             markdown = self._build_markdown(doc_obj)
@@ -106,7 +107,7 @@ class Exporter:
             logger.warning("Exporter: Markdown export failed: %s", e)
             return None
 
-    def export_jats(self, doc_obj: Document, output_path: str) -> Optional[str]:
+    def export_jats(self, doc_obj: Document, output_path: str) -> str | None:
         """Generate and save JATS XML."""
         try:
             generator = JATSGenerator()
@@ -120,7 +121,7 @@ class Exporter:
             logger.warning("Exporter: JATS export failed: %s", e)
             return None
 
-    def export_html(self, doc_obj: Document, output_path: str) -> Optional[str]:
+    def export_html(self, doc_obj: Document, output_path: str) -> str | None:
         """Export document to HTML format."""
         try:
             markdown = self._build_markdown(doc_obj)
@@ -172,7 +173,7 @@ class Exporter:
             logger.warning("Exporter: HTML export failed: %s", e)
             return None
 
-    def export_latex(self, doc_obj: Document, output_path: str) -> Optional[str]:
+    def export_latex(self, doc_obj: Document, output_path: str) -> str | None:
         try:
             if not doc_obj.output_path:
                 return None
@@ -198,7 +199,7 @@ class Exporter:
             logger.warning("Exporter: LaTeX export failed: %s", e)
             return None
 
-    def _get_export_formats(self, document: Document) -> List[str]:
+    def _get_export_formats(self, document: Document) -> list[str]:
         """
         Resolve export formats from formatting options.
         Defaults to DOCX + JSON + Markdown.
@@ -209,7 +210,7 @@ class Exporter:
         if not isinstance(raw_formats, list):
             raw_formats = [str(raw_formats)]
 
-        normalized: List[str] = []
+        normalized: list[str] = []
         for fmt in raw_formats:
             name = str(fmt).strip().lower()
             if name and name not in normalized:
@@ -221,7 +222,7 @@ class Exporter:
 
         return normalized
 
-    def _build_export_payload(self, doc_obj: Document) -> Dict[str, Any]:
+    def _build_export_payload(self, doc_obj: Document) -> dict[str, Any]:
         """Create a serializable export payload preserving metadata."""
         template_name = doc_obj.template.template_name if doc_obj.template else None
 
@@ -244,13 +245,13 @@ class Exporter:
             "tables": [safe_model_dump(table) for table in doc_obj.tables],
             "equations": [safe_model_dump(equation) for equation in doc_obj.equations],
             "processing_history": [safe_model_dump(stage) for stage in doc_obj.processing_history],
-            "exported_at": datetime.now(timezone.utc).isoformat(),
+            "exported_at": datetime.now(UTC).isoformat(),
         }
 
     def _build_markdown(self, doc_obj: Document) -> str:
         """Build markdown export preserving metadata and content."""
         metadata = doc_obj.metadata
-        lines: List[str] = []
+        lines: list[str] = []
 
         title = metadata.title or doc_obj.original_filename or "Untitled Manuscript"
         lines.append(f"# {title}")
@@ -275,7 +276,7 @@ class Exporter:
             lines.append(f"**Keywords:** {', '.join(metadata.keywords)}")
             lines.append("")
 
-        current_heading: Optional[str] = None
+        current_heading: str | None = None
         for block in sorted(doc_obj.blocks, key=lambda b: b.index):
             block_type = str(block.block_type).lower()
             text = (block.text or "").strip()

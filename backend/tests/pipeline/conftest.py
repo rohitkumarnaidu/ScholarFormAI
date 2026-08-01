@@ -7,11 +7,11 @@ Shared fixtures and mock utilities for table/figure pipeline tests.
 
 from __future__ import annotations
 
-from typing import List, Optional, Any, Dict
-from unittest.mock import MagicMock
 from dataclasses import dataclass, field
-import pytest
+from typing import Any
+from unittest.mock import MagicMock
 
+import pytest
 
 # ---------------------------------------------------------------------------
 # python-docx mock helpers
@@ -21,7 +21,7 @@ import pytest
 class MockDocxCell:
     """Simulates a python-docx Cell."""
     text: str = ""
-    paragraphs: List = field(default_factory=list)
+    paragraphs: list = field(default_factory=list)
     bold: bool = False
     _tc: Any = None
     _element: Any = None
@@ -48,19 +48,19 @@ class MockDocxCell:
 @dataclass
 class MockDocxRow:
     """Simulates a python-docx Row."""
-    cells: List[MockDocxCell] = field(default_factory=list)
+    cells: list[MockDocxCell] = field(default_factory=list)
 
 
 @dataclass
 class MockDocxTable:
     """Simulates a python-docx Table."""
-    rows: List[MockDocxRow] = field(default_factory=list)
+    rows: list[MockDocxRow] = field(default_factory=list)
 
 
 def make_mock_table(
-    data: List[List[str]],
+    data: list[list[str]],
     header_row: bool = False,
-    nested_tables_at: Optional[Dict[str, List[List[List[str]]]]] = None,
+    nested_tables_at: dict[str, list[list[list[str]]]] | None = None,
 ) -> MockDocxTable:
     """
     Build a MockDocxTable from raw string data.
@@ -188,7 +188,7 @@ def simple_figure():
 
 @pytest.fixture
 def doc_with_blocks():
-    from app.models import PipelineDocument, Block, BlockType
+    from app.models import Block, BlockType, PipelineDocument
     return PipelineDocument(
         document_id="doc_blocks",
         blocks=[

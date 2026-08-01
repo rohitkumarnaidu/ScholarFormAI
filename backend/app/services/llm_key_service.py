@@ -13,8 +13,6 @@ from __future__ import annotations
 
 import logging
 import sys
-from typing import Optional
-
 
 logger = logging.getLogger(__name__)
 
@@ -31,8 +29,8 @@ def _ls():
 
 def resolve_user_api_key(
     provider: str,
-    user_id: Optional[str] = None,
-) -> Optional[str]:
+    user_id: str | None = None,
+) -> str | None:
     """
     Resolve an API key for the given provider.
 
@@ -57,9 +55,10 @@ def resolve_user_api_key(
 
     if user_id:
         try:
+            from sqlalchemy.orm import Session
+
             from app.db.session import get_db
             from app.services.api_key_service import ApiKeyService
-            from sqlalchemy.orm import Session
 
             db: Session = next(get_db())
             try:

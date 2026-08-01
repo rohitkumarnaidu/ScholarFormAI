@@ -6,7 +6,6 @@ from __future__ import annotations
 import logging
 import time
 from collections import defaultdict
-from typing import Dict, List, Optional, Tuple
 
 from app.cache.redis_cache import RedisCache
 from app.services.audit_log_service import audit_log_service
@@ -17,7 +16,7 @@ logger = logging.getLogger(__name__)
 class AbuseDetector:
     def __init__(self) -> None:
         self._redis = RedisCache().client
-        self._memory: Dict[Tuple[str, str], List[float]] = defaultdict(list)
+        self._memory: dict[tuple[str, str], list[float]] = defaultdict(list)
         self._redis_warning_logged = False
 
     def _increment_bucket(self, key: str, window_seconds: int) -> int:
@@ -55,7 +54,7 @@ class AbuseDetector:
                 details={"type": "generation_spike", "count": count, "window_seconds": 300},
             )
 
-    async def record_llm_call(self, user_id: Optional[str]) -> None:
+    async def record_llm_call(self, user_id: str | None) -> None:
         subject = str(user_id) if user_id else "anonymous"
         count = self._increment_bucket(f"abuse:llm:{subject}", window_seconds=600)
         if count > 50:

@@ -8,6 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -519,8 +520,9 @@ class TestTransformerPatternDetector:
         assert np.all(emb == 0)
 
     def test_encode_document_cached(self):
-        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         import numpy as np
+
+        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         d.embeddings_cache["cached text"] = np.ones(768) * 0.5
         emb = d.encode_document("cached text")
@@ -556,15 +558,17 @@ class TestTransformerPatternDetector:
         assert emb.shape == (768,)
 
     def test_fit_clusters_insufficient(self):
-        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         import numpy as np
+
+        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         result = d.fit_clusters([np.ones(768)] * 2, n_clusters=5)
         assert result is False
 
     def test_fit_clusters_success(self):
-        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         import numpy as np
+
+        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         np.random.seed(42)
         embeddings = [np.random.rand(768) for _ in range(10)]
@@ -575,23 +579,26 @@ class TestTransformerPatternDetector:
         assert len(d.cluster_centers) == 3
 
     def test_fit_clusters_fallback_on_error(self):
-        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         import numpy as np
+
+        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         d.fit_clusters([np.ones(768)] * 3, n_clusters=2)
         # clustering succeeded
         assert d.clusters is not None
 
     def test_predict_cluster_no_model(self):
-        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         import numpy as np
+
+        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         cluster_id = d.predict_cluster(np.ones(768))
         assert cluster_id == -1
 
     def test_predict_cluster_with_model(self):
-        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         import numpy as np
+
+        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         np.random.seed(42)
         embeddings = [np.random.rand(768) for _ in range(10)]
@@ -601,8 +608,9 @@ class TestTransformerPatternDetector:
         assert 0 <= cluster_id < 3
 
     def test_compute_similarity(self):
-        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         import numpy as np
+
+        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         e1 = np.array([1.0, 0.0, 0.0])
         e2 = np.array([1.0, 0.0, 0.0])
@@ -610,8 +618,9 @@ class TestTransformerPatternDetector:
         assert abs(sim - 1.0) < 1e-6
 
     def test_compute_similarity_orthogonal(self):
-        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         import numpy as np
+
+        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         e1 = np.array([1.0, 0.0])
         e2 = np.array([0.0, 1.0])
@@ -619,8 +628,9 @@ class TestTransformerPatternDetector:
         assert abs(sim) < 1e-6
 
     def test_compute_similarity_opposite(self):
-        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         import numpy as np
+
+        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         e1 = np.array([1.0, 0.0])
         e2 = np.array([-1.0, 0.0])
@@ -628,8 +638,9 @@ class TestTransformerPatternDetector:
         assert abs(sim - (-1.0)) < 1e-6
 
     def test_find_similar_documents(self):
-        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         import numpy as np
+
+        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         query = np.array([1.0, 0.0])
         docs = [("doc1", np.array([1.0, 0.0])), ("doc2", np.array([0.0, 1.0])), ("doc3", np.array([0.5, 0.5]))]
@@ -639,23 +650,26 @@ class TestTransformerPatternDetector:
         assert abs(results[0][1] - 1.0) < 0.01
 
     def test_find_similar_documents_empty(self):
-        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         import numpy as np
+
+        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         results = d.find_similar_documents(np.ones(10), [])
         assert results == []
 
     def test_detect_anomaly_semantic_no_centers(self):
-        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         import numpy as np
+
+        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         is_anom, sim = d.detect_anomaly_semantic(np.ones(768))
         assert is_anom is False
         assert sim == 0.0
 
     def test_detect_anomaly_semantic_with_centers(self):
-        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         import numpy as np
+
+        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         np.random.seed(42)
         embeddings = [np.random.rand(768) for _ in range(10)]
@@ -673,8 +687,9 @@ class TestTransformerPatternDetector:
         assert Path(filepath).exists()
 
     def test_save_model_with_cache(self, tmp_path):
-        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         import numpy as np
+
+        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         d.cluster_centers = np.array([[1.0, 2.0], [3.0, 4.0]])
         d.embeddings_cache["doc1"] = np.array([5.0, 6.0])
@@ -694,8 +709,9 @@ class TestTransformerPatternDetector:
         assert summary["n_clusters"] == 0
 
     def test_get_summary_trained(self):
-        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         import numpy as np
+
+        from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         d.fit_clusters([np.ones(768) for _ in range(10)], n_clusters=2)
         summary = d.get_summary()

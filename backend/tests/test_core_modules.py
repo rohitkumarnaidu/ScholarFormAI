@@ -9,12 +9,12 @@ from __future__ import annotations
 from unittest.mock import patch
 
 from app.exceptions import (
-    ExternalServiceError,
+    AuthenticationError,
     DatabaseUnavailableError,
     DocumentNotFoundError,
-    RateLimitExceededError,
+    ExternalServiceError,
     FileStorageError,
-    AuthenticationError,
+    RateLimitExceededError,
 )
 
 
@@ -63,9 +63,9 @@ class TestDatabaseSession:
         assert hasattr(session, "check_db_health")
 
     def test_check_db_health_no_engine(self):
-        from app.db.session import check_db_health
         # When engine is None (no DB URL), returns unconfigured
         from app.db import session
+        from app.db.session import check_db_health
         original_engine = session.engine
         session.engine = None
         try:
@@ -183,7 +183,7 @@ class TestPipelineDocument:
     """Tests for PipelineDocument model."""
 
     def test_pipeline_document_imports(self):
-        from app.models.pipeline_document import PipelineDocument, DocumentMetadata, ProcessingStage
+        from app.models.pipeline_document import DocumentMetadata, PipelineDocument, ProcessingStage
         assert PipelineDocument is not None
         assert DocumentMetadata is not None
         assert ProcessingStage is not None

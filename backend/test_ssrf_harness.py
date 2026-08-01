@@ -2,13 +2,14 @@
 Empirical SSRF Adversarial Test Harness for ScholarFormAI backend
 Tests `_sanitize_url` in app.routers.v1.providers against SSRF payloads.
 """
-import sys
 import os
+import sys
 
 # Ensure backend directory is in sys.path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from fastapi import HTTPException
+
 from app.routers.v1.providers import _sanitize_url
 
 # Categorized Test Suite

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from typing import Dict, Any, List
+from typing import Any
 
 
 class AIExplainer:
@@ -19,7 +19,7 @@ class AIExplainer:
             "reference_completeness": "Some references appear to have incomplete metadata (missing DOI or Year). Providing full metadata improves the credibility of your scientific work.",
         }
 
-    def explain_results(self, validation_results: Dict[str, Any], publisher: str = "IEEE") -> List[str]:
+    def explain_results(self, validation_results: dict[str, Any], publisher: str = "IEEE") -> list[str]:
         """
         Generate a list of helpful explanations based on JSON validation results.
         """

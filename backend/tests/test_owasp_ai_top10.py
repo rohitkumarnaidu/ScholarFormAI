@@ -1,5 +1,7 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 pytestmark = [pytest.mark.security]
 
 class TestLLM01_PromptInjection:
@@ -24,8 +26,9 @@ class TestLLM01_PromptInjection:
 
 class TestLLM02_InsecureOutputHandling:
     def test_xss_via_llm_output_prevented(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.validator_guard import validate_output
         class OutputSchema(BaseModel):
             content: str = ""
         decorated = validate_output(OutputSchema)
@@ -34,8 +37,9 @@ class TestLLM02_InsecureOutputHandling:
         assert result["content"] == malicious
 
     def test_html_injection_in_response(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.validator_guard import validate_output
         class SafeSchema(BaseModel):
             html_content: str = ""
         decorated = validate_output(SafeSchema)
@@ -44,8 +48,9 @@ class TestLLM02_InsecureOutputHandling:
         assert "onerror" in result["html_content"]
 
     def test_javascript_url_in_output(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.validator_guard import validate_output
         class LinkSchema(BaseModel):
             url: str = ""
         decorated = validate_output(LinkSchema)
@@ -59,8 +64,8 @@ class TestLLM03_TrainingDataPoisoning:
             patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None),
             patch("app.pipeline.intelligence.rag_engine.chromadb", None),
             patch("app.config.settings.settings") as ms,
-            patch("app.services.model_store.model_store") as mm,
-            patch("sentence_transformers.SentenceTransformer") as mock_st,
+            patch("app.services.model_store.model_store"),
+            patch("sentence_transformers.SentenceTransformer"),
         ):
             ms.LOW_MEMORY_MODE = True
             ms.RAG_USE_TRANSFORMERS = False
@@ -82,8 +87,8 @@ class TestLLM03_TrainingDataPoisoning:
             patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None),
             patch("app.pipeline.intelligence.rag_engine.chromadb", None),
             patch("app.config.settings.settings") as ms,
-            patch("app.services.model_store.model_store") as mm,
-            patch("sentence_transformers.SentenceTransformer") as mock_st,
+            patch("app.services.model_store.model_store"),
+            patch("sentence_transformers.SentenceTransformer"),
         ):
             ms.LOW_MEMORY_MODE = True
             ms.RAG_USE_TRANSFORMERS = False
@@ -101,7 +106,7 @@ class TestLLM03_TrainingDataPoisoning:
 
 class TestLLM04_ModelDenialOfService:
     def test_token_flood_truncated(self):
-        from app.services.llm_service import sanitize_for_llm, MAX_LLM_INPUT_LENGTH
+        from app.services.llm_service import MAX_LLM_INPUT_LENGTH, sanitize_for_llm
         text = "A" * (MAX_LLM_INPUT_LENGTH * 3)
         result = sanitize_for_llm(text)
         assert len(result) < MAX_LLM_INPUT_LENGTH + 100
@@ -113,7 +118,7 @@ class TestLLM04_ModelDenialOfService:
         assert len(result) > 0
 
     def test_extremely_long_input_handled(self):
-        from app.services.llm_service import sanitize_for_llm, MAX_LLM_INPUT_LENGTH
+        from app.services.llm_service import MAX_LLM_INPUT_LENGTH, sanitize_for_llm
         text = "test " * 50000
         result = sanitize_for_llm(text)
         assert len(result) < MAX_LLM_INPUT_LENGTH + 100

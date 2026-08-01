@@ -2,9 +2,13 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-import pytest
+
 from unittest.mock import MagicMock
+
+import pytest
+
 from app.pipeline.formatting.numbering import NumberingEngine
+
 
 @pytest.fixture
 def mock_contract_loader():
@@ -73,7 +77,7 @@ class TestNumberingEngine:
         assert result.blocks[0].text == "1 Introduction"
 
     def test_figure_numbering(self, mock_contract_loader):
-        from app.models import PipelineDocument, Figure
+        from app.models import Figure, PipelineDocument
         engine = NumberingEngine(mock_contract_loader)
         fig1 = Figure(figure_id="f1", index=1)
         fig2 = Figure(figure_id="f2", index=2)
@@ -93,7 +97,7 @@ class TestNumberingEngine:
         assert result.tables[1].number == 2
 
     def test_equation_numbering_parentheses(self, mock_contract_loader):
-        from app.models import PipelineDocument, Equation
+        from app.models import Equation, PipelineDocument
         engine = NumberingEngine(mock_contract_loader)
         eq1 = Equation(equation_id="e1", latex="x=1", index=1)
         eq2 = Equation(equation_id="e2", latex="y=2", index=2)
@@ -103,7 +107,7 @@ class TestNumberingEngine:
         assert result.equations[1].number == "(2)"
 
     def test_equation_numbering_brackets(self, mock_contract_loader):
-        from app.models import PipelineDocument, Equation
+        from app.models import Equation, PipelineDocument
         loader = MagicMock()
         loader.load.return_value = {
             "numbering": {},
@@ -116,7 +120,7 @@ class TestNumberingEngine:
         assert result.equations[0].number == "[1]"
 
     def test_equation_numbering_no_brackets(self, mock_contract_loader):
-        from app.models import PipelineDocument, Equation
+        from app.models import Equation, PipelineDocument
         loader = MagicMock()
         loader.load.return_value = {
             "numbering": {},

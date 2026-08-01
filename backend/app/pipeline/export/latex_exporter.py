@@ -9,13 +9,12 @@ import re
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Dict, List, Optional
 
 from app.models.pipeline_document import PipelineDocument
 
 logger = logging.getLogger(__name__)
 
-JOURNAL_TEMPLATES: Dict[str, Dict[str, str]] = {
+JOURNAL_TEMPLATES: dict[str, dict[str, str]] = {
     "ieee": {
         "documentclass": r"\documentclass[conference]{IEEEtran}",
         "packages": r"\usepackage{cite}\usepackage{amsmath,amssymb,amsfonts}\usepackage{algorithmic}\usepackage{graphicx}\usepackage{textcomp}\usepackage{xcolor}\usepackage{hyperref}",
@@ -91,7 +90,7 @@ def escape_latex(text: str) -> str:
     return pattern.sub(lambda m: chars[m.group(0)], text)
 
 
-def _resolve_pandoc_binary() -> Optional[str]:
+def _resolve_pandoc_binary() -> str | None:
     configured = (os.getenv("PANDOC_PATH") or "").strip()
     if configured:
         return configured
@@ -154,7 +153,7 @@ class LaTeXExporter:
         tex_path = out_dir / f"{stem}.tex"
         bib_path = out_dir / f"{stem}.bib"
 
-        lines: List[str] = []
+        lines: list[str] = []
         lines.append(tpl["documentclass"])
         lines.append(tpl["packages"])
         lines.append(r"\usepackage[style=ieee]{biblatex}" if template_key in ("ieee",) else "")
@@ -192,7 +191,7 @@ class LaTeXExporter:
         logger.info("LaTeX document written: %s (template=%s, %d chars)", tex_path, template_key, len(content))
         return str(tex_path)
 
-    def _write_title_authors(self, lines: List[str], doc: PipelineDocument) -> None:
+    def _write_title_authors(self, lines: list[str], doc: PipelineDocument) -> None:
         meta = doc.metadata
         title = escape_latex(meta.title or "Untitled")
         lines.append(r"\title{" + title + "}")
@@ -206,7 +205,7 @@ class LaTeXExporter:
         lines.append(r"\maketitle")
         lines.append("")
 
-    def _write_abstract(self, lines: List[str], doc: PipelineDocument) -> None:
+    def _write_abstract(self, lines: list[str], doc: PipelineDocument) -> None:
         if doc.metadata.abstract:
             lines.append(r"\begin{abstract}")
             lines.append(escape_latex(doc.metadata.abstract))
@@ -217,7 +216,7 @@ class LaTeXExporter:
             lines.append(r"\textbf{Keywords:} " + kw)
             lines.append("")
 
-    def _write_sections(self, lines: List[str], doc: PipelineDocument) -> None:
+    def _write_sections(self, lines: list[str], doc: PipelineDocument) -> None:
         for block in sorted(doc.blocks, key=lambda b: b.index):
             text = (block.text or "").strip()
             if not text:
@@ -230,15 +229,13 @@ class LaTeXExporter:
                 lines.append(r"\subsection{" + escaped + "}")
             elif btype.startswith("heading_3"):
                 lines.append(r"\subsubsection{" + escaped + "}")
-            elif btype in ("reference_entry", "references_heading"):
-                continue
-            elif btype in ("figure", "table", "equation"):
+            elif btype in ("reference_entry", "references_heading") or btype in ("figure", "table", "equation"):
                 continue
             else:
                 lines.append(escaped)
             lines.append("")
 
-    def _write_figures(self, lines: List[str], doc: PipelineDocument, out_dir: Optional[Path] = None) -> None:
+    def _write_figures(self, lines: list[str], doc: PipelineDocument, out_dir: Path | None = None) -> None:
         for fig in sorted(doc.figures, key=lambda f: f.index):
             caption = escape_latex(fig.caption_text or "") if fig.caption_text else "Figure"
             lines.append(r"\begin{figure}[htbp]")
@@ -255,7 +252,7 @@ class LaTeXExporter:
             lines.append(r"\end{figure}")
             lines.append("")
 
-    def _write_tables(self, lines: List[str], doc: PipelineDocument) -> None:
+    def _write_tables(self, lines: list[str], doc: PipelineDocument) -> None:
         for tbl in sorted(doc.tables, key=lambda t: t.index):
             caption = escape_latex(tbl.caption_text or "Table") if tbl.caption_text else "Table"
             lines.append(r"\begin{table}[htbp]")
@@ -276,7 +273,7 @@ class LaTeXExporter:
             lines.append(r"\end{table}")
             lines.append("")
 
-    def _write_equations(self, lines: List[str], doc: PipelineDocument) -> None:
+    def _write_equations(self, lines: list[str], doc: PipelineDocument) -> None:
         for eq in sorted(doc.equations, key=lambda e: e.index):
             tex = (eq.text or eq.mathml or eq.omml or "").strip()
             if not tex:
@@ -292,7 +289,7 @@ class LaTeXExporter:
     def _write_bibtex(self, doc: PipelineDocument, bib_path: Path) -> None:
         if not doc.references:
             return
-        entries: List[str] = []
+        entries: list[str] = []
         for i, ref in enumerate(doc.references):
             ref_id = f"ref_{i + 1}"
             raw = (ref.formatted_text or ref.raw_text or "").strip()

@@ -18,19 +18,21 @@ import os
 import re
 
 logger = logging.getLogger(__name__)
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
-from app.pipeline.parsing.base_parser import BaseParser
 from app.models import (
-    PipelineDocument as Document,
-    DocumentMetadata,
     Block,
     BlockType,
-    TextStyle,
+    DocumentMetadata,
     Figure,
     ImageFormat,
+    TextStyle,
 )
+from app.models import (
+    PipelineDocument as Document,
+)
+from app.pipeline.parsing.base_parser import BaseParser
 from app.utils.id_generator import generate_block_id, generate_figure_id
 
 
@@ -69,12 +71,12 @@ class MarkdownParser(BaseParser):
 
         # Read file content
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 content = f.read()
         except UnicodeDecodeError:
             logger.warning("UTF-8 decode failed for '%s'; falling back to latin-1.", file_path)
             try:
-                with open(file_path, "r", encoding="latin-1") as f:
+                with open(file_path, encoding="latin-1") as f:
                     content = f.read()
             except Exception as exc:
                 raise ValueError(f"Failed to read Markdown file '{file_path}': {exc}") from exc
@@ -90,8 +92,8 @@ class MarkdownParser(BaseParser):
             document_id=document_id,
             original_filename=Path(file_path).name,
             source_path=file_path,
-            created_at=datetime.now(timezone.utc),
-            updated_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
         )
 
         # Extract metadata (from YAML frontmatter if present)

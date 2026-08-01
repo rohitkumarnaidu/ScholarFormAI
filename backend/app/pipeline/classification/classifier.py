@@ -11,16 +11,17 @@ Input: Document with structure metadata (headings, sections)
 Output: Document with BlockType assigned
 """
 
-import re
-from typing import List, Optional, Dict, Any
-from datetime import datetime, timezone
-
-from app.models import PipelineDocument as Document, Block, BlockType
-from app.pipeline.base import PipelineStage
-from app.config.settings import settings  # Import settings for dynamic thresholds
-from app.services.classification_gate import should_enable_llm_classification
-from app.pipeline.classification.llm_classifier import get_llm_classifier
 import logging
+import re
+from datetime import UTC, datetime
+from typing import Any
+
+from app.config.settings import settings  # Import settings for dynamic thresholds
+from app.models import Block, BlockType
+from app.models import PipelineDocument as Document
+from app.pipeline.base import PipelineStage
+from app.pipeline.classification.llm_classifier import get_llm_classifier
+from app.services.classification_gate import should_enable_llm_classification
 
 logger = logging.getLogger(__name__)
 
@@ -122,9 +123,7 @@ class ContentClassifier(PipelineStage):
             return True
         if len(text) <= 80 and (text.isupper() or text.istitle()):
             return True
-        if text.endswith(":"):
-            return True
-        return False
+        return bool(text.endswith(":"))
 
     def _resolve_heading_type(self, block: Block) -> tuple[BlockType, str]:
         level = block.metadata.get("level") or block.metadata.get("heading_level") or block.level
@@ -175,7 +174,7 @@ class ContentClassifier(PipelineStage):
         # Default fallback
         return BlockType.BODY, "BODY"
 
-    def _predict_llm_batch(self, blocks: List[Block]) -> Optional[List[Dict[str, Any]]]:
+    def _predict_llm_batch(self, blocks: list[Block]) -> list[dict[str, Any]] | None:
         if not should_enable_llm_classification():
             return None
         if not blocks:
@@ -191,8 +190,8 @@ class ContentClassifier(PipelineStage):
 
     def _apply_llm_predictions(
         self,
-        blocks: List[Block],
-        predictions: Optional[List[Dict[str, Any]]],
+        blocks: list[Block],
+        predictions: list[dict[str, Any]] | None,
     ) -> None:
         if not predictions:
             return
@@ -261,7 +260,7 @@ class ContentClassifier(PipelineStage):
         Returns:
             Document with updated BlockTypes
         """
-        start_time = datetime.now(timezone.utc)
+        start_time = datetime.now(UTC)
         try:
             return self._run_classification(document, start_time)
         except Exception as exc:
@@ -476,14 +475,13 @@ class ContentClassifier(PipelineStage):
                         block.metadata["classification_confidence"] = 1.0
                         block.metadata["classification_method"] = "structure_ref_heading"
                     else:
-                        if block.metadata.get("is_heading_candidate"):
-                            if block.level == 1:
-                                block.block_type = BlockType.HEADING_1
-                                block.semantic_intent = "HEADING_1"
-                                block.classification_confidence = 1.0
-                                block.metadata["semantic_intent"] = "HEADING_1"
-                                block.metadata["classification_confidence"] = 1.0
-                                continue
+                        if block.metadata.get("is_heading_candidate") and block.level == 1:
+                            block.block_type = BlockType.HEADING_1
+                            block.semantic_intent = "HEADING_1"
+                            block.classification_confidence = 1.0
+                            block.metadata["semantic_intent"] = "HEADING_1"
+                            block.metadata["classification_confidence"] = 1.0
+                            continue
 
                         block.block_type = BlockType.REFERENCE_ENTRY
                         block.semantic_intent = "REFERENCE_ENTRY"
@@ -654,7 +652,7 @@ class ContentClassifier(PipelineStage):
                     block.metadata["classification_method"] = "fallback_last_resort"
 
         # Update processing history
-        end_time = datetime.now(timezone.utc)
+        end_time = datetime.now(UTC)
         duration_ms = int((end_time - start_time).total_seconds() * 1000)
 
         document.add_processing_stage(
@@ -664,10 +662,10 @@ class ContentClassifier(PipelineStage):
             duration_ms=duration_ms,
         )
 
-        document.updated_at = datetime.now(timezone.utc)
+        document.updated_at = datetime.now(UTC)
         return document
 
-    def _find_first_section_index(self, blocks: List[Block]) -> int:
+    def _find_first_section_index(self, blocks: list[Block]) -> int:
         """
         Find the index of the first heading block with safety limits.
 
@@ -719,7 +717,7 @@ class ContentClassifier(PipelineStage):
         # the potential metadata zone (not the end of the document).
         return min(12, len(blocks))
 
-    def _find_references_start_index(self, blocks: List[Block]) -> Optional[int]:
+    def _find_references_start_index(self, blocks: list[Block]) -> int | None:
         """Find the index of the References heading."""
         for i, block in enumerate(blocks):
             if not block.metadata.get("is_heading_candidate"):
@@ -742,7 +740,7 @@ class ContentClassifier(PipelineStage):
         text_lower = text.lower()
         return any(indicator in text_lower for indicator in self.affiliation_indicators)
 
-    def _match_grobid_author(self, text: str, grobid_authors: List[Dict]) -> bool:
+    def _match_grobid_author(self, text: str, grobid_authors: list[dict]) -> bool:
         """
         Check if block text matches any GROBID-extracted author.
 
@@ -772,7 +770,7 @@ class ContentClassifier(PipelineStage):
 
         return False
 
-    def _match_grobid_affiliation(self, text: str, grobid_affiliations: List[str]) -> bool:
+    def _match_grobid_affiliation(self, text: str, grobid_affiliations: list[str]) -> bool:
         """
         Check if block text matches any GROBID-extracted affiliation.
 
@@ -799,7 +797,7 @@ class ContentClassifier(PipelineStage):
 
         return False
 
-    def _nlp_classify_fallback(self, blocks: List[Block]):
+    def _nlp_classify_fallback(self, blocks: list[Block]):
         """
         Simulate a lightweight BERT/fastText fallback for UNKNOWN blocks.
         Only applies if confidence is high (simulated).

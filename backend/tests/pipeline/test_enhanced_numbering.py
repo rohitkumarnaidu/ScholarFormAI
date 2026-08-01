@@ -2,8 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 from unittest.mock import Mock
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -243,7 +246,7 @@ class TestCSLEngineExpanded:
     def test_caching(self):
         from app.pipeline.services.csl_engine import CSLEngine
         engine = CSLEngine()
-        result1 = engine.resolve_style("apa")
+        engine.resolve_style("apa")
         result2 = engine.resolve_style("apa")
         assert result2["source"] == "cache"
 

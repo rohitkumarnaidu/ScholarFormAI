@@ -47,8 +47,8 @@ class TestResolveBoolOption:
 
 class TestBlockTypeToken:
     def test_enum_value(self):
-        from app.pipeline.formatting.template_renderer import TemplateRenderer
         from app.models import BlockType
+        from app.pipeline.formatting.template_renderer import TemplateRenderer
         block = MagicMock()
         block.block_type = BlockType.HEADING_1
         assert TemplateRenderer._block_type_token(block) == "heading_1"

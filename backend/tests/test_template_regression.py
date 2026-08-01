@@ -3,6 +3,7 @@
 
 import pytest
 from docx import Document as WordDocument
+
 from app.models import (
     Block,
     BlockType,
@@ -11,6 +12,7 @@ from app.models import (
     Reference,
 )
 from app.pipeline.formatting.template_renderer import TemplateRenderer
+
 
 def _build_test_document(title="Regression Test Title") -> PipelineDocument:
     doc = PipelineDocument(

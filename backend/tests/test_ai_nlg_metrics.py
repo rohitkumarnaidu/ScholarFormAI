@@ -4,9 +4,9 @@
 """NLG evaluation metrics: BLEU, ROUGE, and BERTScore simulation."""
 
 import math
-import pytest
-from typing import Sequence
+from collections.abc import Sequence
 
+import pytest
 
 # ---------------------------------------------------------------------------
 # NLG Metric Implementations
@@ -132,7 +132,7 @@ def _build_embedding(word: str) -> list[float]:
 
 
 def _cosine_sim(a: list[float], b: list[float]) -> float:
-    dot = sum(x * y for x, y in zip(a, b))
+    dot = sum(x * y for x, y in zip(a, b, strict=False))
     return max(0.0, min(1.0, dot))
 
 

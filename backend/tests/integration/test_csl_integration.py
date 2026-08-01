@@ -7,11 +7,12 @@ CSL Integration Tests
 Tests the integration of CSL citation engine with the pipeline.
 """
 
-import pytest
 from pathlib import Path
 
-from app.pipeline.services.csl_engine import CSLEngine
+import pytest
+
 from app.models import Reference
+from app.pipeline.services.csl_engine import CSLEngine
 
 
 @pytest.mark.integration
@@ -110,7 +111,7 @@ class TestCSLIntegration:
         apa_style = Path("app/templates/apa/styles.csl")
         assert apa_style.exists(), "APA CSL style should exist"
         
-        print(f"\n✅ CSL styles loaded: IEEE, APA")
+        print("\n✅ CSL styles loaded: IEEE, APA")
     
     def test_reference_validation(self, csl_engine):
         """Test reference validation."""
@@ -131,7 +132,7 @@ class TestCSLIntegration:
         assert valid_ref.title is not None
         assert valid_ref.year is not None
         
-        print(f"\n✅ Reference validation working")
+        print("\n✅ Reference validation working")
 
 
 if __name__ == "__main__":

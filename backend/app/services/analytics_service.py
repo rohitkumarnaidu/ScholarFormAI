@@ -5,7 +5,7 @@ Uses PostHog when configured, falls back to structured logging.
 
 import logging
 import os
-from typing import Any, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ class AnalyticsService:
                 logger.warning("PostHog initialization failed, using log-only analytics: %s", e)
                 self._enabled = False
 
-    def capture(self, distinct_id: str, event: str, properties: Optional[dict[str, Any]] = None):
+    def capture(self, distinct_id: str, event: str, properties: dict[str, Any] | None = None):
         """Capture an analytics event."""
         if self._enabled and self._posthog:
             try:

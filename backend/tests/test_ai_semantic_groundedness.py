@@ -7,12 +7,11 @@ Simulates semantic grounding using hash-based deterministic embeddings
 and cosine similarity to detect paraphrase, synonym usage, and nuance.
 """
 
-import pytest
-import math
 import hashlib
+import math
 import time
-from typing import List, Dict
 
+import pytest
 
 # ---------------------------------------------------------------------------
 #  Mock embedding engine
@@ -21,7 +20,7 @@ from typing import List, Dict
 _EMBEDDING_DIM = 64
 
 
-def _mock_embed(text: str) -> List[float]:
+def _mock_embed(text: str) -> list[float]:
     """Simulate text embedding with deterministic hash-based vectors.
 
     Produces reproducible vectors where similar texts have similar embeddings
@@ -51,11 +50,11 @@ def _mock_embed(text: str) -> List[float]:
     return vec
 
 
-def _cosine_similarity(a: List[float], b: List[float]) -> float:
+def _cosine_similarity(a: list[float], b: list[float]) -> float:
     """Cosine similarity between two vectors."""
     if not a or not b:
         return 0.0
-    dot = sum(x * y for x, y in zip(a, b))
+    dot = sum(x * y for x, y in zip(a, b, strict=False))
     norm_a = math.sqrt(sum(x * x for x in a))
     norm_b = math.sqrt(sum(y * y for y in b))
     if norm_a == 0 or norm_b == 0:
@@ -63,7 +62,7 @@ def _cosine_similarity(a: List[float], b: List[float]) -> float:
     return dot / (norm_a * norm_b)
 
 
-def _embedding_groundedness(text: str, sources: List[str], threshold: float = 0.7) -> Dict:
+def _embedding_groundedness(text: str, sources: list[str], threshold: float = 0.7) -> dict:
     """Evaluate groundedness using embedding similarity.
 
     Returns dict with:
@@ -141,7 +140,7 @@ def _embedding_groundedness(text: str, sources: List[str], threshold: float = 0.
     }
 
 
-def _batch_groundedness(claim_sets: List[str], sources: List[str], threshold: float = 0.7) -> List[Dict]:
+def _batch_groundedness(claim_sets: list[str], sources: list[str], threshold: float = 0.7) -> list[dict]:
     """Evaluate groundedness for multiple texts against the same sources."""
     return [_embedding_groundedness(t, sources, threshold) for t in claim_sets]
 

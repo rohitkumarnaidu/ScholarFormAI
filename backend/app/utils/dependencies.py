@@ -1,20 +1,21 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from typing import Optional
-from fastapi import Depends, HTTPException, status, Request
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from app.services.auth_service import AuthService
-from app.schemas.user import User
 import logging
+
 import jwt
+from fastapi import Depends, HTTPException, Request, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+
+from app.schemas.user import User
+from app.services.auth_service import AuthService
 
 logger = logging.getLogger(__name__)
 
 security = HTTPBearer(auto_error=False)
 
 
-def get_current_user(request: Request, credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)) -> User:
+def get_current_user(request: Request, credentials: HTTPAuthorizationCredentials | None = Depends(security)) -> User:
     """
     FastAPI dependency to extract and verify the user from the Authorization Bearer header.
     """
@@ -49,7 +50,7 @@ def get_current_user(request: Request, credentials: Optional[HTTPAuthorizationCr
 
             MetricsManager.record_user_activity(str(user_id))
         except Exception:
-            pass
+            pass  # intentionally ignored
 
         return User(id=user_id, email=email, role=role, app_metadata=app_metadata)
     except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, HTTPException) as e:
@@ -62,8 +63,8 @@ def get_current_user(request: Request, credentials: Optional[HTTPAuthorizationCr
 
 
 def get_optional_user(
-    request: Request, credentials: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer(auto_error=False))
-) -> Optional[User]:
+    request: Request, credentials: HTTPAuthorizationCredentials | None = Depends(HTTPBearer(auto_error=False))
+) -> User | None:
     """
     FastAPI dependency that returns a User if a valid Bearer token is present,
     otherwise returns None.
@@ -86,7 +87,7 @@ def get_optional_user(
 
             MetricsManager.record_user_activity(str(user_id))
         except Exception:
-            pass
+            pass  # intentionally ignored
         return User(id=user_id, email=email, role=role, app_metadata=app_metadata)
     except Exception as e:
         logger.warning("Optional token validation failed: %s", str(e))

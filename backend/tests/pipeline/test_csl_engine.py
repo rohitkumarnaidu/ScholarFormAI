@@ -2,9 +2,13 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-import pytest
+
 from pathlib import Path
+
+import pytest
+
 from app.pipeline.services.csl_engine import CSLEngine
+
 
 @pytest.fixture
 def engine():

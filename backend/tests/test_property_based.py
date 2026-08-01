@@ -1,6 +1,9 @@
-import pytest
-from hypothesis import given, strategies as st, assume, settings, HealthCheck
 from unittest.mock import MagicMock, patch
+
+import pytest
+from hypothesis import HealthCheck, assume, given, settings
+from hypothesis import strategies as st
+
 pytestmark = [pytest.mark.property]
 
 class TestSchemaSerialization:
@@ -12,7 +15,7 @@ class TestSchemaSerialization:
             assert response.data == message_text
             assert response.request_id == request_id
         except Exception:
-            pass
+            pass  # intentionally ignored
 
     @given(st.integers(min_value=1, max_value=100))
     def test_pagination_limit_bounds(self, limit):
@@ -21,7 +24,7 @@ class TestSchemaSerialization:
             params = PaginationParams(limit=limit)
             assert 1 <= params.limit <= 100
         except Exception:
-            pass
+            pass  # intentionally ignored
 
     @given(st.text(min_size=1, max_size=200))
     def test_pagination_order_by(self, order_by):
@@ -30,7 +33,7 @@ class TestSchemaSerialization:
             params = PaginationParams(limit=50, order_by=order_by)
             assert params.order_by == order_by
         except Exception:
-            pass
+            pass  # intentionally ignored
 
     @given(st.sampled_from(["asc", "desc"]))
     def test_pagination_order_dir(self, order_dir):
@@ -39,7 +42,7 @@ class TestSchemaSerialization:
             params = PaginationParams(limit=50, order_dir=order_dir)
             assert params.order_dir in ("asc", "desc")
         except Exception:
-            pass
+            pass  # intentionally ignored
 
     @given(st.text(min_size=0, max_size=200))
     def test_cursor_page_roundtrip(self, next_cursor):
@@ -54,7 +57,7 @@ class TestSchemaSerialization:
             assert len(page.items) > 0
             assert isinstance(page.has_more, bool)
         except Exception:
-            pass
+            pass  # intentionally ignored
 
 class TestGeneratorStateTransitions:
     @given(st.sampled_from(["idle", "parsing", "outline_review", "generating", "complete"]))
@@ -64,7 +67,7 @@ class TestGeneratorStateTransitions:
             session = SessionResponse(id="test-id", status=status, session_type="agent")
             assert session.status == status
         except Exception:
-            pass
+            pass  # intentionally ignored
 
     @given(st.lists(st.text(max_size=50), max_size=5))
     def test_message_content_persistence(self, contents):
@@ -74,17 +77,18 @@ class TestGeneratorStateTransitions:
                 msg = MessageRequest(content=content)
                 assert msg.content == content
             except Exception:
-                pass
+                pass  # intentionally ignored
 
     @given(st.integers(min_value=0, max_value=100))
     def test_stage_event_progress(self, progress):
-        from app.schemas.generator_session import StageEvent
         from datetime import datetime
+
+        from app.schemas.generator_session import StageEvent
         try:
             event = StageEvent(stage="parsing", progress=progress, message="test", timestamp=datetime.utcnow())
             assert 0 <= event.progress <= 100
         except Exception:
-            pass
+            pass  # intentionally ignored
 
 class TestApiEnvelope:
     @given(st.text(min_size=1, max_size=50))
@@ -119,7 +123,7 @@ class TestAuthSchemas:
             req = LoginRequest(email=email, password="ValidPass1!")
             assert req.email == email
         except Exception:
-            pass
+            pass  # intentionally ignored
 
     @settings(suppress_health_check=[HealthCheck.filter_too_much], max_examples=20)
     @given(st.text(min_size=8, max_size=128, alphabet=st.characters(whitelist_categories=('L', 'N', 'P'))))
@@ -134,7 +138,7 @@ class TestAuthSchemas:
             result = _validate_password_strength(password)
             assert result == password
         except ValueError:
-            pass
+            pass  # intentionally ignored
 
     def test_forgot_password_request(self):
         from app.schemas.auth import ForgotPasswordRequest
@@ -153,7 +157,7 @@ class TestWebhookSchemas:
             )
             assert sub.name == name
         except Exception:
-            pass
+            pass  # intentionally ignored
 
     @given(st.lists(st.text(min_size=1, max_size=50), min_size=1, max_size=5))
     def test_webhook_subscription_events(self, events):
@@ -164,7 +168,7 @@ class TestWebhookSchemas:
             )
             assert len(sub.events) == len(events)
         except Exception:
-            pass
+            pass  # intentionally ignored
 
     @given(st.booleans())
     def test_webhook_subscription_update_is_active(self, is_active):
@@ -173,13 +177,15 @@ class TestWebhookSchemas:
             update = WebhookSubscriptionUpdate(is_active=is_active)
             assert update.is_active == is_active
         except Exception:
-            pass
+            pass  # intentionally ignored
 
 class TestParserProperties:
     @given(st.text(min_size=0, max_size=1000))
     @settings(max_examples=20)
     def test_txt_parser_handles_any_text(self, text):
-        import tempfile, os
+        import os
+        import tempfile
+
         from app.pipeline.parsing.txt_parser import TxtParser
         parser = TxtParser()
         tmp = tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False, encoding="utf-8")
@@ -190,7 +196,7 @@ class TestParserProperties:
             assert doc is not None
             assert doc.document_id == "test-id"
         except Exception:
-            pass
+            pass  # intentionally ignored
         finally:
             os.unlink(tmp.name)
 
@@ -198,7 +204,9 @@ class TestParserProperties:
     @given(st.text(min_size=0, max_size=100))
     def test_txt_parser_empty_input(self, text):
         assume(len(text.strip()) == 0)
-        import tempfile, os
+        import os
+        import tempfile
+
         from app.pipeline.parsing.txt_parser import TxtParser
         parser = TxtParser()
         tmp = tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False, encoding="utf-8")
@@ -209,12 +217,14 @@ class TestParserProperties:
             assert doc is not None
             assert isinstance(doc.blocks, list)
         except Exception:
-            pass
+            pass  # intentionally ignored
         finally:
             os.unlink(tmp.name)
 
     def test_txt_parser_large_input(self):
-        import tempfile, os
+        import os
+        import tempfile
+
         from app.pipeline.parsing.txt_parser import TxtParser
         parser = TxtParser()
         text = "\n\n".join(["This is paragraph number " + str(i) for i in range(500)])
@@ -230,7 +240,9 @@ class TestParserProperties:
     @settings(max_examples=20)
     def test_txt_parser_unicode_input(self, text):
         assume(any(ord(c) > 127 for c in text))
-        import tempfile, os
+        import os
+        import tempfile
+
         from app.pipeline.parsing.txt_parser import TxtParser
         parser = TxtParser()
         tmp = tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False, encoding="utf-8")
@@ -240,7 +252,7 @@ class TestParserProperties:
             doc = parser.parse(tmp.name, "test-id")
             assert doc is not None
         except Exception:
-            pass
+            pass  # intentionally ignored
         finally:
             os.unlink(tmp.name)
 
@@ -248,7 +260,7 @@ class TestSanitizeProperties:
     @settings(deadline=None, max_examples=20)
     @given(st.text(min_size=0, max_size=500))
     def test_sanitize_never_increases_length_beyond_max(self, text):
-        from app.services.llm_service import sanitize_for_llm, MAX_LLM_INPUT_LENGTH
+        from app.services.llm_service import MAX_LLM_INPUT_LENGTH, sanitize_for_llm
         result = sanitize_for_llm(text)
         assert isinstance(result, str)
         if text:
@@ -306,7 +318,7 @@ class TestPromptBuilderProperties:
             assert isinstance(prompt, str)
             assert len(prompt) > 50
         except Exception:
-            pass
+            pass  # intentionally ignored
 
     @given(st.text(max_size=50))
     def test_prompt_builder_rejects_unknown(self, doc_type):
@@ -369,8 +381,8 @@ class TestRagEngineProperties:
             patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None),
             patch("app.pipeline.intelligence.rag_engine.chromadb", None),
             patch("app.config.settings.settings") as ms,
-            patch("app.services.model_store.model_store") as mm,
-            patch("sentence_transformers.SentenceTransformer") as mock_st,
+            patch("app.services.model_store.model_store"),
+            patch("sentence_transformers.SentenceTransformer"),
         ):
             ms.LOW_MEMORY_MODE = True
             ms.RAG_USE_TRANSFORMERS = False
@@ -392,8 +404,8 @@ class TestRagEngineProperties:
             patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None),
             patch("app.pipeline.intelligence.rag_engine.chromadb", None),
             patch("app.config.settings.settings") as ms,
-            patch("app.services.model_store.model_store") as mm,
-            patch("sentence_transformers.SentenceTransformer") as mock_st,
+            patch("app.services.model_store.model_store"),
+            patch("sentence_transformers.SentenceTransformer"),
         ):
             ms.LOW_MEMORY_MODE = True
             ms.RAG_USE_TRANSFORMERS = False
@@ -426,8 +438,9 @@ class TestInferProvider:
 class TestValidateOutput:
     @given(st.text(min_size=1, max_size=200))
     def test_validate_output_returns_dict(self, text_content):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.validator_guard import validate_output
         class SimpleSchema(BaseModel):
             text: str = ""
         decorated = validate_output(SimpleSchema)

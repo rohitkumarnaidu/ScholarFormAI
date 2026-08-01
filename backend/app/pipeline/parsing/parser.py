@@ -20,35 +20,34 @@ IMPORTANT:
 
 import logging
 import os
-from typing import List, Optional, Tuple, Dict, Any
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 from docx import Document as DocxDocument
 from docx.document import Document as DocxDocumentType
-from docx.table import Table as DocxTable
-from docx.text.paragraph import Paragraph as DocxParagraph
+from docx.oxml.ns import qn
 from docx.oxml.table import CT_Tbl
 from docx.oxml.text.paragraph import CT_P
-from docx.oxml.ns import qn
-
-from app.pipeline.tables.extractor import TableExtractor
+from docx.table import Table as DocxTable
+from docx.text.paragraph import Paragraph as DocxParagraph
 
 from app.models import (
-    PipelineDocument as Document,
-    DocumentMetadata,
     Block,
     BlockType,
-    TextStyle,
+    DocumentMetadata,
+    Equation,
     Figure,
     ImageFormat,
     Table,
-    Equation,
+    TextStyle,
 )
-from app.utils.id_generator import generate_block_id, generate_figure_id, generate_table_id, generate_equation_id
-
-
+from app.models import (
+    PipelineDocument as Document,
+)
 from app.pipeline.parsing.base_parser import BaseParser
+from app.pipeline.tables.extractor import TableExtractor
+from app.utils.id_generator import generate_block_id, generate_equation_id, generate_figure_id, generate_table_id
 
 logger = logging.getLogger(__name__)
 
@@ -115,8 +114,8 @@ class DocxParser(BaseParser):
             document_id=document_id,
             original_filename=Path(docx_path).name,
             source_path=docx_path,
-            created_at=datetime.now(timezone.utc),
-            updated_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
         )
 
         # Extract core properties
@@ -154,7 +153,7 @@ class DocxParser(BaseParser):
 
         return document
 
-    def _extract_footnotes_and_endnotes(self, docx: DocxDocumentType) -> List[Block]:
+    def _extract_footnotes_and_endnotes(self, docx: DocxDocumentType) -> list[Block]:
         """
         Extract content from Footnotes and Endnotes parts.
 
@@ -169,16 +168,15 @@ class DocxParser(BaseParser):
         # 1. Footnotes
         try:
             part = None
-            if hasattr(docx, "part"):
-                if hasattr(docx.part, "footnotes_part"):
-                    part = docx.part.footnotes_part
+            if hasattr(docx, "part") and hasattr(docx.part, "footnotes_part"):
+                part = docx.part.footnotes_part
 
             if part:
                 # Iterate XML elements directly as python-docx high-level API is limited
                 from docx.oxml.ns import qn
 
                 root = part.element
-                for i, fn in enumerate(root.findall(qn("w:footnote"))):
+                for _i, fn in enumerate(root.findall(qn("w:footnote"))):
                     # Skip separator/continuation footnotes (usually ids < 0 or specific types)
                     # We just try to extract text from paragraphs inside
                     fn_id = fn.get(qn("w:id"))
@@ -221,15 +219,14 @@ class DocxParser(BaseParser):
         # 2. Endnotes
         try:
             part = None
-            if hasattr(docx, "part"):
-                if hasattr(docx.part, "endnotes_part"):
-                    part = docx.part.endnotes_part
+            if hasattr(docx, "part") and hasattr(docx.part, "endnotes_part"):
+                part = docx.part.endnotes_part
 
             if part:
                 from docx.oxml.ns import qn
 
                 root = part.element
-                for i, en in enumerate(root.findall(qn("w:endnote"))):
+                for _i, en in enumerate(root.findall(qn("w:endnote"))):
                     en_id = en.get(qn("w:id"))
                     for p_element in en.findall(qn("w:p")):
                         text_chunks = []
@@ -261,7 +258,7 @@ class DocxParser(BaseParser):
 
         return note_blocks
 
-    def _extract_headers_and_footers(self, docx: DocxDocumentType) -> List[Block]:
+    def _extract_headers_and_footers(self, docx: DocxDocumentType) -> list[Block]:
         """
         Extract content from Headers and Footers of all sections.
         """
@@ -332,7 +329,7 @@ class DocxParser(BaseParser):
 
     def _extract_body_content(
         self, docx: DocxDocumentType
-    ) -> Tuple[List[Block], List[Figure], List[Table], List[Equation]]:
+    ) -> tuple[list[Block], list[Figure], list[Table], list[Equation]]:
         """
         Extract all content from document body in original order.
 
@@ -345,10 +342,10 @@ class DocxParser(BaseParser):
         Returns:
             Tuple of (blocks, figures, tables)
         """
-        blocks: List[Block] = []
-        figures: List[Figure] = []
-        tables: List[Table] = []
-        equations: List[Equation] = []
+        blocks: list[Block] = []
+        figures: list[Figure] = []
+        tables: list[Table] = []
+        equations: list[Equation] = []
 
         # Iterate through body elements in order
         # This preserves the exact sequence of content
@@ -404,7 +401,7 @@ class DocxParser(BaseParser):
 
         return blocks, figures, tables, equations
 
-    def _extract_paragraph(self, paragraph: DocxParagraph) -> Optional[Block]:
+    def _extract_paragraph(self, paragraph: DocxParagraph) -> Block | None:
         """
         Extract a paragraph as a Block.
 
@@ -463,7 +460,7 @@ class DocxParser(BaseParser):
 
         return block
 
-    def _extract_hyperlinks(self, paragraph: DocxParagraph) -> List[Dict[str, str]]:
+    def _extract_hyperlinks(self, paragraph: DocxParagraph) -> list[dict[str, str]]:
         """Extract URLs from w:hyperlink elements."""
         links = []
         try:
@@ -490,9 +487,9 @@ class DocxParser(BaseParser):
             logger.warning("Hyperlink extraction failed: %s", e)
         return links
 
-    def _extract_note_references(self, paragraph: DocxParagraph, tag_name: str) -> List[str]:
+    def _extract_note_references(self, paragraph: DocxParagraph, tag_name: str) -> list[str]:
         """Extract footnote/endnote reference IDs attached to a paragraph."""
-        refs: List[str] = []
+        refs: list[str] = []
         try:
             for note_ref in paragraph._element.findall(f".//{qn(tag_name)}"):
                 note_id = note_ref.get(qn("w:id"))
@@ -502,7 +499,7 @@ class DocxParser(BaseParser):
             logger.warning("Note reference extraction failed: %s", e)
         return refs
 
-    def _get_list_info(self, paragraph: DocxParagraph) -> Optional[Dict[str, Any]]:
+    def _get_list_info(self, paragraph: DocxParagraph) -> dict[str, Any] | None:
         """Detect list level and status using w:ilvl and w:numId, with style fallback."""
         try:
             pPr = paragraph._element.find(qn("w:pPr"))
@@ -591,7 +588,7 @@ class DocxParser(BaseParser):
 
         return TextStyle(bold=bold, italic=italic, underline=underline, font_name=font_name, font_size=font_size)
 
-    def _extract_inline_images(self, paragraph: DocxParagraph) -> List[Figure]:
+    def _extract_inline_images(self, paragraph: DocxParagraph) -> list[Figure]:
         """
         Extract inline images from a paragraph.
 
@@ -640,7 +637,7 @@ class DocxParser(BaseParser):
 
         return figures
 
-    def _extract_image_from_inline(self, inline_element, part) -> Optional[Figure]:
+    def _extract_image_from_inline(self, inline_element, part) -> Figure | None:
         """
         Extract image data from inline shape element.
 
@@ -748,7 +745,7 @@ class DocxParser(BaseParser):
         self.table_counter += 1
         return extracted_table
 
-    def _extract_equations(self, paragraph: DocxParagraph) -> List[Equation]:
+    def _extract_equations(self, paragraph: DocxParagraph) -> list[Equation]:
         """
         Extract equations (OMML) from a paragraph.
         """
@@ -779,7 +776,7 @@ class DocxParser(BaseParser):
 
         return equations
 
-    def _extract_math_element(self, om_element, is_block: bool) -> Optional[Equation]:
+    def _extract_math_element(self, om_element, is_block: bool) -> Equation | None:
         """Extract data from an oMath element."""
         try:
             # Get raw XML (OMML)

@@ -2,8 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 from unittest.mock import MagicMock
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -80,16 +83,16 @@ class TestReferenceFormatterEngineInit:
 
 class TestReferenceFormatterEngineProcess:
     def test_process_with_template(self, mock_contract_loader, mock_csl_engine, sample_reference):
-        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         from app.models.pipeline_document import PipelineDocument, TemplateInfo
+        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         engine = ReferenceFormatterEngine(contract_loader=mock_contract_loader, csl_engine=mock_csl_engine)
         doc = PipelineDocument(document_id="test", references=sample_reference, template=TemplateInfo(template_name="IEEE"))
         result = engine.process(doc)
         assert result.references[0].formatted_text == "Formatted ref 1"
 
     def test_process_no_template(self, mock_contract_loader, mock_csl_engine, sample_reference):
-        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         engine = ReferenceFormatterEngine(contract_loader=mock_contract_loader, csl_engine=mock_csl_engine)
         doc = PipelineDocument(document_id="test", references=sample_reference, template=None)
         result = engine.process(doc)
@@ -240,8 +243,8 @@ class TestFormatSingle:
         assert "Testing" in result
 
     def test_format_single_ref_type_str(self, mock_contract_loader):
-        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         from app.models.reference import Reference
+        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         ref = Reference(reference_id="r1", citation_key="k1", raw_text="raw", index=0, authors=["A"], title="T", year=2022)
         ref.reference_type = "journal_article"
         engine = ReferenceFormatterEngine(contract_loader=mock_contract_loader)

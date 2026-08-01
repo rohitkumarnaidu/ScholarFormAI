@@ -13,6 +13,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from pydantic import BaseModel
+
+
 class _TestSchema(BaseModel):
     name: str
     value: int
@@ -34,7 +36,7 @@ class TestModuleLevel:
             mock_guard_cls.for_pydantic.return_value = mock_guard
             decorator = lv.guard_llm_output(_TestSchema)
             # Guard.for_pydantic is called inside decorator, not guard_llm_output
-            wrapped = decorator(lambda: '{"name": "test", "value": 1}')
+            decorator(lambda: '{"name": "test", "value": 1}')
             mock_guard_cls.for_pydantic.assert_called_once_with(output_class=_TestSchema)
 
     def test_fallback_path_when_HAS_GUARDRAILS_False(self):

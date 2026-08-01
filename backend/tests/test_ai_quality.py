@@ -9,9 +9,9 @@ Sections:
   1C — Confidence Calibration    (~ 8 tests)
 """
 
-import pytest
 import re
 
+import pytest
 
 # ===================================================================
 #  1A — Response Quality Scoring
@@ -307,8 +307,9 @@ class TestConfidenceCalibration:
     @pytest.mark.unit
     @pytest.mark.ai_quality
     def test_validator_guard_confidence_bound_low(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel, Field
+
+        from app.pipeline.safety.validator_guard import validate_output
 
         class ConfidenceSchema(BaseModel):
             score: float = Field(..., ge=0.0, le=1.0)
@@ -320,8 +321,9 @@ class TestConfidenceCalibration:
     @pytest.mark.unit
     @pytest.mark.ai_quality
     def test_validator_guard_confidence_bound_high(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel, Field
+
+        from app.pipeline.safety.validator_guard import validate_output
 
         class ConfidenceSchema(BaseModel):
             score: float = Field(..., ge=0.0, le=1.0)
@@ -333,8 +335,9 @@ class TestConfidenceCalibration:
     @pytest.mark.unit
     @pytest.mark.ai_quality
     def test_validator_guard_out_of_range_rejected(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel, Field
+
+        from app.pipeline.safety.validator_guard import validate_output
 
         class ConfidenceSchema(BaseModel):
             score: float = Field(..., ge=0.0, le=1.0)
@@ -346,8 +349,9 @@ class TestConfidenceCalibration:
     @pytest.mark.unit
     @pytest.mark.ai_quality
     def test_validator_guard_known_valid_high_confidence(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel, Field
+
+        from app.pipeline.safety.validator_guard import validate_output
 
         class OutputSchema(BaseModel):
             text: str = Field(..., min_length=1)
@@ -361,8 +365,9 @@ class TestConfidenceCalibration:
     @pytest.mark.unit
     @pytest.mark.ai_quality
     def test_guard_llm_output_confidence_bounds(self):
-        from app.pipeline.safety.llm_validator import guard_llm_output
         from pydantic import BaseModel, Field
+
+        from app.pipeline.safety.llm_validator import guard_llm_output
 
         class OutSchema(BaseModel):
             value: float = Field(..., ge=0.0, le=1.0)
@@ -381,8 +386,9 @@ class TestConfidenceCalibration:
     @pytest.mark.unit
     @pytest.mark.ai_quality
     def test_guard_llm_output_invalid_output_detected(self):
-        from app.pipeline.safety.llm_validator import guard_llm_output
         from pydantic import BaseModel, Field
+
+        from app.pipeline.safety.llm_validator import guard_llm_output
 
         class OutSchema(BaseModel):
             text: str = Field(..., min_length=1)
@@ -397,8 +403,9 @@ class TestConfidenceCalibration:
     @pytest.mark.unit
     @pytest.mark.ai_quality
     def test_guard_llm_output_missing_required_field(self):
-        from app.pipeline.safety.llm_validator import guard_llm_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.llm_validator import guard_llm_output
 
         class RequiredSchema(BaseModel):
             required_field: str

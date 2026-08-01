@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 
 
 class TestNormalizeRole:
@@ -92,8 +93,9 @@ class TestRequireRole:
         assert user.effective_role == "admin"
 
     def test_insufficient_permissions(self):
-        from app.middleware.rbac import require_role
         from fastapi import HTTPException
+
+        from app.middleware.rbac import require_role
         guard = require_role("admin")
         user = MagicMock()
         user.role = "free"

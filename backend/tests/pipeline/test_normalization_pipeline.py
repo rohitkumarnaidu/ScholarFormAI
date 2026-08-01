@@ -1,10 +1,13 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import TableCell
 from __future__ import annotations
+
 import pytest
+
+from app.models import TableCell
 from app.pipeline.normalization.normalizer import Normalizer
+
 
 def _b(text: str, index: int, bid: str = None, bold: bool = False, font_size: float = 12.0):
     from app.models import Block, BlockType
@@ -29,7 +32,7 @@ def normalizer():
 
 class TestNormalizerProcess:
     def test_normalize_blocks_basic(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="doc1",
             blocks=[_b("Hello \u2014 world", 1)],
@@ -40,7 +43,7 @@ class TestNormalizerProcess:
         assert "Hello" in result.blocks[0].text
 
     def test_normalize_metadata_title(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(title="\u201cQuoted Title\u201d"),
@@ -49,7 +52,7 @@ class TestNormalizerProcess:
         assert '"' in result.metadata.title
 
     def test_normalize_metadata_authors(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(authors=["  Smith, J.  ", ""]),
@@ -59,7 +62,7 @@ class TestNormalizerProcess:
         assert result.metadata.authors[0] == "Smith, J."
 
     def test_normalize_metadata_abstract(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(abstract="  This   is   abstract.  "),
@@ -68,7 +71,7 @@ class TestNormalizerProcess:
         assert "  " not in result.metadata.abstract
 
     def test_normalize_metadata_keywords(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(keywords=["  ML  ", ""]),
@@ -78,7 +81,7 @@ class TestNormalizerProcess:
         assert result.metadata.keywords[0] == "ML"
 
     def test_normalize_metadata_journal(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(journal="  IEEE Trans.  "),
@@ -87,7 +90,7 @@ class TestNormalizerProcess:
         assert result.metadata.journal == "IEEE Trans."
 
     def test_normalize_metadata_corresponding_author(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(corresponding_author="  Smith  "),
@@ -96,7 +99,7 @@ class TestNormalizerProcess:
         assert result.metadata.corresponding_author == "Smith"
 
     def test_normalize_metadata_email(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(email="  a@b.com  "),
@@ -221,7 +224,7 @@ class TestNormalizerBlockSplittingMultiLine:
         assert len(result.blocks) == 2
 
     def test_duplicate_blocks_not_identical_style(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         from app.models.block import TextStyle
         b1 = Block(block_id="b1", text="Intro", index=1, block_type=BlockType.UNKNOWN, style=TextStyle(bold=True))
         b2 = Block(block_id="b2", text="Intro", index=2, block_type=BlockType.UNKNOWN, style=TextStyle(bold=False))
@@ -233,7 +236,7 @@ class TestNormalizerEmptyOrphanRemoval:
     def test_empty_body_block_removed(self, normalizer):
         from app.models import PipelineDocument
         blocks = [_body("", 1), _body("Content", 2)]
-        doc = PipelineDocument(document_id="doc1", blocks=blocks)
+        PipelineDocument(document_id="doc1", blocks=blocks)
         result = normalizer._sanitize_empty_orphan_blocks(blocks)
         assert len(result) == 1
 
@@ -286,7 +289,7 @@ class TestNormalizerMedianFont:
 
 class TestNormalizerConvenience:
     def test_normalize_document_convenience(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         from app.pipeline.normalization.normalizer import normalize_document
         doc = PipelineDocument(
             document_id="doc1",

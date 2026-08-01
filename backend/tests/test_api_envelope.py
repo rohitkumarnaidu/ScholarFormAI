@@ -1,5 +1,6 @@
+from datetime import UTC, datetime
+
 import pytest
-from datetime import datetime, timezone
 from pydantic import ValidationError
 
 
@@ -37,7 +38,7 @@ class TestAPIResponse:
         assert resp.data == {"key": "val"}
 
     def test_with_error(self):
-        from app.schemas.api_envelope import APIResponse, APIError
+        from app.schemas.api_envelope import APIError, APIResponse
         err = APIError(code="ERR", message="msg")
         resp = APIResponse(error=err, request_id="req-1")
         assert resp.error.code == "ERR"
@@ -46,7 +47,7 @@ class TestAPIResponse:
         from app.schemas.api_envelope import APIResponse
         resp = APIResponse(request_id="req-1")
         assert resp.timestamp.tzinfo is not None
-        assert resp.timestamp.tzinfo == timezone.utc
+        assert resp.timestamp.tzinfo == UTC
 
     def test_missing_request_id_raises(self):
         from app.schemas.api_envelope import APIResponse

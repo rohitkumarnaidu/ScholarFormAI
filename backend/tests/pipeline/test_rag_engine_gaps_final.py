@@ -11,9 +11,9 @@ from __future__ import annotations
 
 import json
 import os
-import numpy as np
 from unittest.mock import MagicMock, patch
 
+import numpy as np
 import pytest
 
 from tests.pipeline.test_rag_engine_comprehensive import _make_engine
@@ -336,7 +336,7 @@ class TestIsReusableEmbeddingModel:
 
 class TestLoadEmbeddingModelCascade:
     def test_primary_fails_fallback_succeeds(self, tmp_path):
-        from app.pipeline.intelligence.rag_engine import PRIMARY_MODEL, FALLBACK_MODEL
+        from app.pipeline.intelligence.rag_engine import FALLBACK_MODEL, PRIMARY_MODEL
         mock_model = MagicMock()
         mock_model.get_sentence_embedding_dimension.return_value = 384
         mock_model.encode.return_value = [0.1] * 384

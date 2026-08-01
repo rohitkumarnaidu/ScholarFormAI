@@ -56,8 +56,8 @@ class TestRepairCommonCorruptions:
 
 class TestSanitizeEmptyOrphanBlocks:
     def test_removes_empty_body_block(self):
-        from app.pipeline.normalization.normalizer import Normalizer
         from app.models.block import BlockType
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         b = MagicMock()
         b.text.strip.return_value = ""

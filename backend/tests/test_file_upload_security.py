@@ -1,5 +1,6 @@
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock, AsyncMock
 
 pytestmark = [pytest.mark.security]
 
@@ -37,8 +38,9 @@ class TestFileUploadExtensionValidation:
 
     @pytest.mark.asyncio
     async def test_empty_file_raises_magic_validation_error(self):
-        from app.routers.v1.documents_impl import _validate_magic_bytes
         from fastapi import HTTPException
+
+        from app.routers.v1.documents_impl import _validate_magic_bytes
         mock_file = MagicMock()
         mock_file.filename = "empty.pdf"
         mock_file.read = AsyncMock(return_value=b"")
@@ -48,8 +50,9 @@ class TestFileUploadExtensionValidation:
 
     @pytest.mark.asyncio
     async def test_unknown_extension_rejected(self):
-        from app.routers.v1.documents_impl import _validate_magic_bytes
         from fastapi import HTTPException
+
+        from app.routers.v1.documents_impl import _validate_magic_bytes
         mock_file = MagicMock()
         mock_file.filename = "malware.xyz"
         mock_file.read = AsyncMock(return_value=b"some content")
@@ -63,8 +66,9 @@ class TestFileUploadMagicBytesValidation:
 
     @pytest.mark.asyncio
     async def test_pdf_with_wrong_magic_bytes_rejected(self):
-        from app.routers.v1.documents_impl import _validate_magic_bytes
         from fastapi import HTTPException
+
+        from app.routers.v1.documents_impl import _validate_magic_bytes
         mock_file = MagicMock()
         mock_file.filename = "fake.pdf"
         mock_file.read = AsyncMock(return_value=b"This is not a PDF but has pdf extension!")
@@ -105,8 +109,9 @@ class TestFileUploadMagicBytesValidation:
 
     @pytest.mark.asyncio
     async def test_non_utf8_text_file_rejected(self):
-        from app.routers.v1.documents_impl import _validate_magic_bytes
         from fastapi import HTTPException
+
+        from app.routers.v1.documents_impl import _validate_magic_bytes
         mock_file = MagicMock()
         mock_file.filename = "binary.txt"
         payload = bytes(range(256))
@@ -129,16 +134,18 @@ class TestFileUploadMagicBytesValidation:
 class TestFilePathTraversalPrevention:
 
     def test_upload_path_traversal_rejected(self):
-        from app.routers.v1.documents_impl import UPLOAD_DIR
         import os
+
+        from app.routers.v1.documents_impl import UPLOAD_DIR
         safe_path = os.path.abspath(UPLOAD_DIR)
         malicious = os.path.join(safe_path, "..", "..", "etc", "passwd")
         normalized = os.path.normpath(malicious)
         assert not normalized.startswith(safe_path)
 
     def test_upload_absolute_path_rejected(self):
-        from app.routers.v1.documents_impl import UPLOAD_DIR
         import os
+
+        from app.routers.v1.documents_impl import UPLOAD_DIR
         safe_path = os.path.abspath(UPLOAD_DIR)
         assert safe_path == os.path.abspath(UPLOAD_DIR)
 
@@ -152,8 +159,9 @@ class TestFilePathTraversalPrevention:
         assert re.match(pattern, "a") is not None
 
     def test_filepath_startswith_check_rejects_traversal(self):
-        from app.routers.v1.documents_impl import UPLOAD_DIR
         import os
+
+        from app.routers.v1.documents_impl import UPLOAD_DIR
         upload_dir_abs = os.path.abspath(UPLOAD_DIR)
         safe = os.path.join(upload_dir_abs, "file.docx")
         assert safe.startswith(upload_dir_abs)
@@ -182,7 +190,8 @@ class TestFileUploadVirusScan:
     async def test_virus_scan_clean_passes(self):
         from app.routers.v1.documents_impl import _scan_uploaded_file
         with patch("app.routers.v1.documents_impl.virus_scanner.scan", AsyncMock(return_value={"clean": True, "engine": "clamav", "result": "clean"})):
-            import tempfile, os
+            import os
+            import tempfile
             with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as f:
                 f.write(b"clean content")
                 tmp = f.name
@@ -195,10 +204,12 @@ class TestFileUploadVirusScan:
 
     @pytest.mark.asyncio
     async def test_virus_scan_malware_raises_422(self):
-        from app.routers.v1.documents_impl import _scan_uploaded_file
         from fastapi import HTTPException
+
+        from app.routers.v1.documents_impl import _scan_uploaded_file
         with patch("app.routers.v1.documents_impl.virus_scanner.scan", AsyncMock(return_value={"clean": False, "engine": "clamav", "result": "Win.Trojan.Agent-123"})):
-            import tempfile, os
+            import os
+            import tempfile
             with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as f:
                 f.write(b"malicious content")
                 tmp = f.name
@@ -217,7 +228,8 @@ class TestFileUploadVirusScan:
         with patch("app.utils.virus_scanner.settings") as ms:
             ms.CLAMAV_HOST = "127.0.0.1"
             ms.CLAMAV_PORT = 3310
-            import tempfile, os
+            import os
+            import tempfile
             with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as f:
                 f.write(b"test")
                 tmp = f.name

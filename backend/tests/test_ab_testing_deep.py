@@ -1,6 +1,8 @@
 from __future__ import annotations
+
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 
 class TestABTestingFramework:
@@ -100,7 +102,7 @@ class TestABTestingFramework:
         assert "error" in result
 
     def test_get_ab_testing(self):
-        from app.services.ab_testing import get_ab_testing, _ab_testing
+        from app.services.ab_testing import _ab_testing, get_ab_testing
         _ab_testing = None
         with patch("app.services.ab_testing.get_or_create") as mock_gc:
             mock_gc.return_value = "ab_instance"

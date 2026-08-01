@@ -6,7 +6,9 @@
 from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -104,9 +106,7 @@ class TestInitializeExecutor:
 
     @patch("app.pipeline.agents.document_agent.settings")
     def test_init_with_mocked_constructor(self, mock_settings):
-        from app.pipeline.agents.document_agent import (
-            DocumentAgent
-        )
+        from app.pipeline.agents.document_agent import DocumentAgent
         agent = DocumentAgent.__new__(DocumentAgent)
         agent.llm = MagicMock()
         agent.tools = [MagicMock() for _ in range(3)]
@@ -368,7 +368,7 @@ class TestRun:
         agent._execute_with_retry = MagicMock(
             return_value={"output": "analysis", "intermediate_steps": []}
         )
-        result = await agent.run(mock_doc, "job_001")
+        await agent.run(mock_doc, "job_001")
         vt.set_document.assert_called_once_with("doc_123", mock_doc)
 
 
@@ -472,8 +472,8 @@ class TestRunDirectFallbackEdge:
         return a
 
     def test_fallback_with_validation_tool_and_document(self):
-        from app.pipeline.agents.tools.validation_tool import ValidationTool
         from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
+        from app.pipeline.agents.tools.validation_tool import ValidationTool
         vt = MagicMock(spec=ValidationTool)
         vt.name = "validation"
         vt._run.return_value = "valid"

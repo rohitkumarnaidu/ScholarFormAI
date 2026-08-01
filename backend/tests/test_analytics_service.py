@@ -1,7 +1,5 @@
 from unittest.mock import patch
 
-
-
 # Posthog is imported lazily inside AnalyticsService.__init__,
 # so we patch the source package name, not the consumer module
 
@@ -114,7 +112,7 @@ class TestAnalyticsServiceCapture:
     def test_capture_graceful_on_posthog_exception(self):
         with (
             patch.dict("os.environ", {"POSTHOG_API_KEY": "phc_test"}, clear=True),
-            patch("posthog.Posthog") as MockPosthog,
+            patch("posthog.Posthog"),
             patch("app.services.analytics_service.logger") as mock_logger,
         ):
             from app.services.analytics_service import AnalyticsService
@@ -158,8 +156,7 @@ class TestAnalyticsServiceCapture:
 
 class TestAnalyticsServiceSingleton:
     def test_singleton_is_analytics_service_instance(self):
-        from app.services.analytics_service import analytics_service
-        from app.services.analytics_service import AnalyticsService
+        from app.services.analytics_service import AnalyticsService, analytics_service
         assert isinstance(analytics_service, AnalyticsService)
 
     def test_singleton_capture_works(self):

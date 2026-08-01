@@ -94,14 +94,14 @@ def get_api_version(request: Request) -> APIVersion | None:
         try:
             return APIVersion.parse(accept_match.group(1))
         except ValueError:
-            pass
+            pass  # intentionally ignored
 
     custom_header = request.headers.get("X-API-Version", "")
     if custom_header:
         try:
             return APIVersion.parse(custom_header)
         except ValueError:
-            pass
+            pass  # intentionally ignored
 
     return APIVersion.from_path(request.url.path)
 

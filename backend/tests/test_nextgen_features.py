@@ -4,6 +4,7 @@
 
 import sys
 from pathlib import Path
+
 from PIL import Image
 
 # Add backend to sys.path
@@ -11,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from app.pipeline.figures.analyzer import FigureAnalyzer
 from app.services.model_metrics import ModelMetrics
+
 
 def test_figure_analyzer(tmp_path):
     """Test FigureAnalyzer with a generated image."""

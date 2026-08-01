@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
+import contextlib
 import json
 import logging
 import time
-from typing import Any, Dict, Optional
+from typing import Any
 from urllib.parse import quote_plus
 
 import requests
@@ -37,13 +38,13 @@ class CrossRefClient:
 
     BASE_URL = "https://api.crossref.org/works"
 
-    def __init__(self, contact_email: Optional[str] = None):
+    def __init__(self, contact_email: str | None = None):
         email = contact_email or settings.CROSSREF_MAILTO
         self.headers = {"User-Agent": f"ScholarFormValidation/1.0 ({email})"}
         # Instance-level cache (no global lru_cache memory leak).
-        self._api_cache: Dict[str, Dict[str, Any]] = {}
+        self._api_cache: dict[str, dict[str, Any]] = {}
 
-    def _get_cache(self, key: str) -> Optional[Dict[str, Any]]:
+    def _get_cache(self, key: str) -> dict[str, Any] | None:
         """Attempt to fetch from Redis."""
         if HAS_REDIS:
             try:
@@ -51,18 +52,16 @@ class CrossRefClient:
                 if data:
                     return json.loads(data)
             except Exception:
-                pass
+                pass  # intentionally ignored
         return None
 
-    def _set_cache(self, key: str, data: Dict[str, Any], ttl: int = 86400 * 7):
+    def _set_cache(self, key: str, data: dict[str, Any], ttl: int = 86400 * 7):
         """Save results to Redis for 7 days."""
         if HAS_REDIS:
-            try:
+            with contextlib.suppress(Exception):
                 redis_client.setex(f"crossref:{key}", ttl, json.dumps(data))
-            except Exception:
-                pass
 
-    def _fetch_api(self, query: str) -> Dict[str, Any]:
+    def _fetch_api(self, query: str) -> dict[str, Any]:
         """
         The actual network call with instance-level dict cache.
         Avoids @lru_cache on instance method which can leak memory.
@@ -129,7 +128,7 @@ class CrossRefClient:
                 for k in keys[: len(keys) - 2000]:
                     del self._api_cache[k]
 
-    def validate_citation(self, raw_text: str) -> Dict[str, Any]:
+    def validate_citation(self, raw_text: str) -> dict[str, Any]:
         """
         Validates a raw citation string against CrossRef.
         Returns empty dictionary if offline or not found.
@@ -154,7 +153,7 @@ class CrossRefClient:
         return result
 
 
-_crossref_client: Optional[CrossRefClient] = None
+_crossref_client: CrossRefClient | None = None
 
 
 def get_crossref_client() -> CrossRefClient:

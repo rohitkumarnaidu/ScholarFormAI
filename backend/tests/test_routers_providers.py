@@ -1,12 +1,11 @@
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
 
+from app.db.session import get_db
 from app.main import app
 from app.utils.dependencies import get_current_user
-from app.db.session import get_db
 
 
 @pytest.fixture

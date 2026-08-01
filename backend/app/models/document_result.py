@@ -2,8 +2,9 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from sqlalchemy import Column, DateTime, ForeignKey, text
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import relationship
+
 from app.db.base import Base
 
 

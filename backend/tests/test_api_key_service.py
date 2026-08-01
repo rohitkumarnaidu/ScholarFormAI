@@ -45,7 +45,7 @@ class TestApiKeyService:
         existing.key_label = "Old"
         existing.is_active = True
         svc.get_key = MagicMock(return_value=existing)
-        result = svc.update_key("key-1", "user-1", key_label="New Label", is_active=False)
+        svc.update_key("key-1", "user-1", key_label="New Label", is_active=False)
         assert existing.key_label == "New Label"
         assert existing.is_active is False
         svc.db.commit.assert_called_once()
@@ -146,7 +146,7 @@ class TestApiKeyService:
         existing.is_active = True
         existing.rate_limit_per_minute = 10
         svc.get_key = MagicMock(return_value=existing)
-        result = svc.update_key("key-1", "user-1", rate_limit_per_minute=30)
+        svc.update_key("key-1", "user-1", rate_limit_per_minute=30)
         assert existing.rate_limit_per_minute == 30
         assert existing.key_label == "Old"
         svc.db.commit.assert_called_once()

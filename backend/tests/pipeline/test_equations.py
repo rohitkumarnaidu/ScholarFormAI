@@ -2,9 +2,13 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
+
+from unittest.mock import MagicMock, patch
+
 import pytest
+
 from app.utils.id_generator import generate_equation_id
+
 
 class TestEquationStandardizer:
     @pytest.fixture
@@ -23,7 +27,7 @@ class TestEquationStandardizer:
         assert result is doc
 
     def test_process_omml_conversion_success(self, standardizer):
-        from app.models import PipelineDocument, Equation
+        from app.models import Equation, PipelineDocument
         standardizer._convert_omml_to_mathml = MagicMock(return_value="<math>result</math>")
         eq = Equation(equation_id=generate_equation_id(1), index=1, omml="<m:oMath>...</m:oMath>")
         doc = PipelineDocument(document_id="t", equations=[eq])
@@ -31,7 +35,7 @@ class TestEquationStandardizer:
         assert result.equations[0].mathml == "<math>result</math>"
 
     def test_process_omml_conversion_failure(self, standardizer):
-        from app.models import PipelineDocument, Equation
+        from app.models import Equation, PipelineDocument
         standardizer._convert_omml_to_mathml = MagicMock(return_value="")
         eq = Equation(equation_id=generate_equation_id(1), index=1, omml="<bad>xml</bad>")
         doc = PipelineDocument(document_id="t", equations=[eq])
@@ -39,7 +43,7 @@ class TestEquationStandardizer:
         assert result.equations[0].mathml != "<math>result</math>"
 
     def test_process_adds_stage_info(self, standardizer):
-        from app.models import PipelineDocument, Equation
+        from app.models import Equation, PipelineDocument
         standardizer._convert_omml_to_mathml = MagicMock(return_value="<math>ok</math>")
         eq = Equation(equation_id=generate_equation_id(1), index=1, omml="<m:oMath>x</m:oMath>")
         doc = PipelineDocument(document_id="t", equations=[eq])
@@ -72,7 +76,7 @@ class TestEquationStandardizer:
         assert result == ""
 
     def test_process_exception_handled(self, standardizer):
-        from app.models import PipelineDocument, Equation
+        from app.models import Equation, PipelineDocument
         standardizer._convert_omml_to_mathml = MagicMock(side_effect=Exception("unexpected"))
         eq = Equation(equation_id=generate_equation_id(1), index=1, omml="<m:oMath>x</m:oMath>")
         doc = PipelineDocument(document_id="t", equations=[eq])

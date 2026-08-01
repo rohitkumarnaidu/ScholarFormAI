@@ -11,15 +11,15 @@ Integration tests require GROBID service running:
     docker-compose up -d grobid
 """
 
-import pytest
 import os
-from unittest.mock import Mock, patch
 from pathlib import Path
-import requests
+from unittest.mock import Mock, patch
 from urllib.parse import urlparse
 
-from app.pipeline.services.grobid_client import GROBIDClient, GROBIDException
+import pytest
+import requests
 
+from app.pipeline.services.grobid_client import GROBIDClient, GROBIDException
 
 # Sample TEI XML response from GROBID
 SAMPLE_TEI_XML = """<?xml version="1.0" encoding="UTF-8"?>

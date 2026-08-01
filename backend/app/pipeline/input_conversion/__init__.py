@@ -3,6 +3,6 @@
 
 """Input conversion package."""
 
-from .converter import InputConverter, ConversionError
+from .converter import ConversionError, InputConverter
 
 __all__ = ["InputConverter", "ConversionError"]

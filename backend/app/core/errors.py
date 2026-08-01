@@ -203,10 +203,7 @@ def http_exception_to_error(request: Request, exc: HTTPException) -> JSONRespons
 
 
 def validation_error_to_response(request: Request, exc: RequestValidationError | ValidationError) -> JSONResponse:
-    if isinstance(exc, RequestValidationError):
-        errors = exc.errors()
-    else:
-        errors = exc.errors()
+    errors = exc.errors() if isinstance(exc, RequestValidationError) else exc.errors()
 
     formatted_errors: list[dict[str, Any]] = []
     for err in errors:

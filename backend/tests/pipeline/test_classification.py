@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import BlockType
-from app.models import BlockType
 from __future__ import annotations
+
 import pytest
+
+from app.models import BlockType
+
 
 class TestContentClassifier:
     @pytest.fixture

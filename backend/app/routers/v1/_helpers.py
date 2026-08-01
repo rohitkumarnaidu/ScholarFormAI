@@ -5,16 +5,17 @@ from __future__ import annotations
 
 import logging
 import re
+from collections.abc import Awaitable, Callable, Mapping
 from time import monotonic
-from collections.abc import Awaitable, Callable
-from typing import Any, Mapping, Optional
+from typing import Any
 
 from fastapi import HTTPException, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from starlette.responses import Response
 
-from app.common.constants import ERROR_CODES as DEFAULT_ERROR_CODES, PERSONA_PATH_MAP
+from app.common.constants import ERROR_CODES as DEFAULT_ERROR_CODES
+from app.common.constants import PERSONA_PATH_MAP
 from app.middleware.request_id import get_request_id
 from app.schemas.api_envelope import error_response, success_response
 
@@ -68,7 +69,7 @@ def build_error_response(
     status_code: int,
     code: str,
     message: str,
-    details: Optional[Mapping[str, Any]] = None,
+    details: Mapping[str, Any] | None = None,
 ) -> JSONResponse:
     payload = error_response(
         code=code,
@@ -86,7 +87,7 @@ def http_exception_to_response(
     request: Request,
     exc: HTTPException,
     *,
-    code_map: Optional[Mapping[int, str]] = None,
+    code_map: Mapping[int, str] | None = None,
 ) -> JSONResponse:
     detail = exc.detail
     if isinstance(detail, str):
@@ -114,8 +115,8 @@ async def run_enveloped(
     operation: Callable[[], Awaitable[Any]],
     *,
     success_status_code: int = 200,
-    code_map: Optional[Mapping[int, str]] = None,
-    logger: Optional[logging.Logger] = None,
+    code_map: Mapping[int, str] | None = None,
+    logger: logging.Logger | None = None,
     operation_name: str = "request",
 ):
     started_at = monotonic()

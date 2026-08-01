@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import io
-from unittest.mock import MagicMock, patch, ANY
+from unittest.mock import ANY, MagicMock, patch
 from xml.etree import ElementTree as ET
 from zipfile import ZipFile
 
@@ -25,7 +25,6 @@ from app.models import (
     TemplateInfo,
 )
 from app.pipeline.formatting.formatter import Formatter
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -584,7 +583,7 @@ class TestRemoveParagraph:
 
 class TestPrependParagraph:
     def test_prepends_to_empty_doc(self, formatter, word_doc):
-        p = formatter._prepend_paragraph(word_doc, "Hello")
+        formatter._prepend_paragraph(word_doc, "Hello")
         assert word_doc.paragraphs[0].text == "Hello"
 
     def test_prepends_before_existing(self, formatter, word_doc):
@@ -1198,9 +1197,8 @@ class TestLoadContract:
         yaml_content = contract_file.read_bytes()
         mock_file = MagicMock()
         mock_file.__enter__.return_value = io.StringIO(yaml_content.decode())
-        with patch("os.path.exists", return_value=True):
-            with patch("builtins.open", return_value=mock_file):
-                result = formatter._load_contract(str(contract_file))
+        with patch("os.path.exists", return_value=True), patch("builtins.open", return_value=mock_file):
+            result = formatter._load_contract(str(contract_file))
         assert result["layout"]["margins"]["top"] == 2
 
     def test_exception_returns_empty(self, formatter):
@@ -1566,7 +1564,7 @@ class TestPostProcessTemplateRender:
 
         with patch.object(formatter, "_document_contains_text", return_value=False):
             with patch.object(formatter, "_prepend_front_matter") as mock_front:
-                with patch.object(formatter, "_prepend_paragraph") as mock_pp:
+                with patch.object(formatter, "_prepend_paragraph"):
                     formatter._post_process_template_render(doc, source_doc, "ieee", {},
                                                              footnote_lookup={})
         mock_front.assert_called_once()

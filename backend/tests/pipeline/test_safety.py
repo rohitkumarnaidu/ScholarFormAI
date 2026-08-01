@@ -2,14 +2,17 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 import time
 from unittest.mock import patch
+
 import pytest
-from app.pipeline.safety.circuit_breaker import circuit_breaker, CircuitBreakerOpenException
-from app.pipeline.safety.retry_guard import retry_with_backoff, execute_with_retry
-from app.pipeline.safety.safe_execution import safe_execution, safe_function, safe_async_function
-from app.pipeline.safety.validator_guard import validate_output
 from pydantic import BaseModel
+
+from app.pipeline.safety.circuit_breaker import CircuitBreakerOpenException, circuit_breaker
+from app.pipeline.safety.retry_guard import execute_with_retry, retry_with_backoff
+from app.pipeline.safety.safe_execution import safe_async_function, safe_execution, safe_function
+from app.pipeline.safety.validator_guard import validate_output
 
 
 class _TestModel(BaseModel):

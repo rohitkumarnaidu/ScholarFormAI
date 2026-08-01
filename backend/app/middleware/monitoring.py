@@ -5,9 +5,10 @@
 General monitoring middleware for logging and tracing.
 """
 
-import time
 import logging
-from typing import Callable
+import time
+from collections.abc import Callable
+
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 

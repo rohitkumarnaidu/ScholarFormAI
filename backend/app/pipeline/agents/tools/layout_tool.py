@@ -6,7 +6,7 @@ Layout analysis tool using LLM (preferred) or Docling (fallback).
 """
 
 import sys
-from typing import Type
+
 from pydantic import BaseModel, Field
 
 if sys.version_info < (3, 14):
@@ -41,7 +41,7 @@ class LayoutAnalysisTool(BaseTool):
         "and hierarchical structure. Use this when you need to understand "
         "the visual layout and formatting of the document."
     )
-    args_schema: Type[BaseModel] = LayoutToolInput
+    args_schema: type[BaseModel] = LayoutToolInput
 
     def __init__(self):
         super().__init__()
@@ -56,7 +56,7 @@ class LayoutAnalysisTool(BaseTool):
             self._layout_analyzer = LLMPDFParser()
             return self._layout_analyzer
         except Exception:
-            pass
+            pass  # intentionally ignored
         try:
             from app.pipeline.services.docling_client import DoclingClient
 

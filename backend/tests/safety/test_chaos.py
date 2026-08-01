@@ -3,7 +3,9 @@
 
 import unittest
 from unittest.mock import MagicMock, patch
+
 from app.pipeline.intelligence.reasoning_engine import ReasoningEngine
+
 
 class TestSafetyChaos(unittest.TestCase):
     
@@ -25,12 +27,12 @@ class TestSafetyChaos(unittest.TestCase):
                     for i in range(3):
                         res = self.engine.generate_instruction_set([], "")
                         # The circuit breaker + guard will return the fallback dict
-                        self.assertTrue(res.get("fallback"), f"Attempt {i}: Should indicate fallback")
+                        assert res.get("fallback"), f"Attempt {i}: Should indicate fallback"
                     
                 # 2. Fourth call should trip circuit breaker safely 
                 try:
                     res = self.engine.generate_instruction_set([], "")
-                    self.assertTrue(res.get("fallback"), "Circuit breaker tripped should also return fallback")
+                    assert res.get("fallback"), "Circuit breaker tripped should also return fallback"
                 except Exception as e:
                     self.fail(f"Circuit breaker did not fail safely: {e}")
 
@@ -48,7 +50,7 @@ class TestSafetyChaos(unittest.TestCase):
             result = self.engine._call_ollama("test")
             # _call_ollama is wrapped in @retry_guard, which re-raises eventually?
             # actually _call_ollama logic itself catches exceptions and returns None
-            self.assertIsNone(result)
+            assert result is None
 
     def test_orchestrator_safe_execution(self):
         """Verify safe_execution context manager catches unforeseen crashes."""
@@ -63,7 +65,7 @@ class TestSafetyChaos(unittest.TestCase):
         except Exception:
             crash_survived = False
             
-        self.assertTrue(crash_survived, "Safe execution block failed to suppress exception")
+        assert crash_survived, "Safe execution block failed to suppress exception"
 
 if __name__ == '__main__':
     unittest.main()

@@ -8,9 +8,9 @@ Targeted gap-closing tests for remaining Phase 0 & 1 modules.
 from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
-from pydantic import BaseModel
 
 import pytest
+from pydantic import BaseModel
 
 # ═══════════════════════════════════════════════════════════════════════════
 # style_mapper.py — line 26 (bt already starts with BLOCK_)
@@ -314,8 +314,9 @@ class TestSafeExecution:
         # Should not propagate
 
     def test_safe_async_function_fallback(self):
-        from app.pipeline.safety.safe_execution import safe_async_function
         import asyncio
+
+        from app.pipeline.safety.safe_execution import safe_async_function
         @safe_async_function(fallback_value="fallback")
         async def failing_async():
             raise ValueError("async fail")
@@ -324,8 +325,9 @@ class TestSafeExecution:
         assert result == "fallback"
 
     def test_safe_async_function_success(self):
-        from app.pipeline.safety.safe_execution import safe_async_function
         import asyncio
+
+        from app.pipeline.safety.safe_execution import safe_async_function
         @safe_async_function(fallback_value="fallback")
         async def working_async():
             return "ok"
@@ -352,7 +354,7 @@ class TestCircuitBreaker:
         assert result == {}
 
     def test_circuit_breaker_no_fallback_raises(self):
-        from app.pipeline.safety.circuit_breaker import circuit_breaker, CircuitBreakerOpenException
+        from app.pipeline.safety.circuit_breaker import CircuitBreakerOpenException, circuit_breaker
 
         @circuit_breaker(failure_threshold=1, recovery_timeout=60)
         def failing_func():

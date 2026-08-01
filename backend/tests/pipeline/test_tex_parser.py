@@ -2,6 +2,7 @@
 # Copyright (c) 2026 ScholarForm AI
 
 import pytest
+
 from app.pipeline.parsing.tex_parser import TexParser
 
 
@@ -122,7 +123,7 @@ class TestTexParserContent:
         import re
         content = r"\begin{document}First para.\n\nSecond para.\end{document}"
         doc_match = re.search(r"\\begin\{document\}(.*?)\\end\{document\}", content, re.DOTALL)
-        body = doc_match.group(1)
+        doc_match.group(1)
         blocks = parser._extract_content(content)
         assert len(blocks) >= 1
 

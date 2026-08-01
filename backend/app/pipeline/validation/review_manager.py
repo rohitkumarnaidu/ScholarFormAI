@@ -2,7 +2,8 @@
 # Copyright (c) 2026 ScholarForm AI
 
 import logging
-from app.models.pipeline_document import PipelineDocument, ReviewStatus, ReviewMetadata
+
+from app.models.pipeline_document import PipelineDocument, ReviewMetadata, ReviewStatus
 
 logger = logging.getLogger(__name__)
 

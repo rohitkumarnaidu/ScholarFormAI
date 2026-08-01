@@ -8,7 +8,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-
 # ── 1A: Database Query Performance ──────────────────────────────────────────
 
 class TestDatabaseQueryPerformance:
@@ -137,8 +136,9 @@ class TestPipelinePerformance:
     @pytest.mark.unit
     def test_basic_document_parsing_performance(self, minimal_doc, tmp_path):
         """Basic DOCX parsing should complete in < 2s."""
-        from app.pipeline.parsing.parser import DocxParser
         from docx import Document as DocxDocument
+
+        from app.pipeline.parsing.parser import DocxParser
 
         docx_path = tmp_path / "perf_test.docx"
         docx = DocxDocument()
@@ -206,7 +206,7 @@ class TestLLMServicePerformance:
             patch.object(llm.settings, "OPENROUTER_API_KEY", None),
             patch.object(llm, "resolve_user_api_key", return_value=None),
         ):
-            with patch.object(llm, "generate", return_value="cached fallback result") as mock_gen:
+            with patch.object(llm, "generate", return_value="cached fallback result"):
                 start = time.perf_counter()
                 result = llm.generate_with_fallback(
                     [{"role": "user", "content": "hello"}],
@@ -246,7 +246,6 @@ class TestLLMServicePerformance:
         mock_choice.message.content = "model response"
         mock_response.choices = [mock_choice]
 
-        import app.services.llm_service as llm
         llm.completion = MagicMock(return_value=mock_response)
         with (
             patch.object(llm, "LITELLM_AVAILABLE", True),

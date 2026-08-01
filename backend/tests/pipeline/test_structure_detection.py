@@ -2,8 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 import pytest
+
 from app.pipeline.structure_detection.detector import StructureDetector
+
 
 class TestStructureDetector:
     @pytest.fixture
@@ -34,7 +37,7 @@ class TestStructureDetector:
         assert result.blocks[0].section_name is not None
 
     def test_process_preserves_title_block(self, detector):
-        from app.models import PipelineDocument, BlockType
+        from app.models import BlockType, PipelineDocument
         doc = PipelineDocument(document_id="t", blocks=[
         ])
         result = detector.process(doc)

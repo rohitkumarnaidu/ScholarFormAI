@@ -9,7 +9,7 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from fastapi import HTTPException
 
@@ -46,7 +46,7 @@ class MultiDocSynthesizer:
         vector_store: SessionVectorStore,
         llm_service: Any,
         pipeline_orchestrator: PipelineOrchestrator,
-        pubsub: Optional[RedisPubSub] = None,
+        pubsub: RedisPubSub | None = None,
     ) -> None:
         self.session_service = session_service
         self.vector_store = vector_store
@@ -56,9 +56,9 @@ class MultiDocSynthesizer:
         self.crossref = get_crossref_client()
         self.csl_engine = CSLEngine()
 
-    async def run(self, session_id: str, file_paths: List[str], template: str) -> str:
+    async def run(self, session_id: str, file_paths: list[str], template: str) -> str:
         session = await self.session_service.get_session(session_id)
-        config: Dict[str, Any] = dict(session.get("config_json") or {}) if session else {}
+        config: dict[str, Any] = dict(session.get("config_json") or {}) if session else {}
         try:
             await self._update_status(session_id, "processing", 5, "Synthesis pipeline started.", config)
 
@@ -199,10 +199,10 @@ class MultiDocSynthesizer:
         self,
         session_id: str,
         event_type: str,
-        stage: Optional[str],
-        progress: Optional[int],
-        message: Optional[str],
-        payload: Optional[Dict[str, Any]] = None,
+        stage: str | None,
+        progress: int | None,
+        message: str | None,
+        payload: dict[str, Any] | None = None,
     ) -> None:
         event_payload = payload or {}
         if stage:
@@ -226,10 +226,10 @@ class MultiDocSynthesizer:
         status: str,
         progress: int,
         message: str,
-        config: Dict[str, Any],
+        config: dict[str, Any],
         *,
-        stage: Optional[str] = None,
-        outline: Optional[dict] = None,
+        stage: str | None = None,
+        outline: dict | None = None,
         event_type: str = "stage_update",
     ) -> None:
         if stage:
@@ -245,12 +245,12 @@ class MultiDocSynthesizer:
         await self.session_service.update_session(session_id, **update_fields)
         await self._emit_event(session_id, event_type, stage, progress, message, payload={"status": status})
 
-    async def _validate_files(self, file_entries: List[Any]) -> tuple[List[Dict[str, Any]], List[str]]:
+    async def _validate_files(self, file_entries: list[Any]) -> tuple[list[dict[str, Any]], list[str]]:
         if not (2 <= len(file_entries) <= 6):
             raise HTTPException(status_code=422, detail="Upload between 2 and 6 files.")
-        warnings: List[str] = []
+        warnings: list[str] = []
         seen_hashes: set[str] = set()
-        valid_files: List[Dict[str, Any]] = []
+        valid_files: list[dict[str, Any]] = []
 
         for entry in file_entries:
             if isinstance(entry, str):
@@ -282,8 +282,8 @@ class MultiDocSynthesizer:
             raise HTTPException(status_code=422, detail="Need at least 2 unique files after deduplication.")
         return valid_files, warnings
 
-    async def _extract_documents(self, session_id: str, files: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        async def _extract_one(file_meta: Dict[str, Any]) -> Dict[str, Any]:
+    async def _extract_documents(self, session_id: str, files: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        async def _extract_one(file_meta: dict[str, Any]) -> dict[str, Any]:
             file_path = file_meta["path"]
             ext = Path(file_path).suffix.lower()
             factory = ParserFactory()
@@ -305,7 +305,7 @@ class MultiDocSynthesizer:
             }
 
         tasks = [asyncio.create_task(_extract_one(meta)) for meta in files]
-        results: List[Dict[str, Any]] = []
+        results: list[dict[str, Any]] = []
         for task in asyncio.as_completed(tasks):
             item = await task
             results.append(item)
@@ -318,8 +318,8 @@ class MultiDocSynthesizer:
             )
         return results
 
-    def _build_chunks(self, extracted_docs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        chunks: List[Dict[str, Any]] = []
+    def _build_chunks(self, extracted_docs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        chunks: list[dict[str, Any]] = []
         for doc in extracted_docs:
             doc_obj: PipelineDocument = doc["doc_obj"]
             buffer = ""
@@ -348,11 +348,11 @@ class MultiDocSynthesizer:
         text: str,
         source_doc: str,
         section: str,
-        page: Optional[int],
+        page: int | None,
         chunk_size: int = 1000,
         overlap: int = 200,
-    ) -> List[Dict[str, Any]]:
-        output: List[Dict[str, Any]] = []
+    ) -> list[dict[str, Any]]:
+        output: list[dict[str, Any]] = []
         start = 0
         while start < len(text):
             end = min(len(text), start + chunk_size)
@@ -371,7 +371,7 @@ class MultiDocSynthesizer:
             start = max(0, end - overlap)
         return output
 
-    async def _cross_doc_analysis(self, extracted_docs: List[Dict[str, Any]]) -> Dict[str, Any]:
+    async def _cross_doc_analysis(self, extracted_docs: list[dict[str, Any]]) -> dict[str, Any]:
         summaries = []
         for doc in extracted_docs:
             snippet = (doc.get("text") or "")[:1800]
@@ -388,7 +388,7 @@ class MultiDocSynthesizer:
             return result
         return {"overlaps": [], "gaps": [], "unique_points": {s["filename"]: [] for s in summaries}}
 
-    async def _generate_outline(self, session_id: str, analysis: Dict[str, Any], template: str) -> Dict[str, Any]:
+    async def _generate_outline(self, session_id: str, analysis: dict[str, Any], template: str) -> dict[str, Any]:
         system = "You are an academic outline generator. Return JSON only."
         user = (
             "Create a synthesis outline with keys: title, sections (list of objects with title and key_points).\n"
@@ -415,8 +415,8 @@ class MultiDocSynthesizer:
         )
         return result
 
-    async def _generate_sections(self, outline: Dict[str, Any], session_id: str) -> List[Dict[str, Any]]:
-        sections: List[Dict[str, Any]] = []
+    async def _generate_sections(self, outline: dict[str, Any], session_id: str) -> list[dict[str, Any]]:
+        sections: list[dict[str, Any]] = []
         if isinstance(outline, dict):
             outline_sections = outline.get("sections") or []
         elif isinstance(outline, list):
@@ -448,19 +448,19 @@ class MultiDocSynthesizer:
             sections.append({"title": title, "content": text})
         return sections
 
-    def _insert_citations(self, sections: List[Dict[str, Any]], template: str) -> Dict[str, Any]:
-        queries: List[str] = []
+    def _insert_citations(self, sections: list[dict[str, Any]], template: str) -> dict[str, Any]:
+        queries: list[str] = []
         for section in sections:
             queries.extend([q.strip() for q in _REF_PATTERN.findall(section["content"] or "")])
 
-        unique_queries: List[str] = []
+        unique_queries: list[str] = []
         for q in queries:
             if q and q not in unique_queries:
                 unique_queries.append(q)
 
-        references: List[Reference] = []
-        formatted_refs: List[str] = []
-        query_to_num: Dict[str, int] = {}
+        references: list[Reference] = []
+        formatted_refs: list[str] = []
+        query_to_num: dict[str, int] = {}
         for idx, query in enumerate(unique_queries, start=1):
             result = self.crossref.validate_citation(query)
             authors = []
@@ -512,14 +512,14 @@ class MultiDocSynthesizer:
         self,
         session_id: str,
         template: str,
-        outline: Dict[str, Any],
-        sections: List[Dict[str, Any]],
-        references: List[str],
+        outline: dict[str, Any],
+        sections: list[dict[str, Any]],
+        references: list[str],
     ) -> str:
-        from app.pipeline.formatting.formatter import Formatter
         from app.pipeline.export.exporter import Exporter
+        from app.pipeline.formatting.formatter import Formatter
 
-        blocks: List[Block] = []
+        blocks: list[Block] = []
         idx = 0
 
         title = outline.get("title") if isinstance(outline, dict) else None
@@ -569,7 +569,7 @@ class MultiDocSynthesizer:
             )
             idx += 1
 
-            for ref_idx, ref_text in enumerate(references):
+            for _ref_idx, ref_text in enumerate(references):
                 block_id = generate_block_id(idx)
                 blocks.append(
                     Block(
@@ -606,7 +606,7 @@ class MultiDocSynthesizer:
         result = await asyncio.to_thread(generate_with_fallback, messages, temperature=0.3, max_tokens=max_tokens)
         return (result.get("text") or "").strip()
 
-    async def _llm_json(self, system: str, user: str) -> Optional[Dict[str, Any]]:
+    async def _llm_json(self, system: str, user: str) -> dict[str, Any] | None:
         text = await self._llm_text(system, user, max_tokens=1200)
         if not text:
             return None
@@ -619,7 +619,7 @@ class MultiDocSynthesizer:
             return None
 
     @staticmethod
-    def _extract_json(text: str) -> Optional[str]:
+    def _extract_json(text: str) -> str | None:
         cleaned = text.strip()
         if cleaned.startswith("```"):
             cleaned = re.sub(r"^```(?:json)?", "", cleaned, flags=re.IGNORECASE).strip()
@@ -637,7 +637,7 @@ class MultiDocSynthesizer:
         stage: str,
         progress: int,
         text: str,
-        extra: Optional[Dict[str, Any]] = None,
+        extra: dict[str, Any] | None = None,
         chunk_size: int = 400,
     ) -> None:
         if not text:

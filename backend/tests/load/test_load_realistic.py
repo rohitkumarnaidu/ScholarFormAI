@@ -14,7 +14,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-
 BACKEND_ROOT = None  # conftest handles sys.path
 
 
@@ -292,8 +291,8 @@ class TestConcurrentUserScenarios:
             elapsed = time.perf_counter() - start
 
         assert len(results) == n_total
-        read_results = [r for r, t in zip(results, op_types) if t == "read"]
-        write_results = [r for r, t in zip(results, op_types) if t == "write"]
+        read_results = [r for r, t in zip(results, op_types, strict=False) if t == "read"]
+        write_results = [r for r, t in zip(results, op_types, strict=False) if t == "write"]
         assert len(read_results) == n_reads
         assert len(write_results) == n_writes
         assert elapsed < 10.0, f"70/30 mixed workload took {elapsed:.2f}s"

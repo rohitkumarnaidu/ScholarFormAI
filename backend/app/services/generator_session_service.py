@@ -7,16 +7,16 @@ import asyncio
 import copy
 import logging
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from time import monotonic
-from typing import Any, Optional
+from typing import Any
 
 from postgrest import APIError
 
 from app.config.settings import settings
 from app.db.supabase_client import get_supabase_client
-from app.utils.logging_context import log_extra
 from app.exceptions import DatabaseUnavailableError
+from app.utils.logging_context import log_extra
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class GeneratorSessionService:
 
     @staticmethod
     def _now_iso() -> str:
-        return datetime.now(timezone.utc).isoformat()
+        return datetime.now(UTC).isoformat()
 
     @staticmethod
     def _session_ttl_seconds() -> float:
@@ -129,7 +129,7 @@ class GeneratorSessionService:
             self._session_list_cache.clear()
             self._latest_document_cache.clear()
 
-    async def create_session(self, user_id: Optional[str], session_type: str, config: dict) -> str:
+    async def create_session(self, user_id: str | None, session_type: str, config: dict) -> str:
         session_id = str(uuid.uuid4())
         sb = get_supabase_client()
         if sb is None:
@@ -176,7 +176,7 @@ class GeneratorSessionService:
         )
         return session_id
 
-    async def get_session(self, session_id: str) -> Optional[dict]:
+    async def get_session(self, session_id: str) -> dict | None:
         sid = str(session_id)
         cached = await self._get_cached(
             self._session_cache,
@@ -334,7 +334,7 @@ class GeneratorSessionService:
         )
         return payload
 
-    async def list_sessions(self, user_id: Optional[str], limit: int = 50) -> list[dict]:
+    async def list_sessions(self, user_id: str | None, limit: int = 50) -> list[dict]:
         uid = str(user_id) if user_id else "__all__"
         cache_key = f"{uid}|{int(limit or 50)}"
         cached = await self._get_cached(
@@ -382,7 +382,7 @@ class GeneratorSessionService:
         session_id: str,
         content_json: dict,
         docx_path: str,
-        version: Optional[int] = None,
+        version: int | None = None,
     ) -> int:
         sb = get_supabase_client()
         if sb is None:
@@ -453,7 +453,7 @@ class GeneratorSessionService:
         )
         return version_number
 
-    async def get_latest_document(self, session_id: str) -> Optional[dict]:
+    async def get_latest_document(self, session_id: str) -> dict | None:
         sid = str(session_id)
         cached = await self._get_cached(
             self._latest_document_cache,

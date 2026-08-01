@@ -2,8 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 from unittest.mock import MagicMock, patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -32,32 +35,29 @@ class TestFigureAnalyzer:
     def test_downsample_if_needed_under_threshold(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
         a = FigureAnalyzer()
-        with patch("os.path.exists", return_value=True):
-            with patch("os.path.getsize", return_value=1000):
-                result = a.downsample_if_needed("/small.png")
-                assert result == "/small.png"
+        with patch("os.path.exists", return_value=True), patch("os.path.getsize", return_value=1000):
+            result = a.downsample_if_needed("/small.png")
+            assert result == "/small.png"
 
     def test_downsample_if_needed_over_threshold(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
         a = FigureAnalyzer()
         mock_img = MagicMock()
-        with patch("os.path.exists", return_value=True):
-            with patch("os.path.getsize", return_value=3_000_000):
-                with patch("PIL.Image.open") as mock_open:
-                    mock_open.return_value.__enter__.return_value = mock_img
-                    result = a.downsample_if_needed("/large.png")
-                    assert "_downsampled" in result
-                    mock_img.thumbnail.assert_called_once()
+        with patch("os.path.exists", return_value=True), patch("os.path.getsize", return_value=3_000_000):
+            with patch("PIL.Image.open") as mock_open:
+                mock_open.return_value.__enter__.return_value = mock_img
+                result = a.downsample_if_needed("/large.png")
+                assert "_downsampled" in result
+                mock_img.thumbnail.assert_called_once()
 
     def test_downsample_if_needed_exception(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
         a = FigureAnalyzer()
-        with patch("os.path.exists", return_value=True):
-            with patch("os.path.getsize", return_value=3_000_000):
-                with patch("PIL.Image.open") as mock_open:
-                    mock_open.return_value.__enter__.side_effect = Exception("Open failed")
-                    result = a.downsample_if_needed("/bad.png")
-                    assert result == "/bad.png"
+        with patch("os.path.exists", return_value=True), patch("os.path.getsize", return_value=3_000_000):
+            with patch("PIL.Image.open") as mock_open:
+                mock_open.return_value.__enter__.side_effect = Exception("Open failed")
+                result = a.downsample_if_needed("/bad.png")
+                assert result == "/bad.png"
 
     def test_analyze_image_not_found(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
@@ -75,14 +75,13 @@ class TestFigureAnalyzer:
         mock_img.format = "PNG"
         mock_img.mode = "RGB"
         mock_img.info = {"dpi": (300, 300)}
-        with patch("os.path.exists", return_value=True):
-            with patch("PIL.Image.open") as mock_open:
-                mock_open.return_value.__enter__.return_value = mock_img
-                result = a.analyze_image("/good.png")
-                assert result["valid"] is True
-                assert result["width"] == 800
-                assert result["height"] == 600
-                assert result["format"] == "PNG"
+        with patch("os.path.exists", return_value=True), patch("PIL.Image.open") as mock_open:
+            mock_open.return_value.__enter__.return_value = mock_img
+            result = a.analyze_image("/good.png")
+            assert result["valid"] is True
+            assert result["width"] == 800
+            assert result["height"] == 600
+            assert result["format"] == "PNG"
 
     def test_analyze_image_low_resolution(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
@@ -92,12 +91,11 @@ class TestFigureAnalyzer:
         mock_img.format = "JPEG"
         mock_img.mode = "L"
         mock_img.info = {"dpi": (72, 72)}
-        with patch("os.path.exists", return_value=True):
-            with patch("PIL.Image.open") as mock_open:
-                mock_open.return_value.__enter__.return_value = mock_img
-                result = a.analyze_image("/small.png")
-                assert result["valid"] is False
-                assert len(result["issues"]) > 0
+        with patch("os.path.exists", return_value=True), patch("PIL.Image.open") as mock_open:
+            mock_open.return_value.__enter__.return_value = mock_img
+            result = a.analyze_image("/small.png")
+            assert result["valid"] is False
+            assert len(result["issues"]) > 0
 
     def test_analyze_image_low_dpi(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
@@ -107,11 +105,10 @@ class TestFigureAnalyzer:
         mock_img.format = "PNG"
         mock_img.mode = "RGB"
         mock_img.info = {"dpi": (72, 72)}
-        with patch("os.path.exists", return_value=True):
-            with patch("PIL.Image.open") as mock_open:
-                mock_open.return_value.__enter__.return_value = mock_img
-                result = a.analyze_image("/lowdpi.png")
-                assert "Low DPI" in str(result["issues"])
+        with patch("os.path.exists", return_value=True), patch("PIL.Image.open") as mock_open:
+            mock_open.return_value.__enter__.return_value = mock_img
+            result = a.analyze_image("/lowdpi.png")
+            assert "Low DPI" in str(result["issues"])
 
     def test_analyze_image_dpi_as_int(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
@@ -121,20 +118,18 @@ class TestFigureAnalyzer:
         mock_img.format = "PNG"
         mock_img.mode = "RGB"
         mock_img.info = {"dpi": 200}
-        with patch("os.path.exists", return_value=True):
-            with patch("PIL.Image.open") as mock_open:
-                mock_open.return_value.__enter__.return_value = mock_img
-                result = a.analyze_image("/dpi_int.png")
-                assert "200" in str(result["dpi"])
+        with patch("os.path.exists", return_value=True), patch("PIL.Image.open") as mock_open:
+            mock_open.return_value.__enter__.return_value = mock_img
+            result = a.analyze_image("/dpi_int.png")
+            assert "200" in str(result["dpi"])
 
     def test_analyze_image_exception(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
         a = FigureAnalyzer()
-        with patch("os.path.exists", return_value=True):
-            with patch("PIL.Image.open") as mock_open:
-                mock_open.return_value.__enter__.side_effect = Exception("Corrupt image")
-                result = a.analyze_image("/corrupt.png")
-                assert "error" in result
+        with patch("os.path.exists", return_value=True), patch("PIL.Image.open") as mock_open:
+            mock_open.return_value.__enter__.side_effect = Exception("Corrupt image")
+            result = a.analyze_image("/corrupt.png")
+            assert "error" in result
 
     def test_global_instance(self):
         from app.pipeline.figures.analyzer import figure_analyzer
@@ -152,7 +147,7 @@ class TestFigureCaptionMatcher:
     def test_init_enable_vision_unavailable(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
         with (
-            patch("app.pipeline.figures.caption_matcher.logger") as mock_log,
+            patch("app.pipeline.figures.caption_matcher.logger"),
             patch("app.services.nvidia_client.get_nvidia_client", return_value=None),
         ):
             m = CaptionMatcher(enable_vision=True)
@@ -173,18 +168,18 @@ class TestFigureCaptionMatcher:
         assert not m.caption_pattern.match("Just text")
 
     def test_process_no_figures(self):
-        from app.pipeline.figures.caption_matcher import CaptionMatcher
         from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.figures.caption_matcher import CaptionMatcher
         doc = PipelineDocument(document_id="test")
         m = CaptionMatcher()
         result = m.process(doc)
         assert result is doc
 
     def test_process_with_matches(self):
-        from app.pipeline.figures.caption_matcher import CaptionMatcher
-        from app.models.pipeline_document import PipelineDocument
-        from app.models.figure import Figure
         from app.models.block import Block, BlockType
+        from app.models.figure import Figure
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.figures.caption_matcher import CaptionMatcher
         blocks = [
             Block(block_id="b1", text="Figure 1: System Architecture", index=0, block_type=BlockType.BODY),
             Block(block_id="b2", text="Some text", index=1, block_type=BlockType.BODY),
@@ -197,10 +192,10 @@ class TestFigureCaptionMatcher:
         assert result.figures[0].caption_block_id == "b1"
 
     def test_process_skip_headings(self):
-        from app.pipeline.figures.caption_matcher import CaptionMatcher
-        from app.models.pipeline_document import PipelineDocument
-        from app.models.figure import Figure
         from app.models.block import Block, BlockType
+        from app.models.figure import Figure
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.figures.caption_matcher import CaptionMatcher
         blocks = [
             Block(block_id="b1", text="Figure 1 Analysis", index=0, block_type=BlockType.HEADING_1),
             Block(block_id="b2", text="Figure 1: Real Caption", index=1, block_type=BlockType.BODY),
@@ -221,8 +216,8 @@ class TestFigureCaptionMatcher:
         assert result is doc
 
     def test_find_caption_candidates(self):
-        from app.pipeline.figures.caption_matcher import CaptionMatcher
         from app.models.block import Block, BlockType
+        from app.pipeline.figures.caption_matcher import CaptionMatcher
         blocks = [
             Block(block_id="b1", text="Figure 1: Caption", index=0, block_type=BlockType.BODY),
             Block(block_id="b2", text="Introduction", index=1, block_type=BlockType.HEADING_1),
@@ -234,9 +229,9 @@ class TestFigureCaptionMatcher:
         assert 1 not in candidates
 
     def test_match_candidates_figure_found(self):
-        from app.pipeline.figures.caption_matcher import CaptionMatcher
-        from app.models.figure import Figure
         from app.models.block import Block, BlockType
+        from app.models.figure import Figure
+        from app.pipeline.figures.caption_matcher import CaptionMatcher
         blocks = [
             Block(block_id="b1", text="Some text", index=0, block_type=BlockType.BODY),
             Block(block_id="b2", text="Figure 1: Caption", index=1, block_type=BlockType.BODY),
@@ -248,9 +243,9 @@ class TestFigureCaptionMatcher:
         assert matches[0][0].figure_id == "fig_1"
 
     def test_match_candidates_skips_assigned(self):
-        from app.pipeline.figures.caption_matcher import CaptionMatcher
-        from app.models.figure import Figure
         from app.models.block import Block, BlockType
+        from app.models.figure import Figure
+        from app.pipeline.figures.caption_matcher import CaptionMatcher
         blocks = [
             Block(block_id="b1", text="Some text", index=0, block_type=BlockType.BODY),
             Block(block_id="b2", text="Figure 1: Cap", index=1, block_type=BlockType.BODY),
@@ -265,9 +260,9 @@ class TestFigureCaptionMatcher:
         assert len(matches) == 2
 
     def test_match_candidates_tie_break_above(self):
-        from app.pipeline.figures.caption_matcher import CaptionMatcher
-        from app.models.figure import Figure
         from app.models.block import Block, BlockType
+        from app.models.figure import Figure
+        from app.pipeline.figures.caption_matcher import CaptionMatcher
         blocks = [
             Block(block_id="b1", text="Fig above", index=0, block_type=BlockType.BODY),
             Block(block_id="b2", text="Fig below", index=2, block_type=BlockType.BODY),
@@ -282,9 +277,9 @@ class TestFigureCaptionMatcher:
         assert len(matches) == 1
 
     def test_match_candidates_no_valid_block_map(self):
-        from app.pipeline.figures.caption_matcher import CaptionMatcher
-        from app.models.figure import Figure
         from app.models.block import Block, BlockType
+        from app.models.figure import Figure
+        from app.pipeline.figures.caption_matcher import CaptionMatcher
         blocks = [Block(block_id="b1", text="Figure 1: Cap", index=0, block_type=BlockType.BODY)]
         figures = [Figure(figure_id="fig_1", index=0, metadata={"block_index": 99})]
         m = CaptionMatcher()
@@ -292,16 +287,16 @@ class TestFigureCaptionMatcher:
         assert len(matches) == 0
 
     def test_enhance_captions_with_vision_no_path(self):
-        from app.pipeline.figures.caption_matcher import CaptionMatcher
         from app.models.figure import Figure
+        from app.pipeline.figures.caption_matcher import CaptionMatcher
         figs = [Figure(figure_id="f1", index=0)]
         m = CaptionMatcher()
         result = m._enhance_captions_with_vision(figs)
         assert result == 0
 
     def test_enhance_captions_with_vision_no_client(self):
-        from app.pipeline.figures.caption_matcher import CaptionMatcher
         from app.models.figure import Figure
+        from app.pipeline.figures.caption_matcher import CaptionMatcher
         figs = [Figure(figure_id="f1", index=0, export_path="/tmp/test.png")]
         with patch("app.services.nvidia_client.get_nvidia_client", return_value=None):
             m = CaptionMatcher(enable_vision=True)
@@ -309,8 +304,8 @@ class TestFigureCaptionMatcher:
             assert result == 0
 
     def test_enhance_captions_vision_exception(self):
-        from app.pipeline.figures.caption_matcher import CaptionMatcher
         from app.models.figure import Figure
+        from app.pipeline.figures.caption_matcher import CaptionMatcher
         figs = [Figure(figure_id="f1", index=0, export_path="/tmp/test.png")]
         m = CaptionMatcher(enable_vision=True)
         m.vision_client = MagicMock()
@@ -320,8 +315,8 @@ class TestFigureCaptionMatcher:
             assert result == 0
 
     def test_convenience_function(self):
-        from app.pipeline.figures.caption_matcher import link_figures
         from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.figures.caption_matcher import link_figures
         doc = PipelineDocument(document_id="test")
         result = link_figures(doc, enable_vision=False)
         assert result is doc
@@ -329,16 +324,16 @@ class TestFigureCaptionMatcher:
 
 class TestFigureRenderer:
     def test_calculate_image_size_with_dimensions(self):
-        from app.pipeline.figures.renderer import FigureRenderer
         from app.models.figure import Figure
+        from app.pipeline.figures.renderer import FigureRenderer
         fig = Figure(figure_id="f1", index=0, width=1920, height=1080)
         renderer = FigureRenderer()
         width, height = renderer.calculate_image_size(fig)
         assert width is not None
 
     def test_calculate_image_size_no_dimensions(self):
-        from app.pipeline.figures.renderer import FigureRenderer
         from app.models.figure import Figure
+        from app.pipeline.figures.renderer import FigureRenderer
         fig = Figure(figure_id="f1", index=0)
         renderer = FigureRenderer()
         width, height = renderer.calculate_image_size(fig)
@@ -346,8 +341,8 @@ class TestFigureRenderer:
         assert height is None
 
     def test_calculate_image_size_too_wide(self):
-        from app.pipeline.figures.renderer import FigureRenderer
         from app.models.figure import Figure
+        from app.pipeline.figures.renderer import FigureRenderer
         fig = Figure(figure_id="f1", index=0, width=10000, height=1000)
         renderer = FigureRenderer()
         width, height = renderer.calculate_image_size(fig)
@@ -355,8 +350,8 @@ class TestFigureRenderer:
         assert width <= Inches(6.5)
 
     def test_calculate_image_size_too_narrow(self):
-        from app.pipeline.figures.renderer import FigureRenderer
         from app.models.figure import Figure
+        from app.pipeline.figures.renderer import FigureRenderer
         fig = Figure(figure_id="f1", index=0, width=50, height=50)
         renderer = FigureRenderer()
         width, height = renderer.calculate_image_size(fig)
@@ -364,8 +359,8 @@ class TestFigureRenderer:
         assert width >= Inches(2.0)
 
     def test_render_from_export_path(self):
-        from app.pipeline.figures.renderer import FigureRenderer
         from app.models.figure import Figure
+        from app.pipeline.figures.renderer import FigureRenderer
         doc = MagicMock()
         fig = Figure(figure_id="f1", index=0, export_path="/tmp/fig.png")
         renderer = FigureRenderer()
@@ -376,8 +371,8 @@ class TestFigureRenderer:
                     doc.add_paragraph.assert_called()
 
     def test_render_from_export_path_failure(self):
-        from app.pipeline.figures.renderer import FigureRenderer
         from app.models.figure import Figure
+        from app.pipeline.figures.renderer import FigureRenderer
         doc = MagicMock()
         paragraph = MagicMock()
         run = MagicMock()
@@ -393,8 +388,8 @@ class TestFigureRenderer:
                     paragraph.add_run.assert_called()
 
     def test_render_from_image_data(self):
-        from app.pipeline.figures.renderer import FigureRenderer
         from app.models.figure import Figure
+        from app.pipeline.figures.renderer import FigureRenderer
         doc = MagicMock()
         paragraph = MagicMock()
         run = MagicMock()
@@ -408,8 +403,8 @@ class TestFigureRenderer:
                 run.add_picture.assert_called()
 
     def test_render_from_image_data_no_height(self):
-        from app.pipeline.figures.renderer import FigureRenderer
         from app.models.figure import Figure
+        from app.pipeline.figures.renderer import FigureRenderer
         doc = MagicMock()
         paragraph = MagicMock()
         run = MagicMock()
@@ -423,8 +418,8 @@ class TestFigureRenderer:
                 run.add_picture.assert_called()
 
     def test_render_from_image_data_failure(self):
-        from app.pipeline.figures.renderer import FigureRenderer
         from app.models.figure import Figure
+        from app.pipeline.figures.renderer import FigureRenderer
         doc = MagicMock()
         paragraph = MagicMock()
         run = MagicMock()
@@ -439,8 +434,8 @@ class TestFigureRenderer:
                 doc.add_paragraph.assert_called()
 
     def test_render_no_image(self):
-        from app.pipeline.figures.renderer import FigureRenderer
         from app.models.figure import Figure
+        from app.pipeline.figures.renderer import FigureRenderer
         doc = MagicMock()
         fig = Figure(figure_id="f1", index=0)
         renderer = FigureRenderer()
@@ -450,8 +445,8 @@ class TestFigureRenderer:
                 doc.add_paragraph.assert_called()
 
     def test_add_caption_no_text(self):
-        from app.pipeline.figures.renderer import FigureRenderer
         from app.models.figure import Figure
+        from app.pipeline.figures.renderer import FigureRenderer
         doc = MagicMock()
         fig = Figure(figure_id="f1", index=0)
         renderer = FigureRenderer()
@@ -459,8 +454,8 @@ class TestFigureRenderer:
         doc.add_paragraph.assert_not_called()
 
     def test_add_caption_with_text_matching_number(self):
-        from app.pipeline.figures.renderer import FigureRenderer
         from app.models.figure import Figure
+        from app.pipeline.figures.renderer import FigureRenderer
         doc = MagicMock()
         fig = Figure(figure_id="f1", index=0, caption_text="Figure 1: Test caption")
         renderer = FigureRenderer()
@@ -468,8 +463,8 @@ class TestFigureRenderer:
         doc.add_paragraph.assert_called_with(style="Caption")
 
     def test_add_caption_with_text_not_matching(self):
-        from app.pipeline.figures.renderer import FigureRenderer
         from app.models.figure import Figure
+        from app.pipeline.figures.renderer import FigureRenderer
         doc = MagicMock()
         fig = Figure(figure_id="f1", index=0, caption_text="Custom description")
         renderer = FigureRenderer()

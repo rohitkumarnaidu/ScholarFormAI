@@ -1,6 +1,7 @@
 import pytest
+
 from amf_sdk import AMFClient
-from amf_sdk.models import Manuscript, FormattingStyle
+from amf_sdk.models import FormattingStyle, Manuscript
 
 
 def test_client_initialization():

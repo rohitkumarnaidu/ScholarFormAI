@@ -13,7 +13,6 @@ from fastapi import FastAPI, Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.testclient import TestClient
 
-
 # ── FeatureFlagMiddleware ───────────────────────────────────────────────────────
 
 class TestFeatureFlagMiddleware:
@@ -107,7 +106,7 @@ class TestMonitoringMiddleware:
         return _app
 
     def test_records_timing_header(self, app):
-        with patch("app.middleware.monitoring.logger") as mock_log:
+        with patch("app.middleware.monitoring.logger"):
             from app.middleware.monitoring import MonitoringMiddleware
             app.add_middleware(MonitoringMiddleware)
             client = TestClient(app)
@@ -195,7 +194,7 @@ class TestRBAC:
         with patch("app.middleware.rbac.get_current_user", return_value=mock_user):
             result = guard(current_user=mock_user)
             assert result is mock_user
-            assert getattr(mock_user, "effective_role") == "admin"
+            assert mock_user.effective_role == "admin"
 
     def test_role_hierarchy_admin_gte_pro(self):
         from app.middleware.rbac import ROLE_HIERARCHY

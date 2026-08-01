@@ -12,9 +12,6 @@ from __future__ import annotations
 import threading
 from unittest.mock import MagicMock, patch
 
-
-
-
 # ═══════════════════════════════════════════════════════════════════════════
 # _validate_json_schema — edge cases
 # ═══════════════════════════════════════════════════════════════════════════

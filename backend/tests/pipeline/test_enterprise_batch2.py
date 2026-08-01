@@ -2,9 +2,12 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
+
 from pathlib import Path
+from unittest.mock import MagicMock, patch
+
 import pytest
+
 
 @pytest.fixture
 def agent():
@@ -170,16 +173,18 @@ class TestDocumentGenerator:
         assert result["error"] == "boom"
 
     def test_rule_based_skeleton_default(self):
-        from app.pipeline.generation.document_generator import DocumentGenerator
         import json
+
+        from app.pipeline.generation.document_generator import DocumentGenerator
         sk = DocumentGenerator._rule_based_skeleton("academic_paper", {"title": "Test"})
         blocks = json.loads(sk)
         assert blocks[0]["type"] == "TITLE"
         assert blocks[0]["content"] == "Test"
 
     def test_rule_based_skeleton_resume(self):
-        from app.pipeline.generation.document_generator import DocumentGenerator
         import json
+
+        from app.pipeline.generation.document_generator import DocumentGenerator
         sk = DocumentGenerator._rule_based_skeleton("resume", {"title": "John"})
         blocks = json.loads(sk)
         assert blocks[0]["content"] == "John"
@@ -206,8 +211,8 @@ class TestDocumentGenerator:
 
     def test_block_type_map_all_types(self):
         from app.models import BlockType
-        from app.pipeline.generation.document_generator import _BLOCK_TYPE_MAP
         from app.models.block import BlockType
+        from app.pipeline.generation.document_generator import _BLOCK_TYPE_MAP
         assert _BLOCK_TYPE_MAP["TITLE"] == BlockType.TITLE
         assert _BLOCK_TYPE_MAP["BODY"] == BlockType.BODY
         assert _BLOCK_TYPE_MAP["BULLET"] == BlockType.LIST_ITEM
@@ -420,7 +425,8 @@ class TestTemplateRenderer:
     def test_has_template_markers_cached(self):
         from app.pipeline.formatting.template_renderer import TemplateRenderer
         tr = TemplateRenderer(templates_dir=".")
-        import tempfile, os
+        import os
+        import tempfile
         f = tempfile.NamedTemporaryFile(suffix=".docx", delete=False)
         f.close()
         p = Path(f.name)
@@ -431,8 +437,10 @@ class TestTemplateRenderer:
         os.unlink(f.name)
 
     def test_has_template_markers_not_docx(self):
+        import os
+        import tempfile
+
         from app.pipeline.formatting.template_renderer import TemplateRenderer
-        import tempfile, os
         f = tempfile.NamedTemporaryFile(suffix=".html", mode="w", delete=False)
         f.write("anything")
         f.close()
@@ -453,15 +461,14 @@ class TestCircuitBreakerDecorator:
         assert my_func(21) == 42
 
     def test_decorator_opens_after_threshold(self):
-        from app.pipeline.safety.circuit_breaker import circuit_breaker, CircuitBreakerOpenException
+        from app.pipeline.safety.circuit_breaker import CircuitBreakerOpenException, circuit_breaker
         call_count = [0]
         @circuit_breaker(failure_threshold=2)
         def my_func(x):
             call_count[0] += 1
             raise ValueError("fail")
-        with patch("time.sleep"):
-            with pytest.raises((CircuitBreakerOpenException, ValueError)):
-                my_func(1)
+        with patch("time.sleep"), pytest.raises((CircuitBreakerOpenException, ValueError)):
+            my_func(1)
 
     def test_circuit_breaker_open_exception(self):
         from app.pipeline.safety.circuit_breaker import CircuitBreakerOpenException
@@ -474,7 +481,7 @@ class TestCircuitBreakerDecorator:
 
 class TestGuardLlmOutput:
     def test_no_guardrails_fallback(self):
-        from app.pipeline.safety.llm_validator import guard_llm_output, HAS_GUARDRAILS
+        from app.pipeline.safety.llm_validator import HAS_GUARDRAILS, guard_llm_output
         schema = MagicMock()
         @guard_llm_output(schema, error_return_value={"fallback": True})
         def my_func():
@@ -494,8 +501,9 @@ class TestGuardLlmOutput:
         assert result == {"error": True}
 
     def test_guard_returns_pydantic(self):
-        from app.pipeline.safety.llm_validator import guard_llm_output, HAS_GUARDRAILS
         from pydantic import BaseModel
+
+        from app.pipeline.safety.llm_validator import HAS_GUARDRAILS, guard_llm_output
         class MySchema(BaseModel):
             name: str = "default"
         @guard_llm_output(MySchema, error_return_value={"error": True})
@@ -701,7 +709,7 @@ class TestContentClassifier:
         from app.models import BlockType
         from app.models.block import BlockType
         from app.pipeline.references import parser as ref_parser_mod
-        with patch.object(ref_parser_mod, "ReferenceParser") as mock_rp:
+        with patch.object(ref_parser_mod, "ReferenceParser"):
             from app.pipeline.classification.classifier import ContentClassifier
             cc = ContentClassifier()
             b = MagicMock()
@@ -909,6 +917,7 @@ class TestStructureDetector:
 class TestRagEngine:
     def _make_re(self):
         import tempfile
+
         from app.pipeline.intelligence.rag_engine import RagEngine
         with patch.object(RagEngine, "_load_embedding_model"):
             re = RagEngine(tempfile.mkdtemp())
@@ -931,11 +940,10 @@ class TestRagEngine:
 
     def test_add_guideline(self):
         re = self._make_re()
-        with patch.object(re, "_seed_if_empty"):
-            with patch.object(re, "_save_native"):
-                re.add_guideline("IEEE", "introduction", "Content")
-                assert len(re.knowledge_base) == 1
-                assert re.knowledge_base[0]["metadata"]["publisher"] == "IEEE"
+        with patch.object(re, "_seed_if_empty"), patch.object(re, "_save_native"):
+            re.add_guideline("IEEE", "introduction", "Content")
+            assert len(re.knowledge_base) == 1
+            assert re.knowledge_base[0]["metadata"]["publisher"] == "IEEE"
 
     def test_query_guidelines_empty(self):
         re = self._make_re()
@@ -945,9 +953,8 @@ class TestRagEngine:
 
     def test_reset(self):
         re = self._make_re()
-        with patch.object(re, "_seed_if_empty"):
-            with patch.object(re, "_save_native"):
-                re.add_guideline("IEEE", "intro", "test")
+        with patch.object(re, "_seed_if_empty"), patch.object(re, "_save_native"):
+            re.add_guideline("IEEE", "intro", "test")
         re.reset()
         assert len(re.knowledge_base) == 0
 

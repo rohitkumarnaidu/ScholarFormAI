@@ -7,11 +7,12 @@ Tests for agent enhancements.
 import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-from app.pipeline.agents.memory import AgentMemory
-from app.pipeline.agents.streaming import StreamingAgentCallback
-from app.pipeline.agents.llm_factory import CustomLLMFactory
-from app.pipeline.agents.metrics import PerformanceTracker
+
 from app.pipeline.agents.dashboard import ComparisonDashboard
+from app.pipeline.agents.llm_factory import CustomLLMFactory
+from app.pipeline.agents.memory import AgentMemory
+from app.pipeline.agents.metrics import PerformanceTracker
+from app.pipeline.agents.streaming import StreamingAgentCallback
 
 
 class TestAgentMemory:
@@ -102,7 +103,7 @@ class TestCustomLLMFactory:
     @patch('app.pipeline.agents.llm_factory.ChatOpenAI')
     def test_create_openai_llm(self, mock_openai):
         """Test OpenAI LLM creation."""
-        llm = CustomLLMFactory.create_llm(provider="openai", model="gpt-4")
+        CustomLLMFactory.create_llm(provider="openai", model="gpt-4")
         
         mock_openai.assert_called_once()
         call_kwargs = mock_openai.call_args[1]
@@ -111,7 +112,7 @@ class TestCustomLLMFactory:
     @patch('app.pipeline.agents.llm_factory.Ollama')
     def test_create_ollama_llm(self, mock_ollama):
         """Test Ollama LLM creation."""
-        llm = CustomLLMFactory.create_llm(
+        CustomLLMFactory.create_llm(
             provider="ollama",
             model="llama2",
             base_url="http://localhost:11434"

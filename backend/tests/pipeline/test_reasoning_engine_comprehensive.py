@@ -18,7 +18,6 @@ from app.pipeline.intelligence.reasoning_engine import (
     get_reasoning_engine,
 )
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -193,7 +192,7 @@ class TestCallNvidiaLiteLLM:
             patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", True),
             patch("app.pipeline.intelligence.reasoning_engine.LITELLM_AVAILABLE", True),
             patch("app.pipeline.intelligence.reasoning_engine._llm_generate",
-                  return_value='{"blocks": [{"block_id": "b1"}]}') as mock_gen,
+                  return_value='{"blocks": [{"block_id": "b1"}]}'),
         ):
             result = engine._call_nvidia_litellm([{"role": "user", "content": "hi"}])
             assert result == {"blocks": [{"block_id": "b1"}]}
@@ -205,7 +204,7 @@ class TestCallNvidiaLiteLLM:
             patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", True),
             patch("app.pipeline.intelligence.reasoning_engine.LITELLM_AVAILABLE", True),
             patch("app.pipeline.intelligence.reasoning_engine._llm_generate",
-                  return_value='text before {"blocks": []} text after') as mock_gen,
+                  return_value='text before {"blocks": []} text after'),
         ):
             result = engine._call_nvidia_litellm([{"role": "user", "content": "hi"}])
             assert result == {"blocks": []}
@@ -217,7 +216,7 @@ class TestCallNvidiaLiteLLM:
             patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", True),
             patch("app.pipeline.intelligence.reasoning_engine.LITELLM_AVAILABLE", True),
             patch("app.pipeline.intelligence.reasoning_engine._llm_generate",
-                  return_value="plain text") as mock_gen,
+                  return_value="plain text"),
         ):
             result = engine._call_nvidia_litellm([{"role": "user", "content": "hi"}])
             assert result is None
@@ -269,7 +268,7 @@ class TestGenerateInstructionSetMetrics:
             patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics",
                   return_value=mock_metrics),
         ):
-            result = engine.generate_instruction_set(sample_blocks, "rules")
+            engine.generate_instruction_set(sample_blocks, "rules")
             assert mock_metrics.record_call.call_count >= 1
             assert mock_metrics.record_fallback.call_count >= 1
 
@@ -288,7 +287,7 @@ class TestGenerateInstructionSetMetrics:
             patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics",
                   return_value=mock_metrics),
         ):
-            result = engine.generate_instruction_set(sample_blocks, "rules")
+            engine.generate_instruction_set(sample_blocks, "rules")
             assert mock_metrics.record_call.call_count >= 1
 
     def test_deepseek_success_records_metrics(self, engine, sample_blocks):

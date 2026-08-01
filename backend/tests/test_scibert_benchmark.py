@@ -11,7 +11,6 @@ from app.config.settings import settings
 from app.pipeline.intelligence.semantic_parser import SemanticParser
 from app.pipeline.parsing.parser_factory import ParserFactory
 
-
 FIXTURES_DIR = Path(__file__).parent / "fixtures" / "scibert"
 LABELS_PATH = FIXTURES_DIR / "labels.json"
 HEURISTIC_FALLBACK_MODEL = "__local_benchmark_fallback__"
@@ -21,9 +20,9 @@ def _macro_f1(y_true, y_pred):
     labels = sorted(set(y_true) | set(y_pred))
     f1s = []
     for label in labels:
-        tp = sum(1 for t, p in zip(y_true, y_pred) if t == label and p == label)
-        fp = sum(1 for t, p in zip(y_true, y_pred) if t != label and p == label)
-        fn = sum(1 for t, p in zip(y_true, y_pred) if t == label and p != label)
+        tp = sum(1 for t, p in zip(y_true, y_pred, strict=False) if t == label and p == label)
+        fp = sum(1 for t, p in zip(y_true, y_pred, strict=False) if t != label and p == label)
+        fn = sum(1 for t, p in zip(y_true, y_pred, strict=False) if t == label and p != label)
         if tp == 0 and fp == 0 and fn == 0:
             continue
         precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0

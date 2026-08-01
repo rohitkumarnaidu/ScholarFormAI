@@ -5,17 +5,18 @@
 Tests for advanced agent features.
 """
 from pathlib import Path
+
+from app.pipeline.agents.adaptive import AdaptiveStrategy
+from app.pipeline.agents.advanced_dashboard import AdvancedAnalyticsDashboard
+from app.pipeline.agents.custom_tools import (
+    create_citation_formatter_tool,
+    create_keyword_extractor_tool,
+    register_custom_tool,
+)
+from app.pipeline.agents.distributed import AgentRole, DistributedCoordinator
+from app.pipeline.agents.metrics import PerformanceTracker
 from app.pipeline.agents.ml_patterns import MLPatternDetector
 from app.pipeline.agents.multi_doc_learning import MultiDocumentLearner
-from app.pipeline.agents.adaptive import AdaptiveStrategy
-from app.pipeline.agents.distributed import DistributedCoordinator, AgentRole
-from app.pipeline.agents.custom_tools import (
-    register_custom_tool,
-    create_citation_formatter_tool,
-    create_keyword_extractor_tool
-)
-from app.pipeline.agents.advanced_dashboard import AdvancedAnalyticsDashboard
-from app.pipeline.agents.metrics import PerformanceTracker
 
 
 class TestMLPatternDetector:

@@ -1,14 +1,16 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import BClass, EClass, RClass
 from __future__ import annotations
+
 from datetime import datetime
 
+from app.models import BClass, EClass, RClass
 from app.pipeline.export.jats_generator import JATSGenerator
 
+
 def _make_doc(**overrides):
-    from app.models import PipelineDocument, Block, BlockType, Reference
+    from app.models import Block, BlockType, PipelineDocument, Reference
     from app.models.pipeline_document import DocumentMetadata, TemplateInfo
 
     defaults = dict(
@@ -328,8 +330,9 @@ class TestJATSGenerator:
         assert "<body/>" in etree.tostring(parent, encoding="unicode")
 
     def test_body_heading_block(self):
-        from app.models import BlockType
         from lxml import etree
+
+        from app.models import BlockType
         doc = _make_doc()
         doc.blocks = [
             BClass(block_id="b1", index=1, block_type=BlockType.TITLE, text="Heading", section_name="title",
@@ -365,8 +368,9 @@ class TestJATSGenerator:
         assert "<p>" in xml
 
     def test_body_body_before_heading(self):
-        from app.models import BlockType
         from lxml import etree
+
+        from app.models import BlockType
         doc = _make_doc()
         doc.blocks = [
             BClass(block_id="b1", index=1, block_type=BlockType.BODY, text="First text",
@@ -382,8 +386,9 @@ class TestJATSGenerator:
         assert "<sec>" in xml
 
     def test_body_block_no_semantic_intent(self):
-        from app.models import BlockType
         from lxml import etree
+
+        from app.models import BlockType
         doc = _make_doc()
         doc.blocks = [
             BClass(block_id="b1", index=1, block_type=BlockType.BODY, text="Default body",

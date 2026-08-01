@@ -2,9 +2,10 @@
 # Copyright (c) 2026 ScholarForm AI
 
 import os
-import pytest
-from app.pipeline.contracts.loader import ContractLoader, load_contract
 
+import pytest
+
+from app.pipeline.contracts.loader import ContractLoader, load_contract
 
 FIXTURES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "fixtures", "contracts")
 
@@ -69,7 +70,7 @@ class TestContractLoader:
         assert loader.is_required("none", "acknowledgments") is False
 
     def test_load_contract_convenience(self):
-        with pytest.MonkeyPatch.context() as mp:
+        with pytest.MonkeyPatch.context():
             import app.pipeline.contracts.loader as cl
             original = cl._default_pipeline_loader.contracts_dir
             cl._default_pipeline_loader.contracts_dir = FIXTURES_DIR

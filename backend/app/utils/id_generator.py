@@ -6,6 +6,7 @@ ID Generator - Generate unique identifiers for document elements.
 
 Provides consistent, sequential IDs for blocks, figures, tables, and references.
 """
+from datetime import UTC
 
 
 def generate_block_id(index: int) -> str:
@@ -83,7 +84,7 @@ def generate_document_id(prefix: str = "doc") -> str:
     Returns:
         Document ID in format 'prefix_timestamp' (e.g., 'doc_20240202_103045')
     """
-    from datetime import datetime, timezone
+    from datetime import datetime
 
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
     return f"{prefix}_{timestamp}"

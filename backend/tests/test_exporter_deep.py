@@ -14,9 +14,9 @@ from __future__ import annotations
 
 import json
 import os
-from unittest.mock import ANY, MagicMock, patch, mock_open
-import pytest
+from unittest.mock import ANY, MagicMock, mock_open, patch
 
+import pytest
 
 # ---------------------------------------------------------------------------
 #  Fixtures & helpers
@@ -528,7 +528,7 @@ class TestExportHtml:
         meta.keywords = []
         meta.doi = None
         doc = _make_doc(metadata=meta, blocks=[b1, b2], references=[])
-        result = ex.export_html(doc, "/out/test.html")
+        ex.export_html(doc, "/out/test.html")
         handle = mock_file()
         written = "".join(call.args[0] for call in handle.write.call_args_list)
         assert "<ol>" in written
@@ -548,7 +548,7 @@ class TestExportHtml:
         meta.keywords = []
         meta.doi = None
         doc = _make_doc(metadata=meta, blocks=[], references=[])
-        result = ex.export_html(doc, "/out/test.html")
+        ex.export_html(doc, "/out/test.html")
         handle = mock_file()
         written = "".join(call.args[0] for call in handle.write.call_args_list)
         assert "<strong>Authors:</strong> Alice" in written
@@ -637,9 +637,8 @@ class TestProcess:
     def test_json_export_during_process(self, mock_file, mock_makedirs):
         ex = _make_exporter()
         doc = _make_doc(generated_doc=MagicMock())
-        with patch.object(ex, "export"):
-            with patch.object(ex, "export_json") as m_json:
-                ex.process(doc)
+        with patch.object(ex, "export"), patch.object(ex, "export_json") as m_json:
+            ex.process(doc)
         m_json.assert_called_once()
         args, _ = m_json.call_args
         assert args[1].endswith(".json")
@@ -649,9 +648,8 @@ class TestProcess:
     def test_markdown_export_during_process(self, mock_file, mock_makedirs):
         ex = _make_exporter()
         doc = _make_doc(generated_doc=MagicMock())
-        with patch.object(ex, "export"):
-            with patch.object(ex, "export_markdown") as m_md:
-                ex.process(doc)
+        with patch.object(ex, "export"), patch.object(ex, "export_markdown") as m_md:
+            ex.process(doc)
         m_md.assert_called_once()
 
     @patch("app.pipeline.export.exporter.os.makedirs")
@@ -659,9 +657,8 @@ class TestProcess:
     def test_pdf_export_during_process(self, mock_file, mock_makedirs):
         ex = _make_exporter()
         doc = _make_doc(generated_doc=MagicMock(), formatting_options={"export_formats": ["pdf"]})
-        with patch.object(ex, "export"):
-            with patch.object(ex.pdf_exporter, "convert_to_pdf") as m_pdf:
-                ex.process(doc)
+        with patch.object(ex, "export"), patch.object(ex.pdf_exporter, "convert_to_pdf") as m_pdf:
+            ex.process(doc)
         m_pdf.assert_called_once()
 
     @patch("app.pipeline.export.exporter.os.makedirs")
@@ -670,9 +667,8 @@ class TestProcess:
         ex = _make_exporter()
         ex.pdf_exporter.convert_to_pdf.side_effect = RuntimeError("LibreOffice missing")
         doc = _make_doc(generated_doc=MagicMock(), formatting_options={"export_formats": ["pdf"]})
-        with patch.object(ex, "export"):
-            with patch("app.pipeline.export.exporter.logger") as m_log:
-                ex.process(doc)
+        with patch.object(ex, "export"), patch("app.pipeline.export.exporter.logger") as m_log:
+            ex.process(doc)
         m_log.warning.assert_any_call("Exporter: PDF export failed: %s", ANY)
         assert any("PDF export failed" in str(c) for c in m_log.warning.call_args_list)
 
@@ -681,9 +677,8 @@ class TestProcess:
     def test_html_export_during_process(self, mock_file, mock_makedirs):
         ex = _make_exporter()
         doc = _make_doc(generated_doc=MagicMock(), formatting_options={"export_formats": ["html"]})
-        with patch.object(ex, "export"):
-            with patch.object(ex, "export_html") as m_html:
-                ex.process(doc)
+        with patch.object(ex, "export"), patch.object(ex, "export_html") as m_html:
+            ex.process(doc)
         m_html.assert_called_once()
 
     @patch("app.pipeline.export.exporter.os.makedirs")
@@ -693,9 +688,8 @@ class TestProcess:
         mock_tex.convert_to_latex.return_value = "/tmp/out.tex"
         ex = _make_exporter(mock_latex=mock_tex)
         doc = _make_doc(generated_doc=MagicMock(), formatting_options={"export_formats": ["latex"]})
-        with patch.object(ex, "export"):
-            with patch.object(ex, "export_latex") as m_tex:
-                ex.process(doc)
+        with patch.object(ex, "export"), patch.object(ex, "export_latex") as m_tex:
+            ex.process(doc)
         m_tex.assert_called_once()
 
     @patch("app.pipeline.export.exporter.os.makedirs")
@@ -703,9 +697,8 @@ class TestProcess:
     def test_jats_always_exports(self, mock_file, mock_makedirs):
         ex = _make_exporter()
         doc = _make_doc(generated_doc=MagicMock(), formatting_options={"export_formats": []})
-        with patch.object(ex, "export"):
-            with patch.object(ex, "export_jats") as m_jats:
-                ex.process(doc)
+        with patch.object(ex, "export"), patch.object(ex, "export_jats") as m_jats:
+            ex.process(doc)
         m_jats.assert_called_once()
 
     @patch("app.pipeline.export.exporter.os.makedirs")
@@ -720,10 +713,9 @@ class TestProcess:
     def test_skips_all_exports_when_output_path_not_docx(self):
         ex = _make_exporter()
         doc = _make_doc(output_path="/out/manuscript.pdf", generated_doc=MagicMock())
-        with patch.object(ex, "export") as m_export:
-            with patch.object(ex, "export_json") as m_json:
-                with patch.object(ex, "export_markdown") as m_md:
-                    ex.process(doc)
+        with patch.object(ex, "export") as m_export, patch.object(ex, "export_json") as m_json:
+            with patch.object(ex, "export_markdown") as m_md:
+                ex.process(doc)
         m_export.assert_called_once()  # docx still saved if generated_doc present
         m_json.assert_not_called()
         m_md.assert_not_called()
@@ -749,7 +741,7 @@ class TestIntegrationWithTempDir:
         doc = _make_doc()
         result = ex.export_json(doc, str(output))
         assert result == str(output)
-        with open(str(output), "r", encoding="utf-8") as f:
+        with open(str(output), encoding="utf-8") as f:
             data = json.load(f)
         assert data["metadata"]["dumped"] is True
         assert data["document_id"] == "doc_001"
@@ -761,7 +753,7 @@ class TestIntegrationWithTempDir:
         doc = _make_doc()
         result = ex.export_markdown(doc, str(output))
         assert result == str(output)
-        with open(str(output), "r", encoding="utf-8") as f:
+        with open(str(output), encoding="utf-8") as f:
             content = f.read()
         assert "# Test Title" in content
 
@@ -775,7 +767,7 @@ class TestIntegrationWithTempDir:
             doc = _make_doc()
             result = ex.export_jats(doc, str(output))
         assert result == str(output)
-        with open(str(output), "r", encoding="utf-8") as f:
+        with open(str(output), encoding="utf-8") as f:
             content = f.read()
         assert "<article>real xml</article>" in content
 
@@ -785,7 +777,7 @@ class TestIntegrationWithTempDir:
         doc = _make_doc()
         result = ex.export_html(doc, str(output))
         assert result == str(output)
-        with open(str(output), "r", encoding="utf-8") as f:
+        with open(str(output), encoding="utf-8") as f:
             content = f.read()
         assert "<!DOCTYPE html>" in content
 

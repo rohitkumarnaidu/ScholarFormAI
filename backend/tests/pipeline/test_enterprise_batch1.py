@@ -2,9 +2,10 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock, ANY, AsyncMock
-import pytest
 
+from unittest.mock import ANY, AsyncMock, MagicMock, patch
+
+import pytest
 
 # ─── StyleMapper ───────────────────────────────────────────────────────────────
 
@@ -96,7 +97,7 @@ class TestNumberingEngine:
         doc.tables = []
         doc.equations = []
         ne = NumberingEngine(loader)
-        result = ne.apply_numbering(doc, "ieee")
+        ne.apply_numbering(doc, "ieee")
         assert b.metadata["number_string"] == "1"
         assert b.text.startswith("1 ")
 
@@ -235,9 +236,8 @@ class TestContractLoader:
     def test_load_fallback_not_found(self):
         from app.pipeline.contracts.loader import ContractLoader
         cl = ContractLoader()
-        with patch("os.path.exists", return_value=False):
-            with pytest.raises(FileNotFoundError):
-                cl.load("unknown")
+        with patch("os.path.exists", return_value=False), pytest.raises(FileNotFoundError):
+            cl.load("unknown")
 
     def test_load_yaml_error(self):
         from app.pipeline.contracts.loader import ContractLoader
@@ -276,8 +276,7 @@ class TestContractLoader:
         assert cl.is_required("ieee", "Introduction") is False
 
     def test_load_contract_convenience(self):
-        from app.pipeline.contracts.loader import load_contract
-        from app.pipeline.contracts.loader import _default_pipeline_loader
+        from app.pipeline.contracts.loader import _default_pipeline_loader, load_contract
         _default_pipeline_loader._cache["test"] = {"publisher": "test"}
         assert load_contract("test") == {"publisher": "test"}
 
@@ -315,9 +314,8 @@ class TestRetryGuard:
         def fn():
             raise ValueError("always")
         decorated = retry_with_backoff(max_retries=1, backoff_factor=0.01)(fn)
-        with patch("time.sleep"):
-            with pytest.raises(ValueError):
-                decorated()
+        with patch("time.sleep"), pytest.raises(ValueError):
+            decorated()
 
     def test_async_success(self):
         from app.pipeline.safety.retry_guard import retry_with_backoff
@@ -349,9 +347,8 @@ class TestRetryGuard:
             raise ValueError("always")
         decorated = retry_with_backoff(max_retries=1, backoff_factor=0.01)(fn)
         import asyncio
-        with patch("asyncio.sleep"):
-            with pytest.raises(ValueError):
-                asyncio.run(decorated())
+        with patch("asyncio.sleep"), pytest.raises(ValueError):
+            asyncio.run(decorated())
 
     def test_execute_with_retry_success(self):
         from app.pipeline.safety.retry_guard import execute_with_retry
@@ -403,8 +400,9 @@ class TestSafeExecution:
         assert do_thing() == "fallback"
 
     def test_safe_async_function_success(self):
-        from app.pipeline.safety.safe_execution import safe_async_function
         import asyncio
+
+        from app.pipeline.safety.safe_execution import safe_async_function
         @safe_async_function(fallback_value=None)
         async def do_thing():
             return "ok"
@@ -412,8 +410,9 @@ class TestSafeExecution:
         assert result == "ok"
 
     def test_safe_async_function_fallback(self):
-        from app.pipeline.safety.safe_execution import safe_async_function
         import asyncio
+
+        from app.pipeline.safety.safe_execution import safe_async_function
         @safe_async_function(fallback_value="fallback")
         async def do_thing():
             raise ValueError("boom")
@@ -561,8 +560,7 @@ class TestEquationStandardizer:
         )
 
     def test_get_equation_standardizer(self):
-        from app.pipeline.equations.standardizer import get_equation_standardizer
-        from app.pipeline.equations.standardizer import _standardizer
+        from app.pipeline.equations.standardizer import _standardizer, get_equation_standardizer
         _standardizer = None
         es = get_equation_standardizer()
         assert es is not None
@@ -641,7 +639,6 @@ class TestQualityScorer:
 
     def test_section_balance_perfect(self):
         from app.pipeline.generation.quality_scorer import QualityScorer
-        sections = {"A": "word " * 100, "B": "word " * 100}
         result = QualityScorer().score({"sections": [{"title": "A", "content": "word " * 100}, {"title": "B", "content": "word " * 100}]}, "ieee", {"sections": ["A", "B"]})
         assert result["section_balance"] > 90.0
 

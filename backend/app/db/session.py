@@ -17,7 +17,7 @@ Design decisions:
 """
 
 import logging
-from typing import Generator, Optional
+from collections.abc import Generator
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 # ── Engine factory ─────────────────────────────────────────────────────────────
 
 
-def _create_engine_safe() -> Optional[Engine]:
+def _create_engine_safe() -> Engine | None:
     """
     Create the SQLAlchemy engine.
 
@@ -66,10 +66,10 @@ def _create_engine_safe() -> Optional[Engine]:
         return None
 
 
-engine: Optional[Engine] = _create_engine_safe()
+engine: Engine | None = _create_engine_safe()
 
 # SessionLocal is None when engine is None (degraded mode)
-SessionLocal: Optional[sessionmaker] = (
+SessionLocal: sessionmaker | None = (
     sessionmaker(autocommit=False, autoflush=False, bind=engine) if engine is not None else None
 )
 

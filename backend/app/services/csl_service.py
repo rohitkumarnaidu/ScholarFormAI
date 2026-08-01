@@ -12,7 +12,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from app.exceptions import NotFoundError, ExternalServiceError, ValidationError
+from app.exceptions import ExternalServiceError, NotFoundError, ValidationError
 
 logger = logging.getLogger(__name__)
 

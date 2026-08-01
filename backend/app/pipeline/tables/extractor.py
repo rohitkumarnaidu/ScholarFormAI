@@ -7,10 +7,10 @@ Handles extraction of structured data from docx Table objects.
 """
 
 import logging
-from typing import List
 
 logger = logging.getLogger(__name__)
 from docx.table import Table as DocxTable
+
 from app.models.table import Table, TableCell
 
 
@@ -29,7 +29,7 @@ class TableExtractor:
         """
         Extract a structured Table model with a guaranteed 2D data matrix.
         """
-        raw_data: List[List[str]] = []
+        raw_data: list[list[str]] = []
         max_cols = 0
 
         # 1. Primary extraction phase
@@ -64,7 +64,7 @@ class TableExtractor:
         num_cols = max_cols
 
         # 3. Create structured cell objects for model completeness
-        cells: List[TableCell] = []
+        cells: list[TableCell] = []
         has_header = False
         row_has_bold_first = False
 
@@ -106,9 +106,8 @@ class TableExtractor:
                 cells.append(cell_obj)
 
             # Header detection
-            if r_idx == 0:
-                if row_has_bold_first or self._contains_header_keywords(row_text_list):
-                    has_header = True
+            if r_idx == 0 and (row_has_bold_first or self._contains_header_keywords(row_text_list)):
+                has_header = True
 
         # Validation logging
         logger.debug(
@@ -166,7 +165,7 @@ class TableExtractor:
                     return True
         return False
 
-    def _contains_header_keywords(self, row_data: List[str]) -> bool:
+    def _contains_header_keywords(self, row_data: list[str]) -> bool:
         """Simple rule-based check for header-like content."""
         common_headers = {"id", "no.", "name", "date", "description", "value", "parameter", "result", "status", "type"}
         match_count = 0

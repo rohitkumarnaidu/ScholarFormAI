@@ -223,8 +223,9 @@ class TestWebhookUrlValidation:
 
     @pytest.mark.asyncio
     async def test_webhook_delivery_to_internal_ip_blocked(self):
-        from app.services.webhook_service import WebhookService
         import httpx
+
+        from app.services.webhook_service import WebhookService
 
         svc = WebhookService()
 
@@ -398,8 +399,9 @@ class TestWebhookTimeoutRetry:
 
     @pytest.mark.asyncio
     async def test_timeout_during_delivery_triggers_retry(self):
-        from app.services.webhook_service import WebhookService
         import httpx
+
+        from app.services.webhook_service import WebhookService
 
         svc = WebhookService()
 
@@ -425,8 +427,9 @@ class TestWebhookTimeoutRetry:
 
     @pytest.mark.asyncio
     async def test_all_retries_exhausted_marks_failed(self):
-        from app.services.webhook_service import WebhookService
         import httpx
+
+        from app.services.webhook_service import WebhookService
 
         svc = WebhookService()
 

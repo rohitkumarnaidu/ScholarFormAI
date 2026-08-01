@@ -42,7 +42,7 @@ class Counter:
             lines = [f"# HELP {self.name} {self.help_text}", f"# TYPE {self.name} counter"]
             for label_values, value in self._values.items():
                 if self.label_names:
-                    labels_str = ",".join(f'{k}="{v}"' for k, v in zip(self.label_names, label_values))
+                    labels_str = ",".join(f'{k}="{v}"' for k, v in zip(self.label_names, label_values, strict=False))
                     lines.append(f"{self.name}{{{labels_str}}} {value}")
                 else:
                     lines.append(f"{self.name} {value}")
@@ -88,7 +88,7 @@ class Histogram:
             for label_values, entry in self._values.items():
                 labels_str = ""
                 if self.label_names:
-                    labels_str = ",".join(f'{k}="{v}"' for k, v in zip(self.label_names, label_values))
+                    labels_str = ",".join(f'{k}="{v}"' for k, v in zip(self.label_names, label_values, strict=False))
                 bucket_name = self.name
                 if labels_str:
                     bucket_name = f"{self.name}{{{labels_str}}}"
@@ -138,7 +138,7 @@ class Gauge:
                 return lines
             for label_values, value in self._values.items():
                 if self.label_names:
-                    labels_str = ",".join(f'{k}="{v}"' for k, v in zip(self.label_names, label_values))
+                    labels_str = ",".join(f'{k}="{v}"' for k, v in zip(self.label_names, label_values, strict=False))
                     lines.append(f"{self.name}{{{labels_str}}} {value}")
                 else:
                     lines.append(f"{self.name} {value}")
@@ -253,7 +253,7 @@ class MetricsCollector:
                     self.get_gauge("system_disk_usage_bytes").set(disk.used)
                     self.get_gauge("system_disk_free_bytes").set(disk.free)
                 except ImportError:
-                    pass
+                    pass  # intentionally ignored
                 except Exception as exc:
                     logger.debug("System metrics collection error: %s", exc)
                 time.sleep(interval_seconds)

@@ -1,7 +1,8 @@
-import re
-import pytest
 import json
+import re
 from unittest.mock import patch
+
+import pytest
 
 # ---------------------------------------------------------------------------
 #  Helpers
@@ -228,7 +229,7 @@ class TestTokenBudgetEnforcement:
     def test_extract_budget_not_exceeded_with_large_input(self):
         from app.services.llm_service import _extract_prompts
         messages = [{"role": "system", "content": "S."}]
-        for i in range(30):
+        for _i in range(30):
             messages.append({"role": "user", "content": "X" * 500})
             messages.append({"role": "assistant", "content": "Y" * 500})
         system, user = _extract_prompts(messages)
@@ -239,7 +240,7 @@ class TestTokenBudgetEnforcement:
 
     @pytest.mark.ai_quality
     def test_extract_with_max_size_messages(self):
-        from app.services.llm_service import _extract_prompts, MAX_LLM_INPUT_LENGTH
+        from app.services.llm_service import MAX_LLM_INPUT_LENGTH, _extract_prompts
         messages = [
             {"role": "system", "content": "A" * MAX_LLM_INPUT_LENGTH},
             {"role": "user", "content": "B" * MAX_LLM_INPUT_LENGTH},
@@ -429,7 +430,7 @@ class TestConcurrentHandling:
         from app.services.llm_service import _extract_prompts
         msgs = [{"role": "system", "content": "S1"}, {"role": "system", "content": "S2"}]
         s, _ = _extract_prompts(msgs)
-        assert "S1\nS2" == s
+        assert s == "S1\nS2"
 
 
 class TestTokenEfficiency:

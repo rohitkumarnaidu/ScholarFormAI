@@ -14,8 +14,9 @@ from __future__ import annotations
 
 import logging
 import os
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Iterable, Optional
+from typing import Any
 
 from pydantic import field_validator
 from pydantic_settings import BaseSettings
@@ -134,12 +135,12 @@ def _normalize_health_path(value: str | None, *, default_path: str) -> str:
 
 
 class DatabaseSettings(BaseSettings):
-    SUPABASE_URL: Optional[str] = None
-    SUPABASE_ANON_KEY: Optional[str] = None
-    SUPABASE_JWKS_URL: Optional[str] = None
-    SUPABASE_JWT_SECRET: Optional[str] = None
-    SUPABASE_SERVICE_ROLE_KEY: Optional[str] = None
-    SUPABASE_DB_URL: Optional[str] = None
+    SUPABASE_URL: str | None = None
+    SUPABASE_ANON_KEY: str | None = None
+    SUPABASE_JWKS_URL: str | None = None
+    SUPABASE_JWT_SECRET: str | None = None
+    SUPABASE_SERVICE_ROLE_KEY: str | None = None
+    SUPABASE_DB_URL: str | None = None
 
     model_config = {
         "env_file": ENV_FILE,
@@ -150,20 +151,20 @@ class DatabaseSettings(BaseSettings):
 
 
 class LLMSettings(BaseSettings):
-    NVIDIA_API_KEY: Optional[str] = None
+    NVIDIA_API_KEY: str | None = None
     NVIDIA_MODEL: str = "nvidia_nim/meta/llama-3.3-70b-instruct"
-    GROQ_API_KEY: Optional[str] = None
+    GROQ_API_KEY: str | None = None
     GROQ_MODEL: str = ""
     GROQ_API_BASE: str = ""
-    OPENAI_API_KEY: Optional[str] = None
-    ANTHROPIC_API_KEY: Optional[str] = None
-    DEEPSEEK_API_KEY: Optional[str] = None
-    OPENROUTER_API_KEY: Optional[str] = None
+    OPENAI_API_KEY: str | None = None
+    ANTHROPIC_API_KEY: str | None = None
+    DEEPSEEK_API_KEY: str | None = None
+    OPENROUTER_API_KEY: str | None = None
     OPENROUTER_MODEL: str = "openai/gpt-4o-mini"
     OPENROUTER_API_BASE: str = "https://openrouter.ai/api/v1"
-    GOOGLE_API_KEY: Optional[str] = None
-    COHERE_API_KEY: Optional[str] = None
-    MISTRAL_API_KEY: Optional[str] = None
+    GOOGLE_API_KEY: str | None = None
+    COHERE_API_KEY: str | None = None
+    MISTRAL_API_KEY: str | None = None
     OLLAMA_URL: str = ""
     OLLAMA_BASE_URL: str = ""
     LLM_PROVIDER_TIMEOUT_SECONDS: int = 15
@@ -235,13 +236,13 @@ class PipelineSettings(BaseSettings):
 class SecuritySettings(BaseSettings):
     ALGORITHM: str = "HS256"
     CORS_ORIGINS: str = DEFAULT_LOCAL_CORS_ORIGINS
-    SIGNED_URL_SECRET: Optional[str] = None
+    SIGNED_URL_SECRET: str | None = None
     FORCE_HTTPS: bool = False
     CLAMAV_HOST: str = "localhost"
     CLAMAV_PORT: int = 3310
-    STRIPE_API_KEY: Optional[str] = None
-    STRIPE_WEBHOOK_SECRET: Optional[str] = None
-    SENTRY_DSN: Optional[str] = None
+    STRIPE_API_KEY: str | None = None
+    STRIPE_WEBHOOK_SECRET: str | None = None
+    SENTRY_DSN: str | None = None
 
     model_config = {
         "env_file": ENV_FILE,
@@ -304,7 +305,7 @@ class DeploymentSettings(BaseSettings):
     GENERATED_OUTPUT_DIR: str = "output"
     DEFAULT_TEMPLATE: str = "ieee"
     CROSSREF_MAILTO: str = "dev@example.com"
-    LIBREOFFICE_PATH: Optional[str] = None
+    LIBREOFFICE_PATH: str | None = None
 
     EXTERNAL_CIRCUIT_BREAKER_ENABLED: bool = True
     EXTERNAL_CIRCUIT_BREAKER_FAILURE_THRESHOLD: int = 3

@@ -9,9 +9,9 @@ to format references. Falls back to the original regex-based formatting
 if citeproc is unavailable or the template lacks a styles.csl file.
 """
 
-import os
 import logging
-from typing import Optional, Dict, Any, List
+import os
+from typing import Any
 
 from app.models import Reference
 from app.pipeline.contracts.loader import ContractLoader
@@ -22,8 +22,7 @@ logger = logging.getLogger(__name__)
 #  Try to import citeproc-py (optional dependency)
 # --------------------------------------------------------------------------- #
 try:
-    from citeproc import CitationStylesStyle, CitationStylesBibliography, formatter
-    from citeproc import Citation, CitationItem
+    from citeproc import Citation, CitationItem, CitationStylesBibliography, CitationStylesStyle, formatter
     from citeproc.source import BibliographySource
     from citeproc.source.json import CiteProcJSON
 
@@ -43,7 +42,7 @@ except ImportError:
 _TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "templates")
 
 
-def _resolve_csl_path(publisher: str) -> Optional[str]:
+def _resolve_csl_path(publisher: str) -> str | None:
     """Resolve the CSL file path for a given publisher/template name."""
     if not publisher:
         return None
@@ -70,7 +69,7 @@ def _reference_type_to_csl(ref: Reference) -> str:
     return mapping.get(ref.reference_type, "article")
 
 
-def _parse_author_name(name_str: str) -> Dict[str, str]:
+def _parse_author_name(name_str: str) -> dict[str, str]:
     """
     Parse a name string like 'Smith, J.' or 'Jane Doe' into CSL name parts.
     Returns dict with 'family' and optionally 'given'.
@@ -89,12 +88,12 @@ def _parse_author_name(name_str: str) -> Dict[str, str]:
         return {"family": parts[0]}
 
 
-def _reference_to_csl_json(ref: Reference) -> Dict[str, Any]:
+def _reference_to_csl_json(ref: Reference) -> dict[str, Any]:
     """
     Convert a Reference model object to a CSL-JSON dict suitable
     for citeproc-py's CiteProcJSON source.
     """
-    item: Dict[str, Any] = {
+    item: dict[str, Any] = {
         "id": ref.reference_id,
         "type": _reference_type_to_csl(ref),
     }
@@ -164,7 +163,7 @@ class ReferenceFormatter:
     def __init__(self, contract_loader: ContractLoader):
         self.contract_loader = contract_loader
         # Cache loaded CSL styles to avoid re-parsing for every reference
-        self._style_cache: Dict[str, Any] = {}
+        self._style_cache: dict[str, Any] = {}
 
     # ------------------------------------------------------------------ #
     #  Public API (unchanged signature)
@@ -196,7 +195,7 @@ class ReferenceFormatter:
         # Fallback to legacy formatting
         return self._format_legacy(reference, publisher)
 
-    def format_references(self, references: List[Reference], publisher: str) -> List[str]:
+    def format_references(self, references: list[Reference], publisher: str) -> list[str]:
         """Format a list of references. Convenience wrapper.
 
         Args:
@@ -211,7 +210,7 @@ class ReferenceFormatter:
     # ------------------------------------------------------------------ #
     #  citeproc-py formatting
     # ------------------------------------------------------------------ #
-    def _format_with_citeproc(self, reference: Reference, publisher: str) -> Optional[str]:
+    def _format_with_citeproc(self, reference: Reference, publisher: str) -> str | None:
         """Format a single reference using citeproc-py."""
         csl_path = _resolve_csl_path(publisher)
         if not csl_path:
@@ -244,7 +243,7 @@ class ReferenceFormatter:
 
         return None
 
-    def _get_or_load_style(self, csl_path: str) -> Optional[Any]:
+    def _get_or_load_style(self, csl_path: str) -> Any | None:
         """Load a CSL style file, caching the result."""
         if csl_path in self._style_cache:
             return self._style_cache[csl_path]

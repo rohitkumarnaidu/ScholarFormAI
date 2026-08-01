@@ -1,5 +1,6 @@
 import pytest
-from amf_sdk.models import Author, Manuscript, Section, Paragraph
+
+from amf_sdk.models import Author, Manuscript, Paragraph, Section
 
 
 @pytest.fixture

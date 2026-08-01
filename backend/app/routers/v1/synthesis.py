@@ -7,27 +7,27 @@ import asyncio
 import json
 import logging
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, Request, UploadFile
 from sse_starlette.sse import EventSourceResponse
 
 from app.config.settings import settings
+from app.middleware.request_id import get_request_id
 from app.pipeline.orchestrator import PipelineOrchestrator
 from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
 from app.realtime.events import make_event
 from app.realtime.pubsub import RedisPubSub
-from app.middleware.request_id import get_request_id
 from app.routers.v1.documents_impl import ACCEPTED_EXTENSIONS, _validate_magic_bytes
 from app.schemas.generator_session import MessageRequest
 from app.services.enhancement_manager import enhancement_manager
-from app.utils.logging_context import bind_request_context
 from app.services.generator_session_service import GeneratorSessionService
 from app.services.llm_service import generate_with_fallback, sanitize_for_llm
 from app.services.session_vector_store import SessionVectorStore
 from app.utils.dependencies import get_current_user
+from app.utils.logging_context import bind_request_context
 
 from ._helpers import run_enveloped
 
@@ -62,7 +62,7 @@ def _get_synthesizer() -> MultiDocSynthesizer:
     return _synthesizer
 
 
-def _parse_config(raw_config: str) -> Dict[str, Any]:
+def _parse_config(raw_config: str) -> dict[str, Any]:
     if not raw_config:
         return {}
     try:
@@ -71,7 +71,7 @@ def _parse_config(raw_config: str) -> Dict[str, Any]:
         raise HTTPException(status_code=422, detail=f"Invalid config JSON: {exc}")
 
 
-def _assert_session_owner(session: Dict[str, Any], user: Any) -> None:
+def _assert_session_owner(session: dict[str, Any], user: Any) -> None:
     session_user = session.get("user_id")
     current_user_id = getattr(user, "id", user)
     if session_user and str(session_user) != str(current_user_id):
@@ -82,7 +82,7 @@ def _assert_session_owner(session: Dict[str, Any], user: Any) -> None:
 async def create_session(
     request: Request,
     background_tasks: BackgroundTasks,
-    files: List[UploadFile] = File(...),
+    files: list[UploadFile] = File(...),
     session_type: str = Form("multi_doc"),
     template: str = Form(settings.DEFAULT_TEMPLATE),
     config: str = Form("{}"),
@@ -95,7 +95,7 @@ async def create_session(
             raise HTTPException(status_code=422, detail="Upload between 2 and 6 files.")
 
         config_payload = _parse_config(config)
-        validated_files: List[Dict[str, Any]] = []
+        validated_files: list[dict[str, Any]] = []
         for idx, file in enumerate(files):
             filename = file.filename or f"upload_{idx}"
             ext = Path(filename).suffix.lower()
@@ -122,7 +122,7 @@ async def create_session(
         upload_dir = Path("uploads") / "synthesis" / session_id
         upload_dir.mkdir(parents=True, exist_ok=True)
 
-        file_entries: List[Dict[str, Any]] = []
+        file_entries: list[dict[str, Any]] = []
         for item in validated_files:
             safe_name = f"{uuid.uuid4().hex}{item['ext']}"
             file_path = upload_dir / safe_name
@@ -293,7 +293,7 @@ async def session_messages(
             "role": "assistant",
             "content": answer,
             "sources": [{"source_doc": s.get("source_doc"), "section": s.get("section")} for s in sources],
-            "created_at": datetime.now(timezone.utc).isoformat(),
+            "created_at": datetime.now(UTC).isoformat(),
         }
 
     return await run_enveloped(

@@ -6,8 +6,9 @@ Deep learning integration using transformers for pattern detection.
 """
 
 import logging
+from typing import Any
+
 import numpy as np
-from typing import List, Dict, Any, Tuple
 
 try:
     import torch
@@ -15,12 +16,14 @@ except ImportError:
     torch = None
 
 try:
-    from transformers import AutoTokenizer, AutoModel
+    from transformers import AutoModel, AutoTokenizer
 except ImportError:
     AutoTokenizer = None
     AutoModel = None
-from sklearn.cluster import KMeans
 import json
+
+from sklearn.cluster import KMeans
+
 from app.pipeline.safety import safe_function
 
 logger = logging.getLogger(__name__)
@@ -113,7 +116,7 @@ class TransformerPatternDetector:
             return np.zeros(768)  # Default BERT embedding size
 
     @safe_function(fallback_value=np.zeros(768), error_message="TransformerPatternDetector.encode_metadata")
-    def encode_metadata(self, metadata: Dict[str, Any]) -> np.ndarray:
+    def encode_metadata(self, metadata: dict[str, Any]) -> np.ndarray:
         """
         Encode document metadata to text and then to embedding.
 
@@ -143,7 +146,7 @@ class TransformerPatternDetector:
         return self.encode_document(text)
 
     @safe_function(fallback_value=False, error_message="TransformerPatternDetector.fit_clusters")
-    def fit_clusters(self, embeddings: List[np.ndarray], n_clusters: int = 5) -> bool:
+    def fit_clusters(self, embeddings: list[np.ndarray], n_clusters: int = 5) -> bool:
         """
         Cluster document embeddings.
 
@@ -204,8 +207,8 @@ class TransformerPatternDetector:
 
     @safe_function(fallback_value=[], error_message="TransformerPatternDetector.find_similar_documents")
     def find_similar_documents(
-        self, query_embedding: np.ndarray, document_embeddings: List[Tuple[str, np.ndarray]], top_k: int = 5
-    ) -> List[Tuple[str, float]]:
+        self, query_embedding: np.ndarray, document_embeddings: list[tuple[str, np.ndarray]], top_k: int = 5
+    ) -> list[tuple[str, float]]:
         """
         Find similar documents using semantic similarity.
         """
@@ -221,7 +224,7 @@ class TransformerPatternDetector:
         return similarities[:top_k]
 
     @safe_function(fallback_value=(False, 0.0), error_message="TransformerPatternDetector.detect_anomaly_semantic")
-    def detect_anomaly_semantic(self, embedding: np.ndarray, threshold: float = 0.5) -> Tuple[bool, float]:
+    def detect_anomaly_semantic(self, embedding: np.ndarray, threshold: float = 0.5) -> tuple[bool, float]:
         """
         Detect anomaly based on semantic distance from cluster centers.
 
@@ -260,7 +263,7 @@ class TransformerPatternDetector:
         if self.embeddings_cache:
             np.save(filepath + ".embeddings.npy", np.array(list(self.embeddings_cache.values())))
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """Get model summary."""
         return {
             "model_name": self.model_name,

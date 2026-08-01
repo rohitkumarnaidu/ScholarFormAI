@@ -9,7 +9,6 @@ import socket
 import struct
 import time
 from pathlib import Path
-from typing import Dict
 
 from app.config.settings import settings
 
@@ -21,7 +20,7 @@ except Exception:  # pragma: no cover - optional dependency in some test environ
     clamd = None
 
 
-def _parse_scan_result(raw_result: str) -> Dict[str, str | bool]:
+def _parse_scan_result(raw_result: str) -> dict[str, str | bool]:
     normalized = str(raw_result or "").strip().strip("\x00")
     if not normalized:
         return {"clean": True, "engine": "clamav", "result": "clean"}
@@ -42,7 +41,7 @@ def _parse_scan_result(raw_result: str) -> Dict[str, str | bool]:
     return {"clean": True, "engine": "clamav", "result": "clean"}
 
 
-def _scan_via_socket(candidate: str, host: str, port: int) -> Dict[str, str | bool]:
+def _scan_via_socket(candidate: str, host: str, port: int) -> dict[str, str | bool]:
     with socket.create_connection((host, port), timeout=10) as client:
         client.sendall(b"zINSTREAM\x00")
         with open(candidate, "rb") as handle:
@@ -66,7 +65,7 @@ def _scan_via_socket(candidate: str, host: str, port: int) -> Dict[str, str | bo
     return _parse_scan_result(response.decode("utf-8", errors="ignore"))
 
 
-def scan_file(file_path: str) -> Dict[str, str | bool]:
+def scan_file(file_path: str) -> dict[str, str | bool]:
     """
     Scan a file with ClamAV.
 
@@ -122,15 +121,15 @@ def scan_file(file_path: str) -> Dict[str, str | bool]:
 
             MetricsManager.record_clamav_scan_duration(duration)
         except Exception:
-            pass
+            pass  # intentionally ignored
 
 
-async def scan(file_path: str) -> Dict[str, str | bool]:
+async def scan(file_path: str) -> dict[str, str | bool]:
     return await asyncio.to_thread(scan_file, file_path)
 
 
 class VirusScanner:
-    async def scan(self, file_path: str) -> Dict[str, str | bool]:
+    async def scan(self, file_path: str) -> dict[str, str | bool]:
         return await scan(file_path)
 
 

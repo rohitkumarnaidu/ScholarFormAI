@@ -14,8 +14,9 @@ from __future__ import annotations
 
 import importlib.util
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List
+from typing import Any
 
 from app.config.settings import settings
 from app.utils import background_tasks as background_task_utils
@@ -46,7 +47,7 @@ def _module_available(module_name: str) -> bool:
         return False
 
 
-def _split_csv(raw_value: str, default: List[str]) -> List[str]:
+def _split_csv(raw_value: str, default: list[str]) -> list[str]:
     if not raw_value:
         return list(default)
     parts = [part.strip().lower() for part in str(raw_value).split(",")]
@@ -61,11 +62,11 @@ class EnhancementProfile:
     queue_provider: str
     queue_available: bool
     ocr_enabled: bool
-    ocr_backends: List[str]
+    ocr_backends: list[str]
     keyword_enabled: bool
-    keyword_backends: List[str]
+    keyword_backends: list[str]
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "enabled": self.enabled,
             "queue_enabled": self.queue_enabled,
@@ -116,10 +117,10 @@ class EnhancementManager:
             return True
         return float(estimated_duration_seconds) >= self._queue_threshold_seconds()
 
-    def get_ocr_backends(self) -> List[str]:
+    def get_ocr_backends(self) -> list[str]:
         return list(self.profile.ocr_backends)
 
-    def get_keyword_backends(self) -> List[str]:
+    def get_keyword_backends(self) -> list[str]:
         return list(self.profile.keyword_backends)
 
     def dispatch_document_pipeline(
@@ -130,10 +131,10 @@ class EnhancementManager:
         input_path: str,
         job_id: str,
         template_name: str,
-        formatting_options: Dict[str, Any] | None = None,
+        formatting_options: dict[str, Any] | None = None,
         queue_name: str | None = None,
         estimated_duration_seconds: float | None = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Dispatch upload pipeline job with graceful fallback.
 
@@ -175,7 +176,7 @@ class EnhancementManager:
         job_id: str,
         queue_name: str | None = None,
         estimated_duration_seconds: float | None = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Dispatch generation pipeline job with graceful fallback.
         """
@@ -203,11 +204,11 @@ class EnhancementManager:
         background_tasks: Any,
         orchestrator: Any,
         job_id: str,
-        edited_structured_data: Dict[str, Any],
+        edited_structured_data: dict[str, Any],
         template_name: str,
         queue_name: str | None = None,
         estimated_duration_seconds: float | None = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Dispatch edit/reformat flow with graceful fallback.
         """
@@ -241,13 +242,13 @@ class EnhancementManager:
         self,
         *,
         background_tasks: Any,
-        run_pipeline: Callable[[str, List[str], str], Any],
+        run_pipeline: Callable[[str, list[str], str], Any],
         session_id: str,
-        file_paths: List[str],
+        file_paths: list[str],
         template: str,
         queue_name: str | None = None,
         estimated_duration_seconds: float | None = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         if self.should_queue_job(estimated_duration_seconds):
             try:
                 from app.tasks.celery_tasks import process_synthesis_task
@@ -295,9 +296,7 @@ class EnhancementManager:
         queue_backend_available = celery_available and redis_available
 
         resolved_queue_provider = "local"
-        if queue_provider == "celery" and queue_backend_available:
-            resolved_queue_provider = "celery"
-        elif queue_provider == "auto" and queue_enabled and queue_backend_available:
+        if queue_provider == "celery" and queue_backend_available or queue_provider == "auto" and queue_enabled and queue_backend_available:
             resolved_queue_provider = "celery"
 
         ocr_enabled = _coerce_bool(

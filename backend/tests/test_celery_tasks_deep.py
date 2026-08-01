@@ -7,8 +7,10 @@ Deep tests for Celery task configuration and behavior.
 Verifies retry policies, timeouts, path validation, and asyncio bridging.
 """
 
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 pytestmark = [pytest.mark.database]
 
 
@@ -164,6 +166,7 @@ class TestAsyncIoReplacement:
 class TestPathValidation:
     def test_validate_path_rejects_traversal(self):
         import os
+
         from app.tasks.celery_tasks import validate_path_safety
 
         path = os.path.join("uploads", "subdir", "..", "file")
@@ -205,6 +208,7 @@ class TestPathValidation:
 
     def test_cleanup_rejects_traversal_via_task(self):
         import os
+
         from app.tasks.celery_tasks import cleanup_uploads_task
 
         path = os.path.join("uploads", "subdir", "..", "file")

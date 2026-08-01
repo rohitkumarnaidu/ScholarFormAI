@@ -10,9 +10,10 @@ Sections:
    3D — Edge Cases & Scoring        (~4 tests)
 """
 
-import pytest
 import re
-from typing import Dict, Any, List
+from typing import Any
+
+import pytest
 
 # ---------------------------------------------------------------------------
 #  Constants
@@ -26,7 +27,7 @@ VALID_DOIS = [
     "10.1371/journal.pcbi.1012345",
 ]
 
-MOCK_CITATION_METADATA: Dict[str, Dict[str, Any]] = {
+MOCK_CITATION_METADATA: dict[str, dict[str, Any]] = {
     "10.1038/s41586-023-06559-5": {
         "doi": "10.1038/s41586-023-06559-5",
         "title": "A long-term study of AI performance in medical imaging",
@@ -58,7 +59,7 @@ MOCK_CITATION_METADATA: Dict[str, Dict[str, Any]] = {
 # ---------------------------------------------------------------------------
 
 
-def _check_citation_accuracy(doi: str, mock_api: Dict[str, Any]) -> Dict[str, Any]:
+def _check_citation_accuracy(doi: str, mock_api: dict[str, Any]) -> dict[str, Any]:
     """Verify citation metadata against external source.
 
     Returns dict with:
@@ -91,7 +92,7 @@ def _check_citation_accuracy(doi: str, mock_api: Dict[str, Any]) -> Dict[str, An
     }
 
 
-def _verify_claim_against_source(claim: str, source_text: str) -> Dict[str, Any]:
+def _verify_claim_against_source(claim: str, source_text: str) -> dict[str, Any]:
     """Check if factual claim is supported by source.
 
     Returns dict with:
@@ -135,7 +136,7 @@ def _verify_claim_against_source(claim: str, source_text: str) -> Dict[str, Any]
     }
 
 
-def _accuracy_score(verifications: List[Dict[str, Any]]) -> Dict[str, float]:
+def _accuracy_score(verifications: list[dict[str, Any]]) -> dict[str, float]:
     """Compute overall accuracy score from a list of verification results.
 
     Returns dict with:

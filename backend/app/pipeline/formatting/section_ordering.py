@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from typing import List
+
 from app.models import PipelineDocument as Document
 from app.pipeline.contracts.loader import ContractLoader
 
@@ -14,7 +14,7 @@ class SectionOrderValidator:
     def __init__(self, contract_loader: ContractLoader):
         self.contract_loader = contract_loader
 
-    def validate_order(self, document: Document, publisher: str) -> List[str]:
+    def validate_order(self, document: Document, publisher: str) -> list[str]:
         """
         Identify out-of-order or missing sections.
         """

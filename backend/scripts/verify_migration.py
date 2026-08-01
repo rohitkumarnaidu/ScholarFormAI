@@ -9,16 +9,17 @@ Usage:
     python scripts/verify_migration.py          # Check if migration is needed
     python scripts/verify_migration.py --diff    # Show column differences
 """
+import argparse
 import os
 import sys
-import argparse
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from sqlalchemy import inspect, create_engine
+from sqlalchemy import create_engine, inspect
+
 from app.config.settings import settings
-from app.models import *  # noqa: F401 — ensure all models loaded
 from app.db.base import Base
+from app.models import *  # noqa: F401 — ensure all models loaded
 
 
 def get_db_url() -> str:

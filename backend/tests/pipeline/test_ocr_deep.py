@@ -2,8 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 from unittest.mock import MagicMock, patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -60,14 +63,14 @@ class TestPdfOCR:
                 assert result is True
 
     def test_extract_text_pdf2image_unavailable(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", False):
             ocr = PdfOCR()
             with pytest.raises(OCRError, match="pdf2image is unavailable"):
                 ocr.extract_text("/fake.pdf")
 
     def test_extract_text_no_backends(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", False):
                 with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", False):
@@ -76,7 +79,7 @@ class TestPdfOCR:
                         ocr.extract_text("/fake.pdf", backends=["tesseract"])
 
     def test_extract_text_convert_failure(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", side_effect=Exception("Poppler missing")):
                 ocr = PdfOCR()
@@ -84,7 +87,7 @@ class TestPdfOCR:
                     ocr.extract_text("/fake.pdf")
 
     def test_extract_text_no_images(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", return_value=[]):
                 ocr = PdfOCR()
@@ -103,7 +106,7 @@ class TestPdfOCR:
                         assert backend == "tesseract"
 
     def test_extract_text_tesseract_empty_fallback(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
                 with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", True):
@@ -115,7 +118,7 @@ class TestPdfOCR:
                                     ocr.extract_text("/fake.pdf", backends=["tesseract"])
 
     def test_extract_text_tesseract_exception(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
                 with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", return_value=[MagicMock()]):
@@ -181,7 +184,7 @@ class TestPdfOCR:
         assert "Hello" in result
 
     def test_ocr_tesseract_unavailable(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", False):
             ocr = PdfOCR()
             with pytest.raises(OCRError, match="Tesseract backend unavailable"):
@@ -204,14 +207,14 @@ class TestPdfOCR:
                 assert pages == [""]
 
     def test_ocr_paddle_unavailable(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", False):
             ocr = PdfOCR()
             with pytest.raises(OCRError, match="PaddleOCR backend unavailable"):
                 ocr._ocr_paddle([MagicMock()])
 
     def test_ocr_paddle_numpy_unavailable(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         with (
             patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", True),
             patch("app.pipeline.ocr.pdf_ocr.PaddleOCR", MagicMock()),
@@ -246,7 +249,7 @@ class TestPdfOCR:
                         assert pages == [""]
 
     def test_convert_to_docx_docx_unavailable(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         with patch("app.pipeline.ocr.pdf_ocr.DOCX_AVAILABLE", False):
             ocr = PdfOCR()
             with pytest.raises(OCRError, match="python-docx is unavailable"):
@@ -264,7 +267,7 @@ class TestPdfOCR:
                     mock_doc.save.assert_called_with("/out.docx")
 
     def test_convert_to_docx_save_failure(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         with patch("app.pipeline.ocr.pdf_ocr.DOCX_AVAILABLE", True):
             with patch.object(PdfOCR, "extract_text", return_value=("Hello", "tesseract")):
                 mock_doc = MagicMock()

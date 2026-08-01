@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Dict
+from typing import Any
 
 SECTION_PROMPTS = {
     "Abstract": (
@@ -54,7 +54,7 @@ def _truncate(text: str, limit: int = 1200) -> str:
     return cleaned[:limit].rstrip() + "..."
 
 
-def get_section_prompt(section_name: str, context: Dict[str, Any]) -> str:
+def get_section_prompt(section_name: str, context: dict[str, Any]) -> str:
     system_prompt = SECTION_PROMPTS.get(
         section_name,
         "Write a rigorous academic section for the specified heading. Use formal tone and "

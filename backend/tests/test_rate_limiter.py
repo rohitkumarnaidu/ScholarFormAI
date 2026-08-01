@@ -13,8 +13,9 @@ Tests for RateLimitMiddleware — comprehensive coverage of:
 from __future__ import annotations
 
 import time
+from unittest.mock import AsyncMock, MagicMock
+
 import pytest
-from unittest.mock import MagicMock, AsyncMock
 
 try:
     from app.middleware.rate_limit import RateLimitMiddleware

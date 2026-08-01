@@ -6,7 +6,7 @@ Figure analysis tool for detecting and analyzing figures in documents.
 """
 
 import sys
-from typing import Type
+
 from pydantic import BaseModel, Field
 
 if sys.version_info < (3, 14):
@@ -40,7 +40,7 @@ class FigureAnalysisTool(BaseTool):
         "Use this when you need to understand the visual content and "
         "ensure proper figure formatting."
     )
-    args_schema: Type[BaseModel] = FigureToolInput
+    args_schema: type[BaseModel] = FigureToolInput
 
     def __init__(self):
         super().__init__()
@@ -55,7 +55,7 @@ class FigureAnalysisTool(BaseTool):
             self._layout_analyzer = LLMPDFParser()
             return self._layout_analyzer
         except Exception:
-            pass
+            pass  # intentionally ignored
         try:
             from app.pipeline.services.docling_client import DoclingClient
 

@@ -3,8 +3,9 @@
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
 import time
+from unittest.mock import MagicMock, patch
+
 import pytest
 
 pytestmark = [pytest.mark.pipeline]
@@ -34,7 +35,7 @@ class TestAutoScalingManagerInit:
         from app.pipeline.agents.autoscaling import AutoScalingManager
         try:
             AutoScalingManager(min_workers=0)
-            assert False
+            raise AssertionError()
         except ValueError as e:
             assert "min_workers" in str(e)
 
@@ -42,7 +43,7 @@ class TestAutoScalingManagerInit:
         from app.pipeline.agents.autoscaling import AutoScalingManager
         try:
             AutoScalingManager(min_workers=5, max_workers=3)
-            assert False
+            raise AssertionError()
         except ValueError as e:
             assert "max_workers" in str(e)
 
@@ -50,7 +51,7 @@ class TestAutoScalingManagerInit:
         from app.pipeline.agents.autoscaling import AutoScalingManager
         try:
             AutoScalingManager(target_cpu_percent=0.0)
-            assert False
+            raise AssertionError()
         except ValueError as e:
             assert "target_cpu_percent" in str(e)
 
@@ -58,7 +59,7 @@ class TestAutoScalingManagerInit:
         from app.pipeline.agents.autoscaling import AutoScalingManager
         try:
             AutoScalingManager(target_cpu_percent=150.0)
-            assert False
+            raise AssertionError()
         except ValueError as e:
             assert "target_cpu_percent" in str(e)
 
@@ -66,7 +67,7 @@ class TestAutoScalingManagerInit:
         from app.pipeline.agents.autoscaling import AutoScalingManager
         try:
             AutoScalingManager(target_memory_percent=0.0)
-            assert False
+            raise AssertionError()
         except ValueError as e:
             assert "target_memory_percent" in str(e)
 
@@ -74,7 +75,7 @@ class TestAutoScalingManagerInit:
         from app.pipeline.agents.autoscaling import AutoScalingManager
         try:
             AutoScalingManager(target_memory_percent=120.0)
-            assert False
+            raise AssertionError()
         except ValueError as e:
             assert "target_memory_percent" in str(e)
 

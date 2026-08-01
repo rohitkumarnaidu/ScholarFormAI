@@ -5,13 +5,13 @@
 Input Conversion Module - Handles multi-format document conversion.
 """
 
-import os
+import contextlib
 import logging
+import os
 import shutil
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +40,7 @@ class InputConverter:
         ".rtf": "libreoffice",  # A-FIX-25: Rich Text Format support
     }
 
-    def __init__(self, temp_dir: Optional[str] = None):
+    def __init__(self, temp_dir: str | None = None):
         self.temp_dir = temp_dir or tempfile.gettempdir()
 
     def convert_to_docx(self, input_path: str, job_id: str, enable_ocr: bool = True) -> str:
@@ -115,7 +115,7 @@ class InputConverter:
         Handle PDF conversion.
         Auto-detects scanned PDFs and applies OCR if needed.
         """
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         from app.services.enhancement_manager import enhancement_manager
 
         output_path = os.path.join(output_dir, "input.docx")
@@ -207,10 +207,8 @@ class InputConverter:
 
         if os.path.exists(lo_output):
             if os.path.exists(output_path):
-                try:
+                with contextlib.suppress(BaseException):
                     os.remove(output_path)
-                except:
-                    pass
             os.rename(lo_output, output_path)
             return output_path
         else:
@@ -270,7 +268,7 @@ class InputConverter:
         except subprocess.CalledProcessError as exc:
             raise ConversionError(f"LibreOffice conversion failed: {exc.stderr.decode() if exc.stderr else str(exc)}")
 
-    def _get_libreoffice_cmd(self) -> Optional[str]:
+    def _get_libreoffice_cmd(self) -> str | None:
         # Common command names
         candidates = ["soffice", "libreoffice"]
         if os.name == "nt":  # Windows

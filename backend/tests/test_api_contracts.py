@@ -57,10 +57,9 @@ def client():
     app.dependency_overrides[get_current_user] = lambda: user
     app.dependency_overrides[get_optional_user] = lambda: user
 
-    with patch("app.main._probe_grobid_startup", new=AsyncMock(return_value=False)):
-        with TestClient(app) as test_client:
-            test_client.mock_user = user
-            yield test_client
+    with patch("app.main._probe_grobid_startup", new=AsyncMock(return_value=False)), TestClient(app) as test_client:
+        test_client.mock_user = user
+        yield test_client
 
     app.dependency_overrides = {}
 

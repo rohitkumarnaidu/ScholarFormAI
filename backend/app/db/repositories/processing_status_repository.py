@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from postgrest import APIError
 
@@ -16,11 +16,11 @@ logger = logging.getLogger(__name__)
 class ProcessingStatusRepository(BaseRepository):
     TABLE_NAME = "processing_status"
 
-    async def get_statuses(self, doc_id: str) -> List[Dict[str, Any]]:
+    async def get_statuses(self, doc_id: str) -> list[dict[str, Any]]:
         doc_id = str(doc_id)
         if not is_valid_uuid(doc_id):
             return []
-        sb = self._get_client()
+        self._get_client()
 
         def run_query():
             client = self._get_client()
@@ -45,15 +45,15 @@ class ProcessingStatusRepository(BaseRepository):
         doc_id: str,
         phase: str,
         status: str,
-        progress_percentage: Optional[int] = None,
-        message: Optional[str] = None,
+        progress_percentage: int | None = None,
+        message: str | None = None,
     ) -> None:
         doc_id = str(doc_id)
-        sb = self._get_client()
+        self._get_client()
 
         def run_upsert():
             client = self._get_client()
-            payload: Dict[str, Any] = {
+            payload: dict[str, Any] = {
                 "document_id": str(doc_id),
                 "phase": phase,
                 "status": status,

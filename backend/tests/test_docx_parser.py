@@ -15,7 +15,6 @@ Covers:
 """
 from __future__ import annotations
 
-
 import pytest
 from docx import Document as DocxDocument
 from docx.shared import Inches

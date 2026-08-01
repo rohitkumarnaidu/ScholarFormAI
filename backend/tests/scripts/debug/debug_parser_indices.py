@@ -4,6 +4,7 @@
 
 from app.pipeline.parsing.parser import DocxParser
 
+
 def debug_indices(docx_path):
     parser = DocxParser()
     try:

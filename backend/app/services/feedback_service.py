@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, Optional
+from typing import Any
 
 from app.exceptions import NotFoundError
 
@@ -41,8 +41,8 @@ class FeedbackService:
         field: str,
         original_value: Any,
         corrected_value: Any,
-        user_id: Optional[str] = None,
-        comments: Optional[str] = None,
+        user_id: str | None = None,
+        comments: str | None = None,
     ) -> dict[str, Any]:
         """
         Record user feedback on an AI suggestion.
@@ -98,7 +98,7 @@ class FeedbackService:
         field: str,
         original_value: Any,
         corrected_value: Any,
-        comments: Optional[str] = None,
+        comments: str | None = None,
     ) -> None:
         from app.db.supabase_client import get_supabase_client
 

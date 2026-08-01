@@ -66,8 +66,9 @@ class TestCustomProviderModel:
         assert isinstance(cp.id, uuid.UUID)
 
     def test_timestamps_set_on_create(self):
-        from app.models.custom_provider import CustomProvider
         from datetime import datetime
+
+        from app.models.custom_provider import CustomProvider
         cp = CustomProvider(
             user_id=uuid.uuid4(),
             name="Test",

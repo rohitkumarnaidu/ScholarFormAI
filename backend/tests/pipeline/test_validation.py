@@ -2,18 +2,17 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import Block, TemplateInfo, Figure, Reference, Table
 from __future__ import annotations
-from unittest.mock import MagicMock, patch, PropertyMock
-from app.models import PipelineDocument as Document, Block, TemplateInfo, Figure, Reference, Table
-from app.models import PipelineDocument as Document, Block, TemplateInfo, Figure, Reference, Table
+
+from unittest.mock import MagicMock, PropertyMock, patch
+
 import pytest
 
-from app.pipeline.validation.validator_v3 import (
-    DocumentValidator, ValidationResult, validate_document
-)
-from app.pipeline.validation.review_manager import ReviewManager
+from app.models import Block, Figure, Reference, Table, TemplateInfo
+from app.models import PipelineDocument as Document
 from app.pipeline.validation.ai_explainer import AIExplainer
+from app.pipeline.validation.review_manager import ReviewManager
+from app.pipeline.validation.validator_v3 import DocumentValidator, ValidationResult, validate_document
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -22,7 +21,8 @@ from app.pipeline.validation.ai_explainer import AIExplainer
 def _doc(**overrides) -> Document:
 
     """Minimal PipelineDocument."""
-    from app.models import PipelineDocument as Document, Document
+    from app.models import Document
+    from app.models import PipelineDocument as Document
     return Document(document_id="test-123", **overrides)
 
 def _block(block_id: str = "b1", **kw) -> Block:

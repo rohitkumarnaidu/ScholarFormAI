@@ -2,14 +2,16 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-import sys
 import os
+import sys
 
 # Add backend directory to path so we can import app modules
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from sqlalchemy import inspect, text
+
 from app.db.session import engine
+
 
 def check_tables():
     print("\n--- 🔍 Checking Database Tables ---")

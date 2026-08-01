@@ -7,10 +7,10 @@ import logging
 
 from fastapi import APIRouter, Depends, Query, Request
 
+from app.schemas.user import User
 from app.services.activity_service import activity_service
 from app.utils.dependencies import get_current_user
 from app.utils.logging_context import bind_request_context
-from app.schemas.user import User
 
 from ._helpers import run_enveloped
 

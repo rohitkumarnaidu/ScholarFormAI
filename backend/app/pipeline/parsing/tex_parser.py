@@ -16,20 +16,21 @@ Parses LaTeX source to extract:
 import logging
 import os
 import re
-from typing import List
 
 logger = logging.getLogger(__name__)
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
-from app.pipeline.parsing.base_parser import BaseParser
 from app.models import (
-    PipelineDocument as Document,
-    DocumentMetadata,
     Block,
     BlockType,
+    DocumentMetadata,
     TextStyle,
 )
+from app.models import (
+    PipelineDocument as Document,
+)
+from app.pipeline.parsing.base_parser import BaseParser
 from app.utils.id_generator import generate_block_id
 
 
@@ -66,12 +67,12 @@ class TexParser(BaseParser):
 
         # Read file content
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 content = f.read()
         except UnicodeDecodeError:
             logger.warning("UTF-8 decode failed for '%s'; falling back to latin-1.", file_path)
             try:
-                with open(file_path, "r", encoding="latin-1") as f:
+                with open(file_path, encoding="latin-1") as f:
                     content = f.read()
             except Exception as exc:
                 raise ValueError(f"Failed to read LaTeX file '{file_path}': {exc}") from exc
@@ -87,8 +88,8 @@ class TexParser(BaseParser):
             document_id=document_id,
             original_filename=Path(file_path).name,
             source_path=file_path,
-            created_at=datetime.now(timezone.utc),
-            updated_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
         )
 
         # Extract metadata
@@ -130,7 +131,7 @@ class TexParser(BaseParser):
 
         return metadata
 
-    def _extract_content(self, content: str) -> List[Block]:
+    def _extract_content(self, content: str) -> list[Block]:
         """Extract blocks from LaTeX content."""
         # Remove comments first
         content = self._remove_comments(content)
@@ -139,10 +140,7 @@ class TexParser(BaseParser):
 
         # Extract document body
         doc_match = re.search(r"\\begin\{document\}(.*?)\\end\{document\}", content, re.DOTALL)
-        if doc_match:
-            body = doc_match.group(1)
-        else:
-            body = content
+        body = doc_match.group(1) if doc_match else content
 
         # Extract lists (itemize and enumerate)
         itemize_pattern = r"\\begin\{(itemize|enumerate)\}(.*?)\\end\{\1\}"

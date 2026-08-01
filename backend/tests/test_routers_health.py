@@ -1,11 +1,13 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 class TestHealthRouter:
     @pytest.fixture
     def client(self):
         from fastapi.testclient import TestClient
+
         from app.main import app
         app.dependency_overrides.clear()
         with TestClient(app) as c:

@@ -6,8 +6,8 @@
 from __future__ import annotations
 
 import os
-import time
 import threading
+import time
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -72,7 +72,7 @@ class TestMalformedInput:
         ws_file = tmp_path / "whitespace.txt"
         ws_file.write_text("   \n\n  \t  \n")
         blocks = []
-        orch = _make_orch()
+        _make_orch()
         assert len(blocks) == 0
 
 
@@ -93,8 +93,8 @@ class TestLargeAndNested:
 
     def test_deeply_nested_headings(self):
         """Headings deeper than 10 levels should not break numbering."""
-        from app.pipeline.formatting.numbering import NumberingEngine
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
+        from app.pipeline.formatting.numbering import NumberingEngine
         doc = PipelineDocument(document_id="job-deep", metadata=DocumentMetadata())
         doc.blocks = [
             Block(block_id=f"h{i}", index=i, block_type=BlockType(f"heading_{min(i, 4)}"), text=f"Heading {i}")
@@ -242,7 +242,7 @@ class TestReferences:
 class TestMetadataAndTemplates:
     def test_missing_required_metadata(self):
         """Document with missing metadata fields should still process."""
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         doc = PipelineDocument(document_id="job-nometa")
         doc.metadata = DocumentMetadata()
         assert doc.metadata.title is None
@@ -316,7 +316,7 @@ class TestInterruptionAndTimeout:
             raise KeyboardInterrupt("user interrupt")
 
         with patch("app.pipeline.orchestrator.get_supabase_client", return_value=None):
-            orch = _make_orch()
+            _make_orch()
         with pytest.raises(KeyboardInterrupt):
             interrupted_stage()
 

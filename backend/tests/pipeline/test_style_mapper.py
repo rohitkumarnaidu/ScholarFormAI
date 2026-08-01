@@ -2,9 +2,13 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-import pytest
+
 from unittest.mock import MagicMock
+
+import pytest
+
 from app.pipeline.formatting.style_mapper import StyleMapper
+
 
 @pytest.fixture
 def mock_contract_loader():

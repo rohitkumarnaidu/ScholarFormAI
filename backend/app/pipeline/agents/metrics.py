@@ -5,13 +5,13 @@
 Performance metrics tracking for agent vs legacy comparison.
 """
 
-import time
-import logging
-from typing import Dict, Any, Optional, List
-from datetime import datetime, timezone
-from dataclasses import dataclass, asdict
-from pathlib import Path
 import json
+import logging
+import time
+from dataclasses import asdict, dataclass
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ class ProcessingMetrics:
     end_time: float
     duration_seconds: float
     success: bool
-    error_message: Optional[str] = None
+    error_message: str | None = None
 
     # Quality metrics
     metadata_extracted: bool = False
@@ -37,7 +37,7 @@ class ProcessingMetrics:
     validation_warnings: int = 0
 
     # Agent-specific metrics
-    tools_used: List[str] = None
+    tools_used: list[str] = None
     retry_count: int = 0
     fallback_triggered: bool = False
 
@@ -45,7 +45,7 @@ class ProcessingMetrics:
         if self.tools_used is None:
             self.tools_used = []
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return asdict(self)
 
@@ -68,9 +68,9 @@ class PerformanceTracker:
         self.metrics_file = self.metrics_dir / "processing_metrics.jsonl"
         self.summary_file = self.metrics_dir / "summary.json"
 
-        self.current_run: Optional[Dict[str, Any]] = None
+        self.current_run: dict[str, Any] | None = None
 
-    def start_tracking(self, document_id: str, orchestrator_type: str) -> Dict[str, Any]:
+    def start_tracking(self, document_id: str, orchestrator_type: str) -> dict[str, Any]:
         """
         Start tracking a processing run.
 
@@ -101,7 +101,7 @@ class PerformanceTracker:
             self.current_run["retry_count"] += 1
 
     def end_tracking(
-        self, success: bool, document: Any = None, error_message: Optional[str] = None, fallback_triggered: bool = False
+        self, success: bool, document: Any = None, error_message: str | None = None, fallback_triggered: bool = False
     ) -> ProcessingMetrics:
         """
         End tracking and save metrics.
@@ -146,7 +146,7 @@ class PerformanceTracker:
 
         return metrics
 
-    def _extract_quality_metrics(self, document: Any) -> Dict[str, Any]:
+    def _extract_quality_metrics(self, document: Any) -> dict[str, Any]:
         """Extract quality metrics from document."""
         try:
             return {
@@ -181,7 +181,7 @@ class PerformanceTracker:
         legacy_metrics = [m for m in metrics_list if m["orchestrator_type"] == "legacy"]
 
         summary = {
-            "last_updated": datetime.now(timezone.utc).isoformat(),
+            "last_updated": datetime.now(UTC).isoformat(),
             "total_runs": len(metrics_list),
             "agent": self._calculate_stats(agent_metrics),
             "legacy": self._calculate_stats(legacy_metrics),
@@ -190,7 +190,7 @@ class PerformanceTracker:
         with open(self.summary_file, "w", encoding="utf-8") as f:
             json.dump(summary, f, indent=2)
 
-    def _calculate_stats(self, metrics_list: List[Dict]) -> Dict[str, Any]:
+    def _calculate_stats(self, metrics_list: list[dict]) -> dict[str, Any]:
         """Calculate statistics for a set of metrics."""
         if not metrics_list:
             return {"count": 0}
@@ -213,13 +213,13 @@ class PerformanceTracker:
             else 0,
         }
 
-    def load_all_metrics(self) -> List[Dict[str, Any]]:
+    def load_all_metrics(self) -> list[dict[str, Any]]:
         """Load all metrics from file."""
         if not self.metrics_file.exists():
             return []
 
         metrics = []
-        with open(self.metrics_file, "r", encoding="utf-8") as f:
+        with open(self.metrics_file, encoding="utf-8") as f:
             for line in f:
                 try:
                     metrics.append(json.loads(line.strip()))
@@ -227,14 +227,14 @@ class PerformanceTracker:
                     continue
         return metrics
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """Get performance summary."""
         if self.summary_file.exists():
-            with open(self.summary_file, "r", encoding="utf-8") as f:
+            with open(self.summary_file, encoding="utf-8") as f:
                 return json.load(f)
         return {}
 
-    def get_comparison(self) -> Dict[str, Any]:
+    def get_comparison(self) -> dict[str, Any]:
         """Get agent vs legacy comparison."""
         summary = self.get_summary()
 

@@ -9,8 +9,10 @@ import sys
 from unittest.mock import MagicMock, patch
 
 import pytest
-from app.pipeline.parsing.pdf_parser import PdfParser
+
 from app.pipeline.ocr.pdf_ocr import OCRError
+from app.pipeline.parsing.pdf_parser import PdfParser
+
 
 # ────────────────────────────────────────────────────────────
 # Helper: build a mock fitz Page with support for all
@@ -94,7 +96,7 @@ class TestParseNonStringId:
 # ════════════════════════════════════════════════════════════
 class TestExtractMetadataBranches:
     @pytest.mark.parametrize(
-        "meta,attr,expected",
+        ("meta", "attr", "expected"),
         [
             ({"title": "T"}, "title", "T"),
             ({"author": "A"}, "authors", ["A"]),
@@ -722,6 +724,7 @@ class TestSpanProcessingEdge:
 
 import contextlib
 
+
 # ════════════════════════════════════════════════════════════
 # Gaps 513→525, 521-523, 525→532, 529→532, 534
 # ════════════════════════════════════════════════════════════
@@ -842,7 +845,7 @@ class TestBboxAndHeaderFooterMetadata:
 class TestHeadingDetection:
 
     @pytest.mark.parametrize(
-        "size,is_bold,body,expected_level",
+        ("size", "is_bold", "body", "expected_level"),
         [
             (20, False, 11, 1),
             (15, False, 11, 2),

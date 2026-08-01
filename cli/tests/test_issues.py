@@ -1,9 +1,9 @@
 """Tests for issue management CLI commands."""
 
+import sys
 from unittest.mock import MagicMock, patch
 
 import pytest
-import sys
 
 # Mock backend modules for CLI tests
 sys.modules["app"] = MagicMock()

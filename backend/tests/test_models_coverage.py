@@ -10,11 +10,11 @@ import uuid
 
 from app.models.api_key import UserApiKey
 from app.models.api_key_usage_log import ApiKeyUsageLog
-from app.models.block import Block, BlockType, TextStyle, ListType
-from app.models.figure import Figure, FigureType, ImageFormat
-from app.models.table import Table, TableCell
-from app.models.reference import Reference, ReferenceType
+from app.models.block import Block, BlockType, ListType, TextStyle
 from app.models.equation import Equation
+from app.models.figure import Figure, FigureType, ImageFormat
+from app.models.reference import Reference, ReferenceType
+from app.models.table import Table, TableCell
 
 
 class TestUserApiKeyModel:

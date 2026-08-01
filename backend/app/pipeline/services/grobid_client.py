@@ -17,20 +17,22 @@ that can extract 68+ metadata labels including:
 
 import logging
 import time
+from pathlib import Path
+from typing import Any
+from urllib.parse import urlparse
+
 import requests
 from requests import RequestException
-from urllib.parse import urlparse
-from typing import Any, Dict, List, Optional
-from pathlib import Path
 
 try:
     from defusedxml import ElementTree as ET
 except ImportError:
     import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element
+
 from app.config.settings import settings
-from app.pipeline.safety.safe_execution import safe_function
 from app.exceptions import ExternalServiceError
+from app.pipeline.safety.safe_execution import safe_function
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +50,7 @@ class GROBIDClient:
     TRANSIENT_HTTP_STATUSES = {408, 425, 429, 500, 502, 503, 504, 520, 522, 524}
     LAST_GOOD_ENDPOINT_TTL_SECONDS = 300.0
 
-    def __init__(self, base_url: Optional[str] = None):
+    def __init__(self, base_url: str | None = None):
         """
         Initialize GROBID client.
 
@@ -117,7 +119,7 @@ class GROBIDClient:
                 reason,
             )
 
-    def _ordered_base_urls(self) -> List[str]:
+    def _ordered_base_urls(self) -> list[str]:
         ordered = list(self.base_urls)
         if (
             self._last_good_base_url
@@ -161,7 +163,7 @@ class GROBIDClient:
         return False
 
     @safe_function(fallback_value={}, error_message="GROBIDClient.process_header_document")
-    def process_header_document(self, file_path: str) -> Dict[str, Any]:
+    def process_header_document(self, file_path: str) -> dict[str, Any]:
         """
         Process document header/metadata using GROBID.
 
@@ -253,7 +255,7 @@ class GROBIDClient:
         return self._empty_metadata()
 
     @safe_function(fallback_value=[], error_message="GROBIDClient.process_references")
-    def process_references(self, file_path: str) -> List[Dict[str, Any]]:
+    def process_references(self, file_path: str) -> list[dict[str, Any]]:
         """
         Extract references using GROBID.
         """
@@ -306,7 +308,7 @@ class GROBIDClient:
                 )
         return []
 
-    def extract_metadata(self, file_path: str) -> Dict[str, Any]:
+    def extract_metadata(self, file_path: str) -> dict[str, Any]:
         """
         Backward-compatible metadata extraction API.
 
@@ -324,7 +326,7 @@ class GROBIDClient:
         metadata["references"] = references if references else []
         return metadata
 
-    def _parse_tei_xml(self, xml_str: str) -> Dict[str, Any]:
+    def _parse_tei_xml(self, xml_str: str) -> dict[str, Any]:
         """
         Parse GROBID TEI XML output into structured metadata.
 
@@ -383,7 +385,7 @@ class GROBIDClient:
 
         return ""
 
-    def _extract_authors(self, root: Element) -> tuple[List[Dict[str, str]], List[str]]:
+    def _extract_authors(self, root: Element) -> tuple[list[dict[str, str]], list[str]]:
         """
         Extract authors and affiliations from TEI XML.
 
@@ -442,7 +444,7 @@ class GROBIDClient:
                 return abstract_elem.text.strip()
         return ""
 
-    def _extract_keywords(self, root: Element) -> List[str]:
+    def _extract_keywords(self, root: Element) -> list[str]:
         """Extract keywords from TEI XML."""
         keywords = []
         keyword_elems = root.findall(".//tei:keywords/tei:term", self.TEI_NS)
@@ -451,7 +453,7 @@ class GROBIDClient:
                 keywords.append(kw.text.strip())
         return keywords
 
-    def _calculate_confidence(self, title: str, authors: List[Dict]) -> float:
+    def _calculate_confidence(self, title: str, authors: list[dict]) -> float:
         """
         Calculate confidence score for extracted metadata.
 
@@ -488,7 +490,7 @@ class GROBIDClient:
 
         return min(score, 1.0)
 
-    def _empty_metadata(self) -> Dict[str, Any]:
+    def _empty_metadata(self) -> dict[str, Any]:
         """Return empty metadata structure."""
         return {
             "title": "",

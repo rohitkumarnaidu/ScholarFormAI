@@ -6,7 +6,6 @@ import logging
 import os
 import platform
 import subprocess
-from typing import Optional
 
 from app.config.settings import settings
 
@@ -18,10 +17,10 @@ class PDFExporter:
     Adapter for converting DOCX to PDF using LibreOffice headless.
     """
 
-    def __init__(self, libreoffice_path: Optional[str] = None):
+    def __init__(self, libreoffice_path: str | None = None):
         self.libreoffice_path = libreoffice_path or settings.LIBREOFFICE_PATH or self._find_libreoffice()
 
-    def _find_libreoffice(self) -> Optional[str]:
+    def _find_libreoffice(self) -> str | None:
         """Attempt to find LibreOffice executable based on OS (dynamic cross-platform)."""
         if platform.system() == "Windows":
             paths = [
@@ -37,7 +36,7 @@ class PDFExporter:
         else:  # Linux
             return "libreoffice"  # Usually on PATH
 
-    def _weasyprint_fallback(self, docx_path: str, pdf_path: str) -> Optional[str]:
+    def _weasyprint_fallback(self, docx_path: str, pdf_path: str) -> str | None:
         """
         Fallback PDF renderer using WeasyPrint with lightweight DOCX-to-HTML conversion.
         """
@@ -73,7 +72,7 @@ class PDFExporter:
             logger.warning("WeasyPrint fallback failed: %s", exc)
             return None
 
-    def convert_to_pdf(self, docx_path: str, output_dir: str) -> Optional[str]:
+    def convert_to_pdf(self, docx_path: str, output_dir: str) -> str | None:
         """
         Convert DOCX to PDF using LibreOffice, then WeasyPrint, then docx2pdf.
         Raises RuntimeError if all engines fail.

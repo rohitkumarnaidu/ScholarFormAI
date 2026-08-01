@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from typing import Any, Optional
 from threading import Lock
+from typing import Any
 
 
 class ModelStore:
@@ -17,7 +17,7 @@ class ModelStore:
     def __new__(cls):
         with cls._lock:
             if cls._instance is None:
-                cls._instance = super(ModelStore, cls).__new__(cls)
+                cls._instance = super().__new__(cls)
                 cls._instance._models = {}
             return cls._instance
 
@@ -25,7 +25,7 @@ class ModelStore:
         """Register a pre-loaded model."""
         self._models[key] = model
 
-    def get_model(self, key: str) -> Optional[Any]:
+    def get_model(self, key: str) -> Any | None:
         """Retrieve a registered model."""
         return self._models.get(key)
 

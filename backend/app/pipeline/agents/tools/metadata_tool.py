@@ -6,8 +6,9 @@ Metadata extraction tool using GROBID.
 """
 
 import sys
-from typing import Type
+
 from pydantic import BaseModel, Field
+
 from app.pipeline.services.grobid_client import GROBIDClient
 
 if sys.version_info < (3, 14):
@@ -42,7 +43,7 @@ class MetadataExtractionTool(BaseTool):
         "publication date, and references. Use this when you need to understand "
         "the document's bibliographic information."
     )
-    args_schema: Type[BaseModel] = MetadataToolInput
+    args_schema: type[BaseModel] = MetadataToolInput
 
     def __init__(self, grobid_url: str = "http://localhost:8070"):
         super().__init__()

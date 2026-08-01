@@ -1,13 +1,16 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-import pytest
 import uuid
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-from app.pipeline.orchestrator import PipelineOrchestrator
-from app.models.pipeline_document import PipelineDocument
+
+import pytest
+
 from app.models.block import Block
+from app.models.pipeline_document import PipelineDocument
+from app.pipeline.orchestrator import PipelineOrchestrator
+
 
 @pytest.mark.integration
 class TestPipelineIntegration:
@@ -146,7 +149,6 @@ class TestPipelineIntegration:
                  
                  # We need to mock the imports inside orchestrator if they are local
                  with patch("app.services.crossref_client.get_crossref_client", return_value=mock_env['crossref']):
-                     job_id = "test-job"
                      # The logic for CrossRef is inside the main loop of _run_pipeline_internal
                      # Let's see if we can trigger it.
                      pass 

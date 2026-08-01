@@ -6,7 +6,8 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from typing import Any, AsyncGenerator, Dict, Optional
+from collections.abc import AsyncGenerator
+from typing import Any
 
 from app.config.settings import settings
 
@@ -19,14 +20,14 @@ logger = logging.getLogger(__name__)
 
 
 class RedisPubSub:
-    def __init__(self, redis_url: Optional[str] = None) -> None:
+    def __init__(self, redis_url: str | None = None) -> None:
         self._redis_url = redis_url or settings.REDIS_URL
         self._redis_enabled = bool(settings.REDIS_ENABLED)
         self._redis_warning_logged = False
         self._force_fallback = False
         self._lock = asyncio.Lock()
-        self._redis_by_loop: Dict[int, Any] = {}
-        self._fallback_channels: Dict[str, set[asyncio.Queue]] = {}
+        self._redis_by_loop: dict[int, Any] = {}
+        self._fallback_channels: dict[str, set[asyncio.Queue]] = {}
 
     async def _get_redis(self):
         if not self._redis_enabled or self._force_fallback or aioredis is None:

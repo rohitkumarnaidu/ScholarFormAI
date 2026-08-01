@@ -7,15 +7,17 @@ import asyncio
 import json
 import logging
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 from fastapi.responses import FileResponse
 from sse_starlette.sse import EventSourceResponse
 
 from app.config.settings import settings
+from app.middleware.abuse_detector import abuse_detector
+from app.middleware.request_id import get_request_id
 from app.pipeline.export.pdf_exporter import PDFExporter
 from app.pipeline.generation.agent import AgentPipeline
 from app.pipeline.generation.document_generator import get_generator
@@ -23,16 +25,14 @@ from app.pipeline.orchestrator import PipelineOrchestrator
 from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
 from app.realtime.events import make_event
 from app.realtime.pubsub import RedisPubSub
-from app.middleware.request_id import get_request_id
 from app.routers.v1.documents_impl import ACCEPTED_EXTENSIONS, _validate_magic_bytes
 from app.schemas.generator_session import MessageRequest
+from app.services.audit_log_service import audit_log_service
 from app.services.document_service import DocumentService
 from app.services.enhancement_manager import enhancement_manager
 from app.services.generator_session_service import GeneratorSessionService
 from app.services.llm_service import generate_with_fallback, sanitize_for_llm
 from app.services.session_vector_store import SessionVectorStore
-from app.services.audit_log_service import audit_log_service
-from app.middleware.abuse_detector import abuse_detector
 from app.utils.dependencies import get_current_user
 from app.utils.logging_context import bind_request_context
 
@@ -164,7 +164,7 @@ async def _download_generated_artifact(job_id: str, requested_format: str, user:
     )
 
 
-def _serialize_session(session: Dict[str, Any]) -> Dict[str, Any]:
+def _serialize_session(session: dict[str, Any]) -> dict[str, Any]:
     config = session.get("config_json") or {}
     return {
         "id": session.get("id"),
@@ -208,7 +208,7 @@ def _dispatch_agent_task(background_tasks: BackgroundTasks, task_name: str, *arg
             background_tasks.add_task(_get_agent_pipeline().rewrite_section, *args)
 
 
-def _parse_config(raw_config: str) -> Dict[str, Any]:
+def _parse_config(raw_config: str) -> dict[str, Any]:
     if not raw_config:
         return {}
     try:
@@ -217,7 +217,7 @@ def _parse_config(raw_config: str) -> Dict[str, Any]:
         raise HTTPException(status_code=422, detail=f"Invalid config JSON: {exc}")
 
 
-def _detect_section_rewrite(message: str, sections: List[str]) -> Optional[str]:
+def _detect_section_rewrite(message: str, sections: list[str]) -> str | None:
     normalized = message.lower()
     triggers = ("rewrite", "re-write", "revise", "reword", "update", "expand")
     if not any(trigger in normalized for trigger in triggers):
@@ -245,7 +245,7 @@ def _detect_section_rewrite(message: str, sections: List[str]) -> Optional[str]:
     return None
 
 
-def _assert_session_owner(session: Dict[str, Any], user: Any) -> None:
+def _assert_session_owner(session: dict[str, Any], user: Any) -> None:
     session_user = session.get("user_id")
     current_user_id = getattr(user, "id", user)
     if session_user and str(session_user) != str(current_user_id):
@@ -352,7 +352,7 @@ async def start_generation(
         upload_dir = Path("uploads") / "synthesis" / session_id
         upload_dir.mkdir(parents=True, exist_ok=True)
 
-        file_entries: List[Dict[str, Any]] = []
+        file_entries: list[dict[str, Any]] = []
         for idx, file in enumerate(files):
             filename = getattr(file, "filename", None) or f"upload_{idx}"
             ext = Path(filename).suffix.lower()
@@ -665,7 +665,7 @@ async def generation_messages(
                     "role": "assistant",
                     "content": f"Rewrite started for section {rewrite_section}.",
                     "sources": [],
-                    "created_at": datetime.now(timezone.utc).isoformat(),
+                    "created_at": datetime.now(UTC).isoformat(),
                 }
         sources = _vector_store.query(sessionId, question, top_k=5)
 
@@ -677,7 +677,7 @@ async def generation_messages(
         selected_model = payload.model or None
         if selected_model:
             try:
-                from app.services.llm_service import generate_with_model, LLMUnavailableError
+                from app.services.llm_service import LLMUnavailableError, generate_with_model
 
                 result = await asyncio.to_thread(
                     generate_with_model,
@@ -732,7 +732,7 @@ async def generation_messages(
             "role": "assistant",
             "content": answer,
             "sources": [{"source_doc": s.get("source_doc"), "section": s.get("section")} for s in sources],
-            "created_at": datetime.now(timezone.utc).isoformat(),
+            "created_at": datetime.now(UTC).isoformat(),
         }
 
     return await run_enveloped(
@@ -753,7 +753,7 @@ async def approve_outline(
     request: Request,
     sessionId: str,
     background_tasks: BackgroundTasks,
-    payload: Optional[Dict[str, Any]] = None,
+    payload: dict[str, Any] | None = None,
     user=Depends(get_current_user),
 ):
     async def operation():

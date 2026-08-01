@@ -8,7 +8,8 @@ Tables are extracted by the tables/ pipeline stage.
 """
 
 import logging
-from typing import Optional, Dict, Any, List
+from typing import Any
+
 from pydantic import BaseModel, Field, field_validator
 
 logger = logging.getLogger(__name__)
@@ -29,20 +30,20 @@ class TableCell(BaseModel):
     is_header: bool = Field(default=False, description="Whether this cell is a header")
     bold: bool = Field(default=False, description="Bold text")
     italic: bool = Field(default=False, description="Italic text")
-    alignment: Optional[str] = Field(
+    alignment: str | None = Field(
         default=None,
         description="Text alignment (left, center, right)",
     )
 
     # Extensibility
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict,
         description="Additional metadata (e.g., nested tables)",
     )
 
     @field_validator("alignment")
     @classmethod
-    def validate_alignment(cls, v: Optional[str]) -> Optional[str]:
+    def validate_alignment(cls, v: str | None) -> str | None:
         """Ensure alignment is one of the accepted values."""
         if v is not None and v not in ("left", "center", "right", "justify"):
             logger.warning("Invalid alignment value '%s'; setting to None.", v)
@@ -64,7 +65,7 @@ class Table(BaseModel):
     table_id: str = Field(..., description="Unique identifier (e.g., 'tbl_001')")
 
     # Sequential numbering (assigned by formatting stage)
-    number: Optional[int] = Field(
+    number: int | None = Field(
         default=None,
         description="Sequential table number in document (e.g., 1 for 'Table 1')",
     )
@@ -74,19 +75,19 @@ class Table(BaseModel):
     num_cols: int = Field(..., description="Total number of columns", ge=0)
 
     # Table data
-    cells: List[TableCell] = Field(
+    cells: list[TableCell] = Field(
         default_factory=list,
         description="List of all table cells",
     )
 
     # Table data (Source of Truth)
-    data: List[List[str]] = Field(
+    data: list[list[str]] = Field(
         default_factory=list,
         description="2D array representation of table (row-major order). data[row][col] = text",
     )
 
     # Backward compatibility
-    rows: List[List[str]] = Field(
+    rows: list[list[str]] = Field(
         default_factory=list,
         description="2D array representation of table (row-major order)",
     )
@@ -111,7 +112,7 @@ class Table(BaseModel):
     )
 
     # Position in document
-    page_number: Optional[int] = Field(
+    page_number: int | None = Field(
         default=None,
         description="Page where table appears",
     )
@@ -127,37 +128,37 @@ class Table(BaseModel):
     )
 
     # Caption information
-    caption_text: Optional[str] = Field(
+    caption_text: str | None = Field(
         default=None,
         description="Full caption text (e.g., 'Table 1: Experimental Results')",
     )
-    caption_block_id: Optional[str] = Field(
+    caption_block_id: str | None = Field(
         default=None,
         description="Block ID of the caption block",
     )
-    caption_position: Optional[str] = Field(
+    caption_position: str | None = Field(
         default=None,
         description="Caption position relative to table (above, below)",
     )
 
     # Parsed caption components
-    label: Optional[str] = Field(
+    label: str | None = Field(
         default=None,
         description="Table label (e.g., 'Table 1', 'Table I')",
     )
-    title: Optional[str] = Field(
+    title: str | None = Field(
         default=None,
         description="Descriptive title from caption",
     )
 
     # Cross-references
-    referenced_by: List[str] = Field(
+    referenced_by: list[str] = Field(
         default_factory=list,
         description="List of block IDs that reference this table",
     )
 
     # Section context
-    section_name: Optional[str] = Field(
+    section_name: str | None = Field(
         default=None,
         description="Section where this table appears",
     )
@@ -167,23 +168,23 @@ class Table(BaseModel):
         default=True,
         description="Whether table passed validation",
     )
-    warnings: List[str] = Field(
+    warnings: list[str] = Field(
         default_factory=list,
         description="Validation warnings (e.g., missing caption, inconsistent columns)",
     )
 
     # Formatting metadata
-    placement: Optional[str] = Field(
+    placement: str | None = Field(
         default=None,
         description="Placement preference (e.g., 'top', 'bottom', 'here')",
     )
-    style: Optional[str] = Field(
+    style: str | None = Field(
         default=None,
         description="Table style (e.g., 'grid', 'simple', 'booktabs')",
     )
 
     # Extensibility
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict,
         description="Additional metadata",
     )
@@ -205,7 +206,7 @@ class Table(BaseModel):
             logger.error("Error in Table.has_caption for '%s': %s", self.table_id, exc)
             return False
 
-    def get_cell(self, row: int, col: int) -> Optional[TableCell]:
+    def get_cell(self, row: int, col: int) -> TableCell | None:
         """Get cell at specified row and column. Returns None if not found."""
         if row < 0 or col < 0:
             logger.warning("get_cell called with negative indices (%d, %d)", row, col)
@@ -236,7 +237,7 @@ class Table(BaseModel):
             logger.error("Error in get_display_label for '%s': %s", self.table_id, exc)
             return f"Table {self.table_id}"
 
-    def get_row_data(self, row: int) -> List[str]:
+    def get_row_data(self, row: int) -> list[str]:
         """Get all cell text for a specific row. Returns empty list on error or out-of-bounds."""
         if row < 0:
             logger.warning("get_row_data called with negative row index %d", row)

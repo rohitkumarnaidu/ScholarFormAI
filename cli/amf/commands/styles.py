@@ -4,8 +4,8 @@ import sys
 from pathlib import Path
 
 from amf._client import BackendClient
-from amf._output import print_styles_table
 from amf._console import get_console
+from amf._output import print_styles_table
 from amf.config import AMFConfig
 
 logger = logging.getLogger(__name__)

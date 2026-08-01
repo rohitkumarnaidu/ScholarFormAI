@@ -2,9 +2,10 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-from app.models import PipelineDocument, Block, TextStyle, BlockType
+from app.models import Block, BlockType, PipelineDocument, TextStyle
 from app.pipeline.normalization.normalizer import Normalizer
 from app.pipeline.structure_detection.detector import StructureDetector
+
 
 def verify():
     print("Starting Physical Consolidation Verification...")

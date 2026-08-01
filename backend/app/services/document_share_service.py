@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, Dict, List
+from typing import Any
 
 from app.db.supabase_client import get_supabase_client
 from app.exceptions import DatabaseUnavailableError
@@ -30,7 +30,7 @@ class DocumentShareService:
         shared_with_user_id: str,
         permission: str,
         shared_by_user_id: str,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Share a document with another user."""
         sb = get_supabase_client()
         if sb is None:
@@ -61,7 +61,7 @@ class DocumentShareService:
             logger.error("share_document(%s) failed: %s", document_id, exc)
             raise DatabaseUnavailableError(f"Failed to share document: {exc}") from exc
 
-    async def get_shared_documents(self, user_id: str, limit: int = 20, offset: int = 0) -> List[Dict[str, Any]]:
+    async def get_shared_documents(self, user_id: str, limit: int = 20, offset: int = 0) -> list[dict[str, Any]]:
         """Get documents shared with a user (joined with documents table)."""
         sb = get_supabase_client()
         if sb is None:
@@ -157,7 +157,7 @@ class DocumentShareService:
     async def unshare_document(self, document_id: str, user_id: str) -> bool:
         return await self.remove_sharing(document_id, user_id)
 
-    async def get_shared_users(self, document_id: str) -> List[Dict[str, Any]]:
+    async def get_shared_users(self, document_id: str) -> list[dict[str, Any]]:
         sb = get_supabase_client()
         if sb is None:
             return []

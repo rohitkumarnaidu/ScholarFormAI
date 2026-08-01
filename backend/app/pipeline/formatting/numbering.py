@@ -19,7 +19,7 @@ class NumberingEngine:
         Walk through the document and apply numbering to headings, figs, and tables.
         """
         contract = self.contract_loader.load(publisher)
-        rules = contract.get("numbering", {})
+        contract.get("numbering", {})
 
         # Heading counters: level -> count
         counters = {1: 0, 2: 0, 3: 0, 4: 0}
@@ -52,7 +52,7 @@ class NumberingEngine:
         # Equation Numbering
         eq_rules = contract.get("equations", {})
         if eq_rules:
-            scope = eq_rules.get("scope", "global")
+            eq_rules.get("scope", "global")
             brackets = eq_rules.get("brackets", "()")
 
             # Simplified global numbering

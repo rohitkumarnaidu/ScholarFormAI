@@ -2,12 +2,15 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-import pytest
 import time
 import uuid
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 from app.pipeline.orchestrator import PipelineOrchestrator
+
 
 def log(msg):
     print(f"\n[INTEGRATION] {msg}")
@@ -77,7 +80,6 @@ class TestEndToEndIntegration:
 
     def test_end_to_end_pipeline(self, orchestrator, samples_dir, mock_db_session):
         """Run full pipeline and measure performance."""
-        mock_client = mock_db_session
         pdf_files = list(samples_dir.glob("*.pdf"))[:2]
         
         if not pdf_files:
@@ -92,7 +94,7 @@ class TestEndToEndIntegration:
         log("STARTING END-TO-END PIPELINE PERFORMANCE TEST")
         log("="*60)
         
-        for i, pdf_path in enumerate(pdf_files):
+        for _i, pdf_path in enumerate(pdf_files):
             log(f"Processing {pdf_path.name}...")
             start_time = time.time()
             

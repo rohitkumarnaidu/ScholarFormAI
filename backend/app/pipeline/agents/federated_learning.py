@@ -5,11 +5,11 @@
 Federated learning across multiple deployments.
 """
 
-import logging
 import json
-from typing import List, Dict, Any, Optional
-from datetime import datetime, timezone
+import logging
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ class FederatedLearningNode:
         self,
         node_id: str,
         storage_dir: str = ".federated_learning",
-        coordinator_url: Optional[str] = None,
+        coordinator_url: str | None = None,
     ):
         """
         Initialize federated learning node.
@@ -67,12 +67,12 @@ class FederatedLearningNode:
         self.local_updates_file = self.storage_dir / f"node_{self.node_id}_updates.jsonl"
         self.global_model_file = self.storage_dir / "global_model.json"
 
-        self.local_updates: List[Dict[str, Any]] = []
+        self.local_updates: list[dict[str, Any]] = []
         self.global_model = self._load_global_model()
 
-    def _load_global_model(self) -> Dict[str, Any]:
+    def _load_global_model(self) -> dict[str, Any]:
         """Load global model state. Returns default if file missing or corrupt."""
-        default: Dict[str, Any] = {
+        default: dict[str, Any] = {
             "version": 0,
             "patterns": [],
             "statistics": {},
@@ -81,7 +81,7 @@ class FederatedLearningNode:
         if not self.global_model_file.exists():
             return default
         try:
-            with open(self.global_model_file, "r", encoding="utf-8") as f:
+            with open(self.global_model_file, encoding="utf-8") as f:
                 data = json.load(f)
             if not isinstance(data, dict):
                 logger.warning("Global model file has unexpected format; using default.")
@@ -99,7 +99,7 @@ class FederatedLearningNode:
         except Exception as exc:
             logger.error("Failed to save global model: %s", exc)
 
-    def record_local_update(self, update_type: str, data: Dict[str, Any]) -> None:
+    def record_local_update(self, update_type: str, data: dict[str, Any]) -> None:
         """
         Record a local model update.
 
@@ -114,9 +114,9 @@ class FederatedLearningNode:
             logger.warning("record_local_update: data must be a dict, got %s; skipping.", type(data))
             return
 
-        update: Dict[str, Any] = {
+        update: dict[str, Any] = {
             "node_id": self.node_id,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "update_type": update_type,
             "data": data,
             "version": self.global_model.get("version", 0),
@@ -131,7 +131,7 @@ class FederatedLearningNode:
         self.local_updates.append(update)
         logger.info("Recorded local update: %s", update_type)
 
-    def get_local_updates(self, since_version: Optional[int] = None) -> List[Dict[str, Any]]:
+    def get_local_updates(self, since_version: int | None = None) -> list[dict[str, Any]]:
         """
         Get local updates since a specific version.
 
@@ -226,7 +226,7 @@ class FederatedLearningNode:
             logger.error("Failed to pull global model: %s", exc)
             return False
 
-    def aggregate_updates(self, all_updates: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def aggregate_updates(self, all_updates: list[dict[str, Any]]) -> dict[str, Any]:
         """
         Aggregate updates from multiple nodes (coordinator function).
 
@@ -240,8 +240,8 @@ class FederatedLearningNode:
             logger.warning("aggregate_updates: expected list, got %s", type(all_updates))
             all_updates = []
 
-        patterns: List[Dict[str, Any]] = []
-        metrics: List[Dict[str, Any]] = []
+        patterns: list[dict[str, Any]] = []
+        metrics: list[dict[str, Any]] = []
 
         for update in all_updates:
             if not isinstance(update, dict):
@@ -267,18 +267,18 @@ class FederatedLearningNode:
             "version": self.global_model.get("version", 0) + 1,
             "patterns": aggregated_patterns,
             "statistics": aggregated_metrics,
-            "last_updated": datetime.now(timezone.utc).isoformat(),
+            "last_updated": datetime.now(UTC).isoformat(),
             "contributing_nodes": contributing_nodes,
         }
 
-    def _aggregate_patterns(self, patterns: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _aggregate_patterns(self, patterns: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Aggregate patterns from multiple nodes."""
         if not patterns:
             return []
         # Simple aggregation: keep top 10 (placeholder for real clustering)
         return patterns[:10]
 
-    def _aggregate_metrics(self, metrics: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def _aggregate_metrics(self, metrics: list[dict[str, Any]]) -> dict[str, Any]:
         """Aggregate metrics from multiple nodes."""
         if not metrics:
             return {}
@@ -308,7 +308,7 @@ class FederatedLearningNode:
         pull_success = self.pull_global_model()
         return push_success and pull_success
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict[str, Any]:
         """Get node status. Always returns a valid dict."""
         try:
             return {
@@ -347,13 +347,13 @@ class FederatedCoordinator:
         self.updates_file = self.storage_dir / "all_updates.jsonl"
         self.global_model_file = self.storage_dir / "global_model.json"
 
-        self.all_updates: List[Dict[str, Any]] = []
+        self.all_updates: list[dict[str, Any]] = []
         self.global_model = self._load_global_model()
         self.registered_nodes: set = set()
 
-    def _load_global_model(self) -> Dict[str, Any]:
+    def _load_global_model(self) -> dict[str, Any]:
         """Load global model. Returns default if file missing or corrupt."""
-        default: Dict[str, Any] = {
+        default: dict[str, Any] = {
             "version": 0,
             "patterns": [],
             "statistics": {},
@@ -362,7 +362,7 @@ class FederatedCoordinator:
         if not self.global_model_file.exists():
             return default
         try:
-            with open(self.global_model_file, "r", encoding="utf-8") as f:
+            with open(self.global_model_file, encoding="utf-8") as f:
                 data = json.load(f)
             if not isinstance(data, dict):
                 logger.warning("Coordinator global model file has unexpected format; using default.")
@@ -372,7 +372,7 @@ class FederatedCoordinator:
             logger.error("Failed to load coordinator global model: %s", exc)
             return default
 
-    def receive_updates(self, node_id: str, updates: List[Dict[str, Any]]) -> bool:
+    def receive_updates(self, node_id: str, updates: list[dict[str, Any]]) -> bool:
         """
         Receive updates from a node.
 
@@ -405,7 +405,7 @@ class FederatedCoordinator:
             logger.error("Failed to receive updates from node %s: %s", node_id, exc)
             return False
 
-    def aggregate_and_update(self) -> Dict[str, Any]:
+    def aggregate_and_update(self) -> dict[str, Any]:
         """
         Aggregate all updates and create new global model.
 
@@ -428,11 +428,11 @@ class FederatedCoordinator:
             logger.error("Failed to aggregate and update global model: %s", exc)
             return dict(self.global_model)
 
-    def get_global_model(self) -> Dict[str, Any]:
+    def get_global_model(self) -> dict[str, Any]:
         """Get current global model."""
         return dict(self.global_model)
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get coordinator statistics. Always returns a valid dict."""
         try:
             return {

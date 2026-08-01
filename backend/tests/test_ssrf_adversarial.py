@@ -3,6 +3,7 @@ Adversarial SSRF Test Harness for _sanitize_url in app.routers.v1.providers
 """
 import pytest
 from fastapi import HTTPException
+
 from app.routers.v1.providers import _sanitize_url
 
 MALICIOUS_PAYLOADS = [
@@ -67,14 +68,14 @@ VALID_PUBLIC_URLS = [
 ]
 
 
-@pytest.mark.parametrize("url,description", MALICIOUS_PAYLOADS)
+@pytest.mark.parametrize(("url", "description"), MALICIOUS_PAYLOADS)
 def test_sanitize_url_rejects_malicious_payloads(url, description):
     with pytest.raises(HTTPException) as exc_info:
         _sanitize_url(url)
     assert exc_info.value.status_code == 422, f"Failed for {description} ({url}): status was {exc_info.value.status_code}"
 
 
-@pytest.mark.parametrize("url,description", VALID_PUBLIC_URLS)
+@pytest.mark.parametrize(("url", "description"), VALID_PUBLIC_URLS)
 def test_sanitize_url_allows_valid_public_urls(url, description):
     sanitized = _sanitize_url(url)
     assert sanitized is not None

@@ -12,8 +12,9 @@ import sys
 # Add backend to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
-from app.models import PipelineDocument, Block, BlockType
+from app.models import Block, BlockType, PipelineDocument
 from app.pipeline.classification.classifier import ContentClassifier
+
 
 def test_classifier_hardening():
     print("=" * 70)

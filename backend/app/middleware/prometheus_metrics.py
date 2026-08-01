@@ -5,12 +5,13 @@
 Prometheus metrics definition and middleware for the application.
 """
 
-import time
 import logging
 import threading
-from typing import Callable
+import time
+from collections.abc import Callable
+
 from fastapi import Request, Response
-from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
 
 logger = logging.getLogger(__name__)
 

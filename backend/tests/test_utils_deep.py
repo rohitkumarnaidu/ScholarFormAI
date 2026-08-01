@@ -2,18 +2,19 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 @pytest.fixture(autouse=True)
 def _reset_logging_contexts():
-    from app.utils.logging_context import _request_id_ctx, _job_id_ctx, _session_id_ctx
+    from app.utils.logging_context import _job_id_ctx, _request_id_ctx, _session_id_ctx
 
     _request_id_ctx.set(None)
     _job_id_ctx.set(None)
     _session_id_ctx.set(None)
-    yield
+    return
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -25,7 +26,7 @@ MODULE = "app.utils.logging_context"
 
 class TestBindContext:
     def test_binds_all_three(self):
-        from app.utils.logging_context import bind_context, reset_context, _request_id_ctx, _job_id_ctx, _session_id_ctx
+        from app.utils.logging_context import _job_id_ctx, _request_id_ctx, _session_id_ctx, bind_context, reset_context
 
         tokens = bind_context(request_id="rid-1", job_id="jid-1", session_id="sid-1")
         assert "request_id" in tokens
@@ -37,7 +38,7 @@ class TestBindContext:
         reset_context(tokens)
 
     def test_binds_partial(self):
-        from app.utils.logging_context import bind_context, reset_context, _request_id_ctx
+        from app.utils.logging_context import _request_id_ctx, bind_context, reset_context
 
         tokens = bind_context(request_id="rid-only")
         assert _request_id_ctx.get() == "rid-only"
@@ -46,7 +47,7 @@ class TestBindContext:
 
 class TestResetContext:
     def test_resets_all(self):
-        from app.utils.logging_context import bind_context, reset_context, _request_id_ctx
+        from app.utils.logging_context import _request_id_ctx, bind_context, reset_context
 
         tokens = bind_context(request_id="rid")
         reset_context(tokens)
@@ -61,18 +62,17 @@ class TestResetContext:
 
 class TestLogContext:
     def test_context_manager_sets_and_clears(self):
-        from app.utils.logging_context import log_context, _request_id_ctx
+        from app.utils.logging_context import _request_id_ctx, log_context
 
         with log_context(request_id="inside"):
             assert _request_id_ctx.get() == "inside"
         assert _request_id_ctx.get() is None
 
     def test_context_manager_on_exception(self):
-        from app.utils.logging_context import log_context, _request_id_ctx
+        from app.utils.logging_context import _request_id_ctx, log_context
 
-        with pytest.raises(ValueError):
-            with log_context(request_id="exc"):
-                raise ValueError("boom")
+        with pytest.raises(ValueError), log_context(request_id="exc"):
+            raise ValueError("boom")
         assert _request_id_ctx.get() is None
 
 
@@ -96,7 +96,7 @@ class TestGetters:
         assert get_session_id_context() == "sid"
 
     def test_defaults_none(self):
-        from app.utils.logging_context import get_request_id_context, get_job_id_context, get_session_id_context
+        from app.utils.logging_context import get_job_id_context, get_request_id_context, get_session_id_context
 
         assert get_request_id_context() is None
         assert get_job_id_context() is None
@@ -165,7 +165,7 @@ class TestLogContextFilter:
 class TestBindRequestContext:
     @pytest.mark.asyncio
     async def test_binds_without_request_id_in_state(self):
-        from app.utils.logging_context import bind_request_context, _request_id_ctx
+        from app.utils.logging_context import _request_id_ctx, bind_request_context
 
         connection = MagicMock()
         connection.state.request_id = None
@@ -177,7 +177,7 @@ class TestBindRequestContext:
 
     @pytest.mark.asyncio
     async def test_uses_existing_request_id(self):
-        from app.utils.logging_context import bind_request_context, _request_id_ctx
+        from app.utils.logging_context import _request_id_ctx, bind_request_context
 
         connection = MagicMock()
         connection.state.request_id = "state-id"
@@ -188,7 +188,7 @@ class TestBindRequestContext:
 
     @pytest.mark.asyncio
     async def test_generates_uuid_when_no_header(self):
-        from app.utils.logging_context import bind_request_context, _request_id_ctx
+        from app.utils.logging_context import _request_id_ctx, bind_request_context
 
         connection = MagicMock()
         connection.state.request_id = None
@@ -203,7 +203,7 @@ class TestBindRequestContext:
 
     @pytest.mark.asyncio
     async def test_resolves_alternate_param_names(self):
-        from app.utils.logging_context import bind_request_context, _job_id_ctx
+        from app.utils.logging_context import _job_id_ctx, bind_request_context
 
         connection = MagicMock()
         connection.state.request_id = None
@@ -215,7 +215,7 @@ class TestBindRequestContext:
 
     @pytest.mark.asyncio
     async def test_cleans_up_after_yield(self):
-        from app.utils.logging_context import bind_request_context, _request_id_ctx
+        from app.utils.logging_context import _request_id_ctx, bind_request_context
 
         connection = MagicMock()
         connection.state.request_id = None
@@ -297,6 +297,7 @@ class TestCleanupAdditional:
 class TestBackgroundTasksAdditional:
     def test_sync_wrapper_creates_new_event_loop(self):
         import asyncio as real_asyncio
+
         from app.utils.background_tasks import with_timeout
 
         real_loop = real_asyncio.new_event_loop()
@@ -359,9 +360,10 @@ class TestSingletonAdditional:
 
 class TestDependenciesAdditional:
     def test_get_current_user_invalid_token_error(self):
-        from app.utils.dependencies import get_current_user
-        from fastapi import HTTPException
         import jwt
+        from fastapi import HTTPException
+
+        from app.utils.dependencies import get_current_user
         credentials = MagicMock()
         credentials.credentials = "bad-token"
         request = MagicMock()
@@ -372,8 +374,9 @@ class TestDependenciesAdditional:
         assert exc.value.status_code == 401
 
     def test_get_current_user_http_exception_passthrough(self):
-        from app.utils.dependencies import get_current_user
         from fastapi import HTTPException
+
+        from app.utils.dependencies import get_current_user
         credentials = MagicMock()
         credentials.credentials = "fail"
         request = MagicMock()

@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 from fastapi import HTTPException
 
 
@@ -224,8 +225,9 @@ class TestRunEnveloped:
         assert "INTERNAL_SERVER_ERROR" in body
 
     def test_operation_returns_response_directly(self, request_mock):
-        from app.routers.v1._helpers import run_enveloped
         from starlette.responses import JSONResponse
+
+        from app.routers.v1._helpers import run_enveloped
         direct_response = JSONResponse({"direct": True}, status_code=299)
         result = run_enveloped(request_mock, AsyncMock(return_value=direct_response))
         import asyncio

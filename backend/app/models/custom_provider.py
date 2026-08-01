@@ -1,8 +1,10 @@
 import uuid
-from datetime import datetime, timezone
-from sqlalchemy import Column, String, Boolean, DateTime, Text, JSON
+from datetime import UTC, datetime
+
+from sqlalchemy import JSON, Boolean, Column, DateTime, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+
 from app.db.base import Base
 
 
@@ -18,9 +20,9 @@ class CustomProvider(Base):
     is_local = Column(Boolean, default=False, nullable=False)
     description = Column(String(500), nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     updated_at = Column(
-        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
     user = relationship(
@@ -31,7 +33,7 @@ class CustomProvider(Base):
     )
 
     def __init__(self, **kwargs):
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         kwargs.setdefault("id", uuid.uuid4())
         kwargs.setdefault("models", [])
         kwargs.setdefault("is_local", False)

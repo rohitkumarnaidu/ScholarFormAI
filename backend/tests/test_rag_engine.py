@@ -6,12 +6,15 @@ Test Suite for RAG Engine
 Tests retrieval-augmented generation, ChromaDB integration, and fallback mechanisms.
 """
 
-import pytest
 import os
-import tempfile
 import shutil
-from unittest.mock import patch, MagicMock
+import tempfile
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 from app.pipeline.intelligence.rag_engine import RagEngine
+
 
 class TestRagEngine:
     """Test suite for RAG engine."""
@@ -54,7 +57,7 @@ class TestRagEngine:
             engine = RagEngine(persist_directory=temp_persist_dir)
             
             assert engine.backend == "native"
-            assert engine.chroma_enabled == False
+            assert not engine.chroma_enabled
             assert engine.embedding_model is not None
     
     @pytest.mark.rag
@@ -70,7 +73,7 @@ class TestRagEngine:
             engine = RagEngine(persist_directory=temp_persist_dir)
             
             assert engine.backend == "chromadb"
-            assert engine.chroma_enabled == True
+            assert engine.chroma_enabled
             assert engine.client is not None
     
     @pytest.mark.rag

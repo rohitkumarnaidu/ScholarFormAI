@@ -32,15 +32,15 @@ class TestFullPipeline:
     ])
     def test_markdown_to_docx_all_styles(self, components, tmp_path, style_id):
         md = (
-            f"# Test Paper\n"
-            f"By Jane Smith\n"
-            f"## Abstract\n"
-            f"This is a test abstract.\n"
-            f"**Keywords:** test, paper\n"
-            f"## Introduction\n"
-            f"Test content here.\n"
-            f"## References\n"
-            f"Smith, J. (2024). Test. Journal, 1(1), 1-10.\n"
+            "# Test Paper\n"
+            "By Jane Smith\n"
+            "## Abstract\n"
+            "This is a test abstract.\n"
+            "**Keywords:** test, paper\n"
+            "## Introduction\n"
+            "Test content here.\n"
+            "## References\n"
+            "Smith, J. (2024). Test. Journal, 1(1), 1-10.\n"
         )
         manuscript = components["parser"].parse(md, "markdown")
         result = components["validator"].validate(manuscript, style_id)
@@ -90,7 +90,7 @@ class TestFullPipeline:
             "Doe, John. Modern Poetry. Academic Press, 2021.\n"
         )
         manuscript = components["parser"].parse(md, "markdown")
-        result = components["validator"].validate(manuscript, "mla")
+        components["validator"].validate(manuscript, "mla")
         style = components["registry"].get_style("mla")
         output = tmp_path / "mla_output.docx"
         components["formatter"].format(manuscript, style, str(output))
@@ -110,7 +110,7 @@ class TestFullPipeline:
             "Johnson, Sarah. The Industrial Age. History Press, 2020.\n"
         )
         manuscript = components["parser"].parse(md, "markdown")
-        result = components["validator"].validate(manuscript, "chicago")
+        components["validator"].validate(manuscript, "chicago")
         style = components["registry"].get_style("chicago")
         output = tmp_path / "chicago_output.docx"
         components["formatter"].format(manuscript, style, str(output))
@@ -130,7 +130,7 @@ class TestFullPipeline:
             "A. Chen, 'ML for Security,' IEEE Security, vol. 15, no. 3, pp. 45-52, 2023.\n"
         )
         manuscript = components["parser"].parse(md, "markdown")
-        result = components["validator"].validate(manuscript, "ieee")
+        components["validator"].validate(manuscript, "ieee")
         style = components["registry"].get_style("ieee")
         output = tmp_path / "ieee_output.docx"
         components["formatter"].format(manuscript, style, str(output))

@@ -4,11 +4,11 @@
 import json
 import logging
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from app.config.settings import settings
-from app.services.llm_service import generate_with_fallback
 from app.services.llm_fallback_service import LLMUnavailableError
+from app.services.llm_service import generate_with_fallback
 
 logger = logging.getLogger(__name__)
 
@@ -76,22 +76,22 @@ class LLMClassifier:
     def classify_block(
         self,
         text: str,
-        user_id: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        user_id: str | None = None,
+    ) -> dict[str, Any]:
         if not text or not text.strip():
             return {"type": "BODY", "confidence": 0.5}
         return self._classify_text(text, user_id=user_id)
 
     def classify_batch(
         self,
-        texts: List[str],
-        user_id: Optional[str] = None,
-    ) -> List[Dict[str, Any]]:
+        texts: list[str],
+        user_id: str | None = None,
+    ) -> list[dict[str, Any]]:
         if not texts:
             return []
         return self._classify_texts_batch(texts, user_id=user_id)
 
-    def _classify_text(self, text: str, user_id: Optional[str] = None) -> Dict[str, Any]:
+    def _classify_text(self, text: str, user_id: str | None = None) -> dict[str, Any]:
         llm_enabled = getattr(settings, "LLM_CLASSIFICATION_ENABLED", True)
         if not llm_enabled:
             return self._heuristic_classify(text)
@@ -117,7 +117,7 @@ class LLMClassifier:
             return self._heuristic_classify(text)
         return {"type": "BODY", "confidence": 0.5}
 
-    def _classify_texts_batch(self, texts: List[str], user_id: Optional[str] = None) -> List[Dict[str, Any]]:
+    def _classify_texts_batch(self, texts: list[str], user_id: str | None = None) -> list[dict[str, Any]]:
         llm_enabled = getattr(settings, "LLM_CLASSIFICATION_ENABLED", True)
         if not llm_enabled:
             return [self._heuristic_classify(t) for t in texts]
@@ -144,7 +144,7 @@ class LLMClassifier:
             return [self._heuristic_classify(t) for t in texts]
         return [{"type": "BODY", "confidence": 0.5} for _ in texts]
 
-    def _parse_response(self, raw: str) -> Optional[Dict[str, Any]]:
+    def _parse_response(self, raw: str) -> dict[str, Any] | None:
         match = re.search(r"\{[^}]+\}", raw)
         if match:
             try:
@@ -155,13 +155,13 @@ class LLMClassifier:
                     label = "BODY"
                 return {"type": label, "confidence": max(0.0, min(1.0, confidence))}
             except (json.JSONDecodeError, ValueError, TypeError):
-                pass
+                pass  # intentionally ignored
         for label in CLASSIFICATION_LABELS:
             if label in raw.upper():
                 return {"type": label, "confidence": 0.7}
         return None
 
-    def _parse_batch_response(self, raw: str) -> List[Dict[str, Any]]:
+    def _parse_batch_response(self, raw: str) -> list[dict[str, Any]]:
         match = re.search(r"\[.*\]", raw, re.DOTALL)
         if match:
             try:
@@ -175,10 +175,10 @@ class LLMClassifier:
                     results.append({"type": label, "confidence": max(0.0, min(1.0, confidence))})
                 return results
             except (json.JSONDecodeError, ValueError, TypeError):
-                pass
+                pass  # intentionally ignored
         return []
 
-    def _heuristic_classify(self, text: str) -> Dict[str, Any]:
+    def _heuristic_classify(self, text: str) -> dict[str, Any]:
         prediction = {"type": "BODY", "confidence": 0.5}
         text = (text or "").strip()
         upper_text = text.upper()
@@ -196,9 +196,7 @@ class LLMClassifier:
                 prediction = {"type": "METHODOLOGY", "confidence": 0.8}
             elif upper_text.startswith("CONCLUSION") or upper_text.startswith("CONCLUSIONS"):
                 prediction = {"type": "CONCLUSION", "confidence": 0.8}
-            elif upper_text.startswith("INTRODUCTION"):
-                prediction = {"type": "HEADING", "confidence": 0.8}
-            elif upper_text.startswith("RESULTS") or upper_text.startswith("DISCUSSION"):
+            elif upper_text.startswith("INTRODUCTION") or upper_text.startswith("RESULTS") or upper_text.startswith("DISCUSSION"):
                 prediction = {"type": "HEADING", "confidence": 0.8}
             elif text.startswith("Figure") or text.startswith("Fig."):
                 prediction = {"type": "FIGURE_CAPTION", "confidence": 0.7}
@@ -209,7 +207,7 @@ class LLMClassifier:
         return prediction
 
     @staticmethod
-    def labels() -> List[str]:
+    def labels() -> list[str]:
         return list(CLASSIFICATION_LABELS)
 
 

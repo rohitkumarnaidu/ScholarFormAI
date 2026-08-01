@@ -6,8 +6,10 @@ Feature Flag Middleware — Injects feature flags into request state.
 """
 
 import logging
+
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
+
 from app.services.feature_flags import get_feature_flag_service
 
 logger = logging.getLogger(__name__)
@@ -30,7 +32,7 @@ class FeatureFlagMiddleware(BaseHTTPMiddleware):
                 # User is authenticated — could extract user_id from JWT
                 pass
         except Exception:
-            pass
+            pass  # intentionally ignored
 
         # Resolve all feature flags
         service = get_feature_flag_service()

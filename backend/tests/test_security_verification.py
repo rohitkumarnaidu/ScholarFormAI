@@ -3,16 +3,16 @@
 
 import time
 from pathlib import Path
-from unittest.mock import patch
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
 import jwt
 import pytest
 from fastapi.testclient import TestClient
 
+from app.config.settings import settings
+
 # Import app - adjust import based on your actual structure
 from app.main import app
-from app.config.settings import settings
 
 client = TestClient(app)
 

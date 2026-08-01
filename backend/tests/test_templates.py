@@ -257,16 +257,17 @@ class TestHelpers:
     def test_require_db_unavailable(self):
         from app.routers.v1.templates import _require_db
         with patch("app.routers.v1.templates.get_supabase_client", return_value=None):
-            from fastapi import HTTPException
             import pytest
+            from fastapi import HTTPException
             with pytest.raises(HTTPException) as exc:
                 _require_db()
             assert exc.value.status_code == 503
 
     def test_require_user_none(self):
-        from app.routers.v1.templates import _require_user
-        from fastapi import HTTPException
         import pytest
+        from fastapi import HTTPException
+
+        from app.routers.v1.templates import _require_user
         with pytest.raises(HTTPException) as exc:
             _require_user(None)
         assert exc.value.status_code == 401
@@ -278,26 +279,29 @@ class TestHelpers:
         assert result == user
 
     def test_extract_payload_non_dict(self):
-        from app.routers.v1.templates import _extract_template_payload
-        from fastapi import HTTPException
         import pytest
+        from fastapi import HTTPException
+
+        from app.routers.v1.templates import _extract_template_payload
         with pytest.raises(HTTPException) as exc:
             _extract_template_payload("not a dict")
         assert exc.value.status_code == 422
 
     def test_extract_payload_no_name(self):
-        from app.routers.v1.templates import _extract_template_payload
-        from fastapi import HTTPException
         import pytest
+        from fastapi import HTTPException
+
+        from app.routers.v1.templates import _extract_template_payload
         with pytest.raises(HTTPException) as exc:
             _extract_template_payload({"config": {}})
         assert exc.value.status_code == 422
         assert "name" in exc.value.detail.lower()
 
     def test_extract_payload_config_as_list(self):
-        from app.routers.v1.templates import _extract_template_payload
-        from fastapi import HTTPException
         import pytest
+        from fastapi import HTTPException
+
+        from app.routers.v1.templates import _extract_template_payload
         with pytest.raises(HTTPException) as exc:
             _extract_template_payload({"name": "Test", "config": ["not", "object"]})
         assert exc.value.status_code == 422
@@ -331,7 +335,8 @@ class TestHelpers:
 
     def test_list_builtin_handles_missing_dir(self):
         with patch("app.routers.v1.templates.Path.exists", return_value=False):
-            from app.routers.v1.templates import _list_builtin_templates
             import asyncio
+
+            from app.routers.v1.templates import _list_builtin_templates
             result = asyncio.run(_list_builtin_templates())
             assert result == {"templates": []}

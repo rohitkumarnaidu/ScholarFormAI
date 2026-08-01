@@ -24,7 +24,7 @@ import uuid
 from pathlib import Path
 from urllib.parse import urlparse
 
-from locust import HttpUser, User, task, between, events
+from locust import HttpUser, User, between, events, task
 
 try:
     from websocket import create_connection

@@ -558,7 +558,7 @@ class TestAgentPipelineRunWebResearch:
 
     @pytest.mark.asyncio
     async def test_web_research_import_fail(self, agent):
-        with patch("app.pipeline.generation.agent.logger") as mock_log:
+        with patch("app.pipeline.generation.agent.logger"):
             result = await agent._run_web_research({"title": "AI"})
         assert result == []
 
@@ -656,7 +656,7 @@ class TestAgentPipelineBoostQuality:
         full_agent._is_canceled = mock_cancel
         full_agent.citations.assemble = AsyncMock(return_value=({"Intro": "text"}, ""))
         full_agent.quality_scorer.score.return_value = {"overall_score": 40.0}
-        result = await full_agent._boost_quality(
+        await full_agent._boost_quality(
             session_id="s1", task_spec={}, template_rules=[], outline={},
             sections_map={"Intro": "short"}, references=[], config={}, user_id=None,
         )
@@ -667,7 +667,7 @@ class TestAgentPipelineBoostQuality:
         full_agent._select_low_sections = MagicMock(return_value=["Intro"])
         full_agent.session_service.update_session = AsyncMock()
         full_agent._is_canceled = AsyncMock(return_value=True)
-        result = await full_agent._boost_quality(
+        await full_agent._boost_quality(
             session_id="s1", task_spec={}, template_rules=[], outline={},
             sections_map={"Intro": "short"}, references=[], config={}, user_id=None,
         )
@@ -990,7 +990,7 @@ class TestDocumentGeneratorFormatAndExportEdgeCases:
             MockFmt.return_value = fmt
             exp = MagicMock()
             MockExp.return_value = exp
-            docx_path = tmp_path / f"job-empty.docx"
+            docx_path = tmp_path / "job-empty.docx"
             docx_path.write_text("content")
             result = await dg._format_and_export(
                 raw_blocks=[], template="ieee", job_id="job-empty",

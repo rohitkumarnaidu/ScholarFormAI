@@ -7,7 +7,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 # ==============================================================================
 # _FallbackPromptTemplate
 # ==============================================================================
@@ -71,11 +70,11 @@ class TestRunDirectFallback:
         return agent
 
     def test_fallback_execution(self):
-        from app.pipeline.agents.tools.metadata_tool import MetadataExtractionTool
-        from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
-        from app.pipeline.agents.tools.validation_tool import ValidationTool
-        from app.pipeline.agents.tools.reference_tool import ReferenceExtractionTool
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
+        from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
+        from app.pipeline.agents.tools.metadata_tool import MetadataExtractionTool
+        from app.pipeline.agents.tools.reference_tool import ReferenceExtractionTool
+        from app.pipeline.agents.tools.validation_tool import ValidationTool
         classes = [MetadataExtractionTool, LayoutAnalysisTool, ReferenceExtractionTool, FigureAnalysisTool, ValidationTool]
         tools = []
         for cls in classes:
@@ -252,7 +251,8 @@ class TestGetRecommendedModels:
     def test_openai(self):
         from app.pipeline.agents.llm_factory import CustomLLMFactory
         models = CustomLLMFactory.get_recommended_models("openai")
-        assert "gpt-4" in models and "gpt-4-turbo" in models
+        assert "gpt-4" in models
+        assert "gpt-4-turbo" in models
 
     def test_unknown_provider(self):
         from app.pipeline.agents.llm_factory import CustomLLMFactory
@@ -267,7 +267,7 @@ class TestGetApiKey:
             assert _get_api_key("openai") == "sk-key"
 
     def test_unknown_provider(self):
-        with patch("app.pipeline.agents.llm_factory.settings") as mock_settings:
+        with patch("app.pipeline.agents.llm_factory.settings"):
             from app.pipeline.agents.llm_factory import _get_api_key
             assert _get_api_key("unknown") is None
 

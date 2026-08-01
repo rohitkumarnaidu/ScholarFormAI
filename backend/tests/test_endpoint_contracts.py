@@ -1,9 +1,11 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import MagicMock, patch, AsyncMock
+
 
 @pytest.fixture(autouse=True)
 def mock_ai_models():
@@ -26,8 +28,8 @@ def client():
     """Setup TestClient with dependency overrides and mocked service."""
     # Delay imports to avoid collection-time issues
     from app.main import app
-    from app.utils.dependencies import get_current_user, get_optional_user
     from app.services.document_service import DocumentService
+    from app.utils.dependencies import get_current_user, get_optional_user
     
     # We patch the class itself because router uses static methods
     mock_service = MagicMock(spec=DocumentService)
@@ -48,11 +50,10 @@ def client():
     # Use patch(..., mock_service) so DocumentService IS the mock object
     with patch("app.routers.v1.documents_impl.DocumentService", mock_service), \
          patch("app.routers.v1.documents_impl._require_db", return_value=None), \
-         patch("app.middleware.rate_limit.redis", mock_redis):
-        with TestClient(app) as c:
-            c.mock_service = mock_service
-            c.mock_user = mock_user
-            yield c
+         patch("app.middleware.rate_limit.redis", mock_redis), TestClient(app) as c:
+        c.mock_service = mock_service
+        c.mock_user = mock_user
+        yield c
             
     app.dependency_overrides = {}
 

@@ -9,14 +9,16 @@ Embedding model priority:
   2. BAAI/bge-small-en-v1.5  (384d fallback if BGE-M3 fails to load)
 """
 
-import os
+import hashlib
 import json
 import logging
-import hashlib
+import os
 import time
+from typing import Any
+
 import numpy as np
 import requests
-from typing import List, Dict, Any, Optional
+
 from app.utils.singleton import get_or_create
 
 logger = logging.getLogger(__name__)
@@ -89,7 +91,7 @@ class _DeterministicEmbeddingModel:
         digest = hashlib.blake2b(token.encode("utf-8"), digest_size=8).digest()
         return int.from_bytes(digest, byteorder="big") % self.dimension
 
-    def _encode_one(self, text: Any) -> List[float]:
+    def _encode_one(self, text: Any) -> list[float]:
         vec = np.zeros(self.dimension, dtype=float)
         normalized = str(text or "").lower()
         tokens = [t for t in normalized.split() if t]
@@ -155,7 +157,7 @@ class _HuggingFaceAPIEmbeddingModel:
     def get_sentence_embedding_dimension(self) -> int:
         return self.dimension
 
-    def encode(self, texts: Any) -> List[Any]:
+    def encode(self, texts: Any) -> list[Any]:
         if not self.token:
             logger.error("RagEngine: HF_TOKEN is missing. Cannot use HuggingFace API.")
             return []
@@ -166,7 +168,7 @@ class _HuggingFaceAPIEmbeddingModel:
         is_single = isinstance(texts, str)
         payload = {"inputs": [texts] if is_single else texts}
 
-        last_error: Optional[str] = None
+        last_error: str | None = None
         request_url = self.api_url
         for attempt in range(1, self.max_retries + 1):
             try:
@@ -235,7 +237,7 @@ class RagEngine:
       3. Fall back to BAAI/bge-small-en-v1.5  (lighter, 384d)
     """
 
-    def __init__(self, persist_directory: Optional[str] = None, auto_seed: Optional[bool] = None):
+    def __init__(self, persist_directory: str | None = None, auto_seed: bool | None = None):
         if persist_directory is None:
             base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
             self.persist_directory = os.path.join(base_dir, "db", "semantic_store")
@@ -261,7 +263,7 @@ class RagEngine:
 
         # Native fallback state
         self.kb_file = os.path.join(self.persist_directory, "kb.json")
-        self.knowledge_base: List[Dict[str, Any]] = []
+        self.knowledge_base: list[dict[str, Any]] = []
 
         # Attempt ChromaDB initialization
         self.chroma_enabled = False
@@ -333,7 +335,7 @@ class RagEngine:
                 return
 
             logger.info("RagEngine: Knowledge base is empty. Seeding from default_guidelines.json...")
-            with open(default_file, "r") as f:
+            with open(default_file) as f:
                 payload = json.load(f)
 
             if isinstance(payload, dict):
@@ -362,7 +364,7 @@ class RagEngine:
     #  Model loading
     # ------------------------------------------------------------------ #
     @staticmethod
-    def _coerce_embedding_vector(raw_embedding: Any) -> List[float]:
+    def _coerce_embedding_vector(raw_embedding: Any) -> list[float]:
         """
         Convert an embedding object to a JSON-safe numeric list.
         Returns [] when conversion is not possible.
@@ -389,7 +391,7 @@ class RagEngine:
             logger.warning("RagEngine: Failed to coerce embedding vector: %s", e)
             return []
 
-    def _is_reusable_embedding_model(self, candidate: Any) -> tuple[bool, Optional[int]]:
+    def _is_reusable_embedding_model(self, candidate: Any) -> tuple[bool, int | None]:
         """
         Validate a model loaded from ModelStore before reusing it.
         """
@@ -532,7 +534,7 @@ class RagEngine:
     # ------------------------------------------------------------------ #
     #  Public API
     # ------------------------------------------------------------------ #
-    def add_guideline(self, publisher: str, section: str, text: str, metadata: Optional[Dict] = None):
+    def add_guideline(self, publisher: str, section: str, text: str, metadata: dict | None = None):
         """Add a guideline rule to the store."""
         full_metadata = metadata or {}
         full_metadata.update({"publisher": publisher.upper(), "section": section.lower()})
@@ -549,7 +551,7 @@ class RagEngine:
         self.knowledge_base.append({"text": text, "metadata": full_metadata, "embedding": embedding})
         self._save_native()
 
-    def query_guidelines(self, publisher: str, intent: str, top_k: int = 3) -> List[str]:
+    def query_guidelines(self, publisher: str, intent: str, top_k: int = 3) -> list[str]:
         """Retrieve the most relevant guideline text."""
         if self.chroma_enabled:
             try:
@@ -593,7 +595,7 @@ class RagEngine:
             logger.warning("RagEngine: Native query failed (%s). Returning empty list.", e)
             return []
 
-    def query_rules(self, template_name: str, section_name: str, top_k: int = 2) -> List[Dict[str, Any]]:
+    def query_rules(self, template_name: str, section_name: str, top_k: int = 2) -> list[dict[str, Any]]:
         """
         [PHASE-2 INTERFACE ADAPTER]
         Required by PipelineOrchestrator.
@@ -619,7 +621,7 @@ class RagEngine:
 
     def _load_native(self):
         if os.path.exists(self.kb_file):
-            with open(self.kb_file, "r") as f:
+            with open(self.kb_file) as f:
                 self.knowledge_base = json.load(f)
 
     def reset(self):

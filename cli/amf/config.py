@@ -1,8 +1,7 @@
 import json
 import os
 from pathlib import Path
-from typing import Any, Dict, Optional
-
+from typing import Any
 
 DEFAULT_CONFIG = {
     "style": "apa",
@@ -20,9 +19,9 @@ DEFAULT_CONFIG = {
 
 
 class AMFConfig:
-    def __init__(self, config_path: Optional[Path] = None):
+    def __init__(self, config_path: Path | None = None):
         self.config_path = config_path or self._default_config_path()
-        self._config: Dict[str, Any] = {}
+        self._config: dict[str, Any] = {}
         self.load()
 
     @staticmethod
@@ -41,7 +40,7 @@ class AMFConfig:
                     user_config = json.load(f)
                     self._config.update(user_config)
             except (json.JSONDecodeError, OSError):
-                pass
+                pass  # intentionally ignored
 
     def save(self):
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
@@ -54,7 +53,7 @@ class AMFConfig:
     def set(self, key: str, value: Any):
         self._config[key] = value
 
-    def get_all(self) -> Dict[str, Any]:
+    def get_all(self) -> dict[str, Any]:
         return self._config.copy()
 
     def __repr__(self):

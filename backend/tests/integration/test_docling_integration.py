@@ -7,12 +7,13 @@ Docling Integration Tests
 Tests the integration of Docling layout analysis with the pipeline.
 """
 
-import pytest
 from unittest.mock import MagicMock, patch
 
+import pytest
+
+from app.models import DocumentMetadata, PipelineDocument
 from app.pipeline.services.docling_client import DoclingClient
 from app.pipeline.structure_detection.detector import StructureDetector
-from app.models import PipelineDocument, DocumentMetadata
 
 
 @pytest.mark.integration
@@ -54,7 +55,7 @@ class TestDoclingIntegration:
         assert len(mock_layout["blocks"]) == 2
         assert mock_layout["blocks"][0]["font_size"] == 24
         
-        print(f"\n✅ Docling layout analysis structure verified")
+        print("\n✅ Docling layout analysis structure verified")
     
     def test_structure_detector_with_docling(self, structure_detector):
         """Test structure detector uses Docling data."""
@@ -74,7 +75,7 @@ class TestDoclingIntegration:
         assert "docling_data" in doc.metadata.ai_hints
         assert doc.metadata.ai_hints["docling_data"]["title_font_size"] == 24
         
-        print(f"\n✅ Structure detector can access Docling data")
+        print("\n✅ Structure detector can access Docling data")
     
     def test_docling_fallback_behavior(self):
         """Test pipeline continues when Docling unavailable."""
@@ -85,7 +86,7 @@ class TestDoclingIntegration:
             mock_docling.return_value = mock_instance
             
             # Pipeline should continue with fallback
-            print(f"\n✅ Docling fallback behavior verified")
+            print("\n✅ Docling fallback behavior verified")
     
     def test_font_size_detection(self, docling_client):
         """Test font size detection for heading levels."""
@@ -102,7 +103,7 @@ class TestDoclingIntegration:
         assert font_sizes["heading1"] > font_sizes["heading2"]
         assert font_sizes["heading2"] > font_sizes["body"]
         
-        print(f"\n✅ Font size hierarchy verified")
+        print("\n✅ Font size hierarchy verified")
 
 
 if __name__ == "__main__":

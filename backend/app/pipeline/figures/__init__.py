@@ -3,8 +3,8 @@
 
 """Figures pipeline - Caption linking, analysis, and rendering."""
 
-from .caption_matcher import CaptionMatcher, link_figures
 from .analyzer import FigureAnalyzer, figure_analyzer
+from .caption_matcher import CaptionMatcher, link_figures
 from .renderer import FigureRenderer
 
 __all__ = ["CaptionMatcher", "link_figures", "FigureAnalyzer", "figure_analyzer", "FigureRenderer"]

@@ -11,8 +11,6 @@ unavailable or CSL file loading fails.
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional
-
 
 class VancouverFormatter:
     """
@@ -30,7 +28,7 @@ class VancouverFormatter:
     def __init__(self):
         self._ref_counter = 0
 
-    def format_intext_citation(self, ref_numbers: List[int]) -> str:
+    def format_intext_citation(self, ref_numbers: list[int]) -> str:
         """
         Format in-text citation using Vancouver (numeric) style.
 
@@ -49,7 +47,7 @@ class VancouverFormatter:
             return f"[{sorted_nums[0]}]"
 
         # Detect consecutive ranges
-        ranges: List[str] = []
+        ranges: list[str] = []
         start = sorted_nums[0]
         end = sorted_nums[0]
 
@@ -73,19 +71,19 @@ class VancouverFormatter:
 
     def format_reference_entry(
         self,
-        authors: List[str],
-        title: Optional[str] = None,
-        journal: Optional[str] = None,
-        year: Optional[int] = None,
-        volume: Optional[str] = None,
-        issue: Optional[str] = None,
-        pages: Optional[str] = None,
-        publisher: Optional[str] = None,
-        doi: Optional[str] = None,
-        url: Optional[str] = None,
-        book_title: Optional[str] = None,
-        edition: Optional[str] = None,
-        conference: Optional[str] = None,
+        authors: list[str],
+        title: str | None = None,
+        journal: str | None = None,
+        year: int | None = None,
+        volume: str | None = None,
+        issue: str | None = None,
+        pages: str | None = None,
+        publisher: str | None = None,
+        doi: str | None = None,
+        url: str | None = None,
+        book_title: str | None = None,
+        edition: str | None = None,
+        conference: str | None = None,
         reference_type: str = "journal_article",
     ) -> str:
         """
@@ -209,7 +207,7 @@ class VancouverFormatter:
                 entry = f"{entry}."
             return entry
 
-    def _format_authors(self, authors: List[str]) -> str:
+    def _format_authors(self, authors: list[str]) -> str:
         """
         Format authors per Vancouver style.
 
@@ -220,14 +218,11 @@ class VancouverFormatter:
         if not authors:
             return "Unknown"
 
-        if len(authors) <= 6:
-            author_list = ", ".join(authors)
-        else:
-            author_list = f"{', '.join(authors[:6])}, et al."
+        author_list = ", ".join(authors) if len(authors) <= 6 else f"{', '.join(authors[:6])}, et al."
 
         return author_list
 
-    def _format_doi(self, doi: Optional[str]) -> str:
+    def _format_doi(self, doi: str | None) -> str:
         """Format DOI for Vancouver style."""
         if not doi:
             return ""
@@ -239,7 +234,7 @@ class VancouverFormatter:
             return f"doi: {doi_value}."
         return f"doi: {doi_value}."
 
-    def sort_references(self, refs: List[Dict]) -> List[Dict]:
+    def sort_references(self, refs: list[dict]) -> list[dict]:
         """
         Vancouver style: references numbered in order of appearance.
         This method ensures the list maintains citation order.

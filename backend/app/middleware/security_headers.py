@@ -96,5 +96,5 @@ class MaxBodySizeMiddleware:
                         await response(scope, receive, send)
                         return
                 except (ValueError, TypeError):
-                    pass
+                    pass  # intentionally ignored
         await self.app(scope, receive, send)

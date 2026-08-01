@@ -4,13 +4,15 @@
 """
 Tests for the LangChain document agent.
 """
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
+
+from app.models import DocumentMetadata, PipelineDocument
 from app.pipeline.agents.document_agent import DocumentAgent
-from app.pipeline.agents.tools.metadata_tool import MetadataExtractionTool
 from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
+from app.pipeline.agents.tools.metadata_tool import MetadataExtractionTool
 from app.pipeline.agents.tools.validation_tool import ValidationTool
-from app.models import PipelineDocument, DocumentMetadata
 
 
 class TestMetadataExtractionTool:
@@ -143,7 +145,7 @@ class TestDocumentAgent:
     @patch('app.pipeline.agents.document_agent.AgentExecutor')
     def test_agent_initialization(self, mock_executor_class, mock_create_agent, mock_llm_class, mock_env):
         """Test agent initialization."""
-        agent = DocumentAgent()
+        DocumentAgent()
         
         # Verify LLM was created
         mock_llm_class.assert_called_once()

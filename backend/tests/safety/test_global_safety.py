@@ -2,13 +2,14 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-import pytest
-from unittest.mock import MagicMock, patch
-import logging
-from app.pipeline.safety import safe_function, safe_execution
-import sys
 import asyncio
-from unittest.mock import MagicMock
+import logging
+import sys
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+from app.pipeline.safety import safe_execution, safe_function
 
 # Mock langchain to avoid installation requirement for safety tests
 sys.modules["langchain"] = MagicMock()
@@ -24,13 +25,13 @@ sys.modules["langchain.callbacks.base"] = MagicMock()
 sys.modules["langchain.schema"] = MagicMock()
 sys.modules["langchain.callbacks.base"] = MagicMock()
 
-from app.pipeline.intelligence.semantic_parser import SemanticParser
-from app.pipeline.intelligence.rag_engine import RagEngine
-from app.pipeline.agents.document_agent import DocumentAgent
-from app.pipeline.services.docling_client import DoclingClient
 from app.pipeline.agents.deep_learning import TransformerPatternDetector
+from app.pipeline.agents.document_agent import DocumentAgent
 from app.pipeline.agents.ml_patterns import MLPatternDetector
+from app.pipeline.intelligence.rag_engine import RagEngine
+from app.pipeline.intelligence.semantic_parser import SemanticParser
 from app.pipeline.parsing.parser_factory import ParserFactory
+from app.pipeline.services.docling_client import DoclingClient
 
 # Configure logging to capture output
 logging.basicConfig(level=logging.INFO)
@@ -149,8 +150,9 @@ class TestPhase3Safety:
 
     def test_safe_async_function(self):
         """Verify safe_async_function decorator works."""
-        from app.pipeline.safety.safe_execution import safe_async_function
         import asyncio
+
+        from app.pipeline.safety.safe_execution import safe_async_function
         
         @safe_async_function(fallback_value="ASYNC_SAFE", error_message="Async Fail")
         async def risky_async():
@@ -161,8 +163,8 @@ class TestPhase3Safety:
 
     def test_formatter_safety(self):
         """Verify Formatter.process and format don't crash."""
-        from app.pipeline.formatting.formatter import Formatter
         from app.models import PipelineDocument
+        from app.pipeline.formatting.formatter import Formatter
         
         # Mock dependencies to avoid filesystem/template issues during test
         with patch('app.pipeline.formatting.formatter.ContractLoader'), \
@@ -187,8 +189,8 @@ class TestPhase3Safety:
 
     def test_validator_safety(self):
         """Verify Validator.validate doesn't crash."""
-        from app.pipeline.validation import DocumentValidator, ValidationResult
         from app.models import PipelineDocument
+        from app.pipeline.validation import DocumentValidator, ValidationResult
         
         with patch('app.pipeline.validation.validator_v3.ContractLoader'), \
              patch('app.pipeline.validation.validator_v3.SectionOrderValidator'), \
@@ -210,8 +212,8 @@ class TestPhase3Safety:
 
     def test_structure_detector_safety(self):
         """Verify StructureDetector.process doesn't crash."""
-        from app.pipeline.structure_detection.detector import StructureDetector
         from app.models import PipelineDocument
+        from app.pipeline.structure_detection.detector import StructureDetector
         
         with patch('app.pipeline.structure_detection.detector.ContractLoader'), \
              patch('app.pipeline.structure_detection.detector.datetime'):

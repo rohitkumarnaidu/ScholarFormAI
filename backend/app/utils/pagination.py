@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import base64
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 from fastapi import HTTPException
 
@@ -61,7 +61,7 @@ def build_cursor_query(query, params, cursor_column: str = "created_at"):
 
 
 def build_cursor_response(
-    items: List[Dict[str, Any]],
+    items: list[dict[str, Any]],
     params,
     cursor_column: str = "created_at",
 ):

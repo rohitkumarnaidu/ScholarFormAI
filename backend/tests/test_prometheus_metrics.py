@@ -1,6 +1,8 @@
 from __future__ import annotations
+
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock, AsyncMock
 
 TEST_PROVIDER = "nvidia"
 TEST_MODEL = "llama-70b"

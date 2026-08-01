@@ -7,14 +7,17 @@ Targets uncovered branches, edge cases, and error handlers.
 """
 
 from __future__ import annotations
-import os
-import json
-import time
+
 import asyncio
+import json
+import os
 import tempfile
 import threading
-from unittest.mock import patch, MagicMock
+import time
+from unittest.mock import MagicMock, patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -46,7 +49,7 @@ def _make_sb():
 
 
 def _make_doc(job_id="job1"):
-    from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+    from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
     doc = PipelineDocument(
         document_id=job_id,
         blocks=[Block(block_id="b1", index=1, block_type=BlockType.BODY, text="body text")],
@@ -62,12 +65,12 @@ def _make_doc(job_id="job1"):
 
 class TestGetFigureAnalyzer:
     def test_figure_analyzer_lazy_init(self):
-        from app.pipeline.orchestrator import _get_figure_analyzer, _figure_analyzer_instance
+        from app.pipeline.orchestrator import _figure_analyzer_instance, _get_figure_analyzer
         old = _figure_analyzer_instance
         try:
             import app.pipeline.orchestrator as mod
             mod._figure_analyzer_instance = None
-            with patch("app.pipeline.figures.analyzer.figure_analyzer", "mock_analyzer") as patched_mod:
+            with patch("app.pipeline.figures.analyzer.figure_analyzer", "mock_analyzer"):
                 result = _get_figure_analyzer()
                 assert result == "mock_analyzer"
         finally:
@@ -75,7 +78,7 @@ class TestGetFigureAnalyzer:
             mod._figure_analyzer_instance = old
 
     def test_figure_analyzer_returns_cached(self):
-        from app.pipeline.orchestrator import _get_figure_analyzer, _figure_analyzer_instance
+        from app.pipeline.orchestrator import _figure_analyzer_instance, _get_figure_analyzer
         old = _figure_analyzer_instance
         try:
             import app.pipeline.orchestrator as mod
@@ -507,7 +510,7 @@ class TestExtractPyMuPDF:
 
 class TestSyncBlockConfidence:
     def test_classification_confidence_in_metadata(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": 0.85})
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         doc.metadata.ai_hints = {}
@@ -515,7 +518,7 @@ class TestSyncBlockConfidence:
         assert block.metadata["nlp_confidence"] == 0.85
 
     def test_no_classification_confidence_fallback(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block
+        from app.models import Block, DocumentMetadata, PipelineDocument
         block = MagicMock(spec=Block)
         block.block_id = "b1"
         block.metadata = {}
@@ -527,7 +530,7 @@ class TestSyncBlockConfidence:
         assert block.metadata.get("nlp_confidence") == 0.75
 
     def test_nlp_confidence_metadata_fallback(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"nlp_confidence": 0.65})
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         doc.metadata.ai_hints = {}
@@ -535,14 +538,14 @@ class TestSyncBlockConfidence:
         assert block.metadata["nlp_confidence"] == 0.65
 
     def test_type_error_skipped(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": "not-a-number"})
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         orch._sync_block_confidence(doc)
         assert "nlp_confidence" not in block.metadata or block.metadata.get("nlp_confidence") == 0.0
 
     def test_negative_clamped(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": -0.5})
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         doc.metadata.ai_hints = {}
@@ -550,7 +553,7 @@ class TestSyncBlockConfidence:
         assert block.metadata["nlp_confidence"] == 0.0
 
     def test_above_one_clamped(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": 1.5})
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         doc.metadata.ai_hints = {}
@@ -558,7 +561,7 @@ class TestSyncBlockConfidence:
         assert block.metadata["nlp_confidence"] == 1.0
 
     def test_semantic_intent_set(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block
+        from app.models import Block, DocumentMetadata, PipelineDocument
         block = MagicMock(spec=Block)
         block.block_id = "b1"
         block.metadata = {"classification_confidence": 0.9}
@@ -576,7 +579,7 @@ class TestSyncBlockConfidence:
 
 class TestBuildQualitySummary:
     def test_heading_candidates_count(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         block = Block(block_id="b1", index=0, block_type=BlockType.HEADING_1, text="Intro", metadata={"is_heading_candidate": True, "classification_confidence": 0.9})
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         doc.template = None
@@ -585,7 +588,7 @@ class TestBuildQualitySummary:
         assert summary["heading_candidates"] == 1
 
     def test_no_heading_candidates(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="body", metadata={"classification_confidence": 0.9})
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         doc.template = None
@@ -594,7 +597,7 @@ class TestBuildQualitySummary:
         assert summary["heading_candidates"] == 0
 
     def test_no_figures_or_tables_lowers_asset_score(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         doc = PipelineDocument(document_id="d1", blocks=[], metadata=DocumentMetadata())
         doc.template = None
         doc.figures = []
@@ -605,7 +608,7 @@ class TestBuildQualitySummary:
         assert summary["tables"] == 0
 
     def test_metadata_not_dict(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block
+        from app.models import Block, DocumentMetadata, PipelineDocument
         block = MagicMock(spec=Block)
         block.metadata = None
         block.classification_confidence = 0.85
@@ -616,7 +619,7 @@ class TestBuildQualitySummary:
         assert summary["block_count"] == 1
 
     def test_value_error_on_float_conversion(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": "bad"})
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         doc.template = None
@@ -625,7 +628,7 @@ class TestBuildQualitySummary:
         assert summary["block_count"] == 1
 
     def test_low_conf_blocks_counted(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         blocks = [
             Block(block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": 0.3}),
             Block(block_id="b2", index=1, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": 0.9}),
@@ -637,7 +640,7 @@ class TestBuildQualitySummary:
         assert summary["low_conf_blocks"] == 1
 
     def test_errors_and_warnings_penalty(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         doc = PipelineDocument(document_id="d1", blocks=[], metadata=DocumentMetadata())
         doc.template = None
         with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 80.0}):
@@ -646,11 +649,11 @@ class TestBuildQualitySummary:
         assert summary["warnings"] == 1
 
     def test_template_name_from_doc(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, TemplateInfo
+        from app.models import DocumentMetadata, PipelineDocument, TemplateInfo
         doc = PipelineDocument(document_id="d1", blocks=[], metadata=DocumentMetadata())
         doc.template = TemplateInfo(template_name="ACM")
         with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 90.0}):
-            summary = orch._build_quality_summary(doc, {"errors": [], "warnings": []})
+            orch._build_quality_summary(doc, {"errors": [], "warnings": []})
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -698,7 +701,7 @@ class TestRunExtractionStage:
 
 class TestRunSemanticParsing:
     def test_successful_semantic_parsing(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="d1",
             blocks=[Block(block_id="b1", index=0, block_type=BlockType.BODY, text="test")],
@@ -753,7 +756,7 @@ class TestRunValidation:
 
 class TestFigureAnalysisAdditional:
     def test_downsample_returns_same_path(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Figure
+        from app.models import DocumentMetadata, Figure, PipelineDocument
         fig = Figure(figure_id="f1", index=1, export_path="/tmp/fig.png", caption_text="Fig")
         doc = PipelineDocument(document_id="d1", blocks=[], metadata=DocumentMetadata(), figures=[fig])
         doc.metadata.ai_hints = {}
@@ -767,7 +770,7 @@ class TestFigureAnalysisAdditional:
         assert any(a.get("downsampled") is not True for a in result.metadata.ai_hints.get("figure_analysis", []))
 
     def test_metadata_is_dict_without_ai_hints(self, orch):
-        from app.models import PipelineDocument, Figure
+        from app.models import Figure, PipelineDocument
         fig = Figure(figure_id="f1", index=1, export_path="/tmp/fig.png", caption_text="Fig")
         doc = PipelineDocument(
             document_id="figdoc", blocks=[], figures=[fig],
@@ -782,7 +785,7 @@ class TestFigureAnalysisAdditional:
         assert "figure_analysis" in result.metadata["ai_hints"]
 
     def test_metadata_has_ai_hints_attr(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Figure
+        from app.models import DocumentMetadata, Figure, PipelineDocument
         fig = Figure(figure_id="f1", index=1, export_path="/tmp/fig.png", caption_text="Fig")
         doc = PipelineDocument(document_id="figdoc", blocks=[], metadata=DocumentMetadata(), figures=[fig])
         doc.metadata.ai_hints = {"existing": "data"}
@@ -802,7 +805,7 @@ class TestFigureAnalysisAdditional:
         assert result is doc
 
     def test_figure_with_image_data_and_no_export_path(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Figure
+        from app.models import DocumentMetadata, Figure, PipelineDocument
         fig = Figure(figure_id="f2", index=1, export_path=None, image_data=b"imgdata", caption_text="Fig")
         doc = PipelineDocument(document_id="figdoc", blocks=[], metadata=DocumentMetadata(), figures=[fig])
         doc.metadata.ai_hints = {}
@@ -837,9 +840,8 @@ class TestExportDocument:
     def test_export_creates_dir_and_output(self, orch, tmp_path):
         doc = _make_doc()
         exporter = MagicMock()
-        with patch("app.pipeline.orchestrator.Exporter", return_value=exporter):
-            with patch("os.makedirs") as mock_mkdir:
-                result = orch._export_document(doc, str(tmp_path / "input.pdf"), "job1")
+        with patch("app.pipeline.orchestrator.Exporter", return_value=exporter), patch("os.makedirs"):
+            result = orch._export_document(doc, str(tmp_path / "input.pdf"), "job1")
         assert result is not None
         assert doc.output_path == result
 
@@ -851,7 +853,6 @@ class TestExportDocument:
 class TestRunPipeline:
     def test_semaphore_timeout(self, orch):
         import threading
-        old = threading.Semaphore.acquire
         def fake_acquire(timeout=None):
             return False
         with patch.object(threading.Semaphore, "acquire", side_effect=fake_acquire):
@@ -924,7 +925,7 @@ class TestRunEditFlow:
                     with patch("app.pipeline.orchestrator.safe_model_dump", return_value={"valid": True}):
                         with patch("app.pipeline.orchestrator.Formatter") as mock_fmt:
                             mock_fmt.return_value.process.return_value = MagicMock()
-                            with patch("app.pipeline.orchestrator.Exporter") as mock_exp:
+                            with patch("app.pipeline.orchestrator.Exporter"):
                                 result = orch.run_edit_flow("job1", {"sections": {"body": ["Text"]}}, "ieee")
         assert result["status"] == "success"
 
@@ -960,7 +961,7 @@ class TestRunEditFlow:
                     with patch("app.pipeline.orchestrator.safe_model_dump", return_value={"valid": True}):
                         with patch("app.pipeline.orchestrator.Formatter") as mock_fmt:
                             mock_fmt.return_value.process.return_value = MagicMock()
-                            with patch("app.pipeline.orchestrator.Exporter") as mock_exp:
+                            with patch("app.pipeline.orchestrator.Exporter"):
                                 result = orch.run_edit_flow("job1", {"sections": {"body": ["Text"]}}, "ieee")
         assert result["status"] == "success"
 
@@ -980,7 +981,7 @@ class TestRunEditFlow:
                     with patch("app.pipeline.orchestrator.safe_model_dump", return_value={"valid": True}):
                         with patch("app.pipeline.orchestrator.Formatter") as mock_fmt:
                             mock_fmt.return_value.process.return_value = MagicMock()
-                            with patch("app.pipeline.orchestrator.Exporter") as mock_exp:
+                            with patch("app.pipeline.orchestrator.Exporter"):
                                 result = orch.run_edit_flow("job1", {"sections": {"body": ["Text"]}}, "ieee")
         assert result["status"] == "success"
 
@@ -1008,7 +1009,7 @@ def _make_rag_engine(temp_dir=None, model_name=None):
 class TestLoadChromadb:
     def test_chromadb_already_loaded(self):
         from app.pipeline.intelligence.rag_engine import _load_chromadb
-        old_cdb = globals().get("chromadb")
+        globals().get("chromadb")
         try:
             import app.pipeline.intelligence.rag_engine as rag_mod
             rag_mod.chromadb = "already_loaded"
@@ -1043,7 +1044,7 @@ class TestLoadChromadb:
             fake_chromadb = types.ModuleType("chromadb")
             with patch.dict("sys.modules", {"chromadb": fake_chromadb}):
                 with patch.object(rag_mod, "chromadb", None):
-                    result = rag_mod._load_chromadb()
+                    rag_mod._load_chromadb()
         finally:
             rag_mod.chromadb = old_cdb
             rag_mod._CHROMADB_IMPORT_ATTEMPTED = old_attempted
@@ -1248,7 +1249,7 @@ class TestLoadEmbeddingModel:
         re = self._make_rag_no_load()
         with (
             patch("app.config.settings.settings") as mock_settings,
-            patch("app.services.model_store.model_store") as ms,
+            patch("app.services.model_store.model_store"),
         ):
             mock_settings.LOW_MEMORY_MODE = True
             mock_settings.RAG_USE_TRANSFORMERS = False
@@ -1267,7 +1268,7 @@ class TestLoadEmbeddingModel:
         re = self._make_rag_no_load()
         with (
             patch("app.config.settings.settings") as mock_settings,
-            patch("app.services.model_store.model_store") as ms,
+            patch("app.services.model_store.model_store"),
         ):
             mock_settings.LOW_MEMORY_MODE = True
             mock_settings.RAG_USE_TRANSFORMERS = False
@@ -1285,7 +1286,7 @@ class TestLoadEmbeddingModel:
         re = self._make_rag_no_load()
         with (
             patch("app.config.settings.settings") as mock_settings,
-            patch("app.services.model_store.model_store") as ms,
+            patch("app.services.model_store.model_store"),
         ):
             mock_settings.LOW_MEMORY_MODE = True
             mock_settings.RAG_USE_TRANSFORMERS = False
@@ -1297,7 +1298,7 @@ class TestLoadEmbeddingModel:
         re = self._make_rag_no_load()
         with (
             patch("app.config.settings.settings") as mock_settings,
-            patch("app.services.model_store.model_store") as ms,
+            patch("app.services.model_store.model_store"),
         ):
             mock_settings.LOW_MEMORY_MODE = False
             mock_settings.RAG_USE_TRANSFORMERS = True
@@ -1544,30 +1545,27 @@ class TestAddGuideline:
         re = _make_rag_engine()
         re.chroma_enabled = True
         re.collection = MagicMock()
-        with patch.object(re, "_seed_if_empty"):
-            with patch.object(re, "_save_native"):
-                re.embedding_model = None
-                re.add_guideline("IEEE", "intro", "Content")
-                assert len(re.knowledge_base) == 1
+        with patch.object(re, "_seed_if_empty"), patch.object(re, "_save_native"):
+            re.embedding_model = None
+            re.add_guideline("IEEE", "intro", "Content")
+            assert len(re.knowledge_base) == 1
 
     def test_not_chroma_enabled_with_embedding(self):
         re = _make_rag_engine()
         re.chroma_enabled = False
-        with patch.object(re, "_seed_if_empty"):
-            with patch.object(re, "_save_native"):
-                re.add_guideline("ACM", "references", "Cite properly")
-                assert len(re.knowledge_base) == 1
-                assert re.knowledge_base[0]["metadata"]["publisher"] == "ACM"
+        with patch.object(re, "_seed_if_empty"), patch.object(re, "_save_native"):
+            re.add_guideline("ACM", "references", "Cite properly")
+            assert len(re.knowledge_base) == 1
+            assert re.knowledge_base[0]["metadata"]["publisher"] == "ACM"
 
     def test_not_chroma_no_embedding(self):
         re = _make_rag_engine()
         re.chroma_enabled = False
         re.embedding_model = None
-        with patch.object(re, "_seed_if_empty"):
-            with patch.object(re, "_save_native"):
-                re.add_guideline("IEEE", "abstract", "Text")
-                assert len(re.knowledge_base) == 1
-                assert re.knowledge_base[0]["embedding"] == []
+        with patch.object(re, "_seed_if_empty"), patch.object(re, "_save_native"):
+            re.add_guideline("IEEE", "abstract", "Text")
+            assert len(re.knowledge_base) == 1
+            assert re.knowledge_base[0]["embedding"] == []
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -1760,7 +1758,7 @@ class TestSeedIfEmpty:
         re = _make_rag_engine(persist)
         re.knowledge_base = []
         re.chroma_enabled = False
-        default_file = os.path.join(os.path.dirname(os.path.dirname(re.kb_file)), "default_guidelines.json")
+        os.path.join(os.path.dirname(os.path.dirname(re.kb_file)), "default_guidelines.json")
         with patch("os.path.exists", return_value=True):
             with patch("builtins.open", MagicMock()):
                 with patch("json.load", return_value={"guidelines": [{"publisher": "IEEE", "section": "abstract", "text": "Abstract rules"}]}):
@@ -1785,11 +1783,10 @@ class TestSeedIfEmpty:
         re = _make_rag_engine(persist)
         re.knowledge_base = []
         re.chroma_enabled = False
-        with patch("os.path.exists", return_value=True):
-            with patch("builtins.open", MagicMock()):
-                with patch("json.load", return_value=[{"invalid": "item"}]):
-                    with patch.object(re, "add_guideline"):
-                        re._seed_if_empty()
+        with patch("os.path.exists", return_value=True), patch("builtins.open", MagicMock()):
+            with patch("json.load", return_value=[{"invalid": "item"}]):
+                with patch.object(re, "add_guideline"):
+                    re._seed_if_empty()
 
     def test_general_exception(self):
         re = _make_rag_engine()
@@ -1853,7 +1850,7 @@ class TestRagEngineInit:
         from app.pipeline.intelligence.rag_engine import RagEngine
         with patch.object(RagEngine, "_load_embedding_model"):
             with patch.object(RagEngine, "_seed_if_empty") as mock_seed:
-                re = RagEngine(persist_directory=str(tmp_path), auto_seed=True)
+                RagEngine(persist_directory=str(tmp_path), auto_seed=True)
                 mock_seed.assert_called_once()
 
     def test_chroma_fallback_native_on_error(self, tmp_path):
@@ -1877,6 +1874,7 @@ class TestRagEngineInit:
 
     def test_numpy_float_patched(self, tmp_path):
         import numpy as np
+
         from app.pipeline.intelligence.rag_engine import RagEngine
         with patch("app.pipeline.intelligence.rag_engine.chromadb") as mock_cdb:
             mock_cdb.PersistentClient.side_effect = Exception("np.float_ error")
@@ -1937,7 +1935,7 @@ def _run_pipeline_core(orch, tmp_path, doc, sb, **overrides):
 class TestPipelineNougatAndTemplate:
     def test_nougat_fallback_success(self, orch, tmp_path):
         """Lines 730-741: Nougat OCR produces blocks."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="job1",
             blocks=[Block(block_id="b1", index=1, block_type=BlockType.BODY, text="")],
@@ -1989,7 +1987,7 @@ class TestPipelineNougatAndTemplate:
 
     def test_nougat_fallback_exception(self, orch, tmp_path):
         """Lines 740-741: Nougat OCR raises exception."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="job1",
             blocks=[Block(block_id="b1", index=1, block_type=BlockType.BODY, text="")],
@@ -2033,7 +2031,7 @@ class TestPipelineNougatAndTemplate:
 
     def test_no_template_name(self, orch, tmp_path):
         """Line 743->746: template_name is None."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="job1",
             blocks=[Block(block_id="b1", index=1, block_type=BlockType.BODY, text="content")],
@@ -2075,7 +2073,7 @@ class TestPipelineNougatAndTemplate:
 class TestPipelineParallelExtraction:
     def test_has_grobid_and_docling(self, orch, tmp_path):
         """Lines 759-765: AI Extraction already completed."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType, DocumentMetadata
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         md = DocumentMetadata()
         md.ai_hints = {"grobid_metadata": {"title": "Test"}, "docling_layout": {"elements": []}}
         doc = PipelineDocument(
@@ -2902,7 +2900,7 @@ class TestPipelineErrorHandler:
             with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
                 with patch.object(orch, "_run_classification", side_effect=Exception("pipeline crash")):
                     with patch.object(orch, "_update_status"):
-                        with patch.object(orch, "_persist_partial_result") as mock_persist:
+                        with patch.object(orch, "_persist_partial_result"):
                             result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
         assert result["status"] in ("error", "processing")
 
@@ -3051,7 +3049,7 @@ class TestPipelineAdditionalBranches:
 
     def test_keyword_extraction_from_block(self, orch, tmp_path):
         """Lines 912-917: Extracts keywords from abstract block."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="job1",
             blocks=[Block(block_id="b1", index=1, block_type=BlockType.ABSTRACT_BODY, text="This is an abstract about AI research.")],
@@ -3354,7 +3352,7 @@ class TestEditFlowAdditionalBranches:
 class TestRunSemanticParsingBranches:
     def test_semantic_blocks_shorter(self, orch):
         """Line 575->574: semantic_blocks shorter than doc blocks."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="d1",
             blocks=[
@@ -3380,7 +3378,7 @@ class TestRunSemanticParsingBranches:
 class TestRunFigureAnalysisStageAdditional:
     def test_metadata_dict_with_setdefault(self, orch):
         """Line 614->617: metadata is dict with setdefault."""
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         fig = Figure(figure_id="f1", index=1, export_path="/tmp/fig.png", caption_text="Fig")
         doc = PipelineDocument(
             document_id="figdoc",
@@ -3487,10 +3485,9 @@ class TestRagEngineErrorPaths:
         re = _make_rag_engine(persist)
         re.knowledge_base = []
         re.chroma_enabled = False
-        with patch("os.path.exists", return_value=True):
-            with patch("builtins.open", MagicMock()):
-                with patch("json.load", side_effect=json.JSONDecodeError("bad", "doc", 0)):
-                    re._seed_if_empty()
+        with patch("os.path.exists", return_value=True), patch("builtins.open", MagicMock()):
+            with patch("json.load", side_effect=json.JSONDecodeError("bad", "doc", 0)):
+                re._seed_if_empty()
         # Should not raise
         assert True
 
@@ -3512,7 +3509,7 @@ class TestOrchestratorErrorPaths:
 
     def test_build_quality_summary_no_blocks_safe(self, orch):
         """_build_quality_summary with no blocks does not crash."""
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         doc = PipelineDocument(document_id="empty", blocks=[], metadata=DocumentMetadata())
         with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 0.0}):
             summary = orch._build_quality_summary(doc, {"errors": [], "warnings": []})

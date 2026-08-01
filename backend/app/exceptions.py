@@ -44,7 +44,7 @@ class DocumentNotFoundError(ScholarFormError):
     http_status = status.HTTP_404_NOT_FOUND
 
     def __init__(self, doc_id: str | None = None) -> None:
-        detail = f"Document not found" + (f": {doc_id}" if doc_id else ".")
+        detail = "Document not found" + (f": {doc_id}" if doc_id else ".")
         super().__init__(detail)
         self.doc_id = doc_id
 

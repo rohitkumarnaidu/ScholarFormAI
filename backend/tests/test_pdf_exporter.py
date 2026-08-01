@@ -12,10 +12,9 @@ class TestFindLibreOffice:
 
     def test_windows_not_found(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
-        with patch("platform.system", return_value="Windows"):
-            with patch("os.path.exists", return_value=False):
-                exporter = PDFExporter()
-                result = exporter._find_libreoffice()
+        with patch("platform.system", return_value="Windows"), patch("os.path.exists", return_value=False):
+            exporter = PDFExporter()
+            result = exporter._find_libreoffice()
         assert result is None
 
     def test_macos_path(self):
@@ -44,25 +43,23 @@ class TestConvertToPdf:
     def test_libreoffice_success(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
         exporter = PDFExporter(libreoffice_path="/fake/soffice")
-        with patch("os.path.exists", return_value=True):
-            with patch("subprocess.run") as mock_run:
-                mock_result = MagicMock()
-                mock_result.returncode = 0
-                mock_run.return_value = mock_result
-                result = exporter.convert_to_pdf("/tmp/test.docx", "/tmp")
+        with patch("os.path.exists", return_value=True), patch("subprocess.run") as mock_run:
+            mock_result = MagicMock()
+            mock_result.returncode = 0
+            mock_run.return_value = mock_result
+            result = exporter.convert_to_pdf("/tmp/test.docx", "/tmp")
         assert result is not None
 
     def test_libreoffice_failure_falls_to_weasyprint(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
         exporter = PDFExporter(libreoffice_path="/fake/soffice")
-        with patch("os.path.exists", return_value=True):
-            with patch("subprocess.run") as mock_run:
-                mock_result = MagicMock()
-                mock_result.returncode = 1
-                mock_result.stderr = "Error"
-                mock_run.return_value = mock_result
-                with patch.object(exporter, "_weasyprint_fallback", return_value="/tmp/test.pdf"):
-                    result = exporter.convert_to_pdf("/tmp/test.docx", "/tmp")
+        with patch("os.path.exists", return_value=True), patch("subprocess.run") as mock_run:
+            mock_result = MagicMock()
+            mock_result.returncode = 1
+            mock_result.stderr = "Error"
+            mock_run.return_value = mock_result
+            with patch.object(exporter, "_weasyprint_fallback", return_value="/tmp/test.pdf"):
+                result = exporter.convert_to_pdf("/tmp/test.docx", "/tmp")
         assert result == "/tmp/test.pdf"
 
     def test_no_libreoffice_uses_weasyprint(self):
@@ -104,9 +101,8 @@ class TestWeasyprintFallback:
             para = MagicMock()
             para.text = "Hello world"
             mock_docx.return_value.paragraphs = [para]
-            with patch("docx.Document", mock_docx):
-                with patch("os.path.exists", return_value=True):
-                    result = exporter._weasyprint_fallback("/tmp/test.docx", "/tmp/test.pdf")
+            with patch("docx.Document", mock_docx), patch("os.path.exists", return_value=True):
+                result = exporter._weasyprint_fallback("/tmp/test.docx", "/tmp/test.pdf")
             assert result == "/tmp/test.pdf"
         finally:
             self._teardown_weasyprint_mocks()
@@ -118,9 +114,8 @@ class TestWeasyprintFallback:
             exporter = PDFExporter()
             mock_docx = MagicMock()
             mock_docx.return_value.paragraphs = []
-            with patch("docx.Document", mock_docx):
-                with patch("os.path.exists", return_value=True):
-                    result = exporter._weasyprint_fallback("/tmp/test.docx", "/tmp/test.pdf")
+            with patch("docx.Document", mock_docx), patch("os.path.exists", return_value=True):
+                result = exporter._weasyprint_fallback("/tmp/test.docx", "/tmp/test.pdf")
             assert result == "/tmp/test.pdf"
         finally:
             self._teardown_weasyprint_mocks()

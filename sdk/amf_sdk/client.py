@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import httpx
 
@@ -27,8 +27,8 @@ logger = logging.getLogger(__name__)
 class AMFClient:
     def __init__(
         self,
-        base_url: Optional[str] = None,
-        api_key: Optional[str] = None,
+        base_url: str | None = None,
+        api_key: str | None = None,
         timeout: float = 30.0,
     ):
         self.base_url = (base_url or "http://localhost:8000").rstrip("/")
@@ -40,7 +40,7 @@ class AMFClient:
             headers=self._build_headers(),
         )
 
-    def _build_headers(self) -> Dict[str, str]:
+    def _build_headers(self) -> dict[str, str]:
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
         if self.api_key:
             headers["Authorization"] = f"Bearer {self.api_key}"
@@ -71,9 +71,9 @@ class AMFClient:
 
     def format_manuscript(
         self,
-        manuscript: Union[Manuscript, Dict[str, Any]],
+        manuscript: Manuscript | dict[str, Any],
         style: str = "apa",
-        options: Optional[Dict[str, Any]] = None,
+        options: dict[str, Any] | None = None,
     ) -> ManuscriptResult:
         if isinstance(manuscript, Manuscript):
             manuscript = manuscript.model_dump()
@@ -88,9 +88,9 @@ class AMFClient:
 
     def format_from_file(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         style: str = "apa",
-        options: Optional[Dict[str, Any]] = None,
+        options: dict[str, Any] | None = None,
     ) -> ManuscriptResult:
         path = Path(file_path)
         if not path.exists():
@@ -105,7 +105,7 @@ class AMFClient:
 
     def validate_manuscript(
         self,
-        manuscript: Union[Manuscript, Dict[str, Any]],
+        manuscript: Manuscript | dict[str, Any],
         style: str = "apa",
     ) -> ValidationResult:
         if isinstance(manuscript, Manuscript):
@@ -115,7 +115,7 @@ class AMFClient:
         data = self._handle_response(response)
         return ValidationResult(**data)
 
-    def get_styles(self) -> List[FormattingStyle]:
+    def get_styles(self) -> list[FormattingStyle]:
         response = self._client.get("/api/v1/styles")
         data = self._handle_response(response)
         return [FormattingStyle(**s) for s in data]
@@ -127,7 +127,7 @@ class AMFClient:
 
     def get_preview(
         self,
-        manuscript: Union[Manuscript, Dict[str, Any]],
+        manuscript: Manuscript | dict[str, Any],
         style: str = "apa",
     ) -> str:
         if isinstance(manuscript, Manuscript):

@@ -1,7 +1,10 @@
 from __future__ import annotations
-from unittest.mock import MagicMock, patch
-import pytest
+
 import logging
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 pytestmark = [pytest.mark.observability]
 
 
@@ -118,7 +121,6 @@ class TestAuditLog:
     def test_audit_log_for_security_events(self):
         from app.services.document_service import DocumentService
         with patch("app.services.document_service.logger") as mock_logger:
-            doc_id = "550e8400-e29b-41d4-a716-446655440000"
             DocumentService.generate_signed_download_url(
                 file_url="https://storage.example.com/doc.docx",
                 file_path="/path/doc.docx",

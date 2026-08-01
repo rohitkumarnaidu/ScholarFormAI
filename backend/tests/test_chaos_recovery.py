@@ -1,7 +1,11 @@
 from __future__ import annotations
+
 from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
+
 from app.exceptions import DatabaseUnavailableError
+
 pytestmark = [pytest.mark.chaos]
 
 
@@ -188,7 +192,7 @@ class TestNetworkIssues:
     def test_dns_failure_degradation(self, mock_settings):
         mock_settings.SUPABASE_URL = None
         mock_settings.SUPABASE_SERVICE_ROLE_KEY = None
-        from app.db.supabase_client import get_supabase_client, check_supabase_health
+        from app.db.supabase_client import check_supabase_health, get_supabase_client
         client = get_supabase_client(refresh=True)
         assert client is None
         health = check_supabase_health()
@@ -206,7 +210,7 @@ class TestNetworkIssues:
 class TestCircuitBreakerRecovery:
     @patch("app.pipeline.safety.circuit_breaker._PYBREAKER", False)
     def test_circuit_breaker_half_open_to_closed(self):
-        from app.pipeline.safety.circuit_breaker import circuit_breaker, CircuitBreakerOpenException
+        from app.pipeline.safety.circuit_breaker import CircuitBreakerOpenException, circuit_breaker
         call_count = 0
         @circuit_breaker(failure_threshold=2, recovery_timeout=0.05)
         def fragile_op():

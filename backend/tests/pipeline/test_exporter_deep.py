@@ -9,10 +9,14 @@ _get_export_formats, error handling.
 """
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
-import pytest
+
 import json
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 from app.pipeline.export.exporter import Exporter
+
 
 @pytest.fixture
 def exporter():
@@ -21,7 +25,7 @@ def exporter():
 
 @pytest.fixture
 def doc(tmp_path):
-    from app.models import PipelineDocument, Block, BlockType, DocumentMetadata
+    from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
     out = tmp_path / "out.docx"
     meta = DocumentMetadata(title="Test Paper")
     doc = PipelineDocument(
@@ -67,7 +71,7 @@ class TestExporterProcess:
         ):
             m1.return_value = "test.docx"
             m2.return_value = "test.json"
-            result = exporter.process(doc)
+            exporter.process(doc)
             m1.assert_called_once()
             m2.assert_called_once()
 
@@ -77,7 +81,7 @@ class TestExporterProcess:
         doc.generated_doc = MagicMock()
         with patch.object(exporter, "export") as mock_exp:
             mock_exp.return_value = "out.docx"
-            result = exporter.process(doc)
+            exporter.process(doc)
             mock_exp.assert_called_once()
 
     def test_process_handles_export_failure(self, exporter, doc):

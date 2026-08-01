@@ -8,12 +8,12 @@ Targets the biggest coverage gaps to push toward 90%.
 from __future__ import annotations
 
 import asyncio
-import pytest
-from unittest.mock import MagicMock, patch
-from datetime import datetime, date, time
-from enum import Enum
 import json
+from datetime import date, datetime, time
+from enum import Enum
+from unittest.mock import MagicMock, patch
 
+import pytest
 
 # ── Serialization Tests ──────────────────────────────────────────────────────
 
@@ -237,22 +237,25 @@ class TestGetOrCreate:
 
 class TestGetOrCreateSafe:
     def test_returns_existing(self):
-        from app.utils.singleton import get_or_create_safe
         import logging
+
+        from app.utils.singleton import get_or_create_safe
         existing = object()
         result = get_or_create_safe(existing, lambda: object(), logger=logging.getLogger(), name="test")
         assert result is existing
 
     def test_creates_on_success(self):
-        from app.utils.singleton import get_or_create_safe
         import logging
+
+        from app.utils.singleton import get_or_create_safe
         new_obj = object()
         result = get_or_create_safe(None, lambda: new_obj, logger=logging.getLogger(), name="test")
         assert result is new_obj
 
     def test_returns_none_on_failure(self):
-        from app.utils.singleton import get_or_create_safe
         import logging
+
+        from app.utils.singleton import get_or_create_safe
         result = get_or_create_safe(None, lambda: 1/0, logger=logging.getLogger(), name="test")
         assert result is None
 
@@ -739,8 +742,8 @@ class TestReviewManager:
             ReviewManager(review_threshold=1.5, critical_threshold=0.5)
 
     def test_evaluate_ok_document(self):
-        from app.pipeline.validation.review_manager import ReviewManager
         from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.validation.review_manager import ReviewManager
         doc = PipelineDocument(document_id="doc-1")
         doc.metadata.ai_hints = {}
         manager = ReviewManager(review_threshold=0.7, critical_threshold=0.4)
@@ -749,9 +752,9 @@ class TestReviewManager:
         assert status_val.upper() == "OK"
 
     def test_evaluate_low_confidence_block(self):
-        from app.pipeline.validation.review_manager import ReviewManager
-        from app.models.pipeline_document import PipelineDocument, ReviewStatus
         from app.models import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument, ReviewStatus
+        from app.pipeline.validation.review_manager import ReviewManager
         doc = PipelineDocument(document_id="doc-1")
         block = Block(block_id="blk_001", text="test", block_type=BlockType.BODY, index=0)
         block.metadata = {"classification_confidence": 0.3}
@@ -766,8 +769,8 @@ class TestReviewManager:
 
 class TestCrossReferenceEngine:
     def test_validate_no_violations(self):
-        from app.pipeline.integrity.cross_ref import CrossReferenceEngine
         from app.models import PipelineDocument
+        from app.pipeline.integrity.cross_ref import CrossReferenceEngine
         doc = PipelineDocument(document_id="doc-1")
         doc.blocks = []
         doc.figures = []
@@ -778,8 +781,8 @@ class TestCrossReferenceEngine:
         assert violations == []
 
     def test_dangling_figure_reference(self):
+        from app.models import Block, BlockType, PipelineDocument
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
-        from app.models import PipelineDocument, Block, BlockType
         doc = PipelineDocument(document_id="doc-1")
         block = Block(block_id="blk_001", text="See Figure 5 for details.", block_type=BlockType.BODY, index=0)
         doc.blocks = [block]
@@ -792,8 +795,8 @@ class TestCrossReferenceEngine:
         assert "Figure 5" in violations[0]
 
     def test_dangling_table_reference(self):
+        from app.models import Block, BlockType, PipelineDocument
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
-        from app.models import PipelineDocument, Block, BlockType
         doc = PipelineDocument(document_id="doc-1")
         block = Block(block_id="blk_001", text="Table 3 shows results.", block_type=BlockType.BODY, index=0)
         doc.blocks = [block]
@@ -806,8 +809,8 @@ class TestCrossReferenceEngine:
         assert "Table 3" in violations[0]
 
     def test_dangling_equation_reference(self):
+        from app.models import Block, BlockType, PipelineDocument
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
-        from app.models import PipelineDocument, Block, BlockType
         doc = PipelineDocument(document_id="doc-1")
         block = Block(block_id="blk_001", text="As shown in Equation (2)", block_type=BlockType.BODY, index=0)
         doc.blocks = [block]
@@ -1024,7 +1027,7 @@ class TestValidatorGuard:
 
 class TestLoggingContext:
     def test_bind_and_reset_context(self):
-        from app.utils.logging_context import bind_context, reset_context, get_request_id_context
+        from app.utils.logging_context import bind_context, get_request_id_context, reset_context
         tokens = bind_context(request_id="req-123", job_id="job-456")
         try:
             assert get_request_id_context() == "req-123"
@@ -1032,7 +1035,7 @@ class TestLoggingContext:
             reset_context(tokens)
 
     def test_log_context_manager(self):
-        from app.utils.logging_context import log_context, get_request_id_context
+        from app.utils.logging_context import get_request_id_context, log_context
         with log_context(request_id="req-789"):
             assert get_request_id_context() == "req-789"
         assert get_request_id_context() is None
@@ -1267,38 +1270,38 @@ class TestRealtimeEvents:
 
 class TestDependencies:
     def test_has_admin_scope_by_role(self):
-        from app.utils.dependencies import _has_admin_scope
         from app.schemas.user import User
+        from app.utils.dependencies import _has_admin_scope
         user = User(id="1", email="test@test.com", role="admin")
         assert _has_admin_scope(user) is True
 
     def test_has_admin_scope_service_role(self):
-        from app.utils.dependencies import _has_admin_scope
         from app.schemas.user import User
+        from app.utils.dependencies import _has_admin_scope
         user = User(id="1", email="test@test.com", role="service_role")
         assert _has_admin_scope(user) is True
 
     def test_has_admin_scope_regular_user(self):
-        from app.utils.dependencies import _has_admin_scope
         from app.schemas.user import User
+        from app.utils.dependencies import _has_admin_scope
         user = User(id="1", email="test@test.com", role="authenticated")
         assert _has_admin_scope(user) is False
 
     def test_has_admin_scope_from_app_metadata(self):
-        from app.utils.dependencies import _has_admin_scope
         from app.schemas.user import User
+        from app.utils.dependencies import _has_admin_scope
         user = User(id="1", email="test@test.com", role="user", app_metadata={"role": "admin"})
         assert _has_admin_scope(user) is True
 
     def test_has_admin_scope_from_roles_list(self):
-        from app.utils.dependencies import _has_admin_scope
         from app.schemas.user import User
+        from app.utils.dependencies import _has_admin_scope
         user = User(id="1", email="test@test.com", role="user", app_metadata={"roles": ["admin", "editor"]})
         assert _has_admin_scope(user) is True
 
     def test_has_admin_scope_from_roles_string(self):
-        from app.utils.dependencies import _has_admin_scope
         from app.schemas.user import User
+        from app.utils.dependencies import _has_admin_scope
         user = User(id="1", email="test@test.com", role="user", app_metadata={"roles": "admin"})
         assert _has_admin_scope(user) is True
 
@@ -1312,14 +1315,16 @@ class TestAuthService:
         assert user_id == "user-123"
 
     def test_get_user_id_missing_sub_raises(self):
-        from app.services.auth_service import AuthService
         from fastapi import HTTPException
+
+        from app.services.auth_service import AuthService
         with pytest.raises(HTTPException):
             AuthService.get_user_id_from_payload({})
 
     def test_require_supabase_raises_503(self):
-        from app.services.auth_service import _require_supabase
         from fastapi import HTTPException
+
+        from app.services.auth_service import _require_supabase
         with patch("app.services.auth_service.supabase", None):
             with pytest.raises(HTTPException) as exc_info:
                 _require_supabase()
@@ -1460,8 +1465,9 @@ class TestBackgroundTasks:
 
 class TestDependenciesUtils:
     def test_require_supabase_raises(self):
-        from app.routers.v1.documents_impl import _require_db
         from fastapi import HTTPException
+
+        from app.routers.v1.documents_impl import _require_db
         with patch("app.db.supabase_client.get_supabase_client", return_value=None):
             with pytest.raises(HTTPException) as exc_info:
                 _require_db()
@@ -1556,12 +1562,12 @@ class TestDependenciesUtils:
 
 class TestSchemas:
     def test_api_envelope_imports(self):
-        from app.schemas.api_envelope import APIResponse, APIError
+        from app.schemas.api_envelope import APIError, APIResponse
         assert APIResponse is not None
         assert APIError is not None
 
     def test_document_schema_imports(self):
-        from app.schemas.document import DocumentUploadResponse, DocumentStatus
+        from app.schemas.document import DocumentStatus, DocumentUploadResponse
         assert DocumentUploadResponse is not None
         assert DocumentStatus is not None
 
@@ -1573,7 +1579,7 @@ class TestSchemas:
         assert user.role == "authenticated"
 
     def test_auth_schemas(self):
-        from app.schemas.auth import SignupRequest, LoginRequest, ForgotPasswordRequest
+        from app.schemas.auth import ForgotPasswordRequest, LoginRequest, SignupRequest
         signup = SignupRequest(email="test@test.com", password="Password123!", full_name="Test User", institution="Test Uni", terms_accepted=True)
         assert signup.email == "test@test.com"
         login = LoginRequest(email="test@test.com", password="Password123!")
@@ -1619,17 +1625,19 @@ class TestExceptions:
 
 class TestAuthServiceMissingCoverage:
     def test_supabase_unavailable(self):
-        from app.services.auth_service import _require_supabase
-        from fastapi import HTTPException
         import pytest
+        from fastapi import HTTPException
+
+        from app.services.auth_service import _require_supabase
         with patch("app.services.auth_service.supabase", None):
             with pytest.raises(HTTPException) as exc_info:
                 _require_supabase()
             assert exc_info.value.status_code == 503
 
     def test_decode_token_no_token(self):
-        from app.services.auth_service import AuthService
         import jwt
+
+        from app.services.auth_service import AuthService
         with patch("app.services.auth_service.verify_jwt") as mock_verify:
             mock_verify.side_effect = jwt.InvalidTokenError("bad token")
             import pytest
@@ -1637,9 +1645,10 @@ class TestAuthServiceMissingCoverage:
                 AuthService.decode_token("bad-token")
 
     def test_get_user_id_missing_sub(self):
-        from app.services.auth_service import AuthService
-        from fastapi import HTTPException
         import pytest
+        from fastapi import HTTPException
+
+        from app.services.auth_service import AuthService
         with pytest.raises(HTTPException):
             AuthService.get_user_id_from_payload({})
 
@@ -1659,7 +1668,7 @@ class TestSafeExecutionCoverage:
             with safe_execution("test_op", error_return_value="fallback"):
                 1 / 0
         except Exception:
-            pass
+            pass  # intentionally ignored
 
     def test_safe_function_decorator(self):
         from app.pipeline.safety.safe_execution import safe_function
@@ -1791,15 +1800,17 @@ class TestContentParserCoverage:
         assert result[0]["content"] == "Hello"
 
     def test_parse_empty(self):
-        from app.pipeline.generation.content_parser import ContentParser
         import pytest
+
+        from app.pipeline.generation.content_parser import ContentParser
         parser = ContentParser()
         with pytest.raises(ValueError):
             parser.parse("", "academic")
 
     def test_parse_invalid_json(self):
-        from app.pipeline.generation.content_parser import ContentParser
         import pytest
+
+        from app.pipeline.generation.content_parser import ContentParser
         parser = ContentParser()
         with pytest.raises(ValueError):
             parser.parse("not json at all", "academic")
@@ -1821,8 +1832,9 @@ class TestRetryGuardCoverage:
         assert result == "ok"
 
     def test_retry_with_backoff_fails(self):
-        from app.pipeline.safety.retry_guard import execute_with_retry
         import pytest
+
+        from app.pipeline.safety.retry_guard import execute_with_retry
         with pytest.raises(ValueError):
             execute_with_retry(lambda: (_ for _ in ()).throw(ValueError("fail")), max_retries=1)
 
@@ -1858,14 +1870,16 @@ class TestPreviewRendererRenderCoverage:
 
 class TestPipelineDocumentModel:
     def test_validate_document_id_empty_raises(self):
-        from app.models.pipeline_document import PipelineDocument
         import pytest
+
+        from app.models.pipeline_document import PipelineDocument
         with pytest.raises(ValueError):
             PipelineDocument(document_id="")
 
     def test_validate_document_id_whitespace_raises(self):
-        from app.models.pipeline_document import PipelineDocument
         import pytest
+
+        from app.models.pipeline_document import PipelineDocument
         with pytest.raises(ValueError):
             PipelineDocument(document_id="   ")
 
@@ -1889,8 +1903,8 @@ class TestPipelineDocumentModel:
         assert len(doc.processing_history) == 0
 
     def test_get_block_by_id_found(self):
-        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
         doc = PipelineDocument(document_id="d1")
         b1 = Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Hello")
         b2 = Block(block_id="b2", index=2, block_type=BlockType.BODY, text="World")
@@ -1898,8 +1912,8 @@ class TestPipelineDocumentModel:
         assert doc.get_block_by_id("b1") is b1
 
     def test_get_block_by_id_not_found(self):
-        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
         doc = PipelineDocument(document_id="d1")
         doc.blocks = [Block(block_id="b1", index=1, block_type=BlockType.BODY, text="")]
         assert doc.get_block_by_id("nonexistent") is None
@@ -1911,8 +1925,8 @@ class TestPipelineDocumentModel:
         assert doc.get_block_by_id(None) is None
 
     def test_get_figure_by_id_found(self):
-        from app.models.pipeline_document import PipelineDocument
         from app.models.figure import Figure
+        from app.models.pipeline_document import PipelineDocument
         doc = PipelineDocument(document_id="d1")
         fig = Figure(figure_id="f1", index=0)
         doc.figures = [fig]
@@ -1924,8 +1938,8 @@ class TestPipelineDocumentModel:
         assert doc.get_figure_by_id("") is None
 
     def test_get_equation_by_id_found(self):
-        from app.models.pipeline_document import PipelineDocument
         from app.models.equation import Equation
+        from app.models.pipeline_document import PipelineDocument
         doc = PipelineDocument(document_id="d1")
         eq = Equation(equation_id="eq1", latex="x=1", index=0)
         doc.equations = [eq]
@@ -1937,8 +1951,8 @@ class TestPipelineDocumentModel:
         assert doc.get_equation_by_id("") is None
 
     def test_get_blocks_by_type(self):
-        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
         doc = PipelineDocument(document_id="d1")
         doc.blocks = [
             Block(block_id="b1", index=1, block_type=BlockType.HEADING_1, text="Intro"),
@@ -1956,8 +1970,8 @@ class TestPipelineDocumentModel:
         assert doc.get_blocks_by_type(None) == []
 
     def test_get_blocks_in_section(self):
-        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
         doc = PipelineDocument(document_id="d1")
         doc.blocks = [
             Block(block_id="b1", index=1, block_type=BlockType.HEADING_1, text="Intro", section_name="Introduction"),
@@ -1973,8 +1987,8 @@ class TestPipelineDocumentModel:
         assert doc.get_blocks_in_section(None) == []
 
     def test_get_section_names(self):
-        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
         doc = PipelineDocument(document_id="d1")
         doc.blocks = [
             Block(block_id="b1", index=1, block_type=BlockType.HEADING_1, text="Intro", section_name="Introduction"),
@@ -1989,8 +2003,8 @@ class TestPipelineDocumentModel:
         assert doc.get_section_names() == []
 
     def test_get_stats(self):
-        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
         doc = PipelineDocument(document_id="d1")
         doc.blocks = [Block(block_id="b1", index=1, block_type=BlockType.BODY, text="")]
         stats = doc.get_stats()
@@ -2052,8 +2066,8 @@ class TestNormalizerPureMethods:
         assert n._repair_common_corruptions("2ETHODOLOGY") == "2 Methodology"
 
     def test_calculate_median_font_size_basic(self):
-        from app.pipeline.normalization.normalizer import Normalizer
         from app.models.block import Block, BlockType, TextStyle
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         blocks = [
             Block(block_id="b1", index=1, block_type=BlockType.BODY, text="A", style=TextStyle(font_size=10)),
@@ -2068,31 +2082,31 @@ class TestNormalizerPureMethods:
         assert n._calculate_median_font_size([]) is None
 
     def test_calculate_median_font_size_no_font_size(self):
-        from app.pipeline.normalization.normalizer import Normalizer
         from app.models.block import Block, BlockType, TextStyle
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         blocks = [Block(block_id="b1", index=1, block_type=BlockType.BODY, text="X", style=TextStyle(font_size=None))]
         assert n._calculate_median_font_size(blocks) is None
 
     def test_normalize_metadata_title(self):
-        from app.pipeline.normalization.normalizer import Normalizer
         from app.models.pipeline_document import DocumentMetadata
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         meta = DocumentMetadata(title="  Hello World  ")
         result = n._normalize_metadata(meta)
         assert result.title == "Hello World"
 
     def test_normalize_metadata_authors_clean(self):
-        from app.pipeline.normalization.normalizer import Normalizer
         from app.models.pipeline_document import DocumentMetadata
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         meta = DocumentMetadata(authors=["  Smith, J.  ", "", "Doe, A."])
         result = n._normalize_metadata(meta)
         assert len(result.authors) == 2
 
     def test_normalize_metadata_keywords(self):
-        from app.pipeline.normalization.normalizer import Normalizer
         from app.models.pipeline_document import DocumentMetadata
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         meta = DocumentMetadata(keywords=["  ML  ", "", "AI"])
         result = n._normalize_metadata(meta)
@@ -2100,8 +2114,8 @@ class TestNormalizerPureMethods:
         assert "" not in result.keywords
 
     def test_normalize_metadata_none_fields(self):
-        from app.pipeline.normalization.normalizer import Normalizer
         from app.models.pipeline_document import DocumentMetadata
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         meta = DocumentMetadata()
         result = n._normalize_metadata(meta)
@@ -2109,8 +2123,8 @@ class TestNormalizerPureMethods:
         assert result.abstract is None
 
     def test_sanitize_empty_orphan_removes_empty_body(self):
-        from app.pipeline.normalization.normalizer import Normalizer
         from app.models.block import Block, BlockType
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         blocks = [
             Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Keep me"),
@@ -2122,24 +2136,24 @@ class TestNormalizerPureMethods:
         assert result[0].block_id == "b1"
 
     def test_sanitize_keeps_block_with_figure(self):
-        from app.pipeline.normalization.normalizer import Normalizer
         from app.models.block import Block, BlockType
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         blocks = [Block(block_id="b1", index=1, block_type=BlockType.BODY, text="", metadata={"has_figure": True})]
         result = n._sanitize_empty_orphan_blocks(blocks)
         assert len(result) == 1
 
     def test_sanitize_keeps_block_with_list(self):
-        from app.pipeline.normalization.normalizer import Normalizer
         from app.models.block import Block, BlockType
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         blocks = [Block(block_id="b1", index=1, block_type=BlockType.BODY, text="", metadata={"list_level": 0})]
         result = n._sanitize_empty_orphan_blocks(blocks)
         assert len(result) == 1
 
     def test_normalize_tables_basic(self):
-        from app.pipeline.normalization.normalizer import Normalizer
         from app.models.table import Table, TableCell
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         cells = [TableCell(row=0, col=0, text="  Hello  ")]
         table = Table(table_id="t1", cells=cells, rows=[["  World  "]], num_rows=1, num_cols=1, index=0, block_index=0)
@@ -2194,20 +2208,20 @@ class TestReferenceNormalizer:
 
 class TestReferenceFormatterHelpers:
     def test_reference_type_to_csl_journal(self):
-        from app.pipeline.formatting.reference_formatter import _reference_type_to_csl
         from app.models.reference import Reference, ReferenceType
+        from app.pipeline.formatting.reference_formatter import _reference_type_to_csl
         ref = Reference(reference_id="r1", citation_key="K1", raw_text="T1", reference_type=ReferenceType.JOURNAL_ARTICLE, index=0)
         assert _reference_type_to_csl(ref) == "article-journal"
 
     def test_reference_type_to_csl_book(self):
-        from app.pipeline.formatting.reference_formatter import _reference_type_to_csl
         from app.models.reference import Reference, ReferenceType
+        from app.pipeline.formatting.reference_formatter import _reference_type_to_csl
         ref = Reference(reference_id="r1", citation_key="K1", raw_text="T1", reference_type=ReferenceType.BOOK, index=0)
         assert _reference_type_to_csl(ref) == "book"
 
     def test_reference_type_to_csl_unknown(self):
-        from app.pipeline.formatting.reference_formatter import _reference_type_to_csl
         from app.models.reference import Reference, ReferenceType
+        from app.pipeline.formatting.reference_formatter import _reference_type_to_csl
         ref = Reference(reference_id="r1", citation_key="K1", raw_text="T1", reference_type=ReferenceType.UNKNOWN, index=0)
         assert _reference_type_to_csl(ref) == "article"
 
@@ -2232,8 +2246,8 @@ class TestReferenceFormatterHelpers:
         assert _parse_author_name("  ") == {"family": "Unknown"}
 
     def test_reference_to_csl_json_basic(self):
-        from app.pipeline.formatting.reference_formatter import _reference_to_csl_json
         from app.models.reference import Reference, ReferenceType
+        from app.pipeline.formatting.reference_formatter import _reference_to_csl_json
         ref = Reference(
             reference_id="r1", citation_key="K1", raw_text="T1", index=0,
             reference_type=ReferenceType.JOURNAL_ARTICLE,
@@ -2253,8 +2267,8 @@ class TestReferenceFormatterHelpers:
         assert result["URL"] == "https://example.com"
 
     def test_reference_to_csl_json_minimal(self):
-        from app.pipeline.formatting.reference_formatter import _reference_to_csl_json
         from app.models.reference import Reference
+        from app.pipeline.formatting.reference_formatter import _reference_to_csl_json
         ref = Reference(reference_id="r1", citation_key="K1", raw_text="T1", index=0)
         result = _reference_to_csl_json(ref)
         assert result["id"] == "r1"
@@ -2309,14 +2323,14 @@ class TestTemplateRendererPureMethods:
         assert r._resolve_bool_option({}, ["missing_key"], True) is True
 
     def test_block_type_token_string(self):
-        from app.pipeline.formatting.template_renderer import TemplateRenderer
         from app.models.block import Block, BlockType
+        from app.pipeline.formatting.template_renderer import TemplateRenderer
         block = Block(block_id="b1", index=1, block_type=BlockType.HEADING_1, text="")
         assert TemplateRenderer._block_type_token(block) == "heading_1"
 
     def test_first_block_text_found(self):
-        from app.pipeline.formatting.template_renderer import TemplateRenderer
         from app.models.block import Block, BlockType
+        from app.pipeline.formatting.template_renderer import TemplateRenderer
         r = TemplateRenderer("")
         blocks = [
             Block(block_id="b1", index=2, block_type=BlockType.TITLE, text=" Title "),
@@ -2325,15 +2339,15 @@ class TestTemplateRendererPureMethods:
         assert r._first_block_text(blocks, "title") == "Title"
 
     def test_first_block_text_not_found(self):
-        from app.pipeline.formatting.template_renderer import TemplateRenderer
         from app.models.block import Block, BlockType
+        from app.pipeline.formatting.template_renderer import TemplateRenderer
         r = TemplateRenderer("")
         blocks = [Block(block_id="b1", index=1, block_type=BlockType.BODY, text="")]
         assert r._first_block_text(blocks, "title") == ""
 
     def test_all_block_text_found(self):
-        from app.pipeline.formatting.template_renderer import TemplateRenderer
         from app.models.block import Block, BlockType
+        from app.pipeline.formatting.template_renderer import TemplateRenderer
         r = TemplateRenderer("")
         blocks = [
             Block(block_id="b1", index=1, block_type=BlockType.AUTHOR, text=" Doe "),
@@ -2342,15 +2356,15 @@ class TestTemplateRendererPureMethods:
         assert r._all_block_text(blocks, "author") == ["Doe", "Smith"]
 
     def test_all_block_text_empty(self):
-        from app.pipeline.formatting.template_renderer import TemplateRenderer
         from app.models.block import Block, BlockType
+        from app.pipeline.formatting.template_renderer import TemplateRenderer
         r = TemplateRenderer("")
         blocks = [Block(block_id="b1", index=1, block_type=BlockType.BODY, text="")]
         assert r._all_block_text(blocks, "author") == []
 
     def test_collect_sections_basic(self):
-        from app.pipeline.formatting.template_renderer import TemplateRenderer
         from app.models.block import Block, BlockType
+        from app.pipeline.formatting.template_renderer import TemplateRenderer
         r = TemplateRenderer("")
         blocks = [
             Block(block_id="b1", index=1, block_type=BlockType.HEADING_1, text="Introduction"),
@@ -2362,8 +2376,8 @@ class TestTemplateRendererPureMethods:
         assert sections[0]["paragraphs"] == ["Body text."]
 
     def test_collect_sections_skip_types(self):
-        from app.pipeline.formatting.template_renderer import TemplateRenderer
         from app.models.block import Block, BlockType
+        from app.pipeline.formatting.template_renderer import TemplateRenderer
         r = TemplateRenderer("")
         blocks = [
             Block(block_id="b1", index=1, block_type=BlockType.HEADING_1, text="Intro"),
@@ -2411,9 +2425,9 @@ class TestValidatorPureMethods:
         assert DocumentValidator._as_bool("unknown", True) is True
 
     def test_check_figures_missing_caption(self):
-        from app.pipeline.validation.validator_v3 import DocumentValidator
-        from app.models.pipeline_document import PipelineDocument
         from app.models.figure import Figure
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.validation.validator_v3 import DocumentValidator
         doc = PipelineDocument(document_id="d1")
         fig = Figure(figure_id="f1", index=0)
         with patch.object(Figure, "has_caption", return_value=False):
@@ -2424,9 +2438,9 @@ class TestValidatorPureMethods:
         assert "missing caption" in warns[0]
 
     def test_check_figures_with_caption_ok(self):
-        from app.pipeline.validation.validator_v3 import DocumentValidator
-        from app.models.pipeline_document import PipelineDocument
         from app.models.figure import Figure
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.validation.validator_v3 import DocumentValidator
         doc = PipelineDocument(document_id="d1")
         fig = Figure(figure_id="f1", index=0)
         with patch.object(Figure, "has_caption", return_value=True):
@@ -2436,9 +2450,9 @@ class TestValidatorPureMethods:
         assert len(warns) == 0
 
     def test_check_references_missing_year(self):
-        from app.pipeline.validation.validator_v3 import DocumentValidator
         from app.models.pipeline_document import PipelineDocument
         from app.models.reference import Reference
+        from app.pipeline.validation.validator_v3 import DocumentValidator
         doc = PipelineDocument(document_id="d1")
         doc.references = [Reference(reference_id="r1", citation_key="K1", raw_text="T1", index=0)]
         v = DocumentValidator.__new__(DocumentValidator)
@@ -2446,9 +2460,9 @@ class TestValidatorPureMethods:
         assert any("missing publication year" in w for w in warns)
 
     def test_check_references_no_references_with_section(self):
-        from app.pipeline.validation.validator_v3 import DocumentValidator
-        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.validation.validator_v3 import DocumentValidator
         doc = PipelineDocument(document_id="d1")
         doc.blocks = [Block(block_id="b1", index=1, block_type=BlockType.REFERENCES_HEADING, text="References", section_name="References")]
         v = DocumentValidator.__new__(DocumentValidator)
@@ -2456,9 +2470,9 @@ class TestValidatorPureMethods:
         assert any("no reference entries" in w for w in warns)
 
     def test_check_tables_missing_caption(self):
-        from app.pipeline.validation.validator_v3 import DocumentValidator
         from app.models.pipeline_document import PipelineDocument
         from app.models.table import Table
+        from app.pipeline.validation.validator_v3 import DocumentValidator
         doc = PipelineDocument(document_id="d1")
         doc.tables = [Table(table_id="t1", caption_text="", num_rows=0, num_cols=0, index=0, block_index=0)]
         v = DocumentValidator.__new__(DocumentValidator)
@@ -2467,8 +2481,8 @@ class TestValidatorPureMethods:
         assert "missing caption" in warns[0]
 
     def test_check_tables_no_attr(self):
-        from app.pipeline.validation.validator_v3 import DocumentValidator
         from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.validation.validator_v3 import DocumentValidator
         doc = PipelineDocument(document_id="d1")
         v = DocumentValidator.__new__(DocumentValidator)
         errs, warns = v._check_tables(doc)
@@ -2555,8 +2569,8 @@ class TestSynthesizerPureMethods:
 
 class TestFormatterEngine:
     def test_format_single_journal(self):
-        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         from app.models.reference import Reference, ReferenceType
+        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         ref = Reference(
             reference_id="r1", citation_key="K1", raw_text="T1", index=0,
             reference_type=ReferenceType.JOURNAL_ARTICLE,
@@ -2576,8 +2590,8 @@ class TestFormatterEngine:
         assert "2024" in result
 
     def test_format_single_et_al(self):
-        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         from app.models.reference import Reference, ReferenceType
+        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         ref = Reference(
             reference_id="r1", citation_key="K1", raw_text="T1", index=0,
             reference_type=ReferenceType.JOURNAL_ARTICLE,
@@ -2589,8 +2603,8 @@ class TestFormatterEngine:
         assert "et al." in result
 
     def test_format_single_conference(self):
-        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         from app.models.reference import Reference, ReferenceType
+        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         ref = Reference(
             reference_id="r1", citation_key="K1", raw_text="T1", index=0,
             reference_type=ReferenceType.CONFERENCE_PAPER,
@@ -2603,8 +2617,8 @@ class TestFormatterEngine:
         assert "ICML 2024" in result
 
     def test_format_single_default_format(self):
-        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         from app.models.reference import Reference, ReferenceType
+        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         ref = Reference(
             reference_id="r1", citation_key="K1", raw_text="T1", index=0,
             reference_type=ReferenceType.BOOK, authors=["Smith, J."],
@@ -2615,8 +2629,8 @@ class TestFormatterEngine:
         assert "Smith, J." in result
 
     def test_format_single_fallback_on_template_error(self):
-        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         from app.models.reference import Reference, ReferenceType
+        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         ref = Reference(
             reference_id="r1", citation_key="K1", raw_text="Original raw text", index=0,
             reference_type=ReferenceType.JOURNAL_ARTICLE,
@@ -2676,15 +2690,17 @@ class TestRequestIdMiddleware:
         assert _should_log_idempotency("/docs") is False
 
     def test_get_request_id_existing(self):
-        from app.middleware.request_id import get_request_id
         from unittest.mock import MagicMock
+
+        from app.middleware.request_id import get_request_id
         request = MagicMock()
         request.state.request_id = "existing-id"
         assert get_request_id(request) == "existing-id"
 
     def test_get_request_id_missing_creates_new(self):
-        from app.middleware.request_id import get_request_id
         from unittest.mock import MagicMock
+
+        from app.middleware.request_id import get_request_id
         request = MagicMock()
         del request.state.request_id
         rid = get_request_id(request)
@@ -2797,10 +2813,11 @@ class TestHealthCheckPureFunctions:
 
 class TestNumberingEngine:
     def test_apply_numbering_basic(self, monkeypatch):
-        from app.pipeline.formatting.numbering import NumberingEngine
-        from app.models.pipeline_document import PipelineDocument
-        from app.models.block import Block, BlockType, TextStyle
         from unittest.mock import MagicMock
+
+        from app.models.block import Block, BlockType, TextStyle
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.formatting.numbering import NumberingEngine
         mock_loader = MagicMock()
         mock_loader.load.return_value = {
             "numbering": {},
@@ -2816,10 +2833,11 @@ class TestNumberingEngine:
         assert result.blocks[0].text == "1 Intro"
 
     def test_apply_numbering_no_double_prefix(self):
-        from app.pipeline.formatting.numbering import NumberingEngine
-        from app.models.pipeline_document import PipelineDocument
-        from app.models.block import Block, BlockType, TextStyle
         from unittest.mock import MagicMock
+
+        from app.models.block import Block, BlockType, TextStyle
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.formatting.numbering import NumberingEngine
         mock_loader = MagicMock()
         mock_loader.load.return_value = {"numbering": {}, "equations": {}}
         engine = NumberingEngine(mock_loader)
@@ -2831,10 +2849,11 @@ class TestNumberingEngine:
         assert result.blocks[0].text == "1 Intro"
 
     def test_apply_numbering_multilevel(self):
-        from app.pipeline.formatting.numbering import NumberingEngine
-        from app.models.pipeline_document import PipelineDocument
-        from app.models.block import Block, BlockType, TextStyle
         from unittest.mock import MagicMock
+
+        from app.models.block import Block, BlockType, TextStyle
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.formatting.numbering import NumberingEngine
         mock_loader = MagicMock()
         mock_loader.load.return_value = {"numbering": {}, "equations": {}}
         engine = NumberingEngine(mock_loader)
@@ -2848,11 +2867,12 @@ class TestNumberingEngine:
         assert result.blocks[1].text == "1.1 Background"
 
     def test_apply_numbering_figures_tables(self):
-        from app.pipeline.formatting.numbering import NumberingEngine
-        from app.models.pipeline_document import PipelineDocument
-        from app.models.figure import Figure
-        from app.models.table import Table
         from unittest.mock import MagicMock
+
+        from app.models.figure import Figure
+        from app.models.pipeline_document import PipelineDocument
+        from app.models.table import Table
+        from app.pipeline.formatting.numbering import NumberingEngine
         mock_loader = MagicMock()
         mock_loader.load.return_value = {"numbering": {}, "equations": {}}
         engine = NumberingEngine(mock_loader)
@@ -2865,10 +2885,11 @@ class TestNumberingEngine:
         assert result.tables[0].number == 1
 
     def test_apply_numbering_equation_brackets(self):
-        from app.pipeline.formatting.numbering import NumberingEngine
-        from app.models.pipeline_document import PipelineDocument
-        from app.models.equation import Equation
         from unittest.mock import MagicMock
+
+        from app.models.equation import Equation
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.formatting.numbering import NumberingEngine
         mock_loader = MagicMock()
         mock_loader.load.return_value = {
             "numbering": {},
@@ -2886,9 +2907,10 @@ class TestNumberingEngine:
 
 class TestStyleMapper:
     def test_get_style_name_heading1(self):
-        from app.pipeline.formatting.style_mapper import StyleMapper
-        from app.models.block import Block, BlockType
         from unittest.mock import MagicMock
+
+        from app.models.block import Block, BlockType
+        from app.pipeline.formatting.style_mapper import StyleMapper
         mock_loader = MagicMock()
         mock_loader.load.return_value = {
             "styles": {"BLOCK_HEADING_1": "Heading 1"},
@@ -2898,9 +2920,10 @@ class TestStyleMapper:
         assert mapper.get_style_name(block, "ieee") == "Heading 1"
 
     def test_get_style_name_default(self):
-        from app.pipeline.formatting.style_mapper import StyleMapper
-        from app.models.block import Block, BlockType
         from unittest.mock import MagicMock
+
+        from app.models.block import Block, BlockType
+        from app.pipeline.formatting.style_mapper import StyleMapper
         mock_loader = MagicMock()
         mock_loader.load.return_value = {"styles": {}}
         mapper = StyleMapper(mock_loader)
@@ -2912,10 +2935,11 @@ class TestStyleMapper:
 
 class TestSectionOrderValidator:
     def test_validate_order_no_violations(self):
-        from app.pipeline.formatting.section_ordering import SectionOrderValidator
-        from app.models.pipeline_document import PipelineDocument
-        from app.models.block import Block, BlockType
         from unittest.mock import MagicMock
+
+        from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.formatting.section_ordering import SectionOrderValidator
         mock_loader = MagicMock()
         mock_loader.load.return_value = {
             "sections": {
@@ -2933,10 +2957,11 @@ class TestSectionOrderValidator:
         assert len(violations) == 0
 
     def test_validate_order_missing_required(self):
-        from app.pipeline.formatting.section_ordering import SectionOrderValidator
-        from app.models.pipeline_document import PipelineDocument
-        from app.models.block import Block, BlockType
         from unittest.mock import MagicMock
+
+        from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.formatting.section_ordering import SectionOrderValidator
         mock_loader = MagicMock()
         mock_loader.load.return_value = {
             "sections": {
@@ -2954,10 +2979,11 @@ class TestSectionOrderValidator:
         assert any("methods" in v.lower() for v in violations)
 
     def test_validate_order_out_of_order(self):
-        from app.pipeline.formatting.section_ordering import SectionOrderValidator
-        from app.models.pipeline_document import PipelineDocument
-        from app.models.block import Block, BlockType
         from unittest.mock import MagicMock
+
+        from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.formatting.section_ordering import SectionOrderValidator
         mock_loader = MagicMock()
         mock_loader.load.return_value = {
             "sections": {
@@ -2979,10 +3005,12 @@ class TestSectionOrderValidator:
 
 class TestDependenciesUtilsExtended:
     def test_get_current_user_no_credentials_raises(self):
-        from app.utils.dependencies import get_current_user
         from unittest.mock import MagicMock
+
         import pytest
         from fastapi import HTTPException
+
+        from app.utils.dependencies import get_current_user
         request = MagicMock()
         request.query_params.get.return_value = None
         with pytest.raises(HTTPException) as exc:
@@ -2990,10 +3018,12 @@ class TestDependenciesUtilsExtended:
         assert exc.value.status_code == 401
 
     def test_get_current_user_rejects_query_token(self):
-        from app.utils.dependencies import get_current_user
         from unittest.mock import MagicMock
+
         import pytest
         from fastapi import HTTPException
+
+        from app.utils.dependencies import get_current_user
         request = MagicMock()
         def query_get(key, default=None):
             return "abc123" if key == "token" else default

@@ -1,6 +1,7 @@
-import pytest
-from unittest.mock import patch
 import os
+from unittest.mock import patch
+
+import pytest
 
 
 class TestConstructor:
@@ -37,7 +38,7 @@ class TestConvertToDocx:
             conv.convert_to_docx("/nonexistent/file.docx", "job1")
 
     def test_unsupported_extension_raises(self, tmp_path):
-        from app.pipeline.input_conversion.converter import InputConverter, ConversionError
+        from app.pipeline.input_conversion.converter import ConversionError, InputConverter
         f = tmp_path / "test.xyz"
         f.write_text("dummy")
         conv = InputConverter(temp_dir=str(tmp_path))
@@ -70,7 +71,7 @@ class TestConvertToDocx:
         src = tmp_path / "input.html"
         src.write_text("<p>Hello</p>")
         conv = InputConverter(temp_dir=str(tmp_path))
-        result = conv.convert_to_docx(str(src), "job1")
+        conv.convert_to_docx(str(src), "job1")
         mock_run.assert_called_once()
 
     @patch("app.pipeline.input_conversion.converter.InputConverter._run_pandoc")
@@ -79,7 +80,7 @@ class TestConvertToDocx:
         src = tmp_path / "input.txt"
         src.write_text("Hello")
         conv = InputConverter(temp_dir=str(tmp_path))
-        result = conv.convert_to_docx(str(src), "job1")
+        conv.convert_to_docx(str(src), "job1")
         mock_run.assert_called_once()
 
     @patch("app.pipeline.input_conversion.converter.InputConverter._handle_pdf")
@@ -89,12 +90,13 @@ class TestConvertToDocx:
         src.write_text("%PDF")
         mock_handle.return_value = str(tmp_path / "job1" / "input.docx")
         conv = InputConverter(temp_dir=str(tmp_path))
-        result = conv.convert_to_docx(str(src), "job1")
+        conv.convert_to_docx(str(src), "job1")
         mock_handle.assert_called_once()
 
     def test_doc_uses_libreoffice(self, tmp_path):
-        from app.pipeline.input_conversion.converter import InputConverter
         import unittest.mock as um
+
+        from app.pipeline.input_conversion.converter import InputConverter
         src = tmp_path / "mydoc.doc"
         src.write_text("dummy")
         # Pre-create LO output as if _run_libreoffice succeeded
@@ -139,7 +141,7 @@ class TestRunPandoc:
     @patch("shutil.which")
     def test_pandoc_not_found_raises(self, mock_which):
         mock_which.return_value = None
-        from app.pipeline.input_conversion.converter import InputConverter, ConversionError
+        from app.pipeline.input_conversion.converter import ConversionError, InputConverter
         conv = InputConverter()
         with pytest.raises(ConversionError, match="Pandoc not installed"):
             conv._run_pandoc("in.md", "out.docx")
@@ -159,7 +161,7 @@ class TestRunPandoc:
         from subprocess import TimeoutExpired
         mock_which.return_value = "pandoc"
         mock_run.side_effect = TimeoutExpired("pandoc", 120)
-        from app.pipeline.input_conversion.converter import InputConverter, ConversionError
+        from app.pipeline.input_conversion.converter import ConversionError, InputConverter
         conv = InputConverter()
         with pytest.raises(ConversionError, match="timed out"):
             conv._run_pandoc("in.md", "out.docx")
@@ -169,7 +171,7 @@ class TestRunLibreOffice:
     @patch("app.pipeline.input_conversion.converter.InputConverter._get_libreoffice_cmd")
     def test_soffice_not_found(self, mock_get):
         mock_get.return_value = None
-        from app.pipeline.input_conversion.converter import InputConverter, ConversionError
+        from app.pipeline.input_conversion.converter import ConversionError, InputConverter
         conv = InputConverter()
         with pytest.raises(ConversionError, match="not installed"):
             conv._run_libreoffice("in.pdf", "/tmp")

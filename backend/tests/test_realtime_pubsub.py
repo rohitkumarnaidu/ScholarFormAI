@@ -1,6 +1,8 @@
-import pytest
 import asyncio
-from unittest.mock import patch, AsyncMock
+import contextlib
+from unittest.mock import AsyncMock, patch
+
+import pytest
 
 pytestmark = pytest.mark.asyncio
 
@@ -67,19 +69,15 @@ class TestRedisPubSub:
     async def test_subscribe_fallback_cleanup(self, pubsub):
         async def reader():
             gen = pubsub.subscribe("test")
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await gen.__anext__()
-            except asyncio.CancelledError:
-                pass
 
         reader_task = asyncio.create_task(reader())
         await asyncio.sleep(0.02)
         reader_task.cancel()
         await asyncio.sleep(0.02)
-        try:
+        with contextlib.suppress(asyncio.CancelledError, StopAsyncIteration):
             await reader_task
-        except (asyncio.CancelledError, StopAsyncIteration):
-            pass
         await asyncio.sleep(0.02)
         assert len(pubsub._fallback_channels.get("test", set())) == 0
 
@@ -157,7 +155,5 @@ class TestRedisPubSub:
         task = asyncio.create_task(gen.__anext__())
         await asyncio.sleep(0.1)
         task.cancel()
-        try:
+        with contextlib.suppress(asyncio.CancelledError, StopAsyncIteration):
             await task
-        except (asyncio.CancelledError, StopAsyncIteration):
-            pass

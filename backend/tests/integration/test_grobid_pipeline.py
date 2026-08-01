@@ -8,17 +8,18 @@ Tests the full integration of GROBID with the document processing pipeline.
 Verifies metadata extraction, pipeline orchestration, and performance targets.
 """
 
-import pytest
-import time
 import os
-from urllib.parse import urlparse
+import time
 from unittest.mock import MagicMock, patch
+from urllib.parse import urlparse
+
+import pytest
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
-from app.pipeline.services.grobid_client import GROBIDClient
+from app.models import DocumentMetadata, PipelineDocument
 from app.pipeline.orchestrator import PipelineOrchestrator
-from app.models import PipelineDocument, DocumentMetadata
+from app.pipeline.services.grobid_client import GROBIDClient
 
 
 def _grobid_base_url() -> str:
@@ -170,7 +171,7 @@ class TestGROBIDPipelineIntegration:
         assert "confidence" in metadata
         assert "source" in metadata
         
-        print(f"\n✅ Extracted metadata:")
+        print("\n✅ Extracted metadata:")
         print(f"   Title: {metadata.get('title', 'N/A')}")
         print(f"   Authors: {len(metadata.get('authors', []))} found")
         print(f"   Abstract length: {len(metadata.get('abstract', ''))} chars")
@@ -271,7 +272,7 @@ class TestGROBIDPipelineIntegration:
         assert stored_metadata["title"] == grobid_metadata["title"]
         assert stored_metadata["authors"] == grobid_metadata["authors"]
         
-        print(f"\n✅ Metadata properly stored in PipelineDocument")
+        print("\n✅ Metadata properly stored in PipelineDocument")
     
     def test_grobid_error_handling(self, grobid_client):
         """Test GROBID error handling with invalid input."""
@@ -280,7 +281,7 @@ class TestGROBIDPipelineIntegration:
         result = grobid_client.process_header_document("nonexistent.pdf")
         assert result == _empty_metadata(), "Should return normalized empty metadata on error"
         
-        print(f"\n✅ Error handling works correctly")
+        print("\n✅ Error handling works correctly")
     
     @pytest.mark.performance
     def test_multiple_grobid_requests(self, grobid_client, sample_pdf_path):

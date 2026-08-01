@@ -14,8 +14,8 @@ import ipaddress
 import json
 import logging
 import urllib.parse
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Tuple
+from datetime import UTC, datetime
+from typing import Any
 from uuid import uuid4
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ class WebhookService:
         return self._client
 
     def _utc_now_iso(self) -> str:
-        return datetime.now(timezone.utc).isoformat()
+        return datetime.now(UTC).isoformat()
 
     def _encrypt_secret(self, plaintext: str) -> str:
         from app.services.encryption_service import get_encryption_service
@@ -57,7 +57,7 @@ class WebhookService:
             raise RuntimeError("Supabase client not available.")
         return table_method(client).execute()
 
-    def create_subscription(self, user_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
+    def create_subscription(self, user_id: str, data: dict[str, Any]) -> dict[str, Any]:
         now = self._utc_now_iso()
         secret_encrypted = self._encrypt_secret(data.get("secret", "")) if data.get("secret") else ""
 
@@ -83,7 +83,7 @@ class WebhookService:
             logger.error("Failed to create webhook subscription: %s", exc)
             raise
 
-    def get_subscriptions(self, user_id: str) -> List[Dict[str, Any]]:
+    def get_subscriptions(self, user_id: str) -> list[dict[str, Any]]:
         try:
             result = self._run_query(
                 lambda c: (
@@ -98,7 +98,7 @@ class WebhookService:
             logger.error("Failed to list webhook subscriptions: %s", exc)
             return []
 
-    def get_subscription(self, user_id: str, sub_id: str) -> Optional[Dict[str, Any]]:
+    def get_subscription(self, user_id: str, sub_id: str) -> dict[str, Any] | None:
         try:
             result = self._run_query(
                 lambda c: c.table("webhook_subscriptions").select("*").eq("id", sub_id).maybe_single()
@@ -115,7 +115,7 @@ class WebhookService:
             logger.error("Failed to get webhook subscription: %s", exc)
             return None
 
-    def update_subscription(self, user_id: str, sub_id: str, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def update_subscription(self, user_id: str, sub_id: str, data: dict[str, Any]) -> dict[str, Any] | None:
         existing = self.get_subscription(user_id, sub_id)
         if existing is None:
             return None
@@ -161,7 +161,7 @@ class WebhookService:
             logger.error("Failed to delete webhook subscription: %s", exc)
             return False
 
-    def get_deliveries(self, user_id: str, sub_id: str) -> List[Dict[str, Any]]:
+    def get_deliveries(self, user_id: str, sub_id: str) -> list[dict[str, Any]]:
         sub = self.get_subscription(user_id, sub_id)
         if sub is None:
             return []
@@ -201,9 +201,9 @@ class WebhookService:
         try:
             addr = ipaddress.ip_address(hostname)
             if addr.is_private or addr.is_loopback or addr.is_link_local or addr.is_multicast or addr.is_unspecified:
-                raise ValueError(f"Webhook URL resolves to a private/internal IP address")
+                raise ValueError("Webhook URL resolves to a private/internal IP address")
         except ValueError:
-            pass
+            pass  # intentionally ignored
         try:
             addrs = set()
             import socket
@@ -223,7 +223,7 @@ class WebhookService:
         except OSError:
             raise ValueError(f"Could not resolve webhook URL hostname '{hostname}'")
 
-    async def _deliver(self, url: str, payload: str, signature: str) -> Tuple[int, str]:
+    async def _deliver(self, url: str, payload: str, signature: str) -> tuple[int, str]:
         self._validate_webhook_url(url)
         import httpx
 
@@ -243,7 +243,7 @@ class WebhookService:
     def _calculate_retry_delay(self, attempt: int) -> int:
         return min(2**attempt * 60, 3600)
 
-    async def dispatch_event(self, event_type: str, payload: Dict[str, Any], user_id: Optional[str] = None) -> int:
+    async def dispatch_event(self, event_type: str, payload: dict[str, Any], user_id: str | None = None) -> int:
         import httpx
 
         def find_subs():
@@ -292,13 +292,13 @@ class WebhookService:
                         break
                     else:
                         delay = self._calculate_retry_delay(attempt + 1)
-                        next_retry = datetime.now(timezone.utc).timestamp() + delay
+                        next_retry = datetime.now(UTC).timestamp() + delay
                         if attempt < 2:
                             await asyncio.sleep(delay)
                 except httpx.RequestError as exc:
                     response_body = str(exc)
                     delay = self._calculate_retry_delay(attempt + 1)
-                    next_retry = datetime.now(timezone.utc).timestamp() + delay
+                    next_retry = datetime.now(UTC).timestamp() + delay
                     if attempt < 2:
                         await asyncio.sleep(delay)
 

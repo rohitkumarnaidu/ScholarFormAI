@@ -1,8 +1,8 @@
-from typing import Any, Dict, Optional
+from typing import Any
 
 
 class AMFError(Exception):
-    def __init__(self, message: str, status_code: int = 500, details: Optional[Dict[str, Any]] = None):
+    def __init__(self, message: str, status_code: int = 500, details: dict[str, Any] | None = None):
         self.message = message
         self.status_code = status_code
         self.details = details or {}
@@ -20,12 +20,12 @@ class AMFTimeoutError(AMFError):
 
 
 class AMFValidationError(AMFError):
-    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
+    def __init__(self, message: str, details: dict[str, Any] | None = None):
         super().__init__(message, status_code=400, details=details)
 
 
 class AMFFormattingError(AMFError):
-    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
+    def __init__(self, message: str, details: dict[str, Any] | None = None):
         super().__init__(message, status_code=422, details=details)
 
 

@@ -2,15 +2,17 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 from app.pipeline.structure_detection.heading_rules import (
+    analyze_heading_candidate,
     detect_numbering_pattern,
     detect_title,
-    matches_section_keyword,
-    is_likely_heading_by_style,
-    infer_heading_level,
     get_capitalization_ratio,
-    analyze_heading_candidate,
+    infer_heading_level,
+    is_likely_heading_by_style,
+    matches_section_keyword,
 )
+
 
 def _b(text: str, index: int = 1, font_size: float = 12.0, bold: bool = False):
     from app.models import Block, BlockType

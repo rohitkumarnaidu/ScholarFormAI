@@ -5,8 +5,8 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import datetime, timezone
-from typing import Any, Dict, Optional, Tuple
+from datetime import UTC, datetime
+from typing import Any
 
 from fastapi import Request
 
@@ -19,15 +19,15 @@ WRITE_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
 
 
 class AuditLogService:
-    _audit_table_available: Optional[bool] = None
+    _audit_table_available: bool | None = None
     _audit_table_warning_logged: bool = False
 
     @staticmethod
     def _utc_now_iso() -> str:
-        return datetime.now(timezone.utc).isoformat()
+        return datetime.now(UTC).isoformat()
 
     @staticmethod
-    def _extract_resource(path: str) -> Tuple[str, Optional[str]]:
+    def _extract_resource(path: str) -> tuple[str, str | None]:
         segments = [segment for segment in (path or "").strip("/").split("/") if segment]
         while segments and segments[0] in {"api", "v1"}:
             segments.pop(0)
@@ -37,7 +37,7 @@ class AuditLogService:
         return resource_type, resource_id
 
     @staticmethod
-    def _extract_user_id_from_auth_header(authorization_header: Optional[str]) -> Optional[str]:
+    def _extract_user_id_from_auth_header(authorization_header: str | None) -> str | None:
         if not authorization_header:
             return None
 
@@ -58,12 +58,12 @@ class AuditLogService:
 
     async def log(
         self,
-        user_id: Optional[str],
+        user_id: str | None,
         action: str,
         resource_type: str,
-        resource_id: Optional[str],
-        ip_address: Optional[str],
-        details: Optional[Dict[str, Any]] = None,
+        resource_id: str | None,
+        ip_address: str | None,
+        details: dict[str, Any] | None = None,
     ) -> None:
         if self._audit_table_available is False:
             return
@@ -114,7 +114,7 @@ class AuditLogService:
         request: Request,
         *,
         status_code: int,
-        details: Optional[Dict[str, Any]] = None,
+        details: dict[str, Any] | None = None,
     ) -> None:
         method = (request.method or "").upper()
         if method not in WRITE_METHODS:

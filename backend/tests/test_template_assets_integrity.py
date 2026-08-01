@@ -8,7 +8,6 @@ Regression checks for template DOCX assets and layout contracts.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List
 from zipfile import ZipFile
 
 import pytest
@@ -16,12 +15,11 @@ import yaml
 
 from app.pipeline.formatting.template_renderer import TemplateRenderer
 
-
 TEMPLATES_ROOT = Path("app/templates")
 PIPELINE_CONTRACTS_ROOT = Path("app/pipeline/contracts")
 
 
-def _contract_template_names(root: Path) -> List[str]:
+def _contract_template_names(root: Path) -> list[str]:
     names = []
     for entry in sorted(root.iterdir()):
         if not entry.is_dir():

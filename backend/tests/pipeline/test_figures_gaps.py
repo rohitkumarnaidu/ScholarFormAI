@@ -7,8 +7,10 @@ Targets 100% line coverage for each module.
 """
 
 from __future__ import annotations
+
 import os
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 import pytest
 
 from app.pipeline.figures.analyzer import FigureAnalyzer, figure_analyzer
@@ -251,7 +253,7 @@ class TestCaptionMatcherGaps:
     # -- process (lines 70-128) --
 
     def test_process_no_figures_returns_early(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY),
         ])
@@ -259,7 +261,7 @@ class TestCaptionMatcherGaps:
         assert result is doc
 
     def test_process_no_blocks_but_figures(self, matcher):
-        from app.models import PipelineDocument, Figure
+        from app.models import Figure, PipelineDocument
         doc = PipelineDocument(document_id="t", figures=[
             Figure(figure_id="f1", index=0),
         ])
@@ -267,7 +269,7 @@ class TestCaptionMatcherGaps:
         assert result is doc
 
     def test_process_with_figures_and_captions(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Figure 1. Results.", block_type=BlockType.BODY),
@@ -281,7 +283,7 @@ class TestCaptionMatcherGaps:
         assert result.figures[0].caption_text == "Figure 1. Results."
 
     def test_process_with_exception(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Figure 1. Test.", block_type=BlockType.BODY),
@@ -298,7 +300,7 @@ class TestCaptionMatcherGaps:
             assert stages[0].status == "error"
 
     def test_process_success_stage_added(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Figure 1. Test.", block_type=BlockType.BODY),
@@ -314,7 +316,7 @@ class TestCaptionMatcherGaps:
 
     def test_process_vision_enhanced_count_in_message(self, matcher, tmp_path):
         """Vision-enhanced count included in success message (lines 115-117)."""
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         mock_vision = MagicMock()
         mock_vision.analyze_figure.return_value = "A chart"
         matcher.vision_client = mock_vision
@@ -337,7 +339,7 @@ class TestCaptionMatcherGaps:
         assert "enhanced" in stage.message
 
     def test_process_updates_updated_at(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Figure 1. Test.", block_type=BlockType.BODY),
@@ -624,7 +626,7 @@ class TestCaptionMatcherGaps:
     # -- link_figures convenience (lines 253-254) --
 
     def test_link_figures_convenience(self):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         doc = PipelineDocument(document_id="t",
             blocks=[Block(block_id="b1", index=0, text="Figure 1. Test.", block_type=BlockType.BODY)],
             figures=[Figure(figure_id="f1", index=0, metadata={"block_index": 0})],
@@ -633,7 +635,7 @@ class TestCaptionMatcherGaps:
         assert result.figures[0].caption_text == "Figure 1. Test."
 
     def test_link_figures_with_vision(self):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         doc = PipelineDocument(document_id="t",
             blocks=[Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY)],
             figures=[Figure(figure_id="f1", index=0, metadata={"block_index": 0})],

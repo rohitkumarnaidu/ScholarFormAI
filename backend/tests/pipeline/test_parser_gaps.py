@@ -1,17 +1,14 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import Block, BlockType, Figure, Table, Equation
-from app.models import Block, BlockType, Figure, Table, Equation
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from typing import Any, List, Optional
-
+from datetime import UTC, datetime
+from typing import Any
 from unittest.mock import MagicMock, patch
 
+from app.models import Block, BlockType, Equation, Figure, Table
 from app.pipeline.parsing.parser import DocxParser
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -24,7 +21,7 @@ def _make_run(
     underline: bool | None = False,
     font_name: str | None = None,
     font_size_pt: float | None = None,
-    element_findall_result: Optional[List] = None,
+    element_findall_result: list | None = None,
 ) -> MagicMock:
     """Build a MagicMock that looks like a python-docx Run."""
     run = MagicMock()
@@ -45,13 +42,13 @@ def _make_run(
 def _make_paragraph(
     text: str = "",
     style_name: str | None = None,
-    runs: Optional[List[MagicMock]] = None,
+    runs: list[MagicMock] | None = None,
     alignment: Any = None,
     font_bold: bool | None = None,
     font_italic: bool | None = None,
     font_name: str | None = None,
     font_size_pt: float | None = None,
-    element_findall_result: Optional[List] = None,
+    element_findall_result: list | None = None,
 ) -> MagicMock:
     """Build a MagicMock that looks like a python-docx Paragraph."""
     para = MagicMock()
@@ -75,8 +72,8 @@ def _make_paragraph(
 
 
 def _make_docx_mock(
-    body_elements: Optional[List] = None,
-    sections: Optional[List] = None,
+    body_elements: list | None = None,
+    sections: list | None = None,
     footnotes_part: Any = None,
     endnotes_part: Any = None,
 ) -> MagicMock:
@@ -254,7 +251,7 @@ class TestCorePropertiesGaps:
         docx = MagicMock()
         docx.core_properties = MagicMock(
             title="T", author="A", subject="S", keywords="kw1; kw2",
-            created=datetime(2024, 1, 15, tzinfo=timezone.utc),
+            created=datetime(2024, 1, 15, tzinfo=UTC),
         )
         meta = p._extract_core_properties(docx)
         assert meta.publication_date is not None

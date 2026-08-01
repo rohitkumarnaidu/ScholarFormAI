@@ -8,12 +8,13 @@ This is the fundamental unit of content in the document pipeline.
 Each block represents a contiguous piece of text with associated metadata.
 """
 
-from typing import Optional, Dict, Any, List
-from enum import Enum
-from pydantic import BaseModel, Field, ConfigDict
+from enum import StrEnum
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
-class BlockType(str, Enum):
+class BlockType(StrEnum):
     """Classification of block content types."""
 
     # Structural elements
@@ -66,7 +67,7 @@ class BlockType(str, Enum):
     REFERENCE_ITEM = "reference_item"
 
 
-class ListType(str, Enum):
+class ListType(StrEnum):
     """Type of list if block is a list item."""
 
     ORDERED = "ordered"
@@ -80,9 +81,9 @@ class TextStyle(BaseModel):
     italic: bool = False
     underline: bool = False
     strikethrough: bool = False
-    font_name: Optional[str] = None
-    font_size: Optional[float] = None  # in points
-    color: Optional[str] = None  # hex color code
+    font_name: str | None = None
+    font_size: float | None = None  # in points
+    color: str | None = None  # hex color code
 
     model_config = ConfigDict(frozen=True)  # Immutable
 
@@ -106,44 +107,44 @@ class Block(BaseModel):
 
     # Position information (assigned by parser)
     index: int = Field(..., description="Sequential position in document (0-based)")
-    page_number: Optional[int] = Field(default=None, description="Page number if available from parser")
+    page_number: int | None = Field(default=None, description="Page number if available from parser")
 
     # Styling (extracted by parser)
     style: TextStyle = Field(default_factory=TextStyle, description="Visual styling information")
 
     # Hierarchical information (assigned by structure_detection)
-    level: Optional[int] = Field(default=None, description="Hierarchy level (e.g., heading depth, list nesting)")
-    parent_id: Optional[str] = Field(default=None, description="Block ID of parent block (e.g., section heading)")
+    level: int | None = Field(default=None, description="Hierarchy level (e.g., heading depth, list nesting)")
+    parent_id: str | None = Field(default=None, description="Block ID of parent block (e.g., section heading)")
 
     # List-specific metadata
-    list_type: Optional[ListType] = Field(default=None, description="Type of list if this is a list item")
-    list_level: Optional[int] = Field(default=None, description="Nesting level if this is a list item (0-based)")
+    list_type: ListType | None = Field(default=None, description="Type of list if this is a list item")
+    list_level: int | None = Field(default=None, description="Nesting level if this is a list item (0-based)")
 
     # Section information (assigned by structure_detection)
-    section_name: Optional[str] = Field(
+    section_name: str | None = Field(
         default=None, description="Name of the section this block belongs to (e.g., 'Introduction', 'Methods')"
     )
 
     # Semantic information (assigned by classification)
-    semantic_intent: Optional[str] = Field(
+    semantic_intent: str | None = Field(
         default=None, description="Semantic label for classification (e.g., 'ABSTRACT_BODY')"
     )
-    classification_confidence: Optional[float] = Field(
+    classification_confidence: float | None = Field(
         default=None, description="Confidence score for semantic classification"
     )
 
     # Cross-reference metadata (assigned by references stage)
     contains_citation: bool = Field(default=False, description="Whether this block contains inline citations")
-    citation_keys: List[str] = Field(
+    citation_keys: list[str] = Field(
         default_factory=list, description="List of citation keys found in this block (e.g., ['Smith2020', 'Jones2021'])"
     )
 
     # Validation and quality flags (assigned by validation stage)
     is_valid: bool = Field(default=True, description="Whether this block passed validation")
-    warnings: List[str] = Field(default_factory=list, description="List of validation warnings for this block")
+    warnings: list[str] = Field(default_factory=list, description="List of validation warnings for this block")
 
     # Extensibility for pipeline-specific metadata
-    metadata: Dict[str, Any] = Field(default_factory=dict, description="Additional metadata added by pipeline stages")
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata added by pipeline stages")
 
     model_config = ConfigDict(use_enum_values=True)
 

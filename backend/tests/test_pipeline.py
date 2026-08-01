@@ -6,8 +6,9 @@ Pipeline Integration Tests
 Tests end-to-end pipeline execution and stage integration.
 """
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 from docx import Document as DocxDocument
 
 
@@ -81,7 +82,7 @@ class TestPipeline:
             from app.pipeline.orchestrator import PipelineOrchestrator
 
             orchestrator = PipelineOrchestrator(temp_dir=str(tmp_path / "temp"))
-            output_path = str(tmp_path / "output.docx")
+            str(tmp_path / "output.docx")
 
             result = orchestrator.run_pipeline(
                 input_path=str(doc_path),

@@ -2,7 +2,9 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 from unittest.mock import MagicMock
+
 
 class TestCrossReferenceEngine:
     def _make_block(self, block_id="b1", text="", block_type=None, section_name=None):

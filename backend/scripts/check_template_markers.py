@@ -7,7 +7,6 @@ import sys
 from pathlib import Path
 from zipfile import ZipFile
 
-
 REQUIRED_MARKERS = {
     "title": "{{ title }}",
     "sections_loop": "{% for section in sections %}",

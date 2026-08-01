@@ -5,20 +5,24 @@
 Test suite for FigureRenderer.
 """
 
-from app.models import Figure
-from app.models import Figure
 from __future__ import annotations
+
 from unittest.mock import MagicMock, patch
+
 import pytest
+
+from app.models import Figure
 from app.pipeline.figures.renderer import FigureRenderer
+
 
 class TestFigureAnalysisStage:
     """Tests for the orchestrator's _run_figure_analysis_stage integration."""
 
     @pytest.fixture
     def doc_with_figure(self, tmp_path):
-        from app.models import PipelineDocument
         from PIL import Image
+
+        from app.models import PipelineDocument
 
         img_path = tmp_path / "fig.png"
         img = Image.new("RGB", (800, 600), color=(255, 255, 255))

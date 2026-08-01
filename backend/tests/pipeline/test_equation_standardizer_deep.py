@@ -6,12 +6,15 @@ Deep test suite for Equation Standardizer pipeline stage.
 Covers process(), OMML→MathML conversion via XSLT, singleton access.
 """
 
-from app.models import PipelineDocument
-from app.models import PipelineDocument
 from __future__ import annotations
+
 from unittest.mock import patch
+
 import pytest
+
+from app.models import PipelineDocument
 from app.pipeline.equations.standardizer import EquationStandardizer, get_equation_standardizer
+
 
 @pytest.fixture
 def standardizer():

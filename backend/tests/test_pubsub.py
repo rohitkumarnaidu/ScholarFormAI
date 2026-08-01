@@ -1,13 +1,13 @@
-import pytest
 from unittest.mock import AsyncMock, patch
+
+import pytest
 
 
 @pytest.fixture
 def pubsub():
-    with patch("app.realtime.pubsub.aioredis", None):
-        with patch("app.realtime.pubsub.settings.REDIS_ENABLED", False):
-            from app.realtime.pubsub import RedisPubSub
-            yield RedisPubSub(redis_url="redis://localhost:6379")
+    with patch("app.realtime.pubsub.aioredis", None), patch("app.realtime.pubsub.settings.REDIS_ENABLED", False):
+        from app.realtime.pubsub import RedisPubSub
+        yield RedisPubSub(redis_url="redis://localhost:6379")
 
 
 class TestRedisPubSub:

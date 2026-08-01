@@ -6,11 +6,15 @@ Tests for the circuit breaker decorator — public API behavior.
 """
 from __future__ import annotations
 
+import contextlib
+
 import pytest
+
 from app.pipeline.safety.circuit_breaker import (
-    circuit_breaker,
     CircuitBreakerOpenException,
+    circuit_breaker,
 )
+
 
 class TestCircuitBreakerAPI:
 
@@ -42,13 +46,11 @@ class TestCircuitBreakerAPI:
         """Open circuit without fallback → CircuitBreakerOpenException or the underlying exception."""
         @circuit_breaker(failure_threshold=2, recovery_timeout=9999)
         def bad():
-            raise IOError("io")
+            raise OSError("io")
 
         for _ in range(2):
-            try:
+            with contextlib.suppress(Exception):
                 bad()
-            except Exception:
-                pass
 
         with pytest.raises(CircuitBreakerOpenException):
             bad()

@@ -5,8 +5,10 @@
 
 from __future__ import annotations
 
+from unittest.mock import MagicMock, PropertyMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock, PropertyMock
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -388,7 +390,7 @@ class TestDoclingClientHeadersFootersCoverage:
 
     def test_detect_headers_footers_empty_page(self):
         """Empty page in element grouping skips processing."""
-        from app.pipeline.services.docling_client import DoclingClient, BoundingBox, LayoutElement
+        from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
         c = DoclingClient()
         p1_body = LayoutElement(text="Body", bbox=BoundingBox(0, 200, 100, 400, page=1), element_type="text")
         p2_body = LayoutElement(text="P2 Body", bbox=BoundingBox(0, 200, 100, 400, page=2), element_type="text")

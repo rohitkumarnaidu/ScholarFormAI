@@ -1,5 +1,6 @@
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
+
+from unittest.mock import MagicMock, patch
 
 
 class TestNvidiaClientInitBranches:
@@ -47,7 +48,7 @@ class TestNvidiaClientInitBranches:
                 with patch("app.services.nvidia_client._USE_LLM_SERVICE", True):
                     with patch("app.services.nvidia_client.logger") as mock_log:
                         from app.services.nvidia_client import NvidiaClient
-                        client = NvidiaClient()
+                        NvidiaClient()
         mock_log.info.assert_any_call("NvidiaClient: using LiteLLM for NVIDIA calls.")
 
     def test_init_settings_path(self):
@@ -162,7 +163,7 @@ class TestNvidiaClientValidateTemplateComplianceBranches:
 
 class TestNvidiaClientGetClientDeep:
     def test_reuses_instance(self):
-        from app.services.nvidia_client import get_nvidia_client, _nvidia_client
+        from app.services.nvidia_client import _nvidia_client, get_nvidia_client
         _nvidia_client = None
         mock_instance = MagicMock()
         with patch("app.services.nvidia_client.NvidiaClient", return_value=mock_instance):

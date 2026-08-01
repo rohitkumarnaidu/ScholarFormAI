@@ -5,22 +5,21 @@
 
 from __future__ import annotations
 
-import os
-import time
 import asyncio
+import os
 import threading
+import time
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from app.pipeline.orchestrator import (
+    _MAX_CONCURRENT_JOBS,
     PipelineOrchestrator,
     _pipeline_semaphore,
-    _MAX_CONCURRENT_JOBS,
     get_rag_engine,
     get_reasoning_engine,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers

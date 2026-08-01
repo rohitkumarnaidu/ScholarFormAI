@@ -2,8 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 import pytest
+
 from app.pipeline.references.parser import ReferenceParser
+
 
 @pytest.fixture
 def parser():
@@ -60,7 +63,7 @@ class TestReferenceParser:
         assert parser._parse_authors("") == []
 
     def test_process_creates_references(self, parser):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         blocks = [
             Block(block_id="b1", text="[1] Author, \"Title,\" Journal, 2020.",
                   index=1, block_type=BlockType.REFERENCE_ENTRY),

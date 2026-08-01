@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import time
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 pytestmark = [pytest.mark.security]
 
 MODULE = "app.security.jwks_verifier"
@@ -91,7 +93,7 @@ class TestGetCachedKeys:
         from app.security.jwks_verifier import _JWKS_CACHE
         _JWKS_CACHE["keys"] = {}
         _JWKS_CACHE["fetched_at"] = 0.0
-        with patch(f"{MODULE}._fetch_jwks", return_value={"k3": {"kid": "k3"}}) as mock_fetch:
+        with patch(f"{MODULE}._fetch_jwks", return_value={"k3": {"kid": "k3"}}):
             from app.security.jwks_verifier import _get_cached_keys
             result = _get_cached_keys()
             assert "k3" in result
@@ -101,8 +103,9 @@ class TestDecodeWithSecret:
     def test_no_secret_raises(self):
         with patch(f"{MODULE}.settings") as mock_s:
             mock_s.SUPABASE_JWT_SECRET = None
-            from app.security.jwks_verifier import _decode_with_secret
             from fastapi import HTTPException
+
+            from app.security.jwks_verifier import _decode_with_secret
             with pytest.raises(HTTPException) as exc:
                 _decode_with_secret("token", expected_issuer=None)
             assert exc.value.status_code == 401
@@ -145,8 +148,9 @@ class TestPublicKeyFromJwk:
 
     def test_unsupported_key_type(self):
         jwk = {"kty": "DSA"}
-        from app.security.jwks_verifier import _public_key_from_jwk
         from fastapi import HTTPException
+
+        from app.security.jwks_verifier import _public_key_from_jwk
         with pytest.raises(HTTPException) as exc:
             _public_key_from_jwk(jwk)
         assert exc.value.status_code == 401
@@ -171,7 +175,7 @@ class TestDecodeWithJwks:
         with patch(f"{MODULE}.jwt.get_unverified_header", return_value={"kid": "k1", "alg": "RS256"}):
             with patch(f"{MODULE}._get_cached_keys", return_value={"k1": mock_jwk}):
                 with patch(f"{MODULE}._public_key_from_jwk", return_value="pub-key"):
-                    with patch(f"{MODULE}.jwt.decode", return_value={"sub": "user1"}) as mock_decode:
+                    with patch(f"{MODULE}.jwt.decode", return_value={"sub": "user1"}):
                         from app.security.jwks_verifier import _decode_with_jwks
                         result = _decode_with_jwks("token", expected_issuer=None)
                         assert result["sub"] == "user1"
@@ -189,15 +193,17 @@ class TestDecodeWithJwks:
 
 class TestVerifyJwt:
     def test_empty_token_raises(self):
-        from app.security.jwks_verifier import verify_jwt
         from fastapi import HTTPException
+
+        from app.security.jwks_verifier import verify_jwt
         with pytest.raises(HTTPException) as exc:
             verify_jwt("")
         assert exc.value.status_code == 401
 
     def test_none_token_raises(self):
-        from app.security.jwks_verifier import verify_jwt
         from fastapi import HTTPException
+
+        from app.security.jwks_verifier import verify_jwt
         with pytest.raises(HTTPException) as exc:
             verify_jwt(None)
         assert exc.value.status_code == 401
@@ -207,8 +213,9 @@ class TestVerifyJwt:
             mock_s.SUPABASE_URL = "https://project.supabase.co"
             mock_s.SUPABASE_JWT_SECRET = "secret"
             with patch(f"{MODULE}.jwt.get_unverified_header", return_value={"alg": "HS256"}):
-                from app.security.jwks_verifier import verify_jwt
                 from fastapi import HTTPException
+
+                from app.security.jwks_verifier import verify_jwt
                 with pytest.raises(HTTPException) as exc:
                     verify_jwt("token")
                 assert exc.value.status_code == 401
@@ -231,7 +238,7 @@ class TestVerifyJwt:
                 from app.security.jwks_verifier import _RetryableJWTError
                 with patch(f"{MODULE}._decode_with_jwks") as mock_jwks:
                     mock_jwks.side_effect = [_RetryableJWTError("cache miss"), {"sub": "retry-user"}]
-                    mock_jwks_with_refresh = MagicMock(return_value={"sub": "retry-user"})
+                    MagicMock(return_value={"sub": "retry-user"})
                     from app.security.jwks_verifier import verify_jwt
                     result = verify_jwt("token")
                     assert result["sub"] == "retry-user"
@@ -243,8 +250,9 @@ class TestVerifyJwt:
             with patch(f"{MODULE}.jwt.get_unverified_header", return_value={"alg": "RS256", "kid": "k1"}):
                 from app.security.jwks_verifier import _RetryableJWTError
                 with patch(f"{MODULE}._decode_with_jwks", side_effect=[_RetryableJWTError("miss"), _RetryableJWTError("still miss")]):
-                    from app.security.jwks_verifier import verify_jwt
                     from fastapi import HTTPException
+
+                    from app.security.jwks_verifier import verify_jwt
                     with pytest.raises(HTTPException) as exc:
                         verify_jwt("token")
                     assert exc.value.status_code == 401
@@ -254,8 +262,9 @@ class TestVerifyJwt:
             mock_s.SUPABASE_URL = "https://project.supabase.co"
             with patch(f"{MODULE}.jwt.get_unverified_header", return_value={"alg": "RS256", "kid": "k1"}):
                 with patch(f"{MODULE}._decode_with_jwks", side_effect=__import__("jwt").ExpiredSignatureError("expired")):
-                    from app.security.jwks_verifier import verify_jwt
                     from fastapi import HTTPException
+
+                    from app.security.jwks_verifier import verify_jwt
                     with pytest.raises(HTTPException) as exc:
                         verify_jwt("token")
                     assert exc.value.status_code == 401
@@ -266,8 +275,9 @@ class TestVerifyJwt:
             mock_s.SUPABASE_URL = "https://project.supabase.co"
             with patch(f"{MODULE}.jwt.get_unverified_header", return_value={"alg": "RS256", "kid": "k1"}):
                 with patch(f"{MODULE}._decode_with_jwks", side_effect=__import__("jwt").InvalidIssuerError("bad iss")):
-                    from app.security.jwks_verifier import verify_jwt
                     from fastapi import HTTPException
+
+                    from app.security.jwks_verifier import verify_jwt
                     with pytest.raises(HTTPException) as exc:
                         verify_jwt("token")
                     assert exc.value.status_code == 401
@@ -277,8 +287,9 @@ class TestVerifyJwt:
             mock_s.SUPABASE_URL = "https://project.supabase.co"
             with patch(f"{MODULE}.jwt.get_unverified_header", return_value={"alg": "RS256", "kid": "k1"}):
                 with patch(f"{MODULE}._decode_with_jwks", side_effect=__import__("jwt").InvalidAudienceError("bad aud")):
-                    from app.security.jwks_verifier import verify_jwt
                     from fastapi import HTTPException
+
+                    from app.security.jwks_verifier import verify_jwt
                     with pytest.raises(HTTPException) as exc:
                         verify_jwt("token")
                     assert exc.value.status_code == 401
@@ -288,8 +299,9 @@ class TestVerifyJwt:
             mock_s.SUPABASE_URL = "https://project.supabase.co"
             with patch(f"{MODULE}.jwt.get_unverified_header", return_value={"alg": "RS256", "kid": "k1"}):
                 with patch(f"{MODULE}._decode_with_jwks", side_effect=__import__("jwt").InvalidTokenError("generic")):
-                    from app.security.jwks_verifier import verify_jwt
                     from fastapi import HTTPException
+
+                    from app.security.jwks_verifier import verify_jwt
                     with pytest.raises(HTTPException) as exc:
                         verify_jwt("token")
                     assert exc.value.status_code == 401

@@ -6,9 +6,9 @@ Agent memory system for pattern recognition across documents.
 """
 
 import json
-from typing import Dict, Any, Optional
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 
 class AgentMemory:
@@ -47,7 +47,7 @@ class AgentMemory:
         """Load JSON file or return default."""
         if file_path.exists():
             try:
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, encoding="utf-8") as f:
                     return json.load(f)
             except:
                 return default
@@ -58,7 +58,7 @@ class AgentMemory:
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
 
-    def remember_pattern(self, pattern_type: str, context: Dict[str, Any], success: bool):
+    def remember_pattern(self, pattern_type: str, context: dict[str, Any], success: bool):
         """
         Remember a processing pattern.
 
@@ -70,7 +70,7 @@ class AgentMemory:
         if pattern_type not in self.patterns:
             self.patterns[pattern_type] = {"successful": [], "failed": []}
 
-        pattern_entry = {"context": context, "timestamp": datetime.now(timezone.utc).isoformat(), "count": 1}
+        pattern_entry = {"context": context, "timestamp": datetime.now(UTC).isoformat(), "count": 1}
 
         # Check if similar pattern exists
         target_list = self.patterns[pattern_type]["successful" if success else "failed"]
@@ -80,7 +80,7 @@ class AgentMemory:
         for existing in target_list:
             if existing["context"].get("document_type") == context.get("document_type"):
                 existing["count"] = existing.get("count", 1) + 1
-                existing["timestamp"] = datetime.now(timezone.utc).isoformat()
+                existing["timestamp"] = datetime.now(UTC).isoformat()
                 similar_found = True
                 break
 
@@ -89,7 +89,7 @@ class AgentMemory:
 
         self._save_json(self.patterns_file, self.patterns)
 
-    def remember_error(self, error_type: str, error_message: str, solution: Optional[str] = None):
+    def remember_error(self, error_type: str, error_message: str, solution: str | None = None):
         """
         Remember an error and its solution.
 
@@ -102,7 +102,7 @@ class AgentMemory:
             "type": error_type,
             "message": error_message,
             "solution": solution,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "occurrences": 1,
         }
 
@@ -110,7 +110,7 @@ class AgentMemory:
         for existing in self.errors:
             if existing["type"] == error_type and existing["message"] == error_message:
                 existing["occurrences"] += 1
-                existing["timestamp"] = datetime.now(timezone.utc).isoformat()
+                existing["timestamp"] = datetime.now(UTC).isoformat()
                 if solution:
                     existing["solution"] = solution
                 self._save_json(self.errors_file, self.errors)
@@ -119,7 +119,7 @@ class AgentMemory:
         self.errors.append(error_entry)
         self._save_json(self.errors_file, self.errors)
 
-    def record_metric(self, metric_name: str, value: float, metadata: Optional[Dict] = None):
+    def record_metric(self, metric_name: str, value: float, metadata: dict | None = None):
         """
         Record a performance metric.
 
@@ -133,7 +133,7 @@ class AgentMemory:
 
         metric = self.metrics[metric_name]
         metric["values"].append(
-            {"value": value, "timestamp": datetime.now(timezone.utc).isoformat(), "metadata": metadata or {}}
+            {"value": value, "timestamp": datetime.now(UTC).isoformat(), "metadata": metadata or {}}
         )
 
         # Keep only last 100 values
@@ -146,7 +146,7 @@ class AgentMemory:
 
         self._save_json(self.metrics_file, self.metrics)
 
-    def get_best_pattern(self, pattern_type: str, context: Dict[str, Any]) -> Optional[Dict]:
+    def get_best_pattern(self, pattern_type: str, context: dict[str, Any]) -> dict | None:
         """
         Get the best pattern for a given context.
 
@@ -175,7 +175,7 @@ class AgentMemory:
         # Return most common pattern if no exact match
         return max(successful, key=lambda p: p.get("count", 1))
 
-    def get_error_solution(self, error_type: str, error_message: str) -> Optional[str]:
+    def get_error_solution(self, error_type: str, error_message: str) -> str | None:
         """
         Get solution for a known error.
 
@@ -191,7 +191,7 @@ class AgentMemory:
                 return error.get("solution")
         return None
 
-    def get_metric_summary(self, metric_name: str) -> Optional[Dict]:
+    def get_metric_summary(self, metric_name: str) -> dict | None:
         """
         Get summary of a metric.
 
@@ -218,13 +218,13 @@ class AgentMemory:
             "field": field,
             "original": original_value,
             "corrected": corrected_value,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
         }
 
         self.corrections.append(correction_entry)
         self._save_json(self.corrections_file, self.corrections)
 
-    def get_memory_summary(self) -> Dict[str, Any]:
+    def get_memory_summary(self) -> dict[str, Any]:
         """Get overall memory summary."""
         return {
             "patterns": {

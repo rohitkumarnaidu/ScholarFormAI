@@ -1,9 +1,8 @@
-import pytest
 import hashlib
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 from fastapi import HTTPException, UploadFile
-
-
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -71,17 +70,17 @@ class TestCacheHelpers:
     @pytest.mark.asyncio
     async def test_get_cached_ttl_zero(self):
         with patch("app.routers.v1.documents_impl._document_status_ttl_seconds", return_value=0):
-            from app.routers.v1.documents_impl import _get_cached_status_response, _STATUS_CACHE_MISS
+            from app.routers.v1.documents_impl import _STATUS_CACHE_MISS, _get_cached_status_response
             assert await _get_cached_status_response("key") is _STATUS_CACHE_MISS
 
     @pytest.mark.asyncio
     async def test_get_cached_miss(self):
-        from app.routers.v1.documents_impl import _get_cached_status_response, _STATUS_CACHE_MISS
+        from app.routers.v1.documents_impl import _STATUS_CACHE_MISS, _get_cached_status_response
         assert await _get_cached_status_response("nonexistent") is _STATUS_CACHE_MISS
 
     @pytest.mark.asyncio
     async def test_set_and_get(self):
-        from app.routers.v1.documents_impl import _set_cached_status_response, _get_cached_status_response
+        from app.routers.v1.documents_impl import _get_cached_status_response, _set_cached_status_response
         with patch("app.routers.v1.documents_impl._document_status_ttl_seconds", return_value=30):
             payload = {"status": "PROCESSING"}
             await _set_cached_status_response("key1", payload)
@@ -91,7 +90,11 @@ class TestCacheHelpers:
 
     @pytest.mark.asyncio
     async def test_set_ttl_zero_evicts(self):
-        from app.routers.v1.documents_impl import _set_cached_status_response, _get_cached_status_response, _STATUS_CACHE_MISS
+        from app.routers.v1.documents_impl import (
+            _STATUS_CACHE_MISS,
+            _get_cached_status_response,
+            _set_cached_status_response,
+        )
         with patch("app.routers.v1.documents_impl._document_status_ttl_seconds", return_value=30):
             await _set_cached_status_response("key2", {"status": "OK"})
         with patch("app.routers.v1.documents_impl._document_status_ttl_seconds", return_value=0):
@@ -100,7 +103,11 @@ class TestCacheHelpers:
 
     @pytest.mark.asyncio
     async def test_stale_returns_within_max_stale(self):
-        from app.routers.v1.documents_impl import _set_cached_status_response, _get_stale_status_response, _STATUS_CACHE_MISS
+        from app.routers.v1.documents_impl import (
+            _STATUS_CACHE_MISS,
+            _get_stale_status_response,
+            _set_cached_status_response,
+        )
         with patch("app.routers.v1.documents_impl._document_status_ttl_seconds", return_value=1):
             await _set_cached_status_response("key3", {"status": "OK"})
         with patch("app.routers.v1.documents_impl._document_status_ttl_seconds", return_value=1):
@@ -109,7 +116,11 @@ class TestCacheHelpers:
 
     @pytest.mark.asyncio
     async def test_stale_past_max_stale_evicts(self):
-        from app.routers.v1.documents_impl import _set_cached_status_response, _get_stale_status_response, _STATUS_CACHE_MISS
+        from app.routers.v1.documents_impl import (
+            _STATUS_CACHE_MISS,
+            _get_stale_status_response,
+            _set_cached_status_response,
+        )
         with patch("app.routers.v1.documents_impl._document_status_ttl_seconds", return_value=1):
             await _set_cached_status_response("key4", {"status": "OLD"})
         with patch("app.routers.v1.documents_impl._document_status_ttl_seconds", return_value=0):
@@ -305,7 +316,7 @@ class TestUploadDocument:
              patch("app.routers.v1.documents_impl._validate_magic_bytes", return_value=content), \
              patch("app.routers.v1.documents_impl._scan_uploaded_file", return_value={"clean": True}), \
              patch("app.routers.v1.documents_impl.DocumentService") as mock_ds, \
-             patch("app.routers.v1.documents_impl.PipelineOrchestrator") as mock_po, \
+             patch("app.routers.v1.documents_impl.PipelineOrchestrator"), \
              patch("app.routers.v1.documents_impl.enhancement_manager") as mock_em, \
              patch("app.routers.v1.documents_impl.audit_log_service") as mock_audit, \
              patch("app.routers.v1.documents_impl._set_cached_status_response"), \
@@ -524,7 +535,7 @@ class TestDeleteDocument:
 
     @pytest.mark.asyncio
     async def test_status_not_found(self):
-        from app.routers.v1.documents_impl import get_status, _STATUS_CACHE_MISS
+        from app.routers.v1.documents_impl import _STATUS_CACHE_MISS, get_status
         with patch("app.routers.v1.documents_impl._require_db"), \
              patch("app.routers.v1.documents_impl._get_stale_status_response", return_value=_STATUS_CACHE_MISS), \
              patch("app.routers.v1.documents_impl.DocumentService") as mock_ds:

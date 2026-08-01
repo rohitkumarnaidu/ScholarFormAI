@@ -15,7 +15,7 @@ Usage:
 
 import json
 import logging
-from typing import Optional, Any
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ class FeatureFlagService:
         self._redis = redis
         self._cache: dict[str, Any] = dict(_DEFAULT_FLAGS)
 
-    def get_flag(self, name: str, default: Any = None, user_id: Optional[str] = None) -> Any:
+    def get_flag(self, name: str, default: Any = None, user_id: str | None = None) -> Any:
         """
         Get a feature flag value.
 
@@ -62,7 +62,7 @@ class FeatureFlagService:
                     if cached is not None:
                         return json.loads(cached)
             except Exception:
-                pass
+                pass  # intentionally ignored
 
         # Check in-memory cache
         if name in self._cache:
@@ -77,11 +77,11 @@ class FeatureFlagService:
                     self._set_redis_cache(name, value)
                     return value
             except Exception:
-                pass
+                pass  # intentionally ignored
 
         return default if default is not None else _DEFAULT_FLAGS.get(name)
 
-    def set_flag(self, name: str, value: Any, user_id: Optional[str] = None) -> None:
+    def set_flag(self, name: str, value: Any, user_id: str | None = None) -> None:
         """Set a feature flag value."""
         self._cache[name] = value
         self._set_redis_cache(name, value)
@@ -92,7 +92,7 @@ class FeatureFlagService:
             except Exception as e:
                 logger.error("Failed to save feature flag to DB: %s", e)
 
-    def get_all_flags(self, user_id: Optional[str] = None) -> dict[str, Any]:
+    def get_all_flags(self, user_id: str | None = None) -> dict[str, Any]:
         """Get all feature flags."""
         flags = dict(_DEFAULT_FLAGS)
         flags.update(self._cache)
@@ -102,7 +102,7 @@ class FeatureFlagService:
                 db_flags = self._load_all_from_db(user_id)
                 flags.update(db_flags)
             except Exception:
-                pass
+                pass  # intentionally ignored
 
         return flags
 
@@ -115,22 +115,22 @@ class FeatureFlagService:
                 if r:
                     r.setex(f"flag:{name}", 300, json.dumps(value))  # 5 min TTL
             except Exception:
-                pass
+                pass  # intentionally ignored
 
-    def _load_from_db(self, name: str, user_id: Optional[str]) -> Optional[Any]:
+    def _load_from_db(self, name: str, user_id: str | None) -> Any | None:
         """Load flag from database. Override for actual DB implementation."""
         return None
 
-    def _save_to_db(self, name: str, value: Any, user_id: Optional[str]) -> None:
+    def _save_to_db(self, name: str, value: Any, user_id: str | None) -> None:
         """Save flag to database. Override for actual DB implementation."""
         pass
 
-    def _load_all_from_db(self, user_id: Optional[str]) -> dict:
+    def _load_all_from_db(self, user_id: str | None) -> dict:
         """Load all flags from database. Override for actual DB implementation."""
         return {}
 
 
-_feature_service: Optional[FeatureFlagService] = None
+_feature_service: FeatureFlagService | None = None
 
 
 def get_feature_flag_service() -> FeatureFlagService:
@@ -140,6 +140,6 @@ def get_feature_flag_service() -> FeatureFlagService:
     return _feature_service
 
 
-def get_feature_flag(name: str, default: Any = None, user_id: Optional[str] = None) -> Any:
+def get_feature_flag(name: str, default: Any = None, user_id: str | None = None) -> Any:
     """Convenience function to get a feature flag."""
     return get_feature_flag_service().get_flag(name, default, user_id)

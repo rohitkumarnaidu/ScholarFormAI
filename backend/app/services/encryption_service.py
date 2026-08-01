@@ -6,9 +6,10 @@ Encryption service for securely storing user API keys.
 Uses Fernet symmetric encryption with key rotation support.
 """
 
-import os
 import base64
 import logging
+import os
+
 from cryptography.fernet import Fernet, InvalidToken
 
 logger = logging.getLogger(__name__)

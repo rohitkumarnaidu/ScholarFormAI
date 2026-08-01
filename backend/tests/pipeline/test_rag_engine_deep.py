@@ -2,19 +2,22 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock, mock_open
+
+from unittest.mock import MagicMock, mock_open, patch
+
 import numpy as np
 import pytest
+
 pytestmark = [pytest.mark.pipeline, pytest.mark.rag]
 
 
 @pytest.fixture
 def rag_engine():
-    with patch("app.pipeline.intelligence.rag_engine.os.makedirs") as mock_makedirs, \
+    with patch("app.pipeline.intelligence.rag_engine.os.makedirs"), \
          patch("app.pipeline.intelligence.rag_engine.os.path.exists") as mock_exists, \
-         patch("app.pipeline.intelligence.rag_engine.open", mock_open()) as mock_file, \
-         patch("app.pipeline.intelligence.rag_engine.RagEngine._load_embedding_model") as mock_load, \
-         patch("app.pipeline.intelligence.rag_engine.RagEngine._seed_if_empty") as mock_seed, \
+         patch("app.pipeline.intelligence.rag_engine.open", mock_open()), \
+         patch("app.pipeline.intelligence.rag_engine.RagEngine._load_embedding_model"), \
+         patch("app.pipeline.intelligence.rag_engine.RagEngine._seed_if_empty"), \
          patch("app.pipeline.intelligence.rag_engine._load_chromadb") as mock_chroma:
         mock_chroma.return_value = None
         mock_exists.return_value = False
@@ -429,7 +432,7 @@ class TestIsReusableEmbeddingModel:
 
 class TestRagEngineInit:
     def test_persist_directory_default(self):
-        with patch("app.pipeline.intelligence.rag_engine.os.makedirs") as mock_makedirs, \
+        with patch("app.pipeline.intelligence.rag_engine.os.makedirs"), \
              patch("app.pipeline.intelligence.rag_engine.RagEngine._load_embedding_model"), \
              patch("app.pipeline.intelligence.rag_engine.RagEngine._seed_if_empty"), \
              patch("app.pipeline.intelligence.rag_engine._load_chromadb") as mock_chroma:
@@ -439,9 +442,9 @@ class TestRagEngineInit:
             assert engine.backend == "native"
 
     def test_auto_seed_default(self):
-        with patch("app.pipeline.intelligence.rag_engine.os.makedirs") as mock_makedirs, \
+        with patch("app.pipeline.intelligence.rag_engine.os.makedirs"), \
              patch("app.pipeline.intelligence.rag_engine.RagEngine._load_embedding_model"), \
-             patch("app.pipeline.intelligence.rag_engine.RagEngine._seed_if_empty") as mock_seed, \
+             patch("app.pipeline.intelligence.rag_engine.RagEngine._seed_if_empty"), \
              patch("app.pipeline.intelligence.rag_engine._load_chromadb") as mock_chroma:
             mock_chroma.return_value = None
             from app.pipeline.intelligence.rag_engine import RagEngine
@@ -449,7 +452,7 @@ class TestRagEngineInit:
             assert engine.auto_seed is True
 
     def test_auto_seed_explicit_false(self):
-        with patch("app.pipeline.intelligence.rag_engine.os.makedirs") as mock_makedirs, \
+        with patch("app.pipeline.intelligence.rag_engine.os.makedirs"), \
              patch("app.pipeline.intelligence.rag_engine.RagEngine._load_embedding_model"), \
              patch("app.pipeline.intelligence.rag_engine.RagEngine._seed_if_empty"), \
              patch("app.pipeline.intelligence.rag_engine._load_chromadb") as mock_chroma:
@@ -459,12 +462,12 @@ class TestRagEngineInit:
             assert engine.auto_seed is False
 
     def test_active_model_primary_collection(self):
-        with patch("app.pipeline.intelligence.rag_engine.os.makedirs") as mock_makedirs, \
-             patch("app.pipeline.intelligence.rag_engine.RagEngine._load_embedding_model") as mock_load, \
-             patch("app.pipeline.intelligence.rag_engine.RagEngine._seed_if_empty") as mock_seed, \
+        with patch("app.pipeline.intelligence.rag_engine.os.makedirs"), \
+             patch("app.pipeline.intelligence.rag_engine.RagEngine._load_embedding_model"), \
+             patch("app.pipeline.intelligence.rag_engine.RagEngine._seed_if_empty"), \
              patch("app.pipeline.intelligence.rag_engine._load_chromadb") as mock_chroma:
             mock_chroma.return_value = None
-            from app.pipeline.intelligence.rag_engine import RagEngine, PRIMARY_MODEL, COLLECTION_PRIMARY
+            from app.pipeline.intelligence.rag_engine import COLLECTION_PRIMARY, PRIMARY_MODEL, RagEngine
             engine = RagEngine.__new__(RagEngine)
             engine.persist_directory = "/tmp/test"
             engine.auto_seed = False
@@ -476,9 +479,9 @@ class TestRagEngineInit:
             assert engine._collection_name == COLLECTION_PRIMARY
 
     def test_chroma_init_failure_known(self):
-        with patch("app.pipeline.intelligence.rag_engine.os.makedirs") as mock_makedirs, \
-             patch("app.pipeline.intelligence.rag_engine.RagEngine._load_embedding_model") as mock_load, \
-             patch("app.pipeline.intelligence.rag_engine.RagEngine._seed_if_empty") as mock_seed, \
+        with patch("app.pipeline.intelligence.rag_engine.os.makedirs"), \
+             patch("app.pipeline.intelligence.rag_engine.RagEngine._load_embedding_model"), \
+             patch("app.pipeline.intelligence.rag_engine.RagEngine._seed_if_empty"), \
              patch("app.pipeline.intelligence.rag_engine._load_chromadb") as mock_chroma:
             mock_chroma.return_value = None
             from app.pipeline.intelligence.rag_engine import RagEngine
@@ -489,8 +492,8 @@ class TestRagEngineInit:
 
 class TestSeedIfEmpty:
     def test_seed_already_has_data(self):
-        with patch("app.pipeline.intelligence.rag_engine.os.makedirs") as mock_makedirs, \
-             patch("app.pipeline.intelligence.rag_engine.RagEngine._load_embedding_model") as mock_load:
+        with patch("app.pipeline.intelligence.rag_engine.os.makedirs"), \
+             patch("app.pipeline.intelligence.rag_engine.RagEngine._load_embedding_model"):
             from app.pipeline.intelligence.rag_engine import RagEngine
             engine = RagEngine.__new__(RagEngine)
             engine.knowledge_base = [{"text": "existing"}]
@@ -498,8 +501,8 @@ class TestSeedIfEmpty:
             engine._seed_if_empty()
 
     def test_seed_chroma_has_data(self):
-        with patch("app.pipeline.intelligence.rag_engine.os.makedirs") as mock_makedirs, \
-             patch("app.pipeline.intelligence.rag_engine.RagEngine._load_embedding_model") as mock_load:
+        with patch("app.pipeline.intelligence.rag_engine.os.makedirs"), \
+             patch("app.pipeline.intelligence.rag_engine.RagEngine._load_embedding_model"):
             from app.pipeline.intelligence.rag_engine import RagEngine
             engine = RagEngine.__new__(RagEngine)
             engine.knowledge_base = []
@@ -519,7 +522,7 @@ class TestSeedIfEmpty:
 
     def test_seed_dict_payload(self):
         with patch("app.pipeline.intelligence.rag_engine.os.path.exists") as mock_exists, \
-             patch("app.pipeline.intelligence.rag_engine.open", mock_open(read_data='{"guidelines": [{"publisher": "IEEE", "section": "refs", "text": "Use IEEE style."}]}')) as mock_file, \
+             patch("app.pipeline.intelligence.rag_engine.open", mock_open(read_data='{"guidelines": [{"publisher": "IEEE", "section": "refs", "text": "Use IEEE style."}]}')), \
              patch("app.pipeline.intelligence.rag_engine.json.load") as mock_json_load:
             mock_exists.return_value = True
             mock_json_load.return_value = {"guidelines": [{"publisher": "IEEE", "section": "refs", "text": "Use IEEE style."}]}

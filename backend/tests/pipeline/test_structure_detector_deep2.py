@@ -2,14 +2,17 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
+
+from unittest.mock import MagicMock, patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
 @pytest.fixture
 def detector():
-    with patch("app.pipeline.structure_detection.detector.ContractLoader") as mock_cl, \
+    with patch("app.pipeline.structure_detection.detector.ContractLoader"), \
          patch("app.pipeline.structure_detection.detector.safe_execution") as mock_se, \
          patch("app.pipeline.structure_detection.detector.safe_function") as mock_sf:
         ctx_mgr = MagicMock()
@@ -25,8 +28,8 @@ def detector():
 
 @pytest.fixture
 def doc_with_blocks():
-    from app.models import PipelineDocument as Document
     from app.models import DocumentMetadata, TemplateInfo
+    from app.models import PipelineDocument as Document
     blocks_list = [
         _b("My Research Paper", index=0, bid="b0"),
         _b("John Smith", index=1, bid="b1"),
@@ -43,8 +46,7 @@ def doc_with_blocks():
 
 
 def _b(text: str, index: int = 0, bid: str | None = None, font_size: float = 12.0, bold: bool = False):
-    from app.models import Block, BlockType
-    from app.models import TextStyle
+    from app.models import Block, BlockType, TextStyle
     style = TextStyle(font_size=font_size, bold=bold)
     return Block(block_id=bid or f"b{index}", text=text, index=index, block_type=BlockType.UNKNOWN, style=style, metadata={})
 
@@ -62,8 +64,8 @@ class TestCalculateAvgFontSize:
         assert result == 12.0
 
     def test_no_font_sizes(self):
-        from app.pipeline.structure_detection.detector import StructureDetector
         from app.models import Block, BlockType, TextStyle
+        from app.pipeline.structure_detection.detector import StructureDetector
         det = StructureDetector.__new__(StructureDetector)
         blocks = [
             Block(block_id="b0", text="Text", index=0, block_type=BlockType.UNKNOWN, style=TextStyle(font_size=None), metadata={}),
@@ -111,7 +113,7 @@ class TestDetectHeadingCandidates:
             _b("University of Science", index=2),
             _b("1. Introduction", index=3),
         ]
-        result = detector._detect_heading_candidates(blocks)
+        detector._detect_heading_candidates(blocks)
         assert blocks[1].metadata.get("is_author_block") is True
         assert blocks[2].metadata.get("is_affiliation_block") is True
 
@@ -121,7 +123,7 @@ class TestDetectHeadingCandidates:
             _b("1. Introduction", index=1),
             _b("John Smith", index=2),
         ]
-        result = detector._detect_heading_candidates(blocks)
+        detector._detect_heading_candidates(blocks)
         assert blocks[2].metadata.get("is_author_block") is None
 
     def test_analysis_candidate_found(self, detector):
@@ -360,8 +362,8 @@ class TestDetectStructureConvenience:
             mock_se.return_value.__enter__ = MagicMock()
             mock_se.return_value.__exit__ = MagicMock()
             mock_sf.return_value = lambda f: f
-            from app.pipeline.structure_detection.detector import detect_structure
             from app.models import PipelineDocument as Document
+            from app.pipeline.structure_detection.detector import detect_structure
             doc = Document(document_id="test")
             result = detect_structure(doc)
             assert result is doc
@@ -379,7 +381,7 @@ class TestProcess:
                  patch.object(detector, "_build_hierarchy"), \
                  patch.object(detector, "_canonicalize_sections"), \
                  patch.object(detector, "_validate_hierarchy"), \
-                 patch.object(detector, "process", wraps=detector.process) as mock_process:
+                 patch.object(detector, "process", wraps=detector.process):
                 result = detector.process(doc_with_blocks)
                 assert result is doc_with_blocks
                 assert "structure_detection" in [s.stage_name for s in result.processing_history]

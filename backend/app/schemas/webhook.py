@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field, HttpUrl
 
@@ -11,15 +11,15 @@ from pydantic import BaseModel, Field, HttpUrl
 class WebhookSubscriptionCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=200)
     url: HttpUrl
-    events: List[str] = Field(..., min_length=1)
-    secret: Optional[str] = Field(default=None, max_length=512)
+    events: list[str] = Field(..., min_length=1)
+    secret: str | None = Field(default=None, max_length=512)
 
 
 class WebhookSubscriptionUpdate(BaseModel):
-    name: Optional[str] = Field(default=None, min_length=1, max_length=200)
-    url: Optional[HttpUrl] = Field(default=None)
-    events: Optional[List[str]] = Field(default=None, min_length=1)
-    is_active: Optional[bool] = Field(default=None)
+    name: str | None = Field(default=None, min_length=1, max_length=200)
+    url: HttpUrl | None = Field(default=None)
+    events: list[str] | None = Field(default=None, min_length=1)
+    is_active: bool | None = Field(default=None)
 
 
 class WebhookSubscriptionResponse(BaseModel):
@@ -27,14 +27,14 @@ class WebhookSubscriptionResponse(BaseModel):
     user_id: str
     name: str
     url: str
-    events: List[str]
+    events: list[str]
     is_active: bool
     created_at: str
     updated_at: str
 
 
 class WebhookSubscriptionListResponse(BaseModel):
-    subscriptions: List[WebhookSubscriptionResponse]
+    subscriptions: list[WebhookSubscriptionResponse]
     total: int
 
 
@@ -49,4 +49,4 @@ class WebhookDeliveryResponse(BaseModel):
 
 class WebhookTestPayload(BaseModel):
     event_type: str = Field(default="test.ping")
-    payload: Dict[str, Any] = Field(default_factory=lambda: {"message": "test"})
+    payload: dict[str, Any] = Field(default_factory=lambda: {"message": "test"})

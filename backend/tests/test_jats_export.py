@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Add backend to path
@@ -11,8 +11,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 if os.path.abspath(".").endswith("backend") and os.path.abspath(".") not in sys.path:
     sys.path.insert(0, os.path.abspath("."))
 
-from app.models import PipelineDocument, DocumentMetadata, Reference, ReferenceType
+from app.models import DocumentMetadata, PipelineDocument, Reference, ReferenceType
 from app.pipeline.export.jats_generator import JATSGenerator
+
 
 def test_jats_export():
     print("--- JATS EXPORT TEST START ---")

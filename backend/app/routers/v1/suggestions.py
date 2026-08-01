@@ -4,15 +4,15 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel
 
+from app.schemas.user import User
 from app.services.suggestion_service import suggestion_service
 from app.utils.dependencies import get_current_user
 from app.utils.logging_context import bind_request_context
-from app.schemas.user import User
 
 from ._helpers import run_enveloped
 
@@ -23,9 +23,9 @@ router = APIRouter(dependencies=[Depends(bind_request_context)])
 
 class GenerateSuggestionRequest(BaseModel):
     document_id: str
-    block: Dict[str, Any]
+    block: dict[str, Any]
     suggestion_type: str
-    session_id: Optional[str] = None
+    session_id: str | None = None
 
 
 @router.post("/generate", status_code=201)
@@ -68,7 +68,7 @@ async def generate_suggestion(
 async def get_document_suggestions(
     request: Request,
     document_id: str,
-    status: Optional[str] = Query(None, pattern="^(pending|accepted|rejected|dismissed)?$"),
+    status: str | None = Query(None, pattern="^(pending|accepted|rejected|dismissed)?$"),
     limit: int = Query(50, ge=1, le=200),
     current_user: User = Depends(get_current_user),
 ):

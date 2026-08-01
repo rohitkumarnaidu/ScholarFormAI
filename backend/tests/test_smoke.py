@@ -44,12 +44,11 @@ def client():
     with (
         patch("app.routers.v1.documents_impl.DocumentService", mock_service),
         patch("app.routers.v1.documents_impl._require_db", return_value=None),
-        patch("app.middleware.rate_limit.redis", mock_redis),
+        patch("app.middleware.rate_limit.redis", mock_redis),TestClient(app) as test_client
     ):
-        with TestClient(app) as test_client:
-            test_client.mock_service = mock_service
-            test_client.mock_user = mock_user
-            yield test_client
+        test_client.mock_service = mock_service
+        test_client.mock_user = mock_user
+        yield test_client
 
     app.dependency_overrides = {}
 

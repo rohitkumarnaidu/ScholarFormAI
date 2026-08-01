@@ -15,7 +15,8 @@ Falls back gracefully if Surya is not installed.
 from __future__ import annotations
 
 import logging
-from typing import List, Dict, Any, Optional
+from typing import Any
+
 from app.utils.singleton import get_or_create_catching
 
 logger = logging.getLogger(__name__)
@@ -24,19 +25,19 @@ logger = logging.getLogger(__name__)
 #  Optional imports
 # --------------------------------------------------------------------------- #
 SURYA_AVAILABLE = False
-_load_error: Optional[str] = None
+_load_error: str | None = None
 
 try:
-    from surya.ocr import run_ocr
     from surya.detection import batch_text_detection
     from surya.layout import batch_layout_detection
-    from surya.ordering import batch_ordering
     from surya.model.detection.model import load_model as load_det_model
     from surya.model.detection.model import load_processor as load_det_processor
-    from surya.model.recognition.model import load_model as load_rec_model
-    from surya.model.recognition.processor import load_processor as load_rec_processor
     from surya.model.ordering.model import load_model as load_order_model
     from surya.model.ordering.processor import load_processor as load_order_processor
+    from surya.model.recognition.model import load_model as load_rec_model
+    from surya.model.recognition.processor import load_processor as load_rec_processor
+    from surya.ocr import run_ocr
+    from surya.ordering import batch_ordering
 
     SURYA_AVAILABLE = True
 except ImportError as exc:
@@ -127,9 +128,9 @@ class OCREngine:
     # ------------------------------------------------------------------ #
     def detect_text(
         self,
-        images: List[Any],
-        languages: Optional[List[str]] = None,
-    ) -> List[Dict[str, Any]]:
+        images: list[Any],
+        languages: list[str] | None = None,
+    ) -> list[dict[str, Any]]:
         """
         Run OCR on a list of page images.
 
@@ -177,7 +178,7 @@ class OCREngine:
 
         return pages
 
-    def detect_layout(self, images: List[Any]) -> List[List[Dict[str, Any]]]:
+    def detect_layout(self, images: list[Any]) -> list[list[dict[str, Any]]]:
         """
         Detect page layout regions (headers, figures, tables, text blocks).
 
@@ -209,7 +210,7 @@ class OCREngine:
 
         return pages
 
-    def detect_reading_order(self, images: List[Any]) -> List[List[Dict[str, Any]]]:
+    def detect_reading_order(self, images: list[Any]) -> list[list[dict[str, Any]]]:
         """
         Detect the correct reading order for multi-column pages.
 
@@ -266,10 +267,10 @@ class OCREngine:
 # --------------------------------------------------------------------------- #
 #  Singleton
 # --------------------------------------------------------------------------- #
-_ocr_engine: Optional[OCREngine] = None
+_ocr_engine: OCREngine | None = None
 
 
-def get_ocr_engine() -> Optional[OCREngine]:
+def get_ocr_engine() -> OCREngine | None:
     """Get or create an OCREngine instance. Returns None if Surya is unavailable."""
     global _ocr_engine
     _ocr_engine = get_or_create_catching(

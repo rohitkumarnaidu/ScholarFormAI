@@ -1,7 +1,11 @@
 from __future__ import annotations
+
 from unittest.mock import MagicMock, patch
+
 import pytest
+
 from app.services.llm_service import LLMUnavailableError
+
 pytestmark = [pytest.mark.mutation]
 
 
@@ -42,7 +46,7 @@ class TestDocumentServiceMutations:
         assert guarded is False
         DocumentService._is_valid_uuid = lambda x: True
         bypassed = DocumentService._should_query_document_tables("../../etc/passwd", "test")
-        assert bypassed == (True if DocumentService._is_valid_uuid("../../etc/passwd") else False)
+        assert bypassed == (bool(DocumentService._is_valid_uuid("../../etc/passwd")))
 
     @pytest.mark.asyncio
     async def test_mutation_remove_ownership_check(self):
@@ -141,9 +145,8 @@ class TestPipelineMutations:
         with patch("app.pipeline.safety.safe_execution.safe_execution") as mock_safe:
             mock_safe.return_value.__enter__ = MagicMock()
             mock_safe.return_value.__exit__ = MagicMock(return_value=False)
-            with pytest.raises(ValueError):
-                with mock_safe("test"):
-                    raise ValueError("This should be caught")
+            with pytest.raises(ValueError), mock_safe("test"):
+                raise ValueError("This should be caught")
 
     def test_mutation_remove_error_handling(self):
         from app.pipeline.safety.safe_execution import safe_execution

@@ -6,7 +6,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import re
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 from app.models import Reference, ReferenceType
 from app.pipeline.services.csl_engine import CSLEngine
@@ -25,8 +25,8 @@ class CitationAssemblyService:
         self.crossref = get_crossref_client()
         self.csl_engine = CSLEngine()
 
-    async def extract_citations(self, content: str) -> List[str]:
-        citations: List[str] = []
+    async def extract_citations(self, content: str) -> list[str]:
+        citations: list[str] = []
         if not content:
             return citations
 
@@ -48,13 +48,13 @@ class CitationAssemblyService:
 
         return citations
 
-    async def lookup_citations(self, citations: List[str]) -> List[Dict[str, Any]]:
-        results: List[Dict[str, Any]] = []
+    async def lookup_citations(self, citations: list[str]) -> list[dict[str, Any]]:
+        results: list[dict[str, Any]] = []
         if not citations:
             return results
 
         for citation in citations:
-            payload: Dict[str, Any] = {"raw": citation}
+            payload: dict[str, Any] = {"raw": citation}
             try:
                 data = await asyncio.to_thread(self.crossref.validate_citation, citation)
             except Exception as exc:
@@ -65,11 +65,11 @@ class CitationAssemblyService:
             await asyncio.sleep(0.2)
         return results
 
-    async def format_references(self, citations: List[Dict[str, Any]], style: str) -> str:
+    async def format_references(self, citations: list[dict[str, Any]], style: str) -> str:
         if not citations:
             return ""
 
-        references: List[Reference] = []
+        references: list[Reference] = []
         for idx, citation in enumerate(citations, start=1):
             authors = []
             raw_authors = citation.get("authors") or ""
@@ -94,9 +94,9 @@ class CitationAssemblyService:
 
     async def assemble(
         self,
-        content_sections: Dict[str, str],
+        content_sections: dict[str, str],
         citation_style: str,
-    ) -> Tuple[Dict[str, str], str]:
+    ) -> tuple[dict[str, str], str]:
         merged = "\n\n".join(content_sections.values())
         citations = await self.extract_citations(merged)
         citation_meta = await self.lookup_citations(citations)
@@ -111,7 +111,7 @@ class CitationAssemblyService:
     def _normalize(raw: str) -> str:
         return " ".join(str(raw).strip().split())
 
-    def _replace_citations(self, text: str, mapping: Dict[str, int]) -> str:
+    def _replace_citations(self, text: str, mapping: dict[str, int]) -> str:
         if not text:
             return text
 

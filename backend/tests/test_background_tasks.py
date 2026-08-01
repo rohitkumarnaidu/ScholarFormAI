@@ -1,7 +1,9 @@
 from __future__ import annotations
+
 import asyncio
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 
 class TestBackgroundTasks:
@@ -22,7 +24,7 @@ class TestBackgroundTasks:
 
     def test_with_timeout_async_mark_job_failed_on_timeout(self):
         from app.utils.background_tasks import with_timeout
-        with patch("app.utils.background_tasks._mark_job_as_failed") as mock_mark:
+        with patch("app.utils.background_tasks._mark_job_as_failed"):
             @with_timeout(timeout_seconds=0.001)
             async def slow_task():
                 import asyncio
@@ -34,7 +36,7 @@ class TestBackgroundTasks:
         from app.utils.background_tasks import run_pipeline_with_timeout
         mock_orch = MagicMock()
         mock_orch.run_pipeline = MagicMock()
-        with patch("app.utils.background_tasks._mark_job_as_failed") as mock_mark:
+        with patch("app.utils.background_tasks._mark_job_as_failed"):
             asyncio_run(run_pipeline_with_timeout(mock_orch, "input.docx", "job1", "ieee"))
             mock_orch.run_pipeline.assert_called_once()
 
@@ -59,7 +61,7 @@ class TestBackgroundTasks:
 
     def test_with_timeout_sync_mark_job_failed_on_timeout(self):
         from app.utils.background_tasks import with_timeout
-        with patch("app.utils.background_tasks._mark_job_as_failed") as mock_mark:
+        with patch("app.utils.background_tasks._mark_job_as_failed"):
             with patch("app.utils.background_tasks.asyncio.wait_for", side_effect=asyncio.TimeoutError):
                 @with_timeout(timeout_seconds=300)
                 def sync_task():

@@ -11,7 +11,7 @@ or other export pipeline modules directly.
 from __future__ import annotations
 
 import logging
-from typing import Any, Optional
+from typing import Any
 
 from app.exceptions import PipelineError, ValidationError
 
@@ -31,8 +31,8 @@ class ExportService:
         self,
         document_id: str,
         export_format: str,
-        output_dir: Optional[str] = None,
-        options: Optional[dict[str, Any]] = None,
+        output_dir: str | None = None,
+        options: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """
         Export a document in the requested format.
@@ -77,8 +77,8 @@ class ExportService:
     async def _export_pdf(
         self,
         document_id: str,
-        output_dir: Optional[str] = None,
-        options: Optional[dict[str, Any]] = None,
+        output_dir: str | None = None,
+        options: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         try:
             from app.pipeline.export.pdf_exporter import PDFExporter
@@ -113,8 +113,8 @@ class ExportService:
     async def _export_latex(
         self,
         document_id: str,
-        output_dir: Optional[str] = None,
-        options: Optional[dict[str, Any]] = None,
+        output_dir: str | None = None,
+        options: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         try:
             from app.pipeline.export.latex_exporter import LaTeXExporter
@@ -141,8 +141,8 @@ class ExportService:
     async def _export_jats(
         self,
         document_id: str,
-        output_dir: Optional[str] = None,
-        options: Optional[dict[str, Any]] = None,
+        output_dir: str | None = None,
+        options: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         try:
             from app.pipeline.export.jats_exporter import JATSExporter

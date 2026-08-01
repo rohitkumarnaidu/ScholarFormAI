@@ -2,7 +2,8 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock, ANY
+
+from unittest.mock import ANY, MagicMock, patch
 
 
 def _make_block(index, text="", is_heading=False):

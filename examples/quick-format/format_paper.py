@@ -101,7 +101,7 @@ def main():
             sys.exit(1)
         time.sleep(1)
 
-    print(f"\n  Done!")
+    print("\n  Done!")
 
     # 4. Download formatted document
     print(f"Downloading to {args.output}...")

@@ -4,11 +4,12 @@
 
 from app.pipeline.parsing.parser import DocxParser
 
+
 def verify_binary_data(docx_path):
     parser = DocxParser()
     try:
         doc = parser.parse(docx_path, "debug_job")
-        print(f"--- Extraction Audit ---")
+        print("--- Extraction Audit ---")
         print(f"Blocks: {len(doc.blocks)}")
         print(f"Figures: {len(doc.figures)}")
         print(f"Tables: {len(doc.tables)}")

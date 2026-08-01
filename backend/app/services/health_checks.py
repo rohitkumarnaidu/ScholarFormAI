@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from time import monotonic
 from typing import Any
 
@@ -126,7 +126,7 @@ async def _probe_service_targets(
 ) -> dict[str, Any]:
     import httpx
 
-    checked_at = datetime.now(timezone.utc).isoformat()
+    checked_at = datetime.now(UTC).isoformat()
     if not urls:
         return {
             "service": service_name,
@@ -274,7 +274,7 @@ async def _build_readiness_payload() -> tuple[dict, int]:
     else:
         dependency_status["grobid"] = {
             "status": "disabled",
-            "checked_at": datetime.now(timezone.utc).isoformat(),
+            "checked_at": datetime.now(UTC).isoformat(),
             "last_probe": {"endpoint": None, "http_status": None, "error": "disabled"},
         }
         checks["grobid"] = "disabled"
@@ -294,7 +294,7 @@ async def _build_readiness_payload() -> tuple[dict, int]:
         dependency_status["ocr"] = {
             "status": "ready" if ocr_available else "unavailable",
             "service": "local_ocr",
-            "checked_at": datetime.now(timezone.utc).isoformat(),
+            "checked_at": datetime.now(UTC).isoformat(),
         }
         checks["ocr"] = dependency_status["ocr"]["status"]
     except Exception as exc:
@@ -302,7 +302,7 @@ async def _build_readiness_payload() -> tuple[dict, int]:
             "status": "unavailable",
             "service": "local_ocr",
             "error": str(exc),
-            "checked_at": datetime.now(timezone.utc).isoformat(),
+            "checked_at": datetime.now(UTC).isoformat(),
         }
         checks["ocr"] = "unavailable"
 
@@ -320,14 +320,14 @@ async def _build_readiness_payload() -> tuple[dict, int]:
     checks["llm_classification"] = "enabled" if llm_classification_enabled else "disabled"
     dependency_status["llm_classification"] = {
         "status": "enabled" if llm_classification_enabled else "disabled",
-        "checked_at": datetime.now(timezone.utc).isoformat(),
+        "checked_at": datetime.now(UTC).isoformat(),
     }
 
     payload = {
         "ready": is_ready,
         "checks": checks,
         "dependencies": dependency_status,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
     }
     return payload, 200 if is_ready else 503
 

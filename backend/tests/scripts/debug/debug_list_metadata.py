@@ -4,28 +4,30 @@
 
 import os
 import sys
-from docx import Document
 from pathlib import Path
+
+from docx import Document
 
 # Add backend to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 from app.pipeline.parsing.parser import DocxParser
 
+
 def create_list_docx(path):
     doc = Document()
     doc.add_paragraph("Top Level Paragraph")
     
     # Add lists
-    p1 = doc.add_paragraph("List 1 Item 1", style='List Bullet')
-    p2 = doc.add_paragraph("List 1 Item 2", style='List Bullet')
+    doc.add_paragraph("List 1 Item 1", style='List Bullet')
+    doc.add_paragraph("List 1 Item 2", style='List Bullet')
     
     # Add nested list item (manually manipulating XML if necessary, but List Bullet 2 usually works)
     try:
-        p3 = doc.add_paragraph("List 1 Nested Item", style='List Bullet 2')
+        doc.add_paragraph("List 1 Nested Item", style='List Bullet 2')
     except:
         # Fallback to manual ilvl if style missing
-        p3 = doc.add_paragraph("List 1 Nested Item (Manual)")
+        doc.add_paragraph("List 1 Nested Item (Manual)")
         # Simple ilvl injection is complex, but python-docx sometimes supports it
         pass
 
@@ -43,7 +45,6 @@ def verify_list_extraction(path):
          print("❌ FAILED: No list items detected")
          sys.exit(1)
 
-    all_passed = True
     for i, li in enumerate(list_items):
         lvl = li.metadata.get("list_level")
         lid = li.metadata.get("list_id")

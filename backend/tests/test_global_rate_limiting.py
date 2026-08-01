@@ -9,9 +9,10 @@ not just hasattr checks on app.state.
 """
 from __future__ import annotations
 
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch, MagicMock, AsyncMock
 
 
 @pytest.fixture(autouse=True)
@@ -48,10 +49,9 @@ def client():
     with (
         patch("app.routers.v1.documents_impl.DocumentService", mock_service),
         patch("app.routers.v1.documents_impl._require_db", return_value=None),
-        patch("app.middleware.rate_limit.redis", mock_redis),
+        patch("app.middleware.rate_limit.redis", mock_redis),TestClient(app) as test_client
     ):
-        with TestClient(app) as test_client:
-            yield test_client
+        yield test_client
 
     app.dependency_overrides = {}
 

@@ -1,10 +1,9 @@
-import time
 import concurrent.futures
 import threading
+import time
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 
 # ---------------------------------------------------------------------------
 # 2A: Latency Assertions (~8 tests)
@@ -40,7 +39,6 @@ class TestLatencyAssertions:
         """Simulate a response that exceeds SLA threshold."""
         from app.services.llm_service import _provider_timeout_seconds
 
-        sla_threshold = 5.0
         fast_timeout = _provider_timeout_seconds()
         assert fast_timeout >= 3, "Default timeout should be at least 3s"
         assert fast_timeout <= 60, "Default timeout should be at most 60s"
@@ -313,7 +311,7 @@ class TestConcurrentRequestPerformance:
     @pytest.mark.sla
     def test_circuit_breaker_thread_safe(self, llm):
         """Circuit breaker state should remain consistent under concurrency."""
-        from app.services.llm_service import _provider_breaker, _PROVIDER_BREAKERS
+        from app.services.llm_service import _PROVIDER_BREAKERS, _provider_breaker
 
         _PROVIDER_BREAKERS.clear()
 
@@ -335,7 +333,7 @@ class TestConcurrentRequestPerformance:
     @pytest.mark.sla
     def test_concurrent_provider_breaker_reuse(self):
         """Multiple concurrent accesses to same provider should reuse breaker."""
-        from app.services.llm_service import _provider_breaker, _PROVIDER_BREAKERS
+        from app.services.llm_service import _PROVIDER_BREAKERS, _provider_breaker
         _PROVIDER_BREAKERS.clear()
 
         with patch("app.services.llm_service._breaker_enabled", return_value=True):
@@ -481,7 +479,6 @@ class TestProviderLatencyProfiles:
         mock_choice.message.content = "fresh response"
         mock_response.choices = [mock_choice]
 
-        cache_miss_times = []
 
         def measure_cache_miss():
             llm.completion = MagicMock(return_value=mock_response)
@@ -545,6 +542,7 @@ def reset_breaker_cache():
 @pytest.fixture
 def llm():
     import importlib
+
     import app.services.llm_service as m
     importlib.reload(m)
     return m

@@ -6,8 +6,9 @@ Real-time adaptation during processing.
 """
 
 import logging
-from typing import Dict, Any, Optional, Callable, List
 import time
+from collections.abc import Callable
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +32,7 @@ class RealTimeAdaptiveAgent:
     def __init__(
         self,
         base_timeout: float = 60.0,
-        adaptation_callback: Optional[Callable] = None,
+        adaptation_callback: Callable | None = None,
     ):
         """
         Initialize real-time adaptive agent.
@@ -46,7 +47,7 @@ class RealTimeAdaptiveAgent:
         self.adaptation_callback = adaptation_callback
 
         # Real-time metrics
-        self.current_metrics: Dict[str, Any] = {
+        self.current_metrics: dict[str, Any] = {
             "start_time": None,
             "elapsed_time": 0.0,
             "tools_executed": [],
@@ -55,7 +56,7 @@ class RealTimeAdaptiveAgent:
         }
 
         # Adaptive parameters
-        self.params: Dict[str, Any] = {
+        self.params: dict[str, Any] = {
             "timeout": self.base_timeout,
             "retry_enabled": True,
             "tool_priority": [],
@@ -145,29 +146,27 @@ class RealTimeAdaptiveAgent:
             current_timeout = float(self.params.get("timeout", self.base_timeout))
 
             # Adaptation 1: Timeout adjustment
-            if elapsed > current_timeout * 0.7:
-                if not self.params.get("aggressive_mode", False):
-                    self.params["aggressive_mode"] = True
-                    new_timeout = min(current_timeout * 1.5, _MAX_TIMEOUT)
-                    self.params["timeout"] = new_timeout
-                    self._notify_adaptation(
-                        "timeout_extended",
-                        {"new_timeout": new_timeout, "reason": "approaching_timeout"},
-                    )
+            if elapsed > current_timeout * 0.7 and not self.params.get("aggressive_mode", False):
+                self.params["aggressive_mode"] = True
+                new_timeout = min(current_timeout * 1.5, _MAX_TIMEOUT)
+                self.params["timeout"] = new_timeout
+                self._notify_adaptation(
+                    "timeout_extended",
+                    {"new_timeout": new_timeout, "reason": "approaching_timeout"},
+                )
 
             # Adaptation 2: Error handling
-            if error_count >= 2:
-                if self.current_metrics.get("current_strategy") != "fallback":
-                    self.current_metrics["current_strategy"] = "fallback"
-                    self.params["retry_enabled"] = False
-                    self._notify_adaptation(
-                        "strategy_changed",
-                        {"new_strategy": "fallback", "reason": "multiple_errors"},
-                    )
+            if error_count >= 2 and self.current_metrics.get("current_strategy") != "fallback":
+                self.current_metrics["current_strategy"] = "fallback"
+                self.params["retry_enabled"] = False
+                self._notify_adaptation(
+                    "strategy_changed",
+                    {"new_strategy": "fallback", "reason": "multiple_errors"},
+                )
 
             # Adaptation 3: Tool selection
             if tool_count > 0 and not self.params.get("tool_priority"):
-                successful_tools: List[str] = [
+                successful_tools: list[str] = [
                     t["tool"] for t in tools_executed if isinstance(t, dict) and t.get("success")
                 ]
                 if successful_tools:
@@ -177,7 +176,7 @@ class RealTimeAdaptiveAgent:
         except Exception as exc:
             logger.error("Error in _adapt_realtime: %s", exc)
 
-    def _notify_adaptation(self, event_type: str, data: Dict[str, Any]) -> None:
+    def _notify_adaptation(self, event_type: str, data: dict[str, Any]) -> None:
         """Notify about adaptation event. Never raises."""
         try:
             logger.info("Real-time adaptation: %s - %s", event_type, data)
@@ -215,7 +214,7 @@ class RealTimeAdaptiveAgent:
             logger.error("Error in should_continue: %s", exc)
             return False
 
-    def get_current_params(self) -> Dict[str, Any]:
+    def get_current_params(self) -> dict[str, Any]:
         """Get a copy of the current adaptive parameters."""
         try:
             return dict(self.params)
@@ -223,7 +222,7 @@ class RealTimeAdaptiveAgent:
             logger.error("Error in get_current_params: %s", exc)
             return {}
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get a copy of the current metrics."""
         try:
             return dict(self.current_metrics)
@@ -231,7 +230,7 @@ class RealTimeAdaptiveAgent:
             logger.error("Error in get_metrics: %s", exc)
             return {}
 
-    def recommend_next_tool(self, available_tools: List[str]) -> Optional[str]:
+    def recommend_next_tool(self, available_tools: list[str]) -> str | None:
         """
         Recommend next tool to execute.
 

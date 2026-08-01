@@ -9,17 +9,16 @@ Parses unstructured reference strings into structured metadata.
 
 import logging
 import re
-from typing import List
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 logger = logging.getLogger(__name__)
 
-from app.models import PipelineDocument as Document, BlockType, Reference, ReferenceType
-from app.utils.id_generator import generate_reference_id
-from .normalizer import clean_title, clean_author_name
-
-
+from app.models import BlockType, Reference, ReferenceType
+from app.models import PipelineDocument as Document
 from app.pipeline.base import PipelineStage
+from app.utils.id_generator import generate_reference_id
+
+from .normalizer import clean_author_name, clean_title
 
 
 class ReferenceParser(PipelineStage):
@@ -44,13 +43,13 @@ class ReferenceParser(PipelineStage):
         """
         Extract and parse references from the document.
         """
-        start_time = datetime.now(timezone.utc)
+        start_time = datetime.now(UTC)
 
         try:
             blocks = document.get_blocks_by_type(BlockType.REFERENCE_ENTRY)
             if not blocks:
                 # Fallback: check Section "References" if not typed
-                ref_blocks = document.get_blocks_in_section("References")
+                document.get_blocks_in_section("References")
                 # We stick to BlockType.REFERENCE_ENTRY as per contract.
                 pass
 
@@ -80,7 +79,7 @@ class ReferenceParser(PipelineStage):
             return document
 
         # Log
-        end_time = datetime.now(timezone.utc)
+        end_time = datetime.now(UTC)
         duration_ms = int((end_time - start_time).total_seconds() * 1000)
 
         document.add_processing_stage(
@@ -96,7 +95,6 @@ class ReferenceParser(PipelineStage):
         """
         Parse a single reference string.
         """
-        fields = {}
 
         # 1. Extract Citation Key
         match_key = self.citation_key_pattern.match(text)
@@ -191,7 +189,7 @@ class ReferenceParser(PipelineStage):
             url=url,
         )
 
-    def _parse_authors(self, author_str: str) -> List[str]:
+    def _parse_authors(self, author_str: str) -> list[str]:
         """Parse author string into list."""
         if not author_str:
             return []

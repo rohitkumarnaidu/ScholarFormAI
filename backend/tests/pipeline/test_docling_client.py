@@ -2,11 +2,14 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
+
 from app.pipeline.services.docling_client import (
-    DoclingClient,
     BoundingBox,
+    DoclingClient,
     LayoutElement,
 )
 
@@ -209,8 +212,8 @@ class TestDoclingClientDetectHeadersFooters:
     def test_detect_headers_and_footers(self):
         c = DoclingClient()
         page_height = 1000
-        header_zone = page_height * 0.1  # y1 < 100
-        footer_zone = page_height * 0.9  # y0 > 900
+        page_height * 0.1  # y1 < 100
+        page_height * 0.9  # y0 > 900
 
         header_elem = LayoutElement(
             text="Header", bbox=BoundingBox(0, 0, 500, 50), element_type="text"
@@ -261,7 +264,7 @@ class TestDoclingClientHelpers:
 
     def test_find_title_with_elements(self):
         c = DoclingClient()
-        bbox = BoundingBox(0, 0, 100, 50)
+        BoundingBox(0, 0, 100, 50)
         small = LayoutElement(text="small", bbox=BoundingBox(0, 200, 100, 250), element_type="text", font_size=10.0)
         large = LayoutElement(text="TITLE", bbox=BoundingBox(0, 200, 100, 250), element_type="text", font_size=24.0)
         result = c.find_title_with_logo_tolerance([small, large], logo_y_threshold=50)

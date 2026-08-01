@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 import stripe
 from fastapi import APIRouter, Depends, HTTPException, Request, status
@@ -27,14 +26,14 @@ router = APIRouter(
 stripe.api_key = settings.STRIPE_API_KEY or ""
 
 
-def _get_user_id_from_metadata(obj: dict) -> Optional[str]:
+def _get_user_id_from_metadata(obj: dict) -> str | None:
     metadata = obj.get("metadata") or {}
     if isinstance(metadata, dict):
         return metadata.get("user_id")
     return None
 
 
-def _lookup_user_id_by_customer(sb, customer_id: Optional[str]) -> Optional[str]:
+def _lookup_user_id_by_customer(sb, customer_id: str | None) -> str | None:
     if not customer_id:
         return None
     try:

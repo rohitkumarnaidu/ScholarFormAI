@@ -1,9 +1,11 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-import os
 import logging
+import os
+
 from lxml import etree
+
 from app.models import PipelineDocument
 from app.utils.singleton import get_or_create
 

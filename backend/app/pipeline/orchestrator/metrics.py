@@ -31,7 +31,7 @@ class StageMetrics:
 
             MetricsManager.record_pipeline_stage_duration(stage_name, duration)
         except Exception:
-            pass
+            pass  # intentionally ignored
 
     def get_summary(self) -> dict:
         total_duration = sum(r["duration_seconds"] for r in self._results.values() if r.get("duration_seconds"))

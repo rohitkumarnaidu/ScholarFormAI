@@ -8,28 +8,29 @@ Shared helpers for lazy singleton initialization and optional dependency loading
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from functools import lru_cache
 from importlib import import_module
-from typing import Any, Callable, Optional, Tuple, Type, TypeVar
+from typing import Any, TypeVar
 
 T = TypeVar("T")
 
 
-def get_or_create(current: Optional[T], factory: Callable[[], T]) -> T:
+def get_or_create[T](current: T | None, factory: Callable[[], T]) -> T:
     """Return existing singleton instance or create a new one."""
     if current is None:
         return factory()
     return current
 
 
-def get_or_create_safe(
-    current: Optional[T],
+def get_or_create_safe[T](
+    current: T | None,
     factory: Callable[[], T],
     *,
     logger: logging.Logger,
     name: str,
     log_level: str = "error",
-) -> Optional[T]:
+) -> T | None:
     """Safe singleton getter that logs and returns None on initialization failure."""
     if current is not None:
         return current
@@ -41,12 +42,12 @@ def get_or_create_safe(
         return None
 
 
-def get_or_create_catching(
-    current: Optional[T],
+def get_or_create_catching[T](
+    current: T | None,
     factory: Callable[[], T],
     *,
-    exceptions: Tuple[Type[BaseException], ...],
-) -> Optional[T]:
+    exceptions: tuple[type[BaseException], ...],
+) -> T | None:
     """Return singleton or create it, swallowing only declared exception types."""
     if current is not None:
         return current

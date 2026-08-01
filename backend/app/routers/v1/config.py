@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from fastapi import APIRouter, Depends, Request
 
@@ -19,7 +19,7 @@ router = APIRouter(dependencies=[Depends(bind_request_context)])
 
 
 @router.get("")
-async def get_public_config(request: Request) -> Dict[str, Any]:
+async def get_public_config(request: Request) -> dict[str, Any]:
     """Return public application configuration and settings."""
 
     async def operation():

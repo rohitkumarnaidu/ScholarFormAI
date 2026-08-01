@@ -1,19 +1,19 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import Reference, Table, Equation
 from __future__ import annotations
+
 import os
 import subprocess
-from unittest.mock import patch, MagicMock
 from pathlib import Path
+from unittest.mock import MagicMock, patch
+
 import pytest
+
+from app.models import Equation, Reference, Table
 from app.pipeline.export.exporter import Exporter
 from app.pipeline.export.jats_generator import JATSGenerator
-from app.pipeline.export.latex_exporter import (
-    LaTeXExporter, escape_latex, _resolve_pandoc_binary,
-    _convert_via_pandoc
-)
+from app.pipeline.export.latex_exporter import LaTeXExporter, _convert_via_pandoc, _resolve_pandoc_binary, escape_latex
 from app.pipeline.export.pdf_exporter import PDFExporter
 
 # ===========================================================================
@@ -1051,7 +1051,7 @@ class TestPDFExporterGaps:
             with patch.object(PDFExporter, "_find_libreoffice", return_value=None):
                 with patch("app.pipeline.export.pdf_exporter.settings.LIBREOFFICE_PATH", None):
                     with patch("app.pipeline.export.pdf_exporter.logger.warning") as mock_log:
-                        result = PDFExporter(libreoffice_path=None).convert_to_pdf(str(f), str(tmp_path))
+                        PDFExporter(libreoffice_path=None).convert_to_pdf(str(f), str(tmp_path))
                         mock_log.assert_called_once()
                         assert "LibreOffice not found" in mock_log.call_args[0][0]
 
@@ -1068,7 +1068,7 @@ class TestPDFExporterGaps:
         with patch("app.pipeline.export.pdf_exporter.subprocess.run", return_value=r):
             with patch.object(PDFExporter, "_weasyprint_fallback", return_value=None):
                 with patch.dict("sys.modules", {"docx2pdf": d2p_mod}):
-                    with patch("os.path.exists", side_effect=lambda p: p == docx_path or p == pdf_path):
+                    with patch("os.path.exists", side_effect=lambda p: p in (docx_path, pdf_path)):
                         with patch("os.path.abspath", side_effect=lambda p: p):
                             result = PDFExporter("/soffice").convert_to_pdf(docx_path, str(tmp_path))
                             assert result == pdf_path

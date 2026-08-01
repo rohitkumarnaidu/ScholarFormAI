@@ -2,7 +2,8 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock, ANY, PropertyMock
+
+from unittest.mock import ANY, MagicMock, PropertyMock, patch
 
 # ─── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -286,7 +287,7 @@ class TestTableCaptionMatcher:
         doc.blocks = blocks
         doc.tables = [tbl]
 
-        result = TableCaptionMatcher().process(doc)
+        TableCaptionMatcher().process(doc)
         assert tbl.caption_text == ""
 
     def test_process_missing_caption(self):
@@ -297,7 +298,7 @@ class TestTableCaptionMatcher:
         doc.blocks = blocks
         doc.tables = [tbl]
 
-        result = TableCaptionMatcher().process(doc)
+        TableCaptionMatcher().process(doc)
         assert tbl.metadata.get("caption_status") == "Missing"
 
     def test_process_exception(self):
@@ -371,7 +372,7 @@ class TestTableRenderer:
         tbl.cells = []
         tbl.rows = [["A"]]
         tbl.index = 0
-        with patch("app.pipeline.tables.renderer.WD_ALIGN_PARAGRAPH") as mock_align:
+        with patch("app.pipeline.tables.renderer.WD_ALIGN_PARAGRAPH"):
             TableRenderer().render(doc, tbl)
         doc.add_paragraph.assert_called_once_with(style="Caption")
         doc.add_table.assert_called_once()

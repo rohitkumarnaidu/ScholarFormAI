@@ -2,9 +2,12 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-import pytest
+
 import os
+
+import pytest
 import yaml
+
 from app.pipeline.contracts.loader import ContractLoader
 
 

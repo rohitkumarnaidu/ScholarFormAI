@@ -14,7 +14,7 @@ def parser():
 
 @pytest.fixture
 def constants():
-    from app.pipeline.generation.content_parser import VALID_BLOCK_TYPES, TYPE_ALIASES
+    from app.pipeline.generation.content_parser import TYPE_ALIASES, VALID_BLOCK_TYPES
     return VALID_BLOCK_TYPES, TYPE_ALIASES
 
 

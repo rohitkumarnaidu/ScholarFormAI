@@ -5,14 +5,14 @@
 Advanced analytics dashboard for ML insights.
 """
 
-import logging
-from typing import Optional
 import json
+import logging
 from datetime import datetime
-from app.pipeline.agents.ml_patterns import MLPatternDetector
-from app.pipeline.agents.multi_doc_learning import MultiDocumentLearner
+
 from app.pipeline.agents.adaptive import AdaptiveStrategy
 from app.pipeline.agents.distributed import DistributedCoordinator
+from app.pipeline.agents.ml_patterns import MLPatternDetector
+from app.pipeline.agents.multi_doc_learning import MultiDocumentLearner
 
 logger = logging.getLogger(__name__)
 
@@ -24,10 +24,10 @@ class AdvancedAnalyticsDashboard:
 
     def __init__(
         self,
-        ml_detector: Optional[MLPatternDetector] = None,
-        multi_doc_learner: Optional[MultiDocumentLearner] = None,
-        adaptive_strategy: Optional[AdaptiveStrategy] = None,
-        distributed_coord: Optional[DistributedCoordinator] = None,
+        ml_detector: MLPatternDetector | None = None,
+        multi_doc_learner: MultiDocumentLearner | None = None,
+        adaptive_strategy: AdaptiveStrategy | None = None,
+        distributed_coord: DistributedCoordinator | None = None,
     ):
         """
         Initialize advanced analytics dashboard.

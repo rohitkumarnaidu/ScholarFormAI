@@ -30,9 +30,10 @@ class LocalOCRService:
     async def ocr_image(self, image_bytes: bytes) -> list[dict]:
         """Run OCR on image bytes, return list of {text, confidence, bbox}"""
         engine = self._get_engine()
+        import io
+
         import numpy as np
         from PIL import Image
-        import io
 
         img = Image.open(io.BytesIO(image_bytes))
         img_array = np.array(img)

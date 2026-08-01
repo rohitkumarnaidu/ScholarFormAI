@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 MODULE = "app.cache.redis_cache"
 
@@ -196,7 +197,7 @@ class TestRedisCache:
             assert result["status"] == "unavailable"
 
     def test_get_redis_cache_returns_singleton(self):
-        from app.cache.redis_cache import redis_cache, get_redis_cache
+        from app.cache.redis_cache import get_redis_cache, redis_cache
         assert get_redis_cache() is redis_cache
 
     def test_ensure_client_settings_exception(self, cache):

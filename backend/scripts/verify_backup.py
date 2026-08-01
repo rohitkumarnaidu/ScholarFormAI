@@ -8,10 +8,10 @@ Backup verification script — checks that Supabase backups are accessible and v
 Usage:
     python scripts/verify_backup.py
 """
+import logging
 import os
 import sys
-import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -50,7 +50,7 @@ def verify_backup() -> bool:
                 status = "✅" if exists else "❌"
                 print(f"{status} Table '{table}': {'exists' if exists else 'MISSING'}")
 
-            print(f"\n✅ Backup verification complete at {datetime.now(timezone.utc).isoformat()}")
+            print(f"\n✅ Backup verification complete at {datetime.now(UTC).isoformat()}")
             return True
 
     except Exception as e:

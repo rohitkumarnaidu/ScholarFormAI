@@ -2,8 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-import pytest
+
 from unittest.mock import patch
+
+import pytest
+
 from app.pipeline.services.crossref_client import CrossRefClient, CrossRefException
 
 

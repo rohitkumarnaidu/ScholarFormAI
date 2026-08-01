@@ -8,8 +8,11 @@ table normalization, empty orphan sanitization, median font calculation.
 """
 
 from __future__ import annotations
+
 import pytest
+
 from app.pipeline.normalization.normalizer import Normalizer, normalize_document
+
 
 @pytest.fixture
 def normalizer():
@@ -18,7 +21,7 @@ def normalizer():
 
 @pytest.fixture
 def minimal_doc():
-    from app.models import PipelineDocument, Block, BlockType, DocumentMetadata
+    from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
     meta = DocumentMetadata(title="Test  Manuscript", authors=["  John  Doe  "], abstract="  Hello world.  ")
     doc = PipelineDocument(document_id="n1", metadata=meta, blocks=[
         Block(block_id="b1", index=0, text="  Introduction  ", block_type=BlockType.UNKNOWN),
@@ -42,7 +45,7 @@ class TestNormalizerProcess:
         assert len(result.blocks) == 0
 
     def test_process_duplicate_indices_raises(self, normalizer):
-        from app.models import PipelineDocument, Block
+        from app.models import Block, PipelineDocument
         doc = PipelineDocument(document_id="dup", blocks=[
             Block(block_id="a", index=0, text="A"),
             Block(block_id="b", index=0, text="B"),
@@ -52,55 +55,55 @@ class TestNormalizerProcess:
 
 class TestNormalizeMetadata:
     def test_title_cleaned(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         doc = PipelineDocument(document_id="t1", metadata=DocumentMetadata(title="  Hello   World  "))
         normalizer.process(doc)
         assert doc.metadata.title == "Hello World"
 
     def test_authors_filtered(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         meta = DocumentMetadata(authors=["  Alice  ", "", "  Bob  "])
         doc = PipelineDocument(document_id="t2", metadata=meta)
         normalizer.process(doc)
         assert doc.metadata.authors == ["Alice", "Bob"]
 
     def test_affiliations_cleaned(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         meta = DocumentMetadata(affiliations=["  Univ   A  ", ""])
         doc = PipelineDocument(document_id="t3", metadata=meta)
         normalizer.process(doc)
         assert doc.metadata.affiliations == ["Univ A"]
 
     def test_abstract_normalized(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         meta = DocumentMetadata(abstract="  Line1\n  Line2  ")
         doc = PipelineDocument(document_id="t4", metadata=meta)
         normalizer.process(doc)
         assert "Line1" in doc.metadata.abstract
 
     def test_keywords_cleaned(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         meta = DocumentMetadata(keywords=["  ML  ", "", " NLP  "])
         doc = PipelineDocument(document_id="t5", metadata=meta)
         normalizer.process(doc)
         assert doc.metadata.keywords == ["ML", "NLP"]
 
     def test_journal_cleaned(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         meta = DocumentMetadata(journal="  Nature   Communications  ")
         doc = PipelineDocument(document_id="t6", metadata=meta)
         normalizer.process(doc)
         assert doc.metadata.journal == "Nature Communications"
 
     def test_corresponding_author_cleaned(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         meta = DocumentMetadata(corresponding_author="  Jane   Smith  ")
         doc = PipelineDocument(document_id="t7", metadata=meta)
         normalizer.process(doc)
         assert doc.metadata.corresponding_author == "Jane Smith"
 
     def test_email_cleaned(self, normalizer):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         meta = DocumentMetadata(email="  test@example.com  ")
         doc = PipelineDocument(document_id="t8", metadata=meta)
         normalizer.process(doc)
@@ -136,7 +139,7 @@ class TestBlockRepair:
 
 class TestAbstractSplit:
     def test_abstract_colon_body(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="ab1", blocks=[
             Block(block_id="b1", index=0, text="Abstract: This paper presents a novel method.", block_type=BlockType.UNKNOWN),
         ])
@@ -146,7 +149,7 @@ class TestAbstractSplit:
         assert result.blocks[1].text == "This paper presents a novel method."
 
     def test_abstract_dash_body(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="ab2", blocks=[
             Block(block_id="b1", index=0, text="Abstract \u2014 The system achieves high accuracy.", block_type=BlockType.UNKNOWN),
         ])
@@ -154,7 +157,7 @@ class TestAbstractSplit:
         assert len(result.blocks) == 2
 
     def test_abstract_no_delimiter(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         text = "AbstractThe system is described in this manuscript with extensive details."
         doc = PipelineDocument(document_id="ab3", blocks=[
             Block(block_id="b1", index=0, text=text, block_type=BlockType.UNKNOWN),
@@ -163,7 +166,7 @@ class TestAbstractSplit:
         assert len(result.blocks) == 2
 
     def test_abstract_standalone_not_split(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="ab4", blocks=[
             Block(block_id="b1", index=0, text="Abstract", block_type=BlockType.UNKNOWN),
         ])
@@ -173,7 +176,7 @@ class TestAbstractSplit:
 
 class TestNumberedHeadingSplit:
     def test_numbered_heading_with_body(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="nh1", blocks=[
             Block(block_id="b1", index=0, text="1 IntroductionThis section introduces the topic and background.", block_type=BlockType.UNKNOWN),
         ])
@@ -182,7 +185,7 @@ class TestNumberedHeadingSplit:
         assert "Introduction" in result.blocks[0].text
 
     def test_numbered_heading_no_body_not_split(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="nh2", blocks=[
             Block(block_id="b1", index=0, text="1 Introduction", block_type=BlockType.UNKNOWN),
         ])
@@ -190,7 +193,7 @@ class TestNumberedHeadingSplit:
         assert len(result.blocks) == 1
 
     def test_numbered_heading_short_body_not_split(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="nh3", blocks=[
             Block(block_id="b1", index=0, text="1 IntroductionShort.", block_type=BlockType.UNKNOWN),
         ])
@@ -198,7 +201,7 @@ class TestNumberedHeadingSplit:
         assert len(result.blocks) == 1
 
     def test_list_item_not_split(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="nh4", blocks=[
             Block(block_id="b1", index=0, text="1. First item in a list", block_type=BlockType.UNKNOWN,
                   metadata={"list_level": 1}),
@@ -208,7 +211,7 @@ class TestNumberedHeadingSplit:
 
 class TestKeywordSplit:
     def test_keyword_merged_with_body(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="kw1", blocks=[
             Block(block_id="b1", index=0, text="IntroductionThis section provides background on the topic and reviews related work in the field.", block_type=BlockType.UNKNOWN),
         ])
@@ -216,7 +219,7 @@ class TestKeywordSplit:
         assert len(result.blocks) == 2
 
     def test_keyword_short_body_not_split(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="kw2", blocks=[
             Block(block_id="b1", index=0, text="IntroductionShort.", block_type=BlockType.UNKNOWN),
         ])
@@ -225,7 +228,7 @@ class TestKeywordSplit:
 
 class TestFigureBlockPreservation:
     def test_figure_block_not_split(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="fig1", blocks=[
             Block(block_id="b1", index=0, text="Figure 1. Architecture diagram", block_type=BlockType.UNKNOWN,
                   metadata={"has_figure": True}),
@@ -234,7 +237,7 @@ class TestFigureBlockPreservation:
         assert len(result.blocks) == 1
 
     def test_empty_figure_block_kept(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="fig2", blocks=[
             Block(block_id="b1", index=0, text="", block_type=BlockType.UNKNOWN,
                   metadata={"has_figure": True}),
@@ -244,7 +247,7 @@ class TestFigureBlockPreservation:
 
 class TestMultiLineHeadingConsolidation:
     def test_consolidate_two_headings(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         from app.models.block import TextStyle
         style_a = TextStyle(bold=True, font_size=14.0)
         style_b = TextStyle(bold=True, font_size=13.0)
@@ -257,7 +260,7 @@ class TestMultiLineHeadingConsolidation:
         assert result.blocks[0].text == "Related Work"
 
     def test_no_consolidation_with_period(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         from app.models.block import TextStyle
         style = TextStyle(bold=True, font_size=14.0)
         doc = PipelineDocument(document_id="ml2", blocks=[
@@ -268,7 +271,7 @@ class TestMultiLineHeadingConsolidation:
         assert len(result.blocks) == 2
 
     def test_no_consolidation_non_bold(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="ml3", blocks=[
             Block(block_id="b1", index=0, text="Related", block_type=BlockType.UNKNOWN),
             Block(block_id="b2", index=1, text="Work", block_type=BlockType.UNKNOWN),
@@ -277,7 +280,7 @@ class TestMultiLineHeadingConsolidation:
         assert len(result.blocks) == 2
 
     def test_no_consolidation_long_headings(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         from app.models.block import TextStyle
         style = TextStyle(bold=True, font_size=14.0)
         doc = PipelineDocument(document_id="ml4", blocks=[
@@ -288,7 +291,7 @@ class TestMultiLineHeadingConsolidation:
         assert len(result.blocks) == 2
 
     def test_no_consolidation_multiple_bold(self, normalizer):
-        from app.models import PipelineDocument, Block
+        from app.models import Block, PipelineDocument
         from app.models.block import TextStyle
         style = TextStyle(bold=True, font_size=14.0)
         doc = PipelineDocument(document_id="ml5", blocks=[
@@ -301,7 +304,7 @@ class TestMultiLineHeadingConsolidation:
 
 class TestConsecutiveDuplicateFilter:
     def test_identical_blocks_suppressed(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="cd1", blocks=[
             Block(block_id="b1", index=0, text="Duplicate text", block_type=BlockType.UNKNOWN),
             Block(block_id="b2", index=1, text="Duplicate text", block_type=BlockType.UNKNOWN),
@@ -310,7 +313,7 @@ class TestConsecutiveDuplicateFilter:
         assert len(result.blocks) == 1
 
     def test_different_blocks_preserved(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="cd2", blocks=[
             Block(block_id="b1", index=0, text="First", block_type=BlockType.UNKNOWN),
             Block(block_id="b2", index=1, text="Second", block_type=BlockType.UNKNOWN),
@@ -319,7 +322,7 @@ class TestConsecutiveDuplicateFilter:
         assert len(result.blocks) == 2
 
     def test_empty_duplicates_removed(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="cd3", blocks=[
             Block(block_id="b1", index=0, text="", block_type=BlockType.UNKNOWN),
             Block(block_id="b2", index=1, text="", block_type=BlockType.UNKNOWN),
@@ -328,7 +331,7 @@ class TestConsecutiveDuplicateFilter:
         assert len(result.blocks) == 0
 
     def test_duplicate_tracking_in_metadata(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="cd4", blocks=[
             Block(block_id="b1", index=0, text="Hello", block_type=BlockType.UNKNOWN),
             Block(block_id="b2", index=1, text="Hello", block_type=BlockType.UNKNOWN),
@@ -338,7 +341,7 @@ class TestConsecutiveDuplicateFilter:
 
 class TestEmptyOrphanSanitization:
     def test_empty_body_removed(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="eo1", blocks=[
             Block(block_id="b1", index=0, text="", block_type=BlockType.BODY),
         ])
@@ -346,7 +349,7 @@ class TestEmptyOrphanSanitization:
         assert len(result) == 0
 
     def test_empty_unknown_removed(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="eo2", blocks=[
             Block(block_id="b1", index=0, text="", block_type=BlockType.UNKNOWN),
         ])
@@ -354,7 +357,7 @@ class TestEmptyOrphanSanitization:
         assert len(result) == 0
 
     def test_empty_with_figure_kept(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="eo3", blocks=[
             Block(block_id="b1", index=0, text="", block_type=BlockType.BODY,
                   metadata={"has_figure": True}),
@@ -363,7 +366,7 @@ class TestEmptyOrphanSanitization:
         assert len(result) == 1
 
     def test_empty_with_equation_kept(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="eo4", blocks=[
             Block(block_id="b1", index=0, text="", block_type=BlockType.BODY,
                   metadata={"has_equation": True}),
@@ -372,7 +375,7 @@ class TestEmptyOrphanSanitization:
         assert len(result) == 1
 
     def test_empty_with_list_level_kept(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="eo5", blocks=[
             Block(block_id="b1", index=0, text="", block_type=BlockType.BODY,
                   metadata={"list_level": 1}),
@@ -381,7 +384,7 @@ class TestEmptyOrphanSanitization:
         assert len(result) == 1
 
     def test_non_empty_body_kept(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="eo6", blocks=[
             Block(block_id="b1", index=0, text="Content", block_type=BlockType.BODY),
         ])
@@ -389,7 +392,7 @@ class TestEmptyOrphanSanitization:
         assert len(result) == 1
 
     def test_heading_empty_kept(self, normalizer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="eo7", blocks=[
             Block(block_id="b1", index=0, text="", block_type=BlockType.HEADING_1),
         ])

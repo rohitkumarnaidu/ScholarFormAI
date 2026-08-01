@@ -5,15 +5,14 @@ from __future__ import annotations
 
 import logging
 import os
-from datetime import datetime, timezone
-from typing import Dict
+from datetime import UTC, datetime
 
 from app.config.settings import settings
 
 logger = logging.getLogger(__name__)
 
 
-def cleanup_stranded_uploads(upload_dir: str = "uploads", retention_days: int | None = None) -> Dict[str, int]:
+def cleanup_stranded_uploads(upload_dir: str = "uploads", retention_days: int | None = None) -> dict[str, int]:
     """
     Purge stranded upload artifacts older than retention policy.
 
@@ -28,7 +27,7 @@ def cleanup_stranded_uploads(upload_dir: str = "uploads", retention_days: int | 
     if not os.path.isdir(upload_dir):
         return {"deleted_files": 0, "removed_dirs": 0, "retention_days": days}
 
-    cutoff_epoch = datetime.now(timezone.utc).timestamp() - (days * 86400)
+    cutoff_epoch = datetime.now(UTC).timestamp() - (days * 86400)
     deleted_files = 0
     removed_dirs = 0
 

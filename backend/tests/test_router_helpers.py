@@ -9,9 +9,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from fastapi import HTTPException
 from fastapi.routing import APIRoute
-from starlette.requests import Request
 from pydantic import ValidationError
-
+from starlette.requests import Request
 
 # ── Shared helpers ─────────────────────────────────────────────────────
 

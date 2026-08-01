@@ -1,4 +1,5 @@
 from unittest.mock import MagicMock, patch
+
 from app.models.block import Block, BlockType
 
 

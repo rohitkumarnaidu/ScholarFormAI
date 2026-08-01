@@ -8,11 +8,8 @@ This test verifies that headings longer than 120 characters are now detected
 after removing the hard rejection guards.
 """
 
-from app.models import Block, TextStyle, BlockType
-from app.pipeline.structure_detection.heading_rules import (
-    analyze_heading_candidate,
-    is_likely_heading_by_style
-)
+from app.models import Block, BlockType, TextStyle
+from app.pipeline.structure_detection.heading_rules import analyze_heading_candidate, is_likely_heading_by_style
 
 
 def test_long_heading_detection():
@@ -70,10 +67,10 @@ def test_long_heading_detection():
 
 def test_author_detection_without_comma():
     """Verify that author names without commas are still detected."""
+    from app.models import DocumentMetadata, PipelineDocument
     from app.pipeline.classification.classifier import ContentClassifier
-    from app.models import PipelineDocument, DocumentMetadata
     
-    classifier = ContentClassifier()
+    ContentClassifier()
     
     # Create a document with author-like block (no comma)
     author_block = Block(
@@ -84,7 +81,7 @@ def test_author_detection_without_comma():
         style=TextStyle()
     )
     
-    doc = PipelineDocument(
+    PipelineDocument(
         document_id="test_doc",
         metadata=DocumentMetadata(title="Test"),
         blocks=[author_block]

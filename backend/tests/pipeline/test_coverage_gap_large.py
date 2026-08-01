@@ -2,10 +2,13 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from contextlib import contextmanager
+
 import importlib
-from unittest.mock import patch, MagicMock
+from contextlib import contextmanager
+from unittest.mock import MagicMock, patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -15,6 +18,7 @@ pytestmark = [pytest.mark.pipeline]
 
 # Pre-import for reload-based testing
 import app.pipeline.safety.circuit_breaker as _cb_mod
+
 
 class TestCircuitBreaker:
     @contextmanager
@@ -161,7 +165,7 @@ class TestLlmValidator:
         from pydantic import BaseModel
         class FakeSchema(BaseModel):
             result: str
-        sys = importlib.import_module("sys")
+        importlib.import_module("sys")
         with patch("app.pipeline.safety.llm_validator.HAS_GUARDRAILS", False):
             from app.pipeline.safety.llm_validator import guard_llm_output
             @guard_llm_output(FakeSchema, error_return_value={"error": True})
@@ -171,7 +175,7 @@ class TestLlmValidator:
             assert result == {"result": "hello"}
 
     def test_guard_llm_output_not_basemodel(self):
-        sys = importlib.import_module("sys")
+        importlib.import_module("sys")
         with patch("app.pipeline.safety.llm_validator.HAS_GUARDRAILS", False):
             from app.pipeline.safety.llm_validator import guard_llm_output
             @guard_llm_output(dict, error_return_value={"error": True})
@@ -280,8 +284,8 @@ class TestReferenceParser:
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         text = 'A. Author, "Title," Journal, 2021. doi:10.1234/example.5678.'
-        ref = rp._parse_single_reference(text, 0)
-        assert ref.doi is not None or True
+        rp._parse_single_reference(text, 0)
+        assert True
 
     def test_parse_single_no_quote_dot_split(self):
         from app.pipeline.references.parser import ReferenceParser
@@ -1078,6 +1082,7 @@ class TestValidatorGuardBranchCoverage:
 
     def test_pydantic_validation_error(self):
         from pydantic import BaseModel
+
         from app.pipeline.safety.validator_guard import validate_output
         class StrictSchema(BaseModel):
             name: str
@@ -1097,6 +1102,7 @@ class TestValidatorGuardBranchCoverage:
 
     def test_pydantic_from_dict_validation_error(self):
         from pydantic import BaseModel
+
         from app.pipeline.safety.validator_guard import validate_output
         class NumModel(BaseModel):
             num: int

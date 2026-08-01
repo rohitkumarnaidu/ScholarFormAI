@@ -1,6 +1,8 @@
-import pytest
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, PropertyMock, patch
+
 import numpy as np
+import pytest
+
 from app.cache.redis_cache import redis_cache
 
 
@@ -60,14 +62,13 @@ class TestDeterministicEmbeddingModel:
 class TestSessionVectorStore:
     @pytest.fixture
     def store(self):
-        with patch("pathlib.Path.mkdir"):
-            with patch("app.services.session_vector_store.model_store"):
-                from app.services.session_vector_store import SessionVectorStore
-                s = SessionVectorStore(persist_directory="/tmp/test_store")
-                s._chroma = None
-                s._client = None
-                s._embedding_model = None
-                return s
+        with patch("pathlib.Path.mkdir"), patch("app.services.session_vector_store.model_store"):
+            from app.services.session_vector_store import SessionVectorStore
+            s = SessionVectorStore(persist_directory="/tmp/test_store")
+            s._chroma = None
+            s._client = None
+            s._embedding_model = None
+            return s
 
     def test_init_creates_dir(self):
         with patch("pathlib.Path.mkdir") as mock_mkdir:

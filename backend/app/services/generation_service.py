@@ -12,9 +12,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, Optional
+from typing import Any
 
-from app.exceptions import PipelineError, NotFoundError, ValidationError
+from app.exceptions import NotFoundError, PipelineError, ValidationError
 from app.services.generator_session_service import GeneratorSessionService
 from app.services.session_vector_store import SessionVectorStore
 
@@ -30,8 +30,8 @@ class GenerationService:
 
     def __init__(
         self,
-        session_service: Optional[GeneratorSessionService] = None,
-        vector_store: Optional[SessionVectorStore] = None,
+        session_service: GeneratorSessionService | None = None,
+        vector_store: SessionVectorStore | None = None,
     ) -> None:
         self._session_service = session_service or GeneratorSessionService()
         self._vector_store = vector_store or SessionVectorStore()

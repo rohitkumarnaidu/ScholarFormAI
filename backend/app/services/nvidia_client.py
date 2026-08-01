@@ -6,18 +6,21 @@ NVIDIA NIM API Client — now powered by LiteLLM internally.
 """
 
 from __future__ import annotations
+
 import base64
 import logging
 import os
-from typing import List, Dict, Any, Optional
-from app.utils.singleton import get_or_create_safe
+from typing import Any
+
 from app.config.settings import settings
+from app.utils.singleton import get_or_create_safe
 
 logger = logging.getLogger(__name__)
 
 # Use unified LiteLLM service; fall back to direct OpenAI client if unavailable
 try:
-    from app.services.llm_service import generate as _llm_generate, LLM_NVIDIA, LITELLM_AVAILABLE
+    from app.services.llm_service import LITELLM_AVAILABLE, LLM_NVIDIA
+    from app.services.llm_service import generate as _llm_generate
 
     _USE_LLM_SERVICE = True
 except ImportError:
@@ -73,7 +76,7 @@ class NvidiaClient:
 
     def chat(
         self,
-        messages: List[Dict[str, Any]],
+        messages: list[dict[str, Any]],
         model: str = "llama-70b",
         temperature: float = 0.7,
         max_tokens: int = 1024,
@@ -146,7 +149,7 @@ class NvidiaClient:
 
     # ── Higher-level methods (signatures unchanged) ────────────────────── #
 
-    def analyze_document_structure(self, text: str) -> Dict[str, Any]:
+    def analyze_document_structure(self, text: str) -> dict[str, Any]:
         """Analyze document structure using Llama 3.3 70B."""
         messages = [
             {
@@ -168,7 +171,7 @@ class NvidiaClient:
             confidence = min(1.0, 0.3 + (detected / len(section_keywords)) * 0.7)
         return {"analysis": response, "model": self.llama_70b, "confidence": round(confidence, 2)}
 
-    def analyze_figure(self, image_path: str, caption: Optional[str] = None) -> str:
+    def analyze_figure(self, image_path: str, caption: str | None = None) -> str:
         """Analyze figure/diagram using Llama 3.2 11B Vision."""
         fallback_text = caption if caption else "Figure (AI analysis unavailable)"
         try:
@@ -189,8 +192,9 @@ class NvidiaClient:
                 raw_data = f.read()
 
             if len(raw_data) > 2_000_000:
-                from PIL import Image
                 import io
+
+                from PIL import Image
 
                 img = Image.open(io.BytesIO(raw_data))
                 if img.mode in ("RGBA", "P") and media_type == "image/jpeg":
@@ -226,7 +230,7 @@ class NvidiaClient:
             logger.warning("NvidiaClient.analyze_figure: vision analysis failed: %s", exc)
             return fallback_text
 
-    def validate_template_compliance(self, document_text: str, template: str) -> Dict[str, Any]:
+    def validate_template_compliance(self, document_text: str, template: str) -> dict[str, Any]:
         """Check if document complies with template requirements."""
         messages = [
             {
@@ -251,10 +255,10 @@ class NvidiaClient:
 
 
 # ── Singleton ────────────────────────────────────────────────────────────── #
-_nvidia_client: Optional[NvidiaClient] = None
+_nvidia_client: NvidiaClient | None = None
 
 
-def get_nvidia_client() -> Optional[NvidiaClient]:
+def get_nvidia_client() -> NvidiaClient | None:
     """Get or create the singleton NVIDIA client instance."""
     global _nvidia_client
     _nvidia_client = get_or_create_safe(

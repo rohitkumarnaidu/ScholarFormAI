@@ -9,15 +9,15 @@ PRODUCTION HARDENING MODE - Verification Only
 Executable with: pytest backend/tests/stress/test_production_stress.py -v
 """
 
-import sys
 import os
+import sys
 import time
 import uuid
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
 from docx import Document as DocxDocument
-from unittest.mock import patch, MagicMock
 
 BACKEND_ROOT = Path(__file__).resolve().parents[2]
 if str(BACKEND_ROOT) not in sys.path:

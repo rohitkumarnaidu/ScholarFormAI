@@ -2,18 +2,20 @@
 # Copyright (c) 2026 ScholarForm AI
 
 import json
+import logging
 import os
 import re
 import sys
 import time
-import logging
-from typing import List, Dict, Any, Optional
+from typing import Any
+
 import requests
-from app.pipeline.safety.retry_guard import retry_guard
+from pydantic import BaseModel, Field
+
+from app.config.settings import settings
 from app.pipeline.safety.circuit_breaker import circuit_breaker
 from app.pipeline.safety.llm_validator import guard_llm_output
-from pydantic import BaseModel, Field
-from app.config.settings import settings
+from app.pipeline.safety.retry_guard import retry_guard
 from app.utils.singleton import get_or_create
 
 logger = logging.getLogger(__name__)
@@ -27,18 +29,18 @@ class SemanticBlockSchema(BaseModel):
 
 
 class InstructionSetSchema(BaseModel):
-    blocks: List[SemanticBlockSchema]
+    blocks: list[SemanticBlockSchema]
     fallback: bool = Field(default=False)
-    model: Optional[str] = None
-    latency: Optional[float] = None
+    model: str | None = None
+    latency: float | None = None
 
 
 def _instruction_set_circuit_fallback(
     engine: "ReasoningEngine",
-    semantic_blocks: List[Dict[str, Any]],
+    semantic_blocks: list[dict[str, Any]],
     rules: str,
     max_retries: int = 2,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Circuit-breaker fallback for generate_instruction_set.
     Uses deterministic rule-based classification so callers still receive
@@ -59,11 +61,13 @@ except ImportError:
 # Import unified LLM service (LiteLLM-backed)
 try:
     from app.services.llm_service import (
-        generate as _llm_generate,
-        LLM_NVIDIA,
-        LLM_DEEPSEEK,
-        LLMUnavailableError,
         LITELLM_AVAILABLE,
+        LLM_DEEPSEEK,
+        LLM_NVIDIA,
+        LLMUnavailableError,
+    )
+    from app.services.llm_service import (
+        generate as _llm_generate,
     )
 
     _LLM_SERVICE_AVAILABLE = True
@@ -123,7 +127,7 @@ class ReasoningEngine:
         "BIBLIOGRAPHY_HEADING": "REFERENCES_HEADING",
     }
 
-    def __init__(self, timeout: int = 30, model: Optional[str] = None):
+    def __init__(self, timeout: int = 30, model: str | None = None):
         if timeout == 30:
             timeout = int(settings.PIPELINE_REASONING_TIMEOUT_SECONDS)
 
@@ -231,7 +235,7 @@ class ReasoningEngine:
             cancellation_event is not None and hasattr(cancellation_event, "is_set") and cancellation_event.is_set()
         )
 
-    def _validate_json_schema(self, data: Dict[str, Any]) -> bool:
+    def _validate_json_schema(self, data: dict[str, Any]) -> bool:
         """Validate JSON output schema."""
         if not isinstance(data, dict):
             return False
@@ -296,9 +300,9 @@ class ReasoningEngine:
 
     def _normalize_instruction_payload(
         self,
-        data: Optional[Dict[str, Any]],
-        semantic_blocks: List[Dict[str, Any]],
-    ) -> Optional[Dict[str, Any]]:
+        data: dict[str, Any] | None,
+        semantic_blocks: list[dict[str, Any]],
+    ) -> dict[str, Any] | None:
         """
         Normalize model output into canonical schema.
         Accepts variants like `instructions`/`blocks`, id aliases, and score aliases.
@@ -313,7 +317,7 @@ class ReasoningEngine:
         if not isinstance(raw_blocks, list):
             return None
 
-        normalized_blocks: List[Dict[str, Any]] = []
+        normalized_blocks: list[dict[str, Any]] = []
         for idx, raw in enumerate(raw_blocks):
             if not isinstance(raw, dict):
                 continue
@@ -338,7 +342,7 @@ class ReasoningEngine:
             )
             confidence = self._normalize_confidence(raw.get("confidence") or raw.get("score") or raw.get("probability"))
 
-            normalized: Dict[str, Any] = {
+            normalized: dict[str, Any] = {
                 "block_id": block_id,
                 "semantic_type": semantic_type,
                 "confidence": confidence,
@@ -354,7 +358,7 @@ class ReasoningEngine:
             return None
 
         avg_confidence = sum(block["confidence"] for block in normalized_blocks) / len(normalized_blocks)
-        normalized_payload: Dict[str, Any] = {
+        normalized_payload: dict[str, Any] = {
             "blocks": normalized_blocks,
             "instructions": normalized_blocks,
             "confidence": round(avg_confidence, 3),
@@ -371,7 +375,7 @@ class ReasoningEngine:
 
         return normalized_payload
 
-    def _rule_based_fallback(self, semantic_blocks: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def _rule_based_fallback(self, semantic_blocks: list[dict[str, Any]]) -> dict[str, Any]:
         """Rule-based classification fallback when Ollama unavailable."""
         logger.warning("Using rule-based fallback classification")
         blocks = []
@@ -407,7 +411,7 @@ class ReasoningEngine:
         }
 
     @retry_guard(max_retries=3)
-    def _call_ollama(self, prompt: str) -> Optional[Dict[str, Any]]:
+    def _call_ollama(self, prompt: str) -> dict[str, Any] | None:
         """Call Local Ollama API (direct HTTP - used when llm_service unavailable)."""
         try:
             payload = {
@@ -438,7 +442,7 @@ class ReasoningEngine:
             return None
 
     @retry_guard(max_retries=2, base_delay=0.5)
-    def _call_nvidia_litellm(self, messages: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+    def _call_nvidia_litellm(self, messages: list[dict[str, Any]]) -> dict[str, Any] | None:
         """Call NVIDIA NIM via llm_service (LiteLLM-backed)."""
         if not _LLM_SERVICE_AVAILABLE or not self.nvidia_api_key:
             return None
@@ -460,7 +464,7 @@ class ReasoningEngine:
                 try:
                     return json.loads(json_match.group())
                 except json.JSONDecodeError:
-                    pass
+                    pass  # intentionally ignored
         return None
 
     @guard_llm_output(schema=InstructionSetSchema, error_return_value={"blocks": [], "fallback": True})
@@ -471,11 +475,11 @@ class ReasoningEngine:
     )
     def generate_instruction_set(
         self,
-        semantic_blocks: List[Dict[str, Any]],
+        semantic_blocks: list[dict[str, Any]],
         rules: str,
         max_retries: int = 2,
         cancellation_event: Any = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         - Automatic fallback on failure
         - Retry logic for transient failures
@@ -580,10 +584,10 @@ class ReasoningEngine:
 
     def _generate_with_nvidia(
         self,
-        semantic_blocks: List[Dict[str, Any]],
+        semantic_blocks: list[dict[str, Any]],
         rules: str,
         cancellation_event: Any = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Generate instruction set using NVIDIA Llama 3.3 70B (via llm_service when available)."""
         if self._is_cancelled(cancellation_event):
             return self._rule_based_fallback(semantic_blocks)
@@ -591,7 +595,7 @@ class ReasoningEngine:
         if not semantic_blocks:
             return {"blocks": []}
 
-        merged_blocks: List[Dict[str, Any]] = []
+        merged_blocks: list[dict[str, Any]] = []
         for batch_start in range(0, len(semantic_blocks), MAX_BLOCKS_PER_CALL):
             batch = semantic_blocks[batch_start : batch_start + MAX_BLOCKS_PER_CALL]
             blocks_summary = []
@@ -670,11 +674,11 @@ class ReasoningEngine:
 
     def _generate_with_deepseek(
         self,
-        semantic_blocks: List[Dict[str, Any]],
+        semantic_blocks: list[dict[str, Any]],
         rules: str,
         max_retries: int,
         cancellation_event: Any = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Generate instruction set using DeepSeek via llm_service (LiteLLM) or direct Ollama."""
 
         def _parse_response(raw: str):  # type: Optional[Dict[str, Any]]
@@ -686,10 +690,10 @@ class ReasoningEngine:
                     try:
                         return json.loads(m.group())
                     except json.JSONDecodeError:
-                        pass
+                        pass  # intentionally ignored
             return None
 
-        merged_blocks: List[Dict[str, Any]] = []
+        merged_blocks: list[dict[str, Any]] = []
         for batch_start in range(0, len(semantic_blocks), MAX_BLOCKS_PER_CALL):
             batch = semantic_blocks[batch_start : batch_start + MAX_BLOCKS_PER_CALL]
             blocks_json = json.dumps(batch)

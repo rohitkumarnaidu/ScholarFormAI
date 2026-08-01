@@ -4,9 +4,13 @@
 """Targeted tests for uncovered lines in parser.py, pdf_parser.py, parser_factory.py, formatter_engine.py, safe_execution.py."""
 
 from __future__ import annotations
+
 from unittest.mock import MagicMock, patch
+
 import pytest
+
 from app.pipeline.parsing.pdf_parser import PdfParser
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -138,8 +142,9 @@ class TestDocxParserCoverageGaps:
         assert figures == []
 
     def test_extract_equations_with_omath_skip_duplicates(self):
-        from app.pipeline.parsing.parser import DocxParser
         from lxml import etree
+
+        from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
         ns = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
@@ -159,8 +164,9 @@ class TestDocxParserCoverageGaps:
         assert len(equations) >= 1
 
     def test_extract_equations_text_from_wt(self):
-        from app.pipeline.parsing.parser import DocxParser
         from lxml import etree
+
+        from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
         m_ns = "http://schemas.openxmlformats.org/officeDocument/2006/math"
@@ -274,7 +280,7 @@ class TestPdfParserCoverageGaps:
 
     def test_calculate_font_stats_exception_continue(self):
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 5
@@ -346,7 +352,7 @@ class TestPdfParserCoverageGaps:
 
     def test_extract_image_svg_format(self):
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 1
@@ -368,7 +374,7 @@ class TestPdfParserCoverageGaps:
 
     def test_extract_content_fallback_image_blocks(self):
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 1
@@ -390,7 +396,7 @@ class TestPdfParserCoverageGaps:
 
     def test_extract_content_fallback_image_skip_duplicate_hash(self):
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 1
@@ -413,7 +419,7 @@ class TestPdfParserCoverageGaps:
 
     def test_extract_content_fallback_image_exception(self):
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 1
@@ -431,7 +437,7 @@ class TestPdfParserCoverageGaps:
 
     def test_extract_content_image_extraction_exception(self):
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 1
@@ -577,7 +583,7 @@ class TestPdfParserCoverageGaps:
 
     def test_extract_content_table_find_tables_exception(self):
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 1
@@ -595,7 +601,7 @@ class TestPdfParserCoverageGaps:
 
     def test_extract_content_get_text_exception(self):
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 1
@@ -613,7 +619,7 @@ class TestPdfParserCoverageGaps:
 
     def test_extract_content_heading_detection_h1_h2_h3(self):
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 1
@@ -635,7 +641,7 @@ class TestPdfParserCoverageGaps:
 
     def test_extract_content_table_without_bbox(self):
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 1
@@ -657,7 +663,7 @@ class TestPdfParserCoverageGaps:
 
     def test_extract_content_image_rects_exception(self):
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 1
@@ -709,7 +715,7 @@ class TestParserFactoryCoverageGaps:
                 md.return_value = MagicMock()
                 with patch("app.pipeline.parsing.parser_factory.PdfParser", side_effect=ImportError("no fitz")):
                     from app.pipeline.parsing.parser_factory import ParserFactory
-                    f = ParserFactory()
+                    ParserFactory()
 
     def test_init_pdf_parser_exception(self):
         with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
@@ -718,7 +724,7 @@ class TestParserFactoryCoverageGaps:
                 md.return_value = MagicMock()
                 with patch("app.pipeline.parsing.parser_factory.PdfParser", side_effect=Exception("weird")):
                     from app.pipeline.parsing.parser_factory import ParserFactory
-                    f = ParserFactory()
+                    ParserFactory()
 
     def test_init_nougat_parser_exception(self):
         with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
@@ -729,7 +735,7 @@ class TestParserFactoryCoverageGaps:
                     mp.return_value = MagicMock()
                     with patch("app.pipeline.parsing.nougat_parser.NougatParser", side_effect=Exception("fail")):
                         from app.pipeline.parsing.parser_factory import ParserFactory
-                        f = ParserFactory()
+                        ParserFactory()
 
     def test_init_txt_parser_exception(self):
         with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
@@ -740,7 +746,7 @@ class TestParserFactoryCoverageGaps:
                     mp.return_value = MagicMock()
                     with patch("app.pipeline.parsing.parser_factory.TxtParser", side_effect=Exception("fail")):
                         from app.pipeline.parsing.parser_factory import ParserFactory
-                        f = ParserFactory()
+                        ParserFactory()
 
     def test_init_html_parser_import_error(self):
         with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
@@ -753,7 +759,7 @@ class TestParserFactoryCoverageGaps:
                         mt.return_value = MagicMock()
                         with patch("app.pipeline.parsing.parser_factory.HtmlParser", side_effect=ImportError("no bs4")):
                             from app.pipeline.parsing.parser_factory import ParserFactory
-                            f = ParserFactory()
+                            ParserFactory()
 
     def test_init_html_parser_exception(self):
         with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
@@ -766,7 +772,7 @@ class TestParserFactoryCoverageGaps:
                         mt.return_value = MagicMock()
                         with patch("app.pipeline.parsing.parser_factory.HtmlParser", side_effect=Exception("fail")):
                             from app.pipeline.parsing.parser_factory import ParserFactory
-                            f = ParserFactory()
+                            ParserFactory()
 
     def test_init_markdown_parser_exception(self):
         with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
@@ -781,7 +787,7 @@ class TestParserFactoryCoverageGaps:
                             mh.return_value = MagicMock()
                             with patch("app.pipeline.parsing.parser_factory.MarkdownParser", side_effect=Exception("fail")):
                                 from app.pipeline.parsing.parser_factory import ParserFactory
-                                f = ParserFactory()
+                                ParserFactory()
 
     def test_init_tex_parser_exception(self):
         with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
@@ -798,7 +804,7 @@ class TestParserFactoryCoverageGaps:
                                 mm.return_value = MagicMock()
                                 with patch("app.pipeline.parsing.parser_factory.TexParser", side_effect=Exception("fail")):
                                     from app.pipeline.parsing.parser_factory import ParserFactory
-                                    f = ParserFactory()
+                                    ParserFactory()
 
     def test_get_parser_no_parsers_available(self):
         with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:

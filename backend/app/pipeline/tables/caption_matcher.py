@@ -8,12 +8,12 @@ Links extracted Table objects to their corresponding caption blocks.
 
 import logging
 import re
-from typing import List, Optional, Dict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 logger = logging.getLogger(__name__)
 
-from app.models import PipelineDocument as Document, Block, BlockType
+from app.models import Block, BlockType
+from app.models import PipelineDocument as Document
 from app.pipeline.base import PipelineStage
 
 
@@ -50,7 +50,7 @@ class TableCaptionMatcher(PipelineStage):
         """
         Match captions to tables in the document.
         """
-        start_time = datetime.now(timezone.utc)
+        start_time = datetime.now(UTC)
 
         try:
             blocks = document.blocks
@@ -62,7 +62,7 @@ class TableCaptionMatcher(PipelineStage):
             # 1. Performance Optimization: O(n) mapping of block_index -> Block
             ref_start_idx = self._find_references_start_index(blocks)
 
-            block_map: Dict[int, Block] = {}
+            block_map: dict[int, Block] = {}
             for block in blocks:
                 if block.is_heading() or block.block_type == BlockType.REFERENCES_HEADING:
                     continue
@@ -70,9 +70,9 @@ class TableCaptionMatcher(PipelineStage):
                     continue
                 block_map[block.index] = block
 
-            list_index_map: Dict[int, int] = {block.index: i for i, block in enumerate(blocks)}
+            list_index_map: dict[int, int] = {block.index: i for i, block in enumerate(blocks)}
 
-            assigned_block_ids: Dict[str, bool] = {}
+            assigned_block_ids: dict[str, bool] = {}
             match_count = 0
 
             table_indices = sorted([t.block_index for t in tables])
@@ -148,7 +148,7 @@ class TableCaptionMatcher(PipelineStage):
             return document
 
         # 4. Final Processing History Update
-        end_time = datetime.now(timezone.utc)
+        end_time = datetime.now(UTC)
         duration_ms = int((end_time - start_time).total_seconds() * 1000)
 
         document.add_processing_stage(
@@ -160,7 +160,7 @@ class TableCaptionMatcher(PipelineStage):
 
         return document
 
-    def _find_references_start_index(self, blocks: List[Block]) -> Optional[int]:
+    def _find_references_start_index(self, blocks: list[Block]) -> int | None:
         """Utility to find start of References section based on BlockType or keywords."""
         for block in blocks:
             if block.block_type == BlockType.REFERENCES_HEADING:

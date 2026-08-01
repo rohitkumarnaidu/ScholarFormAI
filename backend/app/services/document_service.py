@@ -18,8 +18,8 @@ import hashlib
 import hmac
 import logging
 import time
-from typing import Any, Dict, List, Optional
-from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
+from typing import Any
+from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 from app.services.document_crud_service import DocumentCrudService
 from app.services.document_share_service import DocumentShareService
@@ -30,13 +30,13 @@ logger = logging.getLogger(__name__)
 class DocumentService:
     """Thin facade that delegates to the decomposed document services."""
 
-    _instance: Optional["DocumentService"] = None
+    _instance: DocumentService | None = None
 
     def __init__(
         self,
-        crud: Optional[DocumentCrudService] = None,
-        pipeline: Optional[Any] = None,
-        share: Optional[DocumentShareService] = None,
+        crud: DocumentCrudService | None = None,
+        pipeline: Any | None = None,
+        share: DocumentShareService | None = None,
     ) -> None:
         self._crud = crud or DocumentCrudService()
         if pipeline is None:
@@ -48,7 +48,7 @@ class DocumentService:
         self._share = share or DocumentShareService()
 
     @classmethod
-    def _get_instance(cls) -> "DocumentService":
+    def _get_instance(cls) -> DocumentService:
         if cls._instance is None:
             cls._instance = cls()
         return cls._instance
@@ -73,7 +73,7 @@ class DocumentService:
         secret: str,
         expires_in_seconds: int = 3600,
         download_format: str = "docx",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         if not secret:
             raise ValueError("SIGNED_URL_SECRET is required")
         expires = int(time.time()) + int(expires_in_seconds)
@@ -135,26 +135,26 @@ class DocumentService:
     # ═══════════════════════════════════════════════════════════════════════
 
     @classmethod
-    async def get_document(cls, doc_id: str, user_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
+    async def get_document(cls, doc_id: str, user_id: str | None = None) -> dict[str, Any] | None:
         return await cls._get_instance()._crud.get_document(doc_id, user_id)
 
     @classmethod
     async def list_documents(
         cls,
         user_id: str,
-        status: Optional[str] = None,
-        template: Optional[str] = None,
+        status: str | None = None,
+        template: str | None = None,
         limit: int = 50,
         offset: int = 0,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         return await cls._get_instance()._crud.list_documents(user_id, status, template, limit, offset)
 
     @classmethod
     async def count_documents(
         cls,
         user_id: str,
-        status: Optional[str] = None,
-        template: Optional[str] = None,
+        status: str | None = None,
+        template: str | None = None,
     ) -> int:
         return await cls._get_instance()._crud.count_documents(user_id, status, template)
 
@@ -166,13 +166,13 @@ class DocumentService:
     async def create_document(
         cls,
         doc_id: str,
-        user_id: Optional[str],
+        user_id: str | None,
         filename: str,
-        template: Optional[str],
-        original_file_path: Optional[str] = None,
-        formatting_options: Optional[Dict[str, Any]] = None,
-        file_hash: Optional[str] = None,
-    ) -> Optional[Dict[str, Any]]:
+        template: str | None,
+        original_file_path: str | None = None,
+        formatting_options: dict[str, Any] | None = None,
+        file_hash: str | None = None,
+    ) -> dict[str, Any] | None:
         return await cls._get_instance()._crud.create_document(
             doc_id,
             user_id,
@@ -184,11 +184,11 @@ class DocumentService:
         )
 
     @classmethod
-    async def update_document(cls, doc_id: str, updates: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def update_document(cls, doc_id: str, updates: dict[str, Any]) -> dict[str, Any] | None:
         return await cls._get_instance()._crud.update_document(doc_id, updates)
 
     @classmethod
-    async def delete_document(cls, document_id: str, user_id: Optional[str] = None) -> bool:
+    async def delete_document(cls, document_id: str, user_id: str | None = None) -> bool:
         return await cls._get_instance()._crud.delete_document(document_id, user_id)
 
     @classmethod
@@ -204,25 +204,25 @@ class DocumentService:
         cls,
         doc_id: str,
         output_path: str,
-        raw_text: Optional[str] = None,
+        raw_text: str | None = None,
     ) -> None:
         return await cls._get_instance()._crud.mark_document_completed(doc_id, output_path, raw_text)
 
     @classmethod
-    async def get_document_result(cls, doc_id: str) -> Optional[Dict[str, Any]]:
+    async def get_document_result(cls, doc_id: str) -> dict[str, Any] | None:
         return await cls._get_instance()._crud.get_document_result(doc_id)
 
     @classmethod
     async def upsert_document_result(
         cls,
         doc_id: str,
-        structured_data: Optional[Dict[str, Any]] = None,
-        validation_results: Optional[Dict[str, Any]] = None,
+        structured_data: dict[str, Any] | None = None,
+        validation_results: dict[str, Any] | None = None,
     ) -> None:
         return await cls._get_instance()._crud.upsert_document_result(doc_id, structured_data, validation_results)
 
     @classmethod
-    async def get_processing_statuses(cls, doc_id: str) -> List[Dict[str, Any]]:
+    async def get_processing_statuses(cls, doc_id: str) -> list[dict[str, Any]]:
         return await cls._get_instance()._crud.get_processing_statuses(doc_id)
 
     @classmethod
@@ -231,8 +231,8 @@ class DocumentService:
         doc_id: str,
         phase: str,
         status: str,
-        progress_percentage: Optional[int] = None,
-        message: Optional[str] = None,
+        progress_percentage: int | None = None,
+        message: str | None = None,
     ) -> None:
         return await cls._get_instance()._crud.upsert_processing_status(
             doc_id,
@@ -247,19 +247,19 @@ class DocumentService:
     # ═══════════════════════════════════════════════════════════════════════
 
     @classmethod
-    async def start_processing(cls, doc_id: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    async def start_processing(cls, doc_id: str, options: dict[str, Any] | None = None) -> dict[str, Any]:
         return await cls._get_instance()._pipeline.start_processing(doc_id, options)
 
     @classmethod
-    async def get_processing_status(cls, doc_id: str) -> List[Dict[str, Any]]:
+    async def get_processing_status(cls, doc_id: str) -> list[dict[str, Any]]:
         return await cls._get_instance()._pipeline.get_processing_status(doc_id)
 
     @classmethod
-    async def cancel_processing(cls, doc_id: str) -> Dict[str, Any]:
+    async def cancel_processing(cls, doc_id: str) -> dict[str, Any]:
         return await cls._get_instance()._pipeline.cancel_processing(doc_id)
 
     @classmethod
-    async def get_result(cls, doc_id: str) -> Optional[Dict[str, Any]]:
+    async def get_result(cls, doc_id: str) -> dict[str, Any] | None:
         return await cls._get_instance()._pipeline.get_result(doc_id)
 
     # ═══════════════════════════════════════════════════════════════════════
@@ -273,7 +273,7 @@ class DocumentService:
         shared_with_user_id: str,
         permission: str,
         shared_by_user_id: str,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         return await cls._get_instance()._share.share_document(
             document_id,
             shared_with_user_id,
@@ -282,7 +282,7 @@ class DocumentService:
         )
 
     @classmethod
-    async def get_shared_documents(cls, user_id: str, limit: int = 20, offset: int = 0) -> List[Dict[str, Any]]:
+    async def get_shared_documents(cls, user_id: str, limit: int = 20, offset: int = 0) -> list[dict[str, Any]]:
         return await cls._get_instance()._share.get_shared_documents(user_id, limit, offset)
 
     @classmethod
@@ -298,7 +298,7 @@ class DocumentService:
         return await cls._get_instance()._share.unshare_document(document_id, user_id)
 
     @classmethod
-    async def get_shared_users(cls, document_id: str) -> List[Dict[str, Any]]:
+    async def get_shared_users(cls, document_id: str) -> list[dict[str, Any]]:
         return await cls._get_instance()._share.get_shared_users(document_id)
 
     @classmethod

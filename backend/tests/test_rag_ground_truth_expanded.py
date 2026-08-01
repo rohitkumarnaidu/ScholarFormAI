@@ -5,7 +5,6 @@
 
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # Expanded Ground Truth Dataset — 30 additional queries
 # ---------------------------------------------------------------------------
@@ -376,7 +375,7 @@ class TestExpandedGroundTruthDataset:
             for doc in item["relevant_docs"]:
                 assert 1 <= doc["relevance"] <= 3, f"Relevance out of range: {doc['relevance']}"
             for doc in item["irrelevant_docs"]:
-                assert doc["relevance"] == 0, f"Irrelevant doc has non-zero relevance"
+                assert doc["relevance"] == 0, "Irrelevant doc has non-zero relevance"
 
     @pytest.mark.ai_quality
     @pytest.mark.rag
@@ -394,7 +393,7 @@ class TestExpandedGroundTruthDataset:
             query = item["query"].lower()
             for doc in item["relevant_docs"]:
                 if "recipe" in query or "tyre" in query or "hydroponic" in query or "puppy" in query or "smartphone" in query:
-                    assert doc["relevance"] == 1, f"Negative query should have relevance=1"
+                    assert doc["relevance"] == 1, "Negative query should have relevance=1"
 
     @pytest.mark.ai_quality
     @pytest.mark.rag

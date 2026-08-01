@@ -13,7 +13,7 @@ import asyncio
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from unittest.mock import patch
 
 import pytest
@@ -53,10 +53,9 @@ class TestSingleServiceFailure:
     def test_cpu_pressure_slow_mock_recovers(self):
         """Simulate CPU-bound slowdown via artificially slow mock — verify eventual completion."""
         start = time.time()
-        with patch("time.sleep", side_effect=lambda s: None):
-            with safe_execution("CPU Intensive Pass"):
-                for _ in range(100):
-                    _ = [i ** 2 for i in range(1000)]
+        with patch("time.sleep", side_effect=lambda s: None), safe_execution("CPU Intensive Pass"):
+            for _ in range(100):
+                _ = [i ** 2 for i in range(1000)]
         elapsed = time.time() - start
         assert elapsed < 2.0, f"CPU pressure simulation took {elapsed:.2f}s, expected <2s"
 
@@ -78,7 +77,7 @@ class TestSingleServiceFailure:
 
     def test_clock_skew_handled(self):
         """Simulate clock skew where timestamps are in the future — verify no crash."""
-        wrong_time = datetime.now(timezone.utc) + timedelta(days=365)
+        wrong_time = datetime.now(UTC) + timedelta(days=365)
         with patch("app.pipeline.orchestrator.datetime") as mock_dt:
             mock_dt.now.return_value = wrong_time
             mock_dt.side_effect = lambda *a, **kw: datetime(*a, **kw) if a else wrong_time
@@ -196,6 +195,7 @@ class TestTimingAndRaceConditions:
     def test_data_corruption_malformed_service_response(self):
         """Malformed data returned by external service — validate_output catches it."""
         from pydantic import BaseModel, Field
+
         from app.pipeline.safety.llm_validator import guard_llm_output
 
         class ExpectedSchema(BaseModel):
@@ -276,7 +276,7 @@ class TestResourceExhaustionSystematic:
         import concurrent.futures
         pool = ThreadPoolExecutor(max_workers=1)
         blocker = threading.Event()
-        busy = pool.submit(blocker.wait)
+        pool.submit(blocker.wait)
         quick = pool.submit(lambda: 42)
         with pytest.raises(concurrent.futures.TimeoutError):
             quick.result(timeout=0.1)
@@ -356,7 +356,7 @@ class TestAdvancedChaos:
             futures.append(pool.submit(time.sleep, 0.5))
         with safe_execution("Overflow submit"):
             futures.append(pool.submit(lambda: 42))
-        done = [f for f in futures if f.done() or not f.running()]
+        [f for f in futures if f.done() or not f.running()]
         pool.shutdown(wait=False)
 
     def test_split_brain_job_duplication(self):

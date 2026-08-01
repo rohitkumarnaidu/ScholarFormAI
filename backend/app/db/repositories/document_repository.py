@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import asyncio
+import builtins
 import logging
 import os
-from typing import Any, Dict, List, Optional
+from datetime import UTC
+from typing import Any
 
 from postgrest import APIError
 
@@ -21,9 +23,9 @@ logger = logging.getLogger(__name__)
 class DocumentRepository(BaseRepository):
     TABLE_NAME = "documents"
 
-    _supports_file_hash: Optional[bool] = None
+    _supports_file_hash: bool | None = None
     _file_hash_warning_logged: bool = False
-    _supports_output_hash: Optional[bool] = None
+    _supports_output_hash: bool | None = None
     _output_hash_warning_logged: bool = False
 
     # ── Helpers ───────────────────────────────────────────────────────────────
@@ -42,13 +44,13 @@ class DocumentRepository(BaseRepository):
 
     # ── Read ──────────────────────────────────────────────────────────────────
 
-    async def get(self, doc_id: str, user_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
+    async def get(self, doc_id: str, user_id: str | None = None) -> dict[str, Any] | None:
         doc_id = str(doc_id)
         if user_id:
             user_id = str(user_id)
         if not self._should_query(doc_id, "get_document"):
             return None
-        sb = self._get_client()
+        self._get_client()
 
         def run_query():
             client = self._get_client()
@@ -70,13 +72,13 @@ class DocumentRepository(BaseRepository):
     async def list(
         self,
         user_id: str,
-        status: Optional[str] = None,
-        template: Optional[str] = None,
+        status: str | None = None,
+        template: str | None = None,
         limit: int = 50,
         offset: int = 0,
-    ) -> List[Dict[str, Any]]:
+    ) -> builtins.list[dict[str, Any]]:
         user_id = str(user_id)
-        sb = self._get_client()
+        self._get_client()
 
         def run_query():
             client = self._get_client()
@@ -106,10 +108,10 @@ class DocumentRepository(BaseRepository):
     async def count(
         self,
         user_id: str,
-        status: Optional[str] = None,
-        template: Optional[str] = None,
+        status: str | None = None,
+        template: str | None = None,
     ) -> int:
-        sb = self._get_client()
+        self._get_client()
 
         def run_query():
             client = self._get_client()
@@ -131,13 +133,13 @@ class DocumentRepository(BaseRepository):
             raise DatabaseUnavailableError(f"Failed to count documents: {e}") from e
 
     async def count_uploads_today(self, user_id: str) -> int:
-        from datetime import datetime, timedelta, timezone
+        from datetime import datetime, timedelta
 
-        sb = self._get_client()
+        self._get_client()
 
         def run_query():
             client = self._get_client()
-            day_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+            day_start = datetime.now(UTC).replace(hour=0, minute=0, second=0, microsecond=0)
             day_end = day_start + timedelta(days=1)
             return (
                 client.table("documents")
@@ -163,19 +165,19 @@ class DocumentRepository(BaseRepository):
     async def create(
         self,
         doc_id: str,
-        user_id: Optional[str],
+        user_id: str | None,
         filename: str,
-        template: Optional[str],
-        original_file_path: Optional[str] = None,
-        formatting_options: Optional[Dict[str, Any]] = None,
-        file_hash: Optional[str] = None,
-    ) -> Optional[Dict[str, Any]]:
+        template: str | None,
+        original_file_path: str | None = None,
+        formatting_options: dict[str, Any] | None = None,
+        file_hash: str | None = None,
+    ) -> dict[str, Any] | None:
         doc_id = str(doc_id)
         if user_id:
             user_id = str(user_id)
-        sb = self._get_client()
+        self._get_client()
 
-        payload: Dict[str, Any] = {
+        payload: dict[str, Any] = {
             "id": str(doc_id),
             "filename": filename,
             "status": "PROCESSING",
@@ -193,7 +195,7 @@ class DocumentRepository(BaseRepository):
         if include_file_hash:
             payload["file_hash"] = file_hash
 
-        def run_insert(data: Dict[str, Any]):
+        def run_insert(data: dict[str, Any]):
             client = self._get_client()
             return client.table("documents").insert(data).execute()
 
@@ -230,9 +232,9 @@ class DocumentRepository(BaseRepository):
             logger.error("create_document(%s) failed: %s", doc_id, exc, extra=log_extra(job_id=doc_id))
             raise DatabaseUnavailableError(f"Failed to create document: {exc}") from exc
 
-    async def update(self, doc_id: str, updates: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def update(self, doc_id: str, updates: dict[str, Any]) -> dict[str, Any] | None:
         doc_id = str(doc_id)
-        sb = self._get_client()
+        self._get_client()
 
         def run_update():
             client = self._get_client()
@@ -248,11 +250,11 @@ class DocumentRepository(BaseRepository):
             logger.error("update_document(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
             raise DatabaseUnavailableError(f"Failed to update document: {e}") from e
 
-    async def delete(self, document_id: str, user_id: Optional[str] = None) -> bool:
+    async def delete(self, document_id: str, user_id: str | None = None) -> bool:
         doc_id = str(document_id)
         owner_id = str(user_id) if user_id else None
 
-        sb = self._get_client()
+        self._get_client()
 
         doc = await self.get(doc_id, owner_id)
         if not doc:
@@ -333,7 +335,7 @@ class DocumentRepository(BaseRepository):
         self,
         doc_id: str,
         output_path: str,
-        raw_text: Optional[str] = None,
+        raw_text: str | None = None,
     ) -> None:
         doc_id = str(doc_id)
         if not self._is_available():
@@ -342,7 +344,7 @@ class DocumentRepository(BaseRepository):
 
         def run_update():
             client = self._get_client()
-            updates: Dict[str, Any] = {
+            updates: dict[str, Any] = {
                 "status": "COMPLETED",
                 "output_path": output_path,
                 "progress": 100,
@@ -363,7 +365,7 @@ class DocumentRepository(BaseRepository):
         if self._supports_output_hash is False:
             return False
 
-        sb = self._get_client()
+        self._get_client()
 
         def run_update():
             client = self._get_client()

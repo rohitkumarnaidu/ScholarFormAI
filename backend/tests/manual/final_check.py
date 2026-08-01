@@ -2,14 +2,15 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-import sys
 import os
+import sys
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 from app.pipeline.parsing.md_parser import MarkdownParser
 
 parser = MarkdownParser()
-print(f"Checking methods on MarkdownParser...")
+print("Checking methods on MarkdownParser...")
 if hasattr(parser, '_create_paragraph_block'):
     print("SUCCESS: _create_paragraph_block exists.")
 else:

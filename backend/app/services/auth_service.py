@@ -4,9 +4,9 @@
 import asyncio
 import logging
 import warnings
-from typing import Optional
 
 from fastapi import HTTPException, status
+
 from app.config.settings import settings
 from app.security.jwks_verifier import verify_jwt
 
@@ -26,13 +26,14 @@ try:
     with warnings.catch_warnings():
         for pattern in _SUPABASE_WARNING_FILTERS:
             warnings.filterwarnings("ignore", message=pattern, category=DeprecationWarning)
-        from supabase import create_client, Client as SupabaseClient
+        from supabase import Client as SupabaseClient
+        from supabase import create_client
 
     if settings.SUPABASE_URL and settings.SUPABASE_ANON_KEY:
         with warnings.catch_warnings():
             for pattern in _SUPABASE_WARNING_FILTERS:
                 warnings.filterwarnings("ignore", message=pattern, category=DeprecationWarning)
-            supabase: Optional[SupabaseClient] = create_client(settings.SUPABASE_URL, settings.SUPABASE_ANON_KEY)
+            supabase: SupabaseClient | None = create_client(settings.SUPABASE_URL, settings.SUPABASE_ANON_KEY)
         logger.info("[OK] Supabase auth client initialized.")
     else:
         supabase = None

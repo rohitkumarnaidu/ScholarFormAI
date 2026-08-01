@@ -2,6 +2,7 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from abc import ABC, abstractmethod
+
 from app.models import PipelineDocument
 
 

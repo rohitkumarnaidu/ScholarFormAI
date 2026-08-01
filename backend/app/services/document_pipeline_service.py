@@ -10,6 +10,7 @@ and status response caching.
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import copy
 import hashlib
 import logging
@@ -19,7 +20,7 @@ import sys
 import uuid
 from pathlib import Path
 from time import monotonic
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from fastapi import BackgroundTasks, HTTPException, Request, UploadFile
 
@@ -37,7 +38,7 @@ logger = logging.getLogger(__name__)
 # Status Cache globals and constants
 _STATUS_CACHE_MISS = object()
 _status_cache_lock: asyncio.Lock | None = None
-_status_response_cache: dict[str, tuple[float, Dict[str, Any]]] = {}
+_status_response_cache: dict[str, tuple[float, dict[str, Any]]] = {}
 _MAX_STALE_STATUS_SECONDS = 90.0
 
 UPLOAD_DIR = "uploads"
@@ -93,7 +94,7 @@ def _get_impl_symbol(name: str, fallback: Any = None) -> Any:
             if val is not None:
                 return val
     except Exception:
-        pass
+        pass  # intentionally ignored
     return fallback
 
 
@@ -113,7 +114,7 @@ def _document_status_ttl_seconds(settings_override: Any = None) -> float:
         try:
             return float(ttl_fn())
         except Exception:
-            pass
+            pass  # intentionally ignored
 
     s = settings_override or _get_impl_symbol("settings", settings)
     raw_ttl = getattr(s, "DOCUMENT_STATUS_CACHE_TTL_SECONDS", 1)
@@ -124,13 +125,13 @@ def _document_status_ttl_seconds(settings_override: Any = None) -> float:
     return max(0.0, ttl)
 
 
-def _status_cache_key(job_id: str, current_user: Optional[User]) -> str:
+def _status_cache_key(job_id: str, current_user: User | None) -> str:
     user_id = getattr(current_user, "id", None) if current_user is not None else None
     owner_segment = str(user_id) if user_id is not None else "__anon__"
     return f"{owner_segment}|{str(job_id)}"
 
 
-def _clone_status_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
+def _clone_status_payload(payload: dict[str, Any]) -> dict[str, Any]:
     return copy.deepcopy(payload)
 
 
@@ -174,7 +175,7 @@ async def _get_stale_status_response(
         return _clone_status_payload(payload)
 
 
-async def _set_cached_status_response(cache_key: str, payload: Dict[str, Any], settings_override: Any = None) -> None:
+async def _set_cached_status_response(cache_key: str, payload: dict[str, Any], settings_override: Any = None) -> None:
     ttl_seconds = _document_status_ttl_seconds(settings_override=settings_override)
     async with _get_status_cache_lock():
         if ttl_seconds <= 0:
@@ -210,7 +211,7 @@ def _require_db() -> None:
         )
 
 
-def _enforce_daily_upload_quota(current_user: Optional[User]) -> None:
+def _enforce_daily_upload_quota(current_user: User | None) -> None:
     return
 
 
@@ -220,10 +221,10 @@ def _record_upload_ack_duration(started_at: float) -> None:
 
         MetricsManager.record_upload_ack_duration(max(0.0, monotonic() - started_at))
     except Exception:
-        pass
+        pass  # intentionally ignored
 
 
-def _normalize_provider_name(value: Any) -> Optional[str]:
+def _normalize_provider_name(value: Any) -> str | None:
     token = str(value or "").strip().lower()
     if not token:
         return None
@@ -242,7 +243,7 @@ def _normalize_provider_name(value: Any) -> Optional[str]:
     return token
 
 
-def _extract_quality_payload(result: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+def _extract_quality_payload(result: dict[str, Any] | None) -> dict[str, Any]:
     validation_results = (result or {}).get("validation_results") or {}
     quality_summary = validation_results.get("quality_summary") or {}
     quality = None
@@ -290,7 +291,7 @@ def _extract_quality_payload(result: Optional[Dict[str, Any]]) -> Dict[str, Any]
     }
 
 
-def _build_initial_status_payload(job_id: str) -> Dict[str, Any]:
+def _build_initial_status_payload(job_id: str) -> dict[str, Any]:
     return {
         "job_id": job_id,
         "status": "PROCESSING",
@@ -311,10 +312,8 @@ async def _scan_uploaded_file(file_path: str) -> dict[str, str | bool]:
     scan_result = await scanner.scan(file_path)
     if not scan_result.get("clean", True):
         os_mod = _get_impl_symbol("os", os)
-        try:
+        with contextlib.suppress(OSError):
             os_mod.remove(file_path)
-        except OSError:
-            pass
         raise HTTPException(
             status_code=422,
             detail=f"Malware detected: {scan_result.get('result', 'unknown')}",
@@ -325,8 +324,8 @@ async def _scan_uploaded_file(file_path: str) -> dict[str, str | bool]:
 async def _validate_magic_bytes(
     file: UploadFile,
     *,
-    content: Optional[bytes] = None,
-    file_ext: Optional[str] = None,
+    content: bytes | None = None,
+    file_ext: str | None = None,
 ) -> bytes:
     payload = content if content is not None else await file.read()
     ext = (file_ext or os.path.splitext(file.filename or "")[1]).lower()
@@ -366,8 +365,8 @@ class DocumentPipelineService:
 
     def __init__(
         self,
-        crud_service: Optional[DocumentCrudService] = None,
-        crud: Optional[DocumentCrudService] = None,
+        crud_service: DocumentCrudService | None = None,
+        crud: DocumentCrudService | None = None,
     ) -> None:
         self._crud = crud_service or crud or DocumentCrudService()
 
@@ -381,8 +380,8 @@ class DocumentPipelineService:
         self,
         file: UploadFile,
         *,
-        content: Optional[bytes] = None,
-        file_ext: Optional[str] = None,
+        content: bytes | None = None,
+        file_ext: str | None = None,
     ) -> bytes:
         val_fn = _get_impl_symbol("_validate_magic_bytes")
         if val_fn is not None and getattr(val_fn, "__module__", "") != __name__:
@@ -400,11 +399,11 @@ class DocumentPipelineService:
         add_cover_page: bool = False,
         generate_toc: bool = False,
         add_line_numbers: bool = False,
-        line_spacing: Optional[float] = None,
+        line_spacing: float | None = None,
         page_size: str = "Letter",
         fast_mode: bool = False,
-        current_user: Optional[User] = None,
-    ) -> Dict[str, Any]:
+        current_user: User | None = None,
+    ) -> dict[str, Any]:
         """Handle single document upload and trigger async background processing."""
         require_db_fn = _get_impl_symbol("_require_db", _require_db)
         enforce_quota_fn = _get_impl_symbol("_enforce_daily_upload_quota", _enforce_daily_upload_quota)
@@ -574,11 +573,11 @@ class DocumentPipelineService:
         add_cover_page: bool = False,
         generate_toc: bool = False,
         add_line_numbers: bool = False,
-        line_spacing: Optional[float] = None,
+        line_spacing: float | None = None,
         page_size: str = "Letter",
         fast_mode: bool = False,
         current_user: User = None,  # type: ignore[assignment]
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Chunked file upload for large documents."""
         require_db_fn = _get_impl_symbol("_require_db", _require_db)
         enforce_quota_fn = _get_impl_symbol("_enforce_daily_upload_quota", _enforce_daily_upload_quota)
@@ -685,10 +684,8 @@ class DocumentPipelineService:
                         file_hash=file_hash,
                     )
                 if created is None:
-                    try:
+                    with contextlib.suppress(OSError):
                         os_mod.remove(file_path)
-                    except OSError:
-                        pass
                     raise HTTPException(status_code=503, detail="Database temporarily unavailable. Please retry later.")
 
                 orchestrator_cls = _get_impl_symbol("PipelineOrchestrator", PipelineOrchestrator)
@@ -752,10 +749,10 @@ class DocumentPipelineService:
         self,
         request: Request,
         background_tasks: BackgroundTasks,
-        files: List[UploadFile],
+        files: list[UploadFile],
         template: str = "none",
         current_user: User = None,  # type: ignore[assignment]
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Upload multiple documents at once. Maximum 10 files per batch."""
         require_db_fn = _get_impl_symbol("_require_db", _require_db)
         enforce_quota_fn = _get_impl_symbol("_enforce_daily_upload_quota", _enforce_daily_upload_quota)
@@ -896,10 +893,10 @@ class DocumentPipelineService:
         self,
         request: Request,
         job_id: str,
-        data: Dict[str, Any],
+        data: dict[str, Any],
         background_tasks: BackgroundTasks,
-        current_user: Optional[User] = None,
-    ) -> Dict[str, Any]:
+        current_user: User | None = None,
+    ) -> dict[str, Any]:
         """Handle user edits and trigger non-destructive re-formatting."""
         doc_service = _get_impl_symbol("DocumentService")
         audit_svc = _get_impl_symbol("audit_log_service", audit_log_service)
@@ -964,8 +961,8 @@ class DocumentPipelineService:
     async def get_status(
         self,
         job_id: str,
-        current_user: Optional[User] = None,
-    ) -> Dict[str, Any]:
+        current_user: User | None = None,
+    ) -> dict[str, Any]:
         """Get the detailed processing status of a document."""
         cache_key_fn = _get_impl_symbol("_status_cache_key", _status_cache_key)
         get_cached_fn = _get_impl_symbol("_get_cached_status_response", _get_cached_status_response)
@@ -1087,8 +1084,8 @@ class DocumentPipelineService:
     async def get_document_summary(
         self,
         job_id: str,
-        current_user: Optional[User] = None,
-    ) -> Dict[str, Any]:
+        current_user: User | None = None,
+    ) -> dict[str, Any]:
         """Lightweight job summary for URL-based page hydration."""
         doc_service = _get_impl_symbol("DocumentService")
         extract_quality_fn = _get_impl_symbol("_extract_quality_payload", _extract_quality_payload)
@@ -1108,9 +1105,8 @@ class DocumentPipelineService:
         if not doc:
             raise HTTPException(status_code=404, detail="Not found")
 
-        if doc.get("user_id") is not None:
-            if not current_user or str(doc["user_id"]) != str(current_user.id):
-                raise HTTPException(status_code=403, detail="Not authorized to access this document")
+        if doc.get("user_id") is not None and (not current_user or str(doc["user_id"]) != str(current_user.id)):
+            raise HTTPException(status_code=403, detail="Not authorized to access this document")
 
         status = doc.get("status")
         result = await get_result_fn(job_id) if status in _READY_FOR_EXPORT_STATUSES else None
@@ -1128,8 +1124,8 @@ class DocumentPipelineService:
     async def get_preview(
         self,
         job_id: str,
-        current_user: Optional[User] = None,
-    ) -> Dict[str, Any]:
+        current_user: User | None = None,
+    ) -> dict[str, Any]:
         """Get the structured preview data for a document."""
         doc_service = _get_impl_symbol("DocumentService")
         extract_quality_fn = _get_impl_symbol("_extract_quality_payload", _extract_quality_payload)
@@ -1179,7 +1175,7 @@ class DocumentPipelineService:
             logger.error("Error retrieving preview for %s: %s", job_id, e)
             raise HTTPException(status_code=500, detail=f"Preview failed: {str(e)}")
 
-    async def start_processing(self, doc_id: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    async def start_processing(self, doc_id: str, options: dict[str, Any] | None = None) -> dict[str, Any]:
         """Dispatch a document to the PipelineOrchestrator for formatting."""
         doc_service = _get_impl_symbol("DocumentService")
         get_doc_fn = (
@@ -1204,7 +1200,7 @@ class DocumentPipelineService:
             "job": job,
         }
 
-    async def get_processing_status(self, doc_id: str) -> List[Dict[str, Any]]:
+    async def get_processing_status(self, doc_id: str) -> list[dict[str, Any]]:
         """Return per-phase processing statuses for a document."""
         doc_service = _get_impl_symbol("DocumentService")
         get_statuses_fn = (
@@ -1214,7 +1210,7 @@ class DocumentPipelineService:
         )
         return await get_statuses_fn(doc_id)
 
-    async def cancel_processing(self, doc_id: str) -> Dict[str, Any]:
+    async def cancel_processing(self, doc_id: str) -> dict[str, Any]:
         """Cancel an in-flight processing job for a document."""
         doc_service = _get_impl_symbol("DocumentService")
         mark_failed_fn = (
@@ -1238,7 +1234,7 @@ class DocumentPipelineService:
         await mark_failed_fn(doc_id, "Processing cancelled by user.")
         return {"document_id": doc_id, "status": "CANCELLED"}
 
-    async def get_result(self, doc_id: str) -> Optional[Dict[str, Any]]:
+    async def get_result(self, doc_id: str) -> dict[str, Any] | None:
         """Return the stored processing result for a document."""
         doc_service = _get_impl_symbol("DocumentService")
         get_result_fn = (

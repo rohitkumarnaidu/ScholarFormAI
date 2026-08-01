@@ -16,25 +16,25 @@ from __future__ import annotations
 import logging
 import sys
 import time
-from typing import List, Dict, Any, Optional
+from typing import Any
 
-from app.utils.logging_context import log_extra
 from app.services.llm_provider_service import (
     LITELLM_AVAILABLE,
-    LLM_NVIDIA,
-    LLM_GROQ,
-    LLM_OPENROUTER,
     LLM_DEEPSEEK,
-    _normalize_model_name,
-    _infer_provider,
-    _extract_prompts,
+    LLM_GROQ,
+    LLM_NVIDIA,
+    LLM_OPENROUTER,
     _cache_key,
+    _extract_prompts,
+    _infer_provider,
+    _normalize_model_name,
     _provider_timeout_seconds,
     _record_cache_hit,
     _record_cache_miss,
-    _record_metrics,
     _record_failure,
+    _record_metrics,
 )
+from app.utils.logging_context import log_extra
 
 logger = logging.getLogger(__name__)
 
@@ -62,13 +62,13 @@ class LLMUnavailableError(Exception):
 
 
 def generate(
-    messages: List[Dict[str, str]],
+    messages: list[dict[str, str]],
     model: str = LLM_NVIDIA,
     temperature: float = 0.3,
     max_tokens: int = 2048,
-    timeout: Optional[int] = None,
-    api_key: Optional[str] = None,
-    api_base: Optional[str] = None,
+    timeout: int | None = None,
+    api_key: str | None = None,
+    api_base: str | None = None,
     stream: bool = False,
 ) -> str:
     """Send a chat completion request via LiteLLM (or direct HTTP fallback)."""
@@ -121,7 +121,7 @@ def generate(
             request_success = bool(result)
             return result
 
-        kwargs: Dict[str, Any] = {
+        kwargs: dict[str, Any] = {
             "model": model,
             "messages": messages,
             "temperature": max(0.0, min(1.0, temperature)),
@@ -179,19 +179,19 @@ def generate(
 
 
 def generate_with_model(
-    messages: List[Dict[str, str]],
+    messages: list[dict[str, str]],
     model_name: str,
     temperature: float = 0.3,
     max_tokens: int = 2048,
-    user_id: Optional[str] = None,
-) -> Dict[str, Any]:
+    user_id: str | None = None,
+) -> dict[str, Any]:
     """Generate a response using a specific model (not using fallback)."""
     _ls = _llm_service_module()
     _resolve_key = _ls.resolve_user_api_key
     _circuit = _ls._call_with_provider_circuit
     _generate = _ls.generate
 
-    from app.services.provider_registry import resolve_model_provider, get_provider_info
+    from app.services.provider_registry import get_provider_info, resolve_model_provider
 
     provider = resolve_model_provider(model_name)
     if not provider:
@@ -209,8 +209,9 @@ def generate_with_model(
     }
 
     if is_custom:
-        from app.db.session import SessionLocal
         from sqlalchemy import select
+
+        from app.db.session import SessionLocal
         from app.models.custom_provider import CustomProvider
 
         custom_id = provider.replace("custom_", "")
@@ -287,11 +288,11 @@ def _generate_openai_compat(**kwargs) -> str:
 
 
 def generate_with_fallback(
-    messages: List[Dict[str, str]],
+    messages: list[dict[str, str]],
     temperature: float = 0.3,
     max_tokens: int = 2048,
-    user_id: Optional[str] = None,
-) -> Dict[str, Any]:
+    user_id: str | None = None,
+) -> dict[str, Any]:
     """4-step fallback contract: NVIDIA -> Groq -> OpenRouter -> Ollama/DeepSeek."""
     _lsm = _llm_service_module()
     _resolve_key = _lsm.resolve_user_api_key

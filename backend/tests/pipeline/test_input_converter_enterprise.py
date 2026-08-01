@@ -2,10 +2,12 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from pathlib import Path
-from unittest.mock import patch, MagicMock
-import pytest
+
 import subprocess
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 class TestInputConverter:
@@ -49,18 +51,16 @@ class TestInputConverter:
 
     def test_convert_to_docx_file_not_found(self):
         from app.pipeline.input_conversion.converter import InputConverter
-        with patch("os.path.exists", return_value=False):
-            with pytest.raises(FileNotFoundError):
-                InputConverter().convert_to_docx("/nonexistent.docx", "job1")
+        with patch("os.path.exists", return_value=False), pytest.raises(FileNotFoundError):
+            InputConverter().convert_to_docx("/nonexistent.docx", "job1")
 
     def test_convert_to_docx_unsupported(self):
         from app.pipeline.input_conversion.converter import InputConverter
         with (
             patch("os.path.exists", return_value=True),
-            patch("os.path.abspath", return_value="/tmp/f.xzy"),
+            patch("os.path.abspath", return_value="/tmp/f.xzy"),pytest.raises(Exception)
         ):
-            with pytest.raises(Exception):
-                InputConverter().convert_to_docx("/tmp/f.xzy", "job1")
+            InputConverter().convert_to_docx("/tmp/f.xzy", "job1")
 
     def test_convert_to_docx_docx_pass(self):
         from app.pipeline.input_conversion.converter import InputConverter
@@ -93,10 +93,9 @@ class TestInputConverter:
             patch("os.path.exists", return_value=True),
             patch("os.path.abspath", return_value="/tmp/f.md"),
             patch("os.makedirs"),
-            patch("shutil.which", return_value=None),
+            patch("shutil.which", return_value=None),pytest.raises(Exception)
         ):
-            with pytest.raises(Exception):
-                InputConverter().convert_to_docx("/tmp/f.md", "job1")
+            InputConverter().convert_to_docx("/tmp/f.md", "job1")
 
     def test_convert_to_docx_pandoc_timeout(self):
         from app.pipeline.input_conversion.converter import InputConverter
@@ -105,10 +104,9 @@ class TestInputConverter:
             patch("os.path.abspath", return_value="/tmp/f.md"),
             patch("os.makedirs"),
             patch("shutil.which", return_value="/usr/bin/pandoc"),
-            patch("subprocess.run", side_effect=subprocess.TimeoutExpired("pandoc", 120)),
+            patch("subprocess.run", side_effect=subprocess.TimeoutExpired("pandoc", 120)),pytest.raises(Exception)
         ):
-            with pytest.raises(Exception):
-                InputConverter().convert_to_docx("/tmp/f.md", "job1")
+            InputConverter().convert_to_docx("/tmp/f.md", "job1")
 
     def test_convert_to_docx_pandoc_calledprocess_error(self):
         from app.pipeline.input_conversion.converter import InputConverter
@@ -118,10 +116,9 @@ class TestInputConverter:
             patch("os.path.abspath", return_value="/tmp/f.md"),
             patch("os.makedirs"),
             patch("shutil.which", return_value="/usr/bin/pandoc"),
-            patch("subprocess.run", side_effect=err),
+            patch("subprocess.run", side_effect=err),pytest.raises(Exception)
         ):
-            with pytest.raises(Exception):
-                InputConverter().convert_to_docx("/tmp/f.md", "job1")
+            InputConverter().convert_to_docx("/tmp/f.md", "job1")
 
     def test_convert_to_docx_libreoffice_success(self):
         from app.pipeline.input_conversion.converter import InputConverter
@@ -146,10 +143,9 @@ class TestInputConverter:
             patch("os.makedirs"),
             patch("shutil.which", return_value="/usr/bin/soffice"),
             patch("subprocess.run"),
-            patch.object(Path, "stem", return_value="f"),
+            patch.object(Path, "stem", return_value="f"),pytest.raises(Exception)
         ):
-            with pytest.raises(Exception):
-                InputConverter().convert_to_docx("/tmp/f.doc", "job1")
+            InputConverter().convert_to_docx("/tmp/f.doc", "job1")
 
     def test_convert_to_docx_libreoffice_timeout(self):
         from app.pipeline.input_conversion.converter import InputConverter
@@ -158,10 +154,9 @@ class TestInputConverter:
             patch("os.path.abspath", return_value="/tmp/f.doc"),
             patch("os.makedirs"),
             patch("shutil.which", return_value="/usr/bin/soffice"),
-            patch("subprocess.run", side_effect=subprocess.TimeoutExpired("soffice", 180)),
+            patch("subprocess.run", side_effect=subprocess.TimeoutExpired("soffice", 180)),pytest.raises(Exception)
         ):
-            with pytest.raises(Exception):
-                InputConverter().convert_to_docx("/tmp/f.doc", "job1")
+            InputConverter().convert_to_docx("/tmp/f.doc", "job1")
 
     def test_convert_to_docx_libreoffice_calledprocess_error(self):
         from app.pipeline.input_conversion.converter import InputConverter
@@ -171,10 +166,9 @@ class TestInputConverter:
             patch("os.path.abspath", return_value="/tmp/f.doc"),
             patch("os.makedirs"),
             patch("shutil.which", return_value="/usr/bin/soffice"),
-            patch("subprocess.run", side_effect=err),
+            patch("subprocess.run", side_effect=err),pytest.raises(Exception)
         ):
-            with pytest.raises(Exception):
-                InputConverter().convert_to_docx("/tmp/f.doc", "job1")
+            InputConverter().convert_to_docx("/tmp/f.doc", "job1")
 
     def test_handle_pdf_ocr_disabled_by_profile(self):
         from app.pipeline.input_conversion.converter import InputConverter
@@ -254,10 +248,9 @@ class TestInputConverter:
             patch("subprocess.run"),
             patch.object(Path, "stem", return_value="f"),
             patch("app.services.enhancement_manager.enhancement_manager", mock_enh_mgr),
-            patch("app.pipeline.ocr.pdf_ocr.PdfOCR", return_value=mock_pdf_ocr),
+            patch("app.pipeline.ocr.pdf_ocr.PdfOCR", return_value=mock_pdf_ocr),pytest.raises(Exception)
         ):
-            with pytest.raises(Exception):
-                InputConverter().convert_to_docx("/tmp/f.pdf", "job1", enable_ocr=True)
+            InputConverter().convert_to_docx("/tmp/f.pdf", "job1", enable_ocr=True)
 
     def test_handle_pdf_no_supported_ocr_backends(self):
         from app.pipeline.input_conversion.converter import InputConverter
@@ -281,9 +274,8 @@ class TestInputConverter:
 
     def test_convert_to_pdf_file_not_found(self):
         from app.pipeline.input_conversion.converter import InputConverter
-        with patch("os.path.exists", return_value=False):
-            with pytest.raises(FileNotFoundError):
-                InputConverter().convert_to_pdf("/nonexistent.docx", "job1")
+        with patch("os.path.exists", return_value=False), pytest.raises(FileNotFoundError):
+            InputConverter().convert_to_pdf("/nonexistent.docx", "job1")
 
     def test_convert_to_pdf_already_pdf(self):
         from app.pipeline.input_conversion.converter import InputConverter
@@ -318,10 +310,9 @@ class TestInputConverter:
             patch("os.path.abspath", return_value="/tmp/f.docx"),
             patch("os.makedirs"),
             patch("shutil.which", return_value="/usr/bin/soffice"),
-            patch("subprocess.run", side_effect=subprocess.TimeoutExpired("soffice", 180)),
+            patch("subprocess.run", side_effect=subprocess.TimeoutExpired("soffice", 180)),pytest.raises(Exception)
         ):
-            with pytest.raises(Exception):
-                InputConverter().convert_to_pdf("/tmp/f.docx", "job1")
+            InputConverter().convert_to_pdf("/tmp/f.docx", "job1")
 
     def test_convert_to_pdf_libreoffice_output_not_found(self):
         from app.pipeline.input_conversion.converter import InputConverter
@@ -331,10 +322,9 @@ class TestInputConverter:
             patch("os.makedirs"),
             patch("shutil.which", return_value="/usr/bin/soffice"),
             patch("subprocess.run"),
-            patch.object(Path, "stem", return_value="f"),
+            patch.object(Path, "stem", return_value="f"),pytest.raises(Exception)
         ):
-            with pytest.raises(Exception):
-                InputConverter().convert_to_pdf("/tmp/f.docx", "job1")
+            InputConverter().convert_to_pdf("/tmp/f.docx", "job1")
 
     def test_convert_to_pdf_libreoffice_calledprocess_error(self):
         from app.pipeline.input_conversion.converter import InputConverter
@@ -344,7 +334,6 @@ class TestInputConverter:
             patch("os.path.abspath", return_value="/tmp/f.docx"),
             patch("os.makedirs"),
             patch("shutil.which", return_value="/usr/bin/soffice"),
-            patch("subprocess.run", side_effect=err),
+            patch("subprocess.run", side_effect=err),pytest.raises(Exception)
         ):
-            with pytest.raises(Exception):
-                InputConverter().convert_to_pdf("/tmp/f.docx", "job1")
+            InputConverter().convert_to_pdf("/tmp/f.docx", "job1")

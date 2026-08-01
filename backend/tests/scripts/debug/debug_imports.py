@@ -2,15 +2,15 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-import sys
 import os
+import sys
 
 # Add backend to path
 sys.path.append(os.getcwd())
 
 try:
     print("Attempting to import app.models...")
-    from app.models import Reference, PipelineDocument, DocumentMetadata
+    from app.models import DocumentMetadata, PipelineDocument, Reference
     print("✅ app.models imported successfully")
 except ImportError as e:
     print(f"❌ Failed to import app.models: {e}")
