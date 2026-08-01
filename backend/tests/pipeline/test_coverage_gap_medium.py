@@ -973,7 +973,7 @@ class TestDocxParserErrorPaths:
         )
         meta = p._extract_core_properties(docx)
         assert meta.title is None
-        assert meta.author is None
+        assert meta.authors == []
         assert meta.keywords == []
 
     def test_extract_paragraph_none_style_handled(self):
