@@ -647,7 +647,11 @@ class TestHeadingRules:
         after.text = ""
         after.block_id = "b2"
         after.metadata = {}
-        result = analyze_heading_candidate(b, [before, b, after], 1)
+        # Patch settings so fallback confidence always clears the threshold
+        with patch("app.pipeline.structure_detection.heading_rules.settings") as mock_settings:
+            mock_settings.HEADING_FALLBACK_CONFIDENCE = 0.9
+            mock_settings.HEADING_STYLE_THRESHOLD = 0.3
+            result = analyze_heading_candidate(b, [before, b, after], 1)
         assert result is not None
 
     def test_analyze_heading_numbered_with_remainder_sentence(self):
