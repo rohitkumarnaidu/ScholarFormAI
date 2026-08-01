@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, PropertyMock, patch
+from unittest.mock import AsyncMock, MagicMock, PropertyMock, patch
 
 import pytest
 
@@ -464,71 +464,57 @@ class TestCrossRefClientAsync:
             result = await crossref_client.validate_doi("10.1234/missing")
             assert result is False
 
-    @patch("app.pipeline.services.crossref_client.httpx.AsyncClient")
-    async def test_get_metadata_success(self, mock_client, crossref_client):
+    async def test_get_metadata_success(self, crossref_client):
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json.return_value = {"message": {"title": ["Test Paper"]}}
-        mock_instance = mock_client.return_value.__aenter__.return_value
-        mock_instance.get.return_value = mock_response
-        result = await crossref_client.get_metadata("10.1234/test")
-        assert result["title"] == ["Test Paper"]
-        mock_instance.get.assert_called_once()
+        with patch.object(crossref_client._client, "get", new=AsyncMock(return_value=mock_response)):
+            result = await crossref_client.get_metadata("10.1234/test")
+            assert result["title"] == ["Test Paper"]
 
-    @patch("app.pipeline.services.crossref_client.httpx.AsyncClient")
-    async def test_get_metadata_doi_stripped(self, mock_client, crossref_client):
+    async def test_get_metadata_doi_stripped(self, crossref_client):
         """DOI whitespace is stripped before request."""
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json.return_value = {"message": {"title": ["Test"]}}
-        mock_instance = mock_client.return_value.__aenter__.return_value
-        mock_instance.get.return_value = mock_response
-        result = await crossref_client.get_metadata("  10.1234/test  ")
-        assert result["title"] == ["Test"]
-        call_url = mock_instance.get.call_args[0][0]
-        assert "10.1234/test" in call_url
-        assert "  " not in call_url
+        with patch.object(crossref_client._client, "get", new=AsyncMock(return_value=mock_response)) as mock_get:
+            result = await crossref_client.get_metadata("  10.1234/test  ")
+            assert result["title"] == ["Test"]
+            call_url = mock_get.call_args[0][0]
+            assert "10.1234/test" in call_url
+            assert "  " not in call_url
 
-    @patch("app.pipeline.services.crossref_client.httpx.AsyncClient")
-    async def test_get_metadata_404(self, mock_client, crossref_client):
+    async def test_get_metadata_404(self, crossref_client):
         from app.pipeline.services.crossref_client import CrossRefException
         mock_response = MagicMock()
         mock_response.status_code = 404
-        mock_instance = mock_client.return_value.__aenter__.return_value
-        mock_instance.get.return_value = mock_response
-        with pytest.raises(CrossRefException, match="DOI not found"):
-            await crossref_client.get_metadata("10.1234/missing")
+        with patch.object(crossref_client._client, "get", new=AsyncMock(return_value=mock_response)):
+            with pytest.raises(CrossRefException, match="DOI not found"):
+                await crossref_client.get_metadata("10.1234/missing")
 
-    @patch("app.pipeline.services.crossref_client.httpx.AsyncClient")
-    async def test_get_metadata_api_error(self, mock_client, crossref_client):
+    async def test_get_metadata_api_error(self, crossref_client):
         from app.pipeline.services.crossref_client import CrossRefException
         mock_response = MagicMock()
         mock_response.status_code = 500
-        mock_instance = mock_client.return_value.__aenter__.return_value
-        mock_instance.get.return_value = mock_response
-        with pytest.raises(CrossRefException, match="API error"):
-            await crossref_client.get_metadata("10.1234/error")
+        with patch.object(crossref_client._client, "get", new=AsyncMock(return_value=mock_response)):
+            with pytest.raises(CrossRefException, match="API error"):
+                await crossref_client.get_metadata("10.1234/error")
 
-    @patch("app.pipeline.services.crossref_client.httpx.AsyncClient")
-    async def test_get_metadata_network_error(self, mock_client, crossref_client):
+    async def test_get_metadata_network_error(self, crossref_client):
+        import httpx
         from app.pipeline.services.crossref_client import CrossRefException
-        mock_instance = mock_client.return_value.__aenter__.return_value
-        mock_instance.get.side_effect = __import__("httpx").HTTPError("No connection")
-        with pytest.raises(CrossRefException, match="Network error"):
-            await crossref_client.get_metadata("10.1234/netfail")
+        with patch.object(crossref_client._client, "get", new=AsyncMock(side_effect=httpx.RequestError("No connection"))):
+            with pytest.raises(CrossRefException, match="Network error"):
+                await crossref_client.get_metadata("10.1234/netfail")
 
     async def test_wait_for_rate_limit_sleeps(self, crossref_client):
         """Rate limit interval exceeded triggers sleep."""
-        with patch("asyncio.get_event_loop") as mock_loop:
-            mock_loop_instance = MagicMock()
-            mock_loop_instance.time.side_effect = [100.0, 100.01]
-            mock_loop.return_value = mock_loop_instance
-            with patch.object(crossref_client, "MIN_REQUEST_INTERVAL", 0.5):
-                with patch("asyncio.sleep") as mock_sleep:
-                    crossref_client.last_request_time = 100.0
-                    await crossref_client._wait_for_rate_limit()
-                    mock_sleep.assert_called_once()
-                    mock_loop_instance.time.assert_called()
+        crossref_client.last_request_time = 10000.0
+        with patch("app.pipeline.services.crossref_client.time.time", return_value=10000.01):
+            with patch("app.pipeline.services.crossref_client.asyncio.sleep") as mock_sleep:
+                crossref_client.MIN_REQUEST_INTERVAL = 0.5
+                await crossref_client._wait_for_rate_limit()
+                mock_sleep.assert_called_once()
 
     async def test_wait_for_rate_limit_no_sleep(self, crossref_client):
         """Rate limit not exceeded skips sleep."""
