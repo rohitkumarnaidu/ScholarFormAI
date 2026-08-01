@@ -1044,8 +1044,9 @@ class TestParserFactoryErrorPaths:
     def test_get_parser_unsupported_format_raises(self):
         from app.pipeline.parsing.parser_factory import ParserFactory
         pf = ParserFactory()
-        with pytest.raises((ValueError, ImportError)):
-            pf.get_parser("unsupported.xyz")
+        # get_parser is decorated with @safe_function which returns None on error
+        result = pf.get_parser("unsupported.xyz")
+        assert result is None
 
 
 class TestFormatterEngineErrorPaths:
