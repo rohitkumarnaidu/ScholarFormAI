@@ -161,7 +161,7 @@ class DocumentCrudService:
         sb = get_supabase_client()
         if sb is None:
             logger.error("list_documents: Supabase client not available.", extra=log_extra())
-            raise DatabaseUnavailableError("Supabase client is not configured.")
+            return []
 
         return await self._documents.list(user_id, status, template, limit, offset)
 
