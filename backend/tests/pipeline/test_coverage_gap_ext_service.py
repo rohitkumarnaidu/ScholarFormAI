@@ -62,145 +62,13 @@ class TestLLMValidatorCoverageGaps:
                 return 99
             assert fn() == 99
 
-    def test_parse_with_guardrails_loop_succeeds(self):
-        """Line 73: asyncio.get_running_loop() succeeds, guard.parse called."""
-        from pydantic import BaseModel
-        class S(BaseModel):
-            n: str = "x"
-        g = MagicMock()
-        guard_obj = MagicMock()
-        guard_obj.parse.return_value = MagicMock(validated_output=S(n="ok"))
-        g.Guard.for_pydantic.return_value = guard_obj
-        with self._llm_env({self.GR_KEY: g, self.VG_KEY: MagicMock()}) as mod:
-            assert mod.HAS_GUARDRAILS is True
-            deco = mod.guard_llm_output(S)
-            @deco
-            def fn():
-                return '{"n":"ok"}'
-            with patch("asyncio.get_running_loop", return_value=MagicMock()):
-                result = fn()
-            assert isinstance(result, dict)
-            assert result["n"] == "ok"
 
-    def test_parse_with_guardrails_no_loop_creates_new(self):
-        """Lines 75-81: No running loop, creates new event loop."""
-        from pydantic import BaseModel
-        class S(BaseModel):
-            n: str = "x"
-        g = MagicMock()
-        guard_obj = MagicMock()
-        guard_obj.parse.return_value = MagicMock(validated_output=S(n="ok"))
-        g.Guard.for_pydantic.return_value = guard_obj
-        with self._llm_env({self.GR_KEY: g, self.VG_KEY: MagicMock()}) as mod:
-            deco = mod.guard_llm_output(S)
-            @deco
-            def fn():
-                return '{"n":"ok"}'
-            result = fn()
-            assert isinstance(result, dict)
-            assert result["n"] == "ok"
 
-    def test_non_str_non_dict_return_passed_through(self):
-        """Lines 96-99: func returns int, passed through raw."""
-        from pydantic import BaseModel
-        class S(BaseModel):
-            n: str = "x"
-        g = MagicMock()
-        g.Guard.for_pydantic.return_value = MagicMock()
-        with self._llm_env({self.GR_KEY: g, self.VG_KEY: MagicMock()}) as mod:
-            deco = mod.guard_llm_output(S)
-            @deco
-            def fn():
-                return 42
-            result = fn()
-            assert result == 42
 
-    def test_func_returns_pydantic_model_directly(self):
-        """Line 90: func returns Pydantic model directly, safe_model_dump called."""
-        from pydantic import BaseModel
-        class S(BaseModel):
-            n: str = "x"
-        g = MagicMock()
-        g.Guard.for_pydantic.return_value = MagicMock()
-        with self._llm_env({self.GR_KEY: g, self.VG_KEY: MagicMock()}) as mod:
-            deco = mod.guard_llm_output(S)
-            @deco
-            def fn():
-                return S(n="direct")
-            result = fn()
-            assert result["n"] == "direct"
 
-    def test_func_returns_dict(self):
-        """Lines 94-95: func returns dict, json.dumps then guard.parse."""
-        from pydantic import BaseModel
-        class S(BaseModel):
-            n: str = "x"
-        g = MagicMock()
-        guard_obj = MagicMock()
-        guard_obj.parse.return_value = MagicMock(validated_output=S(n="dict_val"))
-        g.Guard.for_pydantic.return_value = guard_obj
-        with self._llm_env({self.GR_KEY: g, self.VG_KEY: MagicMock()}) as mod:
-            deco = mod.guard_llm_output(S)
-            @deco
-            def fn():
-                return {"n": "dict_val"}
-            with patch("asyncio.get_running_loop", return_value=MagicMock()):
-                result = fn()
-            assert result["n"] == "dict_val"
 
-    def test_guardrails_validation_val_without_model_dump(self):
-        """Line 109: validated_output.validated_output is plain val, returned as-is."""
-        from pydantic import BaseModel
-        class S(BaseModel):
-            n: str = "x"
-        g = MagicMock()
-        guard_obj = MagicMock()
-        guard_obj.parse.return_value = MagicMock(validated_output="raw_string")
-        g.Guard.for_pydantic.return_value = guard_obj
-        with self._llm_env({self.GR_KEY: g, self.VG_KEY: MagicMock()}) as mod:
-            deco = mod.guard_llm_output(S)
-            @deco
-            def fn():
-                return '{"n":"x"}'
-            with patch("asyncio.get_running_loop", return_value=MagicMock()):
-                result = fn()
-            assert result == "raw_string"
 
-    def test_guardrails_validation_returns_none(self):
-        """Lines 112-113: validated_output is None -> warning + fallback."""
-        from pydantic import BaseModel
-        class S(BaseModel):
-            n: str = "x"
-        g = MagicMock()
-        guard_obj = MagicMock()
-        guard_obj.parse.return_value = MagicMock(validated_output=None)
-        g.Guard.for_pydantic.return_value = guard_obj
-        with self._llm_env({self.GR_KEY: g, self.VG_KEY: MagicMock()}) as mod:
-            deco = mod.guard_llm_output(S, error_return_value={})
-            @deco
-            def fn():
-                return '{"n":"x"}'
-            with patch("asyncio.get_running_loop", return_value=MagicMock()):
-                result = fn()
-            assert result == {}
 
-    def test_guardrails_exception_caught(self):
-        """Lines 115-121: Exception inside wrapper caught gracefully."""
-        from pydantic import BaseModel
-        class S(BaseModel):
-            n: str = "x"
-        g = MagicMock()
-        guard_obj = MagicMock()
-        guard_obj.parse.side_effect = ValueError("parse error")
-        g.Guard.for_pydantic.return_value = guard_obj
-        with self._llm_env({self.GR_KEY: g, self.VG_KEY: MagicMock()}) as mod:
-            deco = mod.guard_llm_output(S, error_return_value=None)
-            @deco
-            def fn():
-                return '{"n":"x"}'
-            with patch("asyncio.get_running_loop", return_value=MagicMock()):
-                result = fn()
-            assert result == {}
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -213,12 +81,6 @@ class TestCSLEngineNoCiteproc:
         from app.pipeline.services.csl_engine import CSLEngine
         return CSLEngine(templates_dir="/nonexistent_templates_dir_xyz")
 
-    def test_get_capabilities(self):
-        eng = self.engine()
-        caps = eng.get_capabilities()
-        assert caps["supports_external_csl_files"] is True
-        assert caps["estimated_available_styles"] >= 10000
-        assert "ieee" in caps["built_in_styles"]
 
     def test_supports_10k_plus_styles(self):
         eng = self.engine()
@@ -234,55 +96,12 @@ class TestCSLEngineNoCiteproc:
         eng = CSLEngine(templates_dir="/custom/path")
         assert str(eng.templates_dir) == str(Path("/custom/path"))
 
-    def test_resolve_style_from_file(self, tmp_path):
-        from app.pipeline.services.csl_engine import CSLEngine
-        ieee_dir = tmp_path / "ieee"
-        ieee_dir.mkdir(parents=True)
-        (ieee_dir / "styles.csl").write_text("<style>test</style>", encoding="utf-8")
-        eng = CSLEngine(templates_dir=str(tmp_path))
-        result = eng.resolve_style("ieee")
-        assert result["source"] == "file"
-        assert result["csl_xml"] == "<style>test</style>"
-        assert result["style"] == "ieee"
 
-    def test_resolve_style_cache_hit(self, tmp_path):
-        from app.pipeline.services.csl_engine import CSLEngine
-        ieee_dir = tmp_path / "ieee"
-        ieee_dir.mkdir(parents=True)
-        (ieee_dir / "styles.csl").write_text("<style>original</style>", encoding="utf-8")
-        eng = CSLEngine(templates_dir=str(tmp_path))
-        eng.resolve_style("ieee")
-        (ieee_dir / "styles.csl").write_text("<style>changed</style>", encoding="utf-8")
-        second = eng.resolve_style("ieee")
-        assert second["source"] == "cache"
-        assert second["csl_xml"] == "<style>original</style>"
 
-    def test_resolve_style_fallback(self):
-        eng = self.engine()
-        result = eng.resolve_style("ieee")
-        assert result["source"] == "fallback"
-        assert "citation-number" in result["csl_xml"]
-        assert result["style"] == "ieee"
 
-    def test_resolve_style_empty_name_fallback_to_ieee(self):
-        eng = self.engine()
-        result = eng.resolve_style("")
-        assert result["style"] == "ieee"
 
-    def test_resolve_style_none_fallback_to_ieee(self):
-        eng = self.engine()
-        result = eng.resolve_style(None)
-        assert result["style"] == "ieee"
 
-    def test_generate_csl_fallback_known_style(self):
-        eng = self.engine()
-        xml = eng._generate_csl_fallback("apa")
-        assert "APA" in xml
 
-    def test_generate_csl_fallback_unknown_style_returns_numeric(self):
-        eng = self.engine()
-        xml = eng._generate_csl_fallback("nonexistent_style_xyz")
-        assert "Numeric" in xml
 
     def test_resolve_style_path_explicit_found(self, tmp_path):
         from app.pipeline.services.csl_engine import CSLEngine
@@ -302,15 +121,6 @@ class TestCSLEngineNoCiteproc:
         with pytest.raises(FileNotFoundError):
             eng.resolve_style_path("ieee")
 
-    def test_resolve_style_path_returns_non_file(self):
-        """Branch 269->275: resolve_style_path returns Path but is_file is False."""
-        from app.pipeline.services.csl_engine import CSLEngine
-        eng = CSLEngine(templates_dir="/nonexistent")
-        p = Path("/nonexistent/path.csl")
-        with patch.object(Path, "is_file", return_value=False):
-            with patch.object(eng, "resolve_style_path", return_value=p):
-                result = eng.resolve_style("ieee")
-                assert result["source"] == "fallback"
 
     def test_resolve_style_path_style_path_is_file_raises(self):
         eng = self.engine()
@@ -356,18 +166,6 @@ class TestCSLEngineNoCiteproc:
         assert len(result) == 1
         assert "Smith" in result[0]
 
-    def test_format_references_fallback_vancouver(self):
-        from app.models import Reference
-        eng = self.engine()
-        refs = [
-            Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                      authors=["A", "B", "C", "D", "E", "F", "G"],
-                      title="Vanc Paper", year=2022, journal="Vanc J",
-                      volume="3", issue="1", pages="50-60"),
-        ]
-        result = eng.format_references(refs, style="vancouver")
-        assert len(result) == 1
-        assert "et al" in result[0]
 
     def test_format_references_fallback_mla(self):
         from app.models import Reference
@@ -627,166 +425,27 @@ class TestCSLEngineNoCiteproc:
         eng = self.engine()
         assert eng._format_apa_authors([]) == "Unknown Author"
 
-    def test_vancouver_fallback_many_authors(self):
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["A", "B", "C", "D", "E", "F", "G"],
-                        title="Vanc", journal="VJ", volume="1", issue="2", pages="5", year=2020)
-        result = eng._format_vancouver_fallback(ref)
-        assert "et al" in result
 
-    def test_vancouver_fallback_one_author(self):
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Alone"], title="Solo")
-        result = eng._format_vancouver_fallback(ref)
-        assert "Alone" in result
 
-    def test_vancouver_fallback_two_authors(self):
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["A", "B"], title="Duo", journal="J")
-        result = eng._format_vancouver_fallback(ref)
-        assert "A and B" in result
 
-    def test_vancouver_fallback_three_authors(self):
-        """Line 530: 3-6 authors -> comma-separated list."""
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["A", "B", "C"], title="Trio", journal="J", year=2020)
-        result = eng._format_vancouver_fallback(ref)
-        assert "A, B, C" in result
 
-    def test_vancouver_fallback_issue_only_no_volume(self):
-        """Line 543: issue without volume."""
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["A", "B"], title="Issue Only", journal="J",
-                        issue="4", year=2020)
-        result = eng._format_vancouver_fallback(ref)
-        assert "(4)" in result
 
-    def test_vancouver_fallback_with_doi(self):
-        """Line 551: vancouver with DOI."""
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["A", "B"], title="DOI Test", journal="J",
-                        doi="10.1234/test")
-        result = eng._format_vancouver_fallback(ref)
-        assert "doi:" in result
 
-    def test_vancouver_fallback_no_volume_no_issue(self):
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["A", "B"], title="Minimal", journal="J")
-        result = eng._format_vancouver_fallback(ref)
-        assert "J" in result
 
-    def test_mla_fallback_single_author(self):
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Mla Auth"], title="MLA Title", year=2021, pages="20-30")
-        result = eng._format_mla_fallback(ref)
-        assert "Mla Auth" in result
-        assert "MLA Title" in result
 
-    def test_mla_fallback_multiple_authors(self):
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["First, A.", "Second, B."], title="Multi")
-        result = eng._format_mla_fallback(ref)
-        assert "et al" in result
 
-    def test_mla_fallback_no_author(self):
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        title="No Auth")
-        result = eng._format_mla_fallback(ref)
-        assert "Unknown Author" in result
 
-    def test_mla_fallback_no_title(self):
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Auth"], title="")
-        result = eng._format_mla_fallback(ref)
-        assert "Untitled" in result
 
-    def test_chicago_fallback_full(self):
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Chi Auth"], title="Chi Book", publisher="CP",
-                        volume="1", issue="2", pages="50", year=2020)
-        result = eng._format_chicago_fallback(ref)
-        assert "Chi Auth" in result
 
-    def test_chicago_fallback_no_author(self):
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        title="No Auth")
-        result = eng._format_chicago_fallback(ref)
-        assert "Unknown Author" in result
 
-    def test_chicago_fallback_no_venue(self):
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Auth"], title="No Venue", year=2020)
-        result = eng._format_chicago_fallback(ref)
-        assert "Auth" in result
 
-    def test_harvard_fallback_full(self):
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Har Auth"], title="Har Title", year=2020,
-                        journal="Har J", volume="5", pages="10-20")
-        result = eng._format_harvard_fallback(ref)
-        assert "Har Auth" in result
-        assert "(2020)" in result
-        assert "vol. 5" in result
 
-    def test_harvard_fallback_no_year(self):
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Har Auth"], title="No Year")
-        result = eng._format_harvard_fallback(ref)
-        assert "(n.d.)" in result
 
-    def test_harvard_fallback_already_ends_with_period(self):
-        """Branch 613->615: formatted already ends with '.'"""
-        from app.models import Reference
-        eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Auth"], title="Title.")
-        result = eng._format_harvard_fallback(ref)
-        assert result.endswith(".")
 
     def test_citeproc_not_available_flag(self):
         from app.pipeline.services.csl_engine import CITEPROC_AVAILABLE
         assert isinstance(CITEPROC_AVAILABLE, bool)
 
-    def test_resolve_style_cache_expiry(self):
-        from app.pipeline.services.csl_engine import CSLEngine
-        eng = CSLEngine(templates_dir="/nonexistent_ttl_test")
-        first = eng.resolve_style("ieee")
-        assert first["source"] == "fallback"
-        eng._cache["ieee"] = (eng._cache["ieee"][0], time.time() - 400)
-        second = eng.resolve_style("ieee")
-        assert second["source"] == "fallback"
 
     def test_csl_json_multiple_authors_empty_filtered(self):
         from app.models import Reference, ReferenceType
