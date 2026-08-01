@@ -3,7 +3,8 @@
 
 import logging
 
-from app.models.pipeline_document import PipelineDocument, ReviewMetadata, ReviewStatus
+from app.models.pipeline_document import PipelineDocument
+from app.models.review import ReviewMetadata, ReviewStatus
 
 logger = logging.getLogger(__name__)
 
