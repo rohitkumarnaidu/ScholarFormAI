@@ -6,16 +6,15 @@ Deep coverage tests for TemplateRenderer — exercises error paths, fallbacks,
 edge cases, and uncovered branches to raise coverage from 54.86% to >=80%.
 """
 
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
+from app.models import PipelineDocument, Block, BlockType, Reference, DocumentMetadata
+from app.models import PipelineDocument, Block, BlockType, Reference, DocumentMetadata
 from __future__ import annotations
 
 import zipfile
 from pathlib import Path
-from unittest.mock import patch, MagicMock, call
+from unittest.mock import patch, MagicMock
 
-from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata
+from app.models import Block, BlockType, Reference, DocumentMetadata
 import pytest
 
 from app.pipeline.formatting.template_renderer import TemplateRenderer
@@ -23,13 +22,6 @@ from app.pipeline.formatting.template_renderer import TemplateRenderer
 
 @pytest.fixture
 def renderer():
-    from app.models import (
-    PipelineDocument,
-    DocumentMetadata,
-    Block,
-    BlockType,
-    Reference,
-    )
 
     return TemplateRenderer(templates_dir="app/templates")
 

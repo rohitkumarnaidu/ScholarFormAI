@@ -6,7 +6,7 @@ Adaptive strategies that auto-tune based on metrics.
 """
 
 import logging
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional
 from app.pipeline.agents.metrics import PerformanceTracker
 from app.pipeline.agents.ml_patterns import MLPatternDetector
 

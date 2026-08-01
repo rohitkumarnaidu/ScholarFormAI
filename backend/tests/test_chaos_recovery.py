@@ -1,7 +1,7 @@
 from __future__ import annotations
-from unittest.mock import AsyncMock, MagicMock, patch, PropertyMock
+from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
-from app.exceptions import DatabaseUnavailableError, DocumentNotFoundError
+from app.exceptions import DatabaseUnavailableError
 pytestmark = [pytest.mark.chaos]
 
 
@@ -198,7 +198,7 @@ class TestNetworkIssues:
     def test_connection_refused_handled(self, mock_settings):
         mock_settings.SUPABASE_URL = "https://nonexistent.example.com"
         mock_settings.SUPABASE_SERVICE_ROLE_KEY = "test-key"
-        from app.db.supabase_client import get_supabase_client, check_supabase_health
+        from app.db.supabase_client import check_supabase_health
         health = check_supabase_health()
         assert health["status"] in ("unhealthy", "unconfigured")
 

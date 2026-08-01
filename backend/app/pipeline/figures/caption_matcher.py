@@ -11,7 +11,7 @@ them with the nearest Figure object.
 import logging
 import re
 import os
-from typing import List, Optional, Tuple, Dict, Any
+from typing import List, Tuple, Dict
 from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)

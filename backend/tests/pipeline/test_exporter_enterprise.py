@@ -8,13 +8,9 @@ Covers all 11 methods, 48 branches, error/edge paths
 with zero external dependencies (all mocks).
 """
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
+from app.models import Reference
 from __future__ import annotations
-import json
-import os
-from unittest.mock import patch, MagicMock, call, mock_open
+from unittest.mock import patch, MagicMock, mock_open
 import pytest
 
 from app.pipeline.export.exporter import Exporter
@@ -65,7 +61,6 @@ def _make_doc(**overrides):
 
 @pytest.fixture
 def exporter():
-    from app.models import PipelineDocument, Block, BlockType
     with (
         patch("app.pipeline.export.exporter.PDFExporter"),
         patch("app.pipeline.export.exporter.LaTeXExporter"),
@@ -74,7 +69,6 @@ def exporter():
 
 @pytest.fixture
 def doc():
-    from app.models import PipelineDocument, Block, BlockType
     return _make_doc()
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -83,7 +77,6 @@ def doc():
 
 class TestInit:
     def test_creates_sub_exporters(self):
-        from app.models import PipelineDocument, Block, BlockType
         with (
             patch("app.pipeline.export.exporter.PDFExporter") as mock_pdf,
             patch("app.pipeline.export.exporter.LaTeXExporter") as mock_latex,
@@ -98,7 +91,6 @@ class TestInit:
 
 class TestProcess:
     def test_docx_export_called_when_format_includes_docx(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.generated_doc = MagicMock()
         doc.output_path = "/tmp/out/doc.docx"
         doc.formatting_options = {"export_formats": ["docx"]}
@@ -108,7 +100,6 @@ class TestProcess:
         assert result == doc
 
     def test_docx_skipped_when_no_generated_doc(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.generated_doc = None
         doc.formatting_options = {"export_formats": ["docx"]}
         with patch.object(exporter, "export") as mock_export:
@@ -116,7 +107,6 @@ class TestProcess:
         mock_export.assert_not_called()
 
     def test_docx_skipped_when_no_output_path(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.generated_doc = MagicMock()
         doc.output_path = None
         doc.formatting_options = {"export_formats": ["docx"]}
@@ -125,7 +115,6 @@ class TestProcess:
         mock_export.assert_not_called()
 
     def test_json_export_called(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.output_path = "/tmp/out/doc.docx"
         doc.formatting_options = {"export_formats": ["docx", "json", "markdown"]}
         with (
@@ -138,7 +127,6 @@ class TestProcess:
         mock_json.assert_called_once()
 
     def test_markdown_export_called(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.output_path = "/tmp/out/doc.docx"
         doc.formatting_options = {"export_formats": ["docx", "json", "markdown"]}
         with (
@@ -151,7 +139,6 @@ class TestProcess:
         mock_md.assert_called_once()
 
     def test_pdf_export_called(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.output_path = "/tmp/out/doc.docx"
         doc.formatting_options = {"export_formats": ["docx", "pdf"]}
         with (
@@ -163,7 +150,6 @@ class TestProcess:
         mock_convert.assert_called_once_with("/tmp/out/doc.docx", "/tmp/out")
 
     def test_pdf_export_failure_continues(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.output_path = "/tmp/out/doc.docx"
         doc.formatting_options = {"export_formats": ["docx", "pdf"]}
         exporter.pdf_exporter.convert_to_pdf.side_effect = Exception("LibreOffice not found")
@@ -173,7 +159,6 @@ class TestProcess:
         # Exception caught and logged, pipeline continues without crash
 
     def test_html_export_called(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.output_path = "/tmp/out/doc.docx"
         doc.formatting_options = {"export_formats": ["docx", "html"]}
         with (
@@ -185,7 +170,6 @@ class TestProcess:
         mock_html.assert_called_once()
 
     def test_latex_export_called(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.output_path = "/tmp/out/doc.docx"
         doc.formatting_options = {"export_formats": ["docx", "latex"]}
         with (
@@ -197,7 +181,6 @@ class TestProcess:
         mock_tex.assert_called_once()
 
     def test_jats_always_called(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.output_path = "/tmp/out/doc.docx"
         doc.formatting_options = {"export_formats": ["docx"]}
         with (
@@ -209,7 +192,6 @@ class TestProcess:
         mock_jats.assert_called_once()
 
     def test_output_path_not_docx_skips_extra_exports(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.output_path = "/tmp/out/doc.pdf"
         doc.formatting_options = {"export_formats": ["docx", "json", "markdown", "pdf", "html", "latex"]}
         with (
@@ -235,7 +217,6 @@ class TestProcess:
 
 class TestExport:
     def test_saves_word_doc(self, exporter):
-        from app.models import PipelineDocument, Block, BlockType
         word_doc = MagicMock()
         with patch("os.makedirs") as mock_mkdir:
             result = exporter.export(word_doc, "/tmp/out/test.docx")
@@ -244,7 +225,6 @@ class TestExport:
         assert result == "/tmp/out/test.docx"
 
     def test_returns_none_when_no_word_doc(self, exporter):
-        from app.models import PipelineDocument, Block, BlockType
         result = exporter.export(None, "/tmp/out/test.docx")
         assert result is None
 
@@ -254,7 +234,6 @@ class TestExport:
 
 class TestExportJson:
     def test_writes_json_with_payload(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         with (
             patch.object(exporter, "_build_export_payload", return_value={"key": "val"}),
             patch("builtins.open", mock_open()) as m,
@@ -267,7 +246,6 @@ class TestExportJson:
         assert result == "/tmp/out/doc.json"
 
     def test_returns_none_on_exception(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         with patch.object(exporter, "_build_export_payload", side_effect=Exception("boom")):
             result = exporter.export_json(doc, "/tmp/out/doc.json")
         assert result is None
@@ -278,7 +256,6 @@ class TestExportJson:
 
 class TestExportMarkdown:
     def test_writes_markdown(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         with (
             patch.object(exporter, "_build_markdown", return_value="# Test\n\nBody."),
             patch("builtins.open", mock_open()) as m,
@@ -288,7 +265,6 @@ class TestExportMarkdown:
         assert result == "/tmp/out/doc.md"
 
     def test_returns_none_on_exception(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         with patch.object(exporter, "_build_markdown", side_effect=Exception("boom")):
             result = exporter.export_markdown(doc, "/tmp/out/doc.md")
         assert result is None
@@ -299,7 +275,6 @@ class TestExportMarkdown:
 
 class TestExportJats:
     def test_writes_xml(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         mock_gen = MagicMock()
         mock_gen.to_xml.return_value = "<article>content</article>"
         with (
@@ -311,7 +286,6 @@ class TestExportJats:
         assert result == "/tmp/out/doc.xml"
 
     def test_returns_none_on_generator_exception(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         mock_gen = MagicMock()
         mock_gen.to_xml.side_effect = Exception("JATS error")
         with patch("app.pipeline.export.exporter.JATSGenerator", return_value=mock_gen):
@@ -319,7 +293,6 @@ class TestExportJats:
         assert result is None
 
     def test_returns_none_on_write_exception(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         mock_gen = MagicMock()
         mock_gen.to_xml.return_value = "<article/>"
         with (
@@ -336,12 +309,10 @@ class TestExportJats:
 
 class TestExportHtml:
     def test_writes_html_document(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         md_content = "# Title\n\n## Abstract\n\nBody text.\n\n**Bold:** text\n\n1. item\n\n2. item2\n\nplain"
         written_data = {}
 
         def fake_open(path, mode="r", **kw):
-            from app.models import PipelineDocument, Block, BlockType
             m = MagicMock()
             m.__enter__.return_value.write.side_effect = lambda data: written_data.update({path: written_data.get(path, "") + data}) or len(data)
             m.__enter__.return_value.read.return_value = ""
@@ -363,7 +334,6 @@ class TestExportHtml:
         assert result == "/tmp/out/doc.html"
 
     def test_list_continuation(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         md = "1. item1\n2. item2\nplain after\n3. item3"
         with (
             patch.object(exporter, "_build_markdown", return_value=md),
@@ -373,7 +343,6 @@ class TestExportHtml:
         assert result is not None
 
     def test_returns_none_on_exception(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         with patch.object(exporter, "_build_markdown", side_effect=Exception("boom")):
             result = exporter.export_html(doc, "/tmp/out/doc.html")
         assert result is None
@@ -384,13 +353,11 @@ class TestExportHtml:
 
 class TestExportLatex:
     def test_returns_none_when_no_output_path(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.output_path = None
         result = exporter.export_latex(doc, "/tmp/out/doc.tex")
         assert result is None
 
     def test_calls_convert_to_latex(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.output_path = "/tmp/out/doc.docx"
         converted = "/tmp/out/tmp_abc.tex"
         output = "/tmp/out/doc.tex"
@@ -407,7 +374,6 @@ class TestExportLatex:
         assert result == output
 
     def test_fallback_on_runtime_error(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.output_path = "/tmp/out/doc.docx"
         exporter.latex_exporter.convert_to_latex.side_effect = RuntimeError("convert fail")
         exporter.latex_exporter.export_from_document.return_value = "/tmp/out/doc.tex"
@@ -417,7 +383,6 @@ class TestExportLatex:
         assert result == "/tmp/out/doc.tex"
 
     def test_returns_none_on_generic_exception(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.output_path = "/tmp/out/doc.docx"
         exporter.latex_exporter.convert_to_latex.side_effect = Exception("generic fail")
         result = exporter.export_latex(doc, "/tmp/out/doc.tex")
@@ -429,13 +394,11 @@ class TestExportLatex:
 
 class TestGetExportFormats:
     def test_default_formats(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.formatting_options = {}
         result = exporter._get_export_formats(doc)
         assert result == ["docx", "json", "markdown"]
 
     def test_custom_formats(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.formatting_options = {"export_formats": ["html", "latex"]}
         result = exporter._get_export_formats(doc)
         assert "docx" in result
@@ -443,31 +406,26 @@ class TestGetExportFormats:
         assert "latex" in result
 
     def test_docx_always_first(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.formatting_options = {"export_formats": ["json", "markdown"]}
         result = exporter._get_export_formats(doc)
         assert result[0] == "docx"
 
     def test_handles_non_list_formats(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.formatting_options = {"export_formats": "pdf"}
         result = exporter._get_export_formats(doc)
         assert "pdf" in result
 
     def test_handles_empty_formats(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.formatting_options = {"export_formats": []}
         result = exporter._get_export_formats(doc)
         assert result == ["docx"]
 
     def test_deduplicates(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.formatting_options = {"export_formats": ["docx", "json", "docx", "JSON"]}
         result = exporter._get_export_formats(doc)
         assert result == ["docx", "json"]
 
     def test_normalizes_case(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.formatting_options = {"export_formats": ["DOCX", "JSON"]}
         result = exporter._get_export_formats(doc)
         assert result == ["docx", "json"]
@@ -478,7 +436,6 @@ class TestGetExportFormats:
 
 class TestBuildExportPayload:
     def test_includes_all_keys(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         payload = exporter._build_export_payload(doc)
         keys = {"document_id", "template", "metadata", "blocks", "references",
                 "figures", "tables", "equations", "processing_history",
@@ -487,13 +444,11 @@ class TestBuildExportPayload:
         assert keys.issubset(payload.keys())
 
     def test_template_name_none_when_no_template(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.template = None
         payload = exporter._build_export_payload(doc)
         assert payload["template"] is None
 
     def test_validation_fields(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.is_valid = False
         doc.validation_errors = ["error1"]
         doc.validation_warnings = ["warn1"]
@@ -503,7 +458,6 @@ class TestBuildExportPayload:
         assert payload["validation"]["warnings"] == ["warn1"]
 
     def test_empty_collections(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.blocks = []
         doc.references = []
         doc.figures = []
@@ -524,99 +478,83 @@ class TestBuildExportPayload:
 
 class TestBuildMarkdown:
     def test_title_from_metadata(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         md = exporter._build_markdown(doc)
         assert "# Test Paper" in md
 
     def test_title_fallback_to_filename(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.metadata.title = None
         md = exporter._build_markdown(doc)
         assert "# doc.docx" in md
 
     def test_title_fallback_to_untitled(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.metadata.title = None
         doc.original_filename = None
         md = exporter._build_markdown(doc)
         assert "# Untitled Manuscript" in md
 
     def test_includes_authors(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         md = exporter._build_markdown(doc)
         assert "Alice" in md
         assert "Bob" in md
 
     def test_skips_authors_when_missing(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.metadata.authors = []
         md = exporter._build_markdown(doc)
         assert "Authors:" not in md
 
     def test_includes_affiliations(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         md = exporter._build_markdown(doc)
         assert "Uni A" in md
 
     def test_skips_affiliations_when_missing(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.metadata.affiliations = []
         md = exporter._build_markdown(doc)
         assert "Affiliations:" not in md
 
     def test_includes_doi(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         md = exporter._build_markdown(doc)
         assert "10.1234/test" in md
 
     def test_skips_doi_when_missing(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.metadata.doi = None
         md = exporter._build_markdown(doc)
         assert "DOI:" not in md
 
     def test_includes_template(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         md = exporter._build_markdown(doc)
         assert "default" in md
 
     def test_skips_template_when_missing(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.template = None
         md = exporter._build_markdown(doc)
         assert "Template:" not in md
 
     def test_includes_abstract(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         md = exporter._build_markdown(doc)
         assert "## Abstract" in md
         assert "This is a test." in md
 
     def test_skips_abstract_when_missing(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.metadata.abstract = None
         md = exporter._build_markdown(doc)
         assert "## Abstract" not in md
 
     def test_includes_keywords(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         md = exporter._build_markdown(doc)
         assert "test" in md
         assert "paper" in md
 
     def test_skips_keywords_when_missing(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.metadata.keywords = []
         md = exporter._build_markdown(doc)
         assert "Keywords:" not in md
 
     def test_heading_blocks(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         md = exporter._build_markdown(doc)
         assert "## Introduction" in md
 
     def test_skips_reference_blocks(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType
         doc.blocks = [
             Block(block_id="r1", index=10, block_type=BlockType.REFERENCE_ENTRY, text="[1] Ref text"),
         ]
@@ -624,7 +562,7 @@ class TestBuildMarkdown:
         assert "[1]" not in md
 
     def test_skips_empty_text_blocks(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType
         doc.blocks = [
             Block(block_id="e1", index=5, block_type=BlockType.BODY, text=""),
         ]
@@ -632,7 +570,6 @@ class TestBuildMarkdown:
         assert md is not None
 
     def test_includes_references_section(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.references = [
             Reference(
                 reference_id="r1", block_id="r1", block_index=1, index=1,
@@ -646,7 +583,6 @@ class TestBuildMarkdown:
         assert "Author" in md
 
     def test_references_use_formatted_text_fallback(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.references = [
             Reference(
                 reference_id="r1", block_id="r1", block_index=1, index=1,
@@ -659,7 +595,6 @@ class TestBuildMarkdown:
         assert "Raw ref" in md
 
     def test_skips_empty_references(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.references = [
             Reference(
                 reference_id="r1", block_id="r1", block_index=1, index=1,
@@ -672,7 +607,6 @@ class TestBuildMarkdown:
         assert "References" not in md
 
     def test_no_references_section_when_empty(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.references = []
         md = exporter._build_markdown(doc)
         assert "## References" not in md
@@ -683,7 +617,6 @@ class TestBuildMarkdown:
 
 class TestProcessIntegration:
     def test_all_export_formats_triggered(self, exporter, doc):
-        from app.models import PipelineDocument, Block, BlockType
         doc.output_path = "/tmp/out/doc.docx"
         doc.generated_doc = MagicMock()
         doc.formatting_options = {"export_formats": ["docx", "json", "markdown", "pdf", "html", "latex"]}

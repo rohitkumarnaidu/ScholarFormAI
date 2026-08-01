@@ -9,9 +9,7 @@ Routers MUST use this facade instead of importing MultiDocSynthesizer directly.
 
 from __future__ import annotations
 
-import asyncio
 import logging
-from pathlib import Path
 from typing import Any, Optional
 
 from app.exceptions import PipelineError, NotFoundError, ValidationError

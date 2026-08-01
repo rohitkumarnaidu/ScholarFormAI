@@ -21,7 +21,6 @@ from fastapi import HTTPException, Request
 from fastapi.responses import FileResponse
 
 from app.config.settings import settings
-from app.exceptions import DatabaseUnavailableError
 from app.pipeline.export.latex_exporter import LaTeXExporter
 from app.pipeline.export.pdf_exporter import PDFExporter
 from app.schemas.user import User

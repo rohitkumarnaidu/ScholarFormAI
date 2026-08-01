@@ -6,7 +6,7 @@ Distributed processing with multi-agent coordination.
 """
 
 import logging
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from enum import Enum

@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from typing import List, Tuple
-from app.models import PipelineDocument as Document, Block
+from typing import List
+from app.models import PipelineDocument as Document
 from app.pipeline.contracts.loader import ContractLoader
 
 

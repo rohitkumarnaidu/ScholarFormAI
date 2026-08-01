@@ -7,7 +7,6 @@ absence of secrets does not crash the process.
 """
 from __future__ import annotations
 
-import os
 import pytest
 
 

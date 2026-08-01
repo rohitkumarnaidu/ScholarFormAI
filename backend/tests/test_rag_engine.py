@@ -8,10 +8,9 @@ Tests retrieval-augmented generation, ChromaDB integration, and fallback mechani
 
 import pytest
 import os
-import json
 import tempfile
 import shutil
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch, MagicMock
 from app.pipeline.intelligence.rag_engine import RagEngine
 
 class TestRagEngine:

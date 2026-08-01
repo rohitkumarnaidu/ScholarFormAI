@@ -93,7 +93,7 @@ class TestLoggingContext:
 
     @pytest.mark.asyncio
     async def test_bind_request_context_with_x_request_id(self):
-        from app.utils.logging_context import bind_request_context, get_request_id_context
+        from app.utils.logging_context import bind_request_context
         from unittest.mock import MagicMock
         conn = MagicMock()
         conn.state.request_id = None
@@ -121,7 +121,7 @@ class TestLoggingContext:
 
     @pytest.mark.asyncio
     async def test_bind_request_context_with_aliases(self):
-        from app.utils.logging_context import bind_request_context, get_job_id_context
+        from app.utils.logging_context import bind_request_context
         from unittest.mock import MagicMock
         conn = MagicMock()
         conn.state.request_id = None

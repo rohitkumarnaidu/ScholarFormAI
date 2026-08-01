@@ -1,11 +1,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
 from __future__ import annotations
-from unittest.mock import patch, MagicMock, PropertyMock, ANY
-from datetime import datetime, timezone
+from unittest.mock import patch, MagicMock
 import pytest
 pytestmark = [pytest.mark.pipeline]
 
@@ -28,7 +25,6 @@ def detector():
 
 @pytest.fixture
 def doc_with_blocks():
-    from app.models import BlockType
     from app.models import PipelineDocument as Document
     from app.models import DocumentMetadata, TemplateInfo
     blocks_list = [

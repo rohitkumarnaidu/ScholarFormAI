@@ -12,12 +12,10 @@ Tracks:
 - Fallback frequency
 """
 
-import time
 import json
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, Optional
 from datetime import datetime, timezone
-from collections import defaultdict
 from app.utils.singleton import get_or_create
 
 logger = logging.getLogger(__name__)

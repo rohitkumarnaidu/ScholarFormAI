@@ -12,7 +12,7 @@ via self.orchestrator.
 
 import os
 import logging
-from typing import Any, Optional, Tuple
+from typing import Any, Tuple
 
 from app.pipeline.orchestrator.stages import PipelineStages
 

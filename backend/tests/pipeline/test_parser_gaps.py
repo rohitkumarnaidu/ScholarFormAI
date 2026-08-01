@@ -1,21 +1,16 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
+from app.models import Block, BlockType, Figure, Table, Equation
+from app.models import Block, BlockType, Figure, Table, Equation
 from __future__ import annotations
 
-import io
-import re
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 
-import pytest
-from unittest.mock import MagicMock, PropertyMock, patch, mock_open
+from unittest.mock import MagicMock, patch
 
-from app.pipeline.parsing.parser import DocxParser, generate_figure_id, generate_table_id, generate_equation_id
+from app.pipeline.parsing.parser import DocxParser
 
 
 # ---------------------------------------------------------------------------
@@ -597,7 +592,6 @@ class TestListInfoGaps:
         xml = '<w:pPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:numPr><w:numId w:val="7"/></w:numPr></w:pPr>'
         pPr = etree.fromstring(xml)
         para._element = MagicMock()
-        from docx.oxml.ns import qn
         para._element.find.return_value = pPr
         result = p._get_list_info(para)
         assert result is not None
@@ -613,7 +607,6 @@ class TestListInfoGaps:
         xml = '<w:pPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:numPr><w:ilvl w:val="2"/><w:numId w:val="5"/></w:numPr></w:pPr>'
         pPr = etree.fromstring(xml)
         para._element = MagicMock()
-        from docx.oxml.ns import qn
         para._element.find.return_value = pPr
         result = p._get_list_info(para)
         assert result is not None
@@ -628,7 +621,6 @@ class TestListInfoGaps:
         xml = '<w:pPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:pStyle w:val="ListBullet"/></w:pPr>'
         pPr = etree.fromstring(xml)
         para._element = MagicMock()
-        from docx.oxml.ns import qn
         para._element.find.return_value = pPr
         result = p._get_list_info(para)
         assert result is not None
@@ -643,7 +635,6 @@ class TestListInfoGaps:
         xml = '<w:pPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:pStyle w:val="ListNumber3"/></w:pPr>'
         pPr = etree.fromstring(xml)
         para._element = MagicMock()
-        from docx.oxml.ns import qn
         para._element.find.return_value = pPr
         result = p._get_list_info(para)
         assert result is not None
@@ -657,7 +648,6 @@ class TestListInfoGaps:
         xml = '<w:pPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:pStyle w:val="Numbered1"/></w:pPr>'
         pPr = etree.fromstring(xml)
         para._element = MagicMock()
-        from docx.oxml.ns import qn
         para._element.find.return_value = pPr
         result = p._get_list_info(para)
         assert result is not None
@@ -947,7 +937,6 @@ class TestEquationExtractionGaps:
 
     def test_omathpara_block_equations(self):
         """Lines 789-792: oMathPara loop extracts block equations."""
-        from docx.oxml.ns import qn
 
         p = DocxParser()
         para = MagicMock()
@@ -975,7 +964,6 @@ class TestEquationExtractionGaps:
 
     def test_inline_equations_skip_processed(self):
         """Lines 799-804: inline oMath already processed -> continue."""
-        from docx.oxml.ns import qn
 
         p = DocxParser()
         para = MagicMock()
@@ -1004,7 +992,6 @@ class TestEquationExtractionGaps:
 
     def test_inline_equations_not_processed(self):
         """Line 799: inline oMath not in oMathPara -> extracted."""
-        from docx.oxml.ns import qn
 
         p = DocxParser()
         para = MagicMock()

@@ -982,7 +982,6 @@ class TestDeprecatedRouteGetRouteHandler:
 
     @pytest.mark.asyncio
     async def test_get_route_handler_adds_headers_to_response(self):
-        from app.routers.deprecation import DeprecatedRoute
 
         route = self._make_route({"/api/v1/old/test": "/api/v2/new/test"})
         mock_response = MagicMock()
@@ -998,7 +997,6 @@ class TestDeprecatedRouteGetRouteHandler:
 
     @pytest.mark.asyncio
     async def test_get_route_handler_adds_headers_to_exception(self):
-        from app.routers.deprecation import DeprecatedRoute
 
         route = self._make_route({"/api/v1/old/test": "/api/v2/new/test"})
 

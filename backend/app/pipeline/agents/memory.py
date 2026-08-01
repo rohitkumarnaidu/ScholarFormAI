@@ -6,8 +6,7 @@ Agent memory system for pattern recognition across documents.
 """
 
 import json
-import os
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any, Optional
 from datetime import datetime, timezone
 from pathlib import Path
 

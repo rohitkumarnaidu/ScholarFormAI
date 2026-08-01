@@ -4,7 +4,7 @@
 
 from sqlalchemy import Column, String, DateTime, text, Integer, JSON
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship, foreign
+from sqlalchemy.orm import relationship
 from app.db.base import Base
 
 

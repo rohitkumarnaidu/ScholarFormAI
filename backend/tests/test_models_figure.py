@@ -9,7 +9,6 @@ Covers construction, serialization, enum values, image data, and helper methods.
 
 from __future__ import annotations
 
-import pytest
 
 
 class TestFigureMinimumFields:

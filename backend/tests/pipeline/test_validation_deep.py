@@ -1,12 +1,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 import pytest
 pytestmark = [pytest.mark.pipeline]
 
@@ -459,7 +455,7 @@ class TestReviewManager:
 
     def test_evaluate_ok(self):
         from app.pipeline.validation.review_manager import ReviewManager
-        from app.models.pipeline_document import PipelineDocument, DocumentMetadata
+        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
         doc = PipelineDocument(
             document_id="test",
@@ -532,7 +528,7 @@ class TestReviewManager:
 
     def test_evaluate_ai_hints(self):
         from app.pipeline.validation.review_manager import ReviewManager
-        from app.models.pipeline_document import PipelineDocument, DocumentMetadata
+        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
         doc = PipelineDocument(
             document_id="test",

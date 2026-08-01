@@ -1,6 +1,6 @@
 import pytest
 import asyncio
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import patch, AsyncMock
 
 pytestmark = pytest.mark.asyncio
 
@@ -153,7 +153,6 @@ class TestRedisPubSub:
         assert q.qsize() == 1
 
     async def test_subscribe_fallback_no_events(self, pubsub):
-        import time
         gen = pubsub.subscribe("empty_ch")
         task = asyncio.create_task(gen.__anext__())
         await asyncio.sleep(0.1)

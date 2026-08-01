@@ -1,6 +1,4 @@
 from __future__ import annotations
-import pytest
-from unittest.mock import patch, MagicMock
 
 
 class TestDocumentResult:
@@ -17,7 +15,6 @@ class TestDocumentResult:
 
     def test_columns_defined(self):
         from app.models.document_result import DocumentResult
-        from sqlalchemy import Column
         cols = DocumentResult.__table__.columns
         assert "id" in cols
         assert "document_id" in cols

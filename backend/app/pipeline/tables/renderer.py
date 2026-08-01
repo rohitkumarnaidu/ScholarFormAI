@@ -7,7 +7,6 @@ Table Renderer - Renders Table models into python-docx tables.
 
 import logging
 
-from docx.shared import Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 from app.models import Table

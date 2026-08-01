@@ -13,10 +13,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from app.db.supabase_client import get_supabase_client
-from app.utils.logging_context import log_extra
 from app.exceptions import DatabaseUnavailableError
 
 logger = logging.getLogger(__name__)

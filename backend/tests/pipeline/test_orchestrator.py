@@ -1,28 +1,19 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
+from app.models import PipelineDocument, Block, BlockType, Figure, DocumentMetadata
+from app.models import PipelineDocument, Block, BlockType, Figure, DocumentMetadata
 from __future__ import annotations
-import os
 import time
 import threading
-import json
 import hashlib
 import sys
 import pytest
-from unittest.mock import patch, MagicMock, PropertyMock, call, ANY
-from pathlib import Path
+from unittest.mock import patch, MagicMock
 
 @pytest.fixture
 def orch():
     from app.pipeline.orchestrator import PipelineOrchestrator
-    from app.models import (
-    PipelineDocument, DocumentMetadata, TemplateInfo, Block, BlockType,
-    Reference, Figure, Table,
-    )
 
     with (
         patch("app.pipeline.orchestrator.InputConverter"),

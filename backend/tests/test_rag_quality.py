@@ -1,10 +1,7 @@
 import pytest
-import json
-import tempfile
 import math
-import os
 import numpy as np
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import MagicMock, patch
 
 # ---------------------------------------------------------------------------
 #  IR metric helpers

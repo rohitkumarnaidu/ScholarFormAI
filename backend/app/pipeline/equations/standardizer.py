@@ -3,9 +3,8 @@
 
 import os
 import logging
-from typing import List
 from lxml import etree
-from app.models import PipelineDocument, Equation
+from app.models import PipelineDocument
 from app.utils.singleton import get_or_create
 
 logger = logging.getLogger(__name__)

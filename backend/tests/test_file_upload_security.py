@@ -1,5 +1,3 @@
-import os
-import tempfile
 import pytest
 from unittest.mock import patch, MagicMock, AsyncMock
 
@@ -145,7 +143,6 @@ class TestFilePathTraversalPrevention:
         assert safe_path == os.path.abspath(UPLOAD_DIR)
 
     def test_file_id_regex_rejects_path_traversal(self):
-        from app.routers.v1.documents_impl import upload_document_chunked
         import re
         pattern = r"^[a-zA-Z0-9-]+$"
         assert re.match(pattern, "safe-file-id-123") is not None
@@ -171,12 +168,9 @@ class TestFileSizeValidation:
         assert hasattr(settings, "MAX_FILE_SIZE")
 
     def test_chunk_5mb_limit_enforced(self):
-        from app.routers.v1.documents_impl import upload_document_chunked
         assert 5 * 1024 * 1024 == 5242880
 
     def test_chunked_assembly_rejects_oversize(self):
-        from app.routers.v1.documents_impl import upload_document_chunked, _build_initial_status_payload
-        import os
         max_size = 50 * 1024 * 1024
         total = max_size + 1
         assert total > max_size

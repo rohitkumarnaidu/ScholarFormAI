@@ -12,12 +12,8 @@ Targets:
   - ocr_engine.py      (0%    -> 30%+)
 """
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
-from unittest.mock import patch, MagicMock, PropertyMock
+from unittest.mock import patch, MagicMock
 import pytest
 pytestmark = [pytest.mark.pipeline]
 
@@ -461,7 +457,7 @@ class TestDetectorGaps:
 
     def test_process_with_template(self):
         sd = self._make_detector()
-        from app.models import PipelineDocument as Document, DocumentMetadata, Block, BlockType, TextStyle
+        from app.models import PipelineDocument as Document, Block, TextStyle
         from app.models.pipeline_document import TemplateInfo
         block = Block(block_id="b1", index=0, text="1. Introduction", style=TextStyle(bold=True))
         doc = Document(
@@ -480,7 +476,7 @@ class TestDetectorGaps:
 
     def test_detect_structure_with_docling_title_detected(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block, TextStyle
         block = Block(block_id="b1", index=0, text="Paper Title", style=TextStyle())
         result = sd._detect_structure_with_docling(
             [block],
@@ -495,7 +491,7 @@ class TestDetectorGaps:
 
     def test_detect_structure_with_docling_heading_detected(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block, TextStyle
         block = Block(block_id="b2", index=100, text="Introduction", style=TextStyle())
         result = sd._detect_structure_with_docling(
             [block],
@@ -510,7 +506,7 @@ class TestDetectorGaps:
 
     def test_detect_structure_with_docling_token_overlap_match(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block, TextStyle
         block = Block(block_id="b3", index=200, text="Background and Related Work", style=TextStyle())
         result = sd._detect_structure_with_docling(
             [block],
@@ -524,7 +520,7 @@ class TestDetectorGaps:
 
     def test_detect_structure_with_docling_fallback_to_standard(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block, TextStyle
         block = Block(block_id="b4", index=300, text="Some random text", style=TextStyle())
         result = sd._detect_structure_with_docling(
             [block],
@@ -538,7 +534,7 @@ class TestDetectorGaps:
         assert len(result) >= 0
     def test_detect_heading_candidates_author_affiliation(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block, TextStyle
         title_block = Block(block_id="t1", index=0, text="The Paper Title", style=TextStyle())
         author_block = Block(block_id="a1", index=100, text="John A. Doe, Jane B. Smith", style=TextStyle())
         aff_block = Block(block_id="af1", index=200, text="University of Science and Technology", style=TextStyle())
@@ -549,7 +545,7 @@ class TestDetectorGaps:
 
     def test_detect_heading_candidates_skip_header_footer(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block, TextStyle
         b = Block(block_id="hf1", index=0, text="Header content", style=TextStyle(),
                   metadata={"is_header": True})
         result = sd._detect_heading_candidates([b])
@@ -557,14 +553,14 @@ class TestDetectorGaps:
 
     def test_assign_section_names_headers_footers_skipped(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block
         h_block = Block(block_id="h1", index=0, text="Header", metadata={"is_header": True})
         sd._assign_section_names([h_block], [])
         assert h_block.section_name is None
 
     def test_assign_section_names_with_numbering(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block
         heading = Block(block_id="hd1", index=0, text="1. Introduction",
                         metadata={"numbering_info": {"remainder": "Introduction"}})
         candidates = [{"block": heading, "block_id": "hd1", "level": 1}]
@@ -573,7 +569,7 @@ class TestDetectorGaps:
 
     def test_assign_section_names_title_level(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block
         heading = Block(block_id="h0", index=0, text="The Title")
         candidates = [{"block": heading, "block_id": "h0", "level": 0}]
         sd._assign_section_names([heading], candidates)
@@ -581,7 +577,7 @@ class TestDetectorGaps:
 
     def test_build_hierarchy_with_parent(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block
         l1 = Block(block_id="l1", index=0, text="Intro")
         l2 = Block(block_id="l2", index=100, text="Background")
         candidates = [
@@ -593,7 +589,7 @@ class TestDetectorGaps:
 
     def test_build_hierarchy_skip_header_footer(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block
         hf = Block(block_id="hf", index=0, text="Header", metadata={"is_header": True})
         candidates = [{"block": hf, "block_id": "hf", "level": 1}]
         sd._build_hierarchy([hf], candidates)
@@ -601,7 +597,7 @@ class TestDetectorGaps:
 
     def test_canonicalize_sections(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block
         block = Block(block_id="b", index=0, text="Related Work", section_name="Related Work")
         sd.contract_loader.get_canonical_name.return_value = "Background"
         sd._canonicalize_sections([block], "ieee")
@@ -609,7 +605,7 @@ class TestDetectorGaps:
 
     def test_canonicalize_sections_fails_gracefully(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block
         block = Block(block_id="b", index=0, text="Intro", section_name="Intro")
         sd.contract_loader.get_canonical_name.side_effect = Exception("fail")
         sd._canonicalize_sections([block], "ieee")
@@ -617,7 +613,7 @@ class TestDetectorGaps:
 
     def test_validate_hierarchy_jump_detected(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block, BlockType
         b1 = Block(block_id="b1", index=0, text="L1", level=1)
         b1.block_type = BlockType.HEADING_1
         b2 = Block(block_id="b2", index=100, text="L3", level=3)
@@ -628,7 +624,7 @@ class TestDetectorGaps:
 
     def test_validate_hierarchy_skip_header_footer(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block, BlockType
         hf = Block(block_id="hf", index=0, text="Header", level=1, metadata={"is_header": True})
         hf.block_type = BlockType.HEADING_1
         sd._validate_hierarchy([hf])
@@ -636,7 +632,7 @@ class TestDetectorGaps:
 
     def test_validate_hierarchy_no_jump(self):
         sd = self._make_detector()
-        from app.models import Block, BlockType, TextStyle
+        from app.models import Block, BlockType
         b1 = Block(block_id="b1", index=0, text="L1", level=1)
         b1.block_type = BlockType.HEADING_1
         b2 = Block(block_id="b2", index=100, text="L2", level=2)
@@ -915,7 +911,7 @@ class TestNormalizerGaps:
 
     def test_normalize_document_with_blocks_and_tables(self):
         from app.pipeline.normalization.normalizer import normalize_document
-        from app.models import PipelineDocument as Document, DocumentMetadata, Block, TextStyle, Table, TableCell
+        from app.models import PipelineDocument as Document, Block, Table, TableCell
         block = Block(block_id="b1", index=0, text="  Hello World  ")
         cell = TableCell(row=0, col=0, text="  Cell  ")
         table = Table(table_id="t1", index=0, block_index=0, page_number=1,
@@ -930,7 +926,7 @@ class TestNormalizerGaps:
 
     def test_process_duplicate_indices_causes_assertion(self):
         from app.pipeline.normalization.normalizer import Normalizer
-        from app.models import PipelineDocument, Block, TextStyle
+        from app.models import PipelineDocument, Block
         n = Normalizer()
         b1 = Block(block_id="b1", index=0, text="a")
         b2 = Block(block_id="b2", index=0, text="b")
@@ -940,11 +936,10 @@ class TestNormalizerGaps:
 
     def test_process_non_integer_index_in_document(self):
         from app.pipeline.normalization.normalizer import Normalizer
-        from app.models import PipelineDocument, Block, TextStyle
+        from app.models import PipelineDocument
         n = Normalizer()
         # Directly set the document's blocks to bypass pydantic validation
         doc = PipelineDocument(document_id="t", blocks=[])
-        import pydantic
         # Create a block with a string index to test the isinstance check
         class BadBlock:
             def __init__(self):

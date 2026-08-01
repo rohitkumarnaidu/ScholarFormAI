@@ -53,7 +53,7 @@ class TestRateLimitModule:
     def test_redis_count_enabled(self):
         with patch("app.cache.redis_cache.RedisCache") as mock_rc:
             mock_rc.return_value.client = None
-            from app.middleware.rate_limit import RateLimitMiddleware, REDIS_ENABLED
+            from app.middleware.rate_limit import RateLimitMiddleware
         with patch("app.middleware.rate_limit.REDIS_ENABLED", True), \
              patch("app.middleware.rate_limit.redis") as mock_redis:
             mock_redis.incr.return_value = 5
@@ -65,7 +65,7 @@ class TestRateLimitModule:
     def test_redis_count_first_call_sets_expire(self):
         with patch("app.cache.redis_cache.RedisCache") as mock_rc:
             mock_rc.return_value.client = None
-            from app.middleware.rate_limit import RateLimitMiddleware, REDIS_ENABLED
+            from app.middleware.rate_limit import RateLimitMiddleware
         with patch("app.middleware.rate_limit.REDIS_ENABLED", True), \
              patch("app.middleware.rate_limit.redis") as mock_redis:
             mock_redis.incr.return_value = 1
@@ -78,7 +78,7 @@ class TestRateLimitModule:
     def test_redis_count_error_logs_warning_once(self):
         with patch("app.cache.redis_cache.RedisCache") as mock_rc:
             mock_rc.return_value.client = None
-            from app.middleware.rate_limit import RateLimitMiddleware, REDIS_ENABLED
+            from app.middleware.rate_limit import RateLimitMiddleware
         with patch("app.middleware.rate_limit.REDIS_ENABLED", True), \
              patch("app.middleware.rate_limit.redis") as mock_redis, \
              patch("app.middleware.rate_limit.logger") as mock_log:
@@ -95,7 +95,7 @@ class TestRateLimitModule:
     def test_redis_count_awaitable_incr(self):
         with patch("app.cache.redis_cache.RedisCache") as mock_rc:
             mock_rc.return_value.client = None
-            from app.middleware.rate_limit import RateLimitMiddleware, REDIS_ENABLED
+            from app.middleware.rate_limit import RateLimitMiddleware
         with patch("app.middleware.rate_limit.REDIS_ENABLED", True), \
              patch("app.middleware.rate_limit.redis") as mock_redis:
             async def async_incr(key):
@@ -110,7 +110,7 @@ class TestRateLimitModule:
     def test_redis_count_awaitable_expire(self):
         with patch("app.cache.redis_cache.RedisCache") as mock_rc:
             mock_rc.return_value.client = None
-            from app.middleware.rate_limit import RateLimitMiddleware, REDIS_ENABLED
+            from app.middleware.rate_limit import RateLimitMiddleware
         with patch("app.middleware.rate_limit.REDIS_ENABLED", True), \
              patch("app.middleware.rate_limit.redis") as mock_redis:
             async def async_expire(key, ttl):
@@ -211,7 +211,7 @@ class TestRateLimitModule:
     def test_ensure_redis_enabled(self):
         with patch("app.cache.redis_cache.RedisCache") as mock_rc:
             mock_rc.return_value.client = None
-            from app.middleware.rate_limit import _ensure_redis, REDIS_ENABLED
+            from app.middleware.rate_limit import _ensure_redis
         with patch("app.middleware.rate_limit.REDIS_ENABLED", True), \
              patch("app.middleware.rate_limit.redis", "mock-redis"):
             result = _ensure_redis()
@@ -1027,7 +1027,6 @@ class TestMainExtra:
             _validate_startup()
 
     def test_lifespan_shutdown_cancels_tasks(self):
-        from contextlib import asynccontextmanager
         from app.main import lifespan
         app = MagicMock()
         app.state.grobid_startup_probe_ok = False

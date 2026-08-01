@@ -2,8 +2,7 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import MagicMock, patch, PropertyMock, call, ANY, mock_open
-from pathlib import Path
+from unittest.mock import MagicMock, patch, mock_open
 import pytest
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -160,7 +159,6 @@ class TestDocxParserFootnotesEndnotesEnterprise:
 
     def test_footnote_returns_blocks_when_part_exists(self):
         from app.pipeline.parsing.parser import DocxParser
-        from docx.oxml.ns import qn
         import lxml.etree as ET
         p = DocxParser()
         docx = MagicMock()
@@ -184,7 +182,6 @@ class TestDocxParserFootnotesEndnotesEnterprise:
 
     def test_endnote_returns_blocks_when_part_exists(self):
         from app.pipeline.parsing.parser import DocxParser
-        from docx.oxml.ns import qn
         import lxml.etree as ET
         p = DocxParser()
         docx = MagicMock()
@@ -288,7 +285,6 @@ class TestDocxParserExtractBodyContentEnterprise:
         para_mock2._element = MagicMock()
         para_mock2._element.findall.return_value = []
         para_mock2._element.find.return_value = None
-        from docx.text.paragraph import Paragraph as DocxParagraph
         table_mock = MagicMock()
         with patch("app.pipeline.parsing.parser.DocxParagraph") as mp:
             mp.side_effect = [para_mock, para_mock2]
@@ -367,7 +363,6 @@ class TestDocxParserListInfoEnterprise:
         )
         pPr = ET.fromstring(pPr_xml)
         para._element = MagicMock()
-        from docx.oxml.ns import qn
         para._element.find.return_value = pPr
         result = p._get_list_info(para)
         assert result is not None
@@ -532,7 +527,6 @@ class TestDocxParserExtractImageInlineEnterprise:
 class TestDocxParserHyperlinksEnterprise:
     def test_extract_hyperlinks_no_rid(self):
         from app.pipeline.parsing.parser import DocxParser
-        from docx.oxml.ns import qn
         p = DocxParser()
         para = MagicMock()
         hyperlink = MagicMock()
@@ -1492,7 +1486,7 @@ class TestOCREngineEnterprise:
             assert engine is None
 
     def test_get_ocr_engine_returns_instance(self):
-        from app.pipeline.parsing.ocr_engine import get_ocr_engine, OCREngine
+        from app.pipeline.parsing.ocr_engine import get_ocr_engine
         with patch("app.pipeline.parsing.ocr_engine.SURYA_AVAILABLE", True):
             with patch("app.pipeline.parsing.ocr_engine.OCREngine") as MockEngine:
                 instance = MagicMock()

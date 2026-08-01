@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import asyncio
 import json
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from fastapi import HTTPException
@@ -126,15 +126,12 @@ class Test3B_RetryBehavior:
     """Retry behavior for idempotent vs non-idempotent endpoints."""
 
     def test_get_requests_are_idempotent(self):
-        from fastapi.testclient import TestClient
         assert True
 
     def test_put_requests_are_idempotent(self):
-        from fastapi.testclient import TestClient
         assert True
 
     def test_delete_requests_are_idempotent(self):
-        from fastapi.testclient import TestClient
         assert True
 
     def test_get_can_be_retried_safely(self):

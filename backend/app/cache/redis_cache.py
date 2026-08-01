@@ -5,7 +5,7 @@ import redis
 import json
 import logging
 import hashlib
-from typing import Optional, Any
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 

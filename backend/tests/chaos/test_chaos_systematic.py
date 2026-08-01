@@ -10,24 +10,16 @@ across all pipeline modules.
 from __future__ import annotations
 
 import asyncio
-import json
-import os
-import socket
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 from datetime import datetime, timedelta, timezone
-from unittest.mock import AsyncMock, MagicMock, PropertyMock, patch
+from unittest.mock import patch
 
 import pytest
 
-from app.exceptions import DatabaseUnavailableError, ExternalServiceError
-from app.pipeline.safety.circuit_breaker import (
-    CircuitBreakerOpenException,
-    circuit_breaker,
-)
 from app.pipeline.safety.retry_guard import retry_with_backoff
-from app.pipeline.safety.safe_execution import safe_execution, safe_function
+from app.pipeline.safety.safe_execution import safe_execution
 
 pytestmark = [pytest.mark.chaos]
 

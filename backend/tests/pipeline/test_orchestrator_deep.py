@@ -7,18 +7,14 @@ parallel extraction, figure analysis, keyword extraction, completion logic,
 and edge cases not exercised by the base test suite.
 """
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
+from app.models import PipelineDocument, Block, BlockType, Figure, Reference, DocumentMetadata
+from app.models import PipelineDocument, Block, BlockType, Figure, Reference, DocumentMetadata
 from __future__ import annotations
 import os
 import time
-import threading
 import hashlib
 import asyncio
-from unittest.mock import patch, MagicMock, PropertyMock, call, ANY
-from pathlib import Path
+from unittest.mock import patch, MagicMock
 
 import pytest
 
@@ -27,10 +23,6 @@ from app.pipeline.orchestrator import PipelineOrchestrator
 
 @pytest.fixture
 def orch():
-    from app.models import (
-    PipelineDocument, DocumentMetadata, TemplateInfo, Block, BlockType,
-    Reference, Figure, Table,
-    )
 
     with (
         patch("app.pipeline.orchestrator.InputConverter"),

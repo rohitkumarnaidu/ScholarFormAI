@@ -9,11 +9,9 @@ from __future__ import annotations
 
 import hashlib
 import json
-import math
-import re
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, call, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 

@@ -12,11 +12,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from pathlib import Path
 from typing import Any, Optional
 
 from app.exceptions import PipelineError, NotFoundError, ValidationError
-from app.services.enhancement_manager import enhancement_manager
 from app.services.generator_session_service import GeneratorSessionService
 from app.services.session_vector_store import SessionVectorStore
 

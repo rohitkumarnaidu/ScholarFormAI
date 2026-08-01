@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, MagicMock, PropertyMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
@@ -239,7 +239,7 @@ class TestHelpers:
             _assert_session_owner(session, user)
 
     def test_get_orchestrator_lazy_init(self):
-        from app.routers.v1.synthesis import _get_orchestrator, _orchestrator
+        from app.routers.v1.synthesis import _get_orchestrator
         import app.routers.v1.synthesis as syn
         syn._orchestrator = None
         orch = _get_orchestrator()

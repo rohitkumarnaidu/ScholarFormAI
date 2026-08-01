@@ -6,16 +6,9 @@ Comprehensive gap-filling tests for ReasoningEngine — covers uncovered branche
 in health checking, NVIDIA LiteLLM calls, metrics recording, and edge cases.
 """
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 
-import json
-import time
-from typing import Any
-from unittest.mock import MagicMock, patch, ANY
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -23,9 +16,6 @@ from app.pipeline.intelligence.reasoning_engine import (
     ReasoningEngine,
     _instruction_set_circuit_fallback,
     get_reasoning_engine,
-    _LLM_SERVICE_AVAILABLE,
-    LITELLM_AVAILABLE,
-    METRICS_AVAILABLE,
 )
 
 

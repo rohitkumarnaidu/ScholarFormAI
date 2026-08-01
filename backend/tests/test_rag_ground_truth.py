@@ -1,6 +1,5 @@
 import pytest
 import math
-import numpy as np
 from unittest.mock import MagicMock, patch
 
 # ---------------------------------------------------------------------------

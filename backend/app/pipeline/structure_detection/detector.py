@@ -14,11 +14,10 @@ Output: Document with structure hints attached to blocks
 import logging
 from typing import List, Optional, Dict, Any
 from datetime import datetime, timezone
-from statistics import mean, median
+from statistics import median
 
 from app.models import PipelineDocument as Document, Block, BlockType
 from app.pipeline.contracts.loader import ContractLoader
-from .heading_rules import analyze_heading_candidate
 from .position_rules import analyze_position, boost_heading_confidence_by_position
 
 

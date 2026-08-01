@@ -1,9 +1,7 @@
 import json
 import logging
-import sys
 import time
 from pathlib import Path
-from typing import Any
 
 from amf.config import AMFConfig
 

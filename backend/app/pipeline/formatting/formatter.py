@@ -40,7 +40,7 @@ from app.pipeline.formatting.reference_formatter import ReferenceFormatter
 from app.pipeline.formatting.template_renderer import TemplateRenderer
 from app.pipeline.tables.renderer import TableRenderer
 from app.pipeline.figures.renderer import FigureRenderer
-from app.pipeline.safety.safe_execution import safe_function, safe_execution
+from app.pipeline.safety.safe_execution import safe_function
 
 
 class Formatter:

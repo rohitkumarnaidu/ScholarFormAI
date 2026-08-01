@@ -3,13 +3,9 @@
 
 """Focused enterprise tests for agent modules: document_agent, llm_factory."""
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 import pytest
 pytestmark = [pytest.mark.pipeline]
 
@@ -109,7 +105,7 @@ class TestInitializeExecutor:
     @patch("app.pipeline.agents.document_agent.settings")
     def test_init_with_mocked_constructor(self, mock_settings):
         from app.pipeline.agents.document_agent import (
-            create_openai_functions_agent, AgentExecutor, DocumentAgent
+            DocumentAgent
         )
         agent = DocumentAgent.__new__(DocumentAgent)
         agent.llm = MagicMock()

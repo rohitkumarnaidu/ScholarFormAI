@@ -6,7 +6,7 @@ Auto-scaling for dynamic specialist pool sizing.
 """
 
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from concurrent.futures import ThreadPoolExecutor
 import time
 

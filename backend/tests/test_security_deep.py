@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import time
 import pytest
 from unittest.mock import MagicMock, patch

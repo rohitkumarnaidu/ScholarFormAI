@@ -11,10 +11,9 @@ if citeproc is unavailable or the template lacks a styles.csl file.
 
 import os
 import logging
-import re
 from typing import Optional, Dict, Any, List
 
-from app.models import Reference, CitationStyle
+from app.models import Reference
 from app.pipeline.contracts.loader import ContractLoader
 
 logger = logging.getLogger(__name__)

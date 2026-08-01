@@ -1,17 +1,14 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
+from app.models import BlockType
+from app.models import BlockType
 from __future__ import annotations
 import pytest
 
 class TestContentClassifier:
     @pytest.fixture
     def classifier(self):
-        from app.models import PipelineDocument
         from app.pipeline.classification.classifier import ContentClassifier
         return ContentClassifier()
 

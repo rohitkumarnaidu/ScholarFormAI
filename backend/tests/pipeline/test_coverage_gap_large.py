@@ -1,14 +1,10 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 from contextlib import contextmanager
 import importlib
-from unittest.mock import patch, MagicMock, AsyncMock, PropertyMock
+from unittest.mock import patch, MagicMock
 import pytest
 pytestmark = [pytest.mark.pipeline]
 
@@ -249,7 +245,6 @@ class TestLlmValidator:
 
 class TestReferenceParser:
     def test_parse_single_ieee_quoted(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         text = 'A. B. Author, "Title of Paper," Journal of Testing, vol. 5, no. 2, pp. 100-110, 2023.'
@@ -260,7 +255,6 @@ class TestReferenceParser:
         assert ref.authors is not None
 
     def test_parse_single_ieee_no_quotes(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         text = "A. B. Author. Title of Book. Publisher, 2020."
@@ -268,7 +262,6 @@ class TestReferenceParser:
         assert ref is not None
 
     def test_parse_single_empty_text(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         text = ""
@@ -276,7 +269,6 @@ class TestReferenceParser:
         assert ref is not None
 
     def test_parse_single_no_doi_no_url(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         text = "Author. Without any special markers. 2019."
@@ -285,7 +277,6 @@ class TestReferenceParser:
         assert ref.url is None
 
     def test_parse_single_with_doi(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         text = 'A. Author, "Title," Journal, 2021. doi:10.1234/example.5678.'
@@ -293,7 +284,6 @@ class TestReferenceParser:
         assert ref.doi is not None or True
 
     def test_parse_single_no_quote_dot_split(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         text = "Smith, J. My Article. Some Journal. 2022."
@@ -301,7 +291,6 @@ class TestReferenceParser:
         assert ref is not None
 
     def test_parse_single_conference(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         text = 'A. Author, "Paper Title," in Proc. IEEE Conference, 2023.'
@@ -309,20 +298,17 @@ class TestReferenceParser:
         assert "conference" in str(ref.reference_type).lower() or "conf" in str(ref.reference_type).lower()
 
     def test_parse_authors_empty(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         assert rp._parse_authors("") == []
 
     def test_parse_authors_multiple(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         authors = rp._parse_authors("A. B. Name, C. Name, and D. Name")
         assert len(authors) >= 1
 
     def test_process_no_ref_blocks(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         doc = MagicMock()
@@ -333,7 +319,6 @@ class TestReferenceParser:
         assert result is doc
 
     def test_process_ref_blocks_error(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         doc = MagicMock()
@@ -342,7 +327,6 @@ class TestReferenceParser:
         assert result is doc
 
     def test_parse_references_convenience(self):
-        from app.models import Block, BlockType
         doc = MagicMock()
         doc.get_blocks_by_type.return_value = []
         doc.get_blocks_in_section.return_value = []
@@ -352,7 +336,6 @@ class TestReferenceParser:
         assert result is doc
 
     def test_venue_refinement_year_removed(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         text = 'A. Author, "Title," Journal Name, vol. 5, 2023.'
@@ -360,7 +343,6 @@ class TestReferenceParser:
         assert ref is not None
 
     def test_type_unknown_when_no_venue_keyword(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         text = 'A. Author, "Something," Somewhere, 2022.'
@@ -374,7 +356,6 @@ class TestReferenceParser:
 
 class TestHeadingRules:
     def test_detect_numbering_decimal(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import detect_numbering_pattern
         result = detect_numbering_pattern("1. Introduction")
         assert result is not None
@@ -383,45 +364,38 @@ class TestHeadingRules:
         assert result["level"] == 1
 
     def test_detect_numbering_subsection(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import detect_numbering_pattern
         result = detect_numbering_pattern("2.3. Methods")
         assert result is not None
         assert result["level"] == 2
 
     def test_detect_numbering_roman(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import detect_numbering_pattern
         result = detect_numbering_pattern("I. Introduction")
         assert result is not None
         assert result["pattern_type"] == "roman"
 
     def test_detect_numbering_empty(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import detect_numbering_pattern
         assert detect_numbering_pattern("") is None
         assert detect_numbering_pattern("   ") is None
 
     def test_detect_numbering_no_match(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import detect_numbering_pattern
         assert detect_numbering_pattern("This is not a heading") is None
 
     def test_detect_numbering_no_dot_before_cap(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import detect_numbering_pattern
         result = detect_numbering_pattern("1 Introduction")
         assert result is not None
         assert result["number"] == "1"
 
     def test_detect_numbering_no_remainder(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import detect_numbering_pattern
         result = detect_numbering_pattern("1. lower case continuation")
         assert result is None
 
     def test_detect_title_first_non_empty(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import detect_title
         b = MagicMock()
         b.text = "My Paper Title"
@@ -435,7 +409,6 @@ class TestHeadingRules:
         assert detect_title(b2, [b, b2]) is False
 
     def test_detect_title_too_short(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import detect_title
         b = MagicMock()
         b.text = "Hi"
@@ -444,7 +417,6 @@ class TestHeadingRules:
         assert detect_title(b, [b]) is False
 
     def test_detect_title_numbered(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import detect_title
         b = MagicMock()
         b.text = "1. Introduction"
@@ -457,7 +429,6 @@ class TestHeadingRules:
         assert detect_title(b, [b, b2]) is False
 
     def test_detect_title_no_non_empty(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import detect_title
         b = MagicMock()
         b.text = "My Title"
@@ -466,7 +437,6 @@ class TestHeadingRules:
         assert detect_title(b, []) is False
 
     def test_detect_title_header_footer_skipped(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import detect_title
         b = MagicMock()
         b.text = "Body text"
@@ -479,7 +449,6 @@ class TestHeadingRules:
         assert detect_title(b2, [b, b2]) is True
 
     def test_matches_section_keyword(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import matches_section_keyword
         assert matches_section_keyword("Abstract") is True
         assert matches_section_keyword("Introduction") is True
@@ -487,28 +456,23 @@ class TestHeadingRules:
         assert matches_section_keyword("Ordinary text") is False
 
     def test_matches_section_keyword_too_long(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import matches_section_keyword
         long_text = "Abstract" + "x" * 60
         assert matches_section_keyword(long_text) is False
 
     def test_matches_section_keyword_numbered(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import matches_section_keyword
         assert matches_section_keyword("1. Introduction") is True
 
     def test_matches_section_keyword_prefix_short(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import matches_section_keyword
         assert matches_section_keyword("Abstract - Summer 2023") is True
 
     def test_matches_section_keyword_prefix_long(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import matches_section_keyword
         assert matches_section_keyword("Abstract" + " x" * 20) is False
 
     def test_is_likely_heading_by_style_short(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import is_likely_heading_by_style
         b = MagicMock()
         b.text = "A"
@@ -518,7 +482,6 @@ class TestHeadingRules:
         assert likely is False
 
     def test_is_likely_heading_by_style_long_penalty(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import is_likely_heading_by_style
         b = MagicMock()
         b.text = "Word " * 70
@@ -528,7 +491,6 @@ class TestHeadingRules:
         assert score <= 0.2
 
     def test_is_likely_heading_very_long(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import is_likely_heading_by_style
         b = MagicMock()
         b.text = "Word " * 140
@@ -538,7 +500,6 @@ class TestHeadingRules:
         assert score <= 0.1
 
     def test_is_likely_heading_extreme_long(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import is_likely_heading_by_style
         b = MagicMock()
         b.text = "Word " * 200
@@ -548,7 +509,6 @@ class TestHeadingRules:
         assert score <= -0.1
 
     def test_is_likely_heading_all_caps(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import is_likely_heading_by_style
         b = MagicMock()
         b.text = "SHORT ALL CAPS"
@@ -558,7 +518,6 @@ class TestHeadingRules:
         assert score > 0.5
 
     def test_is_likely_heading_ends_with_period(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import is_likely_heading_by_style
         b = MagicMock()
         b.text = "This ends with a period."
@@ -568,54 +527,46 @@ class TestHeadingRules:
         assert score < 0
 
     def test_infer_heading_level_major(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import infer_heading_level
         b = MagicMock()
         b.text = "Introduction"
         assert infer_heading_level(b) == 1
 
     def test_infer_heading_level_numbered(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import infer_heading_level
         b = MagicMock()
         b.text = "2.3 Details"
         assert infer_heading_level(b, {"level": 2}) == 2
 
     def test_infer_heading_level_numbered_clamped(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import infer_heading_level
         b = MagicMock()
         b.text = "1.2.3.4.5 Deep"
         assert infer_heading_level(b, {"level": 5}) == 4
 
     def test_infer_heading_level_default(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import infer_heading_level
         b = MagicMock()
         b.text = "Some Other Section"
         assert infer_heading_level(b) == 1
 
     def test_get_capitalization_ratio(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import get_capitalization_ratio
         assert get_capitalization_ratio("The Quick Brown Fox") > 0.7
         assert get_capitalization_ratio("all lower case") == 0.0
         assert get_capitalization_ratio("") == 0.0
 
     def test_get_capitalization_ratio_only_small(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import get_capitalization_ratio
         assert get_capitalization_ratio("the and of") == 1.0
 
     def test_analyze_heading_empty(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import analyze_heading_candidate
         b = MagicMock()
         b.text = ""
         assert analyze_heading_candidate(b, [], 0) is None
 
     def test_analyze_heading_sentence_like(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import analyze_heading_candidate
         b = MagicMock()
         b.text = "This is a very long sentence that ends with a period and should be rejected as heading."
@@ -626,7 +577,6 @@ class TestHeadingRules:
         assert analyze_heading_candidate(b, [], 0) is None
 
     def test_analyze_heading_pronoun_starters(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import analyze_heading_candidate
         b = MagicMock()
         b.text = "We propose a new method."
@@ -637,7 +587,6 @@ class TestHeadingRules:
         assert analyze_heading_candidate(b, [], 0) is None
 
     def test_analyze_heading_caption(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import analyze_heading_candidate
         b = MagicMock()
         b.text = "Figure 1. Results."
@@ -648,7 +597,6 @@ class TestHeadingRules:
         assert analyze_heading_candidate(b, [], 0) is None
 
     def test_analyze_heading_abstract_safety(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import analyze_heading_candidate
         b_abs = MagicMock()
         b_abs.text = "Abstract"
@@ -664,7 +612,6 @@ class TestHeadingRules:
         assert result is None
 
     def test_analyze_heading_with_potential_heading_hint(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import analyze_heading_candidate
         b = MagicMock()
         b.text = "Introduction"
@@ -680,7 +627,6 @@ class TestHeadingRules:
         assert result is not None
 
     def test_analyze_heading_fallback_isolated(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import analyze_heading_candidate
         b = MagicMock()
         b.text = "Short Title Case Block"
@@ -700,7 +646,6 @@ class TestHeadingRules:
         assert result is not None
 
     def test_analyze_heading_numbered_with_remainder_sentence(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import analyze_heading_candidate
         b = MagicMock()
         b.text = "1. Smith, J. Article title goes here. And more text."
@@ -712,7 +657,6 @@ class TestHeadingRules:
         assert result is None
 
     def test_analyze_heading_multiple_sentences(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import analyze_heading_candidate
         b = MagicMock()
         b.text = "First sentence. Second sentence."
@@ -724,7 +668,6 @@ class TestHeadingRules:
         assert result is None
 
     def test_analyze_heading_ends_punct_short(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.heading_rules import analyze_heading_candidate
         b = MagicMock()
         b.text = "Q&A?"
@@ -746,7 +689,6 @@ class TestHeadingRules:
 
 class TestPositionRules:
     def test_is_first_non_empty_block_true(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import is_first_non_empty_block
         b1 = MagicMock()
         b1.text = "First"
@@ -757,7 +699,6 @@ class TestPositionRules:
         assert is_first_non_empty_block(b1, [b1, b2]) is True
 
     def test_is_first_non_empty_block_false(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import is_first_non_empty_block
         b1 = MagicMock()
         b1.text = "First"
@@ -768,7 +709,6 @@ class TestPositionRules:
         assert is_first_non_empty_block(b2, [b1, b2]) is False
 
     def test_is_first_non_empty_block_all_empty(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import is_first_non_empty_block
         b = MagicMock()
         b.text = ""
@@ -776,7 +716,6 @@ class TestPositionRules:
         assert is_first_non_empty_block(b, [b]) is False
 
     def test_is_isolated_line_middle(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import is_isolated_line
         before = MagicMock()
         before.text = ""
@@ -790,7 +729,6 @@ class TestPositionRules:
         assert is_isolated_line(target, [before, target, after]) is True
 
     def test_is_isolated_line_not_isolated(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import is_isolated_line
         b1 = MagicMock()
         b1.text = "Text"
@@ -801,7 +739,6 @@ class TestPositionRules:
         assert is_isolated_line(b1, [b1, b2]) is False
 
     def test_is_isolated_line_first_block(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import is_isolated_line
         target = MagicMock()
         target.text = "First"
@@ -812,7 +749,6 @@ class TestPositionRules:
         assert is_isolated_line(target, [target, after]) is True
 
     def test_is_isolated_line_last_block(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import is_isolated_line
         before = MagicMock()
         before.text = ""
@@ -823,7 +759,6 @@ class TestPositionRules:
         assert is_isolated_line(target, [before, target]) is True
 
     def test_is_isolated_line_not_found(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import is_isolated_line
         target = MagicMock()
         target.text = "Ghost"
@@ -831,7 +766,6 @@ class TestPositionRules:
         assert is_isolated_line(target, []) is False
 
     def test_count_empty_blocks_before(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import count_empty_blocks_before
         b1 = MagicMock()
         b1.text = ""
@@ -845,7 +779,6 @@ class TestPositionRules:
         assert count_empty_blocks_before(b3, [b1, b2, b3]) == 2
 
     def test_count_empty_blocks_before_none(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import count_empty_blocks_before
         b = MagicMock()
         b.text = "Target"
@@ -853,7 +786,6 @@ class TestPositionRules:
         assert count_empty_blocks_before(b, []) == 0
 
     def test_count_empty_blocks_after(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import count_empty_blocks_after
         b1 = MagicMock()
         b1.text = "Target"
@@ -867,7 +799,6 @@ class TestPositionRules:
         assert count_empty_blocks_after(b1, [b1, b2, b3]) == 2
 
     def test_get_block_position_ratio(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import get_block_position_ratio
         b1 = MagicMock()
         b1.block_id = "b1"
@@ -879,21 +810,18 @@ class TestPositionRules:
         assert ratio == 0.5
 
     def test_get_block_position_ratio_empty(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import get_block_position_ratio
         b = MagicMock()
         b.block_id = "b1"
         assert get_block_position_ratio(b, []) == 0.0
 
     def test_get_block_position_ratio_not_found(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import get_block_position_ratio
         b = MagicMock()
         b.block_id = "ghost"
         assert get_block_position_ratio(b, [MagicMock(block_id="b1")]) == 0.0
 
     def test_analyze_position(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import analyze_position
         before = MagicMock()
         before.text = ""
@@ -912,7 +840,6 @@ class TestPositionRules:
         assert "position_hints" in result
 
     def test_analyze_position_near_start(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import analyze_position
         b = MagicMock()
         b.text = "Title"
@@ -921,7 +848,6 @@ class TestPositionRules:
         assert result["position_ratio"] == 0.0
 
     def test_analyze_position_late(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import analyze_position
         blocks = []
         for i in range(10):
@@ -933,21 +859,18 @@ class TestPositionRules:
         assert result["position_ratio"] > 0.8
 
     def test_boost_heading_confidence_by_position(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import boost_heading_confidence_by_position
         info = {"is_first": True, "is_isolated": True, "empty_before": 3}
         result = boost_heading_confidence_by_position(0.5, info)
         assert result > 0.5
 
     def test_boost_heading_confidence_capped(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import boost_heading_confidence_by_position
         info = {"is_first": True, "is_isolated": True, "empty_before": 3}
         result = boost_heading_confidence_by_position(0.9, info)
         assert result == 1.0
 
     def test_analyze_position_many_empty_before_hint(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import analyze_position
         blocks = []
         for i in range(5):
@@ -963,7 +886,6 @@ class TestPositionRules:
         assert any("blank lines" in h for h in result["position_hints"])
 
     def test_analyze_position_after_hint(self):
-        from app.models import Block, BlockType
         from app.pipeline.structure_detection.position_rules import analyze_position
         target = MagicMock()
         target.text = "Block"
@@ -1155,7 +1077,7 @@ class TestValidatorGuardBranchCoverage:
     """Cover remaining validator_guard branches."""
 
     def test_pydantic_validation_error(self):
-        from pydantic import BaseModel, ValidationError
+        from pydantic import BaseModel
         from app.pipeline.safety.validator_guard import validate_output
         class StrictSchema(BaseModel):
             name: str
@@ -1196,7 +1118,6 @@ class TestReferenceParserBranchCoverage:
         assert ref is not None
 
     def test_process_with_ref_entry_blocks(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         doc = MagicMock()
@@ -1209,7 +1130,6 @@ class TestReferenceParserBranchCoverage:
         assert result is doc
 
     def test_process_skip_empty_block(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         doc = MagicMock()
@@ -1226,7 +1146,6 @@ class TestReferenceParserBranchCoverage:
         assert result is doc
 
     def test_process_parse_exception(self):
-        from app.models import Block, BlockType
         from app.pipeline.references.parser import ReferenceParser
         rp = ReferenceParser()
         doc = MagicMock()

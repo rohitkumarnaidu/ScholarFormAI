@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import io
 from zipfile import ZipFile
-import pytest
 from docx import Document as WordDocument
 from docxtpl import DocxTemplate
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
@@ -17,7 +16,6 @@ from docx.oxml.ns import qn
 
 from app.models import Block, BlockType
 from app.pipeline.formatting.formatter import Formatter
-from app.pipeline.formatting.template_renderer import TemplateRenderer
 from app.pipeline.parsing.parser import DocxParser
 
 

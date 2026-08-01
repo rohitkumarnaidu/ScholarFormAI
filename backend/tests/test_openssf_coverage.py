@@ -8,12 +8,6 @@ text_utils, security_headers, request_id, and logging_config.
 """
 from __future__ import annotations
 
-import os
-import re
-import sys
-import time
-import json
-import base64
 import logging
 import pytest
 from datetime import datetime, date, time as time_type, timezone

@@ -12,7 +12,7 @@ import re
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from zipfile import ZipFile
 
 logger = logging.getLogger(__name__)

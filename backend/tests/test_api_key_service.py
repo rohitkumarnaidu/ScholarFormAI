@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -15,7 +15,6 @@ class TestApiKeyService:
         return svc
 
     def test_create_key_unsupported_provider_raises(self, svc):
-        from app.services.api_key_service import ApiKeyService
         with pytest.raises(ValueError, match="Unsupported provider"):
             svc.create_key("user-1", "unknown_provider", "sk-test")
 

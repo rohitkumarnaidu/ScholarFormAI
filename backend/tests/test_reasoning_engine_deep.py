@@ -3,10 +3,8 @@
 
 from __future__ import annotations
 
-import json
-import time
 from types import SimpleNamespace
-from unittest.mock import MagicMock, patch, ANY
+from unittest.mock import MagicMock, patch
 
 import pytest
 

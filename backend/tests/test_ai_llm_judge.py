@@ -9,8 +9,7 @@ instruction adherence, and coherence against a rubric.
 
 import pytest
 import math
-import hashlib
-from typing import Dict, List
+from typing import List
 
 
 # ---------------------------------------------------------------------------

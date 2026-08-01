@@ -6,7 +6,7 @@ Validation tool using AI-based analysis.
 """
 
 import sys
-from typing import Optional, Type
+from typing import Type
 from pydantic import BaseModel, Field
 from app.pipeline.validation import DocumentValidator
 from app.models import PipelineDocument

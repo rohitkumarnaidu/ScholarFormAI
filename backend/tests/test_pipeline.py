@@ -6,10 +6,8 @@ Pipeline Integration Tests
 Tests end-to-end pipeline execution and stage integration.
 """
 
-import os
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-from pathlib import Path
+from unittest.mock import patch, MagicMock
 from docx import Document as DocxDocument
 
 

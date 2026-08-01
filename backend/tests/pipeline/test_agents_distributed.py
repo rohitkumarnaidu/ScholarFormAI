@@ -1,10 +1,6 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
@@ -237,7 +233,6 @@ class TestDistributedCoordinatorProcessParallel:
             future_to_task = {f: tasks[0]}
             with patch.object(dc.specialists[AgentRole.METADATA_SPECIALIST], "process"):
                 pass
-            from app.pipeline.agents.distributed import ThreadPoolExecutor
             with patch("app.pipeline.agents.distributed.ThreadPoolExecutor") as mock_tpe:
                 mock_tpe_instance = MagicMock()
                 mock_tpe.return_value.__enter__.return_value = mock_tpe_instance
@@ -256,7 +251,7 @@ class TestDistributedCoordinatorGetStatistics:
         assert stats["total_tasks"] == 0
 
     def test_get_statistics_with_task_counts(self):
-        from app.pipeline.agents.distributed import DistributedCoordinator, AgentRole, AgentTask
+        from app.pipeline.agents.distributed import DistributedCoordinator, AgentRole
         dc = DistributedCoordinator()
         dc.specialists[AgentRole.METADATA_SPECIALIST].task_count = 5
         stats = dc.get_statistics()

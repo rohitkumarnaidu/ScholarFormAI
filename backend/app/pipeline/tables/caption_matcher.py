@@ -8,12 +8,12 @@ Links extracted Table objects to their corresponding caption blocks.
 
 import logging
 import re
-from typing import List, Optional, Dict, Tuple
+from typing import List, Optional, Dict
 from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)
 
-from app.models import PipelineDocument as Document, Block, BlockType, Table
+from app.models import PipelineDocument as Document, Block, BlockType
 from app.pipeline.base import PipelineStage
 
 

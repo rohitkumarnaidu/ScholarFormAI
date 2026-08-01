@@ -1,6 +1,6 @@
 import time
 import pytest
-from unittest.mock import patch, MagicMock, PropertyMock
+from unittest.mock import patch
 
 pytestmark = [pytest.mark.security]
 
@@ -8,7 +8,6 @@ pytestmark = [pytest.mark.security]
 class TestJWTTokenValidation:
 
     def test_expired_jwt_rejected(self):
-        from app.security.jwks_verifier import verify_jwt
         import jwt
         payload = {
             "sub": "user-1",
@@ -30,7 +29,6 @@ class TestJWTTokenValidation:
                 )
 
     def test_jwt_wrong_audience_rejected(self):
-        from app.security.jwks_verifier import verify_jwt
         import jwt
         payload = {
             "sub": "user-1",
@@ -50,7 +48,6 @@ class TestJWTTokenValidation:
                 _decode_with_secret(token, expected_issuer="https://supabase.co/auth/v1")
 
     def test_jwt_wrong_issuer_rejected(self):
-        from app.security.jwks_verifier import verify_jwt
         import jwt
         payload = {
             "sub": "user-1",

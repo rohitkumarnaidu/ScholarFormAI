@@ -8,7 +8,7 @@ import hashlib
 import logging
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeoutError
-from typing import Any, Optional
+from typing import Any
 
 from app.pipeline.safety.retry_guard import retry_with_backoff
 

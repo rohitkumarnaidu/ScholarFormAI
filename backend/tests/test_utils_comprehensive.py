@@ -9,12 +9,10 @@ from __future__ import annotations
 
 import asyncio
 import pytest
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import MagicMock, patch
 from datetime import datetime, date, time
 from enum import Enum
-from io import BytesIO
 import json
-import re
 
 
 # ── Serialization Tests ──────────────────────────────────────────────────────
@@ -742,7 +740,7 @@ class TestReviewManager:
 
     def test_evaluate_ok_document(self):
         from app.pipeline.validation.review_manager import ReviewManager
-        from app.models.pipeline_document import PipelineDocument, ReviewMetadata
+        from app.models.pipeline_document import PipelineDocument
         doc = PipelineDocument(document_id="doc-1")
         doc.metadata.ai_hints = {}
         manager = ReviewManager(review_threshold=0.7, critical_threshold=0.4)
@@ -1047,7 +1045,7 @@ class TestLoggingContext:
             assert extra["job_id"] == "job-222"
 
     def test_log_context_filter(self):
-        from app.utils.logging_context import LogContextFilter, log_context, _request_id_ctx
+        from app.utils.logging_context import LogContextFilter, log_context
         with log_context(request_id="req-filter"):
             filter_obj = LogContextFilter()
             record = MagicMock()
@@ -2699,7 +2697,6 @@ class TestRequestIdMiddleware:
 class TestMaxBodySizeMiddleware:
     def test_max_body_size_under_limit(self):
         from app.middleware.security_headers import MaxBodySizeMiddleware
-        import json
         async def app(scope, receive, send):
             pass
         middleware = MaxBodySizeMiddleware(app, max_size=1000)

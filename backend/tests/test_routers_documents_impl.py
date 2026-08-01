@@ -1,8 +1,6 @@
 import pytest
-import os
-import json
 import hashlib
-from unittest.mock import MagicMock, patch, AsyncMock, call, mock_open
+from unittest.mock import MagicMock, patch, AsyncMock
 from fastapi import HTTPException, UploadFile
 
 

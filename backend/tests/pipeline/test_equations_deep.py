@@ -1,12 +1,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
-from unittest.mock import MagicMock, patch, mock_open
+from unittest.mock import MagicMock, patch
 import pytest
 pytestmark = [pytest.mark.pipeline]
 
@@ -14,7 +10,6 @@ pytestmark = [pytest.mark.pipeline]
 class TestEquationStandardizer:
     def test_init_default_xsl_path(self):
         from app.pipeline.equations.standardizer import EquationStandardizer
-        import os
         with patch("os.path.exists", return_value=False):
             s = EquationStandardizer()
             assert s.xsl_path is not None
@@ -120,13 +115,11 @@ class TestEquationStandardizer:
 
     def test_convert_omml_to_mathml_success(self):
         from app.pipeline.equations.standardizer import EquationStandardizer
-        from lxml import etree
 
         mock_xslt = MagicMock()
         mock_result = MagicMock()
         mock_result.__str__.return_value = "<math>result</math>"
         mock_xslt.return_value = mock_result
-        from lxml import etree as _real_etree
 
         s = EquationStandardizer()
         s._xslt = mock_xslt

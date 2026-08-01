@@ -1,16 +1,11 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 
 import json
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
-import pytest
 
 
 class TestToolMarketplace:
@@ -83,7 +78,6 @@ class TestToolMarketplace:
         tm = ToolMarketplace(local_cache_dir=str(tmp_path))
         tm.publish_tool("my_tool", "code", "desc", "author")
         # Tamper with published file
-        import hashlib
         tool_file = tmp_path / "my_tool_v1.0.0.json"
         data = json.loads(tool_file.read_text())
         data["code_hash"] = "tampered"

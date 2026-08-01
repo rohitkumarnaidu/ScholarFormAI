@@ -8,7 +8,6 @@ try:
     print(f"LangChain version: {langchain.__version__}")
     
     print("Trying to import AgentExecutor...")
-    from langchain.agents import AgentExecutor
     print("SUCCESS: AgentExecutor imported!")
 except Exception as e:
     print(f"FAILED: {e}")

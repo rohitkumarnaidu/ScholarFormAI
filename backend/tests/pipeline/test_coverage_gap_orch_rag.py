@@ -6,9 +6,6 @@ Coverage gap tests for PipelineOrchestrator and RagEngine.
 Targets uncovered branches, edge cases, and error handlers.
 """
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
 from __future__ import annotations
 import os
 import json
@@ -16,8 +13,7 @@ import time
 import asyncio
 import tempfile
 import threading
-from unittest.mock import patch, MagicMock, call, ANY, PropertyMock
-from pathlib import Path
+from unittest.mock import patch, MagicMock
 import pytest
 pytestmark = [pytest.mark.pipeline]
 
@@ -28,7 +24,6 @@ pytestmark = [pytest.mark.pipeline]
 
 @pytest.fixture
 def orch():
-    from app.models import BlockType, PipelineDocument, DocumentMetadata, Block
     with (
         patch("app.pipeline.orchestrator.InputConverter"),
         patch("app.pipeline.orchestrator.ContentAnalyzer"),
@@ -520,7 +515,7 @@ class TestSyncBlockConfidence:
         assert block.metadata["nlp_confidence"] == 0.85
 
     def test_no_classification_confidence_fallback(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import PipelineDocument, DocumentMetadata, Block
         block = MagicMock(spec=Block)
         block.block_id = "b1"
         block.metadata = {}
@@ -563,7 +558,7 @@ class TestSyncBlockConfidence:
         assert block.metadata["nlp_confidence"] == 1.0
 
     def test_semantic_intent_set(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import PipelineDocument, DocumentMetadata, Block
         block = MagicMock(spec=Block)
         block.block_id = "b1"
         block.metadata = {"classification_confidence": 0.9}
@@ -599,7 +594,7 @@ class TestBuildQualitySummary:
         assert summary["heading_candidates"] == 0
 
     def test_no_figures_or_tables_lowers_asset_score(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import PipelineDocument, DocumentMetadata
         doc = PipelineDocument(document_id="d1", blocks=[], metadata=DocumentMetadata())
         doc.template = None
         doc.figures = []
@@ -610,7 +605,7 @@ class TestBuildQualitySummary:
         assert summary["tables"] == 0
 
     def test_metadata_not_dict(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import PipelineDocument, DocumentMetadata, Block
         block = MagicMock(spec=Block)
         block.metadata = None
         block.classification_confidence = 0.85
@@ -642,7 +637,7 @@ class TestBuildQualitySummary:
         assert summary["low_conf_blocks"] == 1
 
     def test_errors_and_warnings_penalty(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import PipelineDocument, DocumentMetadata
         doc = PipelineDocument(document_id="d1", blocks=[], metadata=DocumentMetadata())
         doc.template = None
         with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 80.0}):
@@ -677,7 +672,6 @@ class TestComputeSha256:
 
 class TestRunExtractionStage:
     def test_direct_parse_format(self, orch, tmp_path):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         factory = MagicMock()
         parser = MagicMock()
         factory.get_parser.return_value = parser
@@ -687,7 +681,6 @@ class TestRunExtractionStage:
         assert result.formatting_options is not None
 
     def test_conversion_format(self, orch, tmp_path):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         factory = MagicMock()
         parser = MagicMock()
         factory.get_parser.return_value = parser
@@ -730,7 +723,6 @@ class TestRunSemanticParsing:
 
 class TestRunClassification:
     def test_classification_runs(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         with patch("app.pipeline.orchestrator.ContentClassifier") as MockCls:
             inst = MagicMock()
@@ -761,7 +753,7 @@ class TestRunValidation:
 
 class TestFigureAnalysisAdditional:
     def test_downsample_returns_same_path(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType, Figure
+        from app.models import PipelineDocument, DocumentMetadata, Figure
         fig = Figure(figure_id="f1", index=1, export_path="/tmp/fig.png", caption_text="Fig")
         doc = PipelineDocument(document_id="d1", blocks=[], metadata=DocumentMetadata(), figures=[fig])
         doc.metadata.ai_hints = {}
@@ -775,7 +767,7 @@ class TestFigureAnalysisAdditional:
         assert any(a.get("downsampled") is not True for a in result.metadata.ai_hints.get("figure_analysis", []))
 
     def test_metadata_is_dict_without_ai_hints(self, orch):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import PipelineDocument, Figure
         fig = Figure(figure_id="f1", index=1, export_path="/tmp/fig.png", caption_text="Fig")
         doc = PipelineDocument(
             document_id="figdoc", blocks=[], figures=[fig],
@@ -790,7 +782,7 @@ class TestFigureAnalysisAdditional:
         assert "figure_analysis" in result.metadata["ai_hints"]
 
     def test_metadata_has_ai_hints_attr(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType, Figure
+        from app.models import PipelineDocument, DocumentMetadata, Figure
         fig = Figure(figure_id="f1", index=1, export_path="/tmp/fig.png", caption_text="Fig")
         doc = PipelineDocument(document_id="figdoc", blocks=[], metadata=DocumentMetadata(), figures=[fig])
         doc.metadata.ai_hints = {"existing": "data"}
@@ -810,7 +802,7 @@ class TestFigureAnalysisAdditional:
         assert result is doc
 
     def test_figure_with_image_data_and_no_export_path(self, orch):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType, Figure
+        from app.models import PipelineDocument, DocumentMetadata, Figure
         fig = Figure(figure_id="f2", index=1, export_path=None, image_data=b"imgdata", caption_text="Fig")
         doc = PipelineDocument(document_id="figdoc", blocks=[], metadata=DocumentMetadata(), figures=[fig])
         doc.metadata.ai_hints = {}
@@ -919,7 +911,6 @@ class TestRunEditFlow:
         assert result["status"] == "error"
 
     def test_successful_edit_persistence(self, orch):
-        from app.models import BlockType
         sb = MagicMock()
         sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = [
             MagicMock(data=[{"filename": "test.docx", "output_path": "/orig/output.docx"}]),
@@ -954,7 +945,6 @@ class TestRunEditFlow:
         assert result["status"] == "error"
 
     def test_edit_with_existing_result_and_versions(self, orch):
-        from app.models import BlockType
         sb = MagicMock()
         sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = [
             MagicMock(data=[{"filename": "test.docx", "output_path": "/orig/output.docx"}]),
@@ -1017,7 +1007,7 @@ def _make_rag_engine(temp_dir=None, model_name=None):
 
 class TestLoadChromadb:
     def test_chromadb_already_loaded(self):
-        from app.pipeline.intelligence.rag_engine import _load_chromadb, chromadb
+        from app.pipeline.intelligence.rag_engine import _load_chromadb
         old_cdb = globals().get("chromadb")
         try:
             import app.pipeline.intelligence.rag_engine as rag_mod
@@ -1232,7 +1222,6 @@ class TestIsReusableEmbeddingModel:
 class TestActivateDeterministicEmbedding:
     def test_store_failure_does_not_block(self):
         re = _make_rag_engine()
-        from unittest.mock import PropertyMock
         ms = MagicMock()
         ms.set_model.side_effect = Exception("store fail")
         re._activate_deterministic_embedding(ms, "test reason")
@@ -1695,7 +1684,6 @@ class TestNativePersistence:
         assert len(re.knowledge_base) == 1
 
     def test_load_no_file(self, tmp_path):
-        from app.pipeline.intelligence.rag_engine import RagEngine
         persist = str(tmp_path / "empty")
         os.makedirs(persist, exist_ok=True)
         re = _make_rag_engine(persist)
@@ -1759,7 +1747,6 @@ class TestSeedIfEmpty:
             re._seed_if_empty()
 
     def test_default_file_not_found(self, tmp_path):
-        from app.pipeline.intelligence.rag_engine import RagEngine
         persist = str(tmp_path / "seed_test")
         re = _make_rag_engine(persist)
         re.knowledge_base = []
@@ -1768,7 +1755,6 @@ class TestSeedIfEmpty:
             re._seed_if_empty()
 
     def test_dict_payload_with_guidelines(self, tmp_path):
-        import tempfile as _tf
         persist = str(tmp_path / "seed_dict")
         os.makedirs(persist, exist_ok=True)
         re = _make_rag_engine(persist)
@@ -1782,7 +1768,6 @@ class TestSeedIfEmpty:
                         re._seed_if_empty()
 
     def test_list_payload(self, tmp_path):
-        import tempfile as _tf
         persist = str(tmp_path / "seed_list")
         os.makedirs(persist, exist_ok=True)
         re = _make_rag_engine(persist)
@@ -2133,7 +2118,6 @@ class TestPipelineParallelExtraction:
 
     def test_grobid_disabled(self, orch, tmp_path):
         """Line 779-780: GROBID_ENABLED=false."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         sb = _make_sb()
@@ -2169,7 +2153,6 @@ class TestPipelineParallelExtraction:
 
     def test_grobid_timeout(self, orch, tmp_path):
         """Lines 818-822: GROBID future timeout."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         sb = _make_sb()
@@ -2206,7 +2189,6 @@ class TestPipelineParallelExtraction:
 
     def test_grobid_exception(self, orch, tmp_path):
         """Line 786-788: GROBID extraction raises."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         orch.grobid_client.is_available.return_value = True
@@ -2244,7 +2226,6 @@ class TestPipelineParallelExtraction:
 
     def test_grobid_unavailable(self, orch, tmp_path):
         """Line 782: GROBID client not available."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         orch.grobid_client.is_available.return_value = False
@@ -2281,7 +2262,6 @@ class TestPipelineParallelExtraction:
 
     def test_pymupdf_fallback_metadata_applied(self, orch, tmp_path):
         """Lines 857-874: PyMuPDF fallback metadata."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         sb = _make_sb()
@@ -2365,7 +2345,7 @@ class TestPipelineStageFailuresDeep:
 
     def test_crossref_enrichment(self, orch, tmp_path):
         """Lines 952-983: CrossRef validation."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType, Reference
+        from app.models import Reference
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         doc.references = [Reference(reference_id="r1", index=0, citation_key="test2024", raw_text="Test ref")]
@@ -2443,7 +2423,6 @@ class TestPipelineStageFailuresDeep:
 
     def test_ai_reasoning_query_guidelines(self, orch, tmp_path):
         """Lines 1004-1015: RAG query_guidelines path."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         doc.blocks = [MagicMock(block_id="b1", text="content", metadata={}, semantic_intent="body")]
@@ -2487,7 +2466,6 @@ class TestPipelineStageFailuresDeep:
 
     def test_ai_reasoning_query_rules_fallback(self, orch, tmp_path):
         """Lines 1007-1009: RAG query_rules fallback."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         doc.metadata.ai_hints = {}
@@ -2531,7 +2509,6 @@ class TestPipelineStageFailuresDeep:
 
     def test_ai_reasoning_timeout(self, orch, tmp_path):
         """Lines 1042-1048: AI reasoning timeout."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         doc.metadata.ai_hints = {}
@@ -2574,7 +2551,6 @@ class TestPipelineStageFailuresDeep:
 
     def test_ai_reasoning_general_exception(self, orch, tmp_path):
         """Lines 1049-1055: AI reasoning general exception."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         doc.metadata.ai_hints = {}
@@ -2653,7 +2629,6 @@ class TestPipelineStageFailuresDeep:
 
     def test_confidence_gating_low(self, orch, tmp_path):
         """Lines 1058-1060: Confidence gating sets review_required."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         doc.metadata.ai_hints = {}
@@ -2696,7 +2671,6 @@ class TestPipelineStageFailuresDeep:
 
     def test_confidence_gating_high(self, orch, tmp_path):
         """Lines 1058-1060: High confidence does NOT set review_required."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         doc.metadata.ai_hints = {}
@@ -2741,7 +2715,6 @@ class TestPipelineStageFailuresDeep:
 class TestPipelinePersistenceAndErrors:
     def test_formatting_failure_no_artifact(self, orch, tmp_path):
         """Lines 1087-1097: Formatter produces no generated_doc."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = None
         sb = _make_sb()
@@ -2774,8 +2747,6 @@ class TestPipelinePersistenceAndErrors:
 
     def test_persistence_completed_with_hash(self, orch, tmp_path):
         """Lines 1133-1137: Hash computation in persistence."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
-        import app.services.document_service
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         sb = _make_sb()
@@ -2812,7 +2783,6 @@ class TestPipelinePersistenceAndErrors:
 
     def test_persistence_hash_exception(self, orch, tmp_path):
         """Lines 1136-1137: Hash computation exception."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         sb = _make_sb()
@@ -2849,7 +2819,6 @@ class TestPipelinePersistenceAndErrors:
 
     def test_output_not_ready_fallback_to_memory(self, orch, tmp_path):
         """Line 1126->1129: output ready with in-memory generated_doc."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         sb = _make_sb()
@@ -2884,7 +2853,6 @@ class TestPipelinePersistenceAndErrors:
 
     def test_output_failure(self, orch, tmp_path):
         """Lines 1144-1147: Output generation failed."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         sb = _make_sb()
@@ -2958,7 +2926,6 @@ class TestPipelineErrorHandler:
 
     def test_error_handler_with_output_path_fallback(self, orch, tmp_path):
         """Lines 1189-1203: Error with output path -> downgrades to warning."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         output_path = tmp_path / "out.docx"
@@ -2994,7 +2961,6 @@ class TestPipelineErrorHandler:
 
     def test_error_handler_output_hash_exception(self, orch, tmp_path):
         """Lines 1193-1195: Hash exception during warning path."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         output_path = tmp_path / "out.docx"
@@ -3365,7 +3331,6 @@ class TestEditFlowAdditionalBranches:
 
     def test_edit_flow_existing_result_version_v4(self, orch):
         """Edit flow with version v4 and versions list."""
-        from app.models import BlockType
         sb = MagicMock()
         sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = [
             MagicMock(data=[{"filename": "test.docx", "output_path": "/orig/output.docx"}]),
@@ -3415,7 +3380,7 @@ class TestRunSemanticParsingBranches:
 class TestRunFigureAnalysisStageAdditional:
     def test_metadata_dict_with_setdefault(self, orch):
         """Line 614->617: metadata is dict with setdefault."""
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType, Figure
+        from app.models import PipelineDocument, Block, BlockType, Figure
         fig = Figure(figure_id="f1", index=1, export_path="/tmp/fig.png", caption_text="Fig")
         doc = PipelineDocument(
             document_id="figdoc",
@@ -3509,7 +3474,6 @@ class TestRagEngineErrorPaths:
         persist = str(tmp_path / "corrupt_kb")
         os.makedirs(persist, exist_ok=True)
         re = _make_rag_engine(persist)
-        import json
         kb_path = re.kb_file
         with open(kb_path, "w") as f:
             f.write("not valid json")

@@ -1,10 +1,6 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 import pytest
 from app.pipeline.references.parser import ReferenceParser
@@ -12,12 +8,10 @@ from app.pipeline.references.parser import ReferenceParser
 @pytest.fixture
 def parser():
 
-    from app.models import PipelineDocument, Block, BlockType
     return ReferenceParser()
 
 class TestReferenceParser:
     def test_parse_ieee_with_quotes(self, parser):
-        from app.models import PipelineDocument, Block, BlockType
         text = '[1] J. Smith, "Deep Learning," MIT Press, 2016.'
         ref = parser._parse_single_reference(text, 0)
         assert ref.citation_key == "1"
@@ -26,51 +20,43 @@ class TestReferenceParser:
         assert ref.reference_type is not None
 
     def test_parse_ieee_with_doi(self, parser):
-        from app.models import PipelineDocument, Block, BlockType
         text = '[1] A. Author, "Title," Journal, 2020, doi:10.1234/test.'
         ref = parser._parse_single_reference(text, 0)
         assert ref.doi is not None
         assert "10.1234/test" in ref.doi
 
     def test_parse_no_citation_key(self, parser):
-        from app.models import PipelineDocument, Block, BlockType
         text = "Some reference without brackets."
         ref = parser._parse_single_reference(text, 5)
         assert ref.citation_key == "ref_6"
 
     def test_parse_quoted_title_with_multiple_parts(self, parser):
-        from app.models import PipelineDocument, Block, BlockType
         text = '[2] B. Doe, C. Lee, "A Study on AI," Proc. Conf., 2021.'
         ref = parser._parse_single_reference(text, 1)
         assert ref.title is not None
         assert len(ref.authors) >= 2
 
     def test_parse_conference_paper(self, parser):
-        from app.models import PipelineDocument, Block, BlockType
         text = '[3] D. Author, "Title," Proc. International Conference, 2022.'
         ref = parser._parse_single_reference(text, 2)
         assert ref.reference_type == "conference_paper"
 
     def test_parse_journal_with_url(self, parser):
-        from app.models import PipelineDocument, Block, BlockType
         text = '[4] E. Author, "Title," Journal, 2023. https://example.com/paper.'
         ref = parser._parse_single_reference(text, 3)
         assert ref.url is not None
         assert "https://example.com" in ref.url
 
     def test_parse_authors_simple(self, parser):
-        from app.models import PipelineDocument, Block, BlockType
         authors = parser._parse_authors("A. Smith, B. Jones")
         assert len(authors) == 2
         assert "Smith" in authors[0]
 
     def test_parse_authors_with_and(self, parser):
-        from app.models import PipelineDocument, Block, BlockType
         authors = parser._parse_authors("A. Smith and B. Jones")
         assert len(authors) == 2
 
     def test_parse_authors_empty(self, parser):
-        from app.models import PipelineDocument, Block, BlockType
         assert parser._parse_authors("") == []
 
     def test_process_creates_references(self, parser):
@@ -86,7 +72,7 @@ class TestReferenceParser:
         assert len(result.references) == 2
 
     def test_process_empty_blocks(self, parser):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import PipelineDocument
         doc = PipelineDocument(document_id="doc1", blocks=[])
         result = parser.process(doc)
         assert len(result.references) == 0

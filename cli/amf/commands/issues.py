@@ -1,17 +1,12 @@
 """Issue reporting CLI commands."""
 
-import json
 import logging
 import sys
 from datetime import datetime
 from pathlib import Path
 
-import click
-from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
-from rich.markdown import Markdown
-from rich.prompt import Confirm, Prompt
 from rich.syntax import Syntax
 
 from amf._console import get_console, safe_progress

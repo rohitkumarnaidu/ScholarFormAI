@@ -8,7 +8,7 @@ LangChain-based document processing agent with enhancements.
 import os
 import sys
 import logging
-from typing import Optional, Dict, Any, List, Callable
+from typing import Optional, Dict, Any, Callable
 from unittest.mock import Mock
 from app.config.settings import settings
 from app.pipeline.agents.tools.metadata_tool import MetadataExtractionTool

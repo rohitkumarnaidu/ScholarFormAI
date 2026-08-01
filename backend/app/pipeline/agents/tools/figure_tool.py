@@ -6,7 +6,7 @@ Figure analysis tool for detecting and analyzing figures in documents.
 """
 
 import sys
-from typing import Optional, Type
+from typing import Type
 from pydantic import BaseModel, Field
 
 if sys.version_info < (3, 14):

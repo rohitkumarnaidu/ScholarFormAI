@@ -3,10 +3,8 @@
 
 
 import os
-import sys
 from docx import Document
 from pathlib import Path
-from docx.oxml.ns import qn
 
 def dump_xml(path):
     doc = Document(path)

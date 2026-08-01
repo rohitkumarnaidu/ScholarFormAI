@@ -9,14 +9,14 @@ Parses unstructured reference strings into structured metadata.
 
 import logging
 import re
-from typing import List, Optional, Dict, Any
+from typing import List
 from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)
 
-from app.models import PipelineDocument as Document, Block, BlockType, Reference, ReferenceType
+from app.models import PipelineDocument as Document, BlockType, Reference, ReferenceType
 from app.utils.id_generator import generate_reference_id
-from .normalizer import clean_title, clean_author_name, normalize_page_range
+from .normalizer import clean_title, clean_author_name
 
 
 from app.pipeline.base import PipelineStage

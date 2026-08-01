@@ -2,8 +2,6 @@
 # Copyright (c) 2026 ScholarForm AI
 
 import pytest
-import os
-from pathlib import Path
 from docx import Document as WordDocument
 from app.models import (
     Block,

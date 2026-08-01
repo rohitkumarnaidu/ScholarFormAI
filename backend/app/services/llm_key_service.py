@@ -15,7 +15,6 @@ import logging
 import sys
 from typing import Optional
 
-from app.utils.logging_context import log_extra
 
 logger = logging.getLogger(__name__)
 

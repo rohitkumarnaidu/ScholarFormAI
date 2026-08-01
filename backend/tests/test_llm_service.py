@@ -1,11 +1,9 @@
 import pytest
-from unittest.mock import MagicMock, patch, AsyncMock, PropertyMock
-from typing import Any, Dict, Optional
+from unittest.mock import MagicMock, patch, PropertyMock
 
 
 @pytest.fixture(autouse=True)
 def reset_breaker_cache():
-    import importlib
     import app.services.llm_service as llm
     llm._PROVIDER_BREAKERS.clear()
 
@@ -369,7 +367,7 @@ class TestGenerate:
         assert result == ""
 
     def test_fallback_when_litellm_unavailable(self, llm):
-        from app.services.llm_service import generate, LITELLM_AVAILABLE
+        from app.services.llm_service import generate
         with patch("app.services.llm_service.LITELLM_AVAILABLE", False):
             with patch.object(llm, "_generate_fallback", return_value="fallback result") as mock_fb:
                 with patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None):

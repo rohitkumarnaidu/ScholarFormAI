@@ -10,7 +10,7 @@ Routers MUST use this facade instead of importing csl_fetcher directly.
 from __future__ import annotations
 
 import logging
-from typing import Any, Optional
+from typing import Any
 
 from app.exceptions import NotFoundError, ExternalServiceError, ValidationError
 

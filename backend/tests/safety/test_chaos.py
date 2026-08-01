@@ -3,9 +3,7 @@
 
 import unittest
 from unittest.mock import MagicMock, patch
-import json
 from app.pipeline.intelligence.reasoning_engine import ReasoningEngine
-from app.pipeline.safety.circuit_breaker import CircuitBreakerOpenException
 
 class TestSafetyChaos(unittest.TestCase):
     

@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 import logging
-from enum import Enum
 from typing import Optional, List, Dict, Any
 from datetime import datetime, timezone
 from pydantic import BaseModel, Field, field_validator
@@ -12,7 +11,7 @@ from app.models.figure import Figure
 from app.models.table import Table
 from app.models.reference import Reference
 from app.models.equation import Equation
-from app.models.review import ReviewStatus, ReviewMetadata
+from app.models.review import ReviewMetadata
 
 logger = logging.getLogger(__name__)
 

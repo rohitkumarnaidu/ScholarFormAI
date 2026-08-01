@@ -6,8 +6,7 @@ Unit tests for Docling layout analysis client.
 """
 
 import pytest
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch
 
 from app.pipeline.services.docling_client import (
     DoclingClient,

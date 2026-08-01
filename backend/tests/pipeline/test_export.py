@@ -1,14 +1,9 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 import pytest
 import os
 import json
-import subprocess
 from unittest.mock import MagicMock, patch
 from app.pipeline.export.exporter import Exporter
 from app.pipeline.export.jats_generator import JATSGenerator
@@ -355,7 +350,7 @@ class TestPDFExporter:
         assert PDFExporter()._weasyprint_fallback("/in.docx", str(tmp_path / "o.pdf")) is None
 
     def test_weasyprint_success(self, tmp_path):
-        import types, sys
+        import types
         wp_mod = types.ModuleType("weasyprint")
         wp_mod.HTML = MagicMock()
         docx_mod = types.ModuleType("docx")
@@ -367,7 +362,7 @@ class TestPDFExporter:
             assert r == str(pdf)
 
     def test_weasyprint_exception(self, tmp_path):
-        import types, sys
+        import types
         wp_mod = types.ModuleType("weasyprint")
         wp_mod.HTML = MagicMock()
         docx_mod = types.ModuleType("docx")

@@ -5,13 +5,9 @@
 Targeted gap-closing tests for remaining Phase 0 & 1 modules.
 """
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch, ANY, PropertyMock
+from unittest.mock import MagicMock, patch
 from pydantic import BaseModel
 
 import pytest
@@ -27,7 +23,6 @@ import pytest
 class TestLlmValidator:
     def test_guard_llm_output_fallback_error(self):
         """guard_llm_output fallback returns error_return_value on exception."""
-        from app.models import Block, BlockType
         import app.pipeline.safety.llm_validator as lv
 
         class TestSchema(BaseModel):
@@ -37,14 +32,12 @@ class TestLlmValidator:
             decorator = lv.guard_llm_output(TestSchema, error_return_value={"fallback": True})
             @decorator
             def failing_func():
-                from app.models import Block, BlockType
                 raise ValueError("boom")
             result = failing_func()
             assert result == {"fallback": True}
 
     def test_guardrails_runtime_error_loop_fallback(self):
         """_parse_with_guardrails: no running loop → creates temp loop (lines 75-81)."""
-        from app.models import Block, BlockType
         import app.pipeline.safety.llm_validator as lv
 
         class TestSchema(BaseModel):
@@ -64,7 +57,6 @@ class TestLlmValidator:
             decorator = lv.guard_llm_output(TestSchema)
             @decorator
             def my_func():
-                from app.models import Block, BlockType
                 return '{"name": "test"}'
 
             result = my_func()
@@ -72,7 +64,6 @@ class TestLlmValidator:
 
     def test_guardrails_raw_result_is_schema(self):
         """wrapper: function returns BaseModel directly → safe_model_dump (line 90)."""
-        from app.models import Block, BlockType
         import app.pipeline.safety.llm_validator as lv
 
         class TestSchema(BaseModel):
@@ -89,7 +80,6 @@ class TestLlmValidator:
             decorator = lv.guard_llm_output(TestSchema, error_return_value={})
             @decorator
             def my_func():
-                from app.models import Block, BlockType
                 return TestSchema(name="test")
 
             result = my_func()
@@ -97,7 +87,6 @@ class TestLlmValidator:
 
     def test_guardrails_raw_result_is_dict(self):
         """wrapper: function returns dict → json.dumps for guard (lines 94-95)."""
-        from app.models import Block, BlockType
         import app.pipeline.safety.llm_validator as lv
 
         class TestSchema(BaseModel):
@@ -116,7 +105,6 @@ class TestLlmValidator:
             decorator = lv.guard_llm_output(TestSchema)
             @decorator
             def my_func():
-                from app.models import Block, BlockType
                 return {"name": "test"}
 
             result = my_func()
@@ -124,7 +112,6 @@ class TestLlmValidator:
 
     def test_guardrails_raw_result_unknown_type(self):
         """wrapper: function returns unknown type → pass-through (line 99)."""
-        from app.models import Block, BlockType
         import app.pipeline.safety.llm_validator as lv
 
         class TestSchema(BaseModel):
@@ -140,7 +127,6 @@ class TestLlmValidator:
             decorator = lv.guard_llm_output(TestSchema)
             @decorator
             def my_func():
-                from app.models import Block, BlockType
                 return 42
 
             result = my_func()
@@ -148,20 +134,17 @@ class TestLlmValidator:
 
     def test_guard_llm_output_non_base_model_schema(self):
         """schema is not a BaseModel subclass → fallback."""
-        from app.models import Block, BlockType
         import app.pipeline.safety.llm_validator as lv
 
         decorator = lv.guard_llm_output(dict, error_return_value=None)
         @decorator
         def my_func():
-            from app.models import Block, BlockType
             raise ValueError("fail")
         result = my_func()
         assert result == {}
 
     def test_guardrails_running_loop_parse(self):
         """_parse_with_guardrails: running event loop path (line 73)."""
-        from app.models import Block, BlockType
         import app.pipeline.safety.llm_validator as lv
 
         class TestSchema(BaseModel):
@@ -181,7 +164,6 @@ class TestLlmValidator:
             decorator = lv.guard_llm_output(TestSchema)
             @decorator
             def my_func():
-                from app.models import Block, BlockType
                 return '{"name": "test"}'
 
             result = my_func()
@@ -189,7 +171,6 @@ class TestLlmValidator:
 
     def test_guardrails_validated_output_scalar(self):
         """validated_output is scalar (line 109)."""
-        from app.models import Block, BlockType
         import app.pipeline.safety.llm_validator as lv
 
         class TestSchema(BaseModel):
@@ -209,7 +190,6 @@ class TestLlmValidator:
             decorator = lv.guard_llm_output(TestSchema)
             @decorator
             def my_func():
-                from app.models import Block, BlockType
                 return '{"name": "test"}'
 
             result = my_func()
@@ -217,7 +197,6 @@ class TestLlmValidator:
 
     def test_guardrails_no_validated_output(self):
         """validated_output is None/empty → return error_return_value."""
-        from app.models import Block, BlockType
         import app.pipeline.safety.llm_validator as lv
 
         class TestSchema(BaseModel):
@@ -237,7 +216,6 @@ class TestLlmValidator:
             decorator = lv.guard_llm_output(TestSchema, error_return_value={"err": True})
             @decorator
             def my_func():
-                from app.models import Block, BlockType
                 return '{"name": "test"}'
 
             result = my_func()
@@ -245,7 +223,6 @@ class TestLlmValidator:
 
     def test_guardrails_exception_in_wrapper(self):
         """Exception raised during parse → return error_return_value."""
-        from app.models import Block, BlockType
         import app.pipeline.safety.llm_validator as lv
 
         class TestSchema(BaseModel):
@@ -263,7 +240,6 @@ class TestLlmValidator:
             decorator = lv.guard_llm_output(TestSchema, error_return_value={"safe": True})
             @decorator
             def my_func():
-                from app.models import Block, BlockType
                 return '{"name": "test"}'
 
             result = my_func()
@@ -275,7 +251,6 @@ class TestLlmValidator:
 
 class TestStyleMapper:
     def test_block_type_already_prefixed(self):
-        from app.models import Block, BlockType
         from app.pipeline.formatting.style_mapper import StyleMapper
 
         mock_loader = MagicMock()
@@ -288,7 +263,6 @@ class TestStyleMapper:
         assert style == "Heading 1"
 
     def test_block_type_already_prefixed_lowercase(self):
-        from app.models import Block, BlockType
         from app.pipeline.formatting.style_mapper import StyleMapper
 
         mock_loader = MagicMock()
@@ -318,51 +292,42 @@ class TestStyleMapper:
 
 class TestSafeExecution:
     def test_safe_function_decorator_fallback(self):
-        from app.models import Block, BlockType
         from app.pipeline.safety.safe_execution import safe_function
         @safe_function(fallback_value="default")
         def failing():
-            from app.models import Block, BlockType
             raise ValueError("fail")
         result = failing()
         assert result == "default"
 
     def test_safe_function_decorator_success(self):
-        from app.models import Block, BlockType
         from app.pipeline.safety.safe_execution import safe_function
         @safe_function(fallback_value="default")
         def working():
-            from app.models import Block, BlockType
             return "ok"
         result = working()
         assert result == "ok"
 
     def test_safe_execution_context_suppresses(self):
-        from app.models import Block, BlockType
         from app.pipeline.safety.safe_execution import safe_execution
         with safe_execution("test_op"):
             raise ValueError("suppressed")
         # Should not propagate
 
     def test_safe_async_function_fallback(self):
-        from app.models import Block, BlockType
         from app.pipeline.safety.safe_execution import safe_async_function
         import asyncio
         @safe_async_function(fallback_value="fallback")
         async def failing_async():
-            from app.models import Block, BlockType
             raise ValueError("async fail")
 
         result = asyncio.run(failing_async())
         assert result == "fallback"
 
     def test_safe_async_function_success(self):
-        from app.models import Block, BlockType
         from app.pipeline.safety.safe_execution import safe_async_function
         import asyncio
         @safe_async_function(fallback_value="fallback")
         async def working_async():
-            from app.models import Block, BlockType
             return "ok"
 
         result = asyncio.run(working_async())
@@ -374,37 +339,30 @@ class TestSafeExecution:
 
 class TestCircuitBreaker:
     def test_circuit_breaker_fallback_fails_returns_empty_dict(self):
-        from app.models import Block, BlockType
-        from app.pipeline.safety.circuit_breaker import circuit_breaker, CircuitBreakerOpenException
+        from app.pipeline.safety.circuit_breaker import circuit_breaker
 
         def fallback(*a, **kw):
-            from app.models import Block, BlockType
             raise ValueError("fallback also failed")
 
         @circuit_breaker(failure_threshold=1, recovery_timeout=60, fallback_function=fallback)
         def failing_func():
-            from app.models import Block, BlockType
             raise RuntimeError("always fails")
 
         result = failing_func()
         assert result == {}
 
     def test_circuit_breaker_no_fallback_raises(self):
-        from app.models import Block, BlockType
         from app.pipeline.safety.circuit_breaker import circuit_breaker, CircuitBreakerOpenException
 
         @circuit_breaker(failure_threshold=1, recovery_timeout=60)
         def failing_func():
-            from app.models import Block, BlockType
             raise RuntimeError("always fails")
 
         with pytest.raises(CircuitBreakerOpenException):
             failing_func()
 
     def test_circuit_breaker_import_fallback(self):
-        from app.models import Block, BlockType
         with patch("app.pipeline.safety.circuit_breaker._PYBREAKER", False):
-            import importlib
             with patch.dict("sys.modules", {"pybreaker": None}, clear=False):
                 pass  # Already imported, just test the flag path
 
@@ -414,7 +372,6 @@ class TestCircuitBreaker:
 
 class TestPdfOcr:
     def test_pdf_extract_text_exists(self):
-        from app.models import Block, BlockType
         from app.pipeline.ocr.pdf_ocr import pdf_extract_text
         assert callable(pdf_extract_text)
 

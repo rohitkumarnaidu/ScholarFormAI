@@ -1,7 +1,7 @@
 import pytest
-from unittest.mock import MagicMock, patch, AsyncMock, PropertyMock
+from unittest.mock import MagicMock, patch, PropertyMock
 import numpy as np
-from app.cache.redis_cache import redis_cache, RedisCache
+from app.cache.redis_cache import redis_cache
 
 
 class TestDeterministicEmbeddingModel:

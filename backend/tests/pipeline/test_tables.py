@@ -5,12 +5,8 @@
 Test suite for tables pipeline: extractor, renderer, caption matcher.
 """
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
-from unittest.mock import patch, MagicMock, PropertyMock, call
+from unittest.mock import patch, MagicMock
 import pytest
 from app.pipeline.tables.caption_matcher import TableCaptionMatcher
 from app.pipeline.tables.extractor import TableExtractor
@@ -24,17 +20,16 @@ class TestTableCaptionMatcher:
     @pytest.fixture
     def matcher(self):
 
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         return TableCaptionMatcher()
 
     def test_process_empty_document(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument
         doc = PipelineDocument(document_id="t", blocks=[])
         result = matcher.process(doc)
         assert result is doc
 
     def test_process_no_tables_returns_early(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=1, text="Results are in Table 1.", block_type=BlockType.BODY),
         ])
@@ -42,7 +37,7 @@ class TestTableCaptionMatcher:
         assert result is doc
 
     def test_process_with_tables_and_captions(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Table 1. Performance comparison.", block_type=BlockType.BODY),
@@ -56,7 +51,7 @@ class TestTableCaptionMatcher:
         assert result.tables[0].table_id == "t1"
 
     def test_adds_stage_info(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t",
             blocks=[Block(block_id="b1", index=0, text="Table 1. Testing.", block_type=BlockType.BODY)],
             tables=[Table(table_id="t1", num_rows=0, num_cols=0, index=0, block_index=0)],
@@ -66,13 +61,12 @@ class TestTableCaptionMatcher:
         assert "table_caption_matching" in stages
 
     def test_custom_search_window(self):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         matcher = TableCaptionMatcher(search_window_above=3, search_window_below=2)
         assert matcher.search_window_above == 3
         assert matcher.search_window_below == 2
 
     def test_caption_above_table_is_matched(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Table 1. Accuracy metrics.", block_type=BlockType.BODY),
@@ -84,7 +78,7 @@ class TestTableCaptionMatcher:
         assert result.tables[0].caption_text is not None
 
     def test_multiple_tables_multiple_captions(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Table 1. First table.", block_type=BlockType.BODY),
@@ -102,7 +96,7 @@ class TestTableCaptionMatcher:
         assert result.tables[1].caption_text == "Table 2. Second table."
 
     def test_headings_are_not_captions(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Table 1. Introduction", block_type=BlockType.HEADING_1),
@@ -120,14 +114,12 @@ class TestTableCaptionMatcher:
 class TestTableExtractor:
     @pytest.fixture
     def extractor(self):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         return TableExtractor()
 
     # -- helpers ------------------------------------------------------
 
     def _make_docx_cell(self, text: str, bold: bool = False, nested_table_count: int = 0):
         """Build a MagicMock that behaves like a python-docx Cell."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         cell = MagicMock()
         cell.text = text
         cell._tc = MagicMock()
@@ -158,7 +150,6 @@ class TestTableExtractor:
 
     def _make_docx_table(self, data, header_row=False, nested_at=None):
         """Build a MagicMock docx Table from a 2D list of strings."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         from unittest.mock import MagicMock
         tbl = MagicMock()
         rows = []
@@ -179,7 +170,6 @@ class TestTableExtractor:
     # -- basic extraction tests ---------------------------------------
 
     def test_basic_2x2_table(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         docx_tbl = self._make_docx_table([["A1", "B1"], ["A2", "B2"]])
         result = extractor.extract(docx_tbl, "tbl_001", 0, 0)
         assert result.table_id == "tbl_001"
@@ -189,7 +179,6 @@ class TestTableExtractor:
         assert len(result.cells) == 4
 
     def test_single_cell_table(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         docx_tbl = self._make_docx_table([["only"]])
         result = extractor.extract(docx_tbl, "tbl_single", 0, 0)
         assert result.num_rows == 1
@@ -197,14 +186,12 @@ class TestTableExtractor:
         assert result.data[0][0] == "only"
 
     def test_empty_cells_preserved(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         docx_tbl = self._make_docx_table([["", "B1"], ["A2", ""]])
         result = extractor.extract(docx_tbl, "tbl_empty", 0, 0)
         assert result.data[0][0] == ""
         assert result.data[1][1] == ""
 
     def test_header_row_via_bold(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         docx_tbl = self._make_docx_table([["Name", "Value"], ["x", "1"]], header_row=True)
         result = extractor.extract(docx_tbl, "tbl_hdr", 0, 0)
         assert result.has_header is True
@@ -212,20 +199,17 @@ class TestTableExtractor:
         assert result.cells[0].bold is True
 
     def test_header_row_via_keywords(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         docx_tbl = self._make_docx_table([["Name", "Value"], ["x", "1"]], header_row=False)
         result = extractor.extract(docx_tbl, "tbl_kw", 0, 0)
         # "Name" and "Value" are in the common_headers set -> has_header should be True
         assert result.has_header is True
 
     def test_no_header_detected(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         docx_tbl = self._make_docx_table([["apple", "banana"], ["cherry", "date"]], header_row=False)
         result = extractor.extract(docx_tbl, "tbl_nh", 0, 0)
         assert result.has_header is False
 
     def test_3x3_table(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         docx_tbl = self._make_docx_table([["A", "B", "C"], ["D", "E", "F"], ["G", "H", "I"]])
         result = extractor.extract(docx_tbl, "tbl_33", 0, 0)
         assert result.num_rows == 3
@@ -235,7 +219,6 @@ class TestTableExtractor:
     # -- deep XML fallback -------------------------------------------
 
     def test_deep_xml_fallback_fills_empty_cell(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         cell = MagicMock()
         cell.text = ""
         # deep text available via XML
@@ -261,7 +244,6 @@ class TestTableExtractor:
         assert result.data[0][0] == "hidden_text"
 
     def test_deep_xml_no_text_returns_empty(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         cell = MagicMock()
         cell.text = ""
         cell._tc = MagicMock()
@@ -285,7 +267,6 @@ class TestTableExtractor:
 
     def test_nested_table_extraction(self, extractor):
         """Nested tables are extracted recursively."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         inner_data = [["inner_a", "inner_b"], ["inner_c", "inner_d"]]
 
         # Build inner docx table
@@ -317,7 +298,6 @@ class TestTableExtractor:
 
     def test_nested_table_extraction_failure_handled(self, extractor):
         """If nested extraction fails, it's logged and doesn't crash."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         cell = self._make_docx_cell("outer", nested_table_count=1)
         row = MagicMock()
         row.cells = [cell]
@@ -333,7 +313,6 @@ class TestTableExtractor:
     # -- edge cases ---------------------------------------------------
 
     def test_table_id_assigned(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         docx_tbl = self._make_docx_table([["a"]])
         result = extractor.extract(docx_tbl, "my_id", 42, 7)
         assert result.table_id == "my_id"
@@ -341,7 +320,6 @@ class TestTableExtractor:
         assert result.block_index == 7
 
     def test_unicode_text(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         docx_tbl = self._make_docx_table([["café", "naïve"], ["über", "α β γ"]])
         result = extractor.extract(docx_tbl, "tbl_uni", 0, 0)
         assert result.data[0][0] == "café"
@@ -354,12 +332,10 @@ class TestTableExtractor:
 class TestTableRenderer:
     @pytest.fixture
     def renderer(self):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         return TableRenderer()
 
     def _make_mock_doc(self):
         """Create a mock python-docx Document."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = MagicMock()
         doc.styles = {"Table Grid": MagicMock()}
         doc.add_table.return_value = MagicMock()
@@ -367,20 +343,18 @@ class TestTableRenderer:
         return doc
 
     def test_skip_when_table_none(self, renderer):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = MagicMock()
         renderer.render(doc, None)
         doc.add_table.assert_not_called()
 
     def test_skip_when_no_rows(self, renderer):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import Table
         doc = MagicMock()
         tbl = Table(table_id="empty", num_rows=0, num_cols=0, index=0, block_index=0)
         renderer.render(doc, tbl)
         doc.add_table.assert_not_called()
 
     def test_basic_table_rendering(self, renderer, simple_table):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = self._make_mock_doc()
         renderer.render(doc, simple_table)
         doc.add_table.assert_called_once_with(rows=2, cols=2)
@@ -388,7 +362,6 @@ class TestTableRenderer:
         assert word_table.style == "Table Grid"
 
     def test_caption_added_above_table(self, renderer, simple_table):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = self._make_mock_doc()
         simple_table.caption_text = "Table 1: Accuracy results"
         renderer.render(doc, simple_table)
@@ -398,7 +371,6 @@ class TestTableRenderer:
         assert cap_para.add_run.call_count >= 1
 
     def test_caption_with_number_override(self, renderer, simple_table):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = self._make_mock_doc()
         simple_table.caption_text = "Performance metrics"
         renderer.render(doc, simple_table, number=5)
@@ -410,7 +382,6 @@ class TestTableRenderer:
         assert len(bold_runs) > 0
 
     def test_caption_with_existing_table_prefix(self, renderer, simple_table):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = self._make_mock_doc()
         simple_table.caption_text = "Table 1: Experimental results"
         renderer.render(doc, simple_table)
@@ -420,7 +391,7 @@ class TestTableRenderer:
         assert any(c[0][0] == "Table 1: " for c in calls)
 
     def test_nested_table_rendering(self, renderer, simple_table):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import Table, TableCell
         doc = self._make_mock_doc()
         nested = Table(table_id="n1", num_rows=1, num_cols=1, index=1, block_index=1,
                        data=[["inner"]], cells=[TableCell(row=0, col=0, text="inner")])
@@ -438,7 +409,6 @@ class TestTableRenderer:
         assert doc.add_table.call_count >= 1
 
     def test_style_fallback_when_missing(self, renderer, simple_table):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = MagicMock()
         # Table Grid style not present
         doc.styles = {}
@@ -450,7 +420,6 @@ class TestTableRenderer:
         assert word_table.style != "Table Grid"
 
     def test_cell_population(self, renderer, simple_table):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = self._make_mock_doc()
         # Set up word_table cell mocks
         word_tbl = MagicMock()
@@ -472,7 +441,7 @@ class TestTableRenderer:
         assert cell11.text == "B2"
 
     def test_cell_population_error_does_not_crash(self, renderer, simple_table):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import TableCell
         doc = self._make_mock_doc()
         word_tbl = MagicMock()
         doc.add_table.return_value = word_tbl
@@ -490,7 +459,6 @@ class TestTableRenderer:
 
     def test_cell_access_error_handled_gracefully(self, renderer, simple_table):
         """Triggers the cell population except handler at line 79-80."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = self._make_mock_doc()
         word_tbl = MagicMock()
         doc.add_table.return_value = word_tbl
@@ -502,7 +470,6 @@ class TestTableRenderer:
         renderer.render(doc, simple_table)
 
     def test_renderer_returns_none(self, renderer, simple_table):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = self._make_mock_doc()
         result = renderer.render(doc, simple_table)
         assert result is None

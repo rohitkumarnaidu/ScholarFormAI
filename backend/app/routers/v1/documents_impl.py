@@ -14,31 +14,21 @@ and export compilation to dedicated application service classes:
 from __future__ import annotations
 
 import asyncio
-import hashlib
 import logging
-import os
-import uuid
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from fastapi import BackgroundTasks, Depends, File, Form, Query, Request, UploadFile, HTTPException
+from fastapi import BackgroundTasks, Depends, File, Form, Query, Request, UploadFile
 
 import app.services.document_pipeline_service as _ps
 from app.config.settings import settings
-from app.pipeline.export.latex_exporter import LaTeXExporter
-from app.pipeline.export.pdf_exporter import PDFExporter
-from app.pipeline.orchestrator import PipelineOrchestrator
 from app.schemas.user import User
 from app.services import (
     DocumentCrudService,
     DocumentExportService,
     DocumentPipelineService,
 )
-from app.services.audit_log_service import audit_log_service
-from app.services.document_service import DocumentService
-from app.services.enhancement_manager import enhancement_manager
 from app.utils.dependencies import get_current_user, get_optional_user
-from app.utils.virus_scanner import virus_scanner
 
 logger = logging.getLogger(__name__)
 

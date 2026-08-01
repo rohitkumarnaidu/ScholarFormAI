@@ -13,7 +13,7 @@ import asyncio
 import logging
 from typing import Any, Optional
 
-from app.exceptions import PipelineError, NotFoundError
+from app.exceptions import NotFoundError
 
 logger = logging.getLogger(__name__)
 

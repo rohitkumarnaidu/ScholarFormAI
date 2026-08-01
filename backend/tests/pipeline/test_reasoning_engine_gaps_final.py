@@ -7,20 +7,12 @@ validation edge cases, normalization, cancellation paths, and
 METRICS_AVAILABLE=False branches.
 """
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 
-import sys
 import threading
-from unittest.mock import MagicMock, patch, ANY
+from unittest.mock import MagicMock, patch
 
-import pytest
 
-from app.pipeline.intelligence.reasoning_engine import ReasoningEngine
-from tests.pipeline.test_reasoning_engine_comprehensive import engine, sample_blocks
 
 
 # ═══════════════════════════════════════════════════════════════════════════

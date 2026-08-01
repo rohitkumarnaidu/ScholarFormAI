@@ -521,7 +521,7 @@ class TestGetStatusEdgeCases:
 
     @pytest.mark.asyncio
     async def test_status_stale_response(self):
-        from app.routers.v1.documents_impl import get_status, _STATUS_CACHE_MISS
+        from app.routers.v1.documents_impl import get_status
         stale = {"status": "PROCESSING", "progress_percentage": 30}
         with (
             patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=None),
@@ -970,7 +970,6 @@ def asyncio_run(coro):
         loop = asyncio.get_running_loop()
     except RuntimeError:
         return asyncio.run(coro)
-    import functools
     return asyncio.run_coroutine_threadsafe(coro, loop).result()
 
 

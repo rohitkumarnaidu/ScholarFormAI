@@ -19,13 +19,12 @@ Test categories:
   - Operations-per-second throughput
 """
 
-import asyncio
 import hashlib
 import hmac
 import statistics
 import time
 from concurrent.futures import ThreadPoolExecutor
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -692,7 +691,7 @@ class TestSchemaValidationPerformance:
     """Pydantic model validation with varying payload sizes."""
 
     def test_validate_1000_items(self):
-        from pydantic import BaseModel, Field
+        from pydantic import BaseModel
 
         class TestItem(BaseModel):
             id: str
@@ -706,7 +705,7 @@ class TestSchemaValidationPerformance:
         _check_latency(stats, max_median=0.200_000)
 
     def test_validate_single_item(self):
-        from pydantic import BaseModel, Field
+        from pydantic import BaseModel
 
         class TestItem(BaseModel):
             id: str

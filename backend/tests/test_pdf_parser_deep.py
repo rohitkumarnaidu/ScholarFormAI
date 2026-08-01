@@ -3,11 +3,10 @@
 
 from __future__ import annotations
 
-import hashlib
-from unittest.mock import MagicMock, patch, call, ANY, PropertyMock
+from unittest.mock import MagicMock, patch
 import pytest
 
-from app.models import Block, BlockType, TextStyle
+from app.models import Block, BlockType
 
 
 @pytest.fixture

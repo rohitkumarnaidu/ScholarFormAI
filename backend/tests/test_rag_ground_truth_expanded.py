@@ -4,7 +4,6 @@
 """Expanded RAG ground truth dataset — additional 30 queries (for 50+ total)."""
 
 import pytest
-from dataclasses import dataclass
 
 
 # ---------------------------------------------------------------------------

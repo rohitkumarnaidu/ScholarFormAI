@@ -11,7 +11,6 @@ from pprint import pformat
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from app.services.auth_service import AuthService
-from app.config.settings import settings
 
 class Logger:
     def __init__(self, filename):

@@ -1,7 +1,6 @@
 from __future__ import annotations
-from unittest.mock import AsyncMock, MagicMock, patch, PropertyMock
+from unittest.mock import patch
 import pytest
-from app.exceptions import ExternalServiceError
 from app.services.llm_service import LLMUnavailableError
 pytestmark = [pytest.mark.security]
 
@@ -129,7 +128,6 @@ class TestResourceExhaustion:
         mock_settings.NVIDIA_MODEL = "meta/llama-3.1-8b-instruct"
         mock_settings.LLM_PROVIDER_TIMEOUT_SECONDS = 15
         mock_settings.LLM_CACHE_TTL_SECONDS = 3600
-        from app.services.llm_service import _provider_breaker, _breaker_enabled, _breaker_fail_max, _breaker_reset_seconds
         from app.services.llm_service import _call_with_provider_circuit
         breaker_fails = 0
         def _fail():

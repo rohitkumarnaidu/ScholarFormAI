@@ -1,5 +1,4 @@
 import pytest
-from unittest.mock import MagicMock, patch
 pytestmark = [pytest.mark.security]
 
 class TestDANJailbreak:
@@ -224,7 +223,6 @@ class TestInjectionPatternCount:
         assert len(_INJECTION_PATTERNS) >= 4
 
     def test_each_pattern_matches_something(self):
-        from app.services.llm_service import _INJECTION_PATTERNS
         pattern_tests = [
             r'(ignore|forget|disregard)\s+(all\s+)?(previous|above|prior)\s+(instructions?|prompts?|rules?)',
             r'you\s+are\s+now\s+(a|an)\s+',

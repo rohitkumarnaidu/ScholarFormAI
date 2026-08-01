@@ -2,7 +2,7 @@
 # Copyright (c) 2026 ScholarForm AI
 
 import pytest
-from unittest.mock import patch, AsyncMock
+from unittest.mock import patch
 
 from app.services.document_service import DocumentService
 

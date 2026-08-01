@@ -1,5 +1,4 @@
-import pytest
-from unittest.mock import MagicMock, patch, mock_open
+from unittest.mock import patch
 
 
 class TestStatePath:
@@ -11,7 +10,7 @@ class TestStatePath:
         assert str(path).endswith("scibert_state.json")
 
     def test_default_path(self):
-        from app.services.scibert_gate import _state_path, BACKEND_ROOT
+        from app.services.scibert_gate import _state_path
         with patch("app.services.scibert_gate.settings") as mock_s:
             mock_s.SCIBERT_BENCHMARK_STATE_PATH = ""
             path = _state_path()

@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import MagicMock, patch
 pytestmark = [pytest.mark.security]
 
 class TestLLM01_PromptInjection:
@@ -64,7 +64,7 @@ class TestLLM03_TrainingDataPoisoning:
         ):
             ms.LOW_MEMORY_MODE = True
             ms.RAG_USE_TRANSFORMERS = False
-            import tempfile, os
+            import tempfile
             d = tempfile.mkdtemp()
             engine = RagEngine(persist_directory=d, auto_seed=False)
             engine.embedding_model = MagicMock()
@@ -87,7 +87,7 @@ class TestLLM03_TrainingDataPoisoning:
         ):
             ms.LOW_MEMORY_MODE = True
             ms.RAG_USE_TRANSFORMERS = False
-            import tempfile, os
+            import tempfile
             d = tempfile.mkdtemp()
             engine = RagEngine(persist_directory=d, auto_seed=False)
             engine.embedding_model = MagicMock()

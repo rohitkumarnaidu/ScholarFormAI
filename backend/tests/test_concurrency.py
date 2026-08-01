@@ -8,7 +8,7 @@ from __future__ import annotations
 import asyncio
 import threading
 import time
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -54,7 +54,7 @@ class TestPipelineSemaphore:
         self._cleanup()
 
     def test_acquire_timeout_raises_on_full(self):
-        from app.pipeline.orchestrator import _pipeline_semaphore, _ACQUIRE_TIMEOUT_SECONDS
+        from app.pipeline.orchestrator import _pipeline_semaphore
         self._cleanup()
         for _ in range(5):
             _pipeline_semaphore.acquire(blocking=False)
@@ -66,7 +66,7 @@ class TestPipelineSemaphore:
         self._cleanup()
 
     def test_semaphore_threadsafe(self):
-        from app.pipeline.orchestrator import _pipeline_semaphore, _MAX_CONCURRENT_JOBS
+        from app.pipeline.orchestrator import _pipeline_semaphore
         self._cleanup()
         acquired = []
 

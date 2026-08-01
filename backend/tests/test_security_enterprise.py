@@ -379,7 +379,6 @@ class TestOwnership:
     @pytest.mark.asyncio
     async def test_verify_template_ownership_shareable(self):
         from app.services.document_service import DocumentService
-        from app.exceptions import DatabaseUnavailableError
         with patch.object(DocumentService, "get_document",
                           return_value={"id": "doc-1", "user_id": "user-abc", "template": "ieee"}):
             doc = await DocumentService.get_document("doc-1")

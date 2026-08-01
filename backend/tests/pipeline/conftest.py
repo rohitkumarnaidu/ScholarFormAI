@@ -6,12 +6,9 @@ Shared fixtures and mock utilities for table/figure pipeline tests.
 """
 
 from __future__ import annotations
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
 
 from typing import List, Optional, Any, Dict
-from unittest.mock import MagicMock, PropertyMock
+from unittest.mock import MagicMock
 from dataclasses import dataclass, field
 import pytest
 
@@ -96,14 +93,12 @@ def make_mock_table(
                     # wire recursion hook so MockDocxTable can be wrapped
                     mock_tbl_xml.tag = "w:tbl"
                     # We store the inner mock on the xml so DocxTableWrapper can access it
-                    from docx.oxml.ns import qn
                     # The extractor does: tbl_xml.findall(qn('w:tbl'))
                     # So we skip nested on the inner level
                     inner_mock = MagicMock()
                     inner_mock.rows = inner_tbl.rows
                     # We'll store it as a side effect
                     mock_tbl_xml._inner_mock = inner_mock
-                    from docx.oxml import OxmlElement
                     tbl_elements.append(mock_tbl_xml)
 
                 # Override findall to return our nested table XML elements

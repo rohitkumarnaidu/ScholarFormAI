@@ -1,14 +1,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
-from unittest.mock import patch, MagicMock, PropertyMock, mock_open
-import json
-import os
+from unittest.mock import patch, MagicMock, mock_open
 import numpy as np
 import pytest
 pytestmark = [pytest.mark.pipeline, pytest.mark.rag]

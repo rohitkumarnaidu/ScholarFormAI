@@ -7,7 +7,7 @@ Handles extraction of structured data from docx Table objects.
 """
 
 import logging
-from typing import List, Optional
+from typing import List
 
 logger = logging.getLogger(__name__)
 from docx.table import Table as DocxTable

@@ -8,12 +8,11 @@ Purpose: Verify isolation guards and front-matter safety limits in the Classifie
 
 import os
 import sys
-from typing import List
 
 # Add backend to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
-from app.models import PipelineDocument, Block, BlockType, TextStyle
+from app.models import PipelineDocument, Block, BlockType
 from app.pipeline.classification.classifier import ContentClassifier
 
 def test_classifier_hardening():

@@ -14,7 +14,7 @@ Falls back gracefully if dependencies are unavailable.
 from __future__ import annotations
 
 import logging
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Optional
 from app.utils.singleton import get_or_create_catching
 
 logger = logging.getLogger(__name__)
@@ -286,7 +286,6 @@ class TableExtractor:
             Table model instance.
         """
         from app.models.table import Table, TableCell
-        from app.utils.id_generator import generate_block_id
 
         structure = table_data.get("structure", {})
         num_rows = structure.get("num_rows", 0)

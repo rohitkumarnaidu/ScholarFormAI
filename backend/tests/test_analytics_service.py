@@ -1,6 +1,5 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
-import pytest
 
 
 # Posthog is imported lazily inside AnalyticsService.__init__,
@@ -56,7 +55,6 @@ class TestAnalyticsServiceInit:
             patch.dict("os.environ", {"POSTHOG_API_KEY": "phc_test"}, clear=True),
             patch.dict("sys.modules", {"posthog": None}),
         ):
-            import importlib
             import sys
             if "app.services.analytics_service" in sys.modules:
                 del sys.modules["app.services.analytics_service"]

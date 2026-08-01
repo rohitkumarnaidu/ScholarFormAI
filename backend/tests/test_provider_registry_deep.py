@@ -4,8 +4,7 @@
 from __future__ import annotations
 
 import time
-import pytest
-from unittest.mock import MagicMock, AsyncMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 
 
 class TestCacheDiscoveredModels:

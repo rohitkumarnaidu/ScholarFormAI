@@ -8,7 +8,6 @@ Tests the integration of Docling layout analysis with the pipeline.
 """
 
 import pytest
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 from app.pipeline.services.docling_client import DoclingClient

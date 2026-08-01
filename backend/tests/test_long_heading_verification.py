@@ -8,7 +8,6 @@ This test verifies that headings longer than 120 characters are now detected
 after removing the hard rejection guards.
 """
 
-import pytest
 from app.models import Block, TextStyle, BlockType
 from app.pipeline.structure_detection.heading_rules import (
     analyze_heading_candidate,

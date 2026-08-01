@@ -1,18 +1,12 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 from unittest.mock import patch, MagicMock, ANY, PropertyMock
-import pytest
 
 # ─── Fixtures ──────────────────────────────────────────────────────────────────
 
 def _mock_block(index, text="", block_type="BODY", is_heading=False, block_id=None):
-    from app.models import BlockType
     b = MagicMock()
     b.index = index
     b.text = text
@@ -23,7 +17,6 @@ def _mock_block(index, text="", block_type="BODY", is_heading=False, block_id=No
     return b
 
 def _mock_table(table_id="T1", block_index=0, rows=None, caption_text=""):
-    from app.models import BlockType
     t = MagicMock()
     t.table_id = table_id
     t.block_index = block_index
@@ -37,33 +30,27 @@ def _mock_table(table_id="T1", block_index=0, rows=None, caption_text=""):
 
 class TestTableExtractor:
     def test_normalize_cell_text_none(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         assert TableExtractor()._normalize_cell_text("") == ""
         assert TableExtractor()._normalize_cell_text(None) == ""
 
     def test_normalize_cell_text_strip(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         assert TableExtractor()._normalize_cell_text("  hello  ") == "hello"
 
     def test_contains_header_keywords_true(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         assert TableExtractor()._contains_header_keywords(["Name", "Date"]) is True
 
     def test_contains_header_keywords_false(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         assert TableExtractor()._contains_header_keywords(["foo", "bar"]) is False
 
     def test_contains_header_keywords_substring_match(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         assert TableExtractor()._contains_header_keywords(["Quantity", "Amount"]) is True
 
     def test_is_cell_bold_true(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         cell = MagicMock()
         run = MagicMock()
@@ -74,7 +61,6 @@ class TestTableExtractor:
         assert TableExtractor()._is_cell_bold(cell) is True
 
     def test_is_cell_bold_false(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         cell = MagicMock()
         run = MagicMock()
@@ -85,7 +71,6 @@ class TestTableExtractor:
         assert TableExtractor()._is_cell_bold(cell) is False
 
     def test_extract_deep_xml_text_success(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         cell = MagicMock()
         node1 = MagicMock()
@@ -98,7 +83,6 @@ class TestTableExtractor:
         assert TableExtractor()._extract_deep_xml_text(cell) == "Hello World"
 
     def test_extract_deep_xml_text_empty(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         cell = MagicMock()
         node = MagicMock()
@@ -108,14 +92,12 @@ class TestTableExtractor:
         assert TableExtractor()._extract_deep_xml_text(cell) == ""
 
     def test_extract_deep_xml_text_exception(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         cell = MagicMock()
         cell._tc.iter.side_effect = Exception("boom")
         assert TableExtractor()._extract_deep_xml_text(cell) == ""
 
     def test_extract_basic(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         docx_table = MagicMock()
         row1 = MagicMock()
@@ -143,7 +125,6 @@ class TestTableExtractor:
         assert result.data == [["A", "B"], ["1", "2"]]
 
     def test_extract_with_row_normalization(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         docx_table = MagicMock()
         row1 = MagicMock()
@@ -161,7 +142,6 @@ class TestTableExtractor:
         assert result.data[0] == ["A", ""]
 
     def test_extract_with_deep_fallback(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         docx_table = MagicMock()
         row1 = MagicMock()
@@ -180,7 +160,6 @@ class TestTableExtractor:
         assert result.data[0][0] == "DeepText"
 
     def test_extract_with_header_detection_bold(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         docx_table = MagicMock()
         row1 = MagicMock()
@@ -195,7 +174,6 @@ class TestTableExtractor:
         assert result.has_header is True
 
     def test_extract_with_header_detection_keywords(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         docx_table = MagicMock()
         row1 = MagicMock()
@@ -207,7 +185,6 @@ class TestTableExtractor:
         assert result.has_header is True
 
     def test_extract_nested_table(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         ext = TableExtractor()
         docx_table = MagicMock()
@@ -226,7 +203,6 @@ class TestTableExtractor:
         assert nested[0].table_id == "T1_n0"
 
     def test_extract_nested_table_exception(self):
-        from app.models import BlockType
         from app.pipeline.tables.extractor import TableExtractor
         ext = TableExtractor()
         docx_table = MagicMock()
@@ -244,21 +220,18 @@ class TestTableExtractor:
 
 class TestTableCaptionMatcher:
     def test_init_defaults(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         cm = TableCaptionMatcher()
         assert cm.search_window_above == 2
         assert cm.search_window_below == 1
 
     def test_init_custom(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         cm = TableCaptionMatcher(search_window_above=3, search_window_below=2)
         assert cm.search_window_above == 3
         assert cm.search_window_below == 2
 
     def test_find_references_start_index_none(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         assert TableCaptionMatcher()._find_references_start_index([]) is None
 
@@ -269,13 +242,11 @@ class TestTableCaptionMatcher:
         assert TableCaptionMatcher()._find_references_start_index([blk]) == 5
 
     def test_find_references_start_index_by_keyword(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         blk = _mock_block(10, "References", is_heading=True)
         assert TableCaptionMatcher()._find_references_start_index([blk]) == 10
 
     def test_process_no_tables(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         doc = MagicMock()
         doc.blocks = []
@@ -284,7 +255,6 @@ class TestTableCaptionMatcher:
         assert result is doc
 
     def test_process_no_blocks(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         doc = MagicMock()
         doc.blocks = []
@@ -293,7 +263,6 @@ class TestTableCaptionMatcher:
         assert result is doc
 
     def test_process_matches_caption(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         tbl = _mock_table("T1", block_index=5, rows=[[]])
         cap_block = _mock_block(3, "Table 1: Results")
@@ -309,7 +278,6 @@ class TestTableCaptionMatcher:
         doc.add_processing_stage.assert_called_once()
 
     def test_process_skips_heading_block(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         tbl = _mock_table("T1", block_index=5)
         heading = _mock_block(3, "Table 1: Results", is_heading=True)
@@ -322,7 +290,6 @@ class TestTableCaptionMatcher:
         assert tbl.caption_text == ""
 
     def test_process_missing_caption(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         tbl = _mock_table("T1", block_index=5)
         blocks = [_mock_block(3, "Not a caption"), _mock_block(5, "[table]")]
@@ -334,7 +301,6 @@ class TestTableCaptionMatcher:
         assert tbl.metadata.get("caption_status") == "Missing"
 
     def test_process_exception(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         doc = MagicMock()
         doc.blocks = [_mock_block(0, "x")]
@@ -351,7 +317,6 @@ class TestTableCaptionMatcher:
         )
 
     def test_caption_regex_matches(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         cm = TableCaptionMatcher()
         assert cm.caption_regex.match("Table 1: Results")
@@ -361,14 +326,12 @@ class TestTableCaptionMatcher:
         assert cm.caption_regex.match("Table A: Letter")
 
     def test_caption_regex_no_match(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         cm = TableCaptionMatcher()
         assert not cm.caption_regex.match("Figure 1: test")
         assert not cm.caption_regex.match("Not a table caption")
 
     def test_match_table_captions_convenience(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import match_table_captions
         doc = MagicMock()
         doc.blocks = []
@@ -380,7 +343,6 @@ class TestTableCaptionMatcher:
 
 class TestTableRenderer:
     def test_render_none_table(self):
-        from app.models import BlockType
         from app.pipeline.tables.renderer import TableRenderer
         doc = MagicMock()
         TableRenderer().render(doc, None)
@@ -388,7 +350,6 @@ class TestTableRenderer:
         doc.add_table.assert_not_called()
 
     def test_render_no_rows(self):
-        from app.models import BlockType
         from app.pipeline.tables.renderer import TableRenderer
         doc = MagicMock()
         tbl = _mock_table("T1", rows=[])
@@ -396,7 +357,6 @@ class TestTableRenderer:
         doc.add_table.assert_not_called()
 
     def test_render_no_caption(self):
-        from app.models import BlockType
         from app.pipeline.tables.renderer import TableRenderer
         doc = MagicMock()
         tbl = _mock_table("T1", rows=[["A", "B"]])
@@ -405,7 +365,6 @@ class TestTableRenderer:
         doc.add_table.assert_called_once()
 
     def test_render_with_caption_exact_match(self):
-        from app.models import BlockType
         from app.pipeline.tables.renderer import TableRenderer
         doc = MagicMock()
         tbl = _mock_table("T1", block_index=0, caption_text="Table 1: Results")
@@ -418,7 +377,6 @@ class TestTableRenderer:
         doc.add_table.assert_called_once()
 
     def test_render_with_caption_different_number(self):
-        from app.models import BlockType
         from app.pipeline.tables.renderer import TableRenderer
         doc = MagicMock()
         tbl = _mock_table("T1", block_index=5, caption_text="Data table")
@@ -430,7 +388,6 @@ class TestTableRenderer:
         doc.add_table.assert_called_once()
 
     def test_render_populates_cells(self):
-        from app.models import BlockType
         from app.pipeline.tables.renderer import TableRenderer
         doc = MagicMock()
         word_cell = MagicMock()
@@ -452,7 +409,6 @@ class TestTableRenderer:
         assert word_cell.text == "Hello"
 
     def test_render_nested_table(self):
-        from app.models import BlockType
         from app.pipeline.tables.renderer import TableRenderer
         doc = MagicMock()
         word_table = MagicMock()
@@ -474,7 +430,6 @@ class TestTableRenderer:
         word_cell.add_paragraph.assert_not_called()
 
     def test_render_nested_table_failure(self):
-        from app.models import BlockType
         from app.pipeline.tables.renderer import TableRenderer
         doc = MagicMock()
         word_cell = MagicMock()
@@ -502,7 +457,6 @@ class TestTableRenderer:
         word_cell.add_paragraph.assert_called_once()
 
     def test_render_style_exception(self):
-        from app.models import BlockType
         from app.pipeline.tables.renderer import TableRenderer
         doc = MagicMock()
         style_prop = PropertyMock(side_effect=Exception("style err"))
@@ -513,7 +467,6 @@ class TestTableRenderer:
         doc.add_table.assert_called_once()
 
     def test_render_cols_zero(self):
-        from app.models import BlockType
         from app.pipeline.tables.renderer import TableRenderer
         doc = MagicMock()
         tbl = _mock_table("T1", rows=[[]])

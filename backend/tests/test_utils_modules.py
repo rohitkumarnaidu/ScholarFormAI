@@ -3,8 +3,6 @@
 
 from __future__ import annotations
 
-import pytest
-from unittest.mock import MagicMock, patch
 
 from app.utils.serialization import build_structured_data, safe_model_dump
 from app.utils.singleton import resolve_optional_callable

@@ -10,7 +10,7 @@ Allows running both models in parallel and comparing results.
 import time
 import logging
 from typing import Dict, Any, List, Optional
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 from app.utils.singleton import get_or_create
 
 logger = logging.getLogger(__name__)

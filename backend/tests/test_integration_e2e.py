@@ -4,7 +4,6 @@
 
 import pytest
 import time
-import os
 import uuid
 from pathlib import Path
 from unittest.mock import MagicMock, patch
