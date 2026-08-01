@@ -13,17 +13,17 @@ import pytest
 # ==============================================================================
 
 class TestFigureAnalysisTool:
-    @patch("app.pipeline.services.docling_client.DoclingClient")
-    def test_success_with_figures(self, mock_dc_cls):
+    @patch("app.pipeline.parsing.llm_pdf_parser.LLMPDFParser")
+    def test_success_with_figures(self, mock_llm_cls):
         mock_client = MagicMock()
         mock_client.analyze_layout.return_value = {
-            "blocks": [
-                {"block_type": "figure", "text": "Fig 1 caption", "bbox": {"x": 0, "y": 0}, "page": 1},
-                {"block_type": "figure", "text": "Fig 2 caption", "bbox": {"x": 10, "y": 10}, "page": 2},
-                {"block_type": "paragraph", "text": "some text", "bbox": {}, "page": 1},
+            "elements": [
+                {"type": "figure", "text": "Fig 1 caption", "bbox": {"x": 0, "y": 0}, "page": 1},
+                {"type": "figure", "text": "Fig 2 caption", "bbox": {"x": 10, "y": 10}, "page": 2},
+                {"type": "paragraph", "text": "some text", "bbox": {}, "page": 1},
             ]
         }
-        mock_dc_cls.return_value = mock_client
+        mock_llm_cls.return_value = mock_client
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
         tool = FigureAnalysisTool()
         result = json.loads(tool._run("test.pdf"))
@@ -31,36 +31,36 @@ class TestFigureAnalysisTool:
         assert result["figures"]["total_count"] == 2
         assert result["figures"]["with_captions"] == 2
 
-    @patch("app.pipeline.services.docling_client.DoclingClient")
-    def test_no_figures(self, mock_dc_cls):
+    @patch("app.pipeline.parsing.llm_pdf_parser.LLMPDFParser")
+    def test_no_figures(self, mock_llm_cls):
         mock_client = MagicMock()
-        mock_client.analyze_layout.return_value = {"blocks": [{"block_type": "paragraph", "text": "text"}]}
-        mock_dc_cls.return_value = mock_client
+        mock_client.analyze_layout.return_value = {"elements": [{"type": "paragraph", "text": "text"}]}
+        mock_llm_cls.return_value = mock_client
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
         tool = FigureAnalysisTool()
         result = json.loads(tool._run("test.pdf"))
         assert result["figures"]["total_count"] == 0
 
-    @patch("app.pipeline.services.docling_client.DoclingClient")
-    def test_layout_data_none(self, mock_dc_cls):
+    @patch("app.pipeline.parsing.llm_pdf_parser.LLMPDFParser")
+    def test_layout_data_none(self, mock_llm_cls):
         mock_client = MagicMock()
         mock_client.analyze_layout.return_value = None
-        mock_dc_cls.return_value = mock_client
+        mock_llm_cls.return_value = mock_client
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
         tool = FigureAnalysisTool()
         assert "ERROR" in tool._run("test.pdf")
 
-    @patch("app.pipeline.services.docling_client.DoclingClient")
-    def test_exception_handling(self, mock_dc_cls):
+    @patch("app.pipeline.parsing.llm_pdf_parser.LLMPDFParser")
+    def test_exception_handling(self, mock_llm_cls):
         mock_client = MagicMock()
         mock_client.analyze_layout.side_effect = RuntimeError("failed")
-        mock_dc_cls.return_value = mock_client
+        mock_llm_cls.return_value = mock_client
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
         tool = FigureAnalysisTool()
         assert "ERROR" in tool._run("test.pdf")
 
-    @patch("app.pipeline.services.docling_client.DoclingClient")
-    def test_arun_raises_not_implemented(self, mock_dc_cls):
+    @patch("app.pipeline.parsing.llm_pdf_parser.LLMPDFParser")
+    def test_arun_raises_not_implemented(self, mock_llm_cls):
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
         tool = FigureAnalysisTool()
         with pytest.raises(NotImplementedError):
@@ -72,48 +72,48 @@ class TestFigureAnalysisTool:
 # ==============================================================================
 
 class TestLayoutAnalysisTool:
-    @patch("app.pipeline.services.docling_client.DoclingClient")
-    def test_success(self, mock_dc_cls):
+    @patch("app.pipeline.parsing.llm_pdf_parser.LLMPDFParser")
+    def test_success(self, mock_llm_cls):
         mock_client = MagicMock()
         mock_client.analyze_layout.return_value = {
-            "blocks": [
-                {"block_type": "heading1", "text": "Intro", "font_size": 16, "bbox": {}},
-                {"block_type": "paragraph", "text": "Some text", "font_size": 12, "bbox": {}},
-                {"block_type": "figure", "text": "", "font_size": None, "bbox": {}},
-                {"block_type": "table", "text": "", "font_size": None, "bbox": {}},
+            "elements": [
+                {"type": "heading", "text": "Intro", "font_size": 16, "bbox": {}},
+                {"type": "paragraph", "text": "Some text", "font_size": 12, "bbox": {}},
+                {"type": "figure", "text": "", "font_size": None, "bbox": {}},
+                {"type": "table", "text": "", "font_size": None, "bbox": {}},
             ]
         }
-        mock_dc_cls.return_value = mock_client
+        mock_llm_cls.return_value = mock_client
         from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
         tool = LayoutAnalysisTool()
         result = json.loads(tool._run("test.pdf"))
         assert result["status"] == "success"
-        assert result["layout"]["total_blocks"] == 4
+        assert result["layout"]["total_elements"] == 4
         assert result["layout"]["headings"] == 1
         assert result["layout"]["paragraphs"] == 1
         assert result["layout"]["has_figures"] is True
         assert result["layout"]["has_tables"] is True
 
-    @patch("app.pipeline.services.docling_client.DoclingClient")
-    def test_layout_data_none(self, mock_dc_cls):
+    @patch("app.pipeline.parsing.llm_pdf_parser.LLMPDFParser")
+    def test_layout_data_none(self, mock_llm_cls):
         mock_client = MagicMock()
         mock_client.analyze_layout.return_value = None
-        mock_dc_cls.return_value = mock_client
+        mock_llm_cls.return_value = mock_client
         from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
         tool = LayoutAnalysisTool()
         assert "ERROR" in tool._run("test.pdf")
 
-    @patch("app.pipeline.services.docling_client.DoclingClient")
-    def test_exception_handling(self, mock_dc_cls):
+    @patch("app.pipeline.parsing.llm_pdf_parser.LLMPDFParser")
+    def test_exception_handling(self, mock_llm_cls):
         mock_client = MagicMock()
         mock_client.analyze_layout.side_effect = RuntimeError("failed")
-        mock_dc_cls.return_value = mock_client
+        mock_llm_cls.return_value = mock_client
         from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
         tool = LayoutAnalysisTool()
         assert "ERROR" in tool._run("test.pdf")
 
-    @patch("app.pipeline.services.docling_client.DoclingClient")
-    def test_arun_not_implemented(self, mock_dc_cls):
+    @patch("app.pipeline.parsing.llm_pdf_parser.LLMPDFParser")
+    def test_arun_not_implemented(self, mock_llm_cls):
         from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
         tool = LayoutAnalysisTool()
         with pytest.raises(NotImplementedError):
