@@ -16,22 +16,20 @@ pytestmark = [pytest.mark.pipeline]
 # circuit_breaker.py
 # ══════════════════════════════════════════════════════════════════════════════
 
-# Pre-import for reload-based testing
-import app.pipeline.safety.circuit_breaker as _cb_mod
+# Pre-import for patching-based testing — use importlib to get the real MODULE,
+# not the function that __init__.py re-exports under the same name
+_cb_mod = importlib.import_module("app.pipeline.safety.circuit_breaker")
 
 
 class TestCircuitBreaker:
     @contextmanager
-    def _patch_pybreaker(self, pybreaker_state=None, extra_mods=None):
-        """Context that patches pybreaker availability and reloads circuit_breaker."""
-        mods = {"pybreaker": pybreaker_state}
-        if extra_mods:
-            mods.update(extra_mods)
-        with patch.dict("sys.modules", mods, clear=False):
-            yield importlib.reload(_cb_mod)
+    def _no_pybreaker(self):
+        """Context that simulates pybreaker not being installed by patching _PYBREAKER=False."""
+        with patch.object(_cb_mod, "_PYBREAKER", False):
+            yield _cb_mod
 
     def test_pybreaker_import_fallback(self):
-        with self._patch_pybreaker(None) as mod:
+        with self._no_pybreaker() as mod:
             assert mod._PYBREAKER is False
             cb = mod.circuit_breaker(failure_threshold=2, recovery_timeout=1)
             called = False
@@ -45,7 +43,7 @@ class TestCircuitBreaker:
             assert called
 
     def test_legacy_trip_and_recover(self):
-        with self._patch_pybreaker(None) as mod:
+        with self._no_pybreaker() as mod:
             cb = mod.circuit_breaker(failure_threshold=1, recovery_timeout=5)
             call_count = [0]
             @cb
@@ -62,7 +60,7 @@ class TestCircuitBreaker:
             assert call_count[0] == 1
 
     def test_legacy_fallback_function(self):
-        with self._patch_pybreaker(None) as mod:
+        with self._no_pybreaker() as mod:
             fb = MagicMock(return_value="fallback")
             cb = mod.circuit_breaker(failure_threshold=1, recovery_timeout=60, fallback_function=fb)
             @cb
@@ -76,7 +74,7 @@ class TestCircuitBreaker:
             assert fb.call_count == 2
 
     def test_legacy_fallback_also_fails(self):
-        with self._patch_pybreaker(None) as mod:
+        with self._no_pybreaker() as mod:
             fb = MagicMock(side_effect=Exception("fb fail"))
             cb = mod.circuit_breaker(failure_threshold=1, recovery_timeout=60, fallback_function=fb)
             @cb
@@ -87,7 +85,7 @@ class TestCircuitBreaker:
             fb.assert_called_once()
 
     def test_legacy_open_circuit_no_fallback(self):
-        with self._patch_pybreaker(None) as mod:
+        with self._no_pybreaker() as mod:
             cb = mod.circuit_breaker(failure_threshold=1, recovery_timeout=60)
             @cb
             def this_fails():
@@ -101,9 +99,9 @@ class TestCircuitBreaker:
         _pb = __import__("sys").modules.get("pybreaker")
         if not _pb:
             pytest.skip("pybreaker not available")
-        with self._patch_pybreaker(_pb) as mod:
+        with patch.object(_cb_mod, "_PYBREAKER", True):
             fb = MagicMock(return_value="fallback")
-            cbr = mod.circuit_breaker(failure_threshold=2, recovery_timeout=60, fallback_function=fb)
+            cbr = _cb_mod.circuit_breaker(failure_threshold=2, recovery_timeout=60, fallback_function=fb)
             fail_count = [0]
             @cbr
             def fails_once():
@@ -120,9 +118,9 @@ class TestCircuitBreaker:
         _pb = __import__("sys").modules.get("pybreaker")
         if not _pb:
             pytest.skip("pybreaker not available")
-        with self._patch_pybreaker(_pb) as mod:
+        with patch.object(_cb_mod, "_PYBREAKER", True):
             fb = MagicMock(side_effect=Exception("fb fail"))
-            cbr = mod.circuit_breaker(failure_threshold=2, recovery_timeout=60, fallback_function=fb)
+            cbr = _cb_mod.circuit_breaker(failure_threshold=2, recovery_timeout=60, fallback_function=fb)
             fail_count = [0]
             @cbr
             def fails():
@@ -139,8 +137,8 @@ class TestCircuitBreaker:
         _pb = __import__("sys").modules.get("pybreaker")
         if not _pb:
             pytest.skip("pybreaker not available")
-        with self._patch_pybreaker(_pb) as mod:
-            cb = mod.circuit_breaker(failure_threshold=3, recovery_timeout=60)
+        with patch.object(_cb_mod, "_PYBREAKER", True):
+            cb = _cb_mod.circuit_breaker(failure_threshold=3, recovery_timeout=60)
             call_count = [0]
             @cb
             def sometimes_fails():
@@ -154,6 +152,8 @@ class TestCircuitBreaker:
                 sometimes_fails()
             assert sometimes_fails() == "ok"
             assert call_count[0] == 3
+
+
 
 
 # ══════════════════════════════════════════════════════════════════════════════
