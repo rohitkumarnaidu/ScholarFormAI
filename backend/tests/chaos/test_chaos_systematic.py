@@ -78,7 +78,10 @@ class TestSingleServiceFailure:
     def test_clock_skew_handled(self):
         """Simulate clock skew where timestamps are in the future — verify no crash."""
         wrong_time = datetime.now(UTC) + timedelta(days=365)
-        with patch("app.pipeline.orchestrator.datetime") as mock_dt:
+        # Patch datetime on the actual orchestrator sub-module that imports it.
+        # create=True is required because datetime is imported locally (function-scoped),
+        # not at the module level, so the attribute may not exist at patch time.
+        with patch("app.pipeline.orchestrator.orchestrator.datetime", create=True) as mock_dt:
             mock_dt.now.return_value = wrong_time
             mock_dt.side_effect = lambda *a, **kw: datetime(*a, **kw) if a else wrong_time
             safe = False
