@@ -129,6 +129,27 @@ class RedisCache:
         except Exception as e:
             logger.error(f"Error writing to LLM Redis cache: {e}")
 
+    def get(self, key: str) -> str | None:
+        """Generic get: retrieve a value by key. Returns None if unavailable."""
+        client = self._ensure_client()
+        if not client:
+            return None
+        try:
+            return client.get(key)
+        except Exception as e:
+            logger.error(f"Error reading from Redis cache (key={key}): {e}")
+            return None
+
+    def set(self, key: str, value: str, ttl: int = 3600) -> None:
+        """Generic set: store a value by key with optional TTL (seconds)."""
+        client = self._ensure_client()
+        if not client:
+            return
+        try:
+            client.setex(key, ttl, value)
+        except Exception as e:
+            logger.error(f"Error writing to Redis cache (key={key}): {e}")
+
     def delete(self, key: str) -> None:
         """Delete a key from the cache."""
         client = self._ensure_client()

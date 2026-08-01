@@ -23,20 +23,24 @@ def client():
     mock_user = MagicMock()
     mock_user.id = "user-123"
     mock_user.role = "authenticated"
-    app.dependency_overrides[get_current_user] = lambda: mock_user
 
     mock_db = MagicMock()
     mock_service = MagicMock()
 
-    with (
-        patch("app.routers.v1.api_keys.get_db", return_value=mock_db),
-        patch("app.routers.v1.api_keys.ApiKeyService", return_value=mock_service),TestClient(app) as test_client
-    ):
-        test_client.mock_service = mock_service
-        test_client.mock_user = mock_user
-        yield test_client
+    from app.db.session import get_db
+    from app.routers.v1.api_keys import ApiKeyService
+
+    app.dependency_overrides[get_current_user] = lambda: mock_user
+    app.dependency_overrides[get_db] = lambda: mock_db
+
+    with patch("app.routers.v1.api_keys.ApiKeyService", return_value=mock_service) as _patched:
+        with TestClient(app) as test_client:
+            test_client.mock_service = mock_service
+            test_client.mock_user = mock_user
+            yield test_client
 
     app.dependency_overrides = {}
+
 
 
 class TestCreateApiKey:

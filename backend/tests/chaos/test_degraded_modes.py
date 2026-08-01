@@ -126,20 +126,20 @@ class TestNoSupabase:
         """Supabase unavailable — existing cached data is still served."""
         import asyncio
 
-        from app.services.document_service import DocumentService
+        from app.services.document_crud_service import DocumentCrudService
 
-        with patch("app.services.document_service.get_supabase_client", return_value=None):
-            result = asyncio.run(DocumentService.search_documents("test", "user1"))
+        with patch("app.services.document_crud_service.get_supabase_client", return_value=None):
+            result = asyncio.run(DocumentCrudService().list_documents("user1"))
             assert result == []
 
     def test_no_supabase_write_returns_503(self):
         """Supabase unavailable — write operations raise DatabaseUnavailableError."""
-        from app.services.document_service import DocumentService
+        from app.services.document_crud_service import DocumentCrudService
 
-        with patch("app.services.document_service.get_supabase_client", return_value=None):
+        with patch("app.services.document_crud_service.get_supabase_client", return_value=None):
             with pytest.raises(DatabaseUnavailableError):
                 import asyncio
-                asyncio.run(DocumentService.get_document("550e8400-e29b-41d4-a716-446655440000"))
+                asyncio.run(DocumentCrudService().get_document("550e8400-e29b-41d4-a716-446655440000"))
 
 
 class TestNoCelery:

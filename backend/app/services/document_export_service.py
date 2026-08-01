@@ -32,6 +32,11 @@ def _get_doc_service():
 
     return DocumentService
 
+def _get_doc_crud_service():
+    from app.services.document_crud_service import DocumentCrudService
+    
+    return DocumentCrudService()
+
 
 logger = logging.getLogger(__name__)
 
@@ -158,52 +163,58 @@ class DocumentExportService:
         current_user: User | None = None,
     ) -> dict[str, Any]:
         """Get data for side-by-side comparison with HTML diff."""
-        doc = await _get_doc_service().get_document(job_id)
-        if not doc:
-            raise HTTPException(status_code=404, detail="Document not found")
+        try:
+            doc = await _get_doc_crud_service().get_document(job_id)
+            if not doc:
+                raise HTTPException(status_code=404, detail="Document not found")
 
-        if doc.get("user_id") is not None and (not current_user or str(doc["user_id"]) != str(current_user.id)):
-            raise HTTPException(status_code=403, detail="Not authorized to access comparison data")
+            if doc.get("user_id") is not None and (not current_user or str(doc["user_id"]) != str(current_user.id)):
+                raise HTTPException(status_code=403, detail="Not authorized to access comparison data")
 
-        if doc.get("status") not in _READY_FOR_EXPORT_STATUSES:
-            logger.warning("Compare endpoint called too early for job %s. Status: %s", job_id, doc.get("status"))
-            raise HTTPException(
-                status_code=400,
-                detail=(
-                    f"Comparison data not available. Job status: {doc.get('status')}. "
-                    "Wait for COMPLETED or COMPLETED_WITH_WARNINGS status."
-                ),
+            if doc.get("status") not in _READY_FOR_EXPORT_STATUSES:
+                logger.warning("Compare endpoint called too early for job %s. Status: %s", job_id, doc.get("status"))
+                raise HTTPException(
+                    status_code=400,
+                    detail=(
+                        f"Comparison data not available. Job status: {doc.get('status')}. "
+                        "Wait for COMPLETED or COMPLETED_WITH_WARNINGS status."
+                    ),
+                )
+
+            result = await _get_doc_crud_service().get_document_result(job_id)
+            if not result:
+                logger.warning("DocumentResult missing for completed job %s", job_id)
+                raise HTTPException(status_code=404, detail="Processing results not found")
+
+            original_text = doc.get("raw_text") or ""
+            formatted_text = ""
+            structured_data = result.get("structured_data")
+            if structured_data and isinstance(structured_data, dict):
+                blocks = structured_data.get("blocks") or structured_data.get("sections", [])
+                formatted_text = "\n\n".join(
+                    [block.get("text", "") for block in blocks if isinstance(block, dict) and block.get("text")]
+                )
+
+            html_diff = await asyncio.to_thread(
+                difflib.HtmlDiff(wrapcolumn=80).make_file,
+                original_text.splitlines(keepends=True),
+                formatted_text.splitlines(keepends=True),
+                fromdesc="Original Document",
+                todesc="Formatted Document",
+                context=True,
+                numlines=3,
             )
 
-        result = await _get_doc_service().get_document_result(job_id)
-        if not result:
-            logger.warning("DocumentResult missing for completed job %s", job_id)
-            raise HTTPException(status_code=404, detail="Processing results not found")
-
-        original_text = doc.get("raw_text") or ""
-        formatted_text = ""
-        structured_data = result.get("structured_data")
-        if structured_data and isinstance(structured_data, dict):
-            blocks = structured_data.get("blocks") or structured_data.get("sections", [])
-            formatted_text = "\n\n".join(
-                [block.get("text", "") for block in blocks if isinstance(block, dict) and block.get("text")]
-            )
-
-        html_diff = await asyncio.to_thread(
-            difflib.HtmlDiff(wrapcolumn=80).make_file,
-            original_text.splitlines(keepends=True),
-            formatted_text.splitlines(keepends=True),
-            fromdesc="Original Document",
-            todesc="Formatted Document",
-            context=True,
-            numlines=3,
-        )
-
-        return {
-            "html_diff": html_diff,
-            "original": {"raw_text": original_text, "structured_data": None},
-            "formatted": {"structured_data": structured_data},
-        }
+            return {
+                "html_diff": html_diff,
+                "original": {"raw_text": original_text, "structured_data": None},
+                "formatted": {"structured_data": structured_data},
+            }
+        except HTTPException:
+            raise
+        except Exception as exc:
+            logger.error("Comparison data generation failed for %s: %s", job_id, exc)
+            raise HTTPException(status_code=500, detail=f"Comparison failed: {str(exc)}")
 
     async def download_document(
         self,
@@ -216,7 +227,7 @@ class DocumentExportService:
     ) -> Any:
         """Download the processed document in DOCX, PDF, or TeX format."""
         try:
-            doc = await _get_doc_service().get_document(job_id)
+            doc = await _get_doc_crud_service().get_document(job_id)
             if not doc:
                 raise HTTPException(status_code=404, detail="Document job not found")
 
