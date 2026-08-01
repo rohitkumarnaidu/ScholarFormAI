@@ -151,7 +151,11 @@ class SemanticParser:
                 prediction = {"type": "METHODOLOGY", "confidence": 0.8}
             elif upper_text.startswith("CONCLUSION") or upper_text.startswith("CONCLUSIONS"):
                 prediction = {"type": "CONCLUSION", "confidence": 0.8}
-            elif upper_text.startswith("INTRODUCTION") or upper_text.startswith("RESULTS") or upper_text.startswith("DISCUSSION"):
+            elif (
+                upper_text.startswith("INTRODUCTION")
+                or upper_text.startswith("RESULTS")
+                or upper_text.startswith("DISCUSSION")
+            ):
                 prediction = {"type": "HEADING", "confidence": 0.8}
             elif text.startswith("Figure") or text.startswith("Fig."):
                 prediction = {"type": "FIGURE_CAPTION", "confidence": 0.7}

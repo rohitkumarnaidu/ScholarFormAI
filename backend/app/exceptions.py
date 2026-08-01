@@ -82,7 +82,7 @@ class PipelineError(ScholarFormError):
 class ValidationError(ScholarFormError):
     """Raised when input validation fails."""
 
-    http_status = status.HTTP_422_UNPROCESSABLE_ENTITY
+    http_status = 422
 
 
 class FileStorageError(ScholarFormError):

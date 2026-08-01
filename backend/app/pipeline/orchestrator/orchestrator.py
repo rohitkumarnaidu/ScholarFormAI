@@ -406,7 +406,6 @@ class PipelineOrchestrator:
                 self._update_status(job_id, "SYSTEM", "FAILED", "Edit interrupted by shutdown", progress=0)
             return {"status": "cancelled", "message": "Edit interrupted by shutdown"}
         except Exception as e:
-
             logger.error("Edit flow error: %s", e)
             self._update_status(job_id, "PERSISTENCE", "FAILED", str(e), progress=0)
             return {"status": "error", "message": str(e)}

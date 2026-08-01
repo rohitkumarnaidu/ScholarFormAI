@@ -30,9 +30,7 @@ class UserApiKey(Base):
     total_requests = Column(Integer, default=0, nullable=False)
     last_request_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
-    updated_at = Column(
-        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
-    )
+    updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
 
     user = relationship(
         "User", back_populates="api_keys", lazy="joined", primaryjoin="foreign(UserApiKey.user_id) == User.id"

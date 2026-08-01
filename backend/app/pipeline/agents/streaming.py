@@ -7,7 +7,7 @@ Streaming callback handler for real-time agent updates.
 
 import logging
 import sys
-from typing import Any
+from typing import Any, Callable
 
 if sys.version_info < (3, 14):
     try:
@@ -39,7 +39,7 @@ class StreamingAgentCallback(BaseCallbackHandler):
     - Final results
     """
 
-    def __init__(self, callback_fn: callable | None = None):
+    def __init__(self, callback_fn: Callable | None = None):
         """
         Initialize streaming callback.
 
