@@ -186,7 +186,6 @@ class AdaptiveStrategy:
         """
         if not isinstance(document_metadata, dict):
             logger.warning("recommend_strategy received non-dict metadata: %s", type(document_metadata))
-            document_metadata = {}
 
         # Check if we have ML patterns
         if self.ml_detector is not None:

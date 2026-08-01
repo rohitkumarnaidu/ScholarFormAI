@@ -65,3 +65,5 @@ def downgrade() -> None:
     op.drop_index("idx_webhook_subs_active_events", table_name="webhook_subscriptions")
     op.drop_index("idx_webhook_subs_user_id", table_name="webhook_subscriptions")
     op.drop_table("webhook_subscriptions")
+
+__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']

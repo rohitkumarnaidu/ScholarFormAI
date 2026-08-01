@@ -40,3 +40,5 @@ def downgrade() -> None:
     existing = {col["name"] for col in inspector.get_columns("documents")}
     if "template" in existing:
         op.drop_column('documents', 'template')
+
+__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']

@@ -42,3 +42,4 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.drop_table("custom_providers")
+__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']

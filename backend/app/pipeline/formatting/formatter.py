@@ -1139,15 +1139,15 @@ class Formatter:
         """Render a block with contract-driven spacing, formatting, and dynamic list detection."""
         # Skip rendering empty anchor blocks (preserve in pipeline)
         if block.text.strip() == "" and block.metadata.get("has_figure", False):
-            return  # Block remains in pipeline for anchor stability
+            return None  # Block remains in pipeline for anchor stability
 
         if block.text.strip() == "" and block.metadata.get("has_equation", False):
-            return  # Block remains in pipeline for anchor stability
+            return None  # Block remains in pipeline for anchor stability
 
         # DYNAMIC LIST DETECTION
         clean_text = block.text.strip()
         if not clean_text:
-            return  # Skip empty blocks
+            return None  # Skip empty blocks
 
         try:
             # Check if this is a list item
@@ -1188,7 +1188,7 @@ class Formatter:
                 )
                 self._apply_spacing_from_contract(p, block, template_name)
             else:
-                return
+                return None
 
         return p
 

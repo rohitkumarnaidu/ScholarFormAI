@@ -30,3 +30,5 @@ def upgrade() -> None:
 def downgrade() -> None:
     op.drop_index("idx_documents_user_updated", table_name="documents")
     op.drop_index("idx_documents_user_created", table_name="documents")
+
+__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']
