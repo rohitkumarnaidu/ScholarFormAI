@@ -6,7 +6,6 @@ Reference Field Normalizer - Cleans parsed reference fields.
 """
 
 import re
-from typing import List
 
 
 def clean_author_name(name: str) -> str:

@@ -15,18 +15,12 @@ Covers:
 """
 from __future__ import annotations
 
-import io
-import os
-import tempfile
-from pathlib import Path
 
 import pytest
 from docx import Document as DocxDocument
-from docx.shared import Inches, Pt
-from unittest.mock import MagicMock, patch
+from docx.shared import Inches
 
 from app.pipeline.parsing.parser import DocxParser
-from app.models import BlockType
 
 
 class TestValidDocxParsing:

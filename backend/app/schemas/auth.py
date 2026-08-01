@@ -10,7 +10,7 @@ All response models are typed to prevent accidental data leakage.
 
 import re
 from typing import Optional
-from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────

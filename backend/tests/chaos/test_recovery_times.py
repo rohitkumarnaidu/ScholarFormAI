@@ -9,9 +9,8 @@ under simulated failure conditions.
 
 from __future__ import annotations
 
-import asyncio
 import time
-from unittest.mock import AsyncMock, MagicMock, PropertyMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -19,7 +18,6 @@ from app.pipeline.safety.circuit_breaker import (
     CircuitBreakerOpenException,
     circuit_breaker,
 )
-from app.pipeline.safety.safe_execution import safe_execution
 
 pytestmark = [pytest.mark.chaos, pytest.mark.slow]
 

@@ -7,7 +7,7 @@ Scans for Fig, Table, Eq, and Section references.
 """
 
 import re
-from typing import List, Dict, Any, Set
+from typing import List
 from app.models import PipelineDocument as Document, BlockType
 
 

@@ -1,10 +1,6 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 import pytest
 from unittest.mock import MagicMock
@@ -13,7 +9,6 @@ from app.pipeline.formatting.numbering import NumberingEngine
 @pytest.fixture
 def mock_contract_loader():
 
-    from app.models import PipelineDocument, Block, BlockType, Figure, Table, Equation
     loader = MagicMock()
     loader.load.return_value = {
         "numbering": {},
@@ -22,17 +17,17 @@ def mock_contract_loader():
     return loader
 
 def _h(text: str, level: int, index: int, bid: str):
-    from app.models import PipelineDocument, Block, BlockType, Figure, Table, Equation
+    from app.models import Block, BlockType
     bt = getattr(BlockType, f"HEADING_{level}", BlockType.HEADING_1)
     return Block(block_id=bid, text=text, index=index, block_type=bt, level=level)
 
 def _body(text: str, index: int, bid: str):
-    from app.models import PipelineDocument, Block, BlockType, Figure, Table, Equation
+    from app.models import Block, BlockType
     return Block(block_id=bid, text=text, index=index, block_type=BlockType.BODY)
 
 class TestNumberingEngine:
     def test_number_headings_sequential(self, mock_contract_loader):
-        from app.models import PipelineDocument, Block, BlockType, Figure, Table, Equation
+        from app.models import PipelineDocument
         engine = NumberingEngine(mock_contract_loader)
         doc = PipelineDocument(
             document_id="doc1",
@@ -48,7 +43,7 @@ class TestNumberingEngine:
         assert result.blocks[2].text == "3 Results"
 
     def test_number_nested_headings(self, mock_contract_loader):
-        from app.models import PipelineDocument, Block, BlockType, Figure, Table, Equation
+        from app.models import PipelineDocument
         engine = NumberingEngine(mock_contract_loader)
         doc = PipelineDocument(
             document_id="doc1",
@@ -66,7 +61,7 @@ class TestNumberingEngine:
         assert result.blocks[3].text == "2 Section 2"
 
     def test_idempotent_no_double_number(self, mock_contract_loader):
-        from app.models import PipelineDocument, Block, BlockType, Figure, Table, Equation
+        from app.models import PipelineDocument
         engine = NumberingEngine(mock_contract_loader)
         doc = PipelineDocument(
             document_id="doc1",
@@ -78,7 +73,7 @@ class TestNumberingEngine:
         assert result.blocks[0].text == "1 Introduction"
 
     def test_figure_numbering(self, mock_contract_loader):
-        from app.models import PipelineDocument, Block, BlockType, Figure, Table, Equation
+        from app.models import PipelineDocument, Figure
         engine = NumberingEngine(mock_contract_loader)
         fig1 = Figure(figure_id="f1", index=1)
         fig2 = Figure(figure_id="f2", index=2)
@@ -88,7 +83,7 @@ class TestNumberingEngine:
         assert result.figures[1].number == 2
 
     def test_table_numbering(self, mock_contract_loader):
-        from app.models import PipelineDocument, Block, BlockType, Figure, Table, Equation
+        from app.models import PipelineDocument, Table
         engine = NumberingEngine(mock_contract_loader)
         t1 = Table(table_id="t1", num_rows=1, num_cols=1, index=1, block_index=0)
         t2 = Table(table_id="t2", num_rows=1, num_cols=1, index=2, block_index=1)
@@ -98,7 +93,7 @@ class TestNumberingEngine:
         assert result.tables[1].number == 2
 
     def test_equation_numbering_parentheses(self, mock_contract_loader):
-        from app.models import PipelineDocument, Block, BlockType, Figure, Table, Equation
+        from app.models import PipelineDocument, Equation
         engine = NumberingEngine(mock_contract_loader)
         eq1 = Equation(equation_id="e1", latex="x=1", index=1)
         eq2 = Equation(equation_id="e2", latex="y=2", index=2)
@@ -108,7 +103,7 @@ class TestNumberingEngine:
         assert result.equations[1].number == "(2)"
 
     def test_equation_numbering_brackets(self, mock_contract_loader):
-        from app.models import PipelineDocument, Block, BlockType, Figure, Table, Equation
+        from app.models import PipelineDocument, Equation
         loader = MagicMock()
         loader.load.return_value = {
             "numbering": {},
@@ -121,7 +116,7 @@ class TestNumberingEngine:
         assert result.equations[0].number == "[1]"
 
     def test_equation_numbering_no_brackets(self, mock_contract_loader):
-        from app.models import PipelineDocument, Block, BlockType, Figure, Table, Equation
+        from app.models import PipelineDocument, Equation
         loader = MagicMock()
         loader.load.return_value = {
             "numbering": {},
@@ -134,7 +129,7 @@ class TestNumberingEngine:
         assert result.equations[0].number == "1"
 
     def test_non_heading_blocks_unchanged(self, mock_contract_loader):
-        from app.models import PipelineDocument, Block, BlockType, Figure, Table, Equation
+        from app.models import PipelineDocument
         engine = NumberingEngine(mock_contract_loader)
         doc = PipelineDocument(
             document_id="doc1",

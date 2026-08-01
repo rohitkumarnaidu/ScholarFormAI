@@ -1,7 +1,5 @@
 from __future__ import annotations
-import pytest
-from unittest.mock import patch, MagicMock
-import json
+from unittest.mock import patch
 
 
 class TestPreviewRenderer:
@@ -176,5 +174,5 @@ class TestPreviewRenderer:
             assert "ieee" in renderer._css_cache
 
     def test_global_preload_function(self):
-        from app.services.preview_renderer import preload_template_css, preview_renderer
+        from app.services.preview_renderer import preview_renderer
         assert preview_renderer is not None

@@ -1,7 +1,5 @@
 import pytest
-import time
-from unittest.mock import MagicMock, patch, AsyncMock, PropertyMock
-from datetime import datetime, timezone
+from unittest.mock import MagicMock, patch, AsyncMock
 
 
 class TestTransientError:

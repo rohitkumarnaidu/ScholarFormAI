@@ -1,6 +1,4 @@
-import json
-import time
-from unittest.mock import MagicMock, patch, call, mock_open
+from unittest.mock import patch, mock_open
 
 import pytest
 

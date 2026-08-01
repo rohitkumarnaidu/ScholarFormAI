@@ -1,6 +1,5 @@
 import ipaddress
 import logging
-import re
 import time
 from typing import Optional, Union
 from urllib.parse import urlparse

@@ -5,8 +5,7 @@ import logging
 import re
 from typing import Any, Dict, List, Optional
 
-from app.config.settings import settings
-from app.models import Block, BlockType, PipelineDocument as Document
+from app.models import Block
 from app.pipeline.safety import safe_function
 from app.services.classification_gate import should_enable_llm_classification
 from app.pipeline.classification.llm_classifier import get_llm_classifier

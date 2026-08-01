@@ -30,7 +30,7 @@ from app.models import (
     TextStyle,
 )
 from app.pipeline.parsing.base_parser import BaseParser
-from app.services.llm_service import generate_with_model, LLMUnavailableError
+from app.services.llm_service import generate_with_model
 from app.utils.id_generator import generate_block_id
 
 logger = logging.getLogger(__name__)

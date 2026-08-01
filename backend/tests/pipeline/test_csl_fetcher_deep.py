@@ -1,10 +1,6 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 from unittest.mock import MagicMock, patch, AsyncMock
 import pytest
@@ -122,7 +118,7 @@ class TestCslFetcherModule:
             assert all(r["source"] == "local" for r in rows)
 
     def test_local_styles_empty_dir(self, tmp_path):
-        from app.pipeline.services.csl_fetcher import _local_styles, TEMPLATES_DIR
+        from app.pipeline.services.csl_fetcher import _local_styles
         from pathlib import Path
         with patch("app.pipeline.services.csl_fetcher.TEMPLATES_DIR", Path(str(tmp_path))):
             rows = _local_styles()
@@ -260,7 +256,7 @@ class TestFetchStyle:
 
     @pytest.mark.asyncio
     async def test_fetch_style_local_path_exists(self, tmp_path):
-        from app.pipeline.services.csl_fetcher import fetch_style, TEMPLATES_DIR, reset_csl_cache_for_tests
+        from app.pipeline.services.csl_fetcher import fetch_style, reset_csl_cache_for_tests
         from pathlib import Path
         reset_csl_cache_for_tests()
         with patch("app.pipeline.services.csl_fetcher.TEMPLATES_DIR", Path(str(tmp_path))):
@@ -272,7 +268,7 @@ class TestFetchStyle:
 
     @pytest.mark.asyncio
     async def test_fetch_style_local_path_exists_ttl_zero(self, tmp_path):
-        from app.pipeline.services.csl_fetcher import fetch_style, TEMPLATES_DIR, _style_cache, reset_csl_cache_for_tests
+        from app.pipeline.services.csl_fetcher import fetch_style, _style_cache, reset_csl_cache_for_tests
         from pathlib import Path
         reset_csl_cache_for_tests()
         bad_settings = type("Settings", (), {"CSL_FETCH_CACHE_TTL_SECONDS": -1})()
@@ -286,7 +282,7 @@ class TestFetchStyle:
 
     @pytest.mark.asyncio
     async def test_fetch_style_remote(self, tmp_path):
-        from app.pipeline.services.csl_fetcher import fetch_style, TEMPLATES_DIR, reset_csl_cache_for_tests
+        from app.pipeline.services.csl_fetcher import fetch_style, reset_csl_cache_for_tests
         from pathlib import Path
         reset_csl_cache_for_tests()
         with patch("app.pipeline.services.csl_fetcher.TEMPLATES_DIR", Path(str(tmp_path))):
@@ -305,7 +301,7 @@ class TestFetchStyle:
 
     @pytest.mark.asyncio
     async def test_fetch_style_remote_ttl_zero(self, tmp_path):
-        from app.pipeline.services.csl_fetcher import fetch_style, TEMPLATES_DIR, _style_cache, reset_csl_cache_for_tests
+        from app.pipeline.services.csl_fetcher import fetch_style, _style_cache, reset_csl_cache_for_tests
         from pathlib import Path
         reset_csl_cache_for_tests()
         bad_settings = type("Settings", (), {"CSL_FETCH_CACHE_TTL_SECONDS": -1})()
@@ -326,7 +322,7 @@ class TestFetchStyle:
 
     @pytest.mark.asyncio
     async def test_fetch_style_cached_under_lock(self):
-        from app.pipeline.services.csl_fetcher import fetch_style, _style_cache, _get_style_cache_lock, reset_csl_cache_for_tests
+        from app.pipeline.services.csl_fetcher import fetch_style, _style_cache, reset_csl_cache_for_tests
         from time import monotonic
         reset_csl_cache_for_tests()
         _style_cache["apa"] = (monotonic() + 1000, {"slug": "apa", "source": "local", "content": "<style/>"})
@@ -344,7 +340,7 @@ class TestFetchStyle:
 
     @pytest.mark.asyncio
     async def test_fetch_style_remote_http_error(self, tmp_path):
-        from app.pipeline.services.csl_fetcher import fetch_style, TEMPLATES_DIR, reset_csl_cache_for_tests
+        from app.pipeline.services.csl_fetcher import fetch_style, reset_csl_cache_for_tests
         from pathlib import Path
         reset_csl_cache_for_tests()
         with patch("app.pipeline.services.csl_fetcher.TEMPLATES_DIR", Path(str(tmp_path))):
@@ -363,7 +359,7 @@ class TestFetchStyle:
 class TestFetchStyleZoteroUrl:
     @pytest.mark.asyncio
     async def test_fetch_style_uses_zotero_url(self, tmp_path):
-        from app.pipeline.services.csl_fetcher import fetch_style, TEMPLATES_DIR, ZOTERO_STYLE_URL, reset_csl_cache_for_tests
+        from app.pipeline.services.csl_fetcher import fetch_style, ZOTERO_STYLE_URL, reset_csl_cache_for_tests
         from pathlib import Path
         reset_csl_cache_for_tests()
         with patch("app.pipeline.services.csl_fetcher.TEMPLATES_DIR", Path(str(tmp_path))):

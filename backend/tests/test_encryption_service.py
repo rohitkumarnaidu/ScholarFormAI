@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import patch
 
 import pytest
 
@@ -67,7 +67,6 @@ class TestEncryptionService:
 
 class TestGetEncryptionService:
     def test_returns_singleton(self):
-        from app.services.encryption_service import get_encryption_service
         with patch.dict("os.environ", {"ENCRYPTION_KEY": _FERNET_KEY}):
             from app.services.encryption_service import get_encryption_service as gs
             # Clear module cache to force fresh singleton

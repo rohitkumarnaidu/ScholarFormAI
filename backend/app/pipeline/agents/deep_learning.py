@@ -7,7 +7,7 @@ Deep learning integration using transformers for pattern detection.
 
 import logging
 import numpy as np
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Tuple
 
 try:
     import torch

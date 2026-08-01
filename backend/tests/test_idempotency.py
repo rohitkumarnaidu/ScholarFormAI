@@ -5,9 +5,7 @@
 
 from __future__ import annotations
 
-import json
 import time
-from unittest.mock import ANY, AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi import FastAPI, HTTPException
@@ -243,7 +241,7 @@ class TestIdempotencyAtEndpoints:
 
     def test_idempotency_key_logging_middleware(self):
         """Verify that RequestIdMiddleware logs idempotency keys on matching paths."""
-        from app.middleware.request_id import RequestIdMiddleware, _should_log_idempotency
+        from app.middleware.request_id import _should_log_idempotency
         assert _should_log_idempotency("/api/v1/documents/upload") is True
         assert _should_log_idempotency("/api/v1/generator/sessions") is True
         assert _should_log_idempotency("/api/v1/synthesis/sessions") is True

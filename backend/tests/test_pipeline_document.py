@@ -1,7 +1,6 @@
 from __future__ import annotations
 import pytest
-from datetime import datetime, timezone
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 class TestPipelineDocument:
@@ -111,7 +110,7 @@ class TestPipelineDocument:
 
     def test_get_blocks_by_type(self):
         from app.models.pipeline_document import PipelineDocument
-        from app.models.block import Block, BlockType
+        from app.models.block import Block
         doc = PipelineDocument(document_id="d1")
         doc.blocks.append(Block(block_id="b1", text="A", index=0, block_type="body"))
         doc.blocks.append(Block(block_id="b2", text="B", index=1, block_type="heading_1"))

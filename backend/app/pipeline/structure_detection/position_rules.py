@@ -11,7 +11,7 @@ This module contains rules based on block positioning and spacing:
 - Spacing patterns
 """
 
-from typing import List, Optional, Dict, Any
+from typing import List, Dict, Any
 from app.models import Block
 
 

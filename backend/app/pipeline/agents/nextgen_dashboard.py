@@ -6,9 +6,8 @@ Next-generation analytics dashboard.
 """
 
 import logging
-from typing import Dict, Any, Optional
+from typing import Optional
 from datetime import datetime
-from pathlib import Path
 from app.pipeline.agents.deep_learning import TransformerPatternDetector
 from app.pipeline.agents.federated_learning import FederatedLearningNode
 from app.pipeline.agents.realtime_adaptation import RealTimeAdaptiveAgent

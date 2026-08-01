@@ -6,7 +6,6 @@
 Unit tests for the export pipeline.
 """
 import pytest
-import os
 from unittest.mock import MagicMock, patch
 from app.models import PipelineDocument, DocumentMetadata
 from app.pipeline.export.exporter import Exporter

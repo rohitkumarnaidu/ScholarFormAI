@@ -5,12 +5,8 @@
 Test suite for figures pipeline: analyzer and caption matcher.
 """
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
-from unittest.mock import patch, MagicMock, PropertyMock
+from unittest.mock import patch, MagicMock
 import os
 import pytest
 from app.pipeline.figures.caption_matcher import CaptionMatcher, link_figures
@@ -24,17 +20,16 @@ class TestCaptionMatcher:
     @pytest.fixture
     def matcher(self):
 
-        from app.models import PipelineDocument, Block, BlockType, Figure
         return CaptionMatcher()
 
     def test_process_empty_document(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import PipelineDocument
         doc = PipelineDocument(document_id="t", blocks=[])
         result = matcher.process(doc)
         assert result is doc
 
     def test_process_no_figures_returns_early(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import PipelineDocument, Block, BlockType
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=1, text="As shown in Figure 1.", block_type=BlockType.BODY),
         ])
@@ -70,7 +65,6 @@ class TestCaptionMatcher:
         assert "figure_linking" in stages
 
     def test_vision_client_disabled_by_default(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Figure
         assert matcher.vision_client is None
 
     def test_vision_enhance_skipped_when_client_none(self, matcher):
@@ -253,11 +247,9 @@ class TestCaptionMatcher:
 class TestFigureAnalyzer:
     @pytest.fixture
     def analyzer(self):
-        from app.models import PipelineDocument, Block, BlockType, Figure
         return FigureAnalyzer()
 
     def test_analyze_valid_image(self, analyzer, temp_image):
-        from app.models import PipelineDocument, Block, BlockType, Figure
         result = analyzer.analyze_image(temp_image)
         assert result["width"] == 800
         assert result["height"] == 600
@@ -268,7 +260,6 @@ class TestFigureAnalyzer:
         assert isinstance(result["valid"], bool)
 
     def test_analyze_low_resolution_image(self, analyzer, temp_image_low_res):
-        from app.models import PipelineDocument, Block, BlockType, Figure
         result = analyzer.analyze_image(temp_image_low_res)
         assert result["valid"] is False
         assert result["width"] == 100
@@ -277,20 +268,17 @@ class TestFigureAnalyzer:
         assert any("Low resolution" in issue for issue in result["issues"])
 
     def test_analyze_nonexistent_file(self, analyzer):
-        from app.models import PipelineDocument, Block, BlockType, Figure
         result = analyzer.analyze_image("/nonexistent/path.png")
         assert "error" in result
         assert result["path"] == "/nonexistent/path.png"
 
     def test_analyze_jpeg_format(self, analyzer, temp_jpeg_image):
-        from app.models import PipelineDocument, Block, BlockType, Figure
         result = analyzer.analyze_image(temp_jpeg_image)
         assert result["format"] == "JPEG"
         assert result["width"] == 1024
         assert isinstance(result["valid"], bool)
 
     def test_aspect_ratio_calculation(self, analyzer):
-        from app.models import PipelineDocument, Block, BlockType, Figure
         from PIL import Image
         import tempfile
         with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
@@ -304,7 +292,6 @@ class TestFigureAnalyzer:
             os.unlink(path)
 
     def test_custom_min_dimensions(self):
-        from app.models import PipelineDocument, Block, BlockType, Figure
         analyzer = FigureAnalyzer(min_width=500, min_height=500, min_dpi=300)
         from PIL import Image
         import tempfile
@@ -322,18 +309,15 @@ class TestFigureAnalyzer:
     # -- downsample tests --------------------------------------------
 
     def test_downsample_not_needed(self, analyzer, temp_image):
-        from app.models import PipelineDocument, Block, BlockType, Figure
         result = analyzer.downsample_if_needed(temp_image, max_size_bytes=50_000_000)
         assert result == temp_image
 
     def test_downsample_returns_none_for_missing(self, analyzer):
-        from app.models import PipelineDocument, Block, BlockType, Figure
         result = analyzer.downsample_if_needed("/nonexistent.png")
         assert result is None
 
     def test_downsample_creates_smaller_file(self, analyzer):
         """When file exceeds max_size, a downsampled copy is created."""
-        from app.models import PipelineDocument, Block, BlockType, Figure
         from PIL import Image
         import tempfile
         with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
@@ -357,7 +341,6 @@ class TestFigureAnalyzer:
 
     def test_downsample_error_returns_original(self, analyzer):
         """If downsampling fails, the original path is returned."""
-        from app.models import PipelineDocument, Block, BlockType, Figure
         with patch("PIL.Image.open", side_effect=Exception("corrupt")):
             from PIL import Image
             import tempfile
@@ -372,7 +355,6 @@ class TestFigureAnalyzer:
                 os.unlink(path)
 
     def test_analyze_corrupt_image(self, analyzer):
-        from app.models import PipelineDocument, Block, BlockType, Figure
         import tempfile
         with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
             f.write(b"not a real image file")

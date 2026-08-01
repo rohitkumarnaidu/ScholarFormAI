@@ -5,8 +5,7 @@
 Tests for the LangChain document agent.
 """
 import pytest
-import os
-from unittest.mock import MagicMock, patch, mock_open
+from unittest.mock import MagicMock, patch
 from app.pipeline.agents.document_agent import DocumentAgent
 from app.pipeline.agents.tools.metadata_tool import MetadataExtractionTool
 from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool

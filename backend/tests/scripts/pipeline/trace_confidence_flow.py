@@ -6,7 +6,6 @@ RUNTIME TRACE ANALYSIS - Confidence Engine Verification
 Traces NLP confidence flow through classifier to verify integration.
 """
 
-import json
 from app.pipeline.parsing.parser import DocxParser
 from app.pipeline.normalization.normalizer import Normalizer
 from app.pipeline.structure_detection.detector import StructureDetector

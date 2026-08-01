@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import time
 import pytest
-from unittest.mock import MagicMock, AsyncMock, Mock
+from unittest.mock import MagicMock, AsyncMock
 
 try:
     from app.middleware.rate_limit import RateLimitMiddleware

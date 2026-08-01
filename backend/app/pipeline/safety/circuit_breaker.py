@@ -92,7 +92,7 @@ def circuit_breaker(
                             logger.error("Fallback also failed: %s", fb)
                             return {}
                     raise CircuitBreakerOpenException(f"Circuit Breaker is OPEN for {func.__name__}") from exc
-                except Exception as exc:
+                except Exception:
                     if fallback_function:
                         try:
                             return fallback_function(*args, **kwargs)

@@ -2,12 +2,11 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
+from app.models import Block, TemplateInfo, Figure, Reference, Table
 from __future__ import annotations
 from unittest.mock import MagicMock, patch, PropertyMock
-from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata
-from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata
+from app.models import PipelineDocument as Document, Block, TemplateInfo, Figure, Reference, Table
+from app.models import PipelineDocument as Document, Block, TemplateInfo, Figure, Reference, Table
 import pytest
 
 from app.pipeline.validation.validator_v3 import (
@@ -23,11 +22,11 @@ from app.pipeline.validation.ai_explainer import AIExplainer
 def _doc(**overrides) -> Document:
 
     """Minimal PipelineDocument."""
-    from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
+    from app.models import PipelineDocument as Document, Document
     return Document(document_id="test-123", **overrides)
 
 def _block(block_id: str = "b1", **kw) -> Block:
-    from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
+    from app.models import Block
     return Block(block_id=block_id, index=0, text="Hello", **kw)
 
 # ===========================================================================
@@ -36,7 +35,6 @@ def _block(block_id: str = "b1", **kw) -> Block:
 
 class TestDocumentValidatorInit:
     def test_init_creates_dependencies(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         v = DocumentValidator()
         assert v.contract_loader is not None
         assert v.order_validator is not None
@@ -45,24 +43,20 @@ class TestDocumentValidatorInit:
 
 class TestAsBool:
     def test_none_default(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         assert DocumentValidator._as_bool(None) is False
         assert DocumentValidator._as_bool(None, True) is True
 
     def test_bool_passthrough(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         assert DocumentValidator._as_bool(True) is True
         assert DocumentValidator._as_bool(False) is False
 
     def test_int_float(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         assert DocumentValidator._as_bool(1) is True
         assert DocumentValidator._as_bool(0) is False
         assert DocumentValidator._as_bool(1.0) is True
         assert DocumentValidator._as_bool(0.0) is False
 
     def test_string_values(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         assert DocumentValidator._as_bool("true") is True
         assert DocumentValidator._as_bool("yes") is True
         assert DocumentValidator._as_bool("1") is True
@@ -75,7 +69,6 @@ class TestAsBool:
 
 class TestDocumentValidatorProcess:
     def test_process_calls_validate(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         v.validate = MagicMock(return_value=ValidationResult(is_valid=True))
@@ -84,7 +77,6 @@ class TestDocumentValidatorProcess:
         assert result is doc
 
     def test_process_safe_execution_fallback(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         v.validate = MagicMock(side_effect=RuntimeError("boom"))
@@ -93,7 +85,6 @@ class TestDocumentValidatorProcess:
 
 class TestDocumentValidatorValidate:
     def test_validate_empty_document(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         with patch.multiple(v, _check_sections=MagicMock(return_value=([], [])),
@@ -107,7 +98,6 @@ class TestDocumentValidatorValidate:
         assert doc.is_valid is True
 
     def test_validate_with_errors(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         with patch.multiple(v, _check_sections=MagicMock(return_value=(["Section missing"], [])),
@@ -122,7 +112,6 @@ class TestDocumentValidatorValidate:
         assert "Section missing" in doc.validation_errors
 
     def test_validate_integrity_violations(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         v.integrity_engine.validate_integrity = MagicMock(return_value=[
@@ -140,7 +129,6 @@ class TestDocumentValidatorValidate:
         assert "Warning: figure out of order" in result.warnings
 
     def test_validate_fast_mode_skips_doi_checks(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc(formatting_options={"fast_mode": True})
         v = DocumentValidator()
         with patch.multiple(v, _check_sections=MagicMock(return_value=([], [])),
@@ -153,7 +141,6 @@ class TestDocumentValidatorValidate:
         assert result.is_valid is True
 
     def test_validate_doi_warnings_non_fast(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         with patch.multiple(v, _check_sections=MagicMock(return_value=([], [])),
@@ -166,7 +153,6 @@ class TestDocumentValidatorValidate:
         assert "DOI error" in result.warnings
 
     def test_validate_adds_processing_stage(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         with patch.multiple(v, _check_sections=MagicMock(return_value=([], [])),
@@ -182,7 +168,6 @@ class TestDocumentValidatorValidate:
         assert stage.status in ("success", "warning")
 
     def test_validate_returns_stats(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         with patch.multiple(v, _check_sections=MagicMock(return_value=([], [])),
@@ -197,7 +182,6 @@ class TestDocumentValidatorValidate:
 
 class TestCheckSections:
     def test_delegates_to_order_validator(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc(blocks=[_block(section_name="Introduction")])
         v = DocumentValidator()
         v.order_validator.validate_order = MagicMock(return_value=["Missing required: Abstract"])
@@ -206,7 +190,6 @@ class TestCheckSections:
         assert len(warnings) == 0
 
     def test_non_missing_are_warnings(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         v.order_validator.validate_order = MagicMock(return_value=["Unusual order: Methods before Introduction"])
@@ -215,7 +198,6 @@ class TestCheckSections:
         assert any("Unusual order" in w for w in warnings)
 
     def test_handles_exception_gracefully(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         v.order_validator.validate_order = MagicMock(side_effect=ValueError("boom"))
@@ -224,7 +206,6 @@ class TestCheckSections:
         assert any("Section order check skipped" in w for w in warnings)
 
     def test_fallback_publisher(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         v.order_validator.validate_order = MagicMock(return_value=[])
@@ -232,7 +213,6 @@ class TestCheckSections:
         v.order_validator.validate_order.assert_called_with(doc, "IEEE")
 
     def test_publisher_from_template(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc(blocks=[_block(section_name="Intro")],
                    template=TemplateInfo(template_name="ACM"))
         v = DocumentValidator()
@@ -241,7 +221,6 @@ class TestCheckSections:
         v.order_validator.validate_order.assert_called_with(doc, "ACM")
 
     def test_no_template_fallback(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         v.order_validator.validate_order = MagicMock(return_value=[])
@@ -250,7 +229,6 @@ class TestCheckSections:
 
 class TestCheckFigures:
     def test_figure_with_caption_no_warning(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         fig = Figure(figure_id="f1", index=0, caption_text="Fig. 1. Results")
         doc = _doc(figures=[fig])
         v = DocumentValidator()
@@ -259,7 +237,6 @@ class TestCheckFigures:
         assert warnings == []
 
     def test_figure_without_caption_warning(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         fig = Figure(figure_id="F1", index=0, caption_text=None)
         doc = _doc(figures=[fig])
         v = DocumentValidator()
@@ -267,7 +244,6 @@ class TestCheckFigures:
         assert "Figure F1 missing caption" in warnings
 
     def test_no_figures(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         errors, warnings = v._check_figures(doc)
@@ -276,7 +252,6 @@ class TestCheckFigures:
 
 class TestCheckReferences:
     def test_no_references_no_section_warns_nothing(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         errors, warnings = v._check_references(doc)
@@ -284,14 +259,12 @@ class TestCheckReferences:
         assert warnings == []
 
     def test_no_references_but_section_exists_warns(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc(blocks=[_block(section_name="References")])
         v = DocumentValidator()
         errors, warnings = v._check_references(doc)
         assert "References section found but no reference entries parsed" in warnings
 
     def test_ref_missing_year(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         ref = Reference(reference_id="r1", citation_key="R1",
                         raw_text="Ref text", index=0,
                         year=None, authors=["Smith"], title="Paper")
@@ -301,7 +274,6 @@ class TestCheckReferences:
         assert any("R1" in w and "year" in w for w in warnings)
 
     def test_ref_missing_authors_error(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         ref = Reference(reference_id="r1", citation_key="R1",
                         raw_text="Ref text", index=0,
                         year=2023, authors=[], title="Paper")
@@ -311,7 +283,6 @@ class TestCheckReferences:
         assert any("R1" in e and "authors" in e for e in errors)
 
     def test_ref_missing_title_warning(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         ref = Reference(reference_id="r1", citation_key="R1",
                         raw_text="Ref text", index=0,
                         year=2023, authors=["Smith"], title=None)
@@ -321,7 +292,6 @@ class TestCheckReferences:
         assert any("R1" in w and "title" in w for w in warnings)
 
     def test_ref_all_fields_ok(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         ref = Reference(reference_id="r1", citation_key="R1",
                         raw_text="Ref text", index=0,
                         year=2023, authors=["Smith"], title="Paper")
@@ -333,7 +303,6 @@ class TestCheckReferences:
 
 class TestCheckTables:
     def test_table_with_caption(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         tbl = Table(table_id="t1", num_rows=1, num_cols=1,
                      index=0, block_index=0,
                      caption_text="Table 1. Results")
@@ -343,7 +312,6 @@ class TestCheckTables:
         assert warnings == []
 
     def test_table_without_caption(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         tbl = Table(table_id="t1", num_rows=1, num_cols=1,
                      index=0, block_index=0,
                      caption_text=None)
@@ -353,7 +321,6 @@ class TestCheckTables:
         assert any("missing caption" in w for w in warnings)
 
     def test_empty_table_attr(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         errors, warnings = v._check_tables(doc)
@@ -361,7 +328,6 @@ class TestCheckTables:
 
 class TestCheckReferenceIntegrity:
     def test_no_references(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         v = DocumentValidator()
         errors, warnings = v._check_reference_integrity(doc)
@@ -369,7 +335,6 @@ class TestCheckReferenceIntegrity:
         assert warnings == []
 
     def test_valid_doi_high_confidence(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         ref = Reference(reference_id="r1", citation_key="R1",
                         raw_text="Ref text", index=0,
                         doi="10.1234/test", title="Paper",
@@ -386,7 +351,6 @@ class TestCheckReferenceIntegrity:
         assert ref.metadata["validation"]["confidence"] == 0.85
 
     def test_invalid_doi(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         ref = Reference(reference_id="r1", citation_key="R1",
                         raw_text="Ref text", index=0,
                         doi="10.1234/bad")
@@ -399,7 +363,6 @@ class TestCheckReferenceIntegrity:
         assert ref.metadata["validation"]["confidence"] == 0.0
 
     def test_low_confidence_warning(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         ref = Reference(reference_id="r1", citation_key="R1",
                         raw_text="Ref text", index=0,
                         doi="10.1234/low", title="Paper",
@@ -413,7 +376,6 @@ class TestCheckReferenceIntegrity:
         assert any("low confidence" in w for w in warnings)
 
     def test_metadata_fetch_exception(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         ref = Reference(reference_id="r1", citation_key="R1",
                         raw_text="Ref text", index=0,
                         doi="10.1234/test")
@@ -425,7 +387,6 @@ class TestCheckReferenceIntegrity:
         assert any("Failed to fetch metadata" in w for w in warnings)
 
     def test_validate_doi_exception(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         ref = Reference(reference_id="r1", citation_key="R1",
                         raw_text="Ref text", index=0,
                         doi="10.1234/test")
@@ -436,7 +397,6 @@ class TestCheckReferenceIntegrity:
         assert any("CrossRef validation failed" in w for w in warnings)
 
     def test_method_level_crash_safe_function_fallback(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         v = DocumentValidator()
         doc = MagicMock()
         # Accessing doc.references raises to trigger safe_function decorator
@@ -446,13 +406,11 @@ class TestCheckReferenceIntegrity:
 
 class TestValidateDocument:
     def test_convenience_function(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         result = validate_document(doc)
         assert isinstance(result, ValidationResult)
 
     def test_convenience_function_safe_fallback(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc()
         with patch("app.pipeline.validation.validator_v3.DocumentValidator") as m_cls:
             m_cls.return_value.validate.side_effect = RuntimeError("boom")
@@ -466,24 +424,20 @@ class TestValidateDocument:
 
 class TestReviewManagerInit:
     def test_default_thresholds(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         rm = ReviewManager()
         assert rm.review_threshold == 0.70
         assert rm.critical_threshold == 0.45
 
     def test_custom_thresholds(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         rm = ReviewManager(review_threshold=0.8, critical_threshold=0.3)
         assert rm.review_threshold == 0.8
         assert rm.critical_threshold == 0.3
 
     def test_critical_gte_review_raises(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         with pytest.raises(ValueError, match="critical_threshold"):
             ReviewManager(review_threshold=0.5, critical_threshold=0.5)
 
     def test_out_of_range_thresholds(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         with pytest.raises(ValueError, match="Thresholds must be between"):
             ReviewManager(review_threshold=1.5, critical_threshold=0.3)
         with pytest.raises(ValueError, match="Thresholds must be between"):
@@ -491,12 +445,11 @@ class TestReviewManagerInit:
 
 class TestReviewManagerEvaluate:
     def make_doc(self, blocks=None):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         doc = _doc(blocks=blocks or [])
         return doc
 
     def test_all_high_confidence_ok(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
+        from app.models import ReviewStatus
         b = _block(classification_confidence=0.95, semantic_intent="ABSTRACT")
         doc = self.make_doc(blocks=[b])
         rm = ReviewManager()
@@ -505,7 +458,7 @@ class TestReviewManagerEvaluate:
         assert doc.review.lowest_confidence == 0.95
 
     def test_critical_confidence(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
+        from app.models import ReviewStatus
         b = _block(classification_confidence=0.3, semantic_intent="METHODS")
         doc = self.make_doc(blocks=[b])
         rm = ReviewManager()
@@ -514,7 +467,7 @@ class TestReviewManagerEvaluate:
         assert any("CRITICAL" in f for f in doc.review.flags)
 
     def test_review_confidence(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
+        from app.models import ReviewStatus
         b = _block(classification_confidence=0.55, semantic_intent="RESULTS")
         doc = self.make_doc(blocks=[b])
         rm = ReviewManager()
@@ -525,7 +478,7 @@ class TestReviewManagerEvaluate:
         assert not any("CRITICAL" in f for f in doc.review.flags)
 
     def test_none_confidence_fallsback_to_1(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
+        from app.models import ReviewStatus
         b = _block(classification_confidence=None)
         doc = self.make_doc(blocks=[b])
         rm = ReviewManager()
@@ -533,7 +486,7 @@ class TestReviewManagerEvaluate:
         assert doc.review.status == ReviewStatus.OK
 
     def test_confidence_from_metadata_classification(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
+        from app.models import Block, ReviewStatus
         b = Block(block_id="b1", index=0, text="test",
                   metadata={"classification_confidence": 0.35})
         doc = self.make_doc(blocks=[b])
@@ -542,7 +495,7 @@ class TestReviewManagerEvaluate:
         assert doc.review.status == ReviewStatus.CRITICAL
 
     def test_confidence_from_metadata_nlp(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
+        from app.models import Block, ReviewStatus
         b = Block(block_id="b1", index=0, text="test",
                   metadata={"nlp_confidence": 0.55})
         doc = self.make_doc(blocks=[b])
@@ -551,7 +504,7 @@ class TestReviewManagerEvaluate:
         assert doc.review.status == ReviewStatus.REVIEW
 
     def test_non_numeric_confidence_defaults_to_1(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
+        from app.models import Block, ReviewStatus
         b = Block(block_id="b1", index=0, text="test",
                   metadata={"classification_confidence": "bad"})
         doc = self.make_doc(blocks=[b])
@@ -560,7 +513,6 @@ class TestReviewManagerEvaluate:
         assert doc.review.status == ReviewStatus.OK
 
     def test_confidence_clamped(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         b = _block(classification_confidence=1.5)
         doc = self.make_doc(blocks=[b])
         rm = ReviewManager()
@@ -568,7 +520,7 @@ class TestReviewManagerEvaluate:
         assert doc.review.lowest_confidence <= 1.0
 
     def test_semantic_intent_fallback(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
+        from app.models import Block
         b = Block(block_id="b1", index=0, text="test",
                   metadata={"semantic_intent": "ACKNOWLEDGMENTS"},
                   classification_confidence=0.3)
@@ -578,7 +530,7 @@ class TestReviewManagerEvaluate:
         assert any("ACKNOWLEDGMENTS" in f for f in doc.review.flags)
 
     def test_semantic_advice_low_confidence(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
+        from app.models import ReviewStatus
         b = _block(classification_confidence=0.95)
         doc = self.make_doc(blocks=[b])
         doc.metadata.ai_hints = {"semantic_advice": {"confidence": 0.5}}
@@ -587,7 +539,7 @@ class TestReviewManagerEvaluate:
         assert doc.review.status == ReviewStatus.REVIEW
 
     def test_semantic_advice_higher_ignored(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
+        from app.models import ReviewStatus
         b = _block(classification_confidence=0.95)
         doc = self.make_doc(blocks=[b])
         doc.metadata.ai_hints = {"semantic_advice": {"confidence": 0.9}}
@@ -596,7 +548,6 @@ class TestReviewManagerEvaluate:
         assert doc.review.status == ReviewStatus.OK
 
     def test_flags_limited_to_5(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         blocks = [_block(block_id=f"b{i}", classification_confidence=0.3,
                          semantic_intent=f"S{i}") for i in range(10)]
         doc = self.make_doc(blocks=blocks)
@@ -605,7 +556,7 @@ class TestReviewManagerEvaluate:
         assert len(doc.review.flags) <= 5
 
     def test_lowest_conf_tracked_across_blocks(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
+        from app.models import ReviewStatus
         b1 = _block(classification_confidence=0.9)
         b2 = _block(classification_confidence=0.4)
         doc = self.make_doc(blocks=[b1, b2])
@@ -615,7 +566,6 @@ class TestReviewManagerEvaluate:
         assert doc.review.status == ReviewStatus.CRITICAL
 
     def test_reason_set_for_critical(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         b = _block(classification_confidence=0.3)
         doc = self.make_doc(blocks=[b])
         rm = ReviewManager()
@@ -623,7 +573,6 @@ class TestReviewManagerEvaluate:
         assert doc.review.reason is not None
 
     def test_reason_set_for_review(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         b = _block(classification_confidence=0.55)
         doc = self.make_doc(blocks=[b])
         rm = ReviewManager()
@@ -631,7 +580,6 @@ class TestReviewManagerEvaluate:
         assert doc.review.reason is not None
 
     def test_no_flags_for_ok(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         b = _block(classification_confidence=0.95)
         doc = self.make_doc(blocks=[b])
         rm = ReviewManager()
@@ -644,13 +592,11 @@ class TestReviewManagerEvaluate:
 
 class TestAIExplainer:
     def test_explain_empty_errors(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         explainer = AIExplainer()
         result = explainer.explain_results({"errors": []})
         assert result == []
 
     def test_explain_missing_section_string_error(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         explainer = AIExplainer()
         result = explainer.explain_results({
             "errors": ["Missing required section: Abstract"]
@@ -660,7 +606,6 @@ class TestAIExplainer:
         assert "IEEE" in result[0]
 
     def test_explain_reference_string_error(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         explainer = AIExplainer()
         result = explainer.explain_results({
             "errors": ["Reference R1 missing DOI"]
@@ -669,7 +614,6 @@ class TestAIExplainer:
         assert "reference" in result[0].lower()
 
     def test_explain_general_string_error(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         explainer = AIExplainer()
         result = explainer.explain_results({
             "errors": ["Formatting issue detected"]
@@ -678,7 +622,6 @@ class TestAIExplainer:
         assert "formatting error" in result[0]
 
     def test_explain_dict_error(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         explainer = AIExplainer()
         result = explainer.explain_results({
             "errors": [{"category": "figure_captions", "message": "Fig 1 missing caption"}]
@@ -687,7 +630,6 @@ class TestAIExplainer:
         assert "Figures detected" in result[0]
 
     def test_explain_dict_error_unknown_category(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         explainer = AIExplainer()
         result = explainer.explain_results({
             "errors": [{"category": "unknown_category", "message": "Something is off"}]
@@ -696,7 +638,6 @@ class TestAIExplainer:
         assert "formatting error" in result[0].lower()
 
     def test_explain_custom_publisher(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         explainer = AIExplainer()
         result = explainer.explain_results({
             "errors": ["Missing required section: Abstract"]
@@ -704,7 +645,6 @@ class TestAIExplainer:
         assert "ACM" in result[0]
 
     def test_explain_multiple_errors(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         explainer = AIExplainer()
         result = explainer.explain_results({
             "errors": [
@@ -716,7 +656,6 @@ class TestAIExplainer:
         assert len(result) == 3
 
     def test_explain_no_errors_key(self):
-        from app.models import PipelineDocument as Document, Block, BlockType, ReviewStatus, Document
         explainer = AIExplainer()
         result = explainer.explain_results({})
         assert result == []

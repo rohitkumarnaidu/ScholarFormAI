@@ -14,7 +14,7 @@ from __future__ import annotations
 import json
 import os
 import sys
-from unittest.mock import MagicMock, patch, ANY
+from unittest.mock import MagicMock, patch
 import pytest
 import numpy as np
 
@@ -392,7 +392,7 @@ class TestInit:
             mock_model.encode.return_value = [0.1] * 384
             mst.return_value = mock_model
 
-            from app.pipeline.intelligence.rag_engine import RagEngine, _load_chromadb
+            from app.pipeline.intelligence.rag_engine import RagEngine
 
             with patch("app.pipeline.intelligence.rag_engine.chromadb", mock_chroma):
                 e = RagEngine(persist_directory=persist, auto_seed=False)
@@ -929,7 +929,7 @@ class TestGetRagEngine:
             mock_model.encode.return_value = [0.1] * 384
             mst.return_value = mock_model
 
-            from app.pipeline.intelligence.rag_engine import get_rag_engine, _rag_engine
+            from app.pipeline.intelligence.rag_engine import get_rag_engine
             import app.pipeline.intelligence.rag_engine as rag_mod
             orig = rag_mod._rag_engine
             try:

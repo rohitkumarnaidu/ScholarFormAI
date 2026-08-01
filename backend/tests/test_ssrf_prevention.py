@@ -1,6 +1,5 @@
 import pytest
 from unittest.mock import patch, MagicMock, AsyncMock
-from urllib.parse import urlparse
 
 pytestmark = [pytest.mark.security]
 

@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import json
 import os
-from unittest.mock import ANY, MagicMock, patch, call, mock_open
+from unittest.mock import ANY, MagicMock, patch, mock_open
 import pytest
 
 

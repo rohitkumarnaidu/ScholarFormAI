@@ -4,12 +4,9 @@
 from __future__ import annotations
 
 import asyncio
-import hashlib
 import json
 import time
-from datetime import datetime, timezone
-from pathlib import Path
-from unittest.mock import MagicMock, patch, AsyncMock, PropertyMock, call, ANY
+from unittest.mock import MagicMock, patch, AsyncMock
 
 import pytest
 
@@ -1152,7 +1149,6 @@ class TestEnhancementManagerEnterprise:
         assert d["ocr_backends"] == ["tesseract"]
 
     def test_build_profile(self, manager):
-        from app.services.enhancement_manager import _coerce_bool, _module_available
         with patch("app.services.enhancement_manager.settings") as mock_s:
             mock_s.ENHANCEMENTS_ENABLED = True
             mock_s.ENHANCEMENT_QUEUE_ENABLED = False
@@ -1384,7 +1380,7 @@ class TestProviderRegistryEnterprise:
         assert "deepseek-r1" in models
 
     def test_cache_discovered_models_expired(self):
-        from app.services.provider_registry import cache_discovered_models, _get_cached_discovered_models, _DISCOVERED_MODELS_CACHE
+        from app.services.provider_registry import cache_discovered_models, _get_cached_discovered_models
         cache_discovered_models("user-2", "ollama", ["model1"])
         import time as t
         with patch("app.services.provider_registry.time.time", return_value=t.time() + 7200):
@@ -2512,7 +2508,7 @@ class TestNvidiaClientEnterprise:
         assert result == "analysis result"
 
     def test_get_nvidia_client_none(self):
-        from app.services.nvidia_client import get_nvidia_client, _nvidia_client
+        from app.services.nvidia_client import get_nvidia_client
         import app.services.nvidia_client as nc_mod
         nc_mod._nvidia_client = None
         with patch("app.services.nvidia_client.NvidiaClient") as mock_cls:

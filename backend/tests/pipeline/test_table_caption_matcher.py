@@ -1,17 +1,11 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
-from unittest.mock import MagicMock, patch
-from datetime import datetime, timezone
+from unittest.mock import MagicMock
 
 class TestTableCaptionMatcher:
     def _make_doc(self, blocks=None, tables=None):
-        from app.models import BlockType
         doc = MagicMock()
         doc.blocks = blocks or []
         doc.tables = tables or []
@@ -19,7 +13,6 @@ class TestTableCaptionMatcher:
         return doc
 
     def _make_block(self, index, text="", block_id="b1", block_type="BODY", is_heading=False):
-        from app.models import BlockType
         b = MagicMock()
         b.index = index
         b.text = text
@@ -30,7 +23,6 @@ class TestTableCaptionMatcher:
         return b
 
     def _make_table(self, block_index=0, table_id="t1"):
-        from app.models import BlockType
         t = MagicMock()
         t.block_index = block_index
         t.table_id = table_id
@@ -40,7 +32,6 @@ class TestTableCaptionMatcher:
         return t
 
     def test_no_tables_or_blocks(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         m = TableCaptionMatcher()
         doc = self._make_doc(tables=[], blocks=[])
@@ -48,7 +39,6 @@ class TestTableCaptionMatcher:
         assert result is doc
 
     def test_match_caption_above(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         block = self._make_block(index=0, text="Table 1: Results", block_id="b_cap")
         table = self._make_table(block_index=1, table_id="t1")
@@ -59,7 +49,6 @@ class TestTableCaptionMatcher:
         assert table.caption_block_id == "b_cap"
 
     def test_no_match_no_caption_pattern(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         block = self._make_block(index=0, text="Some random text", block_id="b1")
         table = self._make_table(block_index=1, table_id="t1")
@@ -69,7 +58,6 @@ class TestTableCaptionMatcher:
         assert table.metadata.get("caption_status") == "Missing"
 
     def test_skip_heading_blocks(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         heading = self._make_block(index=0, text="Table 1: Results", block_id="h1", is_heading=True)
         body = self._make_block(index=1, text="Body text", block_id="b1")
@@ -89,7 +77,6 @@ class TestTableCaptionMatcher:
         assert result == 5
 
     def test_find_references_keyword_fallback(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
         heading = self._make_block(index=3, text="Bibliography", block_id="r1", is_heading=True)
         m = TableCaptionMatcher()
@@ -97,7 +84,6 @@ class TestTableCaptionMatcher:
         assert result == 3
 
     def test_convenience_function(self):
-        from app.models import BlockType
         from app.pipeline.tables.caption_matcher import match_table_captions
         doc = MagicMock()
         doc.blocks = []

@@ -1,7 +1,7 @@
 import time
 import concurrent.futures
 import threading
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -538,7 +538,6 @@ class TestProviderLatencyProfiles:
 
 @pytest.fixture(autouse=True)
 def reset_breaker_cache():
-    import importlib
     import app.services.llm_service as llm
     llm._PROVIDER_BREAKERS.clear()
 

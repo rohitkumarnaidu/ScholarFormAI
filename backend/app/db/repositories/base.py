@@ -3,8 +3,8 @@ from __future__ import annotations
 import asyncio
 import logging
 import uuid
-from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from abc import ABC
+from typing import Optional
 
 from app.db.supabase_client import get_supabase_client
 from app.exceptions import DatabaseUnavailableError

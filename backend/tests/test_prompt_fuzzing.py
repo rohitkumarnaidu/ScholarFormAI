@@ -9,9 +9,6 @@ Sections:
 """
 
 import pytest
-import re
-from unittest.mock import MagicMock, patch
-from typing import Dict, Any
 
 
 # ===================================================================

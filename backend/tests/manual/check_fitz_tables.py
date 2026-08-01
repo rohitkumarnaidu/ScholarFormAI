@@ -2,7 +2,6 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-import sys
 try:
     import fitz
     print(f"PyMuPDF Version: {fitz.__version__}")

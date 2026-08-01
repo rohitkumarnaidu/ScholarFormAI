@@ -1,6 +1,4 @@
-import os
-import pytest
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 
 
 class TestResolveCslPath:
@@ -10,7 +8,7 @@ class TestResolveCslPath:
         assert _resolve_csl_path("") is None
 
     def test_file_exists(self, tmp_path):
-        from app.pipeline.formatting.reference_formatter import _resolve_csl_path, _TEMPLATES_DIR
+        from app.pipeline.formatting.reference_formatter import _resolve_csl_path
         csl_dir = tmp_path / "ieee"
         csl_dir.mkdir(parents=True)
         csl_file = csl_dir / "styles.csl"

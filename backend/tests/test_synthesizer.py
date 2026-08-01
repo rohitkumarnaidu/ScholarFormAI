@@ -1,25 +1,21 @@
 import pytest
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import MagicMock
 
 
 class TestTemplateToCsl:
     def test_ieee_style(self):
-        from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
         synth = _make_synth()
         assert synth._template_to_csl("ieee") == "ieee"
 
     def test_apa_style(self):
-        from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
         synth = _make_synth()
         assert synth._template_to_csl("apa") == "apa"
 
     def test_none_falls_to_ieee(self):
-        from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
         synth = _make_synth()
         assert synth._template_to_csl("none") == "ieee"
 
     def test_empty_falls_to_ieee(self):
-        from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
         synth = _make_synth()
         assert synth._template_to_csl("") == "ieee"
 
@@ -40,7 +36,6 @@ class TestExtractJson:
 
 class TestChunkText:
     def test_single_chunk(self):
-        from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
         synth = _make_synth()
         chunks = synth._chunk_text("Hello world", "doc1", "Intro", 1, chunk_size=1000)
         assert len(chunks) == 1
@@ -48,14 +43,12 @@ class TestChunkText:
         assert chunks[0]["source_doc"] == "doc1"
 
     def test_multiple_chunks_with_overlap(self):
-        from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
         synth = _make_synth()
         text = "Hello " * 500
         chunks = synth._chunk_text(text, "doc1", "Intro", None, chunk_size=200, overlap=50)
         assert len(chunks) >= 2
 
     def test_empty_text(self):
-        from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
         synth = _make_synth()
         assert synth._chunk_text("", "doc1", "Intro", None) == []
 

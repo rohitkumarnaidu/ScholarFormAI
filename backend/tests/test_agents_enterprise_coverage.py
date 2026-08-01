@@ -2,7 +2,7 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock, AsyncMock, PropertyMock, call
+from unittest.mock import patch, MagicMock
 import pytest
 
 
@@ -471,7 +471,6 @@ class TestAgentMemory:
 
     def test_load_json_corrupt_file(self, tmp_path):
         from app.pipeline.agents.memory import AgentMemory
-        import json
         f = tmp_path / ".mem22" / "corrupt.json"
         f.parent.mkdir(exist_ok=True)
         f.write_text("{invalid json")
@@ -788,7 +787,7 @@ class TestDistributedCoordinator:
 
 class TestSpecialistAgent:
     def test_init_invalid_role(self):
-        from app.pipeline.agents.distributed import SpecialistAgent, AgentRole
+        from app.pipeline.agents.distributed import SpecialistAgent
         with pytest.raises(ValueError, match="role must be an AgentRole"):
             SpecialistAgent(role="not_a_role", tools=[])
 

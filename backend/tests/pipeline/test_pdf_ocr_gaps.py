@@ -5,19 +5,11 @@
 Gap-filling tests for PdfOCR to reach 100% line coverage.
 """
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
-from unittest.mock import MagicMock, patch, PropertyMock, call
+from unittest.mock import MagicMock, patch
 import pytest
 
 from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
-from app.pipeline.ocr.pdf_ocr import (
-    PDFMINER_AVAILABLE, PDF2IMAGE_AVAILABLE, TESSERACT_AVAILABLE,
-    PADDLE_AVAILABLE, NUMPY_AVAILABLE, DOCX_AVAILABLE,
-)
 
 
 # ===================================================================

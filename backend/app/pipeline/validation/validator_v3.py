@@ -10,11 +10,11 @@ the entire pipeline.
 """
 
 import logging
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 from datetime import datetime, timezone
 from pydantic import BaseModel, Field
 
-from app.models import PipelineDocument as Document, BlockType, Figure
+from app.models import PipelineDocument as Document
 from app.pipeline.contracts.loader import ContractLoader
 from app.pipeline.formatting.section_ordering import SectionOrderValidator
 from app.pipeline.integrity.cross_ref import CrossReferenceEngine

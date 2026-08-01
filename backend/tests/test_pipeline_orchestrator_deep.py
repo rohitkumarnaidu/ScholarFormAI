@@ -9,8 +9,7 @@ import os
 import time
 import asyncio
 import threading
-from unittest.mock import MagicMock, patch, call, PropertyMock
-from concurrent.futures import ThreadPoolExecutor, Future
+from unittest.mock import MagicMock, patch
 
 import pytest
 

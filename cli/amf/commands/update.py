@@ -1,18 +1,14 @@
 """Update management CLI commands."""
 
-import json
 import logging
 import sys
 from datetime import datetime
-from pathlib import Path
 
-import click
 from rich.panel import Panel
 from rich.table import Table
 from rich.progress import BarColumn, DownloadColumn, Progress, TextColumn, TimeRemainingColumn
 
 from amf._console import get_console, safe_progress
-from amf.config import AMFConfig
 
 logger = logging.getLogger(__name__)
 console = get_console()

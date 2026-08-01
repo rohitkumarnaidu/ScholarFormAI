@@ -1,6 +1,4 @@
-import pytest
-from unittest.mock import MagicMock, patch
-from typing import Optional
+from unittest.mock import MagicMock
 
 
 class TestGetOrCreate:

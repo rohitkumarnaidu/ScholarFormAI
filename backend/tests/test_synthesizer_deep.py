@@ -6,11 +6,9 @@
 from __future__ import annotations
 
 import asyncio
-import hashlib
 import json
 import sys
-from pathlib import Path
-from unittest.mock import ANY, AsyncMock, MagicMock, call, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -18,7 +16,7 @@ import pytest
 sys.modules["app.routers.v1.generator"] = MagicMock()
 sys.modules["app.routers.v1.synthesis"] = MagicMock()
 
-from app.models import Block, BlockType, PipelineDocument, Reference
+from app.models import Block, PipelineDocument
 from app.pipeline.synthesis.synthesizer import _FakeUpload, _REF_PATTERN, MultiDocSynthesizer
 
 

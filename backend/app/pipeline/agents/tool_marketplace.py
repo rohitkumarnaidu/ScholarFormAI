@@ -6,7 +6,6 @@ Tool marketplace for community tool sharing.
 """
 
 import logging
-import requests
 import json
 from typing import List, Dict, Any, Optional
 from pathlib import Path

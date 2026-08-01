@@ -1,10 +1,6 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 import pytest
 from unittest.mock import MagicMock
@@ -13,7 +9,6 @@ from app.pipeline.formatting.section_ordering import SectionOrderValidator
 @pytest.fixture
 def mock_contract_loader():
 
-    from app.models import PipelineDocument, Block, BlockType
     loader = MagicMock()
     loader.load.return_value = {
         "sections": {
@@ -24,7 +19,7 @@ def mock_contract_loader():
     return loader
 
 def _h(text: str, section_name: str, index: int, bid: str):
-    from app.models import PipelineDocument, Block, BlockType
+    from app.models import Block, BlockType
     return Block(
         block_id=bid, text=text, index=index,
         block_type=BlockType.HEADING_1,
@@ -33,12 +28,12 @@ def _h(text: str, section_name: str, index: int, bid: str):
     )
 
 def _body(text: str, index: int, bid: str):
-    from app.models import PipelineDocument, Block, BlockType
+    from app.models import Block, BlockType
     return Block(block_id=bid, text=text, index=index, block_type=BlockType.BODY)
 
 class TestSectionOrderValidator:
     def test_valid_order_no_violations(self, mock_contract_loader):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import PipelineDocument
         validator = SectionOrderValidator(mock_contract_loader)
         doc = PipelineDocument(
             document_id="doc1",
@@ -56,7 +51,7 @@ class TestSectionOrderValidator:
         assert violations == []
 
     def test_missing_required_section(self, mock_contract_loader):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import PipelineDocument
         validator = SectionOrderValidator(mock_contract_loader)
         doc = PipelineDocument(
             document_id="doc1",
@@ -69,7 +64,7 @@ class TestSectionOrderValidator:
         assert any("abstract" in v.lower() for v in violations)
 
     def test_out_of_order_section(self, mock_contract_loader):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import PipelineDocument
         validator = SectionOrderValidator(mock_contract_loader)
         doc = PipelineDocument(
             document_id="doc1",
@@ -83,7 +78,7 @@ class TestSectionOrderValidator:
         assert any("out of order" in v.lower() for v in violations)
 
     def test_no_headings_no_violations(self, mock_contract_loader):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import PipelineDocument
         validator = SectionOrderValidator(mock_contract_loader)
         doc = PipelineDocument(
             document_id="doc1",
@@ -93,7 +88,7 @@ class TestSectionOrderValidator:
         assert any("missing" in v.lower() for v in violations)
 
     def test_empty_document(self, mock_contract_loader):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import PipelineDocument
         validator = SectionOrderValidator(mock_contract_loader)
         doc = PipelineDocument(document_id="doc1")
         violations = validator.validate_order(doc, "ieee")

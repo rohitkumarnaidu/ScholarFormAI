@@ -8,8 +8,7 @@ from __future__ import annotations
 import os
 import time
 import threading
-from concurrent.futures import ThreadPoolExecutor
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -56,7 +55,7 @@ class TestMalformedInput:
         """Pipeline should handle a document with no content gracefully."""
         empty_file = tmp_path / "empty.txt"
         empty_file.write_text("")
-        from app.models import DocumentMetadata, PipelineDocument, Block
+        from app.models import DocumentMetadata, PipelineDocument
         doc = PipelineDocument(document_id="job-empty", metadata=DocumentMetadata())
         doc.blocks = []
         orch = _make_orch()
@@ -310,7 +309,6 @@ class TestCaptionsEquationsCrossrefs:
 class TestInterruptionAndTimeout:
     def test_processing_interruption_mid_stage(self):
         """Simulate interruption mid-pipeline — should handle gracefully."""
-        from app.pipeline.orchestrator import PipelineOrchestrator
         event = threading.Event()
 
         def interrupted_stage():

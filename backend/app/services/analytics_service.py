@@ -5,7 +5,6 @@ Uses PostHog when configured, falls back to structured logging.
 
 import logging
 import os
-from datetime import datetime, timezone
 from typing import Any, Optional
 
 logger = logging.getLogger(__name__)

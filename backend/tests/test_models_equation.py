@@ -9,7 +9,6 @@ Covers construction, serialization, content representations, and defaults.
 
 from __future__ import annotations
 
-import pytest
 
 
 class TestEquationMinimumFields:

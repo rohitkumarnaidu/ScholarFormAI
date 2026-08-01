@@ -6,8 +6,7 @@ Tests for database session, supabase client, exceptions, and cache.
 """
 from __future__ import annotations
 
-import pytest
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import patch
 
 from app.exceptions import (
     ExternalServiceError,

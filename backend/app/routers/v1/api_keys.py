@@ -10,7 +10,7 @@ import logging
 import time
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Header, Query, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
@@ -18,7 +18,6 @@ from app.db.session import get_db
 from app.utils.dependencies import get_current_user
 from app.services.api_key_service import ApiKeyService
 from app.services.api_key_rate_limiter import get_api_key_rate_limiter, RateLimitResult
-from app.models.api_key import UserApiKey
 
 logger = logging.getLogger(__name__)
 

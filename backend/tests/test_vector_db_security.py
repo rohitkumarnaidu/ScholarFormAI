@@ -1,7 +1,6 @@
 from __future__ import annotations
-from unittest.mock import AsyncMock, MagicMock, patch, PropertyMock
+from unittest.mock import patch
 import pytest
-import numpy as np
 pytestmark = [pytest.mark.rag]
 
 
@@ -96,7 +95,6 @@ class TestIndexCorruption:
     @patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None)
     def test_corrupted_index_file_does_not_crash(self, mock_load, tmp_path):
         from app.pipeline.intelligence.rag_engine import RagEngine
-        import json
         persist = tmp_path / "rag_corrupt"
         persist.mkdir()
         kb_file = persist / "kb.json"

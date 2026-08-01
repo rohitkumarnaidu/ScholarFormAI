@@ -9,7 +9,6 @@ Tests the integration of docxtpl template rendering with the pipeline.
 
 import pytest
 from pathlib import Path
-from unittest.mock import MagicMock
 
 from app.pipeline.formatting.template_renderer import TemplateRenderer
 from app.models import PipelineDocument, DocumentMetadata, Block, BlockType

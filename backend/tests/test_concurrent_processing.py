@@ -112,7 +112,6 @@ class TestConcurrentPipeline:
     @pytest.mark.unit
     def test_concurrent_writes_serialized(self):
         """Concurrent writes to Supabase should be serialized."""
-        import app.services.document_service as ds
 
         write_order = []
         lock = threading.Lock()

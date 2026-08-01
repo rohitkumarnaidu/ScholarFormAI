@@ -3,7 +3,7 @@
 
 
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 from app.models import PipelineDocument, Block, BlockType
 from app.pipeline.structure_detection.detector import StructureDetector
 

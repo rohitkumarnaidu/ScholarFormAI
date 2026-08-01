@@ -1,7 +1,5 @@
 """Full pipeline integration tests: parse -> validate -> format."""
 
-import tempfile
-from pathlib import Path
 
 import pytest
 

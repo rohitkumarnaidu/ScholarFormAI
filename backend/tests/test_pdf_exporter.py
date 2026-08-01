@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import MagicMock, patch
 
 
@@ -127,7 +126,6 @@ class TestWeasyprintFallback:
             self._teardown_weasyprint_mocks()
 
     def test_exception_during_conversion(self):
-        import sys
         mock_wp = self._setup_weasyprint_mocks()
         try:
             from app.pipeline.export.pdf_exporter import PDFExporter

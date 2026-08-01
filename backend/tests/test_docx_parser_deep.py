@@ -5,16 +5,13 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, PropertyMock, patch, call
-import os
-import io
+from typing import Dict, List
+from unittest.mock import MagicMock, patch
 import uuid
 
 import pytest
 from docx import Document as DocxDocument
-from docx.shared import Inches, Pt
+from docx.shared import Pt
 
 from app.pipeline.parsing.parser import (
     DocxParser,
@@ -26,14 +23,9 @@ from app.pipeline.parsing.parser import (
 from lxml import etree
 
 from app.models import (
-    Block,
-    BlockType,
-    TextStyle,
     ImageFormat,
     Figure,
     Equation,
-    DocumentMetadata,
-    PipelineDocument as Document,
 )
 from app.pipeline.parsing.base_parser import BaseParser
 
@@ -475,7 +467,6 @@ class TestListInfo:
         ppr = MagicMock()
 
         def ppr_find(path):
-            from docx.oxml.ns import qn
             if "numPr" in path:
                 if numpr_data is not None:
                     numpr = MagicMock()

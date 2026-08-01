@@ -14,7 +14,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 from app.pipeline.parsing.pdf_parser import PdfParser
 from app.pipeline.parsing.tex_parser import TexParser
 from app.pipeline.parsing.txt_parser import TxtParser
-from app.models import Block
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("RiskVerification")

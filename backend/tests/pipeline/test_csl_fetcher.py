@@ -1,10 +1,6 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 import pytest
 from unittest.mock import patch, AsyncMock, MagicMock
@@ -126,7 +122,6 @@ class TestCslFetcherFetchStyle:
         mock_httpx.return_value = mock_client
 
         # Temporarily remove local path to force remote fetch
-        import os
         orig = csl_fetcher.TEMPLATES_DIR
         fake_dir = Path(__file__).parent / "_nonexistent"
         csl_fetcher.TEMPLATES_DIR = fake_dir
@@ -149,7 +144,6 @@ class TestCslFetcherFetchStyle:
         mock_client.get.return_value = mock_resp
         mock_httpx.return_value = mock_client
 
-        import os
         orig = csl_fetcher.TEMPLATES_DIR
         fake_dir = Path(__file__).parent / "_nonexistent"
         csl_fetcher.TEMPLATES_DIR = fake_dir

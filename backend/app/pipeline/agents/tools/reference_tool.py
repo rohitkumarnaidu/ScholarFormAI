@@ -6,7 +6,7 @@ Reference extraction tool using GROBID and reference parser.
 """
 
 import sys
-from typing import Optional, Type
+from typing import Type
 from pydantic import BaseModel, Field
 from app.pipeline.services.grobid_client import GROBIDClient
 from app.pipeline.references.parser import ReferenceParser

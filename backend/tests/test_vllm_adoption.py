@@ -1,6 +1,5 @@
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import patch
 
-import pytest
 
 
 class TestCounterTotal:

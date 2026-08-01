@@ -4,7 +4,6 @@
 """Stage metrics collection for pipeline orchestrator."""
 
 import time
-from typing import Optional
 
 
 class StageMetrics:

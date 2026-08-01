@@ -6,12 +6,8 @@ Deep test suite for tables pipeline: caption matcher, extractor, renderer.
 Targets uncovered branches and edge cases to push coverage >85% / >90%.
 """
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
-from unittest.mock import patch, MagicMock, call
+from unittest.mock import patch, MagicMock
 import pytest
 from app.pipeline.tables.caption_matcher import TableCaptionMatcher
 from app.pipeline.tables.extractor import TableExtractor
@@ -27,13 +23,12 @@ class TestTableCaptionMatcherDeep:
     @pytest.fixture
     def matcher(self):
 
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         return TableCaptionMatcher()
 
     # -- _find_references_start_index ---------------------------------
 
     def test_find_refs_via_block_type(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import Block, BlockType
         blocks = [
             Block(block_id="r1", index=5, text="References", block_type=BlockType.REFERENCES_HEADING),
             Block(block_id="b1", index=6, text="[1] Some ref.", block_type=BlockType.REFERENCE_ENTRY),
@@ -41,35 +36,35 @@ class TestTableCaptionMatcherDeep:
         assert matcher._find_references_start_index(blocks) == 5
 
     def test_find_refs_via_keyword_heading(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import Block, BlockType
         blocks = [
             Block(block_id="r1", index=3, text="References", block_type=BlockType.HEADING_1),
         ]
         assert matcher._find_references_start_index(blocks) == 3
 
     def test_find_refs_via_bibliography_keyword(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import Block, BlockType
         blocks = [
             Block(block_id="b1", index=7, text="Bibliography", block_type=BlockType.HEADING_2),
         ]
         assert matcher._find_references_start_index(blocks) == 7
 
     def test_find_refs_via_works_cited_keyword(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import Block, BlockType
         blocks = [
             Block(block_id="b1", index=9, text="Works Cited", block_type=BlockType.HEADING_3),
         ]
         assert matcher._find_references_start_index(blocks) == 9
 
     def test_keyword_non_heading_does_not_match(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import Block, BlockType
         blocks = [
             Block(block_id="b1", index=4, text="references", block_type=BlockType.BODY),
         ]
         assert matcher._find_references_start_index(blocks) is None
 
     def test_no_references_returns_none(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import Block, BlockType
         blocks = [
             Block(block_id="b1", index=0, text="Introduction", block_type=BlockType.HEADING_1),
         ]
@@ -79,7 +74,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_ref_boundary_skips_candidates_after_refs(self, matcher):
         """Blocks at/after references heading are excluded from caption matching."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="c1", index=0, text="Table 1. Before refs.", block_type=BlockType.BODY),
             Block(block_id="body", index=1, text="Body.", block_type=BlockType.BODY),
@@ -96,7 +91,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].caption_text is None
 
     def test_ref_boundary_no_candidates_before_refs(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="r1", index=0, text="References", block_type=BlockType.HEADING_1),
             Block(block_id="b1", index=1, text="Table 1. Missed.", block_type=BlockType.BODY),
@@ -111,7 +106,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_table_idx_not_in_list_index_map_fallback(self, matcher):
         """When table.block_index does not match any block index, linear search fallback."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="Table 1. Caption.", block_type=BlockType.BODY),
             Block(block_id="b2", index=2, text="Body.", block_type=BlockType.BODY),
@@ -125,7 +120,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_table_idx_fallback_to_end_of_list(self, matcher):
         """When table_idx > all block indices, table_list_pos = len(blocks) - 1."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=10, text="Table 1. Caption.", block_type=BlockType.BODY),
             Block(block_id="b2", index=20, text="Body.", block_type=BlockType.BODY),
@@ -142,7 +137,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_prev_table_boundary_skips_caption(self, matcher):
         """Caption before prev_table_idx is excluded."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="c1", index=0, text="Table 1. Caption one.", block_type=BlockType.BODY),
             Block(block_id="x1", index=1, text="Table data.", block_type=BlockType.BODY),
@@ -158,7 +153,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_next_table_boundary_skips_caption(self, matcher):
         """Caption at/after next_table_idx is excluded from current table."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="c1", index=0, text="Table 1. First cap.", block_type=BlockType.BODY),
             Block(block_id="x1", index=1, text="Data.", block_type=BlockType.BODY),
@@ -176,7 +171,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_equal_distance_prefers_caption_above(self, matcher):
         """When two candidates have equal distance, prefer the one above the table."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="above", index=0, text="Table 1. Above caption.", block_type=BlockType.BODY),
             Block(block_id="body1", index=1, text="Body.", block_type=BlockType.BODY),
@@ -193,7 +188,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_already_assigned_block_id_skipped(self, matcher):
         """A block already assigned as caption to one table cannot be reused."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="shared", index=0, text="Table 1. Shared cap.", block_type=BlockType.BODY),
             Block(block_id="body1", index=1, text="Body one.", block_type=BlockType.BODY),
@@ -210,7 +205,7 @@ class TestTableCaptionMatcherDeep:
     # -- Heading / REFERENCES_HEADING cannot be captions (111–112) ----
 
     def test_heading_skipped_as_caption(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="h1", index=0, text="Table 1. Introduction", block_type=BlockType.HEADING_1),
             Block(block_id="b1", index=1, text="Body.", block_type=BlockType.BODY),
@@ -221,7 +216,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].caption_text is None
 
     def test_references_heading_skipped_as_caption(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="rh", index=0, text="Table 1. References", block_type=BlockType.REFERENCES_HEADING),
             Block(block_id="b1", index=1, text="Body.", block_type=BlockType.BODY),
@@ -235,7 +230,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_per_table_exception_caught(self, matcher):
         """Exception inside per-table loop is caught; processing continues."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="Table 1. Test", block_type=BlockType.BODY),
         ], tables=[
@@ -250,7 +245,7 @@ class TestTableCaptionMatcherDeep:
     # -- Top-level exception (lines 140–147) --------------------------
 
     def test_top_level_exception_adds_error_stage(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="body", block_type=BlockType.BODY),
         ], tables=[
@@ -266,7 +261,7 @@ class TestTableCaptionMatcherDeep:
     # -- Missing caption sets metadata (lines 135–137) ----------------
 
     def test_missing_caption_sets_status(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="No table caption here.", block_type=BlockType.BODY),
         ], tables=[
@@ -276,7 +271,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].metadata.get("caption_status") == "Missing"
 
     def test_existing_caption_text_preserved_when_no_match(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY),
         ], tables=[
@@ -290,7 +285,7 @@ class TestTableCaptionMatcherDeep:
     # -- Caption regex: various formats --------------------------------
 
     def test_roman_numeral_caption(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="Table I: Results", block_type=BlockType.BODY),
             Block(block_id="b2", index=1, text="Body.", block_type=BlockType.BODY),
@@ -301,7 +296,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].caption_text == "Table I: Results"
 
     def test_letter_caption(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="Table A: Appendix", block_type=BlockType.BODY),
             Block(block_id="b2", index=1, text="Body.", block_type=BlockType.BODY),
@@ -312,7 +307,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].caption_text == "Table A: Appendix"
 
     def test_dotted_number_caption(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="Table 1.1: Sub results", block_type=BlockType.BODY),
             Block(block_id="b2", index=1, text="Body.", block_type=BlockType.BODY),
@@ -325,7 +320,7 @@ class TestTableCaptionMatcherDeep:
     # -- Search window boundaries -------------------------------------
 
     def test_search_window_above_respected(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         matcher.search_window_above = 1  # narrow window
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="c1", index=0, text="Table 1. Far above.", block_type=BlockType.BODY),
@@ -339,7 +334,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].caption_text is None
 
     def test_search_window_below_respected(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         matcher.search_window_below = 0  # no search below
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="x1", index=0, text="Body.", block_type=BlockType.BODY),
@@ -352,7 +347,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].caption_text is None
 
     def test_caption_below_table_in_window(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="x1", index=0, text="Body.", block_type=BlockType.BODY),
             Block(block_id="c1", index=1, text="Table 1. Below cap.", block_type=BlockType.BODY),
@@ -366,7 +361,7 @@ class TestTableCaptionMatcherDeep:
     # -- No tables / no blocks early return ---------------------------
 
     def test_no_tables_early_return(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="Some text.", block_type=BlockType.BODY),
         ])
@@ -374,7 +369,7 @@ class TestTableCaptionMatcherDeep:
         assert result is doc
 
     def test_no_blocks_early_return(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Table
         doc = PipelineDocument(document_id="t", tables=[
             Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0),
         ])
@@ -384,7 +379,7 @@ class TestTableCaptionMatcherDeep:
     # -- Processing stage metadata ------------------------------------
 
     def test_success_stage_message_contains_match_count(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="c1", index=0, text="Table 1. Match.", block_type=BlockType.BODY),
             Block(block_id="x1", index=1, text="Body.", block_type=BlockType.BODY),
@@ -396,7 +391,7 @@ class TestTableCaptionMatcherDeep:
         assert "1" in stage.message
 
     def test_caption_block_type_changed(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="c1", index=0, text="Table 1. Types.", block_type=BlockType.BODY),
             Block(block_id="x1", index=1, text="Body.", block_type=BlockType.BODY),
@@ -410,7 +405,6 @@ class TestTableCaptionMatcherDeep:
         assert caption_block.metadata.get("classification_method") == "deterministic_table_caption_rule"
 
     def test_custom_search_window_constructor(self):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         matcher = TableCaptionMatcher(search_window_above=5, search_window_below=3)
         assert matcher.search_window_above == 5
         assert matcher.search_window_below == 3
@@ -418,7 +412,7 @@ class TestTableCaptionMatcherDeep:
     # -- Tiebreaker / edge cases ---------------------------------------
 
     def test_equal_distance_tiebreaker_prefers_above(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         blocks = [
             Block(block_id="c1", index=0, text="Table 1. Above.", block_type=BlockType.BODY),
             Block(block_id="x1", index=1, text="Body.", block_type=BlockType.BODY),
@@ -430,7 +424,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].caption_text == "Table 1. Above."
 
     def test_missing_caption_sets_metadata(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument, Block, BlockType, Table
         blocks = [Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY)]
         tables = [Table(table_id="t1", num_rows=2, num_cols=2, index=0, block_index=0)]
         doc = PipelineDocument(document_id="t", blocks=blocks, tables=tables)
@@ -438,7 +432,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].metadata.get("caption_status") == "Missing"
 
     def test_convenience_function(self):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import PipelineDocument
         from app.pipeline.tables.caption_matcher import match_table_captions
         doc = PipelineDocument(document_id="t", blocks=[], tables=[])
         result = match_table_captions(doc)
@@ -453,28 +447,23 @@ class TestTableExtractorDeep:
 
     @pytest.fixture
     def extractor(self):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         return TableExtractor()
 
     # -- _normalize_cell_text -----------------------------------------
 
     def test_normalize_cell_text_none(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         assert extractor._normalize_cell_text(None) == ""
 
     def test_normalize_cell_text_whitespace_only(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         assert extractor._normalize_cell_text("   \t  ") == ""
 
     def test_normalize_cell_text_preserves_internal(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         assert extractor._normalize_cell_text("  hello\nworld  ") == "hello\nworld"
 
     # -- Deep XML edge cases ------------------------------------------
 
     def test_deep_xml_iteration_exception(self, extractor):
         """_tc.iter() raises → _extract_deep_xml_text returns '' gracefully."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         cell = MagicMock()
         cell._tc = MagicMock()
         cell._tc.iter.side_effect = RuntimeError("iter crash")
@@ -483,7 +472,6 @@ class TestTableExtractorDeep:
 
     def test_deep_xml_no_text_nodes(self, extractor):
         """iter() yields nodes but none match the ending '}t' tag."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         cell = MagicMock()
         cell._tc = MagicMock()
         fake_node = MagicMock()
@@ -494,7 +482,6 @@ class TestTableExtractorDeep:
         assert result == ""
 
     def test_deep_xml_multiple_text_parts(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         cell = MagicMock()
         cell._tc = MagicMock()
         n1 = MagicMock(tag="}t", text="Hello ")
@@ -527,7 +514,6 @@ class TestTableExtractorDeep:
         assert result.data[0][0] == ""
 
     def test_extract_with_no_cell_text_and_deep_also_empty(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         cell = MagicMock()
         cell.text = ""
         cell._tc = MagicMock()
@@ -549,7 +535,6 @@ class TestTableExtractorDeep:
 
     def test_padding_preserves_empty_cells(self, extractor):
         """Empty cells remain empty; no data corruption."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         from unittest.mock import MagicMock
         cell = MagicMock(text="A", bold=False)
         cell._tc = MagicMock()
@@ -575,7 +560,6 @@ class TestTableExtractorDeep:
 
     def test_header_keywords_unit(self, extractor):
         """'Unit' contains 'unit' keyword → header detected."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         cell = MagicMock(text="Unit", bold=False)
         cell._tc = MagicMock()
         cell._tc.iter.return_value = []
@@ -590,7 +574,6 @@ class TestTableExtractorDeep:
         assert result.has_header is True
 
     def test_header_keywords_qty(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         cell = MagicMock(text="Qty", bold=False)
         cell._tc = MagicMock()
         cell._tc.iter.return_value = []
@@ -605,7 +588,6 @@ class TestTableExtractorDeep:
         assert result.has_header is True
 
     def test_header_keywords_amount(self, extractor):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         cell = MagicMock(text="Amount", bold=False)
         cell._tc = MagicMock()
         cell._tc.iter.return_value = []
@@ -623,7 +605,6 @@ class TestTableExtractorDeep:
 
     def test_multiple_nested_tables_in_one_cell(self, extractor):
         """A cell with 2 nested tables both get extracted."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         cell = MagicMock(text="outer", bold=False)
         cell._tc = MagicMock()
         cell._tc.iter.return_value = []
@@ -659,16 +640,13 @@ class TestTableExtractorDeep:
         xml2._inner_mock = inner2_tbl
 
         def findall_side_effect(ns):
-            from app.models import PipelineDocument, Block, BlockType, Table, TableCell
             return [xml1, xml2] if ns.endswith("}tbl") else []
 
         cell._element = MagicMock()
         cell._element.findall.side_effect = findall_side_effect
 
-        from docx.oxml.ns import qn
 
         def patched_table_constructor(tbl_xml, parent):
-            from app.models import PipelineDocument, Block, BlockType, Table, TableCell
             return tbl_xml._inner_mock
 
         row = MagicMock()
@@ -685,7 +663,6 @@ class TestTableExtractorDeep:
 
     def test_nested_table_unexpected_structure_does_not_crash(self, extractor):
         """Even if docx structure is malformed, extractor does not crash."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         cell = MagicMock(text="outer", bold=False)
         cell._tc = MagicMock()
         cell._tc.iter.side_effect = AttributeError("missing _tc structure")
@@ -713,12 +690,11 @@ class TestTableRendererDeep:
 
     @pytest.fixture
     def renderer(self):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         return TableRenderer()
 
     @pytest.fixture
     def simple_table(self):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import Table, TableCell
         return Table(
             table_id="tbl_001",
             num_rows=2, num_cols=2,
@@ -739,21 +715,20 @@ class TestTableRendererDeep:
     # -- No-op cases ---------------------------------------------------
 
     def test_render_none_table(self, renderer):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = MagicMock()
         renderer.render(doc, None)
         doc.add_table.assert_not_called()
         doc.add_paragraph.assert_not_called()
 
     def test_render_zero_rows(self, renderer):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import Table
         doc = MagicMock()
         tbl = Table(table_id="e", num_rows=0, num_cols=0, index=0, block_index=0)
         renderer.render(doc, tbl)
         doc.add_table.assert_not_called()
 
     def test_render_zero_cols(self, renderer):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import Table
         doc = MagicMock()
         tbl = Table(table_id="e", num_rows=1, num_cols=0, index=0, block_index=0,
                      data=[[]], rows=[[]])
@@ -764,7 +739,6 @@ class TestTableRendererDeep:
 
     def test_caption_with_exact_table_prefix(self, renderer, simple_table):
         """When caption already starts with 'Table X: ', it is split correctly."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = MagicMock()
         doc.styles = {"Table Grid": MagicMock()}
         doc.add_table.return_value = MagicMock()
@@ -778,7 +752,6 @@ class TestTableRendererDeep:
 
     def test_caption_with_different_number_in_text(self, renderer, simple_table):
         """Caption says 'Table 2: …' but actual number differs."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = MagicMock()
         doc.styles = {"Table Grid": MagicMock()}
         doc.add_table.return_value = MagicMock()
@@ -793,7 +766,6 @@ class TestTableRendererDeep:
 
     def test_caption_without_table_prefix(self, renderer, simple_table):
         """Caption that doesn't start with 'Table X:' at all."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = MagicMock()
         doc.styles = {"Table Grid": MagicMock()}
         doc.add_table.return_value = MagicMock()
@@ -805,7 +777,6 @@ class TestTableRendererDeep:
         assert any(c[0][0] == "Table 1: " for c in calls)
 
     def test_caption_center_alignment(self, renderer, simple_table):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = MagicMock()
         doc.styles = {"Table Grid": MagicMock()}
         doc.add_table.return_value = MagicMock()
@@ -818,7 +789,6 @@ class TestTableRendererDeep:
     # -- Style application edge cases ---------------------------------
 
     def test_style_not_present(self, renderer, simple_table):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = MagicMock()
         doc.styles = {}  # 'Table Grid' not present
         doc.add_table.return_value = MagicMock()
@@ -828,7 +798,6 @@ class TestTableRendererDeep:
         assert not hasattr(word_table, "style") or word_table.style != "Table Grid"
 
     def test_style_application_exception(self, renderer, simple_table):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = MagicMock()
         doc.styles = {"Table Grid": MagicMock()}
         word_table = MagicMock()
@@ -836,7 +805,6 @@ class TestTableRendererDeep:
         doc.add_paragraph.return_value = MagicMock()
         # Setting style raises
         def raise_on_style_set(name, val):
-            from app.models import PipelineDocument, Block, BlockType, Table, TableCell
             raise Exception("style error")
         type(word_table).style = property(fget=lambda s: "mock", fset=raise_on_style_set)
         # Should not crash
@@ -848,7 +816,7 @@ class TestTableRendererDeep:
 
     def test_cell_out_of_bounds_handled(self, renderer, simple_table):
         """Cell row/col beyond word_table dimensions is skipped."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import TableCell
         doc = MagicMock()
         doc.styles = {"Table Grid": MagicMock()}
         word_tbl = MagicMock()
@@ -865,7 +833,7 @@ class TestTableRendererDeep:
         # Should not raise; out-of-bounds cell should be skipped
 
     def test_cell_with_empty_text(self, renderer, simple_table):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import TableCell
         doc = MagicMock()
         doc.styles = {"Table Grid": MagicMock()}
         word_tbl = MagicMock()
@@ -883,7 +851,7 @@ class TestTableRendererDeep:
 
     def test_nested_table_rendering_failure_logged(self, renderer, simple_table):
         """When a nested table render fails, fallback text is added."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
+        from app.models import Table, TableCell
         doc = MagicMock()
         doc.styles = {"Table Grid": MagicMock()}
         word_tbl = MagicMock()
@@ -904,7 +872,6 @@ class TestTableRendererDeep:
         original_render = renderer.render
 
         def render_side_effect(d, tbl, number=None):
-            from app.models import PipelineDocument, Block, BlockType, Table, TableCell
             if d is c00:
                 raise Exception("nested fail")
             return original_render(d, tbl, number=number)
@@ -918,7 +885,6 @@ class TestTableRendererDeep:
     # -- Full rendering smoke test -------------------------------------
 
     def test_smoke_render_simple_table_does_not_crash(self, renderer, simple_table):
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = MagicMock()
         doc.styles = {"Table Grid": MagicMock()}
         word_tbl = MagicMock()
@@ -934,7 +900,6 @@ class TestTableRendererDeep:
 
     def test_outer_exception_caught_and_raised(self, renderer, simple_table):
         """Trigger the outer try/except at renderer.py:81-83."""
-        from app.models import PipelineDocument, Block, BlockType, Table, TableCell
         doc = MagicMock()
         doc.styles = {"Table Grid": MagicMock()}
         doc.add_paragraph.side_effect = RuntimeError("caption failure")

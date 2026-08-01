@@ -6,12 +6,10 @@ LLM latency benchmark tests measuring simulated LLM response time patterns.
 Uses mocked service layer to isolate latency measurement from network.
 """
 
-import asyncio
 import concurrent.futures
 import statistics
-import threading
 import time
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 

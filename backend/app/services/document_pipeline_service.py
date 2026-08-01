@@ -17,12 +17,11 @@ import os
 import re
 import sys
 import uuid
-from datetime import datetime
 from pathlib import Path
 from time import monotonic
 from typing import Any, Dict, List, Optional
 
-from fastapi import BackgroundTasks, File, Form, HTTPException, Request, UploadFile
+from fastapi import BackgroundTasks, HTTPException, Request, UploadFile
 
 from app.config.settings import settings
 from app.exceptions import DatabaseUnavailableError, DocumentNotFoundError

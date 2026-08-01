@@ -1,4 +1,3 @@
-import json
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -110,7 +109,7 @@ class TestGetAllFlags:
 
 class TestGetFeatureFlag:
     def test_convenience_function(self):
-        from app.services.feature_flags import get_feature_flag, get_feature_flag_service
+        from app.services.feature_flags import get_feature_flag
         svc = MagicMock()
         svc.get_flag.return_value = True
         with patch("app.services.feature_flags.get_feature_flag_service", return_value=svc):

@@ -8,7 +8,6 @@ from typing import Optional
 
 from fastapi import HTTPException, status
 from app.config.settings import settings
-from app.exceptions import AuthenticationError
 from app.security.jwks_verifier import verify_jwt
 
 logger = logging.getLogger(__name__)

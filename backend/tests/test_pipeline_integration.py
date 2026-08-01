@@ -2,14 +2,12 @@
 # Copyright (c) 2026 ScholarForm AI
 
 import pytest
-import os
 import uuid
-import time
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 from app.pipeline.orchestrator import PipelineOrchestrator
 from app.models.pipeline_document import PipelineDocument
-from app.models.block import Block, BlockType
+from app.models.block import Block
 
 @pytest.mark.integration
 class TestPipelineIntegration:

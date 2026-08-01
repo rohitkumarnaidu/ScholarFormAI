@@ -14,11 +14,8 @@ Covers:
 from __future__ import annotations
 
 import os
-import time
-import threading
 import pytest
-from unittest.mock import MagicMock, patch, AsyncMock
-from concurrent.futures import ThreadPoolExecutor, Future
+from unittest.mock import MagicMock, patch
 
 from app.pipeline.orchestrator import PipelineOrchestrator
 

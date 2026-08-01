@@ -4,12 +4,11 @@
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 from fastapi import APIRouter, Depends, Query, Request
 
 from app.services.activity_service import activity_service
-from app.utils.dependencies import get_current_user, get_optional_user
+from app.utils.dependencies import get_current_user
 from app.utils.logging_context import bind_request_context
 from app.schemas.user import User
 

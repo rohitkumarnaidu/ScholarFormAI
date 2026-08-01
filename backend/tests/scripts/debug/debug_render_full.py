@@ -2,14 +2,10 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-import sys
-import os
-from io import BytesIO
 from app.pipeline.parsing.parser import DocxParser
 from app.pipeline.normalization.normalizer import Normalizer
 from app.pipeline.classification.classifier import ContentClassifier
 from app.pipeline.formatting.formatter import Formatter
-from docx import Document as WordDocument
 
 def debug_render(docx_path, out_path):
     parser = DocxParser()

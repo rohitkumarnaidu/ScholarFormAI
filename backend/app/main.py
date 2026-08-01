@@ -653,7 +653,6 @@ def _should_bypass_https_redirect(path: str | None) -> bool:
 
 # HTTPS Redirect + HSTS (production only)
 if settings.FORCE_HTTPS and not settings.DEBUG:
-    from app.middleware.https_redirect import HSTSMiddleware
 
     @app.middleware("http")
     async def enforce_https_except_health(request: Request, call_next):

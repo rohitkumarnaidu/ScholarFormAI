@@ -1,7 +1,6 @@
-import pytest
 from datetime import datetime, date, time
 from enum import Enum
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 
 class TestSanitizeForJson:

@@ -1,7 +1,3 @@
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 import pytest
 from unittest.mock import patch, MagicMock, PropertyMock
@@ -138,7 +134,7 @@ class TestDoclingClientAnalyzeLayoutDeep:
 
 class TestDoclingClientExtractElements:
     def test_extract_elements_basic(self):
-        from app.pipeline.services.docling_client import DoclingClient, BoundingBox, LayoutElement
+        from app.pipeline.services.docling_client import DoclingClient
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_item = MagicMock()
@@ -174,7 +170,7 @@ class TestDoclingClientExtractElements:
         assert elements == []
 
     def test_extract_elements_with_prov_data(self):
-        from app.pipeline.services.docling_client import DoclingClient, BoundingBox, LayoutElement
+        from app.pipeline.services.docling_client import DoclingClient
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_item = MagicMock()
@@ -197,7 +193,7 @@ class TestDoclingClientExtractElements:
         assert elements[0].is_italic is True
 
     def test_extract_elements_with_partial_prov(self):
-        from app.pipeline.services.docling_client import DoclingClient, BoundingBox, LayoutElement
+        from app.pipeline.services.docling_client import DoclingClient
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_item = MagicMock()

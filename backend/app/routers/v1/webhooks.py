@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.schemas.user import User
 from app.schemas.webhook import (

@@ -211,7 +211,6 @@ def generate_with_model(
     if is_custom:
         from app.db.session import SessionLocal
         from sqlalchemy import select
-        from sqlalchemy.orm import Session
         from app.models.custom_provider import CustomProvider
 
         custom_id = provider.replace("custom_", "")
@@ -499,7 +498,6 @@ def _openai_compat(messages, model, temperature, max_tokens, api_key, base_url) 
 
 def _ollama_http(messages, model_name, temperature, max_tokens, base_url, timeout) -> str:
     import requests
-    import json
 
     prompt = "\n".join(f"{m['role']}: {m['content']}" for m in messages)
     resp = requests.post(

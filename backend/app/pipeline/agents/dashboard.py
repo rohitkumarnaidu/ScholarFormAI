@@ -6,8 +6,7 @@ Performance comparison dashboard generator.
 """
 
 import json
-from typing import Dict, Any
-from pathlib import Path
+from typing import Dict
 from app.pipeline.agents.metrics import PerformanceTracker
 
 

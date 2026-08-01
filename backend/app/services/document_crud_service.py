@@ -31,7 +31,6 @@ from app.db.repositories.processing_status_repository import ProcessingStatusRep
 from app.utils.logging_context import log_extra
 from app.exceptions import (
     DatabaseUnavailableError,
-    DocumentNotFoundError,
 )
 
 logger = logging.getLogger(__name__)

@@ -16,7 +16,6 @@ Parses Markdown syntax to extract:
 import logging
 import os
 import re
-from typing import List
 
 logger = logging.getLogger(__name__)
 from datetime import datetime, timezone

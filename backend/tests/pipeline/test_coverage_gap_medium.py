@@ -3,12 +3,8 @@
 
 """Targeted tests for uncovered lines in parser.py, pdf_parser.py, parser_factory.py, formatter_engine.py, safe_execution.py."""
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
-from unittest.mock import MagicMock, patch, PropertyMock, AsyncMock
+from unittest.mock import MagicMock, patch
 import pytest
 from app.pipeline.parsing.pdf_parser import PdfParser
 pytestmark = [pytest.mark.pipeline]
@@ -20,7 +16,6 @@ pytestmark = [pytest.mark.pipeline]
 class TestDocxParserCoverageGaps:
 
     def test_extract_core_properties_keywords_semicolon(self):
-        from app.models import Block, BlockType
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         docx = MagicMock()
@@ -36,7 +31,6 @@ class TestDocxParserCoverageGaps:
         assert "kw1" in meta.keywords
 
     def test_extract_core_properties_empty_keywords_filtered(self):
-        from app.models import Block, BlockType
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         docx = MagicMock()
@@ -49,7 +43,6 @@ class TestDocxParserCoverageGaps:
         assert meta.keywords == ["kw1", "kw2"]
 
     def test_extract_footnotes_exception_handler(self):
-        from app.models import Block, BlockType
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         docx = MagicMock()
@@ -61,7 +54,6 @@ class TestDocxParserCoverageGaps:
         assert result == []
 
     def test_extract_endnotes_exception_handler(self):
-        from app.models import Block, BlockType
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         docx = MagicMock()
@@ -73,7 +65,6 @@ class TestDocxParserCoverageGaps:
         assert result == []
 
     def test_extract_headers_and_footers_exception(self):
-        from app.models import Block, BlockType
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         docx = MagicMock()
@@ -83,7 +74,6 @@ class TestDocxParserCoverageGaps:
         assert blocks == []
 
     def test_extract_hyperlinks_key_error_continue(self):
-        from app.models import Block, BlockType
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -101,7 +91,6 @@ class TestDocxParserCoverageGaps:
         assert len(links) >= 0
 
     def test_extract_note_references_exception(self):
-        from app.models import Block, BlockType
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -110,7 +99,6 @@ class TestDocxParserCoverageGaps:
         assert refs == []
 
     def test_get_list_info_exception(self):
-        from app.models import Block, BlockType
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -119,7 +107,6 @@ class TestDocxParserCoverageGaps:
         assert result is None
 
     def test_extract_paragraph_style_attribute_error(self):
-        from app.models import Block, BlockType
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -135,7 +122,6 @@ class TestDocxParserCoverageGaps:
         assert block is not None
 
     def test_extract_inline_images_part_error(self):
-        from app.models import Block, BlockType
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -152,7 +138,6 @@ class TestDocxParserCoverageGaps:
         assert figures == []
 
     def test_extract_equations_with_omath_skip_duplicates(self):
-        from app.models import Block, BlockType
         from app.pipeline.parsing.parser import DocxParser
         from lxml import etree
         p = DocxParser()
@@ -174,7 +159,6 @@ class TestDocxParserCoverageGaps:
         assert len(equations) >= 1
 
     def test_extract_equations_text_from_wt(self):
-        from app.models import Block, BlockType
         from app.pipeline.parsing.parser import DocxParser
         from lxml import etree
         p = DocxParser()
@@ -192,7 +176,6 @@ class TestDocxParserCoverageGaps:
         assert equations[0].text == "x=y"
 
     def test_extract_paragraph_footnote_refs_metadata(self):
-        from app.models import Block, BlockType
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -215,7 +198,6 @@ class TestDocxParserCoverageGaps:
         assert "footnote_refs" in block.metadata
 
     def test_extract_body_content_with_inline_images_and_equations(self, tmp_path):
-        from app.models import Block, BlockType
         from app.pipeline.parsing.parser import DocxParser
         f = tmp_path / "rich.docx"
         f.write_text("dummy")
@@ -262,7 +244,6 @@ class TestDocxParserCoverageGaps:
                         assert "has_equation" in blocks[0].metadata
 
     def test_parse_with_headers_footers_and_notes(self, tmp_path):
-        from app.models import Block, BlockType
         from app.pipeline.parsing.parser import DocxParser
         f = tmp_path / "full.docx"
         f.write_text("dummy")
@@ -709,7 +690,6 @@ class TestParserFactoryCoverageGaps:
                     mp.return_value = MagicMock()
                     with patch("app.pipeline.parsing.parser_factory.PdfParser") as mp2:
                         mp2.return_value = MagicMock()
-                        import sys
                         f = ParserFactory()
                         assert len(f.parsers) >= 2
 
@@ -904,7 +884,7 @@ class TestFormatterEngineCoverageGaps:
         assert result[0].formatted_text is not None
 
     def test_process_no_template_defaults_to_ieee(self):
-        from app.models import PipelineDocument, Reference, ReferenceType, TemplateInfo
+        from app.models import PipelineDocument, Reference
         from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         cl = MagicMock()
         cl.load.return_value = {"references": {}}

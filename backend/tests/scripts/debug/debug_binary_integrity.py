@@ -2,10 +2,7 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-import sys
-import os
 from app.pipeline.parsing.parser import DocxParser
-from app.models.pipeline_document import PipelineDocument
 
 def verify_binary_data(docx_path):
     parser = DocxParser()

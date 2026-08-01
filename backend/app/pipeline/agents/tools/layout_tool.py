@@ -6,7 +6,7 @@ Layout analysis tool using LLM (preferred) or Docling (fallback).
 """
 
 import sys
-from typing import Optional, Type
+from typing import Type
 from pydantic import BaseModel, Field
 
 if sys.version_info < (3, 14):

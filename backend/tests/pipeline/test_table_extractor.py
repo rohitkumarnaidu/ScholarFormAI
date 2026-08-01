@@ -8,13 +8,9 @@ Covers all public methods, lazy-loading paths, error branches, and the
 singleton getter.  Targets 90%+ line / branch coverage.
 """
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 import sys
 
 import pytest
@@ -49,7 +45,6 @@ from app.pipeline.parsing.table_extractor import (
     get_table_extractor,
     TABLE_TRANSFORMER_AVAILABLE,
     _load_error,
-    _extractor,
     DETECTION_MODEL,
     STRUCTURE_MODEL,
     TABLE_DETECTION_THRESHOLD,

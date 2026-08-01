@@ -8,7 +8,7 @@ Prevents infinite loops and resource exhaustion in background tasks.
 
 import asyncio
 import logging
-from typing import Callable, Any
+from typing import Callable
 from functools import wraps
 
 # ── Old ORM imports (kept for reference, replaced by DocumentService) ──────────

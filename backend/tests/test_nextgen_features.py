@@ -2,8 +2,6 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-import pytest
-import os
 import sys
 from pathlib import Path
 from PIL import Image
@@ -60,7 +58,6 @@ def test_model_metrics_comparison():
 
 if __name__ == "__main__":
     # Manually run if executed directly
-    from app.services.model_metrics import get_model_metrics
     print("Running manual verification...")
     test_model_metrics_comparison()
     print("Metrics Verified.")

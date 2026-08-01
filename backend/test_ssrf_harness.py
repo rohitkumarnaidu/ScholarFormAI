@@ -4,7 +4,6 @@ Tests `_sanitize_url` in app.routers.v1.providers against SSRF payloads.
 """
 import sys
 import os
-import time
 
 # Ensure backend directory is in sys.path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

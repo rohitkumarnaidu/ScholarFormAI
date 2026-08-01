@@ -126,7 +126,7 @@ class TestContentParser:
 
 class TestDocumentGenerator:
     def setup_method(self):
-        from unittest.mock import patch, MagicMock
+        from unittest.mock import patch
         from app.pipeline.generation.document_generator import DocumentGenerator
         self._ds_patch = patch("app.pipeline.generation.document_generator.DocumentService")
         self._ds_mock = self._ds_patch.start()

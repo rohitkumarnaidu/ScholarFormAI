@@ -13,9 +13,8 @@ Integration tests require GROBID service running:
 
 import pytest
 import os
-from unittest.mock import Mock, patch, mock_open
+from unittest.mock import Mock, patch
 from pathlib import Path
-import xml.etree.ElementTree as ET
 import requests
 from urllib.parse import urlparse
 

@@ -3,9 +3,8 @@
 
 from __future__ import annotations
 
-import json
 import pytest
-from unittest.mock import MagicMock, AsyncMock, patch, PropertyMock, mock_open
+from unittest.mock import MagicMock, patch, mock_open
 
 
 class TestRecordCall:

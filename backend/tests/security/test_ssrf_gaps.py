@@ -21,7 +21,6 @@ Known Limitations
 from __future__ import annotations
 
 import pytest
-from unittest.mock import patch, MagicMock
 
 pytestmark = [pytest.mark.security]
 

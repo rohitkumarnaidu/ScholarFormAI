@@ -4,10 +4,7 @@
 """Performance regression tests for database, pipeline, and LLM operations."""
 
 import time
-import threading
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-from unittest.mock import AsyncMock, MagicMock, PropertyMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 

@@ -4,7 +4,6 @@
 
 import sys
 import os
-from pathlib import Path
 
 # Add backend to path
 sys.path.append(os.getcwd())

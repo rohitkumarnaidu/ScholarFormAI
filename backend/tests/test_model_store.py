@@ -2,13 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-import pytest
 
 
 class TestModelStore:
     def _fresh_store(self):
         from app.services.model_store import ModelStore
-        import threading
         s = object.__new__(ModelStore)
         s._models = {}
         ModelStore._instance = s

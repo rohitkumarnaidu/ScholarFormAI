@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 
 def _make_table(rows=None, caption_text=None, index=0, table_id="tbl_001"):

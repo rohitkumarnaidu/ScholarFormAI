@@ -28,7 +28,6 @@ Private names are re-exported here so that existing test patches on
 from __future__ import annotations
 
 import logging
-from typing import List, Dict, Any, Optional
 
 from app.config.settings import settings
 from app.services.llm_fallback_service import (

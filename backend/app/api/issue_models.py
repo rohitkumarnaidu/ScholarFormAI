@@ -1,6 +1,5 @@
 """Pydantic models for issue reporting API."""
 
-from datetime import datetime
 from enum import StrEnum
 from typing import Any
 

@@ -5,7 +5,6 @@
 import unittest
 from datetime import datetime, timezone
 from app.models import PipelineDocument as Document, Block, BlockType, Equation
-from app.pipeline.parsing.parser import DocxParser
 from app.pipeline.classification.classifier import ContentClassifier
 from app.pipeline.formatting.formatter import Formatter
 

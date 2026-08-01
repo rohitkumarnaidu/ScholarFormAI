@@ -1,16 +1,10 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 
-import json
-import pickle
 from pathlib import Path
-from unittest.mock import MagicMock, patch, mock_open, ANY
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
@@ -176,7 +170,6 @@ class TestPerformanceTracker:
 
     def test_load_all_metrics_with_data(self, tmp_path):
         from app.pipeline.agents.metrics import PerformanceTracker
-        import json, time
         t = PerformanceTracker(str(tmp_path))
         t.start_tracking("doc_001", "agent")
         t.end_tracking(success=True)

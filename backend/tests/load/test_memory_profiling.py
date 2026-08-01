@@ -6,14 +6,11 @@ Memory profiling tests — simulated memory boundary checks.
 Verifies that memory usage stays within thresholds for various operations.
 """
 
-import asyncio
 import gc
 import os
 import sys
 import tempfile
-import threading
-import time
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 

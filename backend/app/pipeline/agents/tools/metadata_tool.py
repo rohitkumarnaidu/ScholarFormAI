@@ -6,7 +6,7 @@ Metadata extraction tool using GROBID.
 """
 
 import sys
-from typing import Optional, Type
+from typing import Type
 from pydantic import BaseModel, Field
 from app.pipeline.services.grobid_client import GROBIDClient
 
@@ -61,7 +61,6 @@ class MetadataExtractionTool(BaseTool):
         try:
             # Phase 3: Check Caching
             from app.cache.redis_cache import redis_cache
-            import hashlib
 
             # Read file content for caching key when available.
             # In unit tests or remote file workflows, the local file may not exist.

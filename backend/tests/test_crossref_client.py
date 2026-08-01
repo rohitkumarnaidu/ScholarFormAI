@@ -7,7 +7,6 @@ Unit tests for CrossRefClient.
 """
 
 import pytest
-import time
 import requests
 from unittest.mock import MagicMock, patch
 from app.pipeline.services.crossref_client import CrossRefClient, CrossRefException

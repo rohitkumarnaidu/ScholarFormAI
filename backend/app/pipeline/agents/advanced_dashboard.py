@@ -6,8 +6,7 @@ Advanced analytics dashboard for ML insights.
 """
 
 import logging
-from typing import Dict, Any, List, Optional
-from pathlib import Path
+from typing import Optional
 import json
 from datetime import datetime
 from app.pipeline.agents.ml_patterns import MLPatternDetector

@@ -8,7 +8,7 @@ Verifies retry policies, timeouts, path validation, and asyncio bridging.
 """
 
 import pytest
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import MagicMock, patch
 pytestmark = [pytest.mark.database]
 
 

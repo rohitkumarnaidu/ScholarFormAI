@@ -3,9 +3,7 @@
 
 from __future__ import annotations
 
-import json
-import re
-from unittest.mock import AsyncMock, MagicMock, patch, call, ANY
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 

@@ -4,15 +4,11 @@
 from __future__ import annotations
 
 import io
-import logging
-import os
-import re
-from unittest.mock import MagicMock, PropertyMock, call, patch, ANY
+from unittest.mock import MagicMock, patch, ANY
 from xml.etree import ElementTree as ET
 from zipfile import ZipFile
 
 import pytest
-import yaml
 from docx import Document as WordDocument
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
@@ -26,8 +22,6 @@ from app.models import (
     Figure,
     PipelineDocument,
     Reference,
-    ReferenceType,
-    Table,
     TemplateInfo,
 )
 from app.pipeline.formatting.formatter import Formatter

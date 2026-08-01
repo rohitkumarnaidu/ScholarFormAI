@@ -6,13 +6,11 @@
 from __future__ import annotations
 
 import json
-import time
-from unittest.mock import ANY, AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi import FastAPI, Request
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import JSONResponse
 from starlette.testclient import TestClient
 
 
@@ -181,7 +179,7 @@ class TestMonitoringMiddleware:
 
 class TestRBAC:
     def test_require_role_rejects_insufficient(self):
-        from app.middleware.rbac import require_role, ROLE_HIERARCHY
+        from app.middleware.rbac import require_role
         guard = require_role("admin")
         mock_user = MagicMock()
         mock_user.role = "free"
@@ -319,8 +317,6 @@ class TestRequestIdMiddleware:
 class TestMiddlewareOrdering:
     def test_request_id_before_rbac(self):
         """RequestIdMiddleware should set request_id before RBAC runs."""
-        from app.middleware.request_id import RequestIdMiddleware
-        from app.middleware.rbac import require_role, resolve_user_role
         execution_order = []
 
         class TrackingMiddleware(BaseHTTPMiddleware):

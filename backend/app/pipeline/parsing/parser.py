@@ -18,7 +18,6 @@ IMPORTANT:
 - Preserve exact order from source document
 """
 
-import io
 import logging
 import os
 from typing import List, Optional, Tuple, Dict, Any
@@ -31,7 +30,6 @@ from docx.table import Table as DocxTable
 from docx.text.paragraph import Paragraph as DocxParagraph
 from docx.oxml.table import CT_Tbl
 from docx.oxml.text.paragraph import CT_P
-from docx.shape import InlineShape
 from docx.oxml.ns import qn
 
 from app.pipeline.tables.extractor import TableExtractor
@@ -45,7 +43,6 @@ from app.models import (
     Figure,
     ImageFormat,
     Table,
-    TableCell,
     Equation,
 )
 from app.utils.id_generator import generate_block_id, generate_figure_id, generate_table_id, generate_equation_id

@@ -6,7 +6,6 @@
 Debug script to verify CrossRef DOI validation with real API calls.
 """
 import logging
-import sys
 from app.pipeline.services.crossref_client import CrossRefClient
 
 # Configure logging

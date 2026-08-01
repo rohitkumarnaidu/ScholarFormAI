@@ -1,8 +1,6 @@
 import pytest
-import json
 import re
-from unittest.mock import MagicMock, patch, AsyncMock
-from typing import List, Dict, Tuple
+from typing import List, Dict
 
 # ---------------------------------------------------------------------------
 # Groundedness evaluation helpers  (simulates a hallucination detector)
@@ -324,7 +322,7 @@ class TestSchemaValidation:
     @pytest.mark.ai_quality
     def test_validate_output_rejects_missing_required_fields(self):
         from app.pipeline.safety.validator_guard import validate_output
-        from pydantic import BaseModel, Field
+        from pydantic import BaseModel
 
         class RequiredSchema(BaseModel):
             title: str

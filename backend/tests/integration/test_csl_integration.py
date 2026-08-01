@@ -9,7 +9,6 @@ Tests the integration of CSL citation engine with the pipeline.
 
 import pytest
 from pathlib import Path
-from unittest.mock import MagicMock
 
 from app.pipeline.services.csl_engine import CSLEngine
 from app.models import Reference

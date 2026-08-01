@@ -1,6 +1,5 @@
 """Tests for update management CLI commands."""
 
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest

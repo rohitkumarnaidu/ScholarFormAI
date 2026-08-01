@@ -13,7 +13,6 @@ from docx.shared import Inches, Pt
 
 from app.api.models import FormattingOptions, Manuscript
 from app.domain.models import (
-    DomainAuthor,
     DomainManuscript,
     DomainParagraph,
     DomainReference,

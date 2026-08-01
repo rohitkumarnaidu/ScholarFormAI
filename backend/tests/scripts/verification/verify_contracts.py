@@ -7,7 +7,6 @@ Tests all 4 templates to ensure they load without errors.
 """
 
 from app.pipeline.contracts.loader import ContractLoader
-import os
 
 def verify_all_contracts():
     """Verify all publisher contracts load correctly."""

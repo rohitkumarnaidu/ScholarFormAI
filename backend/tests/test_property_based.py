@@ -1,7 +1,6 @@
 import pytest
 from hypothesis import given, strategies as st, assume, settings, HealthCheck
 from unittest.mock import MagicMock, patch
-import json
 pytestmark = [pytest.mark.property]
 
 class TestSchemaSerialization:

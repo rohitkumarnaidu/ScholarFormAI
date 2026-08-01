@@ -19,7 +19,6 @@ from __future__ import annotations
 
 import logging
 import warnings
-from pathlib import Path
 import importlib.util
 from typing import Any, Dict, List, Optional, Tuple
 from contextlib import contextmanager

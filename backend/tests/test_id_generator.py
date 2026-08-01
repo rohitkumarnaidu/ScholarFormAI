@@ -1,4 +1,3 @@
-import pytest
 from app.utils.id_generator import (
     generate_block_id, generate_figure_id, generate_table_id,
     generate_reference_id, generate_equation_id, generate_document_id,

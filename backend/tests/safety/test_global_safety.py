@@ -83,7 +83,6 @@ class TestGlobalSafety:
 
     def test_document_agent_safety(self):
         """Test DocumentAgent handles processing errors gracefully."""
-        from app.pipeline.agents.memory import AgentMemory
         # Mock LLM creation to avoid OPENAI_API_KEY error during init
         with patch('app.pipeline.agents.llm_factory.CustomLLMFactory.create_llm') as mock_llm:
             mock_llm.return_value = MagicMock()

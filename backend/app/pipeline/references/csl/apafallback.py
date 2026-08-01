@@ -11,8 +11,7 @@ unavailable or CSL file loading fails.
 
 from __future__ import annotations
 
-import re
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 
 class APA7Formatter:

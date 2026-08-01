@@ -1,7 +1,6 @@
 from __future__ import annotations
-from unittest.mock import AsyncMock, MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 import pytest
-from app.exceptions import DatabaseUnavailableError, DocumentNotFoundError, AuthenticationError, RateLimitExceededError
 from app.services.llm_service import LLMUnavailableError
 pytestmark = [pytest.mark.mutation]
 

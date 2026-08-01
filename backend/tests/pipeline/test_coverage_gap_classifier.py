@@ -3,16 +3,9 @@
 
 """Coverage gap tests: classifier.py, formatter.py, synthesizer.py."""
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
-import json
-import math
-from unittest.mock import patch, MagicMock, AsyncMock, PropertyMock, ANY
+from unittest.mock import patch, MagicMock, AsyncMock
 import pytest
-from pathlib import Path
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -667,7 +660,6 @@ class TestClassifierCoverageGaps:
 
     def test_classification_loop_empty_text(self):
         from app.pipeline.classification.classifier import ContentClassifier
-        from app.models.block import BlockType
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -1371,7 +1363,6 @@ class TestFormatterCoverageGaps:
     def test_apply_spacing_from_contract_references(self):
         from app.pipeline.formatting.formatter import Formatter
         f = Formatter(templates_dir=".", contracts_dir=".")
-        from app.models.block import BlockType
         with patch.object(f.contract_loader, "load", return_value={
             "layout": {"spacing": {"references": {"before": 6, "after": 6}}}
         }):
@@ -1451,7 +1442,6 @@ class TestFormatterCoverageGaps:
     def test_build_footnote_lookup_endnote(self):
         from app.pipeline.formatting.formatter import Formatter
         f = Formatter(templates_dir=".", contracts_dir=".")
-        from app.models.block import BlockType
         b = MagicMock()
         b.block_type = "BODY"
         b.text = "Endnote text"

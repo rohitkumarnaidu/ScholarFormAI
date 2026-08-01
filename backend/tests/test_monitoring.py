@@ -5,12 +5,10 @@
 """
 Tests for monitoring middleware and Prometheus metrics.
 """
-import pytest
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
 from app.middleware.prometheus_metrics import prometheus_metrics_middleware, MetricsManager
 from app.middleware.monitoring import MonitoringMiddleware
-from prometheus_client import REGISTRY
 
 # Create a dummy app for testing
 app = FastAPI()

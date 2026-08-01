@@ -1,7 +1,6 @@
 import pytest
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import patch
 import os
-import tempfile
 
 
 class TestConstructor:

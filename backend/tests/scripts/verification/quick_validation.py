@@ -7,7 +7,6 @@ Validates professional baseline format with available test documents.
 """
 
 import sys
-import os
 from pathlib import Path
 
 # Add backend to path
@@ -30,7 +29,6 @@ This validation confirms:
 
 # Import pipeline
 try:
-    from app.pipeline.orchestrator import PipelineOrchestrator
     print("✅ Pipeline orchestrator loaded")
 except Exception as e:
     print(f"❌ Failed to load pipeline: {e}")

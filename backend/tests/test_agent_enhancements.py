@@ -4,14 +4,13 @@
 """
 Tests for agent enhancements.
 """
-import pytest
 import json
 from pathlib import Path
-from unittest.mock import MagicMock, patch, mock_open
+from unittest.mock import MagicMock, patch
 from app.pipeline.agents.memory import AgentMemory
 from app.pipeline.agents.streaming import StreamingAgentCallback
 from app.pipeline.agents.llm_factory import CustomLLMFactory
-from app.pipeline.agents.metrics import PerformanceTracker, ProcessingMetrics
+from app.pipeline.agents.metrics import PerformanceTracker
 from app.pipeline.agents.dashboard import ComparisonDashboard
 
 

@@ -11,7 +11,6 @@ coordination layer. Stage implementation details live in stages.py.
 import os
 import asyncio
 import time
-import logging
 import threading
 from typing import Optional, Any
 
@@ -407,7 +406,6 @@ class PipelineOrchestrator:
                 pass
             return {"status": "cancelled", "message": "Edit interrupted by shutdown"}
         except Exception as e:
-            import traceback
 
             logger.error("Edit flow error: %s", e)
             self._update_status(job_id, "PERSISTENCE", "FAILED", str(e), progress=0)

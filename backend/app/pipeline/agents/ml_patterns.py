@@ -12,7 +12,6 @@ from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import IsolationForest
 from collections import defaultdict
-import json
 from app.pipeline.safety import safe_function
 
 logger = logging.getLogger(__name__)

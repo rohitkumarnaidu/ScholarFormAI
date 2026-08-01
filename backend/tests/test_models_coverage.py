@@ -6,8 +6,6 @@ Tests for ORM models: api_key, api_key_usage_log, block, figure, table, referenc
 """
 from __future__ import annotations
 
-import pytest
-from datetime import datetime, timezone
 import uuid
 
 from app.models.api_key import UserApiKey
@@ -15,7 +13,7 @@ from app.models.api_key_usage_log import ApiKeyUsageLog
 from app.models.block import Block, BlockType, TextStyle, ListType
 from app.models.figure import Figure, FigureType, ImageFormat
 from app.models.table import Table, TableCell
-from app.models.reference import Reference, ReferenceType, CitationStyle
+from app.models.reference import Reference, ReferenceType
 from app.models.equation import Equation
 
 

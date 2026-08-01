@@ -8,7 +8,7 @@ Tests FastAPI endpoints, authentication, and request handling.
 
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import Mock, patch, AsyncMock, MagicMock
+from unittest.mock import patch, AsyncMock, MagicMock
 from app.main import app
 from app.utils.dependencies import get_current_user, get_optional_user
 

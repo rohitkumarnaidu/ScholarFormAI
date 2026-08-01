@@ -1,8 +1,7 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from typing import Dict, Any
-from app.models import Block, BlockType
+from app.models import Block
 from app.pipeline.contracts.loader import ContractLoader
 
 

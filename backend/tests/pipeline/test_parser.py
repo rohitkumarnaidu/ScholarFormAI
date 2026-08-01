@@ -1,50 +1,40 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 import pytest
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 
 class TestHelpers:
     def test_generate_figure_id(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import generate_figure_id
 
         assert generate_figure_id(0) == "fig_000"
         assert generate_figure_id(12) == "fig_012"
 
     def test_generate_table_id(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import generate_table_id
         assert generate_table_id(0) == "tbl_000"
         assert generate_table_id(5) == "tbl_005"
 
     def test_generate_equation_id(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import generate_equation_id
         assert generate_equation_id(0) == "eqn_000"
         assert generate_equation_id(99) == "eqn_099"
 
 class TestDocxParserSupportsFormat:
     def test_supports_docx(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         assert p.supports_format(".docx")
         assert p.supports_format(".doc")
 
     def test_not_supports_other(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         assert not p.supports_format(".pdf")
 
 class TestDocxParserParagraphExtraction:
     def test_extract_paragraph_empty_paragraph(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -64,7 +54,7 @@ class TestDocxParserParagraphExtraction:
         assert block.text == ""
 
     def test_extract_paragraph_with_text(self):
-        from app.models import BlockType, ImageFormat, Block
+        from app.models import BlockType
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -91,7 +81,6 @@ class TestDocxParserParagraphExtraction:
         assert block.block_type == BlockType.UNKNOWN
 
     def test_extract_paragraph_with_style_name(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -111,7 +100,6 @@ class TestDocxParserParagraphExtraction:
         assert block.metadata["style_name"] == "Heading 1"
 
     def test_extract_paragraph_with_alignment(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -131,7 +119,6 @@ class TestDocxParserParagraphExtraction:
         assert "alignment" in block.metadata
 
     def test_extract_paragraph_style_from_runs(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -160,7 +147,6 @@ class TestDocxParserParagraphExtraction:
         assert block.style.font_size == 12.0
 
     def test_extract_paragraph_style_fallback(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -180,7 +166,6 @@ class TestDocxParserParagraphExtraction:
         assert block.style.bold is True
 
     def test_extract_hyperlinks(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -195,19 +180,16 @@ class TestDocxParserParagraphExtraction:
         assert len(links) >= 0
 
     def test_extract_note_references(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
         note_ref = MagicMock()
         note_ref.get.return_value = "1"
         para._element.findall.return_value = [note_ref]
-        from docx.oxml.ns import qn
         refs = p._extract_note_references(para, "w:footnoteReference")
         assert len(refs) >= 0
 
     def test_get_list_info_with_numpr(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -215,7 +197,6 @@ class TestDocxParserParagraphExtraction:
         numPr_xml = '<w:numPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:ilvl w:val="1"/><w:numId w:val="3"/></w:numPr>'
         pPr = etree.fromstring(f'<w:pPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">{numPr_xml}</w:pPr>')
         para._element = MagicMock()
-        from docx.oxml.ns import qn
         para._element.find.return_value = pPr
         result = p._get_list_info(para)
         assert result is not None
@@ -223,7 +204,6 @@ class TestDocxParserParagraphExtraction:
         assert result["list_level"] == 1
 
     def test_get_list_info_with_style_fallback(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -231,14 +211,12 @@ class TestDocxParserParagraphExtraction:
         from lxml import etree
         pPr = etree.fromstring(pPr_xml)
         para._element = MagicMock()
-        from docx.oxml.ns import qn
         para._element.find.return_value = pPr
         result = p._get_list_info(para)
         assert result is not None
         assert result["is_list_item"] is True
 
     def test_get_list_info_no_list(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -249,7 +227,7 @@ class TestDocxParserParagraphExtraction:
 
 class TestDocxParserImageExtraction:
     def test_get_image_format(self):
-        from app.models import BlockType, ImageFormat, Block
+        from app.models import ImageFormat
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         assert p._get_image_format("image/png") == ImageFormat.PNG
@@ -257,7 +235,6 @@ class TestDocxParserImageExtraction:
         assert p._get_image_format("image/unknown") == ImageFormat.UNKNOWN
 
     def test_extract_image_from_inline_missing_blip(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         inline = MagicMock()
@@ -266,7 +243,6 @@ class TestDocxParserImageExtraction:
         assert result is None
 
     def test_extract_image_from_inline_missing_embed(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         inline = MagicMock()
@@ -277,7 +253,7 @@ class TestDocxParserImageExtraction:
         assert result is None
 
     def test_extract_image_from_inline_success(self):
-        from app.models import BlockType, ImageFormat, Block
+        from app.models import ImageFormat
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         inline = MagicMock()
@@ -295,7 +271,6 @@ class TestDocxParserImageExtraction:
         assert result.width is not None
 
     def test_extract_inline_images_empty_runs(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -304,7 +279,6 @@ class TestDocxParserImageExtraction:
 
 class TestDocxParserEquationExtraction:
     def test_extract_equations(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         para = MagicMock()
@@ -314,7 +288,6 @@ class TestDocxParserEquationExtraction:
 
 class TestDocxParserCoreProperties:
     def test_extract_core_properties(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         docx = MagicMock()
@@ -331,7 +304,6 @@ class TestDocxParserCoreProperties:
         assert "Abstract" in meta.abstract
 
     def test_extract_core_properties_empty(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         docx = MagicMock()
@@ -341,7 +313,6 @@ class TestDocxParserCoreProperties:
 
 class TestDocxParserFootnotesEndnotes:
     def test_extract_footnotes_and_endnotes_empty(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         docx = MagicMock()
@@ -351,7 +322,6 @@ class TestDocxParserFootnotesEndnotes:
         assert blocks == []
 
     def test_extract_footnotes_and_endnotes_exception(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         docx = MagicMock()
@@ -361,7 +331,6 @@ class TestDocxParserFootnotesEndnotes:
 
 class TestDocxParserHeaderFooter:
     def test_extract_headers_and_footers(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         docx = MagicMock()
@@ -373,7 +342,6 @@ class TestDocxParserHeaderFooter:
         assert blocks == []
 
     def test_extract_headers_and_footers_exception(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         docx = MagicMock()
@@ -383,14 +351,12 @@ class TestDocxParserHeaderFooter:
 
 class TestDocxParserParse:
     def test_parse_file_not_found(self):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         with pytest.raises(FileNotFoundError):
             p.parse("/nonexistent.docx", "doc1")
 
     def test_parse_invalid_file(self, tmp_path):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         f = tmp_path / "bad.docx"
         f.write_text("not a docx")
@@ -399,7 +365,6 @@ class TestDocxParserParse:
             p.parse(str(f), "doc1")
 
     def test_parse_success(self, tmp_path):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         f = tmp_path / "test.docx"
         f.write_text("dummy")
@@ -416,7 +381,6 @@ class TestDocxParserParse:
             assert doc.original_filename == "test.docx"
 
     def test_parse_with_paragraphs(self, tmp_path):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         f = tmp_path / "paras.docx"
         f.write_text("dummy")
@@ -443,7 +407,6 @@ class TestDocxParserParse:
             para.runs = []
             para._element = MagicMock()
             para._element.findall.return_value = []
-            from docx.oxml.ns import qn
             para._element.find.return_value = None
 
             mock_docx_cls.return_value = docx
@@ -455,7 +418,6 @@ class TestDocxParserParse:
                 assert len(doc.blocks) >= 1
 
     def test_parse_document_id_conversion(self, tmp_path):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import DocxParser
         f = tmp_path / "id.docx"
         f.write_text("dummy")
@@ -473,7 +435,6 @@ class TestDocxParserParse:
 
 class TestParseDocxFunction:
     def test_parse_docx_function(self, tmp_path):
-        from app.models import BlockType, ImageFormat, Block
         from app.pipeline.parsing.parser import parse_docx
         f = tmp_path / "test.docx"
         f.write_text("dummy")

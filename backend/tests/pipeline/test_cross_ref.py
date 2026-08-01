@@ -1,13 +1,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import PipelineDocument as Document
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation, TableCell, TextStyle, ImageFormat, BClass, EClass, RClass
-from app.pipeline.formatting.formatter import Formatter
-from app.models import PipelineDocument, Block, BlockType, ReviewStatus, TemplateInfo, Figure, Reference, Table, DocumentMetadata, Equation
 from __future__ import annotations
 from unittest.mock import MagicMock
-import pytest
 
 class TestCrossReferenceEngine:
     def _make_block(self, block_id="b1", text="", block_type=None, section_name=None):
@@ -22,7 +17,6 @@ class TestCrossReferenceEngine:
         return b
 
     def _make_doc(self, blocks=None, figures=None, tables=None, equations=None):
-        from app.models import BlockType
         doc = MagicMock()
         doc.blocks = blocks or []
         doc.figures = figures or []
@@ -31,7 +25,6 @@ class TestCrossReferenceEngine:
         return doc
 
     def test_no_violations(self):
-        from app.models import BlockType
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
         doc = self._make_doc(
             blocks=[self._make_block(text="See Figure 1")],
@@ -42,7 +35,6 @@ class TestCrossReferenceEngine:
         assert violations == []
 
     def test_dangling_figure_ref(self):
-        from app.models import BlockType
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
         doc = self._make_doc(
             blocks=[self._make_block(text="See Figure 5")],
@@ -55,7 +47,6 @@ class TestCrossReferenceEngine:
         assert "Figure 5" in violations[0]
 
     def test_dangling_table_ref(self):
-        from app.models import BlockType
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
         doc = self._make_doc(
             blocks=[self._make_block(text="See Table 3")],
@@ -68,7 +59,6 @@ class TestCrossReferenceEngine:
         assert "Table 3" in violations[0]
 
     def test_dangling_equation_ref(self):
-        from app.models import BlockType
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
         doc = self._make_doc(
             blocks=[self._make_block(text="See Eq. (5)")],
@@ -80,7 +70,6 @@ class TestCrossReferenceEngine:
         assert "Dangling reference" in violations[0]
 
     def test_only_body_blocks_checked(self):
-        from app.models import BlockType
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
         heading = self._make_block(text="See Figure 99", block_type="HEADING_1")
         body = self._make_block(text="See Figure 1", block_type="BODY")
@@ -94,7 +83,6 @@ class TestCrossReferenceEngine:
         assert "Figure 99" not in str(violations)
 
     def test_no_body_blocks(self):
-        from app.models import BlockType
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
         doc = self._make_doc(
             blocks=[self._make_block(text="See Figure 1", block_type="HEADING_1")],
@@ -105,7 +93,6 @@ class TestCrossReferenceEngine:
         assert violations == []
 
     def test_multiple_violations(self):
-        from app.models import BlockType
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
         doc = self._make_doc(
             blocks=[self._make_block(text="See Figure 2 and Table 5")],

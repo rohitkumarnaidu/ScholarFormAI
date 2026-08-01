@@ -1,5 +1,4 @@
 import pytest
-from unittest.mock import patch, MagicMock
 
 pytestmark = [pytest.mark.security]
 
@@ -93,7 +92,7 @@ class TestToolDataLeakage:
         assert "Tool execution failed" in result
 
     def test_tool_registry_global_isolates_tools(self):
-        from app.pipeline.agents.custom_tools import _global_registry, list_custom_tools
+        from app.pipeline.agents.custom_tools import list_custom_tools
         tools_before = list_custom_tools()
         from app.pipeline.agents.custom_tools import register_custom_tool
 
@@ -162,7 +161,7 @@ class TestToolMarketplaceSecurity:
 
     def test_marketplace_publish_requires_code_hash(self):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
-        import tempfile, hashlib
+        import tempfile
         with tempfile.TemporaryDirectory() as tmpdir:
             marketplace = ToolMarketplace(
                 marketplace_url="https://api.example.com",

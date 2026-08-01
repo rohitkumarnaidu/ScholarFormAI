@@ -2,7 +2,6 @@ import asyncio
 import logging
 import os
 import tempfile
-import uuid
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException

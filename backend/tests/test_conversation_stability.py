@@ -1,7 +1,7 @@
 import re
 import pytest
 import json
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import patch
 
 # ---------------------------------------------------------------------------
 #  Helpers
@@ -226,7 +226,7 @@ class TestTokenBudgetEnforcement:
 
     @pytest.mark.ai_quality
     def test_extract_budget_not_exceeded_with_large_input(self):
-        from app.services.llm_service import _extract_prompts, MAX_LLM_INPUT_LENGTH
+        from app.services.llm_service import _extract_prompts
         messages = [{"role": "system", "content": "S."}]
         for i in range(30):
             messages.append({"role": "user", "content": "X" * 500})

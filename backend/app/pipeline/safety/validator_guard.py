@@ -2,9 +2,8 @@
 # Copyright (c) 2026 ScholarForm AI
 
 import functools
-import json
 import logging
-from typing import Callable, Any, Dict
+from typing import Callable, Any
 from pydantic import BaseModel, ValidationError
 from app.utils.serialization import safe_model_dump
 

@@ -7,7 +7,7 @@ Tests database connection, Supabase client operations, and graceful degradation.
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock, AsyncMock
+from unittest.mock import patch, MagicMock
 
 
 class TestDatabaseLayer:

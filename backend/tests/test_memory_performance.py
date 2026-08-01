@@ -5,7 +5,6 @@
 
 import asyncio
 import gc
-import os
 import threading
 import time
 from unittest.mock import AsyncMock, MagicMock, patch

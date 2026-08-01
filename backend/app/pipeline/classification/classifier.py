@@ -12,7 +12,7 @@ Output: Document with BlockType assigned
 """
 
 import re
-from typing import List, Optional, Dict, Any, Set
+from typing import List, Optional, Dict, Any
 from datetime import datetime, timezone
 
 from app.models import PipelineDocument as Document, Block, BlockType
