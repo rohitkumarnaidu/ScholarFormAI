@@ -25,6 +25,8 @@ class ReferenceFormatterEngine:
     """
 
     def __init__(self, contract_loader: ContractLoader, csl_engine: CSLEngine | None = None):
+        if contract_loader is None:
+            raise ValueError("contract_loader cannot be None")
         self.contract_loader = contract_loader
         self.csl_engine = csl_engine or CSLEngine()
 
