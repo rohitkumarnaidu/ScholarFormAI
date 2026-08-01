@@ -291,7 +291,7 @@ class TestGROBIDExtractMetadataEdgeCases:
 
 @pytest.fixture
 def docling_mock_settings():
-    with patch("app.pipeline.services.docling_client.settings.USE_DOCLING_FALLBACK", True):
+    with patch("app.pipeline.services.docling_client.settings.USE_DOCLING_FALLBACK", True, create=True):
         with patch("app.pipeline.services.docling_client.settings.LOW_MEMORY_MODE", False):
             yield
 
@@ -317,7 +317,7 @@ class TestDoclingClientModuleCoverage:
 
     def test_docling_enabled_low_memory(self):
         """_docling_enabled returns False in low memory mode."""
-        with patch("app.pipeline.services.docling_client.settings.USE_DOCLING_FALLBACK", True):
+        with patch("app.pipeline.services.docling_client.settings.USE_DOCLING_FALLBACK", True, create=True):
             with patch("app.pipeline.services.docling_client.settings.LOW_MEMORY_MODE", True):
                 from app.pipeline.services.docling_client import _docling_enabled
                 assert _docling_enabled() is False
