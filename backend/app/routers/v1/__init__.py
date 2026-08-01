@@ -25,19 +25,33 @@ from . import (
 )
 
 v1_router = APIRouter(prefix="/api/v1")
-v1_router.include_router(health.router, prefix="/health", tags=["Health v1"])
-v1_router.include_router(auth.router, prefix="/auth", tags=["Auth v1"])
-v1_router.include_router(config.router, prefix="/config", tags=["Config v1"])
-v1_router.include_router(documents.router, prefix="/documents", tags=["Documents v1"])
-v1_router.include_router(templates.router, prefix="/templates", tags=["Templates v1"])
-v1_router.include_router(generator.router, prefix="/generator", tags=["Generator v1"])
-v1_router.include_router(synthesis.router, prefix="/synthesis", tags=["Synthesis v1"])
-v1_router.include_router(feedback.router, prefix="/feedback", tags=["Feedback v1"])
-v1_router.include_router(metrics.router, prefix="/metrics", tags=["Metrics v1"])
-v1_router.include_router(providers.router, prefix="/providers")
-v1_router.include_router(api_keys.router, prefix="/keys")
-v1_router.include_router(stream.router, prefix="/stream", tags=["Streaming v1"])
-v1_router.include_router(billing.router)
-v1_router.include_router(activity.router, prefix="/activity", tags=["Activity v1"])
-v1_router.include_router(suggestions.router, prefix="/suggestions", tags=["Suggestions v1"])
-v1_router.include_router(webhooks.router, prefix="/webhooks", tags=["Webhooks v1"])
+
+for router_module, prefix, tags in [
+    (health.router, "/health", ["Health v1"]),
+    (auth.router, "/auth", ["Auth v1"]),
+    (config.router, "/config", ["Config v1"]),
+    (documents.router, "/documents", ["Documents v1"]),
+    (templates.router, "/templates", ["Templates v1"]),
+    (generator.router, "/generator", ["Generator v1"]),
+    (synthesis.router, "/synthesis", ["Synthesis v1"]),
+    (feedback.router, "/feedback", ["Feedback v1"]),
+    (metrics.router, "/metrics", ["Metrics v1"]),
+    (providers.router, "/providers", []),
+    (api_keys.router, "/keys", []),
+    (stream.router, "/stream", ["Streaming v1"]),
+    (billing.router, "", []),
+    (activity.router, "/activity", ["Activity v1"]),
+    (suggestions.router, "/suggestions", ["Suggestions v1"]),
+    (webhooks.router, "/webhooks", ["Webhooks v1"]),
+]:
+    try:
+        if tags:
+            v1_router.include_router(router_module, prefix=prefix, tags=tags)
+        elif prefix:
+            v1_router.include_router(router_module, prefix=prefix)
+        else:
+            v1_router.include_router(router_module)
+    except AssertionError as e:
+        if "already includes" not in str(e):
+            raise
+
