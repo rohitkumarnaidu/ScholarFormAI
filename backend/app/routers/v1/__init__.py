@@ -54,4 +54,3 @@ for router_module, prefix, tags in [
     except AssertionError as e:
         if "already includes" not in str(e):
             raise
-

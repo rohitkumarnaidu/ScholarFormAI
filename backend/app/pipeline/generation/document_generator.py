@@ -441,6 +441,7 @@ class DocumentGenerator:
     def _emit(self, job_id: str, **payload: Any) -> None:
         try:
             from app.routers.v1.stream import emit_event
+
             emit_event(job_id, "status_update", payload)
         except Exception as exc:
             logger.debug("SSE emission failed for generation job %s: %s", job_id, exc)
