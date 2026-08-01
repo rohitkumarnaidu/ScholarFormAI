@@ -914,10 +914,11 @@ class TestFinalBranchCoverage:
     """Hit remaining uncovered lines across 4 modules."""
 
     def test_legacy_half_open_success_recovery(self):
-        with patch.dict("sys.modules", {"pybreaker": None}):
-            import app.pipeline.safety.circuit_breaker as _cb
-            mod = importlib.reload(_cb)
-            cb = mod.circuit_breaker(failure_threshold=1, recovery_timeout=0.01)
+        import time
+        import app.pipeline.safety.circuit_breaker as _cb_direct
+        _cb_mod_local = importlib.import_module("app.pipeline.safety.circuit_breaker")
+        with patch.object(_cb_mod_local, "_PYBREAKER", False):
+            cb = _cb_mod_local.circuit_breaker(failure_threshold=1, recovery_timeout=0.01)
             call_count = [0]
             @cb
             def fails_once_then_succeeds():
@@ -928,10 +929,9 @@ class TestFinalBranchCoverage:
             with pytest.raises(ValueError):
                 fails_once_then_succeeds()
             assert call_count[0] == 1
-            with pytest.raises(mod.CircuitBreakerOpenException):
+            with pytest.raises(_cb_mod_local.CircuitBreakerOpenException):
                 fails_once_then_succeeds()
             assert call_count[0] == 1
-            import time
             time.sleep(0.02)
             result = fails_once_then_succeeds()
             assert result == "success"
@@ -1013,10 +1013,9 @@ class TestCircuitBreakerBranchCoverage:
             assert fb.called
 
     def test_legacy_per_instance_state(self):
-        with patch.dict("sys.modules", {"pybreaker": None}):
-            import app.pipeline.safety.circuit_breaker as _cb
-            mod = importlib.reload(_cb)
-            cb = mod.circuit_breaker(failure_threshold=5, recovery_timeout=60)
+        _cb_mod_local = importlib.import_module("app.pipeline.safety.circuit_breaker")
+        with patch.object(_cb_mod_local, "_PYBREAKER", False):
+            cb = _cb_mod_local.circuit_breaker(failure_threshold=5, recovery_timeout=60)
             class MyClass:
                 @cb
                 def method(self):
@@ -1025,10 +1024,10 @@ class TestCircuitBreakerBranchCoverage:
             assert obj.method() == "ok"
 
     def test_legacy_half_open_then_fail_again(self):
-        with patch.dict("sys.modules", {"pybreaker": None}):
-            import app.pipeline.safety.circuit_breaker as _cb
-            mod = importlib.reload(_cb)
-            cb = mod.circuit_breaker(failure_threshold=1, recovery_timeout=0.01)
+        import time
+        _cb_mod_local = importlib.import_module("app.pipeline.safety.circuit_breaker")
+        with patch.object(_cb_mod_local, "_PYBREAKER", False):
+            cb = _cb_mod_local.circuit_breaker(failure_threshold=1, recovery_timeout=0.01)
             call_count = [0]
             @cb
             def always_fails():
@@ -1037,9 +1036,8 @@ class TestCircuitBreakerBranchCoverage:
             with pytest.raises(ValueError):
                 always_fails()
             assert call_count[0] == 1
-            with pytest.raises(mod.CircuitBreakerOpenException):
+            with pytest.raises(_cb_mod_local.CircuitBreakerOpenException):
                 always_fails()
-            import time
             time.sleep(0.02)
             with pytest.raises(ValueError):
                 always_fails()
@@ -1050,32 +1048,29 @@ class TestLlmValidatorBranchCoverage:
     """Targeted tests for remaining uncovered llm_validator branches."""
 
     def test_guardrails_import_error(self):
-        with patch.dict("sys.modules", {"guardrails": None}):
-            import app.pipeline.safety.llm_validator as _lv
-            mod = importlib.reload(_lv)
-            assert mod.HAS_GUARDRAILS is False
+        _lv_mod = importlib.import_module("app.pipeline.safety.llm_validator")
+        with patch.object(_lv_mod, "HAS_GUARDRAILS", False):
+            assert _lv_mod.HAS_GUARDRAILS is False
 
     def test_extreme_fallback_on_validator_import_error(self):
-        with patch.dict("sys.modules", {"app.pipeline.safety.validator_guard": None}):
-            import app.pipeline.safety.llm_validator as _lv
-            mod = importlib.reload(_lv)
-            from pydantic import BaseModel
+        from pydantic import BaseModel
+        _lv_mod = importlib.import_module("app.pipeline.safety.llm_validator")
+        with patch.object(_lv_mod, "HAS_GUARDRAILS", False):
             class FakeSchema(BaseModel):
                 result: str
-            @mod.guard_llm_output(FakeSchema, error_return_value={"error": True})
+            @_lv_mod.guard_llm_output(FakeSchema, error_return_value={"error": True})
             def test_fn():
                 raise ValueError("bad")
             result = test_fn()
             assert result == {"error": True}
 
     def test_extreme_fallback_raises_exception(self):
-        with patch.dict("sys.modules", {"app.pipeline.safety.validator_guard": None}):
-            import app.pipeline.safety.llm_validator as _lv
-            mod = importlib.reload(_lv)
-            from pydantic import BaseModel
+        from pydantic import BaseModel
+        _lv_mod = importlib.import_module("app.pipeline.safety.llm_validator")
+        with patch.object(_lv_mod, "HAS_GUARDRAILS", False):
             class FakeSchema(BaseModel):
                 result: str
-            @mod.guard_llm_output(FakeSchema, error_return_value={"fallback": True})
+            @_lv_mod.guard_llm_output(FakeSchema, error_return_value={"fallback": True})
             def raises_error():
                 raise ValueError("fail")
             result = raises_error()
