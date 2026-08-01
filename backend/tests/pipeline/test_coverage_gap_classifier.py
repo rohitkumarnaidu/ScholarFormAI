@@ -72,252 +72,182 @@ class TestClassifierCoverageGaps:
         from app.models.block import BlockType
         assert bt == BlockType.HEADING_2
 
-    def test_map_scibert_label_title(self):
+    def test_map_llm_label_title(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
         b.text = "Title"
-        bt, si = ContentClassifier()._map_scibert_label("TITLE", b)
+        bt, si = ContentClassifier()._map_llm_label("TITLE", b)
         from app.models.block import BlockType
         assert bt == BlockType.TITLE
 
-    def test_map_scibert_label_author_info_affiliation(self):
+    def test_map_llm_label_author_info_affiliation(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
         b.text = "University of Testing"
-        bt, si = ContentClassifier()._map_scibert_label("AUTHOR_INFO", b)
+        bt, si = ContentClassifier()._map_llm_label("AUTHOR_INFO", b)
         from app.models.block import BlockType
         assert bt == BlockType.AFFILIATION
 
-    def test_map_scibert_label_author_info_author(self):
+    def test_map_llm_label_author_info_author(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
         b.text = "John Smith"
-        bt, si = ContentClassifier()._map_scibert_label("AUTHOR_INFO", b)
+        bt, si = ContentClassifier()._map_llm_label("AUTHOR_INFO", b)
         from app.models.block import BlockType
         assert bt == BlockType.AUTHOR
 
-    def test_map_scibert_label_abstract_heading(self):
+    def test_map_llm_label_abstract_heading(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
         b.text = "Abstract"
         b.metadata = {}
-        bt, si = ContentClassifier()._map_scibert_label("ABSTRACT", b)
+        bt, si = ContentClassifier()._map_llm_label("ABSTRACT", b)
         from app.models.block import BlockType
         assert bt == BlockType.ABSTRACT_HEADING
 
-    def test_map_scibert_label_abstract_body(self):
+    def test_map_llm_label_abstract_body(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
         b.text = "This paper presents a novel approach with many details that make it a body text not a heading"
         b.metadata = {}
-        bt, si = ContentClassifier()._map_scibert_label("ABSTRACT", b)
+        bt, si = ContentClassifier()._map_llm_label("ABSTRACT", b)
         from app.models.block import BlockType
         assert bt == BlockType.ABSTRACT_BODY
 
-    def test_map_scibert_label_references_heading(self):
+    def test_map_llm_label_references_heading(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
         b.text = "References"
         b.metadata = {}
-        bt, si = ContentClassifier()._map_scibert_label("REFERENCES", b)
+        bt, si = ContentClassifier()._map_llm_label("REFERENCES", b)
         from app.models.block import BlockType
         assert bt == BlockType.REFERENCES_HEADING
 
-    def test_map_scibert_label_references_entry(self):
+    def test_map_llm_label_references_entry(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
         b.text = "1. J. Smith, A Very Long Paper Title That Exceeds Fifty Characters In Total Length"
         b.metadata = {}
-        bt, si = ContentClassifier()._map_scibert_label("REFERENCES", b)
+        bt, si = ContentClassifier()._map_llm_label("REFERENCES", b)
         from app.models.block import BlockType
         assert bt == BlockType.REFERENCE_ENTRY
 
-    def test_map_scibert_label_figure_caption(self):
+    def test_map_llm_label_figure_caption(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
-        bt, si = ContentClassifier()._map_scibert_label("FIGURE_CAPTION", b)
+        bt, si = ContentClassifier()._map_llm_label("FIGURE_CAPTION", b)
         from app.models.block import BlockType
         assert bt == BlockType.FIGURE_CAPTION
 
-    def test_map_scibert_label_table_caption(self):
+    def test_map_llm_label_table_caption(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
-        bt, si = ContentClassifier()._map_scibert_label("TABLE_CAPTION", b)
+        bt, si = ContentClassifier()._map_llm_label("TABLE_CAPTION", b)
         from app.models.block import BlockType
         assert bt == BlockType.TABLE_CAPTION
 
-    def test_map_scibert_label_acknowledgements(self):
+    def test_map_llm_label_acknowledgements(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
-        bt, si = ContentClassifier()._map_scibert_label("ACKNOWLEDGEMENTS", b)
+        bt, si = ContentClassifier()._map_llm_label("ACKNOWLEDGEMENTS", b)
         from app.models.block import BlockType
         assert bt == BlockType.ACKNOWLEDGEMENTS
 
-    def test_map_scibert_label_equation(self):
+    def test_map_llm_label_equation(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
-        bt, si = ContentClassifier()._map_scibert_label("EQUATION", b)
+        bt, si = ContentClassifier()._map_llm_label("EQUATION", b)
         from app.models.block import BlockType
         assert bt == BlockType.EQUATION
 
-    def test_map_scibert_label_methodology_heading(self):
+    def test_map_llm_label_methodology_heading(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
         b.metadata = {"level": 1}
         b.level = None
         b.text = "Methodology"
-        bt, si = ContentClassifier()._map_scibert_label("METHODOLOGY", b)
+        bt, si = ContentClassifier()._map_llm_label("METHODOLOGY", b)
         from app.models.block import BlockType
         assert bt == BlockType.HEADING_1
 
-    def test_map_scibert_label_methodology_body(self):
+    def test_map_llm_label_methodology_body(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
         b.text = "Long body text about methodology that goes way over the threshold"
         b.metadata = {}
-        bt, si = ContentClassifier()._map_scibert_label("METHODOLOGY", b)
+        bt, si = ContentClassifier()._map_llm_label("METHODOLOGY", b)
         from app.models.block import BlockType
         assert bt == BlockType.BODY
 
-    def test_map_scibert_label_conclusion_heading(self):
+    def test_map_llm_label_conclusion_heading(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
         b.metadata = {"level": 2}
         b.text = "Conclusion"
-        bt, si = ContentClassifier()._map_scibert_label("CONCLUSION", b)
+        bt, si = ContentClassifier()._map_llm_label("CONCLUSION", b)
         from app.models.block import BlockType
         assert bt == BlockType.HEADING_2
 
-    def test_map_scibert_label_heading(self):
+    def test_map_llm_label_heading(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
         b.metadata = {"level": 1}
-        bt, si = ContentClassifier()._map_scibert_label("HEADING", b)
+        bt, si = ContentClassifier()._map_llm_label("HEADING", b)
         from app.models.block import BlockType
         assert bt == BlockType.HEADING_1
 
-    def test_map_scibert_label_body(self):
+    def test_map_llm_label_body(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
-        bt, si = ContentClassifier()._map_scibert_label("BODY", b)
+        bt, si = ContentClassifier()._map_llm_label("BODY", b)
         from app.models.block import BlockType
         assert bt == BlockType.BODY
 
-    def test_map_scibert_label_unknown_default(self):
+    def test_map_llm_label_unknown_default(self):
         from app.pipeline.classification.classifier import ContentClassifier
         b = MagicMock()
-        bt, si = ContentClassifier()._map_scibert_label("SOME_UNKNOWN_LABEL", b)
+        bt, si = ContentClassifier()._map_llm_label("SOME_UNKNOWN_LABEL", b)
         from app.models.block import BlockType
         assert bt == BlockType.BODY
 
-    def test_predict_scibert_batch_disabled(self):
+    def test_predict_llm_batch_disabled(self):
         from app.pipeline.classification.classifier import ContentClassifier
-        with patch("app.pipeline.classification.classifier.should_enable_scibert", return_value=False):
-            result = ContentClassifier()._predict_scibert_batch([MagicMock()])
+        with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=False):
+            result = ContentClassifier()._predict_llm_batch([MagicMock()])
             assert result is None
 
-    def test_predict_scibert_batch_empty_blocks(self):
+    def test_predict_llm_batch_empty_blocks(self):
         from app.pipeline.classification.classifier import ContentClassifier
-        with patch("app.pipeline.classification.classifier.should_enable_scibert", return_value=True):
-            result = ContentClassifier()._predict_scibert_batch([])
+        with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
+            result = ContentClassifier()._predict_llm_batch([])
             assert result == []
 
-    def test_predict_scibert_batch_langdetect_skips_non_en(self):
+    def test_predict_llm_batch_success(self):
         from app.pipeline.classification.classifier import ContentClassifier
-        with patch("app.pipeline.classification.classifier.should_enable_scibert", return_value=True):
-            mock_parser_module = MagicMock()
-            mock_parser_module.HAS_LANGDETECT = True
-            mock_parser_module.detect_language = MagicMock(return_value="fr")
-            mock_parser_module.get_semantic_parser = MagicMock()
-            with patch.dict("sys.modules", {"app.pipeline.intelligence.semantic_parser": mock_parser_module}):
-                b = MagicMock()
-                b.text = "Bonjour le monde"
-                result = ContentClassifier()._predict_scibert_batch([b])
-                assert result is None
-
-    def test_predict_scibert_batch_langdetect_exception(self):
-        from app.pipeline.classification.classifier import ContentClassifier
-        with patch("app.pipeline.classification.classifier.should_enable_scibert", return_value=True):
-            mock_parser_module = MagicMock()
-            mock_parser_module.HAS_LANGDETECT = True
-            mock_parser_module.detect_language = MagicMock(side_effect=Exception("lang fail"))
-            parser_instance = MagicMock()
-            parser_instance.model = MagicMock()
-            parser_instance.tokenizer = MagicMock()
-            parser_instance.predict_blocks_batch.return_value = [{"type": "BODY", "confidence": 0.9}]
-            mock_parser_module.get_semantic_parser.return_value = parser_instance
-            with patch.dict("sys.modules", {"app.pipeline.intelligence.semantic_parser": mock_parser_module}):
-                b = MagicMock()
-                b.text = "Some English text"
-                result = ContentClassifier()._predict_scibert_batch([b])
-                assert result == [{"type": "BODY", "confidence": 0.9}]
-
-    def test_predict_scibert_batch_no_combined_text(self):
-        from app.pipeline.classification.classifier import ContentClassifier
-        with patch("app.pipeline.classification.classifier.should_enable_scibert", return_value=True):
-            mock_parser_module = MagicMock()
-            mock_parser_module.HAS_LANGDETECT = True
-            mock_parser_module.detect_language = MagicMock()
-            parser_instance = MagicMock()
-            parser_instance.model = MagicMock()
-            parser_instance.tokenizer = MagicMock()
-            parser_instance.predict_blocks_batch.return_value = [{"type": "BODY", "confidence": 0.9}]
-            mock_parser_module.get_semantic_parser.return_value = parser_instance
-            with patch.dict("sys.modules", {"app.pipeline.intelligence.semantic_parser": mock_parser_module}):
-                b = MagicMock()
-                b.text = ""
-                result = ContentClassifier()._predict_scibert_batch([b])
-                assert result == [{"type": "BODY", "confidence": 0.9}]
-
-    def test_predict_scibert_batch_model_unavailable(self):
-        from app.pipeline.classification.classifier import ContentClassifier
-        with patch("app.pipeline.classification.classifier.should_enable_scibert", return_value=True):
-            mock_parser_module = MagicMock()
-            mock_parser_module.HAS_LANGDETECT = False
-            mock_parser_module.get_semantic_parser = MagicMock()
-            with patch.dict("sys.modules", {"app.pipeline.intelligence.semantic_parser": mock_parser_module}):
-                parser_instance = MagicMock()
-                parser_instance.model = None
-                parser_instance.tokenizer = None
-                mock_parser_module.get_semantic_parser.return_value = parser_instance
+        with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
+            with patch("app.pipeline.classification.classifier.get_llm_classifier") as mock_get:
+                mock_clf = mock_get.return_value
+                mock_clf.classify_batch.return_value = [{"type": "BODY", "confidence": 0.9}]
                 b = MagicMock()
                 b.text = "Some text"
-                result = ContentClassifier()._predict_scibert_batch([b])
+                result = ContentClassifier()._predict_llm_batch([b])
+                assert result == [{"type": "BODY", "confidence": 0.9}]
+                mock_clf.classify_batch.assert_called_once_with(["Some text"])
+
+    def test_predict_llm_batch_exception(self):
+        from app.pipeline.classification.classifier import ContentClassifier
+        with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
+            with patch("app.pipeline.classification.classifier.get_llm_classifier") as mock_get:
+                mock_get.side_effect = Exception("Not available")
+                result = ContentClassifier()._predict_llm_batch([MagicMock()])
                 assert result is None
 
-    def test_predict_scibert_batch_exception(self):
-        from app.pipeline.classification.classifier import ContentClassifier
-        with patch("app.pipeline.classification.classifier.should_enable_scibert", return_value=True):
-            with patch("app.pipeline.classification.classifier.logger"):
-                mock_parser_module = MagicMock()
-                mock_parser_module.HAS_LANGDETECT = False
-                mock_parser_module.get_semantic_parser = MagicMock(side_effect=Exception("import fail"))
-                with patch.dict("sys.modules", {"app.pipeline.intelligence.semantic_parser": mock_parser_module}):
-                    result = ContentClassifier()._predict_scibert_batch([MagicMock()])
-                    assert result is None
-
-    def test_predict_scibert_batch_success(self):
-        from app.pipeline.classification.classifier import ContentClassifier
-        with patch("app.pipeline.classification.classifier.should_enable_scibert", return_value=True):
-            mock_parser_module = MagicMock()
-            mock_parser_module.HAS_LANGDETECT = False
-            parser_instance = MagicMock()
-            parser_instance.model = MagicMock()
-            parser_instance.tokenizer = MagicMock()
-            parser_instance.predict_blocks_batch.return_value = [{"type": "BODY", "confidence": 0.9}]
-            mock_parser_module.get_semantic_parser.return_value = parser_instance
-            with patch.dict("sys.modules", {"app.pipeline.intelligence.semantic_parser": mock_parser_module}):
-                b = MagicMock()
-                b.text = "Some text"
-                result = ContentClassifier()._predict_scibert_batch([b])
-                assert result == [{"type": "BODY", "confidence": 0.9}]
-
-    def test_apply_scibert_predictions_none(self):
+    def test_apply_llm_predictions_none(self):
         from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
-        cc._apply_scibert_predictions([MagicMock()], None)
+        cc._apply_llm_predictions([MagicMock()], None)
 
-    def test_apply_scibert_predictions_fewer_predictions_than_blocks(self):
+    def test_apply_llm_predictions_fewer_predictions_than_blocks(self):
         from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b1 = MagicMock()
@@ -325,69 +255,69 @@ class TestClassifierCoverageGaps:
         b2 = MagicMock()
         b2.metadata = {}
         preds = [{"type": "BODY", "confidence": 0.9}]
-        cc._apply_scibert_predictions([b1, b2], preds)
-        assert b1.metadata.get("scibert_prediction") == "BODY"
+        cc._apply_llm_predictions([b1, b2], preds)
+        assert b1.metadata.get("llm_prediction") == "BODY"
 
-    def test_apply_scibert_predictions_empty_pred(self):
+    def test_apply_llm_predictions_empty_pred(self):
         from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
         preds = [None]
-        cc._apply_scibert_predictions([b], preds)
+        cc._apply_llm_predictions([b], preds)
 
-    def test_apply_scibert_predictions_no_label(self):
+    def test_apply_llm_predictions_no_label(self):
         from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
         preds = [{"confidence": 0.9}]
-        cc._apply_scibert_predictions([b], preds)
+        cc._apply_llm_predictions([b], preds)
 
-    def test_apply_scibert_predictions_low_confidence(self):
+    def test_apply_llm_predictions_low_confidence(self):
         from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
         b.block_type = "BODY"
         preds = [{"type": "BODY", "confidence": 0.5}]
-        cc._apply_scibert_predictions([b], preds)
+        cc._apply_llm_predictions([b], preds)
 
-    def test_apply_scibert_predictions_protected_block(self):
+    def test_apply_llm_predictions_protected_block(self):
         from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {"is_header": True}
         b.block_type = "BODY"
         preds = [{"type": "TITLE", "confidence": 0.95}]
-        cc._apply_scibert_predictions([b], preds)
+        cc._apply_llm_predictions([b], preds)
 
-    def test_apply_scibert_predictions_not_overrideable_type(self):
+    def test_apply_llm_predictions_not_overrideable_type(self):
         from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
         b.block_type = "TITLE"
         preds = [{"type": "BODY", "confidence": 0.95}]
-        cc._apply_scibert_predictions([b], preds)
+        cc._apply_llm_predictions([b], preds)
 
-    def test_apply_scibert_predictions_same_body(self):
+    def test_apply_llm_predictions_same_body(self):
         from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
         b.block_type = "BODY"
         preds = [{"type": "BODY", "confidence": 0.95}]
-        cc._apply_scibert_predictions([b], preds)
+        cc._apply_llm_predictions([b], preds)
 
-    def test_apply_scibert_predictions_confidence_parse_error(self):
+    def test_apply_llm_predictions_confidence_parse_error(self):
         from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
         b.block_type = "UNKNOWN"
         preds = [{"type": "TITLE", "confidence": "not_a_number"}]
-        cc._apply_scibert_predictions([b], preds)
+        cc._apply_llm_predictions([b], preds)
 
     def test_find_first_section_index_title_skip(self):
         from app.models.block import BlockType
@@ -613,7 +543,7 @@ class TestClassifierCoverageGaps:
 
     def _run_process(self, cc, doc):
         """Run process with SciBERT patched out to avoid transformers import."""
-        with patch("app.pipeline.classification.classifier.should_enable_scibert", return_value=False):
+        with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=False):
             return cc.process(doc)
 
     def test_classification_loop_title_in_front_matter(self):
@@ -836,7 +766,7 @@ class TestClassifierCoverageGaps:
         b.index = 1
         doc = self._make_doc([t, b])
         result = self._run_process(cc, doc)
-        assert result.blocks[1].block_type == BlockType.AUTHOR
+        assert result.blocks[1].block_type == BlockType.AFFILIATION
 
     def test_classification_loop_email_affiliation(self):
         from app.models.block import BlockType

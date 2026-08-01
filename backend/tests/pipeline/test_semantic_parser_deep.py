@@ -266,7 +266,7 @@ class TestClassifyBlockEdgeCases:
 
         p = SemanticParser()
         with (
-            patch("app.pipeline.intelligence.semantic_parser.should_enable_scibert", return_value=False),
+            patch("app.pipeline.intelligence.semantic_parser.should_enable_llm_classification", return_value=False),
             patch.object(p, "_heuristic_classify", return_value={"type": "BODY", "confidence": 0.5}) as mock_heur,
         ):
             r = p.classify_block("text", use_transformer=True)
