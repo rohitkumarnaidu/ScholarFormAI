@@ -32,9 +32,10 @@ def _get_doc_service():
 
     return DocumentService
 
+
 def _get_doc_crud_service():
     from app.services.document_crud_service import DocumentCrudService
-    
+
     return DocumentCrudService()
 
 
