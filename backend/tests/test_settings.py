@@ -16,6 +16,7 @@ class TestSettingsDefaults:
         """Import Settings in a clean env context."""
         # Reload settings module with patched env
         import importlib
+
         import app.config.settings as mod
         importlib.reload(mod)
         return mod.Settings()
@@ -36,6 +37,7 @@ class TestSettingsDefaults:
         """Default template must be 'ieee' (unless overridden by env)."""
         monkeypatch.setenv("DEFAULT_TEMPLATE", "ieee")
         from importlib import reload
+
         from app.config import settings
         reload(settings)
         from app.config.settings import Settings

@@ -6,7 +6,7 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 from xml.etree import ElementTree as ET
 from zipfile import ZipFile
 
@@ -33,7 +33,7 @@ GOLDEN_DIR = BASE_DIR / "goldens"
 FORMATTER = Formatter(templates_dir="app/templates", contracts_dir="app/pipeline/contracts")
 
 
-def _split_frontmatter(raw_text: str) -> Tuple[Dict[str, Any], str]:
+def _split_frontmatter(raw_text: str) -> tuple[dict[str, Any], str]:
     if not raw_text.startswith("---\n"):
         return {}, raw_text
 
@@ -41,8 +41,8 @@ def _split_frontmatter(raw_text: str) -> Tuple[Dict[str, Any], str]:
     return yaml.safe_load(frontmatter) or {}, body
 
 
-def _extract_markdown_hyperlinks(text: str) -> Tuple[str, List[Dict[str, str]]]:
-    links: List[Dict[str, str]] = []
+def _extract_markdown_hyperlinks(text: str) -> tuple[str, list[dict[str, str]]]:
+    links: list[dict[str, str]] = []
 
     def _replace(match: re.Match[str]) -> str:
         anchor = match.group(1).strip()
@@ -55,7 +55,7 @@ def _extract_markdown_hyperlinks(text: str) -> Tuple[str, List[Dict[str, str]]]:
     return cleaned, links
 
 
-def _extract_footnote_refs(text: str) -> Tuple[str, List[str]]:
+def _extract_footnote_refs(text: str) -> tuple[str, list[str]]:
     refs = re.findall(r"\[\^([^\]]+)\]", text)
     cleaned = re.sub(r"\[\^[^\]]+\]", "", text)
     return cleaned.strip(), refs
@@ -86,8 +86,8 @@ def _build_pipeline_document(sample_path: Path, template_name: str) -> PipelineD
         },
     )
 
-    blocks: List[Block] = []
-    references: List[Reference] = []
+    blocks: list[Block] = []
+    references: list[Reference] = []
     current_mode = "body"
     current_section_name = ""
     block_index = 100
@@ -156,7 +156,7 @@ def _build_pipeline_document(sample_path: Path, template_name: str) -> PipelineD
 
         cleaned_text, hyperlinks = _extract_markdown_hyperlinks(line.strip())
         cleaned_text, footnote_refs = _extract_footnote_refs(cleaned_text)
-        block_metadata: Dict[str, Any] = {}
+        block_metadata: dict[str, Any] = {}
         if hyperlinks:
             block_metadata["hyperlinks"] = hyperlinks
         if footnote_refs:
@@ -202,7 +202,7 @@ def _build_pipeline_document(sample_path: Path, template_name: str) -> PipelineD
     return document
 
 
-def _build_structural_summary(output_path: Path, golden: Dict[str, Any]) -> Dict[str, Any]:
+def _build_structural_summary(output_path: Path, golden: dict[str, Any]) -> dict[str, Any]:
     rendered = WordDocument(str(output_path))
     paragraphs = [paragraph.text.strip() for paragraph in rendered.paragraphs if paragraph.text.strip()]
     full_text = "\n".join(paragraphs)
@@ -227,11 +227,11 @@ def _build_structural_summary(output_path: Path, golden: Dict[str, Any]) -> Dict
     }
 
 
-def _load_golden(template_name: str) -> Dict[str, Any]:
+def _load_golden(template_name: str) -> dict[str, Any]:
     return json.loads((GOLDEN_DIR / f"{template_name}.json").read_text(encoding="utf-8"))
 
 
-def _run_fixture(sample_name: str, tmp_path: Path) -> Dict[str, Any]:
+def _run_fixture(sample_name: str, tmp_path: Path) -> dict[str, Any]:
     sample_path = INPUT_DIR / f"{sample_name}.md"
     golden = _load_golden(sample_name)
     document = _build_pipeline_document(sample_path, sample_name)

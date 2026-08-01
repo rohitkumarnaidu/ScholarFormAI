@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-import redis
+import hashlib
 import json
 import logging
-import hashlib
-from typing import Optional
+
+import redis
 
 logger = logging.getLogger(__name__)
 
@@ -17,13 +17,13 @@ class RedisCache:
     """
 
     def __init__(self, host: str = "localhost", port: int = 6379, db: int = 0, redis_url: str | None = None):
-        self._client: Optional[redis.Redis] = None
+        self._client: redis.Redis | None = None
         self._initialized = False
         self._init_kwargs = {"host": host, "port": port, "db": db}
         if redis_url is not None:
             self._init_kwargs["redis_url"] = redis_url
 
-    def _ensure_client(self) -> Optional[redis.Redis]:
+    def _ensure_client(self) -> redis.Redis | None:
         """Lazily create the Redis client on first use."""
         if self._initialized:
             return self._client
@@ -66,7 +66,7 @@ class RedisCache:
         return self._client
 
     @property
-    def client(self) -> Optional[redis.Redis]:
+    def client(self) -> redis.Redis | None:
         return self._ensure_client()
 
     def _generate_key(self, content: str, prefix: str = "grobid") -> str:
@@ -74,7 +74,7 @@ class RedisCache:
         content_hash = hashlib.sha256(content.encode()).hexdigest()
         return f"{prefix}:{content_hash}"
 
-    def get_grobid_result(self, file_content: str) -> Optional[dict]:
+    def get_grobid_result(self, file_content: str) -> dict | None:
         """Retrieve cached GROBID results for the given file content."""
         client = self._ensure_client()
         if not client:
@@ -104,7 +104,7 @@ class RedisCache:
         except Exception as e:
             logger.error(f"Error writing to Redis cache: {e}")
 
-    def get_llm_result(self, cache_key: str) -> Optional[str]:
+    def get_llm_result(self, cache_key: str) -> str | None:
         """Retrieve cached LLM result."""
         client = self._ensure_client()
         if not client:

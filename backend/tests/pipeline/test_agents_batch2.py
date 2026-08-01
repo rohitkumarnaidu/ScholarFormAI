@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
@@ -22,25 +22,28 @@ from app.pipeline.agents.adaptive import (
 from app.pipeline.agents.autoscaling import AutoScalingManager
 from app.pipeline.agents.realtime_adaptation import (
     _MAX_ERRORS_BEFORE_STOP,
-    _MAX_TIMEOUT as RT_MAX_TIMEOUT,
-    _MIN_TIMEOUT as RT_MIN_TIMEOUT,
     RealTimeAdaptiveAgent,
 )
+from app.pipeline.agents.realtime_adaptation import (
+    _MAX_TIMEOUT as RT_MAX_TIMEOUT,
+)
+from app.pipeline.agents.realtime_adaptation import (
+    _MIN_TIMEOUT as RT_MIN_TIMEOUT,
+)
 from app.pipeline.agents.streaming import StreamingAgentCallback
-
 
 # =============================================================================
 # Helpers
 # =============================================================================
 
-def _make_tracker(summary: Dict[str, Any]) -> MagicMock:
+def _make_tracker(summary: dict[str, Any]) -> MagicMock:
     """Build a mock PerformanceTracker that returns the given summary."""
     tracker = MagicMock()
     tracker.get_summary.return_value = summary
     return tracker
 
 
-def _make_ml_detector(patterns: list | None = None, pattern_summary: Dict | None = None) -> MagicMock:
+def _make_ml_detector(patterns: list | None = None, pattern_summary: dict | None = None) -> MagicMock:
     """Build a mock MLPatternDetector."""
     detector = MagicMock()
     detector.patterns = patterns or []
@@ -831,7 +834,7 @@ class _MockAgentAction:
 
 class _MockAgentFinish:
     """Minimal mock for AgentFinish."""
-    def __init__(self, return_values: Dict[str, Any] | None = None):
+    def __init__(self, return_values: dict[str, Any] | None = None):
         self.return_values = return_values or {"output": "done"}
 
 
@@ -1005,7 +1008,7 @@ class TestStreamingAgentCallback:
 
     def test_callbacks_with_custom_function(self):
         received: list = []
-        def my_cb(evt: str, data: Dict) -> None:
+        def my_cb(evt: str, data: dict) -> None:
             received.append((evt, data))
 
         handler = StreamingAgentCallback(callback_fn=my_cb)

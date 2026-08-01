@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-import pytest
-import os
 import json
+import os
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 from app.pipeline.export.exporter import Exporter
 from app.pipeline.export.jats_generator import JATSGenerator
 from app.pipeline.export.latex_exporter import LaTeXExporter
@@ -23,12 +25,12 @@ class TestExporter:
         meta.title = kw.get("title", "Test")
         meta.authors = kw.get("authors", [])
         meta.affiliations = kw.get("affiliations", [])
-        meta.doi = kw.get("doi", None)
-        meta.abstract = kw.get("abstract", None)
+        meta.doi = kw.get("doi")
+        meta.abstract = kw.get("abstract")
         meta.keywords = kw.get("keywords", [])
-        meta.publication_date = kw.get("publication_date", None)
-        meta.volume = kw.get("volume", None)
-        meta.issue = kw.get("issue", None)
+        meta.publication_date = kw.get("publication_date")
+        meta.volume = kw.get("volume")
+        meta.issue = kw.get("issue")
         doc.metadata = meta
         doc.is_valid = kw.get("is_valid", True)
         doc.validation_errors = kw.get("validation_errors", [])

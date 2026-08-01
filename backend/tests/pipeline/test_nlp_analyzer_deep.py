@@ -8,12 +8,19 @@ readability checks, keyword extraction (yake/basic/keybert), LLM keywords.
 """
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
+
+from unittest.mock import MagicMock, patch
+
 import pytest
+
 from app.pipeline.nlp.analyzer import (
-    ContentAnalyzer, extract_keywords, _parse_keyword_payload,
-    methods_detect_abstract, _get_keybert_model,
+    ContentAnalyzer,
+    _get_keybert_model,
+    _parse_keyword_payload,
+    extract_keywords,
+    methods_detect_abstract,
 )
+
 
 @pytest.fixture
 def analyzer():
@@ -27,7 +34,7 @@ def doc_empty():
 
 @pytest.fixture
 def doc_with_blocks():
-    from app.models import PipelineDocument, Block, BlockType
+    from app.models import Block, BlockType, PipelineDocument
     return PipelineDocument(document_id="nlp1", blocks=[
         Block(block_id="b1", index=0, text="Introduction", block_type=BlockType.HEADING_1),
         Block(block_id="b2", index=1, text="This paper presents a novel approach to natural language processing using deep learning methods.", block_type=BlockType.BODY),
@@ -228,7 +235,7 @@ class TestKeybertModel:
 
 class TestEdgeCases:
     def test_process_no_ai_hints_for_empty_block(self, analyzer):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="ec1", blocks=[
             Block(block_id="b1", index=0, text="", block_type=BlockType.HEADING_1),
         ])
@@ -236,7 +243,7 @@ class TestEdgeCases:
         assert result.blocks[0].metadata.get("ai_hints") is None
 
     def test_process_sets_default_metadata(self, analyzer):
-        from app.models import PipelineDocument, Block
+        from app.models import Block, PipelineDocument
         block = Block(block_id="b1", index=0, text="Introduction")
         doc = PipelineDocument(document_id="ec2", blocks=[block])
         result = analyzer.process(doc)

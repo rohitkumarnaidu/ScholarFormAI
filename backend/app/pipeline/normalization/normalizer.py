@@ -26,18 +26,16 @@ IMPORTANT:
 - Be conservative (when unsure, do nothing)
 """
 
-from typing import List, Optional
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from app.models import PipelineDocument as Document, Block, Table, DocumentMetadata
+from app.models import Block, DocumentMetadata, Table
+from app.models import PipelineDocument as Document
+from app.pipeline.base import PipelineStage
 from app.utils.text_utils import (
+    clean_metadata_field,
     normalize_block_text,
     normalize_table_cell_text,
-    clean_metadata_field,
 )
-
-
-from app.pipeline.base import PipelineStage
 
 
 class Normalizer(PipelineStage):
@@ -65,7 +63,7 @@ class Normalizer(PipelineStage):
         Returns:
             Document with normalized text content
         """
-        start_time = datetime.now(timezone.utc)
+        start_time = datetime.now(UTC)
 
         # Track initial block count for audit logging
         initial_block_count = len(document.blocks)
@@ -93,7 +91,7 @@ class Normalizer(PipelineStage):
         # Note: Figures don't have text to normalize (only captions, which come later)
 
         # Update processing history
-        end_time = datetime.now(timezone.utc)
+        end_time = datetime.now(UTC)
         duration_ms = int((end_time - start_time).total_seconds() * 1000)
 
         document.add_processing_stage(
@@ -103,7 +101,7 @@ class Normalizer(PipelineStage):
             duration_ms=duration_ms,
         )
 
-        document.updated_at = datetime.now(timezone.utc)
+        document.updated_at = datetime.now(UTC)
 
         return document
 
@@ -161,7 +159,7 @@ class Normalizer(PipelineStage):
 
         return metadata
 
-    def _normalize_blocks(self, blocks: List[Block], median_font: Optional[float] = None) -> List[Block]:
+    def _normalize_blocks(self, blocks: list[Block], median_font: float | None = None) -> list[Block]:
         """
         Normalize text in all blocks with strict sequential logic.
 
@@ -413,7 +411,7 @@ class Normalizer(PipelineStage):
 
         return final_blocks
 
-    def _calculate_median_font_size(self, blocks: List[Block]) -> Optional[float]:
+    def _calculate_median_font_size(self, blocks: list[Block]) -> float | None:
         """Calculate median font size for outlier detection."""
         from statistics import median
 
@@ -448,7 +446,7 @@ class Normalizer(PipelineStage):
 
         return text
 
-    def _normalize_tables(self, tables: List[Table]) -> List[Table]:
+    def _normalize_tables(self, tables: list[Table]) -> list[Table]:
         """
         Normalize text in all tables.
 
@@ -499,7 +497,7 @@ class Normalizer(PipelineStage):
 
         return normalized_tables
 
-    def _sanitize_empty_orphan_blocks(self, blocks: List[Block]) -> List[Block]:
+    def _sanitize_empty_orphan_blocks(self, blocks: list[Block]) -> list[Block]:
         """
         SURGICAL QUALITY HARDENING: Remove empty orphan BODY blocks.
 

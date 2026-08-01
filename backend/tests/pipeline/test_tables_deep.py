@@ -7,8 +7,11 @@ Targets uncovered branches and edge cases to push coverage >85% / >90%.
 """
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
+
+from unittest.mock import MagicMock, patch
+
 import pytest
+
 from app.pipeline.tables.caption_matcher import TableCaptionMatcher
 from app.pipeline.tables.extractor import TableExtractor
 from app.pipeline.tables.renderer import TableRenderer
@@ -74,7 +77,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_ref_boundary_skips_candidates_after_refs(self, matcher):
         """Blocks at/after references heading are excluded from caption matching."""
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="c1", index=0, text="Table 1. Before refs.", block_type=BlockType.BODY),
             Block(block_id="body", index=1, text="Body.", block_type=BlockType.BODY),
@@ -91,7 +94,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].caption_text is None
 
     def test_ref_boundary_no_candidates_before_refs(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="r1", index=0, text="References", block_type=BlockType.HEADING_1),
             Block(block_id="b1", index=1, text="Table 1. Missed.", block_type=BlockType.BODY),
@@ -106,7 +109,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_table_idx_not_in_list_index_map_fallback(self, matcher):
         """When table.block_index does not match any block index, linear search fallback."""
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="Table 1. Caption.", block_type=BlockType.BODY),
             Block(block_id="b2", index=2, text="Body.", block_type=BlockType.BODY),
@@ -120,7 +123,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_table_idx_fallback_to_end_of_list(self, matcher):
         """When table_idx > all block indices, table_list_pos = len(blocks) - 1."""
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=10, text="Table 1. Caption.", block_type=BlockType.BODY),
             Block(block_id="b2", index=20, text="Body.", block_type=BlockType.BODY),
@@ -137,7 +140,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_prev_table_boundary_skips_caption(self, matcher):
         """Caption before prev_table_idx is excluded."""
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="c1", index=0, text="Table 1. Caption one.", block_type=BlockType.BODY),
             Block(block_id="x1", index=1, text="Table data.", block_type=BlockType.BODY),
@@ -153,7 +156,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_next_table_boundary_skips_caption(self, matcher):
         """Caption at/after next_table_idx is excluded from current table."""
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="c1", index=0, text="Table 1. First cap.", block_type=BlockType.BODY),
             Block(block_id="x1", index=1, text="Data.", block_type=BlockType.BODY),
@@ -171,7 +174,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_equal_distance_prefers_caption_above(self, matcher):
         """When two candidates have equal distance, prefer the one above the table."""
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="above", index=0, text="Table 1. Above caption.", block_type=BlockType.BODY),
             Block(block_id="body1", index=1, text="Body.", block_type=BlockType.BODY),
@@ -188,7 +191,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_already_assigned_block_id_skipped(self, matcher):
         """A block already assigned as caption to one table cannot be reused."""
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="shared", index=0, text="Table 1. Shared cap.", block_type=BlockType.BODY),
             Block(block_id="body1", index=1, text="Body one.", block_type=BlockType.BODY),
@@ -205,7 +208,7 @@ class TestTableCaptionMatcherDeep:
     # -- Heading / REFERENCES_HEADING cannot be captions (111–112) ----
 
     def test_heading_skipped_as_caption(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="h1", index=0, text="Table 1. Introduction", block_type=BlockType.HEADING_1),
             Block(block_id="b1", index=1, text="Body.", block_type=BlockType.BODY),
@@ -216,7 +219,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].caption_text is None
 
     def test_references_heading_skipped_as_caption(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="rh", index=0, text="Table 1. References", block_type=BlockType.REFERENCES_HEADING),
             Block(block_id="b1", index=1, text="Body.", block_type=BlockType.BODY),
@@ -230,7 +233,7 @@ class TestTableCaptionMatcherDeep:
 
     def test_per_table_exception_caught(self, matcher):
         """Exception inside per-table loop is caught; processing continues."""
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="Table 1. Test", block_type=BlockType.BODY),
         ], tables=[
@@ -245,7 +248,7 @@ class TestTableCaptionMatcherDeep:
     # -- Top-level exception (lines 140–147) --------------------------
 
     def test_top_level_exception_adds_error_stage(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="body", block_type=BlockType.BODY),
         ], tables=[
@@ -261,7 +264,7 @@ class TestTableCaptionMatcherDeep:
     # -- Missing caption sets metadata (lines 135–137) ----------------
 
     def test_missing_caption_sets_status(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="No table caption here.", block_type=BlockType.BODY),
         ], tables=[
@@ -271,7 +274,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].metadata.get("caption_status") == "Missing"
 
     def test_existing_caption_text_preserved_when_no_match(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY),
         ], tables=[
@@ -285,7 +288,7 @@ class TestTableCaptionMatcherDeep:
     # -- Caption regex: various formats --------------------------------
 
     def test_roman_numeral_caption(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="Table I: Results", block_type=BlockType.BODY),
             Block(block_id="b2", index=1, text="Body.", block_type=BlockType.BODY),
@@ -296,7 +299,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].caption_text == "Table I: Results"
 
     def test_letter_caption(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="Table A: Appendix", block_type=BlockType.BODY),
             Block(block_id="b2", index=1, text="Body.", block_type=BlockType.BODY),
@@ -307,7 +310,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].caption_text == "Table A: Appendix"
 
     def test_dotted_number_caption(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="Table 1.1: Sub results", block_type=BlockType.BODY),
             Block(block_id="b2", index=1, text="Body.", block_type=BlockType.BODY),
@@ -320,7 +323,7 @@ class TestTableCaptionMatcherDeep:
     # -- Search window boundaries -------------------------------------
 
     def test_search_window_above_respected(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         matcher.search_window_above = 1  # narrow window
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="c1", index=0, text="Table 1. Far above.", block_type=BlockType.BODY),
@@ -334,7 +337,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].caption_text is None
 
     def test_search_window_below_respected(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         matcher.search_window_below = 0  # no search below
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="x1", index=0, text="Body.", block_type=BlockType.BODY),
@@ -347,7 +350,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].caption_text is None
 
     def test_caption_below_table_in_window(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="x1", index=0, text="Body.", block_type=BlockType.BODY),
             Block(block_id="c1", index=1, text="Table 1. Below cap.", block_type=BlockType.BODY),
@@ -361,7 +364,7 @@ class TestTableCaptionMatcherDeep:
     # -- No tables / no blocks early return ---------------------------
 
     def test_no_tables_early_return(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=0, text="Some text.", block_type=BlockType.BODY),
         ])
@@ -379,7 +382,7 @@ class TestTableCaptionMatcherDeep:
     # -- Processing stage metadata ------------------------------------
 
     def test_success_stage_message_contains_match_count(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="c1", index=0, text="Table 1. Match.", block_type=BlockType.BODY),
             Block(block_id="x1", index=1, text="Body.", block_type=BlockType.BODY),
@@ -391,7 +394,7 @@ class TestTableCaptionMatcherDeep:
         assert "1" in stage.message
 
     def test_caption_block_type_changed(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="c1", index=0, text="Table 1. Types.", block_type=BlockType.BODY),
             Block(block_id="x1", index=1, text="Body.", block_type=BlockType.BODY),
@@ -412,7 +415,7 @@ class TestTableCaptionMatcherDeep:
     # -- Tiebreaker / edge cases ---------------------------------------
 
     def test_equal_distance_tiebreaker_prefers_above(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         blocks = [
             Block(block_id="c1", index=0, text="Table 1. Above.", block_type=BlockType.BODY),
             Block(block_id="x1", index=1, text="Body.", block_type=BlockType.BODY),
@@ -424,7 +427,7 @@ class TestTableCaptionMatcherDeep:
         assert result.tables[0].caption_text == "Table 1. Above."
 
     def test_missing_caption_sets_metadata(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Table
+        from app.models import Block, BlockType, PipelineDocument, Table
         blocks = [Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY)]
         tables = [Table(table_id="t1", num_rows=2, num_cols=2, index=0, block_index=0)]
         doc = PipelineDocument(document_id="t", blocks=blocks, tables=tables)

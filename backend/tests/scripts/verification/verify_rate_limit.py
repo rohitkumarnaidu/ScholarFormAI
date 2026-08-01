@@ -14,6 +14,7 @@ mock_orchestrator = MagicMock()
 sys.modules["app.pipeline.orchestrator"] = mock_orchestrator
 
 from fastapi.testclient import TestClient
+
 from app.main import app
 
 client = TestClient(app)

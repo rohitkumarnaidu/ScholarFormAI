@@ -5,8 +5,11 @@ import asyncio
 import logging
 import sys
 import warnings
+from collections.abc import Callable
+from typing import Any
+
 from pydantic import BaseModel
-from typing import Callable, Any, Type, Optional
+
 from app.utils.serialization import safe_model_dump
 
 logger = logging.getLogger(__name__)
@@ -49,7 +52,7 @@ except ImportError:
         return decorator
 
 
-def guard_llm_output(schema: Type[BaseModel], error_return_value: Optional[Any] = None) -> Callable:
+def guard_llm_output(schema: type[BaseModel], error_return_value: Any | None = None) -> Callable:
     """
     Advanced LLM Output Validator.
     Uses Guardrails AI (guardrails-ai) if available to guarantee Pydantic schema compliance.

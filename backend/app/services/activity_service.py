@@ -5,8 +5,8 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, List, Optional
+from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from app.db.supabase_client import get_supabase_client
 from app.exceptions import DatabaseUnavailableError
@@ -27,16 +27,16 @@ ACTIVITY_TYPES = frozenset(
 
 
 class ActivityService:
-    _table_available: Optional[bool] = None
+    _table_available: bool | None = None
     _table_warning_logged: bool = False
 
     @staticmethod
     def _utc_now_iso() -> str:
-        return datetime.now(timezone.utc).isoformat()
+        return datetime.now(UTC).isoformat()
 
     @staticmethod
-    def _compute_period_start(period: str) -> Optional[datetime]:
-        now = datetime.now(timezone.utc)
+    def _compute_period_start(period: str) -> datetime | None:
+        now = datetime.now(UTC)
         if period == "7d":
             return now - timedelta(days=7)
         if period == "30d":
@@ -52,7 +52,7 @@ class ActivityService:
         cls,
         user_id: str,
         activity_type: str,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         if cls._table_available is False:
             return
@@ -66,7 +66,7 @@ class ActivityService:
             logger.warning("Activity record skipped: Supabase client unavailable.")
             return
 
-        payload: Dict[str, Any] = {
+        payload: dict[str, Any] = {
             "user_id": str(user_id),
             "activity_type": activity_type,
             "metadata": metadata or {},
@@ -101,7 +101,7 @@ class ActivityService:
         cls,
         user_id: str,
         limit: int = 20,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         sb = get_supabase_client()
         if sb is None:
             raise DatabaseUnavailableError("Supabase client is not configured.")
@@ -134,7 +134,7 @@ class ActivityService:
         cls,
         user_id: str,
         period: str = "7d",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         sb = get_supabase_client()
         if sb is None:
             raise DatabaseUnavailableError("Supabase client is not configured.")
@@ -154,7 +154,7 @@ class ActivityService:
             result = await asyncio.to_thread(run_query)
             rows = result.data or []
 
-            type_counts: Dict[str, int] = {}
+            type_counts: dict[str, int] = {}
             for row in rows:
                 atype = row.get("activity_type", "unknown")
                 type_counts[atype] = type_counts.get(atype, 0) + 1

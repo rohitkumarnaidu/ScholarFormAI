@@ -2,15 +2,16 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-import sys
-import os
 import asyncio
+import os
+import sys
 from pprint import pformat
 
 # Add backend directory to path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from app.services.auth_service import AuthService
+
 
 class Logger:
     def __init__(self, filename):
@@ -33,7 +34,7 @@ async def verify_auth_structure():
     sys.stdout = Logger("verify_result_internal.log")
     sys.stderr = sys.stdout # Capture errors too
     
-    print(f"--- 🔐 Verifying Auth Response Structure ---")
+    print("--- 🔐 Verifying Auth Response Structure ---")
     
     email = "structural_test_user_2@example.com"
     password = "TestPassword123!"
@@ -45,25 +46,25 @@ async def verify_auth_structure():
     except Exception as e:
         print(f"   ℹ️  Signup note: {e}")
 
-    print(f"\n2. Attempting Login...")
+    print("\n2. Attempting Login...")
     try:
         response = await AuthService.login(email, password)
-        print(f"   ✅ Login successful!")
+        print("   ✅ Login successful!")
         print(f"   👉 Response Type: {type(response)}")
         
         # Check if it's a Pydantic model or object
         if hasattr(response, 'session'):
-            print(f"   👉 Has .session attribute: Yes")
+            print("   👉 Has .session attribute: Yes")
             print(f"   👉 Session Type: {type(response.session)}")
             # Try to see if session has access_token
             if response.session and hasattr(response.session, 'access_token'):
-                 print(f"   👉 Session.access_token: Present")
+                 print("   👉 Session.access_token: Present")
             else:
-                 print(f"   ❌ Session.access_token: MISSING")
+                 print("   ❌ Session.access_token: MISSING")
         else:
-            print(f"   ❌ Has .session attribute: NO")
+            print("   ❌ Has .session attribute: NO")
             
-        print(f"\n   👉 Full Response Dump:")
+        print("\n   👉 Full Response Dump:")
         try:
             # Try varying dumping methods
             if hasattr(response, 'model_dump'):

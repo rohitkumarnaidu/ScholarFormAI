@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 import logging
-from typing import List, Sequence, Tuple
+from collections.abc import Sequence
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +89,7 @@ class PdfOCR:
             logger.warning("PdfOCR.is_scanned failed for '%s': %s", pdf_path, exc)
             return False
 
-    def extract_text(self, pdf_path: str, backends: Sequence[str] | None = None) -> Tuple[str, str]:
+    def extract_text(self, pdf_path: str, backends: Sequence[str] | None = None) -> tuple[str, str]:
         """
         Extract text from a scanned PDF using backend fallback order.
 
@@ -115,7 +115,7 @@ class PdfOCR:
         if not images:
             raise OCRError("PDF contains no renderable pages for OCR.")
 
-        failures: List[str] = []
+        failures: list[str] = []
         for backend in selected_backends:
             try:
                 if backend == "tesseract":
@@ -156,9 +156,9 @@ class PdfOCR:
         except Exception as exc:
             raise OCRError(f"Failed to save OCR DOCX: {exc}") from exc
 
-    def _normalize_backends(self, backends: Sequence[str] | None) -> List[str]:
+    def _normalize_backends(self, backends: Sequence[str] | None) -> list[str]:
         ordered = [str(name).strip().lower() for name in (backends or ["tesseract", "paddle"])]
-        cleaned: List[str] = []
+        cleaned: list[str] = []
         for backend in ordered:
             if backend not in self.SUPPORTED_BACKENDS:
                 continue
@@ -167,7 +167,7 @@ class PdfOCR:
             cleaned.append(backend)
 
         # Remove unavailable backends but preserve order.
-        available: List[str] = []
+        available: list[str] = []
         for backend in cleaned:
             if backend == "tesseract" and not TESSERACT_AVAILABLE:
                 continue
@@ -184,11 +184,11 @@ class PdfOCR:
     def _sanitize_text(text: str) -> str:
         return "".join(ch for ch in (text or "") if ch.isprintable() or ch in "\n\r\t")
 
-    def _ocr_tesseract(self, images: Sequence[object]) -> List[str]:
+    def _ocr_tesseract(self, images: Sequence[object]) -> list[str]:
         if not TESSERACT_AVAILABLE or pytesseract is None:
             raise OCRError("Tesseract backend unavailable (install pytesseract + binary).")
 
-        page_text: List[str] = []
+        page_text: list[str] = []
         for index, image in enumerate(images):
             try:
                 page_text.append(pytesseract.image_to_string(image) or "")
@@ -197,14 +197,14 @@ class PdfOCR:
                 page_text.append("")
         return page_text
 
-    def _ocr_paddle(self, images: Sequence[object]) -> List[str]:
+    def _ocr_paddle(self, images: Sequence[object]) -> list[str]:
         if not PADDLE_AVAILABLE or PaddleOCR is None:
             raise OCRError("PaddleOCR backend unavailable (install paddleocr).")
         if not NUMPY_AVAILABLE or np is None:
             raise OCRError("NumPy is required for PaddleOCR backend.")
 
         ocr = PaddleOCR(use_angle_cls=True, lang=self.paddle_language, show_log=False)
-        page_text: List[str] = []
+        page_text: list[str] = []
 
         for index, image in enumerate(images):
             try:
@@ -213,15 +213,12 @@ class PdfOCR:
                     image_np = image_np[:, :, ::-1]  # RGB -> BGR
 
                 result = ocr.ocr(image_np, cls=True)
-                lines: List[str] = []
+                lines: list[str] = []
 
                 # paddleocr may return: [ [ [bbox, (text, score)], ... ] ]
                 page_candidates = []
                 if isinstance(result, list) and result:
-                    if isinstance(result[0], list):
-                        page_candidates = result[0]
-                    else:
-                        page_candidates = result
+                    page_candidates = result[0] if isinstance(result[0], list) else result
 
                 for entry in page_candidates:
                     if not isinstance(entry, (list, tuple)) or len(entry) < 2:

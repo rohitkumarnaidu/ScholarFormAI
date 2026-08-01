@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 
 
 def _make_block(block_type="heading_1", text="Introduction", section_name="introduction", is_heading=True):
@@ -75,7 +76,7 @@ class TestSectionOrderValidator:
         ]
 
         violations = validator.validate_order(doc, "ieee")
-        missing_count = sum(1 for v in violations if "Missing" in v)
+        sum(1 for v in violations if "Missing" in v)
         assert "Missing required section: abstract" in str(violations)
 
     def test_non_heading_blocks_skipped(self, contract_loader):

@@ -3,7 +3,8 @@
 
 """Stage contract interfaces using Protocol for the pipeline orchestrator."""
 
-from typing import Protocol, Any, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
 from app.pipeline.base import PipelineDocument
 
 

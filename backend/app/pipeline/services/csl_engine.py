@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from app.models import Reference
 
@@ -47,11 +47,11 @@ class CSLEngine:
     }
     ESTIMATED_AVAILABLE_STYLES = 10_000
 
-    def __init__(self, templates_dir: Optional[str] = None):
+    def __init__(self, templates_dir: str | None = None):
         app_dir = Path(__file__).resolve().parents[2]
         self.templates_dir = Path(templates_dir) if templates_dir else app_dir / "templates"
 
-    def get_capabilities(self) -> Dict[str, Any]:
+    def get_capabilities(self) -> dict[str, Any]:
         """
         Return capability metadata.
 
@@ -68,7 +68,7 @@ class CSLEngine:
         """Whether the engine can consume the broader 10k+ CSL style ecosystem."""
         return self.ESTIMATED_AVAILABLE_STYLES >= 10_000
 
-    def resolve_style_path(self, style: str, style_path: Optional[str] = None) -> Path:
+    def resolve_style_path(self, style: str, style_path: str | None = None) -> Path:
         """Resolve style path from explicit path or built-in template mapping."""
         if style_path:
             explicit = Path(style_path)
@@ -89,14 +89,14 @@ class CSLEngine:
             raise FileNotFoundError(f"Built-in CSL style file not found for style '{style_key}': {default_path}")
         return default_path
 
-    def format_reference(self, reference: Reference, style: str = "ieee", style_path: Optional[str] = None) -> str:
+    def format_reference(self, reference: Reference, style: str = "ieee", style_path: str | None = None) -> str:
         """Format a single reference."""
         formatted = self.format_references([reference], style=style, style_path=style_path)
         return formatted[0] if formatted else ""
 
     def format_references(
-        self, references: List[Reference], style: str = "ieee", style_path: Optional[str] = None
-    ) -> List[str]:
+        self, references: list[Reference], style: str = "ieee", style_path: str | None = None
+    ) -> list[str]:
         """Format multiple references using CSL or deterministic fallback."""
         if not references:
             return []
@@ -113,7 +113,7 @@ class CSLEngine:
 
         return [self._format_fallback(ref, style=style) for ref in references]
 
-    def _format_with_citeproc(self, references: List[Reference], style: str, style_path: Optional[str]) -> List[str]:
+    def _format_with_citeproc(self, references: list[Reference], style: str, style_path: str | None) -> list[str]:
         """Format references with citeproc-py."""
         style_file = self.resolve_style_path(style=style, style_path=style_path)
         csl_items = [self._reference_to_csl_json(ref=ref, index=index) for index, ref in enumerate(references, start=1)]
@@ -132,7 +132,7 @@ class CSLEngine:
             )
         return rendered_entries
 
-    def _reference_to_csl_json(self, ref: Reference, index: int) -> Dict[str, Any]:
+    def _reference_to_csl_json(self, ref: Reference, index: int) -> dict[str, Any]:
         """Map internal reference model to CSL-JSON item."""
         ref_type = getattr(ref.reference_type, "value", ref.reference_type)
         ref_type = str(ref_type).lower()
@@ -148,7 +148,7 @@ class CSLEngine:
             "preprint": "article",
         }.get(ref_type, "article")
 
-        csl_item: Dict[str, Any] = {
+        csl_item: dict[str, Any] = {
             "id": ref.reference_id or f"ref_{index}",
             "type": csl_type,
             "title": ref.title or "Untitled",
@@ -182,7 +182,7 @@ class CSLEngine:
 
         return csl_item
 
-    def _to_csl_name(self, name: str) -> Dict[str, str]:
+    def _to_csl_name(self, name: str) -> dict[str, str]:
         """Convert free-text author name to CSL name object."""
         clean_name = " ".join(name.strip().split())
         if not clean_name:
@@ -213,7 +213,7 @@ class CSLEngine:
         title = ref.title or "Untitled"
         venue = ref.journal or ref.conference or ref.book_title or ref.publisher or ""
 
-        parts: List[str] = [f'{authors}, "{title},"']
+        parts: list[str] = [f'{authors}, "{title},"']
         if venue:
             parts.append(venue)
         if ref.volume:
@@ -237,7 +237,7 @@ class CSLEngine:
         year_part = f"({ref.year})." if ref.year else "(n.d.)."
         title = f"{ref.title or 'Untitled'}."
 
-        venue_parts: List[str] = []
+        venue_parts: list[str] = []
         venue = ref.journal or ref.conference or ref.book_title or ref.publisher
         if venue:
             venue_parts.append(venue)
@@ -255,15 +255,12 @@ class CSLEngine:
         doi_text = ""
         if ref.doi:
             doi_value = ref.doi.strip()
-            if doi_value.lower().startswith("http"):
-                doi_text = doi_value
-            else:
-                doi_text = f"https://doi.org/{doi_value}"
+            doi_text = doi_value if doi_value.lower().startswith("http") else f"https://doi.org/{doi_value}"
 
         formatted = " ".join(part for part in [authors, year_part, title, venue_text, doi_text] if part).strip()
         return formatted
 
-    def _format_apa_authors(self, authors: List[str]) -> str:
+    def _format_apa_authors(self, authors: list[str]) -> str:
         if not authors:
             return "Unknown Author"
         if len(authors) == 1:

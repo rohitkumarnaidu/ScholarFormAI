@@ -4,12 +4,15 @@
 """Targeted tests for uncovered lines in llm_validator.py, csl_engine.py, csl_fetcher.py."""
 
 from __future__ import annotations
-from contextlib import contextmanager
+
 import importlib
 import time
-from unittest.mock import MagicMock, patch
+from contextlib import contextmanager
 from pathlib import Path
+from unittest.mock import MagicMock, patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -32,10 +35,9 @@ class TestLLMValidatorCoverageGaps:
 
     def test_python_314_disables_guardrails(self):
         """Lines 16-17: sys.version_info >= 3.14 sets HAS_GUARDRAILS = False."""
-        with self._llm_env({self.VG_KEY: MagicMock()}) as mod:
-            with patch("sys.version_info", (3, 14)):
-                importlib.reload(mod)
-                assert mod.HAS_GUARDRAILS is False
+        with self._llm_env({self.VG_KEY: MagicMock()}) as mod, patch("sys.version_info", (3, 14)):
+            importlib.reload(mod)
+            assert mod.HAS_GUARDRAILS is False
 
     def test_guardrails_import_fails(self):
         """Lines 29-31: guardrails not importable, HAS_GUARDRAILS = False."""
@@ -249,7 +251,7 @@ class TestCSLEngineNoCiteproc:
         ieee_dir.mkdir(parents=True)
         (ieee_dir / "styles.csl").write_text("<style>original</style>", encoding="utf-8")
         eng = CSLEngine(templates_dir=str(tmp_path))
-        first = eng.resolve_style("ieee")
+        eng.resolve_style("ieee")
         (ieee_dir / "styles.csl").write_text("<style>changed</style>", encoding="utf-8")
         second = eng.resolve_style("ieee")
         assert second["source"] == "cache"
@@ -1090,15 +1092,14 @@ class TestCSLFetcherCoverageGaps:
     @pytest.mark.asyncio
     async def test_search_styles_with_remote(self, tmp_path):
         mod = self._mod()
-        with patch.object(mod, "TEMPLATES_DIR", tmp_path):
-            with patch("httpx.AsyncClient") as mc:
-                instance = MagicMock()
-                resp = MagicMock()
-                resp.json.return_value = [{"name": "custom-style", "title": "Custom Style"}]
-                instance.__aenter__.return_value.get.return_value = resp
-                mc.return_value = instance
-                result = await mod.search_styles("custom")
-                assert any(r["slug"] == "custom-style" for r in result)
+        with patch.object(mod, "TEMPLATES_DIR", tmp_path), patch("httpx.AsyncClient") as mc:
+            instance = MagicMock()
+            resp = MagicMock()
+            resp.json.return_value = [{"name": "custom-style", "title": "Custom Style"}]
+            instance.__aenter__.return_value.get.return_value = resp
+            mc.return_value = instance
+            result = await mod.search_styles("custom")
+            assert any(r["slug"] == "custom-style" for r in result)
 
     @pytest.mark.asyncio
     async def test_search_styles_remote_error_falls_back(self, tmp_path):
@@ -1118,34 +1119,32 @@ class TestCSLFetcherCoverageGaps:
     async def test_search_styles_remote_non_dict_item_skipped(self, tmp_path):
         """Line 113: non-dict items in remote response are skipped."""
         mod = self._mod()
-        with patch.object(mod, "TEMPLATES_DIR", tmp_path):
-            with patch("httpx.AsyncClient") as mc:
-                instance = MagicMock()
-                resp = MagicMock()
-                resp.json.return_value = [
-                    {"name": "valid", "title": "Valid"},
-                    "not a dict",
-                    42,
-                    None,
-                ]
-                instance.__aenter__.return_value.get.return_value = resp
-                mc.return_value = instance
-                result = await mod.search_styles("valid")
-                slugs = [r["slug"] for r in result]
-                assert "valid" in slugs
+        with patch.object(mod, "TEMPLATES_DIR", tmp_path), patch("httpx.AsyncClient") as mc:
+            instance = MagicMock()
+            resp = MagicMock()
+            resp.json.return_value = [
+                {"name": "valid", "title": "Valid"},
+                "not a dict",
+                42,
+                None,
+            ]
+            instance.__aenter__.return_value.get.return_value = resp
+            mc.return_value = instance
+            result = await mod.search_styles("valid")
+            slugs = [r["slug"] for r in result]
+            assert "valid" in slugs
 
     @pytest.mark.asyncio
     async def test_search_styles_remote_empty_slug_skipped(self, tmp_path):
         mod = self._mod()
-        with patch.object(mod, "TEMPLATES_DIR", tmp_path):
-            with patch("httpx.AsyncClient") as mc:
-                instance = MagicMock()
-                resp = MagicMock()
-                resp.json.return_value = [{"name": "", "title": "Empty"}]
-                instance.__aenter__.return_value.get.return_value = resp
-                mc.return_value = instance
-                result = await mod.search_styles("empty")
-                assert len(result) == 0
+        with patch.object(mod, "TEMPLATES_DIR", tmp_path), patch("httpx.AsyncClient") as mc:
+            instance = MagicMock()
+            resp = MagicMock()
+            resp.json.return_value = [{"name": "", "title": "Empty"}]
+            instance.__aenter__.return_value.get.return_value = resp
+            mc.return_value = instance
+            result = await mod.search_styles("empty")
+            assert len(result) == 0
 
     @pytest.mark.asyncio
     async def test_search_styles_ttl_zero_no_caching(self, tmp_path):
@@ -1160,28 +1159,26 @@ class TestCSLFetcherCoverageGaps:
     @pytest.mark.asyncio
     async def test_search_styles_remote_invalid_payload(self, tmp_path):
         mod = self._mod()
-        with patch.object(mod, "TEMPLATES_DIR", tmp_path):
-            with patch("httpx.AsyncClient") as mc:
-                instance = MagicMock()
-                resp = MagicMock()
-                resp.json.return_value = "not a list"
-                instance.__aenter__.return_value.get.return_value = resp
-                mc.return_value = instance
-                result = await mod.search_styles("custom")
-                assert isinstance(result, list)
+        with patch.object(mod, "TEMPLATES_DIR", tmp_path), patch("httpx.AsyncClient") as mc:
+            instance = MagicMock()
+            resp = MagicMock()
+            resp.json.return_value = "not a list"
+            instance.__aenter__.return_value.get.return_value = resp
+            mc.return_value = instance
+            result = await mod.search_styles("custom")
+            assert isinstance(result, list)
 
     @pytest.mark.asyncio
     async def test_search_styles_remote_item_no_slug_skipped(self, tmp_path):
         mod = self._mod()
-        with patch.object(mod, "TEMPLATES_DIR", tmp_path):
-            with patch("httpx.AsyncClient") as mc:
-                instance = MagicMock()
-                resp = MagicMock()
-                resp.json.return_value = [{"not_slug": "foo"}, {"name": "valid", "title": "V"}]
-                instance.__aenter__.return_value.get.return_value = resp
-                mc.return_value = instance
-                result = await mod.search_styles("valid")
-                assert any(r["slug"] == "valid" for r in result)
+        with patch.object(mod, "TEMPLATES_DIR", tmp_path), patch("httpx.AsyncClient") as mc:
+            instance = MagicMock()
+            resp = MagicMock()
+            resp.json.return_value = [{"not_slug": "foo"}, {"name": "valid", "title": "V"}]
+            instance.__aenter__.return_value.get.return_value = resp
+            mc.return_value = instance
+            result = await mod.search_styles("valid")
+            assert any(r["slug"] == "valid" for r in result)
 
     @pytest.mark.asyncio
     async def test_search_styles_double_cache_check(self):
@@ -1232,16 +1229,15 @@ class TestCSLFetcherCoverageGaps:
     @pytest.mark.asyncio
     async def test_fetch_style_remote(self, tmp_path):
         mod = self._mod()
-        with patch.object(mod, "TEMPLATES_DIR", tmp_path):
-            with patch("httpx.AsyncClient") as mc:
-                instance = MagicMock()
-                resp = MagicMock()
-                resp.text = "remote style content"
-                instance.__aenter__.return_value.get.return_value = resp
-                mc.return_value = instance
-                result = await mod.fetch_style("nonexistent-style")
-                assert result["source"] == "remote"
-                assert result["content"] == "remote style content"
+        with patch.object(mod, "TEMPLATES_DIR", tmp_path), patch("httpx.AsyncClient") as mc:
+            instance = MagicMock()
+            resp = MagicMock()
+            resp.text = "remote style content"
+            instance.__aenter__.return_value.get.return_value = resp
+            mc.return_value = instance
+            result = await mod.fetch_style("nonexistent-style")
+            assert result["source"] == "remote"
+            assert result["content"] == "remote style content"
 
     @pytest.mark.asyncio
     async def test_fetch_style_remote_ttl_zero(self, tmp_path):
@@ -1260,15 +1256,14 @@ class TestCSLFetcherCoverageGaps:
     @pytest.mark.asyncio
     async def test_fetch_style_remote_http_error(self, tmp_path):
         mod = self._mod()
-        with patch.object(mod, "TEMPLATES_DIR", tmp_path):
-            with patch("httpx.AsyncClient") as mc:
-                instance = MagicMock()
-                resp = MagicMock()
-                resp.raise_for_status.side_effect = Exception("HTTP 404")
-                instance.__aenter__.return_value.get.return_value = resp
-                mc.return_value = instance
-                with pytest.raises(Exception):
-                    await mod.fetch_style("nonexistent")
+        with patch.object(mod, "TEMPLATES_DIR", tmp_path), patch("httpx.AsyncClient") as mc:
+            instance = MagicMock()
+            resp = MagicMock()
+            resp.raise_for_status.side_effect = Exception("HTTP 404")
+            instance.__aenter__.return_value.get.return_value = resp
+            mc.return_value = instance
+            with pytest.raises(Exception):
+                await mod.fetch_style("nonexistent")
 
     @pytest.mark.asyncio
     async def test_fetch_style_double_cache_check(self):
@@ -1282,15 +1277,14 @@ class TestCSLFetcherCoverageGaps:
     @pytest.mark.asyncio
     async def test_fetch_style_remote_caches_result(self, tmp_path):
         mod = self._mod()
-        with patch.object(mod, "TEMPLATES_DIR", tmp_path):
-            with patch("httpx.AsyncClient") as mc:
-                instance = MagicMock()
-                resp = MagicMock()
-                resp.text = "cached remote"
-                instance.__aenter__.return_value.get.return_value = resp
-                mc.return_value = instance
-                result = await mod.fetch_style("teststyle")
-                assert mod._style_cache["teststyle"][1]["content"] == "cached remote"
+        with patch.object(mod, "TEMPLATES_DIR", tmp_path), patch("httpx.AsyncClient") as mc:
+            instance = MagicMock()
+            resp = MagicMock()
+            resp.text = "cached remote"
+            instance.__aenter__.return_value.get.return_value = resp
+            mc.return_value = instance
+            await mod.fetch_style("teststyle")
+            assert mod._style_cache["teststyle"][1]["content"] == "cached remote"
 
     def test_verify_existing_templates_directory(self):
         mod = self._mod()

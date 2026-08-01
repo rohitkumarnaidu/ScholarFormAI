@@ -2,14 +2,18 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-import pytest
+
 from unittest.mock import MagicMock
+
+import pytest
+
 from app.pipeline.formatting.reference_formatter import (
-    _resolve_csl_path,
+    ReferenceFormatter,
     _parse_author_name,
     _reference_type_to_csl,
-    ReferenceFormatter,
+    _resolve_csl_path,
 )
+
 
 class TestResolveCslPath:
     def test_none_publisher(self):

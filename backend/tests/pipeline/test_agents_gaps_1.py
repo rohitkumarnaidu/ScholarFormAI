@@ -9,7 +9,6 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 import pytest
 
-
 # ═══════════════════════════════════════════════════════════════════════════
 # AgentMemory — app.pipeline.agents.memory
 # ═══════════════════════════════════════════════════════════════════════════
@@ -845,7 +844,7 @@ class TestToolRegistry:
         r = ToolRegistry()
         def my_fn(inputs):
             return f"ok: {inputs.get('name', '')}"
-        cls = r.register("greet", "Greets", {"name": (str, "Name")}, my_fn)
+        r.register("greet", "Greets", {"name": (str, "Name")}, my_fn)
         instance = r.create_instance("greet")
         assert instance is not None
 
@@ -879,7 +878,7 @@ class TestCustomToolsGlobals:
     def test_register_custom_tool_global(self):
         from app.pipeline.agents import custom_tools as ct
         def fn(i): return str(i)
-        cls = ct.register_custom_tool("global_test", "desc", {"q": (str, "q")}, fn)
+        ct.register_custom_tool("global_test", "desc", {"q": (str, "q")}, fn)
         assert ct.get_custom_tool("global_test") is not None
         assert "global_test" in ct.list_custom_tools()
 

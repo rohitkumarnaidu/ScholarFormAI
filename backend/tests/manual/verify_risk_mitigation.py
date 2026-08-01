@@ -2,13 +2,14 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-import sys
-import unittest
 import logging
-from unittest.mock import MagicMock, patch
 
 # Add backend to path
 import os
+import sys
+import unittest
+from unittest.mock import MagicMock, patch
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 from app.pipeline.parsing.pdf_parser import PdfParser
@@ -61,11 +62,11 @@ class TestRiskMitigation(unittest.TestCase):
             print(f"Calculated Body Size: {body_size}")
             
             # Expect 12.0 to be the body size (most frequent by char count)
-            self.assertEqual(body_size, 12.0)
+            assert body_size == 12.0
             
             # Verify Thresholds Logic (Manual Check)
             h1 = body_size * 1.6
-            self.assertTrue(24.0 > h1, "Heading (24) should be detected as H1 (> 19.2)")
+            assert h1 < 24.0, "Heading (24) should be detected as H1 (> 19.2)"
         except Exception as e:
             print(f"TEST ERROR: {e}")
             import traceback
@@ -89,10 +90,10 @@ class TestRiskMitigation(unittest.TestCase):
         
         logger.info(f"Cleaned LaTeX:\n{cleaned_stripped}")
         
-        self.assertNotIn("This is a comment", cleaned)
-        self.assertNotIn("Another comment", cleaned)
-        self.assertIn("50\\% increase", cleaned)
-        self.assertIn("This is visible text", cleaned)
+        assert "This is a comment" not in cleaned
+        assert "Another comment" not in cleaned
+        assert "50\\% increase" in cleaned
+        assert "This is visible text" in cleaned
 
     def test_txt_strict_list_logic(self):
         """Test strict numbered list detection."""
@@ -113,13 +114,13 @@ a) Letter item
             logger.info(f"Block: '{b.text[:20]}...' | List? {b.metadata.get('is_list_item')}")
             
             if "1. First" in b.text:
-                self.assertTrue(b.metadata.get("is_list_item"))
+                assert b.metadata.get("is_list_item")
             if "1999." in b.text:
-                self.assertFalse(b.metadata.get("is_list_item"), "Year should not be list item")
+                assert not b.metadata.get("is_list_item"), "Year should not be list item"
             if "10. Tenth" in b.text:
-                self.assertTrue(b.metadata.get("is_list_item"))
+                assert b.metadata.get("is_list_item")
             if "a) Letter" in b.text:
-                self.assertTrue(b.metadata.get("is_list_item"))
+                assert b.metadata.get("is_list_item")
 
 
 if __name__ == '__main__':

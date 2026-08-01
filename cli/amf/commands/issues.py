@@ -5,9 +5,9 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from rich.table import Table
 from rich.panel import Panel
 from rich.syntax import Syntax
+from rich.table import Table
 
 from amf._console import get_console, safe_progress
 
@@ -73,7 +73,12 @@ def run_issue_report(
     """Report a new issue."""
     try:
         service = _get_service()
-        from app.services.issue_service import IssueReport, IssueCategory, IssueSeverity, ReportSource
+        from app.services.issue_service import (
+            IssueCategory,
+            IssueReport,
+            IssueSeverity,
+            ReportSource,
+        )
     except ImportError:
         console.print("[red]Error:[/red] Backend modules not available. Install the backend package.")
         console.print("  pip install -e backend/")
@@ -104,7 +109,7 @@ def run_issue_report(
         result = service.submit_issue(report)
 
     tracking = result.get("tracking_number", "?")
-    console.print(f"[green]Issue submitted![/green]")
+    console.print("[green]Issue submitted![/green]")
     console.print(f"  Tracking: [bold]{tracking}[/bold]")
     if result.get("duplicate_of"):
         console.print(f"  [yellow]Marked as duplicate of: {result['duplicate_of']}[/yellow]")
@@ -209,7 +214,7 @@ def run_issue_show(issue_id: str, verbose: bool):
     if issue.get("steps_to_reproduce"):
         console.print(f"\n[bold]Steps to Reproduce:[/bold]\n{issue['steps_to_reproduce']}")
     if issue.get("stack_trace"):
-        console.print(f"\n[bold]Stack Trace:[/bold]")
+        console.print("\n[bold]Stack Trace:[/bold]")
         console.print(Syntax(issue["stack_trace"][:2000], "python", theme="monokai", word_wrap=True))
     if issue.get("ai_suggested_fix"):
         console.print(f"\n[bold]AI Suggested Fix:[/bold]\n{issue['ai_suggested_fix']}")

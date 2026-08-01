@@ -10,11 +10,11 @@ import os
 import socket
 import sys
 from pathlib import Path
+from unittest.mock import AsyncMock, MagicMock, patch
 from urllib.parse import urlparse
+
 import pytest
 import requests
-from unittest.mock import AsyncMock, MagicMock, patch
-
 
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
 if str(BACKEND_ROOT) not in sys.path:
@@ -24,6 +24,8 @@ if Path.cwd() != BACKEND_ROOT:
 
 os.environ["AMF_ENVIRONMENT"] = "test"
 os.environ["AMF_SECRET_KEY"] = "test-secret-key"
+
+import contextlib
 
 from app.services import health_checks
 
@@ -49,12 +51,11 @@ def _integration_service_status() -> list[str]:
     grobid_host = os.getenv("GROBID_HOST")
     grobid_port = os.getenv("GROBID_PORT")
     grobid_url = os.getenv("GROBID_URL") or os.getenv("GROBID_BASE_URL")
-    if not grobid_host:
-        if grobid_url:
-            parsed = urlparse(grobid_url if "://" in grobid_url else f"http://{grobid_url}")
-            if parsed.hostname:
-                grobid_host = parsed.hostname
-                grobid_port = str(parsed.port or (443 if parsed.scheme == "https" else 80))
+    if not grobid_host and grobid_url:
+        parsed = urlparse(grobid_url if "://" in grobid_url else f"http://{grobid_url}")
+        if parsed.hostname:
+            grobid_host = parsed.hostname
+            grobid_port = str(parsed.port or (443 if parsed.scheme == "https" else 80))
 
     redis_host = os.getenv("REDIS_HOST", "127.0.0.1")
     redis_port = int(os.getenv("REDIS_PORT", "6379"))
@@ -174,15 +175,11 @@ def reset_rate_limit_state():
 @pytest.fixture(autouse=True)
 def reset_health_check_caches():
     """Avoid cross-test contamination from cached /health and /ready payloads."""
-    try:
+    with contextlib.suppress(Exception):
         health_checks._reset_readiness_cache_for_tests()
-    except Exception:
-        pass
     yield
-    try:
+    with contextlib.suppress(Exception):
         health_checks._reset_readiness_cache_for_tests()
-    except Exception:
-        pass
 
 
 from app.models import (
@@ -194,10 +191,9 @@ from app.models import (
     ReferenceType,
 )
 
-
 # ── Document fixtures ──────────────────────────────────────────────────────────
 
-@pytest.fixture()
+@pytest.fixture
 def minimal_doc() -> PipelineDocument:
     """Bare-minimum PipelineDocument with title + one body block."""
     doc = PipelineDocument(
@@ -216,7 +212,7 @@ def minimal_doc() -> PipelineDocument:
     return doc
 
 
-@pytest.fixture()
+@pytest.fixture
 def full_doc(minimal_doc: PipelineDocument) -> PipelineDocument:
     """PipelineDocument with metadata, blocks, and a reference."""
     minimal_doc.metadata.keywords = ["formatting", "test"]

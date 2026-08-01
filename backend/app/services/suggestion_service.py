@@ -5,8 +5,8 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from datetime import UTC, datetime
+from typing import Any
 
 from app.db.supabase_client import get_supabase_client
 from app.exceptions import DatabaseUnavailableError
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 SUGGESTION_TYPES = frozenset({"style", "grammar", "structure", "citation", "clarity"})
 SUGGESTION_STATUSES = frozenset({"pending", "accepted", "rejected", "dismissed"})
 
-_SUGGESTION_PROMPTS: Dict[str, str] = {
+_SUGGESTION_PROMPTS: dict[str, str] = {
     "style": (
         "You are an academic writing style expert. Suggest improvements for the following "
         "text to make it more consistent with formal academic style. Focus on tone, "
@@ -47,15 +47,15 @@ _SUGGESTION_PROMPTS: Dict[str, str] = {
 
 
 class SuggestionService:
-    _table_available: Optional[bool] = None
+    _table_available: bool | None = None
     _table_warning_logged: bool = False
 
     @staticmethod
     def _utc_now_iso() -> str:
-        return datetime.now(timezone.utc).isoformat()
+        return datetime.now(UTC).isoformat()
 
     @staticmethod
-    def _build_suggestion_prompt(original_text: str, suggestion_type: str) -> List[Dict[str, str]]:
+    def _build_suggestion_prompt(original_text: str, suggestion_type: str) -> list[dict[str, str]]:
         system_prompt = _SUGGESTION_PROMPTS.get(
             suggestion_type,
             "You are an academic writing assistant. Suggest improvements for the following text.",
@@ -70,7 +70,7 @@ class SuggestionService:
         cls,
         original_text: str,
         suggestion_type: str,
-    ) -> Optional[str]:
+    ) -> str | None:
         messages = cls._build_suggestion_prompt(original_text, suggestion_type)
         try:
             from app.services.llm_service import generate_with_fallback
@@ -90,11 +90,11 @@ class SuggestionService:
     async def generate_suggestion(
         cls,
         document_id: str,
-        block: Dict[str, Any],
+        block: dict[str, Any],
         suggestion_type: str,
-        user_id: Optional[str] = None,
-        session_id: Optional[str] = None,
-    ) -> Optional[Dict[str, Any]]:
+        user_id: str | None = None,
+        session_id: str | None = None,
+    ) -> dict[str, Any] | None:
         if suggestion_type not in SUGGESTION_TYPES:
             logger.warning("Unknown suggestion type: %s", suggestion_type)
             return None
@@ -119,7 +119,7 @@ class SuggestionService:
         if sb is None:
             raise DatabaseUnavailableError("Supabase client is not configured.")
 
-        payload: Dict[str, Any] = {
+        payload: dict[str, Any] = {
             "user_id": str(user_id) if user_id else None,
             "document_id": str(document_id),
             "session_id": session_id,
@@ -160,9 +160,9 @@ class SuggestionService:
     async def get_suggestions(
         cls,
         document_id: str,
-        status: Optional[str] = None,
+        status: str | None = None,
         limit: int = 50,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         sb = get_supabase_client()
         if sb is None:
             raise DatabaseUnavailableError("Supabase client is not configured.")
@@ -197,7 +197,7 @@ class SuggestionService:
         cls,
         suggestion_id: str,
         status: str,
-    ) -> Optional[Dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         if status not in SUGGESTION_STATUSES:
             return None
 
@@ -205,7 +205,7 @@ class SuggestionService:
         if sb is None:
             raise DatabaseUnavailableError("Supabase client is not configured.")
 
-        updates: Dict[str, Any] = {
+        updates: dict[str, Any] = {
             "status": status,
             "updated_at": cls._utc_now_iso(),
         }
@@ -226,15 +226,15 @@ class SuggestionService:
             raise DatabaseUnavailableError(f"Failed to update suggestion: {exc}") from exc
 
     @classmethod
-    async def accept_suggestion(cls, suggestion_id: str) -> Optional[Dict[str, Any]]:
+    async def accept_suggestion(cls, suggestion_id: str) -> dict[str, Any] | None:
         return await cls._update_suggestion_status(suggestion_id, "accepted")
 
     @classmethod
-    async def reject_suggestion(cls, suggestion_id: str) -> Optional[Dict[str, Any]]:
+    async def reject_suggestion(cls, suggestion_id: str) -> dict[str, Any] | None:
         return await cls._update_suggestion_status(suggestion_id, "rejected")
 
     @classmethod
-    async def dismiss_suggestion(cls, suggestion_id: str) -> Optional[Dict[str, Any]]:
+    async def dismiss_suggestion(cls, suggestion_id: str) -> dict[str, Any] | None:
         return await cls._update_suggestion_status(suggestion_id, "dismissed")
 
     @classmethod
@@ -242,7 +242,7 @@ class SuggestionService:
         cls,
         user_id: str,
         limit: int = 20,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         sb = get_supabase_client()
         if sb is None:
             raise DatabaseUnavailableError("Supabase client is not configured.")
@@ -275,7 +275,7 @@ class SuggestionService:
         cls,
         suggestion_id: str,
         document_id: str,
-    ) -> Optional[Dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         sb = get_supabase_client()
         if sb is None:
             raise DatabaseUnavailableError("Supabase client is not configured.")

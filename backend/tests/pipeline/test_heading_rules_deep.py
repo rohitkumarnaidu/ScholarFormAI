@@ -1,18 +1,19 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import Block, BlockType, TextStyle
-from app.models import Block, BlockType
 from __future__ import annotations
+
 import pytest
+
+from app.models import Block, BlockType, TextStyle
 from app.pipeline.structure_detection.heading_rules import (
+    analyze_heading_candidate,
     detect_numbering_pattern,
     detect_title,
-    matches_section_keyword,
-    is_likely_heading_by_style,
-    infer_heading_level,
     get_capitalization_ratio,
-    analyze_heading_candidate,
+    infer_heading_level,
+    is_likely_heading_by_style,
+    matches_section_keyword,
 )
 
 

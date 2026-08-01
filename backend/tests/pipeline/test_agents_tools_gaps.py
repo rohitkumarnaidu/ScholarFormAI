@@ -8,7 +8,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 # ==============================================================================
 # FigureAnalysisTool — app.pipeline.agents.tools.figure_tool
 # ==============================================================================
@@ -131,7 +130,7 @@ class TestMetadataExtractionTool:
         return MetadataExtractionTool()
 
     def test_cache_hit(self):
-        with patch("app.pipeline.agents.tools.metadata_tool.GROBIDClient") as mock_gc_cls, \
+        with patch("app.pipeline.agents.tools.metadata_tool.GROBIDClient"), \
              patch("app.cache.redis_cache.redis_cache") as mock_cache:
             mock_cache.get_grobid_result.return_value = {"cached": True}
             tool = self._make_tool()
@@ -178,7 +177,7 @@ class TestMetadataExtractionTool:
             assert "ERROR" in tool._run("/nonexistent/file.pdf")
 
     def test_exception_handling(self):
-        with patch("app.pipeline.agents.tools.metadata_tool.GROBIDClient") as mock_gc_cls, \
+        with patch("app.pipeline.agents.tools.metadata_tool.GROBIDClient"), \
              patch("app.cache.redis_cache.redis_cache") as mock_cache:
             mock_cache.get_grobid_result.side_effect = RuntimeError("boom")
             tool = self._make_tool()

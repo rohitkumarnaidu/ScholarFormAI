@@ -1,8 +1,10 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
+
 from app.pipeline.parsing.parser_factory import ParserFactory
 
 
@@ -32,7 +34,7 @@ class TestParserFactoryInit:
             mock_s.ENABLE_NOUGAT_PARSER = True
             with patch("app.pipeline.parsing.nougat_parser.NougatParser") as mock_n:
                 mock_n.return_value = MagicMock()
-                f = ParserFactory()
+                ParserFactory()
                 assert mock_n.called
 
     def test_init_nougat_import_error(self):

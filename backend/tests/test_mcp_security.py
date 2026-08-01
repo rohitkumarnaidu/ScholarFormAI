@@ -110,8 +110,9 @@ class TestToolDataLeakage:
         assert len(tools_after) == len(tools_before) + 1
 
     def test_tool_arg_schema_is_pydantic_model(self):
-        from app.pipeline.agents.custom_tools import ToolRegistry
         from pydantic import BaseModel
+
+        from app.pipeline.agents.custom_tools import ToolRegistry
         registry = ToolRegistry()
 
         def dummy(inputs):
@@ -124,22 +125,24 @@ class TestToolDataLeakage:
             execute_fn=dummy,
         )
         instance = tool_cls()
-        from pydantic import BaseModel
         assert issubclass(instance.args_schema, BaseModel)
         model = instance.args_schema(name="test", count=5)
         assert model.name == "test"
         assert model.count == 5
 
     def test_marketplace_tool_integrity_check(self):
+        import json
+        import os
+        import tempfile
+
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
-        import tempfile, os, json
         with tempfile.TemporaryDirectory() as tmpdir:
             marketplace = ToolMarketplace(
                 marketplace_url="https://api.example.com",
                 local_cache_dir=tmpdir,
             )
             tool_code = 'def my_tool(): return "safe"'
-            code_hash = __import__("hashlib").sha256(tool_code.encode()).hexdigest()
+            __import__("hashlib").sha256(tool_code.encode()).hexdigest()
             tool_file = os.path.join(tmpdir, "my_tool_v1.0.0.json")
             with open(tool_file, "w") as f:
                 json.dump({
@@ -160,8 +163,9 @@ class TestToolDataLeakage:
 class TestToolMarketplaceSecurity:
 
     def test_marketplace_publish_requires_code_hash(self):
-        from app.pipeline.agents.tool_marketplace import ToolMarketplace
         import tempfile
+
+        from app.pipeline.agents.tool_marketplace import ToolMarketplace
         with tempfile.TemporaryDirectory() as tmpdir:
             marketplace = ToolMarketplace(
                 marketplace_url="https://api.example.com",
@@ -178,8 +182,9 @@ class TestToolMarketplaceSecurity:
             assert "tool_id" in result
 
     def test_marketplace_tool_not_found_returns_error(self):
-        from app.pipeline.agents.tool_marketplace import ToolMarketplace
         import tempfile
+
+        from app.pipeline.agents.tool_marketplace import ToolMarketplace
         with tempfile.TemporaryDirectory() as tmpdir:
             marketplace = ToolMarketplace(
                 marketplace_url="https://api.example.com",

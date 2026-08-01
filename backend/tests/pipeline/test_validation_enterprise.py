@@ -9,14 +9,15 @@ Covers:
 - ReviewManager (review_manager.py) — all 5 paths (critical/review/ok, thresholds, limits)
 """
 
-from app.models import Figure, Reference
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
-from app.models import Figure, Reference
+
+from unittest.mock import MagicMock, patch
+
 import pytest
 
-from app.pipeline.validation.validator_v3 import DocumentValidator, ValidationResult
+from app.models import Figure, Reference
 from app.pipeline.validation.review_manager import ReviewManager
+from app.pipeline.validation.validator_v3 import DocumentValidator, ValidationResult
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Fixtures
@@ -34,7 +35,7 @@ def validator():
 
 @pytest.fixture
 def doc():
-    from app.models import PipelineDocument, Block, BlockType
+    from app.models import Block, BlockType, PipelineDocument
     from app.models.pipeline_document import DocumentMetadata, TemplateInfo
 
     doc = PipelineDocument(
@@ -71,7 +72,7 @@ class TestValidatorInit:
             patch("app.pipeline.validation.validator_v3.CrossReferenceEngine"),
             patch("app.pipeline.validation.validator_v3.CrossRefClient"),
         ):
-            v = DocumentValidator(contracts_dir="app/pipeline/contracts")
+            DocumentValidator(contracts_dir="app/pipeline/contracts")
         mock_cl.assert_called_once_with(contracts_dir="app/pipeline/contracts")
 
 class TestAsBool:
@@ -121,7 +122,7 @@ class TestValidate:
             patch.object(validator, "_check_references", return_value=([], [])),
             patch.object(validator, "_check_tables", return_value=([], [])),
             patch.object(validator, "_check_reference_integrity", return_value=([], [])),
-            patch("app.pipeline.validation.validator_v3.ReviewManager") as mock_rm,
+            patch("app.pipeline.validation.validator_v3.ReviewManager"),
         ):
             result = validator.validate(doc)
         assert result.is_valid is True

@@ -42,11 +42,11 @@ class BackendClient:
     def _ensure_local(self):
         if not self._local_loaded:
             try:
+                from app.api.models import Manuscript, Paragraph, Section  # noqa: F401
                 from app.services.formatter import ManuscriptFormatter as _FmtCls  # noqa: F401
                 from app.services.parser import ManuscriptParser as _PCls  # noqa: F401
-                from app.services.validator import ManuscriptValidator as _VCls  # noqa: F401
                 from app.services.style_registry import StyleRegistry as _SCls  # noqa: F401
-                from app.api.models import Manuscript, Paragraph, Section  # noqa: F401
+                from app.services.validator import ManuscriptValidator as _VCls  # noqa: F401
 
                 self._ManuscriptFormatter = _FmtCls
                 self._ManuscriptParser = _PCls
@@ -103,7 +103,7 @@ class BackendClient:
                 try:
                     detail = resp.json().get("detail", "") if resp is not None else ""
                 except Exception:
-                    pass
+                    pass  # intentionally ignored
                 raise BackendError(
                     f"API error ({status}): {detail or resp.reason if resp else 'unknown'}",
                     exit_code=1,
@@ -270,7 +270,7 @@ class BackendClient:
                 if isinstance(result, dict):
                     return result.get("styles", result.get("data", []))
             except BackendError:
-                pass
+                pass  # intentionally ignored
 
         self._ensure_backend()
         registry = self._StyleRegistry()
@@ -284,7 +284,7 @@ class BackendClient:
                 if isinstance(result, dict):
                     return result
             except BackendError:
-                pass
+                pass  # intentionally ignored
 
         self._ensure_backend()
         registry = self._StyleRegistry()

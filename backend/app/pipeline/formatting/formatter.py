@@ -11,36 +11,39 @@ one block/figure/equation does not abort the entire document generation.
 import logging
 import os
 import re
-import yaml
 from copy import deepcopy
+
+import yaml
 
 try:
     from defusedxml import ElementTree as ET
 except ImportError:
     from xml.etree import ElementTree as ET
+from io import BytesIO
+from typing import Any
 from xml.etree.ElementTree import Element, SubElement
 from zipfile import ZIP_DEFLATED, ZipFile
-from typing import Optional, Any
+
 from docx import Document as WordDocument
-from jinja2.exceptions import TemplateError
-from docx.opc.constants import RELATIONSHIP_TYPE as RT
-from docx.shared import Inches, Pt
-from io import BytesIO
 from docx.enum.text import WD_BREAK
-from docx.oxml.ns import qn
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.shared import Inches, Pt
+from jinja2.exceptions import TemplateError
 
 logger = logging.getLogger(__name__)
 
-from app.models import PipelineDocument as Document, BlockType, Figure
+from app.models import BlockType, Figure
+from app.models import PipelineDocument as Document
 from app.pipeline.contracts.loader import ContractLoader
-from app.pipeline.formatting.style_mapper import StyleMapper
+from app.pipeline.figures.renderer import FigureRenderer
 from app.pipeline.formatting.numbering import NumberingEngine
 from app.pipeline.formatting.reference_formatter import ReferenceFormatter
+from app.pipeline.formatting.style_mapper import StyleMapper
 from app.pipeline.formatting.template_renderer import TemplateRenderer
-from app.pipeline.tables.renderer import TableRenderer
-from app.pipeline.figures.renderer import FigureRenderer
 from app.pipeline.safety.safe_execution import safe_function
+from app.pipeline.tables.renderer import TableRenderer
 
 
 class Formatter:
@@ -70,7 +73,7 @@ class Formatter:
         return document
 
     @safe_function(fallback_value=None, error_message="Formatter.format failed")
-    def format(self, document: Document, template_name: str = "IEEE") -> Optional[Any]:
+    def format(self, document: Document, template_name: str = "IEEE") -> Any | None:
         """
         Apply formatting using contract-driven modular components.
         """
@@ -155,7 +158,7 @@ class Formatter:
             word_doc = WordDocument(template_path)
 
         contract = self._load_contract(contract_path)
-        style_map = contract.get("styles", {})
+        contract.get("styles", {})
 
         # 2. Add Content
         items_to_insert = []
@@ -371,11 +374,11 @@ class Formatter:
         contract_page_size = str(layout.get("page_size", "")).strip()
         return contract_page_size or "Letter"
 
-    def _resolve_line_spacing(self, template_name: str, options: dict) -> Optional[float]:
+    def _resolve_line_spacing(self, template_name: str, options: dict) -> float | None:
         """Resolve global line spacing from options/contract if present."""
-        raw_value = options.get("line_spacing", None)
+        raw_value = options.get("line_spacing")
         if raw_value is None:
-            raw_value = options.get("add_line_spacing", None)
+            raw_value = options.get("add_line_spacing")
         if raw_value is None:
             contract = self.contract_loader.load(template_name)
             raw_value = (contract.get("layout", {}) or {}).get("line_spacing")
@@ -497,10 +500,7 @@ class Formatter:
         """Adds simple page numbers to the footer."""
         for section in doc.sections:
             footer = section.footer
-            if footer.paragraphs:
-                p = footer.paragraphs[0]
-            else:
-                p = footer.add_paragraph()
+            p = footer.paragraphs[0] if footer.paragraphs else footer.add_paragraph()
             p.alignment = 1  # Center
             if self._paragraph_has_field_code(p, "PAGE"):
                 continue
@@ -574,7 +574,7 @@ class Formatter:
         if parent is not None:
             parent.remove(p)
 
-    def _prepend_paragraph(self, doc, text: str = "", style: Optional[str] = None, alignment: Optional[int] = None):
+    def _prepend_paragraph(self, doc, text: str = "", style: str | None = None, alignment: int | None = None):
         """Create a paragraph and move it to the beginning of the document."""
         try:
             paragraph = doc.add_paragraph(style=style) if style else doc.add_paragraph()
@@ -596,10 +596,7 @@ class Formatter:
         needle = (text or "").strip().lower()
         if not needle:
             return False
-        for paragraph in doc.paragraphs:
-            if needle in (paragraph.text or "").strip().lower():
-                return True
-        return False
+        return any(needle in (paragraph.text or "").strip().lower() for paragraph in doc.paragraphs)
 
     def _prepend_front_matter(self, doc, document_obj: Document, as_cover_page: bool) -> None:
         """Insert title/authors at top when template omitted front-matter markers."""
@@ -687,7 +684,7 @@ class Formatter:
         source_document: Document,
         template_name: str,
         options: dict,
-        footnote_lookup: Optional[dict] = None,
+        footnote_lookup: dict | None = None,
     ) -> None:
         """Apply backend layout options to docxtpl-rendered templates as well."""
         word_doc = getattr(rendered, "docx", None)
@@ -1054,7 +1051,7 @@ class Formatter:
 
     def _patch_content_types(self, content_types_xml: bytes) -> bytes:
         root = ET.fromstring(content_types_xml)  # nosec B314
-        existing = root.findall(f"./{{*}}Override[@PartName='/word/footnotes.xml']")
+        existing = root.findall("./{*}Override[@PartName='/word/footnotes.xml']")
         if not existing:
             override = Element(
                 f"{{{root.tag.partition('}')[0].strip('{')}}}Override",
@@ -1100,7 +1097,7 @@ class Formatter:
             return settings_xml
 
         root = ET.fromstring(settings_xml)  # nosec B314
-        existing = root.find(f"./{{*}}footnotePr")
+        existing = root.find("./{*}footnotePr")
         if existing is None:
             footnote_properties = Element(qn("w:footnotePr"))
             num_format = SubElement(footnote_properties, qn("w:numFmt"))
@@ -1131,14 +1128,14 @@ class Formatter:
         if not os.path.exists(path):
             return {}
         try:
-            with open(path, "r") as f:
+            with open(path) as f:
                 return yaml.safe_load(f) or {}
         except Exception as e:
             logger.warning("Failed to load contract %s: %s", path, e)
             return {}
 
     @safe_function(fallback_value=None, error_message="Block rendering failed")
-    def _render_block(self, doc, block, template_name, footnote_lookup: Optional[dict] = None):
+    def _render_block(self, doc, block, template_name, footnote_lookup: dict | None = None):
         """Render a block with contract-driven spacing, formatting, and dynamic list detection."""
         # Skip rendering empty anchor blocks (preserve in pipeline)
         if block.text.strip() == "" and block.metadata.get("has_figure", False):
@@ -1231,7 +1228,7 @@ class Formatter:
             if line_spacing:
                 paragraph.paragraph_format.line_spacing = float(line_spacing)
         except (TypeError, ValueError):
-            pass
+            pass  # intentionally ignored
 
     @safe_function(fallback_value=None, error_message="Image sizing failed")
     def _calculate_image_size(self, figure: Figure):

@@ -4,9 +4,10 @@ Revision ID: 20260708_add_webhook_tables
 Revises: 20260708_add_v2_pagination_index
 Create Date: 2026-07-08 00:00:00.000000
 """
-from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy.dialects.postgresql import JSONB, UUID
+
+from alembic import op
 
 revision = "20260708_add_webhook_tables"
 down_revision = "20260708_add_v2_pagination_index"

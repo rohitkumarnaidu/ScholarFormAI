@@ -3,10 +3,13 @@
 
 
 import unittest
-from datetime import datetime, timezone
-from app.models import PipelineDocument as Document, Block, BlockType, Equation
+from datetime import UTC, datetime
+
+from app.models import Block, BlockType, Equation
+from app.models import PipelineDocument as Document
 from app.pipeline.classification.classifier import ContentClassifier
 from app.pipeline.formatting.formatter import Formatter
+
 
 class TestEquationLogic(unittest.TestCase):
     def test_01_parser_anchoring(self):
@@ -17,13 +20,13 @@ class TestEquationLogic(unittest.TestCase):
         print("\n[Test 01] Verifying Equation Model supports metadata...")
         eqn = Equation(equation_id="eqn_1", index=0, text="x=y", is_block=True)
         eqn.metadata["block_index"] = 5
-        self.assertEqual(eqn.metadata["block_index"], 5)
+        assert eqn.metadata["block_index"] == 5
         print("Model check passed.")
 
     def test_02_classifier_support(self):
         """Verify Classifier assigns BlockType.EQUATION."""
         print("\n[Test 02] Verifying Classifier supports Equation detection...")
-        doc = Document(document_id="test", original_filename="test.docx", created_at=datetime.now(timezone.utc), updated_at=datetime.now(timezone.utc))
+        doc = Document(document_id="test", original_filename="test.docx", created_at=datetime.now(UTC), updated_at=datetime.now(UTC))
         
         # Create block with equation-like text
         block = Block(
@@ -39,13 +42,13 @@ class TestEquationLogic(unittest.TestCase):
         classifier._nlp_classify_fallback([block])
         
         print(f"Block classified as: {block.block_type}")
-        self.assertEqual(block.block_type, BlockType.EQUATION)
+        assert block.block_type == BlockType.EQUATION
         print("Classifier check passed.")
 
     def test_03_formatter_sorting(self):
         """Verify Formatter sorts by block_index."""
         print("\n[Test 03] Verifying Formatter sorting logic...")
-        doc = Document(document_id="test", original_filename="test.docx", created_at=datetime.now(timezone.utc), updated_at=datetime.now(timezone.utc))
+        doc = Document(document_id="test", original_filename="test.docx", created_at=datetime.now(UTC), updated_at=datetime.now(UTC))
         
         # Scenario: 
         # Block 0 (Intro)
@@ -91,10 +94,10 @@ class TestEquationLogic(unittest.TestCase):
             print(f"- {item['type']} (Index: {item['index']})")
             
         # Check order: b0, b1, eqn, b2
-        self.assertEqual(sorted_items[0]['obj'], b0)
-        self.assertEqual(sorted_items[1]['obj'], b1)
-        self.assertEqual(sorted_items[2]['obj'], eqn) # Should be index 1.2
-        self.assertEqual(sorted_items[3]['obj'], b2)
+        assert sorted_items[0]['obj'] == b0
+        assert sorted_items[1]['obj'] == b1
+        assert sorted_items[2]['obj'] == eqn # Should be index 1.2
+        assert sorted_items[3]['obj'] == b2
         print("Formatter sorting check passed.")
 
 if __name__ == '__main__':

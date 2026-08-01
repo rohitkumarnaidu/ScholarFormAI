@@ -26,7 +26,7 @@ def _auto_mocks():
     from app.services.document_service import DocumentService
     DocumentService._supports_file_hash = None
     DocumentService._supports_output_hash = None
-    yield
+    return
 
 
 def _make_supabase_result(data=None):

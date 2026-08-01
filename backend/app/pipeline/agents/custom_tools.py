@@ -5,9 +5,11 @@
 Custom tool creation framework for user-defined tools.
 """
 
-import sys
 import logging
-from typing import Type, Dict, Any, Optional, Callable, List
+import sys
+from collections.abc import Callable
+from typing import Any
+
 from pydantic import BaseModel, Field, create_model
 
 if sys.version_info < (3, 14):
@@ -29,15 +31,15 @@ class ToolRegistry:
 
     def __init__(self):
         """Initialize tool registry."""
-        self.tools: Dict[str, Type[BaseTool]] = {}
+        self.tools: dict[str, type[BaseTool]] = {}
 
     def register(
         self,
         name: str,
         description: str,
-        input_schema: Dict[str, tuple],  # {field_name: (type, description)}
-        execute_fn: Callable[[Dict[str, Any]], str],
-    ) -> Type[BaseTool]:
+        input_schema: dict[str, tuple],  # {field_name: (type, description)}
+        execute_fn: Callable[[dict[str, Any]], str],
+    ) -> type[BaseTool]:
         """
         Register a custom tool.
 
@@ -63,7 +65,7 @@ class ToolRegistry:
         class CustomTool(base_tool_class):
             name: str = ""
             description: str = ""
-            args_schema: Type[BaseModel] = InputModel
+            args_schema: type[BaseModel] = InputModel
 
             def _run(self, **kwargs) -> str:
                 """Execute the tool."""
@@ -85,7 +87,7 @@ class ToolRegistry:
 
         return CustomTool
 
-    def get_tool(self, name: str) -> Optional[Type[BaseTool]]:
+    def get_tool(self, name: str) -> type[BaseTool] | None:
         """Get a registered tool."""
         return self.tools.get(name)
 
@@ -93,7 +95,7 @@ class ToolRegistry:
         """List all registered tools."""
         return list(self.tools.keys())
 
-    def create_instance(self, name: str) -> Optional[BaseTool]:
+    def create_instance(self, name: str) -> BaseTool | None:
         """Create an instance of a registered tool."""
         tool_class = self.get_tool(name)
         if tool_class:
@@ -106,8 +108,8 @@ _global_registry = ToolRegistry()
 
 
 def register_custom_tool(
-    name: str, description: str, input_schema: Dict[str, tuple], execute_fn: Callable[[Dict[str, Any]], str]
-) -> Type[BaseTool]:
+    name: str, description: str, input_schema: dict[str, tuple], execute_fn: Callable[[dict[str, Any]], str]
+) -> type[BaseTool]:
     """
     Register a custom tool globally.
 
@@ -137,12 +139,12 @@ def register_custom_tool(
     return _global_registry.register(name, description, input_schema, execute_fn)
 
 
-def get_custom_tool(name: str) -> Optional[BaseTool]:
+def get_custom_tool(name: str) -> BaseTool | None:
     """Get a custom tool instance."""
     return _global_registry.create_instance(name)
 
 
-def list_custom_tools() -> List[str]:
+def list_custom_tools() -> list[str]:
     """List all custom tools."""
     return _global_registry.list_tools()
 
@@ -153,7 +155,7 @@ def list_custom_tools() -> List[str]:
 def create_citation_formatter_tool():
     """Create a citation formatting tool."""
 
-    def format_citation(inputs: Dict[str, Any]) -> str:
+    def format_citation(inputs: dict[str, Any]) -> str:
         """Format a citation in various styles."""
         authors = inputs.get("authors", [])
         title = inputs.get("title", "")
@@ -188,7 +190,7 @@ def create_citation_formatter_tool():
 def create_keyword_extractor_tool():
     """Create a keyword extraction tool."""
 
-    def extract_keywords(inputs: Dict[str, Any]) -> str:
+    def extract_keywords(inputs: dict[str, Any]) -> str:
         """Extract keywords from text."""
         text = inputs.get("text", "")
         max_keywords = inputs.get("max_keywords", 5)

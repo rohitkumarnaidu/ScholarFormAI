@@ -15,8 +15,9 @@ import json
 import os
 import sys
 from unittest.mock import MagicMock, patch
-import pytest
+
 import numpy as np
+import pytest
 
 try:
     import sentence_transformers  # noqa: F401
@@ -109,8 +110,8 @@ class TestLoadChromadb:
             assert result is None
 
     def test_import_success(self):
-        from app.pipeline.intelligence.rag_engine import _load_chromadb
         import app.pipeline.intelligence.rag_engine as rag_mod
+        from app.pipeline.intelligence.rag_engine import _load_chromadb
 
         fake_mod = MagicMock()
         was_there = "chromadb" in sys.modules
@@ -133,8 +134,8 @@ class TestLoadChromadb:
                 sys.modules.pop("chromadb", None)
 
     def test_import_failure(self):
-        from app.pipeline.intelligence.rag_engine import _load_chromadb
         import app.pipeline.intelligence.rag_engine as rag_mod
+        from app.pipeline.intelligence.rag_engine import _load_chromadb
 
         with (
             patch.dict("sys.modules", {"chromadb": None}, clear=False),
@@ -327,7 +328,7 @@ class TestInit:
     """Constructor behavior under various conditions."""
 
     def test_custom_persist_directory(self, tmp_path):
-        d = str(tmp_path / "custom")
+        str(tmp_path / "custom")
         e = _make_engine(tmp_path)
         # persist dir is tmp_path/rag_store, just verify it exists
         assert "rag_store" in e.persist_directory
@@ -523,7 +524,7 @@ class TestLoadEmbeddingModel:
         assert e.active_model_name == DETERMINISTIC_FALLBACK_MODEL
 
     def test_primary_model_fails_fallback_succeeds(self, tmp_path):
-        from app.pipeline.intelligence.rag_engine import PRIMARY_MODEL, FALLBACK_MODEL
+        from app.pipeline.intelligence.rag_engine import FALLBACK_MODEL, PRIMARY_MODEL
 
         fallback_model = MagicMock(name="fallback_model")
         fallback_model.get_sentence_embedding_dimension.return_value = 384
@@ -903,7 +904,7 @@ class TestGetRagEngine:
             mock_model.encode.return_value = [0.1] * 384
             mst.return_value = mock_model
 
-            from app.pipeline.intelligence.rag_engine import get_rag_engine, _rag_engine
+            from app.pipeline.intelligence.rag_engine import _rag_engine, get_rag_engine
             # Ensure singleton is None before test
             test_rag = _rag_engine
             try:
@@ -929,8 +930,8 @@ class TestGetRagEngine:
             mock_model.encode.return_value = [0.1] * 384
             mst.return_value = mock_model
 
-            from app.pipeline.intelligence.rag_engine import get_rag_engine
             import app.pipeline.intelligence.rag_engine as rag_mod
+            from app.pipeline.intelligence.rag_engine import get_rag_engine
             orig = rag_mod._rag_engine
             try:
                 rag_mod._rag_engine = None

@@ -4,8 +4,11 @@
 """Coverage gap tests: classifier.py, formatter.py, synthesizer.py."""
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock, AsyncMock
+
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -387,8 +390,8 @@ class TestClassifierCoverageGaps:
         cc._apply_scibert_predictions([b], preds)
 
     def test_find_first_section_index_title_skip(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         b1 = MagicMock()
         b1.metadata = {"is_heading_candidate": True}
         b1.block_type = BlockType.TITLE
@@ -427,7 +430,7 @@ class TestClassifierCoverageGaps:
     def test_find_first_section_index_i_limit(self):
         from app.pipeline.classification.classifier import ContentClassifier
         blocks = []
-        for i in range(31):
+        for _i in range(31):
             b = MagicMock()
             b.metadata = {}
             b.text = "word"
@@ -491,8 +494,8 @@ class TestClassifierCoverageGaps:
         assert ContentClassifier()._match_grobid_affiliation("MIT", affiliations) is False
 
     def test_nlp_classify_fallback_footnote_digit_pattern(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -503,8 +506,8 @@ class TestClassifierCoverageGaps:
         assert b.block_type == BlockType.FOOTNOTE
 
     def test_nlp_classify_fallback_footnote_bracket(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -515,8 +518,8 @@ class TestClassifierCoverageGaps:
         assert b.block_type == BlockType.FOOTNOTE
 
     def test_nlp_classify_fallback_footnote_asterisk(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -527,8 +530,8 @@ class TestClassifierCoverageGaps:
         assert b.block_type == BlockType.FOOTNOTE
 
     def test_nlp_classify_fallback_equation_hyphens(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -539,8 +542,8 @@ class TestClassifierCoverageGaps:
         assert b.block_type == BlockType.EQUATION
 
     def test_nlp_classify_fallback_equation_sum(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -551,8 +554,8 @@ class TestClassifierCoverageGaps:
         assert b.block_type == BlockType.EQUATION
 
     def test_nlp_classify_fallback_table_tabs(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -563,8 +566,8 @@ class TestClassifierCoverageGaps:
         assert b.block_type == BlockType.BODY
 
     def test_nlp_classify_fallback_table_pipes(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -614,8 +617,8 @@ class TestClassifierCoverageGaps:
             return cc.process(doc)
 
     def test_classification_loop_title_in_front_matter(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -629,8 +632,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].semantic_intent == "TITLE"
 
     def test_classification_loop_figure_caption(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -644,8 +647,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].block_type == BlockType.FIGURE_CAPTION
 
     def test_classification_loop_table_caption(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -671,8 +674,8 @@ class TestClassifierCoverageGaps:
         assert result is not None
 
     def test_classification_loop_grobid_title_match(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -687,8 +690,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].block_type == BlockType.TITLE
 
     def test_classification_loop_grobid_title_not_matching(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -703,8 +706,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].block_type == BlockType.TITLE
 
     def test_classification_loop_grobid_author_match(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         t = MagicMock()
         t.metadata = {}
@@ -733,8 +736,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[1].block_type == BlockType.AUTHOR
 
     def test_classification_loop_grobid_affiliation_match(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         t = MagicMock()
         t.metadata = {}
@@ -770,8 +773,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[2].block_type == BlockType.AFFILIATION
 
     def test_classification_loop_author_regex(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         t = MagicMock()
         t.metadata = {}
@@ -792,8 +795,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[1].block_type == BlockType.AUTHOR
 
     def test_classification_loop_affiliation_rule(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         t = MagicMock()
         t.metadata = {}
@@ -814,8 +817,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[1].block_type == BlockType.AFFILIATION
 
     def test_classification_loop_email_pattern(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         t = MagicMock()
         t.metadata = {}
@@ -836,8 +839,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[1].block_type == BlockType.AUTHOR
 
     def test_classification_loop_email_affiliation(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         t = MagicMock()
         t.metadata = {}
@@ -858,8 +861,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[1].block_type is not None
 
     def test_classification_loop_references_heading(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -884,8 +887,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[1].block_type == BlockType.REFERENCES_HEADING
 
     def test_classification_loop_abstract_heading_in_body(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -901,8 +904,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].block_type == BlockType.ABSTRACT_HEADING
 
     def test_classification_loop_keywords_heading(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -918,8 +921,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].block_type == BlockType.KEYWORDS_HEADING
 
     def test_classification_loop_funding_heading(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -935,8 +938,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].block_type == BlockType.FUNDING
 
     def test_classification_loop_conflict_heading(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -952,8 +955,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].block_type == BlockType.CONFLICT_OF_INTEREST
 
     def test_classification_loop_acknowledgements_heading(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -969,8 +972,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].block_type == BlockType.ACKNOWLEDGEMENTS
 
     def test_classification_loop_appendix_heading(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -986,8 +989,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].metadata.get("is_appendix") is True
 
     def test_classification_loop_abstract_body(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -1010,8 +1013,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[1].block_type == BlockType.ABSTRACT_BODY
 
     def test_classification_loop_keywords_body(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -1035,8 +1038,8 @@ class TestClassifierCoverageGaps:
 
     def test_nlp_classify_fallback_detects_footnote_direct(self):
         """_nlp_classify_fallback detects footnote patterns via regex."""
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -1047,8 +1050,8 @@ class TestClassifierCoverageGaps:
         assert b.block_type == BlockType.FOOTNOTE
 
     def test_classification_loop_references_heading_candidate_level_1(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -1073,8 +1076,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[1].block_type == BlockType.HEADING_1
 
     def test_classification_loop_fallback_confidence_nlp(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         fn = MagicMock()
         fn.metadata = {"nlp_confidence": 0.75}
@@ -1088,8 +1091,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].classification_confidence >= 0.5
 
     def test_classification_loop_fallback_last_resort(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         fn = MagicMock()
         fn.metadata = {}
@@ -1103,8 +1106,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].classification_confidence is not None
 
     def test_classification_loop_standard_heading_regex(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -1118,8 +1121,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].block_type == BlockType.HEADING_1
 
     def test_classification_loop_unnumbered_standard_heading(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -1133,8 +1136,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].block_type == BlockType.HEADING_1
 
     def test_classification_loop_unnumbered_standard_heading_colon(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -1148,8 +1151,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].block_type == BlockType.HEADING_1
 
     def test_classification_loop_heading_level_2(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b2 = MagicMock()
         b2.metadata = {"is_heading_candidate": True, "level": 2}
@@ -1165,8 +1168,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].block_type == BlockType.HEADING_2
 
     def test_classification_loop_heading_level_3(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {"is_heading_candidate": True, "level": 3}
@@ -1182,8 +1185,8 @@ class TestClassifierCoverageGaps:
         assert result.blocks[0].block_type == BlockType.HEADING_3
 
     def test_classification_loop_heading_level_4(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {"is_heading_candidate": True, "level": 4}
@@ -1227,8 +1230,8 @@ class TestClassifierCoverageGaps:
 
     def test_classification_loop_affiliation_is_likely_fallback(self):
         """Tests the _is_likely_affiliation fallback path (no explicit University/etc)."""
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models.block import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         t = MagicMock()
         t.metadata = {}
@@ -1402,10 +1405,9 @@ class TestFormatterCoverageGaps:
         b.metadata = {}
         b.block_type = "REFERENCE_ENTRY"
         f.style_mapper.get_style_name = MagicMock(return_value="Normal")
-        with patch.object(f, "_write_inline_content"):
-            with patch.object(f, "_apply_spacing_from_contract"):
-                result = f._render_block(doc, b, "ieee")
-                assert result is not None
+        with patch.object(f, "_write_inline_content"), patch.object(f, "_apply_spacing_from_contract"):
+            result = f._render_block(doc, b, "ieee")
+            assert result is not None
 
     def test_render_block_empty_after_exception(self):
         from app.pipeline.formatting.formatter import Formatter
@@ -2096,7 +2098,7 @@ class TestSynthesizerCoverageGaps:
         ]
         doc = PipelineDocument(document_id="d1", blocks=blocks)
         extracted = [{"filename": "doc1.docx", "doc_obj": doc}]
-        chunks = cls._build_chunks(s, extracted)
+        cls._build_chunks(s, extracted)
         s._chunk_text.assert_called()
 
     def test_build_chunks_empty_blocks(self, syn_and_cls):

@@ -1,7 +1,12 @@
 from __future__ import annotations
+
+import contextlib
 from unittest.mock import patch
+
 import pytest
+
 from app.services.llm_service import LLMUnavailableError
+
 pytestmark = [pytest.mark.security]
 
 
@@ -134,15 +139,14 @@ class TestResourceExhaustion:
             nonlocal breaker_fails
             breaker_fails += 1
             raise Exception("transient error")
-        for i in range(4):
-            try:
+        for _i in range(4):
+            with contextlib.suppress(Exception):
                 _call_with_provider_circuit("test_provider", _fail)
-            except Exception:
-                pass
         assert breaker_fails == 2
 
     def test_circuit_breaker_half_open_recovers(self):
         import time
+
         import pybreaker
         breaker = pybreaker.CircuitBreaker(fail_max=1, reset_timeout=0.05)
         call_count = [0]
@@ -153,17 +157,13 @@ class TestResourceExhaustion:
                 raise Exception("transient")
             return "recovered"
 
-        try:
+        with contextlib.suppress(Exception):
             breaker.call(action)
-        except Exception:
-            pass
         assert call_count[0] == 1
         assert breaker.current_state == pybreaker.STATE_OPEN
 
-        try:
+        with contextlib.suppress(Exception):
             breaker.call(action)
-        except Exception:
-            pass
         assert call_count[0] == 1
 
         time.sleep(0.06)
@@ -175,6 +175,7 @@ class TestResourceExhaustion:
 
     def test_circuit_breaker_state_transitions(self):
         import time
+
         import pybreaker
         breaker = pybreaker.CircuitBreaker(fail_max=2, reset_timeout=0.05)
         call_count = [0]
@@ -183,26 +184,20 @@ class TestResourceExhaustion:
             call_count[0] += 1
             raise Exception("persistent fail")
 
-        try:
+        with contextlib.suppress(Exception):
             breaker.call(action)
-        except Exception:
-            pass
         assert call_count[0] == 1
         assert breaker.current_state == pybreaker.STATE_CLOSED
 
-        try:
+        with contextlib.suppress(Exception):
             breaker.call(action)
-        except Exception:
-            pass
         assert call_count[0] == 2
         assert breaker.current_state == pybreaker.STATE_OPEN
 
         time.sleep(0.06)
 
-        try:
+        with contextlib.suppress(Exception):
             breaker.call(action)
-        except Exception:
-            pass
         assert call_count[0] == 3
         assert breaker.current_state == pybreaker.STATE_OPEN
 

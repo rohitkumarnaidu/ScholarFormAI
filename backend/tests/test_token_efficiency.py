@@ -8,15 +8,14 @@ Sections:
   3B — Cost Tracking         (~4 tests)
 """
 
-import pytest
-from typing import Dict
 
+import pytest
 
 # ===================================================================
 #  Mock Token Counter & Cost Models
 # ===================================================================
 
-_PROVIDER_RATES: Dict[str, Dict[str, float]] = {
+_PROVIDER_RATES: dict[str, dict[str, float]] = {
     "nvidia":  {"input_per_1k": 0.0005, "output_per_1k": 0.0015},
     "groq":    {"input_per_1k": 0.0002, "output_per_1k": 0.0006},
     "openai":  {"input_per_1k": 0.01,   "output_per_1k": 0.03},
@@ -83,8 +82,8 @@ class TestTokenCounting:
     @pytest.mark.unit
     @pytest.mark.ai_quality
     def test_prompt_budget_not_exceeded(self):
-        from app.services.llm_service import MAX_LLM_INPUT_LENGTH
         from app.pipeline.generation.prompt_builder import PromptBuilder
+        from app.services.llm_service import MAX_LLM_INPUT_LENGTH
         builder = PromptBuilder()
         prompt = builder.build("academic_paper", {"title": "Test", "authors": ["A"]}, {})
         estimated_tokens = MockTokenCounter.count(prompt)
@@ -93,7 +92,7 @@ class TestTokenCounting:
 
     @pytest.mark.unit
     @pytest.mark.ai_quality
-    @pytest.mark.parametrize("doc_type,metadata", [
+    @pytest.mark.parametrize(("doc_type", "metadata"), [
         ("academic_paper", {"title": "Budget", "authors": ["A"],
                             "sections": [{"name": "Intro", "include": True}]}),
         ("resume", {"name": "N", "skills": ["Python"],
@@ -115,8 +114,8 @@ class TestTokenCounting:
     @pytest.mark.unit
     @pytest.mark.ai_quality
     def test_system_plus_user_under_budget(self):
-        from app.services.llm_service import MAX_LLM_INPUT_LENGTH
         from app.pipeline.generation.prompt_builder import PromptBuilder
+        from app.services.llm_service import MAX_LLM_INPUT_LENGTH
         builder = PromptBuilder()
         system_prompt = "You are an academic formatting assistant. Follow all instructions precisely."
         user_prompt = builder.build("academic_paper", {"title": "Test", "authors": ["A"]}, {})
@@ -126,7 +125,7 @@ class TestTokenCounting:
     @pytest.mark.unit
     @pytest.mark.ai_quality
     def test_response_truncation_at_limit(self):
-        from app.services.llm_service import sanitize_for_llm, MAX_LLM_INPUT_LENGTH
+        from app.services.llm_service import MAX_LLM_INPUT_LENGTH, sanitize_for_llm
         text = "A" * (MAX_LLM_INPUT_LENGTH * 3)
         result = sanitize_for_llm(text)
         assert len(result) <= MAX_LLM_INPUT_LENGTH + 100

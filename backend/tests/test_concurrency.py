@@ -12,7 +12,6 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-
 # ── Pipeline Semaphore ─────────────────────────────────────────────────────────
 
 class TestPipelineSemaphore:
@@ -22,7 +21,7 @@ class TestPipelineSemaphore:
             _pipeline_semaphore.release()
 
     def test_allows_up_to_five_concurrent(self):
-        from app.pipeline.orchestrator import _pipeline_semaphore, _MAX_CONCURRENT_JOBS
+        from app.pipeline.orchestrator import _MAX_CONCURRENT_JOBS, _pipeline_semaphore
         assert _MAX_CONCURRENT_JOBS == 5
         acquired = []
         for _ in range(5):

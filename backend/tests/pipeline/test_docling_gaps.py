@@ -4,14 +4,15 @@
 from __future__ import annotations
 
 import warnings
-from unittest.mock import patch, MagicMock, PropertyMock
+from unittest.mock import MagicMock, PropertyMock, patch
+
 from app.pipeline.services.docling_client import (
-    DoclingClient,
     BoundingBox,
+    DoclingClient,
     LayoutElement,
-    _suppress_docling_warnings,
     _docling_enabled,
     _load_docling_converter,
+    _suppress_docling_warnings,
 )
 
 
@@ -35,7 +36,6 @@ class TestDoclingUtilities:
             assert _docling_enabled() is True
 
     def test_load_converter_not_available(self):
-        DOCLING_AVAILABLE = False
         with patch("app.pipeline.services.docling_client.DOCLING_AVAILABLE", False):
             assert _load_docling_converter() is None
 
@@ -50,10 +50,9 @@ class TestDoclingUtilities:
                 assert _load_docling_converter() is None
 
     def test_suppress_warnings_context(self):
-        with _suppress_docling_warnings():
-            with warnings.catch_warnings(record=True) as w:
-                warnings.warn("test deprecated", DeprecationWarning)
-                assert len(w) == 1
+        with _suppress_docling_warnings(), warnings.catch_warnings(record=True) as w:
+            warnings.warn("test deprecated", DeprecationWarning, stacklevel=2)
+            assert len(w) == 1
 
 
 class TestDoclingClientInit:
@@ -197,7 +196,6 @@ class TestDoclingClientHelpers:
 
     def test_detect_headers_footers_basic(self):
         c = DoclingClient()
-        page_height = 1000.0
         header = LayoutElement("H", BoundingBox(0, 0, 100, 50, page=0), "heading")
         body = LayoutElement("B", BoundingBox(0, 200, 100, 300, page=0), "paragraph")
         footer = LayoutElement("F", BoundingBox(0, 950, 100, 1000, page=0), "footer")

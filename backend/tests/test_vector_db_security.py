@@ -1,6 +1,9 @@
 from __future__ import annotations
+
 from unittest.mock import patch
+
 import pytest
+
 pytestmark = [pytest.mark.rag]
 
 
@@ -75,8 +78,9 @@ class TestCrossUserDataLeakage:
     @patch("app.pipeline.intelligence.rag_engine.chromadb", None)
     @patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None)
     def test_cross_user_isolation(self, mock_load, tmp_path):
-        from app.pipeline.intelligence.rag_engine import RagEngine
         import tempfile
+
+        from app.pipeline.intelligence.rag_engine import RagEngine
         with tempfile.TemporaryDirectory() as d1, tempfile.TemporaryDirectory() as d2:
             engine1 = RagEngine(persist_directory=d1, auto_seed=False)
             engine2 = RagEngine(persist_directory=d2, auto_seed=False)

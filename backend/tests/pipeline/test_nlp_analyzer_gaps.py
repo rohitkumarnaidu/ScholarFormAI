@@ -5,24 +5,25 @@
 Gap-filling tests for NLP ContentAnalyzer to reach 100% line coverage.
 """
 
-from app.models import Block
-from app.models import Block
 from __future__ import annotations
+
+import builtins
 import importlib
 import sys
-import builtins
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
+from app.models import Block
+from app.models import PipelineDocument as Document
 from app.pipeline.nlp.analyzer import (
     ContentAnalyzer,
-    extract_keywords,
-    _parse_keyword_payload,
     _extract_keywords_with_keyllm,
-    methods_detect_abstract,
     _get_keybert_model,
+    _parse_keyword_payload,
+    extract_keywords,
+    methods_detect_abstract,
 )
 
-from app.models import PipelineDocument as Document
+
 def _doc(blocks=None) -> Document:
     from app.models import PipelineDocument as Document
     return Document(document_id="test-id", blocks=blocks or [])

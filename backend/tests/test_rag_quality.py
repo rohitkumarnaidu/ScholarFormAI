@@ -1,7 +1,8 @@
-import pytest
 import math
-import numpy as np
 from unittest.mock import MagicMock, patch
+
+import numpy as np
+import pytest
 
 # ---------------------------------------------------------------------------
 #  IR metric helpers
@@ -59,8 +60,8 @@ def rag_engine(tmp_path):
         patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None),
         patch("app.pipeline.intelligence.rag_engine.chromadb", None),
         patch("app.config.settings.settings") as ms,
-        patch("app.services.model_store.model_store") as mm,
-        patch("sentence_transformers.SentenceTransformer") as mock_st,
+        patch("app.services.model_store.model_store"),
+        patch("sentence_transformers.SentenceTransformer"),
     ):
         ms.LOW_MEMORY_MODE = True
         ms.RAG_USE_TRANSFORMERS = False

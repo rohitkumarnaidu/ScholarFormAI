@@ -8,16 +8,15 @@ Handles CRUD for user-provided LLM provider API keys with rate limiting.
 
 import logging
 import time
-from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.utils.dependencies import get_current_user
+from app.services.api_key_rate_limiter import RateLimitResult, get_api_key_rate_limiter
 from app.services.api_key_service import ApiKeyService
-from app.services.api_key_rate_limiter import get_api_key_rate_limiter, RateLimitResult
+from app.utils.dependencies import get_current_user
 
 logger = logging.getLogger(__name__)
 
@@ -30,18 +29,18 @@ router = APIRouter(tags=["api-keys"])
 class CreateApiKeyRequest(BaseModel):
     provider: str = Field(..., description="Provider name (openai, anthropic, deepseek, etc.)")
     api_key: str = Field(..., min_length=8, description="Raw API key value")
-    key_label: Optional[str] = Field(None, max_length=100, description="Friendly label for the key")
-    rate_limit_per_minute: Optional[int] = Field(None, ge=1, le=1000)
-    rate_limit_per_hour: Optional[int] = Field(None, ge=1, le=100000)
-    daily_quota: Optional[int] = Field(None, ge=1, le=1000000)
+    key_label: str | None = Field(None, max_length=100, description="Friendly label for the key")
+    rate_limit_per_minute: int | None = Field(None, ge=1, le=1000)
+    rate_limit_per_hour: int | None = Field(None, ge=1, le=100000)
+    daily_quota: int | None = Field(None, ge=1, le=1000000)
 
 
 class UpdateApiKeyRequest(BaseModel):
-    key_label: Optional[str] = Field(None, max_length=100)
-    is_active: Optional[bool] = None
-    rate_limit_per_minute: Optional[int] = Field(None, ge=1, le=1000)
-    rate_limit_per_hour: Optional[int] = Field(None, ge=1, le=100000)
-    daily_quota: Optional[int] = Field(None, ge=1, le=1000000)
+    key_label: str | None = Field(None, max_length=100)
+    is_active: bool | None = None
+    rate_limit_per_minute: int | None = Field(None, ge=1, le=1000)
+    rate_limit_per_hour: int | None = Field(None, ge=1, le=100000)
+    daily_quota: int | None = Field(None, ge=1, le=1000000)
 
 
 class TestApiKeyRequest(BaseModel):
@@ -52,14 +51,14 @@ class TestApiKeyRequest(BaseModel):
 class ApiKeyResponse(BaseModel):
     id: str
     provider: str
-    key_label: Optional[str]
+    key_label: str | None
     is_active: bool
     rate_limit_per_minute: int
     rate_limit_per_hour: int
     daily_quota: int
     total_requests: int
-    last_request_at: Optional[str]
-    created_at: Optional[str]
+    last_request_at: str | None
+    created_at: str | None
     key_preview: str
 
 
@@ -108,7 +107,7 @@ async def create_api_key(
 
 @router.get("", response_model=list[ApiKeyResponse])
 async def list_api_keys(
-    provider: Optional[str] = Query(None, description="Filter by provider"),
+    provider: str | None = Query(None, description="Filter by provider"),
     db: Session = Depends(get_db),
     user=Depends(get_current_user),
 ):

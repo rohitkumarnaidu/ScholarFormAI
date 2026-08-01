@@ -3,8 +3,10 @@
 
 
 import os
-from docx import Document
 from pathlib import Path
+
+from docx import Document
+
 
 def dump_xml(path):
     doc = Document(path)

@@ -12,7 +12,6 @@ import pytest
 from app.pipeline.parsing import ocr_engine as ocr_module
 from app.pipeline.parsing.ocr_engine import OCREngine, get_ocr_engine
 
-
 _sentinel = object()
 
 
@@ -161,10 +160,7 @@ class TestConstruction:
 # --------------------------------------------------------------------------- #
 
 @pytest.mark.parametrize(
-    "flag_attr,method,"
-    "load_model_attr,load_proc_attr,"
-    "model_key,proc_key,"
-    "attr_model,attr_proc",
+    ("flag_attr", "method", "load_model_attr", "load_proc_attr", "model_key", "proc_key", "attr_model", "attr_proc"),
     [
         ("_loaded_det", OCREngine._ensure_detection_loaded,
          "load_det_model", "load_det_processor",
@@ -289,7 +285,7 @@ class TestDetectText:
         assert result[0]["lines"][0]["confidence"] == 0.9543
 
     @pytest.mark.parametrize(
-        "languages, expected_per_image",
+        ("languages", "expected_per_image"),
         [
             (None, ["en"]),
             (["de"], ["de"]),
@@ -462,7 +458,7 @@ class TestIsScannedPDF:
         return OCREngine()
 
     @pytest.mark.parametrize(
-        "text, page_count, expected",
+        ("text", "page_count", "expected"),
         [
             # page_count <= 0 → False
             ("", 0, False),

@@ -14,11 +14,12 @@ Rate Limit: 50 requests/second (polite pool).
 """
 
 import asyncio
-import httpx
 import logging
 import time
-from typing import Dict, Any, Optional
 from difflib import SequenceMatcher
+from typing import Any
+
+import httpx
 
 from app.exceptions import ExternalServiceError
 
@@ -41,7 +42,7 @@ class CrossRefClient:
     # specific logic to ensuring we don't exceed this.
     MIN_REQUEST_INTERVAL = 0.025  # Slightly conservative (40 req/s)
 
-    def __init__(self, email: Optional[str] = None):
+    def __init__(self, email: str | None = None):
         """
         Initialize CrossRef client.
 
@@ -79,7 +80,7 @@ class CrossRefClient:
         except CrossRefException:
             return False
 
-    async def get_metadata(self, doi: str) -> Dict[str, Any]:
+    async def get_metadata(self, doi: str) -> dict[str, Any]:
         """
         Retrieve metadata for a DOI.
 
@@ -111,7 +112,7 @@ class CrossRefClient:
         except httpx.RequestError as e:
             raise CrossRefException(f"Network error: {str(e)}")
 
-    def calculate_confidence(self, reference_data: Dict[str, Any], crossref_data: Dict[str, Any]) -> float:
+    def calculate_confidence(self, reference_data: dict[str, Any], crossref_data: dict[str, Any]) -> float:
         """
         Calculate confidence score by comparing local reference data with CrossRef data.
 

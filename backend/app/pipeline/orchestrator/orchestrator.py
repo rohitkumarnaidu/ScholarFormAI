@@ -8,18 +8,20 @@ This module has been refactored from a 1350-line god class into a slim
 coordination layer. Stage implementation details live in stages.py.
 """
 
-import os
 import asyncio
-import time
+import contextlib
+import os
 import threading
-from typing import Optional, Any
+import time
+from datetime import UTC
+from typing import Any
 
 from app.config.settings import settings
-from app.models import PipelineDocument, Block, BlockType
-from app.pipeline.orchestrator.stages import PipelineStages
-from app.pipeline.orchestrator.phases import PipelinePhases
-from app.pipeline.orchestrator.metrics import StageMetrics
+from app.models import Block, BlockType, PipelineDocument
 from app.pipeline.orchestrator.events import StageEventEmitter
+from app.pipeline.orchestrator.metrics import StageMetrics
+from app.pipeline.orchestrator.phases import PipelinePhases
+from app.pipeline.orchestrator.stages import PipelineStages
 
 
 class _PackageLoggerProxy:
@@ -66,7 +68,7 @@ class PipelineOrchestrator:
     final output. Stage implementations are delegated to PipelineStages.
     """
 
-    def __init__(self, templates_dir: str = "app/templates", temp_dir: Optional[str] = None):
+    def __init__(self, templates_dir: str = "app/templates", temp_dir: str | None = None):
         self.templates_dir = templates_dir
         self.temp_dir = temp_dir or "temp"
         os.makedirs(self.temp_dir, exist_ok=True)
@@ -116,11 +118,11 @@ class PipelineOrchestrator:
         self,
         input_path: str,
         job_id: str,
-        template_name: Optional[str] = "IEEE",
+        template_name: str | None = "IEEE",
         formatting_options: dict[str, Any] = None,
     ) -> dict[str, Any]:
         """Execute full pipeline sequentially. Acquires semaphore first."""
-        from app.pipeline.orchestrator import _pipeline_semaphore, _ACQUIRE_TIMEOUT_SECONDS
+        from app.pipeline.orchestrator import _ACQUIRE_TIMEOUT_SECONDS, _pipeline_semaphore
 
         if not _pipeline_semaphore.acquire(timeout=_ACQUIRE_TIMEOUT_SECONDS):
             logger.warning("Semaphore full. Job %s rejected.", job_id)
@@ -139,7 +141,7 @@ class PipelineOrchestrator:
         self,
         input_path: str,
         job_id: str,
-        template_name: Optional[str] = "IEEE",
+        template_name: str | None = "IEEE",
         formatting_options: dict[str, Any] = None,
     ) -> dict[str, Any]:
         """Orchestrate all pipeline stages sequentially."""
@@ -223,7 +225,7 @@ class PipelineOrchestrator:
                         }
                     ).eq("id", job_id).execute()
             except Exception:
-                pass
+                pass  # intentionally ignored
             return {"status": "cancelled", "message": "Interrupted by server shutdown"}
 
         except Exception as e:
@@ -243,7 +245,7 @@ class PipelineOrchestrator:
 
                     DocumentService.update_output_hash(job_id, PipelineStages.compute_sha256(output_path))
                 except Exception:
-                    pass
+                    pass  # intentionally ignored
                 self._update_status(job_id, "PERSISTENCE", "COMPLETED", "Completed with warnings.", progress=100)
                 if sb:
                     sb.table("documents").update(
@@ -308,7 +310,7 @@ class PipelineOrchestrator:
                     pipeline_doc.blocks.append(block)
 
             self._update_status(job_id, "VALIDATION", "PROCESSING", "Re-validating...", progress=30)
-            from app.pipeline.orchestrator import validate_document, safe_model_dump
+            from app.pipeline.orchestrator import safe_model_dump, validate_document
 
             val_result = validate_document(pipeline_doc)
             validation_results = safe_model_dump(val_result)
@@ -335,7 +337,7 @@ class PipelineOrchestrator:
 
                     DocumentService.update_output_hash(job_id, PipelineStages.compute_sha256(output_path))
                 except Exception:
-                    pass
+                    pass  # intentionally ignored
 
             existing = sb.table("document_results").select("*").eq("document_id", job_id).execute()
             if existing.data:
@@ -352,9 +354,9 @@ class PipelineOrchestrator:
                         last_num = int(versions.data[0]["version_number"].replace("v", ""))
                         next_version = f"v{last_num + 1}"
                     except Exception:
-                        from datetime import datetime, timezone
+                        from datetime import datetime
 
-                        next_version = f"v_{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
+                        next_version = f"v_{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}"
                 else:
                     next_version = "v1"
                 sb.table("document_versions").insert(
@@ -400,10 +402,8 @@ class PipelineOrchestrator:
 
         except asyncio.CancelledError:
             logger.info("Edit flow %s cancelled by shutdown.", job_id)
-            try:
+            with contextlib.suppress(Exception):
                 self._update_status(job_id, "SYSTEM", "FAILED", "Edit interrupted by shutdown", progress=0)
-            except Exception:
-                pass
             return {"status": "cancelled", "message": "Edit interrupted by shutdown"}
         except Exception as e:
 
@@ -415,7 +415,7 @@ class PipelineOrchestrator:
     #  Status updates, cancellation, and persistence                      #
     # ------------------------------------------------------------------ #
 
-    def _update_status(self, document_id, phase, status, message=None, progress: Optional[int] = None):
+    def _update_status(self, document_id, phase, status, message=None, progress: int | None = None):
         """Update processing status in Supabase and emit SSE event."""
         document_id = str(document_id)
         self._record_stage_transition(document_id, phase, status)
@@ -582,7 +582,7 @@ class PipelineOrchestrator:
 
             MetricsManager.record_pipeline_stage_duration(stage_key[1].lower(), time.perf_counter() - started_at)
         except Exception:
-            pass
+            pass  # intentionally ignored
 
     def _run_with_timeout(self, func, timeout_sec, *args, cancel_event=None, **kwargs):
         import concurrent.futures
@@ -604,7 +604,7 @@ class PipelineOrchestrator:
     def _coerce_bool(value, default=False):
         return PipelineStages.coerce_bool(value, default)
 
-    def _resolve_runtime_flags(self, formatting_options: Optional[dict[str, Any]]) -> dict[str, bool]:
+    def _resolve_runtime_flags(self, formatting_options: dict[str, Any] | None) -> dict[str, bool]:
         options = formatting_options or {}
         in_pytest = bool(os.environ.get("PYTEST_CURRENT_TEST"))
         default_fast = bool(getattr(settings, "DEFAULT_FAST_MODE", False))
@@ -655,7 +655,6 @@ class PipelineOrchestrator:
             if getattr(doc_obj, "template", None) and getattr(doc_obj.template, "template_name", None)
             else "default"
         )
-        from app.pipeline.orchestrator import compute_quality_score
 
         quality_metrics = compute_quality_score(structured_data, template_name, validation_results)
 

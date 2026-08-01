@@ -5,14 +5,14 @@
 Streaming callback handler for real-time agent updates.
 """
 
-import sys
 import logging
-from typing import Any, Dict, List, Optional
+import sys
+from typing import Any
 
 if sys.version_info < (3, 14):
     try:
-        from langchain_core.callbacks.base import BaseCallbackHandler
         from langchain_core.agents import AgentAction, AgentFinish
+        from langchain_core.callbacks.base import BaseCallbackHandler
         from langchain_core.outputs import LLMResult
     except Exception:
         BaseCallbackHandler = object  # type: ignore[assignment]
@@ -39,7 +39,7 @@ class StreamingAgentCallback(BaseCallbackHandler):
     - Final results
     """
 
-    def __init__(self, callback_fn: Optional[callable] = None):
+    def __init__(self, callback_fn: callable | None = None):
         """
         Initialize streaming callback.
 
@@ -50,12 +50,12 @@ class StreamingAgentCallback(BaseCallbackHandler):
         self.callback_fn = callback_fn or self._default_callback
         self.events = []
 
-    def _default_callback(self, event_type: str, data: Dict):
+    def _default_callback(self, event_type: str, data: dict):
         """Default callback that logs events."""
         logger.info(f"[{event_type}] {data}")
         self.events.append({"type": event_type, "data": data})
 
-    def on_llm_start(self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any) -> None:
+    def on_llm_start(self, serialized: dict[str, Any], prompts: list[str], **kwargs: Any) -> None:
         """Called when LLM starts."""
         self.callback_fn("llm_start", {"message": "Agent is thinking...", "prompt_count": len(prompts)})
 
@@ -67,7 +67,7 @@ class StreamingAgentCallback(BaseCallbackHandler):
         """Called when LLM errors."""
         self.callback_fn("llm_error", {"message": "LLM error occurred", "error": str(error)})
 
-    def on_tool_start(self, serialized: Dict[str, Any], input_str: str, **kwargs: Any) -> None:
+    def on_tool_start(self, serialized: dict[str, Any], input_str: str, **kwargs: Any) -> None:
         """Called when tool starts."""
         tool_name = serialized.get("name", "unknown")
         self.callback_fn(
@@ -111,13 +111,13 @@ class StreamingAgentCallback(BaseCallbackHandler):
             "agent_finish", {"message": "Agent processing complete", "output": str(finish.return_values)[:200]}
         )
 
-    def on_chain_start(self, serialized: Dict[str, Any], inputs: Dict[str, Any], **kwargs: Any) -> None:
+    def on_chain_start(self, serialized: dict[str, Any], inputs: dict[str, Any], **kwargs: Any) -> None:
         """Called when chain starts."""
         self.callback_fn(
             "chain_start", {"message": "Starting processing chain", "chain": serialized.get("name", "unknown")}
         )
 
-    def on_chain_end(self, outputs: Dict[str, Any], **kwargs: Any) -> None:
+    def on_chain_end(self, outputs: dict[str, Any], **kwargs: Any) -> None:
         """Called when chain ends."""
         self.callback_fn("chain_end", {"message": "Processing chain complete"})
 
@@ -125,7 +125,7 @@ class StreamingAgentCallback(BaseCallbackHandler):
         """Called when chain errors."""
         self.callback_fn("chain_error", {"message": "Processing chain error", "error": str(error)})
 
-    def get_events(self) -> List[Dict]:
+    def get_events(self) -> list[dict]:
         """Get all recorded events."""
         return self.events
 

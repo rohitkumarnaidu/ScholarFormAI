@@ -2,12 +2,15 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-import pytest
-from unittest.mock import patch, AsyncMock, MagicMock
+
 from pathlib import Path
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 
 # Force cache reset before importing module
 from app.pipeline.services import csl_fetcher
+
 csl_fetcher.reset_csl_cache_for_tests()
 
 

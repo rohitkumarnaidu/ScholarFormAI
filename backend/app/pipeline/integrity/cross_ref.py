@@ -7,8 +7,9 @@ Scans for Fig, Table, Eq, and Section references.
 """
 
 import re
-from typing import List
-from app.models import PipelineDocument as Document, BlockType
+
+from app.models import BlockType
+from app.models import PipelineDocument as Document
 
 
 class CrossReferenceEngine:
@@ -23,7 +24,7 @@ class CrossReferenceEngine:
         self.eq_pattern = re.compile(r"\b(Equation|Eq\.)\s*\((?P<num>\d+)\)", re.IGNORECASE)
         self.sect_pattern = re.compile(r"\b(Section|Sect\.)\s*(?P<id>[I|V|X|L|C]+|\d+)\b", re.IGNORECASE)
 
-    def validate_integrity(self, document: Document) -> List[str]:
+    def validate_integrity(self, document: Document) -> list[str]:
         """
         Scan all body blocks and validate references against extracted items.
         Returns a list of violation messages.
@@ -37,7 +38,7 @@ class CrossReferenceEngine:
         eq_nums = {i + 1 for i in range(len(document.equations))}
 
         # Sections (titles or canonical names)
-        sections = {b.section_name.lower() for b in document.blocks if b.section_name}
+        {b.section_name.lower() for b in document.blocks if b.section_name}
 
         # 2. Scan Text Blocks
         for block in document.blocks:

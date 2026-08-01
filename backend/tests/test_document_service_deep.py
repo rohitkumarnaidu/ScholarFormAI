@@ -12,7 +12,6 @@ import pytest
 from app.exceptions import DatabaseUnavailableError, DocumentNotFoundError
 from app.services.document_service import DocumentService
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

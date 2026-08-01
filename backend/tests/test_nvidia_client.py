@@ -1,6 +1,8 @@
 from __future__ import annotations
+
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 
 class TestNvidiaClient:
@@ -149,9 +151,8 @@ class TestNvidiaClient:
         client.llama_vision = "meta/llama-3.2-11b-vision-instruct"
         client.client = MagicMock()
         client.client.chat.completions.create.side_effect = Exception("api fail")
-        with patch("app.services.nvidia_client._USE_LLM_SERVICE", False):
-            with pytest.raises(Exception):
-                client.chat([{"role": "user", "content": "hi"}])
+        with patch("app.services.nvidia_client._USE_LLM_SERVICE", False), pytest.raises(Exception):
+            client.chat([{"role": "user", "content": "hi"}])
 
     def test_validate_compliance_ambiguous(self):
         from app.services.nvidia_client import NvidiaClient
@@ -261,9 +262,8 @@ class TestNvidiaClient:
         mock_bytes = b"x" * 3_000_000  # > 2MB
         mock_file = MagicMock()
         mock_file.__enter__.return_value.read.return_value = mock_bytes
-        with patch("builtins.open", return_value=mock_file):
-            with patch("PIL.Image.open", return_value=mock_img):
-                result = client.analyze_figure("/fake/path.jpeg", caption="Large figure")
+        with patch("builtins.open", return_value=mock_file), patch("PIL.Image.open", return_value=mock_img):
+            result = client.analyze_figure("/fake/path.jpeg", caption="Large figure")
         assert result == "analysis"
 
     def test_analyze_figure_rgba_to_rgb(self):
@@ -274,9 +274,8 @@ class TestNvidiaClient:
         mock_img.mode = "RGBA"
         mock_file = MagicMock()
         mock_file.__enter__.return_value.read.return_value = b"x" * 3_000_000
-        with patch("builtins.open", return_value=mock_file):
-            with patch("PIL.Image.open", return_value=mock_img):
-                result = client.analyze_figure("/fake/path.jpeg", caption="RGBA test")
+        with patch("builtins.open", return_value=mock_file), patch("PIL.Image.open", return_value=mock_img):
+            result = client.analyze_figure("/fake/path.jpeg", caption="RGBA test")
         assert result == "analysis"
         mock_img.convert.assert_called_once_with("RGB")
 

@@ -1,6 +1,6 @@
-import pytest
 import re
-from typing import List, Dict
+
+import pytest
 
 # ---------------------------------------------------------------------------
 # Groundedness evaluation helpers  (simulates a hallucination detector)
@@ -11,7 +11,7 @@ _AUTHOR_PATTERN = re.compile(r"^[A-Z][a-z]+,\s*[A-Z]\.?\s*[A-Z]?\.?$")
 _YEAR_PATTERN = re.compile(r"(?:19|20)\d{2}")
 
 
-def _extract_claims(text: str) -> List[str]:
+def _extract_claims(text: str) -> list[str]:
     """Split text into individual claim-like sentences."""
     sentences = re.split(r"(?<=[.!?])\s+", text)
     return [s.strip() for s in sentences if len(s.strip()) > 10]
@@ -29,7 +29,7 @@ def _keyword_overlap(claim: str, source: str) -> float:
     return len(overlap) / len(claim_tokens)
 
 
-def _groundedness_score(text: str, source: str) -> Dict[str, object]:
+def _groundedness_score(text: str, source: str) -> dict[str, object]:
     """Evaluate how well claims in *text* are grounded in *source*.
 
     Returns a dict with:
@@ -53,7 +53,7 @@ def _groundedness_score(text: str, source: str) -> Dict[str, object]:
     }
 
 
-def _citation_format_score(text: str) -> Dict[str, object]:
+def _citation_format_score(text: str) -> dict[str, object]:
     """Score citation correctness across several dimensions.
 
     Returns dict with:
@@ -310,7 +310,7 @@ class TestContentFiltering:
 
     @pytest.mark.ai_quality
     def test_sanitize_truncates_very_long_input(self):
-        from app.services.llm_service import sanitize_for_llm, MAX_LLM_INPUT_LENGTH
+        from app.services.llm_service import MAX_LLM_INPUT_LENGTH, sanitize_for_llm
         text = "A" * (MAX_LLM_INPUT_LENGTH * 2)
         result = sanitize_for_llm(text)
         assert len(result) < MAX_LLM_INPUT_LENGTH + 100
@@ -321,8 +321,9 @@ class TestSchemaValidation:
 
     @pytest.mark.ai_quality
     def test_validate_output_rejects_missing_required_fields(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.validator_guard import validate_output
 
         class RequiredSchema(BaseModel):
             title: str
@@ -334,8 +335,9 @@ class TestSchemaValidation:
 
     @pytest.mark.ai_quality
     def test_validate_output_rejects_extra_unknown_fields_silently(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel
+
+        from app.pipeline.safety.validator_guard import validate_output
 
         class ExactSchema(BaseModel):
             claim: str
@@ -347,8 +349,9 @@ class TestSchemaValidation:
 
     @pytest.mark.ai_quality
     def test_validate_output_hallucinated_confidence_too_high(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel, Field
+
+        from app.pipeline.safety.validator_guard import validate_output
 
         class FactSchema(BaseModel):
             claim: str
@@ -361,8 +364,9 @@ class TestSchemaValidation:
 
     @pytest.mark.ai_quality
     def test_validate_output_citation_schema_strict(self):
-        from app.pipeline.safety.validator_guard import validate_output
         from pydantic import BaseModel, Field
+
+        from app.pipeline.safety.validator_guard import validate_output
 
         class CitationSchema(BaseModel):
             key: str = Field(..., min_length=1)

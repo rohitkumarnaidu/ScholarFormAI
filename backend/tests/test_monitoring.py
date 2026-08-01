@@ -5,10 +5,13 @@
 """
 Tests for monitoring middleware and Prometheus metrics.
 """
+import contextlib
+
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
-from app.middleware.prometheus_metrics import prometheus_metrics_middleware, MetricsManager
+
 from app.middleware.monitoring import MonitoringMiddleware
+from app.middleware.prometheus_metrics import MetricsManager, prometheus_metrics_middleware
 
 # Create a dummy app for testing
 app = FastAPI()
@@ -93,10 +96,8 @@ def test_monitoring_middleware_error_logged():
         raise ValueError("Oops")
     with patch("app.middleware.monitoring.logger") as mock_log:
         import asyncio
-        try:
+        with contextlib.suppress(ValueError):
             asyncio.run(middleware.dispatch(request, failing_call_next))
-        except ValueError:
-            pass
         mock_log.error.assert_called_once()
         log_msg = mock_log.error.call_args[0][0]
         assert "Request failed" in log_msg

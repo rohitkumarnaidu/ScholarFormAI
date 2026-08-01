@@ -11,8 +11,8 @@ This module provides clients for industry-standard tools:
 - CSL: Citation formatting engine
 """
 
-from .grobid_client import GROBIDClient
-from .csl_engine import CSLEngine
 from .crossref_client import CrossRefClient
+from .csl_engine import CSLEngine
+from .grobid_client import GROBIDClient
 
 __all__ = ["GROBIDClient", "CSLEngine", "CrossRefClient"]

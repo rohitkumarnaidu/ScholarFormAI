@@ -2,10 +2,12 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 import pytest
-from app.pipeline.references.parser import ReferenceParser
-from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
+
 from app.pipeline.contracts.loader import ContractLoader
+from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
+from app.pipeline.references.parser import ReferenceParser
 
 FIXTURES_DIR = "tests/fixtures/contracts"
 
@@ -16,7 +18,7 @@ class TestReferenceParser:
         return ReferenceParser()
 
     def test_process_empty_document(self, parser):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="t", blocks=[Block(block_id="b1", index=1, text="hello", block_type=BlockType.BODY)])
         result = parser.process(doc)
         assert result.references == []

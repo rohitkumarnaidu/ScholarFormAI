@@ -32,17 +32,19 @@ import logging
 from app.config.settings import settings
 from app.services.llm_fallback_service import (
     LLMUnavailableError,
+    _generate_fallback,
+    _generate_openai_compat,
+    _ollama_http,
+    _openai_compat,
     generate,
     generate_with_fallback,
     generate_with_model,
     invalidate_llm_cache,
-    _generate_fallback,
-    _generate_openai_compat,
-    _openai_compat,
-    _ollama_http,
 )
 from app.services.llm_key_service import resolve_user_api_key
 from app.services.llm_provider_service import (
+    _INJECTION_PATTERNS,
+    _PROVIDER_BREAKERS,
     LITELLM_AVAILABLE,
     LLM_DEEPSEEK,
     LLM_GROQ,
@@ -52,13 +54,11 @@ from app.services.llm_provider_service import (
     _breaker_enabled,
     _breaker_fail_max,
     _breaker_reset_seconds,
-    _call_with_provider_circuit,
     _cache_key,
+    _call_with_provider_circuit,
     _extract_prompts,
     _infer_provider,
-    _INJECTION_PATTERNS,
     _normalize_model_name,
-    _PROVIDER_BREAKERS,
     _provider_breaker,
     _provider_timeout_seconds,
     _record_cache_hit,

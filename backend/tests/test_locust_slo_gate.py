@@ -10,7 +10,8 @@ from types import ModuleType, SimpleNamespace
 def _load_locustfile_with_stubbed_locust():
     module_path = Path(__file__).resolve().parent / "load" / "locustfile.py"
     spec = importlib.util.spec_from_file_location("locustfile_under_test", module_path)
-    assert spec is not None and spec.loader is not None
+    assert spec is not None
+    assert spec.loader is not None
 
     fake_locust = ModuleType("locust")
 

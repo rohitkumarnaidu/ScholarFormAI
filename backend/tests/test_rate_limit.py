@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 
 
 class TestInMemoryCount:
@@ -18,7 +19,8 @@ class TestInMemoryCount:
         rl = RateLimitMiddleware(mock_app)
         c1 = rl._in_memory_count("ip1")
         c2 = rl._in_memory_count("ip2")
-        assert c1 == 1 and c2 == 1
+        assert c1 == 1
+        assert c2 == 1
 
     def test_upload_separate_from_general(self):
         from app.middleware.rate_limit import RateLimitMiddleware
@@ -26,7 +28,8 @@ class TestInMemoryCount:
         rl = RateLimitMiddleware(mock_app)
         general = rl._in_memory_count("ip1")
         upload = rl._in_memory_count("ip1", is_upload=True)
-        assert general == 1 and upload == 1
+        assert general == 1
+        assert upload == 1
 
 
 class TestDispatch:

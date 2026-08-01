@@ -243,7 +243,7 @@ class TestCircuitBreakerAdvanced:
             def op():
                 raise ValueError("fail")
 
-            for i in range(5):
+            for _i in range(5):
                 with pytest.raises(ValueError):
                     op()
 
@@ -270,7 +270,6 @@ class TestCircuitBreakerAdvanced:
         """State change listener is invoked on transitions."""
         from app.pipeline.safety.circuit_breaker import circuit_breaker
 
-        transitions = []
 
         with patch("app.pipeline.safety.circuit_breaker._PYBREAKER", False):
 

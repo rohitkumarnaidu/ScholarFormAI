@@ -6,10 +6,11 @@ Validation tool using AI-based analysis.
 """
 
 import sys
-from typing import Type
+
 from pydantic import BaseModel, Field
-from app.pipeline.validation import DocumentValidator
+
 from app.models import PipelineDocument
+from app.pipeline.validation import DocumentValidator
 
 if sys.version_info < (3, 14):
     try:
@@ -42,7 +43,7 @@ class ValidationTool(BaseTool):
         "Returns validation results including errors, warnings, and confidence scores. "
         "Use this to ensure the document meets academic standards and is properly formatted."
     )
-    args_schema: Type[BaseModel] = ValidationToolInput
+    args_schema: type[BaseModel] = ValidationToolInput
 
     def __init__(self):
         super().__init__()

@@ -8,9 +8,11 @@ event publishing, error handling.
 """
 
 from __future__ import annotations
+
 import sys
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock, AsyncMock
 
 _mock_documents_impl = MagicMock()
 _mock_documents_impl.ACCEPTED_EXTENSIONS = {'.pdf', '.docx', '.doc', '.md', '.html', '.txt', '.tex', '.odt', '.rtf'}
@@ -169,15 +171,14 @@ class TestValidateFiles:
         contents = iter([b"same", b"same"])
         with (
             patch("pathlib.Path.read_bytes", side_effect=lambda: next(contents)),
-            patch("pathlib.Path.exists", return_value=True),
+            patch("pathlib.Path.exists", return_value=True),pytest.raises(Exception, match="2 unique")
         ):
-            with pytest.raises(Exception, match="2 unique"):
-                await synt._validate_files(["a.docx", "b.docx"])
+            await synt._validate_files(["a.docx", "b.docx"])
 
 class TestExtractDocuments:
     @pytest.mark.asyncio
     async def test_extracts(self, synt):
-        from app.models import PipelineDocument, Block
+        from app.models import Block, PipelineDocument
         doc = PipelineDocument(document_id="d1", blocks=[
             Block(block_id="b1", index=0, text="Content", section_name="Intro"),
         ])
@@ -210,7 +211,7 @@ class TestChunking:
         assert len(result) > 1
 
     def test_build_chunks(self, synt):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="d1", blocks=[
             Block(block_id="b1", index=0, text="Hello world", block_type=BlockType.BODY, section_name="Intro"),
         ])
@@ -332,8 +333,8 @@ class TestEventPublishing:
 
 class TestRenderDocument:
     def test_render(self, synt, tmp_path):
-        from app.pipeline.formatting.formatter import Formatter
         from app.pipeline.export.exporter import Exporter
+        from app.pipeline.formatting.formatter import Formatter
         with patch.object(Formatter, "process") as mock_fmt:
             mock_fmt.return_value = MagicMock()
             with patch.object(Exporter, "process") as mock_exp:

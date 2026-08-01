@@ -2,6 +2,7 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 import pytest
 
 
@@ -17,7 +18,7 @@ class TestCircuitBreaker:
         assert call_count[0] == 1
 
     def test_decorator_failure_and_trip(self):
-        from app.pipeline.safety.circuit_breaker import circuit_breaker, CircuitBreakerOpenException
+        from app.pipeline.safety.circuit_breaker import CircuitBreakerOpenException, circuit_breaker
         call_count = [0]
         @circuit_breaker(failure_threshold=2, recovery_timeout=60)
         def fail_func():
@@ -50,7 +51,7 @@ class TestCircuitBreaker:
         assert result == {}
 
     def test_instance_isolation(self):
-        from app.pipeline.safety.circuit_breaker import circuit_breaker, CircuitBreakerOpenException
+        from app.pipeline.safety.circuit_breaker import CircuitBreakerOpenException, circuit_breaker
         class MyClass:
             @circuit_breaker(failure_threshold=2, recovery_timeout=60)
             def method(self):

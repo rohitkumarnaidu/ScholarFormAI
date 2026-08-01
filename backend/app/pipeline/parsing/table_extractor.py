@@ -14,7 +14,8 @@ Falls back gracefully if dependencies are unavailable.
 from __future__ import annotations
 
 import logging
-from typing import List, Dict, Any, Optional
+from typing import Any
+
 from app.utils.singleton import get_or_create_catching
 
 logger = logging.getLogger(__name__)
@@ -23,15 +24,15 @@ logger = logging.getLogger(__name__)
 #  Optional imports
 # --------------------------------------------------------------------------- #
 TABLE_TRANSFORMER_AVAILABLE = False
-_load_error: Optional[str] = None
+_load_error: str | None = None
 
 try:
     import torch
+    from PIL import Image
     from transformers import (
         AutoImageProcessor,
         TableTransformerForObjectDetection,
     )
-    from PIL import Image
 
     TABLE_TRANSFORMER_AVAILABLE = True
 except ImportError as exc:
@@ -125,7 +126,7 @@ class TableExtractor:
     # ------------------------------------------------------------------ #
     #  Public API
     # ------------------------------------------------------------------ #
-    def detect_tables(self, image: "Image.Image", threshold: float = TABLE_DETECTION_THRESHOLD) -> List[Dict[str, Any]]:
+    def detect_tables(self, image: Image.Image, threshold: float = TABLE_DETECTION_THRESHOLD) -> list[dict[str, Any]]:
         """
         Detect table bounding boxes in a page image.
 
@@ -151,7 +152,7 @@ class TableExtractor:
         )[0]
 
         tables = []
-        for score, label, box in zip(results["scores"], results["labels"], results["boxes"]):
+        for score, label, box in zip(results["scores"], results["labels"], results["boxes"], strict=False):
             bbox = box.cpu().tolist()
             tables.append(
                 {
@@ -166,9 +167,9 @@ class TableExtractor:
 
     def extract_table_structure(
         self,
-        table_image: "Image.Image",
+        table_image: Image.Image,
         threshold: float = STRUCTURE_DETECTION_THRESHOLD,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Recognize rows, columns, and cell structure within a cropped table image.
 
@@ -198,7 +199,7 @@ class TableExtractor:
 
         id2label = self._structure_model.config.id2label
 
-        for score, label_id, box in zip(results["scores"], results["labels"], results["boxes"]):
+        for score, label_id, box in zip(results["scores"], results["labels"], results["boxes"], strict=False):
             label = id2label.get(label_id.item(), "unknown")
             bbox = box.cpu().tolist()
             entry = {"bbox": tuple(bbox), "score": round(score.item(), 4)}
@@ -219,7 +220,7 @@ class TableExtractor:
         num_cols = len(columns)
 
         # Create empty data grid
-        data: List[List[str]] = [["" for _ in range(max(num_cols, 1))] for _ in range(max(num_rows, 1))]
+        data: list[list[str]] = [["" for _ in range(max(num_cols, 1))] for _ in range(max(num_rows, 1))]
 
         return {
             "num_rows": num_rows,
@@ -230,7 +231,7 @@ class TableExtractor:
             "data": data,
         }
 
-    def extract_tables_from_page(self, page_image: "Image.Image") -> List[Dict[str, Any]]:
+    def extract_tables_from_page(self, page_image: Image.Image) -> list[dict[str, Any]]:
         """
         Full pipeline: detect tables in a page, then extract structure for each.
 
@@ -268,10 +269,10 @@ class TableExtractor:
 
     def to_table_model(
         self,
-        table_data: Dict[str, Any],
+        table_data: dict[str, Any],
         table_index: int,
         block_index: int,
-        page_number: Optional[int] = None,
+        page_number: int | None = None,
     ) -> Any:
         """
         Convert extracted table data to the project's Table model.
@@ -331,10 +332,10 @@ class TableExtractor:
 # --------------------------------------------------------------------------- #
 #  Singleton
 # --------------------------------------------------------------------------- #
-_extractor: Optional[TableExtractor] = None
+_extractor: TableExtractor | None = None
 
 
-def get_table_extractor() -> Optional[TableExtractor]:
+def get_table_extractor() -> TableExtractor | None:
     """Get or create a TableExtractor instance. Returns None if unavailable."""
     global _extractor
     _extractor = get_or_create_catching(

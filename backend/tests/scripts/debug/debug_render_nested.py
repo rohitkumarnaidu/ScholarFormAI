@@ -4,14 +4,16 @@
 
 import os
 import sys
-from docx import Document
 from pathlib import Path
+
+from docx import Document
 
 # Add backend to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 from app.pipeline.parsing.parser import DocxParser
 from app.pipeline.tables.renderer import TableRenderer
+
 
 def verify_rendering():
     # 1. Create a dummy table model with nesting

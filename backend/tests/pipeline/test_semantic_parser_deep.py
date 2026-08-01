@@ -11,6 +11,7 @@ from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -18,8 +19,9 @@ class TestRemoteRequestException:
     """Cover lines 269-279: `except RequestException` handler body with retry."""
 
     def test_request_exception_retries_and_continues(self):
-        from app.pipeline.intelligence.semantic_parser import SemanticParser
         from requests.exceptions import RequestException
+
+        from app.pipeline.intelligence.semantic_parser import SemanticParser
 
         p = SemanticParser()
         p.remote_base_urls = ["https://ex.com"]
@@ -31,8 +33,9 @@ class TestRemoteRequestException:
                 assert result is None
 
     def test_request_exception_last_attempt_breaks(self):
-        from app.pipeline.intelligence.semantic_parser import SemanticParser
         from requests.exceptions import RequestException
+
+        from app.pipeline.intelligence.semantic_parser import SemanticParser
 
         p = SemanticParser()
         p.remote_base_urls = ["https://ex.com"]
@@ -168,8 +171,8 @@ class TestAnalyzeBlocksEdgeCases:
     """Additional edge-case coverage for analyze_blocks."""
 
     def test_non_english_uses_heuristic(self):
-        from app.pipeline.intelligence.semantic_parser import SemanticParser
         from app.models import Block, BlockType
+        from app.pipeline.intelligence.semantic_parser import SemanticParser
 
         p = SemanticParser()
         blocks = [
@@ -191,8 +194,8 @@ class TestAnalyzeBlocksEdgeCases:
         mock_batch.assert_not_called()
 
     def test_scibert_enabled_uses_batch(self):
-        from app.pipeline.intelligence.semantic_parser import SemanticParser
         from app.models import Block, BlockType
+        from app.pipeline.intelligence.semantic_parser import SemanticParser
 
         p = SemanticParser()
         blocks = [
@@ -212,8 +215,8 @@ class TestAnalyzeBlocksEdgeCases:
         mock_batch.assert_called_once()
 
     def test_combined_text_empty_skips_detect(self):
-        from app.pipeline.intelligence.semantic_parser import SemanticParser
         from app.models import Block, BlockType
+        from app.pipeline.intelligence.semantic_parser import SemanticParser
 
         p = SemanticParser()
         blocks = [
@@ -233,8 +236,8 @@ class TestAnalyzeBlocksEdgeCases:
         mock_detect.assert_not_called()
 
     def test_predictions_shorter_than_blocks_falls_back(self):
-        from app.pipeline.intelligence.semantic_parser import SemanticParser
         from app.models import Block, BlockType
+        from app.pipeline.intelligence.semantic_parser import SemanticParser
 
         p = SemanticParser()
         blocks = [
@@ -275,8 +278,8 @@ class TestRepairFragmentedHeadingsEdgeCases:
     """Additional edge-case coverage for _repair_fragmented_headings."""
 
     def test_number_with_space_before_lowercase(self):
-        from app.pipeline.intelligence.semantic_parser import SemanticParser
         from app.models import Block, BlockType
+        from app.pipeline.intelligence.semantic_parser import SemanticParser
 
         p = SemanticParser()
         blocks = [
@@ -288,8 +291,8 @@ class TestRepairFragmentedHeadingsEdgeCases:
         assert result[0].text == "42. is the answer"
 
     def test_consecutive_numbers_merged(self):
-        from app.pipeline.intelligence.semantic_parser import SemanticParser
         from app.models import Block, BlockType
+        from app.pipeline.intelligence.semantic_parser import SemanticParser
 
         p = SemanticParser()
         blocks = [
@@ -304,8 +307,8 @@ class TestRepairFragmentedHeadingsEdgeCases:
         assert result[1].text == "2. methods"
 
     def test_number_at_end(self):
-        from app.pipeline.intelligence.semantic_parser import SemanticParser
         from app.models import Block, BlockType
+        from app.pipeline.intelligence.semantic_parser import SemanticParser
 
         p = SemanticParser()
         blocks = [

@@ -10,10 +10,10 @@ from __future__ import annotations
 
 import json
 import os
-import numpy as np
 from unittest.mock import MagicMock, patch
-import pytest
 
+import numpy as np
+import pytest
 
 # ---------------------------------------------------------------------------
 #  Helpers
@@ -123,7 +123,7 @@ class TestLoadEmbeddingModelHfApi:
             mock_hf_cls.return_value = mock_hf
 
             persist = str(tmp_path / "hf_fail")
-            from app.pipeline.intelligence.rag_engine import RagEngine, DETERMINISTIC_FALLBACK_MODEL
+            from app.pipeline.intelligence.rag_engine import DETERMINISTIC_FALLBACK_MODEL, RagEngine
 
             with patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None):
                 with patch.dict(os.environ, {"RAG_EMBEDDING_PROVIDER": "huggingface_api"}, clear=False):
@@ -162,7 +162,7 @@ class TestNumpyCompat:
             try:
                 persist = str(tmp_path / "numpy_test")
                 with patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None):
-                    engine = RagEngine(persist_directory=persist, auto_seed=False)
+                    RagEngine(persist_directory=persist, auto_seed=False)
                     assert hasattr(np, 'float_')
                     assert hasattr(np, 'int_')
             finally:

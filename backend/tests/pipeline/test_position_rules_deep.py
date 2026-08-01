@@ -7,7 +7,9 @@ Adds gap coverage for functions with all imports inside function bodies.
 """
 
 from __future__ import annotations
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 

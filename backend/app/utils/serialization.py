@@ -8,9 +8,10 @@ Shared serialization helpers for backend pipeline payloads.
 from __future__ import annotations
 
 import base64
-from datetime import date, datetime, time as time_type
+from datetime import date, datetime
+from datetime import time as time_type
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any
 
 
 def sanitize_for_json(value: Any) -> Any:
@@ -40,7 +41,7 @@ def sanitize_for_json(value: Any) -> Any:
     return value
 
 
-def safe_model_dump(model_obj: Any) -> Dict[str, Any]:
+def safe_model_dump(model_obj: Any) -> dict[str, Any]:
     """
     Dump a model-like object to a JSON-safe dict.
     Supports Pydantic v2 (`model_dump`) and v1 (`dict`) style payloads.
@@ -61,7 +62,7 @@ def safe_model_dump(model_obj: Any) -> Dict[str, Any]:
         if isinstance(model_obj, dict):
             return sanitize_for_json(model_obj)
     except Exception:
-        pass
+        pass  # intentionally ignored
 
     sanitized = sanitize_for_json(model_obj)
     if isinstance(sanitized, dict):
@@ -74,13 +75,13 @@ def _normalize_block_type(block_type: Any) -> str:
     return str(raw_value)
 
 
-def build_structured_data(doc_obj: Any, partial: bool = False) -> Dict[str, Any]:
+def build_structured_data(doc_obj: Any, partial: bool = False) -> dict[str, Any]:
     """
     Build the structured_data payload used by persistence and edit/review flows.
     """
-    sections: Dict[str, List[Any]] = {}
-    blocks_payload: List[Dict[str, Any]] = []
-    headings_payload: List[Dict[str, Any]] = []
+    sections: dict[str, list[Any]] = {}
+    blocks_payload: list[dict[str, Any]] = []
+    headings_payload: list[dict[str, Any]] = []
 
     for block in getattr(doc_obj, "blocks", []) or []:
         block_type = getattr(block, "block_type", None)
@@ -109,7 +110,7 @@ def build_structured_data(doc_obj: Any, partial: bool = False) -> Dict[str, Any]
                 }
             )
 
-    payload: Dict[str, Any] = {
+    payload: dict[str, Any] = {
         "sections": sections,
         "blocks": blocks_payload,
         "headings": headings_payload,

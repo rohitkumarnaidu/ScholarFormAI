@@ -3,8 +3,9 @@
 
 from __future__ import annotations
 
+from unittest.mock import MagicMock, mock_open, patch
+
 import pytest
-from unittest.mock import MagicMock, patch, mock_open
 
 
 class TestRecordCall:
@@ -190,14 +191,14 @@ class TestExportMetrics:
 
 class TestGetModelMetrics:
     def test_returns_singleton(self):
-        from app.services.model_metrics import get_model_metrics, _model_metrics
+        from app.services.model_metrics import _model_metrics, get_model_metrics
         _model_metrics = None
         s1 = get_model_metrics()
         s2 = get_model_metrics()
         assert s1 is s2
 
     def test_uses_get_or_create(self):
-        from app.services.model_metrics import get_model_metrics, _model_metrics
+        from app.services.model_metrics import _model_metrics, get_model_metrics
         _model_metrics = None
         with patch("app.services.model_metrics.get_or_create", return_value="mock_instance"):
             result = get_model_metrics()

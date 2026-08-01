@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 import pytest
-from starlette.requests import Request
 from fastapi import HTTPException
+from starlette.requests import Request
 
 from app.routers.v1._helpers import run_enveloped
 
@@ -54,9 +54,11 @@ async def test_run_enveloped_records_persona_kpis_success(monkeypatch):
     )
 
     assert response.status_code == 200
-    assert events and events[0][0] == "authoring"
+    assert events
+    assert events[0][0] == "authoring"
     assert events[0][2] == "success"
-    assert latencies and latencies[0][2] >= 0
+    assert latencies
+    assert latencies[0][2] >= 0
 
 
 @pytest.mark.asyncio
@@ -87,6 +89,8 @@ async def test_run_enveloped_records_persona_kpis_error(monkeypatch):
     )
 
     assert response.status_code == 422
-    assert events and events[0][0] == "formatter"
+    assert events
+    assert events[0][0] == "formatter"
     assert events[0][2] == "error"
-    assert latencies and latencies[0][2] >= 0
+    assert latencies
+    assert latencies[0][2] >= 0

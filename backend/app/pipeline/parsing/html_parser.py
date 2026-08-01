@@ -14,10 +14,9 @@ Uses BeautifulSoup to parse HTML and extract:
 
 import logging
 import os
-from typing import List, Tuple
 
 logger = logging.getLogger(__name__)
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 try:
@@ -27,16 +26,18 @@ try:
 except ImportError:
     BS4_AVAILABLE = False
 
-from app.pipeline.parsing.base_parser import BaseParser
 from app.models import (
-    PipelineDocument as Document,
-    DocumentMetadata,
     Block,
     BlockType,
-    TextStyle,
+    DocumentMetadata,
     Figure,
     ImageFormat,
+    TextStyle,
 )
+from app.models import (
+    PipelineDocument as Document,
+)
+from app.pipeline.parsing.base_parser import BaseParser
 from app.utils.id_generator import generate_block_id, generate_figure_id
 
 
@@ -77,12 +78,12 @@ class HtmlParser(BaseParser):
 
         # Read and parse HTML
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 soup = BeautifulSoup(f, "html.parser")
         except UnicodeDecodeError:
             logger.warning("UTF-8 decode failed for '%s'; falling back to latin-1.", file_path)
             try:
-                with open(file_path, "r", encoding="latin-1") as f:
+                with open(file_path, encoding="latin-1") as f:
                     soup = BeautifulSoup(f, "html.parser")
             except Exception as exc:
                 raise ValueError(f"Failed to read HTML file '{file_path}': {exc}") from exc
@@ -98,8 +99,8 @@ class HtmlParser(BaseParser):
             document_id=document_id,
             original_filename=Path(file_path).name,
             source_path=file_path,
-            created_at=datetime.now(timezone.utc),
-            updated_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
         )
 
         # Extract metadata
@@ -142,7 +143,7 @@ class HtmlParser(BaseParser):
 
         return metadata
 
-    def _extract_content(self, soup) -> Tuple[List[Block], List[Figure]]:
+    def _extract_content(self, soup) -> tuple[list[Block], list[Figure]]:
         """Extract blocks and figures from HTML body."""
         blocks = []
         figures = []

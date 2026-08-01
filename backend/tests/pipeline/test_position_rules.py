@@ -2,16 +2,19 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 import pytest
+
 from app.pipeline.structure_detection.position_rules import (
-    is_first_non_empty_block,
-    is_isolated_line,
-    count_empty_blocks_before,
-    count_empty_blocks_after,
-    get_block_position_ratio,
     analyze_position,
     boost_heading_confidence_by_position,
+    count_empty_blocks_after,
+    count_empty_blocks_before,
+    get_block_position_ratio,
+    is_first_non_empty_block,
+    is_isolated_line,
 )
+
 
 def _b(text: str = "", index: int = 1, bid: str | None = None):
 

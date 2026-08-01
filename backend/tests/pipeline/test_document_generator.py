@@ -16,7 +16,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 # ---------------------------------------------------------------------------
 #  Conftest cleanup — conftest.py stubs document_generator as a MagicMock;
 #  we need the real module for these tests.
@@ -54,6 +53,7 @@ def _fresh_module():
     get_supabase_client already mocked.  Must be called inside
     the patch('app.db.supabase_client.get_supabase_client') context."""
     import importlib
+
     import app.pipeline.generation.document_generator as m
     importlib.reload(m)
     return m
@@ -209,12 +209,15 @@ class TestSessionRecordToStatus:
              "config_json": {"stage": "done", "message": "Done.", "output_path": "/p/doc.docx"},
              "outline_json": ["Intro"]}
         r = dg._session_record_to_status(s)
-        assert r["job_id"] == "j1" and r["status"] == "done" and r["progress"] == 100
+        assert r["job_id"] == "j1"
+        assert r["status"] == "done"
+        assert r["progress"] == 100
 
     def test_no_config_json(self, dc):
         _, dg = dc
         r = dg._session_record_to_status({"id": "j1"})
-        assert r["status"] == "pending" and r["progress"] == 0
+        assert r["status"] == "pending"
+        assert r["progress"] == 0
 
     def test_outline_not_list(self, dc):
         _, dg = dc
@@ -498,7 +501,8 @@ class TestGetStatus:
             mod.DocumentService = ds
             dg = mod.DocumentGenerator()
             r = dg.get_status("j1")
-            assert r["status"] == "failed" and r["error"] == "boom"
+            assert r["status"] == "failed"
+            assert r["error"] == "boom"
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -635,7 +639,8 @@ class TestLlmGenerate:
             with patch.dict("sys.modules", {"app.services.llm_service": svc}, clear=False):
                 import asyncio
                 r = asyncio.run(dg._llm_generate("prompt", "j1"))
-                assert "Fallback" in r and "Introduction" in r
+                assert "Fallback" in r
+                assert "Introduction" in r
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -667,7 +672,7 @@ class TestFormatAndExport:
     def test_success(self, dc):
         _, dg = dc
         mod = dg._mod
-        out = Path("/tmp/gen_out/t.docx")
+        Path("/tmp/gen_out/t.docx")
         mod.GENERATED_DIR = Path("/tmp/gen_out")
         with patch.object(mod, "Formatter") as fm, \
              patch.object(mod, "Exporter") as em:
@@ -793,6 +798,7 @@ class TestGetGenerator:
     def _build_module(self):
         """Build without patching supabase (not needed for this test)."""
         import importlib
+
         import app.pipeline.generation.document_generator as m
         if "app.pipeline.generation.document_generator" in sys.modules:
             pass

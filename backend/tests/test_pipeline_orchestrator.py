@@ -14,8 +14,9 @@ Covers:
 from __future__ import annotations
 
 import os
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 from app.pipeline.orchestrator import PipelineOrchestrator
 
@@ -180,7 +181,7 @@ class TestConcurrentPipelineExecution:
         pytest.skip("PipelineOrchestrator.run() not implemented - uses stage methods directly")
 
     def test_semaphore_limits_concurrency(self, orchestrator):
-        from app.pipeline.orchestrator import _pipeline_semaphore, _MAX_CONCURRENT_JOBS
+        from app.pipeline.orchestrator import _MAX_CONCURRENT_JOBS, _pipeline_semaphore
         assert _MAX_CONCURRENT_JOBS == 5
         assert _pipeline_semaphore._value == _MAX_CONCURRENT_JOBS
 

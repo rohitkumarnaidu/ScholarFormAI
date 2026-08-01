@@ -1,6 +1,7 @@
-import pytest
-from unittest.mock import MagicMock
 from datetime import datetime
+from unittest.mock import MagicMock
+
+import pytest
 
 
 @pytest.fixture
@@ -25,7 +26,8 @@ class TestJATSGenerator:
         xml = gen.to_xml(doc)
         assert "<article" in xml
         assert "Test Paper" in xml
-        assert "Alice" in xml and "Smith" in xml
+        assert "Alice" in xml
+        assert "Smith" in xml
         assert "2024" in xml
         assert "test abstract" in xml
 

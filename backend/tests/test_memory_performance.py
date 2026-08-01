@@ -28,15 +28,16 @@ class TestMemoryUsage:
     @pytest.mark.unit
     def test_parser_no_memory_leak_on_large_file(self, tmp_path):
         """Document parser should not leak memory on large documents."""
-        from app.pipeline.parsing.parser import DocxParser
         from docx import Document as DocxDocument
+
+        from app.pipeline.parsing.parser import DocxParser
 
         large_path = tmp_path / "large_mem_test.docx"
         docx = DocxDocument()
         docx.add_heading("Large Document", level=1)
         for i in range(500):
             docx.add_paragraph(f"Paragraph {i}: " + "content " * 50)
-        for t_idx in range(10):
+        for _t_idx in range(10):
             table = docx.add_table(rows=20, cols=5)
             for r in range(20):
                 for c in range(5):
@@ -60,8 +61,9 @@ class TestMemoryUsage:
     @pytest.mark.unit
     def test_pipeline_orchestrator_releases_memory(self, tmp_path):
         """Pipeline orchestrator should release memory after completion."""
-        from app.pipeline.orchestrator import PipelineOrchestrator
         from docx import Document as DocxDocument
+
+        from app.pipeline.orchestrator import PipelineOrchestrator
 
         docx_path = tmp_path / "orchestrator_mem.docx"
         docx = DocxDocument()
@@ -219,9 +221,11 @@ class TestMemoryUsage:
     @pytest.mark.slow
     def test_large_batch_processing_memory_budget(self, tmp_path):
         """Processing 100+ files in batch should stay within memory budget."""
-        from app.pipeline.orchestrator import PipelineOrchestrator
-        from docx import Document as DocxDocument
         import tracemalloc
+
+        from docx import Document as DocxDocument
+
+        from app.pipeline.orchestrator import PipelineOrchestrator
 
         batch_dir = tmp_path / "batch"
         batch_dir.mkdir()

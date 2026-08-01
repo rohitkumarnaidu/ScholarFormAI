@@ -1,7 +1,8 @@
-import click
 from pathlib import Path
 
-from amf import __version__, __title__
+import click
+
+from amf import __title__, __version__
 
 
 @click.group(invoke_without_command=False)

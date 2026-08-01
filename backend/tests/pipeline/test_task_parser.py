@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 import pytest
 
-from app.pipeline.generation.task_parser import _load_templates, _extract_json, _keywords_from_prompt, TaskParser
+from app.pipeline.generation.task_parser import TaskParser, _extract_json, _keywords_from_prompt, _load_templates
 
 
 class TestLoadTemplates:

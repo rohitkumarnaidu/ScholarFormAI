@@ -1,6 +1,9 @@
 from __future__ import annotations
-import pytest
+
+from datetime import UTC
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 class TestActivityServiceUtcNowIso:
@@ -22,34 +25,34 @@ class TestActivityServiceComputePeriodStart:
         return ActivityService
 
     def test_7d(self, svc):
-        from datetime import datetime, timedelta, timezone
+        from datetime import datetime, timedelta
         result = svc._compute_period_start("7d")
         assert result is not None
-        diff = datetime.now(timezone.utc) - result
+        diff = datetime.now(UTC) - result
         assert diff >= timedelta(days=6)
 
     def test_30d(self, svc):
-        from datetime import datetime, timedelta, timezone
+        from datetime import datetime, timedelta
         result = svc._compute_period_start("30d")
         assert result is not None
-        diff = datetime.now(timezone.utc) - result
+        diff = datetime.now(UTC) - result
         assert diff >= timedelta(days=29)
 
     def test_90d(self, svc):
-        from datetime import datetime, timedelta, timezone
+        from datetime import datetime, timedelta
         result = svc._compute_period_start("90d")
         assert result is not None
-        diff = datetime.now(timezone.utc) - result
+        diff = datetime.now(UTC) - result
         assert diff >= timedelta(days=89)
 
     def test_all(self, svc):
         assert svc._compute_period_start("all") is None
 
     def test_unknown_defaults_7d(self, svc):
-        from datetime import datetime, timedelta, timezone
+        from datetime import datetime, timedelta
         result = svc._compute_period_start("invalid")
         assert result is not None
-        diff = datetime.now(timezone.utc) - result
+        diff = datetime.now(UTC) - result
         assert diff >= timedelta(days=6)
 
 
@@ -227,7 +230,8 @@ class TestActivityServiceModule:
         assert "edit" in ACTIVITY_TYPES
 
 
-_INLINE_TO_THREAD = lambda fn, *a, **kw: fn(*a, **kw)
+def _INLINE_TO_THREAD(fn, *a, **kw):
+    return fn(*a, **kw)
 
 
 class TestRecordActivityInnerClosure:

@@ -7,7 +7,6 @@ import os
 import time
 from unittest.mock import patch
 
-
 from app.tasks.cleanup import cleanup_stranded_uploads
 
 
@@ -62,7 +61,7 @@ def test_cleanup_skips_nonempty_directories(tmp_path):
     subdir.mkdir(parents=True, exist_ok=True)
     keep_file = subdir / "keep.txt"
     keep_file.write_text("keep")
-    result = cleanup_stranded_uploads(str(upload_dir), retention_days=1)
+    cleanup_stranded_uploads(str(upload_dir), retention_days=1)
     assert subdir.exists()
     assert keep_file.exists()
 

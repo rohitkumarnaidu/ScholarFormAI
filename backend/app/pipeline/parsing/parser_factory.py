@@ -10,16 +10,15 @@ without hardcoding parser selection logic throughout the codebase.
 
 import logging
 import os
-from typing import Optional
 
 from app.config.settings import settings
 from app.pipeline.parsing.base_parser import BaseParser
-from app.pipeline.parsing.parser import DocxParser
-from app.pipeline.parsing.pdf_parser import PdfParser
-from app.pipeline.parsing.txt_parser import TxtParser
 from app.pipeline.parsing.html_parser import HtmlParser
 from app.pipeline.parsing.md_parser import MarkdownParser
+from app.pipeline.parsing.parser import DocxParser
+from app.pipeline.parsing.pdf_parser import PdfParser
 from app.pipeline.parsing.tex_parser import TexParser
+from app.pipeline.parsing.txt_parser import TxtParser
 from app.pipeline.safety import safe_function
 
 logger = logging.getLogger(__name__)
@@ -91,7 +90,7 @@ class ParserFactory:
             logger.warning("TexParser initialization failed: %s", e)
 
     @safe_function(fallback_value=None, error_message="ParserFactory.get_parser failed")
-    def get_parser(self, file_path: str) -> Optional[BaseParser]:
+    def get_parser(self, file_path: str) -> BaseParser | None:
         """
         Get the appropriate parser for the given file.
 

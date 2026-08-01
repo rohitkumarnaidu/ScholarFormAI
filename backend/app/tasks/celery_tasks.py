@@ -3,21 +3,23 @@
 
 # RESERVED: Celery task definitions for future distributed processing.
 # Not currently wired into the FastAPI runtime — kept for planned Redis/Celery migration.
+import asyncio
+import contextlib
 import logging
 import time
-import asyncio
+
 from celery import Celery
 from celery.schedules import crontab
 from kombu import Queue
-from app.pipeline.orchestrator import PipelineOrchestrator
+
 from app.config.settings import settings
-from app.tasks.cleanup import cleanup_stranded_uploads
+from app.pipeline.orchestrator import PipelineOrchestrator
 
 # ── Old ORM imports (kept for reference, replaced by DocumentService) ──────────
 # from app.db.session import SessionLocal
 # from app.models import PipelineDocument
-
 from app.services.document_service import DocumentService
+from app.tasks.cleanup import cleanup_stranded_uploads
 
 logger = logging.getLogger(__name__)
 
@@ -105,10 +107,8 @@ def process_document_task(document_id: str, use_agent: bool = True):
     except Exception as exc:
         logger.error("Async processing failed for %s: %s", document_id, exc, exc_info=True)
         # Mark as FAILED — never raises
-        try:
+        with contextlib.suppress(Exception):
             asyncio.run(DocumentService.mark_document_failed(document_id, str(exc)))
-        except Exception:
-            pass
         return False
 
 
@@ -166,8 +166,8 @@ def process_agent_pipeline_task(session_id: str, user_prompt: str):
     logger.info("Starting agent pipeline for session: %s", session_id)
     try:
         from app.pipeline.generation.agent import AgentPipeline
-        from app.services.generator_session_service import GeneratorSessionService
         from app.realtime.pubsub import RedisPubSub
+        from app.services.generator_session_service import GeneratorSessionService
 
         pipeline = AgentPipeline(
             session_service=GeneratorSessionService(),
@@ -191,8 +191,8 @@ def process_agent_resume_task(session_id: str):
     logger.info("Resuming agent pipeline for session: %s", session_id)
     try:
         from app.pipeline.generation.agent import AgentPipeline
-        from app.services.generator_session_service import GeneratorSessionService
         from app.realtime.pubsub import RedisPubSub
+        from app.services.generator_session_service import GeneratorSessionService
 
         pipeline = AgentPipeline(
             session_service=GeneratorSessionService(),
@@ -216,8 +216,8 @@ def process_agent_rewrite_task(session_id: str, section_name: str, instruction: 
     logger.info("Rewriting section %s for session %s", section_name, session_id)
     try:
         from app.pipeline.generation.agent import AgentPipeline
-        from app.services.generator_session_service import GeneratorSessionService
         from app.realtime.pubsub import RedisPubSub
+        from app.services.generator_session_service import GeneratorSessionService
 
         pipeline = AgentPipeline(
             session_service=GeneratorSessionService(),
@@ -279,8 +279,8 @@ def purge_expired_vector_sessions():
     Falls back gracefully when Redis or ChromaDB is absent/disabled.
     """
     try:
-        from app.services.session_vector_store import SessionVectorStore
         from app.cache.redis_cache import redis_cache
+        from app.services.session_vector_store import SessionVectorStore
 
         r_client = redis_cache.client
         if not r_client:

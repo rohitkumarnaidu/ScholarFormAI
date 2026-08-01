@@ -11,10 +11,9 @@ import re
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional
 
-import yaml
 import redis
+import yaml
 
 from app.config.settings import settings
 
@@ -36,8 +35,8 @@ class PreviewRenderer:
         self._redis = None
         self._redis_enabled = bool(settings.REDIS_ENABLED)
         self._redis_warning_logged = False
-        self._local_cache: Dict[str, _CachedValue] = {}
-        self._css_cache: Dict[str, str] = {}
+        self._local_cache: dict[str, _CachedValue] = {}
+        self._css_cache: dict[str, str] = {}
         self._template_names = self._discover_templates()
         self._init_redis()
 
@@ -71,7 +70,7 @@ class PreviewRenderer:
         hasher.update(content.encode("utf-8"))
         return f"{HTML_CACHE_KEY_PREFIX}{hasher.hexdigest()}"
 
-    def _get_cached(self, key: str) -> Optional[dict]:
+    def _get_cached(self, key: str) -> dict | None:
         if self._redis is not None:
             try:
                 cached = self._redis.get(key)
@@ -214,7 +213,7 @@ class PreviewRenderer:
         contract = self._load_contract(template_dir)
         return self._build_fallback_css(template_name, contract)
 
-    def _get_template_css(self, template_name: str, warnings: List[str]) -> str:
+    def _get_template_css(self, template_name: str, warnings: list[str]) -> str:
         cache_key = f"{CSS_CACHE_KEY_PREFIX}{template_name}"
         if template_name in self._css_cache:
             return self._css_cache[template_name]
@@ -239,10 +238,10 @@ class PreviewRenderer:
                 pass
         return css
 
-    def _split_blocks(self, content: str) -> List[dict]:
+    def _split_blocks(self, content: str) -> list[dict]:
         lines = content.replace("\r\n", "\n").split("\n")
-        raw_blocks: List[dict] = []
-        current: List[str] = []
+        raw_blocks: list[dict] = []
+        current: list[str] = []
         for line in lines:
             stripped = line.strip()
             if not stripped:
@@ -298,12 +297,10 @@ class PreviewRenderer:
             return False
         if len(text) > 150:
             return False
-        if text.endswith("."):
-            return False
-        return True
+        return not text.endswith(".")
 
-    def _classify_blocks(self, raw_blocks: List[dict]) -> List[dict]:
-        classified: List[dict] = []
+    def _classify_blocks(self, raw_blocks: list[dict]) -> list[dict]:
+        classified: list[dict] = []
         abstract_next = False
         for idx, block in enumerate(raw_blocks):
             text = block.get("text", "").strip()
@@ -333,8 +330,8 @@ class PreviewRenderer:
             classified.append({"type": "paragraph", "text": text})
         return classified
 
-    def _render_blocks(self, blocks: List[dict]) -> str:
-        parts: List[str] = []
+    def _render_blocks(self, blocks: list[dict]) -> str:
+        parts: list[str] = []
         in_list = False
         for block in blocks:
             block_type = block.get("type")
@@ -370,7 +367,7 @@ class PreviewRenderer:
 
     def render_preview(self, content: str, template_name: str) -> dict:
         start = time.perf_counter()
-        warnings: List[str] = []
+        warnings: list[str] = []
         requested_template = self._normalize_template(template_name)
         normalized_template = requested_template
         if normalized_template not in self._template_names:
@@ -414,7 +411,7 @@ class PreviewRenderer:
 
     def preload_template_css(self) -> None:
         for template_name in sorted(self._template_names):
-            warnings: List[str] = []
+            warnings: list[str] = []
             css = self._get_template_css(template_name, warnings)
             if css and template_name not in self._css_cache:
                 self._css_cache[template_name] = css

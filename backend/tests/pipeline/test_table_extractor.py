@@ -10,8 +10,8 @@ singleton getter.  Targets 90%+ line / branch coverage.
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
 import sys
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -41,14 +41,14 @@ for _mod_name, _mod_obj in [
         sys.modules[_mod_name] = _mod_obj
 
 from app.pipeline.parsing.table_extractor import (
-    TableExtractor,
-    get_table_extractor,
-    TABLE_TRANSFORMER_AVAILABLE,
-    _load_error,
     DETECTION_MODEL,
+    STRUCTURE_DETECTION_THRESHOLD,
     STRUCTURE_MODEL,
     TABLE_DETECTION_THRESHOLD,
-    STRUCTURE_DETECTION_THRESHOLD,
+    TABLE_TRANSFORMER_AVAILABLE,
+    TableExtractor,
+    _load_error,
+    get_table_extractor,
 )
 
 # ===================================================================
@@ -200,7 +200,7 @@ class TestEnsureLoaded:
         self, mock_ttod_fp, mock_aip_fp, mock_ms
     ):
         mock_ms.is_loaded.return_value = False
-        mock_aip_fp.return_value = det_proc = MagicMock()
+        mock_aip_fp.return_value = MagicMock()
         mock_ttod_fp.return_value = det_model = MagicMock()
         det_model.to.return_value = det_model
 
@@ -742,7 +742,6 @@ class TestDetectTablesLazyLoading:
         ext._detection_model.config.id2label = {0: "table"}
 
         # Patch _ensure_loaded to just set _loaded = True
-        original = ext._ensure_loaded
 
         def fake_ensure():
             ext._loaded = True

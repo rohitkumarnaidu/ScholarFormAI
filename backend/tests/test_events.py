@@ -1,3 +1,4 @@
+from datetime import UTC
 
 
 class TestRealtimeEvent:
@@ -24,15 +25,17 @@ class TestRealtimeEvent:
         assert isinstance(event["timestamp"], str)
 
     def test_includes_request_id_when_available(self):
-        from app.realtime.events import make_event
         from unittest.mock import patch
+
+        from app.realtime.events import make_event
         with patch("app.realtime.events.get_request_id_context", return_value="req-123"):
             event = make_event("test")
         assert event["request_id"] == "req-123"
 
     def test_no_request_id_when_none(self):
-        from app.realtime.events import make_event
         from unittest.mock import patch
+
+        from app.realtime.events import make_event
         with patch("app.realtime.events.get_request_id_context", return_value=None):
             event = make_event("test", job_id="j1")
         assert event.get("request_id") is None
@@ -43,9 +46,10 @@ class TestRealtimeEvent:
         assert event["request_id"] == "explicit-rid"
 
     def test_timestamp_can_be_overridden(self):
+        from datetime import datetime
+
         from app.realtime.events import make_event
-        from datetime import datetime, timezone
-        ts = datetime(2026, 1, 1, tzinfo=timezone.utc)
+        ts = datetime(2026, 1, 1, tzinfo=UTC)
         event = make_event("test", timestamp=ts)
         assert event["timestamp"] == ts.isoformat()
 

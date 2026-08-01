@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 class TestConstructor:
@@ -90,7 +91,7 @@ class TestNormalizeBackends:
 class TestExtractText:
     @patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", False)
     def test_raises_when_pdf2image_unavailable(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         ocr = PdfOCR()
         with pytest.raises(OCRError, match="pdf2image is unavailable"):
             ocr.extract_text("test.pdf")
@@ -101,7 +102,7 @@ class TestExtractText:
     def test_raises_when_no_backends(self, mock_norm, mock_convert):
         mock_norm.return_value = []
         mock_convert.return_value = [MagicMock()]
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         ocr = PdfOCR()
         with pytest.raises(OCRError, match="No OCR backends"):
             ocr.extract_text("test.pdf")
@@ -110,7 +111,7 @@ class TestExtractText:
     @patch("app.pipeline.ocr.pdf_ocr.convert_from_path")
     def test_raises_when_convert_fails(self, mock_convert):
         mock_convert.side_effect = Exception("Poppler missing")
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         ocr = PdfOCR()
         with pytest.raises(OCRError, match="Failed to convert"):
             ocr.extract_text("test.pdf")
@@ -119,7 +120,7 @@ class TestExtractText:
     @patch("app.pipeline.ocr.pdf_ocr.convert_from_path")
     def test_raises_when_no_pages(self, mock_convert):
         mock_convert.return_value = []
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         ocr = PdfOCR()
         with pytest.raises(OCRError, match="no renderable pages"):
             ocr.extract_text("test.pdf")
@@ -142,7 +143,7 @@ class TestExtractText:
 class TestConvertToDocx:
     @patch("app.pipeline.ocr.pdf_ocr.DOCX_AVAILABLE", False)
     def test_raises_when_docx_unavailable(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
+        from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
         ocr = PdfOCR()
         with pytest.raises(OCRError, match="python-docx is unavailable"):
             ocr.convert_to_docx("test.pdf", "out.docx")
@@ -204,4 +205,4 @@ class TestOCRError:
 class TestSupportedBackends:
     def test_has_tesseract_and_paddle(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
-        assert PdfOCR.SUPPORTED_BACKENDS == {"tesseract", "paddle"}
+        assert {"tesseract", "paddle"} == PdfOCR.SUPPORTED_BACKENDS

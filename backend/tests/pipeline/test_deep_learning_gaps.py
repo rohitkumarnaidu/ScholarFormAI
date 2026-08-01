@@ -28,7 +28,9 @@ class TestEncode:
     def test_encode_document_no_model_returns_zeros(self):
         d = TransformerPatternDetector()
         emb = d.encode_document("test document")
-        assert isinstance(emb, np.ndarray) and emb.shape == (768,) and np.all(emb == 0.0)
+        assert isinstance(emb, np.ndarray)
+        assert emb.shape == (768,)
+        assert np.all(emb == 0.0)
 
     def test_encode_document_cache_hit(self):
         d = TransformerPatternDetector()
@@ -39,17 +41,20 @@ class TestEncode:
     def test_encode_metadata_full(self):
         d = TransformerPatternDetector()
         emb = d.encode_metadata({"title": "Paper", "authors": ["A"], "abstract": "Abs", "venue": "N"})
-        assert emb.shape == (768,) and np.all(emb == 0.0)
+        assert emb.shape == (768,)
+        assert np.all(emb == 0.0)
 
     def test_encode_metadata_partial(self):
         d = TransformerPatternDetector()
         emb = d.encode_metadata({"title": "Only"})
-        assert emb.shape == (768,) and np.all(emb == 0.0)
+        assert emb.shape == (768,)
+        assert np.all(emb == 0.0)
 
     def test_encode_metadata_empty(self):
         d = TransformerPatternDetector()
         emb = d.encode_metadata({})
-        assert emb.shape == (768,) and np.all(emb == 0.0)
+        assert emb.shape == (768,)
+        assert np.all(emb == 0.0)
 
 
 class TestClustering:
@@ -62,7 +67,8 @@ class TestClustering:
         np.random.seed(42)
         embs = [np.random.rand(768) for _ in range(10)]
         assert d.fit_clusters(embs, n_clusters=3) is True
-        assert d.clusters is not None and d.cluster_centers is not None
+        assert d.clusters is not None
+        assert d.cluster_centers is not None
 
     def test_predict_cluster_untrained_returns_neg1(self):
         d = TransformerPatternDetector()
@@ -96,7 +102,8 @@ class TestSimilarity:
         d = TransformerPatternDetector()
         docs = [("a", np.array([1.0, 0.0])), ("b", np.array([0.0, 1.0]))]
         results = d.find_similar_documents(np.array([1.0, 0.0]), docs, top_k=2)
-        assert len(results) == 2 and results[0][0] == "a"
+        assert len(results) == 2
+        assert results[0][0] == "a"
 
     def test_find_similar_empty_list(self):
         d = TransformerPatternDetector()
@@ -107,7 +114,8 @@ class TestAnomaly:
     def test_no_cluster_centers(self):
         d = TransformerPatternDetector()
         is_anom, score = d.detect_anomaly_semantic(np.zeros(768))
-        assert is_anom is False and score == 0.0
+        assert is_anom is False
+        assert score == 0.0
 
     def test_with_centers(self):
         d = TransformerPatternDetector()
@@ -115,7 +123,8 @@ class TestAnomaly:
         embs = [np.random.rand(768) for _ in range(10)]
         d.fit_clusters(embs, n_clusters=3)
         is_anom, score = d.detect_anomaly_semantic(embs[0], threshold=0.1)
-        assert isinstance(is_anom, bool) and 0.0 <= score <= 1.0
+        assert isinstance(is_anom, bool)
+        assert 0.0 <= score <= 1.0
 
     def test_below_threshold(self):
         d = TransformerPatternDetector()
@@ -141,11 +150,13 @@ class TestSaveLoad:
 class TestSummary:
     def test_untrained(self):
         s = TransformerPatternDetector().get_summary()
-        assert s["clusters_trained"] is False and s["n_clusters"] == 0
+        assert s["clusters_trained"] is False
+        assert s["n_clusters"] == 0
 
     def test_trained(self):
         d = TransformerPatternDetector()
         np.random.seed(42)
         d.fit_clusters([np.random.rand(768) for _ in range(10)], n_clusters=3)
         s = d.get_summary()
-        assert s["clusters_trained"] is True and s["n_clusters"] == 3
+        assert s["clusters_trained"] is True
+        assert s["n_clusters"] == 3

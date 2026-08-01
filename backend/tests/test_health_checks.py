@@ -1,6 +1,6 @@
-import pytest
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
 
 RESET_FUNC = """
 from app.services import health_checks as hc
@@ -469,6 +469,7 @@ class TestGetReadinessPayload:
 @pytest.fixture
 def health_checks():
     import importlib
+
     import app.services.health_checks as hc_mod
     importlib.reload(hc_mod)
     return hc_mod

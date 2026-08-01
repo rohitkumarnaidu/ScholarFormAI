@@ -23,9 +23,6 @@ class StyleMapper:
 
         # Standardize key (e.g. "heading_1" -> "BLOCK_HEADING_1")
         bt = str(block.block_type).upper()
-        if bt.startswith("BLOCK_"):
-            key = bt
-        else:
-            key = f"BLOCK_{bt}"
+        key = bt if bt.startswith("BLOCK_") else f"BLOCK_{bt}"
 
         return style_map.get(key, "Normal")

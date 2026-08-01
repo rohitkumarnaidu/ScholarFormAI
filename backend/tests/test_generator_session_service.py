@@ -139,7 +139,8 @@ class TestCreateSession:
         mock_client.table.return_value.insert.return_value.execute.return_value = MagicMock()
         with patch("app.services.generator_session_service.get_supabase_client", return_value=mock_client):
             sid = await svc.create_session("user-1", "multi_doc", {"key": "val"})
-        assert isinstance(sid, str) and len(sid) > 20
+        assert isinstance(sid, str)
+        assert len(sid) > 20
 
     @pytest.mark.asyncio
     async def test_creates_session_with_none_user(self, svc):

@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 @pytest.fixture
@@ -181,7 +182,7 @@ class TestValidate:
         validator.crossref_client = MagicMock()
         doc.formatting_options = {"fast_mode": True}
         with patch("app.pipeline.validation.validator_v3.ReviewManager"):
-            result = validator.validate(doc)
+            validator.validate(doc)
         validator.crossref_client.validate_doi.assert_not_called()
 
 
@@ -193,7 +194,7 @@ class TestProcess:
         validator.order_validator = MagicMock()
         validator.integrity_engine = MagicMock()
         validator.crossref_client = MagicMock()
-        with patch.object(validator, "validate") as mock_val:
+        with patch.object(validator, "validate"):
             result = validator.process(doc)
         assert result is doc
 

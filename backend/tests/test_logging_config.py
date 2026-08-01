@@ -29,13 +29,15 @@ class TestLoggingConfig:
     def test_logs_dir_created(self):
         with patch("pathlib.Path.mkdir") as mock_mkdir:
             import importlib
+
             import app.config.logging_config
             importlib.reload(app.config.logging_config)
             mock_mkdir.assert_called_with(parents=True, exist_ok=True)
 
     def test_logs_dir_is_path(self):
-        from app.config.logging_config import LOGS_DIR
         from pathlib import Path
+
+        from app.config.logging_config import LOGS_DIR
         assert isinstance(LOGS_DIR, Path)
         assert "logs" in str(LOGS_DIR).lower()
 

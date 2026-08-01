@@ -1,10 +1,11 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 class TestGenerateWithModel:
     def test_unknown_model(self):
-        from app.services.llm_service import generate_with_model, LLMUnavailableError
+        from app.services.llm_service import LLMUnavailableError, generate_with_model
         with patch("app.services.provider_registry.resolve_model_provider", return_value=None):
             with pytest.raises(LLMUnavailableError, match="Unknown model"):
                 generate_with_model([{"role": "user", "content": "Hi"}], "nonexistent-model")
@@ -36,7 +37,7 @@ class TestGenerateWithModel:
         assert result["model"] == "custom_cp-1/my-model"
 
     def test_custom_provider_not_found(self):
-        from app.services.llm_service import generate_with_model, LLMUnavailableError
+        from app.services.llm_service import LLMUnavailableError, generate_with_model
 
         mock_db = MagicMock()
         mock_db.execute.return_value.scalar_one_or_none.return_value = None
@@ -69,7 +70,7 @@ class TestGenerateWithModel:
         assert result["provider"] == "openai"
 
     def test_builtin_returns_empty_raises(self):
-        from app.services.llm_service import generate_with_model, LLMUnavailableError
+        from app.services.llm_service import LLMUnavailableError, generate_with_model
 
         mock_provider_info = {"base_url": "https://api.openai.com/v1"}
 
@@ -82,7 +83,7 @@ class TestGenerateWithModel:
                             generate_with_model([{"role": "user", "content": "Hi"}], "gpt-4o")
 
     def test_builtin_exception_raises(self):
-        from app.services.llm_service import generate_with_model, LLMUnavailableError
+        from app.services.llm_service import LLMUnavailableError, generate_with_model
 
         mock_provider_info = {"base_url": "https://api.openai.com/v1"}
 

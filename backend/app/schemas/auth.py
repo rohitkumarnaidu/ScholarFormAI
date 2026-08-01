@@ -9,9 +9,8 @@ All response models are typed to prevent accidental data leakage.
 """
 
 import re
-from typing import Optional
-from pydantic import BaseModel, EmailStr, Field, field_validator
 
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -45,7 +44,7 @@ class SignupRequest(BaseModel):
         ...,
         description="Valid email address used as the login identifier.",
     )
-    institution: Optional[str] = Field(
+    institution: str | None = Field(
         None,
         max_length=200,
         description="University or organisation name (optional).",
@@ -146,9 +145,9 @@ class AuthTokenResponse(BaseModel):
 
     access_token: str = Field(..., description="Supabase JWT access token.")
     token_type: str = Field(default="bearer", description="OAuth2 token type.")
-    expires_in: Optional[int] = Field(None, description="Token lifetime in seconds (from Supabase).")
-    user_id: Optional[str] = Field(None, description="Authenticated user UUID.")
-    email: Optional[str] = Field(None, description="Authenticated user email.")
+    expires_in: int | None = Field(None, description="Token lifetime in seconds (from Supabase).")
+    user_id: str | None = Field(None, description="Authenticated user UUID.")
+    email: str | None = Field(None, description="Authenticated user email.")
 
 
 class MessageResponse(BaseModel):

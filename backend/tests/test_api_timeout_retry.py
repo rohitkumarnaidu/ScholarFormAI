@@ -47,11 +47,10 @@ class Test3A_TimeoutHandling:
         with (
             patch("app.routers.v1.documents_impl._require_db"),
             patch("app.routers.v1.documents_impl.DocumentService"),
-            patch("app.db.supabase_client.get_supabase_client", return_value=MagicMock()),
+            patch("app.db.supabase_client.get_supabase_client", return_value=MagicMock()),TestClient(app) as c
         ):
-            with TestClient(app) as c:
-                c.headers.update({"Authorization": "Bearer test-token"})
-                yield c
+            c.headers.update({"Authorization": "Bearer test-token"})
+            yield c
         app.dependency_overrides.clear()
 
     def _response_json(self, resp):
@@ -102,7 +101,7 @@ class Test3A_TimeoutHandling:
         async def run_with_timeout():
             try:
                 return await asyncio.wait_for(slow_operation(), timeout=0.01)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 raise HTTPException(status_code=504, detail="Upstream service timed out")
 
         with pytest.raises(HTTPException) as exc_info:
@@ -156,7 +155,7 @@ class Test3B_RetryBehavior:
         return json.loads(resp.body.decode())
 
     def test_post_with_idempotency_key_prevents_duplicates(self):
-        from app.routers.v1._helpers import build_success_response, build_error_response
+        from app.routers.v1._helpers import build_error_response, build_success_response
         mock_req = MagicMock()
         mock_req.state.request_id = "req-ik"
         first = build_success_response(mock_req, {"status": "created"})

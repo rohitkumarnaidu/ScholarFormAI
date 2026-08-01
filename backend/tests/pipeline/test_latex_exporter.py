@@ -2,8 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 from unittest.mock import MagicMock, patch
+
 import pytest
+
 
 class TestLaTeXExporter:
     def _make_doc(self, metadata=None, blocks=None, figures=None, tables=None, equations=None, references=None, template=None):
@@ -123,7 +126,7 @@ class TestLaTeXExporter:
             blocks.append(b)
         doc = self._make_doc(blocks=blocks)
         exporter = LaTeXExporter()
-        result = exporter.export_from_document(doc, str(tmp_path))
+        exporter.export_from_document(doc, str(tmp_path))
         content = tmp_path.joinpath("manuscript.tex").read_text(encoding="utf-8")
         assert "Introduction" in content
         assert "Hello world" in content

@@ -9,9 +9,9 @@ from contract.yaml when CSL formatting is unavailable.
 """
 
 import logging
-from typing import Dict, List, Optional
 
-from app.models import PipelineDocument as Document, Reference
+from app.models import PipelineDocument as Document
+from app.models import Reference
 from app.pipeline.contracts.loader import ContractLoader
 from app.pipeline.services.csl_engine import CSLEngine
 
@@ -24,7 +24,7 @@ class ReferenceFormatterEngine:
     CSL is attempted first to support standard and custom citation styles.
     """
 
-    def __init__(self, contract_loader: ContractLoader, csl_engine: Optional[CSLEngine] = None):
+    def __init__(self, contract_loader: ContractLoader, csl_engine: CSLEngine | None = None):
         self.contract_loader = contract_loader
         self.csl_engine = csl_engine or CSLEngine()
 
@@ -34,7 +34,7 @@ class ReferenceFormatterEngine:
         document.references = self.format_all(document.references, publisher)
         return document
 
-    def format_all(self, references: List[Reference], publisher: str) -> List[Reference]:
+    def format_all(self, references: list[Reference], publisher: str) -> list[Reference]:
         """Format a list of references."""
         if not references:
             return references
@@ -54,7 +54,7 @@ class ReferenceFormatterEngine:
             if len(rendered) != len(references):
                 raise ValueError(f"CSL output length mismatch: expected {len(references)}, got {len(rendered)}")
 
-            for ref, formatted in zip(references, rendered):
+            for ref, formatted in zip(references, rendered, strict=False):
                 ref.formatted_text = formatted
             return references
         except Exception as exc:
@@ -75,7 +75,7 @@ class ReferenceFormatterEngine:
 
         return references
 
-    def format_single(self, ref: Reference, rules: Dict) -> str:
+    def format_single(self, ref: Reference, rules: dict) -> str:
         """Apply deterministic fallback template formatting to a single reference."""
         ref_type = getattr(ref.reference_type, "value", ref.reference_type)
         ref_type = str(ref_type).lower()

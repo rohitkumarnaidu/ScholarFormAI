@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 
 
 def _make_table(rows=None, caption_text=None, index=0, table_id="tbl_001"):

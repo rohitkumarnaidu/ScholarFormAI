@@ -12,17 +12,17 @@ Output: Document with structure hints attached to blocks
 """
 
 import logging
-from typing import List, Optional, Dict, Any
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from statistics import median
+from typing import Any
 
-from app.models import PipelineDocument as Document, Block, BlockType
-from app.pipeline.contracts.loader import ContractLoader
-from .position_rules import analyze_position, boost_heading_confidence_by_position
-
-
+from app.models import Block, BlockType
+from app.models import PipelineDocument as Document
 from app.pipeline.base import PipelineStage
-from app.pipeline.safety.safe_execution import safe_function, safe_execution
+from app.pipeline.contracts.loader import ContractLoader
+from app.pipeline.safety.safe_execution import safe_execution, safe_function
+
+from .position_rules import analyze_position, boost_heading_confidence_by_position
 
 logger = logging.getLogger(__name__)
 
@@ -43,8 +43,8 @@ class StructureDetector(PipelineStage):
 
     def __init__(self, contracts_dir: str = "app/pipeline/contracts"):
         """Initialize the detector."""
-        self.avg_font_size: Optional[float] = None
-        self.detected_headings: List[Dict[str, Any]] = []
+        self.avg_font_size: float | None = None
+        self.detected_headings: list[dict[str, Any]] = []
         self.contract_loader = ContractLoader(contracts_dir=contracts_dir)
 
     def process(self, document: Document) -> Document:
@@ -52,7 +52,7 @@ class StructureDetector(PipelineStage):
         Detect structure in a normalized document.
         """
         with safe_execution("StructureDetector.process"):
-            start_time = datetime.now(timezone.utc)
+            start_time = datetime.now(UTC)
 
             # Step 0: ENFORCE NORMALIZATION
             # User requirement: Normalizer must run before StructureDetector
@@ -99,7 +99,7 @@ class StructureDetector(PipelineStage):
         self._validate_hierarchy(document.blocks)
 
         # Update processing history
-        end_time = datetime.now(timezone.utc)
+        end_time = datetime.now(UTC)
         duration_ms = int((end_time - start_time).total_seconds() * 1000)
 
         num_headings = len(heading_candidates)
@@ -112,14 +112,14 @@ class StructureDetector(PipelineStage):
             duration_ms=duration_ms,
         )
 
-        document.updated_at = datetime.now(timezone.utc)
+        document.updated_at = datetime.now(UTC)
 
         # Store detected headings for debugging
         self.detected_headings = heading_candidates
 
         return document
 
-    def _calculate_avg_font_size(self, blocks: List[Block]) -> Optional[float]:
+    def _calculate_avg_font_size(self, blocks: list[Block]) -> float | None:
         """
         Calculate average font size in document.
 
@@ -142,7 +142,7 @@ class StructureDetector(PipelineStage):
         # Use median instead of mean to avoid outlier influence
         return median(font_sizes)
 
-    def _detect_heading_candidates(self, blocks: List[Block]) -> List[Dict[str, Any]]:
+    def _detect_heading_candidates(self, blocks: list[Block]) -> list[dict[str, Any]]:
         """
         Detect all heading candidates in the document.
 
@@ -269,7 +269,7 @@ class StructureDetector(PipelineStage):
 
         return candidates
 
-    def _assign_section_names(self, blocks: List[Block], heading_candidates: List[Dict[str, Any]]) -> None:
+    def _assign_section_names(self, blocks: list[Block], heading_candidates: list[dict[str, Any]]) -> None:
         """
         Assign section names to all blocks based on detected headings.
 
@@ -309,7 +309,7 @@ class StructureDetector(PipelineStage):
                 if current_section:
                     block.section_name = current_section
 
-    def _build_hierarchy(self, blocks: List[Block], heading_candidates: List[Dict[str, Any]]) -> None:
+    def _build_hierarchy(self, blocks: list[Block], heading_candidates: list[dict[str, Any]]) -> None:
         """
         Build parent-child relationships between headings.
 
@@ -318,7 +318,7 @@ class StructureDetector(PipelineStage):
         """
         heading_map = {h["block_id"]: h for h in heading_candidates}
         # Build list of headings in order
-        heading_stack: List[Dict[str, Any]] = []
+        heading_stack: list[dict[str, Any]] = []
 
         for block in blocks:
             # 1. HARD ISOLATION RULE: Skip Header/Footer blocks
@@ -348,7 +348,7 @@ class StructureDetector(PipelineStage):
             heading_stack = [h for h in heading_stack if h["level"] < current_level]
             heading_stack.append(heading_info)
 
-    def _canonicalize_sections(self, blocks: List[Block], publisher: str) -> None:
+    def _canonicalize_sections(self, blocks: list[Block], publisher: str) -> None:
         """
         Rename sections to their canonical names based on the publisher contract.
         Example: "Related Work" -> "Background"
@@ -360,7 +360,7 @@ class StructureDetector(PipelineStage):
         except Exception as e:
             logger.warning("Section canonicalization failed: %s", e)
 
-    def _validate_hierarchy(self, blocks: List[Block]) -> None:
+    def _validate_hierarchy(self, blocks: list[Block]) -> None:
         """
         Validate heading nesting hierarchy.
         Detects "jumping" levels (e.g., Heading 1 followed by Heading 3).
@@ -381,8 +381,8 @@ class StructureDetector(PipelineStage):
 
     @safe_function(fallback_value=[], error_message="LLM layout structure detection failed")
     def _detect_structure_with_llm_layout(
-        self, blocks: List[Block], layout_data: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+        self, blocks: list[Block], layout_data: dict[str, Any]
+    ) -> list[dict[str, Any]]:
         """
         Detect structure using LLM layout analysis data (replaces Docling).
 
@@ -416,7 +416,7 @@ class StructureDetector(PipelineStage):
             logger.warning("LLM layout data empty. Fallback to standard detection.")
             return self._detect_heading_candidates(blocks)
 
-        prepared_elements: List[Dict[str, Any]] = []
+        prepared_elements: list[dict[str, Any]] = []
         for element in elements:
             normalized_text = _normalize(element.get("text", ""))
             if not normalized_text:

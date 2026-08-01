@@ -13,7 +13,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 LATENCY_P50_MS = 200
 LATENCY_P95_MS = 1000
 LATENCY_P99_MS = 3000
@@ -24,6 +23,7 @@ TTFT_MAX_MS = 500
 def _mock_llm_module():
     """Import and return the llm_service module with safe fallback."""
     import importlib
+
     import app.services.llm_service as m
     importlib.reload(m)
     return m

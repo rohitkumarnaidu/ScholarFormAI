@@ -62,8 +62,10 @@ def test_styles_list(runner: CliRunner):
 
 def test_manuscript_change_handler(sample_manuscript: Path, temp_dir: Path, unittest_mock=None):
     from unittest.mock import MagicMock, patch
-    from amf.commands.format import ManuscriptChangeHandler
+
     from watchdog.events import FileModifiedEvent
+
+    from amf.commands.format import ManuscriptChangeHandler
 
     mock_client = MagicMock()
     output_file = temp_dir / "out.docx"

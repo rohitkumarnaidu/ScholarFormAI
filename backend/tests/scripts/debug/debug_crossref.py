@@ -6,6 +6,7 @@
 Debug script to verify CrossRef DOI validation with real API calls.
 """
 import logging
+
 from app.pipeline.services.crossref_client import CrossRefClient
 
 # Configure logging
@@ -23,7 +24,7 @@ def test_crossref():
         # validate_doi swallows errors, so let's try get_metadata to see what's wrong if it fails
         try:
             metadata = client.get_metadata(doi_valid)
-            print(f"[OK] Exists: True")
+            print("[OK] Exists: True")
             print(f"   Title: {metadata.get('title', [''])[0]}")
             print(f"   Publisher: {metadata.get('publisher')}")
             

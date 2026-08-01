@@ -1,9 +1,12 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 from app.pipeline.parsing.pdf_parser import PdfParser
+
 
 @pytest.fixture
 def pdf_parser():

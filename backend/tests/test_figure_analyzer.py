@@ -21,10 +21,9 @@ class FakeImage:
 class TestFigureAnalyzer:
     def test_analyze_image_valid(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
-        with patch("PIL.Image.open", return_value=FakeImage()):
-            with patch("os.path.exists", return_value=True):
-                analyzer = FigureAnalyzer()
-                result = analyzer.analyze_image("/path/img.png")
+        with patch("PIL.Image.open", return_value=FakeImage()), patch("os.path.exists", return_value=True):
+            analyzer = FigureAnalyzer()
+            result = analyzer.analyze_image("/path/img.png")
         assert result["valid"] is True
         assert result["width"] == 800
         assert result["height"] == 600
@@ -40,20 +39,18 @@ class TestFigureAnalyzer:
     def test_analyze_image_low_resolution(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
         small_img = FakeImage(size=(100, 100))
-        with patch("PIL.Image.open", return_value=small_img):
-            with patch("os.path.exists", return_value=True):
-                analyzer = FigureAnalyzer(min_width=300, min_height=300)
-                result = analyzer.analyze_image("/path/small.png")
+        with patch("PIL.Image.open", return_value=small_img), patch("os.path.exists", return_value=True):
+            analyzer = FigureAnalyzer(min_width=300, min_height=300)
+            result = analyzer.analyze_image("/path/small.png")
         assert result["valid"] is False
         assert "Low resolution" in str(result["issues"])
 
     def test_analyze_image_low_dpi(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
         low_dpi_img = FakeImage(size=(800, 600), dpi=(72, 72))
-        with patch("PIL.Image.open", return_value=low_dpi_img):
-            with patch("os.path.exists", return_value=True):
-                analyzer = FigureAnalyzer(min_dpi=150)
-                result = analyzer.analyze_image("/path/lowdpi.png")
+        with patch("PIL.Image.open", return_value=low_dpi_img), patch("os.path.exists", return_value=True):
+            analyzer = FigureAnalyzer(min_dpi=150)
+            result = analyzer.analyze_image("/path/lowdpi.png")
         assert result["valid"] is False
         assert "Low DPI" in str(result["issues"])
 

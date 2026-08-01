@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 from unittest.mock import MagicMock, patch
+
 import pytest
 
 pytestmark = [pytest.mark.pipeline]
@@ -25,7 +26,7 @@ class TestFederatedLearningNodeInit:
         from app.pipeline.agents.federated_learning import FederatedLearningNode
         try:
             FederatedLearningNode("")
-            assert False
+            raise AssertionError()
         except ValueError as e:
             assert "node_id" in str(e)
 
@@ -33,7 +34,7 @@ class TestFederatedLearningNodeInit:
         from app.pipeline.agents.federated_learning import FederatedLearningNode
         try:
             FederatedLearningNode("   ")
-            assert False
+            raise AssertionError()
         except ValueError as e:
             assert "node_id" in str(e)
 
@@ -47,9 +48,9 @@ class TestFederatedLearningNodeInit:
         with patch("pathlib.Path.mkdir", side_effect=PermissionError("no permission")):
             try:
                 FederatedLearningNode("node1", storage_dir="/invalid/path")
-                assert False
+                raise AssertionError()
             except PermissionError:
-                pass
+                pass  # intentionally ignored
 
 
 class TestFederatedLearningNodeLoadGlobalModel:
@@ -475,9 +476,9 @@ class TestFederatedCoordinatorInit:
         with patch("pathlib.Path.mkdir", side_effect=PermissionError("no permission")):
             try:
                 FederatedCoordinator(storage_dir="/invalid/path")
-                assert False
+                raise AssertionError()
             except PermissionError:
-                pass
+                pass  # intentionally ignored
 
 
 class TestFederatedCoordinatorLoadGlobalModel:

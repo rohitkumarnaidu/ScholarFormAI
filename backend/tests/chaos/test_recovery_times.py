@@ -97,7 +97,7 @@ class TestSupabaseRecovery:
         def get_document(doc_id):
             if connected[0]:
                 return f"live:{doc_id}"
-            return cache.get(doc_id, None)
+            return cache.get(doc_id)
 
         assert get_document("doc-1") == "cached_content"
         connected[0] = True
@@ -105,7 +105,7 @@ class TestSupabaseRecovery:
 
     def test_supabase_recovery_under_500ms(self):
         """Supabase mock reconnection completes in under 500ms."""
-        from app.db.supabase_client import get_supabase_client, check_supabase_health
+        from app.db.supabase_client import check_supabase_health, get_supabase_client
 
         start = time.perf_counter()
         with patch("app.db.supabase_client.settings") as mock_settings:

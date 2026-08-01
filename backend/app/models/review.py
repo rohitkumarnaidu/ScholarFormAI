@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from enum import Enum
-from typing import Optional, List
+from enum import StrEnum
+
 from pydantic import BaseModel, Field
 
 
-class ReviewStatus(str, Enum):
+class ReviewStatus(StrEnum):
     """Signals for human-in-the-loop review."""
 
     OK = "OK"
@@ -19,6 +19,6 @@ class ReviewMetadata(BaseModel):
 
     # Use string for type hint to avoid "not defined" error during model initialization
     status: str = "OK"
-    flags: List[str] = Field(default_factory=list)
+    flags: list[str] = Field(default_factory=list)
     lowest_confidence: float = 1.0
-    reason: Optional[str] = None
+    reason: str | None = None

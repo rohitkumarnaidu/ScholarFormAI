@@ -6,10 +6,9 @@ Per-API-key rate limiter using Redis sliding window counters.
 Enforces per-minute, per-hour, and per-day limits with 429 responses.
 """
 
-import time
 import logging
+import time
 from dataclasses import dataclass
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +19,7 @@ class RateLimitResult:
     limit: int
     remaining: int
     reset_at: float
-    retry_after: Optional[float] = None
+    retry_after: float | None = None
 
 
 class ApiKeyRateLimiter:
@@ -234,7 +233,7 @@ class ApiKeyRateLimiter:
         }
 
 
-_rate_limiter: Optional[ApiKeyRateLimiter] = None
+_rate_limiter: ApiKeyRateLimiter | None = None
 
 
 def get_api_key_rate_limiter() -> ApiKeyRateLimiter:

@@ -279,7 +279,7 @@ class RedisCache(CacheBackend):
             results = asyncio.run(self._client.mget(list(prefixed.keys())))
             return {
                 prefixed[orig_key]: json.loads(val)
-                for orig_key, val in zip(prefixed.keys(), results)
+                for orig_key, val in zip(prefixed.keys(), results, strict=False)
                 if val is not None
             }
         except Exception as exc:

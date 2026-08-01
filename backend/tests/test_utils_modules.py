@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-
 from app.utils.serialization import build_structured_data, safe_model_dump
 from app.utils.singleton import resolve_optional_callable
 
@@ -12,8 +11,9 @@ class TestSerialization:
     """Tests for serialization utilities."""
 
     def test_build_structured_data_with_blocks(self):
-        from app.models import Block, TextStyle, BlockType, DocumentMetadata
         from types import SimpleNamespace
+
+        from app.models import Block, BlockType, DocumentMetadata, TextStyle
 
         doc = SimpleNamespace(
             blocks=[

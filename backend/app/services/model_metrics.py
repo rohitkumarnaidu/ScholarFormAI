@@ -14,8 +14,9 @@ Tracks:
 
 import json
 import logging
-from typing import Dict, Any, Optional
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+from typing import Any
+
 from app.utils.singleton import get_or_create
 
 logger = logging.getLogger(__name__)
@@ -58,7 +59,7 @@ class ModelMetrics:
         self._persistence_enabled = True
         self._missing_table_logged = False
 
-    def record_call(self, model: str, success: bool, latency: float, quality_score: Optional[float] = None):
+    def record_call(self, model: str, success: bool, latency: float, quality_score: float | None = None):
         """
         Record a model API call.
 
@@ -82,16 +83,16 @@ class ModelMetrics:
 
         metrics["total_latency"] += latency
         metrics["avg_latency"] = metrics["total_latency"] / metrics["total_calls"]
-        metrics["last_used"] = datetime.now(timezone.utc).isoformat()
+        metrics["last_used"] = datetime.now(UTC).isoformat()
 
         if quality_score is not None:
             self.quality_scores.append(
-                {"model": model, "score": quality_score, "timestamp": datetime.now(timezone.utc).isoformat()}
+                {"model": model, "score": quality_score, "timestamp": datetime.now(UTC).isoformat()}
             )
 
         self._persist_metric(model, latency, success, quality_score)
 
-    def _persist_metric(self, model: str, latency: float, success: bool, quality_score: Optional[float]):
+    def _persist_metric(self, model: str, latency: float, success: bool, quality_score: float | None):
         """Persist to Supabase in a background thread to prevent pipeline crashes."""
         import threading
 
@@ -136,10 +137,10 @@ class ModelMetrics:
     def record_fallback(self, from_model: str, to_model: str, reason: str):
         """Record a fallback event."""
         self.fallback_chain.append(
-            {"from": from_model, "to": to_model, "reason": reason, "timestamp": datetime.now(timezone.utc).isoformat()}
+            {"from": from_model, "to": to_model, "reason": reason, "timestamp": datetime.now(UTC).isoformat()}
         )
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         """Get metrics summary."""
         return {
             "models": self.metrics,
@@ -152,7 +153,7 @@ class ModelMetrics:
             },
         }
 
-    def get_model_comparison(self) -> Dict[str, Any]:
+    def get_model_comparison(self) -> dict[str, Any]:
         """Compare model performance."""
         nvidia_calls = max(1, self.metrics["nvidia"]["total_calls"])
         deepseek_calls = max(1, self.metrics["deepseek"]["total_calls"])
@@ -188,7 +189,7 @@ class ModelMetrics:
             "quality_scores": self.quality_scores,
             "summary": self.get_summary(),
             "comparison": self.get_model_comparison(),
-            "exported_at": datetime.now(timezone.utc).isoformat(),
+            "exported_at": datetime.now(UTC).isoformat(),
         }
 
         with open(filepath, "w") as f:
@@ -198,7 +199,7 @@ class ModelMetrics:
 
 
 # Global metrics instance
-_model_metrics: Optional[ModelMetrics] = None
+_model_metrics: ModelMetrics | None = None
 
 
 def get_model_metrics() -> ModelMetrics:

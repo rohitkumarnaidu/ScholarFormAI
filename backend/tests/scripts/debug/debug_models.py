@@ -2,14 +2,14 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-import sys
 import os
+import sys
 
 # Add backend to path
 sys.path.append(os.getcwd())
 
 try:
-    from app.models import Reference, Block, BlockType, DocumentMetadata, PipelineDocument
+    from app.models import Block, BlockType, DocumentMetadata, PipelineDocument, Reference
 
     print("--- Testing Reference Instantiation ---")
     try:

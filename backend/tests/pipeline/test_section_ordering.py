@@ -2,9 +2,13 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-import pytest
+
 from unittest.mock import MagicMock
+
+import pytest
+
 from app.pipeline.formatting.section_ordering import SectionOrderValidator
+
 
 @pytest.fixture
 def mock_contract_loader():

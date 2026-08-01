@@ -2,9 +2,10 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-from sqlalchemy import Column, String, DateTime, text
+from sqlalchemy import Column, DateTime, String, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+
 from app.db.base import Base
 
 

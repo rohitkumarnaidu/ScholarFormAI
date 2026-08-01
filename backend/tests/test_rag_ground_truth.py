@@ -1,6 +1,7 @@
-import pytest
 import math
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 # ---------------------------------------------------------------------------
 # Ground Truth Dataset — 20 known-relevance queries
@@ -304,8 +305,8 @@ def rag_engine(tmp_path):
         patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None),
         patch("app.pipeline.intelligence.rag_engine.chromadb", None),
         patch("app.config.settings.settings") as ms,
-        patch("app.services.model_store.model_store") as mm,
-        patch("sentence_transformers.SentenceTransformer") as mock_st,
+        patch("app.services.model_store.model_store"),
+        patch("sentence_transformers.SentenceTransformer"),
     ):
         ms.LOW_MEMORY_MODE = True
         ms.RAG_USE_TRANSFORMERS = False
@@ -361,7 +362,7 @@ class TestGroundTruthDataset:
             for doc in item["relevant_docs"]:
                 assert 1 <= doc["relevance"] <= 3, f"Relevance out of range: {doc['relevance']}"
             for doc in item["irrelevant_docs"]:
-                assert doc["relevance"] == 0, f"Irrelevant doc has non-zero relevance"
+                assert doc["relevance"] == 0, "Irrelevant doc has non-zero relevance"
 
     @pytest.mark.rag
     @pytest.mark.ai_quality

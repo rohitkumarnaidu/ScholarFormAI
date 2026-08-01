@@ -5,14 +5,15 @@
 Unit tests for Docling layout analysis client.
 """
 
-import pytest
 from unittest.mock import patch
 
+import pytest
+
 from app.pipeline.services.docling_client import (
-    DoclingClient,
-    BoundingBox,
-    LayoutElement,
     DOCLING_AVAILABLE,
+    BoundingBox,
+    DoclingClient,
+    LayoutElement,
 )
 
 

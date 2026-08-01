@@ -32,11 +32,10 @@ def client():
     mock_svc.apply_suggestion = AsyncMock()
     mock_svc.get_suggestion_history = AsyncMock()
 
-    with patch("app.routers.v1.suggestions.suggestion_service", mock_svc):
-        with TestClient(app) as test_client:
-            test_client.headers.update({"Authorization": "Bearer test-token"})
-            test_client.mock_svc = mock_svc
-            yield test_client
+    with patch("app.routers.v1.suggestions.suggestion_service", mock_svc), TestClient(app) as test_client:
+        test_client.headers.update({"Authorization": "Bearer test-token"})
+        test_client.mock_svc = mock_svc
+        yield test_client
 
     app.dependency_overrides = {}
 

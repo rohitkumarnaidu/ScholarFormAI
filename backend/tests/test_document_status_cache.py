@@ -50,17 +50,15 @@ async def test_document_status_cache_hits_within_ttl(monkeypatch):
     with patch(
         "app.routers.v1.documents_impl.DocumentService.get_document",
         return_value=_mock_document(),
-    ) as mock_get_doc:
-        with patch(
-            "app.routers.v1.documents_impl.DocumentService.get_processing_statuses",
-            return_value=[{"phase": "EXTRACTION", "status": "running", "message": "extracting"}],
-        ) as mock_get_statuses:
-            with patch(
-                "app.routers.v1.documents_impl.DocumentService.get_document_result",
-                return_value={"validation_results": {"quality_summary": {"quality_score": 0.8}}},
-            ) as mock_get_result:
-                first_payload = await legacy_documents.get_status("job-1", current_user=user)
-                second_payload = await legacy_documents.get_status("job-1", current_user=user)
+    ) as mock_get_doc, patch(
+        "app.routers.v1.documents_impl.DocumentService.get_processing_statuses",
+        return_value=[{"phase": "EXTRACTION", "status": "running", "message": "extracting"}],
+    ) as mock_get_statuses, patch(
+        "app.routers.v1.documents_impl.DocumentService.get_document_result",
+        return_value={"validation_results": {"quality_summary": {"quality_score": 0.8}}},
+    ) as mock_get_result:
+        first_payload = await legacy_documents.get_status("job-1", current_user=user)
+        second_payload = await legacy_documents.get_status("job-1", current_user=user)
 
     assert first_payload == second_payload
     assert mock_get_doc.call_count == 1
@@ -77,18 +75,16 @@ async def test_document_status_cache_scoped_by_user(monkeypatch):
     with patch(
         "app.routers.v1.documents_impl.DocumentService.get_document",
         return_value=_mock_document(owner="user-1"),
-    ) as mock_get_doc:
-        with patch(
-            "app.routers.v1.documents_impl.DocumentService.get_processing_statuses",
-            return_value=[{"phase": "EXTRACTION", "status": "running"}],
-        ) as mock_get_statuses:
-            with patch(
-                "app.routers.v1.documents_impl.DocumentService.get_document_result",
-                return_value=None,
-            ) as mock_get_result:
-                await legacy_documents.get_status("job-1", current_user=owner)
-                with pytest.raises(HTTPException) as exc_info:
-                    await legacy_documents.get_status("job-1", current_user=intruder)
+    ) as mock_get_doc, patch(
+        "app.routers.v1.documents_impl.DocumentService.get_processing_statuses",
+        return_value=[{"phase": "EXTRACTION", "status": "running"}],
+    ) as mock_get_statuses, patch(
+        "app.routers.v1.documents_impl.DocumentService.get_document_result",
+        return_value=None,
+    ) as mock_get_result:
+        await legacy_documents.get_status("job-1", current_user=owner)
+        with pytest.raises(HTTPException) as exc_info:
+            await legacy_documents.get_status("job-1", current_user=intruder)
 
     assert exc_info.value.status_code == 403
     assert mock_get_doc.call_count == 2
@@ -104,18 +100,16 @@ async def test_document_status_cache_expires_after_ttl(monkeypatch):
     with patch(
         "app.routers.v1.documents_impl.DocumentService.get_document",
         return_value=_mock_document(),
-    ) as mock_get_doc:
-        with patch(
-            "app.routers.v1.documents_impl.DocumentService.get_processing_statuses",
-            return_value=[{"phase": "EXTRACTION", "status": "running"}],
-        ) as mock_get_statuses:
-            with patch(
-                "app.routers.v1.documents_impl.DocumentService.get_document_result",
-                return_value=None,
-            ) as mock_get_result:
-                await legacy_documents.get_status("job-1", current_user=user)
-                await asyncio.sleep(0.02)
-                await legacy_documents.get_status("job-1", current_user=user)
+    ) as mock_get_doc, patch(
+        "app.routers.v1.documents_impl.DocumentService.get_processing_statuses",
+        return_value=[{"phase": "EXTRACTION", "status": "running"}],
+    ) as mock_get_statuses, patch(
+        "app.routers.v1.documents_impl.DocumentService.get_document_result",
+        return_value=None,
+    ) as mock_get_result:
+        await legacy_documents.get_status("job-1", current_user=user)
+        await asyncio.sleep(0.02)
+        await legacy_documents.get_status("job-1", current_user=user)
 
     assert mock_get_doc.call_count == 2
     assert mock_get_statuses.call_count == 2
@@ -130,17 +124,15 @@ async def test_document_status_cache_fetches_result_for_terminal_status(monkeypa
     with patch(
         "app.routers.v1.documents_impl.DocumentService.get_document",
         return_value=_mock_document(status="COMPLETED"),
-    ) as mock_get_doc:
-        with patch(
-            "app.routers.v1.documents_impl.DocumentService.get_processing_statuses",
-            return_value=[{"phase": "PERSISTENCE", "status": "done", "message": "saved"}],
-        ) as mock_get_statuses:
-            with patch(
-                "app.routers.v1.documents_impl.DocumentService.get_document_result",
-                return_value={"validation_results": {"quality_summary": {"quality_score": 0.91}}},
-            ) as mock_get_result:
-                await legacy_documents.get_status("job-1", current_user=user)
-                await legacy_documents.get_status("job-1", current_user=user)
+    ) as mock_get_doc, patch(
+        "app.routers.v1.documents_impl.DocumentService.get_processing_statuses",
+        return_value=[{"phase": "PERSISTENCE", "status": "done", "message": "saved"}],
+    ) as mock_get_statuses, patch(
+        "app.routers.v1.documents_impl.DocumentService.get_document_result",
+        return_value={"validation_results": {"quality_summary": {"quality_score": 0.91}}},
+    ) as mock_get_result:
+        await legacy_documents.get_status("job-1", current_user=user)
+        await legacy_documents.get_status("job-1", current_user=user)
 
     assert mock_get_doc.call_count == 1
     assert mock_get_statuses.call_count == 1

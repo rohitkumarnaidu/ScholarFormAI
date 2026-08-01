@@ -2,8 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 from unittest.mock import MagicMock, patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -17,15 +20,14 @@ class TestEquationStandardizer:
 
     def test_init_with_custom_path(self):
         from app.pipeline.equations.standardizer import EquationStandardizer
-        with patch("os.path.exists", return_value=True):
-            with patch("lxml.etree.parse") as mock_parse:
-                mock_xslt = MagicMock()
-                mock_parse.return_value = mock_xslt
-                from lxml import etree
-                with patch.object(etree, "XSLT") as mock_xslt_cls:
-                    mock_xslt_cls.return_value = MagicMock()
-                    s = EquationStandardizer(xsl_path="/custom/omml2mml.xsl")
-                    assert s._xslt is not None
+        with patch("os.path.exists", return_value=True), patch("lxml.etree.parse") as mock_parse:
+            mock_xslt = MagicMock()
+            mock_parse.return_value = mock_xslt
+            from lxml import etree
+            with patch.object(etree, "XSLT") as mock_xslt_cls:
+                mock_xslt_cls.return_value = MagicMock()
+                s = EquationStandardizer(xsl_path="/custom/omml2mml.xsl")
+                assert s._xslt is not None
 
     def test_init_xslt_load_failure(self):
         from app.pipeline.equations.standardizer import EquationStandardizer
@@ -41,8 +43,8 @@ class TestEquationStandardizer:
             assert s._xslt is None
 
     def test_process_no_equations(self):
-        from app.pipeline.equations.standardizer import EquationStandardizer
         from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.equations.standardizer import EquationStandardizer
         doc = PipelineDocument(document_id="test")
         s = EquationStandardizer()
         with patch.object(s, "_convert_omml_to_mathml"):
@@ -50,9 +52,9 @@ class TestEquationStandardizer:
             assert result is doc
 
     def test_process_with_equations(self):
-        from app.pipeline.equations.standardizer import EquationStandardizer
-        from app.models.pipeline_document import PipelineDocument
         from app.models.equation import Equation
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.equations.standardizer import EquationStandardizer
         doc = PipelineDocument(
             document_id="test",
             equations=[Equation(equation_id="e1", omml="<m:oMath>...</m:oMath>", index=0)]
@@ -64,9 +66,9 @@ class TestEquationStandardizer:
             assert result.equations[0].metadata["conversion_engine"] == "xslt-1.0"
 
     def test_process_conversion_failure(self):
-        from app.pipeline.equations.standardizer import EquationStandardizer
-        from app.models.pipeline_document import PipelineDocument
         from app.models.equation import Equation
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.equations.standardizer import EquationStandardizer
         doc = PipelineDocument(
             document_id="test",
             equations=[Equation(equation_id="e1", omml="<bad>", index=0)]
@@ -77,9 +79,9 @@ class TestEquationStandardizer:
             assert result.equations[0].mathml is None
 
     def test_process_exception(self):
-        from app.pipeline.equations.standardizer import EquationStandardizer
-        from app.models.pipeline_document import PipelineDocument
         from app.models.equation import Equation
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.equations.standardizer import EquationStandardizer
         doc = PipelineDocument(
             document_id="test",
             equations=[Equation(equation_id="e1", omml="<m:oMath>...</m:oMath>", index=0)]
@@ -90,9 +92,9 @@ class TestEquationStandardizer:
             assert result.equations[0].mathml is None
 
     def test_process_partial_failure(self):
-        from app.pipeline.equations.standardizer import EquationStandardizer
-        from app.models.pipeline_document import PipelineDocument
         from app.models.equation import Equation
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.equations.standardizer import EquationStandardizer
         doc = PipelineDocument(
             document_id="test",
             equations=[
@@ -166,7 +168,7 @@ class TestEquationStandardizer:
                 assert result == "<math>result</math>"
 
     def test_get_equation_standardizer(self):
-        from app.pipeline.equations.standardizer import get_equation_standardizer, _standardizer
+        from app.pipeline.equations.standardizer import _standardizer, get_equation_standardizer
         _standardizer = None
         s = get_equation_standardizer()
         assert s is not None
@@ -191,9 +193,9 @@ class TestEquationStandardizer:
                 assert result is not None
 
     def test_process_no_omml(self):
-        from app.pipeline.equations.standardizer import EquationStandardizer
-        from app.models.pipeline_document import PipelineDocument
         from app.models.equation import Equation
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.equations.standardizer import EquationStandardizer
         doc = PipelineDocument(
             document_id="test",
             equations=[Equation(equation_id="e1", omml=None, index=0)]

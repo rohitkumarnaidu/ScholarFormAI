@@ -1,12 +1,16 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.pipeline.formatting.formatter import Formatter
 from __future__ import annotations
+
 import io
-import yaml
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
+import yaml
+
+from app.pipeline.formatting.formatter import Formatter
+
 
 @pytest.fixture
 def formatter():
@@ -14,11 +18,11 @@ def formatter():
 
     with (
         patch("app.pipeline.formatting.formatter.ContractLoader") as mock_cl,
-        patch("app.pipeline.formatting.formatter.StyleMapper") as mock_sm,
-        patch("app.pipeline.formatting.formatter.NumberingEngine") as mock_ne,
-        patch("app.pipeline.formatting.formatter.ReferenceFormatter") as mock_rf,
-        patch("app.pipeline.formatting.formatter.TemplateRenderer") as mock_tr,
-        patch("app.pipeline.formatting.formatter.TableRenderer") as mock_tbl,
+        patch("app.pipeline.formatting.formatter.StyleMapper"),
+        patch("app.pipeline.formatting.formatter.NumberingEngine"),
+        patch("app.pipeline.formatting.formatter.ReferenceFormatter"),
+        patch("app.pipeline.formatting.formatter.TemplateRenderer"),
+        patch("app.pipeline.formatting.formatter.TableRenderer"),
     ):
         mock_cl_instance = mock_cl.return_value
         mock_cl_instance.load.return_value = {}
@@ -30,7 +34,7 @@ def formatter():
 
 @pytest.fixture
 def minimal_doc():
-    from app.models import PipelineDocument, DocumentMetadata
+    from app.models import DocumentMetadata, PipelineDocument
     return PipelineDocument(
         document_id="doc1",
         blocks=[],
@@ -39,7 +43,7 @@ def minimal_doc():
 
 @pytest.fixture
 def doc_with_blocks():
-    from app.models import PipelineDocument, DocumentMetadata, Block, BlockType, Reference
+    from app.models import Block, BlockType, DocumentMetadata, PipelineDocument, Reference
     blocks = [
         Block(block_id="b1", index=1, block_type=BlockType.TITLE, text="Paper Title", section_name="abstract"),
         Block(block_id="b2", index=2, block_type=BlockType.BODY, text="Abstract text.", section_name="abstract"),
@@ -124,7 +128,7 @@ class TestFormatterProcess:
         mock_format.assert_called_once_with(doc_with_blocks, "none")
 
     def test_process_uses_template_name(self, formatter):
-        from app.models import PipelineDocument, DocumentMetadata, TemplateInfo
+        from app.models import DocumentMetadata, PipelineDocument, TemplateInfo
         doc = PipelineDocument(
             document_id="doc1",
             blocks=[],
@@ -142,7 +146,7 @@ class TestFormatterFormatTemplatePath:
         formatter.numbering_engine.apply_numbering.side_effect = lambda doc, tmpl: doc
         formatter.template_renderer.render = MagicMock(return_value=MagicMock())
         formatter.template_renderer.render.return_value.save = MagicMock()
-        with patch.object(formatter, "_post_process_template_render") as mock_post:
+        with patch.object(formatter, "_post_process_template_render"):
             with patch.object(formatter, "_install_post_save_hook"):
                 result = formatter.format(doc_with_blocks, template_name="ieee")
         assert result is not None
@@ -961,7 +965,7 @@ class TestFormatterFigures:
                      width=400, height=300)
         with patch("os.path.exists", return_value=True):
             with patch.object(formatter, "_calculate_image_size", return_value=(5.0, 3.75)):
-                with patch("app.pipeline.formatting.formatter.logger") as mock_log:
+                with patch("app.pipeline.formatting.formatter.logger"):
                     doc.add_paragraph.return_value.add_run.return_value.add_picture.side_effect = Exception("fail")
                     formatter._render_figure(doc, fig, 1)
 
@@ -1014,7 +1018,7 @@ class TestFormatterFigures:
 
 class TestFormatterFootnotes:
     def test_build_footnote_lookup(self, formatter):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="doc1",
             blocks=[
@@ -1033,7 +1037,7 @@ class TestFormatterFootnotes:
         assert lookup == {}
 
     def test_build_footnote_lookup_deduplicates(self, formatter):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         doc = PipelineDocument(
             document_id="doc1",
             blocks=[
@@ -1167,19 +1171,18 @@ class TestFormatterContract:
 
 class TestFormatterPostProcess:
     def test_post_process_with_docx(self, formatter):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         rendered = MagicMock()
         rendered.docx = MagicMock()
         doc = PipelineDocument(document_id="doc1", blocks=[], metadata=DocumentMetadata())
-        with patch.object(formatter, "_apply_initial_layout"):
-            with patch.object(formatter, "_apply_page_size"):
-                with patch.object(formatter, "_remove_static_page_number_placeholders"):
-                    with patch.object(formatter, "_rehydrate_template_render"):
-                        with patch.object(formatter, "_apply_global_line_spacing"):
-                            formatter._post_process_template_render(rendered, doc, "ieee", {})
+        with patch.object(formatter, "_apply_initial_layout"), patch.object(formatter, "_apply_page_size"):
+            with patch.object(formatter, "_remove_static_page_number_placeholders"):
+                with patch.object(formatter, "_rehydrate_template_render"):
+                    with patch.object(formatter, "_apply_global_line_spacing"):
+                        formatter._post_process_template_render(rendered, doc, "ieee", {})
 
     def test_post_process_no_docx(self, formatter):
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
         rendered = MagicMock()
         rendered.docx = None
         doc = PipelineDocument(document_id="doc1", blocks=[], metadata=DocumentMetadata())
@@ -1218,7 +1221,7 @@ class TestFormatterInlineContent:
     def test_write_inline_content_empty_hyperlink(self, formatter):
         p = MagicMock()
         p._p = MagicMock()
-        with patch.object(formatter, "_add_hyperlink") as mock_ah:
+        with patch.object(formatter, "_add_hyperlink"):
             formatter._write_inline_content(
                 p, "Text",
                 [{"text": "", "url": ""}],
@@ -1272,7 +1275,7 @@ class TestFormatterInlineContent:
 
 class TestFormatterRehydrate:
     def test_rehydrate_matched_paragraph(self, formatter):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         doc = _make_word_doc()
         block = Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Matched paragraph")
         doc.paragraphs = [MagicMock()]
@@ -1283,7 +1286,7 @@ class TestFormatterRehydrate:
                 formatter._rehydrate_template_render(doc, doc_obj, "ieee", {})
 
     def test_rehydrate_unmatched_renders_block(self, formatter):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         doc = _make_word_doc()
         block = Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Unmatched text",
                       metadata={"hyperlinks": [{"text": "link", "url": "https://example.com"}]})
@@ -1293,7 +1296,7 @@ class TestFormatterRehydrate:
                 formatter._rehydrate_template_render(doc, doc_obj, "ieee", {})
 
     def test_rehydrate_unmatched_reference_entry(self, formatter):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         doc = _make_word_doc()
         block = Block(block_id="b1", index=1, block_type=BlockType.REFERENCE_ENTRY, text="[1] Ref")
         doc_obj = PipelineDocument(document_id="doc1", blocks=[block], metadata=DocumentMetadata())
@@ -1302,7 +1305,7 @@ class TestFormatterRehydrate:
                 formatter._rehydrate_template_render(doc, doc_obj, "ieee", {})
 
     def test_rehydrate_skips_footnotes(self, formatter):
-        from app.models import PipelineDocument, DocumentMetadata, Block, BlockType
+        from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
         doc = _make_word_doc()
         block = Block(block_id="b1", index=1, block_type=BlockType.FOOTNOTE, text="Skip footnote",
                       metadata={"is_footnote": True})
@@ -1312,7 +1315,7 @@ class TestFormatterRehydrate:
         mock_find.assert_not_called()
 
     def test_rehydrate_appends_figures(self, formatter):
-        from app.models import PipelineDocument, DocumentMetadata, Figure, Table, Equation
+        from app.models import DocumentMetadata, Equation, Figure, PipelineDocument, Table
         doc = _make_word_doc()
         doc_obj = PipelineDocument(
             document_id="doc1", blocks=[], metadata=DocumentMetadata(),
@@ -1320,9 +1323,8 @@ class TestFormatterRehydrate:
             equations=[Equation(equation_id="e1", text="x=1", index=1)],
             tables=[Table(table_id="t1", num_rows=2, num_cols=2, index=1, block_index=1, cells=[])],
         )
-        with patch.object(formatter, "_render_figure"):
-            with patch.object(formatter, "_render_equation"):
-                formatter._rehydrate_template_render(doc, doc_obj, "ieee", {})
+        with patch.object(formatter, "_render_figure"), patch.object(formatter, "_render_equation"):
+            formatter._rehydrate_template_render(doc, doc_obj, "ieee", {})
 
     def test_find_matching_paragraph_exact(self, formatter):
         doc = _make_word_doc()

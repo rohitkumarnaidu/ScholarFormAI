@@ -5,13 +5,15 @@
 ML-based pattern detection for agent learning.
 """
 
-import numpy as np
 import logging
-from typing import List, Dict, Any, Optional, Tuple
-from sklearn.cluster import DBSCAN
-from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import IsolationForest
 from collections import defaultdict
+from typing import Any
+
+import numpy as np
+from sklearn.cluster import DBSCAN
+from sklearn.ensemble import IsolationForest
+from sklearn.preprocessing import StandardScaler
+
 from app.pipeline.safety import safe_function
 
 logger = logging.getLogger(__name__)
@@ -41,7 +43,7 @@ class MLPatternDetector:
         self.patterns = []
 
     @safe_function(fallback_value=np.zeros(8), error_message="MLPatternDetector.extract_features")
-    def extract_features(self, metrics: Dict[str, Any]) -> np.ndarray:
+    def extract_features(self, metrics: dict[str, Any]) -> np.ndarray:
         """
         Extract numerical features from processing metrics.
         """
@@ -58,7 +60,7 @@ class MLPatternDetector:
         return np.array(features)
 
     @safe_function(fallback_value=False, error_message="MLPatternDetector.fit")
-    def fit(self, metrics_list: List[Dict[str, Any]]) -> bool:
+    def fit(self, metrics_list: list[dict[str, Any]]) -> bool:
         """
         Train pattern detector on historical metrics.
 
@@ -96,7 +98,7 @@ class MLPatternDetector:
             logger.error(f"Pattern detection training failed: {e}")
             return False
 
-    def _extract_patterns(self, metrics_list: List[Dict[str, Any]], labels: np.ndarray) -> List[Dict[str, Any]]:
+    def _extract_patterns(self, metrics_list: list[dict[str, Any]], labels: np.ndarray) -> list[dict[str, Any]]:
         """Extract pattern summaries from clusters."""
         patterns = []
 
@@ -121,7 +123,7 @@ class MLPatternDetector:
 
         return patterns
 
-    def _most_common_tools(self, metrics_list: List[Dict[str, Any]]) -> List[str]:
+    def _most_common_tools(self, metrics_list: list[dict[str, Any]]) -> list[str]:
         """Find most commonly used tools in a cluster."""
         tool_counts = defaultdict(int)
         for m in metrics_list:
@@ -133,7 +135,7 @@ class MLPatternDetector:
         return [tool for tool, _ in sorted_tools[:3]]
 
     @safe_function(fallback_value=None, error_message="MLPatternDetector.predict_pattern")
-    def predict_pattern(self, metrics: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def predict_pattern(self, metrics: dict[str, Any]) -> dict[str, Any] | None:
         """
         Predict which pattern a document belongs to.
 
@@ -148,7 +150,7 @@ class MLPatternDetector:
 
         try:
             features = self.extract_features(metrics).reshape(1, -1)
-            features_scaled = self.scaler.transform(features)
+            self.scaler.transform(features)
 
             # Find nearest pattern (simplified - using distance to cluster centers)
             # In practice, would use proper cluster prediction
@@ -159,7 +161,7 @@ class MLPatternDetector:
             return None
 
     @safe_function(fallback_value=(False, 0.0), error_message="MLPatternDetector.detect_anomaly")
-    def detect_anomaly(self, metrics: Dict[str, Any]) -> Tuple[bool, float]:
+    def detect_anomaly(self, metrics: dict[str, Any]) -> tuple[bool, float]:
         """
         Detect if a document is anomalous.
 
@@ -184,7 +186,7 @@ class MLPatternDetector:
             logger.error(f"Anomaly detection failed: {e}")
             return False, 0.0
 
-    def get_pattern_summary(self) -> Dict[str, Any]:
+    def get_pattern_summary(self) -> dict[str, Any]:
         """Get summary of detected patterns."""
         return {"pattern_count": len(self.patterns), "patterns": self.patterns, "trained": self.clusterer is not None}
 

@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import time
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -135,7 +136,7 @@ class TestRateLimitModule:
             request.method = "GET"
             call_next = AsyncMock(return_value=MagicMock())
             import asyncio
-            response = asyncio.run(mw.dispatch(request, call_next))
+            asyncio.run(mw.dispatch(request, call_next))
             call_next.assert_awaited_once()
 
     def test_dispatch_upload_rate_limited(self):
@@ -241,7 +242,7 @@ class TestHTTPSRedirect:
         call_next = AsyncMock(return_value=MagicMock(headers={}))
         mw = HTTPSRedirectMiddleware(MagicMock())
         import asyncio
-        response = asyncio.run(mw.dispatch(request, call_next))
+        asyncio.run(mw.dispatch(request, call_next))
         call_next.assert_awaited_once()
 
     def test_https_redirect_localhost_bypass(self):
@@ -253,7 +254,7 @@ class TestHTTPSRedirect:
         call_next = AsyncMock(return_value=MagicMock(headers={}))
         mw = HTTPSRedirectMiddleware(MagicMock())
         import asyncio
-        response = asyncio.run(mw.dispatch(request, call_next))
+        asyncio.run(mw.dispatch(request, call_next))
         call_next.assert_awaited_once()
 
     def test_https_redirect_127_bypass(self):
@@ -265,7 +266,7 @@ class TestHTTPSRedirect:
         call_next = AsyncMock(return_value=MagicMock(headers={}))
         mw = HTTPSRedirectMiddleware(MagicMock())
         import asyncio
-        response = asyncio.run(mw.dispatch(request, call_next))
+        asyncio.run(mw.dispatch(request, call_next))
         call_next.assert_awaited_once()
 
     def test_https_redirect_health_bypass(self):
@@ -277,7 +278,7 @@ class TestHTTPSRedirect:
         call_next = AsyncMock(return_value=MagicMock(headers={}))
         mw = HTTPSRedirectMiddleware(MagicMock())
         import asyncio
-        response = asyncio.run(mw.dispatch(request, call_next))
+        asyncio.run(mw.dispatch(request, call_next))
         call_next.assert_awaited_once()
 
     def test_https_redirect_http_to_https(self):
@@ -357,7 +358,7 @@ class TestFeatureFlagMiddleware:
             call_next = AsyncMock(return_value=MagicMock(headers={}))
             mw = FeatureFlagMiddleware(MagicMock())
             import asyncio
-            response = asyncio.run(mw.dispatch(request, call_next))
+            asyncio.run(mw.dispatch(request, call_next))
             assert request.state.feature_flags == {"new_ui": True, "dark_mode": False}
             mock_service.get_all_flags.assert_called_once()
 
@@ -401,7 +402,7 @@ class TestFeatureFlagMiddleware:
             call_next = AsyncMock(return_value=MagicMock(headers={}))
             mw = FeatureFlagMiddleware(MagicMock())
             import asyncio
-            response = asyncio.run(mw.dispatch(request, call_next))
+            asyncio.run(mw.dispatch(request, call_next))
             assert hasattr(request.state, "feature_flags")
 
     def test_dispatch_auth_extraction_exception_safe(self):
@@ -415,7 +416,7 @@ class TestFeatureFlagMiddleware:
             call_next = AsyncMock(return_value=MagicMock(headers={}))
             mw = FeatureFlagMiddleware(MagicMock())
             import asyncio
-            response = asyncio.run(mw.dispatch(request, call_next))
+            asyncio.run(mw.dispatch(request, call_next))
             assert hasattr(request.state, "feature_flags")
 
 
@@ -555,7 +556,7 @@ class TestJWKSVerifier:
             from app.security.jwks_verifier import verify_jwt
             mock_keys = {"key-1": {"kty": "RSA", "kid": "key-1", "n": "test", "e": "AQAB"}}
             with patch("app.security.jwks_verifier._get_cached_keys", return_value=mock_keys), \
-                 patch("app.security.jwks_verifier._public_key_from_jwk") as mock_pubkey, \
+                 patch("app.security.jwks_verifier._public_key_from_jwk"), \
                  patch("jwt.decode", return_value={"sub": "user-456"}):
                 result = verify_jwt("valid-rs-token")
                 assert result["sub"] == "user-456"
@@ -615,7 +616,7 @@ class TestJWKSVerifier:
              patch("jwt.get_unverified_header", return_value={"alg": "RS256", "kid": "key-1"}):
             from app.security.jwks_verifier import verify_jwt
             call_count = [0]
-            original_func = verify_jwt.__wrapped__ if hasattr(verify_jwt, "__wrapped__") else None
+            verify_jwt.__wrapped__ if hasattr(verify_jwt, "__wrapped__") else None
 
             def mock_decode_with_jwks(token, *, expected_issuer, refresh=False):
                 call_count[0] += 1
@@ -634,7 +635,7 @@ class TestJWKSVerifier:
              patch("app.security.jwks_verifier.settings.ALGORITHM", "RS256"), \
              patch("app.security.jwks_verifier.settings.SUPABASE_URL", "https://project.supabase.co"), \
              patch("jwt.get_unverified_header", return_value={"alg": "RS256", "kid": "key-1"}):
-            from app.security.jwks_verifier import verify_jwt, _RetryableJWTError
+            from app.security.jwks_verifier import _RetryableJWTError, verify_jwt
 
             def always_fail(token, *, expected_issuer, refresh=False):
                 raise _RetryableJWTError("always fail")
@@ -785,9 +786,8 @@ class TestJWKSVerifier:
         with patch("app.security.jwks_verifier.settings.SUPABASE_URL", "https://project.supabase.co"):
             from app.security.jwks_verifier import _decode_with_jwks
             with patch("jwt.get_unverified_header", return_value={"alg": "RS256", "kid": "missing-key"}), \
-                 patch("app.security.jwks_verifier._get_cached_keys", return_value={}):
-                with pytest.raises(Exception):
-                    _decode_with_jwks("token", expected_issuer=None)
+                 patch("app.security.jwks_verifier._get_cached_keys", return_value={}), pytest.raises(Exception):
+                _decode_with_jwks("token", expected_issuer=None)
 
     def test_verify_jwt_no_supabase_url_no_issuer(self):
         with patch("app.security.jwks_verifier.settings.SUPABASE_URL", None), \
@@ -810,7 +810,7 @@ class TestMonitoringMiddlewareExtra:
         call_next = AsyncMock(return_value=MagicMock(headers={}))
         mw = MonitoringMiddleware(MagicMock())
         import asyncio
-        response = asyncio.run(mw.dispatch(request, call_next))
+        asyncio.run(mw.dispatch(request, call_next))
         assert request.state.request_id == "custom-id-123"
 
     def test_dispatch_generates_uuid_when_no_header(self):
@@ -822,7 +822,7 @@ class TestMonitoringMiddlewareExtra:
         call_next = AsyncMock(return_value=MagicMock(headers={}))
         mw = MonitoringMiddleware(MagicMock())
         import asyncio
-        response = asyncio.run(mw.dispatch(request, call_next))
+        asyncio.run(mw.dispatch(request, call_next))
         assert len(request.state.request_id) == 36
 
     def test_dispatch_sets_timing_headers(self):
@@ -868,7 +868,7 @@ class TestMonitoringMiddlewareExtra:
         mw = MonitoringMiddleware(MagicMock())
         import asyncio
         with patch("app.middleware.monitoring.logger") as mock_log:
-            result = asyncio.run(mw.dispatch(request, call_next))
+            asyncio.run(mw.dispatch(request, call_next))
             assert mock_log.info.call_count >= 1
             log_calls = [c[0][0] for c in mock_log.info.call_args_list]
             has_start = any("Request started" in msg for msg in log_calls)
@@ -883,8 +883,9 @@ class TestMainExtra:
         assert app.title == "ScholarForm AI Backend"
 
     def test_http_exception_handler_v1_request(self):
-        from app.main import http_exception_handler
         from fastapi import HTTPException
+
+        from app.main import http_exception_handler
         request = MagicMock()
         request.url.path = "/api/v1/documents"
         request.state.request_id = "req-1"
@@ -896,8 +897,9 @@ class TestMainExtra:
             mock_build.assert_called_once()
 
     def test_http_exception_handler_non_v1_request(self):
-        from app.main import http_exception_handler
         from fastapi import HTTPException
+
+        from app.main import http_exception_handler
         request = MagicMock()
         request.url.path = "/docs"
         exc = HTTPException(status_code=404, detail="Not found")
@@ -908,8 +910,9 @@ class TestMainExtra:
             mock_handler.assert_called_once_with(request, exc)
 
     def test_http_exception_handler_with_detail_dict(self):
-        from app.main import http_exception_handler
         from fastapi import HTTPException
+
+        from app.main import http_exception_handler
         request = MagicMock()
         request.url.path = "/api/v1/documents"
         request.state.request_id = "req-1"
@@ -921,8 +924,9 @@ class TestMainExtra:
             mock_build.assert_called_once()
 
     def test_request_validation_handler_v1_request(self):
-        from app.main import request_validation_handler
         from fastapi.exceptions import RequestValidationError
+
+        from app.main import request_validation_handler
         request = MagicMock()
         request.url.path = "/api/v1/documents"
         request.state.request_id = "req-1"
@@ -937,8 +941,9 @@ class TestMainExtra:
             )
 
     def test_request_validation_handler_non_v1_request(self):
-        from app.main import request_validation_handler
         from fastapi.exceptions import RequestValidationError
+
+        from app.main import request_validation_handler
         request = MagicMock()
         request.url.path = "/docs"
         exc = RequestValidationError(errors=[])
@@ -949,8 +954,9 @@ class TestMainExtra:
             mock_handler.assert_called_once_with(request, exc)
 
     def test_root_endpoint(self):
-        from app.main import root
         import asyncio
+
+        from app.main import root
         result = asyncio.run(root())
         assert result["message"] == "ScholarForm AI Backend is running"
 
@@ -984,8 +990,9 @@ class TestMainExtra:
         assert resp.status_code == 500
 
     def test_http_exception_preserves_headers(self):
-        from app.main import http_exception_handler
         from fastapi import HTTPException
+
+        from app.main import http_exception_handler
         request = MagicMock()
         request.url.path = "/api/v1/documents"
         request.state.request_id = "req-1"
@@ -1056,7 +1063,7 @@ class TestSupabaseClientExtra:
             mock_settings.SUPABASE_URL = "https://project.supabase.co"
             mock_settings.SUPABASE_SERVICE_ROLE_KEY = "service-role-key"
             from app.db.supabase_client import _init_client
-            result = _init_client()
+            _init_client()
             mock_create.assert_called_once_with("https://project.supabase.co", "service-role-key")
 
     def test_get_supabase_db_returns_client_when_configured(self):
@@ -1078,7 +1085,7 @@ class TestSupabaseClientExtra:
 
 class TestRedisCacheExtra:
     def test_get_redis_cache_returns_singleton(self):
-        from app.cache.redis_cache import redis_cache, get_redis_cache
+        from app.cache.redis_cache import get_redis_cache, redis_cache
         assert get_redis_cache() is redis_cache
 
     def test_health_with_error_detail(self):
@@ -1131,13 +1138,14 @@ class TestDBSessionExtra:
             assert "503" in str(exc.value) or "Database is not configured" in str(exc.value)
 
     def test_get_db_handles_sqlalchemy_error(self):
-        from app.db.session import get_db
         from sqlalchemy.exc import SQLAlchemyError
+
+        from app.db.session import get_db
         mock_session = MagicMock()
         mock_session.commit.side_effect = SQLAlchemyError("db failure")
         with patch("app.db.session.SessionLocal", return_value=mock_session):
             gen = get_db()
-            session = next(gen)
+            next(gen)
             with pytest.raises(Exception) as exc:
                 gen.throw(SQLAlchemyError("db failure"))
             assert "500" in str(exc.value) or "A database error occurred" in str(exc.value)
@@ -1149,7 +1157,7 @@ class TestDBSessionExtra:
         mock_session = MagicMock()
         with patch("app.db.session.SessionLocal", return_value=mock_session):
             gen = get_db()
-            session = next(gen)
+            next(gen)
             with pytest.raises(StopIteration):
                 next(gen)
             mock_session.close.assert_called_once()
@@ -1160,17 +1168,15 @@ class TestDBSessionExtra:
         mock_session.close.side_effect = lambda: None
         with patch("app.db.session.SessionLocal", return_value=mock_session):
             gen = get_db()
-            session = next(gen)
-            try:
+            next(gen)
+            with contextlib.suppress(ValueError):
                 gen.throw(ValueError("unexpected"))
-            except ValueError:
-                pass
             mock_session.close.assert_called_once()
 
     def test_check_db_health_with_operational_error(self):
         from sqlalchemy.exc import OperationalError
         mock_engine = MagicMock()
-        mock_connection = MagicMock()
+        MagicMock()
         mock_engine.connect.return_value.__enter__.side_effect = OperationalError("stmt", {}, None)
         with patch("app.db.session.engine", mock_engine):
             from app.db.session import check_db_health

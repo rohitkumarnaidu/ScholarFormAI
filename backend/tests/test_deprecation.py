@@ -87,12 +87,12 @@ class TestDeprecatedRoute:
             assert handler is dummy_handler
 
     def test_deprecation_headers_added_to_response(self):
-        from app.routers.deprecation import build_deprecation_headers, DeprecatedRoute
+        from app.routers.deprecation import DeprecatedRoute, build_deprecation_headers
 
         mock_response = MagicMock()
         mock_response.headers = {}
 
-        mock_original = AsyncMock(return_value=mock_response)
+        AsyncMock(return_value=mock_response)
         route = DeprecatedRoute.__new__(DeprecatedRoute)
         route.successor_map = {"/v1/old": "/v2/new"}
         route.path_format = "/v1/old"
@@ -105,8 +105,9 @@ class TestDeprecatedRoute:
         assert "successor-version" in mock_response.headers["Link"]
 
     def test_http_exception_gets_headers(self):
-        from app.routers.deprecation import build_deprecation_headers, DeprecatedRoute
         from fastapi import HTTPException
+
+        from app.routers.deprecation import DeprecatedRoute, build_deprecation_headers
 
         route = DeprecatedRoute.__new__(DeprecatedRoute)
         route.successor_map = {"/v1/old": "/v2/new"}

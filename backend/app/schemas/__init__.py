@@ -14,41 +14,41 @@ All schemas are available from this single import point.
 
 # ── Auth ──────────────────────────────────────────────────────────────────────
 from app.schemas.auth import (
-    SignupRequest,
-    LoginRequest,
-    ForgotPasswordRequest,
-    VerifyOTPRequest,
-    ResetPasswordRequest,
     AuthTokenResponse,
+    ForgotPasswordRequest,
+    LoginRequest,
     MessageResponse,
     OTPVerifyResponse,
+    ResetPasswordRequest,
+    SignupRequest,
+    VerifyOTPRequest,
 )
 
 # ── Document ──────────────────────────────────────────────────────────────────
 from app.schemas.document import (
-    ExportFormat,
-    DocumentStatus,
-    PageSize,
-    TemplateChoice,
-    FormattingOptions,
-    DocumentUploadResponse,
-    PhaseStatus,
-    DocumentStatusResponse,
-    DocumentBase,
+    CompareFormatted,
+    CompareOriginal,
     Document,
+    DocumentBase,
+    DocumentCompareResponse,
     DocumentListItem,
     DocumentListResponse,
     DocumentMetaSummary,
     DocumentPreviewResponse,
-    CompareOriginal,
-    CompareFormatted,
-    DocumentCompareResponse,
+    DocumentStatus,
+    DocumentStatusResponse,
+    DocumentUploadResponse,
+    ExportFormat,
+    FormattingOptions,
+    PageSize,
+    PhaseStatus,
+    TemplateChoice,
 )
 
 # ── User ──────────────────────────────────────────────────────────────────────
 from app.schemas.user import (
-    UserBase,
     User,
+    UserBase,
     UserProfile,
     UserUpdateRequest,
 )

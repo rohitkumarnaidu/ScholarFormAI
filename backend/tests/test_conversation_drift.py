@@ -8,17 +8,16 @@ Sections:
   2B — Context Retention           (~10 tests)
 """
 
-import pytest
 import re
 from unittest.mock import patch
-from typing import List, Dict
 
+import pytest
 
 # ===================================================================
 #  Helpers
 # ===================================================================
 
-def _build_turns(n: int, base_topic: str = "academic formatting") -> List[Dict[str, str]]:
+def _build_turns(n: int, base_topic: str = "academic formatting") -> list[dict[str, str]]:
     """Build *n* user/assistant turn pairs on a consistent topic."""
     messages = [{"role": "system", "content": f"You are a {base_topic} assistant."}]
     for i in range(n):
@@ -38,7 +37,7 @@ def _embedding_similarity(text_a: str, text_b: str) -> float:
     return len(intersection) / len(union)
 
 
-def _measure_drift(messages: List[Dict[str, str]]) -> float:
+def _measure_drift(messages: list[dict[str, str]]) -> float:
     """Measure semantic drift between first user message and last user message."""
     user_msgs = [m["content"] for m in messages if m.get("role") == "user"]
     if len(user_msgs) < 2:
@@ -47,7 +46,7 @@ def _measure_drift(messages: List[Dict[str, str]]) -> float:
     return 1.0 - sim  # drift = 1 - similarity
 
 
-def _topic_change_detected(messages: List[Dict[str, str]]) -> bool:
+def _topic_change_detected(messages: list[dict[str, str]]) -> bool:
     """Detect if topic has shifted significantly between first and last user turn."""
     drift = _measure_drift(messages)
     return drift > 0.7
@@ -211,9 +210,9 @@ class TestContextRetention:
     @pytest.mark.unit
     @pytest.mark.ai_quality
     def test_context_window_within_limit(self):
-        from app.services.llm_service import _extract_prompts, MAX_LLM_INPUT_LENGTH
+        from app.services.llm_service import MAX_LLM_INPUT_LENGTH, _extract_prompts
         messages = [{"role": "system", "content": "S" * 1000}]
-        for i in range(10):
+        for _i in range(10):
             messages.append({"role": "user", "content": "X" * 500})
             messages.append({"role": "assistant", "content": "Y" * 500})
         system, user = _extract_prompts(messages)

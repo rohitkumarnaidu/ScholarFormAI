@@ -1,4 +1,5 @@
 import asyncio
+import contextlib
 import logging
 import os
 import tempfile
@@ -86,10 +87,8 @@ async def format_manuscript(request: FormatRequest):
         raise HTTPException(status_code=422, detail=f"Formatting failed: {str(e)}")
     finally:
         if os.path.exists(output_path):
-            try:
+            with contextlib.suppress(OSError):
                 os.remove(output_path)
-            except OSError:
-                pass
 
 
 @router.post("/validate", response_model=ValidateResponse, summary="Validate a manuscript")

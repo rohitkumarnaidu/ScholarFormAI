@@ -10,9 +10,9 @@ document processing pipeline and delegates to the orchestrator's services
 via self.orchestrator.
 """
 
-import os
 import logging
-from typing import Any, Tuple
+import os
+from typing import Any
 
 from app.pipeline.orchestrator.stages import PipelineStages
 
@@ -159,7 +159,7 @@ class PipelinePhases:
         job_id: str,
         template_name: str,
         runtime_flags: dict,
-    ) -> Tuple[Any, dict]:
+    ) -> tuple[Any, dict]:
         self.orchestrator._update_status(job_id, "VALIDATION", "PROCESSING", progress=60)
         if runtime_flags["crossref_enrichment"]:
             doc_obj = self.orchestrator.stages.run_crossref_validation(doc_obj)

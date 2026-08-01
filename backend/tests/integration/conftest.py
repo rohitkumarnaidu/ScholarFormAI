@@ -31,12 +31,11 @@ def _docker_service_matrix() -> list[tuple[str, str, int]]:
     grobid_host = os.getenv("GROBID_HOST")
     grobid_port = os.getenv("GROBID_PORT")
     grobid_url = os.getenv("GROBID_URL") or os.getenv("GROBID_BASE_URL")
-    if not grobid_host:
-        if grobid_url:
-            parsed = urlparse(grobid_url if "://" in grobid_url else f"http://{grobid_url}")
-            if parsed.hostname:
-                grobid_host = parsed.hostname
-                grobid_port = str(parsed.port or (443 if parsed.scheme == "https" else 80))
+    if not grobid_host and grobid_url:
+        parsed = urlparse(grobid_url if "://" in grobid_url else f"http://{grobid_url}")
+        if parsed.hostname:
+            grobid_host = parsed.hostname
+            grobid_port = str(parsed.port or (443 if parsed.scheme == "https" else 80))
 
     return [
         ("Redis", os.getenv("REDIS_HOST", "127.0.0.1"), int(os.getenv("REDIS_PORT", "6379"))),

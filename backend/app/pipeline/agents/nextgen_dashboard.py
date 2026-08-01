@@ -6,12 +6,12 @@ Next-generation analytics dashboard.
 """
 
 import logging
-from typing import Optional
 from datetime import datetime
+
+from app.pipeline.agents.autoscaling import AutoScalingManager
 from app.pipeline.agents.deep_learning import TransformerPatternDetector
 from app.pipeline.agents.federated_learning import FederatedLearningNode
 from app.pipeline.agents.realtime_adaptation import RealTimeAdaptiveAgent
-from app.pipeline.agents.autoscaling import AutoScalingManager
 from app.pipeline.agents.tool_marketplace import ToolMarketplace
 
 logger = logging.getLogger(__name__)
@@ -24,11 +24,11 @@ class NextGenDashboard:
 
     def __init__(
         self,
-        transformer_detector: Optional[TransformerPatternDetector] = None,
-        federated_node: Optional[FederatedLearningNode] = None,
-        realtime_agent: Optional[RealTimeAdaptiveAgent] = None,
-        autoscaling_manager: Optional[AutoScalingManager] = None,
-        tool_marketplace: Optional[ToolMarketplace] = None,
+        transformer_detector: TransformerPatternDetector | None = None,
+        federated_node: FederatedLearningNode | None = None,
+        realtime_agent: RealTimeAdaptiveAgent | None = None,
+        autoscaling_manager: AutoScalingManager | None = None,
+        tool_marketplace: ToolMarketplace | None = None,
     ):
         """Initialize next-gen dashboard."""
         self.transformer_detector = transformer_detector

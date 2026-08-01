@@ -1,20 +1,22 @@
 from __future__ import annotations
+
 import logging
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from sqlalchemy.orm import Session
+
 from app.config.settings import settings
 
 logger = logging.getLogger(__name__)
 
 # ── Discovered models cache (per-user, in-memory with TTL) ──────────────── #
 
-_DISCOVERED_MODELS_CACHE: Dict[str, Dict[str, Dict]] = {}
+_DISCOVERED_MODELS_CACHE: dict[str, dict[str, dict]] = {}
 _DISCOVERED_MODELS_TTL = 3600  # 1 hour
 
 
-def cache_discovered_models(user_id: str, provider_id: str, models: List[str]) -> None:
+def cache_discovered_models(user_id: str, provider_id: str, models: list[str]) -> None:
     """Store discovered models for a user+provider so they appear in list_available_models()."""
     if user_id not in _DISCOVERED_MODELS_CACHE:
         _DISCOVERED_MODELS_CACHE[user_id] = {}
@@ -24,7 +26,7 @@ def cache_discovered_models(user_id: str, provider_id: str, models: List[str]) -
     }
 
 
-def _get_cached_discovered_models(user_id: Optional[str], provider_id: str) -> List[str]:
+def _get_cached_discovered_models(user_id: str | None, provider_id: str) -> list[str]:
     if not user_id:
         return []
     user_cache = _DISCOVERED_MODELS_CACHE.get(user_id, {})
@@ -39,7 +41,7 @@ def _get_cached_discovered_models(user_id: Optional[str], provider_id: str) -> L
 
 # ── Built-in provider definitions ──────────────────────────────────────── #
 
-BUILTIN_PROVIDERS: Dict[str, Dict[str, Any]] = {
+BUILTIN_PROVIDERS: dict[str, dict[str, Any]] = {
     "openai": {
         "name": "OpenAI",
         "base_url": "https://api.openai.com/v1",
@@ -187,19 +189,20 @@ OPENAI_COMPATIBLE_PROVIDERS = {
 }
 
 
-def get_provider_info(provider_id: str) -> Optional[Dict[str, Any]]:
+def get_provider_info(provider_id: str) -> dict[str, Any] | None:
     return BUILTIN_PROVIDERS.get(provider_id.lower())
 
 
-def get_builtin_providers() -> Dict[str, Dict[str, Any]]:
+def get_builtin_providers() -> dict[str, dict[str, Any]]:
     return dict(BUILTIN_PROVIDERS)
 
 
 def _get_user_configured_providers(db: Session, user_id: str) -> set[str]:
     """Return set of provider names for which the user has stored an active API key."""
     try:
-        from app.models.api_key import UserApiKey
         from sqlalchemy import select
+
+        from app.models.api_key import UserApiKey
 
         rows = db.execute(
             select(UserApiKey.provider).where(
@@ -213,9 +216,9 @@ def _get_user_configured_providers(db: Session, user_id: str) -> set[str]:
 
 
 def list_available_models(
-    db: Optional[Session] = None,
-    user_id: Optional[str] = None,
-) -> List[Dict[str, Any]]:
+    db: Session | None = None,
+    user_id: str | None = None,
+) -> list[dict[str, Any]]:
     """
     Return all available models grouped by provider.
     Includes built-in providers and user's custom providers.
@@ -250,8 +253,9 @@ def list_available_models(
     # Add user's custom providers from DB
     if db and user_id:
         try:
-            from app.models.custom_provider import CustomProvider
             from sqlalchemy import select
+
+            from app.models.custom_provider import CustomProvider
 
             query = select(CustomProvider).where(
                 CustomProvider.user_id == user_id,
@@ -292,7 +296,7 @@ def list_available_models(
     return result
 
 
-def resolve_model_provider(model_name: str) -> Optional[str]:
+def resolve_model_provider(model_name: str) -> str | None:
     """
     Given a full model string (e.g. 'gpt-4o' or 'nvidia_nim/meta/llama'),
     resolve which provider it belongs to.

@@ -2,9 +2,10 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
-import pytest
 
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 # ─── AdaptiveStrategy ──────────────────────────────────────────────────────────
 
@@ -752,7 +753,7 @@ class TestDistributedCoordinator:
             DistributedCoordinator(max_workers=0)
 
     def test_initialization_creates_specialists(self):
-        from app.pipeline.agents.distributed import DistributedCoordinator, AgentRole
+        from app.pipeline.agents.distributed import AgentRole, DistributedCoordinator
         dc = DistributedCoordinator()
         assert AgentRole.METADATA_SPECIALIST in dc.specialists
         assert AgentRole.REFERENCE_SPECIALIST in dc.specialists
@@ -792,60 +793,60 @@ class TestSpecialistAgent:
             SpecialistAgent(role="not_a_role", tools=[])
 
     def test_init_valid(self):
-        from app.pipeline.agents.distributed import SpecialistAgent, AgentRole
+        from app.pipeline.agents.distributed import AgentRole, SpecialistAgent
         agent = SpecialistAgent(AgentRole.METADATA_SPECIALIST, [])
         assert agent.role == AgentRole.METADATA_SPECIALIST
 
     def test_process_none_task(self):
-        from app.pipeline.agents.distributed import SpecialistAgent, AgentRole
+        from app.pipeline.agents.distributed import AgentRole, SpecialistAgent
         agent = SpecialistAgent(AgentRole.METADATA_SPECIALIST, [])
         result = agent.process(None)
         assert "error" in result
 
     def test_process_metadata(self):
-        from app.pipeline.agents.distributed import SpecialistAgent, AgentRole, AgentTask
+        from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
         agent = SpecialistAgent(AgentRole.METADATA_SPECIALIST, [])
         task = AgentTask(task_id="t1", role=AgentRole.METADATA_SPECIALIST, document_path="/p.pdf")
         result = agent.process(task)
         assert result["result"] == "metadata_extracted"
 
     def test_process_layout(self):
-        from app.pipeline.agents.distributed import SpecialistAgent, AgentRole, AgentTask
+        from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
         agent = SpecialistAgent(AgentRole.LAYOUT_SPECIALIST, [])
         task = AgentTask(task_id="t2", role=AgentRole.LAYOUT_SPECIALIST, document_path="/p.pdf")
         result = agent.process(task)
         assert result["result"] == "layout_analyzed"
 
     def test_process_validation(self):
-        from app.pipeline.agents.distributed import SpecialistAgent, AgentRole, AgentTask
+        from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
         agent = SpecialistAgent(AgentRole.VALIDATION_SPECIALIST, [])
         task = AgentTask(task_id="t3", role=AgentRole.VALIDATION_SPECIALIST, document_path="/p.pdf")
         result = agent.process(task)
         assert result["result"] == "validation_complete"
 
     def test_process_references(self):
-        from app.pipeline.agents.distributed import SpecialistAgent, AgentRole, AgentTask
+        from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
         agent = SpecialistAgent(AgentRole.REFERENCE_SPECIALIST, [])
         task = AgentTask(task_id="t4", role=AgentRole.REFERENCE_SPECIALIST, document_path="/p.pdf")
         result = agent.process(task)
         assert result["result"] == "references_extracted"
 
     def test_process_unknown_role(self):
-        from app.pipeline.agents.distributed import SpecialistAgent, AgentRole, AgentTask
+        from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
         agent = SpecialistAgent(AgentRole.COORDINATOR, [])
         task = AgentTask(task_id="t5", role=AgentRole.COORDINATOR, document_path="/p.pdf")
         result = agent.process(task)
         assert "Unknown role" in result.get("error", "")
 
     def test_task_count_increments(self):
-        from app.pipeline.agents.distributed import SpecialistAgent, AgentRole, AgentTask
+        from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
         agent = SpecialistAgent(AgentRole.METADATA_SPECIALIST, [])
         task = AgentTask(task_id="t1", role=AgentRole.METADATA_SPECIALIST, document_path="/p.pdf")
         agent.process(task)
         assert agent.task_count == 1
 
     def test_process_exception_handling(self):
-        from app.pipeline.agents.distributed import SpecialistAgent, AgentRole, AgentTask
+        from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
         agent = SpecialistAgent(AgentRole.METADATA_SPECIALIST, [])
         agent._process_metadata = MagicMock(side_effect=RuntimeError("fail"))
         task = AgentTask(task_id="t1", role=AgentRole.METADATA_SPECIALIST, document_path="/p.pdf")
@@ -872,6 +873,7 @@ class TestTransformerPatternDetector:
 
     def test_encode_document_cache_hit(self):
         import numpy as np
+
         from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         d.embeddings_cache["test"] = np.array([1.0, 2.0])
@@ -901,6 +903,7 @@ class TestTransformerPatternDetector:
 
     def test_fit_clusters_success(self):
         import numpy as np
+
         from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         embeddings = [np.random.rand(768) for _ in range(10)]
@@ -909,6 +912,7 @@ class TestTransformerPatternDetector:
 
     def test_predict_cluster_no_clusters(self):
         import numpy as np
+
         from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         result = d.predict_cluster(np.random.rand(768))
@@ -916,6 +920,7 @@ class TestTransformerPatternDetector:
 
     def test_compute_similarity_identical(self):
         import numpy as np
+
         from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         v = np.array([1.0, 0.0, 0.0])
@@ -924,6 +929,7 @@ class TestTransformerPatternDetector:
 
     def test_compute_similarity_orthogonal(self):
         import numpy as np
+
         from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         v1 = np.array([1.0, 0.0])
@@ -933,6 +939,7 @@ class TestTransformerPatternDetector:
 
     def test_find_similar_documents(self):
         import numpy as np
+
         from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         query = np.array([1.0, 0.0])
@@ -943,6 +950,7 @@ class TestTransformerPatternDetector:
 
     def test_detect_anomaly_semantic_no_clusters(self):
         import numpy as np
+
         from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         is_anom, score = d.detect_anomaly_semantic(np.random.rand(768))
@@ -956,6 +964,7 @@ class TestTransformerPatternDetector:
 
     def test_save_model(self, tmp_path):
         import numpy as np
+
         from app.pipeline.agents.deep_learning import TransformerPatternDetector
         d = TransformerPatternDetector()
         d.embeddings_cache["test"] = np.array([1.0, 2.0])
@@ -1805,7 +1814,7 @@ class TestCustomToolsGlobals:
         assert cls.name == "global_tool"
 
     def test_get_custom_tool_existing(self):
-        from app.pipeline.agents.custom_tools import register_custom_tool, get_custom_tool
+        from app.pipeline.agents.custom_tools import get_custom_tool, register_custom_tool
         def fn(inputs):
             return "ok"
         register_custom_tool("get_tool_test", "desc", {"p": (str, "d")}, fn)
@@ -1823,7 +1832,7 @@ class TestCustomToolsGlobals:
 
     def test_create_citation_formatter_tool(self):
         from app.pipeline.agents.custom_tools import create_citation_formatter_tool, get_custom_tool
-        cls = create_citation_formatter_tool()
+        create_citation_formatter_tool()
         inst = get_custom_tool("format_citation")
         assert inst is not None
 
@@ -2412,12 +2421,13 @@ class TestToolMarketplace:
         assert "installable" in tm.installed_tools
 
     def test_install_tool_integrity_fail(self, tmp_path):
-        from app.pipeline.agents.tool_marketplace import ToolMarketplace
         import json
+
+        from app.pipeline.agents.tool_marketplace import ToolMarketplace
         tm = ToolMarketplace(local_cache_dir=str(tmp_path / ".tm9"))
         tm.publish_tool("bad_hash", "code", "desc", "author")
         tool_file = tm.cache_dir / "bad_hash_v1.0.0.json"
-        with open(tool_file, 'r') as f:
+        with open(tool_file) as f:
             data = json.load(f)
         data["code_hash"] = "tampered"
         with open(tool_file, 'w') as f:

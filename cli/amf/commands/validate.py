@@ -18,7 +18,7 @@ def run_validate(input_path: str, style: str, output_path: str, verbose: bool):
         sys.exit(1)
 
     try:
-        text = input_file.read_text(encoding="utf-8")
+        input_file.read_text(encoding="utf-8")
     except Exception as e:
         console.print(f"[red]Error reading file:[/red] {e}")
         sys.exit(1)

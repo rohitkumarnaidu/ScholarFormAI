@@ -6,14 +6,15 @@ Enterprise Security Deep Tests — Phase 8 Final Verification.
 Covers CSRF, encryption, JWT blacklist, path traversal, ownership, and rate limiting.
 """
 
-import time
 import base64
 import hashlib
 import hmac
 import secrets
+import time
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+
 pytestmark = [pytest.mark.security]
 
 
@@ -26,8 +27,7 @@ class TestCSRFDeep:
 
     def test_csrf_token_format(self):
         with patch("app.middleware.csrf._get_csrf_secret", return_value=self._CSRF_SECRET):
-            from app.middleware.csrf import generate_csrf_token
-            from app.middleware.csrf import _get_csrf_secret
+            from app.middleware.csrf import _get_csrf_secret, generate_csrf_token
             token = generate_csrf_token()
             decoded = base64.urlsafe_b64decode(token.encode()).decode()
             parts = decoded.split(":")
@@ -49,8 +49,7 @@ class TestCSRFDeep:
 
     def test_csrf_token_expiry(self):
         with patch("app.middleware.csrf._get_csrf_secret", return_value=self._CSRF_SECRET):
-            from app.middleware.csrf import validate_csrf_token
-            from app.middleware.csrf import _get_csrf_secret
+            from app.middleware.csrf import _get_csrf_secret, validate_csrf_token
             secret = _get_csrf_secret()
             old_ts = str(int(time.time()) - 7200)
             raw = f"{old_ts}:{secrets.token_hex(32)}"
@@ -89,7 +88,7 @@ class TestCSRFDeep:
     @pytest.mark.asyncio
     async def test_csrf_cookie_httponly(self):
         with patch("app.middleware.csrf._get_csrf_secret", return_value=self._CSRF_SECRET):
-            from app.middleware.csrf import CSRFMiddleware, CSRF_COOKIE_NAME
+            from app.middleware.csrf import CSRF_COOKIE_NAME, CSRFMiddleware
             call_next = AsyncMock(return_value=MagicMock(headers={}))
             request = MagicMock()
             request.method = "GET"
@@ -114,7 +113,7 @@ class TestCSRFDeep:
 
     @pytest.mark.asyncio
     async def test_csrf_cookie_samesite_lax(self):
-        from app.middleware.csrf import CSRFMiddleware, CSRF_COOKIE_NAME
+        from app.middleware.csrf import CSRF_COOKIE_NAME, CSRFMiddleware
         call_next = AsyncMock(return_value=MagicMock(headers={}))
         request = MagicMock()
         request.method = "GET"
@@ -132,7 +131,7 @@ class TestCSRFDeep:
 
     @pytest.mark.asyncio
     async def test_csrf_cookie_secure_in_prod(self):
-        from app.middleware.csrf import CSRFMiddleware, CSRF_COOKIE_NAME
+        from app.middleware.csrf import CSRF_COOKIE_NAME, CSRFMiddleware
         with patch("app.middleware.csrf.settings.DEBUG", False):
             call_next = AsyncMock(return_value=MagicMock(headers={}))
             request = MagicMock()
@@ -206,14 +205,16 @@ class TestEncryptionDeep:
             EncryptionService(key="not-a-valid-fernet-key")
 
     def test_fernet_property_type(self):
-        from app.services.encryption_service import EncryptionService
         from cryptography.fernet import Fernet
+
+        from app.services.encryption_service import EncryptionService
         svc = EncryptionService(key=_FERNET_KEY)
         assert isinstance(svc.fernet, Fernet)
 
     def test_generate_key_format(self):
-        from app.services.encryption_service import EncryptionService
         from cryptography.fernet import Fernet
+
+        from app.services.encryption_service import EncryptionService
         key = EncryptionService.generate_key()
         assert isinstance(key, str)
         assert len(key) > 20
@@ -266,8 +267,9 @@ class TestJWTBlacklist:
             assert cache.is_token_blacklisted("jti-persist") is False
 
     def test_dependencies_check_blacklisted_token(self):
-        from app.utils.dependencies import get_current_user
         from fastapi import HTTPException
+
+        from app.utils.dependencies import get_current_user
         credentials = MagicMock()
         credentials.credentials = "revoked-token"
         request = MagicMock()
@@ -288,14 +290,15 @@ class TestJWTBlacklist:
 
 class TestPathTraversal:
     def test_validate_path_safety_normal(self):
-        from app.tasks.celery_tasks import validate_path_safety, ALLOWED_DIRECTORIES
+        from app.tasks.celery_tasks import ALLOWED_DIRECTORIES, validate_path_safety
         allowed = ALLOWED_DIRECTORIES[0]
         result = validate_path_safety(allowed)
         assert result == allowed
 
     def test_validate_path_safety_traversal(self):
-        from app.tasks.celery_tasks import validate_path_safety
         import os
+
+        from app.tasks.celery_tasks import validate_path_safety
         allowed = os.path.abspath("data/uploads")
         with pytest.raises(ValueError) as exc:
             validate_path_safety(f"{allowed}/../../etc/passwd")
@@ -318,8 +321,9 @@ class TestPathTraversal:
             validate_path_safety("")
 
     def test_validate_path_safety_null_byte(self):
-        from app.tasks.celery_tasks import validate_path_safety
         import os
+
+        from app.tasks.celery_tasks import validate_path_safety
         if os.name == "nt":
             pytest.skip("Null byte path traversal behavior differs on Windows (null is not a terminator)")
         with pytest.raises(ValueError):
@@ -343,8 +347,9 @@ class TestOwnership:
 
     @pytest.mark.asyncio
     async def test_verify_session_ownership_non_owner(self):
-        from app.routers.v1.generator import verify_session_ownership
         from fastapi import HTTPException
+
+        from app.routers.v1.generator import verify_session_ownership
         mock_service = MagicMock()
         mock_service.get_session = AsyncMock(return_value={"id": "sess-1", "user_id": "user-abc"})
         import app.routers.v1.generator
@@ -355,8 +360,9 @@ class TestOwnership:
 
     @pytest.mark.asyncio
     async def test_verify_session_ownership_nonexistent(self):
-        from app.routers.v1.generator import verify_session_ownership
         from fastapi import HTTPException
+
+        from app.routers.v1.generator import verify_session_ownership
         mock_service = MagicMock()
         mock_service.get_session = AsyncMock(return_value=None)
         import app.routers.v1.generator
@@ -369,7 +375,7 @@ class TestOwnership:
     async def test_verify_document_ownership(self):
         from app.services.document_service import DocumentService
         with patch.object(DocumentService, "get_document",
-                          side_effect=[{"id": "doc-1", "user_id": "user-abc"}, None]) as mock_get:
+                          side_effect=[{"id": "doc-1", "user_id": "user-abc"}, None]):
             result = await DocumentService.get_document("doc-1", user_id="user-abc")
             assert result is not None
             assert result["user_id"] == "user-abc"
@@ -386,8 +392,9 @@ class TestOwnership:
 
     @pytest.mark.asyncio
     async def test_generator_ownership_check_on_create(self):
-        from app.routers.v1.generator import verify_session_ownership
         from fastapi import HTTPException
+
+        from app.routers.v1.generator import verify_session_ownership
         mock_service = MagicMock()
         mock_service.get_session = AsyncMock(return_value={"id": "sess-2", "user_id": "creator"})
         import app.routers.v1.generator
@@ -400,8 +407,9 @@ class TestOwnership:
 
     @pytest.mark.asyncio
     async def test_ownership_empty_user_id_rejected(self):
-        from app.routers.v1.generator import verify_session_ownership
         from fastapi import HTTPException
+
+        from app.routers.v1.generator import verify_session_ownership
         mock_service = MagicMock()
         mock_service.get_session = AsyncMock(return_value={"id": "sess-1", "user_id": "user-abc"})
         import app.routers.v1.generator
@@ -412,8 +420,9 @@ class TestOwnership:
 
     @pytest.mark.asyncio
     async def test_ownership_deleted_session_raises(self):
-        from app.routers.v1.generator import verify_session_ownership
         from fastapi import HTTPException
+
+        from app.routers.v1.generator import verify_session_ownership
         mock_service = MagicMock()
         mock_service.get_session = AsyncMock(return_value=None)
         import app.routers.v1.generator
@@ -424,8 +433,9 @@ class TestOwnership:
 
     @pytest.mark.asyncio
     async def test_ownership_concurrent_modification(self):
-        from app.routers.v1.generator import verify_session_ownership
         from fastapi import HTTPException
+
+        from app.routers.v1.generator import verify_session_ownership
         mock_service = MagicMock()
         mock_service.get_session = AsyncMock(side_effect=[
             {"id": "sess-1", "user_id": "user-abc"},

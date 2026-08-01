@@ -1,6 +1,8 @@
 from __future__ import annotations
-import pytest
+
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 class TestSuggestionServiceBuildPrompt:
@@ -609,7 +611,8 @@ class TestSuggestionServiceModule:
         assert "accepted" in SUGGESTION_STATUSES
 
 
-_INLINE_TO_THREAD = lambda fn, *a, **kw: fn(*a, **kw)
+def _INLINE_TO_THREAD(fn, *a, **kw):
+    return fn(*a, **kw)
 
 
 class TestSuggestionServiceInnerClosures:

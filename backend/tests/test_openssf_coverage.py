@@ -9,19 +9,21 @@ text_utils, security_headers, request_id, and logging_config.
 from __future__ import annotations
 
 import logging
-import pytest
-from datetime import datetime, date, time as time_type, timezone
+from datetime import UTC, date, datetime
+from datetime import time as time_type
 from enum import Enum
-from unittest.mock import AsyncMock, MagicMock, patch, Mock
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 from uuid import UUID
 
+import pytest
+
 from app.exceptions import (
+    AuthenticationError,
     DatabaseUnavailableError,
     DocumentNotFoundError,
-    AuthenticationError,
-    RateLimitExceededError,
-    FileStorageError,
     ExternalServiceError,
+    FileStorageError,
+    RateLimitExceededError,
 )
 
 
@@ -66,10 +68,10 @@ class TestExceptions:
 
 
 from app.routers.deprecation import (
+    DEPRECATION_DATE,
+    DeprecatedRoute,
     build_deprecation_headers,
     normalize_path,
-    DeprecatedRoute,
-    DEPRECATION_DATE,
 )
 
 
@@ -106,11 +108,11 @@ class TestDeprecation:
 
 from app.utils.id_generator import (
     generate_block_id,
-    generate_figure_id,
-    generate_table_id,
-    generate_reference_id,
-    generate_equation_id,
     generate_document_id,
+    generate_equation_id,
+    generate_figure_id,
+    generate_reference_id,
+    generate_table_id,
 )
 
 
@@ -151,7 +153,7 @@ class TestIdGenerator:
         assert len(parts) == 3
 
 
-from app.utils.singleton import get_or_create, get_or_create_safe, get_or_create_catching, resolve_optional_callable
+from app.utils.singleton import get_or_create, get_or_create_catching, get_or_create_safe, resolve_optional_callable
 
 
 class TestSingleton:
@@ -227,7 +229,7 @@ class TestCleanup:
                     await cleanup_old_uploads()
 
 
-from app.utils.serialization import sanitize_for_json, safe_model_dump, build_structured_data
+from app.utils.serialization import build_structured_data, safe_model_dump, sanitize_for_json
 
 
 class MockEnum(Enum):
@@ -284,7 +286,7 @@ class TestSerialization:
         assert result["preview_b64"] == ""
 
     def test_sanitize_datetime(self):
-        dt = datetime(2026, 6, 15, 10, 30, 0, tzinfo=timezone.utc)
+        dt = datetime(2026, 6, 15, 10, 30, 0, tzinfo=UTC)
         result = sanitize_for_json(dt)
         assert "2026-06-15T10:30:00" in result
 
@@ -361,12 +363,12 @@ class TestSerialization:
 
 
 from app.utils.text_utils import (
-    normalize_unicode,
-    normalize_whitespace,
-    normalize_list_markers,
     clean_metadata_field,
     normalize_block_text,
+    normalize_list_markers,
     normalize_table_cell_text,
+    normalize_unicode,
+    normalize_whitespace,
 )
 
 
@@ -439,7 +441,7 @@ class TestTextUtils:
         assert normalize_table_cell_text(None) == ""
 
 
-from app.middleware.security_headers import SecurityHeadersMiddleware, MaxBodySizeMiddleware
+from app.middleware.security_headers import MaxBodySizeMiddleware, SecurityHeadersMiddleware
 
 
 class TestSecurityHeadersMiddleware:

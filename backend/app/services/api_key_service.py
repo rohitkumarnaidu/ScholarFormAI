@@ -6,11 +6,11 @@ API Key CRUD service for managing user-provided LLM provider keys.
 """
 
 import logging
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import UTC, datetime
 
-from sqlalchemy import select, func, and_
+from sqlalchemy import and_, func, select
 from sqlalchemy.orm import Session
+
 from app.models.api_key import UserApiKey
 from app.models.api_key_usage_log import ApiKeyUsageLog
 from app.services.encryption_service import get_encryption_service
@@ -42,10 +42,10 @@ class ApiKeyService:
         user_id: str,
         provider: str,
         api_key: str,
-        key_label: Optional[str] = None,
-        rate_limit_per_minute: Optional[int] = None,
-        rate_limit_per_hour: Optional[int] = None,
-        daily_quota: Optional[int] = None,
+        key_label: str | None = None,
+        rate_limit_per_minute: int | None = None,
+        rate_limit_per_hour: int | None = None,
+        daily_quota: int | None = None,
     ) -> UserApiKey:
         provider_lower = provider.lower()
         if provider_lower not in SUPPORTED_PROVIDERS:
@@ -69,25 +69,25 @@ class ApiKeyService:
         logger.info("Created API key for user %s, provider %s", user_id, provider_lower)
         return new_key
 
-    def get_key(self, key_id: str, user_id: str) -> Optional[UserApiKey]:
+    def get_key(self, key_id: str, user_id: str) -> UserApiKey | None:
         result = self.db.execute(select(UserApiKey).where(and_(UserApiKey.id == key_id, UserApiKey.user_id == user_id)))
         return result.scalar_one_or_none()
 
-    def get_active_key(self, user_id: str, provider: str) -> Optional[UserApiKey]:
+    def get_active_key(self, user_id: str, provider: str) -> UserApiKey | None:
         result = self.db.execute(
             select(UserApiKey)
             .where(
                 and_(
                     UserApiKey.user_id == user_id,
                     UserApiKey.provider == provider.lower(),
-                    UserApiKey.is_active == True,
+                    UserApiKey.is_active,
                 )
             )
             .order_by(UserApiKey.updated_at.desc())
         )
         return result.scalar_one_or_none()
 
-    def list_keys(self, user_id: str, provider: Optional[str] = None) -> list[UserApiKey]:
+    def list_keys(self, user_id: str, provider: str | None = None) -> list[UserApiKey]:
         query = select(UserApiKey).where(UserApiKey.user_id == user_id)
         if provider:
             query = query.where(UserApiKey.provider == provider.lower())
@@ -99,12 +99,12 @@ class ApiKeyService:
         self,
         key_id: str,
         user_id: str,
-        key_label: Optional[str] = None,
-        is_active: Optional[bool] = None,
-        rate_limit_per_minute: Optional[int] = None,
-        rate_limit_per_hour: Optional[int] = None,
-        daily_quota: Optional[int] = None,
-    ) -> Optional[UserApiKey]:
+        key_label: str | None = None,
+        is_active: bool | None = None,
+        rate_limit_per_minute: int | None = None,
+        rate_limit_per_hour: int | None = None,
+        daily_quota: int | None = None,
+    ) -> UserApiKey | None:
         key = self.get_key(key_id, user_id)
         if not key:
             return None
@@ -120,7 +120,7 @@ class ApiKeyService:
         if daily_quota is not None:
             key.daily_quota = daily_quota
 
-        key.updated_at = datetime.now(timezone.utc)
+        key.updated_at = datetime.now(UTC)
         self.db.commit()
         self.db.refresh(key)
         return key
@@ -144,17 +144,17 @@ class ApiKeyService:
         key = result.scalar_one_or_none()
         if key:
             key.total_requests += 1
-            key.last_request_at = datetime.now(timezone.utc)
+            key.last_request_at = datetime.now(UTC)
             self.db.commit()
 
     def log_usage(
         self,
         user_api_key_id: str,
-        endpoint: Optional[str] = None,
-        model: Optional[str] = None,
-        tokens_used: Optional[int] = None,
-        status_code: Optional[int] = None,
-        response_time_ms: Optional[int] = None,
+        endpoint: str | None = None,
+        model: str | None = None,
+        tokens_used: int | None = None,
+        status_code: int | None = None,
+        response_time_ms: int | None = None,
     ) -> None:
         """Log a single API key usage event."""
         log_entry = ApiKeyUsageLog(
@@ -174,7 +174,7 @@ class ApiKeyService:
         hours: int = 24,
     ) -> dict:
         """Get usage statistics for a user's API keys over the last N hours."""
-        cutoff = datetime.now(timezone.utc).replace(microsecond=0)
+        cutoff = datetime.now(UTC).replace(microsecond=0)
         from datetime import timedelta
 
         cutoff = cutoff - timedelta(hours=hours)

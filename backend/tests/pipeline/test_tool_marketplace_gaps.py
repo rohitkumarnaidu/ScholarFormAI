@@ -7,7 +7,6 @@ import json
 from unittest.mock import patch
 
 
-
 class TestToolMarketplace:
     def test_init_creates_cache_dir(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
@@ -24,7 +23,7 @@ class TestToolMarketplace:
 
     def test_publish_tool_exception(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
-        tm = ToolMarketplace(local_cache_dir=str(tmp_path))
+        ToolMarketplace(local_cache_dir=str(tmp_path))
         tm2 = ToolMarketplace(local_cache_dir=str(tmp_path / "broken"))
         with patch("builtins.open", side_effect=OSError("disk full")):
             result = tm2.publish_tool("t", "code", "desc", "a")

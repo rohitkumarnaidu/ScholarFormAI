@@ -2,9 +2,12 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import patch
-import pytest
+
 import os
+from unittest.mock import patch
+
+import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -128,7 +131,7 @@ class TestContractLoader:
         assert loader.is_required("none", "ABSTRACT") is True
 
     def test_load_contract_convenience(self):
-        from app.pipeline.contracts.loader import load_contract, _default_pipeline_loader
+        from app.pipeline.contracts.loader import _default_pipeline_loader, load_contract
         original_dir = _default_pipeline_loader.contracts_dir
         _default_pipeline_loader.contracts_dir = FIXTURES_DIR
         try:
@@ -138,7 +141,7 @@ class TestContractLoader:
             _default_pipeline_loader.contracts_dir = original_dir
 
     def test_load_contract_convenience_cache(self):
-        from app.pipeline.contracts.loader import load_contract, _default_pipeline_loader
+        from app.pipeline.contracts.loader import _default_pipeline_loader, load_contract
         original_dir = _default_pipeline_loader.contracts_dir
         _default_pipeline_loader.contracts_dir = FIXTURES_DIR
         try:

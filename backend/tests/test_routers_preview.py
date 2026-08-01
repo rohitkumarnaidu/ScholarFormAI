@@ -1,5 +1,6 @@
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
-from unittest.mock import MagicMock, patch, AsyncMock
 
 
 class TestPreviewHelpers:
@@ -113,7 +114,7 @@ class TestAISuggest:
 
     @pytest.mark.asyncio
     async def test_llm_unavailable(self):
-        from app.routers.preview import ai_suggest, LLMUnavailableError
+        from app.routers.preview import LLMUnavailableError, ai_suggest
 
         async def _run_directly(func, *args, **kwargs):
             return func(*args, **kwargs)

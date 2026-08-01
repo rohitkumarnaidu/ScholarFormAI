@@ -5,8 +5,7 @@ from __future__ import annotations
 
 import math
 import re
-from typing import Any, Dict, List
-
+from typing import Any
 
 _CITATION_PATTERNS = [
     re.compile(r"\[\d+(?:\s*,\s*\d+)*\]"),
@@ -16,7 +15,7 @@ _CITATION_PATTERNS = [
 
 
 class QualityScorer:
-    def score(self, content: Dict[str, Any], template: str, task_spec: Dict[str, Any]) -> Dict[str, Any]:
+    def score(self, content: dict[str, Any], template: str, task_spec: dict[str, Any]) -> dict[str, Any]:
         sections_map = self._normalize_sections(content)
         required_sections = self._required_sections(task_spec, sections_map)
 
@@ -50,11 +49,11 @@ class QualityScorer:
         }
 
     @staticmethod
-    def _normalize_sections(content: Dict[str, Any]) -> Dict[str, str]:
+    def _normalize_sections(content: dict[str, Any]) -> dict[str, str]:
         if not content:
             return {}
         if "sections" in content and isinstance(content["sections"], list):
-            sections_map: Dict[str, str] = {}
+            sections_map: dict[str, str] = {}
             for item in content["sections"]:
                 if isinstance(item, dict):
                     title = str(item.get("title") or item.get("section") or "").strip()
@@ -65,7 +64,7 @@ class QualityScorer:
         return {str(k): str(v) for k, v in content.items() if isinstance(v, (str, int, float))}
 
     @staticmethod
-    def _required_sections(task_spec: Dict[str, Any], sections_map: Dict[str, str]) -> List[str]:
+    def _required_sections(task_spec: dict[str, Any], sections_map: dict[str, str]) -> list[str]:
         required = task_spec.get("sections") if isinstance(task_spec, dict) else None
         if isinstance(required, list) and required:
             return [str(item).strip() for item in required if str(item).strip()]
@@ -89,8 +88,8 @@ class QualityScorer:
         return total
 
     @staticmethod
-    def _section_balance(sections: Dict[str, str], required_sections: List[str]) -> float:
-        counts: List[int] = []
+    def _section_balance(sections: dict[str, str], required_sections: list[str]) -> float:
+        counts: list[int] = []
         for section in required_sections:
             counts.append(len(sections.get(section, "").split()))
         if not counts:

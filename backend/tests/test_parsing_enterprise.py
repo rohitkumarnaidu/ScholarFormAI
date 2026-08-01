@@ -2,7 +2,10 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import MagicMock, patch, mock_open
+
+from datetime import UTC
+from unittest.mock import MagicMock, mock_open, patch
+
 import pytest
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -18,12 +21,13 @@ class TestBaseParserEnterprise:
             BadParser()
 
     def test_concrete_parse_must_return_document(self):
+        from datetime import datetime
+
         from app.pipeline.parsing.base_parser import BaseParser
-        from datetime import datetime, timezone
         class GoodParser(BaseParser):
             def parse(self, file_path, document_id):
                 from app.models import PipelineDocument as Document
-                now = datetime.now(timezone.utc)
+                now = datetime.now(UTC)
                 return Document(document_id=document_id, created_at=now, updated_at=now)
             def supports_format(self, file_extension):
                 return file_extension == ".abc"
@@ -158,8 +162,9 @@ class TestDocxParserFootnotesEndnotesEnterprise:
         assert blocks == []
 
     def test_footnote_returns_blocks_when_part_exists(self):
-        from app.pipeline.parsing.parser import DocxParser
         import lxml.etree as ET
+
+        from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         docx = MagicMock()
         ns = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
@@ -181,8 +186,9 @@ class TestDocxParserFootnotesEndnotesEnterprise:
         assert blocks[0].metadata.get("is_footnote") is True
 
     def test_endnote_returns_blocks_when_part_exists(self):
-        from app.pipeline.parsing.parser import DocxParser
         import lxml.etree as ET
+
+        from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         docx = MagicMock()
         ns = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
@@ -256,9 +262,10 @@ class TestDocxParserHeaderFooterEnterprise:
 
 class TestDocxParserExtractBodyContentEnterprise:
     def test_paragraph_with_table_interleaved(self):
-        from app.pipeline.parsing.parser import DocxParser
-        from docx.oxml.text.paragraph import CT_P
         from docx.oxml.table import CT_Tbl
+        from docx.oxml.text.paragraph import CT_P
+
+        from app.pipeline.parsing.parser import DocxParser
         p = DocxParser()
         docx = MagicMock()
         ct_p = MagicMock(spec=CT_P)
@@ -416,7 +423,7 @@ class TestDocxParserInlineImagesEnterprise:
             f'</w:r>'
         )
         run._element = ET.fromstring(wrapper_xml)
-        setattr(run, 'part', MagicMock())
+        run.part = MagicMock()
         run.part.related_parts = {"rId2": MagicMock(blob=b"imgdata", content_type="image/jpeg")}
         para.runs = [run]
         figures = p._extract_inline_images(para)
@@ -567,7 +574,7 @@ class TestDocxParserParseEnterprise:
                 mte_instance.extract.return_value = MagicMock()
                 mte.return_value = mte_instance
                 p = DocxParser()
-                doc = p.parse(str(f), "doc1")
+                p.parse(str(f), "doc1")
                 assert mte_instance.extract.called
 
     def test_parse_produces_history(self, tmp_path):
@@ -586,8 +593,9 @@ class TestDocxParserParseEnterprise:
             assert len(doc.processing_history) >= 1
 
     def test_parse_document_id_uuid_conversion(self, tmp_path):
-        from app.pipeline.parsing.parser import DocxParser
         import uuid
+
+        from app.pipeline.parsing.parser import DocxParser
         f = tmp_path / "uuid.docx"
         f.write_text("dummy")
         with patch("app.pipeline.parsing.parser.DocxDocument") as md:
@@ -610,8 +618,9 @@ class TestDocxParserParseEnterprise:
             p.parse(str(f), "doc1")
 
     def test_parse_paragraphs_with_equations(self, tmp_path):
-        from app.pipeline.parsing.parser import DocxParser
         from docx.oxml.text.paragraph import CT_P
+
+        from app.pipeline.parsing.parser import DocxParser
         f = tmp_path / "eqns.docx"
         f.write_text("dummy")
         with patch("app.pipeline.parsing.parser.DocxDocument") as md:
@@ -657,7 +666,7 @@ class TestPdfParserExtractContentEnterprise:
     def test_extract_content_image_fallback_when_no_images(self):
         from app.pipeline.parsing.pdf_parser import PdfParser
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 1
@@ -680,7 +689,7 @@ class TestPdfParserExtractContentEnterprise:
     def test_extract_content_image_skip_duplicate_hash(self):
         from app.pipeline.parsing.pdf_parser import PdfParser
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 1
@@ -700,7 +709,7 @@ class TestPdfParserExtractContentEnterprise:
     def test_extract_content_header_on_page1_kept(self):
         from app.pipeline.parsing.pdf_parser import PdfParser
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 1
@@ -723,7 +732,7 @@ class TestPdfParserExtractContentEnterprise:
     def test_extract_content_duplicate_text_suppression(self):
         from app.pipeline.parsing.pdf_parser import PdfParser
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 1
@@ -747,7 +756,7 @@ class TestPdfParserExtractContentEnterprise:
     def test_content_text_dict_failure_returns_empty(self):
         from app.pipeline.parsing.pdf_parser import PdfParser
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 1
@@ -810,7 +819,7 @@ class TestPdfParserFontStatsEnterprise:
     def test_font_stats_scan_error_continues(self):
         from app.pipeline.parsing.pdf_parser import PdfParser
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 3
@@ -827,7 +836,7 @@ class TestPdfParserFontStatsEnterprise:
     def test_font_stats_no_sizes_returns_default(self):
         from app.pipeline.parsing.pdf_parser import PdfParser
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
-            with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
+            with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 p = PdfParser()
                 pdf_doc = MagicMock()
                 pdf_doc.__len__.return_value = 0
@@ -938,14 +947,13 @@ class TestHtmlParserEnterprise:
         from app.pipeline.parsing.html_parser import HtmlParser
         f = tmp_path / "test.html"
         f.write_bytes(b"<html></html>")
-        with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", True):
-            with patch("builtins.open", side_effect=[
-                UnicodeDecodeError("utf-8", b"", 0, 1, "bad"),
-                PermissionError("denied"),
-            ]):
-                p = HtmlParser()
-                with pytest.raises(ValueError, match="Failed to read HTML"):
-                    p.parse(str(f), "doc1")
+        with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", True), patch("builtins.open", side_effect=[
+            UnicodeDecodeError("utf-8", b"", 0, 1, "bad"),
+            PermissionError("denied"),
+        ]):
+            p = HtmlParser()
+            with pytest.raises(ValueError, match="Failed to read HTML"):
+                p.parse(str(f), "doc1")
 
     def test_parse_open_exception(self, tmp_path):
         from app.pipeline.parsing.html_parser import HtmlParser
@@ -958,8 +966,9 @@ class TestHtmlParserEnterprise:
                     p.parse(str(f), "doc1")
 
     def test_extract_content_script_style_removed(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", True):
             p = HtmlParser()
             soup = BeautifulSoup(
@@ -970,8 +979,9 @@ class TestHtmlParserEnterprise:
             assert len(blocks) == 1
 
     def test_extract_content_element_failure_logged(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", True):
             p = HtmlParser()
             soup = BeautifulSoup("<html><body><bad>text</bad><p>Good</p></body></html>", "html.parser")
@@ -979,8 +989,9 @@ class TestHtmlParserEnterprise:
             assert len(blocks) >= 0
 
     def test_extract_metadata_no_title_tag(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", True):
             p = HtmlParser()
             soup = BeautifulSoup("<html><head></head><body></body></html>", "html.parser")
@@ -988,8 +999,9 @@ class TestHtmlParserEnterprise:
             assert meta.title is None
 
     def test_extract_content_pre_with_language_class(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", True):
             p = HtmlParser()
             soup = BeautifulSoup(
@@ -1012,12 +1024,11 @@ class TestTexParserEnterprise:
         f.write_bytes(r"\documentclass{article}\begin{document}Hello\end{document}".encode("latin-1"))
         with patch("builtins.open", side_effect=[
             UnicodeDecodeError("utf-8", b"", 0, 1, "bad"),
-        ]):
-            with patch("builtins.open") as mo:
-                mo.return_value.__enter__.return_value.read.return_value = r"\begin{document}Body\end{document}"
-                p = TexParser()
-                doc = p.parse(str(f), "doc1")
-                assert doc is not None
+        ]), patch("builtins.open") as mo:
+            mo.return_value.__enter__.return_value.read.return_value = r"\begin{document}Body\end{document}"
+            p = TexParser()
+            doc = p.parse(str(f), "doc1")
+            assert doc is not None
 
     def test_parse_utf8_fallback_exception(self, tmp_path):
         from app.pipeline.parsing.tex_parser import TexParser
@@ -1083,7 +1094,7 @@ class TestTexParserEnterprise:
         from app.pipeline.parsing.tex_parser import TexParser
         p = TexParser()
         blocks = p._extract_content(r"\begin{document}Hi\end{document}")
-        short_blocks = [b for b in blocks if b.text == "Hi"]
+        [b for b in blocks if b.text == "Hi"]
         assert all(len(b.text) <= 10 or "Hi" in b.text for b in blocks if b.text == "Hi")
 
 
@@ -1172,7 +1183,7 @@ class TestTableExtractorEnterprise:
                 del sys.modules[_mod_name]
 
     def test_init_unavailable_raises(self):
-        from app.pipeline.parsing.table_extractor import TableExtractor, TABLE_TRANSFORMER_AVAILABLE
+        from app.pipeline.parsing.table_extractor import TABLE_TRANSFORMER_AVAILABLE, TableExtractor
         if TABLE_TRANSFORMER_AVAILABLE:
             with patch("app.pipeline.parsing.table_extractor.TABLE_TRANSFORMER_AVAILABLE", False):
                 with pytest.raises(ImportError, match="Table Transformer"):
@@ -1189,7 +1200,7 @@ class TestTableExtractorEnterprise:
             assert result is None
 
     def test_to_table_model_with_headers(self):
-        from app.pipeline.parsing.table_extractor import TableExtractor, TABLE_TRANSFORMER_AVAILABLE
+        from app.pipeline.parsing.table_extractor import TABLE_TRANSFORMER_AVAILABLE, TableExtractor
         if not TABLE_TRANSFORMER_AVAILABLE:
             pytest.skip("Table Transformer not available")
         te = TableExtractor()
@@ -1209,7 +1220,7 @@ class TestTableExtractorEnterprise:
         assert table.page_number == 1
 
     def test_to_table_model_no_headers(self):
-        from app.pipeline.parsing.table_extractor import TableExtractor, TABLE_TRANSFORMER_AVAILABLE
+        from app.pipeline.parsing.table_extractor import TABLE_TRANSFORMER_AVAILABLE, TableExtractor
         if not TABLE_TRANSFORMER_AVAILABLE:
             pytest.skip("Table Transformer not available")
         te = TableExtractor()
@@ -1226,7 +1237,7 @@ class TestTableExtractorEnterprise:
         assert table.has_header is False
 
     def test_extract_tables_from_page_detection_fails(self):
-        from app.pipeline.parsing.table_extractor import TableExtractor, TABLE_TRANSFORMER_AVAILABLE
+        from app.pipeline.parsing.table_extractor import TABLE_TRANSFORMER_AVAILABLE, TableExtractor
         if not TABLE_TRANSFORMER_AVAILABLE:
             pytest.skip("Table Transformer not available")
         te = TableExtractor()
@@ -1236,7 +1247,7 @@ class TestTableExtractorEnterprise:
                 te.extract_tables_from_page(img)
 
     def test_extract_tables_from_page_structure_fails(self):
-        from app.pipeline.parsing.table_extractor import TableExtractor, TABLE_TRANSFORMER_AVAILABLE
+        from app.pipeline.parsing.table_extractor import TABLE_TRANSFORMER_AVAILABLE, TableExtractor
         if not TABLE_TRANSFORMER_AVAILABLE:
             pytest.skip("Table Transformer not available")
         te = TableExtractor()
@@ -1308,12 +1319,14 @@ class TestNougatParserEnterprise:
 
     def test_classify_nougat_line_table_like(self):
         from app.pipeline.parsing.nougat_parser import _classify_nougat_line
+
         from app.models import BlockType
         result = _classify_nougat_line("| a | b |")
         assert result == BlockType.UNKNOWN
 
     def test_classify_nougat_line_blank(self):
         from app.pipeline.parsing.nougat_parser import _classify_nougat_line
+
         from app.models import BlockType
         assert _classify_nougat_line("   ") == BlockType.UNKNOWN
 
@@ -1368,8 +1381,9 @@ class TestNougatParserEnterprise:
             assert result == ""
 
     def test_ordered_remote_urls_with_last_good(self):
-        from app.pipeline.parsing.nougat_parser import NougatParser
         import time
+
+        from app.pipeline.parsing.nougat_parser import NougatParser
         with patch("app.pipeline.parsing.nougat_parser.settings") as mock_s:
             mock_s.get_nougat_urls.return_value = ["https://a.com", "https://b.com"]
             p = NougatParser()

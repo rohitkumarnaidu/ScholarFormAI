@@ -38,7 +38,7 @@ async def test_health_cache_hits_within_ttl(monkeypatch):
     monkeypatch.setattr(health_checks.settings, "OLLAMA_URL", "http://ollama:11434", raising=False)
 
     with patch("app.db.supabase_client.check_supabase_health", return_value={"status": "healthy"}) as mock_sb:
-        with patch("httpx.AsyncClient", return_value=_mock_httpx_client()) as mock_httpx:
+        with patch("httpx.AsyncClient", return_value=_mock_httpx_client()):
             with patch("app.services.model_store.model_store.get_model", return_value=True):
                 first_payload, first_status = await health_checks.get_health_payload()
                 second_payload, second_status = await health_checks.get_health_payload()
@@ -54,7 +54,7 @@ async def test_health_cache_refreshes_after_ttl(monkeypatch):
     monkeypatch.setattr(health_checks.settings, "OLLAMA_URL", "http://ollama:11434", raising=False)
 
     with patch("app.db.supabase_client.check_supabase_health", return_value={"status": "healthy"}) as mock_sb:
-        with patch("httpx.AsyncClient", return_value=_mock_httpx_client()) as mock_httpx:
+        with patch("httpx.AsyncClient", return_value=_mock_httpx_client()):
             with patch("app.services.model_store.model_store.get_model", return_value=True):
                 await health_checks.get_health_payload()
                 await asyncio.sleep(0.02)
@@ -69,7 +69,7 @@ async def test_health_force_refresh_bypasses_cache(monkeypatch):
     monkeypatch.setattr(health_checks.settings, "OLLAMA_URL", "http://ollama:11434", raising=False)
 
     with patch("app.db.supabase_client.check_supabase_health", return_value={"status": "healthy"}) as mock_sb:
-        with patch("httpx.AsyncClient", return_value=_mock_httpx_client()) as mock_httpx:
+        with patch("httpx.AsyncClient", return_value=_mock_httpx_client()):
             with patch("app.services.model_store.model_store.get_model", return_value=True):
                 await health_checks.get_health_payload()
                 await health_checks.get_health_payload(force_refresh=True)

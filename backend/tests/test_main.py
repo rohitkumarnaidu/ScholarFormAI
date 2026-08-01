@@ -151,6 +151,7 @@ class TestSentryBeforeSend:
 
     def test_exc_info_filter(self):
         from asyncio import CancelledError
+
         from app.main import _sentry_before_send
         event = {}
         hint = {"exc_info": (CancelledError, CancelledError(), None)}
@@ -274,8 +275,9 @@ class TestRunStartupStep:
 
     @pytest.mark.asyncio
     async def test_timeout(self):
-        from app.main import _run_startup_step
         import time
+
+        from app.main import _run_startup_step
 
         def slow_op():
             time.sleep(0.5)

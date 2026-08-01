@@ -8,13 +8,12 @@ Prevents infinite loops and resource exhaustion in background tasks.
 
 import asyncio
 import logging
-from typing import Callable
+from collections.abc import Callable
 from functools import wraps
 
 # ── Old ORM imports (kept for reference, replaced by DocumentService) ──────────
 # from app.db.session import SessionLocal
 # from app.models import Document
-
 from app.services.document_service import DocumentService
 
 logger = logging.getLogger(__name__)
@@ -38,7 +37,7 @@ def with_timeout(timeout_seconds: int = 300):
         async def async_wrapper(*args, **kwargs):
             try:
                 return await asyncio.wait_for(func(*args, **kwargs), timeout=timeout_seconds)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 logger.error("Task %s timed out after %s seconds", func.__name__, timeout_seconds)
                 job_id = kwargs.get("job_id") or (args[1] if len(args) > 1 else None)
                 if job_id:
@@ -62,7 +61,7 @@ def with_timeout(timeout_seconds: int = 300):
                     return await asyncio.wait_for(
                         loop.run_in_executor(None, func, *args, **kwargs), timeout=timeout_seconds
                     )
-                except asyncio.TimeoutError:
+                except TimeoutError:
                     logger.error("Task %s timed out after %s seconds", func.__name__, timeout_seconds)
                     job_id = kwargs.get("job_id") or (args[1] if len(args) > 1 else None)
                     if job_id:
@@ -126,7 +125,7 @@ async def run_pipeline_with_timeout(
             timeout=900.0,  # 15 minutes max
         )
         logger.info("Pipeline completed successfully for job %s", job_id)
-    except asyncio.TimeoutError:
+    except TimeoutError:
         logger.error("Pipeline timeout for job %s", job_id)
         _mark_job_as_failed(str(job_id), "Processing timeout (15 minutes exceeded)")
     except Exception as e:

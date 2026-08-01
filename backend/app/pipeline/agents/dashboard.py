@@ -6,7 +6,7 @@ Performance comparison dashboard generator.
 """
 
 import json
-from typing import Dict
+
 from app.pipeline.agents.metrics import PerformanceTracker
 
 
@@ -44,7 +44,7 @@ class ComparisonDashboard:
 
         return output_path
 
-    def _build_html(self, summary: Dict, comparison: Dict) -> str:
+    def _build_html(self, summary: dict, comparison: dict) -> str:
         """Build HTML content."""
         agent_stats = summary.get("agent", {})
         legacy_stats = summary.get("legacy", {})

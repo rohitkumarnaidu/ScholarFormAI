@@ -2,8 +2,10 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
+
 from pathlib import Path
+from unittest.mock import MagicMock, patch
+
 import pytest
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -80,19 +82,17 @@ class TestTemplateRendererRender:
         from app.pipeline.formatting.template_renderer import TemplateRenderer
         tr = TemplateRenderer(templates_dir=".")
         with (
-            patch("app.pipeline.formatting.template_renderer._DOCXTPL_AVAILABLE", False),
+            patch("app.pipeline.formatting.template_renderer._DOCXTPL_AVAILABLE", False),pytest.raises(ImportError)
         ):
-            with pytest.raises(ImportError):
-                tr.render(MagicMock(), "ieee")
+            tr.render(MagicMock(), "ieee")
 
     def test_render_none_document(self):
         from app.pipeline.formatting.template_renderer import TemplateRenderer
         tr = TemplateRenderer(templates_dir=".")
         with (
-            patch("app.pipeline.formatting.template_renderer._DOCXTPL_AVAILABLE", True),
+            patch("app.pipeline.formatting.template_renderer._DOCXTPL_AVAILABLE", True),pytest.raises(ValueError)
         ):
-            with pytest.raises(ValueError):
-                tr.render(None, "ieee")
+            tr.render(None, "ieee")
 
     def test_render_error_logged(self):
         from app.pipeline.formatting.template_renderer import TemplateRenderer
@@ -668,10 +668,10 @@ class TestReferenceFormatterCiteproc:
         with (
             patch("app.pipeline.formatting.reference_formatter._resolve_csl_path", return_value="/tmp/ieee/styles.csl"),
             patch.object(rf, "_get_or_load_style", return_value=MagicMock()),
-            patch("app.pipeline.formatting.reference_formatter.CiteProcJSON") as mock_cpj,
+            patch("app.pipeline.formatting.reference_formatter.CiteProcJSON"),
             patch("app.pipeline.formatting.reference_formatter.CitationStylesBibliography") as mock_csb,
-            patch("app.pipeline.formatting.reference_formatter.Citation") as mock_cit,
-            patch("app.pipeline.formatting.reference_formatter.CitationItem") as mock_ci,
+            patch("app.pipeline.formatting.reference_formatter.Citation"),
+            patch("app.pipeline.formatting.reference_formatter.CitationItem"),
         ):
             mock_bib = MagicMock()
             mock_bib.bibliography.return_value = ["[1] Smith, J., Test, 2024."]

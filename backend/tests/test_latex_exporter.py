@@ -46,9 +46,8 @@ class TestResolvePandocBinary:
 
     def test_not_found(self):
         from app.pipeline.export.latex_exporter import _resolve_pandoc_binary
-        with patch.dict("os.environ", {}, clear=True):
-            with patch("shutil.which", return_value=None):
-                result = _resolve_pandoc_binary()
+        with patch.dict("os.environ", {}, clear=True), patch("shutil.which", return_value=None):
+            result = _resolve_pandoc_binary()
         assert result is None
 
 
@@ -138,8 +137,8 @@ class TestWriteAbstract:
 
 class TestWriteSections:
     def test_headings(self):
-        from app.pipeline.export.latex_exporter import LaTeXExporter
         from app.models.block import Block, BlockType
+        from app.pipeline.export.latex_exporter import LaTeXExporter
         exporter = LaTeXExporter()
         doc = MagicMock()
         doc.blocks = [
@@ -155,8 +154,8 @@ class TestWriteSections:
         assert "\\subsubsection{Detailed}" in text
 
     def test_skips_references_and_figures(self):
-        from app.pipeline.export.latex_exporter import LaTeXExporter
         from app.models.block import Block, BlockType
+        from app.pipeline.export.latex_exporter import LaTeXExporter
         exporter = LaTeXExporter()
         doc = MagicMock()
         doc.blocks = [
@@ -237,7 +236,7 @@ class TestExportFromDocument:
         doc.template = MagicMock()
         doc.template.template_name = "ieee"
 
-        result = exporter.export_from_document(doc, str(tmp_path))
+        exporter.export_from_document(doc, str(tmp_path))
         tex_path = tmp_path / "manuscript.tex"
         assert tex_path.exists()
         content = tex_path.read_text(encoding="utf-8")

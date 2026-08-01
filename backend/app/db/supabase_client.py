@@ -39,7 +39,7 @@ try:
     with warnings.catch_warnings():
         for pattern in _SUPABASE_WARNING_FILTERS:
             warnings.filterwarnings("ignore", message=pattern, category=DeprecationWarning)
-        from supabase import create_client, Client
+        from supabase import Client, create_client
 except Exception:  # pragma: no cover - optional dependency in some test envs
     create_client = None
     Client = object

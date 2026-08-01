@@ -114,7 +114,7 @@ class TestRunABTest:
 
     def test_get_test_summary_exception_returns_error(self, framework):
         framework.test_results = [None]
-        with patch("app.services.ab_testing.logger") as mock_log:
+        with patch("app.services.ab_testing.logger"):
             result = framework.get_test_summary()
         assert "error" in result
 

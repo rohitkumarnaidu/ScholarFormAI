@@ -3,9 +3,9 @@
 
 """Enterprise tests — Batch 4: agents/, orchestrator, intelligence/, services/."""
 
-import pytest
 from unittest.mock import MagicMock, PropertyMock, patch
 
+import pytest
 
 # ══════════════════════════════════════════════════════════════════════════════
 # agents/metrics.py — PerformanceTracker + ProcessingMetrics
@@ -49,7 +49,7 @@ class TestPerformanceTracker:
 
     def test_init_creates_dir(self, tmp_path):
         from app.pipeline.agents.metrics import PerformanceTracker
-        t = PerformanceTracker(metrics_dir=str(tmp_path / "my_metrics"))
+        PerformanceTracker(metrics_dir=str(tmp_path / "my_metrics"))
         assert (tmp_path / "my_metrics").exists()
 
     def test_start_tracking(self, tracker):
@@ -159,7 +159,7 @@ class TestAgentMemory:
 
     def test_init_creates_dir(self, tmp_path):
         from app.pipeline.agents.memory import AgentMemory
-        m = AgentMemory(memory_dir=str(tmp_path / "test_mem"))
+        AgentMemory(memory_dir=str(tmp_path / "test_mem"))
         assert (tmp_path / "test_mem").exists()
 
     def test_remember_pattern(self, memory):
@@ -234,8 +234,8 @@ class TestAgentMemory:
 class TestAdaptiveStrategy:
     @pytest.fixture
     def strategy(self):
-        from app.pipeline.agents.metrics import PerformanceTracker
         from app.pipeline.agents.adaptive import AdaptiveStrategy
+        from app.pipeline.agents.metrics import PerformanceTracker
         tracker = MagicMock(spec=PerformanceTracker)
         return AdaptiveStrategy(tracker)
 
@@ -760,10 +760,10 @@ class TestPipelineOrchestrator:
             GROBIDClient=MagicMock,
             DoclingClient=MagicMock,
         ):
-            return PipelineOrchestrator(templates_dir=str("/tmp/templates"), temp_dir=str("/tmp/pipeline_temp"))
+            return PipelineOrchestrator(templates_dir="/tmp/templates", temp_dir="/tmp/pipeline_temp")
 
     def test_init(self, orch):
-        assert orch.temp_dir == str("/tmp/pipeline_temp")
+        assert orch.temp_dir == "/tmp/pipeline_temp"
 
     def test_coerce_bool_none(self, orch):
         assert orch._coerce_bool(None, default=True) is True

@@ -6,7 +6,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from unittest.mock import patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -33,11 +35,11 @@ class TestMultiDocumentLearnerInit:
         assert learner.insights["quality_trends"] == []
 
     def test_raises_on_bad_storage_dir(self):
-        from app.pipeline.agents.multi_doc_learning import MultiDocumentLearner
         import pytest
-        with patch.object(Path, "mkdir", side_effect=PermissionError("denied")):
-            with pytest.raises(PermissionError):
-                MultiDocumentLearner(storage_dir="/invalid/path")
+
+        from app.pipeline.agents.multi_doc_learning import MultiDocumentLearner
+        with patch.object(Path, "mkdir", side_effect=PermissionError("denied")), pytest.raises(PermissionError):
+            MultiDocumentLearner(storage_dir="/invalid/path")
 
     def test_loads_existing_insights(self, tmp_path):
         from app.pipeline.agents.multi_doc_learning import MultiDocumentLearner

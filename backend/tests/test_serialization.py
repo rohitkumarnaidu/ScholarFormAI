@@ -1,4 +1,4 @@
-from datetime import datetime, date, time
+from datetime import date, datetime, time
 from enum import Enum
 from unittest.mock import MagicMock
 
@@ -26,7 +26,7 @@ class TestSanitizeForJson:
     def test_date(self):
         from app.utils.serialization import sanitize_for_json
         result = sanitize_for_json(date(2024, 6, 15))
-        assert "2024-06-15" == result
+        assert result == "2024-06-15"
 
     def test_enum(self):
         from app.utils.serialization import sanitize_for_json
@@ -71,8 +71,9 @@ class TestSafeModelDump:
         assert safe_model_dump(None) == {}
 
     def test_pydantic_v2_model(self):
-        from app.utils.serialization import safe_model_dump
         from pydantic import BaseModel
+
+        from app.utils.serialization import safe_model_dump
         class TestModel(BaseModel):
             name: str
         model = TestModel(name="test")
@@ -123,8 +124,9 @@ class TestSafeModelDump:
 
 class TestNormalizeBlockType:
     def test_enum_with_value(self):
-        from app.utils.serialization import _normalize_block_type
         from enum import Enum
+
+        from app.utils.serialization import _normalize_block_type
         class BType(Enum):
             BODY = "body"
         assert _normalize_block_type(BType.BODY) == "body"

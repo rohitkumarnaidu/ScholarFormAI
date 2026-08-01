@@ -10,7 +10,6 @@ Covers construction, serialization, content representations, and defaults.
 from __future__ import annotations
 
 
-
 class TestEquationMinimumFields:
     def test_creation_with_minimum_fields(self):
         from app.models.equation import Equation

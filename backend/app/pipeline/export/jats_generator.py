@@ -3,7 +3,9 @@
 
 import logging
 from datetime import datetime
+
 from lxml import etree
+
 from app.models.pipeline_document import PipelineDocument
 
 logger = logging.getLogger(__name__)
@@ -62,11 +64,10 @@ class JATSGenerator:
             mixed_citation.text = ref.raw_text or "Reference text unavailable"
 
             # Add structured metadata if available
-            if ref.metadata:
-                if "doi" in ref.metadata:
-                    pub_id = etree.SubElement(mixed_citation, "pub-id")
-                    pub_id.set("pub-id-type", "doi")
-                    pub_id.text = ref.metadata["doi"]
+            if ref.metadata and "doi" in ref.metadata:
+                pub_id = etree.SubElement(mixed_citation, "pub-id")
+                pub_id.set("pub-id-type", "doi")
+                pub_id.text = ref.metadata["doi"]
 
     def _add_metadata(self, parent, doc_obj):
         article_meta = etree.SubElement(parent, "article-meta")
@@ -108,7 +109,7 @@ class JATSGenerator:
                     if len(date_parts) >= 3:
                         etree.SubElement(pub_date, "day").text = date_parts[2][:2]
                 except:
-                    pass
+                    pass  # intentionally ignored
 
         # Volume / Issue
         if doc_obj.metadata.volume:
@@ -154,4 +155,4 @@ class JATSGenerator:
                     mathml_tree = etree.fromstring(eqn.mathml)
                     formula.append(mathml_tree)
                 except:
-                    pass
+                    pass  # intentionally ignored

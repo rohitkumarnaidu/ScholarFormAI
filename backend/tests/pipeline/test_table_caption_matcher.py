@@ -2,7 +2,9 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 from unittest.mock import MagicMock
+
 
 class TestTableCaptionMatcher:
     def _make_doc(self, blocks=None, tables=None):
@@ -44,7 +46,7 @@ class TestTableCaptionMatcher:
         table = self._make_table(block_index=1, table_id="t1")
         doc = self._make_doc(blocks=[block], tables=[table])
         m = TableCaptionMatcher(search_window_above=2, search_window_below=1)
-        result = m.process(doc)
+        m.process(doc)
         assert table.caption_text == "Table 1: Results"
         assert table.caption_block_id == "b_cap"
 

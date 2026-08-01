@@ -2,10 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-from app.pipeline.parsing.parser import DocxParser
-from app.pipeline.normalization.normalizer import Normalizer
 from app.pipeline.classification.classifier import ContentClassifier
 from app.pipeline.formatting.formatter import Formatter
+from app.pipeline.normalization.normalizer import Normalizer
+from app.pipeline.parsing.parser import DocxParser
+
 
 def debug_render(docx_path, out_path):
     parser = DocxParser()

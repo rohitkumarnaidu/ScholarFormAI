@@ -239,15 +239,15 @@ class TestHelpers:
             _assert_session_owner(session, user)
 
     def test_get_orchestrator_lazy_init(self):
-        from app.routers.v1.synthesis import _get_orchestrator
         import app.routers.v1.synthesis as syn
+        from app.routers.v1.synthesis import _get_orchestrator
         syn._orchestrator = None
         orch = _get_orchestrator()
         assert orch is not None
 
     def test_get_synthesizer_lazy_init(self):
-        from app.routers.v1.synthesis import _get_synthesizer
         import app.routers.v1.synthesis as syn
+        from app.routers.v1.synthesis import _get_synthesizer
         syn._orchestrator = None
         syn._synthesizer = None
         with patch("app.routers.v1.synthesis.MultiDocSynthesizer") as mock_synth_cls:

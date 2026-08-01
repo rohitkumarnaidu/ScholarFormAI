@@ -11,18 +11,20 @@ Public API unchanged:
 """
 
 from __future__ import annotations
+
+import logging
 import os
 import sys
-import logging
-from typing import List
 from unittest.mock import Mock
+
 from app.config.settings import settings
 
 logger = logging.getLogger(__name__)
 
 # LiteLLM availability
 try:
-    from app.services.llm_service import generate as _llm_generate, LITELLM_AVAILABLE
+    from app.services.llm_service import LITELLM_AVAILABLE
+    from app.services.llm_service import generate as _llm_generate
 except ImportError:
     LITELLM_AVAILABLE = False
     _llm_generate = None
@@ -172,7 +174,7 @@ class CustomLLMFactory:
             raise ValueError(f"Unsupported provider: {provider}")
 
     @staticmethod
-    def get_available_providers() -> List[str]:
+    def get_available_providers() -> list[str]:
         providers = []
         if settings.NVIDIA_API_KEY:
             providers.append("nvidia")
@@ -185,7 +187,7 @@ class CustomLLMFactory:
                 if settings.ANTHROPIC_API_KEY:
                     providers.append("anthropic")
             except ImportError:
-                pass
+                pass  # intentionally ignored
         try:
             import requests
 
@@ -193,13 +195,13 @@ class CustomLLMFactory:
             if r.status_code == 200:
                 providers.append("ollama")
         except Exception:
-            pass
+            pass  # intentionally ignored
         if LITELLM_AVAILABLE:
             providers.append("litellm")
         return providers
 
     @staticmethod
-    def get_recommended_models(provider: str) -> List[str]:
+    def get_recommended_models(provider: str) -> list[str]:
         return {
             "openai": ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo"],
             "anthropic": ["claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"],

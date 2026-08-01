@@ -2,8 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
+
+from unittest.mock import MagicMock, patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -745,7 +748,7 @@ class TestTableCaptionMatcher:
         doc.tables = [table]
 
         m = TableCaptionMatcher()
-        result = m.process(doc)
+        m.process(doc)
         assert table.caption_text is None
 
     def test_process_sets_missing_status(self):
@@ -1226,7 +1229,7 @@ class TestDocumentValidatorV3:
              patch.object(validator, "_check_tables", return_value=([], [])), \
              patch.object(validator, "_check_reference_integrity") as mock_doi:
             validator.integrity_engine.validate_integrity.return_value = []
-            result = validator.validate(doc)
+            validator.validate(doc)
         mock_doi.assert_not_called()
 
     def test_validate_with_errors(self, validator):
@@ -1594,8 +1597,8 @@ class TestReviewManager:
             ReviewManager(review_threshold=1.5, critical_threshold=0.5)
 
     def test_evaluate_all_ok(self):
-        from app.pipeline.validation.review_manager import ReviewManager
         from app.models import ReviewStatus
+        from app.pipeline.validation.review_manager import ReviewManager
 
         doc = MagicMock()
         doc.blocks = []
@@ -1608,8 +1611,8 @@ class TestReviewManager:
         assert result.review.status == ReviewStatus.OK
 
     def test_evaluate_critical_threshold(self):
-        from app.pipeline.validation.review_manager import ReviewManager
         from app.models import ReviewStatus
+        from app.pipeline.validation.review_manager import ReviewManager
 
         doc = MagicMock()
         block = MagicMock()
@@ -1625,8 +1628,8 @@ class TestReviewManager:
         assert result.review.status == ReviewStatus.CRITICAL
 
     def test_evaluate_review_threshold(self):
-        from app.pipeline.validation.review_manager import ReviewManager
         from app.models import ReviewStatus
+        from app.pipeline.validation.review_manager import ReviewManager
 
         doc = MagicMock()
         block = MagicMock()
@@ -1642,8 +1645,8 @@ class TestReviewManager:
         assert result.review.status == ReviewStatus.REVIEW
 
     def test_evaluate_missing_confidence(self):
-        from app.pipeline.validation.review_manager import ReviewManager
         from app.models import ReviewStatus
+        from app.pipeline.validation.review_manager import ReviewManager
 
         doc = MagicMock()
         block = MagicMock()
@@ -1659,8 +1662,8 @@ class TestReviewManager:
         assert result.review.status == ReviewStatus.OK
 
     def test_evaluate_uses_nlp_confidence_fallback(self):
-        from app.pipeline.validation.review_manager import ReviewManager
         from app.models import ReviewStatus
+        from app.pipeline.validation.review_manager import ReviewManager
 
         doc = MagicMock()
         block = MagicMock()
@@ -1677,8 +1680,8 @@ class TestReviewManager:
         assert result.review.status == ReviewStatus.REVIEW
 
     def test_evaluate_uses_classification_confidence_attribute(self):
-        from app.pipeline.validation.review_manager import ReviewManager
         from app.models import ReviewStatus
+        from app.pipeline.validation.review_manager import ReviewManager
 
         doc = MagicMock()
         block = MagicMock()
@@ -1695,8 +1698,8 @@ class TestReviewManager:
         assert result.review.status == ReviewStatus.CRITICAL
 
     def test_evaluate_with_ai_hints(self):
-        from app.pipeline.validation.review_manager import ReviewManager
         from app.models import ReviewStatus
+        from app.pipeline.validation.review_manager import ReviewManager
 
         doc = MagicMock()
         block = MagicMock()
@@ -1729,8 +1732,8 @@ class TestReviewManager:
         assert result.review is not None
 
     def test_evaluate_semantic_intent_from_metadata(self):
-        from app.pipeline.validation.review_manager import ReviewManager
         from app.models import ReviewStatus
+        from app.pipeline.validation.review_manager import ReviewManager
 
         doc = MagicMock()
         block = MagicMock()
@@ -1831,8 +1834,8 @@ class TestCoverageEdgeCases:
     # --- Validator additional edge cases ---
 
     def test_validator_integrity_warning(self):
-        from app.pipeline.validation.validator_v3 import DocumentValidator
         from app.models import PipelineDocument
+        from app.pipeline.validation.validator_v3 import DocumentValidator
         with patch("app.pipeline.validation.validator_v3.ContractLoader"), \
              patch("app.pipeline.validation.validator_v3.SectionOrderValidator"), \
              patch("app.pipeline.validation.validator_v3.CrossReferenceEngine"), \

@@ -19,7 +19,7 @@ all_ok = True
 for fname in FILES:
     path = os.path.join(BASE, fname)
     try:
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             content = f.read()
         ast.parse(content, filename=fname)
         print(f"OK: {fname}")

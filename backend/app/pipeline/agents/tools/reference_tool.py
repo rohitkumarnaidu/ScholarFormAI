@@ -6,10 +6,11 @@ Reference extraction tool using GROBID and reference parser.
 """
 
 import sys
-from typing import Type
+
 from pydantic import BaseModel, Field
-from app.pipeline.services.grobid_client import GROBIDClient
+
 from app.pipeline.references.parser import ReferenceParser
+from app.pipeline.services.grobid_client import GROBIDClient
 
 if sys.version_info < (3, 14):
     try:
@@ -43,7 +44,7 @@ class ReferenceExtractionTool(BaseTool):
         "publication years, DOIs, and citation counts. Use this when you need "
         "to analyze the document's bibliography or validate citations."
     )
-    args_schema: Type[BaseModel] = ReferenceToolInput
+    args_schema: type[BaseModel] = ReferenceToolInput
 
     def __init__(self, grobid_url: str = "http://localhost:8070"):
         super().__init__()

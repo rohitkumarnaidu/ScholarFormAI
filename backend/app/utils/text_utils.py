@@ -9,14 +9,12 @@ Helper functions for normalizing text content without changing meaning.
 
 import re
 import unicodedata
-from typing import Dict
-
 
 # Unicode normalization mappings
 # These are common Unicode variants that should be normalized to ASCII equivalents
 
 # Quotation marks
-QUOTE_MAPPING: Dict[str, str] = {
+QUOTE_MAPPING: dict[str, str] = {
     "\u2018": "'",  # Left single quotation mark
     "\u2019": "'",  # Right single quotation mark
     "\u201a": "'",  # Single low-9 quotation mark
@@ -32,7 +30,7 @@ QUOTE_MAPPING: Dict[str, str] = {
 }
 
 # Dashes and hyphens
-DASH_MAPPING: Dict[str, str] = {
+DASH_MAPPING: dict[str, str] = {
     "\u2010": "-",  # Hyphen
     "\u2011": "-",  # Non-breaking hyphen
     "\u2012": "-",  # Figure dash
@@ -43,7 +41,7 @@ DASH_MAPPING: Dict[str, str] = {
 }
 
 # Spaces
-SPACE_MAPPING: Dict[str, str] = {
+SPACE_MAPPING: dict[str, str] = {
     "\u00a0": " ",  # Non-breaking space
     "\u2002": " ",  # En space
     "\u2003": " ",  # Em space
@@ -59,7 +57,7 @@ SPACE_MAPPING: Dict[str, str] = {
 }
 
 # Bullet and list characters
-BULLET_MAPPING: Dict[str, str] = {
+BULLET_MAPPING: dict[str, str] = {
     "\u2022": "•",  # Bullet (keep as is, it's common)
     "\u2023": "•",  # Triangular bullet
     "\u2043": "•",  # Hyphen bullet
@@ -72,7 +70,7 @@ BULLET_MAPPING: Dict[str, str] = {
 }
 
 # Combined mapping
-UNICODE_MAPPING: Dict[str, str] = {
+UNICODE_MAPPING: dict[str, str] = {
     **QUOTE_MAPPING,
     **DASH_MAPPING,
     **SPACE_MAPPING,

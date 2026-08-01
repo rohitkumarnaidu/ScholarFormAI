@@ -7,10 +7,11 @@ A/B Testing Framework - Compare NVIDIA vs DeepSeek quality.
 Allows running both models in parallel and comparing results.
 """
 
-import time
 import logging
-from typing import Dict, Any, List, Optional
+import time
 from concurrent.futures import ThreadPoolExecutor
+from typing import Any
+
 from app.utils.singleton import get_or_create
 
 logger = logging.getLogger(__name__)
@@ -24,8 +25,8 @@ class ABTestingFramework:
         self.test_results = []
 
     def run_ab_test(
-        self, nvidia_client, deepseek_llm, semantic_blocks: List[Dict[str, Any]], rules: str
-    ) -> Dict[str, Any]:
+        self, nvidia_client, deepseek_llm, semantic_blocks: list[dict[str, Any]], rules: str
+    ) -> dict[str, Any]:
         """
         Run both NVIDIA and DeepSeek in parallel and compare results.
 
@@ -38,7 +39,7 @@ class ABTestingFramework:
         Returns:
             Dict with comparison results
         """
-        results: Dict[str, Any] = {"nvidia": None, "deepseek": None, "comparison": {}}
+        results: dict[str, Any] = {"nvidia": None, "deepseek": None, "comparison": {}}
 
         try:
             # Run both models in parallel
@@ -104,7 +105,7 @@ class ABTestingFramework:
 
         return results
 
-    def _run_nvidia_test(self, nvidia_client, semantic_blocks: List[Dict[str, Any]], rules: str) -> Dict[str, Any]:
+    def _run_nvidia_test(self, nvidia_client, semantic_blocks: list[dict[str, Any]], rules: str) -> dict[str, Any]:
         """Run NVIDIA analysis."""
         start_time = time.time()
 
@@ -131,7 +132,7 @@ class ABTestingFramework:
                 "model": "NVIDIA Llama 3.3 70B",
             }
 
-    def _run_deepseek_test(self, deepseek_llm, semantic_blocks: List[Dict[str, Any]], rules: str) -> Dict[str, Any]:
+    def _run_deepseek_test(self, deepseek_llm, semantic_blocks: list[dict[str, Any]], rules: str) -> dict[str, Any]:
         """Run DeepSeek analysis."""
         start_time = time.time()
 
@@ -149,7 +150,7 @@ class ABTestingFramework:
         except Exception as e:
             return {"error": str(e), "latency": time.time() - start_time, "success": False, "model": "DeepSeek"}
 
-    def _compare_results(self, nvidia_result: Optional[Dict], deepseek_result: Optional[Dict]) -> Dict[str, Any]:
+    def _compare_results(self, nvidia_result: dict | None, deepseek_result: dict | None) -> dict[str, Any]:
         """Compare NVIDIA and DeepSeek results."""
         comparison = {"both_succeeded": False, "latency_winner": None, "latency_difference": 0.0}
 
@@ -172,7 +173,7 @@ class ABTestingFramework:
 
         return comparison
 
-    def get_test_summary(self) -> Dict[str, Any]:
+    def get_test_summary(self) -> dict[str, Any]:
         """Get summary of all A/B tests."""
         if not self.test_results:
             return {"message": "No tests run yet"}
@@ -196,7 +197,7 @@ class ABTestingFramework:
 
 
 # Global A/B testing instance
-_ab_testing: Optional[ABTestingFramework] = None
+_ab_testing: ABTestingFramework | None = None
 
 
 def get_ab_testing() -> ABTestingFramework:

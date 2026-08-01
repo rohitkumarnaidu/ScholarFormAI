@@ -2,34 +2,36 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-from datetime import datetime, timezone
-
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.exceptions import RequestValidationError
-from fastapi.exception_handlers import (
-    http_exception_handler as fastapi_http_exception_handler,
-    request_validation_exception_handler as fastapi_validation_exception_handler,
-)
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, RedirectResponse
-from fastapi.encoders import jsonable_encoder
-from app.config.settings import settings
-from app.exceptions import ScholarFormError
-from app.middleware.request_id import RequestIdMiddleware, get_request_id
-from app.middleware.rate_limit import RateLimitMiddleware
-from app.middleware.tier_rate_limit import TierRateLimitMiddleware
-from app.schemas.api_envelope import error_response
-from contextlib import asynccontextmanager
-from prometheus_fastapi_instrumentator import Instrumentator
+import asyncio
+import logging
 
 # Initialize logging — kept commented out so terminal output remains visible during development
 # from app.config.logging_config import setup_logging
 # setup_logging()
-
 # Phase 2: Silence Global AI Startup Noise
 import os
-import asyncio
-import logging
+from contextlib import asynccontextmanager, suppress
+from datetime import UTC, datetime
+
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.encoders import jsonable_encoder
+from fastapi.exception_handlers import (
+    http_exception_handler as fastapi_http_exception_handler,
+)
+from fastapi.exception_handlers import (
+    request_validation_exception_handler as fastapi_validation_exception_handler,
+)
+from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, RedirectResponse
+from prometheus_fastapi_instrumentator import Instrumentator
+
+from app.config.settings import settings
+from app.exceptions import ScholarFormError
+from app.middleware.rate_limit import RateLimitMiddleware
+from app.middleware.request_id import RequestIdMiddleware, get_request_id
+from app.middleware.tier_rate_limit import TierRateLimitMiddleware
+from app.schemas.api_envelope import error_response
 
 # Optional structured logging for production environments.
 if settings.ENABLE_STRUCTURED_LOGGING:
@@ -116,7 +118,7 @@ def _cleanup_expired_uploads(*, upload_dir: str = "uploads", retention_days: int
     if not os.path.isdir(upload_dir):
         return 0
 
-    cutoff_epoch = datetime.now(timezone.utc).timestamp() - (retention_days * 86400)
+    cutoff_epoch = datetime.now(UTC).timestamp() - (retention_days * 86400)
     deleted = 0
     for entry in os.scandir(upload_dir):
         if not entry.is_file():
@@ -169,7 +171,7 @@ async def _periodic_queue_depth_update(interval_seconds: int = 30) -> None:
             for queue, depth in depths.items():
                 MetricsManager.set_celery_queue_depth(queue, depth)
         except Exception:
-            pass
+            pass  # intentionally ignored
         await asyncio.sleep(interval_seconds)
 
 
@@ -262,8 +264,8 @@ def _load_optional_routers(target_app: FastAPI) -> None:
     if getattr(target_app.state, "_routers_loaded", False):
         return
 
-    from app.routers.v1 import v1_router
     from app.routers import preview
+    from app.routers.v1 import v1_router
 
     target_app.include_router(v1_router)
     target_app.include_router(preview.router)
@@ -382,7 +384,7 @@ async def _run_startup_step(
     """
     try:
         return await asyncio.wait_for(asyncio.to_thread(callback), timeout=timeout_seconds)
-    except asyncio.TimeoutError:
+    except TimeoutError:
         logger.warning(
             "Startup step '%s' timed out after %.1fs. Continuing in degraded mode.",
             step_name,
@@ -443,7 +445,7 @@ async def lifespan(app: FastAPI):
                 _probe_grobid_startup(),
                 timeout=25.0,
             )
-        except asyncio.TimeoutError:
+        except TimeoutError:
             app.state.grobid_startup_probe_ok = False
             logger.warning("Startup step 'grobid_probe' timed out after 25.0s. Continuing in degraded mode.")
 
@@ -484,16 +486,12 @@ async def lifespan(app: FastAPI):
     # ── SHUTDOWN ──
     if queue_metrics_task is not None:
         queue_metrics_task.cancel()
-        try:
+        with suppress(asyncio.CancelledError):
             await queue_metrics_task
-        except asyncio.CancelledError:
-            pass
     if cleanup_task is not None:
         cleanup_task.cancel()
-        try:
+        with suppress(asyncio.CancelledError):
             await cleanup_task
-        except asyncio.CancelledError:
-            pass
     logger.info("ScholarForm AI shutting down...")
 
 
@@ -608,7 +606,7 @@ app.add_middleware(
 app.add_middleware(TierRateLimitMiddleware, guest_daily_limit=5)
 
 # Security Headers Middleware (CSP, X-Frame-Options, etc.)
-from app.middleware.security_headers import SecurityHeadersMiddleware, MaxBodySizeMiddleware
+from app.middleware.security_headers import MaxBodySizeMiddleware, SecurityHeadersMiddleware
 
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(MaxBodySizeMiddleware, max_size=60 * 1024 * 1024)  # 60MB global limit

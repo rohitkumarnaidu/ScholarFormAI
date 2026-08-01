@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from app.services.model_store import model_store
 
@@ -21,6 +21,7 @@ class _DeterministicEmbeddingModel:
 
     def __init__(self, dimension: int = 256) -> None:
         import hashlib
+
         import numpy as np
 
         self._hashlib = hashlib
@@ -30,7 +31,7 @@ class _DeterministicEmbeddingModel:
     def get_sentence_embedding_dimension(self) -> int:
         return self._dimension
 
-    def _encode_one(self, text: Any) -> List[float]:
+    def _encode_one(self, text: Any) -> list[float]:
         vec = self._np.zeros(self._dimension, dtype=float)
         normalized = str(text or "").lower()
         tokens = [t for t in normalized.split() if t]
@@ -52,7 +53,7 @@ class _DeterministicEmbeddingModel:
 
 
 class SessionVectorStore:
-    def __init__(self, persist_directory: Optional[str] = None) -> None:
+    def __init__(self, persist_directory: str | None = None) -> None:
         base_dir = Path(__file__).resolve().parents[2]
         self.persist_directory = Path(persist_directory) if persist_directory else base_dir / "db" / "session_store"
         self.persist_directory.mkdir(parents=True, exist_ok=True)
@@ -134,17 +135,17 @@ class SessionVectorStore:
         except Exception as exc:
             logger.warning("SessionVectorStore: Failed to persist Redis TTL for %s: %s", session_id, exc)
 
-    def add_chunks(self, session_id: str, chunks: List[Dict[str, Any]]) -> int:
+    def add_chunks(self, session_id: str, chunks: list[dict[str, Any]]) -> int:
         if not chunks:
             return 0
         client = self._get_client()
         collection = client.get_or_create_collection(self._collection_name(session_id))
         model = self._get_embedding_model()
 
-        documents: List[str] = []
-        metadatas: List[Dict[str, Any]] = []
-        ids: List[str] = []
-        embeddings: List[List[float]] = []
+        documents: list[str] = []
+        metadatas: list[dict[str, Any]] = []
+        ids: list[str] = []
+        embeddings: list[list[float]] = []
 
         for idx, chunk in enumerate(chunks):
             text = str(chunk.get("text") or "").strip()
@@ -167,7 +168,7 @@ class SessionVectorStore:
             collection.add(documents=documents, metadatas=metadatas, ids=ids, embeddings=embeddings)
         return len(documents)
 
-    def query(self, session_id: str, question: str, top_k: int = 5) -> List[Dict[str, Any]]:
+    def query(self, session_id: str, question: str, top_k: int = 5) -> list[dict[str, Any]]:
         if not question:
             return []
         try:
@@ -185,8 +186,8 @@ class SessionVectorStore:
             documents = results.get("documents", [[]])[0] if results else []
             metadatas = results.get("metadatas", [[]])[0] if results else []
             distances = results.get("distances", [[]])[0] if results else []
-            output: List[Dict[str, Any]] = []
-            for text, meta, dist in zip(documents, metadatas, distances):
+            output: list[dict[str, Any]] = []
+            for text, meta, dist in zip(documents, metadatas, distances, strict=False):
                 score = 1.0 - float(dist) if dist is not None else 0.0
                 output.append(
                     {
@@ -218,4 +219,4 @@ class SessionVectorStore:
                 if raw_id != str(session_id):
                     r_client.delete(f"vector_session:{raw_id}:ttl")
         except Exception:
-            pass
+            pass  # intentionally ignored

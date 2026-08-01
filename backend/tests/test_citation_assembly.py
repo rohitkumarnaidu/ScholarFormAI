@@ -2,8 +2,10 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 
 class TestCitationAssemblyExtractCitations:
@@ -74,7 +76,7 @@ class TestCitationAssemblyNormalize:
     @pytest.fixture
     def service(self):
         from app.services.citation_assembly_service import CitationAssemblyService
-        yield CitationAssemblyService()
+        return CitationAssemblyService()
 
     def test_trims_whitespace(self, service):
         result = service._normalize("  hello  world  ")
@@ -172,7 +174,7 @@ class TestCitationAssemblyReplaceCitations:
     @pytest.fixture
     def service(self):
         from app.services.citation_assembly_service import CitationAssemblyService
-        yield CitationAssemblyService()
+        return CitationAssemblyService()
 
     def test_empty_text(self, service):
         result = service._replace_citations("", {"Smith 2020": 1})

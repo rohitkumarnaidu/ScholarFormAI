@@ -11,9 +11,10 @@ Backward-compatible public API:
   CircuitBreakerOpenException
 """
 
-import logging
 import functools
-from typing import Callable, Any, Optional
+import logging
+from collections.abc import Callable
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +36,7 @@ class CircuitBreakerOpenException(Exception):
 def circuit_breaker(
     failure_threshold: int = 3,
     recovery_timeout: int = 60,
-    fallback_function: Optional[Callable] = None,
+    fallback_function: Callable | None = None,
 ):
     """Thread-safe circuit breaker decorator (pybreaker-powered when available)."""
     if _PYBREAKER:

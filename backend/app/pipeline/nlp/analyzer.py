@@ -5,14 +5,15 @@
 NLP Content Analyzer - Enriches document with AI/NLP hints (Read-Only).
 """
 
-import re
+import importlib.util
 import json
 import logging
-import importlib.util
-from typing import List, Dict
-from app.models import PipelineDocument as Document, Block, BlockType
-from app.utils.singleton import get_or_create_safe
+import re
+
+from app.models import Block, BlockType
+from app.models import PipelineDocument as Document
 from app.services.llm_service import generate_with_fallback
+from app.utils.singleton import get_or_create_safe
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +81,7 @@ class ContentAnalyzer(PipelineStage):
 
         return document
 
-    def _estimate_section_confidence(self, block: Block) -> Dict:
+    def _estimate_section_confidence(self, block: Block) -> dict:
         """Estimate if block is a section header."""
         text = block.text.strip().lower()
         if not text:
@@ -163,7 +164,7 @@ def _get_keybert_model():
     return _KEYBERT_MODEL
 
 
-def extract_keywords(text: str, top_k: int = 8) -> List[str]:
+def extract_keywords(text: str, top_k: int = 8) -> list[str]:
     """
     Enhancement-aware keyword extraction with strict fallback order.
     Default order: keybert -> yake -> basic.
@@ -172,11 +173,11 @@ def extract_keywords(text: str, top_k: int = 8) -> List[str]:
     if not text:
         return []
 
-    def basic_fallback() -> List[str]:
+    def basic_fallback() -> list[str]:
         # Ultimate fallback: deterministic token frequency heuristic.
         tokens = [t.strip(".,;:!?()[]{}").lower() for t in text.split()]
         tokens_local = [t for t in tokens if len(t) > 3]
-        freq: Dict[str, int] = {}
+        freq: dict[str, int] = {}
         for token in tokens_local:
             freq[token] = freq.get(token, 0) + 1
         return [tok for tok, _count in sorted(freq.items(), key=lambda item: item[1], reverse=True)[:top_k]]
@@ -193,7 +194,7 @@ def extract_keywords(text: str, top_k: int = 8) -> List[str]:
     except Exception as exc:
         logger.debug("Enhancement profile unavailable for keyword extraction: %s", exc)
 
-    yake_candidates: List[str] = []
+    yake_candidates: list[str] = []
     for backend in backend_order:
         if backend == "keyllm":
             try:
@@ -243,13 +244,13 @@ def extract_keywords(text: str, top_k: int = 8) -> List[str]:
         return yake_candidates[:top_k]
     tokens = [t.strip(".,;:!?()[]{}").lower() for t in text.split()]
     tokens = [t for t in tokens if len(t) > 3]
-    freq: Dict[str, int] = {}
+    freq: dict[str, int] = {}
     for token in tokens:
         freq[token] = freq.get(token, 0) + 1
     return [tok for tok, _count in sorted(freq.items(), key=lambda item: item[1], reverse=True)[:top_k]]
 
 
-def _parse_keyword_payload(raw: str, top_k: int) -> List[str]:
+def _parse_keyword_payload(raw: str, top_k: int) -> list[str]:
     if not raw:
         return []
     cleaned = raw.strip()
@@ -273,7 +274,7 @@ def _parse_keyword_payload(raw: str, top_k: int) -> List[str]:
     if not isinstance(payload, list):
         return []
 
-    normalized: List[str] = []
+    normalized: list[str] = []
     seen: set[str] = set()
     for item in payload:
         token = str(item or "").strip()
@@ -289,7 +290,7 @@ def _parse_keyword_payload(raw: str, top_k: int) -> List[str]:
     return normalized
 
 
-def _extract_keywords_with_keyllm(text: str, top_k: int) -> List[str]:
+def _extract_keywords_with_keyllm(text: str, top_k: int) -> list[str]:
     prompt = (
         f"Extract the top {max(1, top_k)} semantic keywords from this academic text. "
         "Return strict JSON as an array of keyword strings only."

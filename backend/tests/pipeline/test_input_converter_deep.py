@@ -8,13 +8,16 @@ pandoc/libreoffice/OCR fallback chains, error handling.
 """
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
-import pytest
+
 import os
 import subprocess
 import tempfile
 from pathlib import Path
-from app.pipeline.input_conversion.converter import InputConverter, ConversionError
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+from app.pipeline.input_conversion.converter import ConversionError, InputConverter
 
 
 @pytest.fixture
@@ -110,23 +113,23 @@ class TestConvertToDocx:
 
     def test_md_uses_pandoc(self, converter, md_file):
         with patch.object(converter, "_run_pandoc") as mock_pandoc:
-            result = converter.convert_to_docx(md_file, "jobmd")
+            converter.convert_to_docx(md_file, "jobmd")
             mock_pandoc.assert_called_once()
 
     def test_html_uses_pandoc(self, converter, html_file):
         with patch.object(converter, "_run_pandoc") as mock_pandoc:
-            result = converter.convert_to_docx(html_file, "jobhtml")
+            converter.convert_to_docx(html_file, "jobhtml")
             mock_pandoc.assert_called_once()
 
     def test_tex_uses_pandoc(self, converter, tex_file):
         with patch.object(converter, "_run_pandoc") as mock_pandoc:
-            result = converter.convert_to_docx(tex_file, "jobtex")
+            converter.convert_to_docx(tex_file, "jobtex")
             mock_pandoc.assert_called_once()
 
     def test_pdf_uses_handle_pdf(self, converter, pdf_file):
         with patch.object(converter, "_handle_pdf") as mock_handle:
             mock_handle.return_value = "/tmp/input.docx"
-            result = converter.convert_to_docx(pdf_file, "jobpdf")
+            converter.convert_to_docx(pdf_file, "jobpdf")
             mock_handle.assert_called_once()
 
     def test_doc_uses_libreoffice(self, converter, temp_dir):
@@ -201,7 +204,7 @@ class TestHandlePdf:
     def test_ocr_enabled_and_scanned(self, converter, pdf_file, temp_dir):
         converter.temp_dir = temp_dir
         with (
-            patch.object(converter, "_run_libreoffice") as mock_lo,
+            patch.object(converter, "_run_libreoffice"),
             patch("app.pipeline.ocr.pdf_ocr.PdfOCR") as mock_ocr_cls,
             patch("app.services.enhancement_manager.enhancement_manager") as mock_em,
         ):
@@ -211,7 +214,7 @@ class TestHandlePdf:
             mock_ocr = MagicMock()
             mock_ocr.is_scanned.return_value = True
             mock_ocr_cls.return_value = mock_ocr
-            result = converter._handle_pdf(pdf_file, temp_dir, "jobocr", True)
+            converter._handle_pdf(pdf_file, temp_dir, "jobocr", True)
             mock_ocr.convert_to_docx.assert_called_once()
 
     def test_ocr_disabled_uses_libreoffice(self, converter, pdf_file, temp_dir):
@@ -223,7 +226,7 @@ class TestHandlePdf:
             patch("app.services.enhancement_manager.enhancement_manager") as mock_em,
         ):
             mock_em.profile.enabled = False
-            result = converter._handle_pdf(pdf_file, temp_dir, "jobnoocr", True)
+            converter._handle_pdf(pdf_file, temp_dir, "jobnoocr", True)
             mock_lo.assert_called_once()
 
     def test_ocr_falls_back_on_failure(self, converter, pdf_file, temp_dir):
@@ -242,7 +245,7 @@ class TestHandlePdf:
             mock_ocr.is_scanned.return_value = True
             mock_ocr.convert_to_docx.side_effect = Exception("OCR failed")
             mock_ocr_cls.return_value = mock_ocr
-            result = converter._handle_pdf(pdf_file, temp_dir, "jobocrfall", True)
+            converter._handle_pdf(pdf_file, temp_dir, "jobocrfall", True)
             mock_lo.assert_called_once()
 
     def test_not_scanned_uses_libreoffice(self, converter, pdf_file, temp_dir):
@@ -260,7 +263,7 @@ class TestHandlePdf:
             mock_ocr = MagicMock()
             mock_ocr.is_scanned.return_value = False
             mock_ocr_cls.return_value = mock_ocr
-            result = converter._handle_pdf(pdf_file, temp_dir, "jobnotscan", True)
+            converter._handle_pdf(pdf_file, temp_dir, "jobnotscan", True)
             mock_lo.assert_called_once()
 
     def test_no_backends_uses_libreoffice(self, converter, pdf_file, temp_dir):
@@ -274,16 +277,15 @@ class TestHandlePdf:
             mock_em.profile.enabled = True
             mock_em.profile.ocr_enabled = True
             mock_em.get_ocr_backends.return_value = []
-            result = converter._handle_pdf(pdf_file, temp_dir, "jobnoback", True)
+            converter._handle_pdf(pdf_file, temp_dir, "jobnoback", True)
             mock_lo.assert_called_once()
 
 
 class TestGetLibreofficeCmd:
     def test_returns_none_when_not_found(self, converter):
-        with patch("shutil.which", return_value=None):
-            with patch("os.path.exists", return_value=False):
-                result = converter._get_libreoffice_cmd()
-                assert result is None
+        with patch("shutil.which", return_value=None), patch("os.path.exists", return_value=False):
+            result = converter._get_libreoffice_cmd()
+            assert result is None
 
     def test_finds_soffice(self, converter):
         with patch("shutil.which", return_value="soffice"):
@@ -291,22 +293,20 @@ class TestGetLibreofficeCmd:
             assert result == "soffice"
 
     def test_checks_windows_paths(self, converter):
-        with patch("shutil.which", return_value=None):
-            with patch("os.name", "nt"):
-                with patch("os.path.exists") as mock_exists:
-                    mock_exists.side_effect = lambda x: x == r"C:\Program Files\LibreOffice\program\soffice.exe"
-                    result = converter._get_libreoffice_cmd()
-                    assert result == r"C:\Program Files\LibreOffice\program\soffice.exe"
+        with patch("shutil.which", return_value=None), patch("os.name", "nt"):
+            with patch("os.path.exists") as mock_exists:
+                mock_exists.side_effect = lambda x: x == r"C:\Program Files\LibreOffice\program\soffice.exe"
+                result = converter._get_libreoffice_cmd()
+                assert result == r"C:\Program Files\LibreOffice\program\soffice.exe"
 
 
 class TestRunPandoc:
     def test_pandoc_called(self, converter, md_file, temp_dir):
-        with patch("shutil.which", return_value="/usr/bin/pandoc"):
-            with patch("subprocess.run") as mock_run:
-                mock_run.return_value = MagicMock()
-                output = os.path.join(temp_dir, "out.docx")
-                converter._run_pandoc(md_file, output)
-                mock_run.assert_called_once()
+        with patch("shutil.which", return_value="/usr/bin/pandoc"), patch("subprocess.run") as mock_run:
+            mock_run.return_value = MagicMock()
+            output = os.path.join(temp_dir, "out.docx")
+            converter._run_pandoc(md_file, output)
+            mock_run.assert_called_once()
 
     def test_pandoc_not_installed(self, converter, md_file, temp_dir):
         with patch("shutil.which", return_value=None):

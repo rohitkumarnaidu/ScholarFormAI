@@ -9,7 +9,7 @@ Exit criterion: Every major API endpoint returns expected envelope + schema.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from io import BytesIO
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -19,7 +19,6 @@ from fastapi.testclient import TestClient
 from app.main import app
 from app.schemas.user import User
 from app.utils.dependencies import get_current_user, get_optional_user
-
 
 # ---------------------------------------------------------------------------
 # Shared fixtures
@@ -48,10 +47,9 @@ def client():
     app.dependency_overrides[get_current_user] = lambda: user
     app.dependency_overrides[get_optional_user] = lambda: user
 
-    with patch("app.main._probe_grobid_startup", new=AsyncMock(return_value=False)):
-        with TestClient(app) as test_client:
-            test_client.mock_user = user
-            yield test_client
+    with patch("app.main._probe_grobid_startup", new=AsyncMock(return_value=False)), TestClient(app) as test_client:
+        test_client.mock_user = user
+        yield test_client
 
     app.dependency_overrides = {}
 
@@ -79,8 +77,10 @@ def assert_template_schema(tpl: dict):
     assert "description" in tpl
     assert "source" in tpl
     assert tpl["source"] == "built_in"
-    assert isinstance(tpl["id"], str) and tpl["id"]
-    assert isinstance(tpl["name"], str) and tpl["name"]
+    assert isinstance(tpl["id"], str)
+    assert tpl["id"]
+    assert isinstance(tpl["name"], str)
+    assert tpl["name"]
     assert isinstance(tpl["description"], str)
 
 
@@ -304,8 +304,8 @@ class TestGeneratorSessionSmoke:
             "session_type": "agent",
             "config_json": {"template": "ieee"},
             "outline_json": None,
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "created_at": datetime.now(UTC).isoformat(),
+            "updated_at": datetime.now(UTC).isoformat(),
             "user_id": "user-123",
         }
         with patch("app.services.generator_session_service.GeneratorSessionService.get_session",
@@ -377,8 +377,9 @@ class TestDeprecationSmoke:
 
     def test_deprecated_route_headers(self, client):
         """Verify that a deprecated route emits Deprecation, Sunset, and Link headers."""
-        from app.routers.deprecation import DeprecatedRoute
         from fastapi import APIRouter
+
+        from app.routers.deprecation import DeprecatedRoute
 
         test_router = APIRouter(route_class=DeprecatedRoute)
         DeprecatedRoute.successor_map = {"/api/v1/old/test": "/api/v1/new/test"}

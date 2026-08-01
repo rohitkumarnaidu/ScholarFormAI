@@ -6,9 +6,11 @@ API Integration Tests
 Tests FastAPI endpoints, authentication, and request handling.
 """
 
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch, AsyncMock, MagicMock
+
 from app.main import app
 from app.utils.dependencies import get_current_user, get_optional_user
 
@@ -389,26 +391,23 @@ class TestAPIEndpoints:
         """Infected uploads must fail validation before document creation or pipeline dispatch."""
         monkeypatch.chdir(tmp_path)
 
-        with patch("app.routers.v1.documents_impl._require_db", return_value=None):
-            with patch(
-                "app.routers.v1.documents_impl.virus_scanner.scan",
-                new=AsyncMock(return_value={"clean": False, "engine": "clamav", "result": "Eicar-Test-Signature"}),
-            ):
-                with patch("app.routers.v1.documents_impl.DocumentService.create_document") as mock_create_document:
-                    with patch(
-                        "app.routers.v1.documents_impl.enhancement_manager.dispatch_document_pipeline"
-                    ) as mock_dispatch:
-                        response = client.post(
-                            "/api/v1/documents/upload",
-                            files={
-                                "file": (
-                                    "infected.docx",
-                                    b"PK\x03\x04infected-docx",
-                                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                                )
-                            },
-                            data={"template": "IEEE"},
-                        )
+        with patch("app.routers.v1.documents_impl._require_db", return_value=None), patch(
+            "app.routers.v1.documents_impl.virus_scanner.scan",
+            new=AsyncMock(return_value={"clean": False, "engine": "clamav", "result": "Eicar-Test-Signature"}),
+        ), patch("app.routers.v1.documents_impl.DocumentService.create_document") as mock_create_document, patch(
+            "app.routers.v1.documents_impl.enhancement_manager.dispatch_document_pipeline"
+        ) as mock_dispatch:
+            response = client.post(
+                "/api/v1/documents/upload",
+                files={
+                    "file": (
+                        "infected.docx",
+                        b"PK\x03\x04infected-docx",
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    )
+                },
+                data={"template": "IEEE"},
+            )
 
         assert response.status_code == 422
         payload = response.json()

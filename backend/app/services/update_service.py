@@ -5,8 +5,8 @@ import json
 import logging
 import os
 import shutil
-from datetime import datetime, timezone
-from enum import Enum
+from datetime import UTC, datetime
+from enum import StrEnum
 from pathlib import Path
 from typing import Any
 
@@ -15,14 +15,14 @@ import httpx
 logger = logging.getLogger(__name__)
 
 
-class ReleaseChannel(str, Enum):
+class ReleaseChannel(StrEnum):
     STABLE = "stable"
     BETA = "beta"
     NIGHTLY = "nightly"
     PRE_RELEASE = "pre-release"
 
 
-class UpdateStatus(str, Enum):
+class UpdateStatus(StrEnum):
     UP_TO_DATE = "up-to-date"
     UPDATE_AVAILABLE = "update-available"
     DOWNLOADING = "downloading"
@@ -33,7 +33,7 @@ class UpdateStatus(str, Enum):
     ERROR = "error"
 
 
-class UpdateCheckMode(str, Enum):
+class UpdateCheckMode(StrEnum):
     AUTO = "auto"
     MANUAL = "manual"
     SCHEDULED = "scheduled"
@@ -382,7 +382,7 @@ class UpdateService:
         include_current: bool = False,
     ) -> dict[str, Any]:
         target_channel = channel or self._settings.get("channel", "stable")
-        checked_at = datetime.now(timezone.utc).isoformat()
+        checked_at = datetime.now(UTC).isoformat()
 
         result: dict[str, Any] = {
             "current_version": self.current_version,
@@ -443,7 +443,7 @@ class UpdateService:
             return True
         try:
             last = datetime.fromisoformat(last_check)
-            elapsed = (datetime.now(timezone.utc) - last).total_seconds()
+            elapsed = (datetime.now(UTC) - last).total_seconds()
             return elapsed >= self._settings.get("check_frequency_hours", 24) * 3600
         except (ValueError, TypeError):
             return True
@@ -560,12 +560,12 @@ class UpdateService:
                 h.update(install_path.read_bytes())
                 checksum = h.hexdigest()
             except Exception:
-                pass
+                pass  # intentionally ignored
 
             entry = UpdateHistoryEntry(
                 version=target_version or "unknown",
                 channel=ReleaseChannel(self._settings.get("channel", "stable")),
-                installed_at=datetime.now(timezone.utc).isoformat(),
+                installed_at=datetime.now(UTC).isoformat(),
                 checksum=checksum,
                 success=True,
             )
@@ -585,7 +585,7 @@ class UpdateService:
             entry = UpdateHistoryEntry(
                 version=target_version or "unknown",
                 channel=ReleaseChannel(self._settings.get("channel", "stable")),
-                installed_at=datetime.now(timezone.utc).isoformat(),
+                installed_at=datetime.now(UTC).isoformat(),
                 success=False,
                 error_message=str(e),
             )
@@ -623,7 +623,7 @@ class UpdateService:
             entry = UpdateHistoryEntry(
                 version=prev_version,
                 channel=ReleaseChannel(self._settings.get("channel", "stable")),
-                installed_at=datetime.now(timezone.utc).isoformat(),
+                installed_at=datetime.now(UTC).isoformat(),
                 success=True,
             )
             entry.rolled_back = True

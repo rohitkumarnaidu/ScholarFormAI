@@ -14,7 +14,7 @@ import difflib
 import hashlib
 import logging
 import os
-from typing import Any, Dict, Optional
+from typing import Any
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from fastapi import HTTPException, Request
@@ -47,8 +47,8 @@ class DocumentExportService:
 
     def __init__(
         self,
-        crud_service: Optional[DocumentCrudService] = None,
-        crud: Optional[DocumentCrudService] = None,
+        crud_service: DocumentCrudService | None = None,
+        crud: DocumentCrudService | None = None,
     ) -> None:
         self._crud = crud_service or crud or DocumentCrudService()
 
@@ -68,7 +68,7 @@ class DocumentExportService:
         secret: str,
         expires_in_seconds: int = 3600,
         download_format: str = "docx",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Generate a HMAC-signed download URL."""
         return _get_doc_service().generate_signed_download_url(
             file_url=file_url,
@@ -129,7 +129,7 @@ class DocumentExportService:
             logger.error("Unexpected LaTeX Error: %s", exc)
             raise HTTPException(status_code=500, detail="An internal error occurred during LaTeX export.")
 
-    def compile_jats(self, document_id: str, output_dir: str) -> Dict[str, Any]:
+    def compile_jats(self, document_id: str, output_dir: str) -> dict[str, Any]:
         """Compile/export document to JATS XML format."""
         try:
             from app.pipeline.export.jats_exporter import JATSExporter
@@ -155,16 +155,15 @@ class DocumentExportService:
     async def get_comparison_data(
         self,
         job_id: str,
-        current_user: Optional[User] = None,
-    ) -> Dict[str, Any]:
+        current_user: User | None = None,
+    ) -> dict[str, Any]:
         """Get data for side-by-side comparison with HTML diff."""
         doc = await _get_doc_service().get_document(job_id)
         if not doc:
             raise HTTPException(status_code=404, detail="Document not found")
 
-        if doc.get("user_id") is not None:
-            if not current_user or str(doc["user_id"]) != str(current_user.id):
-                raise HTTPException(status_code=403, detail="Not authorized to access comparison data")
+        if doc.get("user_id") is not None and (not current_user or str(doc["user_id"]) != str(current_user.id)):
+            raise HTTPException(status_code=403, detail="Not authorized to access comparison data")
 
         if doc.get("status") not in _READY_FOR_EXPORT_STATUSES:
             logger.warning("Compare endpoint called too early for job %s. Status: %s", job_id, doc.get("status"))
@@ -211,9 +210,9 @@ class DocumentExportService:
         request: Request,
         job_id: str,
         format: str = "docx",
-        token: Optional[str] = None,
-        expires: Optional[int] = None,
-        current_user: Optional[User] = None,
+        token: str | None = None,
+        expires: int | None = None,
+        current_user: User | None = None,
     ) -> Any:
         """Download the processed document in DOCX, PDF, or TeX format."""
         try:

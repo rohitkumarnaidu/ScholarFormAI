@@ -2,8 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 from unittest.mock import MagicMock, patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -175,7 +178,7 @@ class TestDocumentValidator:
                                         v = DocumentValidator()
                                         v.integrity_engine.validate_integrity.return_value = []
                                         with patch.object(v, "_check_reference_integrity") as mock_doi:
-                                            result = v.validate(doc)
+                                            v.validate(doc)
                                             mock_doi.assert_not_called()
 
     def test_check_sections_error(self):
@@ -420,7 +423,7 @@ class TestDocumentValidator:
             assert result.is_valid is True
 
     def test_validate_document_crash_fallback(self):
-        from app.pipeline.validation.validator_v3 import validate_document, ValidationResult
+        from app.pipeline.validation.validator_v3 import ValidationResult, validate_document
         doc = MagicMock()
         doc.figures = []
         doc.references = []
@@ -454,9 +457,9 @@ class TestReviewManager:
             ReviewManager(critical_threshold=0.5, review_threshold=1.5)
 
     def test_evaluate_ok(self):
-        from app.pipeline.validation.review_manager import ReviewManager
-        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.validation.review_manager import ReviewManager
         doc = PipelineDocument(
             document_id="test",
             blocks=[Block(block_id="b1", text="OK", index=0, block_type=BlockType.BODY, classification_confidence=0.95)]
@@ -467,9 +470,9 @@ class TestReviewManager:
         assert result.review.status == ReviewStatus.OK
 
     def test_evaluate_review_threshold(self):
-        from app.pipeline.validation.review_manager import ReviewManager
-        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.validation.review_manager import ReviewManager
         doc = PipelineDocument(
             document_id="test",
             blocks=[Block(block_id="b1", text="Ambiguous", index=0, block_type=BlockType.BODY, classification_confidence=0.6)]
@@ -480,9 +483,9 @@ class TestReviewManager:
         assert result.review.status == ReviewStatus.REVIEW
 
     def test_evaluate_critical(self):
-        from app.pipeline.validation.review_manager import ReviewManager
-        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.validation.review_manager import ReviewManager
         doc = PipelineDocument(
             document_id="test",
             blocks=[Block(block_id="b1", text="Bad", index=0, block_type=BlockType.BODY, classification_confidence=0.3)]
@@ -493,9 +496,9 @@ class TestReviewManager:
         assert result.review.status == ReviewStatus.CRITICAL
 
     def test_evaluate_confidence_from_metadata(self):
-        from app.pipeline.validation.review_manager import ReviewManager
-        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.validation.review_manager import ReviewManager
         block = Block(block_id="b1", text="Test", index=0, block_type=BlockType.BODY)
         block.metadata["classification_confidence"] = 0.3
         doc = PipelineDocument(document_id="test", blocks=[block])
@@ -505,9 +508,9 @@ class TestReviewManager:
         assert result.review.status == ReviewStatus.CRITICAL
 
     def test_evaluate_confidence_from_nlp_metadata(self):
-        from app.pipeline.validation.review_manager import ReviewManager
-        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.validation.review_manager import ReviewManager
         block = Block(block_id="b1", text="Test", index=0, block_type=BlockType.BODY)
         block.metadata["nlp_confidence"] = 0.5
         doc = PipelineDocument(document_id="test", blocks=[block])
@@ -517,9 +520,9 @@ class TestReviewManager:
         assert result.review.status == ReviewStatus.REVIEW
 
     def test_evaluate_invalid_confidence(self):
-        from app.pipeline.validation.review_manager import ReviewManager
-        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.validation.review_manager import ReviewManager
         block = Block.model_construct(block_id="b1", text="Test", index=0, block_type=BlockType.BODY, classification_confidence="invalid")
         doc = PipelineDocument(document_id="test", blocks=[block])
         rm = ReviewManager()
@@ -527,9 +530,9 @@ class TestReviewManager:
         assert result.review.lowest_confidence == 1.0
 
     def test_evaluate_ai_hints(self):
-        from app.pipeline.validation.review_manager import ReviewManager
-        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.validation.review_manager import ReviewManager
         doc = PipelineDocument(
             document_id="test",
             blocks=[Block(block_id="b1", text="Test", index=0, block_type=BlockType.BODY, classification_confidence=0.9)]
@@ -541,9 +544,9 @@ class TestReviewManager:
         assert result.review.status == ReviewStatus.REVIEW
 
     def test_evaluate_flags_limited_to_five(self):
-        from app.pipeline.validation.review_manager import ReviewManager
-        from app.models.pipeline_document import PipelineDocument
         from app.models.block import Block, BlockType
+        from app.models.pipeline_document import PipelineDocument
+        from app.pipeline.validation.review_manager import ReviewManager
         blocks = [Block(block_id=f"b{i}", text="Low", index=i, block_type=BlockType.BODY, classification_confidence=0.3) for i in range(10)]
         doc = PipelineDocument(document_id="test", blocks=blocks)
         rm = ReviewManager()

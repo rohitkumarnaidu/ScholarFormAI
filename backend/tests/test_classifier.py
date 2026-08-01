@@ -45,8 +45,8 @@ class TestLooksLikeHeading:
 
 class TestResolveHeadingType:
     def test_level_2(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         block = MagicMock()
         block.metadata = {"level": 2}
@@ -55,8 +55,8 @@ class TestResolveHeadingType:
         assert result == BlockType.HEADING_2
 
     def test_default_level_1(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         block = MagicMock()
         block.metadata = {}
@@ -67,8 +67,8 @@ class TestResolveHeadingType:
 
 class TestMapScibertLabel:
     def test_title_mapping(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         block = MagicMock()
         block.text = "My Paper"
@@ -76,8 +76,8 @@ class TestMapScibertLabel:
         assert result == BlockType.TITLE
 
     def test_abstract_heading(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         block = MagicMock()
         block.text = "Abstract"
@@ -85,8 +85,8 @@ class TestMapScibertLabel:
         assert result == BlockType.ABSTRACT_HEADING
 
     def test_abstract_body(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         block = MagicMock()
         block.text = "This paper discusses..."
@@ -210,8 +210,8 @@ class TestMatchGrobidAffiliation:
 
 class TestNlpClassifyFallback:
     def test_footnote_detected(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         block = MagicMock()
         block.block_type = BlockType.UNKNOWN
@@ -221,8 +221,8 @@ class TestNlpClassifyFallback:
         assert block.block_type == BlockType.FOOTNOTE
 
     def test_equation_detected(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         block = MagicMock()
         block.block_type = BlockType.UNKNOWN
@@ -232,8 +232,8 @@ class TestNlpClassifyFallback:
         assert block.block_type == BlockType.EQUATION
 
     def test_already_classified_skipped(self):
-        from app.pipeline.classification.classifier import ContentClassifier
         from app.models import BlockType
+        from app.pipeline.classification.classifier import ContentClassifier
         cc = ContentClassifier()
         block = MagicMock()
         block.block_type = BlockType.TITLE

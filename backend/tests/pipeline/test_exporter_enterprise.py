@@ -8,11 +8,13 @@ Covers all 11 methods, 48 branches, error/edge paths
 with zero external dependencies (all mocks).
 """
 
-from app.models import Reference
 from __future__ import annotations
-from unittest.mock import patch, MagicMock, mock_open
+
+from unittest.mock import MagicMock, mock_open, patch
+
 import pytest
 
+from app.models import Reference
 from app.pipeline.export.exporter import Exporter
 
 # ---------------------------------------------------------------------------
@@ -21,7 +23,7 @@ from app.pipeline.export.exporter import Exporter
 
 def _make_doc(**overrides):
     """Build a minimal PipelineDocument mock with all attributes the exporter touches."""
-    from app.models import PipelineDocument, Block, BlockType
+    from app.models import Block, BlockType, PipelineDocument
     from app.models.pipeline_document import DocumentMetadata, TemplateInfo
 
     doc = PipelineDocument(
@@ -78,8 +80,8 @@ def doc():
 class TestInit:
     def test_creates_sub_exporters(self):
         with (
-            patch("app.pipeline.export.exporter.PDFExporter") as mock_pdf,
-            patch("app.pipeline.export.exporter.LaTeXExporter") as mock_latex,
+            patch("app.pipeline.export.exporter.PDFExporter"),
+            patch("app.pipeline.export.exporter.LaTeXExporter"),
         ):
             e = Exporter()
             assert isinstance(e.pdf_exporter, MagicMock)
@@ -118,9 +120,9 @@ class TestProcess:
         doc.output_path = "/tmp/out/doc.docx"
         doc.formatting_options = {"export_formats": ["docx", "json", "markdown"]}
         with (
-            patch.object(exporter, "export") as mock_export,
+            patch.object(exporter, "export"),
             patch.object(exporter, "export_json") as mock_json,
-            patch.object(exporter, "export_markdown") as mock_md,
+            patch.object(exporter, "export_markdown"),
         ):
             doc.generated_doc = MagicMock()
             exporter.process(doc)
@@ -130,8 +132,8 @@ class TestProcess:
         doc.output_path = "/tmp/out/doc.docx"
         doc.formatting_options = {"export_formats": ["docx", "json", "markdown"]}
         with (
-            patch.object(exporter, "export") as mock_export,
-            patch.object(exporter, "export_json") as mock_json,
+            patch.object(exporter, "export"),
+            patch.object(exporter, "export_json"),
             patch.object(exporter, "export_markdown") as mock_md,
         ):
             doc.generated_doc = MagicMock()
@@ -377,7 +379,7 @@ class TestExportLatex:
         doc.output_path = "/tmp/out/doc.docx"
         exporter.latex_exporter.convert_to_latex.side_effect = RuntimeError("convert fail")
         exporter.latex_exporter.export_from_document.return_value = "/tmp/out/doc.tex"
-        with patch("os.replace") as mock_replace:
+        with patch("os.replace"):
             result = exporter.export_latex(doc, "/tmp/out/doc.tex")
         exporter.latex_exporter.export_from_document.assert_called_once()
         assert result == "/tmp/out/doc.tex"

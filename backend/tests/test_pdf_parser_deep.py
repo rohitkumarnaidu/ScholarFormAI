@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
+
 import pytest
 
 from app.models import Block, BlockType
@@ -11,7 +12,7 @@ from app.models import Block, BlockType
 
 @pytest.fixture
 def pdf_parser():
-    with patch("app.pipeline.parsing.pdf_parser.fitz") as mock_fitz:
+    with patch("app.pipeline.parsing.pdf_parser.fitz"):
         from app.pipeline.parsing.pdf_parser import PdfParser
         parser = PdfParser()
         parser.block_counter = 0
@@ -152,7 +153,7 @@ class TestBuildOcrBlocks:
 
     def test_increments_counter(self, pdf_parser):
         pdf_parser.block_counter = 5
-        blocks = pdf_parser._build_ocr_blocks("Text", "tesseract")
+        pdf_parser._build_ocr_blocks("Text", "tesseract")
         assert pdf_parser.block_counter == 6
 
 
@@ -192,7 +193,7 @@ class TestCalculateFontStats:
         mock_page.get_text.return_value = {
             "blocks": [{"type": 0, "lines": [{"spans": [{"size": 12.0, "text": "x", "flags": 0, "font": "A"}]}]}]
         }
-        result = pdf_parser._calculate_font_stats(doc)
+        pdf_parser._calculate_font_stats(doc)
         assert doc.__getitem__.call_count <= 5
 
 
@@ -447,7 +448,6 @@ class TestExtractContent:
         mock_page.get_images.return_value = [(1, 0, 0, 0, 0, 0, 0)]
         pdf_doc = mock_pdf_doc
         pdf_doc.extract_image.return_value = {"image": b"imgdata", "ext": "png"}
-        page_text_positions = []
         mock_page.get_image_rects.return_value = []
         blocks, figures, tables = pdf_parser._extract_content(mock_pdf_doc)
         assert len(figures) == 1

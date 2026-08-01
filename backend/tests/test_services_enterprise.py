@@ -6,10 +6,9 @@ from __future__ import annotations
 import asyncio
 import json
 import time
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
 
 # ═════════════════════════════════════════════════════════════════════════════ #
 # DocumentService — remaining gaps (get_document_result, upsert_document_result,
@@ -398,13 +397,13 @@ class TestLlmServiceEnterprise:
         assert result["provider"] == "custom_abc"
 
     def test_generate_with_model_unknown_raises(self):
-        from app.services.llm_service import generate_with_model, LLMUnavailableError
+        from app.services.llm_service import LLMUnavailableError, generate_with_model
         with patch("app.services.provider_registry.resolve_model_provider", return_value=None):
             with pytest.raises(LLMUnavailableError):
                 generate_with_model([{"role": "user", "content": "hi"}], "unknown-model")
 
     def test_generate_with_model_custom_not_found(self):
-        from app.services.llm_service import generate_with_model, LLMUnavailableError
+        from app.services.llm_service import LLMUnavailableError, generate_with_model
         with patch("app.services.provider_registry.resolve_model_provider", return_value="custom_abc"):
             with patch("app.db.session.get_db") as mock_get_db:
                 mock_db = MagicMock()
@@ -442,7 +441,7 @@ class TestLlmServiceEnterprise:
 
     @patch("app.services.llm_service._call_with_provider_circuit")
     def test_generate_with_fallback_all_fail(self, mock_call):
-        from app.services.llm_service import generate_with_fallback, LLMUnavailableError
+        from app.services.llm_service import LLMUnavailableError, generate_with_fallback
         mock_call.side_effect = Exception("all fail")
         with patch("app.services.llm_service.resolve_user_api_key", return_value="some_key"):
             with patch("app.services.llm_service.settings") as mock_s:
@@ -454,7 +453,7 @@ class TestLlmServiceEnterprise:
 
     @patch("app.services.llm_service._call_with_provider_circuit")
     def test_generate_with_fallback_all_missing_keys(self, mock_call):
-        from app.services.llm_service import generate_with_fallback, LLMUnavailableError
+        from app.services.llm_service import LLMUnavailableError, generate_with_fallback
         mock_call.side_effect = Exception("all fail")
         with patch("app.services.llm_service.resolve_user_api_key", return_value=None):
             with patch("app.services.llm_service.settings") as mock_s:
@@ -505,7 +504,7 @@ class TestLlmServiceEnterprise:
             mock_choice.message.content = "ok"
             mock_client.chat.completions.create.return_value = MagicMock(choices=[mock_choice])
             from app.services.llm_service import _openai_compat
-            result = _openai_compat(
+            _openai_compat(
                 [{"role": "user", "content": "hi"}], "nvidia_nim/meta/llama",
                 0.3, 1024, "key", "https://api.nvidia.com/v1",
             )
@@ -580,6 +579,7 @@ class TestLlmServiceEnterprise:
                 mock_instance.get = AsyncMock(return_value=mock_resp)
                 mock_client.return_value.__aenter__.return_value = mock_instance
                 import asyncio
+
                 from app.services.llm_service import check_health
                 result = asyncio.run(check_health())
         assert result["nvidia"] == "healthy"
@@ -593,13 +593,17 @@ class TestLlmServiceEnterprise:
 
 class TestHealthChecksEnterprise:
     def test_invalidate_readiness_cache(self):
-        from app.services.health_checks import invalidate_readiness_cache, _readiness_cache_payload, _readiness_cache_status_code
+        from app.services.health_checks import (
+            _readiness_cache_payload,
+            _readiness_cache_status_code,
+            invalidate_readiness_cache,
+        )
         invalidate_readiness_cache()
         assert _readiness_cache_payload is None
         assert _readiness_cache_status_code == 503
 
     def test_invalidate_health_cache(self):
-        from app.services.health_checks import invalidate_health_cache, _health_cache_payload, _health_cache_status_code
+        from app.services.health_checks import _health_cache_payload, _health_cache_status_code, invalidate_health_cache
         invalidate_health_cache()
         assert _health_cache_payload is None
         assert _health_cache_status_code == 503
@@ -865,7 +869,7 @@ class TestPreviewRendererEnterprise:
         renderer._template_names = {"apa"}
         with patch.object(renderer, "_load_template_css", return_value="body {}"):
             warnings = []
-            css = renderer._get_template_css("unknown", warnings)
+            renderer._get_template_css("unknown", warnings)
         assert "unknown_template" in str(warnings)
 
     def test_build_fallback_css_a4(self, renderer):
@@ -1374,13 +1378,13 @@ class TestProviderRegistryEnterprise:
         assert normalize_model_name("", "openai") == ""
 
     def test_cache_discovered_models(self):
-        from app.services.provider_registry import cache_discovered_models, _get_cached_discovered_models
+        from app.services.provider_registry import _get_cached_discovered_models, cache_discovered_models
         cache_discovered_models("user-1", "ollama", ["deepseek-r1", "llama3"])
         models = _get_cached_discovered_models("user-1", "ollama")
         assert "deepseek-r1" in models
 
     def test_cache_discovered_models_expired(self):
-        from app.services.provider_registry import cache_discovered_models, _get_cached_discovered_models
+        from app.services.provider_registry import _get_cached_discovered_models, cache_discovered_models
         cache_discovered_models("user-2", "ollama", ["model1"])
         import time as t
         with patch("app.services.provider_registry.time.time", return_value=t.time() + 7200):
@@ -1523,8 +1527,8 @@ class TestGeneratorSessionServiceEnterprise:
         mock_client = MagicMock()
         mock_client.table.return_value.insert.return_value.execute.return_value = MagicMock()
         with patch("app.services.generator_session_service.get_supabase_client", return_value=mock_client):
-            with patch.object(svc, "_set_cached") as mock_set:
-                with patch.object(svc, "_invalidate_session_lists") as mock_inv:
+            with patch.object(svc, "_set_cached"):
+                with patch.object(svc, "_invalidate_session_lists"):
                     sid = await svc.create_session("user-1", "multi_doc", {"key": "val"})
         assert sid is not None
         assert len(sid) > 0
@@ -1571,7 +1575,7 @@ class TestGeneratorSessionServiceEnterprise:
         mock_client.table.return_value.update.return_value.eq.return_value.execute.return_value = MagicMock()
         with patch("app.services.generator_session_service.get_supabase_client", return_value=mock_client):
             with patch.object(svc, "_invalidate_session_caches") as mock_inv:
-                with patch.object(svc, "_invalidate_session_lists") as mock_inv2:
+                with patch.object(svc, "_invalidate_session_lists"):
                     await svc.update_session("sess-1", status="completed")
         mock_inv.assert_called_once_with("sess-1")
 
@@ -1703,8 +1707,8 @@ class TestApiKeyRateLimiterEnterprise:
         assert result["requests_this_minute"] == 0
 
     def test_get_api_key_rate_limiter(self):
-        from app.services.api_key_rate_limiter import get_api_key_rate_limiter
         import app.services.api_key_rate_limiter as rlmod
+        from app.services.api_key_rate_limiter import get_api_key_rate_limiter
         rlmod._rate_limiter = None
         limiter = get_api_key_rate_limiter()
         assert limiter is not None
@@ -2203,7 +2207,7 @@ class TestCrossRefClientEnterprise:
         with patch.object(client, "_get_cache", return_value=None):
             with patch.object(client, "_fetch_api", return_value={"doi": "10.1000/test"}):
                 with patch("app.services.crossref_client.HAS_REDIS", True):
-                    with patch.object(client, "_set_cache") as mock_set:
+                    with patch.object(client, "_set_cache"):
                         result = client.validate_citation("some long query")
         assert result["doi"] == "10.1000/test"
 
@@ -2278,8 +2282,8 @@ class TestModelMetricsEnterprise:
         assert "summary" in data
 
     def test_get_model_metrics(self):
-        from app.services.model_metrics import get_model_metrics
         import app.services.model_metrics as mm
+        from app.services.model_metrics import get_model_metrics
         mm._model_metrics = None
         m = get_model_metrics()
         assert m is not None
@@ -2407,8 +2411,8 @@ class TestUserServiceEnterprise:
 
 class TestABTestingEnterprise:
     def test_get_ab_testing(self):
-        from app.services.ab_testing import get_ab_testing
         import app.services.ab_testing as ab
+        from app.services.ab_testing import get_ab_testing
         ab._ab_testing = None
         instance = get_ab_testing()
         assert instance is not None
@@ -2508,8 +2512,8 @@ class TestNvidiaClientEnterprise:
         assert result == "analysis result"
 
     def test_get_nvidia_client_none(self):
-        from app.services.nvidia_client import get_nvidia_client
         import app.services.nvidia_client as nc_mod
+        from app.services.nvidia_client import get_nvidia_client
         nc_mod._nvidia_client = None
         with patch("app.services.nvidia_client.NvidiaClient") as mock_cls:
             mock_instance = MagicMock()

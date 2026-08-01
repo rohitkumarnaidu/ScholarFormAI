@@ -16,22 +16,23 @@ Internally delegates to proper Repository classes under
 from __future__ import annotations
 
 import asyncio
-import os
 import logging
+import os
 import uuid
 from datetime import datetime
-from typing import Optional, List, Dict, Any
+from typing import Any
 
 from fastapi import Request
-from app.schemas.user import User
-from app.db.supabase_client import get_supabase_client
+
 from app.db.repositories.document_repository import DocumentRepository
 from app.db.repositories.document_result_repository import DocumentResultRepository
 from app.db.repositories.processing_status_repository import ProcessingStatusRepository
-from app.utils.logging_context import log_extra
+from app.db.supabase_client import get_supabase_client
 from app.exceptions import (
     DatabaseUnavailableError,
 )
+from app.schemas.user import User
+from app.utils.logging_context import log_extra
 
 logger = logging.getLogger(__name__)
 
@@ -49,9 +50,9 @@ class DocumentCrudService:
     functions so behaviour is identical across the decomposed services.
     """
 
-    _supports_file_hash: Optional[bool] = None
+    _supports_file_hash: bool | None = None
     _file_hash_warning_logged: bool = False
-    _supports_output_hash: Optional[bool] = None
+    _supports_output_hash: bool | None = None
     _output_hash_warning_logged: bool = False
     _TRANSIENT_ERROR_MARKERS = (
         "remoteprotocolerror",
@@ -87,7 +88,7 @@ class DocumentCrudService:
         operation_name: str,
         operation,
         *,
-        job_id: Optional[str] = None,
+        job_id: str | None = None,
         max_attempts: int = 3,
     ):
         attempt = 0
@@ -135,7 +136,7 @@ class DocumentCrudService:
 
     # ── Documents CRUD ───────────────────────────────────────────────────────
 
-    async def get_document(self, doc_id: str, user_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
+    async def get_document(self, doc_id: str, user_id: str | None = None) -> dict[str, Any] | None:
         doc_id = str(doc_id)
         if user_id:
             user_id = str(user_id)
@@ -151,11 +152,11 @@ class DocumentCrudService:
     async def list_documents(
         self,
         user_id: str,
-        status: Optional[str] = None,
-        template: Optional[str] = None,
+        status: str | None = None,
+        template: str | None = None,
         limit: int = 50,
         offset: int = 0,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         user_id = str(user_id)
         sb = get_supabase_client()
         if sb is None:
@@ -167,8 +168,8 @@ class DocumentCrudService:
     async def count_documents(
         self,
         user_id: str,
-        status: Optional[str] = None,
-        template: Optional[str] = None,
+        status: str | None = None,
+        template: str | None = None,
     ) -> int:
         sb = get_supabase_client()
         if sb is None:
@@ -186,13 +187,13 @@ class DocumentCrudService:
     async def create_document(
         self,
         doc_id: str,
-        user_id: Optional[str],
+        user_id: str | None,
         filename: str,
-        template: Optional[str],
-        original_file_path: Optional[str] = None,
-        formatting_options: Optional[Dict[str, Any]] = None,
-        file_hash: Optional[str] = None,
-    ) -> Optional[Dict[str, Any]]:
+        template: str | None,
+        original_file_path: str | None = None,
+        formatting_options: dict[str, Any] | None = None,
+        file_hash: str | None = None,
+    ) -> dict[str, Any] | None:
         doc_id = str(doc_id)
         if user_id:
             user_id = str(user_id)
@@ -222,7 +223,7 @@ class DocumentCrudService:
 
         return result
 
-    async def update_document(self, doc_id: str, updates: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def update_document(self, doc_id: str, updates: dict[str, Any]) -> dict[str, Any] | None:
         doc_id = str(doc_id)
         sb = get_supabase_client()
         if sb is None:
@@ -231,9 +232,9 @@ class DocumentCrudService:
 
         return await self._documents.update(doc_id, updates)
 
-    async def delete_document(self, document_id: str, user_id: Optional[str] = None) -> bool:
-        doc_id = str(document_id)
-        owner_id = str(user_id) if user_id else None
+    async def delete_document(self, document_id: str, user_id: str | None = None) -> bool:
+        str(document_id)
+        str(user_id) if user_id else None
         sb = get_supabase_client()
         if sb is None:
             raise DatabaseUnavailableError("Supabase client is not configured.")
@@ -275,7 +276,7 @@ class DocumentCrudService:
         self,
         doc_id: str,
         output_path: str,
-        raw_text: Optional[str] = None,
+        raw_text: str | None = None,
     ) -> None:
         doc_id = str(doc_id)
         sb = get_supabase_client()
@@ -287,7 +288,7 @@ class DocumentCrudService:
 
     # ── Document Results ─────────────────────────────────────────────────────
 
-    async def get_document_result(self, doc_id: str) -> Optional[Dict[str, Any]]:
+    async def get_document_result(self, doc_id: str) -> dict[str, Any] | None:
         doc_id = str(doc_id)
         if not self._should_query_document_tables(doc_id, "get_document_result"):
             return None
@@ -300,8 +301,8 @@ class DocumentCrudService:
     async def upsert_document_result(
         self,
         doc_id: str,
-        structured_data: Optional[Dict[str, Any]] = None,
-        validation_results: Optional[Dict[str, Any]] = None,
+        structured_data: dict[str, Any] | None = None,
+        validation_results: dict[str, Any] | None = None,
     ) -> None:
         doc_id = str(doc_id)
         sb = get_supabase_client()
@@ -313,7 +314,7 @@ class DocumentCrudService:
 
     # ── Processing Status ────────────────────────────────────────────────────
 
-    async def get_processing_statuses(self, doc_id: str) -> List[Dict[str, Any]]:
+    async def get_processing_statuses(self, doc_id: str) -> list[dict[str, Any]]:
         doc_id = str(doc_id)
         if not self._should_query_document_tables(doc_id, "get_processing_statuses"):
             return []
@@ -328,8 +329,8 @@ class DocumentCrudService:
         doc_id: str,
         phase: str,
         status: str,
-        progress_percentage: Optional[int] = None,
-        message: Optional[str] = None,
+        progress_percentage: int | None = None,
+        message: str | None = None,
     ) -> None:
         doc_id = str(doc_id)
         sb = get_supabase_client()
@@ -341,17 +342,18 @@ class DocumentCrudService:
 
     async def list_documents_paginated(
         self,
-        current_user: Optional[User] = None,
-        status: Optional[str] = None,
-        template: Optional[str] = None,
-        start_date: Optional[datetime] = None,
-        end_date: Optional[datetime] = None,
+        current_user: User | None = None,
+        status: str | None = None,
+        template: str | None = None,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
         limit: int = 50,
         offset: int = 0,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """List documents for current user with filtering, pagination and formatting."""
-        from fastapi import HTTPException
         import sys
+
+        from fastapi import HTTPException
 
         def _get_impl_symbol(name: str, fallback: Any = None) -> Any:
             try:
@@ -361,7 +363,7 @@ class DocumentCrudService:
                     if val is not None:
                         return val
             except Exception:
-                pass
+                pass  # intentionally ignored
             return fallback
 
         require_db_fn = _get_impl_symbol("_require_db")
@@ -427,10 +429,11 @@ class DocumentCrudService:
         request: Request,
         job_id: str,
         current_user: User,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Delete a document, audit log, and remove its associated files from disk."""
-        from fastapi import HTTPException
         import sys
+
+        from fastapi import HTTPException
 
         def _get_impl_symbol(name: str, fallback: Any = None) -> Any:
             try:
@@ -440,7 +443,7 @@ class DocumentCrudService:
                     if val is not None:
                         return val
             except Exception:
-                pass
+                pass  # intentionally ignored
             return fallback
 
         require_db_fn = _get_impl_symbol("_require_db")
@@ -464,9 +467,8 @@ class DocumentCrudService:
             if not doc:
                 raise HTTPException(status_code=404, detail="Document not found")
 
-            if doc.get("user_id") is not None:
-                if str(doc["user_id"]) != str(current_user.id):
-                    raise HTTPException(status_code=403, detail="Not authorized to delete this document")
+            if doc.get("user_id") is not None and str(doc["user_id"]) != str(current_user.id):
+                raise HTTPException(status_code=403, detail="Not authorized to delete this document")
 
             output_path = doc.get("output_path")
             if output_path and os_mod.path.exists(output_path):

@@ -2,12 +2,12 @@
 # Copyright (c) 2026 ScholarForm AI
 
 import subprocess
-from unittest.mock import MagicMock, patch
-import pytest
 import tempfile
+from unittest.mock import MagicMock, patch
 
-from app.pipeline.input_conversion.converter import InputConverter, ConversionError
+import pytest
 
+from app.pipeline.input_conversion.converter import ConversionError, InputConverter
 
 # ===========================================================================
 # ConversionError
@@ -57,75 +57,66 @@ TMP = r"C:\Users\test\AppData\Local\Temp"
 class TestConvertToDocx:
     def test_input_file_not_found(self):
         ic = InputConverter()
-        with patch("os.path.exists", return_value=False):
-            with pytest.raises(FileNotFoundError, match="not found"):
-                ic.convert_to_docx(INPUT + ".docx", "job1")
+        with patch("os.path.exists", return_value=False), pytest.raises(FileNotFoundError, match="not found"):
+            ic.convert_to_docx(INPUT + ".docx", "job1")
 
     def test_unsupported_extension(self):
         ic = InputConverter()
-        with patch("os.path.exists", return_value=True):
-            with pytest.raises(ConversionError, match="Unsupported"):
-                ic.convert_to_docx(INPUT + ".xyz", "job1")
+        with patch("os.path.exists", return_value=True), pytest.raises(ConversionError, match="Unsupported"):
+            ic.convert_to_docx(INPUT + ".xyz", "job1")
 
     def test_pass_strategy_copies_file(self):
         ic = InputConverter(temp_dir=TMP)
-        with patch("os.path.exists", return_value=True):
-            with patch("os.makedirs"):
-                with patch("shutil.copy2") as m_copy:
-                    result = ic.convert_to_docx(INPUT + ".docx", "job1")
-                    m_copy.assert_called_once()
-                    assert result == TMP + r"\job1\input.docx"
+        with patch("os.path.exists", return_value=True), patch("os.makedirs"), patch("shutil.copy2") as m_copy:
+            result = ic.convert_to_docx(INPUT + ".docx", "job1")
+            m_copy.assert_called_once()
+            assert result == TMP + r"\job1\input.docx"
 
     def test_pandoc_strategy_calls_run_pandoc(self):
         ic = InputConverter()
-        with patch("os.path.exists", return_value=True):
-            with patch("os.makedirs"):
-                with patch.object(ic, "_run_pandoc") as m_run:
-                    result = ic.convert_to_docx(INPUT + ".md", "job1")
-                    m_run.assert_called_once()
-                    assert result.endswith("input.docx")
+        with patch("os.path.exists", return_value=True), patch("os.makedirs"):
+            with patch.object(ic, "_run_pandoc") as m_run:
+                result = ic.convert_to_docx(INPUT + ".md", "job1")
+                m_run.assert_called_once()
+                assert result.endswith("input.docx")
 
     def test_libreoffice_strategy_non_pdf_calls_run(self):
         ic = InputConverter(temp_dir=TMP)
-        with patch("os.path.exists", side_effect=[True, False]):
-            with patch("os.makedirs"):
-                with patch.object(ic, "_run_libreoffice") as m_lo:
-                    with pytest.raises(ConversionError):
-                        ic.convert_to_docx(INPUT + ".doc", "job1")
-                    m_lo.assert_called_once()
+        with patch("os.path.exists", side_effect=[True, False]), patch("os.makedirs"):
+            with patch.object(ic, "_run_libreoffice") as m_lo:
+                with pytest.raises(ConversionError):
+                    ic.convert_to_docx(INPUT + ".doc", "job1")
+                m_lo.assert_called_once()
 
     def test_libreoffice_renames_lo_output(self):
         ic = InputConverter(temp_dir=TMP)
-        with patch("os.path.exists", side_effect=[True, True, True, True]):
-            with patch("os.makedirs"):
-                with patch.object(ic, "_run_libreoffice"):
-                    with patch("os.remove"):
-                        with patch("os.rename") as m_rename:
-                            result = ic.convert_to_docx(INPUT + ".doc", "job1")
-                            m_rename.assert_called_once_with(
-                                TMP + r"\job1\file.docx",
-                                TMP + r"\job1\input.docx"
-                            )
+        with patch("os.path.exists", side_effect=[True, True, True, True]), patch("os.makedirs"):
+            with patch.object(ic, "_run_libreoffice"):
+                with patch("os.remove"):
+                    with patch("os.rename") as m_rename:
+                        ic.convert_to_docx(INPUT + ".doc", "job1")
+                        m_rename.assert_called_once_with(
+                            TMP + r"\job1\file.docx",
+                            TMP + r"\job1\input.docx"
+                        )
 
     def test_libreoffice_lo_output_not_found_raises(self):
         ic = InputConverter(temp_dir=TMP)
-        with patch("os.path.exists", return_value=True):
-            with patch("os.makedirs"):
-                with patch.object(ic, "_run_libreoffice"):
-                    lo_path = TMP + r"\job1\file.docx"
-                    with patch("os.path.exists") as m2:
-                        m2.side_effect = lambda p: lo_path not in p
-                        with pytest.raises(ConversionError, match="failed to produce"):
-                            ic.convert_to_docx(INPUT + ".doc", "job1")
+        with patch("os.path.exists", return_value=True), patch("os.makedirs"):
+            with patch.object(ic, "_run_libreoffice"):
+                lo_path = TMP + r"\job1\file.docx"
+                with patch("os.path.exists") as m2:
+                    m2.side_effect = lambda p: lo_path not in p
+                    with pytest.raises(ConversionError, match="failed to produce"):
+                        ic.convert_to_docx(INPUT + ".doc", "job1")
 
     def test_pdf_strategy_calls_handle_pdf(self):
         ic = InputConverter()
-        with patch("os.path.exists", return_value=True):
-            with patch("os.makedirs"):
-                with patch.object(ic, "_handle_pdf", return_value=r"D:\out.docx") as m_h:
-                    result = ic.convert_to_docx(INPUT + ".pdf", "job1")
-                    m_h.assert_called_once()
-                    assert result == r"D:\out.docx"
+        with patch("os.path.exists", return_value=True), patch("os.makedirs"):
+            with patch.object(ic, "_handle_pdf", return_value=r"D:\out.docx") as m_h:
+                result = ic.convert_to_docx(INPUT + ".pdf", "job1")
+                m_h.assert_called_once()
+                assert result == r"D:\out.docx"
 
 
 # ===========================================================================
@@ -141,10 +132,9 @@ class TestGetLibreofficeCmd:
 
     def test_returns_none_if_not_found(self):
         ic = InputConverter()
-        with patch("shutil.which", return_value=None):
-            with patch("os.path.exists", return_value=False):
-                result = ic._get_libreoffice_cmd()
-                assert result is None
+        with patch("shutil.which", return_value=None), patch("os.path.exists", return_value=False):
+            result = ic._get_libreoffice_cmd()
+            assert result is None
 
     def test_windows_path_exists(self):
         ic = InputConverter()
@@ -169,13 +159,12 @@ class TestRunPandoc:
 
     def test_pandoc_success(self):
         ic = InputConverter()
-        with patch("shutil.which", return_value="pandoc"):
-            with patch("subprocess.run") as m_run:
-                ic._run_pandoc("/in.md", "/out.docx")
-                m_run.assert_called_once_with(
-                    ["pandoc", "/in.md", "-o", "/out.docx"],
-                    check=True, capture_output=True, timeout=120
-                )
+        with patch("shutil.which", return_value="pandoc"), patch("subprocess.run") as m_run:
+            ic._run_pandoc("/in.md", "/out.docx")
+            m_run.assert_called_once_with(
+                ["pandoc", "/in.md", "-o", "/out.docx"],
+                check=True, capture_output=True, timeout=120
+            )
 
     def test_pandoc_timeout(self):
         ic = InputConverter()
@@ -205,15 +194,14 @@ class TestRunLibreoffice:
 
     def test_soffice_success(self):
         ic = InputConverter()
-        with patch.object(ic, "_get_libreoffice_cmd", return_value="soffice"):
-            with patch("subprocess.run") as m_run:
-                ic._run_libreoffice("/in.pdf", "/outdir")
-                m_run.assert_called_once()
-                args = m_run.call_args[0][0]
-                assert "soffice" in args
-                assert "--headless" in args
-                assert "--convert-to" in args
-                assert "docx" in args
+        with patch.object(ic, "_get_libreoffice_cmd", return_value="soffice"), patch("subprocess.run") as m_run:
+            ic._run_libreoffice("/in.pdf", "/outdir")
+            m_run.assert_called_once()
+            args = m_run.call_args[0][0]
+            assert "soffice" in args
+            assert "--headless" in args
+            assert "--convert-to" in args
+            assert "docx" in args
 
     def test_soffice_timeout(self):
         ic = InputConverter()
@@ -243,11 +231,10 @@ class TestRunLibreofficeToPdf:
 
     def test_soffice_success(self):
         ic = InputConverter()
-        with patch.object(ic, "_get_libreoffice_cmd", return_value="soffice"):
-            with patch("subprocess.run") as m_run:
-                ic._run_libreoffice_to_pdf("/in.docx", "/outdir")
-                args = m_run.call_args[0][0]
-                assert "pdf" in args
+        with patch.object(ic, "_get_libreoffice_cmd", return_value="soffice"), patch("subprocess.run") as m_run:
+            ic._run_libreoffice_to_pdf("/in.docx", "/outdir")
+            args = m_run.call_args[0][0]
+            assert "pdf" in args
 
     def test_soffice_timeout(self):
         ic = InputConverter()
@@ -273,13 +260,12 @@ PDF = r"C:\docs\input.pdf"
 class TestHandlePdf:
     def test_ocr_disabled_uses_libreoffice(self):
         ic = InputConverter(temp_dir=TMP)
-        with patch("os.path.exists", return_value=True):
-            with patch("os.makedirs"):
-                with patch.object(ic, "_run_libreoffice"):
-                    with patch("os.remove"):
-                        with patch("os.rename"):
-                            result = ic._handle_pdf(PDF, TMP + r"\job1", "job1", enable_ocr=False)
-                            assert result == TMP + r"\job1\input.docx"
+        with patch("os.path.exists", return_value=True), patch("os.makedirs"):
+            with patch.object(ic, "_run_libreoffice"):
+                with patch("os.remove"):
+                    with patch("os.rename"):
+                        result = ic._handle_pdf(PDF, TMP + r"\job1", "job1", enable_ocr=False)
+                        assert result == TMP + r"\job1\input.docx"
 
     def test_ocr_disabled_by_profile(self):
         ic = InputConverter(temp_dir=TMP)
@@ -306,11 +292,10 @@ class TestHandlePdf:
                 m_ocr = MagicMock()
                 m_ocr.is_scanned.return_value = True
                 m_ocr_cls.return_value = m_ocr
-                with patch("os.path.exists", return_value=True):
-                    with patch("os.makedirs"):
-                        result = ic._handle_pdf(PDF, TMP + r"\job1", "job1", enable_ocr=True)
-                        m_ocr.convert_to_docx.assert_called_once()
-                        assert result == TMP + r"\job1\input.docx"
+                with patch("os.path.exists", return_value=True), patch("os.makedirs"):
+                    result = ic._handle_pdf(PDF, TMP + r"\job1", "job1", enable_ocr=True)
+                    m_ocr.convert_to_docx.assert_called_once()
+                    assert result == TMP + r"\job1\input.docx"
 
     def test_ocr_enabled_scanned_fails_fallsback(self):
         ic = InputConverter(temp_dir=TMP)
@@ -324,13 +309,12 @@ class TestHandlePdf:
                 m_ocr.is_scanned.return_value = True
                 m_ocr.convert_to_docx.side_effect = Exception("OCR error")
                 m_ocr_cls.return_value = m_ocr
-                with patch("os.path.exists", return_value=True):
-                    with patch("os.makedirs"):
-                        with patch.object(ic, "_run_libreoffice"):
-                            with patch("os.remove"):
-                                with patch("os.rename"):
-                                    result = ic._handle_pdf(PDF, TMP + r"\job1", "job1", enable_ocr=True)
-                                    assert result == TMP + r"\job1\input.docx"
+                with patch("os.path.exists", return_value=True), patch("os.makedirs"):
+                    with patch.object(ic, "_run_libreoffice"):
+                        with patch("os.remove"):
+                            with patch("os.rename"):
+                                result = ic._handle_pdf(PDF, TMP + r"\job1", "job1", enable_ocr=True)
+                                assert result == TMP + r"\job1\input.docx"
 
     def test_ocr_enabled_not_scanned(self):
         ic = InputConverter(temp_dir=TMP)
@@ -343,13 +327,12 @@ class TestHandlePdf:
                 m_ocr = MagicMock()
                 m_ocr.is_scanned.return_value = False
                 m_ocr_cls.return_value = m_ocr
-                with patch("os.path.exists", return_value=True):
-                    with patch("os.makedirs"):
-                        with patch.object(ic, "_run_libreoffice"):
-                            with patch("os.remove"):
-                                with patch("os.rename"):
-                                    result = ic._handle_pdf(PDF, TMP + r"\job1", "job1", enable_ocr=True)
-                                    assert result == TMP + r"\job1\input.docx"
+                with patch("os.path.exists", return_value=True), patch("os.makedirs"):
+                    with patch.object(ic, "_run_libreoffice"):
+                        with patch("os.remove"):
+                            with patch("os.rename"):
+                                result = ic._handle_pdf(PDF, TMP + r"\job1", "job1", enable_ocr=True)
+                                assert result == TMP + r"\job1\input.docx"
 
     def test_ocr_enabled_no_backends(self):
         ic = InputConverter(temp_dir=TMP)
@@ -374,37 +357,32 @@ class TestHandlePdf:
 class TestConvertToPdf:
     def test_input_not_found(self):
         ic = InputConverter()
-        with patch("os.path.exists", return_value=False):
-            with pytest.raises(FileNotFoundError, match="not found"):
-                ic.convert_to_pdf(INPUT + ".docx", "job1")
+        with patch("os.path.exists", return_value=False), pytest.raises(FileNotFoundError, match="not found"):
+            ic.convert_to_pdf(INPUT + ".docx", "job1")
 
     def test_input_already_pdf_copies(self):
         ic = InputConverter(temp_dir=TMP)
-        with patch("os.path.exists", return_value=True):
-            with patch("os.makedirs"):
-                with patch("shutil.copy2") as m_copy:
-                    result = ic.convert_to_pdf(PDF, "job1")
-                    m_copy.assert_called_once()
-                    assert result == TMP + r"\job1\input.pdf"
+        with patch("os.path.exists", return_value=True), patch("os.makedirs"), patch("shutil.copy2") as m_copy:
+            result = ic.convert_to_pdf(PDF, "job1")
+            m_copy.assert_called_once()
+            assert result == TMP + r"\job1\input.pdf"
 
     def test_non_pdf_converts_via_libreoffice(self):
         ic = InputConverter(temp_dir=TMP)
-        with patch("os.path.exists", return_value=True):
-            with patch("os.makedirs"):
-                with patch.object(ic, "_run_libreoffice_to_pdf") as m_lo:
-                    with patch("os.remove"):
-                        with patch("os.rename"):
-                            result = ic.convert_to_pdf(INPUT + ".docx", "job1")
-                            m_lo.assert_called_once()
-                            assert result == TMP + r"\job1\input.pdf"
+        with patch("os.path.exists", return_value=True), patch("os.makedirs"):
+            with patch.object(ic, "_run_libreoffice_to_pdf") as m_lo:
+                with patch("os.remove"):
+                    with patch("os.rename"):
+                        result = ic.convert_to_pdf(INPUT + ".docx", "job1")
+                        m_lo.assert_called_once()
+                        assert result == TMP + r"\job1\input.pdf"
 
     def test_lo_output_not_found_raises(self):
         ic = InputConverter(temp_dir=TMP)
-        with patch("os.path.exists", side_effect=[True, False]):
-            with patch("os.makedirs"):
-                with patch.object(ic, "_run_libreoffice_to_pdf"):
-                    with pytest.raises(ConversionError, match="failed to generate"):
-                        ic.convert_to_pdf(INPUT + ".docx", "job1")
+        with patch("os.path.exists", side_effect=[True, False]), patch("os.makedirs"):
+            with patch.object(ic, "_run_libreoffice_to_pdf"):
+                with pytest.raises(ConversionError, match="failed to generate"):
+                    ic.convert_to_pdf(INPUT + ".docx", "job1")
 
 
 # ===========================================================================

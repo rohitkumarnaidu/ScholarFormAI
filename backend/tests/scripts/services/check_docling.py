@@ -2,9 +2,10 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-import time
 import sys
+import time
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 print("Starting check_docling.py")
 start = time.time()

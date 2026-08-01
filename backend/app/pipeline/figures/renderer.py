@@ -8,7 +8,6 @@ Figure Renderer - Renders Figure models into python-docx documents.
 import logging
 import os
 from io import BytesIO
-from typing import Optional, Tuple
 
 from docx.shared import Inches
 
@@ -30,7 +29,7 @@ class FigureRenderer:
     """
 
     @safe_function(fallback_value=None, error_message="Image sizing failed")
-    def calculate_image_size(self, figure: Figure) -> Tuple[Inches, Optional[Inches]]:
+    def calculate_image_size(self, figure: Figure) -> tuple[Inches, Inches | None]:
         """Calculate optimal image size based on actual dimensions and page constraints."""
         if figure.width and figure.height:
             img_width_inches = Inches(figure.width / 96.0)

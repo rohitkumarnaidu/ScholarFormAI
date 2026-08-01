@@ -13,8 +13,11 @@ Targets:
 """
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
+
+from unittest.mock import MagicMock, patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -436,8 +439,8 @@ class TestDetectorGaps:
             return StructureDetector()
 
     def test_detect_structure_convenience(self):
-        from app.pipeline.structure_detection.detector import detect_structure
         from app.models import PipelineDocument as Document
+        from app.pipeline.structure_detection.detector import detect_structure
         doc = Document(document_id="t", blocks=[])
         with patch("app.pipeline.structure_detection.detector.ContractLoader"):
             result = detect_structure(doc)
@@ -445,8 +448,8 @@ class TestDetectorGaps:
 
     def test_process_with_docling_layout(self):
         sd = self._make_detector()
-        from app.models import PipelineDocument as Document
         from app.models import DocumentMetadata
+        from app.models import PipelineDocument as Document
         doc = Document(
             document_id="t",
             blocks=[],
@@ -457,7 +460,8 @@ class TestDetectorGaps:
 
     def test_process_with_template(self):
         sd = self._make_detector()
-        from app.models import PipelineDocument as Document, Block, TextStyle
+        from app.models import Block, TextStyle
+        from app.models import PipelineDocument as Document
         from app.models.pipeline_document import TemplateInfo
         block = Block(block_id="b1", index=0, text="1. Introduction", style=TextStyle(bold=True))
         doc = Document(
@@ -538,7 +542,7 @@ class TestDetectorGaps:
         title_block = Block(block_id="t1", index=0, text="The Paper Title", style=TextStyle())
         author_block = Block(block_id="a1", index=100, text="John A. Doe, Jane B. Smith", style=TextStyle())
         aff_block = Block(block_id="af1", index=200, text="University of Science and Technology", style=TextStyle())
-        result = sd._detect_heading_candidates([title_block, author_block, aff_block])
+        sd._detect_heading_candidates([title_block, author_block, aff_block])
         assert title_block.metadata.get("is_author_block") is None
         assert author_block.metadata.get("is_author_block") is True
         assert aff_block.metadata.get("is_affiliation_block") is True
@@ -672,7 +676,7 @@ class TestDetectorGaps:
 
     def test_process_fallback_from_docling_empty(self):
         sd = self._make_detector()
-        from app.models import PipelineDocument, DocumentMetadata, Block, TextStyle
+        from app.models import Block, DocumentMetadata, PipelineDocument, TextStyle
         b = Block(block_id="b1", index=0, text="Introduction", style=TextStyle(bold=True))
         doc = PipelineDocument(
             document_id="t",
@@ -903,15 +907,16 @@ class TestNormalizerGaps:
     # ── normalize_document convenience function ─────────────────────────────
 
     def test_normalize_document_convenience(self):
-        from app.pipeline.normalization.normalizer import normalize_document
         from app.models import PipelineDocument as Document
+        from app.pipeline.normalization.normalizer import normalize_document
         doc = Document(document_id="t", blocks=[])
         result = normalize_document(doc)
         assert result.document_id == "t"
 
     def test_normalize_document_with_blocks_and_tables(self):
+        from app.models import Block, Table, TableCell
+        from app.models import PipelineDocument as Document
         from app.pipeline.normalization.normalizer import normalize_document
-        from app.models import PipelineDocument as Document, Block, Table, TableCell
         block = Block(block_id="b1", index=0, text="  Hello World  ")
         cell = TableCell(row=0, col=0, text="  Cell  ")
         table = Table(table_id="t1", index=0, block_index=0, page_number=1,
@@ -925,8 +930,8 @@ class TestNormalizerGaps:
     # ── process() invariant checks ──────────────────────────────────────────
 
     def test_process_duplicate_indices_causes_assertion(self):
+        from app.models import Block, PipelineDocument
         from app.pipeline.normalization.normalizer import Normalizer
-        from app.models import PipelineDocument, Block
         n = Normalizer()
         b1 = Block(block_id="b1", index=0, text="a")
         b2 = Block(block_id="b2", index=0, text="b")
@@ -935,8 +940,8 @@ class TestNormalizerGaps:
             n.process(doc)
 
     def test_process_non_integer_index_in_document(self):
-        from app.pipeline.normalization.normalizer import Normalizer
         from app.models import PipelineDocument
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         # Directly set the document's blocks to bypass pydantic validation
         doc = PipelineDocument(document_id="t", blocks=[])
@@ -969,8 +974,9 @@ class TestNormalizerGaps:
 class TestBaseParserGaps:
 
     def test_abstract_methods_have_correct_signatures(self):
-        from app.pipeline.parsing.base_parser import BaseParser
         import inspect
+
+        from app.pipeline.parsing.base_parser import BaseParser
         sig_parse = inspect.signature(BaseParser.parse)
         params = list(sig_parse.parameters.keys())
         assert "self" in params
@@ -1187,8 +1193,8 @@ class TestOCREngineGaps:
                 p.stop()
 
     def test_get_ocr_engine_import_error(self):
-        from app.pipeline.parsing.ocr_engine import get_ocr_engine
         from app.pipeline.parsing import ocr_engine as ocr_mod
+        from app.pipeline.parsing.ocr_engine import get_ocr_engine
         ocr_mod._ocr_engine = None
         eng = get_ocr_engine()
         assert eng is None

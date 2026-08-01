@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from unittest.mock import MagicMock
+
 import pytest
 
 pytestmark = [pytest.mark.pipeline]
@@ -29,7 +30,7 @@ class TestAdaptiveStrategyInit:
         from app.pipeline.agents.adaptive import AdaptiveStrategy
         try:
             AdaptiveStrategy(None)
-            assert False, "Should have raised ValueError"
+            raise AssertionError("Should have raised ValueError")
         except ValueError as e:
             assert "tracker must not be None" in str(e)
 

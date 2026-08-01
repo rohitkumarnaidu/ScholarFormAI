@@ -10,9 +10,9 @@ from __future__ import annotations
 import logging
 import re
 import tempfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 from zipfile import ZipFile
 
 logger = logging.getLogger(__name__)
@@ -25,9 +25,12 @@ except ImportError:
     DocxTemplate = None  # type: ignore[assignment,misc]
     _DOCXTPL_AVAILABLE = False
 
+import contextlib
+
 from docx import Document as WordDocument
 
-from app.models import Block, PipelineDocument as Document
+from app.models import Block
+from app.models import PipelineDocument as Document
 
 
 class TemplateRenderer:
@@ -37,7 +40,7 @@ class TemplateRenderer:
 
     def __init__(self, templates_dir: str = "app/templates"):
         self.templates_dir = Path(templates_dir)
-        self._template_marker_cache: Dict[Path, bool] = {}
+        self._template_marker_cache: dict[Path, bool] = {}
 
     @staticmethod
     def _coerce_bool(value: Any, default: bool) -> bool:
@@ -57,8 +60,8 @@ class TemplateRenderer:
 
     def _resolve_bool_option(
         self,
-        options: Dict[str, Any],
-        keys: List[str],
+        options: dict[str, Any],
+        keys: list[str],
         default: bool,
     ) -> bool:
         for key in keys:
@@ -66,7 +69,7 @@ class TemplateRenderer:
                 return self._coerce_bool(options.get(key), default)
         return default
 
-    def render(self, document: Document, template_name: str = "ieee") -> "DocxTemplate":
+    def render(self, document: Document, template_name: str = "ieee") -> DocxTemplate:
         """Render a template using document context."""
         if not _DOCXTPL_AVAILABLE:
             raise ImportError("docxtpl is not installed. Run: pip install 'docxtpl>=1.0.0'")
@@ -84,10 +87,8 @@ class TemplateRenderer:
             raise
         finally:
             if is_temp and template_path and template_path.exists():
-                try:
+                with contextlib.suppress(Exception):
                     template_path.unlink(missing_ok=True)
-                except Exception:
-                    pass
 
     def has_renderable_template(self, template_name: str) -> bool:
         """Return True when the template directory contains a docxtpl-capable source."""
@@ -99,7 +100,7 @@ class TemplateRenderer:
         candidate = template_dir / "template.docx"
         return candidate.is_file() and self._has_template_markers(candidate)
 
-    def build_context(self, document: Document) -> Dict[str, Any]:
+    def build_context(self, document: Document) -> dict[str, Any]:
         """Build Jinja2 context from a pipeline document."""
         try:
             metadata = document.metadata
@@ -155,7 +156,7 @@ class TemplateRenderer:
                 "title": title,
                 "authors": authors,
                 "affiliations": affiliations,
-                "date": datetime.now(timezone.utc).strftime("%B %d, %Y"),
+                "date": datetime.now(UTC).strftime("%B %d, %Y"),
                 "abstract": abstract_text,
                 "keywords": keywords,
                 "sections": sections,
@@ -272,7 +273,7 @@ class TemplateRenderer:
             logger.error("Failed to build fallback template: %s", exc)
             raise
 
-    def _collect_references(self, document: Document) -> List[str]:
+    def _collect_references(self, document: Document) -> list[str]:
         if document.references:
             ordered = sorted(document.references, key=lambda ref: ref.index)
             refs = [
@@ -290,11 +291,11 @@ class TemplateRenderer:
         ]
         return ref_blocks
 
-    def _collect_sections(self, blocks: List[Block]) -> List[Dict[str, Any]]:
+    def _collect_sections(self, blocks: list[Block]) -> list[dict[str, Any]]:
         """Group non-reference content into heading sections."""
-        sections: List[Dict[str, Any]] = []
+        sections: list[dict[str, Any]] = []
         current_heading = "Body"
-        current_paragraphs: List[str] = []
+        current_paragraphs: list[str] = []
 
         skip_types = {
             "title",
@@ -337,7 +338,7 @@ class TemplateRenderer:
 
         return sections
 
-    def _first_block_text(self, blocks: List[Block], block_type: str) -> str:
+    def _first_block_text(self, blocks: list[Block], block_type: str) -> str:
         for block in sorted(blocks, key=lambda b: b.index):
             if self._block_type_token(block) == block_type:
                 value = (block.text or "").strip()
@@ -345,8 +346,8 @@ class TemplateRenderer:
                     return value
         return ""
 
-    def _all_block_text(self, blocks: List[Block], block_type: str) -> List[str]:
-        values: List[str] = []
+    def _all_block_text(self, blocks: list[Block], block_type: str) -> list[str]:
+        values: list[str] = []
         for block in sorted(blocks, key=lambda b: b.index):
             if self._block_type_token(block) == block_type:
                 value = (block.text or "").strip()
@@ -358,5 +359,5 @@ class TemplateRenderer:
     def _block_type_token(block: Block) -> str:
         block_type = getattr(block, "block_type", "")
         if hasattr(block_type, "value"):
-            block_type = getattr(block_type, "value")
+            block_type = block_type.value
         return str(block_type).strip().lower()

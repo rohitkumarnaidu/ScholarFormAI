@@ -9,15 +9,15 @@ them with the nearest Figure object.
 """
 
 import logging
-import re
 import os
-from typing import List, Tuple, Dict
-from datetime import datetime, timezone
+import re
+from datetime import UTC, datetime
 
 logger = logging.getLogger(__name__)
 
+from app.models import Block, Figure
+from app.models import PipelineDocument as Document
 from app.pipeline.base import PipelineStage
-from app.models import PipelineDocument as Document, Block, Figure
 
 
 class CaptionMatcher(PipelineStage):
@@ -66,7 +66,7 @@ class CaptionMatcher(PipelineStage):
         """
         Match specific figures to captions in the document.
         """
-        start_time = datetime.now(timezone.utc)
+        start_time = datetime.now(UTC)
 
         try:
             blocks = document.blocks
@@ -106,7 +106,7 @@ class CaptionMatcher(PipelineStage):
             return document
 
         # Update processing history
-        end_time = datetime.now(timezone.utc)
+        end_time = datetime.now(UTC)
         duration_ms = int((end_time - start_time).total_seconds() * 1000)
 
         message = f"Linked {match_count} captions to figures"
@@ -117,11 +117,11 @@ class CaptionMatcher(PipelineStage):
             stage_name="figure_linking", status="success", message=message, duration_ms=duration_ms
         )
 
-        document.updated_at = datetime.now(timezone.utc)
+        document.updated_at = datetime.now(UTC)
 
         return document
 
-    def _enhance_captions_with_vision(self, figures: List[Figure]) -> int:
+    def _enhance_captions_with_vision(self, figures: list[Figure]) -> int:
         """
         Use NVIDIA Llama 3.2 Vision to enhance figure captions.
 
@@ -166,7 +166,7 @@ class CaptionMatcher(PipelineStage):
 
         return enhanced_count
 
-    def _find_caption_candidates(self, blocks: List[Block]) -> List[int]:
+    def _find_caption_candidates(self, blocks: list[Block]) -> list[int]:
         """
         Find parser indices of blocks that look like captions.
         """
@@ -183,20 +183,20 @@ class CaptionMatcher(PipelineStage):
         return candidates
 
     def _match_candidates(
-        self, blocks: List[Block], figures: List[Figure], candidate_indices: List[int]
-    ) -> List[Tuple[Figure, Block]]:
+        self, blocks: list[Block], figures: list[Figure], candidate_indices: list[int]
+    ) -> list[tuple[Figure, Block]]:
         """
         Match detected caption blocks to figures.
         """
         matches = []
-        assigned_figures: Dict[str, bool] = {}  # Keep track of matched figures
+        assigned_figures: dict[str, bool] = {}  # Keep track of matched figures
 
         # Create block_map for O(1) lookup by parser index
-        block_map: Dict[int, Block] = {block.index: block for block in blocks}
+        block_map: dict[int, Block] = {block.index: block for block in blocks}
 
         # Create a list index map to calculate "Logical Distance" (number of blocks between)
         # This makes the matcher resilient to arbitrary index steps (e.g. 100)
-        list_index_map: Dict[int, int] = {block.index: i for i, block in enumerate(blocks)}
+        list_index_map: dict[int, int] = {block.index: i for i, block in enumerate(blocks)}
 
         # Sort candidates to handle document flow
         candidate_indices.sort()

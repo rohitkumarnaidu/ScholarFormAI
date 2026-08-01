@@ -1,5 +1,6 @@
+from unittest.mock import MagicMock, PropertyMock, patch
+
 import pytest
-from unittest.mock import MagicMock, patch, PropertyMock
 
 
 @pytest.fixture(autouse=True)
@@ -82,7 +83,7 @@ class TestProviderBreaker:
                 assert _provider_breaker("nvidia") is None
 
     def test_creates_and_caches_breaker(self):
-        from app.services.llm_service import _provider_breaker, _PROVIDER_BREAKERS
+        from app.services.llm_service import _PROVIDER_BREAKERS, _provider_breaker
         mock_pybreaker = MagicMock()
         mock_pybreaker.CircuitBreaker = MagicMock(return_value="breaker_obj")
         with patch("app.services.llm_service._breaker_enabled", return_value=True):
@@ -92,7 +93,7 @@ class TestProviderBreaker:
         assert _PROVIDER_BREAKERS["nvidia"] == "breaker_obj"
 
     def test_reuses_cached_breaker(self):
-        from app.services.llm_service import _provider_breaker, _PROVIDER_BREAKERS
+        from app.services.llm_service import _PROVIDER_BREAKERS, _provider_breaker
         mock_pybreaker = MagicMock()
         mock_pybreaker.CircuitBreaker = MagicMock(return_value="breaker_obj")
         _PROVIDER_BREAKERS["groq"] = "cached"
@@ -216,7 +217,7 @@ class TestSanitizeForLLM:
         assert "[CONTENT_FILTERED]" in result
 
     def test_truncates_long_input(self):
-        from app.services.llm_service import sanitize_for_llm, MAX_LLM_INPUT_LENGTH
+        from app.services.llm_service import MAX_LLM_INPUT_LENGTH, sanitize_for_llm
         long_text = "A" * (MAX_LLM_INPUT_LENGTH + 100)
         result = sanitize_for_llm(long_text)
         assert len(result) == MAX_LLM_INPUT_LENGTH + len("\n[... content truncated for safety ...]")
@@ -320,7 +321,7 @@ class TestResolveUserApiKey:
 
 class TestGenerate:
     def test_with_litellm_and_cache_miss(self, llm):
-        from app.services.llm_service import generate, LITELLM_AVAILABLE
+        from app.services.llm_service import LITELLM_AVAILABLE, generate
         if not LITELLM_AVAILABLE:
             pytest.skip("LiteLLM not available")
         mock_response = MagicMock()
@@ -352,7 +353,7 @@ class TestGenerate:
         assert result == "cached reply"
 
     def test_empty_choices_returns_empty(self, llm):
-        from app.services.llm_service import generate, LITELLM_AVAILABLE
+        from app.services.llm_service import LITELLM_AVAILABLE, generate
         if not LITELLM_AVAILABLE:
             pytest.skip("LiteLLM not available")
         mock_response = MagicMock()
@@ -487,16 +488,16 @@ class TestOllamaHttp:
         assert result == "deepseek reply"
 
     def test_raises_on_http_error(self, llm):
-        from app.services.llm_service import _ollama_http
         import requests
+
+        from app.services.llm_service import _ollama_http
         mock_resp = MagicMock()
         mock_resp.raise_for_status.side_effect = requests.HTTPError("401")
-        with patch("requests.post", return_value=mock_resp):
-            with pytest.raises(requests.HTTPError):
-                _ollama_http(
-                    [{"role": "user", "content": "Hi"}],
-                    "deepseek-r1", 0.3, 2048, "http://localhost:11434", 30,
-                )
+        with patch("requests.post", return_value=mock_resp), pytest.raises(requests.HTTPError):
+            _ollama_http(
+                [{"role": "user", "content": "Hi"}],
+                "deepseek-r1", 0.3, 2048, "http://localhost:11434", 30,
+            )
 
 
 class TestGenerateWithFallback:
@@ -526,7 +527,7 @@ class TestGenerateWithFallback:
         assert result["text"] == "groq result"
 
     def test_all_tiers_fail_raises_error(self, llm):
-        from app.services.llm_service import generate_with_fallback, LLMUnavailableError
+        from app.services.llm_service import LLMUnavailableError, generate_with_fallback
         def mock_generate(messages, **kw):
             raise RuntimeError("fail")
 
@@ -606,6 +607,7 @@ class TestCheckHealth:
 @pytest.fixture
 def llm():
     import importlib
+
     import app.services.llm_service as m
     importlib.reload(m)
     return m

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
+
 import pytest
 
 pytestmark = [pytest.mark.pipeline]
@@ -46,7 +47,7 @@ class TestRealTimeAdaptiveAgentInit:
         from app.pipeline.agents.realtime_adaptation import RealTimeAdaptiveAgent
         try:
             RealTimeAdaptiveAgent(base_timeout=-10.0)
-            assert False
+            raise AssertionError()
         except ValueError as e:
             assert "base_timeout" in str(e)
 
@@ -54,7 +55,7 @@ class TestRealTimeAdaptiveAgentInit:
         from app.pipeline.agents.realtime_adaptation import RealTimeAdaptiveAgent
         try:
             RealTimeAdaptiveAgent(base_timeout=0)
-            assert False
+            raise AssertionError()
         except ValueError as e:
             assert "base_timeout" in str(e)
 

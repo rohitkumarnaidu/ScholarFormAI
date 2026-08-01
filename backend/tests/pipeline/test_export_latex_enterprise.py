@@ -1,23 +1,26 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import ImageFormat
 from __future__ import annotations
+
 import os
 import subprocess
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 import pytest
 
+from app.models import ImageFormat
 from app.pipeline.export.latex_exporter import (
     LaTeXExporter,
-    escape_latex,
-    _resolve_pandoc_binary,
     _convert_via_pandoc,
+    _resolve_pandoc_binary,
+    escape_latex,
 )
 
+
 def _make_doc(**overrides):
-    from app.models import PipelineDocument, Block, BlockType
+    from app.models import Block, BlockType, PipelineDocument
     from app.models.pipeline_document import DocumentMetadata, TemplateInfo
 
     defaults = dict(
@@ -105,9 +108,8 @@ class TestResolvePandoc:
                 assert _resolve_pandoc_binary() == "/usr/bin/pandoc"
 
     def test_env_not_set_pandoc_not_found(self):
-        with patch.dict(os.environ, {}, clear=True):
-            with patch("shutil.which", return_value=None):
-                assert _resolve_pandoc_binary() is None
+        with patch.dict(os.environ, {}, clear=True), patch("shutil.which", return_value=None):
+            assert _resolve_pandoc_binary() is None
 
     def test_env_var_whitespace_only(self):
         with patch.dict(os.environ, {"PANDOC_PATH": "  "}, clear=True):
@@ -415,7 +417,7 @@ class TestWriteAbstract:
 class TestWriteSections:
     def _make_section_doc(self, blocks_data):
         """Helper to build doc with custom blocks using real Block instances."""
-        from app.models import PipelineDocument, Block
+        from app.models import Block, PipelineDocument
         from app.models.pipeline_document import DocumentMetadata, TemplateInfo
         doc = PipelineDocument(
             document_id="t1",

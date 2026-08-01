@@ -13,10 +13,10 @@ This module contains rule-based logic to detect heading candidates based on:
 """
 
 import re
-from typing import Optional, Dict, Any, Tuple, List
-from app.models import Block
-from app.config.settings import settings  # Import settings for dynamic thresholds
+from typing import Any
 
+from app.config.settings import settings  # Import settings for dynamic thresholds
+from app.models import Block
 
 # Common academic section headings (case-insensitive)
 COMMON_SECTION_KEYWORDS = {
@@ -72,7 +72,7 @@ COMMON_SECTION_KEYWORDS = {
 }
 
 
-def detect_numbering_pattern(text: str) -> Optional[Dict[str, Any]]:
+def detect_numbering_pattern(text: str) -> dict[str, Any] | None:
     """
     Detect if text starts with a heading numbering pattern.
     """
@@ -125,10 +125,7 @@ def detect_title(block: Block, all_blocks: list) -> bool:
         return False
 
     # Rule: TITLE must NEVER be a numbered heading
-    if detect_numbering_pattern(text):
-        return False
-
-    return True
+    return not detect_numbering_pattern(text)
 
 
 def matches_section_keyword(text: str) -> bool:
@@ -161,7 +158,7 @@ def matches_section_keyword(text: str) -> bool:
     return False
 
 
-def is_likely_heading_by_style(block: Block, avg_font_size: Optional[float] = None) -> Tuple[bool, float]:
+def is_likely_heading_by_style(block: Block, avg_font_size: float | None = None) -> tuple[bool, float]:
     """
     Determine if a block is likely a heading based on styling.
     """
@@ -202,7 +199,7 @@ def is_likely_heading_by_style(block: Block, avg_font_size: Optional[float] = No
     return score >= settings.HEADING_STYLE_THRESHOLD, min(score, 1.0)  # Dynamic threshold
 
 
-def infer_heading_level(block: Block, numbering_info: Optional[Dict] = None) -> int:
+def infer_heading_level(block: Block, numbering_info: dict | None = None) -> int:
     """
     Infer heading level (1-4).
     TITLE = 0 (handled by detect_title)
@@ -256,8 +253,8 @@ def get_capitalization_ratio(text: str) -> float:
 
 
 def analyze_heading_candidate(
-    block: Block, all_blocks: List[Block], block_index: int, avg_font_size: Optional[float] = None
-) -> Optional[Dict[str, Any]]:
+    block: Block, all_blocks: list[Block], block_index: int, avg_font_size: float | None = None
+) -> dict[str, Any] | None:
     """
     Unified analysis with ABSOLUTE SENIOR HARD GUARDS.
     These guards override ALL keyword/style matches.

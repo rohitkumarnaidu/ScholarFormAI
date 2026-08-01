@@ -3,8 +3,11 @@
 
 import functools
 import logging
-from typing import Callable, Any
+from collections.abc import Callable
+from typing import Any
+
 from pydantic import BaseModel, ValidationError
+
 from app.utils.serialization import safe_model_dump
 
 logger = logging.getLogger(__name__)
@@ -41,7 +44,7 @@ def validate_output(
 
                 # Check specific keys if schema is a dict of types (simple mode)
                 if isinstance(schema, dict) and isinstance(result, dict):
-                    missing = [k for k in schema.keys() if k not in result]
+                    missing = [k for k in schema if k not in result]
                     if missing:
                         logger.warning("Validator Guard: Missing keys in %s: %s", func.__name__, missing)
                         return error_return_value or {}

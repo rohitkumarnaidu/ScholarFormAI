@@ -15,16 +15,16 @@ Design goals:
 
 from __future__ import annotations
 
-import time
 import hashlib
-import logging
 import inspect
+import logging
+import time
 from collections import defaultdict
-from typing import Dict, List, Optional
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
+
 from app.cache.redis_cache import RedisCache
 from app.config.settings import settings
 
@@ -77,8 +77,8 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         # In-memory stores:
         # - request_counts keeps legacy/general API counters (used by tests)
         # - upload_request_counts isolates stricter upload limits from general traffic
-        self.request_counts: Dict[str, List[float]] = defaultdict(list)
-        self.upload_request_counts: Dict[str, List[float]] = defaultdict(list)
+        self.request_counts: dict[str, list[float]] = defaultdict(list)
+        self.upload_request_counts: dict[str, list[float]] = defaultdict(list)
         self._redis_warning_logged = False
 
     # ------------------------------------------------------------------
@@ -94,7 +94,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         counter_store[ip].append(now)
         return len(counter_store[ip])
 
-    async def _redis_count(self, key: str) -> Optional[int]:
+    async def _redis_count(self, key: str) -> int | None:
         """Try to increment the Redis counter; return count or None on error."""
         if not REDIS_ENABLED:
             return None

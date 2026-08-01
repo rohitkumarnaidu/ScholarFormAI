@@ -5,7 +5,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from fastapi import HTTPException
 
-
 # ── documents_impl: error paths ─────────────────────────────────────────
 
 class TestDocumentsImplEditDocument:
@@ -505,7 +504,7 @@ class TestDocumentsImplChunkedUpload:
 class TestGetStatusEdgeCases:
     @pytest.mark.asyncio
     async def test_status_from_processing_statuses(self):
-        from app.routers.v1.documents_impl import get_status, _STATUS_CACHE_MISS
+        from app.routers.v1.documents_impl import _STATUS_CACHE_MISS, get_status
         statuses = [
             {"status": "PROCESSING", "phase": "PARSING", "message": "Parsing...", "progress_percentage": 50, "updated_at": "now", "created_at": "now"},
         ]
@@ -534,7 +533,7 @@ class TestGetStatusEdgeCases:
 
     @pytest.mark.asyncio
     async def test_status_doc_with_user_id_mismatch(self):
-        from app.routers.v1.documents_impl import get_status, _STATUS_CACHE_MISS
+        from app.routers.v1.documents_impl import _STATUS_CACHE_MISS, get_status
         doc = {"user_id": "other-user", "status": "COMPLETED"}
         with (
             patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
@@ -547,8 +546,8 @@ class TestGetStatusEdgeCases:
 
     @pytest.mark.asyncio
     async def test_status_db_unavailable_error(self):
-        from app.routers.v1.documents_impl import get_status
         from app.exceptions import DatabaseUnavailableError
+        from app.routers.v1.documents_impl import get_status
         with (
             patch("app.routers.v1.documents_impl.DocumentService.get_document", side_effect=DatabaseUnavailableError("DB down")),
             patch("app.routers.v1.documents_impl._require_db"),
@@ -597,8 +596,8 @@ class TestGetDocumentSummaryEdgeCases:
 class TestListDocumentsEdgeCases:
     @pytest.mark.asyncio
     async def test_db_unavailable_error(self):
-        from app.routers.v1.documents_impl import list_documents
         from app.exceptions import DatabaseUnavailableError
+        from app.routers.v1.documents_impl import list_documents
         mock_user = MagicMock(id="user-1")
         with (
             patch("app.routers.v1.documents_impl._require_db"),
@@ -1019,9 +1018,10 @@ class TestDeprecation:
         assert successor is None
 
     def test_deprecated_route_handler_adds_headers(self):
-        from app.routers.deprecation import DeprecatedRoute
-        from fastapi.routing import APIRoute
         from fastapi import Response
+        from fastapi.routing import APIRoute
+
+        from app.routers.deprecation import DeprecatedRoute
         async def mock_inner(req):
             return Response("ok")
         with patch.object(APIRoute, 'get_route_handler', return_value=mock_inner):
@@ -1033,9 +1033,10 @@ class TestDeprecation:
             assert "Sunset" in response.headers
 
     def test_deprecated_route_handler_preserves_http_exception_headers(self):
-        from app.routers.deprecation import DeprecatedRoute
-        from fastapi.routing import APIRoute
         from fastapi import HTTPException
+        from fastapi.routing import APIRoute
+
+        from app.routers.deprecation import DeprecatedRoute
         async def mock_inner(req):
             raise HTTPException(status_code=403, detail="Forbidden", headers={"X-Custom": "val"})
         with patch.object(APIRoute, 'get_route_handler', return_value=mock_inner):
@@ -1172,7 +1173,7 @@ class TestPreviewHelpers:
 
     @pytest.mark.asyncio
     async def test_ai_suggest_llm_unavailable(self):
-        from app.routers.preview import ai_suggest, LLMUnavailableError
+        from app.routers.preview import LLMUnavailableError, ai_suggest
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
         async def _mock_to_thread(fn, *args, **kwargs):

@@ -1,22 +1,21 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from logging.config import fileConfig
-
-import sys
 import os
+import sys
+from logging.config import fileConfig
 
 # Add the project directory to the sys.path
 sys.path.append(os.getcwd())
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 
 # Import your app's settings and Base
 from app.config.settings import settings
 from app.db.base import Base
+
 # Ensure all models are imported so metadata is populated
 from app.models import *  # noqa
 

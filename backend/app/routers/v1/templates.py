@@ -4,9 +4,9 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
@@ -35,21 +35,18 @@ def _require_db():
     return sb
 
 
-def _require_user(current_user: Optional[User]) -> User:
+def _require_user(current_user: User | None) -> User:
     if current_user is None:
         raise HTTPException(status_code=401, detail="Authentication required")
     return current_user
 
 
-def _extract_template_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
+def _extract_template_payload(payload: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise HTTPException(status_code=422, detail="Invalid template payload")
 
     candidate = payload.get("template")
-    if isinstance(candidate, dict):
-        template_data = candidate
-    else:
-        template_data = payload
+    template_data = candidate if isinstance(candidate, dict) else payload
 
     if not isinstance(template_data, dict):
         raise HTTPException(status_code=422, detail="Invalid template payload")
@@ -75,7 +72,7 @@ def _extract_template_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
 
     template_id = str(template_data.get("id") or payload.get("id") or uuid4())
 
-    now_iso = datetime.now(timezone.utc).isoformat()
+    now_iso = datetime.now(UTC).isoformat()
     created_at = (
         template_data.get("created_at")
         or template_data.get("createdAt")
@@ -107,7 +104,7 @@ def _template_display_name(template_id: str) -> str:
     return template_id.replace("_", " ").title()
 
 
-async def _list_builtin_templates() -> Dict[str, Any]:
+async def _list_builtin_templates() -> dict[str, Any]:
     templates_dir = Path(__file__).resolve().parents[2] / "templates"
     descriptions = {
         "ieee": "IEEE manuscript style",
@@ -141,9 +138,9 @@ async def _list_builtin_templates() -> Dict[str, Any]:
 
 async def _csl_search(
     *,
-    q: Optional[str] = None,
-    query: Optional[str] = None,
-) -> Dict[str, Any]:
+    q: str | None = None,
+    query: str | None = None,
+) -> dict[str, Any]:
     search_query = (q or query or "").strip()
     if not search_query:
         raise HTTPException(status_code=422, detail="q query parameter is required")
@@ -163,7 +160,7 @@ async def _fetch_csl_style(slug: str):
     return style
 
 
-async def _list_custom_templates(current_user: Optional[User] = None) -> Dict[str, Any]:
+async def _list_custom_templates(current_user: User | None = None) -> dict[str, Any]:
     user = _require_user(current_user)
     sb = _require_db()
     try:
@@ -183,9 +180,9 @@ async def _list_custom_templates(current_user: Optional[User] = None) -> Dict[st
 async def _create_custom_template(
     *,
     request: Request,
-    payload: Dict[str, Any],
-    current_user: Optional[User] = None,
-) -> Dict[str, Any]:
+    payload: dict[str, Any],
+    current_user: User | None = None,
+) -> dict[str, Any]:
     user = _require_user(current_user)
     sb = _require_db()
     record = _extract_template_payload(payload)
@@ -212,9 +209,9 @@ async def _update_custom_template(
     *,
     request: Request,
     template_id: str,
-    payload: Dict[str, Any],
-    current_user: Optional[User] = None,
-) -> Dict[str, Any]:
+    payload: dict[str, Any],
+    current_user: User | None = None,
+) -> dict[str, Any]:
     user = _require_user(current_user)
     sb = _require_db()
     parsed = _extract_template_payload(payload)
@@ -223,7 +220,7 @@ async def _update_custom_template(
         "name": parsed["name"],
         "description": parsed["description"],
         "config": parsed["config"],
-        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(UTC).isoformat(),
     }
 
     try:
@@ -251,8 +248,8 @@ async def _update_custom_template(
 async def _delete_custom_template(
     *,
     template_id: str,
-    current_user: Optional[User] = None,
-) -> Dict[str, Any]:
+    current_user: User | None = None,
+) -> dict[str, Any]:
     user = _require_user(current_user)
     sb = _require_db()
 
@@ -293,8 +290,8 @@ async def list_builtin_templates(request: Request):
 @router.get("/csl/search")
 async def csl_search(
     request: Request,
-    q: Optional[str] = Query(default=None, min_length=1),
-    query: Optional[str] = Query(default=None, min_length=1),
+    q: str | None = Query(default=None, min_length=1),
+    query: str | None = Query(default=None, min_length=1),
 ):
     async def operation():
         return await _csl_search(q=q, query=query)
@@ -351,7 +348,7 @@ async def csl_fetch_by_style_id(
 @router.get("/custom")
 async def list_custom_templates(
     request: Request,
-    current_user: Optional[User] = Depends(get_optional_user),
+    current_user: User | None = Depends(get_optional_user),
 ):
     async def operation():
         return await _list_custom_templates(current_user=current_user)
@@ -371,8 +368,8 @@ async def list_custom_templates(
 @router.post("/custom")
 async def create_custom_template(
     request: Request,
-    payload: Dict[str, Any],
-    current_user: Optional[User] = Depends(get_optional_user),
+    payload: dict[str, Any],
+    current_user: User | None = Depends(get_optional_user),
 ):
     async def operation():
         return await _create_custom_template(
@@ -398,8 +395,8 @@ async def create_custom_template(
 async def update_custom_template(
     request: Request,
     templateId: str,
-    payload: Dict[str, Any],
-    current_user: Optional[User] = Depends(get_optional_user),
+    payload: dict[str, Any],
+    current_user: User | None = Depends(get_optional_user),
 ):
     async def operation():
         return await _update_custom_template(
@@ -427,7 +424,7 @@ async def update_custom_template(
 async def delete_custom_template(
     request: Request,
     templateId: str,
-    current_user: Optional[User] = Depends(get_optional_user),
+    current_user: User | None = Depends(get_optional_user),
 ):
     async def operation():
         return await _delete_custom_template(

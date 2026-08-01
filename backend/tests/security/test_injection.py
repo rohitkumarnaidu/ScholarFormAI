@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import pytest
 
-
 XSS_PAYLOADS = [
     "<script>alert('XSS')</script>",
     "<img src=x onerror=alert(1)>",
@@ -150,7 +149,7 @@ class TestOWASPInjectionCombined:
 
     @pytest.mark.skip(reason="Requires database connection for health endpoint")
     @pytest.mark.parametrize(
-        "payload_type,payload",
+        ("payload_type", "payload"),
         [
             ("xss", p) for p in XSS_PAYLOADS[:3]
         ] + [

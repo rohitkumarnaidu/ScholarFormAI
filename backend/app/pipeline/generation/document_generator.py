@@ -12,9 +12,9 @@ import asyncio
 import hashlib
 import logging
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from app.config.settings import settings
 from app.db.supabase_client import get_supabase_client
@@ -77,7 +77,7 @@ class DocumentGenerator:
 
     @staticmethod
     def _now_iso() -> str:
-        return datetime.now(timezone.utc).isoformat()
+        return datetime.now(UTC).isoformat()
 
     def _default_session_config(
         self,
@@ -123,7 +123,7 @@ class DocumentGenerator:
             "outline": outline,
         }
 
-    def _get_session_record(self, job_id: str) -> Optional[dict[str, Any]]:
+    def _get_session_record(self, job_id: str) -> dict[str, Any] | None:
         sb = get_supabase_client()
         if sb is not None:
             try:
@@ -134,7 +134,7 @@ class DocumentGenerator:
                 logger.warning("Failed to fetch generator session %s from DB: %s", job_id, exc)
         return self._volatile_sessions.get(str(job_id))
 
-    def get_session(self, job_id: str) -> Optional[dict[str, Any]]:
+    def get_session(self, job_id: str) -> dict[str, Any] | None:
         return self._get_session_record(job_id)
 
     def update_status(
@@ -143,11 +143,11 @@ class DocumentGenerator:
         *,
         status: str,
         progress: int,
-        stage: Optional[str] = None,
-        message: Optional[str] = None,
-        error: Optional[str] = None,
-        output_path: Optional[str] = None,
-        outline: Optional[list[str]] = None,
+        stage: str | None = None,
+        message: str | None = None,
+        error: str | None = None,
+        output_path: str | None = None,
+        outline: list[str] | None = None,
     ) -> None:
         record = self._get_session_record(job_id) or {"id": str(job_id)}
         config = dict(record.get("config_json") or {})
@@ -284,7 +284,7 @@ class DocumentGenerator:
                     "template": template,
                     "blocks": raw_blocks,
                     "outline": outline,
-                    "generated_at": datetime.now(timezone.utc).isoformat(),
+                    "generated_at": datetime.now(UTC).isoformat(),
                 },
                 validation_results={},
             )

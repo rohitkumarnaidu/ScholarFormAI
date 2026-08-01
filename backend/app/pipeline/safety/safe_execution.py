@@ -4,7 +4,8 @@
 import contextlib
 import logging
 import traceback
-from typing import Generator, Any
+from collections.abc import Generator
+from typing import Any
 
 # Configure logger
 logger = logging.getLogger(__name__)

@@ -9,7 +9,8 @@ class TestEncryptionService:
     def test_generate_key(self):
         from app.services.encryption_service import EncryptionService
         key = EncryptionService.generate_key()
-        assert isinstance(key, str) and len(key) > 20
+        assert isinstance(key, str)
+        assert len(key) > 20
 
     def test_encrypt_then_decrypt(self):
         from app.services.encryption_service import EncryptionService
@@ -46,17 +47,17 @@ class TestEncryptionService:
             assert svc.decrypt(result) == "test"
 
     def test_fernet_property(self):
-        from app.services.encryption_service import EncryptionService
         from cryptography.fernet import Fernet
+
+        from app.services.encryption_service import EncryptionService
         svc = EncryptionService(key=_FERNET_KEY)
         assert isinstance(svc.fernet, Fernet)
 
 
     def test_auto_generated_key_when_env_not_set(self):
         from app.services.encryption_service import EncryptionService
-        with patch.dict("os.environ", {}, clear=True):
-            with pytest.raises(RuntimeError, match="ENCRYPTION_KEY"):
-                EncryptionService(key=None)
+        with patch.dict("os.environ", {}, clear=True), pytest.raises(RuntimeError, match="ENCRYPTION_KEY"):
+            EncryptionService(key=None)
 
     def test_encrypt_decrypt_roundtrip_various(self):
         from app.services.encryption_service import EncryptionService
@@ -68,9 +69,9 @@ class TestEncryptionService:
 class TestGetEncryptionService:
     def test_returns_singleton(self):
         with patch.dict("os.environ", {"ENCRYPTION_KEY": _FERNET_KEY}):
-            from app.services.encryption_service import get_encryption_service as gs
             # Clear module cache to force fresh singleton
             import app.services.encryption_service as es_mod
+            from app.services.encryption_service import get_encryption_service as gs
             es_mod._encryption_service = None
             s1 = gs()
             s2 = gs()

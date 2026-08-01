@@ -564,7 +564,7 @@ def main():
     print(f"   → Wrote {notice_path} ({len(notice)} chars)", file=sys.stderr)
 
     # Summary
-    print(f"\n✅ Complete!", file=sys.stderr)
+    print("\n✅ Complete!", file=sys.stderr)
     print(f"   Python: {len(python_pkgs)} deps", file=sys.stderr)
     print(f"   npm:    {len(npm_pkgs)} deps", file=sys.stderr)
     print(f"   Total:  {len(python_pkgs) + len(npm_pkgs)} deps", file=sys.stderr)

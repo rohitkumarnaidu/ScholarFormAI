@@ -7,10 +7,11 @@ import sys
 # Add backend to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
-from app.pipeline.parsing.parser import DocxParser
-from app.pipeline.normalization.normalizer import Normalizer
-from app.pipeline.structure_detection.detector import StructureDetector
 from app.pipeline.classification.classifier import ContentClassifier
+from app.pipeline.normalization.normalizer import Normalizer
+from app.pipeline.parsing.parser import DocxParser
+from app.pipeline.structure_detection.detector import StructureDetector
+
 
 def inspect_blocks(docx_path):
     parser = DocxParser()
@@ -38,7 +39,7 @@ def inspect_blocks(docx_path):
     
     # Check for TITLE preservation and isolation guards
     print("\nDetailed Block Audit (First 10):")
-    for i, b in enumerate(doc.blocks[:10]):
+    for _i, b in enumerate(doc.blocks[:10]):
         print(f"Index {b.index} | Text: {b.text[:30]}...")
         print(f"  - BlockType: {b.block_type}")
         print(f"  - Method: {b.metadata.get('classification_method')}")

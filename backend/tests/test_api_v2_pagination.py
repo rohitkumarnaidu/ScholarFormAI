@@ -4,13 +4,12 @@
 from __future__ import annotations
 
 import base64
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from unittest.mock import MagicMock, patch
 
 import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
-
 
 # ── Pure utility tests ─────────────────────────────────────────────────────────
 
@@ -29,7 +28,7 @@ class TestCursorEncoding:
     def test_encode_cursor_with_timestamp(self):
         from app.utils.pagination import encode_cursor
 
-        ts = datetime(2026, 7, 8, 12, 34, 56, tzinfo=timezone.utc)
+        ts = datetime(2026, 7, 8, 12, 34, 56, tzinfo=UTC)
         encoded = encode_cursor(ts.isoformat())
         assert isinstance(encoded, str)
         assert len(encoded) > 0
@@ -122,9 +121,9 @@ class TestCursorPageBuilding:
         from app.utils.pagination import build_cursor_response
 
         items = [
-            {"id": "1", "created_at": datetime(2026, 7, 8, 12, 0, 0, tzinfo=timezone.utc)},
-            {"id": "2", "created_at": datetime(2026, 7, 8, 11, 0, 0, tzinfo=timezone.utc)},
-            {"id": "3", "created_at": datetime(2026, 7, 8, 10, 0, 0, tzinfo=timezone.utc)},
+            {"id": "1", "created_at": datetime(2026, 7, 8, 12, 0, 0, tzinfo=UTC)},
+            {"id": "2", "created_at": datetime(2026, 7, 8, 11, 0, 0, tzinfo=UTC)},
+            {"id": "3", "created_at": datetime(2026, 7, 8, 10, 0, 0, tzinfo=UTC)},
         ]
         params = type("_", (), {"limit": 2, "cursor": None, "order_dir": "desc"})()
         result = build_cursor_response(items, params)

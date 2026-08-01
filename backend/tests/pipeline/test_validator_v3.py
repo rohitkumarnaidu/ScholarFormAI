@@ -2,6 +2,7 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 from unittest.mock import MagicMock, patch
 
 
@@ -185,8 +186,7 @@ class TestDocumentValidator:
         assert doc.is_valid is True
 
     def test_validate_document_convenience(self):
-        from app.pipeline.validation.validator_v3 import validate_document
-        from app.pipeline.validation.validator_v3 import DocumentValidator
+        from app.pipeline.validation.validator_v3 import DocumentValidator, validate_document
         doc = self._make_doc()
         with patch.object(DocumentValidator, "_check_sections", return_value=([], [])), \
              patch.object(DocumentValidator, "_check_figures", return_value=([], [])), \

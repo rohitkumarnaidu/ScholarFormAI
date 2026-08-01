@@ -10,10 +10,9 @@ Covers upload, status polling, preview, comparison, and download endpoints.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
-
 
 # ── Type aliases ──────────────────────────────────────────────────────────────
 
@@ -74,9 +73,9 @@ class PhaseStatus(BaseModel):
 
     phase: str = Field(..., description="Pipeline stage name (e.g. 'parsing').")
     status: str = Field(..., description="Phase status: 'success', 'warning', 'failed'.")
-    message: Optional[str] = Field(None, description="Human-readable phase message.")
-    progress: Optional[float] = Field(None, ge=0, le=100, description="Phase progress percentage.")
-    updated_at: Optional[datetime] = Field(None, description="Last update timestamp.")
+    message: str | None = Field(None, description="Human-readable phase message.")
+    progress: float | None = Field(None, ge=0, le=100, description="Phase progress percentage.")
+    updated_at: datetime | None = Field(None, description="Last update timestamp.")
 
 
 class DocumentStatusResponse(BaseModel):
@@ -84,12 +83,12 @@ class DocumentStatusResponse(BaseModel):
 
     job_id: str
     status: str = Field(..., description="Overall job status.")
-    current_phase: Optional[str] = Field(None, description="Currently active stage.")
-    phase: Optional[str] = Field(None, description="Alias for current_phase (frontend compat).")
+    current_phase: str | None = Field(None, description="Currently active stage.")
+    phase: str | None = Field(None, description="Alias for current_phase (frontend compat).")
     progress_percentage: float = Field(0, ge=0, le=100)
-    message: Optional[str] = Field(None, description="Status message or error detail.")
-    updated_at: Optional[datetime] = None
-    phases: List[PhaseStatus] = Field(default_factory=list, description="Detailed per-stage breakdown.")
+    message: str | None = Field(None, description="Status message or error detail.")
+    updated_at: datetime | None = None
+    phases: list[PhaseStatus] = Field(default_factory=list, description="Detailed per-stage breakdown.")
 
 
 # ── ORM / DB Schemas ─────────────────────────────────────────────────────────
@@ -101,7 +100,7 @@ class DocumentBase(BaseModel):
     filename: str = Field(..., description="Original uploaded filename.")
     template: str = Field(..., description="Journal template applied (e.g. 'IEEE').")
     status: str = Field(..., description="Processing status.")
-    export_formats: List[ExportFormat] = Field(
+    export_formats: list[ExportFormat] = Field(
         default_factory=lambda: ["docx", "pdf"],
         description="Requested output formats for the document pipeline.",
     )
@@ -116,15 +115,15 @@ class Document(DocumentBase):
     """Full document record returned from the database."""
 
     id: str = Field(..., description="UUID of the document job.")
-    user_id: Optional[str] = Field(None, description="Owner user UUID (None for anonymous).")
-    output_path: Optional[str] = Field(None, description="Server path to the formatted output file.")
-    original_file_path: Optional[str] = Field(None, description="Server path to the original upload.")
-    progress: Optional[float] = Field(None, ge=0, le=100, description="Overall progress percentage.")
-    current_stage: Optional[str] = Field(None, description="Name of the currently active pipeline stage.")
-    error_message: Optional[str] = Field(None, description="Error detail if status is FAILED.")
-    formatting_options: Optional[Dict[str, Any]] = Field(None, description="Formatting options used for this job.")
+    user_id: str | None = Field(None, description="Owner user UUID (None for anonymous).")
+    output_path: str | None = Field(None, description="Server path to the formatted output file.")
+    original_file_path: str | None = Field(None, description="Server path to the original upload.")
+    progress: float | None = Field(None, ge=0, le=100, description="Overall progress percentage.")
+    current_stage: str | None = Field(None, description="Name of the currently active pipeline stage.")
+    error_message: str | None = Field(None, description="Error detail if status is FAILED.")
+    formatting_options: dict[str, Any] | None = Field(None, description="Formatting options used for this job.")
     created_at: datetime = Field(..., description="Job creation timestamp (UTC).")
-    updated_at: Optional[datetime] = Field(None, description="Last update timestamp (UTC).")
+    updated_at: datetime | None = Field(None, description="Last update timestamp (UTC).")
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -136,11 +135,11 @@ class DocumentListItem(BaseModel):
     filename: str
     template: str
     status: str
-    progress: Optional[float] = None
-    current_stage: Optional[str] = None
-    error_message: Optional[str] = None
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    progress: float | None = None
+    current_stage: str | None = None
+    error_message: str | None = None
+    created_at: str | None = None
+    updated_at: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -148,7 +147,7 @@ class DocumentListItem(BaseModel):
 class DocumentListResponse(BaseModel):
     """Returned by GET /api/v1/documents."""
 
-    documents: List[DocumentListItem] = Field(default_factory=list)
+    documents: list[DocumentListItem] = Field(default_factory=list)
     total: int = Field(0, description="Total matching documents (before pagination).")
     limit: int = Field(50, description="Page size used.")
     offset: int = Field(0, description="Page offset used.")
@@ -163,24 +162,24 @@ class DocumentMetaSummary(BaseModel):
     filename: str
     template: str
     status: str
-    created_at: Optional[datetime] = None
+    created_at: datetime | None = None
 
 
 class DocumentPreviewResponse(BaseModel):
     """Returned by GET /api/v1/documents/{job_id}/preview."""
 
-    structured_data: Optional[Dict[str, Any]] = Field(None, description="Parsed and structured document content.")
-    validation_results: Optional[Dict[str, Any]] = Field(None, description="Validation errors and warnings.")
-    metadata: Optional[DocumentMetaSummary] = None
+    structured_data: dict[str, Any] | None = Field(None, description="Parsed and structured document content.")
+    validation_results: dict[str, Any] | None = Field(None, description="Validation errors and warnings.")
+    metadata: DocumentMetaSummary | None = None
 
 
 class CompareOriginal(BaseModel):
-    raw_text: Optional[str] = None
+    raw_text: str | None = None
     structured_data: None = None
 
 
 class CompareFormatted(BaseModel):
-    structured_data: Optional[Dict[str, Any]] = None
+    structured_data: dict[str, Any] | None = None
 
 
 class DocumentCompareResponse(BaseModel):
@@ -201,37 +200,37 @@ class SectionSpec(BaseModel):
 
 class AcademicPaperMetadata(BaseModel):
     title: str
-    authors: List[str] = Field(default_factory=list)
-    affiliation: Optional[str] = None
-    abstract: Optional[str] = None
-    keywords: List[str] = Field(default_factory=list)
-    sections: List[SectionSpec] = Field(default_factory=list)
+    authors: list[str] = Field(default_factory=list)
+    affiliation: str | None = None
+    abstract: str | None = None
+    keywords: list[str] = Field(default_factory=list)
+    sections: list[SectionSpec] = Field(default_factory=list)
     language: str = "english"
 
 
 class ResumeEducationItem(BaseModel):
     institution: str
     degree: str
-    year: Optional[str] = None
+    year: str | None = None
 
 
 class ResumeExperienceItem(BaseModel):
     company: str
     role: str
-    duration: Optional[str] = None
-    bullets: List[str] = Field(default_factory=list)
+    duration: str | None = None
+    bullets: list[str] = Field(default_factory=list)
 
 
 class ResumeMetadata(BaseModel):
     name: str
-    email: Optional[str] = None
-    phone: Optional[str] = None
-    linkedin: Optional[str] = None
-    summary: Optional[str] = None
-    education: List[ResumeEducationItem] = Field(default_factory=list)
-    experience: List[ResumeExperienceItem] = Field(default_factory=list)
-    skills: List[str] = Field(default_factory=list)
-    certifications: List[str] = Field(default_factory=list)
+    email: str | None = None
+    phone: str | None = None
+    linkedin: str | None = None
+    summary: str | None = None
+    education: list[ResumeEducationItem] = Field(default_factory=list)
+    experience: list[ResumeExperienceItem] = Field(default_factory=list)
+    skills: list[str] = Field(default_factory=list)
+    certifications: list[str] = Field(default_factory=list)
 
 
 class GenerationOptions(BaseModel):
@@ -242,14 +241,14 @@ class GenerationOptions(BaseModel):
 class GenerateRequest(BaseModel):
     doc_type: str
     template: str
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
     options: GenerationOptions = Field(default_factory=GenerationOptions)
 
 
 class GenerateResponse(BaseModel):
     job_id: str
     status: str
-    message: Optional[str] = None
+    message: str | None = None
 
 
 class GenerateStatusResponse(BaseModel):
@@ -258,6 +257,6 @@ class GenerateStatusResponse(BaseModel):
     stage: str
     progress: int
     message: str
-    error: Optional[str] = None
-    output_path: Optional[str] = None
-    outline: List[str] = Field(default_factory=list)
+    error: str | None = None
+    output_path: str | None = None
+    outline: list[str] = Field(default_factory=list)

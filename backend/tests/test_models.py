@@ -1,8 +1,9 @@
 import pytest
-from app.models.figure import Figure, FigureType, ImageFormat
+
 from app.models.equation import Equation
+from app.models.figure import Figure, FigureType, ImageFormat
+from app.models.reference import CitationStyle, Reference, ReferenceType
 from app.models.table import Table, TableCell
-from app.models.reference import Reference, ReferenceType, CitationStyle
 
 
 class TestFigure:

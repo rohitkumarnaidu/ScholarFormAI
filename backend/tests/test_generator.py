@@ -9,8 +9,8 @@ Tests: PromptBuilder, ContentParser, DocumentGenerator, and the generator router
 from __future__ import annotations
 
 import json
-import pytest
 
+import pytest
 
 # ─── PromptBuilder tests ────────────────────────────────────────────────────
 
@@ -52,7 +52,8 @@ class TestPromptBuilder:
         metadata = {"name": "Dr. Alice", "research_field": "AI", "bio": "AI researcher."}
         prompt = self.pb.build("portfolio", metadata, {})
         assert "Dr. Alice" in prompt
-        assert isinstance(prompt, str) and len(prompt) > 100
+        assert isinstance(prompt, str)
+        assert len(prompt) > 100
 
     def test_report_contains_title(self):
         metadata = {"title": "Annual Security Report", "authors": ["Team A"]}
@@ -127,6 +128,7 @@ class TestContentParser:
 class TestDocumentGenerator:
     def setup_method(self):
         from unittest.mock import patch
+
         from app.pipeline.generation.document_generator import DocumentGenerator
         self._ds_patch = patch("app.pipeline.generation.document_generator.DocumentService")
         self._ds_mock = self._ds_patch.start()

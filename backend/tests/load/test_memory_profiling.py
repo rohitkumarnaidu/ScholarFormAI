@@ -14,7 +14,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 MB = 1024 * 1024
 PIPELINE_MEMORY_LIMIT_MB = 100
 RAG_MEMORY_LIMIT_MB = 80
@@ -59,7 +58,7 @@ class TestMemoryProfiling:
     @pytest.mark.slow
     def test_pipeline_document_10k_blocks_under_threshold(self):
         """PipelineDocument with 10k blocks stays under memory threshold."""
-        from app.models import PipelineDocument, DocumentMetadata
+        from app.models import DocumentMetadata, PipelineDocument
 
         n_blocks = 10000
         doc = PipelineDocument(

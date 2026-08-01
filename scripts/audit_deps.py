@@ -58,7 +58,7 @@ def check_python() -> list[str]:
              str(BACKEND_DIR / "requirements.txt")])
     if r.returncode != 0:
         issues.append(f"safety found issues:\n{r.stdout[:1000]}")
-        print(f"    ⚠️  Vulnerabilities detected")
+        print("    ⚠️  Vulnerabilities detected")
     else:
         print("    ✅ No vulnerabilities found")
 
@@ -69,7 +69,7 @@ def check_python() -> list[str]:
              "-x", "app/tests", "-ll", "-q"])
     if r.returncode != 0:
         issues.append(f"bandit found issues:\n{r.stdout[:1000]}")
-        print(f"    ⚠️  Security issues detected")
+        print("    ⚠️  Security issues detected")
     else:
         print("    ✅ No security issues found")
 

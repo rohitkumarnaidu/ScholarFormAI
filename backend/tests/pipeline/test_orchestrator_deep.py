@@ -7,17 +7,17 @@ parallel extraction, figure analysis, keyword extraction, completion logic,
 and edge cases not exercised by the base test suite.
 """
 
-from app.models import PipelineDocument, Block, BlockType, Figure, Reference, DocumentMetadata
-from app.models import PipelineDocument, Block, BlockType, Figure, Reference, DocumentMetadata
 from __future__ import annotations
+
+import asyncio
+import hashlib
 import os
 import time
-import hashlib
-import asyncio
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
+from app.models import Block, BlockType, DocumentMetadata, Figure, PipelineDocument, Reference
 from app.pipeline.orchestrator import PipelineOrchestrator
 
 
@@ -95,7 +95,7 @@ class TestFigureAnalysisStage:
     def test_figure_analysis_no_figures(self, orch):
         doc = self._make_doc([])
         with patch("app.pipeline.orchestrator._get_figure_analyzer") as mock_get:
-            result = orch._run_figure_analysis_stage(doc)
+            orch._run_figure_analysis_stage(doc)
         mock_get.return_value.analyze_image.assert_not_called()
         assert "figure_analysis" not in doc.metadata.ai_hints
 
@@ -345,20 +345,18 @@ class TestPipelineErrorHandlers:
     def test_cancelled_in_extraction(self, orch, tmp_path):
         input_path = tmp_path / "test.pdf"
         input_path.write_text("dummy")
-        with patch.object(orch, "_update_status"):
-            with patch("app.pipeline.orchestrator.ParserFactory") as mock_pf:
-                mock_pf.return_value.get_parser.side_effect = asyncio.CancelledError("cancel")
-                result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
+        with patch.object(orch, "_update_status"), patch("app.pipeline.orchestrator.ParserFactory") as mock_pf:
+            mock_pf.return_value.get_parser.side_effect = asyncio.CancelledError("cancel")
+            result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
         assert result["status"] == "cancelled"
 
     def test_error_safe_execution_swallows(self, orch, tmp_path):
         """safe_execution swallows pipeline exceptions; returns 'processing'."""
         input_path = tmp_path / "test.pdf"
         input_path.write_text("dummy")
-        with patch.object(orch, "_update_status"):
-            with patch("app.pipeline.orchestrator.ParserFactory") as mock_pf:
-                mock_pf.side_effect = Exception("Factory failed before doc_obj")
-                result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
+        with patch.object(orch, "_update_status"), patch("app.pipeline.orchestrator.ParserFactory") as mock_pf:
+            mock_pf.side_effect = Exception("Factory failed before doc_obj")
+            result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
         assert result["status"] == "processing"
 
 
@@ -644,7 +642,7 @@ class TestKeywordExtraction:
         ], metadata=DocumentMetadata())
         doc.metadata.ai_hints = {}
         doc.metadata.abstract = "This research explores machine learning and AI."
-        result = self._run_pipeline_with_doc(orch, tmp_path, doc)
+        self._run_pipeline_with_doc(orch, tmp_path, doc)
         assert len(doc.metadata.keywords) > 0
 
     def test_keywords_from_abstract_block(self, orch, tmp_path):
@@ -654,7 +652,7 @@ class TestKeywordExtraction:
         ], metadata=DocumentMetadata())
         doc.metadata.ai_hints = {}
         doc.metadata.abstract = ""
-        result = self._run_pipeline_with_doc(orch, tmp_path, doc)
+        self._run_pipeline_with_doc(orch, tmp_path, doc)
         assert len(doc.metadata.keywords) > 0
         assert doc.metadata.ai_hints.get("keywords") is not None
 
@@ -736,7 +734,7 @@ class TestIntegrationScenarios:
                 with patch.object(orch.docling_client, "is_available", return_value=True):
                     with patch.object(orch.docling_client, "analyze_layout", return_value={"elements": [{"type": "text"}]}):
                         with patch.object(orch, "_should_skip_docling_for_digital_pdf", return_value=False):
-                            result = self._run_pipeline(orch, tmp_path, doc, {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True})
+                            self._run_pipeline(orch, tmp_path, doc, {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True})
         assert doc.metadata.ai_hints.get("grobid_metadata", {}).get("title") == "Test"
         assert doc.metadata.ai_hints.get("docling_layout", {}).get("elements") is not None
 
@@ -745,7 +743,7 @@ class TestIntegrationScenarios:
         doc.generated_doc = MagicMock()
         with patch.object(orch.grobid_client, "is_available", return_value=True):
             with patch.object(orch, "_should_skip_docling_for_digital_pdf", return_value=True):
-                result = self._run_pipeline(orch, tmp_path, doc, {"GROBID_ENABLED": False, "USE_DOCLING_FALLBACK": True})
+                self._run_pipeline(orch, tmp_path, doc, {"GROBID_ENABLED": False, "USE_DOCLING_FALLBACK": True})
         assert "grobid_metadata" not in doc.metadata.ai_hints
 
     def test_docling_disabled(self, orch, tmp_path):
@@ -754,7 +752,7 @@ class TestIntegrationScenarios:
         with patch.object(orch.grobid_client, "is_available", return_value=True):
             with patch.object(orch.grobid_client, "process_header_document", return_value={"title": "Test"}):
                 with patch.object(orch, "_should_skip_docling_for_digital_pdf", return_value=False):
-                    result = self._run_pipeline(orch, tmp_path, doc, {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": False})
+                    self._run_pipeline(orch, tmp_path, doc, {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": False})
         assert "docling_layout" not in doc.metadata.ai_hints
 
     def test_grobid_timeout(self, orch, tmp_path):
@@ -766,7 +764,7 @@ class TestIntegrationScenarios:
         with patch.object(orch.grobid_client, "is_available", return_value=True):
             with patch.object(orch.grobid_client, "process_header_document", side_effect=_slow):
                 with patch.object(orch, "_should_skip_docling_for_digital_pdf", return_value=True):
-                    result = self._run_pipeline(orch, tmp_path, doc, {
+                    self._run_pipeline(orch, tmp_path, doc, {
                         "GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True,
                         "PIPELINE_GROBID_TIMEOUT_SECONDS": 1,
                     })
@@ -779,7 +777,7 @@ class TestIntegrationScenarios:
         doc.metadata.ai_hints["docling_layout"] = {"elements": []}
         with patch.object(orch.grobid_client, "is_available", return_value=True):
             with patch.object(orch.grobid_client, "process_header_document", return_value={"title": "SHOULD NOT BE CALLED"}):
-                result = self._run_pipeline(orch, tmp_path, doc, {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True})
+                self._run_pipeline(orch, tmp_path, doc, {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True})
         assert doc.metadata.ai_hints["grobid_metadata"]["title"] == "Existing"
 
     def test_pymupdf_fallback_in_pipeline(self, orch, tmp_path):
@@ -790,7 +788,7 @@ class TestIntegrationScenarios:
                 with patch.object(orch, "_extract_pymupdf_fallback_metadata", return_value={
                     "source": "pymupdf", "page_count": 3, "title": "PyMuPDF Title",
                 }):
-                    result = self._run_pipeline(orch, tmp_path, doc, {"PYMUPDF_FALLBACK": True})
+                    self._run_pipeline(orch, tmp_path, doc, {"PYMUPDF_FALLBACK": True})
         assert doc.metadata.ai_hints.get("pymupdf_fallback", {}).get("source") == "pymupdf"
         assert doc.metadata.title == "PyMuPDF Title"
 
@@ -886,7 +884,7 @@ class TestIntegrationScenarios:
             mock_cr_inst = MagicMock()
             mock_cr_inst.validate_citation.return_value = {"valid": True, "doi": "10.1234/test"}
             mock_cr.return_value = mock_cr_inst
-            result = self._run_pipeline(orch, tmp_path, doc, {"CROSSREF_MAX_WORKERS": 2}, fast_mode=False, crossref_enrichment=True)
+            self._run_pipeline(orch, tmp_path, doc, {"CROSSREF_MAX_WORKERS": 2}, fast_mode=False, crossref_enrichment=True)
         assert doc.references[0].metadata["crossref_validation"]["valid"] is True
 
     def test_crossref_exception_handled(self, orch, tmp_path):

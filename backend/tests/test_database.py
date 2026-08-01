@@ -6,8 +6,9 @@ Database Layer Tests
 Tests database connection, Supabase client operations, and graceful degradation.
 """
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 
 class TestDatabaseLayer:
@@ -24,7 +25,7 @@ class TestDatabaseLayer:
                 from app.db.supabase_client import get_supabase_client
 
                 mock_create_client.return_value = MagicMock()
-                client = get_supabase_client(refresh=True)
+                get_supabase_client(refresh=True)
                 assert mock_create_client.called
 
     @pytest.mark.database
@@ -62,7 +63,7 @@ class TestDatabaseLayer:
                 from app.db.supabase_client import get_supabase_client
 
                 client1 = get_supabase_client(refresh=True)
-                client2 = get_supabase_client(refresh=False)
+                get_supabase_client(refresh=False)
                 assert client1 is not None
 
     @pytest.mark.database

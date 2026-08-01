@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 @pytest.fixture
@@ -51,24 +52,27 @@ class TestHtmlParserExtractMetadata:
         assert meta.title == "My Title"
 
     def test_extract_author(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         p = HtmlParser()
         soup = BeautifulSoup('<html><head><meta name="author" content="John Doe"></head></html>', "html.parser")
         meta = p._extract_metadata(soup)
         assert meta.authors == ["John Doe"]
 
     def test_extract_description(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         p = HtmlParser()
         soup = BeautifulSoup('<html><head><meta name="description" content="An abstract"></head></html>', "html.parser")
         meta = p._extract_metadata(soup)
         assert meta.abstract == "An abstract"
 
     def test_extract_keywords(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         p = HtmlParser()
         soup = BeautifulSoup('<html><head><meta name="keywords" content="kw1, kw2, kw3"></head></html>', "html.parser")
         meta = p._extract_metadata(soup)
@@ -77,8 +81,9 @@ class TestHtmlParserExtractMetadata:
 
 class TestHtmlParserExtractContent:
     def test_extract_headings(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><h1>Title</h1><h2>Section</h2></body></html>", "html.parser")
         blocks, figures = p._extract_content(soup)
@@ -88,8 +93,9 @@ class TestHtmlParserExtractContent:
         assert blocks[1].metadata["heading_level"] == 2
 
     def test_extract_paragraphs(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><p>First paragraph.</p><p>Second paragraph.</p></body></html>", "html.parser")
         blocks, _ = p._extract_content(soup)
@@ -97,32 +103,36 @@ class TestHtmlParserExtractContent:
         assert "First" in blocks[0].text
 
     def test_extract_paragraph_with_bold(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><p><b>Bold text</b> normal</p></body></html>", "html.parser")
         blocks, _ = p._extract_content(soup)
         assert blocks[0].style.bold is True
 
     def test_extract_paragraph_with_italic(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><p><i>Italic</i> text</p></body></html>", "html.parser")
         blocks, _ = p._extract_content(soup)
         assert blocks[0].style.italic is True
 
     def test_extract_paragraph_links(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><p>Visit <a href='https://x.com'>X</a></p></body></html>", "html.parser")
         blocks, _ = p._extract_content(soup)
         assert "links" in blocks[0].metadata
 
     def test_extract_list_items(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><ul><li>Item A</li><li>Item B</li></ul></body></html>", "html.parser")
         blocks, _ = p._extract_content(soup)
@@ -130,16 +140,18 @@ class TestHtmlParserExtractContent:
         assert len(items) == 2
 
     def test_ordered_list(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><ol><li>First</li></ol></body></html>", "html.parser")
         blocks, _ = p._extract_content(soup)
         assert blocks[0].metadata["list_type"] == "ordered"
 
     def test_extract_code_block(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         p = HtmlParser()
         soup = BeautifulSoup('<html><body><code class="language-python">print("hi")</code></body></html>', "html.parser")
         blocks, _ = p._extract_content(soup)
@@ -148,8 +160,9 @@ class TestHtmlParserExtractContent:
         assert codes[0].metadata["code_language"] == "python"
 
     def test_extract_table(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><table><tr><td>A</td><td>B</td></tr></table></body></html>", "html.parser")
         blocks, _ = p._extract_content(soup)
@@ -157,8 +170,9 @@ class TestHtmlParserExtractContent:
         assert len(tables) >= 1
 
     def test_extract_images(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><img src='img.png' alt='Photo'></body></html>", "html.parser")
         blocks, figures = p._extract_content(soup)
@@ -166,8 +180,9 @@ class TestHtmlParserExtractContent:
         assert figures[0].caption_text == "Photo"
 
     def test_script_style_removed(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><script>alert('x')</script><p>Text</p><style>.c{}</style></body></html>", "html.parser")
         blocks, _ = p._extract_content(soup)

@@ -17,11 +17,14 @@ def test_required_risk_migrations_exist_and_chain():
     audit_text = audit.read_text(encoding="utf-8")
     billing_text = billing.read_text(encoding="utf-8")
 
-    assert "op.create_table(" in audit_text and "\"audit_log\"" in audit_text
-    assert "down_revision" in audit_text and "20260311_0001" in audit_text
+    assert "op.create_table(" in audit_text
+    assert "\"audit_log\"" in audit_text
+    assert "down_revision" in audit_text
+    assert "20260311_0001" in audit_text
 
     assert "\"profiles\"" in billing_text
     assert "plan_tier" in billing_text
     assert "stripe_customer_id" in billing_text
     assert "billing_status" in billing_text
-    assert "down_revision" in billing_text and "20260315_0001" in billing_text
+    assert "down_revision" in billing_text
+    assert "20260315_0001" in billing_text

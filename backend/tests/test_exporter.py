@@ -1,5 +1,6 @@
+from unittest.mock import MagicMock, mock_open, patch
+
 import pytest
-from unittest.mock import MagicMock, patch, mock_open
 
 
 @pytest.fixture
@@ -117,8 +118,8 @@ class TestBuildMarkdown:
         assert "paper.docx" in md
 
     def test_skips_reference_blocks(self, mkblock):
-        from app.pipeline.export.exporter import Exporter
         from app.models.block import BlockType
+        from app.pipeline.export.exporter import Exporter
         exporter = Exporter()
         doc = _make_doc(mkblock)
         doc.blocks.append(mkblock("References", BlockType.REFERENCES_HEADING, idx=3))
@@ -127,8 +128,8 @@ class TestBuildMarkdown:
         assert "[1] Ref" not in md
 
     def test_heading_blocks(self, mkblock):
-        from app.pipeline.export.exporter import Exporter
         from app.models.block import BlockType
+        from app.pipeline.export.exporter import Exporter
         exporter = Exporter()
         doc = _make_doc(mkblock)
         doc.blocks = [
@@ -167,11 +168,10 @@ class TestExportJson:
         doc = _make_doc(mkblock)
 
         m = mock_open()
-        with patch("builtins.open", m):
-            with patch("os.makedirs"):
-                with patch("app.pipeline.export.exporter.safe_model_dump",
-                           side_effect=lambda x: {}):
-                    result = exporter.export_json(doc, "/tmp/out.json")
+        with patch("builtins.open", m), patch("os.makedirs"):
+            with patch("app.pipeline.export.exporter.safe_model_dump",
+                       side_effect=lambda x: {}):
+                result = exporter.export_json(doc, "/tmp/out.json")
         assert result == "/tmp/out.json"
 
     def test_exception_returns_none(self, mkblock):
@@ -191,9 +191,8 @@ class TestExportMarkdown:
         doc = _make_doc(mkblock)
 
         m = mock_open()
-        with patch("builtins.open", m):
-            with patch("os.makedirs"):
-                result = exporter.export_markdown(doc, "/tmp/out.md")
+        with patch("builtins.open", m), patch("os.makedirs"):
+            result = exporter.export_markdown(doc, "/tmp/out.md")
         assert result == "/tmp/out.md"
 
     def test_exception_returns_none(self, mkblock):
@@ -213,9 +212,8 @@ class TestExportHtml:
         doc = _make_doc(mkblock)
 
         m = mock_open()
-        with patch("builtins.open", m):
-            with patch("os.makedirs"):
-                result = exporter.export_html(doc, "/tmp/out.html")
+        with patch("builtins.open", m), patch("os.makedirs"):
+            result = exporter.export_html(doc, "/tmp/out.html")
         assert result == "/tmp/out.html"
 
     def test_ol_list_handling(self, mkblock):
@@ -223,9 +221,8 @@ class TestExportHtml:
         exporter = Exporter()
         doc = _make_doc(mkblock)
         doc.blocks = [mkblock("1. First item", idx=0), mkblock("2. Second item", idx=1)]
-        with patch("os.makedirs"):
-            with patch("builtins.open", mock_open()):
-                html_result = exporter.export_html(doc, "/tmp/out.html")
+        with patch("os.makedirs"), patch("builtins.open", mock_open()):
+            html_result = exporter.export_html(doc, "/tmp/out.html")
         assert html_result == "/tmp/out.html"
 
 
@@ -237,9 +234,8 @@ class TestExportJats:
 
         with patch("app.pipeline.export.jats_generator.JATSGenerator.to_xml", return_value="<article/>"):
             m = mock_open()
-            with patch("builtins.open", m):
-                with patch("os.makedirs"):
-                    result = exporter.export_jats(doc, "/tmp/out.xml")
+            with patch("builtins.open", m), patch("os.makedirs"):
+                result = exporter.export_jats(doc, "/tmp/out.xml")
         assert result == "/tmp/out.xml"
 
     def test_exception_returns_none(self, mkblock):
@@ -259,10 +255,9 @@ class TestProcess:
         doc = _make_doc(mkblock)
         doc.generated_doc = MagicMock()
 
-        with patch("os.makedirs"):
-            with patch("builtins.open", mock_open()):
-                with patch("app.pipeline.export.jats_generator.JATSGenerator.to_xml", return_value="<article/>"):
-                    result = exporter.process(doc)
+        with patch("os.makedirs"), patch("builtins.open", mock_open()):
+            with patch("app.pipeline.export.jats_generator.JATSGenerator.to_xml", return_value="<article/>"):
+                result = exporter.process(doc)
         assert result is doc
 
     def test_process_no_output_path(self, mkblock):
@@ -271,8 +266,7 @@ class TestProcess:
         doc = _make_doc(mkblock)
         doc.output_path = None
 
-        with patch("os.makedirs"):
-            with patch("builtins.open", mock_open()):
-                with patch("app.pipeline.export.jats_generator.JATSGenerator.to_xml", return_value="<article/>"):
-                    result = exporter.process(doc)
+        with patch("os.makedirs"), patch("builtins.open", mock_open()):
+            with patch("app.pipeline.export.jats_generator.JATSGenerator.to_xml", return_value="<article/>"):
+                result = exporter.process(doc)
         assert result is doc

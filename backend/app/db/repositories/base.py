@@ -4,7 +4,6 @@ import asyncio
 import logging
 import uuid
 from abc import ABC
-from typing import Optional
 
 from app.db.supabase_client import get_supabase_client
 from app.exceptions import DatabaseUnavailableError
@@ -37,7 +36,7 @@ async def execute_with_transient_retry(
     operation_name: str,
     operation,
     *,
-    job_id: Optional[str] = None,
+    job_id: str | None = None,
     max_attempts: int = 3,
 ):
     from app.utils.logging_context import log_extra

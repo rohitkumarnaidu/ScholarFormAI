@@ -10,19 +10,19 @@ import json
 import logging
 import re
 import time
-from typing import Iterable
+from collections.abc import Iterable
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
 from app.config.settings import settings
+from app.middleware.request_id import get_request_id
 from app.realtime.events import make_event
 from app.realtime.pubsub import RedisPubSub
-from app.middleware.request_id import get_request_id
-from app.utils.logging_context import bind_request_context, log_extra
 from app.services.llm_service import LLMUnavailableError, generate_with_fallback, sanitize_for_llm
 from app.services.preview_renderer import preview_renderer
+from app.utils.logging_context import bind_request_context, log_extra
 
 logger = logging.getLogger(__name__)
 

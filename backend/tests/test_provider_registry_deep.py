@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, patch
 
 class TestCacheDiscoveredModels:
     def test_cache_models(self):
-        from app.services.provider_registry import cache_discovered_models, _DISCOVERED_MODELS_CACHE
+        from app.services.provider_registry import _DISCOVERED_MODELS_CACHE, cache_discovered_models
         _DISCOVERED_MODELS_CACHE.clear()
         cache_discovered_models("user-1", "ollama", ["model-a", "model-b", "model-a"])
         assert "user-1" in _DISCOVERED_MODELS_CACHE
@@ -19,19 +19,19 @@ class TestCacheDiscoveredModels:
 
 class TestGetCachedDiscoveredModels:
     def test_no_user(self):
-        from app.services.provider_registry import _get_cached_discovered_models, _DISCOVERED_MODELS_CACHE
+        from app.services.provider_registry import _DISCOVERED_MODELS_CACHE, _get_cached_discovered_models
         _DISCOVERED_MODELS_CACHE.clear()
         result = _get_cached_discovered_models(None, "ollama")
         assert result == []
 
     def test_no_cache_entry(self):
-        from app.services.provider_registry import _get_cached_discovered_models, _DISCOVERED_MODELS_CACHE
+        from app.services.provider_registry import _DISCOVERED_MODELS_CACHE, _get_cached_discovered_models
         _DISCOVERED_MODELS_CACHE.clear()
         result = _get_cached_discovered_models("user-1", "ollama")
         assert result == []
 
     def test_expired_entry(self):
-        from app.services.provider_registry import _get_cached_discovered_models, _DISCOVERED_MODELS_CACHE
+        from app.services.provider_registry import _DISCOVERED_MODELS_CACHE, _get_cached_discovered_models
         _DISCOVERED_MODELS_CACHE.clear()
         _DISCOVERED_MODELS_CACHE["user-1"] = {
             "ollama": {"models": ["m1"], "timestamp": 0}
@@ -41,7 +41,7 @@ class TestGetCachedDiscoveredModels:
         assert "ollama" not in _DISCOVERED_MODELS_CACHE["user-1"]
 
     def test_valid_entry(self):
-        from app.services.provider_registry import _get_cached_discovered_models, _DISCOVERED_MODELS_CACHE
+        from app.services.provider_registry import _DISCOVERED_MODELS_CACHE, _get_cached_discovered_models
         _DISCOVERED_MODELS_CACHE.clear()
         _DISCOVERED_MODELS_CACHE["user-1"] = {
             "ollama": {"models": ["m1"], "timestamp": time.time()}
@@ -156,7 +156,9 @@ class TestListAvailableModels:
 
     def test_discovered_models_appended(self):
         from app.services.provider_registry import (
-            list_available_models, cache_discovered_models, _DISCOVERED_MODELS_CACHE
+            _DISCOVERED_MODELS_CACHE,
+            cache_discovered_models,
+            list_available_models,
         )
         _DISCOVERED_MODELS_CACHE.clear()
         cache_discovered_models("user-1", "ollama", ["discovered-model"])

@@ -5,12 +5,12 @@
 Tool marketplace for community tool sharing.
 """
 
-import logging
-import json
-from typing import List, Dict, Any, Optional
-from pathlib import Path
-from datetime import datetime, timezone
 import hashlib
+import json
+import logging
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -44,10 +44,10 @@ class ToolMarketplace:
         self.installed_tools_file = self.cache_dir / "installed_tools.json"
         self.installed_tools = self._load_installed_tools()
 
-    def _load_installed_tools(self) -> Dict[str, Any]:
+    def _load_installed_tools(self) -> dict[str, Any]:
         """Load installed tools registry."""
         if self.installed_tools_file.exists():
-            with open(self.installed_tools_file, "r") as f:
+            with open(self.installed_tools_file) as f:
                 return json.load(f)
         return {}
 
@@ -63,8 +63,8 @@ class ToolMarketplace:
         description: str,
         author: str,
         version: str = "1.0.0",
-        tags: Optional[List[str]] = None,
-    ) -> Dict[str, Any]:
+        tags: list[str] | None = None,
+    ) -> dict[str, Any]:
         """
         Publish a tool to the marketplace.
 
@@ -90,7 +90,7 @@ class ToolMarketplace:
             "version": version,
             "tags": tags or [],
             "code_hash": code_hash,
-            "published_at": datetime.now(timezone.utc).isoformat(),
+            "published_at": datetime.now(UTC).isoformat(),
         }
 
         try:
@@ -109,8 +109,8 @@ class ToolMarketplace:
             return {"success": False, "error": str(e)}
 
     def search_tools(
-        self, query: Optional[str] = None, tags: Optional[List[str]] = None, limit: int = 10
-    ) -> List[Dict[str, Any]]:
+        self, query: str | None = None, tags: list[str] | None = None, limit: int = 10
+    ) -> list[dict[str, Any]]:
         """
         Search for tools in the marketplace.
 
@@ -131,7 +131,7 @@ class ToolMarketplace:
                 continue
 
             try:
-                with open(tool_file, "r") as f:
+                with open(tool_file) as f:
                     tool = json.load(f)
 
                 # Apply filters
@@ -161,7 +161,7 @@ class ToolMarketplace:
 
         return results
 
-    def install_tool(self, tool_name: str, version: Optional[str] = None) -> Dict[str, Any]:
+    def install_tool(self, tool_name: str, version: str | None = None) -> dict[str, Any]:
         """
         Install a tool from the marketplace.
 
@@ -186,7 +186,7 @@ class ToolMarketplace:
             return {"success": False, "error": f"Tool {tool_name} version {version} not found"}
 
         try:
-            with open(tool_file, "r") as f:
+            with open(tool_file) as f:
                 tool = json.load(f)
 
             # Verify integrity
@@ -197,7 +197,7 @@ class ToolMarketplace:
             # Install (save to installed registry)
             self.installed_tools[tool_name] = {
                 "version": tool["version"],
-                "installed_at": datetime.now(timezone.utc).isoformat(),
+                "installed_at": datetime.now(UTC).isoformat(),
                 "code": tool["code"],
                 "description": tool["description"],
             }
@@ -234,7 +234,7 @@ class ToolMarketplace:
             return True
         return False
 
-    def get_installed_tools(self) -> List[Dict[str, Any]]:
+    def get_installed_tools(self) -> list[dict[str, Any]]:
         """Get list of installed tools."""
         return [
             {
@@ -246,7 +246,7 @@ class ToolMarketplace:
             for name, info in self.installed_tools.items()
         ]
 
-    def rate_tool(self, tool_name: str, rating: int, review: Optional[str] = None) -> bool:
+    def rate_tool(self, tool_name: str, rating: int, review: str | None = None) -> bool:
         """
         Rate a tool.
 
@@ -262,7 +262,7 @@ class ToolMarketplace:
         logger.info(f"Rated tool {tool_name}: {rating}/5")
         return True
 
-    def get_tool_stats(self, tool_name: str) -> Dict[str, Any]:
+    def get_tool_stats(self, tool_name: str) -> dict[str, Any]:
         """
         Get tool statistics.
 

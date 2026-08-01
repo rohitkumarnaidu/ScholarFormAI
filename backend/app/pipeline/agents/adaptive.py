@@ -6,7 +6,8 @@ Adaptive strategies that auto-tune based on metrics.
 """
 
 import logging
-from typing import Dict, Any, Optional
+from typing import Any
+
 from app.pipeline.agents.metrics import PerformanceTracker
 from app.pipeline.agents.ml_patterns import MLPatternDetector
 
@@ -35,7 +36,7 @@ class AdaptiveStrategy:
     def __init__(
         self,
         tracker: PerformanceTracker,
-        ml_detector: Optional[MLPatternDetector] = None,
+        ml_detector: MLPatternDetector | None = None,
     ):
         """
         Initialize adaptive strategy.
@@ -50,7 +51,7 @@ class AdaptiveStrategy:
         self.ml_detector = ml_detector
         self.config = self._default_config()
 
-    def _default_config(self) -> Dict[str, Any]:
+    def _default_config(self) -> dict[str, Any]:
         """Get default configuration."""
         return {
             "max_retries": 3,
@@ -70,7 +71,7 @@ class AdaptiveStrategy:
         """Clamp value between lo and hi."""
         return max(lo, min(hi, value))
 
-    def adapt(self) -> Dict[str, Any]:
+    def adapt(self) -> dict[str, Any]:
         """
         Adapt configuration based on metrics.
 
@@ -169,11 +170,11 @@ class AdaptiveStrategy:
         except Exception as exc:
             logger.error("Error in _adapt_from_ml_patterns: %s", exc)
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Get a copy of the current configuration."""
         return self.config.copy()
 
-    def recommend_strategy(self, document_metadata: Dict[str, Any]) -> Dict[str, Any]:
+    def recommend_strategy(self, document_metadata: dict[str, Any]) -> dict[str, Any]:
         """
         Recommend processing strategy for a document.
 
@@ -190,7 +191,7 @@ class AdaptiveStrategy:
         # Check if we have ML patterns
         if self.ml_detector is not None:
             try:
-                dummy_metrics: Dict[str, Any] = {
+                dummy_metrics: dict[str, Any] = {
                     "duration_seconds": 30,
                     "references_count": 20,
                     "figures_count": 5,

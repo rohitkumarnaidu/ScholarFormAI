@@ -47,7 +47,7 @@ class TestInit:
             patch("app.pipeline.generation.agent.RedisPubSub") as mock_ps,
             patch("app.pipeline.generation.agent.CitationAssemblyService"),
         ):
-            a = AP(ss, po)
+            AP(ss, po)
             mock_ps.assert_called_once()
 
     def test_provided_pubsub_used(self, AP):
@@ -364,7 +364,7 @@ class TestRetrieveTemplateRules:
 
     def test_fallback_to_general_when_no_rules(self, agent):
         agent.rag_engine.query_rules.return_value = []
-        result = agent._retrieve_template_rules("ACM", ["Intro", "Methods"])
+        agent._retrieve_template_rules("ACM", ["Intro", "Methods"])
         agent.rag_engine.query_rules.assert_any_call("ACM", "general", top_k=2)
 
 

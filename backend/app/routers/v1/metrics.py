@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
@@ -116,7 +116,7 @@ async def log_frontend_error(
 
                 AGENT_TOOLS_USAGE_TOTAL.labels(tool_name="frontend", status="error").inc()
             except ImportError:
-                pass
+                pass  # intentionally ignored
 
             return {"status": "logged"}
         except Exception as exc:
@@ -183,7 +183,7 @@ async def health_check(request: Request):
 async def get_metrics_dashboard(
     request: Request,
     admin_user=Depends(require_role("admin")),
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     async def operation():
         model_metrics = get_model_metrics()
         ab_testing = get_ab_testing()
@@ -230,7 +230,7 @@ async def get_metrics_dashboard(
 async def get_enhancement_metrics(
     request: Request,
     admin_user=Depends(require_role("admin")),
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     async def operation():
         profile = enhancement_manager.refresh()
         profile_dict = profile.to_dict()
@@ -257,7 +257,7 @@ async def get_enhancement_metrics(
 async def get_vllm_readiness(
     request: Request,
     admin_user=Depends(require_role("admin")),
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     async def operation():
         return {
             "status": "success",

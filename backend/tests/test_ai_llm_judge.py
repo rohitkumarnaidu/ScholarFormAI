@@ -7,10 +7,9 @@ Simulates an LLM judge that scores outputs on factuality, completeness,
 instruction adherence, and coherence against a rubric.
 """
 
-import pytest
 import math
-from typing import List
 
+import pytest
 
 # ---------------------------------------------------------------------------
 #  Simulated LLM judge helpers
@@ -53,7 +52,7 @@ def _sentence_similarity(a: str, b: str) -> float:
     return sum(scores) / len(scores) if scores else 0.0
 
 
-def _extract_requirements(rubric: dict) -> List[str]:
+def _extract_requirements(rubric: dict) -> list[str]:
     """Extract text requirements from rubric (keys prefixed with 'req_' or 'requires_')."""
     reqs = []
     for k, v in rubric.items():
@@ -180,7 +179,7 @@ def _compute_confidence(scores: dict, output: str, expected: str) -> float:
     return max(0.0, min(confidence, 1.0))
 
 
-def _evaluate_batch(outputs: List[str], expected: str, rubric: dict = None) -> List[dict]:
+def _evaluate_batch(outputs: list[str], expected: str, rubric: dict = None) -> list[dict]:
     """Evaluate multiple outputs against the same expected content and rubric."""
     return [_llm_judge_score(o, expected, rubric) for o in outputs]
 

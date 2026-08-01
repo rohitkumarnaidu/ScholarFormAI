@@ -6,11 +6,12 @@ Gap-filling tests for PdfOCR to reach 100% line coverage.
 """
 
 from __future__ import annotations
+
 from unittest.mock import MagicMock, patch
+
 import pytest
 
-from app.pipeline.ocr.pdf_ocr import PdfOCR, OCRError
-
+from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
 
 # ===================================================================
 # Module-level import error paths (lines 16-18, 23-25, 30-32, 37-39, 44-46, 51-53)
@@ -88,7 +89,7 @@ class TestPdfOCRInitGaps:
         assert ocr.paddle_language == "zh"
 
     def test_supported_backends_set(self):
-        assert PdfOCR.SUPPORTED_BACKENDS == {"tesseract", "paddle"}
+        assert {"tesseract", "paddle"} == PdfOCR.SUPPORTED_BACKENDS
 
 
 # ===================================================================
@@ -193,48 +194,37 @@ class TestExtractTextGaps:
             ocr = PdfOCR()
             images = ["img1"]
             with patch.object(ocr, "_normalize_backends",
-                              return_value=["tesseract", "paddle"]):
-                with patch("app.pipeline.ocr.pdf_ocr.convert_from_path",
-                           return_value=images):
-                    with patch.object(ocr, "_ocr_tesseract",
-                                      return_value=[""]):
-                        with patch.object(ocr, "_ocr_paddle",
-                                          return_value=["text"]):
-                            with patch.object(ocr, "_combine_pages",
-                                              side_effect=["", "text"]):
-                                text, backend = ocr.extract_text("test.pdf")
-                                assert backend == "paddle"
+                              return_value=["tesseract", "paddle"]), patch("app.pipeline.ocr.pdf_ocr.convert_from_path",
+                       return_value=images), patch.object(ocr, "_ocr_tesseract",
+                              return_value=[""]), patch.object(ocr, "_ocr_paddle",
+                              return_value=["text"]), patch.object(ocr, "_combine_pages",
+                              side_effect=["", "text"]):
+                text, backend = ocr.extract_text("test.pdf")
+                assert backend == "paddle"
 
     def test_all_backends_fail_raises(self):
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             ocr = PdfOCR()
             with patch.object(ocr, "_normalize_backends",
-                              return_value=["tesseract", "paddle"]):
-                with patch("app.pipeline.ocr.pdf_ocr.convert_from_path",
-                           return_value=["img1"]):
-                    with patch.object(ocr, "_ocr_tesseract",
-                                      side_effect=OCRError("tess crash")):
-                        with patch.object(ocr, "_ocr_paddle",
-                                          side_effect=OCRError("paddle crash")):
-                            with pytest.raises(OCRError, match="All OCR backends failed"):
-                                ocr.extract_text("test.pdf")
+                              return_value=["tesseract", "paddle"]), patch("app.pipeline.ocr.pdf_ocr.convert_from_path",
+                       return_value=["img1"]), patch.object(ocr, "_ocr_tesseract",
+                              side_effect=OCRError("tess crash")), patch.object(ocr, "_ocr_paddle",
+                              side_effect=OCRError("paddle crash")):
+                with pytest.raises(OCRError, match="All OCR backends failed"):
+                    ocr.extract_text("test.pdf")
 
     def test_combined_empty_falls_through(self):
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             ocr = PdfOCR()
             with patch.object(ocr, "_normalize_backends",
-                              return_value=["tesseract", "paddle"]):
-                with patch("app.pipeline.ocr.pdf_ocr.convert_from_path",
-                           return_value=["img1"]):
-                    with patch.object(ocr, "_ocr_tesseract",
-                                      return_value=["   "]):
-                        with patch.object(ocr, "_ocr_paddle",
-                                          return_value=["real text"]):
-                            with patch.object(ocr, "_combine_pages",
-                                              side_effect=["", "real text"]):
-                                text, backend = ocr.extract_text("test.pdf")
-                                assert backend == "paddle"
-                                assert text == "real text"
+                              return_value=["tesseract", "paddle"]), patch("app.pipeline.ocr.pdf_ocr.convert_from_path",
+                       return_value=["img1"]), patch.object(ocr, "_ocr_tesseract",
+                              return_value=["   "]), patch.object(ocr, "_ocr_paddle",
+                              return_value=["real text"]), patch.object(ocr, "_combine_pages",
+                              side_effect=["", "real text"]):
+                text, backend = ocr.extract_text("test.pdf")
+                assert backend == "paddle"
+                assert text == "real text"
 
     def test_unknown_backend_skipped(self):
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
@@ -254,16 +244,13 @@ class TestExtractTextGaps:
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             ocr = PdfOCR()
             with patch.object(ocr, "_normalize_backends",
-                              return_value=["tesseract", "paddle"]):
-                with patch("app.pipeline.ocr.pdf_ocr.convert_from_path",
-                           return_value=["img1"]):
-                    with patch.object(ocr, "_ocr_tesseract",
-                                      side_effect=OCRError("tess fail")):
-                        with patch.object(ocr, "_ocr_paddle",
-                                          return_value=["text"]):
-                            text, backend = ocr.extract_text("test.pdf")
-                            assert backend == "paddle"
-                            assert text == "text"
+                              return_value=["tesseract", "paddle"]), patch("app.pipeline.ocr.pdf_ocr.convert_from_path",
+                       return_value=["img1"]), patch.object(ocr, "_ocr_tesseract",
+                              side_effect=OCRError("tess fail")), patch.object(ocr, "_ocr_paddle",
+                              return_value=["text"]):
+                text, backend = ocr.extract_text("test.pdf")
+                assert backend == "paddle"
+                assert text == "text"
 
 
 # ===================================================================
@@ -280,36 +267,32 @@ class TestConvertToDocxGaps:
 
     def test_success(self):
         mock_doc = MagicMock()
-        with patch("app.pipeline.ocr.pdf_ocr.DOCX_AVAILABLE", True):
-            with patch("app.pipeline.ocr.pdf_ocr.Document",
-                       return_value=mock_doc):
-                ocr = PdfOCR()
-                with patch.object(ocr, "extract_text",
-                                  return_value=("hello world", "tesseract")):
-                    text = ocr.convert_to_docx("in.pdf", "out.docx")
-                    assert text == "hello world"
-                    mock_doc.add_paragraph.assert_called_once()
-                    mock_doc.save.assert_called_once_with("out.docx")
+        with patch("app.pipeline.ocr.pdf_ocr.DOCX_AVAILABLE", True), patch("app.pipeline.ocr.pdf_ocr.Document",
+                   return_value=mock_doc):
+            ocr = PdfOCR()
+            with patch.object(ocr, "extract_text",
+                              return_value=("hello world", "tesseract")):
+                text = ocr.convert_to_docx("in.pdf", "out.docx")
+                assert text == "hello world"
+                mock_doc.add_paragraph.assert_called_once()
+                mock_doc.save.assert_called_once_with("out.docx")
 
     def test_extract_text_failure_propagates(self):
         with patch("app.pipeline.ocr.pdf_ocr.DOCX_AVAILABLE", True):
             ocr = PdfOCR()
             with patch.object(ocr, "extract_text",
-                              side_effect=OCRError("no text")):
-                with pytest.raises(OCRError, match="no text"):
-                    ocr.convert_to_docx("in.pdf", "out.docx")
+                              side_effect=OCRError("no text")), pytest.raises(OCRError, match="no text"):
+                ocr.convert_to_docx("in.pdf", "out.docx")
 
     def test_save_failure_raises(self):
         mock_doc = MagicMock()
         mock_doc.save.side_effect = PermissionError("denied")
-        with patch("app.pipeline.ocr.pdf_ocr.DOCX_AVAILABLE", True):
-            with patch("app.pipeline.ocr.pdf_ocr.Document",
-                       return_value=mock_doc):
-                ocr = PdfOCR()
-                with patch.object(ocr, "extract_text",
-                                  return_value=("text", "tesseract")):
-                    with pytest.raises(OCRError, match="Failed to save"):
-                        ocr.convert_to_docx("in.pdf", "out.docx")
+        with patch("app.pipeline.ocr.pdf_ocr.DOCX_AVAILABLE", True), patch("app.pipeline.ocr.pdf_ocr.Document",
+                   return_value=mock_doc):
+            ocr = PdfOCR()
+            with patch.object(ocr, "extract_text",
+                              return_value=("text", "tesseract")), pytest.raises(OCRError, match="Failed to save"):
+                ocr.convert_to_docx("in.pdf", "out.docx")
 
 
 # ===================================================================

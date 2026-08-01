@@ -17,11 +17,11 @@ Docling excels at:
 
 from __future__ import annotations
 
+import importlib.util
 import logging
 import warnings
-import importlib.util
-from typing import Any, Dict, List, Optional, Tuple
 from contextlib import contextmanager
+from typing import Any
 
 from app.config.settings import settings
 from app.pipeline.safety import safe_function
@@ -53,9 +53,7 @@ def _suppress_docling_warnings():
 def _docling_enabled() -> bool:
     if not getattr(settings, "USE_DOCLING_FALLBACK", False):
         return False
-    if settings.LOW_MEMORY_MODE:
-        return False
-    return True
+    return not settings.LOW_MEMORY_MODE
 
 
 # Backward-compatible availability flag used by tests and external callers.
@@ -101,7 +99,7 @@ class BoundingBox:
         """Vertical center position."""
         return (self.y0 + self.y1) / 2
 
-    def to_dict(self) -> Dict[str, float]:
+    def to_dict(self) -> dict[str, float]:
         return {
             "x0": self.x0,
             "y0": self.y0,
@@ -121,7 +119,7 @@ class LayoutElement:
         text: str,
         bbox: BoundingBox,
         element_type: str,
-        font_size: Optional[float] = None,
+        font_size: float | None = None,
         is_bold: bool = False,
         is_italic: bool = False,
         confidence: float = 1.0,
@@ -134,7 +132,7 @@ class LayoutElement:
         self.is_italic = is_italic
         self.confidence = confidence
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "text": self.text,
             "bbox": self.bbox.to_dict(),
@@ -195,7 +193,7 @@ class DoclingClient:
         },
         error_message="DoclingClient.analyze_layout",
     )
-    def analyze_layout(self, file_path: str) -> Dict[str, Any]:
+    def analyze_layout(self, file_path: str) -> dict[str, Any]:
         """
         Analyze the layout of a PDF file using Docling.
 
@@ -268,10 +266,7 @@ class DoclingClient:
             num_pages = 1
             if hasattr(doc, "num_pages"):
                 np = doc.num_pages
-                if callable(np):
-                    num_pages = np()
-                else:
-                    num_pages = np
+                num_pages = np() if callable(np) else np
 
             result = {"elements": elements, "pages": num_pages}
 
@@ -282,7 +277,7 @@ class DoclingClient:
             logger.error(f"Docling analysis failed: {e}")
             return self._empty_layout()
 
-    def _extract_elements(self, document) -> List[LayoutElement]:
+    def _extract_elements(self, document) -> list[LayoutElement]:
         """Extract layout elements from Docling document."""
         elements = []
 
@@ -340,7 +335,7 @@ class DoclingClient:
 
         return elements
 
-    def _detect_headers_footers(self, elements: List[LayoutElement]) -> Tuple[List[LayoutElement], List[LayoutElement]]:
+    def _detect_headers_footers(self, elements: list[LayoutElement]) -> tuple[list[LayoutElement], list[LayoutElement]]:
         """
         Detect headers and footers based on position.
 
@@ -354,7 +349,7 @@ class DoclingClient:
             return headers, footers
 
         # Group elements by page
-        pages: Dict[int, List[LayoutElement]] = {}
+        pages: dict[int, list[LayoutElement]] = {}
         for elem in elements:
             page = elem.bbox.page
             if page not in pages:
@@ -362,7 +357,7 @@ class DoclingClient:
             pages[page].append(elem)
 
         # For each page, identify headers/footers
-        for page_num, page_elements in pages.items():
+        for _page_num, page_elements in pages.items():
             if not page_elements:
                 continue
 
@@ -385,7 +380,7 @@ class DoclingClient:
 
         return headers, footers
 
-    def _extract_tables(self, document) -> List[Dict[str, Any]]:
+    def _extract_tables(self, document) -> list[dict[str, Any]]:
         """Extract table information."""
         tables = []
 
@@ -404,7 +399,7 @@ class DoclingClient:
 
         return tables
 
-    def _extract_figures(self, document) -> List[Dict[str, Any]]:
+    def _extract_figures(self, document) -> list[dict[str, Any]]:
         """Extract figure information."""
         figures = []
 
@@ -422,7 +417,7 @@ class DoclingClient:
 
         return figures
 
-    def _calculate_confidence(self, elements: List[LayoutElement]) -> float:
+    def _calculate_confidence(self, elements: list[LayoutElement]) -> float:
         """Calculate overall confidence score."""
         if not elements:
             return 0.0
@@ -431,7 +426,7 @@ class DoclingClient:
         total_confidence = sum(elem.confidence for elem in elements)
         return total_confidence / len(elements)
 
-    def _empty_layout(self) -> Dict[str, Any]:
+    def _empty_layout(self) -> dict[str, Any]:
         """Return empty layout structure."""
         return {
             "elements": [],
@@ -444,8 +439,8 @@ class DoclingClient:
         }
 
     def find_title_with_logo_tolerance(
-        self, elements: List[LayoutElement], logo_y_threshold: float = 150.0
-    ) -> Optional[LayoutElement]:
+        self, elements: list[LayoutElement], logo_y_threshold: float = 150.0
+    ) -> LayoutElement | None:
         """
         Find title element, accounting for logos at the top.
 

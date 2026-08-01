@@ -10,7 +10,6 @@ Covers construction, serialization, enum values, image data, and helper methods.
 from __future__ import annotations
 
 
-
 class TestFigureMinimumFields:
     def test_creation_with_minimum_fields(self):
         from app.models.figure import Figure

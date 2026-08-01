@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from unittest.mock import patch
 
 
@@ -17,7 +17,7 @@ class TestRealtimeEvent:
 
     def test_with_all_fields(self):
         from app.realtime.events import RealtimeEvent
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
         event = RealtimeEvent(
             event_type="complete",
             job_id="job-1",
@@ -35,7 +35,7 @@ class TestRealtimeEvent:
     def test_timestamp_defaults_to_utc_now(self):
         from app.realtime.events import RealtimeEvent
         event = RealtimeEvent(event_type="test")
-        assert event.timestamp.tzinfo == timezone.utc
+        assert event.timestamp.tzinfo == UTC
 
 
 class TestMakeEvent:
@@ -57,7 +57,7 @@ class TestMakeEvent:
 
     def test_custom_timestamp(self):
         from app.realtime.events import make_event
-        ts = datetime(2026, 1, 1, tzinfo=timezone.utc)
+        ts = datetime(2026, 1, 1, tzinfo=UTC)
         result = make_event("test", timestamp=ts)
         assert result["timestamp"] == "2026-01-01T00:00:00+00:00"
 

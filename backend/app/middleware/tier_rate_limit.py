@@ -5,8 +5,7 @@ from __future__ import annotations
 
 import logging
 from collections import defaultdict
-from datetime import datetime, timezone, timedelta
-from typing import Dict, Optional, Tuple
+from datetime import UTC, datetime, timedelta
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
@@ -30,7 +29,7 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
         super().__init__(app)
         self.guest_daily_limit = int(guest_daily_limit)
         self._redis = RedisCache().client
-        self._memory_counts: Dict[Tuple[str, str], int] = defaultdict(int)
+        self._memory_counts: dict[tuple[str, str], int] = defaultdict(int)
         self._redis_warning_logged = False
 
     def _should_skip(self, request: Request) -> bool:
@@ -41,9 +40,7 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
             return True
         if path.startswith("/api/v1/templates"):
             return True
-        if path.startswith("/api/v1/health"):
-            return True
-        return False
+        return bool(path.startswith("/api/v1/health"))
 
     def _is_limited_endpoint(self, request: Request) -> bool:
         if request.method != "POST":
@@ -54,7 +51,7 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
             "/api/v1/generator/sessions",
         }
 
-    def _get_user_id(self, request: Request) -> Optional[str]:
+    def _get_user_id(self, request: Request) -> str | None:
         auth_header = request.headers.get("authorization", "")
         if not auth_header.lower().startswith("bearer "):
             return None
@@ -68,10 +65,10 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
             return None
 
     def _utc_day_key(self) -> str:
-        return datetime.now(timezone.utc).strftime("%Y%m%d")
+        return datetime.now(UTC).strftime("%Y%m%d")
 
     def _seconds_until_next_day(self) -> int:
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         tomorrow = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
         return int((tomorrow - now).total_seconds())
 

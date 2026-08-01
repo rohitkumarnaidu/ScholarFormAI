@@ -2,10 +2,13 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-import pytest
 from unittest.mock import patch
-from app.models import PipelineDocument, Block, BlockType
+
+import pytest
+
+from app.models import Block, BlockType, PipelineDocument
 from app.pipeline.structure_detection.detector import StructureDetector
+
 
 class TestStructureDetectorDocling:
     """Test StructureDetector with Docling layout data."""

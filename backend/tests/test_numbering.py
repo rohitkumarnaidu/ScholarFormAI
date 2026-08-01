@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 
 
 def _make_block(block_type="heading_1", text="Introduction", level=1,

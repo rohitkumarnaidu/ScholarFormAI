@@ -11,11 +11,12 @@ This module contains rules based on block positioning and spacing:
 - Spacing patterns
 """
 
-from typing import List, Dict, Any
+from typing import Any
+
 from app.models import Block
 
 
-def is_first_non_empty_block(block: Block, all_blocks: List[Block]) -> bool:
+def is_first_non_empty_block(block: Block, all_blocks: list[Block]) -> bool:
     """
     Check if this is the first non-empty block in the document.
 
@@ -34,7 +35,7 @@ def is_first_non_empty_block(block: Block, all_blocks: List[Block]) -> bool:
     return False
 
 
-def is_isolated_line(block: Block, all_blocks: List[Block]) -> bool:
+def is_isolated_line(block: Block, all_blocks: list[Block]) -> bool:
     """
     Check if a block is an isolated line (surrounded by empty blocks).
 
@@ -72,7 +73,7 @@ def is_isolated_line(block: Block, all_blocks: List[Block]) -> bool:
     return has_empty_before and has_empty_after
 
 
-def count_empty_blocks_before(block: Block, all_blocks: List[Block]) -> int:
+def count_empty_blocks_before(block: Block, all_blocks: list[Block]) -> int:
     """
     Count consecutive empty blocks immediately before this block.
 
@@ -100,7 +101,7 @@ def count_empty_blocks_before(block: Block, all_blocks: List[Block]) -> int:
     return count
 
 
-def count_empty_blocks_after(block: Block, all_blocks: List[Block]) -> int:
+def count_empty_blocks_after(block: Block, all_blocks: list[Block]) -> int:
     """
     Count consecutive empty blocks immediately after this block.
 
@@ -126,7 +127,7 @@ def count_empty_blocks_after(block: Block, all_blocks: List[Block]) -> int:
     return count
 
 
-def get_block_position_ratio(block: Block, all_blocks: List[Block]) -> float:
+def get_block_position_ratio(block: Block, all_blocks: list[Block]) -> float:
     """
     Get the relative position of block in document (0.0 = start, 1.0 = end).
 
@@ -147,7 +148,7 @@ def get_block_position_ratio(block: Block, all_blocks: List[Block]) -> float:
         return 0.0
 
 
-def analyze_position(block: Block, all_blocks: List[Block]) -> Dict[str, Any]:
+def analyze_position(block: Block, all_blocks: list[Block]) -> dict[str, Any]:
     """
     Comprehensive positional analysis of a block.
 
@@ -201,7 +202,7 @@ def analyze_position(block: Block, all_blocks: List[Block]) -> Dict[str, Any]:
     }
 
 
-def boost_heading_confidence_by_position(base_confidence: float, position_info: Dict[str, Any]) -> float:
+def boost_heading_confidence_by_position(base_confidence: float, position_info: dict[str, Any]) -> float:
     """
     Adjust heading confidence based on positional cues.
 

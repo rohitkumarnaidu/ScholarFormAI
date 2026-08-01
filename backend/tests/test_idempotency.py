@@ -11,7 +11,6 @@ import pytest
 from fastapi import FastAPI, HTTPException
 from starlette.testclient import TestClient
 
-
 # ── Idempotency store (in-memory, simulates the cache layer) ───────────────────
 
 class _IdempotencyStore:
@@ -92,7 +91,6 @@ class TestIdempotencyKey:
         """Same idempotency key + same payload returns cached result, not duplicate."""
         store = _IdempotencyStore()
         key = "idem-001"
-        payload = {"title": "Manuscript", "idempotency_key": key}
         response = {"status": "created", "document_id": "doc-001"}
         store.set(key, {"payload": {"title": "Manuscript"}, "response": response})
 
@@ -103,7 +101,6 @@ class TestIdempotencyKey:
         """Same idempotency key with identical payload returns identical result."""
         store = _IdempotencyStore()
         key = "idem-002"
-        payload = {"title": "Paper", "idempotency_key": key}
         response = {"status": "created", "document_id": "doc-002"}
         store.set(key, {"payload": {"title": "Paper"}, "response": response})
 

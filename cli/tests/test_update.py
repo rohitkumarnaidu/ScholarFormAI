@@ -7,6 +7,7 @@ from click.testing import CliRunner
 
 from amf.main import cli
 
+
 @pytest.fixture
 def mock_update_service():
     """Mock the UpdateService to avoid network calls."""

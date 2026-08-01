@@ -5,22 +5,24 @@
 LangChain-based document processing agent with enhancements.
 """
 
+import logging
 import os
 import sys
-import logging
-from typing import Optional, Dict, Any, Callable
+from collections.abc import Callable
+from typing import Any
 from unittest.mock import Mock
+
 from app.config.settings import settings
-from app.pipeline.agents.tools.metadata_tool import MetadataExtractionTool
-from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
-from app.pipeline.agents.tools.validation_tool import ValidationTool
-from app.pipeline.agents.tools.reference_tool import ReferenceExtractionTool
-from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
+from app.models import PipelineDocument
 from app.pipeline.agents.llm_factory import CustomLLMFactory
 from app.pipeline.agents.memory import AgentMemory
 from app.pipeline.agents.streaming import StreamingAgentCallback
-from app.models import PipelineDocument
-from app.pipeline.safety import safe_function, safe_async_function, retry_guard
+from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
+from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
+from app.pipeline.agents.tools.metadata_tool import MetadataExtractionTool
+from app.pipeline.agents.tools.reference_tool import ReferenceExtractionTool
+from app.pipeline.agents.tools.validation_tool import ValidationTool
+from app.pipeline.safety import retry_guard, safe_async_function, safe_function
 
 logger = logging.getLogger(__name__)
 
@@ -60,8 +62,8 @@ ChatOpenAI = _ChatOpenAI
 
 if sys.version_info < (3, 14):
     try:
-        from langchain.agents import create_openai_functions_agent as _create_openai_functions_agent
         from langchain.agents import AgentExecutor as _LegacyAgentExecutor
+        from langchain.agents import create_openai_functions_agent as _create_openai_functions_agent
     except Exception:
         _create_openai_functions_agent = None
         _LegacyAgentExecutor = None
@@ -90,10 +92,10 @@ class DocumentAgent:
         llm_model: str = "gpt-4",
         temperature: float = 0.0,
         max_retries: int = 3,
-        grobid_url: Optional[str] = None,
+        grobid_url: str | None = None,
         enable_memory: bool = True,
         enable_streaming: bool = False,
-        streaming_callback: Optional[Callable] = None,
+        streaming_callback: Callable | None = None,
     ):
         """
         Initialize the enhanced document agent.
@@ -160,7 +162,7 @@ class DocumentAgent:
         prompt_path = os.path.join(os.path.dirname(__file__), "prompts", "orchestration_prompt.txt")
 
         try:
-            with open(prompt_path, "r", encoding="utf-8") as f:
+            with open(prompt_path, encoding="utf-8") as f:
                 system_prompt = f.read()
         except FileNotFoundError:
             logger.warning(f"Orchestration prompt not found at {prompt_path}. Using default.")
@@ -180,7 +182,7 @@ class DocumentAgent:
         self.prompt = PromptTemplate.from_template(system_prompt)
         self.agent = None
         self.executor = None
-        self._agent_import_error: Optional[str] = None
+        self._agent_import_error: str | None = None
         self._initialize_executor()
 
     def _initialize_executor(self) -> None:
@@ -211,7 +213,8 @@ class DocumentAgent:
             return
 
         try:
-            from langchain.agents import AgentExecutor as ReactAgentExecutor, create_react_agent
+            from langchain.agents import AgentExecutor as ReactAgentExecutor
+            from langchain.agents import create_react_agent
         except Exception as e:
             self._agent_import_error = str(e)
             logger.warning(
@@ -240,7 +243,7 @@ class DocumentAgent:
         fallback_value={"success": False, "error": "Agent crashed safely", "should_fallback": True},
         error_message="DocumentAgent.process_document",
     )
-    def process_document(self, file_path: str) -> Dict[str, Any]:
+    def process_document(self, file_path: str) -> dict[str, Any]:
         """
         Legacy sync API retained for compatibility with existing tests/integrations.
         """
@@ -266,7 +269,7 @@ Tasks:
         fallback_value={"status": "error", "message": "Agent crashed safely"}, error_message="DocumentAgent.run"
     )
     @retry_guard(max_retries=1)  # Retry once if agent fails
-    async def run(self, document: PipelineDocument, job_id: str) -> Dict[str, Any]:
+    async def run(self, document: PipelineDocument, job_id: str) -> dict[str, Any]:
         """
         Run the agent on a document to fix validation errors.
 
@@ -341,7 +344,7 @@ Provide a comprehensive analysis and recommend the best processing approach.
 
             return {"success": False, "error": str(e), "should_fallback": True}
 
-    def _run_direct_fallback(self, document: Optional[PipelineDocument], doc_path: str) -> Dict[str, Any]:
+    def _run_direct_fallback(self, document: PipelineDocument | None, doc_path: str) -> dict[str, Any]:
         """
         Run tools directly when LangChain agent APIs are unavailable.
         """
@@ -386,7 +389,7 @@ Provide a comprehensive analysis and recommend the best processing approach.
             logger.error("Direct fallback execution failed: %s", e)
             return {"success": False, "error": str(e), "should_fallback": True}
 
-    def _execute_with_retry(self, input_message: str) -> Dict[str, Any]:
+    def _execute_with_retry(self, input_message: str) -> dict[str, Any]:
         """
         Execute agent with retry logic.
 
@@ -430,7 +433,7 @@ Provide a comprehensive analysis and recommend the best processing approach.
 
         raise last_error
 
-    def _should_fallback(self, result: Dict[str, Any]) -> bool:
+    def _should_fallback(self, result: dict[str, Any]) -> bool:
         """
         Determine if we should fallback to legacy orchestrator.
 

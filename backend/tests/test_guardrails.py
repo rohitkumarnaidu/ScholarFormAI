@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-import sys
 import json
-from app.pipeline.safety.llm_validator import guard_llm_output
+import sys
+
 from app.pipeline.intelligence.reasoning_engine import InstructionSetSchema
+from app.pipeline.safety.llm_validator import guard_llm_output
+
 
 # Dummy LLM functional output that returns a JSON string instead of an object
 @guard_llm_output(schema=InstructionSetSchema, error_return_value={"blocks": [], "fallback": True})

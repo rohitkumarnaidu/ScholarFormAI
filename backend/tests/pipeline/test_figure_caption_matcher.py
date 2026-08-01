@@ -2,6 +2,7 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 from unittest.mock import MagicMock, patch
 
 
@@ -46,7 +47,7 @@ class TestCaptionMatcher:
         fig = self._make_figure(figure_id="f1", metadata={"block_index": 1})
         doc = self._make_doc(blocks=[cap_block, body_block], figures=[fig])
         m = CaptionMatcher(max_distance=3)
-        result = m.process(doc)
+        m.process(doc)
         assert fig.caption_text == "Figure 1: Test"
         assert fig.caption_block_id == "cap1"
         assert cap_block.metadata["is_figure_caption"] is True

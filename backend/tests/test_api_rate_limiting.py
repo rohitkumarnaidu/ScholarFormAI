@@ -56,11 +56,10 @@ class Test2A_RateLimitHeaders:
         with (
             patch("app.db.session.get_db", return_value=mock_db),
             patch("app.routers.v1.api_keys.ApiKeyService"),
-            patch("app.routers.v1.api_keys.get_api_key_rate_limiter", return_value=mock_rl_result),
+            patch("app.routers.v1.api_keys.get_api_key_rate_limiter", return_value=mock_rl_result),TestClient(app) as c
         ):
-            with TestClient(app) as c:
-                c.headers.update({"Authorization": "Bearer test-token"})
-                yield c
+            c.headers.update({"Authorization": "Bearer test-token"})
+            yield c
         app.dependency_overrides.clear()
 
     def test_rate_limit_limit_header_present(self, authed_client):
@@ -120,9 +119,8 @@ class Test2A_RateLimitHeaders:
             )
             with patch("app.routers.v1.api_keys.get_api_key_rate_limiter", return_value=mock_rl):
                 resp = authed_client.get(path)
-            if resp.status_code < 500:
-                if "X-RateLimit-Limit" in resp.headers:
-                    assert int(resp.headers["X-RateLimit-Limit"]) >= 0
+            if resp.status_code < 500 and "X-RateLimit-Limit" in resp.headers:
+                assert int(resp.headers["X-RateLimit-Limit"]) >= 0
 
 
 # ── 2B: Rate Limit Enforcement ───────────────────────────────────────────
@@ -184,8 +182,9 @@ class Test2B_RateLimitEnforcement:
         assert authed.limit >= anon.limit
 
     def test_rate_limit_window_reset(self):
-        from app.services.api_key_rate_limiter import RateLimitResult
         import time
+
+        from app.services.api_key_rate_limiter import RateLimitResult
         future = time.time() + 60
         result = RateLimitResult(allowed=True, limit=100, remaining=0, reset_at=future, retry_after=60.0)
         assert result.retry_after > 0

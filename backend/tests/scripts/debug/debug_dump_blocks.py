@@ -2,9 +2,10 @@
 # Copyright (c) 2026 ScholarForm AI
 
 
-from app.pipeline.parsing.parser import DocxParser
-from app.pipeline.normalization.normalizer import Normalizer
 from app.pipeline.classification.classifier import ContentClassifier
+from app.pipeline.normalization.normalizer import Normalizer
+from app.pipeline.parsing.parser import DocxParser
+
 
 def dump_blocks(docx_path):
     parser = DocxParser()

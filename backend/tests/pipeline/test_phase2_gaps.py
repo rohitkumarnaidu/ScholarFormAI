@@ -12,14 +12,16 @@ Targets uncovered lines identified by coverage analysis across 5 modules:
   5. app/pipeline/references/parser.py           (83.90% → 95%+)
 """
 
-from app.models import DocumentMetadata, Equation
-from app.models import DocumentMetadata, Equation
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
-import importlib
+
 import builtins
+import importlib
 import sys
+from unittest.mock import MagicMock, patch
+
 import pytest
+
+from app.models import DocumentMetadata, Equation
 
 # =============================================================================
 # 1. app/pipeline/equations/standardizer.py  — remaining uncovered lines
@@ -66,8 +68,9 @@ class TestEquationStandardizerGaps:
 
     def test_nsmap_is_none(self):
         """Line 97: dom.nsmap is None (falsy) -> skip nsmap validation block."""
-        from app.pipeline.equations.standardizer import EquationStandardizer
         import lxml.etree as etree
+
+        from app.pipeline.equations.standardizer import EquationStandardizer
 
         s = EquationStandardizer()
         fake_dom = MagicMock(spec=etree._Element)
@@ -84,8 +87,9 @@ class TestEquationStandardizerGaps:
         """Lines 100-101: nsmap has NO default ns key and OMML ns absent -> debug log."""
         import logging
         caplog.set_level(logging.DEBUG)
-        from app.pipeline.equations.standardizer import EquationStandardizer
         import lxml.etree as etree
+
+        from app.pipeline.equations.standardizer import EquationStandardizer
 
         s = EquationStandardizer()
         fake_dom = MagicMock(spec=etree._Element)
@@ -102,8 +106,9 @@ class TestEquationStandardizerGaps:
 
     def test_generic_exception_in_conversion(self):
         """Lines 109-111: a non-XMLSyntaxError exception during xslt transform."""
-        from app.pipeline.equations.standardizer import EquationStandardizer
         import lxml.etree as etree
+
+        from app.pipeline.equations.standardizer import EquationStandardizer
 
         s = EquationStandardizer()
         fake_dom = MagicMock(spec=etree._Element)
@@ -135,7 +140,7 @@ class TestMdParserGaps:
         f.write_text("dummy")
 
         call_count = 0
-        original_open = __builtins__["open"] if isinstance(__builtins__, dict) else __builtins__.open
+        __builtins__["open"] if isinstance(__builtins__, dict) else __builtins__.open
 
         def fake_open(*args, **kwargs):
             nonlocal call_count
@@ -392,6 +397,7 @@ class TestHtmlParserGaps:
     def test_empty_heading_skipped(self):
         """Line 166->161: empty heading text -> skipped."""
         from bs4 import BeautifulSoup
+
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
@@ -403,6 +409,7 @@ class TestHtmlParserGaps:
     def test_empty_paragraph_skipped(self):
         """Line 186->161: empty paragraph -> skipped."""
         from bs4 import BeautifulSoup
+
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
@@ -414,6 +421,7 @@ class TestHtmlParserGaps:
     def test_empty_href_skipped(self):
         """Line 198->196: <a> with empty href -> not added to links list."""
         from bs4 import BeautifulSoup
+
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
@@ -427,6 +435,7 @@ class TestHtmlParserGaps:
     def test_empty_list_item_skipped(self):
         """Line 217->161: <li> with empty text -> skipped."""
         from bs4 import BeautifulSoup
+
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
@@ -439,6 +448,7 @@ class TestHtmlParserGaps:
     def test_empty_code_block_skipped(self):
         """Line 239->161: <code>/<pre> with only whitespace -> skipped."""
         from bs4 import BeautifulSoup
+
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
@@ -451,6 +461,7 @@ class TestHtmlParserGaps:
     def test_code_block_no_language_class(self):
         """Line 246->251: <code> with no class -> defaults to 'plaintext'."""
         from bs4 import BeautifulSoup
+
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
@@ -463,6 +474,7 @@ class TestHtmlParserGaps:
     def test_code_block_non_matching_class(self):
         """Line 247->246: class exists but doesn't start with 'language-' -> continues loop."""
         from bs4 import BeautifulSoup
+
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
@@ -475,6 +487,7 @@ class TestHtmlParserGaps:
     def test_empty_table_row_skipped(self):
         """Line 269->266: <tr> with no cells or empty cells -> row_text empty, skipped."""
         from bs4 import BeautifulSoup
+
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
@@ -487,6 +500,7 @@ class TestHtmlParserGaps:
     def test_all_empty_table_skipped(self):
         """Line 272->161: table with all-empty rows -> no block created."""
         from bs4 import BeautifulSoup
+
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
@@ -497,8 +511,9 @@ class TestHtmlParserGaps:
 
     def test_element_extraction_catch_all(self):
         """Lines 302-303: exception during element extraction -> logged, continues."""
-        from app.pipeline.parsing.html_parser import HtmlParser
         from unittest.mock import MagicMock
+
+        from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
         soup = MagicMock()
@@ -611,7 +626,7 @@ class TestReferenceParserGaps:
 
     def test_empty_reference_block_skipped(self):
         """Line 62: block with empty/whitespace-only text -> continue."""
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         from app.pipeline.references.parser import ReferenceParser
 
         parser = ReferenceParser()
@@ -629,7 +644,7 @@ class TestReferenceParserGaps:
 
     def test_inner_parse_single_reference_exception(self, caplog):
         """Lines 70-71: _parse_single_reference raises exception -> logged, continues."""
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         from app.pipeline.references.parser import ReferenceParser
 
         parser = ReferenceParser()
@@ -651,7 +666,7 @@ class TestReferenceParserGaps:
 
     def test_outer_process_exception(self, caplog):
         """Lines 74-81: outer try/except in process() -> error stage added, doc returned."""
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         from app.pipeline.references.parser import ReferenceParser
 
         parser = ReferenceParser()
@@ -725,7 +740,7 @@ class TestReferenceParserGaps:
 
     def test_module_level_parse_references(self):
         """Lines 212-213: convenience function parse_references delegates to ReferenceParser."""
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         from app.pipeline.references.parser import parse_references
 
         blocks = [

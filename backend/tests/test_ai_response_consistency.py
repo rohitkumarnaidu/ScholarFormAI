@@ -9,9 +9,11 @@ Sections:
    4C — Edge Cases & Scoring      (~5 tests)
 """
 
-import pytest
 import re
-from typing import Dict, Any, List, Callable
+from collections.abc import Callable
+from typing import Any
+
+import pytest
 
 # ---------------------------------------------------------------------------
 #  Helpers
@@ -54,7 +56,7 @@ def _semantic_similarity(text1: str, text2: str) -> float:
     return round(min(1.0, max(0.0, weighted)), 4)
 
 
-def _check_determinism(func: Callable, input_data: Any, num_runs: int = 3) -> Dict[str, Any]:
+def _check_determinism(func: Callable, input_data: Any, num_runs: int = 3) -> dict[str, Any]:
     """Run same function with same input N times, measure consistency.
 
     Returns dict with:
@@ -104,7 +106,7 @@ def _format_similarity(text1: str, text2: str) -> float:
     return round(min(len(fmt1), len(fmt2)) / max(len(fmt1), len(fmt2)), 4)
 
 
-def _consistency_report(results: List[Dict[str, Any]]) -> Dict[str, float]:
+def _consistency_report(results: list[dict[str, Any]]) -> dict[str, float]:
     """Generate an overall consistency score report.
 
     Returns dict with:
@@ -246,7 +248,7 @@ class TestCrossCallConsistency:
     @pytest.mark.ai_quality
     def test_key_information_preserved_across_calls(self):
         def gen_with_key_info(text):
-            words = text.split()
+            text.split()
             return f"Title: {text}\nAuthor: AI\nDate: 2026\nAbstract: {text}"
 
         r1 = gen_with_key_info("Machine Learning in Healthcare")

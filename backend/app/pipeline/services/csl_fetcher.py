@@ -6,19 +6,17 @@ from __future__ import annotations
 import asyncio
 from pathlib import Path
 from time import monotonic
-from typing import Dict, List
 
 import httpx
 
 from app.config.settings import settings
 
-
 TEMPLATES_DIR = Path(__file__).resolve().parents[2] / "templates"
 CSL_SEARCH_URL = "https://api.citationstyles.org/styles"
 ZOTERO_STYLE_URL = "https://www.zotero.org/styles/{slug}"
 
-_search_cache: dict[str, tuple[float, List[Dict[str, str]]]] = {}
-_style_cache: dict[str, tuple[float, Dict[str, str]]] = {}
+_search_cache: dict[str, tuple[float, list[dict[str, str]]]] = {}
+_style_cache: dict[str, tuple[float, dict[str, str]]] = {}
 _search_cache_lock: asyncio.Lock | None = None
 _style_cache_lock: asyncio.Lock | None = None
 
@@ -55,11 +53,11 @@ def _get_style_cache_lock() -> asyncio.Lock:
     return _style_cache_lock
 
 
-def _clone_style_rows(rows: List[Dict[str, str]]) -> List[Dict[str, str]]:
+def _clone_style_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]:
     return [dict(row) for row in rows]
 
 
-def _clone_style_payload(payload: Dict[str, str]) -> Dict[str, str]:
+def _clone_style_payload(payload: dict[str, str]) -> dict[str, str]:
     return dict(payload)
 
 
@@ -72,15 +70,15 @@ def reset_csl_cache_for_tests() -> None:
     _style_cache_lock = None
 
 
-def _local_styles() -> List[Dict[str, str]]:
-    rows: List[Dict[str, str]] = []
+def _local_styles() -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
     for style_file in sorted(TEMPLATES_DIR.glob("*/styles.csl")):
         slug = style_file.parent.name.lower()
         rows.append({"slug": slug, "title": slug.upper(), "source": "local"})
     return rows
 
 
-async def search_styles(query: str, limit: int = 20) -> List[Dict[str, str]]:
+async def search_styles(query: str, limit: int = 20) -> list[dict[str, str]]:
     query = (query or "").strip().lower()
     cache_key = f"{query}|{int(limit)}"
     ttl_seconds = _search_cache_ttl_seconds()
@@ -100,7 +98,7 @@ async def search_styles(query: str, limit: int = 20) -> List[Dict[str, str]]:
 
         local = [row for row in _local_styles() if query in row["slug"] or query in row["title"].lower()]
 
-        remote: List[Dict[str, str]] = []
+        remote: list[dict[str, str]] = []
         if query:
             try:
                 async with httpx.AsyncClient(timeout=8) as client:
@@ -125,7 +123,7 @@ async def search_styles(query: str, limit: int = 20) -> List[Dict[str, str]]:
                 # Network access can be unavailable in local/dev environments; local fallback keeps API usable.
                 remote = []
 
-        combined: Dict[str, Dict[str, str]] = {}
+        combined: dict[str, dict[str, str]] = {}
         for row in local + remote:
             combined[row["slug"]] = row
         results = list(combined.values())[:limit]
@@ -138,7 +136,7 @@ async def search_styles(query: str, limit: int = 20) -> List[Dict[str, str]]:
         return _clone_style_rows(results)
 
 
-async def fetch_style(slug: str) -> Dict[str, str]:
+async def fetch_style(slug: str) -> dict[str, str]:
     style_slug = (slug or "").strip().lower()
     if not style_slug:
         raise ValueError("slug is required")

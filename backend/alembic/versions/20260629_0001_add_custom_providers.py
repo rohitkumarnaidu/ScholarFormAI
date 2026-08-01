@@ -4,9 +4,10 @@ Revision ID: 20260629_0001
 Revises: 20260521_0001
 Create Date: 2026-06-29 00:00:00.000000
 """
-from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import UUID, JSON
+from sqlalchemy.dialects.postgresql import JSON, UUID
+
+from alembic import op
 
 revision = "20260629_0001"
 down_revision = "20260521_0001"

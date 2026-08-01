@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 from postgrest import APIError
 
@@ -16,11 +16,11 @@ logger = logging.getLogger(__name__)
 class DocumentResultRepository(BaseRepository):
     TABLE_NAME = "document_results"
 
-    async def get(self, doc_id: str) -> Optional[Dict[str, Any]]:
+    async def get(self, doc_id: str) -> dict[str, Any] | None:
         doc_id = str(doc_id)
         if not is_valid_uuid(doc_id):
             return None
-        sb = self._get_client()
+        self._get_client()
 
         def run_query():
             client = self._get_client()
@@ -47,15 +47,15 @@ class DocumentResultRepository(BaseRepository):
     async def upsert(
         self,
         doc_id: str,
-        structured_data: Optional[Dict[str, Any]] = None,
-        validation_results: Optional[Dict[str, Any]] = None,
+        structured_data: dict[str, Any] | None = None,
+        validation_results: dict[str, Any] | None = None,
     ) -> None:
         doc_id = str(doc_id)
-        sb = self._get_client()
+        self._get_client()
 
         def run_upsert():
             client = self._get_client()
-            payload: Dict[str, Any] = {"document_id": str(doc_id)}
+            payload: dict[str, Any] = {"document_id": str(doc_id)}
             if structured_data is not None:
                 payload["structured_data"] = structured_data
             if validation_results is not None:

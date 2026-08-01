@@ -8,12 +8,13 @@ Figures are extracted by the figures/ pipeline stage and associated
 with their captions through caption matching.
 """
 
-from typing import Optional, Dict, Any, List
-from enum import Enum
-from pydantic import BaseModel, Field, ConfigDict
+from enum import StrEnum
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
-class FigureType(str, Enum):
+class FigureType(StrEnum):
     """Type of figure content."""
 
     DIAGRAM = "diagram"
@@ -25,7 +26,7 @@ class FigureType(str, Enum):
     UNKNOWN = "unknown"
 
 
-class ImageFormat(str, Enum):
+class ImageFormat(StrEnum):
     """Image file format."""
 
     PNG = "png"
@@ -52,31 +53,31 @@ class Figure(BaseModel):
     figure_id: str = Field(..., description="Unique identifier (e.g., 'fig_001')")
 
     # Sequential numbering (assigned by formatting stage)
-    number: Optional[int] = Field(
+    number: int | None = Field(
         default=None, description="Sequential figure number in document (e.g., 1 for 'Figure 1')"
     )
 
     # Image data
-    image_data: Optional[bytes] = Field(default=None, description="Raw binary image data extracted from document")
+    image_data: bytes | None = Field(default=None, description="Raw binary image data extracted from document")
     image_format: ImageFormat = Field(default=ImageFormat.UNKNOWN, description="Image format/extension")
 
     # Dimensions (in pixels or original units)
-    width: Optional[float] = Field(default=None, description="Image width in original units")
-    height: Optional[float] = Field(default=None, description="Image height in original units")
+    width: float | None = Field(default=None, description="Image width in original units")
+    height: float | None = Field(default=None, description="Image height in original units")
 
     # Position in document
-    page_number: Optional[int] = Field(default=None, description="Page where figure appears")
+    page_number: int | None = Field(default=None, description="Page where figure appears")
     index: int = Field(..., description="Sequential position among all figures (0-based)")
 
     # Caption information (matched by caption_matcher)
-    caption_text: Optional[str] = Field(
+    caption_text: str | None = Field(
         default=None, description="Full caption text (e.g., 'Figure 1: System Architecture')"
     )
-    caption_block_id: Optional[str] = Field(default=None, description="Block ID of the caption block")
+    caption_block_id: str | None = Field(default=None, description="Block ID of the caption block")
 
     # Parsed caption components
-    label: Optional[str] = Field(default=None, description="Figure label (e.g., 'Figure 1', 'Fig. 2')")
-    title: Optional[str] = Field(
+    label: str | None = Field(default=None, description="Figure label (e.g., 'Figure 1', 'Fig. 2')")
+    title: str | None = Field(
         default=None, description="Descriptive title from caption (e.g., 'System Architecture')"
     )
 
@@ -84,28 +85,28 @@ class Figure(BaseModel):
     figure_type: FigureType = Field(default=FigureType.UNKNOWN, description="Type of figure content")
 
     # Cross-references
-    referenced_by: List[str] = Field(default_factory=list, description="List of block IDs that reference this figure")
+    referenced_by: list[str] = Field(default_factory=list, description="List of block IDs that reference this figure")
 
     # Section context
-    section_name: Optional[str] = Field(default=None, description="Section where this figure appears")
+    section_name: str | None = Field(default=None, description="Section where this figure appears")
 
     # Validation
     is_valid: bool = Field(default=True, description="Whether figure passed validation")
-    warnings: List[str] = Field(
+    warnings: list[str] = Field(
         default_factory=list, description="Validation warnings (e.g., missing caption, low resolution)"
     )
 
     # Formatting metadata (assigned by formatting stage)
-    placement: Optional[str] = Field(default=None, description="Placement preference (e.g., 'top', 'bottom', 'here')")
+    placement: str | None = Field(default=None, description="Placement preference (e.g., 'top', 'bottom', 'here')")
 
     # File export information (assigned by export stage)
-    export_filename: Optional[str] = Field(
+    export_filename: str | None = Field(
         default=None, description="Filename for exported image (e.g., 'figure_1.png')"
     )
-    export_path: Optional[str] = Field(default=None, description="Path where image was exported")
+    export_path: str | None = Field(default=None, description="Path where image was exported")
 
     # Extensibility
-    metadata: Dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
 
     model_config = ConfigDict(use_enum_values=True)
 

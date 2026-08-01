@@ -54,6 +54,7 @@ class TestSessionResponse:
 
     def test_with_all_fields(self):
         from datetime import datetime
+
         from app.schemas.generator_session import SessionResponse
         now = datetime.now()
         resp = SessionResponse(
@@ -142,6 +143,7 @@ class TestMessageResponse:
 
     def test_with_created_at(self):
         from datetime import datetime
+
         from app.schemas.generator_session import MessageResponse
         now = datetime.now()
         resp = MessageResponse(role="assistant", content="Answer", created_at=now)
@@ -166,6 +168,7 @@ class TestMessageResponse:
 class TestStageEvent:
     def test_required_fields(self):
         from datetime import datetime
+
         from app.schemas.generator_session import StageEvent
         now = datetime.now()
         event = StageEvent(stage="writing", progress=50, message="Writing section 2", timestamp=now)
@@ -176,18 +179,21 @@ class TestStageEvent:
 
     def test_progress_zero(self):
         from datetime import datetime
+
         from app.schemas.generator_session import StageEvent
         event = StageEvent(stage="planning", progress=0, message="Starting", timestamp=datetime.now())
         assert event.progress == 0
 
     def test_progress_hundred(self):
         from datetime import datetime
+
         from app.schemas.generator_session import StageEvent
         event = StageEvent(stage="complete", progress=100, message="Done", timestamp=datetime.now())
         assert event.progress == 100
 
     def test_missing_stage_fails(self):
         from datetime import datetime
+
         from app.schemas.generator_session import StageEvent
         with pytest.raises(ValidationError):
             StageEvent(progress=50, message="test", timestamp=datetime.now())
@@ -199,6 +205,7 @@ class TestStageEvent:
 
     def test_non_integer_progress_fails(self):
         from datetime import datetime
+
         from app.schemas.generator_session import StageEvent
         with pytest.raises(ValidationError):
             StageEvent(stage="writing", progress="fifty", message="test", timestamp=datetime.now())

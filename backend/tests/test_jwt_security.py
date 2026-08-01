@@ -1,6 +1,7 @@
 import time
-import pytest
 from unittest.mock import patch
+
+import pytest
 
 pytestmark = [pytest.mark.security]
 
@@ -67,29 +68,33 @@ class TestJWTTokenValidation:
                 _decode_with_secret(token, expected_issuer="https://supabase.co/auth/v1")
 
     def test_malformed_jwt_rejected(self):
-        from app.security.jwks_verifier import verify_jwt
         from fastapi import HTTPException
+
+        from app.security.jwks_verifier import verify_jwt
         with pytest.raises(HTTPException) as exc:
             verify_jwt("not.a.jwt")
         assert exc.value.status_code == 401
 
     def test_empty_token_rejected(self):
-        from app.security.jwks_verifier import verify_jwt
         from fastapi import HTTPException
+
+        from app.security.jwks_verifier import verify_jwt
         with pytest.raises(HTTPException) as exc:
             verify_jwt("")
         assert exc.value.status_code == 401
 
     def test_blank_token_rejected(self):
-        from app.security.jwks_verifier import verify_jwt
         from fastapi import HTTPException
+
+        from app.security.jwks_verifier import verify_jwt
         with pytest.raises(HTTPException) as exc:
             verify_jwt("   ")
         assert exc.value.status_code == 401
 
     def test_tampered_signature_rejected(self):
-        from app.security.jwks_verifier import verify_jwt
         import jwt
+
+        from app.security.jwks_verifier import verify_jwt
         payload = {
             "sub": "user-1",
             "aud": "authenticated",
@@ -109,8 +114,9 @@ class TestJWTTokenValidation:
                 verify_jwt(tampered)
 
     def test_jwt_with_none_algorithm_rejected(self):
-        from app.security.jwks_verifier import verify_jwt
         import jwt
+
+        from app.security.jwks_verifier import verify_jwt
         payload = {
             "sub": "user-1",
             "aud": "authenticated",
@@ -128,8 +134,9 @@ class TestJWTTokenValidation:
                 verify_jwt(token)
 
     def test_jwt_algorithm_confusion_hs256_vs_rs256_prevented(self):
-        from app.security.jwks_verifier import verify_jwt
         import jwt
+
+        from app.security.jwks_verifier import verify_jwt
         payload = {
             "sub": "user-1",
             "aud": "authenticated",
@@ -147,8 +154,9 @@ class TestJWTTokenValidation:
                 verify_jwt(token)
 
     def test_valid_jwt_accepted(self):
-        from app.security.jwks_verifier import verify_jwt
         import jwt
+
+        from app.security.jwks_verifier import verify_jwt
         payload = {
             "sub": "user-1",
             "aud": "authenticated",
@@ -196,8 +204,9 @@ class TestJWTKeyManagement:
             assert "kid-new" in result
 
     def test_expired_jwks_key_handled_gracefully(self):
-        from app.security.jwks_verifier import verify_jwt
         import jwt
+
+        from app.security.jwks_verifier import verify_jwt
         payload = {
             "sub": "user-1",
             "aud": "authenticated",
@@ -225,8 +234,9 @@ class TestJWTKeyManagement:
 class TestJWTAuthService:
 
     def test_decode_token_invalid_401(self):
-        from app.services.auth_service import AuthService
         from fastapi import HTTPException
+
+        from app.services.auth_service import AuthService
         with pytest.raises(HTTPException) as exc:
             AuthService.decode_token("invalid-token")
         assert exc.value.status_code == 401
@@ -237,8 +247,9 @@ class TestJWTAuthService:
         assert result == "user-abc"
 
     def test_get_user_id_from_payload_missing_sub_401(self):
-        from app.services.auth_service import AuthService
         from fastapi import HTTPException
+
+        from app.services.auth_service import AuthService
         with pytest.raises(HTTPException) as exc:
             AuthService.get_user_id_from_payload({"email": "test@test.com"})
         assert exc.value.status_code == 401

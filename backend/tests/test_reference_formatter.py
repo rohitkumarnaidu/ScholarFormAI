@@ -254,7 +254,7 @@ class TestFormatReference:
         with patch("app.pipeline.formatting.reference_formatter.CITEPROC_AVAILABLE", False):
             formatter = ReferenceFormatter(loader)
             result = formatter.format_reference(ref, "none")
-        assert "Raw reference text" == result
+        assert result == "Raw reference text"
 
     def test_legacy_default_to_raw(self):
         from app.pipeline.formatting.reference_formatter import ReferenceFormatter

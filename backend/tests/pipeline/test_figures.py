@@ -6,11 +6,14 @@ Test suite for figures pipeline: analyzer and caption matcher.
 """
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
+
 import os
+from unittest.mock import MagicMock, patch
+
 import pytest
-from app.pipeline.figures.caption_matcher import CaptionMatcher, link_figures
+
 from app.pipeline.figures.analyzer import FigureAnalyzer
+from app.pipeline.figures.caption_matcher import CaptionMatcher, link_figures
 
 # ===================================================================
 # CAPTION MATCHER TESTS
@@ -29,7 +32,7 @@ class TestCaptionMatcher:
         assert result is doc
 
     def test_process_no_figures_returns_early(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType
+        from app.models import Block, BlockType, PipelineDocument
         doc = PipelineDocument(document_id="t", blocks=[
             Block(block_id="b1", index=1, text="As shown in Figure 1.", block_type=BlockType.BODY),
         ])
@@ -37,7 +40,7 @@ class TestCaptionMatcher:
         assert result is doc
 
     def test_process_with_figures_and_captions(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Figure 1. Experimental results.", block_type=BlockType.BODY),
@@ -55,7 +58,7 @@ class TestCaptionMatcher:
         assert result.figures[1].caption_text is not None
 
     def test_adds_stage_info(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         doc = PipelineDocument(document_id="t",
             blocks=[Block(block_id="b1", index=0, text="Figure 1. Testing.", block_type=BlockType.BODY)],
             figures=[Figure(figure_id="f1", index=0, metadata={"block_index": 0})],
@@ -68,7 +71,7 @@ class TestCaptionMatcher:
         assert matcher.vision_client is None
 
     def test_vision_enhance_skipped_when_client_none(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         matcher.vision_client = None
         doc = PipelineDocument(document_id="t",
             blocks=[Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY)],
@@ -79,7 +82,7 @@ class TestCaptionMatcher:
 
     def test_caption_pattern_matching(self, matcher):
         """Various valid caption forms should be matched."""
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Figure 1. System diagram.", block_type=BlockType.BODY),
@@ -99,7 +102,7 @@ class TestCaptionMatcher:
 
     def test_headings_excluded_from_captions(self, matcher):
         """Heading blocks with figure-like text should NOT be matched."""
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Figure 1. The Problem", block_type=BlockType.HEADING_1),
@@ -112,7 +115,7 @@ class TestCaptionMatcher:
 
     def test_max_distance_respected(self, matcher):
         """Figures too far from a caption should NOT be matched."""
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Intro.", block_type=BlockType.BODY),
@@ -129,7 +132,7 @@ class TestCaptionMatcher:
 
     def test_tie_breaker_prefers_figure_above_caption(self, matcher):
         """When two figures are equally distant, prefer the one above the caption."""
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Some text.", block_type=BlockType.BODY),
@@ -149,7 +152,7 @@ class TestCaptionMatcher:
         assert matched[0].figure_id == "f_above"
 
     def test_caption_block_metadata_updated(self, matcher):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         doc = PipelineDocument(document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Figure 1. Matched.", block_type=BlockType.BODY),
@@ -163,7 +166,7 @@ class TestCaptionMatcher:
         assert cap_block.metadata.get("linked_figure_id") == "f1"
 
     def test_link_figures_convenience_function(self):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         doc = PipelineDocument(document_id="t",
             blocks=[Block(block_id="b1", index=0, text="Figure 1. Test.", block_type=BlockType.BODY)],
             figures=[Figure(figure_id="f1", index=0, metadata={"block_index": 0})],
@@ -173,7 +176,7 @@ class TestCaptionMatcher:
 
     def test_process_error_handling(self, matcher):
         """If process encounters an error, it returns the document with error stage."""
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         doc = PipelineDocument(document_id="t",
             blocks=[Block(block_id="b1", index=0, text="Figure 1. Test.", block_type=BlockType.BODY)],
             figures=[Figure(figure_id="f1", index=0, metadata={"block_index": 0})],
@@ -189,7 +192,7 @@ class TestCaptionMatcher:
     # -- vision enhancement tests -------------------------------------
 
     def test_vision_enhancement_generates_caption_when_missing(self, tmp_path):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         mock_vision = MagicMock()
         mock_vision.analyze_figure.return_value = "A bar chart showing quarterly revenue growth."
         matcher = CaptionMatcher()
@@ -209,7 +212,7 @@ class TestCaptionMatcher:
         assert result.figures[0].metadata.get("vision_analysis") == "A bar chart showing quarterly revenue growth."
 
     def test_vision_enhancement_skipped_without_export_path(self):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         mock_vision = MagicMock()
         matcher = CaptionMatcher()
         matcher.vision_client = mock_vision
@@ -223,7 +226,7 @@ class TestCaptionMatcher:
         mock_vision.analyze_figure.assert_not_called()
 
     def test_vision_enhancement_failure_does_not_crash(self):
-        from app.models import PipelineDocument, Block, BlockType, Figure
+        from app.models import Block, BlockType, Figure, PipelineDocument
         mock_vision = MagicMock()
         mock_vision.analyze_figure.side_effect = Exception("vision failed")
         matcher = CaptionMatcher()
@@ -279,8 +282,9 @@ class TestFigureAnalyzer:
         assert isinstance(result["valid"], bool)
 
     def test_aspect_ratio_calculation(self, analyzer):
-        from PIL import Image
         import tempfile
+
+        from PIL import Image
         with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
             path = f.name
         try:
@@ -293,8 +297,9 @@ class TestFigureAnalyzer:
 
     def test_custom_min_dimensions(self):
         analyzer = FigureAnalyzer(min_width=500, min_height=500, min_dpi=300)
-        from PIL import Image
         import tempfile
+
+        from PIL import Image
         with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
             path = f.name
         try:
@@ -318,15 +323,16 @@ class TestFigureAnalyzer:
 
     def test_downsample_creates_smaller_file(self, analyzer):
         """When file exceeds max_size, a downsampled copy is created."""
-        from PIL import Image
         import tempfile
+
+        from PIL import Image
         with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
             path = f.name
         try:
             # Create a large image
             img = Image.new("RGB", (2000, 2000), color=(128, 128, 128))
             img.save(path)
-            original_size = os.path.getsize(path)
+            os.path.getsize(path)
 
             # Very small max to force downsample
             result = analyzer.downsample_if_needed(path, max_size_bytes=1)
@@ -342,8 +348,9 @@ class TestFigureAnalyzer:
     def test_downsample_error_returns_original(self, analyzer):
         """If downsampling fails, the original path is returned."""
         with patch("PIL.Image.open", side_effect=Exception("corrupt")):
-            from PIL import Image
             import tempfile
+
+            from PIL import Image
             with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
                 path = f.name
             try:

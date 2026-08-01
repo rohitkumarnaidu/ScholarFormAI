@@ -5,8 +5,8 @@ import logging
 import re
 import time
 import uuid
-from datetime import datetime, timezone
-from enum import Enum
+from datetime import UTC, datetime
+from enum import StrEnum
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 ISSUES_DIR = Path.home() / ".amf" / "issues"
 
 
-class IssueCategory(str, Enum):
+class IssueCategory(StrEnum):
     BUG = "bug"
     FEATURE_REQUEST = "feature-request"
     GENERAL_FEEDBACK = "general-feedback"
@@ -27,7 +27,7 @@ class IssueCategory(str, Enum):
     OTHER = "other"
 
 
-class IssueSeverity(str, Enum):
+class IssueSeverity(StrEnum):
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
@@ -35,7 +35,7 @@ class IssueSeverity(str, Enum):
     SUGGESTION = "suggestion"
 
 
-class IssueStatus(str, Enum):
+class IssueStatus(StrEnum):
     NEW = "new"
     TRIAGED = "triaged"
     IN_PROGRESS = "in-progress"
@@ -46,7 +46,7 @@ class IssueStatus(str, Enum):
     NEEDS_INFO = "needs-info"
 
 
-class ReportSource(str, Enum):
+class ReportSource(StrEnum):
     CLI = "cli"
     WEB_UI = "web-ui"
     ERROR_DIALOG = "error-dialog"
@@ -129,7 +129,7 @@ class IssueReport:
         slack_notifications: bool = False,
         **kwargs,
     ):
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         self.id = id or str(uuid.uuid4())
         self.title = title
         self.description = description
@@ -364,7 +364,7 @@ class IssueService:
                 logger.warning("AI processing failed: %s", e)
         if not report.tracking_number:
             report.tracking_number = self._generate_tracking_number()
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         report.created_at = now
         report.updated_at = now
         report.timeline.append(
@@ -442,7 +442,7 @@ class IssueService:
         issue = self.get_issue(issue_id)
         if not issue:
             return None
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         timeline_entries = []
         for key, value in updates.items():
             if key in ("id", "created_at", "tracking_number"):
@@ -481,7 +481,7 @@ class IssueService:
         issue = self.get_issue(issue_id)
         if not issue:
             return None
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         comment["id"] = str(uuid.uuid4())
         comment["timestamp"] = now
         issue.setdefault("comments", []).append(comment)
@@ -582,7 +582,7 @@ class IssueService:
         }
 
     def check_sla(self) -> list[dict]:
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         breaches = []
         sla_map = {
             IssueSeverity.CRITICAL.value: self._settings.get("sla_critical_hours", 4),
@@ -610,7 +610,7 @@ class IssueService:
                         }
                     )
             except (ValueError, KeyError):
-                pass
+                pass  # intentionally ignored
         return breaches
 
     # ------------------------------------------------------------------
@@ -811,7 +811,7 @@ class IssueService:
                 {"name": "Source", "value": issue.get("source", ""), "inline": True},
             ],
             "footer": {"text": f"Event: {event}"},
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
         }
 
     def _build_slack_blocks(self, issue: dict, event: str) -> list[dict]:
@@ -844,7 +844,7 @@ class IssueService:
 
     def submit_crash_report(self, crash_data: dict) -> dict:
         crash_data["id"] = crash_data.get("id", str(uuid.uuid4()))
-        crash_data["created_at"] = crash_data.get("created_at", datetime.now(timezone.utc).isoformat())
+        crash_data["created_at"] = crash_data.get("created_at", datetime.now(UTC).isoformat())
         crash_data["category"] = IssueCategory.CRASH.value
         crash_data["tracking_number"] = self._generate_tracking_number()
         self._crashes.append(crash_data)
@@ -869,7 +869,7 @@ class IssueService:
 
     def submit_feedback(self, feedback_data: dict) -> dict:
         feedback_data["id"] = feedback_data.get("id", str(uuid.uuid4()))
-        feedback_data["created_at"] = feedback_data.get("created_at", datetime.now(timezone.utc).isoformat())
+        feedback_data["created_at"] = feedback_data.get("created_at", datetime.now(UTC).isoformat())
         self._feedback.append(feedback_data)
         self._save_feedback()
         if feedback_data.get("create_issue", True):

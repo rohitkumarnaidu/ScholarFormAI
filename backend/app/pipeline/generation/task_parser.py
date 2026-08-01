@@ -7,7 +7,7 @@ import asyncio
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 from app.services.llm_service import generate, sanitize_for_llm
 
@@ -24,7 +24,7 @@ _DEFAULT_SECTIONS = [
     "References",
 ]
 
-_DEFAULT_SPEC: Dict[str, Any] = {
+_DEFAULT_SPEC: dict[str, Any] = {
     "doc_type": "research_paper",
     "template": "IEEE",
     "sections": list(_DEFAULT_SECTIONS),
@@ -53,10 +53,10 @@ _KNOWN_CITATION_STYLES = {
 }
 
 
-def _load_templates() -> Dict[str, str]:
+def _load_templates() -> dict[str, str]:
     app_dir = Path(__file__).resolve().parents[2]
     templates_dir = app_dir / "templates"
-    mapping: Dict[str, str] = {}
+    mapping: dict[str, str] = {}
     if templates_dir.is_dir():
         for entry in templates_dir.iterdir():
             if entry.is_dir():
@@ -80,9 +80,9 @@ def _extract_json(text: str) -> str | None:
     return cleaned[start : end + 1]
 
 
-def _keywords_from_prompt(prompt: str, limit: int = 6) -> List[str]:
+def _keywords_from_prompt(prompt: str, limit: int = 6) -> list[str]:
     tokens = [t.strip(".,;:()[]{}\"'").lower() for t in str(prompt or "").split()]
-    keywords: List[str] = []
+    keywords: list[str] = []
     for token in tokens:
         if len(token) < 4:
             continue
@@ -95,9 +95,9 @@ def _keywords_from_prompt(prompt: str, limit: int = 6) -> List[str]:
 
 class TaskParser:
     def __init__(self) -> None:
-        self.last_turn: Dict[str, str] | None = None
+        self.last_turn: dict[str, str] | None = None
 
-    async def parse(self, user_prompt: str) -> Dict[str, Any]:
+    async def parse(self, user_prompt: str) -> dict[str, Any]:
         system = (
             "You are an academic document planning assistant. Parse the user's request into "
             "a structured task specification. If information is missing, infer reasonable defaults "
@@ -129,7 +129,7 @@ class TaskParser:
 
         return self._validate_spec({}, user_prompt)
 
-    def _validate_spec(self, raw: Dict[str, Any], user_prompt: str) -> Dict[str, Any]:
+    def _validate_spec(self, raw: dict[str, Any], user_prompt: str) -> dict[str, Any]:
         data = dict(_DEFAULT_SPEC)
         if isinstance(raw, dict):
             data.update({k: v for k, v in raw.items() if v is not None})
@@ -172,7 +172,7 @@ class TaskParser:
         sections = data.get("sections")
         if not isinstance(sections, list) or not sections:
             sections = list(_DEFAULT_SECTIONS)
-        normalized_sections: List[str] = []
+        normalized_sections: list[str] = []
         for section in sections:
             section_name = str(section).strip()
             if section_name and section_name not in normalized_sections:

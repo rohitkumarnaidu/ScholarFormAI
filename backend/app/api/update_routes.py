@@ -19,7 +19,7 @@ from app.api.update_models import (
     UpdateSettingsUpdate,
     VersionInfoResponse,
 )
-from app.services.update_service import UpdateService, UpdateCheckMode
+from app.services.update_service import UpdateCheckMode, UpdateService
 
 logger = logging.getLogger(__name__)
 

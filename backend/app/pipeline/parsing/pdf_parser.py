@@ -8,14 +8,14 @@ Uses PyMuPDF (fitz) to extract text, images, and basic structure from PDF docume
 Converts to internal Document model for processing through the pipeline.
 """
 
+import hashlib
 import logging
 import os
-import hashlib
 import re
-from typing import List, Tuple, Dict, Set, Any, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 try:
@@ -25,18 +25,20 @@ try:
 except ImportError:
     PYMUPDF_AVAILABLE = False
 
-from app.pipeline.parsing.base_parser import BaseParser
 from app.models import (
-    PipelineDocument as Document,
-    DocumentMetadata,
     Block,
     BlockType,
-    TextStyle,
+    DocumentMetadata,
     Figure,
     ImageFormat,
     Table,
     TableCell,
+    TextStyle,
 )
+from app.models import (
+    PipelineDocument as Document,
+)
+from app.pipeline.parsing.base_parser import BaseParser
 from app.utils.id_generator import generate_block_id, generate_figure_id, generate_table_id
 
 
@@ -100,8 +102,8 @@ class PdfParser(BaseParser):
             document_id=document_id,
             original_filename=Path(file_path).name,
             source_path=file_path,
-            created_at=datetime.now(timezone.utc),
-            updated_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
         )
 
         # Extract metadata
@@ -148,7 +150,7 @@ class PdfParser(BaseParser):
         return metadata
 
     @staticmethod
-    def _should_attempt_ocr_fallback(blocks: List[Block], page_count: int) -> bool:
+    def _should_attempt_ocr_fallback(blocks: list[Block], page_count: int) -> bool:
         """
         Determine whether OCR fallback should run for sparse-text PDFs.
         """
@@ -165,15 +167,15 @@ class PdfParser(BaseParser):
         self,
         file_path: str,
         pdf_doc,
-        parsed_blocks: List[Block],
-    ) -> Tuple[List[Block], Optional[str]]:
+        parsed_blocks: list[Block],
+    ) -> tuple[list[Block], str | None]:
         """
         When a PDF is likely scanned/image-based, extract OCR text and replace sparse blocks.
         Keeps core parser path unchanged if OCR is unavailable/fails.
         """
         try:
-            from app.services.enhancement_manager import enhancement_manager
             from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
+            from app.services.enhancement_manager import enhancement_manager
         except Exception as exc:
             logger.debug("OCR fallback imports unavailable: %s", exc)
             return parsed_blocks, None
@@ -216,7 +218,7 @@ class PdfParser(BaseParser):
             logger.warning("Unexpected PDF OCR fallback error for %s: %s", file_path, exc)
             return parsed_blocks, None
 
-    def _build_ocr_blocks(self, extracted_text: str, backend_used: str) -> List[Block]:
+    def _build_ocr_blocks(self, extracted_text: str, backend_used: str) -> list[Block]:
         """
         Build body blocks from OCR text while preserving parser Block model semantics.
         """
@@ -229,7 +231,7 @@ class PdfParser(BaseParser):
         if not paragraphs:
             paragraphs = [line.strip() for line in cleaned_text.splitlines() if line.strip()]
 
-        ocr_blocks: List[Block] = []
+        ocr_blocks: list[Block] = []
         for paragraph in paragraphs:
             block_id = generate_block_id(self.block_counter)
             self.block_counter += 1
@@ -323,10 +325,10 @@ class PdfParser(BaseParser):
 
     def _build_table_model(
         self,
-        rows: List[List[str]],
+        rows: list[list[str]],
         page_number: int,
         block_index: int,
-    ) -> Optional[Table]:
+    ) -> Table | None:
         """Create a Table model from raw extracted rows."""
         if not rows:
             return None
@@ -335,7 +337,7 @@ class PdfParser(BaseParser):
         if num_cols == 0:
             return None
 
-        normalized_rows: List[List[str]] = []
+        normalized_rows: list[list[str]] = []
         for row in rows:
             cleaned = [self._sanitize_cell_text(cell) for cell in row]
             if len(cleaned) < num_cols:
@@ -344,7 +346,7 @@ class PdfParser(BaseParser):
 
         num_rows = len(normalized_rows)
         has_header = any(bool(v) for v in normalized_rows[0]) if normalized_rows else False
-        cells: List[TableCell] = []
+        cells: list[TableCell] = []
         for r_idx, row_vals in enumerate(normalized_rows):
             for c_idx, text in enumerate(row_vals):
                 cells.append(
@@ -374,13 +376,13 @@ class PdfParser(BaseParser):
         self.table_counter += 1
         return table
 
-    def _extract_content(self, pdf_doc) -> Tuple[List[Block], List[Figure], List[Table]]:
+    def _extract_content(self, pdf_doc) -> tuple[list[Block], list[Figure], list[Table]]:
         """Extract text blocks, tables, and images from PDF."""
         blocks = []
         figures = []
         tables = []
-        seen_margin_texts: Set[str] = set()
-        seen_image_hashes: Set[str] = set()
+        seen_margin_texts: set[str] = set()
+        seen_image_hashes: set[str] = set()
 
         # 0. Content Analysis (Dynamic Font Sizing)
         # ------------------------------------------------
@@ -402,14 +404,14 @@ class PdfParser(BaseParser):
             # 1. Extract Tables first (PyMuPDF find_tables)
             # ------------------------------------------------
             table_rects = []
-            page_tables: List[Dict[str, Any]] = []
+            page_tables: list[dict[str, Any]] = []
             try:
                 page_tables_raw = page.find_tables()
                 for table in page_tables_raw:
                     # Get table bounding box to exclude raw text later
                     table_rects.append(table.bbox)
 
-                    header_names: List[str] = []
+                    header_names: list[str] = []
                     header = getattr(table, "header", None)
                     if header and hasattr(header, "names") and header.names:
                         header_names = [self._sanitize_cell_text(h) for h in header.names]
@@ -446,7 +448,7 @@ class PdfParser(BaseParser):
                 logger.warning("Failed to get text dict on page %d: %s", page_num + 1, exc)
                 text_dict = {"blocks": []}
 
-            page_text_positions: List[Tuple[int, float]] = []
+            page_text_positions: list[tuple[int, float]] = []
             last_text_key = ""
 
             # Process each block in the page
@@ -652,10 +654,7 @@ class PdfParser(BaseParser):
                         figure.height = float(first_rect.height) if hasattr(first_rect, "height") else None
                         if page_text_positions:
                             above = [idx for idx, y in page_text_positions if y <= float(first_rect.y0)]
-                            if above:
-                                anchor_index = above[-1]
-                            else:
-                                anchor_index = page_text_positions[0][0]
+                            anchor_index = above[-1] if above else page_text_positions[0][0]
                         figure.metadata["bbox"] = [
                             float(first_rect.x0),
                             float(first_rect.y0),

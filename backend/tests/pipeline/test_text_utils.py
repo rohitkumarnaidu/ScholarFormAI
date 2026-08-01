@@ -2,12 +2,12 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from app.utils.text_utils import (
-    normalize_unicode,
-    normalize_whitespace,
-    normalize_list_markers,
     clean_metadata_field,
     normalize_block_text,
+    normalize_list_markers,
     normalize_table_cell_text,
+    normalize_unicode,
+    normalize_whitespace,
 )
 
 

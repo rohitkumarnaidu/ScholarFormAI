@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, Optional
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
@@ -28,7 +28,7 @@ class FeedbackRequest(BaseModel):
     field: str
     original_value: Any
     corrected_value: Any
-    comments: Optional[str] = None
+    comments: str | None = None
 
 
 @router.post("/", status_code=201)

@@ -69,7 +69,7 @@ def require_role(role: str):
     def _guard(current_user=Depends(get_current_user)):
         user_role = resolve_user_role(current_user)
         if ROLE_HIERARCHY[user_role] >= ROLE_HIERARCHY[required_role]:
-            setattr(current_user, "effective_role", user_role)
+            current_user.effective_role = user_role
             return current_user
 
         raise HTTPException(

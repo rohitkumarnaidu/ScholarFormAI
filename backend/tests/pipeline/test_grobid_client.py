@@ -2,11 +2,12 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 from app.pipeline.services.grobid_client import GROBIDClient, GROBIDException
-
 
 SAMPLE_TEI_XML = """<?xml version="1.0" encoding="UTF-8"?>
 <TEI xmlns="http://www.tei-c.org/ns/1.0">

@@ -2,9 +2,10 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
-import pytest
 
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 # ─── PdfOCR ────────────────────────────────────────────────────────────────────
 
@@ -206,9 +207,8 @@ class TestPdfOCR:
 
     def test_ocr_tesseract_unavailable(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
-        with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", False):
-            with pytest.raises(Exception):
-                PdfOCR()._ocr_tesseract([MagicMock()])
+        with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", False), pytest.raises(Exception):
+            PdfOCR()._ocr_tesseract([MagicMock()])
 
     def test_ocr_tesseract_success(self):
         mock_image = MagicMock()

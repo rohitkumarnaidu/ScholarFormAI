@@ -2,8 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 import pytest
+
 from app.pipeline.references.csl.apafallback import APA7Formatter
+
 pytestmark = [pytest.mark.pipeline]
 
 

@@ -6,11 +6,12 @@ RUNTIME TRACE ANALYSIS - Confidence Engine Verification
 Traces NLP confidence flow through classifier to verify integration.
 """
 
-from app.pipeline.parsing.parser import DocxParser
-from app.pipeline.normalization.normalizer import Normalizer
-from app.pipeline.structure_detection.detector import StructureDetector
 from app.pipeline.classification.classifier import ContentClassifier
 from app.pipeline.intelligence.semantic_parser import get_semantic_parser
+from app.pipeline.normalization.normalizer import Normalizer
+from app.pipeline.parsing.parser import DocxParser
+from app.pipeline.structure_detection.detector import StructureDetector
+
 
 def trace_confidence_flow(docx_path: str):
     """
@@ -156,9 +157,9 @@ def trace_confidence_flow(docx_path: str):
     
     # C) Fallback running prematurely?
     if blocks_using_last_resort > 0:
-        print(f" ️  C) FALLBACK RUNNING PREMATURELY")
+        print(" ️  C) FALLBACK RUNNING PREMATURELY")
         print(f"   {blocks_using_last_resort} blocks are using last resort fallback (0.5)")
-        print(f"   This suggests NLP integration is NOT being used.")
+        print("   This suggests NLP integration is NOT being used.")
     else:
         print("✅ C) No premature fallback (0 blocks using last resort)")
     print()
@@ -187,7 +188,7 @@ def trace_confidence_flow(docx_path: str):
     elif blocks_with_nlp > 0 and blocks_using_nlp_fallback == 0:
         print(" ️  NLP PREDICTIONS PRESENT BUT NOT USED")
         print(f"   - {blocks_with_nlp} blocks have NLP predictions")
-        print(f"   - 0 blocks are using NLP fallback")
+        print("   - 0 blocks are using NLP fallback")
         print("   - This suggests deterministic rules are matching all blocks")
         print("   - This is EXPECTED if most blocks match deterministic patterns")
     else:

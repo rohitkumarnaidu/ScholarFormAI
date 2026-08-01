@@ -62,7 +62,7 @@ def _format_single(client: BackendClient, input_file: Path, output_file: Path, s
     console.print(f"[bold]Output:[/bold] {output_file}")
 
     try:
-        text = input_file.read_text(encoding="utf-8")
+        input_file.read_text(encoding="utf-8")
     except Exception as e:
         console.print(f"[red]Error reading file:[/red] {e}")
         sys.exit(1)

@@ -1,5 +1,6 @@
 from __future__ import annotations
-from unittest.mock import patch, MagicMock
+
+from unittest.mock import MagicMock, patch
 
 
 class TestCSRFMiddleware:
@@ -55,15 +56,17 @@ class TestValidateToken:
         assert validate_csrf_token("bad") is False
 
     def test_expired_token_false(self):
-        from app.middleware.csrf import validate_csrf_token
         import time
+
+        from app.middleware.csrf import validate_csrf_token
         old_ts = str(int(time.time()) - 7200)
         token = f"{old_ts}:random:sig"
         assert validate_csrf_token(token) is False
 
     def test_bad_signature_false(self):
-        from app.middleware.csrf import validate_csrf_token
         import time
+
+        from app.middleware.csrf import validate_csrf_token
         now = str(int(time.time()))
         token = f"{now}:random:badsig"
         assert validate_csrf_token(token) is False

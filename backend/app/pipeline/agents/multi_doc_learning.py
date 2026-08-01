@@ -5,11 +5,11 @@
 Multi-document learning for cross-document insights.
 """
 
-import logging
 import json
-from typing import List, Dict, Any, Optional
-from datetime import datetime, timezone
+import logging
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -47,9 +47,9 @@ class MultiDocumentLearner:
 
         self.insights = self._load_insights()
 
-    def _load_insights(self) -> Dict[str, Any]:
+    def _load_insights(self) -> dict[str, Any]:
         """Load existing insights. Returns default structure on any error."""
-        default: Dict[str, Any] = {
+        default: dict[str, Any] = {
             "author_patterns": {},
             "venue_patterns": {},
             "document_types": {},
@@ -58,7 +58,7 @@ class MultiDocumentLearner:
         if not self.insights_file.exists():
             return default
         try:
-            with open(self.insights_file, "r", encoding="utf-8") as f:
+            with open(self.insights_file, encoding="utf-8") as f:
                 data = json.load(f)
             if not isinstance(data, dict):
                 logger.warning("Insights file has unexpected format; using default.")
@@ -82,8 +82,8 @@ class MultiDocumentLearner:
     def record_document(
         self,
         document_id: str,
-        metadata: Dict[str, Any],
-        metrics: Dict[str, Any],
+        metadata: dict[str, Any],
+        metrics: dict[str, Any],
     ) -> None:
         """
         Record a processed document.
@@ -103,9 +103,9 @@ class MultiDocumentLearner:
             logger.warning("record_document: metrics must be a dict; using empty dict.")
             metrics = {}
 
-        record: Dict[str, Any] = {
+        record: dict[str, Any] = {
             "document_id": document_id,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "metadata": metadata,
             "metrics": metrics,
         }
@@ -122,7 +122,7 @@ class MultiDocumentLearner:
         except Exception as exc:
             logger.error("Failed to update insights for document '%s': %s", document_id, exc)
 
-    def _update_insights(self, metadata: Dict[str, Any], metrics: Dict[str, Any]) -> None:
+    def _update_insights(self, metadata: dict[str, Any], metrics: dict[str, Any]) -> None:
         """Update insights based on new document."""
         # Author patterns
         authors = metadata.get("authors", [])
@@ -175,7 +175,7 @@ class MultiDocumentLearner:
         # Quality trends
         self.insights["quality_trends"].append(
             {
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "success": bool(metrics.get("success", False)),
                 "errors": int(metrics.get("validation_errors", 0)),
             }
@@ -187,7 +187,7 @@ class MultiDocumentLearner:
 
         self._save_insights()
 
-    def get_author_insights(self, author: str) -> Optional[Dict[str, Any]]:
+    def get_author_insights(self, author: str) -> dict[str, Any] | None:
         """Get insights for a specific author. Returns None if not found."""
         if not author:
             return None
@@ -197,7 +197,7 @@ class MultiDocumentLearner:
             logger.error("Error in get_author_insights('%s'): %s", author, exc)
             return None
 
-    def get_venue_insights(self, venue: str) -> Optional[Dict[str, Any]]:
+    def get_venue_insights(self, venue: str) -> dict[str, Any] | None:
         """Get insights for a specific venue. Returns None if not found."""
         if not venue:
             return None
@@ -209,9 +209,9 @@ class MultiDocumentLearner:
 
     def get_similar_documents(
         self,
-        metadata: Dict[str, Any],
+        metadata: dict[str, Any],
         limit: int = 5,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Find similar documents based on metadata.
 
@@ -230,12 +230,12 @@ class MultiDocumentLearner:
         if not self.document_db.exists():
             return []
 
-        similar: List[Dict[str, Any]] = []
+        similar: list[dict[str, Any]] = []
         target_authors = set(metadata.get("authors", []))
         target_venue = str(metadata.get("venue", "") or "")
 
         try:
-            with open(self.document_db, "r", encoding="utf-8") as f:
+            with open(self.document_db, encoding="utf-8") as f:
                 for line in f:
                     line = line.strip()
                     if not line:
@@ -276,7 +276,7 @@ class MultiDocumentLearner:
         similar.sort(key=lambda x: x.get("similarity_score", 0), reverse=True)
         return similar[:limit]
 
-    def get_insights_summary(self) -> Dict[str, Any]:
+    def get_insights_summary(self) -> dict[str, Any]:
         """Get summary of all insights. Always returns a valid dict."""
         try:
             top_authors = sorted(

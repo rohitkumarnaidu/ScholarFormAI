@@ -8,11 +8,12 @@ from __future__ import annotations
 
 import io
 from zipfile import ZipFile
+
 from docx import Document as WordDocument
-from docxtpl import DocxTemplate
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
+from docxtpl import DocxTemplate
 
 from app.models import Block, BlockType
 from app.pipeline.formatting.formatter import Formatter

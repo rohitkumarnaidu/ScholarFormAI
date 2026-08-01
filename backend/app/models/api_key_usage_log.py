@@ -6,11 +6,12 @@ API Key Usage Log model for tracking per-key request analytics.
 """
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from sqlalchemy import Column, String, Integer, DateTime
+from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+
 from app.db.base import Base
 
 
@@ -24,7 +25,7 @@ class ApiKeyUsageLog(Base):
     tokens_used = Column(Integer, nullable=True)
     status_code = Column(Integer, nullable=True)
     response_time_ms = Column(Integer, nullable=True)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), index=True)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC), index=True)
 
     api_key = relationship(
         "UserApiKey",

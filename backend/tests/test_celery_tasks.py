@@ -29,8 +29,8 @@ class TestProcessDocumentTask:
         assert result is False
 
     def test_process_generation_success(self):
-        from app.tasks.celery_tasks import process_generation_task
         import app.tasks.celery_tasks as ct
+        from app.tasks.celery_tasks import process_generation_task
         with patch.object(ct, "asyncio") as mock_asyncio, \
              patch("app.tasks.celery_tasks.DocumentService.mark_document_failed"):
             mock_asyncio.run.return_value = None
@@ -38,8 +38,8 @@ class TestProcessDocumentTask:
         assert result is True
 
     def test_process_generation_exception(self):
-        from app.tasks.celery_tasks import process_generation_task
         import app.tasks.celery_tasks as ct
+        from app.tasks.celery_tasks import process_generation_task
         with patch.object(ct, "asyncio") as mock_asyncio, \
              patch("app.tasks.celery_tasks.DocumentService.mark_document_failed"):
             mock_asyncio.run.side_effect = Exception("gen error")
@@ -47,16 +47,16 @@ class TestProcessDocumentTask:
         assert result is False
 
     def test_process_synthesis_success(self):
-        from app.tasks.celery_tasks import process_synthesis_task
         import app.tasks.celery_tasks as ct
+        from app.tasks.celery_tasks import process_synthesis_task
         with patch.object(ct, "asyncio") as mock_asyncio:
             mock_asyncio.run.return_value = None
             result = process_synthesis_task("sess-1", ["/f1.docx"], "IEEE")
         assert result is True
 
     def test_agent_pipeline_success(self):
-        from app.tasks.celery_tasks import process_agent_pipeline_task
         import app.tasks.celery_tasks as ct
+        from app.tasks.celery_tasks import process_agent_pipeline_task
         with patch.object(ct, "asyncio") as mock_asyncio, \
              patch("app.tasks.celery_tasks.DocumentService.mark_document_failed"):
             mock_asyncio.run.return_value = None
@@ -64,8 +64,8 @@ class TestProcessDocumentTask:
         assert result is True
 
     def test_agent_resume_success(self):
-        from app.tasks.celery_tasks import process_agent_resume_task
         import app.tasks.celery_tasks as ct
+        from app.tasks.celery_tasks import process_agent_resume_task
         with patch.object(ct, "asyncio") as mock_asyncio, \
              patch("app.tasks.celery_tasks.DocumentService.mark_document_failed"):
             mock_asyncio.run.return_value = None
@@ -73,8 +73,8 @@ class TestProcessDocumentTask:
         assert result is True
 
     def test_agent_rewrite_success(self):
-        from app.tasks.celery_tasks import process_agent_rewrite_task
         import app.tasks.celery_tasks as ct
+        from app.tasks.celery_tasks import process_agent_rewrite_task
         with patch.object(ct, "asyncio") as mock_asyncio, \
              patch("app.tasks.celery_tasks.DocumentService.mark_document_failed"):
             mock_asyncio.run.return_value = None
@@ -176,9 +176,9 @@ class TestMacroF1:
             labels = sorted(set(y_true) | set(y_pred))
             f1s = []
             for label in labels:
-                tp = sum(1 for t, p in zip(y_true, y_pred) if t == label and p == label)
-                fp = sum(1 for t, p in zip(y_true, y_pred) if t != label and p == label)
-                fn = sum(1 for t, p in zip(y_true, y_pred) if t == label and p != label)
+                tp = sum(1 for t, p in zip(y_true, y_pred, strict=False) if t == label and p == label)
+                fp = sum(1 for t, p in zip(y_true, y_pred, strict=False) if t != label and p == label)
+                fn = sum(1 for t, p in zip(y_true, y_pred, strict=False) if t == label and p != label)
                 if tp == 0 and fp == 0 and fn == 0:
                     continue
                 precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0

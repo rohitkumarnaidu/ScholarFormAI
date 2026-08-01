@@ -3,9 +3,9 @@
 
 """Individual pipeline stages extracted from the PipelineOrchestrator god class."""
 
-import os
 import hashlib
 import logging
+import os
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeoutError
 from typing import Any
@@ -297,8 +297,8 @@ class PipelineStages:
 
     @retry_with_backoff(max_retries=2, backoff_factor=1.0)
     def run_semantic_parsing(self, doc_obj):
-        from app.pipeline.orchestrator import settings as _s
         from app.pipeline.intelligence.semantic_parser import get_semantic_parser
+        from app.pipeline.orchestrator import settings as _s
 
         semantic_parser = get_semantic_parser()
         timeout = int(_s.PIPELINE_SEMANTIC_TIMEOUT_SECONDS)
@@ -414,8 +414,8 @@ class PipelineStages:
 
     @property
     def ref_normalizer(self):
-        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
         from app.pipeline.contracts.loader import ContractLoader
+        from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
 
         loader = ContractLoader(contracts_dir=self.contracts_dir)
         return ReferenceFormatterEngine(loader)
@@ -445,12 +445,10 @@ class PipelineStages:
                                 if res:
                                     if not hasattr(ref, "metadata") or ref.metadata is None:
                                         ref.metadata = {}
-                                    if isinstance(ref.metadata, dict):
-                                        ref.metadata["crossref_validation"] = res
-                                    elif hasattr(ref.metadata, "__setitem__"):
+                                    if isinstance(ref.metadata, dict) or hasattr(ref.metadata, "__setitem__"):
                                         ref.metadata["crossref_validation"] = res
                                     else:
-                                        setattr(ref.metadata, "crossref_validation", res)
+                                        ref.metadata.crossref_validation = res
 
                         list(cr_exec.map(validate_ref, doc_obj.references))
             except Exception as e:
@@ -463,7 +461,8 @@ class PipelineStages:
 
     def run_ai_reasoning(self, doc_obj, template_name, job_id):
         """RAG + LLM reasoning layer. Returns semantic_advice dict."""
-        from app.pipeline.orchestrator import safe_execution, settings as _s
+        from app.pipeline.orchestrator import safe_execution
+        from app.pipeline.orchestrator import settings as _s
 
         semantic_advice = {}
         rag = self._resolve_rag_engine()

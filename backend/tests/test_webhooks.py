@@ -310,7 +310,6 @@ class TestWebhookService:
         log_sb = MagicMock()
         log_sb.table.return_value = log_table
 
-        deliver_results = [(500, "Server Error"), (200, "OK")]
 
         with patch.object(svc, "_get_client") as mock_get:
             mock_get.side_effect = [find_sb, log_sb]
@@ -512,7 +511,7 @@ class TestWebhookRouter:
                 "created_at": "t1",
                 "updated_at": "t1",
             }
-            response = client.get(f"/api/v1/webhooks/wh-1")
+            response = client.get("/api/v1/webhooks/wh-1")
 
         assert response.status_code == 200
         assert response.json()["data"]["id"] == "wh-1"

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import Mapping, Optional
+from collections.abc import Mapping
 
 from fastapi import HTTPException, Request
 from fastapi.routing import APIRoute
@@ -11,7 +11,7 @@ from fastapi.routing import APIRoute
 DEPRECATION_DATE = "2026-05-01"
 
 
-def build_deprecation_headers(successor_path: Optional[str]) -> dict[str, str]:
+def build_deprecation_headers(successor_path: str | None) -> dict[str, str]:
     headers = {
         "Deprecation": "true",
         "Sunset": DEPRECATION_DATE,
@@ -30,7 +30,7 @@ def normalize_path(path: str) -> str:
 class DeprecatedRoute(APIRoute):
     successor_map: Mapping[str, str] = {}
 
-    def _successor_path(self) -> Optional[str]:
+    def _successor_path(self) -> str | None:
         path_format = getattr(self, "path_format", self.path)
         normalized = normalize_path(path_format)
         return self.successor_map.get(path_format) or self.successor_map.get(normalized)

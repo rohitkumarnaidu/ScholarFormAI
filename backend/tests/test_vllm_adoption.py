@@ -1,7 +1,6 @@
 from unittest.mock import patch
 
 
-
 class TestCounterTotal:
     def test_sums_matching_samples(self):
         from app.services.vllm_adoption import _counter_total

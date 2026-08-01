@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -7,51 +7,51 @@ from pydantic import BaseModel, Field
 class Author(BaseModel):
     first_name: str
     last_name: str
-    affiliation: Optional[str] = None
-    email: Optional[str] = None
-    orcid: Optional[str] = None
+    affiliation: str | None = None
+    email: str | None = None
+    orcid: str | None = None
 
 
 class Paragraph(BaseModel):
     text: str
-    style: Optional[str] = None
-    alignment: Optional[str] = None
+    style: str | None = None
+    alignment: str | None = None
 
 
 class Section(BaseModel):
     heading: str
     level: int = 1
-    content: List[Paragraph] = []
-    subsections: List["Section"] = []
+    content: list[Paragraph] = []
+    subsections: list["Section"] = []
 
 
 class Reference(BaseModel):
-    authors: List[Author] = []
-    year: Optional[str] = None
+    authors: list[Author] = []
+    year: str | None = None
     title: str
-    journal: Optional[str] = None
-    volume: Optional[str] = None
-    issue: Optional[str] = None
-    pages: Optional[str] = None
-    doi: Optional[str] = None
+    journal: str | None = None
+    volume: str | None = None
+    issue: str | None = None
+    pages: str | None = None
+    doi: str | None = None
 
 
 class Manuscript(BaseModel):
     title: str
-    authors: List[Author] = []
-    abstract: Optional[str] = None
-    keywords: List[str] = []
-    sections: List[Section] = []
-    references: List[Reference] = []
-    acknowledgments: Optional[str] = None
+    authors: list[Author] = []
+    abstract: str | None = None
+    keywords: list[str] = []
+    sections: list[Section] = []
+    references: list[Reference] = []
+    acknowledgments: str | None = None
 
 
 class FormattingOptions(BaseModel):
     output_format: str = "docx"
     page_size: str = "A4"
-    font_family: Optional[str] = None
-    font_size: Optional[float] = None
-    line_spacing: Optional[float] = None
+    font_family: str | None = None
+    font_size: float | None = None
+    line_spacing: float | None = None
     include_toc: bool = False
     include_page_numbers: bool = True
     include_running_header: bool = True
@@ -72,9 +72,9 @@ class FormattingStyle(BaseModel):
 
 class ManuscriptResult(BaseModel):
     download_url: str
-    preview_url: Optional[str] = None
+    preview_url: str | None = None
     pages: int = 0
-    metadata: Dict[str, Any] = {}
+    metadata: dict[str, Any] = {}
     style_applied: str
     formatted_at: datetime = Field(default_factory=datetime.utcnow)
 
@@ -82,12 +82,12 @@ class ManuscriptResult(BaseModel):
 class ValidationIssue(BaseModel):
     code: str
     message: str
-    location: Optional[str] = None
+    location: str | None = None
     severity: str = "warning"
 
 
 class ValidationResult(BaseModel):
     valid: bool
-    errors: List[ValidationIssue] = []
-    warnings: List[ValidationIssue] = []
-    suggestions: List[str] = []
+    errors: list[ValidationIssue] = []
+    warnings: list[ValidationIssue] = []
+    suggestions: list[str] = []

@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import json
 from unittest.mock import patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -111,7 +113,7 @@ class TestToolRegistry:
 
 class TestGlobalCustomTools:
     def test_register_custom_tool(self):
-        from app.pipeline.agents.custom_tools import register_custom_tool, _global_registry
+        from app.pipeline.agents.custom_tools import _global_registry, register_custom_tool
         _global_registry.tools.clear()
         tool_cls = register_custom_tool(
             name="global_tool", description="Global tool",
@@ -123,7 +125,7 @@ class TestGlobalCustomTools:
         assert result == "res: hello"
 
     def test_get_custom_tool(self):
-        from app.pipeline.agents.custom_tools import get_custom_tool, register_custom_tool, _global_registry
+        from app.pipeline.agents.custom_tools import _global_registry, get_custom_tool, register_custom_tool
         _global_registry.tools.clear()
         register_custom_tool("get_test", "desc", {"x": (str, "x")}, lambda i: "ok")
         instance = get_custom_tool("get_test")
@@ -135,19 +137,19 @@ class TestGlobalCustomTools:
         assert instance is None
 
     def test_list_custom_tools(self):
-        from app.pipeline.agents.custom_tools import list_custom_tools, register_custom_tool, _global_registry
+        from app.pipeline.agents.custom_tools import _global_registry, list_custom_tools, register_custom_tool
         _global_registry.tools.clear()
         register_custom_tool("list_test", "desc", {"x": (str, "x")}, lambda i: "ok")
         tools = list_custom_tools()
         assert "list_test" in tools
 
     def test_list_custom_tools_empty(self):
-        from app.pipeline.agents.custom_tools import list_custom_tools, _global_registry
+        from app.pipeline.agents.custom_tools import _global_registry, list_custom_tools
         _global_registry.tools.clear()
         assert list_custom_tools() == []
 
     def test_create_citation_formatter_tool_apa(self):
-        from app.pipeline.agents.custom_tools import create_citation_formatter_tool, _global_registry
+        from app.pipeline.agents.custom_tools import _global_registry, create_citation_formatter_tool
         _global_registry.tools.clear()
         tool_cls = create_citation_formatter_tool()
         instance = tool_cls()
@@ -157,7 +159,7 @@ class TestGlobalCustomTools:
         assert "2024" in result
 
     def test_create_citation_formatter_tool_mla(self):
-        from app.pipeline.agents.custom_tools import create_citation_formatter_tool, _global_registry
+        from app.pipeline.agents.custom_tools import _global_registry, create_citation_formatter_tool
         _global_registry.tools.clear()
         tool_cls = create_citation_formatter_tool()
         instance = tool_cls()
@@ -166,7 +168,7 @@ class TestGlobalCustomTools:
         assert '"Test Paper."' in result or '"Test Paper"' in result
 
     def test_create_citation_formatter_tool_chicago(self):
-        from app.pipeline.agents.custom_tools import create_citation_formatter_tool, _global_registry
+        from app.pipeline.agents.custom_tools import _global_registry, create_citation_formatter_tool
         _global_registry.tools.clear()
         tool_cls = create_citation_formatter_tool()
         instance = tool_cls()
@@ -174,7 +176,7 @@ class TestGlobalCustomTools:
         assert "Smith, J., Doe, A." in result
 
     def test_create_citation_formatter_tool_no_authors(self):
-        from app.pipeline.agents.custom_tools import create_citation_formatter_tool, _global_registry
+        from app.pipeline.agents.custom_tools import _global_registry, create_citation_formatter_tool
         _global_registry.tools.clear()
         tool_cls = create_citation_formatter_tool()
         instance = tool_cls()
@@ -182,7 +184,7 @@ class TestGlobalCustomTools:
         assert '"Test."' in result
 
     def test_create_keyword_extractor_tool(self):
-        from app.pipeline.agents.custom_tools import create_keyword_extractor_tool, _global_registry
+        from app.pipeline.agents.custom_tools import _global_registry, create_keyword_extractor_tool
         _global_registry.tools.clear()
         tool_cls = create_keyword_extractor_tool()
         instance = tool_cls()
@@ -192,7 +194,7 @@ class TestGlobalCustomTools:
         assert len(data["keywords"]) <= 3
 
     def test_create_keyword_extractor_tool_empty_text(self):
-        from app.pipeline.agents.custom_tools import create_keyword_extractor_tool, _global_registry
+        from app.pipeline.agents.custom_tools import _global_registry, create_keyword_extractor_tool
         _global_registry.tools.clear()
         tool_cls = create_keyword_extractor_tool()
         instance = tool_cls()
@@ -244,8 +246,9 @@ class TestToolMarketplace:
         assert result["success"] is True
 
     def test_publish_tool_failure(self, tmp_path):
-        from app.pipeline.agents.tool_marketplace import ToolMarketplace
         from unittest.mock import patch
+
+        from app.pipeline.agents.tool_marketplace import ToolMarketplace
         tm = ToolMarketplace(local_cache_dir=str(tmp_path))
         with patch("builtins.open", side_effect=OSError("write error")):
             result = tm.publish_tool("fail_tool", "code", "desc", "author")

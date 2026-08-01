@@ -65,7 +65,7 @@ class TestNoLLMProviders:
 
     def test_no_ai_providers_generation_returns_503(self):
         """All AI providers unreachable — generation endpoint returns 503 equivalent."""
-        from app.services.llm_service import generate_with_fallback, LLMUnavailableError
+        from app.services.llm_service import LLMUnavailableError, generate_with_fallback
 
         with patch("app.services.llm_service.settings") as mock_settings:
             mock_settings.NVIDIA_API_KEY = "test"
@@ -125,6 +125,7 @@ class TestNoSupabase:
     def test_no_supabase_cached_data_served(self):
         """Supabase unavailable — existing cached data is still served."""
         import asyncio
+
         from app.services.document_service import DocumentService
 
         with patch("app.services.document_service.get_supabase_client", return_value=None):
@@ -189,10 +190,7 @@ class TestAllAIDegraded:
         degraded = {"redis": True, "grobid": True, "chromadb": True}
 
         def run_document_pipeline():
-            if degraded["grobid"]:
-                parser = "pymupdf"
-            else:
-                parser = "grobid"
+            parser = "pymupdf" if degraded["grobid"] else "grobid"
             return {"status": "ok", "parser": parser}
 
         result = run_document_pipeline()

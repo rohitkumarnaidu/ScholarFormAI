@@ -6,11 +6,12 @@ DeepSeek Model Comparison Test
 Compares deepseek-r1:8b vs deepseek-r1:0b for semantic reasoning quality.
 """
 
-import pytest
+import json
 import sys
 import time
-import json
 from pathlib import Path
+
+import pytest
 
 # Add backend to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -88,7 +89,7 @@ def run_model_comparison():
             print(f"✅ Has semantic types: {has_semantic_type}")
             
             if success:
-                print(f"\nSample output:")
+                print("\nSample output:")
                 print(json.dumps(output, indent=2)[:500] + "...")
             
         except Exception as e:

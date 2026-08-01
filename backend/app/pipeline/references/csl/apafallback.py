@@ -11,8 +11,6 @@ unavailable or CSL file loading fails.
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional
-
 
 class APA7Formatter:
     """
@@ -36,9 +34,9 @@ class APA7Formatter:
 
     def format_intext_citation(
         self,
-        authors: List[str],
-        year: Optional[int] = None,
-        page: Optional[str] = None,
+        authors: list[str],
+        year: int | None = None,
+        page: str | None = None,
         narrative: bool = False,
     ) -> str:
         """
@@ -68,7 +66,7 @@ class APA7Formatter:
                 return f"({author_str}, {year_str}{page_str})"
             return f"({author_str}, {year_str})"
 
-    def _format_intext_authors(self, authors: List[str]) -> str:
+    def _format_intext_authors(self, authors: list[str]) -> str:
         """
         Format author list for in-text citation according to APA 7.
 
@@ -122,21 +120,21 @@ class APA7Formatter:
 
     def format_reference_entry(
         self,
-        authors: List[str],
-        year: Optional[int] = None,
-        title: Optional[str] = None,
-        journal: Optional[str] = None,
-        volume: Optional[str] = None,
-        issue: Optional[str] = None,
-        pages: Optional[str] = None,
-        publisher: Optional[str] = None,
-        doi: Optional[str] = None,
-        url: Optional[str] = None,
-        book_title: Optional[str] = None,
-        edition: Optional[str] = None,
-        conference: Optional[str] = None,
+        authors: list[str],
+        year: int | None = None,
+        title: str | None = None,
+        journal: str | None = None,
+        volume: str | None = None,
+        issue: str | None = None,
+        pages: str | None = None,
+        publisher: str | None = None,
+        doi: str | None = None,
+        url: str | None = None,
+        book_title: str | None = None,
+        edition: str | None = None,
+        conference: str | None = None,
         reference_type: str = "journal_article",
-        hanging_indent: Optional[bool] = None,
+        hanging_indent: bool | None = None,
     ) -> str:
         """
         Format a full reference entry per APA 7th edition.
@@ -224,7 +222,7 @@ class APA7Formatter:
                 entry = f"{entry} {doi_str}"
             return entry.strip()
 
-    def _format_authors(self, authors: List[str]) -> str:
+    def _format_authors(self, authors: list[str]) -> str:
         """
         Format author list per APA 7th edition.
 
@@ -291,7 +289,7 @@ class APA7Formatter:
         return title
 
     def _format_journal_article(
-        self, journal: Optional[str], volume: Optional[str], issue: Optional[str], pages: Optional[str]
+        self, journal: str | None, volume: str | None, issue: str | None, pages: str | None
     ) -> str:
         """Format a journal article venue part per APA 7."""
         parts = []
@@ -317,7 +315,7 @@ class APA7Formatter:
 
         return ""
 
-    def _format_doi(self, doi: Optional[str]) -> str:
+    def _format_doi(self, doi: str | None) -> str:
         """Format DOI as hyperlink per APA 7."""
         if not doi:
             return ""
@@ -327,7 +325,7 @@ class APA7Formatter:
             return doi_value
         return f"https://doi.org/{doi_value}"
 
-    def sort_references(self, refs: List[Dict]) -> List[Dict]:
+    def sort_references(self, refs: list[dict]) -> list[dict]:
         """
         Sort references alphabetically by surname of first author per APA 7.
 

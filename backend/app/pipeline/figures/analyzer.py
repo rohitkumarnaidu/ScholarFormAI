@@ -7,7 +7,8 @@ Analyzes images for resolution, aspect ratio, and potential quality issues.
 """
 
 import os
-from typing import Dict, Any, Optional
+from typing import Any
+
 from PIL import Image
 
 
@@ -26,7 +27,7 @@ class FigureAnalyzer:
         self.min_height = min_height
         self.min_dpi = min_dpi
 
-    def downsample_if_needed(self, image_path: str, max_size_bytes: int = 2_000_000) -> Optional[str]:
+    def downsample_if_needed(self, image_path: str, max_size_bytes: int = 2_000_000) -> str | None:
         """
         Downsample image if it exceeds size threshold.
         Returns path to downsampled image (same as input if no change needed).
@@ -56,7 +57,7 @@ class FigureAnalyzer:
             getLogger(__name__).error(f"Downsampling failed for {image_path}: {e}")
             return image_path
 
-    def analyze_image(self, image_path: str) -> Dict[str, Any]:
+    def analyze_image(self, image_path: str) -> dict[str, Any]:
         """
         Analyze an image file.
 

@@ -10,7 +10,6 @@ import pytest
 from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
 from app.pipeline.classification.classifier import ContentClassifier, classify_content
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------

@@ -1,10 +1,13 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import ImageFormat
 from __future__ import annotations
-from unittest.mock import patch, MagicMock, PropertyMock
+
+from unittest.mock import MagicMock, PropertyMock, patch
+
 import pytest
+
+from app.models import ImageFormat
 
 # ══════════════════════════════════════════════════════════════════════════════
 # parsing/base_parser.py
@@ -241,8 +244,8 @@ class TestNormalizer:
         assert n._repair_common_corruptions(None) is None
 
     def test_sanitize_empty_orphan_blocks(self):
-        from app.pipeline.normalization.normalizer import Normalizer
         from app.models.block import BlockType
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         b = MagicMock()
         type(b).text = PropertyMock(return_value="")
@@ -252,8 +255,8 @@ class TestNormalizer:
         assert len(result) == 0
 
     def test_sanitize_empty_orphan_with_anchor_kept(self):
-        from app.pipeline.normalization.normalizer import Normalizer
         from app.models.block import BlockType
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         b = MagicMock()
         type(b).text = PropertyMock(return_value="")
@@ -280,8 +283,8 @@ class TestNormalizer:
         assert n._calculate_median_font_size([]) is None
 
     def test_normalize_blocks_abstract_split(self):
-        from app.pipeline.normalization.normalizer import Normalizer
         from app.models.block import BlockType
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         b = MagicMock()
         type(b).text = PropertyMock(return_value="AbstractThis is the abstract content.")
@@ -297,9 +300,10 @@ class TestNormalizer:
             assert len(result) >= 1
 
     def test_normalize_blocks_consecutive_duplicate(self):
-        from app.pipeline.normalization.normalizer import Normalizer
-        from app.models.block import BlockType
         from unittest.mock import PropertyMock
+
+        from app.models.block import BlockType
+        from app.pipeline.normalization.normalizer import Normalizer
         n = Normalizer()
         shared_style = MagicMock()
         shared_style.bold = False
@@ -430,13 +434,13 @@ class TestHtmlParser:
 
     def test_init_raises_without_bs4(self):
         from app.pipeline.parsing.html_parser import HtmlParser
-        with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", False):
-            with pytest.raises(ImportError):
-                HtmlParser()
+        with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", False), pytest.raises(ImportError):
+            HtmlParser()
 
     def test_extract_metadata(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", True):
             p = HtmlParser()
             html = "<html><head><title>Test Title</title><meta name='author' content='Dr. Smith'></head></html>"
@@ -446,8 +450,9 @@ class TestHtmlParser:
             assert "Dr. Smith" in meta.authors
 
     def test_extract_metadata_abstract(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", True):
             p = HtmlParser()
             html = "<html><head><meta name='description' content='Paper abstract'></head></html>"
@@ -456,8 +461,9 @@ class TestHtmlParser:
             assert meta.abstract == "Paper abstract"
 
     def test_extract_metadata_keywords(self):
-        from app.pipeline.parsing.html_parser import HtmlParser
         from bs4 import BeautifulSoup
+
+        from app.pipeline.parsing.html_parser import HtmlParser
         with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", True):
             p = HtmlParser()
             html = "<html><head><meta name='keywords' content='ml, ai, nlp'></head></html>"

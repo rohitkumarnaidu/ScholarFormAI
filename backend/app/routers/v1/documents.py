@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from fastapi import (
     APIRouter,
@@ -20,9 +20,9 @@ from fastapi import (
 
 from app.config.settings import settings
 from app.routers.v1 import documents_impl
-from app.utils.logging_context import bind_request_context
 from app.schemas.user import User
 from app.utils.dependencies import get_current_user, get_optional_user
+from app.utils.logging_context import bind_request_context
 
 from ._helpers import run_enveloped
 
@@ -45,7 +45,7 @@ async def upload_document_chunked(
     add_cover_page: bool = Form(False),
     generate_toc: bool = Form(False),
     add_line_numbers: bool = Form(False),
-    line_spacing: Optional[float] = Form(None),
+    line_spacing: float | None = Form(None),
     page_size: str = Form("Letter"),
     fast_mode: bool = Form(False),
     current_user: User = Depends(get_current_user),
@@ -88,13 +88,13 @@ async def upload_document_chunked(
 @router.get("")
 async def list_documents(
     request: Request,
-    status: Optional[str] = Query(None, description="Filter by status (PROCESSING, COMPLETED, FAILED)"),
-    template: Optional[str] = Query(None, description="Filter by template (IEEE, Springer, APA)"),
-    start_date: Optional[datetime] = Query(None, description="Filter by created_at >= start_date"),
-    end_date: Optional[datetime] = Query(None, description="Filter by created_at <= end_date"),
+    status: str | None = Query(None, description="Filter by status (PROCESSING, COMPLETED, FAILED)"),
+    template: str | None = Query(None, description="Filter by template (IEEE, Springer, APA)"),
+    start_date: datetime | None = Query(None, description="Filter by created_at >= start_date"),
+    end_date: datetime | None = Query(None, description="Filter by created_at <= end_date"),
     limit: int = Query(50, ge=1, le=100, description="Number of results to return"),
     offset: int = Query(0, ge=0, description="Number of results to skip"),
-    current_user: Optional[User] = Depends(get_optional_user),
+    current_user: User | None = Depends(get_optional_user),
 ):
     async def operation():
         return await documents_impl.list_documents(
@@ -127,10 +127,10 @@ async def upload_document(
     add_cover_page: bool = Form(False),
     generate_toc: bool = Form(False),
     add_line_numbers: bool = Form(False),
-    line_spacing: Optional[float] = Form(None),
+    line_spacing: float | None = Form(None),
     page_size: str = Form("Letter"),
     fast_mode: bool = Form(False),
-    current_user: Optional[User] = Depends(get_optional_user),
+    current_user: User | None = Depends(get_optional_user),
 ):
     async def operation():
         return await documents_impl.upload_document(
@@ -168,7 +168,7 @@ async def upload_document(
 async def get_status(
     request: Request,
     jobId: str,
-    current_user: Optional[User] = Depends(get_optional_user),
+    current_user: User | None = Depends(get_optional_user),
 ):
     async def operation():
         return await documents_impl.get_status(job_id=jobId, current_user=current_user)
@@ -189,7 +189,7 @@ async def get_status(
 async def get_document_summary(
     request: Request,
     jobId: str,
-    current_user: Optional[User] = Depends(get_optional_user),
+    current_user: User | None = Depends(get_optional_user),
 ):
     async def operation():
         return await documents_impl.get_document_summary(job_id=jobId, current_user=current_user)
@@ -210,9 +210,9 @@ async def get_document_summary(
 async def edit_document(
     request: Request,
     jobId: str,
-    data: Dict[str, Any],
+    data: dict[str, Any],
     background_tasks: BackgroundTasks,
-    current_user: Optional[User] = Depends(get_optional_user),
+    current_user: User | None = Depends(get_optional_user),
 ):
     async def operation():
         return await documents_impl.edit_document(
@@ -240,7 +240,7 @@ async def edit_document(
 async def get_preview(
     request: Request,
     jobId: str,
-    current_user: Optional[User] = Depends(get_optional_user),
+    current_user: User | None = Depends(get_optional_user),
 ):
     async def operation():
         return await documents_impl.get_preview(job_id=jobId, current_user=current_user)
@@ -261,7 +261,7 @@ async def get_preview(
 async def get_comparison_data(
     request: Request,
     jobId: str,
-    current_user: Optional[User] = Depends(get_optional_user),
+    current_user: User | None = Depends(get_optional_user),
 ):
     async def operation():
         return await documents_impl.get_comparison_data(job_id=jobId, current_user=current_user)
@@ -284,9 +284,9 @@ async def download_document(
     request: Request,
     jobId: str,
     format: str = Query("docx"),
-    token: Optional[str] = Query(None),
-    expires: Optional[int] = Query(None),
-    current_user: Optional[User] = Depends(get_optional_user),
+    token: str | None = Query(None),
+    expires: int | None = Query(None),
+    current_user: User | None = Depends(get_optional_user),
 ):
     async def operation():
         return await documents_impl.download_document(
@@ -336,7 +336,7 @@ async def delete_document(
 async def batch_upload(
     request: Request,
     background_tasks: BackgroundTasks,
-    files: List[UploadFile] = File(...),
+    files: list[UploadFile] = File(...),
     template: str = Form("none"),
     current_user: User = Depends(get_current_user),
 ):

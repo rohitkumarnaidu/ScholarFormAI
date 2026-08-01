@@ -2,8 +2,9 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import MagicMock
+
 from datetime import datetime
+from unittest.mock import MagicMock
 
 
 class TestJATSGenerator:
@@ -42,8 +43,9 @@ class TestJATSGenerator:
         assert "Test abstract" in xml
 
     def test_no_authors_adds_placeholder(self):
-        from app.pipeline.export.jats_generator import JATSGenerator
         from lxml import etree
+
+        from app.pipeline.export.jats_generator import JATSGenerator
         doc = self._make_doc()
         doc.metadata.authors = []
         gen = JATSGenerator()

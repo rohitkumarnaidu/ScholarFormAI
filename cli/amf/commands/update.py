@@ -5,8 +5,8 @@ import sys
 from datetime import datetime
 
 from rich.panel import Panel
-from rich.table import Table
 from rich.progress import BarColumn, DownloadColumn, Progress, TextColumn, TimeRemainingColumn
+from rich.table import Table
 
 from amf._console import get_console, safe_progress
 
@@ -16,8 +16,8 @@ console = get_console()
 
 def _get_update_service():
     """Get or create an UpdateService instance."""
-    from app.services.update_service import UpdateService
     from app import __version__
+    from app.services.update_service import UpdateService
     return UpdateService(current_version=__version__)
 
 
@@ -361,9 +361,9 @@ def run_update_release_notes(version: str, verbose: bool = False):
         console.print(f"  URL: {result['html_url']}")
 
     if result.get("changelog"):
-        console.print(f"\n[bold]Changes:[/bold]")
+        console.print("\n[bold]Changes:[/bold]")
         for line in result["changelog"]:
             console.print(f"  {line}")
     elif result.get("body"):
-        console.print(f"\n[bold]Release body:[/bold]")
+        console.print("\n[bold]Release body:[/bold]")
         console.print(result["body"])

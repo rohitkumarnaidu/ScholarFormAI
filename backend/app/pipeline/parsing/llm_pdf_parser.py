@@ -11,23 +11,25 @@ Tier 3: Raw PyMuPDF text extraction — last resort
 
 from __future__ import annotations
 
-import logging
-import os
-import re
 import base64
 import io
 import json
-from datetime import datetime, timezone
+import logging
+import os
+import re
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from app.config.settings import settings
 from app.models import (
     Block,
     BlockType,
     DocumentMetadata,
-    PipelineDocument as Document,
     TextStyle,
+)
+from app.models import (
+    PipelineDocument as Document,
 )
 from app.pipeline.parsing.base_parser import BaseParser
 from app.services.llm_service import generate_with_model
@@ -41,7 +43,7 @@ try:
 
     LITELLM_AVAILABLE = True
 except ImportError:
-    pass
+    pass  # intentionally ignored
 
 
 def _has_vision_capability(model_name: str) -> bool:
@@ -159,7 +161,7 @@ class LLMPDFParser(BaseParser):
         return self._parse_via_raw_pymupdf(file_path, document_id)
 
     def _new_document(self, file_path: str, document_id: str) -> Document:
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         document = Document(
             document_id=str(document_id),
             original_filename=Path(file_path).name,
@@ -178,7 +180,7 @@ class LLMPDFParser(BaseParser):
                 return True
         return False
 
-    def _get_vision_model(self) -> Optional[str]:
+    def _get_vision_model(self) -> str | None:
         if getattr(settings, "OPENAI_API_KEY", None):
             return "gpt-4o"
         if getattr(settings, "ANTHROPIC_API_KEY", None):
@@ -187,7 +189,7 @@ class LLMPDFParser(BaseParser):
             return "gemini-2.0-flash"
         return None
 
-    def _call_vision_api(self, messages: List[Dict[str, Any]]) -> str:
+    def _call_vision_api(self, messages: list[dict[str, Any]]) -> str:
         """Call a vision-capable model, handling multimodal content."""
         model_name = self._get_vision_model()
         if not model_name:
@@ -233,7 +235,7 @@ class LLMPDFParser(BaseParser):
 
         pdf_doc = fitz.open(file_path)
         num_pages = len(pdf_doc)
-        all_blocks: List[Block] = []
+        all_blocks: list[Block] = []
         self.block_counter = 0
 
         for page_num in range(num_pages):
@@ -298,7 +300,7 @@ class LLMPDFParser(BaseParser):
 
         pdf_doc = fitz.open(file_path)
         num_pages = len(pdf_doc)
-        page_texts: List[str] = []
+        page_texts: list[str] = []
 
         for page_num in range(num_pages):
             page = pdf_doc[page_num]
@@ -355,7 +357,7 @@ class LLMPDFParser(BaseParser):
 
         document = self._new_document(file_path, document_id)
         pdf_doc = fitz.open(file_path)
-        all_blocks: List[Block] = []
+        all_blocks: list[Block] = []
         self.block_counter = 0
 
         for page_num in range(len(pdf_doc)):
@@ -386,8 +388,8 @@ class LLMPDFParser(BaseParser):
         document.metadata.ai_hints["parser"] = "pymupdf_raw"
         return document
 
-    def _parse_llm_output(self, text: str) -> List[Block]:
-        blocks: List[Block] = []
+    def _parse_llm_output(self, text: str) -> list[Block]:
+        blocks: list[Block] = []
         if not text:
             return blocks
 
@@ -434,7 +436,7 @@ class LLMPDFParser(BaseParser):
 
         return blocks
 
-    def analyze_layout(self, file_path: str) -> Dict[str, Any]:
+    def analyze_layout(self, file_path: str) -> dict[str, Any]:
         """
         Replace Docling layout analysis with LLM-based structure analysis.
         Returns the same format as DoclingClient.analyze_layout().

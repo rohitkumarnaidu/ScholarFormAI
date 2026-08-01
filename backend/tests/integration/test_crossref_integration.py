@@ -6,10 +6,13 @@
 Integration tests for CrossRef validation in the document validator.
 """
 
-import pytest
 from unittest.mock import MagicMock
-from app.models import PipelineDocument, DocumentMetadata, Reference
+
+import pytest
+
+from app.models import DocumentMetadata, PipelineDocument, Reference
 from app.pipeline.validation import DocumentValidator
+
 
 @pytest.mark.integration
 class TestCrossRefIntegration:

@@ -10,7 +10,6 @@ from app.main import app
 from app.pipeline.ocr import pdf_ocr
 from app.utils.dependencies import get_current_user
 
-
 client = TestClient(app)
 
 

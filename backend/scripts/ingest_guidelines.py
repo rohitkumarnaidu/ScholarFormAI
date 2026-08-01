@@ -2,13 +2,15 @@
 # Copyright (c) 2026 ScholarForm AI
 
 import os
-import yaml
 import sys
+
+import yaml
 
 # Add backend to path to import app
 sys.path.append(os.path.join(os.getcwd(), "backend"))
 
 from app.pipeline.intelligence.rag_engine import get_rag_engine
+
 
 def ingest_all_guidelines(contracts_dir: str = "backend/app/pipeline/contracts"):
     rag = get_rag_engine()
@@ -25,7 +27,7 @@ def ingest_all_guidelines(contracts_dir: str = "backend/app/pipeline/contracts")
             
         print(f"Ingesting {publisher} guidelines...")
         try:
-            with open(contract_file, 'r') as f:
+            with open(contract_file) as f:
                 contract = yaml.safe_load(f)
                 
             # 1. Ingest Section Requirements

@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Optional, Dict, Any
+from typing import Any
 
 from postgrest import APIError
 
@@ -33,7 +33,7 @@ class UserService:
     """
 
     @staticmethod
-    async def get_user_by_id(user_id: str) -> Optional[Dict[str, Any]]:
+    async def get_user_by_id(user_id: str) -> dict[str, Any] | None:
         """
         Fetch a user profile by ID.
         Returns None if not found.
@@ -70,7 +70,7 @@ class UserService:
         full_name: str,
         institution: str,
         role: str = "authenticated",
-    ) -> Optional[Dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         """
         Upsert a user profile row (insert if new, update if exists).
         Returns the upserted row dict or None on error.
@@ -94,7 +94,7 @@ class UserService:
             client = get_supabase_client()
             if client is None:
                 raise RuntimeError("Supabase client not available.")
-            payload: Dict[str, Any] = {
+            payload: dict[str, Any] = {
                 "id": str(user_id),
                 "email": email,
                 "full_name": full_name,
@@ -114,7 +114,7 @@ class UserService:
             raise DatabaseUnavailableError(f"Failed to update user profile: {e}") from e
 
     @staticmethod
-    async def get_user_by_email(email: str) -> Optional[Dict[str, Any]]:
+    async def get_user_by_email(email: str) -> dict[str, Any] | None:
         """
         Fetch a user profile by email address.
         Returns None if not found.

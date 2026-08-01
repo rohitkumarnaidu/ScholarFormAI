@@ -1,13 +1,15 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from app.models import Reference
-from app.models import Reference
 from __future__ import annotations
 
-from unittest.mock import patch, MagicMock
-import pytest
 from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+from app.models import Reference
+
 
 def _ref(**kw) -> Reference:
     from app.models import Reference
@@ -43,7 +45,8 @@ class TestCslEngineGaps:
         with patch.object(e, "_format_with_citeproc", side_effect=ValueError("down")):
             with patch("app.pipeline.services.csl_engine.CITEPROC_AVAILABLE", True):
                 r = e.format_references([ref], style="ieee")
-        assert len(r) == 1 and "Doe" in r[0]
+        assert len(r) == 1
+        assert "Doe" in r[0]
 
     def test_length_mismatch_raises(self):
         e = self._engine()

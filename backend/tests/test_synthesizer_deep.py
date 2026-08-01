@@ -17,8 +17,7 @@ sys.modules["app.routers.v1.generator"] = MagicMock()
 sys.modules["app.routers.v1.synthesis"] = MagicMock()
 
 from app.models import Block, PipelineDocument
-from app.pipeline.synthesis.synthesizer import _FakeUpload, _REF_PATTERN, MultiDocSynthesizer
-
+from app.pipeline.synthesis.synthesizer import _REF_PATTERN, MultiDocSynthesizer, _FakeUpload
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -852,7 +851,7 @@ class TestRenderDocument:
         references = ["[1] Ref"]
         synth._render_document("s1", "ieee", outline, sections, references)
         doc_arg = mock_formatter.process.call_args[0][0]
-        types = [(b.block_type, b.text) for b in doc_arg.blocks]
+        [(b.block_type, b.text) for b in doc_arg.blocks]
 
     @patch("app.pipeline.formatting.formatter.Formatter")
     @patch("app.pipeline.export.exporter.Exporter")

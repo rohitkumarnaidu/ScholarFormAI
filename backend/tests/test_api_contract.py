@@ -8,7 +8,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-
 # ── Expected endpoints ──────────────────────────────────────────────────────
 # Source: backend/app/routers/v1/__init__.py + preview router
 # Verified against actual OpenAPI schema output
@@ -166,7 +165,7 @@ def openapi_schema():
     _patch_env()
     # Import app.main inside the fixture body to avoid module-level import side effects
     with _patched_dependencies():
-        from app.main import app, _load_optional_routers
+        from app.main import _load_optional_routers, app
         # V1 routers are loaded lazily via middleware; force-load before generating schema
         _load_optional_routers(app)
         schema = app.openapi()
@@ -271,11 +270,10 @@ def test_all_endpoints_have_responses(openapi_schema: dict[str, Any]):
 def test_all_expected_endpoints_exist(openapi_schema: dict[str, Any], tag: str):
     """Verify every endpoint specified in EXPECTED_ENDPOINTS appears in the schema."""
     group = EXPECTED_ENDPOINTS[tag]
-    template_count = {"custom": 0, "custom/{templateId}": 0, "{key_id}": 0}
     prefix = group["prefix"]
     paths_schema = openapi_schema.get("paths", {})
 
-    for subpath, expected_method in zip(group["paths"], group["methods"]):
+    for subpath, expected_method in zip(group["paths"], group["methods"], strict=False):
         path_key = _openapi_path_key(prefix, subpath)
         # Handle duplicate path keys (same path, different methods)
         actual = paths_schema.get(path_key)
@@ -563,7 +561,7 @@ def test_tag_consistency(openapi_schema: dict[str, Any]):
     for path_key, methods in paths.items():
         if not path_key.startswith("/api/v1/"):
             continue
-        for method, operation in methods.items():
+        for _method, operation in methods.items():
             tags = operation.get("tags", [])
             prefix = path_key.split("/")[3]
             if prefix not in tag_by_prefix:

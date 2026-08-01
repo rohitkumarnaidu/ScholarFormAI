@@ -93,12 +93,12 @@ class TestExternalServiceError:
 class TestExceptionHierarchy:
     def test_all_inherit_from_exception(self):
         from app.exceptions import (
+            AuthenticationError,
             DatabaseUnavailableError,
             DocumentNotFoundError,
-            AuthenticationError,
-            RateLimitExceededError,
-            FileStorageError,
             ExternalServiceError,
+            FileStorageError,
+            RateLimitExceededError,
         )
         assert issubclass(DatabaseUnavailableError, Exception)
         assert issubclass(DocumentNotFoundError, Exception)

@@ -11,11 +11,11 @@ does not depend on the multi-tier fallback chain or user-key resolution.
 
 from __future__ import annotations
 
-import sys
+import hashlib
 import logging
 import re
-import hashlib
-from typing import List, Dict, Any, Optional, Tuple
+import sys
+from typing import Any
 
 from app.config.settings import settings
 from app.utils.logging_context import log_extra
@@ -74,7 +74,7 @@ def _breaker_reset_seconds() -> int:
         return 60
 
 
-_PROVIDER_BREAKERS: Dict[str, Any] = {}
+_PROVIDER_BREAKERS: dict[str, Any] = {}
 
 
 def _provider_breaker(provider: str):
@@ -210,7 +210,7 @@ def sanitize_for_llm(text: str) -> str:
     return text
 
 
-def _extract_prompts(messages: List[Dict[str, str]]) -> Tuple[str, str]:
+def _extract_prompts(messages: list[dict[str, str]]) -> tuple[str, str]:
     system_parts = [m.get("content", "") for m in messages if m.get("role") == "system"]
     user_parts = [m.get("content", "") for m in messages if m.get("role") == "user"]
     return "\n".join(system_parts), "\n".join(user_parts)
@@ -222,8 +222,8 @@ def _cache_key(
     model: str,
     temperature: float,
     max_tokens: int = 2048,
-    api_base: Optional[str] = None,
-    api_key_prefix: Optional[str] = None,
+    api_base: str | None = None,
+    api_key_prefix: str | None = None,
 ) -> str:
     key_input = (
         f"{model}:{temperature}:{max_tokens}:{api_base or ''}:{api_key_prefix or ''}:{system_prompt}:{user_message}"
@@ -266,10 +266,10 @@ def _record_failure(provider: str) -> None:
 
         MetricsManager.record_llm_failure(provider)
     except Exception:
-        pass
+        pass  # intentionally ignored
 
 
-async def check_health() -> Dict[str, str]:
+async def check_health() -> dict[str, str]:
     """Check health of underlying LLM providers."""
     results = {}
 

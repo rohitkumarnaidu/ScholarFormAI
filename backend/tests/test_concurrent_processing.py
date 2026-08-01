@@ -11,7 +11,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-
 # ── 3A: Concurrent Pipeline Tests ──────────────────────────────────────────
 
 class TestConcurrentPipeline:
@@ -122,9 +121,8 @@ class TestConcurrentPipeline:
         n_writes = 10
 
         def write_doc(i):
-            with patch("app.services.document_service.get_supabase_client", return_value=mock_sb):
-                with lock:
-                    write_order.append(i)
+            with patch("app.services.document_service.get_supabase_client", return_value=mock_sb), lock:
+                write_order.append(i)
 
         start = time.perf_counter()
         with concurrent.futures.ThreadPoolExecutor(max_workers=n_writes) as ex:

@@ -5,29 +5,28 @@
 
 from __future__ import annotations
 
-from typing import Dict, List
-from unittest.mock import MagicMock, patch
+import contextlib
 import uuid
+from unittest.mock import MagicMock, patch
 
 import pytest
 from docx import Document as DocxDocument
 from docx.shared import Pt
-
-from app.pipeline.parsing.parser import (
-    DocxParser,
-    parse_docx,
-    generate_figure_id,
-    generate_table_id,
-    generate_equation_id,
-)
 from lxml import etree
 
 from app.models import (
-    ImageFormat,
-    Figure,
     Equation,
+    Figure,
+    ImageFormat,
 )
 from app.pipeline.parsing.base_parser import BaseParser
+from app.pipeline.parsing.parser import (
+    DocxParser,
+    generate_equation_id,
+    generate_figure_id,
+    generate_table_id,
+    parse_docx,
+)
 
 
 class TestHelperFunctions:
@@ -224,7 +223,7 @@ class TestParagraphStyleExtraction:
     def parser(self):
         return DocxParser()
 
-    def _make_paragraph(self, runs_data: List[Dict], style_name=None, no_runs=False):
+    def _make_paragraph(self, runs_data: list[dict], style_name=None, no_runs=False):
         """Helper to create a mocked paragraph."""
         para = MagicMock(spec=["runs", "style", "_element", "text", "alignment"])
         style = MagicMock()
@@ -414,7 +413,7 @@ class TestNoteReferences:
     def parser(self):
         return DocxParser()
 
-    def _make_paragraph(self, ref_ids: List[str], raise_error=False):
+    def _make_paragraph(self, ref_ids: list[str], raise_error=False):
         para = MagicMock()
         element = MagicMock()
         if raise_error:
@@ -615,10 +614,8 @@ class TestInlineImageExtraction:
         run._element = element
 
         if part:
-            try:
+            with contextlib.suppress(AttributeError):
                 run.part = part
-            except AttributeError:
-                pass
 
         return run
 
@@ -1055,7 +1052,7 @@ class TestEquationExtraction:
         element.findall.side_effect = findall_fn
         para._element = element
 
-        with patch.object(parser, "_extract_math_element", return_value=MagicMock(spec=Equation)) as mock_extract:
+        with patch.object(parser, "_extract_math_element", return_value=MagicMock(spec=Equation)):
             result = parser._extract_equations(para)
             assert len(result) == 1, f"Expected 1, got {len(result)}. findall calls: {call_log}"
 

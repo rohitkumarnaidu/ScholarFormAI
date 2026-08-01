@@ -7,15 +7,15 @@ import asyncio
 import json
 import logging
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from app.models import Block, BlockType, DocumentMetadata, PipelineDocument, TemplateInfo
+from app.pipeline.formatting.formatter import Formatter
 from app.pipeline.generation.quality_scorer import QualityScorer
 from app.pipeline.generation.section_prompts import get_section_prompt
 from app.pipeline.generation.task_parser import TaskParser
 from app.pipeline.intelligence.rag_engine import get_rag_engine
 from app.pipeline.orchestrator import PipelineOrchestrator
-from app.pipeline.formatting.formatter import Formatter
 from app.realtime.events import make_event
 from app.realtime.pubsub import RedisPubSub
 from app.services.citation_assembly_service import CitationAssemblyService
@@ -31,7 +31,7 @@ class AgentPipeline:
         self,
         session_service: GeneratorSessionService,
         pipeline_orchestrator: PipelineOrchestrator,
-        pubsub: Optional[RedisPubSub] = None,
+        pubsub: RedisPubSub | None = None,
     ) -> None:
         self.session_service = session_service
         self.pipeline_orchestrator = pipeline_orchestrator
@@ -44,7 +44,7 @@ class AgentPipeline:
 
     async def run(self, session_id: str, user_prompt: str) -> None:
         session = await self.session_service.get_session(session_id)
-        config: Dict[str, Any] = dict(session.get("config_json") or {}) if session else {}
+        config: dict[str, Any] = dict(session.get("config_json") or {}) if session else {}
         config["user_prompt"] = user_prompt
         user_id = str(session.get("user_id")) if session and session.get("user_id") else None
         await self._update_status(
@@ -135,7 +135,7 @@ class AgentPipeline:
             logger.warning("AgentPipeline.resume: session %s not found", session_id)
             return
 
-        config: Dict[str, Any] = dict(session.get("config_json") or {})
+        config: dict[str, Any] = dict(session.get("config_json") or {})
         outline = session.get("outline_json") or {}
         task_spec = config
         user_id = str(session.get("user_id")) if session.get("user_id") else None
@@ -153,9 +153,9 @@ class AgentPipeline:
             stage="writing",
         )
 
-        sections_map: Dict[str, str] = {}
+        sections_map: dict[str, str] = {}
         outline_sections = self._extract_outline_sections(outline)
-        filtered_sections: List[Dict[str, Any]] = []
+        filtered_sections: list[dict[str, Any]] = []
         for section in outline_sections:
             section_name = section.get("title") or section.get("section") or section.get("name") or str(section)
             if str(section_name).strip().lower() in {"references", "bibliography"}:
@@ -307,7 +307,7 @@ class AgentPipeline:
             logger.warning("AgentPipeline.rewrite_section: session %s not found", session_id)
             return
 
-        config: Dict[str, Any] = dict(session.get("config_json") or {})
+        config: dict[str, Any] = dict(session.get("config_json") or {})
         user_id = str(session.get("user_id")) if session.get("user_id") else None
         latest_doc = await self.session_service.get_latest_document(session_id)
         content_json = (latest_doc or {}).get("content_json") or {}
@@ -402,10 +402,10 @@ class AgentPipeline:
 
     def _apply_quality_floor(
         self,
-        sections_map: Dict[str, str],
-        required_sections: List[str],
+        sections_map: dict[str, str],
+        required_sections: list[str],
         min_words: int,
-    ) -> Dict[str, str]:
+    ) -> dict[str, str]:
         filler_sentence = (
             "This section provides additional context and clarifies key points to ensure "
             "completeness and academic rigor in line with scholarly conventions."
@@ -435,7 +435,7 @@ class AgentPipeline:
             return 240
         return 180
 
-    def _select_low_sections(self, sections_map: Dict[str, str], min_words: int, limit: int = 3) -> List[str]:
+    def _select_low_sections(self, sections_map: dict[str, str], min_words: int, limit: int = 3) -> list[str]:
         if not sections_map:
             return []
         counts = [
@@ -454,14 +454,14 @@ class AgentPipeline:
         self,
         *,
         session_id: str,
-        task_spec: Dict[str, Any],
-        template_rules: List[Dict[str, Any]],
-        outline: Dict[str, Any],
-        sections_map: Dict[str, str],
-        references: List[str],
-        config: Dict[str, Any],
-        user_id: Optional[str] = None,
-    ) -> tuple[Dict[str, str], List[str], str, Dict[str, Any]]:
+        task_spec: dict[str, Any],
+        template_rules: list[dict[str, Any]],
+        outline: dict[str, Any],
+        sections_map: dict[str, str],
+        references: list[str],
+        config: dict[str, Any],
+        user_id: str | None = None,
+    ) -> tuple[dict[str, str], list[str], str, dict[str, Any]]:
         min_words = self._min_words_for_length(task_spec.get("length"))
         low_sections = self._select_low_sections(sections_map, min_words=min_words, limit=3)
         if not low_sections:
@@ -566,8 +566,8 @@ class AgentPipeline:
             )
         return sections_map, references, docx_path, quality
 
-    def _retrieve_template_rules(self, template: str, sections: List[str]) -> List[Dict[str, Any]]:
-        rules: List[Dict[str, Any]] = []
+    def _retrieve_template_rules(self, template: str, sections: list[str]) -> list[dict[str, Any]]:
+        rules: list[dict[str, Any]] = []
         template_name = str(template or "IEEE")
         for section in sections or []:
             rules.extend(self.rag_engine.query_rules(template_name, str(section), top_k=2))
@@ -575,7 +575,7 @@ class AgentPipeline:
             rules.extend(self.rag_engine.query_rules(template_name, "general", top_k=2))
         return rules
 
-    async def _run_web_research(self, task_spec: Dict[str, Any]) -> List[Any]:
+    async def _run_web_research(self, task_spec: dict[str, Any]) -> list[Any]:
         query_parts = [task_spec.get("title") or "", " ".join(task_spec.get("keywords") or [])]
         query = " ".join(part for part in query_parts if part).strip()
         if not query:
@@ -600,11 +600,11 @@ class AgentPipeline:
     async def _generate_outline(
         self,
         session_id: str,
-        task_spec: Dict[str, Any],
-        template_rules: List[Dict[str, Any]],
-        web_results: List[Any],
-        user_id: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        task_spec: dict[str, Any],
+        template_rules: list[dict[str, Any]],
+        web_results: list[Any],
+        user_id: str | None = None,
+    ) -> dict[str, Any]:
         system = "You are an academic outline generator. Return JSON only."
         user = (
             "Create an outline with keys: title, sections (list of objects with number, title, key_points).\n"
@@ -632,7 +632,7 @@ class AgentPipeline:
         return outline
 
     async def _generate_section(
-        self, session_id: str, section_name: str, prompt: str, user_id: Optional[str] = None
+        self, session_id: str, section_name: str, prompt: str, user_id: str | None = None
     ) -> str:
         system = f"You are an academic writing assistant. Draft the '{section_name}' section."
         user = sanitize_for_llm(prompt)
@@ -650,12 +650,12 @@ class AgentPipeline:
     async def _render_document(
         self,
         session_id: str,
-        task_spec: Dict[str, Any],
-        outline: Dict[str, Any],
-        sections: Dict[str, str],
-        references: List[str],
+        task_spec: dict[str, Any],
+        outline: dict[str, Any],
+        sections: dict[str, str],
+        references: list[str],
     ) -> str:
-        blocks: List[Block] = []
+        blocks: list[Block] = []
         idx = 0
 
         title = outline.get("title") if isinstance(outline, dict) else task_spec.get("title")
@@ -737,7 +737,7 @@ class AgentPipeline:
         return str(output_path)
 
     async def _llm_text(
-        self, session_id: str, system: str, user: str, max_tokens: int = 1200, user_id: Optional[str] = None
+        self, session_id: str, system: str, user: str, max_tokens: int = 1200, user_id: str | None = None
     ) -> str:
         result = await asyncio.to_thread(
             generate_with_fallback,
@@ -754,8 +754,8 @@ class AgentPipeline:
         return text
 
     async def _llm_json(
-        self, session_id: str, system: str, user: str, user_id: Optional[str] = None
-    ) -> Optional[Dict[str, Any]]:
+        self, session_id: str, system: str, user: str, user_id: str | None = None
+    ) -> dict[str, Any] | None:
         text = await self._llm_text(session_id, system, user, max_tokens=1200, user_id=user_id)
         if not text:
             return None
@@ -768,7 +768,7 @@ class AgentPipeline:
             return None
 
     @staticmethod
-    def _extract_json(text: str) -> Optional[str]:
+    def _extract_json(text: str) -> str | None:
         if text is None:
             return None
         cleaned = text.strip()
@@ -786,7 +786,7 @@ class AgentPipeline:
         await self.session_service.add_message(session_id, "assistant", assistant, token_count=0)
 
     @staticmethod
-    def _extract_outline_sections(outline: Any) -> List[Dict[str, Any]]:
+    def _extract_outline_sections(outline: Any) -> list[dict[str, Any]]:
         if isinstance(outline, dict):
             sections = outline.get("sections") or []
             return [s for s in sections if s]
@@ -795,11 +795,11 @@ class AgentPipeline:
         return []
 
     @staticmethod
-    def _normalize_sections(sections: Any) -> Dict[str, str]:
+    def _normalize_sections(sections: Any) -> dict[str, str]:
         if isinstance(sections, dict):
             return {str(k): str(v) for k, v in sections.items()}
         if isinstance(sections, list):
-            output: Dict[str, str] = {}
+            output: dict[str, str] = {}
             for item in sections:
                 if isinstance(item, dict):
                     title = str(item.get("title") or item.get("section") or "").strip()
@@ -809,7 +809,7 @@ class AgentPipeline:
         return {}
 
     @staticmethod
-    def _ensure_outline_numbers(outline: Dict[str, Any]) -> Dict[str, Any]:
+    def _ensure_outline_numbers(outline: dict[str, Any]) -> dict[str, Any]:
         sections = outline.get("sections")
         if not isinstance(sections, list):
             return outline
@@ -832,7 +832,7 @@ class AgentPipeline:
         stage: str,
         progress: int,
         message: str,
-        extra: Optional[Dict[str, Any]] = None,
+        extra: dict[str, Any] | None = None,
     ) -> None:
         payload = {"stage": stage, "progress": progress, "message": message}
         if extra:
@@ -854,7 +854,7 @@ class AgentPipeline:
         stage: str,
         progress: int,
         text: str,
-        extra: Optional[Dict[str, Any]] = None,
+        extra: dict[str, Any] | None = None,
         chunk_size: int = 400,
     ) -> None:
         if not text:
@@ -880,9 +880,9 @@ class AgentPipeline:
         status: str,
         progress: int,
         message: str,
-        config: Dict[str, Any],
-        stage: Optional[str] = None,
-        outline: Optional[dict] = None,
+        config: dict[str, Any],
+        stage: str | None = None,
+        outline: dict | None = None,
     ) -> None:
         if stage:
             config["stage"] = stage

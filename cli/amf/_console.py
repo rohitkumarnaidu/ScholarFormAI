@@ -11,7 +11,7 @@ def safe_progress(*, transient: bool = True) -> Progress:
     try:
         columns.append(SpinnerColumn())
     except Exception:
-        pass
+        pass  # intentionally ignored
     columns.append(TextColumn("{task.description}"))
     return Progress(*columns, console=Console(stderr=True), transient=transient)
 

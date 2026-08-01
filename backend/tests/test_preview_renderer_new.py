@@ -1,20 +1,20 @@
-import pytest
-from unittest.mock import patch
 import time
+from unittest.mock import patch
+
+import pytest
 
 
 @pytest.fixture
 def renderer():
-    with patch("app.services.preview_renderer.TEMPLATE_ROOT"):
-        with patch("app.services.preview_renderer.settings"):
-            from app.services.preview_renderer import PreviewRenderer
-            r = PreviewRenderer()
-            r._redis = None
-            r._redis_enabled = False
-            r._template_names = {"ieee", "apa", "modern_blue"}
-            r._css_cache = {}
-            r._local_cache = {}
-            return r
+    with patch("app.services.preview_renderer.TEMPLATE_ROOT"), patch("app.services.preview_renderer.settings"):
+        from app.services.preview_renderer import PreviewRenderer
+        r = PreviewRenderer()
+        r._redis = None
+        r._redis_enabled = False
+        r._template_names = {"ieee", "apa", "modern_blue"}
+        r._css_cache = {}
+        r._local_cache = {}
+        return r
 
 
 class TestNormalizeTemplate:

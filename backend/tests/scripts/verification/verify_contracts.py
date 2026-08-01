@@ -8,6 +8,7 @@ Tests all 4 templates to ensure they load without errors.
 
 from app.pipeline.contracts.loader import ContractLoader
 
+
 def verify_all_contracts():
     """Verify all publisher contracts load correctly."""
     
@@ -47,7 +48,7 @@ def verify_all_contracts():
             has_layout = "layout" in contract
             has_equations = "equations" in contract
             
-            print(f"  ✅ Contract loaded successfully")
+            print("  ✅ Contract loaded successfully")
             print(f"  Publisher: {contract.get('publisher', 'N/A')}")
             print(f"  Description: {contract.get('description', 'N/A')}")
             print(f"  Has sections: {has_sections}")

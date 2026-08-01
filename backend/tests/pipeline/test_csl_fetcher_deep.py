@@ -2,8 +2,11 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import MagicMock, patch, AsyncMock
+
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 
 
@@ -95,7 +98,7 @@ class TestCslFetcherModule:
         assert cloned is not payload
 
     def test_reset_csl_cache_for_tests(self):
-        from app.pipeline.services.csl_fetcher import reset_csl_cache_for_tests, _search_cache, _style_cache
+        from app.pipeline.services.csl_fetcher import _search_cache, _style_cache, reset_csl_cache_for_tests
         _search_cache["test"] = (1.0, [])
         _style_cache["test"] = (1.0, {})
         reset_csl_cache_for_tests()
@@ -103,9 +106,9 @@ class TestCslFetcherModule:
         assert len(_style_cache) == 0
 
     def test_local_styles(self, tmp_path):
-        from app.pipeline.services.csl_fetcher import _local_styles, TEMPLATES_DIR
         from pathlib import Path
-        original = TEMPLATES_DIR
+
+        from app.pipeline.services.csl_fetcher import _local_styles
         with patch("app.pipeline.services.csl_fetcher.TEMPLATES_DIR", Path(str(tmp_path))):
             (tmp_path / "ieee").mkdir()
             (tmp_path / "ieee" / "styles.csl").write_text("<style/>")
@@ -118,8 +121,9 @@ class TestCslFetcherModule:
             assert all(r["source"] == "local" for r in rows)
 
     def test_local_styles_empty_dir(self, tmp_path):
-        from app.pipeline.services.csl_fetcher import _local_styles
         from pathlib import Path
+
+        from app.pipeline.services.csl_fetcher import _local_styles
         with patch("app.pipeline.services.csl_fetcher.TEMPLATES_DIR", Path(str(tmp_path))):
             rows = _local_styles()
             assert rows == []
@@ -128,17 +132,18 @@ class TestCslFetcherModule:
 class TestSearchStyles:
     @pytest.mark.asyncio
     async def test_search_styles_empty_query(self):
-        from app.pipeline.services.csl_fetcher import search_styles, reset_csl_cache_for_tests
+        from app.pipeline.services.csl_fetcher import reset_csl_cache_for_tests, search_styles
         reset_csl_cache_for_tests()
         with patch("app.pipeline.services.csl_fetcher._local_styles", return_value=[]):
-            with patch("httpx.AsyncClient") as mock_client:
+            with patch("httpx.AsyncClient"):
                 results = await search_styles("", limit=10)
                 assert isinstance(results, list)
 
     @pytest.mark.asyncio
     async def test_search_styles_cached_hit(self):
-        from app.pipeline.services.csl_fetcher import search_styles, _search_cache, reset_csl_cache_for_tests
         from time import monotonic
+
+        from app.pipeline.services.csl_fetcher import _search_cache, reset_csl_cache_for_tests, search_styles
         reset_csl_cache_for_tests()
         cache_key = "test|20"
         _search_cache[cache_key] = (monotonic() + 1000, [{"slug": "cached", "title": "Cached", "source": "local"}])
@@ -149,8 +154,9 @@ class TestSearchStyles:
 
     @pytest.mark.asyncio
     async def test_search_styles_expired_cache(self):
-        from app.pipeline.services.csl_fetcher import search_styles, _search_cache, reset_csl_cache_for_tests
         from time import monotonic
+
+        from app.pipeline.services.csl_fetcher import _search_cache, reset_csl_cache_for_tests, search_styles
         reset_csl_cache_for_tests()
         cache_key = "new|20"
         _search_cache[cache_key] = (monotonic() - 1000, [{"slug": "old", "title": "Old", "source": "local"}])
@@ -170,7 +176,7 @@ class TestSearchStyles:
 
     @pytest.mark.asyncio
     async def test_search_styles_remote_api_failure(self):
-        from app.pipeline.services.csl_fetcher import search_styles, reset_csl_cache_for_tests
+        from app.pipeline.services.csl_fetcher import reset_csl_cache_for_tests, search_styles
         reset_csl_cache_for_tests()
         with patch("app.pipeline.services.csl_fetcher._local_styles", return_value=[]):
             with patch("httpx.AsyncClient") as mock_client:
@@ -184,7 +190,7 @@ class TestSearchStyles:
 
     @pytest.mark.asyncio
     async def test_search_styles_remote_returns_valid_data(self):
-        from app.pipeline.services.csl_fetcher import search_styles, reset_csl_cache_for_tests
+        from app.pipeline.services.csl_fetcher import reset_csl_cache_for_tests, search_styles
         reset_csl_cache_for_tests()
         with patch("app.pipeline.services.csl_fetcher._local_styles", return_value=[]):
             with patch("httpx.AsyncClient") as mock_client:
@@ -202,7 +208,7 @@ class TestSearchStyles:
 
     @pytest.mark.asyncio
     async def test_search_styles_remote_returns_non_list(self):
-        from app.pipeline.services.csl_fetcher import search_styles, reset_csl_cache_for_tests
+        from app.pipeline.services.csl_fetcher import reset_csl_cache_for_tests, search_styles
         reset_csl_cache_for_tests()
         with patch("app.pipeline.services.csl_fetcher._local_styles", return_value=[]):
             with patch("httpx.AsyncClient") as mock_client:
@@ -219,8 +225,9 @@ class TestSearchStyles:
 
     @pytest.mark.asyncio
     async def test_search_styles_shared_lock_same_cache(self):
-        from app.pipeline.services.csl_fetcher import search_styles, _search_cache, reset_csl_cache_for_tests
         from time import monotonic
+
+        from app.pipeline.services.csl_fetcher import _search_cache, reset_csl_cache_for_tests, search_styles
         reset_csl_cache_for_tests()
         cache_key = "shared|20"
         _search_cache[cache_key] = (monotonic() + 1000, [{"slug": "shared_res", "title": "Shared", "source": "local"}])
@@ -246,8 +253,9 @@ class TestFetchStyle:
 
     @pytest.mark.asyncio
     async def test_fetch_style_cached_hit(self):
-        from app.pipeline.services.csl_fetcher import fetch_style, _style_cache, reset_csl_cache_for_tests
         from time import monotonic
+
+        from app.pipeline.services.csl_fetcher import _style_cache, fetch_style, reset_csl_cache_for_tests
         reset_csl_cache_for_tests()
         _style_cache["ieee"] = (monotonic() + 1000, {"slug": "ieee", "source": "local", "content": "<style/>"})
         result = await fetch_style("ieee")
@@ -256,8 +264,9 @@ class TestFetchStyle:
 
     @pytest.mark.asyncio
     async def test_fetch_style_local_path_exists(self, tmp_path):
-        from app.pipeline.services.csl_fetcher import fetch_style, reset_csl_cache_for_tests
         from pathlib import Path
+
+        from app.pipeline.services.csl_fetcher import fetch_style, reset_csl_cache_for_tests
         reset_csl_cache_for_tests()
         with patch("app.pipeline.services.csl_fetcher.TEMPLATES_DIR", Path(str(tmp_path))):
             (tmp_path / "ieee").mkdir()
@@ -268,8 +277,9 @@ class TestFetchStyle:
 
     @pytest.mark.asyncio
     async def test_fetch_style_local_path_exists_ttl_zero(self, tmp_path):
-        from app.pipeline.services.csl_fetcher import fetch_style, _style_cache, reset_csl_cache_for_tests
         from pathlib import Path
+
+        from app.pipeline.services.csl_fetcher import _style_cache, fetch_style, reset_csl_cache_for_tests
         reset_csl_cache_for_tests()
         bad_settings = type("Settings", (), {"CSL_FETCH_CACHE_TTL_SECONDS": -1})()
         with patch("app.pipeline.services.csl_fetcher.settings", bad_settings):
@@ -282,8 +292,9 @@ class TestFetchStyle:
 
     @pytest.mark.asyncio
     async def test_fetch_style_remote(self, tmp_path):
-        from app.pipeline.services.csl_fetcher import fetch_style, reset_csl_cache_for_tests
         from pathlib import Path
+
+        from app.pipeline.services.csl_fetcher import fetch_style, reset_csl_cache_for_tests
         reset_csl_cache_for_tests()
         with patch("app.pipeline.services.csl_fetcher.TEMPLATES_DIR", Path(str(tmp_path))):
             with patch("httpx.AsyncClient") as mock_client:
@@ -301,8 +312,9 @@ class TestFetchStyle:
 
     @pytest.mark.asyncio
     async def test_fetch_style_remote_ttl_zero(self, tmp_path):
-        from app.pipeline.services.csl_fetcher import fetch_style, _style_cache, reset_csl_cache_for_tests
         from pathlib import Path
+
+        from app.pipeline.services.csl_fetcher import _style_cache, fetch_style, reset_csl_cache_for_tests
         reset_csl_cache_for_tests()
         bad_settings = type("Settings", (), {"CSL_FETCH_CACHE_TTL_SECONDS": -1})()
         with patch("app.pipeline.services.csl_fetcher.settings", bad_settings):
@@ -322,8 +334,9 @@ class TestFetchStyle:
 
     @pytest.mark.asyncio
     async def test_fetch_style_cached_under_lock(self):
-        from app.pipeline.services.csl_fetcher import fetch_style, _style_cache, reset_csl_cache_for_tests
         from time import monotonic
+
+        from app.pipeline.services.csl_fetcher import _style_cache, fetch_style, reset_csl_cache_for_tests
         reset_csl_cache_for_tests()
         _style_cache["apa"] = (monotonic() + 1000, {"slug": "apa", "source": "local", "content": "<style/>"})
         result = await fetch_style("apa")
@@ -331,8 +344,9 @@ class TestFetchStyle:
 
     @pytest.mark.asyncio
     async def test_fetch_style_locked_cache_hit(self):
-        from app.pipeline.services.csl_fetcher import fetch_style, _style_cache, reset_csl_cache_for_tests
         from time import monotonic
+
+        from app.pipeline.services.csl_fetcher import _style_cache, fetch_style, reset_csl_cache_for_tests
         reset_csl_cache_for_tests()
         _style_cache["locked"] = (monotonic() + 1000, {"slug": "locked", "source": "local", "content": "cached"})
         result = await fetch_style("locked")
@@ -340,8 +354,9 @@ class TestFetchStyle:
 
     @pytest.mark.asyncio
     async def test_fetch_style_remote_http_error(self, tmp_path):
-        from app.pipeline.services.csl_fetcher import fetch_style, reset_csl_cache_for_tests
         from pathlib import Path
+
+        from app.pipeline.services.csl_fetcher import fetch_style, reset_csl_cache_for_tests
         reset_csl_cache_for_tests()
         with patch("app.pipeline.services.csl_fetcher.TEMPLATES_DIR", Path(str(tmp_path))):
             with patch("httpx.AsyncClient") as mock_client:
@@ -359,8 +374,9 @@ class TestFetchStyle:
 class TestFetchStyleZoteroUrl:
     @pytest.mark.asyncio
     async def test_fetch_style_uses_zotero_url(self, tmp_path):
-        from app.pipeline.services.csl_fetcher import fetch_style, ZOTERO_STYLE_URL, reset_csl_cache_for_tests
         from pathlib import Path
+
+        from app.pipeline.services.csl_fetcher import ZOTERO_STYLE_URL, fetch_style, reset_csl_cache_for_tests
         reset_csl_cache_for_tests()
         with patch("app.pipeline.services.csl_fetcher.TEMPLATES_DIR", Path(str(tmp_path))):
             with patch("httpx.AsyncClient") as mock_client:

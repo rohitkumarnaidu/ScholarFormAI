@@ -2,8 +2,10 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
+
 import subprocess
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 import pytest
 
 
@@ -15,7 +17,8 @@ class TestFindLibreOffice:
         ):
             from app.pipeline.export.pdf_exporter import PDFExporter
             result = PDFExporter(libreoffice_path="")._find_libreoffice()
-            assert result and "soffice.exe" in result
+            assert result
+            assert "soffice.exe" in result
 
     def test_windows_not_found(self):
         with (
@@ -90,7 +93,8 @@ class TestConvertToPdf:
             mock_result = MagicMock(returncode=0, stdout="", stderr="")
             mock_run.return_value = mock_result
             result = exporter.convert_to_pdf("/tmp/doc.docx", "/tmp/out")
-            assert result and result.endswith(".pdf")
+            assert result
+            assert result.endswith(".pdf")
 
     def test_libreoffice_fails_fallback_succeeds(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
@@ -158,12 +162,13 @@ class TestConvertToPdf:
             patch("os.path.exists", side_effect=lambda p: p.endswith(".docx") or p.endswith(".pdf")),
             patch("subprocess.run") as mock_run,
             patch.object(exporter, "_weasyprint_fallback", return_value=None),
-            patch("docx2pdf.convert") as mock_convert,
+            patch("docx2pdf.convert"),
         ):
             mock_result = MagicMock(returncode=1, stdout="", stderr="err")
             mock_run.return_value = mock_result
             result = exporter.convert_to_pdf("/tmp/doc.docx", "/tmp/out")
-            assert result and result.endswith(".pdf")
+            assert result
+            assert result.endswith(".pdf")
 
     def test_docx2pdf_fails_runtime_error(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
