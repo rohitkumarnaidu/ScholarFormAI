@@ -148,40 +148,32 @@ class TestPredictLlmBatch:
             assert classifier._predict_llm_batch([]) == []
 
     def test_non_english_returns_none(self, classifier):
-        mock_parser = MagicMock()
-        mock_parser.predict_blocks_batch.return_value = []
+        mock_classifier = MagicMock()
+        mock_classifier.classify_batch.return_value = None
         with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
-            with patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser", return_value=mock_parser):
-                with patch("app.pipeline.intelligence.semantic_parser.HAS_LANGDETECT", True, create=True):
-                    with patch("app.pipeline.intelligence.semantic_parser.detect_language", return_value="fr", create=True):
-                        result = classifier._predict_llm_batch([block("b", 0, text="Bonjour")])
+            with patch("app.pipeline.classification.classifier.get_llm_classifier", return_value=mock_classifier):
+                result = classifier._predict_llm_batch([block("b", 0, text="Bonjour")])
         assert result is None
 
     def test_successful_prediction(self, classifier):
-        mock_parser = MagicMock()
-        mock_parser.model = MagicMock()
-        mock_parser.tokenizer = MagicMock()
-        mock_parser.predict_blocks_batch.return_value = [{"type": "BODY", "confidence": 0.95}]
+        mock_classifier = MagicMock()
+        mock_classifier.classify_batch.return_value = [{"type": "BODY", "confidence": 0.95}]
         with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
-            with patch("app.pipeline.intelligence.semantic_parser.HAS_LANGDETECT", False, create=True):
-                with patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser", return_value=mock_parser):
-                    result = classifier._predict_llm_batch([block("b", 0, text="Hello")])
+            with patch("app.pipeline.classification.classifier.get_llm_classifier", return_value=mock_classifier):
+                result = classifier._predict_llm_batch([block("b", 0, text="Hello")])
         assert result == [{"type": "BODY", "confidence": 0.95}]
 
     def test_exception_caught(self, classifier):
         with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
-            with patch("app.pipeline.intelligence.semantic_parser.HAS_LANGDETECT", False, create=True):
-                with patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser", side_effect=ImportError("no module")):
-                    assert classifier._predict_llm_batch([block("b", 0)]) is None
+            with patch("app.pipeline.classification.classifier.get_llm_classifier", side_effect=Exception("API error")):
+                assert classifier._predict_llm_batch([block("b", 0)]) is None
 
     def test_no_model_returns_none(self, classifier):
-        mock_parser = MagicMock()
-        mock_parser.model = None
-        mock_parser.tokenizer = None
+        mock_classifier = MagicMock()
+        mock_classifier.classify_batch.return_value = None
         with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
-            with patch("app.pipeline.intelligence.semantic_parser.HAS_LANGDETECT", False, create=True):
-                with patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser", return_value=mock_parser):
-                    assert classifier._predict_llm_batch([block("b", 0)]) is None
+            with patch("app.pipeline.classification.classifier.get_llm_classifier", return_value=mock_classifier):
+                assert classifier._predict_llm_batch([block("b", 0)]) is None
 
 
 # ---------------------------------------------------------------------------
