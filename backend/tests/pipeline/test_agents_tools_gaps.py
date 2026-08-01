@@ -13,7 +13,7 @@ import pytest
 # ==============================================================================
 
 class TestFigureAnalysisTool:
-    @patch("app.pipeline.agents.tools.figure_tool.DoclingClient")
+    @patch("app.pipeline.services.docling_client.DoclingClient")
     def test_success_with_figures(self, mock_dc_cls):
         mock_client = MagicMock()
         mock_client.analyze_layout.return_value = {
@@ -31,7 +31,7 @@ class TestFigureAnalysisTool:
         assert result["figures"]["total_count"] == 2
         assert result["figures"]["with_captions"] == 2
 
-    @patch("app.pipeline.agents.tools.figure_tool.DoclingClient")
+    @patch("app.pipeline.services.docling_client.DoclingClient")
     def test_no_figures(self, mock_dc_cls):
         mock_client = MagicMock()
         mock_client.analyze_layout.return_value = {"blocks": [{"block_type": "paragraph", "text": "text"}]}
@@ -41,7 +41,7 @@ class TestFigureAnalysisTool:
         result = json.loads(tool._run("test.pdf"))
         assert result["figures"]["total_count"] == 0
 
-    @patch("app.pipeline.agents.tools.figure_tool.DoclingClient")
+    @patch("app.pipeline.services.docling_client.DoclingClient")
     def test_layout_data_none(self, mock_dc_cls):
         mock_client = MagicMock()
         mock_client.analyze_layout.return_value = None
@@ -50,7 +50,7 @@ class TestFigureAnalysisTool:
         tool = FigureAnalysisTool()
         assert "ERROR" in tool._run("test.pdf")
 
-    @patch("app.pipeline.agents.tools.figure_tool.DoclingClient")
+    @patch("app.pipeline.services.docling_client.DoclingClient")
     def test_exception_handling(self, mock_dc_cls):
         mock_client = MagicMock()
         mock_client.analyze_layout.side_effect = RuntimeError("failed")
@@ -59,7 +59,7 @@ class TestFigureAnalysisTool:
         tool = FigureAnalysisTool()
         assert "ERROR" in tool._run("test.pdf")
 
-    @patch("app.pipeline.agents.tools.figure_tool.DoclingClient")
+    @patch("app.pipeline.services.docling_client.DoclingClient")
     def test_arun_raises_not_implemented(self, mock_dc_cls):
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
         tool = FigureAnalysisTool()
@@ -72,7 +72,7 @@ class TestFigureAnalysisTool:
 # ==============================================================================
 
 class TestLayoutAnalysisTool:
-    @patch("app.pipeline.agents.tools.layout_tool.DoclingClient")
+    @patch("app.pipeline.services.docling_client.DoclingClient")
     def test_success(self, mock_dc_cls):
         mock_client = MagicMock()
         mock_client.analyze_layout.return_value = {
@@ -94,7 +94,7 @@ class TestLayoutAnalysisTool:
         assert result["layout"]["has_figures"] is True
         assert result["layout"]["has_tables"] is True
 
-    @patch("app.pipeline.agents.tools.layout_tool.DoclingClient")
+    @patch("app.pipeline.services.docling_client.DoclingClient")
     def test_layout_data_none(self, mock_dc_cls):
         mock_client = MagicMock()
         mock_client.analyze_layout.return_value = None
@@ -103,7 +103,7 @@ class TestLayoutAnalysisTool:
         tool = LayoutAnalysisTool()
         assert "ERROR" in tool._run("test.pdf")
 
-    @patch("app.pipeline.agents.tools.layout_tool.DoclingClient")
+    @patch("app.pipeline.services.docling_client.DoclingClient")
     def test_exception_handling(self, mock_dc_cls):
         mock_client = MagicMock()
         mock_client.analyze_layout.side_effect = RuntimeError("failed")
@@ -112,7 +112,7 @@ class TestLayoutAnalysisTool:
         tool = LayoutAnalysisTool()
         assert "ERROR" in tool._run("test.pdf")
 
-    @patch("app.pipeline.agents.tools.layout_tool.DoclingClient")
+    @patch("app.pipeline.services.docling_client.DoclingClient")
     def test_arun_not_implemented(self, mock_dc_cls):
         from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
         tool = LayoutAnalysisTool()
