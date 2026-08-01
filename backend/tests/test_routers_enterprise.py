@@ -15,7 +15,7 @@ class TestDocumentsImplEditDocument:
         mock_request.client.host = "127.0.0.1"
         doc = {"id": "d1", "user_id": "u1", "filename": "test.docx", "template": "ieee"}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
             patch("app.routers.v1.documents_impl._require_db"),
         ):
             with pytest.raises(HTTPException) as exc:
@@ -27,7 +27,7 @@ class TestDocumentsImplEditDocument:
         from app.routers.v1.documents_impl import edit_document
         mock_request = MagicMock()
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=None),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=None),
             patch("app.routers.v1.documents_impl._require_db"),
         ):
             with pytest.raises(HTTPException) as exc:
@@ -40,7 +40,7 @@ class TestDocumentsImplEditDocument:
         mock_request = MagicMock()
         doc = {"id": "d1", "user_id": "other-user", "filename": "test.docx", "template": "ieee"}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
             patch("app.routers.v1.documents_impl._require_db"),
         ):
             with pytest.raises(HTTPException) as exc:
@@ -54,7 +54,7 @@ class TestDocumentsImplEditDocument:
         mock_request.client.host = "127.0.0.1"
         doc = {"id": "d1", "user_id": "u1", "filename": "test.docx", "template": "ieee"}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
             patch("app.routers.v1.documents_impl._require_db"),
             patch("app.routers.v1.documents_impl.PipelineOrchestrator", side_effect=ValueError("boom")),
         ):
@@ -70,8 +70,8 @@ class TestDocumentsImplPreview:
         mock_user = MagicMock(id="u1")
         doc = {"id": "d1", "user_id": "u1", "filename": "p.pdf", "template": "apa", "status": "COMPLETED", "created_at": "now"}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
-            patch("app.routers.v1.documents_impl.DocumentService.get_document_result", new_callable=AsyncMock, return_value=None),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document_result", new_callable=AsyncMock, return_value=None),
         ):
             with pytest.raises(HTTPException) as exc:
                 await get_preview("d1", current_user=mock_user)
@@ -80,7 +80,7 @@ class TestDocumentsImplPreview:
     @pytest.mark.asyncio
     async def test_doc_not_found(self):
         from app.routers.v1.documents_impl import get_preview
-        with patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=None):
+        with patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=None):
             with pytest.raises(HTTPException) as exc:
                 await get_preview("nonexistent", current_user=None)
             assert exc.value.status_code == 404
@@ -89,7 +89,7 @@ class TestDocumentsImplPreview:
     async def test_not_authorized(self):
         from app.routers.v1.documents_impl import get_preview
         doc = {"id": "d1", "user_id": "other-user", "filename": "p.pdf", "template": "apa", "status": "COMPLETED", "created_at": "now"}
-        with patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc):
+        with patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc):
             with pytest.raises(HTTPException) as exc:
                 await get_preview("d1", current_user=MagicMock(id="u1"))
             assert exc.value.status_code == 403
@@ -97,7 +97,7 @@ class TestDocumentsImplPreview:
     @pytest.mark.asyncio
     async def test_unexpected_error(self):
         from app.routers.v1.documents_impl import get_preview
-        with patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, side_effect=ValueError("boom")):
+        with patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, side_effect=ValueError("boom")):
             with pytest.raises(HTTPException) as exc:
                 await get_preview("d1", current_user=None)
             assert exc.value.status_code == 500
@@ -107,7 +107,7 @@ class TestDocumentsImplComparison:
     @pytest.mark.asyncio
     async def test_doc_not_found(self):
         from app.routers.v1.documents_impl import get_comparison_data
-        with patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=None):
+        with patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=None):
             with pytest.raises(HTTPException) as exc:
                 await get_comparison_data("nonexistent", current_user=None)
             assert exc.value.status_code == 404
@@ -116,7 +116,7 @@ class TestDocumentsImplComparison:
     async def test_not_authorized(self):
         from app.routers.v1.documents_impl import get_comparison_data
         doc = {"id": "d1", "user_id": "other-user", "status": "COMPLETED"}
-        with patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc):
+        with patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc):
             with pytest.raises(HTTPException) as exc:
                 await get_comparison_data("d1", current_user=MagicMock(id="u1"))
             assert exc.value.status_code == 403
@@ -125,7 +125,7 @@ class TestDocumentsImplComparison:
     async def test_not_ready(self):
         from app.routers.v1.documents_impl import get_comparison_data
         doc = {"id": "d1", "user_id": "u1", "status": "PROCESSING"}
-        with patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc):
+        with patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc):
             with pytest.raises(HTTPException) as exc:
                 await get_comparison_data("d1", current_user=MagicMock(id="u1"))
             assert exc.value.status_code == 400
@@ -135,8 +135,8 @@ class TestDocumentsImplComparison:
         from app.routers.v1.documents_impl import get_comparison_data
         doc = {"id": "d1", "user_id": "u1", "status": "COMPLETED", "raw_text": "original"}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
-            patch("app.routers.v1.documents_impl.DocumentService.get_document_result", new_callable=AsyncMock, return_value=None),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document_result", new_callable=AsyncMock, return_value=None),
         ):
             with pytest.raises(HTTPException) as exc:
                 await get_comparison_data("d1", current_user=MagicMock(id="u1"))
@@ -145,7 +145,7 @@ class TestDocumentsImplComparison:
     @pytest.mark.asyncio
     async def test_unexpected_error(self):
         from app.routers.v1.documents_impl import get_comparison_data
-        with patch("app.routers.v1.documents_impl.DocumentService.get_document", side_effect=ValueError("boom")):
+        with patch("app.services.document_crud_service.DocumentCrudService.get_document", side_effect=ValueError("boom")):
             with pytest.raises(HTTPException) as exc:
                 await get_comparison_data("d1", current_user=None)
             assert exc.value.status_code == 500
@@ -156,7 +156,7 @@ class TestDocumentsImplDownload:
     async def test_doc_not_found(self):
         from app.routers.v1.documents_impl import download_document
         mock_request = MagicMock()
-        with patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=None):
+        with patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=None):
             with pytest.raises(HTTPException) as exc:
                 await download_document(mock_request, "nonexistent", format="docx", current_user=None)
             assert exc.value.status_code == 404
@@ -166,7 +166,7 @@ class TestDocumentsImplDownload:
         from app.routers.v1.documents_impl import download_document
         mock_request = MagicMock()
         doc = {"id": "d1", "status": "COMPLETED"}
-        with patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc):
+        with patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc):
             with pytest.raises(HTTPException) as exc:
                 await download_document(mock_request, "d1", format="svg", current_user=None)
             assert exc.value.status_code == 400
@@ -177,7 +177,7 @@ class TestDocumentsImplDownload:
         mock_request = MagicMock()
         doc = {"id": "d1", "user_id": "other-user", "status": "COMPLETED"}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
             patch("app.routers.v1.documents_impl.settings.SIGNED_URL_SECRET", "secret"),
         ):
             with pytest.raises(HTTPException) as exc:
@@ -190,7 +190,7 @@ class TestDocumentsImplDownload:
         mock_request = MagicMock()
         doc = {"id": "d1", "user_id": None, "status": "COMPLETED"}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
             patch("app.routers.v1.documents_impl.settings.SIGNED_URL_SECRET", "secret"),
         ):
             with pytest.raises(HTTPException) as exc:
@@ -203,7 +203,7 @@ class TestDocumentsImplDownload:
         mock_request = MagicMock()
         doc = {"id": "d1", "user_id": None, "status": "PROCESSING"}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
             patch("app.routers.v1.documents_impl.settings.SIGNED_URL_SECRET", "secret"),
         ):
             with pytest.raises(HTTPException) as exc:
@@ -216,8 +216,8 @@ class TestDocumentsImplDownload:
         mock_request = MagicMock()
         doc = {"id": "d1", "user_id": None, "status": "COMPLETED", "output_path": None}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
-            patch("app.routers.v1.documents_impl.os.path.exists", return_value=True),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_export_service.os.path.exists", return_value=True),
             patch("app.routers.v1.documents_impl.settings.SIGNED_URL_SECRET", "secret"),
         ):
             with pytest.raises(HTTPException) as exc:
@@ -230,8 +230,8 @@ class TestDocumentsImplDownload:
         mock_request = MagicMock()
         doc = {"id": "d1", "user_id": None, "status": "COMPLETED", "output_path": "/tmp/missing.docx"}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
-            patch("app.routers.v1.documents_impl.os.path.exists", return_value=False),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_export_service.os.path.exists", return_value=False),
             patch("app.routers.v1.documents_impl.settings.SIGNED_URL_SECRET", "secret"),
         ):
             with pytest.raises(HTTPException) as exc:
@@ -246,11 +246,11 @@ class TestDocumentsImplDownload:
         mock_request.url.path = "/api/v1/documents/d1/download"
         doc = {"id": "d1", "user_id": None, "status": "COMPLETED", "output_path": "/tmp/doc.docx", "output_hash": "abc123", "filename": "paper.docx"}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
-            patch("app.routers.v1.documents_impl.os.path.exists", return_value=True),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_export_service.os.path.exists", return_value=True),
             patch("app.routers.v1.documents_impl.settings.SIGNED_URL_SECRET", "secret"),
             patch("app.routers.v1.documents_impl._compute_sha256", return_value="def456"),
-            patch("app.routers.v1.documents_impl.DocumentService.verify_signed_download", return_value=True),
+            patch("app.services.document_export_service.DocumentExportService.verify_signed_download", return_value=True),
         ):
             with pytest.raises(HTTPException) as exc:
                 await download_document(mock_request, "d1", format="docx", token="valid", expires=9999999999, current_user=None)
@@ -266,11 +266,11 @@ class TestDocumentsImplDownload:
         def _exists_side_effect(path):
             return ".docx" in str(path)
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
-            patch("app.routers.v1.documents_impl.os.path.exists", side_effect=_exists_side_effect),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_export_service.os.path.exists", side_effect=_exists_side_effect),
             patch("app.routers.v1.documents_impl.settings.SIGNED_URL_SECRET", "secret"),
-            patch("app.routers.v1.documents_impl.DocumentService.verify_signed_download", return_value=True),
-            patch("app.routers.v1.documents_impl.PDFExporter") as mock_exporter,
+            patch("app.services.document_export_service.DocumentExportService.verify_signed_download", return_value=True),
+            patch("app.services.document_export_service.PDFExporter") as mock_exporter,
         ):
             mock_exporter.return_value.convert_to_pdf.side_effect = RuntimeError("no wkhtmltopdf")
             with pytest.raises(HTTPException) as exc:
@@ -287,11 +287,11 @@ class TestDocumentsImplDownload:
         def _tex_exists_side_effect(path):
             return ".docx" in str(path)
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
-            patch("app.routers.v1.documents_impl.os.path.exists", side_effect=_tex_exists_side_effect),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_export_service.os.path.exists", side_effect=_tex_exists_side_effect),
             patch("app.routers.v1.documents_impl.settings.SIGNED_URL_SECRET", "secret"),
-            patch("app.routers.v1.documents_impl.DocumentService.verify_signed_download", return_value=True),
-            patch("app.routers.v1.documents_impl.LaTeXExporter") as mock_exporter,
+            patch("app.services.document_export_service.DocumentExportService.verify_signed_download", return_value=True),
+            patch("app.services.document_export_service.LaTeXExporter") as mock_exporter,
         ):
             mock_exporter.return_value.convert_to_latex.side_effect = RuntimeError("no pdflatex")
             with pytest.raises(HTTPException) as exc:
@@ -306,7 +306,7 @@ class TestDocumentsImplDelete:
         mock_request = MagicMock()
         doc = {"id": "d1", "user_id": "other-user"}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
             patch("app.routers.v1.documents_impl._require_db"),
         ):
             with pytest.raises(HTTPException) as exc:
@@ -318,7 +318,7 @@ class TestDocumentsImplDelete:
         from app.routers.v1.documents_impl import delete_document
         mock_request = MagicMock()
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=None),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=None),
             patch("app.routers.v1.documents_impl._require_db"),
         ):
             with pytest.raises(HTTPException) as exc:
@@ -332,11 +332,11 @@ class TestDocumentsImplDelete:
         mock_request.client.host = "127.0.0.1"
         doc = {"id": "d1", "user_id": "u1", "output_path": "/tmp/doc.docx", "original_file_path": "/tmp/orig.docx", "filename": "test.docx"}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
-            patch("app.routers.v1.documents_impl.DocumentService.delete_document", new_callable=AsyncMock),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_crud_service.DocumentCrudService.delete_document", new_callable=AsyncMock),
             patch("app.routers.v1.documents_impl.audit_log_service.log", new_callable=AsyncMock),
-            patch("app.routers.v1.documents_impl.os.path.exists", return_value=True),
-            patch("app.routers.v1.documents_impl.os.remove", side_effect=OSError("permission")),
+            patch("app.services.document_export_service.os.path.exists", return_value=True),
+            patch("app.services.document_crud_service.os.remove", side_effect=OSError("permission")),
             patch("app.routers.v1.documents_impl._require_db"),
         ):
             result = await delete_document(mock_request, "d1", current_user=MagicMock(id="u1"))
@@ -347,7 +347,7 @@ class TestDocumentsImplDelete:
         from app.routers.v1.documents_impl import delete_document
         mock_request = MagicMock()
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", side_effect=ValueError("boom")),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", side_effect=ValueError("boom")),
             patch("app.routers.v1.documents_impl._require_db"),
         ):
             with pytest.raises(HTTPException) as exc:
@@ -424,11 +424,11 @@ class TestDocumentsImplUpload:
             patch("app.routers.v1.documents_impl._enforce_daily_upload_quota"),
             patch("app.routers.v1.documents_impl._validate_magic_bytes", return_value=content),
             patch("app.routers.v1.documents_impl._scan_uploaded_file", return_value={"clean": True}),
-            patch("app.routers.v1.documents_impl.DocumentService.create_document", new_callable=AsyncMock, return_value=None),
-            patch("app.routers.v1.documents_impl.os.remove"),
+            patch("app.services.document_crud_service.DocumentCrudService.create_document", new_callable=AsyncMock, return_value=None),
+            patch("app.services.document_crud_service.os.remove"),
             patch("app.routers.v1.documents_impl.settings.MAX_FILE_SIZE", 10485760),
             patch("app.routers.v1.documents_impl.settings.DEFAULT_TEMPLATE", "ieee"),
-            patch("app.routers.v1.documents_impl.uuid.uuid4", return_value="job-abc"),
+            patch("app.services.document_pipeline_service.uuid.uuid4", return_value="job-abc"),
         ):
             with pytest.raises(HTTPException) as exc:
                 await upload_document(mock_request, MagicMock(), file=file, template="ieee", current_user=MagicMock(id="u1"))
@@ -509,8 +509,8 @@ class TestGetStatusEdgeCases:
             {"status": "PROCESSING", "phase": "PARSING", "message": "Parsing...", "progress_percentage": 50, "updated_at": "now", "created_at": "now"},
         ]
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=None),
-            patch("app.routers.v1.documents_impl.DocumentService.get_processing_statuses", new_callable=AsyncMock, return_value=statuses),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=None),
+            patch("app.services.document_crud_service.DocumentCrudService.get_processing_statuses", new_callable=AsyncMock, return_value=statuses),
             patch("app.routers.v1.documents_impl._get_stale_status_response", return_value=_STATUS_CACHE_MISS),
             patch("app.routers.v1.documents_impl._set_cached_status_response"),
             patch("app.routers.v1.documents_impl._require_db"),
@@ -523,8 +523,8 @@ class TestGetStatusEdgeCases:
         from app.routers.v1.documents_impl import get_status
         stale = {"status": "PROCESSING", "progress_percentage": 30}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=None),
-            patch("app.routers.v1.documents_impl.DocumentService.get_processing_statuses", new_callable=AsyncMock, return_value=[]),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=None),
+            patch("app.services.document_crud_service.DocumentCrudService.get_processing_statuses", new_callable=AsyncMock, return_value=[]),
             patch("app.routers.v1.documents_impl._get_stale_status_response", return_value=stale),
             patch("app.routers.v1.documents_impl._require_db"),
         ):
@@ -536,7 +536,7 @@ class TestGetStatusEdgeCases:
         from app.routers.v1.documents_impl import _STATUS_CACHE_MISS, get_status
         doc = {"user_id": "other-user", "status": "COMPLETED"}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
             patch("app.routers.v1.documents_impl._get_stale_status_response", return_value=_STATUS_CACHE_MISS),
             patch("app.routers.v1.documents_impl._require_db"),
         ):
@@ -549,7 +549,7 @@ class TestGetStatusEdgeCases:
         from app.exceptions import DatabaseUnavailableError
         from app.routers.v1.documents_impl import get_status
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", side_effect=DatabaseUnavailableError("DB down")),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", side_effect=DatabaseUnavailableError("DB down")),
             patch("app.routers.v1.documents_impl._require_db"),
         ):
             with pytest.raises(HTTPException) as exc:
@@ -560,7 +560,7 @@ class TestGetStatusEdgeCases:
     async def test_status_internal_error(self):
         from app.routers.v1.documents_impl import get_status
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", side_effect=ValueError("internal")),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", side_effect=ValueError("internal")),
             patch("app.routers.v1.documents_impl._require_db"),
         ):
             with pytest.raises(HTTPException) as exc:
@@ -574,7 +574,7 @@ class TestGetDocumentSummaryEdgeCases:
         from app.routers.v1.documents_impl import get_document_summary
         doc = {"id": "d1", "user_id": "other-user", "filename": "paper.docx", "template": "ieee", "status": "COMPLETED"}
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=doc),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=doc),
             patch("app.routers.v1.documents_impl._require_db"),
         ):
             with pytest.raises(HTTPException) as exc:
@@ -585,7 +585,7 @@ class TestGetDocumentSummaryEdgeCases:
     async def test_not_found(self):
         from app.routers.v1.documents_impl import get_document_summary
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document", new_callable=AsyncMock, return_value=None),
+            patch("app.services.document_crud_service.DocumentCrudService.get_document", new_callable=AsyncMock, return_value=None),
             patch("app.routers.v1.documents_impl._require_db"),
         ):
             with pytest.raises(HTTPException) as exc:
@@ -601,7 +601,7 @@ class TestListDocumentsEdgeCases:
         mock_user = MagicMock(id="user-1")
         with (
             patch("app.routers.v1.documents_impl._require_db"),
-            patch("app.routers.v1.documents_impl.DocumentService.list_documents", side_effect=DatabaseUnavailableError("DB down")),
+            patch("app.services.document_crud_service.DocumentCrudService.list_documents", side_effect=DatabaseUnavailableError("DB down")),
         ):
             with pytest.raises(HTTPException) as exc:
                 await list_documents(status=None, template=None, limit=50, offset=0, current_user=mock_user)
@@ -613,7 +613,7 @@ class TestListDocumentsEdgeCases:
         mock_user = MagicMock(id="user-1")
         with (
             patch("app.routers.v1.documents_impl._require_db"),
-            patch("app.routers.v1.documents_impl.DocumentService.list_documents", side_effect=ValueError("internal")),
+            patch("app.services.document_crud_service.DocumentCrudService.list_documents", side_effect=ValueError("internal")),
         ):
             with pytest.raises(HTTPException) as exc:
                 await list_documents(status=None, template=None, limit=50, offset=0, current_user=mock_user)
@@ -682,7 +682,7 @@ class TestProviderHelpers:
 
     def test_sanitize_url_strips_trailing_slash(self):
         from app.routers.v1.providers import _sanitize_url
-        result = _sanitize_url("http://localhost:8080/v1/")
+        result = _sanitize_url("http://localhost:8080/v1/", allow_local=True)
         assert not result.endswith("/")
 
     def test_sanitize_url_valid(self):
@@ -738,7 +738,7 @@ class TestDiscoverModels:
         mock_db.execute.return_value.scalar_one_or_none.return_value = None
         with patch("app.routers.v1.providers.get_provider_info", return_value=None):
             with pytest.raises(HTTPException) as exc:
-                await discover_models("nonexistent", db=mock_db, user=MagicMock(id="u1"))
+                await discover_models("nonexistent", base_url=None, db=mock_db, user=MagicMock(id="u1"))
             assert exc.value.status_code == 404
 
     @pytest.mark.asyncio

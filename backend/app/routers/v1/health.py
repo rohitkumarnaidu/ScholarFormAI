@@ -7,6 +7,7 @@ import logging
 
 from fastapi import APIRouter, Depends, Request
 
+from app.services.health_checks import get_readiness_payload
 from app.core.health import health_checker
 from app.schemas.user import User
 from app.utils.dependencies import require_admin_user
@@ -33,8 +34,6 @@ async def live(request: Request):
 @router.get("/ready")
 async def ready(request: Request):
     try:
-        from app.services.health_checks import get_readiness_payload
-
         payload, status_code = await get_readiness_payload()
     except Exception:
         logger.exception("Failed to build readiness payload")

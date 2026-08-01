@@ -37,6 +37,10 @@ _pipeline_service = DocumentPipelineService()
 _crud_service = DocumentCrudService()
 _export_service = DocumentExportService()
 
+# Backward-compatible alias: tests and legacy code that reference DocumentService
+# on this module will resolve to DocumentCrudService (which absorbed DocumentService).
+DocumentService = DocumentCrudService
+
 # Module-level re-exports for backward compatibility
 UPLOAD_DIR = _ps.UPLOAD_DIR
 ACCEPTED_EXTENSIONS = _ps.ACCEPTED_EXTENSIONS
@@ -46,6 +50,14 @@ _READY_FOR_EXPORT_STATUSES = _ps._READY_FOR_EXPORT_STATUSES
 _SUPPORTED_EXPORT_FORMATS = _ps._SUPPORTED_EXPORT_FORMATS
 MAX_DAILY_UPLOADS = _ps.MAX_DAILY_UPLOADS
 _STATUS_CACHE_MISS = _ps._STATUS_CACHE_MISS
+
+# Legacy re-exports: tests patch these symbols on documents_impl directly.
+# Importing them here makes `patch("app.routers.v1.documents_impl.X")` work
+# even though the actual logic now lives in the service layer.
+from app.pipeline.orchestrator import PipelineOrchestrator  # noqa: E402
+from app.services.audit_log_service import audit_log_service  # noqa: E402
+from app.services.enhancement_manager import enhancement_manager  # noqa: E402
+from app.utils.virus_scanner import virus_scanner  # noqa: E402
 
 
 # Helper functions delegating to service implementations while honouring local module patches (e.g. settings)

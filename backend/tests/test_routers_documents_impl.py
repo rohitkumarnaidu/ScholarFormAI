@@ -289,7 +289,7 @@ class TestScanUploadedFile:
     @pytest.mark.asyncio
     async def test_malware_detected(self):
         with patch("app.routers.v1.documents_impl.virus_scanner") as mock_scanner, \
-             patch("app.routers.v1.documents_impl.os.remove"):
+             patch("app.services.document_crud_service.os.remove"):
             mock_scanner.scan = AsyncMock(return_value={"clean": False, "result": "EICAR"})
             from app.routers.v1.documents_impl import _scan_uploaded_file
             with pytest.raises(HTTPException) as exc:
@@ -315,7 +315,7 @@ class TestUploadDocument:
              patch("app.routers.v1.documents_impl._enforce_daily_upload_quota"), \
              patch("app.routers.v1.documents_impl._validate_magic_bytes", return_value=content), \
              patch("app.routers.v1.documents_impl._scan_uploaded_file", return_value={"clean": True}), \
-             patch("app.routers.v1.documents_impl.DocumentService") as mock_ds, \
+             patch("app.services.document_crud_service.DocumentCrudService") as mock_ds, \
              patch("app.routers.v1.documents_impl.PipelineOrchestrator"), \
              patch("app.routers.v1.documents_impl.enhancement_manager") as mock_em, \
              patch("app.routers.v1.documents_impl.audit_log_service") as mock_audit, \
@@ -362,9 +362,9 @@ class TestUploadDocument:
              patch("app.routers.v1.documents_impl._enforce_daily_upload_quota"), \
              patch("app.routers.v1.documents_impl._validate_magic_bytes", return_value=content), \
              patch("app.routers.v1.documents_impl._scan_uploaded_file", return_value={"clean": True}), \
-             patch("app.routers.v1.documents_impl.DocumentService") as mock_ds, \
+             patch("app.services.document_crud_service.DocumentCrudService") as mock_ds, \
              patch("app.routers.v1.documents_impl._record_upload_ack_duration"), \
-             patch("app.routers.v1.documents_impl.os.remove"), \
+             patch("app.services.document_crud_service.os.remove"), \
              patch("app.routers.v1.documents_impl.settings.MAX_FILE_SIZE", 10485760), \
              patch("app.routers.v1.documents_impl.settings.DEFAULT_TEMPLATE", "ieee"), \
              patch("app.routers.v1.documents_impl.uuid.uuid4", return_value="job-abc"):
@@ -394,7 +394,7 @@ class TestUploadDocument:
              patch("app.routers.v1.documents_impl._enforce_daily_upload_quota"), \
              patch("app.routers.v1.documents_impl._validate_magic_bytes", return_value=content), \
              patch("app.routers.v1.documents_impl._scan_uploaded_file", return_value={"clean": True}), \
-             patch("app.routers.v1.documents_impl.DocumentService") as mock_ds, \
+             patch("app.services.document_crud_service.DocumentCrudService") as mock_ds, \
              patch("app.routers.v1.documents_impl._record_upload_ack_duration"), \
              patch("app.routers.v1.documents_impl.settings.MAX_FILE_SIZE", 10485760), \
              patch("app.routers.v1.documents_impl.settings.DEFAULT_TEMPLATE", "ieee"), \
@@ -426,7 +426,7 @@ class TestListDocuments:
         from app.routers.v1.documents_impl import list_documents
         mock_user = MagicMock(id="user-1")
         with patch("app.routers.v1.documents_impl._require_db"), \
-             patch("app.routers.v1.documents_impl.DocumentService") as mock_ds:
+             patch("app.services.document_crud_service.DocumentCrudService") as mock_ds:
             mock_ds.list_documents = AsyncMock(return_value=[{"id": "doc1", "filename": "test.docx"}])
             mock_ds.count_documents = AsyncMock(return_value=1)
             result = await list_documents(
@@ -458,7 +458,7 @@ class TestGetStatus:
         }
         with patch("app.routers.v1.documents_impl._require_db"), \
              patch("app.routers.v1.documents_impl._get_stale_status_response", return_value=None), \
-             patch("app.routers.v1.documents_impl.DocumentService") as mock_ds, \
+             patch("app.services.document_crud_service.DocumentCrudService") as mock_ds, \
              patch("app.routers.v1.documents_impl._set_cached_status_response"), \
              patch("app.routers.v1.documents_impl._extract_quality_payload", return_value={"quality_score": 90, "quality_summary": None, "quality": None}):
             mock_ds.get_document = AsyncMock(return_value=mock_doc)
@@ -480,7 +480,7 @@ class TestGetDocumentSummary:
             "status": "COMPLETED",
         }
         with patch("app.routers.v1.documents_impl._require_db"), \
-             patch("app.routers.v1.documents_impl.DocumentService") as mock_ds:
+             patch("app.services.document_crud_service.DocumentCrudService") as mock_ds:
             mock_ds.get_document = AsyncMock(return_value=mock_doc)
             mock_ds.get_document_result = AsyncMock(return_value=None)
             result = await get_document_summary(job_id="doc-1", current_user=mock_user)
@@ -491,7 +491,7 @@ class TestGetDocumentSummary:
     async def test_summary_not_found(self):
         from app.routers.v1.documents_impl import get_document_summary
         with patch("app.routers.v1.documents_impl._require_db"), \
-             patch("app.routers.v1.documents_impl.DocumentService") as mock_ds:
+             patch("app.services.document_crud_service.DocumentCrudService") as mock_ds:
             mock_ds.get_document = AsyncMock(return_value=None)
             with pytest.raises(HTTPException) as exc:
                 await get_document_summary(job_id="nonexistent", current_user=None)
@@ -507,10 +507,10 @@ class TestDeleteDocument:
         mock_request.client.host = "127.0.0.1"
 
         with patch("app.routers.v1.documents_impl._require_db"), \
-             patch("app.routers.v1.documents_impl.DocumentService") as mock_ds, \
+             patch("app.services.document_crud_service.DocumentCrudService") as mock_ds, \
              patch("app.routers.v1.documents_impl.audit_log_service") as mock_audit, \
-             patch("app.routers.v1.documents_impl.os.path.exists", return_value=True), \
-             patch("app.routers.v1.documents_impl.os.remove"):
+             patch("app.services.document_export_service.os.path.exists", return_value=True), \
+             patch("app.services.document_crud_service.os.remove"):
 
             mock_ds.get_document = AsyncMock(return_value={"id": "doc-1", "original_file_path": "/tmp/doc.pdf"})
             mock_ds.delete_document = AsyncMock(return_value=True)
@@ -526,7 +526,7 @@ class TestDeleteDocument:
         mock_request = MagicMock()
 
         with patch("app.routers.v1.documents_impl._require_db"), \
-             patch("app.routers.v1.documents_impl.DocumentService") as mock_ds:
+             patch("app.services.document_crud_service.DocumentCrudService") as mock_ds:
             mock_ds.get_document = AsyncMock(return_value=None)
             with pytest.raises(HTTPException) as exc:
                 await delete_document(request=mock_request, job_id="nonexistent", current_user=mock_user)
@@ -538,7 +538,7 @@ class TestDeleteDocument:
         from app.routers.v1.documents_impl import _STATUS_CACHE_MISS, get_status
         with patch("app.routers.v1.documents_impl._require_db"), \
              patch("app.routers.v1.documents_impl._get_stale_status_response", return_value=_STATUS_CACHE_MISS), \
-             patch("app.routers.v1.documents_impl.DocumentService") as mock_ds:
+             patch("app.services.document_crud_service.DocumentCrudService") as mock_ds:
             mock_ds.get_document = AsyncMock(return_value=None)
             mock_ds.get_processing_statuses = AsyncMock(return_value=[])
             with pytest.raises(HTTPException) as exc:
