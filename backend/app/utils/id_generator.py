@@ -6,6 +6,7 @@ ID Generator - Generate unique identifiers for document elements.
 
 Provides consistent, sequential IDs for blocks, figures, tables, and references.
 """
+
 from datetime import UTC
 
 

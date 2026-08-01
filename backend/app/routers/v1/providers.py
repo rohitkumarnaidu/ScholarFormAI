@@ -91,7 +91,9 @@ def _try_parse_ip(host_str: str) -> ipaddress.IPv4Address | ipaddress.IPv6Addres
 
             if len(numeric_parts) == 4:
                 if all(0 <= p <= 255 for p in numeric_parts):
-                    val = (numeric_parts[0] << 24) | (numeric_parts[1] << 16) | (numeric_parts[2] << 8) | numeric_parts[3]
+                    val = (
+                        (numeric_parts[0] << 24) | (numeric_parts[1] << 16) | (numeric_parts[2] << 8) | numeric_parts[3]
+                    )
                     return ipaddress.IPv4Address(val)
             elif len(numeric_parts) == 3:
                 if 0 <= numeric_parts[0] <= 255 and 0 <= numeric_parts[1] <= 255 and 0 <= numeric_parts[2] <= 65535:
@@ -119,14 +121,7 @@ def _is_ip_private_or_reserved(ip: ipaddress.IPv4Address | ipaddress.IPv6Address
         if ip in ipaddress.IPv4Network("100.64.0.0/10"):
             return True
 
-    return (
-        ip.is_loopback
-        or ip.is_private
-        or ip.is_reserved
-        or ip.is_link_local
-        or ip.is_unspecified
-        or ip.is_multicast
-    )
+    return ip.is_loopback or ip.is_private or ip.is_reserved or ip.is_link_local or ip.is_unspecified or ip.is_multicast
 
 
 def _sanitize_url(url: str, allow_local: bool = False) -> str:
@@ -160,9 +155,7 @@ def _sanitize_url(url: str, allow_local: bool = False) -> str:
         raise HTTPException(status_code=422, detail="URL host not allowed")
 
     if not allow_local and (
-        host_lower in SSRF_BLOCKED_HOSTS
-        or host_lower == "localhost"
-        or host_lower.endswith(".localhost")
+        host_lower in SSRF_BLOCKED_HOSTS or host_lower == "localhost" or host_lower.endswith(".localhost")
     ):
         raise HTTPException(status_code=422, detail="URL host not allowed")
 
@@ -368,10 +361,11 @@ async def discover_models(
 
         api_base = _sanitize_url(target_url, allow_local=True).rstrip("/")
         from urllib.parse import urlparse
+
         parsed_api = urlparse(api_base)
         if parsed_api.scheme not in ("http", "https") or not parsed_api.netloc:
             raise ValueError("Invalid URL")
-        
+
         if not api_base.endswith("/v1"):
             api_base = api_base + "/v1"
         async with httpx.AsyncClient(base_url=api_base, timeout=10) as client:
@@ -415,7 +409,9 @@ async def create_custom_provider(
 
     from sqlalchemy import func, select
 
-    raw_count = db.execute(select(func.count()).select_from(CustomProvider).where(CustomProvider.user_id == user_id)).scalar()
+    raw_count = db.execute(
+        select(func.count()).select_from(CustomProvider).where(CustomProvider.user_id == user_id)
+    ).scalar()
     try:
         count = int(raw_count) if raw_count is not None and not hasattr(raw_count, "_mock_name") else 0
     except (TypeError, ValueError):
@@ -465,6 +461,8 @@ async def get_custom_provider(
     user=Depends(get_current_user),
 ):
     _get_user_id(user)
+
+
 def _format_custom_provider_response(cp: Any) -> CustomProviderResponse:
     d = None
     try:
@@ -478,11 +476,17 @@ def _format_custom_provider_response(cp: Any) -> CustomProviderResponse:
     if not d:
         d = {
             "id": str(getattr(cp, "id", "cp-1")) if not hasattr(getattr(cp, "id", None), "_mock_name") else "cp-1",
-            "name": str(getattr(cp, "name", "Provider")) if not hasattr(getattr(cp, "name", None), "_mock_name") else "Provider",
-            "base_url": str(getattr(cp, "base_url", "http://localhost:8080/v1")) if not hasattr(getattr(cp, "base_url", None), "_mock_name") else "http://localhost:8080/v1",
+            "name": str(getattr(cp, "name", "Provider"))
+            if not hasattr(getattr(cp, "name", None), "_mock_name")
+            else "Provider",
+            "base_url": str(getattr(cp, "base_url", "http://localhost:8080/v1"))
+            if not hasattr(getattr(cp, "base_url", None), "_mock_name")
+            else "http://localhost:8080/v1",
             "models": getattr(cp, "models", []) if isinstance(getattr(cp, "models", None), list) else [],
             "is_local": getattr(cp, "is_local", False) if isinstance(getattr(cp, "is_local", None), bool) else False,
-            "description": getattr(cp, "description", None) if not hasattr(getattr(cp, "description", None), "_mock_name") else None,
+            "description": getattr(cp, "description", None)
+            if not hasattr(getattr(cp, "description", None), "_mock_name")
+            else None,
             "is_active": getattr(cp, "is_active", True) if isinstance(getattr(cp, "is_active", None), bool) else True,
             "created_at": None,
             "updated_at": None,

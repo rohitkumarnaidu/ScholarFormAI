@@ -77,9 +77,7 @@ class Figure(BaseModel):
 
     # Parsed caption components
     label: str | None = Field(default=None, description="Figure label (e.g., 'Figure 1', 'Fig. 2')")
-    title: str | None = Field(
-        default=None, description="Descriptive title from caption (e.g., 'System Architecture')"
-    )
+    title: str | None = Field(default=None, description="Descriptive title from caption (e.g., 'System Architecture')")
 
     # Classification
     figure_type: FigureType = Field(default=FigureType.UNKNOWN, description="Type of figure content")
@@ -100,9 +98,7 @@ class Figure(BaseModel):
     placement: str | None = Field(default=None, description="Placement preference (e.g., 'top', 'bottom', 'here')")
 
     # File export information (assigned by export stage)
-    export_filename: str | None = Field(
-        default=None, description="Filename for exported image (e.g., 'figure_1.png')"
-    )
+    export_filename: str | None = Field(default=None, description="Filename for exported image (e.g., 'figure_1.png')")
     export_path: str | None = Field(default=None, description="Path where image was exported")
 
     # Extensibility

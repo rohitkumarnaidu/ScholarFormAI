@@ -296,7 +296,13 @@ class EnhancementManager:
         queue_backend_available = celery_available and redis_available
 
         resolved_queue_provider = "local"
-        if queue_provider == "celery" and queue_backend_available or queue_provider == "auto" and queue_enabled and queue_backend_available:
+        if (
+            queue_provider == "celery"
+            and queue_backend_available
+            or queue_provider == "auto"
+            and queue_enabled
+            and queue_backend_available
+        ):
             resolved_queue_provider = "celery"
 
         ocr_enabled = _coerce_bool(

@@ -26,7 +26,6 @@ from fastapi import BackgroundTasks, HTTPException, Request, UploadFile
 
 from app.config.settings import settings
 from app.exceptions import DatabaseUnavailableError, DocumentNotFoundError
-from app.pipeline.orchestrator import PipelineOrchestrator
 from app.schemas.user import User
 from app.services.audit_log_service import audit_log_service
 from app.services.document_crud_service import DocumentCrudService
@@ -502,7 +501,7 @@ class DocumentPipelineService:
             if created is None:
                 raise HTTPException(status_code=503, detail="Database temporarily unavailable. Please retry later.")
 
-            orchestrator_cls = _get_impl_symbol("PipelineOrchestrator", PipelineOrchestrator)
+            orchestrator_cls = _get_impl_symbol("PipelineOrchestrator") or __import__("app.pipeline.orchestrator", fromlist=["PipelineOrchestrator"]).PipelineOrchestrator
             orchestrator = orchestrator_cls()
             enhancement_mgr = _get_impl_symbol("enhancement_manager")
             if enhancement_mgr is None:
@@ -688,7 +687,7 @@ class DocumentPipelineService:
                         os_mod.remove(file_path)
                     raise HTTPException(status_code=503, detail="Database temporarily unavailable. Please retry later.")
 
-                orchestrator_cls = _get_impl_symbol("PipelineOrchestrator", PipelineOrchestrator)
+                orchestrator_cls = _get_impl_symbol("PipelineOrchestrator") or __import__("app.pipeline.orchestrator", fromlist=["PipelineOrchestrator"]).PipelineOrchestrator
                 orchestrator = orchestrator_cls()
                 enhancement_mgr = _get_impl_symbol("enhancement_manager")
                 if enhancement_mgr is None:
@@ -823,7 +822,7 @@ class DocumentPipelineService:
                         file_hash=hashlib.sha256(content).hexdigest(),
                     )
 
-                orchestrator_cls = _get_impl_symbol("PipelineOrchestrator", PipelineOrchestrator)
+                orchestrator_cls = _get_impl_symbol("PipelineOrchestrator") or __import__("app.pipeline.orchestrator", fromlist=["PipelineOrchestrator"]).PipelineOrchestrator
                 orchestrator = orchestrator_cls()
                 enhancement_mgr = _get_impl_symbol("enhancement_manager")
                 if enhancement_mgr is None:
@@ -919,7 +918,7 @@ class DocumentPipelineService:
             if not edited_data:
                 raise HTTPException(status_code=400, detail="Missing edited_structured_data")
 
-            orchestrator_cls = _get_impl_symbol("PipelineOrchestrator", PipelineOrchestrator)
+            orchestrator_cls = _get_impl_symbol("PipelineOrchestrator") or __import__("app.pipeline.orchestrator", fromlist=["PipelineOrchestrator"]).PipelineOrchestrator
             orchestrator = orchestrator_cls()
             enhancement_mgr = _get_impl_symbol("enhancement_manager")
             if enhancement_mgr is None:
@@ -1188,7 +1187,7 @@ class DocumentPipelineService:
         if doc is None:
             raise DocumentNotFoundError(doc_id)
 
-        orchestrator_cls = _get_impl_symbol("PipelineOrchestrator", PipelineOrchestrator)
+        orchestrator_cls = _get_impl_symbol("PipelineOrchestrator") or __import__("app.pipeline.orchestrator", fromlist=["PipelineOrchestrator"]).PipelineOrchestrator
         orchestrator = orchestrator_cls()
         job = await orchestrator.dispatch(
             document_id=str(doc_id),
@@ -1220,7 +1219,7 @@ class DocumentPipelineService:
         )
 
         doc_id = str(doc_id)
-        orchestrator_cls = _get_impl_symbol("PipelineOrchestrator", PipelineOrchestrator)
+        orchestrator_cls = _get_impl_symbol("PipelineOrchestrator") or __import__("app.pipeline.orchestrator", fromlist=["PipelineOrchestrator"]).PipelineOrchestrator
         orchestrator = orchestrator_cls()
         try:
             await orchestrator.cancel(document_id=doc_id)

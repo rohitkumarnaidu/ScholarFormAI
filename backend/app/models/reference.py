@@ -105,9 +105,7 @@ class Reference(BaseModel):
     citation_count: int = Field(default=0, description="Number of times this reference is cited")
 
     # Formatting
-    formatted_text: str | None = Field(
-        default=None, description="Formatted reference text according to target style"
-    )
+    formatted_text: str | None = Field(default=None, description="Formatted reference text according to target style")
     style: CitationStyle | None = Field(default=None, description="Citation style to use for formatting")
 
     # Validation
