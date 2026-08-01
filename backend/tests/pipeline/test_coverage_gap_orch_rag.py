@@ -65,28 +65,28 @@ def _make_doc(job_id="job1"):
 
 class TestGetFigureAnalyzer:
     def test_figure_analyzer_lazy_init(self):
-        from app.pipeline.orchestrator import _figure_analyzer_instance, _get_figure_analyzer
+        from app.pipeline.orchestrator.stages import _figure_analyzer_instance, _get_figure_analyzer
         old = _figure_analyzer_instance
         try:
-            import app.pipeline.orchestrator as mod
+            import app.pipeline.orchestrator.stages as mod
             mod._figure_analyzer_instance = None
             with patch("app.pipeline.figures.analyzer.figure_analyzer", "mock_analyzer"):
                 result = _get_figure_analyzer()
                 assert result == "mock_analyzer"
         finally:
-            import app.pipeline.orchestrator as mod
+            import app.pipeline.orchestrator.stages as mod
             mod._figure_analyzer_instance = old
 
     def test_figure_analyzer_returns_cached(self):
-        from app.pipeline.orchestrator import _figure_analyzer_instance, _get_figure_analyzer
+        from app.pipeline.orchestrator.stages import _figure_analyzer_instance, _get_figure_analyzer
         old = _figure_analyzer_instance
         try:
-            import app.pipeline.orchestrator as mod
+            import app.pipeline.orchestrator.stages as mod
             mod._figure_analyzer_instance = "cached"
             result = _get_figure_analyzer()
             assert result == "cached"
         finally:
-            import app.pipeline.orchestrator as mod
+            import app.pipeline.orchestrator.stages as mod
             mod._figure_analyzer_instance = old
 
 
