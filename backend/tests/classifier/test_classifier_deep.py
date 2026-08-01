@@ -81,80 +81,80 @@ class TestResolveHeadingType:
 
 
 # ---------------------------------------------------------------------------
-# _map_scibert_label
+# _map_llm_label
 # ---------------------------------------------------------------------------
 
-class TestMapScibertLabel:
+class TestMapLLMLabel:
     def test_title(self, classifier):
-        assert classifier._map_scibert_label("TITLE", block("b", 0))[0] == BlockType.TITLE
+        assert classifier._map_llm_label("TITLE", block("b", 0))[0] == BlockType.TITLE
 
     def test_abstract_heading(self, classifier):
         b = block("b", 0, text="Abstract", metadata={"is_heading_candidate": True})
-        assert classifier._map_scibert_label("ABSTRACT", b)[0] == BlockType.ABSTRACT_HEADING
+        assert classifier._map_llm_label("ABSTRACT", b)[0] == BlockType.ABSTRACT_HEADING
 
     def test_abstract_body(self, classifier):
         b = block("b", 0, text="This paper presents...")
-        assert classifier._map_scibert_label("ABSTRACT", b)[0] == BlockType.ABSTRACT_BODY
+        assert classifier._map_llm_label("ABSTRACT", b)[0] == BlockType.ABSTRACT_BODY
 
     def test_references_heading(self, classifier):
         b = block("b", 0, text="References", metadata={"is_heading_candidate": True})
-        assert classifier._map_scibert_label("REFERENCES", b)[0] == BlockType.REFERENCES_HEADING
+        assert classifier._map_llm_label("REFERENCES", b)[0] == BlockType.REFERENCES_HEADING
 
     def test_references_entry(self, classifier):
         b = block("b1", 0, text="[1] Author, J. (2024). A very long paper title indeed that exceeds the fifty character minimum threshold.")
-        assert classifier._map_scibert_label("REFERENCES", b)[0] == BlockType.REFERENCE_ENTRY
+        assert classifier._map_llm_label("REFERENCES", b)[0] == BlockType.REFERENCE_ENTRY
 
     def test_figure_caption(self, classifier):
-        assert classifier._map_scibert_label("FIGURE_CAPTION", block("b", 0))[0] == BlockType.FIGURE_CAPTION
+        assert classifier._map_llm_label("FIGURE_CAPTION", block("b", 0))[0] == BlockType.FIGURE_CAPTION
 
     def test_table_caption(self, classifier):
-        assert classifier._map_scibert_label("TABLE_CAPTION", block("b", 0))[0] == BlockType.TABLE_CAPTION
+        assert classifier._map_llm_label("TABLE_CAPTION", block("b", 0))[0] == BlockType.TABLE_CAPTION
 
     def test_acknowledgements(self, classifier):
-        assert classifier._map_scibert_label("ACKNOWLEDGEMENTS", block("b", 0))[0] == BlockType.ACKNOWLEDGEMENTS
+        assert classifier._map_llm_label("ACKNOWLEDGEMENTS", block("b", 0))[0] == BlockType.ACKNOWLEDGEMENTS
 
     def test_equation(self, classifier):
-        assert classifier._map_scibert_label("EQUATION", block("b", 0))[0] == BlockType.EQUATION
+        assert classifier._map_llm_label("EQUATION", block("b", 0))[0] == BlockType.EQUATION
 
     def test_methodology_heading(self, classifier):
-        b = block("b", 0, text="Methodology", metadata={"is_heading_candidate": True})
-        assert classifier._map_scibert_label("METHODOLOGY", b)[0] == BlockType.HEADING_1
+        b = block("b", 0, text="Methods", metadata={"is_heading_candidate": True})
+        assert classifier._map_llm_label("METHODOLOGY", b)[0] == BlockType.HEADING_1
 
     def test_methodology_body(self, classifier):
-        b = block("b", 0, text="We used a transformer-based approach.")
-        assert classifier._map_scibert_label("METHODOLOGY", b)[0] == BlockType.BODY
+        b = block("b", 0, text="We used the following methods...")
+        assert classifier._map_llm_label("METHODOLOGY", b)[0] == BlockType.BODY
 
     def test_heading(self, classifier):
-        assert classifier._map_scibert_label("HEADING", block("b", 0))[0] == BlockType.HEADING_1
+        assert classifier._map_llm_label("HEADING", block("b", 0))[0] == BlockType.HEADING_1
 
     def test_body(self, classifier):
-        assert classifier._map_scibert_label("BODY", block("b", 0))[0] == BlockType.BODY
+        assert classifier._map_llm_label("BODY", block("b", 0))[0] == BlockType.BODY
 
-    def test_unknown_falls_to_body(self, classifier):
-        assert classifier._map_scibert_label("UNKNOWN", block("b", 0))[0] == BlockType.BODY
+    def test_fallback(self, classifier):
+        assert classifier._map_llm_label("UNKNOWN", block("b", 0))[0] == BlockType.BODY
 
 
 # ---------------------------------------------------------------------------
-# _predict_scibert_batch
+# _predict_llm_batch
 # ---------------------------------------------------------------------------
 
-class TestPredictScibertBatch:
+class TestPredictLlmBatch:
     def test_disabled_returns_none(self, classifier):
-        with patch("app.pipeline.classification.classifier.should_enable_scibert", return_value=False):
-            assert classifier._predict_scibert_batch([]) is None
+        with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=False):
+            assert classifier._predict_llm_batch([]) is None
 
     def test_empty_blocks_returns_list(self, classifier):
-        with patch("app.pipeline.classification.classifier.should_enable_scibert", return_value=True):
-            assert classifier._predict_scibert_batch([]) == []
+        with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
+            assert classifier._predict_llm_batch([]) == []
 
     def test_non_english_returns_none(self, classifier):
         mock_parser = MagicMock()
         mock_parser.predict_blocks_batch.return_value = []
-        with patch("app.pipeline.classification.classifier.should_enable_scibert", return_value=True):
+        with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
             with patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser", return_value=mock_parser):
                 with patch("app.pipeline.intelligence.semantic_parser.HAS_LANGDETECT", True, create=True):
                     with patch("app.pipeline.intelligence.semantic_parser.detect_language", return_value="fr", create=True):
-                        result = classifier._predict_scibert_batch([block("b", 0, text="Bonjour")])
+                        result = classifier._predict_llm_batch([block("b", 0, text="Bonjour")])
         assert result is None
 
     def test_successful_prediction(self, classifier):
@@ -162,75 +162,75 @@ class TestPredictScibertBatch:
         mock_parser.model = MagicMock()
         mock_parser.tokenizer = MagicMock()
         mock_parser.predict_blocks_batch.return_value = [{"type": "BODY", "confidence": 0.95}]
-        with patch("app.pipeline.classification.classifier.should_enable_scibert", return_value=True):
+        with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
             with patch("app.pipeline.intelligence.semantic_parser.HAS_LANGDETECT", False, create=True):
                 with patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser", return_value=mock_parser):
-                    result = classifier._predict_scibert_batch([block("b", 0, text="Hello")])
+                    result = classifier._predict_llm_batch([block("b", 0, text="Hello")])
         assert result == [{"type": "BODY", "confidence": 0.95}]
 
     def test_exception_caught(self, classifier):
-        with patch("app.pipeline.classification.classifier.should_enable_scibert", return_value=True):
+        with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
             with patch("app.pipeline.intelligence.semantic_parser.HAS_LANGDETECT", False, create=True):
                 with patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser", side_effect=ImportError("no module")):
-                    assert classifier._predict_scibert_batch([block("b", 0)]) is None
+                    assert classifier._predict_llm_batch([block("b", 0)]) is None
 
     def test_no_model_returns_none(self, classifier):
         mock_parser = MagicMock()
         mock_parser.model = None
         mock_parser.tokenizer = None
-        with patch("app.pipeline.classification.classifier.should_enable_scibert", return_value=True):
+        with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
             with patch("app.pipeline.intelligence.semantic_parser.HAS_LANGDETECT", False, create=True):
                 with patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser", return_value=mock_parser):
-                    assert classifier._predict_scibert_batch([block("b", 0)]) is None
+                    assert classifier._predict_llm_batch([block("b", 0)]) is None
 
 
 # ---------------------------------------------------------------------------
-# _apply_scibert_predictions
+# _apply_llm_predictions
 # ---------------------------------------------------------------------------
 
-class TestApplyScibertPredictions:
+class TestApplyLlmPredictions:
     def test_no_predictions_noop(self, classifier):
         b = block("b1", 0, block_type=BlockType.BODY)
-        classifier._apply_scibert_predictions([b], None)
+        classifier._apply_llm_predictions([b], None)
         assert b.block_type == BlockType.BODY
 
     def test_stores_raw_metadata(self, classifier):
         b = block("b1", 0, block_type=BlockType.BODY)
         preds = [{"type": "ABSTRACT", "confidence": 0.95}]
-        classifier._apply_scibert_predictions([b], preds)
-        assert b.metadata.get("scibert_prediction") == "ABSTRACT"
+        classifier._apply_llm_predictions([b], preds)
+        assert b.metadata.get("llm_prediction") == "ABSTRACT"
 
     def test_skips_non_body_types(self, classifier):
         b = block("b1", 0, block_type=BlockType.TITLE)
         preds = [{"type": "BODY", "confidence": 0.95}]
-        classifier._apply_scibert_predictions([b], preds)
+        classifier._apply_llm_predictions([b], preds)
         assert b.block_type == BlockType.TITLE
 
     def test_overrides_body(self, classifier):
         b = block("b1", 0, block_type=BlockType.BODY)
         preds = [{"type": "ABSTRACT", "confidence": 0.95}]
-        classifier._apply_scibert_predictions([b], preds)
+        classifier._apply_llm_predictions([b], preds)
         assert b.block_type == BlockType.ABSTRACT_BODY
 
     def test_low_confidence_skipped(self, classifier):
-        classifier.scibert_min_confidence = 0.8
+        classifier.llm_min_confidence = 0.8
         b = block("b1", 0, block_type=BlockType.BODY)
         preds = [{"type": "ABSTRACT", "confidence": 0.3}]
-        classifier._apply_scibert_predictions([b], preds)
+        classifier._apply_llm_predictions([b], preds)
         assert b.block_type == BlockType.BODY
 
     def test_skips_header_blocks(self, classifier):
         b = block("b1", 0, block_type=BlockType.BODY, metadata={"is_header": True})
         preds = [{"type": "ABSTRACT", "confidence": 0.95}]
-        classifier._apply_scibert_predictions([b], preds)
+        classifier._apply_llm_predictions([b], preds)
         assert b.block_type == BlockType.BODY
 
     def test_body_to_body_skipped(self, classifier):
         b = block("b1", 0, block_type=BlockType.BODY)
         preds = [{"type": "BODY", "confidence": 0.99}]
-        classifier._apply_scibert_predictions([b], preds)
+        classifier._apply_llm_predictions([b], preds)
         assert b.block_type == BlockType.BODY
-        assert b.metadata.get("classification_method") != "scibert_batch"
+        assert b.metadata.get("classification_method") != "llm_batch"
 
 
 # ---------------------------------------------------------------------------
@@ -381,7 +381,7 @@ class TestDeterministicCaptions:
             document_id="d", metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.BODY, text="Figure 1: Results")],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -392,7 +392,7 @@ class TestDeterministicCaptions:
             document_id="d", metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.BODY, text="Table 1: Data")],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -409,7 +409,7 @@ class TestFrontMatter:
             document_id="d", metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.BODY, text="My Paper")],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -421,7 +421,7 @@ class TestFrontMatter:
             metadata=DocumentMetadata(ai_hints={"grobid_metadata": {"title": "My Paper"}}),
             blocks=[block("b1", 0, BlockType.BODY, text="My Paper")],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -438,7 +438,7 @@ class TestFrontMatter:
                 block("b2", 100, BlockType.BODY, text="Alice Johnson"),
             ],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -459,7 +459,7 @@ class TestFrontMatter:
                 block("b3", 200, BlockType.BODY, text="Massachusetts Institute of Technology"),
             ],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -473,7 +473,7 @@ class TestFrontMatter:
                 block("b2", 100, BlockType.BODY, text="Alice Johnson"),
             ],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -488,7 +488,7 @@ class TestFrontMatter:
                 block("b3", 200, BlockType.BODY, text="University of Wonderland"),
             ],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -509,7 +509,7 @@ class TestBodyZone:
                       metadata={"is_heading_candidate": True}, level=1),
             ],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -525,7 +525,7 @@ class TestBodyZone:
                       section_name="abstract"),
             ],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -542,7 +542,7 @@ class TestBodyZone:
                 block("b2", 100, BlockType.BODY, text="This paper presents..."),
             ],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -558,7 +558,7 @@ class TestBodyZone:
                       section_name="keywords"),
             ],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -575,7 +575,7 @@ class TestBodyZone:
                 block("b2", 100, BlockType.BODY, text="machine learning, NLP"),
             ],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -591,7 +591,7 @@ class TestBodyZone:
                       section_name="acknowledgements"),
             ],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -607,7 +607,7 @@ class TestBodyZone:
                       section_name="acknowledgements"),
             ],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -623,7 +623,7 @@ class TestBodyZone:
                       section_name="acknowledgements"),
             ],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -639,7 +639,7 @@ class TestBodyZone:
                       section_name="appendix"),
             ],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -662,7 +662,7 @@ class TestReferencesZone:
                 block("b2", 100, BlockType.BODY, text="[1] Author. Title."),
             ],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=1):
                     classifier.process(doc)
@@ -703,7 +703,7 @@ class TestNlpFallback:
 class TestProcess:
     def test_returns_document(self, classifier):
         doc = PipelineDocument(document_id="d", metadata=DocumentMetadata(), blocks=[])
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     result = classifier.process(doc)
@@ -714,7 +714,7 @@ class TestProcess:
             document_id="d", metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.BODY, text="Hello")],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -731,7 +731,7 @@ class TestProcess:
             document_id="d", metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.BODY, text="Header", metadata={"is_header": True})],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -742,7 +742,7 @@ class TestProcess:
             document_id="d", metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.TITLE, text="My Paper")],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -753,7 +753,7 @@ class TestProcess:
             document_id="d", metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.BODY, text="Regular paragraph.")],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -764,7 +764,7 @@ class TestProcess:
             document_id="d", metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.UNKNOWN, text="1. Introduction")],
         )
-        with patch.object(classifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
@@ -778,7 +778,7 @@ class TestProcess:
 class TestClassifyContent:
     def test_returns_document(self):
         doc = PipelineDocument(document_id="d", metadata=DocumentMetadata(), blocks=[])
-        with patch.object(ContentClassifier, "_predict_scibert_batch", return_value=None):
+        with patch.object(ContentClassifier, "_predict_llm_batch", return_value=None):
             with patch.object(ContentClassifier, "_find_first_section_index", return_value=0):
                 with patch.object(ContentClassifier, "_find_references_start_index", return_value=None):
                     result = classify_content(doc)

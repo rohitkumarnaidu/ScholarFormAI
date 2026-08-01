@@ -88,6 +88,7 @@ class ContentClassifier(PipelineStage):
             "ltd",
             "gmbh",
             "foundation",
+            "@",
             "limited",
             "road",
             "st.",
