@@ -548,6 +548,8 @@ class StructureDetector(PipelineStage):
 
         return candidates
 
+    _detect_structure_with_docling = _detect_structure_with_llm_layout
+
 
 # Convenience function
 @safe_function(fallback_value=None, error_message="detect_structure failed")

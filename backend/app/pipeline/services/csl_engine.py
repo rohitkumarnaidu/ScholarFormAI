@@ -44,12 +44,22 @@ class CSLEngine:
     DEFAULT_STYLE_MAP = {
         "ieee": "ieee",
         "apa": "apa",
+        "vancouver": "vancouver",
+        "mla": "mla",
+        "chicago": "chicago",
+        "harvard": "harvard",
+        "nature": "nature",
+        "springer": "springer",
+        "acm": "acm",
+        "elsevier": "elsevier",
+        "numeric": "numeric",
     }
     ESTIMATED_AVAILABLE_STYLES = 10_000
 
     def __init__(self, templates_dir: str | None = None):
         app_dir = Path(__file__).resolve().parents[2]
         self.templates_dir = Path(templates_dir) if templates_dir else app_dir / "templates"
+        self._style_cache: dict[str, str] = {}
 
     def get_capabilities(self) -> dict[str, Any]:
         """
@@ -62,6 +72,7 @@ class CSLEngine:
             "supports_citeproc": CITEPROC_AVAILABLE,
             "supports_external_csl_files": True,
             "estimated_available_styles": self.ESTIMATED_AVAILABLE_STYLES,
+            "built_in_styles": list(self.DEFAULT_STYLE_MAP.keys()),
         }
 
     def supports_10k_plus_styles(self) -> bool:
@@ -88,6 +99,29 @@ class CSLEngine:
         if not default_path.is_file():
             raise FileNotFoundError(f"Built-in CSL style file not found for style '{style_key}': {default_path}")
         return default_path
+
+    def resolve_style(self, style: str, style_path: str | None = None) -> dict[str, Any]:
+        """Resolve CSL style xml and source metadata, with caching."""
+        style_key = (style or "ieee").strip().lower()
+        if style_key in self._style_cache:
+            return {"style": style, "csl_xml": self._style_cache[style_key], "source": "cache"}
+
+        source = "fallback"
+        csl_xml = f"<style>{style_key}</style>"
+        try:
+            resolved_path = self.resolve_style_path(style=style_key, style_path=style_path)
+            if resolved_path and resolved_path.is_file():
+                csl_xml = resolved_path.read_text(encoding="utf-8")
+                source = "file"
+        except Exception:
+            source = "fallback"
+
+        self._style_cache[style_key] = csl_xml
+        return {
+            "style": style,
+            "csl_xml": csl_xml,
+            "source": source,
+        }
 
     def format_reference(self, reference: Reference, style: str = "ieee", style_path: str | None = None) -> str:
         """Format a single reference."""
@@ -206,6 +240,14 @@ class CSLEngine:
         style_key = (style or "ieee").strip().lower()
         if style_key == "apa":
             return self._format_apa_fallback(ref)
+        elif style_key == "vancouver":
+            return self._format_vancouver_fallback(ref)
+        elif style_key == "mla":
+            return self._format_mla_fallback(ref)
+        elif style_key == "chicago":
+            return self._format_chicago_fallback(ref)
+        elif style_key == "harvard":
+            return self._format_harvard_fallback(ref)
         return self._format_ieee_fallback(ref)
 
     def _format_ieee_fallback(self, ref: Reference) -> str:
@@ -268,3 +310,53 @@ class CSLEngine:
         if len(authors) == 2:
             return f"{authors[0]}, & {authors[1]}"
         return f"{', '.join(authors[:-1])}, & {authors[-1]}"
+
+    def _format_vancouver_fallback(self, ref: Reference) -> str:
+        authors = ", ".join(ref.authors) if ref.authors else "Unknown Author"
+        title = ref.title or "Untitled"
+        venue = ref.journal or ref.conference or ref.book_title or ref.publisher or ""
+        year = str(ref.year) if ref.year else ""
+        vol = f"{ref.volume}" if ref.volume else ""
+        issue = f"({ref.issue})" if ref.issue else ""
+        pages = f":{ref.pages}" if ref.pages else ""
+
+        parts = [f"{authors}. {title}."]
+        if venue:
+            parts.append(f"{venue}. {year};{vol}{issue}{pages}.".replace("..", "."))
+        elif year:
+            parts.append(f"{year}.")
+        return " ".join(p for p in parts if p).strip()
+
+    def _format_mla_fallback(self, ref: Reference) -> str:
+        authors = ", ".join(ref.authors) if ref.authors else "Unknown Author"
+        title = f'"{ref.title}."' if ref.title else '"Untitled."'
+        venue = ref.journal or ref.conference or ref.book_title or ref.publisher or ""
+        year = str(ref.year) if ref.year else ""
+        parts = [f"{authors}.", title]
+        if venue:
+            parts.append(f"{venue},")
+        if year:
+            parts.append(f"{year}.")
+        return " ".join(parts).strip()
+
+    def _format_chicago_fallback(self, ref: Reference) -> str:
+        authors = ", ".join(ref.authors) if ref.authors else "Unknown Author"
+        title = f'"{ref.title}."' if ref.title else '"Untitled."'
+        venue = ref.journal or ref.conference or ref.book_title or ref.publisher or ""
+        year = str(ref.year) if ref.year else ""
+        parts = [f"{authors}.", title]
+        if venue:
+            parts.append(f"{venue}")
+        if year:
+            parts.append(f"({year}).")
+        return " ".join(parts).strip()
+
+    def _format_harvard_fallback(self, ref: Reference) -> str:
+        authors = ", ".join(ref.authors) if ref.authors else "Unknown Author"
+        year = f"({ref.year})" if ref.year else "(n.d.)"
+        title = f"'{ref.title}'," if ref.title else "'Untitled',"
+        venue = ref.journal or ref.conference or ref.book_title or ref.publisher or ""
+        parts = [authors, year, title]
+        if venue:
+            parts.append(f"{venue}.")
+        return " ".join(parts).strip()

@@ -1,2 +1,492 @@
 
-# SPDX-License-Identifier: MIT\n# Copyright (c) 2026 ScholarForm AI\n\n"""\nDeep tests for ReferenceFormatter — coverage booster for citeproc-enabled paths.\n\nCovers:\n- _reference_to_csl_json (all fields + edge cases)\n- _format_with_citeproc (all branches: no CSL, style failure, success, empty results)\n- _get_or_load_style (cache hit, cache miss, load failure)\n- format_reference with CITEPROC_AVAILABLE=True (success, fallback, exception)\n- _resolve_csl_path with valid file detection\n- _reference_type_to_csl ALL enum values\n- _parse_author_name edge cases (multi-word, von names, whitespace)\n"""\n\nimport sys\nfrom unittest.mock import patch, MagicMock\nimport pytest\n\n# ── Module-level citeproc-py mock ──────────────────────────────────────────\n# Build a complete mock citeproc-py module tree so that\n# reference_formatter's try/except ImportError block succeeds and\n# CITEPROC_AVAILABLE = True.\n_citeproc_source = MagicMock()\n_citeproc_source.json = MagicMock()\n_citeproc_source.json.CiteProcJSON = MagicMock()\n\n_citeproc = MagicMock()\n_citeproc.CitationStylesStyle = MagicMock()\n_citeproc.CitationStylesBibliography = MagicMock()\n_citeproc.formatter = MagicMock()\n_citeproc.Citation = MagicMock()\n_citeproc.CitationItem = MagicMock()\n_citeproc.source = _citeproc_source\n\n_citeproc_source.BibliographySource = MagicMock()\n\nsys.modules["citeproc"] = _citeproc\nsys.modules["citeproc.source"] = _citeproc_source\nsys.modules["citeproc.source.json"] = _citeproc_source.json\n\n# Also force the module-level flag (no-op if already set by the try block)\npatch("app.pipeline.formatting.reference_formatter.CITEPROC_AVAILABLE", True).start()\n\nfrom app.pipeline.formatting.reference_formatter import (  # noqa: E402\n    _resolve_csl_path,\n    _parse_author_name,\n    _reference_type_to_csl,\n    _reference_to_csl_json,\n)\n\n\n# ======================================================================\n#  _reference_to_csl_json tests  (lines 90–147)\n# ======================================================================\nclass TestReferenceToCslJson:\n    """Every field branch in _reference_to_csl_json."""\n\n    @staticmethod\n    def _ref(**kw) -> Reference:\nfrom app.models import Reference, ReferenceType  # noqa: E402\n\n        defaults = dict(reference_id="r1", citation_key="k", raw_text="t", index=0)\n        defaults.update(kw)\n        return Reference(**defaults)\n\n    def test_all_fields(self):\n        ref = self._ref(\n            authors=["Smith, J.", "Doe, A."],\n            reference_type=ReferenceType.JOURNAL_ARTICLE,\n            title="Full Title",\n            journal="Test Jrnl",\n            publisher="TestPub",\n            year=2023,\n            volume="10",\n            issue="2",\n            pages="123-145",\n            doi="10.1234/abc",\n            isbn="978-0-12-345678-9",\n            issn="1234-5678",\n            url="https://example.org",\n            edition="3rd",\n            note="See also ...",\n        result = _reference_to_csl_json(ref)\n\n        assert result["id"] == "r1"\n        assert result["type"] == "article-journal"\n        assert result["author"] == [\n            {"family": "Smith", "given": "J."},\n            {"family": "Doe", "given": "A."},\n        ]\n        assert result["title"] == "Full Title"\n        assert result["container-title"] == "Test Jrnl"\n        assert result["publisher"] == "TestPub"\n        assert result["issued"] == {"date-parts": [[2023]]}\n        assert result["volume"] == "10"\n        assert result["issue"] == "2"\n        assert result["page"] == "123-145"\n        assert result["DOI"] == "10.1234/abc"\n        assert result["ISBN"] == "978-0-12-345678-9"\n        assert result["ISSN"] == "1234-5678"\n        assert result["URL"] == "https://example.org"\n        assert result["edition"] == "3rd"\n        assert result["note"] == "See also ..."\n\n    def test_minimal(self):\n        """Only required fields → only id and type."""\n        ref = self._ref()\n        result = _reference_to_csl_json(ref)\n        assert result == {"id": "r1", "type": "article"}\n\n    def test_container_conference(self):\n        """journal=None → use conference as container-title."""\n        ref = self._ref(conference="Conf 2024")\n        result = _reference_to_csl_json(ref)\n        assert result["container-title"] == "Conf 2024"\n\n    def test_container_book_title(self):\n        """journal & conference None → use book_title."""\n        ref = self._ref(book_title="The Book")\n        result = _reference_to_csl_json(ref)\n        assert result["container-title"] == "The Book"\n\n    def test_container_precedence_journal_over_conference(self):\n        """journal takes priority over conference and book_title."""\n        ref = self._ref(\n            journal="The Jrnl",\n            conference="The Conf",\n            book_title="The Book",\n        result = _reference_to_csl_json(ref)\n        assert result["container-title"] == "The Jrnl"\n\n    def test_no_authors(self):\n        """Empty authors list → no 'author' key emitted."""\n        ref = self._ref(authors=[])\n        result = _reference_to_csl_json(ref)\n        assert "author" not in result\n\n    def test_no_year(self):\n        """year=None → no 'issued' key."""\n        ref = self._ref(year=None)\n        result = _reference_to_csl_json(ref)\n        assert "issued" not in result\n\n    def test_no_identifiers(self):\n        """All identifiers None → no DOI/ISBN/ISSN/URL keys."""\n        ref = self._ref(doi=None, isbn=None, issn=None, url=None)\n        result = _reference_to_csl_json(ref)\n        for key in ("DOI", "ISBN", "ISSN", "URL"):\n            assert key not in result\n\n\n# ======================================================================\n#  _format_with_citeproc tests  (lines 211–244)\n# ======================================================================\nclass TestFormatWithCiteproc:\n    """Every branch of _format_with_citeproc."""\n\n    @pytest.fixture\n    def fmt(self):\n        return ReferenceFormatter(MagicMock())\n\n    @staticmethod\n    def _ref(**kw) -> Reference:\n        defaults = dict(reference_id="r1", citation_key="k", raw_text="t", index=0)\n        defaults.update(kw)\n        return Reference(**defaults)\n\n    def test_no_csl_path_returns_none(self, fmt):\n        """_resolve_csl_path returns None → return None immediately."""\n        with patch(\n            "app.pipeline.formatting.reference_formatter._resolve_csl_path",\n            return_value=None,\n        ):\n            result = fmt._format_with_citeproc(self._ref(), "ieee")\n        assert result is None\n\n    def test_style_none_returns_none(self, fmt):\n        """_get_or_load_style returns None → return None."""\n        with patch(\n            "app.pipeline.formatting.reference_formatter._resolve_csl_path",\n            return_value="/fake/styles.csl",\n        ):\n            fmt._style_cache["/fake/styles.csl"] = None\n            result = fmt._format_with_citeproc(self._ref(), "ieee")\n        assert result is None\n\n    @patch("app.pipeline.formatting.reference_formatter.CitationItem")\n    @patch("app.pipeline.formatting.reference_formatter.Citation")\n    @patch("app.pipeline.formatting.reference_formatter.CitationStylesBibliography")\n    @patch("app.pipeline.formatting.reference_formatter.CiteProcJSON")\n    @patch("app.pipeline.formatting.reference_formatter._resolve_csl_path")\n    def test_success_path(self, m_resolve, m_cpj, m_csb, m_cit, m_ci, fmt):\n        """Full success: style cached → citeproc pipeline → formatted string."""\n        m_resolve.return_value = "/fake/styles.csl"\n        mock_style = MagicMock()\n        fmt._style_cache["/fake/styles.csl"] = mock_style\n\n        mock_bib = MagicMock()\n        mock_bib.bibliography.return_value = ["  Formatted output.  "]\n        m_csb.return_value = mock_bib\n        m_cpj.return_value = MagicMock()\n        m_cit.return_value = MagicMock()\n        m_ci.return_value = MagicMock()\n\n        result = fmt._format_with_citeproc(self._ref(), "ieee")\n\n        assert result == "Formatted output."\n        mock_bib.register.assert_called_once()\n\n    @patch("app.pipeline.formatting.reference_formatter.CitationItem")\n    @patch("app.pipeline.formatting.reference_formatter.Citation")\n    @patch("app.pipeline.formatting.reference_formatter.CitationStylesBibliography")\n    @patch("app.pipeline.formatting.reference_formatter.CiteProcJSON")\n    @patch("app.pipeline.formatting.reference_formatter._resolve_csl_path")\n    def test_empty_bib_entries_returns_none(\n        self, m_resolve, m_cpj, m_csb, m_cit, m_ci, fmt\n    ):\n        """bibliography() returns [] → return None."""\n        m_resolve.return_value = "/fake/styles.csl"\n        mock_style = MagicMock()\n        fmt._style_cache["/fake/styles.csl"] = mock_style\n\n        mock_bib = MagicMock()\n        mock_bib.bibliography.return_value = []\n        m_csb.return_value = mock_bib\n        m_cpj.return_value = MagicMock()\n        m_cit.return_value = MagicMock()\n        m_ci.return_value = MagicMock()\n\n        result = fmt._format_with_citeproc(self._ref(), "ieee")\n        assert result is None\n\n    @patch("app.pipeline.formatting.reference_formatter.CitationItem")\n    @patch("app.pipeline.formatting.reference_formatter.Citation")\n    @patch("app.pipeline.formatting.reference_formatter.CitationStylesBibliography")\n    @patch("app.pipeline.formatting.reference_formatter.CiteProcJSON")\n    @patch("app.pipeline.formatting.reference_formatter._resolve_csl_path")\n    def test_empty_rendered_string_returns_none(\n        self, m_resolve, m_cpj, m_csb, m_cit, m_ci, fmt\n    ):\n        """bib_entries[0] is blank after strip → return None."""\n        m_resolve.return_value = "/fake/styles.csl"\n        mock_style = MagicMock()\n        fmt._style_cache["/fake/styles.csl"] = mock_style\n\n        mock_bib = MagicMock()\n        mock_bib.bibliography.return_value = ["   "]\n        m_csb.return_value = mock_bib\n        m_cpj.return_value = MagicMock()\n        m_cit.return_value = MagicMock()\n        m_ci.return_value = MagicMock()\n\n        result = fmt._format_with_citeproc(self._ref(), "ieee")\n        assert result is None\n\n\n# ======================================================================\n#  _get_or_load_style tests  (lines 246–259)\n# ======================================================================\nclass TestGetOrLoadStyle:\n    """Caching and failure modes of _get_or_load_style."""\n\n    @pytest.fixture\n    def fmt(self):\n        return ReferenceFormatter(MagicMock())\n\n    def test_cache_hit_returns_cached(self, fmt):\n        """Existing entry in _style_cache → returned immediately."""\n        mock_style = MagicMock()\n        fmt._style_cache["/path/s.csl"] = mock_style\n        assert fmt._get_or_load_style("/path/s.csl") is mock_style\n\n    @patch("app.pipeline.formatting.reference_formatter.CitationStylesStyle")\n    def test_cache_miss_loads_and_caches(self, m_css, fmt):\n        """First call loads style and stores in cache."""\n        mock_style = MagicMock()\n        m_css.return_value = mock_style\n        result = fmt._get_or_load_style("/path/s.csl")\n        assert result is mock_style\n        assert fmt._style_cache["/path/s.csl"] is mock_style\n        m_css.assert_called_once_with("/path/s.csl", validate=False)\n\n    @patch("app.pipeline.formatting.reference_formatter.CitationStylesStyle")\n    def test_load_failure_caches_none(self, m_css, fmt):\n        """Exception during load → cached as None, returns None."""\n        m_css.side_effect = RuntimeError("corrupt CSL")\n        result = fmt._get_or_load_style("/path/s.csl")\n        assert result is None\n        assert fmt._style_cache["/path/s.csl"] is None\n\n    @patch("app.pipeline.formatting.reference_formatter.logger")\n    @patch("app.pipeline.formatting.reference_formatter.CitationStylesStyle")\n    def test_load_failure_logs_error(self, m_css, m_logger, fmt):\n        """Exception during load → error logged."""\n        m_css.side_effect = RuntimeError("parse error")\n        fmt._get_or_load_style("/path/s.csl")\n        m_logger.error.assert_called_once()\n        assert "Failed to load CSL style" in str(m_logger.error.call_args)\n\n\n# ======================================================================\n#  format_reference with CITEPROC_AVAILABLE=True  (lines 181–192)\n# ======================================================================\nclass TestReferenceFormatterCiteproc:\n    """format_reference citeproc path: success, fallback, exception."""\n\n    @pytest.fixture\n    def fmt(self):\n        return ReferenceFormatter(MagicMock())\n\n    @staticmethod\n    def _ref(**kw) -> Reference:\n        defaults = dict(reference_id="r1", citation_key="k", raw_text="t", index=0)\n        defaults.update(kw)\n        return Reference(**defaults)\n\n    def test_citeproc_success_returns_citeproc_result(self, fmt):\n        """_format_with_citeproc returns string → returned as-is."""\n        with patch.object(\n            fmt, "_format_with_citeproc", return_value="Citeproc OK"\n        ) as m_cp, patch.object(fmt, "_format_legacy") as m_legacy:\n            ref = self._ref()\n            result = fmt.format_reference(ref, "ieee")\n\n        assert result == "Citeproc OK"\n        m_cp.assert_called_once_with(ref, "ieee")\n        m_legacy.assert_not_called()\n\n    def test_citeproc_none_falls_back_to_legacy(self, fmt):\n        """_format_with_citeproc returns None → falls to _format_legacy."""\n        with patch.object(\n            fmt, "_format_with_citeproc", return_value=None\n        ) as m_cp, patch.object(\n            fmt, "_format_legacy", return_value="Legacy OK"\n        ) as m_legacy:\n            ref = self._ref()\n            result = fmt.format_reference(ref, "ieee")\n\n        assert result == "Legacy OK"\n        m_cp.assert_called_once_with(ref, "ieee")\n        m_legacy.assert_called_once_with(ref, "ieee")\n\n    def test_citeproc_exception_falls_back_to_legacy(self, fmt):\n        """_format_with_citeproc raises → caught, logs, falls to legacy."""\n        with patch.object(\n            fmt, "_format_with_citeproc", side_effect=ValueError("boom")\n        ) as m_cp, patch.object(\n            fmt, "_format_legacy", return_value="Legacy OK"\n        ) as m_legacy:\n            ref = self._ref()\n            result = fmt.format_reference(ref, "ieee")\n\n        assert result == "Legacy OK"\n        m_cp.assert_called_once_with(ref, "ieee")\n        m_legacy.assert_called_once_with(ref, "ieee")\n\n    def test_citeproc_flag_false_skips_citeproc(self, fmt):\n        """CITEPROC_AVAILABLE=False → direct to legacy, no citeproc call."""\n        with patch(\n            "app.pipeline.formatting.reference_formatter.CITEPROC_AVAILABLE",\n            False,\n        ), patch.object(fmt, "_format_with_citeproc") as m_cp, patch.object(\n            fmt, "_format_legacy", return_value="Legacy OK"\n        ) as m_legacy:\n            ref = self._ref()\n            result = fmt.format_reference(ref, "ieee")\n\n        assert result == "Legacy OK"\n        m_cp.assert_not_called()\n        m_legacy.assert_called_once_with(ref, "ieee")\n\n    def test_format_references_calls_format_reference_each(self, fmt):\n        """format_references delegates to format_reference per item."""\n        refs = [\n        ]\n        with patch.object(\n            fmt,\n            "format_reference",\n            side_effect=lambda r, p: f"formatted-{r.reference_id}",\n        ):\n            results = fmt.format_references(refs, "ieee")\n\n        assert results == ["formatted-r1", "formatted-r2"]\n\n\n# ======================================================================\n#  _resolve_csl_path edge with valid file  (lines 44–52)\n# ======================================================================\nclass TestResolveCslPathFile:\n    """_resolve_csl_path when a CSL file actually exists."""\n\n    @patch("app.pipeline.formatting.reference_formatter.os.path.isfile")\n    def test_valid_publisher_found(self, m_isfile):\n        """Publisher that maps to an existing styles.csl → path returned."""\n        m_isfile.return_value = True\n        path = _resolve_csl_path("ieee")\n        assert path is not None\n        assert path.endswith("styles.csl")\n        m_isfile.assert_called_once()\n\n    @patch("app.pipeline.formatting.reference_formatter.os.path.isfile")\n    def test_valid_publisher_not_found(self, m_isfile):\n        """Publisher whose styles.csl does not exist → None."""\n        m_isfile.return_value = False\n        path = _resolve_csl_path("ieee")\n        assert path is None\n\n    @patch("app.pipeline.formatting.reference_formatter.os.path.isfile")\n    def test_whitespace_and_case_normalized(self, m_isfile):\n        """Leading/trailing whitespace and uppercase are normalized."""\n        m_isfile.return_value = True\n        path = _resolve_csl_path("  IEEE  ")\n        assert path is not None\n        assert "ieee" in path and "IEEE" not in path\n\n\n# ======================================================================\n#  _reference_type_to_csl — all enum values  (lines 55–68)\n# ======================================================================\nclass TestReferenceTypeToCslAll:\n    """Map every ReferenceType value to the expected CSL type string."""\n\n    @pytest.mark.parametrize("ref_type,expected", [\n        (ReferenceType.JOURNAL_ARTICLE, "article-journal"),\n        (ReferenceType.CONFERENCE_PAPER, "paper-conference"),\n        (ReferenceType.BOOK, "book"),\n        (ReferenceType.BOOK_CHAPTER, "chapter"),\n        (ReferenceType.THESIS, "thesis"),\n        (ReferenceType.TECHNICAL_REPORT, "report"),\n        (ReferenceType.PATENT, "patent"),\n        (ReferenceType.WEB_PAGE, "webpage"),\n        (ReferenceType.PREPRINT, "article"),\n        (ReferenceType.UNKNOWN, "article"),\n    ])\n    def test_mapping(self, ref_type, expected):\n        ref = Reference(\n            reference_id="r1",\n            citation_key="k",\n            raw_text="t",\n            index=0,\n            reference_type=ref_type,\n        assert _reference_type_to_csl(ref) == expected\n\n\n# ======================================================================\n#  _parse_author_name advanced edge cases  (lines 80–87)\n# ======================================================================\nclass TestParseAuthorNameAdvanced:\n    """Edge cases in _parse_author_name — especially the rsplit else branch."""\n\n    def test_multi_word_no_comma(self):\n        """'Jane Anne Doe' → rsplit splits on last space."""\n        r = _parse_author_name("Jane Anne Doe")\n        assert r == {"given": "Jane Anne", "family": "Doe"}\n\n    def test_multi_word_with_comma(self):\n        """'Doe, Jane Anne' → comma split preserves multi-word family."""\n        r = _parse_author_name("Doe, Jane Anne")\n        assert r == {"family": "Doe", "given": "Jane Anne"}\n\n    def test_middle_initial_no_comma(self):\n        """'John M. Doe' → rsplit, given includes initial."""\n        r = _parse_author_name("John M. Doe")\n        assert r == {"given": "John M.", "family": "Doe"}\n\n    def test_von_surname_with_comma(self):\n        """'von Neumann, John' → comma branch, family='von Neumann'."""\n        r = _parse_author_name("von Neumann, John")\n        assert r == {"family": "von Neumann", "given": "John"}\n\n    def test_comma_no_given(self):\n        """'Doe,' → family='Doe', given=''."""\n        r = _parse_author_name("Doe,")\n        assert r == {"family": "Doe", "given": ""}\n\n    def test_single_word_no_given(self):\n        """'Aristotle' → only family key, no 'given'."""\n        r = _parse_author_name("Aristotle")\n        assert r == {"family": "Aristotle"}\n\n    def test_empty_returns_unknown(self):\n        """Empty string after strip → family='Unknown'."""\n        r = _parse_author_name("")\n        assert r == {"family": "Unknown"}\n\n    def test_only_spaces_returns_unknown(self):\n        """Whitespace-only → family='Unknown'."""\n        r = _parse_author_name("   ")\n        assert r == {"family": "Unknown"}\n
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 ScholarForm AI
+
+"""
+Deep tests for ReferenceFormatter — coverage booster for citeproc-enabled paths.
+
+Covers:
+- _reference_to_csl_json (all fields + edge cases)
+- _format_with_citeproc (all branches: no CSL, style failure, success, empty results)
+- _get_or_load_style (cache hit, cache miss, load failure)
+- format_reference with CITEPROC_AVAILABLE=True (success, fallback, exception)
+- _resolve_csl_path with valid file detection
+- _reference_type_to_csl ALL enum values
+- _parse_author_name edge cases (multi-word, von names, whitespace)
+"""
+
+import sys
+from unittest.mock import patch, MagicMock
+import pytest
+
+# ── Module-level citeproc-py mock ──────────────────────────────────────────
+# Build a complete mock citeproc-py module tree so that
+# reference_formatter's try/except ImportError block succeeds and
+# CITEPROC_AVAILABLE = True.
+_citeproc_source = MagicMock()
+_citeproc_source.json = MagicMock()
+_citeproc_source.json.CiteProcJSON = MagicMock()
+
+_citeproc = MagicMock()
+_citeproc.CitationStylesStyle = MagicMock()
+_citeproc.CitationStylesBibliography = MagicMock()
+_citeproc.formatter = MagicMock()
+_citeproc.Citation = MagicMock()
+_citeproc.CitationItem = MagicMock()
+_citeproc.source = _citeproc_source
+
+_citeproc_source.BibliographySource = MagicMock()
+
+sys.modules["citeproc"] = _citeproc
+sys.modules["citeproc.source"] = _citeproc_source
+sys.modules["citeproc.source.json"] = _citeproc_source.json
+
+# Also force the module-level flag (no-op if already set by the try block)
+patch("app.pipeline.formatting.reference_formatter.CITEPROC_AVAILABLE", True).start()
+
+from app.pipeline.formatting.reference_formatter import (  # noqa: E402
+    _resolve_csl_path,
+    _parse_author_name,
+    _reference_type_to_csl,
+    _reference_to_csl_json,
+)
+
+
+# ======================================================================
+#  _reference_to_csl_json tests  (lines 90–147)
+# ======================================================================
+class TestReferenceToCslJson:
+    """Every field branch in _reference_to_csl_json."""
+
+    @staticmethod
+    def _ref(**kw) -> Reference:
+from app.models import Reference, ReferenceType  # noqa: E402
+
+        defaults = dict(reference_id="r1", citation_key="k", raw_text="t", index=0)
+        defaults.update(kw)
+        return Reference(**defaults)
+
+    def test_all_fields(self):
+        ref = self._ref(
+            authors=["Smith, J.", "Doe, A."],
+            reference_type=ReferenceType.JOURNAL_ARTICLE,
+            title="Full Title",
+            journal="Test Jrnl",
+            publisher="TestPub",
+            year=2023,
+            volume="10",
+            issue="2",
+            pages="123-145",
+            doi="10.1234/abc",
+            isbn="978-0-12-345678-9",
+            issn="1234-5678",
+            url="https://example.org",
+            edition="3rd",
+            note="See also ...",
+        result = _reference_to_csl_json(ref)
+
+        assert result["id"] == "r1"
+        assert result["type"] == "article-journal"
+        assert result["author"] == [
+            {"family": "Smith", "given": "J."},
+            {"family": "Doe", "given": "A."},
+        ]
+        assert result["title"] == "Full Title"
+        assert result["container-title"] == "Test Jrnl"
+        assert result["publisher"] == "TestPub"
+        assert result["issued"] == {"date-parts": [[2023]]}
+        assert result["volume"] == "10"
+        assert result["issue"] == "2"
+        assert result["page"] == "123-145"
+        assert result["DOI"] == "10.1234/abc"
+        assert result["ISBN"] == "978-0-12-345678-9"
+        assert result["ISSN"] == "1234-5678"
+        assert result["URL"] == "https://example.org"
+        assert result["edition"] == "3rd"
+        assert result["note"] == "See also ..."
+
+    def test_minimal(self):
+        """Only required fields → only id and type."""
+        ref = self._ref()
+        result = _reference_to_csl_json(ref)
+        assert result == {"id": "r1", "type": "article"}
+
+    def test_container_conference(self):
+        """journal=None → use conference as container-title."""
+        ref = self._ref(conference="Conf 2024")
+        result = _reference_to_csl_json(ref)
+        assert result["container-title"] == "Conf 2024"
+
+    def test_container_book_title(self):
+        """journal & conference None → use book_title."""
+        ref = self._ref(book_title="The Book")
+        result = _reference_to_csl_json(ref)
+        assert result["container-title"] == "The Book"
+
+    def test_container_precedence_journal_over_conference(self):
+        """journal takes priority over conference and book_title."""
+        ref = self._ref(
+            journal="The Jrnl",
+            conference="The Conf",
+            book_title="The Book",
+        result = _reference_to_csl_json(ref)
+        assert result["container-title"] == "The Jrnl"
+
+    def test_no_authors(self):
+        """Empty authors list → no 'author' key emitted."""
+        ref = self._ref(authors=[])
+        result = _reference_to_csl_json(ref)
+        assert "author" not in result
+
+    def test_no_year(self):
+        """year=None → no 'issued' key."""
+        ref = self._ref(year=None)
+        result = _reference_to_csl_json(ref)
+        assert "issued" not in result
+
+    def test_no_identifiers(self):
+        """All identifiers None → no DOI/ISBN/ISSN/URL keys."""
+        ref = self._ref(doi=None, isbn=None, issn=None, url=None)
+        result = _reference_to_csl_json(ref)
+        for key in ("DOI", "ISBN", "ISSN", "URL"):
+            assert key not in result
+
+
+# ======================================================================
+#  _format_with_citeproc tests  (lines 211–244)
+# ======================================================================
+class TestFormatWithCiteproc:
+    """Every branch of _format_with_citeproc."""
+
+    @pytest.fixture
+    def fmt(self):
+        return ReferenceFormatter(MagicMock())
+
+    @staticmethod
+    def _ref(**kw) -> Reference:
+        defaults = dict(reference_id="r1", citation_key="k", raw_text="t", index=0)
+        defaults.update(kw)
+        return Reference(**defaults)
+
+    def test_no_csl_path_returns_none(self, fmt):
+        """_resolve_csl_path returns None → return None immediately."""
+        with patch(
+            "app.pipeline.formatting.reference_formatter._resolve_csl_path",
+            return_value=None,
+        ):
+            result = fmt._format_with_citeproc(self._ref(), "ieee")
+        assert result is None
+
+    def test_style_none_returns_none(self, fmt):
+        """_get_or_load_style returns None → return None."""
+        with patch(
+            "app.pipeline.formatting.reference_formatter._resolve_csl_path",
+            return_value="/fake/styles.csl",
+        ):
+            fmt._style_cache["/fake/styles.csl"] = None
+            result = fmt._format_with_citeproc(self._ref(), "ieee")
+        assert result is None
+
+    @patch("app.pipeline.formatting.reference_formatter.CitationItem")
+    @patch("app.pipeline.formatting.reference_formatter.Citation")
+    @patch("app.pipeline.formatting.reference_formatter.CitationStylesBibliography")
+    @patch("app.pipeline.formatting.reference_formatter.CiteProcJSON")
+    @patch("app.pipeline.formatting.reference_formatter._resolve_csl_path")
+    def test_success_path(self, m_resolve, m_cpj, m_csb, m_cit, m_ci, fmt):
+        """Full success: style cached → citeproc pipeline → formatted string."""
+        m_resolve.return_value = "/fake/styles.csl"
+        mock_style = MagicMock()
+        fmt._style_cache["/fake/styles.csl"] = mock_style
+
+        mock_bib = MagicMock()
+        mock_bib.bibliography.return_value = ["  Formatted output.  "]
+        m_csb.return_value = mock_bib
+        m_cpj.return_value = MagicMock()
+        m_cit.return_value = MagicMock()
+        m_ci.return_value = MagicMock()
+
+        result = fmt._format_with_citeproc(self._ref(), "ieee")
+
+        assert result == "Formatted output."
+        mock_bib.register.assert_called_once()
+
+    @patch("app.pipeline.formatting.reference_formatter.CitationItem")
+    @patch("app.pipeline.formatting.reference_formatter.Citation")
+    @patch("app.pipeline.formatting.reference_formatter.CitationStylesBibliography")
+    @patch("app.pipeline.formatting.reference_formatter.CiteProcJSON")
+    @patch("app.pipeline.formatting.reference_formatter._resolve_csl_path")
+    def test_empty_bib_entries_returns_none(
+        self, m_resolve, m_cpj, m_csb, m_cit, m_ci, fmt
+    ):
+        """bibliography() returns [] → return None."""
+        m_resolve.return_value = "/fake/styles.csl"
+        mock_style = MagicMock()
+        fmt._style_cache["/fake/styles.csl"] = mock_style
+
+        mock_bib = MagicMock()
+        mock_bib.bibliography.return_value = []
+        m_csb.return_value = mock_bib
+        m_cpj.return_value = MagicMock()
+        m_cit.return_value = MagicMock()
+        m_ci.return_value = MagicMock()
+
+        result = fmt._format_with_citeproc(self._ref(), "ieee")
+        assert result is None
+
+    @patch("app.pipeline.formatting.reference_formatter.CitationItem")
+    @patch("app.pipeline.formatting.reference_formatter.Citation")
+    @patch("app.pipeline.formatting.reference_formatter.CitationStylesBibliography")
+    @patch("app.pipeline.formatting.reference_formatter.CiteProcJSON")
+    @patch("app.pipeline.formatting.reference_formatter._resolve_csl_path")
+    def test_empty_rendered_string_returns_none(
+        self, m_resolve, m_cpj, m_csb, m_cit, m_ci, fmt
+    ):
+        """bib_entries[0] is blank after strip → return None."""
+        m_resolve.return_value = "/fake/styles.csl"
+        mock_style = MagicMock()
+        fmt._style_cache["/fake/styles.csl"] = mock_style
+
+        mock_bib = MagicMock()
+        mock_bib.bibliography.return_value = ["   "]
+        m_csb.return_value = mock_bib
+        m_cpj.return_value = MagicMock()
+        m_cit.return_value = MagicMock()
+        m_ci.return_value = MagicMock()
+
+        result = fmt._format_with_citeproc(self._ref(), "ieee")
+        assert result is None
+
+
+# ======================================================================
+#  _get_or_load_style tests  (lines 246–259)
+# ======================================================================
+class TestGetOrLoadStyle:
+    """Caching and failure modes of _get_or_load_style."""
+
+    @pytest.fixture
+    def fmt(self):
+        return ReferenceFormatter(MagicMock())
+
+    def test_cache_hit_returns_cached(self, fmt):
+        """Existing entry in _style_cache → returned immediately."""
+        mock_style = MagicMock()
+        fmt._style_cache["/path/s.csl"] = mock_style
+        assert fmt._get_or_load_style("/path/s.csl") is mock_style
+
+    @patch("app.pipeline.formatting.reference_formatter.CitationStylesStyle")
+    def test_cache_miss_loads_and_caches(self, m_css, fmt):
+        """First call loads style and stores in cache."""
+        mock_style = MagicMock()
+        m_css.return_value = mock_style
+        result = fmt._get_or_load_style("/path/s.csl")
+        assert result is mock_style
+        assert fmt._style_cache["/path/s.csl"] is mock_style
+        m_css.assert_called_once_with("/path/s.csl", validate=False)
+
+    @patch("app.pipeline.formatting.reference_formatter.CitationStylesStyle")
+    def test_load_failure_caches_none(self, m_css, fmt):
+        """Exception during load → cached as None, returns None."""
+        m_css.side_effect = RuntimeError("corrupt CSL")
+        result = fmt._get_or_load_style("/path/s.csl")
+        assert result is None
+        assert fmt._style_cache["/path/s.csl"] is None
+
+    @patch("app.pipeline.formatting.reference_formatter.logger")
+    @patch("app.pipeline.formatting.reference_formatter.CitationStylesStyle")
+    def test_load_failure_logs_error(self, m_css, m_logger, fmt):
+        """Exception during load → error logged."""
+        m_css.side_effect = RuntimeError("parse error")
+        fmt._get_or_load_style("/path/s.csl")
+        m_logger.error.assert_called_once()
+        assert "Failed to load CSL style" in str(m_logger.error.call_args)
+
+
+# ======================================================================
+#  format_reference with CITEPROC_AVAILABLE=True  (lines 181–192)
+# ======================================================================
+class TestReferenceFormatterCiteproc:
+    """format_reference citeproc path: success, fallback, exception."""
+
+    @pytest.fixture
+    def fmt(self):
+        return ReferenceFormatter(MagicMock())
+
+    @staticmethod
+    def _ref(**kw) -> Reference:
+        defaults = dict(reference_id="r1", citation_key="k", raw_text="t", index=0)
+        defaults.update(kw)
+        return Reference(**defaults)
+
+    def test_citeproc_success_returns_citeproc_result(self, fmt):
+        """_format_with_citeproc returns string → returned as-is."""
+        with patch.object(
+            fmt, "_format_with_citeproc", return_value="Citeproc OK"
+        ) as m_cp, patch.object(fmt, "_format_legacy") as m_legacy:
+            ref = self._ref()
+            result = fmt.format_reference(ref, "ieee")
+
+        assert result == "Citeproc OK"
+        m_cp.assert_called_once_with(ref, "ieee")
+        m_legacy.assert_not_called()
+
+    def test_citeproc_none_falls_back_to_legacy(self, fmt):
+        """_format_with_citeproc returns None → falls to _format_legacy."""
+        with patch.object(
+            fmt, "_format_with_citeproc", return_value=None
+        ) as m_cp, patch.object(
+            fmt, "_format_legacy", return_value="Legacy OK"
+        ) as m_legacy:
+            ref = self._ref()
+            result = fmt.format_reference(ref, "ieee")
+
+        assert result == "Legacy OK"
+        m_cp.assert_called_once_with(ref, "ieee")
+        m_legacy.assert_called_once_with(ref, "ieee")
+
+    def test_citeproc_exception_falls_back_to_legacy(self, fmt):
+        """_format_with_citeproc raises → caught, logs, falls to legacy."""
+        with patch.object(
+            fmt, "_format_with_citeproc", side_effect=ValueError("boom")
+        ) as m_cp, patch.object(
+            fmt, "_format_legacy", return_value="Legacy OK"
+        ) as m_legacy:
+            ref = self._ref()
+            result = fmt.format_reference(ref, "ieee")
+
+        assert result == "Legacy OK"
+        m_cp.assert_called_once_with(ref, "ieee")
+        m_legacy.assert_called_once_with(ref, "ieee")
+
+    def test_citeproc_flag_false_skips_citeproc(self, fmt):
+        """CITEPROC_AVAILABLE=False → direct to legacy, no citeproc call."""
+        with patch(
+            "app.pipeline.formatting.reference_formatter.CITEPROC_AVAILABLE",
+            False,
+        ), patch.object(fmt, "_format_with_citeproc") as m_cp, patch.object(
+            fmt, "_format_legacy", return_value="Legacy OK"
+        ) as m_legacy:
+            ref = self._ref()
+            result = fmt.format_reference(ref, "ieee")
+
+        assert result == "Legacy OK"
+        m_cp.assert_not_called()
+        m_legacy.assert_called_once_with(ref, "ieee")
+
+    def test_format_references_calls_format_reference_each(self, fmt):
+        """format_references delegates to format_reference per item."""
+        refs = [
+        ]
+        with patch.object(
+            fmt,
+            "format_reference",
+            side_effect=lambda r, p: f"formatted-{r.reference_id}",
+        ):
+            results = fmt.format_references(refs, "ieee")
+
+        assert results == ["formatted-r1", "formatted-r2"]
+
+
+# ======================================================================
+#  _resolve_csl_path edge with valid file  (lines 44–52)
+# ======================================================================
+class TestResolveCslPathFile:
+    """_resolve_csl_path when a CSL file actually exists."""
+
+    @patch("app.pipeline.formatting.reference_formatter.os.path.isfile")
+    def test_valid_publisher_found(self, m_isfile):
+        """Publisher that maps to an existing styles.csl → path returned."""
+        m_isfile.return_value = True
+        path = _resolve_csl_path("ieee")
+        assert path is not None
+        assert path.endswith("styles.csl")
+        m_isfile.assert_called_once()
+
+    @patch("app.pipeline.formatting.reference_formatter.os.path.isfile")
+    def test_valid_publisher_not_found(self, m_isfile):
+        """Publisher whose styles.csl does not exist → None."""
+        m_isfile.return_value = False
+        path = _resolve_csl_path("ieee")
+        assert path is None
+
+    @patch("app.pipeline.formatting.reference_formatter.os.path.isfile")
+    def test_whitespace_and_case_normalized(self, m_isfile):
+        """Leading/trailing whitespace and uppercase are normalized."""
+        m_isfile.return_value = True
+        path = _resolve_csl_path("  IEEE  ")
+        assert path is not None
+        assert "ieee" in path and "IEEE" not in path
+
+
+# ======================================================================
+#  _reference_type_to_csl — all enum values  (lines 55–68)
+# ======================================================================
+class TestReferenceTypeToCslAll:
+    """Map every ReferenceType value to the expected CSL type string."""
+
+    @pytest.mark.parametrize("ref_type,expected", [
+        (ReferenceType.JOURNAL_ARTICLE, "article-journal"),
+        (ReferenceType.CONFERENCE_PAPER, "paper-conference"),
+        (ReferenceType.BOOK, "book"),
+        (ReferenceType.BOOK_CHAPTER, "chapter"),
+        (ReferenceType.THESIS, "thesis"),
+        (ReferenceType.TECHNICAL_REPORT, "report"),
+        (ReferenceType.PATENT, "patent"),
+        (ReferenceType.WEB_PAGE, "webpage"),
+        (ReferenceType.PREPRINT, "article"),
+        (ReferenceType.UNKNOWN, "article"),
+    ])
+    def test_mapping(self, ref_type, expected):
+        ref = Reference(
+            reference_id="r1",
+            citation_key="k",
+            raw_text="t",
+            index=0,
+            reference_type=ref_type,
+        assert _reference_type_to_csl(ref) == expected
+
+
+# ======================================================================
+#  _parse_author_name advanced edge cases  (lines 80–87)
+# ======================================================================
+class TestParseAuthorNameAdvanced:
+    """Edge cases in _parse_author_name — especially the rsplit else branch."""
+
+    def test_multi_word_no_comma(self):
+        """'Jane Anne Doe' → rsplit splits on last space."""
+        r = _parse_author_name("Jane Anne Doe")
+        assert r == {"given": "Jane Anne", "family": "Doe"}
+
+    def test_multi_word_with_comma(self):
+        """'Doe, Jane Anne' → comma split preserves multi-word family."""
+        r = _parse_author_name("Doe, Jane Anne")
+        assert r == {"family": "Doe", "given": "Jane Anne"}
+
+    def test_middle_initial_no_comma(self):
+        """'John M. Doe' → rsplit, given includes initial."""
+        r = _parse_author_name("John M. Doe")
+        assert r == {"given": "John M.", "family": "Doe"}
+
+    def test_von_surname_with_comma(self):
+        """'von Neumann, John' → comma branch, family='von Neumann'."""
+        r = _parse_author_name("von Neumann, John")
+        assert r == {"family": "von Neumann", "given": "John"}
+
+    def test_comma_no_given(self):
+        """'Doe,' → family='Doe', given=''."""
+        r = _parse_author_name("Doe,")
+        assert r == {"family": "Doe", "given": ""}
+
+    def test_single_word_no_given(self):
+        """'Aristotle' → only family key, no 'given'."""
+        r = _parse_author_name("Aristotle")
+        assert r == {"family": "Aristotle"}
+
+    def test_empty_returns_unknown(self):
+        """Empty string after strip → family='Unknown'."""
+        r = _parse_author_name("")
+        assert r == {"family": "Unknown"}
+
+    def test_only_spaces_returns_unknown(self):
+        """Whitespace-only → family='Unknown'."""
+        r = _parse_author_name("   ")
+        assert r == {"family": "Unknown"}

@@ -90,9 +90,10 @@ class PipelineOrchestrator:
         self.ref_normalizer = ReferenceFormatterEngine(self.contract_loader)
 
         # External service clients
-        from app.pipeline.orchestrator import GROBIDClient
+        from app.pipeline.orchestrator import DoclingClient, GROBIDClient
 
         self.grobid_client = GROBIDClient()
+        self.docling_client = DoclingClient()
 
         # Stage engine — all stage implementations delegated here
         self.stages = PipelineStages(
@@ -101,7 +102,9 @@ class PipelineOrchestrator:
             contracts_dir=self.contracts_dir,
             converter=self.converter,
             grobid_client=self.grobid_client,
+            docling_client=self.docling_client,
             run_with_timeout_fn=self._run_with_timeout,
+            orchestrator=self,
         )
 
         # Metrics & events
@@ -586,6 +589,9 @@ class PipelineOrchestrator:
     def _run_with_timeout(self, func, timeout_sec, *args, cancel_event=None, **kwargs):
         import concurrent.futures
 
+        if timeout_sec < 0:
+            raise ValueError("Timeout cannot be negative")
+
         executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
         future = executor.submit(func, *args, **kwargs)
         try:
@@ -731,6 +737,23 @@ class PipelineOrchestrator:
 
         self._check_stage_interface(Exporter(), "process", "Exporter")
         return self.stages.export_document(doc_obj, input_path, job_id)
+
+    def _should_skip_docling_for_digital_pdf(self, input_path: str) -> bool:
+        if getattr(settings, "PIPELINE_DOCLING_FORCE", False):
+            return False
+        if not getattr(settings, "PIPELINE_DOCLING_SKIP_DIGITAL_PDF", True):
+            return False
+        try:
+            import fitz
+
+            with fitz.open(input_path) as pdf_doc:
+                for idx in range(min(3, len(pdf_doc))):
+                    text = pdf_doc[idx].get_text("text") or ""
+                    if len(text.strip()) > 50:
+                        return True
+        except Exception:
+            pass
+        return False
 
     # ------------------------------------------------------------------ #
     #  Context manager helpers                                            #

@@ -31,14 +31,39 @@ class SemanticParser:
     2) Deterministic heuristics
     """
 
-    def __init__(self):
+    def __init__(self, model_name: str | None = None):
+        self.model_name = model_name or "__heuristic_fallback__"
+        self._is_loaded = False
         self._llm_classifier = None
+
+    def _load_model(self) -> None:
+        """Lazy-load the transformer model (no-op in heuristic mode)."""
+        self._is_loaded = True
 
     @property
     def llm_classifier(self):
         if self._llm_classifier is None:
             self._llm_classifier = get_llm_classifier()
         return self._llm_classifier
+
+    def _ordered_remote_urls(self) -> list[str]:
+        """Return remote base URLs ordered by last-good-url preference."""
+        import time
+        urls = list(getattr(self, "remote_base_urls", []))
+        last_good = getattr(self, "_last_good_remote_url", None)
+        last_good_at = getattr(self, "_last_good_remote_at", 0.0)
+        if last_good and (time.time() - last_good_at) < 300 and last_good in urls:
+            urls.remove(last_good)
+            urls.insert(0, last_good)
+        return urls
+
+    def _normalize_remote_prediction(self, raw: dict | None) -> dict | None:
+        """Normalize a raw remote prediction dict, returning None if invalid."""
+        if raw is None or not isinstance(raw, dict):
+            return None
+        if "type" not in raw:
+            return None
+        return {"type": raw["type"], "confidence": float(raw.get("confidence", 0.5))}
 
     def detect_boundaries(self, blocks: list[Block]) -> list[Block]:
         try:

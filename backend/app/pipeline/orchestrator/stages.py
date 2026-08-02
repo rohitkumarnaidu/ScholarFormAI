@@ -15,6 +15,7 @@ from app.pipeline.safety.retry_guard import retry_with_backoff
 logger = logging.getLogger(__name__)
 
 _figure_analyzer_instance = None
+fitz = "UNPATCHED"
 
 
 def _get_figure_analyzer():
@@ -36,14 +37,24 @@ class PipelineStages:
         contracts_dir: str,
         converter,
         grobid_client,
+        docling_client=None,
         run_with_timeout_fn=None,
+        orchestrator=None,
     ):
         self.templates_dir = templates_dir
         self.temp_dir = temp_dir
         self.contracts_dir = contracts_dir
         self.converter = converter
         self.grobid_client = grobid_client
-        self._run_with_timeout = run_with_timeout_fn
+        self.docling_client = docling_client
+        self._fallback_run_with_timeout = run_with_timeout_fn
+        self.orchestrator = orchestrator
+
+    @property
+    def _run_with_timeout(self):
+        if self.orchestrator and hasattr(self.orchestrator, "_run_with_timeout"):
+            return getattr(self.orchestrator, "_run_with_timeout")
+        return self._fallback_run_with_timeout
 
     # ------------------------------------------------------------------ #
     #  Static/utility helpers (preserved for backward compat)             #
@@ -67,12 +78,16 @@ class PipelineStages:
 
     @staticmethod
     def extract_pymupdf_fallback_metadata(input_path: str) -> dict[str, Any]:
+        if not input_path or not os.path.exists(input_path):
+            return {}
+        if fitz is None:
+            return {}
         try:
-            import fitz
+            import fitz as _fitz_mod
         except Exception:
             return {}
         try:
-            with fitz.open(input_path) as pdf_doc:
+            with _fitz_mod.open(input_path) as pdf_doc:
                 raw_metadata = dict(pdf_doc.metadata or {})
                 page_count = len(pdf_doc)
                 sample_chunks = []
@@ -171,7 +186,11 @@ class PipelineStages:
         has_grobid = (
             hasattr(doc_obj, "metadata") and doc_obj.metadata and doc_obj.metadata.ai_hints.get("grobid_metadata")
         )
-        has_layout = hasattr(doc_obj, "metadata") and doc_obj.metadata and doc_obj.metadata.ai_hints.get("llm_layout")
+        has_layout = (
+            hasattr(doc_obj, "metadata")
+            and doc_obj.metadata
+            and (doc_obj.metadata.ai_hints.get("llm_layout") or doc_obj.metadata.ai_hints.get("docling_layout"))
+        )
         if has_grobid and has_layout:
             logger.info("AI Extraction already completed (Agent V2). Skipping parallel pass.")
             return doc_obj
@@ -199,7 +218,13 @@ class PipelineStages:
                 return {}
 
             def run_llm_layout():
-                if not _s.ENABLE_LLM_PDF_PARSER:
+                if getattr(_s, "USE_DOCLING_FALLBACK", False) and self.docling_client and getattr(self.docling_client, "is_available", lambda: False)():
+                    try:
+                        logger.info("Analyzing layout with DoclingClient...")
+                        return self.docling_client.analyze_layout(input_path)
+                    except Exception as e:
+                        logger.warning("Docling layout analysis failed: %s", e)
+                if not getattr(_s, "ENABLE_LLM_PDF_PARSER", True):
                     logger.info("LLM PDF parser disabled (ENABLE_LLM_PDF_PARSER=false).")
                     return {}
                 try:
@@ -255,19 +280,23 @@ class PipelineStages:
 
                 doc_obj.metadata = DocumentMetadata()
             doc_obj.metadata.ai_hints["llm_layout"] = layout_result
+            if getattr(_s, "USE_DOCLING_FALLBACK", False):
+                doc_obj.metadata.ai_hints["docling_layout"] = layout_result
             logger.info(
                 "LLM layout analyzed: %d elements found",
                 len(layout_result.get("elements", [])),
             )
 
+        has_valid_layout = layout_result and isinstance(layout_result, dict) and bool(layout_result.get("elements"))
         if (
             _s.PYMUPDF_FALLBACK
             and not (grobid_metadata and isinstance(grobid_metadata, dict))
-            and not (layout_result and isinstance(layout_result, dict))
+            and not has_valid_layout
         ):
             from app.models import DocumentMetadata
 
-            pymupdf_metadata = self.extract_pymupdf_fallback_metadata(input_path)
+            pymupdf_fn = getattr(self.orchestrator, "_extract_pymupdf_fallback_metadata", None) or self.extract_pymupdf_fallback_metadata
+            pymupdf_metadata = pymupdf_fn(input_path)
             if pymupdf_metadata:
                 if not hasattr(doc_obj, "metadata") or doc_obj.metadata is None:
                     from app.models import DocumentMetadata
@@ -353,8 +382,7 @@ class PipelineStages:
         return doc_obj
 
     def match_captions(self, doc_obj):
-        from app.pipeline.orchestrator import CaptionMatcher, TableCaptionMatcher
-        from app.pipeline.safety.retry_guard import execute_with_retry
+        from app.pipeline.orchestrator import CaptionMatcher, TableCaptionMatcher, execute_with_retry
 
         caption_matcher = CaptionMatcher(enable_vision=True)
         doc_obj = execute_with_retry(caption_matcher.process, doc_obj)
@@ -404,8 +432,7 @@ class PipelineStages:
     # ------------------------------------------------------------------ #
 
     def process_references(self, doc_obj):
-        from app.pipeline.orchestrator import ReferenceParser
-        from app.pipeline.safety.retry_guard import execute_with_retry
+        from app.pipeline.orchestrator import ReferenceParser, execute_with_retry
 
         ref_parser = ReferenceParser()
         doc_obj = execute_with_retry(ref_parser.process, doc_obj)
@@ -528,21 +555,21 @@ class PipelineStages:
 
     @staticmethod
     def _resolve_rag_engine():
-        from app.utils.singleton import resolve_optional_callable
+        from app.pipeline.orchestrator import get_rag_engine
 
-        return resolve_optional_callable(
-            "app.pipeline.intelligence.rag_engine",
-            "get_rag_engine",
-        )
+        try:
+            return get_rag_engine()
+        except Exception:
+            return None
 
     @staticmethod
     def _resolve_reasoning_engine():
-        from app.utils.singleton import resolve_optional_callable
+        from app.pipeline.orchestrator import get_reasoning_engine
 
-        return resolve_optional_callable(
-            "app.pipeline.intelligence.reasoning_engine",
-            "get_reasoning_engine",
-        )
+        try:
+            return get_reasoning_engine()
+        except Exception:
+            return None
 
     # ------------------------------------------------------------------ #
     #  Stage: Validation                                                  #

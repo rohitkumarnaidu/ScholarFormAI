@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2026 ScholarForm AI
+from __future__ import annotations
+
+from typing import Any
 
 from app.models import PipelineDocument as Document
 from app.pipeline.contracts.loader import ContractLoader
@@ -11,14 +12,80 @@ class NumberingEngine:
     Driven by numbering rules in contract.yaml.
     """
 
-    def __init__(self, contract_loader: ContractLoader):
+    def __init__(self, contract_loader: ContractLoader | None = None, scope: str = "global"):
         self.contract_loader = contract_loader
+        self.scope = scope
+
+    def set_scope(self, scope: str) -> None:
+        """Update numbering scope ('global' or 'per_section')."""
+        self.scope = scope
+
+    def number_equations(self, blocks: list[Any], scope: str | None = None) -> list[Any]:
+        """
+        Number equations in blocks list with scope support (global or per_section).
+        """
+        effective_scope = scope or self.scope
+        current_section = 1
+        eq_counter = 0
+
+        for block in blocks:
+            b_type = getattr(block, "block_type", "")
+            if isinstance(b_type, str):
+                b_type_str = b_type.lower()
+            else:
+                b_type_str = getattr(b_type, "value", str(b_type)).lower()
+
+            if "heading_1" in b_type_str or "section" in b_type_str:
+                sn = getattr(block, "section_number", None)
+                if isinstance(sn, int):
+                    current_section = sn
+                eq_counter = 0
+            elif "equation" in b_type_str or b_type == "equation":
+                sn = getattr(block, "section_number", None)
+                if isinstance(sn, int):
+                    current_section = sn
+                eq_counter += 1
+                if effective_scope == "per_section":
+                    block.number = f"({current_section}.{eq_counter})"
+                else:
+                    block.number = f"({eq_counter})"
+
+        return blocks
+
+    def number_tables(self, blocks: list[Any], scope: str | None = None) -> list[Any]:
+        """
+        Number tables in blocks list with scope support (global or per_section).
+        """
+        effective_scope = scope or self.scope
+        current_section = 1
+        table_counter = 0
+
+        for block in blocks:
+            b_type = getattr(block, "block_type", "")
+            if isinstance(b_type, str):
+                b_type_str = b_type.lower()
+            else:
+                b_type_str = getattr(b_type, "value", str(b_type)).lower()
+
+            if "heading_1" in b_type_str or "section" in b_type_str:
+                sn = getattr(block, "section_number", None)
+                if isinstance(sn, int):
+                    current_section = sn
+                table_counter = 0
+            elif "table" in b_type_str:
+                table_counter += 1
+                if effective_scope == "per_section":
+                    block.number = f"Table {current_section}.{table_counter}"
+                else:
+                    block.number = f"Table {table_counter}"
+
+        return blocks
 
     def apply_numbering(self, document: Document, publisher: str) -> Document:
         """
         Walk through the document and apply numbering to headings, figs, and tables.
         """
-        contract = self.contract_loader.load(publisher)
+        contract = self.contract_loader.load(publisher) if self.contract_loader else {}
         contract.get("numbering", {})
 
         # Heading counters: level -> count

@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 # --- Optional Guardrails Import ---
 if sys.version_info >= (3, 14):
     HAS_GUARDRAILS = False
+    Guard = None
     logger.info("Guardrails AI disabled on Python >= 3.14. Falling back to native Pydantic validation.")
 else:
     try:
@@ -31,6 +32,7 @@ else:
         logger.info("Guardrails AI loaded for robust LLM validation.")
     except ImportError:
         HAS_GUARDRAILS = False
+        Guard = None
         logger.info("Guardrails AI unavailable. Falling back to native Pydantic validation (validator_guard.py).")
 
 # Gracefully import the old wrapper as a fallback
