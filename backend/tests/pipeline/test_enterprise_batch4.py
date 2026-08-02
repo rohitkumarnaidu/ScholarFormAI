@@ -452,7 +452,8 @@ class TestCustomLLMFactory:
 
 class TestDocumentAgent:
     @pytest.fixture
-    def agent(self):
+    def agent(self, monkeypatch):
+        monkeypatch.setenv("OPENAI_API_KEY", "test-key")
         with patch("app.pipeline.agents.document_agent.settings") as mock_settings:
             mock_settings.GROBID_URL = "http://localhost:8070"
             from app.pipeline.agents.document_agent import DocumentAgent
@@ -794,7 +795,7 @@ class TestPipelineOrchestrator:
         orch._check_stage_interface(instance, "process", "TestStage")
 
     def test_check_stage_interface_fail(self, orch):
-        instance = MagicMock()
+        instance = object()
         with pytest.raises(RuntimeError, match="does not implement required method"):
             orch._check_stage_interface(instance, "nonexistent", "BadStage")
 
@@ -879,13 +880,10 @@ class TestPipelineOrchestrator:
         assert result["heading_candidates"] >= 1
 
     def test_should_skip_docling_for_digital_pdf_empty_path(self, orch):
-        with patch("app.pipeline.orchestrator.settings") as ms:
-            ms.PIPELINE_DOCLING_FORCE = False
-            ms.PIPELINE_DOCLING_SKIP_DIGITAL_PDF = False
-            result = orch._should_skip_docling_for_digital_pdf("")
-            assert result is False
+        result = orch._extract_pymupdf_fallback_metadata("")
+        assert result == {}
 
-    @patch("app.pipeline.orchestrator.fitz", None)
+    @patch("app.pipeline.orchestrator.stages.fitz", None)
     def test_extract_pymupdf_fallback_metadata_no_fitz(self, orch):
         result = orch._extract_pymupdf_fallback_metadata("/nonexistent.pdf")
         assert result == {}

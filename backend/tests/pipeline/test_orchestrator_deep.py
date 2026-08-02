@@ -63,7 +63,7 @@ class TestFigureAnalysisStage:
         mock_analyzer = MagicMock()
         mock_analyzer.analyze_image.return_value = {"valid": True, "resolution": 300}
         mock_analyzer.downsample_if_needed.return_value = None
-        with patch("app.pipeline.orchestrator._get_figure_analyzer", return_value=mock_analyzer):
+        with patch("app.pipeline.orchestrator.stages._get_figure_analyzer", return_value=mock_analyzer):
             with patch("os.path.exists", return_value=True):
                 result = orch._run_figure_analysis_stage(doc)
         assert result is doc
@@ -74,7 +74,7 @@ class TestFigureAnalysisStage:
         fig = Figure(figure_id="f3", index=1, export_path=None, caption_text="No path")
         doc = self._make_doc([fig])
         mock_analyzer = MagicMock()
-        with patch("app.pipeline.orchestrator._get_figure_analyzer", return_value=mock_analyzer):
+        with patch("app.pipeline.orchestrator.stages._get_figure_analyzer", return_value=mock_analyzer):
             with patch("os.path.exists", return_value=False):
                 result = orch._run_figure_analysis_stage(doc)
         analysis = result.metadata.ai_hints["figure_analysis"]
@@ -87,14 +87,14 @@ class TestFigureAnalysisStage:
         mock_analyzer = MagicMock()
         mock_analyzer.analyze_image.return_value = {"valid": True}
         mock_analyzer.downsample_if_needed.return_value = "/tmp/downsampled_fig1.png"
-        with patch("app.pipeline.orchestrator._get_figure_analyzer", return_value=mock_analyzer):
+        with patch("app.pipeline.orchestrator.stages._get_figure_analyzer", return_value=mock_analyzer):
             with patch("os.path.exists", return_value=True):
                 result = orch._run_figure_analysis_stage(doc)
         assert result.figures[0].export_path == "/tmp/downsampled_fig1.png"
 
     def test_figure_analysis_no_figures(self, orch):
         doc = self._make_doc([])
-        with patch("app.pipeline.orchestrator._get_figure_analyzer") as mock_get:
+        with patch("app.pipeline.orchestrator.stages._get_figure_analyzer") as mock_get:
             orch._run_figure_analysis_stage(doc)
         mock_get.return_value.analyze_image.assert_not_called()
         assert "figure_analysis" not in doc.metadata.ai_hints
@@ -105,7 +105,7 @@ class TestFigureAnalysisStage:
         doc = self._make_doc([fig])
         mock_analyzer = MagicMock()
         mock_analyzer.analyze_image.side_effect = Exception("analysis failed")
-        with patch("app.pipeline.orchestrator._get_figure_analyzer", return_value=mock_analyzer):
+        with patch("app.pipeline.orchestrator.stages._get_figure_analyzer", return_value=mock_analyzer):
             with patch("os.path.exists", return_value=True):
                 result = orch._run_figure_analysis_stage(doc)
         assert result is None
@@ -114,7 +114,7 @@ class TestFigureAnalysisStage:
         fig = Figure(figure_id="f_img", index=1, export_path="/tmp/img.png", image_data=b"fake", caption_text="X")
         doc = self._make_doc([fig])
         mock_analyzer = MagicMock()
-        with patch("app.pipeline.orchestrator._get_figure_analyzer", return_value=mock_analyzer):
+        with patch("app.pipeline.orchestrator.stages._get_figure_analyzer", return_value=mock_analyzer):
             with patch("os.path.exists", return_value=False):
                 result = orch._run_figure_analysis_stage(doc)
         assert result.metadata.ai_hints["figure_analysis"][0]["valid"] is False
@@ -132,7 +132,7 @@ class TestFigureAnalysisStage:
         mock_analyzer = MagicMock()
         mock_analyzer.analyze_image.return_value = {"valid": True}
         mock_analyzer.downsample_if_needed.return_value = None
-        with patch("app.pipeline.orchestrator._get_figure_analyzer", return_value=mock_analyzer):
+        with patch("app.pipeline.orchestrator.stages._get_figure_analyzer", return_value=mock_analyzer):
             with patch("os.path.exists", return_value=True):
                 result = orch._run_figure_analysis_stage(doc)
         assert result.metadata.ai_hints["existing"] == "value"

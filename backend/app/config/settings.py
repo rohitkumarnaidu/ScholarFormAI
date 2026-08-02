@@ -327,11 +327,11 @@ class DeploymentSettings(BaseSettings):
     ENHANCEMENT_QUEUE_MIN_SECONDS: float = 5.0
     CROSSREF_MAX_WORKERS: int = 4
 
-    HEADING_STYLE_THRESHOLD: float = 0.8
-    HEADING_FALLBACK_CONFIDENCE: float = 0.5
-    HEURISTIC_CONFIDENCE_HIGH: float = 0.9
-    HEURISTIC_CONFIDENCE_MEDIUM: float = 0.7
-    HEURISTIC_CONFIDENCE_LOW: float = 0.4
+    HEADING_STYLE_THRESHOLD: float = 0.4
+    HEADING_FALLBACK_CONFIDENCE: float = 0.45
+    HEURISTIC_CONFIDENCE_HIGH: float = 0.95
+    HEURISTIC_CONFIDENCE_MEDIUM: float = 0.9
+    HEURISTIC_CONFIDENCE_LOW: float = 0.5
 
     model_config = {
         "env_file": ENV_FILE,

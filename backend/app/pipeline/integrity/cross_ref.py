@@ -1,12 +1,7 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2026 ScholarForm AI
-
-"""
-Cross-Reference Integrity Engine - Validates internal document links.
-Scans for Fig, Table, Eq, and Section references.
-"""
+from __future__ import annotations
 
 import re
+from typing import Any
 
 from app.models import BlockType
 from app.models import PipelineDocument as Document
@@ -17,12 +12,96 @@ class CrossReferenceEngine:
     Scans document text for internal references and validates integrity.
     """
 
-    def __init__(self):
+    def __init__(self, auto_resolve: bool = False):
+        self.auto_resolve = auto_resolve
         # Patterns for common academic cross-references
-        self.fig_pattern = re.compile(r"\b(Figure|Fig\.)\s*(?P<num>\d+)\b", re.IGNORECASE)
-        self.tbl_pattern = re.compile(r"\b(Table)\s*(?P<num>\d+)\b", re.IGNORECASE)
-        self.eq_pattern = re.compile(r"\b(Equation|Eq\.)\s*\((?P<num>\d+)\)", re.IGNORECASE)
-        self.sect_pattern = re.compile(r"\b(Section|Sect\.)\s*(?P<id>[I|V|X|L|C]+|\d+)\b", re.IGNORECASE)
+        self.fig_pattern = re.compile(r"\b(?P<prefix>Figure|Fig\.)\s*(?P<num>[\d\.]+)\b", re.IGNORECASE)
+        self.tbl_pattern = re.compile(r"\b(?P<prefix>Table)\s*(?P<num>[\d\.]+)\b", re.IGNORECASE)
+        self.eq_pattern = re.compile(r"\b(?P<prefix>Equation|Eq\.)\s*\((?P<num>[\d\.]+)\)", re.IGNORECASE)
+        self.sect_pattern = re.compile(r"\b(?P<prefix>Section|Sect\.)\s*(?P<id>[I|V|X|L|C]+|\d+)\b", re.IGNORECASE)
+
+    def resolve_references(
+        self,
+        blocks: list[Any],
+        equation_map: dict[int | str, str] | None = None,
+        figure_map: dict[int | str, str] | None = None,
+        table_map: dict[int | str, str] | None = None,
+    ) -> list[Any]:
+        """
+        Resolve and rewrite cross-references in text blocks based on mapping tables.
+        """
+        eq_map = equation_map or {}
+        fig_map = figure_map or {}
+        tbl_map = table_map or {}
+
+        for block in blocks:
+            text = getattr(block, "text", "")
+            if not text:
+                continue
+
+            if eq_map:
+                def _replace_eq(m: re.Match) -> str:
+                    prefix = m.group("prefix")
+                    num_str = m.group("num")
+                    val = None
+                    try:
+                        val = eq_map.get(int(num_str))
+                    except ValueError:
+                        pass
+                    if val is None:
+                        val = eq_map.get(num_str)
+                    if val is not None:
+                        clean_val = str(val).strip("()")
+                        return f"{prefix} ({clean_val})"
+                    return m.group(0)
+
+                text = self.eq_pattern.sub(_replace_eq, text)
+
+            if fig_map:
+                def _replace_fig(m: re.Match) -> str:
+                    prefix = m.group("prefix")
+                    num_str = m.group("num")
+                    val = None
+                    try:
+                        val = fig_map.get(int(num_str))
+                    except ValueError:
+                        pass
+                    if val is None:
+                        val = fig_map.get(num_str)
+                    if val is not None:
+                        return f"{prefix} {val}"
+                    return m.group(0)
+
+                text = self.fig_pattern.sub(_replace_fig, text)
+
+            if tbl_map:
+                def _replace_tbl(m: re.Match) -> str:
+                    prefix = m.group("prefix")
+                    num_str = m.group("num")
+                    val = None
+                    if "." in num_str:
+                        val = tbl_map.get(num_str)
+                        if val is None:
+                            try:
+                                val = tbl_map.get(int(num_str.split(".")[-1]))
+                            except ValueError:
+                                pass
+                    else:
+                        try:
+                            val = tbl_map.get(int(num_str))
+                        except ValueError:
+                            pass
+                    if val is None:
+                        val = tbl_map.get(num_str)
+                    if val is not None:
+                        return f"{prefix} {val}"
+                    return m.group(0)
+
+                text = self.tbl_pattern.sub(_replace_tbl, text)
+
+            block.text = text
+
+        return blocks
 
     def validate_integrity(self, document: Document) -> list[str]:
         """

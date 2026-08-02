@@ -130,7 +130,7 @@ class PipelinePhases:
 
     def phase_content_analysis(self, doc_obj, job_id: str, runtime_flags: dict):
         self.orchestrator._check_stage_interface(self.orchestrator.analyzer, "process", "ContentAnalyzer")
-        from app.pipeline.safety.retry_guard import execute_with_retry
+        from app.pipeline.orchestrator import execute_with_retry
 
         doc_obj = execute_with_retry(self.orchestrator.analyzer.process, doc_obj)
         doc_obj = self.orchestrator.stages.analyze_content(doc_obj, job_id)

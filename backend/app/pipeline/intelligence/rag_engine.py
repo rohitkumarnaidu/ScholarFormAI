@@ -536,12 +536,17 @@ class RagEngine:
     # ------------------------------------------------------------------ #
     def add_guideline(self, publisher: str, section: str, text: str, metadata: dict | None = None):
         """Add a guideline rule to the store."""
+        if not text or not text.strip():
+            return
         full_metadata = metadata or {}
         full_metadata.update({"publisher": publisher.upper(), "section": section.lower()})
 
         if self.chroma_enabled:
-            doc_id = f"{publisher}_{section}_{hash(text)}"
-            self.collection.add(ids=[doc_id], documents=[text], metadatas=[full_metadata])
+            try:
+                doc_id = f"{publisher}_{section}_{hash(text)}"
+                self.collection.add(ids=[doc_id], documents=[text], metadatas=[full_metadata])
+            except Exception as e:
+                logger.warning("RagEngine: Failed to add guideline to Chroma: %s", e)
 
         # Always update native store for consistent fallback
         if self.embedding_model is not None:
@@ -621,8 +626,12 @@ class RagEngine:
 
     def _load_native(self):
         if os.path.exists(self.kb_file):
-            with open(self.kb_file) as f:
-                self.knowledge_base = json.load(f)
+            try:
+                with open(self.kb_file) as f:
+                    self.knowledge_base = json.load(f)
+            except Exception as e:
+                logger.warning("RagEngine: Failed to load native KB: %s", e)
+                self.knowledge_base = []
 
     def reset(self):
         """Clear all indexed guidelines."""

@@ -101,7 +101,7 @@ class CustomLLMFactory:
             provider == "ollama" and _is_mocked_constructor(Ollama)
         )
 
-        if LITELLM_AVAILABLE and _llm_generate is not None and not force_langchain:
+        if _llm_generate is not None and not force_langchain:
             return CustomLLMFactory._create_litellm(provider, model, temperature, **kwargs)
         return CustomLLMFactory._create_langchain(provider, model, temperature, **kwargs)
 
