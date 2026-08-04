@@ -64,7 +64,7 @@ docxtpl==0.20.2
 weasyprint==62.3
 reportlab==4.4.9
 pylatexenc==2.10
-numpy==1.26.4
+numpy>=1.26.4
 
 # ─── LLM Clients (light) ───────────────────────────────────────────────────────
 litellm>=1.81.13
