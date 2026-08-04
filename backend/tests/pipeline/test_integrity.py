@@ -7,15 +7,16 @@ from app.pipeline.integrity.cross_ref import CrossReferenceEngine
 _counter = [0]
 
 
+from app.models import PipelineDocument, Block, Figure, Table, Equation, BlockType
+
 def _block(text, block_type=BlockType.BODY, block_id=None):
-from app.models import PipelineDocument, Block, Figure, Table, Equation, BlockType, BlockType
 
     _counter[0] += 1
     return Block(
         block_id=block_id or f"b{_counter[0]}",
         text=text,
         index=_counter[0],
-        block_type=block_type,
+        block_type=block_type)
 
 
 class TestCrossReferenceEngine:
@@ -29,7 +30,7 @@ class TestCrossReferenceEngine:
             ],
             figures=[Figure(figure_id="f1", index=1)],
             tables=[Table(table_id="t1", num_rows=0, num_cols=0, index=1, block_index=1)],
-            equations=[Equation(equation_id="e1", index=1, latex="x=1")],
+            equations=[Equation(equation_id="e1", index=1, latex="x=1")])
         violations = self.engine.validate_integrity(doc)
         assert violations == []
 
@@ -40,7 +41,7 @@ class TestCrossReferenceEngine:
             ],
             figures=[Figure(figure_id="f1", index=1)],
             tables=[],
-            equations=[],
+            equations=[])
         violations = self.engine.validate_integrity(doc)
         assert any("Figure 5" in v for v in violations)
         assert any("1 figures" in v for v in violations)
@@ -52,7 +53,7 @@ class TestCrossReferenceEngine:
             ],
             figures=[],
             tables=[Table(table_id="t1", num_rows=0, num_cols=0, index=1, block_index=1)],
-            equations=[],
+            equations=[])
         violations = self.engine.validate_integrity(doc)
         assert any("Table 3" in v for v in violations)
 
@@ -63,7 +64,7 @@ class TestCrossReferenceEngine:
             ],
             figures=[],
             tables=[],
-            equations=[Equation(equation_id="e1", index=1, latex="x=1")],
+            equations=[Equation(equation_id="e1", index=1, latex="x=1")])
         violations = self.engine.validate_integrity(doc)
         assert any("Eq. (42)" in v for v in violations)
 
@@ -76,7 +77,7 @@ class TestCrossReferenceEngine:
             ],
             figures=[],
             tables=[],
-            equations=[],
+            equations=[])
         violations = self.engine.validate_integrity(doc)
         # HEADING_1 and TITLE are skipped, BODY is checked
         assert len(violations) == 1

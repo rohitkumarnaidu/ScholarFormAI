@@ -18,8 +18,9 @@ from app.pipeline.nlp.analyzer import (
 )
 
 
+from app.models import PipelineDocument as Document, Block, BlockType
+
 def _doc(blocks=None) -> Document:
-from app.models import PipelineDocument as Document, Block, BlockType, Document
 
     return Document(document_id="test-id", blocks=blocks or [])
 
@@ -170,7 +171,7 @@ class TestEvaluateCaptionQuality:
 
     def test_good_caption(self):
         result = _ca()._evaluate_caption_quality(
-            "Figure 1. Experimental results showing significant improvement in accuracy"
+            "Figure 1. Experimental results showing significant improvement in accuracy")
         assert result == "Good"
 
     def test_vague_word_short_caption(self):
@@ -441,9 +442,9 @@ class TestParseKeywordPayload:
         assert result == ["x", "y"]
 
     def test_jagged_json_extracted_from_markdown_block(self):
-        raw = "```json
-[\"kw1\", \"kw2\"]
-```"
+        raw = """```json
+["kw1", "kw2"]
+```"""
         result = _parse_keyword_payload(raw, 5)
         assert result == ["kw1", "kw2"]
 
