@@ -378,7 +378,7 @@ class TestRunWithTimeout:
 
 class TestResolveRuntimeFlags:
     def test_pytest_override(self, orch):
-        with patch("app.pipeline.orchestrator.settings") as mock_s:
+        with patch("app.pipeline.orchestrator.orchestrator.settings") as mock_s:
             mock_s.DEFAULT_FAST_MODE = False
             mock_s.LOW_MEMORY_MODE = False
             with patch.dict(os.environ, {"PYTEST_CURRENT_TEST": "test"}, clear=True):
@@ -386,7 +386,7 @@ class TestResolveRuntimeFlags:
         assert flags["fast_mode"] is True
 
     def test_low_memory_mode(self, orch):
-        with patch("app.pipeline.orchestrator.settings") as mock_s:
+        with patch("app.pipeline.orchestrator.orchestrator.settings") as mock_s:
             mock_s.DEFAULT_FAST_MODE = False
             mock_s.LOW_MEMORY_MODE = True
             with patch.dict(os.environ, {}, clear=True):
@@ -394,7 +394,7 @@ class TestResolveRuntimeFlags:
         assert flags["fast_mode"] is True
 
     def test_options_not_none(self, orch):
-        with patch("app.pipeline.orchestrator.settings") as mock_s:
+        with patch("app.pipeline.orchestrator.orchestrator.settings") as mock_s:
             mock_s.DEFAULT_FAST_MODE = False
             mock_s.LOW_MEMORY_MODE = False
             with patch.dict(os.environ, {}, clear=True):
@@ -402,7 +402,7 @@ class TestResolveRuntimeFlags:
         assert flags["semantic_parser"] is True
 
     def default_fast_mode_true(self, orch):
-        with patch("app.pipeline.orchestrator.settings") as mock_s:
+        with patch("app.pipeline.orchestrator.orchestrator.settings") as mock_s:
             mock_s.DEFAULT_FAST_MODE = True
             mock_s.LOW_MEMORY_MODE = False
             with patch.dict(os.environ, {}, clear=True):
