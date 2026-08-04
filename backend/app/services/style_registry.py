@@ -228,12 +228,12 @@ class StyleRegistry:
         return [self.get_style_info(sid) for sid in self._styles]
 
     def get_style(self, style_id: str) -> FormattingStyle:
-        return self._styles.get(style_id)
+        return self._styles[style_id]
 
     def get_style_info(self, style_id: str) -> dict[str, Any]:
         style = self._styles.get(style_id)
         if not style:
-            return None
+            return {}
         info = asdict(style)
         info["is_builtin"] = True
         return info

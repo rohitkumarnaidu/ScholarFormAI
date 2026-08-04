@@ -31,7 +31,7 @@ class DeprecatedRoute(APIRoute):
     successor_map: Mapping[str, str] = {}
 
     def _successor_path(self) -> str | None:
-        path_format = getattr(self, "path_format", self.path)
+        path_format = str(getattr(self, "path_format", self.path))
         normalized = normalize_path(path_format)
         return self.successor_map.get(path_format) or self.successor_map.get(normalized)
 
