@@ -237,6 +237,7 @@ class TestCustomLLMFactoryDeep:
         fake_openai_mod.ChatOpenAI = fake_chat_cls
 
         with patch.object(mod, "LITELLM_AVAILABLE", False), \
+             patch.object(mod, "_llm_generate", None), \
              patch.object(mod, "ChatOpenAI", None), \
              patch.object(mod, "settings") as mock_settings, \
              patch.dict("sys.modules", {"langchain_openai": fake_openai_mod}):
@@ -253,6 +254,7 @@ class TestCustomLLMFactoryDeep:
         fake_openai_mod.ChatOpenAI = fake_chat_cls
 
         with patch.object(mod, "LITELLM_AVAILABLE", False), \
+             patch.object(mod, "_llm_generate", None), \
              patch.object(mod, "ChatOpenAI", None), \
              patch.object(mod, "settings") as mock_settings, \
              patch.object(mod, "os") as mock_os, \
