@@ -210,7 +210,7 @@ class TestRunClassificationRemainingGaps:
         """Block with empty text is skipped (stays UNKNOWN)."""
         doc = PipelineDocument(
             document_id="d", metadata=DocumentMetadata(),
-            blocks=[block("b0", 0, BlockType.UNKNOWN, text="")]),
+            blocks=[block("b0", 0, BlockType.UNKNOWN, text="")])
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -222,7 +222,7 @@ class TestRunClassificationRemainingGaps:
         doc = PipelineDocument(
             document_id="d",
             metadata=DocumentMetadata(ai_hints={"grobid_metadata": {"title": "My Paper", "confidence": 0.95}}),
-            blocks=[block("b0", 0, BlockType.BODY, text="My Paper")]),
+            blocks=[block("b0", 0, BlockType.BODY, text="My Paper")])
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -240,7 +240,7 @@ class TestRunClassificationRemainingGaps:
             blocks=[
                 block("b0", 0, BlockType.TITLE, text="Title"),
                 block("b1", 1, BlockType.BODY, text="John Smith"),
-            ]),
+            ])
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -262,7 +262,7 @@ class TestRunClassificationRemainingGaps:
             blocks=[
                 block("b0", 0, BlockType.TITLE, text="Title"),
                 block("b1", 1, BlockType.BODY, text="MIT University"),
-            ]),
+            ])
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -277,7 +277,7 @@ class TestRunClassificationRemainingGaps:
             blocks=[
                 block("b0", 0, BlockType.TITLE, text="Title"),
                 block("b1", 1, BlockType.BODY, text="alice@school.edu"),
-            ]),
+            ])
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -292,7 +292,7 @@ class TestRunClassificationRemainingGaps:
             blocks=[
                 block("b0", 0, BlockType.TITLE, text="Title"),
                 block("b1", 1, BlockType.BODY, text="Testing"),
-            ]),
+            ])
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -309,7 +309,7 @@ class TestRunClassificationRemainingGaps:
                 block("b1", 1, BlockType.BODY, text="Abstract",
                       metadata={"is_heading_candidate": True}, level=1,
                       section_name="abstract"),
-            ]),
+            ])
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -325,7 +325,7 @@ class TestRunClassificationRemainingGaps:
                 block("b1", 1, BlockType.BODY, text="Keywords",
                       metadata={"is_heading_candidate": True}, level=1,
                       section_name="key words"),
-            ]),
+            ])
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -346,7 +346,7 @@ class TestRunClassificationRemainingGaps:
                 block("b1", 1, BlockType.BODY, text=text,
                       metadata={"is_heading_candidate": True}, level=1,
                       section_name=section),
-            ]),
+            ])
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -389,7 +389,7 @@ class TestRunClassificationRemainingGaps:
                       metadata={"is_heading_candidate": True}, level=1,
                       section_name="introduction"),
                 b2,
-            ]),
+            ])
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -406,7 +406,7 @@ class TestRunClassificationRemainingGaps:
                       metadata={"is_heading_candidate": True}, level=1,
                       section_name="abstract"),
                 block("b2", 2, BlockType.BODY, text="This is the abstract"),
-            ]),
+            ])
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -424,7 +424,7 @@ class TestRunClassificationRemainingGaps:
                       metadata={"is_heading_candidate": True}, level=1,
                       section_name="key words"),
                 block("b2", 2, BlockType.BODY, text="kw1, kw2"),
-            ]),
+            ])
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -461,7 +461,7 @@ class TestPostLoopRemainingGaps:
         """Empty-text UNKNOWN block is skipped in post-loop (line 587)."""
         doc = PipelineDocument(
             document_id="d", metadata=DocumentMetadata(),
-            blocks=[block("b0", 0, BlockType.UNKNOWN, text="")]),
+            blocks=[block("b0", 0, BlockType.UNKNOWN, text="")])
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
