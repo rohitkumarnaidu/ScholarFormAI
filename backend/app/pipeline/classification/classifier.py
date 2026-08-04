@@ -430,8 +430,7 @@ class ContentClassifier(PipelineStage):
                         if re.search(email_pattern, text):
                             # If it looks like an affiliation too, prioritize affiliation
                             has_other_indicators = any(
-                                ind in text.lower() for ind in self.affiliation_indicators
-                                if ind not in ("@", "email")
+                                ind in text.lower() for ind in self.affiliation_indicators if ind not in ("@", "email")
                             )
                             if has_other_indicators:
                                 block.block_type = BlockType.AFFILIATION
