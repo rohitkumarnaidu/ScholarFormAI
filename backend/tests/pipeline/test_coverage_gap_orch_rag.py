@@ -475,16 +475,17 @@ class TestShouldSkipDocling:
 class TestExtractPyMuPDF:
     def test_import_exception(self, orch):
         import builtins
+        real_import = builtins.__import__
         def fake_import(name, *args, **kwargs):
             if name == "fitz":
                 raise ImportError("no fitz")
-            return builtins.__import__(name, *args, **kwargs)
-        with patch("builtins.__import__", side_effect=fake_import):
+            return real_import(name, *args, **kwargs)
+        with patch("builtins.__import__", side_effect=fake_import), patch("os.path.exists", return_value=True):
             result = orch._extract_pymupdf_fallback_metadata("/test.pdf")
         assert result == {}
 
     def test_successful_extraction(self, orch):
-        with patch("fitz.open") as mock_fitz:
+        with patch("fitz.open") as mock_fitz, patch("os.path.exists", return_value=True):
             mock_doc = MagicMock()
             mock_doc.metadata = {"title": "Test Paper", "author": "Author A"}
             mock_doc.__len__.return_value = 5
@@ -498,7 +499,7 @@ class TestExtractPyMuPDF:
             assert result["title"] == "Test Paper"
 
     def test_open_exception(self, orch):
-        with patch("fitz.open") as mock_fitz:
+        with patch("fitz.open") as mock_fitz, patch("os.path.exists", return_value=True):
             mock_fitz.return_value.__enter__.side_effect = Exception("corrupt PDF")
             result = orch._extract_pymupdf_fallback_metadata("/test.pdf")
         assert result == {}
