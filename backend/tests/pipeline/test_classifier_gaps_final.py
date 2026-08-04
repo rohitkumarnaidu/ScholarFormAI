@@ -444,7 +444,7 @@ class TestRunClassificationRemainingGaps:
         ]
         object.__setattr__(blocks[1], "section_name", 123)
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(), blocks=blocks),
+            document_id="d", metadata=DocumentMetadata(), blocks=blocks)
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -481,7 +481,7 @@ class TestPostLoopRemainingGaps:
         ]
         object.__setattr__(blocks[1], "section_name", 123)
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(), blocks=blocks),
+            document_id="d", metadata=DocumentMetadata(), blocks=blocks)
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -503,7 +503,7 @@ class TestPostLoopRemainingGaps:
         ]
         object.__setattr__(blocks[1], "section_name", 123)
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(), blocks=blocks),
+            document_id="d", metadata=DocumentMetadata(), blocks=blocks)
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
