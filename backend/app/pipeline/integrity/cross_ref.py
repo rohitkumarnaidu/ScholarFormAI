@@ -40,6 +40,7 @@ class CrossReferenceEngine:
                 continue
 
             if eq_map:
+
                 def _replace_eq(m: re.Match) -> str:
                     prefix = m.group("prefix")
                     num_str = m.group("num")
@@ -58,6 +59,7 @@ class CrossReferenceEngine:
                 text = self.eq_pattern.sub(_replace_eq, text)
 
             if fig_map:
+
                 def _replace_fig(m: re.Match) -> str:
                     prefix = m.group("prefix")
                     num_str = m.group("num")
@@ -75,6 +77,7 @@ class CrossReferenceEngine:
                 text = self.fig_pattern.sub(_replace_fig, text)
 
             if tbl_map:
+
                 def _replace_tbl(m: re.Match) -> str:
                     prefix = m.group("prefix")
                     num_str = m.group("num")

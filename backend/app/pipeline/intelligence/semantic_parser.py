@@ -49,6 +49,7 @@ class SemanticParser:
     def _ordered_remote_urls(self) -> list[str]:
         """Return remote base URLs ordered by last-good-url preference."""
         import time
+
         urls = list(getattr(self, "remote_base_urls", []))
         last_good = getattr(self, "_last_good_remote_url", None)
         last_good_at = getattr(self, "_last_good_remote_at", 0.0)
