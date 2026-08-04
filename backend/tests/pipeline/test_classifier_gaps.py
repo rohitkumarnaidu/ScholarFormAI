@@ -15,9 +15,10 @@ import pytest
 from app.pipeline.classification.classifier import ContentClassifier, classify_content
 
 
+from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
+
 @pytest.fixture
 def classifier():
-from app.models import Block, BlockType, DocumentMetadata, PipelineDocument, BlockType
     return ContentClassifier()
 
 
@@ -25,7 +26,7 @@ def block(block_id: str, index: int, block_type=BlockType.BODY, text="",
            level=None, section_name="", metadata=None, **kw):
     return Block(
         block_id=block_id, index=index, block_type=block_type, text=text,
-        level=level, section_name=section_name, metadata=metadata or {}, **kw,
+        level=level, section_name=section_name, metadata=metadata or {}, **kw)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -140,7 +141,7 @@ class TestRunClassificationGaps:
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
                 block("b1", 0, BlockType.BODY, text="alice@mit.edu"),
-            ],
+            ]),
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -156,7 +157,7 @@ class TestRunClassificationGaps:
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
                 block("b1", 0, BlockType.BODY, text="alice@mit.edu, Department of CS"),
-            ],
+            ]),
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -172,7 +173,7 @@ class TestRunClassificationGaps:
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
                 block("b1", 0, BlockType.BODY, text="Alice Johnson, PhD"),
-            ],
+            ]),
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -187,7 +188,7 @@ class TestRunClassificationGaps:
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
                 block("b1", 0, BlockType.BODY, text="Department of Physics"),
-            ],
+            ]),
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -202,7 +203,7 @@ class TestRunClassificationGaps:
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
                 block("b1", 0, BlockType.BODY, text="Research School of Something"),
-            ],
+            ]),
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -217,7 +218,7 @@ class TestRunClassificationGaps:
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
                 block("b1", 0, BlockType.BODY, text="Bob Smith"),
-            ],
+            ]),
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -233,7 +234,7 @@ class TestRunClassificationGaps:
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
                 block("b1", 0, BlockType.BODY, text="One Two Three Four Five Six Seven Eight"),
-            ],
+            ]),
         from app.config.settings import settings
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
@@ -250,7 +251,7 @@ class TestRunClassificationGaps:
                 block("b1", 0, BlockType.HEADING_1, text="Intro", metadata={"is_heading_candidate": True}, level=1, section_name="introduction"),
                 block("b2", 1, BlockType.BODY, text="Some text"),
                 block("b3", 2, BlockType.FOOTNOTE, text="A footnote", metadata={"is_footnote": True}),
-            ],
+            ]),
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -266,7 +267,7 @@ class TestRunClassificationGaps:
                 block("b1", 0, BlockType.BODY, text="Supplementary Materials",
                       metadata={"is_heading_candidate": True}, level=1,
                       section_name="supplementary"),
-            ],
+            ]),
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -285,7 +286,7 @@ class TestRunClassificationGaps:
                       metadata={"is_heading_candidate": True}),
                 block("b2", 1, BlockType.BODY, text="Appendix A: Data",
                       level=1, metadata={"is_heading_candidate": True}),
-            ],
+            ]),
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=0):
@@ -301,7 +302,7 @@ class TestRunClassificationGaps:
                 block("b1", 0, BlockType.BODY, text="References",
                       metadata={"is_heading_candidate": True}),
                 block("b2", 1, BlockType.BODY, text="[1] Author. Title.", metadata={}),
-            ],
+            ]),
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=1):
@@ -321,7 +322,7 @@ class TestRunClassificationGaps:
                       metadata={"is_heading_candidate": True, "level": 3}, section_name="methods"),
                 block("b3", 2, BlockType.BODY, text="Sub4",
                       metadata={"is_heading_candidate": True, "level": 4}, section_name="methods"),
-            ],
+            ]),
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -340,7 +341,7 @@ class TestPostLoopClassificationGaps:
         """Post-loop: UNKNOWN block containing standard heading text → HEADING_1."""
         doc = PipelineDocument(
             document_id="d", metadata=DocumentMetadata(),
-            blocks=[block("b1", 0, BlockType.UNKNOWN, text="Introduction")],
+            blocks=[block("b1", 0, BlockType.UNKNOWN, text="Introduction")]),
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -352,7 +353,7 @@ class TestPostLoopClassificationGaps:
         """Post-loop: heading with colon removed before match."""
         doc = PipelineDocument(
             document_id="d", metadata=DocumentMetadata(),
-            blocks=[block("b1", 0, BlockType.UNKNOWN, text="Introduction:")],
+            blocks=[block("b1", 0, BlockType.UNKNOWN, text="Introduction:")]),
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -366,7 +367,7 @@ class TestPostLoopClassificationGaps:
         doc = PipelineDocument(
             document_id="d", metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.UNKNOWN, text="Some random text",
-                         metadata={"nlp_confidence": 0.7})],
+                         metadata={"nlp_confidence": 0.7})]),
         from app.config.settings import settings
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
@@ -381,7 +382,7 @@ class TestPostLoopClassificationGaps:
         """UNKNOWN block without nlp_confidence in body zone → BODY with HEURISTIC_CONFIDENCE_HIGH."""
         doc = PipelineDocument(
             document_id="d", metadata=DocumentMetadata(),
-            blocks=[block("b1", 0, BlockType.UNKNOWN, text="Some random text")],
+            blocks=[block("b1", 0, BlockType.UNKNOWN, text="Some random text")]),
         from app.config.settings import settings
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
@@ -413,7 +414,7 @@ class TestPostLoopClassificationGaps:
         In body zone, UNKNOWN becomes BODY before the fallback runs."""
         doc = PipelineDocument(
             document_id="d", metadata=DocumentMetadata(),
-            blocks=[block("b1", 0, BlockType.UNKNOWN, text="1 This is a footnote")],
+            blocks=[block("b1", 0, BlockType.UNKNOWN, text="1 This is a footnote")]),
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
