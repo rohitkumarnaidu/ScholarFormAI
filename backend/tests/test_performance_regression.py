@@ -273,7 +273,7 @@ class TestLLMServicePerformance:
         import app.services.llm_service as llm
 
         with (
-            patch.object(llm, "LITELLM_AVAILABLE", False),
+            patch.object(llm, "LITELLM_AVAILABLE", False), \
             patch.object(llm, "_llm_generate", None),
             patch.object(llm, "_generate_fallback", return_value="streaming token"),
             patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None),
