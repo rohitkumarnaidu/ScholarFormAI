@@ -191,6 +191,7 @@ class TestLLMLatencyBenchmark:
         n_requests = 5
         with (
             patch.object(llm, "LITELLM_AVAILABLE", False),
+            patch.object(llm, "_llm_generate", None),
             patch.object(llm, "_generate_fallback", side_effect=mock_gen),
             patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None),
             patch("app.cache.redis_cache.redis_cache.set_llm_result"),
@@ -243,6 +244,7 @@ class TestLLMLatencyBenchmark:
         """Streaming TTFT (time to first token) under 500ms."""
         with (
             patch.object(llm, "LITELLM_AVAILABLE", False),
+            patch.object(llm, "_llm_generate", None),
             patch.object(llm, "_generate_fallback", return_value="first token content"),
             patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None),
             patch.object(llm.settings, "NVIDIA_API_KEY", "key"),
@@ -269,6 +271,7 @@ class TestLLMLatencyBenchmark:
 
         with (
             patch.object(llm, "LITELLM_AVAILABLE", False),
+            patch.object(llm, "_llm_generate", None),
             patch.object(llm, "_generate_fallback", return_value="stable"),
             patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None),
             patch("app.cache.redis_cache.redis_cache.set_llm_result"),
@@ -322,6 +325,7 @@ class TestLLMLatencyBenchmark:
 
         with (
             patch.object(llm, "LITELLM_AVAILABLE", False),
+            patch.object(llm, "_llm_generate", None),
             patch.object(llm, "_generate_fallback", side_effect=mock_gen),
             patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None),
             patch("app.cache.redis_cache.redis_cache.set_llm_result"),
@@ -352,6 +356,7 @@ class TestLLMLatencyBenchmark:
         n_calls = 8
         with (
             patch.object(llm, "LITELLM_AVAILABLE", False),
+            patch.object(llm, "_llm_generate", None),
             patch.object(llm, "_generate_fallback", side_effect=slow_gen),
             patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None),
             patch("app.cache.redis_cache.redis_cache.set_llm_result"),

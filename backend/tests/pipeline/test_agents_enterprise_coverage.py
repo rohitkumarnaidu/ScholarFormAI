@@ -334,7 +334,8 @@ class TestCustomLLMFactoryDeep:
     # -- edge cases --
 
     def test_create_langchain_unsupported_provider(self):
-        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False):
+        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
+             patch("app.pipeline.agents.llm_factory._llm_generate", None):
             from app.pipeline.agents.llm_factory import CustomLLMFactory
             with pytest.raises(ValueError, match="Unsupported provider"):
                 CustomLLMFactory.create_llm(provider="not_a_provider", model="x")

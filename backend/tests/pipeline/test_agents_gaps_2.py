@@ -185,6 +185,7 @@ class TestCreateLLM:
         mock_llm = MagicMock()
         mock_cls = MagicMock(return_value=mock_llm)
         with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
+             patch("app.pipeline.agents.llm_factory._llm_generate", None), \
              patch("app.pipeline.agents.llm_factory.ChatOpenAI", mock_cls), \
              patch("app.pipeline.agents.llm_factory.settings") as mock_settings:
             mock_settings.OPENAI_API_KEY = "test-key"
@@ -194,6 +195,7 @@ class TestCreateLLM:
 
     def test_create_langchain_openai_no_key(self):
         with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
+             patch("app.pipeline.agents.llm_factory._llm_generate", None), \
              patch("app.pipeline.agents.llm_factory.ChatOpenAI", MagicMock()), \
              patch("app.pipeline.agents.llm_factory.settings") as mock_settings:
             mock_settings.OPENAI_API_KEY = ""
@@ -205,6 +207,7 @@ class TestCreateLLM:
         mock_llm = MagicMock()
         mock_cls = MagicMock(return_value=mock_llm)
         with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
+             patch("app.pipeline.agents.llm_factory._llm_generate", None), \
              patch("app.pipeline.agents.llm_factory.Ollama", mock_cls), \
              patch("app.pipeline.agents.llm_factory.settings") as mock_settings:
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
@@ -215,6 +218,7 @@ class TestCreateLLM:
     def test_create_langchain_anthropic(self):
         mock_llm = MagicMock()
         with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
+             patch("app.pipeline.agents.llm_factory._llm_generate", None), \
              patch("app.pipeline.agents.llm_factory.settings") as mock_settings, \
              patch("langchain_anthropic.ChatAnthropic", return_value=mock_llm):
             mock_settings.ANTHROPIC_API_KEY = "ant-key"
