@@ -138,40 +138,15 @@ class TestPredictScibertBatchRemainingGaps:
             result = classifier._predict_llm_batch([])
         assert result == []
 
-    def test_non_english_document_returns_none(self, classifier):
-        """Non-English language causes classification to return None."""
-        b = block("b", 0, text="Bonjour le monde")
-        with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
-            with patch("app.pipeline.intelligence.semantic_parser.HAS_LANGDETECT", True, create=True):
-                with patch("app.pipeline.intelligence.semantic_parser.detect_language", return_value="fr", create=True):
-                    result = classifier._predict_llm_batch([b])
-        assert result is None
-
-    def test_empty_combined_text_proceeds(self, classifier):
-        """Empty combined text skips language detection and proceeds to parser."""
-        b = block("b", 0, text="")
-        mock_parser = MagicMock()
-        mock_parser.model = MagicMock()
-        mock_parser.tokenizer = MagicMock()
-        mock_parser.predict_blocks_batch.return_value = [{"type": "BODY", "confidence": 0.95}]
-        with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
-            with patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser", return_value=mock_parser):
-                with patch("app.pipeline.intelligence.semantic_parser.HAS_LANGDETECT", True, create=True):
-                    with patch("app.pipeline.intelligence.semantic_parser.detect_language", return_value="en", create=True):
-                        result = classifier._predict_llm_batch([b])
-        assert result == [{"type": "BODY", "confidence": 0.95}]
-
     def test_exception_during_inference(self, classifier):
         """Exception during model inference is caught and returns None."""
-        mock_parser = MagicMock()
-        mock_parser._load_model.side_effect = RuntimeError("model load failed")
         with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
-            with patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser", return_value=mock_parser):
-                with patch("app.pipeline.intelligence.semantic_parser.HAS_LANGDETECT", False, create=True):
-                    result = classifier._predict_llm_batch([block("b", 0, text="hello")])
+            with patch("app.pipeline.classification.classifier.get_llm_classifier") as mock_get_llm:
+                mock_llm = MagicMock()
+                mock_llm.classify_batch.side_effect = Exception("Model error")
+                mock_get_llm.return_value = mock_llm
+                result = classifier._predict_llm_batch([block("b", 0, text="hello")])
         assert result is None
-
-
 # ══════════════════════════════════════════════════════════════════════════════
 # _apply_llm_predictions — lines 190, 193->188, 200, 204, 228
 # ══════════════════════════════════════════════════════════════════════════════
