@@ -60,7 +60,6 @@ class TestReferenceToCslJson:
 
     @staticmethod
     def _ref(**kw) -> Reference:
-from app.models import Reference, ReferenceType  # noqa: E402
 
         defaults = dict(reference_id="r1", citation_key="k", raw_text="t", index=0)
         defaults.update(kw)
@@ -82,7 +81,7 @@ from app.models import Reference, ReferenceType  # noqa: E402
             issn="1234-5678",
             url="https://example.org",
             edition="3rd",
-            note="See also ...",
+            note="See also ...")
         result = _reference_to_csl_json(ref)
 
         assert result["id"] == "r1"
@@ -128,7 +127,7 @@ from app.models import Reference, ReferenceType  # noqa: E402
         ref = self._ref(
             journal="The Jrnl",
             conference="The Conf",
-            book_title="The Book",
+            book_title="The Book")
         result = _reference_to_csl_json(ref)
         assert result["container-title"] == "The Jrnl"
 
@@ -441,7 +440,7 @@ class TestReferenceTypeToCslAll:
             citation_key="k",
             raw_text="t",
             index=0,
-            reference_type=ref_type,
+            reference_type=ref_type)
         assert _reference_type_to_csl(ref) == expected
 
 

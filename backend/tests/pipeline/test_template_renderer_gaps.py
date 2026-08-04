@@ -15,13 +15,11 @@ from unittest.mock import patch, MagicMock, PropertyMock
 
 import pytest
 
-)
 from app.pipeline.formatting.template_renderer import TemplateRenderer
-
+from app.models import Block, BlockType, PipelineDocument, DocumentMetadata
 
 @pytest.fixture
 def renderer():
-    from app.models import (
     return TemplateRenderer(templates_dir="app/templates")
 
 
@@ -32,6 +30,7 @@ def _make_block(block_id, index, block_type, text="", metadata=None):
         block_type=block_type,
         text=text,
         metadata=metadata or {},
+    )
 
 
 def _make_ref(reference_id, index, citation_key="cit1", raw_text="Raw", formatted_text="Formatted"):
@@ -40,7 +39,7 @@ def _make_ref(reference_id, index, citation_key="cit1", raw_text="Raw", formatte
         index=index,
         citation_key=citation_key,
         raw_text=raw_text,
-        formatted_text=formatted_text,
+        formatted_text=formatted_text)
 
 
 def _make_doc(blocks=None, references=None, metadata=None, formatting_options=None, original_filename="manuscript.pdf"):
@@ -50,7 +49,7 @@ def _make_doc(blocks=None, references=None, metadata=None, formatting_options=No
         references=references or [],
         metadata=metadata or DocumentMetadata(),
         formatting_options=formatting_options or {},
-        original_filename=original_filename,
+        original_filename=original_filename)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -205,14 +204,14 @@ class TestBuildContextGaps:
     def test_abstract_from_metadata_empty_string(self, renderer):
         doc = _make_doc(
             metadata=DocumentMetadata(abstract=""),
-            blocks=[_make_block("b1", 0, "abstract_body", "Block abstract")],
+            blocks=[_make_block("b1", 0, "abstract_body", "Block abstract")])
         ctx = renderer.build_context(doc)
         assert ctx["abstract"] == "Block abstract"
 
     def test_keywords_raw_split_with_spaces(self, renderer):
         doc = _make_doc(
             metadata=DocumentMetadata(keywords=[]),
-            blocks=[_make_block("b1", 0, "keywords_body", "  kw1  ,  kw2  ,  kw3  ")],
+            blocks=[_make_block("b1", 0, "keywords_body", "  kw1  ,  kw2  ,  kw3  ")])
         ctx = renderer.build_context(doc)
         assert ctx["keywords"] == ["kw1", "kw2", "kw3"]
 
@@ -220,7 +219,7 @@ class TestBuildContextGaps:
         doc = _make_doc(
             metadata=DocumentMetadata(title=""),
             blocks=[],
-            original_filename=None,
+            original_filename=None)
         ctx = renderer.build_context(doc)
         assert ctx["title"] == "Untitled Manuscript"
 

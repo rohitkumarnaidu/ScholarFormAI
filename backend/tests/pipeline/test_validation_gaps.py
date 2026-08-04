@@ -7,13 +7,12 @@ from unittest.mock import patch, MagicMock, PropertyMock
 from datetime import datetime
 import pytest
 
-from app.models import (
-)
-from app.pipeline.validation.validator_v3 import (
-    DocumentValidator, ValidationResult, validate_document
+from app.models import PipelineDocument, Block, Reference, DocumentMetadata, Figure, Table, Equation, BlockType, CitationStyle
+from app.pipeline.validation.validator_v3 import DocumentValidator, ValidationResult, validate_document
 from app.pipeline.validation.review_manager import ReviewManager
 from app.pipeline.validation.ai_explainer import AIExplainer
-    from app.models import (
+
+def _doc(**overrides) -> PipelineDocument:
     return PipelineDocument(document_id="test-123", **overrides)
 
 
@@ -411,8 +410,8 @@ class TestCheckReferencesGaps:
 
     def test_multiple_references_mixed_issues(self):
         refs = [
-                      raw_text="Ref1", index=0, year=None, authors=[], title=None),
-                      raw_text="Ref2", index=1, year=2023, authors=["Smith"], title="Paper"),
+            Reference(reference_id="r1", citation_key="k1", raw_text="Ref1", index=0, year=None, authors=[], title=None),
+            Reference(reference_id="r2", citation_key="k2", raw_text="Ref2", index=1, year=2023, authors=["Smith"], title="Paper"),
         ]
         doc = _doc(references=refs)
         v = DocumentValidator()
