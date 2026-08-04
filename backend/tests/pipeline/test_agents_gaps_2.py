@@ -227,13 +227,15 @@ class TestCreateLLM:
             assert llm is mock_llm
 
     def test_create_langchain_custom_raises(self):
-        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False):
+        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
+             patch("app.pipeline.agents.llm_factory._llm_generate", None):
             from app.pipeline.agents.llm_factory import CustomLLMFactory
             with pytest.raises(NotImplementedError):
                 CustomLLMFactory.create_llm(provider="custom", model="x")
 
     def test_create_langchain_unsupported(self):
-        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False):
+        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
+             patch("app.pipeline.agents.llm_factory._llm_generate", None):
             from app.pipeline.agents.llm_factory import CustomLLMFactory
             with pytest.raises(ValueError, match="Unsupported provider"):
                 CustomLLMFactory.create_llm(provider="bad", model="x")
