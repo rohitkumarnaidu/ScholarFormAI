@@ -218,7 +218,11 @@ class PipelineStages:
                 return {}
 
             def run_llm_layout():
-                if getattr(_s, "USE_DOCLING_FALLBACK", False) and self.docling_client and getattr(self.docling_client, "is_available", lambda: False)():
+                if (
+                    getattr(_s, "USE_DOCLING_FALLBACK", False)
+                    and self.docling_client
+                    and getattr(self.docling_client, "is_available", lambda: False)()
+                ):
                     try:
                         logger.info("Analyzing layout with DoclingClient...")
                         return self.docling_client.analyze_layout(input_path)
@@ -288,14 +292,13 @@ class PipelineStages:
             )
 
         has_valid_layout = layout_result and isinstance(layout_result, dict) and bool(layout_result.get("elements"))
-        if (
-            _s.PYMUPDF_FALLBACK
-            and not (grobid_metadata and isinstance(grobid_metadata, dict))
-            and not has_valid_layout
-        ):
+        if _s.PYMUPDF_FALLBACK and not (grobid_metadata and isinstance(grobid_metadata, dict)) and not has_valid_layout:
             from app.models import DocumentMetadata
 
-            pymupdf_fn = getattr(self.orchestrator, "_extract_pymupdf_fallback_metadata", None) or self.extract_pymupdf_fallback_metadata
+            pymupdf_fn = (
+                getattr(self.orchestrator, "_extract_pymupdf_fallback_metadata", None)
+                or self.extract_pymupdf_fallback_metadata
+            )
             pymupdf_metadata = pymupdf_fn(input_path)
             if pymupdf_metadata:
                 if not hasattr(doc_obj, "metadata") or doc_obj.metadata is None:
