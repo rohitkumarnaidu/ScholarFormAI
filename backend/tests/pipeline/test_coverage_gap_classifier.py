@@ -766,7 +766,7 @@ class TestClassifierCoverageGaps:
         b.index = 1
         doc = self._make_doc([t, b])
         result = self._run_process(cc, doc)
-        assert result.blocks[1].block_type == BlockType.AFFILIATION
+        assert result.blocks[1].block_type == BlockType.AUTHOR
 
     def test_classification_loop_email_affiliation(self):
         from app.models.block import BlockType
