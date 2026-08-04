@@ -17,8 +17,7 @@ class TestLatencyAssertions:
     def test_response_under_500ms_passes_sla(self, llm):
         """Responses under 500ms should pass SLA."""
         with (
-            patch.object(llm, "LITELLM_AVAILABLE", False), \
-            patch.object(llm, "_llm_generate", None),
+            patch.object(llm, "LITELLM_AVAILABLE", False),
             patch.object(llm, "_generate_fallback", return_value="fast response"),
             patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None),
             patch("app.cache.redis_cache.redis_cache.set_llm_result"),
@@ -49,8 +48,7 @@ class TestLatencyAssertions:
     def test_timeout_propagated_from_settings(self, llm):
         """Timeout value from settings should flow to generate kwargs."""
         with patch.object(llm.settings, "LLM_PROVIDER_TIMEOUT_SECONDS", 10):
-            with patch.object(llm, "LITELLM_AVAILABLE", False), \
-                 patch.object(llm, "_llm_generate", None):
+            with patch.object(llm, "LITELLM_AVAILABLE", False):
                 with patch.object(llm, "_generate_fallback", return_value="result"):
                     with patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None):
                         with patch("app.cache.redis_cache.redis_cache.set_llm_result"):
@@ -73,8 +71,7 @@ class TestLatencyAssertions:
             captured["timeout"] = timeout
             return "captured"
 
-        with patch.object(llm, "LITELLM_AVAILABLE", False), \
-                 patch.object(llm, "_llm_generate", None):
+        with patch.object(llm, "LITELLM_AVAILABLE", False):
             with patch.object(llm, "_generate_fallback", side_effect=capture_timeout):
                 with patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None):
                     with patch("app.cache.redis_cache.redis_cache.set_llm_result"):
@@ -151,8 +148,7 @@ class TestTimeoutHandling:
     @pytest.mark.sla
     def test_circuit_breaker_resets_after_timeout(self, llm):
         """Timeout should propagate and not silently swallow errors."""
-        with patch.object(llm, "LITELLM_AVAILABLE", False), \
-                 patch.object(llm, "_llm_generate", None):
+        with patch.object(llm, "LITELLM_AVAILABLE", False):
             with patch.object(llm, "_generate_fallback", side_effect=TimeoutError("timeout")):
                 with patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None):
                     with patch.object(llm.settings, "NVIDIA_API_KEY", "key"):
@@ -230,8 +226,7 @@ class TestTimeoutHandling:
             captured_timeout[0] = timeout
             return "custom timeout result"
 
-        with patch.object(llm, "LITELLM_AVAILABLE", False), \
-                 patch.object(llm, "_llm_generate", None):
+        with patch.object(llm, "LITELLM_AVAILABLE", False):
             with patch.object(llm, "_generate_fallback", side_effect=fallback_with_timeout):
                 with patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None):
                     with patch("app.cache.redis_cache.redis_cache.set_llm_result"):
@@ -261,8 +256,7 @@ class TestConcurrentRequestPerformance:
             return "concurrent result"
 
         n_requests = 5
-        with patch.object(llm, "LITELLM_AVAILABLE", False), \
-                 patch.object(llm, "_llm_generate", None):
+        with patch.object(llm, "LITELLM_AVAILABLE", False):
             with patch.object(llm, "_generate_fallback", side_effect=mock_gen):
                 with patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None):
                     with patch("app.cache.redis_cache.redis_cache.set_llm_result"):
@@ -294,8 +288,7 @@ class TestConcurrentRequestPerformance:
             return "rate limited"
 
         n_requests = 3
-        with patch.object(llm, "LITELLM_AVAILABLE", False), \
-                 patch.object(llm, "_llm_generate", None):
+        with patch.object(llm, "LITELLM_AVAILABLE", False):
             with patch.object(llm, "_generate_fallback", side_effect=slow_gen):
                 with patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None):
                     with patch("app.cache.redis_cache.redis_cache.set_llm_result"):
@@ -365,8 +358,7 @@ class TestConcurrentRequestPerformance:
         mock_cache.set_llm_result.return_value = True
 
         n_requests = 5
-        with patch.object(llm, "LITELLM_AVAILABLE", False), \
-                 patch.object(llm, "_llm_generate", None):
+        with patch.object(llm, "LITELLM_AVAILABLE", False):
             with patch.object(llm, "_generate_fallback", return_value="cached result"):
                 with patch("app.cache.redis_cache.redis_cache", mock_cache):
                     with patch.object(llm.settings, "NVIDIA_API_KEY", "key"):
@@ -431,8 +423,7 @@ class TestProviderLatencyProfiles:
             call_count[0] += 1
             return f"result from {model}"
 
-        with patch.object(llm, "LITELLM_AVAILABLE", False), \
-                 patch.object(llm, "_llm_generate", None):
+        with patch.object(llm, "LITELLM_AVAILABLE", False):
             with patch.object(llm, "_generate_fallback", side_effect=mock_fallback):
                 with patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None):
                     with patch("app.cache.redis_cache.redis_cache.set_llm_result"):
@@ -522,8 +513,7 @@ class TestProviderLatencyProfiles:
     @pytest.mark.sla
     def test_stream_reduces_ttft(self, llm):
         """Streaming should reduce perceived TTFT."""
-        with patch.object(llm, "LITELLM_AVAILABLE", False), \
-                 patch.object(llm, "_llm_generate", None):
+        with patch.object(llm, "LITELLM_AVAILABLE", False):
             with patch.object(llm, "_generate_fallback", return_value="stream result"):
                 with patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None):
                     with patch.object(llm.settings, "NVIDIA_API_KEY", "key"):
