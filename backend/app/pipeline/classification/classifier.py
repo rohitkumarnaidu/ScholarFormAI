@@ -429,7 +429,11 @@ class ContentClassifier(PipelineStage):
                         email_pattern = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
                         if re.search(email_pattern, text):
                             # If it looks like an affiliation too, prioritize affiliation
-                            if self._is_likely_affiliation(text):
+                            has_other_indicators = any(
+                                ind in text.lower() for ind in self.affiliation_indicators
+                                if ind not in ("@", "email")
+                            )
+                            if has_other_indicators:
                                 block.block_type = BlockType.AFFILIATION
                                 block.semantic_intent = "AFFILIATION"
                                 block.classification_confidence = 0.9  # High confidence due to email
