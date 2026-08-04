@@ -599,7 +599,8 @@ class TestCreateLLMEdge:
         mock_llm = MagicMock()
         mock_cls = MagicMock(return_value=mock_llm)
         with (
-            patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False),
+            patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
+             patch("app.pipeline.agents.llm_factory._llm_generate", None),
             patch("app.pipeline.agents.llm_factory.ChatOpenAI", mock_cls),
             patch("app.pipeline.agents.llm_factory.settings") as mock_settings,
         ):
@@ -617,7 +618,8 @@ class TestCreateLLMEdge:
         mock_llm = MagicMock()
         mock_cls = MagicMock(return_value=mock_llm)
         with (
-            patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False),
+            patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
+             patch("app.pipeline.agents.llm_factory._llm_generate", None),
             patch("app.pipeline.agents.llm_factory.Ollama", mock_cls),
             patch("app.pipeline.agents.llm_factory.settings") as mock_settings,
         ):
