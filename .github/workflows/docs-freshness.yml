@@ -76,7 +76,7 @@ jobs:
             while IFS= read -r link; do
               TARGET=$(echo "$link" | grep -oP '\]\(\K[^)]+')
               # Skip external URLs and anchors
-              if echo "$TARGET" | grep -qE '^(https?://|#)'; then
+              if echo "$TARGET" | grep -qE '^(https?://|file://|mailto:|#)'; then
                 continue
               fi
               # Resolve relative to the file's directory
