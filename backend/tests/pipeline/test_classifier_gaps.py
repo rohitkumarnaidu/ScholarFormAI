@@ -70,18 +70,19 @@ class TestMapScibertLabelGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 
 class TestPredictScibertBatchGaps:
-    def test_lang_detect_raises_exception_falls_to_en(self, classifier):
+    def test_lang_detect_raises_exception_falls_to_en(self):
         """When detect_language raises, detected_lang should become 'en'."""
-        mock_parser = MagicMock()
-        mock_parser.model = MagicMock()
-        mock_parser.tokenizer = MagicMock()
-        mock_parser.predict_blocks_batch.return_value = [{"type": "BODY", "confidence": 0.95}]
-        with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
-            with patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser", return_value=mock_parser):
-                with patch("app.pipeline.intelligence.semantic_parser.HAS_LANGDETECT", True, create=True):
-                    with patch("app.pipeline.intelligence.semantic_parser.detect_language", side_effect=Exception("lang fail"), create=True):
-                        result = classifier._predict_llm_batch([block("b", 0, text="Hello World")])
-        assert result == [{"type": "BODY", "confidence": 0.95}]
+        from app.pipeline.intelligence.semantic_parser import SemanticParser
+        parser = SemanticParser()
+        parser._llm_classifier = MagicMock()
+        parser._llm_classifier.classify_batch.return_value = [{"type": "BODY", "confidence": 0.95}]
+        with patch("app.pipeline.intelligence.semantic_parser.should_enable_llm_classification", return_value=True):
+            with patch("app.pipeline.intelligence.semantic_parser.HAS_LANGDETECT", True, create=True):
+                with patch("app.pipeline.intelligence.semantic_parser.detect_language", side_effect=Exception("lang fail"), create=True):
+                    result = parser.analyze_blocks([block("b", 0, text="Hello World")])
+        assert result[0]["detected_language"] == "en"
+        assert result[0]["predicted_section_type"] == "BODY"
+        assert result[0]["confidence_score"] == 0.95
 
 
 # ══════════════════════════════════════════════════════════════════════════════
