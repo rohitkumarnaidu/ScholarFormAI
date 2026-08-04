@@ -19,6 +19,8 @@ import sys
 from unittest.mock import patch, MagicMock
 import pytest
 
+from app.models import Reference, ReferenceType
+
 # ── Module-level citeproc-py mock ──────────────────────────────────────────
 # Build a complete mock citeproc-py module tree so that
 # reference_formatter's try/except ImportError block succeeds and
