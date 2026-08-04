@@ -25,7 +25,11 @@ export default defineConfig({
         jsx: 'automatic',
     },
     test: {
-        pool: 'forks',
+        pool: 'threads',
+        poolOptions: {
+            threads: { minThreads: 1, maxThreads: 2 }
+        },
+        testTimeout: 20000,
         globals: true,
         environment: 'jsdom',
         setupFiles: './src/test/setup.js',
