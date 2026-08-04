@@ -277,6 +277,7 @@ class TestCustomLLMFactoryDeep:
         fake_anthropic_mod.ChatAnthropic = fake_chat
 
         with patch.object(mod, "LITELLM_AVAILABLE", False), \
+             patch.object(mod, "_llm_generate", None), \
              patch.object(mod, "settings") as mock_settings, \
              patch.dict("sys.modules", {"langchain_anthropic": fake_anthropic_mod}):
             mock_settings.ANTHROPIC_API_KEY = "ant-key"
@@ -294,6 +295,7 @@ class TestCustomLLMFactoryDeep:
         fake_anthropic_mod.ChatAnthropic = fake_chat
 
         with patch.object(mod, "LITELLM_AVAILABLE", False), \
+             patch.object(mod, "_llm_generate", None), \
              patch.object(mod, "settings") as mock_settings, \
              patch.dict("sys.modules", {"langchain_anthropic": fake_anthropic_mod}):
             mock_settings.ANTHROPIC_API_KEY = ""
@@ -316,6 +318,7 @@ class TestCustomLLMFactoryDeep:
         fake_community_mod.llms = fake_llms_mod
 
         with patch.object(mod, "LITELLM_AVAILABLE", False), \
+             patch.object(mod, "_llm_generate", None), \
              patch.object(mod, "Ollama", None), \
              patch.object(mod, "settings") as mock_settings, \
              patch.dict("sys.modules", {
@@ -341,6 +344,7 @@ class TestCustomLLMFactoryDeep:
         mod = self._mod()
         # Remove langchain_anthropic from sys.modules and prevent re-import
         with patch.object(mod, "LITELLM_AVAILABLE", False), \
+             patch.object(mod, "_llm_generate", None), \
              patch.object(mod, "settings") as mock_settings, \
              patch.dict("sys.modules", {"langchain_anthropic": None}):
             mock_settings.ANTHROPIC_API_KEY = "ant-key"
@@ -355,6 +359,7 @@ class TestCustomLLMFactoryDeep:
         fake_anthropic_mod.ChatAnthropic = fake_chat
 
         with patch.object(mod, "LITELLM_AVAILABLE", False), \
+             patch.object(mod, "_llm_generate", None), \
              patch.object(mod, "settings") as mock_settings, \
              patch.dict("sys.modules", {"langchain_anthropic": fake_anthropic_mod}):
             mock_settings.ANTHROPIC_API_KEY = ""
@@ -409,6 +414,7 @@ class TestGetAvailableProvidersDeep:
         mod = __import__("app.pipeline.agents.llm_factory", fromlist=["_"])
         with patch.object(mod, "settings") as mock_settings, \
              patch.object(mod, "LITELLM_AVAILABLE", False), \
+             patch.object(mod, "_llm_generate", None), \
              self._mock_anthropic_fail(), \
              patch("requests.get") as mock_get:
             mock_settings.NVIDIA_API_KEY = ""
@@ -424,6 +430,7 @@ class TestGetAvailableProvidersDeep:
         mod = __import__("app.pipeline.agents.llm_factory", fromlist=["_"])
         with patch.object(mod, "settings") as mock_settings, \
              patch.object(mod, "LITELLM_AVAILABLE", False), \
+             patch.object(mod, "_llm_generate", None), \
              self._mock_anthropic_fail(), \
              patch("requests.get") as mock_get:
             mock_settings.NVIDIA_API_KEY = ""
@@ -439,6 +446,7 @@ class TestGetAvailableProvidersDeep:
         mod = __import__("app.pipeline.agents.llm_factory", fromlist=["_"])
         with patch.object(mod, "settings") as mock_settings, \
              patch.object(mod, "LITELLM_AVAILABLE", False), \
+             patch.object(mod, "_llm_generate", None), \
              self._mock_anthropic_fail(), \
              patch("requests.get") as mock_get:
             mock_settings.NVIDIA_API_KEY = ""
@@ -469,6 +477,7 @@ class TestGetAvailableProvidersDeep:
         mod = __import__("app.pipeline.agents.llm_factory", fromlist=["_"])
         with patch.object(mod, "settings") as mock_settings, \
              patch.object(mod, "LITELLM_AVAILABLE", False), \
+             patch.object(mod, "_llm_generate", None), \
              patch.dict("sys.modules", {"langchain_anthropic": None}), \
              patch("requests.get") as mock_get:
             mock_settings.NVIDIA_API_KEY = ""
@@ -486,6 +495,7 @@ class TestGetAvailableProvidersDeep:
         fake_anthropic = self._make_anthropic_fake()
         with patch.object(mod, "settings") as mock_settings, \
              patch.object(mod, "LITELLM_AVAILABLE", False), \
+             patch.object(mod, "_llm_generate", None), \
              patch.dict("sys.modules", {"langchain_anthropic": fake_anthropic}), \
              patch("requests.get") as mock_get:
             mock_settings.NVIDIA_API_KEY = ""
@@ -503,6 +513,7 @@ class TestGetAvailableProvidersDeep:
         mod = __import__("app.pipeline.agents.llm_factory", fromlist=["_"])
         with patch.object(mod, "settings") as mock_settings, \
              patch.object(mod, "LITELLM_AVAILABLE", False), \
+             patch.object(mod, "_llm_generate", None), \
              self._mock_anthropic_fail(), \
              patch("requests.get") as mock_get:
             mock_settings.NVIDIA_API_KEY = "nv-key"
