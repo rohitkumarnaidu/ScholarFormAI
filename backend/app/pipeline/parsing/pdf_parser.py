@@ -19,7 +19,10 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 try:
-    import fitz  # PyMuPDF
+    try:
+        import pymupdf as fitz  # PyMuPDF >= 1.25.0
+    except ImportError:
+        import fitz  # PyMuPDF < 1.25.0
 
     PYMUPDF_AVAILABLE = True
 except ImportError:

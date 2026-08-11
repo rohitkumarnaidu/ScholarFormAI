@@ -7,8 +7,8 @@
 **Referenced Files in This Document**
 - [TESTING_COMMANDS.md](file://backend/manual_tests/TESTING_COMMANDS.md)
 - [test_commands.md](file://backend/manual_tests/test_commands.md)
-- [README.md (Sample Inputs)](file://backend/manual_tests/sample_inputs/README.md)
-- [test_formatter_golden_files.py](file://backend/tests/test_formatter_golden_files.py)
+- [README.md (Sample Inputs)](../../../../../README.md)
+- [test_formatter_golden_files.py](../../../../../backend/tests/test_formatter_golden_files.py)
 - [test_output_v6.txt](file://backend/logs/test_output_v6.txt)
 - [test_final_output_v6.txt](file://backend/logs/test_final_output_v6.txt)
 </cite>
@@ -81,34 +81,34 @@ TT --> TL
 
 - [TESTING_COMMANDS.md:1-46](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L46)
 - [test_commands.md:5-52](file://backend/manual_tests/test_commands.md#L5-L52)
-- [test_formatter_golden_files.py:22-25](file://backend/tests/test_formatter_golden_files.py#L22-L25)
+- [test_formatter_golden_files.py:22-25](../../../../../backend/tests/test_formatter_golden_files.py#L22-L25)
 
 **Section sources**
 
 - [TESTING_COMMANDS.md:5-46](file://backend/manual_tests/TESTING_COMMANDS.md#L5-L46)
 - [test_commands.md:5-52](file://backend/manual_tests/test_commands.md#L5-L52)
-- [test_formatter_golden_files.py:22-25](file://backend/tests/test_formatter_golden_files.py#L22-L25)
+- [test_formatter_golden_files.py:22-25](../../../../../backend/tests/test_formatter_golden_files.py#L22-L25)
 
 ## Core Components
 
 - Sample input directory structure for manual testing
-    - Purpose: Provide curated DOCX files for stepwise verification across parsing, identification, assembly, and formatting
-    - Required files: simple.docx, with_figures.docx, with_tables.docx, with_equations.docx
-    - Guidance: Add renamed uploads or use existing uploads directly via manual test commands
+  - Purpose: Provide curated DOCX files for stepwise verification across parsing, identification, assembly, and formatting
+  - Required files: simple.docx, with_figures.docx, with_tables.docx, with_equations.docx
+  - Guidance: Add renamed uploads or use existing uploads directly via manual test commands
 
 - Automated golden-file test suite
-    - Inputs: Markdown fixtures under tests/golden_files/inputs
-    - Expected outputs: JSON under tests/golden_files/goldens
-    - Runner: tests/test_formatter_golden_files.py validates structural summary against goldens
+  - Inputs: Markdown fixtures under tests/golden_files/inputs
+  - Expected outputs: JSON under tests/golden_files/goldens
+  - Runner: tests/test_formatter_golden_files.py validates structural summary against goldens
 
 - Logging and regression outputs
-    - Historical outputs stored under logs for comparison and regression tracking
+  - Historical outputs stored under logs for comparison and regression tracking
 
 **Section sources**
 
-- [README.md (Sample Inputs):1-78](file://backend/manual_tests/sample_inputs/README.md#L1-L78)
+- [README.md (Sample Inputs):1-78](../../../../../README.md#L1-L78)
 - [test_commands.md:5-52](file://backend/manual_tests/test_commands.md#L5-L52)
-- [test_formatter_golden_files.py:22-25](file://backend/tests/test_formatter_golden_files.py#L22-L25)
+- [test_formatter_golden_files.py:22-25](../../../../../backend/tests/test_formatter_golden_files.py#L22-L25)
 - [test_output_v6.txt](file://backend/logs/test_output_v6.txt)
 - [test_final_output_v6.txt](file://backend/logs/test_final_output_v6.txt)
 
@@ -131,7 +131,7 @@ F -. "expected baseline" .-> G
 
 - [TESTING_COMMANDS.md:5-46](file://backend/manual_tests/TESTING_COMMANDS.md#L5-L46)
 - [test_commands.md:5-52](file://backend/manual_tests/test_commands.md#L5-L52)
-- [test_formatter_golden_files.py:22-25](file://backend/tests/test_formatter_golden_files.py#L22-L25)
+- [test_formatter_golden_files.py:22-25](../../../../../backend/tests/test_formatter_golden_files.py#L22-L25)
 - [test_output_v6.txt](file://backend/logs/test_output_v6.txt)
 - [test_final_output_v6.txt](file://backend/logs/test_final_output_v6.txt)
 
@@ -142,13 +142,13 @@ F -. "expected baseline" .-> G
 - Directory: backend/manual_tests/sample_inputs
 - Purpose: Provide deterministic, curated DOCX files for manual verification across pipeline phases
 - Required files and purposes:
-    - simple.docx: Basic academic paper for parsing and classification
-    - with_figures.docx: Adds figures and captions for detection and numbering
-    - with_tables.docx: Adds tables and captions for extraction and numbering
-    - with_equations.docx: Adds inline and display math for OMML and MathML handling
+  - simple.docx: Basic academic paper for parsing and classification
+  - with_figures.docx: Adds figures and captions for detection and numbering
+  - with_tables.docx: Adds tables and captions for extraction and numbering
+  - with_equations.docx: Adds inline and display math for OMML and MathML handling
 - Adding new inputs:
-    - Copy from backend/uploads/ and rename per naming convention
-    - Alternatively, run manual test commands directly against existing uploads
+  - Copy from backend/uploads/ and rename per naming convention
+  - Alternatively, run manual test commands directly against existing uploads
 
 ```mermaid
 flowchart TD
@@ -163,29 +163,29 @@ Verify --> End(["Ready for Phase 1–3 verification"])
 
 **Diagram sources**
 
-- [README.md (Sample Inputs):56-78](file://backend/manual_tests/sample_inputs/README.md#L56-L78)
+- [README.md (Sample Inputs):56-78](../../../../../README.md#L56-L78)
 - [TESTING_COMMANDS.md:52-80](file://backend/manual_tests/TESTING_COMMANDS.md#L52-L80)
 - [test_commands.md:58-72](file://backend/manual_tests/test_commands.md#L58-L72)
 
 **Section sources**
 
-- [README.md (Sample Inputs):1-78](file://backend/manual_tests/sample_inputs/README.md#L1-L78)
+- [README.md (Sample Inputs):1-78](../../../../../README.md#L1-L78)
 - [TESTING_COMMANDS.md:5-46](file://backend/manual_tests/TESTING_COMMANDS.md#L5-L46)
 - [test_commands.md:5-52](file://backend/manual_tests/test_commands.md#L5-L52)
 
 ### Golden File System: Inputs and Expected Outputs
 
 - Inputs: Markdown fixtures under tests/golden_files/inputs
-    - Format: YAML frontmatter followed by structured content
-    - Parser: tests/test_formatter_golden_files.py reads frontmatter and body, builds PipelineDocument
+  - Format: YAML frontmatter followed by structured content
+  - Parser: tests/test_formatter_golden_files.py reads frontmatter and body, builds PipelineDocument
 - Expected outputs: JSON under tests/golden_files/goldens
-    - Content: Structural summaries (e.g., section counts, heading hierarchy, reference counts)
+  - Content: Structural summaries (e.g., section counts, heading hierarchy, reference counts)
 - Runner: tests/test_formatter_golden_files.py
-    - Loads golden JSON
-    - Builds PipelineDocument from fixture MD
-    - Renders DOCX via Formatter
-    - Extracts structural summary from rendered DOCX
-    - Asserts equality against expected summary
+  - Loads golden JSON
+  - Builds PipelineDocument from fixture MD
+  - Renders DOCX via Formatter
+  - Extracts structural summary from rendered DOCX
+  - Asserts equality against expected summary
 
 ```mermaid
 sequenceDiagram
@@ -207,47 +207,47 @@ R-->>T : Assert structural summary equals expected
 
 **Diagram sources**
 
-- [test_formatter_golden_files.py:222-252](file://backend/tests/test_formatter_golden_files.py#L222-L252)
+- [test_formatter_golden_files.py:222-252](../../../../../backend/tests/test_formatter_golden_files.py#L222-L252)
 
 **Section sources**
 
-- [test_formatter_golden_files.py:22-25](file://backend/tests/test_formatter_golden_files.py#L22-L25)
-- [test_formatter_golden_files.py:56-194](file://backend/tests/test_formatter_golden_files.py#L56-L194)
-- [test_formatter_golden_files.py:197-234](file://backend/tests/test_formatter_golden_files.py#L197-L234)
-- [test_formatter_golden_files.py:237-252](file://backend/tests/test_formatter_golden_files.py#L237-L252)
+- [test_formatter_golden_files.py:22-25](../../../../../backend/tests/test_formatter_golden_files.py#L22-L25)
+- [test_formatter_golden_files.py:56-194](../../../../../backend/tests/test_formatter_golden_files.py#L56-L194)
+- [test_formatter_golden_files.py:197-234](../../../../../backend/tests/test_formatter_golden_files.py#L197-L234)
+- [test_formatter_golden_files.py:237-252](../../../../../backend/tests/test_formatter_golden_files.py#L237-L252)
 
 ### Test Data Formats and Preparation
 
 - Manual test formats
-    - Inputs: DOCX files placed in manual_tests/sample_inputs/
-    - Outputs: JSON in manual_tests/outputs/, DOCX in manual_tests/visual_outputs/
-    - Commands: See manual test command guides for invocation and expected outputs
+  - Inputs: DOCX files placed in manual_tests/sample_inputs/
+  - Outputs: JSON in manual_tests/outputs/, DOCX in manual_tests/visual_outputs/
+  - Commands: See manual test command guides for invocation and expected outputs
 - Automated test formats
-    - Inputs: Markdown fixtures with YAML frontmatter and body content
-    - Expected outputs: JSON containing structural expectations
-    - Runner: Python-based test that renders DOCX and compares structural summary
+  - Inputs: Markdown fixtures with YAML frontmatter and body content
+  - Expected outputs: JSON containing structural expectations
+  - Runner: Python-based test that renders DOCX and compares structural summary
 
 **Section sources**
 
 - [TESTING_COMMANDS.md:5-46](file://backend/manual_tests/TESTING_COMMANDS.md#L5-L46)
 - [test_commands.md:5-52](file://backend/manual_tests/test_commands.md#L5-L52)
-- [test_formatter_golden_files.py:28-47](file://backend/tests/test_formatter_golden_files.py#L28-L47)
-- [test_formatter_golden_files.py:56-194](file://backend/tests/test_formatter_golden_files.py#L56-L194)
+- [test_formatter_golden_files.py:28-47](../../../../../backend/tests/test_formatter_golden_files.py#L28-L47)
+- [test_formatter_golden_files.py:56-194](../../../../../backend/tests/test_formatter_golden_files.py#L56-L194)
 
 ### Test Data Lifecycle and Version Management
 
 - Creation
-    - Manual: Add curated DOCX files to manual_tests/sample_inputs/
-    - Automated: Add markdown fixtures to tests/golden_files/inputs and expected JSON to tests/golden_files/goldens
+  - Manual: Add curated DOCX files to manual_tests/sample_inputs/
+  - Automated: Add markdown fixtures to tests/golden_files/inputs and expected JSON to tests/golden_files/goldens
 - Execution
-    - Manual: Run scripts under manual_tests/normal/ and manual_tests/visual/
-    - Automated: Execute pytest against tests/test_formatter_golden_files.py
+  - Manual: Run scripts under manual_tests/normal/ and manual_tests/visual/
+  - Automated: Execute pytest against tests/test_formatter_golden_files.py
 - Regression maintenance
-    - Compare current outputs with historical logs under logs/
-    - Update goldens only when behavior change is intentional and validated
+  - Compare current outputs with historical logs under logs/
+  - Update goldens only when behavior change is intentional and validated
 - Versioning
-    - Templates: Managed under app/templates and contracts under app/pipeline/contracts
-    - Test fixtures: Named by template (e.g., ieee, apa, acm, nature, resume)
+  - Templates: Managed under app/templates and contracts under app/pipeline/contracts
+  - Test fixtures: Named by template (e.g., ieee, apa, acm, nature, resume)
 
 ```mermaid
 stateDiagram-v2
@@ -263,11 +263,11 @@ Baseline --> [*]
 
 **Diagram sources**
 
-- [test_formatter_golden_files.py:237-252](file://backend/tests/test_formatter_golden_files.py#L237-L252)
+- [test_formatter_golden_files.py:237-252](../../../../../backend/tests/test_formatter_golden_files.py#L237-L252)
 
 **Section sources**
 
-- [test_formatter_golden_files.py:237-252](file://backend/tests/test_formatter_golden_files.py#L237-L252)
+- [test_formatter_golden_files.py:237-252](../../../../../backend/tests/test_formatter_golden_files.py#L237-L252)
 - [test_output_v6.txt](file://backend/logs/test_output_v6.txt)
 - [test_final_output_v6.txt](file://backend/logs/test_final_output_v6.txt)
 
@@ -275,9 +275,9 @@ Baseline --> [*]
 
 - Use logs under backend/logs to compare current outputs with previous runs
 - When updating goldens, ensure:
-    - Changes are intentional and documented
-    - All related templates are consistently updated
-    - Manual verification is performed for critical regressions
+  - Changes are intentional and documented
+  - All related templates are consistently updated
+  - Manual verification is performed for critical regressions
 
 **Section sources**
 
@@ -287,14 +287,14 @@ Baseline --> [*]
 ## Dependency Analysis
 
 - Manual tests depend on:
-    - Sample inputs in manual_tests/sample_inputs
-    - Scripts in manual_tests/normal and manual_tests/visual
-    - Outputs in manual_tests/outputs and manual_tests/visual_outputs
+  - Sample inputs in manual_tests/sample_inputs
+  - Scripts in manual_tests/normal and manual_tests/visual
+  - Outputs in manual_tests/outputs and manual_tests/visual_outputs
 - Automated tests depend on:
-    - Golden inputs in tests/golden_files/inputs
-    - Golden outputs in tests/golden_files/goldens
-    - Runner in tests/test_formatter_golden_files.py
-    - Logs in backend/logs for regression tracking
+  - Golden inputs in tests/golden_files/inputs
+  - Golden outputs in tests/golden_files/goldens
+  - Runner in tests/test_formatter_golden_files.py
+  - Logs in backend/logs for regression tracking
 
 ```mermaid
 graph LR
@@ -311,13 +311,13 @@ TT --> TL["logs/*"]
 
 - [TESTING_COMMANDS.md:5-46](file://backend/manual_tests/TESTING_COMMANDS.md#L5-L46)
 - [test_commands.md:5-52](file://backend/manual_tests/test_commands.md#L5-L52)
-- [test_formatter_golden_files.py:22-25](file://backend/tests/test_formatter_golden_files.py#L22-L25)
+- [test_formatter_golden_files.py:22-25](../../../../../backend/tests/test_formatter_golden_files.py#L22-L25)
 
 **Section sources**
 
 - [TESTING_COMMANDS.md:5-46](file://backend/manual_tests/TESTING_COMMANDS.md#L5-L46)
 - [test_commands.md:5-52](file://backend/manual_tests/test_commands.md#L5-L52)
-- [test_formatter_golden_files.py:22-25](file://backend/tests/test_formatter_golden_files.py#L22-L25)
+- [test_formatter_golden_files.py:22-25](../../../../../backend/tests/test_formatter_golden_files.py#L22-L25)
 
 ## Performance Considerations
 
@@ -330,19 +330,19 @@ TT --> TL["logs/*"]
 Common issues and resolutions:
 
 - Missing manual test outputs
-    - Ensure the correct manual test command is used for the desired phase and that the input file exists in manual_tests/sample_inputs or uploads
+  - Ensure the correct manual test command is used for the desired phase and that the input file exists in manual_tests/sample_inputs or uploads
 - Golden-file assertion failures
-    - Review the generated DOCX structural summary and compare with the expected golden JSON
-    - Update goldens only after validating the new behavior is intentional
+  - Review the generated DOCX structural summary and compare with the expected golden JSON
+  - Update goldens only after validating the new behavior is intentional
 - Environment inconsistencies
-    - Align template and contract paths used by the formatter with those referenced in the runner
-    - Confirm logs under backend/logs reflect the expected outputs for regression checks
+  - Align template and contract paths used by the formatter with those referenced in the runner
+  - Confirm logs under backend/logs reflect the expected outputs for regression checks
 
 **Section sources**
 
 - [TESTING_COMMANDS.md:52-80](file://backend/manual_tests/TESTING_COMMANDS.md#L52-L80)
 - [test_commands.md:58-72](file://backend/manual_tests/test_commands.md#L58-L72)
-- [test_formatter_golden_files.py:237-252](file://backend/tests/test_formatter_golden_files.py#L237-L252)
+- [test_formatter_golden_files.py:237-252](../../../../../backend/tests/test_formatter_golden_files.py#L237-L252)
 - [test_output_v6.txt](file://backend/logs/test_output_v6.txt)
 - [test_final_output_v6.txt](file://backend/logs/test_final_output_v6.txt)
 

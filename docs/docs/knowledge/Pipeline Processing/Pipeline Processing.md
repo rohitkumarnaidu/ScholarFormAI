@@ -5,19 +5,19 @@
 
 <cite>
 **Referenced Files in This Document**
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [base.py](file://backend/app/pipeline/base.py)
-- [converter.py](file://backend/app/pipeline/input_conversion/converter.py)
-- [parser_factory.py](file://backend/app/pipeline/parsing/parser_factory.py)
-- [detector.py](file://backend/app/pipeline/structure_detection/detector.py)
-- [formatter.py](file://backend/app/pipeline/formatting/formatter.py)
-- [validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [grobid_client.py](file://backend/app/pipeline/services/grobid_client.py)
-- [docling_client.py](file://backend/app/pipeline/services/docling_client.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [exporter.py](file://backend/app/pipeline/export/exporter.py)
-- [document.py](file://backend/app/models/document.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [base.py](../../../../backend/app/pipeline/base.py)
+- [converter.py](../../../../backend/app/pipeline/input_conversion/converter.py)
+- [parser_factory.py](../../../../backend/app/pipeline/parsing/parser_factory.py)
+- [detector.py](../../../../backend/app/pipeline/structure_detection/detector.py)
+- [formatter.py](../../../../backend/app/pipeline/formatting/formatter.py)
+- [validator_v3.py](../../../../backend/app/pipeline/validation/validator_v3.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [grobid_client.py](../../../../backend/app/pipeline/services/grobid_client.py)
+- [docling_client.py](../../../../backend/app/pipeline/services/docling_client.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [exporter.py](../../../../backend/app/pipeline/export/exporter.py)
+- [document.py](../../../../backend/app/models/document.py)
 </cite>
 
 ## Table of Contents
@@ -89,21 +89,21 @@ ORCH --> EXP
 
 **Diagram sources**
 
-- [orchestrator.py:522-800](file://backend/app/pipeline/orchestrator.py#L522-L800)
-- [converter.py:19-166](file://backend/app/pipeline/input_conversion/converter.py#L19-L166)
-- [parser_factory.py:25-166](file://backend/app/pipeline/parsing/parser_factory.py#L25-L166)
-- [grobid_client.py:25-137](file://backend/app/pipeline/services/grobid_client.py#L25-L137)
-- [docling_client.py:143-289](file://backend/app/pipeline/services/docling_client.py#L143-L289)
-- [detector.py:27-122](file://backend/app/pipeline/structure_detection/detector.py#L27-L122)
-- [reasoning_engine.py:83-176](file://backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
-- [formatter.py:35-291](file://backend/app/pipeline/formatting/formatter.py#L35-L291)
-- [validator_v3.py:34-146](file://backend/app/pipeline/validation/validator_v3.py#L34-L146)
-- [exporter.py:19-195](file://backend/app/pipeline/export/exporter.py#L19-L195)
+- [orchestrator.py:522-800](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L522-L800)
+- [converter.py:19-166](../../../../backend/app/pipeline/input_conversion/converter.py#L19-L166)
+- [parser_factory.py:25-166](../../../../backend/app/pipeline/parsing/parser_factory.py#L25-L166)
+- [grobid_client.py:25-137](../../../../backend/app/pipeline/services/grobid_client.py#L25-L137)
+- [docling_client.py:143-289](../../../../backend/app/pipeline/services/docling_client.py#L143-L289)
+- [detector.py:27-122](../../../../backend/app/pipeline/structure_detection/detector.py#L27-L122)
+- [reasoning_engine.py:83-176](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
+- [formatter.py:35-291](../../../../backend/app/pipeline/formatting/formatter.py#L35-L291)
+- [validator_v3.py:34-146](../../../../backend/app/pipeline/validation/validator_v3.py#L34-L146)
+- [exporter.py:19-195](../../../../backend/app/pipeline/export/exporter.py#L19-L195)
 
 **Section sources**
 
-- [orchestrator.py:522-800](file://backend/app/pipeline/orchestrator.py#L522-L800)
-- [base.py:4-24](file://backend/app/pipeline/base.py#L4-L24)
+- [orchestrator.py:522-800](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L522-L800)
+- [base.py:4-24](../../../../backend/app/pipeline/base.py#L4-L24)
 
 ## Core Components
 
@@ -122,17 +122,17 @@ ORCH --> EXP
 
 **Section sources**
 
-- [orchestrator.py:73-121](file://backend/app/pipeline/orchestrator.py#L73-L121)
-- [base.py:4-24](file://backend/app/pipeline/base.py#L4-L24)
-- [converter.py:19-166](file://backend/app/pipeline/input_conversion/converter.py#L19-L166)
-- [parser_factory.py:25-166](file://backend/app/pipeline/parsing/parser_factory.py#L25-L166)
-- [grobid_client.py:25-137](file://backend/app/pipeline/services/grobid_client.py#L25-L137)
-- [docling_client.py:143-289](file://backend/app/pipeline/services/docling_client.py#L143-L289)
-- [detector.py:27-122](file://backend/app/pipeline/structure_detection/detector.py#L27-L122)
-- [reasoning_engine.py:83-176](file://backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
-- [formatter.py:35-291](file://backend/app/pipeline/formatting/formatter.py#L35-L291)
-- [validator_v3.py:34-146](file://backend/app/pipeline/validation/validator_v3.py#L34-L146)
-- [exporter.py:19-195](file://backend/app/pipeline/export/exporter.py#L19-L195)
+- [orchestrator.py:73-121](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L121)
+- [base.py:4-24](../../../../backend/app/pipeline/base.py#L4-L24)
+- [converter.py:19-166](../../../../backend/app/pipeline/input_conversion/converter.py#L19-L166)
+- [parser_factory.py:25-166](../../../../backend/app/pipeline/parsing/parser_factory.py#L25-L166)
+- [grobid_client.py:25-137](../../../../backend/app/pipeline/services/grobid_client.py#L25-L137)
+- [docling_client.py:143-289](../../../../backend/app/pipeline/services/docling_client.py#L143-L289)
+- [detector.py:27-122](../../../../backend/app/pipeline/structure_detection/detector.py#L27-L122)
+- [reasoning_engine.py:83-176](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
+- [formatter.py:35-291](../../../../backend/app/pipeline/formatting/formatter.py#L35-L291)
+- [validator_v3.py:34-146](../../../../backend/app/pipeline/validation/validator_v3.py#L34-L146)
+- [exporter.py:19-195](../../../../backend/app/pipeline/export/exporter.py#L19-L195)
 
 ## Architecture Overview
 
@@ -159,9 +159,9 @@ participant NA as "ContentAnalyzer"
 participant VL as "DocumentValidator"
 participant FM as "Formatter"
 participant EX as "Exporter"
-Client->>Orchestrator : submit job (input_path, job_id, template, options)
+Client->>Orchestrator : submit job ("input_path, job_id, template, options")
 Orchestrator->>DB : update status UPLOAD
-Orchestrator->>Conv : convert_to_docx (if needed)
+Orchestrator->>Conv : convert_to_docx ("if needed")
 Orchestrator->>PF : get_parser(input_path)
 Orchestrator->>PF : parse("input_path/docx, job_id")
 Orchestrator->>G : process_header_document (parallel)
@@ -179,53 +179,53 @@ Orchestrator-->>Client : result
 
 **Diagram sources**
 
-- [orchestrator.py:522-800](file://backend/app/pipeline/orchestrator.py#L522-L800)
-- [converter.py:40-166](file://backend/app/pipeline/input_conversion/converter.py#L40-L166)
-- [parser_factory.py:95-141](file://backend/app/pipeline/parsing/parser_factory.py#L95-L141)
-- [grobid_client.py:52-92](file://backend/app/pipeline/services/grobid_client.py#L52-L92)
-- [docling_client.py:180-289](file://backend/app/pipeline/services/docling_client.py#L180-L289)
-- [detector.py:47-122](file://backend/app/pipeline/structure_detection/detector.py#L47-L122)
-- [reasoning_engine.py:463-571](file://backend/app/pipeline/intelligence/reasoning_engine.py#L463-L571)
-- [formatter.py:49-291](file://backend/app/pipeline/formatting/formatter.py#L49-L291)
-- [validator_v3.py:62-146](file://backend/app/pipeline/validation/validator_v3.py#L62-L146)
-- [exporter.py:30-195](file://backend/app/pipeline/export/exporter.py#L30-L195)
+- [orchestrator.py:522-800](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L522-L800)
+- [converter.py:40-166](../../../../backend/app/pipeline/input_conversion/converter.py#L40-L166)
+- [parser_factory.py:95-141](../../../../backend/app/pipeline/parsing/parser_factory.py#L95-L141)
+- [grobid_client.py:52-92](../../../../backend/app/pipeline/services/grobid_client.py#L52-L92)
+- [docling_client.py:180-289](../../../../backend/app/pipeline/services/docling_client.py#L180-L289)
+- [detector.py:47-122](../../../../backend/app/pipeline/structure_detection/detector.py#L47-L122)
+- [reasoning_engine.py:463-571](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L463-L571)
+- [formatter.py:49-291](../../../../backend/app/pipeline/formatting/formatter.py#L49-L291)
+- [validator_v3.py:62-146](../../../../backend/app/pipeline/validation/validator_v3.py#L62-L146)
+- [exporter.py:30-195](../../../../backend/app/pipeline/export/exporter.py#L30-L195)
 
 ## Detailed Component Analysis
 
 ### 12-Stage Pipeline Workflow
 
 - Stage 0: Upload and Job Creation
-    - Orchestrator initializes and sets status to UPLOAD
+  - Orchestrator initializes and sets status to UPLOAD
 - Stage 1: Input Conversion
-    - Convert non-Docx inputs to DOCX using LibreOffice/Pandoc; optional OCR for scanned PDFs
+  - Convert non-Docx inputs to DOCX using LibreOffice/Pandoc; optional OCR for scanned PDFs
 - Stage 2: Text Extraction
-    - Use ParserFactory to select parser; parse DOCX/PDF/HTML/MD/TX; optionally fallback to LLMPDFParser for scanned PDFs
+  - Use ParserFactory to select parser; parse DOCX/PDF/HTML/MD/TX; optionally fallback to LLMPDFParser for scanned PDFs
 - Stage 3: AI Extraction (Parallel)
-    - GROBID: extract metadata (title/authors/abstract/keywords)
-    - Docling: extract layout (bounding boxes, font sizes, headings/tables/figures)
-    - PyMuPDF fallback for metadata when AI services unavailable
+  - GROBID: extract metadata (title/authors/abstract/keywords)
+  - Docling: extract layout (bounding boxes, font sizes, headings/tables/figures)
+  - PyMuPDF fallback for metadata when AI services unavailable
 - Stage 4: Structure Detection
-    - Detect headings and build section hierarchy; canonicalize section names; validate hierarchy
+  - Detect headings and build section hierarchy; canonicalize section names; validate hierarchy
 - Stage 5: AI Semantic Parsing
-    - Optional semantic classification via ReasoningEngine (NVIDIA NIM or Ollama DeepSeek); rule-based fallback
+  - Optional semantic classification via ReasoningEngine (NVIDIA NIM or Ollama DeepSeek); rule-based fallback
 - Stage 6: Classification
-    - Assign semantic block types and confidence scores
+  - Assign semantic block types and confidence scores
 - Stage 7: NLP Analysis
-    - Extract keywords and enrich content metadata
+  - Extract keywords and enrich content metadata
 - Stage 8: Validation
-    - Structural completeness, figure/table/reference checks, integrity/cross-reference validation, optional CrossRef DOI checks
+  - Structural completeness, figure/table/reference checks, integrity/cross-reference validation, optional CrossRef DOI checks
 - Stage 9: Formatting
-    - Apply numbering, references, styles, and template rendering; add TOC/page numbers/borders/line numbers
+  - Apply numbering, references, styles, and template rendering; add TOC/page numbers/borders/line numbers
 - Stage 10: Export
-    - Save DOCX; derive PDF/JATS/JSON/HTML/LaTeX; write structured export payload
+  - Save DOCX; derive PDF/JATS/JSON/HTML/LaTeX; write structured export payload
 - Stage 11: Persistence and Completion
-    - Persist partial results on failure; compute quality score; update status to COMPLETED/FAILED
+  - Persist partial results on failure; compute quality score; update status to COMPLETED/FAILED
 
 ```mermaid
 flowchart TD
 S0["Upload & Job Creation"] --> S1["Input Conversion"]
 S1 --> S2["Text Extraction"]
-S2 --> S3["AI Extraction (GROBID + Docling)"]
+S2 --> S3["AI Extraction ("GROBID + Docling")"]
 S3 --> S4["Structure Detection"]
 S4 --> S5["AI Semantic Parsing"]
 S5 --> S6["Classification"]
@@ -240,14 +240,14 @@ S10 --> S11["Persistence & Completion"]
 
 **Section sources**
 
-- [orchestrator.py:583-800](file://backend/app/pipeline/orchestrator.py#L583-L800)
-- [converter.py:40-166](file://backend/app/pipeline/input_conversion/converter.py#L40-L166)
-- [parser_factory.py:95-141](file://backend/app/pipeline/parsing/parser_factory.py#L95-L141)
-- [detector.py:47-122](file://backend/app/pipeline/structure_detection/detector.py#L47-L122)
-- [reasoning_engine.py:463-571](file://backend/app/pipeline/intelligence/reasoning_engine.py#L463-L571)
-- [formatter.py:49-291](file://backend/app/pipeline/formatting/formatter.py#L49-L291)
-- [validator_v3.py:62-146](file://backend/app/pipeline/validation/validator_v3.py#L62-L146)
-- [exporter.py:30-195](file://backend/app/pipeline/export/exporter.py#L30-L195)
+- [orchestrator.py:583-800](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L583-L800)
+- [converter.py:40-166](../../../../backend/app/pipeline/input_conversion/converter.py#L40-L166)
+- [parser_factory.py:95-141](../../../../backend/app/pipeline/parsing/parser_factory.py#L95-L141)
+- [detector.py:47-122](../../../../backend/app/pipeline/structure_detection/detector.py#L47-L122)
+- [reasoning_engine.py:463-571](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L463-L571)
+- [formatter.py:49-291](../../../../backend/app/pipeline/formatting/formatter.py#L49-L291)
+- [validator_v3.py:62-146](../../../../backend/app/pipeline/validation/validator_v3.py#L62-L146)
+- [exporter.py:30-195](../../../../backend/app/pipeline/export/exporter.py#L30-L195)
 
 ### Orchestrator and Stage Coordination
 
@@ -279,11 +279,11 @@ class PipelineOrchestrator {
 
 **Diagram sources**
 
-- [orchestrator.py:73-521](file://backend/app/pipeline/orchestrator.py#L73-L521)
+- [orchestrator.py:73-521](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L521)
 
 **Section sources**
 
-- [orchestrator.py:522-800](file://backend/app/pipeline/orchestrator.py#L522-L800)
+- [orchestrator.py:522-800](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L522-L800)
 
 ### Input Conversion
 
@@ -294,7 +294,7 @@ class PipelineOrchestrator {
 
 **Section sources**
 
-- [converter.py:19-166](file://backend/app/pipeline/input_conversion/converter.py#L19-L166)
+- [converter.py:19-166](../../../../backend/app/pipeline/input_conversion/converter.py#L19-L166)
 
 ### Text Extraction
 
@@ -304,7 +304,7 @@ class PipelineOrchestrator {
 
 **Section sources**
 
-- [parser_factory.py:25-166](file://backend/app/pipeline/parsing/parser_factory.py#L25-L166)
+- [parser_factory.py:25-166](../../../../backend/app/pipeline/parsing/parser_factory.py#L25-L166)
 
 ### AI Extraction (External Services)
 
@@ -315,9 +315,9 @@ class PipelineOrchestrator {
 
 **Section sources**
 
-- [grobid_client.py:25-137](file://backend/app/pipeline/services/grobid_client.py#L25-L137)
-- [docling_client.py:143-289](file://backend/app/pipeline/services/docling_client.py#L143-L289)
-- [orchestrator.py:635-755](file://backend/app/pipeline/orchestrator.py#L635-L755)
+- [grobid_client.py:25-137](../../../../backend/app/pipeline/services/grobid_client.py#L25-L137)
+- [docling_client.py:143-289](../../../../backend/app/pipeline/services/docling_client.py#L143-L289)
+- [orchestrator.py:635-755](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L635-L755)
 
 ### Structure Detection
 
@@ -328,22 +328,22 @@ class PipelineOrchestrator {
 
 **Section sources**
 
-- [detector.py:27-122](file://backend/app/pipeline/structure_detection/detector.py#L27-L122)
+- [detector.py:27-122](../../../../backend/app/pipeline/structure_detection/detector.py#L27-L122)
 
 ### AI Semantic Parsing and Reasoning
 
 - Multi-tier LLM reasoning:
-    - Primary: NVIDIA NIM (Llama 3.3 70B) via LiteLLM
-    - Fallback: Ollama DeepSeek via LangChain or direct HTTP
-    - Final fallback: rule-based classification
+  - Primary: NVIDIA NIM (Llama 3.3 70B) via LiteLLM
+  - Fallback: Ollama DeepSeek via LangChain or direct HTTP
+  - Final fallback: rule-based classification
 - Circuit breaker protects against repeated failures; records metrics
 - JSON schema validation and normalization of outputs
 
 **Section sources**
 
-- [reasoning_engine.py:83-176](file://backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
-- [reasoning_engine.py:463-571](file://backend/app/pipeline/intelligence/reasoning_engine.py#L463-L571)
-- [circuit_breaker.py:29-97](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L97)
+- [reasoning_engine.py:83-176](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
+- [reasoning_engine.py:463-571](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L463-L571)
+- [circuit_breaker.py:29-97](../../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L97)
 
 ### Classification and NLP Analysis
 
@@ -353,7 +353,7 @@ class PipelineOrchestrator {
 
 **Section sources**
 
-- [orchestrator.py:782-800](file://backend/app/pipeline/orchestrator.py#L782-L800)
+- [orchestrator.py:782-800](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L782-L800)
 
 ### Validation
 
@@ -365,7 +365,7 @@ class PipelineOrchestrator {
 
 **Section sources**
 
-- [validator_v3.py:34-146](file://backend/app/pipeline/validation/validator_v3.py#L34-L146)
+- [validator_v3.py:34-146](../../../../backend/app/pipeline/validation/validator_v3.py#L34-L146)
 
 ### Formatting
 
@@ -376,7 +376,7 @@ class PipelineOrchestrator {
 
 **Section sources**
 
-- [formatter.py:35-291](file://backend/app/pipeline/formatting/formatter.py#L35-L291)
+- [formatter.py:35-291](../../../../backend/app/pipeline/formatting/formatter.py#L35-L291)
 
 ### Export
 
@@ -386,7 +386,7 @@ class PipelineOrchestrator {
 
 **Section sources**
 
-- [exporter.py:19-195](file://backend/app/pipeline/export/exporter.py#L19-L195)
+- [exporter.py:19-195](../../../../backend/app/pipeline/export/exporter.py#L19-L195)
 
 ## Dependency Analysis
 
@@ -417,14 +417,14 @@ ORCH --> SSE["Real-time Events"]
 
 **Diagram sources**
 
-- [orchestrator.py:522-800](file://backend/app/pipeline/orchestrator.py#L522-L800)
-- [detector.py:27-122](file://backend/app/pipeline/structure_detection/detector.py#L27-L122)
-- [reasoning_engine.py:83-176](file://backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
-- [exporter.py:19-195](file://backend/app/pipeline/export/exporter.py#L19-L195)
+- [orchestrator.py:522-800](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L522-L800)
+- [detector.py:27-122](../../../../backend/app/pipeline/structure_detection/detector.py#L27-L122)
+- [reasoning_engine.py:83-176](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
+- [exporter.py:19-195](../../../../backend/app/pipeline/export/exporter.py#L19-L195)
 
 **Section sources**
 
-- [orchestrator.py:522-800](file://backend/app/pipeline/orchestrator.py#L522-L800)
+- [orchestrator.py:522-800](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L522-L800)
 
 ## Performance Considerations
 
@@ -453,15 +453,15 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [converter.py:107-166](file://backend/app/pipeline/input_conversion/converter.py#L107-L166)
-- [parser_factory.py:55-66](file://backend/app/pipeline/parsing/parser_factory.py#L55-L66)
-- [grobid_client.py:41-51](file://backend/app/pipeline/services/grobid_client.py#L41-L51)
-- [docling_client.py:176-179](file://backend/app/pipeline/services/docling_client.py#L176-L179)
-- [reasoning_engine.py:458-470](file://backend/app/pipeline/intelligence/reasoning_engine.py#L458-L470)
-- [validator_v3.py:109-118](file://backend/app/pipeline/validation/validator_v3.py#L109-L118)
-- [exporter.py:47-65](file://backend/app/pipeline/export/exporter.py#L47-L65)
-- [orchestrator.py:169-185](file://backend/app/pipeline/orchestrator.py#L169-L185)
-- [orchestrator.py:186-211](file://backend/app/pipeline/orchestrator.py#L186-L211)
+- [converter.py:107-166](../../../../backend/app/pipeline/input_conversion/converter.py#L107-L166)
+- [parser_factory.py:55-66](../../../../backend/app/pipeline/parsing/parser_factory.py#L55-L66)
+- [grobid_client.py:41-51](../../../../backend/app/pipeline/services/grobid_client.py#L41-L51)
+- [docling_client.py:176-179](../../../../backend/app/pipeline/services/docling_client.py#L176-L179)
+- [reasoning_engine.py:458-470](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L458-L470)
+- [validator_v3.py:109-118](../../../../backend/app/pipeline/validation/validator_v3.py#L109-L118)
+- [exporter.py:47-65](../../../../backend/app/pipeline/export/exporter.py#L47-L65)
+- [orchestrator.py:169-185](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L169-L185)
+- [orchestrator.py:186-211](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L186-L211)
 
 ## Conclusion
 
@@ -479,8 +479,8 @@ The pipeline integrates robust orchestration, modular stages, and resilient fall
 
 **Section sources**
 
-- [orchestrator.py:107-168](file://backend/app/pipeline/orchestrator.py#L107-L168)
-- [document.py:6-26](file://backend/app/models/document.py#L6-L26)
+- [orchestrator.py:107-168](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L107-L168)
+- [document.py:6-26](../../../../backend/app/models/document.py#L6-L26)
 
 ### Extensibility Options
 
@@ -491,7 +491,7 @@ The pipeline integrates robust orchestration, modular stages, and resilient fall
 
 **Section sources**
 
-- [base.py:4-24](file://backend/app/pipeline/base.py#L4-L24)
-- [parser_factory.py:95-141](file://backend/app/pipeline/parsing/parser_factory.py#L95-L141)
-- [reasoning_engine.py:458-470](file://backend/app/pipeline/intelligence/reasoning_engine.py#L458-L470)
-- [exporter.py:173-195](file://backend/app/pipeline/export/exporter.py#L173-L195)
+- [base.py:4-24](../../../../backend/app/pipeline/base.py#L4-L24)
+- [parser_factory.py:95-141](../../../../backend/app/pipeline/parsing/parser_factory.py#L95-L141)
+- [reasoning_engine.py:458-470](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L458-L470)
+- [exporter.py:173-195](../../../../backend/app/pipeline/export/exporter.py#L173-L195)

@@ -5,19 +5,19 @@
 
 <cite>
 **Referenced Files in This Document**
-- [test_classification.py](file://backend/tests/test_classification.py)
-- [labels.json](file://backend/tests/fixtures/classification/labels.json)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [test_deepseek_models.py](file://backend/tests/intelligence/test_deepseek_models.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [locustfile.py](file://backend/tests/load/locustfile.py)
+- [test_classification.py](../../../../../backend/tests/pipeline/test_classification.py)
+- [labels.json](../../../../../backend/tests/fixtures/scibert/labels.json)
+- [semantic_parser.py](../../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [test_deepseek_models.py](../../../../../backend/tests/intelligence/test_deepseek_models.py)
+- [reasoning_engine.py](../../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [locustfile.py](../../../../../backend/tests/load/locustfile.py)
 - [TESTING_COMMANDS.md](file://backend/manual_tests/TESTING_COMMANDS.md)
 - [README_1.md](file://backend/manual_tests/README_1.md)
-- [README.md](file://backend/README.md)
-- [Testing.md](file://docs/Testing.md)
+- [README.md](../../../../../backend/README.md)
+- [Testing.md](../../../guides/testing.md)
 - [production_stress_test.py](file://backend/tests/stress/production_stress_test.py)
-- [README.md](file://backend/manual_tests/sample_inputs/README.md)
-- [pyproject.toml](file://backend/pyproject.toml)
+- [README.md](../../../../../README.md)
+- [pyproject.toml](../../../../../backend/pyproject.toml)
 </cite>
 
 ## Table of Contents
@@ -81,18 +81,18 @@ M3 --> C1
 
 **Diagram sources**
 
-- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
-- [semantic_parser.py:1-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
-- [test_deepseek_models.py:1-171](file://backend/tests/intelligence/test_deepseek_models.py#L1-L171)
-- [reasoning_engine.py:1-774](file://backend/app/pipeline/intelligence/reasoning_engine.py#L1-L774)
-- [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
+- [test_classification.py:1-92](../../../../../backend/tests/pipeline/test_classification.py#L1-L92)
+- [semantic_parser.py:1-306](../../../../../backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
+- [test_deepseek_models.py:1-171](../../../../../backend/tests/intelligence/test_deepseek_models.py#L1-L171)
+- [reasoning_engine.py:1-774](../../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L1-L774)
+- [locustfile.py:1-139](../../../../../backend/tests/load/locustfile.py#L1-L139)
 - [production_stress_test.py:1-172](file://backend/tests/stress/production_stress_test.py#L1-L172)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
 
 **Section sources**
 
-- [Testing.md:1-146](file://docs/Testing.md#L1-L146)
-- [README.md:1-211](file://backend/README.md#L1-L211)
+- [Testing.md:1-146](../../../guides/testing.md#L1-L146)
+- [README.md:1-211](../../../../../backend/README.md#L1-L211)
 
 ## Core Components
 
@@ -104,12 +104,12 @@ M3 --> C1
 
 **Section sources**
 
-- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
-- [labels.json:1-203](file://backend/tests/fixtures/classification/labels.json#L1-L203)
-- [semantic_parser.py:1-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
-- [test_deepseek_models.py:1-171](file://backend/tests/intelligence/test_deepseek_models.py#L1-L171)
-- [reasoning_engine.py:1-774](file://backend/app/pipeline/intelligence/reasoning_engine.py#L1-L774)
-- [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
+- [test_classification.py:1-92](../../../../../backend/tests/pipeline/test_classification.py#L1-L92)
+- [labels.json:1-203](../../../../../backend/tests/fixtures/scibert/labels.json#L1-L203)
+- [semantic_parser.py:1-306](../../../../../backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
+- [test_deepseek_models.py:1-171](../../../../../backend/tests/intelligence/test_deepseek_models.py#L1-L171)
+- [reasoning_engine.py:1-774](../../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L1-L774)
+- [locustfile.py:1-139](../../../../../backend/tests/load/locustfile.py#L1-L139)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
 - [production_stress_test.py:1-172](file://backend/tests/stress/production_stress_test.py#L1-L172)
 
@@ -138,8 +138,8 @@ Bench->>Bench : "compute macro-F1"
 
 **Diagram sources**
 
-- [test_classification.py:49-91](file://backend/tests/test_classification.py#L49-L91)
-- [semantic_parser.py:106-159](file://backend/app/pipeline/intelligence/semantic_parser.py#L106-L159)
+- [test_classification.py:49-91](../../../../../backend/tests/pipeline/test_classification.py#L49-L91)
+- [semantic_parser.py:106-159](../../../../../backend/app/pipeline/intelligence/semantic_parser.py#L106-L159)
 
 ```mermaid
 sequenceDiagram
@@ -160,8 +160,8 @@ DeepSeek->>DeepSeek : "compare latency and quality"
 
 **Diagram sources**
 
-- [test_deepseek_models.py:19-136](file://backend/tests/intelligence/test_deepseek_models.py#L19-L136)
-- [reasoning_engine.py:463-570](file://backend/app/pipeline/intelligence/reasoning_engine.py#L463-L570)
+- [test_deepseek_models.py:19-136](../../../../../backend/tests/intelligence/test_deepseek_models.py#L19-L136)
+- [reasoning_engine.py:463-570](../../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L463-L570)
 
 ```mermaid
 sequenceDiagram
@@ -177,7 +177,7 @@ WS-->>Locust : "Round-trip response"
 
 **Diagram sources**
 
-- [locustfile.py:36-139](file://backend/tests/load/locustfile.py#L36-L139)
+- [locustfile.py:36-139](../../../../../backend/tests/load/locustfile.py#L36-L139)
 
 ## Detailed Component Analysis
 
@@ -203,15 +203,15 @@ Threshold --> |No| Fail["Test FAILED"]
 
 **Diagram sources**
 
-- [test_classification.py:49-91](file://backend/tests/test_classification.py#L49-L91)
-- [labels.json:1-203](file://backend/tests/fixtures/classification/labels.json#L1-L203)
-- [semantic_parser.py:106-159](file://backend/app/pipeline/intelligence/semantic_parser.py#L106-L159)
+- [test_classification.py:49-91](../../../../../backend/tests/pipeline/test_classification.py#L49-L91)
+- [labels.json:1-203](../../../../../backend/tests/fixtures/scibert/labels.json#L1-L203)
+- [semantic_parser.py:106-159](../../../../../backend/app/pipeline/intelligence/semantic_parser.py#L106-L159)
 
 **Section sources**
 
-- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
-- [labels.json:1-203](file://backend/tests/fixtures/classification/labels.json#L1-L203)
-- [semantic_parser.py:1-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
+- [test_classification.py:1-92](../../../../../backend/tests/pipeline/test_classification.py#L1-L92)
+- [labels.json:1-203](../../../../../backend/tests/fixtures/scibert/labels.json#L1-L203)
+- [semantic_parser.py:1-306](../../../../../backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
 
 ### DeepSeek Model Validation
 
@@ -233,21 +233,21 @@ Compare --> Recommend["Print recommendation"]
 
 **Diagram sources**
 
-- [test_deepseek_models.py:19-136](file://backend/tests/intelligence/test_deepseek_models.py#L19-L136)
-- [reasoning_engine.py:463-570](file://backend/app/pipeline/intelligence/reasoning_engine.py#L463-L570)
+- [test_deepseek_models.py:19-136](../../../../../backend/tests/intelligence/test_deepseek_models.py#L19-L136)
+- [reasoning_engine.py:463-570](../../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L463-L570)
 
 **Section sources**
 
-- [test_deepseek_models.py:1-171](file://backend/tests/intelligence/test_deepseek_models.py#L1-L171)
-- [reasoning_engine.py:1-774](file://backend/app/pipeline/intelligence/reasoning_engine.py#L1-L774)
+- [test_deepseek_models.py:1-171](../../../../../backend/tests/intelligence/test_deepseek_models.py#L1-L171)
+- [reasoning_engine.py:1-774](../../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L1-L774)
 
 ### Load Testing with Locust
 
 - Scenarios:
-    - Upload: concurrent users uploading a sample DOCX
-    - Status poll: GET /status polling
-    - Templates: GET /templates
-    - Live preview: WebSocket round-trip
+  - Upload: concurrent users uploading a sample DOCX
+  - Status poll: GET /status polling
+  - Templates: GET /templates
+  - Live preview: WebSocket round-trip
 - Metrics focus: P99 ACK and RTT thresholds defined in comments.
 
 ```mermaid
@@ -269,11 +269,11 @@ API-->>W : "preview response"
 
 **Diagram sources**
 
-- [locustfile.py:36-139](file://backend/tests/load/locustfile.py#L36-L139)
+- [locustfile.py:36-139](../../../../../backend/tests/load/locustfile.py#L36-L139)
 
 **Section sources**
 
-- [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
+- [locustfile.py:1-139](../../../../../backend/tests/load/locustfile.py#L1-L139)
 
 ### Manual Verification Procedures
 
@@ -331,16 +331,16 @@ Decide --> |No| Fix["Fix issues before freeze"]
 ## Dependency Analysis
 
 - SciBERT benchmark depends on:
-    - SemanticParser for classification
-    - ParserFactory for document parsing
-    - Fixture labels for ground truth
+  - SemanticParser for classification
+  - ParserFactory for document parsing
+  - Fixture labels for ground truth
 - DeepSeek comparison depends on:
-    - ReasoningEngine for instruction set generation
-    - Ollama/LiteLLM for model inference
+  - ReasoningEngine for instruction set generation
+  - Ollama/LiteLLM for model inference
 - Load tests depend on:
-    - Backend endpoints and WebSocket service
+  - Backend endpoints and WebSocket service
 - Manual verification scripts depend on:
-    - Pipeline modules and output directories
+  - Pipeline modules and output directories
 
 ```mermaid
 graph TB
@@ -355,58 +355,58 @@ Manual --> RE
 
 **Diagram sources**
 
-- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
-- [semantic_parser.py:1-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
-- [test_deepseek_models.py:1-171](file://backend/tests/intelligence/test_deepseek_models.py#L1-L171)
-- [reasoning_engine.py:1-774](file://backend/app/pipeline/intelligence/reasoning_engine.py#L1-L774)
-- [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
+- [test_classification.py:1-92](../../../../../backend/tests/pipeline/test_classification.py#L1-L92)
+- [semantic_parser.py:1-306](../../../../../backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
+- [test_deepseek_models.py:1-171](../../../../../backend/tests/intelligence/test_deepseek_models.py#L1-L171)
+- [reasoning_engine.py:1-774](../../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L1-L774)
+- [locustfile.py:1-139](../../../../../backend/tests/load/locustfile.py#L1-L139)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
 
 **Section sources**
 
-- [pyproject.toml:1-9](file://backend/pyproject.toml#L1-L9)
+- [pyproject.toml:1-9](../../../../../backend/pyproject.toml#L1-L9)
 
 ## Performance Considerations
 
 - SciBERT inference:
-    - Batch processing reduces overhead; heuristic fallback ensures resilience when disabled or unavailable.
-    - Language detection avoids unnecessary transformer calls for non-English documents.
+  - Batch processing reduces overhead; heuristic fallback ensures resilience when disabled or unavailable.
+  - Language detection avoids unnecessary transformer calls for non-English documents.
 - ReasoningEngine:
-    - Multi-tier fallback (NVIDIA primary, DeepSeek fallback, rule-based) with circuit breaker and retry guards.
-    - Schema normalization and validation improve robustness.
+  - Multi-tier fallback (NVIDIA primary, DeepSeek fallback, rule-based) with circuit breaker and retry guards.
+  - Schema normalization and validation improve robustness.
 - Locust:
-    - P99 thresholds for upload ACK, status polling, templates, and WebSocket RTT define performance targets.
+  - P99 thresholds for upload ACK, status polling, templates, and WebSocket RTT define performance targets.
 - Stress validation:
-    - Detects structural and rendering regressions on real documents.
+  - Detects structural and rendering regressions on real documents.
 
 **Section sources**
 
-- [semantic_parser.py:106-237](file://backend/app/pipeline/intelligence/semantic_parser.py#L106-L237)
-- [reasoning_engine.py:457-570](file://backend/app/pipeline/intelligence/reasoning_engine.py#L457-L570)
-- [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
+- [semantic_parser.py:106-237](../../../../../backend/app/pipeline/intelligence/semantic_parser.py#L106-L237)
+- [reasoning_engine.py:457-570](../../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L457-L570)
+- [locustfile.py:1-139](../../../../../backend/tests/load/locustfile.py#L1-L139)
 - [production_stress_test.py:1-172](file://backend/tests/stress/production_stress_test.py#L1-L172)
 
 ## Troubleshooting Guide
 
 - SciBERT benchmark missing fixtures:
-    - Skip test if labels.json is absent; ensure fixture directory contains required files.
+  - Skip test if labels.json is absent; ensure fixture directory contains required files.
 - SciBERT model configuration:
-    - Use environment variable to override model; fallback model name is supported.
+  - Use environment variable to override model; fallback model name is supported.
 - DeepSeek model comparison:
-    - Verify Ollama server availability; ensure required models are pulled; review comparison summary for recommendations.
+  - Verify Ollama server availability; ensure required models are pulled; review comparison summary for recommendations.
 - Locust environment:
-    - Ensure sample DOCX exists; handle missing file gracefully with event reporting.
+  - Ensure sample DOCX exists; handle missing file gracefully with event reporting.
 - Manual verification:
-    - Follow phase checkpoints; address duplicates before proceeding to formatting.
+  - Follow phase checkpoints; address duplicates before proceeding to formatting.
 - General blockers:
-    - Backend Python version and asyncio mode; frontend missing dependencies; E2E stubs require real DOM assertions.
+  - Backend Python version and asyncio mode; frontend missing dependencies; E2E stubs require real DOM assertions.
 
 **Section sources**
 
-- [test_classification.py:33-51](file://backend/tests/test_classification.py#L33-L51)
-- [test_deepseek_models.py:145-164](file://backend/tests/intelligence/test_deepseek_models.py#L145-L164)
-- [locustfile.py:26-50](file://backend/tests/load/locustfile.py#L26-L50)
-- [Testing.md:50-146](file://docs/Testing.md#L50-L146)
+- [test_classification.py:33-51](../../../../../backend/tests/pipeline/test_classification.py#L33-L51)
+- [test_deepseek_models.py:145-164](../../../../../backend/tests/intelligence/test_deepseek_models.py#L145-L164)
+- [locustfile.py:26-50](../../../../../backend/tests/load/locustfile.py#L26-L50)
+- [Testing.md:50-146](../../../guides/testing.md#L50-L146)
 
 ## Conclusion
 
@@ -421,8 +421,8 @@ The system employs a layered testing strategy combining ML model benchmarks, mod
 
 **Section sources**
 
-- [labels.json:1-203](file://backend/tests/fixtures/classification/labels.json#L1-L203)
-- [test_classification.py:17-30](file://backend/tests/test_classification.py#L17-L30)
+- [labels.json:1-203](../../../../../backend/tests/fixtures/scibert/labels.json#L1-L203)
+- [test_classification.py:17-30](../../../../../backend/tests/pipeline/test_classification.py#L17-L30)
 
 ### Appendix B: Specialized Testing Tools
 
@@ -434,9 +434,9 @@ The system employs a layered testing strategy combining ML model benchmarks, mod
 
 **Section sources**
 
-- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
-- [test_deepseek_models.py:1-171](file://backend/tests/intelligence/test_deepseek_models.py#L1-L171)
-- [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
+- [test_classification.py:1-92](../../../../../backend/tests/pipeline/test_classification.py#L1-L92)
+- [test_deepseek_models.py:1-171](../../../../../backend/tests/intelligence/test_deepseek_models.py#L1-L171)
+- [locustfile.py:1-139](../../../../../backend/tests/load/locustfile.py#L1-L139)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
 - [production_stress_test.py:1-172](file://backend/tests/stress/production_stress_test.py#L1-L172)
 
@@ -457,4 +457,4 @@ The system employs a layered testing strategy combining ML model benchmarks, mod
 
 **Section sources**
 
-- [README.md:1-78](file://backend/manual_tests/sample_inputs/README.md#L1-L78)
+- [README.md:1-78](../../../../../README.md#L1-L78)

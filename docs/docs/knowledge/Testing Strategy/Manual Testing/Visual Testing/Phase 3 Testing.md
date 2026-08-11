@@ -9,11 +9,11 @@
 - [README_VISUAL.md](file://backend/manual_tests/README_VISUAL.md)
 - [TESTING_COMMANDS.md](file://backend/manual_tests/TESTING_COMMANDS.md)
 - [run_formatter.py](file://backend/manual_tests/normal/phase3/run_formatter.py)
-- [formatter.py](file://backend/app/pipeline/formatting/formatter.py)
-- [validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
-- [quality_scorer.py](file://backend/app/pipeline/generation/quality_scorer.py)
-- [quality_score_service.py](file://backend/app/services/quality_score_service.py)
-- [README.md (Sample Inputs)](file://backend/manual_tests/sample_inputs/README.md)
+- [formatter.py](../../../../../../backend/app/pipeline/formatting/formatter.py)
+- [validator_v3.py](../../../../../../backend/app/pipeline/validation/validator_v3.py)
+- [quality_scorer.py](../../../../../../backend/app/pipeline/generation/quality_scorer.py)
+- [quality_score_service.py](../../../../../../backend/app/services/quality_score_service.py)
+- [README.md (Sample Inputs)](../../../../../../README.md)
 </cite>
 
 ## Table of Contents
@@ -70,18 +70,18 @@ Samps --> V3
 - [06_formatted.py:1-140](file://backend/manual_tests/visual/phase3/06_formatted.py#L1-L140)
 - [README_VISUAL.md:1-203](file://backend/manual_tests/README_VISUAL.md#L1-L203)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
-- [formatter.py:1-800](file://backend/app/pipeline/formatting/formatter.py#L1-L800)
-- [validator_v3.py:1-277](file://backend/app/pipeline/validation/validator_v3.py#L1-L277)
-- [quality_scorer.py:1-123](file://backend/app/pipeline/generation/quality_scorer.py#L1-L123)
-- [quality_score_service.py:92-128](file://backend/app/services/quality_score_service.py#L92-L128)
-- [README.md (Sample Inputs):1-78](file://backend/manual_tests/sample_inputs/README.md#L1-L78)
+- [formatter.py:1-800](../../../../../../backend/app/pipeline/formatting/formatter.py#L1-L800)
+- [validator_v3.py:1-277](../../../../../../backend/app/pipeline/validation/validator_v3.py#L1-L277)
+- [quality_scorer.py:1-123](../../../../../../backend/app/pipeline/generation/quality_scorer.py#L1-L123)
+- [quality_score_service.py:92-128](../../../../../../backend/app/services/quality_score_service.py#L92-L128)
+- [README.md (Sample Inputs):1-78](../../../../../../README.md#L1-L78)
 
 **Section sources**
 
 - [06_formatted.py:1-140](file://backend/manual_tests/visual/phase3/06_formatted.py#L1-L140)
 - [README_VISUAL.md:1-203](file://backend/manual_tests/README_VISUAL.md#L1-L203)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
-- [README.md (Sample Inputs):1-78](file://backend/manual_tests/sample_inputs/README.md#L1-L78)
+- [README.md (Sample Inputs):1-78](../../../../../../README.md#L1-L78)
 
 ## Core Components
 
@@ -100,10 +100,10 @@ Key responsibilities:
 **Section sources**
 
 - [06_formatted.py:40-140](file://backend/manual_tests/visual/phase3/06_formatted.py#L40-L140)
-- [formatter.py:35-290](file://backend/app/pipeline/formatting/formatter.py#L35-L290)
-- [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
-- [quality_scorer.py:15-52](file://backend/app/pipeline/generation/quality_scorer.py#L15-L52)
-- [quality_score_service.py:98-128](file://backend/app/services/quality_score_service.py#L98-L128)
+- [formatter.py:35-290](../../../../../../backend/app/pipeline/formatting/formatter.py#L35-L290)
+- [validator_v3.py:34-145](../../../../../../backend/app/pipeline/validation/validator_v3.py#L34-L145)
+- [quality_scorer.py:15-52](../../../../../../backend/app/pipeline/generation/quality_scorer.py#L15-L52)
+- [quality_score_service.py:98-128](../../../../../../backend/app/services/quality_score_service.py#L98-L128)
 
 ## Architecture Overview
 
@@ -143,7 +143,7 @@ Script-->>User : Output path and inspection checklist
 **Diagram sources**
 
 - [06_formatted.py:52-125](file://backend/manual_tests/visual/phase3/06_formatted.py#L52-L125)
-- [formatter.py:49-290](file://backend/app/pipeline/formatting/formatter.py#L49-L290)
+- [formatter.py:49-290](../../../../../../backend/app/pipeline/formatting/formatter.py#L49-L290)
 
 ## Detailed Component Analysis
 
@@ -254,16 +254,16 @@ DocumentValidator --> QualityScorer : "metrics inform validation"
 
 **Diagram sources**
 
-- [formatter.py:35-290](file://backend/app/pipeline/formatting/formatter.py#L35-L290)
-- [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
-- [quality_scorer.py:15-52](file://backend/app/pipeline/generation/quality_scorer.py#L15-L52)
+- [formatter.py:35-290](../../../../../../backend/app/pipeline/formatting/formatter.py#L35-L290)
+- [validator_v3.py:34-145](../../../../../../backend/app/pipeline/validation/validator_v3.py#L34-L145)
+- [quality_scorer.py:15-52](../../../../../../backend/app/pipeline/generation/quality_scorer.py#L15-L52)
 
 **Section sources**
 
-- [formatter.py:35-290](file://backend/app/pipeline/formatting/formatter.py#L35-L290)
-- [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
-- [quality_scorer.py:15-52](file://backend/app/pipeline/generation/quality_scorer.py#L15-L52)
-- [quality_score_service.py:98-128](file://backend/app/services/quality_score_service.py#L98-L128)
+- [formatter.py:35-290](../../../../../../backend/app/pipeline/formatting/formatter.py#L35-L290)
+- [validator_v3.py:34-145](../../../../../../backend/app/pipeline/validation/validator_v3.py#L34-L145)
+- [quality_scorer.py:15-52](../../../../../../backend/app/pipeline/generation/quality_scorer.py#L15-L52)
+- [quality_score_service.py:98-128](../../../../../../backend/app/services/quality_score_service.py#L98-L128)
 
 ### Expected Final Formatted Document Characteristics
 
@@ -285,7 +285,7 @@ Acceptance criteria:
 **Section sources**
 
 - [README_VISUAL.md:127-162](file://backend/manual_tests/README_VISUAL.md#L127-L162)
-- [formatter.py:107-290](file://backend/app/pipeline/formatting/formatter.py#L107-L290)
+- [formatter.py:107-290](../../../../../../backend/app/pipeline/formatting/formatter.py#L107-L290)
 
 ### Validation Workflows and Procedures
 
@@ -302,7 +302,7 @@ Decision flow:
 **Section sources**
 
 - [README_VISUAL.md:165-179](file://backend/manual_tests/README_VISUAL.md#L165-L179)
-- [validator_v3.py:68-145](file://backend/app/pipeline/validation/validator_v3.py#L68-L145)
+- [validator_v3.py:68-145](../../../../../../backend/app/pipeline/validation/validator_v3.py#L68-L145)
 
 ### Guidelines for Final Review Procedures
 
@@ -324,8 +324,8 @@ Decision flow:
 
 **Section sources**
 
-- [quality_scorer.py:15-52](file://backend/app/pipeline/generation/quality_scorer.py#L15-L52)
-- [quality_score_service.py:98-128](file://backend/app/services/quality_score_service.py#L98-L128)
+- [quality_scorer.py:15-52](../../../../../../backend/app/pipeline/generation/quality_scorer.py#L15-L52)
+- [quality_score_service.py:98-128](../../../../../../backend/app/services/quality_score_service.py#L98-L128)
 
 ## Dependency Analysis
 
@@ -350,12 +350,12 @@ Fmt --> TableR["TableRenderer"]
 **Diagram sources**
 
 - [06_formatted.py:32-84](file://backend/manual_tests/visual/phase3/06_formatted.py#L32-L84)
-- [formatter.py:35-47](file://backend/app/pipeline/formatting/formatter.py#L35-L47)
+- [formatter.py:35-47](../../../../../../backend/app/pipeline/formatting/formatter.py#L35-L47)
 
 **Section sources**
 
 - [06_formatted.py:32-84](file://backend/manual_tests/visual/phase3/06_formatted.py#L32-L84)
-- [formatter.py:35-47](file://backend/app/pipeline/formatting/formatter.py#L35-L47)
+- [formatter.py:35-47](../../../../../../backend/app/pipeline/formatting/formatter.py#L35-L47)
 
 ## Performance Considerations
 
@@ -378,7 +378,7 @@ Common issues and resolutions:
 **Section sources**
 
 - [06_formatted.py:82-88](file://backend/manual_tests/visual/phase3/06_formatted.py#L82-L88)
-- [validator_v3.py:174-217](file://backend/app/pipeline/validation/validator_v3.py#L174-L217)
+- [validator_v3.py:174-217](../../../../../../backend/app/pipeline/validation/validator_v3.py#L174-L217)
 
 ## Conclusion
 
@@ -405,4 +405,4 @@ Phase 3 visual testing ensures the final formatted document meets publication st
 
 **Section sources**
 
-- [README.md (Sample Inputs):1-78](file://backend/manual_tests/sample_inputs/README.md#L1-L78)
+- [README.md (Sample Inputs):1-78](../../../../../../README.md#L1-L78)

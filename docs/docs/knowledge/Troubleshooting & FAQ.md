@@ -5,19 +5,19 @@
 
 <cite>
 **Referenced Files in This Document**
-- [backend/app/main.py](file://backend/app/main.py)
-- [backend/app/config/logging_config.py](file://backend/app/config/logging_config.py)
-- [backend/app/config/settings.py](file://backend/app/config/settings.py)
-- [backend/app/utils/logging_context.py](file://backend/app/utils/logging_context.py)
-- [backend/app/middleware/request_id.py](file://backend/app/middleware/request_id.py)
-- [backend/README.md](file://backend/README.md)
+- [backend/app/main.py](../../../backend/app/main.py)
+- [backend/app/config/logging_config.py](../../../backend/app/config/logging_config.py)
+- [backend/app/config/settings.py](../../../backend/app/config/settings.py)
+- [backend/app/utils/logging_context.py](../../../backend/app/utils/logging_context.py)
+- [backend/app/middleware/request_id.py](../../../backend/app/middleware/request_id.py)
+- [backend/README.md](../../../backend/README.md)
 - [backend/manual_tests/README_1.md](file://backend/manual_tests/README_1.md)
 - [backend/manual_tests/TESTING_COMMANDS.md](file://backend/manual_tests/TESTING_COMMANDS.md)
 - [backend/manual_tests/test_commands.md](file://backend/manual_tests/test_commands.md)
 - [scripts/generate_env_template.py](file://scripts/generate_env_template.py)
-- [frontend/src/components/ErrorBoundary.jsx](file://frontend/src/components/ErrorBoundary.jsx)
-- [frontend/src/services/api.core.js](file://frontend/src/services/api.core.js)
-- [backend/app/pipeline/safety/safe_execution.py](file://backend/app/pipeline/safety/safe_execution.py)
+- [frontend/src/components/ErrorBoundary.jsx](../../../frontend/src/components/ErrorBoundary.jsx)
+- [frontend/src/services/api.core.js](../../../frontend/src/services/api.core.js)
+- [backend/app/pipeline/safety/safe_execution.py](../../../backend/app/pipeline/safety/safe_execution.py)
 </cite>
 
 ## Table of Contents
@@ -73,12 +73,12 @@ BE --> EXT
 
 **Section sources**
 
-- [backend/app/config/logging_config.py:1-185](file://backend/app/config/logging_config.py#L1-L185)
-- [backend/app/config/settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
-- [backend/app/utils/logging_context.py:1-115](file://backend/app/utils/logging_context.py#L1-L115)
-- [backend/app/middleware/request_id.py:1-74](file://backend/app/middleware/request_id.py#L1-L74)
-- [frontend/src/components/ErrorBoundary.jsx:1-90](file://frontend/src/components/ErrorBoundary.jsx#L1-L90)
-- [backend/app/pipeline/safety/safe_execution.py:1-42](file://backend/app/pipeline/safety/safe_execution.py#L1-L42)
+- [backend/app/config/logging_config.py:1-185](../../../backend/app/config/logging_config.py#L1-L185)
+- [backend/app/config/settings.py:1-422](../../../backend/app/config/settings.py#L1-L422)
+- [backend/app/utils/logging_context.py:1-115](../../../backend/app/utils/logging_context.py#L1-L115)
+- [backend/app/middleware/request_id.py:1-74](../../../backend/app/middleware/request_id.py#L1-L74)
+- [frontend/src/components/ErrorBoundary.jsx:1-90](../../../frontend/src/components/ErrorBoundary.jsx#L1-L90)
+- [backend/app/pipeline/safety/safe_execution.py:1-42](../../../backend/app/pipeline/safety/safe_execution.py#L1-L42)
 
 ## Architecture Overview
 
@@ -98,23 +98,23 @@ participant BE as "FastAPI Backend"
 participant DB as "Supabase"
 participant Ext as "External Services"
 Client->>FE : "User Action"
-FE->>BE : "HTTP Request (with x-request-id)"
+FE->>BE : "HTTP Request ("with x-request-id")"
 BE->>BE : "RequestIdMiddleware sets context"
-BE->>DB : "DB Calls (if configured)"
+BE->>DB : "DB Calls ("if configured")"
 BE->>Ext : "External Integrations"
-BE-->>FE : "Response (with X-Request-Id)"
+BE-->>FE : "Response ("with X-Request-Id")"
 FE-->>Client : "UI Update or Error Message"
 ```
 
 **Diagram sources**
 
-- [backend/app/middleware/request_id.py:21-74](file://backend/app/middleware/request_id.py#L21-L74)
-- [backend/app/main.py:318-358](file://backend/app/main.py#L318-L358)
+- [backend/app/middleware/request_id.py:21-74](../../../backend/app/middleware/request_id.py#L21-L74)
+- [backend/app/main.py:318-358](../../../backend/app/main.py#L318-L358)
 
 **Section sources**
 
-- [backend/app/main.py:360-383](file://backend/app/main.py#L360-L383)
-- [backend/app/config/logging_config.py:39-157](file://backend/app/config/logging_config.py#L39-L157)
+- [backend/app/main.py:360-383](../../../backend/app/main.py#L360-L383)
+- [backend/app/config/logging_config.py:39-157](../../../backend/app/config/logging_config.py#L39-L157)
 
 ## Detailed Component Analysis
 
@@ -138,12 +138,12 @@ Logger --> End(["Logs include request/job/session IDs"])
 
 **Diagram sources**
 
-- [backend/app/config/logging_config.py:163-185](file://backend/app/config/logging_config.py#L163-L185)
+- [backend/app/config/logging_config.py:163-185](../../../backend/app/config/logging_config.py#L163-L185)
 
 **Section sources**
 
-- [backend/app/config/logging_config.py:1-185](file://backend/app/config/logging_config.py#L1-L185)
-- [backend/app/utils/logging_context.py:83-115](file://backend/app/utils/logging_context.py#L83-L115)
+- [backend/app/config/logging_config.py:1-185](../../../backend/app/config/logging_config.py#L1-L185)
+- [backend/app/utils/logging_context.py:83-115](../../../backend/app/utils/logging_context.py#L83-L115)
 
 ### Environment Variables and Settings
 
@@ -163,13 +163,13 @@ OK --> |No| Raise["Raise ValueError"]
 
 **Diagram sources**
 
-- [backend/app/config/settings.py:248-257](file://backend/app/config/settings.py#L248-L257)
+- [backend/app/config/settings.py:248-257](../../../backend/app/config/settings.py#L248-L257)
 
 **Section sources**
 
-- [backend/app/config/settings.py:38-51](file://backend/app/config/settings.py#L38-L51)
-- [backend/app/config/settings.py:227-247](file://backend/app/config/settings.py#L227-L247)
-- [backend/app/config/settings.py:415-418](file://backend/app/config/settings.py#L415-L418)
+- [backend/app/config/settings.py:38-51](../../../backend/app/config/settings.py#L38-L51)
+- [backend/app/config/settings.py:227-247](../../../backend/app/config/settings.py#L227-L247)
+- [backend/app/config/settings.py:415-418](../../../backend/app/config/settings.py#L415-L418)
 
 ### Request Tracing and Context Propagation
 
@@ -192,13 +192,13 @@ Handler-->>Client : "Response with X-Request-Id"
 
 **Diagram sources**
 
-- [backend/app/middleware/request_id.py:21-74](file://backend/app/middleware/request_id.py#L21-L74)
-- [backend/app/utils/logging_context.py:83-115](file://backend/app/utils/logging_context.py#L83-L115)
+- [backend/app/middleware/request_id.py:21-74](../../../backend/app/middleware/request_id.py#L21-L74)
+- [backend/app/utils/logging_context.py:83-115](../../../backend/app/utils/logging_context.py#L83-L115)
 
 **Section sources**
 
-- [backend/app/middleware/request_id.py:1-74](file://backend/app/middleware/request_id.py#L1-L74)
-- [backend/app/utils/logging_context.py:17-81](file://backend/app/utils/logging_context.py#L17-L81)
+- [backend/app/middleware/request_id.py:1-74](../../../backend/app/middleware/request_id.py#L1-L74)
+- [backend/app/utils/logging_context.py:17-81](../../../backend/app/utils/logging_context.py#L17-L81)
 
 ### Frontend Error Boundary and Friendly Messages
 
@@ -217,13 +217,13 @@ EB --> UI["Show Retry/Reload UI"]
 
 **Diagram sources**
 
-- [frontend/src/components/ErrorBoundary.jsx:13-30](file://frontend/src/components/ErrorBoundary.jsx#L13-L30)
-- [frontend/src/services/api.core.js:845-1062](file://frontend/src/services/api.core.js#L845-L1062)
+- [frontend/src/components/ErrorBoundary.jsx:13-30](../../../frontend/src/components/ErrorBoundary.jsx#L13-L30)
+- [frontend/src/services/api.core.js:845-1062](../../../frontend/src/services/api.core.js#L845-L1062)
 
 **Section sources**
 
-- [frontend/src/components/ErrorBoundary.jsx:1-90](file://frontend/src/components/ErrorBoundary.jsx#L1-L90)
-- [frontend/src/services/api.core.js:845-1062](file://frontend/src/services/api.core.js#L845-L1062)
+- [frontend/src/components/ErrorBoundary.jsx:1-90](../../../frontend/src/components/ErrorBoundary.jsx#L1-L90)
+- [frontend/src/services/api.core.js:845-1062](../../../frontend/src/services/api.core.js#L845-L1062)
 
 ### Safety Net for Startup and Critical Operations
 
@@ -242,11 +242,11 @@ Suppress --> Exit
 
 **Diagram sources**
 
-- [backend/app/pipeline/safety/safe_execution.py:9-31](file://backend/app/pipeline/safety/safe_execution.py#L9-L31)
+- [backend/app/pipeline/safety/safe_execution.py:9-31](../../../backend/app/pipeline/safety/safe_execution.py#L9-L31)
 
 **Section sources**
 
-- [backend/app/pipeline/safety/safe_execution.py:1-42](file://backend/app/pipeline/safety/safe_execution.py#L1-L42)
+- [backend/app/pipeline/safety/safe_execution.py:1-42](../../../backend/app/pipeline/safety/safe_execution.py#L1-L42)
 
 ### Manual Testing Scripts for Pipeline Isolation
 
@@ -297,16 +297,16 @@ Backend --> Safety["safe_execution"]
 
 **Diagram sources**
 
-- [backend/app/config/settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
-- [backend/app/config/logging_config.py:39-157](file://backend/app/config/logging_config.py#L39-L157)
-- [backend/app/middleware/request_id.py:21-74](file://backend/app/middleware/request_id.py#L21-L74)
-- [backend/app/utils/logging_context.py:83-115](file://backend/app/utils/logging_context.py#L83-L115)
-- [backend/app/pipeline/safety/safe_execution.py:9-31](file://backend/app/pipeline/safety/safe_execution.py#L9-L31)
+- [backend/app/config/settings.py:72-422](../../../backend/app/config/settings.py#L72-L422)
+- [backend/app/config/logging_config.py:39-157](../../../backend/app/config/logging_config.py#L39-L157)
+- [backend/app/middleware/request_id.py:21-74](../../../backend/app/middleware/request_id.py#L21-L74)
+- [backend/app/utils/logging_context.py:83-115](../../../backend/app/utils/logging_context.py#L83-L115)
+- [backend/app/pipeline/safety/safe_execution.py:9-31](../../../backend/app/pipeline/safety/safe_execution.py#L9-L31)
 
 **Section sources**
 
-- [backend/app/main.py:262-358](file://backend/app/main.py#L262-L358)
-- [backend/app/config/settings.py:248-257](file://backend/app/config/settings.py#L248-L257)
+- [backend/app/main.py:262-358](../../../backend/app/main.py#L262-L358)
+- [backend/app/config/settings.py:248-257](../../../backend/app/config/settings.py#L248-L257)
 
 ## Performance Considerations
 
@@ -317,10 +317,10 @@ Backend --> Safety["safe_execution"]
 
 **Section sources**
 
-- [backend/app/main.py:198-229](file://backend/app/main.py#L198-L229)
-- [backend/app/main.py:138-147](file://backend/app/main.py#L138-L147)
-- [backend/app/main.py:106-114](file://backend/app/main.py#L106-L114)
-- [backend/app/main.py:301](file://backend/app/main.py#L301)
+- [backend/app/main.py:198-229](../../../backend/app/main.py#L198-L229)
+- [backend/app/main.py:138-147](../../../backend/app/main.py#L138-L147)
+- [backend/app/main.py:106-114](../../../backend/app/main.py#L106-L114)
+- [backend/app/main.py:301](../../../backend/app/main.py#L301)
 
 ## Troubleshooting Guide
 
@@ -335,10 +335,10 @@ Common symptoms:
 Resolution steps:
 
 - Generate or sync environment templates to discover missing variables
-    - Use the environment template generator to scan code and produce a .env template
+  - Use the environment template generator to scan code and produce a .env template
 - Validate .env against settings:
-    - Required fields are present and normalized
-    - Boolean-like values are recognized
+  - Required fields are present and normalized
+  - Boolean-like values are recognized
 - Adjust CORS origins for local development ports
 - Enable structured logging only in production-like environments
 
@@ -351,11 +351,11 @@ Diagnostic checklist:
 **Section sources**
 
 - [scripts/generate_env_template.py:168-196](file://scripts/generate_env_template.py#L168-L196)
-- [backend/app/config/settings.py:54-58](file://backend/app/config/settings.py#L54-L58)
-- [backend/app/config/settings.py:61-69](file://backend/app/config/settings.py#L61-L69)
-- [backend/app/config/settings.py:227-247](file://backend/app/config/settings.py#L227-L247)
-- [backend/app/main.py:70-85](file://backend/app/main.py#L70-L85)
-- [backend/app/config/logging_config.py:163-185](file://backend/app/config/logging_config.py#L163-L185)
+- [backend/app/config/settings.py:54-58](../../../backend/app/config/settings.py#L54-L58)
+- [backend/app/config/settings.py:61-69](../../../backend/app/config/settings.py#L61-L69)
+- [backend/app/config/settings.py:227-247](../../../backend/app/config/settings.py#L227-L247)
+- [backend/app/main.py:70-85](../../../backend/app/main.py#L70-L85)
+- [backend/app/config/logging_config.py:163-185](../../../backend/app/config/logging_config.py#L163-L185)
 
 ### Development and Runtime Diagnostics
 
@@ -381,11 +381,11 @@ Diagnostic checklist:
 
 **Section sources**
 
-- [backend/app/middleware/request_id.py:21-74](file://backend/app/middleware/request_id.py#L21-L74)
-- [backend/app/utils/logging_context.py:83-115](file://backend/app/utils/logging_context.py#L83-L115)
-- [backend/app/main.py:360-383](file://backend/app/main.py#L360-L383)
-- [frontend/src/components/ErrorBoundary.jsx:13-30](file://frontend/src/components/ErrorBoundary.jsx#L13-L30)
-- [frontend/src/services/api.core.js:845-1062](file://frontend/src/services/api.core.js#L845-L1062)
+- [backend/app/middleware/request_id.py:21-74](../../../backend/app/middleware/request_id.py#L21-L74)
+- [backend/app/utils/logging_context.py:83-115](../../../backend/app/utils/logging_context.py#L83-L115)
+- [backend/app/main.py:360-383](../../../backend/app/main.py#L360-L383)
+- [frontend/src/components/ErrorBoundary.jsx:13-30](../../../frontend/src/components/ErrorBoundary.jsx#L13-L30)
+- [frontend/src/services/api.core.js:845-1062](../../../frontend/src/services/api.core.js#L845-L1062)
 
 ### Pipeline Stage Failures
 
@@ -398,9 +398,9 @@ Common symptoms:
 Resolution steps:
 
 - Run phase-specific manual tests to isolate the failure
-    - Phase 1: conversion, structure, classification, figures, tables, references
-    - Phase 2: validation and full pipeline assembly
-    - Phase 3: final formatting
+  - Phase 1: conversion, structure, classification, figures, tables, references
+  - Phase 2: validation and full pipeline assembly
+  - Phase 3: final formatting
 - Inspect JSON outputs and annotated DOCX files
 - Adjust timeouts and feature toggles for external services
 
@@ -440,11 +440,11 @@ Diagnostic checklist:
 
 **Section sources**
 
-- [backend/app/pipeline/safety/safe_execution.py:9-31](file://backend/app/pipeline/safety/safe_execution.py#L9-L31)
-- [backend/app/main.py:198-229](file://backend/app/main.py#L198-L229)
-- [backend/app/main.py:31-36](file://backend/app/main.py#L31-L36)
-- [backend/app/main.py:360-383](file://backend/app/main.py#L360-L383)
-- [backend/app/main.py:138-147](file://backend/app/main.py#L138-L147)
+- [backend/app/pipeline/safety/safe_execution.py:9-31](../../../backend/app/pipeline/safety/safe_execution.py#L9-L31)
+- [backend/app/main.py:198-229](../../../backend/app/main.py#L198-L229)
+- [backend/app/main.py:31-36](../../../backend/app/main.py#L31-L36)
+- [backend/app/main.py:360-383](../../../backend/app/main.py#L360-L383)
+- [backend/app/main.py:138-147](../../../backend/app/main.py#L138-L147)
 
 ### Frontend Errors and User Experience
 
@@ -467,8 +467,8 @@ Diagnostic checklist:
 
 **Section sources**
 
-- [frontend/src/components/ErrorBoundary.jsx:13-30](file://frontend/src/components/ErrorBoundary.jsx#L13-L30)
-- [frontend/src/services/api.core.js:845-1062](file://frontend/src/services/api.core.js#L845-L1062)
+- [frontend/src/components/ErrorBoundary.jsx:13-30](../../../frontend/src/components/ErrorBoundary.jsx#L13-L30)
+- [frontend/src/services/api.core.js:845-1062](../../../frontend/src/services/api.core.js#L845-L1062)
 
 ### Frequently Asked Questions
 
@@ -498,13 +498,13 @@ A: Ensure Redis is enabled and reachable; periodic updates will populate metrics
 
 **Section sources**
 
-- [backend/app/config/logging_config.py:163-185](file://backend/app/config/logging_config.py#L163-L185)
-- [backend/app/middleware/request_id.py:21-74](file://backend/app/middleware/request_id.py#L21-L74)
+- [backend/app/config/logging_config.py:163-185](../../../backend/app/config/logging_config.py#L163-L185)
+- [backend/app/middleware/request_id.py:21-74](../../../backend/app/middleware/request_id.py#L21-L74)
 - [backend/manual_tests/README_1.md:30-186](file://backend/manual_tests/README_1.md#L30-L186)
-- [backend/app/main.py:177-196](file://backend/app/main.py#L177-L196)
-- [backend/app/main.py:31-36](file://backend/app/main.py#L31-L36)
-- [backend/app/config/settings.py:94-96](file://backend/app/config/settings.py#L94-L96)
-- [backend/app/main.py:138-147](file://backend/app/main.py#L138-L147)
+- [backend/app/main.py:177-196](../../../backend/app/main.py#L177-L196)
+- [backend/app/main.py:31-36](../../../backend/app/main.py#L31-L36)
+- [backend/app/config/settings.py:94-96](../../../backend/app/config/settings.py#L94-L96)
+- [backend/app/main.py:138-147](../../../backend/app/main.py#L138-L147)
 
 ### Escalation Procedures and Support Resources
 
@@ -523,7 +523,7 @@ Support resources:
 
 **Section sources**
 
-- [backend/README.md:1-79](file://backend/README.md#L1-L79)
+- [backend/README.md:1-79](../../../backend/README.md#L1-L79)
 - [backend/manual_tests/README_1.md:30-186](file://backend/manual_tests/README_1.md#L30-L186)
 - [scripts/generate_env_template.py:168-196](file://scripts/generate_env_template.py#L168-L196)
 
@@ -545,9 +545,9 @@ Effective troubleshooting hinges on structured logging with request correlation,
 
 **Section sources**
 
-- [backend/app/config/settings.py:248-257](file://backend/app/config/settings.py#L248-L257)
-- [backend/app/config/logging_config.py:163-185](file://backend/app/config/logging_config.py#L163-L185)
-- [backend/app/middleware/request_id.py:21-74](file://backend/app/middleware/request_id.py#L21-L74)
-- [backend/app/main.py:360-383](file://backend/app/main.py#L360-L383)
+- [backend/app/config/settings.py:248-257](../../../backend/app/config/settings.py#L248-L257)
+- [backend/app/config/logging_config.py:163-185](../../../backend/app/config/logging_config.py#L163-L185)
+- [backend/app/middleware/request_id.py:21-74](../../../backend/app/middleware/request_id.py#L21-L74)
+- [backend/app/main.py:360-383](../../../backend/app/main.py#L360-L383)
 - [backend/manual_tests/README_1.md:30-186](file://backend/manual_tests/README_1.md#L30-L186)
-- [frontend/src/components/ErrorBoundary.jsx:13-30](file://frontend/src/components/ErrorBoundary.jsx#L13-L30)
+- [frontend/src/components/ErrorBoundary.jsx:13-30](../../../frontend/src/components/ErrorBoundary.jsx#L13-L30)

@@ -7,7 +7,8 @@ from app.pipeline.integrity.cross_ref import CrossReferenceEngine
 _counter = [0]
 
 
-from app.models import PipelineDocument, Block, Figure, Table, Equation, BlockType
+from app.models import Block, BlockType, Equation, Figure, PipelineDocument, Table
+
 
 def _block(text, block_type=BlockType.BODY, block_id=None):
 

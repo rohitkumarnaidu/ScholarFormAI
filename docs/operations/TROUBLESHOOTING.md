@@ -1,6 +1,6 @@
 # ScholarForm AI — Troubleshooting Guide
 
-> **Quick reference.** For the full troubleshooting guide (user-facing issues), see [docs/troubleshooting.md](docs/troubleshooting.md).
+> **Quick reference.** For the full troubleshooting guide (user-facing issues), see [docs/troubleshooting.md](TROUBLESHOOTING.md).
 
 ---
 
@@ -139,7 +139,7 @@ GROBID requires ~1.5GB RAM. On low-memory instances, it auto-disables. The fallb
 | [GitHub Discussions](https://github.com/rohitkumarnaidu/ScholarFormAI/discussions) | Q&A, community help |
 | [FAQ](../reference/FAQ.md) | Frequently asked questions |
 | [SUPPORT](../../SUPPORT.md) | Support channels and SLAs |
-| [docs/troubleshooting.md](../troubleshooting.md) | User-facing troubleshooting |
+| [docs/troubleshooting.md](TROUBLESHOOTING.md) | User-facing troubleshooting |
 
 ---
 

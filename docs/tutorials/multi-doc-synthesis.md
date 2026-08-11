@@ -36,20 +36,20 @@ The synthesis pipeline:
 
 ```mermaid
 flowchart TD
-    A[Source Doc 1] --> P1[Parse]
-    B[Source Doc 2] --> P2[Parse]
-    C[Source Doc 3] --> P2
-    D[Source Doc N] --> PN[Parse]
+    A["Source Doc 1"] --> P1[Parse]
+    B["Source Doc 2"] --> P2[Parse]
+    C["Source Doc 3"] --> P2
+    D["Source Doc N"] --> PN[Parse]
     
-    P1 --> M[Merge Engine]
+    P1 --> M["Merge Engine"]
     P2 --> M
     PN --> M
     
-    M --> DEDUP[Deduplicate Content]
-    DEDUP --> CIT[Resolve Citations]
-    CIT --> FORMAT[Apply Template]
-    FORMAT --> QC[Quality Check]
-    QC --> EXPORT[Export Unified Doc]
+    M --> DEDUP["Deduplicate Content"]
+    DEDUP --> CIT["Resolve Citations"]
+    CIT --> FORMAT["Apply Template"]
+    FORMAT --> QC["Quality Check"]
+    QC --> EXPORT["Export Unified Doc"]
     
     style EXPORT fill:#057a55,color:#fff
     style M fill:#1a56db,color:#fff
@@ -59,8 +59,8 @@ flowchart TD
 
 | Requirement | Details |
 | ------------- | --------- |
-| Running backend | Follow the [Quickstart](../quickstart.md) |
-| LLM provider key | Required for synthesis — see [API Key Setup](../API_KEY_QUICK_START.md) |
+| Running backend | Follow the [Quickstart](../docs/getting-started/quickstart.md) |
+| LLM provider key | Required for synthesis — see [API Key Setup](../api/API_KEY_QUICK_START.md) |
 | Source documents | 2–6 academic papers in DOCX, PDF, TEX, HTML, or MD format |
 | Python 3.12+ | For running code examples |
 
@@ -120,7 +120,7 @@ print(f"Ready to synthesize: {doc_ids}")
 
 ### Via UI
 
-1. Navigate to **http://localhost:3000/multi-upload**
+1. Navigate to **<http://localhost:3000/multi-upload>**
 2. Click **Add Files** and select 2–6 source documents
 3. Wait for each document to finish processing (status will show "Completed")
 4. Click **Proceed to Synthesis**

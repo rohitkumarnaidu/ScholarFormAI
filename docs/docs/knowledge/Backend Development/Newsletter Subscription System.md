@@ -5,9 +5,9 @@
 
 <cite>
 **Referenced Files in This Document**
-- [route.js](file://frontend/app/api/v1/marketing/newsletter/route.js)
-- [Footer.jsx](file://frontend/src/components/Footer.jsx)
-- [api.core.js](file://frontend/src/services/api.core.js)
+- [route.js](../../../../frontend/app/api/v1/marketing/newsletter/route.js)
+- [Footer.jsx](../../../../frontend/src/components/Footer.jsx)
+- [api.core.js](../../../../frontend/src/services/api.core.js)
 </cite>
 
 ## Table of Contents
@@ -38,21 +38,21 @@ The Newsletter Subscription System operates within a client-server architecture 
 ```mermaid
 graph TB
 subgraph "Frontend Layer"
-UI[Footer Component]
-Service[API Service Layer]
-Validation[Input Validation]
+UI["Footer Component"]
+Service["API Service Layer"]
+Validation["Input Validation"]
 end
 subgraph "API Gateway"
-Route[Next.js Route Handler]
+Route["Next.js Route Handler"]
 end
 subgraph "Backend Processing"
-EmailValidation[Email Format Validation]
-DelaySimulator[Processing Delay Simulator]
-ResponseHandler[Response Generator]
+EmailValidation["Email Format Validation"]
+DelaySimulator["Processing Delay Simulator"]
+ResponseHandler["Response Generator"]
 end
 subgraph "External Services"
-ExternalAPI[External Newsletter Service]
-Database[(Database)]
+ExternalAPI["External Newsletter Service"]
+Database["(Database)"]
 end
 UI --> Service
 Service --> Route
@@ -67,9 +67,9 @@ Service --> UI
 
 **Diagram sources**
 
-- [Footer.jsx:13-26](file://frontend/src/components/Footer.jsx#L13-L26)
-- [route.js:3-27](file://frontend/app/api/v1/marketing/newsletter/route.js#L3-L27)
-- [api.core.js:383-392](file://frontend/src/services/api.core.js#L383-L392)
+- [Footer.jsx:13-26](../../../../frontend/src/components/Footer.jsx#L13-L26)
+- [route.js:3-27](../../../../frontend/app/api/v1/marketing/newsletter/route.js#L3-L27)
+- [api.core.js:383-392](../../../../frontend/src/services/api.core.js#L383-L392)
 
 ## Core Components
 
@@ -103,9 +103,9 @@ NewsletterService --> APIRoute : "calls"
 
 **Diagram sources**
 
-- [Footer.jsx:8-26](file://frontend/src/components/Footer.jsx#L8-L26)
-- [api.core.js:377-392](file://frontend/src/services/api.core.js#L377-L392)
-- [route.js:3-27](file://frontend/app/api/v1/marketing/newsletter/route.js#L3-L27)
+- [Footer.jsx:8-26](../../../../frontend/src/components/Footer.jsx#L8-L26)
+- [api.core.js:377-392](../../../../frontend/src/services/api.core.js#L377-L392)
+- [route.js:3-27](../../../../frontend/app/api/v1/marketing/newsletter/route.js#L3-L27)
 
 ### State Management and User Experience
 
@@ -117,19 +117,19 @@ stateDiagram-v2
 Idle --> Loading : form submit
 Loading --> Success : successful subscription
 Loading --> Error : validation failure
-Success --> Idle : timeout (3 seconds)
+Success --> Idle : timeout ("3 seconds")
 Error --> Idle : user correction
 Idle --> Idle : user interaction
 ```
 
 **Diagram sources**
 
-- [Footer.jsx:10-26](file://frontend/src/components/Footer.jsx#L10-L26)
+- [Footer.jsx:10-26](../../../../frontend/src/components/Footer.jsx#L10-L26)
 
 **Section sources**
 
-- [Footer.jsx:1-170](file://frontend/src/components/Footer.jsx#L1-L170)
-- [api.core.js:377-392](file://frontend/src/services/api.core.js#L377-L392)
+- [Footer.jsx:1-170](../../../../frontend/src/components/Footer.jsx#L1-L170)
+- [api.core.js:377-392](../../../../frontend/src/services/api.core.js#L377-L392)
 
 ## User Interface Implementation
 
@@ -161,9 +161,9 @@ Footer-->>User : Show success message
 
 **Diagram sources**
 
-- [Footer.jsx:13-26](file://frontend/src/components/Footer.jsx#L13-L26)
-- [api.core.js:383-392](file://frontend/src/services/api.core.js#L383-L392)
-- [route.js:3-27](file://frontend/app/api/v1/marketing/newsletter/route.js#L3-L27)
+- [Footer.jsx:13-26](../../../../frontend/src/components/Footer.jsx#L13-L26)
+- [api.core.js:383-392](../../../../frontend/src/services/api.core.js#L383-L392)
+- [route.js:3-27](../../../../frontend/app/api/v1/marketing/newsletter/route.js#L3-L27)
 
 ### Form Design and Validation
 
@@ -171,7 +171,7 @@ The subscription form incorporates several design patterns to enhance user exper
 
 **Section sources**
 
-- [Footer.jsx:94-127](file://frontend/src/components/Footer.jsx#L94-L127)
+- [Footer.jsx:94-127](../../../../frontend/src/components/Footer.jsx#L94-L127)
 
 ## API Endpoint Analysis
 
@@ -181,7 +181,7 @@ The backend endpoint follows Next.js API route conventions and implements compre
 
 ```mermaid
 flowchart TD
-Start([POST Request Received]) --> ParseJSON["Parse JSON Request Body"]
+Start(["POST Request Received"]) --> ParseJSON["Parse JSON Request Body"]
 ParseJSON --> ExtractEmail["Extract Email Field"]
 ExtractEmail --> ValidateEmail{"Email Valid?"}
 ValidateEmail --> |No| Return400["Return 400 Bad Request"]
@@ -193,7 +193,7 @@ ReturnSuccess --> End
 
 **Diagram sources**
 
-- [route.js:3-27](file://frontend/app/api/v1/marketing/newsletter/route.js#L3-L27)
+- [route.js:3-27](../../../../frontend/app/api/v1/marketing/newsletter/route.js#L3-L27)
 
 ### Response Structure and Error Handling
 
@@ -201,7 +201,7 @@ The API endpoint implements a consistent response pattern that returns either su
 
 **Section sources**
 
-- [route.js:1-28](file://frontend/app/api/v1/marketing/newsletter/route.js#L1-L28)
+- [route.js:1-28](../../../../frontend/app/api/v1/marketing/newsletter/route.js#L1-L28)
 
 ## Data Flow and Processing
 
@@ -212,16 +212,16 @@ The newsletter subscription process follows a well-defined pipeline that ensures
 ```mermaid
 flowchart LR
 subgraph "Input Stage"
-EmailInput[Email Input]
-FormatValidation[Format Validation]
+EmailInput["Email Input"]
+FormatValidation["Format Validation"]
 end
 subgraph "Processing Stage"
-DelaySimulator[800ms Processing Delay]
-ExternalCall[External API Call]
+DelaySimulator["800ms Processing Delay"]
+ExternalCall["External API Call"]
 end
 subgraph "Output Stage"
-SuccessResponse[Success Response]
-ErrorResponse[Error Response]
+SuccessResponse["Success Response"]
+ErrorResponse["Error Response"]
 end
 EmailInput --> FormatValidation
 FormatValidation --> |Valid| DelaySimulator
@@ -234,8 +234,8 @@ ErrorResponse --> End
 
 **Diagram sources**
 
-- [Footer.jsx:13-26](file://frontend/src/components/Footer.jsx#L13-L26)
-- [route.js:14-15](file://frontend/app/api/v1/marketing/newsletter/route.js#L14-L15)
+- [Footer.jsx:13-26](../../../../frontend/src/components/Footer.jsx#L13-L26)
+- [route.js:14-15](../../../../frontend/app/api/v1/marketing/newsletter/route.js#L14-L15)
 
 ### Service Layer Integration
 
@@ -243,7 +243,7 @@ The frontend service layer provides a unified interface for API communication, i
 
 **Section sources**
 
-- [api.core.js:307-370](file://frontend/src/services/api.core.js#L307-L370)
+- [api.core.js:307-370](../../../../frontend/src/services/api.core.js#L307-L370)
 
 ## Error Handling and Validation
 
@@ -265,8 +265,8 @@ The system implements standardized error response patterns that provide meaningf
 
 **Section sources**
 
-- [Footer.jsx:15](file://frontend/src/components/Footer.jsx#L15)
-- [route.js:7-12](file://frontend/app/api/v1/marketing/newsletter/route.js#L7-L12)
+- [Footer.jsx:15](../../../../frontend/src/components/Footer.jsx#L15)
+- [route.js:7-12](../../../../frontend/app/api/v1/marketing/newsletter/route.js#L7-L12)
 
 ## Security Considerations
 

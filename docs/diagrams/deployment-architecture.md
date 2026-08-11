@@ -13,7 +13,7 @@ graph TB
         VERCEL_CDN["CDN Cache<br/>_next/static: 1 year TTL"]
     end
 
-    subgraph RENDER["Render (Professional tier)"]
+    subgraph RENDER["Render ("Professional tier")"]
         direction TB
         WEB_SVC["Web Service<br/>Uvicorn app.main:app<br/>--workers WEB_CONCURRENCY<br/>Health: /api/v1/health/live"]
 
@@ -28,13 +28,13 @@ graph TB
         REDIS_BROKER["Celery Broker + Backend"]
     end
 
-    subgraph SUPABASE["Supabase (Free Tier, 500MB)"]
+    subgraph SUPABASE["Supabase ("Free Tier, 500MB")"]
         PG["PostgreSQL 15+<br/>Primary Database"]
         AUTH["Auth Service<br/>JWT + Row Level Security"]
         STORAGE["Storage<br/>File uploads"]
     end
 
-    subgraph HF_SPACES["HuggingFace Spaces (Free, 2 vCPU each)"]
+    subgraph HF_SPACES["HuggingFace Spaces ("Free, 2 vCPU each")"]
         direction TB
         subgraph GROBID_PAIR["GROBID × 2"]
             GRO_PRIMARY["GROBID Primary<br/>lfoppiano/grobid:0.8.2<br/>Port 7860"]
@@ -69,7 +69,7 @@ graph TB
         CI_FRONTEND["frontend-ci.yml<br/>eslint → vitest → build → Lighthouse → Playwright E2E"]
         CI_SECURITY["security.yml<br/>Dependency scan + secret detection"]
         CD_PRODUCTION["deploy-production.yml<br/>verify-ci-gates → pre-deploy-health → deploy-production<br/>→ wait-health → post-deploy-verify → deploy-frontend"]
-        CD_STAGING["deploy-staging.yml<br/>test → deploy (push to develop)"]
+        CD_STAGING["deploy-staging.yml<br/>test → deploy ("push to develop")"]
         KEEPALIVE["Keepalive(cron: */14 * * * *)<br/>Pings Render + all 6 HF service pairs"]
     end
 
@@ -165,7 +165,7 @@ flowchart LR
         BACKEND_DEPLOY["Backend Deploy<br/>Deploy Hook / Render API"]
         WAIT_HEALTH["Wait for Health<br/>20 attempts × 15s"]
         POST_VERIFY["Post-deploy Verification"]
-        AUTO_ROLLBACK["Auto-rollback<br/>(if health fails)"]
+        AUTO_ROLLBACK["Auto-rollback<br/>("if health fails")"]
         FRONTEND_DEPLOY["Frontend Deploy<br/>vercel deploy --prod"]
         VERIFY["Verify Production<br/>Smoke test + Grafana"]
     end

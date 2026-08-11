@@ -21,16 +21,16 @@ Learn ScholarForm AI step by step.
 
 | Tutorial | Description | Time |
 | ---------- | ------------- | ------ |
-| [Quickstart](../quickstart.md) | 5-minute setup — clone to first formatted document | 5 min |
-| [Developer Onboarding](../DEVELOPER_ONBOARDING.md) | Full development environment setup | 15 min |
-| [API Key Setup](../API_KEY_QUICK_START.md) | Configure LLM provider keys | 10 min |
+| [Quickstart](../docs/getting-started/quickstart.md) | 5-minute setup — clone to first formatted document | 5 min |
+| [Developer Onboarding](../developer-guide/DEVELOPER_ONBOARDING.md) | Full development environment setup | 15 min |
+| [API Key Setup](../api/API_KEY_QUICK_START.md) | Configure LLM provider keys | 10 min |
 
 ## Formatting
 
 | Tutorial | Description | Time |
 |----------|-------------|------|
-| [User Guide](../user_guide.md) | End-to-end formatting workflow | 20 min |
-| [Template Creation](../template_creation.md) | Create custom journal templates | 30 min |
+| [User Guide](../guides/USER_GUIDE.md) | End-to-end formatting workflow | 20 min |
+| [Template Creation](../user-guide/template_creation.md) | Create custom journal templates | 30 min |
 
 ## Examples
 

@@ -5,11 +5,11 @@
 
 <cite>
 **Referenced Files in This Document**
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [base.py](file://backend/app/pipeline/base.py)
-- [pipeline_document.py](file://backend/app/models/pipeline_document.py)
-- [celery_tasks.py](file://backend/app/tasks/celery_tasks.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [base.py](../../../../backend/app/pipeline/base.py)
+- [pipeline_document.py](../../../../backend/app/models/pipeline_document.py)
+- [celery_tasks.py](../../../../backend/app/tasks/celery_tasks.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
 </cite>
 
 ## Update Summary
@@ -60,19 +60,19 @@ Orchestrator --> Services["External Services<br/>GROBID, Docling, Crossref, Expo
 
 **Diagram sources**
 
-- [celery_tasks.py:41-66](file://backend/app/tasks/celery_tasks.py#L41-L66)
-- [orchestrator.py:73-1281](file://backend/app/pipeline/orchestrator.py#L73-L1281)
-- [base.py:4-23](file://backend/app/pipeline/base.py#L4-L23)
-- [pipeline_document.py:49-207](file://backend/app/models/pipeline_document.py#L49-L207)
-- [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
+- [celery_tasks.py:41-66](../../../../backend/app/tasks/celery_tasks.py#L41-L66)
+- [orchestrator.py:73-1281](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L1281)
+- [base.py:4-23](../../../../backend/app/pipeline/base.py#L4-L23)
+- [pipeline_document.py:49-207](../../../../backend/app/models/pipeline_document.py#L49-L207)
+- [retry_guard.py:1-63](../../../../backend/app/pipeline/safety/retry_guard.py#L1-L63)
 
 **Section sources**
 
-- [celery_tasks.py:41-66](file://backend/app/tasks/celery_tasks.py#L41-L66)
-- [orchestrator.py:73-1281](file://backend/app/pipeline/orchestrator.py#L73-L1281)
-- [base.py:4-23](file://backend/app/pipeline/base.py#L4-L23)
-- [pipeline_document.py:49-207](file://backend/app/models/pipeline_document.py#L49-L207)
-- [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
+- [celery_tasks.py:41-66](../../../../backend/app/tasks/celery_tasks.py#L41-L66)
+- [orchestrator.py:73-1281](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L1281)
+- [base.py:4-23](../../../../backend/app/pipeline/base.py#L4-L23)
+- [pipeline_document.py:49-207](../../../../backend/app/models/pipeline_document.py#L49-L207)
+- [retry_guard.py:1-63](../../../../backend/app/pipeline/safety/retry_guard.py#L1-L63)
 
 ## Core Components
 
@@ -92,10 +92,10 @@ Key responsibilities:
 
 **Section sources**
 
-- [orchestrator.py:73-1281](file://backend/app/pipeline/orchestrator.py#L73-L1281)
-- [base.py:4-23](file://backend/app/pipeline/base.py#L4-L23)
-- [pipeline_document.py:49-207](file://backend/app/models/pipeline_document.py#L49-L207)
-- [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
+- [orchestrator.py:73-1281](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L1281)
+- [base.py:4-23](../../../../backend/app/pipeline/base.py#L4-L23)
+- [pipeline_document.py:49-207](../../../../backend/app/models/pipeline_document.py#L49-L207)
+- [retry_guard.py:1-63](../../../../backend/app/pipeline/safety/retry_guard.py#L1-L63)
 
 ## Architecture Overview
 
@@ -127,7 +127,7 @@ participant Exporter as "Exporter"
 Client->>Celery : "Submit document job"
 Celery->>Orchestrator : "run_pipeline(input_path, job_id)"
 Orchestrator->>RetryGuard : "wrap database operations with retry"
-Orchestrator->>Parser : "parse input (direct or via DOCX)"
+Orchestrator->>Parser : "parse input ("direct or via DOCX")"
 Orchestrator->>GROBID : "parallel header extraction (PDF)"
 Orchestrator->>Docling : "parallel layout analysis (PDF)"
 Orchestrator->>Orchestrator : "structure detection, classification"
@@ -142,9 +142,9 @@ Celery-->>Client : "completion status"
 
 **Diagram sources**
 
-- [celery_tasks.py:41-66](file://backend/app/tasks/celery_tasks.py#L41-L66)
-- [orchestrator.py:576-1146](file://backend/app/pipeline/orchestrator.py#L576-L1146)
-- [retry_guard.py:10-62](file://backend/app/pipeline/safety/retry_guard.py#L10-L62)
+- [celery_tasks.py:41-66](../../../../backend/app/tasks/celery_tasks.py#L41-L66)
+- [orchestrator.py:576-1146](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L576-L1146)
+- [retry_guard.py:10-62](../../../../backend/app/pipeline/safety/retry_guard.py#L10-L62)
 
 ## Detailed Component Analysis
 
@@ -185,11 +185,11 @@ class PipelineOrchestrator {
 
 **Diagram sources**
 
-- [orchestrator.py:73-1281](file://backend/app/pipeline/orchestrator.py#L73-L1281)
+- [orchestrator.py:73-1281](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L1281)
 
 **Section sources**
 
-- [orchestrator.py:73-1281](file://backend/app/pipeline/orchestrator.py#L73-L1281)
+- [orchestrator.py:73-1281](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L1281)
 
 ### Retry Guard and Exponential Backoff Mechanisms
 
@@ -237,19 +237,19 @@ Success3 --> |No| Fail
 
 **Diagram sources**
 
-- [orchestrator.py:127-150](file://backend/app/pipeline/orchestrator.py#L127-L150)
-- [retry_guard.py:10-62](file://backend/app/pipeline/safety/retry_guard.py#L10-L62)
+- [orchestrator.py:127-150](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L127-L150)
+- [retry_guard.py:10-62](../../../../backend/app/pipeline/safety/retry_guard.py#L10-L62)
 
 **Section sources**
 
-- [orchestrator.py:127-150](file://backend/app/pipeline/orchestrator.py#L127-L150)
-- [orchestrator.py:505-518](file://backend/app/pipeline/orchestrator.py#L505-L518)
-- [orchestrator.py:520-524](file://backend/app/pipeline/orchestrator.py#L520-L524)
-- [orchestrator.py:526-541](file://backend/app/pipeline/orchestrator.py#L526-L541)
-- [orchestrator.py:543-546](file://backend/app/pipeline/orchestrator.py#L543-L546)
-- [orchestrator.py:548-551](file://backend/app/pipeline/orchestrator.py#L548-L551)
-- [orchestrator.py:553-556](file://backend/app/pipeline/orchestrator.py#L553-L556)
-- [retry_guard.py:10-62](file://backend/app/pipeline/safety/retry_guard.py#L10-L62)
+- [orchestrator.py:127-150](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L127-L150)
+- [orchestrator.py:505-518](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L505-L518)
+- [orchestrator.py:520-524](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L520-L524)
+- [orchestrator.py:526-541](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L526-L541)
+- [orchestrator.py:543-546](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L543-L546)
+- [orchestrator.py:548-551](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L548-L551)
+- [orchestrator.py:553-556](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L553-L556)
+- [retry_guard.py:10-62](../../../../backend/app/pipeline/safety/retry_guard.py#L10-L62)
 
 ### PipelineStage Base Interface
 
@@ -265,11 +265,11 @@ class PipelineStage {
 
 **Diagram sources**
 
-- [base.py:4-23](file://backend/app/pipeline/base.py#L4-L23)
+- [base.py:4-23](../../../../backend/app/pipeline/base.py#L4-L23)
 
 **Section sources**
 
-- [base.py:4-23](file://backend/app/pipeline/base.py#L4-L23)
+- [base.py:4-23](../../../../backend/app/pipeline/base.py#L4-L23)
 
 ### PipelineDocument Model
 
@@ -340,11 +340,11 @@ PipelineDocument --> ProcessingStage : "history"
 
 **Diagram sources**
 
-- [pipeline_document.py:49-207](file://backend/app/models/pipeline_document.py#L49-L207)
+- [pipeline_document.py:49-207](../../../../backend/app/models/pipeline_document.py#L49-L207)
 
 **Section sources**
 
-- [pipeline_document.py:49-207](file://backend/app/models/pipeline_document.py#L49-L207)
+- [pipeline_document.py:49-207](../../../../backend/app/models/pipeline_document.py#L49-L207)
 
 ### Stage Coordination and Control Flow
 
@@ -403,11 +403,11 @@ Persist --> End(["End"])
 
 **Diagram sources**
 
-- [orchestrator.py:576-1146](file://backend/app/pipeline/orchestrator.py#L576-L1146)
+- [orchestrator.py:576-1146](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L576-L1146)
 
 **Section sources**
 
-- [orchestrator.py:576-1146](file://backend/app/pipeline/orchestrator.py#L576-L1146)
+- [orchestrator.py:576-1146](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L576-L1146)
 
 ### Error Handling and Recovery
 
@@ -439,13 +439,13 @@ Success --> End
 
 **Diagram sources**
 
-- [orchestrator.py:586-598](file://backend/app/pipeline/orchestrator.py#L586-L598)
-- [orchestrator.py:1106-1146](file://backend/app/pipeline/orchestrator.py#L1106-L1146)
+- [orchestrator.py:586-598](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L586-L598)
+- [orchestrator.py:1106-1146](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L1106-L1146)
 
 **Section sources**
 
-- [orchestrator.py:586-598](file://backend/app/pipeline/orchestrator.py#L586-L598)
-- [orchestrator.py:1106-1146](file://backend/app/pipeline/orchestrator.py#L1106-L1146)
+- [orchestrator.py:586-598](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L586-L598)
+- [orchestrator.py:1106-1146](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L1106-L1146)
 
 ### Conditional Execution and Runtime Flags
 
@@ -460,7 +460,7 @@ These flags are resolved from formatting options and environment settings, with 
 
 **Section sources**
 
-- [orchestrator.py:306-323](file://backend/app/pipeline/orchestrator.py#L306-L323)
+- [orchestrator.py:306-323](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L306-L323)
 
 ### Timeout Handling and Concurrency Controls
 
@@ -471,9 +471,9 @@ These flags are resolved from formatting options and environment settings, with 
 
 **Section sources**
 
-- [orchestrator.py:266-287](file://backend/app/pipeline/orchestrator.py#L266-L287)
-- [orchestrator.py:69-72](file://backend/app/pipeline/orchestrator.py#L69-L72)
-- [orchestrator.py:745-769](file://backend/app/pipeline/orchestrator.py#L745-L769)
+- [orchestrator.py:266-287](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L266-L287)
+- [orchestrator.py:69-72](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L69-L72)
+- [orchestrator.py:745-769](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L745-L769)
 
 ### Edit Reprocessing Flow
 
@@ -503,11 +503,11 @@ Orchestrator-->>Client : "success"
 
 **Diagram sources**
 
-- [orchestrator.py:1148-1281](file://backend/app/pipeline/orchestrator.py#L1148-L1281)
+- [orchestrator.py:1148-1281](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L1148-L1281)
 
 **Section sources**
 
-- [orchestrator.py:1148-1281](file://backend/app/pipeline/orchestrator.py#L1148-L1281)
+- [orchestrator.py:1148-1281](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L1148-L1281)
 
 ## Dependency Analysis
 
@@ -536,15 +536,15 @@ RetryGuard --> ExponentialBackoff["Exponential Backoff Logic"]
 
 **Diagram sources**
 
-- [orchestrator.py:19-38](file://backend/app/pipeline/orchestrator.py#L19-L38)
-- [orchestrator.py:58-61](file://backend/app/pipeline/orchestrator.py#L58-L61)
-- [retry_guard.py:10-62](file://backend/app/pipeline/safety/retry_guard.py#L10-L62)
+- [orchestrator.py:19-38](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L19-L38)
+- [orchestrator.py:58-61](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L58-L61)
+- [retry_guard.py:10-62](../../../../backend/app/pipeline/safety/retry_guard.py#L10-L62)
 
 **Section sources**
 
-- [orchestrator.py:19-38](file://backend/app/pipeline/orchestrator.py#L19-L38)
-- [orchestrator.py:58-61](file://backend/app/pipeline/orchestrator.py#L58-L61)
-- [retry_guard.py:10-62](file://backend/app/pipeline/safety/retry_guard.py#L10-L62)
+- [orchestrator.py:19-38](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L19-L38)
+- [orchestrator.py:58-61](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L58-L61)
+- [retry_guard.py:10-62](../../../../backend/app/pipeline/safety/retry_guard.py#L10-L62)
 
 ## Performance Considerations
 
@@ -572,9 +572,9 @@ Common issues and remedies:
 
 **Section sources**
 
-- [orchestrator.py:586-598](file://backend/app/pipeline/orchestrator.py#L586-L598)
-- [orchestrator.py:1106-1146](file://backend/app/pipeline/orchestrator.py#L1106-L1146)
-- [orchestrator.py:127-150](file://backend/app/pipeline/orchestrator.py#L127-L150)
+- [orchestrator.py:586-598](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L586-L598)
+- [orchestrator.py:1106-1146](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L1106-L1146)
+- [orchestrator.py:127-150](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L127-L150)
 
 ## Conclusion
 

@@ -5,25 +5,25 @@
 
 <cite>
 **Referenced Files in This Document**
-- [playwright.config.js](file://frontend/playwright.config.js)
-- [package.json](file://frontend/package.json)
-- [phase4-flows.spec.js](file://frontend/e2e/phase4-flows.spec.js)
-- [upload-journey.spec.js](file://frontend/e2e/upload-journey.spec.js)
-- [auth-flow.spec.js](file://frontend/e2e/auth-flow.spec.js)
-- [formatter-upload.spec.js](file://frontend/e2e/formatter-upload.spec.js)
+- [playwright.config.js](../../../../../frontend/playwright.config.js)
+- [package.json](../../../../../frontend/package.json)
+- [phase4-flows.spec.js](../../../../../frontend/e2e/phase4-flows.spec.js)
+- [upload-journey.spec.js](../../../../../frontend/e2e/upload-journey.spec.js)
+- [auth-flow.spec.js](../../../../../frontend/e2e/auth-flow.spec.js)
+- [formatter-upload.spec.js](../../../../../frontend/e2e/formatter-upload.spec.js)
 - [generator-streaming.spec.js](file://frontend/e2e/generator-streaming.spec.js)
 - [responsive-mobile.spec.js](file://frontend/e2e/responsive-mobile.spec.js)
 - [formatter-live-preview.spec.js](file://frontend/e2e/formatter-live-preview.spec.js)
 - [generator-history.spec.js](file://frontend/e2e/generator-history.spec.js)
-- [smoke.spec.js](file://frontend/e2e/smoke.spec.js)
-- [template-list.spec.js](file://frontend/e2e/template-list.spec.js)
-- [e2e-production.yml](file://.github/workflows/e2e-production.yml)
-- [AuthContext.jsx](file://frontend/src/context/AuthContext.jsx)
-- [api.auth.js](file://frontend/src/services/api.auth.js)
-- [api.documents.js](file://frontend/src/services/api.documents.js)
-- [useUpload.js](file://frontend/src/hooks/useUpload.js)
-- [api.generator.v1.js](file://frontend/src/services/api.generator.v1.js)
-- [useGeneratorSessionStream.js](file://frontend/src/hooks/useGeneratorSessionStream.js)
+- [smoke.spec.js](../../../../../frontend/e2e/smoke.spec.js)
+- [template-list.spec.js](../../../../../frontend/e2e/template-list.spec.js)
+- [e2e-production.yml](../../../../../.github/workflows/e2e-production.yml)
+- [AuthContext.jsx](../../../../../frontend/src/context/AuthContext.jsx)
+- [api.auth.js](../../../../../frontend/src/services/api.auth.js)
+- [api.documents.js](../../../../../frontend/src/services/api.documents.js)
+- [useUpload.js](../../../../../frontend/src/hooks/useUpload.js)
+- [api.generator.v1.js](../../../../../frontend/src/services/api.generator.v1.js)
+- [useGeneratorSessionStream.js](../../../../../frontend/src/hooks/useGeneratorSessionStream.js)
 </cite>
 
 ## Update Summary
@@ -65,8 +65,8 @@ graph TB
 PW["Playwright Config<br/>frontend/playwright.config.js"]
 PKG["Frontend Scripts<br/>frontend/package.json"]
 E2E_DIR["E2E Specs<br/>frontend/e2e/*.spec.js"]
-PHASE4["Phase 4 Flows<br/>frontend/e2e/phase4-flows.spec.js<br/>(300 lines)"]
-UPLOAD_JOURNEY["Upload Journey<br/>frontend/e2e/upload-journey.spec.js<br/>(46 lines)"]
+PHASE4["Phase 4 Flows<br/>frontend/e2e/phase4-flows.spec.js<br/>("300 lines")"]
+UPLOAD_JOURNEY["Upload Journey<br/>frontend/e2e/upload-journey.spec.js<br/>("46 lines")"]
 GH_WORKFLOW["CI Workflow<br/>.github/workflows/e2e-production.yml"]
 ENV_VARS["Environment Variables<br/>E2E_EMAIL, E2E_PASSWORD"]
 PW --> E2E_DIR
@@ -79,17 +79,17 @@ E2E_DIR --> UPLOAD_JOURNEY
 
 **Diagram sources**
 
-- [playwright.config.js:1-50](file://frontend/playwright.config.js#L1-L50)
-- [package.json:1-69](file://frontend/package.json#L1-L69)
-- [e2e-production.yml:1-60](file://.github/workflows/e2e-production.yml#L1-L60)
-- [phase4-flows.spec.js:1-300](file://frontend/e2e/phase4-flows.spec.js#L1-L300)
-- [upload-journey.spec.js:1-48](file://frontend/e2e/upload-journey.spec.js#L1-L48)
+- [playwright.config.js:1-50](../../../../../frontend/playwright.config.js#L1-L50)
+- [package.json:1-69](../../../../../frontend/package.json#L1-L69)
+- [e2e-production.yml:1-60](../../../../../.github/workflows/e2e-production.yml#L1-L60)
+- [phase4-flows.spec.js:1-300](../../../../../frontend/e2e/phase4-flows.spec.js#L1-L300)
+- [upload-journey.spec.js:1-48](../../../../../frontend/e2e/upload-journey.spec.js#L1-L48)
 
 **Section sources**
 
-- [playwright.config.js:1-50](file://frontend/playwright.config.js#L1-L50)
-- [package.json:1-69](file://frontend/package.json#L1-L69)
-- [.github/workflows/e2e-production.yml:1-60](file://.github/workflows/e2e-production.yml#L1-L60)
+- [playwright.config.js:1-50](../../../../../frontend/playwright.config.js#L1-L50)
+- [package.json:1-69](../../../../../frontend/package.json#L1-L69)
+- [.github/workflows/e2e-production.yml:1-60](../../../../../.github/workflows/e2e-production.yml#L1-L60)
 
 ## Core Components
 
@@ -112,10 +112,10 @@ Key configuration highlights:
 
 **Section sources**
 
-- [playwright.config.js:9-49](file://frontend/playwright.config.js#L9-L49)
-- [package.json:6-16](file://frontend/package.json#L6-L16)
-- [e2e-production.yml:50-55](file://.github/workflows/e2e-production.yml#L50-L55)
-- [phase4-flows.spec.js:237-239](file://frontend/e2e/phase4-flows.spec.js#L237-L239)
+- [playwright.config.js:9-49](../../../../../frontend/playwright.config.js#L9-L49)
+- [package.json:6-16](../../../../../frontend/package.json#L6-L16)
+- [e2e-production.yml:50-55](../../../../../.github/workflows/e2e-production.yml#L50-L55)
+- [phase4-flows.spec.js:237-239](../../../../../frontend/e2e/phase4-flows.spec.js#L237-L239)
 
 ## Architecture Overview
 
@@ -127,8 +127,8 @@ subgraph "Testing Layer"
 PW["Playwright Runner"]
 CFG["Playwright Config"]
 SPEC["Spec Files (*.spec.js)"]
-PHASE4["Phase 4 Flows<br/>(300 lines)"]
-UPLOAD["Upload Journey<br/>(46 lines)"]
+PHASE4["Phase 4 Flows<br/>("300 lines")"]
+UPLOAD["Upload Journey<br/>("46 lines")"]
 ENV["Env Vars<br/>E2E_EMAIL/E2E_PASSWORD"]
 END_TO_END["End-to-End Harness"]
 end
@@ -168,15 +168,15 @@ AUTH_CTX --> AUTH
 
 **Diagram sources**
 
-- [playwright.config.js:1-50](file://frontend/playwright.config.js#L1-L50)
-- [phase4-flows.spec.js:105-235](file://frontend/e2e/phase4-flows.spec.js#L105-L235)
-- [upload-journey.spec.js:4-46](file://frontend/e2e/upload-journey.spec.js#L4-L46)
-- [AuthContext.jsx:65-172](file://frontend/src/context/AuthContext.jsx#L65-L172)
-- [api.auth.js:1-39](file://frontend/src/services/api.auth.js#L1-L39)
-- [api.documents.js:1-412](file://frontend/src/services/api.documents.js#L1-L412)
-- [api.generator.v1.js:1-80](file://frontend/src/services/api.generator.v1.js#L1-L80)
-- [useUpload.js:1-361](file://frontend/src/hooks/useUpload.js#L1-L361)
-- [useGeneratorSessionStream.js:1-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
+- [playwright.config.js:1-50](../../../../../frontend/playwright.config.js#L1-L50)
+- [phase4-flows.spec.js:105-235](../../../../../frontend/e2e/phase4-flows.spec.js#L105-L235)
+- [upload-journey.spec.js:4-46](../../../../../frontend/e2e/upload-journey.spec.js#L4-L46)
+- [AuthContext.jsx:65-172](../../../../../frontend/src/context/AuthContext.jsx#L65-L172)
+- [api.auth.js:1-39](../../../../../frontend/src/services/api.auth.js#L1-L39)
+- [api.documents.js:1-412](../../../../../frontend/src/services/api.documents.js#L1-L412)
+- [api.generator.v1.js:1-80](../../../../../frontend/src/services/api.generator.v1.js#L1-L80)
+- [useUpload.js:1-361](../../../../../frontend/src/hooks/useUpload.js#L1-L361)
+- [useGeneratorSessionStream.js:1-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
 
 ## Detailed Component Analysis
 
@@ -204,13 +204,13 @@ Note over T,E2E : Uses E2E_EMAIL/E2E_PASSWORD from environment
 
 **Diagram sources**
 
-- [auth-flow.spec.js:1-7](file://frontend/e2e/auth-flow.spec.js#L1-L7)
-- [api.auth.js:18-38](file://frontend/src/services/api.auth.js#L18-L38)
+- [auth-flow.spec.js:1-7](../../../../../frontend/e2e/auth-flow.spec.js#L1-L7)
+- [api.auth.js:18-38](../../../../../frontend/src/services/api.auth.js#L18-L38)
 
 **Section sources**
 
-- [auth-flow.spec.js:1-7](file://frontend/e2e/auth-flow.spec.js#L1-L7)
-- [api.auth.js:1-39](file://frontend/src/services/api.auth.js#L1-L39)
+- [auth-flow.spec.js:1-7](../../../../../frontend/e2e/auth-flow.spec.js#L1-L7)
+- [api.auth.js:1-39](../../../../../frontend/src/services/api.auth.js#L1-L39)
 
 ### Document Upload and Formatting Workflows
 
@@ -233,14 +233,14 @@ Download --> End(["Test assertion passed"])
 
 **Diagram sources**
 
-- [useUpload.js:224-342](file://frontend/src/hooks/useUpload.js#L224-L342)
-- [api.documents.js:128-300](file://frontend/src/services/api.documents.js#L128-L300)
+- [useUpload.js:224-342](../../../../../frontend/src/hooks/useUpload.js#L224-L342)
+- [api.documents.js:128-300](../../../../../frontend/src/services/api.documents.js#L128-L300)
 
 **Section sources**
 
-- [formatter-upload.spec.js:1-11](file://frontend/e2e/formatter-upload.spec.js#L1-L11)
-- [useUpload.js:1-361](file://frontend/src/hooks/useUpload.js#L1-L361)
-- [api.documents.js:1-412](file://frontend/src/services/api.documents.js#L1-L412)
+- [formatter-upload.spec.js:1-11](../../../../../frontend/e2e/formatter-upload.spec.js#L1-L11)
+- [useUpload.js:1-361](../../../../../frontend/src/hooks/useUpload.js#L1-L361)
+- [api.documents.js:1-412](../../../../../frontend/src/services/api.documents.js#L1-L412)
 
 ### Generator Streaming and Session Management
 
@@ -265,14 +265,14 @@ UI-->>P : "Assert real-time updates"
 **Diagram sources**
 
 - [generator-streaming.spec.js:1-5](file://frontend/e2e/generator-streaming.spec.js#L1-L5)
-- [api.generator.v1.js:4-80](file://frontend/src/services/api.generator.v1.js#L4-L80)
-- [useGeneratorSessionStream.js:1-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
+- [api.generator.v1.js:4-80](../../../../../frontend/src/services/api.generator.v1.js#L4-L80)
+- [useGeneratorSessionStream.js:1-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
 
 **Section sources**
 
 - [generator-streaming.spec.js:1-5](file://frontend/e2e/generator-streaming.spec.js#L1-L5)
-- [api.generator.v1.js:1-80](file://frontend/src/services/api.generator.v1.js#L1-L80)
-- [useGeneratorSessionStream.js:1-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
+- [api.generator.v1.js:1-80](../../../../../frontend/src/services/api.generator.v1.js#L1-L80)
+- [useGeneratorSessionStream.js:1-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
 
 ### Responsive Design Testing
 
@@ -313,11 +313,11 @@ P-->>T : "Assertions pass"
 
 **Diagram sources**
 
-- [smoke.spec.js:5-23](file://frontend/e2e/smoke.spec.js#L5-L23)
+- [smoke.spec.js:5-23](../../../../../frontend/e2e/smoke.spec.js#L5-L23)
 
 **Section sources**
 
-- [smoke.spec.js:1-68](file://frontend/e2e/smoke.spec.js#L1-L68)
+- [smoke.spec.js:1-68](../../../../../frontend/e2e/smoke.spec.js#L1-L68)
 
 ### Template Management Testing
 
@@ -325,7 +325,7 @@ Template list tests ensure the templates page loads without crashing and display
 
 **Section sources**
 
-- [template-list.spec.js:1-11](file://frontend/e2e/template-list.spec.js#L1-L11)
+- [template-list.spec.js:1-11](../../../../../frontend/e2e/template-list.spec.js#L1-L11)
 
 ### Additional Test Categories
 
@@ -348,7 +348,7 @@ Template list tests ensure the templates page loads without crashing and display
 
 - [generator-history.spec.js:1-11](file://frontend/e2e/generator-history.spec.js#L1-L11)
 - [formatter-live-preview.spec.js:1-5](file://frontend/e2e/formatter-live-preview.spec.js#L1-L5)
-- [protected-routes.spec.js:1-10](file://frontend/e2e/protected-routes.spec.js#L1-L10)
+- [protected-routes.spec.js:1-10](../../../../../frontend/e2e/protected-routes.spec.js#L1-L10)
 - [onboarding-tour-next.spec.js:1-50](file://frontend/e2e/onboarding-tour-next.spec.js#L1-L50)
 - [onboarding-tour-skip.spec.js:1-50](file://frontend/e2e/onboarding-tour-skip.spec.js#L1-L50)
 - [generator-multi-upload.spec.js:1-50](file://frontend/e2e/generator-multi-upload.spec.js#L1-L50)
@@ -361,18 +361,18 @@ Template list tests ensure the templates page loads without crashing and display
 - [formatter-edit.spec.js:1-50](file://frontend/e2e/formatter-edit.spec.js#L1-L50)
 - [formatter-compare.spec.js:1-50](file://frontend/e2e/formatter-compare.spec.js#L1-L50)
 - [formatter-batch.spec.js:1-50](file://frontend/e2e/formatter-batch.spec.js#L1-L50)
-- [settings.spec.js:1-50](file://frontend/e2e/settings.spec.js#L1-L50)
-- [profile-update.spec.js:1-50](file://frontend/e2e/profile-update.spec.js#L1-L50)
-- [forgot-password.spec.js:1-50](file://frontend/e2e/forgot-password.spec.js#L1-L50)
-- [reset-password.spec.js:1-50](file://frontend/e2e/reset-password.spec.js#L1-L50)
+- [settings.spec.js:1-50](../../../../../frontend/e2e/settings.spec.js#L1-L50)
+- [profile-update.spec.js:1-50](../../../../../frontend/e2e/profile-update.spec.js#L1-L50)
+- [forgot-password.spec.js:1-50](../../../../../frontend/e2e/forgot-password.spec.js#L1-L50)
+- [reset-password.spec.js:1-50](../../../../../frontend/e2e/reset-password.spec.js#L1-L50)
 - [plan-gating.spec.js:1-50](file://frontend/e2e/plan-gating.spec.js#L1-L50)
-- [account-deletion.spec.js:1-50](file://frontend/e2e/account-deletion.spec.js#L1-L50)
-- [admin-access.spec.js:1-50](file://frontend/e2e/admin-access.spec.js#L1-L50)
+- [account-deletion.spec.js:1-50](../../../../../frontend/e2e/account-deletion.spec.js#L1-L50)
+- [admin-access.spec.js:1-50](../../../../../frontend/e2e/admin-access.spec.js#L1-L50)
 - [error-boundary.spec.js:1-50](file://frontend/e2e/error-boundary.spec.js#L1-L50)
-- [dark-mode.spec.js:1-50](file://frontend/e2e/dark-mode.spec.js#L1-L50)
+- [dark-mode.spec.js:1-50](../../../../../frontend/e2e/dark-mode.spec.js#L1-L50)
 - [navigation-sidebar-toggle.spec.js:1-50](file://frontend/e2e/navigation-sidebar-toggle.spec.js#L1-L50)
-- [landing-page.spec.js:1-50](file://frontend/e2e/landing-page.spec.js#L1-L50)
-- [smoke.spec.js:1-68](file://frontend/e2e/smoke.spec.js#L1-L68)
+- [landing-page.spec.js:1-50](../../../../../frontend/e2e/landing-page.spec.js#L1-L50)
+- [smoke.spec.js:1-68](../../../../../frontend/e2e/smoke.spec.js#L1-L68)
 
 ## Enhanced Phase 4 Flows Testing
 
@@ -399,11 +399,11 @@ ExecuteFlow --> End(["Test Complete"])
 
 **Diagram sources**
 
-- [phase4-flows.spec.js:7-29](file://frontend/e2e/phase4-flows.spec.js#L7-L29)
+- [phase4-flows.spec.js:7-29](../../../../../frontend/e2e/phase4-flows.spec.js#L7-L29)
 
 **Section sources**
 
-- [phase4-flows.spec.js:1-300](file://frontend/e2e/phase4-flows.spec.js#L1-L300)
+- [phase4-flows.spec.js:1-300](../../../../../frontend/e2e/phase4-flows.spec.js#L1-L300)
 
 ### Advanced State Monitoring with Promise.any()
 
@@ -417,7 +417,7 @@ participant UI as "Agent Interface"
 T->>P : "Send prompt and press Control+Enter"
 P->>UI : "Display submitted prompt"
 UI-->>P : "Show initial state"
-T->>T : "Promise.any([proceedToWrite, writingState, errorState])"
+T->>T : "Promise.any(["proceedToWrite, writingState, errorState"])"
 UI-->>P : "proceedToWrite visible"
 Note over T : First promise resolves
 T->>P : "Click proceed to write"
@@ -427,11 +427,11 @@ UI-->>P : "Writing indicators visible"
 
 **Diagram sources**
 
-- [phase4-flows.spec.js:288-292](file://frontend/e2e/phase4-flows.spec.js#L288-L292)
+- [phase4-flows.spec.js:288-292](../../../../../frontend/e2e/phase4-flows.spec.js#L288-L292)
 
 **Section sources**
 
-- [phase4-flows.spec.js:269-298](file://frontend/e2e/phase4-flows.spec.js#L269-L298)
+- [phase4-flows.spec.js:269-298](../../../../../frontend/e2e/phase4-flows.spec.js#L269-L298)
 
 ### Comprehensive Test Harness Installation
 
@@ -447,8 +447,8 @@ Key harness features:
 
 **Section sources**
 
-- [phase4-flows.spec.js:43-103](file://frontend/e2e/phase4-flows.spec.js#L43-L103)
-- [phase4-flows.spec.js:105-235](file://frontend/e2e/phase4-flows.spec.js#L105-L235)
+- [phase4-flows.spec.js:43-103](../../../../../frontend/e2e/phase4-flows.spec.js#L43-L103)
+- [phase4-flows.spec.js:105-235](../../../../../frontend/e2e/phase4-flows.spec.js#L105-L235)
 
 ### Enhanced Selector Strategies
 
@@ -463,10 +463,10 @@ Selector examples from Phase 4 flows:
 
 **Section sources**
 
-- [phase4-flows.spec.js:19-22](file://frontend/e2e/phase4-flows.spec.js#L19-L22)
-- [phase4-flows.spec.js:40-44](file://frontend/e2e/phase4-flows.spec.js#L40-L44)
-- [phase4-flows.spec.js:63-67](file://frontend/e2e/phase4-flows.spec.js#L63-L67)
-- [phase4-flows.spec.js:71-74](file://frontend/e2e/phase4-flows.spec.js#L71-L74)
+- [phase4-flows.spec.js:19-22](../../../../../frontend/e2e/phase4-flows.spec.js#L19-L22)
+- [phase4-flows.spec.js:40-44](../../../../../frontend/e2e/phase4-flows.spec.js#L40-L44)
+- [phase4-flows.spec.js:63-67](../../../../../frontend/e2e/phase4-flows.spec.js#L63-L67)
+- [phase4-flows.spec.js:71-74](../../../../../frontend/e2e/phase4-flows.spec.js#L71-L74)
 
 ### CI/CD Environment Variable Configuration
 
@@ -481,7 +481,7 @@ Environment variables configured:
 
 **Section sources**
 
-- [e2e-production.yml:50-55](file://.github/workflows/e2e-production.yml#L50-L55)
+- [e2e-production.yml:50-55](../../../../../.github/workflows/e2e-production.yml#L50-L55)
 
 ## Upload Journey Testing
 
@@ -514,11 +514,11 @@ U-->>P : "Download successful"
 
 **Diagram sources**
 
-- [upload-journey.spec.js:4-46](file://frontend/e2e/upload-journey.spec.js#L4-L46)
+- [upload-journey.spec.js:4-46](../../../../../frontend/e2e/upload-journey.spec.js#L4-L46)
 
 **Section sources**
 
-- [upload-journey.spec.js:1-48](file://frontend/e2e/upload-journey.spec.js#L1-L48)
+- [upload-journey.spec.js:1-48](../../../../../frontend/e2e/upload-journey.spec.js#L1-L48)
 
 ### Realistic File Upload Simulation
 
@@ -535,7 +535,7 @@ Key testing features:
 
 **Section sources**
 
-- [upload-journey.spec.js:5-46](file://frontend/e2e/upload-journey.spec.js#L5-L46)
+- [upload-journey.spec.js:5-46](../../../../../frontend/e2e/upload-journey.spec.js#L5-L46)
 
 ### End-to-End Workflow Validation
 
@@ -543,7 +543,7 @@ The upload journey test validates the complete end-to-end workflow ensuring that
 
 **Section sources**
 
-- [upload-journey.spec.js:4-46](file://frontend/e2e/upload-journey.spec.js#L4-L46)
+- [upload-journey.spec.js:4-46](../../../../../frontend/e2e/upload-journey.spec.js#L4-L46)
 
 ## Authentication and State Management
 
@@ -560,7 +560,7 @@ Key authentication features:
 
 **Section sources**
 
-- [AuthContext.jsx:65-172](file://frontend/src/context/AuthContext.jsx#L65-L172)
+- [AuthContext.jsx:65-172](../../../../../frontend/src/context/AuthContext.jsx#L65-L172)
 
 ### Production-Ready Authentication Flow
 
@@ -582,11 +582,11 @@ SetGuest --> Ready
 
 **Diagram sources**
 
-- [AuthContext.jsx:68-135](file://frontend/src/context/AuthContext.jsx#L68-L135)
+- [AuthContext.jsx:68-135](../../../../../frontend/src/context/AuthContext.jsx#L68-L135)
 
 **Section sources**
 
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
 
 ## Dependency Analysis
 
@@ -597,9 +597,9 @@ graph TB
 PKG["frontend/package.json"]
 PWCFG["frontend/playwright.config.js"]
 WF["e2e-production.yml"]
-TESTS["frontend/e2e/*.spec.js<br/>(45 test files total)"]
-PHASE4["phase4-flows.spec.js<br/>(300 lines)"]
-UPLOAD["upload-journey.spec.js<br/>(46 lines)"]
+TESTS["frontend/e2e/*.spec.js<br/>("45 test files total")"]
+PHASE4["phase4-flows.spec.js<br/>("300 lines")"]
+UPLOAD["upload-journey.spec.js<br/>("46 lines")"]
 ENV["E2E Secrets"]
 PKG --> PWCFG
 WF --> PWCFG
@@ -611,15 +611,15 @@ TESTS --> UPLOAD
 
 **Diagram sources**
 
-- [package.json:6-16](file://frontend/package.json#L6-L16)
-- [playwright.config.js:1-50](file://frontend/playwright.config.js#L1-L50)
-- [e2e-production.yml:1-60](file://.github/workflows/e2e-production.yml#L1-L60)
+- [package.json:6-16](../../../../../frontend/package.json#L6-L16)
+- [playwright.config.js:1-50](../../../../../frontend/playwright.config.js#L1-L50)
+- [e2e-production.yml:1-60](../../../../../.github/workflows/e2e-production.yml#L1-L60)
 
 **Section sources**
 
-- [package.json:1-69](file://frontend/package.json#L1-L69)
-- [playwright.config.js:1-50](file://frontend/playwright.config.js#L1-L50)
-- [.github/workflows/e2e-production.yml:1-60](file://.github/workflows/e2e-production.yml#L1-L60)
+- [package.json:1-69](../../../../../frontend/package.json#L1-L69)
+- [playwright.config.js:1-50](../../../../../frontend/playwright.config.js#L1-L50)
+- [.github/workflows/e2e-production.yml:1-60](../../../../../.github/workflows/e2e-production.yml#L1-L60)
 
 ## Performance Considerations
 
@@ -648,14 +648,14 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [playwright.config.js:14-28](file://frontend/playwright.config.js#L14-L28)
-- [e2e-production.yml:33-37](file://.github/workflows/e2e-production.yml#L33-L37)
-- [api.auth.js:28-38](file://frontend/src/services/api.auth.js#L28-L38)
-- [useUpload.js:267-290](file://frontend/src/hooks/useUpload.js#L267-L290)
-- [useGeneratorSessionStream.js:5-11](file://frontend/src/hooks/useGeneratorSessionStream.js#L5-L11)
-- [smoke.spec.js:5-23](file://frontend/e2e/smoke.spec.js#L5-L23)
-- [phase4-flows.spec.js:15-18](file://frontend/e2e/phase4-flows.spec.js#L15-L18)
-- [upload-journey.spec.js:18-20](file://frontend/e2e/upload-journey.spec.js#L18-L20)
+- [playwright.config.js:14-28](../../../../../frontend/playwright.config.js#L14-L28)
+- [e2e-production.yml:33-37](../../../../../.github/workflows/e2e-production.yml#L33-L37)
+- [api.auth.js:28-38](../../../../../frontend/src/services/api.auth.js#L28-L38)
+- [useUpload.js:267-290](../../../../../frontend/src/hooks/useUpload.js#L267-L290)
+- [useGeneratorSessionStream.js:5-11](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L5-L11)
+- [smoke.spec.js:5-23](../../../../../frontend/e2e/smoke.spec.js#L5-L23)
+- [phase4-flows.spec.js:15-18](../../../../../frontend/e2e/phase4-flows.spec.js#L15-L18)
+- [upload-journey.spec.js:18-20](../../../../../frontend/e2e/upload-journey.spec.js#L18-L20)
 
 ## Conclusion
 
@@ -685,9 +685,9 @@ The Playwright E2E suite comprehensively validates the Next.js application's cri
 
 **Section sources**
 
-- [useUpload.js:89-196](file://frontend/src/hooks/useUpload.js#L89-L196)
-- [useGeneratorSessionStream.js:5-11](file://frontend/src/hooks/useGeneratorSessionStream.js#L5-L11)
-- [phase4-flows.spec.js:288-292](file://frontend/e2e/phase4-flows.spec.js#L288-L292)
+- [useUpload.js:89-196](../../../../../frontend/src/hooks/useUpload.js#L89-L196)
+- [useGeneratorSessionStream.js:5-11](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L5-L11)
+- [phase4-flows.spec.js:288-292](../../../../../frontend/e2e/phase4-flows.spec.js#L288-L292)
 
 ### Managing Test Data
 
@@ -700,9 +700,9 @@ The Playwright E2E suite comprehensively validates the Next.js application's cri
 
 **Section sources**
 
-- [smoke.spec.js:5-23](file://frontend/e2e/smoke.spec.js#L5-L23)
-- [phase4-flows.spec.js:4-5](file://frontend/e2e/phase4-flows.spec.js#L4-L5)
-- [phase4-flows.spec.js:105-151](file://frontend/e2e/phase4-flows.spec.js#L105-L151)
+- [smoke.spec.js:5-23](../../../../../frontend/e2e/smoke.spec.js#L5-L23)
+- [phase4-flows.spec.js:4-5](../../../../../frontend/e2e/phase4-flows.spec.js#L4-L5)
+- [phase4-flows.spec.js:105-151](../../../../../frontend/e2e/phase4-flows.spec.js#L105-L151)
 
 ### Browser Compatibility and Responsive Testing
 
@@ -713,7 +713,7 @@ The Playwright E2E suite comprehensively validates the Next.js application's cri
 
 **Section sources**
 
-- [playwright.config.js:32-38](file://frontend/playwright.config.js#L32-L38)
+- [playwright.config.js:32-38](../../../../../frontend/playwright.config.js#L32-L38)
 - [responsive-mobile.spec.js:3-7](file://frontend/e2e/responsive-mobile.spec.js#L3-L7)
 
 ### Performance Testing Scenarios
@@ -735,9 +735,9 @@ The Playwright E2E suite comprehensively validates the Next.js application's cri
 
 **Section sources**
 
-- [phase4-flows.spec.js:7-29](file://frontend/e2e/phase4-flows.spec.js#L7-L29)
-- [phase4-flows.spec.js:288-292](file://frontend/e2e/phase4-flows.spec.js#L288-L292)
-- [e2e-production.yml:50-55](file://.github/workflows/e2e-production.yml#L50-L55)
+- [phase4-flows.spec.js:7-29](../../../../../frontend/e2e/phase4-flows.spec.js#L7-L29)
+- [phase4-flows.spec.js:288-292](../../../../../frontend/e2e/phase4-flows.spec.js#L288-L292)
+- [e2e-production.yml:50-55](../../../../../.github/workflows/e2e-production.yml#L50-L55)
 
 ### Upload Journey Testing Patterns
 
@@ -750,5 +750,5 @@ The Playwright E2E suite comprehensively validates the Next.js application's cri
 
 **Section sources**
 
-- [upload-journey.spec.js:4-46](file://frontend/e2e/upload-journey.spec.js#L4-L46)
-- [upload-journey.spec.js:18-20](file://frontend/e2e/upload-journey.spec.js#L18-L20)
+- [upload-journey.spec.js:4-46](../../../../../frontend/e2e/upload-journey.spec.js#L4-L46)
+- [upload-journey.spec.js:18-20](../../../../../frontend/e2e/upload-journey.spec.js#L18-L20)

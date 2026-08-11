@@ -85,7 +85,7 @@ docker-compose up -d
 - **Star on GitHub** → [github.com/rohitkumarnaidu/ScholarFormAI](https://github.com/rohitkumarnaidu/ScholarFormAI)
 - **Try the Demo** → [scholarform.ai](https://scholarform.ai)
 - **Read the Docs** → See the `docs/` directory for 80+ documentation files
-- **Contribute** → We welcome PRs. See [`CONTRIBUTING.md`](CONTRIBUTING.md) and the [`ROADMAP.md`](docs/Roadmap.md).
+- **Contribute** → We welcome PRs. See [`CONTRIBUTING.md`](../../CONTRIBUTING.md) and the [`ROADMAP.md`](ROADMAP.md).
 - **Report Issues** → [GitHub Issues](https://github.com/rohitkumarnaidu/ScholarFormAI/issues)
 
 ---

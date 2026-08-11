@@ -5,20 +5,20 @@
 
 <cite>
 **Referenced Files in This Document**
-- [__init__.py](file://backend/app/pipeline/safety/__init__.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [llm_validator.py](file://backend/app/pipeline/safety/llm_validator.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [safe_execution.py](file://backend/app/pipeline/safety/safe_execution.py)
-- [validator_guard.py](file://backend/app/pipeline/safety/validator_guard.py)
-- [test_global_safety.py](file://backend/tests/safety/test_global_safety.py)
-- [test_chaos.py](file://backend/tests/safety/test_chaos.py)
-- [monitoring.py](file://backend/app/middleware/monitoring.py)
-- [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
-- [formatter.py](file://backend/app/pipeline/formatting/formatter.py)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
+- [__init__.py](../../../../backend/app/pipeline/safety/__init__.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [llm_validator.py](../../../../backend/app/pipeline/safety/llm_validator.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [safe_execution.py](../../../../backend/app/pipeline/safety/safe_execution.py)
+- [validator_guard.py](../../../../backend/app/pipeline/safety/validator_guard.py)
+- [test_global_safety.py](../../../../backend/tests/safety/test_global_safety.py)
+- [test_chaos.py](../../../../backend/tests/safety/test_chaos.py)
+- [monitoring.py](../../../../backend/app/middleware/monitoring.py)
+- [prometheus_metrics.py](../../../../backend/app/middleware/prometheus_metrics.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [validator_v3.py](../../../../backend/app/pipeline/validation/validator_v3.py)
+- [formatter.py](../../../../backend/app/pipeline/formatting/formatter.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
 </cite>
 
 ## Table of Contents
@@ -75,25 +75,25 @@ PM --> ORCH
 
 **Diagram sources**
 
-- [__init__.py:1-9](file://backend/app/pipeline/safety/__init__.py#L1-L9)
-- [circuit_breaker.py:1-164](file://backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
-- [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
-- [safe_execution.py:1-74](file://backend/app/pipeline/safety/safe_execution.py#L1-L74)
-- [validator_guard.py:1-51](file://backend/app/pipeline/safety/validator_guard.py#L1-L51)
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [orchestrator.py:1-200](file://backend/app/pipeline/orchestrator.py#L1-L200)
-- [semantic_parser.py:1-200](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L200)
-- [validator_v3.py:1-200](file://backend/app/pipeline/validation/validator_v3.py#L1-L200)
-- [formatter.py:1-200](file://backend/app/pipeline/formatting/formatter.py#L1-L200)
+- [**init**.py:1-9](../../../../backend/app/pipeline/safety/__init__.py#L1-L9)
+- [circuit_breaker.py:1-164](../../../../backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
+- [llm_validator.py:1-122](../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [retry_guard.py:1-63](../../../../backend/app/pipeline/safety/retry_guard.py#L1-L63)
+- [safe_execution.py:1-74](../../../../backend/app/pipeline/safety/safe_execution.py#L1-L74)
+- [validator_guard.py:1-51](../../../../backend/app/pipeline/safety/validator_guard.py#L1-L51)
+- [monitoring.py:1-51](../../../../backend/app/middleware/monitoring.py#L1-L51)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [orchestrator.py:1-200](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L1-L200)
+- [semantic_parser.py:1-200](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L1-L200)
+- [validator_v3.py:1-200](../../../../backend/app/pipeline/validation/validator_v3.py#L1-L200)
+- [formatter.py:1-200](../../../../backend/app/pipeline/formatting/formatter.py#L1-L200)
 
 **Section sources**
 
-- [__init__.py:1-9](file://backend/app/pipeline/safety/__init__.py#L1-L9)
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [orchestrator.py:1-200](file://backend/app/pipeline/orchestrator.py#L1-L200)
+- [**init**.py:1-9](../../../../backend/app/pipeline/safety/__init__.py#L1-L9)
+- [monitoring.py:1-51](../../../../backend/app/middleware/monitoring.py#L1-L51)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [orchestrator.py:1-200](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L1-L200)
 
 ## Core Components
 
@@ -107,12 +107,12 @@ These components are exported from the safety package’s init and are widely us
 
 **Section sources**
 
-- [__init__.py:1-9](file://backend/app/pipeline/safety/__init__.py#L1-L9)
-- [circuit_breaker.py:1-164](file://backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
-- [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
-- [safe_execution.py:1-74](file://backend/app/pipeline/safety/safe_execution.py#L1-L74)
-- [validator_guard.py:1-51](file://backend/app/pipeline/safety/validator_guard.py#L1-L51)
+- [**init**.py:1-9](../../../../backend/app/pipeline/safety/__init__.py#L1-L9)
+- [circuit_breaker.py:1-164](../../../../backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
+- [llm_validator.py:1-122](../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [retry_guard.py:1-63](../../../../backend/app/pipeline/safety/retry_guard.py#L1-L63)
+- [safe_execution.py:1-74](../../../../backend/app/pipeline/safety/safe_execution.py#L1-L74)
+- [validator_guard.py:1-51](../../../../backend/app/pipeline/safety/validator_guard.py#L1-L51)
 
 ## Architecture Overview
 
@@ -125,9 +125,9 @@ API["FastAPI App"]
 MON["Monitoring Middleware"]
 PM["Prometheus Metrics"]
 ORCH["PipelineOrchestrator"]
-STAGE["Pipeline Stage (e.g., SemanticParser)"]
+STAGE["Pipeline Stage ("e.g., SemanticParser")"]
 SAFE["Safety Wrappers<br/>Retry/Validator/CB/SafeExec"]
-REMOTE["External Services<br/>(LLM, GROBID)"]
+REMOTE["External Services<br/>("LLM, GROBID")"]
 Client --> API
 API --> MON
 MON --> PM
@@ -139,14 +139,14 @@ SAFE --> REMOTE
 
 **Diagram sources**
 
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [orchestrator.py:1-200](file://backend/app/pipeline/orchestrator.py#L1-L200)
-- [semantic_parser.py:1-200](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L200)
-- [safe_execution.py:1-74](file://backend/app/pipeline/safety/safe_execution.py#L1-L74)
-- [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
-- [circuit_breaker.py:1-164](file://backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [monitoring.py:1-51](../../../../backend/app/middleware/monitoring.py#L1-L51)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [orchestrator.py:1-200](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L1-L200)
+- [semantic_parser.py:1-200](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L1-L200)
+- [safe_execution.py:1-74](../../../../backend/app/pipeline/safety/safe_execution.py#L1-L74)
+- [retry_guard.py:1-63](../../../../backend/app/pipeline/safety/retry_guard.py#L1-L63)
+- [circuit_breaker.py:1-164](../../../../backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
+- [llm_validator.py:1-122](../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
 
 ## Detailed Component Analysis
 
@@ -154,14 +154,14 @@ SAFE --> REMOTE
 
 - Purpose: Protect downstream systems from cascading failures by failing fast when upstream services degrade.
 - Behavior:
-    - Tracks consecutive failures and transitions through CLOSED → HALF_OPEN → OPEN states.
-    - Supports a fallback function to return safe defaults.
-    - Logs state changes and failures for observability.
-    - Provides a thread-safe decorator that can be bound per-instance or shared.
+  - Tracks consecutive failures and transitions through CLOSED → HALF_OPEN → OPEN states.
+  - Supports a fallback function to return safe defaults.
+  - Logs state changes and failures for observability.
+  - Provides a thread-safe decorator that can be bound per-instance or shared.
 - Configuration:
-    - failure_threshold: number of failures to trip the breaker.
-    - recovery_timeout: seconds to wait before attempting recovery.
-    - fallback_function: callable invoked when the breaker is open or on error.
+  - failure_threshold: number of failures to trip the breaker.
+  - recovery_timeout: seconds to wait before attempting recovery.
+  - fallback_function: callable invoked when the breaker is open or on error.
 
 ```mermaid
 stateDiagram-v2
@@ -174,20 +174,20 @@ HALF_OPEN --> OPEN : "any subsequent failure"
 
 **Diagram sources**
 
-- [circuit_breaker.py:24-164](file://backend/app/pipeline/safety/circuit_breaker.py#L24-L164)
+- [circuit_breaker.py:24-164](../../../../backend/app/pipeline/safety/circuit_breaker.py#L24-L164)
 
 **Section sources**
 
-- [circuit_breaker.py:1-164](file://backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
+- [circuit_breaker.py:1-164](../../../../backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
 
 ### LLM Validation and Schema Enforcement
 
 - Purpose: Ensure LLM outputs conform to expected schemas and mitigate hallucinations.
 - Behavior:
-    - Attempts to use Guardrails AI for robust parsing and validation when available.
-    - Falls back to native Pydantic validation and key presence checks.
-    - Handles environments without an event loop by creating a temporary loop for parsing.
-    - Returns a configured error_return_value on validation failure to avoid pipeline crashes.
+  - Attempts to use Guardrails AI for robust parsing and validation when available.
+  - Falls back to native Pydantic validation and key presence checks.
+  - Handles environments without an event loop by creating a temporary loop for parsing.
+  - Returns a configured error_return_value on validation failure to avoid pipeline crashes.
 
 ```mermaid
 flowchart TD
@@ -209,21 +209,21 @@ Return --> End
 
 **Diagram sources**
 
-- [llm_validator.py:46-122](file://backend/app/pipeline/safety/llm_validator.py#L46-L122)
-- [validator_guard.py:10-51](file://backend/app/pipeline/safety/validator_guard.py#L10-L51)
+- [llm_validator.py:46-122](../../../../backend/app/pipeline/safety/llm_validator.py#L46-L122)
+- [validator_guard.py:10-51](../../../../backend/app/pipeline/safety/validator_guard.py#L10-L51)
 
 **Section sources**
 
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
-- [validator_guard.py:1-51](file://backend/app/pipeline/safety/validator_guard.py#L1-L51)
+- [llm_validator.py:1-122](../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [validator_guard.py:1-51](../../../../backend/app/pipeline/safety/validator_guard.py#L1-L51)
 
 ### Retry Guards and Exponential Backoff
 
 - Purpose: Improve resilience against transient failures by retrying operations with exponential backoff.
 - Behavior:
-    - Works for both sync and async functions.
-    - Limits retries by max_retries and computes delay using backoff_factor and exponential growth.
-    - Logs retry attempts and final failure after exhausting retries.
+  - Works for both sync and async functions.
+  - Limits retries by max_retries and computes delay using backoff_factor and exponential growth.
+  - Logs retry attempts and final failure after exhausting retries.
 
 ```mermaid
 flowchart TD
@@ -239,19 +239,19 @@ Sleep --> Try
 
 **Diagram sources**
 
-- [retry_guard.py:10-63](file://backend/app/pipeline/safety/retry_guard.py#L10-L63)
+- [retry_guard.py:10-63](../../../../backend/app/pipeline/safety/retry_guard.py#L10-L63)
 
 **Section sources**
 
-- [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
+- [retry_guard.py:1-63](../../../../backend/app/pipeline/safety/retry_guard.py#L1-L63)
 
 ### Safe Execution Wrappers
 
 - Purpose: Contain exceptions and enable graceful degradation across the pipeline.
 - Behavior:
-    - Context manager logs and suppresses exceptions, optionally returning a provided fallback value.
-    - Decorators (safe_function, safe_async_function) wrap functions to return fallback values on failure.
-    - Used extensively in pipeline stages to prevent single failures from aborting the entire pipeline.
+  - Context manager logs and suppresses exceptions, optionally returning a provided fallback value.
+  - Decorators (safe_function, safe_async_function) wrap functions to return fallback values on failure.
+  - Used extensively in pipeline stages to prevent single failures from aborting the entire pipeline.
 
 ```mermaid
 sequenceDiagram
@@ -267,11 +267,11 @@ Wrap-->>Caller : "Return fallback_value"
 
 **Diagram sources**
 
-- [safe_execution.py:9-74](file://backend/app/pipeline/safety/safe_execution.py#L9-L74)
+- [safe_execution.py:9-74](../../../../backend/app/pipeline/safety/safe_execution.py#L9-L74)
 
 **Section sources**
 
-- [safe_execution.py:1-74](file://backend/app/pipeline/safety/safe_execution.py#L1-L74)
+- [safe_execution.py:1-74](../../../../backend/app/pipeline/safety/safe_execution.py#L1-L74)
 
 ### Integration Examples Across Pipeline Stages
 
@@ -310,34 +310,34 @@ LLMValidator <.. Orchestrator : "used in LLM flows"
 
 **Diagram sources**
 
-- [safe_execution.py:1-74](file://backend/app/pipeline/safety/safe_execution.py#L1-L74)
-- [circuit_breaker.py:1-164](file://backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
-- [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
-- [validator_guard.py:1-51](file://backend/app/pipeline/safety/validator_guard.py#L1-L51)
-- [semantic_parser.py:106-159](file://backend/app/pipeline/intelligence/semantic_parser.py#L106-L159)
-- [validator_v3.py:62-145](file://backend/app/pipeline/validation/validator_v3.py#L62-L145)
-- [formatter.py:49-130](file://backend/app/pipeline/formatting/formatter.py#L49-L130)
-- [orchestrator.py:59-62](file://backend/app/pipeline/orchestrator.py#L59-L62)
+- [safe_execution.py:1-74](../../../../backend/app/pipeline/safety/safe_execution.py#L1-L74)
+- [circuit_breaker.py:1-164](../../../../backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
+- [retry_guard.py:1-63](../../../../backend/app/pipeline/safety/retry_guard.py#L1-L63)
+- [llm_validator.py:1-122](../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [validator_guard.py:1-51](../../../../backend/app/pipeline/safety/validator_guard.py#L1-L51)
+- [semantic_parser.py:106-159](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L106-L159)
+- [validator_v3.py:62-145](../../../../backend/app/pipeline/validation/validator_v3.py#L62-L145)
+- [formatter.py:49-130](../../../../backend/app/pipeline/formatting/formatter.py#L49-L130)
+- [orchestrator.py:59-62](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L59-L62)
 
 **Section sources**
 
-- [semantic_parser.py:106-159](file://backend/app/pipeline/intelligence/semantic_parser.py#L106-L159)
-- [validator_v3.py:62-145](file://backend/app/pipeline/validation/validator_v3.py#L62-L145)
-- [formatter.py:49-130](file://backend/app/pipeline/formatting/formatter.py#L49-L130)
-- [orchestrator.py:59-62](file://backend/app/pipeline/orchestrator.py#L59-L62)
+- [semantic_parser.py:106-159](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L106-L159)
+- [validator_v3.py:62-145](../../../../backend/app/pipeline/validation/validator_v3.py#L62-L145)
+- [formatter.py:49-130](../../../../backend/app/pipeline/formatting/formatter.py#L49-L130)
+- [orchestrator.py:59-62](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L59-L62)
 
 ## Dependency Analysis
 
 - Internal dependencies:
-    - Safety wrappers are imported and used by pipeline stages (semantic_parser, validator_v3, formatter).
-    - Orchestrator imports retry and safe_execution utilities for robust orchestration.
+  - Safety wrappers are imported and used by pipeline stages (semantic_parser, validator_v3, formatter).
+  - Orchestrator imports retry and safe_execution utilities for robust orchestration.
 - External dependencies:
-    - pybreaker is used when available for thread-safe circuit breaking; otherwise a legacy implementation is used.
-    - Guardrails AI is conditionally imported for LLM validation; fallbacks are provided when unavailable.
+  - pybreaker is used when available for thread-safe circuit breaking; otherwise a legacy implementation is used.
+  - Guardrails AI is conditionally imported for LLM validation; fallbacks are provided when unavailable.
 - Observability:
-    - Monitoring middleware logs request lifecycle and attaches request IDs.
-    - Prometheus metrics middleware defines counters and histograms for pipeline and agent metrics.
+  - Monitoring middleware logs request lifecycle and attaches request IDs.
+  - Prometheus metrics middleware defines counters and histograms for pipeline and agent metrics.
 
 ```mermaid
 graph LR
@@ -356,63 +356,63 @@ PROM --> ORCH
 
 **Diagram sources**
 
-- [__init__.py:1-9](file://backend/app/pipeline/safety/__init__.py#L1-L9)
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [orchestrator.py:1-200](file://backend/app/pipeline/orchestrator.py#L1-L200)
-- [semantic_parser.py:1-200](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L200)
-- [validator_v3.py:1-200](file://backend/app/pipeline/validation/validator_v3.py#L1-L200)
-- [formatter.py:1-200](file://backend/app/pipeline/formatting/formatter.py#L1-L200)
+- [**init**.py:1-9](../../../../backend/app/pipeline/safety/__init__.py#L1-L9)
+- [monitoring.py:1-51](../../../../backend/app/middleware/monitoring.py#L1-L51)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [orchestrator.py:1-200](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L1-L200)
+- [semantic_parser.py:1-200](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L1-L200)
+- [validator_v3.py:1-200](../../../../backend/app/pipeline/validation/validator_v3.py#L1-L200)
+- [formatter.py:1-200](../../../../backend/app/pipeline/formatting/formatter.py#L1-L200)
 
 **Section sources**
 
-- [__init__.py:1-9](file://backend/app/pipeline/safety/__init__.py#L1-L9)
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [orchestrator.py:1-200](file://backend/app/pipeline/orchestrator.py#L1-L200)
+- [**init**.py:1-9](../../../../backend/app/pipeline/safety/__init__.py#L1-L9)
+- [monitoring.py:1-51](../../../../backend/app/middleware/monitoring.py#L1-L51)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [orchestrator.py:1-200](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L1-L200)
 
 ## Performance Considerations
 
 - Circuit Breaker:
-    - Tuning failure_threshold and recovery_timeout impacts latency and throughput. Lower thresholds reduce risk but increase false positives; higher thresholds improve availability but delay recovery.
+  - Tuning failure_threshold and recovery_timeout impacts latency and throughput. Lower thresholds reduce risk but increase false positives; higher thresholds improve availability but delay recovery.
 - Retry Guards:
-    - Excessive retries increase load on upstream services. Use conservative max_retries and backoff_factor to balance reliability and resource usage.
+  - Excessive retries increase load on upstream services. Use conservative max_retries and backoff_factor to balance reliability and resource usage.
 - Safe Execution:
-    - Logging and exception suppression add overhead. Prefer targeted safe_execution blocks around expensive operations.
+  - Logging and exception suppression add overhead. Prefer targeted safe_execution blocks around expensive operations.
 - LLM Validation:
-    - Guardrails parsing adds CPU overhead. Consider disabling Guardrails in performance-critical paths and rely on validator_guard fallback.
+  - Guardrails parsing adds CPU overhead. Consider disabling Guardrails in performance-critical paths and rely on validator_guard fallback.
 - Observability:
-    - Logging and metrics introduce I/O overhead. Ensure batching and efficient sinks for production deployments.
+  - Logging and metrics introduce I/O overhead. Ensure batching and efficient sinks for production deployments.
 
 [No sources needed since this section provides general guidance]
 
 ## Troubleshooting Guide
 
 - Circuit Breaker Open:
-    - Symptoms: Calls return fallback or raise CircuitBreakerOpenException.
-    - Actions: Inspect upstream service health, reduce load, adjust thresholds, or disable fallback temporarily for diagnostics.
-    - Evidence: Logs show breaker state changes and failure counts.
+  - Symptoms: Calls return fallback or raise CircuitBreakerOpenException.
+  - Actions: Inspect upstream service health, reduce load, adjust thresholds, or disable fallback temporarily for diagnostics.
+  - Evidence: Logs show breaker state changes and failure counts.
 - LLM Validation Failures:
-    - Symptoms: Empty or malformed outputs returned.
-    - Actions: Verify schema correctness, enable Guardrails AI, or relax validator rules for debugging.
-    - Evidence: Logs indicate Guardrails parse failures or schema mismatches.
+  - Symptoms: Empty or malformed outputs returned.
+  - Actions: Verify schema correctness, enable Guardrails AI, or relax validator rules for debugging.
+  - Evidence: Logs indicate Guardrails parse failures or schema mismatches.
 - Retry Exhaustion:
-    - Symptoms: Final error after max_retries.
-    - Actions: Increase max_retries, tune backoff_factor, or add jitter; investigate upstream instability.
+  - Symptoms: Final error after max_retries.
+  - Actions: Increase max_retries, tune backoff_factor, or add jitter; investigate upstream instability.
 - Safe Execution Suppression:
-    - Symptoms: Silent failures without visible errors.
-    - Actions: Temporarily remove safe_execution wrappers to surface exceptions; confirm fallback values are appropriate.
+  - Symptoms: Silent failures without visible errors.
+  - Actions: Temporarily remove safe_execution wrappers to surface exceptions; confirm fallback values are appropriate.
 - Monitoring and Metrics:
-    - Use monitoring middleware logs to correlate request IDs with pipeline stages and Prometheus metrics to identify hotspots.
+  - Use monitoring middleware logs to correlate request IDs with pipeline stages and Prometheus metrics to identify hotspots.
 
 **Section sources**
 
-- [circuit_breaker.py:24-164](file://backend/app/pipeline/safety/circuit_breaker.py#L24-L164)
-- [llm_validator.py:46-122](file://backend/app/pipeline/safety/llm_validator.py#L46-L122)
-- [retry_guard.py:10-63](file://backend/app/pipeline/safety/retry_guard.py#L10-L63)
-- [safe_execution.py:9-74](file://backend/app/pipeline/safety/safe_execution.py#L9-L74)
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [circuit_breaker.py:24-164](../../../../backend/app/pipeline/safety/circuit_breaker.py#L24-L164)
+- [llm_validator.py:46-122](../../../../backend/app/pipeline/safety/llm_validator.py#L46-L122)
+- [retry_guard.py:10-63](../../../../backend/app/pipeline/safety/retry_guard.py#L10-L63)
+- [safe_execution.py:9-74](../../../../backend/app/pipeline/safety/safe_execution.py#L9-L74)
+- [monitoring.py:1-51](../../../../backend/app/middleware/monitoring.py#L1-L51)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
 
 ## Conclusion
 
@@ -425,50 +425,50 @@ The pipeline safety subsystem provides layered resilience through circuit breake
 ### Safety Configuration Examples
 
 - Circuit Breaker:
-    - Configure failure_threshold and recovery_timeout per service stability.
-    - Provide fallback_function to return safe defaults.
+  - Configure failure_threshold and recovery_timeout per service stability.
+  - Provide fallback_function to return safe defaults.
 - LLM Validator:
-    - Define schema using Pydantic models; set error_return_value for degraded outputs.
-    - Enable Guardrails AI when available for stricter validation.
+  - Define schema using Pydantic models; set error_return_value for degraded outputs.
+  - Enable Guardrails AI when available for stricter validation.
 - Retry Guard:
-    - Set max_retries and backoff_factor according to upstream SLAs.
-    - Use execute_with_retry for dynamic retry scenarios.
+  - Set max_retries and backoff_factor according to upstream SLAs.
+  - Use execute_with_retry for dynamic retry scenarios.
 - Safe Execution:
-    - Use safe_execution context manager around risky blocks.
-    - Apply safe_function/safe_async_function to functions that must not crash the pipeline.
+  - Use safe_execution context manager around risky blocks.
+  - Apply safe_function/safe_async_function to functions that must not crash the pipeline.
 
 **Section sources**
 
-- [circuit_breaker.py:29-97](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L97)
-- [llm_validator.py:46-122](file://backend/app/pipeline/safety/llm_validator.py#L46-L122)
-- [retry_guard.py:10-63](file://backend/app/pipeline/safety/retry_guard.py#L10-L63)
-- [safe_execution.py:9-74](file://backend/app/pipeline/safety/safe_execution.py#L9-L74)
+- [circuit_breaker.py:29-97](../../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L97)
+- [llm_validator.py:46-122](../../../../backend/app/pipeline/safety/llm_validator.py#L46-L122)
+- [retry_guard.py:10-63](../../../../backend/app/pipeline/safety/retry_guard.py#L10-L63)
+- [safe_execution.py:9-74](../../../../backend/app/pipeline/safety/safe_execution.py#L9-L74)
 
 ### Integration with Monitoring and Alerting
 
 - Monitoring Middleware:
-    - Generates request IDs, logs start/completion/failure, and attaches processing time headers.
+  - Generates request IDs, logs start/completion/failure, and attaches processing time headers.
 - Prometheus Metrics:
-    - Defines counters and histograms for pipeline requests, durations, agent retries, LLM usage, and queue depths.
-    - MetricsManager records pipeline events and stage durations.
+  - Defines counters and histograms for pipeline requests, durations, agent retries, LLM usage, and queue depths.
+  - MetricsManager records pipeline events and stage durations.
 
 **Section sources**
 
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [monitoring.py:1-51](../../../../backend/app/middleware/monitoring.py#L1-L51)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
 
 ### Practical Usage Patterns Observed in Tests
 
 - Global Safety Tests:
-    - Verify safe_execution context manager suppresses exceptions.
-    - Verify safe_function and safe_async_function return fallback values.
-    - Validate that pipeline stages (SemanticParser, RagEngine, DocumentAgent, DoclingClient, etc.) degrade gracefully.
+  - Verify safe_execution context manager suppresses exceptions.
+  - Verify safe_function and safe_async_function return fallback values.
+  - Validate that pipeline stages (SemanticParser, RagEngine, DocumentAgent, DoclingClient, etc.) degrade gracefully.
 - Chaos Tests:
-    - Confirm circuit breaker activates after repeated failures and returns fallbacks.
-    - Validate that validator guard suppresses malformed JSON from LLM responses.
-    - Demonstrate safe_execution catching unexpected crashes in orchestrator blocks.
+  - Confirm circuit breaker activates after repeated failures and returns fallbacks.
+  - Validate that validator guard suppresses malformed JSON from LLM responses.
+  - Demonstrate safe_execution catching unexpected crashes in orchestrator blocks.
 
 **Section sources**
 
-- [test_global_safety.py:1-229](file://backend/tests/safety/test_global_safety.py#L1-L229)
-- [test_chaos.py:1-69](file://backend/tests/safety/test_chaos.py#L1-L69)
+- [test_global_safety.py:1-229](../../../../backend/tests/safety/test_global_safety.py#L1-L229)
+- [test_chaos.py:1-69](../../../../backend/tests/safety/test_chaos.py#L1-L69)

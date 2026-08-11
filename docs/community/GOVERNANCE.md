@@ -80,7 +80,7 @@ Disagreements within the project should be escalated through these steps:
 
 ## Release Process
 
-See [RELEASE_PROCESS.md](RELEASE_PROCESS.md) for versioning, release scheduling, and publishing procedures.
+See [RELEASE_PROCESS.md](../deployment/RELEASE_PROCESS.md) for versioning, release scheduling, and publishing procedures.
 
 ## Charter
 

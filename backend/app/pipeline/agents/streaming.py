@@ -7,7 +7,8 @@ Streaming callback handler for real-time agent updates.
 
 import logging
 import sys
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 if sys.version_info < (3, 14):
     try:

@@ -412,18 +412,18 @@ class TestDoclingClientModule:
         assert DOCLING_AVAILABLE is not None
 
     def test_docling_enabled_settings(self):
-        with patch("app.pipeline.services.docling_client.settings.USE_DOCLING_FALLBACK", True):
+        with patch("app.pipeline.services.docling_client.settings.USE_DOCLING_FALLBACK", True, create=True):
             with patch("app.pipeline.services.docling_client.settings.LOW_MEMORY_MODE", False):
                 from app.pipeline.services.docling_client import _docling_enabled
                 assert _docling_enabled() is True
 
     def test_docling_disabled_by_setting(self):
-        with patch("app.pipeline.services.docling_client.settings.USE_DOCLING_FALLBACK", False):
+        with patch("app.pipeline.services.docling_client.settings.USE_DOCLING_FALLBACK", False, create=True):
             from app.pipeline.services.docling_client import _docling_enabled
             assert _docling_enabled() is False
 
     def test_docling_disabled_low_memory(self):
-        with patch("app.pipeline.services.docling_client.settings.USE_DOCLING_FALLBACK", True):
+        with patch("app.pipeline.services.docling_client.settings.USE_DOCLING_FALLBACK", True, create=True):
             with patch("app.pipeline.services.docling_client.settings.LOW_MEMORY_MODE", True):
                 from app.pipeline.services.docling_client import _docling_enabled
                 assert _docling_enabled() is False

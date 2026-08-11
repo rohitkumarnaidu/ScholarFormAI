@@ -37,52 +37,52 @@ The diagram below illustrates the end-to-end system topology of ScholarForm AI, 
 ```mermaid
 graph TB
     subgraph Clients["Clients & SDK Layer"]
-        NextJS["Next.js 16 Web App<br/>(App Router / React 19)"]
-        CLI["Python Click CLI<br/>(amf CLI Tool)"]
-        SDK["Python SDK Clients<br/>(AMFClient & AsyncAMFClient)"]
+        NextJS["Next.js 16 Web App<br/>("App Router / React 19")"]
+        CLI["Python Click CLI<br/>("amf CLI Tool")"]
+        SDK["Python SDK Clients<br/>("AMFClient & AsyncAMFClient")"]
     end
 
     subgraph Gateway["Gateway & Security Middleware"]
-        AuthMiddleware["JWKS JWT Authenticator<br/>(Supabase Auth Verification)"]
-        CORS["CORS & Security Headers<br/>(HSTS, CSP, Strict Origin)"]
-        RateLimiter["Rate Limiter & Quota Engine<br/>(Per-Minute & Daily Limits)"]
-        ClamAV["ClamAV Antivirus Scanner<br/>(Malware Upload Filter)"]
+        AuthMiddleware["JWKS JWT Authenticator<br/>("Supabase Auth Verification")"]
+        CORS["CORS & Security Headers<br/>("HSTS, CSP, Strict Origin")"]
+        RateLimiter["Rate Limiter & Quota Engine<br/>("Per-Minute & Daily Limits")"]
+        ClamAV["ClamAV Antivirus Scanner<br/>("Malware Upload Filter")"]
     end
 
     subgraph Routers["FastAPI Router Aggregator - /api/v1"]
 
-        DocsRouter["/documents Router<br/>(Upload, Format, Export, Shares)"]
-        GenRouter["/generator Router<br/>(AI Sessions, Messages, RAG)"]
-        SynthRouter["/synthesis Router<br/>(Multi-Doc RAG Synthesis)"]
-        CitationRouter["/citations Router<br/>(CSL Search & CrossRef Lookup)"]
-        WebhookRouter["/webhooks Router<br/>(Subscriptions & Delivery Logs)"]
-        AdminRouter["/users & /api-keys Router<br/>(User Management & Key Encryption)"]
+        DocsRouter["/documents Router<br/>("Upload, Format, Export, Shares")"]
+        GenRouter["/generator Router<br/>("AI Sessions, Messages, RAG")"]
+        SynthRouter["/synthesis Router<br/>("Multi-Doc RAG Synthesis")"]
+        CitationRouter["/citations Router<br/>("CSL Search & CrossRef Lookup")"]
+        WebhookRouter["/webhooks Router<br/>("Subscriptions & Delivery Logs")"]
+        AdminRouter["/users & /api-keys Router<br/>("User Management & Key Encryption")"]
     end
 
     subgraph Services["Core Service & Processing Layer"]
-        PipelineSvc["Document Pipeline Service<br/>(PipelineOrchestrator Coordination)"]
-        GenSvc["Generator Session Service<br/>(Outline & Interactive Authoring)"]
-        SynthSvc["Multi-Doc Synthesis Service<br/>(RAG Vector Context Merging)"]
-        CitationSvc["Citation Assembly & CSL Engine<br/>(CrossRef Lookup & CSL Formatting)"]
-        LLMFallback["4-Tier LLM Fallback Service<br/>(NVIDIA NIM -> Groq -> OpenRouter -> Ollama)"]
-        AuditSvc["Audit Log & Security Service<br/>(Event Logging & Activity Tracking)"]
-        PreviewRenderer["Preview Renderer Service<br/>(HTML/CSS Real-Time Styling)"]
-        CeleryWorkers["Celery Background Workers<br/>(Async Processing Pipeline)"]
+        PipelineSvc["Document Pipeline Service<br/>("PipelineOrchestrator Coordination")"]
+        GenSvc["Generator Session Service<br/>("Outline & Interactive Authoring")"]
+        SynthSvc["Multi-Doc Synthesis Service<br/>("RAG Vector Context Merging")"]
+        CitationSvc["Citation Assembly & CSL Engine<br/>("CrossRef Lookup & CSL Formatting")"]
+        LLMFallback["4-Tier LLM Fallback Service<br/>("NVIDIA NIM -> Groq -> OpenRouter -> Ollama")"]
+        AuditSvc["Audit Log & Security Service<br/>("Event Logging & Activity Tracking")"]
+        PreviewRenderer["Preview Renderer Service<br/>("HTML/CSS Real-Time Styling")"]
+        CeleryWorkers["Celery Background Workers<br/>("Async Processing Pipeline")"]
     end
 
     subgraph Persistence["Persistence & State Layer"]
-        SupabasePG[("Supabase PostgreSQL<br/>(12 Relational Tables + RLS Policies)")]
-        RedisCache[("Redis 7.x Cache & Broker<br/>(Celery Queue, Cache, Rate Limits)")]
-        ChromaVector[("ChromaDB Vector Store<br/>(BGE-M3 & MiniLM Embeddings)")]
+        SupabasePG[("Supabase PostgreSQL<br/>("12 Relational Tables + RLS Policies")")]
+        RedisCache[("Redis 7.x Cache & Broker<br/>("Celery Queue, Cache, Rate Limits")")]
+        ChromaVector[("ChromaDB Vector Store<br/>("BGE-M3 & MiniLM Embeddings")")]
     end
 
     subgraph External["External Services & AI Providers"]
-        GROBID["GROBID Microservice (Docker)<br/>(TEI XML Metadata Parser)"]
-        CrossRef["CrossRef REST API<br/>(DOI Citation Validation)"]
-        NVIDIA["NVIDIA NIM API (Tier 1)<br/>(Llama 3.3 70B Instruct)"]
-        Groq["Groq API (Tier 2)<br/>(llama-3.3-70b-versatile)"]
-        OpenRouter["OpenRouter API (Tier 3)<br/>(Multi-Model Fallback)"]
-        Ollama["Ollama / DeepSeek (Tier 4)<br/>(Local / Self-Hosted R1)"]
+        GROBID["GROBID Microservice (Docker)<br/>("TEI XML Metadata Parser")"]
+        CrossRef["CrossRef REST API<br/>("DOI Citation Validation")"]
+        NVIDIA["NVIDIA NIM API ("Tier 1")<br/>("Llama 3.3 70B Instruct")"]
+        Groq["Groq API ("Tier 2")<br/>(llama-3.3-70b-versatile)"]
+        OpenRouter["OpenRouter API ("Tier 3")<br/>("Multi-Model Fallback")"]
+        Ollama["Ollama / DeepSeek ("Tier 4")<br/>("Local / Self-Hosted R1")"]
     end
 
     NextJS --> AuthMiddleware
@@ -175,7 +175,7 @@ flowchart TD
     L1["🔒 Layer 1 — Network Boundary\nTLS 1.3 · HSTS · Strict CORS · CSP Headers"]
     L2["🛡️ Layer 2 — Gateway Security\nClamAV Antivirus · Magic-Byte Inspection · Rate Limiter"]
     L3["🔑 Layer 3 — Authentication Boundary\nSupabase JWKS JWT Verification · Fernet AES-256 Key Encryption"]
-    L4["👤 Layer 4 — Authorization Boundary\nApplication RBAC (Free / Pro / Admin tiers)"]
+    L4["👤 Layer 4 — Authorization Boundary\nApplication RBAC ("Free / Pro / Admin tiers")"]
     L5["🗄️ Layer 5 — Data Boundary\nPostgreSQL Row Level Security — auth.uid() = user_id"]
     App(["✅ Authorized Service Handler"])
 
@@ -236,7 +236,7 @@ sequenceDiagram
     participant SSE as "SSE Event Stream"
 
     User->>GW: POST /api/v1/documents/upload
-    GW->>ClamAV: Scan payload (magic-byte + antivirus)
+    GW->>ClamAV: Scan payload ("magic-byte + antivirus")
     ClamAV-->>GW: ✅ Clean Attestation
     GW->>DB: INSERT documents (status=PROCESSING)
     GW-->>User: 202 Accepted { job_id }
@@ -246,7 +246,7 @@ sequenceDiagram
         Celery->>GROBID: Extract TEI XML + text blocks
         GROBID-->>Celery: Extracted content + metadata
         Celery->>Celery: Structure detection + heading discovery
-        Celery->>Celery: Block classification (LLM + heuristics)
+        Celery->>Celery: Block classification ("LLM + heuristics")
         Celery->>Celery: Citation extraction + CrossRef enrichment
         Celery->>Celery: Rule validation + quality scoring
         Celery->>Formatter: Apply publisher style (python-docx)
@@ -276,11 +276,11 @@ sequenceDiagram
     participant DB as "Supabase PostgreSQL"
 
     User->>API: POST /api/v1/generator/sessions { prompt }
-    API->>RAG: Retrieve Top-K context chunks (BGE-M3 similarity)
+    API->>RAG: Retrieve Top-K context chunks ("BGE-M3 similarity")
     RAG-->>API: Publisher guidelines + session history
     API->>LLM: Generate with in-context RAG prompt
 
-    LLM->>NVIDIA: Request (Llama 3.3 70B Instruct)
+    LLM->>NVIDIA: Request ("Llama 3.3 70B Instruct")
     alt NVIDIA success
         NVIDIA-->>LLM: ✅ Generated text
     else NVIDIA rate limit / error
@@ -332,7 +332,7 @@ sequenceDiagram
 - [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) — Subsystem detailed design, RAG flowcharts, and CSL engine logic.
 - [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md) — Complete 12-table PostgreSQL schema, ERD, and RLS policies.
 - [PIPELINE.md](PIPELINE.md) — 12-Stage Document Processing Pipeline sequence diagram and breakdown.
-- [API_REFERENCE.md](API_REFERENCE.md) — REST API endpoint specification.
+- [API_REFERENCE.md](../api/API_REFERENCE.md) — REST API endpoint specification.
 
 ---
 

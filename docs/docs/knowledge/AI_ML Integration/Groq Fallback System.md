@@ -5,14 +5,14 @@
 
 <cite>
 **Referenced Files in This Document**
-- [llm_service.py](file://backend/app/services/llm_service.py)
-- [nvidia_client.py](file://backend/app/services/nvidia_client.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [.env.example](file://backend/.env.example)
-- [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
-- [model_metrics.py](file://backend/app/services/model_metrics.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
+- [nvidia_client.py](../../../../backend/app/services/nvidia_client.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [.env.example](../../../../backend/.env.example)
+- [prometheus_metrics.py](../../../../backend/app/middleware/prometheus_metrics.py)
+- [model_metrics.py](../../../../backend/app/services/model_metrics.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
 </cite>
 
 ## Table of Contents
@@ -42,7 +42,7 @@ The fallback system spans three primary layers:
 ```mermaid
 graph TB
 subgraph "Configuration"
-Settings["Settings (environment variables)"]
+Settings["Settings ("environment variables")"]
 EnvExample[".env.example (defaults)"]
 end
 subgraph "Unified LLM Layer"
@@ -69,25 +69,25 @@ ReasoningEngine --> NvidiaClient
 
 **Diagram sources**
 
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [nvidia_client.py:1-260](file://backend/app/services/nvidia_client.py#L1-L260)
-- [settings.py:146-149](file://backend/app/config/settings.py#L146-L149)
-- [.env.example:53-55](file://backend/.env.example#L53-L55)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
-- [model_metrics.py:23-209](file://backend/app/services/model_metrics.py#L23-L209)
-- [reasoning_engine.py:83-176](file://backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
-- [circuit_breaker.py:29-163](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L163)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [nvidia_client.py:1-260](../../../../backend/app/services/nvidia_client.py#L1-L260)
+- [settings.py:146-149](../../../../backend/app/config/settings.py#L146-L149)
+- [.env.example:53-55](../../../../backend/.env.example#L53-L55)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [model_metrics.py:23-209](../../../../backend/app/services/model_metrics.py#L23-L209)
+- [reasoning_engine.py:83-176](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
+- [circuit_breaker.py:29-163](../../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L163)
 
 **Section sources**
 
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [nvidia_client.py:1-260](file://backend/app/services/nvidia_client.py#L1-L260)
-- [settings.py:146-149](file://backend/app/config/settings.py#L146-L149)
-- [.env.example:53-55](file://backend/.env.example#L53-L55)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
-- [model_metrics.py:23-209](file://backend/app/services/model_metrics.py#L23-L209)
-- [reasoning_engine.py:83-176](file://backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
-- [circuit_breaker.py:29-163](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L163)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [nvidia_client.py:1-260](../../../../backend/app/services/nvidia_client.py#L1-L260)
+- [settings.py:146-149](../../../../backend/app/config/settings.py#L146-L149)
+- [.env.example:53-55](../../../../backend/.env.example#L53-L55)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [model_metrics.py:23-209](../../../../backend/app/services/model_metrics.py#L23-L209)
+- [reasoning_engine.py:83-176](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
+- [circuit_breaker.py:29-163](../../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L163)
 
 ## Core Components
 
@@ -106,11 +106,11 @@ Key responsibilities:
 
 **Section sources**
 
-- [llm_service.py:205-269](file://backend/app/services/llm_service.py#L205-L269)
-- [llm_service.py:91-203](file://backend/app/services/llm_service.py#L91-L203)
-- [settings.py:342-349](file://backend/app/config/settings.py#L342-L349)
-- [prometheus_metrics.py:174-191](file://backend/app/middleware/prometheus_metrics.py#L174-L191)
-- [model_metrics.py:60-99](file://backend/app/services/model_metrics.py#L60-L99)
+- [llm_service.py:205-269](../../../../backend/app/services/llm_service.py#L205-L269)
+- [llm_service.py:91-203](../../../../backend/app/services/llm_service.py#L91-L203)
+- [settings.py:342-349](../../../../backend/app/config/settings.py#L342-L349)
+- [prometheus_metrics.py:174-191](../../../../backend/app/middleware/prometheus_metrics.py#L174-L191)
+- [model_metrics.py:60-99](../../../../backend/app/services/model_metrics.py#L60-L99)
 
 ## Architecture Overview
 
@@ -131,14 +131,14 @@ participant Groq as "Groq"
 participant Ollama as "Ollama (DeepSeek)"
 participant Metrics as "MetricsManager"
 Caller->>LLM : "messages, temperature, max_tokens"
-LLM->>Nvidia : "Try NVIDIA (key present?)"
+LLM->>Nvidia : "Try NVIDIA ("key present?")"
 alt NVIDIA succeeds
 Nvidia-->>LLM : "text"
 LLM-->>Caller : "{text, model : NVIDIA, tier : 1}"
 LLM->>Metrics : "record_llm_failure('nvidia')"
 else NVIDIA fails
 LLM->>Metrics : "record_llm_failure('nvidia')"
-LLM->>Groq : "Try Groq (key present?)"
+LLM->>Groq : "Try Groq ("key present?")"
 alt Groq succeeds
 Groq-->>LLM : "text"
 LLM-->>Caller : "{text, model : Groq, tier : 2}"
@@ -158,13 +158,13 @@ end
 
 **Diagram sources**
 
-- [llm_service.py:205-269](file://backend/app/services/llm_service.py#L205-L269)
-- [prometheus_metrics.py:174-175](file://backend/app/middleware/prometheus_metrics.py#L174-L175)
+- [llm_service.py:205-269](../../../../backend/app/services/llm_service.py#L205-L269)
+- [prometheus_metrics.py:174-175](../../../../backend/app/middleware/prometheus_metrics.py#L174-L175)
 
 **Section sources**
 
-- [llm_service.py:205-269](file://backend/app/services/llm_service.py#L205-L269)
-- [prometheus_metrics.py:174-175](file://backend/app/middleware/prometheus_metrics.py#L174-L175)
+- [llm_service.py:205-269](../../../../backend/app/services/llm_service.py#L205-L269)
+- [prometheus_metrics.py:174-175](../../../../backend/app/middleware/prometheus_metrics.py#L174-L175)
 
 ## Detailed Component Analysis
 
@@ -205,14 +205,14 @@ OllamaOK --> |No| RecordOllamaFail["Metrics.record_llm_failure('ollama')"] --> R
 
 **Diagram sources**
 
-- [llm_service.py:205-269](file://backend/app/services/llm_service.py#L205-L269)
-- [prometheus_metrics.py:174-175](file://backend/app/middleware/prometheus_metrics.py#L174-L175)
+- [llm_service.py:205-269](../../../../backend/app/services/llm_service.py#L205-L269)
+- [prometheus_metrics.py:174-175](../../../../backend/app/middleware/prometheus_metrics.py#L174-L175)
 
 **Section sources**
 
-- [llm_service.py:205-269](file://backend/app/services/llm_service.py#L205-L269)
-- [llm_service.py:91-203](file://backend/app/services/llm_service.py#L91-L203)
-- [prometheus_metrics.py:174-191](file://backend/app/middleware/prometheus_metrics.py#L174-L191)
+- [llm_service.py:205-269](../../../../backend/app/services/llm_service.py#L205-L269)
+- [llm_service.py:91-203](../../../../backend/app/services/llm_service.py#L91-L203)
+- [prometheus_metrics.py:174-191](../../../../backend/app/middleware/prometheus_metrics.py#L174-L191)
 
 ### NVIDIA Client (Primary Provider)
 
@@ -229,34 +229,34 @@ Integration highlights:
 
 **Section sources**
 
-- [nvidia_client.py:30-140](file://backend/app/services/nvidia_client.py#L30-L140)
-- [nvidia_client.py:143-243](file://backend/app/services/nvidia_client.py#L143-L243)
+- [nvidia_client.py:30-140](../../../../backend/app/services/nvidia_client.py#L30-L140)
+- [nvidia_client.py:143-243](../../../../backend/app/services/nvidia_client.py#L143-L243)
 
 ### Configuration Parameters
 
 Environment-driven configuration enables flexible provider selection and behavior:
 
 - NVIDIA
-    - NVIDIA_API_KEY: Enables NVIDIA tier
-    - NVIDIA_MODEL: Model identifier for NVIDIA NIM
+  - NVIDIA_API_KEY: Enables NVIDIA tier
+  - NVIDIA_MODEL: Model identifier for NVIDIA NIM
 - Groq
-    - GROQ_API_KEY: Enables Groq tier
-    - GROQ_MODEL: Model identifier for Groq
-    - GROQ_API_BASE: Base URL for Groq
+  - GROQ_API_KEY: Enables Groq tier
+  - GROQ_MODEL: Model identifier for Groq
+  - GROQ_API_BASE: Base URL for Groq
 - Ollama
-    - OLLAMA_BASE_URL: Base URL for Ollama
+  - OLLAMA_BASE_URL: Base URL for Ollama
 - General
-    - LLM_CACHE_TTL_SECONDS: Cache TTL for LLM responses
-    - PIPELINE_REASONING_TIMEOUT_SECONDS: Timeout for reasoning operations
+  - LLM_CACHE_TTL_SECONDS: Cache TTL for LLM responses
+  - PIPELINE_REASONING_TIMEOUT_SECONDS: Timeout for reasoning operations
 
 Defaults and examples are provided in the environment template.
 
 **Section sources**
 
-- [settings.py:146-149](file://backend/app/config/settings.py#L146-L149)
-- [settings.py:342-349](file://backend/app/config/settings.py#L342-L349)
-- [.env.example:53-55](file://backend/.env.example#L53-L55)
-- [settings.py:164-173](file://backend/app/config/settings.py#L164-L173)
+- [settings.py:146-149](../../../../backend/app/config/settings.py#L146-L149)
+- [settings.py:342-349](../../../../backend/app/config/settings.py#L342-L349)
+- [.env.example:53-55](../../../../backend/.env.example#L53-L55)
+- [settings.py:164-173](../../../../backend/app/config/settings.py#L164-L173)
 
 ### Timeout Handling and Caching
 
@@ -267,9 +267,9 @@ Defaults and examples are provided in the environment template.
 
 **Section sources**
 
-- [llm_service.py:96-99](file://backend/app/services/llm_service.py#L96-L99)
-- [llm_service.py:120-141](file://backend/app/services/llm_service.py#L120-L141)
-- [prometheus_metrics.py:178-191](file://backend/app/middleware/prometheus_metrics.py#L178-L191)
+- [llm_service.py:96-99](../../../../backend/app/services/llm_service.py#L96-L99)
+- [llm_service.py:120-141](../../../../backend/app/services/llm_service.py#L120-L141)
+- [prometheus_metrics.py:178-191](../../../../backend/app/middleware/prometheus_metrics.py#L178-L191)
 
 ### Error Recovery Mechanisms
 
@@ -279,28 +279,28 @@ Defaults and examples are provided in the environment template.
 
 **Section sources**
 
-- [circuit_breaker.py:29-163](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L163)
-- [llm_service.py:271-273](file://backend/app/services/llm_service.py#L271-L273)
-- [llm_service.py:359-391](file://backend/app/services/llm_service.py#L359-L391)
+- [circuit_breaker.py:29-163](../../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L163)
+- [llm_service.py:271-273](../../../../backend/app/services/llm_service.py#L271-L273)
+- [llm_service.py:359-391](../../../../backend/app/services/llm_service.py#L359-L391)
 
 ### Monitoring and Logging Strategies
 
 - Prometheus metrics:
-    - LLM failures by provider
-    - LLM request duration and TTFT histograms
-    - LLM cache hits and misses
+  - LLM failures by provider
+  - LLM request duration and TTFT histograms
+  - LLM cache hits and misses
 - Model performance metrics:
-    - Call counts, success/failure rates, latency, and fallback tracking
-    - Comparison between NVIDIA and Ollama (DeepSeek)
+  - Call counts, success/failure rates, latency, and fallback tracking
+  - Comparison between NVIDIA and Ollama (DeepSeek)
 - Logging:
-    - Verbose logs for fallback transitions and provider health
-    - Warning/error logs for failures and degraded modes
+  - Verbose logs for fallback transitions and provider health
+  - Warning/error logs for failures and degraded modes
 
 **Section sources**
 
-- [prometheus_metrics.py:60-90](file://backend/app/middleware/prometheus_metrics.py#L60-L90)
-- [prometheus_metrics.py:174-191](file://backend/app/middleware/prometheus_metrics.py#L174-L191)
-- [model_metrics.py:23-181](file://backend/app/services/model_metrics.py#L23-L181)
+- [prometheus_metrics.py:60-90](../../../../backend/app/middleware/prometheus_metrics.py#L60-L90)
+- [prometheus_metrics.py:174-191](../../../../backend/app/middleware/prometheus_metrics.py#L174-L191)
+- [model_metrics.py:23-181](../../../../backend/app/services/model_metrics.py#L23-L181)
 
 ### Integration Patterns with the Main LLM Service
 
@@ -310,8 +310,8 @@ Defaults and examples are provided in the environment template.
 
 **Section sources**
 
-- [reasoning_engine.py:116-176](file://backend/app/pipeline/intelligence/reasoning_engine.py#L116-L176)
-- [reasoning_engine.py:431-515](file://backend/app/pipeline/intelligence/reasoning_engine.py#L431-L515)
+- [reasoning_engine.py:116-176](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L116-L176)
+- [reasoning_engine.py:431-515](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L431-L515)
 
 ## Dependency Analysis
 
@@ -336,23 +336,23 @@ Reasoning --> Nvidia
 
 **Diagram sources**
 
-- [settings.py:146-149](file://backend/app/config/settings.py#L146-L149)
-- [.env.example:53-55](file://backend/.env.example#L53-L55)
-- [llm_service.py:205-269](file://backend/app/services/llm_service.py#L205-L269)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
-- [model_metrics.py:23-209](file://backend/app/services/model_metrics.py#L23-L209)
-- [nvidia_client.py:30-140](file://backend/app/services/nvidia_client.py#L30-L140)
-- [circuit_breaker.py:29-163](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L163)
-- [reasoning_engine.py:83-176](file://backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
+- [settings.py:146-149](../../../../backend/app/config/settings.py#L146-L149)
+- [.env.example:53-55](../../../../backend/.env.example#L53-L55)
+- [llm_service.py:205-269](../../../../backend/app/services/llm_service.py#L205-L269)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [model_metrics.py:23-209](../../../../backend/app/services/model_metrics.py#L23-L209)
+- [nvidia_client.py:30-140](../../../../backend/app/services/nvidia_client.py#L30-L140)
+- [circuit_breaker.py:29-163](../../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L163)
+- [reasoning_engine.py:83-176](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
 
 **Section sources**
 
-- [llm_service.py:205-269](file://backend/app/services/llm_service.py#L205-L269)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
-- [model_metrics.py:23-209](file://backend/app/services/model_metrics.py#L23-L209)
-- [nvidia_client.py:30-140](file://backend/app/services/nvidia_client.py#L30-L140)
-- [circuit_breaker.py:29-163](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L163)
-- [reasoning_engine.py:83-176](file://backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
+- [llm_service.py:205-269](../../../../backend/app/services/llm_service.py#L205-L269)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [model_metrics.py:23-209](../../../../backend/app/services/model_metrics.py#L23-L209)
+- [nvidia_client.py:30-140](../../../../backend/app/services/nvidia_client.py#L30-L140)
+- [circuit_breaker.py:29-163](../../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L163)
+- [reasoning_engine.py:83-176](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L83-L176)
 
 ## Performance Considerations
 
@@ -368,25 +368,25 @@ Reasoning --> Nvidia
 Common scenarios and remedies:
 
 - All tiers fail
-    - Verify environment keys for NVIDIA and Groq
-    - Confirm provider base URLs and network connectivity
-    - Inspect metrics for failure counts and durations
+  - Verify environment keys for NVIDIA and Groq
+  - Confirm provider base URLs and network connectivity
+  - Inspect metrics for failure counts and durations
 - Slow responses
-    - Adjust timeouts and consider enabling caching
-    - Monitor latency histograms and TTFT metrics
+  - Adjust timeouts and consider enabling caching
+  - Monitor latency histograms and TTFT metrics
 - Provider unavailability
-    - Use health checks to confirm readiness
-    - Review circuit breaker state and fallback behavior
+  - Use health checks to confirm readiness
+  - Review circuit breaker state and fallback behavior
 - Cost optimization
-    - Prefer Groq when NVIDIA is unavailable or slower
-    - Track fallback rates and adjust thresholds accordingly
+  - Prefer Groq when NVIDIA is unavailable or slower
+  - Track fallback rates and adjust thresholds accordingly
 
 **Section sources**
 
-- [llm_service.py:271-273](file://backend/app/services/llm_service.py#L271-L273)
-- [prometheus_metrics.py:60-90](file://backend/app/middleware/prometheus_metrics.py#L60-L90)
-- [llm_service.py:359-391](file://backend/app/services/llm_service.py#L359-L391)
-- [circuit_breaker.py:29-163](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L163)
+- [llm_service.py:271-273](../../../../backend/app/services/llm_service.py#L271-L273)
+- [prometheus_metrics.py:60-90](../../../../backend/app/middleware/prometheus_metrics.py#L60-L90)
+- [llm_service.py:359-391](../../../../backend/app/services/llm_service.py#L359-L391)
+- [circuit_breaker.py:29-163](../../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L163)
 
 ## Conclusion
 

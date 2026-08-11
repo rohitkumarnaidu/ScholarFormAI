@@ -5,16 +5,16 @@
 
 <cite>
 **Referenced Files in This Document**
-- [document_agent.py](file://backend/app/pipeline/agents/document_agent.py)
-- [dashboard.py](file://backend/app/pipeline/agents/dashboard.py)
-- [advanced_dashboard.py](file://backend/app/pipeline/agents/advanced_dashboard.py)
-- [nextgen_dashboard.py](file://backend/app/pipeline/agents/nextgen_dashboard.py)
-- [metrics.py](file://backend/app/pipeline/agents/metrics.py)
-- [useAgent.js](file://frontend/src/hooks/useAgent.js)
-- [useAgentEvents.js](file://frontend/src/hooks/useAgentEvents.js)
+- [document_agent.py](../../../backend/app/pipeline/agents/document_agent.py)
+- [dashboard.py](../../../backend/app/pipeline/agents/dashboard.py)
+- [advanced_dashboard.py](../../../backend/app/pipeline/agents/advanced_dashboard.py)
+- [nextgen_dashboard.py](../../../backend/app/pipeline/agents/nextgen_dashboard.py)
+- [metrics.py](../../../backend/app/pipeline/agents/metrics.py)
+- [useAgent.js](../../../frontend/src/hooks/useAgent.js)
+- [useAgentEvents.js](../../../frontend/src/hooks/useAgentEvents.js)
 - [page.jsx](file://frontend/app/(generator)/(protected)/agent/page.jsx)
-- [api.generator.v1.js](file://frontend/src/services/api.generator.v1.js)
-- [test_agent_enhancements.py](file://backend/tests/test_agent_enhancements.py)
+- [api.generator.v1.js](../../../frontend/src/services/api.generator.v1.js)
+- [test_agent_enhancements.py](../../../backend/tests/test_agent_enhancements.py)
 </cite>
 
 ## Table of Contents
@@ -43,9 +43,9 @@ The enhanced agent system follows a modular architecture with clear separation b
 ```mermaid
 graph TB
 subgraph "Frontend Layer"
-AP[Agent Page]
-UC[useAgent Hook]
-UE[useAgentEvents Hook]
+AP["Agent Page"]
+UC["useAgent Hook"]
+UE["useAgentEvents Hook"]
 AC[AgentChatPane]
 DB[DocumentBuildPane]
 end
@@ -57,9 +57,9 @@ AD[AdvancedDashboard]
 NGD[NextGenDashboard]
 end
 subgraph "Infrastructure"
-SSE[Server-Sent Events]
-METRICS[Performance Metrics]
-DASH[Analytics Dashboards]
+SSE["Server-Sent Events"]
+METRICS["Performance Metrics"]
+DASH["Analytics Dashboards"]
 end
 AP --> UC
 UC --> UE
@@ -80,13 +80,13 @@ NGD --> DASH
 **Diagram sources**
 
 - [page.jsx](file://frontend/app/(generator)/(protected)/agent/page.jsx#L1-L323)
-- [document_agent.py:1-483](file://backend/app/pipeline/agents/document_agent.py#L1-L483)
-- [metrics.py:1-260](file://backend/app/pipeline/agents/metrics.py#L1-L260)
+- [document_agent.py:1-483](../../../backend/app/pipeline/agents/document_agent.py#L1-L483)
+- [metrics.py:1-260](../../../backend/app/pipeline/agents/metrics.py#L1-L260)
 
 **Section sources**
 
 - [page.jsx](file://frontend/app/(generator)/(protected)/agent/page.jsx#L1-L323)
-- [document_agent.py:1-483](file://backend/app/pipeline/agents/document_agent.py#L1-L483)
+- [document_agent.py:1-483](../../../backend/app/pipeline/agents/document_agent.py#L1-L483)
 
 ## Core Components
 
@@ -106,9 +106,9 @@ Comprehensive analytics systems track performance metrics, generate comparative 
 
 **Section sources**
 
-- [document_agent.py:71-186](file://backend/app/pipeline/agents/document_agent.py#L71-L186)
-- [useAgent.js:18-305](file://frontend/src/hooks/useAgent.js#L18-L305)
-- [metrics.py:48-67](file://backend/app/pipeline/agents/metrics.py#L48-L67)
+- [document_agent.py:71-186](../../../backend/app/pipeline/agents/document_agent.py#L71-L186)
+- [useAgent.js:18-305](../../../frontend/src/hooks/useAgent.js#L18-L305)
+- [metrics.py:48-67](../../../backend/app/pipeline/agents/metrics.py#L48-L67)
 
 ## Architecture Overview
 
@@ -145,16 +145,16 @@ Agent-->>User : Final Results
 
 **Diagram sources**
 
-- [document_agent.py:273-357](file://backend/app/pipeline/agents/document_agent.py#L273-L357)
-- [useAgentEvents.js:23-156](file://frontend/src/hooks/useAgentEvents.js#L23-L156)
-- [metrics.py:68-146](file://backend/app/pipeline/agents/metrics.py#L68-L146)
+- [document_agent.py:273-357](../../../backend/app/pipeline/agents/document_agent.py#L273-L357)
+- [useAgentEvents.js:23-156](../../../frontend/src/hooks/useAgentEvents.js#L23-L156)
+- [metrics.py:68-146](../../../backend/app/pipeline/agents/metrics.py#L68-L146)
 
 The architecture supports multiple processing modes including traditional ReAct agent execution, direct tool execution fallback, and streaming response capabilities. The system maintains comprehensive state management and provides real-time feedback through server-sent events.
 
 **Section sources**
 
-- [document_agent.py:188-243](file://backend/app/pipeline/agents/document_agent.py#L188-L243)
-- [useAgent.js:145-197](file://frontend/src/hooks/useAgent.js#L145-L197)
+- [document_agent.py:188-243](../../../backend/app/pipeline/agents/document_agent.py#L188-L243)
+- [useAgent.js:145-197](../../../frontend/src/hooks/useAgent.js#L145-L197)
 
 ## Detailed Component Analysis
 
@@ -204,7 +204,7 @@ DocumentAgent --> BaseTool : manages
 
 **Diagram sources**
 
-- [document_agent.py:71-483](file://backend/app/pipeline/agents/document_agent.py#L71-L483)
+- [document_agent.py:71-483](../../../backend/app/pipeline/agents/document_agent.py#L71-L483)
 
 The DocumentAgent incorporates several key enhancements:
 
@@ -216,7 +216,7 @@ The DocumentAgent incorporates several key enhancements:
 
 **Section sources**
 
-- [document_agent.py:83-157](file://backend/app/pipeline/agents/document_agent.py#L83-L157)
+- [document_agent.py:83-157](../../../backend/app/pipeline/agents/document_agent.py#L83-L157)
 
 ### Frontend Agent Hooks
 
@@ -224,34 +224,34 @@ The frontend implementation provides sophisticated state management and real-tim
 
 ```mermaid
 flowchart TD
-Start([User Interaction]) --> CheckSession{Active Session?}
+Start(["User Interaction"]) --> CheckSession{Active Session?}
 CheckSession --> |No| StartSession[handleStartSession]
 CheckSession --> |Yes| SendMessage[handleSendMessage]
-StartSession --> ValidateInput[Validate Input]
-ValidateInput --> ParseSchema[Parse with Zod Schema]
-ParseSchema --> SetState[Set Loading State]
-SetState --> CreateSession[Create Agent Session]
-CreateSession --> TrackEvent[Track Analytics Event]
-TrackEvent --> UpdateUI[Update UI State]
-SendMessage --> ValidateMessage[Validate Message]
-ValidateMessage --> AddToChat[Add to Chat]
-AddToChat --> SendAPI[Send to API]
-SendAPI --> FetchDocument[Fetch Latest Document]
-FetchDocument --> UpdateSections[Update Sections]
-UpdateUI --> MonitorEvents[Monitor SSE Events]
-MonitorEvents --> UpdateState[Update State]
-UpdateState --> RenderUI[Render UI]
+StartSession --> ValidateInput["Validate Input"]
+ValidateInput --> ParseSchema["Parse with Zod Schema"]
+ParseSchema --> SetState["Set Loading State"]
+SetState --> CreateSession["Create Agent Session"]
+CreateSession --> TrackEvent["Track Analytics Event"]
+TrackEvent --> UpdateUI["Update UI State"]
+SendMessage --> ValidateMessage["Validate Message"]
+ValidateMessage --> AddToChat["Add to Chat"]
+AddToChat --> SendAPI["Send to API"]
+SendAPI --> FetchDocument["Fetch Latest Document"]
+FetchDocument --> UpdateSections["Update Sections"]
+UpdateUI --> MonitorEvents["Monitor SSE Events"]
+MonitorEvents --> UpdateState["Update State"]
+UpdateState --> RenderUI["Render UI"]
 ```
 
 **Diagram sources**
 
-- [useAgent.js:145-230](file://frontend/src/hooks/useAgent.js#L145-L230)
-- [useAgentEvents.js:23-156](file://frontend/src/hooks/useAgentEvents.js#L23-L156)
+- [useAgent.js:145-230](../../../frontend/src/hooks/useAgent.js#L145-L230)
+- [useAgentEvents.js:23-156](../../../frontend/src/hooks/useAgentEvents.js#L23-L156)
 
 **Section sources**
 
-- [useAgent.js:18-305](file://frontend/src/hooks/useAgent.js#L18-L305)
-- [useAgentEvents.js:1-163](file://frontend/src/hooks/useAgentEvents.js#L1-L163)
+- [useAgent.js:18-305](../../../frontend/src/hooks/useAgent.js#L18-L305)
+- [useAgentEvents.js:1-163](../../../frontend/src/hooks/useAgentEvents.js#L1-L163)
 
 ### Performance Monitoring System
 
@@ -292,12 +292,12 @@ PERFORMANCE_SUMMARY ||--|| COMPARISON_DATA : analyzed_by
 
 **Diagram sources**
 
-- [metrics.py:15-46](file://backend/app/pipeline/agents/metrics.py#L15-L46)
-- [metrics.py:182-207](file://backend/app/pipeline/agents/metrics.py#L182-L207)
+- [metrics.py:15-46](../../../backend/app/pipeline/agents/metrics.py#L15-L46)
+- [metrics.py:182-207](../../../backend/app/pipeline/agents/metrics.py#L182-L207)
 
 **Section sources**
 
-- [metrics.py:48-260](file://backend/app/pipeline/agents/metrics.py#L48-L260)
+- [metrics.py:48-260](../../../backend/app/pipeline/agents/metrics.py#L48-L260)
 
 ## Enhanced Agent Page Implementation
 
@@ -310,21 +310,21 @@ The agent page implements a flexible, responsive layout that adapts seamlessly b
 ```mermaid
 graph TB
 subgraph "Desktop Layout"
-TB[Top Toolbar]
-SB[Sidebar - Session History]
-CHAT[Center Panel - Chat Interface]
-DOC[Right Panel - Document Builder]
+TB["Top Toolbar"]
+SB["Sidebar - Session History"]
+CHAT["Center Panel - Chat Interface"]
+DOC["Right Panel - Document Builder"]
 end
 subgraph "Mobile Layout"
-MB[Mobile Tab Bar]
-MC[Chat Tab]
-MD[Document Tab]
+MB["Mobile Tab Bar"]
+MC["Chat Tab"]
+MD["Document Tab"]
 end
 subgraph "Shared Components"
 AC[AgentChatPane]
 DB[DocumentBuildPane]
 OA[OutlineApproval]
-SM[Session Management]
+SM["Session Management"]
 end
 TB --> SB
 TB --> CHAT
@@ -372,8 +372,8 @@ API->>SSE : Terminate Stream
 
 **Diagram sources**
 
-- [useAgentEvents.js:36-145](file://frontend/src/hooks/useAgentEvents.js#L36-L145)
-- [api.generator.v1.js:39-48](file://frontend/src/services/api.generator.v1.js#L39-L48)
+- [useAgentEvents.js:36-145](../../../frontend/src/hooks/useAgentEvents.js#L36-L145)
+- [api.generator.v1.js:39-48](../../../frontend/src/services/api.generator.v1.js#L39-L48)
 
 ### Template and Configuration Management
 
@@ -382,7 +382,7 @@ The agent page provides comprehensive template selection and configuration manag
 **Section sources**
 
 - [page.jsx](file://frontend/app/(generator)/(protected)/agent/page.jsx#L1-L323)
-- [useAgent.js:28-296](file://frontend/src/hooks/useAgent.js#L28-L296)
+- [useAgent.js:28-296](../../../frontend/src/hooks/useAgent.js#L28-L296)
 
 ## Performance Monitoring and Analytics
 
@@ -395,14 +395,14 @@ The comparative performance dashboard generates comprehensive HTML reports that 
 ```mermaid
 graph LR
 subgraph "Performance Metrics"
-SPEED[Average Duration]
-QUALITY[Success Rate]
-RELIABILITY[Fallback Rate]
-ERRORS[Average Validation Errors]
+SPEED["Average Duration"]
+QUALITY["Success Rate"]
+RELIABILITY["Fallback Rate"]
+ERRORS["Average Validation Errors"]
 end
 subgraph "Agent vs Legacy"
-AGENT[Agent Metrics]
-LEGACY[Legacy Metrics]
+AGENT["Agent Metrics"]
+LEGACY["Legacy Metrics"]
 end
 subgraph "Visualizations"
 SPEED --> SPEED_COMP
@@ -410,20 +410,20 @@ QUALITY --> QUAL_COMP
 RELIABILITY --> REL_COMP
 ERRORS --> ERR_COMP
 end
-AGENT --> SPEED_COMP[Speed Comparison]
+AGENT --> SPEED_COMP["Speed Comparison"]
 LEGACY --> SPEED_COMP
-AGENT --> QUAL_COMP[Quality Comparison]
+AGENT --> QUAL_COMP["Quality Comparison"]
 LEGACY --> QUAL_COMP
-AGENT --> REL_COMP[Reliability Analysis]
+AGENT --> REL_COMP["Reliability Analysis"]
 LEGACY --> REL_COMP
-AGENT --> ERR_COMP[Error Analysis]
+AGENT --> ERR_COMP["Error Analysis"]
 LEGACY --> ERR_COMP
 ```
 
 **Diagram sources**
 
-- [dashboard.py:165-219](file://backend/app/pipeline/agents/dashboard.py#L165-L219)
-- [metrics.py:230-259](file://backend/app/pipeline/agents/metrics.py#L230-L259)
+- [dashboard.py:165-219](../../../backend/app/pipeline/agents/dashboard.py#L165-L219)
+- [metrics.py:230-259](../../../backend/app/pipeline/agents/metrics.py#L230-L259)
 
 ### Advanced Analytics Dashboard
 
@@ -431,8 +431,8 @@ The advanced analytics dashboard provides ML-powered insights and multi-agent co
 
 **Section sources**
 
-- [dashboard.py:10-42](file://backend/app/pipeline/agents/dashboard.py#L10-L42)
-- [advanced_dashboard.py:17-60](file://backend/app/pipeline/agents/advanced_dashboard.py#L17-L60)
+- [dashboard.py:10-42](../../../backend/app/pipeline/agents/dashboard.py#L10-L42)
+- [advanced_dashboard.py:17-60](../../../backend/app/pipeline/agents/advanced_dashboard.py#L17-L60)
 
 ## Advanced Dashboard Features
 
@@ -452,8 +452,8 @@ The real-time adaptation system dynamically adjusts agent parameters and strateg
 
 **Section sources**
 
-- [nextgen_dashboard.py:17-45](file://backend/app/pipeline/agents/nextgen_dashboard.py#L17-L45)
-- [advanced_dashboard.py:17-42](file://backend/app/pipeline/agents/advanced_dashboard.py#L17-L42)
+- [nextgen_dashboard.py:17-45](../../../backend/app/pipeline/agents/nextgen_dashboard.py#L17-L45)
+- [advanced_dashboard.py:17-42](../../../backend/app/pipeline/agents/advanced_dashboard.py#L17-L42)
 
 ## Integration Patterns
 
@@ -473,8 +473,8 @@ The implementation leverages event-driven patterns for real-time communication, 
 
 **Section sources**
 
-- [api.generator.v1.js:1-80](file://frontend/src/services/api.generator.v1.js#L1-L80)
-- [useAgent.js:41-143](file://frontend/src/hooks/useAgent.js#L41-L143)
+- [api.generator.v1.js:1-80](../../../frontend/src/services/api.generator.v1.js#L1-L80)
+- [useAgent.js:41-143](../../../frontend/src/hooks/useAgent.js#L41-L143)
 
 ## Conclusion
 

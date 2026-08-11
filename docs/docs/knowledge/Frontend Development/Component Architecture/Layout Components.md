@@ -5,15 +5,15 @@
 
 <cite>
 **Referenced Files in This Document**
-- [AppShell.jsx](file://frontend/src/components/layout/AppShell.jsx)
-- [Header.jsx](file://frontend/src/components/layout/Header.jsx)
-- [Sidebar.jsx](file://frontend/src/components/layout/Sidebar.jsx)
-- [AuthGuard.jsx](file://frontend/src/components/layout/AuthGuard.jsx)
-- [ThemeContext.jsx](file://frontend/src/context/ThemeContext.jsx)
-- [AuthContext.jsx](file://frontend/src/context/AuthContext.jsx)
-- [ClientProviders.jsx](file://frontend/src/components/layout/ClientProviders.jsx)
-- [RootLayout.jsx](file://frontend/app/layout.jsx)
-- [ThemeToggle.jsx](file://frontend/src/components/layout/header/ThemeToggle.jsx)
+- [AppShell.jsx](../../../../../frontend/src/components/layout/AppShell.jsx)
+- [Header.jsx](../../../../../frontend/src/components/layout/Header.jsx)
+- [Sidebar.jsx](../../../../../frontend/src/components/layout/Sidebar.jsx)
+- [AuthGuard.jsx](../../../../../frontend/src/components/layout/AuthGuard.jsx)
+- [ThemeContext.jsx](../../../../../frontend/src/context/ThemeContext.jsx)
+- [AuthContext.jsx](../../../../../frontend/src/context/AuthContext.jsx)
+- [ClientProviders.jsx](../../../../../frontend/src/components/layout/ClientProviders.jsx)
+- [RootLayout.jsx](../../../../../frontend/app/(formatter)/layout.jsx)
+- [ThemeToggle.jsx](../../../../../frontend/src/components/layout/header/ThemeToggle.jsx)
 </cite>
 
 ## Table of Contents
@@ -55,19 +55,19 @@ Children --> AuthGuard["AuthGuard.jsx<br/>Route protection"]
 
 **Diagram sources**
 
-- [RootLayout.jsx:32-84](file://frontend/app/layout.jsx#L32-L84)
-- [ClientProviders.jsx:14-51](file://frontend/src/components/layout/ClientProviders.jsx#L14-L51)
-- [ThemeContext.jsx:57-70](file://frontend/src/context/ThemeContext.jsx#L57-L70)
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
-- [AppShell.jsx:12-162](file://frontend/src/components/layout/AppShell.jsx#L12-L162)
-- [Header.jsx:29-105](file://frontend/src/components/layout/Header.jsx#L29-L105)
-- [Sidebar.jsx:62-196](file://frontend/src/components/layout/Sidebar.jsx#L62-L196)
-- [AuthGuard.jsx:58-72](file://frontend/src/components/layout/AuthGuard.jsx#L58-L72)
+- [RootLayout.jsx:32-84](../../../../../frontend/app/(formatter)/layout.jsx#L32-L84)
+- [ClientProviders.jsx:14-51](../../../../../frontend/src/components/layout/ClientProviders.jsx#L14-L51)
+- [ThemeContext.jsx:57-70](../../../../../frontend/src/context/ThemeContext.jsx#L57-L70)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
+- [AppShell.jsx:12-162](../../../../../frontend/src/components/layout/AppShell.jsx#L12-L162)
+- [Header.jsx:29-105](../../../../../frontend/src/components/layout/Header.jsx#L29-L105)
+- [Sidebar.jsx:62-196](../../../../../frontend/src/components/layout/Sidebar.jsx#L62-L196)
+- [AuthGuard.jsx:58-72](../../../../../frontend/src/components/layout/AuthGuard.jsx#L58-L72)
 
 **Section sources**
 
-- [RootLayout.jsx:32-84](file://frontend/app/layout.jsx#L32-L84)
-- [ClientProviders.jsx:14-51](file://frontend/src/components/layout/ClientProviders.jsx#L14-L51)
+- [RootLayout.jsx:32-84](../../../../../frontend/app/(formatter)/layout.jsx#L32-L84)
+- [ClientProviders.jsx:14-51](../../../../../frontend/src/components/layout/ClientProviders.jsx#L14-L51)
 
 ## Core Components
 
@@ -78,10 +78,10 @@ Children --> AuthGuard["AuthGuard.jsx<br/>Route protection"]
 
 **Section sources**
 
-- [AppShell.jsx:12-162](file://frontend/src/components/layout/AppShell.jsx#L12-L162)
-- [Header.jsx:29-105](file://frontend/src/components/layout/Header.jsx#L29-L105)
-- [Sidebar.jsx:62-196](file://frontend/src/components/layout/Sidebar.jsx#L62-L196)
-- [AuthGuard.jsx:58-72](file://frontend/src/components/layout/AuthGuard.jsx#L58-L72)
+- [AppShell.jsx:12-162](../../../../../frontend/src/components/layout/AppShell.jsx#L12-L162)
+- [Header.jsx:29-105](../../../../../frontend/src/components/layout/Header.jsx#L29-L105)
+- [Sidebar.jsx:62-196](../../../../../frontend/src/components/layout/Sidebar.jsx#L62-L196)
+- [AuthGuard.jsx:58-72](../../../../../frontend/src/components/layout/AuthGuard.jsx#L58-L72)
 
 ## Architecture Overview
 
@@ -118,14 +118,14 @@ Guard-->>Browser : Redirect or render children
 
 **Diagram sources**
 
-- [RootLayout.jsx:32-84](file://frontend/app/layout.jsx#L32-L84)
-- [ClientProviders.jsx:14-51](file://frontend/src/components/layout/ClientProviders.jsx#L14-L51)
-- [ThemeContext.jsx:57-70](file://frontend/src/context/ThemeContext.jsx#L57-L70)
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
-- [AppShell.jsx:12-162](file://frontend/src/components/layout/AppShell.jsx#L12-L162)
-- [Header.jsx:29-105](file://frontend/src/components/layout/Header.jsx#L29-L105)
-- [Sidebar.jsx:62-196](file://frontend/src/components/layout/Sidebar.jsx#L62-L196)
-- [AuthGuard.jsx:58-72](file://frontend/src/components/layout/AuthGuard.jsx#L58-L72)
+- [RootLayout.jsx:32-84](../../../../../frontend/app/(formatter)/layout.jsx#L32-L84)
+- [ClientProviders.jsx:14-51](../../../../../frontend/src/components/layout/ClientProviders.jsx#L14-L51)
+- [ThemeContext.jsx:57-70](../../../../../frontend/src/context/ThemeContext.jsx#L57-L70)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
+- [AppShell.jsx:12-162](../../../../../frontend/src/components/layout/AppShell.jsx#L12-L162)
+- [Header.jsx:29-105](../../../../../frontend/src/components/layout/Header.jsx#L29-L105)
+- [Sidebar.jsx:62-196](../../../../../frontend/src/components/layout/Sidebar.jsx#L62-L196)
+- [AuthGuard.jsx:58-72](../../../../../frontend/src/components/layout/AuthGuard.jsx#L58-L72)
 
 ## Detailed Component Analysis
 
@@ -170,7 +170,7 @@ Customization examples:
 
 **Section sources**
 
-- [AppShell.jsx:12-162](file://frontend/src/components/layout/AppShell.jsx#L12-L162)
+- [AppShell.jsx:12-162](../../../../../frontend/src/components/layout/AppShell.jsx#L12-L162)
 
 ### Header
 
@@ -205,7 +205,7 @@ Accessibility:
 
 **Section sources**
 
-- [Header.jsx:29-105](file://frontend/src/components/layout/Header.jsx#L29-L105)
+- [Header.jsx:29-105](../../../../../frontend/src/components/layout/Header.jsx#L29-L105)
 
 ### Sidebar
 
@@ -242,7 +242,7 @@ Accessibility:
 
 **Section sources**
 
-- [Sidebar.jsx:62-196](file://frontend/src/components/layout/Sidebar.jsx#L62-L196)
+- [Sidebar.jsx:62-196](../../../../../frontend/src/components/layout/Sidebar.jsx#L62-L196)
 
 ### AuthGuard
 
@@ -271,7 +271,7 @@ Integration points:
 
 **Section sources**
 
-- [AuthGuard.jsx:58-72](file://frontend/src/components/layout/AuthGuard.jsx#L58-L72)
+- [AuthGuard.jsx:58-72](../../../../../frontend/src/components/layout/AuthGuard.jsx#L58-L72)
 
 ### Theme Integration
 
@@ -294,9 +294,9 @@ ClientProviders:
 
 **Section sources**
 
-- [ThemeContext.jsx:57-70](file://frontend/src/context/ThemeContext.jsx#L57-L70)
-- [ThemeToggle.jsx:6-34](file://frontend/src/components/layout/header/ThemeToggle.jsx#L6-L34)
-- [ClientProviders.jsx:14-51](file://frontend/src/components/layout/ClientProviders.jsx#L14-L51)
+- [ThemeContext.jsx:57-70](../../../../../frontend/src/context/ThemeContext.jsx#L57-L70)
+- [ThemeToggle.jsx:6-34](../../../../../frontend/src/components/layout/header/ThemeToggle.jsx#L6-L34)
+- [ClientProviders.jsx:14-51](../../../../../frontend/src/components/layout/ClientProviders.jsx#L14-L51)
 
 ### State Management Coordination
 
@@ -320,9 +320,9 @@ ClientProviders:
 
 **Section sources**
 
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
-- [AppShell.jsx:12-162](file://frontend/src/components/layout/AppShell.jsx#L12-L162)
-- [ClientProviders.jsx:14-51](file://frontend/src/components/layout/ClientProviders.jsx#L14-L51)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
+- [AppShell.jsx:12-162](../../../../../frontend/src/components/layout/AppShell.jsx#L12-L162)
+- [ClientProviders.jsx:14-51](../../../../../frontend/src/components/layout/ClientProviders.jsx#L14-L51)
 
 ## Architecture Overview
 
@@ -389,14 +389,14 @@ AppShell --> AuthGuard
 
 **Diagram sources**
 
-- [RootLayout.jsx:32-84](file://frontend/app/layout.jsx#L32-L84)
-- [ClientProviders.jsx:14-51](file://frontend/src/components/layout/ClientProviders.jsx#L14-L51)
-- [ThemeContext.jsx:57-70](file://frontend/src/context/ThemeContext.jsx#L57-L70)
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
-- [AppShell.jsx:12-162](file://frontend/src/components/layout/AppShell.jsx#L12-L162)
-- [Header.jsx:29-105](file://frontend/src/components/layout/Header.jsx#L29-L105)
-- [Sidebar.jsx:62-196](file://frontend/src/components/layout/Sidebar.jsx#L62-L196)
-- [AuthGuard.jsx:58-72](file://frontend/src/components/layout/AuthGuard.jsx#L58-L72)
+- [RootLayout.jsx:32-84](../../../../../frontend/app/(formatter)/layout.jsx#L32-L84)
+- [ClientProviders.jsx:14-51](../../../../../frontend/src/components/layout/ClientProviders.jsx#L14-L51)
+- [ThemeContext.jsx:57-70](../../../../../frontend/src/context/ThemeContext.jsx#L57-L70)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
+- [AppShell.jsx:12-162](../../../../../frontend/src/components/layout/AppShell.jsx#L12-L162)
+- [Header.jsx:29-105](../../../../../frontend/src/components/layout/Header.jsx#L29-L105)
+- [Sidebar.jsx:62-196](../../../../../frontend/src/components/layout/Sidebar.jsx#L62-L196)
+- [AuthGuard.jsx:58-72](../../../../../frontend/src/components/layout/AuthGuard.jsx#L58-L72)
 
 ## Detailed Component Analysis
 
@@ -421,17 +421,17 @@ Close --> Content
 
 **Diagram sources**
 
-- [AppShell.jsx:49-71](file://frontend/src/components/layout/AppShell.jsx#L49-L71)
-- [AppShell.jsx:73-79](file://frontend/src/components/layout/AppShell.jsx#L73-L79)
-- [AppShell.jsx:122-132](file://frontend/src/components/layout/AppShell.jsx#L122-L132)
-- [AppShell.jsx:134-144](file://frontend/src/components/layout/AppShell.jsx#L134-L144)
-- [AppShell.jsx:146-157](file://frontend/src/components/layout/AppShell.jsx#L146-L157)
+- [AppShell.jsx:49-71](../../../../../frontend/src/components/layout/AppShell.jsx#L49-L71)
+- [AppShell.jsx:73-79](../../../../../frontend/src/components/layout/AppShell.jsx#L73-L79)
+- [AppShell.jsx:122-132](../../../../../frontend/src/components/layout/AppShell.jsx#L122-L132)
+- [AppShell.jsx:134-144](../../../../../frontend/src/components/layout/AppShell.jsx#L134-L144)
+- [AppShell.jsx:146-157](../../../../../frontend/src/components/layout/AppShell.jsx#L146-L157)
 
 **Section sources**
 
-- [AppShell.jsx:49-71](file://frontend/src/components/layout/AppShell.jsx#L49-L71)
-- [AppShell.jsx:73-79](file://frontend/src/components/layout/AppShell.jsx#L73-L79)
-- [AppShell.jsx:122-157](file://frontend/src/components/layout/AppShell.jsx#L122-L157)
+- [AppShell.jsx:49-71](../../../../../frontend/src/components/layout/AppShell.jsx#L49-L71)
+- [AppShell.jsx:73-79](../../../../../frontend/src/components/layout/AppShell.jsx#L73-L79)
+- [AppShell.jsx:122-157](../../../../../frontend/src/components/layout/AppShell.jsx#L122-L157)
 
 ### Authentication Flow and Route Protection
 
@@ -461,14 +461,14 @@ end
 
 **Diagram sources**
 
-- [AuthGuard.jsx:18-34](file://frontend/src/components/layout/AuthGuard.jsx#L18-L34)
-- [AuthGuard.jsx:58-72](file://frontend/src/components/layout/AuthGuard.jsx#L58-L72)
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
+- [AuthGuard.jsx:18-34](../../../../../frontend/src/components/layout/AuthGuard.jsx#L18-L34)
+- [AuthGuard.jsx:58-72](../../../../../frontend/src/components/layout/AuthGuard.jsx#L58-L72)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
 
 **Section sources**
 
-- [AuthGuard.jsx:18-34](file://frontend/src/components/layout/AuthGuard.jsx#L18-L34)
-- [AuthGuard.jsx:58-72](file://frontend/src/components/layout/AuthGuard.jsx#L58-L72)
+- [AuthGuard.jsx:18-34](../../../../../frontend/src/components/layout/AuthGuard.jsx#L18-L34)
+- [AuthGuard.jsx:58-72](../../../../../frontend/src/components/layout/AuthGuard.jsx#L58-L72)
 
 ### Navigation and Active States
 
@@ -487,15 +487,15 @@ Resolve --> Mode["Mode switch updates links/actions"]
 
 **Diagram sources**
 
-- [Sidebar.jsx:37-45](file://frontend/src/components/layout/Sidebar.jsx#L37-L45)
-- [Sidebar.jsx:83-92](file://frontend/src/components/layout/Sidebar.jsx#L83-L92)
-- [Sidebar.jsx:101-113](file://frontend/src/components/layout/Sidebar.jsx#L101-L113)
+- [Sidebar.jsx:37-45](../../../../../frontend/src/components/layout/Sidebar.jsx#L37-L45)
+- [Sidebar.jsx:83-92](../../../../../frontend/src/components/layout/Sidebar.jsx#L83-L92)
+- [Sidebar.jsx:101-113](../../../../../frontend/src/components/layout/Sidebar.jsx#L101-L113)
 
 **Section sources**
 
-- [Sidebar.jsx:37-45](file://frontend/src/components/layout/Sidebar.jsx#L37-L45)
-- [Sidebar.jsx:83-92](file://frontend/src/components/layout/Sidebar.jsx#L83-L92)
-- [Sidebar.jsx:101-113](file://frontend/src/components/layout/Sidebar.jsx#L101-L113)
+- [Sidebar.jsx:37-45](../../../../../frontend/src/components/layout/Sidebar.jsx#L37-L45)
+- [Sidebar.jsx:83-92](../../../../../frontend/src/components/layout/Sidebar.jsx#L83-L92)
+- [Sidebar.jsx:101-113](../../../../../frontend/src/components/layout/Sidebar.jsx#L101-L113)
 
 ## Dependency Analysis
 
@@ -523,23 +523,23 @@ RootLayout --> ClientProviders
 
 **Diagram sources**
 
-- [AppShell.jsx:3-8](file://frontend/src/components/layout/AppShell.jsx#L3-L8)
-- [Header.jsx:6-8](file://frontend/src/components/layout/Header.jsx#L6-L8)
-- [Sidebar.jsx:5-6](file://frontend/src/components/layout/Sidebar.jsx#L5-L6)
-- [AuthGuard.jsx:4-5](file://frontend/src/components/layout/AuthGuard.jsx#L4-L5)
-- [ThemeToggle.jsx:3](file://frontend/src/components/layout/header/ThemeToggle.jsx#L3)
-- [ClientProviders.jsx:3-8](file://frontend/src/components/layout/ClientProviders.jsx#L3-L8)
-- [RootLayout.jsx:3-4](file://frontend/app/layout.jsx#L3-L4)
+- [AppShell.jsx:3-8](../../../../../frontend/src/components/layout/AppShell.jsx#L3-L8)
+- [Header.jsx:6-8](../../../../../frontend/src/components/layout/Header.jsx#L6-L8)
+- [Sidebar.jsx:5-6](../../../../../frontend/src/components/layout/Sidebar.jsx#L5-L6)
+- [AuthGuard.jsx:4-5](../../../../../frontend/src/components/layout/AuthGuard.jsx#L4-L5)
+- [ThemeToggle.jsx:3](../../../../../frontend/src/components/layout/header/ThemeToggle.jsx#L3)
+- [ClientProviders.jsx:3-8](../../../../../frontend/src/components/layout/ClientProviders.jsx#L3-L8)
+- [RootLayout.jsx:3-4](../../../../../frontend/app/(formatter)/layout.jsx#L3-L4)
 
 **Section sources**
 
-- [AppShell.jsx:3-8](file://frontend/src/components/layout/AppShell.jsx#L3-L8)
-- [Header.jsx:6-8](file://frontend/src/components/layout/Header.jsx#L6-L8)
-- [Sidebar.jsx:5-6](file://frontend/src/components/layout/Sidebar.jsx#L5-L6)
-- [AuthGuard.jsx:4-5](file://frontend/src/components/layout/AuthGuard.jsx#L4-L5)
-- [ThemeToggle.jsx:3](file://frontend/src/components/layout/header/ThemeToggle.jsx#L3)
-- [ClientProviders.jsx:3-8](file://frontend/src/components/layout/ClientProviders.jsx#L3-L8)
-- [RootLayout.jsx:3-4](file://frontend/app/layout.jsx#L3-L4)
+- [AppShell.jsx:3-8](../../../../../frontend/src/components/layout/AppShell.jsx#L3-L8)
+- [Header.jsx:6-8](../../../../../frontend/src/components/layout/Header.jsx#L6-L8)
+- [Sidebar.jsx:5-6](../../../../../frontend/src/components/layout/Sidebar.jsx#L5-L6)
+- [AuthGuard.jsx:4-5](../../../../../frontend/src/components/layout/AuthGuard.jsx#L4-L5)
+- [ThemeToggle.jsx:3](../../../../../frontend/src/components/layout/header/ThemeToggle.jsx#L3)
+- [ClientProviders.jsx:3-8](../../../../../frontend/src/components/layout/ClientProviders.jsx#L3-L8)
+- [RootLayout.jsx:3-4](../../../../../frontend/app/(formatter)/layout.jsx#L3-L4)
 
 ## Performance Considerations
 
@@ -563,11 +563,11 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [AuthContext.jsx:140-178](file://frontend/src/context/AuthContext.jsx#L140-L178)
-- [AppShell.jsx:36-47](file://frontend/src/components/layout/AppShell.jsx#L36-L47)
-- [Sidebar.jsx:68-69](file://frontend/src/components/layout/Sidebar.jsx#L68-L69)
-- [ThemeContext.jsx:10-22](file://frontend/src/context/ThemeContext.jsx#L10-L22)
-- [AuthGuard.jsx:36-45](file://frontend/src/components/layout/AuthGuard.jsx#L36-L45)
+- [AuthContext.jsx:140-178](../../../../../frontend/src/context/AuthContext.jsx#L140-L178)
+- [AppShell.jsx:36-47](../../../../../frontend/src/components/layout/AppShell.jsx#L36-L47)
+- [Sidebar.jsx:68-69](../../../../../frontend/src/components/layout/Sidebar.jsx#L68-L69)
+- [ThemeContext.jsx:10-22](../../../../../frontend/src/context/ThemeContext.jsx#L10-L22)
+- [AuthGuard.jsx:36-45](../../../../../frontend/src/components/layout/AuthGuard.jsx#L36-L45)
 
 ## Conclusion
 

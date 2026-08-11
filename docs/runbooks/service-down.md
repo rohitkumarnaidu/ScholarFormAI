@@ -19,7 +19,7 @@ last_updated: July 2026
 **Alert:** `ScholarFormServiceDown`  
 **On-Call Response:** < 5 minutes
 
-> **See also:** [Disaster Recovery](../DISASTER_RECOVERY.md), [Incident Response](incident-response.md), [Rollback](rollback.md)
+> **See also:** [Disaster Recovery](../operations/DISASTER_RECOVERY.md), [Incident Response](incident-response.md), [Rollback](rollback.md)
 
 ---
 

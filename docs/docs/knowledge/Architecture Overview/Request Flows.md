@@ -5,15 +5,15 @@
 
 <cite>
 **Referenced Files in This Document**
-- [backend/app/main.py](file://backend/app/main.py)
-- [backend/app/routers/documents.py](file://backend/app/routers/documents.py)
-- [backend/app/routers/preview.py](file://backend/app/routers/preview.py)
-- [backend/app/routers/stream.py](file://backend/app/routers/stream.py)
-- [backend/app/routers/generator.py](file://backend/app/routers/generator.py)
-- [backend/app/realtime/pubsub.py](file://backend/app/realtime/pubsub.py)
-- [backend/app/services/document_service.py](file://backend/app/services/document_service.py)
-- [backend/app/pipeline/orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [backend/app/tasks/celery_tasks.py](file://backend/app/tasks/celery_tasks.py)
+- [backend/app/main.py](../../../../backend/app/main.py)
+- [backend/app/routers/documents.py](../../../../backend/app/routers/v1/documents.py)
+- [backend/app/routers/preview.py](../../../../backend/app/routers/preview.py)
+- [backend/app/routers/stream.py](../../../../backend/app/routers/v1/stream.py)
+- [backend/app/routers/generator.py](../../../../backend/app/routers/v1/generator.py)
+- [backend/app/realtime/pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [backend/app/services/document_service.py](../../../../backend/app/services/document_service.py)
+- [backend/app/pipeline/orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [backend/app/tasks/celery_tasks.py](../../../../backend/app/tasks/celery_tasks.py)
 </cite>
 
 ## Table of Contents
@@ -65,15 +65,15 @@ Main --> Stream
 
 **Diagram sources**
 
-- [backend/app/main.py](file://backend/app/main.py)
-- [backend/app/routers/documents.py](file://backend/app/routers/documents.py)
-- [backend/app/routers/generator.py](file://backend/app/routers/generator.py)
-- [backend/app/routers/preview.py](file://backend/app/routers/preview.py)
-- [backend/app/routers/stream.py](file://backend/app/routers/stream.py)
+- [backend/app/main.py](../../../../backend/app/main.py)
+- [backend/app/routers/documents.py](../../../../backend/app/routers/v1/documents.py)
+- [backend/app/routers/generator.py](../../../../backend/app/routers/v1/generator.py)
+- [backend/app/routers/preview.py](../../../../backend/app/routers/preview.py)
+- [backend/app/routers/stream.py](../../../../backend/app/routers/v1/stream.py)
 
 **Section sources**
 
-- [backend/app/main.py](file://backend/app/main.py)
+- [backend/app/main.py](../../../../backend/app/main.py)
 
 ## Core Components
 
@@ -92,11 +92,11 @@ Key responsibilities:
 
 **Section sources**
 
-- [backend/app/routers/documents.py](file://backend/app/routers/documents.py)
-- [backend/app/services/document_service.py](file://backend/app/services/document_service.py)
-- [backend/app/pipeline/orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [backend/app/realtime/pubsub.py](file://backend/app/realtime/pubsub.py)
-- [backend/app/tasks/celery_tasks.py](file://backend/app/tasks/celery_tasks.py)
+- [backend/app/routers/documents.py](../../../../backend/app/routers/v1/documents.py)
+- [backend/app/services/document_service.py](../../../../backend/app/services/document_service.py)
+- [backend/app/pipeline/orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [backend/app/realtime/pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [backend/app/tasks/celery_tasks.py](../../../../backend/app/tasks/celery_tasks.py)
 
 ## Architecture Overview
 
@@ -139,14 +139,14 @@ CEL -. future .-> PO
 
 **Diagram sources**
 
-- [backend/app/routers/documents.py](file://backend/app/routers/documents.py)
-- [backend/app/routers/generator.py](file://backend/app/routers/generator.py)
-- [backend/app/routers/preview.py](file://backend/app/routers/preview.py)
-- [backend/app/routers/stream.py](file://backend/app/routers/stream.py)
-- [backend/app/services/document_service.py](file://backend/app/services/document_service.py)
-- [backend/app/pipeline/orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [backend/app/realtime/pubsub.py](file://backend/app/realtime/pubsub.py)
-- [backend/app/tasks/celery_tasks.py](file://backend/app/tasks/celery_tasks.py)
+- [backend/app/routers/documents.py](../../../../backend/app/routers/v1/documents.py)
+- [backend/app/routers/generator.py](../../../../backend/app/routers/v1/generator.py)
+- [backend/app/routers/preview.py](../../../../backend/app/routers/preview.py)
+- [backend/app/routers/stream.py](../../../../backend/app/routers/v1/stream.py)
+- [backend/app/services/document_service.py](../../../../backend/app/services/document_service.py)
+- [backend/app/pipeline/orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [backend/app/realtime/pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [backend/app/tasks/celery_tasks.py](../../../../backend/app/tasks/celery_tasks.py)
 
 ## Detailed Component Analysis
 
@@ -178,7 +178,7 @@ PO->>DS : "update_document()/upsert_processing_status()"
 PO->>PS : "publish('job : {job_id}', event)"
 PS-->>SSE : "deliver events"
 C->>SSE : "GET /api/stream/{job_id}"
-SSE-->>C : "SSE events (progress, status)"
+SSE-->>C : "SSE events ("progress, status")"
 ```
 
 Key behaviors:
@@ -201,18 +201,18 @@ Error handling:
 
 **Diagram sources**
 
-- [backend/app/routers/documents.py](file://backend/app/routers/documents.py)
-- [backend/app/services/document_service.py](file://backend/app/services/document_service.py)
-- [backend/app/pipeline/orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [backend/app/realtime/pubsub.py](file://backend/app/realtime/pubsub.py)
-- [backend/app/routers/stream.py](file://backend/app/routers/stream.py)
+- [backend/app/routers/documents.py](../../../../backend/app/routers/v1/documents.py)
+- [backend/app/services/document_service.py](../../../../backend/app/services/document_service.py)
+- [backend/app/pipeline/orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [backend/app/realtime/pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [backend/app/routers/stream.py](../../../../backend/app/routers/v1/stream.py)
 
 **Section sources**
 
-- [backend/app/routers/documents.py](file://backend/app/routers/documents.py)
-- [backend/app/services/document_service.py](file://backend/app/services/document_service.py)
-- [backend/app/pipeline/orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [backend/app/routers/stream.py](file://backend/app/routers/stream.py)
+- [backend/app/routers/documents.py](../../../../backend/app/routers/v1/documents.py)
+- [backend/app/services/document_service.py](../../../../backend/app/services/document_service.py)
+- [backend/app/pipeline/orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [backend/app/routers/stream.py](../../../../backend/app/routers/v1/stream.py)
 
 ### Formatter Mode B: Live Preview (WebSocket Communication)
 
@@ -248,13 +248,13 @@ Real-time mechanics:
 
 **Diagram sources**
 
-- [backend/app/routers/preview.py](file://backend/app/routers/preview.py)
-- [backend/app/realtime/pubsub.py](file://backend/app/realtime/pubsub.py)
+- [backend/app/routers/preview.py](../../../../backend/app/routers/preview.py)
+- [backend/app/realtime/pubsub.py](../../../../backend/app/realtime/pubsub.py)
 
 **Section sources**
 
-- [backend/app/routers/preview.py](file://backend/app/routers/preview.py)
-- [backend/app/realtime/pubsub.py](file://backend/app/realtime/pubsub.py)
+- [backend/app/routers/preview.py](../../../../backend/app/routers/preview.py)
+- [backend/app/realtime/pubsub.py](../../../../backend/app/realtime/pubsub.py)
 
 ### Generator Modes: Multi-Doc Synthesis and AI Agent (Streaming Responses)
 
@@ -288,7 +288,7 @@ PO->>DS : "update_document()/upsert_processing_status()"
 PO->>PS : "publish('job : {id}', status_update)"
 PS-->>SSE : "events"
 C->>SSE : "GET /api/stream/{id}"
-SSE-->>C : "SSE events (progress, status)"
+SSE-->>C : "SSE events ("progress, status")"
 ```
 
 Additional streaming endpoint:
@@ -304,25 +304,25 @@ participant SSE as "SSE"
 C->>PR : "GET /api/v1/preview/{sessionId}/ai-suggest?content&templateId"
 PR->>LLM : "generate_with_fallback(messages, temperature, max_tokens)"
 LLM-->>PR : "text"
-PR-->>C : "SSE chunks (status, suggestion, done)"
+PR-->>C : "SSE chunks ("status, suggestion, done")"
 ```
 
 **Diagram sources**
 
-- [backend/app/routers/generator.py](file://backend/app/routers/generator.py)
-- [backend/app/routers/stream.py](file://backend/app/routers/stream.py)
-- [backend/app/routers/preview.py](file://backend/app/routers/preview.py)
-- [backend/app/services/document_service.py](file://backend/app/services/document_service.py)
-- [backend/app/pipeline/orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [backend/app/realtime/pubsub.py](file://backend/app/realtime/pubsub.py)
+- [backend/app/routers/generator.py](../../../../backend/app/routers/v1/generator.py)
+- [backend/app/routers/stream.py](../../../../backend/app/routers/v1/stream.py)
+- [backend/app/routers/preview.py](../../../../backend/app/routers/preview.py)
+- [backend/app/services/document_service.py](../../../../backend/app/services/document_service.py)
+- [backend/app/pipeline/orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [backend/app/realtime/pubsub.py](../../../../backend/app/realtime/pubsub.py)
 
 **Section sources**
 
-- [backend/app/routers/generator.py](file://backend/app/routers/generator.py)
-- [backend/app/routers/preview.py](file://backend/app/routers/preview.py)
-- [backend/app/routers/stream.py](file://backend/app/routers/stream.py)
-- [backend/app/services/document_service.py](file://backend/app/services/document_service.py)
-- [backend/app/pipeline/orchestrator.py](file://backend/app/pipeline/orchestrator.py)
+- [backend/app/routers/generator.py](../../../../backend/app/routers/v1/generator.py)
+- [backend/app/routers/preview.py](../../../../backend/app/routers/preview.py)
+- [backend/app/routers/stream.py](../../../../backend/app/routers/v1/stream.py)
+- [backend/app/services/document_service.py](../../../../backend/app/services/document_service.py)
+- [backend/app/pipeline/orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
 
 ## Dependency Analysis
 
@@ -347,25 +347,25 @@ Cel["celery_tasks.py"] -. optional .-> PO
 
 **Diagram sources**
 
-- [backend/app/routers/documents.py](file://backend/app/routers/documents.py)
-- [backend/app/routers/generator.py](file://backend/app/routers/generator.py)
-- [backend/app/routers/preview.py](file://backend/app/routers/preview.py)
-- [backend/app/routers/stream.py](file://backend/app/routers/stream.py)
-- [backend/app/services/document_service.py](file://backend/app/services/document_service.py)
-- [backend/app/pipeline/orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [backend/app/realtime/pubsub.py](file://backend/app/realtime/pubsub.py)
-- [backend/app/tasks/celery_tasks.py](file://backend/app/tasks/celery_tasks.py)
+- [backend/app/routers/documents.py](../../../../backend/app/routers/v1/documents.py)
+- [backend/app/routers/generator.py](../../../../backend/app/routers/v1/generator.py)
+- [backend/app/routers/preview.py](../../../../backend/app/routers/preview.py)
+- [backend/app/routers/stream.py](../../../../backend/app/routers/v1/stream.py)
+- [backend/app/services/document_service.py](../../../../backend/app/services/document_service.py)
+- [backend/app/pipeline/orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [backend/app/realtime/pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [backend/app/tasks/celery_tasks.py](../../../../backend/app/tasks/celery_tasks.py)
 
 **Section sources**
 
-- [backend/app/routers/documents.py](file://backend/app/routers/documents.py)
-- [backend/app/routers/generator.py](file://backend/app/routers/generator.py)
-- [backend/app/routers/preview.py](file://backend/app/routers/preview.py)
-- [backend/app/routers/stream.py](file://backend/app/routers/stream.py)
-- [backend/app/services/document_service.py](file://backend/app/services/document_service.py)
-- [backend/app/pipeline/orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [backend/app/realtime/pubsub.py](file://backend/app/realtime/pubsub.py)
-- [backend/app/tasks/celery_tasks.py](file://backend/app/tasks/celery_tasks.py)
+- [backend/app/routers/documents.py](../../../../backend/app/routers/v1/documents.py)
+- [backend/app/routers/generator.py](../../../../backend/app/routers/v1/generator.py)
+- [backend/app/routers/preview.py](../../../../backend/app/routers/preview.py)
+- [backend/app/routers/stream.py](../../../../backend/app/routers/v1/stream.py)
+- [backend/app/services/document_service.py](../../../../backend/app/services/document_service.py)
+- [backend/app/pipeline/orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [backend/app/realtime/pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [backend/app/tasks/celery_tasks.py](../../../../backend/app/tasks/celery_tasks.py)
 
 ## Performance Considerations
 
@@ -395,10 +395,10 @@ Operational checks:
 
 **Section sources**
 
-- [backend/app/routers/documents.py](file://backend/app/routers/documents.py)
-- [backend/app/routers/stream.py](file://backend/app/routers/stream.py)
-- [backend/app/routers/preview.py](file://backend/app/routers/preview.py)
-- [backend/app/main.py](file://backend/app/main.py)
+- [backend/app/routers/documents.py](../../../../backend/app/routers/v1/documents.py)
+- [backend/app/routers/stream.py](../../../../backend/app/routers/v1/stream.py)
+- [backend/app/routers/preview.py](../../../../backend/app/routers/preview.py)
+- [backend/app/main.py](../../../../backend/app/main.py)
 
 ## Conclusion
 

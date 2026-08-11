@@ -5,17 +5,17 @@
 
 <cite>
 **Referenced Files in This Document**
-- [README.md](file://README.md)
-- [backend/README.md](file://backend/README.md)
-- [backend/pyproject.toml](file://backend/pyproject.toml)
-- [backend/requirements.txt](file://backend/requirements.txt)
-- [backend/app/main.py](file://backend/app/main.py)
-- [backend/docker/README.md](file://backend/docker/README.md)
-- [backend/docker/docker-compose.yml](file://backend/docker/docker-compose.yml)
+- [README.md](../../../README.md)
+- [backend/README.md](../../../backend/README.md)
+- [backend/pyproject.toml](../../../backend/pyproject.toml)
+- [backend/requirements.txt](../../../backend/requirements.txt)
+- [backend/app/main.py](../../../backend/app/main.py)
+- [backend/docker/README.md](../../../backend/docker/README.md)
+- [backend/docker/docker-compose.yml](../../../backend/docker/docker-compose.yml)
 - [scripts/generate_env_template.py](file://scripts/generate_env_template.py)
-- [frontend/package.json](file://frontend/package.json)
+- [frontend/package.json](../../../frontend/package.json)
 - [docs/API.md](file://docs/API.md)
-- [docs/troubleshooting.md](file://docs/troubleshooting.md)
+- [docs/troubleshooting.md](../../operations/TROUBLESHOOTING.md)
 </cite>
 
 ## Table of Contents
@@ -52,22 +52,22 @@ Notes:
 
 **Section sources**
 
-- [backend/pyproject.toml:8](file://backend/pyproject.toml#L8)
-- [README.md:13](file://README.md#L13)
-- [backend/README.md:56](file://backend/README.md#L56)
+- [backend/pyproject.toml:8](../../../backend/pyproject.toml#L8)
+- [README.md:13](../../../README.md#L13)
+- [backend/README.md:56](../../../backend/README.md#L56)
 
 ## Quick Links
 
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-- OpenAPI Docs: http://localhost:8000/docs
+- Frontend: <http://localhost:3000>
+- Backend API: <http://localhost:8000>
+- OpenAPI Docs: <http://localhost:8000/docs>
 - Framework: Next.js 14 (App Router), not Vite
 
 **Section sources**
 
-- [README.md:9](file://README.md#L9)
-- [README.md:10](file://README.md#L10)
-- [README.md:12](file://README.md#L12)
+- [README.md:9](../../../README.md#L9)
+- [README.md:10](../../../README.md#L10)
+- [README.md:12](../../../README.md#L12)
 
 ## Project Structure
 
@@ -101,20 +101,20 @@ DOCS_TRBL --> BE_MAIN
 
 **Diagram sources**
 
-- [backend/app/main.py:263](file://backend/app/main.py#L263)
-- [backend/pyproject.toml:1](file://backend/pyproject.toml#L1)
-- [backend/requirements.txt:1](file://backend/requirements.txt#L1)
-- [backend/docker/README.md:1](file://backend/docker/README.md#L1)
-- [backend/docker/docker-compose.yml:1](file://backend/docker/docker-compose.yml#L1)
-- [frontend/package.json:1](file://frontend/package.json#L1)
+- [backend/app/main.py:263](../../../backend/app/main.py#L263)
+- [backend/pyproject.toml:1](../../../backend/pyproject.toml#L1)
+- [backend/requirements.txt:1](../../../backend/requirements.txt#L1)
+- [backend/docker/README.md:1](../../../backend/docker/README.md#L1)
+- [backend/docker/docker-compose.yml:1](../../../backend/docker/docker-compose.yml#L1)
+- [frontend/package.json:1](../../../frontend/package.json#L1)
 - [docs/API.md:1](file://docs/API.md#L1)
-- [docs/troubleshooting.md:1](file://docs/troubleshooting.md#L1)
+- [docs/troubleshooting.md:1](../../operations/TROUBLESHOOTING.md#L1)
 
 **Section sources**
 
-- [README.md:1](file://README.md#L1)
-- [backend/README.md:1](file://backend/README.md#L1)
-- [frontend/package.json:1](file://frontend/package.json#L1)
+- [README.md:1](../../../README.md#L1)
+- [backend/README.md:1](../../../backend/README.md#L1)
+- [frontend/package.json:1](../../../frontend/package.json#L1)
 
 ## Backend Setup
 
@@ -137,16 +137,16 @@ E --> F["uvicorn app.main:app --reload --port 8000"]
 
 **Diagram sources**
 
-- [README.md:87](file://README.md#L87)
-- [README.md:105](file://README.md#L105)
-- [backend/README.md:58](file://backend/README.md#L58)
+- [README.md:87](../../../README.md#L87)
+- [README.md:105](../../../README.md#L105)
+- [backend/README.md:58](../../../backend/README.md#L58)
 
 **Section sources**
 
-- [README.md:87](file://README.md#L87)
-- [README.md:105](file://README.md#L105)
-- [backend/README.md:58](file://backend/README.md#L58)
-- [backend/requirements.txt:1](file://backend/requirements.txt#L1)
+- [README.md:87](../../../README.md#L87)
+- [README.md:105](../../../README.md#L105)
+- [backend/README.md:58](../../../backend/README.md#L58)
+- [backend/requirements.txt:1](../../../backend/requirements.txt#L1)
 
 ## Frontend Setup
 
@@ -166,14 +166,14 @@ C --> D["npm run dev"]
 
 **Diagram sources**
 
-- [README.md:113](file://README.md#L113)
-- [README.md:117](file://README.md#L117)
+- [README.md:113](../../../README.md#L113)
+- [README.md:117](../../../README.md#L117)
 
 **Section sources**
 
-- [README.md:113](file://README.md#L113)
-- [README.md:117](file://README.md#L117)
-- [frontend/package.json:6](file://frontend/package.json#L6)
+- [README.md:113](../../../README.md#L113)
+- [README.md:117](../../../README.md#L117)
+- [frontend/package.json:6](../../../frontend/package.json#L6)
 
 ## Environment Variables
 
@@ -200,9 +200,9 @@ Syncing templates:
 ```mermaid
 flowchart TD
 A[".env (Backend)"] --> B["Supabase Keys"]
-A --> C["LLM Keys (NVIDIA, Groq)"]
+A --> C["LLM Keys ("NVIDIA, Groq")"]
 A --> D["Redis URL"]
-A --> E["Flags (GROBID, HTTPS, Cleanup, Memory)"]
+A --> E["Flags ("GROBID, HTTPS, Cleanup, Memory")"]
 F[".env.local (Frontend)"] --> G["NEXT_PUBLIC_API_URL"]
 F --> H["NEXT_PUBLIC_SUPABASE_URL / ANON_KEY"]
 I["scripts/generate_env_template.py"] --> J[".env.template (Backend)"]
@@ -211,16 +211,16 @@ I --> K[".env.template (Frontend)"]
 
 **Diagram sources**
 
-- [README.md:35](file://README.md#L35)
-- [README.md:59](file://README.md#L59)
+- [README.md:35](../../../README.md#L35)
+- [README.md:59](../../../README.md#L59)
 - [scripts/generate_env_template.py:1](file://scripts/generate_env_template.py#L1)
 
 **Section sources**
 
-- [README.md:35](file://README.md#L35)
-- [README.md:59](file://README.md#L59)
-- [README.md:70](file://README.md#L70)
-- [README.md:72](file://README.md#L72)
+- [README.md:35](../../../README.md#L35)
+- [README.md:59](../../../README.md#L59)
+- [README.md:70](../../../README.md#L70)
+- [README.md:72](../../../README.md#L72)
 - [scripts/generate_env_template.py:210](file://scripts/generate_env_template.py#L210)
 
 ## Development Server Startup
@@ -248,13 +248,13 @@ BE-->>FE : Returns formatted responses
 
 **Diagram sources**
 
-- [README.md:105](file://README.md#L105)
-- [README.md:117](file://README.md#L117)
+- [README.md:105](../../../README.md#L105)
+- [README.md:117](../../../README.md#L117)
 
 **Section sources**
 
-- [README.md:105](file://README.md#L105)
-- [README.md:117](file://README.md#L117)
+- [README.md:105](../../../README.md#L105)
+- [README.md:117](../../../README.md#L117)
 
 ## Basic Usage Examples
 
@@ -310,14 +310,14 @@ After starting both servers, verify the setup:
 
 - Backend health: GET /health should return OK and list Redis, DB, and ChromaDB statuses.
 - OpenAPI docs: Visit /docs to confirm endpoint availability.
-- Frontend: Open http://localhost:3000 and ensure the app loads without errors.
-- Environment variables: Confirm NEXT_PUBLIC_API_URL points to http://localhost:8000.
+- Frontend: Open <http://localhost:3000> and ensure the app loads without errors.
+- Environment variables: Confirm NEXT_PUBLIC_API_URL points to <http://localhost:8000>.
 
 **Section sources**
 
 - [docs/API.md:192](file://docs/API.md#L192)
-- [README.md:109](file://README.md#L109)
-- [README.md:121](file://README.md#L121)
+- [README.md:109](../../../README.md#L109)
+- [README.md:121](../../../README.md#L121)
 
 ## Architecture Overview
 
@@ -325,9 +325,9 @@ High-level architecture for local development:
 
 ```mermaid
 graph TB
-FE["Frontend (Next.js 14)"]
+FE["Frontend ("Next.js 14")"]
 API["Backend (FastAPI)"]
-SUPA["Supabase (PostgreSQL + Storage)"]
+SUPA["Supabase ("PostgreSQL + Storage")"]
 REDIS["Redis"]
 GROBID["GROBID (optional)"]
 CHROMA["ChromaDB (RAG)"]
@@ -340,37 +340,37 @@ API -. optional .-> GROBID
 
 **Diagram sources**
 
-- [README.md:145](file://README.md#L145)
-- [backend/app/main.py:263](file://backend/app/main.py#L263)
+- [README.md:145](../../../README.md#L145)
+- [backend/app/main.py:263](../../../backend/app/main.py#L263)
 
 **Section sources**
 
-- [README.md:145](file://README.md#L145)
-- [backend/app/main.py:263](file://backend/app/main.py#L263)
+- [README.md:145](../../../README.md#L145)
+- [backend/app/main.py:263](../../../backend/app/main.py#L263)
 
 ## Troubleshooting Guide
 
 Common setup and runtime issues with resolutions:
 
 - Upload errors
-    - Invalid file type: Ensure the file is DOCX, PDF, or TEX.
-    - File too large: Reduce image sizes or split appendices.
+  - Invalid file type: Ensure the file is DOCX, PDF, or TEX.
+  - File too large: Reduce image sizes or split appendices.
 
 - Processing issues
-    - Status stuck on RUNNING: Refresh the page, check backend logs, and retry.
-    - Formatting failure: Try the “None” template, then retry with the target template.
+  - Status stuck on RUNNING: Refresh the page, check backend logs, and retry.
+  - Formatting failure: Try the “None” template, then retry with the target template.
 
 - Preview and download problems
-    - Empty or partial preview: Confirm the job reached COMPLETED status and retry.
-    - Download button fails: Ensure COMPLETED status, retry from the Download page, and try DOCX first.
+  - Empty or partial preview: Confirm the job reached COMPLETED status and retry.
+  - Download button fails: Ensure COMPLETED status, retry from the Download page, and try DOCX first.
 
 - Authentication and security
-    - 401 Unauthorized: Log out and log in again.
-    - CSRF token mismatch: Clear site cookies, refresh, and retry.
+  - 401 Unauthorized: Log out and log in again.
+  - CSRF token mismatch: Clear site cookies, refresh, and retry.
 
 - Debug commands
-    - Frontend: Run tests and build locally.
-    - Backend: Run targeted tests for template rendering and export pipeline.
+  - Frontend: Run tests and build locally.
+  - Backend: Run targeted tests for template rendering and export pipeline.
 
 Escalation checklist:
 
@@ -378,15 +378,15 @@ Escalation checklist:
 
 **Section sources**
 
-- [docs/troubleshooting.md:5](file://docs/troubleshooting.md#L5)
-- [docs/troubleshooting.md:16](file://docs/troubleshooting.md#L16)
-- [docs/troubleshooting.md:29](file://docs/troubleshooting.md#L29)
-- [docs/troubleshooting.md:42](file://docs/troubleshooting.md#L42)
-- [docs/troubleshooting.md:55](file://docs/troubleshooting.md#L55)
-- [docs/troubleshooting.md:70](file://docs/troubleshooting.md#L70)
-- [docs/troubleshooting.md:95](file://docs/troubleshooting.md#L95)
-- [docs/troubleshooting.md:122](file://docs/troubleshooting.md#L122)
-- [docs/troubleshooting.md:140](file://docs/troubleshooting.md#L140)
+- [docs/troubleshooting.md:5](../../operations/TROUBLESHOOTING.md#L5)
+- [docs/troubleshooting.md:16](../../operations/TROUBLESHOOTING.md#L16)
+- [docs/troubleshooting.md:29](../../operations/TROUBLESHOOTING.md#L29)
+- [docs/troubleshooting.md:42](../../operations/TROUBLESHOOTING.md#L42)
+- [docs/troubleshooting.md:55](../../operations/TROUBLESHOOTING.md#L55)
+- [docs/troubleshooting.md:70](../../operations/TROUBLESHOOTING.md#L70)
+- [docs/troubleshooting.md:95](../../operations/TROUBLESHOOTING.md#L95)
+- [docs/troubleshooting.md:122](../../operations/TROUBLESHOOTING.md#L122)
+- [docs/troubleshooting.md:140](../../operations/TROUBLESHOOTING.md#L140)
 
 ## Conclusion
 

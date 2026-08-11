@@ -5,21 +5,21 @@
 
 <cite>
 **Referenced Files in This Document**
-- [AuthContext.jsx](file://frontend/src/context/AuthContext.jsx)
-- [DocumentContext.jsx](file://frontend/src/context/DocumentContext.jsx)
-- [ThemeContext.jsx](file://frontend/src/context/ThemeContext.jsx)
-- [ToastContext.jsx](file://frontend/src/context/ToastContext.jsx)
-- [UserPreferencesContext.jsx](file://frontend/src/context/UserPreferencesContext.jsx)
-- [useAgent.js](file://frontend/src/hooks/useAgent.js)
-- [useAgentEvents.js](file://frontend/src/hooks/useAgentEvents.js)
-- [useGeneratorSessionStream.js](file://frontend/src/hooks/useGeneratorSessionStream.js)
-- [useSessionEventStream.js](file://frontend/src/hooks/useSessionEventStream.js)
-- [useSynthesisSessionStream.js](file://frontend/src/hooks/useSynthesisSessionStream.js)
-- [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
-- [useUpload.js](file://frontend/src/hooks/useUpload.js)
-- [useAutosave.js](file://frontend/src/hooks/useAutosave.js)
-- [useUnsavedChanges.js](file://frontend/src/hooks/useUnsavedChanges.js)
-- [ErrorBoundary.jsx](file://frontend/src/components/ErrorBoundary.jsx)
+- [AuthContext.jsx](../../../../../frontend/src/context/AuthContext.jsx)
+- [DocumentContext.jsx](../../../../../frontend/src/context/DocumentContext.jsx)
+- [ThemeContext.jsx](../../../../../frontend/src/context/ThemeContext.jsx)
+- [ToastContext.jsx](../../../../../frontend/src/context/ToastContext.jsx)
+- [UserPreferencesContext.jsx](../../../../../frontend/src/context/UserPreferencesContext.jsx)
+- [useAgent.js](../../../../../frontend/src/hooks/useAgent.js)
+- [useAgentEvents.js](../../../../../frontend/src/hooks/useAgentEvents.js)
+- [useGeneratorSessionStream.js](../../../../../frontend/src/hooks/useGeneratorSessionStream.js)
+- [useSessionEventStream.js](../../../../../frontend/src/hooks/useSessionEventStream.js)
+- [useSynthesisSessionStream.js](../../../../../frontend/src/hooks/useSynthesisSessionStream.js)
+- [useLivePreviewSocket.js](../../../../../frontend/src/hooks/useLivePreviewSocket.js)
+- [useUpload.js](../../../../../frontend/src/hooks/useUpload.js)
+- [useAutosave.js](../../../../../frontend/src/hooks/useAutosave.js)
+- [useUnsavedChanges.js](../../../../../frontend/src/hooks/useUnsavedChanges.js)
+- [ErrorBoundary.jsx](../../../../../frontend/src/components/ErrorBoundary.jsx)
 </cite>
 
 ## Table of Contents
@@ -97,37 +97,37 @@ AC --> API
 
 **Diagram sources**
 
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
-- [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
-- [ThemeContext.jsx:57-70](file://frontend/src/context/ThemeContext.jsx#L57-L70)
-- [ToastContext.jsx:9-104](file://frontend/src/context/ToastContext.jsx#L9-L104)
-- [UserPreferencesContext.jsx:8-66](file://frontend/src/context/UserPreferencesContext.jsx#L8-L66)
-- [useAgent.js:18-292](file://frontend/src/hooks/useAgent.js#L18-L292)
-- [useAgentEvents.js:7-163](file://frontend/src/hooks/useAgentEvents.js#L7-L163)
-- [useGeneratorSessionStream.js:5-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
-- [useSessionEventStream.js:4-101](file://frontend/src/hooks/useSessionEventStream.js#L4-L101)
-- [useSynthesisSessionStream.js:5-12](file://frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
-- [useLivePreviewSocket.js:28-137](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
-- [useUpload.js:22-361](file://frontend/src/hooks/useUpload.js#L22-L361)
-- [useAutosave.js:5-37](file://frontend/src/hooks/useAutosave.js#L5-L37)
-- [useUnsavedChanges.js:9-23](file://frontend/src/hooks/useUnsavedChanges.js#L9-L23)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
+- [DocumentContext.jsx:17-139](../../../../../frontend/src/context/DocumentContext.jsx#L17-L139)
+- [ThemeContext.jsx:57-70](../../../../../frontend/src/context/ThemeContext.jsx#L57-L70)
+- [ToastContext.jsx:9-104](../../../../../frontend/src/context/ToastContext.jsx#L9-L104)
+- [UserPreferencesContext.jsx:8-66](../../../../../frontend/src/context/UserPreferencesContext.jsx#L8-L66)
+- [useAgent.js:18-292](../../../../../frontend/src/hooks/useAgent.js#L18-L292)
+- [useAgentEvents.js:7-163](../../../../../frontend/src/hooks/useAgentEvents.js#L7-L163)
+- [useGeneratorSessionStream.js:5-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
+- [useSessionEventStream.js:4-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L4-L101)
+- [useSynthesisSessionStream.js:5-12](../../../../../frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
+- [useLivePreviewSocket.js:28-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
+- [useUpload.js:22-361](../../../../../frontend/src/hooks/useUpload.js#L22-L361)
+- [useAutosave.js:5-37](../../../../../frontend/src/hooks/useAutosave.js#L5-L37)
+- [useUnsavedChanges.js:9-23](../../../../../frontend/src/hooks/useUnsavedChanges.js#L9-L23)
 
 **Section sources**
 
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
-- [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
-- [ThemeContext.jsx:57-70](file://frontend/src/context/ThemeContext.jsx#L57-L70)
-- [ToastContext.jsx:9-104](file://frontend/src/context/ToastContext.jsx#L9-L104)
-- [UserPreferencesContext.jsx:8-66](file://frontend/src/context/UserPreferencesContext.jsx#L8-L66)
-- [useAgent.js:18-292](file://frontend/src/hooks/useAgent.js#L18-L292)
-- [useAgentEvents.js:7-163](file://frontend/src/hooks/useAgentEvents.js#L7-L163)
-- [useGeneratorSessionStream.js:5-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
-- [useSessionEventStream.js:4-101](file://frontend/src/hooks/useSessionEventStream.js#L4-L101)
-- [useSynthesisSessionStream.js:5-12](file://frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
-- [useLivePreviewSocket.js:28-137](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
-- [useUpload.js:22-361](file://frontend/src/hooks/useUpload.js#L22-L361)
-- [useAutosave.js:5-37](file://frontend/src/hooks/useAutosave.js#L5-L37)
-- [useUnsavedChanges.js:9-23](file://frontend/src/hooks/useUnsavedChanges.js#L9-L23)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
+- [DocumentContext.jsx:17-139](../../../../../frontend/src/context/DocumentContext.jsx#L17-L139)
+- [ThemeContext.jsx:57-70](../../../../../frontend/src/context/ThemeContext.jsx#L57-L70)
+- [ToastContext.jsx:9-104](../../../../../frontend/src/context/ToastContext.jsx#L9-L104)
+- [UserPreferencesContext.jsx:8-66](../../../../../frontend/src/context/UserPreferencesContext.jsx#L8-L66)
+- [useAgent.js:18-292](../../../../../frontend/src/hooks/useAgent.js#L18-L292)
+- [useAgentEvents.js:7-163](../../../../../frontend/src/hooks/useAgentEvents.js#L7-L163)
+- [useGeneratorSessionStream.js:5-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
+- [useSessionEventStream.js:4-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L4-L101)
+- [useSynthesisSessionStream.js:5-12](../../../../../frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
+- [useLivePreviewSocket.js:28-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
+- [useUpload.js:22-361](../../../../../frontend/src/hooks/useUpload.js#L22-L361)
+- [useAutosave.js:5-37](../../../../../frontend/src/hooks/useAutosave.js#L5-L37)
+- [useUnsavedChanges.js:9-23](../../../../../frontend/src/hooks/useUnsavedChanges.js#L9-L23)
 
 ## Core Components
 
@@ -140,20 +140,20 @@ AC --> API
 
 **Section sources**
 
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
-- [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
-- [ThemeContext.jsx:57-70](file://frontend/src/context/ThemeContext.jsx#L57-L70)
-- [ToastContext.jsx:9-104](file://frontend/src/context/ToastContext.jsx#L9-L104)
-- [UserPreferencesContext.jsx:8-66](file://frontend/src/context/UserPreferencesContext.jsx#L8-L66)
-- [useAgent.js:18-292](file://frontend/src/hooks/useAgent.js#L18-L292)
-- [useAgentEvents.js:7-163](file://frontend/src/hooks/useAgentEvents.js#L7-L163)
-- [useGeneratorSessionStream.js:5-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
-- [useSessionEventStream.js:4-101](file://frontend/src/hooks/useSessionEventStream.js#L4-L101)
-- [useSynthesisSessionStream.js:5-12](file://frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
-- [useLivePreviewSocket.js:28-137](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
-- [useUpload.js:22-361](file://frontend/src/hooks/useUpload.js#L22-L361)
-- [useAutosave.js:5-37](file://frontend/src/hooks/useAutosave.js#L5-L37)
-- [useUnsavedChanges.js:9-23](file://frontend/src/hooks/useUnsavedChanges.js#L9-L23)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
+- [DocumentContext.jsx:17-139](../../../../../frontend/src/context/DocumentContext.jsx#L17-L139)
+- [ThemeContext.jsx:57-70](../../../../../frontend/src/context/ThemeContext.jsx#L57-L70)
+- [ToastContext.jsx:9-104](../../../../../frontend/src/context/ToastContext.jsx#L9-L104)
+- [UserPreferencesContext.jsx:8-66](../../../../../frontend/src/context/UserPreferencesContext.jsx#L8-L66)
+- [useAgent.js:18-292](../../../../../frontend/src/hooks/useAgent.js#L18-L292)
+- [useAgentEvents.js:7-163](../../../../../frontend/src/hooks/useAgentEvents.js#L7-L163)
+- [useGeneratorSessionStream.js:5-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
+- [useSessionEventStream.js:4-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L4-L101)
+- [useSynthesisSessionStream.js:5-12](../../../../../frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
+- [useLivePreviewSocket.js:28-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
+- [useUpload.js:22-361](../../../../../frontend/src/hooks/useUpload.js#L22-L361)
+- [useAutosave.js:5-37](../../../../../frontend/src/hooks/useAutosave.js#L5-L37)
+- [useUnsavedChanges.js:9-23](../../../../../frontend/src/hooks/useUnsavedChanges.js#L9-L23)
 
 ## Architecture Overview
 
@@ -194,11 +194,11 @@ WS-->>UI : "html,warnings,latency"
 
 **Diagram sources**
 
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
-- [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
-- [UserPreferencesContext.jsx:8-66](file://frontend/src/context/UserPreferencesContext.jsx#L8-L66)
-- [useSessionEventStream.js:4-101](file://frontend/src/hooks/useSessionEventStream.js#L4-L101)
-- [useLivePreviewSocket.js:28-137](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
+- [DocumentContext.jsx:17-139](../../../../../frontend/src/context/DocumentContext.jsx#L17-L139)
+- [UserPreferencesContext.jsx:8-66](../../../../../frontend/src/context/UserPreferencesContext.jsx#L8-L66)
+- [useSessionEventStream.js:4-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L4-L101)
+- [useLivePreviewSocket.js:28-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
 
 ## Detailed Component Analysis
 
@@ -236,11 +236,11 @@ Ignore --> Done
 
 **Diagram sources**
 
-- [AuthContext.jsx:65-178](file://frontend/src/context/AuthContext.jsx#L65-L178)
+- [AuthContext.jsx:65-178](../../../../../frontend/src/context/AuthContext.jsx#L65-L178)
 
 **Section sources**
 
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
 
 ### Document Processing State (DocumentContext)
 
@@ -265,12 +265,12 @@ FailState --> PersistFail["Persist to sessionStorage"]
 
 **Diagram sources**
 
-- [DocumentContext.jsx:57-88](file://frontend/src/context/DocumentContext.jsx#L57-L88)
-- [DocumentContext.jsx:90-121](file://frontend/src/context/DocumentContext.jsx#L90-L121)
+- [DocumentContext.jsx:57-88](../../../../../frontend/src/context/DocumentContext.jsx#L57-L88)
+- [DocumentContext.jsx:90-121](../../../../../frontend/src/context/DocumentContext.jsx#L90-L121)
 
 **Section sources**
 
-- [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
+- [DocumentContext.jsx:17-139](../../../../../frontend/src/context/DocumentContext.jsx#L17-L139)
 
 ### Theme and Preferences (ThemeContext, UserPreferencesContext)
 
@@ -295,13 +295,13 @@ UPC-->>UI : "preferences updated"
 
 **Diagram sources**
 
-- [UserPreferencesContext.jsx:41-56](file://frontend/src/context/UserPreferencesContext.jsx#L41-L56)
-- [ThemeContext.jsx:24-48](file://frontend/src/context/ThemeContext.jsx#L24-L48)
+- [UserPreferencesContext.jsx:41-56](../../../../../frontend/src/context/UserPreferencesContext.jsx#L41-L56)
+- [ThemeContext.jsx:24-48](../../../../../frontend/src/context/ThemeContext.jsx#L24-L48)
 
 **Section sources**
 
-- [ThemeContext.jsx:57-70](file://frontend/src/context/ThemeContext.jsx#L57-L70)
-- [UserPreferencesContext.jsx:8-66](file://frontend/src/context/UserPreferencesContext.jsx#L8-L66)
+- [ThemeContext.jsx:57-70](../../../../../frontend/src/context/ThemeContext.jsx#L57-L70)
+- [UserPreferencesContext.jsx:8-66](../../../../../frontend/src/context/UserPreferencesContext.jsx#L8-L66)
 
 ### Notifications (ToastContext)
 
@@ -322,11 +322,11 @@ Remove --> Cleanup["Clear timeout"]
 
 **Diagram sources**
 
-- [ToastContext.jsx:19-34](file://frontend/src/context/ToastContext.jsx#L19-L34)
+- [ToastContext.jsx:19-34](../../../../../frontend/src/context/ToastContext.jsx#L19-L34)
 
 **Section sources**
 
-- [ToastContext.jsx:9-104](file://frontend/src/context/ToastContext.jsx#L9-L104)
+- [ToastContext.jsx:9-104](../../../../../frontend/src/context/ToastContext.jsx#L9-L104)
 
 ### Real-Time Streams and Sessions
 
@@ -355,15 +355,15 @@ Hook->>SSE : "close() on unmount"
 
 **Diagram sources**
 
-- [useSessionEventStream.js:20-96](file://frontend/src/hooks/useSessionEventStream.js#L20-L96)
-- [useGeneratorSessionStream.js:5-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
-- [useSynthesisSessionStream.js:5-12](file://frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
+- [useSessionEventStream.js:20-96](../../../../../frontend/src/hooks/useSessionEventStream.js#L20-L96)
+- [useGeneratorSessionStream.js:5-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
+- [useSynthesisSessionStream.js:5-12](../../../../../frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
 
 **Section sources**
 
-- [useSessionEventStream.js:4-101](file://frontend/src/hooks/useSessionEventStream.js#L4-L101)
-- [useGeneratorSessionStream.js:5-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
-- [useSynthesisSessionStream.js:5-12](file://frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
+- [useSessionEventStream.js:4-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L4-L101)
+- [useGeneratorSessionStream.js:5-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
+- [useSynthesisSessionStream.js:5-12](../../../../../frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
 
 #### Agent Session Events (useAgentEvents)
 
@@ -387,11 +387,11 @@ AE->>AG : "fetchSessionData/fetchLatestDocument"
 
 **Diagram sources**
 
-- [useAgentEvents.js:23-156](file://frontend/src/hooks/useAgentEvents.js#L23-L156)
+- [useAgentEvents.js:23-156](../../../../../frontend/src/hooks/useAgentEvents.js#L23-L156)
 
 **Section sources**
 
-- [useAgentEvents.js:7-163](file://frontend/src/hooks/useAgentEvents.js#L7-L163)
+- [useAgentEvents.js:7-163](../../../../../frontend/src/hooks/useAgentEvents.js#L7-L163)
 
 #### Live Preview WebSocket (useLivePreviewSocket)
 
@@ -415,11 +415,11 @@ LP->>LP : "isReconnecting/reconnectAttempt"
 
 **Diagram sources**
 
-- [useLivePreviewSocket.js:44-133](file://frontend/src/hooks/useLivePreviewSocket.js#L44-L133)
+- [useLivePreviewSocket.js:44-133](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L44-L133)
 
 **Section sources**
 
-- [useLivePreviewSocket.js:28-137](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
+- [useLivePreviewSocket.js:28-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
 
 ### Upload Workflow and Job State (useUpload)
 
@@ -447,12 +447,12 @@ Terminal --> |Failed| FailState["Update job.error"]
 
 **Diagram sources**
 
-- [useUpload.js:224-342](file://frontend/src/hooks/useUpload.js#L224-L342)
-- [useUpload.js:89-196](file://frontend/src/hooks/useUpload.js#L89-L196)
+- [useUpload.js:224-342](../../../../../frontend/src/hooks/useUpload.js#L224-L342)
+- [useUpload.js:89-196](../../../../../frontend/src/hooks/useUpload.js#L89-L196)
 
 **Section sources**
 
-- [useUpload.js:22-361](file://frontend/src/hooks/useUpload.js#L22-L361)
+- [useUpload.js:22-361](../../../../../frontend/src/hooks/useUpload.js#L22-L361)
 
 ### Local State Utilities
 
@@ -461,8 +461,8 @@ Terminal --> |Failed| FailState["Update job.error"]
 
 **Section sources**
 
-- [useAutosave.js:5-37](file://frontend/src/hooks/useAutosave.js#L5-L37)
-- [useUnsavedChanges.js:9-23](file://frontend/src/hooks/useUnsavedChanges.js#L9-L23)
+- [useAutosave.js:5-37](../../../../../frontend/src/hooks/useAutosave.js#L5-L37)
+- [useUnsavedChanges.js:9-23](../../../../../frontend/src/hooks/useUnsavedChanges.js#L9-L23)
 
 ## Dependency Analysis
 
@@ -488,29 +488,29 @@ USS --> SSE["SSE"]
 
 **Diagram sources**
 
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
-- [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
-- [UserPreferencesContext.jsx:8-66](file://frontend/src/context/UserPreferencesContext.jsx#L8-L66)
-- [ThemeContext.jsx:57-70](file://frontend/src/context/ThemeContext.jsx#L57-L70)
-- [useAgent.js:18-292](file://frontend/src/hooks/useAgent.js#L18-L292)
-- [useUpload.js:22-361](file://frontend/src/hooks/useUpload.js#L22-L361)
-- [useGeneratorSessionStream.js:5-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
-- [useSynthesisSessionStream.js:5-12](file://frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
-- [useSessionEventStream.js:4-101](file://frontend/src/hooks/useSessionEventStream.js#L4-L101)
-- [useLivePreviewSocket.js:28-137](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
+- [DocumentContext.jsx:17-139](../../../../../frontend/src/context/DocumentContext.jsx#L17-L139)
+- [UserPreferencesContext.jsx:8-66](../../../../../frontend/src/context/UserPreferencesContext.jsx#L8-L66)
+- [ThemeContext.jsx:57-70](../../../../../frontend/src/context/ThemeContext.jsx#L57-L70)
+- [useAgent.js:18-292](../../../../../frontend/src/hooks/useAgent.js#L18-L292)
+- [useUpload.js:22-361](../../../../../frontend/src/hooks/useUpload.js#L22-L361)
+- [useGeneratorSessionStream.js:5-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
+- [useSynthesisSessionStream.js:5-12](../../../../../frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
+- [useSessionEventStream.js:4-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L4-L101)
+- [useLivePreviewSocket.js:28-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
 
 **Section sources**
 
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
-- [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
-- [UserPreferencesContext.jsx:8-66](file://frontend/src/context/UserPreferencesContext.jsx#L8-L66)
-- [ThemeContext.jsx:57-70](file://frontend/src/context/ThemeContext.jsx#L57-L70)
-- [useAgent.js:18-292](file://frontend/src/hooks/useAgent.js#L18-L292)
-- [useUpload.js:22-361](file://frontend/src/hooks/useUpload.js#L22-L361)
-- [useGeneratorSessionStream.js:5-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
-- [useSynthesisSessionStream.js:5-12](file://frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
-- [useSessionEventStream.js:4-101](file://frontend/src/hooks/useSessionEventStream.js#L4-L101)
-- [useLivePreviewSocket.js:28-137](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
+- [DocumentContext.jsx:17-139](../../../../../frontend/src/context/DocumentContext.jsx#L17-L139)
+- [UserPreferencesContext.jsx:8-66](../../../../../frontend/src/context/UserPreferencesContext.jsx#L8-L66)
+- [ThemeContext.jsx:57-70](../../../../../frontend/src/context/ThemeContext.jsx#L57-L70)
+- [useAgent.js:18-292](../../../../../frontend/src/hooks/useAgent.js#L18-L292)
+- [useUpload.js:22-361](../../../../../frontend/src/hooks/useUpload.js#L22-L361)
+- [useGeneratorSessionStream.js:5-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L5-L12)
+- [useSynthesisSessionStream.js:5-12](../../../../../frontend/src/hooks/useSynthesisSessionStream.js#L5-L12)
+- [useSessionEventStream.js:4-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L4-L101)
+- [useLivePreviewSocket.js:28-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
 
 ## Performance Considerations
 
@@ -525,27 +525,27 @@ USS --> SSE["SSE"]
 ## Troubleshooting Guide
 
 - Authentication loops or stale state:
-    - Verify onAuthStateChange guards and signingInRef usage
-    - Confirm getSession/getUser verification and local storage cleanup
+  - Verify onAuthStateChange guards and signingInRef usage
+  - Confirm getSession/getUser verification and local storage cleanup
 - SSE/WebSocket disconnections:
-    - Inspect error handlers and exponential backoff logic
-    - Ensure token injection via query param when applicable
+  - Inspect error handlers and exponential backoff logic
+  - Ensure token injection via query param when applicable
 - Upload stalls or incorrect progress:
-    - Validate refetch intervals and polling logic
-    - Check chunked upload thresholds and abort controller usage
+  - Validate refetch intervals and polling logic
+  - Check chunked upload thresholds and abort controller usage
 - Toast not dismissing:
-    - Confirm timer cleanup and queue limits
+  - Confirm timer cleanup and queue limits
 - Live preview not updating:
-    - Verify checksum differences and debounce timing
-    - Check reconnect attempts and pending payload replay
+  - Verify checksum differences and debounce timing
+  - Check reconnect attempts and pending payload replay
 
 **Section sources**
 
-- [AuthContext.jsx:140-178](file://frontend/src/context/AuthContext.jsx#L140-L178)
-- [useSessionEventStream.js:76-96](file://frontend/src/hooks/useSessionEventStream.js#L76-L96)
-- [useUpload.js:75-96](file://frontend/src/hooks/useUpload.js#L75-L96)
-- [ToastContext.jsx:31-34](file://frontend/src/context/ToastContext.jsx#L31-L34)
-- [useLivePreviewSocket.js:91-102](file://frontend/src/hooks/useLivePreviewSocket.js#L91-L102)
+- [AuthContext.jsx:140-178](../../../../../frontend/src/context/AuthContext.jsx#L140-L178)
+- [useSessionEventStream.js:76-96](../../../../../frontend/src/hooks/useSessionEventStream.js#L76-L96)
+- [useUpload.js:75-96](../../../../../frontend/src/hooks/useUpload.js#L75-L96)
+- [ToastContext.jsx:31-34](../../../../../frontend/src/context/ToastContext.jsx#L31-L34)
+- [useLivePreviewSocket.js:91-102](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L91-L102)
 
 ## Conclusion
 

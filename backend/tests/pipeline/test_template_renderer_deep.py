@@ -115,9 +115,11 @@ class TestRenderEdgeCases:
         doc.metadata = DocumentMetadata()
         doc.blocks = []
         doc.references = []
+        doc.original_filename = "test.pdf"
+        doc.formatting_options = {}
         with (
             patch("app.pipeline.formatting.template_renderer._DOCXTPL_AVAILABLE", True),
-            patch.object(renderer, "_resolve_template_path", side_effect=Exception("boom")),
+            patch.object(renderer, "_resolve_template_path_with_flag", side_effect=Exception("boom")),
         ):
             with pytest.raises(Exception, match="boom"):
                 renderer.render(document=doc)

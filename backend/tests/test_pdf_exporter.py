@@ -4,30 +4,30 @@ from unittest.mock import MagicMock, patch
 class TestFindLibreOffice:
     def test_windows_paths(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+        exporter = PDFExporter(libreoffice_path="skip") # to avoid auto-find in init
         with patch("platform.system", return_value="Windows"):
             with patch("os.path.exists", side_effect=[False, True]):
-                exporter = PDFExporter()
                 result = exporter._find_libreoffice()
         assert "LibreOffice" in result
 
     def test_windows_not_found(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+        exporter = PDFExporter(libreoffice_path="skip")
         with patch("platform.system", return_value="Windows"), patch("os.path.exists", return_value=False):
-            exporter = PDFExporter()
             result = exporter._find_libreoffice()
         assert result is None
 
     def test_macos_path(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+        exporter = PDFExporter(libreoffice_path="skip")
         with patch("platform.system", return_value="Darwin"):
-            exporter = PDFExporter()
             result = exporter._find_libreoffice()
         assert "LibreOffice.app" in result
 
     def test_linux_default(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+        exporter = PDFExporter(libreoffice_path="skip")
         with patch("platform.system", return_value="Linux"):
-            exporter = PDFExporter()
             result = exporter._find_libreoffice()
         assert result == "libreoffice"
 

@@ -5,19 +5,19 @@
 
 <cite>
 **Referenced Files in This Document**
-- [backend/app/main.py](file://backend/app/main.py)
-- [backend/app/routers/auth.py](file://backend/app/routers/auth.py)
-- [backend/app/services/auth_service.py](file://backend/app/services/auth_service.py)
-- [backend/app/routers/documents.py](file://backend/app/routers/documents.py)
-- [backend/app/services/document_service.py](file://backend/app/services/document_service.py)
-- [backend/app/routers/generator.py](file://backend/app/routers/generator.py)
-- [backend/app/services/generator_session_service.py](file://backend/app/services/generator_session_service.py)
-- [backend/app/routers/templates.py](file://backend/app/routers/templates.py)
-- [backend/app/db/supabase_client.py](file://backend/app/db/supabase_client.py)
-- [frontend/src/services/api.auth.js](file://frontend/src/services/api.auth.js)
-- [frontend/src/services/api.core.js](file://frontend/src/services/api.core.js)
-- [frontend/src/lib/supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
-- [frontend/src/lib/analytics.js](file://frontend/src/lib/analytics.js)
+- [backend/app/main.py](../../../../../backend/app/main.py)
+- [backend/app/routers/auth.py](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py)
+- [backend/app/services/auth_service.py](../../../../../backend/app/services/auth_service.py)
+- [backend/app/routers/documents.py](../../../../../backend/app/routers/v1/documents.py)
+- [backend/app/services/document_service.py](../../../../../backend/app/services/document_service.py)
+- [backend/app/routers/generator.py](../../../../../backend/app/routers/v1/generator.py)
+- [backend/app/services/generator_session_service.py](../../../../../backend/app/services/generator_session_service.py)
+- [backend/app/routers/templates.py](../../../../../backend/app/routers/v1/templates.py)
+- [backend/app/db/supabase_client.py](../../../../../backend/app/db/supabase_client.py)
+- [frontend/src/services/api.auth.js](../../../../../frontend/src/services/api.auth.js)
+- [frontend/src/services/api.core.js](../../../../../frontend/src/services/api.core.js)
+- [frontend/src/lib/supabaseClient.js](../../../../../frontend/src/lib/supabaseClient.js)
+- [frontend/src/lib/analytics.js](../../../../../frontend/src/lib/analytics.js)
 </cite>
 
 ## Table of Contents
@@ -76,24 +76,24 @@ FCore --> FSb
 
 **Diagram sources**
 
-- [backend/app/main.py:263-383](file://backend/app/main.py#L263-L383)
-- [backend/app/routers/auth.py:1-59](file://backend/app/routers/auth.py#L1-L59)
-- [backend/app/routers/documents.py:1-1171](file://backend/app/routers/documents.py#L1-L1171)
-- [backend/app/routers/generator.py:1-231](file://backend/app/routers/generator.py#L1-L231)
-- [backend/app/routers/templates.py:1-327](file://backend/app/routers/templates.py#L1-L327)
-- [backend/app/services/auth_service.py:1-183](file://backend/app/services/auth_service.py#L1-L183)
-- [backend/app/services/document_service.py:1-560](file://backend/app/services/document_service.py#L1-L560)
-- [backend/app/services/generator_session_service.py:1-362](file://backend/app/services/generator_session_service.py#L1-L362)
-- [backend/app/db/supabase_client.py](file://backend/app/db/supabase_client.py)
-- [frontend/src/services/api.auth.js:1-39](file://frontend/src/services/api.auth.js#L1-L39)
-- [frontend/src/services/api.core.js:1-368](file://frontend/src/services/api.core.js#L1-L368)
-- [frontend/src/lib/supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
-- [frontend/src/lib/analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
+- [backend/app/main.py:263-383](../../../../../backend/app/main.py#L263-L383)
+- [backend/app/routers/auth.py:1-59](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L1-L59)
+- [backend/app/routers/documents.py:1-1171](../../../../../backend/app/routers/v1/documents.py#L1-L1171)
+- [backend/app/routers/generator.py:1-231](../../../../../backend/app/routers/v1/generator.py#L1-L231)
+- [backend/app/routers/templates.py:1-327](../../../../../backend/app/routers/v1/templates.py#L1-L327)
+- [backend/app/services/auth_service.py:1-183](../../../../../backend/app/services/auth_service.py#L1-L183)
+- [backend/app/services/document_service.py:1-560](../../../../../backend/app/services/document_service.py#L1-L560)
+- [backend/app/services/generator_session_service.py:1-362](../../../../../backend/app/services/generator_session_service.py#L1-L362)
+- [backend/app/db/supabase_client.py](../../../../../backend/app/db/supabase_client.py)
+- [frontend/src/services/api.auth.js:1-39](../../../../../frontend/src/services/api.auth.js#L1-L39)
+- [frontend/src/services/api.core.js:1-368](../../../../../frontend/src/services/api.core.js#L1-L368)
+- [frontend/src/lib/supabaseClient.js:1-24](../../../../../frontend/src/lib/supabaseClient.js#L1-L24)
+- [frontend/src/lib/analytics.js:1-20](../../../../../frontend/src/lib/analytics.js#L1-L20)
 
 **Section sources**
 
-- [backend/app/main.py:263-383](file://backend/app/main.py#L263-L383)
-- [frontend/src/services/api.core.js:1-368](file://frontend/src/services/api.core.js#L1-L368)
+- [backend/app/main.py:263-383](../../../../../backend/app/main.py#L263-L383)
+- [frontend/src/services/api.core.js:1-368](../../../../../frontend/src/services/api.core.js#L1-L368)
 
 ## Core Components
 
@@ -106,16 +106,16 @@ FCore --> FSb
 
 **Section sources**
 
-- [backend/app/routers/auth.py:1-59](file://backend/app/routers/auth.py#L1-L59)
-- [backend/app/services/auth_service.py:56-183](file://backend/app/services/auth_service.py#L56-L183)
-- [backend/app/routers/documents.py:1-1171](file://backend/app/routers/documents.py#L1-L1171)
-- [backend/app/services/document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
-- [backend/app/routers/generator.py:1-231](file://backend/app/routers/generator.py#L1-L231)
-- [backend/app/services/generator_session_service.py:20-362](file://backend/app/services/generator_session_service.py#L20-L362)
-- [backend/app/routers/templates.py:1-327](file://backend/app/routers/templates.py#L1-L327)
-- [frontend/src/services/api.auth.js:1-39](file://frontend/src/services/api.auth.js#L1-L39)
-- [frontend/src/services/api.core.js:1-368](file://frontend/src/services/api.core.js#L1-L368)
-- [frontend/src/lib/analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
+- [backend/app/routers/auth.py:1-59](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L1-L59)
+- [backend/app/services/auth_service.py:56-183](../../../../../backend/app/services/auth_service.py#L56-L183)
+- [backend/app/routers/documents.py:1-1171](../../../../../backend/app/routers/v1/documents.py#L1-L1171)
+- [backend/app/services/document_service.py:34-560](../../../../../backend/app/services/document_service.py#L34-L560)
+- [backend/app/routers/generator.py:1-231](../../../../../backend/app/routers/v1/generator.py#L1-L231)
+- [backend/app/services/generator_session_service.py:20-362](../../../../../backend/app/services/generator_session_service.py#L20-L362)
+- [backend/app/routers/templates.py:1-327](../../../../../backend/app/routers/v1/templates.py#L1-L327)
+- [frontend/src/services/api.auth.js:1-39](../../../../../frontend/src/services/api.auth.js#L1-L39)
+- [frontend/src/services/api.core.js:1-368](../../../../../frontend/src/services/api.core.js#L1-L368)
+- [frontend/src/lib/analytics.js:1-20](../../../../../frontend/src/lib/analytics.js#L1-L20)
 
 ## Architecture Overview
 
@@ -139,17 +139,17 @@ Note over FE,SVC : Auth header injected automatically by API Core
 
 **Diagram sources**
 
-- [frontend/src/services/api.auth.js:18-26](file://frontend/src/services/api.auth.js#L18-L26)
-- [frontend/src/services/api.core.js:307-362](file://frontend/src/services/api.core.js#L307-L362)
-- [backend/app/routers/auth.py:31-36](file://backend/app/routers/auth.py#L31-L36)
-- [backend/app/services/auth_service.py:102-121](file://backend/app/services/auth_service.py#L102-L121)
+- [frontend/src/services/api.auth.js:18-26](../../../../../frontend/src/services/api.auth.js#L18-L26)
+- [frontend/src/services/api.core.js:307-362](../../../../../frontend/src/services/api.core.js#L307-L362)
+- [backend/app/routers/auth.py:31-36](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L31-L36)
+- [backend/app/services/auth_service.py:102-121](../../../../../backend/app/services/auth_service.py#L102-L121)
 
 **Section sources**
 
-- [backend/app/main.py:263-383](file://backend/app/main.py#L263-L383)
-- [backend/app/routers/auth.py:1-59](file://backend/app/routers/auth.py#L1-L59)
-- [backend/app/services/auth_service.py:1-183](file://backend/app/services/auth_service.py#L1-L183)
-- [frontend/src/services/api.core.js:220-258](file://frontend/src/services/api.core.js#L220-L258)
+- [backend/app/main.py:263-383](../../../../../backend/app/main.py#L263-L383)
+- [backend/app/routers/auth.py:1-59](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L1-L59)
+- [backend/app/services/auth_service.py:1-183](../../../../../backend/app/services/auth_service.py#L1-L183)
+- [frontend/src/services/api.core.js:220-258](../../../../../frontend/src/services/api.core.js#L220-L258)
 
 ## Detailed Component Analysis
 
@@ -178,15 +178,15 @@ API-->>FE : resolve
 
 **Diagram sources**
 
-- [frontend/src/services/api.auth.js:20](file://frontend/src/services/api.auth.js#L20)
-- [backend/app/routers/auth.py:31-36](file://backend/app/routers/auth.py#L31-L36)
-- [backend/app/services/auth_service.py:102-121](file://backend/app/services/auth_service.py#L102-L121)
+- [frontend/src/services/api.auth.js:20](../../../../../frontend/src/services/api.auth.js#L20)
+- [backend/app/routers/auth.py:31-36](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L31-L36)
+- [backend/app/services/auth_service.py:102-121](../../../../../backend/app/services/auth_service.py#L102-L121)
 
 **Section sources**
 
-- [backend/app/routers/auth.py:1-59](file://backend/app/routers/auth.py#L1-L59)
-- [backend/app/services/auth_service.py:56-183](file://backend/app/services/auth_service.py#L56-L183)
-- [frontend/src/services/api.auth.js:1-39](file://frontend/src/services/api.auth.js#L1-L39)
+- [backend/app/routers/auth.py:1-59](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L1-L59)
+- [backend/app/services/auth_service.py:56-183](../../../../../backend/app/services/auth_service.py#L56-L183)
+- [frontend/src/services/api.auth.js:1-39](../../../../../frontend/src/services/api.auth.js#L1-L39)
 
 ### Document Operations
 
@@ -207,13 +207,13 @@ Audit --> Done(["Return job_id"])
 
 **Diagram sources**
 
-- [backend/app/routers/documents.py:468-617](file://backend/app/routers/documents.py#L468-L617)
-- [backend/app/services/document_service.py:204-282](file://backend/app/services/document_service.py#L204-L282)
+- [backend/app/routers/documents.py:468-617](../../../../../backend/app/routers/v1/documents.py#L468-L617)
+- [backend/app/services/document_service.py:204-282](../../../../../backend/app/services/document_service.py#L204-L282)
 
 **Section sources**
 
-- [backend/app/routers/documents.py:1-1171](file://backend/app/routers/documents.py#L1-L1171)
-- [backend/app/services/document_service.py:1-560](file://backend/app/services/document_service.py#L1-L560)
+- [backend/app/routers/documents.py:1-1171](../../../../../backend/app/routers/v1/documents.py#L1-L1171)
+- [backend/app/services/document_service.py:1-560](../../../../../backend/app/services/document_service.py#L1-L560)
 
 ### Generation Sessions
 
@@ -243,13 +243,13 @@ GEN-->>FE : FileResponse(pdf)
 
 **Diagram sources**
 
-- [backend/app/routers/generator.py:78-231](file://backend/app/routers/generator.py#L78-L231)
-- [backend/app/services/generator_session_service.py:126-362](file://backend/app/services/generator_session_service.py#L126-L362)
+- [backend/app/routers/generator.py:78-231](../../../../../backend/app/routers/v1/generator.py#L78-L231)
+- [backend/app/services/generator_session_service.py:126-362](../../../../../backend/app/services/generator_session_service.py#L126-L362)
 
 **Section sources**
 
-- [backend/app/routers/generator.py:1-231](file://backend/app/routers/generator.py#L1-L231)
-- [backend/app/services/generator_session_service.py:1-362](file://backend/app/services/generator_session_service.py#L1-L362)
+- [backend/app/routers/generator.py:1-231](../../../../../backend/app/routers/v1/generator.py#L1-L231)
+- [backend/app/services/generator_session_service.py:1-362](../../../../../backend/app/services/generator_session_service.py#L1-L362)
 
 ### Template Management
 
@@ -273,11 +273,11 @@ TPL-->>FE : { template }
 
 **Diagram sources**
 
-- [backend/app/routers/templates.py:119-327](file://backend/app/routers/templates.py#L119-L327)
+- [backend/app/routers/templates.py:119-327](../../../../../backend/app/routers/v1/templates.py#L119-L327)
 
 **Section sources**
 
-- [backend/app/routers/templates.py:1-327](file://backend/app/routers/templates.py#L1-L327)
+- [backend/app/routers/templates.py:1-327](../../../../../backend/app/routers/v1/templates.py#L1-L327)
 
 ### Frontend API Client and Interceptors
 
@@ -300,14 +300,14 @@ Log --> Throw["throw Error"]
 
 **Diagram sources**
 
-- [frontend/src/services/api.core.js:307-362](file://frontend/src/services/api.core.js#L307-L362)
-- [frontend/src/services/api.core.js:220-258](file://frontend/src/services/api.core.js#L220-L258)
-- [frontend/src/services/api.core.js:168-218](file://frontend/src/services/api.core.js#L168-L218)
+- [frontend/src/services/api.core.js:307-362](../../../../../frontend/src/services/api.core.js#L307-L362)
+- [frontend/src/services/api.core.js:220-258](../../../../../frontend/src/services/api.core.js#L220-L258)
+- [frontend/src/services/api.core.js:168-218](../../../../../frontend/src/services/api.core.js#L168-L218)
 
 **Section sources**
 
-- [frontend/src/services/api.core.js:1-368](file://frontend/src/services/api.core.js#L1-L368)
-- [frontend/src/lib/supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
+- [frontend/src/services/api.core.js:1-368](../../../../../frontend/src/services/api.core.js#L1-L368)
+- [frontend/src/lib/supabaseClient.js:1-24](../../../../../frontend/src/lib/supabaseClient.js#L1-L24)
 
 ## Dependency Analysis
 
@@ -335,70 +335,70 @@ FE --> Fanalytics["analytics.js"]
 
 **Diagram sources**
 
-- [backend/app/main.py:273-359](file://backend/app/main.py#L273-L359)
-- [backend/app/routers/auth.py:1-59](file://backend/app/routers/auth.py#L1-L59)
-- [backend/app/routers/documents.py:1-1171](file://backend/app/routers/documents.py#L1-L1171)
-- [backend/app/routers/generator.py:1-231](file://backend/app/routers/generator.py#L1-L231)
-- [backend/app/routers/templates.py:1-327](file://backend/app/routers/templates.py#L1-L327)
-- [backend/app/services/auth_service.py:1-183](file://backend/app/services/auth_service.py#L1-L183)
-- [backend/app/services/document_service.py:1-560](file://backend/app/services/document_service.py#L1-L560)
-- [backend/app/services/generator_session_service.py:1-362](file://backend/app/services/generator_session_service.py#L1-L362)
-- [frontend/src/services/api.core.js:1-368](file://frontend/src/services/api.core.js#L1-L368)
-- [frontend/src/lib/supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
-- [frontend/src/lib/analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
+- [backend/app/main.py:273-359](../../../../../backend/app/main.py#L273-L359)
+- [backend/app/routers/auth.py:1-59](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L1-L59)
+- [backend/app/routers/documents.py:1-1171](../../../../../backend/app/routers/v1/documents.py#L1-L1171)
+- [backend/app/routers/generator.py:1-231](../../../../../backend/app/routers/v1/generator.py#L1-L231)
+- [backend/app/routers/templates.py:1-327](../../../../../backend/app/routers/v1/templates.py#L1-L327)
+- [backend/app/services/auth_service.py:1-183](../../../../../backend/app/services/auth_service.py#L1-L183)
+- [backend/app/services/document_service.py:1-560](../../../../../backend/app/services/document_service.py#L1-L560)
+- [backend/app/services/generator_session_service.py:1-362](../../../../../backend/app/services/generator_session_service.py#L1-L362)
+- [frontend/src/services/api.core.js:1-368](../../../../../frontend/src/services/api.core.js#L1-L368)
+- [frontend/src/lib/supabaseClient.js:1-24](../../../../../frontend/src/lib/supabaseClient.js#L1-L24)
+- [frontend/src/lib/analytics.js:1-20](../../../../../frontend/src/lib/analytics.js#L1-L20)
 
 **Section sources**
 
-- [backend/app/main.py:263-383](file://backend/app/main.py#L263-L383)
-- [frontend/src/services/api.core.js:1-368](file://frontend/src/services/api.core.js#L1-L368)
+- [backend/app/main.py:263-383](../../../../../backend/app/main.py#L263-L383)
+- [frontend/src/services/api.core.js:1-368](../../../../../frontend/src/services/api.core.js#L1-L368)
 
 ## Performance Considerations
 
 - Caching strategies:
-    - Document status responses cache with TTL.
-    - Generator session, messages, session lists, and latest document caches with separate TTLs.
-    - DocumentService optionally persists file and output hashes with graceful fallbacks.
+  - Document status responses cache with TTL.
+  - Generator session, messages, session lists, and latest document caches with separate TTLs.
+  - DocumentService optionally persists file and output hashes with graceful fallbacks.
 - Retry and resilience:
-    - Frontend retries safe methods (GET/HEAD/OPTIONS) on transient errors and selected status codes.
-    - Supabase client initialization guards prevent runtime crashes in SSR environments.
+  - Frontend retries safe methods (GET/HEAD/OPTIONS) on transient errors and selected status codes.
+  - Supabase client initialization guards prevent runtime crashes in SSR environments.
 - Observability:
-    - Prometheus metrics exposed via instrumentor.
-    - Error tracking.
-    - Audit logs for write operations.
+  - Prometheus metrics exposed via instrumentor.
+  - Error tracking.
+  - Audit logs for write operations.
 
 **Section sources**
 
-- [backend/app/routers/documents.py:103-151](file://backend/app/routers/documents.py#L103-L151)
-- [backend/app/services/generator_session_service.py:74-125](file://backend/app/services/generator_session_service.py#L74-L125)
-- [backend/app/services/document_service.py:357-392](file://backend/app/services/document_service.py#L357-L392)
-- [frontend/src/services/api.core.js:168-218](file://frontend/src/services/api.core.js#L168-L218)
-- [backend/app/main.py:273-274](file://backend/app/main.py#L273-L274)
-- [backend/app/main.py:40-59](file://backend/app/main.py#L40-L59)
+- [backend/app/routers/documents.py:103-151](../../../../../backend/app/routers/v1/documents.py#L103-L151)
+- [backend/app/services/generator_session_service.py:74-125](../../../../../backend/app/services/generator_session_service.py#L74-L125)
+- [backend/app/services/document_service.py:357-392](../../../../../backend/app/services/document_service.py#L357-L392)
+- [frontend/src/services/api.core.js:168-218](../../../../../frontend/src/services/api.core.js#L168-L218)
+- [backend/app/main.py:273-274](../../../../../backend/app/main.py#L273-L274)
+- [backend/app/main.py:40-59](../../../../../backend/app/main.py#L40-L59)
 
 ## Troubleshooting Guide
 
 - Authentication failures:
-    - Missing Supabase credentials cause 503 during auth operations.
-    - Login returns 401 with user-friendly messages; verify OTP and password policies.
+  - Missing Supabase credentials cause 503 during auth operations.
+  - Login returns 401 with user-friendly messages; verify OTP and password policies.
 - Document upload issues:
-    - Invalid file type, spoofed signatures, or oversized files return 400/413.
-    - Malware detection blocks uploads with 422.
-    - Database unavailability returns 503; retry after service restoration.
+  - Invalid file type, spoofed signatures, or oversized files return 400/413.
+  - Malware detection blocks uploads with 422.
+  - Database unavailability returns 503; retry after service restoration.
 - Status and download:
-    - Unauthorized access returns 403; ensure ownership.
-    - Job not done returns 409; poll until completion.
+  - Unauthorized access returns 403; ensure ownership.
+  - Job not done returns 409; poll until completion.
 - Frontend errors:
-    - Network errors are detected and surfaced with friendly messages.
-    - Errors are logged to backend metrics endpoint for triage.
+  - Network errors are detected and surfaced with friendly messages.
+  - Errors are logged to backend metrics endpoint for triage.
 
 **Section sources**
 
-- [backend/app/services/auth_service.py:46-53](file://backend/app/services/auth_service.py#L46-L53)
-- [backend/app/routers/documents.py:205-230](file://backend/app/routers/documents.py#L205-L230)
-- [backend/app/routers/documents.py:325-334](file://backend/app/routers/documents.py#L325-L334)
-- [backend/app/routers/generator.py:178-182](file://backend/app/routers/generator.py#L178-L182)
-- [frontend/src/services/api.core.js:85-97](file://frontend/src/services/api.core.js#L85-L97)
-- [frontend/src/services/api.core.js:121-166](file://frontend/src/services/api.core.js#L121-L166)
+- [backend/app/services/auth_service.py:46-53](../../../../../backend/app/services/auth_service.py#L46-L53)
+- [backend/app/routers/documents.py:205-230](../../../../../backend/app/routers/v1/documents.py#L205-L230)
+- [backend/app/routers/documents.py:325-334](../../../../../backend/app/routers/v1/documents.py#L325-L334)
+- [backend/app/routers/generator.py:178-182](../../../../../backend/app/routers/v1/generator.py#L178-L182)
+- [frontend/src/services/api.core.js:85-97](../../../../../frontend/src/services/api.core.js#L85-L97)
+- [frontend/src/services/api.core.js:121-166](../../../../../frontend/src/services/api.core.js#L121-L166)
 
 ## Conclusion
 

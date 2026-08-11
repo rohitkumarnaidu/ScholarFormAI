@@ -504,7 +504,7 @@ avg_over_time(active_processing_jobs[15m])
 | Resource | Description |
 | ---------- | ------------- |
 | [Deploying to Production Guide](deploying-to-production.md) | Full production deployment |
-| [Operations Runbook](../OPERATIONS_RUNBOOK.md) | Day-to-day operations |
+| [Operations Runbook](../runbooks/OPERATIONS_RUNBOOK.md) | Day-to-day operations |
 | [Incident Response Runbook](../runbooks/incident-response.md) | P0/P1 incident procedures |
 | [SLO Definitions](../SLO_DEFINITIONS.md) | Service level objectives and SLIs |
-| [Prometheus Metrics Source](../backend/app/middleware/prometheus_metrics.py) | Source code for metrics |
+| [Prometheus Metrics Source](../../backend/app/middleware/prometheus_metrics.py) | Source code for metrics |

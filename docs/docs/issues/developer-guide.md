@@ -11,7 +11,7 @@ The issue reporting ecosystem spans four modular layers: UI/CLI Entry Points, Ba
 flowchart TD
     subgraph Entry["Entry Points"]
         UI["Web UI Dashboard"]
-        CLI["CLI Command (amf issues)"]
+        CLI["CLI Command ("amf issues")"]
         Dialog["Error Dialog & Crash Screen"]
         Widget["Feedback Floating Widget"]
     end
@@ -88,14 +88,14 @@ sequenceDiagram
 
     User->>Svc: submit_issue(IssueReportPayload)
     activate Svc
-    Svc->>Svc: Verify Rate Limit (Spam Audit)
-    Svc->>DB: Check for Existing Similar Issues (Jaccard Similarity)
+    Svc->>Svc: Verify Rate Limit ("Spam Audit")
+    Svc->>DB: Check for Existing Similar Issues ("Jaccard Similarity")
     alt Duplicate Found
         Svc-->>User: Return Existing Issue Reference
     else New Issue
         Svc->>DB: Store New Issue Report
         Svc->>GH: Optional Sync to GitHub Repository
-        Svc-->>User: 201 Created (Issue ID & Details)
+        Svc-->>User: 201 Created ("Issue ID & Details")
     end
     deactivate Svc
 ```

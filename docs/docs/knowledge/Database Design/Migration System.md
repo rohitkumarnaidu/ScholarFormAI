@@ -5,16 +5,16 @@
 
 <cite>
 **Referenced Files in This Document**
-- [alembic.ini](file://backend/alembic.ini)
-- [env.py](file://backend/alembic/env.py)
-- [script.py.mako](file://backend/alembic/script.py.mako)
-- [base.py](file://backend/app/db/base.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [document.py](file://backend/app/models/document.py)
-- [__init__.py](file://backend/app/models/__init__.py)
-- [530ab1236474_baseline_schema.py](file://backend/alembic/versions/530ab1236474_baseline_schema.py)
-- [1f7c085e7ef2_add_template_column_to_documents.py](file://backend/alembic/versions/1f7c085e7ef2_add_template_column_to_documents.py)
-- [feat47_48_indexes_and_token_tracking.sql](file://backend/alembic/versions/feat47_48_indexes_and_token_tracking.sql)
+- [alembic.ini](../../../../backend/alembic.ini)
+- [env.py](../../../../backend/alembic/env.py)
+- [script.py.mako](../../../../backend/alembic/script.py.mako)
+- [base.py](../../../../backend/app/db/base.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [document.py](../../../../backend/app/models/document.py)
+- [__init__.py](../../../../backend/app/models/__init__.py)
+- [530ab1236474_baseline_schema.py](../../../../backend/alembic/versions/530ab1236474_baseline_schema.py)
+- [1f7c085e7ef2_add_template_column_to_documents.py](../../../../backend/alembic/versions/1f7c085e7ef2_add_template_column_to_documents.py)
+- [feat47_48_indexes_and_token_tracking.sql](../../../../backend/alembic/sql_scripts/feat47_48_indexes_and_token_tracking.sql)
 </cite>
 
 ## Table of Contents
@@ -56,23 +56,23 @@ I["backend/app/models/document.py"] --> H
 
 **Diagram sources**
 
-- [alembic.ini](file://backend/alembic.ini)
-- [env.py](file://backend/alembic/env.py)
-- [script.py.mako](file://backend/alembic/script.py.mako)
-- [settings.py](file://backend/app/config/settings.py)
-- [base.py](file://backend/app/db/base.py)
-- [__init__.py](file://backend/app/models/__init__.py)
-- [document.py](file://backend/app/models/document.py)
+- [alembic.ini](../../../../backend/alembic.ini)
+- [env.py](../../../../backend/alembic/env.py)
+- [script.py.mako](../../../../backend/alembic/script.py.mako)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [base.py](../../../../backend/app/db/base.py)
+- [**init**.py](../../../../backend/app/models/__init__.py)
+- [document.py](../../../../backend/app/models/document.py)
 
 **Section sources**
 
-- [alembic.ini](file://backend/alembic.ini)
-- [env.py](file://backend/alembic/env.py)
-- [script.py.mako](file://backend/alembic/script.py.mako)
-- [settings.py](file://backend/app/config/settings.py)
-- [base.py](file://backend/app/db/base.py)
-- [__init__.py](file://backend/app/models/__init__.py)
-- [document.py](file://backend/app/models/document.py)
+- [alembic.ini](../../../../backend/alembic.ini)
+- [env.py](../../../../backend/alembic/env.py)
+- [script.py.mako](../../../../backend/alembic/script.py.mako)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [base.py](../../../../backend/app/db/base.py)
+- [**init**.py](../../../../backend/app/models/__init__.py)
+- [document.py](../../../../backend/app/models/document.py)
 
 ## Core Components
 
@@ -92,12 +92,12 @@ Key responsibilities:
 
 **Section sources**
 
-- [alembic.ini](file://backend/alembic.ini)
-- [env.py](file://backend/alembic/env.py)
-- [script.py.mako](file://backend/alembic/script.py.mako)
-- [base.py](file://backend/app/db/base.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [__init__.py](file://backend/app/models/__init__.py)
+- [alembic.ini](../../../../backend/alembic.ini)
+- [env.py](../../../../backend/alembic/env.py)
+- [script.py.mako](../../../../backend/alembic/script.py.mako)
+- [base.py](../../../../backend/app/db/base.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [**init**.py](../../../../backend/app/models/__init__.py)
 
 ## Architecture Overview
 
@@ -120,8 +120,8 @@ DB-->>CLI : Report migration status
 
 **Diagram sources**
 
-- [env.py](file://backend/alembic/env.py)
-- [settings.py](file://backend/app/config/settings.py)
+- [env.py](../../../../backend/alembic/env.py)
+- [settings.py](../../../../backend/app/config/settings.py)
 
 ## Detailed Component Analysis
 
@@ -139,7 +139,7 @@ Operational notes:
 
 **Section sources**
 
-- [alembic.ini](file://backend/alembic.ini)
+- [alembic.ini](../../../../backend/alembic.ini)
 
 ### Migration Environment (env.py)
 
@@ -149,8 +149,8 @@ Responsibilities:
 - Imports application settings and SQLAlchemy Base to populate target metadata.
 - Imports all models to ensure metadata is fully loaded for autogenerate.
 - Supports offline and online migration modes:
-    - Offline mode: Uses a URL directly without an Engine.
-    - Online mode: Builds an Engine from configuration and binds a connection to the context.
+  - Offline mode: Uses a URL directly without an Engine.
+  - Online mode: Builds an Engine from configuration and binds a connection to the context.
 
 Runtime overrides:
 
@@ -159,10 +159,10 @@ Runtime overrides:
 
 **Section sources**
 
-- [env.py](file://backend/alembic/env.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [base.py](file://backend/app/db/base.py)
-- [__init__.py](file://backend/app/models/__init__.py)
+- [env.py](../../../../backend/alembic/env.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [base.py](../../../../backend/app/db/base.py)
+- [**init**.py](../../../../backend/app/models/__init__.py)
 
 ### Revision Template (script.py.mako)
 
@@ -176,7 +176,7 @@ Usage:
 
 **Section sources**
 
-- [script.py.mako](file://backend/alembic/script.py.mako)
+- [script.py.mako](../../../../backend/alembic/script.py.mako)
 
 ### Versioned Migrations
 
@@ -192,14 +192,14 @@ Implications:
 
 **Section sources**
 
-- [530ab1236474_baseline_schema.py](file://backend/alembic/versions/530ab1236474_baseline_schema.py)
+- [530ab1236474_baseline_schema.py](../../../../backend/alembic/versions/530ab1236474_baseline_schema.py)
 
 #### Add Template Column to Documents (1f7c085e7ef2_add_template_column_to_documents.py)
 
 - Purpose: Adds a template column to the documents table.
 - Implementation pattern:
-    - Uses inspection to check for existing columns (idempotent).
-    - Conditionally adds or drops the column in upgrade()/downgrade().
+  - Uses inspection to check for existing columns (idempotent).
+  - Conditionally adds or drops the column in upgrade()/downgrade().
 - Dependencies: References a prior revision by down_revision.
 
 Idempotency:
@@ -208,15 +208,15 @@ Idempotency:
 
 **Section sources**
 
-- [1f7c085e7ef2_add_template_column_to_documents.py](file://backend/alembic/versions/1f7c085e7ef2_add_template_column_to_documents.py)
+- [1f7c085e7ef2_add_template_column_to_documents.py](../../../../backend/alembic/versions/1f7c085e7ef2_add_template_column_to_documents.py)
 
 #### Feature 47/48: Indexes, Constraints, and Token Tracking (feat47_48_indexes_and_token_tracking.sql)
 
 - Purpose: Introduces performance indexes, foreign key constraints, and a new token usage tracking table.
 - Implementation pattern:
-    - Creates indexes with IF NOT EXISTS for idempotency.
-    - Adds foreign keys conditionally using DO blocks.
-    - Defines llm_token_usage table with computed totals and indexes.
+  - Creates indexes with IF NOT EXISTS for idempotency.
+  - Adds foreign keys conditionally using DO blocks.
+  - Defines llm_token_usage table with computed totals and indexes.
 - Notes: This is a SQL-based revision executed as raw SQL.
 
 Best practices demonstrated:
@@ -226,7 +226,7 @@ Best practices demonstrated:
 
 **Section sources**
 
-- [feat47_48_indexes_and_token_tracking.sql](file://backend/alembic/versions/feat47_48_indexes_and_token_tracking.sql)
+- [feat47_48_indexes_and_token_tracking.sql](../../../../backend/alembic/sql_scripts/feat47_48_indexes_and_token_tracking.sql)
 
 ### Model Metadata and Autogenerate
 
@@ -241,9 +241,9 @@ Considerations:
 
 **Section sources**
 
-- [base.py](file://backend/app/db/base.py)
-- [__init__.py](file://backend/app/models/__init__.py)
-- [document.py](file://backend/app/models/document.py)
+- [base.py](../../../../backend/app/db/base.py)
+- [**init**.py](../../../../backend/app/models/__init__.py)
+- [document.py](../../../../backend/app/models/document.py)
 
 ## Dependency Analysis
 
@@ -262,17 +262,17 @@ Env --> RevSQL["SQL revisions (*.sql)"]
 
 **Diagram sources**
 
-- [settings.py](file://backend/app/config/settings.py)
-- [env.py](file://backend/alembic/env.py)
-- [base.py](file://backend/app/db/base.py)
-- [__init__.py](file://backend/app/models/__init__.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [env.py](../../../../backend/alembic/env.py)
+- [base.py](../../../../backend/app/db/base.py)
+- [**init**.py](../../../../backend/app/models/__init__.py)
 
 **Section sources**
 
-- [settings.py](file://backend/app/config/settings.py)
-- [env.py](file://backend/alembic/env.py)
-- [base.py](file://backend/app/db/base.py)
-- [__init__.py](file://backend/app/models/__init__.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [env.py](../../../../backend/alembic/env.py)
+- [base.py](../../../../backend/app/db/base.py)
+- [**init**.py](../../../../backend/app/models/__init__.py)
 
 ## Performance Considerations
 
@@ -288,30 +288,30 @@ Recommendations:
 
 **Section sources**
 
-- [feat47_48_indexes_and_token_tracking.sql](file://backend/alembic/versions/feat47_48_indexes_and_token_tracking.sql)
+- [feat47_48_indexes_and_token_tracking.sql](../../../../backend/alembic/sql_scripts/feat47_48_indexes_and_token_tracking.sql)
 
 ## Troubleshooting Guide
 
 Common issues and resolutions:
 
 - Database URL not set:
-    - Symptom: Migration fails due to missing URL.
-    - Resolution: Ensure SUPABASE_DB_URL is present in the environment and loaded by settings.
+  - Symptom: Migration fails due to missing URL.
+  - Resolution: Ensure SUPABASE_DB_URL is present in the environment and loaded by settings.
 - Drifted schema:
-    - Symptom: Autogenerate detects differences or manual changes conflict with revisions.
-    - Resolution: Use idempotent DDL patterns (existence checks) and align model definitions with the database state.
+  - Symptom: Autogenerate detects differences or manual changes conflict with revisions.
+  - Resolution: Use idempotent DDL patterns (existence checks) and align model definitions with the database state.
 - Revision dependencies:
-    - Symptom: Running a revision fails due to missing parent revision.
-    - Resolution: Apply revisions in dependency order or adjust down_revision references to match the current head.
+  - Symptom: Running a revision fails due to missing parent revision.
+  - Resolution: Apply revisions in dependency order or adjust down_revision references to match the current head.
 - Offline vs online mode:
-    - Symptom: Differences between offline and online behavior.
-    - Resolution: Verify that env.py overrides sqlalchemy.url consistently and that target_metadata is populated before running migrations.
+  - Symptom: Differences between offline and online behavior.
+  - Resolution: Verify that env.py overrides sqlalchemy.url consistently and that target_metadata is populated before running migrations.
 
 **Section sources**
 
-- [env.py](file://backend/alembic/env.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [1f7c085e7ef2_add_template_column_to_documents.py](file://backend/alembic/versions/1f7c085e7ef2_add_template_column_to_documents.py)
+- [env.py](../../../../backend/alembic/env.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [1f7c085e7ef2_add_template_column_to_documents.py](../../../../backend/alembic/versions/1f7c085e7ef2_add_template_column_to_documents.py)
 
 ## Conclusion
 
@@ -322,14 +322,14 @@ The migration system combines Alembic with application settings and SQLAlchemy m
 ### Migration Execution Commands
 
 - Initialize or upgrade to head:
-    - alembic upgrade head
+  - alembic upgrade head
 - Downgrade to a specific revision:
-    - alembic downgrade -1
-    - alembic downgrade <revision-id>
+  - alembic downgrade -1
+  - alembic downgrade <revision-id>
 - Generate a new revision:
-    - alembic revision --autogenerate -m "Description"
+  - alembic revision --autogenerate -m "Description"
 - Generate a blank revision:
-    - alembic revision -m "Description"
+  - alembic revision -m "Description"
 
 Notes:
 
@@ -338,42 +338,42 @@ Notes:
 
 **Section sources**
 
-- [alembic.ini](file://backend/alembic.ini)
-- [env.py](file://backend/alembic/env.py)
-- [script.py.mako](file://backend/alembic/script.py.mako)
+- [alembic.ini](../../../../backend/alembic.ini)
+- [env.py](../../../../backend/alembic/env.py)
+- [script.py.mako](../../../../backend/alembic/script.py.mako)
 
 ### Best Practices for Writing Migrations
 
 - Idempotency:
-    - Use existence checks for indexes, constraints, and columns.
-    - Guard additions/removals with conditional logic.
+  - Use existence checks for indexes, constraints, and columns.
+  - Guard additions/removals with conditional logic.
 - Backward compatibility:
-    - Prefer nullable columns and defaults when extending schemas.
-    - Avoid dropping columns or tables unless absolutely necessary; prefer deprecation cycles.
+  - Prefer nullable columns and defaults when extending schemas.
+  - Avoid dropping columns or tables unless absolutely necessary; prefer deprecation cycles.
 - Safety:
-    - Test revisions on staging or local databases before applying to production.
-    - Keep transactions short; batch related changes within a single revision.
+  - Test revisions on staging or local databases before applying to production.
+  - Keep transactions short; batch related changes within a single revision.
 - Documentation:
-    - Include clear comments in SQL revisions explaining intent and impact.
-    - Use descriptive revision messages and slug-like filenames.
+  - Include clear comments in SQL revisions explaining intent and impact.
+  - Use descriptive revision messages and slug-like filenames.
 
 **Section sources**
 
-- [1f7c085e7ef2_add_template_column_to_documents.py](file://backend/alembic/versions/1f7c085e7ef2_add_template_column_to_documents.py)
-- [feat47_48_indexes_and_token_tracking.sql](file://backend/alembic/versions/feat47_48_indexes_and_token_tracking.sql)
+- [1f7c085e7ef2_add_template_column_to_documents.py](../../../../backend/alembic/versions/1f7c085e7ef2_add_template_column_to_documents.py)
+- [feat47_48_indexes_and_token_tracking.sql](../../../../backend/alembic/sql_scripts/feat47_48_indexes_and_token_tracking.sql)
 
 ### Complex Migration Patterns
 
 - Conditional DDL:
-    - Use DO blocks and IF NOT EXISTS to safely introduce indexes and constraints.
+  - Use DO blocks and IF NOT EXISTS to safely introduce indexes and constraints.
 - Data modeling:
-    - Introduce new tables with appropriate indexes and foreign keys in a single revision.
+  - Introduce new tables with appropriate indexes and foreign keys in a single revision.
 - Token tracking:
-    - Define computed columns and indexes to optimize reporting queries.
+  - Define computed columns and indexes to optimize reporting queries.
 
 **Section sources**
 
-- [feat47_48_indexes_and_token_tracking.sql](file://backend/alembic/versions/feat47_48_indexes_and_token_tracking.sql)
+- [feat47_48_indexes_and_token_tracking.sql](../../../../backend/alembic/sql_scripts/feat47_48_indexes_and_token_tracking.sql)
 
 ### Environment-Specific Migrations
 
@@ -382,23 +382,23 @@ Notes:
 
 **Section sources**
 
-- [settings.py](file://backend/app/config/settings.py)
-- [env.py](file://backend/alembic/env.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [env.py](../../../../backend/alembic/env.py)
 
 ### Production Deployment Procedures
 
 - Pre-deploy:
-    - Run alembic upgrade head on a maintenance window.
-    - Verify logs and confirm successful completion.
+  - Run alembic upgrade head on a maintenance window.
+  - Verify logs and confirm successful completion.
 - Post-deploy:
-    - Validate schema and indexes using database introspection.
-    - Confirm application endpoints that rely on new schema features.
+  - Validate schema and indexes using database introspection.
+  - Confirm application endpoints that rely on new schema features.
 - Rollback:
-    - Use alembic downgrade to the previous revision if issues arise.
-    - Ensure downgrade logic is tested and reversible.
+  - Use alembic downgrade to the previous revision if issues arise.
+  - Ensure downgrade logic is tested and reversible.
 
 **Section sources**
 
-- [env.py](file://backend/alembic/env.py)
-- [1f7c085e7ef2_add_template_column_to_documents.py](file://backend/alembic/versions/1f7c085e7ef2_add_template_column_to_documents.py)
-- [feat47_48_indexes_and_token_tracking.sql](file://backend/alembic/versions/feat47_48_indexes_and_token_tracking.sql)
+- [env.py](../../../../backend/alembic/env.py)
+- [1f7c085e7ef2_add_template_column_to_documents.py](../../../../backend/alembic/versions/1f7c085e7ef2_add_template_column_to_documents.py)
+- [feat47_48_indexes_and_token_tracking.sql](../../../../backend/alembic/sql_scripts/feat47_48_indexes_and_token_tracking.sql)

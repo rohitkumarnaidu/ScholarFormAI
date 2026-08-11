@@ -2,23 +2,22 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-import json
-import re
-from unittest.mock import MagicMock, patch, PropertyMock
-import pytest
+from unittest.mock import MagicMock, patch
 
+from app.models import Block, BlockType
+from app.models import PipelineDocument as Document
 from app.pipeline.nlp.analyzer import (
     ContentAnalyzer,
-    ContentAnalyzer as _ca,
-    methods_detect_abstract,
-    _get_keybert_model,
-    extract_keywords,
-    _parse_keyword_payload,
     _extract_keywords_with_keyllm,
+    _get_keybert_model,
+    _parse_keyword_payload,
+    extract_keywords,
+    methods_detect_abstract,
+)
+from app.pipeline.nlp.analyzer import (
+    ContentAnalyzer as _ca,
 )
 
-
-from app.models import PipelineDocument as Document, Block, BlockType
 
 def _doc(blocks=None) -> Document:
 

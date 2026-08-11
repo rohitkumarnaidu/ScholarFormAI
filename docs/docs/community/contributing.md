@@ -36,4 +36,4 @@ This project follows our [Code of Conduct](code-of-conduct.md). Be respectful, i
 
 - Issues: GitHub Issues
 - Questions: GitHub Discussions
-- Security: security@amf.dev
+- Security: <security@amf.dev>

@@ -23,8 +23,10 @@
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
-[![CI Status](https://github.com/rohitkumarnaidu/ScholarFormAI/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/rohitkumarnaidu/ScholarFormAI/actions/workflows/backend-ci.yml)
-[![Coverage](https://img.shields.io/badge/coverage-85%25-brightgreen)](backend/.coverage)
+[![Build Status](https://github.com/rohitkumarnaidu/ScholarFormAI/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/rohitkumarnaidu/ScholarFormAI/actions/workflows/backend-ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-85%25-brightgreen)](docs/testing/VERIFICATION_STRATEGY.md)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](docs/release/RELEASE_CHECKLIST.md)
+[![Release Status](https://img.shields.io/badge/status-GA-success.svg)](docs/release/RELEASE_CHECKLIST.md)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/rohitkumarnaidu/ScholarFormAI/badge)](https://api.scorecard.dev/projects/github.com/rohitkumarnaidu/ScholarFormAI)
 [![SLSA 3](https://img.shields.io/badge/SLSA-Level_3-brightgreen)](.github/workflows/slsa-provenance.yml)
 
@@ -35,11 +37,13 @@
 
 ---
 
-## 🌟 Vision & Mission
+## 🌟 Project Vision
 
-**Vision:** To eliminate formatting friction and repetitive manual labor in academic publishing, allowing researchers to focus entirely on scientific discovery.
+To eliminate formatting friction and repetitive manual labor in academic publishing, allowing researchers to focus entirely on scientific discovery.
 
-**Mission:** Provide a robust, enterprise-grade open-source platform that leverages multi-agent AI architectures to automate manuscript formatting, reference resolution, and document synthesis.
+## 🎯 Mission
+
+Provide a robust, enterprise-grade open-source platform that leverages multi-agent AI architectures to automate manuscript formatting, reference resolution, and document synthesis.
 
 ---
 
@@ -58,6 +62,7 @@
 
 ScholarForm AI employs a decoupled, highly scalable architecture combining a Next.js App Router frontend with an asynchronous FastAPI backend, orchestrated via Celery and Redis.
 
+### System Diagram
 ```mermaid
 flowchart TB
     subgraph BROWSER["Frontend Layer (Next.js 16)"]
@@ -97,6 +102,16 @@ flowchart TB
     WORKERS <--> DATA
 ```
 
+### Architecture Diagram
+```mermaid
+graph TD
+    Client(Browser) --> API[FastAPI Gateway]
+    API --> Services[Backend Microservices]
+    Services --> DB[(PostgreSQL)]
+    Services --> Cache[(Redis)]
+    Services --> VectorDB[(ChromaDB)]
+```
+
 ---
 
 ## 🛠 Technology Stack
@@ -120,7 +135,7 @@ Get started in under 5 minutes using Docker.
 - Node.js 20+ (for local frontend dev)
 - Python 3.12+ (for local backend dev)
 
-### 1. Clone & Configure
+### Installation
 
 ```bash
 git clone https://github.com/rohitkumarnaidu/ScholarFormAI.git
@@ -130,36 +145,22 @@ cd ScholarFormAI
 cp backend/.env.example backend/.env
 cp frontend/.env.local.example frontend/.env.local
 ```
-
 *Edit `.env` files to include your API keys (NVIDIA, Groq, Supabase).*
-
-### 2. Run with Docker Compose
 
 ```bash
 docker compose -f deploy/services/docker-compose.yml up -d
 ```
 
-### 3. Local Development (Alternative)
+---
 
-**Backend:**
+## 📖 Documentation Links
 
-```bash
-cd backend
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
-
-**Frontend:**
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Visit `http://localhost:3000` to view the application, and `http://localhost:8000/docs` for the OpenAPI interactive documentation.
+- [Architecture & System Design](docs/architecture/ARCHITECTURE.md)
+- [API Reference](docs/api/API.md)
+- [Python SDK Guide](docs/sdk/SDK_GUIDE.md)
+- [Enterprise Readiness & Deployment](docs/deployment/Deployment.md)
+- [Database Schema](docs/architecture/DATABASE_SCHEMA.md)
+- [Developer Onboarding](docs/developer-guide/DEVELOPER_ONBOARDING.md)
 
 ---
 
@@ -178,17 +179,19 @@ amf analyze paper.pdf
 amf update
 ```
 
-Read the full [CLI Reference](docs/reference/CLI_REFERENCE.md).
+Read the full CLI Reference in the [Documentation](docs/cli/).
 
 ---
 
-## 🤖 AI & Multi-Agent Features
+## 🤖 AI Features
 
-We leverage advanced multi-agent workflows defined in [`AGENTS.md`](docs/reference/AGENTS.md):
+We leverage advanced multi-agent workflows:
 
 - **Forensic Auditor Agent:** Independently verifies citations, checks equations, and identifies hallucinated references.
 - **Synthesis Agent:** Merges structured data from ChromaDB into fluid, academically rigorous paragraphs.
-- **Layout Agent:** Maps abstract document structures into specific template directives (e.g., IEEE two-column margins).
+- **Layout Agent:** Maps abstract document structures into specific template directives.
+
+Explore agents in [docs/agents/](docs/agents/).
 
 ---
 
@@ -197,56 +200,48 @@ We leverage advanced multi-agent workflows defined in [`AGENTS.md`](docs/referen
 ```text
 ScholarFormAI/
 ├── backend/                # FastAPI backend, ML pipelines, and API services
-│   ├── app/
-│   │   ├── api/            # API v1 routes & middleware
-│   │   ├── core/           # Config, logging, exceptions
-│   │   ├── models/         # SQLAlchemy/Supabase ORM models
-│   │   ├── schemas/        # Pydantic validation (api_envelope)
-│   │   ├── services/       # Core business logic (Formatter, AI)
-│   └── tests/              # Pytest suite
 ├── frontend/               # Next.js App Router UI
-│   ├── app/                # Pages and API routes
-│   ├── src/                # Components, hooks, lib, styles
-│   └── e2e/                # Playwright tests
 ├── cli/                    # AMF command line tool
 ├── sdk/                    # Python SDK (Sync/Async)
-├── docs/                   # Architecture, API, and setup documentation
+├── docs/                   # Enterprise Architecture, API, and setup documentation
 └── deploy/                 # Docker Compose, Kubernetes manifests
 ```
 
 ---
 
-## 🔐 Security & Compliance
+## ⚙️ Configuration & Development Workflow
 
-Enterprise readiness is built-in.
-
-- **SLSA Level 3:** Build provenance and signed artifacts.
-- **CodeQL & Scorecards:** Automated vulnerability scanning on every PR.
-- **Dependency Management:** Renovate + SBOM generation.
-- **Zero Trust Architecture:** Strict RBAC, JWKS verification, and rate-limiting.
-
-Review our complete [Security Policy](SECURITY.md) and [Compliance Matrix](docs/reports/ENTERPRISE_CERTIFICATION.md).
+Check out the [Configuration Reference](docs/reference/CONFIGURATION_REFERENCE.md) to set up endpoints, limiters, and environment parameters.
+For building and testing, please review our [Developer Guide](docs/developer-guide/DEVELOPER_ONBOARDING.md).
 
 ---
 
-## 📖 Documentation & Resources
+## 🌟 Examples
 
-- [Architecture & System Design](docs/architecture/ARCHITECTURE.md)
-- [API Reference](docs/api/API_REFERENCE.md)
-- [Python SDK Guide](docs/guides/SDK_GUIDE.md)
-- [Enterprise Readiness & Deployment](docs/deployment/DEPLOYMENT.md)
-- [Database Schema](docs/architecture/DATABASE_SCHEMA.md)
+Discover sample projects and manuscript conversions in the `examples/` directory.
+
+---
+
+## 🔐 Security
+
+Enterprise readiness is built-in.
+- **SLSA Level 3:** Build provenance and signed artifacts.
+- **CodeQL & Scorecards:** Automated vulnerability scanning on every PR.
+- **Dependency Management:** Renovate + SBOM generation.
+
+Review our complete [Security Policy](SECURITY.md).
+
+---
+
+## 🚢 Deployment
+
+Detailed instructions for staging, production, and scalable operations on Kubernetes or Render can be found in the [Deployment Guide](docs/deployment/Deployment.md).
 
 ---
 
 ## 🛣 Roadmap
 
-- [ ] **v1.1:** LaTeX compiler integration and offline export.
-- [ ] **v1.2:** Collaborative editing (Google Docs style CRDTs).
-- [ ] **v1.5:** Custom template builder UI.
-- [ ] **v2.0:** Agentic peer-review simulation and feedback generation.
-
-See the full [Roadmap](docs/Roadmap.md).
+See the full [Roadmap](docs/roadmap/Roadmap.md) for version 2.0 plans, including peer review simulations and CRDTs for collaborative editing.
 
 ---
 
@@ -254,12 +249,13 @@ See the full [Roadmap](docs/Roadmap.md).
 
 We welcome contributions! Please review our [Contributing Guidelines](CONTRIBUTING.md) and [Governance Model](GOVERNANCE.md) before submitting pull requests.
 
-1. Fork the repo.
-2. Create a feature branch (`git checkout -b feat/amazing-feature`).
-3. Commit with Conventional Commits and sign off (`git commit -s -m "feat: amazing feature"`).
-4. Push to the branch and open a PR.
+---
 
-*Note: All PRs must pass the CI pipeline and maintain 85%+ test coverage.*
+## 💬 Support & Community
+
+- **Community:** Join our [Discord](https://discord.gg/scholarformai).
+- **Support:** View our [Support Policy](SUPPORT.md).
+- **Code of Conduct:** Review our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ---
 

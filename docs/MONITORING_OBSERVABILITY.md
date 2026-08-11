@@ -34,21 +34,21 @@ fourth (analytics) layer for product intelligence.
 graph TB
     subgraph Frontend
         RUM["Lighthouse CI / RUM"]
-        LATENCY[LatencyObserver Component]
+        LATENCY["LatencyObserver Component"]
     end
 
     subgraph Backend
-        FASTAPI[FastAPI App]
-        PROM[Prometheus Instrumentator]
-        MM[Monitoring Middleware]
-        HC[Health Checks]
-        LOG[Structured Logging]
+        FASTAPI["FastAPI App"]
+        PROM["Prometheus Instrumentator"]
+        MM["Monitoring Middleware"]
+        HC["Health Checks"]
+        LOG["Structured Logging"]
     end
 
     subgraph Storage
-        PROM_DB[(Prometheus)]
-        GRAFANA[Grafana Dashboards]
-        LOG_FILES[(Rotating Logs)]
+        PROM_DB["(Prometheus)"]
+        GRAFANA["Grafana Dashboards"]
+        LOG_FILES["("Rotating Logs")"]
     end
 
     FASTAPI --> PROM
@@ -144,7 +144,7 @@ sequenceDiagram
         App-->>Prom: Prometheus text format
     end
 
-    Graf->>Prom: PromQL queries (dashboard refresh)
+    Graf->>Prom: PromQL queries ("dashboard refresh")
     Prom-->>Graf: Aggregated time series
 ```
 
@@ -360,7 +360,7 @@ sequenceDiagram
     participant API as Backend API
     participant Prom as Prometheus
 
-    Browser->>LH: Lighthouse audit (6 pages)
+    Browser->>LH: Lighthouse audit ("6 pages")
     LH->>LH: Assert perf >= 80, a11y >= 90
 
     Browser->>LAT: Page load complete
@@ -474,13 +474,13 @@ sequenceDiagram
     participant Route as Route Handler
     participant Logger
 
-    Client->>MW: HTTP Request (with X-Request-Id)
+    Client->>MW: HTTP Request ("with X-Request-Id")
     MW->>MW: request.state.request_id = UUID
     MW->>Logger: INFO "Request started["ID: abc"]"
 
     MW->>Route: call_next(request)
     Route->>Route: bind_request_context(request, job_id)
-    Route->>Logger: DEBUG "Processing step X [req=abc job=doc_123]"
+    Route->>Logger: DEBUG "Processing step X ["req=abc job=doc_123"]"
     Route->>Route: reset_context(tokens)
     Route-->>MW: Response
 

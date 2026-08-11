@@ -5,20 +5,20 @@
 
 <cite>
 **Referenced Files in This Document**
-- [main.py](file://backend/app/main.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [logging_config.py](file://backend/app/config/logging_config.py)
-- [security_headers.py](file://backend/app/middleware/security_headers.py)
-- [rate_limit.py](file://backend/app/middleware/rate_limit.py)
-- [tier_rate_limit.py](file://backend/app/middleware/tier_rate_limit.py)
-- [request_id.py](file://backend/app/middleware/request_id.py)
-- [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
-- [auth.py](file://backend/app/routers/auth.py)
-- [documents.py](file://backend/app/routers/documents.py)
-- [__init__.py](file://backend/app/routers/v1/__init__.py)
-- [health_checks.py](file://backend/app/services/health_checks.py)
-- [dependencies.py](file://backend/app/utils/dependencies.py)
-- [pyproject.toml](file://backend/pyproject.toml)
+- [main.py](../../../../backend/app/main.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [logging_config.py](../../../../backend/app/config/logging_config.py)
+- [security_headers.py](../../../../backend/app/middleware/security_headers.py)
+- [rate_limit.py](../../../../backend/app/middleware/rate_limit.py)
+- [tier_rate_limit.py](../../../../backend/app/middleware/tier_rate_limit.py)
+- [request_id.py](../../../../backend/app/middleware/request_id.py)
+- [prometheus_metrics.py](../../../../backend/app/middleware/prometheus_metrics.py)
+- [auth.py](../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py)
+- [documents.py](../../../../backend/app/routers/v1/documents.py)
+- [__init__.py](../../../../backend/app/routers/v1/__init__.py)
+- [health_checks.py](../../../../backend/app/services/health_checks.py)
+- [dependencies.py](../../../../backend/app/utils/dependencies.py)
+- [pyproject.toml](../../../../backend/pyproject.toml)
 </cite>
 
 ## Table of Contents
@@ -67,24 +67,24 @@ A --> M["Dependencies<br/>utils/dependencies.py"]
 
 **Diagram sources**
 
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
-- [logging_config.py:39-185](file://backend/app/config/logging_config.py#L39-L185)
-- [security_headers.py:18-67](file://backend/app/middleware/security_headers.py#L18-L67)
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
-- [tier_rate_limit.py:19-116](file://backend/app/middleware/tier_rate_limit.py#L19-L116)
-- [request_id.py:21-74](file://backend/app/middleware/request_id.py#L21-L74)
-- [prometheus_metrics.py:135-235](file://backend/app/middleware/prometheus_metrics.py#L135-L235)
-- [auth.py:9-59](file://backend/app/routers/auth.py#L9-L59)
-- [documents.py:57-800](file://backend/app/routers/documents.py#L57-L800)
-- [__init__.py:7-14](file://backend/app/routers/v1/__init__.py#L7-L14)
-- [health_checks.py:85-261](file://backend/app/services/health_checks.py#L85-L261)
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
+- [logging_config.py:39-185](../../../../backend/app/config/logging_config.py#L39-L185)
+- [security_headers.py:18-67](../../../../backend/app/middleware/security_headers.py#L18-L67)
+- [rate_limit.py:49-172](../../../../backend/app/middleware/rate_limit.py#L49-L172)
+- [tier_rate_limit.py:19-116](../../../../backend/app/middleware/tier_rate_limit.py#L19-L116)
+- [request_id.py:21-74](../../../../backend/app/middleware/request_id.py#L21-L74)
+- [prometheus_metrics.py:135-235](../../../../backend/app/middleware/prometheus_metrics.py#L135-L235)
+- [auth.py:9-59](../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L9-L59)
+- [documents.py:57-800](../../../../backend/app/routers/v1/documents.py#L57-L800)
+- [**init**.py:7-14](../../../../backend/app/routers/v1/__init__.py#L7-L14)
+- [health_checks.py:85-261](../../../../backend/app/services/health_checks.py#L85-L261)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
 
 **Section sources**
 
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
 
 ## Core Components
 
@@ -98,10 +98,10 @@ A --> M["Dependencies<br/>utils/dependencies.py"]
 
 **Section sources**
 
-- [main.py:150-260](file://backend/app/main.py#L150-L260)
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
-- [health_checks.py:85-261](file://backend/app/services/health_checks.py#L85-L261)
+- [main.py:150-260](../../../../backend/app/main.py#L150-L260)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
+- [health_checks.py:85-261](../../../../backend/app/services/health_checks.py#L85-L261)
 
 ## Architecture Overview
 
@@ -153,12 +153,12 @@ APP --> SEN
 
 **Diagram sources**
 
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
-- [logging_config.py:163-185](file://backend/app/config/logging_config.py#L163-L185)
-- [auth.py:9-59](file://backend/app/routers/auth.py#L9-L59)
-- [documents.py:57-800](file://backend/app/routers/documents.py#L57-L800)
-- [__init__.py:7-14](file://backend/app/routers/v1/__init__.py#L7-L14)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
+- [logging_config.py:163-185](../../../../backend/app/config/logging_config.py#L163-L185)
+- [auth.py:9-59](../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L9-L59)
+- [documents.py:57-800](../../../../backend/app/routers/v1/documents.py#L57-L800)
+- [**init**.py:7-14](../../../../backend/app/routers/v1/__init__.py#L7-L14)
 
 ## Detailed Component Analysis
 
@@ -202,17 +202,17 @@ Docs-->>Client : Response
 
 **Diagram sources**
 
-- [main.py:276-358](file://backend/app/main.py#L276-L358)
-- [rate_limit.py:124-172](file://backend/app/middleware/rate_limit.py#L124-L172)
-- [tier_rate_limit.py:96-116](file://backend/app/middleware/tier_rate_limit.py#L96-L116)
-- [security_headers.py:28-67](file://backend/app/middleware/security_headers.py#L28-L67)
-- [request_id.py:25-60](file://backend/app/middleware/request_id.py#L25-L60)
-- [auth.py:9-59](file://backend/app/routers/auth.py#L9-L59)
-- [documents.py:57-800](file://backend/app/routers/documents.py#L57-L800)
+- [main.py:276-358](../../../../backend/app/main.py#L276-L358)
+- [rate_limit.py:124-172](../../../../backend/app/middleware/rate_limit.py#L124-L172)
+- [tier_rate_limit.py:96-116](../../../../backend/app/middleware/tier_rate_limit.py#L96-L116)
+- [security_headers.py:28-67](../../../../backend/app/middleware/security_headers.py#L28-L67)
+- [request_id.py:25-60](../../../../backend/app/middleware/request_id.py#L25-L60)
+- [auth.py:9-59](../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L9-L59)
+- [documents.py:57-800](../../../../backend/app/routers/v1/documents.py#L57-L800)
 
 **Section sources**
 
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
 
 ### Configuration Management
 
@@ -228,7 +228,7 @@ Start(["Load Settings"]) --> CheckPyd["Check pydantic-settings availability"]
 CheckPyd --> |Available| Model["Settings(BaseSettings)"]
 CheckPyd --> |Unavailable| EnvOnly["Read from os.getenv"]
 Model --> Normalize["Normalize CORS Origins"]
-Model --> Validators["Field validators (bool, confidence)"]
+Model --> Validators["Field validators ("bool, confidence")"]
 EnvOnly --> Normalize
 Normalize --> Validate["validate() checks"]
 Validate --> Ready(["Settings Ready"])
@@ -236,11 +236,11 @@ Validate --> Ready(["Settings Ready"])
 
 **Diagram sources**
 
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
 
 **Section sources**
 
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
 
 ### Middleware Stack
 
@@ -290,32 +290,32 @@ MetricsManager <.. FastAPI
 
 **Diagram sources**
 
-- [security_headers.py:18-99](file://backend/app/middleware/security_headers.py#L18-L99)
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
-- [tier_rate_limit.py:19-116](file://backend/app/middleware/tier_rate_limit.py#L19-L116)
-- [request_id.py:21-74](file://backend/app/middleware/request_id.py#L21-L74)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [security_headers.py:18-99](../../../../backend/app/middleware/security_headers.py#L18-L99)
+- [rate_limit.py:49-172](../../../../backend/app/middleware/rate_limit.py#L49-L172)
+- [tier_rate_limit.py:19-116](../../../../backend/app/middleware/tier_rate_limit.py#L19-L116)
+- [request_id.py:21-74](../../../../backend/app/middleware/request_id.py#L21-L74)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
 
 **Section sources**
 
-- [main.py:276-315](file://backend/app/main.py#L276-L315)
-- [security_headers.py:18-99](file://backend/app/middleware/security_headers.py#L18-L99)
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
-- [tier_rate_limit.py:19-116](file://backend/app/middleware/tier_rate_limit.py#L19-L116)
-- [request_id.py:21-74](file://backend/app/middleware/request_id.py#L21-L74)
-- [prometheus_metrics.py:135-235](file://backend/app/middleware/prometheus_metrics.py#L135-L235)
+- [main.py:276-315](../../../../backend/app/main.py#L276-L315)
+- [security_headers.py:18-99](../../../../backend/app/middleware/security_headers.py#L18-L99)
+- [rate_limit.py:49-172](../../../../backend/app/middleware/rate_limit.py#L49-L172)
+- [tier_rate_limit.py:19-116](../../../../backend/app/middleware/tier_rate_limit.py#L19-L116)
+- [request_id.py:21-74](../../../../backend/app/middleware/request_id.py#L21-L74)
+- [prometheus_metrics.py:135-235](../../../../backend/app/middleware/prometheus_metrics.py#L135-L235)
 
 ### Lifespan Context Manager
 
 - Startup:
-    - Optional periodic file cleanup based on retention policy.
-    - Periodic queue depth updates for Celery queues.
-    - Reset interrupted jobs in the database if applicable.
-    - Optional AI model pre-loading for performance.
-    - Capability refresh for enhancement layer.
-    - Preload preview template CSS.
+  - Optional periodic file cleanup based on retention policy.
+  - Periodic queue depth updates for Celery queues.
+  - Reset interrupted jobs in the database if applicable.
+  - Optional AI model pre-loading for performance.
+  - Capability refresh for enhancement layer.
+  - Preload preview template CSS.
 - Shutdown:
-    - Cancel background tasks and await completion.
+  - Cancel background tasks and await completion.
 
 ```mermaid
 flowchart TD
@@ -332,11 +332,11 @@ Shutdown --> Cancel["Cancel tasks and await"]
 
 **Diagram sources**
 
-- [main.py:150-260](file://backend/app/main.py#L150-L260)
+- [main.py:150-260](../../../../backend/app/main.py#L150-L260)
 
 **Section sources**
 
-- [main.py:150-260](file://backend/app/main.py#L150-L260)
+- [main.py:150-260](../../../../backend/app/main.py#L150-L260)
 
 ### Dependency Injection Patterns
 
@@ -362,12 +362,12 @@ Router-->>Client : Response
 
 **Diagram sources**
 
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
-- [prometheus_metrics.py:220-231](file://backend/app/middleware/prometheus_metrics.py#L220-L231)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
+- [prometheus_metrics.py:220-231](../../../../backend/app/middleware/prometheus_metrics.py#L220-L231)
 
 **Section sources**
 
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
 
 ### Router Organization and API Versioning
 
@@ -395,13 +395,13 @@ GEN["/api/generate"] --> Gen["Generator Router"]
 
 **Diagram sources**
 
-- [__init__.py:7-14](file://backend/app/routers/v1/__init__.py#L7-L14)
-- [main.py:330-358](file://backend/app/main.py#L330-L358)
+- [**init**.py:7-14](../../../../backend/app/routers/v1/__init__.py#L7-L14)
+- [main.py:330-358](../../../../backend/app/main.py#L330-L358)
 
 **Section sources**
 
-- [__init__.py:7-14](file://backend/app/routers/v1/__init__.py#L7-L14)
-- [main.py:330-358](file://backend/app/main.py#L330-L358)
+- [**init**.py:7-14](../../../../backend/app/routers/v1/__init__.py#L7-L14)
+- [main.py:330-358](../../../../backend/app/main.py#L330-L358)
 
 ### Health and Readiness Probes
 
@@ -425,13 +425,13 @@ App-->>Probe : JSON Response
 
 **Diagram sources**
 
-- [main.py:360-381](file://backend/app/main.py#L360-L381)
-- [health_checks.py:85-261](file://backend/app/services/health_checks.py#L85-L261)
+- [main.py:360-381](../../../../backend/app/main.py#L360-L381)
+- [health_checks.py:85-261](../../../../backend/app/services/health_checks.py#L85-L261)
 
 **Section sources**
 
-- [main.py:360-381](file://backend/app/main.py#L360-L381)
-- [health_checks.py:85-261](file://backend/app/services/health_checks.py#L85-L261)
+- [main.py:360-381](../../../../backend/app/main.py#L360-L381)
+- [health_checks.py:85-261](../../../../backend/app/services/health_checks.py#L85-L261)
 
 ### Logging Configuration
 
@@ -442,7 +442,7 @@ App-->>Probe : JSON Response
 
 **Section sources**
 
-- [logging_config.py:163-185](file://backend/app/config/logging_config.py#L163-L185)
+- [logging_config.py:163-185](../../../../backend/app/config/logging_config.py#L163-L185)
 
 ### Development vs Production Configurations
 
@@ -453,10 +453,10 @@ App-->>Probe : JSON Response
 
 **Section sources**
 
-- [main.py:303-314](file://backend/app/main.py#L303-L314)
-- [main.py:26-28](file://backend/app/main.py#L26-L28)
-- [main.py:76-84](file://backend/app/main.py#L76-L84)
-- [main.py:198-229](file://backend/app/main.py#L198-L229)
+- [main.py:303-314](../../../../backend/app/main.py#L303-L314)
+- [main.py:26-28](../../../../backend/app/main.py#L26-L28)
+- [main.py:76-84](../../../../backend/app/main.py#L76-L84)
+- [main.py:198-229](../../../../backend/app/main.py#L198-L229)
 
 ## Dependency Analysis
 
@@ -486,15 +486,15 @@ App --> HC["Health Checks"]
 
 **Diagram sources**
 
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
-- [health_checks.py:85-261](file://backend/app/services/health_checks.py#L85-L261)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
+- [health_checks.py:85-261](../../../../backend/app/services/health_checks.py#L85-L261)
 
 **Section sources**
 
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
 
 ## Performance Considerations
 
@@ -507,25 +507,25 @@ App --> HC["Health Checks"]
 ## Troubleshooting Guide
 
 - Health/Readiness failures:
-    - Verify external service URLs and network connectivity.
-    - Check cache TTLs and ensure caches are not stale.
+  - Verify external service URLs and network connectivity.
+  - Check cache TTLs and ensure caches are not stale.
 - Rate limit errors:
-    - Confirm Redis availability for distributed counters.
-    - Review per-minute limits and endpoint-specific upload caps.
+  - Confirm Redis availability for distributed counters.
+  - Review per-minute limits and endpoint-specific upload caps.
 - Authentication issues:
-    - Ensure Authorization header is present or token query parameter is used for SSE.
-    - Validate JWT decoding and token expiration.
+  - Ensure Authorization header is present or token query parameter is used for SSE.
+  - Validate JWT decoding and token expiration.
 - Logging problems:
-    - Confirm structured logging is enabled and log directory is writable.
-    - Check filters and formatters for contextual fields.
+  - Confirm structured logging is enabled and log directory is writable.
+  - Check filters and formatters for contextual fields.
 
 **Section sources**
 
-- [health_checks.py:85-261](file://backend/app/services/health_checks.py#L85-L261)
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
-- [tier_rate_limit.py:19-116](file://backend/app/middleware/tier_rate_limit.py#L19-L116)
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
-- [logging_config.py:163-185](file://backend/app/config/logging_config.py#L163-L185)
+- [health_checks.py:85-261](../../../../backend/app/services/health_checks.py#L85-L261)
+- [rate_limit.py:49-172](../../../../backend/app/middleware/rate_limit.py#L49-L172)
+- [tier_rate_limit.py:19-116](../../../../backend/app/middleware/tier_rate_limit.py#L19-L116)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
+- [logging_config.py:163-185](../../../../backend/app/config/logging_config.py#L163-L185)
 
 ## Conclusion
 
@@ -537,4 +537,4 @@ The FastAPI application is structured for scalability and maintainability, with 
 
 **Section sources**
 
-- [pyproject.toml:5-9](file://backend/pyproject.toml#L5-L9)
+- [pyproject.toml:5-9](../../../../backend/pyproject.toml#L5-L9)

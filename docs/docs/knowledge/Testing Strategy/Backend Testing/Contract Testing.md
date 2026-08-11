@@ -5,19 +5,19 @@
 
 <cite>
 **Referenced Files in This Document**
-- [test_endpoint_contracts.py](file://backend/tests/test_endpoint_contracts.py)
-- [test_template_assets_integrity.py](file://backend/tests/test_template_assets_integrity.py)
-- [test_template_regression.py](file://backend/tests/test_template_regression.py)
-- [test_templates.py](file://backend/tests/test_templates.py)
-- [test_formatter_golden_files.py](file://backend/tests/test_formatter_golden_files.py)
-- [template_renderer.py](file://backend/app/pipeline/formatting/template_renderer.py)
-- [document.py](file://backend/app/schemas/document.py)
-- [conftest.py](file://backend/tests/conftest.py)
-- [backend-ci.yml](file://.github/workflows/backend-ci.yml)
-- [pytest.ini](file://backend/pytest.ini)
+- [test_endpoint_contracts.py](../../../../../backend/tests/test_endpoint_contracts.py)
+- [test_template_assets_integrity.py](../../../../../backend/tests/test_template_assets_integrity.py)
+- [test_template_regression.py](../../../../../backend/tests/test_template_regression.py)
+- [test_templates.py](../../../../../backend/tests/test_templates.py)
+- [test_formatter_golden_files.py](../../../../../backend/tests/test_formatter_golden_files.py)
+- [template_renderer.py](../../../../../backend/app/pipeline/formatting/template_renderer.py)
+- [document.py](../../../../../backend/app/schemas/document.py)
+- [conftest.py](../../../../../backend/tests/conftest.py)
+- [backend-ci.yml](../../../../../.github/workflows/backend-ci.yml)
+- [pytest.ini](../../../../../backend/pytest.ini)
 - [TESTING_COMMANDS.md](file://backend/manual_tests/TESTING_COMMANDS.md)
-- [ieee contract.yaml (pipeline)](file://backend/app/pipeline/contracts/ieee/contract.yaml)
-- [ieee contract.yaml (templates)](file://backend/app/templates/ieee/contract.yaml)
+- [ieee contract.yaml (pipeline)](../../../../../backend/app/pipeline/contracts/ieee/contract.yaml)
+- [ieee contract.yaml (templates)](../../../../../backend/app/templates/ieee/contract.yaml)
 </cite>
 
 ## Table of Contents
@@ -75,23 +75,23 @@ TRender --> C2
 
 **Diagram sources**
 
-- [test_endpoint_contracts.py:1-170](file://backend/tests/test_endpoint_contracts.py#L1-L170)
-- [test_template_assets_integrity.py:1-98](file://backend/tests/test_template_assets_integrity.py#L1-L98)
-- [test_template_regression.py:1-93](file://backend/tests/test_template_regression.py#L1-L93)
-- [test_templates.py:1-145](file://backend/tests/test_templates.py#L1-L145)
-- [test_formatter_golden_files.py:1-253](file://backend/tests/test_formatter_golden_files.py#L1-L253)
-- [template_renderer.py:1-331](file://backend/app/pipeline/formatting/template_renderer.py#L1-L331)
-- [document.py:1-266](file://backend/app/schemas/document.py#L1-L266)
+- [test_endpoint_contracts.py:1-170](../../../../../backend/tests/test_endpoint_contracts.py#L1-L170)
+- [test_template_assets_integrity.py:1-98](../../../../../backend/tests/test_template_assets_integrity.py#L1-L98)
+- [test_template_regression.py:1-93](../../../../../backend/tests/test_template_regression.py#L1-L93)
+- [test_templates.py:1-145](../../../../../backend/tests/test_templates.py#L1-L145)
+- [test_formatter_golden_files.py:1-253](../../../../../backend/tests/test_formatter_golden_files.py#L1-L253)
+- [template_renderer.py:1-331](../../../../../backend/app/pipeline/formatting/template_renderer.py#L1-L331)
+- [document.py:1-266](../../../../../backend/app/schemas/document.py#L1-L266)
 
 **Section sources**
 
-- [test_endpoint_contracts.py:1-170](file://backend/tests/test_endpoint_contracts.py#L1-L170)
-- [test_template_assets_integrity.py:1-98](file://backend/tests/test_template_assets_integrity.py#L1-L98)
-- [test_template_regression.py:1-93](file://backend/tests/test_template_regression.py#L1-L93)
-- [test_templates.py:1-145](file://backend/tests/test_templates.py#L1-L145)
-- [test_formatter_golden_files.py:1-253](file://backend/tests/test_formatter_golden_files.py#L1-L253)
-- [template_renderer.py:1-331](file://backend/app/pipeline/formatting/template_renderer.py#L1-L331)
-- [document.py:1-266](file://backend/app/schemas/document.py#L1-L266)
+- [test_endpoint_contracts.py:1-170](../../../../../backend/tests/test_endpoint_contracts.py#L1-L170)
+- [test_template_assets_integrity.py:1-98](../../../../../backend/tests/test_template_assets_integrity.py#L1-L98)
+- [test_template_regression.py:1-93](../../../../../backend/tests/test_template_regression.py#L1-L93)
+- [test_templates.py:1-145](../../../../../backend/tests/test_templates.py#L1-L145)
+- [test_formatter_golden_files.py:1-253](../../../../../backend/tests/test_formatter_golden_files.py#L1-L253)
+- [template_renderer.py:1-331](../../../../../backend/app/pipeline/formatting/template_renderer.py#L1-L331)
+- [document.py:1-266](../../../../../backend/app/schemas/document.py#L1-L266)
 
 ## Core Components
 
@@ -103,21 +103,21 @@ TRender --> C2
 
 Key implementation references:
 
-- Endpoint contracts and schema validation: [test_endpoint_contracts.py:62-170](file://backend/tests/test_endpoint_contracts.py#L62-L170), [document.py:148-178](file://backend/app/schemas/document.py#L148-L178)
-- Template integrity and marker checks: [test_template_assets_integrity.py:56-98](file://backend/tests/test_template_assets_integrity.py#L56-L98), [template_renderer.py:200-230](file://backend/app/pipeline/formatting/template_renderer.py#L200-L230)
-- Golden file testing: [test_formatter_golden_files.py:222-253](file://backend/tests/test_formatter_golden_files.py#L222-L253)
-- Template regression: [test_template_regression.py:47-93](file://backend/tests/test_template_regression.py#L47-L93)
-- Template CRUD/list/search endpoints: [test_templates.py:38-145](file://backend/tests/test_templates.py#L38-L145)
+- Endpoint contracts and schema validation: [test_endpoint_contracts.py:62-170](../../../../../backend/tests/test_endpoint_contracts.py#L62-L170), [document.py:148-178](../../../../../backend/app/schemas/document.py#L148-L178)
+- Template integrity and marker checks: [test_template_assets_integrity.py:56-98](../../../../../backend/tests/test_template_assets_integrity.py#L56-L98), [template_renderer.py:200-230](../../../../../backend/app/pipeline/formatting/template_renderer.py#L200-L230)
+- Golden file testing: [test_formatter_golden_files.py:222-253](../../../../../backend/tests/test_formatter_golden_files.py#L222-L253)
+- Template regression: [test_template_regression.py:47-93](../../../../../backend/tests/test_template_regression.py#L47-L93)
+- Template CRUD/list/search endpoints: [test_templates.py:38-145](../../../../../backend/tests/test_templates.py#L38-L145)
 
 **Section sources**
 
-- [test_endpoint_contracts.py:62-170](file://backend/tests/test_endpoint_contracts.py#L62-L170)
-- [document.py:148-178](file://backend/app/schemas/document.py#L148-L178)
-- [test_template_assets_integrity.py:56-98](file://backend/tests/test_template_assets_integrity.py#L56-L98)
-- [template_renderer.py:200-230](file://backend/app/pipeline/formatting/template_renderer.py#L200-L230)
-- [test_formatter_golden_files.py:222-253](file://backend/tests/test_formatter_golden_files.py#L222-L253)
-- [test_template_regression.py:47-93](file://backend/tests/test_template_regression.py#L47-L93)
-- [test_templates.py:38-145](file://backend/tests/test_templates.py#L38-L145)
+- [test_endpoint_contracts.py:62-170](../../../../../backend/tests/test_endpoint_contracts.py#L62-L170)
+- [document.py:148-178](../../../../../backend/app/schemas/document.py#L148-L178)
+- [test_template_assets_integrity.py:56-98](../../../../../backend/tests/test_template_assets_integrity.py#L56-L98)
+- [template_renderer.py:200-230](../../../../../backend/app/pipeline/formatting/template_renderer.py#L200-L230)
+- [test_formatter_golden_files.py:222-253](../../../../../backend/tests/test_formatter_golden_files.py#L222-L253)
+- [test_template_regression.py:47-93](../../../../../backend/tests/test_template_regression.py#L47-L93)
+- [test_templates.py:38-145](../../../../../backend/tests/test_templates.py#L38-L145)
 
 ## Architecture Overview
 
@@ -137,10 +137,10 @@ Tests --> Schemas
 
 **Diagram sources**
 
-- [test_endpoint_contracts.py:21-55](file://backend/tests/test_endpoint_contracts.py#L21-L55)
-- [document.py:148-178](file://backend/app/schemas/document.py#L148-L178)
-- [template_renderer.py:29-83](file://backend/app/pipeline/formatting/template_renderer.py#L29-L83)
-- [test_template_assets_integrity.py:17-98](file://backend/tests/test_template_assets_integrity.py#L17-L98)
+- [test_endpoint_contracts.py:21-55](../../../../../backend/tests/test_endpoint_contracts.py#L21-L55)
+- [document.py:148-178](../../../../../backend/app/schemas/document.py#L148-L178)
+- [template_renderer.py:29-83](../../../../../backend/app/pipeline/formatting/template_renderer.py#L29-L83)
+- [test_template_assets_integrity.py:17-98](../../../../../backend/tests/test_template_assets_integrity.py#L17-L98)
 
 ## Detailed Component Analysis
 
@@ -174,21 +174,21 @@ TC-->>TC : assert job_id and status
 
 **Diagram sources**
 
-- [test_endpoint_contracts.py:68-128](file://backend/tests/test_endpoint_contracts.py#L68-L128)
-- [document.py:148-178](file://backend/app/schemas/document.py#L148-L178)
+- [test_endpoint_contracts.py:68-128](../../../../../backend/tests/test_endpoint_contracts.py#L68-L128)
+- [document.py:148-178](../../../../../backend/app/schemas/document.py#L148-L178)
 
 Key test references:
 
-- List documents contract: [test_endpoint_contracts.py:68-95](file://backend/tests/test_endpoint_contracts.py#L68-L95)
-- Status contract: [test_endpoint_contracts.py:96-128](file://backend/tests/test_endpoint_contracts.py#L96-L128)
-- Preview contract: [test_endpoint_contracts.py:129-153](file://backend/tests/test_endpoint_contracts.py#L129-L153)
-- Invalid extension contract: [test_endpoint_contracts.py:154-162](file://backend/tests/test_endpoint_contracts.py#L154-L162)
-- Not-found preview contract: [test_endpoint_contracts.py:164-170](file://backend/tests/test_endpoint_contracts.py#L164-L170)
+- List documents contract: [test_endpoint_contracts.py:68-95](../../../../../backend/tests/test_endpoint_contracts.py#L68-L95)
+- Status contract: [test_endpoint_contracts.py:96-128](../../../../../backend/tests/test_endpoint_contracts.py#L96-L128)
+- Preview contract: [test_endpoint_contracts.py:129-153](../../../../../backend/tests/test_endpoint_contracts.py#L129-L153)
+- Invalid extension contract: [test_endpoint_contracts.py:154-162](../../../../../backend/tests/test_endpoint_contracts.py#L154-L162)
+- Not-found preview contract: [test_endpoint_contracts.py:164-170](../../../../../backend/tests/test_endpoint_contracts.py#L164-L170)
 
 **Section sources**
 
-- [test_endpoint_contracts.py:62-170](file://backend/tests/test_endpoint_contracts.py#L62-L170)
-- [document.py:148-178](file://backend/app/schemas/document.py#L148-L178)
+- [test_endpoint_contracts.py:62-170](../../../../../backend/tests/test_endpoint_contracts.py#L62-L170)
+- [document.py:148-178](../../../../../backend/app/schemas/document.py#L148-L178)
 
 ### Template Asset Integrity Testing
 
@@ -209,20 +209,20 @@ Pass --> |No| Fail["Fail"]
 
 **Diagram sources**
 
-- [test_template_assets_integrity.py:52-98](file://backend/tests/test_template_assets_integrity.py#L52-L98)
-- [template_renderer.py:200-230](file://backend/app/pipeline/formatting/template_renderer.py#L200-L230)
+- [test_template_assets_integrity.py:52-98](../../../../../backend/tests/test_template_assets_integrity.py#L52-L98)
+- [template_renderer.py:200-230](../../../../../backend/app/pipeline/formatting/template_renderer.py#L200-L230)
 
 Key test references:
 
-- Template names discovery: [test_template_assets_integrity.py:21-28](file://backend/tests/test_template_assets_integrity.py#L21-L28)
-- Jinja marker detection: [test_template_assets_integrity.py:57-63](file://backend/tests/test_template_assets_integrity.py#L57-L63), [template_renderer.py:200-230](file://backend/app/pipeline/formatting/template_renderer.py#L200-L230)
-- Layout core validation: [test_template_assets_integrity.py:67-71](file://backend/tests/test_template_assets_integrity.py#L67-L71), [test_template_assets_integrity.py:74-80](file://backend/tests/test_template_assets_integrity.py#L74-L80)
-- Smoke render and unresolved markers: [test_template_assets_integrity.py:83-98](file://backend/tests/test_template_assets_integrity.py#L83-L98)
+- Template names discovery: [test_template_assets_integrity.py:21-28](../../../../../backend/tests/test_template_assets_integrity.py#L21-L28)
+- Jinja marker detection: [test_template_assets_integrity.py:57-63](../../../../../backend/tests/test_template_assets_integrity.py#L57-L63), [template_renderer.py:200-230](../../../../../backend/app/pipeline/formatting/template_renderer.py#L200-L230)
+- Layout core validation: [test_template_assets_integrity.py:67-71](../../../../../backend/tests/test_template_assets_integrity.py#L67-L71), [test_template_assets_integrity.py:74-80](../../../../../backend/tests/test_template_assets_integrity.py#L74-L80)
+- Smoke render and unresolved markers: [test_template_assets_integrity.py:83-98](../../../../../backend/tests/test_template_assets_integrity.py#L83-L98)
 
 **Section sources**
 
-- [test_template_assets_integrity.py:1-98](file://backend/tests/test_template_assets_integrity.py#L1-L98)
-- [template_renderer.py:200-230](file://backend/app/pipeline/formatting/template_renderer.py#L200-L230)
+- [test_template_assets_integrity.py:1-98](../../../../../backend/tests/test_template_assets_integrity.py#L1-L98)
+- [template_renderer.py:200-230](../../../../../backend/app/pipeline/formatting/template_renderer.py#L200-L230)
 
 ### Golden File Testing Strategy
 
@@ -246,17 +246,17 @@ Fixture-->>Fixture : assert actual == expected
 
 **Diagram sources**
 
-- [test_formatter_golden_files.py:226-253](file://backend/tests/test_formatter_golden_files.py#L226-L253)
+- [test_formatter_golden_files.py:226-253](../../../../../backend/tests/test_formatter_golden_files.py#L226-L253)
 
 Key test references:
 
-- Golden file loading and assertions: [test_formatter_golden_files.py:222-253](file://backend/tests/test_formatter_golden_files.py#L222-L253)
-- Structural summary builder: [test_formatter_golden_files.py:197-220](file://backend/tests/test_formatter_golden_files.py#L197-L220)
-- Pipeline document construction from markdown: [test_formatter_golden_files.py:56-194](file://backend/tests/test_formatter_golden_files.py#L56-L194)
+- Golden file loading and assertions: [test_formatter_golden_files.py:222-253](../../../../../backend/tests/test_formatter_golden_files.py#L222-L253)
+- Structural summary builder: [test_formatter_golden_files.py:197-220](../../../../../backend/tests/test_formatter_golden_files.py#L197-L220)
+- Pipeline document construction from markdown: [test_formatter_golden_files.py:56-194](../../../../../backend/tests/test_formatter_golden_files.py#L56-L194)
 
 **Section sources**
 
-- [test_formatter_golden_files.py:1-253](file://backend/tests/test_formatter_golden_files.py#L1-L253)
+- [test_formatter_golden_files.py:1-253](../../../../../backend/tests/test_formatter_golden_files.py#L1-L253)
 
 ### Template Regression Testing
 
@@ -283,16 +283,16 @@ AssertKeywords --> Done
 
 **Diagram sources**
 
-- [test_template_regression.py:49-79](file://backend/tests/test_template_regression.py#L49-L79)
+- [test_template_regression.py:49-79](../../../../../backend/tests/test_template_regression.py#L49-L79)
 
 Key test references:
 
-- Regression basics across templates: [test_template_regression.py:49-79](file://backend/tests/test_template_regression.py#L49-L79)
-- Numeric template specifics: [test_template_regression.py:81-93](file://backend/tests/test_template_regression.py#L81-L93)
+- Regression basics across templates: [test_template_regression.py:49-79](../../../../../backend/tests/test_template_regression.py#L49-L79)
+- Numeric template specifics: [test_template_regression.py:81-93](../../../../../backend/tests/test_template_regression.py#L81-L93)
 
 **Section sources**
 
-- [test_template_regression.py:1-93](file://backend/tests/test_template_regression.py#L1-L93)
+- [test_template_regression.py:1-93](../../../../../backend/tests/test_template_regression.py#L1-L93)
 
 ### Template Endpoint Contract Testing
 
@@ -328,19 +328,19 @@ Router-->>Client : 200 JSON
 
 **Diagram sources**
 
-- [test_templates.py:38-106](file://backend/tests/test_templates.py#L38-L106)
+- [test_templates.py:38-106](../../../../../backend/tests/test_templates.py#L38-L106)
 
 Key test references:
 
-- Authentication requirement: [test_templates.py:38-42](file://backend/tests/test_templates.py#L38-L42)
-- CRUD operations: [test_templates.py:56-106](file://backend/tests/test_templates.py#L56-L106)
-- Validation error on bad config: [test_templates.py:108-117](file://backend/tests/test_templates.py#L108-L117)
-- Response shape for built-in templates: [test_templates.py:119-125](file://backend/tests/test_templates.py#L119-L125)
-- CSL search and fetch: [test_templates.py:127-145](file://backend/tests/test_templates.py#L127-L145)
+- Authentication requirement: [test_templates.py:38-42](../../../../../backend/tests/test_templates.py#L38-L42)
+- CRUD operations: [test_templates.py:56-106](../../../../../backend/tests/test_templates.py#L56-L106)
+- Validation error on bad config: [test_templates.py:108-117](../../../../../backend/tests/test_templates.py#L108-L117)
+- Response shape for built-in templates: [test_templates.py:119-125](../../../../../backend/tests/test_templates.py#L119-L125)
+- CSL search and fetch: [test_templates.py:127-145](../../../../../backend/tests/test_templates.py#L127-L145)
 
 **Section sources**
 
-- [test_templates.py:1-145](file://backend/tests/test_templates.py#L1-L145)
+- [test_templates.py:1-145](../../../../../backend/tests/test_templates.py#L1-L145)
 
 ## Dependency Analysis
 
@@ -362,19 +362,19 @@ Tests --> Fixtures["Pytest Fixtures"]
 
 **Diagram sources**
 
-- [test_endpoint_contracts.py:21-55](file://backend/tests/test_endpoint_contracts.py#L21-L55)
-- [document.py:148-178](file://backend/app/schemas/document.py#L148-L178)
-- [template_renderer.py:29-83](file://backend/app/pipeline/formatting/template_renderer.py#L29-L83)
-- [test_template_assets_integrity.py:17-98](file://backend/tests/test_template_assets_integrity.py#L17-L98)
-- [conftest.py:72-112](file://backend/tests/conftest.py#L72-L112)
+- [test_endpoint_contracts.py:21-55](../../../../../backend/tests/test_endpoint_contracts.py#L21-L55)
+- [document.py:148-178](../../../../../backend/app/schemas/document.py#L148-L178)
+- [template_renderer.py:29-83](../../../../../backend/app/pipeline/formatting/template_renderer.py#L29-L83)
+- [test_template_assets_integrity.py:17-98](../../../../../backend/tests/test_template_assets_integrity.py#L17-L98)
+- [conftest.py:72-112](../../../../../backend/tests/conftest.py#L72-L112)
 
 **Section sources**
 
-- [test_endpoint_contracts.py:21-55](file://backend/tests/test_endpoint_contracts.py#L21-L55)
-- [document.py:148-178](file://backend/app/schemas/document.py#L148-L178)
-- [template_renderer.py:29-83](file://backend/app/pipeline/formatting/template_renderer.py#L29-L83)
-- [test_template_assets_integrity.py:17-98](file://backend/tests/test_template_assets_integrity.py#L17-L98)
-- [conftest.py:72-112](file://backend/tests/conftest.py#L72-L112)
+- [test_endpoint_contracts.py:21-55](../../../../../backend/tests/test_endpoint_contracts.py#L21-L55)
+- [document.py:148-178](../../../../../backend/app/schemas/document.py#L148-L178)
+- [template_renderer.py:29-83](../../../../../backend/app/pipeline/formatting/template_renderer.py#L29-L83)
+- [test_template_assets_integrity.py:17-98](../../../../../backend/tests/test_template_assets_integrity.py#L17-L98)
+- [conftest.py:72-112](../../../../../backend/tests/conftest.py#L72-L112)
 
 ## Performance Considerations
 
@@ -397,10 +397,10 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [test_endpoint_contracts.py:62-170](file://backend/tests/test_endpoint_contracts.py#L62-L170)
-- [test_template_assets_integrity.py:56-98](file://backend/tests/test_template_assets_integrity.py#L56-L98)
-- [template_renderer.py:200-230](file://backend/app/pipeline/formatting/template_renderer.py#L200-L230)
-- [test_templates.py:38-145](file://backend/tests/test_templates.py#L38-L145)
+- [test_endpoint_contracts.py:62-170](../../../../../backend/tests/test_endpoint_contracts.py#L62-L170)
+- [test_template_assets_integrity.py:56-98](../../../../../backend/tests/test_template_assets_integrity.py#L56-L98)
+- [template_renderer.py:200-230](../../../../../backend/app/pipeline/formatting/template_renderer.py#L200-L230)
+- [test_templates.py:38-145](../../../../../backend/tests/test_templates.py#L38-L145)
 
 ## Conclusion
 
@@ -418,16 +418,16 @@ The repository implements robust contract testing across API endpoints and templ
 
 **Section sources**
 
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
-- [pytest.ini:16-28](file://backend/pytest.ini#L16-L28)
+- [backend-ci.yml:1-41](../../../../../.github/workflows/backend-ci.yml#L1-L41)
+- [pytest.ini:16-28](../../../../../backend/pytest.ini#L16-L28)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
 
 ### Contract Definitions and Examples
 
-- Pipeline contract example (IEEE): [ieee contract.yaml (pipeline):1-99](file://backend/app/pipeline/contracts/ieee/contract.yaml#L1-L99)
-- Template contract example (IEEE): [ieee contract.yaml (templates):1-50](file://backend/app/templates/ieee/contract.yaml#L1-L50)
+- Pipeline contract example (IEEE): [ieee contract.yaml (pipeline):1-99](../../../../../backend/app/pipeline/contracts/ieee/contract.yaml#L1-L99)
+- Template contract example (IEEE): [ieee contract.yaml (templates):1-50](../../../../../backend/app/templates/ieee/contract.yaml#L1-L50)
 
 **Section sources**
 
-- [ieee contract.yaml (pipeline):1-99](file://backend/app/pipeline/contracts/ieee/contract.yaml#L1-L99)
-- [ieee contract.yaml (templates):1-50](file://backend/app/templates/ieee/contract.yaml#L1-L50)
+- [ieee contract.yaml (pipeline):1-99](../../../../../backend/app/pipeline/contracts/ieee/contract.yaml#L1-L99)
+- [ieee contract.yaml (templates):1-50](../../../../../backend/app/templates/ieee/contract.yaml#L1-L50)

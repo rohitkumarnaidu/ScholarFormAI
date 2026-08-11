@@ -266,8 +266,10 @@ def _load_optional_routers(target_app: FastAPI) -> None:
 
     from app.routers import preview
     from app.routers.v1 import v1_router
+    from app.routers.v2 import v2_router
 
     target_app.include_router(v1_router)
+    target_app.include_router(v2_router, prefix="/api/v2")
     target_app.include_router(preview.router)
     target_app.state._routers_loaded = True
     logger.info("Startup: API routers loaded.")
@@ -481,6 +483,7 @@ async def lifespan(app: FastAPI):
             _preload_preview_css,
             timeout_seconds=5.0,
         )
+    print('YIELDING FROM MAIN LIFESPAN!')
     yield  # App is running
 
     # ── SHUTDOWN ──
@@ -678,9 +681,9 @@ else:
 @app.middleware("http")
 async def lazy_router_loader(request: Request, call_next):
     path = request.url.path or ""
-    if (path.startswith("/api/v1/") or path.startswith("/api/preview")) and not getattr(
-        app.state, "_routers_loaded", False
-    ):
+    if (
+        path.startswith("/api/v1/") or path.startswith("/api/v2/") or path.startswith("/api/preview")
+    ) and not getattr(app.state, "_routers_loaded", False):
         await _ensure_routers_loaded(app)
     return await call_next(request)
 

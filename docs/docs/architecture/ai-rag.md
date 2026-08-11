@@ -17,9 +17,9 @@ The RAG subsystem enables:
 ```mermaid
 flowchart TD
     ContractYAML["Publisher Contract YAML<br/>pipeline/contracts/*"] --> IngestScript["Ingestion Script<br/>ingest_guidelines.py"]
-    DefaultJSON["Default Guidelines JSON<br/>default_guidelines.json"] --> RagEngineInit[RagEngine Initialization]
+    DefaultJSON["Default Guidelines JSON<br/>default_guidelines.json"] --> RagEngineInit["RagEngine Initialization"]
     
-    IngestScript --> RagEngine[RagEngine Core Service]
+    IngestScript --> RagEngine["RagEngine Core Service"]
     RagEngineInit --> RagEngine
     
     subgraph DualStore ["Dual-Backend Storage Layer"]
@@ -30,11 +30,11 @@ flowchart TD
     UserPrompt["User Prompt / Formatting Request"] --> QueryEngine[RagEngine.query_guidelines]
     
     QueryEngine --> AttemptChroma{Attempt ChromaDB Query}
-    AttemptChroma -- Success --> ReturnResults[Top-K Publisher Rules]
-    AttemptChroma -- Error / Unavailable --> FallbackNative[Fallback to kb.json Cosine Query]
+    AttemptChroma -- Success --> ReturnResults["Top-K Publisher Rules"]
+    AttemptChroma -- Error / Unavailable --> FallbackNative["Fallback to kb.json Cosine Query"]
     FallbackNative --> ReturnResults
     
-    ReturnResults --> LLMPrompt[Inject Guidelines into LLM Prompt Context]
+    ReturnResults --> LLMPrompt["Inject Guidelines into LLM Prompt Context"]
     LLMPrompt --> LLMEngine["NVIDIA NIM / Groq / Ollama LLM Execution"]
 ```
 
@@ -57,9 +57,9 @@ When embedding queries or ingesting document guidelines, `RagEngine` cascades th
 
 ```mermaid
 flowchart LR
-    Tier1["Tier 1: BAAI/bge-m3<br/>(1024d, 8192 token window)"] -->|On Failure / Memory Limit| Tier2["Tier 2: HuggingFace API<br/>(Feature Extraction Endpoint)"]
-    Tier2 -->|On Failure / Network Offline| Tier3["Tier 3: BAAI/bge-small-en-v1.5<br/>(384d, Lightweight)"]
-    Tier3 -->|On Failure / No PyTorch| Tier4["Tier 4: _DeterministicEmbeddingModel<br/>(256d BLAKE2b Hash Vector)"]
+    Tier1["Tier 1: BAAI/bge-m3<br/>("1024d, 8192 token window")"] -->|On Failure / Memory Limit| Tier2["Tier 2: HuggingFace API<br/>("Feature Extraction Endpoint")"]
+    Tier2 -->|On Failure / Network Offline| Tier3["Tier 3: BAAI/bge-small-en-v1.5<br/>("384d, Lightweight")"]
+    Tier3 -->|On Failure / No PyTorch| Tier4["Tier 4: _DeterministicEmbeddingModel<br/>("256d BLAKE2b Hash Vector")"]
 ```
 
 ### Embedding Tiers Specifications

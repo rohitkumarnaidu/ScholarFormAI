@@ -24,8 +24,8 @@ sequenceDiagram
     participant Auditor as "Forensic Auditor / QA Agent"
 
 
-    Parent->>Worker: Dispatch Task (Scope, Roles, Parent ID, Context)
-    Note over Worker: 1. Initialize ORIGINAL_REQUEST.md & BRIEFING.md<br/>2. Create progress.md (Liveness Heartbeat)
+    Parent->>Worker: Dispatch Task ("Scope, Roles, Parent ID, Context")
+    Note over Worker: 1. Initialize ORIGINAL_REQUEST.md & BRIEFING.md<br/>2. Create progress.md ("Liveness Heartbeat")
     Worker->>FS: Log state in .agents/<worker>/
     
     loop Execution & Verification Cycle
@@ -41,7 +41,7 @@ sequenceDiagram
     Auditor->>FS: Inspect handoff.md & execute Verification Method
     Auditor-->>Worker: Verification Confirmation / Audit Pass
     
-    Worker->>Parent: send_message (Completion Notice + handoff.md reference)
+    Worker->>Parent: send_message ("Completion Notice + handoff.md reference")
 ```
 
 ### 5-Component Handoff Protocol

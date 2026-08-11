@@ -5,17 +5,17 @@
 
 <cite>
 **Referenced Files in This Document**
-- [conftest.py](file://backend/tests/conftest.py)
-- [integration/conftest.py](file://backend/tests/integration/conftest.py)
-- [test_crossref_integration.py](file://backend/tests/integration/test_crossref_integration.py)
-- [test_csl_formatting.py](file://backend/tests/integration/test_csl_formatting.py)
-- [test_csl_integration.py](file://backend/tests/integration/test_csl_integration.py)
-- [test_docling_integration.py](file://backend/tests/integration/test_docling_integration.py)
-- [test_template_integration.py](file://backend/tests/integration/test_template_integration.py)
-- [test_grobid_pipeline.py](file://backend/tests/integration/test_grobid_pipeline.py)
-- [crossref_client.py](file://backend/app/pipeline/services/crossref_client.py)
-- [docling_client.py](file://backend/app/pipeline/services/docling_client.py)
-- [template_renderer.py](file://backend/app/pipeline/formatting/template_renderer.py)
+- [conftest.py](../../../../../backend/tests/conftest.py)
+- [integration/conftest.py](../../../../../backend/tests/integration/conftest.py)
+- [test_crossref_integration.py](../../../../../backend/tests/integration/test_crossref_integration.py)
+- [test_csl_formatting.py](../../../../../backend/tests/integration/test_csl_formatting.py)
+- [test_csl_integration.py](../../../../../backend/tests/integration/test_csl_integration.py)
+- [test_docling_integration.py](../../../../../backend/tests/integration/test_docling_integration.py)
+- [test_template_integration.py](../../../../../backend/tests/integration/test_template_integration.py)
+- [test_grobid_pipeline.py](../../../../../backend/tests/integration/test_grobid_pipeline.py)
+- [crossref_client.py](../../../../../backend/app/pipeline/services/crossref_client.py)
+- [docling_client.py](../../../../../backend/app/pipeline/services/docling_client.py)
+- [template_renderer.py](../../../../../backend/app/pipeline/formatting/template_renderer.py)
 - [TESTING_COMMANDS.md](file://backend/manual_tests/TESTING_COMMANDS.md)
 </cite>
 
@@ -78,13 +78,13 @@ IT6 --- SC2
 
 **Diagram sources**
 
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
+- [conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
+- [integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
 
 **Section sources**
 
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
+- [conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
+- [integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
 
 ## Core Components
 
@@ -104,15 +104,15 @@ Key responsibilities:
 
 **Section sources**
 
-- [crossref_client.py:1-171](file://backend/app/pipeline/services/crossref_client.py#L1-L171)
-- [docling_client.py:1-482](file://backend/app/pipeline/services/docling_client.py#L1-L482)
-- [template_renderer.py:1-331](file://backend/app/pipeline/formatting/template_renderer.py#L1-L331)
-- [test_crossref_integration.py:1-82](file://backend/tests/integration/test_crossref_integration.py#L1-L82)
-- [test_csl_formatting.py:1-152](file://backend/tests/integration/test_csl_formatting.py#L1-L152)
-- [test_csl_integration.py:1-137](file://backend/tests/integration/test_csl_integration.py#L1-L137)
-- [test_docling_integration.py:1-108](file://backend/tests/integration/test_docling_integration.py#L1-L108)
-- [test_template_integration.py:1-130](file://backend/tests/integration/test_template_integration.py#L1-L130)
-- [test_grobid_pipeline.py:1-255](file://backend/tests/integration/test_grobid_pipeline.py#L1-L255)
+- [crossref_client.py:1-171](../../../../../backend/app/pipeline/services/crossref_client.py#L1-L171)
+- [docling_client.py:1-482](../../../../../backend/app/pipeline/services/docling_client.py#L1-L482)
+- [template_renderer.py:1-331](../../../../../backend/app/pipeline/formatting/template_renderer.py#L1-L331)
+- [test_crossref_integration.py:1-82](../../../../../backend/tests/integration/test_crossref_integration.py#L1-L82)
+- [test_csl_formatting.py:1-152](../../../../../backend/tests/integration/test_csl_formatting.py#L1-L152)
+- [test_csl_integration.py:1-137](../../../../../backend/tests/integration/test_csl_integration.py#L1-L137)
+- [test_docling_integration.py:1-108](../../../../../backend/tests/integration/test_docling_integration.py#L1-L108)
+- [test_template_integration.py:1-130](../../../../../backend/tests/integration/test_template_integration.py#L1-L130)
+- [test_grobid_pipeline.py:1-255](../../../../../backend/tests/integration/test_grobid_pipeline.py#L1-L255)
 
 ## Architecture Overview
 
@@ -155,13 +155,13 @@ T4 --> ORCH
 
 **Diagram sources**
 
-- [crossref_client.py:1-171](file://backend/app/pipeline/services/crossref_client.py#L1-L171)
-- [docling_client.py:1-482](file://backend/app/pipeline/services/docling_client.py#L1-L482)
-- [template_renderer.py:1-331](file://backend/app/pipeline/formatting/template_renderer.py#L1-L331)
-- [test_crossref_integration.py:1-82](file://backend/tests/integration/test_crossref_integration.py#L1-L82)
-- [test_csl_formatting.py:1-152](file://backend/tests/integration/test_csl_formatting.py#L1-L152)
-- [test_docling_integration.py:1-108](file://backend/tests/integration/test_docling_integration.py#L1-L108)
-- [test_grobid_pipeline.py:1-255](file://backend/tests/integration/test_grobid_pipeline.py#L1-L255)
+- [crossref_client.py:1-171](../../../../../backend/app/pipeline/services/crossref_client.py#L1-L171)
+- [docling_client.py:1-482](../../../../../backend/app/pipeline/services/docling_client.py#L1-L482)
+- [template_renderer.py:1-331](../../../../../backend/app/pipeline/formatting/template_renderer.py#L1-L331)
+- [test_crossref_integration.py:1-82](../../../../../backend/tests/integration/test_crossref_integration.py#L1-L82)
+- [test_csl_formatting.py:1-152](../../../../../backend/tests/integration/test_csl_formatting.py#L1-L152)
+- [test_docling_integration.py:1-108](../../../../../backend/tests/integration/test_docling_integration.py#L1-L108)
+- [test_grobid_pipeline.py:1-255](../../../../../backend/tests/integration/test_grobid_pipeline.py#L1-L255)
 
 ## Detailed Component Analysis
 
@@ -187,8 +187,8 @@ DV-->>IT : "ValidationResult with warnings and metadata"
 
 **Diagram sources**
 
-- [test_crossref_integration.py:1-82](file://backend/tests/integration/test_crossref_integration.py#L1-L82)
-- [crossref_client.py:1-171](file://backend/app/pipeline/services/crossref_client.py#L1-L171)
+- [test_crossref_integration.py:1-82](../../../../../backend/tests/integration/test_crossref_integration.py#L1-L82)
+- [crossref_client.py:1-171](../../../../../backend/app/pipeline/services/crossref_client.py#L1-L171)
 
 Key behaviors validated:
 
@@ -198,8 +198,8 @@ Key behaviors validated:
 
 **Section sources**
 
-- [test_crossref_integration.py:1-82](file://backend/tests/integration/test_crossref_integration.py#L1-L82)
-- [crossref_client.py:1-171](file://backend/app/pipeline/services/crossref_client.py#L1-L171)
+- [test_crossref_integration.py:1-82](../../../../../backend/tests/integration/test_crossref_integration.py#L1-L82)
+- [crossref_client.py:1-171](../../../../../backend/app/pipeline/services/crossref_client.py#L1-L171)
 
 ### CSL Formatting and Template Rendering
 
@@ -225,8 +225,8 @@ IT->>IT : "Assert visible text and no unresolved tokens"
 
 **Diagram sources**
 
-- [test_csl_formatting.py:1-152](file://backend/tests/integration/test_csl_formatting.py#L1-L152)
-- [template_renderer.py:1-331](file://backend/app/pipeline/formatting/template_renderer.py#L1-L331)
+- [test_csl_formatting.py:1-152](../../../../../backend/tests/integration/test_csl_formatting.py#L1-L152)
+- [template_renderer.py:1-331](../../../../../backend/app/pipeline/formatting/template_renderer.py#L1-L331)
 
 Validation highlights:
 
@@ -236,8 +236,8 @@ Validation highlights:
 
 **Section sources**
 
-- [test_csl_formatting.py:1-152](file://backend/tests/integration/test_csl_formatting.py#L1-L152)
-- [template_renderer.py:1-331](file://backend/app/pipeline/formatting/template_renderer.py#L1-L331)
+- [test_csl_formatting.py:1-152](../../../../../backend/tests/integration/test_csl_formatting.py#L1-L152)
+- [template_renderer.py:1-331](../../../../../backend/app/pipeline/formatting/template_renderer.py#L1-L331)
 
 ### CSL Engine Integration
 
@@ -254,11 +254,11 @@ ValidateRefs --> End(["Assertions Passed"])
 
 **Diagram sources**
 
-- [test_csl_integration.py:1-137](file://backend/tests/integration/test_csl_integration.py#L1-L137)
+- [test_csl_integration.py:1-137](../../../../../backend/tests/integration/test_csl_integration.py#L1-L137)
 
 **Section sources**
 
-- [test_csl_integration.py:1-137](file://backend/tests/integration/test_csl_integration.py#L1-L137)
+- [test_csl_integration.py:1-137](../../../../../backend/tests/integration/test_csl_integration.py#L1-L137)
 
 ### Docling Integration
 
@@ -271,7 +271,7 @@ participant DC as "DoclingClient"
 participant SD as "StructureDetector"
 participant PD as "PipelineDocument"
 IT->>DC : "analyze_layout(file_path)"
-DC-->>IT : "Layout structure (elements, bbox, font info)"
+DC-->>IT : "Layout structure ("elements, bbox, font info")"
 IT->>SD : "Use ai_hints.docling_data"
 SD->>PD : "Access metadata.ai_hints.docling_data"
 IT->>IT : "Assert font hierarchy and structure"
@@ -281,13 +281,13 @@ DC-->>IT : "Empty layout with safe defaults"
 
 **Diagram sources**
 
-- [test_docling_integration.py:1-108](file://backend/tests/integration/test_docling_integration.py#L1-L108)
-- [docling_client.py:1-482](file://backend/app/pipeline/services/docling_client.py#L1-L482)
+- [test_docling_integration.py:1-108](../../../../../backend/tests/integration/test_docling_integration.py#L1-L108)
+- [docling_client.py:1-482](../../../../../backend/app/pipeline/services/docling_client.py#L1-L482)
 
 **Section sources**
 
-- [test_docling_integration.py:1-108](file://backend/tests/integration/test_docling_integration.py#L1-L108)
-- [docling_client.py:1-482](file://backend/app/pipeline/services/docling_client.py#L1-L482)
+- [test_docling_integration.py:1-108](../../../../../backend/tests/integration/test_docling_integration.py#L1-L108)
+- [docling_client.py:1-482](../../../../../backend/app/pipeline/services/docling_client.py#L1-L482)
 
 ### GROBID Pipeline Integration
 
@@ -313,7 +313,7 @@ IT->>IT : "Assert performance SLA and content"
 
 **Diagram sources**
 
-- [test_grobid_pipeline.py:1-255](file://backend/tests/integration/test_grobid_pipeline.py#L1-L255)
+- [test_grobid_pipeline.py:1-255](../../../../../backend/tests/integration/test_grobid_pipeline.py#L1-L255)
 
 Key validations:
 
@@ -324,7 +324,7 @@ Key validations:
 
 **Section sources**
 
-- [test_grobid_pipeline.py:1-255](file://backend/tests/integration/test_grobid_pipeline.py#L1-L255)
+- [test_grobid_pipeline.py:1-255](../../../../../backend/tests/integration/test_grobid_pipeline.py#L1-L255)
 
 ### Template Integration
 
@@ -341,11 +341,11 @@ E --> F["Output DOCX Verified"]
 
 **Diagram sources**
 
-- [test_template_integration.py:1-130](file://backend/tests/integration/test_template_integration.py#L1-L130)
+- [test_template_integration.py:1-130](../../../../../backend/tests/integration/test_template_integration.py#L1-L130)
 
 **Section sources**
 
-- [test_template_integration.py:1-130](file://backend/tests/integration/test_template_integration.py#L1-L130)
+- [test_template_integration.py:1-130](../../../../../backend/tests/integration/test_template_integration.py#L1-L130)
 
 ## Dependency Analysis
 
@@ -366,13 +366,13 @@ IT --> SVC["External Services"]
 
 **Diagram sources**
 
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
+- [conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
+- [integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
 
 **Section sources**
 
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
+- [conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
+- [integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
 
 ## Performance Considerations
 
@@ -390,9 +390,9 @@ Recommendations:
 
 **Section sources**
 
-- [test_grobid_pipeline.py:109-135](file://backend/tests/integration/test_grobid_pipeline.py#L109-L135)
-- [crossref_client.py:30-54](file://backend/app/pipeline/services/crossref_client.py#L30-L54)
-- [docling_client.py:180-191](file://backend/app/pipeline/services/docling_client.py#L180-L191)
+- [test_grobid_pipeline.py:109-135](../../../../../backend/tests/integration/test_grobid_pipeline.py#L109-L135)
+- [crossref_client.py:30-54](../../../../../backend/app/pipeline/services/crossref_client.py#L30-L54)
+- [docling_client.py:180-191](../../../../../backend/app/pipeline/services/docling_client.py#L180-L191)
 
 ## Troubleshooting Guide
 
@@ -412,8 +412,8 @@ Operational tips:
 
 **Section sources**
 
-- [integration/conftest.py:24-40](file://backend/tests/integration/conftest.py#L24-L40)
-- [template_renderer.py:200-230](file://backend/app/pipeline/formatting/template_renderer.py#L200-L230)
+- [integration/conftest.py:24-40](../../../../../backend/tests/integration/conftest.py#L24-L40)
+- [template_renderer.py:200-230](../../../../../backend/app/pipeline/formatting/template_renderer.py#L200-L230)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
 
 ## Conclusion
@@ -430,8 +430,8 @@ The integration test suite comprehensively validates end-to-end workflows across
 
 **Section sources**
 
-- [integration/conftest.py:17-32](file://backend/tests/integration/conftest.py#L17-L32)
-- [conftest.py:29-44](file://backend/tests/conftest.py#L29-L44)
+- [integration/conftest.py:17-32](../../../../../backend/tests/integration/conftest.py#L17-L32)
+- [conftest.py:29-44](../../../../../backend/tests/conftest.py#L29-L44)
 
 ### Service Mocking Strategies
 
@@ -441,7 +441,7 @@ The integration test suite comprehensively validates end-to-end workflows across
 
 **Section sources**
 
-- [conftest.py:46-58](file://backend/tests/conftest.py#L46-L58)
+- [conftest.py:46-58](../../../../../backend/tests/conftest.py#L46-L58)
 
 ### Data Fixture Management
 
@@ -451,7 +451,7 @@ The integration test suite comprehensively validates end-to-end workflows across
 
 **Section sources**
 
-- [conftest.py:70-112](file://backend/tests/conftest.py#L70-L112)
+- [conftest.py:70-112](../../../../../backend/tests/conftest.py#L70-L112)
 
 ### Test Isolation and Cleanup
 
@@ -461,8 +461,8 @@ The integration test suite comprehensively validates end-to-end workflows across
 
 **Section sources**
 
-- [test_csl_formatting.py:92-102](file://backend/tests/integration/test_csl_formatting.py#L92-L102)
-- [test_grobid_pipeline.py:153-165](file://backend/tests/integration/test_grobid_pipeline.py#L153-L165)
+- [test_csl_formatting.py:92-102](../../../../../backend/tests/integration/test_csl_formatting.py#L92-L102)
+- [test_grobid_pipeline.py:153-165](../../../../../backend/tests/integration/test_grobid_pipeline.py#L153-L165)
 
 ### Guidelines for Reliable Integration Tests
 

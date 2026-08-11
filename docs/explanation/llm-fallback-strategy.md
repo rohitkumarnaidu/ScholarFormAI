@@ -23,13 +23,13 @@ Single-provider dependencies create single points of failure. If NVIDIA NIM goes
 
 ```mermaid
 graph TD
-    Req[LLM Request] --> P1{Primary: NVIDIA NIM}
+    Req["LLM Request"] --> P1{Primary: NVIDIA NIM}
     P1 -->|Available| Done[Response]
     P1 -->|Timeout/Error| P2{Fallback 1: Groq}
     P2 -->|Available| Done
     P2 -->|Timeout/Error| P3{Fallback 2: Ollama}
     P3 -->|Available| Done
-    P3 -->|Unavailable| Fail[Return Error with Fallback Info]
+    P3 -->|Unavailable| Fail["Return Error with Fallback Info"]
 ```
 
 ## Implementation

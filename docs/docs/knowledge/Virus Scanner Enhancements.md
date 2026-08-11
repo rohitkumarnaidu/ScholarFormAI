@@ -5,13 +5,13 @@
 
 <cite>
 **Referenced Files in This Document**
-- [virus_scanner.py](file://backend/app/utils/virus_scanner.py)
-- [documents.py](file://backend/app/routers/documents.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
-- [security_headers.py](file://backend/app/middleware/security_headers.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [test_api.py](file://backend/tests/test_api.py)
+- [virus_scanner.py](../../../backend/app/utils/virus_scanner.py)
+- [documents.py](../../../backend/app/routers/v1/documents.py)
+- [settings.py](../../../backend/app/config/settings.py)
+- [prometheus_metrics.py](../../../backend/app/middleware/prometheus_metrics.py)
+- [security_headers.py](../../../backend/app/middleware/security_headers.py)
+- [circuit_breaker.py](../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [test_api.py](../../../backend/tests/test_api.py)
 </cite>
 
 ## Table of Contents
@@ -41,22 +41,22 @@ The virus scanning system follows a layered architecture pattern that integrates
 ```mermaid
 graph TB
 subgraph "Client Layer"
-UI[Web Interface]
-API[REST API]
+UI["Web Interface"]
+API["REST API"]
 end
 subgraph "Application Layer"
-Router[Documents Router]
-Service[Document Service]
-Pipeline[Pipeline Orchestrator]
+Router["Documents Router"]
+Service["Document Service"]
+Pipeline["Pipeline Orchestrator"]
 end
 subgraph "Security Layer"
-Scanner[Virus Scanner]
-Metrics[Prometheus Metrics]
-Headers[Security Headers]
+Scanner["Virus Scanner"]
+Metrics["Prometheus Metrics"]
+Headers["Security Headers"]
 end
 subgraph "External Services"
-ClamAV[ClamAV Daemon]
-Database[(Supabase)]
+ClamAV["ClamAV Daemon"]
+Database["(Supabase)"]
 end
 UI --> API
 API --> Router
@@ -71,9 +71,9 @@ Service --> Database
 
 **Diagram sources**
 
-- [virus_scanner.py:128-134](file://backend/app/utils/virus_scanner.py#L128-L134)
-- [documents.py:24-25](file://backend/app/routers/documents.py#L24-L25)
-- [prometheus_metrics.py:184-300](file://backend/app/middleware/prometheus_metrics.py#L184-L300)
+- [virus_scanner.py:128-134](../../../backend/app/utils/virus_scanner.py#L128-L134)
+- [documents.py:24-25](../../../backend/app/routers/v1/documents.py#L24-L25)
+- [prometheus_metrics.py:184-300](../../../backend/app/middleware/prometheus_metrics.py#L184-L300)
 
 ## Core Components
 
@@ -106,14 +106,14 @@ AsyncVirusScanner --|> VirusScanner
 
 **Diagram sources**
 
-- [virus_scanner.py:128-134](file://backend/app/utils/virus_scanner.py#L128-L134)
-- [virus_scanner.py:66-126](file://backend/app/utils/virus_scanner.py#L66-L126)
-- [settings.py:145-147](file://backend/app/config/settings.py#L145-L147)
+- [virus_scanner.py:128-134](../../../backend/app/utils/virus_scanner.py#L128-L134)
+- [virus_scanner.py:66-126](../../../backend/app/utils/virus_scanner.py#L66-L126)
+- [settings.py:145-147](../../../backend/app/config/settings.py#L145-L147)
 
 **Section sources**
 
-- [virus_scanner.py:128-134](file://backend/app/utils/virus_scanner.py#L128-L134)
-- [virus_scanner.py:66-126](file://backend/app/utils/virus_scanner.py#L66-L126)
+- [virus_scanner.py:128-134](../../../backend/app/utils/virus_scanner.py#L128-L134)
+- [virus_scanner.py:66-126](../../../backend/app/utils/virus_scanner.py#L66-L126)
 
 ### Document Upload Integration
 
@@ -145,12 +145,12 @@ end
 
 **Diagram sources**
 
-- [documents.py:85-96](file://backend/app/routers/documents.py#L85-L96)
-- [virus_scanner.py:66-126](file://backend/app/utils/virus_scanner.py#L66-L126)
+- [documents.py:85-96](../../../backend/app/routers/v1/documents.py#L85-L96)
+- [virus_scanner.py:66-126](../../../backend/app/utils/virus_scanner.py#L66-L126)
 
 **Section sources**
 
-- [documents.py:85-96](file://backend/app/routers/documents.py#L85-L96)
+- [documents.py:85-96](../../../backend/app/routers/v1/documents.py#L85-L96)
 
 ## Virus Scanning Implementation
 
@@ -160,7 +160,7 @@ The virus scanning implementation employs a sophisticated multi-layered approach
 
 ```mermaid
 flowchart TD
-Start([Scan Request]) --> CheckLib["Check python-clamd availability"]
+Start(["Scan Request"]) --> CheckLib["Check python-clamd availability"]
 CheckLib --> HasLib{"python-clamd available?"}
 HasLib --> |Yes| TryClamd["Try Clamd Network Socket"]
 TryClamd --> ClamdSuccess{"Clamd scan successful?"}
@@ -180,8 +180,8 @@ RaiseError --> End
 
 **Diagram sources**
 
-- [virus_scanner.py:93-114](file://backend/app/utils/virus_scanner.py#L93-L114)
-- [virus_scanner.py:21-39](file://backend/app/utils/virus_scanner.py#L21-L39)
+- [virus_scanner.py:93-114](../../../backend/app/utils/virus_scanner.py#L93-L114)
+- [virus_scanner.py:21-39](../../../backend/app/utils/virus_scanner.py#L21-L39)
 
 ### Scan Result Processing
 
@@ -196,8 +196,8 @@ The system processes scan results through a comprehensive parsing mechanism:
 
 **Section sources**
 
-- [virus_scanner.py:21-39](file://backend/app/utils/virus_scanner.py#L21-L39)
-- [virus_scanner.py:93-114](file://backend/app/utils/virus_scanner.py#L93-L114)
+- [virus_scanner.py:21-39](../../../backend/app/utils/virus_scanner.py#L21-L39)
+- [virus_scanner.py:93-114](../../../backend/app/utils/virus_scanner.py#L93-L114)
 
 ## Integration Points
 
@@ -214,8 +214,8 @@ The virus scanner relies on centralized configuration management through the set
 
 **Section sources**
 
-- [settings.py:145-147](file://backend/app/config/settings.py#L145-L147)
-- [settings.py:367-368](file://backend/app/config/settings.py#L367-L368)
+- [settings.py:145-147](../../../backend/app/config/settings.py#L145-L147)
+- [settings.py:367-368](../../../backend/app/config/settings.py#L367-L368)
 
 ### Security Middleware Integration
 
@@ -224,16 +224,16 @@ The virus scanning system works in conjunction with security middleware to provi
 ```mermaid
 graph LR
 subgraph "Security Layers"
-SH[Security Headers]
-RL[Rate Limiting]
-CB[Circuit Breaker]
-VS[Virus Scanner]
+SH["Security Headers"]
+RL["Rate Limiting"]
+CB["Circuit Breaker"]
+VS["Virus Scanner"]
 end
 subgraph "Attack Vectors"
-MITM[MITM Attack]
-DOS[DoS Attack]
-MAL[Malicious Files]
-BRUTE[Brute Force]
+MITM["MITM Attack"]
+DOS["DoS Attack"]
+MAL["Malicious Files"]
+BRUTE["Brute Force"]
 end
 MITM --> SH
 DOS --> RL
@@ -246,13 +246,13 @@ CB --> VS
 
 **Diagram sources**
 
-- [security_headers.py:18-66](file://backend/app/middleware/security_headers.py#L18-L66)
-- [circuit_breaker.py:29-97](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L97)
+- [security_headers.py:18-66](../../../backend/app/middleware/security_headers.py#L18-L66)
+- [circuit_breaker.py:29-97](../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L97)
 
 **Section sources**
 
-- [security_headers.py:18-66](file://backend/app/middleware/security_headers.py#L18-L66)
-- [circuit_breaker.py:29-97](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L97)
+- [security_headers.py:18-66](../../../backend/app/middleware/security_headers.py#L18-L66)
+- [circuit_breaker.py:29-97](../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L97)
 
 ## Security Enhancements
 
@@ -278,7 +278,7 @@ The system provides comprehensive threat detection through multiple mechanisms:
 
 **Section sources**
 
-- [documents.py:311-348](file://backend/app/routers/documents.py#L311-L348)
+- [documents.py:311-348](../../../backend/app/routers/v1/documents.py#L311-L348)
 
 ## Monitoring and Metrics
 
@@ -310,13 +310,13 @@ Prometheus-->>External : Serve metrics data
 
 **Diagram sources**
 
-- [virus_scanner.py:115-121](file://backend/app/utils/virus_scanner.py#L115-L121)
-- [prometheus_metrics.py:144-149](file://backend/app/middleware/prometheus_metrics.py#L144-L149)
+- [virus_scanner.py:115-121](../../../backend/app/utils/virus_scanner.py#L115-L121)
+- [prometheus_metrics.py:144-149](../../../backend/app/middleware/prometheus_metrics.py#L144-L149)
 
 **Section sources**
 
-- [prometheus_metrics.py:144-149](file://backend/app/middleware/prometheus_metrics.py#L144-L149)
-- [virus_scanner.py:115-121](file://backend/app/utils/virus_scanner.py#L115-L121)
+- [prometheus_metrics.py:144-149](../../../backend/app/middleware/prometheus_metrics.py#L144-L149)
+- [virus_scanner.py:115-121](../../../backend/app/utils/virus_scanner.py#L115-L121)
 
 ## Testing Strategy
 
@@ -327,10 +327,10 @@ The virus scanning system employs comprehensive testing strategies:
 ```mermaid
 graph TB
 subgraph "Test Categories"
-UT[Unit Tests]
-IT[Integration Tests]
-FT[Functional Tests]
-MT[Mutation Tests]
+UT["Unit Tests"]
+IT["Integration Tests"]
+FT["Functional Tests"]
+MT["Mutation Tests"]
 end
 subgraph "Test Scenarios"
 CleanFiles["Clean File Scenarios"]
@@ -350,7 +350,7 @@ MT --> TimeoutScenarios
 
 **Diagram sources**
 
-- [test_api.py:385-416](file://backend/tests/test_api.py#L385-L416)
+- [test_api.py:385-416](../../../backend/tests/test_api.py#L385-L416)
 
 ### Test Case Examples
 
@@ -365,7 +365,7 @@ The testing framework includes specific scenarios for virus detection validation
 
 **Section sources**
 
-- [test_api.py:385-416](file://backend/tests/test_api.py#L385-L416)
+- [test_api.py:385-416](../../../backend/tests/test_api.py#L385-L416)
 
 ## Performance Considerations
 
@@ -421,7 +421,7 @@ Key log entries for troubleshooting:
 
 **Section sources**
 
-- [virus_scanner.py:89-114](file://backend/app/utils/virus_scanner.py#L89-L114)
+- [virus_scanner.py:89-114](../../../backend/app/utils/virus_scanner.py#L89-L114)
 
 ## Conclusion
 

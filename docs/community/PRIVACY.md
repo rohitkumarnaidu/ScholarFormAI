@@ -6,10 +6,10 @@
 
 - **Local Mode**: All manuscript content stays on your machine. No data is transmitted externally.
 - **API Mode**: Manuscript content is sent to the AMF API server for processing. Content is:
-    - Processed in memory only
-    - Not permanently stored (except temporary formatted files)
-    - Not used for model training
-    - Not shared with third parties
+  - Processed in memory only
+  - Not permanently stored (except temporary formatted files)
+  - Not used for model training
+  - Not shared with third parties
 
 ### Logging
 
@@ -36,7 +36,7 @@ AMF does not integrate with any third-party analytics, advertising, or tracking 
 
 ## Self-Hosting
 
-For maximum privacy, self-host AMF using Docker Compose or manual deployment. See [DEPLOYMENT.md](DEPLOYMENT.md).
+For maximum privacy, self-host AMF using Docker Compose or manual deployment. See [DEPLOYMENT.md](../deployment/Deployment.md).
 
 ## Security
 

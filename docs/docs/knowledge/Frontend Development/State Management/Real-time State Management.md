@@ -5,15 +5,15 @@
 
 <cite>
 **Referenced Files in This Document**
-- [events.py](file://backend/app/realtime/events.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [stream.py](file://backend/app/routers/stream.py)
-- [streaming.py](file://backend/app/pipeline/agents/streaming.py)
-- [preview_renderer.py](file://backend/app/services/preview_renderer.py)
-- [ReconnectingWebSocket.js](file://frontend/src/lib/ReconnectingWebSocket.js)
-- [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
-- [useSessionEventStream.js](file://frontend/src/hooks/useSessionEventStream.js)
-- [test_stream.py](file://backend/tests/test_stream.py)
+- [events.py](../../../../../backend/app/realtime/events.py)
+- [pubsub.py](../../../../../backend/app/realtime/pubsub.py)
+- [stream.py](../../../../../backend/app/routers/v1/stream.py)
+- [streaming.py](../../../../../backend/app/pipeline/agents/streaming.py)
+- [preview_renderer.py](../../../../../backend/app/services/preview_renderer.py)
+- [ReconnectingWebSocket.js](../../../../../frontend/src/lib/ReconnectingWebSocket.js)
+- [useLivePreviewSocket.js](../../../../../frontend/src/hooks/useLivePreviewSocket.js)
+- [useSessionEventStream.js](../../../../../frontend/src/hooks/useSessionEventStream.js)
+- [test_stream.py](../../../../../backend/tests/test_stream.py)
 </cite>
 
 ## Table of Contents
@@ -71,23 +71,23 @@ F --> E
 
 **Diagram sources**
 
-- [events.py:1-34](file://backend/app/realtime/events.py#L1-L34)
-- [pubsub.py:1-120](file://backend/app/realtime/pubsub.py#L1-L120)
-- [stream.py:1-95](file://backend/app/routers/stream.py#L1-L95)
-- [preview_renderer.py:1-421](file://backend/app/services/preview_renderer.py#L1-L421)
-- [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [useSessionEventStream.js:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [events.py:1-34](../../../../../backend/app/realtime/events.py#L1-L34)
+- [pubsub.py:1-120](../../../../../backend/app/realtime/pubsub.py#L1-L120)
+- [stream.py:1-95](../../../../../backend/app/routers/v1/stream.py#L1-L95)
+- [preview_renderer.py:1-421](../../../../../backend/app/services/preview_renderer.py#L1-L421)
+- [ReconnectingWebSocket.js:1-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
+- [useLivePreviewSocket.js:1-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [useSessionEventStream.js:1-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
 
 **Section sources**
 
-- [events.py:1-34](file://backend/app/realtime/events.py#L1-L34)
-- [pubsub.py:1-120](file://backend/app/realtime/pubsub.py#L1-L120)
-- [stream.py:1-95](file://backend/app/routers/stream.py#L1-L95)
-- [preview_renderer.py:1-421](file://backend/app/services/preview_renderer.py#L1-L421)
-- [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [useSessionEventStream.js:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [events.py:1-34](../../../../../backend/app/realtime/events.py#L1-L34)
+- [pubsub.py:1-120](../../../../../backend/app/realtime/pubsub.py#L1-L120)
+- [stream.py:1-95](../../../../../backend/app/routers/v1/stream.py#L1-L95)
+- [preview_renderer.py:1-421](../../../../../backend/app/services/preview_renderer.py#L1-L421)
+- [ReconnectingWebSocket.js:1-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
+- [useLivePreviewSocket.js:1-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [useSessionEventStream.js:1-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
 
 ## Core Components
 
@@ -105,13 +105,13 @@ Key responsibilities:
 
 **Section sources**
 
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [stream.py:32-95](file://backend/app/routers/stream.py#L32-L95)
-- [preview_renderer.py:31-421](file://backend/app/services/preview_renderer.py#L31-L421)
-- [ReconnectingWebSocket.js:5-148](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
-- [useLivePreviewSocket.js:28-137](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
-- [useSessionEventStream.js:4-101](file://frontend/src/hooks/useSessionEventStream.js#L4-L101)
+- [events.py:9-34](../../../../../backend/app/realtime/events.py#L9-L34)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [stream.py:32-95](../../../../../backend/app/routers/v1/stream.py#L32-L95)
+- [preview_renderer.py:31-421](../../../../../backend/app/services/preview_renderer.py#L31-L421)
+- [ReconnectingWebSocket.js:5-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
+- [useLivePreviewSocket.js:28-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
+- [useSessionEventStream.js:4-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L4-L101)
 
 ## Architecture Overview
 
@@ -127,7 +127,7 @@ participant WS as "WebSocket Endpoint"
 participant RR as "Preview Renderer"
 participant SSE as "SSE Endpoint"
 FE->>WS : "Connect with session ID"
-WS->>RR : "Render preview (content, template)"
+WS->>RR : "Render preview ("content, template")"
 RR-->>WS : "{html, warnings, latency}"
 WS-->>FE : "JSON {html, warnings, latency}"
 FE->>SSE : "Subscribe to job events"
@@ -137,10 +137,10 @@ SSE-->>FE : "progress updates and stage changes"
 
 **Diagram sources**
 
-- [useLivePreviewSocket.js:44-102](file://frontend/src/hooks/useLivePreviewSocket.js#L44-L102)
-- [preview_renderer.py:364-406](file://backend/app/services/preview_renderer.py#L364-L406)
-- [useSessionEventStream.js:20-97](file://frontend/src/hooks/useSessionEventStream.js#L20-L97)
-- [stream.py:32-70](file://backend/app/routers/stream.py#L32-L70)
+- [useLivePreviewSocket.js:44-102](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L44-L102)
+- [preview_renderer.py:364-406](../../../../../backend/app/services/preview_renderer.py#L364-L406)
+- [useSessionEventStream.js:20-97](../../../../../frontend/src/hooks/useSessionEventStream.js#L20-L97)
+- [stream.py:32-70](../../../../../backend/app/routers/v1/stream.py#L32-L70)
 
 ## Detailed Component Analysis
 
@@ -174,13 +174,13 @@ RealtimeEvent <.. RedisPubSub : "serialized payload"
 
 **Diagram sources**
 
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
+- [events.py:9-34](../../../../../backend/app/realtime/events.py#L9-L34)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
 
 **Section sources**
 
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
+- [events.py:9-34](../../../../../backend/app/realtime/events.py#L9-L34)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
 
 ### SSE Router for Job Streams
 
@@ -206,14 +206,14 @@ end
 
 **Diagram sources**
 
-- [stream.py:32-70](file://backend/app/routers/stream.py#L32-L70)
-- [pubsub.py:79-120](file://backend/app/realtime/pubsub.py#L79-L120)
-- [events.py:21-34](file://backend/app/realtime/events.py#L21-L34)
+- [stream.py:32-70](../../../../../backend/app/routers/v1/stream.py#L32-L70)
+- [pubsub.py:79-120](../../../../../backend/app/realtime/pubsub.py#L79-L120)
+- [events.py:21-34](../../../../../backend/app/realtime/events.py#L21-L34)
 
 **Section sources**
 
-- [stream.py:32-95](file://backend/app/routers/stream.py#L32-L95)
-- [test_stream.py:26-51](file://backend/tests/test_stream.py#L26-L51)
+- [stream.py:32-95](../../../../../backend/app/routers/v1/stream.py#L32-L95)
+- [test_stream.py:26-51](../../../../../backend/tests/test_stream.py#L26-L51)
 
 ### Preview Renderer and Live HTML
 
@@ -238,12 +238,12 @@ StoreCache --> ReturnNew["Return HTML + latency + warnings"]
 
 **Diagram sources**
 
-- [preview_renderer.py:364-406](file://backend/app/services/preview_renderer.py#L364-L406)
-- [preview_renderer.py:89-98](file://backend/app/services/preview_renderer.py#L89-L98)
+- [preview_renderer.py:364-406](../../../../../backend/app/services/preview_renderer.py#L364-L406)
+- [preview_renderer.py:89-98](../../../../../backend/app/services/preview_renderer.py#L89-L98)
 
 **Section sources**
 
-- [preview_renderer.py:31-421](file://backend/app/services/preview_renderer.py#L31-L421)
+- [preview_renderer.py:31-421](../../../../../backend/app/services/preview_renderer.py#L31-L421)
 
 ### WebSocket Live Preview with Reconnection
 
@@ -273,14 +273,14 @@ RWS->>RWS : "scheduleReconnect()"
 
 **Diagram sources**
 
-- [useLivePreviewSocket.js:44-102](file://frontend/src/hooks/useLivePreviewSocket.js#L44-L102)
-- [ReconnectingWebSocket.js:33-109](file://frontend/src/lib/ReconnectingWebSocket.js#L33-L109)
-- [preview_renderer.py:364-406](file://backend/app/services/preview_renderer.py#L364-L406)
+- [useLivePreviewSocket.js:44-102](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L44-L102)
+- [ReconnectingWebSocket.js:33-109](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L33-L109)
+- [preview_renderer.py:364-406](../../../../../backend/app/services/preview_renderer.py#L364-L406)
 
 **Section sources**
 
-- [useLivePreviewSocket.js:28-137](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
-- [ReconnectingWebSocket.js:5-148](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
+- [useLivePreviewSocket.js:28-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
+- [ReconnectingWebSocket.js:5-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
 
 ### Session Event Stream (SSE) for Progress
 
@@ -306,13 +306,13 @@ Hook->>Hook : "retry with exponential backoff"
 
 **Diagram sources**
 
-- [useSessionEventStream.js:20-97](file://frontend/src/hooks/useSessionEventStream.js#L20-L97)
-- [stream.py:32-70](file://backend/app/routers/stream.py#L32-L70)
+- [useSessionEventStream.js:20-97](../../../../../frontend/src/hooks/useSessionEventStream.js#L20-L97)
+- [stream.py:32-70](../../../../../backend/app/routers/v1/stream.py#L32-L70)
 
 **Section sources**
 
-- [useSessionEventStream.js:4-101](file://frontend/src/hooks/useSessionEventStream.js#L4-L101)
-- [stream.py:32-95](file://backend/app/routers/stream.py#L32-L95)
+- [useSessionEventStream.js:4-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L4-L101)
+- [stream.py:32-95](../../../../../backend/app/routers/v1/stream.py#L32-L95)
 
 ### AI Agent Streaming Callbacks
 
@@ -341,11 +341,11 @@ class StreamingAgentCallback {
 
 **Diagram sources**
 
-- [streaming.py:27-147](file://backend/app/pipeline/agents/streaming.py#L27-L147)
+- [streaming.py:27-147](../../../../../backend/app/pipeline/agents/streaming.py#L27-L147)
 
 **Section sources**
 
-- [streaming.py:27-147](file://backend/app/pipeline/agents/streaming.py#L27-L147)
+- [streaming.py:27-147](../../../../../backend/app/pipeline/agents/streaming.py#L27-L147)
 
 ## Dependency Analysis
 
@@ -365,37 +365,37 @@ SSE --> StreamHook["useSessionEventStream.js"]
 
 **Diagram sources**
 
-- [events.py:1-34](file://backend/app/realtime/events.py#L1-L34)
-- [pubsub.py:1-120](file://backend/app/realtime/pubsub.py#L1-L120)
-- [stream.py:1-95](file://backend/app/routers/stream.py#L1-L95)
-- [preview_renderer.py:1-421](file://backend/app/services/preview_renderer.py#L1-L421)
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [useSessionEventStream.js:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
-- [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
+- [events.py:1-34](../../../../../backend/app/realtime/events.py#L1-L34)
+- [pubsub.py:1-120](../../../../../backend/app/realtime/pubsub.py#L1-L120)
+- [stream.py:1-95](../../../../../backend/app/routers/v1/stream.py#L1-L95)
+- [preview_renderer.py:1-421](../../../../../backend/app/services/preview_renderer.py#L1-L421)
+- [useLivePreviewSocket.js:1-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [useSessionEventStream.js:1-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [ReconnectingWebSocket.js:1-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
 
 **Section sources**
 
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [stream.py:32-95](file://backend/app/routers/stream.py#L32-L95)
-- [preview_renderer.py:31-421](file://backend/app/services/preview_renderer.py#L31-L421)
-- [useLivePreviewSocket.js:28-137](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
-- [useSessionEventStream.js:4-101](file://frontend/src/hooks/useSessionEventStream.js#L4-L101)
-- [ReconnectingWebSocket.js:5-148](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [stream.py:32-95](../../../../../backend/app/routers/v1/stream.py#L32-L95)
+- [preview_renderer.py:31-421](../../../../../backend/app/services/preview_renderer.py#L31-L421)
+- [useLivePreviewSocket.js:28-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
+- [useSessionEventStream.js:4-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L4-L101)
+- [ReconnectingWebSocket.js:5-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
 
 ## Performance Considerations
 
 - Caching
-    - Preview renderer caches rendered HTML and CSS with TTL to reduce repeated computation
-    - Redis fallback gracefully degrades to in-memory cache
+  - Preview renderer caches rendered HTML and CSS with TTL to reduce repeated computation
+  - Redis fallback gracefully degrades to in-memory cache
 - Backpressure and debouncing
-    - Live preview hook debounces frequent updates and measures latency
-    - WebSocket wrapper avoids sending when closed and replays pending payloads on reconnect
+  - Live preview hook debounces frequent updates and measures latency
+  - WebSocket wrapper avoids sending when closed and replays pending payloads on reconnect
 - Efficient eventing
-    - SSE streams minimal JSON payloads with essential fields
-    - Pub/Sub decodes JSON once per message and yields parsed dictionaries
+  - SSE streams minimal JSON payloads with essential fields
+  - Pub/Sub decodes JSON once per message and yields parsed dictionaries
 - Latency visibility
-    - Live preview computes and returns latency for user feedback
-    - SSE progress updates enable real-time progress bars and stage indicators
+  - Live preview computes and returns latency for user feedback
+  - SSE progress updates enable real-time progress bars and stage indicators
 
 [No sources needed since this section provides general guidance]
 
@@ -404,34 +404,34 @@ SSE --> StreamHook["useSessionEventStream.js"]
 Common issues and remedies:
 
 - Redis unavailability
-    - Pub/Sub falls back to in-memory queues; verify logs for warnings
-    - Ensure Redis connectivity and credentials
+  - Pub/Sub falls back to in-memory queues; verify logs for warnings
+  - Ensure Redis connectivity and credentials
 - SSE disconnections
-    - Client-side exponential backoff retries; confirm token presence and session validity
-    - Inspect server metrics for connection open/close counts
+  - Client-side exponential backoff retries; confirm token presence and session validity
+  - Inspect server metrics for connection open/close counts
 - WebSocket reconnection storms
-    - Verify jitter and max delay parameters; inspect reconnect attempts
-    - Confirm payload checksum and sequence to avoid duplicate processing
+  - Verify jitter and max delay parameters; inspect reconnect attempts
+  - Confirm payload checksum and sequence to avoid duplicate processing
 - Preview rendering errors
-    - Unknown templates trigger fallback and warnings
-    - Empty content renders placeholder text
+  - Unknown templates trigger fallback and warnings
+  - Empty content renders placeholder text
 
 Operational checks:
 
 - Backend
-    - Validate Redis ping and pub/sub subscribe/publish flows
-    - Confirm SSE endpoint returns connected event and subsequent updates
+  - Validate Redis ping and pub/sub subscribe/publish flows
+  - Confirm SSE endpoint returns connected event and subsequent updates
 - Frontend
-    - Monitor reconnect attempts and latencyMs
-    - Ensure debounce timer does not starve updates for large diffs
+  - Monitor reconnect attempts and latencyMs
+  - Ensure debounce timer does not starve updates for large diffs
 
 **Section sources**
 
-- [pubsub.py:40-53](file://backend/app/realtime/pubsub.py#L40-L53)
-- [pubsub.py:63-77](file://backend/app/realtime/pubsub.py#L63-L77)
-- [useSessionEventStream.js:76-87](file://frontend/src/hooks/useSessionEventStream.js#L76-L87)
-- [useLivePreviewSocket.js:91-102](file://frontend/src/hooks/useLivePreviewSocket.js#L91-L102)
-- [preview_renderer.py:369-374](file://backend/app/services/preview_renderer.py#L369-L374)
+- [pubsub.py:40-53](../../../../../backend/app/realtime/pubsub.py#L40-L53)
+- [pubsub.py:63-77](../../../../../backend/app/realtime/pubsub.py#L63-L77)
+- [useSessionEventStream.js:76-87](../../../../../frontend/src/hooks/useSessionEventStream.js#L76-L87)
+- [useLivePreviewSocket.js:91-102](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L91-L102)
+- [preview_renderer.py:369-374](../../../../../backend/app/services/preview_renderer.py#L369-L374)
 
 ## Conclusion
 

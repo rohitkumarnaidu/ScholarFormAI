@@ -5,20 +5,20 @@
 
 <cite>
 **Referenced Files in This Document**
-- [main.py](file://backend/app/main.py)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [redis_cache.py](file://backend/app/cache/redis_cache.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [stream.py](file://backend/app/routers/stream.py)
-- [session.py](file://backend/app/db/session.py)
-- [document.py](file://backend/app/models/document.py)
-- [document_service.py](file://backend/app/services/document_service.py)
-- [validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
-- [parser_factory.py](file://backend/app/pipeline/parsing/parser_factory.py)
-- [formatter.py](file://backend/app/pipeline/formatting/formatter.py)
-- [exporter.py](file://backend/app/pipeline/export/exporter.py)
-- [docling_client.py](file://backend/app/pipeline/services/docling_client.py)
-- [grobid_client.py](file://backend/app/pipeline/services/grobid_client.py)
+- [main.py](../../../../backend/app/main.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [redis_cache.py](../../../../backend/app/cache/redis_cache.py)
+- [pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [stream.py](../../../../backend/app/routers/v1/stream.py)
+- [session.py](../../../../backend/app/db/session.py)
+- [document.py](../../../../backend/app/models/document.py)
+- [document_service.py](../../../../backend/app/services/document_service.py)
+- [validator_v3.py](../../../../backend/app/pipeline/validation/validator_v3.py)
+- [parser_factory.py](../../../../backend/app/pipeline/parsing/parser_factory.py)
+- [formatter.py](../../../../backend/app/pipeline/formatting/formatter.py)
+- [exporter.py](../../../../backend/app/pipeline/export/exporter.py)
+- [docling_client.py](../../../../backend/app/pipeline/services/docling_client.py)
+- [grobid_client.py](../../../../backend/app/pipeline/services/grobid_client.py)
 </cite>
 
 ## Table of Contents
@@ -93,24 +93,24 @@ DB --> Models
 
 **Diagram sources**
 
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
-- [orchestrator.py:73-545](file://backend/app/pipeline/orchestrator.py#L73-L545)
-- [stream.py:24-95](file://backend/app/routers/stream.py#L24-L95)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
-- [document.py:6-26](file://backend/app/models/document.py#L6-L26)
-- [parser_factory.py:25-166](file://backend/app/pipeline/parsing/parser_factory.py#L25-L166)
-- [validator_v3.py:34-277](file://backend/app/pipeline/validation/validator_v3.py#L34-L277)
-- [formatter.py:35-800](file://backend/app/pipeline/formatting/formatter.py#L35-L800)
-- [exporter.py:19-282](file://backend/app/pipeline/export/exporter.py#L19-L282)
-- [docling_client.py:143-482](file://backend/app/pipeline/services/docling_client.py#L143-L482)
-- [grobid_client.py:25-317](file://backend/app/pipeline/services/grobid_client.py#L25-L317)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
+- [orchestrator.py:73-545](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L545)
+- [stream.py:24-95](../../../../backend/app/routers/v1/stream.py#L24-L95)
+- [pubsub.py:18-120](../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [document_service.py:34-560](../../../../backend/app/services/document_service.py#L34-L560)
+- [document.py:6-26](../../../../backend/app/models/document.py#L6-L26)
+- [parser_factory.py:25-166](../../../../backend/app/pipeline/parsing/parser_factory.py#L25-L166)
+- [validator_v3.py:34-277](../../../../backend/app/pipeline/validation/validator_v3.py#L34-L277)
+- [formatter.py:35-800](../../../../backend/app/pipeline/formatting/formatter.py#L35-L800)
+- [exporter.py:19-282](../../../../backend/app/pipeline/export/exporter.py#L19-L282)
+- [docling_client.py:143-482](../../../../backend/app/pipeline/services/docling_client.py#L143-L482)
+- [grobid_client.py:25-317](../../../../backend/app/pipeline/services/grobid_client.py#L25-L317)
 
 **Section sources**
 
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
-- [orchestrator.py:73-545](file://backend/app/pipeline/orchestrator.py#L73-L545)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
+- [orchestrator.py:73-545](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L545)
 
 ## Core Components
 
@@ -126,18 +126,18 @@ DB --> Models
 
 **Section sources**
 
-- [orchestrator.py:73-545](file://backend/app/pipeline/orchestrator.py#L73-L545)
-- [parser_factory.py:25-166](file://backend/app/pipeline/parsing/parser_factory.py#L25-L166)
-- [docling_client.py:143-482](file://backend/app/pipeline/services/docling_client.py#L143-L482)
-- [grobid_client.py:25-317](file://backend/app/pipeline/services/grobid_client.py#L25-L317)
-- [validator_v3.py:34-277](file://backend/app/pipeline/validation/validator_v3.py#L34-L277)
-- [formatter.py:35-800](file://backend/app/pipeline/formatting/formatter.py#L35-L800)
-- [exporter.py:19-282](file://backend/app/pipeline/export/exporter.py#L19-L282)
-- [stream.py:24-95](file://backend/app/routers/stream.py#L24-L95)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
-- [document.py:6-26](file://backend/app/models/document.py#L6-L26)
+- [orchestrator.py:73-545](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L545)
+- [parser_factory.py:25-166](../../../../backend/app/pipeline/parsing/parser_factory.py#L25-L166)
+- [docling_client.py:143-482](../../../../backend/app/pipeline/services/docling_client.py#L143-L482)
+- [grobid_client.py:25-317](../../../../backend/app/pipeline/services/grobid_client.py#L25-L317)
+- [validator_v3.py:34-277](../../../../backend/app/pipeline/validation/validator_v3.py#L34-L277)
+- [formatter.py:35-800](../../../../backend/app/pipeline/formatting/formatter.py#L35-L800)
+- [exporter.py:19-282](../../../../backend/app/pipeline/export/exporter.py#L19-L282)
+- [stream.py:24-95](../../../../backend/app/routers/v1/stream.py#L24-L95)
+- [pubsub.py:18-120](../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [document_service.py:34-560](../../../../backend/app/services/document_service.py#L34-L560)
+- [document.py:6-26](../../../../backend/app/models/document.py#L6-L26)
 
 ## Architecture Overview
 
@@ -175,30 +175,30 @@ Orchestrator->>SSE : "emit_event(job_id, 'status_update', {...})"
 
 **Diagram sources**
 
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
-- [orchestrator.py:522-545](file://backend/app/pipeline/orchestrator.py#L522-L545)
-- [document_service.py:395-441](file://backend/app/services/document_service.py#L395-L441)
-- [stream.py:73-95](file://backend/app/routers/stream.py#L73-L95)
-- [pubsub.py:55-120](file://backend/app/realtime/pubsub.py#L55-L120)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
+- [orchestrator.py:522-545](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L522-L545)
+- [document_service.py:395-441](../../../../backend/app/services/document_service.py#L395-L441)
+- [stream.py:73-95](../../../../backend/app/routers/v1/stream.py#L73-L95)
+- [pubsub.py:55-120](../../../../backend/app/realtime/pubsub.py#L55-L120)
 
 ## Detailed Component Analysis
 
 ### PipelineOrchestrator
 
 - Responsibilities:
-    - Sequentially runs 12+ stages (extraction, metadata/layout, structure detection, classification, validation, formatting, export, persistence).
-    - Manages concurrency limits and timeouts.
-    - Persists status to Supabase and emits SSE events.
-    - Handles cancellation checks and partial result persistence on failure.
+  - Sequentially runs 12+ stages (extraction, metadata/layout, structure detection, classification, validation, formatting, export, persistence).
+  - Manages concurrency limits and timeouts.
+  - Persists status to Supabase and emits SSE events.
+  - Handles cancellation checks and partial result persistence on failure.
 - Key behaviors:
-    - Runtime flags (fast_mode, semantic_parser, crossref_enrichment, ai_reasoning) shape stage execution.
-    - Parallel extraction via ThreadPoolExecutor for GROBID and Docling.
-    - Nougat OCR fallback for empty PDF extractions.
-    - Quality scoring and diagnostics computed and logged.
+  - Runtime flags (fast_mode, semantic_parser, crossref_enrichment, ai_reasoning) shape stage execution.
+  - Parallel extraction via ThreadPoolExecutor for GROBID and Docling.
+  - Nougat OCR fallback for empty PDF extractions.
+  - Quality scoring and diagnostics computed and logged.
 
 ```mermaid
 flowchart TD
-Start([Start run_pipeline]) --> Acquire["Acquire Semaphore"]
+Start(["Start run_pipeline"]) --> Acquire["Acquire Semaphore"]
 Acquire --> |Success| Internal["_run_pipeline_internal"]
 Acquire --> |Timeout| Reject["Reject: Too busy"]
 Internal --> Flags["Resolve Runtime Flags"]
@@ -221,12 +221,12 @@ Complete --> End
 
 **Diagram sources**
 
-- [orchestrator.py:522-800](file://backend/app/pipeline/orchestrator.py#L522-L800)
+- [orchestrator.py:522-800](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L522-L800)
 
 **Section sources**
 
-- [orchestrator.py:73-545](file://backend/app/pipeline/orchestrator.py#L73-L545)
-- [orchestrator.py:522-800](file://backend/app/pipeline/orchestrator.py#L522-L800)
+- [orchestrator.py:73-545](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L545)
+- [orchestrator.py:522-800](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L522-L800)
 
 ### ParserFactory and Extraction
 
@@ -236,7 +236,7 @@ Complete --> End
 
 **Section sources**
 
-- [parser_factory.py:25-166](file://backend/app/pipeline/parsing/parser_factory.py#L25-L166)
+- [parser_factory.py:25-166](../../../../backend/app/pipeline/parsing/parser_factory.py#L25-L166)
 
 ### External Services: Docling and GROBID
 
@@ -264,14 +264,14 @@ PipelineOrchestrator --> GROBIDClient : "uses"
 
 **Diagram sources**
 
-- [docling_client.py:143-482](file://backend/app/pipeline/services/docling_client.py#L143-L482)
-- [grobid_client.py:25-317](file://backend/app/pipeline/services/grobid_client.py#L25-L317)
-- [orchestrator.py:92-94](file://backend/app/pipeline/orchestrator.py#L92-L94)
+- [docling_client.py:143-482](../../../../backend/app/pipeline/services/docling_client.py#L143-L482)
+- [grobid_client.py:25-317](../../../../backend/app/pipeline/services/grobid_client.py#L25-L317)
+- [orchestrator.py:92-94](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L92-L94)
 
 **Section sources**
 
-- [docling_client.py:143-482](file://backend/app/pipeline/services/docling_client.py#L143-L482)
-- [grobid_client.py:25-317](file://backend/app/pipeline/services/grobid_client.py#L25-L317)
+- [docling_client.py:143-482](../../../../backend/app/pipeline/services/docling_client.py#L143-L482)
+- [grobid_client.py:25-317](../../../../backend/app/pipeline/services/grobid_client.py#L25-L317)
 
 ### Validation
 
@@ -280,7 +280,7 @@ PipelineOrchestrator --> GROBIDClient : "uses"
 
 **Section sources**
 
-- [validator_v3.py:34-277](file://backend/app/pipeline/validation/validator_v3.py#L34-L277)
+- [validator_v3.py:34-277](../../../../backend/app/pipeline/validation/validator_v3.py#L34-L277)
 
 ### Formatting and Export
 
@@ -289,8 +289,8 @@ PipelineOrchestrator --> GROBIDClient : "uses"
 
 **Section sources**
 
-- [formatter.py:35-800](file://backend/app/pipeline/formatting/formatter.py#L35-L800)
-- [exporter.py:19-282](file://backend/app/pipeline/export/exporter.py#L19-L282)
+- [formatter.py:35-800](../../../../backend/app/pipeline/formatting/formatter.py#L35-L800)
+- [exporter.py:19-282](../../../../backend/app/pipeline/export/exporter.py#L19-L282)
 
 ### Real-Time Streaming (SSE) and Redis Pub/Sub
 
@@ -314,15 +314,15 @@ SSE-->>Client : "EventSourceResponse stream"
 
 **Diagram sources**
 
-- [stream.py:32-95](file://backend/app/routers/stream.py#L32-L95)
-- [pubsub.py:55-120](file://backend/app/realtime/pubsub.py#L55-L120)
-- [orchestrator.py:117-168](file://backend/app/pipeline/orchestrator.py#L117-L168)
+- [stream.py:32-95](../../../../backend/app/routers/v1/stream.py#L32-L95)
+- [pubsub.py:55-120](../../../../backend/app/realtime/pubsub.py#L55-L120)
+- [orchestrator.py:117-168](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L117-L168)
 
 **Section sources**
 
-- [stream.py:24-95](file://backend/app/routers/stream.py#L24-L95)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [orchestrator.py:117-168](file://backend/app/pipeline/orchestrator.py#L117-L168)
+- [stream.py:24-95](../../../../backend/app/routers/v1/stream.py#L24-L95)
+- [pubsub.py:18-120](../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [orchestrator.py:117-168](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L117-L168)
 
 ### Caching with Redis
 
@@ -331,7 +331,7 @@ SSE-->>Client : "EventSourceResponse stream"
 
 **Section sources**
 
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
 
 ### Database Persistence (Supabase)
 
@@ -341,20 +341,20 @@ SSE-->>Client : "EventSourceResponse stream"
 
 **Section sources**
 
-- [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
-- [document.py:6-26](file://backend/app/models/document.py#L6-L26)
-- [session.py:28-130](file://backend/app/db/session.py#L28-L130)
+- [document_service.py:34-560](../../../../backend/app/services/document_service.py#L34-L560)
+- [document.py:6-26](../../../../backend/app/models/document.py#L6-L26)
+- [session.py:28-130](../../../../backend/app/db/session.py#L28-L130)
 
 ## Dependency Analysis
 
 - Coupling:
-    - Orchestrator depends on parsers, external clients, validators, formatters, exporters, and persistence.
-    - Real-time streaming is decoupled via RedisPubSub and SSE.
+  - Orchestrator depends on parsers, external clients, validators, formatters, exporters, and persistence.
+  - Real-time streaming is decoupled via RedisPubSub and SSE.
 - Cohesion:
-    - Each stage is cohesive and exposes a process() interface.
+  - Each stage is cohesive and exposes a process() interface.
 - External dependencies:
-    - Docling and GROBID are optional and guarded by availability checks.
-    - Redis is optional; fallback to in-memory queues is implemented.
+  - Docling and GROBID are optional and guarded by availability checks.
+  - Redis is optional; fallback to in-memory queues is implemented.
 
 ```mermaid
 graph LR
@@ -372,17 +372,17 @@ DocumentService --> SupabaseDB["Supabase"]
 
 **Diagram sources**
 
-- [orchestrator.py:73-545](file://backend/app/pipeline/orchestrator.py#L73-L545)
-- [stream.py:24-95](file://backend/app/routers/stream.py#L24-L95)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
+- [orchestrator.py:73-545](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L545)
+- [stream.py:24-95](../../../../backend/app/routers/v1/stream.py#L24-L95)
+- [pubsub.py:18-120](../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [document_service.py:34-560](../../../../backend/app/services/document_service.py#L34-L560)
 
 **Section sources**
 
-- [orchestrator.py:73-545](file://backend/app/pipeline/orchestrator.py#L73-L545)
-- [stream.py:24-95](file://backend/app/routers/stream.py#L24-L95)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
+- [orchestrator.py:73-545](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L545)
+- [stream.py:24-95](../../../../backend/app/routers/v1/stream.py#L24-L95)
+- [pubsub.py:18-120](../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [document_service.py:34-560](../../../../backend/app/services/document_service.py#L34-L560)
 
 ## Performance Considerations
 
@@ -398,26 +398,26 @@ DocumentService --> SupabaseDB["Supabase"]
 ## Troubleshooting Guide
 
 - Health and readiness:
-    - Use /health and /ready endpoints to verify DB, AI models, and service availability.
+  - Use /health and /ready endpoints to verify DB, AI models, and service availability.
 - Database connectivity:
-    - If SUPABASE_DB_URL is missing, the app starts in degraded mode; DB endpoints return 503.
+  - If SUPABASE_DB_URL is missing, the app starts in degraded mode; DB endpoints return 503.
 - Redis availability:
-    - If Redis is unreachable, caching is disabled and SSE falls back to in-memory queues.
+  - If Redis is unreachable, caching is disabled and SSE falls back to in-memory queues.
 - Cancellation:
-    - Orchestrator periodically checks for user-initiated cancellation and raises cancellation exceptions.
+  - Orchestrator periodically checks for user-initiated cancellation and raises cancellation exceptions.
 - Partial results:
-    - On failure, partial results are persisted to document_results to aid recovery.
+  - On failure, partial results are persisted to document_results to aid recovery.
 - Validation failures:
-    - Validation is wrapped in safety guards; errors are captured and surfaced as warnings or errors without aborting the pipeline.
+  - Validation is wrapped in safety guards; errors are captured and surfaced as warnings or errors without aborting the pipeline.
 
 **Section sources**
 
-- [main.py:360-383](file://backend/app/main.py#L360-L383)
-- [session.py:28-130](file://backend/app/db/session.py#L28-L130)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [orchestrator.py:169-211](file://backend/app/pipeline/orchestrator.py#L169-L211)
-- [validator_v3.py:68-71](file://backend/app/pipeline/validation/validator_v3.py#L68-L71)
+- [main.py:360-383](../../../../backend/app/main.py#L360-L383)
+- [session.py:28-130](../../../../backend/app/db/session.py#L28-L130)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [pubsub.py:18-120](../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [orchestrator.py:169-211](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L169-L211)
+- [validator_v3.py:68-71](../../../../backend/app/pipeline/validation/validator_v3.py#L68-L71)
 
 ## Conclusion
 

@@ -18,7 +18,7 @@ last_updated: July 2026
 **Current Version:** v1  
 **Next Version:** v2 (planned)
 
-> **See also:** [API Reference](API.md), [ADR 003: API Versioning Strategy](adr/003-api-versioning-strategy.md)
+> **See also:** [API Reference](API.md), [ADR 003: API Versioning Strategy](../adr/003-api-versioning-strategy.md)
 
 ---
 

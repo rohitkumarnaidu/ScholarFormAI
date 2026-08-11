@@ -60,7 +60,7 @@ uvicorn app.main:app --reload --port 8000
 
 Open `http://localhost:8000/docs` for Swagger UI.
 
-See the [Quickstart Guide](quickstart.md) for a full 5-minute setup.
+See the [Quickstart Guide](docs/getting-started/quickstart.md) for a full 5-minute setup.
 
 ## License
 
@@ -70,11 +70,11 @@ MIT License — free to use, modify, and distribute. See [LICENSE](../LICENSE).
 
 | Topic | Resource |
 | ------- | ---------- |
-| 5-minute quickstart | [Quickstart](quickstart.md) |
-| Full user workflow | [User Guide](user_guide.md) |
-| Architecture deep-dive | [Architecture](architecture.md) |
+| 5-minute quickstart | [Quickstart](docs/getting-started/quickstart.md) |
+| Full user workflow | [User Guide](guides/USER_GUIDE.md) |
+| Architecture deep-dive | [Architecture](architecture/ARCHITECTURE.md) |
 | API documentation | [API Reference](API.md) |
-| Custom templates | [Template Creation](template_creation.md) |
-| AI Agent | [Agent Documentation](Agent.md) |
-| Deployment | [Deployment Guide](Deployment.md) |
+| Custom templates | [Template Creation](user-guide/template_creation.md) |
+| AI Agent | [Agent Documentation](agents/Agent.md) |
+| Deployment | [Deployment Guide](deployment/Deployment.md) |
 | Contributing | [CONTRIBUTING.md](../CONTRIBUTING.md) |

@@ -5,15 +5,15 @@
 
 <cite>
 **Referenced Files in This Document**
-- [AgentChatPane.jsx](file://frontend/src/components/generator/AgentChatPane.jsx)
-- [DocumentBuildPane.jsx](file://frontend/src/components/generator/DocumentBuildPane.jsx)
-- [TokenStream.jsx](file://frontend/src/components/generator/TokenStream.jsx)
-- [PreviewPane.jsx](file://frontend/src/components/live-preview/PreviewPane.jsx)
-- [SplitEditor.jsx](file://frontend/src/components/live-preview/SplitEditor.jsx)
-- [DashboardRow.jsx](file://frontend/src/components/dashboard/DashboardRow.jsx)
-- [DashboardStats.jsx](file://frontend/src/components/dashboard/DashboardStats.jsx)
-- [MultiUploadPanel.jsx](file://frontend/src/components/generator/MultiUploadPanel.jsx)
-- [SynthesisStageTimeline.jsx](file://frontend/src/components/generator/SynthesisStageTimeline.jsx)
+- [AgentChatPane.jsx](../../../../../frontend/src/components/generator/AgentChatPane.jsx)
+- [DocumentBuildPane.jsx](../../../../../frontend/src/components/generator/DocumentBuildPane.jsx)
+- [TokenStream.jsx](../../../../../frontend/src/components/generator/TokenStream.jsx)
+- [PreviewPane.jsx](../../../../../frontend/src/components/live-preview/PreviewPane.jsx)
+- [SplitEditor.jsx](../../../../../frontend/src/components/live-preview/SplitEditor.jsx)
+- [DashboardRow.jsx](../../../../../frontend/src/components/dashboard/DashboardRow.jsx)
+- [DashboardStats.jsx](../../../../../frontend/src/components/dashboard/DashboardStats.jsx)
+- [MultiUploadPanel.jsx](../../../../../frontend/src/components/generator/MultiUploadPanel.jsx)
+- [SynthesisStageTimeline.jsx](../../../../../frontend/src/components/generator/SynthesisStageTimeline.jsx)
 </cite>
 
 ## Table of Contents
@@ -76,27 +76,27 @@ MUP -. "Upload & Session Streams" .- SST
 
 **Diagram sources**
 
-- [AgentChatPane.jsx:110-278](file://frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
-- [DocumentBuildPane.jsx:52-152](file://frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
-- [TokenStream.jsx](file://frontend/src/components/generator/TokenStream.jsx)
-- [PreviewPane.jsx](file://frontend/src/components/live-preview/PreviewPane.jsx)
-- [SplitEditor.jsx](file://frontend/src/components/live-preview/SplitEditor.jsx)
-- [DashboardRow.jsx](file://frontend/src/components/dashboard/DashboardRow.jsx)
-- [DashboardStats.jsx](file://frontend/src/components/dashboard/DashboardStats.jsx)
-- [MultiUploadPanel.jsx](file://frontend/src/components/generator/MultiUploadPanel.jsx)
-- [SynthesisStageTimeline.jsx](file://frontend/src/components/generator/SynthesisStageTimeline.jsx)
+- [AgentChatPane.jsx:110-278](../../../../../frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
+- [DocumentBuildPane.jsx:52-152](../../../../../frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
+- [TokenStream.jsx](../../../../../frontend/src/components/generator/TokenStream.jsx)
+- [PreviewPane.jsx](../../../../../frontend/src/components/live-preview/PreviewPane.jsx)
+- [SplitEditor.jsx](../../../../../frontend/src/components/live-preview/SplitEditor.jsx)
+- [DashboardRow.jsx](../../../../../frontend/src/components/dashboard/DashboardRow.jsx)
+- [DashboardStats.jsx](../../../../../frontend/src/components/dashboard/DashboardStats.jsx)
+- [MultiUploadPanel.jsx](../../../../../frontend/src/components/generator/MultiUploadPanel.jsx)
+- [SynthesisStageTimeline.jsx](../../../../../frontend/src/components/generator/SynthesisStageTimeline.jsx)
 
 **Section sources**
 
-- [AgentChatPane.jsx:110-278](file://frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
-- [DocumentBuildPane.jsx:52-152](file://frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
-- [TokenStream.jsx](file://frontend/src/components/generator/TokenStream.jsx)
-- [PreviewPane.jsx](file://frontend/src/components/live-preview/PreviewPane.jsx)
-- [SplitEditor.jsx](file://frontend/src/components/live-preview/SplitEditor.jsx)
-- [DashboardRow.jsx](file://frontend/src/components/dashboard/DashboardRow.jsx)
-- [DashboardStats.jsx](file://frontend/src/components/dashboard/DashboardStats.jsx)
-- [MultiUploadPanel.jsx](file://frontend/src/components/generator/MultiUploadPanel.jsx)
-- [SynthesisStageTimeline.jsx](file://frontend/src/components/generator/SynthesisStageTimeline.jsx)
+- [AgentChatPane.jsx:110-278](../../../../../frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
+- [DocumentBuildPane.jsx:52-152](../../../../../frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
+- [TokenStream.jsx](../../../../../frontend/src/components/generator/TokenStream.jsx)
+- [PreviewPane.jsx](../../../../../frontend/src/components/live-preview/PreviewPane.jsx)
+- [SplitEditor.jsx](../../../../../frontend/src/components/live-preview/SplitEditor.jsx)
+- [DashboardRow.jsx](../../../../../frontend/src/components/dashboard/DashboardRow.jsx)
+- [DashboardStats.jsx](../../../../../frontend/src/components/dashboard/DashboardStats.jsx)
+- [MultiUploadPanel.jsx](../../../../../frontend/src/components/generator/MultiUploadPanel.jsx)
+- [SynthesisStageTimeline.jsx](../../../../../frontend/src/components/generator/SynthesisStageTimeline.jsx)
 
 ## Core Components
 
@@ -114,15 +114,15 @@ This section summarizes each component’s responsibilities and integration poin
 
 **Section sources**
 
-- [AgentChatPane.jsx:110-278](file://frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
-- [DocumentBuildPane.jsx:52-152](file://frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
-- [TokenStream.jsx](file://frontend/src/components/generator/TokenStream.jsx)
-- [PreviewPane.jsx](file://frontend/src/components/live-preview/PreviewPane.jsx)
-- [SplitEditor.jsx](file://frontend/src/components/live-preview/SplitEditor.jsx)
-- [DashboardRow.jsx](file://frontend/src/components/dashboard/DashboardRow.jsx)
-- [DashboardStats.jsx](file://frontend/src/components/dashboard/DashboardStats.jsx)
-- [MultiUploadPanel.jsx](file://frontend/src/components/generator/MultiUploadPanel.jsx)
-- [SynthesisStageTimeline.jsx](file://frontend/src/components/generator/SynthesisStageTimeline.jsx)
+- [AgentChatPane.jsx:110-278](../../../../../frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
+- [DocumentBuildPane.jsx:52-152](../../../../../frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
+- [TokenStream.jsx](../../../../../frontend/src/components/generator/TokenStream.jsx)
+- [PreviewPane.jsx](../../../../../frontend/src/components/live-preview/PreviewPane.jsx)
+- [SplitEditor.jsx](../../../../../frontend/src/components/live-preview/SplitEditor.jsx)
+- [DashboardRow.jsx](../../../../../frontend/src/components/dashboard/DashboardRow.jsx)
+- [DashboardStats.jsx](../../../../../frontend/src/components/dashboard/DashboardStats.jsx)
+- [MultiUploadPanel.jsx](../../../../../frontend/src/components/generator/MultiUploadPanel.jsx)
+- [SynthesisStageTimeline.jsx](../../../../../frontend/src/components/generator/SynthesisStageTimeline.jsx)
 
 ## Architecture Overview
 
@@ -167,15 +167,15 @@ DR --> DS
 
 **Diagram sources**
 
-- [AgentChatPane.jsx:110-278](file://frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
-- [DocumentBuildPane.jsx:52-152](file://frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
-- [TokenStream.jsx](file://frontend/src/components/generator/TokenStream.jsx)
-- [PreviewPane.jsx](file://frontend/src/components/live-preview/PreviewPane.jsx)
-- [SplitEditor.jsx](file://frontend/src/components/live-preview/SplitEditor.jsx)
-- [DashboardRow.jsx](file://frontend/src/components/dashboard/DashboardRow.jsx)
-- [DashboardStats.jsx](file://frontend/src/components/dashboard/DashboardStats.jsx)
-- [MultiUploadPanel.jsx](file://frontend/src/components/generator/MultiUploadPanel.jsx)
-- [SynthesisStageTimeline.jsx](file://frontend/src/components/generator/SynthesisStageTimeline.jsx)
+- [AgentChatPane.jsx:110-278](../../../../../frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
+- [DocumentBuildPane.jsx:52-152](../../../../../frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
+- [TokenStream.jsx](../../../../../frontend/src/components/generator/TokenStream.jsx)
+- [PreviewPane.jsx](../../../../../frontend/src/components/live-preview/PreviewPane.jsx)
+- [SplitEditor.jsx](../../../../../frontend/src/components/live-preview/SplitEditor.jsx)
+- [DashboardRow.jsx](../../../../../frontend/src/components/dashboard/DashboardRow.jsx)
+- [DashboardStats.jsx](../../../../../frontend/src/components/dashboard/DashboardStats.jsx)
+- [MultiUploadPanel.jsx](../../../../../frontend/src/components/generator/MultiUploadPanel.jsx)
+- [SynthesisStageTimeline.jsx](../../../../../frontend/src/components/generator/SynthesisStageTimeline.jsx)
 
 ## Detailed Component Analysis
 
@@ -220,11 +220,11 @@ S-->>W : Cancel request
 
 **Diagram sources**
 
-- [AgentChatPane.jsx:110-278](file://frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
+- [AgentChatPane.jsx:110-278](../../../../../frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
 
 **Section sources**
 
-- [AgentChatPane.jsx:110-278](file://frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
+- [AgentChatPane.jsx:110-278](../../../../../frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
 
 ### DocumentBuildPane
 
@@ -256,11 +256,11 @@ IdleOverlay --> End
 
 **Diagram sources**
 
-- [DocumentBuildPane.jsx:52-152](file://frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
+- [DocumentBuildPane.jsx:52-152](../../../../../frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
 
 **Section sources**
 
-- [DocumentBuildPane.jsx:52-152](file://frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
+- [DocumentBuildPane.jsx:52-152](../../../../../frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
 
 ### TokenStream
 
@@ -293,13 +293,13 @@ TS-->>DBP : Notify complete
 
 **Diagram sources**
 
-- [TokenStream.jsx](file://frontend/src/components/generator/TokenStream.jsx)
-- [DocumentBuildPane.jsx:88-88](file://frontend/src/components/generator/DocumentBuildPane.jsx#L88-L88)
+- [TokenStream.jsx](../../../../../frontend/src/components/generator/TokenStream.jsx)
+- [DocumentBuildPane.jsx:88-88](../../../../../frontend/src/components/generator/DocumentBuildPane.jsx#L88-L88)
 
 **Section sources**
 
-- [TokenStream.jsx](file://frontend/src/components/generator/TokenStream.jsx)
-- [DocumentBuildPane.jsx:88-88](file://frontend/src/components/generator/DocumentBuildPane.jsx#L88-L88)
+- [TokenStream.jsx](../../../../../frontend/src/components/generator/TokenStream.jsx)
+- [DocumentBuildPane.jsx:88-88](../../../../../frontend/src/components/generator/DocumentBuildPane.jsx#L88-L88)
 
 ### PreviewPane
 
@@ -329,13 +329,13 @@ P->>P : Show error or finalize
 
 **Diagram sources**
 
-- [PreviewPane.jsx](file://frontend/src/components/live-preview/PreviewPane.jsx)
-- [SplitEditor.jsx](file://frontend/src/components/live-preview/SplitEditor.jsx)
+- [PreviewPane.jsx](../../../../../frontend/src/components/live-preview/PreviewPane.jsx)
+- [SplitEditor.jsx](../../../../../frontend/src/components/live-preview/SplitEditor.jsx)
 
 **Section sources**
 
-- [PreviewPane.jsx](file://frontend/src/components/live-preview/PreviewPane.jsx)
-- [SplitEditor.jsx](file://frontend/src/components/live-preview/SplitEditor.jsx)
+- [PreviewPane.jsx](../../../../../frontend/src/components/live-preview/PreviewPane.jsx)
+- [SplitEditor.jsx](../../../../../frontend/src/components/live-preview/SplitEditor.jsx)
 
 ### SplitEditor
 
@@ -364,13 +364,13 @@ SplitEditor --> PreviewPane : "sync selection/scroll"
 
 **Diagram sources**
 
-- [SplitEditor.jsx](file://frontend/src/components/live-preview/SplitEditor.jsx)
-- [PreviewPane.jsx](file://frontend/src/components/live-preview/PreviewPane.jsx)
+- [SplitEditor.jsx](../../../../../frontend/src/components/live-preview/SplitEditor.jsx)
+- [PreviewPane.jsx](../../../../../frontend/src/components/live-preview/PreviewPane.jsx)
 
 **Section sources**
 
-- [SplitEditor.jsx](file://frontend/src/components/live-preview/SplitEditor.jsx)
-- [PreviewPane.jsx](file://frontend/src/components/live-preview/PreviewPane.jsx)
+- [SplitEditor.jsx](../../../../../frontend/src/components/live-preview/SplitEditor.jsx)
+- [PreviewPane.jsx](../../../../../frontend/src/components/live-preview/PreviewPane.jsx)
 
 ### DashboardRow
 
@@ -391,11 +391,11 @@ Actions --> Delete["Delete"]
 
 **Diagram sources**
 
-- [DashboardRow.jsx](file://frontend/src/components/dashboard/DashboardRow.jsx)
+- [DashboardRow.jsx](../../../../../frontend/src/components/dashboard/DashboardRow.jsx)
 
 **Section sources**
 
-- [DashboardRow.jsx](file://frontend/src/components/dashboard/DashboardRow.jsx)
+- [DashboardRow.jsx](../../../../../frontend/src/components/dashboard/DashboardRow.jsx)
 
 ### DashboardStats
 
@@ -418,11 +418,11 @@ class DashboardStats {
 
 **Diagram sources**
 
-- [DashboardStats.jsx](file://frontend/src/components/dashboard/DashboardStats.jsx)
+- [DashboardStats.jsx](../../../../../frontend/src/components/dashboard/DashboardStats.jsx)
 
 **Section sources**
 
-- [DashboardStats.jsx](file://frontend/src/components/dashboard/DashboardStats.jsx)
+- [DashboardStats.jsx](../../../../../frontend/src/components/dashboard/DashboardStats.jsx)
 
 ### MultiUploadPanel
 
@@ -448,11 +448,11 @@ M->>S : Abort or requeue
 
 **Diagram sources**
 
-- [MultiUploadPanel.jsx](file://frontend/src/components/generator/MultiUploadPanel.jsx)
+- [MultiUploadPanel.jsx](../../../../../frontend/src/components/generator/MultiUploadPanel.jsx)
 
 **Section sources**
 
-- [MultiUploadPanel.jsx](file://frontend/src/components/generator/MultiUploadPanel.jsx)
+- [MultiUploadPanel.jsx](../../../../../frontend/src/components/generator/MultiUploadPanel.jsx)
 
 ### SynthesisStageTimeline
 
@@ -477,11 +477,11 @@ Export -.-> pending
 
 **Diagram sources**
 
-- [SynthesisStageTimeline.jsx](file://frontend/src/components/generator/SynthesisStageTimeline.jsx)
+- [SynthesisStageTimeline.jsx](../../../../../frontend/src/components/generator/SynthesisStageTimeline.jsx)
 
 **Section sources**
 
-- [SynthesisStageTimeline.jsx](file://frontend/src/components/generator/SynthesisStageTimeline.jsx)
+- [SynthesisStageTimeline.jsx](../../../../../frontend/src/components/generator/SynthesisStageTimeline.jsx)
 
 ## Dependency Analysis
 
@@ -504,27 +504,27 @@ DR["DashboardRow"] --> DS["DashboardStats"]
 
 **Diagram sources**
 
-- [AgentChatPane.jsx:110-278](file://frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
-- [DocumentBuildPane.jsx:52-152](file://frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
-- [TokenStream.jsx](file://frontend/src/components/generator/TokenStream.jsx)
-- [PreviewPane.jsx](file://frontend/src/components/live-preview/PreviewPane.jsx)
-- [SplitEditor.jsx](file://frontend/src/components/live-preview/SplitEditor.jsx)
-- [MultiUploadPanel.jsx](file://frontend/src/components/generator/MultiUploadPanel.jsx)
-- [SynthesisStageTimeline.jsx](file://frontend/src/components/generator/SynthesisStageTimeline.jsx)
-- [DashboardRow.jsx](file://frontend/src/components/dashboard/DashboardRow.jsx)
-- [DashboardStats.jsx](file://frontend/src/components/dashboard/DashboardStats.jsx)
+- [AgentChatPane.jsx:110-278](../../../../../frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
+- [DocumentBuildPane.jsx:52-152](../../../../../frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
+- [TokenStream.jsx](../../../../../frontend/src/components/generator/TokenStream.jsx)
+- [PreviewPane.jsx](../../../../../frontend/src/components/live-preview/PreviewPane.jsx)
+- [SplitEditor.jsx](../../../../../frontend/src/components/live-preview/SplitEditor.jsx)
+- [MultiUploadPanel.jsx](../../../../../frontend/src/components/generator/MultiUploadPanel.jsx)
+- [SynthesisStageTimeline.jsx](../../../../../frontend/src/components/generator/SynthesisStageTimeline.jsx)
+- [DashboardRow.jsx](../../../../../frontend/src/components/dashboard/DashboardRow.jsx)
+- [DashboardStats.jsx](../../../../../frontend/src/components/dashboard/DashboardStats.jsx)
 
 **Section sources**
 
-- [AgentChatPane.jsx:110-278](file://frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
-- [DocumentBuildPane.jsx:52-152](file://frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
-- [TokenStream.jsx](file://frontend/src/components/generator/TokenStream.jsx)
-- [PreviewPane.jsx](file://frontend/src/components/live-preview/PreviewPane.jsx)
-- [SplitEditor.jsx](file://frontend/src/components/live-preview/SplitEditor.jsx)
-- [MultiUploadPanel.jsx](file://frontend/src/components/generator/MultiUploadPanel.jsx)
-- [SynthesisStageTimeline.jsx](file://frontend/src/components/generator/SynthesisStageTimeline.jsx)
-- [DashboardRow.jsx](file://frontend/src/components/dashboard/DashboardRow.jsx)
-- [DashboardStats.jsx](file://frontend/src/components/dashboard/DashboardStats.jsx)
+- [AgentChatPane.jsx:110-278](../../../../../frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
+- [DocumentBuildPane.jsx:52-152](../../../../../frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
+- [TokenStream.jsx](../../../../../frontend/src/components/generator/TokenStream.jsx)
+- [PreviewPane.jsx](../../../../../frontend/src/components/live-preview/PreviewPane.jsx)
+- [SplitEditor.jsx](../../../../../frontend/src/components/live-preview/SplitEditor.jsx)
+- [MultiUploadPanel.jsx](../../../../../frontend/src/components/generator/MultiUploadPanel.jsx)
+- [SynthesisStageTimeline.jsx](../../../../../frontend/src/components/generator/SynthesisStageTimeline.jsx)
+- [DashboardRow.jsx](../../../../../frontend/src/components/dashboard/DashboardRow.jsx)
+- [DashboardStats.jsx](../../../../../frontend/src/components/dashboard/DashboardStats.jsx)
 
 ## Performance Considerations
 
@@ -549,12 +549,12 @@ Common issues and recovery patterns:
 
 **Section sources**
 
-- [AgentChatPane.jsx:110-278](file://frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
-- [DocumentBuildPane.jsx:52-152](file://frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
-- [TokenStream.jsx](file://frontend/src/components/generator/TokenStream.jsx)
-- [PreviewPane.jsx](file://frontend/src/components/live-preview/PreviewPane.jsx)
-- [SplitEditor.jsx](file://frontend/src/components/live-preview/SplitEditor.jsx)
-- [MultiUploadPanel.jsx](file://frontend/src/components/generator/MultiUploadPanel.jsx)
+- [AgentChatPane.jsx:110-278](../../../../../frontend/src/components/generator/AgentChatPane.jsx#L110-L278)
+- [DocumentBuildPane.jsx:52-152](../../../../../frontend/src/components/generator/DocumentBuildPane.jsx#L52-L152)
+- [TokenStream.jsx](../../../../../frontend/src/components/generator/TokenStream.jsx)
+- [PreviewPane.jsx](../../../../../frontend/src/components/live-preview/PreviewPane.jsx)
+- [SplitEditor.jsx](../../../../../frontend/src/components/live-preview/SplitEditor.jsx)
+- [MultiUploadPanel.jsx](../../../../../frontend/src/components/generator/MultiUploadPanel.jsx)
 
 ## Conclusion
 
@@ -565,11 +565,11 @@ These specialized components form a cohesive real-time authoring and synthesis e
 ## Appendices
 
 - Component composition tips:
-    - Compose AgentChatPane with DocumentBuildPane for end-to-end generation UX.
-    - Pair SplitEditor with PreviewPane for collaborative editing sessions.
-    - Integrate MultiUploadPanel with SynthesisStageTimeline for batch workflows.
+  - Compose AgentChatPane with DocumentBuildPane for end-to-end generation UX.
+  - Pair SplitEditor with PreviewPane for collaborative editing sessions.
+  - Integrate MultiUploadPanel with SynthesisStageTimeline for batch workflows.
 - Advanced usage scenarios:
-    - Multi-file synthesis: Upload multiple documents, monitor SynthesisStageTimeline, and open results in SplitEditor/PreviewPane.
-    - Agent-driven rewriting: Use AgentChatPane to request targeted edits; observe TokenStream updates and DocumentBuildPane completion.
+  - Multi-file synthesis: Upload multiple documents, monitor SynthesisStageTimeline, and open results in SplitEditor/PreviewPane.
+  - Agent-driven rewriting: Use AgentChatPane to request targeted edits; observe TokenStream updates and DocumentBuildPane completion.
 
 [No sources needed since this section provides general guidance]

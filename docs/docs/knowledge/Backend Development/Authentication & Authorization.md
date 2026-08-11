@@ -5,19 +5,19 @@
 
 <cite>
 **Referenced Files in This Document**
-- [auth.py](file://backend/app/routers/auth.py)
-- [auth_service.py](file://backend/app/services/auth_service.py)
-- [jwks_verifier.py](file://backend/app/security/jwks_verifier.py)
-- [rbac.py](file://backend/app/middleware/rbac.py)
-- [dependencies.py](file://backend/app/utils/dependencies.py)
-- [user.py](file://backend/app/models/user.py)
-- [user.py](file://backend/app/schemas/user.py)
-- [auth.py](file://backend/app/schemas/auth.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [security_headers.py](file://backend/app/middleware/security_headers.py)
-- [audit_log_service.py](file://backend/app/services/audit_log_service.py)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
-- [AuthContext.jsx](file://frontend/src/context/AuthContext.jsx)
+- [auth.py](../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py)
+- [auth_service.py](../../../../backend/app/services/auth_service.py)
+- [jwks_verifier.py](../../../../backend/app/security/jwks_verifier.py)
+- [rbac.py](../../../../backend/app/middleware/rbac.py)
+- [dependencies.py](../../../../backend/app/utils/dependencies.py)
+- [user.py](../../../../backend/app/models/user.py)
+- [user.py](../../../../backend/app/schemas/user.py)
+- [auth.py](../../../../backend/app/schemas/auth.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [security_headers.py](../../../../backend/app/middleware/security_headers.py)
+- [audit_log_service.py](../../../../backend/app/services/audit_log_service.py)
+- [supabaseClient.js](../../../../frontend/src/lib/supabaseClient.js)
+- [AuthContext.jsx](../../../../frontend/src/context/AuthContext.jsx)
 </cite>
 
 ## Table of Contents
@@ -80,33 +80,33 @@ AL --> S
 
 **Diagram sources**
 
-- [auth.py:1-59](file://backend/app/routers/auth.py#L1-L59)
-- [auth_service.py:1-183](file://backend/app/services/auth_service.py#L1-L183)
-- [jwks_verifier.py:1-183](file://backend/app/security/jwks_verifier.py#L1-L183)
-- [dependencies.py:1-93](file://backend/app/utils/dependencies.py#L1-L93)
-- [rbac.py:1-80](file://backend/app/middleware/rbac.py#L1-L80)
-- [user.py:1-67](file://backend/app/schemas/user.py#L1-L67)
-- [user.py:1-20](file://backend/app/models/user.py#L1-L20)
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
-- [security_headers.py:1-99](file://backend/app/middleware/security_headers.py#L1-L99)
-- [audit_log_service.py:1-141](file://backend/app/services/audit_log_service.py#L1-L141)
-- [supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
-- [AuthContext.jsx:1-340](file://frontend/src/context/AuthContext.jsx#L1-L340)
+- [auth.py:1-59](../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L1-L59)
+- [auth_service.py:1-183](../../../../backend/app/services/auth_service.py#L1-L183)
+- [jwks_verifier.py:1-183](../../../../backend/app/security/jwks_verifier.py#L1-L183)
+- [dependencies.py:1-93](../../../../backend/app/utils/dependencies.py#L1-L93)
+- [rbac.py:1-80](../../../../backend/app/middleware/rbac.py#L1-L80)
+- [user.py:1-67](../../../../backend/app/schemas/user.py#L1-L67)
+- [user.py:1-20](../../../../backend/app/models/user.py#L1-L20)
+- [settings.py:1-422](../../../../backend/app/config/settings.py#L1-L422)
+- [security_headers.py:1-99](../../../../backend/app/middleware/security_headers.py#L1-L99)
+- [audit_log_service.py:1-141](../../../../backend/app/services/audit_log_service.py#L1-L141)
+- [supabaseClient.js:1-24](../../../../frontend/src/lib/supabaseClient.js#L1-L24)
+- [AuthContext.jsx:1-340](../../../../frontend/src/context/AuthContext.jsx#L1-L340)
 
 **Section sources**
 
-- [auth.py:1-59](file://backend/app/routers/auth.py#L1-L59)
-- [auth_service.py:1-183](file://backend/app/services/auth_service.py#L1-L183)
-- [jwks_verifier.py:1-183](file://backend/app/security/jwks_verifier.py#L1-L183)
-- [dependencies.py:1-93](file://backend/app/utils/dependencies.py#L1-L93)
-- [rbac.py:1-80](file://backend/app/middleware/rbac.py#L1-L80)
-- [user.py:1-67](file://backend/app/schemas/user.py#L1-L67)
-- [user.py:1-20](file://backend/app/models/user.py#L1-L20)
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
-- [security_headers.py:1-99](file://backend/app/middleware/security_headers.py#L1-L99)
-- [audit_log_service.py:1-141](file://backend/app/services/audit_log_service.py#L1-L141)
-- [supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
-- [AuthContext.jsx:1-340](file://frontend/src/context/AuthContext.jsx#L1-L340)
+- [auth.py:1-59](../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L1-L59)
+- [auth_service.py:1-183](../../../../backend/app/services/auth_service.py#L1-L183)
+- [jwks_verifier.py:1-183](../../../../backend/app/security/jwks_verifier.py#L1-L183)
+- [dependencies.py:1-93](../../../../backend/app/utils/dependencies.py#L1-L93)
+- [rbac.py:1-80](../../../../backend/app/middleware/rbac.py#L1-L80)
+- [user.py:1-67](../../../../backend/app/schemas/user.py#L1-L67)
+- [user.py:1-20](../../../../backend/app/models/user.py#L1-L20)
+- [settings.py:1-422](../../../../backend/app/config/settings.py#L1-L422)
+- [security_headers.py:1-99](../../../../backend/app/middleware/security_headers.py#L1-L99)
+- [audit_log_service.py:1-141](../../../../backend/app/services/audit_log_service.py#L1-L141)
+- [supabaseClient.js:1-24](../../../../frontend/src/lib/supabaseClient.js#L1-L24)
+- [AuthContext.jsx:1-340](../../../../frontend/src/context/AuthContext.jsx#L1-L340)
 
 ## Core Components
 
@@ -120,14 +120,14 @@ AL --> S
 
 **Section sources**
 
-- [auth.py:15-59](file://backend/app/routers/auth.py#L15-L59)
-- [auth_service.py:56-183](file://backend/app/services/auth_service.py#L56-L183)
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
-- [dependencies.py:15-60](file://backend/app/utils/dependencies.py#L15-L60)
-- [rbac.py:9-80](file://backend/app/middleware/rbac.py#L9-L80)
-- [AuthContext.jsx:65-178](file://frontend/src/context/AuthContext.jsx#L65-L178)
-- [security_headers.py:18-66](file://backend/app/middleware/security_headers.py#L18-L66)
-- [audit_log_service.py:17-141](file://backend/app/services/audit_log_service.py#L17-L141)
+- [auth.py:15-59](../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L15-L59)
+- [auth_service.py:56-183](../../../../backend/app/services/auth_service.py#L56-L183)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
+- [dependencies.py:15-60](../../../../backend/app/utils/dependencies.py#L15-L60)
+- [rbac.py:9-80](../../../../backend/app/middleware/rbac.py#L9-L80)
+- [AuthContext.jsx:65-178](../../../../frontend/src/context/AuthContext.jsx#L65-L178)
+- [security_headers.py:18-66](../../../../backend/app/middleware/security_headers.py#L18-L66)
+- [audit_log_service.py:17-141](../../../../backend/app/services/audit_log_service.py#L17-L141)
 
 ## Architecture Overview
 
@@ -151,19 +151,19 @@ BE-->>FE : session
 FE->>SC : setSession(access_token, refresh_token)
 FE->>BE : Protected request with Bearer token
 BE->>JV : verify_jwt(token)
-JV-->>BE : payload (sub, email, role, app_metadata)
+JV-->>BE : payload ("sub, email, role, app_metadata")
 BE->>BE : get_current_user() builds User
 BE-->>FE : Resource response
 ```
 
 **Diagram sources**
 
-- [auth.py:31-36](file://backend/app/routers/auth.py#L31-L36)
-- [auth_service.py:102-121](file://backend/app/services/auth_service.py#L102-L121)
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
-- [dependencies.py:15-60](file://backend/app/utils/dependencies.py#L15-L60)
-- [AuthContext.jsx:214-249](file://frontend/src/context/AuthContext.jsx#L214-L249)
-- [supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
+- [auth.py:31-36](../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L31-L36)
+- [auth_service.py:102-121](../../../../backend/app/services/auth_service.py#L102-L121)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
+- [dependencies.py:15-60](../../../../backend/app/utils/dependencies.py#L15-L60)
+- [AuthContext.jsx:214-249](../../../../frontend/src/context/AuthContext.jsx#L214-L249)
+- [supabaseClient.js:1-24](../../../../frontend/src/lib/supabaseClient.js#L1-L24)
 
 ## Detailed Component Analysis
 
@@ -192,14 +192,14 @@ RetryFetch --> VerifySig
 
 **Diagram sources**
 
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
-- [jwks_verifier.py:106-133](file://backend/app/security/jwks_verifier.py#L106-L133)
-- [jwks_verifier.py:61-68](file://backend/app/security/jwks_verifier.py#L61-L68)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
+- [jwks_verifier.py:106-133](../../../../backend/app/security/jwks_verifier.py#L106-L133)
+- [jwks_verifier.py:61-68](../../../../backend/app/security/jwks_verifier.py#L61-L68)
 
 **Section sources**
 
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
-- [jwks_verifier.py:26-68](file://backend/app/security/jwks_verifier.py#L26-L68)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
+- [jwks_verifier.py:26-68](../../../../backend/app/security/jwks_verifier.py#L26-L68)
 
 ### Session Management and User Extraction
 
@@ -224,15 +224,15 @@ Dep-->>Client : User injected into route handler
 
 **Diagram sources**
 
-- [dependencies.py:15-60](file://backend/app/utils/dependencies.py#L15-L60)
-- [auth_service.py:58-74](file://backend/app/services/auth_service.py#L58-L74)
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
+- [dependencies.py:15-60](../../../../backend/app/utils/dependencies.py#L15-L60)
+- [auth_service.py:58-74](../../../../backend/app/services/auth_service.py#L58-L74)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
 
 **Section sources**
 
-- [dependencies.py:15-60](file://backend/app/utils/dependencies.py#L15-L60)
-- [auth_service.py:58-74](file://backend/app/services/auth_service.py#L58-L74)
-- [user.py:29-38](file://backend/app/schemas/user.py#L29-L38)
+- [dependencies.py:15-60](../../../../backend/app/utils/dependencies.py#L15-L60)
+- [auth_service.py:58-74](../../../../backend/app/services/auth_service.py#L58-L74)
+- [user.py:29-38](../../../../backend/app/schemas/user.py#L29-L38)
 
 ### Role-Based Access Control (RBAC)
 
@@ -253,13 +253,13 @@ E --> |No| G["HTTP 403 Forbidden"]
 
 **Diagram sources**
 
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
-- [rbac.py:34-58](file://backend/app/middleware/rbac.py#L34-L58)
+- [rbac.py:61-80](../../../../backend/app/middleware/rbac.py#L61-L80)
+- [rbac.py:34-58](../../../../backend/app/middleware/rbac.py#L34-L58)
 
 **Section sources**
 
-- [rbac.py:9-80](file://backend/app/middleware/rbac.py#L9-L80)
-- [user.py:29-38](file://backend/app/schemas/user.py#L29-L38)
+- [rbac.py:9-80](../../../../backend/app/middleware/rbac.py#L9-L80)
+- [user.py:29-38](../../../../backend/app/schemas/user.py#L29-L38)
 
 ### Resource-Level Authorization
 
@@ -288,13 +288,13 @@ USER ||--o{ AUDIT_LOG : "performed"
 
 **Diagram sources**
 
-- [user.py:6-19](file://backend/app/models/user.py#L6-L19)
-- [audit_log_service.py:55-137](file://backend/app/services/audit_log_service.py#L55-L137)
+- [user.py:6-19](../../../../backend/app/models/user.py#L6-L19)
+- [audit_log_service.py:55-137](../../../../backend/app/services/audit_log_service.py#L55-L137)
 
 **Section sources**
 
-- [audit_log_service.py:55-137](file://backend/app/services/audit_log_service.py#L55-L137)
-- [user.py:6-19](file://backend/app/models/user.py#L6-L19)
+- [audit_log_service.py:55-137](../../../../backend/app/services/audit_log_service.py#L55-L137)
+- [user.py:6-19](../../../../backend/app/models/user.py#L6-L19)
 
 ### Authentication Endpoints and Flows
 
@@ -345,14 +345,14 @@ BE-->>FE : result
 
 **Diagram sources**
 
-- [auth.py:23-59](file://backend/app/routers/auth.py#L23-L59)
-- [auth_service.py:77-183](file://backend/app/services/auth_service.py#L77-L183)
+- [auth.py:23-59](../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L23-L59)
+- [auth_service.py:77-183](../../../../backend/app/services/auth_service.py#L77-L183)
 
 **Section sources**
 
-- [auth.py:23-59](file://backend/app/routers/auth.py#L23-L59)
-- [auth_service.py:77-183](file://backend/app/services/auth_service.py#L77-L183)
-- [auth.py:32-137](file://backend/app/schemas/auth.py#L32-L137)
+- [auth.py:23-59](../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L23-L59)
+- [auth_service.py:77-183](../../../../backend/app/services/auth_service.py#L77-L183)
+- [auth.py:32-137](../../../../backend/app/schemas/auth.py#L32-L137)
 
 ### Frontend Authentication Lifecycle
 
@@ -370,7 +370,7 @@ participant SC as "Supabase Client"
 participant API as "Backend API"
 App->>AC : Initialize AuthContext
 AC->>SC : auth.getSession()
-SC-->>AC : session (if any)
+SC-->>AC : session ("if any")
 AC->>SC : auth.getUser() to verify token
 SC-->>AC : user or error
 AC-->>App : set user state
@@ -386,17 +386,17 @@ AC-->>App : clear user state and storage
 
 **Diagram sources**
 
-- [AuthContext.jsx:65-178](file://frontend/src/context/AuthContext.jsx#L65-L178)
-- [AuthContext.jsx:180-249](file://frontend/src/context/AuthContext.jsx#L180-L249)
-- [AuthContext.jsx:262-278](file://frontend/src/context/AuthContext.jsx#L262-L278)
-- [supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
+- [AuthContext.jsx:65-178](../../../../frontend/src/context/AuthContext.jsx#L65-L178)
+- [AuthContext.jsx:180-249](../../../../frontend/src/context/AuthContext.jsx#L180-L249)
+- [AuthContext.jsx:262-278](../../../../frontend/src/context/AuthContext.jsx#L262-L278)
+- [supabaseClient.js:1-24](../../../../frontend/src/lib/supabaseClient.js#L1-L24)
 
 **Section sources**
 
-- [supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
-- [AuthContext.jsx:65-178](file://frontend/src/context/AuthContext.jsx#L65-L178)
-- [AuthContext.jsx:180-249](file://frontend/src/context/AuthContext.jsx#L180-L249)
-- [AuthContext.jsx:262-278](file://frontend/src/context/AuthContext.jsx#L262-L278)
+- [supabaseClient.js:1-24](../../../../frontend/src/lib/supabaseClient.js#L1-L24)
+- [AuthContext.jsx:65-178](../../../../frontend/src/context/AuthContext.jsx#L65-L178)
+- [AuthContext.jsx:180-249](../../../../frontend/src/context/AuthContext.jsx#L180-L249)
+- [AuthContext.jsx:262-278](../../../../frontend/src/context/AuthContext.jsx#L262-L278)
 
 ### Security Middleware Integration
 
@@ -406,8 +406,8 @@ AC-->>App : clear user state and storage
 
 **Section sources**
 
-- [security_headers.py:18-99](file://backend/app/middleware/security_headers.py#L18-L99)
-- [settings.py:99-103](file://backend/app/config/settings.py#L99-L103)
+- [security_headers.py:18-99](../../../../backend/app/middleware/security_headers.py#L18-L99)
+- [settings.py:99-103](../../../../backend/app/config/settings.py#L99-L103)
 
 ### Audit Logging for Security Events
 
@@ -417,7 +417,7 @@ AC-->>App : clear user state and storage
 
 **Section sources**
 
-- [audit_log_service.py:17-141](file://backend/app/services/audit_log_service.py#L17-L141)
+- [audit_log_service.py:17-141](../../../../backend/app/services/audit_log_service.py#L17-L141)
 
 ## Dependency Analysis
 
@@ -440,23 +440,23 @@ Audit --> UserSchema
 
 **Diagram sources**
 
-- [auth.py:1-59](file://backend/app/routers/auth.py#L1-L59)
-- [auth_service.py:1-183](file://backend/app/services/auth_service.py#L1-L183)
-- [jwks_verifier.py:1-183](file://backend/app/security/jwks_verifier.py#L1-L183)
-- [dependencies.py:1-93](file://backend/app/utils/dependencies.py#L1-L93)
-- [rbac.py:1-80](file://backend/app/middleware/rbac.py#L1-L80)
-- [audit_log_service.py:1-141](file://backend/app/services/audit_log_service.py#L1-L141)
-- [user.py:1-67](file://backend/app/schemas/user.py#L1-L67)
+- [auth.py:1-59](../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L1-L59)
+- [auth_service.py:1-183](../../../../backend/app/services/auth_service.py#L1-L183)
+- [jwks_verifier.py:1-183](../../../../backend/app/security/jwks_verifier.py#L1-L183)
+- [dependencies.py:1-93](../../../../backend/app/utils/dependencies.py#L1-L93)
+- [rbac.py:1-80](../../../../backend/app/middleware/rbac.py#L1-L80)
+- [audit_log_service.py:1-141](../../../../backend/app/services/audit_log_service.py#L1-L141)
+- [user.py:1-67](../../../../backend/app/schemas/user.py#L1-L67)
 
 **Section sources**
 
-- [auth.py:1-59](file://backend/app/routers/auth.py#L1-L59)
-- [auth_service.py:1-183](file://backend/app/services/auth_service.py#L1-L183)
-- [jwks_verifier.py:1-183](file://backend/app/security/jwks_verifier.py#L1-L183)
-- [dependencies.py:1-93](file://backend/app/utils/dependencies.py#L1-L93)
-- [rbac.py:1-80](file://backend/app/middleware/rbac.py#L1-L80)
-- [audit_log_service.py:1-141](file://backend/app/services/audit_log_service.py#L1-L141)
-- [user.py:1-67](file://backend/app/schemas/user.py#L1-L67)
+- [auth.py:1-59](../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L1-L59)
+- [auth_service.py:1-183](../../../../backend/app/services/auth_service.py#L1-L183)
+- [jwks_verifier.py:1-183](../../../../backend/app/security/jwks_verifier.py#L1-L183)
+- [dependencies.py:1-93](../../../../backend/app/utils/dependencies.py#L1-L93)
+- [rbac.py:1-80](../../../../backend/app/middleware/rbac.py#L1-L80)
+- [audit_log_service.py:1-141](../../../../backend/app/services/audit_log_service.py#L1-L141)
+- [user.py:1-67](../../../../backend/app/schemas/user.py#L1-L67)
 
 ## Performance Considerations
 
@@ -478,12 +478,12 @@ Audit --> UserSchema
 
 **Section sources**
 
-- [auth_service.py:46-53](file://backend/app/services/auth_service.py#L46-L53)
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
-- [dependencies.py:31-59](file://backend/app/utils/dependencies.py#L31-L59)
-- [rbac.py:74-77](file://backend/app/middleware/rbac.py#L74-L77)
-- [supabaseClient.js:8-10](file://frontend/src/lib/supabaseClient.js#L8-L10)
-- [AuthContext.jsx:262-278](file://frontend/src/context/AuthContext.jsx#L262-L278)
+- [auth_service.py:46-53](../../../../backend/app/services/auth_service.py#L46-L53)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
+- [dependencies.py:31-59](../../../../backend/app/utils/dependencies.py#L31-L59)
+- [rbac.py:74-77](../../../../backend/app/middleware/rbac.py#L74-L77)
+- [supabaseClient.js:8-10](../../../../frontend/src/lib/supabaseClient.js#L8-L10)
+- [AuthContext.jsx:262-278](../../../../frontend/src/context/AuthContext.jsx#L262-L278)
 
 ## Conclusion
 
@@ -501,6 +501,6 @@ The system leverages Supabase Auth for identity and tokens, with robust JWT veri
 
 **Section sources**
 
-- [settings.py:76-87](file://backend/app/config/settings.py#L76-L87)
-- [settings.py:99-103](file://backend/app/config/settings.py#L99-L103)
-- [supabaseClient.js:3-4](file://frontend/src/lib/supabaseClient.js#L3-L4)
+- [settings.py:76-87](../../../../backend/app/config/settings.py#L76-L87)
+- [settings.py:99-103](../../../../backend/app/config/settings.py#L99-L103)
+- [supabaseClient.js:3-4](../../../../frontend/src/lib/supabaseClient.js#L3-L4)

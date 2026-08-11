@@ -5,13 +5,13 @@
 
 <cite>
 **Referenced Files in This Document**
-- [classifier.py](file://backend/app/pipeline/classification/classifier.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [model_store.py](file://backend/app/services/model_store.py)
-- [test_classification.py](file://backend/tests/test_classification.py)
-- [celery_tasks.py](file://backend/app/tasks/celery_tasks.py)
-- [README.md](file://backend/manual_tests/sample_inputs/README.md)
+- [classifier.py](../../../../backend/app/pipeline/classification/classifier.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [model_store.py](../../../../backend/app/services/model_store.py)
+- [test_classification.py](../../../../backend/tests/pipeline/test_classification.py)
+- [celery_tasks.py](../../../../backend/app/tasks/celery_tasks.py)
+- [README.md](../../../../README.md)
 </cite>
 
 ## Table of Contents
@@ -63,21 +63,21 @@ CT --> SP
 
 **Diagram sources**
 
-- [classifier.py:22-236](file://backend/app/pipeline/classification/classifier.py#L22-L236)
-- [semantic_parser.py:32-82](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L82)
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
-- [settings.py:185-187](file://backend/app/config/settings.py#L185-L187)
-- [test_classification.py:49-92](file://backend/tests/test_classification.py#L49-L92)
-- [celery_tasks.py:241-268](file://backend/app/tasks/celery_tasks.py#L241-L268)
+- [classifier.py:22-236](../../../../backend/app/pipeline/classification/classifier.py#L22-L236)
+- [semantic_parser.py:32-82](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L32-L82)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
+- [settings.py:185-187](../../../../backend/app/config/settings.py#L185-L187)
+- [test_classification.py:49-92](../../../../backend/tests/pipeline/test_classification.py#L49-L92)
+- [celery_tasks.py:241-268](../../../../backend/app/tasks/celery_tasks.py#L241-L268)
 
 **Section sources**
 
-- [classifier.py:1-830](file://backend/app/pipeline/classification/classifier.py#L1-L830)
-- [semantic_parser.py:1-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
-- [settings.py:118-187](file://backend/app/config/settings.py#L118-L187)
-- [model_store.py:1-33](file://backend/app/services/model_store.py#L1-L33)
-- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
-- [celery_tasks.py:241-268](file://backend/app/tasks/celery_tasks.py#L241-L268)
+- [classifier.py:1-830](../../../../backend/app/pipeline/classification/classifier.py#L1-L830)
+- [semantic_parser.py:1-306](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
+- [settings.py:118-187](../../../../backend/app/config/settings.py#L118-L187)
+- [model_store.py:1-33](../../../../backend/app/services/model_store.py#L1-L33)
+- [test_classification.py:1-92](../../../../backend/tests/pipeline/test_classification.py#L1-L92)
+- [celery_tasks.py:241-268](../../../../backend/app/tasks/celery_tasks.py#L241-L268)
 
 ## Core Components
 
@@ -89,11 +89,11 @@ CT --> SP
 
 **Section sources**
 
-- [classifier.py:22-236](file://backend/app/pipeline/classification/classifier.py#L22-L236)
-- [semantic_parser.py:32-82](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L82)
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
-- [settings.py:118-187](file://backend/app/config/settings.py#L118-L187)
-- [test_classification.py:17-31](file://backend/tests/test_classification.py#L17-L31)
+- [classifier.py:22-236](../../../../backend/app/pipeline/classification/classifier.py#L22-L236)
+- [semantic_parser.py:32-82](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L32-L82)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
+- [settings.py:118-187](../../../../backend/app/config/settings.py#L118-L187)
+- [test_classification.py:17-31](../../../../backend/tests/pipeline/test_classification.py#L17-L31)
 
 ## Architecture Overview
 
@@ -127,28 +127,28 @@ CC-->>Client : document with block types and confidences
 
 **Diagram sources**
 
-- [classifier.py:137-173](file://backend/app/pipeline/classification/classifier.py#L137-L173)
-- [semantic_parser.py:44-82](file://backend/app/pipeline/intelligence/semantic_parser.py#L44-L82)
-- [model_store.py:19-29](file://backend/app/services/model_store.py#L19-L29)
-- [settings.py:185-187](file://backend/app/config/settings.py#L185-L187)
+- [classifier.py:137-173](../../../../backend/app/pipeline/classification/classifier.py#L137-L173)
+- [semantic_parser.py:44-82](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L44-L82)
+- [model_store.py:19-29](../../../../backend/app/services/model_store.py#L19-L29)
+- [settings.py:185-187](../../../../backend/app/config/settings.py#L185-L187)
 
 ## Detailed Component Analysis
 
 ### ContentClassifier
 
 - Zones and anchors:
-    - Front matter: Title, Authors, Affiliations, Acknowledgments, Funding, Conflict of Interest.
-    - Body: Sections inferred from headings and context.
-    - References: Headings and entries detected deterministically.
+  - Front matter: Title, Authors, Affiliations, Acknowledgments, Funding, Conflict of Interest.
+  - Body: Sections inferred from headings and context.
+  - References: Headings and entries detected deterministically.
 - classification integration:
-    - Batch inference is gated by USE_LLM_CLASSIFICATION and English-language detection.
-    - Predictions are persisted to block metadata and conditionally override low-specificity assignments.
-    - Minimum confidence threshold is derived from settings.
+  - Batch inference is gated by USE_LLM_CLASSIFICATION and English-language detection.
+  - Predictions are persisted to block metadata and conditionally override low-specificity assignments.
+  - Minimum confidence threshold is derived from settings.
 - Deterministic rules:
-    - Strong regex and keyword heuristics for captions, headings, author/affiliation detection.
-    - GROBID metadata integration for front matter when available.
+  - Strong regex and keyword heuristics for captions, headings, author/affiliation detection.
+  - GROBID metadata integration for front matter when available.
 - Confidence scoring:
-    - Uses structured thresholds and NLP-derived confidence where available.
+  - Uses structured thresholds and NLP-derived confidence where available.
 
 ```mermaid
 flowchart TD
@@ -156,7 +156,7 @@ Start(["Start Classification"]) --> Flags["Check USE_LLM_CLASSIFICATION"]
 Flags --> |Disabled| HeuristicsOnly["Apply deterministic rules"]
 Flags --> |Enabled| DetectLang["Detect language (en?)"]
 DetectLang --> |Not English| HeuristicsOnly
-DetectLang --> |English| LoadModel["Load classification (ModelStore or HF)"]
+DetectLang --> |English| LoadModel["Load classification ("ModelStore or HF")"]
 LoadModel --> Infer["Batch inference"]
 Infer --> Apply["Apply overrides if confidence >= threshold"]
 Apply --> HeuristicsOnly
@@ -165,24 +165,24 @@ HeuristicsOnly --> End(["End"])
 
 **Diagram sources**
 
-- [classifier.py:137-173](file://backend/app/pipeline/classification/classifier.py#L137-L173)
-- [semantic_parser.py:44-82](file://backend/app/pipeline/intelligence/semantic_parser.py#L44-L82)
-- [settings.py:185-187](file://backend/app/config/settings.py#L185-L187)
+- [classifier.py:137-173](../../../../backend/app/pipeline/classification/classifier.py#L137-L173)
+- [semantic_parser.py:44-82](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L44-L82)
+- [settings.py:185-187](../../../../backend/app/config/settings.py#L185-L187)
 
 **Section sources**
 
-- [classifier.py:22-638](file://backend/app/pipeline/classification/classifier.py#L22-L638)
+- [classifier.py:22-638](../../../../backend/app/pipeline/classification/classifier.py#L22-L638)
 
 ### SemanticParser
 
 - Model lifecycle:
-    - Lazy-load tokenizer and model on demand.
-    - Prefer pre-loaded models from ModelStore to avoid repeated initialization.
+  - Lazy-load tokenizer and model on demand.
+  - Prefer pre-loaded models from ModelStore to avoid repeated initialization.
 - Inference:
-    - Batch inference with softmax over logits; maps indices to internal labels.
-    - Heuristic fallback when transformer inference is disabled or fails.
+  - Batch inference with softmax over logits; maps indices to internal labels.
+  - Heuristic fallback when transformer inference is disabled or fails.
 - Language gating:
-    - Skips transformer inference for non-English documents.
+  - Skips transformer inference for non-English documents.
 
 ```mermaid
 classDiagram
@@ -209,12 +209,12 @@ SemanticParser --> ModelStore : "reuses models"
 
 **Diagram sources**
 
-- [semantic_parser.py:32-82](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L82)
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
+- [semantic_parser.py:32-82](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L32-L82)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
 
 **Section sources**
 
-- [semantic_parser.py:32-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
+- [semantic_parser.py:32-306](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
 
 ### ModelStore
 
@@ -223,7 +223,7 @@ SemanticParser --> ModelStore : "reuses models"
 
 **Section sources**
 
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
 
 ### Settings and Thresholds
 
@@ -233,7 +233,7 @@ SemanticParser --> ModelStore : "reuses models"
 
 **Section sources**
 
-- [settings.py:118-187](file://backend/app/config/settings.py#L118-L187)
+- [settings.py:118-187](../../../../backend/app/config/settings.py#L118-L187)
 
 ### Evaluation and Benchmarking
 
@@ -253,7 +253,7 @@ PF-->>Test : Parser
 Test->>PF : parse(file_path)
 PF-->>Doc : Document(blocks)
 Test->>SP : analyze_blocks(Doc.blocks)
-SP-->>Test : [{type, confidence}, ...]
+SP-->>Test : ["{type, confidence}, ..."]
 Test->>Eval : compute macro-F1(true, pred)
 Eval-->>Test : score
 Test->>Test : assert score >= threshold
@@ -261,12 +261,12 @@ Test->>Test : assert score >= threshold
 
 **Diagram sources**
 
-- [test_classification.py:49-92](file://backend/tests/test_classification.py#L49-L92)
-- [semantic_parser.py:107-159](file://backend/app/pipeline/intelligence/semantic_parser.py#L107-L159)
+- [test_classification.py:49-92](../../../../backend/tests/pipeline/test_classification.py#L49-L92)
+- [semantic_parser.py:107-159](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L107-L159)
 
 **Section sources**
 
-- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
+- [test_classification.py:1-92](../../../../backend/tests/pipeline/test_classification.py#L1-L92)
 
 ### Celery Tasks and Batch Scoring
 
@@ -275,21 +275,21 @@ Test->>Test : assert score >= threshold
 
 **Section sources**
 
-- [celery_tasks.py:241-268](file://backend/app/tasks/celery_tasks.py#L241-L268)
+- [celery_tasks.py:241-268](../../../../backend/app/tasks/celery_tasks.py#L241-L268)
 
 ## Dependency Analysis
 
 - ContentClassifier depends on:
-    - SemanticParser for optional batch inference.
-    - Settings for feature flags and confidence thresholds.
-    - ModelStore indirectly via SemanticParser.
+  - SemanticParser for optional batch inference.
+  - Settings for feature flags and confidence thresholds.
+  - ModelStore indirectly via SemanticParser.
 - SemanticParser depends on:
-    - Transformers for tokenizer/model.
-    - ModelStore for cached models.
-    - Settings for feature flags and language detection.
+  - Transformers for tokenizer/model.
+  - ModelStore for cached models.
+  - Settings for feature flags and language detection.
 - Tests depend on:
-    - ParserFactory to construct documents from fixture files.
-    - SemanticParser to produce predictions.
+  - ParserFactory to construct documents from fixture files.
+  - SemanticParser to produce predictions.
 
 ```mermaid
 graph LR
@@ -303,18 +303,18 @@ CT["Celery Tasks"] --> SP
 
 **Diagram sources**
 
-- [classifier.py:137-173](file://backend/app/pipeline/classification/classifier.py#L137-L173)
-- [semantic_parser.py:44-82](file://backend/app/pipeline/intelligence/semantic_parser.py#L44-L82)
-- [model_store.py:19-29](file://backend/app/services/model_store.py#L19-L29)
-- [settings.py:185-187](file://backend/app/config/settings.py#L185-L187)
-- [test_classification.py:49-92](file://backend/tests/test_classification.py#L49-L92)
-- [celery_tasks.py:241-268](file://backend/app/tasks/celery_tasks.py#L241-L268)
+- [classifier.py:137-173](../../../../backend/app/pipeline/classification/classifier.py#L137-L173)
+- [semantic_parser.py:44-82](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L44-L82)
+- [model_store.py:19-29](../../../../backend/app/services/model_store.py#L19-L29)
+- [settings.py:185-187](../../../../backend/app/config/settings.py#L185-L187)
+- [test_classification.py:49-92](../../../../backend/tests/pipeline/test_classification.py#L49-L92)
+- [celery_tasks.py:241-268](../../../../backend/app/tasks/celery_tasks.py#L241-L268)
 
 **Section sources**
 
-- [classifier.py:137-173](file://backend/app/pipeline/classification/classifier.py#L137-L173)
-- [semantic_parser.py:44-82](file://backend/app/pipeline/intelligence/semantic_parser.py#L44-L82)
-- [test_classification.py:49-92](file://backend/tests/test_classification.py#L49-L92)
+- [classifier.py:137-173](../../../../backend/app/pipeline/classification/classifier.py#L137-L173)
+- [semantic_parser.py:44-82](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L44-L82)
+- [test_classification.py:49-92](../../../../backend/tests/pipeline/test_classification.py#L49-L92)
 
 ## Performance Considerations
 
@@ -328,20 +328,20 @@ CT["Celery Tasks"] --> SP
 ## Troubleshooting Guide
 
 - classification disabled or unavailable:
-    - Ensure USE_LLM_CLASSIFICATION is enabled in settings.
-    - Confirm model is present in ModelStore or can be loaded from Hugging Face.
+  - Ensure USE_LLM_CLASSIFICATION is enabled in settings.
+  - Confirm model is present in ModelStore or can be loaded from Hugging Face.
 - Non-English documents:
-    - Language detection may skip transformer inference; switch to heuristic-only mode.
+  - Language detection may skip transformer inference; switch to heuristic-only mode.
 - Low-confidence overrides:
-    - Adjust minimum confidence threshold and verify protected structural blocks are not overridden.
+  - Adjust minimum confidence threshold and verify protected structural blocks are not overridden.
 - Benchmark failures:
-    - Verify fixture labels exist and model path is correct; use heuristic fallback for local runs.
+  - Verify fixture labels exist and model path is correct; use heuristic fallback for local runs.
 
 **Section sources**
 
-- [classifier.py:137-173](file://backend/app/pipeline/classification/classifier.py#L137-L173)
-- [semantic_parser.py:44-82](file://backend/app/pipeline/intelligence/semantic_parser.py#L44-L82)
-- [test_classification.py:33-43](file://backend/tests/test_classification.py#L33-L43)
+- [classifier.py:137-173](../../../../backend/app/pipeline/classification/classifier.py#L137-L173)
+- [semantic_parser.py:44-82](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L44-L82)
+- [test_classification.py:33-43](../../../../backend/tests/pipeline/test_classification.py#L33-L43)
 
 ## Conclusion
 
@@ -354,18 +354,18 @@ The classification classification system blends robust deterministic heuristics 
 ### Classification Pipeline and Confidence Scoring
 
 - Pipeline stages:
-    - Deterministic classification across front matter, body, and references.
-    - Optional classification refinement with confidence thresholding.
-    - NLP fallback to integrate semantic parser confidence.
+  - Deterministic classification across front matter, body, and references.
+  - Optional classification refinement with confidence thresholding.
+  - NLP fallback to integrate semantic parser confidence.
 - Confidence scoring:
-    - Structured thresholds for deterministic rules.
-    - Transformer confidence for overrides.
-    - Aggregated confidence for UNKNOWN blocks.
+  - Structured thresholds for deterministic rules.
+  - Transformer confidence for overrides.
+  - Aggregated confidence for UNKNOWN blocks.
 
 **Section sources**
 
-- [classifier.py:259-638](file://backend/app/pipeline/classification/classifier.py#L259-L638)
-- [semantic_parser.py:161-225](file://backend/app/pipeline/intelligence/semantic_parser.py#L161-L225)
+- [classifier.py:259-638](../../../../backend/app/pipeline/classification/classifier.py#L259-L638)
+- [semantic_parser.py:161-225](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L161-L225)
 
 ### Multi-Label Classification and Domain-Specific Training Data
 
@@ -374,36 +374,36 @@ The classification classification system blends robust deterministic heuristics 
 
 **Section sources**
 
-- [semantic_parser.py:175-185](file://backend/app/pipeline/intelligence/semantic_parser.py#L175-L185)
-- [test_classification.py:17-31](file://backend/tests/test_classification.py#L17-L31)
+- [semantic_parser.py:175-185](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L175-L185)
+- [test_classification.py:17-31](../../../../backend/tests/pipeline/test_classification.py#L17-L31)
 
 ### Threshold Tuning and Integration Examples
 
 - Threshold tuning:
-    - Adjust minimum confidence threshold for classification overrides.
-    - Calibrate deterministic thresholds (HEURISTIC_CONFIDENCE_HIGH/MEDIUM/LOW) for different zones.
+  - Adjust minimum confidence threshold for classification overrides.
+  - Calibrate deterministic thresholds (HEURISTIC_CONFIDENCE_HIGH/MEDIUM/LOW) for different zones.
 - Integration examples:
-    - Use labeled fixtures to evaluate macro-F1 and iterate on thresholds.
-    - Run benchmark tests locally with a heuristic fallback model.
+  - Use labeled fixtures to evaluate macro-F1 and iterate on thresholds.
+  - Run benchmark tests locally with a heuristic fallback model.
 
 **Section sources**
 
-- [classifier.py:72-72](file://backend/app/pipeline/classification/classifier.py#L72-L72)
-- [settings.py:121-123](file://backend/app/config/settings.py#L121-L123)
-- [test_classification.py:39-43](file://backend/tests/test_classification.py#L39-L43)
+- [classifier.py:72-72](../../../../backend/app/pipeline/classification/classifier.py#L72-L72)
+- [settings.py:121-123](../../../../backend/app/config/settings.py#L121-L123)
+- [test_classification.py:39-43](../../../../backend/tests/pipeline/test_classification.py#L39-L43)
 
 ### Model Versioning, Retraining, and Quality Assurance
 
 - Model versioning:
-    - Use distinct model_name values to select different classification variants or fine-tuned heads.
+  - Use distinct model_name values to select different classification variants or fine-tuned heads.
 - Retraining procedures:
-    - Prepare labeled datasets aligned with internal labels; evaluate with macro-F1 benchmark.
+  - Prepare labeled datasets aligned with internal labels; evaluate with macro-F1 benchmark.
 - Quality assurance:
-    - Continuous evaluation via benchmark tests and Celery tasks.
-    - Manual sample inputs for exploratory testing.
+  - Continuous evaluation via benchmark tests and Celery tasks.
+  - Manual sample inputs for exploratory testing.
 
 **Section sources**
 
-- [semantic_parser.py:38-42](file://backend/app/pipeline/intelligence/semantic_parser.py#L38-L42)
-- [test_classification.py:49-92](file://backend/tests/test_classification.py#L49-L92)
-- [README.md:1-78](file://backend/manual_tests/sample_inputs/README.md#L1-L78)
+- [semantic_parser.py:38-42](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L38-L42)
+- [test_classification.py:49-92](../../../../backend/tests/pipeline/test_classification.py#L49-L92)
+- [README.md:1-78](../../../../README.md#L1-L78)

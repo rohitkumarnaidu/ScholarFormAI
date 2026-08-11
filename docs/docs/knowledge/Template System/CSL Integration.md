@@ -5,15 +5,15 @@
 
 <cite>
 **Referenced Files in This Document**
-- [csl_engine.py](file://backend/app/pipeline/services/csl_engine.py)
-- [csl_fetcher.py](file://backend/app/pipeline/services/csl_fetcher.py)
-- [formatter_engine.py](file://backend/app/pipeline/references/formatter_engine.py)
-- [reference_formatter.py](file://backend/app/pipeline/formatting/reference_formatter.py)
-- [loader.py](file://backend/app/pipeline/contracts/loader.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [test_csl_integration.py](file://backend/tests/integration/test_csl_integration.py)
-- [apa/styles.csl](file://backend/app/templates/apa/styles.csl)
-- [ieee/styles.csl](file://backend/app/templates/ieee/styles.csl)
+- [csl_engine.py](../../../../backend/app/pipeline/services/csl_engine.py)
+- [csl_fetcher.py](../../../../backend/app/pipeline/services/csl_fetcher.py)
+- [formatter_engine.py](../../../../backend/app/pipeline/references/formatter_engine.py)
+- [reference_formatter.py](../../../../backend/app/pipeline/formatting/reference_formatter.py)
+- [loader.py](../../../../backend/app/pipeline/contracts/loader.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [test_csl_integration.py](../../../../backend/tests/integration/test_csl_integration.py)
+- [apa/styles.csl](../../../../backend/app/templates/apa/styles.csl)
+- [ieee/styles.csl](../../../../backend/app/templates/ieee/styles.csl)
 </cite>
 
 ## Table of Contents
@@ -71,21 +71,21 @@ CFG --> CE
 
 **Diagram sources**
 
-- [formatter_engine.py:18-75](file://backend/app/pipeline/references/formatter_engine.py#L18-L75)
-- [csl_engine.py:38-140](file://backend/app/pipeline/services/csl_engine.py#L38-L140)
-- [reference_formatter.py:153-288](file://backend/app/pipeline/formatting/reference_formatter.py#L153-L288)
-- [loader.py:8-38](file://backend/app/pipeline/contracts/loader.py#L8-L38)
-- [csl_fetcher.py:138-179](file://backend/app/pipeline/services/csl_fetcher.py#L138-L179)
-- [settings.py:167-168](file://backend/app/config/settings.py#L167-L168)
+- [formatter_engine.py:18-75](../../../../backend/app/pipeline/references/formatter_engine.py#L18-L75)
+- [csl_engine.py:38-140](../../../../backend/app/pipeline/services/csl_engine.py#L38-L140)
+- [reference_formatter.py:153-288](../../../../backend/app/pipeline/formatting/reference_formatter.py#L153-L288)
+- [loader.py:8-38](../../../../backend/app/pipeline/contracts/loader.py#L8-L38)
+- [csl_fetcher.py:138-179](../../../../backend/app/pipeline/services/csl_fetcher.py#L138-L179)
+- [settings.py:167-168](../../../../backend/app/config/settings.py#L167-L168)
 
 **Section sources**
 
-- [formatter_engine.py:18-75](file://backend/app/pipeline/references/formatter_engine.py#L18-L75)
-- [csl_engine.py:38-140](file://backend/app/pipeline/services/csl_engine.py#L38-L140)
-- [reference_formatter.py:153-288](file://backend/app/pipeline/formatting/reference_formatter.py#L153-L288)
-- [loader.py:8-38](file://backend/app/pipeline/contracts/loader.py#L8-L38)
-- [csl_fetcher.py:138-179](file://backend/app/pipeline/services/csl_fetcher.py#L138-L179)
-- [settings.py:167-168](file://backend/app/config/settings.py#L167-L168)
+- [formatter_engine.py:18-75](../../../../backend/app/pipeline/references/formatter_engine.py#L18-L75)
+- [csl_engine.py:38-140](../../../../backend/app/pipeline/services/csl_engine.py#L38-L140)
+- [reference_formatter.py:153-288](../../../../backend/app/pipeline/formatting/reference_formatter.py#L153-L288)
+- [loader.py:8-38](../../../../backend/app/pipeline/contracts/loader.py#L8-L38)
+- [csl_fetcher.py:138-179](../../../../backend/app/pipeline/services/csl_fetcher.py#L138-L179)
+- [settings.py:167-168](../../../../backend/app/config/settings.py#L167-L168)
 
 ## Core Components
 
@@ -97,11 +97,11 @@ CFG --> CE
 
 **Section sources**
 
-- [csl_engine.py:38-283](file://backend/app/pipeline/services/csl_engine.py#L38-L283)
-- [formatter_engine.py:18-114](file://backend/app/pipeline/references/formatter_engine.py#L18-L114)
-- [reference_formatter.py:153-288](file://backend/app/pipeline/formatting/reference_formatter.py#L153-L288)
-- [loader.py:8-74](file://backend/app/pipeline/contracts/loader.py#L8-L74)
-- [csl_fetcher.py:138-179](file://backend/app/pipeline/services/csl_fetcher.py#L138-L179)
+- [csl_engine.py:38-283](../../../../backend/app/pipeline/services/csl_engine.py#L38-L283)
+- [formatter_engine.py:18-114](../../../../backend/app/pipeline/references/formatter_engine.py#L18-L114)
+- [reference_formatter.py:153-288](../../../../backend/app/pipeline/formatting/reference_formatter.py#L153-L288)
+- [loader.py:8-74](../../../../backend/app/pipeline/contracts/loader.py#L8-L74)
+- [csl_fetcher.py:138-179](../../../../backend/app/pipeline/services/csl_fetcher.py#L138-L179)
 
 ## Architecture Overview
 
@@ -120,7 +120,7 @@ participant FS as "Filesystem"
 participant API as "CitationStyles.org API"
 participant ZOT as "Zotero Styles"
 P->>CL : load(publisher)
-CL-->>P : contract (style, csl_style_path, normalization)
+CL-->>P : contract ("style, csl_style_path, normalization")
 P->>CE : format_references(references, style, style_path)
 CE->>FS : resolve_style_path(style, style_path)
 alt style_path provided
@@ -129,8 +129,8 @@ else built-in mapping
 FS-->>CE : styles.csl("template/<style>")
 end
 CE->>CE : _format_with_citeproc()
-CE->>API : search_styles() (if needed)
-CE->>ZOT : fetch_style() (if needed)
+CE->>API : search_styles() ("if needed")
+CE->>ZOT : fetch_style() ("if needed")
 CE-->>P : formatted references
 opt fallback
 CE-->>P : deterministic fallback
@@ -139,9 +139,9 @@ end
 
 **Diagram sources**
 
-- [formatter_engine.py:28-75](file://backend/app/pipeline/references/formatter_engine.py#L28-L75)
-- [csl_engine.py:68-140](file://backend/app/pipeline/services/csl_engine.py#L68-L140)
-- [csl_fetcher.py:80-179](file://backend/app/pipeline/services/csl_fetcher.py#L80-L179)
+- [formatter_engine.py:28-75](../../../../backend/app/pipeline/references/formatter_engine.py#L28-L75)
+- [csl_engine.py:68-140](../../../../backend/app/pipeline/services/csl_engine.py#L68-L140)
+- [csl_fetcher.py:80-179](../../../../backend/app/pipeline/services/csl_fetcher.py#L80-L179)
 
 ## Detailed Component Analysis
 
@@ -180,11 +180,11 @@ class CSLEngine {
 
 **Diagram sources**
 
-- [csl_engine.py:38-283](file://backend/app/pipeline/services/csl_engine.py#L38-L283)
+- [csl_engine.py:38-283](../../../../backend/app/pipeline/services/csl_engine.py#L38-L283)
 
 **Section sources**
 
-- [csl_engine.py:38-283](file://backend/app/pipeline/services/csl_engine.py#L38-L283)
+- [csl_engine.py:38-283](../../../../backend/app/pipeline/services/csl_engine.py#L38-L283)
 
 ### ReferenceFormatterEngine
 
@@ -215,11 +215,11 @@ Fallback --> End
 
 **Diagram sources**
 
-- [formatter_engine.py:28-75](file://backend/app/pipeline/references/formatter_engine.py#L28-L75)
+- [formatter_engine.py:28-75](../../../../backend/app/pipeline/references/formatter_engine.py#L28-L75)
 
 **Section sources**
 
-- [formatter_engine.py:18-114](file://backend/app/pipeline/references/formatter_engine.py#L18-L114)
+- [formatter_engine.py:18-114](../../../../backend/app/pipeline/references/formatter_engine.py#L18-L114)
 
 ### ReferenceFormatter (Legacy)
 
@@ -235,7 +235,7 @@ Highlights:
 
 **Section sources**
 
-- [reference_formatter.py:153-288](file://backend/app/pipeline/formatting/reference_formatter.py#L153-L288)
+- [reference_formatter.py:153-288](../../../../backend/app/pipeline/formatting/reference_formatter.py#L153-L288)
 
 ### ContractLoader
 
@@ -247,7 +247,7 @@ Responsibilities:
 
 **Section sources**
 
-- [loader.py:8-74](file://backend/app/pipeline/contracts/loader.py#L8-L74)
+- [loader.py:8-74](../../../../backend/app/pipeline/contracts/loader.py#L8-L74)
 
 ### CSLFetcher
 
@@ -270,25 +270,25 @@ External integration:
 
 **Section sources**
 
-- [csl_fetcher.py:138-179](file://backend/app/pipeline/services/csl_fetcher.py#L138-L179)
-- [settings.py:167-168](file://backend/app/config/settings.py#L167-L168)
+- [csl_fetcher.py:138-179](../../../../backend/app/pipeline/services/csl_fetcher.py#L138-L179)
+- [settings.py:167-168](../../../../backend/app/config/settings.py#L167-L168)
 
 ## Dependency Analysis
 
 - CSLEngine depends on:
-    - Internal Reference model for data conversion.
-    - Optional citeproc-py for rendering.
-    - Local templates directory for styles.csl resolution.
+  - Internal Reference model for data conversion.
+  - Optional citeproc-py for rendering.
+  - Local templates directory for styles.csl resolution.
 - ReferenceFormatterEngine depends on:
-    - ContractLoader for publisher rules.
-    - CSLEngine for CSL rendering.
+  - ContractLoader for publisher rules.
+  - CSLEngine for CSL rendering.
 - ReferenceFormatter (legacy) depends on:
-    - ContractLoader for normalization rules.
-    - Optional citeproc-py availability.
+  - ContractLoader for normalization rules.
+  - Optional citeproc-py availability.
 - CSLFetcher depends on:
-    - Settings for cache TTLs.
-    - httpx for network requests.
-    - Local filesystem for templates.
+  - Settings for cache TTLs.
+  - httpx for network requests.
+  - Local filesystem for templates.
 
 ```mermaid
 graph LR
@@ -306,30 +306,30 @@ CF --> ZOT["Zotero Styles"]
 
 **Diagram sources**
 
-- [csl_engine.py:15-29](file://backend/app/pipeline/services/csl_engine.py#L15-L29)
-- [formatter_engine.py:12-26](file://backend/app/pipeline/references/formatter_engine.py#L12-L26)
-- [reference_formatter.py:22-35](file://backend/app/pipeline/formatting/reference_formatter.py#L22-L35)
-- [csl_fetcher.py:138-179](file://backend/app/pipeline/services/csl_fetcher.py#L138-L179)
-- [settings.py:167-168](file://backend/app/config/settings.py#L167-L168)
+- [csl_engine.py:15-29](../../../../backend/app/pipeline/services/csl_engine.py#L15-L29)
+- [formatter_engine.py:12-26](../../../../backend/app/pipeline/references/formatter_engine.py#L12-L26)
+- [reference_formatter.py:22-35](../../../../backend/app/pipeline/formatting/reference_formatter.py#L22-L35)
+- [csl_fetcher.py:138-179](../../../../backend/app/pipeline/services/csl_fetcher.py#L138-L179)
+- [settings.py:167-168](../../../../backend/app/config/settings.py#L167-L168)
 
 **Section sources**
 
-- [csl_engine.py:15-29](file://backend/app/pipeline/services/csl_engine.py#L15-L29)
-- [formatter_engine.py:12-26](file://backend/app/pipeline/references/formatter_engine.py#L12-L26)
-- [reference_formatter.py:22-35](file://backend/app/pipeline/formatting/reference_formatter.py#L22-L35)
-- [csl_fetcher.py:138-179](file://backend/app/pipeline/services/csl_fetcher.py#L138-L179)
-- [settings.py:167-168](file://backend/app/config/settings.py#L167-L168)
+- [csl_engine.py:15-29](../../../../backend/app/pipeline/services/csl_engine.py#L15-L29)
+- [formatter_engine.py:12-26](../../../../backend/app/pipeline/references/formatter_engine.py#L12-L26)
+- [reference_formatter.py:22-35](../../../../backend/app/pipeline/formatting/reference_formatter.py#L22-L35)
+- [csl_fetcher.py:138-179](../../../../backend/app/pipeline/services/csl_fetcher.py#L138-L179)
+- [settings.py:167-168](../../../../backend/app/config/settings.py#L167-L168)
 
 ## Performance Considerations
 
 - citeproc-py availability: When citeproc-py is present, rendering is delegated to it for accurate, standards-compliant formatting. When absent, deterministic fallback is used.
 - Style caching:
-    - CSLEngine caches CSL-JSON items internally during a single render operation.
-    - CSLFetcher maintains in-memory caches for search results and style content with TTLs controlled by settings.
+  - CSLEngine caches CSL-JSON items internally during a single render operation.
+  - CSLFetcher maintains in-memory caches for search results and style content with TTLs controlled by settings.
 - Concurrency:
-    - CSLFetcher uses asyncio locks to guard cache updates, preventing race conditions during concurrent lookups.
+  - CSLFetcher uses asyncio locks to guard cache updates, preventing race conditions during concurrent lookups.
 - Network resilience:
-    - External style discovery and retrieval are best-effort; failures do not block local formatting.
+  - External style discovery and retrieval are best-effort; failures do not block local formatting.
 
 [No sources needed since this section provides general guidance]
 
@@ -338,21 +338,21 @@ CF --> ZOT["Zotero Styles"]
 Common issues and resolutions:
 
 - Missing citeproc-py:
-    - Symptom: Warning logged indicating citeproc-py not installed; fallback formatting is used.
-    - Resolution: Install citeproc-py to enable CSL rendering.
-    - Evidence: Logging and fallback behavior in both engines.
+  - Symptom: Warning logged indicating citeproc-py not installed; fallback formatting is used.
+  - Resolution: Install citeproc-py to enable CSL rendering.
+  - Evidence: Logging and fallback behavior in both engines.
 - Style file not found:
-    - Symptom: FileNotFoundError raised when resolving style path.
-    - Resolution: Ensure styles.csl exists under the expected template folder or provide a valid style_path.
+  - Symptom: FileNotFoundError raised when resolving style path.
+  - Resolution: Ensure styles.csl exists under the expected template folder or provide a valid style_path.
 - CSL rendering failure:
-    - Symptom: Warning logged and fallback to deterministic formatting.
-    - Resolution: Verify style correctness and reference data; check logs for exceptions.
+  - Symptom: Warning logged and fallback to deterministic formatting.
+  - Resolution: Verify style correctness and reference data; check logs for exceptions.
 - External style discovery failing:
-    - Symptom: Empty or partial style lists from API.
-    - Resolution: Confirm network connectivity and API availability; rely on local styles when needed.
+  - Symptom: Empty or partial style lists from API.
+  - Resolution: Confirm network connectivity and API availability; rely on local styles when needed.
 - Cache TTL misconfiguration:
-    - Symptom: Frequent network calls or stale results.
-    - Resolution: Adjust CSL_SEARCH_CACHE_TTL_SECONDS and CSL_FETCH_CACHE_TTL_SECONDS in settings.
+  - Symptom: Frequent network calls or stale results.
+  - Resolution: Adjust CSL_SEARCH_CACHE_TTL_SECONDS and CSL_FETCH_CACHE_TTL_SECONDS in settings.
 
 Validation references:
 
@@ -360,11 +360,11 @@ Validation references:
 
 **Section sources**
 
-- [csl_engine.py:105-115](file://backend/app/pipeline/services/csl_engine.py#L105-L115)
-- [formatter_engine.py:59-66](file://backend/app/pipeline/references/formatter_engine.py#L59-L66)
-- [csl_fetcher.py:101-123](file://backend/app/pipeline/services/csl_fetcher.py#L101-L123)
-- [settings.py:167-168](file://backend/app/config/settings.py#L167-L168)
-- [test_csl_integration.py:101-111](file://backend/tests/integration/test_csl_integration.py#L101-L111)
+- [csl_engine.py:105-115](../../../../backend/app/pipeline/services/csl_engine.py#L105-L115)
+- [formatter_engine.py:59-66](../../../../backend/app/pipeline/references/formatter_engine.py#L59-L66)
+- [csl_fetcher.py:101-123](../../../../backend/app/pipeline/services/csl_fetcher.py#L101-L123)
+- [settings.py:167-168](../../../../backend/app/config/settings.py#L167-L168)
+- [test_csl_integration.py:101-111](../../../../backend/tests/integration/test_csl_integration.py#L101-L111)
 
 ## Conclusion
 

@@ -73,5 +73,5 @@ This decision has been implemented and is verified by:
 
 - [ADR 008: LiteLLM for LLM Routing](008-litellm-llm-routing.md) — tooling layer
 - [LLM Fallback Strategy](../explanation/llm-fallback-strategy.md) — detailed design and flow diagrams
-- [AI Architecture](../AI_ARCHITECTURE.md) — AI subsystem overview
-- [LLM Provider Guide](../LLM_PROVIDER_GUIDE.md) — provider configuration
+- [AI Architecture](../architecture/AI_ARCHITECTURE.md) — AI subsystem overview
+- [LLM Provider Guide](../user-guide/LLM_PROVIDER_GUIDE.md) — provider configuration

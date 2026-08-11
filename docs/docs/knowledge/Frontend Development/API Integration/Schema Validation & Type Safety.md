@@ -5,20 +5,20 @@
 
 <cite>
 **Referenced Files in This Document**
-- [backend/app/schemas/__init__.py](file://backend/app/schemas/__init__.py)
-- [backend/app/schemas/auth.py](file://backend/app/schemas/auth.py)
-- [backend/app/schemas/user.py](file://backend/app/schemas/user.py)
-- [backend/app/schemas/document.py](file://backend/app/schemas/document.py)
-- [backend/app/schemas/generator_session.py](file://backend/app/schemas/generator_session.py)
-- [backend/app/schemas/api_envelope.py](file://backend/app/schemas/api_envelope.py)
-- [backend/app/routers/v1/_helpers.py](file://backend/app/routers/v1/_helpers.py)
-- [backend/app/pipeline/validation/validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
-- [backend/app/pipeline/validation/review_manager.py](file://backend/app/pipeline/validation/review_manager.py)
-- [backend/app/pipeline/validation/ai_explainer.py](file://backend/app/pipeline/validation/ai_explainer.py)
-- [backend/app/pipeline/safety/validator_guard.py](file://backend/app/pipeline/safety/validator_guard.py)
-- [frontend/src/lib/schemas.js](file://frontend/src/lib/schemas.js)
-- [frontend/src/lib/schemas.test.js](file://frontend/src/lib/schemas.test.js)
-- [frontend/src/services/api.core.js](file://frontend/src/services/api.core.js)
+- [backend/app/schemas/__init__.py](../../../../../backend/app/schemas/__init__.py)
+- [backend/app/schemas/auth.py](../../../../../backend/app/schemas/auth.py)
+- [backend/app/schemas/user.py](../../../../../backend/app/schemas/user.py)
+- [backend/app/schemas/document.py](../../../../../backend/app/schemas/document.py)
+- [backend/app/schemas/generator_session.py](../../../../../backend/app/schemas/generator_session.py)
+- [backend/app/schemas/api_envelope.py](../../../../../backend/app/schemas/api_envelope.py)
+- [backend/app/routers/v1/_helpers.py](../../../../../backend/app/routers/v1/_helpers.py)
+- [backend/app/pipeline/validation/validator_v3.py](../../../../../backend/app/pipeline/validation/validator_v3.py)
+- [backend/app/pipeline/validation/review_manager.py](../../../../../backend/app/pipeline/validation/review_manager.py)
+- [backend/app/pipeline/validation/ai_explainer.py](../../../../../backend/app/pipeline/validation/ai_explainer.py)
+- [backend/app/pipeline/safety/validator_guard.py](../../../../../backend/app/pipeline/safety/validator_guard.py)
+- [frontend/src/lib/schemas.js](../../../../../frontend/src/lib/schemas.js)
+- [frontend/src/lib/schemas.test.js](../../../../../frontend/src/lib/schemas.test.js)
+- [frontend/src/services/api.core.js](../../../../../frontend/src/services/api.core.js)
 </cite>
 
 ## Table of Contents
@@ -81,56 +81,56 @@ Review --> Explainer
 
 **Diagram sources**
 
-- [backend/app/schemas/auth.py:32-79](file://backend/app/schemas/auth.py#L32-L79)
-- [backend/app/schemas/user.py:15-67](file://backend/app/schemas/user.py#L15-L67)
-- [backend/app/schemas/document.py:43-155](file://backend/app/schemas/document.py#L43-L155)
-- [backend/app/schemas/generator_session.py:9-41](file://backend/app/schemas/generator_session.py#L9-L41)
-- [backend/app/schemas/api_envelope.py:18-46](file://backend/app/schemas/api_envelope.py#L18-L46)
-- [backend/app/routers/v1/_helpers.py:44-88](file://backend/app/routers/v1/_helpers.py#L44-L88)
-- [backend/app/pipeline/validation/validator_v3.py:34-146](file://backend/app/pipeline/validation/validator_v3.py#L34-L146)
-- [backend/app/pipeline/validation/review_manager.py:7-117](file://backend/app/pipeline/validation/review_manager.py#L7-L117)
-- [backend/app/pipeline/validation/ai_explainer.py:3-47](file://backend/app/pipeline/validation/ai_explainer.py#L3-L47)
-- [frontend/src/lib/schemas.js:1-235](file://frontend/src/lib/schemas.js#L1-L235)
-- [frontend/src/services/api.core.js:83-133](file://frontend/src/services/api.core.js#L83-L133)
-- [frontend/src/lib/schemas.test.js:1-133](file://frontend/src/lib/schemas.test.js#L1-L133)
+- [backend/app/schemas/auth.py:32-79](../../../../../backend/app/schemas/auth.py#L32-L79)
+- [backend/app/schemas/user.py:15-67](../../../../../backend/app/schemas/user.py#L15-L67)
+- [backend/app/schemas/document.py:43-155](../../../../../backend/app/schemas/document.py#L43-L155)
+- [backend/app/schemas/generator_session.py:9-41](../../../../../backend/app/schemas/generator_session.py#L9-L41)
+- [backend/app/schemas/api_envelope.py:18-46](../../../../../backend/app/schemas/api_envelope.py#L18-L46)
+- [backend/app/routers/v1/_helpers.py:44-88](../../../../../backend/app/routers/v1/_helpers.py#L44-L88)
+- [backend/app/pipeline/validation/validator_v3.py:34-146](../../../../../backend/app/pipeline/validation/validator_v3.py#L34-L146)
+- [backend/app/pipeline/validation/review_manager.py:7-117](../../../../../backend/app/pipeline/validation/review_manager.py#L7-L117)
+- [backend/app/pipeline/validation/ai_explainer.py:3-47](../../../../../backend/app/pipeline/validation/ai_explainer.py#L3-L47)
+- [frontend/src/lib/schemas.js:1-235](../../../../../frontend/src/lib/schemas.js#L1-L235)
+- [frontend/src/services/api.core.js:83-133](../../../../../frontend/src/services/api.core.js#L83-L133)
+- [frontend/src/lib/schemas.test.js:1-133](../../../../../frontend/src/lib/schemas.test.js#L1-L133)
 
 **Section sources**
 
-- [backend/app/schemas/__init__.py:12-85](file://backend/app/schemas/__init__.py#L12-L85)
-- [frontend/src/lib/schemas.js:1-235](file://frontend/src/lib/schemas.js#L1-L235)
+- [backend/app/schemas/**init**.py:12-85](../../../../../backend/app/schemas/__init__.py#L12-L85)
+- [frontend/src/lib/schemas.js:1-235](../../../../../frontend/src/lib/schemas.js#L1-L235)
 
 ## Core Components
 
 - Backend Pydantic Schemas:
-    - Authentication: SignupRequest, LoginRequest, ForgotPasswordRequest, VerifyOTPRequest, ResetPasswordRequest, AuthTokenResponse, MessageResponse, OTPVerifyResponse
-    - User: UserBase, User, UserProfile, UserUpdateRequest
-    - Documents: FormattingOptions, DocumentUploadResponse, PhaseStatus, DocumentStatusResponse, DocumentBase, Document, DocumentListItem, DocumentListResponse, DocumentMetaSummary, DocumentPreviewResponse, DocumentCompareResponse, GenerationOptions, GenerateRequest, GenerateResponse, GenerateStatusResponse
-    - Generator sessions: CreateSessionRequest, SessionResponse, MessageRequest, MessageResponse, StageEvent
-    - API Envelope: APIResponse, APIError, success_response, error_response
+  - Authentication: SignupRequest, LoginRequest, ForgotPasswordRequest, VerifyOTPRequest, ResetPasswordRequest, AuthTokenResponse, MessageResponse, OTPVerifyResponse
+  - User: UserBase, User, UserProfile, UserUpdateRequest
+  - Documents: FormattingOptions, DocumentUploadResponse, PhaseStatus, DocumentStatusResponse, DocumentBase, Document, DocumentListItem, DocumentListResponse, DocumentMetaSummary, DocumentPreviewResponse, DocumentCompareResponse, GenerationOptions, GenerateRequest, GenerateResponse, GenerateStatusResponse
+  - Generator sessions: CreateSessionRequest, SessionResponse, MessageRequest, MessageResponse, StageEvent
+  - API Envelope: APIResponse, APIError, success_response, error_response
 - Frontend Zod Schemas:
-    - User profile, authentication, settings, upload/start, feedback, agent session, synthesis session, generator start
-    - Utilities: getFirstZodError
+  - User profile, authentication, settings, upload/start, feedback, agent session, synthesis session, generator start
+  - Utilities: getFirstZodError
 - Validation orchestration:
-    - DocumentValidator pipeline with safe execution wrappers
-    - ReviewManager threshold-based flags
-    - AIExplainer for friendly explanations
+  - DocumentValidator pipeline with safe execution wrappers
+  - ReviewManager threshold-based flags
+  - AIExplainer for friendly explanations
 - Error handling helpers:
-    - build_error_response and http_exception_to_response
-    - Frontend sanitization and friendly error extraction
+  - build_error_response and http_exception_to_response
+  - Frontend sanitization and friendly error extraction
 
 **Section sources**
 
-- [backend/app/schemas/auth.py:32-165](file://backend/app/schemas/auth.py#L32-L165)
-- [backend/app/schemas/user.py:15-67](file://backend/app/schemas/user.py#L15-L67)
-- [backend/app/schemas/document.py:43-266](file://backend/app/schemas/document.py#L43-L266)
-- [backend/app/schemas/generator_session.py:9-41](file://backend/app/schemas/generator_session.py#L9-L41)
-- [backend/app/schemas/api_envelope.py:9-46](file://backend/app/schemas/api_envelope.py#L9-L46)
-- [frontend/src/lib/schemas.js:7-235](file://frontend/src/lib/schemas.js#L7-L235)
-- [backend/app/pipeline/validation/validator_v3.py:34-146](file://backend/app/pipeline/validation/validator_v3.py#L34-L146)
-- [backend/app/pipeline/validation/review_manager.py:7-117](file://backend/app/pipeline/validation/review_manager.py#L7-L117)
-- [backend/app/pipeline/validation/ai_explainer.py:3-47](file://backend/app/pipeline/validation/ai_explainer.py#L3-L47)
-- [backend/app/routers/v1/_helpers.py:44-88](file://backend/app/routers/v1/_helpers.py#L44-L88)
-- [frontend/src/services/api.core.js:83-133](file://frontend/src/services/api.core.js#L83-L133)
+- [backend/app/schemas/auth.py:32-165](../../../../../backend/app/schemas/auth.py#L32-L165)
+- [backend/app/schemas/user.py:15-67](../../../../../backend/app/schemas/user.py#L15-L67)
+- [backend/app/schemas/document.py:43-266](../../../../../backend/app/schemas/document.py#L43-L266)
+- [backend/app/schemas/generator_session.py:9-41](../../../../../backend/app/schemas/generator_session.py#L9-L41)
+- [backend/app/schemas/api_envelope.py:9-46](../../../../../backend/app/schemas/api_envelope.py#L9-L46)
+- [frontend/src/lib/schemas.js:7-235](../../../../../frontend/src/lib/schemas.js#L7-L235)
+- [backend/app/pipeline/validation/validator_v3.py:34-146](../../../../../backend/app/pipeline/validation/validator_v3.py#L34-L146)
+- [backend/app/pipeline/validation/review_manager.py:7-117](../../../../../backend/app/pipeline/validation/review_manager.py#L7-L117)
+- [backend/app/pipeline/validation/ai_explainer.py:3-47](../../../../../backend/app/pipeline/validation/ai_explainer.py#L3-L47)
+- [backend/app/routers/v1/_helpers.py:44-88](../../../../../backend/app/routers/v1/_helpers.py#L44-L88)
+- [frontend/src/services/api.core.js:83-133](../../../../../frontend/src/services/api.core.js#L83-L133)
 
 ## Architecture Overview
 
@@ -169,12 +169,12 @@ SVC-->>FE : "Structured response via APIEnvelope"
 
 **Diagram sources**
 
-- [frontend/src/lib/schemas.js:31-57](file://frontend/src/lib/schemas.js#L31-L57)
-- [frontend/src/services/api.core.js:83-133](file://frontend/src/services/api.core.js#L83-L133)
-- [backend/app/schemas/api_envelope.py:18-46](file://backend/app/schemas/api_envelope.py#L18-L46)
-- [backend/app/pipeline/validation/validator_v3.py:68-146](file://backend/app/pipeline/validation/validator_v3.py#L68-L146)
-- [backend/app/pipeline/validation/review_manager.py:29-117](file://backend/app/pipeline/validation/review_manager.py#L29-L117)
-- [backend/app/pipeline/validation/ai_explainer.py:18-47](file://backend/app/pipeline/validation/ai_explainer.py#L18-L47)
+- [frontend/src/lib/schemas.js:31-57](../../../../../frontend/src/lib/schemas.js#L31-L57)
+- [frontend/src/services/api.core.js:83-133](../../../../../frontend/src/services/api.core.js#L83-L133)
+- [backend/app/schemas/api_envelope.py:18-46](../../../../../backend/app/schemas/api_envelope.py#L18-L46)
+- [backend/app/pipeline/validation/validator_v3.py:68-146](../../../../../backend/app/pipeline/validation/validator_v3.py#L68-L146)
+- [backend/app/pipeline/validation/review_manager.py:29-117](../../../../../backend/app/pipeline/validation/review_manager.py#L29-L117)
+- [backend/app/pipeline/validation/ai_explainer.py:18-47](../../../../../backend/app/pipeline/validation/ai_explainer.py#L18-L47)
 
 ## Detailed Component Analysis
 
@@ -261,18 +261,18 @@ APIResponse --> APIError : "contains"
 
 **Diagram sources**
 
-- [backend/app/schemas/auth.py:141-165](file://backend/app/schemas/auth.py#L141-L165)
-- [backend/app/schemas/user.py:15-67](file://backend/app/schemas/user.py#L15-L67)
-- [backend/app/schemas/document.py:43-155](file://backend/app/schemas/document.py#L43-L155)
-- [backend/app/schemas/api_envelope.py:9-46](file://backend/app/schemas/api_envelope.py#L9-L46)
+- [backend/app/schemas/auth.py:141-165](../../../../../backend/app/schemas/auth.py#L141-L165)
+- [backend/app/schemas/user.py:15-67](../../../../../backend/app/schemas/user.py#L15-L67)
+- [backend/app/schemas/document.py:43-155](../../../../../backend/app/schemas/document.py#L43-L155)
+- [backend/app/schemas/api_envelope.py:9-46](../../../../../backend/app/schemas/api_envelope.py#L9-L46)
 
 **Section sources**
 
-- [backend/app/schemas/auth.py:32-165](file://backend/app/schemas/auth.py#L32-L165)
-- [backend/app/schemas/user.py:15-67](file://backend/app/schemas/user.py#L15-L67)
-- [backend/app/schemas/document.py:43-266](file://backend/app/schemas/document.py#L43-L266)
-- [backend/app/schemas/generator_session.py:9-41](file://backend/app/schemas/generator_session.py#L9-L41)
-- [backend/app/schemas/api_envelope.py:9-46](file://backend/app/schemas/api_envelope.py#L9-L46)
+- [backend/app/schemas/auth.py:32-165](../../../../../backend/app/schemas/auth.py#L32-L165)
+- [backend/app/schemas/user.py:15-67](../../../../../backend/app/schemas/user.py#L15-L67)
+- [backend/app/schemas/document.py:43-266](../../../../../backend/app/schemas/document.py#L43-L266)
+- [backend/app/schemas/generator_session.py:9-41](../../../../../backend/app/schemas/generator_session.py#L9-L41)
+- [backend/app/schemas/api_envelope.py:9-46](../../../../../backend/app/schemas/api_envelope.py#L9-L46)
 
 ### Frontend Zod Schemas
 
@@ -298,16 +298,16 @@ BuildErr --> FEError["Show friendly error to user"]
 
 **Diagram sources**
 
-- [frontend/src/lib/schemas.js:31-57](file://frontend/src/lib/schemas.js#L31-L57)
-- [frontend/src/lib/schemas.js:201-231](file://frontend/src/lib/schemas.js#L201-L231)
-- [frontend/src/lib/schemas.js:233-235](file://frontend/src/lib/schemas.js#L233-L235)
-- [frontend/src/services/api.core.js:83-133](file://frontend/src/services/api.core.js#L83-L133)
-- [backend/app/routers/v1/_helpers.py:44-88](file://backend/app/routers/v1/_helpers.py#L44-L88)
+- [frontend/src/lib/schemas.js:31-57](../../../../../frontend/src/lib/schemas.js#L31-L57)
+- [frontend/src/lib/schemas.js:201-231](../../../../../frontend/src/lib/schemas.js#L201-L231)
+- [frontend/src/lib/schemas.js:233-235](../../../../../frontend/src/lib/schemas.js#L233-L235)
+- [frontend/src/services/api.core.js:83-133](../../../../../frontend/src/services/api.core.js#L83-L133)
+- [backend/app/routers/v1/_helpers.py:44-88](../../../../../backend/app/routers/v1/_helpers.py#L44-L88)
 
 **Section sources**
 
-- [frontend/src/lib/schemas.js:7-235](file://frontend/src/lib/schemas.js#L7-L235)
-- [frontend/src/lib/schemas.test.js:1-133](file://frontend/src/lib/schemas.test.js#L1-L133)
+- [frontend/src/lib/schemas.js:7-235](../../../../../frontend/src/lib/schemas.js#L7-L235)
+- [frontend/src/lib/schemas.test.js:1-133](../../../../../frontend/src/lib/schemas.test.js#L1-L133)
 
 ### Validation Pipeline and Error Handling
 
@@ -328,7 +328,7 @@ participant EX as "AIExplainer"
 VAL->>SAFE : "Wrap validation steps"
 VAL->>INT : "Validate integrity"
 INT-->>VAL : "Violations"
-VAL->>CR : "Validate DOIs (unless fast_mode)"
+VAL->>CR : "Validate DOIs ("unless fast_mode")"
 CR-->>VAL : "Confidence scores"
 VAL->>REV : "Evaluate review flags"
 REV-->>VAL : "ReviewMetadata"
@@ -339,18 +339,18 @@ VAL-->>VAL : "Final ValidationResult"
 
 **Diagram sources**
 
-- [backend/app/pipeline/validation/validator_v3.py:68-146](file://backend/app/pipeline/validation/validator_v3.py#L68-L146)
-- [backend/app/pipeline/validation/review_manager.py:29-117](file://backend/app/pipeline/validation/review_manager.py#L29-L117)
-- [backend/app/pipeline/validation/ai_explainer.py:18-47](file://backend/app/pipeline/validation/ai_explainer.py#L18-L47)
-- [backend/app/pipeline/safety/validator_guard.py:33-50](file://backend/app/pipeline/safety/validator_guard.py#L33-L50)
+- [backend/app/pipeline/validation/validator_v3.py:68-146](../../../../../backend/app/pipeline/validation/validator_v3.py#L68-L146)
+- [backend/app/pipeline/validation/review_manager.py:29-117](../../../../../backend/app/pipeline/validation/review_manager.py#L29-L117)
+- [backend/app/pipeline/validation/ai_explainer.py:18-47](../../../../../backend/app/pipeline/validation/ai_explainer.py#L18-L47)
+- [backend/app/pipeline/safety/validator_guard.py:33-50](../../../../../backend/app/pipeline/safety/validator_guard.py#L33-L50)
 
 **Section sources**
 
-- [backend/app/pipeline/validation/validator_v3.py:34-277](file://backend/app/pipeline/validation/validator_v3.py#L34-L277)
-- [backend/app/pipeline/validation/review_manager.py:7-117](file://backend/app/pipeline/validation/review_manager.py#L7-L117)
-- [backend/app/pipeline/validation/ai_explainer.py:3-47](file://backend/app/pipeline/validation/ai_explainer.py#L3-L47)
-- [backend/app/routers/v1/_helpers.py:44-88](file://backend/app/routers/v1/_helpers.py#L44-L88)
-- [frontend/src/services/api.core.js:83-133](file://frontend/src/services/api.core.js#L83-L133)
+- [backend/app/pipeline/validation/validator_v3.py:34-277](../../../../../backend/app/pipeline/validation/validator_v3.py#L34-L277)
+- [backend/app/pipeline/validation/review_manager.py:7-117](../../../../../backend/app/pipeline/validation/review_manager.py#L7-L117)
+- [backend/app/pipeline/validation/ai_explainer.py:3-47](../../../../../backend/app/pipeline/validation/ai_explainer.py#L3-L47)
+- [backend/app/routers/v1/_helpers.py:44-88](../../../../../backend/app/routers/v1/_helpers.py#L44-L88)
+- [frontend/src/services/api.core.js:83-133](../../../../../frontend/src/services/api.core.js#L83-L133)
 
 ## Dependency Analysis
 
@@ -373,19 +373,19 @@ REV --> EXPL["ai_explainer.py"]
 
 **Diagram sources**
 
-- [frontend/src/lib/schemas.js:1-235](file://frontend/src/lib/schemas.js#L1-L235)
-- [frontend/src/services/api.core.js:83-133](file://frontend/src/services/api.core.js#L83-L133)
-- [backend/app/schemas/api_envelope.py:18-46](file://backend/app/schemas/api_envelope.py#L18-L46)
-- [backend/app/routers/v1/_helpers.py:44-88](file://backend/app/routers/v1/_helpers.py#L44-L88)
-- [backend/app/pipeline/validation/validator_v3.py:34-146](file://backend/app/pipeline/validation/validator_v3.py#L34-L146)
-- [backend/app/pipeline/validation/review_manager.py:7-117](file://backend/app/pipeline/validation/review_manager.py#L7-L117)
-- [backend/app/pipeline/validation/ai_explainer.py:3-47](file://backend/app/pipeline/validation/ai_explainer.py#L3-L47)
+- [frontend/src/lib/schemas.js:1-235](../../../../../frontend/src/lib/schemas.js#L1-L235)
+- [frontend/src/services/api.core.js:83-133](../../../../../frontend/src/services/api.core.js#L83-L133)
+- [backend/app/schemas/api_envelope.py:18-46](../../../../../backend/app/schemas/api_envelope.py#L18-L46)
+- [backend/app/routers/v1/_helpers.py:44-88](../../../../../backend/app/routers/v1/_helpers.py#L44-L88)
+- [backend/app/pipeline/validation/validator_v3.py:34-146](../../../../../backend/app/pipeline/validation/validator_v3.py#L34-L146)
+- [backend/app/pipeline/validation/review_manager.py:7-117](../../../../../backend/app/pipeline/validation/review_manager.py#L7-L117)
+- [backend/app/pipeline/validation/ai_explainer.py:3-47](../../../../../backend/app/pipeline/validation/ai_explainer.py#L3-L47)
 
 **Section sources**
 
-- [backend/app/schemas/__init__.py:12-85](file://backend/app/schemas/__init__.py#L12-L85)
-- [backend/app/schemas/api_envelope.py:18-46](file://backend/app/schemas/api_envelope.py#L18-L46)
-- [backend/app/routers/v1/_helpers.py:44-88](file://backend/app/routers/v1/_helpers.py#L44-L88)
+- [backend/app/schemas/**init**.py:12-85](../../../../../backend/app/schemas/__init__.py#L12-L85)
+- [backend/app/schemas/api_envelope.py:18-46](../../../../../backend/app/schemas/api_envelope.py#L18-L46)
+- [backend/app/routers/v1/_helpers.py:44-88](../../../../../backend/app/routers/v1/_helpers.py#L44-L88)
 
 ## Performance Considerations
 
@@ -399,18 +399,18 @@ REV --> EXPL["ai_explainer.py"]
 ## Troubleshooting Guide
 
 - Backend error responses:
-    - Use build_error_response and http_exception_to_response to ensure consistent error payloads with code, message, and optional details.
-    - Extract friendly messages on the frontend using getFriendlyErrorMessage and sanitize server error details.
+  - Use build_error_response and http_exception_to_response to ensure consistent error payloads with code, message, and optional details.
+  - Extract friendly messages on the frontend using getFriendlyErrorMessage and sanitize server error details.
 - Frontend sanitization:
-    - sanitizePayload removes control characters and trims sensitive inputs; apply to all outgoing payloads.
+  - sanitizePayload removes control characters and trims sensitive inputs; apply to all outgoing payloads.
 - Validation guard:
-    - Validator Guard logs missing keys and returns safe defaults to protect downstream consumers.
+  - Validator Guard logs missing keys and returns safe defaults to protect downstream consumers.
 
 **Section sources**
 
-- [backend/app/routers/v1/_helpers.py:44-88](file://backend/app/routers/v1/_helpers.py#L44-L88)
-- [frontend/src/services/api.core.js:83-133](file://frontend/src/services/api.core.js#L83-L133)
-- [backend/app/pipeline/safety/validator_guard.py:33-50](file://backend/app/pipeline/safety/validator_guard.py#L33-L50)
+- [backend/app/routers/v1/_helpers.py:44-88](../../../../../backend/app/routers/v1/_helpers.py#L44-L88)
+- [frontend/src/services/api.core.js:83-133](../../../../../frontend/src/services/api.core.js#L83-L133)
+- [backend/app/pipeline/safety/validator_guard.py:33-50](../../../../../backend/app/pipeline/safety/validator_guard.py#L33-L50)
 
 ## Conclusion
 
@@ -423,18 +423,18 @@ The system achieves robust type safety and validation by aligning frontend Zod s
 ### Example Workflows
 
 - Form validation (frontend)
-    - Use Zod schemas to validate user input before submission.
-    - Map Zod issues to field-level messages and show getFirstZodError for fallback.
-    - Reference: [frontend/src/lib/schemas.js:31-57](file://frontend/src/lib/schemas.js#L31-L57), [frontend/src/lib/schemas.js:233-235](file://frontend/src/lib/schemas.js#L233-L235)
+  - Use Zod schemas to validate user input before submission.
+  - Map Zod issues to field-level messages and show getFirstZodError for fallback.
+  - Reference: [frontend/src/lib/schemas.js:31-57](../../../../../frontend/src/lib/schemas.js#L31-L57), [frontend/src/lib/schemas.js:233-235](../../../../../frontend/src/lib/schemas.js#L233-L235)
 
 - API response parsing (backend)
-    - Build APIResponse with success_response or error_response.
-    - Reference: [backend/app/schemas/api_envelope.py:31-46](file://backend/app/schemas/api_envelope.py#L31-L46)
+  - Build APIResponse with success_response or error_response.
+  - Reference: [backend/app/schemas/api_envelope.py:31-46](../../../../../backend/app/schemas/api_envelope.py#L31-L46)
 
 - Error message formatting (frontend)
-    - Extract friendly messages from server responses and handle network errors.
-    - Reference: [frontend/src/services/api.core.js:83-133](file://frontend/src/services/api.core.js#L83-L133)
+  - Extract friendly messages from server responses and handle network errors.
+  - Reference: [frontend/src/services/api.core.js:83-133](../../../../../frontend/src/services/api.core.js#L83-L133)
 
 - Testing strategies
-    - Validate Zod schemas with Vitest assertions for positive and negative cases.
-    - Reference: [frontend/src/lib/schemas.test.js:1-133](file://frontend/src/lib/schemas.test.js#L1-L133)
+  - Validate Zod schemas with Vitest assertions for positive and negative cases.
+  - Reference: [frontend/src/lib/schemas.test.js:1-133](../../../../../frontend/src/lib/schemas.test.js#L1-L133)

@@ -432,7 +432,7 @@ class TestShouldSkipDocling:
         with patch("app.pipeline.orchestrator.settings") as mock_s:
             mock_s.PIPELINE_DOCLING_FORCE = False
             mock_s.PIPELINE_DOCLING_SKIP_DIGITAL_PDF = True
-            with patch("fitz.open") as mock_fitz:
+            with patch.dict("sys.modules", {"fitz": MagicMock()}), patch("fitz.open") as mock_fitz:
                 mock_doc = MagicMock()
                 mock_doc.__len__.return_value = 0
                 mock_fitz.return_value.__enter__.return_value = mock_doc
@@ -444,7 +444,7 @@ class TestShouldSkipDocling:
         with patch("app.pipeline.orchestrator.settings") as mock_s:
             mock_s.PIPELINE_DOCLING_FORCE = False
             mock_s.PIPELINE_DOCLING_SKIP_DIGITAL_PDF = True
-            with patch("fitz.open") as mock_fitz:
+            with patch.dict("sys.modules", {"fitz": MagicMock()}), patch("fitz.open") as mock_fitz:
                 mock_doc = MagicMock()
                 mock_doc.__len__.return_value = 3
                 page = MagicMock()
@@ -485,23 +485,25 @@ class TestExtractPyMuPDF:
         assert result == {}
 
     def test_successful_extraction(self, orch):
-        with patch("fitz.open") as mock_fitz, patch("os.path.exists", return_value=True):
-            mock_doc = MagicMock()
-            mock_doc.metadata = {"title": "Test Paper", "author": "Author A"}
-            mock_doc.__len__.return_value = 5
-            page = MagicMock()
-            page.get_text.return_value = "This is sample text content for testing."
-            mock_doc.__getitem__.return_value = page
-            mock_doc.__iter__.return_value = iter([page, page])
-            mock_fitz.return_value.__enter__.return_value = mock_doc
-            result = orch._extract_pymupdf_fallback_metadata("/test.pdf")
-            assert result["source"] == "pymupdf"
-            assert result["title"] == "Test Paper"
+        with patch.dict("sys.modules", {"fitz": MagicMock()}):
+            with patch("fitz.open") as mock_fitz, patch("os.path.exists", return_value=True):
+                mock_doc = MagicMock()
+                mock_doc.metadata = {"title": "Test Paper", "author": "Author A"}
+                mock_doc.__len__.return_value = 5
+                page = MagicMock()
+                page.get_text.return_value = "This is sample text content for testing."
+                mock_doc.__getitem__.return_value = page
+                mock_doc.__iter__.return_value = iter([page, page])
+                mock_fitz.return_value.__enter__.return_value = mock_doc
+                result = orch._extract_pymupdf_fallback_metadata("/test.pdf")
+                assert result["source"] == "pymupdf"
+                assert result["title"] == "Test Paper"
 
     def test_open_exception(self, orch):
-        with patch("fitz.open") as mock_fitz, patch("os.path.exists", return_value=True):
-            mock_fitz.return_value.__enter__.side_effect = Exception("corrupt PDF")
-            result = orch._extract_pymupdf_fallback_metadata("/test.pdf")
+        with patch.dict("sys.modules", {"fitz": MagicMock()}):
+            with patch("fitz.open") as mock_fitz, patch("os.path.exists", return_value=True):
+                mock_fitz.return_value.__enter__.side_effect = Exception("corrupt PDF")
+                result = orch._extract_pymupdf_fallback_metadata("/test.pdf")
         assert result == {}
 
 
@@ -765,7 +767,7 @@ class TestFigureAnalysisAdditional:
         mock_analyzer.analyze_image.return_value = {"valid": True}
         mock_analyzer.downsample_if_needed.return_value = "/tmp/fig.png"
         with patch("app.pipeline.orchestrator._get_figure_analyzer", return_value=mock_analyzer):
-            with patch("os.path.exists", return_value=True):
+            with patch("os.path.exists", return_value=True), patch("os.path.getsize", return_value=1024):
                 result = orch._run_figure_analysis_stage(doc)
         assert result.figures[0].export_path == "/tmp/fig.png"
         assert any(a.get("downsampled") is not True for a in result.metadata.ai_hints.get("figure_analysis", []))
@@ -781,7 +783,7 @@ class TestFigureAnalysisAdditional:
         mock_analyzer.analyze_image.return_value = {"valid": True}
         mock_analyzer.downsample_if_needed.return_value = None
         with patch("app.pipeline.orchestrator._get_figure_analyzer", return_value=mock_analyzer):
-            with patch("os.path.exists", return_value=True):
+            with patch("os.path.exists", return_value=True), patch("os.path.getsize", return_value=1024):
                 result = orch._run_figure_analysis_stage(doc)
         assert "figure_analysis" in result.metadata["ai_hints"]
 
@@ -794,7 +796,7 @@ class TestFigureAnalysisAdditional:
         mock_analyzer.analyze_image.return_value = {"valid": True}
         mock_analyzer.downsample_if_needed.return_value = None
         with patch("app.pipeline.orchestrator._get_figure_analyzer", return_value=mock_analyzer):
-            with patch("os.path.exists", return_value=True):
+            with patch("os.path.exists", return_value=True), patch("os.path.getsize", return_value=1024):
                 result = orch._run_figure_analysis_stage(doc)
         assert "figure_analysis" in result.metadata.ai_hints
 
@@ -1316,6 +1318,7 @@ class TestLoadEmbeddingModel:
     def test_reuse_from_model_store_primary(self):
         re = self._make_rag_no_load()
         with (
+            patch.dict("sys.modules", {"sentence_transformers": MagicMock()}),
             patch("app.config.settings.settings") as mock_settings,
         ):
             mock_settings.LOW_MEMORY_MODE = False
@@ -1332,6 +1335,7 @@ class TestLoadEmbeddingModel:
     def test_invalid_model_in_store_reloads(self):
         re = self._make_rag_no_load()
         with (
+            patch.dict("sys.modules", {"sentence_transformers": MagicMock()}),
             patch("app.config.settings.settings") as mock_settings,
             patch("sentence_transformers.SentenceTransformer") as MockST,
         ):
@@ -1352,6 +1356,7 @@ class TestLoadEmbeddingModel:
     def test_load_primary_fails_fallback_succeeds(self):
         re = self._make_rag_no_load()
         with (
+            patch.dict("sys.modules", {"sentence_transformers": MagicMock()}),
             patch("app.config.settings.settings") as mock_settings,
             patch("app.services.model_store.model_store") as ms,
             patch("sentence_transformers.SentenceTransformer") as MockST,
@@ -1367,6 +1372,7 @@ class TestLoadEmbeddingModel:
     def test_both_fail_deterministic(self):
         re = self._make_rag_no_load()
         with (
+            patch.dict("sys.modules", {"sentence_transformers": MagicMock()}),
             patch("app.config.settings.settings") as mock_settings,
             patch("app.services.model_store.model_store") as ms,
             patch("sentence_transformers.SentenceTransformer") as MockST,
@@ -3391,7 +3397,7 @@ class TestRunFigureAnalysisStageAdditional:
         mock_analyzer.analyze_image.return_value = {"valid": True}
         mock_analyzer.downsample_if_needed.return_value = None
         with patch("app.pipeline.orchestrator._get_figure_analyzer", return_value=mock_analyzer):
-            with patch("os.path.exists", return_value=True):
+            with patch("os.path.exists", return_value=True), patch("os.path.getsize", return_value=1024):
                 result = orch._run_figure_analysis_stage(doc)
         assert isinstance(result.metadata, dict)
 

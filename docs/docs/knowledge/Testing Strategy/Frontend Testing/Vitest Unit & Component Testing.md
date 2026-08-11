@@ -5,20 +5,20 @@
 
 <cite>
 **Referenced Files in This Document**
-- [vitest.config.js](file://frontend/vitest.config.js)
-- [setup.js](file://frontend/src/test/setup.js)
-- [navigation.js](file://frontend/__mocks__/next/navigation.js)
-- [package.json](file://frontend/package.json)
-- [tsconfig.json](file://frontend/tsconfig.json)
-- [jsconfig.json](file://frontend/jsconfig.json)
-- [AppShell.auth-redirect.test.jsx](file://frontend/src/test/AppShell.auth-redirect.test.jsx)
-- [AuthGuard.test.jsx](file://frontend/src/test/AuthGuard.test.jsx)
-- [ErrorBoundary.test.jsx](file://frontend/src/test/ErrorBoundary.test.jsx)
-- [StatusBadge.test.jsx](file://frontend/src/test/StatusBadge.test.jsx)
-- [useGeneratorState.test.js](file://frontend/src/test/useGeneratorState.test.js)
-- [AuthContext.initialization.test.jsx](file://frontend/src/test/AuthContext.initialization.test.jsx)
-- [Header.auth-state.test.jsx](file://frontend/src/test/Header.auth-state.test.jsx)
-- [Footer.test.jsx](file://frontend/src/test/Footer.test.jsx)
+- [vitest.config.js](../../../../../frontend/vitest.config.js)
+- [setup.js](../../../../../frontend/src/test/setup.js)
+- [navigation.js](../../../../../frontend/__mocks__/next/navigation.js)
+- [package.json](../../../../../frontend/package.json)
+- [tsconfig.json](../../../../../frontend/tsconfig.json)
+- [jsconfig.json](../../../../../frontend/jsconfig.json)
+- [AppShell.auth-redirect.test.jsx](../../../../../frontend/src/test/AppShell.auth-redirect.test.jsx)
+- [AuthGuard.test.jsx](../../../../../frontend/src/test/AuthGuard.test.jsx)
+- [ErrorBoundary.test.jsx](../../../../../frontend/src/test/ErrorBoundary.test.jsx)
+- [StatusBadge.test.jsx](../../../../../frontend/src/test/StatusBadge.test.jsx)
+- [useGeneratorState.test.js](../../../../../frontend/src/test/useGeneratorState.test.js)
+- [AuthContext.initialization.test.jsx](../../../../../frontend/src/test/AuthContext.initialization.test.jsx)
+- [Header.auth-state.test.jsx](../../../../../frontend/src/test/Header.auth-state.test.jsx)
+- [Footer.test.jsx](../../../../../frontend/src/test/Footer.test.jsx)
 </cite>
 
 ## Table of Contents
@@ -66,50 +66,50 @@ J --> V
 
 **Diagram sources**
 
-- [vitest.config.js:1-33](file://frontend/vitest.config.js#L1-L33)
-- [setup.js:1-2](file://frontend/src/test/setup.js#L1-L2)
-- [navigation.js:1-16](file://frontend/__mocks__/next/navigation.js#L1-L16)
-- [package.json:6-16](file://frontend/package.json#L6-L16)
-- [tsconfig.json:1-48](file://frontend/tsconfig.json#L1-L48)
-- [jsconfig.json:1-32](file://frontend/jsconfig.json#L1-L32)
+- [vitest.config.js:1-33](../../../../../frontend/vitest.config.js#L1-L33)
+- [setup.js:1-2](../../../../../frontend/src/test/setup.js#L1-L2)
+- [navigation.js:1-16](../../../../../frontend/__mocks__/next/navigation.js#L1-L16)
+- [package.json:6-16](../../../../../frontend/package.json#L6-L16)
+- [tsconfig.json:1-48](../../../../../frontend/tsconfig.json#L1-L48)
+- [jsconfig.json:1-32](../../../../../frontend/jsconfig.json#L1-L32)
 
 **Section sources**
 
-- [vitest.config.js:1-33](file://frontend/vitest.config.js#L1-L33)
-- [setup.js:1-2](file://frontend/src/test/setup.js#L1-L2)
-- [navigation.js:1-16](file://frontend/__mocks__/next/navigation.js#L1-L16)
-- [package.json:6-16](file://frontend/package.json#L6-L16)
-- [tsconfig.json:1-48](file://frontend/tsconfig.json#L1-L48)
-- [jsconfig.json:1-32](file://frontend/jsconfig.json#L1-L32)
+- [vitest.config.js:1-33](../../../../../frontend/vitest.config.js#L1-L33)
+- [setup.js:1-2](../../../../../frontend/src/test/setup.js#L1-L2)
+- [navigation.js:1-16](../../../../../frontend/__mocks__/next/navigation.js#L1-L16)
+- [package.json:6-16](../../../../../frontend/package.json#L6-L16)
+- [tsconfig.json:1-48](../../../../../frontend/tsconfig.json#L1-L48)
+- [jsconfig.json:1-32](../../../../../frontend/jsconfig.json#L1-L32)
 
 ## Core Components
 
 This section documents the Vitest configuration and environment setup that enable React component and hook testing.
 
 - Aliases and Module Resolution
-    - The configuration sets up the @ alias to resolve from the project root and maps testing libraries and Next.js navigation to mocks for isolated testing.
-    - These aliases align with TypeScript and JS configs to ensure consistent resolution during tests.
+  - The configuration sets up the @ alias to resolve from the project root and maps testing libraries and Next.js navigation to mocks for isolated testing.
+  - These aliases align with TypeScript and JS configs to ensure consistent resolution during tests.
 
 - JSX Automatic Transformation
-    - esbuild is configured with jsx: 'automatic' to transform JSX without explicit React imports, matching Next.js behavior.
+  - esbuild is configured with jsx: 'automatic' to transform JSX without explicit React imports, matching Next.js behavior.
 
 - jsdom Environment
-    - The jsdom environment provides a DOM-like API for rendering components and simulating browser behaviors such as window events and element interactions.
+  - The jsdom environment provides a DOM-like API for rendering components and simulating browser behaviors such as window events and element interactions.
 
 - Test File Patterns and Setup
-    - Tests are included via src/**/*.{test,spec}.{js,jsx,ts,tsx}, excluding legacy archives.
-    - A setup file imports @testing-library/jest-dom to extend expect with DOM-related matchers.
+  - Tests are included via src/**/*.{test,spec}.{js,jsx,ts,tsx}, excluding legacy archives.
+  - A setup file imports @testing-library/jest-dom to extend expect with DOM-related matchers.
 
 - Next.js Navigation Mocks
-    - next/navigation is mocked to provide deterministic router and navigation APIs for route-dependent components.
+  - next/navigation is mocked to provide deterministic router and navigation APIs for route-dependent components.
 
 **Section sources**
 
-- [vitest.config.js:4-32](file://frontend/vitest.config.js#L4-L32)
-- [setup.js:1-2](file://frontend/src/test/setup.js#L1-L2)
-- [navigation.js:1-16](file://frontend/__mocks__/next/navigation.js#L1-L16)
-- [tsconfig.json:26-30](file://frontend/tsconfig.json#L26-L30)
-- [jsconfig.json:4-28](file://frontend/jsconfig.json#L4-L28)
+- [vitest.config.js:4-32](../../../../../frontend/vitest.config.js#L4-L32)
+- [setup.js:1-2](../../../../../frontend/src/test/setup.js#L1-L2)
+- [navigation.js:1-16](../../../../../frontend/__mocks__/next/navigation.js#L1-L16)
+- [tsconfig.json:26-30](../../../../../frontend/tsconfig.json#L26-L30)
+- [jsconfig.json:4-28](../../../../../frontend/jsconfig.json#L4-L28)
 
 ## Architecture Overview
 
@@ -146,9 +146,9 @@ T3 --> V
 
 **Diagram sources**
 
-- [vitest.config.js:16-26](file://frontend/vitest.config.js#L16-L26)
-- [setup.js:1-2](file://frontend/src/test/setup.js#L1-L2)
-- [navigation.js:1-16](file://frontend/__mocks__/next/navigation.js#L1-L16)
+- [vitest.config.js:16-26](../../../../../frontend/vitest.config.js#L16-L26)
+- [setup.js:1-2](../../../../../frontend/src/test/setup.js#L1-L2)
+- [navigation.js:1-16](../../../../../frontend/__mocks__/next/navigation.js#L1-L16)
 
 ## Detailed Component Analysis
 
@@ -171,13 +171,13 @@ Test->>Router : "Assert replace called with '/dashboard'"
 
 **Diagram sources**
 
-- [AppShell.auth-redirect.test.jsx:23-66](file://frontend/src/test/AppShell.auth-redirect.test.jsx#L23-L66)
-- [navigation.js:3-10](file://frontend/__mocks__/next/navigation.js#L3-L10)
+- [AppShell.auth-redirect.test.jsx:23-66](../../../../../frontend/src/test/AppShell.auth-redirect.test.jsx#L23-L66)
+- [navigation.js:3-10](../../../../../frontend/__mocks__/next/navigation.js#L3-L10)
 
 **Section sources**
 
-- [AppShell.auth-redirect.test.jsx:1-88](file://frontend/src/test/AppShell.auth-redirect.test.jsx#L1-L88)
-- [navigation.js:1-16](file://frontend/__mocks__/next/navigation.js#L1-L16)
+- [AppShell.auth-redirect.test.jsx:1-88](../../../../../frontend/src/test/AppShell.auth-redirect.test.jsx#L1-L88)
+- [navigation.js:1-16](../../../../../frontend/__mocks__/next/navigation.js#L1-L16)
 
 ### AuthGuard Route Protection Test
 
@@ -203,13 +203,13 @@ end
 
 **Diagram sources**
 
-- [AuthGuard.test.jsx:11-41](file://frontend/src/test/AuthGuard.test.jsx#L11-L41)
-- [navigation.js:3-10](file://frontend/__mocks__/next/navigation.js#L3-L10)
+- [AuthGuard.test.jsx:11-41](../../../../../frontend/src/test/AuthGuard.test.jsx#L11-L41)
+- [navigation.js:3-10](../../../../../frontend/__mocks__/next/navigation.js#L3-L10)
 
 **Section sources**
 
-- [AuthGuard.test.jsx:1-75](file://frontend/src/test/AuthGuard.test.jsx#L1-L75)
-- [navigation.js:1-16](file://frontend/__mocks__/next/navigation.js#L1-L16)
+- [AuthGuard.test.jsx:1-75](../../../../../frontend/src/test/AuthGuard.test.jsx#L1-L75)
+- [navigation.js:1-16](../../../../../frontend/__mocks__/next/navigation.js#L1-L16)
 
 ### ErrorBoundary Recovery Test
 
@@ -227,11 +227,11 @@ Cleanup --> End(["Test Complete"])
 
 **Diagram sources**
 
-- [ErrorBoundary.test.jsx:15-72](file://frontend/src/test/ErrorBoundary.test.jsx#L15-L72)
+- [ErrorBoundary.test.jsx:15-72](../../../../../frontend/src/test/ErrorBoundary.test.jsx#L15-L72)
 
 **Section sources**
 
-- [ErrorBoundary.test.jsx:1-74](file://frontend/src/test/ErrorBoundary.test.jsx#L1-L74)
+- [ErrorBoundary.test.jsx:1-74](../../../../../frontend/src/test/ErrorBoundary.test.jsx#L1-L74)
 
 ### StatusBadge Rendering Test
 
@@ -256,11 +256,11 @@ VerifyNull --> End
 
 **Diagram sources**
 
-- [StatusBadge.test.jsx:6-35](file://frontend/src/test/StatusBadge.test.jsx#L6-L35)
+- [StatusBadge.test.jsx:6-35](../../../../../frontend/src/test/StatusBadge.test.jsx#L6-L35)
 
 **Section sources**
 
-- [StatusBadge.test.jsx:1-37](file://frontend/src/test/StatusBadge.test.jsx#L1-L37)
+- [StatusBadge.test.jsx:1-37](../../../../../frontend/src/test/StatusBadge.test.jsx#L1-L37)
 
 ### useGeneratorState Hook Test
 
@@ -291,11 +291,11 @@ Hook-->>Test : "assert step reset and stream closed"
 
 **Diagram sources**
 
-- [useGeneratorState.test.js:58-201](file://frontend/src/test/useGeneratorState.test.js#L58-L201)
+- [useGeneratorState.test.js:58-201](../../../../../frontend/src/test/useGeneratorState.test.js#L58-L201)
 
 **Section sources**
 
-- [useGeneratorState.test.js:1-202](file://frontend/src/test/useGeneratorState.test.js#L1-L202)
+- [useGeneratorState.test.js:1-202](../../../../../frontend/src/test/useGeneratorState.test.js#L1-L202)
 
 ### AuthContext Initialization Test
 
@@ -315,11 +315,11 @@ TestSignOut --> End(["Test Complete"])
 
 **Diagram sources**
 
-- [AuthContext.initialization.test.jsx:55-159](file://frontend/src/test/AuthContext.initialization.test.jsx#L55-L159)
+- [AuthContext.initialization.test.jsx:55-159](../../../../../frontend/src/test/AuthContext.initialization.test.jsx#L55-L159)
 
 **Section sources**
 
-- [AuthContext.initialization.test.jsx:1-160](file://frontend/src/test/AuthContext.initialization.test.jsx#L1-L160)
+- [AuthContext.initialization.test.jsx:1-160](../../../../../frontend/src/test/AuthContext.initialization.test.jsx#L1-L160)
 
 ### Header Authentication State Test
 
@@ -338,13 +338,13 @@ AssertHiddenActions --> End(["Test Complete"])
 
 **Diagram sources**
 
-- [Header.auth-state.test.jsx:19-73](file://frontend/src/test/Header.auth-state.test.jsx#L19-L73)
-- [navigation.js:3-10](file://frontend/__mocks__/next/navigation.js#L3-L10)
+- [Header.auth-state.test.jsx:19-73](../../../../../frontend/src/test/Header.auth-state.test.jsx#L19-L73)
+- [navigation.js:3-10](../../../../../frontend/__mocks__/next/navigation.js#L3-L10)
 
 **Section sources**
 
-- [Header.auth-state.test.jsx:1-75](file://frontend/src/test/Header.auth-state.test.jsx#L1-L75)
-- [navigation.js:1-16](file://frontend/__mocks__/next/navigation.js#L1-L16)
+- [Header.auth-state.test.jsx:1-75](../../../../../frontend/src/test/Header.auth-state.test.jsx#L1-L75)
+- [navigation.js:1-16](../../../../../frontend/__mocks__/next/navigation.js#L1-L16)
 
 ### Footer Links Test
 
@@ -360,11 +360,11 @@ AssertLandingLinks --> End(["Test Complete"])
 
 **Diagram sources**
 
-- [Footer.test.jsx:9-25](file://frontend/src/test/Footer.test.jsx#L9-L25)
+- [Footer.test.jsx:9-25](../../../../../frontend/src/test/Footer.test.jsx#L9-L25)
 
 **Section sources**
 
-- [Footer.test.jsx:1-26](file://frontend/src/test/Footer.test.jsx#L1-L26)
+- [Footer.test.jsx:1-26](../../../../../frontend/src/test/Footer.test.jsx#L1-L26)
 
 ## Dependency Analysis
 
@@ -391,15 +391,15 @@ JestDom --> Tests
 
 **Diagram sources**
 
-- [vitest.config.js:5-11](file://frontend/vitest.config.js#L5-L11)
-- [tsconfig.json:26-30](file://frontend/tsconfig.json#L26-L30)
-- [jsconfig.json:4-28](file://frontend/jsconfig.json#L4-L28)
+- [vitest.config.js:5-11](../../../../../frontend/vitest.config.js#L5-L11)
+- [tsconfig.json:26-30](../../../../../frontend/tsconfig.json#L26-L30)
+- [jsconfig.json:4-28](../../../../../frontend/jsconfig.json#L4-L28)
 
 **Section sources**
 
-- [vitest.config.js:1-33](file://frontend/vitest.config.js#L1-L33)
-- [tsconfig.json:1-48](file://frontend/tsconfig.json#L1-L48)
-- [jsconfig.json:1-32](file://frontend/jsconfig.json#L1-L32)
+- [vitest.config.js:1-33](../../../../../frontend/vitest.config.js#L1-L33)
+- [tsconfig.json:1-48](../../../../../frontend/tsconfig.json#L1-L48)
+- [jsconfig.json:1-32](../../../../../frontend/jsconfig.json#L1-L32)
 
 ## Performance Considerations
 
@@ -413,33 +413,33 @@ JestDom --> Tests
 Common issues and resolutions:
 
 - Missing DOM matchers
-    - Ensure the setup file imports @testing-library/jest-dom so expect extensions are available.
-    - Reference: [setup.js:1](file://frontend/src/test/setup.js#L1-L1)
+  - Ensure the setup file imports @testing-library/jest-dom so expect extensions are available.
+  - Reference: [setup.js:1](../../../../../frontend/src/test/setup.js#L1-L1)
 
 - Next.js navigation failures
-    - Verify next/navigation is mocked consistently across tests.
-    - Reference: [navigation.js:1-16](file://frontend/__mocks__/next/navigation.js#L1-L16)
+  - Verify next/navigation is mocked consistently across tests.
+  - Reference: [navigation.js:1-16](../../../../../frontend/__mocks__/next/navigation.js#L1-L16)
 
 - Test file discovery issues
-    - Confirm test files match src/**/*.{test,spec}.{js,jsx,ts,tsx} pattern and are not excluded by configuration.
-    - Reference: [vitest.config.js:20-25](file://frontend/vitest.config.js#L20-L25)
+  - Confirm test files match src/**/*.{test,spec}.{js,jsx,ts,tsx} pattern and are not excluded by configuration.
+  - Reference: [vitest.config.js:20-25](../../../../../frontend/vitest.config.js#L20-L25)
 
 - Type resolution errors
-    - Align alias paths in tsconfig.json and jsconfig.json with Vitest resolve.alias.
-    - References: [tsconfig.json:26-30](file://frontend/tsconfig.json#L26-L30), [jsconfig.json:4-28](file://frontend/jsconfig.json#L4-L28)
+  - Align alias paths in tsconfig.json and jsconfig.json with Vitest resolve.alias.
+  - References: [tsconfig.json:26-30](../../../../../frontend/tsconfig.json#L26-L30), [jsconfig.json:4-28](../../../../../frontend/jsconfig.json#L4-L28)
 
 - Asynchronous timing issues
-    - Use waitFor or fake timers for stream events and downloads.
-    - References: [useGeneratorState.test.js:150-177](file://frontend/src/test/useGeneratorState.test.js#L150-L177)
+  - Use waitFor or fake timers for stream events and downloads.
+  - References: [useGeneratorState.test.js:150-177](../../../../../frontend/src/test/useGeneratorState.test.js#L150-L177)
 
 **Section sources**
 
-- [setup.js:1-2](file://frontend/src/test/setup.js#L1-L2)
-- [navigation.js:1-16](file://frontend/__mocks__/next/navigation.js#L1-L16)
-- [vitest.config.js:20-25](file://frontend/vitest.config.js#L20-L25)
-- [tsconfig.json:26-30](file://frontend/tsconfig.json#L26-L30)
-- [jsconfig.json:4-28](file://frontend/jsconfig.json#L4-L28)
-- [useGeneratorState.test.js:150-177](file://frontend/src/test/useGeneratorState.test.js#L150-L177)
+- [setup.js:1-2](../../../../../frontend/src/test/setup.js#L1-L2)
+- [navigation.js:1-16](../../../../../frontend/__mocks__/next/navigation.js#L1-L16)
+- [vitest.config.js:20-25](../../../../../frontend/vitest.config.js#L20-L25)
+- [tsconfig.json:26-30](../../../../../frontend/tsconfig.json#L26-L30)
+- [jsconfig.json:4-28](../../../../../frontend/jsconfig.json#L4-L28)
+- [useGeneratorState.test.js:150-177](../../../../../frontend/src/test/useGeneratorState.test.js#L150-L177)
 
 ## Conclusion
 
@@ -455,4 +455,4 @@ The Vitest configuration and test suite provide a robust foundation for React co
 
 **Section sources**
 
-- [package.json:11-15](file://frontend/package.json#L11-L15)
+- [package.json:11-15](../../../../../frontend/package.json#L11-L15)

@@ -66,7 +66,7 @@ This document defines the required branch protection settings for the `main` and
 
 The following GitHub Actions workflows must be configured as required status checks:
 
-### For `main` branch:
+### For `main` branch
 
 1. `backend-ci` — Backend lint, type-check, and test suite
 2. `frontend-ci` — Frontend ESLint, vitest, and build
@@ -78,7 +78,7 @@ The following GitHub Actions workflows must be configured as required status che
 8. `CodeQL / Analyze (javascript-typescript)` — JS/TS security analysis
 9. `OpenSSF Scorecard / analysis` — Supply chain security score
 
-### For `develop` branch:
+### For `develop` branch
 
 1. `backend-ci`
 2. `frontend-ci`

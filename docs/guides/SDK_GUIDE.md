@@ -4,9 +4,9 @@
 
 - [Installation](#installation)
 - [Architecture & Diagrams](#architecture--diagrams)
-    - [SDK Class Diagram](#1-sdk-class-diagram)
-    - [Async SDK Execution Sequence](#2-async-sdk-execution-sequence-diagram)
-    - [SDK Usage Workflow](#3-sdk-usage-workflow)
+  - [SDK Class Diagram](#1-sdk-class-diagram)
+  - [Async SDK Execution Sequence](#2-async-sdk-execution-sequence-diagram)
+  - [SDK Usage Workflow](#3-sdk-usage-workflow)
 - [Code Examples & Context Managers](#code-examples--context-managers)
 - [Pydantic v2 Models Reference](#10-pydantic-v2-models-reference-amf_sdkmodels)
 - [Exception Taxonomy](#exception-taxonomy-amf_sdkexceptions)

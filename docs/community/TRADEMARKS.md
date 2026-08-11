@@ -43,7 +43,7 @@ Other product names, logos, and brands mentioned in this project are the propert
 
 ## Reporting Misuse
 
-Report trademark misuse to: trademark@scholarform.ai
+Report trademark misuse to: <trademark@scholarform.ai>
 
 ---
 

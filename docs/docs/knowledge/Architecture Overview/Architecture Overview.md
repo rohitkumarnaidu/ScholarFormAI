@@ -5,22 +5,22 @@
 
 <cite>
 **Referenced Files in This Document**
-- [architecture.md](file://docs/architecture.md)
-- [TechStack.md](file://docs/TechStack.md)
-- [Deployment.md](file://docs/Deployment.md)
-- [main.py](file://backend/app/main.py)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [celery_tasks.py](file://backend/app/tasks/celery_tasks.py)
-- [session.py](file://backend/app/db/session.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [rate_limit.py](file://backend/app/middleware/rate_limit.py)
-- [Dockerfile](file://backend/docker/Dockerfile)
-- [docker-compose.yml](file://backend/docker/docker-compose.yml)
-- [next.config.mjs](file://frontend/next.config.mjs)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
-- [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
-- [api.core.js](file://frontend/src/services/api.core.js)
-- [render.yaml](file://render.yaml)
+- [architecture.md](../../../architecture/ARCHITECTURE.md)
+- [TechStack.md](../../../architecture/TechStack.md)
+- [Deployment.md](../../../deployment/Deployment.md)
+- [main.py](../../../../backend/app/main.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [celery_tasks.py](../../../../backend/app/tasks/celery_tasks.py)
+- [session.py](../../../../backend/app/db/session.py)
+- [pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [rate_limit.py](../../../../backend/app/middleware/rate_limit.py)
+- [Dockerfile](../../../../backend/docker/Dockerfile)
+- [docker-compose.yml](../../../../backend/docker/docker-compose.yml)
+- [next.config.mjs](../../../../frontend/next.config.mjs)
+- [supabaseClient.js](../../../../frontend/src/lib/supabaseClient.js)
+- [useLivePreviewSocket.js](../../../../frontend/src/hooks/useLivePreviewSocket.js)
+- [api.core.js](../../../../frontend/src/services/api.core.js)
+- [render.yaml](../../../../render.yaml)
 </cite>
 
 ## Table of Contents
@@ -59,7 +59,7 @@ end
 subgraph "Backend (FastAPI)"
 BE_Main["FastAPI App (main.py)"]
 BE_MW["Middleware Stack"]
-BE_Routers["Routers (v1, auth, documents, etc.)"]
+BE_Routers["Routers ("v1, auth, documents, etc.")"]
 BE_Orchestrator["Pipeline Orchestrator"]
 BE_Cache["Redis(Pub/Sub, Cache)"]
 BE_DB["Supabase PostgreSQL"]
@@ -67,8 +67,8 @@ BE_Celery["Celery Tasks (Planned)"]
 end
 subgraph "External Services"
 ES_Grobid["GROBID (Optional)"]
-ES_ClamAV["ClamAV (Malware Scan)"]
-ES_LLMs["LLM Providers (NVIDIA NIM, Groq, Ollama)"]
+ES_ClamAV["ClamAV ("Malware Scan")"]
+ES_LLMs["LLM Providers ("NVIDIA NIM, Groq, Ollama")"]
 ES_Chroma["ChromaDB (RAG)"]
 end
 FE_Next --> FE_API
@@ -88,42 +88,42 @@ BE_Celery -. "Planned migration" .-> BE_Cache
 
 **Diagram sources**
 
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
-- [api.core.js:1-368](file://frontend/src/services/api.core.js#L1-L368)
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [pubsub.py:1-120](file://backend/app/realtime/pubsub.py#L1-L120)
-- [session.py:1-130](file://backend/app/db/session.py#L1-L130)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
+- [api.core.js:1-368](../../../../frontend/src/services/api.core.js#L1-L368)
+- [useLivePreviewSocket.js:1-137](../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [pubsub.py:1-120](../../../../backend/app/realtime/pubsub.py#L1-L120)
+- [session.py:1-130](../../../../backend/app/db/session.py#L1-L130)
 
 **Section sources**
 
-- [architecture.md:1-173](file://docs/architecture.md#L1-L173)
-- [TechStack.md:1-122](file://docs/TechStack.md#L1-L122)
+- [architecture.md:1-173](../../../architecture/ARCHITECTURE.md#L1-L173)
+- [TechStack.md:1-122](../../../architecture/TechStack.md#L1-L122)
 
 ## Core Components
 
 - Frontend (Next.js)
-    - App Router with 34 routes, Supabase client initialization, and real-time WebSocket integration for live preview.
-    - Optimizations include tree-shaking for error tracking.
+  - App Router with 34 routes, Supabase client initialization, and real-time WebSocket integration for live preview.
+  - Optimizations include tree-shaking for error tracking.
 - Backend (FastAPI)
-    - Central application with middleware stack (rate limiting, tier-aware limits, security headers, request ID, Prometheus metrics).
-    - Routers for documents, templates, generator, synthesis, billing, health, metrics, feedback, stream, preview, and generator.
-    - Pipeline orchestrator coordinates multi-stage document processing with safety guards and Redis-backed pub/sub/SSE.
+  - Central application with middleware stack (rate limiting, tier-aware limits, security headers, request ID, Prometheus metrics).
+  - Routers for documents, templates, generator, synthesis, billing, health, metrics, feedback, stream, preview, and generator.
+  - Pipeline orchestrator coordinates multi-stage document processing with safety guards and Redis-backed pub/sub/SSE.
 - Real-time Communication
-    - RedisPubSub provides publish/subscribe with in-memory fallback.
-    - WebSocket for live preview and SSE for streaming pipeline events.
+  - RedisPubSub provides publish/subscribe with in-memory fallback.
+  - WebSocket for live preview and SSE for streaming pipeline events.
 - Data Layer
-    - Supabase PostgreSQL for user, job, and session data; Redis for caching and pub/sub; ChromaDB for vector embeddings.
+  - Supabase PostgreSQL for user, job, and session data; Redis for caching and pub/sub; ChromaDB for vector embeddings.
 - External Integrations
-    - GROBID (optional), ClamAV, LLM providers (NVIDIA NIM, Groq, Ollama), and Docling for PDF parsing.
+  - GROBID (optional), ClamAV, LLM providers (NVIDIA NIM, Groq, Ollama), and Docling for PDF parsing.
 
 **Section sources**
 
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
-- [api.core.js:1-368](file://frontend/src/services/api.core.js#L1-L368)
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [pubsub.py:1-120](file://backend/app/realtime/pubsub.py#L1-L120)
-- [session.py:1-130](file://backend/app/db/session.py#L1-L130)
-- [TechStack.md:1-122](file://docs/TechStack.md#L1-L122)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
+- [api.core.js:1-368](../../../../frontend/src/services/api.core.js#L1-L368)
+- [useLivePreviewSocket.js:1-137](../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [pubsub.py:1-120](../../../../backend/app/realtime/pubsub.py#L1-L120)
+- [session.py:1-130](../../../../backend/app/db/session.py#L1-L130)
+- [TechStack.md:1-122](../../../architecture/TechStack.md#L1-L122)
 
 ## Architecture Overview
 
@@ -154,13 +154,13 @@ Orchestrator --> Storage
 
 **Diagram sources**
 
-- [architecture.md:39-117](file://docs/architecture.md#L39-L117)
-- [main.py:273-358](file://backend/app/main.py#L273-L358)
+- [architecture.md:39-117](../../../architecture/ARCHITECTURE.md#L39-L117)
+- [main.py:273-358](../../../../backend/app/main.py#L273-L358)
 
 **Section sources**
 
-- [architecture.md:1-173](file://docs/architecture.md#L1-L173)
-- [TechStack.md:1-122](file://docs/TechStack.md#L1-L122)
+- [architecture.md:1-173](../../../architecture/ARCHITECTURE.md#L1-L173)
+- [TechStack.md:1-122](../../../architecture/TechStack.md#L1-L122)
 
 ## Detailed Component Analysis
 
@@ -168,10 +168,10 @@ Orchestrator --> Storage
 
 - Application lifecycle and middleware registration are centralized in the main application factory.
 - Middleware order and responsibilities:
-    - Prometheus metrics instrumentation.
-    - Rate limiting (base and uploads) and tier-aware rate limiting.
-    - Abuse detection, request ID, security headers, and HTTPS redirect in production.
-    - Audit logging for write operations.
+  - Prometheus metrics instrumentation.
+  - Rate limiting (base and uploads) and tier-aware rate limiting.
+  - Abuse detection, request ID, security headers, and HTTPS redirect in production.
+  - Audit logging for write operations.
 - Routers include v1 endpoints, auth, documents, templates, metrics, feedback, stream, preview, and generator.
 - Health and readiness probes expose service status and dependency health.
 
@@ -194,13 +194,13 @@ API-->>Client : HTTP Response
 
 **Diagram sources**
 
-- [main.py:273-358](file://backend/app/main.py#L273-L358)
-- [session.py:79-112](file://backend/app/db/session.py#L79-L112)
+- [main.py:273-358](../../../../backend/app/main.py#L273-L358)
+- [session.py:79-112](../../../../backend/app/db/session.py#L79-L112)
 
 **Section sources**
 
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
-- [session.py:1-130](file://backend/app/db/session.py#L1-L130)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
+- [session.py:1-130](../../../../backend/app/db/session.py#L1-L130)
 
 ### Pipeline Orchestrator
 
@@ -227,11 +227,11 @@ SSE --> End(["Complete"])
 
 **Diagram sources**
 
-- [orchestrator.py:522-800](file://backend/app/pipeline/orchestrator.py#L522-L800)
+- [orchestrator.py:522-800](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L522-L800)
 
 **Section sources**
 
-- [orchestrator.py:73-800](file://backend/app/pipeline/orchestrator.py#L73-L800)
+- [orchestrator.py:73-800](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L800)
 
 ### Real-time Communication (Pub/Sub and WebSockets)
 
@@ -256,13 +256,13 @@ WS-->>FE : html, warnings, latency
 
 **Diagram sources**
 
-- [pubsub.py:1-120](file://backend/app/realtime/pubsub.py#L1-L120)
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [pubsub.py:1-120](../../../../backend/app/realtime/pubsub.py#L1-L120)
+- [useLivePreviewSocket.js:1-137](../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
 
 **Section sources**
 
-- [pubsub.py:1-120](file://backend/app/realtime/pubsub.py#L1-L120)
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [pubsub.py:1-120](../../../../backend/app/realtime/pubsub.py#L1-L120)
+- [useLivePreviewSocket.js:1-137](../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
 
 ### Rate Limiting and Security Middleware
 
@@ -284,13 +284,13 @@ Metrics --> Handler["Route Handler"]
 
 **Diagram sources**
 
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
-- [main.py:294-315](file://backend/app/main.py#L294-L315)
+- [rate_limit.py:49-172](../../../../backend/app/middleware/rate_limit.py#L49-L172)
+- [main.py:294-315](../../../../backend/app/main.py#L294-L315)
 
 **Section sources**
 
-- [rate_limit.py:1-172](file://backend/app/middleware/rate_limit.py#L1-L172)
-- [main.py:294-315](file://backend/app/main.py#L294-L315)
+- [rate_limit.py:1-172](../../../../backend/app/middleware/rate_limit.py#L1-L172)
+- [main.py:294-315](../../../../backend/app/main.py#L294-L315)
 
 ### Data Layer and External Services
 
@@ -316,13 +316,13 @@ Orchestrator --> VDB
 
 **Diagram sources**
 
-- [TechStack.md:54-89](file://docs/TechStack.md#L54-L89)
-- [session.py:1-130](file://backend/app/db/session.py#L1-L130)
+- [TechStack.md:54-89](../../../architecture/TechStack.md#L54-L89)
+- [session.py:1-130](../../../../backend/app/db/session.py#L1-L130)
 
 **Section sources**
 
-- [TechStack.md:1-122](file://docs/TechStack.md#L1-L122)
-- [session.py:1-130](file://backend/app/db/session.py#L1-L130)
+- [TechStack.md:1-122](../../../architecture/TechStack.md#L1-L122)
+- [session.py:1-130](../../../../backend/app/db/session.py#L1-L130)
 
 ### Celery Task Definitions (Planned)
 
@@ -346,24 +346,24 @@ Celery-->>API : Result
 
 **Diagram sources**
 
-- [celery_tasks.py:1-290](file://backend/app/tasks/celery_tasks.py#L1-L290)
+- [celery_tasks.py:1-290](../../../../backend/app/tasks/celery_tasks.py#L1-L290)
 
 **Section sources**
 
-- [celery_tasks.py:1-290](file://backend/app/tasks/celery_tasks.py#L1-L290)
+- [celery_tasks.py:1-290](../../../../backend/app/tasks/celery_tasks.py#L1-L290)
 
 ## Dependency Analysis
 
 - Frontend-to-Backend
-    - Next.js communicates with FastAPI via REST endpoints and real-time channels.
-    - Supabase client manages auth and DB operations; environment variables prefixed with NEXT_PUBLIC_.
+  - Next.js communicates with FastAPI via REST endpoints and real-time channels.
+  - Supabase client manages auth and DB operations; environment variables prefixed with NEXT_PUBLIC_.
 - Backend-to-Infrastructure
-    - FastAPI depends on middleware, routers, and the pipeline orchestrator.
-    - Redis is central for pub/sub and metrics; Supabase DB for persistence; external services for PDF parsing and LLMs.
+  - FastAPI depends on middleware, routers, and the pipeline orchestrator.
+  - Redis is central for pub/sub and metrics; Supabase DB for persistence; external services for PDF parsing and LLMs.
 - External Dependencies
-    - PDF parsing: Docling (primary), GROBID (optional), PyMuPDF fallback.
-    - LLMs: NVIDIA NIM, Groq, Ollama via LiteLLM abstraction.
-    - Monitoring: Prometheus metrics endpoint for error tracking.
+  - PDF parsing: Docling (primary), GROBID (optional), PyMuPDF fallback.
+  - LLMs: NVIDIA NIM, Groq, Ollama via LiteLLM abstraction.
+  - Monitoring: Prometheus metrics endpoint for error tracking.
 
 ```mermaid
 graph TB
@@ -384,22 +384,22 @@ API --> Ext
 
 **Diagram sources**
 
-- [main.py:273-358](file://backend/app/main.py#L273-L358)
-- [pubsub.py:1-120](file://backend/app/realtime/pubsub.py#L1-L120)
-- [TechStack.md:77-100](file://docs/TechStack.md#L77-L100)
+- [main.py:273-358](../../../../backend/app/main.py#L273-L358)
+- [pubsub.py:1-120](../../../../backend/app/realtime/pubsub.py#L1-L120)
+- [TechStack.md:77-100](../../../architecture/TechStack.md#L77-L100)
 
 **Section sources**
 
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
-- [TechStack.md:1-122](file://docs/TechStack.md#L1-L122)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
+- [TechStack.md:1-122](../../../architecture/TechStack.md#L1-L122)
 
 ## Performance Considerations
 
 - Concurrency Control: Semaphore-based pipeline throttling prevents overload.
 - Caching: Redis cache for LLM responses and preview rendering; ChromaDB for embeddings.
 - Latency Targets:
-    - Live preview renders HTML/CSS under 80ms.
-    - Upload response returned in <400ms; background processing continues asynchronously.
+  - Live preview renders HTML/CSS under 80ms.
+  - Upload response returned in <400ms; background processing continues asynchronously.
 - Memory Constraints: Free-tier deployments (Render) require Docling fallback and disable heavy models (e.g., SciBERT) to fit within 512MB RAM.
 - Retry and Backoff: Frontend fetchWithRetry and backend middleware provide resilient request handling.
 
@@ -408,23 +408,23 @@ API --> Ext
 ## Troubleshooting Guide
 
 - Health and Readiness
-    - Use /api/v1/health and /api/v1/ready endpoints to verify service status and dependency health.
+  - Use /api/v1/health and /api/v1/ready endpoints to verify service status and dependency health.
 - Database Connectivity
-    - If SUPABASE_DB_URL is missing, the app starts in degraded mode; DB endpoints return 503.
+  - If SUPABASE_DB_URL is missing, the app starts in degraded mode; DB endpoints return 503.
 - Rate Limiting
-    - Exceeded limits return 429 with retry guidance; verify in-memory counters and Redis availability.
+  - Exceeded limits return 429 with retry guidance; verify in-memory counters and Redis availability.
 - Real-time Channels
-    - Redis unavailability triggers in-memory fallback; monitor warnings and adjust configuration.
+  - Redis unavailability triggers in-memory fallback; monitor warnings and adjust configuration.
 - PDF Parsing Failures
-    - On Render free tier, ensure GROBID_ENABLED=false and rely on Docling/PyMuPDF fallback.
+  - On Render free tier, ensure GROBID_ENABLED=false and rely on Docling/PyMuPDF fallback.
 
 **Section sources**
 
-- [main.py:360-381](file://backend/app/main.py#L360-L381)
-- [session.py:114-130](file://backend/app/db/session.py#L114-L130)
-- [rate_limit.py:124-172](file://backend/app/middleware/rate_limit.py#L124-L172)
-- [pubsub.py:28-54](file://backend/app/realtime/pubsub.py#L28-L54)
-- [Deployment.md:3-33](file://docs/Deployment.md#L3-L33)
+- [main.py:360-381](../../../../backend/app/main.py#L360-L381)
+- [session.py:114-130](../../../../backend/app/db/session.py#L114-L130)
+- [rate_limit.py:124-172](../../../../backend/app/middleware/rate_limit.py#L124-L172)
+- [pubsub.py:28-54](../../../../backend/app/realtime/pubsub.py#L28-L54)
+- [Deployment.md:3-33](../../../deployment/Deployment.md#L3-L33)
 
 ## Conclusion
 
@@ -442,20 +442,20 @@ The Automated Academic Manuscript Formatter employs a robust FastAPI-only backen
 
 **Section sources**
 
-- [TechStack.md:1-122](file://docs/TechStack.md#L1-L122)
+- [TechStack.md:1-122](../../../architecture/TechStack.md#L1-L122)
 
 ### Deployment Topology
 
 - Free-tier recommended stack:
-    - Frontend: Vercel (SSR, edge functions)
-    - Backend: Render (Docker, 750 hrs/mo)
-    - Database: Supabase (PostgreSQL, free tier)
-    - Cache/Queue: Upstash Redis (free tier)
-    - Vector DB: ChromaDB co-located with backend
-    - PDF Parsing: Docling primary; GROBID optional; PyMuPDF fallback
+  - Frontend: Vercel (SSR, edge functions)
+  - Backend: Render (Docker, 750 hrs/mo)
+  - Database: Supabase (PostgreSQL, free tier)
+  - Cache/Queue: Upstash Redis (free tier)
+  - Vector DB: ChromaDB co-located with backend
+  - PDF Parsing: Docling primary; GROBID optional; PyMuPDF fallback
 - Render-specific constraints: 512MB RAM, cold starts, free tier sleep behavior.
 
 **Section sources**
 
-- [Deployment.md:1-176](file://docs/Deployment.md#L1-L176)
-- [render.yaml:1-15](file://render.yaml#L1-L15)
+- [Deployment.md:1-176](../../../deployment/Deployment.md#L1-L176)
+- [render.yaml:1-15](../../../../render.yaml#L1-L15)

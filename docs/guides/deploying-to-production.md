@@ -346,7 +346,7 @@ See the [Monitoring Setup Guide](setting-up-monitoring.md) for complete setup in
 
 ## Step 8: Production Checklist Verification
 
-Run through the [Production Readiness Checklist](../PRODUCTION_READINESS_CHECKLIST.md) before going live.
+Run through the [Production Readiness Checklist](../reports/PRODUCTION_READINESS_CHECKLIST.md) before going live.
 
 ### Critical Items
 
@@ -478,10 +478,10 @@ See the [Rollback Runbook](../runbooks/rollback.md) for detailed procedures.
 
 | Resource | Description |
 | ---------- | ------------- |
-| [Deployment Guide (Legacy)](../Deployment.md) | Original deployment documentation |
-| [Disaster Recovery](../DISASTER_RECOVERY.md) | Backup, restore, and DR procedures |
+| [Deployment Guide (Legacy)](../deployment/Deployment.md) | Original deployment documentation |
+| [Disaster Recovery](../operations/DISASTER_RECOVERY.md) | Backup, restore, and DR procedures |
 | [Monitoring Setup](setting-up-monitoring.md) | Complete monitoring configuration guide |
-| [Secret Rotation](../SECRET_ROTATION.md) | Credential rotation procedures |
-| [Operations Runbook](../OPERATIONS_RUNBOOK.md) | Day-to-day operations |
+| [Secret Rotation](../security/SECRET_ROTATION.md) | Credential rotation procedures |
+| [Operations Runbook](../runbooks/OPERATIONS_RUNBOOK.md) | Day-to-day operations |
 | [Rollback Runbook](../runbooks/rollback.md) | Detailed rollback procedures |
-| [Production Readiness Checklist](../PRODUCTION_READINESS_CHECKLIST.md) | Pre-launch verification |
+| [Production Readiness Checklist](../reports/PRODUCTION_READINESS_CHECKLIST.md) | Pre-launch verification |

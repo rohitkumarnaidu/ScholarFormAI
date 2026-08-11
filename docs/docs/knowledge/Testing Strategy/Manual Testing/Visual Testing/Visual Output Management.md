@@ -13,9 +13,9 @@
 - [04_references.py](file://backend/manual_tests/visual/phase1/04_references.py)
 - [05_full_pipeline.py](file://backend/manual_tests/visual/phase1/05_full_pipeline.py)
 - [06_formatted.py](file://backend/manual_tests/visual/phase1/06_formatted.py)
-- [quality_scorer.py](file://backend/app/pipeline/generation/quality_scorer.py)
+- [quality_scorer.py](../../../../../../backend/app/pipeline/generation/quality_scorer.py)
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx)
-- [DocumentBuildPane.jsx](file://frontend/src/components/generator/DocumentBuildPane.jsx)
+- [DocumentBuildPane.jsx](../../../../../../frontend/src/components/generator/DocumentBuildPane.jsx)
 - [formatter-quality.spec.js](file://frontend/e2e/formatter-quality.spec.js)
 </cite>
 
@@ -75,9 +75,9 @@ G --> I
 - [04_references.py:1-94](file://backend/manual_tests/visual/phase1/04_references.py#L1-L94)
 - [05_full_pipeline.py:1-119](file://backend/manual_tests/visual/phase1/05_full_pipeline.py#L1-L119)
 - [06_formatted.py:1-121](file://backend/manual_tests/visual/phase1/06_formatted.py#L1-L121)
-- [quality_scorer.py:1-123](file://backend/app/pipeline/generation/quality_scorer.py#L1-L123)
+- [quality_scorer.py:1-123](../../../../../../backend/app/pipeline/generation/quality_scorer.py#L1-L123)
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L290-L489)
-- [DocumentBuildPane.jsx:26-50](file://frontend/src/components/generator/DocumentBuildPane.jsx#L26-L50)
+- [DocumentBuildPane.jsx:26-50](../../../../../../frontend/src/components/generator/DocumentBuildPane.jsx#L26-L50)
 - [formatter-quality.spec.js:1-5](file://frontend/e2e/formatter-quality.spec.js#L1-L5)
 
 **Section sources**
@@ -102,9 +102,9 @@ G --> I
 - [04_references.py:30-94](file://backend/manual_tests/visual/phase1/04_references.py#L30-L94)
 - [05_full_pipeline.py:50-119](file://backend/manual_tests/visual/phase1/05_full_pipeline.py#L50-L119)
 - [06_formatted.py:21-121](file://backend/manual_tests/visual/phase1/06_formatted.py#L21-L121)
-- [quality_scorer.py:15-123](file://backend/app/pipeline/generation/quality_scorer.py#L15-L123)
+- [quality_scorer.py:15-123](../../../../../../backend/app/pipeline/generation/quality_scorer.py#L15-L123)
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L290-L489)
-- [DocumentBuildPane.jsx:26-50](file://frontend/src/components/generator/DocumentBuildPane.jsx#L26-L50)
+- [DocumentBuildPane.jsx:26-50](../../../../../../frontend/src/components/generator/DocumentBuildPane.jsx#L26-L50)
 
 ## Architecture Overview
 
@@ -144,9 +144,9 @@ Frontend-->>User : Present side-by-side comparison
 - Inputs: DOCX files from uploads or sample sets.
 - Outputs: Annotated DOCX files under a shared directory with stage-specific filenames.
 - Storage convention:
-    - Directory: A central outputs folder for staged visual results.
-    - Naming: Descriptive prefixes indicating stage and purpose (e.g., structure, classification, figures/tables, references, full pipeline, formatted).
-    - Organization: Separate directories for each phase to isolate outputs by stage.
+  - Directory: A central outputs folder for staged visual results.
+  - Naming: Descriptive prefixes indicating stage and purpose (e.g., structure, classification, figures/tables, references, full pipeline, formatted).
+  - Organization: Separate directories for each phase to isolate outputs by stage.
 
 ```mermaid
 flowchart TD
@@ -226,13 +226,13 @@ Review --> Compare["Compare with Original"]
 ### Quality Assessment Criteria and Scoring
 
 - Backend quality scoring:
-    - Computes template compliance, content completeness, citation count, word count, and section balance.
-    - Aggregates weighted scores into an overall quality score.
+  - Computes template compliance, content completeness, citation count, word count, and section balance.
+  - Aggregates weighted scores into an overall quality score.
 - Frontend quality panel:
-    - Displays overall score, template compliance, content completeness, and citation count.
-    - Provides color-coded progress bars and textual descriptors for quick interpretation.
+  - Displays overall score, template compliance, content completeness, and citation count.
+  - Provides color-coded progress bars and textual descriptors for quick interpretation.
 - Validation outcomes:
-    - Presents errors, warnings, and advisories for actionable insights.
+  - Presents errors, warnings, and advisories for actionable insights.
 
 ```mermaid
 classDiagram
@@ -256,24 +256,24 @@ QualityScorer --> ResultsPage : "provides metrics"
 
 **Diagram sources**
 
-- [quality_scorer.py:15-123](file://backend/app/pipeline/generation/quality_scorer.py#L15-L123)
+- [quality_scorer.py:15-123](../../../../../../backend/app/pipeline/generation/quality_scorer.py#L15-L123)
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L290-L489)
 
 **Section sources**
 
-- [quality_scorer.py:15-123](file://backend/app/pipeline/generation/quality_scorer.py#L15-L123)
+- [quality_scorer.py:15-123](../../../../../../backend/app/pipeline/generation/quality_scorer.py#L15-L123)
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L290-L489)
-- [DocumentBuildPane.jsx:26-50](file://frontend/src/components/generator/DocumentBuildPane.jsx#L26-L50)
+- [DocumentBuildPane.jsx:26-50](../../../../../../frontend/src/components/generator/DocumentBuildPane.jsx#L26-L50)
 
 ### Retrieval Procedures and Archival Practices
 
 - Retrieval:
-    - Locate outputs in the visual outputs directory by stage and filename.
-    - Open annotated DOCX files in a compatible viewer for inspection.
+  - Locate outputs in the visual outputs directory by stage and filename.
+  - Open annotated DOCX files in a compatible viewer for inspection.
 - Archival:
-    - Maintain a dated record of runs and outputs.
-    - Preserve original inputs alongside processed outputs for traceability.
-    - Store quality metrics and validation logs alongside visual artifacts for auditability.
+  - Maintain a dated record of runs and outputs.
+  - Preserve original inputs alongside processed outputs for traceability.
+  - Store quality metrics and validation logs alongside visual artifacts for auditability.
 
 [No sources needed since this section provides general guidance]
 
@@ -304,7 +304,7 @@ Results --> Validation["Validation Summary"]
 - [04_references.py:18-23](file://backend/manual_tests/visual/phase1/04_references.py#L18-L23)
 - [05_full_pipeline.py:18-26](file://backend/manual_tests/visual/phase1/05_full_pipeline.py#L18-L26)
 - [06_formatted.py:10-19](file://backend/manual_tests/visual/phase1/06_formatted.py#L10-L19)
-- [quality_scorer.py:15-123](file://backend/app/pipeline/generation/quality_scorer.py#L15-L123)
+- [quality_scorer.py:15-123](../../../../../../backend/app/pipeline/generation/quality_scorer.py#L15-L123)
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L290-L489)
 
 **Section sources**
@@ -315,7 +315,7 @@ Results --> Validation["Validation Summary"]
 - [04_references.py:18-23](file://backend/manual_tests/visual/phase1/04_references.py#L18-L23)
 - [05_full_pipeline.py:18-26](file://backend/manual_tests/visual/phase1/05_full_pipeline.py#L18-L26)
 - [06_formatted.py:10-19](file://backend/manual_tests/visual/phase1/06_formatted.py#L10-L19)
-- [quality_scorer.py:15-123](file://backend/app/pipeline/generation/quality_scorer.py#L15-L123)
+- [quality_scorer.py:15-123](../../../../../../backend/app/pipeline/generation/quality_scorer.py#L15-L123)
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L290-L489)
 
 ## Performance Considerations
@@ -330,13 +330,13 @@ Results --> Validation["Validation Summary"]
 ## Troubleshooting Guide
 
 - Duplicates or inconsistencies found during inspection:
-    - Re-run the failing stage from the beginning to rebuild the document state.
-    - Inspect the summary dashboards embedded in annotated outputs for counts and statuses.
+  - Re-run the failing stage from the beginning to rebuild the document state.
+  - Inspect the summary dashboards embedded in annotated outputs for counts and statuses.
 - Formatting not applied:
-    - Confirm template availability and contract presence; formatting may be conditionally applied.
+  - Confirm template availability and contract presence; formatting may be conditionally applied.
 - Quality panel shows no data:
-    - Ensure backend quality scoring is enabled and returning metrics.
-    - Verify that the results page receives the quality payload from the backend.
+  - Ensure backend quality scoring is enabled and returning metrics.
+  - Verify that the results page receives the quality payload from the backend.
 
 **Section sources**
 
@@ -372,5 +372,5 @@ The visual output management system provides a robust, staged approach to valida
 
 **Section sources**
 
-- [quality_scorer.py:15-123](file://backend/app/pipeline/generation/quality_scorer.py#L15-L123)
+- [quality_scorer.py:15-123](../../../../../../backend/app/pipeline/generation/quality_scorer.py#L15-L123)
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L290-L489)

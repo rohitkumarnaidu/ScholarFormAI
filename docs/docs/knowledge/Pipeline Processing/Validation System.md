@@ -5,21 +5,21 @@
 
 <cite>
 **Referenced Files in This Document**
-- [validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
-- [ai_explainer.py](file://backend/app/pipeline/validation/ai_explainer.py)
-- [review_manager.py](file://backend/app/pipeline/validation/review_manager.py)
-- [cross_ref.py](file://backend/app/pipeline/integrity/cross_ref.py)
-- [section_ordering.py](file://backend/app/pipeline/formatting/section_ordering.py)
-- [loader.py](file://backend/app/pipeline/contracts/loader.py)
-- [contract.yaml (IEEE)](file://backend/app/pipeline/contracts/ieee/contract.yaml)
-- [contract.yaml (APA)](file://backend/app/pipeline/contracts/apa/contract.yaml)
-- [crossref_client.py](file://backend/app/pipeline/services/crossref_client.py)
-- [llm_validator.py](file://backend/app/pipeline/safety/llm_validator.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
+- [validator_v3.py](../../../../backend/app/pipeline/validation/validator_v3.py)
+- [ai_explainer.py](../../../../backend/app/pipeline/validation/ai_explainer.py)
+- [review_manager.py](../../../../backend/app/pipeline/validation/review_manager.py)
+- [cross_ref.py](../../../../backend/app/pipeline/integrity/cross_ref.py)
+- [section_ordering.py](../../../../backend/app/pipeline/formatting/section_ordering.py)
+- [loader.py](../../../../backend/app/pipeline/contracts/loader.py)
+- [contract.yaml (IEEE)](../../../../backend/app/pipeline/contracts/ieee/contract.yaml)
+- [contract.yaml (APA)](../../../../backend/app/pipeline/contracts/apa/contract.yaml)
+- [crossref_client.py](../../../../backend/app/pipeline/services/crossref_client.py)
+- [llm_validator.py](../../../../backend/app/pipeline/safety/llm_validator.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
 - [run_validation.py](file://backend/manual_tests/normal/phase1/run_validation.py)
-- [test_crossref_integration.py](file://backend/tests/integration/test_crossref_integration.py)
-- [document_result.py](file://backend/app/models/document_result.py)
-- [review.py](file://backend/app/models/review.py)
+- [test_crossref_integration.py](../../../../backend/tests/integration/test_crossref_integration.py)
+- [document_result.py](../../../../backend/app/models/document_result.py)
+- [review.py](../../../../backend/app/models/review.py)
 </cite>
 
 ## Table of Contents
@@ -78,31 +78,31 @@ RG --> XC
 
 **Diagram sources**
 
-- [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
-- [review_manager.py:7-117](file://backend/app/pipeline/validation/review_manager.py#L7-L117)
-- [ai_explainer.py:3-47](file://backend/app/pipeline/validation/ai_explainer.py#L3-L47)
-- [section_ordering.py:5-43](file://backend/app/pipeline/formatting/section_ordering.py#L5-L43)
-- [loader.py:8-82](file://backend/app/pipeline/contracts/loader.py#L8-L82)
-- [cross_ref.py:10-64](file://backend/app/pipeline/integrity/cross_ref.py#L10-L64)
-- [crossref_client.py:25-171](file://backend/app/pipeline/services/crossref_client.py#L25-L171)
-- [llm_validator.py:46-122](file://backend/app/pipeline/safety/llm_validator.py#L46-L122)
-- [retry_guard.py:10-63](file://backend/app/pipeline/safety/retry_guard.py#L10-L63)
-- [review.py:5-18](file://backend/app/models/review.py#L5-L18)
-- [document_result.py:5-13](file://backend/app/models/document_result.py#L5-L13)
+- [validator_v3.py:34-145](../../../../backend/app/pipeline/validation/validator_v3.py#L34-L145)
+- [review_manager.py:7-117](../../../../backend/app/pipeline/validation/review_manager.py#L7-L117)
+- [ai_explainer.py:3-47](../../../../backend/app/pipeline/validation/ai_explainer.py#L3-L47)
+- [section_ordering.py:5-43](../../../../backend/app/pipeline/formatting/section_ordering.py#L5-L43)
+- [loader.py:8-82](../../../../backend/app/pipeline/contracts/loader.py#L8-L82)
+- [cross_ref.py:10-64](../../../../backend/app/pipeline/integrity/cross_ref.py#L10-L64)
+- [crossref_client.py:25-171](../../../../backend/app/pipeline/services/crossref_client.py#L25-L171)
+- [llm_validator.py:46-122](../../../../backend/app/pipeline/safety/llm_validator.py#L46-L122)
+- [retry_guard.py:10-63](../../../../backend/app/pipeline/safety/retry_guard.py#L10-L63)
+- [review.py:5-18](../../../../backend/app/models/review.py#L5-L18)
+- [document_result.py:5-13](../../../../backend/app/models/document_result.py#L5-L13)
 
 **Section sources**
 
-- [validator_v3.py:1-277](file://backend/app/pipeline/validation/validator_v3.py#L1-L277)
-- [review_manager.py:1-117](file://backend/app/pipeline/validation/review_manager.py#L1-L117)
-- [ai_explainer.py:1-47](file://backend/app/pipeline/validation/ai_explainer.py#L1-L47)
-- [cross_ref.py:1-64](file://backend/app/pipeline/integrity/cross_ref.py#L1-L64)
-- [section_ordering.py:1-43](file://backend/app/pipeline/formatting/section_ordering.py#L1-L43)
-- [loader.py:1-82](file://backend/app/pipeline/contracts/loader.py#L1-L82)
-- [crossref_client.py:1-171](file://backend/app/pipeline/services/crossref_client.py#L1-L171)
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
-- [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
-- [review.py:1-18](file://backend/app/models/review.py#L1-L18)
-- [document_result.py:1-13](file://backend/app/models/document_result.py#L1-L13)
+- [validator_v3.py:1-277](../../../../backend/app/pipeline/validation/validator_v3.py#L1-L277)
+- [review_manager.py:1-117](../../../../backend/app/pipeline/validation/review_manager.py#L1-L117)
+- [ai_explainer.py:1-47](../../../../backend/app/pipeline/validation/ai_explainer.py#L1-L47)
+- [cross_ref.py:1-64](../../../../backend/app/pipeline/integrity/cross_ref.py#L1-L64)
+- [section_ordering.py:1-43](../../../../backend/app/pipeline/formatting/section_ordering.py#L1-L43)
+- [loader.py:1-82](../../../../backend/app/pipeline/contracts/loader.py#L1-L82)
+- [crossref_client.py:1-171](../../../../backend/app/pipeline/services/crossref_client.py#L1-L171)
+- [llm_validator.py:1-122](../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [retry_guard.py:1-63](../../../../backend/app/pipeline/safety/retry_guard.py#L1-L63)
+- [review.py:1-18](../../../../backend/app/models/review.py#L1-L18)
+- [document_result.py:1-13](../../../../backend/app/models/document_result.py#L1-L13)
 
 ## Core Components
 
@@ -116,14 +116,14 @@ RG --> XC
 
 **Section sources**
 
-- [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
-- [section_ordering.py:12-42](file://backend/app/pipeline/formatting/section_ordering.py#L12-L42)
-- [cross_ref.py:22-63](file://backend/app/pipeline/integrity/cross_ref.py#L22-L63)
-- [crossref_client.py:55-171](file://backend/app/pipeline/services/crossref_client.py#L55-L171)
-- [review_manager.py:29-116](file://backend/app/pipeline/validation/review_manager.py#L29-L116)
-- [ai_explainer.py:18-46](file://backend/app/pipeline/validation/ai_explainer.py#L18-L46)
-- [llm_validator.py:46-122](file://backend/app/pipeline/safety/llm_validator.py#L46-L122)
-- [retry_guard.py:10-63](file://backend/app/pipeline/safety/retry_guard.py#L10-L63)
+- [validator_v3.py:34-145](../../../../backend/app/pipeline/validation/validator_v3.py#L34-L145)
+- [section_ordering.py:12-42](../../../../backend/app/pipeline/formatting/section_ordering.py#L12-L42)
+- [cross_ref.py:22-63](../../../../backend/app/pipeline/integrity/cross_ref.py#L22-L63)
+- [crossref_client.py:55-171](../../../../backend/app/pipeline/services/crossref_client.py#L55-L171)
+- [review_manager.py:29-116](../../../../backend/app/pipeline/validation/review_manager.py#L29-L116)
+- [ai_explainer.py:18-46](../../../../backend/app/pipeline/validation/ai_explainer.py#L18-L46)
+- [llm_validator.py:46-122](../../../../backend/app/pipeline/safety/llm_validator.py#L46-L122)
+- [retry_guard.py:10-63](../../../../backend/app/pipeline/safety/retry_guard.py#L10-L63)
 
 ## Architecture Overview
 
@@ -170,11 +170,11 @@ Validator-->>Parser : "updated PipelineDocument with validation results"
 
 **Diagram sources**
 
-- [validator_v3.py:62-145](file://backend/app/pipeline/validation/validator_v3.py#L62-L145)
-- [cross_ref.py:22-63](file://backend/app/pipeline/integrity/cross_ref.py#L22-L63)
-- [section_ordering.py:12-42](file://backend/app/pipeline/formatting/section_ordering.py#L12-L42)
-- [crossref_client.py:55-171](file://backend/app/pipeline/services/crossref_client.py#L55-L171)
-- [review_manager.py:29-116](file://backend/app/pipeline/validation/review_manager.py#L29-L116)
+- [validator_v3.py:62-145](../../../../backend/app/pipeline/validation/validator_v3.py#L62-L145)
+- [cross_ref.py:22-63](../../../../backend/app/pipeline/integrity/cross_ref.py#L22-L63)
+- [section_ordering.py:12-42](../../../../backend/app/pipeline/formatting/section_ordering.py#L12-L42)
+- [crossref_client.py:55-171](../../../../backend/app/pipeline/services/crossref_client.py#L55-L171)
+- [review_manager.py:29-116](../../../../backend/app/pipeline/validation/review_manager.py#L29-L116)
 
 ## Detailed Component Analysis
 
@@ -201,11 +201,11 @@ classDiagram
 class DocumentValidator {
 +process(document) Document
 +validate(document) ValidationResult
--_check_sections(document) (List[str], List[str])
--_check_figures(document) (List[str], List[str])
--_check_references(document) (List[str], List[str])
--_check_tables(document) (List[str], List[str])
--_check_reference_integrity(document) (List[str], List[str])
+-_check_sections(document) ("List[str], List[str]")
+-_check_figures(document) ("List[str], List[str]")
+-_check_references(document) ("List[str], List[str]")
+-_check_tables(document) ("List[str], List[str]")
+-_check_reference_integrity(document) ("List[str], List[str]")
 -_as_bool(value, default) bool
 }
 class ValidationResult {
@@ -237,15 +237,15 @@ DocumentValidator --> ReviewManager : "uses"
 
 **Diagram sources**
 
-- [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
-- [section_ordering.py:12-42](file://backend/app/pipeline/formatting/section_ordering.py#L12-L42)
-- [cross_ref.py:22-63](file://backend/app/pipeline/integrity/cross_ref.py#L22-L63)
-- [crossref_client.py:55-171](file://backend/app/pipeline/services/crossref_client.py#L55-L171)
-- [review_manager.py:29-116](file://backend/app/pipeline/validation/review_manager.py#L29-L116)
+- [validator_v3.py:34-145](../../../../backend/app/pipeline/validation/validator_v3.py#L34-L145)
+- [section_ordering.py:12-42](../../../../backend/app/pipeline/formatting/section_ordering.py#L12-L42)
+- [cross_ref.py:22-63](../../../../backend/app/pipeline/integrity/cross_ref.py#L22-L63)
+- [crossref_client.py:55-171](../../../../backend/app/pipeline/services/crossref_client.py#L55-L171)
+- [review_manager.py:29-116](../../../../backend/app/pipeline/validation/review_manager.py#L29-L116)
 
 **Section sources**
 
-- [validator_v3.py:62-145](file://backend/app/pipeline/validation/validator_v3.py#L62-L145)
+- [validator_v3.py:62-145](../../../../backend/app/pipeline/validation/validator_v3.py#L62-L145)
 
 ### SectionOrderValidator and Contracts
 
@@ -265,17 +265,17 @@ Violations --> End(["Done"])
 
 **Diagram sources**
 
-- [section_ordering.py:12-42](file://backend/app/pipeline/formatting/section_ordering.py#L12-L42)
-- [loader.py:16-38](file://backend/app/pipeline/contracts/loader.py#L16-L38)
-- [contract.yaml (IEEE):4-24](file://backend/app/pipeline/contracts/ieee/contract.yaml#L4-L24)
-- [contract.yaml (APA):4-26](file://backend/app/pipeline/contracts/apa/contract.yaml#L4-L26)
+- [section_ordering.py:12-42](../../../../backend/app/pipeline/formatting/section_ordering.py#L12-L42)
+- [loader.py:16-38](../../../../backend/app/pipeline/contracts/loader.py#L16-L38)
+- [contract.yaml (IEEE):4-24](../../../../backend/app/pipeline/contracts/ieee/contract.yaml#L4-L24)
+- [contract.yaml (APA):4-26](../../../../backend/app/pipeline/contracts/apa/contract.yaml#L4-L26)
 
 **Section sources**
 
-- [section_ordering.py:12-42](file://backend/app/pipeline/formatting/section_ordering.py#L12-L42)
-- [loader.py:16-38](file://backend/app/pipeline/contracts/loader.py#L16-L38)
-- [contract.yaml (IEEE):4-24](file://backend/app/pipeline/contracts/ieee/contract.yaml#L4-L24)
-- [contract.yaml (APA):4-26](file://backend/app/pipeline/contracts/apa/contract.yaml#L4-L26)
+- [section_ordering.py:12-42](../../../../backend/app/pipeline/formatting/section_ordering.py#L12-L42)
+- [loader.py:16-38](../../../../backend/app/pipeline/contracts/loader.py#L16-L38)
+- [contract.yaml (IEEE):4-24](../../../../backend/app/pipeline/contracts/ieee/contract.yaml#L4-L24)
+- [contract.yaml (APA):4-26](../../../../backend/app/pipeline/contracts/apa/contract.yaml#L4-L26)
 
 ### CrossReferenceEngine
 
@@ -307,11 +307,11 @@ Next3 --> Iterate
 
 **Diagram sources**
 
-- [cross_ref.py:22-63](file://backend/app/pipeline/integrity/cross_ref.py#L22-L63)
+- [cross_ref.py:22-63](../../../../backend/app/pipeline/integrity/cross_ref.py#L22-L63)
 
 **Section sources**
 
-- [cross_ref.py:22-63](file://backend/app/pipeline/integrity/cross_ref.py#L22-L63)
+- [cross_ref.py:22-63](../../../../backend/app/pipeline/integrity/cross_ref.py#L22-L63)
 
 ### CrossRefClient and DOI Validation
 
@@ -340,13 +340,13 @@ end
 
 **Diagram sources**
 
-- [crossref_client.py:55-171](file://backend/app/pipeline/services/crossref_client.py#L55-L171)
-- [validator_v3.py:220-266](file://backend/app/pipeline/validation/validator_v3.py#L220-L266)
+- [crossref_client.py:55-171](../../../../backend/app/pipeline/services/crossref_client.py#L55-L171)
+- [validator_v3.py:220-266](../../../../backend/app/pipeline/validation/validator_v3.py#L220-L266)
 
 **Section sources**
 
-- [crossref_client.py:55-171](file://backend/app/pipeline/services/crossref_client.py#L55-L171)
-- [validator_v3.py:220-266](file://backend/app/pipeline/validation/validator_v3.py#L220-L266)
+- [crossref_client.py:55-171](../../../../backend/app/pipeline/services/crossref_client.py#L55-L171)
+- [validator_v3.py:220-266](../../../../backend/app/pipeline/validation/validator_v3.py#L220-L266)
 
 ### ReviewManager and Confidence-Based Review
 
@@ -373,13 +373,13 @@ SetMeta --> End(["Done"])
 
 **Diagram sources**
 
-- [review_manager.py:29-116](file://backend/app/pipeline/validation/review_manager.py#L29-L116)
-- [review.py:5-18](file://backend/app/models/review.py#L5-L18)
+- [review_manager.py:29-116](../../../../backend/app/pipeline/validation/review_manager.py#L29-L116)
+- [review.py:5-18](../../../../backend/app/models/review.py#L5-L18)
 
 **Section sources**
 
-- [review_manager.py:29-116](file://backend/app/pipeline/validation/review_manager.py#L29-L116)
-- [review.py:5-18](file://backend/app/models/review.py#L5-L18)
+- [review_manager.py:29-116](../../../../backend/app/pipeline/validation/review_manager.py#L29-L116)
+- [review.py:5-18](../../../../backend/app/models/review.py#L5-L18)
 
 ### AIExplainer
 
@@ -401,11 +401,11 @@ Append --> End(["Return explanations"])
 
 **Diagram sources**
 
-- [ai_explainer.py:18-46](file://backend/app/pipeline/validation/ai_explainer.py#L18-L46)
+- [ai_explainer.py:18-46](../../../../backend/app/pipeline/validation/ai_explainer.py#L18-L46)
 
 **Section sources**
 
-- [ai_explainer.py:18-46](file://backend/app/pipeline/validation/ai_explainer.py#L18-L46)
+- [ai_explainer.py:18-46](../../../../backend/app/pipeline/validation/ai_explainer.py#L18-L46)
 
 ### Safety and Reliability
 
@@ -414,8 +414,8 @@ Append --> End(["Return explanations"])
 
 **Section sources**
 
-- [llm_validator.py:46-122](file://backend/app/pipeline/safety/llm_validator.py#L46-L122)
-- [retry_guard.py:10-63](file://backend/app/pipeline/safety/retry_guard.py#L10-L63)
+- [llm_validator.py:46-122](../../../../backend/app/pipeline/safety/llm_validator.py#L46-L122)
+- [retry_guard.py:10-63](../../../../backend/app/pipeline/safety/retry_guard.py#L10-L63)
 
 ## Dependency Analysis
 
@@ -442,20 +442,20 @@ RM --> RS["ReviewStatus/ReviewMetadata"]
 
 **Diagram sources**
 
-- [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
-- [section_ordering.py:9-10](file://backend/app/pipeline/formatting/section_ordering.py#L9-L10)
-- [loader.py:12-14](file://backend/app/pipeline/contracts/loader.py#L12-L14)
-- [contract.yaml (IEEE):1-2](file://backend/app/pipeline/contracts/ieee/contract.yaml#L1-L2)
-- [contract.yaml (APA):1-2](file://backend/app/pipeline/contracts/apa/contract.yaml#L1-L2)
-- [crossref_client.py:25-46](file://backend/app/pipeline/services/crossref_client.py#L25-L46)
-- [document_result.py:5-13](file://backend/app/models/document_result.py#L5-L13)
-- [review.py:5-18](file://backend/app/models/review.py#L5-L18)
+- [validator_v3.py:34-145](../../../../backend/app/pipeline/validation/validator_v3.py#L34-L145)
+- [section_ordering.py:9-10](../../../../backend/app/pipeline/formatting/section_ordering.py#L9-L10)
+- [loader.py:12-14](../../../../backend/app/pipeline/contracts/loader.py#L12-L14)
+- [contract.yaml (IEEE):1-2](../../../../backend/app/pipeline/contracts/ieee/contract.yaml#L1-L2)
+- [contract.yaml (APA):1-2](../../../../backend/app/pipeline/contracts/apa/contract.yaml#L1-L2)
+- [crossref_client.py:25-46](../../../../backend/app/pipeline/services/crossref_client.py#L25-L46)
+- [document_result.py:5-13](../../../../backend/app/models/document_result.py#L5-L13)
+- [review.py:5-18](../../../../backend/app/models/review.py#L5-L18)
 
 **Section sources**
 
-- [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
-- [loader.py:12-14](file://backend/app/pipeline/contracts/loader.py#L12-L14)
-- [crossref_client.py:25-46](file://backend/app/pipeline/services/crossref_client.py#L25-L46)
+- [validator_v3.py:34-145](../../../../backend/app/pipeline/validation/validator_v3.py#L34-L145)
+- [loader.py:12-14](../../../../backend/app/pipeline/contracts/loader.py#L12-L14)
+- [crossref_client.py:25-46](../../../../backend/app/pipeline/services/crossref_client.py#L25-L46)
 
 ## Performance Considerations
 
@@ -484,7 +484,7 @@ Integration testing and manual validation:
 
 **Section sources**
 
-- [test_crossref_integration.py:35-82](file://backend/tests/integration/test_crossref_integration.py#L35-L82)
+- [test_crossref_integration.py:35-82](../../../../backend/tests/integration/test_crossref_integration.py#L35-L82)
 - [run_validation.py:22-74](file://backend/manual_tests/normal/phase1/run_validation.py#L22-L74)
 
 ## Conclusion
@@ -515,7 +515,7 @@ Example structure:
 
 **Section sources**
 
-- [validator_v3.py:25-32](file://backend/app/pipeline/validation/validator_v3.py#L25-L32)
+- [validator_v3.py:25-32](../../../../backend/app/pipeline/validation/validator_v3.py#L25-L32)
 - [run_validation.py:53-68](file://backend/manual_tests/normal/phase1/run_validation.py#L53-L68)
 
 ### Quality Improvement Suggestions

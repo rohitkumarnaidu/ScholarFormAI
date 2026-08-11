@@ -22,6 +22,11 @@ def bypass_csrf():
     with patch("app.middleware.csrf._is_exempt_path", return_value=True):
         yield
 
+@pytest.fixture(autouse=True)
+def mock_dns():
+    with patch("socket.gethostbyname", return_value="8.8.8.8"):
+        yield
+
 
 @pytest.fixture
 def client():

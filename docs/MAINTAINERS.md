@@ -167,8 +167,8 @@ Issue filed → Triaged (72h) → Assigned to area lead →
 | [GOVERNANCE.md](../GOVERNANCE.md) | Full governance model and voting procedures |
 | [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) | Community guidelines |
 | [CONTRIBUTING.md](../CONTRIBUTING.md) | Contribution guidelines |
-| [CODE_REVIEW_STANDARDS.md](../docs/CODE_REVIEW_STANDARDS.md) | PR review expectations |
-| [DEVELOPER_ONBOARDING.md](../docs/DEVELOPER_ONBOARDING.md) | Onboarding new contributors |
+| [CODE_REVIEW_STANDARDS.md](governance/CODE_REVIEW_STANDARDS.md) | PR review expectations |
+| [DEVELOPER_ONBOARDING.md](developer-guide/DEVELOPER_ONBOARDING.md) | Onboarding new contributors |
 
 ---
 

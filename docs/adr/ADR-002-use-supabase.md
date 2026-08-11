@@ -66,4 +66,4 @@ This decision has been implemented and is verified by:
 - [ADR 001: Python-First Runtime](001-python-first-runtime.md) — Python 3.12 runtime
 - [ADR 004: ChromaDB for RAG](ADR-004-chromadb-for-rag.md) — vector storage (complements Supabase)
 - [Security Model](../explanation/security-model.md) — RLS and encryption at rest
-- [Database Model](../Database.md) — schema and relationships
+- [Database Model](../database/Database.md) — schema and relationships

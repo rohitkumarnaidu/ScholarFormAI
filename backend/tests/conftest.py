@@ -24,6 +24,12 @@ if Path.cwd() != BACKEND_ROOT:
 
 os.environ["AMF_ENVIRONMENT"] = "test"
 os.environ["AMF_SECRET_KEY"] = "test-secret-key"
+os.environ["ENCRYPTION_KEY"] = "a2geXVIrEQu5-kHc2k8Peps0EYf9sEyzIo7A9bdO8sU="
+os.environ["SUPABASE_URL"] = "http://localhost:8000"
+os.environ["SUPABASE_ANON_KEY"] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy_anon_key"
+os.environ["SUPABASE_SERVICE_ROLE_KEY"] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy_service_key"
+os.environ["SUPABASE_DB_URL"] = "postgresql://postgres:postgres@localhost:5432/postgres"
+os.environ["SUPABASE_JWT_SECRET"] = "dummy-jwt-secret-key"
 
 import contextlib
 
@@ -182,6 +188,20 @@ def reset_health_check_caches():
         health_checks._reset_readiness_cache_for_tests()
 
 
+@pytest.fixture(autouse=True)
+def reset_dependency_overrides():
+    """Ensure FastAPI dependency overrides are cleared before and after each test."""
+    try:
+        from app.main import app
+    except (ImportError, TypeError):
+        yield
+        return
+    
+    app.dependency_overrides.clear()
+    yield
+    app.dependency_overrides.clear()
+
+
 from app.models import (
     Block,
     BlockType,
@@ -233,3 +253,11 @@ def full_doc(minimal_doc: PipelineDocument) -> PipelineDocument:
         Block(block_id="b4", index=4, block_type=BlockType.REFERENCE_ENTRY, text="[1] J. Doe, Testing, 2024.")
     )
     return minimal_doc
+
+
+
+
+
+
+import fastapi.routing
+old_merge = fastapi.routing._merge_lifespan_context

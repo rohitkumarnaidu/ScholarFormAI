@@ -5,21 +5,21 @@
 
 <cite>
 **Referenced Files in This Document**
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [classifier.py](file://backend/app/pipeline/classification/classifier.py)
-- [nvidia_client.py](file://backend/app/services/nvidia_client.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [model_store.py](file://backend/app/services/model_store.py)
-- [default_guidelines.json](file://backend/app/pipeline/intelligence/default_guidelines.json)
-- [test_rag_engine.py](file://backend/tests/test_rag_engine.py)
-- [test_reasoning_engine.py](file://backend/tests/test_reasoning_engine.py)
-- [test_classification.py](file://backend/tests/test_classification.py)
-- [llm_validator.py](file://backend/app/pipeline/safety/llm_validator.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [classifier.py](../../../../backend/app/pipeline/classification/classifier.py)
+- [nvidia_client.py](../../../../backend/app/services/nvidia_client.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [model_store.py](../../../../backend/app/services/model_store.py)
+- [default_guidelines.json](../../../../backend/app/pipeline/intelligence/default_guidelines.json)
+- [test_rag_engine.py](../../../../backend/tests/test_rag_engine.py)
+- [test_reasoning_engine.py](../../../../backend/tests/test_reasoning_engine.py)
+- [test_classification.py](../../../../backend/tests/pipeline/test_classification.py)
+- [llm_validator.py](../../../../backend/app/pipeline/safety/llm_validator.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
 </cite>
 
 ## Table of Contents
@@ -78,25 +78,25 @@ CFG --> CL
 
 **Diagram sources**
 
-- [rag_engine.py:106-528](file://backend/app/pipeline/intelligence/rag_engine.py#L106-L528)
-- [reasoning_engine.py:83-774](file://backend/app/pipeline/intelligence/reasoning_engine.py#L83-L774)
-- [semantic_parser.py:32-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
-- [classifier.py:22-830](file://backend/app/pipeline/classification/classifier.py#L22-L830)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [nvidia_client.py:30-260](file://backend/app/services/nvidia_client.py#L30-L260)
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
-- [settings.py:73-422](file://backend/app/config/settings.py#L73-L422)
+- [rag_engine.py:106-528](../../../../backend/app/pipeline/intelligence/rag_engine.py#L106-L528)
+- [reasoning_engine.py:83-774](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L83-L774)
+- [semantic_parser.py:32-306](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
+- [classifier.py:22-830](../../../../backend/app/pipeline/classification/classifier.py#L22-L830)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [nvidia_client.py:30-260](../../../../backend/app/services/nvidia_client.py#L30-L260)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
+- [settings.py:73-422](../../../../backend/app/config/settings.py#L73-L422)
 
 **Section sources**
 
-- [rag_engine.py:1-528](file://backend/app/pipeline/intelligence/rag_engine.py#L1-L528)
-- [reasoning_engine.py:1-774](file://backend/app/pipeline/intelligence/reasoning_engine.py#L1-L774)
-- [semantic_parser.py:1-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
-- [classifier.py:1-830](file://backend/app/pipeline/classification/classifier.py#L1-L830)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [nvidia_client.py:1-260](file://backend/app/services/nvidia_client.py#L1-L260)
-- [model_store.py:1-33](file://backend/app/services/model_store.py#L1-L33)
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
+- [rag_engine.py:1-528](../../../../backend/app/pipeline/intelligence/rag_engine.py#L1-L528)
+- [reasoning_engine.py:1-774](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L1-L774)
+- [semantic_parser.py:1-306](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L1-L306)
+- [classifier.py:1-830](../../../../backend/app/pipeline/classification/classifier.py#L1-L830)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [nvidia_client.py:1-260](../../../../backend/app/services/nvidia_client.py#L1-L260)
+- [model_store.py:1-33](../../../../backend/app/services/model_store.py#L1-L33)
+- [settings.py:1-422](../../../../backend/app/config/settings.py#L1-L422)
 
 ## Core Components
 
@@ -110,13 +110,13 @@ CFG --> CL
 
 **Section sources**
 
-- [rag_engine.py:106-528](file://backend/app/pipeline/intelligence/rag_engine.py#L106-L528)
-- [reasoning_engine.py:83-774](file://backend/app/pipeline/intelligence/reasoning_engine.py#L83-L774)
-- [semantic_parser.py:32-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
-- [classifier.py:22-830](file://backend/app/pipeline/classification/classifier.py#L22-L830)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [nvidia_client.py:30-260](file://backend/app/services/nvidia_client.py#L30-L260)
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
+- [rag_engine.py:106-528](../../../../backend/app/pipeline/intelligence/rag_engine.py#L106-L528)
+- [reasoning_engine.py:83-774](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L83-L774)
+- [semantic_parser.py:32-306](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
+- [classifier.py:22-830](../../../../backend/app/pipeline/classification/classifier.py#L22-L830)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [nvidia_client.py:30-260](../../../../backend/app/services/nvidia_client.py#L30-L260)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
 
 ## Architecture Overview
 
@@ -133,7 +133,7 @@ participant CL as "Content Classifier"
 Doc->>SP : "analyze_blocks()"
 SP-->>Doc : "SemanticBlock[] with confidence"
 Doc->>RE : "generate_instruction_set(blocks, rules)"
-RE->>NV : "chat()/direct API (when available)"
+RE->>NV : "chat()/direct API ("when available")"
 RE->>LLM : "generate() via LiteLLM"
 LLM-->>RE : "JSON payload"
 RE-->>Doc : "Normalized Instruction Set + Latency"
@@ -143,11 +143,11 @@ CL-->>Doc : "Blocks with BlockType + Confidence"
 
 **Diagram sources**
 
-- [semantic_parser.py:107-159](file://backend/app/pipeline/intelligence/semantic_parser.py#L107-L159)
-- [reasoning_engine.py:463-571](file://backend/app/pipeline/intelligence/reasoning_engine.py#L463-L571)
-- [llm_service.py:91-203](file://backend/app/services/llm_service.py#L91-L203)
-- [nvidia_client.py:68-140](file://backend/app/services/nvidia_client.py#L68-L140)
-- [classifier.py:237-638](file://backend/app/pipeline/classification/classifier.py#L237-L638)
+- [semantic_parser.py:107-159](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L107-L159)
+- [reasoning_engine.py:463-571](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L463-L571)
+- [llm_service.py:91-203](../../../../backend/app/services/llm_service.py#L91-L203)
+- [nvidia_client.py:68-140](../../../../backend/app/services/nvidia_client.py#L68-L140)
+- [classifier.py:237-638](../../../../backend/app/pipeline/classification/classifier.py#L237-L638)
 
 ## Detailed Component Analysis
 
@@ -181,7 +181,7 @@ RagEngine --> _DeterministicEmbeddingModel : "fallback"
 
 **Diagram sources**
 
-- [rag_engine.py:106-528](file://backend/app/pipeline/intelligence/rag_engine.py#L106-L528)
+- [rag_engine.py:106-528](../../../../backend/app/pipeline/intelligence/rag_engine.py#L106-L528)
 
 Key behaviors:
 
@@ -191,9 +191,9 @@ Key behaviors:
 
 **Section sources**
 
-- [rag_engine.py:106-528](file://backend/app/pipeline/intelligence/rag_engine.py#L106-L528)
-- [default_guidelines.json:1-59](file://backend/app/pipeline/intelligence/default_guidelines.json#L1-L59)
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
+- [rag_engine.py:106-528](../../../../backend/app/pipeline/intelligence/rag_engine.py#L106-L528)
+- [default_guidelines.json:1-59](../../../../backend/app/pipeline/intelligence/default_guidelines.json#L1-L59)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
 
 ### Reasoning Engine
 
@@ -228,11 +228,11 @@ RE-->>CB : "normalized payload"
 
 **Diagram sources**
 
-- [reasoning_engine.py:457-571](file://backend/app/pipeline/intelligence/reasoning_engine.py#L457-L571)
-- [llm_service.py:205-274](file://backend/app/services/llm_service.py#L205-L274)
-- [nvidia_client.py:68-140](file://backend/app/services/nvidia_client.py#L68-L140)
-- [llm_validator.py:46-122](file://backend/app/pipeline/safety/llm_validator.py#L46-L122)
-- [circuit_breaker.py:29-98](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L98)
+- [reasoning_engine.py:457-571](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L457-L571)
+- [llm_service.py:205-274](../../../../backend/app/services/llm_service.py#L205-L274)
+- [nvidia_client.py:68-140](../../../../backend/app/services/nvidia_client.py#L68-L140)
+- [llm_validator.py:46-122](../../../../backend/app/pipeline/safety/llm_validator.py#L46-L122)
+- [circuit_breaker.py:29-98](../../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L98)
 
 Operational highlights:
 
@@ -242,12 +242,12 @@ Operational highlights:
 
 **Section sources**
 
-- [reasoning_engine.py:83-774](file://backend/app/pipeline/intelligence/reasoning_engine.py#L83-L774)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [nvidia_client.py:30-260](file://backend/app/services/nvidia_client.py#L30-L260)
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
-- [circuit_breaker.py:1-164](file://backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
-- [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
+- [reasoning_engine.py:83-774](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L83-L774)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [nvidia_client.py:30-260](../../../../backend/app/services/nvidia_client.py#L30-L260)
+- [llm_validator.py:1-122](../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [circuit_breaker.py:1-164](../../../../backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
+- [retry_guard.py:1-63](../../../../backend/app/pipeline/safety/retry_guard.py#L1-L63)
 
 ### Semantic Parser (LLM Classification)
 
@@ -273,12 +273,12 @@ BuildOut --> End(["Return"])
 
 **Diagram sources**
 
-- [semantic_parser.py:107-225](file://backend/app/pipeline/intelligence/semantic_parser.py#L107-L225)
+- [semantic_parser.py:107-225](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L107-L225)
 
 **Section sources**
 
-- [semantic_parser.py:32-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
+- [semantic_parser.py:32-306](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
 
 ### Content Classifier
 
@@ -297,10 +297,10 @@ FindLandmarks --> Iterate["Iterate blocks"]
 Iterate --> Protected{"Protected structural block?"}
 Protected --> |Yes| Next["Skip"]
 Protected --> |No| Zone{"Zone: Frontmatter / Body / References"}
-Zone --> Frontmatter["Apply frontmatter rules (title, author, affiliation)"]
+Zone --> Frontmatter["Apply frontmatter rules ("title, author, affiliation")"]
 Zone --> Body["Apply heading/body rules"]
 Zone --> References["Apply references rules"]
-Frontmatter --> LLM["Apply LLM overrides (confidence threshold)"]
+Frontmatter --> LLM["Apply LLM overrides ("confidence threshold")"]
 Body --> LLM
 References --> LLM
 SciBERT --> Fallback["Regex and NLP fallback"]
@@ -311,11 +311,11 @@ Iterate --> Done(["Update processing history and return"])
 
 **Diagram sources**
 
-- [classifier.py:237-638](file://backend/app/pipeline/classification/classifier.py#L237-L638)
+- [classifier.py:237-638](../../../../backend/app/pipeline/classification/classifier.py#L237-L638)
 
 **Section sources**
 
-- [classifier.py:22-830](file://backend/app/pipeline/classification/classifier.py#L22-L830)
+- [classifier.py:22-830](../../../../backend/app/pipeline/classification/classifier.py#L22-L830)
 
 ### Integration with External AI Services
 
@@ -335,15 +335,15 @@ NV --> NVIDIAD["NVIDIA API"]
 
 **Diagram sources**
 
-- [reasoning_engine.py:54-82](file://backend/app/pipeline/intelligence/reasoning_engine.py#L54-L82)
-- [llm_service.py:39-52](file://backend/app/services/llm_service.py#L39-L52)
-- [nvidia_client.py:30-67](file://backend/app/services/nvidia_client.py#L30-L67)
+- [reasoning_engine.py:54-82](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L54-L82)
+- [llm_service.py:39-52](../../../../backend/app/services/llm_service.py#L39-L52)
+- [nvidia_client.py:30-67](../../../../backend/app/services/nvidia_client.py#L30-L67)
 
 **Section sources**
 
-- [reasoning_engine.py:116-176](file://backend/app/pipeline/intelligence/reasoning_engine.py#L116-L176)
-- [llm_service.py:205-274](file://backend/app/services/llm_service.py#L205-L274)
-- [nvidia_client.py:30-140](file://backend/app/services/nvidia_client.py#L30-L140)
+- [reasoning_engine.py:116-176](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L116-L176)
+- [llm_service.py:205-274](../../../../backend/app/services/llm_service.py#L205-L274)
+- [nvidia_client.py:30-140](../../../../backend/app/services/nvidia_client.py#L30-L140)
 
 ## Dependency Analysis
 
@@ -370,21 +370,21 @@ RG["retry_guard.py"] --> RE
 
 **Diagram sources**
 
-- [settings.py:73-422](file://backend/app/config/settings.py#L73-L422)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [nvidia_client.py:30-260](file://backend/app/services/nvidia_client.py#L30-L260)
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
-- [circuit_breaker.py:1-164](file://backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
-- [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
+- [settings.py:73-422](../../../../backend/app/config/settings.py#L73-L422)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [nvidia_client.py:30-260](../../../../backend/app/services/nvidia_client.py#L30-L260)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
+- [llm_validator.py:1-122](../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [circuit_breaker.py:1-164](../../../../backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
+- [retry_guard.py:1-63](../../../../backend/app/pipeline/safety/retry_guard.py#L1-L63)
 
 **Section sources**
 
-- [settings.py:175-221](file://backend/app/config/settings.py#L175-L221)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
-- [circuit_breaker.py:1-164](file://backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
-- [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
+- [settings.py:175-221](../../../../backend/app/config/settings.py#L175-L221)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [llm_validator.py:1-122](../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [circuit_breaker.py:1-164](../../../../backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
+- [retry_guard.py:1-63](../../../../backend/app/pipeline/safety/retry_guard.py#L1-L63)
 
 ## Performance Considerations
 
@@ -403,43 +403,43 @@ RG["retry_guard.py"] --> RE
 Common issues and resolutions:
 
 - RAG initialization failures:
-    - Symptom: RAG falls back to native backend.
-    - Cause: ChromaDB import or compatibility errors.
-    - Resolution: Install compatible versions or rely on native JSON store.
-    - Evidence: [rag_engine.py:172-196](file://backend/app/pipeline/intelligence/rag_engine.py#L172-L196)
+  - Symptom: RAG falls back to native backend.
+  - Cause: ChromaDB import or compatibility errors.
+  - Resolution: Install compatible versions or rely on native JSON store.
+  - Evidence: [rag_engine.py:172-196](../../../../backend/app/pipeline/intelligence/rag_engine.py#L172-L196)
 - Empty knowledge base:
-    - Symptom: No guidelines retrieved.
-    - Cause: Missing seeded data or reset.
-    - Resolution: Ensure auto-seeding runs or manually add guidelines.
-    - Evidence: [rag_engine.py:202-244](file://backend/app/pipeline/intelligence/rag_engine.py#L202-L244)
+  - Symptom: No guidelines retrieved.
+  - Cause: Missing seeded data or reset.
+  - Resolution: Ensure auto-seeding runs or manually add guidelines.
+  - Evidence: [rag_engine.py:202-244](../../../../backend/app/pipeline/intelligence/rag_engine.py#L202-L244)
 - ReasoningEngine provider outages:
-    - Symptom: Falls back to rule-based classification.
-    - Cause: NVIDIA API key missing or Ollama unreachable.
-    - Resolution: Configure ENABLE_NVIDIA_REASONER, NVIDIA_API_KEY, OLLAMA_BASE_URL.
-    - Evidence: [reasoning_engine.py:136-172](file://backend/app/pipeline/intelligence/reasoning_engine.py#L136-L172)
+  - Symptom: Falls back to rule-based classification.
+  - Cause: NVIDIA API key missing or Ollama unreachable.
+  - Resolution: Configure ENABLE_NVIDIA_REASONER, NVIDIA_API_KEY, OLLAMA_BASE_URL.
+  - Evidence: [reasoning_engine.py:136-172](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L136-L172)
 - LLM schema validation failures:
-    - Symptom: Invalid JSON payloads rejected.
-    - Cause: Non-conforming LLM output.
-    - Resolution: Enable guardrails or adjust prompts; fallback returns structured payloads.
-    - Evidence: [llm_validator.py:46-122](file://backend/app/pipeline/safety/llm_validator.py#L46-L122)
+  - Symptom: Invalid JSON payloads rejected.
+  - Cause: Non-conforming LLM output.
+  - Resolution: Enable guardrails or adjust prompts; fallback returns structured payloads.
+  - Evidence: [llm_validator.py:46-122](../../../../backend/app/pipeline/safety/llm_validator.py#L46-L122)
 - Circuit breaker tripping:
-    - Symptom: Calls blocked after repeated failures.
-    - Cause: Excessive provider errors.
-    - Resolution: Monitor recovery_timeout, adjust failure_threshold, or use fallback.
-    - Evidence: [circuit_breaker.py:29-98](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L98)
+  - Symptom: Calls blocked after repeated failures.
+  - Cause: Excessive provider errors.
+  - Resolution: Monitor recovery_timeout, adjust failure_threshold, or use fallback.
+  - Evidence: [circuit_breaker.py:29-98](../../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L98)
 - LLM classification errors:
-    - Symptom: Fallback to heuristics.
-    - Cause: Missing model or non-English documents.
-    - Resolution: Ensure USE_LLM_CLASSIFICATION and English language detection.
-    - Evidence: [semantic_parser.py:116-132](file://backend/app/pipeline/intelligence/semantic_parser.py#L116-L132)
+  - Symptom: Fallback to heuristics.
+  - Cause: Missing model or non-English documents.
+  - Resolution: Ensure USE_LLM_CLASSIFICATION and English language detection.
+  - Evidence: [semantic_parser.py:116-132](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L116-L132)
 
 **Section sources**
 
-- [rag_engine.py:172-244](file://backend/app/pipeline/intelligence/rag_engine.py#L172-L244)
-- [reasoning_engine.py:136-172](file://backend/app/pipeline/intelligence/reasoning_engine.py#L136-L172)
-- [llm_validator.py:46-122](file://backend/app/pipeline/safety/llm_validator.py#L46-L122)
-- [circuit_breaker.py:29-98](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L98)
-- [semantic_parser.py:116-132](file://backend/app/pipeline/intelligence/semantic_parser.py#L116-L132)
+- [rag_engine.py:172-244](../../../../backend/app/pipeline/intelligence/rag_engine.py#L172-L244)
+- [reasoning_engine.py:136-172](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L136-L172)
+- [llm_validator.py:46-122](../../../../backend/app/pipeline/safety/llm_validator.py#L46-L122)
+- [circuit_breaker.py:29-98](../../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L98)
+- [semantic_parser.py:116-132](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L116-L132)
 
 ## Conclusion
 
@@ -465,10 +465,10 @@ Key settings affecting AI behavior:
 
 **Section sources**
 
-- [settings.py:175-221](file://backend/app/config/settings.py#L175-L221)
-- [settings.py:346-349](file://backend/app/config/settings.py#L346-L349)
-- [settings.py:383-384](file://backend/app/config/settings.py#L383-L384)
-- [settings.py:164-167](file://backend/app/config/settings.py#L164-L167)
+- [settings.py:175-221](../../../../backend/app/config/settings.py#L175-L221)
+- [settings.py:346-349](../../../../backend/app/config/settings.py#L346-L349)
+- [settings.py:383-384](../../../../backend/app/config/settings.py#L383-L384)
+- [settings.py:164-167](../../../../backend/app/config/settings.py#L164-L167)
 
 ### Tests and Benchmarks
 
@@ -478,6 +478,6 @@ Key settings affecting AI behavior:
 
 **Section sources**
 
-- [test_rag_engine.py:1-355](file://backend/tests/test_rag_engine.py#L1-L355)
-- [test_reasoning_engine.py:1-220](file://backend/tests/test_reasoning_engine.py#L1-L220)
-- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
+- [test_rag_engine.py:1-355](../../../../backend/tests/test_rag_engine.py#L1-L355)
+- [test_reasoning_engine.py:1-220](../../../../backend/tests/test_reasoning_engine.py#L1-L220)
+- [test_classification.py:1-92](../../../../backend/tests/pipeline/test_classification.py#L1-L92)

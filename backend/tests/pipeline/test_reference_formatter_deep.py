@@ -16,7 +16,8 @@ Covers:
 """
 
 import sys
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 import pytest
 
 from app.models import Reference, ReferenceType
@@ -47,10 +48,11 @@ sys.modules["citeproc.source.json"] = _citeproc_source.json
 patch("app.pipeline.formatting.reference_formatter.CITEPROC_AVAILABLE", True).start()
 
 from app.pipeline.formatting.reference_formatter import (  # noqa: E402
-    _resolve_csl_path,
+    ReferenceFormatter,
     _parse_author_name,
-    _reference_type_to_csl,
     _reference_to_csl_json,
+    _reference_type_to_csl,
+    _resolve_csl_path,
 )
 
 
@@ -376,6 +378,8 @@ class TestReferenceFormatterCiteproc:
     def test_format_references_calls_format_reference_each(self, fmt):
         """format_references delegates to format_reference per item."""
         refs = [
+            Reference(reference_id="r1", index=0, citation_key="k1", raw_text="t1"),
+            Reference(reference_id="r2", index=1, citation_key="k2", raw_text="t2"),
         ]
         with patch.object(
             fmt,

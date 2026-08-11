@@ -8,14 +8,13 @@ Fills remaining coverage gaps in ContentClassifier beyond test_classifier_deep.p
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
+from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
 from app.pipeline.classification.classifier import ContentClassifier, classify_content
 
-
-from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
 
 @pytest.fixture
 def classifier():

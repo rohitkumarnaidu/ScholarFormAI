@@ -5,20 +5,20 @@
 
 <cite>
 **Referenced Files in This Document**
-- [main.py](file://backend/app/main.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [base.py](file://backend/app/db/base.py)
-- [document.py](file://backend/app/models/document.py)
-- [documents.py](file://backend/app/routers/v1/documents.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [converter.py](file://backend/app/pipeline/input_conversion/converter.py)
-- [parser.py](file://backend/app/pipeline/parsing/parser.py)
-- [formatter.py](file://backend/app/pipeline/formatting/formatter.py)
-- [validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
-- [exporter.py](file://backend/app/pipeline/export/exporter.py)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [rate_limit.py](file://backend/app/middleware/rate_limit.py)
-- [document_service.py](file://backend/app/services/document_service.py)
+- [main.py](../../../../backend/app/main.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [base.py](../../../../backend/app/db/base.py)
+- [document.py](../../../../backend/app/models/document.py)
+- [documents.py](../../../../backend/app/routers/v1/documents.py)
+- [pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [converter.py](../../../../backend/app/pipeline/input_conversion/converter.py)
+- [parser.py](../../../../backend/app/pipeline/parsing/parser.py)
+- [formatter.py](../../../../backend/app/pipeline/formatting/formatter.py)
+- [validator_v3.py](../../../../backend/app/pipeline/validation/validator_v3.py)
+- [exporter.py](../../../../backend/app/pipeline/export/exporter.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [rate_limit.py](../../../../backend/app/middleware/rate_limit.py)
+- [document_service.py](../../../../backend/app/services/document_service.py)
 </cite>
 
 ## Table of Contents
@@ -95,24 +95,24 @@ A --> M
 
 **Diagram sources**
 
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
-- [base.py:11-20](file://backend/app/db/base.py#L11-L20)
-- [document.py:6-26](file://backend/app/models/document.py#L6-L26)
-- [documents.py:29-359](file://backend/app/routers/v1/documents.py#L29-L359)
-- [orchestrator.py:73-545](file://backend/app/pipeline/orchestrator.py#L73-L545)
-- [converter.py:19-106](file://backend/app/pipeline/input_conversion/converter.py#L19-L106)
-- [parser.py:61-165](file://backend/app/pipeline/parsing/parser.py#L61-L165)
-- [formatter.py:35-80](file://backend/app/pipeline/formatting/formatter.py#L35-L80)
-- [validator_v3.py:34-146](file://backend/app/pipeline/validation/validator_v3.py#L34-L146)
-- [exporter.py:19-67](file://backend/app/pipeline/export/exporter.py#L19-L67)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [document_service.py:34-114](file://backend/app/services/document_service.py#L34-L114)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
+- [base.py:11-20](../../../../backend/app/db/base.py#L11-L20)
+- [document.py:6-26](../../../../backend/app/models/document.py#L6-L26)
+- [documents.py:29-359](../../../../backend/app/routers/v1/documents.py#L29-L359)
+- [orchestrator.py:73-545](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L545)
+- [converter.py:19-106](../../../../backend/app/pipeline/input_conversion/converter.py#L19-L106)
+- [parser.py:61-165](../../../../backend/app/pipeline/parsing/parser.py#L61-L165)
+- [formatter.py:35-80](../../../../backend/app/pipeline/formatting/formatter.py#L35-L80)
+- [validator_v3.py:34-146](../../../../backend/app/pipeline/validation/validator_v3.py#L34-L146)
+- [exporter.py:19-67](../../../../backend/app/pipeline/export/exporter.py#L19-L67)
+- [pubsub.py:18-120](../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [document_service.py:34-114](../../../../backend/app/services/document_service.py#L34-L114)
 
 **Section sources**
 
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
 
 ## Core Components
 
@@ -126,14 +126,14 @@ A --> M
 
 **Section sources**
 
-- [main.py:1-383](file://backend/app/main.py#L1-L383)
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
-- [base.py:11-20](file://backend/app/db/base.py#L11-L20)
-- [document.py:6-26](file://backend/app/models/document.py#L6-L26)
-- [document_service.py:34-114](file://backend/app/services/document_service.py#L34-L114)
-- [orchestrator.py:73-545](file://backend/app/pipeline/orchestrator.py#L73-L545)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
+- [main.py:1-383](../../../../backend/app/main.py#L1-L383)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
+- [base.py:11-20](../../../../backend/app/db/base.py#L11-L20)
+- [document.py:6-26](../../../../backend/app/models/document.py#L6-L26)
+- [document_service.py:34-114](../../../../backend/app/services/document_service.py#L34-L114)
+- [orchestrator.py:73-545](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L545)
+- [pubsub.py:18-120](../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [rate_limit.py:49-172](../../../../backend/app/middleware/rate_limit.py#L49-L172)
 
 ## Architecture Overview
 
@@ -153,7 +153,7 @@ API --> MW2["TierRateLimitMiddleware"]
 API --> MW3["SecurityHeadersMiddleware"]
 API --> MW4["MaxBodySizeMiddleware"]
 API --> MW5["RequestIdMiddleware"]
-API --> Routers["Routers (v1, auth, documents, templates, metrics, feedback, stream, preview, generator)"]
+API --> Routers["Routers ("v1, auth, documents, templates, metrics, feedback, stream, preview, generator")"]
 API --> Orchestrator["Pipeline Orchestrator"]
 Orchestrator --> Stages["Pipeline Stages<br/>InputConversion → Parsing → StructureDetection → NLPAnalysis → Classification → Validation → Formatting → Export"]
 Orchestrator --> DB["Supabase Client"]
@@ -163,10 +163,10 @@ Orchestrator --> ExternalTools["External Tools<br/>GROBID, Docling, LibreOffice,
 
 **Diagram sources**
 
-- [main.py:294-359](file://backend/app/main.py#L294-L359)
-- [orchestrator.py:73-545](file://backend/app/pipeline/orchestrator.py#L73-L545)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [document_service.py:34-114](file://backend/app/services/document_service.py#L34-L114)
+- [main.py:294-359](../../../../backend/app/main.py#L294-L359)
+- [orchestrator.py:73-545](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L545)
+- [pubsub.py:18-120](../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [document_service.py:34-114](../../../../backend/app/services/document_service.py#L34-L114)
 
 ## Detailed Component Analysis
 
@@ -197,13 +197,13 @@ Router-->>Client : Response
 
 **Diagram sources**
 
-- [main.py:294-359](file://backend/app/main.py#L294-L359)
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
+- [main.py:294-359](../../../../backend/app/main.py#L294-L359)
+- [rate_limit.py:49-172](../../../../backend/app/middleware/rate_limit.py#L49-L172)
 
 **Section sources**
 
-- [main.py:294-359](file://backend/app/main.py#L294-L359)
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
+- [main.py:294-359](../../../../backend/app/main.py#L294-L359)
+- [rate_limit.py:49-172](../../../../backend/app/middleware/rate_limit.py#L49-L172)
 
 ### Configuration and Environment Settings
 
@@ -212,7 +212,7 @@ Router-->>Client : Response
 
 **Section sources**
 
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
 
 ### Database Design with SQLAlchemy ORM
 
@@ -241,13 +241,13 @@ timestamptz updated_at
 
 **Diagram sources**
 
-- [base.py:11-20](file://backend/app/db/base.py#L11-L20)
-- [document.py:6-26](file://backend/app/models/document.py#L6-L26)
+- [base.py:11-20](../../../../backend/app/db/base.py#L11-L20)
+- [document.py:6-26](../../../../backend/app/models/document.py#L6-L26)
 
 **Section sources**
 
-- [base.py:11-20](file://backend/app/db/base.py#L11-L20)
-- [document.py:6-26](file://backend/app/models/document.py#L6-L26)
+- [base.py:11-20](../../../../backend/app/db/base.py#L11-L20)
+- [document.py:6-26](../../../../backend/app/models/document.py#L6-L26)
 
 ### Service Layer Architecture
 
@@ -278,11 +278,11 @@ class DocumentService {
 
 **Diagram sources**
 
-- [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
+- [document_service.py:34-560](../../../../backend/app/services/document_service.py#L34-L560)
 
 **Section sources**
 
-- [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
+- [document_service.py:34-560](../../../../backend/app/services/document_service.py#L34-L560)
 
 ### Routing Organization
 
@@ -291,7 +291,7 @@ class DocumentService {
 
 **Section sources**
 
-- [documents.py:29-359](file://backend/app/routers/v1/documents.py#L29-L359)
+- [documents.py:29-359](../../../../backend/app/routers/v1/documents.py#L29-L359)
 
 ### Real-Time Communication via Redis Pub/Sub
 
@@ -310,13 +310,13 @@ Client-->>PubSub : receive event
 
 **Diagram sources**
 
-- [orchestrator.py:115-166](file://backend/app/pipeline/orchestrator.py#L115-L166)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
+- [orchestrator.py:115-166](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L115-L166)
+- [pubsub.py:18-120](../../../../backend/app/realtime/pubsub.py#L18-L120)
 
 **Section sources**
 
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [orchestrator.py:115-166](file://backend/app/pipeline/orchestrator.py#L115-L166)
+- [pubsub.py:18-120](../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [orchestrator.py:115-166](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L115-L166)
 
 ### 12-Stage Pipeline Processing System
 
@@ -346,21 +346,21 @@ Export --> End(["End"])
 
 **Diagram sources**
 
-- [orchestrator.py:522-545](file://backend/app/pipeline/orchestrator.py#L522-L545)
-- [converter.py:19-106](file://backend/app/pipeline/input_conversion/converter.py#L19-L106)
-- [parser.py:61-165](file://backend/app/pipeline/parsing/parser.py#L61-L165)
-- [formatter.py:35-80](file://backend/app/pipeline/formatting/formatter.py#L35-L80)
-- [validator_v3.py:34-146](file://backend/app/pipeline/validation/validator_v3.py#L34-L146)
-- [exporter.py:19-67](file://backend/app/pipeline/export/exporter.py#L19-L67)
+- [orchestrator.py:522-545](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L522-L545)
+- [converter.py:19-106](../../../../backend/app/pipeline/input_conversion/converter.py#L19-L106)
+- [parser.py:61-165](../../../../backend/app/pipeline/parsing/parser.py#L61-L165)
+- [formatter.py:35-80](../../../../backend/app/pipeline/formatting/formatter.py#L35-L80)
+- [validator_v3.py:34-146](../../../../backend/app/pipeline/validation/validator_v3.py#L34-L146)
+- [exporter.py:19-67](../../../../backend/app/pipeline/export/exporter.py#L19-L67)
 
 **Section sources**
 
-- [orchestrator.py:522-545](file://backend/app/pipeline/orchestrator.py#L522-L545)
-- [converter.py:19-106](file://backend/app/pipeline/input_conversion/converter.py#L19-L106)
-- [parser.py:61-165](file://backend/app/pipeline/parsing/parser.py#L61-L165)
-- [formatter.py:35-80](file://backend/app/pipeline/formatting/formatter.py#L35-L80)
-- [validator_v3.py:34-146](file://backend/app/pipeline/validation/validator_v3.py#L34-L146)
-- [exporter.py:19-67](file://backend/app/pipeline/export/exporter.py#L19-L67)
+- [orchestrator.py:522-545](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L522-L545)
+- [converter.py:19-106](../../../../backend/app/pipeline/input_conversion/converter.py#L19-L106)
+- [parser.py:61-165](../../../../backend/app/pipeline/parsing/parser.py#L61-L165)
+- [formatter.py:35-80](../../../../backend/app/pipeline/formatting/formatter.py#L35-L80)
+- [validator_v3.py:34-146](../../../../backend/app/pipeline/validation/validator_v3.py#L34-L146)
+- [exporter.py:19-67](../../../../backend/app/pipeline/export/exporter.py#L19-L67)
 
 ## Dependency Analysis
 
@@ -386,23 +386,23 @@ DocSvc --> DB["models/document.py"]
 
 **Diagram sources**
 
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
-- [documents.py:29-359](file://backend/app/routers/v1/documents.py#L29-L359)
-- [orchestrator.py:73-545](file://backend/app/pipeline/orchestrator.py#L73-L545)
-- [converter.py:19-106](file://backend/app/pipeline/input_conversion/converter.py#L19-L106)
-- [parser.py:61-165](file://backend/app/pipeline/parsing/parser.py#L61-L165)
-- [formatter.py:35-80](file://backend/app/pipeline/formatting/formatter.py#L35-L80)
-- [validator_v3.py:34-146](file://backend/app/pipeline/validation/validator_v3.py#L34-L146)
-- [exporter.py:19-67](file://backend/app/pipeline/export/exporter.py#L19-L67)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [document_service.py:34-114](file://backend/app/services/document_service.py#L34-L114)
-- [document.py:6-26](file://backend/app/models/document.py#L6-L26)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
+- [documents.py:29-359](../../../../backend/app/routers/v1/documents.py#L29-L359)
+- [orchestrator.py:73-545](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L545)
+- [converter.py:19-106](../../../../backend/app/pipeline/input_conversion/converter.py#L19-L106)
+- [parser.py:61-165](../../../../backend/app/pipeline/parsing/parser.py#L61-L165)
+- [formatter.py:35-80](../../../../backend/app/pipeline/formatting/formatter.py#L35-L80)
+- [validator_v3.py:34-146](../../../../backend/app/pipeline/validation/validator_v3.py#L34-L146)
+- [exporter.py:19-67](../../../../backend/app/pipeline/export/exporter.py#L19-L67)
+- [pubsub.py:18-120](../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [document_service.py:34-114](../../../../backend/app/services/document_service.py#L34-L114)
+- [document.py:6-26](../../../../backend/app/models/document.py#L6-L26)
 
 **Section sources**
 
-- [main.py:263-383](file://backend/app/main.py#L263-L383)
-- [orchestrator.py:73-545](file://backend/app/pipeline/orchestrator.py#L73-L545)
+- [main.py:263-383](../../../../backend/app/main.py#L263-L383)
+- [orchestrator.py:73-545](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L545)
 
 ## Performance Considerations
 
@@ -415,9 +415,9 @@ DocSvc --> DB["models/document.py"]
 
 **Section sources**
 
-- [orchestrator.py:68-72](file://backend/app/pipeline/orchestrator.py#L68-L72)
-- [settings.py:380-414](file://backend/app/config/settings.py#L380-L414)
-- [main.py:106-148](file://backend/app/main.py#L106-L148)
+- [orchestrator.py:68-72](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L68-L72)
+- [settings.py:380-414](../../../../backend/app/config/settings.py#L380-L414)
+- [main.py:106-148](../../../../backend/app/main.py#L106-L148)
 
 ## Troubleshooting Guide
 
@@ -429,12 +429,12 @@ DocSvc --> DB["models/document.py"]
 
 **Section sources**
 
-- [main.py:360-381](file://backend/app/main.py#L360-L381)
-- [document_service.py:395-441](file://backend/app/services/document_service.py#L395-L441)
-- [validator_v3.py:68-146](file://backend/app/pipeline/validation/validator_v3.py#L68-L146)
-- [exporter.py:76-171](file://backend/app/pipeline/export/exporter.py#L76-L171)
-- [rate_limit.py:124-172](file://backend/app/middleware/rate_limit.py#L124-L172)
-- [pubsub.py:45-71](file://backend/app/realtime/pubsub.py#L45-L71)
+- [main.py:360-381](../../../../backend/app/main.py#L360-L381)
+- [document_service.py:395-441](../../../../backend/app/services/document_service.py#L395-L441)
+- [validator_v3.py:68-146](../../../../backend/app/pipeline/validation/validator_v3.py#L68-L146)
+- [exporter.py:76-171](../../../../backend/app/pipeline/export/exporter.py#L76-L171)
+- [rate_limit.py:124-172](../../../../backend/app/middleware/rate_limit.py#L124-L172)
+- [pubsub.py:45-71](../../../../backend/app/realtime/pubsub.py#L45-L71)
 
 ## Conclusion
 
@@ -450,8 +450,8 @@ The backend leverages FastAPI with a modular pipeline architecture, robust middl
 
 **Section sources**
 
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
-- [pyproject.toml:1-9](file://backend/pyproject.toml#L1-L9)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
+- [pyproject.toml:1-9](../../../../backend/pyproject.toml#L1-L9)
 
 ### Testing Strategies
 
@@ -461,7 +461,7 @@ The backend leverages FastAPI with a modular pipeline architecture, robust middl
 
 **Section sources**
 
-- [tests/](file://backend/tests/)
+- [tests/](../../../../backend/tests)
 - [manual_tests/](file://backend/manual_tests/)
 
 ### Deployment Considerations
@@ -473,6 +473,6 @@ The backend leverages FastAPI with a modular pipeline architecture, robust middl
 
 **Section sources**
 
-- [main.py:303-314](file://backend/app/main.py#L303-L314)
-- [docker/](file://backend/docker/)
-- [ops/](file://backend/ops/)
+- [main.py:303-314](../../../../backend/app/main.py#L303-L314)
+- [docker/](../../../../backend/docker)
+- [ops/](../../../../backend/ops)

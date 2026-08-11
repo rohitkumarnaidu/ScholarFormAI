@@ -26,7 +26,7 @@ Pre-release suffixes: `-alpha.N`, `-beta.N`, `-rc.N`.
 
 Rotating role among Core Team. Responsible for shepherding the release from branch to production.
 
-> **Quick reference:** See [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md) for the one-page release checklist.
+> **Quick reference:** See [docs/RELEASE_CHECKLIST.md](../release/RELEASE_CHECKLIST.md) for the one-page release checklist.
 
 ## Release Workflow
 
@@ -248,7 +248,7 @@ When the tag is pushed, `create-release.yml` uses the draft to populate the rele
 
 - Production deployment via `deploy-production.yml` workflow (manual trigger)
 - Monitor SLO dashboards for 1 hour post-deploy
-- If regression detected: trigger rollback (see [Rollback Runbook](docs/runbooks/rollback.md))
+- If regression detected: trigger rollback (see [Rollback Runbook](../runbooks/rollback.md))
 
 ### 6. Post-Release
 

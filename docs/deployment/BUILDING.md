@@ -51,7 +51,7 @@ docker build -t scholarform-api:latest -f backend/Dockerfile backend/
 docker build -t scholarform-ui:latest -f frontend/Dockerfile frontend/
 ```
 
-See [docker-compose.yml](backend/docker/docker-compose.yml) for the full service stack (GROBID + support services).
+See [docker-compose.yml](../../backend/docker/docker-compose.yml) for the full service stack (GROBID + support services).
 
 ## Development Build
 

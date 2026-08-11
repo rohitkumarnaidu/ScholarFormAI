@@ -53,7 +53,7 @@ class PipelineStages:
     @property
     def _run_with_timeout(self):
         if self.orchestrator and hasattr(self.orchestrator, "_run_with_timeout"):
-            return getattr(self.orchestrator, "_run_with_timeout")
+            return self.orchestrator._run_with_timeout
         return self._fallback_run_with_timeout
 
     # ------------------------------------------------------------------ #

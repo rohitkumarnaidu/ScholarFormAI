@@ -5,28 +5,28 @@
 
 <cite>
 **Referenced Files in This Document**
-- [package.json](file://frontend/package.json)
-- [api.core.js](file://frontend/src/services/api.core.js)
-- [api.documents.js](file://frontend/src/services/api.documents.js)
-- [api.generation.js](file://frontend/src/services/api.generation.js)
-- [api.hooks.js](file://frontend/src/services/api.hooks.js)
+- [package.json](../../../../../frontend/package.json)
+- [api.core.js](../../../../../frontend/src/services/api.core.js)
+- [api.documents.js](../../../../../frontend/src/services/api.documents.js)
+- [api.generation.js](../../../../../frontend/src/services/api.generation.js)
+- [api.hooks.js](../../../../../frontend/src/services/api.hooks.js)
 - [useGeneratorState.js](file://frontend/app/(generator)/(protected)/generate/_components/useGeneratorState.js)
-- [useSessionEventStream.js](file://frontend/src/hooks/useSessionEventStream.js)
-- [useGeneratorSessionStream.js](file://frontend/src/hooks/useGeneratorSessionStream.js)
-- [useSynthesisSessionStream.js](file://frontend/src/hooks/useSynthesisSessionStream.js)
-- [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
-- [useUpload.js](file://frontend/src/hooks/useUpload.js)
-- [useAgent.js](file://frontend/src/hooks/useAgent.js)
-- [useAgentEvents.js](file://frontend/src/hooks/useAgentEvents.js)
-- [useAutosave.js](file://frontend/src/hooks/useAutosave.js)
-- [useUnsavedChanges.js](file://frontend/src/hooks/useUnsavedChanges.js)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
-- [layout.jsx](file://frontend/app/layout.jsx)
+- [useSessionEventStream.js](../../../../../frontend/src/hooks/useSessionEventStream.js)
+- [useGeneratorSessionStream.js](../../../../../frontend/src/hooks/useGeneratorSessionStream.js)
+- [useSynthesisSessionStream.js](../../../../../frontend/src/hooks/useSynthesisSessionStream.js)
+- [useLivePreviewSocket.js](../../../../../frontend/src/hooks/useLivePreviewSocket.js)
+- [useUpload.js](../../../../../frontend/src/hooks/useUpload.js)
+- [useAgent.js](../../../../../frontend/src/hooks/useAgent.js)
+- [useAgentEvents.js](../../../../../frontend/src/hooks/useAgentEvents.js)
+- [useAutosave.js](../../../../../frontend/src/hooks/useAutosave.js)
+- [useUnsavedChanges.js](../../../../../frontend/src/hooks/useUnsavedChanges.js)
+- [supabaseClient.js](../../../../../frontend/src/lib/supabaseClient.js)
+- [layout.jsx](../../../../../frontend/app/(formatter)/layout.jsx)
 - [layout.jsx](file://frontend/app/(shared)/layout.jsx)
 - [layout.jsx](file://frontend/app/(formatter)/(protected)/layout.jsx)
 - [layout.jsx](file://frontend/app/(generator)/(protected)/layout.jsx)
 - [layout.jsx](file://frontend/app/(shared)/(protected)/layout.jsx)
-- [status.js](file://frontend/src/constants/status.js)
+- [status.js](../../../../../frontend/src/constants/status.js)
 </cite>
 
 ## Table of Contents
@@ -64,30 +64,30 @@ S1 --> C1
 
 **Diagram sources**
 
-- [layout.jsx](file://frontend/app/layout.jsx)
+- [layout.jsx](../../../../../frontend/app/(formatter)/layout.jsx)
 - [layout.jsx](file://frontend/app/(shared)/layout.jsx)
 - [layout.jsx](file://frontend/app/(formatter)/(protected)/layout.jsx)
 - [layout.jsx](file://frontend/app/(generator)/(protected)/layout.jsx)
 - [layout.jsx](file://frontend/app/(shared)/(protected)/layout.jsx)
-- [useUpload.js](file://frontend/src/hooks/useUpload.js)
-- [useSessionEventStream.js](file://frontend/src/hooks/useSessionEventStream.js)
-- [useGeneratorSessionStream.js](file://frontend/src/hooks/useGeneratorSessionStream.js)
-- [useSynthesisSessionStream.js](file://frontend/src/hooks/useSynthesisSessionStream.js)
-- [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
-- [useAgent.js](file://frontend/src/hooks/useAgent.js)
-- [useAgentEvents.js](file://frontend/src/hooks/useAgentEvents.js)
-- [useAutosave.js](file://frontend/src/hooks/useAutosave.js)
-- [useUnsavedChanges.js](file://frontend/src/hooks/useUnsavedChanges.js)
-- [api.core.js](file://frontend/src/services/api.core.js)
-- [api.documents.js](file://frontend/src/services/api.documents.js)
-- [api.generation.js](file://frontend/src/services/api.generation.js)
-- [api.hooks.js](file://frontend/src/services/api.hooks.js)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
+- [useUpload.js](../../../../../frontend/src/hooks/useUpload.js)
+- [useSessionEventStream.js](../../../../../frontend/src/hooks/useSessionEventStream.js)
+- [useGeneratorSessionStream.js](../../../../../frontend/src/hooks/useGeneratorSessionStream.js)
+- [useSynthesisSessionStream.js](../../../../../frontend/src/hooks/useSynthesisSessionStream.js)
+- [useLivePreviewSocket.js](../../../../../frontend/src/hooks/useLivePreviewSocket.js)
+- [useAgent.js](../../../../../frontend/src/hooks/useAgent.js)
+- [useAgentEvents.js](../../../../../frontend/src/hooks/useAgentEvents.js)
+- [useAutosave.js](../../../../../frontend/src/hooks/useAutosave.js)
+- [useUnsavedChanges.js](../../../../../frontend/src/hooks/useUnsavedChanges.js)
+- [api.core.js](../../../../../frontend/src/services/api.core.js)
+- [api.documents.js](../../../../../frontend/src/services/api.documents.js)
+- [api.generation.js](../../../../../frontend/src/services/api.generation.js)
+- [api.hooks.js](../../../../../frontend/src/services/api.hooks.js)
+- [supabaseClient.js](../../../../../frontend/src/lib/supabaseClient.js)
 
 **Section sources**
 
-- [package.json:17-36](file://frontend/package.json#L17-L36)
-- [layout.jsx](file://frontend/app/layout.jsx)
+- [package.json:17-36](../../../../../frontend/package.json#L17-L36)
+- [layout.jsx](../../../../../frontend/app/(formatter)/layout.jsx)
 - [layout.jsx](file://frontend/app/(shared)/layout.jsx)
 - [layout.jsx](file://frontend/app/(formatter)/(protected)/layout.jsx)
 - [layout.jsx](file://frontend/app/(generator)/(protected)/layout.jsx)
@@ -110,15 +110,15 @@ Key responsibilities:
 
 **Section sources**
 
-- [package.json:22-22](file://frontend/package.json#L22-L22)
-- [api.core.js:190-218](file://frontend/src/services/api.core.js#L190-L218)
-- [api.core.js:220-255](file://frontend/src/services/api.core.js#L220-L255)
-- [api.core.js:307-362](file://frontend/src/services/api.core.js#L307-L362)
-- [api.documents.js:121-146](file://frontend/src/services/api.documents.js#L121-L146)
-- [api.documents.js:148-224](file://frontend/src/services/api.documents.js#L148-L224)
-- [api.documents.js:226-300](file://frontend/src/services/api.documents.js#L226-L300)
-- [api.documents.js:302-320](file://frontend/src/services/api.documents.js#L302-L320)
-- [api.documents.js:334-395](file://frontend/src/services/api.documents.js#L334-L395)
+- [package.json:22-22](../../../../../frontend/package.json#L22-L22)
+- [api.core.js:190-218](../../../../../frontend/src/services/api.core.js#L190-L218)
+- [api.core.js:220-255](../../../../../frontend/src/services/api.core.js#L220-L255)
+- [api.core.js:307-362](../../../../../frontend/src/services/api.core.js#L307-L362)
+- [api.documents.js:121-146](../../../../../frontend/src/services/api.documents.js#L121-L146)
+- [api.documents.js:148-224](../../../../../frontend/src/services/api.documents.js#L148-L224)
+- [api.documents.js:226-300](../../../../../frontend/src/services/api.documents.js#L226-L300)
+- [api.documents.js:302-320](../../../../../frontend/src/services/api.documents.js#L302-L320)
+- [api.documents.js:334-395](../../../../../frontend/src/services/api.documents.js#L334-L395)
 
 ## Architecture Overview
 
@@ -158,28 +158,28 @@ AC --> SB
 
 **Diagram sources**
 
-- [api.core.js:307-362](file://frontend/src/services/api.core.js#L307-L362)
-- [api.documents.js:121-146](file://frontend/src/services/api.documents.js#L121-L146)
-- [api.documents.js:302-320](file://frontend/src/services/api.documents.js#L302-L320)
-- [api.generation.js](file://frontend/src/services/api.generation.js)
-- [api.hooks.js](file://frontend/src/services/api.hooks.js)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
-- [useSessionEventStream.js](file://frontend/src/hooks/useSessionEventStream.js)
-- [useGeneratorSessionStream.js](file://frontend/src/hooks/useGeneratorSessionStream.js)
-- [useSynthesisSessionStream.js](file://frontend/src/hooks/useSynthesisSessionStream.js)
-- [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
+- [api.core.js:307-362](../../../../../frontend/src/services/api.core.js#L307-L362)
+- [api.documents.js:121-146](../../../../../frontend/src/services/api.documents.js#L121-L146)
+- [api.documents.js:302-320](../../../../../frontend/src/services/api.documents.js#L302-L320)
+- [api.generation.js](../../../../../frontend/src/services/api.generation.js)
+- [api.hooks.js](../../../../../frontend/src/services/api.hooks.js)
+- [supabaseClient.js](../../../../../frontend/src/lib/supabaseClient.js)
+- [useSessionEventStream.js](../../../../../frontend/src/hooks/useSessionEventStream.js)
+- [useGeneratorSessionStream.js](../../../../../frontend/src/hooks/useGeneratorSessionStream.js)
+- [useSynthesisSessionStream.js](../../../../../frontend/src/hooks/useSynthesisSessionStream.js)
+- [useLivePreviewSocket.js](../../../../../frontend/src/hooks/useLivePreviewSocket.js)
 
 ## Detailed Component Analysis
 
 ### Query Client Configuration
 
 - Initialize QueryClient with defaults:
-    - staleTime: Allow cached data to remain fresh for moderate durations to reduce redundant network calls.
-    - gcTime: Garbage collection time to free inactive queries.
-    - defaultOptions.queries.retry: Conservative retry for transient failures on GET/HEAD/OPTIONS.
-    - defaultOptions.queries.refetchOnWindowFocus: Disable to avoid unwanted refetches during editing.
-    - defaultOptions.queries.refetchOnMount: Enable for recent data on mount.
-    - defaultOptions.mutations.retry: Retry mutations that fail due to network errors.
+  - staleTime: Allow cached data to remain fresh for moderate durations to reduce redundant network calls.
+  - gcTime: Garbage collection time to free inactive queries.
+  - defaultOptions.queries.retry: Conservative retry for transient failures on GET/HEAD/OPTIONS.
+  - defaultOptions.queries.refetchOnWindowFocus: Disable to avoid unwanted refetches during editing.
+  - defaultOptions.queries.refetchOnMount: Enable for recent data on mount.
+  - defaultOptions.mutations.retry: Retry mutations that fail due to network errors.
 - Wrap the app with QueryClientProvider in the root layout.
 
 Best practices:
@@ -189,32 +189,32 @@ Best practices:
 
 **Section sources**
 
-- [api.core.js:168-188](file://frontend/src/services/api.core.js#L168-L188)
-- [layout.jsx](file://frontend/app/layout.jsx)
+- [api.core.js:168-188](../../../../../frontend/src/services/api.core.js#L168-L188)
+- [layout.jsx](../../../../../frontend/app/(formatter)/layout.jsx)
 
 ### Caching Strategies
 
 - Document Lists:
-    - Use query keys that encode filters and pagination to avoid cache collisions.
-    - Normalize query params to ensure deterministic keys.
+  - Use query keys that encode filters and pagination to avoid cache collisions.
+  - Normalize query params to ensure deterministic keys.
 - Real-time Updates:
-    - Invalidate related queries upon mutation completion to force refetch.
-    - Use optimistic updates for immediate UI feedback.
+  - Invalidate related queries upon mutation completion to force refetch.
+  - Use optimistic updates for immediate UI feedback.
 - Debounced Requests:
-    - Preview and comparison endpoints use debounced fetch to coalesce rapid updates.
+  - Preview and comparison endpoints use debounced fetch to coalesce rapid updates.
 
 **Section sources**
 
-- [api.documents.js:61-95](file://frontend/src/services/api.documents.js#L61-L95)
-- [api.documents.js:22-59](file://frontend/src/services/api.documents.js#L22-L59)
-- [api.documents.js:302-320](file://frontend/src/services/api.documents.js#L302-L320)
+- [api.documents.js:61-95](../../../../../frontend/src/services/api.documents.js#L61-L95)
+- [api.documents.js:22-59](../../../../../frontend/src/services/api.documents.js#L22-L59)
+- [api.documents.js:302-320](../../../../../frontend/src/services/api.documents.js#L302-L320)
 
 ### Data Synchronization Patterns
 
 - Event-driven updates:
-    - useSessionEventStream, useGeneratorSessionStream, useSynthesisSessionStream listen to server-sent events and update local cache accordingly.
+  - useSessionEventStream, useGeneratorSessionStream, useSynthesisSessionStream listen to server-sent events and update local cache accordingly.
 - WebSocket-based live preview:
-    - useLivePreviewSocket maintains a persistent connection for live diffs and collaborative editing.
+  - useLivePreviewSocket maintains a persistent connection for live diffs and collaborative editing.
 
 ```mermaid
 sequenceDiagram
@@ -231,32 +231,32 @@ QC-->>UI : Updated data
 
 **Diagram sources**
 
-- [useSessionEventStream.js](file://frontend/src/hooks/useSessionEventStream.js)
-- [api.documents.js:302-304](file://frontend/src/services/api.documents.js#L302-L304)
+- [useSessionEventStream.js](../../../../../frontend/src/hooks/useSessionEventStream.js)
+- [api.documents.js:302-304](../../../../../frontend/src/services/api.documents.js#L302-L304)
 
 **Section sources**
 
-- [useSessionEventStream.js](file://frontend/src/hooks/useSessionEventStream.js)
-- [useGeneratorSessionStream.js](file://frontend/src/hooks/useGeneratorSessionStream.js)
-- [useSynthesisSessionStream.js](file://frontend/src/hooks/useSynthesisSessionStream.js)
-- [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
+- [useSessionEventStream.js](../../../../../frontend/src/hooks/useSessionEventStream.js)
+- [useGeneratorSessionStream.js](../../../../../frontend/src/hooks/useGeneratorSessionStream.js)
+- [useSynthesisSessionStream.js](../../../../../frontend/src/hooks/useSynthesisSessionStream.js)
+- [useLivePreviewSocket.js](../../../../../frontend/src/hooks/useLivePreviewSocket.js)
 
 ### Document-Related Queries
 
 - Fetch Documents List:
-    - Endpoint: GET /api/documents with normalized query params (limit, offset, filters).
-    - Query key: [“documents”, params].
+  - Endpoint: GET /api/documents with normalized query params (limit, offset, filters).
+  - Query key: [“documents”, params].
 - Job Status:
-    - Endpoint: GET /api/documents/{jobId}/status.
-    - Query key: [“documents”, jobId, “status”].
+  - Endpoint: GET /api/documents/{jobId}/status.
+  - Query key: [“documents”, jobId, “status”].
 - Preview and Comparison:
-    - Endpoints: GET /api/documents/{jobId}/preview, /api/documents/{jobId}/compare.
-    - Debounced fetch to reduce churn.
+  - Endpoints: GET /api/documents/{jobId}/preview, /api/documents/{jobId}/compare.
+  - Debounced fetch to reduce churn.
 - Edit Submission:
-    - Endpoint: POST /api/documents/{jobId}/edit with structured data payload.
+  - Endpoint: POST /api/documents/{jobId}/edit with structured data payload.
 - Export and Download:
-    - Endpoint: GET /api/documents/{jobId}/download?format={docx|pdf|tex}.
-    - Handles signed URLs for secure downloads.
+  - Endpoint: GET /api/documents/{jobId}/download?format={docx|pdf|tex}.
+  - Handles signed URLs for secure downloads.
 
 ```mermaid
 flowchart TD
@@ -278,26 +278,26 @@ Cache --> UI["UI updates"]
 
 **Diagram sources**
 
-- [api.documents.js:121-126](file://frontend/src/services/api.documents.js#L121-L126)
-- [api.documents.js:302-304](file://frontend/src/services/api.documents.js#L302-L304)
-- [api.documents.js:306-320](file://frontend/src/services/api.documents.js#L306-L320)
-- [api.documents.js:322-330](file://frontend/src/services/api.documents.js#L322-L330)
-- [api.documents.js:334-395](file://frontend/src/services/api.documents.js#L334-L395)
+- [api.documents.js:121-126](../../../../../frontend/src/services/api.documents.js#L121-L126)
+- [api.documents.js:302-304](../../../../../frontend/src/services/api.documents.js#L302-L304)
+- [api.documents.js:306-320](../../../../../frontend/src/services/api.documents.js#L306-L320)
+- [api.documents.js:322-330](../../../../../frontend/src/services/api.documents.js#L322-L330)
+- [api.documents.js:334-395](../../../../../frontend/src/services/api.documents.js#L334-L395)
 
 **Section sources**
 
-- [api.documents.js:121-146](file://frontend/src/services/api.documents.js#L121-L146)
-- [api.documents.js:302-320](file://frontend/src/services/api.documents.js#L302-L320)
-- [api.documents.js:322-330](file://frontend/src/services/api.documents.js#L322-L330)
-- [api.documents.js:334-395](file://frontend/src/services/api.documents.js#L334-L395)
+- [api.documents.js:121-146](../../../../../frontend/src/services/api.documents.js#L121-L146)
+- [api.documents.js:302-320](../../../../../frontend/src/services/api.documents.js#L302-L320)
+- [api.documents.js:322-330](../../../../../frontend/src/services/api.documents.js#L322-L330)
+- [api.documents.js:334-395](../../../../../frontend/src/services/api.documents.js#L334-L395)
 
 ### Generation Session Queries
 
 - Session Management:
-    - Retrieve generation sessions and associated metadata.
-    - Use event streams to receive incremental updates.
+  - Retrieve generation sessions and associated metadata.
+  - Use event streams to receive incremental updates.
 - Streaming:
-    - useGeneratorSessionStream and useSynthesisSessionStream consume server-sent events to update UI in real time.
+  - useGeneratorSessionStream and useSynthesisSessionStream consume server-sent events to update UI in real time.
 
 ```mermaid
 sequenceDiagram
@@ -317,27 +317,27 @@ QC-->>UI : Render incremental changes
 
 **Diagram sources**
 
-- [useGeneratorSessionStream.js](file://frontend/src/hooks/useGeneratorSessionStream.js)
-- [api.generation.js](file://frontend/src/services/api.generation.js)
-- [useSynthesisSessionStream.js](file://frontend/src/hooks/useSynthesisSessionStream.js)
+- [useGeneratorSessionStream.js](../../../../../frontend/src/hooks/useGeneratorSessionStream.js)
+- [api.generation.js](../../../../../frontend/src/services/api.generation.js)
+- [useSynthesisSessionStream.js](../../../../../frontend/src/hooks/useSynthesisSessionStream.js)
 
 **Section sources**
 
-- [useGeneratorSessionStream.js](file://frontend/src/hooks/useGeneratorSessionStream.js)
-- [useSynthesisSessionStream.js](file://frontend/src/hooks/useSynthesisSessionStream.js)
-- [api.generation.js](file://frontend/src/services/api.generation.js)
+- [useGeneratorSessionStream.js](../../../../../frontend/src/hooks/useGeneratorSessionStream.js)
+- [useSynthesisSessionStream.js](../../../../../frontend/src/hooks/useSynthesisSessionStream.js)
+- [api.generation.js](../../../../../frontend/src/services/api.generation.js)
 
 ### Mutation Patterns
 
 - Document Upload:
-    - Single-shot multipart upload with progress via fetchWithAuth.
-    - Chunked upload for large files with progress and abort support.
+  - Single-shot multipart upload with progress via fetchWithAuth.
+  - Chunked upload for large files with progress and abort support.
 - Edit Submission:
-    - Optimistic update: immediately reflect edits in cache, rollback on failure.
+  - Optimistic update: immediately reflect edits in cache, rollback on failure.
 - Delete:
-    - Invalidate related queries after deletion.
+  - Invalidate related queries after deletion.
 - Download:
-    - Handle signed URLs and blob downloads.
+  - Handle signed URLs and blob downloads.
 
 ```mermaid
 flowchart TD
@@ -357,33 +357,33 @@ Rollback --> Done2
 
 **Diagram sources**
 
-- [api.documents.js:128-146](file://frontend/src/services/api.documents.js#L128-L146)
-- [api.documents.js:226-300](file://frontend/src/services/api.documents.js#L226-L300)
-- [api.documents.js:322-330](file://frontend/src/services/api.documents.js#L322-L330)
+- [api.documents.js:128-146](../../../../../frontend/src/services/api.documents.js#L128-L146)
+- [api.documents.js:226-300](../../../../../frontend/src/services/api.documents.js#L226-L300)
+- [api.documents.js:322-330](../../../../../frontend/src/services/api.documents.js#L322-L330)
 
 **Section sources**
 
-- [api.documents.js:128-146](file://frontend/src/services/api.documents.js#L128-L146)
-- [api.documents.js:226-300](file://frontend/src/services/api.documents.js#L226-L300)
-- [api.documents.js:322-330](file://frontend/src/services/api.documents.js#L322-L330)
-- [useUpload.js](file://frontend/src/hooks/useUpload.js)
+- [api.documents.js:128-146](../../../../../frontend/src/services/api.documents.js#L128-L146)
+- [api.documents.js:226-300](../../../../../frontend/src/services/api.documents.js#L226-L300)
+- [api.documents.js:322-330](../../../../../frontend/src/services/api.documents.js#L322-L330)
+- [useUpload.js](../../../../../frontend/src/hooks/useUpload.js)
 
 ### Error Handling and Loading States
 
 - Friendly Error Messages:
-    - getFriendlyErrorMessage maps HTTP statuses and network errors to user-friendly messages.
+  - getFriendlyErrorMessage maps HTTP statuses and network errors to user-friendly messages.
 - Network Error Detection:
-    - isNetworkError detects browser/network failures to enable retries.
+  - isNetworkError detects browser/network failures to enable retries.
 - Loading States:
-    - Use isLoading, isFetching, and error states from React Query to render skeletons and error banners.
+  - Use isLoading, isFetching, and error states from React Query to render skeletons and error banners.
 - Abort Handling:
-    - Respect AbortSignal for uploads and chunked uploads to cancel ongoing requests.
+  - Respect AbortSignal for uploads and chunked uploads to cancel ongoing requests.
 
 **Section sources**
 
-- [api.core.js:85-97](file://frontend/src/services/api.core.js#L85-L97)
-- [api.core.js:121-166](file://frontend/src/services/api.core.js#L121-L166)
-- [api.documents.js:186-223](file://frontend/src/services/api.documents.js#L186-L223)
+- [api.core.js:85-97](../../../../../frontend/src/services/api.core.js#L85-L97)
+- [api.core.js:121-166](../../../../../frontend/src/services/api.core.js#L121-L166)
+- [api.documents.js:186-223](../../../../../frontend/src/services/api.documents.js#L186-L223)
 
 ### Optimistic Updates
 
@@ -392,7 +392,7 @@ Rollback --> Done2
 
 **Section sources**
 
-- [api.documents.js:322-330](file://frontend/src/services/api.documents.js#L322-L330)
+- [api.documents.js:322-330](../../../../../frontend/src/services/api.documents.js#L322-L330)
 
 ### Query Invalidation and Refetching
 
@@ -402,7 +402,7 @@ Rollback --> Done2
 
 **Section sources**
 
-- [api.documents.js:401-405](file://frontend/src/services/api.documents.js#L401-L405)
+- [api.documents.js:401-405](../../../../../frontend/src/services/api.documents.js#L401-L405)
 
 ### Cache Persistence
 
@@ -411,7 +411,7 @@ Rollback --> Done2
 
 **Section sources**
 
-- [api.documents.js:121-126](file://frontend/src/services/api.documents.js#L121-L126)
+- [api.documents.js:121-126](../../../../../frontend/src/services/api.documents.js#L121-L126)
 
 ## Dependency Analysis
 
@@ -430,24 +430,24 @@ RQ --> RT["Real-time Hooks<br/>useSessionEventStream, useGeneratorSessionStream,
 
 **Diagram sources**
 
-- [api.core.js:307-362](file://frontend/src/services/api.core.js#L307-L362)
-- [api.documents.js:121-146](file://frontend/src/services/api.documents.js#L121-L146)
-- [api.generation.js](file://frontend/src/services/api.generation.js)
-- [api.hooks.js](file://frontend/src/services/api.hooks.js)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
-- [useSessionEventStream.js](file://frontend/src/hooks/useSessionEventStream.js)
-- [useGeneratorSessionStream.js](file://frontend/src/hooks/useGeneratorSessionStream.js)
-- [useSynthesisSessionStream.js](file://frontend/src/hooks/useSynthesisSessionStream.js)
-- [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
+- [api.core.js:307-362](../../../../../frontend/src/services/api.core.js#L307-L362)
+- [api.documents.js:121-146](../../../../../frontend/src/services/api.documents.js#L121-L146)
+- [api.generation.js](../../../../../frontend/src/services/api.generation.js)
+- [api.hooks.js](../../../../../frontend/src/services/api.hooks.js)
+- [supabaseClient.js](../../../../../frontend/src/lib/supabaseClient.js)
+- [useSessionEventStream.js](../../../../../frontend/src/hooks/useSessionEventStream.js)
+- [useGeneratorSessionStream.js](../../../../../frontend/src/hooks/useGeneratorSessionStream.js)
+- [useSynthesisSessionStream.js](../../../../../frontend/src/hooks/useSynthesisSessionStream.js)
+- [useLivePreviewSocket.js](../../../../../frontend/src/hooks/useLivePreviewSocket.js)
 
 **Section sources**
 
-- [api.core.js:307-362](file://frontend/src/services/api.core.js#L307-L362)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
-- [useSessionEventStream.js](file://frontend/src/hooks/useSessionEventStream.js)
-- [useGeneratorSessionStream.js](file://frontend/src/hooks/useGeneratorSessionStream.js)
-- [useSynthesisSessionStream.js](file://frontend/src/hooks/useSynthesisSessionStream.js)
-- [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
+- [api.core.js:307-362](../../../../../frontend/src/services/api.core.js#L307-L362)
+- [supabaseClient.js](../../../../../frontend/src/lib/supabaseClient.js)
+- [useSessionEventStream.js](../../../../../frontend/src/hooks/useSessionEventStream.js)
+- [useGeneratorSessionStream.js](../../../../../frontend/src/hooks/useGeneratorSessionStream.js)
+- [useSynthesisSessionStream.js](../../../../../frontend/src/hooks/useSynthesisSessionStream.js)
+- [useLivePreviewSocket.js](../../../../../frontend/src/hooks/useLivePreviewSocket.js)
 
 ## Performance Considerations
 
@@ -465,20 +465,20 @@ RQ --> RT["Real-time Hooks<br/>useSessionEventStream, useGeneratorSessionStream,
 Common issues and resolutions:
 
 - Authentication Failures:
-    - Ensure Supabase session is present and headers are injected automatically.
+  - Ensure Supabase session is present and headers are injected automatically.
 - Network Errors:
-    - Verify retry logic for transient failures; inspect isNetworkError detection.
+  - Verify retry logic for transient failures; inspect isNetworkError detection.
 - Download Failures:
-    - Confirm signed URL expiry and re-fetch if needed.
+  - Confirm signed URL expiry and re-fetch if needed.
 - Real-time Updates Not Reflecting:
-    - Check event stream connections and query invalidation after mutations.
+  - Check event stream connections and query invalidation after mutations.
 
 **Section sources**
 
-- [api.core.js:220-255](file://frontend/src/services/api.core.js#L220-L255)
-- [api.core.js:85-97](file://frontend/src/services/api.core.js#L85-L97)
-- [api.documents.js:334-395](file://frontend/src/services/api.documents.js#L334-L395)
-- [useSessionEventStream.js](file://frontend/src/hooks/useSessionEventStream.js)
+- [api.core.js:220-255](../../../../../frontend/src/services/api.core.js#L220-L255)
+- [api.core.js:85-97](../../../../../frontend/src/services/api.core.js#L85-L97)
+- [api.documents.js:334-395](../../../../../frontend/src/services/api.documents.js#L334-L395)
+- [useSessionEventStream.js](../../../../../frontend/src/hooks/useSessionEventStream.js)
 
 ## Conclusion
 

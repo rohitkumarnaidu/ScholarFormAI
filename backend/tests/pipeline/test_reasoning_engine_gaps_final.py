@@ -9,8 +9,26 @@ METRICS_AVAILABLE=False branches.
 
 from __future__ import annotations
 
+import pytest
 import threading
 from unittest.mock import MagicMock, patch
+
+from app.pipeline.intelligence.reasoning_engine import ReasoningEngine
+
+@pytest.fixture
+def engine():
+    with patch("app.pipeline.intelligence.reasoning_engine.requests.get") as mock_get:
+        mock_get.return_value.status_code = 200
+        with patch("app.pipeline.intelligence.reasoning_engine.ChatOllama"):
+            with patch.dict("os.environ", {"PYTEST_CURRENT_TEST": "1"}, clear=False):
+                return ReasoningEngine()
+
+@pytest.fixture
+def sample_blocks():
+    return [
+        {"block_id": "b1", "text": "Introduction", "index": 0},
+        {"block_id": "b2", "text": "This paper presents a novel approach.", "index": 1},
+    ]
 
 # ═══════════════════════════════════════════════════════════════════════════
 # _validate_json_schema — edge cases

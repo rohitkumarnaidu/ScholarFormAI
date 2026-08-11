@@ -29,7 +29,7 @@ Node.js 20+ (LTS). The frontend uses Next.js 16 (App Router), which requires Nod
 
 ### Can I use Vite instead of Next.js?
 
-No. The frontend is built on Next.js 16 App Router. Vite is not supported. See [ADR 010](docs/adr/010-nextjs-app-router.md) for reasoning.
+No. The frontend is built on Next.js 16 App Router. Vite is not supported. See [ADR 010](../adr/010-nextjs-app-router.md) for reasoning.
 
 ### Do I need GROBID?
 
@@ -47,7 +47,7 @@ Yes. The AI pipeline works CPU-only. LLM inference runs via API (NVIDIA NIM, Gro
 
 ### Can I create my own template?
 
-Yes. Create a `template.docx` with Jinja2 placeholders, a `contract.yaml` for validation, and optionally a `styles.csl` for citations. See [Template Creation Guide](docs/template_creation.md).
+Yes. Create a `template.docx` with Jinja2 placeholders, a `contract.yaml` for validation, and optionally a `styles.csl` for citations. See [Template Creation Guide](../user-guide/template_creation.md).
 
 ### Does it support citations?
 
@@ -61,7 +61,7 @@ PDF input is supported via GROBID/Docling/PyMuPDF pipeline. Output is DOCX (with
 
 ### How do I deploy to production?
 
-See the [Deployment Guide](docs/Deployment.md). The recommended stack is Vercel (frontend) + Render (backend) + Supabase (database).
+See the [Deployment Guide](../deployment/Deployment.md). The recommended stack is Vercel (frontend) + Render (backend) + Supabase (database).
 
 ### Can I deploy on my own server?
 
@@ -75,7 +75,7 @@ The Render free tier (512MB RAM) is sufficient with `LOW_MEMORY_MODE=true`. GROB
 
 ### How do I contribute?
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions require DCO sign-off (`git commit -s`).
+See [CONTRIBUTING.md](../../CONTRIBUTING.md). All contributions require DCO sign-off (`git commit -s`).
 
 ### Do I need to sign a CLA?
 
@@ -83,7 +83,7 @@ No. ScholarForm AI uses the [Developer Certificate of Origin](../community/DEVEL
 
 ### What license does the project use?
 
-MIT License. See [LICENSE](LICENSE).
+MIT License. See [LICENSE](../../LICENSE).
 
 ## Troubleshooting
 

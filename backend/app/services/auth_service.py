@@ -47,10 +47,10 @@ except Exception as _exc:
 
 
 def _require_supabase():
-    """Raise HTTP 403 if the Supabase client is not available."""
+    """Raise HTTP 503 if the Supabase client is not available."""
     if supabase is None:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Authentication service is not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY.",
         )
     return supabase
@@ -70,7 +70,7 @@ class AuthService:
         user_id = payload.get("sub")
         if not user_id:
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
+                status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Token missing user identity (sub)",
             )
         return user_id
@@ -167,7 +167,7 @@ class AuthService:
             logger.error("Password reset failed for %s: %s", email, exc)
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Password reset failed. Please try again.",
+                detail="Reset failed. Please try again.",
             )
 
     @staticmethod

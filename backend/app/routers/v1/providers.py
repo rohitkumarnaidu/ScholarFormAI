@@ -1,11 +1,10 @@
 import ipaddress
 import logging
 import time
+from typing import Any
 from urllib.parse import urlparse
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
-from typing import Any
-
 from pydantic import BaseModel, Field, field_validator
 from sqlalchemy.orm import Session
 
@@ -453,14 +452,6 @@ async def list_custom_providers(
     rows = db.execute(query).scalars().all()
     return [_format_custom_provider_response(cp) for cp in rows]
 
-
-@router.get("/custom/{provider_id}", response_model=CustomProviderResponse)
-async def get_custom_provider(
-    provider_id: str,
-    db: Session = Depends(get_db),
-    user=Depends(get_current_user),
-):
-    _get_user_id(user)
 
 
 def _format_custom_provider_response(cp: Any) -> CustomProviderResponse:

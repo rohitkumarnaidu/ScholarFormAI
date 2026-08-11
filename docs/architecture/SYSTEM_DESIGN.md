@@ -69,16 +69,16 @@ The Generator and RAG subsystem powers AI-assisted academic document drafting, s
 
 ```mermaid
 flowchart TD
-    Start([User Request / Prompt Input]) --> CheckCache{Check Redis LLM Cache<br/>(llm:key_hash, TTL 24h)}
-    CheckCache -- Cache Hit --> ReturnCache([Return Cached Completion])
+    Start(["User Request / Prompt Input"]) --> CheckCache{Check Redis LLM Cache<br/>("llm:key_hash, TTL 24h")}
+    CheckCache -- Cache Hit --> ReturnCache(["Return Cached Completion"])
     CheckCache -- Cache Miss --> QueryRAG["Query Session Vector Store<br/>ChromaDB / SessionVectorStore"]
     
     QueryRAG --> EmbedQuery["Embed Query Text<br/>sentence-transformers / BGE-M3"]
     EmbedQuery --> VectorSearch["Retrieve Top-K Context Chunks<br/>Publisher Guidelines & Session History"]
-    VectorSearch --> BuildPrompt[Construct Prompt with In-Context RAG Guidelines]
+    VectorSearch --> BuildPrompt["Construct Prompt with In-Context RAG Guidelines"]
     
     BuildPrompt --> Tier1{Tier 1: NVIDIA NIM API<br/>Llama 3.3 70B Instruct}
-    Tier1 -- Success --> CacheResult[Cache Completion in Redis]
+    Tier1 -- Success --> CacheResult["Cache Completion in Redis"]
     Tier1 -- Rate Limit / Error / Timeout --> Tier2{Tier 2: Groq API<br/>llama-3.3-70b-versatile}
     
     Tier2 -- Success --> CacheResult
@@ -88,10 +88,10 @@ flowchart TD
     Tier3 -- Rate Limit / Error / Timeout --> Tier4{Tier 4: Ollama / DeepSeek<br/>Local / Self-Hosted R1 Engine}
     
     Tier4 -- Success --> CacheResult
-    Tier4 -- All Tiers Failed --> RuleEngine[Execute Rule-Based Heuristic Engine]
+    Tier4 -- All Tiers Failed --> RuleEngine["Execute Rule-Based Heuristic Engine"]
     RuleEngine --> LogDegradation["Log System Degradation & Alert"]
     
-    CacheResult --> End([Deliver Generated Output])
+    CacheResult --> End(["Deliver Generated Output"])
     LogDegradation --> End
 ```
 
@@ -146,7 +146,7 @@ flowchart LR
     end
 
     ReindexKeys --> ReplaceInText["Replace In-Text Citations<br/>e.g. Smith et al. (2024) -> [1]"]
-    ReplaceInText --> Output[Updated Sections + Formatted Bibliography]
+    ReplaceInText --> Output["Updated Sections + Formatted Bibliography"]
 
 ```
 

@@ -72,8 +72,8 @@ class MaxBodySizeMiddleware:
     This protects the application against Denial of Service (DoS) attacks
     where an attacker sends an excessively large request body to consume
     memory or exhaust server bandwidth. If the Content-Length header
-    exceeds `max_size`, an HTTP 413 (Payload Too Large) is returned immediately
-    without processing the rest of the request.
+    or accumulated streaming body exceeds `max_size`, an HTTP 413 (Payload Too Large)
+    is returned immediately.
     """
 
     def __init__(self, app, max_size: int = 60 * 1024 * 1024):  # Default 60MB
@@ -81,20 +81,45 @@ class MaxBodySizeMiddleware:
         self.max_size = max_size
 
     async def __call__(self, scope, receive, send):
-        if scope["type"] == "http":
-            headers = dict(scope.get("headers", []))
-            content_length = headers.get(b"content-length")
-            if content_length:
-                try:
-                    if int(content_length) > self.max_size:
-                        from starlette.responses import JSONResponse
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
 
-                        response = JSONResponse(
-                            {"detail": f"Request body too large. Maximum is {self.max_size // (1024 * 1024)}MB."},
-                            status_code=413,
-                        )
-                        await response(scope, receive, send)
-                        return
-                except (ValueError, TypeError):
-                    pass  # intentionally ignored
-        await self.app(scope, receive, send)
+        headers = dict(scope.get("headers", []))
+        content_length = headers.get(b"content-length")
+        if content_length:
+            try:
+                if int(content_length) > self.max_size:
+                    from starlette.responses import JSONResponse
+
+                    response = JSONResponse(
+                        {"detail": f"Request body too large. Maximum is {self.max_size} bytes."},
+                        status_code=413,
+                    )
+                    await response(scope, receive, send)
+                    return
+            except (ValueError, TypeError):
+                pass  # intentionally ignored
+
+        received_bytes = 0
+        response_sent = False
+
+        async def custom_receive():
+            nonlocal received_bytes, response_sent
+            message = await receive()
+            if message and message.get("type") == "http.request":
+                body = message.get("body", b"")
+                received_bytes += len(body)
+                if received_bytes > self.max_size and not response_sent:
+                    response_sent = True
+                    from starlette.responses import JSONResponse
+
+                    response = JSONResponse(
+                        {"detail": f"Request body too large. Maximum is {self.max_size} bytes."},
+                        status_code=413,
+                    )
+                    await response(scope, receive, send)
+                    return {"type": "http.disconnect"}
+            return message
+
+        await self.app(scope, custom_receive, send)

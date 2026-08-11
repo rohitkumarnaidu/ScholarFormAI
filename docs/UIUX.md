@@ -15,7 +15,7 @@ last_updated: July 2026
 
 # ScholarForm AI — UI/UX Analysis & Recommendations
 
-> **See also:** [Features](Features.md), [Comprehensive Audit](comprehensive_audit.md), [User Guide](user_guide.md)
+> **See also:** [Features](architecture/Features.md), [Comprehensive Audit](archive/comprehensive_audit.md), [User Guide](guides/USER_GUIDE.md)
 
 ---
 

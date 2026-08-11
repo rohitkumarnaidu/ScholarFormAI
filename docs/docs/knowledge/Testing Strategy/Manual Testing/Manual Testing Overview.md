@@ -8,15 +8,15 @@
 - [TESTING_COMMANDS.md](file://backend/manual_tests/TESTING_COMMANDS.md)
 - [README_1.md](file://backend/manual_tests/README_1.md)
 - [README_VISUAL.md](file://backend/manual_tests/README_VISUAL.md)
-- [README.md](file://backend/manual_tests/sample_inputs/README.md)
+- [README.md](../../../../../README.md)
 - [run_input_conversion.py](file://backend/manual_tests/normal/phase1/run_input_conversion.py)
 - [run_validation.py](file://backend/manual_tests/normal/phase2/run_validation.py)
 - [run_formatter.py](file://backend/manual_tests/normal/phase3/run_formatter.py)
 - [01_parse_and_structure.py](file://backend/manual_tests/visual/phase1/01_parse_and_structure.py)
 - [06_formatted.py](file://backend/manual_tests/visual/phase3/06_formatted.py)
 - [MANUAL_TESTING_LOG.md](file://backend/MANUAL_TESTING_LOG.md)
-- [Testing.md](file://docs/Testing.md)
-- [backend README.md](file://backend/README.md)
+- [Testing.md](../../../guides/testing.md)
+- [backend README.md](../../../../../backend/README.md)
 </cite>
 
 ## Table of Contents
@@ -93,7 +93,7 @@ V3 --> OUT_DOCX
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
 - [README_1.md:1-211](file://backend/manual_tests/README_1.md#L1-L211)
 - [README_VISUAL.md:1-203](file://backend/manual_tests/README_VISUAL.md#L1-L203)
-- [README.md:1-78](file://backend/manual_tests/sample_inputs/README.md#L1-L78)
+- [README.md:1-78](../../../../../README.md#L1-L78)
 
 ## Core Components
 
@@ -172,7 +172,7 @@ Execution steps:
 - [TESTING_COMMANDS.md:50-285](file://backend/manual_tests/TESTING_COMMANDS.md#L50-L285)
 - [README_1.md:30-211](file://backend/manual_tests/README_1.md#L30-L211)
 - [README_VISUAL.md:29-195](file://backend/manual_tests/README_VISUAL.md#L29-L195)
-- [README.md:1-78](file://backend/manual_tests/sample_inputs/README.md#L1-L78)
+- [README.md:1-78](../../../../../README.md#L1-L78)
 
 ### Test Environment Setup
 
@@ -182,8 +182,8 @@ Execution steps:
 
 **Section sources**
 
-- [backend README.md:55-79](file://backend/README.md#L55-L79)
-- [Testing.md:14-48](file://docs/Testing.md#L14-L48)
+- [backend README.md:55-79](../../../../../backend/README.md#L55-L79)
+- [Testing.md:14-48](../../../guides/testing.md#L14-L48)
 
 ### Relationship Between Automated and Manual Testing
 
@@ -193,7 +193,7 @@ Execution steps:
 
 **Section sources**
 
-- [Testing.md:8-146](file://docs/Testing.md#L8-L146)
+- [Testing.md:8-146](../../../guides/testing.md#L8-L146)
 - [MANUAL_TESTING_LOG.md:6-10](file://backend/MANUAL_TESTING_LOG.md#L6-L10)
 
 ### When Manual Testing Is Preferred
@@ -330,7 +330,7 @@ Common issues and remedies:
 
 - [README_1.md:172-200](file://backend/manual_tests/README_1.md#L172-L200)
 - [README_VISUAL.md:165-194](file://backend/manual_tests/README_VISUAL.md#L165-L194)
-- [Testing.md:50-57](file://docs/Testing.md#L50-L57)
+- [Testing.md:50-57](../../../guides/testing.md#L50-L57)
 
 ## Conclusion
 

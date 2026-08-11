@@ -27,7 +27,7 @@ sequenceDiagram
 
     Client->>Gateway: HTTP Request("Method, Path, Bearer Token, Body/Files")
     alt Rate Limit Exceeded or Unauthorized Token
-        Gateway-->>Client: 429 RATE_LIMITED / 401 UNAUTHORIZED (APIResponse Envelope)
+        Gateway-->>Client: 429 RATE_LIMITED / 401 UNAUTHORIZED ("APIResponse Envelope")
     else Request Allowed
         Gateway->>Router: Forward Validated Request
         Router->>Service: Dispatch to Endpoint Handler & Pydantic Schema

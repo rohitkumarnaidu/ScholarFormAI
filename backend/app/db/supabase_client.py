@@ -123,6 +123,11 @@ def get_supabase_db():
     return client
 
 
+def is_supabase_configured() -> bool:
+    """Return True if Supabase client is configured and available."""
+    return get_supabase_client() is not None
+
+
 def check_supabase_health() -> dict:
     """
     Returns a dict describing current Supabase DB connectivity status.

@@ -5,9 +5,9 @@
 
 <cite>
 **Referenced Files in This Document**
-- [api.ts](file://frontend/src/lib/api.ts)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
-- [route.js](file://frontend/app/api/status/route.js)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
+- [supabaseClient.js](../../../../../frontend/src/lib/supabaseClient.js)
+- [route.js](../../../../../frontend/app/api/status/route.js)
 </cite>
 
 ## Table of Contents
@@ -52,15 +52,15 @@ A --> D
 
 **Diagram sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
-- [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
+- [supabaseClient.js](../../../../../frontend/src/lib/supabaseClient.js)
+- [route.js:1-20](../../../../../frontend/app/api/status/route.js#L1-L20)
 
 **Section sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
-- [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
+- [supabaseClient.js](../../../../../frontend/src/lib/supabaseClient.js)
+- [route.js:1-20](../../../../../frontend/app/api/status/route.js#L1-L20)
 
 ## Core Components
 
@@ -86,7 +86,7 @@ Key responsibilities:
 
 **Section sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
 
 ## Architecture Overview
 
@@ -105,19 +105,19 @@ participant SRV as "Service Module (api.ts)"
 participant AUTH as "Supabase Auth"
 participant API as "Next.js API"
 participant CACHE as "React Query Cache"
-UI->>SRV : Call API function (e.g., upload, download)
+UI->>SRV : Call API function ("e.g., upload, download")
 SRV->>AUTH : Inject Authorization header
 SRV->>API : Perform HTTP request
-API-->>SRV : Response (JSON or Blob)
+API-->>SRV : Response ("JSON or Blob")
 SRV->>CACHE : Update query cache
 SRV-->>UI : Return normalized result
 ```
 
 **Diagram sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
-- [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
+- [supabaseClient.js](../../../../../frontend/src/lib/supabaseClient.js)
+- [route.js:1-20](../../../../../frontend/app/api/status/route.js#L1-L20)
 
 ## Detailed Component Analysis
 
@@ -147,11 +147,11 @@ Log --> Return
 
 **Diagram sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
 
 **Section sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
 
 ### Authentication and Authorization
 
@@ -179,13 +179,13 @@ SRV-->>UI : Return result
 
 **Diagram sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
+- [supabaseClient.js](../../../../../frontend/src/lib/supabaseClient.js)
 
 **Section sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
+- [supabaseClient.js](../../../../../frontend/src/lib/supabaseClient.js)
 
 ### Payload Sanitization and Validation
 
@@ -207,11 +207,11 @@ Validate --> Output["Sanitized payload"]
 
 **Diagram sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
 
 **Section sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
 
 ### Error Handling and Logging
 
@@ -233,11 +233,11 @@ Log --> Throw["Throw normalized error"]
 
 **Diagram sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
 
 **Section sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
 
 ### React Query Integration and Caching
 
@@ -274,11 +274,11 @@ QueryClient --> TemplatesQueries : "provides"
 
 **Diagram sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
 
 **Section sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
 
 ### Upload and Download Workflows
 
@@ -309,11 +309,11 @@ SRV-->>UI : Blob URL for download
 
 **Diagram sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
 
 **Section sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
 
 ### Health Checks and Metrics
 
@@ -325,8 +325,8 @@ Health checks and metrics endpoints:
 
 **Section sources**
 
-- [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
-- [api.ts](file://frontend/src/lib/api.ts)
+- [route.js:1-20](../../../../../frontend/app/api/status/route.js#L1-L20)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
 
 ## Dependency Analysis
 
@@ -355,15 +355,15 @@ SRV --> API
 
 **Diagram sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
-- [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
+- [supabaseClient.js](../../../../../frontend/src/lib/supabaseClient.js)
+- [route.js:1-20](../../../../../frontend/app/api/status/route.js#L1-L20)
 
 **Section sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
-- [route.js:1-20](file://frontend/app/api/status/route.js#L1-L20)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
+- [supabaseClient.js](../../../../../frontend/src/lib/supabaseClient.js)
+- [route.js:1-20](../../../../../frontend/app/api/status/route.js#L1-L20)
 
 ## Performance Considerations
 
@@ -385,7 +385,7 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [api.ts](file://frontend/src/lib/api.ts)
+- [api.ts](../../../../../frontend/src/lib/api.ts)
 
 ## Conclusion
 

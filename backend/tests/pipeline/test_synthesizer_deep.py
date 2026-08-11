@@ -14,11 +14,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-_mock_documents_impl = MagicMock()
-_mock_documents_impl.ACCEPTED_EXTENSIONS = {'.pdf', '.docx', '.doc', '.md', '.html', '.txt', '.tex', '.odt', '.rtf'}
-_mock_documents_impl._validate_magic_bytes = AsyncMock()
-_original_documents_impl = sys.modules.get('app.routers.v1.documents_impl')
-sys.modules['app.routers.v1.documents_impl'] = _mock_documents_impl
+@pytest.fixture(autouse=True)
+def _patch_validation():
+    with patch("app.pipeline.synthesis.synthesizer.ACCEPTED_EXTENSIONS", {'.pdf', '.docx', '.doc', '.md', '.html', '.txt', '.tex', '.odt', '.rtf'}), \
+         patch("app.pipeline.synthesis.synthesizer._validate_magic_bytes", new_callable=AsyncMock):
+        yield
 
 OUTLINE = {"title": "Synthesis", "sections": [{"title": "Intro", "chunks": ["chunk1"]}]}
 SECTIONS = [{"title": "Intro", "content": "Generated content.", "citations": []}]
@@ -342,8 +342,4 @@ class TestRenderDocument:
                 result = synt._render_document("s1", "default", OUTLINE, SECTIONS, REFERENCES)
                 assert result is not None
 
-# Restore original module to avoid leaking mock into other tests
-if _original_documents_impl:
-    sys.modules['app.routers.v1.documents_impl'] = _original_documents_impl
-else:
-    sys.modules.pop('app.routers.v1.documents_impl', None)
+# Done

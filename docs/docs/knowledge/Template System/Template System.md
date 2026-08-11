@@ -5,19 +5,19 @@
 
 <cite>
 **Referenced Files in This Document**
-- [template_renderer.py](file://backend/app/pipeline/formatting/template_renderer.py)
-- [loader.py](file://backend/app/pipeline/contracts/loader.py)
-- [formatter_engine.py](file://backend/app/pipeline/references/formatter_engine.py)
-- [parser.py](file://backend/app/pipeline/references/parser.py)
-- [template_creation_guide.md](file://backend/docs/template_creation_guide.md)
-- [contract.yaml (IEEE)](file://backend/app/templates/ieee/contract.yaml)
-- [contract.yaml (APA)](file://backend/app/templates/apa/contract.yaml)
-- [test_template_renderer.py](file://backend/tests/test_template_renderer.py)
-- [test_csl_formatting.py](file://backend/tests/integration/test_csl_formatting.py)
-- [test_templates.py](file://backend/tests/test_templates.py)
-- [test_template_assets_integrity.py](file://backend/tests/test_template_assets_integrity.py)
-- [test_template_regression.py](file://backend/tests/test_template_regression.py)
-- [check_template_markers.py](file://backend/scripts/check_template_markers.py)
+- [template_renderer.py](../../../../backend/app/pipeline/formatting/template_renderer.py)
+- [loader.py](../../../../backend/app/pipeline/contracts/loader.py)
+- [formatter_engine.py](../../../../backend/app/pipeline/references/formatter_engine.py)
+- [parser.py](../../../../backend/app/pipeline/references/parser.py)
+- [template_creation_guide.md](../../../../backend/docs/template_creation_guide.md)
+- [contract.yaml (IEEE)](../../../../backend/app/templates/ieee/contract.yaml)
+- [contract.yaml (APA)](../../../../backend/app/templates/apa/contract.yaml)
+- [test_template_renderer.py](../../../../backend/tests/test_template_renderer.py)
+- [test_csl_formatting.py](../../../../backend/tests/integration/test_csl_formatting.py)
+- [test_templates.py](../../../../backend/tests/test_templates.py)
+- [test_template_assets_integrity.py](../../../../backend/tests/test_template_assets_integrity.py)
+- [test_template_regression.py](../../../../backend/tests/test_template_regression.py)
+- [check_template_markers.py](../../../../backend/scripts/check_template_markers.py)
 </cite>
 
 ## Table of Contents
@@ -78,17 +78,17 @@ CTX --> RENDER
 
 **Diagram sources**
 
-- [template_renderer.py:65-83](file://backend/app/pipeline/formatting/template_renderer.py#L65-L83)
-- [loader.py:16-38](file://backend/app/pipeline/contracts/loader.py#L16-L38)
-- [formatter_engine.py:24-26](file://backend/app/pipeline/references/formatter_engine.py#L24-L26)
-- [parser.py:39-91](file://backend/app/pipeline/references/parser.py#L39-L91)
+- [template_renderer.py:65-83](../../../../backend/app/pipeline/formatting/template_renderer.py#L65-L83)
+- [loader.py:16-38](../../../../backend/app/pipeline/contracts/loader.py#L16-L38)
+- [formatter_engine.py:24-26](../../../../backend/app/pipeline/references/formatter_engine.py#L24-L26)
+- [parser.py:39-91](../../../../backend/app/pipeline/references/parser.py#L39-L91)
 
 **Section sources**
 
-- [template_renderer.py:29-331](file://backend/app/pipeline/formatting/template_renderer.py#L29-L331)
-- [loader.py:8-82](file://backend/app/pipeline/contracts/loader.py#L8-L82)
-- [formatter_engine.py:18-114](file://backend/app/pipeline/references/formatter_engine.py#L18-L114)
-- [parser.py:21-211](file://backend/app/pipeline/references/parser.py#L21-L211)
+- [template_renderer.py:29-331](../../../../backend/app/pipeline/formatting/template_renderer.py#L29-L331)
+- [loader.py:8-82](../../../../backend/app/pipeline/contracts/loader.py#L8-L82)
+- [formatter_engine.py:18-114](../../../../backend/app/pipeline/references/formatter_engine.py#L18-L114)
+- [parser.py:21-211](../../../../backend/app/pipeline/references/parser.py#L21-L211)
 
 ## Core Components
 
@@ -105,13 +105,13 @@ Key responsibilities:
 
 **Section sources**
 
-- [template_renderer.py:94-159](file://backend/app/pipeline/formatting/template_renderer.py#L94-L159)
-- [template_renderer.py:164-179](file://backend/app/pipeline/formatting/template_renderer.py#L164-L179)
-- [template_renderer.py:200-230](file://backend/app/pipeline/formatting/template_renderer.py#L200-L230)
-- [template_renderer.py:257-331](file://backend/app/pipeline/formatting/template_renderer.py#L257-L331)
-- [loader.py:16-74](file://backend/app/pipeline/contracts/loader.py#L16-L74)
-- [formatter_engine.py:28-75](file://backend/app/pipeline/references/formatter_engine.py#L28-L75)
-- [parser.py:39-91](file://backend/app/pipeline/references/parser.py#L39-L91)
+- [template_renderer.py:94-159](../../../../backend/app/pipeline/formatting/template_renderer.py#L94-L159)
+- [template_renderer.py:164-179](../../../../backend/app/pipeline/formatting/template_renderer.py#L164-L179)
+- [template_renderer.py:200-230](../../../../backend/app/pipeline/formatting/template_renderer.py#L200-L230)
+- [template_renderer.py:257-331](../../../../backend/app/pipeline/formatting/template_renderer.py#L257-L331)
+- [loader.py:16-74](../../../../backend/app/pipeline/contracts/loader.py#L16-L74)
+- [formatter_engine.py:28-75](../../../../backend/app/pipeline/references/formatter_engine.py#L28-L75)
+- [parser.py:39-91](../../../../backend/app/pipeline/references/parser.py#L39-L91)
 
 ## Architecture Overview
 
@@ -143,9 +143,9 @@ TR-->>OUT : "DocxTemplate rendered"
 
 **Diagram sources**
 
-- [parser.py:39-91](file://backend/app/pipeline/references/parser.py#L39-L91)
-- [formatter_engine.py:28-75](file://backend/app/pipeline/references/formatter_engine.py#L28-L75)
-- [template_renderer.py:65-83](file://backend/app/pipeline/formatting/template_renderer.py#L65-L83)
+- [parser.py:39-91](../../../../backend/app/pipeline/references/parser.py#L39-L91)
+- [formatter_engine.py:28-75](../../../../backend/app/pipeline/references/formatter_engine.py#L28-L75)
+- [template_renderer.py:65-83](../../../../backend/app/pipeline/formatting/template_renderer.py#L65-L83)
 
 ## Detailed Component Analysis
 
@@ -193,16 +193,16 @@ class TemplateRenderer {
 
 **Diagram sources**
 
-- [template_renderer.py:29-331](file://backend/app/pipeline/formatting/template_renderer.py#L29-L331)
+- [template_renderer.py:29-331](../../../../backend/app/pipeline/formatting/template_renderer.py#L29-L331)
 
 **Section sources**
 
-- [template_renderer.py:34-83](file://backend/app/pipeline/formatting/template_renderer.py#L34-L83)
-- [template_renderer.py:94-159](file://backend/app/pipeline/formatting/template_renderer.py#L94-L159)
-- [template_renderer.py:164-179](file://backend/app/pipeline/formatting/template_renderer.py#L164-L179)
-- [template_renderer.py:200-230](file://backend/app/pipeline/formatting/template_renderer.py#L200-L230)
-- [template_renderer.py:232-255](file://backend/app/pipeline/formatting/template_renderer.py#L232-L255)
-- [template_renderer.py:257-331](file://backend/app/pipeline/formatting/template_renderer.py#L257-L331)
+- [template_renderer.py:34-83](../../../../backend/app/pipeline/formatting/template_renderer.py#L34-L83)
+- [template_renderer.py:94-159](../../../../backend/app/pipeline/formatting/template_renderer.py#L94-L159)
+- [template_renderer.py:164-179](../../../../backend/app/pipeline/formatting/template_renderer.py#L164-L179)
+- [template_renderer.py:200-230](../../../../backend/app/pipeline/formatting/template_renderer.py#L200-L230)
+- [template_renderer.py:232-255](../../../../backend/app/pipeline/formatting/template_renderer.py#L232-L255)
+- [template_renderer.py:257-331](../../../../backend/app/pipeline/formatting/template_renderer.py#L257-L331)
 
 ### ContractLoader and Template Contracts
 
@@ -232,13 +232,13 @@ class ContractLoader {
 
 **Diagram sources**
 
-- [loader.py:8-82](file://backend/app/pipeline/contracts/loader.py#L8-L82)
+- [loader.py:8-82](../../../../backend/app/pipeline/contracts/loader.py#L8-L82)
 
 **Section sources**
 
-- [loader.py:16-38](file://backend/app/pipeline/contracts/loader.py#L16-L38)
-- [loader.py:40-57](file://backend/app/pipeline/contracts/loader.py#L40-L57)
-- [loader.py:59-74](file://backend/app/pipeline/contracts/loader.py#L59-L74)
+- [loader.py:16-38](../../../../backend/app/pipeline/contracts/loader.py#L16-L38)
+- [loader.py:40-57](../../../../backend/app/pipeline/contracts/loader.py#L40-L57)
+- [loader.py:59-74](../../../../backend/app/pipeline/contracts/loader.py#L59-L74)
 
 ### ReferenceFormatterEngine and CSL Integration
 
@@ -270,14 +270,14 @@ SetFormatted --> End(["End"])
 
 **Diagram sources**
 
-- [formatter_engine.py:28-75](file://backend/app/pipeline/references/formatter_engine.py#L28-L75)
-- [formatter_engine.py:77-114](file://backend/app/pipeline/references/formatter_engine.py#L77-L114)
+- [formatter_engine.py:28-75](../../../../backend/app/pipeline/references/formatter_engine.py#L28-L75)
+- [formatter_engine.py:77-114](../../../../backend/app/pipeline/references/formatter_engine.py#L77-L114)
 
 **Section sources**
 
-- [formatter_engine.py:24-26](file://backend/app/pipeline/references/formatter_engine.py#L24-L26)
-- [formatter_engine.py:34-75](file://backend/app/pipeline/references/formatter_engine.py#L34-L75)
-- [formatter_engine.py:77-114](file://backend/app/pipeline/references/formatter_engine.py#L77-L114)
+- [formatter_engine.py:24-26](../../../../backend/app/pipeline/references/formatter_engine.py#L24-L26)
+- [formatter_engine.py:34-75](../../../../backend/app/pipeline/references/formatter_engine.py#L34-L75)
+- [formatter_engine.py:77-114](../../../../backend/app/pipeline/references/formatter_engine.py#L77-L114)
 
 ### ReferenceParser
 
@@ -302,23 +302,23 @@ H --> I["Construct Reference object"]
 
 **Diagram sources**
 
-- [parser.py:93-190](file://backend/app/pipeline/references/parser.py#L93-L190)
+- [parser.py:93-190](../../../../backend/app/pipeline/references/parser.py#L93-L190)
 
 **Section sources**
 
-- [parser.py:39-91](file://backend/app/pipeline/references/parser.py#L39-L91)
-- [parser.py:93-190](file://backend/app/pipeline/references/parser.py#L93-L190)
+- [parser.py:39-91](../../../../backend/app/pipeline/references/parser.py#L39-L91)
+- [parser.py:93-190](../../../../backend/app/pipeline/references/parser.py#L93-L190)
 
 ## Dependency Analysis
 
 - TemplateRenderer depends on:
-    - PipelineDocument model for metadata and blocks
-    - docxtpl for rendering
-    - docx for building fallback templates
+  - PipelineDocument model for metadata and blocks
+  - docxtpl for rendering
+  - docx for building fallback templates
 - ContractLoader depends on YAML parsing and filesystem access
 - ReferenceFormatterEngine depends on:
-    - ContractLoader for publisher rules
-    - CSLEngine for CSL formatting
+  - ContractLoader for publisher rules
+  - CSLEngine for CSL formatting
 - ReferenceParser is a standalone pipeline stage extracting structured data
 
 ```mermaid
@@ -333,17 +333,17 @@ RP["ReferenceParser"] --> RF
 
 **Diagram sources**
 
-- [template_renderer.py:26-27](file://backend/app/pipeline/formatting/template_renderer.py#L26-L27)
-- [loader.py:24-36](file://backend/app/pipeline/contracts/loader.py#L24-L36)
-- [formatter_engine.py:24-26](file://backend/app/pipeline/references/formatter_engine.py#L24-L26)
-- [parser.py:14-16](file://backend/app/pipeline/references/parser.py#L14-L16)
+- [template_renderer.py:26-27](../../../../backend/app/pipeline/formatting/template_renderer.py#L26-L27)
+- [loader.py:24-36](../../../../backend/app/pipeline/contracts/loader.py#L24-L36)
+- [formatter_engine.py:24-26](../../../../backend/app/pipeline/references/formatter_engine.py#L24-L26)
+- [parser.py:14-16](../../../../backend/app/pipeline/references/parser.py#L14-L16)
 
 **Section sources**
 
-- [template_renderer.py:17-27](file://backend/app/pipeline/formatting/template_renderer.py#L17-L27)
-- [loader.py:1-7](file://backend/app/pipeline/contracts/loader.py#L1-L7)
-- [formatter_engine.py:12-13](file://backend/app/pipeline/references/formatter_engine.py#L12-L13)
-- [parser.py:14-16](file://backend/app/pipeline/references/parser.py#L14-L16)
+- [template_renderer.py:17-27](../../../../backend/app/pipeline/formatting/template_renderer.py#L17-L27)
+- [loader.py:1-7](../../../../backend/app/pipeline/contracts/loader.py#L1-L7)
+- [formatter_engine.py:12-13](../../../../backend/app/pipeline/references/formatter_engine.py#L12-L13)
+- [parser.py:14-16](../../../../backend/app/pipeline/references/parser.py#L14-L16)
 
 ## Performance Considerations
 
@@ -360,9 +360,9 @@ Recommendations:
 
 **Section sources**
 
-- [template_renderer.py:36-36](file://backend/app/pipeline/formatting/template_renderer.py#L36-L36)
-- [template_renderer.py:200-230](file://backend/app/pipeline/formatting/template_renderer.py#L200-L230)
-- [template_renderer.py:232-255](file://backend/app/pipeline/formatting/template_renderer.py#L232-L255)
+- [template_renderer.py:36-36](../../../../backend/app/pipeline/formatting/template_renderer.py#L36-L36)
+- [template_renderer.py:200-230](../../../../backend/app/pipeline/formatting/template_renderer.py#L200-L230)
+- [template_renderer.py:232-255](../../../../backend/app/pipeline/formatting/template_renderer.py#L232-L255)
 
 ## Troubleshooting Guide
 
@@ -387,12 +387,12 @@ Operational checks:
 
 **Section sources**
 
-- [template_creation_guide.md:93-114](file://backend/docs/template_creation_guide.md#L93-L114)
-- [test_template_renderer.py](file://backend/tests/test_template_renderer.py)
-- [test_csl_formatting.py](file://backend/tests/integration/test_csl_formatting.py)
-- [test_template_assets_integrity.py](file://backend/tests/test_template_assets_integrity.py)
-- [test_template_regression.py](file://backend/tests/test_template_regression.py)
-- [check_template_markers.py](file://backend/scripts/check_template_markers.py)
+- [template_creation_guide.md:93-114](../../../../backend/docs/template_creation_guide.md#L93-L114)
+- [test_template_renderer.py](../../../../backend/tests/test_template_renderer.py)
+- [test_csl_formatting.py](../../../../backend/tests/integration/test_csl_formatting.py)
+- [test_template_assets_integrity.py](../../../../backend/tests/test_template_assets_integrity.py)
+- [test_template_regression.py](../../../../backend/tests/test_template_regression.py)
+- [check_template_markers.py](../../../../backend/scripts/check_template_markers.py)
 
 ## Conclusion
 
@@ -424,9 +424,9 @@ Publisher-specific formatting rules:
 
 **Section sources**
 
-- [contract.yaml (IEEE):1-50](file://backend/app/templates/ieee/contract.yaml#L1-L50)
-- [contract.yaml (APA):1-45](file://backend/app/templates/apa/contract.yaml#L1-L45)
-- [template_creation_guide.md:5-18](file://backend/docs/template_creation_guide.md#L5-L18)
+- [contract.yaml (IEEE):1-50](../../../../backend/app/templates/ieee/contract.yaml#L1-L50)
+- [contract.yaml (APA):1-45](../../../../backend/app/templates/apa/contract.yaml#L1-L45)
+- [template_creation_guide.md:5-18](../../../../backend/docs/template_creation_guide.md#L5-L18)
 
 ### Template Creation Workflow
 
@@ -452,7 +452,7 @@ Commands:
 
 **Section sources**
 
-- [template_creation_guide.md:19-114](file://backend/docs/template_creation_guide.md#L19-L114)
+- [template_creation_guide.md:19-114](../../../../backend/docs/template_creation_guide.md#L19-L114)
 
 ### Template Modification and Customization
 
@@ -469,9 +469,9 @@ Best practices:
 
 **Section sources**
 
-- [loader.py:59-74](file://backend/app/pipeline/contracts/loader.py#L59-L74)
-- [template_renderer.py:130-159](file://backend/app/pipeline/formatting/template_renderer.py#L130-L159)
-- [formatter_engine.py:68-75](file://backend/app/pipeline/references/formatter_engine.py#L68-L75)
+- [loader.py:59-74](../../../../backend/app/pipeline/contracts/loader.py#L59-L74)
+- [template_renderer.py:130-159](../../../../backend/app/pipeline/formatting/template_renderer.py#L130-L159)
+- [formatter_engine.py:68-75](../../../../backend/app/pipeline/references/formatter_engine.py#L68-L75)
 
 ### Template Versioning, Distribution, and Maintenance
 
@@ -483,7 +483,7 @@ Best practices:
 
 **Section sources**
 
-- [loader.py:24-30](file://backend/app/pipeline/contracts/loader.py#L24-L30)
-- [loader.py:40-57](file://backend/app/pipeline/contracts/loader.py#L40-L57)
-- [test_template_assets_integrity.py](file://backend/tests/test_template_assets_integrity.py)
-- [test_template_regression.py](file://backend/tests/test_template_regression.py)
+- [loader.py:24-30](../../../../backend/app/pipeline/contracts/loader.py#L24-L30)
+- [loader.py:40-57](../../../../backend/app/pipeline/contracts/loader.py#L40-L57)
+- [test_template_assets_integrity.py](../../../../backend/tests/test_template_assets_integrity.py)
+- [test_template_regression.py](../../../../backend/tests/test_template_regression.py)

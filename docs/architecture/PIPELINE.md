@@ -91,23 +91,23 @@ sequenceDiagram
     participant Preview as Preview Renderer Service
     participant DB as "Supabase PG & Storage"
 
-    Client->>Gateway: POST /api/v1/documents/upload (file payload)
+    Client->>Gateway: POST /api/v1/documents/upload ("file payload")
     Gateway->>Gateway: Stage 1: Validate MIME, Magic Bytes & Extension
     Gateway->>Scan: Stage 1: Scan Payload via ClamAV
     Scan-->>Gateway: Clean Attestation
-    Gateway->>Svc: Stage 2: Calculate SHA-256 & Reassemble Chunks (if chunked)
+    Gateway->>Svc: Stage 2: Calculate SHA-256 & Reassemble Chunks ("if chunked")
     Svc->>DB: Stage 2: Create Record in documents (status='PROCESSING')
     Gateway-->>Client: 202 Accepted { job_id, status: "PROCESSING" }
 
     rect rgb(240, 245, 255)
-        note over Orch: Async Background Task Execution (Celery Queue)
+        note over Orch: Async Background Task Execution ("Celery Queue")
         Orch->>Extract: Stage 3: Extract Raw Text & TEI Metadata("GROBID / RapidOCR")
         Extract-->>Orch: Extracted Blocks & TEI XML Metadata
         
-        Orch->>Orch: Stage 4: Structure Detection (Heading Candidates)
+        Orch->>Orch: Stage 4: Structure Detection ("Heading Candidates")
         Orch->>Orch: Stage 5: Semantic Parsing & Entity Enrichment
         
-        Orch->>Class: Stage 6: Block Classification (Title, H1-H4, Paragraph, Caption)
+        Orch->>Class: Stage 6: Block Classification ("Title, H1-H4, Paragraph, Caption")
         Class-->>Orch: Classified Blocks with Confidence Scores
         
         Orch->>Orch: Stage 7: Asset Analysis("Table & Figure Caption Matching")

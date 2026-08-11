@@ -7,10 +7,10 @@ graph LR
         IC["InputConverter<br/>.doc / .odt / .rtf → DOCX"]
     end
 
-    subgraph STAGE1["1. Parsing — ParserFactory (7 parsers)"]
+    subgraph STAGE1["1. Parsing — ParserFactory ("7 parsers")"]
         DP["DocxParser<br/>python-docx"]
         PP["PdfParser<br/>PyMuPDF (fitz)"]
-        NP["LLMPDFParser<br/>OCR Fallback (scanned PDFs)"]
+        NP["LLMPDFParser<br/>OCR Fallback ("scanned PDFs")"]
         TP["TxtParser"]
         HP["HtmlParser<br/>BeautifulSoup4"]
         MP["MarkdownParser"]
@@ -27,7 +27,7 @@ graph LR
     subgraph STAGE3["3. Core AI Pipeline"]
         ES["Equation Standardizer<br/>Detect & standardize math"]
         SD["StructureDetector<br/>Heading/section IDs<br/>@retry_with_backoff"]
-        SP["SemanticParser<br/>LLMClassifier → Heuristics<br/>(optional, fast_mode flag)"]
+        SP["SemanticParser<br/>LLMClassifier → Heuristics<br/>("optional, fast_mode flag")"]
         CC["ContentClassifier<br/>BlockType assignment<br/>12 labels"]
         NLP["ContentAnalyzer<br/>Keywords, language detection"]
     end
@@ -35,7 +35,7 @@ graph LR
     subgraph STAGE4["4. Content Analysis"]
         CM["CaptionMatcher<br/>Figure captions + vision QA"]
         TCM["TableCaptionMatcher<br/>Table captions"]
-        FA["FigureAnalyzer<br/>DPI / downsampling<br/>(skip in fast_mode)"]
+        FA["FigureAnalyzer<br/>DPI / downsampling<br/>("skip in fast_mode")"]
         RP["ReferenceParser<br/>Reference extraction"]
         REF_FMT["ReferenceFormatterEngine<br/>CSL / Contract templates"]
     end
@@ -60,14 +60,14 @@ graph LR
         TR["TemplateRenderer<br/>Jinja2 / docxtpl"]
         TBL["TableRenderer<br/>Structured table gen"]
         FIG_R["FigureRenderer<br/>DPI-optimized embedding"]
-        FMT["Formatter<br/>(combines all)"]
+        FMT["Formatter<br/>("combines all")"]
     end
 
     subgraph STAGE8["8. Export"]
         EX["Exporter<br/>DOCX (primary) / PDF<br/>LaTeX / JATS XML<br/>JSON / Markdown / HTML"]
     end
 
-    subgraph SAFETY["Safety Layer (wraps all stages)"]
+    subgraph SAFETY["Safety Layer ("wraps all stages")"]
         CB["Circuit Breaker<br/>pybreaker<br/>3 failures → OPEN<br/>60s recovery"]
         RG["RetryGuard<br/>Exponential backoff<br/>sleep = factor × 2^(n-1)"]
         LV["LLM Validator<br/>Guardrails AI →<br/>Pydantic schema<br/>Prompt injection detection"]

@@ -801,29 +801,31 @@ class TestJWKSVerifier:
 
 
 class TestMonitoringMiddlewareExtra:
-    def test_dispatch_uses_x_request_id_from_header(self):
+    def test_dispatch_logs_request_id(self):
         from app.middleware.monitoring import MonitoringMiddleware
         request = MagicMock()
-        request.headers = {"x-request-id": "custom-id-123"}
+        request.state.request_id = "custom-id-123"
         request.method = "GET"
         request.url.path = "/test"
         call_next = AsyncMock(return_value=MagicMock(headers={}))
         mw = MonitoringMiddleware(MagicMock())
         import asyncio
-        asyncio.run(mw.dispatch(request, call_next))
-        assert request.state.request_id == "custom-id-123"
+        with patch("app.middleware.monitoring.logger") as mock_log:
+            asyncio.run(mw.dispatch(request, call_next))
+            assert "custom-id-123" in mock_log.info.call_args_list[0][0][0]
 
-    def test_dispatch_generates_uuid_when_no_header(self):
+    def test_dispatch_handles_missing_request_id(self):
         from app.middleware.monitoring import MonitoringMiddleware
-        request = MagicMock()
-        request.headers = {}
+        request = MagicMock(spec=["method", "url", "state"])
+        request.state = MagicMock(spec=[])
         request.method = "GET"
         request.url.path = "/test"
         call_next = AsyncMock(return_value=MagicMock(headers={}))
         mw = MonitoringMiddleware(MagicMock())
         import asyncio
-        asyncio.run(mw.dispatch(request, call_next))
-        assert len(request.state.request_id) == 36
+        with patch("app.middleware.monitoring.logger") as mock_log:
+            asyncio.run(mw.dispatch(request, call_next))
+            assert "unknown" in mock_log.info.call_args_list[0][0][0]
 
     def test_dispatch_sets_timing_headers(self):
         from app.middleware.monitoring import MonitoringMiddleware
@@ -836,7 +838,6 @@ class TestMonitoringMiddlewareExtra:
         mw = MonitoringMiddleware(MagicMock())
         import asyncio
         result = asyncio.run(mw.dispatch(request, call_next))
-        assert "X-Request-Id" in result.headers
         assert "X-Processing-Time" in result.headers
 
     def test_dispatch_error_logs_and_re_raises(self):
@@ -963,7 +964,7 @@ class TestMainExtra:
     def test_health_check_returns_200(self):
         from app.main import health_check
         mock_payload = {"status": "healthy", "version": "1.0.0"}
-        with patch("app.main.get_health_payload", return_value=(mock_payload, 200)):
+        with patch("app.services.health_checks.get_health_payload", return_value=(mock_payload, 200)):
             import asyncio
             response = asyncio.run(health_check())
             assert response.status_code == 200
@@ -971,7 +972,7 @@ class TestMainExtra:
 
     def test_readiness_probe(self):
         from app.main import readiness_probe
-        with patch("app.main.get_readiness_payload", return_value=({"ready": True}, 200)):
+        with patch("app.services.health_checks.get_readiness_payload", return_value=({"ready": True}, 200)):
             import asyncio
             response = asyncio.run(readiness_probe())
             assert response.status_code == 200

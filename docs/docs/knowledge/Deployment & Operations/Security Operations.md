@@ -5,21 +5,21 @@
 
 <cite>
 **Referenced Files in This Document**
-- [Security.md](file://docs/Security.md)
-- [Risk_Register.md](file://docs/Risk_Register.md)
-- [main.py](file://backend/app/main.py)
-- [security_headers.py](file://backend/app/middleware/security_headers.py)
-- [jwks_verifier.py](file://backend/app/security/jwks_verifier.py)
-- [rate_limit.py](file://backend/app/middleware/rate_limit.py)
-- [tier_rate_limit.py](file://backend/app/middleware/tier_rate_limit.py)
-- [abuse_detector.py](file://backend/app/middleware/abuse_detector.py)
-- [rbac.py](file://backend/app/middleware/rbac.py)
-- [request_id.py](file://backend/app/middleware/request_id.py)
-- [audit_log_service.py](file://backend/app/services/audit_log_service.py)
-- [virus_scanner.py](file://backend/app/utils/virus_scanner.py)
-- [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [security.yml](file://.github/workflows/security.yml)
+- [Security.md](../../../../SECURITY.md)
+- [Risk_Register.md](../../../reports/Risk_Register.md)
+- [main.py](../../../../backend/app/main.py)
+- [security_headers.py](../../../../backend/app/middleware/security_headers.py)
+- [jwks_verifier.py](../../../../backend/app/security/jwks_verifier.py)
+- [rate_limit.py](../../../../backend/app/middleware/rate_limit.py)
+- [tier_rate_limit.py](../../../../backend/app/middleware/tier_rate_limit.py)
+- [abuse_detector.py](../../../../backend/app/middleware/abuse_detector.py)
+- [rbac.py](../../../../backend/app/middleware/rbac.py)
+- [request_id.py](../../../../backend/app/middleware/request_id.py)
+- [audit_log_service.py](../../../../backend/app/services/audit_log_service.py)
+- [virus_scanner.py](../../../../backend/app/utils/virus_scanner.py)
+- [prometheus_metrics.py](../../../../backend/app/middleware/prometheus_metrics.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [security.yml](../../../../.github/workflows/security.yml)
 </cite>
 
 ## Table of Contents
@@ -72,55 +72,55 @@ App --> CFG
 
 **Diagram sources**
 
-- [main.py:294-328](file://backend/app/main.py#L294-L328)
-- [security_headers.py:18-66](file://backend/app/middleware/security_headers.py#L18-L66)
-- [request_id.py:21-59](file://backend/app/middleware/request_id.py#L21-L59)
-- [rate_limit.py:49-171](file://backend/app/middleware/rate_limit.py#L49-L171)
-- [tier_rate_limit.py:19-115](file://backend/app/middleware/tier_rate_limit.py#L19-L115)
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
-- [abuse_detector.py:14-69](file://backend/app/middleware/abuse_detector.py#L14-L69)
-- [audit_log_service.py:17-140](file://backend/app/services/audit_log_service.py#L17-L140)
-- [virus_scanner.py:65-121](file://backend/app/utils/virus_scanner.py#L65-L121)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
+- [main.py:294-328](../../../../backend/app/main.py#L294-L328)
+- [security_headers.py:18-66](../../../../backend/app/middleware/security_headers.py#L18-L66)
+- [request_id.py:21-59](../../../../backend/app/middleware/request_id.py#L21-L59)
+- [rate_limit.py:49-171](../../../../backend/app/middleware/rate_limit.py#L49-L171)
+- [tier_rate_limit.py:19-115](../../../../backend/app/middleware/tier_rate_limit.py#L19-L115)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
+- [abuse_detector.py:14-69](../../../../backend/app/middleware/abuse_detector.py#L14-L69)
+- [audit_log_service.py:17-140](../../../../backend/app/services/audit_log_service.py#L17-L140)
+- [virus_scanner.py:65-121](../../../../backend/app/utils/virus_scanner.py#L65-L121)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
 
 **Section sources**
 
-- [main.py:294-328](file://backend/app/main.py#L294-L328)
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
+- [main.py:294-328](../../../../backend/app/main.py#L294-L328)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
 
 ## Core Components
 
 - Authentication and Authorization
-    - JWT verification using Supabase JWKS and/or HMAC secret, extracting user identity and roles.
-    - Role-based access control guard with role normalization and hierarchy.
+  - JWT verification using Supabase JWKS and/or HMAC secret, extracting user identity and roles.
+  - Role-based access control guard with role normalization and hierarchy.
 - API Security
-    - Security headers (CSP, HSTS, X-Frame-Options, etc.) and body size enforcement.
-    - HTTPS enforcement and HSTS header injection in production.
+  - Security headers (CSP, HSTS, X-Frame-Options, etc.) and body size enforcement.
+  - HTTPS enforcement and HSTS header injection in production.
 - Access Control
-    - Tier-aware daily limits for guests on specific endpoints.
-    - General rate limiting with in-memory and Redis-backed sliding windows.
+  - Tier-aware daily limits for guests on specific endpoints.
+  - General rate limiting with in-memory and Redis-backed sliding windows.
 - Abuse Detection
-    - Generation spikes and LLM usage tracking with audit logging.
+  - Generation spikes and LLM usage tracking with audit logging.
 - Input Validation and Sanitization
-    - File upload tri-validation (MIME, magic bytes, extension) and virus scanning via ClamAV.
+  - File upload tri-validation (MIME, magic bytes, extension) and virus scanning via ClamAV.
 - Observability and Auditing
-    - Request ID correlation, HTTP write operation audit logging, Prometheus metrics, and ClamAV scan timing.
+  - Request ID correlation, HTTP write operation audit logging, Prometheus metrics, and ClamAV scan timing.
 - Vulnerability Management and CI
-    - Automated container and dependency scanning in GitHub Actions.
+  - Automated container and dependency scanning in GitHub Actions.
 
 **Section sources**
 
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
-- [security_headers.py:18-66](file://backend/app/middleware/security_headers.py#L18-L66)
-- [tier_rate_limit.py:19-115](file://backend/app/middleware/tier_rate_limit.py#L19-L115)
-- [rate_limit.py:49-171](file://backend/app/middleware/rate_limit.py#L49-L171)
-- [abuse_detector.py:14-69](file://backend/app/middleware/abuse_detector.py#L14-L69)
-- [audit_log_service.py:17-140](file://backend/app/services/audit_log_service.py#L17-L140)
-- [virus_scanner.py:65-121](file://backend/app/utils/virus_scanner.py#L65-L121)
-- [prometheus_metrics.py:118-122](file://backend/app/middleware/prometheus_metrics.py#L118-L122)
-- [security.yml:24-46](file://.github/workflows/security.yml#L24-L46)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
+- [rbac.py:61-80](../../../../backend/app/middleware/rbac.py#L61-L80)
+- [security_headers.py:18-66](../../../../backend/app/middleware/security_headers.py#L18-L66)
+- [tier_rate_limit.py:19-115](../../../../backend/app/middleware/tier_rate_limit.py#L19-L115)
+- [rate_limit.py:49-171](../../../../backend/app/middleware/rate_limit.py#L49-L171)
+- [abuse_detector.py:14-69](../../../../backend/app/middleware/abuse_detector.py#L14-L69)
+- [audit_log_service.py:17-140](../../../../backend/app/services/audit_log_service.py#L17-L140)
+- [virus_scanner.py:65-121](../../../../backend/app/utils/virus_scanner.py#L65-L121)
+- [prometheus_metrics.py:118-122](../../../../backend/app/middleware/prometheus_metrics.py#L118-L122)
+- [security.yml:24-46](../../../../.github/workflows/security.yml#L24-L46)
 
 ## Architecture Overview
 
@@ -146,25 +146,25 @@ A->>RL : Enforce general rate limit
 A->>TRL : Enforce tier/daily limit for guests
 A->>JV : Verify JWT("JWKS/HMAC")
 JV-->>A : Decoded token with user/role
-A->>RB : Enforce role-based access (if required)
+A->>RB : Enforce role-based access ("if required")
 A->>AD : Record abuse metrics("generation/LLM")
 A->>AUD : Log write operations
-A->>VS : Scan uploaded files (if applicable)
+A->>VS : Scan uploaded files ("if applicable")
 A-->>C : Response
 ```
 
 **Diagram sources**
 
-- [main.py:294-328](file://backend/app/main.py#L294-L328)
-- [security_headers.py:18-66](file://backend/app/middleware/security_headers.py#L18-L66)
-- [request_id.py:21-59](file://backend/app/middleware/request_id.py#L21-L59)
-- [rate_limit.py:49-171](file://backend/app/middleware/rate_limit.py#L49-L171)
-- [tier_rate_limit.py:19-115](file://backend/app/middleware/tier_rate_limit.py#L19-L115)
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
-- [abuse_detector.py:14-69](file://backend/app/middleware/abuse_detector.py#L14-L69)
-- [audit_log_service.py:104-137](file://backend/app/services/audit_log_service.py#L104-L137)
-- [virus_scanner.py:65-121](file://backend/app/utils/virus_scanner.py#L65-L121)
+- [main.py:294-328](../../../../backend/app/main.py#L294-L328)
+- [security_headers.py:18-66](../../../../backend/app/middleware/security_headers.py#L18-L66)
+- [request_id.py:21-59](../../../../backend/app/middleware/request_id.py#L21-L59)
+- [rate_limit.py:49-171](../../../../backend/app/middleware/rate_limit.py#L49-L171)
+- [tier_rate_limit.py:19-115](../../../../backend/app/middleware/tier_rate_limit.py#L19-L115)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
+- [rbac.py:61-80](../../../../backend/app/middleware/rbac.py#L61-L80)
+- [abuse_detector.py:14-69](../../../../backend/app/middleware/abuse_detector.py#L14-L69)
+- [audit_log_service.py:104-137](../../../../backend/app/services/audit_log_service.py#L104-L137)
+- [virus_scanner.py:65-121](../../../../backend/app/utils/virus_scanner.py#L65-L121)
 
 ## Detailed Component Analysis
 
@@ -190,15 +190,15 @@ App-->>Client : Proceed to handler
 
 **Diagram sources**
 
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
-- [main.py:303-313](file://backend/app/main.py#L303-L313)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
+- [rbac.py:61-80](../../../../backend/app/middleware/rbac.py#L61-L80)
+- [main.py:303-313](../../../../backend/app/main.py#L303-L313)
 
 **Section sources**
 
-- [jwks_verifier.py:26-183](file://backend/app/security/jwks_verifier.py#L26-L183)
-- [rbac.py:9-80](file://backend/app/middleware/rbac.py#L9-L80)
-- [main.py:303-313](file://backend/app/main.py#L303-L313)
+- [jwks_verifier.py:26-183](../../../../backend/app/security/jwks_verifier.py#L26-L183)
+- [rbac.py:9-80](../../../../backend/app/middleware/rbac.py#L9-L80)
+- [main.py:303-313](../../../../backend/app/main.py#L303-L313)
 
 ### API Security Patterns
 
@@ -223,13 +223,13 @@ Continue --> End(["Response Sent"])
 
 **Diagram sources**
 
-- [security_headers.py:18-66](file://backend/app/middleware/security_headers.py#L18-L66)
-- [main.py:303-313](file://backend/app/main.py#L303-L313)
+- [security_headers.py:18-66](../../../../backend/app/middleware/security_headers.py#L18-L66)
+- [main.py:303-313](../../../../backend/app/main.py#L303-L313)
 
 **Section sources**
 
-- [security_headers.py:18-99](file://backend/app/middleware/security_headers.py#L18-L99)
-- [main.py:303-313](file://backend/app/main.py#L303-L313)
+- [security_headers.py:18-99](../../../../backend/app/middleware/security_headers.py#L18-L99)
+- [main.py:303-313](../../../../backend/app/main.py#L303-L313)
 
 ### Access Control Implementations
 
@@ -251,12 +251,12 @@ OverLimit --> |No| Pass
 
 **Diagram sources**
 
-- [tier_rate_limit.py:46-115](file://backend/app/middleware/tier_rate_limit.py#L46-L115)
+- [tier_rate_limit.py:46-115](../../../../backend/app/middleware/tier_rate_limit.py#L46-L115)
 
 **Section sources**
 
-- [tier_rate_limit.py:19-115](file://backend/app/middleware/tier_rate_limit.py#L19-L115)
-- [rate_limit.py:49-171](file://backend/app/middleware/rate_limit.py#L49-L171)
+- [tier_rate_limit.py:19-115](../../../../backend/app/middleware/tier_rate_limit.py#L19-L115)
+- [rate_limit.py:49-171](../../../../backend/app/middleware/rate_limit.py#L49-L171)
 
 ### Abuse Detection and Monitoring
 
@@ -277,14 +277,14 @@ end
 
 **Diagram sources**
 
-- [abuse_detector.py:41-66](file://backend/app/middleware/abuse_detector.py#L41-L66)
-- [audit_log_service.py:55-103](file://backend/app/services/audit_log_service.py#L55-L103)
+- [abuse_detector.py:41-66](../../../../backend/app/middleware/abuse_detector.py#L41-L66)
+- [audit_log_service.py:55-103](../../../../backend/app/services/audit_log_service.py#L55-L103)
 
 **Section sources**
 
-- [abuse_detector.py:14-69](file://backend/app/middleware/abuse_detector.py#L14-L69)
-- [prometheus_metrics.py:118-122](file://backend/app/middleware/prometheus_metrics.py#L118-L122)
-- [audit_log_service.py:104-137](file://backend/app/services/audit_log_service.py#L104-L137)
+- [abuse_detector.py:14-69](../../../../backend/app/middleware/abuse_detector.py#L14-L69)
+- [prometheus_metrics.py:118-122](../../../../backend/app/middleware/prometheus_metrics.py#L118-L122)
+- [audit_log_service.py:104-137](../../../../backend/app/services/audit_log_service.py#L104-L137)
 
 ### Input Validation and Sanitization
 
@@ -307,11 +307,11 @@ Skip --> Accept
 
 **Diagram sources**
 
-- [virus_scanner.py:65-121](file://backend/app/utils/virus_scanner.py#L65-L121)
+- [virus_scanner.py:65-121](../../../../backend/app/utils/virus_scanner.py#L65-L121)
 
 **Section sources**
 
-- [virus_scanner.py:14-121](file://backend/app/utils/virus_scanner.py#L14-L121)
+- [virus_scanner.py:14-121](../../../../backend/app/utils/virus_scanner.py#L14-L121)
 
 ### Audit Logging and Request Correlation
 
@@ -331,14 +331,14 @@ App-->>Client : Response
 
 **Diagram sources**
 
-- [audit_log_service.py:104-137](file://backend/app/services/audit_log_service.py#L104-L137)
-- [main.py:318-328](file://backend/app/main.py#L318-L328)
+- [audit_log_service.py:104-137](../../../../backend/app/services/audit_log_service.py#L104-L137)
+- [main.py:318-328](../../../../backend/app/main.py#L318-L328)
 
 **Section sources**
 
-- [audit_log_service.py:17-140](file://backend/app/services/audit_log_service.py#L17-L140)
-- [request_id.py:21-74](file://backend/app/middleware/request_id.py#L21-L74)
-- [main.py:318-328](file://backend/app/main.py#L318-L328)
+- [audit_log_service.py:17-140](../../../../backend/app/services/audit_log_service.py#L17-L140)
+- [request_id.py:21-74](../../../../backend/app/middleware/request_id.py#L21-L74)
+- [main.py:318-328](../../../../backend/app/main.py#L318-L328)
 
 ### Vulnerability Management and CI
 
@@ -346,7 +346,7 @@ App-->>Client : Response
 
 **Section sources**
 
-- [security.yml:24-46](file://.github/workflows/security.yml#L24-L46)
+- [security.yml:24-46](../../../../.github/workflows/security.yml#L24-L46)
 
 ## Dependency Analysis
 
@@ -369,18 +369,18 @@ VS["VirusScanner"] --> ClamAV
 
 **Diagram sources**
 
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
-- [rate_limit.py:30-34](file://backend/app/middleware/rate_limit.py#L30-L34)
-- [tier_rate_limit.py:30-32](file://backend/app/middleware/tier_rate_limit.py#L30-L32)
-- [jwks_verifier.py:26-36](file://backend/app/security/jwks_verifier.py#L26-L36)
-- [abuse_detector.py:16-18](file://backend/app/middleware/abuse_detector.py#L16-L18)
-- [audit_log_service.py:67-86](file://backend/app/services/audit_log_service.py#L67-L86)
-- [virus_scanner.py:80-81](file://backend/app/utils/virus_scanner.py#L80-L81)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
+- [rate_limit.py:30-34](../../../../backend/app/middleware/rate_limit.py#L30-L34)
+- [tier_rate_limit.py:30-32](../../../../backend/app/middleware/tier_rate_limit.py#L30-L32)
+- [jwks_verifier.py:26-36](../../../../backend/app/security/jwks_verifier.py#L26-L36)
+- [abuse_detector.py:16-18](../../../../backend/app/middleware/abuse_detector.py#L16-L18)
+- [audit_log_service.py:67-86](../../../../backend/app/services/audit_log_service.py#L67-L86)
+- [virus_scanner.py:80-81](../../../../backend/app/utils/virus_scanner.py#L80-L81)
 
 **Section sources**
 
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
-- [main.py:294-328](file://backend/app/main.py#L294-L328)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
+- [main.py:294-328](../../../../backend/app/main.py#L294-L328)
 
 ## Performance Considerations
 
@@ -390,34 +390,34 @@ VS["VirusScanner"] --> ClamAV
 
 **Section sources**
 
-- [rate_limit.py:37-118](file://backend/app/middleware/rate_limit.py#L37-L118)
-- [prometheus_metrics.py:118-122](file://backend/app/middleware/prometheus_metrics.py#L118-L122)
-- [security_headers.py:78-99](file://backend/app/middleware/security_headers.py#L78-L99)
+- [rate_limit.py:37-118](../../../../backend/app/middleware/rate_limit.py#L37-L118)
+- [prometheus_metrics.py:118-122](../../../../backend/app/middleware/prometheus_metrics.py#L118-L122)
+- [security_headers.py:78-99](../../../../backend/app/middleware/security_headers.py#L78-L99)
 
 ## Troubleshooting Guide
 
 - JWT verification failures
-    - Ensure Supabase URL and JWKS URL are configured; verify algorithm and issuer claims.
-    - Check for expired/expired or invalid audience/issuer errors.
+  - Ensure Supabase URL and JWKS URL are configured; verify algorithm and issuer claims.
+  - Check for expired/expired or invalid audience/issuer errors.
 - RBAC not enforcing
-    - The RBAC guard exists but may require endpoint-specific guards; verify route dependencies and role resolution.
+  - The RBAC guard exists but may require endpoint-specific guards; verify route dependencies and role resolution.
 - Audit logging not appearing
-    - Audit table may be missing; confirm Supabase table exists and logging is not suppressed after initial failure.
+  - Audit table may be missing; confirm Supabase table exists and logging is not suppressed after initial failure.
 - Rate limiting anomalies
-    - Confirm Redis connectivity; fallback to in-memory counters is logged when Redis is unavailable.
+  - Confirm Redis connectivity; fallback to in-memory counters is logged when Redis is unavailable.
 - Abusive behavior not flagged
-    - Verify AbuseDetector Redis availability and that abuse thresholds are exceeded.
+  - Verify AbuseDetector Redis availability and that abuse thresholds are exceeded.
 - File processing blocked
-    - ClamAV daemon may be unreachable; scanning falls back and logs warnings.
+  - ClamAV daemon may be unreachable; scanning falls back and logs warnings.
 
 **Section sources**
 
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
-- [audit_log_service.py:64-103](file://backend/app/services/audit_log_service.py#L64-L103)
-- [rate_limit.py:94-118](file://backend/app/middleware/rate_limit.py#L94-L118)
-- [abuse_detector.py:20-33](file://backend/app/middleware/abuse_detector.py#L20-L33)
-- [virus_scanner.py:83-113](file://backend/app/utils/virus_scanner.py#L83-L113)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
+- [rbac.py:61-80](../../../../backend/app/middleware/rbac.py#L61-L80)
+- [audit_log_service.py:64-103](../../../../backend/app/services/audit_log_service.py#L64-L103)
+- [rate_limit.py:94-118](../../../../backend/app/middleware/rate_limit.py#L94-L118)
+- [abuse_detector.py:20-33](../../../../backend/app/middleware/abuse_detector.py#L20-L33)
+- [virus_scanner.py:83-113](../../../../backend/app/utils/virus_scanner.py#L83-L113)
 
 ## Conclusion
 
@@ -433,9 +433,9 @@ The backend implements a robust set of security controls including JWT verificat
 
 **Section sources**
 
-- [main.py:106-114](file://backend/app/main.py#L106-L114)
-- [settings.py:128-131](file://backend/app/config/settings.py#L128-L131)
-- [settings.py:87-87](file://backend/app/config/settings.py#L87-L87)
+- [main.py:106-114](../../../../backend/app/main.py#L106-L114)
+- [settings.py:128-131](../../../../backend/app/config/settings.py#L128-L131)
+- [settings.py:87-87](../../../../backend/app/config/settings.py#L87-L87)
 
 ### Secure Deployment Practices
 
@@ -446,10 +446,10 @@ The backend implements a robust set of security controls including JWT verificat
 
 **Section sources**
 
-- [main.py:303-313](file://backend/app/main.py#L303-L313)
-- [settings.py:27-26](file://backend/app/config/settings.py#L27-L26)
-- [tier_rate_limit.py:30-32](file://backend/app/middleware/tier_rate_limit.py#L30-L32)
-- [jwks_verifier.py:26-36](file://backend/app/security/jwks_verifier.py#L26-L36)
+- [main.py:303-313](../../../../backend/app/main.py#L303-L313)
+- [settings.py:27-26](../../../../backend/app/config/settings.py#L27-L26)
+- [tier_rate_limit.py:30-32](../../../../backend/app/middleware/tier_rate_limit.py#L30-L32)
+- [jwks_verifier.py:26-36](../../../../backend/app/security/jwks_verifier.py#L26-L36)
 
 ### Secrets Management
 
@@ -458,8 +458,8 @@ The backend implements a robust set of security controls including JWT verificat
 
 **Section sources**
 
-- [settings.py:76-91](file://backend/app/config/settings.py#L76-L91)
-- [main.py:198-229](file://backend/app/main.py#L198-L229)
+- [settings.py:76-91](../../../../backend/app/config/settings.py#L76-L91)
+- [main.py:198-229](../../../../backend/app/main.py#L198-L229)
 
 ### Continuous Security Assessment
 
@@ -468,8 +468,8 @@ The backend implements a robust set of security controls including JWT verificat
 
 **Section sources**
 
-- [security.yml:24-46](file://.github/workflows/security.yml#L24-L46)
-- [Security.md:49-72](file://docs/Security.md#L49-L72)
+- [security.yml:24-46](../../../../.github/workflows/security.yml#L24-L46)
+- [Security.md:49-72](../../../../SECURITY.md#L49-L72)
 
 ### Incident Response Protocols
 
@@ -479,7 +479,7 @@ The backend implements a robust set of security controls including JWT verificat
 
 **Section sources**
 
-- [request_id.py:21-74](file://backend/app/middleware/request_id.py#L21-L74)
-- [abuse_detector.py:41-66](file://backend/app/middleware/abuse_detector.py#L41-L66)
-- [audit_log_service.py:104-137](file://backend/app/services/audit_log_service.py#L104-L137)
-- [Risk_Register.md:18-18](file://docs/Risk_Register.md#L18-L18)
+- [request_id.py:21-74](../../../../backend/app/middleware/request_id.py#L21-L74)
+- [abuse_detector.py:41-66](../../../../backend/app/middleware/abuse_detector.py#L41-L66)
+- [audit_log_service.py:104-137](../../../../backend/app/services/audit_log_service.py#L104-L137)
+- [Risk_Register.md:18-18](../../../reports/Risk_Register.md#L18-L18)

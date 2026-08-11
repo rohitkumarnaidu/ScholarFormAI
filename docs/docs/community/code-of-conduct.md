@@ -22,7 +22,7 @@ We are committed to providing a welcoming, inclusive, and harassment-free experi
 
 ## Enforcement
 
-Violations can be reported to conduct@amf.dev. All reports will be reviewed and investigated promptly.
+Violations can be reported to <conduct@amf.dev>. All reports will be reviewed and investigated promptly.
 
 Project maintainers are responsible for enforcing these standards and may take corrective action including warnings, temporary bans, or permanent bans.
 

@@ -5,16 +5,16 @@
 
 <cite>
 **Referenced Files in This Document**
-- [pytest.ini](file://backend/pytest.ini)
-- [pyproject.toml](file://backend/pyproject.toml)
-- [pyrefly.toml](file://backend/pyrefly.toml)
-- [ruff.toml](file://backend/ruff.toml)
-- [tests/conftest.py](file://backend/tests/conftest.py)
-- [tests/integration/conftest.py](file://backend/tests/integration/conftest.py)
-- [tests/test_smoke.py](file://backend/tests/test_smoke.py)
-- [tests/test_api.py](file://backend/tests/test_api.py)
-- [tests/test_database.py](file://backend/tests/test_database.py)
-- [backend-ci.yml](file://.github/workflows/backend-ci.yml)
+- [pytest.ini](../../../../../backend/pytest.ini)
+- [pyproject.toml](../../../../../backend/pyproject.toml)
+- [pyrefly.toml](../../../../../backend/pyrefly.toml)
+- [ruff.toml](../../../../../backend/ruff.toml)
+- [tests/conftest.py](../../../../../backend/tests/conftest.py)
+- [tests/integration/conftest.py](../../../../../backend/tests/integration/conftest.py)
+- [tests/test_smoke.py](../../../../../backend/tests/test_smoke.py)
+- [tests/test_api.py](../../../../../backend/tests/test_api.py)
+- [tests/test_database.py](../../../../../backend/tests/test_database.py)
+- [backend-ci.yml](../../../../../.github/workflows/backend-ci.yml)
 - [TESTING_COMMANDS.md](file://backend/manual_tests/TESTING_COMMANDS.md)
 - [test_core.sh](file://backend/test_core.sh)
 - [test_core.bat](file://backend/test_core.bat)
@@ -61,52 +61,52 @@ J["test_core.sh / test_core.bat<br/>Local quick-run"] --> K["Pytest with markers
 
 **Diagram sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [tests/conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [tests/integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
-- [tests/test_smoke.py:1-269](file://backend/tests/test_smoke.py#L1-L269)
-- [tests/test_api.py:1-366](file://backend/tests/test_api.py#L1-L366)
-- [tests/test_database.py:1-52](file://backend/tests/test_database.py#L1-L52)
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-L28)
+- [tests/conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
+- [tests/integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
+- [tests/test_smoke.py:1-269](../../../../../backend/tests/test_smoke.py#L1-L269)
+- [tests/test_api.py:1-366](../../../../../backend/tests/test_api.py#L1-L366)
+- [tests/test_database.py:1-52](../../../../../backend/tests/test_database.py#L1-L52)
+- [backend-ci.yml:1-41](../../../../../.github/workflows/backend-ci.yml#L1-L41)
 - [test_core.sh:1-5](file://backend/test_core.sh#L1-L5)
 - [test_core.bat:1-4](file://backend/test_core.bat#L1-L4)
 
 **Section sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [tests/conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [tests/integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-L28)
+- [tests/conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
+- [tests/integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
+- [backend-ci.yml:1-41](../../../../../.github/workflows/backend-ci.yml#L1-L41)
 - [test_core.sh:1-5](file://backend/test_core.sh#L1-L5)
 - [test_core.bat:1-4](file://backend/test_core.bat#L1-L4)
 
 ## Core Components
 
 - pytest.ini
-    - Test discovery: scans the tests directory while excluding manual test folders.
-    - Asyncio mode: configured for async-native test execution.
-    - Collection patterns: Python files, classes, and functions follow conventional naming.
-    - Plugin options: disables a specific plugin during test runs.
-    - Warning filters: suppresses noisy deprecation warnings from third-party libraries.
-    - Markers: comprehensive taxonomy for categorizing tests (unit, integration, database, contract, pipeline, performance, slow, rag, llm, service).
+  - Test discovery: scans the tests directory while excluding manual test folders.
+  - Asyncio mode: configured for async-native test execution.
+  - Collection patterns: Python files, classes, and functions follow conventional naming.
+  - Plugin options: disables a specific plugin during test runs.
+  - Warning filters: suppresses noisy deprecation warnings from third-party libraries.
+  - Markers: comprehensive taxonomy for categorizing tests (unit, integration, database, contract, pipeline, performance, slow, rag, llm, service).
 - tests/conftest.py
-    - Global autouse fixtures: ensures Redis-related integrations are mocked consistently.
-    - Integration skipper: automatically skips integration tests when required services are unreachable.
-    - Document fixtures: reusable minimal/full document models for pipeline tests.
+  - Global autouse fixtures: ensures Redis-related integrations are mocked consistently.
+  - Integration skipper: automatically skips integration tests when required services are unreachable.
+  - Document fixtures: reusable minimal/full document models for pipeline tests.
 - tests/integration/conftest.py
-    - Service availability checks for Redis and GROBID.
-    - Automatic marker assignment for integration tests discovered under tests/integration/.
+  - Service availability checks for Redis and GROBID.
+  - Automatic marker assignment for integration tests discovered under tests/integration/.
 - CI/CD
-    - GitHub Actions job runs linting and non-integration tests by default.
+  - GitHub Actions job runs linting and non-integration tests by default.
 - Local scripts
-    - Cross-platform helpers to run a “trusted core” subset of tests (excluding integration and LLM-dependent tests).
+  - Cross-platform helpers to run a “trusted core” subset of tests (excluding integration and LLM-dependent tests).
 
 **Section sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [tests/conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [tests/integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-L28)
+- [tests/conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
+- [tests/integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
+- [backend-ci.yml:1-41](../../../../../.github/workflows/backend-ci.yml#L1-L41)
 - [test_core.sh:1-5](file://backend/test_core.sh#L1-L5)
 - [test_core.bat:1-4](file://backend/test_core.bat#L1-L4)
 
@@ -152,16 +152,16 @@ GH --> P
 
 **Diagram sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [ruff.toml:1-11](file://backend/ruff.toml#L1-L11)
-- [pyproject.toml:1-9](file://backend/pyproject.toml#L1-L9)
-- [pyrefly.toml:1-7](file://backend/pyrefly.toml#L1-L7)
-- [tests/conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [tests/integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
-- [tests/test_smoke.py:1-269](file://backend/tests/test_smoke.py#L1-L269)
-- [tests/test_api.py:1-366](file://backend/tests/test_api.py#L1-L366)
-- [tests/test_database.py:1-52](file://backend/tests/test_database.py#L1-L52)
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-L28)
+- [ruff.toml:1-11](../../../../../backend/ruff.toml#L1-L11)
+- [pyproject.toml:1-9](../../../../../backend/pyproject.toml#L1-L9)
+- [pyrefly.toml:1-7](../../../../../backend/pyrefly.toml#L1-L7)
+- [tests/conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
+- [tests/integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
+- [tests/test_smoke.py:1-269](../../../../../backend/tests/test_smoke.py#L1-L269)
+- [tests/test_api.py:1-366](../../../../../backend/tests/test_api.py#L1-L366)
+- [tests/test_database.py:1-52](../../../../../backend/tests/test_database.py#L1-L52)
+- [backend-ci.yml:1-41](../../../../../.github/workflows/backend-ci.yml#L1-L41)
 
 ## Detailed Component Analysis
 
@@ -184,7 +184,7 @@ Practical usage tips:
 
 **Section sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-L28)
 
 ### pyproject.toml and Tooling Integration
 
@@ -198,9 +198,9 @@ Related tooling:
 
 **Section sources**
 
-- [pyproject.toml:1-9](file://backend/pyproject.toml#L1-L9)
-- [ruff.toml:1-11](file://backend/ruff.toml#L1-L11)
-- [pyrefly.toml:1-7](file://backend/pyrefly.toml#L1-L7)
+- [pyproject.toml:1-9](../../../../../backend/pyproject.toml#L1-L9)
+- [ruff.toml:1-11](../../../../../backend/ruff.toml#L1-L11)
+- [pyrefly.toml:1-7](../../../../../backend/pyrefly.toml#L1-L7)
 
 ### tests/conftest.py: Global Fixtures and Environment Management
 
@@ -217,7 +217,7 @@ Isolation strategies:
 
 **Section sources**
 
-- [tests/conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
+- [tests/conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
 
 ### tests/integration/conftest.py: Integration-Specific Behavior
 
@@ -228,7 +228,7 @@ Highlights:
 
 **Section sources**
 
-- [tests/integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
+- [tests/integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
 
 ### Smoke and Contract Tests (tests/test_smoke.py)
 
@@ -245,7 +245,7 @@ Execution guidance:
 
 **Section sources**
 
-- [tests/test_smoke.py:1-269](file://backend/tests/test_smoke.py#L1-L269)
+- [tests/test_smoke.py:1-269](../../../../../backend/tests/test_smoke.py#L1-L269)
 
 ### API Integration Tests (tests/test_api.py)
 
@@ -260,7 +260,7 @@ Marker usage:
 
 **Section sources**
 
-- [tests/test_api.py:1-366](file://backend/tests/test_api.py#L1-L366)
+- [tests/test_api.py:1-366](../../../../../backend/tests/test_api.py#L1-L366)
 
 ### Database Layer Tests (tests/test_database.py)
 
@@ -274,7 +274,7 @@ Marker usage:
 
 **Section sources**
 
-- [tests/test_database.py:1-52](file://backend/tests/test_database.py#L1-L52)
+- [tests/test_database.py:1-52](../../../../../backend/tests/test_database.py#L1-L52)
 
 ### CI/CD Test Execution (.github/workflows/backend-ci.yml)
 
@@ -289,7 +289,7 @@ Local parity:
 
 **Section sources**
 
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
+- [backend-ci.yml:1-41](../../../../../.github/workflows/backend-ci.yml#L1-L41)
 
 ### Local Development Scripts (test_core.sh, test_core.bat)
 
@@ -330,31 +330,31 @@ SC["test_core.sh / test_core.bat"] --> PI
 
 **Diagram sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [tests/conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [tests/integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
-- [tests/test_smoke.py:1-269](file://backend/tests/test_smoke.py#L1-L269)
-- [tests/test_api.py:1-366](file://backend/tests/test_api.py#L1-L366)
-- [tests/test_database.py:1-52](file://backend/tests/test_database.py#L1-L52)
-- [ruff.toml:1-11](file://backend/ruff.toml#L1-L11)
-- [pyproject.toml:1-9](file://backend/pyproject.toml#L1-L9)
-- [pyrefly.toml:1-7](file://backend/pyrefly.toml#L1-L7)
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-L28)
+- [tests/conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
+- [tests/integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
+- [tests/test_smoke.py:1-269](../../../../../backend/tests/test_smoke.py#L1-L269)
+- [tests/test_api.py:1-366](../../../../../backend/tests/test_api.py#L1-L366)
+- [tests/test_database.py:1-52](../../../../../backend/tests/test_database.py#L1-L52)
+- [ruff.toml:1-11](../../../../../backend/ruff.toml#L1-L11)
+- [pyproject.toml:1-9](../../../../../backend/pyproject.toml#L1-L9)
+- [pyrefly.toml:1-7](../../../../../backend/pyrefly.toml#L1-L7)
+- [backend-ci.yml:1-41](../../../../../.github/workflows/backend-ci.yml#L1-L41)
 - [test_core.sh:1-5](file://backend/test_core.sh#L1-L5)
 - [test_core.bat:1-4](file://backend/test_core.bat#L1-L4)
 
 **Section sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [tests/conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [tests/integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
-- [tests/test_smoke.py:1-269](file://backend/tests/test_smoke.py#L1-L269)
-- [tests/test_api.py:1-366](file://backend/tests/test_api.py#L1-L366)
-- [tests/test_database.py:1-52](file://backend/tests/test_database.py#L1-L52)
-- [ruff.toml:1-11](file://backend/ruff.toml#L1-L11)
-- [pyproject.toml:1-9](file://backend/pyproject.toml#L1-L9)
-- [pyrefly.toml:1-7](file://backend/pyrefly.toml#L1-L7)
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-L28)
+- [tests/conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
+- [tests/integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
+- [tests/test_smoke.py:1-269](../../../../../backend/tests/test_smoke.py#L1-L269)
+- [tests/test_api.py:1-366](../../../../../backend/tests/test_api.py#L1-L366)
+- [tests/test_database.py:1-52](../../../../../backend/tests/test_database.py#L1-L52)
+- [ruff.toml:1-11](../../../../../backend/ruff.toml#L1-L11)
+- [pyproject.toml:1-9](../../../../../backend/pyproject.toml#L1-L9)
+- [pyrefly.toml:1-7](../../../../../backend/pyrefly.toml#L1-L7)
+- [backend-ci.yml:1-41](../../../../../.github/workflows/backend-ci.yml#L1-L41)
 - [test_core.sh:1-5](file://backend/test_core.sh#L1-L5)
 - [test_core.bat:1-4](file://backend/test_core.bat#L1-L4)
 
@@ -372,25 +372,25 @@ SC["test_core.sh / test_core.bat"] --> PI
 Common scenarios and remedies:
 
 - Integration tests skipped unexpectedly
-    - Cause: Required services (Redis, GROBID) unreachable.
-    - Action: Start Docker services or adjust host/port environment variables; rerun with explicit markers.
-    - Evidence: Integration skipper and service checks in fixtures.
+  - Cause: Required services (Redis, GROBID) unreachable.
+  - Action: Start Docker services or adjust host/port environment variables; rerun with explicit markers.
+  - Evidence: Integration skipper and service checks in fixtures.
 - Noisy deprecation warnings
-    - Cause: Third-party library deprecations.
-    - Action: Warnings are filtered by pytest.ini; confirm filters remain effective.
+  - Cause: Third-party library deprecations.
+  - Action: Warnings are filtered by pytest.ini; confirm filters remain effective.
 - Lint or type errors blocking CI
-    - Cause: Ruff or MyPy failures.
-    - Action: Run locally with the same toolchain as CI; address reported issues.
+  - Cause: Ruff or MyPy failures.
+  - Action: Run locally with the same toolchain as CI; address reported issues.
 - Local vs. CI differences
-    - Cause: Different environment variables or installed dependencies.
-    - Action: Mirror CI steps locally (setup Python, install dependencies, copy environment file).
+  - Cause: Different environment variables or installed dependencies.
+  - Action: Mirror CI steps locally (setup Python, install dependencies, copy environment file).
 
 **Section sources**
 
-- [tests/conftest.py:29-44](file://backend/tests/conftest.py#L29-L44)
-- [tests/integration/conftest.py:9-32](file://backend/tests/integration/conftest.py#L9-L32)
-- [pytest.ini:9-16](file://backend/pytest.ini#L9-L16)
-- [backend-ci.yml:23-40](file://.github/workflows/backend-ci.yml#L23-L40)
+- [tests/conftest.py:29-44](../../../../../backend/tests/conftest.py#L29-L44)
+- [tests/integration/conftest.py:9-32](../../../../../backend/tests/integration/conftest.py#L9-L32)
+- [pytest.ini:9-16](../../../../../backend/pytest.ini#L9-L16)
+- [backend-ci.yml:23-40](../../../../../.github/workflows/backend-ci.yml#L23-L40)
 
 ## Conclusion
 
@@ -405,13 +405,13 @@ The backend testing setup leverages pytest’s powerful configuration and fixtur
 - Discovery patterns: test_*.py, Test* classes, test_* functions.
 - Markers: unit, integration, database, contract, pipeline, performance, slow, rag, llm, service.
 - Execution examples:
-    - Run only unit tests: pytest -m unit
-    - Skip integration and slow tests: pytest -m "not integration and not slow"
+  - Run only unit tests: pytest -m unit
+  - Skip integration and slow tests: pytest -m "not integration and not slow"
 
 **Section sources**
 
-- [pytest.ini:2-8](file://backend/pytest.ini#L2-L8)
-- [pytest.ini:16-27](file://backend/pytest.ini#L16-L27)
+- [pytest.ini:2-8](../../../../../backend/pytest.ini#L2-L8)
+- [pytest.ini:16-27](../../../../../backend/pytest.ini#L16-L27)
 
 ### Local Development Setup
 
@@ -421,7 +421,7 @@ The backend testing setup leverages pytest’s powerful configuration and fixtur
 
 **Section sources**
 
-- [backend-ci.yml:23-40](file://.github/workflows/backend-ci.yml#L23-L40)
+- [backend-ci.yml:23-40](../../../../../.github/workflows/backend-ci.yml#L23-L40)
 - [test_core.sh:1-5](file://backend/test_core.sh#L1-L5)
 - [test_core.bat:1-4](file://backend/test_core.bat#L1-L4)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)

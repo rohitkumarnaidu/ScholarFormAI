@@ -5,16 +5,16 @@
 
 <cite>
 **Referenced Files in This Document**
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [default_guidelines.json](file://backend/app/pipeline/intelligence/default_guidelines.json)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [llm_validator.py](file://backend/app/pipeline/safety/llm_validator.py)
-- [test_reasoning_engine.py](file://backend/tests/test_reasoning_engine.py)
-- [test_semantic_parser.py](file://backend/tests/test_semantic_parser.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [default_guidelines.json](../../../../backend/app/pipeline/intelligence/default_guidelines.json)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [llm_validator.py](../../../../backend/app/pipeline/safety/llm_validator.py)
+- [test_reasoning_engine.py](../../../../backend/tests/test_reasoning_engine.py)
+- [test_semantic_parser.py](../../../../backend/tests/test_semantic_parser.py)
 </cite>
 
 ## Table of Contents
@@ -64,22 +64,22 @@ RE --> LV
 
 **Diagram sources**
 
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [default_guidelines.json](file://backend/app/pipeline/intelligence/default_guidelines.json)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [llm_validator.py](file://backend/app/pipeline/safety/llm_validator.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [default_guidelines.json](../../../../backend/app/pipeline/intelligence/default_guidelines.json)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [llm_validator.py](../../../../backend/app/pipeline/safety/llm_validator.py)
 
 **Section sources**
 
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [default_guidelines.json](file://backend/app/pipeline/intelligence/default_guidelines.json)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [default_guidelines.json](../../../../backend/app/pipeline/intelligence/default_guidelines.json)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
 
 ## Core Components
 
@@ -98,10 +98,10 @@ Key responsibilities:
 
 **Section sources**
 
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
 
 ## Architecture Overview
 
@@ -131,10 +131,10 @@ Orchestrator-->>Client : "pipeline continues with validation/formatting"
 
 **Diagram sources**
 
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
 
 ## Detailed Component Analysis
 
@@ -178,7 +178,7 @@ class ReasoningEngine {
 
 **Diagram sources**
 
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
 
 Key workflows:
 
@@ -195,11 +195,11 @@ Integration points:
 
 **Section sources**
 
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [llm_validator.py](file://backend/app/pipeline/safety/llm_validator.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [llm_validator.py](../../../../backend/app/pipeline/safety/llm_validator.py)
 
 ### SemanticParser
 
@@ -224,11 +224,11 @@ BuildSemanticBlocks --> End(["Return semantic_blocks"])
 
 **Diagram sources**
 
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
 
 **Section sources**
 
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
 
 ### RagEngine and Publisher Rules
 
@@ -255,13 +255,13 @@ end
 
 **Diagram sources**
 
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [default_guidelines.json](file://backend/app/pipeline/intelligence/default_guidelines.json)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [default_guidelines.json](../../../../backend/app/pipeline/intelligence/default_guidelines.json)
 
 **Section sources**
 
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [default_guidelines.json](file://backend/app/pipeline/intelligence/default_guidelines.json)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [default_guidelines.json](../../../../backend/app/pipeline/intelligence/default_guidelines.json)
 
 ### PipelineOrchestrator Integration
 
@@ -287,13 +287,13 @@ ORCH-->>ORCH : "continue validation/formatting"
 
 **Diagram sources**
 
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
 
 **Section sources**
 
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
 
 ## Dependency Analysis
 
@@ -318,23 +318,23 @@ ORCH --> SP
 
 **Diagram sources**
 
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [llm_validator.py](file://backend/app/pipeline/safety/llm_validator.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [llm_validator.py](../../../../backend/app/pipeline/safety/llm_validator.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
 
 **Section sources**
 
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [llm_validator.py](file://backend/app/pipeline/safety/llm_validator.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [llm_validator.py](../../../../backend/app/pipeline/safety/llm_validator.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
 
 ## Performance Considerations
 
@@ -365,12 +365,12 @@ Debugging techniques:
 
 **Section sources**
 
-- [test_reasoning_engine.py](file://backend/tests/test_reasoning_engine.py)
-- [test_semantic_parser.py](file://backend/tests/test_semantic_parser.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [llm_validator.py](file://backend/app/pipeline/safety/llm_validator.py)
+- [test_reasoning_engine.py](../../../../backend/tests/test_reasoning_engine.py)
+- [test_semantic_parser.py](../../../../backend/tests/test_semantic_parser.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [llm_validator.py](../../../../backend/app/pipeline/safety/llm_validator.py)
 
 ## Conclusion
 

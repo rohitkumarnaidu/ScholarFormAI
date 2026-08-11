@@ -25,13 +25,13 @@ EXPECTED_ENDPOINTS: dict[str, dict[str, list[str]]] = {
     "Documents v1": {
         "prefix": "/api/v1/documents",
         "paths": [
-            "", "/upload", "/upload/chunked", "/batch-upload", "/stats",
+            "", "/upload", "/upload/chunked", "/batch-upload",
             "/{jobId}/status", "/{jobId}/summary", "/{jobId}/edit",
             "/{jobId}/preview", "/{jobId}/compare", "/{jobId}/download",
             "/{jobId}",
         ],
         "methods": [
-            "GET", "POST", "POST", "POST", "GET",
+            "GET", "POST", "POST", "POST",
             "GET", "GET", "POST",
             "GET", "GET", "GET",
             "DELETE",
@@ -71,8 +71,8 @@ EXPECTED_ENDPOINTS: dict[str, dict[str, list[str]]] = {
     },
     "Metrics v1": {
         "prefix": "/api/v1/metrics",
-        "paths": ["/db", "/log-error", "/health", "/dashboard", "/enhancements", "/vllm-readiness", "/usage"],
-        "methods": ["GET", "POST", "GET", "GET", "GET", "GET", "GET"],
+        "paths": ["/db", "/log-error", "/health", "/dashboard", "/enhancements", "/vllm-readiness"],
+        "methods": ["GET", "POST", "GET", "GET", "GET", "GET"],
     },
     "providers": {
         "prefix": "/api/v1/providers",
@@ -204,7 +204,7 @@ def _patched_dependencies():
         get_remote_address=MagicMock(return_value="127.0.0.1"),
         SLOWAPI_AVAILABLE=False,
         sentry_sdk=None,
-        SENTRY_AVAILABLE=False,
+        SENTRY_AVAILABLE=False, create=True
     )
 
 
@@ -228,7 +228,7 @@ def test_openapi_schema_has_valid_paths(openapi_schema: dict[str, Any]):
     allowed_root = {"/", "/health", "/ready"}
     paths = openapi_schema.get("paths", {})
     for path_key in paths:
-        ok = path_key.startswith("/api/v1/") or path_key in allowed_root
+        ok = path_key.startswith("/api/v1/") or path_key.startswith("/api/v2/") or path_key in allowed_root
         assert ok, f"Unexpected path key: {path_key}"
 
 

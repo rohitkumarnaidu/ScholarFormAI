@@ -83,13 +83,13 @@ Stores document formatting job metadata, upload status, file paths, and current 
 | `updated_at` | `TIMESTAMPTZ` | No | `DEFAULT NOW()` | Last progress update timestamp. |
 
 - **Indexes**:
-    - `idx_documents_user_id` on `user_id`
-    - `idx_documents_status` on `status`
-    - `idx_documents_created_at` on `created_at DESC`
-    - `idx_documents_file_hash` on `file_hash`
-    - `idx_documents_user_created` composite on `(user_id, created_at DESC)`
-    - `idx_documents_user_updated` composite on `(user_id, updated_at DESC)`
-    - `idx_documents_fts` GIN on `to_tsvector('english', raw_text)`
+  - `idx_documents_user_id` on `user_id`
+  - `idx_documents_status` on `status`
+  - `idx_documents_created_at` on `created_at DESC`
+  - `idx_documents_file_hash` on `file_hash`
+  - `idx_documents_user_created` composite on `(user_id, created_at DESC)`
+  - `idx_documents_user_updated` composite on `(user_id, updated_at DESC)`
+  - `idx_documents_fts` GIN on `to_tsvector('english', raw_text)`
 
 ---
 
@@ -294,9 +294,9 @@ Records security events, authentication attempts, API key creations, and documen
 | `created_at` | `TIMESTAMPTZ` | No | `DEFAULT NOW()` | Event logging timestamp. |
 
 - **Indexes**:
-    - `idx_audit_log_user_id` on `user_id`
-    - `idx_audit_log_timestamp` on `created_at DESC`
-    - `idx_audit_log_resource` composite on `(resource_type, resource_id)`
+  - `idx_audit_log_user_id` on `user_id`
+  - `idx_audit_log_timestamp` on `created_at DESC`
+  - `idx_audit_log_resource` composite on `(resource_type, resource_id)`
 
 ---
 
@@ -317,8 +317,8 @@ Manages client webhook subscriptions for processing event notifications.
 | `updated_at` | `TIMESTAMPTZ` | No | `DEFAULT NOW()` | Modification timestamp. |
 
 - **Indexes**:
-    - `idx_webhook_subs_user_id` on `user_id`
-    - `idx_webhook_subs_active_events` GIN on `(is_active, events)`
+  - `idx_webhook_subs_user_id` on `user_id`
+  - `idx_webhook_subs_active_events` GIN on `(is_active, events)`
 
 ---
 

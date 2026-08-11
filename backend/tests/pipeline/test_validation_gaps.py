@@ -3,14 +3,25 @@
 # Copyright (c) 2026 ScholarForm AI
 
 from __future__ import annotations
-from unittest.mock import patch, MagicMock, PropertyMock
-from datetime import datetime
+
+from unittest.mock import MagicMock, PropertyMock, patch
+
 import pytest
 
-from app.models import PipelineDocument, Block, Reference, DocumentMetadata, Figure, Table, Equation, BlockType, CitationStyle
-from app.pipeline.validation.validator_v3 import DocumentValidator, ValidationResult, validate_document
-from app.pipeline.validation.review_manager import ReviewManager
+from app.models import (
+    Block,
+    Figure,
+    PipelineDocument,
+    Reference,
+    ReviewMetadata,
+    ReviewStatus,
+    Table,
+    TemplateInfo,
+)
 from app.pipeline.validation.ai_explainer import AIExplainer
+from app.pipeline.validation.review_manager import ReviewManager
+from app.pipeline.validation.validator_v3 import DocumentValidator, ValidationResult, validate_document
+
 
 def _doc(**overrides) -> PipelineDocument:
     return PipelineDocument(document_id="test-123", **overrides)
@@ -337,6 +348,8 @@ class TestCheckFiguresGaps:
 
     def test_multiple_figures_some_missing_captions(self):
         figs = [
+            Figure(figure_id="f1", index=0, caption_text="Fig 1"),
+            Figure(figure_id="f2", index=1, caption_text=None),
         ]
         doc = _doc(figures=figs)
         v = DocumentValidator()
@@ -410,8 +423,8 @@ class TestCheckReferencesGaps:
 
     def test_multiple_references_mixed_issues(self):
         refs = [
-            Reference(reference_id="r1", citation_key="k1", raw_text="Ref1", index=0, year=None, authors=[], title=None),
-            Reference(reference_id="r2", citation_key="k2", raw_text="Ref2", index=1, year=2023, authors=["Smith"], title="Paper"),
+            Reference(reference_id="r1", citation_key="R1", raw_text="Ref1", index=0, year=None, authors=[], title=None),
+            Reference(reference_id="r2", citation_key="R2", raw_text="Ref2", index=1, year=2023, authors=["Smith"], title="Paper"),
         ]
         doc = _doc(references=refs)
         v = DocumentValidator()
