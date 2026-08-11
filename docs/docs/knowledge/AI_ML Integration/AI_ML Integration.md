@@ -5,20 +5,20 @@
 
 <cite>
 **Referenced Files in This Document**
-- [nvidia_client.py](file://backend/app/services/nvidia_client.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
-- [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [classifier.py](file://backend/app/pipeline/classification/classifier.py)
-- [test_classification.py](file://backend/tests/test_classification.py)
+- [nvidia_client.py](../../../../backend/app/services/nvidia_client.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
+- [vllm_adoption.py](../../../../backend/app/services/vllm_adoption.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [classifier.py](../../../../backend/app/pipeline/classification/classifier.py)
+- [test_classification.py](../../../../backend/tests/pipeline/test_classification.py)
 - [test_classification_gate.py](file://backend/tests/test_classification_gate.py)
-- [test_vllm_adoption.py](file://backend/tests/test_vllm_adoption.py)
-- [test_rag_engine.py](file://backend/tests/test_rag_engine.py)
-- [test_reasoning_engine.py](file://backend/tests/test_reasoning_engine.py)
-- [test_nvidia_client.py](file://backend/tests/test_nvidia_client.py)
+- [test_vllm_adoption.py](../../../../backend/tests/test_vllm_adoption.py)
+- [test_rag_engine.py](../../../../backend/tests/test_rag_engine.py)
+- [test_reasoning_engine.py](../../../../backend/tests/test_reasoning_engine.py)
+- [test_nvidia_client.py](../../../../backend/tests/test_nvidia_client.py)
 </cite>
 
 ## Update Summary
@@ -94,25 +94,25 @@ RE --> CL
 
 **Diagram sources**
 
-- [nvidia_client.py](file://backend/app/services/nvidia_client.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
-- [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [classifier.py](file://backend/app/pipeline/classification/classifier.py)
+- [nvidia_client.py](../../../../backend/app/services/nvidia_client.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
+- [vllm_adoption.py](../../../../backend/app/services/vllm_adoption.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [classifier.py](../../../../backend/app/pipeline/classification/classifier.py)
 
 **Section sources**
 
-- [nvidia_client.py](file://backend/app/services/nvidia_client.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
-- [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [classifier.py](file://backend/app/pipeline/classification/classifier.py)
+- [nvidia_client.py](../../../../backend/app/services/nvidia_client.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
+- [vllm_adoption.py](../../../../backend/app/services/vllm_adoption.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [classifier.py](../../../../backend/app/pipeline/classification/classifier.py)
 
 ## Core Components
 
@@ -127,14 +127,14 @@ RE --> CL
 
 **Section sources**
 
-- [nvidia_client.py](file://backend/app/services/nvidia_client.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
-- [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [classifier.py](file://backend/app/pipeline/classification/classifier.py)
+- [nvidia_client.py](../../../../backend/app/services/nvidia_client.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
+- [vllm_adoption.py](../../../../backend/app/services/vllm_adoption.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [classifier.py](../../../../backend/app/pipeline/classification/classifier.py)
 
 ## Architecture Overview
 
@@ -173,14 +173,14 @@ CL-->>CL : "assign BlockTypes"
 
 **Diagram sources**
 
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [nvidia_client.py](file://backend/app/services/nvidia_client.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
-- [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [classifier.py](file://backend/app/pipeline/classification/classifier.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [nvidia_client.py](../../../../backend/app/services/nvidia_client.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
+- [vllm_adoption.py](../../../../backend/app/services/vllm_adoption.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [classifier.py](../../../../backend/app/pipeline/classification/classifier.py)
 
 ## Detailed Component Analysis
 
@@ -207,13 +207,13 @@ NvidiaClient --> LLMService : "uses when available"
 
 **Diagram sources**
 
-- [nvidia_client.py](file://backend/app/services/nvidia_client.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
+- [nvidia_client.py](../../../../backend/app/services/nvidia_client.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
 
 **Section sources**
 
-- [nvidia_client.py](file://backend/app/services/nvidia_client.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
+- [nvidia_client.py](../../../../backend/app/services/nvidia_client.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
 
 ### Enhanced LLM Service with Model Management and Health Checking
 
@@ -230,7 +230,7 @@ class LLMService {
 +generate(messages, model, temperature, max_tokens, timeout, api_key) str
 +generate_with_fallback(messages, temperature, max_tokens) Dict
 +invalidate_llm_cache(pattern) int
-+check_health() Dict[str, str]
++check_health() Dict["str, str"]
 +sanitize_for_llm(text) str
 }
 class CircuitBreaker {
@@ -248,11 +248,11 @@ LLMService --> RedisCache : "uses for caching"
 
 **Diagram sources**
 
-- [llm_service.py](file://backend/app/services/llm_service.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
 
 **Section sources**
 
-- [llm_service.py](file://backend/app/services/llm_service.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
 
 ### LLM Classification Gating System
 
@@ -280,11 +280,11 @@ Persist --> Return["Return Decision"]
 
 **Diagram sources**
 
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
 
 **Section sources**
 
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
 - [test_classification_gate.py](file://backend/tests/test_classification_gate.py)
 
 ### vLLM Adoption Tracking for Phase 4 Rollout
@@ -313,12 +313,12 @@ NextSteps --> Return["Return Report"]
 
 **Diagram sources**
 
-- [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
+- [vllm_adoption.py](../../../../backend/app/services/vllm_adoption.py)
 
 **Section sources**
 
-- [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
-- [test_vllm_adoption.py](file://backend/tests/test_vllm_adoption.py)
+- [vllm_adoption.py](../../../../backend/app/services/vllm_adoption.py)
+- [test_vllm_adoption.py](../../../../backend/tests/test_vllm_adoption.py)
 
 ### Local Ollama Deployment and Fallback
 
@@ -341,11 +341,11 @@ Validate --> |Invalid| RuleFallback
 
 **Diagram sources**
 
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
 
 **Section sources**
 
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
 
 ### Enhanced Classification with Automated Gating
 
@@ -376,14 +376,14 @@ SemanticParser --> ClassificationGate : "uses for gating"
 
 **Diagram sources**
 
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
 
 **Section sources**
 
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
-- [test_classification.py](file://backend/tests/test_classification.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
+- [test_classification.py](../../../../backend/tests/pipeline/test_classification.py)
 
 ### RAG Engine Implementation
 
@@ -407,12 +407,12 @@ NativeSim --> ReturnNative["Return results"]
 
 **Diagram sources**
 
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
 
 **Section sources**
 
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [test_rag_engine.py](file://backend/tests/test_rag_engine.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [test_rag_engine.py](../../../../backend/tests/test_rag_engine.py)
 
 ### Reasoning Engine Orchestration
 
@@ -448,13 +448,13 @@ RE-->>CL : "normalized instruction set"
 
 **Diagram sources**
 
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [vllm_adoption.py](../../../../backend/app/services/vllm_adoption.py)
 
 **Section sources**
 
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [test_reasoning_engine.py](file://backend/tests/test_reasoning_engine.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [test_reasoning_engine.py](../../../../backend/tests/test_reasoning_engine.py)
 
 ### Content Classifier Integration
 
@@ -478,15 +478,15 @@ Regex --> Finalize["Finalize BlockTypes"]
 
 **Diagram sources**
 
-- [classifier.py](file://backend/app/pipeline/classification/classifier.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
+- [classifier.py](../../../../backend/app/pipeline/classification/classifier.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
 
 **Section sources**
 
-- [classifier.py](file://backend/app/pipeline/classification/classifier.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
+- [classifier.py](../../../../backend/app/pipeline/classification/classifier.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
 
 ## Dependency Analysis
 
@@ -516,21 +516,21 @@ RAG --> CH["ChromaDB"]
 
 **Diagram sources**
 
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [nvidia_client.py](file://backend/app/services/nvidia_client.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
-- [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [nvidia_client.py](../../../../backend/app/services/nvidia_client.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
+- [vllm_adoption.py](../../../../backend/app/services/vllm_adoption.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
 
 **Section sources**
 
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
-- [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
+- [vllm_adoption.py](../../../../backend/app/services/vllm_adoption.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
 
 ## Performance Considerations
 
@@ -564,19 +564,19 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [nvidia_client.py](file://backend/app/services/nvidia_client.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
-- [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
-- [test_classification.py](file://backend/tests/test_classification.py)
+- [nvidia_client.py](../../../../backend/app/services/nvidia_client.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
+- [vllm_adoption.py](../../../../backend/app/services/vllm_adoption.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
+- [test_classification.py](../../../../backend/tests/pipeline/test_classification.py)
 - [test_classification_gate.py](file://backend/tests/test_classification_gate.py)
-- [test_vllm_adoption.py](file://backend/tests/test_vllm_adoption.py)
-- [test_rag_engine.py](file://backend/tests/test_rag_engine.py)
-- [test_reasoning_engine.py](file://backend/tests/test_reasoning_engine.py)
-- [test_nvidia_client.py](file://backend/tests/test_nvidia_client.py)
+- [test_vllm_adoption.py](../../../../backend/tests/test_vllm_adoption.py)
+- [test_rag_engine.py](../../../../backend/tests/test_rag_engine.py)
+- [test_reasoning_engine.py](../../../../backend/tests/test_reasoning_engine.py)
+- [test_nvidia_client.py](../../../../backend/tests/test_nvidia_client.py)
 
 ## Conclusion
 
@@ -589,42 +589,42 @@ The system integrates NVIDIA NIM, local Ollama, LLM Classification, and a robust
 ### Configuration Options
 
 - NVIDIA NIM
-    - Environment variables: NVIDIA_API_KEY, NVIDIA_MODEL
-    - Behavior: LiteLLM-backed when available; direct client fallback
+  - Environment variables: NVIDIA_API_KEY, NVIDIA_MODEL
+  - Behavior: LiteLLM-backed when available; direct client fallback
 - Reasoning Engine
-    - Flags: ENABLE_NVIDIA_REASONER, PIPELINE_REASONING_TIMEOUT_SECONDS
-    - Ollama: OLLAMA_BASE_URL, fallback model selection with auto-discovery
+  - Flags: ENABLE_NVIDIA_REASONER, PIPELINE_REASONING_TIMEOUT_SECONDS
+  - Ollama: OLLAMA_BASE_URL, fallback model selection with auto-discovery
 - LLM Service
-    - Flags: LLM_PROVIDER_TIMEOUT_SECONDS, EXTERNAL_CIRCUIT_BREAKER_ENABLED
-    - Cache: LLM_CACHE_TTL_SECONDS, Redis integration
-    - Security: MAX_LLM_INPUT_LENGTH, prompt injection patterns
+  - Flags: LLM_PROVIDER_TIMEOUT_SECONDS, EXTERNAL_CIRCUIT_BREAKER_ENABLED
+  - Cache: LLM_CACHE_TTL_SECONDS, Redis integration
+  - Security: MAX_LLM_INPUT_LENGTH, prompt injection patterns
 - LLM Classification Gate
-    - Flags: USE_LLM_CLASSIFICATION, AUTO_ENABLE_FROM_BENCHMARK
-    - Thresholds: MIN_BENCHMARK_F1, BENCHMARK_STATE_PATH
+  - Flags: USE_LLM_CLASSIFICATION, AUTO_ENABLE_FROM_BENCHMARK
+  - Thresholds: MIN_BENCHMARK_F1, BENCHMARK_STATE_PATH
 - vLLM Adoption
-    - Flags: VLLM_ADOPTION_ENABLED, VLLM_REQUESTS_PER_HOUR_THRESHOLD, VLLM_DAILY_TOKENS_THRESHOLD
-    - Target: VLLM_TARGET_MODEL, VLLM_TARGET_GPU
+  - Flags: VLLM_ADOPTION_ENABLED, VLLM_REQUESTS_PER_HOUR_THRESHOLD, VLLM_DAILY_TOKENS_THRESHOLD
+  - Target: VLLM_TARGET_MODEL, VLLM_TARGET_GPU
 - RAG Engine
-    - Flags: LOW_MEMORY_MODE, RAG_USE_TRANSFORMERS
-    - Persistence: semantic_store directory, auto-seeding from default guidelines
+  - Flags: LOW_MEMORY_MODE, RAG_USE_TRANSFORMERS
+  - Persistence: semantic_store directory, auto-seeding from default guidelines
 - LLM Classification
-    - Flag: USE_LLM_CLASSIFICATION
-    - Model: LLM-based classification with configurable model backend
+  - Flag: USE_LLM_CLASSIFICATION
+  - Model: LLM-based classification with configurable model backend
 - Tests
-    - Classification benchmark: CLASSIFICATION_BENCHMARK_MODEL environment variable
-    - vLLM adoption: Prometheus metrics integration
+  - Classification benchmark: CLASSIFICATION_BENCHMARK_MODEL environment variable
+  - vLLM adoption: Prometheus metrics integration
 
 **Section sources**
 
-- [nvidia_client.py](file://backend/app/services/nvidia_client.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
-- [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [test_classification.py](file://backend/tests/test_classification.py)
-- [test_vllm_adoption.py](file://backend/tests/test_vllm_adoption.py)
+- [nvidia_client.py](../../../../backend/app/services/nvidia_client.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
+- [vllm_adoption.py](../../../../backend/app/services/vllm_adoption.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [test_classification.py](../../../../backend/tests/pipeline/test_classification.py)
+- [test_vllm_adoption.py](../../../../backend/tests/test_vllm_adoption.py)
 
 ### Cost Optimization Strategies
 
@@ -651,12 +651,12 @@ The system integrates NVIDIA NIM, local Ollama, LLM Classification, and a robust
 
 **Section sources**
 
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
-- [classification_gate.py](file://backend/app/services/classification_gate.py)
-- [vllm_adoption.py](file://backend/app/services/vllm_adoption.py)
-- [test_reasoning_engine.py](file://backend/tests/test_reasoning_engine.py)
-- [test_rag_engine.py](file://backend/tests/test_rag_engine.py)
-- [test_classification.py](file://backend/tests/test_classification.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
+- [classification_gate.py](../../../../backend/app/services/classification_gate.py)
+- [vllm_adoption.py](../../../../backend/app/services/vllm_adoption.py)
+- [test_reasoning_engine.py](../../../../backend/tests/test_reasoning_engine.py)
+- [test_rag_engine.py](../../../../backend/tests/test_rag_engine.py)
+- [test_classification.py](../../../../backend/tests/pipeline/test_classification.py)
 - [test_classification_gate.py](file://backend/tests/test_classification_gate.py)
-- [test_vllm_adoption.py](file://backend/tests/test_vllm_adoption.py)
+- [test_vllm_adoption.py](../../../../backend/tests/test_vllm_adoption.py)

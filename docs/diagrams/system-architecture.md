@@ -6,7 +6,7 @@ graph TB
         BROWSER["Browser / Client"]
     end
 
-    subgraph VERCEl["Vercel — Next.js 16 (React 19)"]
+    subgraph VERCEl["Vercel — Next.js 16 ("React 19")"]
         FE["Frontend App"]
         FE_MW["Next.js Middleware<br/>25 Protected Routes"]
         STATIC["Static Assets (CDN)"]
@@ -17,24 +17,24 @@ graph TB
         SSL["TLS Termination"]
     end
 
-    subgraph RENDER["Render — FastAPI (Uvicorn, Port 8000)"]
+    subgraph RENDER["Render — FastAPI ("Uvicorn, Port 8000")"]
         direction TB
-        subgraph MIDDLEWARE["11 Middleware Layers (Execution Order)"]
-            M1["1. CORSMiddleware<br/>(CORS_ORIGINS allowlist)"]
-            M2["2. RequestIdMiddleware<br/>(X-Request-Id assignment)"]
-            M3["3. HTTPSRedirectMiddleware<br/>(HTTP→HTTPS, production only)"]
+        subgraph MIDDLEWARE["11 Middleware Layers ("Execution Order")"]
+            M1["1. CORSMiddleware<br/>("CORS_ORIGINS allowlist")"]
+            M2["2. RequestIdMiddleware<br/>("X-Request-Id assignment")"]
+            M3["3. HTTPSRedirectMiddleware<br/>("HTTP→HTTPS, production only")"]
             M4["4. HSTSMiddleware<br/>(Strict-Transport-Security)"]
-            M5["5. SlowAPI + RateLimitMiddleware<br/>(120 req/min global)"]
-            M6["6. TierRateLimitMiddleware<br/>(guest 5/day, pro unlimited)"]
-            M7["7. SecurityHeadersMiddleware<br/>(CSP, X-Frame-Options)"]
-            M8["8. MaxBodySizeMiddleware<br/>(60MB limit)"]
-            M9["9. CSRFMiddleware<br/>(CSRF tokens)"]
-            M10["10. FeatureFlagMiddleware<br/>(X-Feature-Flags, dev)"]
-            M11["11. MonitoringMiddleware<br/>(timing + structured logging)"]
+            M5["5. SlowAPI + RateLimitMiddleware<br/>("120 req/min global")"]
+            M6["6. TierRateLimitMiddleware<br/>("guest 5/day, pro unlimited")"]
+            M7["7. SecurityHeadersMiddleware<br/>("CSP, X-Frame-Options")"]
+            M8["8. MaxBodySizeMiddleware<br/>("60MB limit")"]
+            M9["9. CSRFMiddleware<br/>("CSRF tokens")"]
+            M10["10. FeatureFlagMiddleware<br/>("X-Feature-Flags, dev")"]
+            M11["11. MonitoringMiddleware<br/>("timing + structured logging")"]
         end
         subgraph HTTP_MW["HTTP Middleware (main.py)"]
-            HM12["12. lazy_router_loader<br/>(lazy-load v1/v2/preview)"]
-            HM13["13. audit_write_operations<br/>(POST/PUT/DELETE audit log)"]
+            HM12["12. lazy_router_loader<br/>("lazy-load v1/v2/preview")"]
+            HM13["13. audit_write_operations<br/>("POST/PUT/DELETE audit log")"]
         end
         subgraph PROM["Prometheus Instrumentation"]
             PROM_EXPOSE["GET /metrics<br/>prometheus_fastapi_instrumentator"]
@@ -45,7 +45,7 @@ graph TB
         end
     end
 
-    subgraph V1_ROUTERS["v1 Routers (15 sub-routers, 95 routes)"]
+    subgraph V1_ROUTERS["v1 Routers ("15 sub-routers, 95 routes")"]
         R1["health<br/>GET /live, /ready"]
         R2["auth<br/>signup, login, me, OTP"]
         R3["documents<br/>upload, batch, status, preview, edit"]
@@ -54,16 +54,16 @@ graph TB
         R6["synthesis<br/>multi-doc sessions"]
         R7["feedback<br/>submit, summary"]
         R8["metrics<br/>dashboard, DB health, usage"]
-        R9["providers<br/>built-in + custom CRUD (11 routes)"]
-        R10["api_keys<br/>user key CRUD + usage (9 routes)"]
+        R9["providers<br/>built-in + custom CRUD ("11 routes")"]
+        R10["api_keys<br/>user key CRUD + usage ("9 routes")"]
         R11["stream<br/>SSE event stream per job"]
         R12["activity<br/>recent, summary"]
-        R13["suggestions<br/>generate, accept, reject (7 routes)"]
+        R13["suggestions<br/>generate, accept, reject ("7 routes")"]
         R14["billing<br/>Stripe webhook"]
-        R15["webhooks<br/>outbound CRUD + delivery log (7 routes)"]
+        R15["webhooks<br/>outbound CRUD + delivery log ("7 routes")"]
     end
 
-    subgraph V2_ROUTERS["v2 Routers (2 sub-routers)"]
+    subgraph V2_ROUTERS["v2 Routers ("2 sub-routers")"]
         V2_DOCS["documents<br/>cursor-paginated list"]
         V2_WEBHOOKS["webhooks<br/>v1-compat re-export"]
     end
@@ -81,7 +81,7 @@ graph TB
         CELERY_WORKER["celery -A app.tasks.celery_tasks"]
     end
 
-    subgraph SERVICES["Services Layer (27 services)"]
+    subgraph SERVICES["Services Layer ("27 services")"]
         LLM_SVC["LLM Service<br/>10 providers, 4-tier fallback"]
         AUTH_SVC["Auth / Supabase JWT"]
         GEN_SVC["Generator Session"]
@@ -101,7 +101,7 @@ graph TB
         STORAGE[("Supabase Storage<br/>File Storage")]
     end
 
-    subgraph HF_SPACES["HuggingFace Spaces (6 service pairs × 2)"]
+    subgraph HF_SPACES["HuggingFace Spaces ("6 service pairs × 2")"]
         GROBID["GROBID<br/>XML Metadata Extraction<br/>Port 8070"]
         DOCLING["Docling<br/>Layout-Aware PDF Analysis"]
         OCR["RapidOCR<br/>Text Extraction"]
@@ -110,7 +110,7 @@ graph TB
         LLMClassifier["LLMClassifier<br/>Block-Type Classification<br/>12 Labels"]
     end
 
-    subgraph LLM_PROVIDERS["LLM Providers (10 built-in)"]
+    subgraph LLM_PROVIDERS["LLM Providers ("10 built-in")"]
         NVIDIA["NVIDIA NIM<br/>Primary Tier"]
         GROQ["Groq<br/>Fallback Tier 1"]
         OPENROUTER["OpenRouter<br/>Fallback Tier 2"]

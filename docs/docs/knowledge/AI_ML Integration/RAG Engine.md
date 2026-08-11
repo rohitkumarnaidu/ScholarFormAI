@@ -5,16 +5,16 @@
 
 <cite>
 **Referenced Files in This Document**
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
-- [default_guidelines.json](file://backend/app/pipeline/intelligence/default_guidelines.json)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [session_vector_store.py](file://backend/app/services/session_vector_store.py)
-- [crossref_client.py](file://backend/app/services/crossref_client.py)
-- [model_store.py](file://backend/app/services/model_store.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [quality_scorer.py](file://backend/app/pipeline/generation/quality_scorer.py)
+- [rag_engine.py](../../../../backend/app/pipeline/intelligence/rag_engine.py)
+- [default_guidelines.json](../../../../backend/app/pipeline/intelligence/default_guidelines.json)
+- [semantic_parser.py](../../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [session_vector_store.py](../../../../backend/app/services/session_vector_store.py)
+- [crossref_client.py](../../../../backend/app/services/crossref_client.py)
+- [model_store.py](../../../../backend/app/services/model_store.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [quality_scorer.py](../../../../backend/app/pipeline/generation/quality_scorer.py)
 - [verify_rag_interface.py](file://backend/manual_tests/rag/verify_rag_interface.py)
-- [test_rag_engine.py](file://backend/tests/test_rag_engine.py)
+- [test_rag_engine.py](../../../../backend/tests/test_rag_engine.py)
 </cite>
 
 ## Update Summary
@@ -89,21 +89,21 @@ QS -. "evaluates generated output" .-> RE
 
 **Diagram sources**
 
-- [rag_engine.py:108-227](file://backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
-- [rag_engine.py:438-469](file://backend/app/pipeline/intelligence/rag_engine.py#L438-L469)
-- [semantic_parser.py:32-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
-- [session_vector_store.py:53-204](file://backend/app/services/session_vector_store.py#L53-L204)
-- [crossref_client.py:32-164](file://backend/app/services/crossref_client.py#L32-L164)
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
+- [rag_engine.py:108-227](../../../../backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
+- [rag_engine.py:438-469](../../../../backend/app/pipeline/intelligence/rag_engine.py#L438-L469)
+- [semantic_parser.py:32-306](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
+- [session_vector_store.py:53-204](../../../../backend/app/services/session_vector_store.py#L53-L204)
+- [crossref_client.py:32-164](../../../../backend/app/services/crossref_client.py#L32-L164)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
 
 **Section sources**
 
-- [rag_engine.py:108-227](file://backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
-- [rag_engine.py:438-469](file://backend/app/pipeline/intelligence/rag_engine.py#L438-L469)
-- [semantic_parser.py:32-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
-- [session_vector_store.py:53-204](file://backend/app/services/session_vector_store.py#L53-L204)
-- [crossref_client.py:32-164](file://backend/app/services/crossref_client.py#L32-L164)
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
+- [rag_engine.py:108-227](../../../../backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
+- [rag_engine.py:438-469](../../../../backend/app/pipeline/intelligence/rag_engine.py#L438-L469)
+- [semantic_parser.py:32-306](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
+- [session_vector_store.py:53-204](../../../../backend/app/services/session_vector_store.py#L53-L204)
+- [crossref_client.py:32-164](../../../../backend/app/services/crossref_client.py#L32-L164)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
 
 ## Core Components
 
@@ -120,14 +120,14 @@ QS -. "evaluates generated output" .-> RE
 
 **Section sources**
 
-- [rag_engine.py:70-106](file://backend/app/pipeline/intelligence/rag_engine.py#L70-L106)
-- [rag_engine.py:108-227](file://backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
-- [rag_engine.py:230-670](file://backend/app/pipeline/intelligence/rag_engine.py#L230-L670)
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
-- [session_vector_store.py:53-204](file://backend/app/services/session_vector_store.py#L53-L204)
-- [semantic_parser.py:32-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
-- [crossref_client.py:32-164](file://backend/app/services/crossref_client.py#L32-L164)
-- [quality_scorer.py:15-123](file://backend/app/pipeline/generation/quality_scorer.py#L15-L123)
+- [rag_engine.py:70-106](../../../../backend/app/pipeline/intelligence/rag_engine.py#L70-L106)
+- [rag_engine.py:108-227](../../../../backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
+- [rag_engine.py:230-670](../../../../backend/app/pipeline/intelligence/rag_engine.py#L230-L670)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
+- [session_vector_store.py:53-204](../../../../backend/app/services/session_vector_store.py#L53-L204)
+- [semantic_parser.py:32-306](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
+- [crossref_client.py:32-164](../../../../backend/app/services/crossref_client.py#L32-L164)
+- [quality_scorer.py:15-123](../../../../backend/app/pipeline/generation/quality_scorer.py#L15-L123)
 
 ## Architecture Overview
 
@@ -167,43 +167,43 @@ end
 
 **Diagram sources**
 
-- [rag_engine.py:444-469](file://backend/app/pipeline/intelligence/rag_engine.py#L444-L469)
-- [rag_engine.py:565-609](file://backend/app/pipeline/intelligence/rag_engine.py#L565-L609)
+- [rag_engine.py:444-469](../../../../backend/app/pipeline/intelligence/rag_engine.py#L444-L469)
+- [rag_engine.py:565-609](../../../../backend/app/pipeline/intelligence/rag_engine.py#L565-L609)
 
 **Section sources**
 
-- [rag_engine.py:117-201](file://backend/app/pipeline/intelligence/rag_engine.py#L117-L201)
-- [rag_engine.py:444-469](file://backend/app/pipeline/intelligence/rag_engine.py#L444-L469)
-- [rag_engine.py:565-609](file://backend/app/pipeline/intelligence/rag_engine.py#L565-L609)
-- [default_guidelines.json:1-59](file://backend/app/pipeline/intelligence/default_guidelines.json#L1-L59)
+- [rag_engine.py:117-201](../../../../backend/app/pipeline/intelligence/rag_engine.py#L117-L201)
+- [rag_engine.py:444-469](../../../../backend/app/pipeline/intelligence/rag_engine.py#L444-L469)
+- [rag_engine.py:565-609](../../../../backend/app/pipeline/intelligence/rag_engine.py#L565-L609)
+- [default_guidelines.json:1-59](../../../../backend/app/pipeline/intelligence/default_guidelines.json#L1-L59)
 
 ## Detailed Component Analysis
 
 ### Retrieval Engine (RagEngine)
 
 - Enhanced embedding model loading priority:
-    - Check for remote API override first (Hugging Face API)
-    - Reuse from ModelStore if available
-    - Load BAAI/bge-m3 (1024d) or fallback to BAAI/bge-small-en-v1.5 (384d)
-    - If transformers unavailable, activate DeterministicEmbeddingModel (256d)
+  - Check for remote API override first (Hugging Face API)
+  - Reuse from ModelStore if available
+  - Load BAAI/bge-m3 (1024d) or fallback to BAAI/bge-small-en-v1.5 (384d)
+  - If transformers unavailable, activate DeterministicEmbeddingModel (256d)
 - Remote embedding support:
-    - _HuggingFaceAPIEmbeddingModel handles authentication, timeouts, and retry mechanisms
-    - Automatic endpoint normalization for Hugging Face Inference API
-    - Configurable model selection via environment variables
+  - _HuggingFaceAPIEmbeddingModel handles authentication, timeouts, and retry mechanisms
+  - Automatic endpoint normalization for Hugging Face Inference API
+  - Configurable model selection via environment variables
 - Storage backends:
-    - ChromaDB persistent collection named by active model
-    - Native JSON store (kb.json) for fallback and persistence
+  - ChromaDB persistent collection named by active model
+  - Native JSON store (kb.json) for fallback and persistence
 - Indexing:
-    - add_guideline writes to both ChromaDB and native store
-    - Metadata includes normalized publisher and lowercased section
+  - add_guideline writes to both ChromaDB and native store
+  - Metadata includes normalized publisher and lowercased section
 - Querying:
-    - query_guidelines supports publisher filtering and top-k selection
-    - query_rules adapts template/section names to publisher/intent and returns rule dicts
+  - query_guidelines supports publisher filtering and top-k selection
+  - query_rules adapts template/section names to publisher/intent and returns rule dicts
 - Auto-seeding:
-    - _seed_if_empty loads default guidelines from default_guidelines.json when store is empty
+  - _seed_if_empty loads default guidelines from default_guidelines.json when store is empty
 - Persistence:
-    - reset deletes collection and clears native store
-    - native store persists to kb.json
+  - reset deletes collection and clears native store
+  - native store persists to kb.json
 
 ```mermaid
 classDiagram
@@ -235,19 +235,19 @@ RagEngine --> _HuggingFaceAPIEmbeddingModel : "remote option"
 
 **Diagram sources**
 
-- [rag_engine.py:70-106](file://backend/app/pipeline/intelligence/rag_engine.py#L70-L106)
-- [rag_engine.py:108-227](file://backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
-- [rag_engine.py:230-670](file://backend/app/pipeline/intelligence/rag_engine.py#L230-L670)
+- [rag_engine.py:70-106](../../../../backend/app/pipeline/intelligence/rag_engine.py#L70-L106)
+- [rag_engine.py:108-227](../../../../backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
+- [rag_engine.py:230-670](../../../../backend/app/pipeline/intelligence/rag_engine.py#L230-L670)
 
 **Section sources**
 
-- [rag_engine.py:117-201](file://backend/app/pipeline/intelligence/rag_engine.py#L117-L201)
-- [rag_engine.py:202-244](file://backend/app/pipeline/intelligence/rag_engine.py#L202-L244)
-- [rag_engine.py:400-422](file://backend/app/pipeline/intelligence/rag_engine.py#L400-L422)
-- [rag_engine.py:423-467](file://backend/app/pipeline/intelligence/rag_engine.py#L423-L467)
-- [rag_engine.py:503-516](file://backend/app/pipeline/intelligence/rag_engine.py#L503-L516)
-- [rag_engine.py:108-227](file://backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
-- [default_guidelines.json:1-59](file://backend/app/pipeline/intelligence/default_guidelines.json#L1-L59)
+- [rag_engine.py:117-201](../../../../backend/app/pipeline/intelligence/rag_engine.py#L117-L201)
+- [rag_engine.py:202-244](../../../../backend/app/pipeline/intelligence/rag_engine.py#L202-L244)
+- [rag_engine.py:400-422](../../../../backend/app/pipeline/intelligence/rag_engine.py#L400-L422)
+- [rag_engine.py:423-467](../../../../backend/app/pipeline/intelligence/rag_engine.py#L423-L467)
+- [rag_engine.py:503-516](../../../../backend/app/pipeline/intelligence/rag_engine.py#L503-L516)
+- [rag_engine.py:108-227](../../../../backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
+- [default_guidelines.json:1-59](../../../../backend/app/pipeline/intelligence/default_guidelines.json#L1-L59)
 
 ### Embedding Strategies and Fallbacks
 
@@ -257,13 +257,13 @@ RagEngine --> _HuggingFaceAPIEmbeddingModel : "remote option"
 - Deterministic fallback: token hashing into 256-d vectors
 - ModelStore reuse avoids repeated loading; settings toggle low-memory or transformer usage
 - Remote embedding configuration:
-    - RAG_EMBEDDING_PROVIDER: Set to "huggingface_api" or "hf_api" to enable remote embeddings
-    - RAG_EMBEDDING_MODEL: Specify model ID for remote embeddings (default: "sentence-transformers/all-MiniLM-L6-v2")
-    - RAG_EMBEDDING_API_URL: Custom API endpoint URL (with automatic endpoint normalization)
-    - HF_TOKEN: Authentication token for Hugging Face API
-    - RAG_HF_TIMEOUT_SECONDS: Request timeout in seconds (default: 30)
-    - RAG_HF_MAX_RETRIES: Maximum retry attempts (default: 3)
-    - RAG_HF_RETRY_BACKOFF_SECONDS: Backoff multiplier for retries (default: 1.0)
+  - RAG_EMBEDDING_PROVIDER: Set to "huggingface_api" or "hf_api" to enable remote embeddings
+  - RAG_EMBEDDING_MODEL: Specify model ID for remote embeddings (default: "sentence-transformers/all-MiniLM-L6-v2")
+  - RAG_EMBEDDING_API_URL: Custom API endpoint URL (with automatic endpoint normalization)
+  - HF_TOKEN: Authentication token for Hugging Face API
+  - RAG_HF_TIMEOUT_SECONDS: Request timeout in seconds (default: 30)
+  - RAG_HF_MAX_RETRIES: Maximum retry attempts (default: 3)
+  - RAG_HF_RETRY_BACKOFF_SECONDS: Backoff multiplier for retries (default: 1.0)
 
 ```mermaid
 flowchart TD
@@ -289,18 +289,18 @@ UseSmall --> End
 
 **Diagram sources**
 
-- [rag_engine.py:444-469](file://backend/app/pipeline/intelligence/rag_engine.py#L444-L469)
-- [rag_engine.py:438-537](file://backend/app/pipeline/intelligence/rag_engine.py#L438-L537)
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
-- [settings.py:185-190](file://backend/app/config/settings.py#L185-L190)
+- [rag_engine.py:444-469](../../../../backend/app/pipeline/intelligence/rag_engine.py#L444-L469)
+- [rag_engine.py:438-537](../../../../backend/app/pipeline/intelligence/rag_engine.py#L438-L537)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
+- [settings.py:185-190](../../../../backend/app/config/settings.py#L185-L190)
 
 **Section sources**
 
-- [rag_engine.py:52-66](file://backend/app/pipeline/intelligence/rag_engine.py#L52-L66)
-- [rag_engine.py:108-227](file://backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
-- [rag_engine.py:438-537](file://backend/app/pipeline/intelligence/rag_engine.py#L438-L537)
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
-- [settings.py:185-190](file://backend/app/config/settings.py#L185-L190)
+- [rag_engine.py:52-66](../../../../backend/app/pipeline/intelligence/rag_engine.py#L52-L66)
+- [rag_engine.py:108-227](../../../../backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
+- [rag_engine.py:438-537](../../../../backend/app/pipeline/intelligence/rag_engine.py#L438-L537)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
+- [settings.py:185-190](../../../../backend/app/config/settings.py#L185-L190)
 
 ### Hugging Face API Embedding System
 
@@ -332,25 +332,25 @@ M --> |No| O["Log error and return []"]
 
 **Diagram sources**
 
-- [rag_engine.py:108-227](file://backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
+- [rag_engine.py:108-227](../../../../backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
 
 **Section sources**
 
-- [rag_engine.py:108-227](file://backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
-- [rag_engine.py:444-469](file://backend/app/pipeline/intelligence/rag_engine.py#L444-L469)
+- [rag_engine.py:108-227](../../../../backend/app/pipeline/intelligence/rag_engine.py#L108-L227)
+- [rag_engine.py:444-469](../../../../backend/app/pipeline/intelligence/rag_engine.py#L444-L469)
 
 ### Document Indexing and Similarity Search
 
 - Indexing:
-    - Documents are added with metadata (publisher, section)
-    - Embeddings are computed and stored alongside text
+  - Documents are added with metadata (publisher, section)
+  - Embeddings are computed and stored alongside text
 - Querying:
-    - ChromaDB query with publisher filter and top_k
-    - Native fallback computes cosine similarity across matching publisher entries
-    - Remote embeddings support both ChromaDB and native storage backends
+  - ChromaDB query with publisher filter and top_k
+  - Native fallback computes cosine similarity across matching publisher entries
+  - Remote embeddings support both ChromaDB and native storage backends
 - Ranking:
-    - Cosine similarity used for native ranking
-    - ChromaDB returns nearest neighbors based on distance
+  - Cosine similarity used for native ranking
+  - ChromaDB returns nearest neighbors based on distance
 
 ```mermaid
 flowchart TD
@@ -368,18 +368,18 @@ K --> |Yes| L["Return documents"]
 K --> |No| M["Log warning and continue"]
 I --> |No| N["Encode intent via active model"]
 M --> N
-N --> O["Iterate knowledge_base (publisher match)"]
+N --> O["Iterate knowledge_base ("publisher match")"]
 O --> P["Compute cosine similarity"]
 P --> Q["Sort descending and return top_k"]
 ```
 
 **Diagram sources**
 
-- [rag_engine.py:542-609](file://backend/app/pipeline/intelligence/rag_engine.py#L542-L609)
+- [rag_engine.py:542-609](../../../../backend/app/pipeline/intelligence/rag_engine.py#L542-L609)
 
 **Section sources**
 
-- [rag_engine.py:542-609](file://backend/app/pipeline/intelligence/rag_engine.py#L542-L609)
+- [rag_engine.py:542-609](../../../../backend/app/pipeline/intelligence/rag_engine.py#L542-L609)
 
 ### Crossref Integration for Academic Paper Retrieval
 
@@ -409,11 +409,11 @@ end
 
 **Diagram sources**
 
-- [crossref_client.py:132-154](file://backend/app/services/crossref_client.py#L132-L154)
+- [crossref_client.py:132-154](../../../../backend/app/services/crossref_client.py#L132-L154)
 
 **Section sources**
 
-- [crossref_client.py:32-164](file://backend/app/services/crossref_client.py#L32-L164)
+- [crossref_client.py:32-164](../../../../backend/app/services/crossref_client.py#L32-L164)
 
 ### Semantic Search Capabilities
 
@@ -435,11 +435,11 @@ class SemanticParser {
 
 **Diagram sources**
 
-- [semantic_parser.py:32-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
+- [semantic_parser.py:32-306](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
 
 **Section sources**
 
-- [semantic_parser.py:32-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
+- [semantic_parser.py:32-306](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
 
 ### Session Vector Store
 
@@ -459,11 +459,11 @@ Z --> AA["Map distances to scores and return chunks"]
 
 **Diagram sources**
 
-- [session_vector_store.py:53-204](file://backend/app/services/session_vector_store.py#L53-L204)
+- [session_vector_store.py:53-204](../../../../backend/app/services/session_vector_store.py#L53-L204)
 
 **Section sources**
 
-- [session_vector_store.py:53-204](file://backend/app/services/session_vector_store.py#L53-L204)
+- [session_vector_store.py:53-204](../../../../backend/app/services/session_vector_store.py#L53-L204)
 
 ### Generation Pipeline and Quality Assessment
 
@@ -474,7 +474,7 @@ Z --> AA["Map distances to scores and return chunks"]
 flowchart TD
 B1["Generated Content"] --> B2["Normalize sections"]
 B2 --> B3["Compute template_compliance"]
-B2 --> B4["Compute completeness (>=100 words)"]
+B2 --> B4["Compute completeness (">=100 words")"]
 B2 --> B5["Count citations"]
 B2 --> B6["Compute section_balance (CV)"]
 B3 --> B7["Weighted aggregation"]
@@ -486,29 +486,29 @@ B7 --> B8["Overall score"]
 
 **Diagram sources**
 
-- [quality_scorer.py:15-123](file://backend/app/pipeline/generation/quality_scorer.py#L15-L123)
+- [quality_scorer.py:15-123](../../../../backend/app/pipeline/generation/quality_scorer.py#L15-L123)
 
 **Section sources**
 
-- [quality_scorer.py:15-123](file://backend/app/pipeline/generation/quality_scorer.py#L15-L123)
+- [quality_scorer.py:15-123](../../../../backend/app/pipeline/generation/quality_scorer.py#L15-L123)
 
 ## Dependency Analysis
 
 - RagEngine depends on:
-    - ModelStore for embedding model reuse
-    - ChromaDB client for vector operations (optional)
-    - SentenceTransformers for embeddings (optional)
-    - _HuggingFaceAPIEmbeddingModel for remote embeddings (optional)
-    - DeterministicEmbeddingModel as fallback
+  - ModelStore for embedding model reuse
+  - ChromaDB client for vector operations (optional)
+  - SentenceTransformers for embeddings (optional)
+  - _HuggingFaceAPIEmbeddingModel for remote embeddings (optional)
+  - DeterministicEmbeddingModel as fallback
 - SemanticParser depends on:
-    - SciBERT tokenizer/model via Transformers
-    - ModelStore for pre-loading
+  - SciBERT tokenizer/model via Transformers
+  - ModelStore for pre-loading
 - SessionVectorStore depends on:
-    - ChromaDB client and SentenceTransformers
-    - ModelStore for embedding model reuse
+  - ChromaDB client and SentenceTransformers
+  - ModelStore for embedding model reuse
 - CrossRefClient depends on:
-    - Redis for distributed caching
-    - Requests for HTTP calls
+  - Redis for distributed caching
+  - Requests for HTTP calls
 
 ```mermaid
 graph LR
@@ -528,19 +528,19 @@ CR --> REQ["Requests"]
 
 **Diagram sources**
 
-- [rag_engine.py:230-670](file://backend/app/pipeline/intelligence/rag_engine.py#L230-L670)
-- [semantic_parser.py:32-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
-- [session_vector_store.py:53-204](file://backend/app/services/session_vector_store.py#L53-L204)
-- [crossref_client.py:32-164](file://backend/app/services/crossref_client.py#L32-L164)
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
+- [rag_engine.py:230-670](../../../../backend/app/pipeline/intelligence/rag_engine.py#L230-L670)
+- [semantic_parser.py:32-306](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
+- [session_vector_store.py:53-204](../../../../backend/app/services/session_vector_store.py#L53-L204)
+- [crossref_client.py:32-164](../../../../backend/app/services/crossref_client.py#L32-L164)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
 
 **Section sources**
 
-- [rag_engine.py:230-670](file://backend/app/pipeline/intelligence/rag_engine.py#L230-L670)
-- [semantic_parser.py:32-306](file://backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
-- [session_vector_store.py:53-204](file://backend/app/services/session_vector_store.py#L53-L204)
-- [crossref_client.py:32-164](file://backend/app/services/crossref_client.py#L32-L164)
-- [model_store.py:4-33](file://backend/app/services/model_store.py#L4-L33)
+- [rag_engine.py:230-670](../../../../backend/app/pipeline/intelligence/rag_engine.py#L230-L670)
+- [semantic_parser.py:32-306](../../../../backend/app/pipeline/intelligence/semantic_parser.py#L32-L306)
+- [session_vector_store.py:53-204](../../../../backend/app/services/session_vector_store.py#L53-L204)
+- [crossref_client.py:32-164](../../../../backend/app/services/crossref_client.py#L32-L164)
+- [model_store.py:4-33](../../../../backend/app/services/model_store.py#L4-L33)
 
 ## Performance Considerations
 
@@ -555,28 +555,28 @@ CR --> REQ["Requests"]
 ## Troubleshooting Guide
 
 - ChromaDB import or compatibility errors:
-    - The engine detects known compatibility issues and falls back to native storage automatically.
+  - The engine detects known compatibility issues and falls back to native storage automatically.
 - Empty knowledge base:
-    - Auto-seeding from default_guidelines.json occurs when the store is empty.
+  - Auto-seeding from default_guidelines.json occurs when the store is empty.
 - Query failures:
-    - ChromaDB query failures trigger fallback to native cosine similarity.
+  - ChromaDB query failures trigger fallback to native cosine similarity.
 - Transformer import failures:
-    - DeterministicEmbeddingModel is activated and registered in ModelStore.
+  - DeterministicEmbeddingModel is activated and registered in ModelStore.
 - Remote embedding failures:
-    - Hugging Face API failures trigger fallback to deterministic hash model.
-    - Check HF_TOKEN environment variable and API connectivity.
-    - Adjust timeout and retry parameters via environment variables.
+  - Hugging Face API failures trigger fallback to deterministic hash model.
+  - Check HF_TOKEN environment variable and API connectivity.
+  - Adjust timeout and retry parameters via environment variables.
 - Crossref rate limits:
-    - Built-in retries with backoff; consider enabling Redis for caching to minimize repeated calls.
+  - Built-in retries with backoff; consider enabling Redis for caching to minimize repeated calls.
 
 **Section sources**
 
-- [rag_engine.py:172-196](file://backend/app/pipeline/intelligence/rag_engine.py#L172-L196)
-- [rag_engine.py:202-244](file://backend/app/pipeline/intelligence/rag_engine.py#L202-L244)
-- [rag_engine.py:436-438](file://backend/app/pipeline/intelligence/rag_engine.py#L436-L438)
-- [rag_engine.py:444-469](file://backend/app/pipeline/intelligence/rag_engine.py#L444-L469)
-- [rag_engine.py:320-395](file://backend/app/pipeline/intelligence/rag_engine.py#L320-L395)
-- [crossref_client.py:73-118](file://backend/app/services/crossref_client.py#L73-L118)
+- [rag_engine.py:172-196](../../../../backend/app/pipeline/intelligence/rag_engine.py#L172-L196)
+- [rag_engine.py:202-244](../../../../backend/app/pipeline/intelligence/rag_engine.py#L202-L244)
+- [rag_engine.py:436-438](../../../../backend/app/pipeline/intelligence/rag_engine.py#L436-L438)
+- [rag_engine.py:444-469](../../../../backend/app/pipeline/intelligence/rag_engine.py#L444-L469)
+- [rag_engine.py:320-395](../../../../backend/app/pipeline/intelligence/rag_engine.py#L320-L395)
+- [crossref_client.py:73-118](../../../../backend/app/services/crossref_client.py#L73-L118)
 
 ## Conclusion
 
@@ -587,33 +587,33 @@ The RAG engine provides a robust, layered retrieval system for academic formatti
 ### Configuration Options
 
 - Feature toggles and memory modes:
-    - USE_SCIBERT_CLASSIFICATION: Enable/disable SciBERT-based classification
-    - LOW_MEMORY_MODE: Activate deterministic embeddings
-    - RAG_USE_TRANSFORMERS: Control transformer-based embeddings
-    - PRELOAD_AI_MODELS: Preload models into ModelStore
+  - USE_SCIBERT_CLASSIFICATION: Enable/disable SciBERT-based classification
+  - LOW_MEMORY_MODE: Activate deterministic embeddings
+  - RAG_USE_TRANSFORMERS: Control transformer-based embeddings
+  - PRELOAD_AI_MODELS: Preload models into ModelStore
 - Remote embedding configuration:
-    - RAG_EMBEDDING_PROVIDER: Set to "huggingface_api" or "hf_api" to enable remote embeddings
-    - RAG_EMBEDDING_MODEL: Model ID for remote embeddings (default: "sentence-transformers/all-MiniLM-L6-v2")
-    - RAG_EMBEDDING_API_URL: Custom API endpoint URL (with automatic normalization)
-    - HF_TOKEN: Authentication token for Hugging Face API
-    - RAG_HF_TIMEOUT_SECONDS: Request timeout in seconds (default: 30)
-    - RAG_HF_MAX_RETRIES: Maximum retry attempts (default: 3)
-    - RAG_HF_RETRY_BACKOFF_SECONDS: Backoff multiplier for retries (default: 1.0)
+  - RAG_EMBEDDING_PROVIDER: Set to "huggingface_api" or "hf_api" to enable remote embeddings
+  - RAG_EMBEDDING_MODEL: Model ID for remote embeddings (default: "sentence-transformers/all-MiniLM-L6-v2")
+  - RAG_EMBEDDING_API_URL: Custom API endpoint URL (with automatic normalization)
+  - HF_TOKEN: Authentication token for Hugging Face API
+  - RAG_HF_TIMEOUT_SECONDS: Request timeout in seconds (default: 30)
+  - RAG_HF_MAX_RETRIES: Maximum retry attempts (default: 3)
+  - RAG_HF_RETRY_BACKOFF_SECONDS: Backoff multiplier for retries (default: 1.0)
 - Crossref:
-    - CROSSREF_MAILTO: Contact email header for API
-    - REDIS_ENABLED/REDIS_URL: Enable distributed caching
+  - CROSSREF_MAILTO: Contact email header for API
+  - REDIS_ENABLED/REDIS_URL: Enable distributed caching
 - Retrieval:
-    - top_k: Number of results to return from query
-    - Publisher filtering: enforced by metadata and query adapters
+  - top_k: Number of results to return from query
+  - Publisher filtering: enforced by metadata and query adapters
 
 **Section sources**
 
-- [settings.py:185-190](file://backend/app/config/settings.py#L185-L190)
-- [settings.py:358-362](file://backend/app/config/settings.py#L358-L362)
-- [rag_engine.py:117-131](file://backend/app/pipeline/intelligence/rag_engine.py#L117-L131)
-- [rag_engine.py:444-448](file://backend/app/pipeline/intelligence/rag_engine.py#L444-L448)
-- [rag_engine.py:565-609](file://backend/app/pipeline/intelligence/rag_engine.py#L565-L609)
-- [crossref_client.py:37-39](file://backend/app/services/crossref_client.py#L37-L39)
+- [settings.py:185-190](../../../../backend/app/config/settings.py#L185-L190)
+- [settings.py:358-362](../../../../backend/app/config/settings.py#L358-L362)
+- [rag_engine.py:117-131](../../../../backend/app/pipeline/intelligence/rag_engine.py#L117-L131)
+- [rag_engine.py:444-448](../../../../backend/app/pipeline/intelligence/rag_engine.py#L444-L448)
+- [rag_engine.py:565-609](../../../../backend/app/pipeline/intelligence/rag_engine.py#L565-L609)
+- [crossref_client.py:37-39](../../../../backend/app/services/crossref_client.py#L37-L39)
 
 ### Interface Verification
 
@@ -629,4 +629,4 @@ The RAG engine provides a robust, layered retrieval system for academic formatti
 
 **Section sources**
 
-- [test_rag_engine.py:1-355](file://backend/tests/test_rag_engine.py#L1-L355)
+- [test_rag_engine.py:1-355](../../../../backend/tests/test_rag_engine.py#L1-L355)

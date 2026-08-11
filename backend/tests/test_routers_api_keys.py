@@ -28,7 +28,6 @@ def client():
     mock_service = MagicMock()
 
     from app.db.session import get_db
-    from app.routers.v1.api_keys import ApiKeyService
 
     app.dependency_overrides[get_current_user] = lambda: mock_user
     app.dependency_overrides[get_db] = lambda: mock_db

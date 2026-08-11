@@ -31,19 +31,19 @@ For organizations requiring guaranteed SLAs, priority queue, or custom developme
 | Tier | Response SLA | Scope | Contact |
 | ------ | ------------- | ------- | --------- |
 | **Community** | 24-72 hours | Public issues, discussions | GitHub |
-| **Standard** | 8 business hours | Email support, bug fixes | enterprise@scholarform.ai |
-| **Premium** | 2 business hours | Priority queue, custom templates, deployment assistance, training, dedicated engineer | enterprise@scholarform.ai |
-| **Enterprise** | 1 hour | 24/7 support, custom development, SLA guarantees, on-premise deployment | enterprise@scholarform.ai |
+| **Standard** | 8 business hours | Email support, bug fixes | <enterprise@scholarform.ai> |
+| **Premium** | 2 business hours | Priority queue, custom templates, deployment assistance, training, dedicated engineer | <enterprise@scholarform.ai> |
+| **Enterprise** | 1 hour | 24/7 support, custom development, SLA guarantees, on-premise deployment | <enterprise@scholarform.ai> |
 
 ## Before Opening an Issue
 
-1. Check the [FAQ](FAQ.md) and [Troubleshooting Guide](docs/troubleshooting.md)
+1. Check the [FAQ](../reference/FAQ.md) and [Troubleshooting Guide](../operations/TROUBLESHOOTING.md)
 2. Search existing [issues](https://github.com/rohitkumarnaidu/ScholarFormAI/issues) and [discussions](https://github.com/rohitkumarnaidu/ScholarFormAI/discussions)
-3. Review the [Quickstart Guide](docs/quickstart.md) and [User Guide](docs/user_guide.md)
+3. Review the [Quickstart Guide](../docs/getting-started/quickstart.md) and [User Guide](../guides/USER_GUIDE.md)
 
 ## Reporting Bugs
 
-Use the [bug report template](.github/ISSUE_TEMPLATE/bug_report.md). Include:
+Use the [bug report template](../../.github/ISSUE_TEMPLATE/bug_report.md). Include:
 
 - ScholarForm version (commit hash or release tag)
 - Operating system and Python/Node versions

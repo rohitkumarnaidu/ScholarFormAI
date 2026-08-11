@@ -11,12 +11,13 @@ from __future__ import annotations
 
 import zipfile
 from pathlib import Path
-from unittest.mock import patch, MagicMock, PropertyMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
+from app.models import Block, BlockType, DocumentMetadata, PipelineDocument, Reference
 from app.pipeline.formatting.template_renderer import TemplateRenderer
-from app.models import Block, BlockType, PipelineDocument, DocumentMetadata
+
 
 @pytest.fixture
 def renderer():
@@ -109,7 +110,7 @@ class TestRenderGaps:
         doc.original_filename = None
         with (
             patch("app.pipeline.formatting.template_renderer._DOCXTPL_AVAILABLE", True),
-            patch.object(renderer, "_resolve_template_path", return_value=Path("dummy.docx")),
+            patch.object(renderer, "_resolve_template_path_with_flag", return_value=(Path("dummy.docx"), False)),
             patch.object(renderer, "build_context", return_value={}),
             patch("app.pipeline.formatting.template_renderer.DocxTemplate") as mock_dt,
         ):
@@ -127,7 +128,7 @@ class TestRenderGaps:
         doc.original_filename = None
         with (
             patch("app.pipeline.formatting.template_renderer._DOCXTPL_AVAILABLE", True),
-            patch.object(renderer, "_resolve_template_path", return_value=Path("dummy.docx")),
+            patch.object(renderer, "_resolve_template_path_with_flag", return_value=(Path("dummy.docx"), False)),
             patch.object(renderer, "build_context", return_value={}),
             patch("app.pipeline.formatting.template_renderer.DocxTemplate") as mock_dt,
         ):
@@ -140,9 +141,12 @@ class TestRenderGaps:
         doc = MagicMock(spec=PipelineDocument)
         doc.metadata = DocumentMetadata()
         doc.blocks = []
+        doc.references = []
+        doc.formatting_options = {}
+        doc.original_filename = "test.pdf"
         with (
             patch("app.pipeline.formatting.template_renderer._DOCXTPL_AVAILABLE", True),
-            patch.object(renderer, "_resolve_template_path", side_effect=Exception("resolve error")),
+            patch.object(renderer, "_resolve_template_path_with_flag", side_effect=Exception("resolve error")),
         ):
             with pytest.raises(Exception, match="resolve error"):
                 renderer.render(document=doc)
@@ -153,7 +157,7 @@ class TestRenderGaps:
         doc.blocks = []
         with (
             patch("app.pipeline.formatting.template_renderer._DOCXTPL_AVAILABLE", True),
-            patch.object(renderer, "_resolve_template_path", return_value=Path("dummy.docx")),
+            patch.object(renderer, "_resolve_template_path_with_flag", return_value=(Path("dummy.docx"), False)),
             patch.object(renderer, "build_context", side_effect=ValueError("ctx fail")),
         ):
             with pytest.raises(ValueError, match="ctx fail"):
@@ -374,7 +378,7 @@ class TestCollectSectionsGaps:
     def test_metadata_none_is_footnote(self, renderer):
         blocks = [
             _make_block("b1", 0, "heading_1", "Intro"),
-            _make_block("b2", 1, "body", "text"),
+            _make_block("b2", 1, "body", "note"),
         ]
         sections = renderer._collect_sections(blocks)
         # metadata is None so `block.metadata or {}` yields {} → get returns None → bool(None) is False → not filtered

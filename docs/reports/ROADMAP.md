@@ -1,6 +1,6 @@
 # ScholarForm AI — Development Roadmap
 
-> **Status overview.** For the detailed implementation plan with exit criteria, see [docs/reports/FUTURE_ROADMAP.md](docs/reports/FUTURE_ROADMAP.md).
+> **Status overview.** For the detailed implementation plan with exit criteria, see [docs/reports/FUTURE_ROADMAP.md](FUTURE_ROADMAP.md).
 
 ---
 

@@ -15,7 +15,7 @@ last_updated: July 2026
 
 # ScholarForm AI — Incident Response Runbook
 
-> **See also:** [Postmortem Template](../POSTMORTEM_TEMPLATE.md), [Disaster Recovery](../DISASTER_RECOVERY.md), [Runbooks](.)
+> **See also:** [Postmortem Template](../POSTMORTEM_TEMPLATE.md), [Disaster Recovery](../operations/DISASTER_RECOVERY.md), [Runbooks](.)
 
 ## Alert Matrix
 

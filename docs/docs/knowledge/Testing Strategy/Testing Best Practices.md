@@ -5,20 +5,20 @@
 
 <cite>
 **Referenced Files in This Document**
-- [pytest.ini](file://backend/pytest.ini)
-- [conftest.py](file://backend/tests/conftest.py)
-- [test_smoke.py](file://backend/tests/test_smoke.py)
-- [test_api.py](file://backend/tests/test_api.py)
-- [test_formatter_golden_files.py](file://backend/tests/test_formatter_golden_files.py)
-- [locustfile.py](file://backend/tests/load/locustfile.py)
+- [pytest.ini](../../../../backend/pytest.ini)
+- [conftest.py](../../../../backend/tests/conftest.py)
+- [test_smoke.py](../../../../backend/tests/test_smoke.py)
+- [test_api.py](../../../../backend/tests/test_api.py)
+- [test_formatter_golden_files.py](../../../../backend/tests/test_formatter_golden_files.py)
+- [locustfile.py](../../../../backend/tests/load/locustfile.py)
 - [production_stress_test.py](file://backend/tests/stress/production_stress_test.py)
-- [test_grobid_pipeline.py](file://backend/tests/integration/test_grobid_pipeline.py)
-- [Testing.md](file://docs/Testing.md)
+- [test_grobid_pipeline.py](../../../../backend/tests/integration/test_grobid_pipeline.py)
+- [Testing.md](../../guides/testing.md)
 - [TESTING_COMMANDS.md](file://backend/manual_tests/TESTING_COMMANDS.md)
 - [test_commands.md](file://backend/manual_tests/test_commands.md)
-- [vitest.config.js](file://frontend/vitest.config.js)
-- [playwright.config.js](file://frontend/playwright.config.js)
-- [package.json](file://frontend/package.json)
+- [vitest.config.js](../../../../frontend/vitest.config.js)
+- [playwright.config.js](../../../../frontend/playwright.config.js)
+- [package.json](../../../../frontend/package.json)
 </cite>
 
 ## Table of Contents
@@ -90,28 +90,28 @@ TMC --> SM
 
 **Diagram sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [test_smoke.py:1-269](file://backend/tests/test_smoke.py#L1-L269)
-- [test_api.py:1-366](file://backend/tests/test_api.py#L1-L366)
-- [test_formatter_golden_files.py:1-253](file://backend/tests/test_formatter_golden_files.py#L1-L253)
-- [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
+- [pytest.ini:1-28](../../../../backend/pytest.ini#L1-L28)
+- [conftest.py:1-112](../../../../backend/tests/conftest.py#L1-L112)
+- [test_smoke.py:1-269](../../../../backend/tests/test_smoke.py#L1-L269)
+- [test_api.py:1-366](../../../../backend/tests/test_api.py#L1-L366)
+- [test_formatter_golden_files.py:1-253](../../../../backend/tests/test_formatter_golden_files.py#L1-L253)
+- [locustfile.py:1-139](../../../../backend/tests/load/locustfile.py#L1-L139)
 - [production_stress_test.py:1-172](file://backend/tests/stress/production_stress_test.py#L1-L172)
-- [test_grobid_pipeline.py:1-255](file://backend/tests/integration/test_grobid_pipeline.py#L1-L255)
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
-- [package.json:1-62](file://frontend/package.json#L1-L62)
+- [test_grobid_pipeline.py:1-255](../../../../backend/tests/integration/test_grobid_pipeline.py#L1-L255)
+- [vitest.config.js:1-34](../../../../frontend/vitest.config.js#L1-L34)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
+- [package.json:1-62](../../../../frontend/package.json#L1-L62)
 - [test_commands.md:1-347](file://backend/manual_tests/test_commands.md#L1-L347)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
 
 **Section sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [Testing.md:1-146](file://docs/Testing.md#L1-L146)
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
-- [package.json:1-62](file://frontend/package.json#L1-L62)
+- [pytest.ini:1-28](../../../../backend/pytest.ini#L1-L28)
+- [conftest.py:1-112](../../../../backend/tests/conftest.py#L1-L112)
+- [Testing.md:1-146](../../guides/testing.md#L1-L146)
+- [vitest.config.js:1-34](../../../../frontend/vitest.config.js#L1-L34)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
+- [package.json:1-62](../../../../frontend/package.json#L1-L62)
 - [test_commands.md:1-347](file://backend/manual_tests/test_commands.md#L1-L347)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
 
@@ -127,14 +127,14 @@ TMC --> SM
 
 **Section sources**
 
-- [pytest.ini:16-28](file://backend/pytest.ini#L16-L28)
-- [conftest.py:37-112](file://backend/tests/conftest.py#L37-L112)
-- [test_smoke.py:59-269](file://backend/tests/test_smoke.py#L59-L269)
-- [test_api.py:14-366](file://backend/tests/test_api.py#L14-L366)
-- [test_formatter_golden_files.py:222-253](file://backend/tests/test_formatter_golden_files.py#L222-L253)
-- [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
+- [pytest.ini:16-28](../../../../backend/pytest.ini#L16-L28)
+- [conftest.py:37-112](../../../../backend/tests/conftest.py#L37-L112)
+- [test_smoke.py:59-269](../../../../backend/tests/test_smoke.py#L59-L269)
+- [test_api.py:14-366](../../../../backend/tests/test_api.py#L14-L366)
+- [test_formatter_golden_files.py:222-253](../../../../backend/tests/test_formatter_golden_files.py#L222-L253)
+- [locustfile.py:1-139](../../../../backend/tests/load/locustfile.py#L1-L139)
 - [production_stress_test.py:19-172](file://backend/tests/stress/production_stress_test.py#L19-L172)
-- [test_grobid_pipeline.py:19-255](file://backend/tests/integration/test_grobid_pipeline.py#L19-L255)
+- [test_grobid_pipeline.py:19-255](../../../../backend/tests/integration/test_grobid_pipeline.py#L19-L255)
 - [test_commands.md:1-347](file://backend/manual_tests/test_commands.md#L1-L347)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
 
@@ -161,12 +161,12 @@ M --> G
 
 **Diagram sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [test_smoke.py:1-269](file://backend/tests/test_smoke.py#L1-L269)
-- [test_api.py:1-366](file://backend/tests/test_api.py#L1-L366)
-- [test_formatter_golden_files.py:1-253](file://backend/tests/test_formatter_golden_files.py#L1-L253)
-- [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
+- [pytest.ini:1-28](../../../../backend/pytest.ini#L1-L28)
+- [conftest.py:1-112](../../../../backend/tests/conftest.py#L1-L112)
+- [test_smoke.py:1-269](../../../../backend/tests/test_smoke.py#L1-L269)
+- [test_api.py:1-366](../../../../backend/tests/test_api.py#L1-L366)
+- [test_formatter_golden_files.py:1-253](../../../../backend/tests/test_formatter_golden_files.py#L1-L253)
+- [locustfile.py:1-139](../../../../backend/tests/load/locustfile.py#L1-L139)
 - [production_stress_test.py:1-172](file://backend/tests/stress/production_stress_test.py#L1-L172)
 - [test_commands.md:1-347](file://backend/manual_tests/test_commands.md#L1-L347)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
@@ -187,7 +187,7 @@ Best practices:
 
 **Section sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
+- [pytest.ini:1-28](../../../../backend/pytest.ini#L1-L28)
 
 ### Shared Fixtures and Mocks
 
@@ -202,7 +202,7 @@ Best practices:
 
 **Section sources**
 
-- [conftest.py:37-112](file://backend/tests/conftest.py#L37-L112)
+- [conftest.py:37-112](../../../../backend/tests/conftest.py#L37-L112)
 
 ### Contract and Smoke Tests
 
@@ -216,7 +216,7 @@ Best practices:
 
 **Section sources**
 
-- [test_smoke.py:59-269](file://backend/tests/test_smoke.py#L59-L269)
+- [test_smoke.py:59-269](../../../../backend/tests/test_smoke.py#L59-L269)
 
 ### API Integration Tests
 
@@ -231,7 +231,7 @@ Best practices:
 
 **Section sources**
 
-- [test_api.py:14-366](file://backend/tests/test_api.py#L14-L366)
+- [test_api.py:14-366](../../../../backend/tests/test_api.py#L14-L366)
 
 ### Golden-File Formatting Tests
 
@@ -246,7 +246,7 @@ Best practices:
 
 **Section sources**
 
-- [test_formatter_golden_files.py:222-253](file://backend/tests/test_formatter_golden_files.py#L222-L253)
+- [test_formatter_golden_files.py:222-253](../../../../backend/tests/test_formatter_golden_files.py#L222-L253)
 
 ### Load and Stress Testing
 
@@ -261,7 +261,7 @@ Best practices:
 
 **Section sources**
 
-- [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
+- [locustfile.py:1-139](../../../../backend/tests/load/locustfile.py#L1-L139)
 - [production_stress_test.py:19-172](file://backend/tests/stress/production_stress_test.py#L19-L172)
 
 ### Integration Tests for External Pipelines
@@ -277,7 +277,7 @@ Best practices:
 
 **Section sources**
 
-- [test_grobid_pipeline.py:19-255](file://backend/tests/integration/test_grobid_pipeline.py#L19-L255)
+- [test_grobid_pipeline.py:19-255](../../../../backend/tests/integration/test_grobid_pipeline.py#L19-L255)
 
 ### Manual Testing Procedures
 
@@ -310,10 +310,10 @@ Best practices:
 
 **Section sources**
 
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
-- [package.json:1-62](file://frontend/package.json#L1-L62)
-- [Testing.md:70-107](file://docs/Testing.md#L70-L107)
+- [vitest.config.js:1-34](../../../../frontend/vitest.config.js#L1-L34)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
+- [package.json:1-62](../../../../frontend/package.json#L1-L62)
+- [Testing.md:70-107](../../guides/testing.md#L70-L107)
 
 ## Dependency Analysis
 
@@ -340,23 +340,23 @@ TM --> TG
 
 **Diagram sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [test_smoke.py:1-269](file://backend/tests/test_smoke.py#L1-L269)
-- [test_api.py:1-366](file://backend/tests/test_api.py#L1-L366)
-- [test_formatter_golden_files.py:1-253](file://backend/tests/test_formatter_golden_files.py#L1-L253)
-- [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
+- [pytest.ini:1-28](../../../../backend/pytest.ini#L1-L28)
+- [conftest.py:1-112](../../../../backend/tests/conftest.py#L1-L112)
+- [test_smoke.py:1-269](../../../../backend/tests/test_smoke.py#L1-L269)
+- [test_api.py:1-366](../../../../backend/tests/test_api.py#L1-L366)
+- [test_formatter_golden_files.py:1-253](../../../../backend/tests/test_formatter_golden_files.py#L1-L253)
+- [locustfile.py:1-139](../../../../backend/tests/load/locustfile.py#L1-L139)
 - [production_stress_test.py:1-172](file://backend/tests/stress/production_stress_test.py#L1-L172)
 - [test_commands.md:1-347](file://backend/manual_tests/test_commands.md#L1-L347)
 
 **Section sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [test_smoke.py:1-269](file://backend/tests/test_smoke.py#L1-L269)
-- [test_api.py:1-366](file://backend/tests/test_api.py#L1-L366)
-- [test_formatter_golden_files.py:1-253](file://backend/tests/test_formatter_golden_files.py#L1-L253)
-- [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
+- [pytest.ini:1-28](../../../../backend/pytest.ini#L1-L28)
+- [conftest.py:1-112](../../../../backend/tests/conftest.py#L1-L112)
+- [test_smoke.py:1-269](../../../../backend/tests/test_smoke.py#L1-L269)
+- [test_api.py:1-366](../../../../backend/tests/test_api.py#L1-L366)
+- [test_formatter_golden_files.py:1-253](../../../../backend/tests/test_formatter_golden_files.py#L1-L253)
+- [locustfile.py:1-139](../../../../backend/tests/load/locustfile.py#L1-L139)
 - [production_stress_test.py:1-172](file://backend/tests/stress/production_stress_test.py#L1-L172)
 - [test_commands.md:1-347](file://backend/manual_tests/test_commands.md#L1-L347)
 
@@ -380,7 +380,7 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [Testing.md:50-146](file://docs/Testing.md#L50-L146)
+- [Testing.md:50-146](../../guides/testing.md#L50-L146)
 
 ## Conclusion
 
@@ -407,8 +407,8 @@ A robust testing strategy balances fast unit and contract tests, reliable integr
 
 **Section sources**
 
-- [test_smoke.py:59-269](file://backend/tests/test_smoke.py#L59-L269)
-- [test_api.py:14-366](file://backend/tests/test_api.py#L14-L366)
+- [test_smoke.py:59-269](../../../../backend/tests/test_smoke.py#L59-L269)
+- [test_api.py:14-366](../../../../backend/tests/test_api.py#L14-L366)
 - [test_commands.md:1-347](file://backend/manual_tests/test_commands.md#L1-L347)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
 
@@ -420,7 +420,7 @@ A robust testing strategy balances fast unit and contract tests, reliable integr
 
 **Section sources**
 
-- [test_formatter_golden_files.py:197-253](file://backend/tests/test_formatter_golden_files.py#L197-L253)
+- [test_formatter_golden_files.py:197-253](../../../../backend/tests/test_formatter_golden_files.py#L197-L253)
 
 ### Performance and Scalability Testing
 
@@ -430,8 +430,8 @@ A robust testing strategy balances fast unit and contract tests, reliable integr
 
 **Section sources**
 
-- [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
-- [test_grobid_pipeline.py:109-229](file://backend/tests/integration/test_grobid_pipeline.py#L109-L229)
+- [locustfile.py:1-139](../../../../backend/tests/load/locustfile.py#L1-L139)
+- [test_grobid_pipeline.py:109-229](../../../../backend/tests/integration/test_grobid_pipeline.py#L109-L229)
 
 ### Test Automation and Continuous Integration
 
@@ -441,5 +441,5 @@ A robust testing strategy balances fast unit and contract tests, reliable integr
 
 **Section sources**
 
-- [package.json:6-16](file://frontend/package.json#L6-L16)
-- [Testing.md:127-146](file://docs/Testing.md#L127-L146)
+- [package.json:6-16](../../../../frontend/package.json#L6-L16)
+- [Testing.md:127-146](../../guides/testing.md#L127-L146)

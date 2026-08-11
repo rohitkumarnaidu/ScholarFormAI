@@ -118,6 +118,6 @@ Every stage emits structured logs with `request_id`, `stage`, `duration_ms`, and
 
 ## See Also
 
-- [Architecture Overview](../architecture.md) — system layers and request flows
-- [User Guide](../user_guide.md) — end-to-end formatting workflow
+- [Architecture Overview](../architecture/ARCHITECTURE.md) — system layers and request flows
+- [User Guide](../guides/USER_GUIDE.md) — end-to-end formatting workflow
 - [LLM Fallback Strategy](llm-fallback-strategy.md) — how LLM failures are handled

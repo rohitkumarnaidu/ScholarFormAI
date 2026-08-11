@@ -5,14 +5,14 @@
 
 <cite>
 **Referenced Files in This Document**
-- [templates.py](file://backend/app/routers/v1/templates.py)
-- [templates.py](file://backend/app/routers/templates.py)
-- [dependencies.py](file://backend/app/utils/dependencies.py)
-- [rbac.py](file://backend/app/middleware/rbac.py)
-- [csl_engine.py](file://backend/app/pipeline/services/csl_engine.py)
-- [csl_fetcher.py](file://backend/app/pipeline/services/csl_fetcher.py)
-- [template_creation_guide.md](file://backend/docs/template_creation_guide.md)
-- [test_templates.py](file://backend/tests/test_templates.py)
+- [templates.py](../../../../backend/app/routers/v1/templates.py)
+- [templates.py](../../../../backend/app/routers/v1/templates.py)
+- [dependencies.py](../../../../backend/app/utils/dependencies.py)
+- [rbac.py](../../../../backend/app/middleware/rbac.py)
+- [csl_engine.py](../../../../backend/app/pipeline/services/csl_engine.py)
+- [csl_fetcher.py](../../../../backend/app/pipeline/services/csl_fetcher.py)
+- [template_creation_guide.md](../../../../backend/docs/template_creation_guide.md)
+- [test_templates.py](../../../../backend/tests/test_templates.py)
 </cite>
 
 ## Table of Contents
@@ -67,19 +67,19 @@ AuthDep --> RBAC
 
 **Diagram sources**
 
-- [templates.py:17-189](file://backend/app/routers/v1/templates.py#L17-L189)
-- [templates.py:43-327](file://backend/app/routers/templates.py#L43-L327)
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
-- [csl_engine.py:38-283](file://backend/app/pipeline/services/csl_engine.py#L38-L283)
-- [csl_fetcher.py:80-180](file://backend/app/pipeline/services/csl_fetcher.py#L80-L180)
+- [templates.py:17-189](../../../../backend/app/routers/v1/templates.py#L17-L189)
+- [templates.py:43-327](../../../../backend/app/routers/v1/templates.py#L43-L327)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
+- [rbac.py:61-80](../../../../backend/app/middleware/rbac.py#L61-L80)
+- [csl_engine.py:38-283](../../../../backend/app/pipeline/services/csl_engine.py#L38-L283)
+- [csl_fetcher.py:80-180](../../../../backend/app/pipeline/services/csl_fetcher.py#L80-L180)
 
 **Section sources**
 
-- [templates.py:17-189](file://backend/app/routers/v1/templates.py#L17-L189)
-- [templates.py:43-327](file://backend/app/routers/templates.py#L43-L327)
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
+- [templates.py:17-189](../../../../backend/app/routers/v1/templates.py#L17-L189)
+- [templates.py:43-327](../../../../backend/app/routers/v1/templates.py#L43-L327)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
+- [rbac.py:61-80](../../../../backend/app/middleware/rbac.py#L61-L80)
 
 ## Core Components
 
@@ -95,12 +95,12 @@ Key schemas:
 
 **Section sources**
 
-- [templates.py:119-166](file://backend/app/routers/templates.py#L119-L166)
-- [templates.py:169-204](file://backend/app/routers/templates.py#L169-L204)
-- [templates.py:225-326](file://backend/app/routers/templates.py#L225-L326)
-- [templates.py:20-189](file://backend/app/routers/v1/templates.py#L20-L189)
-- [csl_engine.py:38-283](file://backend/app/pipeline/services/csl_engine.py#L38-L283)
-- [csl_fetcher.py:80-180](file://backend/app/pipeline/services/csl_fetcher.py#L80-L180)
+- [templates.py:119-166](../../../../backend/app/routers/v1/templates.py#L119-L166)
+- [templates.py:169-204](../../../../backend/app/routers/v1/templates.py#L169-L204)
+- [templates.py:225-326](../../../../backend/app/routers/v1/templates.py#L225-L326)
+- [templates.py:20-189](../../../../backend/app/routers/v1/templates.py#L20-L189)
+- [csl_engine.py:38-283](../../../../backend/app/pipeline/services/csl_engine.py#L38-L283)
+- [csl_fetcher.py:80-180](../../../../backend/app/pipeline/services/csl_fetcher.py#L80-L180)
 
 ## Architecture Overview
 
@@ -133,9 +133,9 @@ V1-->>Client : Envelope(data)
 
 **Diagram sources**
 
-- [templates.py:20-189](file://backend/app/routers/v1/templates.py#L20-L189)
-- [templates.py:119-326](file://backend/app/routers/templates.py#L119-L326)
-- [csl_fetcher.py:80-180](file://backend/app/pipeline/services/csl_fetcher.py#L80-L180)
+- [templates.py:20-189](../../../../backend/app/routers/v1/templates.py#L20-L189)
+- [templates.py:119-326](../../../../backend/app/routers/v1/templates.py#L119-L326)
+- [csl_fetcher.py:80-180](../../../../backend/app/pipeline/services/csl_fetcher.py#L80-L180)
 
 ## Detailed Component Analysis
 
@@ -146,7 +146,7 @@ V1-->>Client : Envelope(data)
 - Authentication: Not required.
 - Response envelope: Enveloped by v1 router.
 - Example response shape:
-    - templates: array of objects with id, name, description, source.
+  - templates: array of objects with id, name, description, source.
 
 Validation and constraints:
 
@@ -155,8 +155,8 @@ Validation and constraints:
 
 **Section sources**
 
-- [templates.py:119-166](file://backend/app/routers/templates.py#L119-L166)
-- [templates.py:20-30](file://backend/app/routers/v1/templates.py#L20-L30)
+- [templates.py:119-166](../../../../backend/app/routers/v1/templates.py#L119-L166)
+- [templates.py:20-30](../../../../backend/app/routers/v1/templates.py#L20-L30)
 
 ### Endpoint: GET /api/v1/templates/{id}
 
@@ -167,20 +167,20 @@ Validation and constraints:
 
 **Section sources**
 
-- [templates.py:20-30](file://backend/app/routers/v1/templates.py#L20-L30)
-- [templates.py:119-166](file://backend/app/routers/templates.py#L119-L166)
+- [templates.py:20-30](../../../../backend/app/routers/v1/templates.py#L20-L30)
+- [templates.py:119-166](../../../../backend/app/routers/v1/templates.py#L119-L166)
 
 ### Endpoint: GET /api/v1/templates/csl/search
 
 - Purpose: Search CSL styles by keyword.
 - Query parameters:
-    - q or query (required): search term with minimum length constraint.
+  - q or query (required): search term with minimum length constraint.
 - Behavior: Searches both local styles and remote CSL repository with caching.
 - Authentication: Not required.
 - Response envelope: Enveloped by v1 router with error code mapping.
 - Example response shape:
-    - query: the search term
-    - results: array of {slug, title, source}
+  - query: the search term
+  - results: array of {slug, title, source}
 
 Validation and constraints:
 
@@ -188,20 +188,20 @@ Validation and constraints:
 
 **Section sources**
 
-- [templates.py:169-181](file://backend/app/routers/templates.py#L169-L181)
-- [templates.py:33-48](file://backend/app/routers/v1/templates.py#L33-L48)
-- [csl_fetcher.py:80-136](file://backend/app/pipeline/services/csl_fetcher.py#L80-L136)
+- [templates.py:169-181](../../../../backend/app/routers/v1/templates.py#L169-L181)
+- [templates.py:33-48](../../../../backend/app/routers/v1/templates.py#L33-L48)
+- [csl_fetcher.py:80-136](../../../../backend/app/pipeline/services/csl_fetcher.py#L80-L136)
 
 ### Endpoint: GET /api/v1/templates/csl/fetch
 
 - Purpose: Fetch a CSL style XML by slug.
 - Query parameters:
-    - slug (required): style identifier.
+  - slug (required): style identifier.
 - Behavior: Returns the CSL XML content for the style, with local-first lookup and remote fallback.
 - Authentication: Not required.
 - Response envelope: Enveloped by v1 router with error code mapping.
 - Example response shape:
-    - slug, source, content (XML string)
+  - slug, source, content (XML string)
 
 Validation and constraints:
 
@@ -209,24 +209,24 @@ Validation and constraints:
 
 **Section sources**
 
-- [templates.py:194-198](file://backend/app/routers/templates.py#L194-L198)
-- [templates.py:51-68](file://backend/app/routers/v1/templates.py#L51-L68)
-- [csl_fetcher.py:138-180](file://backend/app/pipeline/services/csl_fetcher.py#L138-L180)
+- [templates.py:194-198](../../../../backend/app/routers/v1/templates.py#L194-L198)
+- [templates.py:51-68](../../../../backend/app/routers/v1/templates.py#L51-L68)
+- [csl_fetcher.py:138-180](../../../../backend/app/pipeline/services/csl_fetcher.py#L138-L180)
 
 ### Endpoint: GET /api/v1/templates/csl/{styleId}
 
 - Purpose: Fetch a CSL style XML by style id/slug.
 - Path parameter:
-    - styleId (required): style identifier.
+  - styleId (required): style identifier.
 - Behavior: Same as csl/fetch but using path parameter.
 - Authentication: Not required.
 - Response envelope: Enveloped by v1 router with error code mapping.
 
 **Section sources**
 
-- [templates.py:200-204](file://backend/app/routers/templates.py#L200-L204)
-- [templates.py:71-88](file://backend/app/routers/v1/templates.py#L71-L88)
-- [csl_fetcher.py:138-180](file://backend/app/pipeline/services/csl_fetcher.py#L138-L180)
+- [templates.py:200-204](../../../../backend/app/routers/v1/templates.py#L200-L204)
+- [templates.py:71-88](../../../../backend/app/routers/v1/templates.py#L71-L88)
+- [csl_fetcher.py:138-180](../../../../backend/app/pipeline/services/csl_fetcher.py#L138-L180)
 
 ### Endpoint: GET /api/v1/templates/custom
 
@@ -235,7 +235,7 @@ Validation and constraints:
 - Behavior: Returns all custom templates owned by the authenticated user, ordered by last updated.
 - Response envelope: Enveloped by v1 router with error code mapping.
 - Example response shape:
-    - templates: array of user’s template records
+  - templates: array of user’s template records
 
 Validation and constraints:
 
@@ -243,9 +243,9 @@ Validation and constraints:
 
 **Section sources**
 
-- [templates.py:206-223](file://backend/app/routers/templates.py#L206-L223)
-- [templates.py:91-108](file://backend/app/routers/v1/templates.py#L91-L108)
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
+- [templates.py:206-223](../../../../backend/app/routers/v1/templates.py#L206-L223)
+- [templates.py:91-108](../../../../backend/app/routers/v1/templates.py#L91-L108)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
 
 ### Endpoint: POST /api/v1/templates/custom
 
@@ -255,7 +255,7 @@ Validation and constraints:
 - Behavior: Inserts a new record into the custom_templates table with user_id set to the authenticated user.
 - Response envelope: Enveloped by v1 router with error code mapping.
 - Example response shape:
-    - template: the created record
+  - template: the created record
 
 Validation and constraints:
 
@@ -269,22 +269,22 @@ Audit and logging:
 
 **Section sources**
 
-- [templates.py:225-252](file://backend/app/routers/templates.py#L225-L252)
-- [templates.py:111-134](file://backend/app/routers/v1/templates.py#L111-L134)
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
-- [test_templates.py:44-105](file://backend/tests/test_templates.py#L44-L105)
+- [templates.py:225-252](../../../../backend/app/routers/v1/templates.py#L225-L252)
+- [templates.py:111-134](../../../../backend/app/routers/v1/templates.py#L111-L134)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
+- [test_templates.py:44-105](../../../../backend/tests/test_templates.py#L44-L105)
 
 ### Endpoint: PUT /api/v1/templates/custom/{templateId}
 
 - Purpose: Update an authenticated user’s custom template.
 - Authentication: Required (Bearer token).
 - Path parameter:
-    - templateId (required): target template id.
+  - templateId (required): target template id.
 - Request body: Same payload structure as create.
 - Behavior: Updates name, description, and config; enforces ownership and returns updated record.
 - Response envelope: Enveloped by v1 router with error code mapping.
 - Example response shape:
-    - template: the updated record
+  - template: the updated record
 
 Validation and constraints:
 
@@ -297,21 +297,21 @@ Audit and logging:
 
 **Section sources**
 
-- [templates.py:254-297](file://backend/app/routers/templates.py#L254-L297)
-- [templates.py:137-163](file://backend/app/routers/v1/templates.py#L137-L163)
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
+- [templates.py:254-297](../../../../backend/app/routers/v1/templates.py#L254-L297)
+- [templates.py:137-163](../../../../backend/app/routers/v1/templates.py#L137-L163)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
 
 ### Endpoint: DELETE /api/v1/templates/custom/{templateId}
 
 - Purpose: Delete an authenticated user’s custom template.
 - Authentication: Required (Bearer token).
 - Path parameter:
-    - templateId (required): target template id.
+  - templateId (required): target template id.
 - Behavior: Deletes the template if owned by the user.
 - Response envelope: Enveloped by v1 router with error code mapping.
 - Example response shape:
-    - status: "deleted"
-    - id: the deleted template id
+  - status: "deleted"
+  - id: the deleted template id
 
 Validation and constraints:
 
@@ -320,21 +320,21 @@ Validation and constraints:
 
 **Section sources**
 
-- [templates.py:299-327](file://backend/app/routers/templates.py#L299-L327)
-- [templates.py:166-189](file://backend/app/routers/v1/templates.py#L166-L189)
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
+- [templates.py:299-327](../../../../backend/app/routers/v1/templates.py#L299-L327)
+- [templates.py:166-189](../../../../backend/app/routers/v1/templates.py#L166-L189)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
 
 ## Dependency Analysis
 
 - Authentication:
-    - get_current_user/get_optional_user extract and validate JWTs from Authorization header or token query parameter.
-    - Custom template endpoints require a valid token; optional token is accepted for listing built-in templates.
+  - get_current_user/get_optional_user extract and validate JWTs from Authorization header or token query parameter.
+  - Custom template endpoints require a valid token; optional token is accepted for listing built-in templates.
 - Authorization:
-    - Role-based guard (require_role) resolves roles from user metadata and enforces minimum role thresholds.
+  - Role-based guard (require_role) resolves roles from user metadata and enforces minimum role thresholds.
 - Storage:
-    - Supabase custom_templates table stores user templates with user_id, name, description, config, and timestamps.
+  - Supabase custom_templates table stores user templates with user_id, name, description, config, and timestamps.
 - CSL:
-    - csl_fetcher caches search and style results; csl_engine formats references using CSL styles.
+  - csl_fetcher caches search and style results; csl_engine formats references using CSL styles.
 
 ```mermaid
 graph LR
@@ -347,50 +347,50 @@ CSL --> CSLE["csl_engine.py"]
 
 **Diagram sources**
 
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
-- [templates.py:17-189](file://backend/app/routers/v1/templates.py#L17-L189)
-- [templates.py:43-327](file://backend/app/routers/templates.py#L43-L327)
-- [csl_fetcher.py:80-180](file://backend/app/pipeline/services/csl_fetcher.py#L80-L180)
-- [csl_engine.py:38-283](file://backend/app/pipeline/services/csl_engine.py#L38-L283)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
+- [rbac.py:61-80](../../../../backend/app/middleware/rbac.py#L61-L80)
+- [templates.py:17-189](../../../../backend/app/routers/v1/templates.py#L17-L189)
+- [templates.py:43-327](../../../../backend/app/routers/v1/templates.py#L43-L327)
+- [csl_fetcher.py:80-180](../../../../backend/app/pipeline/services/csl_fetcher.py#L80-L180)
+- [csl_engine.py:38-283](../../../../backend/app/pipeline/services/csl_engine.py#L38-L283)
 
 **Section sources**
 
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
-- [templates.py:43-327](file://backend/app/routers/templates.py#L43-L327)
-- [csl_fetcher.py:80-180](file://backend/app/pipeline/services/csl_fetcher.py#L80-L180)
-- [csl_engine.py:38-283](file://backend/app/pipeline/services/csl_engine.py#L38-L283)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
+- [rbac.py:61-80](../../../../backend/app/middleware/rbac.py#L61-L80)
+- [templates.py:43-327](../../../../backend/app/routers/v1/templates.py#L43-L327)
+- [csl_fetcher.py:80-180](../../../../backend/app/pipeline/services/csl_fetcher.py#L80-L180)
+- [csl_engine.py:38-283](../../../../backend/app/pipeline/services/csl_engine.py#L38-L283)
 
 ## Performance Considerations
 
 - CSL caching:
-    - Search and style fetch operations are cached with TTLs configurable via settings. This reduces network latency and improves reliability in offline or constrained environments.
+  - Search and style fetch operations are cached with TTLs configurable via settings. This reduces network latency and improves reliability in offline or constrained environments.
 - Asynchronous fetching:
-    - CSL search and style fetch use async HTTP clients to avoid blocking and improve throughput.
+  - CSL search and style fetch use async HTTP clients to avoid blocking and improve throughput.
 - Local-first strategy:
-    - Local styles are prioritized to minimize external dependencies and improve responsiveness.
+  - Local styles are prioritized to minimize external dependencies and improve responsiveness.
 
 **Section sources**
 
-- [csl_fetcher.py:23-38](file://backend/app/pipeline/services/csl_fetcher.py#L23-L38)
-- [csl_fetcher.py:80-180](file://backend/app/pipeline/services/csl_fetcher.py#L80-L180)
+- [csl_fetcher.py:23-38](../../../../backend/app/pipeline/services/csl_fetcher.py#L23-L38)
+- [csl_fetcher.py:80-180](../../../../backend/app/pipeline/services/csl_fetcher.py#L80-L180)
 
 ## Troubleshooting Guide
 
 Common errors and resolutions:
 
 - Authentication failures:
-    - 401 Unauthorized when accessing custom template endpoints without a valid token.
-    - Use a valid Bearer token or ensure token is passed via Authorization header or token query parameter.
+  - 401 Unauthorized when accessing custom template endpoints without a valid token.
+  - Use a valid Bearer token or ensure token is passed via Authorization header or token query parameter.
 - Invalid payloads:
-    - 422 Unprocessable Entity for missing name or invalid config type during template creation/update.
+  - 422 Unprocessable Entity for missing name or invalid config type during template creation/update.
 - Template not found:
-    - 404 Not Found when updating/deleting a template that does not exist or is not owned by the user.
+  - 404 Not Found when updating/deleting a template that does not exist or is not owned by the user.
 - CSL fetch failures:
-    - 400 Invalid style slug or 502 Style fetch failed when slug is invalid or remote fetch fails.
+  - 400 Invalid style slug or 502 Style fetch failed when slug is invalid or remote fetch fails.
 - Internal errors:
-    - 500 Internal Server Error for database or server-side failures; check logs for details.
+  - 500 Internal Server Error for database or server-side failures; check logs for details.
 
 Operational tips:
 
@@ -400,14 +400,14 @@ Operational tips:
 
 **Section sources**
 
-- [templates.py:59-62](file://backend/app/routers/templates.py#L59-L62)
-- [templates.py:82-90](file://backend/app/routers/templates.py#L82-L90)
-- [templates.py:282-282](file://backend/app/routers/templates.py#L282-L282)
-- [templates.py:186-191](file://backend/app/routers/templates.py#L186-L191)
-- [templates.py:102-108](file://backend/app/routers/v1/templates.py#L102-L108)
-- [templates.py:127-131](file://backend/app/routers/v1/templates.py#L127-L131)
-- [templates.py:155-160](file://backend/app/routers/v1/templates.py#L155-L160)
-- [templates.py:181-185](file://backend/app/routers/v1/templates.py#L181-L185)
+- [templates.py:59-62](../../../../backend/app/routers/v1/templates.py#L59-L62)
+- [templates.py:82-90](../../../../backend/app/routers/v1/templates.py#L82-L90)
+- [templates.py:282-282](../../../../backend/app/routers/v1/templates.py#L282-L282)
+- [templates.py:186-191](../../../../backend/app/routers/v1/templates.py#L186-L191)
+- [templates.py:102-108](../../../../backend/app/routers/v1/templates.py#L102-L108)
+- [templates.py:127-131](../../../../backend/app/routers/v1/templates.py#L127-L131)
+- [templates.py:155-160](../../../../backend/app/routers/v1/templates.py#L155-L160)
+- [templates.py:181-185](../../../../backend/app/routers/v1/templates.py#L181-L185)
 
 ## Conclusion
 
@@ -418,82 +418,82 @@ The template management API provides a robust foundation for discovering built-i
 ### Request/Response Schemas
 
 - Template metadata (common fields)
-    - id: string (UUID or custom)
-    - name: string (required)
-    - description: string (optional)
-    - config: object (optional)
-    - created_at: ISO timestamp (optional)
-    - updated_at: ISO timestamp (optional)
+  - id: string (UUID or custom)
+  - name: string (required)
+  - description: string (optional)
+  - config: object (optional)
+  - created_at: ISO timestamp (optional)
+  - updated_at: ISO timestamp (optional)
 
 - CSL style payload
-    - slug: string
-    - title: string
-    - source: "local" | "remote"
-    - content: string (XML)
+  - slug: string
+  - title: string
+  - source: "local" | "remote"
+  - content: string (XML)
 
 - Built-in template item
-    - id: string
-    - name: string
-    - description: string
-    - source: "built_in"
+  - id: string
+  - name: string
+  - description: string
+  - source: "built_in"
 
 - Envelope (standardized)
-    - data: object or array
-    - error: object (optional)
+  - data: object or array
+  - error: object (optional)
 
 **Section sources**
 
-- [templates.py:65-116](file://backend/app/routers/templates.py#L65-L116)
-- [templates.py:119-166](file://backend/app/routers/templates.py#L119-L166)
-- [templates.py:169-204](file://backend/app/routers/templates.py#L169-L204)
-- [templates.py:25-30](file://backend/app/routers/v1/templates.py#L25-L30)
-- [templates.py:42-48](file://backend/app/routers/v1/templates.py#L42-L48)
-- [templates.py:59-68](file://backend/app/routers/v1/templates.py#L59-L68)
-- [templates.py:79-88](file://backend/app/routers/v1/templates.py#L79-L88)
+- [templates.py:65-116](../../../../backend/app/routers/v1/templates.py#L65-L116)
+- [templates.py:119-166](../../../../backend/app/routers/v1/templates.py#L119-L166)
+- [templates.py:169-204](../../../../backend/app/routers/v1/templates.py#L169-L204)
+- [templates.py:25-30](../../../../backend/app/routers/v1/templates.py#L25-L30)
+- [templates.py:42-48](../../../../backend/app/routers/v1/templates.py#L42-L48)
+- [templates.py:59-68](../../../../backend/app/routers/v1/templates.py#L59-L68)
+- [templates.py:79-88](../../../../backend/app/routers/v1/templates.py#L79-L88)
 
 ### Authentication and Permissions
 
 - Authentication:
-    - Required for custom template operations; optional for built-in listing.
-    - Token extraction supports Authorization header and token query parameter.
+  - Required for custom template operations; optional for built-in listing.
+  - Token extraction supports Authorization header and token query parameter.
 - Authorization:
-    - Role-based enforcement is available via require_role; current endpoints primarily rely on ownership checks for custom templates.
+  - Role-based enforcement is available via require_role; current endpoints primarily rely on ownership checks for custom templates.
 
 **Section sources**
 
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
-- [templates.py:209-209](file://backend/app/routers/templates.py#L209-L209)
-- [templates.py:262-262](file://backend/app/routers/templates.py#L262-L262)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
+- [rbac.py:61-80](../../../../backend/app/middleware/rbac.py#L61-L80)
+- [templates.py:209-209](../../../../backend/app/routers/v1/templates.py#L209-L209)
+- [templates.py:262-262](../../../../backend/app/routers/v1/templates.py#L262-L262)
 
 ### Template Categories and Formatting Rules
 
 - Built-in categories:
-    - Academic styles: IEEE, APA, MLA, Chicago, Vancouver, Nature, Springer, Elsevier, Harvard, numeric, none.
-    - Presentation/resume styles: modern_blue, modern_gold, modern_red, resume, portfolio.
+  - Academic styles: IEEE, APA, MLA, Chicago, Vancouver, Nature, Springer, Elsevier, Harvard, numeric, none.
+  - Presentation/resume styles: modern_blue, modern_gold, modern_red, resume, portfolio.
 - Formatting rules:
-    - References are formatted by the CSL engine; templates render final reference text via Jinja2 variables.
-    - Template creation guide outlines required Jinja2 variables and recommended blocks.
+  - References are formatted by the CSL engine; templates render final reference text via Jinja2 variables.
+  - Template creation guide outlines required Jinja2 variables and recommended blocks.
 
 **Section sources**
 
-- [templates.py:123-141](file://backend/app/routers/templates.py#L123-L141)
-- [template_creation_guide.md:19-31](file://backend/docs/template_creation_guide.md#L19-L31)
-- [template_creation_guide.md:82-91](file://backend/docs/template_creation_guide.md#L82-L91)
-- [csl_engine.py:98-116](file://backend/app/pipeline/services/csl_engine.py#L98-L116)
+- [templates.py:123-141](../../../../backend/app/routers/v1/templates.py#L123-L141)
+- [template_creation_guide.md:19-31](../../../../backend/docs/template_creation_guide.md#L19-L31)
+- [template_creation_guide.md:82-91](../../../../backend/docs/template_creation_guide.md#L82-L91)
+- [csl_engine.py:98-116](../../../../backend/app/pipeline/services/csl_engine.py#L98-L116)
 
 ### Publishing Workflows and Examples
 
 - Template creation:
-    - Use POST /api/v1/templates/custom with a payload containing name and optional config/settings.
-    - The system persists the template under the authenticated user’s ownership.
+  - Use POST /api/v1/templates/custom with a payload containing name and optional config/settings.
+  - The system persists the template under the authenticated user’s ownership.
 - Style switching:
-    - Use GET /api/v1/templates/csl/search to discover styles and GET /api/v1/templates/csl/fetch to retrieve the desired CSL XML.
+  - Use GET /api/v1/templates/csl/search to discover styles and GET /api/v1/templates/csl/fetch to retrieve the desired CSL XML.
 - Template inheritance patterns:
-    - Templates are independent per user; there is no built-in inheritance mechanism in the provided endpoints.
+  - Templates are independent per user; there is no built-in inheritance mechanism in the provided endpoints.
 
 **Section sources**
 
-- [templates.py:111-134](file://backend/app/routers/v1/templates.py#L111-L134)
-- [templates.py:33-68](file://backend/app/routers/v1/templates.py#L33-L68)
-- [test_templates.py:44-105](file://backend/tests/test_templates.py#L44-L105)
+- [templates.py:111-134](../../../../backend/app/routers/v1/templates.py#L111-L134)
+- [templates.py:33-68](../../../../backend/app/routers/v1/templates.py#L33-L68)
+- [test_templates.py:44-105](../../../../backend/tests/test_templates.py#L44-L105)

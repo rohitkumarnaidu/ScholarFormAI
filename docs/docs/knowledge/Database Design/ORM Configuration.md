@@ -5,16 +5,16 @@
 
 <cite>
 **Referenced Files in This Document**
-- [base.py](file://backend/app/db/base.py)
-- [session.py](file://backend/app/db/session.py)
-- [supabase_client.py](file://backend/app/db/supabase_client.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [env.py](file://backend/alembic/env.py)
-- [user.py](file://backend/app/models/user.py)
-- [document.py](file://backend/app/models/document.py)
-- [main.py](file://backend/app/main.py)
-- [documents.py](file://backend/app/routers/v1/documents.py)
-- [dependencies.py](file://backend/app/utils/dependencies.py)
+- [base.py](../../../../backend/app/db/base.py)
+- [session.py](../../../../backend/app/db/session.py)
+- [supabase_client.py](../../../../backend/app/db/supabase_client.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [env.py](../../../../backend/alembic/env.py)
+- [user.py](../../../../backend/app/models/user.py)
+- [document.py](../../../../backend/app/models/document.py)
+- [main.py](../../../../backend/app/main.py)
+- [documents.py](../../../../backend/app/routers/v1/documents.py)
+- [dependencies.py](../../../../backend/app/utils/dependencies.py)
 </cite>
 
 ## Table of Contents
@@ -74,29 +74,29 @@ DEP --> DOC
 
 **Diagram sources**
 
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
-- [base.py:1-20](file://backend/app/db/base.py#L1-L20)
-- [session.py:1-130](file://backend/app/db/session.py#L1-L130)
-- [supabase_client.py:1-144](file://backend/app/db/supabase_client.py#L1-L144)
-- [env.py:1-94](file://backend/alembic/env.py#L1-L94)
-- [user.py:1-20](file://backend/app/models/user.py#L1-L20)
-- [document.py:1-26](file://backend/app/models/document.py#L1-L26)
-- [main.py:1-383](file://backend/app/main.py#L1-L383)
-- [documents.py:1-359](file://backend/app/routers/v1/documents.py#L1-L359)
-- [dependencies.py:1-93](file://backend/app/utils/dependencies.py#L1-L93)
+- [settings.py:1-422](../../../../backend/app/config/settings.py#L1-L422)
+- [base.py:1-20](../../../../backend/app/db/base.py#L1-L20)
+- [session.py:1-130](../../../../backend/app/db/session.py#L1-L130)
+- [supabase_client.py:1-144](../../../../backend/app/db/supabase_client.py#L1-L144)
+- [env.py:1-94](../../../../backend/alembic/env.py#L1-L94)
+- [user.py:1-20](../../../../backend/app/models/user.py#L1-L20)
+- [document.py:1-26](../../../../backend/app/models/document.py#L1-L26)
+- [main.py:1-383](../../../../backend/app/main.py#L1-L383)
+- [documents.py:1-359](../../../../backend/app/routers/v1/documents.py#L1-L359)
+- [dependencies.py:1-93](../../../../backend/app/utils/dependencies.py#L1-L93)
 
 **Section sources**
 
-- [base.py:1-20](file://backend/app/db/base.py#L1-L20)
-- [session.py:1-130](file://backend/app/db/session.py#L1-L130)
-- [supabase_client.py:1-144](file://backend/app/db/supabase_client.py#L1-L144)
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
-- [env.py:1-94](file://backend/alembic/env.py#L1-L94)
-- [user.py:1-20](file://backend/app/models/user.py#L1-L20)
-- [document.py:1-26](file://backend/app/models/document.py#L1-L26)
-- [main.py:1-383](file://backend/app/main.py#L1-L383)
-- [documents.py:1-359](file://backend/app/routers/v1/documents.py#L1-L359)
-- [dependencies.py:1-93](file://backend/app/utils/dependencies.py#L1-L93)
+- [base.py:1-20](../../../../backend/app/db/base.py#L1-L20)
+- [session.py:1-130](../../../../backend/app/db/session.py#L1-L130)
+- [supabase_client.py:1-144](../../../../backend/app/db/supabase_client.py#L1-L144)
+- [settings.py:1-422](../../../../backend/app/config/settings.py#L1-L422)
+- [env.py:1-94](../../../../backend/alembic/env.py#L1-L94)
+- [user.py:1-20](../../../../backend/app/models/user.py#L1-L20)
+- [document.py:1-26](../../../../backend/app/models/document.py#L1-L26)
+- [main.py:1-383](../../../../backend/app/main.py#L1-L383)
+- [documents.py:1-359](../../../../backend/app/routers/v1/documents.py#L1-L359)
+- [dependencies.py:1-93](../../../../backend/app/utils/dependencies.py#L1-L93)
 
 ## Core Components
 
@@ -108,11 +108,11 @@ DEP --> DOC
 
 **Section sources**
 
-- [base.py:1-20](file://backend/app/db/base.py#L1-L20)
-- [session.py:1-130](file://backend/app/db/session.py#L1-L130)
-- [supabase_client.py:1-144](file://backend/app/db/supabase_client.py#L1-L144)
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
-- [env.py:1-94](file://backend/alembic/env.py#L1-L94)
+- [base.py:1-20](../../../../backend/app/db/base.py#L1-L20)
+- [session.py:1-130](../../../../backend/app/db/session.py#L1-L130)
+- [supabase_client.py:1-144](../../../../backend/app/db/supabase_client.py#L1-L144)
+- [settings.py:1-422](../../../../backend/app/config/settings.py#L1-L422)
+- [env.py:1-94](../../../../backend/alembic/env.py#L1-L94)
 
 ## Architecture Overview
 
@@ -142,13 +142,13 @@ SB --> MAIN["main.py Startup Tasks"]
 
 **Diagram sources**
 
-- [documents.py:1-359](file://backend/app/routers/v1/documents.py#L1-L359)
-- [session.py:1-130](file://backend/app/db/session.py#L1-L130)
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
-- [env.py:1-94](file://backend/alembic/env.py#L1-L94)
-- [supabase_client.py:1-144](file://backend/app/db/supabase_client.py#L1-L144)
-- [dependencies.py:1-93](file://backend/app/utils/dependencies.py#L1-L93)
-- [main.py:1-383](file://backend/app/main.py#L1-L383)
+- [documents.py:1-359](../../../../backend/app/routers/v1/documents.py#L1-L359)
+- [session.py:1-130](../../../../backend/app/db/session.py#L1-L130)
+- [settings.py:1-422](../../../../backend/app/config/settings.py#L1-L422)
+- [env.py:1-94](../../../../backend/alembic/env.py#L1-L94)
+- [supabase_client.py:1-144](../../../../backend/app/db/supabase_client.py#L1-L144)
+- [dependencies.py:1-93](../../../../backend/app/utils/dependencies.py#L1-L93)
+- [main.py:1-383](../../../../backend/app/main.py#L1-L383)
 
 ## Detailed Component Analysis
 
@@ -159,24 +159,24 @@ SB --> MAIN["main.py Startup Tasks"]
 
 **Section sources**
 
-- [base.py:1-20](file://backend/app/db/base.py#L1-L20)
+- [base.py:1-20](../../../../backend/app/db/base.py#L1-L20)
 
 ### Session Factory and FastAPI Dependency
 
 - Engine creation:
-    - Reads database URL from environment settings.
-    - Creates engine with tuned pool settings for cloud Postgres (Supabase).
-    - Enables pre-ping to detect stale connections.
-    - Logs warnings or errors when URL is missing or invalid.
+  - Reads database URL from environment settings.
+  - Creates engine with tuned pool settings for cloud Postgres (Supabase).
+  - Enables pre-ping to detect stale connections.
+  - Logs warnings or errors when URL is missing or invalid.
 - SessionLocal:
-    - Bound to the engine; becomes None when engine is None (degraded mode).
+  - Bound to the engine; becomes None when engine is None (degraded mode).
 - get_db():
-    - FastAPI dependency that yields a session per request.
-    - Raises HTTP 503 if DB is unconfigured.
-    - Catches SQLAlchemy errors, rolls back the session, and returns HTTP 500.
-    - Ensures session closure in finally.
+  - FastAPI dependency that yields a session per request.
+  - Raises HTTP 503 if DB is unconfigured.
+  - Catches SQLAlchemy errors, rolls back the session, and returns HTTP 500.
+  - Ensures session closure in finally.
 - Health check:
-    - check_db_health() validates connectivity by executing a simple query.
+  - check_db_health() validates connectivity by executing a simple query.
 
 ```mermaid
 sequenceDiagram
@@ -200,25 +200,25 @@ end
 
 **Diagram sources**
 
-- [session.py:79-112](file://backend/app/db/session.py#L79-L112)
-- [documents.py:1-359](file://backend/app/routers/v1/documents.py#L1-L359)
+- [session.py:79-112](../../../../backend/app/db/session.py#L79-L112)
+- [documents.py:1-359](../../../../backend/app/routers/v1/documents.py#L1-L359)
 
 **Section sources**
 
-- [session.py:1-130](file://backend/app/db/session.py#L1-L130)
+- [session.py:1-130](../../../../backend/app/db/session.py#L1-L130)
 
 ### Supabase Integration (Server-Side DB Layer)
 
 - Client initialization:
-    - Uses service role key for server-side operations.
-    - Graceful degradation when URL or service role key are missing.
-    - Suppresses known third-party deprecation warnings to keep logs clean.
+  - Uses service role key for server-side operations.
+  - Graceful degradation when URL or service role key are missing.
+  - Suppresses known third-party deprecation warnings to keep logs clean.
 - Singleton client:
-    - get_supabase_client() returns a cached client; supports refresh for tests.
+  - get_supabase_client() returns a cached client; supports refresh for tests.
 - get_supabase_db():
-    - FastAPI dependency that returns the Supabase client or raises HTTP 503 if unconfigured.
+  - FastAPI dependency that returns the Supabase client or raises HTTP 503 if unconfigured.
 - Health check:
-    - check_supabase_health() performs a lightweight ping against a known table.
+  - check_supabase_health() performs a lightweight ping against a known table.
 
 ```mermaid
 sequenceDiagram
@@ -232,103 +232,103 @@ App->>App : "Log warning, continue degraded"
 else "Credentials Present"
 SB->>Supabase : "Initialize client"
 SB-->>App : "Singleton client"
-App->>Supabase : "Startup tasks (e.g., reset PROCESSING)"
+App->>Supabase : "Startup tasks ("e.g., reset PROCESSING")"
 end
 ```
 
 **Diagram sources**
 
-- [supabase_client.py:85-123](file://backend/app/db/supabase_client.py#L85-L123)
-- [main.py:177-196](file://backend/app/main.py#L177-L196)
+- [supabase_client.py:85-123](../../../../backend/app/db/supabase_client.py#L85-L123)
+- [main.py:177-196](../../../../backend/app/main.py#L177-L196)
 
 **Section sources**
 
-- [supabase_client.py:1-144](file://backend/app/db/supabase_client.py#L1-L144)
-- [main.py:177-196](file://backend/app/main.py#L177-L196)
+- [supabase_client.py:1-144](../../../../backend/app/db/supabase_client.py#L1-L144)
+- [main.py:177-196](../../../../backend/app/main.py#L177-L196)
 
 ### Environment Configuration and Alembic Integration
 
 - settings.py:
-    - Loads environment variables from .env.
-    - Defines SUPABASE_DB_URL and related Supabase keys.
-    - Provides validators and normalization helpers.
+  - Loads environment variables from .env.
+  - Defines SUPABASE_DB_URL and related Supabase keys.
+  - Provides validators and normalization helpers.
 - Alembic env.py:
-    - Imports settings and Base.
-    - Overrides migration URL from settings for both offline and online modes.
-    - Ensures all models are imported so metadata is populated.
+  - Imports settings and Base.
+  - Overrides migration URL from settings for both offline and online modes.
+  - Ensures all models are imported so metadata is populated.
 
 **Section sources**
 
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
-- [env.py:1-94](file://backend/alembic/env.py#L1-L94)
+- [settings.py:1-422](../../../../backend/app/config/settings.py#L1-L422)
+- [env.py:1-94](../../../../backend/alembic/env.py#L1-L94)
 
 ### Models and Schema References
 
 - Example models:
-    - User: maps to the “profiles” table with UUID primary key and standard fields.
-    - Document: maps to the “documents” table with UUID primary key, optional foreign key, and job state fields.
+  - User: maps to the “profiles” table with UUID primary key and standard fields.
+  - Document: maps to the “documents” table with UUID primary key, optional foreign key, and job state fields.
 - These models rely on the shared Base and are imported by Alembic to populate metadata.
 
 **Section sources**
 
-- [user.py:1-20](file://backend/app/models/user.py#L1-L20)
-- [document.py:1-26](file://backend/app/models/document.py#L1-L26)
+- [user.py:1-20](../../../../backend/app/models/user.py#L1-L20)
+- [document.py:1-26](../../../../backend/app/models/document.py#L1-L26)
 
 ### Transaction Management and Connection Lifecycle
 
 - Per-request sessions:
-    - get_db() creates a session per request and closes it in a finally block.
-    - On SQLAlchemy exceptions, the session is rolled back and HTTP 500 is returned.
+  - get_db() creates a session per request and closes it in a finally block.
+  - On SQLAlchemy exceptions, the session is rolled back and HTTP 500 is returned.
 - Degraded mode:
-    - If SUPABASE_DB_URL is missing, engine and SessionLocal become None; endpoints return HTTP 503.
+  - If SUPABASE_DB_URL is missing, engine and SessionLocal become None; endpoints return HTTP 503.
 - Health checks:
-    - check_db_health() and check_supabase_health() provide status for monitoring.
+  - check_db_health() and check_supabase_health() provide status for monitoring.
 
 **Section sources**
 
-- [session.py:79-130](file://backend/app/db/session.py#L79-L130)
+- [session.py:79-130](../../../../backend/app/db/session.py#L79-L130)
 
 ### Practical ORM Usage Patterns
 
 - Typical request flow:
-    - Router handler depends on get_db().
-    - Perform ORM operations (query, insert, update).
-    - Commit implicitly via transaction boundaries; ensure exceptions trigger rollback.
+  - Router handler depends on get_db().
+  - Perform ORM operations (query, insert, update).
+  - Commit implicitly via transaction boundaries; ensure exceptions trigger rollback.
 - Bulk-like operations:
-    - Prefer SQLAlchemy bulk operations (bulk insert/update/delete) for higher throughput.
-    - Use session.execute() with compiled statements for complex updates.
-    - For very large datasets, consider pagination and batching to avoid long transactions.
+  - Prefer SQLAlchemy bulk operations (bulk insert/update/delete) for higher throughput.
+  - Use session.execute() with compiled statements for complex updates.
+  - For very large datasets, consider pagination and batching to avoid long transactions.
 
 [No sources needed since this section provides general guidance]
 
 ### Error Handling Patterns
 
 - SQLAlchemy errors:
-    - Caught in get_db(), logged, rollback performed, HTTP 500 raised.
+  - Caught in get_db(), logged, rollback performed, HTTP 500 raised.
 - Missing DB configuration:
-    - get_db() raises HTTP 503; health endpoints reflect unconfigured state.
+  - get_db() raises HTTP 503; health endpoints reflect unconfigured state.
 - Supabase client failures:
-    - Missing credentials lead to None; endpoints raise HTTP 503.
-    - Health endpoint returns unhealthy with details.
+  - Missing credentials lead to None; endpoints raise HTTP 503.
+  - Health endpoint returns unhealthy with details.
 
 **Section sources**
 
-- [session.py:94-111](file://backend/app/db/session.py#L94-L111)
-- [supabase_client.py:114-123](file://backend/app/db/supabase_client.py#L114-L123)
+- [session.py:94-111](../../../../backend/app/db/session.py#L94-L111)
+- [supabase_client.py:114-123](../../../../backend/app/db/supabase_client.py#L114-L123)
 
 ## Dependency Analysis
 
 - Cohesion:
-    - db/base.py and db/session.py form a cohesive ORM layer.
-    - db/supabase_client.py forms a separate but integrated Supabase layer.
+  - db/base.py and db/session.py form a cohesive ORM layer.
+  - db/supabase_client.py forms a separate but integrated Supabase layer.
 - Coupling:
-    - session.py depends on settings.py for URL and on FastAPI for dependency injection.
-    - env.py depends on settings.py and imports all models to populate metadata.
-    - routers depend on get_db() for ORM access; main.py integrates Supabase client for startup tasks.
+  - session.py depends on settings.py for URL and on FastAPI for dependency injection.
+  - env.py depends on settings.py and imports all models to populate metadata.
+  - routers depend on get_db() for ORM access; main.py integrates Supabase client for startup tasks.
 - External dependencies:
-    - SQLAlchemy for ORM and connection pooling.
-    - Alembic for migrations.
-    - Supabase client for server-side DB operations.
+  - SQLAlchemy for ORM and connection pooling.
+  - Alembic for migrations.
+  - Supabase client for server-side DB operations.
 
 ```mermaid
 graph LR
@@ -343,54 +343,54 @@ SB --> MA["main.py"]
 
 **Diagram sources**
 
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
-- [session.py:1-130](file://backend/app/db/session.py#L1-L130)
-- [supabase_client.py:1-144](file://backend/app/db/supabase_client.py#L1-L144)
-- [env.py:1-94](file://backend/alembic/env.py#L1-L94)
-- [base.py:1-20](file://backend/app/db/base.py#L1-L20)
-- [user.py:1-20](file://backend/app/models/user.py#L1-L20)
-- [document.py:1-26](file://backend/app/models/document.py#L1-L26)
-- [documents.py:1-359](file://backend/app/routers/v1/documents.py#L1-L359)
-- [main.py:1-383](file://backend/app/main.py#L1-L383)
+- [settings.py:1-422](../../../../backend/app/config/settings.py#L1-L422)
+- [session.py:1-130](../../../../backend/app/db/session.py#L1-L130)
+- [supabase_client.py:1-144](../../../../backend/app/db/supabase_client.py#L1-L144)
+- [env.py:1-94](../../../../backend/alembic/env.py#L1-L94)
+- [base.py:1-20](../../../../backend/app/db/base.py#L1-L20)
+- [user.py:1-20](../../../../backend/app/models/user.py#L1-L20)
+- [document.py:1-26](../../../../backend/app/models/document.py#L1-L26)
+- [documents.py:1-359](../../../../backend/app/routers/v1/documents.py#L1-L359)
+- [main.py:1-383](../../../../backend/app/main.py#L1-L383)
 
 **Section sources**
 
-- [session.py:1-130](file://backend/app/db/session.py#L1-L130)
-- [supabase_client.py:1-144](file://backend/app/db/supabase_client.py#L1-L144)
-- [env.py:1-94](file://backend/alembic/env.py#L1-L94)
-- [documents.py:1-359](file://backend/app/routers/v1/documents.py#L1-L359)
-- [main.py:1-383](file://backend/app/main.py#L1-L383)
+- [session.py:1-130](../../../../backend/app/db/session.py#L1-L130)
+- [supabase_client.py:1-144](../../../../backend/app/db/supabase_client.py#L1-L144)
+- [env.py:1-94](../../../../backend/alembic/env.py#L1-L94)
+- [documents.py:1-359](../../../../backend/app/routers/v1/documents.py#L1-L359)
+- [main.py:1-383](../../../../backend/app/main.py#L1-L383)
 
 ## Performance Considerations
 
 - Connection pooling:
-    - Pool size and overflow tuned for cloud Postgres; pre-ping enabled to avoid stale connections after idle periods.
+  - Pool size and overflow tuned for cloud Postgres; pre-ping enabled to avoid stale connections after idle periods.
 - Query execution:
-    - Use bulk operations for high-volume inserts/updates.
-    - Minimize transaction duration; commit early and keep sessions short-lived.
+  - Use bulk operations for high-volume inserts/updates.
+  - Minimize transaction duration; commit early and keep sessions short-lived.
 - Indexing and queries:
-    - Ensure appropriate indexes on frequently filtered columns (e.g., user_id, status).
+  - Ensure appropriate indexes on frequently filtered columns (e.g., user_id, status).
 - Health and monitoring:
-    - Use health endpoints to detect connectivity issues proactively.
+  - Use health endpoints to detect connectivity issues proactively.
 
 [No sources needed since this section provides general guidance]
 
 ## Troubleshooting Guide
 
 - Symptoms: Endpoints return HTTP 503.
-    - Cause: SUPABASE_DB_URL or Supabase credentials not set.
-    - Resolution: Set environment variables; verify .env is loaded.
+  - Cause: SUPABASE_DB_URL or Supabase credentials not set.
+  - Resolution: Set environment variables; verify .env is loaded.
 - Symptoms: Requests fail mid-flight with HTTP 500.
-    - Cause: SQLAlchemy error during request.
-    - Resolution: Inspect logs; ensure rollback occurs; fix query logic.
+  - Cause: SQLAlchemy error during request.
+  - Resolution: Inspect logs; ensure rollback occurs; fix query logic.
 - Symptoms: Health endpoint reports unhealthy.
-    - Cause: Connectivity or credential issues.
-    - Resolution: Validate URLs and keys; check network and firewall rules.
+  - Cause: Connectivity or credential issues.
+  - Resolution: Validate URLs and keys; check network and firewall rules.
 
 **Section sources**
 
-- [session.py:94-111](file://backend/app/db/session.py#L94-L111)
-- [supabase_client.py:126-144](file://backend/app/db/supabase_client.py#L126-L144)
+- [session.py:94-111](../../../../backend/app/db/session.py#L94-L111)
+- [supabase_client.py:126-144](../../../../backend/app/db/supabase_client.py#L126-L144)
 
 ## Conclusion
 
@@ -401,17 +401,17 @@ The backend employs a robust, environment-driven ORM configuration with a modern
 ### Environment Variables and Settings
 
 - Required for SQLAlchemy:
-    - SUPABASE_DB_URL
+  - SUPABASE_DB_URL
 - Required for Supabase client:
-    - SUPABASE_URL
-    - SUPABASE_SERVICE_ROLE_KEY
+  - SUPABASE_URL
+  - SUPABASE_SERVICE_ROLE_KEY
 - Additional settings influence behavior:
-    - DEBUG, FORCE_HTTPS, CORS_ORIGINS, and others as defined in settings.
+  - DEBUG, FORCE_HTTPS, CORS_ORIGINS, and others as defined in settings.
 
 **Section sources**
 
-- [settings.py:76-82](file://backend/app/config/settings.py#L76-L82)
-- [settings.py:267-273](file://backend/app/config/settings.py#L267-L273)
+- [settings.py:76-82](../../../../backend/app/config/settings.py#L76-L82)
+- [settings.py:267-273](../../../../backend/app/config/settings.py#L267-L273)
 
 ### Migration Workflow
 
@@ -420,5 +420,5 @@ The backend employs a robust, environment-driven ORM configuration with a modern
 
 **Section sources**
 
-- [env.py:14-31](file://backend/alembic/env.py#L14-L31)
-- [env.py:51-87](file://backend/alembic/env.py#L51-L87)
+- [env.py:14-31](../../../../backend/alembic/env.py#L14-L31)
+- [env.py:51-87](../../../../backend/alembic/env.py#L51-L87)

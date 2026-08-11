@@ -5,14 +5,14 @@
 
 <cite>
 **Referenced Files in This Document**
-- [auth.py](file://backend/app/routers/auth.py)
-- [auth_service.py](file://backend/app/services/auth_service.py)
-- [auth.py](file://backend/app/schemas/auth.py)
-- [dependencies.py](file://backend/app/utils/dependencies.py)
-- [AuthContext.jsx](file://frontend/src/context/AuthContext.jsx)
-- [supabaseClient.js](file://frontend/src/lib/supabaseClient.js)
-- [api.auth.js](file://frontend/src/services/api.auth.js)
-- [api.core.js](file://frontend/src/services/api.core.js)
+- [auth.py](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py)
+- [auth_service.py](../../../../../backend/app/services/auth_service.py)
+- [auth.py](../../../../../backend/app/schemas/auth.py)
+- [dependencies.py](../../../../../backend/app/utils/dependencies.py)
+- [AuthContext.jsx](../../../../../frontend/src/context/AuthContext.jsx)
+- [supabaseClient.js](../../../../../frontend/src/lib/supabaseClient.js)
+- [api.auth.js](../../../../../frontend/src/services/api.auth.js)
+- [api.core.js](../../../../../frontend/src/services/api.core.js)
 - [page.jsx](file://frontend/app/(shared)/auth/callback/page.jsx)
 - [page.jsx](file://frontend/app/(shared)/login/page.jsx)
 - [page.jsx](file://frontend/app/(shared)/signup/page.jsx)
@@ -80,22 +80,22 @@ D --> R
 
 **Diagram sources**
 
-- [auth.py:1-59](file://backend/app/routers/auth.py#L1-L59)
-- [auth_service.py:56-183](file://backend/app/services/auth_service.py#L56-L183)
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
-- [supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
-- [api.auth.js:1-39](file://frontend/src/services/api.auth.js#L1-L39)
-- [api.core.js:307-362](file://frontend/src/services/api.core.js#L307-L362)
+- [auth.py:1-59](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L1-L59)
+- [auth_service.py:56-183](../../../../../backend/app/services/auth_service.py#L56-L183)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
+- [supabaseClient.js:1-24](../../../../../frontend/src/lib/supabaseClient.js#L1-L24)
+- [api.auth.js:1-39](../../../../../frontend/src/services/api.auth.js#L1-L39)
+- [api.core.js:307-362](../../../../../frontend/src/services/api.core.js#L307-L362)
 - [page.jsx](file://frontend/app/(shared)/auth/callback/page.jsx#L10-L94)
 
 **Section sources**
 
-- [auth.py:1-59](file://backend/app/routers/auth.py#L1-L59)
-- [auth_service.py:56-183](file://backend/app/services/auth_service.py#L56-L183)
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
-- [supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
-- [api.auth.js:1-39](file://frontend/src/services/api.auth.js#L1-L39)
-- [api.core.js:307-362](file://frontend/src/services/api.core.js#L307-L362)
+- [auth.py:1-59](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L1-L59)
+- [auth_service.py:56-183](../../../../../backend/app/services/auth_service.py#L56-L183)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
+- [supabaseClient.js:1-24](../../../../../frontend/src/lib/supabaseClient.js#L1-L24)
+- [api.auth.js:1-39](../../../../../frontend/src/services/api.auth.js#L1-L39)
+- [api.core.js:307-362](../../../../../frontend/src/services/api.core.js#L307-L362)
 - [page.jsx](file://frontend/app/(shared)/auth/callback/page.jsx#L10-L94)
 
 ## Core Components
@@ -109,12 +109,12 @@ D --> R
 
 **Section sources**
 
-- [auth.py:23-58](file://backend/app/routers/auth.py#L23-L58)
-- [auth_service.py:56-183](file://backend/app/services/auth_service.py#L56-L183)
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
-- [supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
-- [api.auth.js:18-38](file://frontend/src/services/api.auth.js#L18-L38)
-- [api.core.js:307-362](file://frontend/src/services/api.core.js#L307-L362)
+- [auth.py:23-58](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L23-L58)
+- [auth_service.py:56-183](../../../../../backend/app/services/auth_service.py#L56-L183)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
+- [supabaseClient.js:1-24](../../../../../frontend/src/lib/supabaseClient.js#L1-L24)
+- [api.auth.js:18-38](../../../../../frontend/src/services/api.auth.js#L18-L38)
+- [api.core.js:307-362](../../../../../frontend/src/services/api.core.js#L307-L362)
 
 ## Architecture Overview
 
@@ -153,11 +153,11 @@ AC-->>U : isLoggedIn=true, redirect
 **Diagram sources**
 
 - [page.jsx](file://frontend/app/(shared)/login/page.jsx#L27-L65)
-- [AuthContext.jsx:214-249](file://frontend/src/context/AuthContext.jsx#L214-L249)
-- [api.auth.js:20-21](file://frontend/src/services/api.auth.js#L20-L21)
-- [auth.py:31-36](file://backend/app/routers/auth.py#L31-L36)
-- [auth_service.py:102-121](file://backend/app/services/auth_service.py#L102-L121)
-- [supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
+- [AuthContext.jsx:214-249](../../../../../frontend/src/context/AuthContext.jsx#L214-L249)
+- [api.auth.js:20-21](../../../../../frontend/src/services/api.auth.js#L20-L21)
+- [auth.py:31-36](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L31-L36)
+- [auth_service.py:102-121](../../../../../backend/app/services/auth_service.py#L102-L121)
+- [supabaseClient.js:1-24](../../../../../frontend/src/lib/supabaseClient.js#L1-L24)
 
 ## Detailed Component Analysis
 
@@ -169,7 +169,7 @@ AC-->>U : isLoggedIn=true, redirect
 
 **Section sources**
 
-- [auth.py:23-58](file://backend/app/routers/auth.py#L23-L58)
+- [auth.py:23-58](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L23-L58)
 
 ### Backend AuthService
 
@@ -193,11 +193,11 @@ class AuthService {
 
 **Diagram sources**
 
-- [auth_service.py:56-183](file://backend/app/services/auth_service.py#L56-L183)
+- [auth_service.py:56-183](../../../../../backend/app/services/auth_service.py#L56-L183)
 
 **Section sources**
 
-- [auth_service.py:56-183](file://backend/app/services/auth_service.py#L56-L183)
+- [auth_service.py:56-183](../../../../../backend/app/services/auth_service.py#L56-L183)
 
 ### Frontend AuthContext Provider
 
@@ -225,11 +225,11 @@ SetUserState --> Listen["Subscribe to onAuthStateChange"]
 
 **Diagram sources**
 
-- [AuthContext.jsx:65-178](file://frontend/src/context/AuthContext.jsx#L65-L178)
+- [AuthContext.jsx:65-178](../../../../../frontend/src/context/AuthContext.jsx#L65-L178)
 
 **Section sources**
 
-- [AuthContext.jsx:16-340](file://frontend/src/context/AuthContext.jsx#L16-L340)
+- [AuthContext.jsx:16-340](../../../../../frontend/src/context/AuthContext.jsx#L16-L340)
 
 ### Frontend Supabase Client
 
@@ -238,7 +238,7 @@ SetUserState --> Listen["Subscribe to onAuthStateChange"]
 
 **Section sources**
 
-- [supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
+- [supabaseClient.js:1-24](../../../../../frontend/src/lib/supabaseClient.js#L1-L24)
 
 ### Frontend API Services
 
@@ -248,8 +248,8 @@ SetUserState --> Listen["Subscribe to onAuthStateChange"]
 
 **Section sources**
 
-- [api.auth.js:1-39](file://frontend/src/services/api.auth.js#L1-L39)
-- [api.core.js:307-362](file://frontend/src/services/api.core.js#L307-L362)
+- [api.auth.js:1-39](../../../../../frontend/src/services/api.auth.js#L1-L39)
+- [api.core.js:307-362](../../../../../frontend/src/services/api.core.js#L307-L362)
 
 ### OAuth with Google
 
@@ -278,16 +278,16 @@ AC-->>U : isLoggedIn=true, redirect to next
 **Diagram sources**
 
 - [page.jsx](file://frontend/app/(shared)/login/page.jsx#L67-L74)
-- [AuthContext.jsx:251-260](file://frontend/src/context/AuthContext.jsx#L251-L260)
+- [AuthContext.jsx:251-260](../../../../../frontend/src/context/AuthContext.jsx#L251-L260)
 - [page.jsx](file://frontend/app/(shared)/auth/callback/page.jsx#L19-L94)
-- [api.auth.js:28-38](file://frontend/src/services/api.auth.js#L28-L38)
+- [api.auth.js:28-38](../../../../../frontend/src/services/api.auth.js#L28-L38)
 
 **Section sources**
 
 - [page.jsx](file://frontend/app/(shared)/login/page.jsx#L67-L74)
-- [AuthContext.jsx:251-260](file://frontend/src/context/AuthContext.jsx#L251-L260)
+- [AuthContext.jsx:251-260](../../../../../frontend/src/context/AuthContext.jsx#L251-L260)
 - [page.jsx](file://frontend/app/(shared)/auth/callback/page.jsx#L19-L94)
-- [api.auth.js:28-38](file://frontend/src/services/api.auth.js#L28-L38)
+- [api.auth.js:28-38](../../../../../frontend/src/services/api.auth.js#L28-L38)
 
 ### Redirect Path Sanitization
 
@@ -296,8 +296,8 @@ AC-->>U : isLoggedIn=true, redirect to next
 
 **Section sources**
 
-- [AuthContext.jsx:59-63](file://frontend/src/context/AuthContext.jsx#L59-L63)
-- [api.auth.js:12-16](file://frontend/src/services/api.auth.js#L12-L16)
+- [AuthContext.jsx:59-63](../../../../../frontend/src/context/AuthContext.jsx#L59-L63)
+- [api.auth.js:12-16](../../../../../frontend/src/services/api.auth.js#L12-L16)
 
 ### Token Management and Session Handling
 
@@ -308,7 +308,7 @@ AC-->>U : isLoggedIn=true, redirect to next
 
 **Section sources**
 
-- [AuthContext.jsx:180-291](file://frontend/src/context/AuthContext.jsx#L180-L291)
+- [AuthContext.jsx:180-291](../../../../../frontend/src/context/AuthContext.jsx#L180-L291)
 
 ### Password Reset Workflow
 
@@ -345,7 +345,7 @@ Reset --> Done["Redirect to login"]
 
 **Section sources**
 
-- [dependencies.py:15-60](file://backend/app/utils/dependencies.py#L15-L60)
+- [dependencies.py:15-60](../../../../../backend/app/utils/dependencies.py#L15-L60)
 
 ## Dependency Analysis
 
@@ -367,21 +367,21 @@ D["dependencies.py"] --> BE
 
 **Diagram sources**
 
-- [AuthContext.jsx:1-11](file://frontend/src/context/AuthContext.jsx#L1-L11)
-- [supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
-- [api.auth.js:1-10](file://frontend/src/services/api.auth.js#L1-L10)
-- [auth.py:1-13](file://backend/app/routers/auth.py#L1-L13)
-- [auth_service.py:21-44](file://backend/app/services/auth_service.py#L21-L44)
-- [dependencies.py:1-13](file://backend/app/utils/dependencies.py#L1-L13)
+- [AuthContext.jsx:1-11](../../../../../frontend/src/context/AuthContext.jsx#L1-L11)
+- [supabaseClient.js:1-24](../../../../../frontend/src/lib/supabaseClient.js#L1-L24)
+- [api.auth.js:1-10](../../../../../frontend/src/services/api.auth.js#L1-L10)
+- [auth.py:1-13](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L1-L13)
+- [auth_service.py:21-44](../../../../../backend/app/services/auth_service.py#L21-L44)
+- [dependencies.py:1-13](../../../../../backend/app/utils/dependencies.py#L1-L13)
 
 **Section sources**
 
-- [AuthContext.jsx:1-11](file://frontend/src/context/AuthContext.jsx#L1-L11)
-- [supabaseClient.js:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
-- [api.auth.js:1-10](file://frontend/src/services/api.auth.js#L1-L10)
-- [auth.py:1-13](file://backend/app/routers/auth.py#L1-L13)
-- [auth_service.py:21-44](file://backend/app/services/auth_service.py#L21-L44)
-- [dependencies.py:1-13](file://backend/app/utils/dependencies.py#L1-L13)
+- [AuthContext.jsx:1-11](../../../../../frontend/src/context/AuthContext.jsx#L1-L11)
+- [supabaseClient.js:1-24](../../../../../frontend/src/lib/supabaseClient.js#L1-L24)
+- [api.auth.js:1-10](../../../../../frontend/src/services/api.auth.js#L1-L10)
+- [auth.py:1-13](../../../../../backend/.venv_new/Lib/site-packages/pip/_internal/network/auth.py#L1-L13)
+- [auth_service.py:21-44](../../../../../backend/app/services/auth_service.py#L21-L44)
+- [dependencies.py:1-13](../../../../../backend/app/utils/dependencies.py#L1-L13)
 
 ## Performance Considerations
 
@@ -404,10 +404,10 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [supabaseClient.js:8-10](file://frontend/src/lib/supabaseClient.js#L8-L10)
-- [auth_service.py:46-53](file://backend/app/services/auth_service.py#L46-L53)
-- [dependencies.py:31-59](file://backend/app/utils/dependencies.py#L31-L59)
-- [api.core.js:85-97](file://frontend/src/services/api.core.js#L85-L97)
+- [supabaseClient.js:8-10](../../../../../frontend/src/lib/supabaseClient.js#L8-L10)
+- [auth_service.py:46-53](../../../../../backend/app/services/auth_service.py#L46-L53)
+- [dependencies.py:31-59](../../../../../backend/app/utils/dependencies.py#L31-L59)
+- [api.core.js:85-97](../../../../../frontend/src/services/api.core.js#L85-L97)
 - [page.jsx](file://frontend/app/(shared)/auth/callback/page.jsx#L38-L87)
 
 ## Conclusion

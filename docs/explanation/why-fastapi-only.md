@@ -57,12 +57,12 @@ The Spring Boot gateway was originally proposed to handle "enterprise concerns" 
 ## Consequences
 
 - All 34 API routes are defined directly in FastAPI routers under `backend/app/routers/`
-- Middleware execution order is explicit and configurable (see [Architecture](../architecture.md#middleware-stack-execution-order))
+- Middleware execution order is explicit and configurable (see [Architecture](../architecture/ARCHITECTURE.md#middleware-stack-execution-order))
 - Future API gateway concerns (like API composition or BFF patterns) will be handled via FastAPI middleware or sub-applications, not a separate service
 - Early PRD references to "Spring Boot API Gateway" are obsolete — see [ADR 004](../adr/004-fastapi-only-gateway.md)
 
 ## See Also
 
 - [ADR 004: FastAPI as Sole API Gateway](../adr/004-fastapi-only-gateway.md) — formal architecture decision record
-- [Architecture Overview](../architecture.md) — system layers and middleware stack
+- [Architecture Overview](../architecture/ARCHITECTURE.md) — system layers and middleware stack
 - [Security Model](security-model.md) — full security architecture

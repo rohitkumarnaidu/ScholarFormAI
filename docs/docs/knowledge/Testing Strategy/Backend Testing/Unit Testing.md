@@ -5,20 +5,20 @@
 
 <cite>
 **Referenced Files in This Document**
-- [conftest.py](file://backend/tests/conftest.py)
-- [pytest.ini](file://backend/pytest.ini)
-- [test_database.py](file://backend/tests/test_database.py)
-- [test_formatter.py](file://backend/tests/test_formatter.py)
-- [test_templates.py](file://backend/tests/test_templates.py)
-- [test_api.py](file://backend/tests/test_api.py)
-- [test_generator.py](file://backend/tests/test_generator.py)
-- [test_generator_session_service_cache.py](file://backend/tests/test_generator_session_service_cache.py)
-- [test_pipeline.py](file://backend/tests/test_pipeline.py)
-- [text_utils.py](file://backend/app/utils/text_utils.py)
-- [formatter.py](file://backend/app/pipeline/formatting/formatter.py)
-- [document_generator.py](file://backend/app/pipeline/generation/document_generator.py)
-- [id_generator.py](file://backend/app/utils/id_generator.py)
-- [document.py](file://backend/app/schemas/document.py)
+- [conftest.py](../../../../../backend/tests/conftest.py)
+- [pytest.ini](../../../../../backend/pytest.ini)
+- [test_database.py](../../../../../backend/tests/test_database.py)
+- [test_formatter.py](../../../../../backend/tests/test_formatter.py)
+- [test_templates.py](../../../../../backend/tests/test_templates.py)
+- [test_api.py](../../../../../backend/tests/test_api.py)
+- [test_generator.py](../../../../../backend/tests/test_generator.py)
+- [test_generator_session_service_cache.py](../../../../../backend/tests/test_generator_session_service_cache.py)
+- [test_pipeline.py](../../../../../backend/tests/test_pipeline.py)
+- [text_utils.py](../../../../../backend/app/utils/text_utils.py)
+- [formatter.py](../../../../../backend/app/pipeline/formatting/formatter.py)
+- [document_generator.py](../../../../../backend/app/pipeline/generation/document_generator.py)
+- [id_generator.py](../../../../../backend/app/utils/id_generator.py)
+- [document.py](../../../../../backend/app/schemas/document.py)
 </cite>
 
 ## Table of Contents
@@ -78,25 +78,25 @@ N --> F
 
 **Diagram sources**
 
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-112)
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-28)
-- [test_database.py:1-52](file://backend/tests/test_database.py#L1-52)
-- [test_formatter.py:1-221](file://backend/tests/test_formatter.py#L1-221)
-- [test_templates.py:1-145](file://backend/tests/test_templates.py#L1-145)
-- [test_api.py:1-366](file://backend/tests/test_api.py#L1-366)
-- [test_generator.py:1-195](file://backend/tests/test_generator.py#L1-195)
-- [test_generator_session_service_cache.py:1-89](file://backend/tests/test_generator_session_service_cache.py#L1-89)
-- [test_pipeline.py:1-65](file://backend/tests/test_pipeline.py#L1-65)
-- [text_utils.py:1-269](file://backend/app/utils/text_utils.py#L1-269)
-- [formatter.py:1-800](file://backend/app/pipeline/formatting/formatter.py#L1-800)
-- [document_generator.py:1-607](file://backend/app/pipeline/generation/document_generator.py#L1-607)
-- [id_generator.py:1-86](file://backend/app/utils/id_generator.py#L1-86)
-- [document.py:1-266](file://backend/app/schemas/document.py#L1-266)
+- [conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-112)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-28)
+- [test_database.py:1-52](../../../../../backend/tests/test_database.py#L1-52)
+- [test_formatter.py:1-221](../../../../../backend/tests/test_formatter.py#L1-221)
+- [test_templates.py:1-145](../../../../../backend/tests/test_templates.py#L1-145)
+- [test_api.py:1-366](../../../../../backend/tests/test_api.py#L1-366)
+- [test_generator.py:1-195](../../../../../backend/tests/test_generator.py#L1-195)
+- [test_generator_session_service_cache.py:1-89](../../../../../backend/tests/test_generator_session_service_cache.py#L1-89)
+- [test_pipeline.py:1-65](../../../../../backend/tests/test_pipeline.py#L1-65)
+- [text_utils.py:1-269](../../../../../backend/app/utils/text_utils.py#L1-269)
+- [formatter.py:1-800](../../../../../backend/app/pipeline/formatting/formatter.py#L1-800)
+- [document_generator.py:1-607](../../../../../backend/app/pipeline/generation/document_generator.py#L1-607)
+- [id_generator.py:1-86](../../../../../backend/app/utils/id_generator.py#L1-86)
+- [document.py:1-266](../../../../../backend/app/schemas/document.py#L1-266)
 
 **Section sources**
 
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-112)
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-28)
+- [conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-112)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-28)
 
 ## Core Components
 
@@ -117,11 +117,11 @@ Key testing patterns demonstrated:
 
 **Section sources**
 
-- [text_utils.py:1-269](file://backend/app/utils/text_utils.py#L1-269)
-- [formatter.py:1-800](file://backend/app/pipeline/formatting/formatter.py#L1-800)
-- [document_generator.py:1-607](file://backend/app/pipeline/generation/document_generator.py#L1-607)
-- [id_generator.py:1-86](file://backend/app/utils/id_generator.py#L1-86)
-- [document.py:1-266](file://backend/app/schemas/document.py#L1-266)
+- [text_utils.py:1-269](../../../../../backend/app/utils/text_utils.py#L1-269)
+- [formatter.py:1-800](../../../../../backend/app/pipeline/formatting/formatter.py#L1-800)
+- [document_generator.py:1-607](../../../../../backend/app/pipeline/generation/document_generator.py#L1-607)
+- [id_generator.py:1-86](../../../../../backend/app/utils/id_generator.py#L1-86)
+- [document.py:1-266](../../../../../backend/app/schemas/document.py#L1-266)
 
 ## Architecture Overview
 
@@ -172,20 +172,20 @@ U5 --> L5
 
 **Diagram sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-28)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-112)
-- [test_database.py:1-52](file://backend/tests/test_database.py#L1-52)
-- [test_formatter.py:1-221](file://backend/tests/test_formatter.py#L1-221)
-- [test_generator.py:1-195](file://backend/tests/test_generator.py#L1-195)
-- [test_templates.py:1-145](file://backend/tests/test_templates.py#L1-145)
-- [test_api.py:1-366](file://backend/tests/test_api.py#L1-366)
-- [test_generator_session_service_cache.py:1-89](file://backend/tests/test_generator_session_service_cache.py#L1-89)
-- [test_pipeline.py:1-65](file://backend/tests/test_pipeline.py#L1-65)
-- [text_utils.py:1-269](file://backend/app/utils/text_utils.py#L1-269)
-- [formatter.py:1-800](file://backend/app/pipeline/formatting/formatter.py#L1-800)
-- [document_generator.py:1-607](file://backend/app/pipeline/generation/document_generator.py#L1-607)
-- [id_generator.py:1-86](file://backend/app/utils/id_generator.py#L1-86)
-- [document.py:1-266](file://backend/app/schemas/document.py#L1-266)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-28)
+- [conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-112)
+- [test_database.py:1-52](../../../../../backend/tests/test_database.py#L1-52)
+- [test_formatter.py:1-221](../../../../../backend/tests/test_formatter.py#L1-221)
+- [test_generator.py:1-195](../../../../../backend/tests/test_generator.py#L1-195)
+- [test_templates.py:1-145](../../../../../backend/tests/test_templates.py#L1-145)
+- [test_api.py:1-366](../../../../../backend/tests/test_api.py#L1-366)
+- [test_generator_session_service_cache.py:1-89](../../../../../backend/tests/test_generator_session_service_cache.py#L1-89)
+- [test_pipeline.py:1-65](../../../../../backend/tests/test_pipeline.py#L1-65)
+- [text_utils.py:1-269](../../../../../backend/app/utils/text_utils.py#L1-269)
+- [formatter.py:1-800](../../../../../backend/app/pipeline/formatting/formatter.py#L1-800)
+- [document_generator.py:1-607](../../../../../backend/app/pipeline/generation/document_generator.py#L1-607)
+- [id_generator.py:1-86](../../../../../backend/app/utils/id_generator.py#L1-86)
+- [document.py:1-266](../../../../../backend/app/schemas/document.py#L1-266)
 
 ## Detailed Component Analysis
 
@@ -213,8 +213,8 @@ Examples from repository:
 
 **Section sources**
 
-- [text_utils.py:80-269](file://backend/app/utils/text_utils.py#L80-269)
-- [test_formatter.py:164-221](file://backend/tests/test_formatter.py#L164-221)
+- [text_utils.py:80-269](../../../../../backend/app/utils/text_utils.py#L80-269)
+- [test_formatter.py:164-221](../../../../../backend/tests/test_formatter.py#L164-221)
 
 ### Formatter
 
@@ -261,12 +261,12 @@ Formatter --> TableRenderer : "uses"
 
 **Diagram sources**
 
-- [formatter.py:35-800](file://backend/app/pipeline/formatting/formatter.py#L35-800)
+- [formatter.py:35-800](../../../../../backend/app/pipeline/formatting/formatter.py#L35-800)
 
 **Section sources**
 
-- [formatter.py:49-290](file://backend/app/pipeline/formatting/formatter.py#L49-290)
-- [test_formatter.py:41-221](file://backend/tests/test_formatter.py#L41-221)
+- [formatter.py:49-290](../../../../../backend/app/pipeline/formatting/formatter.py#L49-290)
+- [test_formatter.py:41-221](../../../../../backend/tests/test_formatter.py#L41-221)
 
 ### DocumentGenerator
 
@@ -312,13 +312,13 @@ DG-->>Test : job_id
 
 **Diagram sources**
 
-- [document_generator.py:187-480](file://backend/app/pipeline/generation/document_generator.py#L187-480)
-- [test_generator.py:124-195](file://backend/tests/test_generator.py#L124-195)
+- [document_generator.py:187-480](../../../../../backend/app/pipeline/generation/document_generator.py#L187-480)
+- [test_generator.py:124-195](../../../../../backend/tests/test_generator.py#L124-195)
 
 **Section sources**
 
-- [document_generator.py:122-480](file://backend/app/pipeline/generation/document_generator.py#L122-480)
-- [test_generator.py:14-195](file://backend/tests/test_generator.py#L14-195)
+- [document_generator.py:122-480](../../../../../backend/app/pipeline/generation/document_generator.py#L122-480)
+- [test_generator.py:14-195](../../../../../backend/tests/test_generator.py#L14-195)
 
 ### ID Generators
 
@@ -339,8 +339,8 @@ Assertion strategies:
 
 **Section sources**
 
-- [id_generator.py:8-86](file://backend/app/utils/id_generator.py#L8-86)
-- [test_generator.py:124-195](file://backend/tests/test_generator.py#L124-195)
+- [id_generator.py:8-86](../../../../../backend/app/utils/id_generator.py#L8-86)
+- [test_generator.py:124-195](../../../../../backend/tests/test_generator.py#L124-195)
 
 ### Pydantic Schemas
 
@@ -361,8 +361,8 @@ Assertion strategies:
 
 **Section sources**
 
-- [document.py:107-130](file://backend/app/schemas/document.py#L107-130)
-- [document.py:244-266](file://backend/app/schemas/document.py#L244-266)
+- [document.py:107-130](../../../../../backend/app/schemas/document.py#L107-130)
+- [document.py:244-266](../../../../../backend/app/schemas/document.py#L244-266)
 
 ### Database Layer
 
@@ -381,7 +381,7 @@ Assertion strategies:
 
 **Section sources**
 
-- [test_database.py:9-52](file://backend/tests/test_database.py#L9-52)
+- [test_database.py:9-52](../../../../../backend/tests/test_database.py#L9-52)
 
 ### API Route Handlers (FastAPI)
 
@@ -403,8 +403,8 @@ Assertion strategies:
 
 **Section sources**
 
-- [test_api.py:14-366](file://backend/tests/test_api.py#L14-366)
-- [test_templates.py:12-145](file://backend/tests/test_templates.py#L12-145)
+- [test_api.py:14-366](../../../../../backend/tests/test_api.py#L14-366)
+- [test_templates.py:12-145](../../../../../backend/tests/test_templates.py#L12-145)
 
 ### Pipeline Integration
 
@@ -423,7 +423,7 @@ Assertion strategies:
 
 **Section sources**
 
-- [test_pipeline.py:9-65](file://backend/tests/test_pipeline.py#L9-65)
+- [test_pipeline.py:9-65](../../../../../backend/tests/test_pipeline.py#L9-65)
 
 ### Generator Session Service Cache
 
@@ -443,7 +443,7 @@ Assertion strategies:
 
 **Section sources**
 
-- [test_generator_session_service_cache.py:12-89](file://backend/tests/test_generator_session_service_cache.py#L12-89)
+- [test_generator_session_service_cache.py:12-89](../../../../../backend/tests/test_generator_session_service_cache.py#L12-89)
 
 ## Dependency Analysis
 
@@ -474,14 +474,14 @@ CF --> T7
 
 **Diagram sources**
 
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-112)
-- [test_database.py:1-52](file://backend/tests/test_database.py#L1-52)
-- [test_formatter.py:1-221](file://backend/tests/test_formatter.py#L1-221)
-- [test_generator.py:1-195](file://backend/tests/test_generator.py#L1-195)
-- [test_templates.py:1-145](file://backend/tests/test_templates.py#L1-145)
-- [test_api.py:1-366](file://backend/tests/test_api.py#L1-366)
-- [test_generator_session_service_cache.py:1-89](file://backend/tests/test_generator_session_service_cache.py#L1-89)
-- [test_pipeline.py:1-65](file://backend/tests/test_pipeline.py#L1-65)
+- [conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-112)
+- [test_database.py:1-52](../../../../../backend/tests/test_database.py#L1-52)
+- [test_formatter.py:1-221](../../../../../backend/tests/test_formatter.py#L1-221)
+- [test_generator.py:1-195](../../../../../backend/tests/test_generator.py#L1-195)
+- [test_templates.py:1-145](../../../../../backend/tests/test_templates.py#L1-145)
+- [test_api.py:1-366](../../../../../backend/tests/test_api.py#L1-366)
+- [test_generator_session_service_cache.py:1-89](../../../../../backend/tests/test_generator_session_service_cache.py#L1-89)
+- [test_pipeline.py:1-65](../../../../../backend/tests/test_pipeline.py#L1-65)
 
 Observations:
 
@@ -491,7 +491,7 @@ Observations:
 
 **Section sources**
 
-- [conftest.py:46-112](file://backend/tests/conftest.py#L46-112)
+- [conftest.py:46-112](../../../../../backend/tests/conftest.py#L46-112)
 
 ## Performance Considerations
 
@@ -511,9 +511,9 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [test_database.py:25-48](file://backend/tests/test_database.py#L25-48)
-- [test_formatter.py:112-139](file://backend/tests/test_formatter.py#L112-139)
-- [test_api.py:131-130](file://backend/tests/test_api.py#L131-130)
+- [test_database.py:25-48](../../../../../backend/tests/test_database.py#L25-48)
+- [test_formatter.py:112-139](../../../../../backend/tests/test_formatter.py#L112-139)
+- [test_api.py:131-130](../../../../../backend/tests/test_api.py#L131-130)
 
 ## Conclusion
 
@@ -529,7 +529,7 @@ The backend test suite demonstrates strong practices for unit testing pure logic
 
 **Section sources**
 
-- [pytest.ini:5-28](file://backend/pytest.ini#L5-28)
+- [pytest.ini:5-28](../../../../../backend/pytest.ini#L5-28)
 
 ### Parameterized Testing
 
@@ -550,7 +550,7 @@ The backend test suite demonstrates strong practices for unit testing pure logic
 
 **Section sources**
 
-- [test_database.py:12-48](file://backend/tests/test_database.py#L12-48)
-- [test_formatter.py:41-221](file://backend/tests/test_formatter.py#L41-221)
-- [test_generator.py:124-195](file://backend/tests/test_generator.py#L124-195)
-- [test_generator_session_service_cache.py:25-89](file://backend/tests/test_generator_session_service_cache.py#L25-89)
+- [test_database.py:12-48](../../../../../backend/tests/test_database.py#L12-48)
+- [test_formatter.py:41-221](../../../../../backend/tests/test_formatter.py#L41-221)
+- [test_generator.py:124-195](../../../../../backend/tests/test_generator.py#L124-195)
+- [test_generator_session_service_cache.py:25-89](../../../../../backend/tests/test_generator_session_service_cache.py#L25-89)

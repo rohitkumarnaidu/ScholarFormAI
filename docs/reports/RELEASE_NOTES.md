@@ -127,7 +127,7 @@ npm install
 npm run dev
 ```
 
-See [DEVELOPER_SETUP.md](DEVELOPER_SETUP.md) for detailed instructions.
+See [DEVELOPER_SETUP.md](../deployment/DEVELOPER_SETUP.md) for detailed instructions.
 
 ---
 
@@ -177,7 +177,7 @@ See [DEVELOPER_SETUP.md](DEVELOPER_SETUP.md) for detailed instructions.
 
 - Engineering & Security Teams at ScholarForm
 
-We welcome community contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
+We welcome community contributions. See [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
 ---
 
@@ -191,6 +191,6 @@ We welcome community contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) to ge
 | Issue Tracker | [https://github.com/rohitkumarnaidu/ScholarFormAI/issues](https://github.com/rohitkumarnaidu/ScholarFormAI/issues) |
 | Security | [SECURITY.md](../../SECURITY.md) / `security@scholarform.ai` |
 | Changelog | [CHANGELOG.md](../../CHANGELOG.md) |
-| Roadmap | [ROADMAP.md](../../Roadmap.md) |
+| Roadmap | [ROADMAP.md](ROADMAP.md) |
 | Code of Conduct | [CODE_OF_CONDUCT.md](../../CODE_OF_CONDUCT.md) |
 | Reusable | [MIT](../../LICENSE) |

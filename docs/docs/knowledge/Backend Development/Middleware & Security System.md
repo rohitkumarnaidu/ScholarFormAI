@@ -5,20 +5,20 @@
 
 <cite>
 **Referenced Files in This Document**
-- [main.py](file://backend/app/main.py)
-- [request_id.py](file://backend/app/middleware/request_id.py)
-- [rate_limit.py](file://backend/app/middleware/rate_limit.py)
-- [tier_rate_limit.py](file://backend/app/middleware/tier_rate_limit.py)
-- [security_headers.py](file://backend/app/middleware/security_headers.py)
-- [rbac.py](file://backend/app/middleware/rbac.py)
-- [abuse_detector.py](file://backend/app/middleware/abuse_detector.py)
-- [monitoring.py](file://backend/app/middleware/monitoring.py)
-- [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [logging_context.py](file://backend/app/utils/logging_context.py)
-- [redis_cache.py](file://backend/app/cache/redis_cache.py)
-- [jwks_verifier.py](file://backend/app/security/jwks_verifier.py)
-- [dependencies.py](file://backend/app/utils/dependencies.py)
+- [main.py](../../../../backend/app/main.py)
+- [request_id.py](../../../../backend/app/middleware/request_id.py)
+- [rate_limit.py](../../../../backend/app/middleware/rate_limit.py)
+- [tier_rate_limit.py](../../../../backend/app/middleware/tier_rate_limit.py)
+- [security_headers.py](../../../../backend/app/middleware/security_headers.py)
+- [rbac.py](../../../../backend/app/middleware/rbac.py)
+- [abuse_detector.py](../../../../backend/app/middleware/abuse_detector.py)
+- [monitoring.py](../../../../backend/app/middleware/monitoring.py)
+- [prometheus_metrics.py](../../../../backend/app/middleware/prometheus_metrics.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [logging_context.py](../../../../backend/app/utils/logging_context.py)
+- [redis_cache.py](../../../../backend/app/cache/redis_cache.py)
+- [jwks_verifier.py](../../../../backend/app/security/jwks_verifier.py)
+- [dependencies.py](../../../../backend/app/utils/dependencies.py)
 </cite>
 
 ## Table of Contents
@@ -88,19 +88,19 @@ PM -. exposes .-> M8
 
 **Diagram sources**
 
-- [main.py:279-315](file://backend/app/main.py#L279-L315)
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
-- [tier_rate_limit.py:19-116](file://backend/app/middleware/tier_rate_limit.py#L19-L116)
-- [security_headers.py:18-99](file://backend/app/middleware/security_headers.py#L18-L99)
-- [settings.py:99-102](file://backend/app/config/settings.py#L99-L102)
-- [logging_context.py:17-115](file://backend/app/utils/logging_context.py#L17-L115)
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
-- [prometheus_metrics.py:135-235](file://backend/app/middleware/prometheus_metrics.py#L135-L235)
+- [main.py:279-315](../../../../backend/app/main.py#L279-L315)
+- [rate_limit.py:49-172](../../../../backend/app/middleware/rate_limit.py#L49-L172)
+- [tier_rate_limit.py:19-116](../../../../backend/app/middleware/tier_rate_limit.py#L19-L116)
+- [security_headers.py:18-99](../../../../backend/app/middleware/security_headers.py#L18-L99)
+- [settings.py:99-102](../../../../backend/app/config/settings.py#L99-L102)
+- [logging_context.py:17-115](../../../../backend/app/utils/logging_context.py#L17-L115)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
+- [prometheus_metrics.py:135-235](../../../../backend/app/middleware/prometheus_metrics.py#L135-L235)
 
 **Section sources**
 
-- [main.py:279-315](file://backend/app/main.py#L279-L315)
+- [main.py:279-315](../../../../backend/app/main.py#L279-L315)
 
 ## Core Components
 
@@ -115,14 +115,14 @@ PM -. exposes .-> M8
 
 **Section sources**
 
-- [request_id.py:21-74](file://backend/app/middleware/request_id.py#L21-L74)
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
-- [tier_rate_limit.py:19-116](file://backend/app/middleware/tier_rate_limit.py#L19-L116)
-- [security_headers.py:18-99](file://backend/app/middleware/security_headers.py#L18-L99)
-- [abuse_detector.py:14-70](file://backend/app/middleware/abuse_detector.py#L14-L70)
-- [rbac.py:9-80](file://backend/app/middleware/rbac.py#L9-L80)
-- [monitoring.py:13-51](file://backend/app/middleware/monitoring.py#L13-L51)
-- [prometheus_metrics.py:135-235](file://backend/app/middleware/prometheus_metrics.py#L135-L235)
+- [request_id.py:21-74](../../../../backend/app/middleware/request_id.py#L21-L74)
+- [rate_limit.py:49-172](../../../../backend/app/middleware/rate_limit.py#L49-L172)
+- [tier_rate_limit.py:19-116](../../../../backend/app/middleware/tier_rate_limit.py#L19-L116)
+- [security_headers.py:18-99](../../../../backend/app/middleware/security_headers.py#L18-L99)
+- [abuse_detector.py:14-70](../../../../backend/app/middleware/abuse_detector.py#L14-L70)
+- [rbac.py:9-80](../../../../backend/app/middleware/rbac.py#L9-L80)
+- [monitoring.py:13-51](../../../../backend/app/middleware/monitoring.py#L13-L51)
+- [prometheus_metrics.py:135-235](../../../../backend/app/middleware/prometheus_metrics.py#L135-L235)
 
 ## Architecture Overview
 
@@ -163,7 +163,7 @@ APP-->>Client : HTTP Response
 
 **Diagram sources**
 
-- [main.py:279-315](file://backend/app/main.py#L279-L315)
+- [main.py:279-315](../../../../backend/app/main.py#L279-L315)
 
 ## Detailed Component Analysis
 
@@ -197,13 +197,13 @@ ResetCtx --> End(["Response Sent"])
 
 **Diagram sources**
 
-- [request_id.py:25-59](file://backend/app/middleware/request_id.py#L25-L59)
-- [logging_context.py:17-43](file://backend/app/utils/logging_context.py#L17-L43)
+- [request_id.py:25-59](../../../../backend/app/middleware/request_id.py#L25-L59)
+- [logging_context.py:17-43](../../../../backend/app/utils/logging_context.py#L17-L43)
 
 **Section sources**
 
-- [request_id.py:21-74](file://backend/app/middleware/request_id.py#L21-L74)
-- [logging_context.py:17-115](file://backend/app/utils/logging_context.py#L17-L115)
+- [request_id.py:21-74](../../../../backend/app/middleware/request_id.py#L21-L74)
+- [logging_context.py:17-115](../../../../backend/app/utils/logging_context.py#L17-L115)
 
 ### Rate Limiting Middleware (Global and Upload)
 
@@ -236,14 +236,14 @@ OverLimit --> |No| PassThrough
 
 **Diagram sources**
 
-- [rate_limit.py:124-172](file://backend/app/middleware/rate_limit.py#L124-L172)
-- [redis_cache.py:10-39](file://backend/app/cache/redis_cache.py#L10-L39)
+- [rate_limit.py:124-172](../../../../backend/app/middleware/rate_limit.py#L124-L172)
+- [redis_cache.py:10-39](../../../../backend/app/cache/redis_cache.py#L10-L39)
 
 **Section sources**
 
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
-- [settings.py:93-97](file://backend/app/config/settings.py#L93-L97)
-- [redis_cache.py:10-39](file://backend/app/cache/redis_cache.py#L10-L39)
+- [rate_limit.py:49-172](../../../../backend/app/middleware/rate_limit.py#L49-L172)
+- [settings.py:93-97](../../../../backend/app/config/settings.py#L93-L97)
+- [redis_cache.py:10-39](../../../../backend/app/cache/redis_cache.py#L10-L39)
 
 ### Tier-Based Rate Limiting Middleware (Guest Daily)
 
@@ -272,7 +272,7 @@ IsLimited --> |No| Next
 IsLimited --> |Yes| GetUser["Verify JWT and extract sub"]
 GetUser --> HasUser{"Authenticated user?"}
 HasUser --> |Yes| Next
-HasUser --> |No| Inc["Increment guest counter (Redis or in-memory)"]
+HasUser --> |No| Inc["Increment guest counter ("Redis or in-memory")"]
 Inc --> Exceeded{"count > guest_daily_limit?"}
 Exceeded --> |Yes| Return429["Return 429 JSONResponse with upgrade_url"]
 Exceeded --> |No| Next
@@ -280,13 +280,13 @@ Exceeded --> |No| Next
 
 **Diagram sources**
 
-- [tier_rate_limit.py:96-116](file://backend/app/middleware/tier_rate_limit.py#L96-L116)
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
+- [tier_rate_limit.py:96-116](../../../../backend/app/middleware/tier_rate_limit.py#L96-L116)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
 
 **Section sources**
 
-- [tier_rate_limit.py:19-116](file://backend/app/middleware/tier_rate_limit.py#L19-L116)
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
+- [tier_rate_limit.py:19-116](../../../../backend/app/middleware/tier_rate_limit.py#L19-L116)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
 
 ### Security Headers Middleware and Body Size Limits
 
@@ -325,13 +325,13 @@ Continue --> Resp(["HTTP Response"])
 
 **Diagram sources**
 
-- [security_headers.py:28-66](file://backend/app/middleware/security_headers.py#L28-L66)
-- [security_headers.py:78-99](file://backend/app/middleware/security_headers.py#L78-L99)
+- [security_headers.py:28-66](../../../../backend/app/middleware/security_headers.py#L28-L66)
+- [security_headers.py:78-99](../../../../backend/app/middleware/security_headers.py#L78-L99)
 
 **Section sources**
 
-- [security_headers.py:18-99](file://backend/app/middleware/security_headers.py#L18-L99)
-- [settings.py:99-102](file://backend/app/config/settings.py#L99-L102)
+- [security_headers.py:18-99](../../../../backend/app/middleware/security_headers.py#L18-L99)
+- [settings.py:99-102](../../../../backend/app/config/settings.py#L99-L102)
 
 ### Abuse Detection
 
@@ -361,11 +361,11 @@ Audit --> Done
 
 **Diagram sources**
 
-- [abuse_detector.py:20-67](file://backend/app/middleware/abuse_detector.py#L20-L67)
+- [abuse_detector.py:20-67](../../../../backend/app/middleware/abuse_detector.py#L20-L67)
 
 **Section sources**
 
-- [abuse_detector.py:14-70](file://backend/app/middleware/abuse_detector.py#L14-L70)
+- [abuse_detector.py:14-70](../../../../backend/app/middleware/abuse_detector.py#L14-L70)
 
 ### Role-Based Access Control (RBAC)
 
@@ -399,13 +399,13 @@ Compare --> |No| Raise403["Raise 403 Forbidden"]
 
 **Diagram sources**
 
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
-- [dependencies.py:15-60](file://backend/app/utils/dependencies.py#L15-L60)
+- [rbac.py:61-80](../../../../backend/app/middleware/rbac.py#L61-L80)
+- [dependencies.py:15-60](../../../../backend/app/utils/dependencies.py#L15-L60)
 
 **Section sources**
 
-- [rbac.py:9-80](file://backend/app/middleware/rbac.py#L9-L80)
-- [dependencies.py:15-93](file://backend/app/utils/dependencies.py#L15-L93)
+- [rbac.py:9-80](../../../../backend/app/middleware/rbac.py#L9-L80)
+- [dependencies.py:15-93](../../../../backend/app/utils/dependencies.py#L15-L93)
 
 ### Monitoring and Metrics
 
@@ -440,13 +440,13 @@ MON->>MET : Optional metric recordings
 
 **Diagram sources**
 
-- [monitoring.py:17-51](file://backend/app/middleware/monitoring.py#L17-L51)
-- [prometheus_metrics.py:135-235](file://backend/app/middleware/prometheus_metrics.py#L135-L235)
+- [monitoring.py:17-51](../../../../backend/app/middleware/monitoring.py#L17-L51)
+- [prometheus_metrics.py:135-235](../../../../backend/app/middleware/prometheus_metrics.py#L135-L235)
 
 **Section sources**
 
-- [monitoring.py:13-51](file://backend/app/middleware/monitoring.py#L13-L51)
-- [prometheus_metrics.py:135-235](file://backend/app/middleware/prometheus_metrics.py#L135-L235)
+- [monitoring.py:13-51](../../../../backend/app/middleware/monitoring.py#L13-L51)
+- [prometheus_metrics.py:135-235](../../../../backend/app/middleware/prometheus_metrics.py#L135-L235)
 
 ## Dependency Analysis
 
@@ -469,39 +469,39 @@ PROM["prometheus_metrics.py"] --> MON
 
 **Diagram sources**
 
-- [main.py:279-315](file://backend/app/main.py#L279-L315)
-- [rate_limit.py:30-34](file://backend/app/middleware/rate_limit.py#L30-L34)
-- [tier_rate_limit.py:30-32](file://backend/app/middleware/tier_rate_limit.py#L30-L32)
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
-- [rbac.py:68-72](file://backend/app/middleware/rbac.py#L68-L72)
-- [dependencies.py:15-60](file://backend/app/utils/dependencies.py#L15-L60)
-- [logging_context.py:17-43](file://backend/app/utils/logging_context.py#L17-L43)
-- [prometheus_metrics.py:135-235](file://backend/app/middleware/prometheus_metrics.py#L135-L235)
+- [main.py:279-315](../../../../backend/app/main.py#L279-L315)
+- [rate_limit.py:30-34](../../../../backend/app/middleware/rate_limit.py#L30-L34)
+- [tier_rate_limit.py:30-32](../../../../backend/app/middleware/tier_rate_limit.py#L30-L32)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
+- [rbac.py:68-72](../../../../backend/app/middleware/rbac.py#L68-L72)
+- [dependencies.py:15-60](../../../../backend/app/utils/dependencies.py#L15-L60)
+- [logging_context.py:17-43](../../../../backend/app/utils/logging_context.py#L17-L43)
+- [prometheus_metrics.py:135-235](../../../../backend/app/middleware/prometheus_metrics.py#L135-L235)
 
 **Section sources**
 
-- [main.py:279-315](file://backend/app/main.py#L279-L315)
-- [rate_limit.py:30-34](file://backend/app/middleware/rate_limit.py#L30-L34)
-- [tier_rate_limit.py:30-32](file://backend/app/middleware/tier_rate_limit.py#L30-L32)
-- [jwks_verifier.py:135-183](file://backend/app/security/jwks_verifier.py#L135-L183)
-- [rbac.py:68-72](file://backend/app/middleware/rbac.py#L68-L72)
-- [dependencies.py:15-60](file://backend/app/utils/dependencies.py#L15-L60)
-- [logging_context.py:17-43](file://backend/app/utils/logging_context.py#L17-L43)
-- [prometheus_metrics.py:135-235](file://backend/app/middleware/prometheus_metrics.py#L135-L235)
+- [main.py:279-315](../../../../backend/app/main.py#L279-L315)
+- [rate_limit.py:30-34](../../../../backend/app/middleware/rate_limit.py#L30-L34)
+- [tier_rate_limit.py:30-32](../../../../backend/app/middleware/tier_rate_limit.py#L30-L32)
+- [jwks_verifier.py:135-183](../../../../backend/app/security/jwks_verifier.py#L135-L183)
+- [rbac.py:68-72](../../../../backend/app/middleware/rbac.py#L68-L72)
+- [dependencies.py:15-60](../../../../backend/app/utils/dependencies.py#L15-L60)
+- [logging_context.py:17-43](../../../../backend/app/utils/logging_context.py#L17-L43)
+- [prometheus_metrics.py:135-235](../../../../backend/app/middleware/prometheus_metrics.py#L135-L235)
 
 ## Performance Considerations
 
 - Rate limiting:
-    - Redis acceleration reduces contention across workers; fallback to in-memory is seamless but not distributed.
-    - Token fingerprinting for uploads increases uniqueness; consider hashing strategies carefully.
+  - Redis acceleration reduces contention across workers; fallback to in-memory is seamless but not distributed.
+  - Token fingerprinting for uploads increases uniqueness; consider hashing strategies carefully.
 - Tier-based limiting:
-    - UTC day keys avoid cross-day drift; expiry aligns with next day boundary.
+  - UTC day keys avoid cross-day drift; expiry aligns with next day boundary.
 - Security headers:
-    - CSP relaxations for docs are minimal and scoped; production should keep defaults strict.
+  - CSP relaxations for docs are minimal and scoped; production should keep defaults strict.
 - Abuse detection:
-    - Per-bucket counters reduce memory growth; Redis expiry prevents leaks.
+  - Per-bucket counters reduce memory growth; Redis expiry prevents leaks.
 - Monitoring and metrics:
-    - Lightweight logging and metric recording; ensure exporters are configured appropriately.
+  - Lightweight logging and metric recording; ensure exporters are configured appropriately.
 
 [No sources needed since this section provides general guidance]
 
@@ -510,25 +510,25 @@ PROM["prometheus_metrics.py"] --> MON
 Common issues and mitigations:
 
 - Rate limit 429 responses:
-    - Verify client IP and Bearer token presence for upload-specific limits.
-    - Check Redis connectivity; fallback to in-memory is used automatically.
+  - Verify client IP and Bearer token presence for upload-specific limits.
+  - Check Redis connectivity; fallback to in-memory is used automatically.
 - Tier-based 429 responses:
-    - Confirm Authorization header format and validity; ensure JWT verification succeeds.
-    - Review guest_daily_limit setting and endpoint eligibility.
+  - Confirm Authorization header format and validity; ensure JWT verification succeeds.
+  - Review guest_daily_limit setting and endpoint eligibility.
 - Security headers not applied:
-    - Ensure HTTPS redirect and HSTS are enabled in production settings.
-    - Validate CSP directives for your deployment’s assets.
+  - Ensure HTTPS redirect and HSTS are enabled in production settings.
+  - Validate CSP directives for your deployment’s assets.
 - Monitoring headers missing:
-    - Confirm MonitoringMiddleware is registered after RequestIdMiddleware.
+  - Confirm MonitoringMiddleware is registered after RequestIdMiddleware.
 - Audit logging failures:
-    - Inspect audit log service availability; middleware gracefully skips on errors.
+  - Inspect audit log service availability; middleware gracefully skips on errors.
 
 **Section sources**
 
-- [rate_limit.py:111-118](file://backend/app/middleware/rate_limit.py#L111-L118)
-- [tier_rate_limit.py:87-91](file://backend/app/middleware/tier_rate_limit.py#L87-L91)
-- [security_headers.py:35-66](file://backend/app/middleware/security_headers.py#L35-L66)
-- [main.py:309-328](file://backend/app/main.py#L309-L328)
+- [rate_limit.py:111-118](../../../../backend/app/middleware/rate_limit.py#L111-L118)
+- [tier_rate_limit.py:87-91](../../../../backend/app/middleware/tier_rate_limit.py#L87-L91)
+- [security_headers.py:35-66](../../../../backend/app/middleware/security_headers.py#L35-L66)
+- [main.py:309-328](../../../../backend/app/main.py#L309-L328)
 
 ## Conclusion
 
@@ -551,16 +551,16 @@ The middleware and security system provides a robust foundation for secure, obse
   8) MonitoringMiddleware
   9) Audit logging hook
 - Integration patterns:
-    - Use RequestIdMiddleware to correlate logs and traces.
-    - Apply require_role guards at router or endpoint level.
-    - Record pipeline and LLM metrics via MetricsManager.
-    - Configure settings for HTTPS/HSTS and body size limits.
+  - Use RequestIdMiddleware to correlate logs and traces.
+  - Apply require_role guards at router or endpoint level.
+  - Record pipeline and LLM metrics via MetricsManager.
+  - Configure settings for HTTPS/HSTS and body size limits.
 
 **Section sources**
 
-- [main.py:279-315](file://backend/app/main.py#L279-L315)
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [main.py:279-315](../../../../backend/app/main.py#L279-L315)
+- [rbac.py:61-80](../../../../backend/app/middleware/rbac.py#L61-L80)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
 
 ### Configuration Options
 
@@ -573,7 +573,7 @@ Key settings impacting security and rate limiting:
 
 **Section sources**
 
-- [settings.py:99-102](file://backend/app/config/settings.py#L99-L102)
-- [settings.py:93-97](file://backend/app/config/settings.py#L93-L97)
-- [settings.py:156-163](file://backend/app/config/settings.py#L156-L163)
-- [security_headers.py:78-99](file://backend/app/middleware/security_headers.py#L78-L99)
+- [settings.py:99-102](../../../../backend/app/config/settings.py#L99-L102)
+- [settings.py:93-97](../../../../backend/app/config/settings.py#L93-L97)
+- [settings.py:156-163](../../../../backend/app/config/settings.py#L156-L163)
+- [security_headers.py:78-99](../../../../backend/app/middleware/security_headers.py#L78-L99)

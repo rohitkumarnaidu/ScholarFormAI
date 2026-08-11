@@ -6,7 +6,6 @@
 from __future__ import annotations
 
 import importlib
-import time
 from contextlib import contextmanager
 from pathlib import Path
 from unittest.mock import MagicMock, patch

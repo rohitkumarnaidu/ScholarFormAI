@@ -5,25 +5,25 @@
 
 <cite>
 **Referenced Files in This Document**
-- [main.py](file://backend/app/main.py)
-- [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
-- [monitoring.py](file://backend/app/middleware/monitoring.py)
-- [metrics.py](file://backend/app/routers/v1/metrics.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [health_checks.py](file://backend/app/services/health_checks.py)
-- [model_metrics.py](file://backend/app/services/model_metrics.py)
-- [metrics.py](file://backend/app/pipeline/agents/metrics.py)
-- [_helpers.py](file://backend/app/routers/v1/_helpers.py)
-- [pipeline.json](file://backend/docker/grafana/dashboards/pipeline.json)
-- [scholarform-overview.json](file://backend/ops/grafana/dashboards/scholarform-overview.json)
-- [scholarform-persona-kpis.json](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json)
-- [prometheus.yml](file://backend/docker/prometheus/prometheus.yml)
-- [prometheus.yml](file://backend/ops/prometheus/prometheus.yml)
-- [docker-compose.yml](file://backend/docker/docker-compose.yml)
+- [main.py](../../../../backend/app/main.py)
+- [prometheus_metrics.py](../../../../backend/app/middleware/prometheus_metrics.py)
+- [monitoring.py](../../../../backend/app/middleware/monitoring.py)
+- [metrics.py](../../../../backend/app/routers/v1/metrics.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [health_checks.py](../../../../backend/app/services/health_checks.py)
+- [model_metrics.py](../../../../backend/app/services/model_metrics.py)
+- [metrics.py](../../../../backend/app/pipeline/agents/metrics.py)
+- [_helpers.py](../../../../backend/app/routers/v1/_helpers.py)
+- [pipeline.json](../../../../backend/docker/grafana/dashboards/pipeline.json)
+- [scholarform-overview.json](../../../../backend/ops/grafana/dashboards/scholarform-overview.json)
+- [scholarform-persona-kpis.json](../../../../backend/ops/grafana/dashboards/scholarform-persona-kpis.json)
+- [prometheus.yml](../../../../backend/docker/prometheus/prometheus.yml)
+- [prometheus.yml](../../../../backend/ops/prometheus/prometheus.yml)
+- [docker-compose.yml](../../../../backend/docker/docker-compose.yml)
 
-- [test_database.py](file://backend/tests/test_database.py)
-- [llm_validator.py](file://backend/app/pipeline/safety/llm_validator.py)
-- [test_persona_kpi_dashboard.py](file://backend/tests/test_persona_kpi_dashboard.py)
+- [test_database.py](../../../../backend/tests/test_database.py)
+- [llm_validator.py](../../../../backend/app/pipeline/safety/llm_validator.py)
+- [test_persona_kpi_dashboard.py](../../../../backend/tests/test_persona_kpi_dashboard.py)
 </cite>
 
 ## Update Summary
@@ -102,67 +102,67 @@ P --> Gr
 
 **Diagram sources**
 
-- [main.py:45-106](file://backend/app/main.py#L45-L106)
-- [prometheus_metrics.py:15-167](file://backend/app/middleware/prometheus_metrics.py#L15-L167)
-- [monitoring.py:13-51](file://backend/app/middleware/monitoring.py#L13-L51)
-- [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
-- [model_metrics.py:101-137](file://backend/app/services/model_metrics.py#L101-L137)
-- [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
-- [_helpers.py:32-68](file://backend/app/routers/v1/_helpers.py#L32-L68)
-- [main.py:47-66](file://backend/app/main.py#L47-L66)
-- [prometheus.yml:5-16](file://backend/docker/prometheus/prometheus.yml#L5-L16)
-- [scholarform-overview.json:1-239](file://backend/ops/grafana/dashboards/scholarform-overview.json#L1-L239)
-- [scholarform-persona-kpis.json:1-142](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
+- [main.py:45-106](../../../../backend/app/main.py#L45-L106)
+- [prometheus_metrics.py:15-167](../../../../backend/app/middleware/prometheus_metrics.py#L15-L167)
+- [monitoring.py:13-51](../../../../backend/app/middleware/monitoring.py#L13-L51)
+- [health_checks.py:85-127](../../../../backend/app/services/health_checks.py#L85-L127)
+- [model_metrics.py:101-137](../../../../backend/app/services/model_metrics.py#L101-L137)
+- [metrics.py:24-248](../../../../backend/app/routers/v1/metrics.py#L24-L248)
+- [_helpers.py:32-68](../../../../backend/app/routers/v1/_helpers.py#L32-L68)
+- [main.py:47-66](../../../../backend/app/main.py#L47-L66)
+- [prometheus.yml:5-16](../../../../backend/docker/prometheus/prometheus.yml#L5-L16)
+- [scholarform-overview.json:1-239](../../../../backend/ops/grafana/dashboards/scholarform-overview.json#L1-L239)
+- [scholarform-persona-kpis.json:1-142](../../../../backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
 **Section sources**
-- [main.py:45-106](file://backend/app/main.py#L45-L106)
-- [prometheus_metrics.py:15-167](file://backend/app/middleware/prometheus_metrics.py#L15-L167)
-- [monitoring.py:13-51](file://backend/app/middleware/monitoring.py#L13-L51)
-- [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
-- [model_metrics.py:101-137](file://backend/app/services/model_metrics.py#L101-L137)
-- [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
-- [_helpers.py:32-68](file://backend/app/routers/v1/_helpers.py#L32-L68)
-- [main.py:47-66](file://backend/app/main.py#L47-L66)
-- [prometheus.yml:5-16](file://backend/docker/prometheus/prometheus.yml#L5-L16)
-- [scholarform-overview.json:1-239](file://backend/ops/grafana/dashboards/scholarform-overview.json#L1-L239)
-- [scholarform-persona-kpis.json:1-142](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
+- [main.py:45-106](../../../../backend/app/main.py#L45-L106)
+- [prometheus_metrics.py:15-167](../../../../backend/app/middleware/prometheus_metrics.py#L15-L167)
+- [monitoring.py:13-51](../../../../backend/app/middleware/monitoring.py#L13-L51)
+- [health_checks.py:85-127](../../../../backend/app/services/health_checks.py#L85-L127)
+- [model_metrics.py:101-137](../../../../backend/app/services/model_metrics.py#L101-L137)
+- [metrics.py:24-248](../../../../backend/app/routers/v1/metrics.py#L24-L248)
+- [_helpers.py:32-68](../../../../backend/app/routers/v1/_helpers.py#L32-L68)
+- [main.py:47-66](../../../../backend/app/main.py#L47-L66)
+- [prometheus.yml:5-16](../../../../backend/docker/prometheus/prometheus.yml#L5-L16)
+- [scholarform-overview.json:1-239](../../../../backend/ops/grafana/dashboards/scholarform-overview.json#L1-L239)
+- [scholarform-persona-kpis.json:1-142](../../../../backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
 
 ## Core Components
 
 - Prometheus instrumentation and custom metrics:
-    - Pipeline request volume, durations, and step durations
-    - Agent tool usage, LLM token consumption, TTFT, cache hits/misses, failures
-    - Queue depths (Celery), real-time connections (SSE/WebSocket)
-    - Active users and ClamAV scan durations
-    - **New**: Persona-based KPIs (persona_events_total, persona_operation_duration_seconds) with automatic operation tracking
+  - Pipeline request volume, durations, and step durations
+  - Agent tool usage, LLM token consumption, TTFT, cache hits/misses, failures
+  - Queue depths (Celery), real-time connections (SSE/WebSocket)
+  - Active users and ClamAV scan durations
+  - **New**: Persona-based KPIs (persona_events_total, persona_operation_duration_seconds) with automatic operation tracking
 
 - **Enhanced**: Consolidated metrics exposure:
-    - V1 metrics router at /api/v1/metrics with unified endpoint structure
-    - Database health, dashboard summaries, enhancements, and vLLM readiness monitoring
-    - Frontend error logging with automatic tool usage tracking
+  - V1 metrics router at /api/v1/metrics with unified endpoint structure
+  - Database health, dashboard summaries, enhancements, and vLLM readiness monitoring
+  - Frontend error logging with automatic tool usage tracking
 - Health and readiness:
-    - Health endpoint aggregates DB, LLM providers, and AI models
-    - Readiness endpoint validates DB, external services, and model availability
+  - Health endpoint aggregates DB, LLM providers, and AI models
+  - Readiness endpoint validates DB, external services, and model availability
 - **Enhanced**: Grafana dashboards:
-    - Pipeline dashboard for throughput, latency, and step breakdown
-    - Overview dashboard for RPS, error rate, latency, pipeline, LLM, real-time, and business KPIs
-    - **New**: Persona KPI dashboard for persona-based analytics (throughput, latency, success rates)
+  - Pipeline dashboard for throughput, latency, and step breakdown
+  - Overview dashboard for RPS, error rate, latency, pipeline, LLM, real-time, and business KPIs
+  - **New**: Persona KPI dashboard for persona-based analytics (throughput, latency, success rates)
 - Persistence and summaries:
-    - Model metrics recorded and persisted asynchronously to Supabase
-    - Agent vs legacy performance tracking stored locally and summarized
+  - Model metrics recorded and persisted asynchronously to Supabase
+  - Agent vs legacy performance tracking stored locally and summarized
 
 **Section sources**
 
-- [prometheus_metrics.py:15-167](file://backend/app/middleware/prometheus_metrics.py#L15-L167)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
-- [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
-- [main.py:360-380](file://backend/app/main.py#L360-L380)
-- [health_checks.py:130-192](file://backend/app/services/health_checks.py#L130-L192)
-- [model_metrics.py:23-181](file://backend/app/services/model_metrics.py#L23-L181)
-- [metrics.py:48-260](file://backend/app/pipeline/agents/metrics.py#L48-L260)
-- [scholarform-persona-kpis.json:1-142](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
-- [pipeline.json:1-448](file://backend/docker/grafana/dashboards/pipeline.json#L1-L448)
-- [scholarform-overview.json:1-239](file://backend/ops/grafana/dashboards/scholarform-overview.json#L1-L239)
-- [main.py:47-66](file://backend/app/main.py#L47-L66)
+- [prometheus_metrics.py:15-167](../../../../backend/app/middleware/prometheus_metrics.py#L15-L167)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [metrics.py:24-248](../../../../backend/app/routers/v1/metrics.py#L24-L248)
+- [main.py:360-380](../../../../backend/app/main.py#L360-L380)
+- [health_checks.py:130-192](../../../../backend/app/services/health_checks.py#L130-L192)
+- [model_metrics.py:23-181](../../../../backend/app/services/model_metrics.py#L23-L181)
+- [metrics.py:48-260](../../../../backend/app/pipeline/agents/metrics.py#L48-L260)
+- [scholarform-persona-kpis.json:1-142](../../../../backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
+- [pipeline.json:1-448](../../../../backend/docker/grafana/dashboards/pipeline.json#L1-L448)
+- [scholarform-overview.json:1-239](../../../../backend/ops/grafana/dashboards/scholarform-overview.json#L1-L239)
+- [main.py:47-66](../../../../backend/app/main.py#L47-L66)
 
 ## Architecture Overview
 
@@ -189,18 +189,18 @@ App-->>Client : Response
 App->>Prom : Expose /metrics
 Prom->>Prom : Scrape targets
 Graf->>Prom : Query dashboards
-Graf-->>Client : Render panels (including Persona KPIs)
+Graf-->>Client : Render panels ("including Persona KPIs")
 ```
 
 **Diagram sources**
 
-- [main.py:273-274](file://backend/app/main.py#L273-L274)
-- [prometheus_metrics.py:135-142](file://backend/app/middleware/prometheus_metrics.py#L135-L142)
-- [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
-- [_helpers.py:54-68](file://backend/app/routers/v1/_helpers.py#L54-L68)
-- [main.py:47-66](file://backend/app/main.py#L47-L66)
-- [prometheus.yml:5-16](file://backend/docker/prometheus/prometheus.yml#L5-L16)
-- [scholarform-persona-kpis.json:1-142](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
+- [main.py:273-274](../../../../backend/app/main.py#L273-L274)
+- [prometheus_metrics.py:135-142](../../../../backend/app/middleware/prometheus_metrics.py#L135-L142)
+- [metrics.py:24-248](../../../../backend/app/routers/v1/metrics.py#L24-L248)
+- [_helpers.py:54-68](../../../../backend/app/routers/v1/_helpers.py#L54-L68)
+- [main.py:47-66](../../../../backend/app/main.py#L47-L66)
+- [prometheus.yml:5-16](../../../../backend/docker/prometheus/prometheus.yml#L5-L16)
+- [scholarform-persona-kpis.json:1-142](../../../../backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
 
 ## Detailed Component Analysis
 
@@ -241,12 +241,12 @@ class MetricsManager {
 
 **Diagram sources**
 
-- [prometheus_metrics.py:144-300](file://backend/app/middleware/prometheus_metrics.py#L144-L300)
+- [prometheus_metrics.py:144-300](../../../../backend/app/middleware/prometheus_metrics.py#L144-L300)
 
 **Section sources**
 
-- [prometheus_metrics.py:15-167](file://backend/app/middleware/prometheus_metrics.py#L15-L167)
-- [prometheus_metrics.py:144-300](file://backend/app/middleware/prometheus_metrics.py#L144-L300)
+- [prometheus_metrics.py:15-167](../../../../backend/app/middleware/prometheus_metrics.py#L15-L167)
+- [prometheus_metrics.py:144-300](../../../../backend/app/middleware/prometheus_metrics.py#L144-L300)
 
 ### Persona-Based KPI Tracking System
 
@@ -274,13 +274,13 @@ Track --> Metrics["Update persona_events_total<br/>and persona_operation_duratio
 
 **Diagram sources**
 
-- [_helpers.py:32-68](file://backend/app/routers/v1/_helpers.py#L32-L68)
-- [prometheus_metrics.py:291-299](file://backend/app/middleware/prometheus_metrics.py#L291-L299)
+- [_helpers.py:32-68](../../../../backend/app/routers/v1/_helpers.py#L32-L68)
+- [prometheus_metrics.py:291-299](../../../../backend/app/middleware/prometheus_metrics.py#L291-L299)
 
 **Section sources**
 
-- [_helpers.py:32-68](file://backend/app/routers/v1/_helpers.py#L32-L68)
-- [prometheus_metrics.py:291-299](file://backend/app/middleware/prometheus_metrics.py#L291-L299)
+- [_helpers.py:32-68](../../../../backend/app/routers/v1/_helpers.py#L32-L68)
+- [prometheus_metrics.py:291-299](../../../../backend/app/middleware/prometheus_metrics.py#L291-L299)
 
 ### Enhanced V1 Metrics Router
 
@@ -321,15 +321,15 @@ V1Router-->>Client : {persistent_db_status, database_records, live_*}
 
 **Diagram sources**
 
-- [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
-- [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
-- [model_metrics.py:148-181](file://backend/app/services/model_metrics.py#L148-L181)
+- [metrics.py:24-248](../../../../backend/app/routers/v1/metrics.py#L24-L248)
+- [health_checks.py:85-127](../../../../backend/app/services/health_checks.py#L85-L127)
+- [model_metrics.py:148-181](../../../../backend/app/services/model_metrics.py#L148-L181)
 
 **Section sources**
 
-- [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
-- [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
-- [model_metrics.py:148-181](file://backend/app/services/model_metrics.py#L148-L181)
+- [metrics.py:24-248](../../../../backend/app/routers/v1/metrics.py#L24-L248)
+- [health_checks.py:85-127](../../../../backend/app/services/health_checks.py#L85-L127)
+- [model_metrics.py:148-181](../../../../backend/app/services/model_metrics.py#L148-L181)
 
 ### Metrics Exposure and Endpoints
 
@@ -368,15 +368,15 @@ V1Router-->>Client : {persistent_db_status, database_records, live_*}
 
 **Diagram sources**
 
-- [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
-- [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
-- [model_metrics.py:148-181](file://backend/app/services/model_metrics.py#L148-L181)
+- [metrics.py:24-248](../../../../backend/app/routers/v1/metrics.py#L24-L248)
+- [health_checks.py:85-127](../../../../backend/app/services/health_checks.py#L85-L127)
+- [model_metrics.py:148-181](../../../../backend/app/services/model_metrics.py#L148-L181)
 
 **Section sources**
 
-- [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
-- [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
-- [model_metrics.py:148-181](file://backend/app/services/model_metrics.py#L148-L181)
+- [metrics.py:24-248](../../../../backend/app/routers/v1/metrics.py#L24-L248)
+- [health_checks.py:85-127](../../../../backend/app/services/health_checks.py#L85-L127)
+- [model_metrics.py:148-181](../../../../backend/app/services/model_metrics.py#L148-L181)
 
 ### Health and Readiness
 
@@ -401,13 +401,13 @@ Degraded --> End
 
 **Diagram sources**
 
-- [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
-- [health_checks.py:130-192](file://backend/app/services/health_checks.py#L130-L192)
+- [health_checks.py:85-127](../../../../backend/app/services/health_checks.py#L85-L127)
+- [health_checks.py:130-192](../../../../backend/app/services/health_checks.py#L130-L192)
 
 **Section sources**
 
-- [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
-- [health_checks.py:130-192](file://backend/app/services/health_checks.py#L130-L192)
+- [health_checks.py:85-127](../../../../backend/app/services/health_checks.py#L85-L127)
+- [health_checks.py:130-192](../../../../backend/app/services/health_checks.py#L130-L192)
 
 ### Enhanced Grafana Dashboards
 
@@ -439,15 +439,15 @@ PK --> PK3["Timeseries: Persona Success Rate"]
 
 **Diagram sources**
 
-- [pipeline.json:101-426](file://backend/docker/grafana/dashboards/pipeline.json#L101-L426)
-- [scholarform-overview.json:39-202](file://backend/ops/grafana/dashboards/scholarform-overview.json#L39-L202)
-- [scholarform-persona-kpis.json:20-105](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L20-L105)
+- [pipeline.json:101-426](../../../../backend/docker/grafana/dashboards/pipeline.json#L101-L426)
+- [scholarform-overview.json:39-202](../../../../backend/ops/grafana/dashboards/scholarform-overview.json#L39-L202)
+- [scholarform-persona-kpis.json:20-105](../../../../backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L20-L105)
 
 **Section sources**
 
-- [pipeline.json:1-448](file://backend/docker/grafana/dashboards/pipeline.json#L1-L448)
-- [scholarform-overview.json:1-239](file://backend/ops/grafana/dashboards/scholarform-overview.json#L1-L239)
-- [scholarform-persona-kpis.json:1-142](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
+- [pipeline.json:1-448](../../../../backend/docker/grafana/dashboards/pipeline.json#L1-L448)
+- [scholarform-overview.json:1-239](../../../../backend/ops/grafana/dashboards/scholarform-overview.json#L1-L239)
+- [scholarform-persona-kpis.json:1-142](../../../../backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
 
 ### Model Metrics Persistence and Summaries
 
@@ -469,11 +469,11 @@ Persist --> Done(["Done"])
 
 **Diagram sources**
 
-- [model_metrics.py:60-137](file://backend/app/services/model_metrics.py#L60-L137)
+- [model_metrics.py:60-137](../../../../backend/app/services/model_metrics.py#L60-L137)
 
 **Section sources**
 
-- [model_metrics.py:23-181](file://backend/app/services/model_metrics.py#L23-L181)
+- [model_metrics.py:23-181](../../../../backend/app/services/model_metrics.py#L23-L181)
 
 ### Agent vs Legacy Performance Tracking
 
@@ -482,7 +482,7 @@ Persist --> Done(["Done"])
 
 **Section sources**
 
-- [metrics.py:15-260](file://backend/app/pipeline/agents/metrics.py#L15-L260)
+- [metrics.py:15-260](../../../../backend/app/pipeline/agents/metrics.py#L15-L260)
 
 ### Queue Depth Metrics and Periodic Updates
 
@@ -491,7 +491,7 @@ Persist --> Done(["Done"])
 
 **Section sources**
 
-- [main.py:117-147](file://backend/app/main.py#L117-L147)
+- [main.py:117-147](../../../../backend/app/main.py#L117-L147)
 
 ## Dependency Analysis
 
@@ -521,88 +521,88 @@ PK --> GDASH["Grafana Persona KPI Dashboard"]
 
 **Diagram sources**
 
-- [main.py:273-274](file://backend/app/main.py#L273-L274)
-- [prometheus_metrics.py:144-300](file://backend/app/middleware/prometheus_metrics.py#L144-L300)
-- [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
-- [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
-- [main.py:45-106](file://backend/app/main.py#L45-L106)
-- [scholarform-persona-kpis.json:1-142](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
+- [main.py:273-274](../../../../backend/app/main.py#L273-L274)
+- [prometheus_metrics.py:144-300](../../../../backend/app/middleware/prometheus_metrics.py#L144-L300)
+- [metrics.py:24-248](../../../../backend/app/routers/v1/metrics.py#L24-L248)
+- [health_checks.py:85-127](../../../../backend/app/services/health_checks.py#L85-L127)
+- [main.py:45-106](../../../../backend/app/main.py#L45-L106)
+- [scholarform-persona-kpis.json:1-142](../../../../backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
 
 **Section sources**
 
-- [main.py:273-274](file://backend/app/main.py#L273-L274)
-- [prometheus_metrics.py:144-300](file://backend/app/middleware/prometheus_metrics.py#L144-L300)
-- [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
-- [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
-- [main.py:45-106](file://backend/app/main.py#L45-L106)
-- [scholarform-persona-kpis.json:1-142](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
+- [main.py:273-274](../../../../backend/app/main.py#L273-L274)
+- [prometheus_metrics.py:144-300](../../../../backend/app/middleware/prometheus_metrics.py#L144-L300)
+- [metrics.py:24-248](../../../../backend/app/routers/v1/metrics.py#L24-L248)
+- [health_checks.py:85-127](../../../../backend/app/services/health_checks.py#L85-L127)
+- [main.py:45-106](../../../../backend/app/main.py#L45-L106)
+- [scholarform-persona-kpis.json:1-142](../../../../backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L1-L142)
 
 ## Performance Considerations
 
 - Scraping cadence and intervals:
-    - Prometheus scrape interval configured to 5s for the backend job
-    - Global evaluation interval at 15s
+  - Prometheus scrape interval configured to 5s for the backend job
+  - Global evaluation interval at 15s
 - Metric cardinality:
-    - Use label selectors and bucket configurations judiciously to avoid excessive series
-    - **New**: Persona KPIs add persona and operation dimensions but use sanitized labels to control cardinality
+  - Use label selectors and bucket configurations judiciously to avoid excessive series
+  - **New**: Persona KPIs add persona and operation dimensions but use sanitized labels to control cardinality
 - Background persistence:
-    - Model metrics persistence runs in a background thread to avoid blocking the pipeline
+  - Model metrics persistence runs in a background thread to avoid blocking the pipeline
 - Queue depth updates:
-    - Periodic updates reduce overhead while keeping queue metrics fresh
+  - Periodic updates reduce overhead while keeping queue metrics fresh
 - Caching:
-    - Health and readiness payloads are cached with TTLs to reduce repeated checks
+  - Health and readiness payloads are cached with TTLs to reduce repeated checks
 
 - **New**: Persona KPI recording overhead:
-    - Minimal performance impact with try/except blocks around persona KPI recording
-    - Automatic persona resolution uses simple string matching for efficiency
+  - Minimal performance impact with try/except blocks around persona KPI recording
+  - Automatic persona resolution uses simple string matching for efficiency
 
 **Section sources**
 
-- [prometheus.yml:5-16](file://backend/docker/prometheus/prometheus.yml#L5-L16)
-- [model_metrics.py:101-137](file://backend/app/services/model_metrics.py#L101-L137)
-- [main.py:138-147](file://backend/app/main.py#L138-L147)
-- [health_checks.py:195-226](file://backend/app/services/health_checks.py#L195-L226)
-- [main.py:45-106](file://backend/app/main.py#L45-L106)
-- [_helpers.py:54-68](file://backend/app/routers/v1/_helpers.py#L54-L68)
+- [prometheus.yml:5-16](../../../../backend/docker/prometheus/prometheus.yml#L5-L16)
+- [model_metrics.py:101-137](../../../../backend/app/services/model_metrics.py#L101-L137)
+- [main.py:138-147](../../../../backend/app/main.py#L138-L147)
+- [health_checks.py:195-226](../../../../backend/app/services/health_checks.py#L195-L226)
+- [main.py:45-106](../../../../backend/app/main.py#L45-L106)
+- [_helpers.py:54-68](../../../../backend/app/routers/v1/_helpers.py#L54-L68)
 
 ## Troubleshooting Guide
 
 Common issues and resolutions:
 
 - No metrics in Grafana:
-    - Verify Prometheus scrape job target matches backend address and port
-    - Confirm /metrics endpoint is reachable and returns text/plain
-    - **New**: Check persona KPI dashboard exists and references persona_events_total and persona_operation_duration_seconds metrics
+  - Verify Prometheus scrape job target matches backend address and port
+  - Confirm /metrics endpoint is reachable and returns text/plain
+  - **New**: Check persona KPI dashboard exists and references persona_events_total and persona_operation_duration_seconds metrics
 - Missing Supabase table for model metrics:
-    - Persistence disables itself after detecting missing table; ensure table exists or adjust expectations
+  - Persistence disables itself after detecting missing table; ensure table exists or adjust expectations
 - Health/Readiness degraded:
-    - Check DB connectivity, LLM provider availability, and AI model loading status
+  - Check DB connectivity, LLM provider availability, and AI model loading status
 - High error rate or latency spikes:
-    - Inspect pipeline P95 duration and step averages; correlate with queue depths and LLM cache hit rates
+  - Inspect pipeline P95 duration and step averages; correlate with queue depths and LLM cache hit rates
 - Real-time connection churn:
-    - Monitor SSE/WS reconnect rates and active connections to detect client-side instability
+  - Monitor SSE/WS reconnect rates and active connections to detect client-side instability
 
 - **Persona KPI tracking issues**:
-    - **New** Verify persona resolution works correctly for different API paths
-    - Check that persona_events_total and persona_operation_duration_seconds metrics are being recorded
-    - Ensure automatic KPI recording occurs in v1 router operations
-    - Validate persona KPI dashboard queries return expected results
+  - **New** Verify persona resolution works correctly for different API paths
+  - Check that persona_events_total and persona_operation_duration_seconds metrics are being recorded
+  - Ensure automatic KPI recording occurs in v1 router operations
+  - Validate persona KPI dashboard queries return expected results
 - **V1 metrics router issues**:
-    - **New** Verify /api/v1/metrics endpoints are properly routed through v1 router
-    - Check authentication requirements for admin-only endpoints
-    - Ensure frontend error logging endpoint properly increments tool usage metrics
+  - **New** Verify /api/v1/metrics endpoints are properly routed through v1 router
+  - Check authentication requirements for admin-only endpoints
+  - Ensure frontend error logging endpoint properly increments tool usage metrics
 
 **Section sources**
 
-- [prometheus.yml:5-16](file://backend/docker/prometheus/prometheus.yml#L5-L16)
-- [model_metrics.py:123-135](file://backend/app/services/model_metrics.py#L123-L135)
-- [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
-- [scholarform-overview.json:41-202](file://backend/ops/grafana/dashboards/scholarform-overview.json#L41-L202)
-- [main.py:45-106](file://backend/app/main.py#L45-L106)
-- [test_database.py:25-48](file://backend/tests/test_database.py#L25-L48)
-- [llm_validator.py:116-118](file://backend/app/pipeline/safety/llm_validator.py#L116-L118)
-- [test_persona_kpi_dashboard.py:6-14](file://backend/tests/test_persona_kpi_dashboard.py#L6-L14)
-- [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
+- [prometheus.yml:5-16](../../../../backend/docker/prometheus/prometheus.yml#L5-L16)
+- [model_metrics.py:123-135](../../../../backend/app/services/model_metrics.py#L123-L135)
+- [health_checks.py:85-127](../../../../backend/app/services/health_checks.py#L85-L127)
+- [scholarform-overview.json:41-202](../../../../backend/ops/grafana/dashboards/scholarform-overview.json#L41-L202)
+- [main.py:45-106](../../../../backend/app/main.py#L45-L106)
+- [test_database.py:25-48](../../../../backend/tests/test_database.py#L25-L48)
+- [llm_validator.py:116-118](../../../../backend/app/pipeline/safety/llm_validator.py#L116-L118)
+- [test_persona_kpi_dashboard.py:6-14](../../../../backend/tests/test_persona_kpi_dashboard.py#L6-L14)
+- [metrics.py:24-248](../../../../backend/app/routers/v1/metrics.py#L24-L248)
 
 ## Conclusion
 
@@ -624,8 +624,8 @@ The monitoring and metrics system provides comprehensive observability for the m
 
 **Section sources**
 
-- [prometheus_metrics.py:135-142](file://backend/app/middleware/prometheus_metrics.py#L135-L142)
-- [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
+- [prometheus_metrics.py:135-142](../../../../backend/app/middleware/prometheus_metrics.py#L135-L142)
+- [metrics.py:24-248](../../../../backend/app/routers/v1/metrics.py#L24-L248)
 
 ### Enhanced Custom Metric Definitions
 
@@ -637,19 +637,19 @@ The monitoring and metrics system provides comprehensive observability for the m
 
 **Section sources**
 
-- [prometheus_metrics.py:15-167](file://backend/app/middleware/prometheus_metrics.py#L15-L167)
+- [prometheus_metrics.py:15-167](../../../../backend/app/middleware/prometheus_metrics.py#L15-L167)
 
 ### Enhanced Alerting Strategies
 
 - Suggested alerts:
-    - High pipeline failure rate or sustained P95 latency increases
-    - Low LLM cache hit rate or frequent failures
-    - Elevated error rate from HTTP instrumentor
-    - Rising queue depths without corresponding worker throughput
-    - Declining active users or generation jobs
+  - High pipeline failure rate or sustained P95 latency increases
+  - Low LLM cache hit rate or frequent failures
+  - Elevated error rate from HTTP instrumentor
+  - Rising queue depths without corresponding worker throughput
+  - Declining active users or generation jobs
 
-    - **New**: Persona KPI monitoring: persona success rate drops, persona latency increases, persona throughput anomalies
-    - **New**: vLLM adoption monitoring: readiness status changes, provider performance degradation
+  - **New**: Persona KPI monitoring: persona success rate drops, persona latency increases, persona throughput anomalies
+  - **New**: vLLM adoption monitoring: readiness status changes, provider performance degradation
 
 ### Log Aggregation and Distributed Tracing
 
@@ -659,31 +659,31 @@ The monitoring and metrics system provides comprehensive observability for the m
 
 **Section sources**
 
-- [settings.py:26-28](file://backend/app/config/settings.py#L26-L28)
-- [main.py:40-59](file://backend/app/main.py#L40-L59)
-- [monitoring.py:17-50](file://backend/app/middleware/monitoring.py#L17-L50)
-- [main.py:45-106](file://backend/app/main.py#L45-L106)
+- [settings.py:26-28](../../../../backend/app/config/settings.py#L26-L28)
+- [main.py:40-59](../../../../backend/app/main.py#L40-L59)
+- [monitoring.py:17-50](../../../../backend/app/middleware/monitoring.py#L17-L50)
+- [main.py:45-106](../../../../backend/app/main.py#L45-L106)
 
 ### Enhanced Metric Retention and Capacity Planning
 
 - Retention policy:
-    - File cleanup scheduled periodically based on settings; configure retention_days accordingly
+  - File cleanup scheduled periodically based on settings; configure retention_days accordingly
 - Capacity planning insights:
-    - Monitor queue_depth and active_processing_jobs to size Celery workers
-    - Track LLM tokens_total and cache hit rates to right-size provider resources
-    - Observe pipeline step durations to optimize slowest stages
-    - **Enhanced error monitoring**: Reduced error volume allows better focus on genuine performance issues
-    - **Graceful degradation monitoring**: Track system resilience under various failure conditions
-    - **New**: Persona KPI insights: identify high-value personas, optimize for top-performing persona categories
-    - **New**: vLLM adoption metrics: monitor readiness progress and performance improvements
+  - Monitor queue_depth and active_processing_jobs to size Celery workers
+  - Track LLM tokens_total and cache hit rates to right-size provider resources
+  - Observe pipeline step durations to optimize slowest stages
+  - **Enhanced error monitoring**: Reduced error volume allows better focus on genuine performance issues
+  - **Graceful degradation monitoring**: Track system resilience under various failure conditions
+  - **New**: Persona KPI insights: identify high-value personas, optimize for top-performing persona categories
+  - **New**: vLLM adoption metrics: monitor readiness progress and performance improvements
 
 **Section sources**
 
-- [settings.py:128-131](file://backend/app/config/settings.py#L128-L131)
-- [main.py:106-114](file://backend/app/main.py#L106-L114)
-- [main.py:138-147](file://backend/app/main.py#L138-L147)
-- [scholarform-overview.json:88-125](file://backend/ops/grafana/dashboards/scholarform-overview.json#L88-L125)
-- [scholarform-persona-kpis.json:88-105](file://backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L88-L105)
+- [settings.py:128-131](../../../../backend/app/config/settings.py#L128-L131)
+- [main.py:106-114](../../../../backend/app/main.py#L106-L114)
+- [main.py:138-147](../../../../backend/app/main.py#L138-L147)
+- [scholarform-overview.json:88-125](../../../../backend/ops/grafana/dashboards/scholarform-overview.json#L88-L125)
+- [scholarform-persona-kpis.json:88-105](../../../../backend/ops/grafana/dashboards/scholarform-persona-kpis.json#L88-L105)
 
 ### Enhanced Production Monitoring Best Practices
 
@@ -699,11 +699,11 @@ The monitoring and metrics system provides comprehensive observability for the m
 
 **Section sources**
 
-- [main.py:303-313](file://backend/app/main.py#L303-L313)
-- [settings.py:76-82](file://backend/app/config/settings.py#L76-L82)
-- [health_checks.py:130-192](file://backend/app/services/health_checks.py#L130-L192)
-- [main.py:45-106](file://backend/app/main.py#L45-L106)
-- [test_database.py:25-48](file://backend/tests/test_database.py#L25-L48)
-- [llm_validator.py:116-118](file://backend/app/pipeline/safety/llm_validator.py#L116-L118)
-- [test_persona_kpi_dashboard.py:6-14](file://backend/tests/test_persona_kpi_dashboard.py#L6-L14)
-- [metrics.py:24-248](file://backend/app/routers/v1/metrics.py#L24-L248)
+- [main.py:303-313](../../../../backend/app/main.py#L303-L313)
+- [settings.py:76-82](../../../../backend/app/config/settings.py#L76-L82)
+- [health_checks.py:130-192](../../../../backend/app/services/health_checks.py#L130-L192)
+- [main.py:45-106](../../../../backend/app/main.py#L45-L106)
+- [test_database.py:25-48](../../../../backend/tests/test_database.py#L25-L48)
+- [llm_validator.py:116-118](../../../../backend/app/pipeline/safety/llm_validator.py#L116-L118)
+- [test_persona_kpi_dashboard.py:6-14](../../../../backend/tests/test_persona_kpi_dashboard.py#L6-L14)
+- [metrics.py:24-248](../../../../backend/app/routers/v1/metrics.py#L24-L248)

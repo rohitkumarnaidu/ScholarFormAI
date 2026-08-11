@@ -1505,7 +1505,8 @@ class TestCustomLLMFactory:
                     CustomLLMFactory.create_llm("invalid_provider", "model", 0.0)
 
     def test_create_llm_langchain_openai_no_key(self):
-        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False):
+        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
+             patch("app.pipeline.agents.llm_factory._llm_generate", None):
             with patch("app.pipeline.agents.llm_factory.settings") as s:
                 s.OPENAI_API_KEY = None
                 from app.pipeline.agents.llm_factory import CustomLLMFactory
@@ -1513,7 +1514,8 @@ class TestCustomLLMFactory:
                     CustomLLMFactory.create_llm("openai", "gpt-4", 0.0)
 
     def test_create_llm_langchain_openai_with_key(self):
-        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False):
+        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
+             patch("app.pipeline.agents.llm_factory._llm_generate", None):
             with patch("app.pipeline.agents.llm_factory.settings") as s:
                 s.OPENAI_API_KEY = "sk-test"
                 with patch("app.pipeline.agents.llm_factory.ChatOpenAI") as mock_co:
@@ -1523,7 +1525,8 @@ class TestCustomLLMFactory:
 
     def test_create_llm_langchain_anthropic(self):
         import sys
-        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False):
+        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
+             patch("app.pipeline.agents.llm_factory._llm_generate", None):
             with patch("app.pipeline.agents.llm_factory.settings") as s:
                 s.ANTHROPIC_API_KEY = "sk-ant"
                 with patch("app.pipeline.agents.llm_factory.sys.version_info", (3, 10)):
@@ -1543,7 +1546,8 @@ class TestCustomLLMFactory:
                             sys.modules.pop("langchain_anthropic", None)
 
     def test_create_llm_langchain_ollama(self):
-        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False):
+        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
+             patch("app.pipeline.agents.llm_factory._llm_generate", None):
             with patch("app.pipeline.agents.llm_factory.settings") as s:
                 s.OLLAMA_BASE_URL = "http://localhost:11434"
                 with patch("app.pipeline.agents.llm_factory.Ollama") as mock_ol:
@@ -1552,13 +1556,15 @@ class TestCustomLLMFactory:
                     mock_ol.assert_called_once()
 
     def test_create_llm_custom_not_implemented(self):
-        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False):
+        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
+             patch("app.pipeline.agents.llm_factory._llm_generate", None):
             from app.pipeline.agents.llm_factory import CustomLLMFactory
             with pytest.raises(NotImplementedError, match="Custom LLM endpoints not yet implemented"):
                 CustomLLMFactory.create_llm("custom", "model", 0.0)
 
     def test_create_llm_unsupported(self):
-        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False):
+        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
+             patch("app.pipeline.agents.llm_factory._llm_generate", None):
             from app.pipeline.agents.llm_factory import CustomLLMFactory
             with pytest.raises(ValueError, match="Unsupported provider"):
                 CustomLLMFactory.create_llm("bad", "model", 0.0)
@@ -2476,16 +2482,16 @@ class TestToolMarketplace:
 # ─── Tools sub-modules ─────────────────────────────────────────────────────────
 
 class TestFigureAnalysisTool:
-    @patch("app.pipeline.agents.tools.figure_tool.DoclingClient")
-    def test_init(self, mock_dc):
+    @patch("app.pipeline.agents.tools.figure_tool.FigureAnalysisTool._get_layout_analyzer")
+    def test_init(self, mock_get):
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
         t = FigureAnalysisTool()
         assert t.name == "analyze_figures"
 
-    @patch("app.pipeline.agents.tools.figure_tool.DoclingClient")
-    def test_run_success(self, mock_dc):
+    @patch("app.pipeline.agents.tools.figure_tool.FigureAnalysisTool._get_layout_analyzer")
+    def test_run_success(self, mock_get):
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
-        inst = mock_dc.return_value
+        inst = mock_get.return_value
         inst.analyze_layout.return_value = {"blocks": [
             {"block_type": "figure", "text": "Fig 1 caption", "bbox": {"x": 0}, "page": 1}
         ]}
@@ -2493,26 +2499,26 @@ class TestFigureAnalysisTool:
         result = t._run("test.pdf")
         assert "success" in result
 
-    @patch("app.pipeline.agents.tools.figure_tool.DoclingClient")
-    def test_run_no_layout(self, mock_dc):
+    @patch("app.pipeline.agents.tools.figure_tool.FigureAnalysisTool._get_layout_analyzer")
+    def test_run_no_layout(self, mock_get):
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
-        inst = mock_dc.return_value
+        inst = mock_get.return_value
         inst.analyze_layout.return_value = None
         t = FigureAnalysisTool()
         result = t._run("test.pdf")
         assert "ERROR" in result
 
-    @patch("app.pipeline.agents.tools.figure_tool.DoclingClient")
-    def test_run_exception(self, mock_dc):
+    @patch("app.pipeline.agents.tools.figure_tool.FigureAnalysisTool._get_layout_analyzer")
+    def test_run_exception(self, mock_get):
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
-        inst = mock_dc.return_value
+        inst = mock_get.return_value
         inst.analyze_layout.side_effect = RuntimeError("fail")
         t = FigureAnalysisTool()
         result = t._run("test.pdf")
         assert "ERROR" in result
 
-    @patch("app.pipeline.agents.tools.figure_tool.DoclingClient")
-    async def test_arun_not_implemented(self, mock_dc):
+    @patch("app.pipeline.agents.tools.figure_tool.FigureAnalysisTool._get_layout_analyzer")
+    async def test_arun_not_implemented(self, mock_get):
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
         t = FigureAnalysisTool()
         with pytest.raises(NotImplementedError):
@@ -2520,16 +2526,16 @@ class TestFigureAnalysisTool:
 
 
 class TestLayoutAnalysisTool:
-    @patch("app.pipeline.agents.tools.layout_tool.DoclingClient")
-    def test_init(self, mock_dc):
+    @patch("app.pipeline.agents.tools.layout_tool.LayoutAnalysisTool._get_layout_analyzer")
+    def test_init(self, mock_get):
         from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
         t = LayoutAnalysisTool()
         assert t.name == "analyze_layout"
 
-    @patch("app.pipeline.agents.tools.layout_tool.DoclingClient")
-    def test_run_success(self, mock_dc):
+    @patch("app.pipeline.agents.tools.layout_tool.LayoutAnalysisTool._get_layout_analyzer")
+    def test_run_success(self, mock_get):
         from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
-        inst = mock_dc.return_value
+        inst = mock_get.return_value
         inst.analyze_layout.return_value = {"blocks": [
             {"block_type": "heading_1", "text": "Intro", "font_size": 16},
             {"block_type": "paragraph", "text": "Content", "font_size": 12}
@@ -2538,19 +2544,19 @@ class TestLayoutAnalysisTool:
         result = t._run("test.pdf")
         assert "success" in result
 
-    @patch("app.pipeline.agents.tools.layout_tool.DoclingClient")
-    def test_run_no_data(self, mock_dc):
+    @patch("app.pipeline.agents.tools.layout_tool.LayoutAnalysisTool._get_layout_analyzer")
+    def test_run_no_data(self, mock_get):
         from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
-        inst = mock_dc.return_value
+        inst = mock_get.return_value
         inst.analyze_layout.return_value = None
         t = LayoutAnalysisTool()
         result = t._run("test.pdf")
         assert "ERROR" in result
 
-    @patch("app.pipeline.agents.tools.layout_tool.DoclingClient")
-    def test_run_exception(self, mock_dc):
+    @patch("app.pipeline.agents.tools.layout_tool.LayoutAnalysisTool._get_layout_analyzer")
+    def test_run_exception(self, mock_get):
         from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
-        inst = mock_dc.return_value
+        inst = mock_get.return_value
         inst.analyze_layout.side_effect = RuntimeError("fail")
         t = LayoutAnalysisTool()
         result = t._run("test.pdf")

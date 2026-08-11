@@ -5,20 +5,20 @@
 
 <cite>
 **Referenced Files in This Document**
-- [main.py](file://backend/app/main.py)
-- [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
-- [rate_limit.py](file://backend/app/middleware/rate_limit.py)
-- [tier_rate_limit.py](file://backend/app/middleware/tier_rate_limit.py)
-- [abuse_detector.py](file://backend/app/middleware/abuse_detector.py)
-- [request_id.py](file://backend/app/middleware/request_id.py)
-- [security_headers.py](file://backend/app/middleware/security_headers.py)
-- [rbac.py](file://backend/app/middleware/rbac.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [redis_cache.py](file://backend/app/cache/redis_cache.py)
-- [logging_context.py](file://backend/app/utils/logging_context.py)
-- [test_rate_limiter.py](file://backend/tests/test_rate_limiter.py)
-- [test_tier_rate_limit.py](file://backend/tests/test_tier_rate_limit.py)
-- [test_rbac.py](file://backend/tests/test_rbac.py)
+- [main.py](../../../../backend/app/main.py)
+- [prometheus_metrics.py](../../../../backend/app/middleware/prometheus_metrics.py)
+- [rate_limit.py](../../../../backend/app/middleware/rate_limit.py)
+- [tier_rate_limit.py](../../../../backend/app/middleware/tier_rate_limit.py)
+- [abuse_detector.py](../../../../backend/app/middleware/abuse_detector.py)
+- [request_id.py](../../../../backend/app/middleware/request_id.py)
+- [security_headers.py](../../../../backend/app/middleware/security_headers.py)
+- [rbac.py](../../../../backend/app/middleware/rbac.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [redis_cache.py](../../../../backend/app/cache/redis_cache.py)
+- [logging_context.py](../../../../backend/app/utils/logging_context.py)
+- [test_rate_limiter.py](../../../../backend/tests/test_rate_limiter.py)
+- [test_tier_rate_limit.py](../../../../backend/tests/test_tier_rate_limit.py)
+- [test_rbac.py](../../../../backend/tests/test_rbac.py)
 </cite>
 
 ## Table of Contents
@@ -56,11 +56,11 @@ A --> J["Metrics Endpoint<br/>Instrumentator + /metrics"]
 
 **Diagram sources**
 
-- [main.py:279-315](file://backend/app/main.py#L279-L315)
+- [main.py:279-315](../../../../backend/app/main.py#L279-L315)
 
 **Section sources**
 
-- [main.py:279-315](file://backend/app/main.py#L279-L315)
+- [main.py:279-315](../../../../backend/app/main.py#L279-L315)
 
 ## Core Components
 
@@ -74,13 +74,13 @@ A --> J["Metrics Endpoint<br/>Instrumentator + /metrics"]
 
 **Section sources**
 
-- [prometheus_metrics.py:135-142](file://backend/app/middleware/prometheus_metrics.py#L135-L142)
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
-- [tier_rate_limit.py:19-116](file://backend/app/middleware/tier_rate_limit.py#L19-L116)
-- [abuse_detector.py:14-70](file://backend/app/middleware/abuse_detector.py#L14-L70)
-- [request_id.py:21-74](file://backend/app/middleware/request_id.py#L21-L74)
-- [security_headers.py:18-66](file://backend/app/middleware/security_headers.py#L18-L66)
-- [rbac.py:9-80](file://backend/app/middleware/rbac.py#L9-L80)
+- [prometheus_metrics.py:135-142](../../../../backend/app/middleware/prometheus_metrics.py#L135-L142)
+- [rate_limit.py:49-172](../../../../backend/app/middleware/rate_limit.py#L49-L172)
+- [tier_rate_limit.py:19-116](../../../../backend/app/middleware/tier_rate_limit.py#L19-L116)
+- [abuse_detector.py:14-70](../../../../backend/app/middleware/abuse_detector.py#L14-L70)
+- [request_id.py:21-74](../../../../backend/app/middleware/request_id.py#L21-L74)
+- [security_headers.py:18-66](../../../../backend/app/middleware/security_headers.py#L18-L66)
+- [rbac.py:9-80](../../../../backend/app/middleware/rbac.py#L9-L80)
 
 ## Architecture Overview
 
@@ -120,8 +120,8 @@ MET-->>Client : Response with metrics
 
 **Diagram sources**
 
-- [main.py:279-315](file://backend/app/main.py#L279-L315)
-- [prometheus_metrics.py:135-142](file://backend/app/middleware/prometheus_metrics.py#L135-L142)
+- [main.py:279-315](../../../../backend/app/main.py#L279-L315)
+- [prometheus_metrics.py:135-142](../../../../backend/app/middleware/prometheus_metrics.py#L135-L142)
 
 ## Detailed Component Analysis
 
@@ -141,13 +141,13 @@ Start --> |Any other path| Next["Call next middleware/handler"]
 
 **Diagram sources**
 
-- [prometheus_metrics.py:135-142](file://backend/app/middleware/prometheus_metrics.py#L135-L142)
+- [prometheus_metrics.py:135-142](../../../../backend/app/middleware/prometheus_metrics.py#L135-L142)
 
 **Section sources**
 
-- [prometheus_metrics.py:135-142](file://backend/app/middleware/prometheus_metrics.py#L135-L142)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
-- [main.py:273-274](file://backend/app/main.py#L273-L274)
+- [prometheus_metrics.py:135-142](../../../../backend/app/middleware/prometheus_metrics.py#L135-L142)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [main.py:273-274](../../../../backend/app/main.py#L273-L274)
 
 ### Base Rate Limiting
 
@@ -178,13 +178,13 @@ K --> |No| M["Call next"]
 
 **Diagram sources**
 
-- [rate_limit.py:124-172](file://backend/app/middleware/rate_limit.py#L124-L172)
+- [rate_limit.py:124-172](../../../../backend/app/middleware/rate_limit.py#L124-L172)
 
 **Section sources**
 
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
-- [settings.py:96-96](file://backend/app/config/settings.py#L96-L96)
-- [redis_cache.py:10-39](file://backend/app/cache/redis_cache.py#L10-L39)
+- [rate_limit.py:49-172](../../../../backend/app/middleware/rate_limit.py#L49-L172)
+- [settings.py:96-96](../../../../backend/app/config/settings.py#L96-L96)
+- [redis_cache.py:10-39](../../../../backend/app/cache/redis_cache.py#L10-L39)
 
 ### Tier-Aware Rate Limiting
 
@@ -202,7 +202,7 @@ B --> |No| C{"Is limited endpoint?"}
 C --> |No| Z
 C --> |Yes| D{"Has valid JWT?"}
 D --> |Yes| Z
-D --> |No| E["Increment guest count (day key)"]
+D --> |No| E["Increment guest count ("day key")"]
 E --> F{"Count > limit?"}
 F --> |Yes| G["Return 429 with upgrade hint"]
 F --> |No| Z
@@ -210,12 +210,12 @@ F --> |No| Z
 
 **Diagram sources**
 
-- [tier_rate_limit.py:96-116](file://backend/app/middleware/tier_rate_limit.py#L96-L116)
+- [tier_rate_limit.py:96-116](../../../../backend/app/middleware/tier_rate_limit.py#L96-L116)
 
 **Section sources**
 
-- [tier_rate_limit.py:19-116](file://backend/app/middleware/tier_rate_limit.py#L19-L116)
-- [redis_cache.py:10-39](file://backend/app/cache/redis_cache.py#L10-L39)
+- [tier_rate_limit.py:19-116](../../../../backend/app/middleware/tier_rate_limit.py#L19-L116)
+- [redis_cache.py:10-39](../../../../backend/app/cache/redis_cache.py#L10-L39)
 
 ### Abuse Detection
 
@@ -226,7 +226,7 @@ F --> |No| Z
 
 ```mermaid
 flowchart TD
-A["Incoming Request"] --> B["Increment bucket (IP or user)"]
+A["Incoming Request"] --> B["Increment bucket ("IP or user")"]
 B --> C{"Exceeded threshold?"}
 C --> |No| D["Continue"]
 C --> |Yes| E["Log admin_action with details"]
@@ -235,12 +235,12 @@ E --> D
 
 **Diagram sources**
 
-- [abuse_detector.py:20-66](file://backend/app/middleware/abuse_detector.py#L20-L66)
+- [abuse_detector.py:20-66](../../../../backend/app/middleware/abuse_detector.py#L20-L66)
 
 **Section sources**
 
-- [abuse_detector.py:14-70](file://backend/app/middleware/abuse_detector.py#L14-L70)
-- [redis_cache.py:10-39](file://backend/app/cache/redis_cache.py#L10-L39)
+- [abuse_detector.py:14-70](../../../../backend/app/middleware/abuse_detector.py#L14-L70)
+- [redis_cache.py:10-39](../../../../backend/app/cache/redis_cache.py#L10-L39)
 
 ### Request ID Tracking
 
@@ -260,12 +260,12 @@ E --> F["Reset context"]
 
 **Diagram sources**
 
-- [request_id.py:25-59](file://backend/app/middleware/request_id.py#L25-L59)
+- [request_id.py:25-59](../../../../backend/app/middleware/request_id.py#L25-L59)
 
 **Section sources**
 
-- [request_id.py:21-74](file://backend/app/middleware/request_id.py#L21-L74)
-- [logging_context.py:17-92](file://backend/app/utils/logging_context.py#L17-L92)
+- [request_id.py:21-74](../../../../backend/app/middleware/request_id.py#L21-L74)
+- [logging_context.py:17-92](../../../../backend/app/utils/logging_context.py#L17-L92)
 
 ### Security Headers (CSP, HSTS, etc.)
 
@@ -286,13 +286,13 @@ E --> F
 
 **Diagram sources**
 
-- [security_headers.py:28-66](file://backend/app/middleware/security_headers.py#L28-L66)
-- [main.py:309-313](file://backend/app/main.py#L309-L313)
+- [security_headers.py:28-66](../../../../backend/app/middleware/security_headers.py#L28-L66)
+- [main.py:309-313](../../../../backend/app/main.py#L309-L313)
 
 **Section sources**
 
-- [security_headers.py:18-66](file://backend/app/middleware/security_headers.py#L18-L66)
-- [main.py:299-313](file://backend/app/main.py#L299-L313)
+- [security_headers.py:18-66](../../../../backend/app/middleware/security_headers.py#L18-L66)
+- [main.py:299-313](../../../../backend/app/main.py#L299-L313)
 
 ### RBAC Implementation
 
@@ -312,21 +312,21 @@ D --> |No| F["Raise HTTP 403"]
 
 **Diagram sources**
 
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
+- [rbac.py:61-80](../../../../backend/app/middleware/rbac.py#L61-L80)
 
 **Section sources**
 
-- [rbac.py:9-80](file://backend/app/middleware/rbac.py#L9-L80)
+- [rbac.py:9-80](../../../../backend/app/middleware/rbac.py#L9-L80)
 
 ## Dependency Analysis
 
 - Registration order: CORS → Base Rate Limit → Tier Rate Limit → Security Headers → Max Body Size → HTTPS Redirect + HSTS → Request ID → RBAC → Handlers → Metrics.
 - Interactions:
-    - Rate limiters depend on RedisCache for distributed counters; fallback to in-memory when unavailable.
-    - Abuse detector depends on RedisCache and audit logging service.
-    - Request ID middleware integrates with logging context for structured logs.
-    - RBAC depends on current user extraction and JWT verification.
-    - Metrics middleware is exposed last to avoid interference with metric recording.
+  - Rate limiters depend on RedisCache for distributed counters; fallback to in-memory when unavailable.
+  - Abuse detector depends on RedisCache and audit logging service.
+  - Request ID middleware integrates with logging context for structured logs.
+  - RBAC depends on current user extraction and JWT verification.
+  - Metrics middleware is exposed last to avoid interference with metric recording.
 
 ```mermaid
 graph LR
@@ -343,88 +343,88 @@ HANDLER --> METRICS["Instrumentator /metrics"]
 
 **Diagram sources**
 
-- [main.py:279-315](file://backend/app/main.py#L279-L315)
+- [main.py:279-315](../../../../backend/app/main.py#L279-L315)
 
 **Section sources**
 
-- [main.py:279-315](file://backend/app/main.py#L279-L315)
-- [rate_limit.py:30-42](file://backend/app/middleware/rate_limit.py#L30-L42)
-- [tier_rate_limit.py:30-32](file://backend/app/middleware/tier_rate_limit.py#L30-L32)
-- [abuse_detector.py:16-18](file://backend/app/middleware/abuse_detector.py#L16-L18)
-- [request_id.py:34-34](file://backend/app/middleware/request_id.py#L34-L34)
-- [rbac.py:7-7](file://backend/app/middleware/rbac.py#L7-L7)
+- [main.py:279-315](../../../../backend/app/main.py#L279-L315)
+- [rate_limit.py:30-42](../../../../backend/app/middleware/rate_limit.py#L30-L42)
+- [tier_rate_limit.py:30-32](../../../../backend/app/middleware/tier_rate_limit.py#L30-L32)
+- [abuse_detector.py:16-18](../../../../backend/app/middleware/abuse_detector.py#L16-L18)
+- [request_id.py:34-34](../../../../backend/app/middleware/request_id.py#L34-L34)
+- [rbac.py:7-7](../../../../backend/app/middleware/rbac.py#L7-L7)
 
 ## Performance Considerations
 
 - Rate limiting:
-    - In-memory sliding window is O(n) per request due to eviction; acceptable for typical loads.
-    - Redis operations are lightweight; failures are handled gracefully.
+  - In-memory sliding window is O(n) per request due to eviction; acceptable for typical loads.
+  - Redis operations are lightweight; failures are handled gracefully.
 - Tier rate limiting:
-    - Daily counters use UTC day keys; Redis incr + expire per request; fallback to in-memory reduces contention.
+  - Daily counters use UTC day keys; Redis incr + expire per request; fallback to in-memory reduces contention.
 - Abuse detection:
-    - Short-lived sliding windows minimize memory footprint.
+  - Short-lived sliding windows minimize memory footprint.
 - Request ID:
-    - Context binding and response header setting are negligible.
+  - Context binding and response header setting are negligible.
 - Security headers:
-    - One-time header computation per response.
+  - One-time header computation per response.
 - Metrics:
-    - Histograms and gauges are efficient; scraping is off-the-wire.
+  - Histograms and gauges are efficient; scraping is off-the-wire.
 
 [No sources needed since this section provides general guidance]
 
 ## Troubleshooting Guide
 
 - Rate limiting:
-    - Symptom: Unexpected 429 responses.
-    - Actions: Verify requests_per_minute and uploads_per_minute; confirm Redis connectivity; check whether uploads include bearer token fingerprinting.
-    - References:
-        - [rate_limit.py:124-172](file://backend/app/middleware/rate_limit.py#L124-L172)
-        - [settings.py:96-96](file://backend/app/config/settings.py#L96-L96)
-        - [redis_cache.py:10-39](file://backend/app/cache/redis_cache.py#L10-L39)
-        - [test_rate_limiter.py:20-99](file://backend/tests/test_rate_limiter.py#L20-L99)
+  - Symptom: Unexpected 429 responses.
+  - Actions: Verify requests_per_minute and uploads_per_minute; confirm Redis connectivity; check whether uploads include bearer token fingerprinting.
+  - References:
+    - [rate_limit.py:124-172](../../../../backend/app/middleware/rate_limit.py#L124-L172)
+    - [settings.py:96-96](../../../../backend/app/config/settings.py#L96-L96)
+    - [redis_cache.py:10-39](../../../../backend/app/cache/redis_cache.py#L10-L39)
+    - [test_rate_limiter.py:20-99](../../../../backend/tests/test_rate_limiter.py#L20-L99)
 - Tier rate limiting:
-    - Symptom: Guest blocked after N requests.
-    - Actions: Confirm guest_daily_limit; ensure JWT is valid for authenticated bypass; check Redis availability.
-    - References:
-        - [tier_rate_limit.py:96-116](file://backend/app/middleware/tier_rate_limit.py#L96-L116)
-        - [redis_cache.py:10-39](file://backend/app/cache/redis_cache.py#L10-L39)
-        - [test_tier_rate_limit.py:9-46](file://backend/tests/test_tier_rate_limit.py#L9-L46)
+  - Symptom: Guest blocked after N requests.
+  - Actions: Confirm guest_daily_limit; ensure JWT is valid for authenticated bypass; check Redis availability.
+  - References:
+    - [tier_rate_limit.py:96-116](../../../../backend/app/middleware/tier_rate_limit.py#L96-L116)
+    - [redis_cache.py:10-39](../../../../backend/app/cache/redis_cache.py#L10-L39)
+    - [test_tier_rate_limit.py:9-46](../../../../backend/tests/test_tier_rate_limit.py#L9-L46)
 - Abuse detection:
-    - Symptom: Administrative alerts for flagged activity.
-    - Actions: Review abuse thresholds and window sizes; verify Redis availability.
-    - References:
-        - [abuse_detector.py:20-66](file://backend/app/middleware/abuse_detector.py#L20-L66)
-        - [redis_cache.py:10-39](file://backend/app/cache/redis_cache.py#L10-L39)
+  - Symptom: Administrative alerts for flagged activity.
+  - Actions: Review abuse thresholds and window sizes; verify Redis availability.
+  - References:
+    - [abuse_detector.py:20-66](../../../../backend/app/middleware/abuse_detector.py#L20-L66)
+    - [redis_cache.py:10-39](../../../../backend/app/cache/redis_cache.py#L10-L39)
 - Request ID:
-    - Symptom: Missing correlation IDs in logs.
-    - Actions: Ensure x-request-id is present or generated; verify logging context filter and response header propagation.
-    - References:
-        - [request_id.py:25-59](file://backend/app/middleware/request_id.py#L25-L59)
-        - [logging_context.py:83-92](file://backend/app/utils/logging_context.py#L83-L92)
+  - Symptom: Missing correlation IDs in logs.
+  - Actions: Ensure x-request-id is present or generated; verify logging context filter and response header propagation.
+  - References:
+    - [request_id.py:25-59](../../../../backend/app/middleware/request_id.py#L25-L59)
+    - [logging_context.py:83-92](../../../../backend/app/utils/logging_context.py#L83-L92)
 - Security headers:
-    - Symptom: CSP violations or mixed-content warnings.
-    - Actions: Confirm environment settings; note docs route relaxes CSP; verify HTTPS redirect and HSTS header in production.
-    - References:
-        - [security_headers.py:28-66](file://backend/app/middleware/security_headers.py#L28-L66)
-        - [main.py:309-313](file://backend/app/main.py#L309-L313)
+  - Symptom: CSP violations or mixed-content warnings.
+  - Actions: Confirm environment settings; note docs route relaxes CSP; verify HTTPS redirect and HSTS header in production.
+  - References:
+    - [security_headers.py:28-66](../../../../backend/app/middleware/security_headers.py#L28-L66)
+    - [main.py:309-313](../../../../backend/app/main.py#L309-L313)
 - RBAC:
-    - Symptom: 403 Forbidden errors.
-    - Actions: Verify current user extraction and JWT; check role aliases and hierarchy; confirm require_role usage.
-    - References:
-        - [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
-        - [test_rbac.py:16-62](file://backend/tests/test_rbac.py#L16-L62)
+  - Symptom: 403 Forbidden errors.
+  - Actions: Verify current user extraction and JWT; check role aliases and hierarchy; confirm require_role usage.
+  - References:
+    - [rbac.py:61-80](../../../../backend/app/middleware/rbac.py#L61-L80)
+    - [test_rbac.py:16-62](../../../../backend/tests/test_rbac.py#L16-L62)
 
 **Section sources**
 
-- [rate_limit.py:124-172](file://backend/app/middleware/rate_limit.py#L124-L172)
-- [tier_rate_limit.py:96-116](file://backend/app/middleware/tier_rate_limit.py#L96-L116)
-- [abuse_detector.py:20-66](file://backend/app/middleware/abuse_detector.py#L20-L66)
-- [request_id.py:25-59](file://backend/app/middleware/request_id.py#L25-L59)
-- [security_headers.py:28-66](file://backend/app/middleware/security_headers.py#L28-L66)
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
-- [test_rate_limiter.py:20-99](file://backend/tests/test_rate_limiter.py#L20-L99)
-- [test_tier_rate_limit.py:9-46](file://backend/tests/test_tier_rate_limit.py#L9-L46)
-- [test_rbac.py:16-62](file://backend/tests/test_rbac.py#L16-L62)
+- [rate_limit.py:124-172](../../../../backend/app/middleware/rate_limit.py#L124-L172)
+- [tier_rate_limit.py:96-116](../../../../backend/app/middleware/tier_rate_limit.py#L96-L116)
+- [abuse_detector.py:20-66](../../../../backend/app/middleware/abuse_detector.py#L20-L66)
+- [request_id.py:25-59](../../../../backend/app/middleware/request_id.py#L25-L59)
+- [security_headers.py:28-66](../../../../backend/app/middleware/security_headers.py#L28-L66)
+- [rbac.py:61-80](../../../../backend/app/middleware/rbac.py#L61-L80)
+- [test_rate_limiter.py:20-99](../../../../backend/tests/test_rate_limiter.py#L20-L99)
+- [test_tier_rate_limit.py:9-46](../../../../backend/tests/test_tier_rate_limit.py#L9-L46)
+- [test_rbac.py:16-62](../../../../backend/tests/test_rbac.py#L16-L62)
 
 ## Conclusion
 

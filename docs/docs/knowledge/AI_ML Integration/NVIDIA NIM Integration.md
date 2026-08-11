@@ -5,14 +5,14 @@
 
 <cite>
 **Referenced Files in This Document**
-- [nvidia_client.py](file://backend/app/services/nvidia_client.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
-- [redis_cache.py](file://backend/app/cache/redis_cache.py)
-- [test_nvidia_client.py](file://backend/tests/test_nvidia_client.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [main.py](file://backend/app/main.py)
+- [nvidia_client.py](../../../../backend/app/services/nvidia_client.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [prometheus_metrics.py](../../../../backend/app/middleware/prometheus_metrics.py)
+- [redis_cache.py](../../../../backend/app/cache/redis_cache.py)
+- [test_nvidia_client.py](../../../../backend/tests/test_nvidia_client.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [main.py](../../../../backend/app/main.py)
 </cite>
 
 ## Table of Contents
@@ -63,19 +63,19 @@ LLM --> RC
 
 **Diagram sources**
 
-- [nvidia_client.py:30-260](file://backend/app/services/nvidia_client.py#L30-L260)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [settings.py:146-154](file://backend/app/config/settings.py#L146-L154)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
-- [redis_cache.py:10-101](file://backend/app/cache/redis_cache.py#L10-L101)
+- [nvidia_client.py:30-260](../../../../backend/app/services/nvidia_client.py#L30-L260)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [settings.py:146-154](../../../../backend/app/config/settings.py#L146-L154)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [redis_cache.py:10-101](../../../../backend/app/cache/redis_cache.py#L10-L101)
 
 **Section sources**
 
-- [nvidia_client.py:1-260](file://backend/app/services/nvidia_client.py#L1-L260)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [settings.py:146-154](file://backend/app/config/settings.py#L146-L154)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
-- [redis_cache.py:10-101](file://backend/app/cache/redis_cache.py#L10-L101)
+- [nvidia_client.py:1-260](../../../../backend/app/services/nvidia_client.py#L1-L260)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [settings.py:146-154](../../../../backend/app/config/settings.py#L146-L154)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [redis_cache.py:10-101](../../../../backend/app/cache/redis_cache.py#L10-L101)
 
 ## Core Components
 
@@ -86,11 +86,11 @@ LLM --> RC
 
 **Section sources**
 
-- [nvidia_client.py:30-260](file://backend/app/services/nvidia_client.py#L30-L260)
-- [llm_service.py:91-268](file://backend/app/services/llm_service.py#L91-L268)
-- [settings.py:146-154](file://backend/app/config/settings.py#L146-L154)
-- [prometheus_metrics.py:60-90](file://backend/app/middleware/prometheus_metrics.py#L60-L90)
-- [redis_cache.py:77-99](file://backend/app/cache/redis_cache.py#L77-L99)
+- [nvidia_client.py:30-260](../../../../backend/app/services/nvidia_client.py#L30-L260)
+- [llm_service.py:91-268](../../../../backend/app/services/llm_service.py#L91-L268)
+- [settings.py:146-154](../../../../backend/app/config/settings.py#L146-L154)
+- [prometheus_metrics.py:60-90](../../../../backend/app/middleware/prometheus_metrics.py#L60-L90)
+- [redis_cache.py:77-99](../../../../backend/app/cache/redis_cache.py#L77-L99)
 
 ## Architecture Overview
 
@@ -128,9 +128,9 @@ NC-->>App : text
 
 **Diagram sources**
 
-- [nvidia_client.py:95-139](file://backend/app/services/nvidia_client.py#L95-L139)
-- [llm_service.py:119-202](file://backend/app/services/llm_service.py#L119-L202)
-- [redis_cache.py:77-99](file://backend/app/cache/redis_cache.py#L77-L99)
+- [nvidia_client.py:95-139](../../../../backend/app/services/nvidia_client.py#L95-L139)
+- [llm_service.py:119-202](../../../../backend/app/services/llm_service.py#L119-L202)
+- [redis_cache.py:77-99](../../../../backend/app/cache/redis_cache.py#L77-L99)
 
 ## Detailed Component Analysis
 
@@ -166,12 +166,12 @@ class NvidiaClient {
 
 **Diagram sources**
 
-- [nvidia_client.py:30-260](file://backend/app/services/nvidia_client.py#L30-L260)
+- [nvidia_client.py:30-260](../../../../backend/app/services/nvidia_client.py#L30-L260)
 
 **Section sources**
 
-- [nvidia_client.py:30-139](file://backend/app/services/nvidia_client.py#L30-L139)
-- [test_nvidia_client.py:16-22](file://backend/tests/test_nvidia_client.py#L16-L22)
+- [nvidia_client.py:30-139](../../../../backend/app/services/nvidia_client.py#L30-L139)
+- [test_nvidia_client.py:16-22](../../../../backend/tests/test_nvidia_client.py#L16-L22)
 
 ### Unified LLM Service
 
@@ -210,11 +210,11 @@ OLOK --> |No| LogOL["Record failure metric"] --> Raise["Raise LLMUnavailableErro
 
 **Diagram sources**
 
-- [llm_service.py:205-268](file://backend/app/services/llm_service.py#L205-L268)
+- [llm_service.py:205-268](../../../../backend/app/services/llm_service.py#L205-L268)
 
 **Section sources**
 
-- [llm_service.py:91-268](file://backend/app/services/llm_service.py#L91-L268)
+- [llm_service.py:91-268](../../../../backend/app/services/llm_service.py#L91-L268)
 
 ### Configuration and Authentication
 
@@ -232,8 +232,8 @@ Configuration highlights:
 
 **Section sources**
 
-- [settings.py:146-154](file://backend/app/config/settings.py#L146-L154)
-- [llm_service.py:158-185](file://backend/app/services/llm_service.py#L158-L185)
+- [settings.py:146-154](../../../../backend/app/config/settings.py#L146-L154)
+- [llm_service.py:158-185](../../../../backend/app/services/llm_service.py#L158-L185)
 
 ### Fallback Mechanisms
 
@@ -243,9 +243,9 @@ Configuration highlights:
 
 **Section sources**
 
-- [nvidia_client.py:95-139](file://backend/app/services/nvidia_client.py#L95-L139)
-- [llm_service.py:205-268](file://backend/app/services/llm_service.py#L205-L268)
-- [llm_service.py:359-391](file://backend/app/services/llm_service.py#L359-L391)
+- [nvidia_client.py:95-139](../../../../backend/app/services/nvidia_client.py#L95-L139)
+- [llm_service.py:205-268](../../../../backend/app/services/llm_service.py#L205-L268)
+- [llm_service.py:359-391](../../../../backend/app/services/llm_service.py#L359-L391)
 
 ### Error Handling Strategies
 
@@ -256,26 +256,26 @@ Configuration highlights:
 
 **Section sources**
 
-- [nvidia_client.py:88-139](file://backend/app/services/nvidia_client.py#L88-L139)
-- [llm_service.py:267-268](file://backend/app/services/llm_service.py#L267-L268)
-- [main.py:318-328](file://backend/app/main.py#L318-L328)
+- [nvidia_client.py:88-139](../../../../backend/app/services/nvidia_client.py#L88-L139)
+- [llm_service.py:267-268](../../../../backend/app/services/llm_service.py#L267-L268)
+- [main.py:318-328](../../../../backend/app/main.py#L318-L328)
 
 ### Performance Monitoring
 
 - Prometheus metrics:
-    - LLM request duration and TTFT histograms.
-    - LLM cache hits and misses counters.
-    - LLM failures counter by provider.
+  - LLM request duration and TTFT histograms.
+  - LLM cache hits and misses counters.
+  - LLM failures counter by provider.
 - Metrics recorded in LLM service and NvidiaClient.
 - Application-wide metrics endpoint exposed via Prometheus instrumentation.
 
 **Section sources**
 
-- [prometheus_metrics.py:60-90](file://backend/app/middleware/prometheus_metrics.py#L60-L90)
-- [prometheus_metrics.py:174-191](file://backend/app/middleware/prometheus_metrics.py#L174-L191)
-- [llm_service.py:195-202](file://backend/app/services/llm_service.py#L195-L202)
-- [nvidia_client.py:125-131](file://backend/app/services/nvidia_client.py#L125-L131)
-- [main.py:273-274](file://backend/app/main.py#L273-L274)
+- [prometheus_metrics.py:60-90](../../../../backend/app/middleware/prometheus_metrics.py#L60-L90)
+- [prometheus_metrics.py:174-191](../../../../backend/app/middleware/prometheus_metrics.py#L174-L191)
+- [llm_service.py:195-202](../../../../backend/app/services/llm_service.py#L195-L202)
+- [nvidia_client.py:125-131](../../../../backend/app/services/nvidia_client.py#L125-L131)
+- [main.py:273-274](../../../../backend/app/main.py#L273-L274)
 
 ### Cost Optimization Techniques
 
@@ -286,9 +286,9 @@ Configuration highlights:
 
 **Section sources**
 
-- [redis_cache.py:77-99](file://backend/app/cache/redis_cache.py#L77-L99)
-- [llm_service.py:66-77](file://backend/app/services/llm_service.py#L66-L77)
-- [nvidia_client.py:92-93](file://backend/app/services/nvidia_client.py#L92-L93)
+- [redis_cache.py:77-99](../../../../backend/app/cache/redis_cache.py#L77-L99)
+- [llm_service.py:66-77](../../../../backend/app/services/llm_service.py#L66-L77)
+- [nvidia_client.py:92-93](../../../../backend/app/services/nvidia_client.py#L92-L93)
 
 ### Integration with the Main AI Pipeline
 
@@ -298,9 +298,9 @@ Configuration highlights:
 
 **Section sources**
 
-- [reasoning_engine.py:480-504](file://backend/app/pipeline/intelligence/reasoning_engine.py#L480-L504)
-- [llm_service.py:359-391](file://backend/app/services/llm_service.py#L359-L391)
-- [main.py:198-229](file://backend/app/main.py#L198-L229)
+- [reasoning_engine.py:480-504](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L480-L504)
+- [llm_service.py:359-391](../../../../backend/app/services/llm_service.py#L359-L391)
+- [main.py:198-229](../../../../backend/app/main.py#L198-L229)
 
 ## Dependency Analysis
 
@@ -316,16 +316,16 @@ LLM --> RC["Redis Cache"]
 
 **Diagram sources**
 
-- [nvidia_client.py:15-21](file://backend/app/services/nvidia_client.py#L15-L21)
-- [llm_service.py:16-32](file://backend/app/services/llm_service.py#L16-L32)
-- [settings.py:146-154](file://backend/app/config/settings.py#L146-L154)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
-- [redis_cache.py:10-101](file://backend/app/cache/redis_cache.py#L10-L101)
+- [nvidia_client.py:15-21](../../../../backend/app/services/nvidia_client.py#L15-L21)
+- [llm_service.py:16-32](../../../../backend/app/services/llm_service.py#L16-L32)
+- [settings.py:146-154](../../../../backend/app/config/settings.py#L146-L154)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [redis_cache.py:10-101](../../../../backend/app/cache/redis_cache.py#L10-L101)
 
 **Section sources**
 
-- [nvidia_client.py:15-21](file://backend/app/services/nvidia_client.py#L15-L21)
-- [llm_service.py:16-32](file://backend/app/services/llm_service.py#L16-L32)
+- [nvidia_client.py:15-21](../../../../backend/app/services/nvidia_client.py#L15-L21)
+- [llm_service.py:16-32](../../../../backend/app/services/llm_service.py#L16-L32)
 
 ## Performance Considerations
 
@@ -353,10 +353,10 @@ Operational tips:
 
 **Section sources**
 
-- [test_nvidia_client.py:16-22](file://backend/tests/test_nvidia_client.py#L16-L22)
-- [nvidia_client.py:44-62](file://backend/app/services/nvidia_client.py#L44-L62)
-- [llm_service.py:267-268](file://backend/app/services/llm_service.py#L267-L268)
-- [prometheus_metrics.py:174-175](file://backend/app/middleware/prometheus_metrics.py#L174-L175)
+- [test_nvidia_client.py:16-22](../../../../backend/tests/test_nvidia_client.py#L16-L22)
+- [nvidia_client.py:44-62](../../../../backend/app/services/nvidia_client.py#L44-L62)
+- [llm_service.py:267-268](../../../../backend/app/services/llm_service.py#L267-L268)
+- [prometheus_metrics.py:174-175](../../../../backend/app/middleware/prometheus_metrics.py#L174-L175)
 
 ## Conclusion
 
@@ -369,15 +369,15 @@ The NVIDIA NIM integration is designed for resilience and flexibility. It levera
 ### Configuration Examples
 
 - NVIDIA API key and model:
-    - Set NVIDIA_API_KEY and NVIDIA_MODEL in environment variables or .env.
+  - Set NVIDIA_API_KEY and NVIDIA_MODEL in environment variables or .env.
 - Groq fallback:
-    - Set GROQ_API_KEY, GROQ_MODEL, and GROQ_API_BASE.
+  - Set GROQ_API_KEY, GROQ_MODEL, and GROQ_API_BASE.
 - Ollama fallback:
-    - Set OLLAMA_BASE_URL pointing to your Ollama instance.
+  - Set OLLAMA_BASE_URL pointing to your Ollama instance.
 - LLM cache TTL:
-    - Configure LLM_CACHE_TTL_SECONDS for Redis caching behavior.
+  - Configure LLM_CACHE_TTL_SECONDS for Redis caching behavior.
 
 **Section sources**
 
-- [settings.py:146-154](file://backend/app/config/settings.py#L146-L154)
-- [llm_service.py:158-185](file://backend/app/services/llm_service.py#L158-L185)
+- [settings.py:146-154](../../../../backend/app/config/settings.py#L146-L154)
+- [llm_service.py:158-185](../../../../backend/app/services/llm_service.py#L158-L185)

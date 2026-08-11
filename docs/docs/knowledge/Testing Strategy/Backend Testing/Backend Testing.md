@@ -5,16 +5,16 @@
 
 <cite>
 **Referenced Files in This Document**
-- [pytest.ini](file://backend/pytest.ini)
-- [pyproject.toml](file://backend/pyproject.toml)
-- [conftest.py](file://backend/tests/conftest.py)
-- [integration/conftest.py](file://backend/tests/integration/conftest.py)
-- [test_classification.py](file://backend/tests/test_classification.py)
-- [test_formatter_golden_files.py](file://backend/tests/test_formatter_golden_files.py)
-- [test_settings.py](file://backend/tests/test_settings.py)
-- [test_csl_fetcher_cache.py](file://backend/tests/test_csl_fetcher_cache.py)
-- [labels.json](file://backend/tests/fixtures/classification/labels.json)
-- [settings.py](file://backend/app/config/settings.py)
+- [pytest.ini](../../../../../backend/pytest.ini)
+- [pyproject.toml](../../../../../backend/pyproject.toml)
+- [conftest.py](../../../../../backend/tests/conftest.py)
+- [integration/conftest.py](../../../../../backend/tests/integration/conftest.py)
+- [test_classification.py](../../../../../backend/tests/pipeline/test_classification.py)
+- [test_formatter_golden_files.py](../../../../../backend/tests/test_formatter_golden_files.py)
+- [test_settings.py](../../../../../backend/tests/test_settings.py)
+- [test_csl_fetcher_cache.py](../../../../../backend/tests/test_csl_fetcher_cache.py)
+- [labels.json](../../../../../backend/tests/fixtures/scibert/labels.json)
+- [settings.py](../../../../../backend/app/config/settings.py)
 </cite>
 
 ## Update Summary
@@ -80,46 +80,46 @@ K["Configuration<br/>settings.py"] --> H
 
 **Diagram sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [pyproject.toml:1-9](file://backend/pyproject.toml#L1-L9)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
-- [test_formatter_golden_files.py:1-253](file://backend/tests/test_formatter_golden_files.py#L1-L253)
-- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
-- [test_settings.py:1-69](file://backend/tests/test_settings.py#L1-L69)
-- [test_csl_fetcher_cache.py:1-83](file://backend/tests/test_csl_fetcher_cache.py#L1-L83)
-- [labels.json:1-203](file://backend/tests/fixtures/classification/labels.json#L1-L203)
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-L28)
+- [pyproject.toml:1-9](../../../../../backend/pyproject.toml#L1-L9)
+- [conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
+- [integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
+- [test_formatter_golden_files.py:1-253](../../../../../backend/tests/test_formatter_golden_files.py#L1-L253)
+- [test_classification.py:1-92](../../../../../backend/tests/pipeline/test_classification.py#L1-L92)
+- [test_settings.py:1-69](../../../../../backend/tests/test_settings.py#L1-L69)
+- [test_csl_fetcher_cache.py:1-83](../../../../../backend/tests/test_csl_fetcher_cache.py#L1-L83)
+- [labels.json:1-203](../../../../../backend/tests/fixtures/scibert/labels.json#L1-L203)
+- [settings.py:1-422](../../../../../backend/app/config/settings.py#L1-L422)
 
 **Section sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [pyproject.toml:1-9](file://backend/pyproject.toml#L1-L9)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-L28)
+- [pyproject.toml:1-9](../../../../../backend/pyproject.toml#L1-L9)
+- [conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
+- [integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
 
 ## Core Components
 
 - Test discovery and execution
-    - pytest.ini sets testpaths to tests, excludes scripts and manual test directories, and enables asyncio_mode = auto for async test support.
-    - Python naming conventions are defined for files, classes, and functions to streamline discovery.
-    - addopts configures verbose output, concise traceback, and disables a third-party plugin.
-    - filterwarnings suppresses known deprecation warnings to keep logs focused.
+  - pytest.ini sets testpaths to tests, excludes scripts and manual test directories, and enables asyncio_mode = auto for async test support.
+  - Python naming conventions are defined for files, classes, and functions to streamline discovery.
+  - addopts configures verbose output, concise traceback, and disables a third-party plugin.
+  - filterwarnings suppresses known deprecation warnings to keep logs focused.
 - Markers
-    - The marker set includes unit, integration, performance, llm, service, regression, database, contract, pipeline, slow, and rag. These enable selective runs and categorization.
+  - The marker set includes unit, integration, performance, llm, service, regression, database, contract, pipeline, slow, and rag. These enable selective runs and categorization.
 - Global fixtures and service checks
-    - conftest.py inserts the backend root into sys.path, ensures the working directory is correct, and provides:
-        - Automatic skipping of integration tests when required services are unreachable
-        - Global Redis mocking for caching, rate limiting, and streaming publish
-        - Document fixtures for minimal and full PipelineDocument instances
+  - conftest.py inserts the backend root into sys.path, ensures the working directory is correct, and provides:
+    - Automatic skipping of integration tests when required services are unreachable
+    - Global Redis mocking for caching, rate limiting, and streaming publish
+    - Document fixtures for minimal and full PipelineDocument instances
 - Integration fixtures and markers
-    - integration/conftest.py validates Redis and GROBID availability and auto-applies the integration marker to tests under tests/integration.
+  - integration/conftest.py validates Redis and GROBID availability and auto-applies the integration marker to tests under tests/integration.
 
 **Section sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-L28)
+- [conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
+- [integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
 
 ## Architecture Overview
 
@@ -154,14 +154,14 @@ I1 --> T4
 
 **Diagram sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [pyproject.toml:1-9](file://backend/pyproject.toml#L1-L9)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
-- [test_formatter_golden_files.py:1-253](file://backend/tests/test_formatter_golden_files.py#L1-L253)
-- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
-- [test_settings.py:1-69](file://backend/tests/test_settings.py#L1-L69)
-- [test_csl_fetcher_cache.py:1-83](file://backend/tests/test_csl_fetcher_cache.py#L1-L83)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-L28)
+- [pyproject.toml:1-9](../../../../../backend/pyproject.toml#L1-L9)
+- [conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
+- [integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
+- [test_formatter_golden_files.py:1-253](../../../../../backend/tests/test_formatter_golden_files.py#L1-L253)
+- [test_classification.py:1-92](../../../../../backend/tests/pipeline/test_classification.py#L1-L92)
+- [test_settings.py:1-69](../../../../../backend/tests/test_settings.py#L1-L69)
+- [test_csl_fetcher_cache.py:1-83](../../../../../backend/tests/test_csl_fetcher_cache.py#L1-L83)
 
 ## Detailed Component Analysis
 
@@ -200,11 +200,11 @@ GF-->>Py : "Assert structural summary equals expected"
 
 **Diagram sources**
 
-- [test_formatter_golden_files.py:222-253](file://backend/tests/test_formatter_golden_files.py#L222-L253)
+- [test_formatter_golden_files.py:222-253](../../../../../backend/tests/test_formatter_golden_files.py#L222-L253)
 
 **Section sources**
 
-- [test_formatter_golden_files.py:1-253](file://backend/tests/test_formatter_golden_files.py#L1-L253)
+- [test_formatter_golden_files.py:1-253](../../../../../backend/tests/test_formatter_golden_files.py#L1-L253)
 
 ### SciBERT Benchmark Tests
 
@@ -242,13 +242,13 @@ Skip --> End
 
 **Diagram sources**
 
-- [test_classification.py:46-92](file://backend/tests/test_classification.py#L46-L92)
-- [labels.json:1-203](file://backend/tests/fixtures/classification/labels.json#L1-L203)
+- [test_classification.py:46-92](../../../../../backend/tests/pipeline/test_classification.py#L46-L92)
+- [labels.json:1-203](../../../../../backend/tests/fixtures/scibert/labels.json#L1-L203)
 
 **Section sources**
 
-- [test_classification.py:1-92](file://backend/tests/test_classification.py#L1-L92)
-- [labels.json:1-203](file://backend/tests/fixtures/classification/labels.json#L1-L203)
+- [test_classification.py:1-92](../../../../../backend/tests/pipeline/test_classification.py#L1-L92)
+- [labels.json:1-203](../../../../../backend/tests/fixtures/scibert/labels.json#L1-L203)
 
 ### Settings Validation Tests
 
@@ -287,12 +287,12 @@ Success --> End(["Test Complete"])
 
 **Diagram sources**
 
-- [test_settings.py:11-69](file://backend/tests/test_settings.py#L11-L69)
+- [test_settings.py:11-69](../../../../../backend/tests/test_settings.py#L11-L69)
 
 **Section sources**
 
-- [test_settings.py:1-69](file://backend/tests/test_settings.py#L1-L69)
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
+- [test_settings.py:1-69](../../../../../backend/tests/test_settings.py#L1-L69)
+- [settings.py:1-422](../../../../../backend/app/config/settings.py#L1-L422)
 
 ### Integration Test Infrastructure
 
@@ -320,12 +320,12 @@ F --> |Yes| H["Execute test"]
 
 **Diagram sources**
 
-- [integration/conftest.py:35-41](file://backend/tests/integration/conftest.py#L35-L41)
-- [integration/conftest.py:24-33](file://backend/tests/integration/conftest.py#L24-L33)
+- [integration/conftest.py:35-41](../../../../../backend/tests/integration/conftest.py#L35-L41)
+- [integration/conftest.py:24-33](../../../../../backend/tests/integration/conftest.py#L24-L33)
 
 **Section sources**
 
-- [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
+- [integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
 
 ### Global Fixtures and Mocking Strategy
 
@@ -338,9 +338,9 @@ Key behaviors:
 - Inserts backend root into sys.path and sets working directory to backend root.
 - Automatically skips integration tests when Redis/GROBID are unreachable.
 - Globally mocks:
-    - Streaming publish for real-time events
-    - Rate limiter Redis client
-    - Cache Redis client
+  - Streaming publish for real-time events
+  - Rate limiter Redis client
+  - Cache Redis client
 - Supplies minimal and full PipelineDocument fixtures for tests requiring structured documents.
 
 ```mermaid
@@ -357,12 +357,12 @@ class GlobalFixtures {
 
 **Diagram sources**
 
-- [conftest.py:37-58](file://backend/tests/conftest.py#L37-L58)
-- [conftest.py:72-111](file://backend/tests/conftest.py#L72-L111)
+- [conftest.py:37-58](../../../../../backend/tests/conftest.py#L37-L58)
+- [conftest.py:72-111](../../../../../backend/tests/conftest.py#L72-L111)
 
 **Section sources**
 
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
+- [conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
 
 ## Enhanced Error Handling and Cache Management
 
@@ -395,8 +395,8 @@ Metadata extraction tests now include cache bypassing to ensure predictable beha
 
 **Section sources**
 
-- [test_csl_fetcher_cache.py:1-83](file://backend/tests/test_csl_fetcher_cache.py#L1-L83)
-- [test_settings.py:62-69](file://backend/tests/test_settings.py#L62-L69)
+- [test_csl_fetcher_cache.py:1-83](../../../../../backend/tests/test_csl_fetcher_cache.py#L1-L83)
+- [test_settings.py:62-69](../../../../../backend/tests/test_settings.py#L62-L69)
 
 ## Dependency Analysis
 
@@ -422,67 +422,67 @@ ST --> |"validation"| Settings["Settings class"]
 
 **Diagram sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [pyproject.toml:1-9](file://backend/pyproject.toml#L1-L9)
-- [conftest.py:37-58](file://backend/tests/conftest.py#L37-L58)
-- [integration/conftest.py:35-41](file://backend/tests/integration/conftest.py#L35-L41)
-- [test_settings.py:13-19](file://backend/tests/test_settings.py#L13-L19)
-- [settings.py:248-256](file://backend/app/config/settings.py#L248-L256)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-L28)
+- [pyproject.toml:1-9](../../../../../backend/pyproject.toml#L1-L9)
+- [conftest.py:37-58](../../../../../backend/tests/conftest.py#L37-L58)
+- [integration/conftest.py:35-41](../../../../../backend/tests/integration/conftest.py#L35-L41)
+- [test_settings.py:13-19](../../../../../backend/tests/test_settings.py#L13-L19)
+- [settings.py:248-256](../../../../../backend/app/config/settings.py#L248-L256)
 
 **Section sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [pyproject.toml:1-9](file://backend/pyproject.toml#L1-L9)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
-- [test_settings.py:1-69](file://backend/tests/test_settings.py#L1-L69)
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
+- [pytest.ini:1-28](../../../../../backend/pytest.ini#L1-L28)
+- [pyproject.toml:1-9](../../../../../backend/pyproject.toml#L1-L9)
+- [conftest.py:1-112](../../../../../backend/tests/conftest.py#L1-L112)
+- [integration/conftest.py:1-41](../../../../../backend/tests/integration/conftest.py#L1-L41)
+- [test_settings.py:1-69](../../../../../backend/tests/test_settings.py#L1-L69)
+- [settings.py:1-422](../../../../../backend/app/config/settings.py#L1-L422)
 
 ## Performance Considerations
 
 - Asyncio mode
-    - asyncio_mode = auto in pytest.ini supports async test functions and fixtures without manual event loop management.
+  - asyncio_mode = auto in pytest.ini supports async test functions and fixtures without manual event loop management.
 - Warning filtering
-    - filterwarnings reduces noise from known deprecations, improving readability and reducing CI log volume.
+  - filterwarnings reduces noise from known deprecations, improving readability and reducing CI log volume.
 - Test categorization
-    - Use markers to selectively run subsets (e.g., unit, integration, slow) and avoid unnecessary heavy workloads.
+  - Use markers to selectively run subsets (e.g., unit, integration, slow) and avoid unnecessary heavy workloads.
 - Fixture reuse
-    - Global fixtures minimize repeated setup costs and ensure consistent environments across tests.
+  - Global fixtures minimize repeated setup costs and ensure consistent environments across tests.
 - Cache management
-    - Explicit cache control ensures tests run efficiently without interference from cached data.
+  - Explicit cache control ensures tests run efficiently without interference from cached data.
 - Deterministic behavior
-    - Cache bypassing and deterministic fallbacks improve test reliability and reduce flakiness.
+  - Cache bypassing and deterministic fallbacks improve test reliability and reduce flakiness.
 
 ## Troubleshooting Guide
 
 Common issues and resolutions:
 
 - Integration tests skipped unexpectedly
-    - Cause: Required services (Redis, GROBID) unreachable.
-    - Resolution: Verify REDIS_HOST/REDIS_PORT and GROBID_HOST/GROBID_PORT environment variables and service availability.
+  - Cause: Required services (Redis, GROBID) unreachable.
+  - Resolution: Verify REDIS_HOST/REDIS_PORT and GROBID_HOST/GROBID_PORT environment variables and service availability.
 - classification benchmark failures
-    - Cause: Missing labels.json fixtures or unsupported parser for a sample.
-    - Resolution: Ensure fixtures exist and a suitable parser is available; optionally set SCIBERT_BENCHMARK_MODEL to a reachable model.
+  - Cause: Missing labels.json fixtures or unsupported parser for a sample.
+  - Resolution: Ensure fixtures exist and a suitable parser is available; optionally set SCIBERT_BENCHMARK_MODEL to a reachable model.
 - Golden file mismatches
-    - Cause: Changes in rendering logic affecting structural summaries.
-    - Resolution: Regenerate golden outputs only after confirming intended behavioral changes; otherwise, investigate differences in heading hierarchy, reference counts, or template metadata.
+  - Cause: Changes in rendering logic affecting structural summaries.
+  - Resolution: Regenerate golden outputs only after confirming intended behavioral changes; otherwise, investigate differences in heading hierarchy, reference counts, or template metadata.
 - Global Redis mocks interfering with specific tests
-    - Cause: Tests expecting real Redis behavior.
-    - Resolution: Temporarily disable global mocks or isolate tests that require real Redis interactions.
+  - Cause: Tests expecting real Redis behavior.
+  - Resolution: Temporarily disable global mocks or isolate tests that require real Redis interactions.
 - Settings validation failures
-    - Cause: Environment-specific configuration conflicts or missing optional settings.
-    - Resolution: Review Settings class validation logic and ensure proper environment variable configuration.
+  - Cause: Environment-specific configuration conflicts or missing optional settings.
+  - Resolution: Review Settings class validation logic and ensure proper environment variable configuration.
 - Cache-related test instability
-    - Cause: Interference from cached data between test runs.
-    - Resolution: Utilize cache reset mechanisms and ensure proper cache TTL configuration in test environment.
+  - Cause: Interference from cached data between test runs.
+  - Resolution: Utilize cache reset mechanisms and ensure proper cache TTL configuration in test environment.
 
 **Section sources**
 
-- [conftest.py:37-58](file://backend/tests/conftest.py#L37-L58)
-- [integration/conftest.py:24-33](file://backend/tests/integration/conftest.py#L24-L33)
-- [test_classification.py:34-36](file://backend/tests/test_classification.py#L34-L36)
-- [test_formatter_golden_files.py:237-253](file://backend/tests/test_formatter_golden_files.py#L237-L253)
-- [test_settings.py:62-69](file://backend/tests/test_settings.py#L62-L69)
+- [conftest.py:37-58](../../../../../backend/tests/conftest.py#L37-L58)
+- [integration/conftest.py:24-33](../../../../../backend/tests/integration/conftest.py#L24-L33)
+- [test_classification.py:34-36](../../../../../backend/tests/pipeline/test_classification.py#L34-L36)
+- [test_formatter_golden_files.py:237-253](../../../../../backend/tests/test_formatter_golden_files.py#L237-L253)
+- [test_settings.py:62-69](../../../../../backend/tests/test_settings.py#L62-L69)
 
 ## Conclusion
 

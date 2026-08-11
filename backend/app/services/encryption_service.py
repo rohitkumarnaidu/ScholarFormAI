@@ -52,9 +52,9 @@ class EncryptionService:
         try:
             raw = base64.b64decode(ciphertext)
             return self._fernet.decrypt(raw).decode()
-        except InvalidToken:
+        except InvalidToken as err:
             logger.error("Failed to decrypt value — key mismatch or corrupted data")
-            raise ValueError("Decryption failed: invalid key or corrupted data")
+            raise ValueError("Decryption failed: invalid key or corrupted data") from err
 
     @staticmethod
     def generate_key() -> str:

@@ -8,12 +8,13 @@ Covers ALL remaining uncovered lines in ContentClassifier (target: 100%).
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
-from app.pipeline.classification.classifier import ContentClassifier, classify_content
 from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
+from app.pipeline.classification.classifier import ContentClassifier
+
 
 @pytest.fixture
 def classifier():

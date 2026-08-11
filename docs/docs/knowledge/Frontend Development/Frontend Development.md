@@ -5,21 +5,21 @@
 
 <cite>
 **Referenced Files in This Document**
-- [package.json](file://frontend/package.json)
-- [next.config.mjs](file://frontend/next.config.mjs)
-- [tailwind.config.js](file://frontend/tailwind.config.js)
-- [RootLayout](file://frontend/app/layout.jsx)
-- [ClientProviders](file://frontend/src/components/layout/ClientProviders.jsx)
-- [AuthContext](file://frontend/src/context/AuthContext.jsx)
-- [supabaseClient](file://frontend/src/lib/supabaseClient.js)
-- [api.auth](file://frontend/src/services/api.auth.js)
-- [api.core](file://frontend/src/services/api.core.js)
-- [schemas](file://frontend/src/lib/schemas.js)
-- [ErrorBoundary](file://frontend/src/components/ErrorBoundary.jsx)
-- [useLivePreviewSocket](file://frontend/src/hooks/useLivePreviewSocket.js)
-- [useSessionEventStream](file://frontend/src/hooks/useSessionEventStream.js)
-- [useGeneratorSessionStream](file://frontend/src/hooks/useGeneratorSessionStream.js)
-- [Button](file://frontend/src/components/ui/Button.jsx)
+- [package.json](../../../../frontend/package.json)
+- [next.config.mjs](../../../../frontend/next.config.mjs)
+- [tailwind.config.js](../../../../frontend/tailwind.config.js)
+- [RootLayout](../../../../frontend/app/(formatter)/layout.jsx)
+- [ClientProviders](../../../../frontend/src/components/layout/ClientProviders.jsx)
+- [AuthContext](../../../../frontend/src/context/AuthContext.jsx)
+- [supabaseClient](../../../../frontend/src/lib/supabaseClient.js)
+- [api.auth](../../../../frontend/src/services/api.auth.js)
+- [api.core](../../../../frontend/src/services/api.core.js)
+- [schemas](../../../../frontend/src/lib/schemas.js)
+- [ErrorBoundary](../../../../frontend/src/components/ErrorBoundary.jsx)
+- [useLivePreviewSocket](../../../../frontend/src/hooks/useLivePreviewSocket.js)
+- [useSessionEventStream](../../../../frontend/src/hooks/useSessionEventStream.js)
+- [useGeneratorSessionStream](../../../../frontend/src/hooks/useGeneratorSessionStream.js)
+- [Button](../../../../frontend/src/components/ui/Button.jsx)
 - [AuthCallback](file://frontend/app/(shared)/auth/callback/page.jsx)
 </cite>
 
@@ -56,9 +56,9 @@ The frontend is organized under the Next.js App Router with route groups and sha
 graph TB
 subgraph "App Router"
 A["app/layout.jsx<br/>Root layout and metadata"]
-B["app/(shared)/...<br/>Shared routes (auth, terms, privacy)"]
-C["app/(formatter)/...<br/>Formatter features (upload, edit, preview, results)"]
-D["app/(generator)/...<br/>Generator features (synthesis, generation)"]
+B["app/(shared)/...<br/>Shared routes ("auth, terms, privacy")"]
+C["app/(formatter)/...<br/>Formatter features ("upload, edit, preview, results")"]
+D["app/(generator)/...<br/>Generator features ("synthesis, generation")"]
 end
 subgraph "Providers"
 P1["src/components/layout/ClientProviders.jsx<br/>React Query, Theme, Toast, Auth, Document"]
@@ -93,18 +93,18 @@ L2 --> X1
 
 **Diagram sources**
 
-- [RootLayout:32-83](file://frontend/app/layout.jsx#L32-L83)
-- [ClientProviders:14-50](file://frontend/src/components/layout/ClientProviders.jsx#L14-L50)
-- [AuthContext:16-339](file://frontend/src/context/AuthContext.jsx#L16-L339)
-- [api.auth:1-39](file://frontend/src/services/api.auth.js#L1-L39)
-- [api.core:1-368](file://frontend/src/services/api.core.js#L1-L368)
-- [supabaseClient:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
-- [schemas:1-235](file://frontend/src/lib/schemas.js#L1-L235)
+- [RootLayout:32-83](../../../../frontend/app/(formatter)/layout.jsx#L32-L83)
+- [ClientProviders:14-50](../../../../frontend/src/components/layout/ClientProviders.jsx#L14-L50)
+- [AuthContext:16-339](../../../../frontend/src/context/AuthContext.jsx#L16-L339)
+- [api.auth:1-39](../../../../frontend/src/services/api.auth.js#L1-L39)
+- [api.core:1-368](../../../../frontend/src/services/api.core.js#L1-L368)
+- [supabaseClient:1-24](../../../../frontend/src/lib/supabaseClient.js#L1-L24)
+- [schemas:1-235](../../../../frontend/src/lib/schemas.js#L1-L235)
 
 **Section sources**
 
-- [RootLayout:1-84](file://frontend/app/layout.jsx#L1-L84)
-- [ClientProviders:1-51](file://frontend/src/components/layout/ClientProviders.jsx#L1-L51)
+- [RootLayout:1-84](../../../../frontend/app/(formatter)/layout.jsx#L1-L84)
+- [ClientProviders:1-51](../../../../frontend/src/components/layout/ClientProviders.jsx#L1-L51)
 
 ## Core Components
 
@@ -117,13 +117,13 @@ L2 --> X1
 
 **Section sources**
 
-- [RootLayout:12-83](file://frontend/app/layout.jsx#L12-L83)
-- [ClientProviders:14-50](file://frontend/src/components/layout/ClientProviders.jsx#L14-L50)
-- [AuthContext:16-339](file://frontend/src/context/AuthContext.jsx#L16-L339)
-- [supabaseClient:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
-- [api.core:1-368](file://frontend/src/services/api.core.js#L1-L368)
-- [useSessionEventStream:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
-- [useLivePreviewSocket:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [RootLayout:12-83](../../../../frontend/app/(formatter)/layout.jsx#L12-L83)
+- [ClientProviders:14-50](../../../../frontend/src/components/layout/ClientProviders.jsx#L14-L50)
+- [AuthContext:16-339](../../../../frontend/src/context/AuthContext.jsx#L16-L339)
+- [supabaseClient:1-24](../../../../frontend/src/lib/supabaseClient.js#L1-L24)
+- [api.core:1-368](../../../../frontend/src/services/api.core.js#L1-L368)
+- [useSessionEventStream:1-101](../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [useLivePreviewSocket:1-137](../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
 
 ## Architecture Overview
 
@@ -157,14 +157,14 @@ LW --> |"WS"| Backend
 
 **Diagram sources**
 
-- [RootLayout:32-83](file://frontend/app/layout.jsx#L32-L83)
-- [ClientProviders:14-50](file://frontend/src/components/layout/ClientProviders.jsx#L14-L50)
-- [AuthContext:16-339](file://frontend/src/context/AuthContext.jsx#L16-L339)
-- [supabaseClient:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
-- [api.auth:1-39](file://frontend/src/services/api.auth.js#L1-L39)
-- [api.core:1-368](file://frontend/src/services/api.core.js#L1-L368)
-- [useSessionEventStream:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
-- [useLivePreviewSocket:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [RootLayout:32-83](../../../../frontend/app/(formatter)/layout.jsx#L32-L83)
+- [ClientProviders:14-50](../../../../frontend/src/components/layout/ClientProviders.jsx#L14-L50)
+- [AuthContext:16-339](../../../../frontend/src/context/AuthContext.jsx#L16-L339)
+- [supabaseClient:1-24](../../../../frontend/src/lib/supabaseClient.js#L1-L24)
+- [api.auth:1-39](../../../../frontend/src/services/api.auth.js#L1-L39)
+- [api.core:1-368](../../../../frontend/src/services/api.core.js#L1-L368)
+- [useSessionEventStream:1-101](../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [useLivePreviewSocket:1-137](../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
 
 ## Detailed Component Analysis
 
@@ -192,15 +192,15 @@ AC-->>UI : "isLoggedIn=true, user updated"
 
 **Diagram sources**
 
-- [AuthContext:180-249](file://frontend/src/context/AuthContext.jsx#L180-L249)
-- [api.auth:18-26](file://frontend/src/services/api.auth.js#L18-L26)
-- [supabaseClient:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
+- [AuthContext:180-249](../../../../frontend/src/context/AuthContext.jsx#L180-L249)
+- [api.auth:18-26](../../../../frontend/src/services/api.auth.js#L18-L26)
+- [supabaseClient:1-24](../../../../frontend/src/lib/supabaseClient.js#L1-L24)
 
 **Section sources**
 
-- [AuthContext:16-339](file://frontend/src/context/AuthContext.jsx#L16-L339)
-- [api.auth:1-39](file://frontend/src/services/api.auth.js#L1-L39)
-- [supabaseClient:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
+- [AuthContext:16-339](../../../../frontend/src/context/AuthContext.jsx#L16-L339)
+- [api.auth:1-39](../../../../frontend/src/services/api.auth.js#L1-L39)
+- [supabaseClient:1-24](../../../../frontend/src/lib/supabaseClient.js#L1-L24)
 - [AuthCallback](file://frontend/app/(shared)/auth/callback/page.jsx#L1-L121)
 
 ### Real-Time Features: SSE Streams and WebSocket Live Preview
@@ -225,7 +225,7 @@ SSE-->>UI : "Update stages, progress, completion"
 
 **Diagram sources**
 
-- [useSessionEventStream:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [useSessionEventStream:1-101](../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
 
 ```mermaid
 sequenceDiagram
@@ -243,13 +243,13 @@ WS-->>UI : "Render live preview"
 
 **Diagram sources**
 
-- [useLivePreviewSocket:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [useLivePreviewSocket:1-137](../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
 
 **Section sources**
 
-- [useSessionEventStream:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
-- [useGeneratorSessionStream:1-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
-- [useLivePreviewSocket:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [useSessionEventStream:1-101](../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [useGeneratorSessionStream:1-12](../../../../frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
+- [useLivePreviewSocket:1-137](../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
 
 ### Form Handling and Validation
 
@@ -269,13 +269,13 @@ HandleResponse --> End
 
 **Diagram sources**
 
-- [schemas:1-235](file://frontend/src/lib/schemas.js#L1-L235)
-- [api.core:60-83](file://frontend/src/services/api.core.js#L60-L83)
+- [schemas:1-235](../../../../frontend/src/lib/schemas.js#L1-L235)
+- [api.core:60-83](../../../../frontend/src/services/api.core.js#L60-L83)
 
 **Section sources**
 
-- [schemas:1-235](file://frontend/src/lib/schemas.js#L1-L235)
-- [api.core:60-83](file://frontend/src/services/api.core.js#L60-L83)
+- [schemas:1-235](../../../../frontend/src/lib/schemas.js#L1-L235)
+- [api.core:60-83](../../../../frontend/src/services/api.core.js#L60-L83)
 
 ### API Integration Strategies
 
@@ -301,11 +301,11 @@ E --> I["Return data"]
 
 **Diagram sources**
 
-- [api.core:190-362](file://frontend/src/services/api.core.js#L190-L362)
+- [api.core:190-362](../../../../frontend/src/services/api.core.js#L190-L362)
 
 **Section sources**
 
-- [api.core:1-368](file://frontend/src/services/api.core.js#L1-L368)
+- [api.core:1-368](../../../../frontend/src/services/api.core.js#L1-L368)
 
 ### UI Component Library and Composition Patterns
 
@@ -328,12 +328,12 @@ class Button {
 
 **Diagram sources**
 
-- [Button:23-57](file://frontend/src/components/ui/Button.jsx#L23-L57)
+- [Button:23-57](../../../../frontend/src/components/ui/Button.jsx#L23-L57)
 
 **Section sources**
 
-- [Button:1-58](file://frontend/src/components/ui/Button.jsx#L1-L58)
-- [ClientProviders:14-50](file://frontend/src/components/layout/ClientProviders.jsx#L14-L50)
+- [Button:1-58](../../../../frontend/src/components/ui/Button.jsx#L1-L58)
+- [ClientProviders:14-50](../../../../frontend/src/components/layout/ClientProviders.jsx#L14-L50)
 
 ### Error Boundary Handling
 
@@ -354,11 +354,11 @@ EB-->>React : "Show friendly UI with Retry/Reload"
 
 **Diagram sources**
 
-- [ErrorBoundary:1-91](file://frontend/src/components/ErrorBoundary.jsx#L1-L91)
+- [ErrorBoundary:1-91](../../../../frontend/src/components/ErrorBoundary.jsx#L1-L91)
 
 **Section sources**
 
-- [ErrorBoundary:1-91](file://frontend/src/components/ErrorBoundary.jsx#L1-L91)
+- [ErrorBoundary:1-91](../../../../frontend/src/components/ErrorBoundary.jsx#L1-L91)
 
 ## Dependency Analysis
 
@@ -383,15 +383,15 @@ N --> TW
 
 **Diagram sources**
 
-- [package.json:17-36](file://frontend/package.json#L17-L36)
-- [next.config.mjs:1-27](file://frontend/next.config.mjs#L1-L27)
-- [tailwind.config.js:1-55](file://frontend/tailwind.config.js#L1-L55)
+- [package.json:17-36](../../../../frontend/package.json#L17-L36)
+- [next.config.mjs:1-27](../../../../frontend/next.config.mjs#L1-L27)
+- [tailwind.config.js:1-55](../../../../frontend/tailwind.config.js#L1-L55)
 
 **Section sources**
 
-- [package.json:1-62](file://frontend/package.json#L1-L62)
-- [next.config.mjs:1-27](file://frontend/next.config.mjs#L1-L27)
-- [tailwind.config.js:1-55](file://frontend/tailwind.config.js#L1-L55)
+- [package.json:1-62](../../../../frontend/package.json#L1-L62)
+- [next.config.mjs:1-27](../../../../frontend/next.config.mjs#L1-L27)
+- [tailwind.config.js:1-55](../../../../frontend/tailwind.config.js#L1-L55)
 
 ## Performance Considerations
 
@@ -403,10 +403,10 @@ N --> TW
 
 **Section sources**
 
-- [ClientProviders:16-24](file://frontend/src/components/layout/ClientProviders.jsx#L16-L24)
-- [next.config.mjs:7-11](file://frontend/next.config.mjs#L7-L11)
-- [useLivePreviewSocket:48-102](file://frontend/src/hooks/useLivePreviewSocket.js#L48-L102)
-- [useSessionEventStream:20-97](file://frontend/src/hooks/useSessionEventStream.js#L20-L97)
+- [ClientProviders:16-24](../../../../frontend/src/components/layout/ClientProviders.jsx#L16-L24)
+- [next.config.mjs:7-11](../../../../frontend/next.config.mjs#L7-L11)
+- [useLivePreviewSocket:48-102](../../../../frontend/src/hooks/useLivePreviewSocket.js#L48-L102)
+- [useSessionEventStream:20-97](../../../../frontend/src/hooks/useSessionEventStream.js#L20-L97)
 
 ## Troubleshooting Guide
 
@@ -420,12 +420,12 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [supabaseClient:1-24](file://frontend/src/lib/supabaseClient.js#L1-L24)
-- [AuthContext:23-23](file://frontend/src/context/AuthContext.jsx#L23-L23)
-- [api.core:85-188](file://frontend/src/services/api.core.js#L85-L188)
-- [useLivePreviewSocket:91-102](file://frontend/src/hooks/useLivePreviewSocket.js#L91-L102)
-- [useSessionEventStream:76-97](file://frontend/src/hooks/useSessionEventStream.js#L76-L97)
-- [ErrorBoundary:20-30](file://frontend/src/components/ErrorBoundary.jsx#L20-L30)
+- [supabaseClient:1-24](../../../../frontend/src/lib/supabaseClient.js#L1-L24)
+- [AuthContext:23-23](../../../../frontend/src/context/AuthContext.jsx#L23-L23)
+- [api.core:85-188](../../../../frontend/src/services/api.core.js#L85-L188)
+- [useLivePreviewSocket:91-102](../../../../frontend/src/hooks/useLivePreviewSocket.js#L91-L102)
+- [useSessionEventStream:76-97](../../../../frontend/src/hooks/useSessionEventStream.js#L76-L97)
+- [ErrorBoundary:20-30](../../../../frontend/src/components/ErrorBoundary.jsx#L20-L30)
 
 ## Conclusion
 
@@ -442,8 +442,8 @@ The frontend leverages Next.js 14’s App Router, a layered provider architectur
 
 **Section sources**
 
-- [tailwind.config.js:1-55](file://frontend/tailwind.config.js#L1-L55)
-- [RootLayout:61-83](file://frontend/app/layout.jsx#L61-L83)
+- [tailwind.config.js:1-55](../../../../frontend/tailwind.config.js#L1-L55)
+- [RootLayout:61-83](../../../../frontend/app/(formatter)/layout.jsx#L61-L83)
 
 ### Responsive Design Considerations
 
@@ -453,8 +453,8 @@ The frontend leverages Next.js 14’s App Router, a layered provider architectur
 
 **Section sources**
 
-- [tailwind.config.js:1-55](file://frontend/tailwind.config.js#L1-L55)
-- [RootLayout:71-76](file://frontend/app/layout.jsx#L71-L76)
+- [tailwind.config.js:1-55](../../../../frontend/tailwind.config.js#L1-L55)
+- [RootLayout:71-76](../../../../frontend/app/(formatter)/layout.jsx#L71-L76)
 
 ### Cross-Browser Compatibility
 
@@ -463,9 +463,9 @@ The frontend leverages Next.js 14’s App Router, a layered provider architectur
 
 **Section sources**
 
-- [api.core:21-30](file://frontend/src/services/api.core.js#L21-L30)
-- [useLivePreviewSocket:48-102](file://frontend/src/hooks/useLivePreviewSocket.js#L48-L102)
-- [useSessionEventStream:38-87](file://frontend/src/hooks/useSessionEventStream.js#L38-L87)
+- [api.core:21-30](../../../../frontend/src/services/api.core.js#L21-L30)
+- [useLivePreviewSocket:48-102](../../../../frontend/src/hooks/useLivePreviewSocket.js#L48-L102)
+- [useSessionEventStream:38-87](../../../../frontend/src/hooks/useSessionEventStream.js#L38-L87)
 
 ### Guidelines for Extending the UI and Adding New Features
 
@@ -479,8 +479,8 @@ The frontend leverages Next.js 14’s App Router, a layered provider architectur
 
 **Section sources**
 
-- [ClientProviders:14-50](file://frontend/src/components/layout/ClientProviders.jsx#L14-L50)
-- [schemas:1-235](file://frontend/src/lib/schemas.js#L1-L235)
-- [api.core:190-362](file://frontend/src/services/api.core.js#L190-L362)
-- [useSessionEventStream:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
-- [useLivePreviewSocket:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [ClientProviders:14-50](../../../../frontend/src/components/layout/ClientProviders.jsx#L14-L50)
+- [schemas:1-235](../../../../frontend/src/lib/schemas.js#L1-L235)
+- [api.core:190-362](../../../../frontend/src/services/api.core.js#L190-L362)
+- [useSessionEventStream:1-101](../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [useLivePreviewSocket:1-137](../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)

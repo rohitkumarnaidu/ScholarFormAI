@@ -130,7 +130,7 @@ curl -X POST http://localhost:8000/api/v1/documents/upload \
 
 ## Template Contract Reference
 
-See the [Template Creation Guide](../template_creation.md) for the full contract schema.
+See the [Template Creation Guide](../user-guide/template_creation.md) for the full contract schema.
 
 ## Best Practices
 

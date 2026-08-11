@@ -69,7 +69,7 @@ sequenceDiagram
     Playwright-->>Dev: ✅ E2E journeys passed (~1.5min)
 
     Dev->>Coverage: pytest --cov=app --cov-report=term-missing
-    Coverage-->>Dev: 📊 Coverage Report (target ≥70%)
+    Coverage-->>Dev: 📊 Coverage Report ("target ≥70%")
 ```
 
 ---
@@ -293,9 +293,9 @@ flowchart LR
 
 ## Related Documentation
 
-- [ARCHITECTURE.md](ARCHITECTURE.md) — System topology
-- [docs/TESTING_ARCHITECTURE.md](docs/TESTING_ARCHITECTURE.md) — Full test infrastructure design
-- [docs/CI_CD_ARCHITECTURE.md](docs/CI_CD_ARCHITECTURE.md) — GitHub Actions workflows
+- [ARCHITECTURE.md](../architecture/ARCHITECTURE.md) — System topology
+- [docs/TESTING_ARCHITECTURE.md](../architecture/TESTING_ARCHITECTURE.md) — Full test infrastructure design
+- [docs/CI_CD_ARCHITECTURE.md](../architecture/CI_CD_ARCHITECTURE.md) — GitHub Actions workflows
 
 ---
 

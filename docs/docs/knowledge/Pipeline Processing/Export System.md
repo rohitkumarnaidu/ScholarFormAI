@@ -5,19 +5,19 @@
 
 <cite>
 **Referenced Files in This Document**
-- [exporter.py](file://backend/app/pipeline/export/exporter.py)
-- [pdf_exporter.py](file://backend/app/pipeline/export/pdf_exporter.py)
-- [latex_exporter.py](file://backend/app/pipeline/export/latex_exporter.py)
-- [jats_generator.py](file://backend/app/pipeline/export/jats_generator.py)
-- [formatter.py](file://backend/app/pipeline/formatting/formatter.py)
-- [template_renderer.py](file://backend/app/pipeline/formatting/template_renderer.py)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [documents.py](file://backend/app/routers/documents.py)
-- [ProcessingOptions.jsx](file://frontend/src/components/ProcessingOptions.jsx)
-- [api.documents.js](file://frontend/src/services/api.documents.js)
-- [test_export_pipeline.py](file://backend/tests/test_export_pipeline.py)
-- [test_jats_export.py](file://backend/tests/test_jats_export.py)
+- [exporter.py](../../../../backend/app/pipeline/export/exporter.py)
+- [pdf_exporter.py](../../../../backend/app/pipeline/export/pdf_exporter.py)
+- [latex_exporter.py](../../../../backend/app/pipeline/export/latex_exporter.py)
+- [jats_generator.py](../../../../backend/app/pipeline/export/jats_generator.py)
+- [formatter.py](../../../../backend/app/pipeline/formatting/formatter.py)
+- [template_renderer.py](../../../../backend/app/pipeline/formatting/template_renderer.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [documents.py](../../../../backend/app/routers/v1/documents.py)
+- [ProcessingOptions.jsx](../../../../frontend/src/components/ProcessingOptions.jsx)
+- [api.documents.js](../../../../frontend/src/services/api.documents.js)
+- [test_export_pipeline.py](../../../../backend/tests/test_export_pipeline.py)
+- [test_jats_export.py](../../../../backend/tests/test_jats_export.py)
 </cite>
 
 ## Table of Contents
@@ -73,24 +73,24 @@ EXP --> JATS
 
 **Diagram sources**
 
-- [ProcessingOptions.jsx:1-39](file://frontend/src/components/ProcessingOptions.jsx#L1-L39)
-- [api.documents.js:13-13](file://frontend/src/services/api.documents.js#L13-L13)
-- [orchestrator.py:504-520](file://backend/app/pipeline/orchestrator.py#L504-L520)
-- [formatter.py:49-58](file://backend/app/pipeline/formatting/formatter.py#L49-L58)
-- [template_renderer.py:65-82](file://backend/app/pipeline/formatting/template_renderer.py#L65-L82)
-- [exporter.py:30-66](file://backend/app/pipeline/export/exporter.py#L30-L66)
-- [pdf_exporter.py:74-131](file://backend/app/pipeline/export/pdf_exporter.py#L74-L131)
-- [latex_exporter.py:26-77](file://backend/app/pipeline/export/latex_exporter.py#L26-L77)
-- [jats_generator.py:20-43](file://backend/app/pipeline/export/jats_generator.py#L20-L43)
+- [ProcessingOptions.jsx:1-39](../../../../frontend/src/components/ProcessingOptions.jsx#L1-L39)
+- [api.documents.js:13-13](../../../../frontend/src/services/api.documents.js#L13-L13)
+- [orchestrator.py:504-520](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L504-L520)
+- [formatter.py:49-58](../../../../backend/app/pipeline/formatting/formatter.py#L49-L58)
+- [template_renderer.py:65-82](../../../../backend/app/pipeline/formatting/template_renderer.py#L65-L82)
+- [exporter.py:30-66](../../../../backend/app/pipeline/export/exporter.py#L30-L66)
+- [pdf_exporter.py:74-131](../../../../backend/app/pipeline/export/pdf_exporter.py#L74-L131)
+- [latex_exporter.py:26-77](../../../../backend/app/pipeline/export/latex_exporter.py#L26-L77)
+- [jats_generator.py:20-43](../../../../backend/app/pipeline/export/jats_generator.py#L20-L43)
 
 **Section sources**
 
-- [exporter.py:19-66](file://backend/app/pipeline/export/exporter.py#L19-L66)
-- [pdf_exporter.py:12-35](file://backend/app/pipeline/export/pdf_exporter.py#L12-L35)
-- [latex_exporter.py:13-25](file://backend/app/pipeline/export/latex_exporter.py#L13-L25)
-- [jats_generator.py:8-24](file://backend/app/pipeline/export/jats_generator.py#L8-L24)
-- [ProcessingOptions.jsx:1-39](file://frontend/src/components/ProcessingOptions.jsx#L1-L39)
-- [api.documents.js:13-13](file://frontend/src/services/api.documents.js#L13-L13)
+- [exporter.py:19-66](../../../../backend/app/pipeline/export/exporter.py#L19-L66)
+- [pdf_exporter.py:12-35](../../../../backend/app/pipeline/export/pdf_exporter.py#L12-L35)
+- [latex_exporter.py:13-25](../../../../backend/app/pipeline/export/latex_exporter.py#L13-L25)
+- [jats_generator.py:8-24](../../../../backend/app/pipeline/export/jats_generator.py#L8-L24)
+- [ProcessingOptions.jsx:1-39](../../../../frontend/src/components/ProcessingOptions.jsx#L1-L39)
+- [api.documents.js:13-13](../../../../frontend/src/services/api.documents.js#L13-L13)
 
 ## Core Components
 
@@ -104,13 +104,13 @@ EXP --> JATS
 
 **Section sources**
 
-- [exporter.py:19-282](file://backend/app/pipeline/export/exporter.py#L19-L282)
-- [pdf_exporter.py:12-131](file://backend/app/pipeline/export/pdf_exporter.py#L12-L131)
-- [latex_exporter.py:13-77](file://backend/app/pipeline/export/latex_exporter.py#L13-L77)
-- [jats_generator.py:8-157](file://backend/app/pipeline/export/jats_generator.py#L8-L157)
-- [formatter.py:35-58](file://backend/app/pipeline/formatting/formatter.py#L35-L58)
-- [template_renderer.py:29-82](file://backend/app/pipeline/formatting/template_renderer.py#L29-L82)
-- [orchestrator.py:504-520](file://backend/app/pipeline/orchestrator.py#L504-L520)
+- [exporter.py:19-282](../../../../backend/app/pipeline/export/exporter.py#L19-L282)
+- [pdf_exporter.py:12-131](../../../../backend/app/pipeline/export/pdf_exporter.py#L12-L131)
+- [latex_exporter.py:13-77](../../../../backend/app/pipeline/export/latex_exporter.py#L13-L77)
+- [jats_generator.py:8-157](../../../../backend/app/pipeline/export/jats_generator.py#L8-L157)
+- [formatter.py:35-58](../../../../backend/app/pipeline/formatting/formatter.py#L35-L58)
+- [template_renderer.py:29-82](../../../../backend/app/pipeline/formatting/template_renderer.py#L29-L82)
+- [orchestrator.py:504-520](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L504-L520)
 
 ## Architecture Overview
 
@@ -150,13 +150,13 @@ Router-->>Client : signed URLs or file
 
 **Diagram sources**
 
-- [documents.py:67-67](file://backend/app/routers/documents.py#L67-L67)
-- [orchestrator.py:504-520](file://backend/app/pipeline/orchestrator.py#L504-L520)
-- [formatter.py:49-58](file://backend/app/pipeline/formatting/formatter.py#L49-L58)
-- [exporter.py:30-66](file://backend/app/pipeline/export/exporter.py#L30-L66)
-- [pdf_exporter.py:74-131](file://backend/app/pipeline/export/pdf_exporter.py#L74-L131)
-- [latex_exporter.py:26-77](file://backend/app/pipeline/export/latex_exporter.py#L26-L77)
-- [jats_generator.py:20-43](file://backend/app/pipeline/export/jats_generator.py#L20-L43)
+- [documents.py:67-67](../../../../backend/app/routers/v1/documents.py#L67-L67)
+- [orchestrator.py:504-520](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L504-L520)
+- [formatter.py:49-58](../../../../backend/app/pipeline/formatting/formatter.py#L49-L58)
+- [exporter.py:30-66](../../../../backend/app/pipeline/export/exporter.py#L30-L66)
+- [pdf_exporter.py:74-131](../../../../backend/app/pipeline/export/pdf_exporter.py#L74-L131)
+- [latex_exporter.py:26-77](../../../../backend/app/pipeline/export/latex_exporter.py#L26-L77)
+- [jats_generator.py:20-43](../../../../backend/app/pipeline/export/jats_generator.py#L20-L43)
 
 ## Detailed Component Analysis
 
@@ -201,12 +201,12 @@ JATS --> End
 
 **Diagram sources**
 
-- [exporter.py:30-66](file://backend/app/pipeline/export/exporter.py#L30-L66)
-- [exporter.py:173-194](file://backend/app/pipeline/export/exporter.py#L173-L194)
+- [exporter.py:30-66](../../../../backend/app/pipeline/export/exporter.py#L30-L66)
+- [exporter.py:173-194](../../../../backend/app/pipeline/export/exporter.py#L173-L194)
 
 **Section sources**
 
-- [exporter.py:19-282](file://backend/app/pipeline/export/exporter.py#L19-L282)
+- [exporter.py:19-282](../../../../backend/app/pipeline/export/exporter.py#L19-L282)
 
 ### PDF Export: LibreOffice, WeasyPrint, docx2pdf Chain
 
@@ -233,12 +233,12 @@ D2P_OK --> |No| Fail["Raise RuntimeError"]
 
 **Diagram sources**
 
-- [pdf_exporter.py:74-131](file://backend/app/pipeline/export/pdf_exporter.py#L74-L131)
+- [pdf_exporter.py:74-131](../../../../backend/app/pipeline/export/pdf_exporter.py#L74-L131)
 
 **Section sources**
 
-- [pdf_exporter.py:12-131](file://backend/app/pipeline/export/pdf_exporter.py#L12-L131)
-- [settings.py:125-127](file://backend/app/config/settings.py#L125-L127)
+- [pdf_exporter.py:12-131](../../../../backend/app/pipeline/export/pdf_exporter.py#L12-L131)
+- [settings.py:125-127](../../../../backend/app/config/settings.py#L125-L127)
 
 ### LaTeX Export: Pandoc Integration
 
@@ -265,11 +265,11 @@ end
 
 **Diagram sources**
 
-- [latex_exporter.py:26-77](file://backend/app/pipeline/export/latex_exporter.py#L26-L77)
+- [latex_exporter.py:26-77](../../../../backend/app/pipeline/export/latex_exporter.py#L26-L77)
 
 **Section sources**
 
-- [latex_exporter.py:13-77](file://backend/app/pipeline/export/latex_exporter.py#L13-L77)
+- [latex_exporter.py:13-77](../../../../backend/app/pipeline/export/latex_exporter.py#L13-L77)
 
 ### JATS XML Generation: Structured Academic Metadata
 
@@ -289,11 +289,11 @@ class JATSGenerator {
 
 **Diagram sources**
 
-- [jats_generator.py:8-157](file://backend/app/pipeline/export/jats_generator.py#L8-L157)
+- [jats_generator.py:8-157](../../../../backend/app/pipeline/export/jats_generator.py#L8-L157)
 
 **Section sources**
 
-- [jats_generator.py:8-157](file://backend/app/pipeline/export/jats_generator.py#L8-L157)
+- [jats_generator.py:8-157](../../../../backend/app/pipeline/export/jats_generator.py#L8-L157)
 
 ### Template-Based DOCX Export
 
@@ -314,13 +314,13 @@ DOCX-->>FMTR : returned DocxTemplate
 
 **Diagram sources**
 
-- [formatter.py:49-58](file://backend/app/pipeline/formatting/formatter.py#L49-L58)
-- [template_renderer.py:65-82](file://backend/app/pipeline/formatting/template_renderer.py#L65-L82)
+- [formatter.py:49-58](../../../../backend/app/pipeline/formatting/formatter.py#L49-L58)
+- [template_renderer.py:65-82](../../../../backend/app/pipeline/formatting/template_renderer.py#L65-L82)
 
 **Section sources**
 
-- [formatter.py:35-130](file://backend/app/pipeline/formatting/formatter.py#L35-L130)
-- [template_renderer.py:29-331](file://backend/app/pipeline/formatting/template_renderer.py#L29-L331)
+- [formatter.py:35-130](../../../../backend/app/pipeline/formatting/formatter.py#L35-L130)
+- [template_renderer.py:29-331](../../../../backend/app/pipeline/formatting/template_renderer.py#L29-L331)
 
 ### Frontend Export Integration
 
@@ -341,15 +341,15 @@ API-->>UI : present download
 
 **Diagram sources**
 
-- [ProcessingOptions.jsx:1-39](file://frontend/src/components/ProcessingOptions.jsx#L1-L39)
-- [api.documents.js:13-13](file://frontend/src/services/api.documents.js#L13-L13)
-- [documents.py:67-67](file://backend/app/routers/documents.py#L67-L67)
+- [ProcessingOptions.jsx:1-39](../../../../frontend/src/components/ProcessingOptions.jsx#L1-L39)
+- [api.documents.js:13-13](../../../../frontend/src/services/api.documents.js#L13-L13)
+- [documents.py:67-67](../../../../backend/app/routers/v1/documents.py#L67-L67)
 
 **Section sources**
 
-- [ProcessingOptions.jsx:1-39](file://frontend/src/components/ProcessingOptions.jsx#L1-L39)
-- [api.documents.js:13-13](file://frontend/src/services/api.documents.js#L13-L13)
-- [documents.py:67-67](file://backend/app/routers/documents.py#L67-L67)
+- [ProcessingOptions.jsx:1-39](../../../../frontend/src/components/ProcessingOptions.jsx#L1-L39)
+- [api.documents.js:13-13](../../../../frontend/src/services/api.documents.js#L13-L13)
+- [documents.py:67-67](../../../../backend/app/routers/v1/documents.py#L67-L67)
 
 ## Dependency Analysis
 
@@ -370,17 +370,17 @@ Ltx --> Env["Environment (PANDOC_PATH)"]
 
 **Diagram sources**
 
-- [exporter.py:26-28](file://backend/app/pipeline/export/exporter.py#L26-L28)
-- [pdf_exporter.py:17-18](file://backend/app/pipeline/export/pdf_exporter.py#L17-L18)
-- [latex_exporter.py:20-24](file://backend/app/pipeline/export/latex_exporter.py#L20-L24)
-- [settings.py:125-127](file://backend/app/config/settings.py#L125-L127)
+- [exporter.py:26-28](../../../../backend/app/pipeline/export/exporter.py#L26-L28)
+- [pdf_exporter.py:17-18](../../../../backend/app/pipeline/export/pdf_exporter.py#L17-L18)
+- [latex_exporter.py:20-24](../../../../backend/app/pipeline/export/latex_exporter.py#L20-L24)
+- [settings.py:125-127](../../../../backend/app/config/settings.py#L125-L127)
 
 **Section sources**
 
-- [exporter.py:19-28](file://backend/app/pipeline/export/exporter.py#L19-L28)
-- [pdf_exporter.py:12-35](file://backend/app/pipeline/export/pdf_exporter.py#L12-L35)
-- [latex_exporter.py:13-25](file://backend/app/pipeline/export/latex_exporter.py#L13-L25)
-- [settings.py:125-127](file://backend/app/config/settings.py#L125-L127)
+- [exporter.py:19-28](../../../../backend/app/pipeline/export/exporter.py#L19-L28)
+- [pdf_exporter.py:12-35](../../../../backend/app/pipeline/export/pdf_exporter.py#L12-L35)
+- [latex_exporter.py:13-25](../../../../backend/app/pipeline/export/latex_exporter.py#L13-L25)
+- [settings.py:125-127](../../../../backend/app/config/settings.py#L125-L127)
 
 ## Performance Considerations
 
@@ -397,17 +397,17 @@ Ltx --> Env["Environment (PANDOC_PATH)"]
 Common issues and resolutions:
 
 - PDF export fails:
-    - Verify LibreOffice installation and path resolution.
-    - Confirm the DOCX file exists before PDF conversion.
-    - Review fallback chain and logs for specific errors.
+  - Verify LibreOffice installation and path resolution.
+  - Confirm the DOCX file exists before PDF conversion.
+  - Review fallback chain and logs for specific errors.
 - LaTeX export fails:
-    - Ensure Pandoc is installed and accessible via PATH or PANDOC_PATH.
-    - Check timeout settings and logs for detailed diagnostics.
+  - Ensure Pandoc is installed and accessible via PATH or PANDOC_PATH.
+  - Check timeout settings and logs for detailed diagnostics.
 - JATS export anomalies:
-    - Confirm document metadata and references are populated.
-    - Validate that lxml is available for XML generation.
+  - Confirm document metadata and references are populated.
+  - Validate that lxml is available for XML generation.
 - Frontend format mismatch:
-    - Supported formats are defined in frontend and backend; align selections accordingly.
+  - Supported formats are defined in frontend and backend; align selections accordingly.
 
 Validation and tests:
 
@@ -416,11 +416,11 @@ Validation and tests:
 
 **Section sources**
 
-- [pdf_exporter.py:74-131](file://backend/app/pipeline/export/pdf_exporter.py#L74-L131)
-- [latex_exporter.py:26-77](file://backend/app/pipeline/export/latex_exporter.py#L26-L77)
-- [jats_generator.py:20-43](file://backend/app/pipeline/export/jats_generator.py#L20-L43)
-- [test_export_pipeline.py:31-85](file://backend/tests/test_export_pipeline.py#L31-L85)
-- [test_jats_export.py:39-72](file://backend/tests/test_jats_export.py#L39-L72)
+- [pdf_exporter.py:74-131](../../../../backend/app/pipeline/export/pdf_exporter.py#L74-L131)
+- [latex_exporter.py:26-77](../../../../backend/app/pipeline/export/latex_exporter.py#L26-L77)
+- [jats_generator.py:20-43](../../../../backend/app/pipeline/export/jats_generator.py#L20-L43)
+- [test_export_pipeline.py:31-85](../../../../backend/tests/test_export_pipeline.py#L31-L85)
+- [test_jats_export.py:39-72](../../../../backend/tests/test_jats_export.py#L39-L72)
 
 ## Conclusion
 
@@ -442,10 +442,10 @@ The export system provides robust multi-format output with layered fallbacks for
 
 **Section sources**
 
-- [exporter.py:23-24](file://backend/app/pipeline/export/exporter.py#L23-L24)
-- [exporter.py:173-194](file://backend/app/pipeline/export/exporter.py#L173-L194)
-- [documents.py:67-67](file://backend/app/routers/documents.py#L67-L67)
-- [ProcessingOptions.jsx:1-5](file://frontend/src/components/ProcessingOptions.jsx#L1-L5)
+- [exporter.py:23-24](../../../../backend/app/pipeline/export/exporter.py#L23-L24)
+- [exporter.py:173-194](../../../../backend/app/pipeline/export/exporter.py#L173-L194)
+- [documents.py:67-67](../../../../backend/app/routers/v1/documents.py#L67-L67)
+- [ProcessingOptions.jsx:1-5](../../../../frontend/src/components/ProcessingOptions.jsx#L1-L5)
 
 ### Export Configuration Options
 
@@ -453,15 +453,15 @@ The export system provides robust multi-format output with layered fallbacks for
 - Template engine mode: formatting_options.template_engine (auto vs legacy).
 - Template selection: document.template.template_name.
 - External tool paths:
-    - LIBREOFFICE_PATH (PDF conversion).
-    - PANDOC_PATH (LaTeX conversion).
+  - LIBREOFFICE_PATH (PDF conversion).
+  - PANDOC_PATH (LaTeX conversion).
 
 **Section sources**
 
-- [exporter.py:173-194](file://backend/app/pipeline/export/exporter.py#L173-L194)
-- [formatter.py:98-105](file://backend/app/pipeline/formatting/formatter.py#L98-L105)
-- [settings.py:125-127](file://backend/app/config/settings.py#L125-L127)
-- [latex_exporter.py:20-24](file://backend/app/pipeline/export/latex_exporter.py#L20-L24)
+- [exporter.py:173-194](../../../../backend/app/pipeline/export/exporter.py#L173-L194)
+- [formatter.py:98-105](../../../../backend/app/pipeline/formatting/formatter.py#L98-L105)
+- [settings.py:125-127](../../../../backend/app/config/settings.py#L125-L127)
+- [latex_exporter.py:20-24](../../../../backend/app/pipeline/export/latex_exporter.py#L20-L24)
 
 ### Quality Assurance Measures
 
@@ -472,10 +472,10 @@ The export system provides robust multi-format output with layered fallbacks for
 
 **Section sources**
 
-- [exporter.py:51-52](file://backend/app/pipeline/export/exporter.py#L51-L52)
-- [pdf_exporter.py:108-110](file://backend/app/pipeline/export/pdf_exporter.py#L108-L110)
-- [latex_exporter.py:60-70](file://backend/app/pipeline/export/latex_exporter.py#L60-L70)
-- [jats_generator.py:78-82](file://backend/app/pipeline/export/jats_generator.py#L78-L82)
+- [exporter.py:51-52](../../../../backend/app/pipeline/export/exporter.py#L51-L52)
+- [pdf_exporter.py:108-110](../../../../backend/app/pipeline/export/pdf_exporter.py#L108-L110)
+- [latex_exporter.py:60-70](../../../../backend/app/pipeline/export/latex_exporter.py#L60-L70)
+- [jats_generator.py:78-82](../../../../backend/app/pipeline/export/jats_generator.py#L78-L82)
 
 ### Batch Processing Capabilities
 
@@ -485,5 +485,5 @@ The export system provides robust multi-format output with layered fallbacks for
 
 **Section sources**
 
-- [documents.py:67-67](file://backend/app/routers/documents.py#L67-L67)
-- [ProcessingOptions.jsx:1-39](file://frontend/src/components/ProcessingOptions.jsx#L1-L39)
+- [documents.py:67-67](../../../../backend/app/routers/v1/documents.py#L67-L67)
+- [ProcessingOptions.jsx:1-39](../../../../frontend/src/components/ProcessingOptions.jsx#L1-L39)

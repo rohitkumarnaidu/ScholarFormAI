@@ -6,10 +6,10 @@
 <cite>
 **Referenced Files in This Document**
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx)
-- [ValidationCard.jsx](file://frontend/src/components/ValidationCard.jsx)
-- [api.documents.js](file://frontend/src/services/api.documents.js)
-- [useJobFromUrl.js](file://frontend/src/hooks/useJobFromUrl.js)
-- [DocumentContext.jsx](file://frontend/src/context/DocumentContext.jsx)
+- [ValidationCard.jsx](../../../frontend/src/components/ValidationCard.jsx)
+- [api.documents.js](../../../frontend/src/services/api.documents.js)
+- [useJobFromUrl.js](../../../frontend/src/hooks/useJobFromUrl.js)
+- [DocumentContext.jsx](../../../frontend/src/context/DocumentContext.jsx)
 - [page.jsx](file://frontend/app/(formatter)/(protected)/history/page.jsx)
 </cite>
 
@@ -55,19 +55,19 @@ ResultsPage --> HistoryPage
 **Diagram sources**
 
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L1-L555)
-- [ValidationCard.jsx:1-65](file://frontend/src/components/ValidationCard.jsx#L1-L65)
-- [api.documents.js:1-431](file://frontend/src/services/api.documents.js#L1-L431)
-- [useJobFromUrl.js:1-91](file://frontend/src/hooks/useJobFromUrl.js#L1-L91)
-- [DocumentContext.jsx:1-139](file://frontend/src/context/DocumentContext.jsx#L1-L139)
+- [ValidationCard.jsx:1-65](../../../frontend/src/components/ValidationCard.jsx#L1-L65)
+- [api.documents.js:1-431](../../../frontend/src/services/api.documents.js#L1-L431)
+- [useJobFromUrl.js:1-91](../../../frontend/src/hooks/useJobFromUrl.js#L1-L91)
+- [DocumentContext.jsx:1-139](../../../frontend/src/context/DocumentContext.jsx#L1-L139)
 - [page.jsx](file://frontend/app/(formatter)/(protected)/history/page.jsx#L1-L461)
 
 **Section sources**
 
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L1-L555)
-- [ValidationCard.jsx:1-65](file://frontend/src/components/ValidationCard.jsx#L1-L65)
-- [api.documents.js:1-431](file://frontend/src/services/api.documents.js#L1-L431)
-- [useJobFromUrl.js:1-91](file://frontend/src/hooks/useJobFromUrl.js#L1-L91)
-- [DocumentContext.jsx:1-139](file://frontend/src/context/DocumentContext.jsx#L1-L139)
+- [ValidationCard.jsx:1-65](../../../frontend/src/components/ValidationCard.jsx#L1-L65)
+- [api.documents.js:1-431](../../../frontend/src/services/api.documents.js#L1-L431)
+- [useJobFromUrl.js:1-91](../../../frontend/src/hooks/useJobFromUrl.js#L1-L91)
+- [DocumentContext.jsx:1-139](../../../frontend/src/context/DocumentContext.jsx#L1-L139)
 - [page.jsx](file://frontend/app/(formatter)/(protected)/history/page.jsx#L1-L461)
 
 ## Core Components
@@ -113,9 +113,9 @@ The redesign leverages:
 **Section sources**
 
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L14-L555)
-- [ValidationCard.jsx:3-65](file://frontend/src/components/ValidationCard.jsx#L3-L65)
-- [api.documents.js:325-428](file://frontend/src/services/api.documents.js#L325-L428)
-- [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
+- [ValidationCard.jsx:3-65](../../../frontend/src/components/ValidationCard.jsx#L3-L65)
+- [api.documents.js:325-428](../../../frontend/src/services/api.documents.js#L325-L428)
+- [DocumentContext.jsx:17-139](../../../frontend/src/context/DocumentContext.jsx#L17-L139)
 
 ## Architecture Overview
 
@@ -150,9 +150,9 @@ ResultsPage->>User : Display filtered results
 **Diagram sources**
 
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L24-L88)
-- [useJobFromUrl.js:25-90](file://frontend/src/hooks/useJobFromUrl.js#L25-L90)
-- [api.documents.js:325-428](file://frontend/src/services/api.documents.js#L325-L428)
-- [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
+- [useJobFromUrl.js:25-90](../../../frontend/src/hooks/useJobFromUrl.js#L25-L90)
+- [api.documents.js:325-428](../../../frontend/src/services/api.documents.js#L325-L428)
+- [DocumentContext.jsx:17-139](../../../frontend/src/context/DocumentContext.jsx#L17-L139)
 
 The architecture ensures:
 
@@ -236,13 +236,13 @@ ResultsPage --> APIService : "uses"
 **Diagram sources**
 
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L14-L555)
-- [ValidationCard.jsx:3-65](file://frontend/src/components/ValidationCard.jsx#L3-L65)
-- [api.documents.js:325-428](file://frontend/src/services/api.documents.js#L325-L428)
+- [ValidationCard.jsx:3-65](../../../frontend/src/components/ValidationCard.jsx#L3-L65)
+- [api.documents.js:325-428](../../../frontend/src/services/api.documents.js#L325-L428)
 
 **Section sources**
 
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L14-L555)
-- [ValidationCard.jsx:3-65](file://frontend/src/components/ValidationCard.jsx#L3-L65)
+- [ValidationCard.jsx:3-65](../../../frontend/src/components/ValidationCard.jsx#L3-L65)
 
 ### Validation Card Component Analysis
 
@@ -271,7 +271,7 @@ The component adapts to different screen sizes while maintaining readability and
 
 **Section sources**
 
-- [ValidationCard.jsx:3-65](file://frontend/src/components/ValidationCard.jsx#L3-L65)
+- [ValidationCard.jsx:3-65](../../../frontend/src/components/ValidationCard.jsx#L3-L65)
 
 ### API Services Integration
 
@@ -296,7 +296,7 @@ Seamless integration with the download system supports multiple export formats w
 
 **Section sources**
 
-- [api.documents.js:325-428](file://frontend/src/services/api.documents.js#L325-L428)
+- [api.documents.js:325-428](../../../frontend/src/services/api.documents.js#L325-L428)
 
 ### State Management and Navigation
 
@@ -321,8 +321,8 @@ The useJobFromUrl hook enables:
 
 **Section sources**
 
-- [DocumentContext.jsx:17-139](file://frontend/src/context/DocumentContext.jsx#L17-L139)
-- [useJobFromUrl.js:25-90](file://frontend/src/hooks/useJobFromUrl.js#L25-L90)
+- [DocumentContext.jsx:17-139](../../../frontend/src/context/DocumentContext.jsx#L17-L139)
+- [useJobFromUrl.js:25-90](../../../frontend/src/hooks/useJobFromUrl.js#L25-L90)
 
 ## Dependency Analysis
 
@@ -370,8 +370,8 @@ ResultsPage --> DownloadPage
 **Diagram sources**
 
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L1-L555)
-- [DocumentContext.jsx:1-139](file://frontend/src/context/DocumentContext.jsx#L1-L139)
-- [api.documents.js:1-431](file://frontend/src/services/api.documents.js#L1-L431)
+- [DocumentContext.jsx:1-139](../../../frontend/src/context/DocumentContext.jsx#L1-L139)
+- [api.documents.js:1-431](../../../frontend/src/services/api.documents.js#L1-L431)
 - [page.jsx](file://frontend/app/(formatter)/(protected)/history/page.jsx#L1-L461)
 
 The dependency analysis reveals:
@@ -384,8 +384,8 @@ The dependency analysis reveals:
 **Section sources**
 
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L1-L555)
-- [DocumentContext.jsx:1-139](file://frontend/src/context/DocumentContext.jsx#L1-L139)
-- [api.documents.js:1-431](file://frontend/src/services/api.documents.js#L1-L431)
+- [DocumentContext.jsx:1-139](../../../frontend/src/context/DocumentContext.jsx#L1-L139)
+- [api.documents.js:1-431](../../../frontend/src/services/api.documents.js#L1-L431)
 
 ## Performance Considerations
 
@@ -434,7 +434,7 @@ Common issues and their solutions:
 **Section sources**
 
 - [page.jsx](file://frontend/app/(formatter)/results/page.jsx#L91-L144)
-- [api.documents.js:325-428](file://frontend/src/services/api.documents.js#L325-L428)
+- [api.documents.js:325-428](../../../frontend/src/services/api.documents.js#L325-L428)
 
 ## Conclusion
 

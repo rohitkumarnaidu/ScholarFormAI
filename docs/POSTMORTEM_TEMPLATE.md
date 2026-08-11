@@ -20,7 +20,7 @@ last_updated: July 2026
 **Author:** [Name]  
 **Status:** Draft / Review / Complete
 
-> **See also:** [Runbooks](runbooks/), [Disaster Recovery](DISASTER_RECOVERY.md), [SLO Definitions](SLO_DEFINITIONS.md)
+> **See also:** [Runbooks](runbooks/), [Disaster Recovery](operations/DISASTER_RECOVERY.md), [SLO Definitions](SLO_DEFINITIONS.md)
 
 ---
 

@@ -5,20 +5,20 @@
 
 <cite>
 **Referenced Files in This Document**
-- [incident-response.md](file://docs/runbooks/incident-response.md)
-- [rollback.md](file://docs/runbooks/rollback.md)
-- [docker-compose.yml](file://backend/docker/docker-compose.yml)
-- [settings.py](file://backend/app/config/settings.py)
-- [redis_cache.py](file://backend/app/cache/redis_cache.py)
-- [health_checks.py](file://backend/app/services/health_checks.py)
-- [health.py](file://backend/app/routers/v1/health.py)
-- [cleanup.py](file://backend/app/utils/cleanup.py)
-- [celery_tasks.py](file://backend/app/tasks/celery_tasks.py)
-- [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
-- [monitoring.py](file://backend/app/middleware/monitoring.py)
-- [supabase_client.py](file://backend/app/db/supabase_client.py)
-- [troubleshooting.md](file://docs/troubleshooting.md)
-- [backend README.md](file://backend/README.md)
+- [incident-response.md](../../../runbooks/incident-response.md)
+- [rollback.md](../../../runbooks/rollback.md)
+- [docker-compose.yml](../../../../backend/docker/docker-compose.yml)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [redis_cache.py](../../../../backend/app/cache/redis_cache.py)
+- [health_checks.py](../../../../backend/app/services/health_checks.py)
+- [health.py](../../../../backend/app/routers/v1/health.py)
+- [cleanup.py](../../../../backend/app/utils/cleanup.py)
+- [celery_tasks.py](../../../../backend/app/tasks/celery_tasks.py)
+- [prometheus_metrics.py](../../../../backend/app/middleware/prometheus_metrics.py)
+- [monitoring.py](../../../../backend/app/middleware/monitoring.py)
+- [supabase_client.py](../../../../backend/app/db/supabase_client.py)
+- [troubleshooting.md](../../../operations/TROUBLESHOOTING.md)
+- [backend README.md](../../../../backend/README.md)
 </cite>
 
 ## Table of Contents
@@ -79,19 +79,19 @@ CW2 --> CLAMAV
 
 **Diagram sources**
 
-- [docker-compose.yml:1-100](file://backend/docker/docker-compose.yml#L1-L100)
-- [health.py:1-42](file://backend/app/routers/v1/health.py#L1-L42)
-- [health_checks.py:1-261](file://backend/app/services/health_checks.py#L1-L261)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
-- [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
-- [supabase_client.py:1-144](file://backend/app/db/supabase_client.py#L1-L144)
-- [celery_tasks.py:1-290](file://backend/app/tasks/celery_tasks.py#L1-L290)
+- [docker-compose.yml:1-100](../../../../backend/docker/docker-compose.yml#L1-L100)
+- [health.py:1-42](../../../../backend/app/routers/v1/health.py#L1-L42)
+- [health_checks.py:1-261](../../../../backend/app/services/health_checks.py#L1-L261)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [monitoring.py:1-51](../../../../backend/app/middleware/monitoring.py#L1-L51)
+- [redis_cache.py:1-102](../../../../backend/app/cache/redis_cache.py#L1-L102)
+- [supabase_client.py:1-144](../../../../backend/app/db/supabase_client.py#L1-L144)
+- [celery_tasks.py:1-290](../../../../backend/app/tasks/celery_tasks.py#L1-L290)
 
 **Section sources**
 
-- [docker-compose.yml:1-100](file://backend/docker/docker-compose.yml#L1-L100)
-- [backend README.md:1-79](file://backend/README.md#L1-L79)
+- [docker-compose.yml:1-100](../../../../backend/docker/docker-compose.yml#L1-L100)
+- [backend README.md:1-79](../../../../backend/README.md#L1-L79)
 
 ## Core Components
 
@@ -104,15 +104,15 @@ CW2 --> CLAMAV
 
 **Section sources**
 
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
-- [health.py:1-42](file://backend/app/routers/v1/health.py#L1-L42)
-- [health_checks.py:1-261](file://backend/app/services/health_checks.py#L1-L261)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
-- [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
-- [cleanup.py:1-62](file://backend/app/utils/cleanup.py#L1-L62)
-- [celery_tasks.py:1-290](file://backend/app/tasks/celery_tasks.py#L1-L290)
-- [docker-compose.yml:1-100](file://backend/docker/docker-compose.yml#L1-L100)
+- [settings.py:1-422](../../../../backend/app/config/settings.py#L1-L422)
+- [health.py:1-42](../../../../backend/app/routers/v1/health.py#L1-L42)
+- [health_checks.py:1-261](../../../../backend/app/services/health_checks.py#L1-L261)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [monitoring.py:1-51](../../../../backend/app/middleware/monitoring.py#L1-L51)
+- [redis_cache.py:1-102](../../../../backend/app/cache/redis_cache.py#L1-L102)
+- [cleanup.py:1-62](../../../../backend/app/utils/cleanup.py#L1-L62)
+- [celery_tasks.py:1-290](../../../../backend/app/tasks/celery_tasks.py#L1-L290)
+- [docker-compose.yml:1-100](../../../../backend/docker/docker-compose.yml#L1-L100)
 
 ## Architecture Overview
 
@@ -151,11 +151,11 @@ Celery-->>API : update status/results
 
 **Diagram sources**
 
-- [health.py:1-42](file://backend/app/routers/v1/health.py#L1-L42)
-- [health_checks.py:130-192](file://backend/app/services/health_checks.py#L130-L192)
-- [supabase_client.py:126-144](file://backend/app/db/supabase_client.py#L126-L144)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [celery_tasks.py:1-290](file://backend/app/tasks/celery_tasks.py#L1-L290)
+- [health.py:1-42](../../../../backend/app/routers/v1/health.py#L1-L42)
+- [health_checks.py:130-192](../../../../backend/app/services/health_checks.py#L130-L192)
+- [supabase_client.py:126-144](../../../../backend/app/db/supabase_client.py#L126-L144)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [celery_tasks.py:1-290](../../../../backend/app/tasks/celery_tasks.py#L1-L290)
 
 ## Detailed Component Analysis
 
@@ -182,14 +182,14 @@ Decision --> |No| Fail["Return 503 with checks"]
 
 **Diagram sources**
 
-- [health.py:28-42](file://backend/app/routers/v1/health.py#L28-L42)
-- [health_checks.py:130-192](file://backend/app/services/health_checks.py#L130-L192)
+- [health.py:28-42](../../../../backend/app/routers/v1/health.py#L28-L42)
+- [health_checks.py:130-192](../../../../backend/app/services/health_checks.py#L130-L192)
 
 **Section sources**
 
-- [health.py:1-42](file://backend/app/routers/v1/health.py#L1-L42)
-- [health_checks.py:1-261](file://backend/app/services/health_checks.py#L1-L261)
-- [supabase_client.py:126-144](file://backend/app/db/supabase_client.py#L126-L144)
+- [health.py:1-42](../../../../backend/app/routers/v1/health.py#L1-L42)
+- [health_checks.py:1-261](../../../../backend/app/services/health_checks.py#L1-L261)
+- [supabase_client.py:126-144](../../../../backend/app/db/supabase_client.py#L126-L144)
 
 ### Redis Cache Management
 
@@ -214,12 +214,12 @@ class RedisCache {
 
 **Diagram sources**
 
-- [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
+- [redis_cache.py:1-102](../../../../backend/app/cache/redis_cache.py#L1-L102)
 
 **Section sources**
 
-- [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
-- [settings.py:156-174](file://backend/app/config/settings.py#L156-L174)
+- [redis_cache.py:1-102](../../../../backend/app/cache/redis_cache.py#L1-L102)
+- [settings.py:156-174](../../../../backend/app/config/settings.py#L156-L174)
 
 ### Cleanup and Retention
 
@@ -239,14 +239,14 @@ Report --> Sleep2["Sleep 24h"] --> Tick
 
 **Diagram sources**
 
-- [cleanup.py:12-62](file://backend/app/utils/cleanup.py#L12-L62)
-- [celery_tasks.py:203-228](file://backend/app/tasks/celery_tasks.py#L203-L228)
+- [cleanup.py:12-62](../../../../backend/app/utils/cleanup.py#L12-L62)
+- [celery_tasks.py:203-228](../../../../backend/app/tasks/celery_tasks.py#L203-L228)
 
 **Section sources**
 
-- [cleanup.py:1-62](file://backend/app/utils/cleanup.py#L1-L62)
-- [celery_tasks.py:203-228](file://backend/app/tasks/celery_tasks.py#L203-L228)
-- [settings.py:128-131](file://backend/app/config/settings.py#L128-L131)
+- [cleanup.py:1-62](../../../../backend/app/utils/cleanup.py#L1-L62)
+- [celery_tasks.py:203-228](../../../../backend/app/tasks/celery_tasks.py#L203-L228)
+- [settings.py:128-131](../../../../backend/app/config/settings.py#L128-L131)
 
 ### Observability and Metrics
 
@@ -269,12 +269,12 @@ Note over MM : sse/ws connection open/close
 
 **Diagram sources**
 
-- [prometheus_metrics.py:135-235](file://backend/app/middleware/prometheus_metrics.py#L135-L235)
+- [prometheus_metrics.py:135-235](../../../../backend/app/middleware/prometheus_metrics.py#L135-L235)
 
 **Section sources**
 
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [monitoring.py:1-51](../../../../backend/app/middleware/monitoring.py#L1-L51)
 
 ### Infrastructure Dependencies (Docker Compose)
 
@@ -292,11 +292,11 @@ CLAMAV ---|scan| CW2
 
 **Diagram sources**
 
-- [docker-compose.yml:1-100](file://backend/docker/docker-compose.yml#L1-L100)
+- [docker-compose.yml:1-100](../../../../backend/docker/docker-compose.yml#L1-L100)
 
 **Section sources**
 
-- [docker-compose.yml:1-100](file://backend/docker/docker-compose.yml#L1-L100)
+- [docker-compose.yml:1-100](../../../../backend/docker/docker-compose.yml#L1-L100)
 
 ## Dependency Analysis
 
@@ -318,19 +318,19 @@ CT --> REDIS["Redis"]
 
 **Diagram sources**
 
-- [health_checks.py:85-127](file://backend/app/services/health_checks.py#L85-L127)
-- [supabase_client.py:107-144](file://backend/app/db/supabase_client.py#L107-L144)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [cleanup.py:1-62](file://backend/app/utils/cleanup.py#L1-L62)
-- [celery_tasks.py:203-228](file://backend/app/tasks/celery_tasks.py#L203-L228)
+- [health_checks.py:85-127](../../../../backend/app/services/health_checks.py#L85-L127)
+- [supabase_client.py:107-144](../../../../backend/app/db/supabase_client.py#L107-L144)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [cleanup.py:1-62](../../../../backend/app/utils/cleanup.py#L1-L62)
+- [celery_tasks.py:203-228](../../../../backend/app/tasks/celery_tasks.py#L203-L228)
 
 **Section sources**
 
-- [health_checks.py:1-261](file://backend/app/services/health_checks.py#L1-L261)
-- [supabase_client.py:1-144](file://backend/app/db/supabase_client.py#L1-L144)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [cleanup.py:1-62](file://backend/app/utils/cleanup.py#L1-L62)
-- [celery_tasks.py:1-290](file://backend/app/tasks/celery_tasks.py#L1-L290)
+- [health_checks.py:1-261](../../../../backend/app/services/health_checks.py#L1-L261)
+- [supabase_client.py:1-144](../../../../backend/app/db/supabase_client.py#L1-L144)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [cleanup.py:1-62](../../../../backend/app/utils/cleanup.py#L1-L62)
+- [celery_tasks.py:1-290](../../../../backend/app/tasks/celery_tasks.py#L1-L290)
 
 ## Performance Considerations
 
@@ -356,7 +356,7 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [troubleshooting.md:1-149](file://docs/troubleshooting.md#L1-L149)
+- [troubleshooting.md:1-149](../../../operations/TROUBLESHOOTING.md#L1-L149)
 
 ## Emergency Procedures
 
@@ -365,7 +365,7 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [incident-response.md:1-47](file://docs/runbooks/incident-response.md#L1-L47)
+- [incident-response.md:1-47](../../../runbooks/incident-response.md#L1-L47)
 
 ## Disaster Recovery
 
@@ -374,7 +374,7 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [rollback.md:1-24](file://docs/runbooks/rollback.md#L1-L24)
+- [rollback.md:1-24](../../../runbooks/rollback.md#L1-L24)
 
 ## System Restoration
 
@@ -384,8 +384,8 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [rollback.md:15-18](file://docs/runbooks/rollback.md#L15-L18)
-- [health.py:28-42](file://backend/app/routers/v1/health.py#L28-L42)
+- [rollback.md:15-18](../../../runbooks/rollback.md#L15-L18)
+- [health.py:28-42](../../../../backend/app/routers/v1/health.py#L28-L42)
 
 ## Preventive Maintenance
 
@@ -404,9 +404,9 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [health.py:1-42](file://backend/app/routers/v1/health.py#L1-L42)
-- [health_checks.py:1-261](file://backend/app/services/health_checks.py#L1-L261)
-- [supabase_client.py:126-144](file://backend/app/db/supabase_client.py#L126-L144)
+- [health.py:1-42](../../../../backend/app/routers/v1/health.py#L1-L42)
+- [health_checks.py:1-261](../../../../backend/app/services/health_checks.py#L1-L261)
+- [supabase_client.py:126-144](../../../../backend/app/db/supabase_client.py#L126-L144)
 
 ## Operational Best Practices
 
@@ -418,10 +418,10 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [settings.py:98-104](file://backend/app/config/settings.py#L98-L104)
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [backend README.md:75-79](file://backend/README.md#L75-L79)
+- [settings.py:98-104](../../../../backend/app/config/settings.py#L98-L104)
+- [monitoring.py:1-51](../../../../backend/app/middleware/monitoring.py#L1-L51)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [backend README.md:75-79](../../../../backend/README.md#L75-L79)
 
 ## Conclusion
 

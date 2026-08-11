@@ -19,7 +19,7 @@ ScholarForm AI allows you to supply a custom reference DOCX template and custom 
 
 A custom DOCX reference template is a Microsoft Word document (`custom_template.docx`) that defines the visual styles used during document generation.
 
-### Key Word Styles to Define:
+### Key Word Styles to Define
 
 | Style Name | Description |
 | :--- | :--- |

@@ -19,7 +19,7 @@ This tutorial walks through formatting a real academic manuscript from start to 
 
 ## Prerequisites
 
-- ScholarForm running locally ([Quickstart](../quickstart.md))
+- ScholarForm running locally ([Quickstart](../docs/getting-started/quickstart.md))
 - A `.docx` manuscript file (or use the sample below)
 
 ## Step 1: Get a Sample Paper
@@ -99,7 +99,7 @@ Compare the two outputs. Notice how headings, spacing, and citation styles diffe
 
 | Topic | Resource |
 | ------- | ---------- |
-| Custom templates | [Template Creation Guide](../template_creation.md) |
-| AI Agent generation | [Agent Documentation](../Agent.md) |
-| Multi-doc synthesis | [User Guide](../user_guide.md) |
+| Custom templates | [Template Creation Guide](../user-guide/template_creation.md) |
+| AI Agent generation | [Agent Documentation](../agents/Agent.md) |
+| Multi-doc synthesis | [User Guide](../guides/USER_GUIDE.md) |
 | API integration | [API Reference](../API.md) |

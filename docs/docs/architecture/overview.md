@@ -87,10 +87,10 @@ The official Python client library provides both synchronous (`AMFClient`) and a
 
 ```mermaid
 graph LR
-    P1[Async-First Execution] --> P2[Stateless API Handlers]
-    P2 --> P3[Strict Schema Validation]
-    P3 --> P4[Tiered LLM Fallbacks]
-    P4 --> P5[High-Fidelity DOCX Output]
+    P1["Async-First Execution"] --> P2["Stateless API Handlers"]
+    P2 --> P3["Strict Schema Validation"]
+    P3 --> P4["Tiered LLM Fallbacks"]
+    P4 --> P5["High-Fidelity DOCX Output"]
 
     style P1 fill:#2c3e50,color:#fff
     style P2 fill:#2c3e50,color:#fff

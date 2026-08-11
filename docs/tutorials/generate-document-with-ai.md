@@ -21,8 +21,8 @@ This tutorial walks through generating a complete academic manuscript from a nat
 
 | Requirement | Details |
 | ------------- | --------- |
-| Running backend | Follow the [Quickstart](../quickstart.md) to get ScholarForm running locally |
-| LLM provider key | At least one of: NVIDIA NIM, Groq, or Ollama — see [API Key Setup](../API_KEY_QUICK_START.md) |
+| Running backend | Follow the [Quickstart](../docs/getting-started/quickstart.md) to get ScholarForm running locally |
+| LLM provider key | At least one of: NVIDIA NIM, Groq, or Ollama — see [API Key Setup](../api/API_KEY_QUICK_START.md) |
 | Python 3.12+ | For running code examples |
 | `curl` or `requests` | For API examples |
 | Sample prompt | A research topic description (see Step 1) |
@@ -31,14 +31,14 @@ This tutorial walks through generating a complete academic manuscript from a nat
 
 ```mermaid
 flowchart LR
-    A[Submit Prompt] --> B[Task Parser]
-    B --> C[Outline Generation]
+    A["Submit Prompt"] --> B["Task Parser"]
+    B --> C["Outline Generation"]
     C --> D{User Approves?}
-    D -->|Yes| E[Section Writing]
+    D -->|Yes| E["Section Writing"]
     D -->|No| C
-    E --> F[Citation Assembly]
-    F --> G[Quality Scoring]
-    G --> H[Document Build]
+    E --> F["Citation Assembly"]
+    F --> G["Quality Scoring"]
+    G --> H["Document Build"]
     H --> I["Export DOCX/PDF"]
     
     style A fill:#1a56db,color:#fff
@@ -104,7 +104,7 @@ print(f"Session created: {session_id}")
 
 ### Via UI
 
-1. Navigate to **http://localhost:3000/agent**
+1. Navigate to **<http://localhost:3000/agent>**
 2. Enter your research topic in the prompt textarea
 3. Select **IEEE** from the template dropdown
 4. Choose **Academic** tone
@@ -584,5 +584,5 @@ curl http://localhost:8000/api/v1/generator/sessions \
 | Multi-doc synthesis | [Multi-Doc Synthesis Tutorial](multi-doc-synthesis.md) |
 | Format an existing paper | [Format Your First Paper](format-your-first-paper.md) |
 | Custom templates | [Custom Template Guide](../guides/creating-a-custom-template.md) |
-| Agent documentation | [Agent Overview](../Agent.md) |
+| Agent documentation | [Agent Overview](../agents/Agent.md) |
 | All tutorials | [Tutorials Index](README.md) |

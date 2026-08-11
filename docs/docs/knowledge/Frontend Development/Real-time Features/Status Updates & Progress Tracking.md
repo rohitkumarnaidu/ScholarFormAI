@@ -5,22 +5,22 @@
 
 <cite>
 **Referenced Files in This Document**
-- [status.js](file://frontend/src/constants/status.js)
-- [JobStatusCard.jsx](file://frontend/src/components/layout/JobStatusCard.jsx)
-- [StatusBadge.jsx](file://frontend/src/components/StatusBadge.jsx)
-- [useUpload.js](file://frontend/src/hooks/useUpload.js)
-- [Stepper.jsx](file://frontend/src/components/Stepper.jsx)
+- [status.js](../../../../../frontend/src/constants/status.js)
+- [JobStatusCard.jsx](../../../../../frontend/src/components/layout/JobStatusCard.jsx)
+- [StatusBadge.jsx](../../../../../frontend/src/components/StatusBadge.jsx)
+- [useUpload.js](../../../../../frontend/src/hooks/useUpload.js)
+- [Stepper.jsx](../../../../../frontend/src/components/Stepper.jsx)
 - [GenerateStep.jsx](file://frontend/app/(generator)/(protected)/generate/_components/GenerateStep.jsx)
 - [processing/page.jsx](file://frontend/app/(formatter)/processing/page.jsx)
-- [notifications.js](file://frontend/src/utils/notifications.js)
-- [NotificationBell.jsx](file://frontend/src/components/NotificationBell.jsx)
+- [notifications.js](../../../../../frontend/src/utils/notifications.js)
+- [NotificationBell.jsx](../../../../../frontend/src/components/NotificationBell.jsx)
 - [page.jsx](file://frontend/app/(shared)/(protected)/notifications/page.jsx)
-- [useSessionEventStream.js](file://frontend/src/hooks/useSessionEventStream.js)
-- [processing_status.py](file://backend/app/models/processing_status.py)
-- [events.py](file://backend/app/realtime/events.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [stream.py](file://backend/app/routers/stream.py)
-- [documents.py](file://backend/app/routers/documents.py)
+- [useSessionEventStream.js](../../../../../frontend/src/hooks/useSessionEventStream.js)
+- [processing_status.py](../../../../../backend/app/models/processing_status.py)
+- [events.py](../../../../../backend/app/realtime/events.py)
+- [pubsub.py](../../../../../backend/app/realtime/pubsub.py)
+- [stream.py](../../../../../backend/app/routers/v1/stream.py)
+- [documents.py](../../../../../backend/app/routers/v1/documents.py)
 </cite>
 
 ## Table of Contents
@@ -78,29 +78,29 @@ N --> |caches| N
 
 **Diagram sources**
 
-- [useUpload.js:1-361](file://frontend/src/hooks/useUpload.js#L1-L361)
-- [JobStatusCard.jsx:1-142](file://frontend/src/components/layout/JobStatusCard.jsx#L1-L142)
-- [StatusBadge.jsx:1-48](file://frontend/src/components/StatusBadge.jsx#L1-L48)
-- [Stepper.jsx:38-143](file://frontend/src/components/Stepper.jsx#L38-L143)
+- [useUpload.js:1-361](../../../../../frontend/src/hooks/useUpload.js#L1-L361)
+- [JobStatusCard.jsx:1-142](../../../../../frontend/src/components/layout/JobStatusCard.jsx#L1-L142)
+- [StatusBadge.jsx:1-48](../../../../../frontend/src/components/StatusBadge.jsx#L1-L48)
+- [Stepper.jsx:38-143](../../../../../frontend/src/components/Stepper.jsx#L38-L143)
 - [GenerateStep.jsx:23-38](file://frontend/app/(generator)/(protected)/generate/_components/GenerateStep.jsx#L23-L38)
-- [useSessionEventStream.js:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
-- [notifications.js:1-46](file://frontend/src/utils/notifications.js#L1-L46)
-- [NotificationBell.jsx:1-75](file://frontend/src/components/NotificationBell.jsx#L1-L75)
+- [useSessionEventStream.js:1-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [notifications.js:1-46](../../../../../frontend/src/utils/notifications.js#L1-L46)
+- [NotificationBell.jsx:1-75](../../../../../frontend/src/components/NotificationBell.jsx#L1-L75)
 - [page.jsx:1-101](file://frontend/app/(shared)/(protected)/notifications/page.jsx#L1-L101)
-- [processing_status.py:1-15](file://backend/app/models/processing_status.py#L1-L15)
-- [events.py:1-34](file://backend/app/realtime/events.py#L1-L34)
-- [pubsub.py:1-120](file://backend/app/realtime/pubsub.py#L1-L120)
-- [stream.py:60-94](file://backend/app/routers/stream.py#L60-L94)
-- [documents.py:103-156](file://backend/app/routers/documents.py#L103-L156)
+- [processing_status.py:1-15](../../../../../backend/app/models/processing_status.py#L1-L15)
+- [events.py:1-34](../../../../../backend/app/realtime/events.py#L1-L34)
+- [pubsub.py:1-120](../../../../../backend/app/realtime/pubsub.py#L1-L120)
+- [stream.py:60-94](../../../../../backend/app/routers/v1/stream.py#L60-L94)
+- [documents.py:103-156](../../../../../backend/app/routers/v1/documents.py#L103-L156)
 
 **Section sources**
 
-- [useUpload.js:1-361](file://frontend/src/hooks/useUpload.js#L1-L361)
-- [processing_status.py:1-15](file://backend/app/models/processing_status.py#L1-L15)
-- [events.py:1-34](file://backend/app/realtime/events.py#L1-L34)
-- [pubsub.py:1-120](file://backend/app/realtime/pubsub.py#L1-L120)
-- [stream.py:60-94](file://backend/app/routers/stream.py#L60-L94)
-- [documents.py:103-156](file://backend/app/routers/documents.py#L103-L156)
+- [useUpload.js:1-361](../../../../../frontend/src/hooks/useUpload.js#L1-L361)
+- [processing_status.py:1-15](../../../../../backend/app/models/processing_status.py#L1-L15)
+- [events.py:1-34](../../../../../backend/app/realtime/events.py#L1-L34)
+- [pubsub.py:1-120](../../../../../backend/app/realtime/pubsub.py#L1-L120)
+- [stream.py:60-94](../../../../../backend/app/routers/v1/stream.py#L60-L94)
+- [documents.py:103-156](../../../../../backend/app/routers/v1/documents.py#L103-L156)
 
 ## Core Components
 
@@ -120,16 +120,16 @@ Key responsibilities:
 
 **Section sources**
 
-- [status.js:1-23](file://frontend/src/constants/status.js#L1-L23)
-- [useUpload.js:75-96](file://frontend/src/hooks/useUpload.js#L75-L96)
-- [useUpload.js:127-196](file://frontend/src/hooks/useUpload.js#L127-L196)
-- [JobStatusCard.jsx:1-142](file://frontend/src/components/layout/JobStatusCard.jsx#L1-L142)
-- [StatusBadge.jsx:1-48](file://frontend/src/components/StatusBadge.jsx#L1-L48)
-- [processing_status.py:1-15](file://backend/app/models/processing_status.py#L1-L15)
-- [events.py:1-34](file://backend/app/realtime/events.py#L1-L34)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [stream.py:73-94](file://backend/app/routers/stream.py#L73-L94)
-- [documents.py:103-156](file://backend/app/routers/documents.py#L103-L156)
+- [status.js:1-23](../../../../../frontend/src/constants/status.js#L1-L23)
+- [useUpload.js:75-96](../../../../../frontend/src/hooks/useUpload.js#L75-L96)
+- [useUpload.js:127-196](../../../../../frontend/src/hooks/useUpload.js#L127-L196)
+- [JobStatusCard.jsx:1-142](../../../../../frontend/src/components/layout/JobStatusCard.jsx#L1-L142)
+- [StatusBadge.jsx:1-48](../../../../../frontend/src/components/StatusBadge.jsx#L1-L48)
+- [processing_status.py:1-15](../../../../../backend/app/models/processing_status.py#L1-L15)
+- [events.py:1-34](../../../../../backend/app/realtime/events.py#L1-L34)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [stream.py:73-94](../../../../../backend/app/routers/v1/stream.py#L73-L94)
+- [documents.py:103-156](../../../../../backend/app/routers/v1/documents.py#L103-L156)
 
 ## Architecture Overview
 
@@ -162,11 +162,11 @@ SSE-->>UI : "progress%, message, phase, status"
 
 **Diagram sources**
 
-- [useUpload.js:88-96](file://frontend/src/hooks/useUpload.js#L88-L96)
-- [documents.py:122-150](file://backend/app/routers/documents.py#L122-L150)
-- [processing_status.py:5-14](file://backend/app/models/processing_status.py#L5-L14)
-- [stream.py:60-94](file://backend/app/routers/stream.py#L60-L94)
-- [pubsub.py:79-120](file://backend/app/realtime/pubsub.py#L79-L120)
+- [useUpload.js:88-96](../../../../../frontend/src/hooks/useUpload.js#L88-L96)
+- [documents.py:122-150](../../../../../backend/app/routers/v1/documents.py#L122-L150)
+- [processing_status.py:5-14](../../../../../backend/app/models/processing_status.py#L5-L14)
+- [stream.py:60-94](../../../../../backend/app/routers/v1/stream.py#L60-L94)
+- [pubsub.py:79-120](../../../../../backend/app/realtime/pubsub.py#L79-L120)
 
 ## Detailed Component Analysis
 
@@ -189,11 +189,11 @@ CheckFailed --> |No| Default["Default to Other"]
 
 **Diagram sources**
 
-- [status.js:10-22](file://frontend/src/constants/status.js#L10-L22)
+- [status.js:10-22](../../../../../frontend/src/constants/status.js#L10-L22)
 
 **Section sources**
 
-- [status.js:1-23](file://frontend/src/constants/status.js#L1-L23)
+- [status.js:1-23](../../../../../frontend/src/constants/status.js#L1-L23)
 
 ### Status State Management and Optimistic Updates
 
@@ -221,13 +221,13 @@ ProcessingCheck2 --> |No| Terminal["Terminal State Handled Once"]
 
 **Diagram sources**
 
-- [useUpload.js:98-125](file://frontend/src/hooks/useUpload.js#L98-L125)
-- [useUpload.js:127-196](file://frontend/src/hooks/useUpload.js#L127-L196)
-- [useUpload.js:75-96](file://frontend/src/hooks/useUpload.js#L75-L96)
+- [useUpload.js:98-125](../../../../../frontend/src/hooks/useUpload.js#L98-L125)
+- [useUpload.js:127-196](../../../../../frontend/src/hooks/useUpload.js#L127-L196)
+- [useUpload.js:75-96](../../../../../frontend/src/hooks/useUpload.js#L75-L96)
 
 **Section sources**
 
-- [useUpload.js:1-361](file://frontend/src/hooks/useUpload.js#L1-L361)
+- [useUpload.js:1-361](../../../../../frontend/src/hooks/useUpload.js#L1-L361)
 
 ### Job Status Card Component
 
@@ -250,13 +250,13 @@ JobStatusCard --> StatusBadge : "displays status badge"
 
 **Diagram sources**
 
-- [JobStatusCard.jsx:1-142](file://frontend/src/components/layout/JobStatusCard.jsx#L1-L142)
-- [StatusBadge.jsx:1-48](file://frontend/src/components/StatusBadge.jsx#L1-L48)
+- [JobStatusCard.jsx:1-142](../../../../../frontend/src/components/layout/JobStatusCard.jsx#L1-L142)
+- [StatusBadge.jsx:1-48](../../../../../frontend/src/components/StatusBadge.jsx#L1-L48)
 
 **Section sources**
 
-- [JobStatusCard.jsx:1-142](file://frontend/src/components/layout/JobStatusCard.jsx#L1-L142)
-- [StatusBadge.jsx:1-48](file://frontend/src/components/StatusBadge.jsx#L1-L48)
+- [JobStatusCard.jsx:1-142](../../../../../frontend/src/components/layout/JobStatusCard.jsx#L1-L142)
+- [StatusBadge.jsx:1-48](../../../../../frontend/src/components/StatusBadge.jsx#L1-L48)
 
 ### Progress Indicators and Step Visualization
 
@@ -277,14 +277,14 @@ Gen->>Gen : "Render per-stage progress bar"
 
 **Diagram sources**
 
-- [Stepper.jsx:38-143](file://frontend/src/components/Stepper.jsx#L38-L143)
-- [useUpload.js:127-196](file://frontend/src/hooks/useUpload.js#L127-L196)
+- [Stepper.jsx:38-143](../../../../../frontend/src/components/Stepper.jsx#L38-L143)
+- [useUpload.js:127-196](../../../../../frontend/src/hooks/useUpload.js#L127-L196)
 - [GenerateStep.jsx:23-38](file://frontend/app/(generator)/(protected)/generate/_components/GenerateStep.jsx#L23-L38)
 - [processing/page.jsx:265-286](file://frontend/app/(formatter)/processing/page.jsx#L265-L286)
 
 **Section sources**
 
-- [Stepper.jsx:38-143](file://frontend/src/components/Stepper.jsx#L38-L143)
+- [Stepper.jsx:38-143](../../../../../frontend/src/components/Stepper.jsx#L38-L143)
 - [GenerateStep.jsx:23-38](file://frontend/app/(generator)/(protected)/generate/_components/GenerateStep.jsx#L23-L38)
 - [processing/page.jsx:265-286](file://frontend/app/(formatter)/processing/page.jsx#L265-L286)
 
@@ -309,17 +309,17 @@ Client->>Client : "setStages/setProgress/setIsComplete"
 
 **Diagram sources**
 
-- [events.py:9-33](file://backend/app/realtime/events.py#L9-L33)
-- [pubsub.py:55-120](file://backend/app/realtime/pubsub.py#L55-L120)
-- [stream.py:73-94](file://backend/app/routers/stream.py#L73-L94)
-- [useSessionEventStream.js:20-97](file://frontend/src/hooks/useSessionEventStream.js#L20-L97)
+- [events.py:9-33](../../../../../backend/app/realtime/events.py#L9-L33)
+- [pubsub.py:55-120](../../../../../backend/app/realtime/pubsub.py#L55-L120)
+- [stream.py:73-94](../../../../../backend/app/routers/v1/stream.py#L73-L94)
+- [useSessionEventStream.js:20-97](../../../../../frontend/src/hooks/useSessionEventStream.js#L20-L97)
 
 **Section sources**
 
-- [events.py:1-34](file://backend/app/realtime/events.py#L1-L34)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [stream.py:60-94](file://backend/app/routers/stream.py#L60-L94)
-- [useSessionEventStream.js:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [events.py:1-34](../../../../../backend/app/realtime/events.py#L1-L34)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [stream.py:60-94](../../../../../backend/app/routers/v1/stream.py#L60-L94)
+- [useSessionEventStream.js:1-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
 
 ### Job Completion Tracking and Error Propagation
 
@@ -337,13 +337,13 @@ TermCheck --> |Failed| Fail["Set error, stop, show retry/logs"]
 
 **Diagram sources**
 
-- [useUpload.js:146-195](file://frontend/src/hooks/useUpload.js#L146-L195)
-- [JobStatusCard.jsx:117-133](file://frontend/src/components/layout/JobStatusCard.jsx#L117-L133)
+- [useUpload.js:146-195](../../../../../frontend/src/hooks/useUpload.js#L146-L195)
+- [JobStatusCard.jsx:117-133](../../../../../frontend/src/components/layout/JobStatusCard.jsx#L117-L133)
 
 **Section sources**
 
-- [useUpload.js:146-195](file://frontend/src/hooks/useUpload.js#L146-L195)
-- [JobStatusCard.jsx:117-133](file://frontend/src/components/layout/JobStatusCard.jsx#L117-L133)
+- [useUpload.js:146-195](../../../../../frontend/src/hooks/useUpload.js#L146-L195)
+- [JobStatusCard.jsx:117-133](../../../../../frontend/src/components/layout/JobStatusCard.jsx#L117-L133)
 
 ### User Notification Systems
 
@@ -365,14 +365,14 @@ Page->>Local : "load/save notifications"
 
 **Diagram sources**
 
-- [notifications.js:19-45](file://frontend/src/utils/notifications.js#L19-L45)
-- [NotificationBell.jsx:15-68](file://frontend/src/components/NotificationBell.jsx#L15-L68)
+- [notifications.js:19-45](../../../../../frontend/src/utils/notifications.js#L19-L45)
+- [NotificationBell.jsx:15-68](../../../../../frontend/src/components/NotificationBell.jsx#L15-L68)
 - [page.jsx:7-32](file://frontend/app/(shared)/(protected)/notifications/page.jsx#L7-L32)
 
 **Section sources**
 
-- [notifications.js:1-46](file://frontend/src/utils/notifications.js#L1-L46)
-- [NotificationBell.jsx:1-75](file://frontend/src/components/NotificationBell.jsx#L1-L75)
+- [notifications.js:1-46](../../../../../frontend/src/utils/notifications.js#L1-L46)
+- [NotificationBell.jsx:1-75](../../../../../frontend/src/components/NotificationBell.jsx#L1-L75)
 - [page.jsx:1-101](file://frontend/app/(shared)/(protected)/notifications/page.jsx#L1-L101)
 
 ## Dependency Analysis
@@ -396,23 +396,23 @@ BE_docs --> BE_model["processing_status.py"]
 
 **Diagram sources**
 
-- [useUpload.js:1-361](file://frontend/src/hooks/useUpload.js#L1-L361)
-- [JobStatusCard.jsx:1-142](file://frontend/src/components/layout/JobStatusCard.jsx#L1-L142)
-- [StatusBadge.jsx:1-48](file://frontend/src/components/StatusBadge.jsx#L1-L48)
-- [Stepper.jsx:38-143](file://frontend/src/components/Stepper.jsx#L38-L143)
+- [useUpload.js:1-361](../../../../../frontend/src/hooks/useUpload.js#L1-L361)
+- [JobStatusCard.jsx:1-142](../../../../../frontend/src/components/layout/JobStatusCard.jsx#L1-L142)
+- [StatusBadge.jsx:1-48](../../../../../frontend/src/components/StatusBadge.jsx#L1-L48)
+- [Stepper.jsx:38-143](../../../../../frontend/src/components/Stepper.jsx#L38-L143)
 - [GenerateStep.jsx:23-38](file://frontend/app/(generator)/(protected)/generate/_components/GenerateStep.jsx#L23-L38)
-- [useSessionEventStream.js:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
-- [stream.py:60-94](file://backend/app/routers/stream.py#L60-L94)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [events.py:1-34](file://backend/app/realtime/events.py#L1-L34)
-- [processing_status.py:1-15](file://backend/app/models/processing_status.py#L1-L15)
+- [useSessionEventStream.js:1-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [stream.py:60-94](../../../../../backend/app/routers/v1/stream.py#L60-L94)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [events.py:1-34](../../../../../backend/app/realtime/events.py#L1-L34)
+- [processing_status.py:1-15](../../../../../backend/app/models/processing_status.py#L1-L15)
 
 **Section sources**
 
-- [documents.py:103-156](file://backend/app/routers/documents.py#L103-L156)
-- [processing_status.py:1-15](file://backend/app/models/processing_status.py#L1-15)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [stream.py:60-94](file://backend/app/routers/stream.py#L60-L94)
+- [documents.py:103-156](../../../../../backend/app/routers/v1/documents.py#L103-L156)
+- [processing_status.py:1-15](../../../../../backend/app/models/processing_status.py#L1-15)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [stream.py:60-94](../../../../../backend/app/routers/v1/stream.py#L60-L94)
 
 ## Performance Considerations
 
@@ -431,34 +431,34 @@ Recommendations:
 
 **Section sources**
 
-- [useUpload.js:75-96](file://frontend/src/hooks/useUpload.js#L75-L96)
-- [documents.py:103-156](file://backend/app/routers/documents.py#L103-L156)
-- [pubsub.py:28-54](file://backend/app/realtime/pubsub.py#L28-L54)
-- [useSessionEventStream.js:76-97](file://frontend/src/hooks/useSessionEventStream.js#L76-L97)
+- [useUpload.js:75-96](../../../../../frontend/src/hooks/useUpload.js#L75-L96)
+- [documents.py:103-156](../../../../../backend/app/routers/v1/documents.py#L103-L156)
+- [pubsub.py:28-54](../../../../../backend/app/realtime/pubsub.py#L28-L54)
+- [useSessionEventStream.js:76-97](../../../../../frontend/src/hooks/useSessionEventStream.js#L76-L97)
 
 ## Troubleshooting Guide
 
 Common issues and resolutions:
 
 - No real-time updates:
-    - Verify SSE subscription URL and token handling.
-    - Confirm Redis availability; fallback to in-memory queues is logged.
+  - Verify SSE subscription URL and token handling.
+  - Confirm Redis availability; fallback to in-memory queues is logged.
 - Frequent polling:
-    - Adjust dynamic intervals based on phase and progress.
-    - Ensure cache TTL is sufficient to avoid constant misses.
+  - Adjust dynamic intervals based on phase and progress.
+  - Ensure cache TTL is sufficient to avoid constant misses.
 - Terminal state not recognized:
-    - Normalize status values to uppercase and trim whitespace.
-    - Check predicates for completed/failed conditions.
+  - Normalize status values to uppercase and trim whitespace.
+  - Check predicates for completed/failed conditions.
 - Notification not appearing:
-    - Ensure browser permissions are granted.
-    - Confirm localStorage availability and Supabase channel subscription.
+  - Ensure browser permissions are granted.
+  - Confirm localStorage availability and Supabase channel subscription.
 
 **Section sources**
 
-- [useSessionEventStream.js:20-97](file://frontend/src/hooks/useSessionEventStream.js#L20-L97)
-- [pubsub.py:40-53](file://backend/app/realtime/pubsub.py#L40-L53)
-- [useUpload.js:135-195](file://frontend/src/hooks/useUpload.js#L135-L195)
-- [NotificationBell.jsx:15-68](file://frontend/src/components/NotificationBell.jsx#L15-L68)
+- [useSessionEventStream.js:20-97](../../../../../frontend/src/hooks/useSessionEventStream.js#L20-L97)
+- [pubsub.py:40-53](../../../../../backend/app/realtime/pubsub.py#L40-L53)
+- [useUpload.js:135-195](../../../../../frontend/src/hooks/useUpload.js#L135-L195)
+- [NotificationBell.jsx:15-68](../../../../../frontend/src/components/NotificationBell.jsx#L15-L68)
 
 ## Conclusion
 

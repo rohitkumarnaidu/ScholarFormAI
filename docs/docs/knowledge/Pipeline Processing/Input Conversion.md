@@ -5,13 +5,13 @@
 
 <cite>
 **Referenced Files in This Document**
-- [converter.py](file://backend/app/pipeline/input_conversion/converter.py)
-- [pdf_ocr.py](file://backend/app/pipeline/ocr/pdf_ocr.py)
-- [enhancement_manager.py](file://backend/app/services/enhancement_manager.py)
-- [parser_factory.py](file://backend/app/pipeline/parsing/parser_factory.py)
-- [parser.py](file://backend/app/pipeline/parsing/parser.py)
-- [base_parser.py](file://backend/app/pipeline/parsing/base_parser.py)
-- [README.md](file://backend/manual_tests/sample_inputs/README.md)
+- [converter.py](../../../../backend/app/pipeline/input_conversion/converter.py)
+- [pdf_ocr.py](../../../../backend/app/pipeline/ocr/pdf_ocr.py)
+- [enhancement_manager.py](../../../../backend/app/services/enhancement_manager.py)
+- [parser_factory.py](../../../../backend/app/pipeline/parsing/parser_factory.py)
+- [parser.py](../../../../backend/app/pipeline/parsing/parser.py)
+- [base_parser.py](../../../../backend/app/pipeline/parsing/base_parser.py)
+- [README.md](../../../../README.md)
 </cite>
 
 ## Table of Contents
@@ -72,21 +72,21 @@ EM --> OCR
 
 **Diagram sources**
 
-- [converter.py:19-294](file://backend/app/pipeline/input_conversion/converter.py#L19-L294)
-- [pdf_ocr.py:57-231](file://backend/app/pipeline/ocr/pdf_ocr.py#L57-L231)
-- [enhancement_manager.py:78-294](file://backend/app/services/enhancement_manager.py#L78-L294)
-- [parser_factory.py:25-166](file://backend/app/pipeline/parsing/parser_factory.py#L25-L166)
-- [parser.py:61-800](file://backend/app/pipeline/parsing/parser.py#L61-L800)
-- [base_parser.py:12-45](file://backend/app/pipeline/parsing/base_parser.py#L12-L45)
+- [converter.py:19-294](../../../../backend/app/pipeline/input_conversion/converter.py#L19-L294)
+- [pdf_ocr.py:57-231](../../../../backend/app/pipeline/ocr/pdf_ocr.py#L57-L231)
+- [enhancement_manager.py:78-294](../../../../backend/app/services/enhancement_manager.py#L78-L294)
+- [parser_factory.py:25-166](../../../../backend/app/pipeline/parsing/parser_factory.py#L25-L166)
+- [parser.py:61-800](../../../../backend/app/pipeline/parsing/parser.py#L61-L800)
+- [base_parser.py:12-45](../../../../backend/app/pipeline/parsing/base_parser.py#L12-L45)
 
 **Section sources**
 
-- [converter.py:19-294](file://backend/app/pipeline/input_conversion/converter.py#L19-L294)
-- [pdf_ocr.py:57-231](file://backend/app/pipeline/ocr/pdf_ocr.py#L57-L231)
-- [enhancement_manager.py:78-294](file://backend/app/services/enhancement_manager.py#L78-L294)
-- [parser_factory.py:25-166](file://backend/app/pipeline/parsing/parser_factory.py#L25-L166)
-- [parser.py:61-800](file://backend/app/pipeline/parsing/parser.py#L61-L800)
-- [base_parser.py:12-45](file://backend/app/pipeline/parsing/base_parser.py#L12-L45)
+- [converter.py:19-294](../../../../backend/app/pipeline/input_conversion/converter.py#L19-L294)
+- [pdf_ocr.py:57-231](../../../../backend/app/pipeline/ocr/pdf_ocr.py#L57-L231)
+- [enhancement_manager.py:78-294](../../../../backend/app/services/enhancement_manager.py#L78-L294)
+- [parser_factory.py:25-166](../../../../backend/app/pipeline/parsing/parser_factory.py#L25-L166)
+- [parser.py:61-800](../../../../backend/app/pipeline/parsing/parser.py#L61-L800)
+- [base_parser.py:12-45](../../../../backend/app/pipeline/parsing/base_parser.py#L12-L45)
 
 ## Core Components
 
@@ -97,12 +97,12 @@ EM --> OCR
 
 **Section sources**
 
-- [converter.py:19-294](file://backend/app/pipeline/input_conversion/converter.py#L19-L294)
-- [pdf_ocr.py:57-231](file://backend/app/pipeline/ocr/pdf_ocr.py#L57-L231)
-- [enhancement_manager.py:78-294](file://backend/app/services/enhancement_manager.py#L78-L294)
-- [parser_factory.py:25-166](file://backend/app/pipeline/parsing/parser_factory.py#L25-L166)
-- [parser.py:61-800](file://backend/app/pipeline/parsing/parser.py#L61-L800)
-- [base_parser.py:12-45](file://backend/app/pipeline/parsing/base_parser.py#L12-L45)
+- [converter.py:19-294](../../../../backend/app/pipeline/input_conversion/converter.py#L19-L294)
+- [pdf_ocr.py:57-231](../../../../backend/app/pipeline/ocr/pdf_ocr.py#L57-L231)
+- [enhancement_manager.py:78-294](../../../../backend/app/services/enhancement_manager.py#L78-L294)
+- [parser_factory.py:25-166](../../../../backend/app/pipeline/parsing/parser_factory.py#L25-L166)
+- [parser.py:61-800](../../../../backend/app/pipeline/parsing/parser.py#L61-L800)
+- [base_parser.py:12-45](../../../../backend/app/pipeline/parsing/base_parser.py#L12-L45)
 
 ## Architecture Overview
 
@@ -147,11 +147,11 @@ DP-->>Client : PipelineDocument
 
 **Diagram sources**
 
-- [converter.py:40-165](file://backend/app/pipeline/input_conversion/converter.py#L40-L165)
-- [enhancement_manager.py:103-104](file://backend/app/services/enhancement_manager.py#L103-L104)
-- [pdf_ocr.py:66-148](file://backend/app/pipeline/ocr/pdf_ocr.py#L66-L148)
-- [parser_factory.py:95-140](file://backend/app/pipeline/parsing/parser_factory.py#L95-L140)
-- [parser.py:82-164](file://backend/app/pipeline/parsing/parser.py#L82-L164)
+- [converter.py:40-165](../../../../backend/app/pipeline/input_conversion/converter.py#L40-L165)
+- [enhancement_manager.py:103-104](../../../../backend/app/services/enhancement_manager.py#L103-L104)
+- [pdf_ocr.py:66-148](../../../../backend/app/pipeline/ocr/pdf_ocr.py#L66-L148)
+- [parser_factory.py:95-140](../../../../backend/app/pipeline/parsing/parser_factory.py#L95-L140)
+- [parser.py:82-164](../../../../backend/app/pipeline/parsing/parser.py#L82-L164)
 
 ## Detailed Component Analysis
 
@@ -187,15 +187,15 @@ class InputConverter {
 
 **Diagram sources**
 
-- [converter.py:19-294](file://backend/app/pipeline/input_conversion/converter.py#L19-L294)
+- [converter.py:19-294](../../../../backend/app/pipeline/input_conversion/converter.py#L19-L294)
 
 **Section sources**
 
-- [converter.py:25-105](file://backend/app/pipeline/input_conversion/converter.py#L25-L105)
-- [converter.py:107-165](file://backend/app/pipeline/input_conversion/converter.py#L107-L165)
-- [converter.py:167-234](file://backend/app/pipeline/input_conversion/converter.py#L167-L234)
-- [converter.py:235-276](file://backend/app/pipeline/input_conversion/converter.py#L235-L276)
-- [converter.py:277-294](file://backend/app/pipeline/input_conversion/converter.py#L277-L294)
+- [converter.py:25-105](../../../../backend/app/pipeline/input_conversion/converter.py#L25-L105)
+- [converter.py:107-165](../../../../backend/app/pipeline/input_conversion/converter.py#L107-L165)
+- [converter.py:167-234](../../../../backend/app/pipeline/input_conversion/converter.py#L167-L234)
+- [converter.py:235-276](../../../../backend/app/pipeline/input_conversion/converter.py#L235-L276)
+- [converter.py:277-294](../../../../backend/app/pipeline/input_conversion/converter.py#L277-L294)
 
 ### PdfOCR
 
@@ -232,14 +232,14 @@ RaiseErr --> End
 
 **Diagram sources**
 
-- [pdf_ocr.py:66-148](file://backend/app/pipeline/ocr/pdf_ocr.py#L66-L148)
-- [pdf_ocr.py:150-231](file://backend/app/pipeline/ocr/pdf_ocr.py#L150-L231)
+- [pdf_ocr.py:66-148](../../../../backend/app/pipeline/ocr/pdf_ocr.py#L66-L148)
+- [pdf_ocr.py:150-231](../../../../backend/app/pipeline/ocr/pdf_ocr.py#L150-L231)
 
 **Section sources**
 
-- [pdf_ocr.py:66-129](file://backend/app/pipeline/ocr/pdf_ocr.py#L66-L129)
-- [pdf_ocr.py:130-148](file://backend/app/pipeline/ocr/pdf_ocr.py#L130-L148)
-- [pdf_ocr.py:178-231](file://backend/app/pipeline/ocr/pdf_ocr.py#L178-L231)
+- [pdf_ocr.py:66-129](../../../../backend/app/pipeline/ocr/pdf_ocr.py#L66-L129)
+- [pdf_ocr.py:130-148](../../../../backend/app/pipeline/ocr/pdf_ocr.py#L130-L148)
+- [pdf_ocr.py:178-231](../../../../backend/app/pipeline/ocr/pdf_ocr.py#L178-L231)
 
 ### EnhancementManager
 
@@ -278,12 +278,12 @@ EnhancementManager --> EnhancementProfile : "produces"
 
 **Diagram sources**
 
-- [enhancement_manager.py:78-294](file://backend/app/services/enhancement_manager.py#L78-L294)
+- [enhancement_manager.py:78-294](../../../../backend/app/services/enhancement_manager.py#L78-L294)
 
 **Section sources**
 
-- [enhancement_manager.py:23-51](file://backend/app/services/enhancement_manager.py#L23-L51)
-- [enhancement_manager.py:221-290](file://backend/app/services/enhancement_manager.py#L221-L290)
+- [enhancement_manager.py:23-51](../../../../backend/app/services/enhancement_manager.py#L23-L51)
+- [enhancement_manager.py:221-290](../../../../backend/app/services/enhancement_manager.py#L221-L290)
 
 ### ParserFactory and DocxParser
 
@@ -318,22 +318,22 @@ DocxParser --|> BaseParser
 
 **Diagram sources**
 
-- [parser_factory.py:25-166](file://backend/app/pipeline/parsing/parser_factory.py#L25-L166)
-- [base_parser.py:12-45](file://backend/app/pipeline/parsing/base_parser.py#L12-L45)
-- [parser.py:61-800](file://backend/app/pipeline/parsing/parser.py#L61-L800)
+- [parser_factory.py:25-166](../../../../backend/app/pipeline/parsing/parser_factory.py#L25-L166)
+- [base_parser.py:12-45](../../../../backend/app/pipeline/parsing/base_parser.py#L12-L45)
+- [parser.py:61-800](../../../../backend/app/pipeline/parsing/parser.py#L61-L800)
 
 **Section sources**
 
-- [parser_factory.py:95-140](file://backend/app/pipeline/parsing/parser_factory.py#L95-L140)
-- [parser_factory.py:142-166](file://backend/app/pipeline/parsing/parser_factory.py#L142-L166)
-- [parser.py:78-164](file://backend/app/pipeline/parsing/parser.py#L78-L164)
+- [parser_factory.py:95-140](../../../../backend/app/pipeline/parsing/parser_factory.py#L95-L140)
+- [parser_factory.py:142-166](../../../../backend/app/pipeline/parsing/parser_factory.py#L142-L166)
+- [parser.py:78-164](../../../../backend/app/pipeline/parsing/parser.py#L78-L164)
 
 ## Dependency Analysis
 
 - InputConverter depends on:
-    - External tools: LibreOffice (soffice), Pandoc
-    - OCR stack: pdf2image, pdfminer, Tesseract, PaddleOCR, NumPy, python-docx
-    - EnhancementManager for backend capability discovery
+  - External tools: LibreOffice (soffice), Pandoc
+  - OCR stack: pdf2image, pdfminer, Tesseract, PaddleOCR, NumPy, python-docx
+  - EnhancementManager for backend capability discovery
 - PdfOCR depends on optional modules; failures are handled with clear exceptions
 - ParserFactory composes parsers and surfaces supported formats dynamically
 
@@ -351,17 +351,17 @@ PF["ParserFactory"] --> DP["DocxParser"]
 
 **Diagram sources**
 
-- [converter.py:25-35](file://backend/app/pipeline/input_conversion/converter.py#L25-L35)
-- [pdf_ocr.py:10-51](file://backend/app/pipeline/ocr/pdf_ocr.py#L10-L51)
-- [enhancement_manager.py:245-260](file://backend/app/services/enhancement_manager.py#L245-L260)
-- [parser_factory.py:42-93](file://backend/app/pipeline/parsing/parser_factory.py#L42-L93)
+- [converter.py:25-35](../../../../backend/app/pipeline/input_conversion/converter.py#L25-L35)
+- [pdf_ocr.py:10-51](../../../../backend/app/pipeline/ocr/pdf_ocr.py#L10-L51)
+- [enhancement_manager.py:245-260](../../../../backend/app/services/enhancement_manager.py#L245-L260)
+- [parser_factory.py:42-93](../../../../backend/app/pipeline/parsing/parser_factory.py#L42-L93)
 
 **Section sources**
 
-- [converter.py:25-35](file://backend/app/pipeline/input_conversion/converter.py#L25-L35)
-- [pdf_ocr.py:10-51](file://backend/app/pipeline/ocr/pdf_ocr.py#L10-L51)
-- [enhancement_manager.py:245-260](file://backend/app/services/enhancement_manager.py#L245-L260)
-- [parser_factory.py:42-93](file://backend/app/pipeline/parsing/parser_factory.py#L42-L93)
+- [converter.py:25-35](../../../../backend/app/pipeline/input_conversion/converter.py#L25-L35)
+- [pdf_ocr.py:10-51](../../../../backend/app/pipeline/ocr/pdf_ocr.py#L10-L51)
+- [enhancement_manager.py:245-260](../../../../backend/app/services/enhancement_manager.py#L245-L260)
+- [parser_factory.py:42-93](../../../../backend/app/pipeline/parsing/parser_factory.py#L42-L93)
 
 ## Performance Considerations
 
@@ -378,40 +378,40 @@ PF["ParserFactory"] --> DP["DocxParser"]
 Common issues and resolutions:
 
 - Unsupported format
-    - Symptom: ConversionError indicating unsupported extension
-    - Resolution: Verify file extension is among supported formats; add mapping if needed
-    - Section sources
-        - [converter.py:62-63](file://backend/app/pipeline/input_conversion/converter.py#L62-L63)
+  - Symptom: ConversionError indicating unsupported extension
+  - Resolution: Verify file extension is among supported formats; add mapping if needed
+  - Section sources
+    - [converter.py:62-63](../../../../backend/app/pipeline/input_conversion/converter.py#L62-L63)
 - Tool not installed or not in PATH
-    - Symptom: ConversionError mentioning missing tool
-    - Resolution: Install LibreOffice or Pandoc; ensure executables are discoverable
-    - Section sources
-        - [converter.py:242-243](file://backend/app/pipeline/input_conversion/converter.py#L242-L243)
-        - [converter.py:217-218](file://backend/app/pipeline/input_conversion/converter.py#L217-L218)
+  - Symptom: ConversionError mentioning missing tool
+  - Resolution: Install LibreOffice or Pandoc; ensure executables are discoverable
+  - Section sources
+    - [converter.py:242-243](../../../../backend/app/pipeline/input_conversion/converter.py#L242-L243)
+    - [converter.py:217-218](../../../../backend/app/pipeline/input_conversion/converter.py#L217-L218)
 - PDF appears blank or low text density
-    - Symptom: Conversion produces minimal text
-    - Resolution: Enable OCR; verify Tesseract/PaddleOCR installation; confirm pdf2image and Poppler availability
-    - Section sources
-        - [converter.py:127-141](file://backend/app/pipeline/input_conversion/converter.py#L127-L141)
-        - [pdf_ocr.py:94-107](file://backend/app/pipeline/ocr/pdf_ocr.py#L94-L107)
+  - Symptom: Conversion produces minimal text
+  - Resolution: Enable OCR; verify Tesseract/PaddleOCR installation; confirm pdf2image and Poppler availability
+  - Section sources
+    - [converter.py:127-141](../../../../backend/app/pipeline/input_conversion/converter.py#L127-L141)
+    - [pdf_ocr.py:94-107](../../../../backend/app/pipeline/ocr/pdf_ocr.py#L94-L107)
 - OCR backends unavailable
-    - Symptom: OCRError indicating missing dependencies
-    - Resolution: Install required packages; check EnhancementManager profile for detected backends
-    - Section sources
-        - [pdf_ocr.py:94-99](file://backend/app/pipeline/ocr/pdf_ocr.py#L94-L99)
-        - [enhancement_manager.py:253-258](file://backend/app/services/enhancement_manager.py#L253-L258)
+  - Symptom: OCRError indicating missing dependencies
+  - Resolution: Install required packages; check EnhancementManager profile for detected backends
+  - Section sources
+    - [pdf_ocr.py:94-99](../../../../backend/app/pipeline/ocr/pdf_ocr.py#L94-L99)
+    - [enhancement_manager.py:253-258](../../../../backend/app/services/enhancement_manager.py#L253-L258)
 - Conversion timeouts
-    - Symptom: Timeout during LibreOffice or Pandoc conversion
-    - Resolution: Reduce input complexity; ensure sufficient resources; retry
-    - Section sources
-        - [converter.py:229-233](file://backend/app/pipeline/input_conversion/converter.py#L229-L233)
-        - [converter.py:248-252](file://backend/app/pipeline/input_conversion/converter.py#L248-L252)
+  - Symptom: Timeout during LibreOffice or Pandoc conversion
+  - Resolution: Reduce input complexity; ensure sufficient resources; retry
+  - Section sources
+    - [converter.py:229-233](../../../../backend/app/pipeline/input_conversion/converter.py#L229-L233)
+    - [converter.py:248-252](../../../../backend/app/pipeline/input_conversion/converter.py#L248-L252)
 - Output file missing
-    - Symptom: ConversionError stating output not found
-    - Resolution: Confirm LibreOffice output naming and temp directory permissions
-    - Section sources
-        - [converter.py:157-163](file://backend/app/pipeline/input_conversion/converter.py#L157-L163)
-        - [converter.py:202-211](file://backend/app/pipeline/input_conversion/converter.py#L202-L211)
+  - Symptom: ConversionError stating output not found
+  - Resolution: Confirm LibreOffice output naming and temp directory permissions
+  - Section sources
+    - [converter.py:157-163](../../../../backend/app/pipeline/input_conversion/converter.py#L157-L163)
+    - [converter.py:202-211](../../../../backend/app/pipeline/input_conversion/converter.py#L202-L211)
 
 ## Conclusion
 
@@ -431,28 +431,28 @@ The input conversion system provides robust, extensible multi-format ingestion w
 
 **Section sources**
 
-- [converter.py:25-35](file://backend/app/pipeline/input_conversion/converter.py#L25-L35)
+- [converter.py:25-35](../../../../backend/app/pipeline/input_conversion/converter.py#L25-L35)
 
 ### Example Workflows
 
 - Converting a LaTeX manuscript to DOCX:
-    - Use Pandoc strategy; ensure LaTeX packages are installed locally
-    - Section sources
-        - [converter.py:78-80](file://backend/app/pipeline/input_conversion/converter.py#L78-L80)
-        - [converter.py:235-252](file://backend/app/pipeline/input_conversion/converter.py#L235-L252)
+  - Use Pandoc strategy; ensure LaTeX packages are installed locally
+  - Section sources
+    - [converter.py:78-80](../../../../backend/app/pipeline/input_conversion/converter.py#L78-L80)
+    - [converter.py:235-252](../../../../backend/app/pipeline/input_conversion/converter.py#L235-L252)
 - Converting a scanned PDF to DOCX:
-    - PdfOCR detects scanning; attempts OCR backends; writes DOCX
-    - Section sources
-        - [converter.py:127-137](file://backend/app/pipeline/input_conversion/converter.py#L127-L137)
-        - [pdf_ocr.py:130-148](file://backend/app/pipeline/ocr/pdf_ocr.py#L130-L148)
+  - PdfOCR detects scanning; attempts OCR backends; writes DOCX
+  - Section sources
+    - [converter.py:127-137](../../../../backend/app/pipeline/input_conversion/converter.py#L127-L137)
+    - [pdf_ocr.py:130-148](../../../../backend/app/pipeline/ocr/pdf_ocr.py#L130-L148)
 - Parsing the resulting DOCX:
-    - Use ParserFactory to select DocxParser; parse into internal model
-    - Section sources
-        - [parser_factory.py:95-140](file://backend/app/pipeline/parsing/parser_factory.py#L95-L140)
-        - [parser.py:82-164](file://backend/app/pipeline/parsing/parser.py#L82-L164)
+  - Use ParserFactory to select DocxParser; parse into internal model
+  - Section sources
+    - [parser_factory.py:95-140](../../../../backend/app/pipeline/parsing/parser_factory.py#L95-L140)
+    - [parser.py:82-164](../../../../backend/app/pipeline/parsing/parser.py#L82-L164)
 
 ### Manual Test Inputs
 
 - The manual test inputs directory includes sample DOCX files for testing conversion and downstream steps.
 - Section sources
-    - [README.md:1-78](file://backend/manual_tests/sample_inputs/README.md#L1-L78)
+  - [README.md:1-78](../../../../README.md#L1-L78)

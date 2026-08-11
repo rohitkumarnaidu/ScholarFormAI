@@ -1,6 +1,6 @@
 # ScholarForm AI — Code Style Guide
 
-> **Quick reference.** For the full standard (841 lines), see [docs/CODING_STANDARDS.md](docs/CODING_STANDARDS.md). For docs style, see [docs/.docs-style-guide.md](docs/.docs-style-guide.md).
+> **Quick reference.** For the full standard (841 lines), see [docs/CODING_STANDARDS.md](../governance/CODING_STANDARDS.md). For docs style, see [docs/.docs-style-guide.md](../.docs-style-guide.md).
 
 ---
 
@@ -127,7 +127,7 @@ Scopes: `backend`, `frontend`, `docs`, `docker`, `ci-cd`, `auth`, `pipeline`, `a
 - Use Mermaid for diagrams (not ASCII art or screenshots)
 - Links must be relative, not absolute paths
 - Code examples must be tested
-- See [docs/.docs-style-guide.md](docs/.docs-style-guide.md) for full details
+- See [docs/.docs-style-guide.md](../.docs-style-guide.md) for full details
 
 ---
 

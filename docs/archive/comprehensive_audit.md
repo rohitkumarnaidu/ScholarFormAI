@@ -62,21 +62,21 @@ last_updated: July 2026
 | # | Fix | Plan Status | File Exists? | Completion | Notes |
 | --- | ----- | ------------- | ------------- | ------------ | ------- |
 | 1 | Pin Python 3.12 | Required | ✅ Dockerfile exists | ️ **Partial** | Need to verify runtime.txt/pyproject.toml pins exactly 3.12 |
-| 2 | Add Groq LLM Tier 3 | Required | ✅ [llm_service.py](../backend/app/services/llm_service.py) (15KB) | ✅ **Completed** | File is 15KB — substantial implementation |
-| 3 | ClamAV Virus Scanning | Required | ✅ [virus_scanner.py](../backend/app/utils/virus_scanner.py) (4.4KB) | ✅ **Completed** | File exists + docker-compose has ClamAV service |
-| 4 | Persist Generator Sessions | Required | ✅ [generator_session_service.py](../backend/app/services/generator_session_service.py) (6.8KB) | ✅ **Completed** | DB-backed service exists |
-| 5 | Fix Template Enum + Whitelist | Required | ✅ [document.py](../backend/app/schemas/document.py) (9.4KB) | ️ **Needs Verification** | Need to confirm all 17 templates listed |
-| 6 | Enforce HTTPS/HSTS | Required | ✅ [security_headers.py](../backend/app/middleware/security_headers.py) (4.6KB) | ✅ **Completed** | Dedicated middleware file |
-| 7 | DocumentService.delete_document() | Required | ✅ [document_service.py](../backend/app/services/document_service.py) (21.7KB) | ️ **Needs Verification** | File is large, but need to verify delete method |
-| 8 | Re-enable GDPR Cleanup | Required | ✅ [cleanup.py](../backend/app/utils/cleanup.py) (2.3KB) | ️ **Needs Verification** | File exists but need to check lifespan wiring |
-| 9 | Fix Integration Tests | Required | ✅ [conftest.py](../backend/tests/conftest.py) + integration/ dir | ️ **Needs Verification** | Integration dir exists, need to test skip logic |
+| 2 | Add Groq LLM Tier 3 | Required | ✅ [llm_service.py](../../backend/app/services/llm_service.py) (15KB) | ✅ **Completed** | File is 15KB — substantial implementation |
+| 3 | ClamAV Virus Scanning | Required | ✅ [virus_scanner.py](../../backend/app/utils/virus_scanner.py) (4.4KB) | ✅ **Completed** | File exists + docker-compose has ClamAV service |
+| 4 | Persist Generator Sessions | Required | ✅ [generator_session_service.py](../../backend/app/services/generator_session_service.py) (6.8KB) | ✅ **Completed** | DB-backed service exists |
+| 5 | Fix Template Enum + Whitelist | Required | ✅ [document.py](../../backend/app/models/document.py) (9.4KB) | ️ **Needs Verification** | Need to confirm all 17 templates listed |
+| 6 | Enforce HTTPS/HSTS | Required | ✅ [security_headers.py](../../backend/app/middleware/security_headers.py) (4.6KB) | ✅ **Completed** | Dedicated middleware file |
+| 7 | DocumentService.delete_document() | Required | ✅ [document_service.py](../../backend/app/services/document_service.py) (21.7KB) | ️ **Needs Verification** | File is large, but need to verify delete method |
+| 8 | Re-enable GDPR Cleanup | Required | ✅ [cleanup.py](../../backend/app/tasks/cleanup.py) (2.3KB) | ️ **Needs Verification** | File exists but need to check lifespan wiring |
+| 9 | Fix Integration Tests | Required | ✅ [conftest.py](../../backend/conftest.py) + integration/ dir | ️ **Needs Verification** | Integration dir exists, need to test skip logic |
 
 **Frontend Module 0:**
 
 | # | Fix | File Exists? | Completion |
 |---|-----|-------------|------------|
 | 1 | Align Export Buttons | ✅ Download page exists |  ️ **Needs Verification** |
-| 2 | Unify ThemeToggle | ✅ [ThemeContext.jsx](../frontend/src/context/ThemeContext.jsx) (2.2KB) | ✅ **Completed** |
+| 2 | Unify ThemeToggle | ✅ [ThemeContext.jsx](../../frontend/src/context/ThemeContext.jsx) (2.2KB) | ✅ **Completed** |
 
 **Module 0 Summary:  ️ 65% Completed, 35% Needs Runtime Verification**
 
@@ -86,18 +86,18 @@ last_updated: July 2026
 
 | Item | File Exists? | Completion |
 | ------ | ------------- | ------------ |
-| Response Envelope Schema | ✅ [api_envelope.py](../backend/app/schemas/api_envelope.py) (1.4KB) | ✅ **Completed** |
-| Request ID Middleware | ✅ [request_id.py](../backend/app/middleware/request_id.py) (2.2KB) | ✅ **Completed** |
-| v1 Router Package | ✅ [__init__.py](../backend/app/routers/v1/__init__.py), health, docs, templates, generator, synthesis, billing | ✅ **Completed** |
+| Response Envelope Schema | ✅ [api_envelope.py](../../backend/app/schemas/api_envelope.py) (1.4KB) | ✅ **Completed** |
+| Request ID Middleware | ✅ [request_id.py](../../backend/app/middleware/request_id.py) (2.2KB) | ✅ **Completed** |
+| v1 Router Package | ✅ [**init**.py](../../backend/__init__.py), health, docs, templates, generator, synthesis, billing | ✅ **Completed** |
 | v1/health.py | ✅ 1KB | ✅ **Completed** |
 | v1/documents.py | ✅ 10.3KB | ✅ **Completed** |
 | v1/templates.py | ✅ 4.8KB | ✅ **Completed** |
 | v1/generator.py | ✅ 18.8KB | ✅ **Completed** |
 | v1/synthesis.py | ✅ 8.8KB | ✅ **Completed** |
 | v1/billing.py | ✅ 3.8KB | ✅ **Completed** |
-| Deprecation headers on legacy | ✅ [deprecation.py](../backend/app/routers/deprecation.py) (1.6KB) | ✅ **Completed** |
-| **Frontend:** api.v1.js | ✅ [api.v1.js](../frontend/src/services/api.v1.js) (6KB) | ✅ **Completed** |
-| **Frontend:** Request ID in api.core.js | ✅ [api.core.js](../frontend/src/services/api.core.js) (10.8KB) | ️ **Needs Verification** |
+| Deprecation headers on legacy | ✅ [deprecation.py](../../backend/.venv_new/Lib/site-packages/pip/_internal/utils/deprecation.py) (1.6KB) | ✅ **Completed** |
+| **Frontend:** api.v1.js | ✅ [api.v1.js](../../frontend/src/services/api.v1.js) (6KB) | ✅ **Completed** |
+| **Frontend:** Request ID in api.core.js | ✅ [api.core.js](../../frontend/src/services/api.core.js) (10.8KB) | ️ **Needs Verification** |
 | **Frontend:** Env vars NEXT_PUBLIC_ | ✅ .env + .env.example | ️ **Needs Verification** |
 
 **Module 1 Summary: ✅ 85% Completed**
@@ -108,20 +108,20 @@ last_updated: July 2026
 
 | Item | File Exists? | Completion |
 | ------ | ------------- | ------------ |
-| Golden Files Benchmark | ✅ [test_formatter_golden_files.py](../backend/tests/test_formatter_golden_files.py) (8.8KB) + golden_files/ dir | ✅ **Completed** |
+| Golden Files Benchmark | ✅ [test_formatter_golden_files.py](../../backend/tests/test_formatter_golden_files.py) (8.8KB) + golden_files/ dir | ✅ **Completed** |
 | docxtpl Renderer Fallback Fix | ️ Need to verify in formatter.py | ️ **Needs Verification** |
 | Preserve Hyperlinks | ️ Need to verify in parser/formatter | ️ **Needs Verification** |
 | Fix Footnote Placement | ️ Need to verify | ️ **Needs Verification** |
-| LaTeX Export | ✅ [latex_exporter.py](../backend/app/pipeline/export/latex_exporter.py) (743B) | ️ **Partial** — file very small (743B), likely stub |
-| CrossRef Retry/Backoff | ✅ [crossref_client.py](../backend/app/services/crossref_client.py) (5.7KB) | ️ **Needs Verification** |
-| Quality Score Service | ✅ [quality_score_service.py](../backend/app/services/quality_score_service.py) (4.4KB) | ✅ **Completed** |
+| LaTeX Export | ✅ [latex_exporter.py](../../backend/app/pipeline/export/latex_exporter.py) (743B) | ️ **Partial** — file very small (743B), likely stub |
+| CrossRef Retry/Backoff | ✅ [crossref_client.py](../../backend/app/pipeline/services/crossref_client.py) (5.7KB) | ️ **Needs Verification** |
+| Quality Score Service | ✅ [quality_score_service.py](../../backend/app/services/quality_score_service.py) (4.4KB) | ✅ **Completed** |
 | GROBID in Docker Compose | ✅ docker-compose.yml exists | ️ **Needs Verification** |
 | **Frontend:** TipTap on /edit | ✅ Edit page exists | ️ **Needs Verification** |
 | **Frontend:** Template Editor Save | ✅ Template editor page exists | ️ **Needs Verification** |
-| **Frontend:** Batch Upload Wiring | ✅ [BatchUploadPanel.jsx](../frontend/src/components/BatchUploadPanel.jsx) (9.7KB) | ✅ **Completed** |
+| **Frontend:** Batch Upload Wiring | ✅ [BatchUploadPanel.jsx](../../frontend/src/components/BatchUploadPanel.jsx) (9.7KB) | ✅ **Completed** |
 | **Frontend:** Quality Score Panel | ️ Results page exists | ️ **Needs Verification** |
 | **Frontend:** LaTeX Download Option | ️ Download page exists | ️ **Needs Verification** |
-| **Frontend:** Backend-Driven Stepper | ✅ [Stepper.jsx](../frontend/src/components/Stepper.jsx) (10.4KB) | ️ **Needs Verification** |
+| **Frontend:** Backend-Driven Stepper | ✅ [Stepper.jsx](../../frontend/src/components/Stepper.jsx) (10.4KB) | ️ **Needs Verification** |
 
 **Module 2 Summary:  ️ 55% Completed, heavy verification needed**
 
@@ -131,15 +131,15 @@ last_updated: July 2026
 
 | Item | File Exists? | Completion |
 | ------ | ------------- | ------------ |
-| Realtime pubsub.py | ✅ [pubsub.py](../backend/app/realtime/pubsub.py) (4.3KB) | ✅ **Completed** |
-| Realtime events.py | ✅ [events.py](../backend/app/realtime/events.py) (1.1KB) | ✅ **Completed** |
-| Preview Renderer | ✅ [preview_renderer.py](../backend/app/services/preview_renderer.py) (15.6KB) | ✅ **Completed** |
-| Preview Router | ✅ [preview.py](../backend/app/routers/preview.py) (7.4KB) | ✅ **Completed** |
-| **Frontend:** useLivePreviewSocket | ✅ [useLivePreviewSocket.js](../frontend/src/hooks/useLivePreviewSocket.js) (5.5KB) | ✅ **Completed** |
-| **Frontend:** PreviewPane | ✅ [PreviewPane.jsx](../frontend/src/components/live-preview/PreviewPane.jsx) (3.5KB) | ✅ **Completed** |
-| **Frontend:** SplitEditor | ✅ [SplitEditor.jsx](../frontend/src/components/live-preview/SplitEditor.jsx) (9.8KB) | ✅ **Completed** |
+| Realtime pubsub.py | ✅ [pubsub.py](../../backend/app/realtime/pubsub.py) (4.3KB) | ✅ **Completed** |
+| Realtime events.py | ✅ [events.py](../../backend/app/pipeline/orchestrator/events.py) (1.1KB) | ✅ **Completed** |
+| Preview Renderer | ✅ [preview_renderer.py](../../backend/app/services/preview_renderer.py) (15.6KB) | ✅ **Completed** |
+| Preview Router | ✅ [preview.py](../../backend/app/routers/preview.py) (7.4KB) | ✅ **Completed** |
+| **Frontend:** useLivePreviewSocket | ✅ [useLivePreviewSocket.js](../../frontend/src/hooks/useLivePreviewSocket.js) (5.5KB) | ✅ **Completed** |
+| **Frontend:** PreviewPane | ✅ [PreviewPane.jsx](../../frontend/src/components/live-preview/PreviewPane.jsx) (3.5KB) | ✅ **Completed** |
+| **Frontend:** SplitEditor | ✅ [SplitEditor.jsx](../../frontend/src/components/live-preview/SplitEditor.jsx) (9.8KB) | ✅ **Completed** |
 | **Frontend:** /formatter/live page | ✅ live/ dir exists | ✅ **Completed** |
-| **Frontend:** api.preview.v1.js | ✅ [api.preview.v1.js](../frontend/src/services/api.preview.v1.js) (1.5KB) | ✅ **Completed** |
+| **Frontend:** api.preview.v1.js | ✅ [api.preview.v1.js](../../frontend/src/services/api.preview.v1.js) (1.5KB) | ✅ **Completed** |
 
 **Module 3 Summary: ✅ 85% Completed — needs runtime testing**
 
@@ -150,15 +150,15 @@ last_updated: July 2026
 | Item | File Exists? | Completion |
 | ------ | ------------- | ------------ |
 | Generator Session Service | ✅ 6.8KB | ✅ **Completed** |
-| Session Vector Store | ✅ [session_vector_store.py](../backend/app/services/session_vector_store.py) (7.8KB) | ✅ **Completed** |
-| Generator Session Schema | ✅ [generator_session.py](../backend/app/schemas/generator_session.py) (1KB) | ️ **Partial** — very small file |
-| Synthesizer Pipeline | ✅ [synthesizer.py](../backend/app/pipeline/synthesis/synthesizer.py) (24.2KB) | ✅ **Completed** |
+| Session Vector Store | ✅ [session_vector_store.py](../../backend/app/services/session_vector_store.py) (7.8KB) | ✅ **Completed** |
+| Generator Session Schema | ✅ [generator_session.py](../../backend/app/schemas/generator_session.py) (1KB) | ️ **Partial** — very small file |
+| Synthesizer Pipeline | ✅ [synthesizer.py](../../backend/app/pipeline/synthesis/synthesizer.py) (24.2KB) | ✅ **Completed** |
 | v1/synthesis.py Router | ✅ 8.8KB | ✅ **Completed** |
-| **Frontend:** useGeneratorSessionStream | ✅ [useGeneratorSessionStream.js](../frontend/src/hooks/useGeneratorSessionStream.js) (3.2KB) | ✅ **Completed** |
-| **Frontend:** api.generator.v1.js | ✅ [api.generator.v1.js](../frontend/src/services/api.generator.v1.js) (2.7KB) | ✅ **Completed** |
-| **Frontend:** api.synthesis.js | ✅ [api.synthesis.js](../frontend/src/services/api.synthesis.js) (36B) | ❌ **Stub Only** — 36 bytes = empty |
-| **Frontend:** MultiUploadPanel | ✅ [MultiUploadPanel.jsx](../frontend/src/components/generator/MultiUploadPanel.jsx) (11.4KB) | ✅ **Completed** |
-| **Frontend:** SynthesisStageTimeline | ✅ [SynthesisStageTimeline.jsx](../frontend/src/components/generator/SynthesisStageTimeline.jsx) (6KB) | ✅ **Completed** |
+| **Frontend:** useGeneratorSessionStream | ✅ [useGeneratorSessionStream.js](../../frontend/src/hooks/useGeneratorSessionStream.js) (3.2KB) | ✅ **Completed** |
+| **Frontend:** api.generator.v1.js | ✅ [api.generator.v1.js](../../frontend/src/services/api.generator.v1.js) (2.7KB) | ✅ **Completed** |
+| **Frontend:** api.synthesis.js | ✅ [api.synthesis.js](../../frontend/src/services/api.synthesis.js) (36B) | ❌ **Stub Only** — 36 bytes = empty |
+| **Frontend:** MultiUploadPanel | ✅ [MultiUploadPanel.jsx](../../frontend/src/components/generator/MultiUploadPanel.jsx) (11.4KB) | ✅ **Completed** |
+| **Frontend:** SynthesisStageTimeline | ✅ [SynthesisStageTimeline.jsx](../../frontend/src/components/generator/SynthesisStageTimeline.jsx) (6KB) | ✅ **Completed** |
 | **Frontend:** multi-upload page | ✅ multi-upload/ dir | ✅ **Completed** |
 | **Frontend:** synthesis page | ✅ synthesis/ dir | ✅ **Completed** |
 
@@ -170,17 +170,17 @@ last_updated: July 2026
 
 | Item | File Exists? | Completion |
 | ------ | ------------- | ------------ |
-| Task Parser | ✅ [task_parser.py](../backend/app/pipeline/generation/task_parser.py) (6.2KB) | ✅ **Completed** |
-| Agent Pipeline | ✅ [agent.py](../backend/app/pipeline/generation/agent.py) (34KB) | ✅ **Completed** — most substantial file |
-| Section Prompts | ✅ [section_prompts.py](../backend/app/pipeline/generation/section_prompts.py) (3.4KB) | ✅ **Completed** |
-| Quality Scorer | ✅ [quality_scorer.py](../backend/app/pipeline/generation/quality_scorer.py) (4.5KB) | ✅ **Completed** |
-| Citation Assembly Service | ✅ [citation_assembly_service.py](../backend/app/services/citation_assembly_service.py) (4.9KB) | ✅ **Completed** |
+| Task Parser | ✅ [task_parser.py](../../backend/app/pipeline/generation/task_parser.py) (6.2KB) | ✅ **Completed** |
+| Agent Pipeline | ✅ [agent.py](../../backend/app/pipeline/generation/agent.py) (34KB) | ✅ **Completed** — most substantial file |
+| Section Prompts | ✅ [section_prompts.py](../../backend/app/pipeline/generation/section_prompts.py) (3.4KB) | ✅ **Completed** |
+| Quality Scorer | ✅ [quality_scorer.py](../../backend/app/pipeline/generation/quality_scorer.py) (4.5KB) | ✅ **Completed** |
+| Citation Assembly Service | ✅ [citation_assembly_service.py](../../backend/app/services/citation_assembly_service.py) (4.9KB) | ✅ **Completed** |
 | v1/generator.py Router | ✅ 18.8KB | ✅ **Completed** |
-| **Frontend:** OutlineApproval | ✅ [OutlineApproval.jsx](../frontend/src/components/generator/OutlineApproval.jsx) (10.7KB) | ✅ **Completed** |
-| **Frontend:** TokenStream | ✅ [TokenStream.jsx](../frontend/src/components/generator/TokenStream.jsx) (11.3KB) | ✅ **Completed** |
-| **Frontend:** AgentChatPane | ✅ [AgentChatPane.jsx](../frontend/src/components/generator/AgentChatPane.jsx) (11KB) | ✅ **Completed** |
-| **Frontend:** DocumentBuildPane | ✅ [DocumentBuildPane.jsx](../frontend/src/components/generator/DocumentBuildPane.jsx) (6.6KB) | ✅ **Completed** |
-| **Frontend:** SessionHistory | ✅ [SessionHistory.jsx](../frontend/src/components/generator/SessionHistory.jsx) (8KB) | ✅ **Completed** |
+| **Frontend:** OutlineApproval | ✅ [OutlineApproval.jsx](../../frontend/src/components/generator/OutlineApproval.jsx) (10.7KB) | ✅ **Completed** |
+| **Frontend:** TokenStream | ✅ [TokenStream.jsx](../../frontend/src/components/generator/TokenStream.jsx) (11.3KB) | ✅ **Completed** |
+| **Frontend:** AgentChatPane | ✅ [AgentChatPane.jsx](../../frontend/src/components/generator/AgentChatPane.jsx) (11KB) | ✅ **Completed** |
+| **Frontend:** DocumentBuildPane | ✅ [DocumentBuildPane.jsx](../../frontend/src/components/generator/DocumentBuildPane.jsx) (6.6KB) | ✅ **Completed** |
+| **Frontend:** SessionHistory | ✅ [SessionHistory.jsx](../../frontend/src/components/generator/SessionHistory.jsx) (8KB) | ✅ **Completed** |
 | **Frontend:** Agent page | ✅ agent/ dir | ✅ **Completed** |
 
 **Module 5 Summary: ✅ 90% File Coverage — needs end-to-end testing**
@@ -194,8 +194,8 @@ last_updated: July 2026
 | LLMClassifier Re-enablement | ✅ classification/ dir exists | ️ **Needs Verification** |
 | LLMClassifier Benchmark Test | ✅ [test_classification_benchmark.py](../backend/tests/test_classification_benchmark.py) (2.9KB) | ✅ **Completed** |
 | LLM Prompt/Result Cache | ️ In llm_service.py | ️ **Needs Verification** |
-| Queue Prioritization | ✅ [enhancement_manager.py](../backend/app/services/enhancement_manager.py) (10.2KB) | ️ **Needs Verification** |
-| Structured Tracing | ✅ [logging_context.py](../backend/app/utils/logging_context.py) (3.4KB) | ️ **Partial** |
+| Queue Prioritization | ✅ [enhancement_manager.py](../../backend/app/services/enhancement_manager.py) (10.2KB) | ️ **Needs Verification** |
+| Structured Tracing | ✅ [logging_context.py](../../backend/app/utils/logging_context.py) (3.4KB) | ️ **Partial** |
 | **Frontend:** Quality Scorer UI | ️ In results page | ️ **Needs Verification** |
 | **Frontend:** LLM Provider Indicator | ️ Unknown | ️ **Needs Verification** |
 
@@ -207,17 +207,17 @@ last_updated: July 2026
 
 | Item | File Exists? | Completion |
 | ------ | ------------- | ------------ |
-| JWKS JWT Verifier | ✅ [jwks_verifier.py](../backend/app/security/jwks_verifier.py) (5.4KB) | ✅ **Completed** |
-| Audit Log Service | ✅ [audit_log_service.py](../backend/app/services/audit_log_service.py) (1.1KB) | ️ **Partial** — very small |
-| RBAC Middleware | ✅ [rbac.py](../backend/app/middleware/rbac.py) (708B) | ️ **Partial** — tiny file |
-| Tier-Aware Rate Limiting | ✅ [tier_rate_limit.py](../backend/app/middleware/tier_rate_limit.py) (4.1KB) + [rate_limit.py](../backend/app/middleware/rate_limit.py) (6.9KB) | ✅ **Completed** |
-| CSP Hardening | ✅ [security_headers.py](../backend/app/middleware/security_headers.py) (4.6KB) | ✅ **Completed** |
+| JWKS JWT Verifier | ✅ [jwks_verifier.py](../../backend/app/security/jwks_verifier.py) (5.4KB) | ✅ **Completed** |
+| Audit Log Service | ✅ [audit_log_service.py](../../backend/app/services/audit_log_service.py) (1.1KB) | ️ **Partial** — very small |
+| RBAC Middleware | ✅ [rbac.py](../../backend/app/middleware/rbac.py) (708B) | ️ **Partial** — tiny file |
+| Tier-Aware Rate Limiting | ✅ [tier_rate_limit.py](../../backend/app/middleware/tier_rate_limit.py) (4.1KB) + [rate_limit.py](../../backend/app/middleware/rate_limit.py) (6.9KB) | ✅ **Completed** |
+| CSP Hardening | ✅ [security_headers.py](../../backend/app/middleware/security_headers.py) (4.6KB) | ✅ **Completed** |
 | Signed Download URLs | ✅ In document_service.py | ️ **Needs Verification** |
-| Stripe Billing Webhook | ✅ [v1/billing.py](../backend/app/routers/v1/billing.py) (3.8KB) | ✅ **Completed** |
-| Abuse Detection | ✅ [abuse_detector.py](../backend/app/middleware/abuse_detector.py) (2.7KB) | ✅ **Completed** |
-| Security CI Workflow | ✅ [security.yml](../.github/workflows/security.yml) (1KB) | ✅ **Completed** |
-| **Frontend:** planTier.js | ✅ [planTier.js](../frontend/src/lib/planTier.js) (2.5KB) | ✅ **Completed** |
-| **Frontend:** UpgradeModal | ✅ [UpgradeModal.jsx](../frontend/src/components/UpgradeModal.jsx) (3.7KB) | ✅ **Completed** |
+| Stripe Billing Webhook | ✅ [v1/billing.py](../../backend/app/routers/v1/billing.py) (3.8KB) | ✅ **Completed** |
+| Abuse Detection | ✅ [abuse_detector.py](../../backend/app/middleware/abuse_detector.py) (2.7KB) | ✅ **Completed** |
+| Security CI Workflow | ✅ [security.yml](../../.github/workflows/security.yml) (1KB) | ✅ **Completed** |
+| **Frontend:** planTier.js | ✅ [planTier.js](../../frontend/src/lib/planTier.js) (2.5KB) | ✅ **Completed** |
+| **Frontend:** UpgradeModal | ✅ [UpgradeModal.jsx](../../frontend/src/components/UpgradeModal.jsx) (3.7KB) | ✅ **Completed** |
 | **Frontend:** Billing Settings Tab | ️ in settings page | ️ **Needs Verification** |
 | **Frontend:** Admin Route Protection | ️ Unknown | ️ **Needs Verification** |
 
@@ -235,13 +235,13 @@ last_updated: July 2026
 | deploy-staging.yml | ❌ **Missing** | ❌ **Not Completed** |
 | deploy-production.yml | ✅ (1.6KB) | ✅ **Completed** |
 | security.yml | ✅ (1KB) | ✅ **Completed** |
-| Prometheus Metrics | ✅ [prometheus_metrics.py](../backend/app/middleware/prometheus_metrics.py) (7KB) | ✅ **Completed** |
+| Prometheus Metrics | ✅ [prometheus_metrics.py](../../backend/app/middleware/prometheus_metrics.py) (7KB) | ✅ **Completed** |
 | Grafana Dashboards | ❌ No ops/ directory found | ❌ **Not Completed** |
 | Load Testing | ✅ tests/load/ dir exists | ️ **Needs Verification** |
 | Runbooks | ✅ docs/runbooks/ dir exists | ️ **Needs Verification** |
 | ADR Documentation | ✅ docs/adr/ dir exists | ✅ **Completed** |
 | **Frontend:** E2E Tests (50+) | ✅ **93 test files** 🎉 | ✅ **Exceeded Target** |
-| **Frontend:** OnboardingTour | ✅ [OnboardingTour.jsx](../frontend/src/components/OnboardingTour.jsx) (6.8KB) | ✅ **Completed** |
+| **Frontend:** OnboardingTour | ✅ [OnboardingTour.jsx](../../frontend/src/components/OnboardingTour.jsx) (6.8KB) | ✅ **Completed** |
 | **Frontend:** Responsive Audit | ️ Need testing | ️ **Needs Verification** |
 
 **Module 8 Summary:  ️ 60% Completed**
@@ -875,17 +875,17 @@ All documents created in this audit session:
 
 | Document | Path | Content |
 | ---------- | ------ | --------- |
-| **PRD.md** | [PRD.md](file:///C:/Users/Dell/.gemini/antigravity/brain/171e5cc5-2510-4118-aa08-29e2b7847f5f/PRD.md) | Product vision, personas, KPIs, supported formats |
-| **Features.md** | [Features.md](file:///C:/Users/Dell/.gemini/antigravity/brain/171e5cc5-2510-4118-aa08-29e2b7847f5f/Features.md) | Complete feature list with status per mode |
-| **UIUX.md** | [UIUX.md](file:///C:/Users/Dell/.gemini/antigravity/brain/171e5cc5-2510-4118-aa08-29e2b7847f5f/UIUX.md) | Color palette, typography, component library, CSS issues |
-| **TechStack.md** | [TechStack.md](file:///C:/Users/Dell/.gemini/antigravity/brain/171e5cc5-2510-4118-aa08-29e2b7847f5f/TechStack.md) | All technologies, versions, purposes |
-| **Database.md** | [Database.md](file:///C:/Users/Dell/.gemini/antigravity/brain/171e5cc5-2510-4118-aa08-29e2b7847f5f/Database.md) | Tables, indexes, storage, Redis keys, ChromaDB |
+| **PRD.md** | [PRD.md](../architecture/PRD.md) | Product vision, personas, KPIs, supported formats |
+| **Features.md** | [Features.md](../architecture/Features.md) | Complete feature list with status per mode |
+| **UIUX.md** | [UIUX.md](../UIUX.md) | Color palette, typography, component library, CSS issues |
+| **TechStack.md** | [TechStack.md](../architecture/TechStack.md) | All technologies, versions, purposes |
+| **Database.md** | [Database.md](../database/Database.md) | Tables, indexes, storage, Redis keys, ChromaDB |
 | **API.md** | [API.md](file:///C:/Users/Dell/.gemini/antigravity/brain/171e5cc5-2510-4118-aa08-29e2b7847f5f/API.md) | All endpoints, auth, request/response schemas |
-| **Architecture.md** | [Architecture.md](file:///C:/Users/Dell/.gemini/antigravity/brain/171e5cc5-2510-4118-aa08-29e2b7847f5f/Architecture.md) | System layers, request flows, key decisions |
-| **Security.md** | [Security.md](file:///C:/Users/Dell/.gemini/antigravity/brain/171e5cc5-2510-4118-aa08-29e2b7847f5f/Security.md) | Implemented controls, gaps, compliance checklist |
-| **Deployment.md** | [Deployment.md](file:///C:/Users/Dell/.gemini/antigravity/brain/171e5cc5-2510-4118-aa08-29e2b7847f5f/Deployment.md) | Hosting options, Docker, env vars, checklist |
-| **AI_Instructions.md** | [AI_Instructions.md](file:///C:/Users/Dell/.gemini/antigravity/brain/171e5cc5-2510-4118-aa08-29e2b7847f5f/AI_Instructions.md) | LLM tiers, RAG, prompts, LLMClassifier, quality scoring |
-| **Agent.md** | [Agent.md](file:///C:/Users/Dell/.gemini/antigravity/brain/171e5cc5-2510-4118-aa08-29e2b7847f5f/Agent.md) | 11-step pipeline, state machine, components, SSE events |
+| **Architecture.md** | [Architecture.md](../architecture/ARCHITECTURE.md) | System layers, request flows, key decisions |
+| **Security.md** | [Security.md](../../SECURITY.md) | Implemented controls, gaps, compliance checklist |
+| **Deployment.md** | [Deployment.md](../deployment/Deployment.md) | Hosting options, Docker, env vars, checklist |
+| **AI_Instructions.md** | [AI_Instructions.md](../AI_Instructions.md) | LLM tiers, RAG, prompts, LLMClassifier, quality scoring |
+| **Agent.md** | [Agent.md](../agents/Agent.md) | 11-step pipeline, state machine, components, SSE events |
 
 ---
 

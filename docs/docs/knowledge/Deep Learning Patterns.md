@@ -5,12 +5,12 @@
 
 <cite>
 **Referenced Files in This Document**
-- [deep_learning.py](file://backend/app/pipeline/agents/deep_learning.py)
-- [ml_patterns.py](file://backend/app/pipeline/agents/ml_patterns.py)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [pipeline_document.py](file://backend/app/models/pipeline_document.py)
-- [test_global_safety.py](file://backend/tests/safety/test_global_safety.py)
-- [test_advanced_features.py](file://backend/tests/test_advanced_features.py)
+- [deep_learning.py](../../../backend/app/pipeline/agents/deep_learning.py)
+- [ml_patterns.py](../../../backend/app/pipeline/agents/ml_patterns.py)
+- [orchestrator.py](../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [pipeline_document.py](../../../backend/app/models/pipeline_document.py)
+- [test_global_safety.py](../../../backend/tests/safety/test_global_safety.py)
+- [test_advanced_features.py](../../../backend/tests/test_advanced_features.py)
 </cite>
 
 ## Table of Contents
@@ -60,17 +60,17 @@ MLP --> PDM
 
 **Diagram sources**
 
-- [deep_learning.py:24-296](file://backend/app/pipeline/agents/deep_learning.py#L24-L296)
-- [ml_patterns.py:17-216](file://backend/app/pipeline/agents/ml_patterns.py#L17-L216)
-- [orchestrator.py:73-1227](file://backend/app/pipeline/orchestrator.py#L73-L1227)
-- [pipeline_document.py:49-207](file://backend/app/models/pipeline_document.py#L49-L207)
+- [deep_learning.py:24-296](../../../backend/app/pipeline/agents/deep_learning.py#L24-L296)
+- [ml_patterns.py:17-216](../../../backend/app/pipeline/agents/ml_patterns.py#L17-L216)
+- [orchestrator.py:73-1227](../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L1227)
+- [pipeline_document.py:49-207](../../../backend/app/models/pipeline_document.py#L49-L207)
 
 **Section sources**
 
-- [deep_learning.py:1-296](file://backend/app/pipeline/agents/deep_learning.py#L1-L296)
-- [ml_patterns.py:1-216](file://backend/app/pipeline/agents/ml_patterns.py#L1-L216)
-- [orchestrator.py:1-1227](file://backend/app/pipeline/orchestrator.py#L1-L1227)
-- [pipeline_document.py:1-207](file://backend/app/models/pipeline_document.py#L1-L207)
+- [deep_learning.py:1-296](../../../backend/app/pipeline/agents/deep_learning.py#L1-L296)
+- [ml_patterns.py:1-216](../../../backend/app/pipeline/agents/ml_patterns.py#L1-L216)
+- [orchestrator.py:1-1227](../../../backend/app/pipeline/orchestrator/orchestrator.py#L1-L1227)
+- [pipeline_document.py:1-207](../../../backend/app/models/pipeline_document.py#L1-L207)
 
 ## Core Components
 
@@ -87,8 +87,8 @@ Key capabilities:
 
 **Section sources**
 
-- [deep_learning.py:24-296](file://backend/app/pipeline/agents/deep_learning.py#L24-L296)
-- [ml_patterns.py:17-216](file://backend/app/pipeline/agents/ml_patterns.py#L17-L216)
+- [deep_learning.py:24-296](../../../backend/app/pipeline/agents/deep_learning.py#L24-L296)
+- [ml_patterns.py:17-216](../../../backend/app/pipeline/agents/ml_patterns.py#L17-L216)
 
 ## Architecture Overview
 
@@ -116,8 +116,8 @@ Orchestrator-->>Client : "Processing continues"
 
 **Diagram sources**
 
-- [orchestrator.py:522-544](file://backend/app/pipeline/orchestrator.py#L522-L544)
-- [deep_learning.py:76-123](file://backend/app/pipeline/agents/deep_learning.py#L76-L123)
+- [orchestrator.py:522-544](../../../backend/app/pipeline/orchestrator/orchestrator.py#L522-L544)
+- [deep_learning.py:76-123](../../../backend/app/pipeline/agents/deep_learning.py#L76-L123)
 
 ## Detailed Component Analysis
 
@@ -150,7 +150,7 @@ class TransformerPatternDetector {
 
 **Diagram sources**
 
-- [deep_learning.py:24-296](file://backend/app/pipeline/agents/deep_learning.py#L24-L296)
+- [deep_learning.py:24-296](../../../backend/app/pipeline/agents/deep_learning.py#L24-L296)
 
 Key behaviors:
 
@@ -168,8 +168,8 @@ Integration points:
 
 **Section sources**
 
-- [deep_learning.py:24-296](file://backend/app/pipeline/agents/deep_learning.py#L24-L296)
-- [pipeline_document.py:49-207](file://backend/app/models/pipeline_document.py#L49-L207)
+- [deep_learning.py:24-296](../../../backend/app/pipeline/agents/deep_learning.py#L24-L296)
+- [pipeline_document.py:49-207](../../../backend/app/models/pipeline_document.py#L49-L207)
 
 ### MLPatternDetector
 
@@ -198,7 +198,7 @@ class MLPatternDetector {
 
 **Diagram sources**
 
-- [ml_patterns.py:17-216](file://backend/app/pipeline/agents/ml_patterns.py#L17-L216)
+- [ml_patterns.py:17-216](../../../backend/app/pipeline/agents/ml_patterns.py#L17-L216)
 
 Key behaviors:
 
@@ -213,7 +213,7 @@ Integration points:
 
 **Section sources**
 
-- [ml_patterns.py:17-216](file://backend/app/pipeline/agents/ml_patterns.py#L17-L216)
+- [ml_patterns.py:17-216](../../../backend/app/pipeline/agents/ml_patterns.py#L17-L216)
 
 ### PipelineOrchestrator Integration
 
@@ -239,8 +239,8 @@ Export --> End(["End"])
 
 **Diagram sources**
 
-- [orchestrator.py:522-800](file://backend/app/pipeline/orchestrator.py#L522-L800)
-- [ml_patterns.py:57-94](file://backend/app/pipeline/agents/ml_patterns.py#L57-L94)
+- [orchestrator.py:522-800](../../../backend/app/pipeline/orchestrator/orchestrator.py#L522-L800)
+- [ml_patterns.py:57-94](../../../backend/app/pipeline/agents/ml_patterns.py#L57-L94)
 
 ## Dependency Analysis
 
@@ -263,8 +263,8 @@ MLP --> Numpy
 
 **Diagram sources**
 
-- [deep_learning.py:7-18](file://backend/app/pipeline/agents/deep_learning.py#L7-L18)
-- [ml_patterns.py:4-12](file://backend/app/pipeline/agents/ml_patterns.py#L4-L12)
+- [deep_learning.py:7-18](../../../backend/app/pipeline/agents/deep_learning.py#L7-L18)
+- [ml_patterns.py:4-12](../../../backend/app/pipeline/agents/ml_patterns.py#L4-L12)
 
 Safety and resilience:
 
@@ -273,9 +273,9 @@ Safety and resilience:
 
 **Section sources**
 
-- [deep_learning.py:52-70](file://backend/app/pipeline/agents/deep_learning.py#L52-L70)
-- [ml_patterns.py:57-94](file://backend/app/pipeline/agents/ml_patterns.py#L57-L94)
-- [test_global_safety.py:112-145](file://backend/tests/safety/test_global_safety.py#L112-L145)
+- [deep_learning.py:52-70](../../../backend/app/pipeline/agents/deep_learning.py#L52-L70)
+- [ml_patterns.py:57-94](../../../backend/app/pipeline/agents/ml_patterns.py#L57-L94)
+- [test_global_safety.py:112-145](../../../backend/tests/safety/test_global_safety.py#L112-L145)
 
 ## Performance Considerations
 
@@ -308,8 +308,8 @@ Validation and tests:
 
 **Section sources**
 
-- [test_global_safety.py:112-145](file://backend/tests/safety/test_global_safety.py#L112-L145)
-- [test_advanced_features.py:38-80](file://backend/tests/test_advanced_features.py#L38-L80)
+- [test_global_safety.py:112-145](../../../backend/tests/safety/test_global_safety.py#L112-L145)
+- [test_advanced_features.py:38-80](../../../backend/tests/test_advanced_features.py#L38-L80)
 
 ## Conclusion
 

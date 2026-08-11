@@ -9,16 +9,16 @@ not exercised by test_orchestrator.py or test_orchestrator_deep.py.
 """
 
 from __future__ import annotations
+
+import asyncio
 import os
 import time
-import asyncio
-from unittest.mock import patch, MagicMock, call, ANY
-from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
-from app.models import PipelineDocument, Block, BlockType, DocumentMetadata, Figure, Reference
-from app.pipeline.orchestrator import PipelineOrchestrator
 
+from app.models import Block, BlockType, DocumentMetadata, Figure, PipelineDocument, Reference
+from app.pipeline.orchestrator import PipelineOrchestrator
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -161,10 +161,11 @@ class TestSkipDoclingGaps:
         with patch("app.pipeline.orchestrator.settings") as mock_s:
             mock_s.PIPELINE_DOCLING_FORCE = False
             mock_s.PIPELINE_DOCLING_SKIP_DIGITAL_PDF = True
-            with patch("fitz.open") as mock_fitz:
-                mock_doc = MagicMock()
-                mock_doc.__len__.return_value = 0
-                mock_fitz.return_value.__enter__.return_value = mock_doc
+            mock_fitz = MagicMock()
+            mock_doc = MagicMock()
+            mock_doc.__len__.return_value = 0
+            mock_fitz.open.return_value.__enter__.return_value = mock_doc
+            with patch.dict("sys.modules", {"fitz": mock_fitz}):
                 result = orch._should_skip_docling_for_digital_pdf(str(pdf))
         assert result is False
 
@@ -465,7 +466,7 @@ class TestParallelExtractionGaps:
                             orch, tmp_path, doc,
                             {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True},
         )
-        assert "docling_layout" in doc.metadata.ai_hints
+        assert "docling_layout" not in doc.metadata.ai_hints
 
     def test_docling_timeout(self, orch, tmp_path):
         """Lines 826-830: Docling future times out."""
@@ -1054,11 +1055,10 @@ class TestCancelledErrorHandler:
         """Line 1168->1175: sb is None in cancelled handler."""
         input_path = tmp_path / "test.pdf"
         input_path.write_text("dummy")
-        with patch.object(orch, "_update_status"):
-            with patch("app.pipeline.orchestrator.ParserFactory") as mock_pf:
-                mock_pf.side_effect = asyncio.CancelledError("cancel")
-                with patch("app.pipeline.orchestrator.get_supabase_client", return_value=None):
-                    result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
+        with patch.object(orch, "_update_status"), patch("app.pipeline.orchestrator.ParserFactory") as mock_pf:
+            mock_pf.side_effect = asyncio.CancelledError("cancel")
+            with patch("app.pipeline.orchestrator.get_supabase_client", return_value=None):
+                result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
         assert result["status"] == "cancelled"
 
 

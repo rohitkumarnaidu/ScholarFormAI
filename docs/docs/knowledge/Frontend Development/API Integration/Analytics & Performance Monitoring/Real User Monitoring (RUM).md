@@ -5,14 +5,14 @@
 
 <cite>
 **Referenced Files in This Document**
-- [rum.js](file://frontend/src/lib/rum.js)
-- [analytics.js](file://frontend/src/lib/analytics.js)
-- [LatencyObserver.jsx](file://frontend/src/components/monitoring/LatencyObserver.jsx)
-- [route.js](file://frontend/app/api/internal/metrics/record/route.js)
-- [metrics.js](file://frontend/src/lib/metrics.js)
-- [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
-- [monitoring.py](file://backend/app/middleware/monitoring.py)
-- [route.js](file://frontend/app/api/metrics/route.js)
+- [rum.js](../../../../../../frontend/src/lib/rum.js)
+- [analytics.js](../../../../../../frontend/src/lib/analytics.js)
+- [LatencyObserver.jsx](../../../../../../frontend/src/components/monitoring/LatencyObserver.jsx)
+- [route.js](../../../../../../frontend/app/api/internal/metrics/record/route.js)
+- [metrics.js](../../../../../../frontend/src/lib/metrics.js)
+- [prometheus_metrics.py](../../../../../../backend/app/middleware/prometheus_metrics.py)
+- [monitoring.py](../../../../../../backend/app/middleware/monitoring.py)
+- [route.js](../../../../../../frontend/app/api/metrics/route.js)
 </cite>
 
 ## Table of Contents
@@ -66,24 +66,24 @@ MMW --> APIM
 
 **Diagram sources**
 
-- [LatencyObserver.jsx:1-38](file://frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
-- [analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
-- [route.js:1-22](file://frontend/app/api/internal/metrics/record/route.js#L1-L22)
-- [route.js:1-20](file://frontend/app/api/metrics/route.js#L1-L20)
-- [metrics.js:1-19](file://frontend/src/lib/metrics.js#L1-L19)
-- [prometheus_metrics.py:1-300](file://backend/app/middleware/prometheus_metrics.py#L1-L300)
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
+- [LatencyObserver.jsx:1-38](../../../../../../frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
+- [analytics.js:1-20](../../../../../../frontend/src/lib/analytics.js#L1-L20)
+- [route.js:1-22](../../../../../../frontend/app/api/internal/metrics/record/route.js#L1-L22)
+- [route.js:1-20](../../../../../../frontend/app/api/metrics/route.js#L1-L20)
+- [metrics.js:1-19](../../../../../../frontend/src/lib/metrics.js#L1-L19)
+- [prometheus_metrics.py:1-300](../../../../../../backend/app/middleware/prometheus_metrics.py#L1-L300)
+- [monitoring.py:1-51](../../../../../../backend/app/middleware/monitoring.py#L1-L51)
 
 **Section sources**
 
-- [rum.js:1-27](file://frontend/src/lib/rum.js#L1-L27)
+- [rum.js:1-27](../../../../../../frontend/src/lib/rum.js#L1-L27)
 - [posthog.js:1-140](file://frontend/src/lib/posthog.js#L1-L140) (legacy - no longer active)
-- [analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
-- [LatencyObserver.jsx:1-38](file://frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
-- [route.js:1-22](file://frontend/app/api/internal/metrics/record/route.js#L1-L22)
-- [metrics.js:1-19](file://frontend/src/lib/metrics.js#L1-L19)
-- [prometheus_metrics.py:1-300](file://backend/app/middleware/prometheus_metrics.py#L1-L300)
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
+- [analytics.js:1-20](../../../../../../frontend/src/lib/analytics.js#L1-L20)
+- [LatencyObserver.jsx:1-38](../../../../../../frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
+- [route.js:1-22](../../../../../../frontend/app/api/internal/metrics/record/route.js#L1-L22)
+- [metrics.js:1-19](../../../../../../frontend/src/lib/metrics.js#L1-L19)
+- [prometheus_metrics.py:1-300](../../../../../../backend/app/middleware/prometheus_metrics.py#L1-L300)
+- [monitoring.py:1-51](../../../../../../backend/app/middleware/monitoring.py#L1-L51)
 
 ## Core Components
 
@@ -97,13 +97,13 @@ MMW --> APIM
 
 **Section sources**
 
-- [rum.js:1-27](file://frontend/src/lib/rum.js#L1-L27)
-- [analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
-- [LatencyObserver.jsx:1-38](file://frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
-- [metrics.js:1-19](file://frontend/src/lib/metrics.js#L1-L19)
-- [route.js:1-22](file://frontend/app/api/internal/metrics/record/route.js#L1-L22)
-- [prometheus_metrics.py:1-300](file://backend/app/middleware/prometheus_metrics.py#L1-L300)
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
+- [rum.js:1-27](../../../../../../frontend/src/lib/rum.js#L1-L27)
+- [analytics.js:1-20](../../../../../../frontend/src/lib/analytics.js#L1-L20)
+- [LatencyObserver.jsx:1-38](../../../../../../frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
+- [metrics.js:1-19](../../../../../../frontend/src/lib/metrics.js#L1-L19)
+- [route.js:1-22](../../../../../../frontend/app/api/internal/metrics/record/route.js#L1-L22)
+- [prometheus_metrics.py:1-300](../../../../../../backend/app/middleware/prometheus_metrics.py#L1-L300)
+- [monitoring.py:1-51](../../../../../../backend/app/middleware/monitoring.py#L1-L51)
 
 ## Architecture Overview
 
@@ -126,10 +126,10 @@ APIM-->>Browser : "Prometheus metrics payload"
 
 **Diagram sources**
 
-- [LatencyObserver.jsx:1-38](file://frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
-- [route.js:1-22](file://frontend/app/api/internal/metrics/record/route.js#L1-L22)
-- [metrics.js:1-19](file://frontend/src/lib/metrics.js#L1-L19)
-- [route.js:1-20](file://frontend/app/api/metrics/route.js#L1-L20)
+- [LatencyObserver.jsx:1-38](../../../../../../frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
+- [route.js:1-22](../../../../../../frontend/app/api/internal/metrics/record/route.js#L1-L22)
+- [metrics.js:1-19](../../../../../../frontend/src/lib/metrics.js#L1-L19)
+- [route.js:1-20](../../../../../../frontend/app/api/metrics/route.js#L1-L20)
 
 ## Detailed Component Analysis
 
@@ -146,8 +146,8 @@ Flush --> End
 
 **Section sources**
 
-- [rum.js:1-27](file://frontend/src/lib/rum.js#L1-L27)
-- [analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
+- [rum.js:1-27](../../../../../../frontend/src/lib/rum.js#L1-L27)
+- [analytics.js:1-20](../../../../../../frontend/src/lib/analytics.js#L1-L20)
 
 ### Latency Observation and Ingestion
 
@@ -167,15 +167,15 @@ REG-->>APIR : "OK"
 
 **Diagram sources**
 
-- [LatencyObserver.jsx:8-26](file://frontend/src/components/monitoring/LatencyObserver.jsx#L8-L26)
-- [route.js:6-15](file://frontend/app/api/internal/metrics/record/route.js#L6-L15)
-- [metrics.js:8-15](file://frontend/src/lib/metrics.js#L8-L15)
+- [LatencyObserver.jsx:8-26](../../../../../../frontend/src/components/monitoring/LatencyObserver.jsx#L8-L26)
+- [route.js:6-15](../../../../../../frontend/app/api/internal/metrics/record/route.js#L6-L15)
+- [metrics.js:8-15](../../../../../../frontend/src/lib/metrics.js#L8-L15)
 
 **Section sources**
 
-- [LatencyObserver.jsx:1-38](file://frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
-- [route.js:1-22](file://frontend/app/api/internal/metrics/record/route.js#L1-L22)
-- [metrics.js:1-19](file://frontend/src/lib/metrics.js#L1-L19)
+- [LatencyObserver.jsx:1-38](../../../../../../frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
+- [route.js:1-22](../../../../../../frontend/app/api/internal/metrics/record/route.js#L1-L22)
+- [metrics.js:1-19](../../../../../../frontend/src/lib/metrics.js#L1-L19)
 
 ### Backend Metrics Exposure
 
@@ -213,12 +213,12 @@ class MetricsManager {
 
 **Diagram sources**
 
-- [prometheus_metrics.py:184-300](file://backend/app/middleware/prometheus_metrics.py#L184-L300)
+- [prometheus_metrics.py:184-300](../../../../../../backend/app/middleware/prometheus_metrics.py#L184-L300)
 
 **Section sources**
 
-- [prometheus_metrics.py:1-300](file://backend/app/middleware/prometheus_metrics.py#L1-L300)
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
+- [prometheus_metrics.py:1-300](../../../../../../backend/app/middleware/prometheus_metrics.py#L1-L300)
+- [monitoring.py:1-51](../../../../../../backend/app/middleware/monitoring.py#L1-L51)
 
 ## Dependency Analysis
 
@@ -239,20 +239,20 @@ MMW["monitoring.py"] --> APIM
 
 **Diagram sources**
 
-- [LatencyObserver.jsx:1-38](file://frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
-- [route.js:1-22](file://frontend/app/api/internal/metrics/record/route.js#L1-L22)
-- [analytics.js:1-20](file://frontend/src/lib/analytics.js#L1-L20)
-- [route.js:1-20](file://frontend/app/api/metrics/route.js#L1-L20)
-- [metrics.js:1-19](file://frontend/src/lib/metrics.js#L1-L19)
-- [prometheus_metrics.py:1-300](file://backend/app/middleware/prometheus_metrics.py#L1-L300)
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
+- [LatencyObserver.jsx:1-38](../../../../../../frontend/src/components/monitoring/LatencyObserver.jsx#L1-L38)
+- [route.js:1-22](../../../../../../frontend/app/api/internal/metrics/record/route.js#L1-L22)
+- [analytics.js:1-20](../../../../../../frontend/src/lib/analytics.js#L1-L20)
+- [route.js:1-20](../../../../../../frontend/app/api/metrics/route.js#L1-L20)
+- [metrics.js:1-19](../../../../../../frontend/src/lib/metrics.js#L1-L19)
+- [prometheus_metrics.py:1-300](../../../../../../backend/app/middleware/prometheus_metrics.py#L1-L300)
+- [monitoring.py:1-51](../../../../../../backend/app/middleware/monitoring.py#L1-L51)
 
 **Section sources**
 
-- [route.js:1-22](file://frontend/app/api/internal/metrics/record/route.js#L1-L22)
-- [route.js:1-20](file://frontend/app/api/metrics/route.js#L1-L20)
-- [prometheus_metrics.py:1-300](file://backend/app/middleware/prometheus_metrics.py#L1-L300)
-- [monitoring.py:1-51](file://backend/app/middleware/monitoring.py#L1-L51)
+- [route.js:1-22](../../../../../../frontend/app/api/internal/metrics/record/route.js#L1-L22)
+- [route.js:1-20](../../../../../../frontend/app/api/metrics/route.js#L1-L20)
+- [prometheus_metrics.py:1-300](../../../../../../backend/app/middleware/prometheus_metrics.py#L1-L300)
+- [monitoring.py:1-51](../../../../../../backend/app/middleware/monitoring.py#L1-L51)
 
 ## Performance Considerations
 
@@ -266,9 +266,9 @@ MMW["monitoring.py"] --> APIM
 
 **Section sources**
 
-- [analytics.js:7-19](file://frontend/src/lib/analytics.js#L7-L19)
-- [route.js:6-15](file://frontend/app/api/internal/metrics/record/route.js#L6-L15)
-- [route.js:6-15](file://frontend/app/api/metrics/route.js#L6-L15)
+- [analytics.js:7-19](../../../../../../frontend/src/lib/analytics.js#L7-L19)
+- [route.js:6-15](../../../../../../frontend/app/api/internal/metrics/record/route.js#L6-L15)
+- [route.js:6-15](../../../../../../frontend/app/api/metrics/route.js#L6-L15)
 
 ## Conclusion
 

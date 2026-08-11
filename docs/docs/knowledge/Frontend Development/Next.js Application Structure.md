@@ -5,21 +5,21 @@
 
 <cite>
 **Referenced Files in This Document**
-- [package.json](file://frontend/package.json)
-- [next.config.mjs](file://frontend/next.config.mjs)
-- [tsconfig.json](file://frontend/tsconfig.json)
+- [package.json](../../../../frontend/package.json)
+- [next.config.mjs](../../../../frontend/next.config.mjs)
+- [tsconfig.json](../../../../frontend/tsconfig.json)
 - [.eslintrc.cjs](file://frontend/.eslintrc.cjs)
-- [tailwind.config.js](file://frontend/tailwind.config.js)
-- [postcss.config.js](file://frontend/postcss.config.js)
-- [jsconfig.json](file://frontend/jsconfig.json)
-- [app/layout.jsx](file://frontend/app/layout.jsx)
-- [app/globals.css](file://frontend/app/globals.css)
-- [src/components/layout/ClientProviders.jsx](file://frontend/src/components/layout/ClientProviders.jsx)
-- [src/context/ThemeContext.jsx](file://frontend/src/context/ThemeContext.jsx)
-- [src/context/AuthContext.jsx](file://frontend/src/context/AuthContext.jsx)
-- [src/components/layout/FocusManager.jsx](file://frontend/src/components/layout/FocusManager.jsx)
-- [src/components/layout/DynamicMeta.jsx](file://frontend/src/components/layout/DynamicMeta.jsx)
-- [app/not-found.jsx](file://frontend/app/not-found.jsx)
+- [tailwind.config.js](../../../../frontend/tailwind.config.js)
+- [postcss.config.js](../../../../frontend/postcss.config.js)
+- [jsconfig.json](../../../../frontend/jsconfig.json)
+- [app/layout.jsx](../../../../frontend/app/(formatter)/layout.jsx)
+- [app/globals.css](../../../../frontend/app/globals.css)
+- [src/components/layout/ClientProviders.jsx](../../../../frontend/src/components/layout/ClientProviders.jsx)
+- [src/context/ThemeContext.jsx](../../../../frontend/src/context/ThemeContext.jsx)
+- [src/context/AuthContext.jsx](../../../../frontend/src/context/AuthContext.jsx)
+- [src/components/layout/FocusManager.jsx](../../../../frontend/src/components/layout/FocusManager.jsx)
+- [src/components/layout/DynamicMeta.jsx](../../../../frontend/src/components/layout/DynamicMeta.jsx)
+- [app/not-found.jsx](../../../../frontend/app/not-found.jsx)
 - [app/(shared)/layout.jsx](file://frontend/app/(shared)/layout.jsx)
 - [app/(shared)/page.jsx](file://frontend/app/(shared)/page.jsx)
 </cite>
@@ -87,22 +87,22 @@ SHARED_LAYOUT --> SHARED_PAGE
 
 **Diagram sources**
 
-- [app/layout.jsx:1-84](file://frontend/app/layout.jsx#L1-L84)
-- [app/globals.css:1-137](file://frontend/app/globals.css#L1-L137)
-- [app/not-found.jsx:1-31](file://frontend/app/not-found.jsx#L1-L31)
+- [app/layout.jsx:1-84](../../../../frontend/app/(formatter)/layout.jsx#L1-L84)
+- [app/globals.css:1-137](../../../../frontend/app/globals.css#L1-L137)
+- [app/not-found.jsx:1-31](../../../../frontend/app/not-found.jsx#L1-L31)
 - [app/(shared)/layout.jsx](file://frontend/app/(shared)/layout.jsx#L1-L6)
 - [app/(shared)/page.jsx](file://frontend/app/(shared)/page.jsx#L1-L583)
-- [src/components/layout/ClientProviders.jsx:1-51](file://frontend/src/components/layout/ClientProviders.jsx#L1-L51)
-- [src/context/ThemeContext.jsx:1-70](file://frontend/src/context/ThemeContext.jsx#L1-L70)
-- [src/context/AuthContext.jsx:1-340](file://frontend/src/context/AuthContext.jsx#L1-L340)
-- [src/components/layout/FocusManager.jsx:1-22](file://frontend/src/components/layout/FocusManager.jsx#L1-L22)
-- [src/components/layout/DynamicMeta.jsx:1-17](file://frontend/src/components/layout/DynamicMeta.jsx#L1-L17)
+- [src/components/layout/ClientProviders.jsx:1-51](../../../../frontend/src/components/layout/ClientProviders.jsx#L1-L51)
+- [src/context/ThemeContext.jsx:1-70](../../../../frontend/src/context/ThemeContext.jsx#L1-L70)
+- [src/context/AuthContext.jsx:1-340](../../../../frontend/src/context/AuthContext.jsx#L1-L340)
+- [src/components/layout/FocusManager.jsx:1-22](../../../../frontend/src/components/layout/FocusManager.jsx#L1-L22)
+- [src/components/layout/DynamicMeta.jsx:1-17](../../../../frontend/src/components/layout/DynamicMeta.jsx#L1-L17)
 
 **Section sources**
 
-- [app/layout.jsx:1-84](file://frontend/app/layout.jsx#L1-L84)
-- [app/globals.css:1-137](file://frontend/app/globals.css#L1-L137)
-- [app/not-found.jsx:1-31](file://frontend/app/not-found.jsx#L1-L31)
+- [app/layout.jsx:1-84](../../../../frontend/app/(formatter)/layout.jsx#L1-L84)
+- [app/globals.css:1-137](../../../../frontend/app/globals.css#L1-L137)
+- [app/not-found.jsx:1-31](../../../../frontend/app/not-found.jsx#L1-L31)
 - [app/(shared)/layout.jsx](file://frontend/app/(shared)/layout.jsx#L1-L6)
 - [app/(shared)/page.jsx](file://frontend/app/(shared)/page.jsx#L1-L583)
 
@@ -117,12 +117,12 @@ SHARED_LAYOUT --> SHARED_PAGE
 
 **Section sources**
 
-- [app/layout.jsx:1-84](file://frontend/app/layout.jsx#L1-L84)
-- [src/components/layout/ClientProviders.jsx:1-51](file://frontend/src/components/layout/ClientProviders.jsx#L1-L51)
-- [src/context/ThemeContext.jsx:1-70](file://frontend/src/context/ThemeContext.jsx#L1-L70)
-- [src/context/AuthContext.jsx:1-340](file://frontend/src/context/AuthContext.jsx#L1-L340)
-- [app/globals.css:1-137](file://frontend/app/globals.css#L1-L137)
-- [tailwind.config.js:1-55](file://frontend/tailwind.config.js#L1-L55)
+- [app/layout.jsx:1-84](../../../../frontend/app/(formatter)/layout.jsx#L1-L84)
+- [src/components/layout/ClientProviders.jsx:1-51](../../../../frontend/src/components/layout/ClientProviders.jsx#L1-L51)
+- [src/context/ThemeContext.jsx:1-70](../../../../frontend/src/context/ThemeContext.jsx#L1-L70)
+- [src/context/AuthContext.jsx:1-340](../../../../frontend/src/context/AuthContext.jsx#L1-L340)
+- [app/globals.css:1-137](../../../../frontend/app/globals.css#L1-L137)
+- [tailwind.config.js:1-55](../../../../frontend/tailwind.config.js#L1-L55)
 
 ## Architecture Overview
 
@@ -151,12 +151,12 @@ SHARED --> BODY
 
 **Diagram sources**
 
-- [app/layout.jsx:1-84](file://frontend/app/layout.jsx#L1-L84)
-- [src/components/layout/ClientProviders.jsx:1-51](file://frontend/src/components/layout/ClientProviders.jsx#L1-L51)
-- [src/context/ThemeContext.jsx:1-70](file://frontend/src/context/ThemeContext.jsx#L1-L70)
-- [src/context/AuthContext.jsx:1-340](file://frontend/src/context/AuthContext.jsx#L1-L340)
-- [src/components/layout/FocusManager.jsx:1-22](file://frontend/src/components/layout/FocusManager.jsx#L1-L22)
-- [src/components/layout/DynamicMeta.jsx:1-17](file://frontend/src/components/layout/DynamicMeta.jsx#L1-L17)
+- [app/layout.jsx:1-84](../../../../frontend/app/(formatter)/layout.jsx#L1-L84)
+- [src/components/layout/ClientProviders.jsx:1-51](../../../../frontend/src/components/layout/ClientProviders.jsx#L1-L51)
+- [src/context/ThemeContext.jsx:1-70](../../../../frontend/src/context/ThemeContext.jsx#L1-L70)
+- [src/context/AuthContext.jsx:1-340](../../../../frontend/src/context/AuthContext.jsx#L1-L340)
+- [src/components/layout/FocusManager.jsx:1-22](../../../../frontend/src/components/layout/FocusManager.jsx#L1-L22)
+- [src/components/layout/DynamicMeta.jsx:1-17](../../../../frontend/src/components/layout/DynamicMeta.jsx#L1-L17)
 - [app/(shared)/layout.jsx](file://frontend/app/(shared)/layout.jsx#L1-L6)
 
 ## Detailed Component Analysis
@@ -182,13 +182,13 @@ Providers --> Children["Render children"]
 
 **Diagram sources**
 
-- [app/layout.jsx:1-84](file://frontend/app/layout.jsx#L1-L84)
-- [app/globals.css:1-137](file://frontend/app/globals.css#L1-L137)
+- [app/layout.jsx:1-84](../../../../frontend/app/(formatter)/layout.jsx#L1-L84)
+- [app/globals.css:1-137](../../../../frontend/app/globals.css#L1-L137)
 
 **Section sources**
 
-- [app/layout.jsx:1-84](file://frontend/app/layout.jsx#L1-L84)
-- [app/globals.css:1-137](file://frontend/app/globals.css#L1-L137)
+- [app/layout.jsx:1-84](../../../../frontend/app/(formatter)/layout.jsx#L1-L84)
+- [app/globals.css:1-137](../../../../frontend/app/globals.css#L1-L137)
 
 ### Client Providers Pattern
 
@@ -212,13 +212,13 @@ Providers-->>Root : Render nested providers
 
 **Diagram sources**
 
-- [src/components/layout/ClientProviders.jsx:1-51](file://frontend/src/components/layout/ClientProviders.jsx#L1-L51)
-- [src/context/ThemeContext.jsx:1-70](file://frontend/src/context/ThemeContext.jsx#L1-L70)
-- [src/context/AuthContext.jsx:1-340](file://frontend/src/context/AuthContext.jsx#L1-L340)
+- [src/components/layout/ClientProviders.jsx:1-51](../../../../frontend/src/components/layout/ClientProviders.jsx#L1-L51)
+- [src/context/ThemeContext.jsx:1-70](../../../../frontend/src/context/ThemeContext.jsx#L1-L70)
+- [src/context/AuthContext.jsx:1-340](../../../../frontend/src/context/AuthContext.jsx#L1-L340)
 
 **Section sources**
 
-- [src/components/layout/ClientProviders.jsx:1-51](file://frontend/src/components/layout/ClientProviders.jsx#L1-L51)
+- [src/components/layout/ClientProviders.jsx:1-51](../../../../frontend/src/components/layout/ClientProviders.jsx#L1-L51)
 
 ### Theme Context and Supabase Sync
 
@@ -240,11 +240,11 @@ Theme->>Supabase : Update user metadata on toggle/set
 
 **Diagram sources**
 
-- [src/context/ThemeContext.jsx:1-70](file://frontend/src/context/ThemeContext.jsx#L1-L70)
+- [src/context/ThemeContext.jsx:1-70](../../../../frontend/src/context/ThemeContext.jsx#L1-L70)
 
 **Section sources**
 
-- [src/context/ThemeContext.jsx:1-70](file://frontend/src/context/ThemeContext.jsx#L1-L70)
+- [src/context/ThemeContext.jsx:1-70](../../../../frontend/src/context/ThemeContext.jsx#L1-L70)
 
 ### Authentication Context and Supabase Integration
 
@@ -271,11 +271,11 @@ Events --> End
 
 **Diagram sources**
 
-- [src/context/AuthContext.jsx:1-340](file://frontend/src/context/AuthContext.jsx#L1-L340)
+- [src/context/AuthContext.jsx:1-340](../../../../frontend/src/context/AuthContext.jsx#L1-L340)
 
 **Section sources**
 
-- [src/context/AuthContext.jsx:1-340](file://frontend/src/context/AuthContext.jsx#L1-L340)
+- [src/context/AuthContext.jsx:1-340](../../../../frontend/src/context/AuthContext.jsx#L1-L340)
 
 ### Accessibility: Focus Management and Dynamic Meta
 
@@ -295,13 +295,13 @@ Meta->>Meta : Update meta[name='theme-color']
 
 **Diagram sources**
 
-- [src/components/layout/FocusManager.jsx:1-22](file://frontend/src/components/layout/FocusManager.jsx#L1-L22)
-- [src/components/layout/DynamicMeta.jsx:1-17](file://frontend/src/components/layout/DynamicMeta.jsx#L1-L17)
+- [src/components/layout/FocusManager.jsx:1-22](../../../../frontend/src/components/layout/FocusManager.jsx#L1-L22)
+- [src/components/layout/DynamicMeta.jsx:1-17](../../../../frontend/src/components/layout/DynamicMeta.jsx#L1-L17)
 
 **Section sources**
 
-- [src/components/layout/FocusManager.jsx:1-22](file://frontend/src/components/layout/FocusManager.jsx#L1-L22)
-- [src/components/layout/DynamicMeta.jsx:1-17](file://frontend/src/components/layout/DynamicMeta.jsx#L1-L17)
+- [src/components/layout/FocusManager.jsx:1-22](../../../../frontend/src/components/layout/FocusManager.jsx#L1-L22)
+- [src/components/layout/DynamicMeta.jsx:1-17](../../../../frontend/src/components/layout/DynamicMeta.jsx#L1-L17)
 
 ### Routing Architecture and Page Organization
 
@@ -323,13 +323,13 @@ NotFound["app/not-found.jsx"] --> Body["Fallback 404 UI"]
 
 - [app/(shared)/layout.jsx](file://frontend/app/(shared)/layout.jsx#L1-L6)
 - [app/(shared)/page.jsx](file://frontend/app/(shared)/page.jsx#L1-L583)
-- [app/not-found.jsx:1-31](file://frontend/app/not-found.jsx#L1-L31)
+- [app/not-found.jsx:1-31](../../../../frontend/app/not-found.jsx#L1-L31)
 
 **Section sources**
 
 - [app/(shared)/layout.jsx](file://frontend/app/(shared)/layout.jsx#L1-L6)
 - [app/(shared)/page.jsx](file://frontend/app/(shared)/page.jsx#L1-L583)
-- [app/not-found.jsx:1-31](file://frontend/app/not-found.jsx#L1-L31)
+- [app/not-found.jsx:1-31](../../../../frontend/app/not-found.jsx#L1-L31)
 
 ### Global CSS, Tailwind, and Design Tokens
 
@@ -348,13 +348,13 @@ CSS --> Overrides["Component overrides for dark/light"]
 
 **Diagram sources**
 
-- [tailwind.config.js:1-55](file://frontend/tailwind.config.js#L1-L55)
-- [app/globals.css:1-137](file://frontend/app/globals.css#L1-L137)
+- [tailwind.config.js:1-55](../../../../frontend/tailwind.config.js#L1-L55)
+- [app/globals.css:1-137](../../../../frontend/app/globals.css#L1-L137)
 
 **Section sources**
 
-- [tailwind.config.js:1-55](file://frontend/tailwind.config.js#L1-L55)
-- [app/globals.css:1-137](file://frontend/app/globals.css#L1-L137)
+- [tailwind.config.js:1-55](../../../../frontend/tailwind.config.js#L1-L55)
+- [app/globals.css:1-137](../../../../frontend/app/globals.css#L1-L137)
 
 ### TypeScript, ESLint, and Build Configuration
 
@@ -376,15 +376,15 @@ NEXT --> Optimize["optimizePackageImports"]
 
 **Diagram sources**
 
-- [tsconfig.json:1-48](file://frontend/tsconfig.json#L1-L48)
+- [tsconfig.json:1-48](../../../../frontend/tsconfig.json#L1-L48)
 - [.eslintrc.cjs:1-65](file://frontend/.eslintrc.cjs#L1-L65)
-- [next.config.mjs:1-27](file://frontend/next.config.mjs#L1-L27)
+- [next.config.mjs:1-27](../../../../frontend/next.config.mjs#L1-L27)
 
 **Section sources**
 
-- [tsconfig.json:1-48](file://frontend/tsconfig.json#L1-L48)
+- [tsconfig.json:1-48](../../../../frontend/tsconfig.json#L1-L48)
 - [.eslintrc.cjs:1-65](file://frontend/.eslintrc.cjs#L1-L65)
-- [next.config.mjs:1-27](file://frontend/next.config.mjs#L1-L27)
+- [next.config.mjs:1-27](../../../../frontend/next.config.mjs#L1-L27)
 
 ## Dependency Analysis
 
@@ -411,13 +411,13 @@ PostCSS["postcss"] --> Autoprefixer["Prefixing"]
 
 **Diagram sources**
 
-- [package.json:1-62](file://frontend/package.json#L1-L62)
-- [next.config.mjs:1-27](file://frontend/next.config.mjs#L1-L27)
+- [package.json:1-62](../../../../frontend/package.json#L1-L62)
+- [next.config.mjs:1-27](../../../../frontend/next.config.mjs#L1-L27)
 
 **Section sources**
 
-- [package.json:1-62](file://frontend/package.json#L1-L62)
-- [next.config.mjs:1-27](file://frontend/next.config.mjs#L1-L27)
+- [package.json:1-62](../../../../frontend/package.json#L1-L62)
+- [next.config.mjs:1-27](../../../../frontend/next.config.mjs#L1-L27)
 
 ## Performance Considerations
 
@@ -439,9 +439,9 @@ PostCSS["postcss"] --> Autoprefixer["Prefixing"]
 
 **Section sources**
 
-- [src/context/AuthContext.jsx:1-340](file://frontend/src/context/AuthContext.jsx#L1-L340)
-- [app/not-found.jsx:1-31](file://frontend/app/not-found.jsx#L1-L31)
-- [app/layout.jsx:1-84](file://frontend/app/layout.jsx#L1-L84)
+- [src/context/AuthContext.jsx:1-340](../../../../frontend/src/context/AuthContext.jsx#L1-L340)
+- [app/not-found.jsx:1-31](../../../../frontend/app/not-found.jsx#L1-L31)
+- [app/layout.jsx:1-84](../../../../frontend/app/(formatter)/layout.jsx#L1-L84)
 
 ## Conclusion
 

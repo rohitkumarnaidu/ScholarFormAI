@@ -7,9 +7,9 @@ import logging
 
 from fastapi import APIRouter, Depends, Request
 
-from app.services.health_checks import get_readiness_payload
 from app.core.health import health_checker
 from app.schemas.user import User
+from app.services.health_checks import get_readiness_payload
 from app.utils.dependencies import require_admin_user
 from app.utils.logging_context import bind_request_context
 

@@ -41,22 +41,28 @@ _pipeline_semaphore = threading.Semaphore(_MAX_CONCURRENT_JOBS)
 _ACQUIRE_TIMEOUT_SECONDS = float(settings.PIPELINE_ACQUIRE_TIMEOUT_SECONDS)
 
 
+from app.utils.singleton import resolve_optional_callable
+
 # -- Lazy resolvers (kept for backward compat with test patches) ----------
 
 
 def get_rag_engine():
-    from app.utils.singleton import resolve_optional_callable
+    import sys
 
-    return resolve_optional_callable(
+    orch_pkg = sys.modules.get("app.pipeline.orchestrator")
+    fn = getattr(orch_pkg, "resolve_optional_callable", resolve_optional_callable)
+    return fn(
         "app.pipeline.intelligence.rag_engine",
         "get_rag_engine",
     )
 
 
 def get_reasoning_engine():
-    from app.utils.singleton import resolve_optional_callable
+    import sys
 
-    return resolve_optional_callable(
+    orch_pkg = sys.modules.get("app.pipeline.orchestrator")
+    fn = getattr(orch_pkg, "resolve_optional_callable", resolve_optional_callable)
+    return fn(
         "app.pipeline.intelligence.reasoning_engine",
         "get_reasoning_engine",
     )

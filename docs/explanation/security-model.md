@@ -27,7 +27,7 @@ graph TD
         HSTS["HSTS Preload"]
     end
     subgraph "Layer 2: Edge"
-        RL["Rate Limiting<br/>(Token Bucket)"]
+        RL["Rate Limiting<br/>("Token Bucket")"]
         CSP["Content Security Policy"]
     end
     subgraph "Layer 3: Auth"
@@ -111,6 +111,6 @@ graph TD
 ## See Also
 
 - [Security Policy](../../SECURITY.md) — vulnerability disclosure
-- [Security Controls](../Security.md) — controls inventory
-- [Secret Rotation](../SECRET_ROTATION.md) — key rotation procedures
-- [Risk Register](../Risk_Register.md) — risk inventory
+- [Security Controls](../../SECURITY.md) — controls inventory
+- [Secret Rotation](../security/SECRET_ROTATION.md) — key rotation procedures
+- [Risk Register](../reports/Risk_Register.md) — risk inventory

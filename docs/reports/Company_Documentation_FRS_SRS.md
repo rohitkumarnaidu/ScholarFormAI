@@ -269,17 +269,17 @@ This documentation pass is source-based verification. Full runtime validation of
 ### 12.1 API contract mismatches
 
 - Built-in templates response shape mismatch risk:
-    - Backend `GET /api/templates/` returns `{ templates: [...] }`
-    - Frontend template loader path currently treats response as array in one code path
+  - Backend `GET /api/templates/` returns `{ templates: [...] }`
+  - Frontend template loader path currently treats response as array in one code path
 - CSL search mismatch risk:
-    - Backend returns `{ query, results }`
-    - Frontend search handler currently expects array in one code path
+  - Backend returns `{ query, results }`
+  - Frontend search handler currently expects array in one code path
 - CSL fetch method mismatch risk:
-    - Backend defines `GET /api/templates/csl/fetch?slug=...`
-    - Frontend helper currently sends `POST /api/templates/csl/fetch`
+  - Backend defines `GET /api/templates/csl/fetch?slug=...`
+  - Frontend helper currently sends `POST /api/templates/csl/fetch`
 - JATS download mismatch risk:
-    - Frontend calls `/api/jobs/{id}/download?format=jats`
-    - No matching backend router endpoint exists
+  - Frontend calls `/api/jobs/{id}/download?format=jats`
+  - No matching backend router endpoint exists
 
 ### 12.2 UX consistency concerns
 
@@ -325,104 +325,104 @@ Defines what the system must do from business and user perspective.
 ### 14.3 Functional requirements
 
 - FR-001 User Authentication
-    - Description: System shall support signup, login, token-based authenticated access, and logout.
-    - Priority: High
-    - Acceptance: Auth endpoints return valid session or clear error; protected routes enforce auth.
+  - Description: System shall support signup, login, token-based authenticated access, and logout.
+  - Priority: High
+  - Acceptance: Auth endpoints return valid session or clear error; protected routes enforce auth.
 
 - FR-002 Password Recovery
-    - Description: System shall support forgot password, OTP verify, and reset password.
-    - Priority: High
-    - Acceptance: User can reset password using OTP flow.
+  - Description: System shall support forgot password, OTP verify, and reset password.
+  - Priority: High
+  - Acceptance: User can reset password using OTP flow.
 
 - FR-003 Single File Upload
-    - Description: System shall accept supported manuscript formats and create a processing job.
-    - Priority: High
-    - Acceptance: Upload endpoint returns job_id and processing starts.
+  - Description: System shall accept supported manuscript formats and create a processing job.
+  - Priority: High
+  - Acceptance: Upload endpoint returns job_id and processing starts.
 
 - FR-004 Chunked Upload for Large Files
-    - Description: System shall support chunk-based upload with reassembly and validation.
-    - Priority: High
-    - Acceptance: Large file upload completes and yields a valid job.
+  - Description: System shall support chunk-based upload with reassembly and validation.
+  - Priority: High
+  - Acceptance: Large file upload completes and yields a valid job.
 
 - FR-005 File Validation
-    - Description: System shall enforce extension allowlist, magic-byte checks, size limits, and path safety.
-    - Priority: High
-    - Acceptance: Invalid files are rejected with 4xx error and clear message.
+  - Description: System shall enforce extension allowlist, magic-byte checks, size limits, and path safety.
+  - Priority: High
+  - Acceptance: Invalid files are rejected with 4xx error and clear message.
 
 - FR-006 Template Selection
-    - Description: System shall allow selecting built-in templates and default none/general formatting.
-    - Priority: High
-    - Acceptance: Selected template is persisted in job options and applied in formatting stage.
+  - Description: System shall allow selecting built-in templates and default none/general formatting.
+  - Priority: High
+  - Acceptance: Selected template is persisted in job options and applied in formatting stage.
 
 - FR-007 Formatting Options
-    - Description: System shall support page numbers, borders, cover page, TOC, line numbers, line spacing, and page size options.
-    - Priority: High
-    - Acceptance: Option flags are accepted by API and reflected in output artifact where supported.
+  - Description: System shall support page numbers, borders, cover page, TOC, line numbers, line spacing, and page size options.
+  - Priority: High
+  - Acceptance: Option flags are accepted by API and reflected in output artifact where supported.
 
 - FR-008 Pipeline Processing
-    - Description: System shall run extraction, analysis, validation, formatting, and persistence phases.
-    - Priority: High
-    - Acceptance: Status progresses through expected phases and final status is terminal.
+  - Description: System shall run extraction, analysis, validation, formatting, and persistence phases.
+  - Priority: High
+  - Acceptance: Status progresses through expected phases and final status is terminal.
 
 - FR-009 Status Tracking
-    - Description: System shall provide status endpoint with progress and phase detail.
-    - Priority: High
-    - Acceptance: Client can poll and render current progress state.
+  - Description: System shall provide status endpoint with progress and phase detail.
+  - Priority: High
+  - Acceptance: Client can poll and render current progress state.
 
 - FR-010 Preview Retrieval
-    - Description: System shall provide structured result and validation data for preview.
-    - Priority: Medium
-    - Acceptance: Preview endpoint returns data for completed jobs.
+  - Description: System shall provide structured result and validation data for preview.
+  - Priority: Medium
+  - Acceptance: Preview endpoint returns data for completed jobs.
 
 - FR-011 Comparison Retrieval
-    - Description: System shall provide original vs formatted comparison payload.
-    - Priority: Medium
-    - Acceptance: Compare endpoint returns payload for UI diff rendering.
+  - Description: System shall provide original vs formatted comparison payload.
+  - Priority: Medium
+  - Acceptance: Compare endpoint returns payload for UI diff rendering.
 
 - FR-012 Edit and Reformat
-    - Description: System shall accept edited structured data and rerun validation/formatting.
-    - Priority: Medium
-    - Acceptance: Edit endpoint returns processing status and updated output path.
+  - Description: System shall accept edited structured data and rerun validation/formatting.
+  - Priority: Medium
+  - Acceptance: Edit endpoint returns processing status and updated output path.
 
 - FR-013 Download Export
-    - Description: System shall provide downloadable formatted outputs (DOCX and PDF).
-    - Priority: High
-    - Acceptance: Download endpoint streams requested supported format.
+  - Description: System shall provide downloadable formatted outputs (DOCX and PDF).
+  - Priority: High
+  - Acceptance: Download endpoint streams requested supported format.
 
 - FR-014 Document History
-    - Description: Authenticated users shall list and manage previous jobs.
-    - Priority: Medium
-    - Acceptance: List and delete operations work with ownership checks.
+  - Description: Authenticated users shall list and manage previous jobs.
+  - Priority: Medium
+  - Acceptance: List and delete operations work with ownership checks.
 
 - FR-015 Batch Upload
-    - Description: Authenticated users shall upload multiple files in one request.
-    - Priority: Medium
-    - Acceptance: Batch endpoint processes each file and returns job summary.
+  - Description: Authenticated users shall upload multiple files in one request.
+  - Priority: Medium
+  - Acceptance: Batch endpoint processes each file and returns job summary.
 
 - FR-016 Feedback Collection
-    - Description: Users shall submit correction feedback for model improvement loops.
-    - Priority: Medium
-    - Acceptance: Feedback endpoint stores data (memory plus DB attempt).
+  - Description: Users shall submit correction feedback for model improvement loops.
+  - Priority: Medium
+  - Acceptance: Feedback endpoint stores data (memory plus DB attempt).
 
 - FR-017 Custom Template Management
-    - Description: Authenticated users shall create/read/update/delete custom templates.
-    - Priority: Medium
-    - Acceptance: CRUD endpoints enforce auth and ownership.
+  - Description: Authenticated users shall create/read/update/delete custom templates.
+  - Priority: Medium
+  - Acceptance: CRUD endpoints enforce auth and ownership.
 
 - FR-018 Metrics and Admin Health
-    - Description: Admin users shall access system metrics and health dashboards.
-    - Priority: Medium
-    - Acceptance: Admin endpoints require admin and return observability data.
+  - Description: Admin users shall access system metrics and health dashboards.
+  - Priority: Medium
+  - Acceptance: Admin endpoints require admin and return observability data.
 
 - FR-019 Frontend Error Logging
-    - Description: Frontend shall send client-side error events to backend metrics logger.
-    - Priority: Medium
-    - Acceptance: `log-error` endpoint receives and records errors.
+  - Description: Frontend shall send client-side error events to backend metrics logger.
+  - Priority: Medium
+  - Acceptance: `log-error` endpoint receives and records errors.
 
 - FR-020 Access Control and Ownership
-    - Description: System shall prevent unauthorized access to other users' jobs.
-    - Priority: High
-    - Acceptance: Unauthorized reads/edits/downloads return 403.
+  - Description: System shall prevent unauthorized access to other users' jobs.
+  - Priority: High
+  - Acceptance: Unauthorized reads/edits/downloads return 403.
 
 ## 15. System Requirements Specification (SRS)
 
@@ -465,33 +465,33 @@ Defines technical system requirements needed to satisfy FRS.
 ### 15.4 Non-functional requirements
 
 - SR-NFR-001 Performance
-    - Normal upload request should return quickly with job id; long processing runs in background.
-    - Status polling should be lightweight and safe at 2s client interval.
+  - Normal upload request should return quickly with job id; long processing runs in background.
+  - Status polling should be lightweight and safe at 2s client interval.
 
 - SR-NFR-002 Scalability
-    - Pipeline execution concurrency should be bounded to avoid resource exhaustion.
-    - Rate limiting should protect API from burst abuse.
+  - Pipeline execution concurrency should be bounded to avoid resource exhaustion.
+  - Rate limiting should protect API from burst abuse.
 
 - SR-NFR-003 Reliability
-    - Background tasks should have timeout guards.
-    - Pipeline failures should mark job status clearly and preserve partial insights when possible.
+  - Background tasks should have timeout guards.
+  - Pipeline failures should mark job status clearly and preserve partial insights when possible.
 
 - SR-NFR-004 Security
-    - Enforce JWT-based auth for protected resources.
-    - Apply secure headers and body size limits.
-    - Validate file signatures and block path traversal vectors.
+  - Enforce JWT-based auth for protected resources.
+  - Apply secure headers and body size limits.
+  - Validate file signatures and block path traversal vectors.
 
 - SR-NFR-005 Maintainability
-    - Code should keep contract mappings explicit (`contract.yaml`) and formatter logic centralized.
-    - API contracts should be type-safe and synchronized with frontend.
+  - Code should keep contract mappings explicit (`contract.yaml`) and formatter logic centralized.
+  - API contracts should be type-safe and synchronized with frontend.
 
 - SR-NFR-006 Observability
-    - Metrics and health endpoints should provide DB/model/service status.
-    - Frontend error telemetry should feed backend logs.
+  - Metrics and health endpoints should provide DB/model/service status.
+  - Frontend error telemetry should feed backend logs.
 
 - SR-NFR-007 Usability
-    - Upload flow must remain clear for both guest and authenticated users.
-    - Error messages must be user-friendly and context-specific (for example login credential errors).
+  - Upload flow must remain clear for both guest and authenticated users.
+  - Error messages must be user-friendly and context-specific (for example login credential errors).
 
 ### 15.5 Constraints
 

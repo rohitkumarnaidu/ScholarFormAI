@@ -15,7 +15,7 @@ last_updated: July 2026
 
 # ScholarForm AI — Rollback Runbook
 
-> **See also:** [Deployment Guide](../Deployment.md), [Disaster Recovery](../DISASTER_RECOVERY.md), [Incident Response](incident-response.md)
+> **See also:** [Deployment Guide](../deployment/Deployment.md), [Disaster Recovery](../operations/DISASTER_RECOVERY.md), [Incident Response](incident-response.md)
 
 ## Backend (Render)
 

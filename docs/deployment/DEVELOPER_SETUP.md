@@ -1,6 +1,6 @@
 # ScholarForm AI — Developer Setup Guide
 
-> **Step-by-step setup.** For onboarding workflow, see [docs/DEVELOPER_ONBOARDING.md](docs/DEVELOPER_ONBOARDING.md). For build instructions, see [BUILDING.md](BUILDING.md).
+> **Step-by-step setup.** For onboarding workflow, see [docs/DEVELOPER_ONBOARDING.md](../developer-guide/DEVELOPER_ONBOARDING.md). For build instructions, see [BUILDING.md](BUILDING.md).
 
 ---
 
@@ -117,7 +117,7 @@ cd backend
 uvicorn app.main:app --reload --port 8000
 ```
 
-API docs: http://localhost:8000/docs
+API docs: <http://localhost:8000/docs>
 
 ### Terminal 2 — Frontend
 
@@ -126,7 +126,7 @@ cd frontend
 npm run dev
 ```
 
-App: http://localhost:3000
+App: <http://localhost:3000>
 
 ### Verify
 
@@ -192,9 +192,9 @@ pre-commit install
 
 ## 9. Next Steps
 
-1. Read [CONTRIBUTING.md](CONTRIBUTING.md) for PR workflow
-2. Read [ARCHITECTURE.md](ARCHITECTURE.md) for system overview
-3. Read [docs/DEVELOPER_ONBOARDING.md](docs/DEVELOPER_ONBOARDING.md) for full onboarding
+1. Read [CONTRIBUTING.md](../../CONTRIBUTING.md) for PR workflow
+2. Read [ARCHITECTURE.md](../architecture/ARCHITECTURE.md) for system overview
+3. Read [docs/DEVELOPER_ONBOARDING.md](../developer-guide/DEVELOPER_ONBOARDING.md) for full onboarding
 4. Browse [examples/](examples/) for API usage samples
 
 ---

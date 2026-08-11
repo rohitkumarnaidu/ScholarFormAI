@@ -19,18 +19,18 @@ The following sequence diagram illustrates the end-to-end lifecycle of a manuscr
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as "Client (Web / CLI / SDK)"
+    actor User as "Client ("Web / CLI / SDK")"
     participant API as "FastAPI Gateway"
     participant Services as "Pipeline Services"
     participant Storage as "Supabase / Local Disk"
 
-    User->>API: POST /api/v1/format (Manuscript payload + Style)
+    User->>API: POST /api/v1/format ("Manuscript payload + Style")
     activate API
     API->>Services: Parse & Structure Manuscript
     activate Services
     Services-->>API: Structured Manuscript AST
     API->>Services: Validate against CSL Style Rules
-    Services-->>API: Validation Result (Pass / Warn)
+    Services-->>API: Validation Result ("Pass / Warn")
     API->>Services: Compile DOCX Document (python-docx)
     Services-->>API: Compiled DOCX Binary
     deactivate Services
@@ -59,7 +59,7 @@ sequenceDiagram
     participant Val as "ValidatorService"
     participant Registry as "StyleRegistry"
 
-    User->>API: POST /api/v1/validate (JSON / DOCX)
+    User->>API: POST /api/v1/validate ("JSON / DOCX")
     activate API
     API->>Val: Validate Document Structure
     activate Val
@@ -67,9 +67,9 @@ sequenceDiagram
     Registry-->>Val: Style Constraints
     Val->>Val: Execute Reference & Citation Audit
     Val->>Val: Check Figure & Table Numbering
-    Val-->>API: Validation Report (valid, errors[], warnings[])
+    Val-->>API: Validation Report ("valid, errors[], warnings[]")
     deactivate Val
-    API-->>User: 200 OK (Validation Envelope)
+    API-->>User: 200 OK ("Validation Envelope")
     deactivate API
 ```
 
@@ -86,7 +86,7 @@ sequenceDiagram
     participant API as "FastAPI (/api/v1/preview)"
     participant Formatter as "PreviewRenderer"
 
-    User->>API: POST /api/v1/preview (Manuscript + Style)
+    User->>API: POST /api/v1/preview ("Manuscript + Style")
     activate API
     API->>Formatter: Generate Styled HTML HTML-DOM
     activate Formatter

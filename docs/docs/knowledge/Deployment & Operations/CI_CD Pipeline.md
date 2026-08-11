@@ -5,25 +5,25 @@
 
 <cite>
 **Referenced Files in This Document**
-- [backend-ci.yml](file://.github/workflows/backend-ci.yml)
-- [frontend-ci.yml](file://.github/workflows/frontend-ci.yml)
-- [deploy-staging.yml](file://.github/workflows/deploy-staging.yml)
-- [e2e-staging.yml](file://.github/workflows/e2e-staging.yml)
-- [deploy-production.yml](file://.github/workflows/deploy-production.yml)
-- [e2e-production.yml](file://.github/workflows/e2e-production.yml)
-- [security.yml](file://.github/workflows/security.yml)
+- [backend-ci.yml](../../../../.github/workflows/backend-ci.yml)
+- [frontend-ci.yml](../../../../.github/workflows/frontend-ci.yml)
+- [deploy-staging.yml](../../../../.github/workflows/deploy-staging.yml)
+- [e2e-staging.yml](../../../../.github/workflows/e2e-staging.yml)
+- [deploy-production.yml](../../../../.github/workflows/deploy-production.yml)
+- [e2e-production.yml](../../../../.github/workflows/e2e-production.yml)
+- [security.yml](../../../../.github/workflows/security.yml)
 - [keepalive-free-tier.yml](file://.github/workflows/keepalive-free-tier.yml)
-- [render.yaml](file://render.yaml)
-- [Dockerfile](file://backend/docker/Dockerfile)
-- [requirements-render.txt](file://backend/requirements-render.txt)
-- [pyproject.toml](file://backend/pyproject.toml)
-- [package.json](file://frontend/package.json)
-- [playwright.config.js](file://frontend/playwright.config.js)
-- [branch-protection.md](file://docs/runbooks/branch-protection.md)
-- [rollback.md](file://docs/runbooks/rollback.md)
-- [incident-response.md](file://docs/runbooks/incident-response.md)
-- [ruff.toml](file://backend/ruff.toml)
-- [mypy.ini](file://backend/mypy.ini)
+- [render.yaml](../../../../render.yaml)
+- [Dockerfile](../../../../backend/docker/Dockerfile)
+- [requirements-render.txt](../../../../backend/requirements-render.txt)
+- [pyproject.toml](../../../../backend/pyproject.toml)
+- [package.json](../../../../frontend/package.json)
+- [playwright.config.js](../../../../frontend/playwright.config.js)
+- [branch-protection.md](../../../runbooks/branch-protection.md)
+- [rollback.md](../../../runbooks/rollback.md)
+- [incident-response.md](../../../runbooks/incident-response.md)
+- [ruff.toml](../../../../backend/ruff.toml)
+- [mypy.ini](../../../../backend/mypy.ini)
 </cite>
 
 ## Update Summary
@@ -111,37 +111,37 @@ KA --> PROD_BE
 
 **Diagram sources**
 
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
-- [frontend-ci.yml:1-96](file://.github/workflows/frontend-ci.yml#L1-L96)
-- [deploy-staging.yml:1-151](file://.github/workflows/deploy-staging.yml#L1-L151)
-- [deploy-production.yml:1-121](file://.github/workflows/deploy-production.yml#L1-L121)
-- [e2e-staging.yml:1-60](file://.github/workflows/e2e-staging.yml#L1-L60)
-- [e2e-production.yml:1-60](file://.github/workflows/e2e-production.yml#L1-L60)
-- [security.yml:1-51](file://.github/workflows/security.yml#L1-L51)
+- [backend-ci.yml:1-41](../../../../.github/workflows/backend-ci.yml#L1-L41)
+- [frontend-ci.yml:1-96](../../../../.github/workflows/frontend-ci.yml#L1-L96)
+- [deploy-staging.yml:1-151](../../../../.github/workflows/deploy-staging.yml#L1-L151)
+- [deploy-production.yml:1-121](../../../../.github/workflows/deploy-production.yml#L1-L121)
+- [e2e-staging.yml:1-60](../../../../.github/workflows/e2e-staging.yml#L1-L60)
+- [e2e-production.yml:1-60](../../../../.github/workflows/e2e-production.yml#L1-L60)
+- [security.yml:1-51](../../../../.github/workflows/security.yml#L1-L51)
 - [keepalive-free-tier.yml:1-89](file://.github/workflows/keepalive-free-tier.yml#L1-L89)
-- [render.yaml:1-15](file://render.yaml#L1-L15)
-- [Dockerfile:1-24](file://backend/docker/Dockerfile#L1-L24)
-- [requirements-render.txt:1-138](file://backend/requirements-render.txt#L1-L138)
-- [pyproject.toml:1-9](file://backend/pyproject.toml#L1-L9)
-- [package.json:1-69](file://frontend/package.json#L1-L69)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
+- [render.yaml:1-15](../../../../render.yaml#L1-L15)
+- [Dockerfile:1-24](../../../../backend/docker/Dockerfile#L1-L24)
+- [requirements-render.txt:1-138](../../../../backend/requirements-render.txt#L1-L138)
+- [pyproject.toml:1-9](../../../../backend/pyproject.toml#L1-L9)
+- [package.json:1-69](../../../../frontend/package.json#L1-L69)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
 
 **Section sources**
 
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
-- [frontend-ci.yml:1-96](file://.github/workflows/frontend-ci.yml#L1-L96)
-- [deploy-staging.yml:1-151](file://.github/workflows/deploy-staging.yml#L1-L151)
-- [deploy-production.yml:1-121](file://.github/workflows/deploy-production.yml#L1-L121)
-- [e2e-staging.yml:1-60](file://.github/workflows/e2e-staging.yml#L1-L60)
-- [e2e-production.yml:1-60](file://.github/workflows/e2e-production.yml#L1-L60)
-- [security.yml:1-51](file://.github/workflows/security.yml#L1-L51)
+- [backend-ci.yml:1-41](../../../../.github/workflows/backend-ci.yml#L1-L41)
+- [frontend-ci.yml:1-96](../../../../.github/workflows/frontend-ci.yml#L1-L96)
+- [deploy-staging.yml:1-151](../../../../.github/workflows/deploy-staging.yml#L1-L151)
+- [deploy-production.yml:1-121](../../../../.github/workflows/deploy-production.yml#L1-L121)
+- [e2e-staging.yml:1-60](../../../../.github/workflows/e2e-staging.yml#L1-L60)
+- [e2e-production.yml:1-60](../../../../.github/workflows/e2e-production.yml#L1-L60)
+- [security.yml:1-51](../../../../.github/workflows/security.yml#L1-L51)
 - [keepalive-free-tier.yml:1-89](file://.github/workflows/keepalive-free-tier.yml#L1-L89)
-- [render.yaml:1-15](file://render.yaml#L1-L15)
-- [Dockerfile:1-24](file://backend/docker/Dockerfile#L1-L24)
-- [requirements-render.txt:1-138](file://backend/requirements-render.txt#L1-L138)
-- [pyproject.toml:1-9](file://backend/pyproject.toml#L1-L9)
-- [package.json:1-69](file://frontend/package.json#L1-L69)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
+- [render.yaml:1-15](../../../../render.yaml#L1-L15)
+- [Dockerfile:1-24](../../../../backend/docker/Dockerfile#L1-L24)
+- [requirements-render.txt:1-138](../../../../backend/requirements-render.txt#L1-L138)
+- [pyproject.toml:1-9](../../../../backend/pyproject.toml#L1-L9)
+- [package.json:1-69](../../../../frontend/package.json#L1-L69)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
 
 ## Core Components
 
@@ -159,17 +159,17 @@ KA --> PROD_BE
 
 **Section sources**
 
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
-- [frontend-ci.yml:1-96](file://.github/workflows/frontend-ci.yml#L1-L96)
-- [deploy-staging.yml:1-151](file://.github/workflows/deploy-staging.yml#L1-L151)
-- [deploy-production.yml:1-121](file://.github/workflows/deploy-production.yml#L1-L121)
-- [e2e-staging.yml:1-60](file://.github/workflows/e2e-staging.yml#L1-L60)
-- [e2e-production.yml:1-60](file://.github/workflows/e2e-production.yml#L1-L60)
-- [security.yml:1-51](file://.github/workflows/security.yml#L1-L51)
+- [backend-ci.yml:1-41](../../../../.github/workflows/backend-ci.yml#L1-L41)
+- [frontend-ci.yml:1-96](../../../../.github/workflows/frontend-ci.yml#L1-L96)
+- [deploy-staging.yml:1-151](../../../../.github/workflows/deploy-staging.yml#L1-L151)
+- [deploy-production.yml:1-121](../../../../.github/workflows/deploy-production.yml#L1-L121)
+- [e2e-staging.yml:1-60](../../../../.github/workflows/e2e-staging.yml#L1-L60)
+- [e2e-production.yml:1-60](../../../../.github/workflows/e2e-production.yml#L1-L60)
+- [security.yml:1-51](../../../../.github/workflows/security.yml#L1-L51)
 - [keepalive-free-tier.yml:1-89](file://.github/workflows/keepalive-free-tier.yml#L1-L89)
-- [branch-protection.md:1-14](file://docs/runbooks/branch-protection.md#L1-L14)
-- [rollback.md:1-24](file://docs/runbooks/rollback.md#L1-L24)
-- [incident-response.md:1-47](file://docs/runbooks/incident-response.md#L1-L47)
+- [branch-protection.md:1-14](../../../runbooks/branch-protection.md#L1-L14)
+- [rollback.md:1-24](../../../runbooks/rollback.md#L1-L24)
+- [incident-response.md:1-47](../../../runbooks/incident-response.md#L1-L47)
 
 ## Architecture Overview
 
@@ -209,7 +209,7 @@ Render-->>Stage : HTTP 200/201 or error
 Stage->>BE : Health check + Locust SLO
 GH->>E2E : e2e-staging.yml(on dispatch/completion)
 E2E-->>GH : Staging E2E results
-GH->>Prod : deploy-production.yml (on dispatch)
+GH->>Prod : deploy-production.yml ("on dispatch")
 Prod->>Preflight : Validate secrets & detect mode
 Prod->>Render : Deploy via selected mode
 Render-->>Prod : HTTP 200/201 or error
@@ -220,13 +220,13 @@ E2E-->>GH : Production E2E results
 
 **Diagram sources**
 
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
-- [frontend-ci.yml:1-96](file://.github/workflows/frontend-ci.yml#L1-L96)
-- [security.yml:1-51](file://.github/workflows/security.yml#L1-L51)
-- [deploy-staging.yml:1-151](file://.github/workflows/deploy-staging.yml#L1-L151)
-- [deploy-production.yml:1-121](file://.github/workflows/deploy-production.yml#L1-L121)
-- [e2e-staging.yml:1-60](file://.github/workflows/e2e-staging.yml#L1-L60)
-- [e2e-production.yml:1-60](file://.github/workflows/e2e-production.yml#L1-L60)
+- [backend-ci.yml:1-41](../../../../.github/workflows/backend-ci.yml#L1-L41)
+- [frontend-ci.yml:1-96](../../../../.github/workflows/frontend-ci.yml#L1-L96)
+- [security.yml:1-51](../../../../.github/workflows/security.yml#L1-L51)
+- [deploy-staging.yml:1-151](../../../../.github/workflows/deploy-staging.yml#L1-L151)
+- [deploy-production.yml:1-121](../../../../.github/workflows/deploy-production.yml#L1-L121)
+- [e2e-staging.yml:1-60](../../../../.github/workflows/e2e-staging.yml#L1-L60)
+- [e2e-production.yml:1-60](../../../../.github/workflows/e2e-production.yml#L1-L60)
 
 ## Detailed Component Analysis
 
@@ -242,24 +242,24 @@ Checkout --> SetupPy["Setup Python 3.12"]
 SetupPy --> PrepEnv["Prepare .env from .env.example"]
 PrepEnv --> InstallDeps["Install pip, requirements-render.txt, ruff, mypy, pytest"]
 InstallDeps --> Ruff["Run Ruff checks"]
-Ruff --> Mypy["Run MyPy (continue on error)"]
+Ruff --> Mypy["Run MyPy ("continue on error")"]
 Mypy --> Pytest["Run PyTest(exclude integration/slow)"]
 Pytest --> End(["Workflow complete"])
 ```
 
 **Diagram sources**
 
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
-- [requirements-render.txt:1-138](file://backend/requirements-render.txt#L1-L138)
-- [ruff.toml:1-11](file://backend/ruff.toml#L1-L11)
-- [mypy.ini:1-10](file://backend/mypy.ini#L1-L10)
+- [backend-ci.yml:1-41](../../../../.github/workflows/backend-ci.yml#L1-L41)
+- [requirements-render.txt:1-138](../../../../backend/requirements-render.txt#L1-L138)
+- [ruff.toml:1-11](../../../../backend/ruff.toml#L1-L11)
+- [mypy.ini:1-10](../../../../backend/mypy.ini#L1-L10)
 
 **Section sources**
 
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
-- [ruff.toml:1-11](file://backend/ruff.toml#L1-L11)
-- [mypy.ini:1-10](file://backend/mypy.ini#L1-L10)
-- [requirements-render.txt:1-138](file://backend/requirements-render.txt#L1-L138)
+- [backend-ci.yml:1-41](../../../../.github/workflows/backend-ci.yml#L1-L41)
+- [ruff.toml:1-11](../../../../backend/ruff.toml#L1-L11)
+- [mypy.ini:1-10](../../../../backend/mypy.ini#L1-L10)
+- [requirements-render.txt:1-138](../../../../backend/requirements-render.txt#L1-L138)
 
 ### Enhanced Frontend CI Workflow
 
@@ -295,15 +295,15 @@ PWTest --> End3(["E2E complete"])
 
 **Diagram sources**
 
-- [frontend-ci.yml:16-41](file://.github/workflows/frontend-ci.yml#L16-L41)
-- [frontend-ci.yml:42-66](file://.github/workflows/frontend-ci.yml#L42-L66)
-- [frontend-ci.yml:68-96](file://.github/workflows/frontend-ci.yml#L68-L96)
-- [package.json:1-69](file://frontend/package.json#L1-L69)
+- [frontend-ci.yml:16-41](../../../../.github/workflows/frontend-ci.yml#L16-L41)
+- [frontend-ci.yml:42-66](../../../../.github/workflows/frontend-ci.yml#L42-L66)
+- [frontend-ci.yml:68-96](../../../../.github/workflows/frontend-ci.yml#L68-L96)
+- [package.json:1-69](../../../../frontend/package.json#L1-L69)
 
 **Section sources**
 
-- [frontend-ci.yml:1-96](file://.github/workflows/frontend-ci.yml#L1-L96)
-- [package.json:1-69](file://frontend/package.json#L1-L69)
+- [frontend-ci.yml:1-96](../../../../.github/workflows/frontend-ci.yml#L1-L96)
+- [package.json:1-69](../../../../frontend/package.json#L1-L69)
 
 ### Security Workflow
 
@@ -317,20 +317,20 @@ Start(["PR/main/cron/dispatch"]) --> Checkout["Checkout code"]
 Checkout --> SetupPy["Setup Python 3.12"]
 SetupPy --> BuildImg["docker build backend image"]
 BuildImg --> Trivy["Trivy scan(critical/high)"]
-Trivy --> Bandit["Bandit scan (JSON report)"]
-Bandit --> OWASP["OWASP Dependency Check (fail on CVSS >= 7)"]
+Trivy --> Bandit["Bandit scan ("JSON report")"]
+Bandit --> OWASP["OWASP Dependency Check ("fail on CVSS >= 7")"]
 OWASP --> End(["Security workflow complete"])
 ```
 
 **Diagram sources**
 
-- [security.yml:1-51](file://.github/workflows/security.yml#L1-L51)
-- [Dockerfile:1-24](file://backend/docker/Dockerfile#L1-L24)
+- [security.yml:1-51](../../../../.github/workflows/security.yml#L1-L51)
+- [Dockerfile:1-24](../../../../backend/docker/Dockerfile#L1-L24)
 
 **Section sources**
 
-- [security.yml:1-51](file://.github/workflows/security.yml#L1-L51)
-- [Dockerfile:1-24](file://backend/docker/Dockerfile#L1-L24)
+- [security.yml:1-51](../../../../.github/workflows/security.yml#L1-L51)
+- [Dockerfile:1-24](../../../../backend/docker/Dockerfile#L1-L24)
 
 ### Enhanced Staging Deployment Workflow
 
@@ -360,21 +360,21 @@ ModeError --> SkipDeploy["Skip deployment with warning"]
 DeployAPI --> HealthCheck["Wait for backend health"]
 DeployHook --> HealthCheck
 HealthCheck --> Locust["Run Locust SLO gate"]
-Locust --> VercelDeploy["Deploy frontend to Vercel (npx vercel@latest)"]
+Locust --> VercelDeploy["Deploy frontend to Vercel ("npx vercel@latest")"]
 SkipDeploy --> End(["Workflow complete"])
 VercelDeploy --> End
 ```
 
 **Diagram sources**
 
-- [deploy-staging.yml:17-54](file://.github/workflows/deploy-staging.yml#L17-L54)
-- [deploy-staging.yml:56-87](file://.github/workflows/deploy-staging.yml#L56-L87)
-- [deploy-staging.yml:119-134](file://.github/workflows/deploy-staging.yml#L119-L134)
+- [deploy-staging.yml:17-54](../../../../.github/workflows/deploy-staging.yml#L17-L54)
+- [deploy-staging.yml:56-87](../../../../.github/workflows/deploy-staging.yml#L56-L87)
+- [deploy-staging.yml:119-134](../../../../.github/workflows/deploy-staging.yml#L119-L134)
 
 **Section sources**
 
-- [deploy-staging.yml:1-151](file://.github/workflows/deploy-staging.yml#L1-L151)
-- [render.yaml:1-15](file://render.yaml#L1-L15)
+- [deploy-staging.yml:1-151](../../../../.github/workflows/deploy-staging.yml#L1-L151)
+- [render.yaml:1-15](../../../../render.yaml#L1-L15)
 
 ### Enhanced Production Deployment Workflow
 
@@ -402,20 +402,20 @@ ModeDetectHook --> DeployHook["Deploy via Render Webhook"]
 ModeError --> SkipDeploy["Skip deployment with warning"]
 DeployAPI --> HealthCheck["Wait for backend health"]
 DeployHook --> HealthCheck
-HealthCheck --> VercelDeploy["Deploy frontend to Vercel (npx vercel@latest)"]
+HealthCheck --> VercelDeploy["Deploy frontend to Vercel ("npx vercel@latest")"]
 SkipDeploy --> End(["Workflow complete"])
 VercelDeploy --> End
 ```
 
 **Diagram sources**
 
-- [deploy-production.yml:13-50](file://.github/workflows/deploy-production.yml#L13-L50)
-- [deploy-production.yml:52-85](file://.github/workflows/deploy-production.yml#L52-L85)
+- [deploy-production.yml:13-50](../../../../.github/workflows/deploy-production.yml#L13-L50)
+- [deploy-production.yml:52-85](../../../../.github/workflows/deploy-production.yml#L52-L85)
 
 **Section sources**
 
-- [deploy-production.yml:1-121](file://.github/workflows/deploy-production.yml#L1-L121)
-- [render.yaml:1-15](file://render.yaml#L1-L15)
+- [deploy-production.yml:1-121](../../../../.github/workflows/deploy-production.yml#L1-L121)
+- [render.yaml:1-15](../../../../render.yaml#L1-L15)
 
 ### Enhanced End-to-End Testing Workflows
 
@@ -452,15 +452,15 @@ PW-->>GH : Production test results
 
 **Diagram sources**
 
-- [e2e-staging.yml:1-60](file://.github/workflows/e2e-staging.yml#L1-L60)
-- [e2e-production.yml:1-60](file://.github/workflows/e2e-production.yml#L1-L60)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
+- [e2e-staging.yml:1-60](../../../../.github/workflows/e2e-staging.yml#L1-L60)
+- [e2e-production.yml:1-60](../../../../.github/workflows/e2e-production.yml#L1-L60)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
 
 **Section sources**
 
-- [e2e-staging.yml:1-60](file://.github/workflows/e2e-staging.yml#L1-L60)
-- [e2e-production.yml:1-60](file://.github/workflows/e2e-production.yml#L1-L60)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
+- [e2e-staging.yml:1-60](../../../../.github/workflows/e2e-staging.yml#L1-L60)
+- [e2e-production.yml:1-60](../../../../.github/workflows/e2e-production.yml#L1-L60)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
 
 ### Keepalive Monitoring Workflow
 
@@ -483,7 +483,7 @@ PW-->>GH : Production test results
 
 **Section sources**
 
-- [branch-protection.md:1-14](file://docs/runbooks/branch-protection.md#L1-L14)
+- [branch-protection.md:1-14](../../../runbooks/branch-protection.md#L1-L14)
 
 ### Rollback Procedures
 
@@ -494,7 +494,7 @@ PW-->>GH : Production test results
 
 **Section sources**
 
-- [rollback.md:1-24](file://docs/runbooks/rollback.md#L1-L24)
+- [rollback.md:1-24](../../../runbooks/rollback.md#L1-L24)
 
 ### Incident Response Playbooks
 
@@ -503,7 +503,7 @@ PW-->>GH : Production test results
 
 **Section sources**
 
-- [incident-response.md:1-47](file://docs/runbooks/incident-response.md#L1-L47)
+- [incident-response.md:1-47](../../../runbooks/incident-response.md#L1-L47)
 
 ## Multi-Environment Deployment Strategy
 
@@ -533,8 +533,8 @@ The pipeline implements a two-tier deployment strategy:
 
 **Section sources**
 
-- [deploy-staging.yml:1-151](file://.github/workflows/deploy-staging.yml#L1-L151)
-- [deploy-production.yml:1-121](file://.github/workflows/deploy-production.yml#L1-L121)
+- [deploy-staging.yml:1-151](../../../../.github/workflows/deploy-staging.yml#L1-L151)
+- [deploy-production.yml:1-121](../../../../.github/workflows/deploy-production.yml#L1-L121)
 
 ## Quality Gates and Testing
 
@@ -564,12 +564,12 @@ The pipeline implements a two-tier deployment strategy:
 
 **Section sources**
 
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
-- [frontend-ci.yml:1-96](file://.github/workflows/frontend-ci.yml#L1-L96)
-- [security.yml:1-51](file://.github/workflows/security.yml#L1-L51)
-- [deploy-staging.yml:119-134](file://.github/workflows/deploy-staging.yml#L119-L134)
-- [e2e-staging.yml:1-60](file://.github/workflows/e2e-staging.yml#L1-L60)
-- [e2e-production.yml:1-60](file://.github/workflows/e2e-production.yml#L1-L60)
+- [backend-ci.yml:1-41](../../../../.github/workflows/backend-ci.yml#L1-L41)
+- [frontend-ci.yml:1-96](../../../../.github/workflows/frontend-ci.yml#L1-L96)
+- [security.yml:1-51](../../../../.github/workflows/security.yml#L1-L51)
+- [deploy-staging.yml:119-134](../../../../.github/workflows/deploy-staging.yml#L119-L134)
+- [e2e-staging.yml:1-60](../../../../.github/workflows/e2e-staging.yml#L1-L60)
+- [e2e-production.yml:1-60](../../../../.github/workflows/e2e-production.yml#L1-L60)
 
 ## Dependency Analysis
 
@@ -590,7 +590,7 @@ The CI/CD pipeline depends on:
 ```mermaid
 graph TB
 GH[".github/workflows/*"] --> RND["Render API/Webhook(Staging/Prod)"]
-GH --> VCD["Vercel CLI (npx vercel@latest)"]
+GH --> VCD["Vercel CLI ("npx vercel@latest")"]
 SEC["security.yml"] --> IMG["backend/docker/Dockerfile"]
 DS["deploy-staging.yml"] --> IMG
 DP["deploy-production.yml"] --> IMG
@@ -607,23 +607,23 @@ KAMON --> EXTSVC["External Services"]
 
 **Diagram sources**
 
-- [deploy-staging.yml:1-151](file://.github/workflows/deploy-staging.yml#L1-L151)
-- [deploy-production.yml:1-121](file://.github/workflows/deploy-production.yml#L1-L121)
-- [security.yml:1-51](file://.github/workflows/security.yml#L1-L51)
-- [frontend-ci.yml:1-96](file://.github/workflows/frontend-ci.yml#L1-L96)
+- [deploy-staging.yml:1-151](../../../../.github/workflows/deploy-staging.yml#L1-L151)
+- [deploy-production.yml:1-121](../../../../.github/workflows/deploy-production.yml#L1-L121)
+- [security.yml:1-51](../../../../.github/workflows/security.yml#L1-L51)
+- [frontend-ci.yml:1-96](../../../../.github/workflows/frontend-ci.yml#L1-L96)
 - [keepalive-free-tier.yml:1-89](file://.github/workflows/keepalive-free-tier.yml#L1-L89)
-- [Dockerfile:1-24](file://backend/docker/Dockerfile#L1-L24)
-- [package.json:1-69](file://frontend/package.json#L1-L69)
+- [Dockerfile:1-24](../../../../backend/docker/Dockerfile#L1-L24)
+- [package.json:1-69](../../../../frontend/package.json#L1-L69)
 
 **Section sources**
 
-- [deploy-staging.yml:1-151](file://.github/workflows/deploy-staging.yml#L1-L151)
-- [deploy-production.yml:1-121](file://.github/workflows/deploy-production.yml#L1-L121)
-- [security.yml:1-51](file://.github/workflows/security.yml#L1-L51)
-- [frontend-ci.yml:1-96](file://.github/workflows/frontend-ci.yml#L1-L96)
+- [deploy-staging.yml:1-151](../../../../.github/workflows/deploy-staging.yml#L1-L151)
+- [deploy-production.yml:1-121](../../../../.github/workflows/deploy-production.yml#L1-L121)
+- [security.yml:1-51](../../../../.github/workflows/security.yml#L1-L51)
+- [frontend-ci.yml:1-96](../../../../.github/workflows/frontend-ci.yml#L1-L96)
 - [keepalive-free-tier.yml:1-89](file://.github/workflows/keepalive-free-tier.yml#L1-L89)
-- [Dockerfile:1-24](file://backend/docker/Dockerfile#L1-L24)
-- [package.json:1-69](file://frontend/package.json#L1-L69)
+- [Dockerfile:1-24](../../../../backend/docker/Dockerfile#L1-L24)
+- [package.json:1-69](../../../../frontend/package.json#L1-L69)
 
 ## Performance Considerations
 
@@ -692,18 +692,18 @@ Common CI/CD issues and resolutions:
 
 **Section sources**
 
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
-- [frontend-ci.yml:1-96](file://.github/workflows/frontend-ci.yml#L1-L96)
-- [security.yml:1-51](file://.github/workflows/security.yml#L1-L51)
-- [deploy-staging.yml:1-151](file://.github/workflows/deploy-staging.yml#L1-L151)
-- [deploy-production.yml:1-121](file://.github/workflows/deploy-production.yml#L1-L121)
-- [e2e-staging.yml:1-60](file://.github/workflows/e2e-staging.yml#L1-L60)
-- [e2e-production.yml:1-60](file://.github/workflows/e2e-production.yml#L1-L60)
+- [backend-ci.yml:1-41](../../../../.github/workflows/backend-ci.yml#L1-L41)
+- [frontend-ci.yml:1-96](../../../../.github/workflows/frontend-ci.yml#L1-L96)
+- [security.yml:1-51](../../../../.github/workflows/security.yml#L1-L51)
+- [deploy-staging.yml:1-151](../../../../.github/workflows/deploy-staging.yml#L1-L151)
+- [deploy-production.yml:1-121](../../../../.github/workflows/deploy-production.yml#L1-L121)
+- [e2e-staging.yml:1-60](../../../../.github/workflows/e2e-staging.yml#L1-L60)
+- [e2e-production.yml:1-60](../../../../.github/workflows/e2e-production.yml#L1-L60)
 - [keepalive-free-tier.yml:1-89](file://.github/workflows/keepalive-free-tier.yml#L1-L89)
-- [ruff.toml:1-11](file://backend/ruff.toml#L1-L11)
-- [mypy.ini:1-10](file://backend/mypy.ini#L1-L10)
-- [package.json:1-69](file://frontend/package.json#L1-L69)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
+- [ruff.toml:1-11](../../../../backend/ruff.toml#L1-L11)
+- [mypy.ini:1-10](../../../../backend/mypy.ini#L1-L10)
+- [package.json:1-69](../../../../frontend/package.json#L1-L69)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
 
 ## Conclusion
 
@@ -725,9 +725,9 @@ The CI/CD pipeline establishes comprehensive automated testing, security scannin
 
 **Section sources**
 
-- [render.yaml:1-15](file://render.yaml#L1-L15)
-- [pyproject.toml:1-9](file://backend/pyproject.toml#L1-L9)
-- [package.json:1-69](file://frontend/package.json#L1-L69)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
-- [deploy-staging.yml:17-54](file://.github/workflows/deploy-staging.yml#L17-L54)
+- [render.yaml:1-15](../../../../render.yaml#L1-L15)
+- [pyproject.toml:1-9](../../../../backend/pyproject.toml#L1-L9)
+- [package.json:1-69](../../../../frontend/package.json#L1-L69)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
+- [deploy-staging.yml:17-54](../../../../.github/workflows/deploy-staging.yml#L17-L54)
 - [keepalive-free-tier.yml:1-89](file://.github/workflows/keepalive-free-tier.yml#L1-L89)

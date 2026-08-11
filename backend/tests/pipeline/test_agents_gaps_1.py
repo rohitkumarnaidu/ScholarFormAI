@@ -14,7 +14,8 @@ import pytest
 # ═══════════════════════════════════════════════════════════════════════════
 
 class TestAgentMemoryInit:
-    def test_default_dir(self):
+    def test_default_dir(self, monkeypatch, tmp_path):
+        monkeypatch.chdir(tmp_path)
         from app.pipeline.agents.memory import AgentMemory
         mem = AgentMemory()
         assert mem.memory_dir.name == ".agent_memory"

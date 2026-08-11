@@ -470,16 +470,19 @@ class TestGenerationEndpoints:
         )
         assert response.status_code == 422
 
-    def test_start_generation_form_bad_ext(self, client):
-        with (
-            patch("app.routers.v1.generator._dispatch_agent_task"),
-            patch("app.routers.v1.generator.audit_log_service.log", new_callable=AsyncMock),
-        ):
-            response = client.post(
-                "/api/v1/generator/sessions",
-                data={"session_type": "agent", "prompt": "test prompt"},
-            )
-        assert response.status_code == 202
+    @patch("app.routers.v1.generator._session_service.create_session", new_callable=AsyncMock)
+    def test_start_generation_form_bad_ext(self, mock_create, client):
+        mock_create.return_value = "fake_session_id"
+        response = client.post(
+            "/api/v1/generator/sessions",
+            data={"session_type": "multi_doc"},
+            files=[
+                ("files", ("test1.pdf", b"%PDF-1.4 dummy pdf", "application/pdf")),
+                ("files", ("test2.bad", b"dummy bad file", "application/octet-stream")),
+            ]
+        )
+        assert response.status_code == 400
+        assert "Unsupported file type" in response.json()["error"]["message"]
 
     def test_get_session_not_found(self, client):
         with patch(

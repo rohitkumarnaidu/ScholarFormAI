@@ -13,13 +13,13 @@ ScholarFormAI automates the formatting of academic manuscripts using AI. It pars
 The backend is a Python-based REST API (FastAPI) handling manuscript processing, AI orchestration, and database interactions.
 
 - **`app/`**: Core application logic.
-    - **`ai/`**: AI agents, prompt templates, and LLM integrations.
-        - **`prompts/`**: Version-controlled prompt files used across agents.
-        - **`rag/`**: Retrieval-Augmented Generation module utilizing Chroma DB for formatting rule lookups.
-    - **`api/`**: FastAPI routers and endpoints.
-    - **`services/`**: Core business logic.
-    - **`models/`**: SQLAlchemy ORM models.
-    - **`schemas/`**: Pydantic schemas for request/response validation.
+  - **`ai/`**: AI agents, prompt templates, and LLM integrations.
+    - **`prompts/`**: Version-controlled prompt files used across agents.
+    - **`rag/`**: Retrieval-Augmented Generation module utilizing Chroma DB for formatting rule lookups.
+  - **`api/`**: FastAPI routers and endpoints.
+  - **`services/`**: Core business logic.
+  - **`models/`**: SQLAlchemy ORM models.
+  - **`schemas/`**: Pydantic schemas for request/response validation.
 - **`alembic/`**: Database migration scripts.
 
 ### 2. Frontend (`/frontend/`)

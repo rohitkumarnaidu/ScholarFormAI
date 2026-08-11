@@ -5,16 +5,16 @@
 
 <cite>
 **Referenced Files in This Document**
-- [ReconnectingWebSocket.js](file://frontend/src/lib/ReconnectingWebSocket.js)
-- [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
-- [useGeneratorSessionStream.js](file://frontend/src/hooks/useGeneratorSessionStream.js)
-- [TokenStream.jsx](file://frontend/src/components/generator/TokenStream.jsx)
-- [generator.py](file://backend/app/routers/v1/generator.py)
-- [stream.py](file://backend/app/routers/stream.py)
-- [events.py](file://backend/app/realtime/events.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [002-redis-realtime-backbone.md](file://docs/adr/002-redis-realtime-backbone.md)
+- [ReconnectingWebSocket.js](../../../../../frontend/src/lib/ReconnectingWebSocket.js)
+- [useLivePreviewSocket.js](../../../../../frontend/src/hooks/useLivePreviewSocket.js)
+- [useGeneratorSessionStream.js](../../../../../frontend/src/hooks/useGeneratorSessionStream.js)
+- [TokenStream.jsx](../../../../../frontend/src/components/generator/TokenStream.jsx)
+- [generator.py](../../../../../backend/app/routers/v1/generator.py)
+- [stream.py](../../../../../backend/app/routers/v1/stream.py)
+- [events.py](../../../../../backend/app/realtime/events.py)
+- [pubsub.py](../../../../../backend/app/realtime/pubsub.py)
+- [settings.py](../../../../../backend/app/config/settings.py)
+- [002-redis-realtime-backbone.md](../../../../adr/002-redis-realtime-backbone.md)
 </cite>
 
 ## Update Summary
@@ -88,27 +88,27 @@ PubSub --> |"subscribe via"| StreamRoute
 
 **Diagram sources**
 
-- [useLivePreviewSocket.js:16-20](file://frontend/src/hooks/useLivePreviewSocket.js#L16-L20)
-- [ReconnectingWebSocket.js:5-31](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L31)
-- [useGeneratorSessionStream.js:15-18](file://frontend/src/hooks/useGeneratorSessionStream.js#L15-L18)
-- [TokenStream.jsx:175-181](file://frontend/src/components/generator/TokenStream.jsx#L175-L181)
-- [generator.py:479-527](file://backend/app/routers/v1/generator.py#L479-L527)
-- [stream.py:60-70](file://backend/app/routers/stream.py#L60-L70)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
-- [settings.py:156-162](file://backend/app/config/settings.py#L156-L162)
+- [useLivePreviewSocket.js:16-20](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L16-L20)
+- [ReconnectingWebSocket.js:5-31](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L31)
+- [useGeneratorSessionStream.js:15-18](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L15-L18)
+- [TokenStream.jsx:175-181](../../../../../frontend/src/components/generator/TokenStream.jsx#L175-L181)
+- [generator.py:479-527](../../../../../backend/app/routers/v1/generator.py#L479-L527)
+- [stream.py:60-70](../../../../../backend/app/routers/v1/stream.py#L60-L70)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [events.py:9-34](../../../../../backend/app/realtime/events.py#L9-L34)
+- [settings.py:156-162](../../../../../backend/app/config/settings.py#L156-L162)
 
 **Section sources**
 
-- [useLivePreviewSocket.js:16-20](file://frontend/src/hooks/useLivePreviewSocket.js#L16-L20)
-- [ReconnectingWebSocket.js:5-31](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L31)
-- [useGeneratorSessionStream.js:15-18](file://frontend/src/hooks/useGeneratorSessionStream.js#L15-L18)
-- [TokenStream.jsx:175-181](file://frontend/src/components/generator/TokenStream.jsx#L175-L181)
-- [generator.py:479-527](file://backend/app/routers/v1/generator.py#L479-L527)
-- [stream.py:60-70](file://backend/app/routers/stream.py#L60-L70)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
-- [settings.py:156-162](file://backend/app/config/settings.py#L156-L162)
+- [useLivePreviewSocket.js:16-20](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L16-L20)
+- [ReconnectingWebSocket.js:5-31](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L31)
+- [useGeneratorSessionStream.js:15-18](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L15-L18)
+- [TokenStream.jsx:175-181](../../../../../frontend/src/components/generator/TokenStream.jsx#L175-L181)
+- [generator.py:479-527](../../../../../backend/app/routers/v1/generator.py#L479-L527)
+- [stream.py:60-70](../../../../../backend/app/routers/v1/stream.py#L60-L70)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [events.py:9-34](../../../../../backend/app/realtime/events.py#L9-L34)
+- [settings.py:156-162](../../../../../backend/app/config/settings.py#L156-L162)
 
 ## Core Components
 
@@ -131,13 +131,13 @@ Key capabilities:
 
 **Section sources**
 
-- [ReconnectingWebSocket.js:5-31](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L31)
-- [useLivePreviewSocket.js:28-102](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L102)
-- [useGeneratorSessionStream.js:6-141](file://frontend/src/hooks/useGeneratorSessionStream.js#L6-L141)
-- [TokenStream.jsx:151-268](file://frontend/src/components/generator/TokenStream.jsx#L151-L268)
-- [generator.py:479-527](file://backend/app/routers/v1/generator.py#L479-L527)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
+- [ReconnectingWebSocket.js:5-31](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L31)
+- [useLivePreviewSocket.js:28-102](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L28-L102)
+- [useGeneratorSessionStream.js:6-141](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L6-L141)
+- [TokenStream.jsx:151-268](../../../../../frontend/src/components/generator/TokenStream.jsx#L151-L268)
+- [generator.py:479-527](../../../../../backend/app/routers/v1/generator.py#L479-L527)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [events.py:9-34](../../../../../backend/app/realtime/events.py#L9-L34)
 
 ## Architecture Overview
 
@@ -175,10 +175,10 @@ SSE->>BE2 : Reconnect after delay
 
 **Diagram sources**
 
-- [useLivePreviewSocket.js:44-102](file://frontend/src/hooks/useLivePreviewSocket.js#L44-L102)
-- [ReconnectingWebSocket.js:33-67](file://frontend/src/lib/ReconnectingWebSocket.js#L33-L67)
-- [useGeneratorSessionStream.js:29-128](file://frontend/src/hooks/useGeneratorSessionStream.js#L29-L128)
-- [generator.py:479-527](file://backend/app/routers/v1/generator.py#L479-L527)
+- [useLivePreviewSocket.js:44-102](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L44-L102)
+- [ReconnectingWebSocket.js:33-67](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L33-L67)
+- [useGeneratorSessionStream.js:29-128](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L29-L128)
+- [generator.py:479-527](../../../../../backend/app/routers/v1/generator.py#L479-L527)
 
 ## Detailed Component Analysis
 
@@ -231,19 +231,19 @@ class ReconnectingWebSocket {
 
 **Diagram sources**
 
-- [ReconnectingWebSocket.js:5-147](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L147)
+- [ReconnectingWebSocket.js:5-147](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L147)
 
 **Section sources**
 
-- [ReconnectingWebSocket.js:5-31](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L31)
-- [ReconnectingWebSocket.js:33-67](file://frontend/src/lib/ReconnectingWebSocket.js#L33-L67)
-- [ReconnectingWebSocket.js:69-79](file://frontend/src/lib/ReconnectingWebSocket.js#L69-L79)
-- [ReconnectingWebSocket.js:81-92](file://frontend/src/lib/ReconnectingWebSocket.js#L81-L92)
-- [ReconnectingWebSocket.js:94-109](file://frontend/src/lib/ReconnectingWebSocket.js#L94-L109)
-- [ReconnectingWebSocket.js:111-114](file://frontend/src/lib/ReconnectingWebSocket.js#L111-L114)
-- [ReconnectingWebSocket.js:116-122](file://frontend/src/lib/ReconnectingWebSocket.js#L116-L122)
-- [ReconnectingWebSocket.js:124-142](file://frontend/src/lib/ReconnectingWebSocket.js#L124-L142)
-- [ReconnectingWebSocket.js:144-147](file://frontend/src/lib/ReconnectingWebSocket.js#L144-L147)
+- [ReconnectingWebSocket.js:5-31](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L31)
+- [ReconnectingWebSocket.js:33-67](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L33-L67)
+- [ReconnectingWebSocket.js:69-79](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L69-L79)
+- [ReconnectingWebSocket.js:81-92](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L81-L92)
+- [ReconnectingWebSocket.js:94-109](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L94-L109)
+- [ReconnectingWebSocket.js:111-114](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L111-L114)
+- [ReconnectingWebSocket.js:116-122](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L116-L122)
+- [ReconnectingWebSocket.js:124-142](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L124-L142)
+- [ReconnectingWebSocket.js:144-147](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L144-L147)
 
 ### Frontend Hook: useLivePreviewSocket
 
@@ -266,9 +266,9 @@ Key behaviors:
 
 **Section sources**
 
-- [useLivePreviewSocket.js:16-20](file://frontend/src/hooks/useLivePreviewSocket.js#L16-L20)
-- [useLivePreviewSocket.js:44-102](file://frontend/src/hooks/useLivePreviewSocket.js#L44-L102)
-- [useLivePreviewSocket.js:106-133](file://frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
+- [useLivePreviewSocket.js:16-20](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L16-L20)
+- [useLivePreviewSocket.js:44-102](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L44-L102)
+- [useLivePreviewSocket.js:106-133](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
 
 ### Frontend Hook: useGeneratorSessionStream
 
@@ -313,11 +313,11 @@ Retry --> CreateES
 
 **Diagram sources**
 
-- [useGeneratorSessionStream.js:20-137](file://frontend/src/hooks/useGeneratorSessionStream.js#L20-L137)
+- [useGeneratorSessionStream.js:20-137](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L20-L137)
 
 **Section sources**
 
-- [useGeneratorSessionStream.js:6-141](file://frontend/src/hooks/useGeneratorSessionStream.js#L6-L141)
+- [useGeneratorSessionStream.js:6-141](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L6-L141)
 
 ### Frontend Component: TokenStream
 
@@ -342,7 +342,7 @@ Key behaviors:
 
 **Section sources**
 
-- [TokenStream.jsx:151-268](file://frontend/src/components/generator/TokenStream.jsx#L151-L268)
+- [TokenStream.jsx:151-268](../../../../../frontend/src/components/generator/TokenStream.jsx#L151-L268)
 
 ### Backend SSE Routes: Generator Sessions
 
@@ -367,7 +367,7 @@ Key behaviors:
 
 **Section sources**
 
-- [generator.py:479-527](file://backend/app/routers/v1/generator.py#L479-L527)
+- [generator.py:479-527](../../../../../backend/app/routers/v1/generator.py#L479-L527)
 
 ### Backend SSE Routes: Job Streams
 
@@ -390,7 +390,7 @@ Key behaviors:
 
 **Section sources**
 
-- [stream.py:60-70](file://backend/app/routers/stream.py#L60-L70)
+- [stream.py:60-70](../../../../../backend/app/routers/v1/stream.py#L60-L70)
 
 ### Realtime Event Model and Pub/Sub
 
@@ -420,28 +420,28 @@ RealtimeEvent <.. RedisPubSub : "used by"
 
 **Diagram sources**
 
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
+- [events.py:9-34](../../../../../backend/app/realtime/events.py#L9-L34)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
 
 **Section sources**
 
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
+- [events.py:9-34](../../../../../backend/app/realtime/events.py#L9-L34)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
 
 ## Dependency Analysis
 
 - Frontend depends on:
-    - ReconnectingWebSocket for WebSocket connections
-    - React hooks for state and lifecycle management
-    - EventSource API for SSE connections
-    - Supabase for authentication token retrieval
-    - Environment variables for API base URLs
+  - ReconnectingWebSocket for WebSocket connections
+  - React hooks for state and lifecycle management
+  - EventSource API for SSE connections
+  - Supabase for authentication token retrieval
+  - Environment variables for API base URLs
 - Backend depends on:
-    - FastAPI for route definitions
-    - RedisPubSub for pub/sub infrastructure
-    - RealtimeEvent for structured payloads
-    - Settings for Redis configuration
-    - Prometheus metrics for monitoring
+  - FastAPI for route definitions
+  - RedisPubSub for pub/sub infrastructure
+  - RealtimeEvent for structured payloads
+  - Settings for Redis configuration
+  - Prometheus metrics for monitoring
 
 ```mermaid
 graph LR
@@ -459,27 +459,27 @@ BE_Stream["stream.py"] --> BE_PS
 
 **Diagram sources**
 
-- [useLivePreviewSocket.js:1-3](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L3)
-- [useGeneratorSessionStream.js:1-5](file://frontend/src/hooks/useGeneratorSessionStream.js#L1-L5)
-- [TokenStream.jsx:1-6](file://frontend/src/components/generator/TokenStream.jsx#L1-L6)
-- [ReconnectingWebSocket.js:5-31](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L31)
-- [generator.py:479-527](file://backend/app/routers/v1/generator.py#L479-L527)
-- [stream.py:60-70](file://backend/app/routers/stream.py#L60-L70)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [events.py:21-34](file://backend/app/realtime/events.py#L21-L34)
-- [settings.py:156-162](file://backend/app/config/settings.py#L156-L162)
+- [useLivePreviewSocket.js:1-3](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L3)
+- [useGeneratorSessionStream.js:1-5](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L1-L5)
+- [TokenStream.jsx:1-6](../../../../../frontend/src/components/generator/TokenStream.jsx#L1-L6)
+- [ReconnectingWebSocket.js:5-31](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L31)
+- [generator.py:479-527](../../../../../backend/app/routers/v1/generator.py#L479-L527)
+- [stream.py:60-70](../../../../../backend/app/routers/v1/stream.py#L60-L70)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [events.py:21-34](../../../../../backend/app/realtime/events.py#L21-L34)
+- [settings.py:156-162](../../../../../backend/app/config/settings.py#L156-L162)
 
 **Section sources**
 
-- [useLivePreviewSocket.js:1-3](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L3)
-- [useGeneratorSessionStream.js:1-5](file://frontend/src/hooks/useGeneratorSessionStream.js#L1-L5)
-- [TokenStream.jsx:1-6](file://frontend/src/components/generator/TokenStream.jsx#L1-L6)
-- [ReconnectingWebSocket.js:5-31](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L31)
-- [generator.py:479-527](file://backend/app/routers/v1/generator.py#L479-L527)
-- [stream.py:60-70](file://backend/app/routers/stream.py#L60-L70)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [events.py:21-34](file://backend/app/realtime/events.py#L21-L34)
-- [settings.py:156-162](file://backend/app/config/settings.py#L156-L162)
+- [useLivePreviewSocket.js:1-3](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L3)
+- [useGeneratorSessionStream.js:1-5](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L1-L5)
+- [TokenStream.jsx:1-6](../../../../../frontend/src/components/generator/TokenStream.jsx#L1-L6)
+- [ReconnectingWebSocket.js:5-31](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L31)
+- [generator.py:479-527](../../../../../backend/app/routers/v1/generator.py#L479-L527)
+- [stream.py:60-70](../../../../../backend/app/routers/v1/stream.py#L60-L70)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [events.py:21-34](../../../../../backend/app/realtime/events.py#L21-L34)
+- [settings.py:156-162](../../../../../backend/app/config/settings.py#L156-L162)
 
 ## Performance Considerations
 
@@ -495,27 +495,27 @@ BE_Stream["stream.py"] --> BE_PS
 Common scenarios and remedies:
 
 - **WebSocket connection fails immediately**:
-    - Verify NEXT_PUBLIC_API_URL and that the backend is reachable
-    - Check that the WebSocket route path matches the constructed URL
-    - Verify SSL certificate validity for secure WebSocket connections
+  - Verify NEXT_PUBLIC_API_URL and that the backend is reachable
+  - Check that the WebSocket route path matches the constructed URL
+  - Verify SSL certificate validity for secure WebSocket connections
 - **Frequent WebSocket reconnections**:
-    - Inspect onreconnect callbacks to confirm retry attempts and delays
-    - Review shouldReconnect predicate if overridden
-    - Check network stability and firewall configurations
+  - Inspect onreconnect callbacks to confirm retry attempts and delays
+  - Review shouldReconnect predicate if overridden
+  - Check network stability and firewall configurations
 - **SSE connection drops frequently**:
-    - Verify authentication token validity and refresh mechanism
-    - Check exponential backoff configuration (1s → 2s → 4s → 8s → max 30s)
-    - Monitor server-side Redis connectivity
+  - Verify authentication token validity and refresh mechanism
+  - Check exponential backoff configuration (1s → 2s → 4s → 8s → max 30s)
+  - Monitor server-side Redis connectivity
 - **Messages not received**:
-    - Ensure the payload is valid JSON and includes required fields
-    - Confirm the session ID is valid and matches the route pattern
-    - Verify proper event type handling in event listeners
+  - Ensure the payload is valid JSON and includes required fields
+  - Confirm the session ID is valid and matches the route pattern
+  - Verify proper event type handling in event listeners
 - **Redis unavailability**:
-    - The backend falls back to in-memory queues; expect limited scalability but functional behavior
-    - Monitor logs for Redis-related warnings and fallback triggers
+  - The backend falls back to in-memory queues; expect limited scalability but functional behavior
+  - Monitor logs for Redis-related warnings and fallback triggers
 - **Memory leaks in SSE**:
-    - Ensure proper cleanup of event listeners and timers on component unmount
-    - Verify that reconnectTimeoutRef is cleared when components unmount
+  - Ensure proper cleanup of event listeners and timers on component unmount
+  - Verify that reconnectTimeoutRef is cleared when components unmount
 
 Operational tips:
 
@@ -527,12 +527,12 @@ Operational tips:
 
 **Section sources**
 
-- [ReconnectingWebSocket.js:69-79](file://frontend/src/lib/ReconnectingWebSocket.js#L69-L79)
-- [ReconnectingWebSocket.js:111-114](file://frontend/src/lib/ReconnectingWebSocket.js#L111-L114)
-- [useGeneratorSessionStream.js:120-127](file://frontend/src/hooks/useGeneratorSessionStream.js#L120-L127)
-- [TokenStream.jsx:245-253](file://frontend/src/components/generator/TokenStream.jsx#L245-L253)
-- [generator.py:479-527](file://backend/app/routers/v1/generator.py#L479-L527)
-- [pubsub.py:40-53](file://backend/app/realtime/pubsub.py#L40-L53)
+- [ReconnectingWebSocket.js:69-79](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L69-L79)
+- [ReconnectingWebSocket.js:111-114](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L111-L114)
+- [useGeneratorSessionStream.js:120-127](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L120-L127)
+- [TokenStream.jsx:245-253](../../../../../frontend/src/components/generator/TokenStream.jsx#L245-L253)
+- [generator.py:479-527](../../../../../backend/app/routers/v1/generator.py#L479-L527)
+- [pubsub.py:40-53](../../../../../backend/app/realtime/pubsub.py#L40-L53)
 
 ## Conclusion
 

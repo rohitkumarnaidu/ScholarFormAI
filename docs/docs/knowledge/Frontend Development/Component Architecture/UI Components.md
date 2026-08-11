@@ -5,11 +5,11 @@
 
 <cite>
 **Referenced Files in This Document**
-- [Button.jsx](file://frontend/src/components/ui/Button.jsx)
-- [Input.jsx](file://frontend/src/components/ui/Input.jsx)
-- [Card.jsx](file://frontend/src/components/ui/Card.jsx)
-- [Badge.jsx](file://frontend/src/components/ui/Badge.jsx)
-- [Skeleton.jsx](file://frontend/src/components/ui/Skeleton.jsx)
+- [Button.jsx](../../../../../frontend/src/components/ui/Button.jsx)
+- [Input.jsx](../../../../../frontend/src/components/ui/Input.jsx)
+- [Card.jsx](../../../../../frontend/src/components/ui/Card.jsx)
+- [Badge.jsx](../../../../../frontend/src/components/ui/Badge.jsx)
+- [Skeleton.jsx](../../../../../frontend/src/components/ui/Skeleton.jsx)
 </cite>
 
 ## Table of Contents
@@ -62,19 +62,19 @@ Tailwind --> Animations
 
 **Diagram sources**
 
-- [Button.jsx:1-58](file://frontend/src/components/ui/Button.jsx#L1-L58)
-- [Input.jsx:1-50](file://frontend/src/components/ui/Input.jsx#L1-L50)
-- [Card.jsx:1-26](file://frontend/src/components/ui/Card.jsx#L1-L26)
-- [Badge.jsx:1-33](file://frontend/src/components/ui/Badge.jsx#L1-L33)
-- [Skeleton.jsx:1-41](file://frontend/src/components/ui/Skeleton.jsx#L1-L41)
+- [Button.jsx:1-58](../../../../../frontend/src/components/ui/Button.jsx#L1-L58)
+- [Input.jsx:1-50](../../../../../frontend/src/components/ui/Input.jsx#L1-L50)
+- [Card.jsx:1-26](../../../../../frontend/src/components/ui/Card.jsx#L1-L26)
+- [Badge.jsx:1-33](../../../../../frontend/src/components/ui/Badge.jsx#L1-L33)
+- [Skeleton.jsx:1-41](../../../../../frontend/src/components/ui/Skeleton.jsx#L1-L41)
 
 **Section sources**
 
-- [Button.jsx:1-58](file://frontend/src/components/ui/Button.jsx#L1-L58)
-- [Input.jsx:1-50](file://frontend/src/components/ui/Input.jsx#L1-L50)
-- [Card.jsx:1-26](file://frontend/src/components/ui/Card.jsx#L1-L26)
-- [Badge.jsx:1-33](file://frontend/src/components/ui/Badge.jsx#L1-L33)
-- [Skeleton.jsx:1-41](file://frontend/src/components/ui/Skeleton.jsx#L1-L41)
+- [Button.jsx:1-58](../../../../../frontend/src/components/ui/Button.jsx#L1-L58)
+- [Input.jsx:1-50](../../../../../frontend/src/components/ui/Input.jsx#L1-L50)
+- [Card.jsx:1-26](../../../../../frontend/src/components/ui/Card.jsx#L1-L26)
+- [Badge.jsx:1-33](../../../../../frontend/src/components/ui/Badge.jsx#L1-L33)
+- [Skeleton.jsx:1-41](../../../../../frontend/src/components/ui/Skeleton.jsx#L1-L41)
 
 ## Core Components
 
@@ -88,11 +88,11 @@ This section introduces each component, its purpose, and key characteristics.
 
 **Section sources**
 
-- [Button.jsx:23-55](file://frontend/src/components/ui/Button.jsx#L23-L55)
-- [Input.jsx:7-47](file://frontend/src/components/ui/Input.jsx#L7-L47)
-- [Card.jsx:7-23](file://frontend/src/components/ui/Card.jsx#L7-L23)
-- [Badge.jsx:14-30](file://frontend/src/components/ui/Badge.jsx#L14-L30)
-- [Skeleton.jsx:7-38](file://frontend/src/components/ui/Skeleton.jsx#L7-L38)
+- [Button.jsx:23-55](../../../../../frontend/src/components/ui/Button.jsx#L23-L55)
+- [Input.jsx:7-47](../../../../../frontend/src/components/ui/Input.jsx#L7-L47)
+- [Card.jsx:7-23](../../../../../frontend/src/components/ui/Card.jsx#L7-L23)
+- [Badge.jsx:14-30](../../../../../frontend/src/components/ui/Badge.jsx#L14-L30)
+- [Skeleton.jsx:7-38](../../../../../frontend/src/components/ui/Skeleton.jsx#L7-L38)
 
 ## Architecture Overview
 
@@ -144,11 +144,11 @@ class Skeleton {
 
 **Diagram sources**
 
-- [Button.jsx:23-55](file://frontend/src/components/ui/Button.jsx#L23-L55)
-- [Input.jsx:7-47](file://frontend/src/components/ui/Input.jsx#L7-L47)
-- [Card.jsx:7-23](file://frontend/src/components/ui/Card.jsx#L7-L23)
-- [Badge.jsx:14-30](file://frontend/src/components/ui/Badge.jsx#L14-L30)
-- [Skeleton.jsx:7-38](file://frontend/src/components/ui/Skeleton.jsx#L7-L38)
+- [Button.jsx:23-55](../../../../../frontend/src/components/ui/Button.jsx#L23-L55)
+- [Input.jsx:7-47](../../../../../frontend/src/components/ui/Input.jsx#L7-L47)
+- [Card.jsx:7-23](../../../../../frontend/src/components/ui/Card.jsx#L7-L23)
+- [Badge.jsx:14-30](../../../../../frontend/src/components/ui/Badge.jsx#L14-L30)
+- [Skeleton.jsx:7-38](../../../../../frontend/src/components/ui/Skeleton.jsx#L7-L38)
 
 ## Detailed Component Analysis
 
@@ -207,13 +207,13 @@ Size --> End(["Final Button"])
 
 **Diagram sources**
 
-- [Button.jsx:36-54](file://frontend/src/components/ui/Button.jsx#L36-L54)
+- [Button.jsx:36-54](../../../../../frontend/src/components/ui/Button.jsx#L36-L54)
 
 **Section sources**
 
-- [Button.jsx:7-17](file://frontend/src/components/ui/Button.jsx#L7-L17)
-- [Button.jsx:19-21](file://frontend/src/components/ui/Button.jsx#L19-L21)
-- [Button.jsx:23-55](file://frontend/src/components/ui/Button.jsx#L23-L55)
+- [Button.jsx:7-17](../../../../../frontend/src/components/ui/Button.jsx#L7-L17)
+- [Button.jsx:19-21](../../../../../frontend/src/components/ui/Button.jsx#L19-L21)
+- [Button.jsx:23-55](../../../../../frontend/src/components/ui/Button.jsx#L23-L55)
 
 ### Input Component
 
@@ -259,11 +259,11 @@ HelperText --> End
 
 **Diagram sources**
 
-- [Input.jsx:20-46](file://frontend/src/components/ui/Input.jsx#L20-L46)
+- [Input.jsx:20-46](../../../../../frontend/src/components/ui/Input.jsx#L20-L46)
 
 **Section sources**
 
-- [Input.jsx:7-47](file://frontend/src/components/ui/Input.jsx#L7-L47)
+- [Input.jsx:7-47](../../../../../frontend/src/components/ui/Input.jsx#L7-L47)
 
 ### Card Component
 
@@ -287,7 +287,7 @@ Accessibility:
 
 **Section sources**
 
-- [Card.jsx:7-23](file://frontend/src/components/ui/Card.jsx#L7-L23)
+- [Card.jsx:7-23](../../../../../frontend/src/components/ui/Card.jsx#L7-L23)
 
 ### Badge Component
 
@@ -312,8 +312,8 @@ Usage Patterns:
 
 **Section sources**
 
-- [Badge.jsx:7-12](file://frontend/src/components/ui/Badge.jsx#L7-L12)
-- [Badge.jsx:14-30](file://frontend/src/components/ui/Badge.jsx#L14-L30)
+- [Badge.jsx:7-12](../../../../../frontend/src/components/ui/Badge.jsx#L7-L12)
+- [Badge.jsx:14-30](../../../../../frontend/src/components/ui/Badge.jsx#L14-L30)
 
 ### Skeleton Component
 
@@ -339,7 +339,7 @@ Accessibility:
 
 **Section sources**
 
-- [Skeleton.jsx:18-38](file://frontend/src/components/ui/Skeleton.jsx#L18-L38)
+- [Skeleton.jsx:18-38](../../../../../frontend/src/components/ui/Skeleton.jsx#L18-L38)
 
 ## Dependency Analysis
 
@@ -370,19 +370,19 @@ Tailwind --> Skeleton
 
 **Diagram sources**
 
-- [Button.jsx:3-5](file://frontend/src/components/ui/Button.jsx#L3-L5)
-- [Input.jsx:3-5](file://frontend/src/components/ui/Input.jsx#L3-L5)
-- [Card.jsx:3-5](file://frontend/src/components/ui/Card.jsx#L3-L5)
-- [Badge.jsx:3-5](file://frontend/src/components/ui/Badge.jsx#L3-L5)
-- [Skeleton.jsx:3-5](file://frontend/src/components/ui/Skeleton.jsx#L3-L5)
+- [Button.jsx:3-5](../../../../../frontend/src/components/ui/Button.jsx#L3-L5)
+- [Input.jsx:3-5](../../../../../frontend/src/components/ui/Input.jsx#L3-L5)
+- [Card.jsx:3-5](../../../../../frontend/src/components/ui/Card.jsx#L3-L5)
+- [Badge.jsx:3-5](../../../../../frontend/src/components/ui/Badge.jsx#L3-L5)
+- [Skeleton.jsx:3-5](../../../../../frontend/src/components/ui/Skeleton.jsx#L3-L5)
 
 **Section sources**
 
-- [Button.jsx:3-5](file://frontend/src/components/ui/Button.jsx#L3-L5)
-- [Input.jsx:3-5](file://frontend/src/components/ui/Input.jsx#L3-L5)
-- [Card.jsx:3-5](file://frontend/src/components/ui/Card.jsx#L3-L5)
-- [Badge.jsx:3-5](file://frontend/src/components/ui/Badge.jsx#L3-L5)
-- [Skeleton.jsx:3-5](file://frontend/src/components/ui/Skeleton.jsx#L3-L5)
+- [Button.jsx:3-5](../../../../../frontend/src/components/ui/Button.jsx#L3-L5)
+- [Input.jsx:3-5](../../../../../frontend/src/components/ui/Input.jsx#L3-L5)
+- [Card.jsx:3-5](../../../../../frontend/src/components/ui/Card.jsx#L3-L5)
+- [Badge.jsx:3-5](../../../../../frontend/src/components/ui/Badge.jsx#L3-L5)
+- [Skeleton.jsx:3-5](../../../../../frontend/src/components/ui/Skeleton.jsx#L3-L5)
 
 ## Performance Considerations
 

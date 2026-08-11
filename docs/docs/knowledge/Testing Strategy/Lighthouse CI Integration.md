@@ -5,13 +5,13 @@
 
 <cite>
 **Referenced Files in This Document**
-- [frontend-ci.yml](file://.github/workflows/frontend-ci.yml)
-- [lighthouserc.js](file://frontend/lighthouserc.js)
-- [package.json](file://frontend/package.json)
-- [playwright.config.js](file://frontend/playwright.config.js)
-- [vitest.config.js](file://frontend/vitest.config.js)
-- [next.config.mjs](file://frontend/next.config.mjs)
-- [tailwind.config.js](file://frontend/tailwind.config.js)
+- [frontend-ci.yml](../../../../.github/workflows/frontend-ci.yml)
+- [lighthouserc.js](../../../../frontend/lighthouserc.js)
+- [package.json](../../../../frontend/package.json)
+- [playwright.config.js](../../../../frontend/playwright.config.js)
+- [vitest.config.js](../../../../frontend/vitest.config.js)
+- [next.config.mjs](../../../../frontend/next.config.mjs)
+- [tailwind.config.js](../../../../frontend/tailwind.config.js)
 </cite>
 
 ## Table of Contents
@@ -61,19 +61,19 @@ C --> G
 
 **Diagram sources**
 
-- [frontend-ci.yml:1-89](file://.github/workflows/frontend-ci.yml#L1-L89)
-- [lighthouserc.js:1-29](file://frontend/lighthouserc.js#L1-L29)
-- [package.json:1-69](file://frontend/package.json#L1-L69)
-- [playwright.config.js:1-50](file://frontend/playwright.config.js#L1-L50)
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [next.config.mjs:1-43](file://frontend/next.config.mjs#L1-L43)
-- [tailwind.config.js:1-55](file://frontend/tailwind.config.js#L1-L55)
+- [frontend-ci.yml:1-89](../../../../.github/workflows/frontend-ci.yml#L1-L89)
+- [lighthouserc.js:1-29](../../../../frontend/lighthouserc.js#L1-L29)
+- [package.json:1-69](../../../../frontend/package.json#L1-L69)
+- [playwright.config.js:1-50](../../../../frontend/playwright.config.js#L1-L50)
+- [vitest.config.js:1-34](../../../../frontend/vitest.config.js#L1-L34)
+- [next.config.mjs:1-43](../../../../frontend/next.config.mjs#L1-L43)
+- [tailwind.config.js:1-55](../../../../frontend/tailwind.config.js#L1-L55)
 
 **Section sources**
 
-- [frontend-ci.yml:1-89](file://.github/workflows/frontend-ci.yml#L1-L89)
-- [lighthouserc.js:1-29](file://frontend/lighthouserc.js#L1-L29)
-- [package.json:1-69](file://frontend/package.json#L1-L69)
+- [frontend-ci.yml:1-89](../../../../.github/workflows/frontend-ci.yml#L1-L89)
+- [lighthouserc.js:1-29](../../../../frontend/lighthouserc.js#L1-L29)
+- [package.json:1-69](../../../../frontend/package.json#L1-L69)
 
 ## Core Components
 
@@ -102,10 +102,10 @@ The lighthouserc.js file defines:
 - Server startup: Uses Next.js start command to serve the built application
 - Upload target: Temporary public storage for sharing reports
 - Assertions: Enforces minimum scores across four categories:
-    - Performance: 0.8 minimum
-    - Accessibility: 0.9 minimum
-    - Best Practices: 0.9 minimum
-    - SEO: 0.9 minimum
+  - Performance: 0.8 minimum
+  - Accessibility: 0.9 minimum
+  - Best Practices: 0.9 minimum
+  - SEO: 0.9 minimum
 - Preset: Uses lighthouse:no-pwa to focus on web app quality rather than Progressive Web App features
 
 ### Frontend Build Pipeline
@@ -119,9 +119,9 @@ The integration relies on:
 
 **Section sources**
 
-- [frontend-ci.yml:13-64](file://.github/workflows/frontend-ci.yml#L13-L64)
-- [lighthouserc.js:3-28](file://frontend/lighthouserc.js#L3-L28)
-- [package.json:6-16](file://frontend/package.json#L6-L16)
+- [frontend-ci.yml:13-64](../../../../.github/workflows/frontend-ci.yml#L13-L64)
+- [lighthouserc.js:3-28](../../../../frontend/lighthouserc.js#L3-L28)
+- [package.json:6-16](../../../../frontend/package.json#L6-L16)
 
 ## Architecture Overview
 
@@ -136,11 +136,11 @@ participant NX as "Next.js Build"
 participant LH as "LHCI Autorun"
 participant LS as "Temporary Storage"
 GH->>WA : Trigger frontend-ci workflow
-WA->>NP : Install dependencies (npm ci)
-WA->>NX : Build application (npm run build)
+WA->>NP : Install dependencies ("npm ci")
+WA->>NX : Build application ("npm run build")
 WA->>LH : Execute Lighthouse CI autorun
 LH->>LH : Collect scores for 6 URLs
-LH->>LH : Apply assertions (min scores per category)
+LH->>LH : Apply assertions ("min scores per category")
 LH->>LS : Upload report to temporary storage
 LS-->>LH : Confirmation
 LH-->>WA : Results with pass/fail status
@@ -149,8 +149,8 @@ WA-->>GH : Job completion status
 
 **Diagram sources**
 
-- [frontend-ci.yml:38-64](file://.github/workflows/frontend-ci.yml#L38-L64)
-- [lighthouserc.js:4-26](file://frontend/lighthouserc.js#L4-L26)
+- [frontend-ci.yml:38-64](../../../../.github/workflows/frontend-ci.yml#L38-L64)
+- [lighthouserc.js:4-26](../../../../frontend/lighthouserc.js#L4-L26)
 
 ## Detailed Component Analysis
 
@@ -181,25 +181,25 @@ The frontend CI workflow demonstrates robust CI/CD practices:
 
 ```mermaid
 flowchart TD
-Start([Workflow Trigger]) --> Checkout["Checkout Repository"]
+Start(["Workflow Trigger"]) --> Checkout["Checkout Repository"]
 Checkout --> SetupNode["Setup Node.js 20<br/>Enable npm caching"]
-SetupNode --> InstallDeps["Install Dependencies<br/>(npm ci)"]
+SetupNode --> InstallDeps["Install Dependencies<br/>("npm ci")"]
 InstallDeps --> TestLint["Run Linter & Unit Tests"]
-TestLint --> BuildApp["Build Application<br/>(npm run build)"]
-BuildApp --> RunLH["Execute Lighthouse CI<br/>(npx lhci autorun)"]
+TestLint --> BuildApp["Build Application<br/>("npm run build")"]
+BuildApp --> RunLH["Execute Lighthouse CI<br/>("npx lhci autorun")"]
 RunLH --> UploadResults["Upload to Temporary Storage"]
-UploadResults --> End([Job Complete])
+UploadResults --> End(["Job Complete"])
 TestLint -.->|Fail| FailFast["Fail Fast<br/>Skip Lighthouse"]
 FailFast --> End
 ```
 
 **Diagram sources**
 
-- [frontend-ci.yml:14-64](file://.github/workflows/frontend-ci.yml#L14-L64)
+- [frontend-ci.yml:14-64](../../../../.github/workflows/frontend-ci.yml#L14-L64)
 
 **Section sources**
 
-- [frontend-ci.yml:1-89](file://.github/workflows/frontend-ci.yml#L1-L89)
+- [frontend-ci.yml:1-89](../../../../.github/workflows/frontend-ci.yml#L1-L89)
 
 ### Lighthouse Configuration Analysis
 
@@ -233,7 +233,7 @@ Uses lighthouse:no-pwa preset to emphasize web application quality over PWA-spec
 
 **Section sources**
 
-- [lighthouserc.js:4-26](file://frontend/lighthouserc.js#L4-L26)
+- [lighthouserc.js:4-26](../../../../frontend/lighthouserc.js#L4-L26)
 
 ### Frontend Build and Test Configuration
 
@@ -255,9 +255,9 @@ The frontend configuration supports both development and CI environments:
 
 **Section sources**
 
-- [next.config.mjs:12-27](file://frontend/next.config.mjs#L12-L27)
-- [vitest.config.js:16-26](file://frontend/vitest.config.js#L16-L26)
-- [playwright.config.js:9-49](file://frontend/playwright.config.js#L9-L49)
+- [next.config.mjs:12-27](../../../../frontend/next.config.mjs#L12-L27)
+- [vitest.config.js:16-26](../../../../frontend/vitest.config.js#L16-L26)
+- [playwright.config.js:9-49](../../../../frontend/playwright.config.js#L9-L49)
 
 ## Dependency Analysis
 
@@ -266,15 +266,15 @@ The Lighthouse CI integration has minimal external dependencies but relies on se
 ```mermaid
 graph LR
 subgraph "External Dependencies"
-A[LHCI CLI]
+A["LHCI CLI"]
 B["Chrome/Chromium"]
-C[GitHub Actions Runner]
+C["GitHub Actions Runner"]
 end
 subgraph "Internal Dependencies"
-D[Next.js Build System]
-E[Node Package Manager]
-F[Application Routes]
-G[Environment Configuration]
+D["Next.js Build System"]
+E["Node Package Manager"]
+F["Application Routes"]
+G["Environment Configuration"]
 end
 A --> B
 C --> A
@@ -287,8 +287,8 @@ A --> E
 
 **Diagram sources**
 
-- [frontend-ci.yml:59-63](file://.github/workflows/frontend-ci.yml#L59-L63)
-- [lighthouserc.js:13-13](file://frontend/lighthouserc.js#L13-L13)
+- [frontend-ci.yml:59-63](../../../../.github/workflows/frontend-ci.yml#L59-L63)
+- [lighthouserc.js:13-13](../../../../frontend/lighthouserc.js#L13-L13)
 
 ### Integration Points
 
@@ -307,7 +307,7 @@ The integration creates a multi-layered quality assurance pipeline:
 
 **Section sources**
 
-- [frontend-ci.yml:38-89](file://.github/workflows/frontend-ci.yml#L38-L89)
+- [frontend-ci.yml:38-89](../../../../.github/workflows/frontend-ci.yml#L38-L89)
 
 ## Performance Considerations
 
@@ -396,8 +396,8 @@ The Lighthouse CI integration incorporates several performance optimization stra
 
 **Section sources**
 
-- [lighthouserc.js:5-12](file://frontend/lighthouserc.js#L5-L12)
-- [frontend-ci.yml:59-63](file://.github/workflows/frontend-ci.yml#L59-L63)
+- [lighthouserc.js:5-12](../../../../frontend/lighthouserc.js#L5-L12)
+- [frontend-ci.yml:59-63](../../../../.github/workflows/frontend-ci.yml#L59-L63)
 
 ## Conclusion
 

@@ -41,7 +41,7 @@ ScholarForm AI follows [Semantic Versioning 2.0.0](https://semver.org/):
 - **MINOR** (1.X.0) — New features, non-breaking improvements
 - **PATCH** (1.0.X) — Bug fixes, security patches, performance improvements
 
-See [VERSIONING.md](../VERSIONING.md) for the complete versioning policy.
+See [VERSIONING.md](community/VERSIONING.md) for the complete versioning policy.
 
 ## LTS Commitment
 
@@ -81,7 +81,7 @@ This policy is reviewed quarterly. Changes are documented in the [CHANGELOG](../
 | Document | Description |
 | ---------- | ------------- |
 | [SECURITY.md](../SECURITY.md) | Vulnerability disclosure, supported versions, security practices |
-| [VERSIONING.md](../VERSIONING.md) | Semantic versioning policy and release numbering |
-| [RELEASE_PROCESS.md](../RELEASE_PROCESS.md) | Step-by-step release workflow |
+| [VERSIONING.md](community/VERSIONING.md) | Semantic versioning policy and release numbering |
+| [RELEASE_PROCESS.md](deployment/RELEASE_PROCESS.md) | Step-by-step release workflow |
 | [CHANGELOG.md](../CHANGELOG.md) | Release history and change log |
-| [ROADMAP.md](../ROADMAP.md) | Upcoming features and release timeline |
+| [ROADMAP.md](reports/ROADMAP.md) | Upcoming features and release timeline |

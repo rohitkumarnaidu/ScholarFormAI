@@ -52,7 +52,7 @@ This decision has been implemented and is verified by:
 
 **See also:**
 
-- [NumberingEngine](backend/app/pipeline/formatting/numbering.py) — source implementation
+- [NumberingEngine](../../backend/app/pipeline/formatting/numbering.py) — source implementation
 - [CrossReferenceEngine](backend/app/pipeline/formatting/cross_reference.py) — dotted identifier support
 - [ADR 009: Template Contract System](009-template-contract-system.md) — `equations.scope` contract key
 - [IEEE Template Contract](../../backend/app/templates/ieee/contract.yaml) — per-section enabled template

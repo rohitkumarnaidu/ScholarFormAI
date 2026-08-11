@@ -5,20 +5,20 @@
 
 <cite>
 **Referenced Files in This Document**
-- [model_store.py](file://backend/app/services/model_store.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
-- [nvidia_client.py](file://backend/app/services/nvidia_client.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [redis_cache.py](file://backend/app/cache/redis_cache.py)
-- [health_checks.py](file://backend/app/services/health_checks.py)
-- [model_metrics.py](file://backend/app/services/model_metrics.py)
-- [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
-- [llm_validator.py](file://backend/app/pipeline/safety/llm_validator.py)
-- [validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
-- [review_manager.py](file://backend/app/pipeline/validation/review_manager.py)
-- [federated_learning.py](file://backend/app/pipeline/agents/federated_learning.py)
-- [deploy-production.yml](file://.github/workflows/deploy-production.yml)
-- [rollback.md](file://docs/runbooks/rollback.md)
+- [model_store.py](../../../../backend/app/services/model_store.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
+- [nvidia_client.py](../../../../backend/app/services/nvidia_client.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [redis_cache.py](../../../../backend/app/cache/redis_cache.py)
+- [health_checks.py](../../../../backend/app/services/health_checks.py)
+- [model_metrics.py](../../../../backend/app/services/model_metrics.py)
+- [prometheus_metrics.py](../../../../backend/app/middleware/prometheus_metrics.py)
+- [llm_validator.py](../../../../backend/app/pipeline/safety/llm_validator.py)
+- [validator_v3.py](../../../../backend/app/pipeline/validation/validator_v3.py)
+- [review_manager.py](../../../../backend/app/pipeline/validation/review_manager.py)
+- [federated_learning.py](../../../../backend/app/pipeline/agents/federated_learning.py)
+- [deploy-production.yml](../../../../.github/workflows/deploy-production.yml)
+- [rollback.md](../../../runbooks/rollback.md)
 </cite>
 
 ## Table of Contents
@@ -92,35 +92,35 @@ DP --> RB
 
 **Diagram sources**
 
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [nvidia_client.py:33-259](file://backend/app/services/nvidia_client.py#L33-L259)
-- [model_store.py:1-33](file://backend/app/services/model_store.py#L1-L33)
-- [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
-- [model_metrics.py:1-209](file://backend/app/services/model_metrics.py#L1-L209)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
-- [validator_v3.py:1-277](file://backend/app/pipeline/validation/validator_v3.py#L1-L277)
-- [review_manager.py:1-117](file://backend/app/pipeline/validation/review_manager.py#L1-L117)
-- [federated_learning.py:213-314](file://backend/app/pipeline/agents/federated_learning.py#L213-L314)
-- [deploy-production.yml:1-63](file://.github/workflows/deploy-production.yml#L1-L63)
-- [rollback.md:1-24](file://docs/runbooks/rollback.md#L1-L24)
+- [settings.py:1-422](../../../../backend/app/config/settings.py#L1-L422)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [nvidia_client.py:33-259](../../../../backend/app/services/nvidia_client.py#L33-L259)
+- [model_store.py:1-33](../../../../backend/app/services/model_store.py#L1-L33)
+- [redis_cache.py:1-102](../../../../backend/app/cache/redis_cache.py#L1-L102)
+- [model_metrics.py:1-209](../../../../backend/app/services/model_metrics.py#L1-L209)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [llm_validator.py:1-122](../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [validator_v3.py:1-277](../../../../backend/app/pipeline/validation/validator_v3.py#L1-L277)
+- [review_manager.py:1-117](../../../../backend/app/pipeline/validation/review_manager.py#L1-L117)
+- [federated_learning.py:213-314](../../../../backend/app/pipeline/agents/federated_learning.py#L213-L314)
+- [deploy-production.yml:1-63](../../../../.github/workflows/deploy-production.yml#L1-L63)
+- [rollback.md:1-24](../../../runbooks/rollback.md#L1-L24)
 
 **Section sources**
 
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [nvidia_client.py:33-259](file://backend/app/services/nvidia_client.py#L33-L259)
-- [model_store.py:1-33](file://backend/app/services/model_store.py#L1-L33)
-- [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
-- [model_metrics.py:1-209](file://backend/app/services/model_metrics.py#L1-L209)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
-- [validator_v3.py:1-277](file://backend/app/pipeline/validation/validator_v3.py#L1-L277)
-- [review_manager.py:1-117](file://backend/app/pipeline/validation/review_manager.py#L1-L117)
-- [federated_learning.py:213-314](file://backend/app/pipeline/agents/federated_learning.py#L213-L314)
-- [deploy-production.yml:1-63](file://.github/workflows/deploy-production.yml#L1-L63)
-- [rollback.md:1-24](file://docs/runbooks/rollback.md#L1-L24)
+- [settings.py:1-422](../../../../backend/app/config/settings.py#L1-L422)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [nvidia_client.py:33-259](../../../../backend/app/services/nvidia_client.py#L33-L259)
+- [model_store.py:1-33](../../../../backend/app/services/model_store.py#L1-L33)
+- [redis_cache.py:1-102](../../../../backend/app/cache/redis_cache.py#L1-L102)
+- [model_metrics.py:1-209](../../../../backend/app/services/model_metrics.py#L1-L209)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [llm_validator.py:1-122](../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [validator_v3.py:1-277](../../../../backend/app/pipeline/validation/validator_v3.py#L1-L277)
+- [review_manager.py:1-117](../../../../backend/app/pipeline/validation/review_manager.py#L1-L117)
+- [federated_learning.py:213-314](../../../../backend/app/pipeline/agents/federated_learning.py#L213-L314)
+- [deploy-production.yml:1-63](../../../../.github/workflows/deploy-production.yml#L1-L63)
+- [rollback.md:1-24](../../../runbooks/rollback.md#L1-L24)
 
 ## Core Components
 
@@ -134,17 +134,17 @@ DP --> RB
 
 **Section sources**
 
-- [model_store.py:1-33](file://backend/app/services/model_store.py#L1-L33)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
-- [model_metrics.py:1-209](file://backend/app/services/model_metrics.py#L1-L209)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
-- [validator_v3.py:1-277](file://backend/app/pipeline/validation/validator_v3.py#L1-L277)
-- [review_manager.py:1-117](file://backend/app/pipeline/validation/review_manager.py#L1-L117)
-- [federated_learning.py:213-314](file://backend/app/pipeline/agents/federated_learning.py#L213-L314)
-- [deploy-production.yml:1-63](file://.github/workflows/deploy-production.yml#L1-L63)
-- [rollback.md:1-24](file://docs/runbooks/rollback.md#L1-L24)
+- [model_store.py:1-33](../../../../backend/app/services/model_store.py#L1-L33)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [redis_cache.py:1-102](../../../../backend/app/cache/redis_cache.py#L1-L102)
+- [model_metrics.py:1-209](../../../../backend/app/services/model_metrics.py#L1-L209)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [llm_validator.py:1-122](../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [validator_v3.py:1-277](../../../../backend/app/pipeline/validation/validator_v3.py#L1-L277)
+- [review_manager.py:1-117](../../../../backend/app/pipeline/validation/review_manager.py#L1-L117)
+- [federated_learning.py:213-314](../../../../backend/app/pipeline/agents/federated_learning.py#L213-L314)
+- [deploy-production.yml:1-63](../../../../.github/workflows/deploy-production.yml#L1-L63)
+- [rollback.md:1-24](../../../runbooks/rollback.md#L1-L24)
 
 ## Architecture Overview
 
@@ -174,16 +174,16 @@ FED --> REG
 
 **Diagram sources**
 
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
-- [model_store.py:1-33](file://backend/app/services/model_store.py#L1-L33)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [nvidia_client.py:33-259](file://backend/app/services/nvidia_client.py#L33-L259)
-- [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
-- [model_metrics.py:1-209](file://backend/app/services/model_metrics.py#L1-L209)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [validator_v3.py:1-277](file://backend/app/pipeline/validation/validator_v3.py#L1-L277)
-- [review_manager.py:1-117](file://backend/app/pipeline/validation/review_manager.py#L1-L117)
-- [federated_learning.py:213-314](file://backend/app/pipeline/agents/federated_learning.py#L213-L314)
+- [settings.py:1-422](../../../../backend/app/config/settings.py#L1-L422)
+- [model_store.py:1-33](../../../../backend/app/services/model_store.py#L1-L33)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [nvidia_client.py:33-259](../../../../backend/app/services/nvidia_client.py#L33-L259)
+- [redis_cache.py:1-102](../../../../backend/app/cache/redis_cache.py#L1-L102)
+- [model_metrics.py:1-209](../../../../backend/app/services/model_metrics.py#L1-L209)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [validator_v3.py:1-277](../../../../backend/app/pipeline/validation/validator_v3.py#L1-L277)
+- [review_manager.py:1-117](../../../../backend/app/pipeline/validation/review_manager.py#L1-L117)
+- [federated_learning.py:213-314](../../../../backend/app/pipeline/agents/federated_learning.py#L213-L314)
 
 ## Detailed Component Analysis
 
@@ -214,13 +214,13 @@ ModelStore <.. OCREngine : "uses"
 
 **Diagram sources**
 
-- [model_store.py:1-33](file://backend/app/services/model_store.py#L1-L33)
-- [ocr_engine.py:83-113](file://backend/app/pipeline/parsing/ocr_engine.py#L83-L113)
+- [model_store.py:1-33](../../../../backend/app/services/model_store.py#L1-L33)
+- [ocr_engine.py:83-113](../../../../backend/app/pipeline/parsing/ocr_engine.py#L83-L113)
 
 **Section sources**
 
-- [model_store.py:1-33](file://backend/app/services/model_store.py#L1-L33)
-- [ocr_engine.py:83-113](file://backend/app/pipeline/parsing/ocr_engine.py#L83-L113)
+- [model_store.py:1-33](../../../../backend/app/services/model_store.py#L1-L33)
+- [ocr_engine.py:83-113](../../../../backend/app/pipeline/parsing/ocr_engine.py#L83-L113)
 
 ### Versioning Strategies and Model Registry
 
@@ -243,13 +243,13 @@ FL-->>FL : "update local version"
 
 **Diagram sources**
 
-- [federated_learning.py:297-314](file://backend/app/pipeline/agents/federated_learning.py#L297-L314)
-- [model_store.py:19-30](file://backend/app/services/model_store.py#L19-L30)
+- [federated_learning.py:297-314](../../../../backend/app/pipeline/agents/federated_learning.py#L297-L314)
+- [model_store.py:19-30](../../../../backend/app/services/model_store.py#L19-L30)
 
 **Section sources**
 
-- [federated_learning.py:213-314](file://backend/app/pipeline/agents/federated_learning.py#L213-L314)
-- [model_store.py:1-33](file://backend/app/services/model_store.py#L1-L33)
+- [federated_learning.py:213-314](../../../../backend/app/pipeline/agents/federated_learning.py#L213-L314)
+- [model_store.py:1-33](../../../../backend/app/services/model_store.py#L1-L33)
 
 ### Deployment Automation
 
@@ -274,12 +274,12 @@ GH->>Vercel : "Deploy frontend"
 
 **Diagram sources**
 
-- [deploy-production.yml:1-63](file://.github/workflows/deploy-production.yml#L1-L63)
+- [deploy-production.yml:1-63](../../../../.github/workflows/deploy-production.yml#L1-L63)
 
 **Section sources**
 
-- [deploy-production.yml:1-63](file://.github/workflows/deploy-production.yml#L1-L63)
-- [rollback.md:1-24](file://docs/runbooks/rollback.md#L1-L24)
+- [deploy-production.yml:1-63](../../../../.github/workflows/deploy-production.yml#L1-L63)
+- [rollback.md:1-24](../../../runbooks/rollback.md#L1-L24)
 
 ### Provider Integrations and Fallback Orchestration
 
@@ -290,11 +290,11 @@ GH->>Vercel : "Deploy frontend"
 ```mermaid
 flowchart TD
 Start(["Call generate()"]) --> Infer["Infer provider from model"]
-Infer --> CacheLookup["Lookup LLM cache (if enabled)"]
+Infer --> CacheLookup["Lookup LLM cache ("if enabled")"]
 CacheLookup --> CacheHit{"Cache hit?"}
 CacheHit --> |Yes| ReturnCache["Return cached text"]
 CacheHit --> |No| ChooseKey["Select API key and base URL"]
-ChooseKey --> CallProvider["Call provider (LiteLLM or direct)"]
+ChooseKey --> CallProvider["Call provider ("LiteLLM or direct")"]
 CallProvider --> Success{"Success?"}
 Success --> |Yes| StoreCache["Store in cache"]
 StoreCache --> RecordMetrics["Record latency & TTFT"]
@@ -307,12 +307,12 @@ ReturnText --> Done
 
 **Diagram sources**
 
-- [llm_service.py:91-203](file://backend/app/services/llm_service.py#L91-L203)
-- [llm_service.py:205-269](file://backend/app/services/llm_service.py#L205-L269)
+- [llm_service.py:91-203](../../../../backend/app/services/llm_service.py#L91-L203)
+- [llm_service.py:205-269](../../../../backend/app/services/llm_service.py#L205-L269)
 
 **Section sources**
 
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
 
 ### Model Validation Procedures
 
@@ -333,13 +333,13 @@ E --> |No| G["Return error_return_value or {}"]
 
 **Diagram sources**
 
-- [llm_validator.py:46-122](file://backend/app/pipeline/safety/llm_validator.py#L46-L122)
+- [llm_validator.py:46-122](../../../../backend/app/pipeline/safety/llm_validator.py#L46-L122)
 
 **Section sources**
 
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
-- [validator_v3.py:68-146](file://backend/app/pipeline/validation/validator_v3.py#L68-L146)
-- [review_manager.py:29-117](file://backend/app/pipeline/validation/review_manager.py#L29-L117)
+- [llm_validator.py:1-122](../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [validator_v3.py:68-146](../../../../backend/app/pipeline/validation/validator_v3.py#L68-L146)
+- [review_manager.py:29-117](../../../../backend/app/pipeline/validation/review_manager.py#L29-L117)
 
 ### Performance Monitoring and Metrics
 
@@ -357,15 +357,15 @@ HC["health_checks.py"] --> PM
 
 **Diagram sources**
 
-- [model_metrics.py:60-138](file://backend/app/services/model_metrics.py#L60-L138)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
-- [health_checks.py:85-95](file://backend/app/services/health_checks.py#L85-L95)
+- [model_metrics.py:60-138](../../../../backend/app/services/model_metrics.py#L60-L138)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [health_checks.py:85-95](../../../../backend/app/services/health_checks.py#L85-L95)
 
 **Section sources**
 
-- [model_metrics.py:1-209](file://backend/app/services/model_metrics.py#L1-L209)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [health_checks.py:1-95](file://backend/app/services/health_checks.py#L1-L95)
+- [model_metrics.py:1-209](../../../../backend/app/services/model_metrics.py#L1-L209)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [health_checks.py:1-95](../../../../backend/app/services/health_checks.py#L1-L95)
 
 ### Configuration Management Across Environments
 
@@ -375,7 +375,7 @@ HC["health_checks.py"] --> PM
 
 **Section sources**
 
-- [settings.py:72-422](file://backend/app/config/settings.py#L72-L422)
+- [settings.py:72-422](../../../../backend/app/config/settings.py#L72-L422)
 
 ### Model Caching Strategies
 
@@ -385,9 +385,9 @@ HC["health_checks.py"] --> PM
 
 **Section sources**
 
-- [llm_service.py:86-121](file://backend/app/services/llm_service.py#L86-L121)
-- [redis_cache.py:77-98](file://backend/app/cache/redis_cache.py#L77-L98)
-- [health_checks.py:36-51](file://backend/app/services/health_checks.py#L36-L51)
+- [llm_service.py:86-121](../../../../backend/app/services/llm_service.py#L86-L121)
+- [redis_cache.py:77-98](../../../../backend/app/cache/redis_cache.py#L77-L98)
+- [health_checks.py:36-51](../../../../backend/app/services/health_checks.py#L36-L51)
 
 ### Resource Optimization
 
@@ -397,9 +397,9 @@ HC["health_checks.py"] --> PM
 
 **Section sources**
 
-- [settings.py:185-188](file://backend/app/config/settings.py#L185-L188)
-- [settings.py:401-403](file://backend/app/config/settings.py#L401-L403)
-- [redis_cache.py:15-39](file://backend/app/cache/redis_cache.py#L15-L39)
+- [settings.py:185-188](../../../../backend/app/config/settings.py#L185-L188)
+- [settings.py:401-403](../../../../backend/app/config/settings.py#L401-L403)
+- [redis_cache.py:15-39](../../../../backend/app/cache/redis_cache.py#L15-L39)
 
 ### Model Update Procedures and Rollback Mechanisms
 
@@ -408,9 +408,9 @@ HC["health_checks.py"] --> PM
 
 **Section sources**
 
-- [federated_learning.py:297-314](file://backend/app/pipeline/agents/federated_learning.py#L297-L314)
-- [deploy-production.yml:1-63](file://.github/workflows/deploy-production.yml#L1-L63)
-- [rollback.md:1-24](file://docs/runbooks/rollback.md#L1-L24)
+- [federated_learning.py:297-314](../../../../backend/app/pipeline/agents/federated_learning.py#L297-L314)
+- [deploy-production.yml:1-63](../../../../.github/workflows/deploy-production.yml#L1-L63)
+- [rollback.md:1-24](../../../runbooks/rollback.md#L1-L24)
 
 ## Dependency Analysis
 
@@ -436,29 +436,29 @@ Fed["federated_learning.py"] --> Registry
 
 **Diagram sources**
 
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [nvidia_client.py:33-259](file://backend/app/services/nvidia_client.py#L33-L259)
-- [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
-- [model_store.py:1-33](file://backend/app/services/model_store.py#L1-L33)
-- [model_metrics.py:1-209](file://backend/app/services/model_metrics.py#L1-L209)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [validator_v3.py:1-277](file://backend/app/pipeline/validation/validator_v3.py#L1-L277)
-- [review_manager.py:1-117](file://backend/app/pipeline/validation/review_manager.py#L1-L117)
-- [federated_learning.py:213-314](file://backend/app/pipeline/agents/federated_learning.py#L213-L314)
+- [settings.py:1-422](../../../../backend/app/config/settings.py#L1-L422)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [nvidia_client.py:33-259](../../../../backend/app/services/nvidia_client.py#L33-L259)
+- [redis_cache.py:1-102](../../../../backend/app/cache/redis_cache.py#L1-L102)
+- [model_store.py:1-33](../../../../backend/app/services/model_store.py#L1-L33)
+- [model_metrics.py:1-209](../../../../backend/app/services/model_metrics.py#L1-L209)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [validator_v3.py:1-277](../../../../backend/app/pipeline/validation/validator_v3.py#L1-L277)
+- [review_manager.py:1-117](../../../../backend/app/pipeline/validation/review_manager.py#L1-L117)
+- [federated_learning.py:213-314](../../../../backend/app/pipeline/agents/federated_learning.py#L213-L314)
 
 **Section sources**
 
-- [settings.py:1-422](file://backend/app/config/settings.py#L1-L422)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [nvidia_client.py:33-259](file://backend/app/services/nvidia_client.py#L33-L259)
-- [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
-- [model_store.py:1-33](file://backend/app/services/model_store.py#L1-L33)
-- [model_metrics.py:1-209](file://backend/app/services/model_metrics.py#L1-L209)
-- [prometheus_metrics.py:1-235](file://backend/app/middleware/prometheus_metrics.py#L1-L235)
-- [validator_v3.py:1-277](file://backend/app/pipeline/validation/validator_v3.py#L1-L277)
-- [review_manager.py:1-117](file://backend/app/pipeline/validation/review_manager.py#L1-L117)
-- [federated_learning.py:213-314](file://backend/app/pipeline/agents/federated_learning.py#L213-L314)
+- [settings.py:1-422](../../../../backend/app/config/settings.py#L1-L422)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [nvidia_client.py:33-259](../../../../backend/app/services/nvidia_client.py#L33-L259)
+- [redis_cache.py:1-102](../../../../backend/app/cache/redis_cache.py#L1-L102)
+- [model_store.py:1-33](../../../../backend/app/services/model_store.py#L1-L33)
+- [model_metrics.py:1-209](../../../../backend/app/services/model_metrics.py#L1-L209)
+- [prometheus_metrics.py:1-235](../../../../backend/app/middleware/prometheus_metrics.py#L1-L235)
+- [validator_v3.py:1-277](../../../../backend/app/pipeline/validation/validator_v3.py#L1-L277)
+- [review_manager.py:1-117](../../../../backend/app/pipeline/validation/review_manager.py#L1-L117)
+- [federated_learning.py:213-314](../../../../backend/app/pipeline/agents/federated_learning.py#L213-L314)
 
 ## Performance Considerations
 
@@ -480,13 +480,13 @@ Fed["federated_learning.py"] --> Registry
 
 **Section sources**
 
-- [llm_service.py:359-392](file://backend/app/services/llm_service.py#L359-L392)
-- [redis_cache.py:22-39](file://backend/app/cache/redis_cache.py#L22-L39)
-- [model_store.py:19-30](file://backend/app/services/model_store.py#L19-L30)
-- [model_metrics.py:101-137](file://backend/app/services/model_metrics.py#L101-L137)
-- [health_checks.py:85-95](file://backend/app/services/health_checks.py#L85-L95)
-- [deploy-production.yml:36-52](file://.github/workflows/deploy-production.yml#L36-L52)
-- [rollback.md:1-24](file://docs/runbooks/rollback.md#L1-L24)
+- [llm_service.py:359-392](../../../../backend/app/services/llm_service.py#L359-L392)
+- [redis_cache.py:22-39](../../../../backend/app/cache/redis_cache.py#L22-L39)
+- [model_store.py:19-30](../../../../backend/app/services/model_store.py#L19-L30)
+- [model_metrics.py:101-137](../../../../backend/app/services/model_metrics.py#L101-L137)
+- [health_checks.py:85-95](../../../../backend/app/services/health_checks.py#L85-L95)
+- [deploy-production.yml:36-52](../../../../.github/workflows/deploy-production.yml#L36-L52)
+- [rollback.md:1-24](../../../runbooks/rollback.md#L1-L24)
 
 ## Conclusion
 
@@ -501,6 +501,6 @@ The model management system integrates configuration-driven provider orchestrati
 
 **Section sources**
 
-- [llm_service.py:359-392](file://backend/app/services/llm_service.py#L359-L392)
-- [health_checks.py:85-95](file://backend/app/services/health_checks.py#L85-L95)
-- [federated_learning.py:297-314](file://backend/app/pipeline/agents/federated_learning.py#L297-L314)
+- [llm_service.py:359-392](../../../../backend/app/services/llm_service.py#L359-L392)
+- [health_checks.py:85-95](../../../../backend/app/services/health_checks.py#L85-L95)
+- [federated_learning.py:297-314](../../../../backend/app/pipeline/agents/federated_learning.py#L297-L314)

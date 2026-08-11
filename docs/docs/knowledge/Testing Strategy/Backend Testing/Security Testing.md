@@ -5,19 +5,19 @@
 
 <cite>
 **Referenced Files in This Document**
-- [backend-ci.yml](file://.github/workflows/backend-ci.yml)
-- [security.yml](file://.github/workflows/security.yml)
-- [rate_limit.py](file://backend/app/middleware/rate_limit.py)
-- [tier_rate_limit.py](file://backend/app/middleware/tier_rate_limit.py)
-- [security_headers.py](file://backend/app/middleware/security_headers.py)
-- [rbac.py](file://backend/app/middleware/rbac.py)
-- [safe_execution.py](file://backend/app/pipeline/safety/safe_execution.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [llm_validator.py](file://backend/app/pipeline/safety/llm_validator.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [test_chaos.py](file://backend/tests/safety/test_chaos.py)
-- [test_global_safety.py](file://backend/tests/safety/test_global_safety.py)
-- [test_security_verification.py](file://backend/tests/test_security_verification.py)
+- [backend-ci.yml](../../../../../.github/workflows/backend-ci.yml)
+- [security.yml](../../../../../.github/workflows/security.yml)
+- [rate_limit.py](../../../../../backend/app/middleware/rate_limit.py)
+- [tier_rate_limit.py](../../../../../backend/app/middleware/tier_rate_limit.py)
+- [security_headers.py](../../../../../backend/app/middleware/security_headers.py)
+- [rbac.py](../../../../../backend/app/middleware/rbac.py)
+- [safe_execution.py](../../../../../backend/app/pipeline/safety/safe_execution.py)
+- [circuit_breaker.py](../../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [llm_validator.py](../../../../../backend/app/pipeline/safety/llm_validator.py)
+- [retry_guard.py](../../../../../backend/app/pipeline/safety/retry_guard.py)
+- [test_chaos.py](../../../../../backend/tests/safety/test_chaos.py)
+- [test_global_safety.py](../../../../../backend/tests/safety/test_global_safety.py)
+- [test_security_verification.py](../../../../../backend/tests/test_security_verification.py)
 </cite>
 
 ## Table of Contents
@@ -88,31 +88,31 @@ TSV --> RL
 
 **Diagram sources**
 
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
-- [tier_rate_limit.py:19-116](file://backend/app/middleware/tier_rate_limit.py#L19-L116)
-- [security_headers.py:18-99](file://backend/app/middleware/security_headers.py#L18-L99)
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
-- [safe_execution.py:9-74](file://backend/app/pipeline/safety/safe_execution.py#L9-L74)
-- [circuit_breaker.py:29-164](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L164)
-- [retry_guard.py:10-63](file://backend/app/pipeline/safety/retry_guard.py#L10-L63)
-- [llm_validator.py:46-122](file://backend/app/pipeline/safety/llm_validator.py#L46-L122)
-- [test_chaos.py:7-69](file://backend/tests/safety/test_chaos.py#L7-L69)
-- [test_global_safety.py:36-229](file://backend/tests/safety/test_global_safety.py#L36-L229)
-- [test_security_verification.py:14-78](file://backend/tests/test_security_verification.py#L14-L78)
+- [rate_limit.py:49-172](../../../../../backend/app/middleware/rate_limit.py#L49-L172)
+- [tier_rate_limit.py:19-116](../../../../../backend/app/middleware/tier_rate_limit.py#L19-L116)
+- [security_headers.py:18-99](../../../../../backend/app/middleware/security_headers.py#L18-L99)
+- [rbac.py:61-80](../../../../../backend/app/middleware/rbac.py#L61-L80)
+- [safe_execution.py:9-74](../../../../../backend/app/pipeline/safety/safe_execution.py#L9-L74)
+- [circuit_breaker.py:29-164](../../../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L164)
+- [retry_guard.py:10-63](../../../../../backend/app/pipeline/safety/retry_guard.py#L10-L63)
+- [llm_validator.py:46-122](../../../../../backend/app/pipeline/safety/llm_validator.py#L46-L122)
+- [test_chaos.py:7-69](../../../../../backend/tests/safety/test_chaos.py#L7-L69)
+- [test_global_safety.py:36-229](../../../../../backend/tests/safety/test_global_safety.py#L36-L229)
+- [test_security_verification.py:14-78](../../../../../backend/tests/test_security_verification.py#L14-L78)
 
 **Section sources**
 
-- [rate_limit.py:1-172](file://backend/app/middleware/rate_limit.py#L1-L172)
-- [tier_rate_limit.py:1-116](file://backend/app/middleware/tier_rate_limit.py#L1-L116)
-- [security_headers.py:1-99](file://backend/app/middleware/security_headers.py#L1-L99)
-- [rbac.py:1-80](file://backend/app/middleware/rbac.py#L1-L80)
-- [safe_execution.py:1-74](file://backend/app/pipeline/safety/safe_execution.py#L1-L74)
-- [circuit_breaker.py:1-164](file://backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
-- [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
-- [test_chaos.py:1-69](file://backend/tests/safety/test_chaos.py#L1-L69)
-- [test_global_safety.py:1-229](file://backend/tests/safety/test_global_safety.py#L1-L229)
-- [test_security_verification.py:1-78](file://backend/tests/test_security_verification.py#L1-L78)
+- [rate_limit.py:1-172](../../../../../backend/app/middleware/rate_limit.py#L1-L172)
+- [tier_rate_limit.py:1-116](../../../../../backend/app/middleware/tier_rate_limit.py#L1-L116)
+- [security_headers.py:1-99](../../../../../backend/app/middleware/security_headers.py#L1-L99)
+- [rbac.py:1-80](../../../../../backend/app/middleware/rbac.py#L1-L80)
+- [safe_execution.py:1-74](../../../../../backend/app/pipeline/safety/safe_execution.py#L1-L74)
+- [circuit_breaker.py:1-164](../../../../../backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
+- [retry_guard.py:1-63](../../../../../backend/app/pipeline/safety/retry_guard.py#L1-L63)
+- [llm_validator.py:1-122](../../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [test_chaos.py:1-69](../../../../../backend/tests/safety/test_chaos.py#L1-L69)
+- [test_global_safety.py:1-229](../../../../../backend/tests/safety/test_global_safety.py#L1-L229)
+- [test_security_verification.py:1-78](../../../../../backend/tests/test_security_verification.py#L1-L78)
 
 ## Core Components
 
@@ -121,21 +121,21 @@ TSV --> RL
 - Security Headers Middleware: Adds CSP, X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy, and HSTS-like behavior.
 - RBAC Role Guards: Normalizes roles and enforces minimum role requirements for protected routes.
 - Safety Utilities:
-    - Safe Execution: Context manager and decorators to suppress unexpected crashes and return fallbacks.
-    - Circuit Breaker: Thread-safe breaker with fallback support and fallback invocation.
-    - Retry Guard: Exponential backoff for sync/async functions.
-    - LLM Validator: Guardrails-based or Pydantic-based output validation with graceful degradation.
+  - Safe Execution: Context manager and decorators to suppress unexpected crashes and return fallbacks.
+  - Circuit Breaker: Thread-safe breaker with fallback support and fallback invocation.
+  - Retry Guard: Exponential backoff for sync/async functions.
+  - LLM Validator: Guardrails-based or Pydantic-based output validation with graceful degradation.
 
 **Section sources**
 
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
-- [tier_rate_limit.py:19-116](file://backend/app/middleware/tier_rate_limit.py#L19-L116)
-- [security_headers.py:18-99](file://backend/app/middleware/security_headers.py#L18-L99)
-- [rbac.py:61-80](file://backend/app/middleware/rbac.py#L61-L80)
-- [safe_execution.py:9-74](file://backend/app/pipeline/safety/safe_execution.py#L9-L74)
-- [circuit_breaker.py:29-164](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L164)
-- [retry_guard.py:10-63](file://backend/app/pipeline/safety/retry_guard.py#L10-L63)
-- [llm_validator.py:46-122](file://backend/app/pipeline/safety/llm_validator.py#L46-L122)
+- [rate_limit.py:49-172](../../../../../backend/app/middleware/rate_limit.py#L49-L172)
+- [tier_rate_limit.py:19-116](../../../../../backend/app/middleware/tier_rate_limit.py#L19-L116)
+- [security_headers.py:18-99](../../../../../backend/app/middleware/security_headers.py#L18-L99)
+- [rbac.py:61-80](../../../../../backend/app/middleware/rbac.py#L61-L80)
+- [safe_execution.py:9-74](../../../../../backend/app/pipeline/safety/safe_execution.py#L9-L74)
+- [circuit_breaker.py:29-164](../../../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L164)
+- [retry_guard.py:10-63](../../../../../backend/app/pipeline/safety/retry_guard.py#L10-L63)
+- [llm_validator.py:46-122](../../../../../backend/app/pipeline/safety/llm_validator.py#L46-L122)
 
 ## Architecture Overview
 
@@ -159,14 +159,14 @@ Safety --> API
 
 **Diagram sources**
 
-- [security_headers.py:28-66](file://backend/app/middleware/security_headers.py#L28-L66)
-- [rate_limit.py:124-172](file://backend/app/middleware/rate_limit.py#L124-L172)
-- [tier_rate_limit.py:96-116](file://backend/app/middleware/tier_rate_limit.py#L96-L116)
-- [rbac.py:68-77](file://backend/app/middleware/rbac.py#L68-L77)
-- [safe_execution.py:9-74](file://backend/app/pipeline/safety/safe_execution.py#L9-L74)
-- [circuit_breaker.py:29-97](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L97)
-- [retry_guard.py:10-63](file://backend/app/pipeline/safety/retry_guard.py#L10-L63)
-- [llm_validator.py:46-122](file://backend/app/pipeline/safety/llm_validator.py#L46-L122)
+- [security_headers.py:28-66](../../../../../backend/app/middleware/security_headers.py#L28-L66)
+- [rate_limit.py:124-172](../../../../../backend/app/middleware/rate_limit.py#L124-L172)
+- [tier_rate_limit.py:96-116](../../../../../backend/app/middleware/tier_rate_limit.py#L96-L116)
+- [rbac.py:68-77](../../../../../backend/app/middleware/rbac.py#L68-L77)
+- [safe_execution.py:9-74](../../../../../backend/app/pipeline/safety/safe_execution.py#L9-L74)
+- [circuit_breaker.py:29-97](../../../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L97)
+- [retry_guard.py:10-63](../../../../../backend/app/pipeline/safety/retry_guard.py#L10-L63)
+- [llm_validator.py:46-122](../../../../../backend/app/pipeline/safety/llm_validator.py#L46-L122)
 
 ## Detailed Component Analysis
 
@@ -174,10 +174,10 @@ Safety --> API
 
 - Purpose: Enforce sliding-window rate limits for general traffic and uploads, with optional Redis scaling and in-memory fallback for unit tests.
 - Key behaviors:
-    - Separate counters for general and upload traffic
-    - Uploads include a token fingerprint to differentiate authenticated users
-    - Health endpoints are excluded from rate limiting
-    - Returns structured 429 responses with retry-after guidance
+  - Separate counters for general and upload traffic
+  - Uploads include a token fingerprint to differentiate authenticated users
+  - Health endpoints are excluded from rate limiting
+  - Returns structured 429 responses with retry-after guidance
 
 ```mermaid
 flowchart TD
@@ -197,20 +197,20 @@ Bypass --> Next
 
 **Diagram sources**
 
-- [rate_limit.py:124-172](file://backend/app/middleware/rate_limit.py#L124-L172)
+- [rate_limit.py:124-172](../../../../../backend/app/middleware/rate_limit.py#L124-L172)
 
 **Section sources**
 
-- [rate_limit.py:49-172](file://backend/app/middleware/rate_limit.py#L49-L172)
+- [rate_limit.py:49-172](../../../../../backend/app/middleware/rate_limit.py#L49-L172)
 
 ### Tier Rate Limiting Middleware
 
 - Purpose: Apply guest daily caps for specific endpoints using UTC-day keys and JWT subject fingerprinting.
 - Key behaviors:
-    - Skips health/status/templates/metrics endpoints
-    - Limits POST endpoints: uploads and generation sessions
-    - Unauthenticated guests are counted; authenticated users are exempt
-    - Returns 429 with upgrade hint when exceeding daily cap
+  - Skips health/status/templates/metrics endpoints
+  - Limits POST endpoints: uploads and generation sessions
+  - Unauthenticated guests are counted; authenticated users are exempt
+  - Returns 429 with upgrade hint when exceeding daily cap
 
 ```mermaid
 flowchart TD
@@ -234,11 +234,11 @@ Over --> |Yes| Reject["Return 429 with upgrade_url"]
 
 **Diagram sources**
 
-- [tier_rate_limit.py:96-116](file://backend/app/middleware/tier_rate_limit.py#L96-L116)
+- [tier_rate_limit.py:96-116](../../../../../backend/app/middleware/tier_rate_limit.py#L96-L116)
 
 **Section sources**
 
-- [tier_rate_limit.py:19-116](file://backend/app/middleware/tier_rate_limit.py#L19-L116)
+- [tier_rate_limit.py:19-116](../../../../../backend/app/middleware/tier_rate_limit.py#L19-L116)
 
 ### Security Headers Middleware
 
@@ -260,19 +260,19 @@ SH-->>C : Response with headers
 
 **Diagram sources**
 
-- [security_headers.py:28-66](file://backend/app/middleware/security_headers.py#L28-L66)
+- [security_headers.py:28-66](../../../../../backend/app/middleware/security_headers.py#L28-L66)
 
 **Section sources**
 
-- [security_headers.py:18-99](file://backend/app/middleware/security_headers.py#L18-L99)
+- [security_headers.py:18-99](../../../../../backend/app/middleware/security_headers.py#L18-L99)
 
 ### RBAC Role Guards
 
 - Purpose: Normalize roles and enforce minimum role requirements for protected routes.
 - Key behaviors:
-    - Role aliases mapped to normalized tiers
-    - Effective role stored on the current user object
-    - 403 Forbidden raised for insufficient permissions
+  - Role aliases mapped to normalized tiers
+  - Effective role stored on the current user object
+  - 403 Forbidden raised for insufficient permissions
 
 ```mermaid
 flowchart TD
@@ -285,11 +285,11 @@ Compare --> |No| Deny["403 Forbidden"]
 
 **Diagram sources**
 
-- [rbac.py:68-77](file://backend/app/middleware/rbac.py#L68-L77)
+- [rbac.py:68-77](../../../../../backend/app/middleware/rbac.py#L68-L77)
 
 **Section sources**
 
-- [rbac.py:1-80](file://backend/app/middleware/rbac.py#L1-L80)
+- [rbac.py:1-80](../../../../../backend/app/middleware/rbac.py#L1-L80)
 
 ### Safety Utilities
 
@@ -323,28 +323,28 @@ SafeExecution <.. LLMValidator : "used by"
 
 **Diagram sources**
 
-- [safe_execution.py:9-74](file://backend/app/pipeline/safety/safe_execution.py#L9-L74)
-- [circuit_breaker.py:29-164](file://backend/app/pipeline/safety/circuit_breaker.py#L29-L164)
-- [retry_guard.py:10-63](file://backend/app/pipeline/safety/retry_guard.py#L10-L63)
-- [llm_validator.py:46-122](file://backend/app/pipeline/safety/llm_validator.py#L46-L122)
+- [safe_execution.py:9-74](../../../../../backend/app/pipeline/safety/safe_execution.py#L9-L74)
+- [circuit_breaker.py:29-164](../../../../../backend/app/pipeline/safety/circuit_breaker.py#L29-L164)
+- [retry_guard.py:10-63](../../../../../backend/app/pipeline/safety/retry_guard.py#L10-L63)
+- [llm_validator.py:46-122](../../../../../backend/app/pipeline/safety/llm_validator.py#L46-L122)
 
 **Section sources**
 
-- [safe_execution.py:1-74](file://backend/app/pipeline/safety/safe_execution.py#L1-L74)
-- [circuit_breaker.py:1-164](file://backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
-- [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [safe_execution.py:1-74](../../../../../backend/app/pipeline/safety/safe_execution.py#L1-L74)
+- [circuit_breaker.py:1-164](../../../../../backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
+- [retry_guard.py:1-63](../../../../../backend/app/pipeline/safety/retry_guard.py#L1-L63)
+- [llm_validator.py:1-122](../../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
 
 ### Chaos Testing and Global Safety Validation
 
 - Chaos tests validate:
-    - Circuit breaker activation after repeated failures
-    - Validator guard suppressing malformed JSON
-    - Safe execution catching unexpected crashes
+  - Circuit breaker activation after repeated failures
+  - Validator guard suppressing malformed JSON
+  - Safe execution catching unexpected crashes
 - Global safety tests validate:
-    - Safe wrappers across critical pipeline components
-    - Async safety wrappers
-    - Formatter, validator, and detector resilience
+  - Safe wrappers across critical pipeline components
+  - Async safety wrappers
+  - Formatter, validator, and detector resilience
 
 ```mermaid
 sequenceDiagram
@@ -364,15 +364,15 @@ SG-->>T : exception suppressed, safe
 
 **Diagram sources**
 
-- [test_chaos.py:12-65](file://backend/tests/safety/test_chaos.py#L12-L65)
-- [circuit_breaker.py:74-96](file://backend/app/pipeline/safety/circuit_breaker.py#L74-L96)
-- [safe_execution.py:9-31](file://backend/app/pipeline/safety/safe_execution.py#L9-L31)
-- [llm_validator.py:80-121](file://backend/app/pipeline/safety/llm_validator.py#L80-L121)
+- [test_chaos.py:12-65](../../../../../backend/tests/safety/test_chaos.py#L12-L65)
+- [circuit_breaker.py:74-96](../../../../../backend/app/pipeline/safety/circuit_breaker.py#L74-L96)
+- [safe_execution.py:9-31](../../../../../backend/app/pipeline/safety/safe_execution.py#L9-L31)
+- [llm_validator.py:80-121](../../../../../backend/app/pipeline/safety/llm_validator.py#L80-L121)
 
 **Section sources**
 
-- [test_chaos.py:1-69](file://backend/tests/safety/test_chaos.py#L1-L69)
-- [test_global_safety.py:36-229](file://backend/tests/safety/test_global_safety.py#L36-L229)
+- [test_chaos.py:1-69](../../../../../backend/tests/safety/test_chaos.py#L1-L69)
+- [test_global_safety.py:36-229](../../../../../backend/tests/safety/test_global_safety.py#L36-L229)
 
 ### Security Verification Procedures
 
@@ -398,24 +398,24 @@ API-->>T : 200 with CORS headers
 
 **Diagram sources**
 
-- [test_security_verification.py:14-78](file://backend/tests/test_security_verification.py#L14-L78)
-- [rate_limit.py:124-172](file://backend/app/middleware/rate_limit.py#L124-L172)
-- [security_headers.py:69-99](file://backend/app/middleware/security_headers.py#L69-L99)
+- [test_security_verification.py:14-78](../../../../../backend/tests/test_security_verification.py#L14-L78)
+- [rate_limit.py:124-172](../../../../../backend/app/middleware/rate_limit.py#L124-L172)
+- [security_headers.py:69-99](../../../../../backend/app/middleware/security_headers.py#L69-L99)
 
 **Section sources**
 
-- [test_security_verification.py:1-78](file://backend/tests/test_security_verification.py#L1-L78)
-- [rate_limit.py:1-172](file://backend/app/middleware/rate_limit.py#L1-L172)
-- [security_headers.py:69-99](file://backend/app/middleware/security_headers.py#L69-L99)
+- [test_security_verification.py:1-78](../../../../../backend/tests/test_security_verification.py#L1-L78)
+- [rate_limit.py:1-172](../../../../../backend/app/middleware/rate_limit.py#L1-L172)
+- [security_headers.py:69-99](../../../../../backend/app/middleware/security_headers.py#L69-L99)
 
 ## Dependency Analysis
 
 - Middleware dependencies:
-    - RedisCache is used by rate limiting and tier rate limiting for distributed counters
-    - Security headers middleware depends on route path matching for docs-specific CSP
+  - RedisCache is used by rate limiting and tier rate limiting for distributed counters
+  - Security headers middleware depends on route path matching for docs-specific CSP
 - Safety utilities:
-    - Circuit breaker optionally depends on pybreaker; otherwise uses legacy state machine
-    - LLM validator conditionally uses Guardrails AI or falls back to Pydantic-based validation
+  - Circuit breaker optionally depends on pybreaker; otherwise uses legacy state machine
+  - LLM validator conditionally uses Guardrails AI or falls back to Pydantic-based validation
 - Tests depend on middleware behavior and safety wrappers to validate resilience and correctness
 
 ```mermaid
@@ -433,67 +433,67 @@ TSV["test_security_verification.py"] --> RL
 
 **Diagram sources**
 
-- [rate_limit.py:24-34](file://backend/app/middleware/rate_limit.py#L24-L34)
-- [tier_rate_limit.py:13-32](file://backend/app/middleware/tier_rate_limit.py#L13-L32)
-- [security_headers.py:28-66](file://backend/app/middleware/security_headers.py#L28-L66)
-- [safe_execution.py:9-74](file://backend/app/pipeline/safety/safe_execution.py#L9-L74)
-- [circuit_breaker.py:16-21](file://backend/app/pipeline/safety/circuit_breaker.py#L16-L21)
-- [retry_guard.py:10-63](file://backend/app/pipeline/safety/retry_guard.py#L10-L63)
-- [llm_validator.py:11-28](file://backend/app/pipeline/safety/llm_validator.py#L11-L28)
-- [test_chaos.py:1-69](file://backend/tests/safety/test_chaos.py#L1-L69)
-- [test_global_safety.py:1-229](file://backend/tests/safety/test_global_safety.py#L1-L229)
-- [test_security_verification.py:1-78](file://backend/tests/test_security_verification.py#L1-L78)
+- [rate_limit.py:24-34](../../../../../backend/app/middleware/rate_limit.py#L24-L34)
+- [tier_rate_limit.py:13-32](../../../../../backend/app/middleware/tier_rate_limit.py#L13-L32)
+- [security_headers.py:28-66](../../../../../backend/app/middleware/security_headers.py#L28-L66)
+- [safe_execution.py:9-74](../../../../../backend/app/pipeline/safety/safe_execution.py#L9-L74)
+- [circuit_breaker.py:16-21](../../../../../backend/app/pipeline/safety/circuit_breaker.py#L16-L21)
+- [retry_guard.py:10-63](../../../../../backend/app/pipeline/safety/retry_guard.py#L10-L63)
+- [llm_validator.py:11-28](../../../../../backend/app/pipeline/safety/llm_validator.py#L11-L28)
+- [test_chaos.py:1-69](../../../../../backend/tests/safety/test_chaos.py#L1-L69)
+- [test_global_safety.py:1-229](../../../../../backend/tests/safety/test_global_safety.py#L1-L229)
+- [test_security_verification.py:1-78](../../../../../backend/tests/test_security_verification.py#L1-L78)
 
 **Section sources**
 
-- [rate_limit.py:1-172](file://backend/app/middleware/rate_limit.py#L1-L172)
-- [tier_rate_limit.py:1-116](file://backend/app/middleware/tier_rate_limit.py#L1-L116)
-- [security_headers.py:1-99](file://backend/app/middleware/security_headers.py#L1-L99)
-- [safe_execution.py:1-74](file://backend/app/pipeline/safety/safe_execution.py#L1-L74)
-- [circuit_breaker.py:1-164](file://backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
-- [retry_guard.py:1-63](file://backend/app/pipeline/safety/retry_guard.py#L1-L63)
-- [llm_validator.py:1-122](file://backend/app/pipeline/safety/llm_validator.py#L1-L122)
-- [test_chaos.py:1-69](file://backend/tests/safety/test_chaos.py#L1-L69)
-- [test_global_safety.py:1-229](file://backend/tests/safety/test_global_safety.py#L1-L229)
-- [test_security_verification.py:1-78](file://backend/tests/test_security_verification.py#L1-L78)
+- [rate_limit.py:1-172](../../../../../backend/app/middleware/rate_limit.py#L1-L172)
+- [tier_rate_limit.py:1-116](../../../../../backend/app/middleware/tier_rate_limit.py#L1-L116)
+- [security_headers.py:1-99](../../../../../backend/app/middleware/security_headers.py#L1-L99)
+- [safe_execution.py:1-74](../../../../../backend/app/pipeline/safety/safe_execution.py#L1-L74)
+- [circuit_breaker.py:1-164](../../../../../backend/app/pipeline/safety/circuit_breaker.py#L1-L164)
+- [retry_guard.py:1-63](../../../../../backend/app/pipeline/safety/retry_guard.py#L1-L63)
+- [llm_validator.py:1-122](../../../../../backend/app/pipeline/safety/llm_validator.py#L1-L122)
+- [test_chaos.py:1-69](../../../../../backend/tests/safety/test_chaos.py#L1-L69)
+- [test_global_safety.py:1-229](../../../../../backend/tests/safety/test_global_safety.py#L1-L229)
+- [test_security_verification.py:1-78](../../../../../backend/tests/test_security_verification.py#L1-L78)
 
 ## Performance Considerations
 
 - Rate limiting:
-    - In-memory sliding windows are efficient for single-worker deployments; Redis enables accurate multi-worker coordination with minimal overhead.
-    - Token fingerprinting for uploads ensures fair attribution without exposing secrets.
+  - In-memory sliding windows are efficient for single-worker deployments; Redis enables accurate multi-worker coordination with minimal overhead.
+  - Token fingerprinting for uploads ensures fair attribution without exposing secrets.
 - Tier rate limiting:
-    - UTC-based day keys simplify expiration; Redis TTL ensures automatic cleanup.
+  - UTC-based day keys simplify expiration; Redis TTL ensures automatic cleanup.
 - Safety utilities:
-    - Circuit breaker reduces cascading failures by failing fast and invoking fallbacks.
-    - Retry guard mitigates transient failures with exponential backoff.
-    - LLM validator gracefully degrades when Guardrails is unavailable.
+  - Circuit breaker reduces cascading failures by failing fast and invoking fallbacks.
+  - Retry guard mitigates transient failures with exponential backoff.
+  - LLM validator gracefully degrades when Guardrails is unavailable.
 
 [No sources needed since this section provides general guidance]
 
 ## Troubleshooting Guide
 
 - Rate limit false positives:
-    - Verify client IP resolution and authorization header parsing for upload keys.
-    - Confirm Redis connectivity for distributed counters; fallback to in-memory is expected.
+  - Verify client IP resolution and authorization header parsing for upload keys.
+  - Confirm Redis connectivity for distributed counters; fallback to in-memory is expected.
 - Tier limit bypass:
-    - Ensure JWT parsing succeeds and sub is extracted; otherwise guest counting applies.
+  - Ensure JWT parsing succeeds and sub is extracted; otherwise guest counting applies.
 - Security headers anomalies:
-    - Docs routes have relaxed CSP; confirm route path matches expectations.
+  - Docs routes have relaxed CSP; confirm route path matches expectations.
 - Safety net failures:
-    - Check safe_execution context usage and fallback values.
-    - Validate circuit breaker thresholds and recovery timeouts.
+  - Check safe_execution context usage and fallback values.
+  - Validate circuit breaker thresholds and recovery timeouts.
 - LLM validation errors:
-    - Confirm Guardrails availability and schema compatibility; fallback to Pydantic-based validation is automatic.
+  - Confirm Guardrails availability and schema compatibility; fallback to Pydantic-based validation is automatic.
 
 **Section sources**
 
-- [rate_limit.py:124-172](file://backend/app/middleware/rate_limit.py#L124-L172)
-- [tier_rate_limit.py:57-68](file://backend/app/middleware/tier_rate_limit.py#L57-L68)
-- [security_headers.py:35-66](file://backend/app/middleware/security_headers.py#L35-L66)
-- [safe_execution.py:9-74](file://backend/app/pipeline/safety/safe_execution.py#L9-L74)
-- [circuit_breaker.py:74-96](file://backend/app/pipeline/safety/circuit_breaker.py#L74-L96)
-- [llm_validator.py:11-28](file://backend/app/pipeline/safety/llm_validator.py#L11-L28)
+- [rate_limit.py:124-172](../../../../../backend/app/middleware/rate_limit.py#L124-L172)
+- [tier_rate_limit.py:57-68](../../../../../backend/app/middleware/tier_rate_limit.py#L57-L68)
+- [security_headers.py:35-66](../../../../../backend/app/middleware/security_headers.py#L35-L66)
+- [safe_execution.py:9-74](../../../../../backend/app/pipeline/safety/safe_execution.py#L9-L74)
+- [circuit_breaker.py:74-96](../../../../../backend/app/pipeline/safety/circuit_breaker.py#L74-L96)
+- [llm_validator.py:11-28](../../../../../backend/app/pipeline/safety/llm_validator.py#L11-L28)
 
 ## Conclusion
 
@@ -513,13 +513,13 @@ These controls collectively mitigate risks from abuse, misconfiguration, and adv
 ### Security Test Automation and Compliance Scanning
 
 - CI workflow:
-    - Linters and type checks
-    - Unit tests excluding slow/integration suites
+  - Linters and type checks
+  - Unit tests excluding slow/integration suites
 - Security workflow:
-    - Container image build
-    - Trivy vulnerability scan (critical/high severity)
-    - Bandit static analysis
-    - OWASP Dependency Check with CVSS threshold
+  - Container image build
+  - Trivy vulnerability scan (critical/high severity)
+  - Bandit static analysis
+  - OWASP Dependency Check with CVSS threshold
 
 ```mermaid
 sequenceDiagram
@@ -541,30 +541,30 @@ SEC->>DC : Dependency scan (CVSS>=7)
 
 **Diagram sources**
 
-- [backend-ci.yml:8-41](file://.github/workflows/backend-ci.yml#L8-L41)
-- [security.yml:12-47](file://.github/workflows/security.yml#L12-L47)
+- [backend-ci.yml:8-41](../../../../../.github/workflows/backend-ci.yml#L8-L41)
+- [security.yml:12-47](../../../../../.github/workflows/security.yml#L12-L47)
 
 **Section sources**
 
-- [backend-ci.yml:1-41](file://.github/workflows/backend-ci.yml#L1-L41)
-- [security.yml:1-47](file://.github/workflows/security.yml#L1-L47)
+- [backend-ci.yml:1-41](../../../../../.github/workflows/backend-ci.yml#L1-L41)
+- [security.yml:1-47](../../../../../.github/workflows/security.yml#L1-L47)
 
 ### Testing Strategies and Methodologies
 
 - Input validation:
-    - Send malformed payloads and oversized bodies; expect 422/413 responses and sanitized handling.
+  - Send malformed payloads and oversized bodies; expect 422/413 responses and sanitized handling.
 - Authentication bypass:
-    - Attempt unauthenticated access to protected endpoints; verify RBAC guards return 403.
-    - Test JWT parsing edge cases; ensure invalid tokens are rejected.
+  - Attempt unauthenticated access to protected endpoints; verify RBAC guards return 403.
+  - Test JWT parsing edge cases; ensure invalid tokens are rejected.
 - Authorization checks:
-    - Use role aliases and normalized roles; validate effective role enforcement.
+  - Use role aliases and normalized roles; validate effective role enforcement.
 - Abuse detection:
-    - Flood upload endpoints to validate rate limiting and tier caps; confirm 429 responses.
+  - Flood upload endpoints to validate rate limiting and tier caps; confirm 429 responses.
 - Vulnerability assessment:
-    - Use Trivy, Bandit, and OWASP Dependency Check in CI to detect known vulnerabilities.
+  - Use Trivy, Bandit, and OWASP Dependency Check in CI to detect known vulnerabilities.
 - Penetration testing:
-    - Complement automated scans with manual exploratory testing of endpoints, headers, and rate limits.
+  - Complement automated scans with manual exploratory testing of endpoints, headers, and rate limits.
 - Security regression testing:
-    - Include safety tests and security verification tests in CI to prevent regressions.
+  - Include safety tests and security verification tests in CI to prevent regressions.
 
 [No sources needed since this section provides general guidance]

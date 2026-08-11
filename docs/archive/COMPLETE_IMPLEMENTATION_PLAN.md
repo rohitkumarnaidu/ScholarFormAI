@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-> ️ **ARCHIVED** — This implementation plan is complete. All features have been implemented. See [ROADMAP.md](../Roadmap.md) for current status.
+> ️ **ARCHIVED** — This implementation plan is complete. All features have been implemented. See [ROADMAP.md](../reports/ROADMAP.md) for current status.
 
 # ScholarForm AI — Complete End-to-End Implementation Plan
 

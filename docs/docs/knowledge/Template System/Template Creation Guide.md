@@ -5,16 +5,16 @@
 
 <cite>
 **Referenced Files in This Document**
-- [template_creation_guide.md](file://backend/docs/template_creation_guide.md)
-- [template_creation.md](file://docs/template_creation.md)
-- [template_renderer.py](file://backend/app/pipeline/formatting/template_renderer.py)
-- [loader.py](file://backend/app/pipeline/contracts/loader.py)
-- [contract.yaml (APA)](file://backend/app/templates/apa/contract.yaml)
-- [styles.csl (APA)](file://backend/app/templates/apa/styles.csl)
-- [contract.yaml (IEEE)](file://backend/app/templates/ieee/contract.yaml)
-- [contract.yaml (None)](file://backend/app/templates/none/contract.yaml)
-- [test_template_renderer.py](file://backend/tests/test_template_renderer.py)
-- [test_csl_formatting.py](file://backend/tests/integration/test_csl_formatting.py)
+- [template_creation_guide.md](../../../../backend/docs/template_creation_guide.md)
+- [template_creation.md](../../../user-guide/template_creation.md)
+- [template_renderer.py](../../../../backend/app/pipeline/formatting/template_renderer.py)
+- [loader.py](../../../../backend/app/pipeline/contracts/loader.py)
+- [contract.yaml (APA)](../../../../backend/app/templates/apa/contract.yaml)
+- [styles.csl (APA)](../../../../backend/app/templates/apa/styles.csl)
+- [contract.yaml (IEEE)](../../../../backend/app/templates/ieee/contract.yaml)
+- [contract.yaml (None)](../../../../backend/app/templates/none/contract.yaml)
+- [test_template_renderer.py](../../../../backend/tests/test_template_renderer.py)
+- [test_csl_formatting.py](../../../../backend/tests/integration/test_csl_formatting.py)
 </cite>
 
 ## Table of Contents
@@ -61,14 +61,14 @@ TPL_NONE --> CT_NONE
 
 **Diagram sources**
 
-- [contract.yaml (APA):1-45](file://backend/app/templates/apa/contract.yaml#L1-L45)
-- [contract.yaml (IEEE):1-50](file://backend/app/templates/ieee/contract.yaml#L1-L50)
-- [contract.yaml (None):1-50](file://backend/app/templates/none/contract.yaml#L1-L50)
+- [contract.yaml (APA):1-45](../../../../backend/app/templates/apa/contract.yaml#L1-L45)
+- [contract.yaml (IEEE):1-50](../../../../backend/app/templates/ieee/contract.yaml#L1-L50)
+- [contract.yaml (None):1-50](../../../../backend/app/templates/none/contract.yaml#L1-L50)
 
 **Section sources**
 
-- [template_creation_guide.md:1-114](file://backend/docs/template_creation_guide.md#L1-L114)
-- [template_creation.md:1-111](file://docs/template_creation.md#L1-L111)
+- [template_creation_guide.md:1-114](../../../../backend/docs/template_creation_guide.md#L1-L114)
+- [template_creation.md:1-111](../../../user-guide/template_creation.md#L1-L111)
 
 ## Core Components
 
@@ -79,18 +79,18 @@ TPL_NONE --> CT_NONE
 Key responsibilities:
 
 - TemplateRenderer
-    - Build context from document metadata, blocks, and references
-    - Resolve template path and detect Jinja markers
-    - Render DOCX and provide fallback templates when needed
+  - Build context from document metadata, blocks, and references
+  - Resolve template path and detect Jinja markers
+  - Render DOCX and provide fallback templates when needed
 - ContractLoader
-    - Load contracts by style name
-    - Normalize legacy shapes and infer publisher identifiers
-    - Provide helpers to resolve canonical section names and required sections
+  - Load contracts by style name
+  - Normalize legacy shapes and infer publisher identifiers
+  - Provide helpers to resolve canonical section names and required sections
 
 **Section sources**
 
-- [template_renderer.py:1-331](file://backend/app/pipeline/formatting/template_renderer.py#L1-L331)
-- [loader.py:1-82](file://backend/app/pipeline/contracts/loader.py#L1-L82)
+- [template_renderer.py:1-331](../../../../backend/app/pipeline/formatting/template_renderer.py#L1-L331)
+- [loader.py:1-82](../../../../backend/app/pipeline/contracts/loader.py#L1-L82)
 
 ## Architecture Overview
 
@@ -112,15 +112,15 @@ Dev->>RF : Format references with publisher style
 RF->>CSLE : Apply CSL rules
 CSLE-->>RF : Formatted references
 Dev->>TR : Render document with template
-TR->>TR : Build context (metadata, sections, refs)
+TR->>TR : Build context ("metadata, sections, refs")
 TR-->>Dev : Rendered DOCX
 ```
 
 **Diagram sources**
 
-- [template_renderer.py:65-83](file://backend/app/pipeline/formatting/template_renderer.py#L65-L83)
-- [loader.py:16-38](file://backend/app/pipeline/contracts/loader.py#L16-L38)
-- [test_csl_formatting.py:94-98](file://backend/tests/integration/test_csl_formatting.py#L94-L98)
+- [template_renderer.py:65-83](../../../../backend/app/pipeline/formatting/template_renderer.py#L65-L83)
+- [loader.py:16-38](../../../../backend/app/pipeline/contracts/loader.py#L16-L38)
+- [test_csl_formatting.py:94-98](../../../../backend/tests/integration/test_csl_formatting.py#L94-L98)
 
 ## Detailed Component Analysis
 
@@ -153,7 +153,7 @@ class TemplateRenderer {
 
 **Diagram sources**
 
-- [template_renderer.py:29-331](file://backend/app/pipeline/formatting/template_renderer.py#L29-L331)
+- [template_renderer.py:29-331](../../../../backend/app/pipeline/formatting/template_renderer.py#L29-L331)
 
 Implementation highlights:
 
@@ -163,8 +163,8 @@ Implementation highlights:
 
 **Section sources**
 
-- [template_renderer.py:94-159](file://backend/app/pipeline/formatting/template_renderer.py#L94-L159)
-- [template_renderer.py:257-313](file://backend/app/pipeline/formatting/template_renderer.py#L257-L313)
+- [template_renderer.py:94-159](../../../../backend/app/pipeline/formatting/template_renderer.py#L94-L159)
+- [template_renderer.py:257-313](../../../../backend/app/pipeline/formatting/template_renderer.py#L257-L313)
 
 ### ContractLoader: Contract Definition and Normalization
 
@@ -187,7 +187,7 @@ class ContractLoader {
 
 **Diagram sources**
 
-- [loader.py:8-82](file://backend/app/pipeline/contracts/loader.py#L8-L82)
+- [loader.py:8-82](../../../../backend/app/pipeline/contracts/loader.py#L8-L82)
 
 Contract examples:
 
@@ -197,10 +197,10 @@ Contract examples:
 
 **Section sources**
 
-- [loader.py:16-74](file://backend/app/pipeline/contracts/loader.py#L16-L74)
-- [contract.yaml (APA):1-45](file://backend/app/templates/apa/contract.yaml#L1-L45)
-- [contract.yaml (IEEE):1-50](file://backend/app/templates/ieee/contract.yaml#L1-L50)
-- [contract.yaml (None):1-50](file://backend/app/templates/none/contract.yaml#L1-L50)
+- [loader.py:16-74](../../../../backend/app/pipeline/contracts/loader.py#L16-L74)
+- [contract.yaml (APA):1-45](../../../../backend/app/templates/apa/contract.yaml#L1-L45)
+- [contract.yaml (IEEE):1-50](../../../../backend/app/templates/ieee/contract.yaml#L1-L50)
+- [contract.yaml (None):1-50](../../../../backend/app/templates/none/contract.yaml#L1-L50)
 
 ### CSL Integration and Reference Formatting
 
@@ -223,7 +223,7 @@ TR-->>Test : Rendered DOCX with formatted references
 
 **Diagram sources**
 
-- [test_csl_formatting.py:94-132](file://backend/tests/integration/test_csl_formatting.py#L94-L132)
+- [test_csl_formatting.py:94-132](../../../../backend/tests/integration/test_csl_formatting.py#L94-L132)
 
 CSL examples:
 
@@ -231,8 +231,8 @@ CSL examples:
 
 **Section sources**
 
-- [styles.csl (APA):1-86](file://backend/app/templates/apa/styles.csl#L1-L86)
-- [test_csl_formatting.py:92-132](file://backend/tests/integration/test_csl_formatting.py#L92-L132)
+- [styles.csl (APA):1-86](../../../../backend/app/templates/apa/styles.csl#L1-L86)
+- [test_csl_formatting.py:92-132](../../../../backend/tests/integration/test_csl_formatting.py#L92-L132)
 
 ### Conditional Logic and Dynamic Content Insertion
 
@@ -262,13 +262,13 @@ RefsLoop --> Done
 
 **Diagram sources**
 
-- [template_renderer.py:125-159](file://backend/app/pipeline/formatting/template_renderer.py#L125-L159)
-- [template_creation_guide.md:32-91](file://backend/docs/template_creation_guide.md#L32-L91)
+- [template_renderer.py:125-159](../../../../backend/app/pipeline/formatting/template_renderer.py#L125-L159)
+- [template_creation_guide.md:32-91](../../../../backend/docs/template_creation_guide.md#L32-L91)
 
 **Section sources**
 
-- [template_creation_guide.md:19-91](file://backend/docs/template_creation_guide.md#L19-L91)
-- [template_creation.md:21-74](file://docs/template_creation.md#L21-L74)
+- [template_creation_guide.md:19-91](../../../../backend/docs/template_creation_guide.md#L19-L91)
+- [template_creation.md:21-74](../../../user-guide/template_creation.md#L21-L74)
 
 ## Dependency Analysis
 
@@ -297,13 +297,13 @@ TR --> RF
 
 **Diagram sources**
 
-- [template_renderer.py:17-24](file://backend/app/pipeline/formatting/template_renderer.py#L17-L24)
-- [loader.py:1-6](file://backend/app/pipeline/contracts/loader.py#L1-L6)
+- [template_renderer.py:17-24](../../../../backend/app/pipeline/formatting/template_renderer.py#L17-L24)
+- [loader.py:1-6](../../../../backend/app/pipeline/contracts/loader.py#L1-L6)
 
 **Section sources**
 
-- [template_renderer.py:65-83](file://backend/app/pipeline/formatting/template_renderer.py#L65-L83)
-- [loader.py:16-38](file://backend/app/pipeline/contracts/loader.py#L16-L38)
+- [template_renderer.py:65-83](../../../../backend/app/pipeline/formatting/template_renderer.py#L65-L83)
+- [loader.py:16-38](../../../../backend/app/pipeline/contracts/loader.py#L16-L38)
 
 ## Performance Considerations
 
@@ -319,8 +319,8 @@ Recommendations:
 
 **Section sources**
 
-- [template_renderer.py:200-230](file://backend/app/pipeline/formatting/template_renderer.py#L200-L230)
-- [template_renderer.py:34-36](file://backend/app/pipeline/formatting/template_renderer.py#L34-L36)
+- [template_renderer.py:200-230](../../../../backend/app/pipeline/formatting/template_renderer.py#L200-L230)
+- [template_renderer.py:34-36](../../../../backend/app/pipeline/formatting/template_renderer.py#L34-L36)
 
 ## Troubleshooting Guide
 
@@ -341,10 +341,10 @@ Validation checklist:
 
 **Section sources**
 
-- [template_creation_guide.md:93-114](file://backend/docs/template_creation_guide.md#L93-L114)
-- [template_creation.md:81-110](file://docs/template_creation.md#L81-L110)
-- [test_csl_formatting.py:79-88](file://backend/tests/integration/test_csl_formatting.py#L79-L88)
-- [test_template_renderer.py:114-127](file://backend/tests/test_template_renderer.py#L114-L127)
+- [template_creation_guide.md:93-114](../../../../backend/docs/template_creation_guide.md#L93-L114)
+- [template_creation.md:81-110](../../../user-guide/template_creation.md#L81-L110)
+- [test_csl_formatting.py:79-88](../../../../backend/tests/integration/test_csl_formatting.py#L79-L88)
+- [test_template_renderer.py:114-127](../../../../backend/tests/test_template_renderer.py#L114-L127)
 
 ## Conclusion
 
@@ -363,8 +363,8 @@ Creating robust templates involves structuring assets per style, defining contra
 
 **Section sources**
 
-- [template_creation.md:5-20](file://docs/template_creation.md#L5-L20)
-- [template_creation_guide.md:5-18](file://backend/docs/template_creation_guide.md#L5-L18)
+- [template_creation.md:5-20](../../../user-guide/template_creation.md#L5-L20)
+- [template_creation_guide.md:5-18](../../../../backend/docs/template_creation_guide.md#L5-L18)
 
 ### Modifying Existing Templates
 
@@ -374,8 +374,8 @@ Creating robust templates involves structuring assets per style, defining contra
 
 **Section sources**
 
-- [template_creation.md:81-110](file://docs/template_creation.md#L81-L110)
-- [test_csl_formatting.py:135-152](file://backend/tests/integration/test_csl_formatting.py#L135-L152)
+- [template_creation.md:81-110](../../../user-guide/template_creation.md#L81-L110)
+- [test_csl_formatting.py:135-152](../../../../backend/tests/integration/test_csl_formatting.py#L135-L152)
 
 ### Integrating New Citation Styles
 
@@ -385,9 +385,9 @@ Creating robust templates involves structuring assets per style, defining contra
 
 **Section sources**
 
-- [contract.yaml (APA):1-45](file://backend/app/templates/apa/contract.yaml#L1-L45)
-- [styles.csl (APA):1-86](file://backend/app/templates/apa/styles.csl#L1-L86)
-- [test_csl_formatting.py:113-132](file://backend/tests/integration/test_csl_formatting.py#L113-L132)
+- [contract.yaml (APA):1-45](../../../../backend/app/templates/apa/contract.yaml#L1-L45)
+- [styles.csl (APA):1-86](../../../../backend/app/templates/apa/styles.csl#L1-L86)
+- [test_csl_formatting.py:113-132](../../../../backend/tests/integration/test_csl_formatting.py#L113-L132)
 
 ### Template Packaging, Distribution, and Maintenance
 
@@ -398,6 +398,6 @@ Creating robust templates involves structuring assets per style, defining contra
 
 **Section sources**
 
-- [template_creation_guide.md:101-114](file://backend/docs/template_creation_guide.md#L101-L114)
-- [test_template_renderer.py:69-127](file://backend/tests/test_template_renderer.py#L69-L127)
-- [test_csl_formatting.py:91-152](file://backend/tests/integration/test_csl_formatting.py#L91-L152)
+- [template_creation_guide.md:101-114](../../../../backend/docs/template_creation_guide.md#L101-L114)
+- [test_template_renderer.py:69-127](../../../../backend/tests/test_template_renderer.py#L69-L127)
+- [test_csl_formatting.py:91-152](../../../../backend/tests/integration/test_csl_formatting.py#L91-L152)

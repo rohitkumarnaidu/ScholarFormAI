@@ -37,29 +37,29 @@ The `amf` CLI automatically operates in **Dual-Mode**: it first attempts high-pe
 sequenceDiagram
     autonumber
     actor User as "CLI User / Terminal"
-    participant CLI as "AMF CLI (amf format)"
+    participant CLI as "AMF CLI ("amf format")"
     participant Client as "BackendClient (_client.py)"
     participant API as "REST API("/api/v1/documents/upload")"
     participant Local as "Local Services (app.services.formatter)"
-    participant FS as "File System (Output DOCX)"
+    participant FS as "File System ("Output DOCX")"
 
 
     User->>CLI: Run amf format -i manuscript.md -o output.docx -s apa
     CLI->>Client: format(input_file, output_file, style, options)
     Client->>API: POST /api/v1/documents/upload or /api/v1/format
     
-    alt REST API Server Reachable (HTTP 200)
+    alt REST API Server Reachable ("HTTP 200")
         API-->>Client: Return JSON result payload & download_url
         Client->>API: Download formatted DOCX file stream
         API-->>Client: Binary DOCX content
         Client->>FS: Write binary content to output.docx
-        Client-->>CLI: Format Success (Pages, Metadata)
+        Client-->>CLI: Format Success ("Pages, Metadata")
     else REST API Unavailable / Network Connection Failure
         Client->>Client: Catch ConnectionError -> Log Fallback Warning
         Client->>Local: Initialize ManuscriptFormatter & StyleRegistry
         Local->>Local: Parse text & format DOCX locally
         Local->>FS: Write output.docx directly to disk
-        Local-->>CLI: Local Format Success (Offline Mode)
+        Local-->>CLI: Local Format Success ("Offline Mode")
     end
     
     CLI-->>User: Display Rich Terminal Output & Summary
@@ -87,16 +87,16 @@ sequenceDiagram
         Collector-->>Cmd: Compressed log payload
     end
     
-    Cmd->>API: POST /api/v1/feedback (Payload + Logs + Contact Info)
+    Cmd->>API: POST /api/v1/feedback ("Payload + Logs + Contact Info")
     
     alt REST API Online
-        API-->>Cmd: 201 Created with Issue ID (e.g. ISS-1001) & SLA status
+        API-->>Cmd: 201 Created with Issue ID ("e.g. ISS-1001") & SLA status
     else REST API Offline
         Cmd->>LocalStore: Append issue report to local offline backup
-        LocalStore-->>Cmd: Saved locally (Pending sync)
+        LocalStore-->>Cmd: Saved locally ("Pending sync")
     end
 
-    Cmd-->>User: Print Formatted Issue Summary (ID, Status, SLA Timeline)
+    Cmd-->>User: Print Formatted Issue Summary ("ID, Status, SLA Timeline")
 ```
 
 ---

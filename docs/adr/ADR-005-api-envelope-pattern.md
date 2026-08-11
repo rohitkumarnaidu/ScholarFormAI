@@ -86,5 +86,5 @@ This decision has been implemented and is verified by:
 ## Cross-References
 
 - [ADR 003: API Versioning Strategy](003-api-versioning-strategy.md) — version prefix
-- [API Error Handling](../ERROR_HANDLING.md) — structured error code reference
+- [API Error Handling](../troubleshooting/ERROR_HANDLING.md) — structured error code reference
 - [API Reference](../API.md) — endpoint documentation with envelope examples

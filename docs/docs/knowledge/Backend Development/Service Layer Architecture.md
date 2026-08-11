@@ -5,17 +5,17 @@
 
 <cite>
 **Referenced Files in This Document**
-- [document_service.py](file://backend/app/services/document_service.py)
-- [auth_service.py](file://backend/app/services/auth_service.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
-- [enhancement_manager.py](file://backend/app/services/enhancement_manager.py)
-- [crossref_client.py](file://backend/app/services/crossref_client.py)
-- [nvidia_client.py](file://backend/app/services/nvidia_client.py)
-- [redis_cache.py](file://backend/app/cache/redis_cache.py)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [docling_client.py](file://backend/app/pipeline/services/docling_client.py)
-- [grobid_client.py](file://backend/app/pipeline/services/grobid_client.py)
-- [singleton.py](file://backend/app/utils/singleton.py)
+- [document_service.py](../../../../backend/app/services/document_service.py)
+- [auth_service.py](../../../../backend/app/services/auth_service.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
+- [enhancement_manager.py](../../../../backend/app/services/enhancement_manager.py)
+- [crossref_client.py](../../../../backend/app/services/crossref_client.py)
+- [nvidia_client.py](../../../../backend/app/services/nvidia_client.py)
+- [redis_cache.py](../../../../backend/app/cache/redis_cache.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [docling_client.py](../../../../backend/app/pipeline/services/docling_client.py)
+- [grobid_client.py](../../../../backend/app/pipeline/services/grobid_client.py)
+- [singleton.py](../../../../backend/app/utils/singleton.py)
 </cite>
 
 ## Table of Contents
@@ -74,30 +74,30 @@ NV --> LLM
 
 **Diagram sources**
 
-- [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
-- [auth_service.py:56-183](file://backend/app/services/auth_service.py#L56-L183)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [enhancement_manager.py:78-294](file://backend/app/services/enhancement_manager.py#L78-L294)
-- [crossref_client.py:32-164](file://backend/app/services/crossref_client.py#L32-L164)
-- [nvidia_client.py:30-260](file://backend/app/services/nvidia_client.py#L30-L260)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [orchestrator.py:73-1227](file://backend/app/pipeline/orchestrator.py#L73-L1227)
-- [docling_client.py:143-482](file://backend/app/pipeline/services/docling_client.py#L143-L482)
-- [grobid_client.py:25-317](file://backend/app/pipeline/services/grobid_client.py#L25-L317)
+- [document_service.py:34-560](../../../../backend/app/services/document_service.py#L34-L560)
+- [auth_service.py:56-183](../../../../backend/app/services/auth_service.py#L56-L183)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [enhancement_manager.py:78-294](../../../../backend/app/services/enhancement_manager.py#L78-L294)
+- [crossref_client.py:32-164](../../../../backend/app/services/crossref_client.py#L32-L164)
+- [nvidia_client.py:30-260](../../../../backend/app/services/nvidia_client.py#L30-L260)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [orchestrator.py:73-1227](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L1227)
+- [docling_client.py:143-482](../../../../backend/app/pipeline/services/docling_client.py#L143-L482)
+- [grobid_client.py:25-317](../../../../backend/app/pipeline/services/grobid_client.py#L25-L317)
 
 **Section sources**
 
-- [document_service.py:1-560](file://backend/app/services/document_service.py#L1-L560)
-- [auth_service.py:1-183](file://backend/app/services/auth_service.py#L1-L183)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [enhancement_manager.py:1-294](file://backend/app/services/enhancement_manager.py#L1-L294)
-- [crossref_client.py:1-164](file://backend/app/services/crossref_client.py#L1-L164)
-- [nvidia_client.py:1-260](file://backend/app/services/nvidia_client.py#L1-L260)
-- [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
-- [orchestrator.py:1-1227](file://backend/app/pipeline/orchestrator.py#L1-L1227)
-- [docling_client.py:1-482](file://backend/app/pipeline/services/docling_client.py#L1-L482)
-- [grobid_client.py:1-317](file://backend/app/pipeline/services/grobid_client.py#L1-L317)
-- [singleton.py:1-72](file://backend/app/utils/singleton.py#L1-L72)
+- [document_service.py:1-560](../../../../backend/app/services/document_service.py#L1-L560)
+- [auth_service.py:1-183](../../../../backend/app/services/auth_service.py#L1-L183)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [enhancement_manager.py:1-294](../../../../backend/app/services/enhancement_manager.py#L1-L294)
+- [crossref_client.py:1-164](../../../../backend/app/services/crossref_client.py#L1-L164)
+- [nvidia_client.py:1-260](../../../../backend/app/services/nvidia_client.py#L1-L260)
+- [redis_cache.py:1-102](../../../../backend/app/cache/redis_cache.py#L1-L102)
+- [orchestrator.py:1-1227](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L1-L1227)
+- [docling_client.py:1-482](../../../../backend/app/pipeline/services/docling_client.py#L1-L482)
+- [grobid_client.py:1-317](../../../../backend/app/pipeline/services/grobid_client.py#L1-L317)
+- [singleton.py:1-72](../../../../backend/app/utils/singleton.py#L1-L72)
 
 ## Core Components
 
@@ -113,16 +113,16 @@ NV --> LLM
 
 **Section sources**
 
-- [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
-- [auth_service.py:56-183](file://backend/app/services/auth_service.py#L56-L183)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [enhancement_manager.py:78-294](file://backend/app/services/enhancement_manager.py#L78-L294)
-- [crossref_client.py:32-164](file://backend/app/services/crossref_client.py#L32-L164)
-- [nvidia_client.py:30-260](file://backend/app/services/nvidia_client.py#L30-L260)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [orchestrator.py:73-1227](file://backend/app/pipeline/orchestrator.py#L73-L1227)
-- [docling_client.py:143-482](file://backend/app/pipeline/services/docling_client.py#L143-L482)
-- [grobid_client.py:25-317](file://backend/app/pipeline/services/grobid_client.py#L25-L317)
+- [document_service.py:34-560](../../../../backend/app/services/document_service.py#L34-L560)
+- [auth_service.py:56-183](../../../../backend/app/services/auth_service.py#L56-L183)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [enhancement_manager.py:78-294](../../../../backend/app/services/enhancement_manager.py#L78-L294)
+- [crossref_client.py:32-164](../../../../backend/app/services/crossref_client.py#L32-L164)
+- [nvidia_client.py:30-260](../../../../backend/app/services/nvidia_client.py#L30-L260)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [orchestrator.py:73-1227](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L1227)
+- [docling_client.py:143-482](../../../../backend/app/pipeline/services/docling_client.py#L143-L482)
+- [grobid_client.py:25-317](../../../../backend/app/pipeline/services/grobid_client.py#L25-L317)
 
 ## Architecture Overview
 
@@ -153,14 +153,14 @@ NV --> LLM
 
 **Diagram sources**
 
-- [orchestrator.py:73-1227](file://backend/app/pipeline/orchestrator.py#L73-L1227)
-- [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [crossref_client.py:32-164](file://backend/app/services/crossref_client.py#L32-L164)
-- [nvidia_client.py:30-260](file://backend/app/services/nvidia_client.py#L30-L260)
-- [docling_client.py:143-482](file://backend/app/pipeline/services/docling_client.py#L143-L482)
-- [grobid_client.py:25-317](file://backend/app/pipeline/services/grobid_client.py#L25-L317)
+- [orchestrator.py:73-1227](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L1227)
+- [document_service.py:34-560](../../../../backend/app/services/document_service.py#L34-L560)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [crossref_client.py:32-164](../../../../backend/app/services/crossref_client.py#L32-L164)
+- [nvidia_client.py:30-260](../../../../backend/app/services/nvidia_client.py#L30-L260)
+- [docling_client.py:143-482](../../../../backend/app/pipeline/services/docling_client.py#L143-L482)
+- [grobid_client.py:25-317](../../../../backend/app/pipeline/services/grobid_client.py#L25-L317)
 
 ## Detailed Component Analysis
 
@@ -203,11 +203,11 @@ class DocumentService {
 
 **Diagram sources**
 
-- [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
+- [document_service.py:34-560](../../../../backend/app/services/document_service.py#L34-L560)
 
 **Section sources**
 
-- [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
+- [document_service.py:34-560](../../../../backend/app/services/document_service.py#L34-L560)
 
 ### AuthService
 
@@ -237,11 +237,11 @@ class AuthService {
 
 **Diagram sources**
 
-- [auth_service.py:56-183](file://backend/app/services/auth_service.py#L56-L183)
+- [auth_service.py:56-183](../../../../backend/app/services/auth_service.py#L56-L183)
 
 **Section sources**
 
-- [auth_service.py:1-183](file://backend/app/services/auth_service.py#L1-L183)
+- [auth_service.py:1-183](../../../../backend/app/services/auth_service.py#L1-L183)
 
 ### LLMService
 
@@ -271,13 +271,13 @@ LLMService --> RedisCache : "uses"
 
 **Diagram sources**
 
-- [llm_service.py:91-393](file://backend/app/services/llm_service.py#L91-L393)
-- [redis_cache.py:77-98](file://backend/app/cache/redis_cache.py#L77-L98)
+- [llm_service.py:91-393](../../../../backend/app/services/llm_service.py#L91-L393)
+- [redis_cache.py:77-98](../../../../backend/app/cache/redis_cache.py#L77-L98)
 
 **Section sources**
 
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [redis_cache.py:1-102](../../../../backend/app/cache/redis_cache.py#L1-L102)
 
 ### EnhancementManager
 
@@ -321,11 +321,11 @@ EnhancementManager --> EnhancementProfile : "produces"
 
 **Diagram sources**
 
-- [enhancement_manager.py:78-294](file://backend/app/services/enhancement_manager.py#L78-L294)
+- [enhancement_manager.py:78-294](../../../../backend/app/services/enhancement_manager.py#L78-L294)
 
 **Section sources**
 
-- [enhancement_manager.py:1-294](file://backend/app/services/enhancement_manager.py#L1-L294)
+- [enhancement_manager.py:1-294](../../../../backend/app/services/enhancement_manager.py#L1-L294)
 
 ### CrossRefClient
 
@@ -353,13 +353,13 @@ CrossRefClient --> RedisCache : "uses"
 
 **Diagram sources**
 
-- [crossref_client.py:32-164](file://backend/app/services/crossref_client.py#L32-L164)
-- [redis_cache.py:45-76](file://backend/app/cache/redis_cache.py#L45-L76)
+- [crossref_client.py:32-164](../../../../backend/app/services/crossref_client.py#L32-L164)
+- [redis_cache.py:45-76](../../../../backend/app/cache/redis_cache.py#L45-L76)
 
 **Section sources**
 
-- [crossref_client.py:1-164](file://backend/app/services/crossref_client.py#L1-L164)
-- [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
+- [crossref_client.py:1-164](../../../../backend/app/services/crossref_client.py#L1-L164)
+- [redis_cache.py:1-102](../../../../backend/app/cache/redis_cache.py#L1-L102)
 
 ### NvidiaClient
 
@@ -387,13 +387,13 @@ NvidiaClient --> LLMService : "delegates to"
 
 **Diagram sources**
 
-- [nvidia_client.py:30-260](file://backend/app/services/nvidia_client.py#L30-L260)
-- [llm_service.py:91-203](file://backend/app/services/llm_service.py#L91-L203)
+- [nvidia_client.py:30-260](../../../../backend/app/services/nvidia_client.py#L30-L260)
+- [llm_service.py:91-203](../../../../backend/app/services/llm_service.py#L91-L203)
 
 **Section sources**
 
-- [nvidia_client.py:1-260](file://backend/app/services/nvidia_client.py#L1-L260)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
+- [nvidia_client.py:1-260](../../../../backend/app/services/nvidia_client.py#L1-L260)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
 
 ### PipelineOrchestrator
 
@@ -430,28 +430,28 @@ Orchestrator-->>Client : result
 
 **Diagram sources**
 
-- [orchestrator.py:522-1092](file://backend/app/pipeline/orchestrator.py#L522-L1092)
-- [docling_client.py:192-284](file://backend/app/pipeline/services/docling_client.py#L192-L284)
-- [grobid_client.py:53-91](file://backend/app/pipeline/services/grobid_client.py#L53-L91)
+- [orchestrator.py:522-1092](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L522-L1092)
+- [docling_client.py:192-284](../../../../backend/app/pipeline/services/docling_client.py#L192-L284)
+- [grobid_client.py:53-91](../../../../backend/app/pipeline/services/grobid_client.py#L53-L91)
 
 **Section sources**
 
-- [orchestrator.py:1-1227](file://backend/app/pipeline/orchestrator.py#L1-L1227)
-- [docling_client.py:1-482](file://backend/app/pipeline/services/docling_client.py#L1-L482)
-- [grobid_client.py:1-317](file://backend/app/pipeline/services/grobid_client.py#L1-L317)
+- [orchestrator.py:1-1227](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L1-L1227)
+- [docling_client.py:1-482](../../../../backend/app/pipeline/services/docling_client.py#L1-L482)
+- [grobid_client.py:1-317](../../../../backend/app/pipeline/services/grobid_client.py#L1-L317)
 
 ## Dependency Analysis
 
 - Coupling:
-    - Services depend on configuration and shared utilities (settings, logging, Redis).
-    - PipelineOrchestrator depends on multiple services and external clients.
-    - LLMService and CrossRefClient depend on RedisCache for caching.
+  - Services depend on configuration and shared utilities (settings, logging, Redis).
+  - PipelineOrchestrator depends on multiple services and external clients.
+  - LLMService and CrossRefClient depend on RedisCache for caching.
 - Cohesion:
-    - Each service encapsulates a single responsibility (documents, auth, LLM, enhancements, external APIs).
+  - Each service encapsulates a single responsibility (documents, auth, LLM, enhancements, external APIs).
 - External dependencies:
-    - Supabase for persistence and JWT verification.
-    - Redis for caching and optional queues.
-    - Third-party providers (NVIDIA NIM, GROBID, Docling) with availability checks and safe execution.
+  - Supabase for persistence and JWT verification.
+  - Redis for caching and optional queues.
+  - Third-party providers (NVIDIA NIM, GROBID, Docling) with availability checks and safe execution.
 
 ```mermaid
 graph LR
@@ -467,27 +467,27 @@ EM["EnhancementManager"] --> ORCH
 
 **Diagram sources**
 
-- [orchestrator.py:73-1227](file://backend/app/pipeline/orchestrator.py#L73-L1227)
-- [document_service.py:34-560](file://backend/app/services/document_service.py#L34-L560)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [crossref_client.py:32-164](file://backend/app/services/crossref_client.py#L32-L164)
-- [nvidia_client.py:30-260](file://backend/app/services/nvidia_client.py#L30-L260)
-- [docling_client.py:143-482](file://backend/app/pipeline/services/docling_client.py#L143-L482)
-- [grobid_client.py:25-317](file://backend/app/pipeline/services/grobid_client.py#L25-L317)
-- [enhancement_manager.py:78-294](file://backend/app/services/enhancement_manager.py#L78-L294)
+- [orchestrator.py:73-1227](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L73-L1227)
+- [document_service.py:34-560](../../../../backend/app/services/document_service.py#L34-L560)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [crossref_client.py:32-164](../../../../backend/app/services/crossref_client.py#L32-L164)
+- [nvidia_client.py:30-260](../../../../backend/app/services/nvidia_client.py#L30-L260)
+- [docling_client.py:143-482](../../../../backend/app/pipeline/services/docling_client.py#L143-L482)
+- [grobid_client.py:25-317](../../../../backend/app/pipeline/services/grobid_client.py#L25-L317)
+- [enhancement_manager.py:78-294](../../../../backend/app/services/enhancement_manager.py#L78-L294)
 
 **Section sources**
 
-- [orchestrator.py:1-1227](file://backend/app/pipeline/orchestrator.py#L1-L1227)
-- [document_service.py:1-560](file://backend/app/services/document_service.py#L1-L560)
-- [llm_service.py:1-393](file://backend/app/services/llm_service.py#L1-L393)
-- [redis_cache.py:1-102](file://backend/app/cache/redis_cache.py#L1-L102)
-- [crossref_client.py:1-164](file://backend/app/services/crossref_client.py#L1-L164)
-- [nvidia_client.py:1-260](file://backend/app/services/nvidia_client.py#L1-L260)
-- [docling_client.py:1-482](file://backend/app/pipeline/services/docling_client.py#L1-L482)
-- [grobid_client.py:1-317](file://backend/app/pipeline/services/grobid_client.py#L1-L317)
-- [enhancement_manager.py:1-294](file://backend/app/services/enhancement_manager.py#L1-L294)
+- [orchestrator.py:1-1227](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L1-L1227)
+- [document_service.py:1-560](../../../../backend/app/services/document_service.py#L1-L560)
+- [llm_service.py:1-393](../../../../backend/app/services/llm_service.py#L1-L393)
+- [redis_cache.py:1-102](../../../../backend/app/cache/redis_cache.py#L1-L102)
+- [crossref_client.py:1-164](../../../../backend/app/services/crossref_client.py#L1-L164)
+- [nvidia_client.py:1-260](../../../../backend/app/services/nvidia_client.py#L1-L260)
+- [docling_client.py:1-482](../../../../backend/app/pipeline/services/docling_client.py#L1-L482)
+- [grobid_client.py:1-317](../../../../backend/app/pipeline/services/grobid_client.py#L1-L317)
+- [enhancement_manager.py:1-294](../../../../backend/app/services/enhancement_manager.py#L1-L294)
 
 ## Performance Considerations
 
@@ -512,12 +512,12 @@ Common issues and mitigations:
 
 **Section sources**
 
-- [document_service.py:90-113](file://backend/app/services/document_service.py#L90-L113)
-- [llm_service.py:205-268](file://backend/app/services/llm_service.py#L205-L268)
-- [redis_cache.py:15-39](file://backend/app/cache/redis_cache.py#L15-L39)
-- [docling_client.py:176-178](file://backend/app/pipeline/services/docling_client.py#L176-L178)
-- [grobid_client.py:41-50](file://backend/app/pipeline/services/grobid_client.py#L41-L50)
-- [orchestrator.py:212-234](file://backend/app/pipeline/orchestrator.py#L212-L234)
+- [document_service.py:90-113](../../../../backend/app/services/document_service.py#L90-L113)
+- [llm_service.py:205-268](../../../../backend/app/services/llm_service.py#L205-L268)
+- [redis_cache.py:15-39](../../../../backend/app/cache/redis_cache.py#L15-L39)
+- [docling_client.py:176-178](../../../../backend/app/pipeline/services/docling_client.py#L176-L178)
+- [grobid_client.py:41-50](../../../../backend/app/pipeline/services/grobid_client.py#L41-L50)
+- [orchestrator.py:212-234](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L212-L234)
 
 ## Conclusion
 

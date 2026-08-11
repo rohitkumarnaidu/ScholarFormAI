@@ -110,7 +110,7 @@ erDiagram
         uuid user_id FK
         text name
         text url
-        jsonb events "['document.completed', 'document.failed', ...]"
+        jsonb events "["'document.completed', 'document.failed', ..."]"
         text secret "HMAC signing"
         bool is_active
         timestamptz created_at

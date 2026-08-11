@@ -5,13 +5,13 @@
 
 <cite>
 **Referenced Files in This Document**
-- [events.py](file://backend/app/realtime/events.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [preview.py](file://backend/app/routers/preview.py)
-- [stream.py](file://backend/app/routers/stream.py)
-- [preview_renderer.py](file://backend/app/services/preview_renderer.py)
-- [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
-- [ReconnectingWebSocket.js](file://frontend/src/lib/ReconnectingWebSocket.js)
+- [events.py](../../../../../backend/app/realtime/events.py)
+- [pubsub.py](../../../../../backend/app/realtime/pubsub.py)
+- [preview.py](../../../../../backend/app/routers/preview.py)
+- [stream.py](../../../../../backend/app/routers/v1/stream.py)
+- [preview_renderer.py](../../../../../backend/app/services/preview_renderer.py)
+- [useLivePreviewSocket.js](../../../../../frontend/src/hooks/useLivePreviewSocket.js)
+- [ReconnectingWebSocket.js](../../../../../frontend/src/lib/ReconnectingWebSocket.js)
 </cite>
 
 ## Table of Contents
@@ -36,13 +36,13 @@ This document explains the real-time features implementation, focusing on live p
 The real-time system spans backend and frontend:
 
 - Backend:
-    - Real-time event model and publisher/subscriber built on Redis with in-memory fallback.
-    - WebSocket endpoint for live preview sessions.
-    - SSE endpoint for streaming job events.
-    - Preview rendering service with caching and template support.
+  - Real-time event model and publisher/subscriber built on Redis with in-memory fallback.
+  - WebSocket endpoint for live preview sessions.
+  - SSE endpoint for streaming job events.
+  - Preview rendering service with caching and template support.
 - Frontend:
-    - React hook that manages a WebSocket connection with exponential backoff and jitter.
-    - ReconnectingWebSocket wrapper for robust reconnection behavior.
+  - React hook that manages a WebSocket connection with exponential backoff and jitter.
+  - ReconnectingWebSocket wrapper for robust reconnection behavior.
 
 ```mermaid
 graph TB
@@ -68,23 +68,23 @@ D --> A
 
 **Diagram sources**
 
-- [events.py:1-34](file://backend/app/realtime/events.py#L1-L34)
-- [pubsub.py:1-120](file://backend/app/realtime/pubsub.py#L1-L120)
-- [preview.py:1-201](file://backend/app/routers/preview.py#L1-L201)
-- [stream.py:1-95](file://backend/app/routers/stream.py#L1-L95)
-- [preview_renderer.py:1-421](file://backend/app/services/preview_renderer.py#L1-L421)
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
+- [events.py:1-34](../../../../../backend/app/realtime/events.py#L1-L34)
+- [pubsub.py:1-120](../../../../../backend/app/realtime/pubsub.py#L1-L120)
+- [preview.py:1-201](../../../../../backend/app/routers/preview.py#L1-L201)
+- [stream.py:1-95](../../../../../backend/app/routers/v1/stream.py#L1-L95)
+- [preview_renderer.py:1-421](../../../../../backend/app/services/preview_renderer.py#L1-L421)
+- [useLivePreviewSocket.js:1-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [ReconnectingWebSocket.js:1-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
 
 **Section sources**
 
-- [events.py:1-34](file://backend/app/realtime/events.py#L1-L34)
-- [pubsub.py:1-120](file://backend/app/realtime/pubsub.py#L1-L120)
-- [preview.py:1-201](file://backend/app/routers/preview.py#L1-L201)
-- [stream.py:1-95](file://backend/app/routers/stream.py#L1-L95)
-- [preview_renderer.py:1-421](file://backend/app/services/preview_renderer.py#L1-L421)
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
+- [events.py:1-34](../../../../../backend/app/realtime/events.py#L1-L34)
+- [pubsub.py:1-120](../../../../../backend/app/realtime/pubsub.py#L1-L120)
+- [preview.py:1-201](../../../../../backend/app/routers/preview.py#L1-L201)
+- [stream.py:1-95](../../../../../backend/app/routers/v1/stream.py#L1-L95)
+- [preview_renderer.py:1-421](../../../../../backend/app/services/preview_renderer.py#L1-L421)
+- [useLivePreviewSocket.js:1-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [ReconnectingWebSocket.js:1-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
 
 ## Core Components
 
@@ -104,11 +104,11 @@ Key responsibilities:
 
 **Section sources**
 
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
-- [preview.py:78-128](file://backend/app/routers/preview.py#L78-L128)
-- [stream.py:32-95](file://backend/app/routers/stream.py#L32-L95)
-- [preview_renderer.py:31-421](file://backend/app/services/preview_renderer.py#L31-L421)
+- [events.py:9-34](../../../../../backend/app/realtime/events.py#L9-L34)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
+- [preview.py:78-128](../../../../../backend/app/routers/preview.py#L78-L128)
+- [stream.py:32-95](../../../../../backend/app/routers/v1/stream.py#L32-L95)
+- [preview_renderer.py:31-421](../../../../../backend/app/services/preview_renderer.py#L31-L421)
 
 ## Architecture Overview
 
@@ -140,11 +140,11 @@ end
 
 **Diagram sources**
 
-- [useLivePreviewSocket.js:28-137](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
-- [preview.py:78-128](file://backend/app/routers/preview.py#L78-L128)
-- [pubsub.py:79-120](file://backend/app/realtime/pubsub.py#L79-L120)
-- [events.py:21-34](file://backend/app/realtime/events.py#L21-L34)
-- [preview_renderer.py:364-406](file://backend/app/services/preview_renderer.py#L364-L406)
+- [useLivePreviewSocket.js:28-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
+- [preview.py:78-128](../../../../../backend/app/routers/preview.py#L78-L128)
+- [pubsub.py:79-120](../../../../../backend/app/realtime/pubsub.py#L79-L120)
+- [events.py:21-34](../../../../../backend/app/realtime/events.py#L21-L34)
+- [preview_renderer.py:364-406](../../../../../backend/app/services/preview_renderer.py#L364-L406)
 
 ## Detailed Component Analysis
 
@@ -179,16 +179,16 @@ Hook-->>Client : "UI updates"
 
 **Diagram sources**
 
-- [preview.py:78-128](file://backend/app/routers/preview.py#L78-L128)
-- [pubsub.py:79-120](file://backend/app/realtime/pubsub.py#L79-L120)
-- [preview_renderer.py:364-406](file://backend/app/services/preview_renderer.py#L364-L406)
-- [useLivePreviewSocket.js:68-81](file://frontend/src/hooks/useLivePreviewSocket.js#L68-L81)
+- [preview.py:78-128](../../../../../backend/app/routers/preview.py#L78-L128)
+- [pubsub.py:79-120](../../../../../backend/app/realtime/pubsub.py#L79-L120)
+- [preview_renderer.py:364-406](../../../../../backend/app/services/preview_renderer.py#L364-L406)
+- [useLivePreviewSocket.js:68-81](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L68-L81)
 
 **Section sources**
 
-- [preview.py:78-128](file://backend/app/routers/preview.py#L78-L128)
-- [preview_renderer.py:364-406](file://backend/app/services/preview_renderer.py#L364-L406)
-- [useLivePreviewSocket.js:28-137](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
+- [preview.py:78-128](../../../../../backend/app/routers/preview.py#L78-L128)
+- [preview_renderer.py:364-406](../../../../../backend/app/services/preview_renderer.py#L364-L406)
+- [useLivePreviewSocket.js:28-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L28-L137)
 
 ### Reconnecting WebSocket Implementation
 
@@ -221,11 +221,11 @@ class ReconnectingWebSocket {
 
 **Diagram sources**
 
-- [ReconnectingWebSocket.js:5-148](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
+- [ReconnectingWebSocket.js:5-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
 
 **Section sources**
 
-- [ReconnectingWebSocket.js:5-148](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
+- [ReconnectingWebSocket.js:5-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
 
 ### Message Handling and Conflict Resolution
 
@@ -252,13 +252,13 @@ Reconnect --> Done
 
 **Diagram sources**
 
-- [useLivePreviewSocket.js:106-133](file://frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
-- [preview.py:105-115](file://backend/app/routers/preview.py#L105-L115)
+- [useLivePreviewSocket.js:106-133](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
+- [preview.py:105-115](../../../../../backend/app/routers/preview.py#L105-L115)
 
 **Section sources**
 
-- [useLivePreviewSocket.js:106-133](file://frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
-- [preview.py:105-115](file://backend/app/routers/preview.py#L105-L115)
+- [useLivePreviewSocket.js:106-133](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
+- [preview.py:105-115](../../../../../backend/app/routers/preview.py#L105-L115)
 
 ### SSE Job Events
 
@@ -286,15 +286,15 @@ end
 
 **Diagram sources**
 
-- [stream.py:32-95](file://backend/app/routers/stream.py#L32-L95)
-- [pubsub.py:79-120](file://backend/app/realtime/pubsub.py#L79-L120)
-- [events.py:21-34](file://backend/app/realtime/events.py#L21-L34)
+- [stream.py:32-95](../../../../../backend/app/routers/v1/stream.py#L32-L95)
+- [pubsub.py:79-120](../../../../../backend/app/realtime/pubsub.py#L79-L120)
+- [events.py:21-34](../../../../../backend/app/realtime/events.py#L21-L34)
 
 **Section sources**
 
-- [stream.py:32-95](file://backend/app/routers/stream.py#L32-L95)
-- [pubsub.py:79-120](file://backend/app/realtime/pubsub.py#L79-L120)
-- [events.py:21-34](file://backend/app/realtime/events.py#L21-L34)
+- [stream.py:32-95](../../../../../backend/app/routers/v1/stream.py#L32-L95)
+- [pubsub.py:79-120](../../../../../backend/app/realtime/pubsub.py#L79-L120)
+- [events.py:21-34](../../../../../backend/app/realtime/events.py#L21-L34)
 
 ### Pub/Sub Backbone and Graceful Degradation
 
@@ -319,11 +319,11 @@ class RedisPubSub {
 
 **Diagram sources**
 
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
 
 **Section sources**
 
-- [pubsub.py:18-120](file://backend/app/realtime/pubsub.py#L18-L120)
+- [pubsub.py:18-120](../../../../../backend/app/realtime/pubsub.py#L18-L120)
 
 ### Preview Renderer and Caching
 
@@ -347,11 +347,11 @@ I --> J["Return {html, warnings, latency}"]
 
 **Diagram sources**
 
-- [preview_renderer.py:364-406](file://backend/app/services/preview_renderer.py#L364-L406)
+- [preview_renderer.py:364-406](../../../../../backend/app/services/preview_renderer.py#L364-L406)
 
 **Section sources**
 
-- [preview_renderer.py:31-421](file://backend/app/services/preview_renderer.py#L31-L421)
+- [preview_renderer.py:31-421](../../../../../backend/app/services/preview_renderer.py#L31-L421)
 
 ## Dependency Analysis
 
@@ -375,38 +375,38 @@ PS --> RD["Redis"]
 
 **Diagram sources**
 
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
-- [preview.py:1-201](file://backend/app/routers/preview.py#L1-L201)
-- [pubsub.py:1-120](file://backend/app/realtime/pubsub.py#L1-L120)
-- [events.py:1-34](file://backend/app/realtime/events.py#L1-L34)
-- [preview_renderer.py:1-421](file://backend/app/services/preview_renderer.py#L1-L421)
-- [stream.py:1-95](file://backend/app/routers/stream.py#L1-L95)
+- [useLivePreviewSocket.js:1-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [ReconnectingWebSocket.js:1-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
+- [preview.py:1-201](../../../../../backend/app/routers/preview.py#L1-L201)
+- [pubsub.py:1-120](../../../../../backend/app/realtime/pubsub.py#L1-L120)
+- [events.py:1-34](../../../../../backend/app/realtime/events.py#L1-L34)
+- [preview_renderer.py:1-421](../../../../../backend/app/services/preview_renderer.py#L1-L421)
+- [stream.py:1-95](../../../../../backend/app/routers/v1/stream.py#L1-L95)
 
 **Section sources**
 
-- [preview.py:1-201](file://backend/app/routers/preview.py#L1-L201)
-- [stream.py:1-95](file://backend/app/routers/stream.py#L1-L95)
-- [pubsub.py:1-120](file://backend/app/realtime/pubsub.py#L1-L120)
-- [events.py:1-34](file://backend/app/realtime/events.py#L1-L34)
-- [preview_renderer.py:1-421](file://backend/app/services/preview_renderer.py#L1-L421)
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
+- [preview.py:1-201](../../../../../backend/app/routers/preview.py#L1-L201)
+- [stream.py:1-95](../../../../../backend/app/routers/v1/stream.py#L1-L95)
+- [pubsub.py:1-120](../../../../../backend/app/realtime/pubsub.py#L1-L120)
+- [events.py:1-34](../../../../../backend/app/realtime/events.py#L1-L34)
+- [preview_renderer.py:1-421](../../../../../backend/app/services/preview_renderer.py#L1-L421)
+- [useLivePreviewSocket.js:1-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [ReconnectingWebSocket.js:1-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
 
 ## Performance Considerations
 
 - WebSocket:
-    - Use checksum/version to avoid unnecessary DOM updates.
-    - Debounce sends to reduce render pressure.
-    - Heartbeat keeps connection alive and detects disconnects promptly.
+  - Use checksum/version to avoid unnecessary DOM updates.
+  - Debounce sends to reduce render pressure.
+  - Heartbeat keeps connection alive and detects disconnects promptly.
 - Pub/Sub:
-    - Prefer Redis for multi-instance deployments; fallback to in-memory queues for single-instance.
-    - Monitor publish/subscribe latency and queue sizes.
+  - Prefer Redis for multi-instance deployments; fallback to in-memory queues for single-instance.
+  - Monitor publish/subscribe latency and queue sizes.
 - SSE:
-    - Keep event payloads minimal; stream progress updates incrementally.
+  - Keep event payloads minimal; stream progress updates incrementally.
 - Renderer:
-    - Leverage caching for templates and rendered HTML.
-    - Normalize template names and warn on unknown templates to prevent repeated fallbacks.
+  - Leverage caching for templates and rendered HTML.
+  - Normalize template names and warn on unknown templates to prevent repeated fallbacks.
 
 [No sources needed since this section provides general guidance]
 
@@ -415,25 +415,25 @@ PS --> RD["Redis"]
 Common issues and resolutions:
 
 - WebSocket disconnects:
-    - Verify session ID format and accept conditions.
-    - Inspect heartbeat behavior and reconnection attempts.
-    - Check Pub/Sub connectivity and fallback behavior.
+  - Verify session ID format and accept conditions.
+  - Inspect heartbeat behavior and reconnection attempts.
+  - Check Pub/Sub connectivity and fallback behavior.
 - Slow or blocked updates:
-    - Confirm debounce timing and payload sizes.
-    - Review checksum/version mismatch causing conflicts.
+  - Confirm debounce timing and payload sizes.
+  - Review checksum/version mismatch causing conflicts.
 - SSE not receiving events:
-    - Ensure client is subscribed to the correct job channel.
-    - Validate request ID propagation and event enrichment.
+  - Ensure client is subscribed to the correct job channel.
+  - Validate request ID propagation and event enrichment.
 - Redis unavailability:
-    - Confirm fallback to in-memory queues is functioning.
-    - Monitor logs for Redis ping failures and fallback warnings.
+  - Confirm fallback to in-memory queues is functioning.
+  - Monitor logs for Redis ping failures and fallback warnings.
 
 **Section sources**
 
-- [preview.py:78-128](file://backend/app/routers/preview.py#L78-L128)
-- [pubsub.py:28-53](file://backend/app/realtime/pubsub.py#L28-L53)
-- [useLivePreviewSocket.js:91-95](file://frontend/src/hooks/useLivePreviewSocket.js#L91-L95)
-- [stream.py:32-58](file://backend/app/routers/stream.py#L32-L58)
+- [preview.py:78-128](../../../../../backend/app/routers/preview.py#L78-L128)
+- [pubsub.py:28-53](../../../../../backend/app/realtime/pubsub.py#L28-L53)
+- [useLivePreviewSocket.js:91-95](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L91-L95)
+- [stream.py:32-58](../../../../../backend/app/routers/v1/stream.py#L32-L58)
 
 ## Conclusion
 
@@ -448,16 +448,16 @@ The real-time system combines a robust WebSocket live preview with SSE job strea
 - Define a clear event model with type, identifiers, stage, progress, and payload.
 - Use the Pub/Sub abstraction for publish/subscribe with Redis and in-memory fallback.
 - For bidirectional live updates, implement a WebSocket endpoint with:
-    - Session/channel scoping.
-    - Heartbeat and graceful teardown.
-    - Renderer integration with caching and warnings.
+  - Session/channel scoping.
+  - Heartbeat and graceful teardown.
+  - Renderer integration with caching and warnings.
 - For long-lived status updates, implement an SSE endpoint emitting structured events.
 - Frontend:
-    - Wrap WebSocket with exponential backoff and jitter.
-    - Implement optimistic updates with checksum/version and debouncing.
-    - Provide clear UI indicators for connection state and reconnect attempts.
+  - Wrap WebSocket with exponential backoff and jitter.
+  - Implement optimistic updates with checksum/version and debouncing.
+  - Provide clear UI indicators for connection state and reconnect attempts.
 - Testing:
-    - Simulate network flakiness and Redis unavailability.
-    - Validate event ordering, deduplication, and conflict resolution.
+  - Simulate network flakiness and Redis unavailability.
+  - Validate event ordering, deduplication, and conflict resolution.
 
 [No sources needed since this section provides general guidance]

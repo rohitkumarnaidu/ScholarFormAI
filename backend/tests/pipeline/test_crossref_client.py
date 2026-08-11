@@ -3,8 +3,9 @@
 
 from __future__ import annotations
 
-from unittest.mock import patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
+import httpx
 import pytest
 
 from app.pipeline.services.crossref_client import CrossRefClient, CrossRefException
@@ -24,47 +25,43 @@ class TestCrossRefClient:
         client = CrossRefClient()
         assert client.headers == {}
 
-    def test_validate_doi_true(self, client):
-        with patch.object(client, "get_metadata") as mock_get:
-            mock_get.return_value = {"title": ["Test"]}
-            assert client.validate_doi("10.1234/test") is True
+    async def test_validate_doi_true(self, client):
+        with patch.object(client, "get_metadata", new=AsyncMock(return_value={"title": ["Test"]})):
+            assert await client.validate_doi("10.1234/test") is True
 
-    def test_validate_doi_false(self, client):
-        with patch.object(client, "get_metadata") as mock_get:
-            mock_get.side_effect = CrossRefException("Not found")
-            assert client.validate_doi("10.1234/fake") is False
+    async def test_validate_doi_false(self, client):
+        with patch.object(client, "get_metadata", new=AsyncMock(side_effect=CrossRefException("Not found"))):
+            assert await client.validate_doi("10.1234/fake") is False
 
-    @patch("app.pipeline.services.crossref_client.requests.get")
-    def test_get_metadata_success(self, mock_get, client):
-        mock_get.return_value.status_code = 200
-        mock_get.return_value.json.return_value = {"message": {"title": ["Test"]}}
-        result = client.get_metadata("10.1234/test")
-        assert result["title"] == ["Test"]
+    async def test_get_metadata_success(self, client):
+        mock_response = MagicMock(status_code=200)
+        mock_response.json.return_value = {"message": {"title": ["Test"]}}
+        with patch.object(client._client, "get", new=AsyncMock(return_value=mock_response)):
+            result = await client.get_metadata("10.1234/test")
+            assert result["title"] == ["Test"]
 
-    @patch("app.pipeline.services.crossref_client.requests.get")
-    def test_get_metadata_404(self, mock_get, client):
-        mock_get.return_value.status_code = 404
-        with pytest.raises(CrossRefException, match="DOI not found"):
-            client.get_metadata("10.1234/missing")
+    async def test_get_metadata_404(self, client):
+        mock_response = MagicMock(status_code=404)
+        with patch.object(client._client, "get", new=AsyncMock(return_value=mock_response)):
+            with pytest.raises(CrossRefException, match="DOI not found"):
+                await client.get_metadata("10.1234/missing")
 
-    @patch("app.pipeline.services.crossref_client.requests.get")
-    def test_get_metadata_api_error(self, mock_get, client):
-        mock_get.return_value.status_code = 500
-        with pytest.raises(CrossRefException, match="API error"):
-            client.get_metadata("10.1234/error")
+    async def test_get_metadata_api_error(self, client):
+        mock_response = MagicMock(status_code=500)
+        with patch.object(client._client, "get", new=AsyncMock(return_value=mock_response)):
+            with pytest.raises(CrossRefException, match="API error"):
+                await client.get_metadata("10.1234/error")
 
-    @patch("app.pipeline.services.crossref_client.requests.get")
-    def test_get_metadata_network_error(self, mock_get, client):
-        mock_get.side_effect = __import__("requests").exceptions.ConnectionError("No connection")
-        with pytest.raises(CrossRefException, match="Network error"):
-            client.get_metadata("10.1234/netfail")
+    async def test_get_metadata_network_error(self, client):
+        with patch.object(client._client, "get", new=AsyncMock(side_effect=httpx.RequestError("No connection"))):
+            with pytest.raises(CrossRefException, match="Network error"):
+                await client.get_metadata("10.1234/netfail")
 
-    @patch("app.pipeline.services.crossref_client.time.time")
-    @patch("app.pipeline.services.crossref_client.time.sleep")
-    def test_wait_for_rate_limit(self, mock_sleep, mock_time, client):
-        mock_time.side_effect = [0.0, 0.01]
-        client._wait_for_rate_limit()
-        mock_sleep.assert_called_once()
+    async def test_wait_for_rate_limit(self, client):
+        with patch("app.pipeline.services.crossref_client.time.time", side_effect=[0.0, 0.01]):
+            with patch("app.pipeline.services.crossref_client.asyncio.sleep", new=AsyncMock()) as mock_sleep:
+                await client._wait_for_rate_limit()
+                mock_sleep.assert_called_once()
 
     def test_calculate_confidence_full_match(self, client):
         ref_data = {"title": "Deep Learning", "year": 2016, "authors": ["Goodfellow, Ian"]}

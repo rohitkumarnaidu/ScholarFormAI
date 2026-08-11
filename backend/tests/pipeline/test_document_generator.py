@@ -24,24 +24,24 @@ import pytest
 @pytest.fixture(autouse=True)
 def _clean_stubs():
     key = "app.pipeline.generation.document_generator"
-    if key in sys.modules:
-        del sys.modules[key]
-    # Remove stubs that block real loading
-    for k in ["app.routers.v1.stream", "app.realtime.events", "app.realtime.pubsub"]:
+    
+    # Save original modules to restore them later
+    saved = {}
+    keys_to_clean = [key, "app.routers.v1.stream", "app.realtime.events", "app.realtime.pubsub", "app.routers.v1.generator"]
+    for k in keys_to_clean:
+        if k in sys.modules:
+            saved[k] = sys.modules.pop(k)
+
+    from unittest.mock import MagicMock as _MM
+    sys.modules["app.routers.v1.generator"] = _MM()
+    yield
+    
+    # Restore original modules
+    for k in keys_to_clean:
         if k in sys.modules:
             del sys.modules[k]
-    # Stub the generator router to prevent circular import when document_generator
-    # triggers loading of app.routers.v1 (via from app.routers.v1.stream import emit_event)
-    from unittest.mock import MagicMock as _MM
-    if "app.routers.v1.generator" not in sys.modules:
-        sys.modules["app.routers.v1.generator"] = _MM()
-    yield
-    # Restore stubs for other tests
-    from unittest.mock import MagicMock as _MM
-    sys.modules[key] = _MM()
-    sys.modules["app.routers.v1.stream"] = _MM()
-    sys.modules["app.realtime.events"] = _MM()
-    sys.modules["app.realtime.pubsub"] = _MM()
+        if k in saved:
+            sys.modules[k] = saved[k]
 
 
 # ---------------------------------------------------------------------------
@@ -580,13 +580,15 @@ class TestUpdate:
 class TestEmit:
     def test_calls_emit_event(self, dc):
         _, dg = dc
-        dg._emit("j1", phase="T", status="OK", message="t")
-        dg._mod.emit_event.assert_called()
+        with patch("app.routers.v1.stream.emit_event") as mock_emit:
+            dg._emit("j1", phase="T", status="OK", message="t")
+            mock_emit.assert_called()
 
     def test_suppresses_exception(self, dc):
         _, dg = dc
-        dg._mod.emit_event.side_effect = Exception("SSE down")
-        dg._emit("j1", phase="T", status="OK")
+        with patch("app.routers.v1.stream.emit_event") as mock_emit:
+            mock_emit.side_effect = Exception("SSE down")
+            dg._emit("j1", phase="T", status="OK")
 
 
 # ═══════════════════════════════════════════════════════════════════════════

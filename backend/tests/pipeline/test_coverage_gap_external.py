@@ -502,6 +502,7 @@ class TestCrossRefClientAsync:
 
     async def test_get_metadata_network_error(self, crossref_client):
         import httpx
+
         from app.pipeline.services.crossref_client import CrossRefException
         with patch.object(crossref_client._client, "get", new=AsyncMock(side_effect=httpx.RequestError("No connection"))):
             with pytest.raises(CrossRefException, match="Network error"):

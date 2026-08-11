@@ -15,7 +15,7 @@ last_updated: July 2026
 
 # ScholarForm AI — Queue and Remote Offload Plan (Deferred)
 
-> **See also:** [Roadmap](../Roadmap.md), [Deployment Guide](../Deployment.md)
+> **See also:** [Roadmap](../reports/ROADMAP.md), [Deployment Guide](../deployment/Deployment.md)
 
 This document captures deferred work. It does not enable queue mode or LLMPDFParser/LLMClassifier paths yet.
 
@@ -36,9 +36,9 @@ Readiness package (to execute later):
 Activation gate:
 
 - Enable queue mode only after:
-    - No backend OOM incidents
-    - No deploy health-check timeouts
-    - Stable Redis connectivity
+  - No backend OOM incidents
+  - No deploy health-check timeouts
+  - Stable Redis connectivity
 
 ## Phase 3: LLMPDFParser and LLMClassifier Remote Offload Design
 

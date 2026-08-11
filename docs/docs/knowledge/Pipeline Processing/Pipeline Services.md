@@ -5,18 +5,18 @@
 
 <cite>
 **Referenced Files in This Document**
-- [crossref_client.py](file://backend/app/pipeline/services/crossref_client.py)
-- [grobid_client.py](file://backend/app/pipeline/services/grobid_client.py)
-- [docling_client.py](file://backend/app/pipeline/services/docling_client.py)
-- [csl_engine.py](file://backend/app/pipeline/services/csl_engine.py)
-- [csl_fetcher.py](file://backend/app/pipeline/services/csl_fetcher.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [safe_execution.py](file://backend/app/pipeline/safety/safe_execution.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [health_checks.py](file://backend/app/services/health_checks.py)
-- [main.py](file://backend/app/main.py)
-- [parser.py](file://backend/app/pipeline/references/parser.py)
+- [crossref_client.py](../../../../backend/app/pipeline/services/crossref_client.py)
+- [grobid_client.py](../../../../backend/app/pipeline/services/grobid_client.py)
+- [docling_client.py](../../../../backend/app/pipeline/services/docling_client.py)
+- [csl_engine.py](../../../../backend/app/pipeline/services/csl_engine.py)
+- [csl_fetcher.py](../../../../backend/app/pipeline/services/csl_fetcher.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [safe_execution.py](../../../../backend/app/pipeline/safety/safe_execution.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [health_checks.py](../../../../backend/app/services/health_checks.py)
+- [main.py](../../../../backend/app/main.py)
+- [parser.py](../../../../backend/app/pipeline/references/parser.py)
 </cite>
 
 ## Table of Contents
@@ -69,18 +69,18 @@ CSLF --> SET
 
 **Diagram sources**
 
-- [orchestrator.py:63-95](file://backend/app/pipeline/orchestrator.py#L63-L95)
-- [settings.py:134-140](file://backend/app/config/settings.py#L134-L140)
-- [crossref_client.py:25-45](file://backend/app/pipeline/services/crossref_client.py#L25-L45)
-- [grobid_client.py:25-40](file://backend/app/pipeline/services/grobid_client.py#L25-L40)
-- [docling_client.py:143-175](file://backend/app/pipeline/services/docling_client.py#L143-L175)
-- [csl_engine.py:38-62](file://backend/app/pipeline/services/csl_engine.py#L38-L62)
-- [csl_fetcher.py:13-20](file://backend/app/pipeline/services/csl_fetcher.py#L13-L20)
+- [orchestrator.py:63-95](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L63-L95)
+- [settings.py:134-140](../../../../backend/app/config/settings.py#L134-L140)
+- [crossref_client.py:25-45](../../../../backend/app/pipeline/services/crossref_client.py#L25-L45)
+- [grobid_client.py:25-40](../../../../backend/app/pipeline/services/grobid_client.py#L25-L40)
+- [docling_client.py:143-175](../../../../backend/app/pipeline/services/docling_client.py#L143-L175)
+- [csl_engine.py:38-62](../../../../backend/app/pipeline/services/csl_engine.py#L38-L62)
+- [csl_fetcher.py:13-20](../../../../backend/app/pipeline/services/csl_fetcher.py#L13-L20)
 
 **Section sources**
 
-- [orchestrator.py:63-95](file://backend/app/pipeline/orchestrator.py#L63-L95)
-- [settings.py:134-140](file://backend/app/config/settings.py#L134-L140)
+- [orchestrator.py:63-95](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L63-L95)
+- [settings.py:134-140](../../../../backend/app/config/settings.py#L134-L140)
 
 ## Core Components
 
@@ -92,11 +92,11 @@ CSLF --> SET
 
 **Section sources**
 
-- [crossref_client.py:25-171](file://backend/app/pipeline/services/crossref_client.py#L25-L171)
-- [grobid_client.py:25-317](file://backend/app/pipeline/services/grobid_client.py#L25-L317)
-- [docling_client.py:143-482](file://backend/app/pipeline/services/docling_client.py#L143-L482)
-- [csl_engine.py:38-283](file://backend/app/pipeline/services/csl_engine.py#L38-L283)
-- [csl_fetcher.py:13-180](file://backend/app/pipeline/services/csl_fetcher.py#L13-L180)
+- [crossref_client.py:25-171](../../../../backend/app/pipeline/services/crossref_client.py#L25-L171)
+- [grobid_client.py:25-317](../../../../backend/app/pipeline/services/grobid_client.py#L25-L317)
+- [docling_client.py:143-482](../../../../backend/app/pipeline/services/docling_client.py#L143-L482)
+- [csl_engine.py:38-283](../../../../backend/app/pipeline/services/csl_engine.py#L38-L283)
+- [csl_fetcher.py:13-180](../../../../backend/app/pipeline/services/csl_fetcher.py#L13-L180)
 
 ## Architecture Overview
 
@@ -125,12 +125,12 @@ Orchestrator-->>Client : "final formatted document"
 
 **Diagram sources**
 
-- [orchestrator.py:636-755](file://backend/app/pipeline/orchestrator.py#L636-L755)
-- [settings.py:176-182](file://backend/app/config/settings.py#L176-L182)
-- [grobid_client.py:41-50](file://backend/app/pipeline/services/grobid_client.py#L41-L50)
-- [docling_client.py:176-178](file://backend/app/pipeline/services/docling_client.py#L176-L178)
-- [crossref_client.py:55-102](file://backend/app/pipeline/services/crossref_client.py#L55-L102)
-- [csl_engine.py:98-116](file://backend/app/pipeline/services/csl_engine.py#L98-L116)
+- [orchestrator.py:636-755](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L636-L755)
+- [settings.py:176-182](../../../../backend/app/config/settings.py#L176-L182)
+- [grobid_client.py:41-50](../../../../backend/app/pipeline/services/grobid_client.py#L41-L50)
+- [docling_client.py:176-178](../../../../backend/app/pipeline/services/docling_client.py#L176-L178)
+- [crossref_client.py:55-102](../../../../backend/app/pipeline/services/crossref_client.py#L55-L102)
+- [csl_engine.py:98-116](../../../../backend/app/pipeline/services/csl_engine.py#L98-L116)
 
 ## Detailed Component Analysis
 
@@ -161,12 +161,12 @@ RaiseOther --> End
 
 **Diagram sources**
 
-- [crossref_client.py:47-102](file://backend/app/pipeline/services/crossref_client.py#L47-L102)
+- [crossref_client.py:47-102](../../../../backend/app/pipeline/services/crossref_client.py#L47-L102)
 
 **Section sources**
 
-- [crossref_client.py:25-171](file://backend/app/pipeline/services/crossref_client.py#L25-L171)
-- [settings.py](file://backend/app/config/settings.py#L163)
+- [crossref_client.py:25-171](../../../../backend/app/pipeline/services/crossref_client.py#L25-L171)
+- [settings.py](../../../../backend/app/config/settings.py#L163)
 
 ### GROBIDClient
 
@@ -192,13 +192,13 @@ end
 
 **Diagram sources**
 
-- [grobid_client.py:41-91](file://backend/app/pipeline/services/grobid_client.py#L41-L91)
-- [orchestrator.py:658-686](file://backend/app/pipeline/orchestrator.py#L658-L686)
+- [grobid_client.py:41-91](../../../../backend/app/pipeline/services/grobid_client.py#L41-L91)
+- [orchestrator.py:658-686](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L658-L686)
 
 **Section sources**
 
-- [grobid_client.py:25-317](file://backend/app/pipeline/services/grobid_client.py#L25-L317)
-- [settings.py:134-138](file://backend/app/config/settings.py#L134-L138)
+- [grobid_client.py:25-317](../../../../backend/app/pipeline/services/grobid_client.py#L25-L317)
+- [settings.py:134-138](../../../../backend/app/config/settings.py#L134-L138)
 
 ### DoclingClient
 
@@ -221,12 +221,12 @@ Loaded --> |Yes| Ready["Ready"]
 
 **Diagram sources**
 
-- [docling_client.py:50-175](file://backend/app/pipeline/services/docling_client.py#L50-L175)
+- [docling_client.py:50-175](../../../../backend/app/pipeline/services/docling_client.py#L50-L175)
 
 **Section sources**
 
-- [docling_client.py:143-482](file://backend/app/pipeline/services/docling_client.py#L143-L482)
-- [settings.py](file://backend/app/config/settings.py#L139)
+- [docling_client.py:143-482](../../../../backend/app/pipeline/services/docling_client.py#L143-L482)
+- [settings.py](../../../../backend/app/config/settings.py#L139)
 
 ### CSLEngine and CSLFetcher
 
@@ -254,14 +254,14 @@ end
 
 **Diagram sources**
 
-- [csl_engine.py:98-140](file://backend/app/pipeline/services/csl_engine.py#L98-L140)
-- [csl_fetcher.py:80-136](file://backend/app/pipeline/services/csl_fetcher.py#L80-L136)
+- [csl_engine.py:98-140](../../../../backend/app/pipeline/services/csl_engine.py#L98-L140)
+- [csl_fetcher.py:80-136](../../../../backend/app/pipeline/services/csl_fetcher.py#L80-L136)
 
 **Section sources**
 
-- [csl_engine.py:38-283](file://backend/app/pipeline/services/csl_engine.py#L38-L283)
-- [csl_fetcher.py:13-180](file://backend/app/pipeline/services/csl_fetcher.py#L13-L180)
-- [settings.py:167-168](file://backend/app/config/settings.py#L167-L168)
+- [csl_engine.py:38-283](../../../../backend/app/pipeline/services/csl_engine.py#L38-L283)
+- [csl_fetcher.py:13-180](../../../../backend/app/pipeline/services/csl_fetcher.py#L13-L180)
+- [settings.py:167-168](../../../../backend/app/config/settings.py#L167-L168)
 
 ## Dependency Analysis
 
@@ -294,66 +294,66 @@ CSLE --> CSLF
 
 **Diagram sources**
 
-- [settings.py:134-182](file://backend/app/config/settings.py#L134-L182)
-- [orchestrator.py:636-755](file://backend/app/pipeline/orchestrator.py#L636-L755)
-- [grobid_client.py:31-40](file://backend/app/pipeline/services/grobid_client.py#L31-L40)
-- [docling_client.py:155-164](file://backend/app/pipeline/services/docling_client.py#L155-L164)
-- [crossref_client.py:28-45](file://backend/app/pipeline/services/crossref_client.py#L28-L45)
-- [csl_engine.py:47-49](file://backend/app/pipeline/services/csl_engine.py#L47-L49)
-- [csl_fetcher.py:13-14](file://backend/app/pipeline/services/csl_fetcher.py#L13-L14)
+- [settings.py:134-182](../../../../backend/app/config/settings.py#L134-L182)
+- [orchestrator.py:636-755](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L636-L755)
+- [grobid_client.py:31-40](../../../../backend/app/pipeline/services/grobid_client.py#L31-L40)
+- [docling_client.py:155-164](../../../../backend/app/pipeline/services/docling_client.py#L155-L164)
+- [crossref_client.py:28-45](../../../../backend/app/pipeline/services/crossref_client.py#L28-L45)
+- [csl_engine.py:47-49](../../../../backend/app/pipeline/services/csl_engine.py#L47-L49)
+- [csl_fetcher.py:13-14](../../../../backend/app/pipeline/services/csl_fetcher.py#L13-L14)
 
 **Section sources**
 
-- [settings.py:134-182](file://backend/app/config/settings.py#L134-L182)
-- [orchestrator.py:636-755](file://backend/app/pipeline/orchestrator.py#L636-L755)
+- [settings.py:134-182](../../../../backend/app/config/settings.py#L134-L182)
+- [orchestrator.py:636-755](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L636-L755)
 
 ## Performance Considerations
 
 - Concurrency and timeouts:
-    - GROBID and Docling are executed in parallel with separate timeouts to avoid blocking the pipeline.
-    - Timeouts are configurable via settings for both services.
+  - GROBID and Docling are executed in parallel with separate timeouts to avoid blocking the pipeline.
+  - Timeouts are configurable via settings for both services.
 - Rate limiting:
-    - Crossref client enforces a minimum inter-request interval to respect API limits.
+  - Crossref client enforces a minimum inter-request interval to respect API limits.
 - Feature flags:
-    - Docling can be disabled or skipped for digital-native PDFs to reduce latency.
-    - GROBID can be disabled via a setting.
+  - Docling can be disabled or skipped for digital-native PDFs to reduce latency.
+  - GROBID can be disabled via a setting.
 - Caching:
-    - CSL search and style fetch use in-memory caches with TTLs controlled by settings.
+  - CSL search and style fetch use in-memory caches with TTLs controlled by settings.
 - Memory and model loading:
-    - AI models are preloaded at startup when enabled; low-memory mode disables certain features.
+  - AI models are preloaded at startup when enabled; low-memory mode disables certain features.
 
 **Section sources**
 
-- [orchestrator.py:689-715](file://backend/app/pipeline/orchestrator.py#L689-L715)
-- [settings.py:176-182](file://backend/app/config/settings.py#L176-L182)
-- [crossref_client.py:30-53](file://backend/app/pipeline/services/crossref_client.py#L30-L53)
-- [csl_fetcher.py:23-38](file://backend/app/pipeline/services/csl_fetcher.py#L23-L38)
-- [settings.py:380-413](file://backend/app/config/settings.py#L380-L413)
+- [orchestrator.py:689-715](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L689-L715)
+- [settings.py:176-182](../../../../backend/app/config/settings.py#L176-L182)
+- [crossref_client.py:30-53](../../../../backend/app/pipeline/services/crossref_client.py#L30-L53)
+- [csl_fetcher.py:23-38](../../../../backend/app/pipeline/services/csl_fetcher.py#L23-L38)
+- [settings.py:380-413](../../../../backend/app/config/settings.py#L380-L413)
 
 ## Troubleshooting Guide
 
 - Service connectivity issues:
-    - Verify GROBID URL and readiness endpoint; ensure GROBID is enabled in settings.
-    - Confirm Docling availability and feature flags; check environment for required libraries.
-    - Validate Crossref mailto configuration for polite pool usage.
+  - Verify GROBID URL and readiness endpoint; ensure GROBID is enabled in settings.
+  - Confirm Docling availability and feature flags; check environment for required libraries.
+  - Validate Crossref mailto configuration for polite pool usage.
 - Timeouts and slow responses:
-    - Adjust per-service timeouts in settings.
-    - Consider disabling Docling for digital-native PDFs to skip layout analysis.
+  - Adjust per-service timeouts in settings.
+  - Consider disabling Docling for digital-native PDFs to skip layout analysis.
 - Error handling and fallbacks:
-    - GROBID and Docling return empty results on failure; orchestrator falls back to PyMuPDF metadata when both are unavailable.
-    - CSL formatting falls back to deterministic formatters when citeproc is unavailable.
+  - GROBID and Docling return empty results on failure; orchestrator falls back to PyMuPDF metadata when both are unavailable.
+  - CSL formatting falls back to deterministic formatters when citeproc is unavailable.
 - Monitoring service health:
-    - Use readiness and health endpoints to check database, LLM, and external service status.
-    - Expose metrics via Prometheus instrumentation.
+  - Use readiness and health endpoints to check database, LLM, and external service status.
+  - Expose metrics via Prometheus instrumentation.
 
 **Section sources**
 
-- [health_checks.py:154-192](file://backend/app/services/health_checks.py#L154-L192)
-- [main.py:360-380](file://backend/app/main.py#L360-L380)
-- [grobid_client.py:41-50](file://backend/app/pipeline/services/grobid_client.py#L41-L50)
-- [docling_client.py:176-178](file://backend/app/pipeline/services/docling_client.py#L176-L178)
-- [crossref_client.py:41-45](file://backend/app/pipeline/services/crossref_client.py#L41-L45)
-- [csl_engine.py:105-115](file://backend/app/pipeline/services/csl_engine.py#L105-L115)
+- [health_checks.py:154-192](../../../../backend/app/services/health_checks.py#L154-L192)
+- [main.py:360-380](../../../../backend/app/main.py#L360-L380)
+- [grobid_client.py:41-50](../../../../backend/app/pipeline/services/grobid_client.py#L41-L50)
+- [docling_client.py:176-178](../../../../backend/app/pipeline/services/docling_client.py#L176-L178)
+- [crossref_client.py:41-45](../../../../backend/app/pipeline/services/crossref_client.py#L41-L45)
+- [csl_engine.py:105-115](../../../../backend/app/pipeline/services/csl_engine.py#L105-L115)
 
 ## Conclusion
 
@@ -364,32 +364,32 @@ The pipeline integrates external services through robust clients with explicit c
 ### Configuration Reference
 
 - GROBID configuration:
-    - GROBID_URL, GROBID_BASE_URL, GROBID_TIMEOUT, GROBID_MAX_RETRIES, GROBID_ENABLED
+  - GROBID_URL, GROBID_BASE_URL, GROBID_TIMEOUT, GROBID_MAX_RETRIES, GROBID_ENABLED
 - Docling configuration:
-    - USE_DOCLING_FALLBACK, PIPELINE_DOCLING_TIMEOUT_SECONDS
+  - USE_DOCLING_FALLBACK, PIPELINE_DOCLING_TIMEOUT_SECONDS
 - Crossref configuration:
-    - CROSSREF_MAILTO, CROSSREF_MAX_WORKERS
+  - CROSSREF_MAILTO, CROSSREF_MAX_WORKERS
 - CSL caching:
-    - CSL_SEARCH_CACHE_TTL_SECONDS, CSL_FETCH_CACHE_TTL_SECONDS
+  - CSL_SEARCH_CACHE_TTL_SECONDS, CSL_FETCH_CACHE_TTL_SECONDS
 - General pipeline tuning:
-    - PIPELINE_GROBID_TIMEOUT_SECONDS, PIPELINE_DOCLING_TIMEOUT_SECONDS, PIPELINE_ACQUIRE_TIMEOUT_SECONDS
+  - PIPELINE_GROBID_TIMEOUT_SECONDS, PIPELINE_DOCLING_TIMEOUT_SECONDS, PIPELINE_ACQUIRE_TIMEOUT_SECONDS
 
 **Section sources**
 
-- [settings.py:134-191](file://backend/app/config/settings.py#L134-L191)
-- [settings.py:167-173](file://backend/app/config/settings.py#L167-L173)
+- [settings.py:134-191](../../../../backend/app/config/settings.py#L134-L191)
+- [settings.py:167-173](../../../../backend/app/config/settings.py#L167-L173)
 
 ### Usage Examples
 
 - Running parallel extraction for PDFs:
-    - The orchestrator submits GROBID and Docling tasks concurrently with per-service timeouts.
+  - The orchestrator submits GROBID and Docling tasks concurrently with per-service timeouts.
 - Formatting references with CSL:
-    - The engine attempts citeproc formatting; on failure, it falls back to deterministic formatters.
+  - The engine attempts citeproc formatting; on failure, it falls back to deterministic formatters.
 - Searching and fetching styles:
-    - The fetcher searches local and remote styles with caching and returns combined results.
+  - The fetcher searches local and remote styles with caching and returns combined results.
 
 **Section sources**
 
-- [orchestrator.py:658-715](file://backend/app/pipeline/orchestrator.py#L658-L715)
-- [csl_engine.py:98-140](file://backend/app/pipeline/services/csl_engine.py#L98-L140)
-- [csl_fetcher.py:80-136](file://backend/app/pipeline/services/csl_fetcher.py#L80-L136)
+- [orchestrator.py:658-715](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L658-L715)
+- [csl_engine.py:98-140](../../../../backend/app/pipeline/services/csl_engine.py#L98-L140)
+- [csl_fetcher.py:80-136](../../../../backend/app/pipeline/services/csl_fetcher.py#L80-L136)

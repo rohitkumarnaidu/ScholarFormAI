@@ -5,31 +5,31 @@
 
 <cite>
 **Referenced Files in This Document**
-- [pytest.ini](file://backend/pytest.ini)
-- [conftest.py](file://backend/tests/conftest.py)
-- [integration/conftest.py](file://backend/tests/integration/conftest.py)
-- [test_api.py](file://backend/tests/test_api.py)
-- [test_api_contracts.py](file://backend/tests/test_api_contracts.py)
-- [test_endpoint_contracts.py](file://backend/tests/test_endpoint_contracts.py)
+- [pytest.ini](../../../../backend/pytest.ini)
+- [conftest.py](../../../../backend/tests/conftest.py)
+- [integration/conftest.py](../../../../backend/tests/integration/conftest.py)
+- [test_api.py](../../../../backend/tests/test_api.py)
+- [test_api_contracts.py](../../../../backend/tests/test_api_contracts.py)
+- [test_endpoint_contracts.py](../../../../backend/tests/test_endpoint_contracts.py)
 - [test_cleanup_automation.py](file://backend/tests/test_cleanup_automation.py)
-- [test_enhancement_queue_threshold.py](file://backend/tests/test_enhancement_queue_threshold.py)
-- [test_persona_kpi_dashboard.py](file://backend/tests/test_persona_kpi_dashboard.py)
-- [A11y.focus.test.jsx](file://frontend/src/test/A11y.focus.test.jsx)
-- [contract.test.js](file://frontend/src/test/contract.test.js)
-- [schemas.js](file://frontend/src/lib/schemas.js)
-- [locustfile.py](file://backend/tests/load/locustfile.py)
+- [test_enhancement_queue_threshold.py](../../../../backend/tests/test_enhancement_queue_threshold.py)
+- [test_persona_kpi_dashboard.py](../../../../backend/tests/test_persona_kpi_dashboard.py)
+- [A11y.focus.test.jsx](../../../../frontend/src/test/A11y.focus.test.jsx)
+- [contract.test.js](../../../../frontend/src/test/contract.test.js)
+- [schemas.js](../../../../frontend/src/lib/schemas.js)
+- [locustfile.py](../../../../backend/tests/load/locustfile.py)
 - [production_stress_test.py](file://backend/tests/stress/production_stress_test.py)
-- [playwright.config.js](file://frontend/playwright.config.js)
-- [vitest.config.js](file://frontend/vitest.config.js)
-- [auth-flow.spec.js](file://frontend/e2e/auth-flow.spec.js)
-- [formatter-upload.spec.js](file://frontend/e2e/formatter-upload.spec.js)
-- [login.spec.js](file://frontend/e2e/login.spec.js)
-- [setup.js](file://frontend/src/test/setup.js)
-- [backend-ci.yml](file://.github/workflows/backend-ci.yml)
-- [frontend-ci.yml](file://.github/workflows/frontend-ci.yml)
-- [e2e-production.yml](file://.github/workflows/e2e-production.yml)
-- [deploy-staging.yml](file://.github/workflows/deploy-staging.yml)
-- [deploy-production.yml](file://.github/workflows/deploy-production.yml)
+- [playwright.config.js](../../../../frontend/playwright.config.js)
+- [vitest.config.js](../../../../frontend/vitest.config.js)
+- [auth-flow.spec.js](../../../../frontend/e2e/auth-flow.spec.js)
+- [formatter-upload.spec.js](../../../../frontend/e2e/formatter-upload.spec.js)
+- [login.spec.js](../../../../frontend/e2e/login.spec.js)
+- [setup.js](../../../../frontend/src/test/setup.js)
+- [backend-ci.yml](../../../../.github/workflows/backend-ci.yml)
+- [frontend-ci.yml](../../../../.github/workflows/frontend-ci.yml)
+- [e2e-production.yml](../../../../.github/workflows/e2e-production.yml)
+- [deploy-staging.yml](../../../../.github/workflows/deploy-staging.yml)
+- [deploy-production.yml](../../../../.github/workflows/deploy-production.yml)
 </cite>
 
 ## Update Summary
@@ -115,32 +115,32 @@ MCMDS --> MLOG
 
 **Diagram sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
-- [test_api.py:1-200](file://backend/tests/test_api.py#L1-L200)
-- [test_api_contracts.py:1-1193](file://backend/tests/test_api_contracts.py#L1-L1193)
-- [test_endpoint_contracts.py:1-173](file://backend/tests/test_endpoint_contracts.py#L1-L173)
+- [pytest.ini:1-28](../../../../backend/pytest.ini#L1-L28)
+- [conftest.py:1-112](../../../../backend/tests/conftest.py#L1-L112)
+- [integration/conftest.py:1-41](../../../../backend/tests/integration/conftest.py#L1-L41)
+- [test_api.py:1-200](../../../../backend/tests/test_api.py#L1-L200)
+- [test_api_contracts.py:1-1193](../../../../backend/tests/test_api_contracts.py#L1-L1193)
+- [test_endpoint_contracts.py:1-173](../../../../backend/tests/test_endpoint_contracts.py#L1-L173)
 - [test_cleanup_automation.py:1-48](file://backend/tests/test_cleanup_automation.py#L1-L48)
-- [test_enhancement_queue_threshold.py:1-98](file://backend/tests/test_enhancement_queue_threshold.py#L1-L98)
-- [test_persona_kpi_dashboard.py:1-16](file://backend/tests/test_persona_kpi_dashboard.py#L1-L16)
-- [A11y.focus.test.jsx:1-137](file://frontend/src/test/A11y.focus.test.jsx#L1-L137)
-- [contract.test.js:1-45](file://frontend/src/test/contract.test.js#L1-L45)
-- [schemas.js:1-267](file://frontend/src/lib/schemas.js#L1-L267)
-- [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
+- [test_enhancement_queue_threshold.py:1-98](../../../../backend/tests/test_enhancement_queue_threshold.py#L1-L98)
+- [test_persona_kpi_dashboard.py:1-16](../../../../backend/tests/test_persona_kpi_dashboard.py#L1-L16)
+- [A11y.focus.test.jsx:1-137](../../../../frontend/src/test/A11y.focus.test.jsx#L1-L137)
+- [contract.test.js:1-45](../../../../frontend/src/test/contract.test.js#L1-L45)
+- [schemas.js:1-267](../../../../frontend/src/lib/schemas.js#L1-L267)
+- [locustfile.py:1-139](../../../../backend/tests/load/locustfile.py#L1-L139)
 - [production_stress_test.py:1-172](file://backend/tests/stress/production_stress_test.py#L1-L172)
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
-- [auth-flow.spec.js](file://frontend/e2e/auth-flow.spec.js)
-- [login.spec.js](file://frontend/e2e/login.spec.js)
+- [vitest.config.js:1-34](../../../../frontend/vitest.config.js#L1-L34)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
+- [auth-flow.spec.js](../../../../frontend/e2e/auth-flow.spec.js)
+- [login.spec.js](../../../../frontend/e2e/login.spec.js)
 
 **Section sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
+- [pytest.ini:1-28](../../../../backend/pytest.ini#L1-L28)
+- [conftest.py:1-112](../../../../backend/tests/conftest.py#L1-L112)
+- [integration/conftest.py:1-41](../../../../backend/tests/integration/conftest.py#L1-L41)
+- [vitest.config.js:1-34](../../../../frontend/vitest.config.js#L1-L34)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
 
 ## Core Components
 
@@ -159,22 +159,22 @@ MCMDS --> MLOG
 
 **Section sources**
 
-- [pytest.ini:16-28](file://backend/pytest.ini#L16-L28)
-- [conftest.py:37-112](file://backend/tests/conftest.py#L37-L112)
-- [integration/conftest.py:24-41](file://backend/tests/integration/conftest.py#L24-L41)
-- [test_api_contracts.py:1-1193](file://backend/tests/test_api_contracts.py#L1-L1193)
-- [A11y.focus.test.jsx:1-137](file://frontend/src/test/A11y.focus.test.jsx#L1-L137)
-- [contract.test.js:1-45](file://frontend/src/test/contract.test.js#L1-L45)
-- [schemas.js:1-267](file://frontend/src/lib/schemas.js#L1-L267)
+- [pytest.ini:16-28](../../../../backend/pytest.ini#L16-L28)
+- [conftest.py:37-112](../../../../backend/tests/conftest.py#L37-L112)
+- [integration/conftest.py:24-41](../../../../backend/tests/integration/conftest.py#L24-L41)
+- [test_api_contracts.py:1-1193](../../../../backend/tests/test_api_contracts.py#L1-L1193)
+- [A11y.focus.test.jsx:1-137](../../../../frontend/src/test/A11y.focus.test.jsx#L1-L137)
+- [contract.test.js:1-45](../../../../frontend/src/test/contract.test.js#L1-L45)
+- [schemas.js:1-267](../../../../frontend/src/lib/schemas.js#L1-L267)
 - [test_cleanup_automation.py:1-48](file://backend/tests/test_cleanup_automation.py#L1-L48)
-- [test_enhancement_queue_threshold.py:1-98](file://backend/tests/test_enhancement_queue_threshold.py#L1-L98)
-- [test_persona_kpi_dashboard.py:1-16](file://backend/tests/test_persona_kpi_dashboard.py#L1-L16)
-- [test_endpoint_contracts.py:1-173](file://backend/tests/test_endpoint_contracts.py#L1-L173)
-- [test_api.py:14-200](file://backend/tests/test_api.py#L14-L200)
-- [locustfile.py:1-139](file://backend/tests/load/locustfile.py#L1-L139)
+- [test_enhancement_queue_threshold.py:1-98](../../../../backend/tests/test_enhancement_queue_threshold.py#L1-L98)
+- [test_persona_kpi_dashboard.py:1-16](../../../../backend/tests/test_persona_kpi_dashboard.py#L1-L16)
+- [test_endpoint_contracts.py:1-173](../../../../backend/tests/test_endpoint_contracts.py#L1-L173)
+- [test_api.py:14-200](../../../../backend/tests/test_api.py#L14-L200)
+- [locustfile.py:1-139](../../../../backend/tests/load/locustfile.py#L1-L139)
 - [production_stress_test.py:1-172](file://backend/tests/stress/production_stress_test.py#L1-L172)
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
+- [vitest.config.js:1-34](../../../../frontend/vitest.config.js#L1-L34)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
 
 ## Architecture Overview
 
@@ -225,16 +225,16 @@ DEPPROD --> BCI
 
 **Diagram sources**
 
-- [backend-ci.yml](file://.github/workflows/backend-ci.yml)
-- [frontend-ci.yml](file://.github/workflows/frontend-ci.yml)
-- [e2e-production.yml](file://.github/workflows/e2e-production.yml)
-- [deploy-staging.yml](file://.github/workflows/deploy-staging.yml)
-- [deploy-production.yml](file://.github/workflows/deploy-production.yml)
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
+- [backend-ci.yml](../../../../.github/workflows/backend-ci.yml)
+- [frontend-ci.yml](../../../../.github/workflows/frontend-ci.yml)
+- [e2e-production.yml](../../../../.github/workflows/e2e-production.yml)
+- [deploy-staging.yml](../../../../.github/workflows/deploy-staging.yml)
+- [deploy-production.yml](../../../../.github/workflows/deploy-production.yml)
+- [pytest.ini:1-28](../../../../backend/pytest.ini#L1-L28)
+- [conftest.py:1-112](../../../../backend/tests/conftest.py#L1-L112)
+- [integration/conftest.py:1-41](../../../../backend/tests/integration/conftest.py#L1-L41)
+- [vitest.config.js:1-34](../../../../frontend/vitest.config.js#L1-L34)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
 
 ## Detailed Component Analysis
 
@@ -264,13 +264,13 @@ C-->>T : "Assert status and payload"
 
 **Diagram sources**
 
-- [test_api.py:24-101](file://backend/tests/test_api.py#L24-L101)
+- [test_api.py:24-101](../../../../backend/tests/test_api.py#L24-L101)
 
 **Section sources**
 
-- [pytest.ini:16-28](file://backend/pytest.ini#L16-L28)
-- [conftest.py:46-58](file://backend/tests/conftest.py#L46-L58)
-- [test_api.py:14-200](file://backend/tests/test_api.py#L14-L200)
+- [pytest.ini:16-28](../../../../backend/pytest.ini#L16-L28)
+- [conftest.py:46-58](../../../../backend/tests/conftest.py#L46-L58)
+- [test_api.py:14-200](../../../../backend/tests/test_api.py#L14-L200)
 
 ### Backend Contract Testing Framework
 
@@ -299,13 +299,13 @@ VerifyAudit --> Complete(["Test Complete"])
 
 **Diagram sources**
 
-- [test_api_contracts.py:67-1193](file://backend/tests/test_api_contracts.py#L67-L1193)
-- [test_endpoint_contracts.py:62-173](file://backend/tests/test_endpoint_contracts.py#L62-L173)
+- [test_api_contracts.py:67-1193](../../../../backend/tests/test_api_contracts.py#L67-L1193)
+- [test_endpoint_contracts.py:62-173](../../../../backend/tests/test_endpoint_contracts.py#L62-L173)
 
 **Section sources**
 
-- [test_api_contracts.py:1-1193](file://backend/tests/test_api_contracts.py#L1-L1193)
-- [test_endpoint_contracts.py:1-173](file://backend/tests/test_endpoint_contracts.py#L1-L173)
+- [test_api_contracts.py:1-1193](../../../../backend/tests/test_api_contracts.py#L1-L1193)
+- [test_endpoint_contracts.py:1-173](../../../../backend/tests/test_endpoint_contracts.py#L1-L173)
 
 ### Backend Automation Testing
 
@@ -342,19 +342,19 @@ VerifyPreservation --> ValidateSchedule["Validate Celery Schedule"]
 ```mermaid
 flowchart TD
 ThresholdTest["Queue Threshold Test"] --> SetThreshold["Set Minimum Duration Threshold"]
-SetThreshold --> TestLongTask["Test Long Task (> threshold)"]
+SetThreshold --> TestLongTask["Test Long Task ("> threshold")"]
 TestLongTask --> ValidateCelery["Validate Celery Queue Usage"]
-ValidateCelery --> TestShortTask["Test Short Task (< threshold)"]
+ValidateCelery --> TestShortTask["Test Short Task ("< threshold")"]
 TestShortTask --> ValidateBackground["Validate Background Task Usage"]
 ```
 
 **Diagram sources**
 
-- [test_enhancement_queue_threshold.py:16-98](file://backend/tests/test_enhancement_queue_threshold.py#L16-L98)
+- [test_enhancement_queue_threshold.py:16-98](../../../../backend/tests/test_enhancement_queue_threshold.py#L16-L98)
 
 **Section sources**
 
-- [test_enhancement_queue_threshold.py:1-98](file://backend/tests/test_enhancement_queue_threshold.py#L1-L98)
+- [test_enhancement_queue_threshold.py:1-98](../../../../backend/tests/test_enhancement_queue_threshold.py#L1-L98)
 
 ### Backend Dashboard Validation
 
@@ -374,11 +374,11 @@ CheckLabels --> Success(["Dashboard Validated"])
 
 **Diagram sources**
 
-- [test_persona_kpi_dashboard.py:6-16](file://backend/tests/test_persona_kpi_dashboard.py#L6-L16)
+- [test_persona_kpi_dashboard.py:6-16](../../../../backend/tests/test_persona_kpi_dashboard.py#L6-L16)
 
 **Section sources**
 
-- [test_persona_kpi_dashboard.py:1-16](file://backend/tests/test_persona_kpi_dashboard.py#L1-L16)
+- [test_persona_kpi_dashboard.py:1-16](../../../../backend/tests/test_persona_kpi_dashboard.py#L1-L16)
 
 ### Frontend Unit Testing with Vitest
 
@@ -402,18 +402,18 @@ SchemaTests --> Coverage
 
 **Diagram sources**
 
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [setup.js](file://frontend/src/test/setup.js)
-- [A11y.focus.test.jsx:1-137](file://frontend/src/test/A11y.focus.test.jsx#L1-L137)
-- [contract.test.js:1-45](file://frontend/src/test/contract.test.js#L1-L45)
+- [vitest.config.js:1-34](../../../../frontend/vitest.config.js#L1-L34)
+- [setup.js](../../../../frontend/src/test/setup.js)
+- [A11y.focus.test.jsx:1-137](../../../../frontend/src/test/A11y.focus.test.jsx#L1-L137)
+- [contract.test.js:1-45](../../../../frontend/src/test/contract.test.js#L1-L45)
 
 **Section sources**
 
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [setup.js](file://frontend/src/test/setup.js)
-- [A11y.focus.test.jsx:1-137](file://frontend/src/test/A11y.focus.test.jsx#L1-L137)
-- [contract.test.js:1-45](file://frontend/src/test/contract.test.js#L1-L45)
-- [schemas.js:1-267](file://frontend/src/lib/schemas.js#L1-L267)
+- [vitest.config.js:1-34](../../../../frontend/vitest.config.js#L1-L34)
+- [setup.js](../../../../frontend/src/test/setup.js)
+- [A11y.focus.test.jsx:1-137](../../../../frontend/src/test/A11y.focus.test.jsx#L1-L137)
+- [contract.test.js:1-45](../../../../frontend/src/test/contract.test.js#L1-L45)
+- [schemas.js:1-267](../../../../frontend/src/lib/schemas.js#L1-L267)
 
 ### Frontend Accessibility Testing
 
@@ -438,11 +438,11 @@ Component-->>Test : "Focus State Validation"
 
 **Diagram sources**
 
-- [A11y.focus.test.jsx:29-137](file://frontend/src/test/A11y.focus.test.jsx#L29-L137)
+- [A11y.focus.test.jsx:29-137](../../../../frontend/src/test/A11y.focus.test.jsx#L29-L137)
 
 **Section sources**
 
-- [A11y.focus.test.jsx:1-137](file://frontend/src/test/A11y.focus.test.jsx#L1-L137)
+- [A11y.focus.test.jsx:1-137](../../../../frontend/src/test/A11y.focus.test.jsx#L1-L137)
 
 ### Frontend Schema Contract Testing
 
@@ -463,13 +463,13 @@ TestPassthrough --> ValidateErrors["Validate Error Messages"]
 
 **Diagram sources**
 
-- [contract.test.js:7-45](file://frontend/src/test/contract.test.js#L7-L45)
-- [schemas.js:242-267](file://frontend/src/lib/schemas.js#L242-L267)
+- [contract.test.js:7-45](../../../../frontend/src/test/contract.test.js#L7-L45)
+- [schemas.js:242-267](../../../../frontend/src/lib/schemas.js#L242-L267)
 
 **Section sources**
 
-- [contract.test.js:1-45](file://frontend/src/test/contract.test.js#L1-L45)
-- [schemas.js:1-267](file://frontend/src/lib/schemas.js#L1-L267)
+- [contract.test.js:1-45](../../../../frontend/src/test/contract.test.js#L1-L45)
+- [schemas.js:1-267](../../../../frontend/src/lib/schemas.js#L1-L267)
 
 ### Frontend End-to-End Testing with Playwright
 
@@ -494,17 +494,17 @@ PW-->>Report : "HTML Report"
 
 **Diagram sources**
 
-- [playwright.config.js:9-47](file://frontend/playwright.config.js#L9-L47)
-- [auth-flow.spec.js](file://frontend/e2e/auth-flow.spec.js)
-- [formatter-upload.spec.js](file://frontend/e2e/formatter-upload.spec.js)
-- [login.spec.js](file://frontend/e2e/login.spec.js)
+- [playwright.config.js:9-47](../../../../frontend/playwright.config.js#L9-L47)
+- [auth-flow.spec.js](../../../../frontend/e2e/auth-flow.spec.js)
+- [formatter-upload.spec.js](../../../../frontend/e2e/formatter-upload.spec.js)
+- [login.spec.js](../../../../frontend/e2e/login.spec.js)
 
 **Section sources**
 
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
-- [auth-flow.spec.js](file://frontend/e2e/auth-flow.spec.js)
-- [formatter-upload.spec.js](file://frontend/e2e/formatter-upload.spec.js)
-- [login.spec.js](file://frontend/e2e/login.spec.js)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
+- [auth-flow.spec.js](../../../../frontend/e2e/auth-flow.spec.js)
+- [formatter-upload.spec.js](../../../../frontend/e2e/formatter-upload.spec.js)
+- [login.spec.js](../../../../frontend/e2e/login.spec.js)
 
 ### Manual Testing Workflows
 
@@ -565,8 +565,8 @@ The contract testing framework provides comprehensive validation of API behavior
 
 **Section sources**
 
-- [test_api_contracts.py:1-1193](file://backend/tests/test_api_contracts.py#L1-L1193)
-- [test_endpoint_contracts.py:1-173](file://backend/tests/test_endpoint_contracts.py#L1-L173)
+- [test_api_contracts.py:1-1193](../../../../backend/tests/test_api_contracts.py#L1-L1193)
+- [test_endpoint_contracts.py:1-173](../../../../backend/tests/test_endpoint_contracts.py#L1-L173)
 
 ## Accessibility Testing
 
@@ -589,7 +589,7 @@ The accessibility testing framework ensures that the frontend application meets 
 
 **Section sources**
 
-- [A11y.focus.test.jsx:1-137](file://frontend/src/test/A11y.focus.test.jsx#L1-L137)
+- [A11y.focus.test.jsx:1-137](../../../../frontend/src/test/A11y.focus.test.jsx#L1-L137)
 
 ## Enhanced Testing Infrastructure
 
@@ -616,32 +616,32 @@ The enhanced testing infrastructure provides comprehensive coverage across multi
 **Section sources**
 
 - [test_cleanup_automation.py:1-48](file://backend/tests/test_cleanup_automation.py#L1-L48)
-- [test_enhancement_queue_threshold.py:1-98](file://backend/tests/test_enhancement_queue_threshold.py#L1-L98)
-- [test_persona_kpi_dashboard.py:1-16](file://backend/tests/test_persona_kpi_dashboard.py#L1-L16)
-- [contract.test.js:1-45](file://frontend/src/test/contract.test.js#L1-L45)
-- [schemas.js:1-267](file://frontend/src/lib/schemas.js#L1-L267)
+- [test_enhancement_queue_threshold.py:1-98](../../../../backend/tests/test_enhancement_queue_threshold.py#L1-L98)
+- [test_persona_kpi_dashboard.py:1-16](../../../../backend/tests/test_persona_kpi_dashboard.py#L1-L16)
+- [contract.test.js:1-45](../../../../frontend/src/test/contract.test.js#L1-L45)
+- [schemas.js:1-267](../../../../frontend/src/lib/schemas.js#L1-L267)
 
 ## Dependency Analysis
 
 - **Backend Test Dependencies**:
-    - pytest.ini markers drive selective execution and categorization including new contract, automation, and accessibility testing.
-    - conftest.py injects global mocks and document fixtures with enhanced mock management.
-    - integration/conftest.py gates tests based on external service availability.
-    - test_api_contracts.py provides comprehensive API envelope validation and error code testing.
-    - test_cleanup_automation.py validates file management and Celery task scheduling.
-    - test_enhancement_queue_threshold.py tests pipeline optimization logic.
-    - test_persona_kpi_dashboard.py ensures monitoring infrastructure integrity.
-    - test_endpoint_contracts.py validates core endpoint behaviors and response structures.
+  - pytest.ini markers drive selective execution and categorization including new contract, automation, and accessibility testing.
+  - conftest.py injects global mocks and document fixtures with enhanced mock management.
+  - integration/conftest.py gates tests based on external service availability.
+  - test_api_contracts.py provides comprehensive API envelope validation and error code testing.
+  - test_cleanup_automation.py validates file management and Celery task scheduling.
+  - test_enhancement_queue_threshold.py tests pipeline optimization logic.
+  - test_persona_kpi_dashboard.py ensures monitoring infrastructure integrity.
+  - test_endpoint_contracts.py validates core endpoint behaviors and response structures.
 - **Frontend Test Dependencies**:
-    - vitest.config.js configures environment and aliases with enhanced setup.
-    - A11y.focus.test.jsx provides accessibility testing framework.
-    - contract.test.js validates Zod schemas for API responses.
-    - schemas.js defines comprehensive frontend validation schemas.
-    - playwright.config.js configures browser projects and dev server behavior.
+  - vitest.config.js configures environment and aliases with enhanced setup.
+  - A11y.focus.test.jsx provides accessibility testing framework.
+  - contract.test.js validates Zod schemas for API responses.
+  - schemas.js defines comprehensive frontend validation schemas.
+  - playwright.config.js configures browser projects and dev server behavior.
 - **CI/CD Dependencies**:
-    - backend-ci.yml, frontend-ci.yml orchestrate enhanced unit and integration runs.
-    - e2e-production.yml executes E2E tests against deployed environments.
-    - deploy-staging.yml and deploy-production.yml prepare environments for testing.
+  - backend-ci.yml, frontend-ci.yml orchestrate enhanced unit and integration runs.
+  - e2e-production.yml executes E2E tests against deployed environments.
+  - deploy-staging.yml and deploy-production.yml prepare environments for testing.
 
 ```mermaid
 graph LR
@@ -665,43 +665,43 @@ E2EP["e2e-production.yml"] --> PWCFG
 
 **Diagram sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
-- [test_api.py:1-200](file://backend/tests/test_api.py#L1-L200)
-- [test_api_contracts.py:1-1193](file://backend/tests/test_api_contracts.py#L1-L1193)
-- [test_endpoint_contracts.py:1-173](file://backend/tests/test_endpoint_contracts.py#L1-L173)
+- [pytest.ini:1-28](../../../../backend/pytest.ini#L1-L28)
+- [conftest.py:1-112](../../../../backend/tests/conftest.py#L1-L112)
+- [integration/conftest.py:1-41](../../../../backend/tests/integration/conftest.py#L1-L41)
+- [test_api.py:1-200](../../../../backend/tests/test_api.py#L1-L200)
+- [test_api_contracts.py:1-1193](../../../../backend/tests/test_api_contracts.py#L1-L1193)
+- [test_endpoint_contracts.py:1-173](../../../../backend/tests/test_endpoint_contracts.py#L1-L173)
 - [test_cleanup_automation.py:1-48](file://backend/tests/test_cleanup_automation.py#L1-L48)
-- [test_enhancement_queue_threshold.py:1-98](file://backend/tests/test_enhancement_queue_threshold.py#L1-L98)
-- [test_persona_kpi_dashboard.py:1-16](file://backend/tests/test_persona_kpi_dashboard.py#L1-L16)
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [A11y.focus.test.jsx:1-137](file://frontend/src/test/A11y.focus.test.jsx#L1-L137)
-- [contract.test.js:1-45](file://frontend/src/test/contract.test.js#L1-L45)
-- [schemas.js:1-267](file://frontend/src/lib/schemas.js#L1-L267)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
-- [backend-ci.yml](file://.github/workflows/backend-ci.yml)
-- [frontend-ci.yml](file://.github/workflows/frontend-ci.yml)
-- [e2e-production.yml](file://.github/workflows/e2e-production.yml)
+- [test_enhancement_queue_threshold.py:1-98](../../../../backend/tests/test_enhancement_queue_threshold.py#L1-L98)
+- [test_persona_kpi_dashboard.py:1-16](../../../../backend/tests/test_persona_kpi_dashboard.py#L1-L16)
+- [vitest.config.js:1-34](../../../../frontend/vitest.config.js#L1-L34)
+- [A11y.focus.test.jsx:1-137](../../../../frontend/src/test/A11y.focus.test.jsx#L1-L137)
+- [contract.test.js:1-45](../../../../frontend/src/test/contract.test.js#L1-L45)
+- [schemas.js:1-267](../../../../frontend/src/lib/schemas.js#L1-L267)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
+- [backend-ci.yml](../../../../.github/workflows/backend-ci.yml)
+- [frontend-ci.yml](../../../../.github/workflows/frontend-ci.yml)
+- [e2e-production.yml](../../../../.github/workflows/e2e-production.yml)
 
 **Section sources**
 
-- [pytest.ini:1-28](file://backend/pytest.ini#L1-L28)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [integration/conftest.py:1-41](file://backend/tests/integration/conftest.py#L1-L41)
-- [test_api.py:1-200](file://backend/tests/test_api.py#L1-L200)
-- [test_api_contracts.py:1-1193](file://backend/tests/test_api_contracts.py#L1-L1193)
-- [test_endpoint_contracts.py:1-173](file://backend/tests/test_endpoint_contracts.py#L1-L173)
+- [pytest.ini:1-28](../../../../backend/pytest.ini#L1-L28)
+- [conftest.py:1-112](../../../../backend/tests/conftest.py#L1-L112)
+- [integration/conftest.py:1-41](../../../../backend/tests/integration/conftest.py#L1-L41)
+- [test_api.py:1-200](../../../../backend/tests/test_api.py#L1-L200)
+- [test_api_contracts.py:1-1193](../../../../backend/tests/test_api_contracts.py#L1-L1193)
+- [test_endpoint_contracts.py:1-173](../../../../backend/tests/test_endpoint_contracts.py#L1-L173)
 - [test_cleanup_automation.py:1-48](file://backend/tests/test_cleanup_automation.py#L1-L48)
-- [test_enhancement_queue_threshold.py:1-98](file://backend/tests/test_enhancement_queue_threshold.py#L1-L98)
-- [test_persona_kpi_dashboard.py:1-16](file://backend/tests/test_persona_kpi_dashboard.py#L1-L16)
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [A11y.focus.test.jsx:1-137](file://frontend/src/test/A11y.focus.test.jsx#L1-L137)
-- [contract.test.js:1-45](file://frontend/src/test/contract.test.js#L1-L45)
-- [schemas.js:1-267](file://frontend/src/lib/schemas.js#L1-L267)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
-- [backend-ci.yml](file://.github/workflows/backend-ci.yml)
-- [frontend-ci.yml](file://.github/workflows/frontend-ci.yml)
-- [e2e-production.yml](file://.github/workflows/e2e-production.yml)
+- [test_enhancement_queue_threshold.py:1-98](../../../../backend/tests/test_enhancement_queue_threshold.py#L1-L98)
+- [test_persona_kpi_dashboard.py:1-16](../../../../backend/tests/test_persona_kpi_dashboard.py#L1-L16)
+- [vitest.config.js:1-34](../../../../frontend/vitest.config.js#L1-L34)
+- [A11y.focus.test.jsx:1-137](../../../../frontend/src/test/A11y.focus.test.jsx#L1-L137)
+- [contract.test.js:1-45](../../../../frontend/src/test/contract.test.js#L1-L45)
+- [schemas.js:1-267](../../../../frontend/src/lib/schemas.js#L1-L267)
+- [playwright.config.js:1-48](../../../../frontend/playwright.config.js#L1-L48)
+- [backend-ci.yml](../../../../.github/workflows/backend-ci.yml)
+- [frontend-ci.yml](../../../../.github/workflows/frontend-ci.yml)
+- [e2e-production.yml](../../../../.github/workflows/e2e-production.yml)
 
 ## Performance Considerations
 
@@ -715,40 +715,40 @@ E2EP["e2e-production.yml"] --> PWCFG
 ## Troubleshooting Guide
 
 - **Contract Test Failures**:
-    - Verify API envelope structure matches expected format with data, error, request_id, and timestamp fields.
-    - Check error codes align with HTTP status codes and validate specific error messages for different failure scenarios.
-    - Ensure authentication requirements are properly tested and RBAC enforcement is working correctly.
+  - Verify API envelope structure matches expected format with data, error, request_id, and timestamp fields.
+  - Check error codes align with HTTP status codes and validate specific error messages for different failure scenarios.
+  - Ensure authentication requirements are properly tested and RBAC enforcement is working correctly.
 - **Accessibility Test Issues**:
-    - Confirm ARIA attributes match expected values and component renders properly with proper roles and labels.
-    - Verify focus management works correctly and keyboard navigation follows expected patterns.
-    - Test screen reader compatibility by checking descriptive labels and announcements.
+  - Confirm ARIA attributes match expected values and component renders properly with proper roles and labels.
+  - Verify focus management works correctly and keyboard navigation follows expected patterns.
+  - Test screen reader compatibility by checking descriptive labels and announcements.
 - **Schema Validation Errors**:
-    - Validate Zod schemas handle edge cases and provide meaningful error messages for invalid data.
-    - Check passthrough functionality allows additional server fields without breaking validation.
-    - Ensure type constraints (min/max lengths, enum values) are properly enforced.
+  - Validate Zod schemas handle edge cases and provide meaningful error messages for invalid data.
+  - Check passthrough functionality allows additional server fields without breaking validation.
+  - Ensure type constraints (min/max lengths, enum values) are properly enforced.
 - **Automation Test Failures**:
-    - Verify file timestamps are set correctly and retention policies are applied as expected.
-    - Check Celery task scheduling configuration and recursive cleanup functionality.
-    - Validate cleanup automation removes old files while preserving new ones.
+  - Verify file timestamps are set correctly and retention policies are applied as expected.
+  - Check Celery task scheduling configuration and recursive cleanup functionality.
+  - Validate cleanup automation removes old files while preserving new ones.
 - **Integration Tests Skipped Due to Service Unavailability**:
-    - Ensure Redis and GROBID are reachable; see integration conftest.py service checks.
+  - Ensure Redis and GROBID are reachable; see integration conftest.py service checks.
 - **Frontend E2E Flakiness**:
-    - Adjust retries and workers in playwright.config.js; enable trace collection on first retry.
+  - Adjust retries and workers in playwright.config.js; enable trace collection on first retry.
 - **Backend Unit Test Failures**:
-    - Confirm mocks are correctly applied; verify dependency overrides for authenticated routes.
+  - Confirm mocks are correctly applied; verify dependency overrides for authenticated routes.
 - **Manual Testing Discrepancies**:
-    - Compare outputs and visual annotations; consult manual testing logs for regressions.
+  - Compare outputs and visual annotations; consult manual testing logs for regressions.
 
 **Section sources**
 
-- [integration/conftest.py:24-32](file://backend/tests/integration/conftest.py#L24-L32)
-- [playwright.config.js:14-18](file://frontend/playwright.config.js#L14-L18)
-- [test_api.py:154-200](file://backend/tests/test_api.py#L154-L200)
-- [A11y.focus.test.jsx:1-137](file://frontend/src/test/A11y.focus.test.jsx#L1-L137)
-- [contract.test.js:1-45](file://frontend/src/test/contract.test.js#L1-L45)
+- [integration/conftest.py:24-32](../../../../backend/tests/integration/conftest.py#L24-L32)
+- [playwright.config.js:14-18](../../../../frontend/playwright.config.js#L14-L18)
+- [test_api.py:154-200](../../../../backend/tests/test_api.py#L154-L200)
+- [A11y.focus.test.jsx:1-137](../../../../frontend/src/test/A11y.focus.test.jsx#L1-L137)
+- [contract.test.js:1-45](../../../../frontend/src/test/contract.test.js#L1-L45)
 - [test_cleanup_automation.py:1-48](file://backend/tests/test_cleanup_automation.py#L1-L48)
-- [test_enhancement_queue_threshold.py:1-98](file://backend/tests/test_enhancement_queue_threshold.py#L1-L98)
-- [test_persona_kpi_dashboard.py:1-16](file://backend/tests/test_persona_kpi_dashboard.py#L1-L16)
+- [test_enhancement_queue_threshold.py:1-98](../../../../backend/tests/test_enhancement_queue_threshold.py#L1-L98)
+- [test_persona_kpi_dashboard.py:1-16](../../../../backend/tests/test_persona_kpi_dashboard.py#L1-L16)
 
 ## Conclusion
 
@@ -765,99 +765,99 @@ The enhanced testing strategy provides comprehensive coverage across multiple di
 
 **Section sources**
 
-- [backend-ci.yml](file://.github/workflows/backend-ci.yml)
-- [frontend-ci.yml](file://.github/workflows/frontend-ci.yml)
-- [e2e-production.yml](file://.github/workflows/e2e-production.yml)
-- [deploy-staging.yml](file://.github/workflows/deploy-staging.yml)
-- [deploy-production.yml](file://.github/workflows/deploy-production.yml)
+- [backend-ci.yml](../../../../.github/workflows/backend-ci.yml)
+- [frontend-ci.yml](../../../../.github/workflows/frontend-ci.yml)
+- [e2e-production.yml](../../../../.github/workflows/e2e-production.yml)
+- [deploy-staging.yml](../../../../.github/workflows/deploy-staging.yml)
+- [deploy-production.yml](../../../../.github/workflows/deploy-production.yml)
 
 ### Writing New Tests
 
 - **Backend**:
-    - Add unit tests under backend/tests; use pytest.ini markers to categorize including new contract, automation, and accessibility categories.
-    - Leverage conftest.py fixtures and mocks; isolate external dependencies with comprehensive patching.
-    - Implement contract tests using @pytest.mark.contract decorator for API envelope validation.
-    - Add accessibility tests following A11y.test.jsx patterns for component validation.
-    - Include automation tests for cleanup and task scheduling validation.
+  - Add unit tests under backend/tests; use pytest.ini markers to categorize including new contract, automation, and accessibility categories.
+  - Leverage conftest.py fixtures and mocks; isolate external dependencies with comprehensive patching.
+  - Implement contract tests using @pytest.mark.contract decorator for API envelope validation.
+  - Add accessibility tests following A11y.test.jsx patterns for component validation.
+  - Include automation tests for cleanup and task scheduling validation.
 - **Frontend**:
-    - Add unit tests under frontend/src/**/*.{test,spec}.{js,jsx,ts,tsx}.
-    - Configure vitest.config.js and setup.js as needed.
-    - Add accessibility tests under frontend/src/test/ with proper ARIA attribute validation.
-    - Include schema contract tests using Zod validation patterns.
-    - Add E2E specs under frontend/e2e; configure playwright.config.js for environment.
+  - Add unit tests under frontend/src/**/*.{test,spec}.{js,jsx,ts,tsx}.
+  - Configure vitest.config.js and setup.js as needed.
+  - Add accessibility tests under frontend/src/test/ with proper ARIA attribute validation.
+  - Include schema contract tests using Zod validation patterns.
+  - Add E2E specs under frontend/e2e; configure playwright.config.js for environment.
 
 **Section sources**
 
-- [pytest.ini:16-28](file://backend/pytest.ini#L16-L28)
-- [conftest.py:1-112](file://backend/tests/conftest.py#L1-L112)
-- [A11y.focus.test.jsx:1-137](file://frontend/src/test/A11y.focus.test.jsx#L1-L137)
-- [contract.test.js:1-45](file://frontend/src/test/contract.test.js#L1-L45)
-- [schemas.js:1-267](file://frontend/src/lib/schemas.js#L1-L267)
-- [vitest.config.js:16-26](file://frontend/vitest.config.js#L16-L26)
-- [playwright.config.js:9-28](file://frontend/playwright.config.js#L9-L28)
+- [pytest.ini:16-28](../../../../backend/pytest.ini#L16-L28)
+- [conftest.py:1-112](../../../../backend/tests/conftest.py#L1-L112)
+- [A11y.focus.test.jsx:1-137](../../../../frontend/src/test/A11y.focus.test.jsx#L1-L137)
+- [contract.test.js:1-45](../../../../frontend/src/test/contract.test.js#L1-L45)
+- [schemas.js:1-267](../../../../frontend/src/lib/schemas.js#L1-L267)
+- [vitest.config.js:16-26](../../../../frontend/vitest.config.js#L16-L26)
+- [playwright.config.js:9-28](../../../../frontend/playwright.config.js#L9-L28)
 
 ### Test Data Management
 
 - **Backend**:
-    - Use fixtures for reusable domain objects (e.g., PipelineDocument).
-    - Store golden files and sample inputs under backend/tests/golden_files and backend/manual_tests/sample_inputs.
-    - Implement contract test fixtures for API response validation and error scenario testing.
-    - Use temporary directories for automation tests to avoid persistent file system changes.
+  - Use fixtures for reusable domain objects (e.g., PipelineDocument).
+  - Store golden files and sample inputs under backend/tests/golden_files and backend/manual_tests/sample_inputs.
+  - Implement contract test fixtures for API response validation and error scenario testing.
+  - Use temporary directories for automation tests to avoid persistent file system changes.
 - **Frontend**:
-    - Use test assets under frontend/public or component-specific test folders.
-    - Maintain E2E test files under frontend/e2e/test-files.
-    - Implement schema test data with proper validation scenarios and edge cases.
-    - Use mock data for accessibility testing to ensure consistent component behavior.
+  - Use test assets under frontend/public or component-specific test folders.
+  - Maintain E2E test files under frontend/e2e/test-files.
+  - Implement schema test data with proper validation scenarios and edge cases.
+  - Use mock data for accessibility testing to ensure consistent component behavior.
 
 **Section sources**
 
-- [conftest.py:70-112](file://backend/tests/conftest.py#L70-L112)
-- [test_api_contracts.py:1-1193](file://backend/tests/test_api_contracts.py#L1-L1193)
+- [conftest.py:70-112](../../../../backend/tests/conftest.py#L70-L112)
+- [test_api_contracts.py:1-1193](../../../../backend/tests/test_api_contracts.py#L1-L1193)
 - [test_cleanup_automation.py:1-48](file://backend/tests/test_cleanup_automation.py#L1-L48)
-- [A11y.focus.test.jsx:1-137](file://frontend/src/test/A11y.focus.test.jsx#L1-L137)
-- [contract.test.js:1-45](file://frontend/src/test/contract.test.js#L1-L45)
+- [A11y.focus.test.jsx:1-137](../../../../frontend/src/test/A11y.focus.test.jsx#L1-L137)
+- [contract.test.js:1-45](../../../../frontend/src/test/contract.test.js#L1-L45)
 
 ### Debugging Test Failures
 
 - **Backend**:
-    - Increase verbosity with pytest.ini; inspect mocked dependencies and overrides.
-    - Use targeted patches around failing endpoints; implement detailed logging for contract test failures.
-    - Validate API envelope structure and error code consistency in failing contract tests.
-    - Check accessibility test component rendering and ARIA attribute validation.
-    - Verify schema validation with detailed error message inspection.
+  - Increase verbosity with pytest.ini; inspect mocked dependencies and overrides.
+  - Use targeted patches around failing endpoints; implement detailed logging for contract test failures.
+  - Validate API envelope structure and error code consistency in failing contract tests.
+  - Check accessibility test component rendering and ARIA attribute validation.
+  - Verify schema validation with detailed error message inspection.
 - **Frontend**:
-    - Enable traces in playwright.config.js; adjust workers and retries.
-    - Inspect DOM snapshots and network logs from HTML reports.
-    - Validate accessibility test component props and state management.
-    - Check schema validation errors and Zod parsing failures.
-    - Test focus management and keyboard navigation in failing accessibility tests.
+  - Enable traces in playwright.config.js; adjust workers and retries.
+  - Inspect DOM snapshots and network logs from HTML reports.
+  - Validate accessibility test component props and state management.
+  - Check schema validation errors and Zod parsing failures.
+  - Test focus management and keyboard navigation in failing accessibility tests.
 
 **Section sources**
 
-- [pytest.ini:8-10](file://backend/pytest.ini#L8-L10)
-- [playwright.config.js:16-28](file://frontend/playwright.config.js#L16-L28)
-- [A11y.focus.test.jsx:1-137](file://frontend/src/test/A11y.focus.test.jsx#L1-L137)
-- [contract.test.js:1-45](file://frontend/src/test/contract.test.js#L1-L45)
+- [pytest.ini:8-10](../../../../backend/pytest.ini#L8-L10)
+- [playwright.config.js:16-28](../../../../frontend/playwright.config.js#L16-L28)
+- [A11y.focus.test.jsx:1-137](../../../../frontend/src/test/A11y.focus.test.jsx#L1-L137)
+- [contract.test.js:1-45](../../../../frontend/src/test/contract.test.js#L1-L45)
 
 ### Testing Across Environments and Deployments
 
 - **Local Development**:
-    - Use pytest markers to run subsets of tests including new contract, automation, and accessibility categories.
-    - Rely on mocks for external services with comprehensive patching strategies.
-    - Validate contract tests with minimal external dependencies using targeted mocking.
+  - Use pytest markers to run subsets of tests including new contract, automation, and accessibility categories.
+  - Rely on mocks for external services with comprehensive patching strategies.
+  - Validate contract tests with minimal external dependencies using targeted mocking.
 - **CI**:
-    - Configure workers and retries per environment; enforce skip-on-unavailable services.
-    - Run comprehensive test suites including new contract and accessibility testing categories.
-    - Monitor test execution time and optimize expensive contract and automation tests.
+  - Configure workers and retries per environment; enforce skip-on-unavailable services.
+  - Run comprehensive test suites including new contract and accessibility testing categories.
+  - Monitor test execution time and optimize expensive contract and automation tests.
 - **Staging/Production**:
-    - Run E2E tests against deployed instances with enhanced test coverage.
-    - Collect traces and reports for all test categories including contract validation.
-    - Validate dashboard infrastructure and monitoring metrics in production-like environments.
+  - Run E2E tests against deployed instances with enhanced test coverage.
+  - Collect traces and reports for all test categories including contract validation.
+  - Validate dashboard infrastructure and monitoring metrics in production-like environments.
 
 **Section sources**
 
-- [backend-ci.yml](file://.github/workflows/backend-ci.yml)
-- [frontend-ci.yml](file://.github/workflows/frontend-ci.yml)
-- [e2e-production.yml](file://.github/workflows/e2e-production.yml)
-- [deploy-staging.yml](file://.github/workflows/deploy-staging.yml)
-- [deploy-production.yml](file://.github/workflows/deploy-production.yml)
+- [backend-ci.yml](../../../../.github/workflows/backend-ci.yml)
+- [frontend-ci.yml](../../../../.github/workflows/frontend-ci.yml)
+- [e2e-production.yml](../../../../.github/workflows/e2e-production.yml)
+- [deploy-staging.yml](../../../../.github/workflows/deploy-staging.yml)
+- [deploy-production.yml](../../../../.github/workflows/deploy-production.yml)

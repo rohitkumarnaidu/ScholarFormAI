@@ -177,7 +177,7 @@ All backend logs follow this JSON schema:
 Prometheus Alertmanager is configured at `https://alertmanager.scholarform.ai` with the following receivers:
 
 - **Slack:** `#incidents` channel for P0/P1 alerts; `#deployments` for deploy events.
-- **Email:** ops@scholarform.ai for P2 alerts.
+- **Email:** <ops@scholarform.ai> for P2 alerts.
 - **PagerDuty:** P0/P1 alerts routed to the on-call escalation policy.
 
 ### 3.2 Alert Severity Levels
@@ -356,7 +356,7 @@ In the event of Redis data loss, the system degrades gracefully but queued Celer
 
 ### 5.4 Disaster Recovery Plan
 
-> **See also:** [Disaster Recovery](../DISASTER_RECOVERY.md)
+> **See also:** [Disaster Recovery](DISASTER_RECOVERY.md)
 
 **DR Tiers:**
 
@@ -575,10 +575,10 @@ All runbooks are located in `docs/runbooks/` and are maintained by the DevOps te
 
 **Related documents:**
 
-- [Disaster Recovery](../DISASTER_RECOVERY.md)
+- [Disaster Recovery](DISASTER_RECOVERY.md)
 - [Postmortem Template](../POSTMORTEM_TEMPLATE.md)
-- [Deployment Guide](../Deployment.md)
-- [Roadmap](../Roadmap.md)
+- [Deployment Guide](../deployment/Deployment.md)
+- [Roadmap](../reports/ROADMAP.md)
 
 ---
 

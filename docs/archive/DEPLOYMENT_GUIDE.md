@@ -5,7 +5,7 @@
 
 > **Version:** 1.0 | **Status:** Production Ready | **Owner:** DevOps Team
 >
-> **See also:** [Architecture](architecture.md) | [Disaster Recovery](DISASTER_RECOVERY.md) | [Monitoring](MONITORING.md)
+> **See also:** [Architecture](../architecture/ARCHITECTURE.md) | [Disaster Recovery](../operations/DISASTER_RECOVERY.md) | [Monitoring](../monitoring/monitoring.md)
 
 ---
 
@@ -958,9 +958,9 @@ alembic downgrade -1   # Revert one migration
 - **Burned by:** Each 5xx response consumes a portion of the error budget
 - **Window:** 30-day rolling
 - **Alert thresholds:**
-    - Green: > 50% remaining
-    - Yellow: 25-50% remaining (watch)
-    - Red: < 25% remaining (critical — deploy freeze recommended)
+  - Green: > 50% remaining
+  - Yellow: 25-50% remaining (watch)
+  - Red: < 25% remaining (critical — deploy freeze recommended)
 
 ### 11.3 Burn Rate Alerts (from `deploy/prometheus/error_budget.yml`)
 

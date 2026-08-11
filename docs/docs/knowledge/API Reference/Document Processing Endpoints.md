@@ -5,14 +5,14 @@
 
 <cite>
 **Referenced Files in This Document**
-- [main.py](file://backend/app/main.py)
-- [__init__.py](file://backend/app/routers/v1/__init__.py)
-- [documents.py](file://backend/app/routers/documents.py)
-- [v1/documents.py](file://backend/app/routers/v1/documents.py)
-- [document_service.py](file://backend/app/services/document_service.py)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [test_document_status_cache.py](file://backend/tests/test_document_status_cache.py)
+- [main.py](../../../../backend/app/main.py)
+- [__init__.py](../../../../backend/app/routers/v1/__init__.py)
+- [documents.py](../../../../backend/app/routers/v1/documents.py)
+- [v1/documents.py](../../../../backend/app/routers/v1/documents.py)
+- [document_service.py](../../../../backend/app/services/document_service.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [test_document_status_cache.py](../../../../backend/tests/test_document_status_cache.py)
 </cite>
 
 ## Update Summary
@@ -81,37 +81,37 @@ Docs --> Batch["POST /batch-upload"]
 
 **Diagram sources**
 
-- [__init__.py:7-13](file://backend/app/routers/v1/__init__.py#L7-L13)
-- [documents.py:57-62](file://backend/app/routers/documents.py#L57-L62)
+- [**init**.py:7-13](../../../../backend/app/routers/v1/__init__.py#L7-L13)
+- [documents.py:57-62](../../../../backend/app/routers/v1/documents.py#L57-L62)
 
 **Section sources**
 
-- [__init__.py:1-14](file://backend/app/routers/v1/__init__.py#L1-L14)
-- [documents.py:57-62](file://backend/app/routers/documents.py#L57-L62)
+- [**init**.py:1-14](../../../../backend/app/routers/v1/__init__.py#L1-L14)
+- [documents.py:57-62](../../../../backend/app/routers/v1/documents.py#L57-L62)
 
 ## Core Components
 
 - Authentication and authorization:
-    - Many endpoints require a current user context; some accept optional users.
-    - Ownership checks ensure users can only access their own documents.
+  - Many endpoints require a current user context; some accept optional users.
+  - Ownership checks ensure users can only access their own documents.
 - File validation:
-    - Extension whitelist and magic-byte verification for binary formats.
-    - UTF-8 validation for text-like extensions.
+  - Extension whitelist and magic-byte verification for binary formats.
+  - UTF-8 validation for text-like extensions.
 - Size and quota enforcement:
-    - Global body size limit and per-request file size limits.
-    - Daily upload quotas enforced by rate-limiting middleware.
+  - Global body size limit and per-request file size limits.
+  - Daily upload quotas enforced by rate-limiting middleware.
 - Processing pipeline:
-    - Dispatch to background processing with real-time status updates.
+  - Dispatch to background processing with real-time status updates.
 - Download security:
-    - Signed URLs with HMAC tokens and expiration; optional integrity checks for DOCX.
+  - Signed URLs with HMAC tokens and expiration; optional integrity checks for DOCX.
 
 **Section sources**
 
-- [documents.py:178-181](file://backend/app/routers/documents.py#L178-L181)
-- [documents.py:205-229](file://backend/app/routers/documents.py#L205-L229)
-- [documents.py:509-513](file://backend/app/routers/documents.py#L509-L513)
-- [main.py:294-301](file://backend/app/main.py#L294-L301)
-- [main.py:295-296](file://backend/app/main.py#L295-L296)
+- [documents.py:178-181](../../../../backend/app/routers/v1/documents.py#L178-L181)
+- [documents.py:205-229](../../../../backend/app/routers/v1/documents.py#L205-L229)
+- [documents.py:509-513](../../../../backend/app/routers/v1/documents.py#L509-L513)
+- [main.py:294-301](../../../../backend/app/main.py#L294-L301)
+- [main.py:295-296](../../../../backend/app/main.py#L295-L296)
 
 ## Architecture Overview
 
@@ -140,9 +140,9 @@ D-->>C : {status, phases, progress, quality}
 
 **Diagram sources**
 
-- [documents.py:468-617](file://backend/app/routers/documents.py#L468-L617)
-- [document_service.py:92-113](file://backend/app/services/document_service.py#L92-L113)
-- [orchestrator.py:107-168](file://backend/app/pipeline/orchestrator.py#L107-L168)
+- [documents.py:468-617](../../../../backend/app/routers/v1/documents.py#L468-L617)
+- [document_service.py:92-113](../../../../backend/app/services/document_service.py#L92-L113)
+- [orchestrator.py:107-168](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L107-L168)
 
 ## Detailed Component Analysis
 
@@ -156,16 +156,16 @@ Request
 
 - Content-Type: multipart/form-data
 - Fields:
-    - file (required): File upload
-    - template (optional, default): String template name
-    - add_page_numbers (optional, default true): Boolean
-    - add_borders (optional, default false): Boolean
-    - add_cover_page (optional, default false): Boolean
-    - generate_toc (optional, default false): Boolean
-    - add_line_numbers (optional, default false): Boolean
-    - line_spacing (optional): Float
-    - page_size (optional, default "Letter"): String
-    - fast_mode (optional, default false): Boolean
+  - file (required): File upload
+  - template (optional, default): String template name
+  - add_page_numbers (optional, default true): Boolean
+  - add_borders (optional, default false): Boolean
+  - add_cover_page (optional, default false): Boolean
+  - generate_toc (optional, default false): Boolean
+  - add_line_numbers (optional, default false): Boolean
+  - line_spacing (optional): Float
+  - page_size (optional, default "Letter"): String
+  - fast_mode (optional, default false): Boolean
 
 Validation and limits:
 
@@ -188,9 +188,9 @@ Security and ownership:
 Example curl
 
 - Upload a DOCX:
-    - curl -F "file=@manuscript.docx" -F "template=ieee" -F "generate_toc=true" https://your-host/api/v1/documents/upload
+  - curl -F "file=@manuscript.docx" -F "template=ieee" -F "generate_toc=true" <https://your-host/api/v1/documents/upload>
 - Upload a TXT:
-    - curl -F "file=@notes.txt" -F "page_size=A4" https://your-host/api/v1/documents/upload
+  - curl -F "file=@notes.txt" -F "page_size=A4" <https://your-host/api/v1/documents/upload>
 
 Notes:
 
@@ -198,8 +198,8 @@ Notes:
 
 **Section sources**
 
-- [documents.py:468-617](file://backend/app/routers/documents.py#L468-L617)
-- [main.py:294-301](file://backend/app/main.py#L294-L301)
+- [documents.py:468-617](../../../../backend/app/routers/v1/documents.py#L468-L617)
+- [main.py:294-301](../../../../backend/app/main.py#L294-L301)
 
 ### POST /api/v1/documents/upload/chunked
 
@@ -211,11 +211,11 @@ Request
 
 - Content-Type: multipart/form-data
 - Fields:
-    - file_id (required): Identifier for grouping chunks
-    - chunk_index (required): Zero-based index of the current chunk
-    - total_chunks (required): Total number of chunks expected
-    - file (required): One chunk's bytes
-    - All formatting options supported by the single-upload endpoint are also supported here
+  - file_id (required): Identifier for grouping chunks
+  - chunk_index (required): Zero-based index of the current chunk
+  - total_chunks (required): Total number of chunks expected
+  - file (required): One chunk's bytes
+  - All formatting options supported by the single-upload endpoint are also supported here
 
 Validation and limits:
 
@@ -231,13 +231,13 @@ Response
 Example curl
 
 - Upload a 12 MB file split into three 5 MB chunks:
-    - curl -F "file_id=large_doc_abc" -F "chunk_index=0" -F "total_chunks=3" -F "file=@chunk1.bin" https://your-host/api/v1/documents/upload/chunked
-    - curl -F "file_id=large_doc_abc" -F "chunk_index=1" -F "total_chunks=3" -F "file=@chunk2.bin" https://your-host/api/v1/documents/upload/chunked
-    - curl -F "file_id=large_doc_abc" -F "chunk_index=2" -F "total_chunks=3" -F "file=@chunk3.bin" https://your-host/api/v1/documents/upload/chunked
+  - curl -F "file_id=large_doc_abc" -F "chunk_index=0" -F "total_chunks=3" -F "file=@chunk1.bin" <https://your-host/api/v1/documents/upload/chunked>
+  - curl -F "file_id=large_doc_abc" -F "chunk_index=1" -F "total_chunks=3" -F "file=@chunk2.bin" <https://your-host/api/v1/documents/upload/chunked>
+  - curl -F "file_id=large_doc_abc" -F "chunk_index=2" -F "total_chunks=3" -F "file=@chunk3.bin" <https://your-host/api/v1/documents/upload/chunked>
 
 **Section sources**
 
-- [documents.py:236-410](file://backend/app/routers/documents.py#L236-L410)
+- [documents.py:236-410](../../../../backend/app/routers/v1/documents.py#L236-L410)
 
 ### GET /api/v1/documents/{job_id}/status
 
@@ -290,9 +290,9 @@ Example response
 
 **Section sources**
 
-- [documents.py:619-681](file://backend/app/routers/documents.py#L619-L681)
-- [document_service.py:92-113](file://backend/app/services/document_service.py#L92-L113)
-- [settings.py:183](file://backend/app/config/settings.py#L183)
+- [documents.py:619-681](../../../../backend/app/routers/v1/documents.py#L619-L681)
+- [document_service.py:92-113](../../../../backend/app/services/document_service.py#L92-L113)
+- [settings.py:183](../../../../backend/app/config/settings.py#L183)
 
 ### GET /api/v1/documents/{job_id}/summary
 
@@ -310,7 +310,7 @@ Access control:
 
 **Section sources**
 
-- [documents.py:683-705](file://backend/app/routers/documents.py#L683-L705)
+- [documents.py:683-705](../../../../backend/app/routers/v1/documents.py#L683-L705)
 
 ### POST /api/v1/documents/{job_id}/edit
 
@@ -332,7 +332,7 @@ Access control:
 
 **Section sources**
 
-- [documents.py:708-747](file://backend/app/routers/documents.py#L708-L747)
+- [documents.py:708-747](../../../../backend/app/routers/v1/documents.py#L708-L747)
 
 ### GET /api/v1/documents/{job_id}/preview
 
@@ -351,7 +351,7 @@ Access control:
 
 **Section sources**
 
-- [documents.py:750-790](file://backend/app/routers/documents.py#L750-L790)
+- [documents.py:750-790](../../../../backend/app/routers/v1/documents.py#L750-L790)
 
 ### GET /api/v1/documents/{job_id}/compare
 
@@ -373,7 +373,7 @@ Access control:
 
 **Section sources**
 
-- [documents.py:792-854](file://backend/app/routers/documents.py#L792-L854)
+- [documents.py:792-854](../../../../backend/app/routers/v1/documents.py#L792-L854)
 
 ### GET /api/v1/documents/{job_id}/download
 
@@ -384,10 +384,10 @@ Purpose:
 Request
 
 - Query parameters:
-    - format: docx | pdf | tex (default docx)
-    - token, expires (optional; required for signed URLs)
+  - format: docx | pdf | tex (default docx)
+  - token, expires (optional; required for signed URLs)
 - Access control:
-    - Ownership required; signed URL generation requires SIGNED_URL_SECRET
+  - Ownership required; signed URL generation requires SIGNED_URL_SECRET
 
 Response
 
@@ -400,8 +400,8 @@ Integrity:
 
 **Section sources**
 
-- [documents.py:857-1008](file://backend/app/routers/documents.py#L857-L1008)
-- [document_service.py:45-88](file://backend/app/services/document_service.py#L45-L88)
+- [documents.py:857-1008](../../../../backend/app/routers/v1/documents.py#L857-L1008)
+- [document_service.py:45-88](../../../../backend/app/services/document_service.py#L45-L88)
 
 ### DELETE /api/v1/documents/{job_id}
 
@@ -419,7 +419,7 @@ Response
 
 **Section sources**
 
-- [documents.py:1011-1066](file://backend/app/routers/documents.py#L1011-L1066)
+- [documents.py:1011-1066](../../../../backend/app/routers/v1/documents.py#L1011-L1066)
 
 ### POST /api/v1/documents/batch-upload
 
@@ -431,10 +431,10 @@ Request
 
 - Content-Type: multipart/form-data
 - Fields:
-    - files (required): Array of files
-    - template (optional): String template name applied to all
+  - files (required): Array of files
+  - template (optional): String template name applied to all
 - Limits:
-    - Maximum number of files per batch governed by configuration
+  - Maximum number of files per batch governed by configuration
 
 Response
 
@@ -442,7 +442,7 @@ Response
 
 **Section sources**
 
-- [documents.py:1070-1171](file://backend/app/routers/documents.py#L1070-L1171)
+- [documents.py:1070-1171](../../../../backend/app/routers/v1/documents.py#L1070-L1171)
 
 ## Intelligent Caching System
 
@@ -472,11 +472,11 @@ N --> O
 
 **Diagram sources**
 
-- [documents.py:739-846](file://backend/app/routers/documents.py#L739-L846)
+- [documents.py:739-846](../../../../backend/app/routers/v1/documents.py#L739-L846)
 
 ### Cache Implementation Details
 
-- **Cache Key**: `{owner_segment}|{job_id}` where owner_segment includes user ID or "__anon__"
+- **Cache Key**: `{owner_segment}|{job_id}` where owner_segment includes user ID or "**anon**"
 - **TTL Control**: Configurable via `DOCUMENT_STATUS_CACHE_TTL_SECONDS` (default: 1.0 seconds)
 - **Stale Window**: Maximum 90 seconds stale responses
 - **Locking**: Thread-safe cache operations with asyncio.Lock
@@ -491,9 +491,9 @@ N --> O
 
 **Section sources**
 
-- [documents.py:117-198](file://backend/app/routers/documents.py#L117-L198)
-- [settings.py:183](file://backend/app/config/settings.py#L183)
-- [test_document_status_cache.py:1-145](file://backend/tests/test_document_status_cache.py#L1-145)
+- [documents.py:117-198](../../../../backend/app/routers/v1/documents.py#L117-L198)
+- [settings.py:183](../../../../backend/app/config/settings.py#L183)
+- [test_document_status_cache.py:1-145](../../../../backend/tests/test_document_status_cache.py#L1-145)
 
 ## Dependency Analysis
 
@@ -518,15 +518,15 @@ C --> R
 
 **Diagram sources**
 
-- [documents.py:560-583](file://backend/app/routers/documents.py#L560-L583)
-- [document_service.py:92-113](file://backend/app/services/document_service.py#L92-L113)
-- [orchestrator.py:107-168](file://backend/app/pipeline/orchestrator.py#L107-L168)
+- [documents.py:560-583](../../../../backend/app/routers/v1/documents.py#L560-L583)
+- [document_service.py:92-113](../../../../backend/app/services/document_service.py#L92-L113)
+- [orchestrator.py:107-168](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L107-L168)
 
 **Section sources**
 
-- [documents.py:560-583](file://backend/app/routers/documents.py#L560-L583)
-- [document_service.py:92-113](file://backend/app/services/document_service.py#L92-L113)
-- [orchestrator.py:107-168](file://backend/app/pipeline/orchestrator.py#L107-L168)
+- [documents.py:560-583](../../../../backend/app/routers/v1/documents.py#L560-L583)
+- [document_service.py:92-113](../../../../backend/app/services/document_service.py#L92-L113)
+- [orchestrator.py:107-168](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L107-L168)
 
 ## Performance Considerations
 
@@ -540,49 +540,49 @@ C --> R
 
 **Section sources**
 
-- [orchestrator.py:69-71](file://backend/app/pipeline/orchestrator.py#L69-L71)
-- [documents.py:122-150](file://backend/app/routers/documents.py#L122-L150)
-- [main.py:295-296](file://backend/app/main.py#L295-L296)
-- [settings.py:183](file://backend/app/config/settings.py#L183)
+- [orchestrator.py:69-71](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L69-L71)
+- [documents.py:122-150](../../../../backend/app/routers/v1/documents.py#L122-L150)
+- [main.py:295-296](../../../../backend/app/main.py#L295-L296)
+- [settings.py:183](../../../../backend/app/config/settings.py#L183)
 
 ## Troubleshooting Guide
 
 Common errors and resolutions:
 
 - 400 Invalid file type or unsupported format:
-    - Ensure extension is in the accepted set and magic bytes match.
+  - Ensure extension is in the accepted set and magic bytes match.
 - 400 File is not valid UTF-8 text:
-    - Re-save the file in UTF-8 encoding for text-like extensions.
+  - Re-save the file in UTF-8 encoding for text-like extensions.
 - 400 Comparison data not available:
-    - Wait until status reaches COMPLETED or COMPLETED_WITH_WARNINGS.
+  - Wait until status reaches COMPLETED or COMPLETED_WITH_WARNINGS.
 - 400 Document not ready:
-    - Download is only allowed after COMPLETED or COMPLETED_WITH_WARNINGS.
+  - Download is only allowed after COMPLETED or COMPLETED_WITH_WARNINGS.
 - 403 Not authorized:
-    - Ensure you are logged in and the document belongs to you.
+  - Ensure you are logged in and the document belongs to you.
 - 404 Document job not found:
-    - Verify the job_id is correct.
+  - Verify the job_id is correct.
 - 413 File too large:
-    - Reduce file size or use chunked upload.
+  - Reduce file size or use chunked upload.
 - 422 Malware detected:
-    - Re-upload a clean file; virus scan failed.
+  - Re-upload a clean file; virus scan failed.
 - 500 Internal error:
-    - Check logs; for downloads, verify signed URL secret and output path existence.
+  - Check logs; for downloads, verify signed URL secret and output path existence.
 - **Cache-related issues**:
-    - **Stale responses**: Look for `"stale": true` in status response indicating cached data beyond TTL
-    - **Cache configuration**: Adjust `DOCUMENT_STATUS_CACHE_TTL_SECONDS` in environment settings
-    - **Cache clearing**: Use `_reset_document_status_cache_for_tests()` for testing scenarios
+  - **Stale responses**: Look for `"stale": true` in status response indicating cached data beyond TTL
+  - **Cache configuration**: Adjust `DOCUMENT_STATUS_CACHE_TTL_SECONDS` in environment settings
+  - **Cache clearing**: Use `_reset_document_status_cache_for_tests()` for testing scenarios
 
 **Updated** Added cache-related troubleshooting scenarios including stale responses and cache configuration issues.
 
 **Section sources**
 
-- [documents.py:205-229](file://backend/app/routers/documents.py#L205-L229)
-- [documents.py:509-513](file://backend/app/routers/documents.py#L509-L513)
-- [documents.py:811-819](file://backend/app/routers/documents.py#L811-L819)
-- [documents.py:885-893](file://backend/app/routers/documents.py#L885-L893)
-- [documents.py:903-905](file://backend/app/routers/documents.py#L903-L905)
-- [documents.py:925-931](file://backend/app/routers/documents.py#L925-L931)
-- [documents.py:936-953](file://backend/app/routers/documents.py#L936-L953)
+- [documents.py:205-229](../../../../backend/app/routers/v1/documents.py#L205-L229)
+- [documents.py:509-513](../../../../backend/app/routers/v1/documents.py#L509-L513)
+- [documents.py:811-819](../../../../backend/app/routers/v1/documents.py#L811-L819)
+- [documents.py:885-893](../../../../backend/app/routers/v1/documents.py#L885-L893)
+- [documents.py:903-905](../../../../backend/app/routers/v1/documents.py#L903-L905)
+- [documents.py:925-931](../../../../backend/app/routers/v1/documents.py#L925-L931)
+- [documents.py:936-953](../../../../backend/app/routers/v1/documents.py#L936-L953)
 
 ## Conclusion
 

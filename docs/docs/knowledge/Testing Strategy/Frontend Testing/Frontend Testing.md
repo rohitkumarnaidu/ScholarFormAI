@@ -5,17 +5,17 @@
 
 <cite>
 **Referenced Files in This Document**
-- [vitest.config.js](file://frontend/vitest.config.js)
-- [playwright.config.js](file://frontend/playwright.config.js)
-- [package.json](file://frontend/package.json)
-- [setup.js](file://frontend/src/test/setup.js)
-- [AppShell.auth-redirect.test.jsx](file://frontend/src/test/AppShell.auth-redirect.test.jsx)
-- [AuthGuard.test.jsx](file://frontend/src/test/AuthGuard.test.jsx)
-- [useGeneratorState.test.js](file://frontend/src/test/useGeneratorState.test.js)
-- [analytics.test.js](file://frontend/src/lib/analytics.test.js)
-- [api.core.test.js](file://frontend/src/services/api.core.test.js)
-- [useAgent.js](file://frontend/src/hooks/useAgent.js)
-- [useUpload.js](file://frontend/src/hooks/useUpload.js)
+- [vitest.config.js](../../../../../frontend/vitest.config.js)
+- [playwright.config.js](../../../../../frontend/playwright.config.js)
+- [package.json](../../../../../frontend/package.json)
+- [setup.js](../../../../../frontend/src/test/setup.js)
+- [AppShell.auth-redirect.test.jsx](../../../../../frontend/src/test/AppShell.auth-redirect.test.jsx)
+- [AuthGuard.test.jsx](../../../../../frontend/src/test/AuthGuard.test.jsx)
+- [useGeneratorState.test.js](../../../../../frontend/src/test/useGeneratorState.test.js)
+- [analytics.test.js](../../../../../frontend/src/lib/analytics.test.js)
+- [api.core.test.js](../../../../../frontend/src/services/api.core.test.js)
+- [useAgent.js](../../../../../frontend/src/hooks/useAgent.js)
+- [useUpload.js](../../../../../frontend/src/hooks/useUpload.js)
 </cite>
 
 ## Table of Contents
@@ -83,15 +83,15 @@ E2E --> SERVICES
 
 **Diagram sources**
 
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
-- [setup.js:1-2](file://frontend/src/test/setup.js#L1-L2)
+- [vitest.config.js:1-34](../../../../../frontend/vitest.config.js#L1-L34)
+- [playwright.config.js:1-48](../../../../../frontend/playwright.config.js#L1-L48)
+- [setup.js:1-2](../../../../../frontend/src/test/setup.js#L1-L2)
 
 **Section sources**
 
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
-- [package.json:1-62](file://frontend/package.json#L1-L62)
+- [vitest.config.js:1-34](../../../../../frontend/vitest.config.js#L1-L34)
+- [playwright.config.js:1-48](../../../../../frontend/playwright.config.js#L1-L48)
+- [package.json:1-62](../../../../../frontend/package.json#L1-L62)
 
 ## Core Components
 
@@ -99,21 +99,21 @@ E2E --> SERVICES
 - Playwright configuration defines test directory, worker and retry policies, browser device projects, and a local dev server lifecycle for E2E runs.
 - Test setup registers @testing-library/jest-dom matchers globally for Vitest, enabling readable assertions in component tests.
 - Example tests demonstrate:
-    - Component-level tests for AppShell and AuthGuard redirection logic
-    - Hook-level tests for useGeneratorState with mocked services and timers
-    - Service-level tests for API utilities including retry logic and sanitization
-    - Analytics wrapper tests validating event capture
+  - Component-level tests for AppShell and AuthGuard redirection logic
+  - Hook-level tests for useGeneratorState with mocked services and timers
+  - Service-level tests for API utilities including retry logic and sanitization
+  - Analytics wrapper tests validating event capture
 
 **Section sources**
 
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
-- [setup.js:1-2](file://frontend/src/test/setup.js#L1-L2)
-- [AppShell.auth-redirect.test.jsx:1-88](file://frontend/src/test/AppShell.auth-redirect.test.jsx#L1-L88)
-- [AuthGuard.test.jsx:1-75](file://frontend/src/test/AuthGuard.test.jsx#L1-L75)
-- [useGeneratorState.test.js:1-202](file://frontend/src/test/useGeneratorState.test.js#L1-L202)
-- [analytics.test.js:1-56](file://frontend/src/lib/analytics.test.js#L1-L56)
-- [api.core.test.js:1-79](file://frontend/src/services/api.core.test.js#L1-L79)
+- [vitest.config.js:1-34](../../../../../frontend/vitest.config.js#L1-L34)
+- [playwright.config.js:1-48](../../../../../frontend/playwright.config.js#L1-L48)
+- [setup.js:1-2](../../../../../frontend/src/test/setup.js#L1-L2)
+- [AppShell.auth-redirect.test.jsx:1-88](../../../../../frontend/src/test/AppShell.auth-redirect.test.jsx#L1-L88)
+- [AuthGuard.test.jsx:1-75](../../../../../frontend/src/test/AuthGuard.test.jsx#L1-L75)
+- [useGeneratorState.test.js:1-202](../../../../../frontend/src/test/useGeneratorState.test.js#L1-L202)
+- [analytics.test.js:1-56](../../../../../frontend/src/lib/analytics.test.js#L1-L56)
+- [api.core.test.js:1-79](../../../../../frontend/src/services/api.core.test.js#L1-L79)
 
 ## Architecture Overview
 
@@ -154,8 +154,8 @@ PW-->>Dev : HTML report and traces
 
 **Diagram sources**
 
-- [vitest.config.js:16-26](file://frontend/vitest.config.js#L16-L26)
-- [playwright.config.js:39-46](file://frontend/playwright.config.js#L39-L46)
+- [vitest.config.js:16-26](../../../../../frontend/vitest.config.js#L16-L26)
+- [playwright.config.js:39-46](../../../../../frontend/playwright.config.js#L39-L46)
 
 ## Detailed Component Analysis
 
@@ -179,13 +179,13 @@ Run --> End(["Vitest End"])
 
 **Diagram sources**
 
-- [vitest.config.js:4-26](file://frontend/vitest.config.js#L4-L26)
-- [setup.js:1-2](file://frontend/src/test/setup.js#L1-L2)
+- [vitest.config.js:4-26](../../../../../frontend/vitest.config.js#L4-L26)
+- [setup.js:1-2](../../../../../frontend/src/test/setup.js#L1-L2)
 
 **Section sources**
 
-- [vitest.config.js:1-34](file://frontend/vitest.config.js#L1-L34)
-- [setup.js:1-2](file://frontend/src/test/setup.js#L1-L2)
+- [vitest.config.js:1-34](../../../../../frontend/vitest.config.js#L1-L34)
+- [setup.js:1-2](../../../../../frontend/src/test/setup.js#L1-L2)
 
 ### Playwright Configuration and E2E Execution
 
@@ -206,11 +206,11 @@ Report --> PEnd(["Playwright End"])
 
 **Diagram sources**
 
-- [playwright.config.js:9-47](file://frontend/playwright.config.js#L9-L47)
+- [playwright.config.js:9-47](../../../../../frontend/playwright.config.js#L9-L47)
 
 **Section sources**
 
-- [playwright.config.js:1-48](file://frontend/playwright.config.js#L1-L48)
+- [playwright.config.js:1-48](../../../../../frontend/playwright.config.js#L1-L48)
 
 ### Component Tests: AppShell Authentication Redirect
 
@@ -234,11 +234,11 @@ Test->>Test : Assert replace called with expected path
 
 **Diagram sources**
 
-- [AppShell.auth-redirect.test.jsx:48-66](file://frontend/src/test/AppShell.auth-redirect.test.jsx#L48-L66)
+- [AppShell.auth-redirect.test.jsx:48-66](../../../../../frontend/src/test/AppShell.auth-redirect.test.jsx#L48-L66)
 
 **Section sources**
 
-- [AppShell.auth-redirect.test.jsx:1-88](file://frontend/src/test/AppShell.auth-redirect.test.jsx#L1-L88)
+- [AppShell.auth-redirect.test.jsx:1-88](../../../../../frontend/src/test/AppShell.auth-redirect.test.jsx#L1-L88)
 
 ### Component Tests: AuthGuard Protection
 
@@ -264,11 +264,11 @@ end
 
 **Diagram sources**
 
-- [AuthGuard.test.jsx:28-41](file://frontend/src/test/AuthGuard.test.jsx#L28-L41)
+- [AuthGuard.test.jsx:28-41](../../../../../frontend/src/test/AuthGuard.test.jsx#L28-L41)
 
 **Section sources**
 
-- [AuthGuard.test.jsx:1-75](file://frontend/src/test/AuthGuard.test.jsx#L1-L75)
+- [AuthGuard.test.jsx:1-75](../../../../../frontend/src/test/AuthGuard.test.jsx#L1-L75)
 
 ### Hook Tests: useGeneratorState
 
@@ -290,11 +290,11 @@ Download --> Cleanup["clear draft and cleanup resources"]
 
 **Diagram sources**
 
-- [useGeneratorState.test.js:64-133](file://frontend/src/test/useGeneratorState.test.js#L64-L133)
+- [useGeneratorState.test.js:64-133](../../../../../frontend/src/test/useGeneratorState.test.js#L64-L133)
 
 **Section sources**
 
-- [useGeneratorState.test.js:1-202](file://frontend/src/test/useGeneratorState.test.js#L1-L202)
+- [useGeneratorState.test.js:1-202](../../../../../frontend/src/test/useGeneratorState.test.js#L1-L202)
 
 ### Service Tests: API Utilities
 
@@ -313,11 +313,11 @@ FetchOnce --> Done
 
 **Diagram sources**
 
-- [api.core.test.js:40-54](file://frontend/src/services/api.core.test.js#L40-L54)
+- [api.core.test.js:40-54](../../../../../frontend/src/services/api.core.test.js#L40-L54)
 
 **Section sources**
 
-- [api.core.test.js:1-79](file://frontend/src/services/api.core.test.js#L1-L79)
+- [api.core.test.js:1-79](../../../../../frontend/src/services/api.core.test.js#L1-L79)
 
 ### Analytics Wrapper Tests
 
@@ -338,11 +338,11 @@ Capture --> ReturnBool["Return capture result"]
 
 **Diagram sources**
 
-- [analytics.test.js:28-54](file://frontend/src/lib/analytics.test.js#L28-L54)
+- [analytics.test.js:28-54](../../../../../frontend/src/lib/analytics.test.js#L28-L54)
 
 **Section sources**
 
-- [analytics.test.js:1-56](file://frontend/src/lib/analytics.test.js#L1-L56)
+- [analytics.test.js:1-56](../../../../../frontend/src/lib/analytics.test.js#L1-L56)
 
 ### Custom Hooks Underlying Tests
 
@@ -353,8 +353,8 @@ These hooks are central to the application’s interactivity and can be tested b
 
 **Section sources**
 
-- [useAgent.js:1-292](file://frontend/src/hooks/useAgent.js#L1-L292)
-- [useUpload.js:1-361](file://frontend/src/hooks/useUpload.js#L1-L361)
+- [useAgent.js:1-292](../../../../../frontend/src/hooks/useAgent.js#L1-L292)
+- [useUpload.js:1-361](../../../../../frontend/src/hooks/useUpload.js#L1-L361)
 
 ## Dependency Analysis
 
@@ -381,11 +381,11 @@ Pkg --> PWChromium["@playwright/browser-chromium"]
 
 **Diagram sources**
 
-- [package.json:38-59](file://frontend/package.json#L38-L59)
+- [package.json:38-59](../../../../../frontend/package.json#L38-L59)
 
 **Section sources**
 
-- [package.json:1-62](file://frontend/package.json#L1-L62)
+- [package.json:1-62](../../../../../frontend/package.json#L1-L62)
 
 ## Performance Considerations
 
@@ -406,8 +406,8 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [setup.js:1-2](file://frontend/src/test/setup.js#L1-L2)
-- [playwright.config.js:14-28](file://frontend/playwright.config.js#L14-L28)
+- [setup.js:1-2](../../../../../frontend/src/test/setup.js#L1-L2)
+- [playwright.config.js:14-28](../../../../../frontend/playwright.config.js#L14-L28)
 
 ## Conclusion
 

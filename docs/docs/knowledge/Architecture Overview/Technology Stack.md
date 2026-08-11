@@ -5,20 +5,20 @@
 
 <cite>
 **Referenced Files in This Document**
-- [TechStack.md](file://docs/TechStack.md)
-- [pyproject.toml](file://backend/pyproject.toml)
-- [package.json](file://frontend/package.json)
-- [Dockerfile](file://backend/docker/Dockerfile)
-- [docker-compose.yml](file://backend/docker/docker-compose.yml)
-- [settings.py](file://backend/app/config/settings.py)
-- [supabase_client.py](file://backend/app/db/supabase_client.py)
-- [redis_cache.py](file://backend/app/cache/redis_cache.py)
-- [docling_client.py](file://backend/app/pipeline/services/docling_client.py)
-- [grobid_client.py](file://backend/app/pipeline/services/grobid_client.py)
-- [next.config.mjs](file://frontend/next.config.mjs)
-- [tailwind.config.js](file://frontend/tailwind.config.js)
-- [render.yaml](file://render.yaml)
-- [requirements.md](file://backend/requirements.md)
+- [TechStack.md](../../../architecture/TechStack.md)
+- [pyproject.toml](../../../../backend/pyproject.toml)
+- [package.json](../../../../frontend/package.json)
+- [Dockerfile](../../../../backend/docker/Dockerfile)
+- [docker-compose.yml](../../../../backend/docker/docker-compose.yml)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [supabase_client.py](../../../../backend/app/db/supabase_client.py)
+- [redis_cache.py](../../../../backend/app/cache/redis_cache.py)
+- [docling_client.py](../../../../backend/app/pipeline/services/docling_client.py)
+- [grobid_client.py](../../../../backend/app/pipeline/services/grobid_client.py)
+- [next.config.mjs](../../../../frontend/next.config.mjs)
+- [tailwind.config.js](../../../../frontend/tailwind.config.js)
+- [render.yaml](../../../../render.yaml)
+- [requirements.md](../../../../backend/requirements.md)
 </cite>
 
 ## Table of Contents
@@ -89,24 +89,24 @@ BE_DB --> INF_ClamAV
 
 **Diagram sources**
 
-- [next.config.mjs:1-27](file://frontend/next.config.mjs#L1-L27)
-- [package.json:17-36](file://frontend/package.json#L17-L36)
-- [pyproject.toml:5-9](file://backend/pyproject.toml#L5-L9)
-- [docker-compose.yml:4-21](file://backend/docker/docker-compose.yml#L4-L21)
-- [docker-compose.yml:22-32](file://backend/docker/docker-compose.yml#L22-L32)
-- [docker-compose.yml:41-67](file://backend/docker/docker-compose.yml#L41-L67)
-- [requirements.md:51-54](file://backend/requirements.md#L51-L54)
-- [requirements.md:249](file://backend/requirements.md#L249)
-- [requirements.md:30](file://backend/requirements.md#L30-L31)
+- [next.config.mjs:1-27](../../../../frontend/next.config.mjs#L1-L27)
+- [package.json:17-36](../../../../frontend/package.json#L17-L36)
+- [pyproject.toml:5-9](../../../../backend/pyproject.toml#L5-L9)
+- [docker-compose.yml:4-21](../../../../backend/docker/docker-compose.yml#L4-L21)
+- [docker-compose.yml:22-32](../../../../backend/docker/docker-compose.yml#L22-L32)
+- [docker-compose.yml:41-67](../../../../backend/docker/docker-compose.yml#L41-L67)
+- [requirements.md:51-54](../../../../backend/requirements.md#L51-L54)
+- [requirements.md:249](../../../../backend/requirements.md#L249)
+- [requirements.md:30](../../../../backend/requirements.md#L30-L31)
 
 **Section sources**
 
-- [TechStack.md:1-122](file://docs/TechStack.md#L1-L122)
-- [package.json:17-36](file://frontend/package.json#L17-L36)
-- [pyproject.toml:5-9](file://backend/pyproject.toml#L5-L9)
-- [docker-compose.yml:4-21](file://backend/docker/docker-compose.yml#L4-L21)
-- [docker-compose.yml:22-32](file://backend/docker/docker-compose.yml#L22-L32)
-- [docker-compose.yml:41-67](file://backend/docker/docker-compose.yml#L41-L67)
+- [TechStack.md:1-122](../../../architecture/TechStack.md#L1-L122)
+- [package.json:17-36](../../../../frontend/package.json#L17-L36)
+- [pyproject.toml:5-9](../../../../backend/pyproject.toml#L5-L9)
+- [docker-compose.yml:4-21](../../../../backend/docker/docker-compose.yml#L4-L21)
+- [docker-compose.yml:22-32](../../../../backend/docker/docker-compose.yml#L22-L32)
+- [docker-compose.yml:41-67](../../../../backend/docker/docker-compose.yml#L41-L67)
 
 ## Core Components
 
@@ -142,12 +142,12 @@ The technology stack is built around several core pillars:
 
 **Section sources**
 
-- [TechStack.md:7-49](file://docs/TechStack.md#L7-L49)
-- [package.json:17-36](file://frontend/package.json#L17-L36)
-- [pyproject.toml:5-9](file://backend/pyproject.toml#L5-L9)
-- [requirements.md:51-54](file://backend/requirements.md#L51-L54)
-- [requirements.md:249](file://backend/requirements.md#L249)
-- [requirements.md:30](file://backend/requirements.md#L30-L31)
+- [TechStack.md:7-49](../../../architecture/TechStack.md#L7-L49)
+- [package.json:17-36](../../../../frontend/package.json#L17-L36)
+- [pyproject.toml:5-9](../../../../backend/pyproject.toml#L5-L9)
+- [requirements.md:51-54](../../../../backend/requirements.md#L51-L54)
+- [requirements.md:249](../../../../backend/requirements.md#L249)
+- [requirements.md:30](../../../../backend/requirements.md#L30-L31)
 
 ## Architecture Overview
 
@@ -176,10 +176,10 @@ API-->>Client : Formatted Document
 
 **Diagram sources**
 
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [supabase_client.py:107-124](file://backend/app/db/supabase_client.py#L107-L124)
-- [docling_client.py:143-179](file://backend/app/pipeline/services/docling_client.py#L143-L179)
-- [grobid_client.py:25-51](file://backend/app/pipeline/services/grobid_client.py#L25-L51)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [supabase_client.py:107-124](../../../../backend/app/db/supabase_client.py#L107-L124)
+- [docling_client.py:143-179](../../../../backend/app/pipeline/services/docling_client.py#L143-L179)
+- [grobid_client.py:25-51](../../../../backend/app/pipeline/services/grobid_client.py#L25-L51)
 
 The architecture supports:
 
@@ -221,8 +221,8 @@ React19 --> UIComponents : "renders"
 
 **Diagram sources**
 
-- [next.config.mjs:4-11](file://frontend/next.config.mjs#L4-L11)
-- [package.json:17-36](file://frontend/package.json#L17-L36)
+- [next.config.mjs:4-11](../../../../frontend/next.config.mjs#L4-L11)
+- [package.json:17-36](../../../../frontend/package.json#L17-L36)
 
 Key features include:
 
@@ -233,9 +233,9 @@ Key features include:
 
 **Section sources**
 
-- [TechStack.md:7-25](file://docs/TechStack.md#L7-L25)
-- [next.config.mjs:1-27](file://frontend/next.config.mjs#L1-L27)
-- [package.json:17-36](file://frontend/package.json#L17-L36)
+- [TechStack.md:7-25](../../../architecture/TechStack.md#L7-L25)
+- [next.config.mjs:1-27](../../../../frontend/next.config.mjs#L1-L27)
+- [package.json:17-36](../../../../frontend/package.json#L17-L36)
 
 ### Backend Framework (FastAPI + Uvicorn)
 
@@ -271,14 +271,14 @@ FastAPI --> Pipeline : "manages"
 
 **Diagram sources**
 
-- [pyproject.toml:5-9](file://backend/pyproject.toml#L5-L9)
-- [docker-compose.yml:41-67](file://backend/docker/docker-compose.yml#L41-L67)
+- [pyproject.toml:5-9](../../../../backend/pyproject.toml#L5-L9)
+- [docker-compose.yml:41-67](../../../../backend/docker/docker-compose.yml#L41-L67)
 
 **Section sources**
 
-- [TechStack.md:29-51](file://docs/TechStack.md#L29-L51)
-- [pyproject.toml:5-9](file://backend/pyproject.toml#L5-L9)
-- [docker-compose.yml:41-67](file://backend/docker/docker-compose.yml#L41-L67)
+- [TechStack.md:29-51](../../../architecture/TechStack.md#L29-L51)
+- [pyproject.toml:5-9](../../../../backend/pyproject.toml#L5-L9)
+- [docker-compose.yml:41-67](../../../../backend/docker/docker-compose.yml#L41-L67)
 
 ### Database Layer (Supabase PostgreSQL)
 
@@ -300,14 +300,14 @@ Storage --> Files["Uploaded/Generated Files"]
 
 **Diagram sources**
 
-- [settings.py:76-82](file://backend/app/config/settings.py#L76-L82)
-- [supabase_client.py:49-83](file://backend/app/db/supabase_client.py#L49-L83)
+- [settings.py:76-82](../../../../backend/app/config/settings.py#L76-L82)
+- [supabase_client.py:49-83](../../../../backend/app/db/supabase_client.py#L49-L83)
 
 **Section sources**
 
-- [TechStack.md:83-84](file://docs/TechStack.md#L83-L84)
-- [settings.py:76-82](file://backend/app/config/settings.py#L76-L82)
-- [supabase_client.py:107-124](file://backend/app/db/supabase_client.py#L107-L124)
+- [TechStack.md:83-84](../../../architecture/TechStack.md#L83-L84)
+- [settings.py:76-82](../../../../backend/app/config/settings.py#L76-L82)
+- [supabase_client.py:107-124](../../../../backend/app/db/supabase_client.py#L107-L124)
 
 ### Caching and Queue Management (Redis)
 
@@ -333,14 +333,14 @@ RedisBroker --> CeleryWorkers
 
 **Diagram sources**
 
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [docker-compose.yml:22-32](file://backend/docker/docker-compose.yml#L22-L32)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [docker-compose.yml:22-32](../../../../backend/docker/docker-compose.yml#L22-L32)
 
 **Section sources**
 
-- [TechStack.md:37](file://docs/TechStack.md#L37)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [docker-compose.yml:22-32](file://backend/docker/docker-compose.yml#L22-L32)
+- [TechStack.md:37](../../../architecture/TechStack.md#L37)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [docker-compose.yml:22-32](../../../../backend/docker/docker-compose.yml#L22-L32)
 
 ### AI/ML Integration Layer
 
@@ -363,13 +363,13 @@ QualityCheck --> FinalResult["Final Formatted Document"]
 
 **Diagram sources**
 
-- [TechStack.md:54-62](file://docs/TechStack.md#L54-L62)
-- [settings.py:142-154](file://backend/app/config/settings.py#L142-L154)
+- [TechStack.md:54-62](../../../architecture/TechStack.md#L54-L62)
+- [settings.py:142-154](../../../../backend/app/config/settings.py#L142-L154)
 
 **Section sources**
 
-- [TechStack.md:54-62](file://docs/TechStack.md#L54-L62)
-- [settings.py:142-154](file://backend/app/config/settings.py#L142-L154)
+- [TechStack.md:54-62](../../../architecture/TechStack.md#L54-L62)
+- [settings.py:142-154](../../../../backend/app/config/settings.py#L142-L154)
 
 ### PDF Processing Pipeline
 
@@ -392,15 +392,15 @@ Metadata --> Formatting["Formatting Engine"]
 
 **Diagram sources**
 
-- [TechStack.md:65-74](file://docs/TechStack.md#L65-L74)
-- [docling_client.py:143-179](file://backend/app/pipeline/services/docling_client.py#L143-L179)
-- [grobid_client.py:25-51](file://backend/app/pipeline/services/grobid_client.py#L25-L51)
+- [TechStack.md:65-74](../../../architecture/TechStack.md#L65-L74)
+- [docling_client.py:143-179](../../../../backend/app/pipeline/services/docling_client.py#L143-L179)
+- [grobid_client.py:25-51](../../../../backend/app/pipeline/services/grobid_client.py#L25-L51)
 
 **Section sources**
 
-- [TechStack.md:65-74](file://docs/TechStack.md#L65-L74)
-- [docling_client.py:143-179](file://backend/app/pipeline/services/docling_client.py#L143-L179)
-- [grobid_client.py:25-51](file://backend/app/pipeline/services/grobid_client.py#L25-L51)
+- [TechStack.md:65-74](../../../architecture/TechStack.md#L65-L74)
+- [docling_client.py:143-179](../../../../backend/app/pipeline/services/docling_client.py#L143-L179)
+- [grobid_client.py:25-51](../../../../backend/app/pipeline/services/grobid_client.py#L25-L51)
 
 ## Dependency Analysis
 
@@ -447,17 +447,17 @@ Node18 --> SupabaseJS
 
 **Diagram sources**
 
-- [pyproject.toml:5-9](file://backend/pyproject.toml#L5-L9)
-- [package.json:17-36](file://frontend/package.json#L17-L36)
-- [requirements.md:51-54](file://backend/requirements.md#L51-L54)
-- [requirements.md:30](file://backend/requirements.md#L30-L31)
-- [requirements.md:249](file://backend/requirements.md#L249)
+- [pyproject.toml:5-9](../../../../backend/pyproject.toml#L5-L9)
+- [package.json:17-36](../../../../frontend/package.json#L17-L36)
+- [requirements.md:51-54](../../../../backend/requirements.md#L51-L54)
+- [requirements.md:30](../../../../backend/requirements.md#L30-L31)
+- [requirements.md:249](../../../../backend/requirements.md#L249)
 
 **Section sources**
 
-- [requirements.md:1-377](file://backend/requirements.md#L1-L377)
-- [package.json:17-36](file://frontend/package.json#L17-L36)
-- [pyproject.toml:5-9](file://backend/pyproject.toml#L5-L9)
+- [requirements.md:1-377](../../../../backend/requirements.md#L1-L377)
+- [package.json:17-36](../../../../frontend/package.json#L17-L36)
+- [pyproject.toml:5-9](../../../../backend/pyproject.toml#L5-L9)
 
 ## Performance Considerations
 
@@ -511,9 +511,9 @@ Common issues and their resolutions:
 
 **Section sources**
 
-- [settings.py:248-257](file://backend/app/config/settings.py#L248-L257)
-- [redis_cache.py:34-38](file://backend/app/cache/redis_cache.py#L34-L38)
-- [supabase_client.py:126-144](file://backend/app/db/supabase_client.py#L126-L144)
+- [settings.py:248-257](../../../../backend/app/config/settings.py#L248-L257)
+- [redis_cache.py:34-38](../../../../backend/app/cache/redis_cache.py#L34-L38)
+- [supabase_client.py:126-144](../../../../backend/app/db/supabase_client.py#L126-L144)
 
 ## Conclusion
 

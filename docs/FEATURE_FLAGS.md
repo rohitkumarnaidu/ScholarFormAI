@@ -13,29 +13,29 @@ last_updated: July 2026
 
 - [Overview](#overview)
 - [Feature Flag Service](#feature-flag-service)
-    - [Resolution Order](#resolution-order)
-    - [Singleton Access](#singleton-access)
+  - [Resolution Order](#resolution-order)
+  - [Singleton Access](#singleton-access)
 - [Feature Flag Middleware](#feature-flag-middleware)
-    - [Response Header Injection](#response-header-injection)
+  - [Response Header Injection](#response-header-injection)
 - [Enhancement Manager](#enhancement-manager)
-    - [EnhancementProfile](#enhancementprofile)
-    - [Capability Discovery](#capability-discovery)
-    - [Fallback Dispatching](#fallback-dispatching)
+  - [EnhancementProfile](#enhancementprofile)
+  - [Capability Discovery](#capability-discovery)
+  - [Fallback Dispatching](#fallback-dispatching)
 - [Available Flags](#available-flags)
-    - [Pipeline Flags](#pipeline-flags)
-    - [Security Flags](#security-flags)
-    - [Cache Flags](#cache-flags)
-    - [Deployment Flags](#deployment-flags)
-    - [Enhancement Flags](#enhancement-flags)
+  - [Pipeline Flags](#pipeline-flags)
+  - [Security Flags](#security-flags)
+  - [Cache Flags](#cache-flags)
+  - [Deployment Flags](#deployment-flags)
+  - [Enhancement Flags](#enhancement-flags)
 - [Configuration Reference](#configuration-reference)
-    - [Pipeline Settings](#pipeline-settings)
-    - [Security Settings](#security-settings)
-    - [Cache Settings](#cache-settings)
-    - [Deployment Settings](#deployment-settings)
+  - [Pipeline Settings](#pipeline-settings)
+  - [Security Settings](#security-settings)
+  - [Cache Settings](#cache-settings)
+  - [Deployment Settings](#deployment-settings)
 - [Usage](#usage)
-    - [Checking Flags in Code](#checking-flags-in-code)
-    - [Per-Request Override](#per-request-override)
-    - [Enhancement Manager Dispatch](#enhancement-manager-dispatch)
+  - [Checking Flags in Code](#checking-flags-in-code)
+  - [Per-Request Override](#per-request-override)
+  - [Enhancement Manager Dispatch](#enhancement-manager-dispatch)
 - [Frontend Integration](#frontend-integration)
 - [See Also](#see-also)
 
@@ -426,15 +426,15 @@ def mock_enhancement_manager():
 
 ```mermaid
 graph TD
-    A[get_flag request] --> B{REDIS_ENABLED?}
-    B -->|Yes| C[Redis cache<br/>flag:{name}<br/>TTL: 5min]
+    A["get_flag request"] --> B{REDIS_ENABLED?}
+    B -->|Yes| C["Redis cache<br/>flag:{name}<br/>TTL: 5min"]
     B -->|No| D["In-memory cache<br/>_DEFAULT_FLAGS"]
-    C -->|Hit| E[Return cached value]
+    C -->|Hit| E["Return cached value"]
     C -->|Miss| D
     D -->|Found| E
     D -->|Miss| F["Database<br/>_load_from_db"]
-    F -->|Found| G[Update caches]
-    F -->|Miss| H[Return default]
+    F -->|Found| G["Update caches"]
+    F -->|Miss| H["Return default"]
     G --> E
 ```
 
@@ -485,8 +485,8 @@ The `X-Feature-Flags` response header (debug mode) provides a zero-latency alter
 
 ## See Also
 
-- [Configuration Reference](CONFIGURATION_REFERENCE.md) — full settings catalog
-- [Architecture Overview](architecture.md) — system architecture
-- [AI Architecture](AI_ARCHITECTURE.md) — AI/ML pipeline details
-- [Deployment Guide](Deployment.md) — environment variable setup
-- [Frontend Architecture](FRONTEND_ARCHITECTURE.md) — frontend integration patterns
+- [Configuration Reference](reference/CONFIGURATION_REFERENCE.md) — full settings catalog
+- [Architecture Overview](architecture/ARCHITECTURE.md) — system architecture
+- [AI Architecture](architecture/AI_ARCHITECTURE.md) — AI/ML pipeline details
+- [Deployment Guide](deployment/Deployment.md) — environment variable setup
+- [Frontend Architecture](architecture/FRONTEND_ARCHITECTURE.md) — frontend integration patterns

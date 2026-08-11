@@ -5,20 +5,20 @@
 
 <cite>
 **Referenced Files in This Document**
-- [RootLayout](file://frontend/app/layout.jsx)
+- [RootLayout](../../../../frontend/app/(formatter)/layout.jsx)
 - [SharedLayout](file://frontend/app/(shared)/layout.jsx)
 - [FormatterProtectedLayout](file://frontend/app/(formatter)/(protected)/layout.jsx)
 - [GeneratorProtectedLayout](file://frontend/app/(generator)/(protected)/layout.jsx)
-- [AuthGuard](file://frontend/src/components/layout/AuthGuard.jsx)
-- [AuthGuard.test.jsx](file://frontend/src/test/AuthGuard.test.jsx)
-- [AuthContext](file://frontend/src/context/AuthContext.jsx)
+- [AuthGuard](../../../../frontend/src/components/layout/AuthGuard.jsx)
+- [AuthGuard.test.jsx](../../../../frontend/src/test/AuthGuard.test.jsx)
+- [AuthContext](../../../../frontend/src/context/AuthContext.jsx)
 - [navigation-sidebar-toggle.spec.js](file://frontend/e2e/navigation-sidebar-toggle.spec.js)
-- [protected-routes.spec.js](file://frontend/e2e/protected-routes.spec.js)
+- [protected-routes.spec.js](../../../../frontend/e2e/protected-routes.spec.js)
 - [responsive-mobile.spec.js](file://frontend/e2e/responsive-mobile.spec.js)
 - [responsive-tablet.spec.js](file://frontend/e2e/responsive-tablet.spec.js)
 - [SharedProtectedLayout](file://frontend/app/(shared)/(protected)/layout.jsx)
-- [next.config.mjs](file://frontend/next.config.mjs)
-- [package.json](file://frontend/package.json)
+- [next.config.mjs](../../../../frontend/next.config.mjs)
+- [package.json](../../../../frontend/package.json)
 </cite>
 
 ## Table of Contents
@@ -80,15 +80,15 @@ LAYOUT_SHARED --> SHARED
 - [SharedLayout](file://frontend/app/(shared)/layout.jsx#L1-L6)
 - [FormatterProtectedLayout](file://frontend/app/(formatter)/(protected)/layout.jsx#L1-L6)
 - [GeneratorProtectedLayout](file://frontend/app/(generator)/(protected)/layout.jsx#L1-L6)
-- [AuthGuard:1-71](file://frontend/src/components/layout/AuthGuard.jsx#L1-L71)
-- [RootLayout:32-84](file://frontend/app/layout.jsx#L32-L84)
+- [AuthGuard:1-71](../../../../frontend/src/components/layout/AuthGuard.jsx#L1-L71)
+- [RootLayout:32-84](../../../../frontend/app/(formatter)/layout.jsx#L32-L84)
 
 **Section sources**
 
 - [SharedLayout](file://frontend/app/(shared)/layout.jsx#L1-L6)
 - [FormatterProtectedLayout](file://frontend/app/(formatter)/(protected)/layout.jsx#L1-L6)
 - [GeneratorProtectedLayout](file://frontend/app/(generator)/(protected)/layout.jsx#L1-L6)
-- [RootLayout:32-84](file://frontend/app/layout.jsx#L32-L84)
+- [RootLayout:32-84](../../../../frontend/app/(formatter)/layout.jsx#L32-L84)
 
 ## Core Components
 
@@ -106,10 +106,10 @@ Key behaviors:
 
 **Section sources**
 
-- [AuthGuard:1-71](file://frontend/src/components/layout/AuthGuard.jsx#L1-L71)
-- [AuthContext:1-340](file://frontend/src/context/AuthContext.jsx#L1-L340)
+- [AuthGuard:1-71](../../../../frontend/src/components/layout/AuthGuard.jsx#L1-L71)
+- [AuthContext:1-340](../../../../frontend/src/context/AuthContext.jsx#L1-L340)
 - [SharedProtectedLayout](file://frontend/app/(shared)/(protected)/layout.jsx#L1-L5)
-- [RootLayout:12-30](file://frontend/app/layout.jsx#L12-L30)
+- [RootLayout:12-30](../../../../frontend/app/(formatter)/layout.jsx#L12-L30)
 
 ## Architecture Overview
 
@@ -140,13 +140,13 @@ Note over Ctx,Supabase : AuthContext initializes session and listens to auth sta
 
 **Diagram sources**
 
-- [AuthGuard:12-35](file://frontend/src/components/layout/AuthGuard.jsx#L12-L35)
-- [AuthContext:65-178](file://frontend/src/context/AuthContext.jsx#L65-L178)
+- [AuthGuard:12-35](../../../../frontend/src/components/layout/AuthGuard.jsx#L12-L35)
+- [AuthContext:65-178](../../../../frontend/src/context/AuthContext.jsx#L65-L178)
 
 **Section sources**
 
-- [AuthGuard:12-35](file://frontend/src/components/layout/AuthGuard.jsx#L12-L35)
-- [AuthContext:65-178](file://frontend/src/context/AuthContext.jsx#L65-L178)
+- [AuthGuard:12-35](../../../../frontend/src/components/layout/AuthGuard.jsx#L12-L35)
+- [AuthContext:65-178](../../../../frontend/src/context/AuthContext.jsx#L65-L178)
 
 ## Detailed Component Analysis
 
@@ -176,12 +176,12 @@ CheckAdmin --> |No| RenderChildren
 
 **Diagram sources**
 
-- [AuthGuard:12-56](file://frontend/src/components/layout/AuthGuard.jsx#L12-L56)
+- [AuthGuard:12-56](../../../../frontend/src/components/layout/AuthGuard.jsx#L12-L56)
 
 **Section sources**
 
-- [AuthGuard:12-56](file://frontend/src/components/layout/AuthGuard.jsx#L12-L56)
-- [AuthGuard.test.jsx:28-73](file://frontend/src/test/AuthGuard.test.jsx#L28-L73)
+- [AuthGuard:12-56](../../../../frontend/src/components/layout/AuthGuard.jsx#L12-L56)
+- [AuthGuard.test.jsx:28-73](../../../../frontend/src/test/AuthGuard.test.jsx#L28-L73)
 
 ### AuthContext
 
@@ -221,11 +221,11 @@ end
 
 **Diagram sources**
 
-- [AuthContext:65-178](file://frontend/src/context/AuthContext.jsx#L65-L178)
+- [AuthContext:65-178](../../../../frontend/src/context/AuthContext.jsx#L65-L178)
 
 **Section sources**
 
-- [AuthContext:65-178](file://frontend/src/context/AuthContext.jsx#L65-L178)
+- [AuthContext:65-178](../../../../frontend/src/context/AuthContext.jsx#L65-L178)
 
 ### Protected Layouts
 
@@ -249,8 +249,8 @@ RootLayout sets global metadata, viewport, fonts, and an accessibility “skip t
 
 **Section sources**
 
-- [RootLayout:12-30](file://frontend/app/layout.jsx#L12-L30)
-- [RootLayout:32-84](file://frontend/app/layout.jsx#L32-L84)
+- [RootLayout:12-30](../../../../frontend/app/(formatter)/layout.jsx#L12-L30)
+- [RootLayout:32-84](../../../../frontend/app/(formatter)/layout.jsx#L32-L84)
 
 ## Dependency Analysis
 
@@ -274,15 +274,15 @@ E2E --> ProtectedLayouts
 
 **Diagram sources**
 
-- [AuthGuard:3-5](file://frontend/src/components/layout/AuthGuard.jsx#L3-L5)
-- [AuthContext:1-10](file://frontend/src/context/AuthContext.jsx#L1-L10)
+- [AuthGuard:3-5](../../../../frontend/src/components/layout/AuthGuard.jsx#L3-L5)
+- [AuthContext:1-10](../../../../frontend/src/context/AuthContext.jsx#L1-L10)
 - [FormatterProtectedLayout](file://frontend/app/(formatter)/(protected)/layout.jsx#L1-L6)
 - [GeneratorProtectedLayout](file://frontend/app/(generator)/(protected)/layout.jsx#L1-L6)
 
 **Section sources**
 
-- [AuthGuard:3-5](file://frontend/src/components/layout/AuthGuard.jsx#L3-L5)
-- [AuthContext:1-10](file://frontend/src/context/AuthContext.jsx#L1-L10)
+- [AuthGuard:3-5](../../../../frontend/src/components/layout/AuthGuard.jsx#L3-L5)
+- [AuthContext:1-10](../../../../frontend/src/context/AuthContext.jsx#L1-L10)
 - [FormatterProtectedLayout](file://frontend/app/(formatter)/(protected)/layout.jsx#L1-L6)
 - [GeneratorProtectedLayout](file://frontend/app/(generator)/(protected)/layout.jsx#L1-L6)
 
@@ -300,8 +300,8 @@ Recommendations:
 
 **Section sources**
 
-- [next.config.mjs:7-11](file://frontend/next.config.mjs#L7-L11)
-- [AuthGuard:58-71](file://frontend/src/components/layout/AuthGuard.jsx#L58-L71)
+- [next.config.mjs:7-11](../../../../frontend/next.config.mjs#L7-L11)
+- [AuthGuard:58-71](../../../../frontend/src/components/layout/AuthGuard.jsx#L58-L71)
 
 ## Troubleshooting Guide
 
@@ -314,10 +314,10 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [AuthContext:140-178](file://frontend/src/context/AuthContext.jsx#L140-L178)
-- [AuthGuard:18-35](file://frontend/src/components/layout/AuthGuard.jsx#L18-L35)
-- [AuthGuard.test.jsx:28-73](file://frontend/src/test/AuthGuard.test.jsx#L28-L73)
-- [protected-routes.spec.js](file://frontend/e2e/protected-routes.spec.js)
+- [AuthContext:140-178](../../../../frontend/src/context/AuthContext.jsx#L140-L178)
+- [AuthGuard:18-35](../../../../frontend/src/components/layout/AuthGuard.jsx#L18-L35)
+- [AuthGuard.test.jsx:28-73](../../../../frontend/src/test/AuthGuard.test.jsx#L28-L73)
+- [protected-routes.spec.js](../../../../frontend/e2e/protected-routes.spec.js)
 - [navigation-sidebar-toggle.spec.js](file://frontend/e2e/navigation-sidebar-toggle.spec.js)
 
 ## Conclusion
@@ -344,7 +344,7 @@ Guidelines:
 - [SharedProtectedLayout](file://frontend/app/(shared)/(protected)/layout.jsx#L1-L5)
 - [FormatterProtectedLayout](file://frontend/app/(formatter)/(protected)/layout.jsx#L1-L6)
 - [GeneratorProtectedLayout](file://frontend/app/(generator)/(protected)/layout.jsx#L1-L6)
-- [AuthGuard:18-21](file://frontend/src/components/layout/AuthGuard.jsx#L18-L21)
+- [AuthGuard:18-21](../../../../frontend/src/components/layout/AuthGuard.jsx#L18-L21)
 
 ### Responsive Navigation and Accessibility
 
@@ -356,4 +356,4 @@ Guidelines:
 
 - [responsive-mobile.spec.js](file://frontend/e2e/responsive-mobile.spec.js)
 - [responsive-tablet.spec.js](file://frontend/e2e/responsive-tablet.spec.js)
-- [RootLayout:71-76](file://frontend/app/layout.jsx#L71-L76)
+- [RootLayout:71-76](../../../../frontend/app/(formatter)/layout.jsx#L71-L76)

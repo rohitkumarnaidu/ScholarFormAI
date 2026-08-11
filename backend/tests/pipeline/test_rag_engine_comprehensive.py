@@ -45,6 +45,7 @@ def _make_engine(
         patch_st = patch("sentence_transformers.SentenceTransformer", return_value=mock_model)
 
     with (
+        patch.dict("sys.modules", {"sentence_transformers": MagicMock()}),
         patch_settings as ms,
         patch_model_store as mm,
         patch_st,

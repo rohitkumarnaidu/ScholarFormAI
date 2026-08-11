@@ -5,15 +5,15 @@
 
 <cite>
 **Referenced Files in This Document**
-- [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
-- [ReconnectingWebSocket.js](file://frontend/src/lib/ReconnectingWebSocket.js)
-- [SplitEditor.jsx](file://frontend/src/components/live-preview/SplitEditor.jsx)
-- [PreviewPane.jsx](file://frontend/src/components/live-preview/PreviewPane.jsx)
+- [useLivePreviewSocket.js](../../../../../frontend/src/hooks/useLivePreviewSocket.js)
+- [ReconnectingWebSocket.js](../../../../../frontend/src/lib/ReconnectingWebSocket.js)
+- [SplitEditor.jsx](../../../../../frontend/src/components/live-preview/SplitEditor.jsx)
+- [PreviewPane.jsx](../../../../../frontend/src/components/live-preview/PreviewPane.jsx)
 - [page.jsx](file://frontend/app/(formatter)/live/page.jsx)
-- [preview.py](file://backend/app/routers/preview.py)
-- [api.preview.v1.js](file://frontend/src/services/api.preview.v1.js)
-- [api.templates.js](file://frontend/src/services/api.templates.js)
-- [api.core.js](file://frontend/src/services/api.core.js)
+- [preview.py](../../../../../backend/app/routers/preview.py)
+- [api.preview.v1.js](../../../../../frontend/src/services/api.preview.v1.js)
+- [api.templates.js](../../../../../frontend/src/services/api.templates.js)
+- [api.core.js](../../../../../frontend/src/services/api.core.js)
 </cite>
 
 ## Table of Contents
@@ -63,24 +63,24 @@ H --> E
 
 **Diagram sources**
 
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
-- [SplitEditor.jsx:1-204](file://frontend/src/components/live-preview/SplitEditor.jsx#L1-L204)
-- [PreviewPane.jsx:1-81](file://frontend/src/components/live-preview/PreviewPane.jsx#L1-L81)
+- [useLivePreviewSocket.js:1-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [ReconnectingWebSocket.js:1-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
+- [SplitEditor.jsx:1-204](../../../../../frontend/src/components/live-preview/SplitEditor.jsx#L1-L204)
+- [PreviewPane.jsx:1-81](../../../../../frontend/src/components/live-preview/PreviewPane.jsx#L1-L81)
 - [page.jsx:1-28](file://frontend/app/(formatter)/live/page.jsx#L1-L28)
-- [preview.py:51-75](file://backend/app/routers/preview.py#L51-L75)
-- [api.preview.v1.js](file://frontend/src/services/api.preview.v1.js)
-- [api.templates.js](file://frontend/src/services/api.templates.js)
-- [api.core.js](file://frontend/src/services/api.core.js)
+- [preview.py:51-75](../../../../../backend/app/routers/preview.py#L51-L75)
+- [api.preview.v1.js](../../../../../frontend/src/services/api.preview.v1.js)
+- [api.templates.js](../../../../../frontend/src/services/api.templates.js)
+- [api.core.js](../../../../../frontend/src/services/api.core.js)
 
 **Section sources**
 
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
-- [SplitEditor.jsx:1-204](file://frontend/src/components/live-preview/SplitEditor.jsx#L1-L204)
-- [PreviewPane.jsx:1-81](file://frontend/src/components/live-preview/PreviewPane.jsx#L1-L81)
+- [useLivePreviewSocket.js:1-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [ReconnectingWebSocket.js:1-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
+- [SplitEditor.jsx:1-204](../../../../../frontend/src/components/live-preview/SplitEditor.jsx#L1-L204)
+- [PreviewPane.jsx:1-81](../../../../../frontend/src/components/live-preview/PreviewPane.jsx#L1-L81)
 - [page.jsx:1-28](file://frontend/app/(formatter)/live/page.jsx#L1-L28)
-- [preview.py:51-75](file://backend/app/routers/preview.py#L51-L75)
+- [preview.py:51-75](../../../../../backend/app/routers/preview.py#L51-L75)
 
 ## Core Components
 
@@ -100,11 +100,11 @@ Key responsibilities:
 
 **Section sources**
 
-- [useLivePreviewSocket.js:28-136](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L136)
-- [ReconnectingWebSocket.js:5-148](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
-- [SplitEditor.jsx:97-204](file://frontend/src/components/live-preview/SplitEditor.jsx#L97-L204)
-- [PreviewPane.jsx:20-81](file://frontend/src/components/live-preview/PreviewPane.jsx#L20-L81)
-- [preview.py:51-75](file://backend/app/routers/preview.py#L51-L75)
+- [useLivePreviewSocket.js:28-136](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L28-L136)
+- [ReconnectingWebSocket.js:5-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
+- [SplitEditor.jsx:97-204](../../../../../frontend/src/components/live-preview/SplitEditor.jsx#L97-L204)
+- [PreviewPane.jsx:20-81](../../../../../frontend/src/components/live-preview/PreviewPane.jsx#L20-L81)
+- [preview.py:51-75](../../../../../backend/app/routers/preview.py#L51-L75)
 
 ## Architecture Overview
 
@@ -120,7 +120,7 @@ participant Backend as "preview.py"
 User->>Editor : Edit content
 Editor->>Hook : sendContent(html, templateId)
 Hook->>Hook : Debounce 200ms<br/>Compute checksum<br/>Increment seq
-Hook->>WS : Send payload (html, checksum, seq)
+Hook->>WS : Send payload ("html, checksum, seq")
 WS-->>Backend : Forward payload
 Backend-->>WS : Rendered HTML + warnings
 WS-->>Hook : onmessage(html, warnings)
@@ -131,10 +131,10 @@ Editor-->>User : Updated preview
 
 **Diagram sources**
 
-- [useLivePreviewSocket.js:106-133](file://frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
-- [useLivePreviewSocket.js:68-81](file://frontend/src/hooks/useLivePreviewSocket.js#L68-L81)
-- [SplitEditor.jsx:115-118](file://frontend/src/components/live-preview/SplitEditor.jsx#L115-L118)
-- [preview.py:51-75](file://backend/app/routers/preview.py#L51-L75)
+- [useLivePreviewSocket.js:106-133](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
+- [useLivePreviewSocket.js:68-81](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L68-L81)
+- [SplitEditor.jsx:115-118](../../../../../frontend/src/components/live-preview/SplitEditor.jsx#L115-L118)
+- [preview.py:51-75](../../../../../backend/app/routers/preview.py#L51-L75)
 
 ## Detailed Component Analysis
 
@@ -177,13 +177,13 @@ ForceAnalyzing --> End
 
 **Diagram sources**
 
-- [useLivePreviewSocket.js:106-133](file://frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
-- [useLivePreviewSocket.js:8-14](file://frontend/src/hooks/useLivePreviewSocket.js#L8-L14)
+- [useLivePreviewSocket.js:106-133](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
+- [useLivePreviewSocket.js:8-14](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L8-L14)
 
 **Section sources**
 
-- [useLivePreviewSocket.js:28-136](file://frontend/src/hooks/useLivePreviewSocket.js#L28-L136)
-- [useLivePreviewSocket.js:8-14](file://frontend/src/hooks/useLivePreviewSocket.js#L8-L14)
+- [useLivePreviewSocket.js:28-136](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L28-L136)
+- [useLivePreviewSocket.js:8-14](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L8-L14)
 
 ### ReconnectingWebSocket Class
 
@@ -227,11 +227,11 @@ class ReconnectingWebSocket {
 
 **Diagram sources**
 
-- [ReconnectingWebSocket.js:5-148](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
+- [ReconnectingWebSocket.js:5-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
 
 **Section sources**
 
-- [ReconnectingWebSocket.js:5-148](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
+- [ReconnectingWebSocket.js:5-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
 
 ### SplitEditor Component
 
@@ -263,13 +263,13 @@ Split-->>User : PreviewPane updates
 
 **Diagram sources**
 
-- [SplitEditor.jsx:106-129](file://frontend/src/components/live-preview/SplitEditor.jsx#L106-L129)
-- [SplitEditor.jsx:115-118](file://frontend/src/components/live-preview/SplitEditor.jsx#L115-L118)
-- [useLivePreviewSocket.js:106-133](file://frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
+- [SplitEditor.jsx:106-129](../../../../../frontend/src/components/live-preview/SplitEditor.jsx#L106-L129)
+- [SplitEditor.jsx:115-118](../../../../../frontend/src/components/live-preview/SplitEditor.jsx#L115-L118)
+- [useLivePreviewSocket.js:106-133](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
 
 **Section sources**
 
-- [SplitEditor.jsx:97-204](file://frontend/src/components/live-preview/SplitEditor.jsx#L97-L204)
+- [SplitEditor.jsx:97-204](../../../../../frontend/src/components/live-preview/SplitEditor.jsx#L97-L204)
 
 ### PreviewPane Component
 
@@ -298,11 +298,11 @@ HideOverlay --> Exit
 
 **Diagram sources**
 
-- [PreviewPane.jsx:20-81](file://frontend/src/components/live-preview/PreviewPane.jsx#L20-L81)
+- [PreviewPane.jsx:20-81](../../../../../frontend/src/components/live-preview/PreviewPane.jsx#L20-L81)
 
 **Section sources**
 
-- [PreviewPane.jsx:20-81](file://frontend/src/components/live-preview/PreviewPane.jsx#L20-L81)
+- [PreviewPane.jsx:20-81](../../../../../frontend/src/components/live-preview/PreviewPane.jsx#L20-L81)
 
 ### Backend Preview Router
 
@@ -319,7 +319,7 @@ Integration:
 
 **Section sources**
 
-- [preview.py:51-75](file://backend/app/routers/preview.py#L51-L75)
+- [preview.py:51-75](../../../../../backend/app/routers/preview.py#L51-L75)
 
 ## Dependency Analysis
 
@@ -343,24 +343,24 @@ Page --> PreviewAPI["api.preview.v1.js"]
 
 **Diagram sources**
 
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
-- [SplitEditor.jsx:1-204](file://frontend/src/components/live-preview/SplitEditor.jsx#L1-L204)
-- [PreviewPane.jsx:1-81](file://frontend/src/components/live-preview/PreviewPane.jsx#L1-L81)
+- [useLivePreviewSocket.js:1-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [ReconnectingWebSocket.js:1-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
+- [SplitEditor.jsx:1-204](../../../../../frontend/src/components/live-preview/SplitEditor.jsx#L1-L204)
+- [PreviewPane.jsx:1-81](../../../../../frontend/src/components/live-preview/PreviewPane.jsx#L1-L81)
 - [page.jsx:1-28](file://frontend/app/(formatter)/live/page.jsx#L1-L28)
-- [preview.py:51-75](file://backend/app/routers/preview.py#L51-L75)
-- [api.preview.v1.js](file://frontend/src/services/api.preview.v1.js)
-- [api.templates.js](file://frontend/src/services/api.templates.js)
-- [api.core.js](file://frontend/src/services/api.core.js)
+- [preview.py:51-75](../../../../../backend/app/routers/preview.py#L51-L75)
+- [api.preview.v1.js](../../../../../frontend/src/services/api.preview.v1.js)
+- [api.templates.js](../../../../../frontend/src/services/api.templates.js)
+- [api.core.js](../../../../../frontend/src/services/api.core.js)
 
 **Section sources**
 
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
-- [SplitEditor.jsx:1-204](file://frontend/src/components/live-preview/SplitEditor.jsx#L1-L204)
-- [PreviewPane.jsx:1-81](file://frontend/src/components/live-preview/PreviewPane.jsx#L1-L81)
+- [useLivePreviewSocket.js:1-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [ReconnectingWebSocket.js:1-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
+- [SplitEditor.jsx:1-204](../../../../../frontend/src/components/live-preview/SplitEditor.jsx#L1-L204)
+- [PreviewPane.jsx:1-81](../../../../../frontend/src/components/live-preview/PreviewPane.jsx#L1-L81)
 - [page.jsx:1-28](file://frontend/app/(formatter)/live/page.jsx#L1-L28)
-- [preview.py:51-75](file://backend/app/routers/preview.py#L51-L75)
+- [preview.py:51-75](../../../../../backend/app/routers/preview.py#L51-L75)
 
 ## Performance Considerations
 
@@ -387,9 +387,9 @@ Common issues and remedies:
 
 **Section sources**
 
-- [useLivePreviewSocket.js:44-102](file://frontend/src/hooks/useLivePreviewSocket.js#L44-L102)
-- [useLivePreviewSocket.js:106-133](file://frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
-- [PreviewPane.jsx:4-11](file://frontend/src/components/live-preview/PreviewPane.jsx#L4-L11)
+- [useLivePreviewSocket.js:44-102](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L44-L102)
+- [useLivePreviewSocket.js:106-133](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
+- [PreviewPane.jsx:4-11](../../../../../frontend/src/components/live-preview/PreviewPane.jsx#L4-L11)
 
 ## Conclusion
 

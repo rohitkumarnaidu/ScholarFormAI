@@ -53,13 +53,13 @@ def get_current_user(request: Request, credentials: HTTPAuthorizationCredentials
             pass  # intentionally ignored
 
         return User(id=user_id, email=email, role=role, app_metadata=app_metadata)
-    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, HTTPException) as e:
-        logger.warning("Authentication failed: %s", str(e))
+    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, HTTPException) as err:
+        logger.warning("Authentication failed: %s", str(err))
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",
             headers={"WWW-Authenticate": "Bearer"},
-        )
+        ) from err
 
 
 def get_optional_user(

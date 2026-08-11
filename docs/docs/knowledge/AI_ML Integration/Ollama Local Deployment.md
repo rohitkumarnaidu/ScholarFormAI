@@ -5,17 +5,17 @@
 
 <cite>
 **Referenced Files in This Document**
-- [main.py](file://backend/app/main.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [llm_service.py](file://backend/app/services/llm_service.py)
-- [reasoning_engine.py](file://backend/app/pipeline/intelligence/reasoning_engine.py)
-- [model_store.py](file://backend/app/services/model_store.py)
-- [llm_pdf_parser.py](file://backend/app/pipeline/parsing/llm_pdf_parser.py)
-- [redis_cache.py](file://backend/app/cache/redis_cache.py)
-- [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
-- [docker-compose.yml](file://backend/docker/docker-compose.yml)
-- [Dockerfile](file://backend/docker/Dockerfile)
-- [test_api.py](file://backend/tests/test_api.py)
+- [main.py](../../../../backend/app/main.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [llm_service.py](../../../../backend/app/services/llm_service.py)
+- [reasoning_engine.py](../../../../backend/app/pipeline/intelligence/reasoning_engine.py)
+- [model_store.py](../../../../backend/app/services/model_store.py)
+- [llm_pdf_parser.py](../../../../backend/app/pipeline/parsing/llm_pdf_parser.py)
+- [redis_cache.py](../../../../backend/app/cache/redis_cache.py)
+- [prometheus_metrics.py](../../../../backend/app/middleware/prometheus_metrics.py)
+- [docker-compose.yml](../../../../backend/docker/docker-compose.yml)
+- [Dockerfile](../../../../backend/docker/Dockerfile)
+- [test_api.py](../../../../backend/tests/test_api.py)
 </cite>
 
 ## Table of Contents
@@ -76,20 +76,20 @@ A --> I
 
 **Diagram sources**
 
-- [main.py:360-383](file://backend/app/main.py#L360-L383)
-- [settings.py:142-145](file://backend/app/config/settings.py#L142-L145)
-- [llm_service.py:346-357](file://backend/app/services/llm_service.py#L346-L357)
-- [reasoning_engine.py:399-429](file://backend/app/pipeline/intelligence/reasoning_engine.py#L399-L429)
-- [model_store.py:4-32](file://backend/app/services/model_store.py#L4-L32)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
-- [docker-compose.yml:22-32](file://backend/docker/docker-compose.yml#L22-L32)
+- [main.py:360-383](../../../../backend/app/main.py#L360-L383)
+- [settings.py:142-145](../../../../backend/app/config/settings.py#L142-L145)
+- [llm_service.py:346-357](../../../../backend/app/services/llm_service.py#L346-L357)
+- [reasoning_engine.py:399-429](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L399-L429)
+- [model_store.py:4-32](../../../../backend/app/services/model_store.py#L4-L32)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [docker-compose.yml:22-32](../../../../backend/docker/docker-compose.yml#L22-L32)
 
 **Section sources**
 
-- [main.py:360-383](file://backend/app/main.py#L360-L383)
-- [settings.py:142-145](file://backend/app/config/settings.py#L142-L145)
-- [docker-compose.yml:22-32](file://backend/docker/docker-compose.yml#L22-L32)
+- [main.py:360-383](../../../../backend/app/main.py#L360-L383)
+- [settings.py:142-145](../../../../backend/app/config/settings.py#L142-L145)
+- [docker-compose.yml:22-32](../../../../backend/docker/docker-compose.yml#L22-L32)
 
 ## Core Components
 
@@ -111,12 +111,12 @@ Key responsibilities:
 
 **Section sources**
 
-- [settings.py:142-145](file://backend/app/config/settings.py#L142-L145)
-- [llm_service.py:205-268](file://backend/app/services/llm_service.py#L205-L268)
-- [reasoning_engine.py:399-429](file://backend/app/pipeline/intelligence/reasoning_engine.py#L399-L429)
-- [model_store.py:4-32](file://backend/app/services/model_store.py#L4-L32)
-- [redis_cache.py:77-98](file://backend/app/cache/redis_cache.py#L77-L98)
-- [prometheus_metrics.py:66-90](file://backend/app/middleware/prometheus_metrics.py#L66-L90)
+- [settings.py:142-145](../../../../backend/app/config/settings.py#L142-L145)
+- [llm_service.py:205-268](../../../../backend/app/services/llm_service.py#L205-L268)
+- [reasoning_engine.py:399-429](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L399-L429)
+- [model_store.py:4-32](../../../../backend/app/services/model_store.py#L4-L32)
+- [redis_cache.py:77-98](../../../../backend/app/cache/redis_cache.py#L77-L98)
+- [prometheus_metrics.py:66-90](../../../../backend/app/middleware/prometheus_metrics.py#L66-L90)
 
 ## Architecture Overview
 
@@ -144,13 +144,13 @@ App-->>Client : "text"
 
 **Diagram sources**
 
-- [main.py:360-383](file://backend/app/main.py#L360-L383)
-- [llm_service.py:346-357](file://backend/app/services/llm_service.py#L346-L357)
+- [main.py:360-383](../../../../backend/app/main.py#L360-L383)
+- [llm_service.py:346-357](../../../../backend/app/services/llm_service.py#L346-L357)
 
 **Section sources**
 
-- [llm_service.py:346-357](file://backend/app/services/llm_service.py#L346-L357)
-- [reasoning_engine.py:399-429](file://backend/app/pipeline/intelligence/reasoning_engine.py#L399-L429)
+- [llm_service.py:346-357](../../../../backend/app/services/llm_service.py#L346-L357)
+- [reasoning_engine.py:399-429](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L399-L429)
 
 ## Detailed Component Analysis
 
@@ -167,9 +167,9 @@ Operational notes:
 
 **Section sources**
 
-- [settings.py:142-145](file://backend/app/config/settings.py#L142-L145)
-- [docker-compose.yml:22-32](file://backend/docker/docker-compose.yml#L22-L32)
-- [llm_service.py:359-391](file://backend/app/services/llm_service.py#L359-L391)
+- [settings.py:142-145](../../../../backend/app/config/settings.py#L142-L145)
+- [docker-compose.yml:22-32](../../../../backend/docker/docker-compose.yml#L22-L32)
+- [llm_service.py:359-391](../../../../backend/app/services/llm_service.py#L359-L391)
 
 ### Model Management
 
@@ -193,14 +193,14 @@ LLMPDFParser --> ModelStore : "caches loaded models"
 
 **Diagram sources**
 
-- [model_store.py:4-32](file://backend/app/services/model_store.py#L4-L32)
-- [llm_pdf_parser.py:179-216](file://backend/app/pipeline/parsing/llm_pdf_parser.py#L179-L216)
+- [model_store.py:4-32](../../../../backend/app/services/model_store.py#L4-L32)
+- [llm_pdf_parser.py:179-216](../../../../backend/app/pipeline/parsing/llm_pdf_parser.py#L179-L216)
 
 **Section sources**
 
-- [llm_service.py:359-391](file://backend/app/services/llm_service.py#L359-L391)
-- [model_store.py:4-32](file://backend/app/services/model_store.py#L4-L32)
-- [llm_pdf_parser.py:179-216](file://backend/app/pipeline/parsing/llm_pdf_parser.py#L179-L216)
+- [llm_service.py:359-391](../../../../backend/app/services/llm_service.py#L359-L391)
+- [model_store.py:4-32](../../../../backend/app/services/model_store.py#L4-L32)
+- [llm_pdf_parser.py:179-216](../../../../backend/app/pipeline/parsing/llm_pdf_parser.py#L179-L216)
 
 ### Resource Allocation Strategies
 
@@ -216,9 +216,9 @@ Practical guidance:
 
 **Section sources**
 
-- [settings.py:380-413](file://backend/app/config/settings.py#L380-L413)
-- [llm_pdf_parser.py:63-70](file://backend/app/pipeline/parsing/llm_pdf_parser.py#L63-L70)
-- [llm_pdf_parser.py:196-198](file://backend/app/pipeline/parsing/llm_pdf_parser.py#L196-L198)
+- [settings.py:380-413](../../../../backend/app/config/settings.py#L380-L413)
+- [llm_pdf_parser.py:63-70](../../../../backend/app/pipeline/parsing/llm_pdf_parser.py#L63-L70)
+- [llm_pdf_parser.py:196-198](../../../../backend/app/pipeline/parsing/llm_pdf_parser.py#L196-L198)
 
 ### Integration with LLM Service for Local Inference
 
@@ -240,13 +240,13 @@ OtherProviders --> End
 
 **Diagram sources**
 
-- [llm_service.py:39-52](file://backend/app/services/llm_service.py#L39-L52)
-- [llm_service.py:346-357](file://backend/app/services/llm_service.py#L346-L357)
+- [llm_service.py:39-52](../../../../backend/app/services/llm_service.py#L39-L52)
+- [llm_service.py:346-357](../../../../backend/app/services/llm_service.py#L346-L357)
 
 **Section sources**
 
-- [llm_service.py:39-52](file://backend/app/services/llm_service.py#L39-L52)
-- [llm_service.py:346-357](file://backend/app/services/llm_service.py#L346-L357)
+- [llm_service.py:39-52](../../../../backend/app/services/llm_service.py#L39-L52)
+- [llm_service.py:346-357](../../../../backend/app/services/llm_service.py#L346-L357)
 
 ### Model Loading and Caching Mechanisms
 
@@ -275,13 +275,13 @@ end
 
 **Diagram sources**
 
-- [llm_service.py:119-194](file://backend/app/services/llm_service.py#L119-L194)
-- [redis_cache.py:77-98](file://backend/app/cache/redis_cache.py#L77-L98)
+- [llm_service.py:119-194](../../../../backend/app/services/llm_service.py#L119-L194)
+- [redis_cache.py:77-98](../../../../backend/app/cache/redis_cache.py#L77-L98)
 
 **Section sources**
 
-- [llm_service.py:119-194](file://backend/app/services/llm_service.py#L119-L194)
-- [redis_cache.py:77-98](file://backend/app/cache/redis_cache.py#L77-L98)
+- [llm_service.py:119-194](../../../../backend/app/services/llm_service.py#L119-L194)
+- [redis_cache.py:77-98](../../../../backend/app/cache/redis_cache.py#L77-L98)
 
 ### Performance Tuning for Local Deployments
 
@@ -298,9 +298,9 @@ Recommendations:
 
 **Section sources**
 
-- [llm_service.py:96-99](file://backend/app/services/llm_service.py#L96-L99)
-- [prometheus_metrics.py:66-90](file://backend/app/middleware/prometheus_metrics.py#L66-L90)
-- [docker-compose.yml:42-94](file://backend/docker/docker-compose.yml#L42-L94)
+- [llm_service.py:96-99](../../../../backend/app/services/llm_service.py#L96-L99)
+- [prometheus_metrics.py:66-90](../../../../backend/app/middleware/prometheus_metrics.py#L66-L90)
+- [docker-compose.yml:42-94](../../../../backend/docker/docker-compose.yml#L42-L94)
 
 ### Configuration Examples
 
@@ -319,9 +319,9 @@ Example usage patterns:
 
 **Section sources**
 
-- [settings.py:142-145](file://backend/app/config/settings.py#L142-L145)
-- [settings.py:359-378](file://backend/app/config/settings.py#L359-L378)
-- [llm_service.py:359-391](file://backend/app/services/llm_service.py#L359-L391)
+- [settings.py:142-145](../../../../backend/app/config/settings.py#L142-L145)
+- [settings.py:359-378](../../../../backend/app/config/settings.py#L359-L378)
+- [llm_service.py:359-391](../../../../backend/app/services/llm_service.py#L359-L391)
 
 ## Dependency Analysis
 
@@ -348,21 +348,21 @@ Compose["docker-compose.yml"] --> Redis
 
 **Diagram sources**
 
-- [settings.py:142-145](file://backend/app/config/settings.py#L142-L145)
-- [llm_service.py:346-357](file://backend/app/services/llm_service.py#L346-L357)
-- [reasoning_engine.py:399-429](file://backend/app/pipeline/intelligence/reasoning_engine.py#L399-L429)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
-- [docker-compose.yml:22-32](file://backend/docker/docker-compose.yml#L22-L32)
+- [settings.py:142-145](../../../../backend/app/config/settings.py#L142-L145)
+- [llm_service.py:346-357](../../../../backend/app/services/llm_service.py#L346-L357)
+- [reasoning_engine.py:399-429](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L399-L429)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [docker-compose.yml:22-32](../../../../backend/docker/docker-compose.yml#L22-L32)
 
 **Section sources**
 
-- [settings.py:142-145](file://backend/app/config/settings.py#L142-L145)
-- [llm_service.py:346-357](file://backend/app/services/llm_service.py#L346-L357)
-- [reasoning_engine.py:399-429](file://backend/app/pipeline/intelligence/reasoning_engine.py#L399-L429)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [prometheus_metrics.py:144-235](file://backend/app/middleware/prometheus_metrics.py#L144-L235)
-- [docker-compose.yml:22-32](file://backend/docker/docker-compose.yml#L22-L32)
+- [settings.py:142-145](../../../../backend/app/config/settings.py#L142-L145)
+- [llm_service.py:346-357](../../../../backend/app/services/llm_service.py#L346-L357)
+- [reasoning_engine.py:399-429](../../../../backend/app/pipeline/intelligence/reasoning_engine.py#L399-L429)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [prometheus_metrics.py:144-235](../../../../backend/app/middleware/prometheus_metrics.py#L144-L235)
+- [docker-compose.yml:22-32](../../../../backend/docker/docker-compose.yml#L22-L32)
 
 ## Performance Considerations
 
@@ -388,9 +388,9 @@ Validation via tests:
 
 **Section sources**
 
-- [llm_service.py:359-391](file://backend/app/services/llm_service.py#L359-L391)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [test_api.py:84-101](file://backend/tests/test_api.py#L84-L101)
+- [llm_service.py:359-391](../../../../backend/app/services/llm_service.py#L359-L391)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [test_api.py:84-101](../../../../backend/tests/test_api.py#L84-L101)
 
 ## Conclusion
 
@@ -411,7 +411,7 @@ The system integrates Ollama for local inference through a unified LLM service a
 
 **Section sources**
 
-- [settings.py:142-145](file://backend/app/config/settings.py#L142-L145)
-- [llm_service.py:359-391](file://backend/app/services/llm_service.py#L359-L391)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [prometheus_metrics.py:66-90](file://backend/app/middleware/prometheus_metrics.py#L66-L90)
+- [settings.py:142-145](../../../../backend/app/config/settings.py#L142-L145)
+- [llm_service.py:359-391](../../../../backend/app/services/llm_service.py#L359-L391)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [prometheus_metrics.py:66-90](../../../../backend/app/middleware/prometheus_metrics.py#L66-L90)

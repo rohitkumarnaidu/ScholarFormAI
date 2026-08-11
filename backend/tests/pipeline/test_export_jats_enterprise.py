@@ -5,7 +5,9 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from app.models import Block as BClass, Equation as EClass, Reference as RClass
+from app.models import Block as BClass
+from app.models import Equation as EClass
+from app.models import Reference as RClass
 from app.pipeline.export.jats_generator import JATSGenerator
 
 

@@ -66,5 +66,5 @@ This decision has been implemented and is verified by:
 
 - [ADR 005: ChromaDB for RAG Storage](005-chromadb-rag-storage.md) — companion ADR with session-scoped TTL details
 - [ADR 002: Use Supabase](ADR-002-use-supabase.md) — primary database (complementary to vector store)
-- [AI Architecture](../AI_ARCHITECTURE.md) — RAG pipeline overview
+- [AI Architecture](../architecture/AI_ARCHITECTURE.md) — RAG pipeline overview
 - [Pipeline Architecture](../explanation/pipeline-architecture.md) — end-to-end processing flow

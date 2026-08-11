@@ -5,15 +5,15 @@
 
 <cite>
 **Referenced Files in This Document**
-- [events.py](file://backend/app/realtime/events.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [stream.py](file://backend/app/routers/v1/stream.py)
-- [preview.py](file://backend/app/routers/preview.py)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [prometheus_metrics.py](file://backend/app/middleware/prometheus_metrics.py)
-- [redis_cache.py](file://backend/app/cache/redis_cache.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [serialization.py](file://backend/app/utils/serialization.py)
+- [events.py](../../../../backend/app/realtime/events.py)
+- [pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [stream.py](../../../../backend/app/routers/v1/stream.py)
+- [preview.py](../../../../backend/app/routers/preview.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [prometheus_metrics.py](../../../../backend/app/middleware/prometheus_metrics.py)
+- [redis_cache.py](../../../../backend/app/cache/redis_cache.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [serialization.py](../../../../backend/app/utils/serialization.py)
 </cite>
 
 ## Update Summary
@@ -92,25 +92,25 @@ M --> PV
 
 **Diagram sources**
 
-- [settings.py:156-174](file://backend/app/config/settings.py#L156-L174)
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
-- [pubsub.py:18-124](file://backend/app/realtime/pubsub.py#L18-L124)
-- [stream.py:24-95](file://backend/app/routers/v1/stream.py#L24-L95)
-- [preview.py:25-200](file://backend/app/routers/preview.py#L25-L200)
-- [orchestrator.py:115-165](file://backend/app/pipeline/orchestrator.py#L115-L165)
-- [prometheus_metrics.py:98-297](file://backend/app/middleware/prometheus_metrics.py#L98-L297)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
+- [settings.py:156-174](../../../../backend/app/config/settings.py#L156-L174)
+- [events.py:9-34](../../../../backend/app/realtime/events.py#L9-L34)
+- [pubsub.py:18-124](../../../../backend/app/realtime/pubsub.py#L18-L124)
+- [stream.py:24-95](../../../../backend/app/routers/v1/stream.py#L24-L95)
+- [preview.py:25-200](../../../../backend/app/routers/preview.py#L25-L200)
+- [orchestrator.py:115-165](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L115-L165)
+- [prometheus_metrics.py:98-297](../../../../backend/app/middleware/prometheus_metrics.py#L98-L297)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
 
 **Section sources**
 
-- [settings.py:156-174](file://backend/app/config/settings.py#L156-L174)
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
-- [pubsub.py:18-124](file://backend/app/realtime/pubsub.py#L18-L124)
-- [stream.py:24-95](file://backend/app/routers/v1/stream.py#L24-L95)
-- [preview.py:25-200](file://backend/app/routers/preview.py#L25-L200)
-- [orchestrator.py:115-165](file://backend/app/pipeline/orchestrator.py#L115-L165)
-- [prometheus_metrics.py:98-297](file://backend/app/middleware/prometheus_metrics.py#L98-L297)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
+- [settings.py:156-174](../../../../backend/app/config/settings.py#L156-L174)
+- [events.py:9-34](../../../../backend/app/realtime/events.py#L9-L34)
+- [pubsub.py:18-124](../../../../backend/app/realtime/pubsub.py#L18-L124)
+- [stream.py:24-95](../../../../backend/app/routers/v1/stream.py#L24-L95)
+- [preview.py:25-200](../../../../backend/app/routers/preview.py#L25-L200)
+- [orchestrator.py:115-165](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L115-L165)
+- [prometheus_metrics.py:98-297](../../../../backend/app/middleware/prometheus_metrics.py#L98-L297)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
 
 ## Core Components
 
@@ -124,13 +124,13 @@ M --> PV
 
 **Section sources**
 
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
-- [pubsub.py:18-124](file://backend/app/realtime/pubsub.py#L18-L124)
-- [stream.py:32-95](file://backend/app/routers/v1/stream.py#L32-L95)
-- [preview.py:61-128](file://backend/app/routers/preview.py#L61-L128)
-- [orchestrator.py:115-165](file://backend/app/pipeline/orchestrator.py#L115-L165)
-- [prometheus_metrics.py:98-297](file://backend/app/middleware/prometheus_metrics.py#L98-L297)
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
+- [events.py:9-34](../../../../backend/app/realtime/events.py#L9-L34)
+- [pubsub.py:18-124](../../../../backend/app/realtime/pubsub.py#L18-L124)
+- [stream.py:32-95](../../../../backend/app/routers/v1/stream.py#L32-L95)
+- [preview.py:61-128](../../../../backend/app/routers/preview.py#L61-L128)
+- [orchestrator.py:115-165](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L115-L165)
+- [prometheus_metrics.py:98-297](../../../../backend/app/middleware/prometheus_metrics.py#L98-L297)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
 
 ## Architecture Overview
 
@@ -154,10 +154,10 @@ SSE-->>Client : EventSource events with comprehensive metrics
 
 **Diagram sources**
 
-- [stream.py:73-95](file://backend/app/routers/v1/stream.py#L73-L95)
-- [pubsub.py:55-124](file://backend/app/realtime/pubsub.py#L55-L124)
-- [orchestrator.py:159-165](file://backend/app/pipeline/orchestrator.py#L159-L165)
-- [prometheus_metrics.py:204-206](file://backend/app/middleware/prometheus_metrics.py#L204-L206)
+- [stream.py:73-95](../../../../backend/app/routers/v1/stream.py#L73-L95)
+- [pubsub.py:55-124](../../../../backend/app/realtime/pubsub.py#L55-L124)
+- [orchestrator.py:159-165](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L159-L165)
+- [prometheus_metrics.py:204-206](../../../../backend/app/middleware/prometheus_metrics.py#L204-L206)
 
 ## Detailed Component Analysis
 
@@ -187,12 +187,12 @@ EnhancedEventsModule --> RealtimeEvent : "creates with enhanced serialization"
 
 **Diagram sources**
 
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
+- [events.py:9-34](../../../../backend/app/realtime/events.py#L9-L34)
 
 **Section sources**
 
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
-- [serialization.py:13-67](file://backend/app/utils/serialization.py#L13-L67)
+- [events.py:9-34](../../../../backend/app/realtime/events.py#L9-L34)
+- [serialization.py:13-67](../../../../backend/app/utils/serialization.py#L13-L67)
 
 ### Advanced Redis Pub/Sub Abstraction
 
@@ -226,12 +226,12 @@ end
 
 **Diagram sources**
 
-- [pubsub.py:18-124](file://backend/app/realtime/pubsub.py#L18-L124)
+- [pubsub.py:18-124](../../../../backend/app/realtime/pubsub.py#L18-L124)
 
 **Section sources**
 
-- [pubsub.py:18-124](file://backend/app/realtime/pubsub.py#L18-L124)
-- [settings.py:156-174](file://backend/app/config/settings.py#L156-L174)
+- [pubsub.py:18-124](../../../../backend/app/realtime/pubsub.py#L18-L124)
+- [settings.py:156-174](../../../../backend/app/config/settings.py#L156-L174)
 
 ### Enhanced Server-Sent Events (SSE)
 
@@ -250,21 +250,21 @@ Router->>Metrics : sse_connection_open() with enhanced tracking
 Router->>PS : subscribe("job : {job_id}") with sophisticated error handling
 PS-->>Router : enhanced event stream with comprehensive metrics
 Router-->>Client : enhanced event "connected" with latency measurement
-Router-->>Client : enhanced event "{event_type}" (json data with progress tracking)
+Router-->>Client : enhanced event "{event_type}" ("json data with progress tracking")
 Client-->>Router : disconnect
 Router->>Metrics : sse_connection_closed() with performance metrics
 ```
 
 **Diagram sources**
 
-- [stream.py:32-71](file://backend/app/routers/v1/stream.py#L32-L71)
-- [pubsub.py:79-124](file://backend/app/realtime/pubsub.py#L79-L124)
-- [prometheus_metrics.py:252-259](file://backend/app/middleware/prometheus_metrics.py#L252-L259)
+- [stream.py:32-71](../../../../backend/app/routers/v1/stream.py#L32-L71)
+- [pubsub.py:79-124](../../../../backend/app/realtime/pubsub.py#L79-L124)
+- [prometheus_metrics.py:252-259](../../../../backend/app/middleware/prometheus_metrics.py#L252-L259)
 
 **Section sources**
 
-- [stream.py:32-95](file://backend/app/routers/v1/stream.py#L32-L95)
-- [prometheus_metrics.py:98-297](file://backend/app/middleware/prometheus_metrics.py#L98-L297)
+- [stream.py:32-95](../../../../backend/app/routers/v1/stream.py#L32-L95)
+- [prometheus_metrics.py:98-297](../../../../backend/app/middleware/prometheus_metrics.py#L98-L297)
 
 ### Advanced WebSocket Live Preview
 
@@ -292,14 +292,14 @@ WS->>Metrics : ws_connection_closed() with performance metrics
 
 **Diagram sources**
 
-- [preview.py:78-128](file://backend/app/routers/preview.py#L78-L128)
-- [pubsub.py:79-124](file://backend/app/realtime/pubsub.py#L79-L124)
-- [prometheus_metrics.py:261-268](file://backend/app/middleware/prometheus_metrics.py#L261-L268)
+- [preview.py:78-128](../../../../backend/app/routers/preview.py#L78-L128)
+- [pubsub.py:79-124](../../../../backend/app/realtime/pubsub.py#L79-L124)
+- [prometheus_metrics.py:261-268](../../../../backend/app/middleware/prometheus_metrics.py#L261-L268)
 
 **Section sources**
 
-- [preview.py:61-128](file://backend/app/routers/preview.py#L61-L128)
-- [prometheus_metrics.py:108-116](file://backend/app/middleware/prometheus_metrics.py#L108-L116)
+- [preview.py:61-128](../../../../backend/app/routers/preview.py#L61-L128)
+- [prometheus_metrics.py:108-116](../../../../backend/app/middleware/prometheus_metrics.py#L108-L116)
 
 ### Enhanced Pipeline Integration and Event Emission
 
@@ -316,13 +316,13 @@ D --> E["Enhanced SSE Router forwards to subscribers with performance tracking"]
 
 **Diagram sources**
 
-- [orchestrator.py:115-165](file://backend/app/pipeline/orchestrator.py#L115-L165)
-- [stream.py:73-95](file://backend/app/routers/v1/stream.py#L73-L95)
+- [orchestrator.py:115-165](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L115-L165)
+- [stream.py:73-95](../../../../backend/app/routers/v1/stream.py#L73-L95)
 
 **Section sources**
 
-- [orchestrator.py:115-165](file://backend/app/pipeline/orchestrator.py#L115-L165)
-- [stream.py:73-95](file://backend/app/routers/v1/stream.py#L73-L95)
+- [orchestrator.py:115-165](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L115-L165)
+- [stream.py:73-95](../../../../backend/app/routers/v1/stream.py#L73-L95)
 
 ### Advanced Caching Strategies for Real-time Data
 
@@ -342,12 +342,12 @@ class EnhancedRedisCache {
 
 **Diagram sources**
 
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
 
 **Section sources**
 
-- [redis_cache.py:10-102](file://backend/app/cache/redis_cache.py#L10-L102)
-- [settings.py:156-174](file://backend/app/config/settings.py#L156-L174)
+- [redis_cache.py:10-102](../../../../backend/app/cache/redis_cache.py#L10-L102)
+- [settings.py:156-174](../../../../backend/app/config/settings.py#L156-L174)
 
 ## Enhanced Streaming Capabilities
 
@@ -373,9 +373,9 @@ The system now features sophisticated streaming capabilities with improved WebSo
 
 **Section sources**
 
-- [pubsub.py:18-124](file://backend/app/realtime/pubsub.py#L18-L124)
-- [preview.py:61-128](file://backend/app/routers/preview.py#L61-L128)
-- [stream.py:32-95](file://backend/app/routers/v1/stream.py#L32-L95)
+- [pubsub.py:18-124](../../../../backend/app/realtime/pubsub.py#L18-L124)
+- [preview.py:61-128](../../../../backend/app/routers/preview.py#L61-L128)
+- [stream.py:32-95](../../../../backend/app/routers/v1/stream.py#L32-L95)
 
 ## Latency Observation and Metrics
 
@@ -401,8 +401,8 @@ The enhanced system provides comprehensive latency observation and metrics colle
 
 **Section sources**
 
-- [prometheus_metrics.py:98-297](file://backend/app/middleware/prometheus_metrics.py#L98-L297)
-- [orchestrator.py:124-128](file://backend/app/pipeline/orchestrator.py#L124-L128)
+- [prometheus_metrics.py:98-297](../../../../backend/app/middleware/prometheus_metrics.py#L98-L297)
+- [orchestrator.py:124-128](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L124-L128)
 
 ## Dependency Analysis
 
@@ -428,25 +428,25 @@ EnhancedSerialization["enhanced serialization.py"] --> Events
 
 **Diagram sources**
 
-- [settings.py:156-174](file://backend/app/config/settings.py#L156-L174)
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
-- [pubsub.py:18-124](file://backend/app/realtime/pubsub.py#L18-L124)
-- [stream.py:24-95](file://backend/app/routers/v1/stream.py#L24-L95)
-- [preview.py:25-200](file://backend/app/routers/preview.py#L25-L200)
-- [orchestrator.py:115-165](file://backend/app/pipeline/orchestrator.py#L115-L165)
-- [prometheus_metrics.py:98-297](file://backend/app/middleware/prometheus_metrics.py#L98-L297)
-- [serialization.py:13-67](file://backend/app/utils/serialization.py#L13-L67)
+- [settings.py:156-174](../../../../backend/app/config/settings.py#L156-L174)
+- [events.py:9-34](../../../../backend/app/realtime/events.py#L9-L34)
+- [pubsub.py:18-124](../../../../backend/app/realtime/pubsub.py#L18-L124)
+- [stream.py:24-95](../../../../backend/app/routers/v1/stream.py#L24-L95)
+- [preview.py:25-200](../../../../backend/app/routers/preview.py#L25-L200)
+- [orchestrator.py:115-165](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L115-L165)
+- [prometheus_metrics.py:98-297](../../../../backend/app/middleware/prometheus_metrics.py#L98-L297)
+- [serialization.py:13-67](../../../../backend/app/utils/serialization.py#L13-L67)
 
 **Section sources**
 
-- [settings.py:156-174](file://backend/app/config/settings.py#L156-L174)
-- [events.py:9-34](file://backend/app/realtime/events.py#L9-L34)
-- [pubsub.py:18-124](file://backend/app/realtime/pubsub.py#L18-L124)
-- [stream.py:24-95](file://backend/app/routers/v1/stream.py#L24-L95)
-- [preview.py:25-200](file://backend/app/routers/preview.py#L25-L200)
-- [orchestrator.py:115-165](file://backend/app/pipeline/orchestrator.py#L115-L165)
-- [prometheus_metrics.py:98-297](file://backend/app/middleware/prometheus_metrics.py#L98-L297)
-- [serialization.py:13-67](file://backend/app/utils/serialization.py#L13-L67)
+- [settings.py:156-174](../../../../backend/app/config/settings.py#L156-L174)
+- [events.py:9-34](../../../../backend/app/realtime/events.py#L9-L34)
+- [pubsub.py:18-124](../../../../backend/app/realtime/pubsub.py#L18-L124)
+- [stream.py:24-95](../../../../backend/app/routers/v1/stream.py#L24-L95)
+- [preview.py:25-200](../../../../backend/app/routers/preview.py#L25-L200)
+- [orchestrator.py:115-165](../../../../backend/app/pipeline/orchestrator/orchestrator.py#L115-L165)
+- [prometheus_metrics.py:98-297](../../../../backend/app/middleware/prometheus_metrics.py#L98-L297)
+- [serialization.py:13-67](../../../../backend/app/utils/serialization.py#L13-L67)
 
 ## Performance Considerations
 
@@ -459,24 +459,24 @@ EnhancedSerialization["enhanced serialization.py"] --> Events
 ## Troubleshooting Guide
 
 - Enhanced Redis connectivity failures:
-    - Symptom: Redis warnings with graceful fallback to in-memory queues with enhanced logging.
-    - Action: Verify REDIS_URL/REDIS_ENABLED; ensure Redis is reachable; confirm ping succeeds with enhanced diagnostics.
+  - Symptom: Redis warnings with graceful fallback to in-memory queues with enhanced logging.
+  - Action: Verify REDIS_URL/REDIS_ENABLED; ensure Redis is reachable; confirm ping succeeds with enhanced diagnostics.
 - Advanced SSE disconnects:
-    - Symptom: Client stops receiving updates with enhanced error handling.
-    - Action: Confirm client-side EventSource reconnects with improved retry logic; check is_disconnected checks in SSE route with enhanced monitoring.
+  - Symptom: Client stops receiving updates with enhanced error handling.
+  - Action: Confirm client-side EventSource reconnects with improved retry logic; check is_disconnected checks in SSE route with enhanced monitoring.
 - Enhanced WebSocket disconnects:
-    - Symptom: Session ends unexpectedly with sophisticated error recovery.
-    - Action: Inspect heartbeat intervals and client ping/pong with enhanced monitoring; verify session ID validation and cleanup paths with improved resource management.
+  - Symptom: Session ends unexpectedly with sophisticated error recovery.
+  - Action: Inspect heartbeat intervals and client ping/pong with enhanced monitoring; verify session ID validation and cleanup paths with improved resource management.
 - Comprehensive metrics anomalies:
-    - Symptom: Active connection counters inconsistent with enhanced tracking.
-    - Action: Review metrics middleware invocations for SSE/WS open/close with comprehensive monitoring and enhanced debugging.
+  - Symptom: Active connection counters inconsistent with enhanced tracking.
+  - Action: Review metrics middleware invocations for SSE/WS open/close with comprehensive monitoring and enhanced debugging.
 
 **Section sources**
 
-- [pubsub.py:40-53](file://backend/app/realtime/pubsub.py#L40-L53)
-- [stream.py:48-57](file://backend/app/routers/v1/stream.py#L48-L57)
-- [preview.py:61-76](file://backend/app/routers/preview.py#L61-L76)
-- [prometheus_metrics.py:252-268](file://backend/app/middleware/prometheus_metrics.py#L252-L268)
+- [pubsub.py:40-53](../../../../backend/app/realtime/pubsub.py#L40-L53)
+- [stream.py:48-57](../../../../backend/app/routers/v1/stream.py#L48-L57)
+- [preview.py:61-76](../../../../backend/app/routers/preview.py#L61-L76)
+- [prometheus_metrics.py:252-268](../../../../backend/app/middleware/prometheus_metrics.py#L252-L268)
 
 ## Conclusion
 

@@ -5,19 +5,19 @@
 
 <cite>
 **Referenced Files in This Document**
-- [README.md](file://backend/README.md)
+- [README.md](../../../../../backend/README.md)
 - [MANUAL_TESTING_LOG.md](file://backend/MANUAL_TESTING_LOG.md)
 - [TESTING_COMMANDS.md](file://backend/manual_tests/TESTING_COMMANDS.md)
 - [test_commands.md](file://backend/manual_tests/test_commands.md)
-- [README.md](file://backend/manual_tests/sample_inputs/README.md)
+- [README.md](../../../../../README.md)
 - [verify_equations.py](file://backend/manual_tests/equations/verify_equations.py)
-- [validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
+- [validator_v3.py](../../../../../backend/app/pipeline/validation/validator_v3.py)
 - [verify_hitl_jats.py](file://backend/manual_tests/hitl/verify_hitl_jats.py)
-- [jats_generator.py](file://backend/app/pipeline/export/jats_generator.py)
+- [jats_generator.py](../../../../../backend/app/pipeline/export/jats_generator.py)
 - [verify_rag_interface.py](file://backend/manual_tests/rag/verify_rag_interface.py)
-- [rag_engine.py](file://backend/app/pipeline/intelligence/rag_engine.py)
+- [rag_engine.py](../../../../../backend/app/pipeline/intelligence/rag_engine.py)
 - [verify_interface.py](file://backend/manual_tests/interface/verify_interface.py)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
+- [semantic_parser.py](../../../../../backend/app/pipeline/intelligence/semantic_parser.py)
 </cite>
 
 ## Table of Contents
@@ -76,17 +76,17 @@ IFACE --> SEM
 **Diagram sources**
 
 - [verify_equations.py:1-59](file://backend/manual_tests/equations/verify_equations.py#L1-L59)
-- [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
+- [validator_v3.py:34-145](../../../../../backend/app/pipeline/validation/validator_v3.py#L34-L145)
 - [verify_hitl_jats.py:1-77](file://backend/manual_tests/hitl/verify_hitl_jats.py#L1-L77)
-- [jats_generator.py:8-157](file://backend/app/pipeline/export/jats_generator.py#L8-L157)
+- [jats_generator.py:8-157](../../../../../backend/app/pipeline/export/jats_generator.py#L8-L157)
 - [verify_rag_interface.py:1-42](file://backend/manual_tests/rag/verify_rag_interface.py#L1-L42)
-- [rag_engine.py:106-527](file://backend/app/pipeline/intelligence/rag_engine.py#L106-L527)
+- [rag_engine.py:106-527](../../../../../backend/app/pipeline/intelligence/rag_engine.py#L106-L527)
 - [verify_interface.py:1-46](file://backend/manual_tests/interface/verify_interface.py#L1-L46)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
+- [semantic_parser.py](../../../../../backend/app/pipeline/intelligence/semantic_parser.py)
 
 **Section sources**
 
-- [README.md:63-73](file://backend/README.md#L63-L73)
+- [README.md:63-73](../../../../../backend/README.md#L63-L73)
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
 - [test_commands.md:1-347](file://backend/manual_tests/test_commands.md#L1-L347)
 
@@ -101,10 +101,10 @@ IFACE --> SEM
 **Section sources**
 
 - [verify_equations.py:10-58](file://backend/manual_tests/equations/verify_equations.py#L10-L58)
-- [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
-- [jats_generator.py:8-157](file://backend/app/pipeline/export/jats_generator.py#L8-L157)
-- [rag_engine.py:106-527](file://backend/app/pipeline/intelligence/rag_engine.py#L106-L527)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
+- [validator_v3.py:34-145](../../../../../backend/app/pipeline/validation/validator_v3.py#L34-L145)
+- [jats_generator.py:8-157](../../../../../backend/app/pipeline/export/jats_generator.py#L8-L157)
+- [rag_engine.py:106-527](../../../../../backend/app/pipeline/intelligence/rag_engine.py#L106-L527)
+- [semantic_parser.py](../../../../../backend/app/pipeline/intelligence/semantic_parser.py)
 
 ## Architecture Overview
 
@@ -122,7 +122,7 @@ participant V as "DocumentValidator"
 participant J as "JATSGenerator"
 participant D as "PipelineDocument"
 T->>V : "validate(document)"
-V-->>T : "ValidationResult (errors, warnings, flags)"
+V-->>T : "ValidationResult ("errors, warnings, flags")"
 T->>J : "export_jats(document, path)"
 J-->>T : "XML file written"
 T->>D : "inspect review.status and flags"
@@ -131,9 +131,9 @@ T-->>T : "assert HITL and JATS outcomes"
 
 **Diagram sources**
 
-- [validator_v3.py:62-145](file://backend/app/pipeline/validation/validator_v3.py#L62-L145)
+- [validator_v3.py:62-145](../../../../../backend/app/pipeline/validation/validator_v3.py#L62-L145)
 - [verify_hitl_jats.py:36-64](file://backend/manual_tests/hitl/verify_hitl_jats.py#L36-L64)
-- [jats_generator.py:20-43](file://backend/app/pipeline/export/jats_generator.py#L20-L43)
+- [jats_generator.py:20-43](../../../../../backend/app/pipeline/export/jats_generator.py#L20-L43)
 
 ## Detailed Component Analysis
 
@@ -199,8 +199,8 @@ Guidelines:
 **Section sources**
 
 - [verify_hitl_jats.py:13-64](file://backend/manual_tests/hitl/verify_hitl_jats.py#L13-L64)
-- [validator_v3.py:119-121](file://backend/app/pipeline/validation/validator_v3.py#L119-L121)
-- [jats_generator.py:144-156](file://backend/app/pipeline/export/jats_generator.py#L144-L156)
+- [validator_v3.py:119-121](../../../../../backend/app/pipeline/validation/validator_v3.py#L119-L121)
+- [jats_generator.py:144-156](../../../../../backend/app/pipeline/export/jats_generator.py#L144-L156)
 
 ### RAG Interface Testing
 
@@ -231,7 +231,7 @@ Guidelines:
 **Section sources**
 
 - [verify_rag_interface.py:9-38](file://backend/manual_tests/rag/verify_rag_interface.py#L9-L38)
-- [rag_engine.py:423-490](file://backend/app/pipeline/intelligence/rag_engine.py#L423-L490)
+- [rag_engine.py:423-490](../../../../../backend/app/pipeline/intelligence/rag_engine.py#L423-L490)
 
 ### Interface Validation Procedures
 
@@ -262,7 +262,7 @@ Guidelines:
 **Section sources**
 
 - [verify_interface.py:10-42](file://backend/manual_tests/interface/verify_interface.py#L10-L42)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
+- [semantic_parser.py](../../../../../backend/app/pipeline/intelligence/semantic_parser.py)
 
 ## Dependency Analysis
 
@@ -280,12 +280,12 @@ VI["verify_interface.py"] --> SP["SemanticParser"]
 **Diagram sources**
 
 - [verify_equations.py:7-44](file://backend/manual_tests/equations/verify_equations.py#L7-L44)
-- [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
-- [jats_generator.py:8-157](file://backend/app/pipeline/export/jats_generator.py#L8-L157)
+- [validator_v3.py:34-145](../../../../../backend/app/pipeline/validation/validator_v3.py#L34-L145)
+- [jats_generator.py:8-157](../../../../../backend/app/pipeline/export/jats_generator.py#L8-L157)
 - [verify_rag_interface.py:7-11](file://backend/manual_tests/rag/verify_rag_interface.py#L7-L11)
-- [rag_engine.py:106-527](file://backend/app/pipeline/intelligence/rag_engine.py#L106-L527)
+- [rag_engine.py:106-527](../../../../../backend/app/pipeline/intelligence/rag_engine.py#L106-L527)
 - [verify_interface.py:7-12](file://backend/manual_tests/interface/verify_interface.py#L7-L12)
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
+- [semantic_parser.py](../../../../../backend/app/pipeline/intelligence/semantic_parser.py)
 
 **Section sources**
 
@@ -306,20 +306,20 @@ VI["verify_interface.py"] --> SP["SemanticParser"]
 Common issues and resolutions:
 
 - Equation MathML missing:
-    - Verify OMML is well-formed and passed to the standardizer.
-    - Confirm the equation record is attached to a PipelineDocument and processed.
+  - Verify OMML is well-formed and passed to the standardizer.
+  - Confirm the equation record is attached to a PipelineDocument and processed.
 - HITL flag not triggered:
-    - Adjust block confidence values below thresholds to force critical status.
-    - Ensure validation is executed before inspecting review status.
+  - Adjust block confidence values below thresholds to force critical status.
+  - Ensure validation is executed before inspecting review status.
 - JATS export missing MathML:
-    - Confirm equations have MathML populated before export.
-    - Validate JATSGenerator processes equations and writes XML.
+  - Confirm equations have MathML populated before export.
+  - Validate JATSGenerator processes equations and writes XML.
 - RAG methods unavailable:
-    - Initialize RagEngine via its singleton accessor.
-    - Expect native fallback when ChromaDB is unavailable; results may be less accurate.
+  - Initialize RagEngine via its singleton accessor.
+  - Expect native fallback when ChromaDB is unavailable; results may be less accurate.
 - Interface methods missing:
-    - Initialize SemanticParser via its singleton accessor.
-    - Ensure blocks are properly constructed before invoking repair/reconciliation methods.
+  - Initialize SemanticParser via its singleton accessor.
+  - Ensure blocks are properly constructed before invoking repair/reconciliation methods.
 
 Operational checks:
 
@@ -328,7 +328,7 @@ Operational checks:
 
 **Section sources**
 
-- [README.md:63-73](file://backend/README.md#L63-L73)
+- [README.md:63-73](../../../../../backend/README.md#L63-L73)
 - [MANUAL_TESTING_LOG.md:1-82](file://backend/MANUAL_TESTING_LOG.md#L1-L82)
 
 ## Conclusion

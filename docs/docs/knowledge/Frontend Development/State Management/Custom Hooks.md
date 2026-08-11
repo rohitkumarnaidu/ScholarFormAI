@@ -5,19 +5,19 @@
 
 <cite>
 **Referenced Files in This Document**
-- [useGeneratorSessionStream.js](file://frontend/src/hooks/useGeneratorSessionStream.js)
-- [useSessionEventStream.js](file://frontend/src/hooks/useSessionEventStream.js)
-- [useUpload.js](file://frontend/src/hooks/useUpload.js)
-- [useLivePreviewSocket.js](file://frontend/src/hooks/useLivePreviewSocket.js)
-- [useAutosave.js](file://frontend/src/hooks/useAutosave.js)
-- [useUnsavedChanges.js](file://frontend/src/hooks/useUnsavedChanges.js)
-- [useSynthesisSessionStream.js](file://frontend/src/hooks/useSynthesisSessionStream.js)
-- [useAgent.js](file://frontend/src/hooks/useAgent.js)
-- [useAgentEvents.js](file://frontend/src/hooks/useAgentEvents.js)
-- [useJobFromUrl.js](file://frontend/src/hooks/useJobFromUrl.js)
-- [ReconnectingWebSocket.js](file://frontend/src/lib/ReconnectingWebSocket.js)
-- [api.v1.js](file://frontend/src/services/api.v1.js)
-- [api.synthesis.js](file://frontend/src/services/api.synthesis.js)
+- [useGeneratorSessionStream.js](../../../../../frontend/src/hooks/useGeneratorSessionStream.js)
+- [useSessionEventStream.js](../../../../../frontend/src/hooks/useSessionEventStream.js)
+- [useUpload.js](../../../../../frontend/src/hooks/useUpload.js)
+- [useLivePreviewSocket.js](../../../../../frontend/src/hooks/useLivePreviewSocket.js)
+- [useAutosave.js](../../../../../frontend/src/hooks/useAutosave.js)
+- [useUnsavedChanges.js](../../../../../frontend/src/hooks/useUnsavedChanges.js)
+- [useSynthesisSessionStream.js](../../../../../frontend/src/hooks/useSynthesisSessionStream.js)
+- [useAgent.js](../../../../../frontend/src/hooks/useAgent.js)
+- [useAgentEvents.js](../../../../../frontend/src/hooks/useAgentEvents.js)
+- [useJobFromUrl.js](../../../../../frontend/src/hooks/useJobFromUrl.js)
+- [ReconnectingWebSocket.js](../../../../../frontend/src/lib/ReconnectingWebSocket.js)
+- [api.v1.js](../../../../../frontend/src/services/api.v1.js)
+- [api.synthesis.js](../../../../../frontend/src/services/api.synthesis.js)
 </cite>
 
 ## Table of Contents
@@ -88,35 +88,35 @@ UJFU --> AV1
 
 **Diagram sources**
 
-- [useGeneratorSessionStream.js:1-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
-- [useSessionEventStream.js:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
-- [useUpload.js:1-361](file://frontend/src/hooks/useUpload.js#L1-L361)
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [useAutosave.js:1-37](file://frontend/src/hooks/useAutosave.js#L1-L37)
-- [useUnsavedChanges.js:1-23](file://frontend/src/hooks/useUnsavedChanges.js#L1-L23)
-- [useSynthesisSessionStream.js:1-12](file://frontend/src/hooks/useSynthesisSessionStream.js#L1-L12)
-- [useAgent.js:1-292](file://frontend/src/hooks/useAgent.js#L1-L292)
-- [useAgentEvents.js:1-163](file://frontend/src/hooks/useAgentEvents.js#L1-L163)
-- [useJobFromUrl.js:1-91](file://frontend/src/hooks/useJobFromUrl.js#L1-L91)
-- [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
-- [api.v1.js:1-164](file://frontend/src/services/api.v1.js#L1-L164)
-- [api.synthesis.js:1-51](file://frontend/src/services/api.synthesis.js#L1-L51)
+- [useGeneratorSessionStream.js:1-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
+- [useSessionEventStream.js:1-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [useUpload.js:1-361](../../../../../frontend/src/hooks/useUpload.js#L1-L361)
+- [useLivePreviewSocket.js:1-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [useAutosave.js:1-37](../../../../../frontend/src/hooks/useAutosave.js#L1-L37)
+- [useUnsavedChanges.js:1-23](../../../../../frontend/src/hooks/useUnsavedChanges.js#L1-L23)
+- [useSynthesisSessionStream.js:1-12](../../../../../frontend/src/hooks/useSynthesisSessionStream.js#L1-L12)
+- [useAgent.js:1-292](../../../../../frontend/src/hooks/useAgent.js#L1-L292)
+- [useAgentEvents.js:1-163](../../../../../frontend/src/hooks/useAgentEvents.js#L1-L163)
+- [useJobFromUrl.js:1-91](../../../../../frontend/src/hooks/useJobFromUrl.js#L1-L91)
+- [ReconnectingWebSocket.js:1-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
+- [api.v1.js:1-164](../../../../../frontend/src/services/api.v1.js#L1-L164)
+- [api.synthesis.js:1-51](../../../../../frontend/src/services/api.synthesis.js#L1-L51)
 
 **Section sources**
 
-- [useGeneratorSessionStream.js:1-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
-- [useSessionEventStream.js:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
-- [useUpload.js:1-361](file://frontend/src/hooks/useUpload.js#L1-L361)
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [useAutosave.js:1-37](file://frontend/src/hooks/useAutosave.js#L1-L37)
-- [useUnsavedChanges.js:1-23](file://frontend/src/hooks/useUnsavedChanges.js#L1-L23)
-- [useSynthesisSessionStream.js:1-12](file://frontend/src/hooks/useSynthesisSessionStream.js#L1-L12)
-- [useAgent.js:1-292](file://frontend/src/hooks/useAgent.js#L1-L292)
-- [useAgentEvents.js:1-163](file://frontend/src/hooks/useAgentEvents.js#L1-L163)
-- [useJobFromUrl.js:1-91](file://frontend/src/hooks/useJobFromUrl.js#L1-L91)
-- [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
-- [api.v1.js:1-164](file://frontend/src/services/api.v1.js#L1-L164)
-- [api.synthesis.js:1-51](file://frontend/src/services/api.synthesis.js#L1-L51)
+- [useGeneratorSessionStream.js:1-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
+- [useSessionEventStream.js:1-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [useUpload.js:1-361](../../../../../frontend/src/hooks/useUpload.js#L1-L361)
+- [useLivePreviewSocket.js:1-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [useAutosave.js:1-37](../../../../../frontend/src/hooks/useAutosave.js#L1-L37)
+- [useUnsavedChanges.js:1-23](../../../../../frontend/src/hooks/useUnsavedChanges.js#L1-L23)
+- [useSynthesisSessionStream.js:1-12](../../../../../frontend/src/hooks/useSynthesisSessionStream.js#L1-L12)
+- [useAgent.js:1-292](../../../../../frontend/src/hooks/useAgent.js#L1-L292)
+- [useAgentEvents.js:1-163](../../../../../frontend/src/hooks/useAgentEvents.js#L1-L163)
+- [useJobFromUrl.js:1-91](../../../../../frontend/src/hooks/useJobFromUrl.js#L1-L91)
+- [ReconnectingWebSocket.js:1-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
+- [api.v1.js:1-164](../../../../../frontend/src/services/api.v1.js#L1-L164)
+- [api.synthesis.js:1-51](../../../../../frontend/src/services/api.synthesis.js#L1-L51)
 
 ## Core Components
 
@@ -129,12 +129,12 @@ UJFU --> AV1
 
 **Section sources**
 
-- [useGeneratorSessionStream.js:1-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
-- [useSessionEventStream.js:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
-- [useUpload.js:1-361](file://frontend/src/hooks/useUpload.js#L1-L361)
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [useAutosave.js:1-37](file://frontend/src/hooks/useAutosave.js#L1-L37)
-- [useUnsavedChanges.js:1-23](file://frontend/src/hooks/useUnsavedChanges.js#L1-L23)
+- [useGeneratorSessionStream.js:1-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
+- [useSessionEventStream.js:1-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [useUpload.js:1-361](../../../../../frontend/src/hooks/useUpload.js#L1-L361)
+- [useLivePreviewSocket.js:1-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [useAutosave.js:1-37](../../../../../frontend/src/hooks/useAutosave.js#L1-L37)
+- [useUnsavedChanges.js:1-23](../../../../../frontend/src/hooks/useUnsavedChanges.js#L1-L23)
 
 ## Architecture Overview
 
@@ -165,10 +165,10 @@ WS-->>UI : {html, warnings, latencyMs}
 
 **Diagram sources**
 
-- [useUpload.js:224-342](file://frontend/src/hooks/useUpload.js#L224-L342)
-- [api.v1.js:72-147](file://frontend/src/services/api.v1.js#L72-L147)
-- [useSessionEventStream.js:20-97](file://frontend/src/hooks/useSessionEventStream.js#L20-L97)
-- [useLivePreviewSocket.js:106-133](file://frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
+- [useUpload.js:224-342](../../../../../frontend/src/hooks/useUpload.js#L224-L342)
+- [api.v1.js:72-147](../../../../../frontend/src/services/api.v1.js#L72-L147)
+- [useSessionEventStream.js:20-97](../../../../../frontend/src/hooks/useSessionEventStream.js#L20-L97)
+- [useLivePreviewSocket.js:106-133](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
 
 ## Detailed Component Analysis
 
@@ -202,13 +202,13 @@ GenHook-->>Caller : state
 
 **Diagram sources**
 
-- [useGeneratorSessionStream.js:5-11](file://frontend/src/hooks/useGeneratorSessionStream.js#L5-L11)
-- [useSessionEventStream.js:20-97](file://frontend/src/hooks/useSessionEventStream.js#L20-L97)
+- [useGeneratorSessionStream.js:5-11](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L5-L11)
+- [useSessionEventStream.js:20-97](../../../../../frontend/src/hooks/useSessionEventStream.js#L20-L97)
 
 **Section sources**
 
-- [useGeneratorSessionStream.js:1-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
-- [useSessionEventStream.js:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [useGeneratorSessionStream.js:1-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
+- [useSessionEventStream.js:1-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
 
 ### useSessionEventStream
 
@@ -241,11 +241,11 @@ OpenES --> Cleanup["Unmount: close ES, clear timers"]
 
 **Diagram sources**
 
-- [useSessionEventStream.js:20-97](file://frontend/src/hooks/useSessionEventStream.js#L20-L97)
+- [useSessionEventStream.js:20-97](../../../../../frontend/src/hooks/useSessionEventStream.js#L20-L97)
 
 **Section sources**
 
-- [useSessionEventStream.js:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [useSessionEventStream.js:1-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
 
 ### useUpload
 
@@ -283,12 +283,12 @@ Terminal --> |FAILED| Failed["Set error message, persist error"]
 
 **Diagram sources**
 
-- [useUpload.js:224-342](file://frontend/src/hooks/useUpload.js#L224-L342)
-- [useUpload.js:88-196](file://frontend/src/hooks/useUpload.js#L88-L196)
+- [useUpload.js:224-342](../../../../../frontend/src/hooks/useUpload.js#L224-L342)
+- [useUpload.js:88-196](../../../../../frontend/src/hooks/useUpload.js#L88-L196)
 
 **Section sources**
 
-- [useUpload.js:1-361](file://frontend/src/hooks/useUpload.js#L1-L361)
+- [useUpload.js:1-361](../../../../../frontend/src/hooks/useUpload.js#L1-L361)
 
 ### useLivePreviewSocket
 
@@ -321,13 +321,13 @@ Hook-->>UI : {isReconnecting, reconnectAttempt}
 
 **Diagram sources**
 
-- [useLivePreviewSocket.js:106-133](file://frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
-- [ReconnectingWebSocket.js:5-148](file://frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
+- [useLivePreviewSocket.js:106-133](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L106-L133)
+- [ReconnectingWebSocket.js:5-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L5-L148)
 
 **Section sources**
 
-- [useLivePreviewSocket.js:1-137](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
-- [ReconnectingWebSocket.js:1-148](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
+- [useLivePreviewSocket.js:1-137](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L137)
+- [ReconnectingWebSocket.js:1-148](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L148)
 
 ### useAutosave
 
@@ -352,11 +352,11 @@ Clear --> Return
 
 **Diagram sources**
 
-- [useAutosave.js:7-29](file://frontend/src/hooks/useAutosave.js#L7-L29)
+- [useAutosave.js:7-29](../../../../../frontend/src/hooks/useAutosave.js#L7-L29)
 
 **Section sources**
 
-- [useAutosave.js:1-37](file://frontend/src/hooks/useAutosave.js#L1-L37)
+- [useAutosave.js:1-37](../../../../../frontend/src/hooks/useAutosave.js#L1-L37)
 
 ### useUnsavedChanges
 
@@ -378,11 +378,11 @@ Add --> Cleanup["removeEventListener on unmount"]
 
 **Diagram sources**
 
-- [useUnsavedChanges.js:9-22](file://frontend/src/hooks/useUnsavedChanges.js#L9-L22)
+- [useUnsavedChanges.js:9-22](../../../../../frontend/src/hooks/useUnsavedChanges.js#L9-L22)
 
 **Section sources**
 
-- [useUnsavedChanges.js:1-23](file://frontend/src/hooks/useUnsavedChanges.js#L1-L23)
+- [useUnsavedChanges.js:1-23](../../../../../frontend/src/hooks/useUnsavedChanges.js#L1-L23)
 
 ### useSynthesisSessionStream
 
@@ -406,13 +406,13 @@ SynHook-->>Caller : state
 
 **Diagram sources**
 
-- [useSynthesisSessionStream.js:5-11](file://frontend/src/hooks/useSynthesisSessionStream.js#L5-L11)
-- [useSessionEventStream.js:20-97](file://frontend/src/hooks/useSessionEventStream.js#L20-L97)
+- [useSynthesisSessionStream.js:5-11](../../../../../frontend/src/hooks/useSynthesisSessionStream.js#L5-L11)
+- [useSessionEventStream.js:20-97](../../../../../frontend/src/hooks/useSessionEventStream.js#L20-L97)
 
 **Section sources**
 
-- [useSynthesisSessionStream.js:1-12](file://frontend/src/hooks/useSynthesisSessionStream.js#L1-L12)
-- [useSessionEventStream.js:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [useSynthesisSessionStream.js:1-12](../../../../../frontend/src/hooks/useSynthesisSessionStream.js#L1-L12)
+- [useSessionEventStream.js:1-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
 
 ### useAgent and useAgentEvents
 
@@ -444,13 +444,13 @@ Agent-->>UI : append message + fetchLatestDocument()
 
 **Diagram sources**
 
-- [useAgent.js:145-216](file://frontend/src/hooks/useAgent.js#L145-L216)
-- [useAgentEvents.js:36-134](file://frontend/src/hooks/useAgentEvents.js#L36-L134)
+- [useAgent.js:145-216](../../../../../frontend/src/hooks/useAgent.js#L145-L216)
+- [useAgentEvents.js:36-134](../../../../../frontend/src/hooks/useAgentEvents.js#L36-L134)
 
 **Section sources**
 
-- [useAgent.js:1-292](file://frontend/src/hooks/useAgent.js#L1-L292)
-- [useAgentEvents.js:1-163](file://frontend/src/hooks/useAgentEvents.js#L1-L163)
+- [useAgent.js:1-292](../../../../../frontend/src/hooks/useAgent.js#L1-L292)
+- [useAgentEvents.js:1-163](../../../../../frontend/src/hooks/useAgentEvents.js#L1-L163)
 
 ### useJobFromUrl
 
@@ -477,11 +477,11 @@ Err --> Done
 
 **Diagram sources**
 
-- [useJobFromUrl.js:36-79](file://frontend/src/hooks/useJobFromUrl.js#L36-L79)
+- [useJobFromUrl.js:36-79](../../../../../frontend/src/hooks/useJobFromUrl.js#L36-L79)
 
 **Section sources**
 
-- [useJobFromUrl.js:1-91](file://frontend/src/hooks/useJobFromUrl.js#L1-L91)
+- [useJobFromUrl.js:1-91](../../../../../frontend/src/hooks/useJobFromUrl.js#L1-L91)
 
 ## Dependency Analysis
 
@@ -507,74 +507,74 @@ UJFU["useJobFromUrl"] --> AV1
 
 **Diagram sources**
 
-- [useGeneratorSessionStream.js:1-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
-- [useSessionEventStream.js:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
-- [useSynthesisSessionStream.js:1-12](file://frontend/src/hooks/useSynthesisSessionStream.js#L1-L12)
-- [useUpload.js:1-15](file://frontend/src/hooks/useUpload.js#L1-L15)
-- [useLivePreviewSocket.js:1-5](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L5)
-- [useAgent.js:1-12](file://frontend/src/hooks/useAgent.js#L1-L12)
-- [useAgentEvents.js:1-17](file://frontend/src/hooks/useAgentEvents.js#L1-L17)
-- [useJobFromUrl.js:1-4](file://frontend/src/hooks/useJobFromUrl.js#L1-L4)
-- [api.v1.js:1-5](file://frontend/src/services/api.v1.js#L1-L5)
-- [api.synthesis.js:1-5](file://frontend/src/services/api.synthesis.js#L1-L5)
-- [ReconnectingWebSocket.js:1-5](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L5)
+- [useGeneratorSessionStream.js:1-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
+- [useSessionEventStream.js:1-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [useSynthesisSessionStream.js:1-12](../../../../../frontend/src/hooks/useSynthesisSessionStream.js#L1-L12)
+- [useUpload.js:1-15](../../../../../frontend/src/hooks/useUpload.js#L1-L15)
+- [useLivePreviewSocket.js:1-5](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L5)
+- [useAgent.js:1-12](../../../../../frontend/src/hooks/useAgent.js#L1-L12)
+- [useAgentEvents.js:1-17](../../../../../frontend/src/hooks/useAgentEvents.js#L1-L17)
+- [useJobFromUrl.js:1-4](../../../../../frontend/src/hooks/useJobFromUrl.js#L1-L4)
+- [api.v1.js:1-5](../../../../../frontend/src/services/api.v1.js#L1-L5)
+- [api.synthesis.js:1-5](../../../../../frontend/src/services/api.synthesis.js#L1-L5)
+- [ReconnectingWebSocket.js:1-5](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L5)
 
 **Section sources**
 
-- [useGeneratorSessionStream.js:1-12](file://frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
-- [useSessionEventStream.js:1-101](file://frontend/src/hooks/useSessionEventStream.js#L1-L101)
-- [useUpload.js:1-15](file://frontend/src/hooks/useUpload.js#L1-L15)
-- [useLivePreviewSocket.js:1-5](file://frontend/src/hooks/useLivePreviewSocket.js#L1-L5)
-- [useSynthesisSessionStream.js:1-12](file://frontend/src/hooks/useSynthesisSessionStream.js#L1-L12)
-- [useAgent.js:1-12](file://frontend/src/hooks/useAgent.js#L1-L12)
-- [useAgentEvents.js:1-17](file://frontend/src/hooks/useAgentEvents.js#L1-L17)
-- [useJobFromUrl.js:1-4](file://frontend/src/hooks/useJobFromUrl.js#L1-L4)
-- [api.v1.js:1-5](file://frontend/src/services/api.v1.js#L1-L5)
-- [api.synthesis.js:1-5](file://frontend/src/services/api.synthesis.js#L1-L5)
-- [ReconnectingWebSocket.js:1-5](file://frontend/src/lib/ReconnectingWebSocket.js#L1-L5)
+- [useGeneratorSessionStream.js:1-12](../../../../../frontend/src/hooks/useGeneratorSessionStream.js#L1-L12)
+- [useSessionEventStream.js:1-101](../../../../../frontend/src/hooks/useSessionEventStream.js#L1-L101)
+- [useUpload.js:1-15](../../../../../frontend/src/hooks/useUpload.js#L1-L15)
+- [useLivePreviewSocket.js:1-5](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L1-L5)
+- [useSynthesisSessionStream.js:1-12](../../../../../frontend/src/hooks/useSynthesisSessionStream.js#L1-L12)
+- [useAgent.js:1-12](../../../../../frontend/src/hooks/useAgent.js#L1-L12)
+- [useAgentEvents.js:1-17](../../../../../frontend/src/hooks/useAgentEvents.js#L1-L17)
+- [useJobFromUrl.js:1-4](../../../../../frontend/src/hooks/useJobFromUrl.js#L1-L4)
+- [api.v1.js:1-5](../../../../../frontend/src/services/api.v1.js#L1-L5)
+- [api.synthesis.js:1-5](../../../../../frontend/src/services/api.synthesis.js#L1-L5)
+- [ReconnectingWebSocket.js:1-5](../../../../../frontend/src/lib/ReconnectingWebSocket.js#L1-L5)
 
 ## Performance Considerations
 
 - SSE and WebSocket:
-    - useSessionEventStream and useLivePreviewSocket implement exponential backoff and jitter to reduce thundering herds and server load.
-    - Debounce sendContent in useLivePreviewSocket reduces payload volume and latency spikes.
+  - useSessionEventStream and useLivePreviewSocket implement exponential backoff and jitter to reduce thundering herds and server load.
+  - Debounce sendContent in useLivePreviewSocket reduces payload volume and latency spikes.
 - Upload:
-    - Chunked upload is conditionally enabled for large files when logged in to improve reliability.
-    - Progress callbacks are throttled by upload implementation; consider adding UI-level debouncing if needed.
+  - Chunked upload is conditionally enabled for large files when logged in to improve reliability.
+  - Progress callbacks are throttled by upload implementation; consider adding UI-level debouncing if needed.
 - Autosave:
-    - 10-second intervals balance persistence frequency with storage writes; ensure formData is lightweight.
+  - 10-second intervals balance persistence frequency with storage writes; ensure formData is lightweight.
 - Status polling:
-    - useUpload adjusts refetch intervals based on phase to reduce unnecessary network calls.
+  - useUpload adjusts refetch intervals based on phase to reduce unnecessary network calls.
 
 [No sources needed since this section provides general guidance]
 
 ## Troubleshooting Guide
 
 - SSE connection fails:
-    - Verify sessionId is truthy and URL is constructed correctly.
-    - Check console logs for “SSE Error” and retry attempts; confirm network connectivity and CORS.
-    - Ensure Supabase session retrieval succeeds and token is appended to URL.
+  - Verify sessionId is truthy and URL is constructed correctly.
+  - Check console logs for “SSE Error” and retry attempts; confirm network connectivity and CORS.
+  - Ensure Supabase session retrieval succeeds and token is appended to URL.
 - WebSocket disconnects:
-    - Inspect isReconnecting and reconnectAttempt; confirm backend WS endpoint availability.
-    - Validate that ReconnectingWebSocket receives onclose/onerror and schedules reconnection.
+  - Inspect isReconnecting and reconnectAttempt; confirm backend WS endpoint availability.
+  - Validate that ReconnectingWebSocket receives onclose/onerror and schedules reconnection.
 - Upload stuck at 0%:
-    - Confirm upload callbacks fire and progress is updated; check abortController state.
-    - For chunked uploads, verify chunk sizes and thresholds.
+  - Confirm upload callbacks fire and progress is updated; check abortController state.
+  - For chunked uploads, verify chunk sizes and thresholds.
 - Live preview not updating:
-    - Ensure sendContent is invoked with content changes; check debounce timing.
-    - Confirm checksum differences trigger analysis; verify server responds with html/warnings.
+  - Ensure sendContent is invoked with content changes; check debounce timing.
+  - Confirm checksum differences trigger analysis; verify server responds with html/warnings.
 - Autosave not restoring:
-    - Check localStorage quota and expiry (24h); verify key correctness.
+  - Check localStorage quota and expiry (24h); verify key correctness.
 - Unsaved changes warning not appearing:
-    - Ensure isDirty toggles appropriately; confirm beforeunload handler is attached.
+  - Ensure isDirty toggles appropriately; confirm beforeunload handler is attached.
 
 **Section sources**
 
-- [useSessionEventStream.js:76-87](file://frontend/src/hooks/useSessionEventStream.js#L76-L87)
-- [useLivePreviewSocket.js:83-95](file://frontend/src/hooks/useLivePreviewSocket.js#L83-L95)
-- [useUpload.js:224-342](file://frontend/src/hooks/useUpload.js#L224-L342)
-- [useAutosave.js:17-29](file://frontend/src/hooks/useAutosave.js#L17-L29)
-- [useUnsavedChanges.js:9-22](file://frontend/src/hooks/useUnsavedChanges.js#L9-L22)
+- [useSessionEventStream.js:76-87](../../../../../frontend/src/hooks/useSessionEventStream.js#L76-L87)
+- [useLivePreviewSocket.js:83-95](../../../../../frontend/src/hooks/useLivePreviewSocket.js#L83-L95)
+- [useUpload.js:224-342](../../../../../frontend/src/hooks/useUpload.js#L224-L342)
+- [useAutosave.js:17-29](../../../../../frontend/src/hooks/useAutosave.js#L17-L29)
+- [useUnsavedChanges.js:9-22](../../../../../frontend/src/hooks/useUnsavedChanges.js#L9-L22)
 
 ## Conclusion
 
@@ -595,11 +595,11 @@ Adopt the documented composition patterns and integration guidelines to build ro
 ### Hook Composition Patterns
 
 - Generator pipeline:
-    - useGeneratorSessionStream -> useSessionEventStream
-    - useUpload -> status polling + SSE
+  - useGeneratorSessionStream -> useSessionEventStream
+  - useUpload -> status polling + SSE
 - Live editing:
-    - useLivePreviewSocket -> sendContent on change
+  - useLivePreviewSocket -> sendContent on change
 - Agent collaboration:
-    - useAgent + useAgentEvents -> SSE-driven state transitions
+  - useAgent + useAgentEvents -> SSE-driven state transitions
 
 [No sources needed since this section provides general guidance]

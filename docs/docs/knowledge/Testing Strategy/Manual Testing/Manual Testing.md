@@ -10,7 +10,7 @@
 - [TESTING_COMMANDS.md](file://backend/manual_tests/TESTING_COMMANDS.md)
 - [test_commands.md](file://backend/manual_tests/test_commands.md)
 - [MANUAL_TESTING_LOG.md](file://backend/MANUAL_TESTING_LOG.md)
-- [README.md](file://backend/manual_tests/sample_inputs/README.md)
+- [README.md](../../../../../README.md)
 - [verify_equations.py](file://backend/manual_tests/equations/verify_equations.py)
 - [verify_hitl_jats.py](file://backend/manual_tests/hitl/verify_hitl_jats.py)
 - [verify_interface.py](file://backend/manual_tests/interface/verify_interface.py)
@@ -48,27 +48,27 @@ Manual testing is organized under the backend manual_tests directory with two co
 Key directories and files:
 
 - normal/: JSON-based outputs for detailed inspection
-    - phase1/: Identification verification (parsing, structure, classification, figures, tables, references)
-    - phase2/: Assembly and deduplication checks
-    - phase3/: Final formatting
+  - phase1/: Identification verification (parsing, structure, classification, figures, tables, references)
+  - phase2/: Assembly and deduplication checks
+  - phase3/: Final formatting
 - visual/: DOCX-based outputs for visual inspection
-    - phase1/: Identification stages (structure, classification, figures/tables, references, numbering, insertion)
-    - phase2/: Full pipeline assembly
-    - phase3/: Final formatted output
+  - phase1/: Identification stages (structure, classification, figures/tables, references, numbering, insertion)
+  - phase2/: Full pipeline assembly
+  - phase3/: Final formatted output
 - outputs/: JSON artifacts produced by normal tests
 - visual_outputs/: DOCX artifacts produced by visual tests
 - Specialized scripts:
-    - equations/verify_equations.py
-    - hitl/verify_hitl_jats.py
-    - interface/verify_interface.py
-    - rag/verify_rag_interface.py
+  - equations/verify_equations.py
+  - hitl/verify_hitl_jats.py
+  - interface/verify_interface.py
+  - rag/verify_rag_interface.py
 - Guides:
-    - README_1.md (high-level workflow)
-    - README_VISUAL.md (visual testing framework)
-    - TESTING_COMMANDS.md (command catalog)
-    - test_commands.md (alternative command catalog)
-    - MANUAL_TESTING_LOG.md (static test cases and execution log)
-    - sample_inputs/README.md (sample input guidance)
+  - README_1.md (high-level workflow)
+  - README_VISUAL.md (visual testing framework)
+  - TESTING_COMMANDS.md (command catalog)
+  - test_commands.md (alternative command catalog)
+  - MANUAL_TESTING_LOG.md (static test cases and execution log)
+  - sample_inputs/README.md (sample input guidance)
 
 ```mermaid
 graph TB
@@ -124,7 +124,7 @@ SI --> V1
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
 - [test_commands.md:1-347](file://backend/manual_tests/test_commands.md#L1-L347)
 - [MANUAL_TESTING_LOG.md:1-82](file://backend/MANUAL_TESTING_LOG.md#L1-L82)
-- [README.md:1-78](file://backend/manual_tests/sample_inputs/README.md#L1-L78)
+- [README.md:1-78](../../../../../README.md#L1-L78)
 
 **Section sources**
 
@@ -133,34 +133,34 @@ SI --> V1
 - [TESTING_COMMANDS.md:1-285](file://backend/manual_tests/TESTING_COMMANDS.md#L1-L285)
 - [test_commands.md:1-347](file://backend/manual_tests/test_commands.md#L1-L347)
 - [MANUAL_TESTING_LOG.md:1-82](file://backend/MANUAL_TESTING_LOG.md#L1-L82)
-- [README.md:1-78](file://backend/manual_tests/sample_inputs/README.md#L1-L78)
+- [README.md:1-78](../../../../../README.md#L1-L78)
 
 ## Core Components
 
 - Phase 1: Identification Verification
-    - Parsing and block extraction
-    - Structure detection (headings)
-    - Semantic classification
-    - Figure detection and caption matching
-    - Figure numbering and insertion points
-    - Table extraction, caption matching, numbering, and insertion
-    - Reference detection
-    - Optional: Equation detection, NLP enrichment, OCR diagnostics, model validation
+  - Parsing and block extraction
+  - Structure detection (headings)
+  - Semantic classification
+  - Figure detection and caption matching
+  - Figure numbering and insertion points
+  - Table extraction, caption matching, numbering, and insertion
+  - Reference detection
+  - Optional: Equation detection, NLP enrichment, OCR diagnostics, model validation
 - Phase 2: Assembly and Deduplication
-    - Validation checks for duplicates and completeness
-    - Full pipeline assembly (no formatting)
+  - Validation checks for duplicates and completeness
+  - Full pipeline assembly (no formatting)
 - Phase 3: Formatting
-    - Final DOCX formatting with selected template
+  - Final DOCX formatting with selected template
 - Visual Testing Framework
-    - DOCX-in, DOCX-out annotated outputs for visual inspection
-    - Cumulative stages with clear acceptance criteria
+  - DOCX-in, DOCX-out annotated outputs for visual inspection
+  - Cumulative stages with clear acceptance criteria
 - Specialized Scripts
-    - Equation verification (MathML conversion)
-    - HITL and JATS export verification
-    - Interface verification for semantic parser and RAG engine
+  - Equation verification (MathML conversion)
+  - HITL and JATS export verification
+  - Interface verification for semantic parser and RAG engine
 - Static Test Cases and Execution Log
-    - Stability validation, crash prevention, lifecycle correctness
-    - Non-functional API behavior documented as static test cases
+  - Stability validation, crash prevention, lifecycle correctness
+  - Non-functional API behavior documented as static test cases
 
 **Section sources**
 
@@ -271,13 +271,13 @@ Focus areas:
 Manual commands and outputs:
 
 - Validation: run_validation.py → outputs/08_validation_report.json
-    - Acceptance criteria: has_any_duplicates false; counts of unique vs total blocks/figures/tables consistent
+  - Acceptance criteria: has_any_duplicates false; counts of unique vs total blocks/figures/tables consistent
 - Full pipeline assembly: run_pipeline.py → outputs/09_pipeline_document.json
 
 Visual equivalent:
 
 - 05_full_pipeline.py → visual_outputs/05_full_pipeline_annotated.docx
-    - Red duplicate annotations and cumulative summary
+  - Red duplicate annotations and cumulative summary
 
 Decision flow:
 
@@ -394,10 +394,10 @@ Verification:
 
 - Open DOCX in Microsoft Word
 - Use color highlights and annotations to verify:
-    - Headings and levels
-    - Figure/table captions
-    - Duplicates and split/merge behavior
-    - Final formatting compliance
+  - Headings and levels
+  - Figure/table captions
+  - Duplicates and split/merge behavior
+  - Final formatting compliance
 
 **Section sources**
 
@@ -408,11 +408,11 @@ Verification:
 ### Manual Testing Phases and Focus Areas
 
 - Phase 1: Identification
-    - Caption matching, figure detection, table extraction, full pipeline validation (assembly)
+  - Caption matching, figure detection, table extraction, full pipeline validation (assembly)
 - Phase 2: Assembly
-    - Duplication checks and full pipeline assembly
+  - Duplication checks and full pipeline assembly
 - Phase 3: Formatting
-    - Final DOCX formatting and visual verification
+  - Final DOCX formatting and visual verification
 
 **Section sources**
 
@@ -468,17 +468,17 @@ FM --> OUT4["visual_outputs/phase3_06_formatted.docx"]
 Common issues and resolutions:
 
 - Duplicates found in Phase 1 or 2:
-    - Fix pipeline logic (identification or assembly), re-run from the first stage.
+  - Fix pipeline logic (identification or assembly), re-run from the first stage.
 - OCR-related failures:
-    - Use run_ocr_debug.py to verify system dependencies and PdfOCR instantiation.
+  - Use run_ocr_debug.py to verify system dependencies and PdfOCR instantiation.
 - Equation MathML generation failures:
-    - Use verify_equations.py to validate OMML-to-MathML conversion.
+  - Use verify_equations.py to validate OMML-to-MathML conversion.
 - HITL/JATS export anomalies:
-    - Use verify_hitl_jats.py to confirm critical review status and JATS XML content.
+  - Use verify_hitl_jats.py to confirm critical review status and JATS XML content.
 - Interface method errors:
-    - Use verify_interface.py for semantic parser methods and verify_rag_interface.py for RAG engine methods.
+  - Use verify_interface.py for semantic parser methods and verify_rag_interface.py for RAG engine methods.
 - Static test case failures:
-    - Refer to MANUAL_TESTING_LOG.md for documented non-functional API behavior and expected outcomes.
+  - Refer to MANUAL_TESTING_LOG.md for documented non-functional API behavior and expected outcomes.
 
 **Section sources**
 
@@ -500,44 +500,44 @@ The manual testing framework provides robust, layered validation of the ScholarF
 ### A. Manual Testing Commands Catalog
 
 - Phase 1 (Normal):
-    - run_input_conversion.py → outputs/01_blocks.json
-    - run_structure.py → outputs/02_structure.json
-    - run_classifier.py → outputs/03_classified.json
-    - run_figure_detection.py → outputs/04_figures.json
-    - run_caption_matching.py → outputs/05_figures_with_captions.json
-    - run_figure_numbering.py → outputs/05b_figures_numbered.json
-    - run_figure_insertion.py → outputs/05c_figures_insertion.json
-    - run_table_extraction.py → outputs/06_tables.json
-    - run_table_caption_matching.py → outputs/07_tables_with_captions.json
-    - run_table_numbering.py → outputs/06b_tables_numbered.json
-    - run_table_insertion.py → outputs/06c_tables_insertion.json
-    - run_reference_detection.py → outputs/12_references.json
-    - run_nlp_debug.py → outputs/13_nlp_debug.json
-    - run_ocr_debug.py
-    - run_model_validation.py
+  - run_input_conversion.py → outputs/01_blocks.json
+  - run_structure.py → outputs/02_structure.json
+  - run_classifier.py → outputs/03_classified.json
+  - run_figure_detection.py → outputs/04_figures.json
+  - run_caption_matching.py → outputs/05_figures_with_captions.json
+  - run_figure_numbering.py → outputs/05b_figures_numbered.json
+  - run_figure_insertion.py → outputs/05c_figures_insertion.json
+  - run_table_extraction.py → outputs/06_tables.json
+  - run_table_caption_matching.py → outputs/07_tables_with_captions.json
+  - run_table_numbering.py → outputs/06b_tables_numbered.json
+  - run_table_insertion.py → outputs/06c_tables_insertion.json
+  - run_reference_detection.py → outputs/12_references.json
+  - run_nlp_debug.py → outputs/13_nlp_debug.json
+  - run_ocr_debug.py
+  - run_model_validation.py
 - Phase 1 (Visual):
-    - 01_parse_and_structure.py → visual_outputs/01_structure_annotated.docx
-    - 02_classification.py → visual_outputs/02_classified_annotated.docx
-    - 03_figures_tables.py → visual_outputs/03_figures_tables_annotated.docx
-    - 04_references.py → visual_outputs/04_references_annotated.docx
-    - 05b_figure_numbering.py → visual_outputs/05b_figure_numbering_annotated.docx
-    - 05c_figure_insertion.py → visual_outputs/05c_figure_insertion_annotated.docx
-    - 06b_table_numbering.py → visual_outputs/06b_table_numbering_annotated.docx
-    - 06c_table_insertion.py → visual_outputs/06c_table_insertion_annotated.docx
+  - 01_parse_and_structure.py → visual_outputs/01_structure_annotated.docx
+  - 02_classification.py → visual_outputs/02_classified_annotated.docx
+  - 03_figures_tables.py → visual_outputs/03_figures_tables_annotated.docx
+  - 04_references.py → visual_outputs/04_references_annotated.docx
+  - 05b_figure_numbering.py → visual_outputs/05b_figure_numbering_annotated.docx
+  - 05c_figure_insertion.py → visual_outputs/05c_figure_insertion_annotated.docx
+  - 06b_table_numbering.py → visual_outputs/06b_table_numbering_annotated.docx
+  - 06c_table_insertion.py → visual_outputs/06c_table_insertion_annotated.docx
 - Phase 2 (Normal):
-    - run_validation.py → outputs/08_validation_report.json
-    - run_pipeline.py → outputs/09_pipeline_document.json
+  - run_validation.py → outputs/08_validation_report.json
+  - run_pipeline.py → outputs/09_pipeline_document.json
 - Phase 2 (Visual):
-    - 05_full_pipeline.py → visual_outputs/05_full_pipeline_annotated.docx
+  - 05_full_pipeline.py → visual_outputs/05_full_pipeline_annotated.docx
 - Phase 3 (Normal):
-    - run_formatter.py → outputs/10_formatted_<template>.docx
+  - run_formatter.py → outputs/10_formatted_<template>.docx
 - Phase 3 (Visual):
-    - 06_formatted.py → visual_outputs/phase3_06_formatted.docx
+  - 06_formatted.py → visual_outputs/phase3_06_formatted.docx
 - Specialized:
-    - equations/verify_equations.py
-    - hitl/verify_hitl_jats.py
-    - interface/verify_interface.py
-    - rag/verify_rag_interface.py
+  - equations/verify_equations.py
+  - hitl/verify_hitl_jats.py
+  - interface/verify_interface.py
+  - rag/verify_rag_interface.py
 
 **Section sources**
 
@@ -560,13 +560,13 @@ The manual testing framework provides robust, layered validation of the ScholarF
 ### C. Test Case Documentation and Regression Procedures
 
 - Static test cases:
-    - Document upload and job creation
-    - Asynchronous status polling
-    - Server reload handling
-    - Database interrupt resilience
-    - Document edit reprocessing
+  - Document upload and job creation
+  - Asynchronous status polling
+  - Server reload handling
+  - Database interrupt resilience
+  - Document edit reprocessing
 - Execution log:
-    - Append-only record of manual test runs with tester, test IDs, results, and notes.
+  - Append-only record of manual test runs with tester, test IDs, results, and notes.
 
 **Section sources**
 

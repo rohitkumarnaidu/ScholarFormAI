@@ -300,7 +300,8 @@ def test_v1_documents_list_contract(client: TestClient):
 def test_v1_documents_status_missing_contract(client: TestClient):
     with (
         patch("app.routers.v1.documents_impl._require_db", return_value=None),
-        patch("app.routers.v1.documents_impl.DocumentService.get_document", return_value=None),
+        patch("app.routers.v1.documents_impl.DocumentService.get_document", new=AsyncMock(return_value=None)),
+        patch("app.routers.v1.documents_impl.DocumentService.get_processing_statuses", new=AsyncMock(return_value=[])),
     ):
         response = client.get("/api/v1/documents/missing-job/status")
 
@@ -314,13 +315,13 @@ def test_v1_documents_status_missing_contract(client: TestClient):
 def test_v1_documents_download_invalid_format_contract(client: TestClient):
     with patch(
         "app.routers.v1.documents_impl.DocumentService.get_document",
-        return_value={
+        new=AsyncMock(return_value={
             "id": "job-download",
             "filename": "paper.docx",
             "status": "COMPLETED",
             "user_id": client.mock_user.id,
             "output_path": "unused.docx",
-        },
+        }),
     ):
         response = client.get("/api/v1/documents/job-download/download?format=txt")
 
@@ -345,7 +346,7 @@ def test_v1_documents_signed_download_allows_tokenized_access_without_user(clien
     }
 
     with (
-        patch("app.routers.v1.documents_impl.DocumentService.get_document", return_value=document_record),
+        patch("app.routers.v1.documents_impl.DocumentService.get_document", new=AsyncMock(return_value=document_record)),
         patch("app.routers.v1.documents_impl.settings.SIGNED_URL_SECRET", "test-secret"),
     ):
         link_response = client.get("/api/v1/documents/job-download/download?format=docx")
@@ -510,8 +511,8 @@ def test_v1_documents_status_existing_job_contract(client: TestClient):
     }
     with (
         patch("app.routers.v1.documents_impl._require_db", return_value=None),
-        patch("app.routers.v1.documents_impl.DocumentService.get_document", return_value=doc),
-        patch("app.routers.v1.documents_impl.DocumentService.get_processing_statuses", return_value=[]),
+        patch("app.routers.v1.documents_impl.DocumentService.get_document", new=AsyncMock(return_value=doc)),
+        patch("app.routers.v1.documents_impl.DocumentService.get_processing_statuses", new=AsyncMock(return_value=[])),
     ):
         response = client.get("/api/v1/documents/job-live/status")
 

@@ -5,18 +5,18 @@
 
 <cite>
 **Referenced Files in This Document**
-- [template_renderer.py](file://backend/app/pipeline/formatting/template_renderer.py)
-- [loader.py](file://backend/app/pipeline/contracts/loader.py)
-- [template_creation_guide.md](file://backend/docs/template_creation_guide.md)
-- [contract.yaml (IEEE)](file://backend/app/templates/ieee/contract.yaml)
-- [styles.csl (IEEE)](file://backend/app/templates/ieee/styles.csl)
-- [contract.yaml (APA)](file://backend/app/templates/apa/contract.yaml)
-- [styles.csl (APA)](file://backend/app/templates/apa/styles.csl)
-- [contract.yaml (IEEE, pipeline)](file://backend/app/pipeline/contracts/ieee/contract.yaml)
-- [contract.yaml (APA, pipeline)](file://backend/app/pipeline/contracts/apa/contract.yaml)
-- [contract.yaml (Chicago, pipeline)](file://backend/app/pipeline/contracts/chicago/contract.yaml)
-- [contract.yaml (Modern Blue, pipeline)](file://backend/app/pipeline/contracts/modern_blue/contract.yaml)
-- [contract.yaml (Modern Gold, pipeline)](file://backend/app/pipeline/contracts/modern_gold/contract.yaml)
+- [template_renderer.py](../../../../backend/app/pipeline/formatting/template_renderer.py)
+- [loader.py](../../../../backend/app/pipeline/contracts/loader.py)
+- [template_creation_guide.md](../../../../backend/docs/template_creation_guide.md)
+- [contract.yaml (IEEE)](../../../../backend/app/templates/ieee/contract.yaml)
+- [styles.csl (IEEE)](../../../../backend/app/templates/ieee/styles.csl)
+- [contract.yaml (APA)](../../../../backend/app/templates/apa/contract.yaml)
+- [styles.csl (APA)](../../../../backend/app/templates/apa/styles.csl)
+- [contract.yaml (IEEE, pipeline)](../../../../backend/app/pipeline/contracts/ieee/contract.yaml)
+- [contract.yaml (APA, pipeline)](../../../../backend/app/pipeline/contracts/apa/contract.yaml)
+- [contract.yaml (Chicago, pipeline)](../../../../backend/app/pipeline/contracts/chicago/contract.yaml)
+- [contract.yaml (Modern Blue, pipeline)](../../../../backend/app/pipeline/contracts/modern_blue/contract.yaml)
+- [contract.yaml (Modern Gold, pipeline)](../../../../backend/app/pipeline/contracts/modern_gold/contract.yaml)
 </cite>
 
 ## Table of Contents
@@ -61,13 +61,13 @@ TPL_ROOT --> CSL
 
 **Diagram sources**
 
-- [template_creation_guide.md:13-17](file://backend/docs/template_creation_guide.md#L13-L17)
-- [contract.yaml (IEEE):1-50](file://backend/app/templates/ieee/contract.yaml#L1-L50)
-- [styles.csl (IEEE):1-66](file://backend/app/templates/ieee/styles.csl#L1-L66)
+- [template_creation_guide.md:13-17](../../../../backend/docs/template_creation_guide.md#L13-L17)
+- [contract.yaml (IEEE):1-50](../../../../backend/app/templates/ieee/contract.yaml#L1-L50)
+- [styles.csl (IEEE):1-66](../../../../backend/app/templates/ieee/styles.csl#L1-L66)
 
 **Section sources**
 
-- [template_creation_guide.md:5-17](file://backend/docs/template_creation_guide.md#L5-L17)
+- [template_creation_guide.md:5-17](../../../../backend/docs/template_creation_guide.md#L5-L17)
 
 ## Core Components
 
@@ -83,8 +83,8 @@ Key responsibilities:
 
 **Section sources**
 
-- [template_renderer.py:29-331](file://backend/app/pipeline/formatting/template_renderer.py#L29-L331)
-- [loader.py:8-82](file://backend/app/pipeline/contracts/loader.py#L8-L82)
+- [template_renderer.py:29-331](../../../../backend/app/pipeline/formatting/template_renderer.py#L29-L331)
+- [loader.py:8-82](../../../../backend/app/pipeline/contracts/loader.py#L8-L82)
 
 ## Architecture Overview
 
@@ -127,17 +127,17 @@ CSL_APA --> TR
 
 **Diagram sources**
 
-- [template_renderer.py:65-82](file://backend/app/pipeline/formatting/template_renderer.py#L65-L82)
-- [loader.py:16-38](file://backend/app/pipeline/contracts/loader.py#L16-L38)
-- [contract.yaml (IEEE, pipeline):1-99](file://backend/app/pipeline/contracts/ieee/contract.yaml#L1-L99)
-- [contract.yaml (APA, pipeline):1-101](file://backend/app/pipeline/contracts/apa/contract.yaml#L1-L101)
-- [contract.yaml (Chicago, pipeline):1-80](file://backend/app/pipeline/contracts/chicago/contract.yaml#L1-L80)
-- [contract.yaml (Modern Blue, pipeline):1-83](file://backend/app/pipeline/contracts/modern_blue/contract.yaml#L1-L83)
-- [contract.yaml (Modern Gold, pipeline):1-83](file://backend/app/pipeline/contracts/modern_gold/contract.yaml#L1-L83)
-- [contract.yaml (IEEE):1-50](file://backend/app/templates/ieee/contract.yaml#L1-L50)
-- [contract.yaml (APA):1-45](file://backend/app/templates/apa/contract.yaml#L1-L45)
-- [styles.csl (IEEE):1-66](file://backend/app/templates/ieee/styles.csl#L1-L66)
-- [styles.csl (APA):1-86](file://backend/app/templates/apa/styles.csl#L1-L86)
+- [template_renderer.py:65-82](../../../../backend/app/pipeline/formatting/template_renderer.py#L65-L82)
+- [loader.py:16-38](../../../../backend/app/pipeline/contracts/loader.py#L16-L38)
+- [contract.yaml (IEEE, pipeline):1-99](../../../../backend/app/pipeline/contracts/ieee/contract.yaml#L1-L99)
+- [contract.yaml (APA, pipeline):1-101](../../../../backend/app/pipeline/contracts/apa/contract.yaml#L1-L101)
+- [contract.yaml (Chicago, pipeline):1-80](../../../../backend/app/pipeline/contracts/chicago/contract.yaml#L1-L80)
+- [contract.yaml (Modern Blue, pipeline):1-83](../../../../backend/app/pipeline/contracts/modern_blue/contract.yaml#L1-L83)
+- [contract.yaml (Modern Gold, pipeline):1-83](../../../../backend/app/pipeline/contracts/modern_gold/contract.yaml#L1-L83)
+- [contract.yaml (IEEE):1-50](../../../../backend/app/templates/ieee/contract.yaml#L1-L50)
+- [contract.yaml (APA):1-45](../../../../backend/app/templates/apa/contract.yaml#L1-L45)
+- [styles.csl (IEEE):1-66](../../../../backend/app/templates/ieee/styles.csl#L1-L66)
+- [styles.csl (APA):1-86](../../../../backend/app/templates/apa/styles.csl#L1-L86)
 
 ## Detailed Component Analysis
 
@@ -172,18 +172,18 @@ class TemplateRenderer {
 
 **Diagram sources**
 
-- [template_renderer.py:29-331](file://backend/app/pipeline/formatting/template_renderer.py#L29-L331)
+- [template_renderer.py:29-331](../../../../backend/app/pipeline/formatting/template_renderer.py#L29-L331)
 
 **Section sources**
 
-- [template_renderer.py:65-82](file://backend/app/pipeline/formatting/template_renderer.py#L65-L82)
-- [template_renderer.py:94-159](file://backend/app/pipeline/formatting/template_renderer.py#L94-L159)
-- [template_renderer.py:164-179](file://backend/app/pipeline/formatting/template_renderer.py#L164-L179)
-- [template_renderer.py:181-198](file://backend/app/pipeline/formatting/template_renderer.py#L181-L198)
-- [template_renderer.py:200-230](file://backend/app/pipeline/formatting/template_renderer.py#L200-L230)
-- [template_renderer.py:232-255](file://backend/app/pipeline/formatting/template_renderer.py#L232-L255)
-- [template_renderer.py:257-273](file://backend/app/pipeline/formatting/template_renderer.py#L257-L273)
-- [template_renderer.py:275-313](file://backend/app/pipeline/formatting/template_renderer.py#L275-L313)
+- [template_renderer.py:65-82](../../../../backend/app/pipeline/formatting/template_renderer.py#L65-L82)
+- [template_renderer.py:94-159](../../../../backend/app/pipeline/formatting/template_renderer.py#L94-L159)
+- [template_renderer.py:164-179](../../../../backend/app/pipeline/formatting/template_renderer.py#L164-L179)
+- [template_renderer.py:181-198](../../../../backend/app/pipeline/formatting/template_renderer.py#L181-L198)
+- [template_renderer.py:200-230](../../../../backend/app/pipeline/formatting/template_renderer.py#L200-L230)
+- [template_renderer.py:232-255](../../../../backend/app/pipeline/formatting/template_renderer.py#L232-L255)
+- [template_renderer.py:257-273](../../../../backend/app/pipeline/formatting/template_renderer.py#L257-L273)
+- [template_renderer.py:275-313](../../../../backend/app/pipeline/formatting/template_renderer.py#L275-L313)
 
 ### ContractLoader
 
@@ -204,13 +204,13 @@ class ContractLoader {
 
 **Diagram sources**
 
-- [loader.py:8-82](file://backend/app/pipeline/contracts/loader.py#L8-L82)
+- [loader.py:8-82](../../../../backend/app/pipeline/contracts/loader.py#L8-L82)
 
 **Section sources**
 
-- [loader.py:16-38](file://backend/app/pipeline/contracts/loader.py#L16-L38)
-- [loader.py:40-57](file://backend/app/pipeline/contracts/loader.py#L40-L57)
-- [loader.py:59-74](file://backend/app/pipeline/contracts/loader.py#L59-L74)
+- [loader.py:16-38](../../../../backend/app/pipeline/contracts/loader.py#L16-L38)
+- [loader.py:40-57](../../../../backend/app/pipeline/contracts/loader.py#L40-L57)
+- [loader.py:59-74](../../../../backend/app/pipeline/contracts/loader.py#L59-L74)
 
 ### Template Contracts and Metadata
 
@@ -252,19 +252,19 @@ json equations
 
 **Diagram sources**
 
-- [contract.yaml (IEEE, pipeline):1-99](file://backend/app/pipeline/contracts/ieee/contract.yaml#L1-L99)
-- [contract.yaml (APA, pipeline):1-101](file://backend/app/pipeline/contracts/apa/contract.yaml#L1-L101)
-- [contract.yaml (Chicago, pipeline):1-80](file://backend/app/pipeline/contracts/chicago/contract.yaml#L1-L80)
-- [contract.yaml (Modern Blue, pipeline):1-83](file://backend/app/pipeline/contracts/modern_blue/contract.yaml#L1-L83)
-- [contract.yaml (Modern Gold, pipeline):1-83](file://backend/app/pipeline/contracts/modern_gold/contract.yaml#L1-L83)
+- [contract.yaml (IEEE, pipeline):1-99](../../../../backend/app/pipeline/contracts/ieee/contract.yaml#L1-L99)
+- [contract.yaml (APA, pipeline):1-101](../../../../backend/app/pipeline/contracts/apa/contract.yaml#L1-L101)
+- [contract.yaml (Chicago, pipeline):1-80](../../../../backend/app/pipeline/contracts/chicago/contract.yaml#L1-L80)
+- [contract.yaml (Modern Blue, pipeline):1-83](../../../../backend/app/pipeline/contracts/modern_blue/contract.yaml#L1-L83)
+- [contract.yaml (Modern Gold, pipeline):1-83](../../../../backend/app/pipeline/contracts/modern_gold/contract.yaml#L1-L83)
 
 **Section sources**
 
-- [contract.yaml (IEEE, pipeline):1-99](file://backend/app/pipeline/contracts/ieee/contract.yaml#L1-L99)
-- [contract.yaml (APA, pipeline):1-101](file://backend/app/pipeline/contracts/apa/contract.yaml#L1-L101)
-- [contract.yaml (Chicago, pipeline):1-80](file://backend/app/pipeline/contracts/chicago/contract.yaml#L1-L80)
-- [contract.yaml (Modern Blue, pipeline):1-83](file://backend/app/pipeline/contracts/modern_blue/contract.yaml#L1-L83)
-- [contract.yaml (Modern Gold, pipeline):1-83](file://backend/app/pipeline/contracts/modern_gold/contract.yaml#L1-L83)
+- [contract.yaml (IEEE, pipeline):1-99](../../../../backend/app/pipeline/contracts/ieee/contract.yaml#L1-L99)
+- [contract.yaml (APA, pipeline):1-101](../../../../backend/app/pipeline/contracts/apa/contract.yaml#L1-L101)
+- [contract.yaml (Chicago, pipeline):1-80](../../../../backend/app/pipeline/contracts/chicago/contract.yaml#L1-L80)
+- [contract.yaml (Modern Blue, pipeline):1-83](../../../../backend/app/pipeline/contracts/modern_blue/contract.yaml#L1-L83)
+- [contract.yaml (Modern Gold, pipeline):1-83](../../../../backend/app/pipeline/contracts/modern_gold/contract.yaml#L1-L83)
 
 ### Template YAML Contracts vs Pipeline Contracts
 
@@ -278,8 +278,8 @@ Compatibility and inheritance:
 
 **Section sources**
 
-- [loader.py:16-38](file://backend/app/pipeline/contracts/loader.py#L16-L38)
-- [loader.py:59-74](file://backend/app/pipeline/contracts/loader.py#L59-L74)
+- [loader.py:16-38](../../../../backend/app/pipeline/contracts/loader.py#L16-L38)
+- [loader.py:59-74](../../../../backend/app/pipeline/contracts/loader.py#L59-L74)
 
 ### CSL Stylesheets and Reference Formatting
 
@@ -289,9 +289,9 @@ Compatibility and inheritance:
 
 **Section sources**
 
-- [template_creation_guide.md:82-91](file://backend/docs/template_creation_guide.md#L82-L91)
-- [styles.csl (IEEE):1-66](file://backend/app/templates/ieee/styles.csl#L1-L66)
-- [styles.csl (APA):1-86](file://backend/app/templates/apa/styles.csl#L1-L86)
+- [template_creation_guide.md:82-91](../../../../backend/docs/template_creation_guide.md#L82-L91)
+- [styles.csl (IEEE):1-66](../../../../backend/app/templates/ieee/styles.csl#L1-L66)
+- [styles.csl (APA):1-86](../../../../backend/app/templates/apa/styles.csl#L1-L86)
 
 ### Template Discovery and Loading Mechanisms
 
@@ -308,10 +308,10 @@ Validation and integrity:
 
 **Section sources**
 
-- [template_renderer.py:84-93](file://backend/app/pipeline/formatting/template_renderer.py#L84-L93)
-- [template_renderer.py:164-179](file://backend/app/pipeline/formatting/template_renderer.py#L164-L179)
-- [template_renderer.py:200-230](file://backend/app/pipeline/formatting/template_renderer.py#L200-L230)
-- [template_renderer.py:232-255](file://backend/app/pipeline/formatting/template_renderer.py#L232-L255)
+- [template_renderer.py:84-93](../../../../backend/app/pipeline/formatting/template_renderer.py#L84-L93)
+- [template_renderer.py:164-179](../../../../backend/app/pipeline/formatting/template_renderer.py#L164-L179)
+- [template_renderer.py:200-230](../../../../backend/app/pipeline/formatting/template_renderer.py#L200-L230)
+- [template_renderer.py:232-255](../../../../backend/app/pipeline/formatting/template_renderer.py#L232-L255)
 
 ### Template Metadata, Validation Rules, and Compatibility
 
@@ -332,8 +332,8 @@ Compatibility:
 
 **Section sources**
 
-- [template_creation_guide.md:93-100](file://backend/docs/template_creation_guide.md#L93-L100)
-- [loader.py:40-57](file://backend/app/pipeline/contracts/loader.py#L40-L57)
+- [template_creation_guide.md:93-100](../../../../backend/docs/template_creation_guide.md#L93-L100)
+- [loader.py:40-57](../../../../backend/app/pipeline/contracts/loader.py#L40-L57)
 
 ### Example Template Structure Layouts
 
@@ -347,7 +347,7 @@ These patterns are driven by the context keys provided by the renderer and the c
 
 **Section sources**
 
-- [template_creation_guide.md:19-81](file://backend/docs/template_creation_guide.md#L19-L81)
+- [template_creation_guide.md:19-81](../../../../backend/docs/template_creation_guide.md#L19-L81)
 
 ### Integration with the Formatting Pipeline
 
@@ -372,18 +372,18 @@ TR-->>Client : DocxTemplate
 
 **Diagram sources**
 
-- [template_renderer.py:65-82](file://backend/app/pipeline/formatting/template_renderer.py#L65-L82)
-- [template_renderer.py:94-159](file://backend/app/pipeline/formatting/template_renderer.py#L94-L159)
+- [template_renderer.py:65-82](../../../../backend/app/pipeline/formatting/template_renderer.py#L65-L82)
+- [template_renderer.py:94-159](../../../../backend/app/pipeline/formatting/template_renderer.py#L94-L159)
 
 ## Dependency Analysis
 
 - TemplateRenderer depends on:
-    - Templates directory for DOCX/Jinja sources
-    - Pipeline contracts for canonical rules and metadata
-    - docxtpl for rendering
+  - Templates directory for DOCX/Jinja sources
+  - Pipeline contracts for canonical rules and metadata
+  - docxtpl for rendering
 - ContractLoader depends on:
-    - Templates directory for style-specific contracts
-    - Pipeline contracts directory for canonical contracts
+  - Templates directory for style-specific contracts
+  - Pipeline contracts directory for canonical contracts
 
 ```mermaid
 graph LR
@@ -395,13 +395,13 @@ TR --> DOCXTPL["docxtpl"]
 
 **Diagram sources**
 
-- [template_renderer.py:34-36](file://backend/app/pipeline/formatting/template_renderer.py#L34-L36)
-- [loader.py:12-14](file://backend/app/pipeline/contracts/loader.py#L12-L14)
+- [template_renderer.py:34-36](../../../../backend/app/pipeline/formatting/template_renderer.py#L34-L36)
+- [loader.py:12-14](../../../../backend/app/pipeline/contracts/loader.py#L12-L14)
 
 **Section sources**
 
-- [template_renderer.py:34-36](file://backend/app/pipeline/formatting/template_renderer.py#L34-L36)
-- [loader.py:12-14](file://backend/app/pipeline/contracts/loader.py#L12-L14)
+- [template_renderer.py:34-36](../../../../backend/app/pipeline/formatting/template_renderer.py#L34-L36)
+- [loader.py:12-14](../../../../backend/app/pipeline/contracts/loader.py#L12-L14)
 
 ## Performance Considerations
 
@@ -422,9 +422,9 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [template_renderer.py:67-70](file://backend/app/pipeline/formatting/template_renderer.py#L67-L70)
-- [template_renderer.py:175-178](file://backend/app/pipeline/formatting/template_renderer.py#L175-L178)
-- [loader.py:24-30](file://backend/app/pipeline/contracts/loader.py#L24-L30)
+- [template_renderer.py:67-70](../../../../backend/app/pipeline/formatting/template_renderer.py#L67-L70)
+- [template_renderer.py:175-178](../../../../backend/app/pipeline/formatting/template_renderer.py#L175-L178)
+- [loader.py:24-30](../../../../backend/app/pipeline/contracts/loader.py#L24-L30)
 
 ## Conclusion
 
@@ -440,4 +440,4 @@ The template architecture combines contract-driven structure, publisher-specific
 
 **Section sources**
 
-- [template_creation_guide.md:5-17](file://backend/docs/template_creation_guide.md#L5-L17)
+- [template_creation_guide.md:5-17](../../../../backend/docs/template_creation_guide.md#L5-L17)

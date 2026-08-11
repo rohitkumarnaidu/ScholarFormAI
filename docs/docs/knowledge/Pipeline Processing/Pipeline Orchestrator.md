@@ -5,16 +5,16 @@
 
 <cite>
 **Referenced Files in This Document**
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [base.py](file://backend/app/pipeline/base.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [stream.py](file://backend/app/routers/stream.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [events.py](file://backend/app/realtime/events.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [safe_execution.py](file://backend/app/pipeline/safety/safe_execution.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [base.py](../../../../backend/app/pipeline/base.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [stream.py](../../../../backend/app/routers/v1/stream.py)
+- [pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [events.py](../../../../backend/app/realtime/events.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [safe_execution.py](../../../../backend/app/pipeline/safety/safe_execution.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [validator_v3.py](../../../../backend/app/pipeline/validation/validator_v3.py)
 - [05_full_pipeline.py](file://backend/manual_tests/visual/phase1/05_full_pipeline.py)
 </cite>
 
@@ -64,27 +64,27 @@ Orchestrator --> Validator
 
 **Diagram sources**
 
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [stream.py](file://backend/app/routers/stream.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [events.py](file://backend/app/realtime/events.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [safe_execution.py](file://backend/app/pipeline/safety/safe_execution.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [stream.py](../../../../backend/app/routers/v1/stream.py)
+- [pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [events.py](../../../../backend/app/realtime/events.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [safe_execution.py](../../../../backend/app/pipeline/safety/safe_execution.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [validator_v3.py](../../../../backend/app/pipeline/validation/validator_v3.py)
 
 **Section sources**
 
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [stream.py](file://backend/app/routers/stream.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [events.py](file://backend/app/realtime/events.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [safe_execution.py](file://backend/app/pipeline/safety/safe_execution.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [stream.py](../../../../backend/app/routers/v1/stream.py)
+- [pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [events.py](../../../../backend/app/realtime/events.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [safe_execution.py](../../../../backend/app/pipeline/safety/safe_execution.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [validator_v3.py](../../../../backend/app/pipeline/validation/validator_v3.py)
 
 ## Core Components
 
@@ -104,15 +104,15 @@ Key responsibilities:
 
 **Section sources**
 
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [base.py](file://backend/app/pipeline/base.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [safe_execution.py](file://backend/app/pipeline/safety/safe_execution.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [stream.py](file://backend/app/routers/stream.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [events.py](file://backend/app/realtime/events.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [base.py](../../../../backend/app/pipeline/base.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [safe_execution.py](../../../../backend/app/pipeline/safety/safe_execution.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [stream.py](../../../../backend/app/routers/v1/stream.py)
+- [pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [events.py](../../../../backend/app/realtime/events.py)
 
 ## Architecture Overview
 
@@ -126,7 +126,7 @@ participant Supabase as "Supabase"
 participant Redis as "Redis Pub/Sub"
 participant SSE as "SSE Router"
 Client->>Orchestrator : submit(input_path, job_id, template, options)
-Orchestrator->>Orchestrator : resolve runtime flags (fast_mode, semantic_parser, crossref, ai_reasoning)
+Orchestrator->>Orchestrator : resolve runtime flags ("fast_mode, semantic_parser, crossref, ai_reasoning")
 Orchestrator->>Supabase : update status UPLOAD/COMPLETED
 Orchestrator->>Supabase : update status EXTRACTION/PROCESSING
 Orchestrator->>Redis : emit event status_update
@@ -144,10 +144,10 @@ Orchestrator-->>Client : final response("success/error")
 
 **Diagram sources**
 
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [stream.py](file://backend/app/routers/stream.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [events.py](file://backend/app/realtime/events.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [stream.py](../../../../backend/app/routers/v1/stream.py)
+- [pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [events.py](../../../../backend/app/realtime/events.py)
 
 ## Detailed Component Analysis
 
@@ -200,11 +200,11 @@ Edit re-run flow:
 
 **Section sources**
 
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [safe_execution.py](file://backend/app/pipeline/safety/safe_execution.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [settings.py](file://backend/app/config/settings.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [safe_execution.py](../../../../backend/app/pipeline/safety/safe_execution.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [settings.py](../../../../backend/app/config/settings.py)
 
 ### Stage Interface and Validation
 
@@ -213,8 +213,8 @@ Edit re-run flow:
 
 **Section sources**
 
-- [base.py](file://backend/app/pipeline/base.py)
-- [validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
+- [base.py](../../../../backend/app/pipeline/base.py)
+- [validator_v3.py](../../../../backend/app/pipeline/validation/validator_v3.py)
 
 ### Real-time Status Updates (Supabase + Redis + SSE)
 
@@ -224,10 +224,10 @@ Edit re-run flow:
 
 **Section sources**
 
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [stream.py](file://backend/app/routers/stream.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [events.py](file://backend/app/realtime/events.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [stream.py](../../../../backend/app/routers/v1/stream.py)
+- [pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [events.py](../../../../backend/app/realtime/events.py)
 
 ### Safety Utilities
 
@@ -237,9 +237,9 @@ Edit re-run flow:
 
 **Section sources**
 
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [safe_execution.py](file://backend/app/pipeline/safety/safe_execution.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [safe_execution.py](../../../../backend/app/pipeline/safety/safe_execution.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
 
 ### Example Pipeline Execution
 
@@ -276,27 +276,27 @@ Orchestrator --> Validator
 
 **Diagram sources**
 
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [stream.py](file://backend/app/routers/stream.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [events.py](file://backend/app/realtime/events.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [safe_execution.py](file://backend/app/pipeline/safety/safe_execution.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [stream.py](../../../../backend/app/routers/v1/stream.py)
+- [pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [events.py](../../../../backend/app/realtime/events.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [safe_execution.py](../../../../backend/app/pipeline/safety/safe_execution.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [validator_v3.py](../../../../backend/app/pipeline/validation/validator_v3.py)
 
 **Section sources**
 
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [stream.py](file://backend/app/routers/stream.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [events.py](file://backend/app/realtime/events.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [safe_execution.py](file://backend/app/pipeline/safety/safe_execution.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [settings.py](../../../../backend/app/config/settings.py)
+- [stream.py](../../../../backend/app/routers/v1/stream.py)
+- [pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [events.py](../../../../backend/app/realtime/events.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [safe_execution.py](../../../../backend/app/pipeline/safety/safe_execution.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [validator_v3.py](../../../../backend/app/pipeline/validation/validator_v3.py)
 
 ## Performance Considerations
 
@@ -328,12 +328,12 @@ Operational tips:
 
 **Section sources**
 
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [retry_guard.py](file://backend/app/pipeline/safety/retry_guard.py)
-- [safe_execution.py](file://backend/app/pipeline/safety/safe_execution.py)
-- [circuit_breaker.py](file://backend/app/pipeline/safety/circuit_breaker.py)
-- [pubsub.py](file://backend/app/realtime/pubsub.py)
-- [stream.py](file://backend/app/routers/stream.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [retry_guard.py](../../../../backend/app/pipeline/safety/retry_guard.py)
+- [safe_execution.py](../../../../backend/app/pipeline/safety/safe_execution.py)
+- [circuit_breaker.py](../../../../backend/app/pipeline/safety/circuit_breaker.py)
+- [pubsub.py](../../../../backend/app/realtime/pubsub.py)
+- [stream.py](../../../../backend/app/routers/v1/stream.py)
 
 ## Conclusion
 
@@ -352,8 +352,8 @@ The Pipeline Orchestrator provides a robust, observable, and resilient framework
 
 **Section sources**
 
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [settings.py](file://backend/app/config/settings.py)
+- [orchestrator.py](../../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [settings.py](../../../../backend/app/config/settings.py)
 
 ### Example: Full Pipeline Visual Test
 

@@ -9,8 +9,8 @@
 - [05_full_pipeline.py](file://backend/manual_tests/visual/phase2/05_full_pipeline.py)
 - [README_VISUAL.md](file://backend/manual_tests/README_VISUAL.md)
 - [TESTING_COMMANDS.md](file://backend/manual_tests/TESTING_COMMANDS.md)
-- [validator_v3.py](file://backend/app/pipeline/validation/validator_v3.py)
-- [document.py](file://backend/app/models/document.py)
+- [validator_v3.py](../../../../../../backend/app/pipeline/validation/validator_v3.py)
+- [document.py](../../../../../../backend/app/models/document.py)
 </cite>
 
 ## Table of Contents
@@ -83,7 +83,7 @@ PV --> VO
 
 - [02_classification.py:38-73](file://backend/manual_tests/visual/phase2/02_classification.py#L38-L73)
 - [05_full_pipeline.py:39-55](file://backend/manual_tests/visual/phase2/05_full_pipeline.py#L39-L55)
-- [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
+- [validator_v3.py:34-145](../../../../../../backend/app/pipeline/validation/validator_v3.py#L34-L145)
 
 **Section sources**
 
@@ -93,24 +93,24 @@ PV --> VO
 ## Core Components
 
 - Phase 2 Classification Verification (02_classification.py)
-    - Executes parsing, normalization, structure detection, and classification
-    - Produces an annotated DOCX with color-coded block type labels and a summary dashboard
-    - Validates classification integrity after assembly
+  - Executes parsing, normalization, structure detection, and classification
+  - Produces an annotated DOCX with color-coded block type labels and a summary dashboard
+  - Validates classification integrity after assembly
 
 - Phase 2 Full Pipeline Assembly (05_full_pipeline.py)
-    - Executes parsing, normalization, structure detection, classification, figure/table caption matching, and validation
-    - Produces a comprehensive annotated DOCX highlighting blocks and summarizing counts
-    - Serves as the integration checkpoint for deduplication and structural completeness
+  - Executes parsing, normalization, structure detection, classification, figure/table caption matching, and validation
+  - Produces a comprehensive annotated DOCX highlighting blocks and summarizing counts
+  - Serves as the integration checkpoint for deduplication and structural completeness
 
 - Validation Engine (validator_v3.py)
-    - Provides structural and content validation, including section completeness, figures, tables, references, and integrity checks
-    - Updates document state with validation results and logs processing stage metadata
+  - Provides structural and content validation, including section completeness, figures, tables, references, and integrity checks
+  - Updates document state with validation results and logs processing stage metadata
 
 **Section sources**
 
 - [02_classification.py:39-150](file://backend/manual_tests/visual/phase2/02_classification.py#L39-L150)
 - [05_full_pipeline.py:39-128](file://backend/manual_tests/visual/phase2/05_full_pipeline.py#L39-L128)
-- [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
+- [validator_v3.py:34-145](../../../../../../backend/app/pipeline/validation/validator_v3.py#L34-L145)
 
 ## Architecture Overview
 
@@ -140,7 +140,7 @@ S2->>O : "Write annotated DOCX"
 
 - [02_classification.py:56-73](file://backend/manual_tests/visual/phase2/02_classification.py#L56-L73)
 - [05_full_pipeline.py:42-55](file://backend/manual_tests/visual/phase2/05_full_pipeline.py#L42-L55)
-- [validator_v3.py:62-145](file://backend/app/pipeline/validation/validator_v3.py#L62-L145)
+- [validator_v3.py:62-145](../../../../../../backend/app/pipeline/validation/validator_v3.py#L62-L145)
 
 ## Detailed Component Analysis
 
@@ -159,18 +159,18 @@ Processing logic:
 - Classifies blocks into semantic types
 - Counts and reports block type distribution
 - Generates an annotated DOCX with:
-    - Summary dashboard
-    - Color-coded block type annotations
-    - Per-block type labels
+  - Summary dashboard
+  - Color-coded block type annotations
+  - Per-block type labels
 
 Validation workflow:
 
 - Input: DOCX path via command-line argument
 - Output: annotated DOCX in manual_tests/visual_outputs
 - Visual inspection checklist:
-    - Verify correct classification of sections (title, author, abstract, headings, body, captions, references)
-    - Confirm no classification corruption after assembly
-    - Ensure all sections are labeled consistently
+  - Verify correct classification of sections (title, author, abstract, headings, body, captions, references)
+  - Confirm no classification corruption after assembly
+  - Ensure all sections are labeled consistently
 
 Comparison procedure:
 
@@ -205,18 +205,18 @@ Processing logic:
 - Executes parsing, normalization, structure detection, classification, figure caption matching, and table caption matching
 - Aggregates blocks, figures, and tables
 - Creates a comprehensive annotated DOCX with:
-    - QA dashboard summary
-    - Highlighted block types
-    - Type annotations per block
+  - QA dashboard summary
+  - Highlighted block types
+  - Type annotations per block
 
 Validation workflow:
 
 - Input: DOCX path via command-line argument
 - Output: annotated DOCX in manual_tests/visual_outputs
 - Visual inspection checklist:
-    - Verify all blocks are processed
-    - Check for RED duplicate warnings
-    - Confirm no data loss or corruption
+  - Verify all blocks are processed
+  - Check for RED duplicate warnings
+  - Confirm no data loss or corruption
 
 Comparison procedure:
 
@@ -261,7 +261,7 @@ Integration with Phase 2:
 
 **Section sources**
 
-- [validator_v3.py:34-145](file://backend/app/pipeline/validation/validator_v3.py#L34-L145)
+- [validator_v3.py:34-145](../../../../../../backend/app/pipeline/validation/validator_v3.py#L34-L145)
 
 ### Phase Transition Validation Criteria
 
@@ -319,7 +319,7 @@ F --> V
 
 - [02_classification.py:56-73](file://backend/manual_tests/visual/phase2/02_classification.py#L56-L73)
 - [05_full_pipeline.py:42-55](file://backend/manual_tests/visual/phase2/05_full_pipeline.py#L42-L55)
-- [validator_v3.py:62-145](file://backend/app/pipeline/validation/validator_v3.py#L62-L145)
+- [validator_v3.py:62-145](../../../../../../backend/app/pipeline/validation/validator_v3.py#L62-L145)
 
 **Section sources**
 
@@ -337,23 +337,23 @@ F --> V
 Common issues and resolutions:
 
 - Missing output DOCX:
-    - Verify the script was invoked with a valid input path
-    - Ensure the visual_outputs directory exists or can be created
+  - Verify the script was invoked with a valid input path
+  - Ensure the visual_outputs directory exists or can be created
 
 - Unexpected block types:
-    - Inspect classification rules and training data
-    - Re-run parsing and normalization steps independently
+  - Inspect classification rules and training data
+  - Re-run parsing and normalization steps independently
 
 - Duplicate warnings:
-    - Investigate upstream duplication sources
-    - Re-run the pipeline after fixing structural or classification issues
+  - Investigate upstream duplication sources
+  - Re-run the pipeline after fixing structural or classification issues
 
 - Validation failures:
-    - Address missing sections, captions, or references
-    - Review integrity and cross-reference checks
+  - Address missing sections, captions, or references
+  - Review integrity and cross-reference checks
 
 - Command invocation:
-    - Use documented commands from the testing guides to ensure correct usage
+  - Use documented commands from the testing guides to ensure correct usage
 
 **Section sources**
 

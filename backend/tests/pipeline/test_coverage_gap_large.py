@@ -915,7 +915,7 @@ class TestFinalBranchCoverage:
 
     def test_legacy_half_open_success_recovery(self):
         import time
-        import app.pipeline.safety.circuit_breaker as _cb_direct
+
         _cb_mod_local = importlib.import_module("app.pipeline.safety.circuit_breaker")
         with patch.object(_cb_mod_local, "_PYBREAKER", False):
             cb = _cb_mod_local.circuit_breaker(failure_threshold=1, recovery_timeout=0.01)

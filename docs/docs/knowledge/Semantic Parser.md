@@ -5,15 +5,15 @@
 
 <cite>
 **Referenced Files in This Document**
-- [semantic_parser.py](file://backend/app/pipeline/intelligence/semantic_parser.py)
-- [classifier.py](file://backend/app/pipeline/classification/classifier.py)
-- [orchestrator.py](file://backend/app/pipeline/orchestrator.py)
-- [block.py](file://backend/app/models/block.py)
-- [settings.py](file://backend/app/config/settings.py)
-- [model_store.py](file://backend/app/services/model_store.py)
-- [singleton.py](file://backend/app/utils/singleton.py)
-- [test_semantic_parser.py](file://backend/tests/test_semantic_parser.py)
-- [default_guidelines.json](file://backend/app/pipeline/intelligence/default_guidelines.json)
+- [semantic_parser.py](../../../backend/app/pipeline/intelligence/semantic_parser.py)
+- [classifier.py](../../../backend/app/pipeline/classification/classifier.py)
+- [orchestrator.py](../../../backend/app/pipeline/orchestrator/orchestrator.py)
+- [block.py](../../../backend/app/models/block.py)
+- [settings.py](../../../backend/app/config/settings.py)
+- [model_store.py](../../../backend/app/services/model_store.py)
+- [singleton.py](../../../backend/app/utils/singleton.py)
+- [test_semantic_parser.py](../../../backend/tests/test_semantic_parser.py)
+- [default_guidelines.json](../../../backend/app/pipeline/intelligence/default_guidelines.json)
 </cite>
 
 ## Table of Contents
@@ -71,15 +71,15 @@ CE --> SG
 
 **Diagram sources**
 
-- [semantic_parser.py:48-328](file://backend/app/pipeline/intelligence/semantic_parser.py#L48-L328)
-- [classifier.py:22-830](file://backend/app/pipeline/classification/classifier.py#L22-L830)
-- [orchestrator.py:472-492](file://backend/app/pipeline/orchestrator.py#L472-L492)
+- [semantic_parser.py:48-328](../../../backend/app/pipeline/intelligence/semantic_parser.py#L48-L328)
+- [classifier.py:22-830](../../../backend/app/pipeline/classification/classifier.py#L22-L830)
+- [orchestrator.py:472-492](../../../backend/app/pipeline/orchestrator/orchestrator.py#L472-L492)
 
 **Section sources**
 
-- [semantic_parser.py:48-328](file://backend/app/pipeline/intelligence/semantic_parser.py#L48-L328)
-- [classifier.py:22-830](file://backend/app/pipeline/classification/classifier.py#L22-L830)
-- [orchestrator.py:472-492](file://backend/app/pipeline/orchestrator.py#L472-L492)
+- [semantic_parser.py:48-328](../../../backend/app/pipeline/intelligence/semantic_parser.py#L48-L328)
+- [classifier.py:22-830](../../../backend/app/pipeline/classification/classifier.py#L22-L830)
+- [orchestrator.py:472-492](../../../backend/app/pipeline/orchestrator/orchestrator.py#L472-L492)
 
 ## Core Components
 
@@ -109,9 +109,9 @@ The main class implements:
 
 **Section sources**
 
-- [semantic_parser.py:48-328](file://backend/app/pipeline/intelligence/semantic_parser.py#L48-L328)
-- [settings.py:380-414](file://backend/app/config/settings.py#L380-L414)
-- [model_store.py:1-33](file://backend/app/services/model_store.py#L1-L33)
+- [semantic_parser.py:48-328](../../../backend/app/pipeline/intelligence/semantic_parser.py#L48-L328)
+- [settings.py:380-414](../../../backend/app/config/settings.py#L380-L414)
+- [model_store.py:1-33](../../../backend/app/services/model_store.py#L1-L33)
 
 ## Architecture Overview
 
@@ -144,9 +144,9 @@ CL->>BD : apply refined classifications
 
 **Diagram sources**
 
-- [orchestrator.py:472-492](file://backend/app/pipeline/orchestrator.py#L472-L492)
-- [semantic_parser.py:132-185](file://backend/app/pipeline/intelligence/semantic_parser.py#L132-L185)
-- [classifier.py:137-236](file://backend/app/pipeline/classification/classifier.py#L137-L236)
+- [orchestrator.py:472-492](../../../backend/app/pipeline/orchestrator/orchestrator.py#L472-L492)
+- [semantic_parser.py:132-185](../../../backend/app/pipeline/intelligence/semantic_parser.py#L132-L185)
+- [classifier.py:137-236](../../../backend/app/pipeline/classification/classifier.py#L137-L236)
 
 ## Detailed Component Analysis
 
@@ -158,25 +158,25 @@ The SemanticParser class implements a sophisticated dual-mode classification sys
 
 ```mermaid
 flowchart TD
-Start([Model Load Request]) --> CheckLoaded{"Already Loaded?"}
-CheckLoaded --> |Yes| ReturnExisting[Return Existing Instance]
+Start(["Model Load Request"]) --> CheckLoaded{"Already Loaded?"}
+CheckLoaded --> |Yes| ReturnExisting["Return Existing Instance"]
 CheckLoaded --> |No| CheckHeuristic{"Heuristic Only?"}
-CheckHeuristic --> |Yes| UseHeuristic[Use Heuristic Mode]
+CheckHeuristic --> |Yes| UseHeuristic["Use Heuristic Mode"]
 CheckHeuristic --> |No| CheckTransformers{"Transformers Available?"}
-CheckTransformers --> |No| UseHeuristic[Use Heuristic Mode]
+CheckTransformers --> |No| UseHeuristic["Use Heuristic Mode"]
 CheckTransformers --> |Yes| CheckGlobalStore{"Global Store Available?"}
-CheckGlobalStore --> |Yes| LoadFromStore[Load from ModelStore]
-CheckGlobalStore --> |No| LoadLocally[Load Locally]
-LoadFromStore --> Success[Model Ready]
+CheckGlobalStore --> |Yes| LoadFromStore["Load from ModelStore"]
+CheckGlobalStore --> |No| LoadLocally["Load Locally"]
+LoadFromStore --> Success["Model Ready"]
 LoadLocally --> Success
 UseHeuristic --> Success
-Success --> End([Ready for Inference])
+Success --> End(["Ready for Inference"])
 ```
 
 **Diagram sources**
 
-- [semantic_parser.py:60-108](file://backend/app/pipeline/intelligence/semantic_parser.py#L60-L108)
-- [model_store.py:19-29](file://backend/app/services/model_store.py#L19-L29)
+- [semantic_parser.py:60-108](../../../backend/app/pipeline/intelligence/semantic_parser.py#L60-L108)
+- [model_store.py:19-29](../../../backend/app/services/model_store.py#L19-L29)
 
 #### Classification Logic
 
@@ -196,8 +196,8 @@ The parser supports 12 distinct semantic categories:
 
 **Section sources**
 
-- [semantic_parser.py:48-328](file://backend/app/pipeline/intelligence/semantic_parser.py#L48-L328)
-- [semantic_parser.py:187-251](file://backend/app/pipeline/intelligence/semantic_parser.py#L187-L251)
+- [semantic_parser.py:48-328](../../../backend/app/pipeline/intelligence/semantic_parser.py#L48-L328)
+- [semantic_parser.py:187-251](../../../backend/app/pipeline/intelligence/semantic_parser.py#L187-L251)
 
 ### Integration with ContentClassifier
 
@@ -231,14 +231,14 @@ SemanticParser --> ContentClassifier : "provides predictions"
 
 **Diagram sources**
 
-- [semantic_parser.py:132-185](file://backend/app/pipeline/intelligence/semantic_parser.py#L132-L185)
-- [classifier.py:137-236](file://backend/app/pipeline/classification/classifier.py#L137-L236)
-- [block.py:86-181](file://backend/app/models/block.py#L86-L181)
+- [semantic_parser.py:132-185](../../../backend/app/pipeline/intelligence/semantic_parser.py#L132-L185)
+- [classifier.py:137-236](../../../backend/app/pipeline/classification/classifier.py#L137-L236)
+- [block.py:86-181](../../../backend/app/models/block.py#L86-L181)
 
 **Section sources**
 
-- [classifier.py:137-236](file://backend/app/pipeline/classification/classifier.py#L137-L236)
-- [semantic_parser.py:132-185](file://backend/app/pipeline/intelligence/semantic_parser.py#L132-L185)
+- [classifier.py:137-236](../../../backend/app/pipeline/classification/classifier.py#L137-L236)
+- [semantic_parser.py:132-185](../../../backend/app/pipeline/intelligence/semantic_parser.py#L132-L185)
 
 ### Language Detection and Multilingual Support
 
@@ -246,25 +246,25 @@ The parser includes optional language detection to ensure accurate classificatio
 
 ```mermaid
 flowchart TD
-Input[Input Blocks] --> CombineText[Combine Sample Text]
+Input["Input Blocks"] --> CombineText["Combine Sample Text"]
 CombineText --> CheckLangDetect{"langdetect Available?"}
-CheckLangDetect --> |No| UseEnglish[Assume English]
-CheckLangDetect --> |Yes| DetectLang[Detect Language]
+CheckLangDetect --> |No| UseEnglish["Assume English"]
+CheckLangDetect --> |Yes| DetectLang["Detect Language"]
 DetectLang --> CheckEnglish{"Language == English?"}
-CheckEnglish --> |Yes| UseTransformer[Use Transformer]
-CheckEnglish --> |No| UseHeuristic[Use Heuristic Only]
+CheckEnglish --> |Yes| UseTransformer["Use Transformer"]
+CheckEnglish --> |No| UseHeuristic["Use Heuristic Only"]
 UseEnglish --> UseTransformer
-UseTransformer --> Output[Classification Results]
+UseTransformer --> Output["Classification Results"]
 UseHeuristic --> Output
 ```
 
 **Diagram sources**
 
-- [semantic_parser.py:142-157](file://backend/app/pipeline/intelligence/semantic_parser.py#L142-L157)
+- [semantic_parser.py:142-157](../../../backend/app/pipeline/intelligence/semantic_parser.py#L142-L157)
 
 **Section sources**
 
-- [semantic_parser.py:142-157](file://backend/app/pipeline/intelligence/semantic_parser.py#L142-L157)
+- [semantic_parser.py:142-157](../../../backend/app/pipeline/intelligence/semantic_parser.py#L142-L157)
 
 ## Dependency Analysis
 
@@ -280,8 +280,8 @@ end
 subgraph "Internal Dependencies"
 CFG[Settings]
 MS[ModelStore]
-BLK[Block Models]
-SGL[Singleton Utils]
+BLK["Block Models"]
+SGL["Singleton Utils"]
 end
 SP[SemanticParser] --> PT
 SP --> HF
@@ -296,14 +296,14 @@ OR[Orchestrator] --> SP
 
 **Diagram sources**
 
-- [semantic_parser.py:1-38](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L38)
-- [settings.py:380-414](file://backend/app/config/settings.py#L380-L414)
-- [model_store.py:1-33](file://backend/app/services/model_store.py#L1-L33)
+- [semantic_parser.py:1-38](../../../backend/app/pipeline/intelligence/semantic_parser.py#L1-L38)
+- [settings.py:380-414](../../../backend/app/config/settings.py#L380-L414)
+- [model_store.py:1-33](../../../backend/app/services/model_store.py#L1-L33)
 
 **Section sources**
 
-- [semantic_parser.py:1-38](file://backend/app/pipeline/intelligence/semantic_parser.py#L1-L38)
-- [settings.py:380-414](file://backend/app/config/settings.py#L380-L414)
+- [semantic_parser.py:1-38](../../../backend/app/pipeline/intelligence/semantic_parser.py#L1-L38)
+- [settings.py:380-414](../../../backend/app/config/settings.py#L380-L414)
 
 ## Performance Considerations
 
@@ -329,8 +329,8 @@ The Semantic Parser implements several optimization strategies:
 
 **Section sources**
 
-- [semantic_parser.py:60-108](file://backend/app/pipeline/intelligence/semantic_parser.py#L60-L108)
-- [settings.py:380-414](file://backend/app/config/settings.py#L380-L414)
+- [semantic_parser.py:60-108](../../../backend/app/pipeline/intelligence/semantic_parser.py#L60-L108)
+- [settings.py:380-414](../../../backend/app/config/settings.py#L380-L414)
 
 ## Troubleshooting Guide
 
@@ -368,8 +368,8 @@ The Semantic Parser implements several optimization strategies:
 
 **Section sources**
 
-- [semantic_parser.py:103-107](file://backend/app/pipeline/intelligence/semantic_parser.py#L103-L107)
-- [semantic_parser.py:249-251](file://backend/app/pipeline/intelligence/semantic_parser.py#L249-L251)
+- [semantic_parser.py:103-107](../../../backend/app/pipeline/intelligence/semantic_parser.py#L103-L107)
+- [semantic_parser.py:249-251](../../../backend/app/pipeline/intelligence/semantic_parser.py#L249-L251)
 
 ## Conclusion
 

@@ -37,7 +37,7 @@ After 14 certification phases, 10,611+ passing tests, 20 production hardening fi
 | **Release Date** | 2026-07-21 |
 | **Versioning Scheme** | Semantic Versioning 2.0.0 |
 | **License** | MIT |
-| **Repository** | https://github.com/rohitkumarnaidu/ScholarFormAI |
+| **Repository** | <https://github.com/rohitkumarnaidu/ScholarFormAI> |
 
 ### 1.2 Technology Stack
 

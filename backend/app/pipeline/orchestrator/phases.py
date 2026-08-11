@@ -10,6 +10,7 @@ document processing pipeline and delegates to the orchestrator's services
 via self.orchestrator.
 """
 
+import asyncio
 import logging
 import os
 from typing import Any
@@ -267,7 +268,16 @@ class PipelinePhases:
                 try:
                     from app.services.document_service import DocumentService
 
-                    DocumentService.update_output_hash(job_id, PipelineStages.compute_sha256(output_path))
+                    res = DocumentService.update_output_hash(job_id, PipelineStages.compute_sha256(output_path))
+                    if asyncio.iscoroutine(res):
+                        try:
+                            loop = asyncio.get_event_loop()
+                            if loop.is_running():
+                                asyncio.create_task(res)
+                            else:
+                                loop.run_until_complete(res)
+                        except Exception:
+                            pass
                 except Exception as hash_exc:
                     logger.warning("Failed to persist output hash: %s", hash_exc)
             if sb:

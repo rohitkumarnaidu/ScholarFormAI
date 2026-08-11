@@ -62,4 +62,4 @@ This decision has been implemented and is verified by:
 
 - [ADR 004: FastAPI as Sole API Gateway](004-fastapi-only-gateway.md) — supersedes the Spring Boot gateway reference
 - [Why FastAPI Only](../explanation/why-fastapi-only.md) — detailed rationale
-- [Architecture Overview](../architecture.md) — system layers and middleware stack
+- [Architecture Overview](../architecture/ARCHITECTURE.md) — system layers and middleware stack

@@ -5,18 +5,18 @@
 
 <cite>
 **Referenced Files in This Document**
-- [template_renderer.py](file://backend/app/pipeline/formatting/template_renderer.py)
-- [formatter.py](file://backend/app/pipeline/formatting/formatter.py)
-- [numbering.py](file://backend/app/pipeline/formatting/numbering.py)
-- [reference_formatter.py](file://backend/app/pipeline/formatting/reference_formatter.py)
-- [section_ordering.py](file://backend/app/pipeline/formatting/section_ordering.py)
-- [style_mapper.py](file://backend/app/pipeline/formatting/style_mapper.py)
-- [loader.py](file://backend/app/pipeline/contracts/loader.py)
-- [contract.yaml (IEEE)](file://backend/app/templates/ieee/contract.yaml)
-- [contract.yaml (APA)](file://backend/app/templates/apa/contract.yaml)
-- [contract.yaml (none)](file://backend/app/templates/none/contract.yaml)
-- [test_template_renderer.py](file://backend/tests/test_template_renderer.py)
-- [test_formatter.py](file://backend/tests/test_formatter.py)
+- [template_renderer.py](../../../../backend/app/pipeline/formatting/template_renderer.py)
+- [formatter.py](../../../../backend/app/pipeline/formatting/formatter.py)
+- [numbering.py](../../../../backend/app/pipeline/formatting/numbering.py)
+- [reference_formatter.py](../../../../backend/app/pipeline/formatting/reference_formatter.py)
+- [section_ordering.py](../../../../backend/app/pipeline/formatting/section_ordering.py)
+- [style_mapper.py](../../../../backend/app/pipeline/formatting/style_mapper.py)
+- [loader.py](../../../../backend/app/pipeline/contracts/loader.py)
+- [contract.yaml (IEEE)](../../../../backend/app/templates/ieee/contract.yaml)
+- [contract.yaml (APA)](../../../../backend/app/templates/apa/contract.yaml)
+- [contract.yaml (none)](../../../../backend/app/templates/none/contract.yaml)
+- [test_template_renderer.py](../../../../backend/tests/test_template_renderer.py)
+- [test_formatter.py](../../../../backend/tests/test_formatter.py)
 </cite>
 
 ## Table of Contents
@@ -73,20 +73,20 @@ NONE --> CL
 
 **Diagram sources**
 
-- [formatter.py:35-130](file://backend/app/pipeline/formatting/formatter.py#L35-L130)
-- [template_renderer.py:29-83](file://backend/app/pipeline/formatting/template_renderer.py#L29-L83)
-- [numbering.py:5-65](file://backend/app/pipeline/formatting/numbering.py#L5-L65)
-- [reference_formatter.py:153-195](file://backend/app/pipeline/formatting/reference_formatter.py#L153-L195)
-- [style_mapper.py:5-28](file://backend/app/pipeline/formatting/style_mapper.py#L5-L28)
-- [loader.py:8-39](file://backend/app/pipeline/contracts/loader.py#L8-L39)
-- [contract.yaml (IEEE):1-50](file://backend/app/templates/ieee/contract.yaml#L1-L50)
-- [contract.yaml (APA):1-45](file://backend/app/templates/apa/contract.yaml#L1-L45)
-- [contract.yaml (none):1-50](file://backend/app/templates/none/contract.yaml#L1-L50)
+- [formatter.py:35-130](../../../../backend/app/pipeline/formatting/formatter.py#L35-L130)
+- [template_renderer.py:29-83](../../../../backend/app/pipeline/formatting/template_renderer.py#L29-L83)
+- [numbering.py:5-65](../../../../backend/app/pipeline/formatting/numbering.py#L5-L65)
+- [reference_formatter.py:153-195](../../../../backend/app/pipeline/formatting/reference_formatter.py#L153-L195)
+- [style_mapper.py:5-28](../../../../backend/app/pipeline/formatting/style_mapper.py#L5-L28)
+- [loader.py:8-39](../../../../backend/app/pipeline/contracts/loader.py#L8-L39)
+- [contract.yaml (IEEE):1-50](../../../../backend/app/templates/ieee/contract.yaml#L1-L50)
+- [contract.yaml (APA):1-45](../../../../backend/app/templates/apa/contract.yaml#L1-L45)
+- [contract.yaml (none):1-50](../../../../backend/app/templates/none/contract.yaml#L1-L50)
 
 **Section sources**
 
-- [formatter.py:35-130](file://backend/app/pipeline/formatting/formatter.py#L35-L130)
-- [loader.py:8-39](file://backend/app/pipeline/contracts/loader.py#L8-L39)
+- [formatter.py:35-130](../../../../backend/app/pipeline/formatting/formatter.py#L35-L130)
+- [loader.py:8-39](../../../../backend/app/pipeline/contracts/loader.py#L8-L39)
 
 ## Core Components
 
@@ -99,12 +99,12 @@ NONE --> CL
 
 **Section sources**
 
-- [template_renderer.py:29-331](file://backend/app/pipeline/formatting/template_renderer.py#L29-L331)
-- [formatter.py:35-290](file://backend/app/pipeline/formatting/formatter.py#L35-L290)
-- [numbering.py:5-65](file://backend/app/pipeline/formatting/numbering.py#L5-L65)
-- [reference_formatter.py:153-288](file://backend/app/pipeline/formatting/reference_formatter.py#L153-L288)
-- [style_mapper.py:5-28](file://backend/app/pipeline/formatting/style_mapper.py#L5-L28)
-- [loader.py:8-82](file://backend/app/pipeline/contracts/loader.py#L8-L82)
+- [template_renderer.py:29-331](../../../../backend/app/pipeline/formatting/template_renderer.py#L29-L331)
+- [formatter.py:35-290](../../../../backend/app/pipeline/formatting/formatter.py#L35-L290)
+- [numbering.py:5-65](../../../../backend/app/pipeline/formatting/numbering.py#L5-L65)
+- [reference_formatter.py:153-288](../../../../backend/app/pipeline/formatting/reference_formatter.py#L153-L288)
+- [style_mapper.py:5-28](../../../../backend/app/pipeline/formatting/style_mapper.py#L5-L28)
+- [loader.py:8-82](../../../../backend/app/pipeline/contracts/loader.py#L8-L82)
 
 ## Architecture Overview
 
@@ -136,10 +136,10 @@ Formatter-->>Client : "WordDocument or DocxTemplate"
 
 **Diagram sources**
 
-- [formatter.py:49-130](file://backend/app/pipeline/formatting/formatter.py#L49-L130)
-- [template_renderer.py:65-83](file://backend/app/pipeline/formatting/template_renderer.py#L65-L83)
-- [numbering.py:13-65](file://backend/app/pipeline/formatting/numbering.py#L13-L65)
-- [reference_formatter.py:170-195](file://backend/app/pipeline/formatting/reference_formatter.py#L170-L195)
+- [formatter.py:49-130](../../../../backend/app/pipeline/formatting/formatter.py#L49-L130)
+- [template_renderer.py:65-83](../../../../backend/app/pipeline/formatting/template_renderer.py#L65-L83)
+- [numbering.py:13-65](../../../../backend/app/pipeline/formatting/numbering.py#L13-L65)
+- [reference_formatter.py:170-195](../../../../backend/app/pipeline/formatting/reference_formatter.py#L170-L195)
 
 ## Detailed Component Analysis
 
@@ -175,13 +175,13 @@ class TemplateRenderer {
 
 **Diagram sources**
 
-- [template_renderer.py:29-331](file://backend/app/pipeline/formatting/template_renderer.py#L29-L331)
+- [template_renderer.py:29-331](../../../../backend/app/pipeline/formatting/template_renderer.py#L29-L331)
 
 **Section sources**
 
-- [template_renderer.py:65-163](file://backend/app/pipeline/formatting/template_renderer.py#L65-L163)
-- [template_renderer.py:164-231](file://backend/app/pipeline/formatting/template_renderer.py#L164-L231)
-- [template_renderer.py:257-331](file://backend/app/pipeline/formatting/template_renderer.py#L257-L331)
+- [template_renderer.py:65-163](../../../../backend/app/pipeline/formatting/template_renderer.py#L65-L163)
+- [template_renderer.py:164-231](../../../../backend/app/pipeline/formatting/template_renderer.py#L164-L231)
+- [template_renderer.py:257-331](../../../../backend/app/pipeline/formatting/template_renderer.py#L257-L331)
 
 ### Variable Substitution and Conditional Rendering
 
@@ -191,8 +191,8 @@ class TemplateRenderer {
 
 **Section sources**
 
-- [template_renderer.py:94-159](file://backend/app/pipeline/formatting/template_renderer.py#L94-L159)
-- [formatter.py:68-105](file://backend/app/pipeline/formatting/formatter.py#L68-L105)
+- [template_renderer.py:94-159](../../../../backend/app/pipeline/formatting/template_renderer.py#L94-L159)
+- [formatter.py:68-105](../../../../backend/app/pipeline/formatting/formatter.py#L68-L105)
 
 ### Section Ordering and Validation
 
@@ -201,8 +201,8 @@ class TemplateRenderer {
 
 **Section sources**
 
-- [section_ordering.py:5-43](file://backend/app/pipeline/formatting/section_ordering.py#L5-L43)
-- [loader.py:59-74](file://backend/app/pipeline/contracts/loader.py#L59-L74)
+- [section_ordering.py:5-43](../../../../backend/app/pipeline/formatting/section_ordering.py#L5-L43)
+- [loader.py:59-74](../../../../backend/app/pipeline/contracts/loader.py#L59-L74)
 
 ### Numbering Systems
 
@@ -212,7 +212,7 @@ class TemplateRenderer {
 
 **Section sources**
 
-- [numbering.py:13-65](file://backend/app/pipeline/formatting/numbering.py#L13-L65)
+- [numbering.py:13-65](../../../../backend/app/pipeline/formatting/numbering.py#L13-L65)
 
 ### Cross-Reference Resolution and Reference Formatting
 
@@ -222,9 +222,9 @@ class TemplateRenderer {
 
 **Section sources**
 
-- [formatter.py:292-304](file://backend/app/pipeline/formatting/formatter.py#L292-L304)
-- [reference_formatter.py:170-195](file://backend/app/pipeline/formatting/reference_formatter.py#L170-L195)
-- [reference_formatter.py:211-244](file://backend/app/pipeline/formatting/reference_formatter.py#L211-L244)
+- [formatter.py:292-304](../../../../backend/app/pipeline/formatting/formatter.py#L292-L304)
+- [reference_formatter.py:170-195](../../../../backend/app/pipeline/formatting/reference_formatter.py#L170-L195)
+- [reference_formatter.py:211-244](../../../../backend/app/pipeline/formatting/reference_formatter.py#L211-L244)
 
 ### Formatting Rules Application and Style Inheritance
 
@@ -234,13 +234,13 @@ class TemplateRenderer {
 
 **Section sources**
 
-- [style_mapper.py:13-28](file://backend/app/pipeline/formatting/style_mapper.py#L13-L28)
-- [contract.yaml (IEEE):25-50](file://backend/app/templates/ieee/contract.yaml#L25-L50)
-- [contract.yaml (APA):25-45](file://backend/app/templates/apa/contract.yaml#L25-L45)
-- [contract.yaml (none):25-50](file://backend/app/templates/none/contract.yaml#L25-L50)
-- [formatter.py:327-340](file://backend/app/pipeline/formatting/formatter.py#L327-L340)
-- [formatter.py:357-382](file://backend/app/pipeline/formatting/formatter.py#L357-L382)
-- [formatter.py:564-571](file://backend/app/pipeline/formatting/formatter.py#L564-L571)
+- [style_mapper.py:13-28](../../../../backend/app/pipeline/formatting/style_mapper.py#L13-L28)
+- [contract.yaml (IEEE):25-50](../../../../backend/app/templates/ieee/contract.yaml#L25-L50)
+- [contract.yaml (APA):25-45](../../../../backend/app/templates/apa/contract.yaml#L25-L45)
+- [contract.yaml (none):25-50](../../../../backend/app/templates/none/contract.yaml#L25-L50)
+- [formatter.py:327-340](../../../../backend/app/pipeline/formatting/formatter.py#L327-L340)
+- [formatter.py:357-382](../../../../backend/app/pipeline/formatting/formatter.py#L357-L382)
+- [formatter.py:564-571](../../../../backend/app/pipeline/formatting/formatter.py#L564-L571)
 
 ### Content Transformation and Post-Processing
 
@@ -250,9 +250,9 @@ class TemplateRenderer {
 
 **Section sources**
 
-- [formatter.py:155-290](file://backend/app/pipeline/formatting/formatter.py#L155-L290)
-- [formatter.py:691-763](file://backend/app/pipeline/formatting/formatter.py#L691-L763)
-- [formatter.py:164-188](file://backend/tests/test_formatter.py#L164-L188)
+- [formatter.py:155-290](../../../../backend/app/pipeline/formatting/formatter.py#L155-L290)
+- [formatter.py:691-763](../../../../backend/app/pipeline/formatting/formatter.py#L691-L763)
+- [formatter.py:164-188](../../../../backend/tests/test_formatter.py#L164-L188)
 
 ## Dependency Analysis
 
@@ -273,13 +273,13 @@ FM --> TBL["TableRenderer"]
 
 **Diagram sources**
 
-- [formatter.py:40-47](file://backend/app/pipeline/formatting/formatter.py#L40-L47)
-- [loader.py:8-39](file://backend/app/pipeline/contracts/loader.py#L8-L39)
+- [formatter.py:40-47](../../../../backend/app/pipeline/formatting/formatter.py#L40-L47)
+- [loader.py:8-39](../../../../backend/app/pipeline/contracts/loader.py#L8-L39)
 
 **Section sources**
 
-- [formatter.py:40-47](file://backend/app/pipeline/formatting/formatter.py#L40-L47)
-- [loader.py:8-39](file://backend/app/pipeline/contracts/loader.py#L8-L39)
+- [formatter.py:40-47](../../../../backend/app/pipeline/formatting/formatter.py#L40-L47)
+- [loader.py:8-39](../../../../backend/app/pipeline/contracts/loader.py#L8-L39)
 
 ## Performance Considerations
 
@@ -303,11 +303,11 @@ Common issues and resolutions:
 
 **Section sources**
 
-- [template_renderer.py:67-82](file://backend/app/pipeline/formatting/template_renderer.py#L67-L82)
-- [formatter.py:691-763](file://backend/app/pipeline/formatting/formatter.py#L691-L763)
-- [test_template_renderer.py:69-127](file://backend/tests/test_template_renderer.py#L69-L127)
-- [test_formatter.py:95-163](file://backend/tests/test_formatter.py#L95-L163)
-- [test_formatter.py:164-188](file://backend/tests/test_formatter.py#L164-L188)
+- [template_renderer.py:67-82](../../../../backend/app/pipeline/formatting/template_renderer.py#L67-L82)
+- [formatter.py:691-763](../../../../backend/app/pipeline/formatting/formatter.py#L691-L763)
+- [test_template_renderer.py:69-127](../../../../backend/tests/test_template_renderer.py#L69-L127)
+- [test_formatter.py:95-163](../../../../backend/tests/test_formatter.py#L95-L163)
+- [test_formatter.py:164-188](../../../../backend/tests/test_formatter.py#L164-L188)
 
 ## Conclusion
 
@@ -324,6 +324,6 @@ The formatting pipeline combines contract-driven rules with flexible rendering m
 
 **Section sources**
 
-- [template_renderer.py:65-83](file://backend/app/pipeline/formatting/template_renderer.py#L65-L83)
-- [formatter.py:113-130](file://backend/app/pipeline/formatting/formatter.py#L113-L130)
-- [formatter.py:155-290](file://backend/app/pipeline/formatting/formatter.py#L155-L290)
+- [template_renderer.py:65-83](../../../../backend/app/pipeline/formatting/template_renderer.py#L65-L83)
+- [formatter.py:113-130](../../../../backend/app/pipeline/formatting/formatter.py#L113-L130)
+- [formatter.py:155-290](../../../../backend/app/pipeline/formatting/formatter.py#L155-L290)
