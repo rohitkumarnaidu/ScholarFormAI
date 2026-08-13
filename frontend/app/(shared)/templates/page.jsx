@@ -7,7 +7,6 @@ import { useState, useEffect, useMemo } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useRouter } from 'next/navigation';
 
-import Footer from '@/src/components/Footer';
 import { getBuiltinTemplates, searchCSLStyles, fetchCSLStyle } from '@/src/services/api'; // B-FIX-22f
 
 // Built-in templates with stable UI metadata.
@@ -496,7 +495,6 @@ export default function Templates() {
                 </Dialog.Portal>
             </Dialog.Root>
 
-            <Footer variant="app" />
         </div>
     );
 }

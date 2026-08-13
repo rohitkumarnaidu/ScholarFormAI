@@ -5,7 +5,7 @@
 
 export default function ModeSwitcher({ activeMode, onChange, compact = false }) {
     // A clean, pill-shaped wrapper matching Perplexity's aesthetic
-    const baseWrapper = 'relative flex items-center rounded-full bg-slate-100/80 dark:bg-white/5 surface-ladder-06 p-1 border border-slate-200/50 dark:border-white/10 surface-ladder-border-10 shadow-inner transition-colors';
+    const baseWrapper = 'relative flex items-center rounded-full bg-slate-100/80 dark:bg-white/5 p-1 border border-slate-200/50 dark:border-white/10 shadow-inner transition-colors';
 
     // Base option styles with precise text color for inactive states
     const baseOption = `relative z-10 font-bold transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer
@@ -17,7 +17,7 @@ export default function ModeSwitcher({ activeMode, onChange, compact = false }) 
         <div className={baseWrapper}>
             {/* Sliding highlighted background indicator */}
             <div
-                className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white dark:bg-white/10 surface-ladder-14 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)] transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${activeMode === 'formatter' ? 'translate-x-0' : 'translate-x-[calc(100%+8px)]'
+                className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white dark:bg-white/10 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)] transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${activeMode === 'formatter' ? 'translate-x-0' : 'translate-x-[calc(100%+8px)]'
                     }`}
             />
 

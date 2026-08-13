@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 import { useDocument } from '@/src/context/DocumentContext';
-import Footer from '@/src/components/Footer';
 import { isCompleted, isFailed } from '@/src/constants/status';
 import DeleteConfirmDialog from '@/src/components/DeleteConfirmDialog';
 import { deleteDocument, useDocuments } from '@/src/services/api';
@@ -454,7 +453,6 @@ export default function History() {
                 onConfirm={handleDeleteConfirm}
             />
 
-            <Footer variant="app" />
         </div>
     );
 }

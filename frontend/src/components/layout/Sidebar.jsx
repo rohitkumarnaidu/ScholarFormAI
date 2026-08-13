@@ -13,19 +13,15 @@ const APP_GUEST_LINKS = [
   { href: '/template-editor', label: 'Template Editor', icon: 'edit_document' },
 ];
 
-const USER_MAIN_LINKS_BY_MODE = {
-  formatter: [
-    { href: '/dashboard', label: 'Dashboard', icon: 'space_dashboard' },
-    { href: '/upload', label: 'Upload', icon: 'upload_file' },
-    { href: '/history', label: 'History', icon: 'history' },
-    { href: '/templates', label: 'Templates', icon: 'grid_view' },
-  ],
-  generator: [
-    { href: '/dashboard', label: 'Dashboard', icon: 'space_dashboard' },
-    { href: '/generate', label: 'Generator', icon: 'magic_button' },
-    { href: '/history', label: 'History', icon: 'history' },
-    { href: '/templates', label: 'Templates', icon: 'grid_view' },
-  ],
+const SHARED_USER_LINKS = [
+  { href: '/dashboard', label: 'Dashboard', icon: 'space_dashboard' },
+  { href: '/history', label: 'History', icon: 'history' },
+  { href: '/templates', label: 'Templates', icon: 'grid_view' },
+];
+
+const MODE_SPECIFIC_LINKS = {
+  formatter: { href: '/upload', label: 'Upload', icon: 'upload_file' },
+  generator: { href: '/generate', label: 'Generator', icon: 'magic_button' },
 };
 
 const USER_SECONDARY_LINKS = [
@@ -86,9 +82,16 @@ const Sidebar = memo(function Sidebar({ section = 'shared', onClose, isCollapsed
     return pathname.startsWith('/generate') ? 'generator' : 'formatter';
   }, [section, pathname]);
 
-  const mainNavLinks = useMemo(() =>
-    (uiUser === null) ? APP_GUEST_LINKS : (USER_MAIN_LINKS_BY_MODE[activeMode] ?? USER_MAIN_LINKS_BY_MODE.formatter),
-    [uiUser, activeMode]);
+  const mainNavLinks = useMemo(() => {
+    if (uiUser === null) return APP_GUEST_LINKS;
+    const modeLink = MODE_SPECIFIC_LINKS[activeMode] || MODE_SPECIFIC_LINKS.formatter;
+    return [
+      SHARED_USER_LINKS[0],
+      modeLink,
+      SHARED_USER_LINKS[1],
+      SHARED_USER_LINKS[2]
+    ];
+  }, [uiUser, activeMode]);
 
   const secondaryNavLinks = useMemo(() => {
     if (uiUser === null) return [];
@@ -127,14 +130,14 @@ const Sidebar = memo(function Sidebar({ section = 'shared', onClose, isCollapsed
     <div className={`flex flex-col h-full py-4 w-full ${isCollapsed ? 'px-2' : 'px-3'}`}>
       {onClose && (
         <div className="flex justify-end mb-4 pr-1">
-          <button onClick={onClose} className="lg:hidden p-1 text-slate-500 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 surface-ladder-hover-10" aria-label="Close Sidebar">
+          <button onClick={onClose} className="lg:hidden p-1 text-slate-500 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 " aria-label="Close Sidebar">
             <span className="material-symbols-outlined" aria-hidden="true">close</span>
           </button>
         </div>
       )}
 
       <div className={`mb-3 ${isCollapsed ? 'px-0' : 'px-1'}`}>
-        <div className={`flex flex-col gap-1 rounded-xl bg-[#f0f1f3] dark:bg-white/5 surface-ladder-06 ring-1 ring-black/5 dark:ring-white/10 surface-ladder-border-10 ${isCollapsed ? 'p-1' : 'p-1.5'}`}>
+        <div className={`flex flex-col gap-1 rounded-xl bg-[#f0f1f3] dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10 ${isCollapsed ? 'p-1' : 'p-1.5'}`}>
           {['formatter', 'generator'].map(m => (
             <button
               key={m}
@@ -194,7 +197,7 @@ const Sidebar = memo(function Sidebar({ section = 'shared', onClose, isCollapsed
           <button
             onClick={handleSignOut}
             title={isCollapsed ? 'Sign Out' : undefined}
-            className={`h-10 flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 surface-ladder-border-10 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 surface-ladder-hover-10 active:scale-[0.98] transition-all ${isCollapsed ? 'w-11 px-0' : 'w-full px-4'}`}
+            className={`h-10 flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 active:scale-[0.98] transition-all ${isCollapsed ? 'w-11 px-0' : 'w-full px-4'}`}
           >
             <span className="material-symbols-outlined shrink-0 text-[20px]">logout</span>
             {!isCollapsed && <span className="truncate font-semibold">Sign Out</span>}
