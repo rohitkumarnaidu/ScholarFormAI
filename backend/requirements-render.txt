@@ -1,11 +1,11 @@
 -r requirements.txt
 
 # ─── Core Web Server ───────────────────────────────────────────────────────────
-fastapi==0.140.0
-uvicorn==0.51.0
-starlette==1.3.1
+fastapi==0.141.1
+uvicorn==0.52.1
+starlette==1.6.0
 python-multipart==0.0.32
-sse-starlette==3.4.6
+sse-starlette==3.4.8
 slowapi==0.1.10
 
 # ─── Settings / Config ─────────────────────────────────────────────────────────
@@ -31,7 +31,7 @@ storage3==2.31.0
 postgrest==2.31.0
 realtime==2.31.0
 SQLAlchemy==2.0.51
-alembic==1.18.5
+alembic==1.19.1
 psycopg2-binary==2.9.12
 psycopg==3.3.4
 psycopg-binary==3.3.4
@@ -53,8 +53,8 @@ redis==8.0.1
 python-docx==1.2.0
 python-pptx==1.0.2
 openpyxl==3.1.5
-pypdf==6.14.2
-PyMuPDF==1.28.0
+pypdf==6.15.0
+PyMuPDF==1.28.2
 pdfminer.six==20260107
 pdf2image==1.17.0
 Pillow==12.3.0
@@ -67,15 +67,15 @@ docxtpl==0.20.2
 weasyprint==69.0
 reportlab==5.0.0
 pylatexenc==2.11
-numpy==2.5.1
+numpy==2.5.2
 
 # ─── LLM / AI (lightweight clients only — no torch/transformers) ───────────────
 litellm @ https://github.com/BerriAI/litellm/archive/refs/tags/v1.81.13.tar.gz
-openai==2.48.0
+openai==2.53.0
 groq
 anthropic
-langchain-core==1.5.1
-langchain-openai==1.4.1
+langchain-core==1.5.3
+langchain-openai==1.4.3
 langchain-community==0.4.2
 langchain==1.3.14
 langchain-anthropic
@@ -88,12 +88,12 @@ prometheus_client==0.26.0
 prometheus-fastapi-instrumentator==8.0.2
 structlog==26.1.0
 posthog==7.29.0
-sentry-sdk[fastapi]==2.66.1
+sentry-sdk[fastapi]==2.67.1
 
 # ─── Utilities ─────────────────────────────────────────────────────────────────
 celery==5.6.3
 kombu==5.6.2
-spacy==3.8.13
+spacy==3.8.15
 python-clamd
 anyio==4.14.2
 orjson==3.11.9
@@ -101,16 +101,16 @@ PyYAML==6.0.3
 toml==0.10.2
 click==8.4.2
 rich==15.0.0
-tqdm==4.69.1
+tqdm==4.70.0
 regex==2026.7.19
-python-Levenshtein==0.27.3
+python-Levenshtein==0.27.4
 RapidFuzz==3.14.5
 cachetools==7.1.6
 backoff==2.2.1
 pybreaker==1.4.1
 psutil==7.2.2
-filelock==3.32.0
-packaging==26.2
+filelock==3.32.2
+packaging==26.3
 setuptools
 pytz==2026.3.post1
 tzdata==2026.3
@@ -119,7 +119,7 @@ tzdata==2026.3
 yake==0.7.3
 
 # ─── NLP / Text (CPU-only) ─────────────────────────────────────────────────────
-nltk==3.10.0
+nltk==3.10.2
 semchunk==4.1.1
 
 # ─── ML (CPU-only, needed for classification + scoring) ────────────────────────
@@ -128,10 +128,10 @@ scipy==1.18.0
 joblib==1.5.3
 
 # ─── Stripe ────────────────────────────────────────────────────────────────────
-stripe==15.3.1
+stripe==15.4.0
 
 # ─── Reference / Citation ──────────────────────────────────────────────────────
-citeproc-py==0.10.3
+citeproc-py==0.10.4
 
 # ─── Async ─────────────────────────────────────────────────────────────────────
 sniffio==1.3.1
