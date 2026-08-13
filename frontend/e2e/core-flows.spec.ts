@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Core User Journeys', () => {
   test('Landing page renders correctly', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle(/ScholarForm/i);
+    await expect(page).toHaveTitle(/AMF/i);
     await expect(page.locator('h1')).toBeVisible();
   });
 

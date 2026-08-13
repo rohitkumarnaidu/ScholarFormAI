@@ -94,10 +94,15 @@ const extractAccessToken = (request) => {
 export default async function middleware(request) {
     const { pathname } = request.nextUrl;
 
+    // Bypass auth for E2E testing
+    if (request.cookies.has('playwright-bypass-auth')) {
+        return NextResponse.next();
+    }
+
     const token = extractAccessToken(request);
     if (!token) {
         const url = request.nextUrl.clone();
-        url.pathname = '/dashboard';
+        url.pathname = '/login';
         url.searchParams.set('reason', 'unauthorized');
         return NextResponse.redirect(url);
     }

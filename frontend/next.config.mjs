@@ -9,6 +9,7 @@ const nextConfig = {
     experimental: {
         optimizePackageImports: ['lucide-react', 'framer-motion', '@tanstack/react-query'],
     },
+    allowedDevOrigins: ['127.0.0.1', 'localhost'],
     // CDN configuration for production static assets
     assetPrefix: process.env.CDN_URL || "",
     images: {
@@ -34,7 +35,7 @@ const nextConfig = {
                             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
                             "font-src 'self' https://fonts.gstatic.com data:",
                             "img-src 'self' data: blob: https://*.supabase.co",
-                            "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://scholarform.onrender.com",
+                            "connect-src 'self' http://localhost:* http://127.0.0.1:* ws://localhost:* ws://127.0.0.1:* https://*.supabase.co wss://*.supabase.co https://scholarform.onrender.com",
                             "frame-src 'none'",
                             "object-src 'none'",
                             "base-uri 'self'",

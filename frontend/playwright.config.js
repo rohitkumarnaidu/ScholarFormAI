@@ -6,7 +6,7 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
+const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3005';
 const useWebServer = !process.env.PLAYWRIGHT_BASE_URL;
 
 export default defineConfig({
@@ -30,6 +30,9 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    extraHTTPHeaders: {
+      'x-playwright-test': 'true'
+    }
   },
 
   /* Configure projects for major browsers */
@@ -43,9 +46,9 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: useWebServer
     ? {
-        command: 'npm run start',
-        url: 'http://localhost:3000',
-        reuseExistingServer: true,
+        command: 'npm run start -- -p 3005',
+        url: 'http://localhost:3005',
+        reuseExistingServer: !process.env.CI,
         timeout: 120 * 1000,
       }
     : undefined,
