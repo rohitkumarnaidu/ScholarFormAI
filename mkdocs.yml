@@ -1,0 +1,664 @@
+site_name: ScholarFormAI Enterprise Documentation
+site_description: Enterprise documentation for ScholarFormAI.
+site_url: https://scholarformai.example.com
+theme:
+  name: material
+  features:
+  - navigation.tabs
+  - navigation.sections
+  - navigation.expand
+  - search.suggest
+  - search.highlight
+  - content.code.copy
+  - content.code.annotate
+  palette:
+  - scheme: default
+    primary: indigo
+    accent: indigo
+    toggle:
+      icon: material/brightness-7
+      name: Switch to dark mode
+  - scheme: slate
+    primary: indigo
+    accent: indigo
+    toggle:
+      icon: material/brightness-4
+      name: Switch to light mode
+plugins:
+- search
+- minify
+markdown_extensions:
+- pymdownx.highlight
+- pymdownx.superfences
+- pymdownx.inlinehilite
+- pymdownx.snippets
+- pymdownx.details
+- pymdownx.tabbed
+- admonition
+- tables
+- toc
+nav:
+- .Docs-Style-Guide: .docs-style-guide.md
+- Accessibility: ACCESSIBILITY.md
+- Ai Instructions: AI_Instructions.md
+- Branch Protection: BRANCH_PROTECTION.md
+- Dynamic Analysis: DYNAMIC_ANALYSIS.md
+- Documentation Inventory Report: Documentation_Inventory_Report.md
+- Feature Flags: FEATURE_FLAGS.md
+- Internationalization: INTERNATIONALIZATION.md
+- Maintainers: MAINTAINERS.md
+- Monitoring Observability: MONITORING_OBSERVABILITY.md
+- Postmortem Template: POSTMORTEM_TEMPLATE.md
+- Overview: README.md
+- Reproducible Build: REPRODUCIBLE_BUILD.md
+- Slo Definitions: SLO_DEFINITIONS.md
+- Supported Versions: SUPPORTED_VERSIONS.md
+- Uiux: UIUX.md
+- Adr:
+  - 001-Python-First-Runtime: adr/001-python-first-runtime.md
+  - 002-Redis-Realtime-Backbone: adr/002-redis-realtime-backbone.md
+  - 003-Api-Versioning-Strategy: adr/003-api-versioning-strategy.md
+  - 004-Fastapi-Only-Gateway: adr/004-fastapi-only-gateway.md
+  - 005-Chromadb-Rag-Storage: adr/005-chromadb-rag-storage.md
+  - 006-Celery-Background-Tasks: adr/006-celery-background-tasks.md
+  - 007-Render-Deployment-Platform: adr/007-render-deployment-platform.md
+  - 008-Litellm-Llm-Routing: adr/008-litellm-llm-routing.md
+  - 009-Template-Contract-System: adr/009-template-contract-system.md
+  - 010-Nextjs-App-Router: adr/010-nextjs-app-router.md
+  - 011-Per-Section-Equation-Numbering: adr/011-per-section-equation-numbering.md
+  - 012-Ai-Suggestion-Engine: adr/012-ai-suggestion-engine.md
+  - Adr-001-Use-Fastapi: adr/ADR-001-use-fastapi.md
+  - Adr-002-Use-Supabase: adr/ADR-002-use-supabase.md
+  - Adr-003-Four-Tier-Llm-Fallback: adr/ADR-003-four-tier-llm-fallback.md
+  - Adr-004-Chromadb-For-Rag: adr/ADR-004-chromadb-for-rag.md
+  - Adr-005-Api-Envelope-Pattern: adr/ADR-005-api-envelope-pattern.md
+- Agents:
+  - Agent: agents/Agent.md
+  - Overview: agents/README.md
+  - Architect: agents/architect.md
+  - Backend-Dev: agents/backend-dev.md
+  - Devops: agents/devops.md
+  - Frontend-Dev: agents/frontend-dev.md
+  - Ml-Engineer: agents/ml-engineer.md
+  - Qa: agents/qa.md
+- Ai:
+  - Ai Ml Integration: ai/AI_ML Integration.md
+  - Deep Learning Patterns: ai/Deep Learning Patterns.md
+  - Groq Fallback System: ai/Groq Fallback System.md
+  - Llm Classification: ai/LLM Classification.md
+  - Model Management: ai/Model Management.md
+  - Nvidia Nim Integration: ai/NVIDIA NIM Integration.md
+  - Ollama Local Deployment: ai/Ollama Local Deployment.md
+  - Rag Engine: ai/RAG Engine.md
+  - Reasoning Engine: ai/Reasoning Engine.md
+- Announcement:
+  - Distribution Checklist: announcement/DISTRIBUTION_CHECKLIST.md
+  - Social Media: announcement/SOCIAL_MEDIA.md
+- Api:
+  - Api Key Quick Start: api/API_KEY_QUICK_START.md
+  - Api Reference: api/API_REFERENCE.md
+  - Document Generator Endpoints: api/Document Generator Endpoints.md
+  - Document Processing Endpoints: api/Document Processing Endpoints.md
+  - Multi-Document Synthesis Endpoints: api/Multi-Document Synthesis Endpoints.md
+  - Real-Time Communication Endpoints: api/Real-time Communication Endpoints.md
+  - Template Management Endpoints: api/Template Management Endpoints.md
+  - Utility And Administrative Endpoints: api/Utility and Administrative Endpoints.md
+  - Webhooks: api/WEBHOOKS.md
+- Architecture:
+  - Ai Architecture: architecture/AI_ARCHITECTURE.md
+  - Ai Onboarding: architecture/AI_ONBOARDING.md
+  - Architecture: architecture/ARCHITECTURE.md
+  - Chroma Rag Architecture: architecture/CHROMA_RAG_ARCHITECTURE.md
+  - Ci Cd Architecture: architecture/CI_CD_ARCHITECTURE.md
+  - Company Documentation Frs Srs: architecture/Company_Documentation_FRS_SRS.md
+  - Database Architecture: architecture/DATABASE_ARCHITECTURE.md
+  - Database Schema: architecture/DATABASE_SCHEMA.md
+  - Data Flow Architecture: architecture/Data Flow Architecture.md
+  - Frontend Architecture: architecture/FRONTEND_ARCHITECTURE.md
+  - Features: architecture/Features.md
+  - Memory: architecture/MEMORY.md
+  - Middleware Stack: architecture/Middleware Stack.md
+  - Pipeline: architecture/PIPELINE.md
+  - Prd: architecture/PRD.md
+  - Rag: architecture/RAG.md
+  - Realtime Architecture: architecture/REALTIME_ARCHITECTURE.md
+  - Request Flows: architecture/Request Flows.md
+  - Security Architecture: architecture/SECURITY_ARCHITECTURE.md
+  - System Design: architecture/SYSTEM_DESIGN.md
+  - Testing Architecture: architecture/TESTING_ARCHITECTURE.md
+  - Techstack: architecture/TechStack.md
+- Archive:
+  - Api Versioning: archive/API_VERSIONING.md
+  - Complete Implementation Plan: archive/COMPLETE_IMPLEMENTATION_PLAN.md
+  - Deployment Guide: archive/DEPLOYMENT_GUIDE.md
+  - Enterprise Audit Report: archive/ENTERPRISE_AUDIT_REPORT.md
+  - Phased Refactoring Plan: archive/PHASED_REFACTORING_PLAN.md
+  - Comprehensive Audit: archive/comprehensive_audit.md
+- Backend:
+  - Ai Analysis: backend/AI Analysis.md
+  - Academic Templates: backend/Academic Templates.md
+  - Authentication & Authorization: backend/Authentication & Authorization.md
+  - Backend Development: backend/Backend Development.md
+  - Celery Tasks Reference: backend/CELERY_TASKS_REFERENCE.md
+  - Csl Integration: backend/CSL Integration.md
+  - Database & Orm Design: backend/Database & ORM Design.md
+  - Export System: backend/Export System.md
+  - Fastapi Application Structure: backend/FastAPI Application Structure.md
+  - Formatting Engine: backend/Formatting Engine.md
+  - Input Conversion: backend/Input Conversion.md
+  - Middleware & Security System: backend/Middleware & Security System.md
+  - Monitoring & Metrics: backend/Monitoring & Metrics.md
+  - Newsletter Subscription System: backend/Newsletter Subscription System.md
+  - Pipeline Orchestrator: backend/Pipeline Orchestrator.md
+  - Pipeline Processing System: backend/Pipeline Processing System.md
+  - Pipeline Processing: backend/Pipeline Processing.md
+  - Pipeline Safety: backend/Pipeline Safety.md
+  - Pipeline Services: backend/Pipeline Services.md
+  - Real-Time Communication: backend/Real-time Communication.md
+  - Semantic Parser: backend/Semantic Parser.md
+  - Service Layer Architecture: backend/Service Layer Architecture.md
+  - Structure Detection: backend/Structure Detection.md
+  - Template Architecture: backend/Template Architecture.md
+  - Template Creation Guide: backend/Template Creation Guide.md
+  - Template Rendering Engine: backend/Template Rendering Engine.md
+  - Template System: backend/Template System.md
+  - Text Extraction: backend/Text Extraction.md
+  - Validation System: backend/Validation System.md
+- Community:
+  - Accessibility: community/ACCESSIBILITY.md
+  - Adopters: community/ADOPTERS.md
+  - Developer Certificate Of Origin: community/DEVELOPER_CERTIFICATE_OF_ORIGIN.md
+  - Governance: community/GOVERNANCE.md
+  - Internationalization: community/INTERNATIONALIZATION.md
+  - Maintainers: community/MAINTAINERS.md
+  - Privacy: community/PRIVACY.md
+  - Project: community/PROJECT.md
+  - Support: community/SUPPORT.md
+  - Trademarks: community/TRADEMARKS.md
+  - Versioning: community/VERSIONING.md
+- Database:
+  - Database Design: database/Database Design.md
+  - Database Schema: database/Database Schema.md
+  - Database: database/Database.md
+  - Entity Models: database/Entity Models.md
+  - Migration System: database/Migration System.md
+  - Orm Configuration: database/ORM Configuration.md
+- Deployment:
+  - Building: deployment/BUILDING.md
+  - Compatibility: deployment/COMPATIBILITY.md
+  - Developer Setup: deployment/DEVELOPER_SETUP.md
+  - Deployment: deployment/Deployment.md
+  - Enterprise Github Setup: deployment/ENTERPRISE_GITHUB_SETUP.md
+  - Migration Guide: deployment/MIGRATION_GUIDE.md
+  - Release: deployment/RELEASE.md
+  - Release Process: deployment/RELEASE_PROCESS.md
+  - Upgrade Guide: deployment/UPGRADE_GUIDE.md
+- Developer-Guide:
+  - Developer Onboarding: developer-guide/DEVELOPER_ONBOARDING.md
+  - Small Tasks: developer-guide/SMALL_TASKS.md
+- Diagrams:
+  - Data-Model: diagrams/data-model.md
+  - Deployment-Architecture: diagrams/deployment-architecture.md
+  - Pipeline-Stages: diagrams/pipeline-stages.md
+  - System-Architecture: diagrams/system-architecture.md
+- Docs:
+  - Api:
+    - Reference: docs/api/reference.md
+  - Architecture:
+    - Ai-Rag: docs/architecture/ai-rag.md
+    - Data-Flow: docs/architecture/data-flow.md
+    - Overview: docs/architecture/overview.md
+    - System-Design: docs/architecture/system-design.md
+  - Changelog:
+    - Index: docs/changelog/index.md
+  - Cli:
+    - Reference: docs/cli/reference.md
+  - Community:
+    - Code-Of-Conduct: docs/community/code-of-conduct.md
+    - Contributing: docs/community/contributing.md
+  - Deployment:
+    - Cloud: docs/deployment/cloud.md
+    - Kubernetes: docs/deployment/kubernetes.md
+    - Manual: docs/deployment/manual.md
+  - Examples:
+    - Api-Integration: docs/examples/api-integration.md
+    - Batch-Processing: docs/examples/batch-processing.md
+    - Custom-Template: docs/examples/custom-template.md
+    - Simple-Formatting: docs/examples/simple-formatting.md
+  - Faq:
+    - Index: docs/faq/index.md
+  - Getting-Started:
+    - Configuration: docs/getting-started/configuration.md
+    - Installation: docs/getting-started/installation.md
+    - Quickstart: docs/getting-started/quickstart.md
+    - Writing: docs/getting-started/writing.md
+  - Guides:
+    - Custom-Styles: docs/guides/custom-styles.md
+    - Formatting: docs/guides/formatting.md
+    - Testing: docs/guides/testing.md
+    - Using-Api: docs/guides/using-api.md
+    - Using-Cli: docs/guides/using-cli.md
+    - Using-Sdk: docs/guides/using-sdk.md
+    - Validation: docs/guides/validation.md
+  - Index: docs/index.md
+  - Issues:
+    - Admin-Guide: docs/issues/admin-guide.md
+    - Developer-Guide: docs/issues/developer-guide.md
+    - User-Guide: docs/issues/user-guide.md
+  - Knowledge:
+    - Ai Ml Integration:
+      - Ai Ml Integration: docs/knowledge/AI_ML Integration/AI_ML Integration.md
+      - Groq Fallback System: docs/knowledge/AI_ML Integration/Groq Fallback System.md
+      - Llm Classification: docs/knowledge/AI_ML Integration/LLM Classification.md
+      - Model Management: docs/knowledge/AI_ML Integration/Model Management.md
+      - Nvidia Nim Integration: docs/knowledge/AI_ML Integration/NVIDIA NIM Integration.md
+      - Ollama Local Deployment: docs/knowledge/AI_ML Integration/Ollama Local Deployment.md
+      - Rag Engine: docs/knowledge/AI_ML Integration/RAG Engine.md
+      - Reasoning Engine: docs/knowledge/AI_ML Integration/Reasoning Engine.md
+    - Api Reference:
+      - Document Generator Endpoints: docs/knowledge/API Reference/Document Generator
+          Endpoints.md
+      - Document Processing Endpoints: docs/knowledge/API Reference/Document Processing
+          Endpoints.md
+      - Multi-Document Synthesis Endpoints: docs/knowledge/API Reference/Multi-Document
+          Synthesis Endpoints.md
+      - Real-Time Communication Endpoints: docs/knowledge/API Reference/Real-time
+          Communication Endpoints.md
+      - Template Management Endpoints: docs/knowledge/API Reference/Template Management
+          Endpoints.md
+      - Utility And Administrative Endpoints: docs/knowledge/API Reference/Utility
+          and Administrative Endpoints.md
+    - Agent Page Enhancements: docs/knowledge/Agent Page Enhancements.md
+    - Architecture Overview:
+      - Architecture Overview: docs/knowledge/Architecture Overview/Architecture Overview.md
+      - Data Flow Architecture: docs/knowledge/Architecture Overview/Data Flow Architecture.md
+      - Middleware Stack: docs/knowledge/Architecture Overview/Middleware Stack.md
+      - Request Flows: docs/knowledge/Architecture Overview/Request Flows.md
+      - System Layers: docs/knowledge/Architecture Overview/System Layers.md
+      - Technology Stack: docs/knowledge/Architecture Overview/Technology Stack.md
+    - Backend Development:
+      - Authentication & Authorization: docs/knowledge/Backend Development/Authentication
+          & Authorization.md
+      - Backend Development: docs/knowledge/Backend Development/Backend Development.md
+      - Database & Orm Design: docs/knowledge/Backend Development/Database & ORM Design.md
+      - Fastapi Application Structure: docs/knowledge/Backend Development/FastAPI
+          Application Structure.md
+      - Middleware & Security System: docs/knowledge/Backend Development/Middleware
+          & Security System.md
+      - Monitoring & Metrics: docs/knowledge/Backend Development/Monitoring & Metrics.md
+      - Newsletter Subscription System: docs/knowledge/Backend Development/Newsletter
+          Subscription System.md
+      - Pipeline Processing System: docs/knowledge/Backend Development/Pipeline Processing
+          System.md
+      - Real-Time Communication: docs/knowledge/Backend Development/Real-time Communication.md
+      - Service Layer Architecture: docs/knowledge/Backend Development/Service Layer
+          Architecture.md
+    - Database Design:
+      - Database Design: docs/knowledge/Database Design/Database Design.md
+      - Database Schema: docs/knowledge/Database Design/Database Schema.md
+      - Entity Models: docs/knowledge/Database Design/Entity Models.md
+      - Migration System: docs/knowledge/Database Design/Migration System.md
+      - Orm Configuration: docs/knowledge/Database Design/ORM Configuration.md
+    - Deep Learning Patterns: docs/knowledge/Deep Learning Patterns.md
+    - Deployment & Operations:
+      - Ci Cd Pipeline: docs/knowledge/Deployment & Operations/CI_CD Pipeline.md
+      - Deployment & Operations: docs/knowledge/Deployment & Operations/Deployment
+          & Operations.md
+      - Environment Configuration: docs/knowledge/Deployment & Operations/Environment
+          Configuration.md
+      - Infrastructure Setup: docs/knowledge/Deployment & Operations/Infrastructure
+          Setup.md
+      - Maintenance & Troubleshooting: docs/knowledge/Deployment & Operations/Maintenance
+          & Troubleshooting.md
+      - Monitoring & Alerting: docs/knowledge/Deployment & Operations/Monitoring &
+          Alerting.md
+      - Security Operations: docs/knowledge/Deployment & Operations/Security Operations.md
+    - Frontend Development:
+      - Api Integration:
+        - Api Integration: docs/knowledge/Frontend Development/API Integration/API
+            Integration.md
+        - Analytics & Performance Monitoring:
+          - Analytics & Performance Monitoring: docs/knowledge/Frontend Development/API
+              Integration/Analytics & Performance Monitoring/Analytics & Performance
+              Monitoring.md
+          - Real User Monitoring (Rum): docs/knowledge/Frontend Development/API Integration/Analytics
+              & Performance Monitoring/Real User Monitoring (RUM).md
+        - Authentication Services: docs/knowledge/Frontend Development/API Integration/Authentication
+            Services.md
+        - Schema Validation & Type Safety: docs/knowledge/Frontend Development/API
+            Integration/Schema Validation & Type Safety.md
+        - Service Layer Implementation: docs/knowledge/Frontend Development/API Integration/Service
+            Layer Implementation.md
+      - Component Architecture:
+        - Component Architecture: docs/knowledge/Frontend Development/Component Architecture/Component
+            Architecture.md
+        - Form Components: docs/knowledge/Frontend Development/Component Architecture/Form
+            Components.md
+        - Layout Components: docs/knowledge/Frontend Development/Component Architecture/Layout
+            Components.md
+        - Specialized Components: docs/knowledge/Frontend Development/Component Architecture/Specialized
+            Components.md
+        - Ui Components: docs/knowledge/Frontend Development/Component Architecture/UI
+            Components.md
+        - Utility Components: docs/knowledge/Frontend Development/Component Architecture/Utility
+            Components.md
+      - Frontend Development: docs/knowledge/Frontend Development/Frontend Development.md
+      - Next.Js Application Structure: docs/knowledge/Frontend Development/Next.js
+          Application Structure.md
+      - Real-Time Features:
+        - Live Preview System: docs/knowledge/Frontend Development/Real-time Features/Live
+            Preview System.md
+        - Real-Time Features: docs/knowledge/Frontend Development/Real-time Features/Real-time
+            Features.md
+        - Status Updates & Progress Tracking: docs/knowledge/Frontend Development/Real-time
+            Features/Status Updates & Progress Tracking.md
+        - Streaming Responses: docs/knowledge/Frontend Development/Real-time Features/Streaming
+            Responses.md
+        - Websocket Implementation: docs/knowledge/Frontend Development/Real-time
+            Features/WebSocket Implementation.md
+      - Routing And Navigation: docs/knowledge/Frontend Development/Routing and Navigation.md
+      - State Management:
+        - Context Providers: docs/knowledge/Frontend Development/State Management/Context
+            Providers.md
+        - Custom Hooks: docs/knowledge/Frontend Development/State Management/Custom
+            Hooks.md
+        - React Query Integration: docs/knowledge/Frontend Development/State Management/React
+            Query Integration.md
+        - Real-Time State Management: docs/knowledge/Frontend Development/State Management/Real-time
+            State Management.md
+        - State Management: docs/knowledge/Frontend Development/State Management/State
+            Management.md
+    - Getting Started: docs/knowledge/Getting Started.md
+    - Pipeline Processing:
+      - Ai Analysis: docs/knowledge/Pipeline Processing/AI Analysis.md
+      - Export System: docs/knowledge/Pipeline Processing/Export System.md
+      - Formatting Engine: docs/knowledge/Pipeline Processing/Formatting Engine.md
+      - Input Conversion: docs/knowledge/Pipeline Processing/Input Conversion.md
+      - Pipeline Orchestrator: docs/knowledge/Pipeline Processing/Pipeline Orchestrator.md
+      - Pipeline Processing: docs/knowledge/Pipeline Processing/Pipeline Processing.md
+      - Pipeline Safety: docs/knowledge/Pipeline Processing/Pipeline Safety.md
+      - Pipeline Services: docs/knowledge/Pipeline Processing/Pipeline Services.md
+      - Structure Detection: docs/knowledge/Pipeline Processing/Structure Detection.md
+      - Text Extraction: docs/knowledge/Pipeline Processing/Text Extraction.md
+      - Validation System: docs/knowledge/Pipeline Processing/Validation System.md
+    - Results Page Redesign: docs/knowledge/Results Page Redesign.md
+    - Semantic Parser: docs/knowledge/Semantic Parser.md
+    - Template System:
+      - Academic Templates: docs/knowledge/Template System/Academic Templates.md
+      - Csl Integration: docs/knowledge/Template System/CSL Integration.md
+      - Template Architecture: docs/knowledge/Template System/Template Architecture.md
+      - Template Creation Guide: docs/knowledge/Template System/Template Creation
+          Guide.md
+      - Template Rendering Engine: docs/knowledge/Template System/Template Rendering
+          Engine.md
+      - Template System: docs/knowledge/Template System/Template System.md
+    - Testing Strategy:
+      - Backend Testing:
+        - Backend Testing: docs/knowledge/Testing Strategy/Backend Testing/Backend
+            Testing.md
+        - Contract Testing: docs/knowledge/Testing Strategy/Backend Testing/Contract
+            Testing.md
+        - Integration Testing: docs/knowledge/Testing Strategy/Backend Testing/Integration
+            Testing.md
+        - Security Testing: docs/knowledge/Testing Strategy/Backend Testing/Security
+            Testing.md
+        - Specialized Testing: docs/knowledge/Testing Strategy/Backend Testing/Specialized
+            Testing.md
+        - Test Configuration & Setup: docs/knowledge/Testing Strategy/Backend Testing/Test
+            Configuration & Setup.md
+        - Unit Testing: docs/knowledge/Testing Strategy/Backend Testing/Unit Testing.md
+      - Frontend Testing:
+        - Frontend Testing: docs/knowledge/Testing Strategy/Frontend Testing/Frontend
+            Testing.md
+        - Playwright End-To-End Testing: docs/knowledge/Testing Strategy/Frontend
+            Testing/Playwright End-to-End Testing.md
+        - Vitest Unit & Component Testing: docs/knowledge/Testing Strategy/Frontend
+            Testing/Vitest Unit & Component Testing.md
+      - Lighthouse Ci Integration: docs/knowledge/Testing Strategy/Lighthouse CI Integration.md
+      - Manual Testing:
+        - Manual Testing Overview: docs/knowledge/Testing Strategy/Manual Testing/Manual
+            Testing Overview.md
+        - Manual Testing: docs/knowledge/Testing Strategy/Manual Testing/Manual Testing.md
+        - Pipeline Validation: docs/knowledge/Testing Strategy/Manual Testing/Pipeline
+            Validation.md
+        - Specialized Testing: docs/knowledge/Testing Strategy/Manual Testing/Specialized
+            Testing.md
+        - Test Data Management: docs/knowledge/Testing Strategy/Manual Testing/Test
+            Data Management.md
+        - Visual Testing:
+          - Phase 1 Testing: docs/knowledge/Testing Strategy/Manual Testing/Visual
+              Testing/Phase 1 Testing.md
+          - Phase 2 Testing: docs/knowledge/Testing Strategy/Manual Testing/Visual
+              Testing/Phase 2 Testing.md
+          - Phase 3 Testing: docs/knowledge/Testing Strategy/Manual Testing/Visual
+              Testing/Phase 3 Testing.md
+          - Visual Output Management: docs/knowledge/Testing Strategy/Manual Testing/Visual
+              Testing/Visual Output Management.md
+          - Visual Testing: docs/knowledge/Testing Strategy/Manual Testing/Visual
+              Testing/Visual Testing.md
+      - Test Infrastructure: docs/knowledge/Testing Strategy/Test Infrastructure.md
+      - Testing Best Practices: docs/knowledge/Testing Strategy/Testing Best Practices.md
+      - Testing Strategy: docs/knowledge/Testing Strategy/Testing Strategy.md
+    - Troubleshooting & Faq: docs/knowledge/Troubleshooting & FAQ.md
+    - Virus Scanner Enhancements: docs/knowledge/Virus Scanner Enhancements.md
+  - Reference:
+    - Configuration: docs/reference/configuration.md
+    - Error-Codes: docs/reference/error-codes.md
+  - Sdk:
+    - Guide: docs/sdk/guide.md
+  - Tutorials:
+    - Cicd-Integration: docs/tutorials/cicd-integration.md
+    - Cli-Project: docs/tutorials/cli-project.md
+    - Docker-Deployment: docs/tutorials/docker-deployment.md
+    - Web-Ui: docs/tutorials/web-ui.md
+  - Updates:
+    - Deployment-Guide: docs/updates/deployment-guide.md
+    - Developer-Guide: docs/updates/developer-guide.md
+    - User-Guide: docs/updates/user-guide.md
+- Explanation:
+  - Llm-Fallback-Strategy: explanation/llm-fallback-strategy.md
+  - Pipeline-Architecture: explanation/pipeline-architecture.md
+  - Security-Model: explanation/security-model.md
+  - Why-Fastapi-Only: explanation/why-fastapi-only.md
+- Faq:
+  - Troubleshooting & Faq: faq/Troubleshooting & FAQ.md
+- Frontend:
+  - Api Integration:
+    - Api Integration: frontend/API Integration/API Integration.md
+    - Analytics & Performance Monitoring:
+      - Analytics & Performance Monitoring: frontend/API Integration/Analytics & Performance
+          Monitoring/Analytics & Performance Monitoring.md
+      - Real User Monitoring (Rum): frontend/API Integration/Analytics & Performance
+          Monitoring/Real User Monitoring (RUM).md
+    - Authentication Services: frontend/API Integration/Authentication Services.md
+    - Schema Validation & Type Safety: frontend/API Integration/Schema Validation
+        & Type Safety.md
+    - Service Layer Implementation: frontend/API Integration/Service Layer Implementation.md
+  - Agent Page Enhancements: frontend/Agent Page Enhancements.md
+  - Component Architecture:
+    - Component Architecture: frontend/Component Architecture/Component Architecture.md
+    - Form Components: frontend/Component Architecture/Form Components.md
+    - Layout Components: frontend/Component Architecture/Layout Components.md
+    - Specialized Components: frontend/Component Architecture/Specialized Components.md
+    - Ui Components: frontend/Component Architecture/UI Components.md
+    - Utility Components: frontend/Component Architecture/Utility Components.md
+  - Frontend Development: frontend/Frontend Development.md
+  - Next.Js Application Structure: frontend/Next.js Application Structure.md
+  - Real-Time Features:
+    - Live Preview System: frontend/Real-time Features/Live Preview System.md
+    - Real-Time Features: frontend/Real-time Features/Real-time Features.md
+    - Status Updates & Progress Tracking: frontend/Real-time Features/Status Updates
+        & Progress Tracking.md
+    - Streaming Responses: frontend/Real-time Features/Streaming Responses.md
+    - Websocket Implementation: frontend/Real-time Features/WebSocket Implementation.md
+  - Results Page Redesign: frontend/Results Page Redesign.md
+  - Routing And Navigation: frontend/Routing and Navigation.md
+  - State Management:
+    - Context Providers: frontend/State Management/Context Providers.md
+    - Custom Hooks: frontend/State Management/Custom Hooks.md
+    - React Query Integration: frontend/State Management/React Query Integration.md
+    - Real-Time State Management: frontend/State Management/Real-time State Management.md
+    - State Management: frontend/State Management/State Management.md
+- Governance:
+  - Bus Factor: governance/BUS_FACTOR.md
+  - Code Review Standards: governance/CODE_REVIEW_STANDARDS.md
+  - Coding Standards: governance/CODING_STANDARDS.md
+  - Community-Moderation: governance/community-moderation.md
+  - Governance-Model: governance/governance-model.md
+  - Rfc-Process: governance/rfc-process.md
+  - Transparency-Reports: governance/transparency-reports.md
+  - Working-Groups: governance/working-groups.md
+- Guides:
+  - Developer Guide: guides/DEVELOPER_GUIDE.md
+  - Plugin Guide: guides/PLUGIN_GUIDE.md
+  - Sdk Guide: guides/SDK_GUIDE.md
+  - Style Guide: guides/STYLE_GUIDE.md
+  - Testing: guides/TESTING.md
+  - User Guide: guides/USER_GUIDE.md
+  - Creating-A-Custom-Template: guides/creating-a-custom-template.md
+  - Deploying-To-Production: guides/deploying-to-production.md
+  - Setting-Up-Monitoring: guides/setting-up-monitoring.md
+- Monitoring:
+  - Monitoring: monitoring/monitoring.md
+- Operations:
+  - Backup Recovery: operations/BACKUP_RECOVERY.md
+  - Ci Cd Pipeline: operations/CI_CD Pipeline.md
+  - Debugging: operations/DEBUGGING.md
+  - Disaster Recovery: operations/DISASTER_RECOVERY.md
+  - Deployment & Operations: operations/Deployment & Operations.md
+  - Environment Configuration: operations/Environment Configuration.md
+  - Infrastructure Setup: operations/Infrastructure Setup.md
+  - Migration: operations/MIGRATION.md
+  - Monitoring: operations/MONITORING.md
+  - Maintenance & Troubleshooting: operations/Maintenance & Troubleshooting.md
+  - Monitoring & Alerting: operations/Monitoring & Alerting.md
+  - Observability: operations/OBSERVABILITY.md
+  - Operations: operations/OPERATIONS.md
+  - Overview: operations/README.md
+  - Runbooks: operations/RUNBOOKS.md
+  - Security Operations: operations/Security Operations.md
+  - Troubleshooting: operations/TROUBLESHOOTING.md
+  - Slo-Sla: operations/slo-sla.md
+- Overview: overview.md
+- Performance:
+  - Performance Scalability: performance/PERFORMANCE_SCALABILITY.md
+  - Performance-Benchmarks: performance/performance-benchmarks.md
+- Reference:
+  - Agents: reference/AGENTS.md
+  - Authentication: reference/AUTHENTICATION.md
+  - Authorization: reference/AUTHORIZATION.md
+  - Cli Reference: reference/CLI_REFERENCE.md
+  - Configuration: reference/CONFIGURATION.md
+  - Configuration Reference: reference/CONFIGURATION_REFERENCE.md
+  - Error Codes: reference/ERROR_CODES.md
+  - Faq: reference/FAQ.md
+  - Glossary: reference/GLOSSARY.md
+  - Pull Request Template: reference/PULL_REQUEST_TEMPLATE.md
+  - Cheatsheet: reference/cheatsheet.md
+  - Docs Deduplication Report: reference/docs_deduplication_report.md
+  - Skills:
+    - Overview: reference/skills/README.md
+    - Api-Design: reference/skills/api-design.md
+    - Code-Review: reference/skills/code-review.md
+    - Migration: reference/skills/migration.md
+    - Pipeline-Debug: reference/skills/pipeline-debug.md
+    - Release: reference/skills/release.md
+- Release:
+  - Release Checklist: release/RELEASE_CHECKLIST.md
+- Reports:
+  - Benchmarks: reports/BENCHMARKS.md
+  - Company Documentation Frs Srs: reports/Company_Documentation_FRS_SRS.md
+  - Documentation Inventory Report: reports/Documentation_Inventory_Report.md
+  - Enterprise Audit Summary: reports/ENTERPRISE_AUDIT_SUMMARY.md
+  - Enterprise Certification: reports/ENTERPRISE_CERTIFICATION.md
+  - Final Release Report: reports/FINAL_RELEASE_REPORT.md
+  - Future Roadmap: reports/FUTURE_ROADMAP.md
+  - Launch Announcement: reports/LAUNCH_ANNOUNCEMENT.md
+  - Launch Checklist: reports/LAUNCH_CHECKLIST.md
+  - Modernization Summary: reports/MODERNIZATION_SUMMARY.md
+  - Openssf Readme: reports/OPENSSF_README.md
+  - Original Request: reports/ORIGINAL_REQUEST.md
+  - Performance: reports/PERFORMANCE.md
+  - Performance Summary: reports/PERFORMANCE_SUMMARY.md
+  - Production Readiness Certificate: reports/PRODUCTION_READINESS_CERTIFICATE.md
+  - Production Readiness Checklist: reports/PRODUCTION_READINESS_CHECKLIST.md
+  - Production Readiness Scorecard: reports/PRODUCTION_READINESS_SCORECARD.md
+  - Release Notes: reports/RELEASE_NOTES.md
+  - Repository Gap Analysis: reports/REPOSITORY_GAP_ANALYSIS.md
+  - Risk And Tech Debt Report: reports/RISK_AND_TECH_DEBT_REPORT.md
+  - Roadmap: reports/ROADMAP.md
+  - Risk Register: reports/Risk_Register.md
+  - Security Compliance Summary: reports/SECURITY_COMPLIANCE_SUMMARY.md
+  - Technical Debt: reports/TECHNICAL_DEBT.md
+  - Technical Report: reports/TECHNICAL_REPORT.md
+  - Third Party Notices: reports/THIRD_PARTY_NOTICES.md
+  - Implementation Plan: reports/implementation_plan.md
+- Roadmap:
+  - Roadmap: roadmap/Roadmap.md
+- Runbooks:
+  - Operations Runbook: runbooks/OPERATIONS_RUNBOOK.md
+  - Branch-Protection: runbooks/branch-protection.md
+  - High-Error-Rate: runbooks/high-error-rate.md
+  - High-Latency: runbooks/high-latency.md
+  - Incident-Response: runbooks/incident-response.md
+  - Queue-And-Remote-Offload-Plan: runbooks/queue-and-remote-offload-plan.md
+  - Rollback: runbooks/rollback.md
+  - Service-Down: runbooks/service-down.md
+- Security:
+  - Hardening: security/HARDENING.md
+  - Secret Rotation: security/SECRET_ROTATION.md
+  - Security Checklist: security/SECURITY_CHECKLIST.md
+  - Security Review: security/SECURITY_REVIEW.md
+  - Security: security/Security.md
+  - Two Factor Auth: security/TWO_FACTOR_AUTH.md
+  - Virus Scanner Enhancements: security/Virus Scanner Enhancements.md
+  - Compliance: security/compliance.md
+  - Threat-Model: security/threat-model.md
+- Testing:
+  - Backend Testing:
+    - Backend Testing: testing/Backend Testing/Backend Testing.md
+    - Contract Testing: testing/Backend Testing/Contract Testing.md
+    - Integration Testing: testing/Backend Testing/Integration Testing.md
+    - Security Testing: testing/Backend Testing/Security Testing.md
+    - Specialized Testing: testing/Backend Testing/Specialized Testing.md
+    - Test Configuration & Setup: testing/Backend Testing/Test Configuration & Setup.md
+    - Unit Testing: testing/Backend Testing/Unit Testing.md
+  - Frontend Testing:
+    - Frontend Testing: testing/Frontend Testing/Frontend Testing.md
+    - Playwright End-To-End Testing: testing/Frontend Testing/Playwright End-to-End
+        Testing.md
+    - Vitest Unit & Component Testing: testing/Frontend Testing/Vitest Unit & Component
+        Testing.md
+  - Lighthouse Ci Integration: testing/Lighthouse CI Integration.md
+  - Manual Testing:
+    - Manual Testing Overview: testing/Manual Testing/Manual Testing Overview.md
+    - Manual Testing: testing/Manual Testing/Manual Testing.md
+    - Pipeline Validation: testing/Manual Testing/Pipeline Validation.md
+    - Specialized Testing: testing/Manual Testing/Specialized Testing.md
+    - Test Data Management: testing/Manual Testing/Test Data Management.md
+    - Visual Testing:
+      - Phase 1 Testing: testing/Manual Testing/Visual Testing/Phase 1 Testing.md
+      - Phase 2 Testing: testing/Manual Testing/Visual Testing/Phase 2 Testing.md
+      - Phase 3 Testing: testing/Manual Testing/Visual Testing/Phase 3 Testing.md
+      - Visual Output Management: testing/Manual Testing/Visual Testing/Visual Output
+          Management.md
+      - Visual Testing: testing/Manual Testing/Visual Testing/Visual Testing.md
+  - Test Infrastructure: testing/Test Infrastructure.md
+  - Testing Best Practices: testing/Testing Best Practices.md
+  - Testing Strategy: testing/Testing Strategy.md
+  - Testing: testing/Testing.md
+  - Verification Strategy: testing/VERIFICATION_STRATEGY.md
+- Troubleshooting:
+  - Error Handling: troubleshooting/ERROR_HANDLING.md
+  - Troubleshooting: troubleshooting/troubleshooting.md
+- Tutorials:
+  - Overview: tutorials/README.md
+  - Format-Your-First-Paper: tutorials/format-your-first-paper.md
+  - Generate-Document-With-Ai: tutorials/generate-document-with-ai.md
+  - Multi-Doc-Synthesis: tutorials/multi-doc-synthesis.md
+- User-Guide:
+  - Getting Started: user-guide/Getting Started.md
+  - Llm Provider Guide: user-guide/LLM_PROVIDER_GUIDE.md
+  - Quickstart: user-guide/quickstart.md
+  - Template Creation: user-guide/template_creation.md
+  - User Guide: user-guide/user_guide.md
