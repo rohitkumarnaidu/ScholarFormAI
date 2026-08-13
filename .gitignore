@@ -169,5 +169,6 @@ backend/.env.template
 frontend/.env.template
 
 # MkDocs generated site
-docs/site/
+site/
+*.db
 

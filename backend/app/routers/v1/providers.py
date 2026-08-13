@@ -298,9 +298,23 @@ async def get_providers(
     return {"providers": providers}
 
 
+import json
+from app.cache.redis_cache import get_redis_cache
+
 @router.get("/builtin")
 async def get_builtin():
-    return {"providers": get_builtin_providers()}
+    cache = get_redis_cache()
+    if cache.client:
+        cached = cache.get("api:providers:builtin")
+        if cached:
+            return json.loads(cached)
+            
+    builtin = get_builtin_providers()
+    
+    if cache.client:
+        cache.set("api:providers:builtin", json.dumps({"providers": builtin}), ttl=86400)
+        
+    return {"providers": builtin}
 
 
 @router.get("/{provider_id}/models")

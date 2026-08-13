@@ -22,6 +22,7 @@ from app.pipeline.export.pdf_exporter import PDFExporter
 from app.pipeline.generation.agent import AgentPipeline
 from app.pipeline.generation.document_generator import get_generator
 from app.pipeline.orchestrator import PipelineOrchestrator
+from app.pipeline.safety.prompt_injection import safe_prompt
 from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
 from app.realtime.events import make_event
 from app.realtime.pubsub import RedisPubSub
@@ -277,6 +278,7 @@ async def start_generation(
             ).strip()
             if not user_prompt:
                 raise HTTPException(status_code=422, detail="Prompt is required for agent sessions.")
+            user_prompt = safe_prompt(user_prompt)
 
             template = str(payload.get("template") or settings.DEFAULT_TEMPLATE)
             config_payload = payload.get("config") or {}
@@ -307,6 +309,7 @@ async def start_generation(
             user_prompt = str(form.get("prompt") or form.get("user_prompt") or form.get("content") or "").strip()
             if not user_prompt:
                 raise HTTPException(status_code=422, detail="Prompt is required for agent sessions.")
+            user_prompt = safe_prompt(user_prompt)
 
             template = str(form.get("template") or settings.DEFAULT_TEMPLATE)
             config_payload = _parse_config(str(form.get("config") or "{}"))
@@ -628,6 +631,7 @@ async def generation_messages(
         question = (payload.content or "").strip()
         if not question:
             raise HTTPException(status_code=422, detail="Message content cannot be empty.")
+        question = safe_prompt(question)
 
         await _session_service.add_message(sessionId, "user", question, token_count=0)
         session_type = session.get("session_type") or "multi_doc"

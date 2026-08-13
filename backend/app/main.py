@@ -508,15 +508,23 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+from app.core.opentelemetry_setup import init_telemetry
+init_telemetry(app)
+
 if SLOWAPI_AVAILABLE and Limiter is not None and get_remote_address is not None:
+    storage_uri = "memory://"
+    if getattr(settings, "REDIS_ENABLED", False) and getattr(settings, "REDIS_URL", None):
+        storage_uri = settings.REDIS_URL
+
     limiter = Limiter(
         key_func=get_remote_address,
         default_limits=[f"{int(getattr(settings, 'GLOBAL_RATE_LIMIT_PER_MINUTE', 120))}/minute"],
+        storage_uri=storage_uri,
     )
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     app.add_middleware(SlowAPIMiddleware)
-    logger.info("SlowAPI global rate limiting enabled.")
+    logger.info(f"SlowAPI global rate limiting enabled using storage: {storage_uri}")
 else:
     logger.warning("SlowAPI not available; falling back to custom middleware-only rate limiting.")
 

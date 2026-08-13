@@ -1,53 +1,34 @@
 # Observability
 
-## Current Capabilities
+Observability in ScholarForm AI is designed to provide deep insights into the internal state of our microservices, particularly the complex multi-agent interactions during manuscript generation and formatting.
 
-### Request Tracing
+## Core Pillars
 
-- Each request gets a unique `X-Request-ID` header
-- Response time tracked via `X-Request-Time` header
-- Structured logging with request context
+1. **Metrics**: Real-time numerical data (see [Monitoring](MONITORING.md)).
+2. **Logging**: Centralized, structured logs.
+3. **Tracing**: Distributed request tracing across components.
 
-### Health Monitoring
+## Distributed Tracing (OpenTelemetry)
 
-- `GET /health` endpoint with status and uptime
-- Docker health checks on all services
-- Startup and shutdown event logging
+We utilize OpenTelemetry to instrument all services, propagating trace context via HTTP headers and Celery message headers.
 
-### Logging
+- **Next.js**: Instruments API routes and server-side rendering.
+- **FastAPI**: Uses the OpenTelemetry FastAPI instrumentation to trace incoming requests, database calls (SQLAlchemy), and Redis caching.
+- **Celery**: Traces task enqueuing and execution.
+- **AI Agents**: Custom spans trace the lifecycle of LLM calls, tracking prompt preparation, generation latency, and response parsing.
 
-- Configurable log levels via `AMF_LOG_LEVEL`
-- Request/response logging with timing
-- Error logging with stack traces
-- Log format includes timestamp, level, module, line number
+### Trace Visualization (Jaeger / Tempo)
+Traces are exported to our backend tracing system (Jaeger or Grafana Tempo). This allows us to visualize bottlenecks, such as a long-running PyMuPDF extraction followed by an LLM synthesis step.
 
-## Planned Capabilities
+## Centralized Logging
 
-### OpenTelemetry Integration (Q4 2026)
+All logs are output in JSON format to stdout/stderr and collected via Promtail/FluentBit, forwarding them to Loki or Elasticsearch.
 
-- Distributed tracing across services
-- Metrics export to Prometheus
-- Logs correlation with traces
+- **Standard Fields**: `timestamp`, `level`, `service_name`, `trace_id`, `span_id`, `message`.
+- **Backend Logs**: Provide detailed context on API requests and WebSocket event streams.
+- **Celery Logs**: Tagged with `task_id` for easy correlation of background jobs.
+- **Frontend Logs**: Client-side errors are captured and sent to a centralized logging endpoint.
 
-### Dashboard (Q1 2027)
-
-- Real-time formatting metrics
-- Error rate monitoring
-- Usage analytics
-- System resource monitoring
-
-### Structured Logging (Q4 2026)
-
-- JSON log output format
-- Log aggregation support (ELK, Loki)
-- Log levels per service
-
-## Configuration
-
-```bash
-# Set log level
-AMF_LOG_LEVEL=debug   # Most verbose
-AMF_LOG_LEVEL=info    # Default
-AMF_LOG_LEVEL=warning # Quiet
-AMF_LOG_LEVEL=error   # Errors only
-```
+## Cross-References
+- [Monitoring Dashboards](MONITORING.md)
+- [Deployment Configuration](DEPLOYMENT.md)

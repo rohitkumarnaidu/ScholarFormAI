@@ -201,9 +201,9 @@ def setup_logging() -> logging.Logger:
 
     try:
         config = dict(LOGGING_CONFIG)
-        import os as _os
+        from app.config.settings import settings
 
-        if _os.getenv("ENABLE_STRUCTURED_LOGGING", "").lower() in ("true", "1", "yes"):
+        if settings.ENABLE_STRUCTURED_LOGGING:
             config["formatters"]["json"] = {"()": "app.config.logging_config.JsonFormatter"}
             config["handlers"]["console"]["formatter"] = "json"
         logging.config.dictConfig(config)

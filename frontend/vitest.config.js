@@ -50,6 +50,12 @@ export default defineConfig({
                 'e2e/**',
                 'coverage/**',
             ],
+            thresholds: {
+                statements: 80,
+                branches: 80,
+                functions: 80,
+                lines: 80,
+            },
         },
     },
     server: {

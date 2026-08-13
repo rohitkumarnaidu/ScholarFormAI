@@ -74,3 +74,4 @@ CREATE INDEX IF NOT EXISTS idx_documents_status ON public.documents (status);
 CREATE INDEX IF NOT EXISTS idx_documents_created_at ON public.documents (created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_documents_template ON public.documents (template);
 CREATE INDEX IF NOT EXISTS idx_documents_file_hash ON public.documents (file_hash);
+CREATE INDEX IF NOT EXISTS idx_custom_providers_user_id ON custom_providers (user_id);

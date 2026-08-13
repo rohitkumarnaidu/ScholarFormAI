@@ -1,84 +1,48 @@
-# Monitoring Guide
+# Monitoring
 
-## Health Check
+This document details the monitoring strategy and infrastructure for ScholarForm AI. Monitoring ensures the reliability, availability, and performance of our services.
 
-```bash
-curl http://localhost:8000/health
-```
+## Overview
 
-Response:
+ScholarForm AI uses a comprehensive monitoring stack based on **Prometheus** for metrics collection and **Grafana** for visualization. We monitor the following key components:
+- **Next.js Frontend**: Web vitals, error rates, and API latency.
+- **FastAPI Backend**: Endpoint latency, request rates, error codes, and active WebSockets.
+- **Celery Workers**: Task queue length, processing time, success/failure rates.
+- **Redis & PostgreSQL**: Cache hit rates, connection pools, and query performance.
 
-```json
-{
-  "status": "healthy",
-  "version": "1.0.0",
-  "service": "Automated Manuscript Formatter",
-  "uptime": 3600.5
-}
-```
+## Metrics Architecture
 
-## Key Metrics
+1. **Prometheus Scrapers**: Prometheus polls the `/metrics` endpoint exposed by the FastAPI backend (using `prometheus-client`).
+2. **Node Exporter**: Collects system-level metrics (CPU, Memory, Disk I/O) from host machines.
+3. **Redis Exporter & Postgres Exporter**: Sidecar containers attached to our datastores to export DB-specific metrics.
 
-| Metric | Source | Description |
-| -------- | -------- | ------------- |
-| Request rate | API middleware | Requests per second |
-| Response time | API middleware | p50/p95/p99 latency |
-| Error rate | API middleware | 4xx/5xx percentage |
-| Active formats | Application | Concurrent formatting operations |
-| Memory usage | System | RSS memory in MB |
-| CPU usage | System | CPU utilization percentage |
-| Disk usage | System | Upload directory usage |
+## Key Dashboards
 
-## Prometheus (Future)
+Our standard Grafana deployment includes the following dashboards:
 
-Planned metrics endpoint at `/metrics`:
+### 1. Global Service Health
+- **Total Requests / Sec**: Analyzed across all API routes.
+- **Global Error Rate**: Aggregated HTTP 4xx and 5xx responses.
+- **System Resource Utilization**: CPU and Memory across all containers.
 
-```
-# HELP amf_format_requests_total Total format requests
-# TYPE amf_format_requests_total counter
-amf_format_requests_total{style="apa"} 150
+### 2. AI Processing Pipeline
+- **Agent Execution Time**: Time spent by the Forensic Auditor, Synthesis, and Layout agents.
+- **LLM API Latency**: External API latency (Groq, NVIDIA).
+- **Token Usage**: Token consumption rate per model.
 
-# HELP amf_format_duration_seconds Format duration
-# TYPE amf_format_duration_seconds histogram
-amf_format_duration_seconds_bucket{le="1"} 100
-amf_format_duration_seconds_bucket{le="5"} 45
-amf_format_duration_seconds_bucket{le="+Inf"} 5
-```
+### 3. Asynchronous Workers (Celery)
+- **Queue Depth**: Number of pending formatting or generation tasks.
+- **Worker Utilization**: Percentage of busy Celery workers.
+- **Task Failure Rate**: See the [Runbooks](RUNBOOKS.md) for handling spikes.
 
-## Logging
+## Alerting
 
-### Structured Logging (Future)
+Alertmanager is configured to route alerts to our Slack `#ops-alerts` channel and PagerDuty for critical severity.
 
-Logs will be output in JSON format for integration with log aggregation tools:
+- **Critical**: Database unreachable, 5xx rate > 5%, Celery queue depth > 1000 for 5 mins.
+- **Warning**: High CPU usage (>80%), High memory usage (>85%), Token rate limit approaching.
 
-```json
-{
-  "timestamp": "2026-07-25T10:30:00Z",
-  "level": "INFO",
-  "service": "amf-backend",
-  "request_id": "abc-123",
-  "endpoint": "/api/v1/format",
-  "duration_ms": 2100,
-  "style": "apa",
-  "pages": 15
-}
-```
-
-## Alerts
-
-### Critical
-
-- Service unreachable
-- Error rate > 5%
-- Response time > 10s for p95
-
-### Warning
-
-- Response time > 3s for p95
-- Error rate > 1%
-- Disk usage > 80%
-
-### Info
-
-- Unusual request patterns
-- Rate limit thresholds approached
+## Cross-References
+- [Observability Strategy](OBSERVABILITY.md)
+- [System Performance](PERFORMANCE.md)
+- [Incident Runbooks](RUNBOOKS.md)

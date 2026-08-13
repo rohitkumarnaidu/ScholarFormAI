@@ -1,39 +1,8 @@
-ScholarForm AI — Automated Academic Manuscript Formatting
-Copyright (c) 2026 ScholarForm AI
+ScholarForm AI
+Copyright 2026 ScholarForm AI
 
-This product includes software developed by:
-  - ScholarForm AI Contributors (https://github.com/rohitkumarnaidu/ScholarFormAI)
+This product includes software developed by the ScholarForm AI Project
+and its open-source contributors.
 
-Licensed under the MIT License. See LICENSE for the full license text.
-
-================================================================================
-Third-Party Notices
-================================================================================
-
-This product incorporates components from the following third-party projects.
-Full license texts are available in LICENSE or the THIRD_PARTY_NOTICES.md file.
-
-  Python (Backend):
-    - FastAPI (MIT)
-    - LangChain (MIT)
-    - Pydantic (MIT)
-    - Celery (BSD-3-Clause)
-    - SQLAlchemy (MIT)
-    - See backend/requirements.txt for complete list
-
-  JavaScript/TypeScript (Frontend):
-    - Next.js (MIT)
-    - React (MIT)
-    - Tailwind CSS (MIT)
-    - TipTap (MIT)
-    - Framer Motion (MIT)
-    - See frontend/package.json for complete list
-
-  Infrastructure:
-    - Redis (BSD-3-Clause)
-    - PostgreSQL/Postgres (PostgreSQL License)
-    - ChromaDB (Apache 2.0)
-    - GROBID (AGPL-3.0)
-    - Docling (MIT)
-    - Prometheus (Apache 2.0)
-    - Grafana (AGPL-3.0)
+Third-party dependencies and their respective licenses are listed in the
+THIRD_PARTY_LICENSES file in the root directory.

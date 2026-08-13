@@ -1,82 +1,49 @@
-# Runbooks
+# Operational Runbooks
 
-## Incident Response
+These runbooks provide step-by-step procedures for handling common incidents and system anomalies in the ScholarForm AI production environment.
 
-### Service Unreachable
+## 🚨 Incident 1: High API Error Rate (5xx > 5%)
 
-**Symptoms**: `curl http://localhost:8000/health` fails or returns non-200.
+**Symptoms:** Alertmanager fires `HighApiErrorRate`. Users report UI failures.
+**Immediate Actions:**
+1. Check the Grafana Global Health Dashboard to identify the failing endpoints.
+2. Check centralized logs (Loki/Elasticsearch) filtering for `level="ERROR"`.
+3. Check database connectivity. If the database is unreachable, verify RDS/Postgres health.
+**Resolution:**
+- If due to bad deployment, initiate rollback via ArgoCD/GitHub Actions.
+- If database connection pool is exhausted, restart the FastAPI pods to clear the pool and investigate connection leaks.
 
-**Steps**:
+## 🚨 Incident 2: Celery Queue Backup
 
-1. Check Docker status: `docker compose ps`
-2. Check container logs: `docker compose logs backend`
-3. Restart service: `docker compose restart backend`
-4. If persistent, check disk space and memory
-5. Escalate if hardware issue
+**Symptoms:** Alert `CeleryQueueDepthCritical` fires. Document formatting is taking too long.
+**Immediate Actions:**
+1. Check Grafana Asynchronous Workers dashboard. Are workers processing tasks, or are they hung?
+2. If workers are processing but the queue is growing, we lack compute capacity.
+**Resolution:**
+- Scale the Celery worker deployment: `kubectl scale deployment celery-worker --replicas=10`
+- If workers are hung (e.g., waiting indefinitely on an LLM API), check `OBSERVABILITY.md` traces. Ensure timeouts are configured correctly on the Groq/NVIDIA clients.
 
-### High Error Rate
+## 🚨 Incident 3: Redis Out of Memory (OOM)
 
-**Symptoms**: API returning 5xx errors, users reporting failures.
+**Symptoms:** Redis eviction rate spikes. Cache misses increase. Background tasks fail to enqueue.
+**Immediate Actions:**
+1. Connect to Redis and run `INFO memory` and `MEMORY DOCTOR`.
+2. Identify the largest keys.
+**Resolution:**
+- If the queue is too large, see Incident 2.
+- If cache keys (LLM responses) are consuming memory, adjust the TTL (Time to Live) configuration.
+- Temporarily scale up the Redis instance class.
 
-**Steps**:
+## 🚨 Incident 4: Third-Party LLM API Outage (Groq/NVIDIA)
 
-1. Check recent changes/deployments
-2. Review backend logs for error patterns
-3. Check `AMF_MAX_UPLOAD_SIZE` configuration
-4. Verify database connection (if configured)
-5. Roll back recent changes if necessary
+**Symptoms:** Spikes in 502/504 errors on AI Generation endpoints.
+**Immediate Actions:**
+1. Check the status pages for Groq and NVIDIA.
+**Resolution:**
+- Update the configuration (`CONFIGURATION.md`) to failover to the secondary provider if implemented.
+- Update the status page to notify users of degraded AI generation performance.
+- Formatting tasks relying solely on layout agents should still function.
 
-### Slow Formatting
-
-**Symptoms**: Format requests taking > 30 seconds.
-
-**Steps**:
-
-1. Check concurrent request count
-2. Monitor CPU and memory usage
-3. Check for large manuscript processing
-4. Scale horizontally if needed
-5. Consider increasing resource limits
-
-## Maintenance
-
-### Daily
-
-- Verify health endpoint
-- Check Docker container status
-- Review error logs
-
-### Weekly
-
-- Review performance metrics
-- Check disk usage
-- Update dependencies if needed
-
-### Monthly
-
-- Review and rotate API keys
-- Audit configuration
-- Backup configurations
-- Review and update documentation
-
-## Disaster Recovery
-
-### Full Service Outage
-
-1. **Assess**: Check all services, hardware, network
-2. **Contain**: Stop all services, preserve logs
-3. **Restore**:
-
-   ```bash
-   docker compose down
-   docker compose up -d
-   ```
-
-4. **Verify**: Run health checks, test formatting
-5. **Post-mortem**: Document root cause and prevention
-
-### Data Loss
-
-1. Restore from backup: `cp backup/config.json config/`
-2. Verify service health
-3. Test with known manuscripts
+## Cross-References
+- [Monitoring & Alerting](MONITORING.md)
+- [Configuration](CONFIGURATION.md)

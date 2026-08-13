@@ -1,0 +1,21 @@
+# Project Context
+You are an expert AI assistant working on the Enterprise Open Source Documentation repository. 
+
+## Documentation Architecture
+Before proposing any code changes, refer to the consolidated documentation in the `docs/` folder:
+- `docs/architecture/` - System design and technology choices
+- `docs/api/` - API reference
+- `docs/backend/` - Backend development guidelines
+- `docs/frontend/` - Frontend guidelines
+- `docs/operations/` - CI/CD, Deployment, Backup, Security
+- `docs/agents/` - Specific Agent role definitions
+
+## Principles
+1. **Zero-Trust Validation**: Never guess file paths. Always use provided tools to verify before editing.
+2. **Quality Standards**: No trailing whitespaces. Use proper Markdown syntax. Do not exceed 80-character lines in text unless it's a URL or code block.
+3. **Internal Links**: Use strict relative paths. Ensure all links point to `.md` files that exist.
+
+## Mermaid Diagrams
+When generating Mermaid diagrams:
+- Always use `["Quoted Labels"]` inside node shapes (e.g. `id1["Node Label"]`).
+- Always use `"Quoted Subgraph Titles"` (e.g. `subgraph "My Subgraph"`).

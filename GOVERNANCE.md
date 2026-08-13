@@ -1,43 +1,36 @@
-<!-- SPDX-License-Identifier: MIT -->
-<!-- Copyright (c) 2026 ScholarForm AI -->
+# Governance Model
 
-# ScholarForm AI Governance
+This document describes the governance model for the **ScholarForm AI** open-source project. Our goal is to ensure the project remains sustainable, transparent, and community-driven while maintaining enterprise-grade standards.
 
-This document describes the governance model for the ScholarForm AI open-source project.
+## 1. Project Structure
 
-## Core Team
+### 1.1 The Steering Committee
+The Steering Committee is the primary decision-making body for ScholarForm AI. It is responsible for:
+- Approving the project [Roadmap](ROADMAP.md).
+- Resolving technical disputes.
+- Overseeing the [Code of Conduct](CODE_OF_CONDUCT.md).
+- Managing project assets, trademark considerations, and overall Open Source Program Office (OSPO) alignment.
 
-The Core Team is responsible for the overall direction of the project, technical decisions, and community management. Core Team members have merge rights to the repository and are expected to:
+Currently, the Steering Committee consists of the Core Maintainers listed in [MAINTAINERS.md](MAINTAINERS.md).
 
-- Review pull requests within a reasonable timeframe (typically 48 hours during business days).
-- Guide the architectural and technical vision of the project.
-- Foster a welcoming and inclusive community.
-- Enforce the Code of Conduct.
+### 1.2 Maintainers
+Maintainers manage the day-to-day operations: reviewing code, triaging issues, and mentoring contributors. Maintainers have commit access to the core repositories.
 
-New Core Team members are added by a two-thirds majority vote of the existing Core Team.
+### 1.3 Contributors
+Anyone who interacts with the project—whether by submitting code, writing documentation, reporting bugs, or helping others—is a contributor.
 
-## Contributors
+## 2. Decision Making Process
+We operate on a model of **Lazy Consensus**.
+- When a proposal is made (e.g., via a GitHub Issue, PR, or Request for Comments (RFC)), it is assumed approved if no maintainer objects within 72 hours.
+- If an objection is raised, the maintainers will attempt to resolve it through discussion.
+- If consensus cannot be reached, the Steering Committee will call for a vote. A simple majority among the Steering Committee is required to pass a binding decision.
 
-Contributors are community members who submit pull requests, open issues, help with documentation, or support other users. We value all contributions!
+## 3. RFC (Request for Comments)
+For major architectural changes—such as introducing new Agentic AI paradigms, altering the core PDF extraction pipeline, or changing the database schema—an RFC must be submitted.
+- RFCs are submitted as PRs to an `rfcs/` directory (or via detailed GitHub Discussions).
+- They must outline the motivation, technical design, alternatives considered, and backward compatibility implications.
 
-- **Active Contributors**: Individuals who regularly contribute (e.g., multiple merged PRs, active issue triage). Active contributors may be nominated to join the Core Team.
-- **First-time Contributors**: Welcomed and encouraged. The Core Team will provide guidance to help new contributors get their first PR merged.
+## 4. Modifications to Governance
+This governance model is a living document. Changes to this model can be proposed by any contributor but must be ratified by a two-thirds majority of the Steering Committee.
 
-## Decision Making
-
-Most technical decisions are made through consensus during the code review process or via GitHub Discussions.
-
-For significant architectural changes or project-wide decisions:
-
-1. An issue or discussion thread is opened for public comment.
-2. The community is encouraged to provide feedback for at least 7 days.
-3. The Core Team will make a final decision based on consensus. If consensus cannot be reached, a simple majority vote among the Core Team will decide.
-
-## Issue and PR Management
-
-- **Triage**: The Core Team aims to triage new issues and PRs within 48 hours.
-- **Stale Issues**: Issues with no activity for 90 days will be marked as stale and closed after another 30 days unless activity resumes.
-
-## Changes to Governance
-
-Changes to this governance model can be proposed via a pull request and must be approved by a two-thirds majority of the Core Team.
+For more information, please see our [Contributing Guidelines](CONTRIBUTING.md).

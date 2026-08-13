@@ -5,8 +5,12 @@
 const nextConfig = {
     output: 'standalone',
     reactStrictMode: true,
+    compress: true,
+    poweredByHeader: false,
+    swcMinify: true,
     transpilePackages: ['react-resizable-panels'],
     experimental: {
+        instrumentationHook: true,
         optimizePackageImports: ['lucide-react', 'framer-motion', '@tanstack/react-query'],
     },
     allowedDevOrigins: ['127.0.0.1', 'localhost'],

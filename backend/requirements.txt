@@ -412,3 +412,4 @@ zope.event==6.2
 zope.interface==8.5
 zopfli==0.4.3
 zstandard==0.25.0
+opentelemetry-instrumentation-celery==0.60b1

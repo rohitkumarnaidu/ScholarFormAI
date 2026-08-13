@@ -297,7 +297,7 @@ class CacheSettings(BaseSettings):
 
 class DeploymentSettings(BaseSettings):
     DEBUG: bool = False
-    ENABLE_STRUCTURED_LOGGING: bool = False
+    ENABLE_STRUCTURED_LOGGING: bool = True
     GLOBAL_RATE_LIMIT_PER_MINUTE: int = 120
     MAX_FILE_SIZE: int = 60 * 1024 * 1024
     MAX_BATCH_FILES: int = 10

@@ -1,128 +1,34 @@
 # User Guide
 
+Welcome to ScholarFormAI! This guide will help you use our web dashboard to automatically format your scholarly documents.
+
 ## Getting Started
 
-AMF provides three ways to format your manuscripts: a web interface, a command-line tool, and a Python API.
+ScholarFormAI takes away the pain of manual formatting. Whether you are submitting a paper to a journal requiring APA 7th Edition or a conference requiring IEEE format, our engine handles fonts, margins, headings, and citations automatically.
 
-### Web Interface
+### 1. Creating an Account
+Navigate to our web portal and sign up. You will automatically be granted a free tier allowance to format your first 5 documents.
 
-1. Open `http://localhost:3000` (or the hosted version)
-2. Click "Format" in the navigation
-3. Paste or upload your manuscript text
-4. Select your citation style
-5. Adjust formatting options
-6. Click "Download DOCX" or "Preview"
+### 2. Uploading a Document
+1. Go to the **Dashboard**.
+2. Click **New Job**.
+3. Drag and drop your `.docx` file into the upload zone.
+4. Select your target **Template** (e.g., APA 7, MLA 9).
+5. Click **Format Document**.
 
-### Command Line
+### 3. Review and Download
+Processing typically takes 5-15 seconds depending on document length. Once complete, you will see a preview of the changes made. Click the **Download** button to retrieve your perfectly formatted `.docx` file.
 
-```bash
-# Create a new project
-amf init -n my-paper
+## Advanced Features
 
-# Format it
-amf format -i my-paper/manuscript.md -s apa
+### Custom Templates
+Enterprise users can create custom formatting templates. Navigate to the **Templates** tab in your dashboard to define custom typography, heading styles, and margin configurations using our visual editor.
 
-# Validate first
-amf validate -i my-paper/manuscript.md -s apa
+### API Access
+If you want to integrate ScholarFormAI into your own application or lab's workflow, you can generate an API key from the **Settings > Developer** tab.
 
-# Generate preview
-amf preview -i my-paper/manuscript.md -s apa --open
-```
+See the [API Reference](../api/API_REFERENCE.md) for more details.
 
-## Writing Your Manuscript
-
-### Markdown (Recommended)
-
-```markdown
-# Your Paper Title
-
-By Author Name
-
-## Abstract
-Write your abstract here.
-
-Keywords: keyword1, keyword2
-
-## Introduction
-Start writing your paper.
-
-## Methods
-Describe your methods.
-
-## Results
-Present your findings.
-
-## References
-Author, A. (Year). Title. Journal, Volume(Issue), Pages.
-```
-
-### LaTeX
-
-```latex
-\title{Your Paper Title}
-\author{Author Name}
-\begin{document}
-\maketitle
-\begin{abstract}
-Write your abstract here.
-\end{abstract}
-\section{Introduction}
-Start writing.
-\section{Methods}
-Describe methods.
-\end{document}
-```
-
-## Formatting Options
-
-### Page Size
-
-- **A4** (210 × 297 mm) — Standard for Europe/Asia
-- **Letter** (8.5 × 11 in) — Standard for North America
-- **Legal** (8.5 × 14 in) — Legal documents
-
-### Font
-
-- Times New Roman (standard for most academic styles)
-- Arial, Calibri, Georgia, Palatino
-
-### Line Spacing
-
-- 1.0 (single), 1.15, 1.5, 2.0 (double — standard for APA/MLA)
-
-### Margins
-
-- Default: 1 inch (2.54 cm) on all sides
-- Adjustable from 0.5 to 2 inches
-
-## Style-Specific Features
-
-### APA 7th Edition
-
-- Running head on every page
-- Title page with author affiliation
-- Abstract on page 2
-- Level 1-5 headings with specific formats
-- Hanging indent references
-- Page numbers top right
-
-### MLA 9th Edition
-
-- No title page (header with name/professor/class/date)
-- Last name + page numbers top right
-- Works Cited with hanging indent
-- 1-inch margins throughout
-
-### Chicago 17th Edition
-
-- Title page
-- Notes-Bibliography style
-- Footnotes support
-- Bibliography with hanging indent
-
-### IEEE
-
-- Two-column format (optional)
-- Numbered references [1], [2], etc.
-- 10pt font standard
-- Abstract and keywords
+## Help and Support
+- [FAQ](../support/FAQ.md)
+- [Troubleshooting](../support/TROUBLESHOOTING.md)

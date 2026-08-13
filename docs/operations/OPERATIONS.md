@@ -1,101 +1,26 @@
-# Operations Guide
+# Operations Overview
 
-## System Requirements
+The ScholarForm AI operations (Ops) stack is designed to provide maximum reliability, security, and visibility into our complex AI-driven workflows.
 
-### Minimum
+## DevOps Philosophy
 
-- 2 CPU cores
-- 2GB RAM
-- 10GB disk space
+We embrace the "You build it, you run it" philosophy, augmented by strong Site Reliability Engineering (SRE) practices. The operations layer is defined entirely as code (Infrastructure as Code) and relies on automated recovery mechanisms where possible.
 
-### Recommended
+## Key Operational Documents
 
-- 4 CPU cores
-- 4GB RAM
-- 50GB SSD
+To manage the ScholarForm AI platform effectively, refer to the following specific guides:
 
-## Monitoring
+- **[Deployment](DEPLOYMENT.md)**: How to package, deploy, and scale the application in production.
+- **[Configuration](CONFIGURATION.md)**: Managing environment variables, secrets, and feature flags.
+- **[Monitoring](MONITORING.md)**: Metrics collection, Prometheus setup, Grafana dashboards, and alerting rules.
+- **[Observability](OBSERVABILITY.md)**: Distributed tracing and centralized logging for debugging multi-agent interactions.
+- **[Performance & Tuning](PERFORMANCE.md)**: Strategies for optimizing API latency, Celery throughput, and database queries.
+- **[Benchmarks](BENCHMARKS.md)**: Load testing methodologies and historical performance KPIs.
+- **[Runbooks](RUNBOOKS.md)**: Step-by-step guides for responding to operational incidents and system failures.
 
-### Health Check
+## Operational Lifecycle
 
-```bash
-# API health
-curl http://localhost:8000/health
-
-# Expected response:
-{"status": "healthy", "version": "1.0.0", "service": "Automated Manuscript Formatter", "uptime": 1234.56}
-```
-
-### Metrics to Monitor
-
-- Request rate (req/s)
-- Response time (p50, p95, p99)
-- Error rate (5xx responses)
-- Concurrent formatting operations
-- Disk usage (uploads directory)
-- Memory usage
-
-## Logging
-
-### Log Levels
-
-- `DEBUG`: Detailed debugging information
-- `INFO`: Normal operational messages
-- `WARNING`: Indications of potential issues
-- `ERROR`: Error conditions that should be investigated
-- `CRITICAL`: Severe conditions requiring immediate action
-
-### Log Format
-
-```
-2026-07-25 10:30:00 | INFO     | app.api.routes:format_manuscript:42 | Formatted manuscript 'Title' with style 'apa' (15 pages)
-```
-
-## Backup
-
-### What to Backup
-
-- Configuration files
-- Custom style definitions
-- Uploaded manuscripts (optional)
-
-### Backup Schedule
-
-- Configuration: Daily
-- Uploads: Weekly
-
-## Upgrades
-
-### Rolling Upgrade
-
-1. Pull new images: `docker compose pull`
-2. Recreate services: `docker compose up -d`
-3. Verify health: `curl http://localhost:8000/health`
-
-### Upgrade Checklist
-
-- [ ] Review CHANGELOG for breaking changes
-- [ ] Backup configuration
-- [ ] Perform upgrade in staging first
-- [ ] Run health checks
-- [ ] Verify formatting quality with test manuscripts
-
-## Troubleshooting
-
-### High Memory Usage
-
-1. Check `AMF_MAX_UPLOAD_SIZE` configuration
-2. Consider adding memory limits to Docker
-3. Scale horizontally instead of vertically
-
-### Slow Response Times
-
-1. Check concurrent formatting requests
-2. Monitor CPU and memory
-3. Consider load balancing
-
-### Disk Full
-
-1. Clean up temporary files: `cleanup` directory
-2. Reduce upload TTL
-3. Increase disk size
+1. **Provisioning**: Infrastructure is managed via Terraform (see `ops/terraform/`).
+2. **Deployment**: CI/CD via GitHub Actions builds images; GitOps (ArgoCD) handles Kubernetes state.
+3. **Observation**: Prometheus and OpenTelemetry provide real-time feedback loop.
+4. **Incident Response**: Alerts trigger PagerDuty; on-call engineers consult [Runbooks](RUNBOOKS.md).

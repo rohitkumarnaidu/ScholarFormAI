@@ -122,13 +122,39 @@ async def preview_manuscript(request: PreviewRequest):
         raise HTTPException(status_code=500, detail=f"Preview failed: {str(e)}\n{traceback.format_exc()}")
 
 
+import json
+from app.cache.redis_cache import get_redis_cache
+
 @router.get("/styles", response_model=list[StyleInfo], summary="List all formatting styles")
 async def list_styles():
-    return style_registry.list_styles()
+    cache = get_redis_cache()
+    if cache.client:
+        cached = cache.get("api:styles:list")
+        if cached:
+            return json.loads(cached)
+    
+    styles = style_registry.list_styles()
+    
+    if cache.client:
+        cache.set("api:styles:list", json.dumps(styles), ttl=3600)
+        
+    return styles
 
 
 @router.get("/styles/{style_id}", response_model=StyleInfo, summary="Get style details")
 async def get_style(style_id: str):
+    cache = get_redis_cache()
+    if cache.client:
+        cached = cache.get(f"api:styles:{style_id}")
+        if cached:
+            return json.loads(cached)
+
     if style_id not in [s["id"] for s in style_registry.list_styles()]:
         raise StyleNotFoundError(style_id)
-    return style_registry.get_style_info(style_id)
+        
+    style_info = style_registry.get_style_info(style_id)
+    
+    if cache.client:
+        cache.set(f"api:styles:{style_id}", json.dumps(style_info), ttl=3600)
+        
+    return style_info
