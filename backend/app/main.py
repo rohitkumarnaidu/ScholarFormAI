@@ -70,8 +70,6 @@ except Exception:
 from app.pipeline.safety import safe_execution
 from app.services.enhancement_manager import enhancement_manager
 
-_queue_depth_redis_client = None
-
 
 from app.common.constants import ERROR_CODES as DEFAULT_ERROR_CODES
 
@@ -147,18 +145,15 @@ def _fetch_queue_depths() -> dict[str, int]:
     if not settings.REDIS_ENABLED:
         return {"interactive": 0, "batch": 0}
     try:
-        global _queue_depth_redis_client
-        if _queue_depth_redis_client is None:
-            import redis
+        import redis
 
-            _queue_depth_redis_client = redis.Redis.from_url(
-                settings.REDIS_URL,
-                decode_responses=True,
-            )
-        return {queue: int(_queue_depth_redis_client.llen(queue) or 0) for queue in ("interactive", "batch")}
+        with redis.Redis.from_url(
+            settings.REDIS_URL,
+            decode_responses=True,
+        ) as client:
+            return {queue: int(client.llen(queue) or 0) for queue in ("interactive", "batch")}
     except Exception as exc:
         logger.debug("Queue depth fetch failed: %s", exc)
-        _queue_depth_redis_client = None
         return {"interactive": 0, "batch": 0}
 
 
@@ -595,6 +590,7 @@ app.add_middleware(
         "X-Request-Id",
         "X-CSRF-Token",
         "Idempotency-Key",
+        "x-playwright-test",
     ],
 )
 
@@ -736,3 +732,12 @@ async def health_check():
 
     payload, _status_code = await get_health_payload()
     return JSONResponse(content=payload, status_code=200)
+
+
+from fastapi import WebSocket
+
+@app.websocket("/ws")
+async def dummy_ws(websocket: WebSocket):
+    """Dummy route to silently accept and drop rogue Next/Vite HMR websocket connections."""
+    await websocket.accept()
+    await websocket.close()

@@ -47,6 +47,7 @@ class Settings(BaseSettings):
         env_file=".env",
         env_prefix="AMF_",
         case_sensitive=False,
+        extra="ignore",
     )
 
     @model_validator(mode="after")

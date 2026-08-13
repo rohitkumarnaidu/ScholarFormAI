@@ -2,7 +2,7 @@ import logging
 import re
 from typing import Any
 
-from app.api.models import Manuscript
+from app.schemas.models import Manuscript
 
 logger = logging.getLogger(__name__)
 
