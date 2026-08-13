@@ -7,7 +7,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import MetricsCard from '@/src/components/MetricsCard';
 import HealthStatusIndicator from '@/src/components/HealthStatusIndicator';
-import Footer from '@/src/components/Footer';
 import Skeleton from '@/src/components/ui/Skeleton';
 import { getMetricsDb, getMetricsHealth, getMetricsDashboard } from '@/src/services/api';
 import { useAuth } from '@/src/context/AuthContext';
@@ -305,7 +304,6 @@ export default function AdminDashboard() {
                     </div>
                 )}
             </main>
-            <Footer />
         </div>
     );
 }

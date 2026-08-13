@@ -6,7 +6,6 @@ import usePageTitle from '@/src/hooks/usePageTitle';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import Footer from '@/src/components/Footer';
 import ExportDialog from '@/src/components/ExportDialog';
 import { useDocument } from '@/src/context/DocumentContext';
 import { useAuth } from '@/src/context/AuthContext';
@@ -52,7 +51,6 @@ export default function Download() {
                                 <main className="flex-1 flex flex-col items-center justify-center">
                     <p className="text-slate-500 dark:text-slate-400 mb-4">Loading document details...</p>
                 </main>
-                <Footer variant="app" />
             </div>
         );
     }
@@ -66,7 +64,6 @@ export default function Download() {
                         Return to History
                     </button>
                 </main>
-                <Footer variant="app" />
             </div>
         );
     }
@@ -78,7 +75,6 @@ export default function Download() {
                     <p className="text-slate-500 dark:text-slate-400 mb-4">No completed job found.</p>
                     <button onClick={() => navigate('/upload')} className="text-primary font-bold hover:underline">Return to Upload</button>
                 </main>
-                <Footer variant="app" />
             </div>
         );
     }
@@ -376,7 +372,6 @@ export default function Download() {
                 />
             </main>
 
-            <Footer variant="app" />
         </div>
     );
 }

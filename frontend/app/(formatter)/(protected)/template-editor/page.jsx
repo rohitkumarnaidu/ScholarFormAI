@@ -4,7 +4,6 @@
 'use client';
 import usePageTitle from '@/src/hooks/usePageTitle';
 import { useEffect, useState, useCallback } from 'react';
-import Footer from '@/src/components/Footer';
 import { getCustomTemplates, saveCustomTemplate } from '@/src/services/api';
 import { useToast } from '@/src/context/ToastContext';
 import { useAuth } from '@/src/context/AuthContext';
@@ -361,7 +360,6 @@ export default function TemplateEditor() {
                 </div>
             </main>
 
-            <Footer variant="app" />
         </div>
     );
 }

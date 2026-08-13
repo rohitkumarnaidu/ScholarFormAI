@@ -5,7 +5,6 @@
 import usePageTitle from '@/src/hooks/usePageTitle';
 import { useEffect, useState, useCallback } from 'react';
 import { useTheme } from '@/src/context/ThemeContext';
-import Footer from '@/src/components/Footer';
 import { useAuth } from '@/src/context/AuthContext';
 import { getUserTier, getRemainingQuota } from '@/src/lib/planTier';
 import { SettingsSchema } from '@/src/lib/schemas';
@@ -399,7 +398,6 @@ export default function SettingsPage() {
                     isDestructive={true}
                 />
             </main>
-            <Footer />
         </div>
     );
 }

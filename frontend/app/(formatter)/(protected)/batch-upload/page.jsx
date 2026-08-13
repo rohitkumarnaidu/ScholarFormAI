@@ -8,7 +8,6 @@ import { useAuth } from '@/src/context/AuthContext';
 import { canAccess } from '@/src/lib/planTier';
 import UpgradeModal from '@/src/components/UpgradeModal';
 
-import Footer from '@/src/components/Footer';
 import BatchUploadPanel from '@/src/components/BatchUploadPanel';
 import { uploadDocumentWithProgress } from '@/src/services/api';
 
@@ -202,7 +201,6 @@ export default function BatchUpload() {
                 )}
             </main>
             )}
-            <Footer />
         </div>
     );
 }

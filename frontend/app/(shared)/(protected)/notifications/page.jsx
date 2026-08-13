@@ -4,7 +4,6 @@
 'use client';
 import usePageTitle from '@/src/hooks/usePageTitle';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import Footer from '@/src/components/Footer';
 import { loadNotifications, saveNotifications } from '@/src/utils/notifications';
 
 // ── Notification preference keys in localStorage ─────────────
@@ -258,7 +257,6 @@ export default function NotificationsPage() {
                     </p>
                 </section>
             </main>
-            <Footer />
         </div>
     );
 }

@@ -20,14 +20,14 @@ const FormattingOptions = memo(function FormattingOptions({
     onProcess,
 }) {
     return (
-        <div className="bg-white surface-ladder-06 rounded-xl border border-slate-200 dark:border-slate-700/70 surface-ladder-border-10 p-6 shadow-sm hover:shadow-md dark:hover:shadow-none transition-shadow">
+        <div className="bg-white rounded-xl border border-slate-200 dark:border-slate-700/70 p-6 shadow-sm hover:shadow-md dark:hover:shadow-none transition-shadow">
             <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">tune</span>
                 2. Formatting Options
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-4">
-                    <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-slate-700/70 surface-ladder-border-10 bg-slate-50 surface-ladder-10 hover:bg-white hover:shadow-sm dark:hover:shadow-none dark:hover:bg-white/10 surface-ladder-hover-10 transition-all">
+                    <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-slate-700/70 bg-slate-50 hover:bg-white hover:shadow-sm dark:hover:shadow-none dark:hover:bg-white/10 transition-all">
                         <div className="flex items-center gap-2">
                             <span className="material-symbols-outlined text-slate-500">format_list_numbered</span>
                             <span className="text-sm font-bold text-slate-900 dark:text-white">Add Page Numbers</span>
@@ -47,7 +47,7 @@ const FormattingOptions = memo(function FormattingOptions({
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-slate-700/70 surface-ladder-border-10 bg-slate-50 surface-ladder-10 hover:bg-white hover:shadow-sm dark:hover:shadow-none dark:hover:bg-white/10 surface-ladder-hover-10 transition-all">
+                    <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-slate-700/70 bg-slate-50 hover:bg-white hover:shadow-sm dark:hover:shadow-none dark:hover:bg-white/10 transition-all">
                         <div className="flex items-center gap-2">
                             <span className="material-symbols-outlined text-slate-500">border_style</span>
                             <span className="text-sm font-bold text-slate-900 dark:text-white">Add Borders</span>
@@ -69,7 +69,7 @@ const FormattingOptions = memo(function FormattingOptions({
                 </div>
 
                 <div className="flex flex-col gap-4">
-                    <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-slate-700/70 surface-ladder-border-10 bg-slate-50 surface-ladder-10 hover:bg-white hover:shadow-sm dark:hover:shadow-none dark:hover:bg-white/10 surface-ladder-hover-10 transition-all">
+                    <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-slate-700/70 bg-slate-50 hover:bg-white hover:shadow-sm dark:hover:shadow-none dark:hover:bg-white/10 transition-all">
                         <div className="flex items-center gap-2">
                             <span className="material-symbols-outlined text-slate-500">article</span>
                             <span className="text-sm font-bold text-slate-900 dark:text-white">Add Cover Page</span>
@@ -89,7 +89,7 @@ const FormattingOptions = memo(function FormattingOptions({
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-slate-700/70 surface-ladder-border-10 bg-slate-50 surface-ladder-10 hover:bg-white hover:shadow-sm dark:hover:shadow-none dark:hover:bg-white/10 surface-ladder-hover-10 transition-all">
+                    <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-slate-700/70 bg-slate-50 hover:bg-white hover:shadow-sm dark:hover:shadow-none dark:hover:bg-white/10 transition-all">
                         <div className="flex flex-col">
                             <div className="flex items-center gap-2">
                                 <span className="material-symbols-outlined text-slate-500">toc</span>
@@ -123,7 +123,7 @@ const FormattingOptions = memo(function FormattingOptions({
                             value={pageSize}
                             onChange={(e) => setPageSize(e.target.value)}
                             disabled={isProcessing || progress === 100}
-                            className="w-full p-3 rounded-lg border border-slate-200 dark:border-slate-700/70 surface-ladder-border-10 bg-slate-50 surface-ladder-10 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                            className="w-full p-3 rounded-lg border border-slate-200 dark:border-slate-700/70 bg-slate-50 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                         >
                             <option value="Letter">Letter (US Default)</option>
                             <option value="A4">A4 (International)</option>

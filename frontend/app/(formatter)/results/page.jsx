@@ -7,7 +7,6 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-import Footer from '@/src/components/Footer';
 import ValidationCard from '@/src/components/ValidationCard';
 import { useDocument } from '@/src/context/DocumentContext';
 import { getPreview, getJobSummary } from '@/src/services/api.documents';
@@ -44,7 +43,9 @@ function ValidationResults() {
     }, []);
 
     useEffect(() => {
+        console.log('Results page effect: job:', job);
         if (!job?.id) {
+            console.log('Results page effect: no job id, clearing resolvedResult');
             setResolvedResult(null);
             setResultLoadError('');
             setIsLoadingResult(false);
@@ -54,12 +55,14 @@ function ValidationResults() {
         let isCancelled = false;
         
         if (!job.result) {
+            console.log('Results page effect: fetching preview');
             setIsLoadingResult(true);
             setResultLoadError('');
             getPreview(job.id, { debounceMs: 0 })
                 .then((data) => {
                     if (isCancelled) return;
                     const validation = data?.validation_results || null;
+                    console.log('Results page effect: preview loaded:', validation);
                     setResolvedResult(validation);
                     if (validation) {
                         setJob((previousJob) => ({ ...(previousJob || {}), result: validation }));
@@ -73,6 +76,9 @@ function ValidationResults() {
                 .finally(() => {
                     if (!isCancelled) setIsLoadingResult(false);
                 });
+        } else {
+            console.log('Results page effect: using job.result directly', job.result);
+            setResolvedResult(job.result);
         }
         
         setIsLoadingSummary(true);
@@ -110,7 +116,6 @@ function ValidationResults() {
                     </div>
                     <Skeleton className="h-[400px] w-full" />
                 </main>
-                <Footer variant="app" />
             </div>
         );
     }
@@ -125,7 +130,6 @@ function ValidationResults() {
                         Return to History
                     </button>
                 </main>
-                <Footer variant="app" />
             </div>
         );
     }
@@ -141,7 +145,6 @@ function ValidationResults() {
                     <p className="text-slate-500 dark:text-slate-400 mb-4">No validation results found. Your document may not have been processed yet.</p>
                     <button onClick={() => navigate('/upload')} className="text-primary font-bold hover:underline">Return to Upload</button>
                 </main>
-                <Footer variant="app" />
             </div>
         );
     }
@@ -177,7 +180,6 @@ function ValidationResults() {
                         </div>
                     </div>
                 </main>
-                <Footer variant="app" />
             </div>
         );
     }
@@ -193,7 +195,6 @@ function ValidationResults() {
                     {resultLoadError ? <p className="text-red-500 text-sm mb-4">{resultLoadError}</p> : null}
                     <button onClick={() => navigate('/upload')} className="text-primary font-bold hover:underline">Return to Upload</button>
                 </main>
-                <Footer variant="app" />
             </div>
         );
     }
@@ -547,7 +548,6 @@ function ValidationResults() {
                     </button>
                 </div>
 
-                <Footer variant="app" />
             </main>
         </>
     );

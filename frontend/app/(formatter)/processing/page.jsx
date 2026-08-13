@@ -7,7 +7,6 @@ import { useCallback, useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 
-import Footer from '@/src/components/Footer';
 import Stepper from '@/src/components/Stepper';
 import StatusBadge from '@/src/components/StatusBadge';
 import { useDocument } from '@/src/context/DocumentContext';
@@ -237,7 +236,6 @@ export default function Processing() {
                         </div>
                     </div>
                 </main>
-                <Footer variant="app" />
             </div>
         );
     }
@@ -310,7 +308,6 @@ export default function Processing() {
                 </p>
             </main>
 
-            <Footer variant="app" />
         </div>
     );
 }

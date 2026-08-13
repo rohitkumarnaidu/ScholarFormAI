@@ -12,7 +12,6 @@ import { useUpload } from '@/src/hooks/useUpload';
 import { trackPageView } from '@/src/lib/rum';
 
 // Core Components
-import Footer from '@/src/components/Footer';
 import CategoryTabs from '@/src/components/upload/CategoryTabs';
 import TemplateSelector from '@/src/components/upload/TemplateSelector';
 import FormattingOptions from '@/src/components/upload/FormattingOptions';
@@ -167,14 +166,14 @@ function UploadContent() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <div className="lg:col-span-7 flex flex-col gap-6">
                         {/* 1. Document Source */}
-                        <div className="bg-white surface-ladder-06 rounded-xl border border-slate-200 dark:border-slate-700/70 surface-ladder-border-10 p-6 shadow-sm hover:shadow-md dark:hover:shadow-none transition-shadow">
+                        <div className="bg-white rounded-xl border border-slate-200 dark:border-slate-700/70 p-6 shadow-sm hover:shadow-md dark:hover:shadow-none transition-shadow">
                             <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                                 <span className="material-symbols-outlined text-primary">upload_file</span>
                                 1. Document Source
                             </h2>
                             <div
                                 id="upload-zone"
-                                className={`flex flex-col items-center gap-6 rounded-xl border-2 border-dashed px-6 py-12 transition-all relative group/zone ${file ? 'border-primary bg-primary/5' : 'border-slate-300 dark:border-slate-700 surface-ladder-border-10 bg-slate-50/50 surface-ladder-10'
+                                className={`flex flex-col items-center gap-6 rounded-xl border-2 border-dashed px-6 py-12 transition-all relative group/zone ${file ? 'border-primary bg-primary/5' : 'border-slate-300 dark:border-slate-700 bg-slate-50/50 '
                                     } hover:border-primary hover:bg-slate-50 dark:hover:bg-white/5`}
                                 onDragOver={(e) => e.preventDefault()}
                                 onDrop={handleDrop}
@@ -243,7 +242,7 @@ function UploadContent() {
                         />
 
                         {/* Fast Mode Toggle */}
-                        <div className="bg-white surface-ladder-06 rounded-xl border border-slate-200 dark:border-slate-700/70 surface-ladder-border-10 p-6 shadow-sm hover:shadow-md dark:hover:shadow-none transition-shadow">
+                        <div className="bg-white rounded-xl border border-slate-200 dark:border-slate-700/70 p-6 shadow-sm hover:shadow-md dark:hover:shadow-none transition-shadow">
                             <FastModeToggle
                                 fastMode={formattingOptions.fastMode}
                                 setFastMode={(val) => updateFormattingOption('fastMode', val)}
@@ -275,7 +274,6 @@ function UploadContent() {
                 </div>
             </main>
 
-            <Footer variant="app" />
         </div>
     );
 }

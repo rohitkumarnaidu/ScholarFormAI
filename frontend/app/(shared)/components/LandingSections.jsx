@@ -111,7 +111,7 @@ export function LandingHero() {
         <section ref={heroRef} className="relative overflow-hidden py-12 lg:py-18 w-full border-b border-slate-100 dark:border-slate-800">
             <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
                 <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-primary/5 dark:bg-primary/10 blur-2xl hidden sm:block" />
-                <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-blue-900/5 surface-ladder-10 blur-2xl hidden sm:block" />
+                <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-blue-900/5 blur-2xl hidden sm:block" />
             </div>
 
             <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
@@ -144,16 +144,16 @@ export function LandingHero() {
                     </div>
 
                     <div className="relative fade-in-up" style={{ animationDelay: '180ms' }}>
-                        <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-white dark:bg-slate-800 surface-ladder-10 shadow-2xl border border-slate-200 dark:border-slate-700 surface-ladder-border-14 relative" style={heroAnimation('hero-pulse-glow 3s ease-in-out infinite')}>
+                        <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 relative" style={heroAnimation('hero-pulse-glow 3s ease-in-out infinite')}>
                             <div className="absolute inset-0 flex flex-col">
-                                <div className="flex items-center gap-2 px-4 py-2.5 border-b border-slate-100 dark:border-slate-700 surface-ladder-border-10 bg-slate-50 dark:bg-slate-900/50 surface-ladder-06">
+                                <div className="flex items-center gap-2 px-4 py-2.5 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 ">
                                     <div className="flex gap-1.5">
                                         <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
                                         <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
                                         <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
                                     </div>
                                     <div className="flex-1 flex justify-center">
-                                        <div className="px-3 py-0.5 bg-white dark:bg-slate-800 surface-ladder-06 rounded text-[10px] font-medium text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 surface-ladder-border-10">
+                                        <div className="px-3 py-0.5 bg-white dark:bg-slate-800 rounded text-[10px] font-medium text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 ">
                                             uploaded_manuscript.docx
                                         </div>
                                     </div>
@@ -173,7 +173,7 @@ export function LandingHero() {
                                         <div className="h-3 bg-slate-200 dark:bg-slate-600 rounded-sm" style={{ ...heroAnimation('hero-line-type 6s ease-out infinite', '1.6s'), maxWidth: '85%' }} />
                                     </div>
 
-                                    <div className="w-[35%] border-l border-slate-100 dark:border-slate-700 surface-ladder-border-10 p-3 flex flex-col gap-2.5 bg-slate-50/50 dark:bg-slate-900/30 surface-ladder-06">
+                                    <div className="w-[35%] border-l border-slate-100 dark:border-slate-700 p-3 flex flex-col gap-2.5 bg-slate-50/50 dark:bg-slate-900/30 ">
                                         <div className="flex items-center justify-between">
                                             <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Formatting</span>
                                             <span className="text-[9px] font-bold text-green-600">Ready</span>
@@ -194,7 +194,7 @@ export function LandingHero() {
                                 </div>
                             </div>
                         </div>
-                        <div className="absolute -bottom-6 -left-6 bg-white dark:bg-slate-800 surface-ladder-10 p-6 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 surface-ladder-border-14 hidden md:block">
+                        <div className="absolute -bottom-6 -left-6 bg-white dark:bg-slate-800 p-6 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 hidden md:block">
                             <div className="flex items-center gap-4">
                                 <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
                                     <span className="material-symbols-outlined text-green-600">check_circle</span>
@@ -274,7 +274,7 @@ export function FeatureGrid() {
                     {features.map((f) => {
                         const c = colorMap[f.color];
                         return (
-                            <div key={f.title} className={`group p-8 bg-white dark:bg-slate-800/50 surface-ladder-06 rounded-2xl border border-slate-200 dark:border-slate-700 surface-ladder-border-10 ${c.hover} transition-all duration-300 ${c.shadow} hover:-translate-y-1.5 ${c.bg} surface-ladder-hover-10 relative overflow-hidden`}>
+                            <div key={f.title} className={`group p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 ${c.hover} transition-all duration-300 ${c.shadow} hover:-translate-y-1.5 ${c.bg} relative overflow-hidden`}>
                                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${c.gradient} opacity-0 group-hover:opacity-100 transition-opacity`} />
                                 <div className={`size-12 rounded-xl bg-gradient-to-br ${c.from} ${c.to} text-white flex items-center justify-center mb-6 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-${f.color}-500/30 transition-all`}>
                                     <span className="material-symbols-outlined">{f.icon}</span>
@@ -357,7 +357,7 @@ export function TemplatePreview() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                     {templates.map((t) => (
-                        <Link key={t.title} href="/templates" className={`flex flex-col gap-4 p-5 rounded-xl bg-white dark:bg-slate-900 surface-ladder-06 border border-slate-200 dark:border-slate-800 surface-ladder-border-10 ${t.hoverShadow} ${t.hoverBorder} transition-all duration-300 group relative overflow-hidden hover:-translate-y-1`}>
+                        <Link key={t.title} href="/templates" className={`flex flex-col gap-4 p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 ${t.hoverShadow} ${t.hoverBorder} transition-all duration-300 group relative overflow-hidden hover:-translate-y-1`}>
                             <div className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${t.gradient} rounded-l-xl`} />
                             <div className="flex justify-between items-start">
                                 <div className={`size-10 rounded-lg ${t.bg} flex items-center justify-center ${t.text} ${t.border}`}>
@@ -395,7 +395,7 @@ export function PricingSection() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                    <div className="flex flex-col p-8 bg-background-light dark:bg-slate-800/50 surface-ladder-06 rounded-2xl border border-slate-200 dark:border-slate-700 surface-ladder-border-10 hover:shadow-lg transition-all">
+                    <div className="flex flex-col p-8 bg-background-light dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all">
                         <div className="mb-6">
                             <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-1">Starter</h4>
                             <p className="text-sm text-slate-500 dark:text-slate-400">For individual researchers</p>
@@ -426,7 +426,7 @@ export function PricingSection() {
                         </Link>
                     </div>
 
-                    <div className="flex flex-col p-8 bg-white dark:bg-slate-900 surface-ladder-10 rounded-2xl border-2 border-primary shadow-xl shadow-primary/10 relative scale-[1.03]">
+                    <div className="flex flex-col p-8 bg-white dark:bg-slate-900 rounded-2xl border-2 border-primary shadow-xl shadow-primary/10 relative scale-[1.03]">
                         <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider">
                             Most Popular
                         </div>
@@ -465,7 +465,7 @@ export function PricingSection() {
                         </Link>
                     </div>
 
-                    <div className="flex flex-col p-8 bg-background-light dark:bg-slate-800/50 surface-ladder-06 rounded-2xl border border-slate-200 dark:border-slate-700 surface-ladder-border-10 hover:shadow-lg transition-all">
+                    <div className="flex flex-col p-8 bg-background-light dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all">
                         <div className="mb-6">
                             <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-1">Institution</h4>
                             <p className="text-sm text-slate-500 dark:text-slate-400">For labs &amp; departments</p>
@@ -511,8 +511,8 @@ export function CTASection() {
             <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
                 <div className="relative bg-gradient-to-br from-slate-900 via-slate-950 to-black theme-dark-cta rounded-3xl p-8 md:p-16 overflow-hidden">
                     <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/20 rounded-full blur-3xl hidden sm:block" />
-                    <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-blue-900/20 dark:bg-white/10 surface-ladder-10 rounded-full blur-3xl hidden sm:block" />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/10 surface-ladder-06 rounded-full blur-3xl hidden sm:block" />
+                    <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-blue-900/20 dark:bg-white/10 rounded-full blur-3xl hidden sm:block" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl hidden sm:block" />
                     <div className="relative z-10 flex flex-col items-center text-center gap-8">
                         <h2 className="text-3xl md:text-5xl font-black text-white leading-tight max-w-2xl">
                             Ready to format your paper for publication?
@@ -574,7 +574,7 @@ export function AboutSection() {
                             </div>
                         </div>
                     </div>
-                    <div className="bg-white dark:bg-slate-800 surface-ladder-06 rounded-2xl p-8 border border-slate-200 dark:border-slate-700 surface-ladder-border-10 shadow-lg">
+                    <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700 shadow-lg">
                         <div className="flex flex-col gap-6">
                             <div className="flex items-start gap-4">
                                 <div className="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">

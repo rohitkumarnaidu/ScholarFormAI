@@ -50,6 +50,21 @@ export function Navbar() {
           >
             <Github className="h-5 w-5" />
           </a>
+          
+          <div className="ml-4 flex items-center gap-2 border-l border-slate-200 pl-4 dark:border-slate-800">
+            <Link
+              href="/login"
+              className="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-primary-800 dark:hover:text-white"
+            >
+              Login
+            </Link>
+            <Link
+              href="/signup"
+              className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-700"
+            >
+              Sign Up
+            </Link>
+          </div>
         </div>
 
         <button
@@ -76,6 +91,22 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
+          <div className="mt-4 flex flex-col gap-2 border-t border-slate-200 pt-4 dark:border-slate-800">
+            <Link
+              href="/login"
+              onClick={() => setOpen(false)}
+              className="block rounded-lg px-3 py-2 text-center text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-primary-800"
+            >
+              Login
+            </Link>
+            <Link
+              href="/signup"
+              onClick={() => setOpen(false)}
+              className="block rounded-lg bg-primary-600 px-3 py-2 text-center text-sm font-medium text-white transition-colors hover:bg-primary-700"
+            >
+              Sign Up
+            </Link>
+          </div>
         </div>
       )}
     </nav>

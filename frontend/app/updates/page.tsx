@@ -115,16 +115,16 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-6">
-          <Link href="/" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-4">
+          <Link href="/" className="inline-flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300 mb-4">
             <ArrowLeft className="h-4 w-4" />
             Back to Home
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Update Settings</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage application updates, channels, and release history</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Update Settings</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Manage application updates, channels, and release history</p>
         </div>
 
         {/* Message */}
@@ -139,15 +139,15 @@ export default function SettingsPage() {
         )}
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-200 mb-6">
+        <div className="flex border-b border-slate-200 dark:border-slate-700 mb-6">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === tab.id
-                  ? "border-blue-500 text-blue-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  ? "border-accent-500 text-accent-500"
+                  : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300 hover:border-slate-200 dark:border-slate-700"
               }`}
             >
               <tab.icon className="h-4 w-4" />
@@ -159,16 +159,16 @@ export default function SettingsPage() {
         {/* Tab Content */}
         {activeTab === "check" && (
           <div className="space-y-4">
-            <div className="rounded-xl border border-gray-200 bg-white p-6">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Check for Updates</h2>
-                  <p className="text-sm text-gray-500">Check if a new version is available</p>
+                  <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Check for Updates</h2>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Check if a new version is available</p>
                 </div>
                 <button
                   onClick={handleCheck}
                   disabled={checking}
-                  className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                  className="inline-flex items-center gap-2 rounded-lg bg-accent-500 px-4 py-2 text-sm font-medium text-white hover:bg-accent-400 disabled:opacity-50 transition-colors"
                 >
                   <RefreshCw className={`h-4 w-4 ${checking ? "animate-spin" : ""}`} />
                   {checking ? "Checking..." : "Check Now"}
@@ -180,28 +180,28 @@ export default function SettingsPage() {
                   checkResult.status === "up-to-date"
                     ? "bg-green-50 border-green-200"
                     : checkResult.status === "update-available"
-                    ? "bg-blue-50 border-blue-200"
+                    ? "bg-accent-50 dark:bg-accent-500/10 border-blue-200"
                     : "bg-red-50 border-red-200"
                 }`}>
                   <div className="flex items-start gap-3">
                     {checkResult.status === "up-to-date" ? (
                       <div className="rounded-full bg-green-100 p-1.5"><Download className="h-4 w-4 text-green-600" /></div>
                     ) : checkResult.status === "update-available" ? (
-                      <div className="rounded-full bg-blue-100 p-1.5"><AlertTriangle className="h-4 w-4 text-blue-600" /></div>
+                      <div className="rounded-full bg-accent-100 dark:bg-accent-500/20 p-1.5"><AlertTriangle className="h-4 w-4 text-accent-500" /></div>
                     ) : (
                       <div className="rounded-full bg-red-100 p-1.5"><AlertTriangle className="h-4 w-4 text-red-600" /></div>
                     )}
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">
+                      <p className="font-medium text-slate-900 dark:text-slate-100">
                         {checkResult.status === "up-to-date" && `Up to date (v${checkResult.current_version})`}
                         {checkResult.status === "update-available" && `Update available: v${checkResult.latest_version}`}
                         {checkResult.status === "error" && "Check failed"}
                       </p>
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                         {checkResult.error || `Checked at ${new Date(checkResult.checked_at).toLocaleString()}`}
                       </p>
                       {checkResult.update?.changelog && (
-                        <ul className="mt-2 text-sm text-gray-600 list-disc list-inside space-y-0.5">
+                        <ul className="mt-2 text-sm text-slate-600 dark:text-slate-400 list-disc list-inside space-y-0.5">
                           {checkResult.update.changelog.slice(0, 5).map((c, i) => <li key={i}>{c}</li>)}
                         </ul>
                       )}
@@ -210,7 +210,7 @@ export default function SettingsPage() {
                           <button
                             onClick={handleDownload}
                             disabled={downloading}
-                            className="inline-flex items-center gap-1 rounded-md bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                            className="inline-flex items-center gap-1 rounded-md bg-accent-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-accent-400 disabled:opacity-50 transition-colors"
                           >
                             <Download className="h-3 w-3" />
                             {downloading ? "Downloading..." : "Download & Install"}
@@ -220,7 +220,7 @@ export default function SettingsPage() {
                               href={checkResult.update.release_notes_url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                              className="inline-flex items-center gap-1 rounded-md border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                             >
                               Release Notes
                             </a>
@@ -238,15 +238,15 @@ export default function SettingsPage() {
               <button
                 onClick={handleRollback}
                 disabled={installing}
-                className="rounded-xl border border-gray-200 bg-white p-4 hover:shadow-md transition-shadow text-left disabled:opacity-50"
+                className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white p-4 hover:shadow-md transition-shadow text-left disabled:opacity-50"
               >
                 <div className="flex items-center gap-3">
                   <div className="rounded-full bg-amber-100 p-2">
                     <RotateCcw className="h-4 w-4 text-amber-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 text-sm">Rollback Update</p>
-                    <p className="text-xs text-gray-500">Revert to previous version</p>
+                    <p className="font-medium text-slate-900 dark:text-slate-100 text-sm">Rollback Update</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Revert to previous version</p>
                   </div>
                 </div>
               </button>
@@ -254,15 +254,15 @@ export default function SettingsPage() {
                 href="https://github.com/amf/automated-manuscript-formatter/releases"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-xl border border-gray-200 bg-white p-4 hover:shadow-md transition-shadow block"
+                className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white p-4 hover:shadow-md transition-shadow block"
               >
                 <div className="flex items-center gap-3">
                   <div className="rounded-full bg-purple-100 p-2">
                     <Download className="h-4 w-4 text-purple-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 text-sm">GitHub Releases</p>
-                    <p className="text-xs text-gray-500">View all releases on GitHub</p>
+                    <p className="font-medium text-slate-900 dark:text-slate-100 text-sm">GitHub Releases</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">View all releases on GitHub</p>
                   </div>
                 </div>
               </a>
@@ -271,22 +271,22 @@ export default function SettingsPage() {
         )}
 
         {activeTab === "settings" && settings && (
-          <div className="rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Update Preferences</h2>
+          <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white p-6">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Update Preferences</h2>
             <div className="space-y-4">
               {/* Channel */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Release Channel</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Release Channel</label>
                 <select
                   value={settings.channel}
                   onChange={e => setSettings({ ...settings, channel: e.target.value })}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm"
                 >
                   {channels.map(c => (
                     <option key={c.id} value={c.id}>{c.name} {c.recommended ? "(Recommended)" : ""}</option>
                   ))}
                 </select>
-                <p className="text-xs text-gray-500 mt-1">{channels.find(c => c.id === settings.channel)?.description}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{channels.find(c => c.id === settings.channel)?.description}</p>
               </div>
 
               {/* Toggles */}
@@ -304,8 +304,8 @@ export default function SettingsPage() {
               ] as const).map(([key, label, desc]) => (
                 <div key={key} className="flex items-center justify-between py-2">
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{label}</p>
-                    <p className="text-xs text-gray-500">{desc}</p>
+                    <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{label}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{desc}</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -314,14 +314,14 @@ export default function SettingsPage() {
                       onChange={e => setSettings({ ...settings, [key]: e.target.checked })}
                       className="sr-only peer"
                     />
-                    <div className="w-9 h-5 bg-gray-200 rounded-full peer peer-checked:bg-blue-600 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all" />
+                    <div className="w-9 h-5 bg-gray-200 rounded-full peer peer-checked:bg-accent-500 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all" />
                   </label>
                 </div>
               ))}
 
               {/* Frequency */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Check Frequency (hours)
                 </label>
                 <input
@@ -330,26 +330,26 @@ export default function SettingsPage() {
                   max={720}
                   value={settings.check_frequency_hours}
                   onChange={e => setSettings({ ...settings, check_frequency_hours: parseInt(e.target.value) || 24 })}
-                  className="w-24 rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  className="w-24 rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm"
                 />
               </div>
 
               {/* Proxy */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Proxy URL (optional)</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Proxy URL (optional)</label>
                 <input
                   type="text"
                   value={settings.proxy_url || ""}
                   onChange={e => setSettings({ ...settings, proxy_url: e.target.value || null })}
                   placeholder="http://proxy:8080"
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  className="w-full rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm"
                 />
               </div>
 
               <button
                 onClick={handleSaveSettings}
                 disabled={saving}
-                className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg bg-accent-500 px-4 py-2 text-sm font-medium text-white hover:bg-accent-400 disabled:opacity-50 transition-colors"
               >
                 <Save className={`h-4 w-4 ${saving ? "animate-spin" : ""}`} />
                 {saving ? "Saving..." : "Save Settings"}
@@ -359,10 +359,10 @@ export default function SettingsPage() {
         )}
 
         {activeTab === "history" && (
-          <div className="rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Update History</h2>
+          <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white p-6">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Update History</h2>
             {history.length === 0 ? (
-              <p className="text-sm text-gray-500">No update history yet.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">No update history yet.</p>
             ) : (
               <div className="space-y-3">
                 {history.map((entry, i) => (
@@ -376,9 +376,9 @@ export default function SettingsPage() {
                         }`}>
                           v{entry.version}
                         </span>
-                        <span className="text-xs text-gray-500 capitalize">{entry.channel}</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 capitalize">{entry.channel}</span>
                       </div>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
                         {new Date(entry.installed_at).toLocaleString()}
                       </span>
                     </div>
@@ -401,19 +401,19 @@ export default function SettingsPage() {
           <div className="space-y-4">
             {channels.map((channel, i) => (
               <div key={i} className={`rounded-xl border p-5 ${
-                channel.recommended ? "border-blue-200 bg-blue-50" : "border-gray-200 bg-white"
+                channel.recommended ? "border-blue-200 bg-accent-50 dark:bg-accent-500/10" : "border-slate-200 dark:border-slate-700 bg-white"
               }`}>
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-semibold text-gray-900 capitalize">
+                    <h3 className="font-semibold text-slate-900 dark:text-slate-100 capitalize">
                       {channel.name}
                       {channel.recommended && (
-                        <span className="ml-2 inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
+                        <span className="ml-2 inline-flex items-center rounded-full bg-accent-100 dark:bg-accent-500/20 px-2 py-0.5 text-xs font-medium text-blue-800">
                           Recommended
                         </span>
                       )}
                     </h3>
-                    <p className="text-sm text-gray-600 mt-1">{channel.description}</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{channel.description}</p>
                   </div>
                   {settings?.channel === channel.id && (
                     <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">

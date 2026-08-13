@@ -2,9 +2,9 @@
 // Copyright (c) 2026 ScholarForm AI
 
 import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useDocument } from '../context/DocumentContext';
-import { getJobSummary } from '@/services/api';
+import { getJobSummary } from '@/src/services/api.documents';
 
 const normalizeSummaryToJob = (summary, fallbackId) => {
     const filename = summary?.filename
@@ -26,7 +26,8 @@ const normalizeSummaryToJob = (summary, fallbackId) => {
 };
 
 export default function useJobFromUrl() {
-    const { jobId } = useParams();
+    const searchParams = useSearchParams();
+    const jobId = searchParams?.get('jobId') || null;
     const { job, setJob } = useDocument();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');

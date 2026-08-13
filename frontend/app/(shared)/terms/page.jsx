@@ -3,7 +3,6 @@
 
 'use client';
 import usePageTitle from '@/src/hooks/usePageTitle';
-import Footer from '@/src/components/Footer';
 
 export default function Terms() {
     usePageTitle('Terms of Service');
@@ -75,7 +74,6 @@ export default function Terms() {
                     ))}
                 </div>
             </main>
-            <Footer variant="app" />
         </div>
     );
 }

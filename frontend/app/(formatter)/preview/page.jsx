@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 import PreviewView from '@/src/components/Preview';
 import ErrorBoundary from '@/src/components/ErrorBoundary';
 import useJobFromUrl from '@/src/hooks/useJobFromUrl';
-import Footer from '@/src/components/Footer';
 import Skeleton from '@/src/components/ui/Skeleton';
 
 export default function Preview() {
@@ -39,7 +38,6 @@ export default function Preview() {
                         <Skeleton className="h-[200px] w-full" />
                     </div>
                 </main>
-                <Footer variant="app" />
             </div>
         );
     }
@@ -54,7 +52,6 @@ export default function Preview() {
                         Return to History
                     </button>
                 </main>
-                <Footer variant="app" />
             </div>
         );
     }

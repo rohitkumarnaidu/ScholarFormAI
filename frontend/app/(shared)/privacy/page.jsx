@@ -3,7 +3,6 @@
 
 'use client';
 import usePageTitle from '@/src/hooks/usePageTitle';
-import Footer from '@/src/components/Footer';
 
 export default function Privacy() {
     usePageTitle('Privacy Policy');
@@ -75,7 +74,6 @@ export default function Privacy() {
                     </section>
                 </div>
             </main>
-            <Footer variant="app" />
         </div>
     );
 }

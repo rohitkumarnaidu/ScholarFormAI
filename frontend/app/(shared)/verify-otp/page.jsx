@@ -101,23 +101,23 @@ function VerifyOTPContent() {
     };
 
     return (
-        <div className="flex-1 w-full flex flex-col font-display transition-colors duration-300 w-full relative bg-gradient-to-br from-violet-50 via-indigo-50 to-blue-50 theme-dark-base">
+        <div className="flex-1 w-full flex flex-col font-display transition-colors duration-300 w-full relative bg-gradient-to-br from-primary-950 via-primary-900 to-primary-800 text-white selection:bg-accent-500/30">
 
             {/* Page background blob decorations */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-                <div className="absolute top-[-10%] left-[-5%] w-[45%] h-[45%] bg-violet-400/25 surface-ladder-10 rounded-full blur-[120px]"></div>
-                <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] bg-blue-400/20 dark:bg-white/10 surface-ladder-06 rounded-full blur-[100px]"></div>
+                <div className="absolute top-[-10%] left-[-5%] w-[45%] h-[45%] bg-accent-500/20 rounded-full blur-[120px]"></div>
+                <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] bg-primary-500/30 rounded-full blur-[100px]"></div>
             </div>
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl w-full flex-1 flex flex-col lg:flex-row items-center justify-center lg:justify-between py-12 lg:py-0 relative z-10">
                 {/* Left Side: Content floating on gradient background */}
                 <div className="hidden lg:flex w-full lg:w-[55%] flex-col justify-center pr-8 xl:pr-20 relative h-full">
                     <div className="relative z-10 max-w-lg animate-in fade-in slide-in-from-left-8 duration-1000">
-                        <h2 className="text-4xl xl:text-5xl font-extrabold text-slate-900 dark:text-white mb-5 leading-tight">
+                        <h2 className="text-4xl xl:text-5xl font-extrabold text-white mb-5 leading-tight">
                             Verify your identity <br />
-                            <span className="text-primary dark:text-primary">to continue securely.</span>
+                            <span className="text-accent-400">to continue securely.</span>
                         </h2>
-                        <p className="text-base text-slate-600 dark:text-slate-400 mb-10 leading-relaxed max-w-md">
+                        <p className="text-base text-white/60 mb-10 leading-relaxed max-w-md">
                             Enter the 6-digit confirmation code we sent to your email to verify your ownership of this account.
                         </p>
 
@@ -125,12 +125,12 @@ function VerifyOTPContent() {
                             <div className="flex -space-x-3">
                                 {[1, 2, 3, 4].map((i) => (
                                     <div key={i} className="w-10 h-10 rounded-full border-2 border-white dark:border-background-dark bg-gradient-to-br from-violet-200 to-indigo-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center shadow-md">
-                                        <span className="material-symbols-outlined text-[16px] text-violet-600 dark:text-slate-400">person</span>
+                                        <span className="material-symbols-outlined text-[16px] text-white/40">person</span>
                                     </div>
                                 ))}
                             </div>
-                            <div className="text-sm font-semibold text-slate-600 dark:text-slate-400">
-                                Trusted by <span className="text-slate-900 dark:text-white font-black">25k+</span> researchers
+                            <div className="text-sm font-semibold text-white/60">
+                                Trusted by <span className="text-white font-black">25k+</span> researchers
                             </div>
                         </div>
                     </div>
@@ -139,15 +139,15 @@ function VerifyOTPContent() {
                 {/* Right Side: Glassmorphic Form Card */}
                 <div className="w-full lg:w-[45%] flex items-center justify-center lg:h-full">
                     <div className="w-full max-w-[420px] z-10 animate-in fade-in slide-in-from-right-8 duration-700">
-                        <div className="w-full bg-white/60 dark:bg-slate-900/80 surface-ladder-10 backdrop-blur-2xl shadow-2xl shadow-violet-500/10 dark:shadow-black/40 border border-white/80 dark:border-slate-700/40 surface-ladder-border-14 rounded-3xl p-8 relative">
+                        <div className="w-full bg-white/5 border border-white/10 backdrop-blur-md rounded-3xl p-8 relative">
                             {/* Inline icon + heading */}
                             <div className="flex items-center gap-3 mb-2">
                                 <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary shrink-0">
                                     <span className="material-symbols-outlined text-primary text-[22px]">mark_email_read</span>
                                 </div>
-                                <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Verify OTP</h1>
+                                <h1 className="text-2xl font-bold tracking-tight text-white">Verify OTP</h1>
                             </div>
-                            <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">Enter the 6-digit code sent to your email address.</p>
+                            <p className="text-white/60 text-sm mb-6">Enter the 6-digit code sent to your email address.</p>
 
                             {error && (
                                 <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 flex items-start gap-3">
@@ -162,7 +162,7 @@ function VerifyOTPContent() {
                                         <input
                                             key={i}
                                             ref={inputRefs[i]}
-                                            className="flex h-12 w-10 sm:h-14 sm:w-12 text-center [appearance:textfield] focus:outline-0 focus:ring-2 focus:ring-primary/40 border border-slate-200 dark:border-slate-800 surface-ladder-border-14 bg-white dark:bg-slate-900/50 surface-ladder-06 hover:border-slate-300 dark:hover:border-slate-700 focus:border-primary dark:focus:border-primary rounded-xl text-xl font-bold leading-normal text-slate-900 dark:text-white transition-all shadow-sm"
+                                            className="flex h-12 w-10 sm:h-14 sm:w-12 text-center [appearance:textfield] focus:outline-0 focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 rounded-xl text-xl font-bold leading-normal text-white bg-white/5 border border-white/10 placeholder:text-white/40 transition-all shadow-sm"
                                             maxLength="6" // Note: we allow > 1 in onChange for pasting
                                             type="text"
                                             value={digit}
@@ -175,7 +175,7 @@ function VerifyOTPContent() {
 
                                 <div className="pt-2">
                                     <button
-                                        className="flex w-full items-center justify-center rounded-xl h-12 px-5 bg-primary text-white text-sm font-bold tracking-wide hover:bg-primary-hover hover:-translate-y-0.5 active:translate-y-0 shadow-lg shadow-primary/25 transition-all disabled:opacity-70 disabled:cursor-not-allowed transform"
+                                        className="flex w-full items-center justify-center rounded-xl h-12 px-5 bg-accent-500 hover:bg-accent-400 shadow-lg shadow-accent-500/25 text-white text-sm font-bold tracking-wide hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-70 disabled:cursor-not-allowed transform"
                                         type="submit"
                                         disabled={loading}
                                     >
@@ -189,18 +189,18 @@ function VerifyOTPContent() {
                                 </div>
                             </form>
 
-                            <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 text-center sm:text-left">
-                                <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 font-medium">
+                            <div className="mt-8 pt-6 border-t border-white/10 text-center sm:text-left">
+                                <p className="text-sm text-white/60 mb-4 font-medium">
                                     Didn&apos;t receive the code?
                                     <button
                                         onClick={handleResend}
                                         disabled={resendLoading}
-                                        className="text-primary font-bold hover:underline ml-1 bg-transparent border-none p-0 cursor-pointer disabled:opacity-50 transition-all hover:text-primary-hover"
+                                        className="text-accent-400 font-bold hover:underline ml-1 bg-transparent border-none p-0 cursor-pointer disabled:opacity-50 transition-all hover:text-accent-300"
                                     >
                                         {resendLoading ? 'Sending...' : 'Resend OTP'}
                                     </button>
                                 </p>
-                                <Link href="/login" className="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors text-sm font-semibold">
+                                <Link href="/login" className="inline-flex items-center gap-2 text-accent-400 hover:text-accent-300 transition-colors text-sm font-semibold">
                                     <span className="material-symbols-outlined text-[18px]">keyboard_backspace</span>
                                     Back to Sign in
                                 </Link>

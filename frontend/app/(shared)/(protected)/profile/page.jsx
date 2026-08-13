@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/src/context/AuthContext';
 import { useToast } from '@/src/context/ToastContext';
 import { useTheme } from '@/src/context/ThemeContext';
-import Footer from '@/src/components/Footer';
 import { supabase } from '@/src/lib/supabaseClient';
 import { UserProfileSchema } from '@/src/lib/schemas';
 import { z } from 'zod';
@@ -475,7 +474,6 @@ export default function Profile() {
                     </div>
                 </div>
             )}
-            <Footer variant="app" />
         </div>
     );
 }

@@ -5,7 +5,6 @@
 import usePageTitle from '@/src/hooks/usePageTitle';
 import { useState } from 'react';
 import FeedbackForm from '@/src/components/FeedbackForm';
-import Footer from '@/src/components/Footer';
 import { getFeedbackSummary } from '@/src/services/api';
 
 export default function FeedbackPage() {
@@ -126,7 +125,6 @@ export default function FeedbackPage() {
                     </div>
                 )}
             </main>
-            <Footer />
         </div>
     );
 }

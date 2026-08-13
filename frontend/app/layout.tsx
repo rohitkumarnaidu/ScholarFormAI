@@ -6,8 +6,8 @@ import Footer from '@/components/Footer';
 import { Toaster } from 'sonner';
 import UpdateBanner from '@/components/UpdateBanner';
 import FeedbackWidget from '@/components/FeedbackWidget';
-import CrashScreen from '@/components/CrashScreen';
 import ClientProviders from '@/components/layout/ClientProviders';
+import { ConditionalNavbar, ConditionalFooter } from '@/components/layout/ConditionalWrappers';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -50,18 +50,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        />
+      </head>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
         <ClientProviders>
-          <Navbar />
+          <ConditionalNavbar>
+            <Navbar />
+          </ConditionalNavbar>
           <main className="min-h-screen">{children}</main>
           <UpdateBanner />
           <FeedbackWidget />
-          <Footer />
+          <ConditionalFooter>
+            <Footer />
+          </ConditionalFooter>
           <Toaster position="top-right" richColors />
-          <CrashScreen />
         </ClientProviders>
       </body>
     </html>

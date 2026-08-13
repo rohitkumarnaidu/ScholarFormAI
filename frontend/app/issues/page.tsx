@@ -221,29 +221,29 @@ export default function IssuesPage() {
   const currentPage = Math.floor(offset / pageSize) + 1;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <div className="mx-auto max-w-6xl px-4 py-8">
         {/* Header */}
         <div className="mb-6">
-          <Link href="/" className="mb-4 inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700">
+          <Link href="/" className="mb-4 inline-flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300">
             <ArrowLeft className="h-4 w-4" />
             Back to Home
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Issues</h1>
-              <p className="text-sm text-gray-500 mt-1">Track bugs, feature requests, and feedback</p>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Issues</h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Track bugs, feature requests, and feedback</p>
             </div>
             <div className="flex items-center gap-3">
               <Link
                 href="/issues/admin"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3.5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 px-3.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 Admin
               </Link>
               <button
                 onClick={() => setReportOpen(true)}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-accent-500 px-4 py-2 text-sm font-medium text-white hover:bg-accent-400 transition-colors"
               >
                 <Plus className="h-4 w-4" />
                 Report Issue
@@ -255,21 +255,21 @@ export default function IssuesPage() {
         {/* Stats */}
         {stats && (
           <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <div className="rounded-xl border border-gray-200 bg-white p-4">
-              <p className="text-2xl font-bold text-gray-900">{stats.total_issues}</p>
-              <p className="text-xs text-gray-500">Total Issues</p>
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white p-4">
+              <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{stats.total_issues}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Total Issues</p>
             </div>
-            <div className="rounded-xl border border-gray-200 bg-white p-4">
-              <p className="text-2xl font-bold text-blue-600">{stats.open_issues}</p>
-              <p className="text-xs text-gray-500">Open</p>
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white p-4">
+              <p className="text-2xl font-bold text-accent-500">{stats.open_issues}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Open</p>
             </div>
-            <div className="rounded-xl border border-gray-200 bg-white p-4">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white p-4">
               <p className="text-2xl font-bold text-green-600">{stats.resolved_issues}</p>
-              <p className="text-xs text-gray-500">Resolved</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Resolved</p>
             </div>
-            <div className="rounded-xl border border-gray-200 bg-white p-4">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white p-4">
               <p className="text-2xl font-bold text-red-600">{stats.critical_issues}</p>
-              <p className="text-xs text-gray-500">Critical</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Critical</p>
             </div>
           </div>
         )}
@@ -277,18 +277,18 @@ export default function IssuesPage() {
         {/* Filters */}
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
             <input
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setOffset(0); }}
               placeholder="Search issues..."
-              className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm"
+              className="w-full rounded-lg border border-slate-200 dark:border-slate-700 py-2 pl-9 pr-3 text-sm"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => { setStatusFilter(e.target.value); setOffset(0); }}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm"
           >
             <option value="">All statuses</option>
             {Object.keys(statusColors).map((s) => (
@@ -298,7 +298,7 @@ export default function IssuesPage() {
           <select
             value={categoryFilter}
             onChange={(e) => { setCategoryFilter(e.target.value); setOffset(0); }}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm"
           >
             <option value="">All categories</option>
             {categories.map((c) => (
@@ -308,7 +308,7 @@ export default function IssuesPage() {
           <select
             value={severityFilter}
             onChange={(e) => { setSeverityFilter(e.target.value); setOffset(0); }}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm"
           >
             <option value="">All severities</option>
             {severities.map((s) => (
@@ -318,15 +318,15 @@ export default function IssuesPage() {
         </div>
 
         {/* Issue List */}
-        <div className="rounded-xl border border-gray-200 bg-white">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white">
           {loading ? (
             <div className="flex items-center justify-center py-16">
-              <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+              <Loader2 className="h-6 w-6 animate-spin text-slate-400 dark:text-slate-500" />
             </div>
           ) : issues.length === 0 ? (
             <div className="py-16 text-center">
-              <MessageSquare className="mx-auto h-8 w-8 text-gray-300" />
-              <p className="mt-2 text-sm text-gray-500">No issues found</p>
+              <MessageSquare className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600" />
+              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">No issues found</p>
             </div>
           ) : (
             <div className="divide-y divide-gray-100">
@@ -341,17 +341,17 @@ export default function IssuesPage() {
                   <div key={id}>
                     <button
                       onClick={() => handleExpand(id)}
-                      className="flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors hover:bg-gray-50"
+                      className="flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors hover:bg-slate-100 dark:hover:bg-slate-800"
                     >
-                      <div className={`rounded-full p-1.5 ${categoryColors[cat] || "bg-gray-100 text-gray-700"}`}>
+                      <div className={`rounded-full p-1.5 ${categoryColors[cat] || "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"}`}>
                         <CatIcon className="h-3.5 w-3.5" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono text-gray-400">
+                          <span className="text-xs font-mono text-slate-400 dark:text-slate-500">
                             {issue.tracking_number ? `#${String(issue.tracking_number)}` : `#${id.slice(0, 8)}`}
                           </span>
-                          <span className="truncate text-sm font-medium text-gray-900">
+                          <span className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">
                             {issue.title as string}
                           </span>
                         </div>
@@ -364,64 +364,64 @@ export default function IssuesPage() {
                           <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium ${statusColors[stat] || ""}`}>
                             {stat.replace("-", " ")}
                           </span>
-                          <span className="text-[10px] text-gray-400">
+                          <span className="text-[10px] text-slate-400 dark:text-slate-500">
                             {issue.created_at ? new Date(String(issue.created_at)).toLocaleDateString() : ""}
                           </span>
                         </div>
                       </div>
-                      {expandedId === id ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
+                      {expandedId === id ? <ChevronUp className="h-4 w-4 text-slate-400 dark:text-slate-500" /> : <ChevronDown className="h-4 w-4 text-slate-400 dark:text-slate-500" />}
                     </button>
 
                     {/* Expanded detail */}
                     {expandedId === id && (
-                      <div className="border-t border-gray-100 bg-gray-50 px-5 py-4">
+                      <div className="border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-5 py-4">
                         {expandedLoading ? (
                           <div className="flex items-center justify-center py-4">
-                            <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+                            <Loader2 className="h-5 w-5 animate-spin text-slate-400 dark:text-slate-500" />
                           </div>
                         ) : expandedData ? (
                           <div className="space-y-4">
-                            <p className="text-sm text-gray-700">
+                            <p className="text-sm text-slate-700 dark:text-slate-300">
                               {(expandedData.description as string) || (expandedData.body as string) || "No description"}
                             </p>
 
                             {expandedData.steps_to_reproduce ? (
                               <div>
-                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Steps to reproduce</p>
-                                <p className="mt-1 text-sm text-gray-700 whitespace-pre-wrap">{String(expandedData.steps_to_reproduce)}</p>
+                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Steps to reproduce</p>
+                                <p className="mt-1 text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{String(expandedData.steps_to_reproduce)}</p>
                               </div>
                             ) : null}
 
                             {expandedData.expected_behavior ? (
                               <div>
-                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Expected behavior</p>
-                                <p className="mt-1 text-sm text-gray-700">{String(expandedData.expected_behavior)}</p>
+                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Expected behavior</p>
+                                <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{String(expandedData.expected_behavior)}</p>
                               </div>
                             ) : null}
 
                             {expandedData.actual_behavior ? (
                               <div>
-                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Actual behavior</p>
-                                <p className="mt-1 text-sm text-gray-700">{String(expandedData.actual_behavior)}</p>
+                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actual behavior</p>
+                                <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{String(expandedData.actual_behavior)}</p>
                               </div>
                             ) : null}
 
                             {/* Comments */}
                             <div>
-                              <p className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              <p className="flex items-center gap-1 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                                 <MessageCircle className="h-3 w-3" />
                                 Comments ({expandedComments.length})
                               </p>
                               <div className="mt-2 space-y-2">
                                 {expandedComments.map((comment, i) => (
-                                  <div key={comment.id || i} className="rounded-lg border border-gray-200 bg-white p-3">
+                                  <div key={comment.id || i} className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white p-3">
                                     <div className="flex items-center justify-between">
-                                      <span className="text-xs font-medium text-gray-700">{comment.author}</span>
-                                      <span className="text-[10px] text-gray-400">
+                                      <span className="text-xs font-medium text-slate-700 dark:text-slate-300">{comment.author}</span>
+                                      <span className="text-[10px] text-slate-400 dark:text-slate-500">
                                         {new Date(comment.timestamp).toLocaleString()}
                                       </span>
                                     </div>
-                                    <p className="mt-1 text-sm text-gray-600">{comment.body}</p>
+                                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{comment.body}</p>
                                   </div>
                                 ))}
                               </div>
@@ -433,7 +433,7 @@ export default function IssuesPage() {
                                 value={newComment}
                                 onChange={(e) => setNewComment(e.target.value)}
                                 placeholder="Add a comment..."
-                                className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                                className="flex-1 rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm"
                                 onKeyDown={(e) => {
                                   if (e.key === "Enter" && !e.shiftKey) {
                                     e.preventDefault();
@@ -444,7 +444,7 @@ export default function IssuesPage() {
                               <button
                                 onClick={() => handleAddComment(id)}
                                 disabled={commenting || !newComment.trim()}
-                                className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                                className="inline-flex items-center gap-1 rounded-lg bg-accent-500 px-3 py-2 text-sm font-medium text-white hover:bg-accent-400 disabled:opacity-50 transition-colors"
                               >
                                 {commenting ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
                                 Send
@@ -464,14 +464,14 @@ export default function IssuesPage() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="mt-4 flex items-center justify-between">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               Showing {offset + 1}–{Math.min(offset + pageSize, total)} of {total}
             </p>
             <div className="flex gap-1">
               <button
                 onClick={() => setOffset(Math.max(0, offset - pageSize))}
                 disabled={offset === 0}
-                className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 transition-colors"
               >
                 Previous
               </button>
@@ -481,8 +481,8 @@ export default function IssuesPage() {
                   onClick={() => setOffset(i * pageSize)}
                   className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
                     currentPage === i + 1
-                      ? "bg-blue-600 text-white"
-                      : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+                      ? "bg-accent-500 text-white"
+                      : "border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                   }`}
                 >
                   {i + 1}
@@ -491,7 +491,7 @@ export default function IssuesPage() {
               <button
                 onClick={() => setOffset(Math.min((totalPages - 1) * pageSize, offset + pageSize))}
                 disabled={offset + pageSize >= total}
-                className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                className="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 transition-colors"
               >
                 Next
               </button>
@@ -504,38 +504,38 @@ export default function IssuesPage() {
       <Dialog.Root open={reportOpen} onOpenChange={setReportOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[85vh] w-full max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl border border-gray-200 bg-white p-6 shadow-2xl">
-            <Dialog.Close className="absolute right-4 top-4 text-gray-400 hover:text-gray-600">
+          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[85vh] w-full max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-700 bg-white p-6 shadow-2xl">
+            <Dialog.Close className="absolute right-4 top-4 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:text-slate-400">
               <X className="h-4 w-4" />
             </Dialog.Close>
-            <Dialog.Title className="text-lg font-semibold text-gray-900">Report Issue</Dialog.Title>
-            <Dialog.Description className="mt-1 text-sm text-gray-500">
+            <Dialog.Title className="text-lg font-semibold text-slate-900 dark:text-slate-100">Report Issue</Dialog.Title>
+            <Dialog.Description className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Submit a bug report, feature request, or feedback.
             </Dialog.Description>
 
             <form onSubmit={handleSubmit(handleReport)} className="mt-5 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Title *</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Title *</label>
                 <input
                   {...register("title")}
                   placeholder="Brief descriptive title"
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  className="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm"
                 />
                 {errors.title && <p className="mt-1 text-xs text-red-600">{errors.title.message}</p>}
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Category *</label>
-                  <select {...register("category")} className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Category *</label>
+                  <select {...register("category")} className="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm">
                     {categories.map((c) => (
                       <option key={c.value} value={c.value}>{c.label}</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Severity</label>
-                  <select {...register("severity")} className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Severity</label>
+                  <select {...register("severity")} className="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm">
                     <option value="">Select...</option>
                     {severities.map((s) => (
                       <option key={s.value} value={s.value}>{s.label}</option>
@@ -545,62 +545,62 @@ export default function IssuesPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Description *</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Description *</label>
                 <textarea
                   {...register("description")}
                   rows={4}
                   placeholder="Detailed description of the issue..."
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm resize-none"
+                  className="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm resize-none"
                 />
                 {errors.description && <p className="mt-1 text-xs text-red-600">{errors.description.message}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Steps to reproduce</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Steps to reproduce</label>
                 <textarea
                   {...register("steps_to_reproduce")}
                   rows={3}
                   placeholder="1. Go to...&#x0a;2. Click on...&#x0a;3. See error..."
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm resize-none"
+                  className="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm resize-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Expected behavior</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Expected behavior</label>
                   <textarea
                     {...register("expected_behavior")}
                     rows={2}
-                    className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm resize-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm resize-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Actual behavior</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Actual behavior</label>
                   <textarea
                     {...register("actual_behavior")}
                     rows={2}
-                    className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm resize-none"
+                    className="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm resize-none"
                   />
                 </div>
               </div>
 
-              <div className="border-t border-gray-200 pt-4">
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">Reporter info (optional)</p>
+              <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Reporter info (optional)</p>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Name</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
                     <input
                       {...register("reporter_name")}
                       placeholder="Your name"
-                      className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                      className="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Email</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Email</label>
                     <input
                       {...register("reporter_email")}
                       placeholder="email@example.com"
-                      className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                      className="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm"
                     />
                   </div>
                 </div>
@@ -609,7 +609,7 @@ export default function IssuesPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-accent-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-400 disabled:opacity-50 transition-colors"
               >
                 {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
                 {submitting ? "Submitting..." : "Submit Issue"}

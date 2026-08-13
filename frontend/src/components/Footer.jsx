@@ -49,10 +49,10 @@ export default function Footer({ variant = 'app' }) {
                                 Providing specialized technical writing and formatting for academic researchers worldwide.
                             </p>
                             <div className="flex items-center gap-4">
-                                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="size-10 rounded-full bg-slate-50 dark:bg-slate-800/50 surface-ladder-06 border border-slate-200 dark:border-slate-700 surface-ladder-border-10 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all">
+                                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="size-10 rounded-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all">
                                     <span className="material-symbols-outlined text-lg">share</span>
                                 </a>
-                                <a href="mailto:contact@scholarform.ai" className="size-10 rounded-full bg-slate-50 dark:bg-slate-800/50 surface-ladder-06 border border-slate-200 dark:border-slate-700 surface-ladder-border-10 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all">
+                                <a href="mailto:contact@scholarform.ai" className="size-10 rounded-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all">
                                     <span className="material-symbols-outlined text-lg">mail</span>
                                 </a>
                             </div>
@@ -106,7 +106,7 @@ export default function Footer({ variant = 'app' }) {
                                         }}
                                         disabled={status === 'loading' || status === 'success'}
                                         placeholder={status === 'success' ? '✔ Subscribed!' : 'Email address'}
-                                        className={`w-full bg-slate-50 dark:bg-slate-800/50 surface-ladder-06 border ${status === 'error' ? 'border-red-400 focus:ring-red-400' : status === 'success' ? 'border-green-400 text-green-600' : 'border-slate-200 dark:border-slate-700/50 focus:ring-primary/50'} surface-ladder-border-10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 text-slate-900 dark:text-white transition-all shadow-sm disabled:opacity-70`}
+                                        className={`w-full bg-slate-50 dark:bg-slate-800/50 border ${status === 'error' ? 'border-red-400 focus:ring-red-400' : status === 'success' ? 'border-green-400 text-green-600' : 'border-slate-200 dark:border-slate-700/50 focus:ring-primary/50'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 text-slate-900 dark:text-white transition-all shadow-sm disabled:opacity-70`}
                                         suppressHydrationWarning
                                     />
                                     <button 

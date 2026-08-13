@@ -30,7 +30,8 @@ export default function FormatPage() {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/v1/format', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+      const response = await fetch(`${apiUrl}/api/v1/format/format`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -75,7 +76,8 @@ export default function FormatPage() {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/v1/preview', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+      const response = await fetch(`${apiUrl}/api/v1/format/preview`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
