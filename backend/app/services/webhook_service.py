@@ -314,11 +314,11 @@ class WebhookService:
                 "next_retry_at": next_retry,
             }
 
-            def insert_log():
+            def insert_log(entry=log_entry):
                 client = self._get_client()
                 if client is None:
                     raise RuntimeError("Supabase client not available.")
-                return client.table("webhook_delivery_logs").insert(log_entry).execute()
+                return client.table("webhook_delivery_logs").insert(entry).execute()
 
             try:
                 await asyncio.to_thread(insert_log)

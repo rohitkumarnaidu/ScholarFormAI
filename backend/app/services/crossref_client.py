@@ -23,7 +23,7 @@ try:
         raise RuntimeError("REDIS_ENABLED=false")
 
     REDIS_URL = settings.REDIS_URL
-    redis_client = redis.from_url(REDIS_URL, decode_responses=True)
+    redis_client = redis.from_url(REDIS_URL, decode_responses=True, socket_timeout=1, socket_connect_timeout=1)
     redis_client.ping()
     HAS_REDIS = True
     logger.info("CrossRef Redis caching enabled.")

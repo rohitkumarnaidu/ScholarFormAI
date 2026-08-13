@@ -58,12 +58,13 @@ class PipelinePhases:
 
         raw_text = "\n".join(b.text for b in doc_obj.blocks)
         if sb:
-            sb.table("documents").update(
+            DocumentRepository().update_sync(
+                job_id,
                 {
                     "raw_text": raw_text,
                     "original_file_path": input_path,
                 }
-            ).eq("id", job_id).execute()
+            )
 
         self.orchestrator._update_status(job_id, "EXTRACTION", "COMPLETED", "Text extracted.", progress=20)
 
@@ -216,12 +217,10 @@ class PipelinePhases:
         else:
             logger.critical("Formatter failed to produce generated_doc for job %s", job_id)
             if sb:
-                sb.table("documents").update(
-                    {
-                        "status": "FAILED",
-                        "error_message": "Formatting failed: No document artifact generated.",
-                    }
-                ).eq("id", job_id).execute()
+                DocumentRepository().update_sync(job_id, {
+                    "status": "FAILED",
+                    "error_message": "Formatting failed: No document artifact generated."
+                })
             raise Exception("Formatting stage failed to generate output artifact.")
         return output_path
 
@@ -257,7 +256,7 @@ class PipelinePhases:
             "created_at": "now()",
         }
         if sb:
-            sb.table("document_results").insert(doc_result_data).execute()
+            DocumentResultRepository().insert_sync(doc_result_data)
 
         output_ready = bool(output_path and os.path.exists(output_path))
         if not output_ready and output_path and getattr(doc_obj, "generated_doc", None):
@@ -266,9 +265,7 @@ class PipelinePhases:
         if output_ready:
             if output_path and os.path.exists(output_path):
                 try:
-                    from app.services.document_service import DocumentService
-
-                    res = DocumentService.update_output_hash(job_id, PipelineStages.compute_sha256(output_path))
+                    res = DocumentRepository.update_output_hash(job_id, PipelineStages.compute_sha256(output_path))
                     if asyncio.iscoroutine(res):
                         try:
                             loop = asyncio.get_event_loop()
@@ -280,13 +277,14 @@ class PipelinePhases:
                             pass
                 except Exception as hash_exc:
                     logger.warning("Failed to persist output hash: %s", hash_exc)
-            if sb:
-                sb.table("documents").update(
-                    {
-                        "status": "COMPLETED",
-                        "output_path": output_path,
-                    }
-                ).eq("id", job_id).execute()
+            
+            DocumentRepository().update_sync(
+                job_id,
+                {
+                    "status": "COMPLETED",
+                    "output_path": output_path,
+                }
+            )
             self.orchestrator._update_status(
                 job_id,
                 "PERSISTENCE",
@@ -299,12 +297,13 @@ class PipelinePhases:
             response["output_path"] = output_path
         else:
             if sb:
-                sb.table("documents").update(
+                DocumentRepository().update_sync(
+                    job_id,
                     {
                         "status": "FAILED",
                         "error_message": "Output file generation failed.",
                     }
-                ).eq("id", job_id).execute()
+                )
             self.orchestrator._update_status(
                 job_id,
                 "PERSISTENCE",

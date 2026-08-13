@@ -70,3 +70,32 @@ class DocumentResultRepository(BaseRepository):
         except Exception as e:
             logger.error("upsert_document_result(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
             raise DatabaseUnavailableError(f"Failed to upsert document result: {e}") from e
+
+    def upsert_sync(
+        self,
+        doc_id: str,
+        structured_data: dict[str, Any] | None = None,
+        validation_results: dict[str, Any] | None = None,
+    ) -> bool:
+        doc_id = str(doc_id)
+        client = self._get_client()
+        payload: dict[str, Any] = {"document_id": doc_id}
+        if structured_data is not None:
+            payload["structured_data"] = structured_data
+        if validation_results is not None:
+            payload["validation_results"] = validation_results
+        try:
+            client.table("document_results").upsert(payload, on_conflict="document_id").execute()
+            return True
+        except Exception as e:
+            logger.error("upsert_sync(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
+            return False
+
+    def insert_sync(self, payload: dict[str, Any]) -> bool:
+        client = self._get_client()
+        try:
+            client.table("document_results").insert(payload).execute()
+            return True
+        except Exception as e:
+            logger.error("insert_sync failed: %s", e)
+            return False

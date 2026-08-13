@@ -13,14 +13,17 @@ from . import (
     config,
     documents,
     feedback,
+    format,
     generator,
     health,
+    issues,
     metrics,
     providers,
     stream,
     suggestions,
     synthesis,
     templates,
+    updates,
     webhooks,
 )
 
@@ -43,6 +46,9 @@ for router_module, prefix, tags in [
     (activity.router, "/activity", ["Activity v1"]),
     (suggestions.router, "/suggestions", ["Suggestions v1"]),
     (webhooks.router, "/webhooks", ["Webhooks v1"]),
+    (format.router, "/format", ["Formatting v1"]),
+    (issues.router, "/issues", ["Issues v1"]),
+    (updates.router, "/updates", ["Updates v1"]),
 ]:
     try:
         if tags:

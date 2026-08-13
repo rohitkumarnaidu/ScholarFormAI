@@ -84,3 +84,38 @@ class ProcessingStatusRepository(BaseRepository):
                 extra=log_extra(job_id=doc_id),
             )
             raise DatabaseUnavailableError(f"Failed to upsert processing status: {e}") from e
+
+    def upsert_sync(
+        self,
+        doc_id: str,
+        phase: str,
+        status: str,
+        progress_percentage: int | None = None,
+        message: str | None = None,
+    ) -> bool:
+        doc_id = str(doc_id)
+        client = self._get_client()
+        payload: dict[str, Any] = {
+            "document_id": str(doc_id),
+            "phase": phase,
+            "status": status,
+        }
+        if progress_percentage is not None:
+            payload["progress_percentage"] = progress_percentage
+        if message is not None:
+            payload["message"] = message
+        try:
+            client.table("processing_status").upsert(payload, on_conflict="document_id,phase").execute()
+            return True
+        except Exception as e:
+            logger.error("upsert_sync(%s, %s) failed: %s", doc_id, phase, e)
+            return False
+
+    def insert_sync(self, payload: dict[str, Any]) -> bool:
+        client = self._get_client()
+        try:
+            client.table("processing_status").insert(payload).execute()
+            return True
+        except Exception as e:
+            logger.error("insert_sync failed: %s", e)
+            return False

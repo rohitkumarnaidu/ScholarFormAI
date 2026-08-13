@@ -44,7 +44,8 @@ def verify_backup() -> bool:
             critical_tables = ["documents", "profiles", "user_api_keys", "api_key_usage_log"]
             for table in critical_tables:
                 result = conn.execute(
-                    text(f"SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = '{table}')")
+                    text("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = :table_name)"),
+                    {"table_name": table}
                 )
                 exists = result.scalar()
                 status = "✅" if exists else "❌"

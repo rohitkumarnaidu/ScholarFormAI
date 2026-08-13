@@ -227,12 +227,10 @@ class PipelineOrchestrator:
             try:
                 self._update_status(job_id, "SYSTEM", "FAILED", "Interrupted by server shutdown", progress=0)
                 if sb:
-                    sb.table("documents").update(
-                        {
+                    DocumentRepository().update_sync(job_id, {
                             "status": "FAILED",
                             "error_message": "Interrupted by server shutdown",
-                        }
-                    ).eq("id", job_id).execute()
+                        })
             except Exception:
                 pass  # intentionally ignored
             return {"status": "cancelled", "message": "Interrupted by server shutdown"}
@@ -257,23 +255,19 @@ class PipelineOrchestrator:
                     pass  # intentionally ignored
                 self._update_status(job_id, "PERSISTENCE", "COMPLETED", "Completed with warnings.", progress=100)
                 if sb:
-                    sb.table("documents").update(
-                        {
+                    DocumentRepository().update_sync(job_id, {
                             "status": "COMPLETED_WITH_WARNINGS",
                             "error_message": f"Validation Warning: {error_msg}",
                             "output_path": output_path,
-                        }
-                    ).eq("id", job_id).execute()
+                        })
                 response["status"] = "success"
             else:
                 self._update_status(job_id, "PERSISTENCE", "FAILED", error_msg, progress=0)
                 if sb:
-                    sb.table("documents").update(
-                        {
+                    DocumentRepository().update_sync(job_id, {
                             "status": "FAILED",
                             "error_message": error_msg,
-                        }
-                    ).eq("id", job_id).execute()
+                        })
                 response["status"] = "error"
                 response["message"] = f"Pipeline failed: {error_msg}"
             logger.error("Pipeline Error Traceback: %s", traceback.format_exc())
@@ -299,7 +293,7 @@ class PipelineOrchestrator:
             if not sb:
                 raise Exception("Supabase client unavailable.")
 
-            doc_query = sb.table("documents").select("filename, output_path").eq("id", job_id).execute()
+            doc_query = DocumentRepository()._table().select("filename, output_path").eq("id", job_id).execute()
             if not doc_query.data:
                 raise Exception("Original document not found")
             filename = doc_query.data[0]["filename"]
@@ -348,10 +342,10 @@ class PipelineOrchestrator:
                 except Exception:
                     pass  # intentionally ignored
 
-            existing = sb.table("document_results").select("*").eq("document_id", job_id).execute()
+            existing = DocumentResultRepository()._table().select("*").eq("document_id", job_id).execute()
             if existing.data:
                 versions = (
-                    sb.table("document_versions")
+                    DocumentVersionRepository()._table()
                     .select("version_number")
                     .eq("document_id", job_id)
                     .order("version_number", desc=True)
@@ -368,43 +362,37 @@ class PipelineOrchestrator:
                         next_version = f"v_{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}"
                 else:
                     next_version = "v1"
-                sb.table("document_versions").insert(
-                    {
+                DocumentVersionRepository().insert_sync({
                         "document_id": job_id,
                         "version_number": next_version,
                         "edited_structured_data": existing.data[0]["structured_data"],
                         "output_path": source_output_path,
                         "created_at": "now()",
-                    }
-                ).execute()
-                sb.table("document_results").update(
-                    {
-                        "structured_data": edited_structured_data,
-                        "validation_results": validation_results,
-                        "updated_at": "now()",
-                    }
-                ).eq("document_id", job_id).execute()
+                    })
+                DocumentResultRepository().upsert_sync(
+                    job_id,
+                    structured_data=edited_structured_data,
+                    validation_results=validation_results
+                )
             else:
                 from app.pipeline.orchestrator import AIExplainer
 
                 explainer = AIExplainer()
                 ai_explanations = explainer.explain_results(validation_results, template_name)
                 validation_results["ai_explanations"] = ai_explanations
-                sb.table("document_results").insert(
+                DocumentResultRepository().insert_sync(
                     {
                         "document_id": job_id,
                         "structured_data": edited_structured_data,
                         "validation_results": validation_results,
                         "created_at": "now()",
                     }
-                ).execute()
+                )
 
-            sb.table("documents").update(
-                {
+            DocumentRepository().update_sync(job_id, {
                     "output_path": output_path,
                     "updated_at": "now()",
-                }
-            ).eq("id", job_id).execute()
+                })
 
             self._update_status(job_id, "PERSISTENCE", "COMPLETED", "Edit re-formatted.", progress=100)
             return {"status": "success", "output_path": output_path}
@@ -468,35 +456,16 @@ class PipelineOrchestrator:
 
             from app.routers.v1.stream import emit_event
 
-            data = {
-                "document_id": document_id,
-                "phase": phase,
-                "status": status,
-                "message": message,
-                "progress_percentage": progress,
-                "updated_at": "now()",
-            }
-            existing = _run_with_retry(
-                "select",
-                lambda: (
-                    sb.table("processing_status")
-                    .select("id")
-                    .match({"document_id": document_id, "phase": phase})
-                    .execute()
-                ),
-            )
-            if existing.data:
-                _run_with_retry(
-                    "update",
-                    lambda: (
-                        sb.table("processing_status")
-                        .update(data)
-                        .match({"document_id": document_id, "phase": phase})
-                        .execute()
-                    ),
+            _run_with_retry(
+                "upsert",
+                lambda: ProcessingStatusRepository().upsert_sync(
+                    doc_id=document_id,
+                    phase=phase,
+                    status=status,
+                    progress_percentage=progress,
+                    message=message
                 )
-            else:
-                _run_with_retry("insert", lambda: sb.table("processing_status").insert(data).execute())
+            )
 
             doc_data = {"current_stage": phase, "updated_at": "now()"}
             if status == "COMPLETED":
@@ -509,7 +478,7 @@ class PipelineOrchestrator:
             if progress is not None:
                 doc_data["progress"] = progress
             _run_with_retry(
-                "doc_update", lambda: sb.table("documents").update(doc_data).eq("id", document_id).execute()
+                "doc_update", lambda: DocumentRepository().update_sync(document_id, doc_data)
             )
             emit_event(
                 document_id,
@@ -531,7 +500,7 @@ class PipelineOrchestrator:
             sb = get_supabase_client()
             if not sb:
                 return
-            response = sb.table("documents").select("status").eq("id", job_id).execute()
+            response = DocumentRepository()._table().select("status").eq("id", job_id).execute()
             if response.data and response.data[0].get("status") == "CANCELLED":
                 logger.info("Job %s was cancelled by user.", job_id)
                 raise asyncio.CancelledError("Job was cancelled by the user")
@@ -548,7 +517,7 @@ class PipelineOrchestrator:
             from app.pipeline.orchestrator import build_structured_data
 
             structured_data = build_structured_data(doc_obj, partial=True)
-            existing = sb.table("document_results").select("id").eq("document_id", job_id).execute()
+            existing = DocumentResultRepository()._table().select("id").eq("document_id", job_id).execute()
             payload = {
                 "document_id": job_id,
                 "structured_data": structured_data,
@@ -556,10 +525,10 @@ class PipelineOrchestrator:
                 "updated_at": "now()",
             }
             if existing.data:
-                sb.table("document_results").update(payload).eq("document_id", job_id).execute()
+                DocumentResultRepository().upsert_sync(job_id, structured_data=payload.get("structured_data"), validation_results=payload.get("validation_results"))
             else:
                 payload["created_at"] = "now()"
-                sb.table("document_results").insert(payload).execute()
+                DocumentResultRepository().insert_sync(payload)
         except Exception as e:
             logger.error("Failed to persist partial result for %s: %s", job_id, e)
 

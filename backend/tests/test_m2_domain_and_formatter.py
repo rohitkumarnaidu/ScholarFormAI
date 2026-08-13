@@ -2,7 +2,7 @@ import tempfile
 
 import pytest
 
-from app.api.models import Author, Manuscript, Paragraph, Reference, Section
+from app.schemas.models import Author, Manuscript, Paragraph, Reference, Section
 from app.domain.models import (
     DomainAuthor,
     DomainManuscript,
@@ -26,6 +26,7 @@ from app.services.validator import ManuscriptValidator
 
 class TestDomainModels:
     def test_domain_author_initialization_and_pydantic_conversion(self):
+        print("\n[DEBUG] ENTERING TEST BODY")
         # From name
         a1 = DomainAuthor(name="Jane Doe", email="jane@example.com", affiliation="MIT", orcid="0000-0002-1825-0097")
         assert a1.first_name == "Jane"
@@ -49,6 +50,7 @@ class TestDomainModels:
         assert p_author_back.first_name == "Isaac"
         assert p_author_back.last_name == "Newton"
         assert p_author_back.email == "isaac@cambridge.ac.uk"
+        print("[DEBUG] EXITING TEST BODY")
 
     def test_domain_section_and_paragraph_conversion(self):
         p = Paragraph(text="Sample paragraph", style="italic", alignment="center")

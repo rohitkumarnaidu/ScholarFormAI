@@ -57,7 +57,10 @@ def _docling_enabled() -> bool:
 
 
 # Backward-compatible availability flag used by tests and external callers.
-DOCLING_AVAILABLE = _docling_enabled() and importlib.util.find_spec("docling") is not None
+try:
+    DOCLING_AVAILABLE = _docling_enabled() and importlib.util.find_spec("docling") is not None
+except Exception:
+    DOCLING_AVAILABLE = False
 
 
 def _load_docling_converter():
@@ -160,7 +163,13 @@ class DoclingClient:
         """Initialize the Docling client."""
         self.converter = None
         self._available = False
+        self._initialized = False
 
+    def _ensure_initialized(self):
+        if self._initialized:
+            return
+        
+        self._initialized = True
         docling_converter = _load_docling_converter()
         if docling_converter is None:
             logger.warning("Docling not available - layout analysis will be limited")
@@ -179,6 +188,7 @@ class DoclingClient:
 
     def is_available(self) -> bool:
         """Check if Docling is available and initialized."""
+        self._ensure_initialized()
         return self._available and self.converter is not None
 
     @safe_function(

@@ -250,6 +250,16 @@ class DocumentRepository(BaseRepository):
             logger.error("update_document(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
             raise DatabaseUnavailableError(f"Failed to update document: {e}") from e
 
+    def update_sync(self, doc_id: str, updates: dict[str, Any]) -> dict[str, Any] | None:
+        doc_id = str(doc_id)
+        client = self._get_client()
+        try:
+            result = client.table("documents").update(updates).eq("id", str(doc_id)).execute()
+            return result.data[0] if result.data else None
+        except Exception as e:
+            logger.error("update_sync(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
+            return None
+
     async def delete(self, document_id: str, user_id: str | None = None) -> bool:
         doc_id = str(document_id)
         owner_id = str(user_id) if user_id else None

@@ -18,11 +18,8 @@ from app.utils.singleton import get_or_create_safe
 logger = logging.getLogger(__name__)
 
 try:
-    import yake
-
-    YAKE_AVAILABLE = True
-except ImportError:
-    yake = None
+    YAKE_AVAILABLE = importlib.util.find_spec("yake") is not None
+except Exception:
     YAKE_AVAILABLE = False
 
 # KeyBERT import is heavy; defer to runtime to avoid startup OOM on low-memory deploys.
@@ -205,9 +202,10 @@ def extract_keywords(text: str, top_k: int = 8) -> list[str]:
                 logger.warning("KeyLLM extraction failed: %s", exc)
 
         if backend == "yake":
-            if not (YAKE_AVAILABLE and yake is not None):
+            if not YAKE_AVAILABLE:
                 continue
             try:
+                import yake
                 extractor = yake.KeywordExtractor(lan="en", n=2, top=max(top_k * 2, 10))
                 yake_candidates = [kw for kw, _score in extractor.extract_keywords(text) if kw]
                 if yake_candidates:
@@ -220,7 +218,8 @@ def extract_keywords(text: str, top_k: int = 8) -> list[str]:
             if keybert_model is None:
                 continue
             try:
-                if not yake_candidates and YAKE_AVAILABLE and yake is not None:
+                if not yake_candidates and YAKE_AVAILABLE:
+                    import yake
                     extractor = yake.KeywordExtractor(lan="en", n=2, top=max(top_k * 2, 10))
                     yake_candidates = [kw for kw, _score in extractor.extract_keywords(text) if kw]
 

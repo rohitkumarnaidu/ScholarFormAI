@@ -7,7 +7,9 @@ from pathlib import Path
 
 from fastapi import APIRouter, HTTPException
 
-from app.api.models import (
+from app.core.config import settings
+from app.core.exceptions import StyleNotFoundError
+from app.schemas.models import (
     FormatRequest,
     FormatResponse,
     PreviewRequest,
@@ -16,8 +18,6 @@ from app.api.models import (
     ValidateRequest,
     ValidateResponse,
 )
-from app.core.config import settings
-from app.core.exceptions import StyleNotFoundError
 from app.services.document_service import DocumentService
 from app.services.formatter import ManuscriptFormatter
 from app.services.parser import ManuscriptParser
@@ -109,12 +109,17 @@ async def validate_manuscript(request: ValidateRequest):
 
 @router.post("/preview", response_model=PreviewResponse, summary="Generate HTML preview")
 async def preview_manuscript(request: PreviewRequest):
-    if not style_registry.get_style(request.style_id):
-        raise StyleNotFoundError(request.style_id)
+    try:
+        if not style_registry.get_style(request.style_id):
+            raise StyleNotFoundError(request.style_id)
 
-    style = style_registry.get_style(request.style_id)
-    html = await asyncio.to_thread(formatter.generate_html_preview, request.manuscript, style)
-    return PreviewResponse(html=html, style_applied=request.style_id)
+        style = style_registry.get_style(request.style_id)
+        html = await asyncio.to_thread(formatter.generate_html_preview, request.manuscript, style)
+        return PreviewResponse(html=html, style_applied=request.style_id)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Preview failed: {str(e)}\n{traceback.format_exc()}")
 
 
 @router.get("/styles", response_model=list[StyleInfo], summary="List all formatting styles")

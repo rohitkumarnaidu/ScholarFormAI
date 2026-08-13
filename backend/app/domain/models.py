@@ -39,8 +39,7 @@ class DomainAuthor:
         )
 
     def to_pydantic(self) -> Any:
-        from app.api.models import Author
-
+        from app.schemas.models import Author
         fn = self.first_name
         ln = self.last_name
         if not fn and not ln and self.name:
@@ -82,7 +81,7 @@ class DomainParagraph:
         )
 
     def to_pydantic(self) -> Any:
-        from app.api.models import Paragraph
+        from app.schemas.models import Paragraph
 
         return Paragraph(
             text=self.text,
@@ -150,7 +149,7 @@ class DomainSection:
         )
 
     def to_pydantic(self) -> Any:
-        from app.api.models import Paragraph, Section
+        from app.schemas.models import Paragraph, Section
 
         pydantic_content = []
         for p in self.content:
@@ -225,7 +224,7 @@ class DomainReference:
         )
 
     def to_pydantic(self) -> Any:
-        from app.api.models import Reference
+        from app.schemas.models import Reference
 
         pydantic_authors = [a.to_pydantic() if isinstance(a, DomainAuthor) else a for a in self.authors]
         return Reference(
@@ -307,7 +306,7 @@ class DomainManuscript:
         )
 
     def to_pydantic(self) -> Any:
-        from app.api.models import Manuscript
+        from app.schemas.models import Manuscript
 
         return Manuscript(
             title=self.title,

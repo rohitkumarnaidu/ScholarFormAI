@@ -4,7 +4,8 @@ import logging
 
 from fastapi import APIRouter, HTTPException
 
-from app.api.issue_models import (
+from app.core.exceptions import IssueReportError
+from app.schemas.issue_models import (
     CommentRequest,
     CrashReportRequest,
     FeedbackRequest,
@@ -18,7 +19,6 @@ from app.api.issue_models import (
     SettingsUpdateRequest,
     SLABreachResponse,
 )
-from app.core.exceptions import IssueReportError
 from app.services.issue_service import IssueReport, IssueService
 
 logger = logging.getLogger(__name__)

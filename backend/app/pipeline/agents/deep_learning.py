@@ -10,16 +10,7 @@ from typing import Any
 
 import numpy as np
 
-try:
-    import torch
-except ImportError:
-    torch = None
 
-try:
-    from transformers import AutoModel, AutoTokenizer
-except ImportError:
-    AutoTokenizer = None
-    AutoModel = None
 import json
 
 from sklearn.cluster import KMeans
@@ -52,22 +43,30 @@ class TransformerPatternDetector:
         self.model_name = model_name
         self.tokenizer = None
         self.model = None
+        self._initialized = False
 
-        if torch is None or AutoTokenizer is None or AutoModel is None:
+    def _ensure_initialized(self):
+        if self._initialized:
+            return
+            
+        self._initialized = True
+        try:
+            import torch
+            from transformers import AutoModel, AutoTokenizer
+            
+            logger.info(f"Loading transformer model: {self.model_name}")
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)  # nosec
+            self.model = AutoModel.from_pretrained(self.model_name).to(self.device)  # nosec
+            self.model.eval()
+            logger.info("Transformer model loaded successfully")
+        except ImportError:
             logger.warning("TransformerPatternDetector: torch/transformers unavailable; running in fallback mode.")
-        else:
-            try:
-                logger.info(f"Loading transformer model: {model_name}")
-                self.tokenizer = AutoTokenizer.from_pretrained(model_name)  # nosec
-                self.model = AutoModel.from_pretrained(model_name).to(device)  # nosec
-                self.model.eval()
-                logger.info("Transformer model loaded successfully")
-            except Exception as e:
-                logger.warning(
-                    "Failed to load transformer model %s: %s. Falling back to zero embeddings.",
-                    model_name,
-                    e,
-                )
+        except Exception as e:
+            logger.warning(
+                "Failed to load transformer model %s: %s. Falling back to zero embeddings.",
+                self.model_name,
+                e,
+            )
                 self.tokenizer = None
                 self.model = None
 
@@ -114,6 +113,13 @@ class TransformerPatternDetector:
         except Exception as e:
             logger.error(f"Encoding failed: {e}")
             return np.zeros(768)  # Default BERT embedding size
+
+    @safe_function(fallback_value={"patterns": [], "clusters": {}, "confidence": 0.0})
+    def detect_patterns(self, document_text: str, sections: list[dict[str, Any]]) -> dict[str, Any]:
+        """Detect semantic patterns across document sections."""
+        self._ensure_initialized()
+        if not document_text or not sections:
+            return {"patterns": [], "clusters": {}, "confidence": 0.0}
 
     @safe_function(fallback_value=np.zeros(768), error_message="TransformerPatternDetector.encode_metadata")
     def encode_metadata(self, metadata: dict[str, Any]) -> np.ndarray:
@@ -262,6 +268,12 @@ class TransformerPatternDetector:
         # Save embeddings separately (binary)
         if self.embeddings_cache:
             np.save(filepath + ".embeddings.npy", np.array(list(self.embeddings_cache.values())))
+
+    def _get_embeddings(self, texts: list[str]) -> np.ndarray | None:
+        """Get BERT embeddings for texts."""
+        self._ensure_initialized()
+        if not self.model or not self.tokenizer:
+            return None
 
     def get_summary(self) -> dict[str, Any]:
         """Get model summary."""

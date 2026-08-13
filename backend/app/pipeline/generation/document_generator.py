@@ -16,7 +16,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from app.config.settings import settings
+from app.db.repositories.document_repository import DocumentRepository
+from app.db.repositories.generator_session_repository import GeneratorSessionRepository
 from app.db.supabase_client import get_supabase_client
 from app.models.block import Block, BlockType
 from app.models.pipeline_document import DocumentMetadata, PipelineDocument, TemplateInfo
@@ -26,6 +27,8 @@ from app.pipeline.generation.content_parser import ContentParser
 from app.pipeline.generation.prompt_builder import PromptBuilder
 from app.services.document_service import DocumentService
 from app.utils.singleton import get_or_create
+
+from app.config.settings import settings
 
 logger = logging.getLogger(__name__)
 
@@ -123,14 +126,10 @@ class DocumentGenerator:
         }
 
     def _get_session_record(self, job_id: str) -> dict[str, Any] | None:
-        sb = get_supabase_client()
-        if sb is not None:
-            try:
-                result = sb.table("generator_sessions").select("*").eq("id", str(job_id)).maybe_single().execute()
-                if result.data:
-                    return result.data
-            except Exception as exc:
-                logger.warning("Failed to fetch generator session %s from DB: %s", job_id, exc)
+        repo = GeneratorSessionRepository()
+        record = repo.get_session(str(job_id))
+        if record:
+            return record
         return self._volatile_sessions.get(str(job_id))
 
     def get_session(self, job_id: str) -> dict[str, Any] | None:
@@ -170,12 +169,9 @@ class DocumentGenerator:
         if outline is not None:
             payload["outline_json"] = [str(item).strip() for item in outline if str(item).strip()]
 
-        sb = get_supabase_client()
-        if sb is not None:
-            try:
-                sb.table("generator_sessions").update(payload).eq("id", str(job_id)).execute()
-            except Exception as exc:
-                logger.warning("Failed to update generator session %s in DB: %s", job_id, exc)
+        repo = GeneratorSessionRepository()
+        if not repo.update_session(str(job_id), payload):
+            logger.warning("Failed to update generator session %s in DB", job_id)
 
         merged = dict(record)
         merged.update(payload)
@@ -228,14 +224,9 @@ class DocumentGenerator:
             "updated_at": self._now_iso(),
         }
 
-        sb = get_supabase_client()
-        if sb is not None:
-            try:
-                sb.table("generator_sessions").insert(session_payload).execute()
-            except Exception as exc:
-                logger.warning("Failed to persist generator session %s to DB: %s", job_id, exc)
-                self._volatile_sessions[job_id] = session_payload
-        else:
+        repo = GeneratorSessionRepository()
+        if not repo.insert_session(session_payload):
+            logger.warning("Failed to persist generator session %s to DB", job_id)
             self._volatile_sessions[job_id] = session_payload
 
         self._emit(

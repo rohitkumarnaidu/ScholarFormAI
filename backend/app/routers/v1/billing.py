@@ -9,6 +9,7 @@ import stripe
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 
 from app.config.settings import settings
+from app.db.repositories.profile_repository import ProfileRepository
 from app.db.supabase_client import get_supabase_client
 from app.services.audit_log_service import audit_log_service
 from app.utils.logging_context import bind_request_context
@@ -33,15 +34,11 @@ def _get_user_id_from_metadata(obj: dict) -> str | None:
     return None
 
 
-def _lookup_user_id_by_customer(sb, customer_id: str | None) -> str | None:
+def _lookup_user_id_by_customer(customer_id: str | None) -> str | None:
     if not customer_id:
         return None
-    try:
-        result = sb.table("profiles").select("id").eq("stripe_customer_id", customer_id).maybe_single().execute()
-        return result.data.get("id") if result and result.data else None
-    except Exception as exc:
-        logger.warning("Failed to lookup user by customer id: %s", exc)
-        return None
+    repo = ProfileRepository()
+    return repo.get_user_id_by_stripe_customer_id(customer_id)
 
 
 def _legacy_profile_updates(updates: dict) -> dict:
@@ -96,7 +93,7 @@ async def stripe_webhook(request: Request):
 
         user_id = _get_user_id_from_metadata(data)
         if not user_id:
-            user_id = _lookup_user_id_by_customer(sb, data.get("customer"))
+            user_id = _lookup_user_id_by_customer(data.get("customer"))
 
         updates = {}
         if event_type == "checkout.session.completed":
@@ -121,22 +118,16 @@ async def stripe_webhook(request: Request):
             }
 
         if user_id and updates:
-            try:
-                sb.table("profiles").update(updates).eq("id", str(user_id)).execute()
-            except Exception as exc:
+            repo = ProfileRepository()
+            success = repo.update_profile(str(user_id), updates)
+            if not success:
                 legacy_updates = _legacy_profile_updates(updates)
-                if not legacy_updates:
-                    logger.warning("Failed to update billing for user %s: %s", user_id, exc)
+                if legacy_updates:
+                    legacy_success = repo.update_profile(str(user_id), legacy_updates)
+                    if not legacy_success:
+                        logger.warning("Failed to update billing for user %s (modern + legacy schema)", user_id)
                 else:
-                    try:
-                        sb.table("profiles").update(legacy_updates).eq("id", str(user_id)).execute()
-                    except Exception as legacy_exc:
-                        logger.warning(
-                            "Failed to update billing for user %s (modern + legacy schema): %s / %s",
-                            user_id,
-                            exc,
-                            legacy_exc,
-                        )
+                    logger.warning("Failed to update billing for user %s", user_id)
 
         await audit_log_service.log(
             user_id=str(user_id) if user_id else None,

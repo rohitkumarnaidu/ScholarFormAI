@@ -130,20 +130,22 @@ async def run_enveloped(
             duration_seconds=monotonic() - started_at,
         )
         return http_exception_to_response(request, exc, code_map=code_map)
-    except Exception:
+    except Exception as exc:
         _record_persona_kpis(
             request,
             operation_name=operation_name,
             success=False,
             duration_seconds=monotonic() - started_at,
         )
+        import traceback
+        err_msg = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))
         if logger is not None:
-            logger.exception("Unhandled error while processing %s", operation_name)
+            logger.exception("Unhandled error while processing %s: %s", operation_name, err_msg)
         return build_error_response(
             request,
             status_code=500,
             code="INTERNAL_SERVER_ERROR",
-            message="Internal server error",
+            message=err_msg,
         )
 
     if isinstance(result, Response):

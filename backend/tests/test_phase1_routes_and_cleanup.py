@@ -10,7 +10,7 @@ from unittest.mock import patch
 import pytest
 from fastapi.testclient import TestClient
 
-from app.api.models import FormatRequest, Manuscript
+from app.schemas.models import FormatRequest, Manuscript
 from app.api.routes import format_manuscript
 from app.main import _load_optional_routers, app
 from app.models import DocumentMetadata

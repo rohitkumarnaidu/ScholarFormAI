@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import re
 from typing import Any
 
@@ -45,10 +46,8 @@ class CrossReferenceEngine:
                     prefix = m.group("prefix")
                     num_str = m.group("num")
                     val = None
-                    try:
+                    with contextlib.suppress(ValueError):
                         val = eq_map.get(int(num_str))
-                    except ValueError:
-                        pass
                     if val is None:
                         val = eq_map.get(num_str)
                     if val is not None:
@@ -64,10 +63,8 @@ class CrossReferenceEngine:
                     prefix = m.group("prefix")
                     num_str = m.group("num")
                     val = None
-                    try:
+                    with contextlib.suppress(ValueError):
                         val = fig_map.get(int(num_str))
-                    except ValueError:
-                        pass
                     if val is None:
                         val = fig_map.get(num_str)
                     if val is not None:
@@ -85,15 +82,11 @@ class CrossReferenceEngine:
                     if "." in num_str:
                         val = tbl_map.get(num_str)
                         if val is None:
-                            try:
+                            with contextlib.suppress(ValueError):
                                 val = tbl_map.get(int(num_str.split(".")[-1]))
-                            except ValueError:
-                                pass
                     else:
-                        try:
+                        with contextlib.suppress(ValueError):
                             val = tbl_map.get(int(num_str))
-                        except ValueError:
-                            pass
                     if val is None:
                         val = tbl_map.get(num_str)
                     if val is not None:

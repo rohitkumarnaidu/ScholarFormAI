@@ -1,8 +1,8 @@
 import logging
 from typing import Any
 
-from app.api.models import ValidationIssue
 from app.domain.models import DomainManuscript
+from app.schemas.models import ValidationIssue
 from app.services.style_registry import StyleRegistry
 
 logger = logging.getLogger(__name__)

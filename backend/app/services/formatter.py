@@ -11,13 +11,13 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt
 
-from app.api.models import FormattingOptions, Manuscript
 from app.domain.models import (
     DomainManuscript,
     DomainParagraph,
     DomainReference,
     DomainSection,
 )
+from app.schemas.models import FormattingOptions, Manuscript
 from app.services.style_registry import FormattingStyle
 
 logger = logging.getLogger(__name__)

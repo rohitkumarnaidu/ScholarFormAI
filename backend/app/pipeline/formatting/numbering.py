@@ -30,10 +30,7 @@ class NumberingEngine:
 
         for block in blocks:
             b_type = getattr(block, "block_type", "")
-            if isinstance(b_type, str):
-                b_type_str = b_type.lower()
-            else:
-                b_type_str = getattr(b_type, "value", str(b_type)).lower()
+            b_type_str = b_type.lower() if isinstance(b_type, str) else getattr(b_type, "value", str(b_type)).lower()
 
             if "heading_1" in b_type_str or "section" in b_type_str:
                 sn = getattr(block, "section_number", None)
@@ -62,10 +59,7 @@ class NumberingEngine:
 
         for block in blocks:
             b_type = getattr(block, "block_type", "")
-            if isinstance(b_type, str):
-                b_type_str = b_type.lower()
-            else:
-                b_type_str = getattr(b_type, "value", str(b_type)).lower()
+            b_type_str = b_type.lower() if isinstance(b_type, str) else getattr(b_type, "value", str(b_type)).lower()
 
             if "heading_1" in b_type_str or "section" in b_type_str:
                 sn = getattr(block, "section_number", None)

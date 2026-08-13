@@ -25,22 +25,23 @@ logger = logging.getLogger(__name__)
 # --------------------------------------------------------------------------- #
 TABLE_TRANSFORMER_AVAILABLE = False
 _load_error: str | None = None
+import importlib.util
 
-try:
-    import torch
-    from PIL import Image
-    from transformers import (
-        AutoImageProcessor,
-        TableTransformerForObjectDetection,
-    )
+def _check_dependencies():
+    try:
+        return (
+            importlib.util.find_spec("torch") is not None
+            and importlib.util.find_spec("transformers") is not None
+            and importlib.util.find_spec("PIL") is not None
+        )
+    except Exception:
+        return False
 
-    TABLE_TRANSFORMER_AVAILABLE = True
-except ImportError as exc:
-    _load_error = str(exc)
-    logger.info(
-        "Table Transformer dependencies not installed (%s). Install with: pip install transformers torch timm Pillow",
-        exc,
-    )
+TABLE_TRANSFORMER_AVAILABLE = _check_dependencies()
+_load_error = None if TABLE_TRANSFORMER_AVAILABLE else "Missing torch, transformers, or PIL"
+
+if not TABLE_TRANSFORMER_AVAILABLE:
+    logger.info("Table Transformer dependencies not installed. Install with: pip install transformers torch timm Pillow")
 
 # --------------------------------------------------------------------------- #
 #  Constants
@@ -84,6 +85,9 @@ class TableExtractor:
         """Load both models on first use."""
         if self._loaded:
             return
+
+        import torch
+        from transformers import AutoImageProcessor, TableTransformerForObjectDetection
 
         from app.services.model_store import model_store
 
@@ -231,7 +235,7 @@ class TableExtractor:
             "data": data,
         }
 
-    def extract_tables_from_page(self, page_image: Image.Image) -> list[dict[str, Any]]:
+    def extract_tables_from_page(self, page_image: "Image.Image") -> list[dict[str, Any]]:
         """
         Full pipeline: detect tables in a page, then extract structure for each.
 

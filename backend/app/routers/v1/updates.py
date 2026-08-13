@@ -5,7 +5,7 @@ import logging
 from fastapi import APIRouter, HTTPException
 
 from app import __version__
-from app.api.update_models import (
+from app.schemas.update_models import (
     ChannelsResponse,
     ReleaseNotesResponse,
     UpdateCheckRequest,
