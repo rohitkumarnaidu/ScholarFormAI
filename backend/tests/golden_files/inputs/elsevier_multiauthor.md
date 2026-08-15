@@ -23,7 +23,7 @@ affiliations:
 - Institute of Pathology, Charité Universitätsmedizin Berlin
 - Faculty of Medical Sciences, University of Lagos
 - Graduate School of Medicine, University of Tokyo
-corresponding_author: Maria Santos (m.santos@pathol.usp.br)
+corresponding_author: Maria Santos (<m.santos@pathol.usp.br>)
 orcid:
 - 0000-0001-2345-6789
 - 0000-0002-3456-7890
@@ -39,7 +39,7 @@ keywords:
 - clinical validation
 - multi-centre study
 - whole-slide imaging
-data_availability: "The datasets generated and analysed during the current study are available in the TCGA repository (https://portal.gdc.cancer.gov/). Code is available at https://github.com/scholarform/histo-transformer. All other data are available from the corresponding author on reasonable request."
+data_availability: "The datasets generated and analysed during the current study are available in the TCGA repository (<https://portal.gdc.cancer.gov/>). Code is available at <https://github.com/scholarform/histo-transformer>. All other data are available from the corresponding author on reasonable request."
 funding: "This work was supported by the São Paulo Research Foundation (FAPESP) Grant No. 2024/12345-6, the Swedish Research Council Grant No. 2024-06789, and the German Research Foundation (DFG) Grant No. MU-4567/1."
 
 ---
@@ -96,7 +96,7 @@ The ViT-L/16 model achieved an AUC of 0.941 (95% CI: 0.928-0.954), with sensitiv
 
 ## Data Availability Statement
 
-The datasets generated and analysed during the current study are available in the TCGA repository (https://portal.gdc.cancer.gov/). Code is available at https://github.com/scholarform/histo-transformer.
+The datasets generated and analysed during the current study are available in the TCGA repository (<https://portal.gdc.cancer.gov/>). Code is available at <https://github.com/scholarform/histo-transformer>.
 
 # Discussion
 
@@ -112,7 +112,7 @@ Vision Transformer models demonstrate strong and consistent performance across m
 
 # Data Availability
 
-The datasets generated and analysed during the current study are available in the TCGA repository (https://portal.gdc.cancer.gov/). Code is available at https://github.com/scholarform/histo-transformer. All other data are available from the corresponding author on reasonable request.
+The datasets generated and analysed during the current study are available in the TCGA repository (<https://portal.gdc.cancer.gov/>). Code is available at <https://github.com/scholarform/histo-transformer>. All other data are available from the corresponding author on reasonable request.
 
 # Acknowledgements
 

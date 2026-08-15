@@ -17,6 +17,10 @@ from datetime import UTC
 from typing import Any
 
 from app.config.settings import settings
+from app.db.repositories.document_repository import DocumentRepository
+from app.db.repositories.document_result_repository import DocumentResultRepository
+from app.db.repositories.processing_status_repository import ProcessingStatusRepository
+from app.db.repositories.document_version_repository import DocumentVersionRepository
 from app.models import Block, BlockType, PipelineDocument
 from app.pipeline.orchestrator.events import StageEventEmitter
 from app.pipeline.orchestrator.metrics import StageMetrics

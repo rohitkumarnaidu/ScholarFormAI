@@ -15,6 +15,8 @@ import logging
 import os
 from typing import Any
 
+from app.db.repositories.document_repository import DocumentRepository
+from app.db.repositories.document_result_repository import DocumentResultRepository
 from app.pipeline.orchestrator.stages import PipelineStages
 
 logger = logging.getLogger(__name__)

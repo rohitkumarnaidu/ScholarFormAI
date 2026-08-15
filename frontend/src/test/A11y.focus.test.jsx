@@ -26,6 +26,15 @@ vi.mock('@/utils/notifications', () => ({
     STORAGE_KEY: 'sf_notifs',
 }));
 
+vi.mock('@/context/NotificationContext', () => ({
+    useNotifications: vi.fn(() => ({
+        notifications: [],
+        unreadCount: 0,
+        markAsRead: vi.fn(),
+        markAllAsRead: vi.fn(),
+    })),
+}));
+
 // ── NotificationBell ─────────────────────────────────────────
 import NotificationBell from '@/components/NotificationBell';
 

@@ -5,6 +5,7 @@ Continuous benchmarking is critical to ensure the ScholarForm AI platform scales
 ## Benchmark Methodology
 
 We use a combination of tools for benchmarking:
+
 - **k6 / Locust**: For load testing HTTP endpoints and WebSocket connections.
 - **pytest-benchmark**: For micro-benchmarks on critical Python functions (e.g., PyMuPDF extraction speed).
 
@@ -13,11 +14,11 @@ We use a combination of tools for benchmarking:
 Our baseline targets for the system are:
 
 | Metric | Target | Description |
-|--------|--------|-------------|
+| -------- | -------- | ------------- |
 | API Latency | < 200ms | P95 latency for non-AI standard API endpoints. |
 | Formatting Speed | < 5s / page | Time taken to format an uploaded DOCX into IEEE template. |
 | Generation TTFB | < 2s | Time to First Byte for streaming AI generation. |
-| DB Query Latency| < 50ms | P99 latency for read queries. |
+| DB Query Latency | < 50ms | P99 latency for read queries. |
 
 ## Running Benchmarks
 
@@ -37,10 +38,12 @@ Simulating LLM load is challenging due to API cost and rate limits. We use a moc
 ## Historical Benchmarks
 
 *Results from v1.0.0 stress test (AWS t3.large, 4 Celery workers)*
+
 - Max concurrent users: 500
 - Sustained throughput: 250 requests/sec
 - Average Formatting Queue Time: 1.2s
 
 ## Cross-References
+
 - [Performance Tuning](PERFORMANCE.md)
 - [Testing Guide](../guides/TESTING.md)

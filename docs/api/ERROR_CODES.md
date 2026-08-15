@@ -7,7 +7,7 @@ This document lists the error codes returned by the ScholarFormAI API and provid
 The API uses standard HTTP status codes to indicate the success or failure of an API request.
 
 | Code | Status | Description |
-|---|---|---|
+| --- | --- | --- |
 | `200` | OK | The request was successful. |
 | `201` | Created | A new resource was successfully created. |
 | `202` | Accepted | The request was accepted and is being processed asynchronously. |
@@ -34,12 +34,13 @@ When an error occurs, the API returns a JSON response containing an `error_code`
 ### Formatting Errors
 
 | Code | Description | Resolution |
-|---|---|---|
+| --- | --- | --- |
 | `ERR_DOCX_CORRUPTED` | The `.docx` file is corrupted. | Ensure the file opens in Microsoft Word without issues before uploading. |
 | `ERR_UNSUPPORTED_TEMPLATE` | The requested `template_id` does not exist. | Check the available templates via the `/templates` endpoint. |
 | `ERR_FILE_TOO_LARGE` | The uploaded document exceeds the maximum file size. | Reduce the file size. Maximum allowed is 50MB. |
 | `ERR_PASSWORD_PROTECTED` | The uploaded `.docx` file is password protected. | Remove the password protection before processing. |
 
 ## Next Steps
+
 - Return to [API Reference](API_REFERENCE.md).
 - Review [Troubleshooting](../support/TROUBLESHOOTING.md).

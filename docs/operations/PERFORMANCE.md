@@ -17,6 +17,7 @@ ScholarForm AI must handle compute-intensive tasks, such as multi-page PDF parsi
 ## Asynchronous Processing (Celery)
 
 Formatting and generation are offloaded to Celery.
+
 - **Concurrency**: Adjust the Celery concurrency based on whether the tasks are CPU-bound (PDF extraction) or I/O-bound (LLM API calls). Use `gevent` or `eventlet` pools for heavy I/O workloads.
 - **Task Batching & Routing**: Dedicated queues for "fast" (e.g., Markdown formatting) and "slow" (e.g., PDF generation) tasks prevent head-of-line blocking.
 
@@ -26,5 +27,6 @@ Formatting and generation are offloaded to Celery.
 - **Rate Limiting**: Redis is used for high-performance, distributed rate limiting to protect our API and external LLM quota.
 
 ## Cross-References
+
 - [Benchmarks](BENCHMARKS.md)
 - [Configuration Guide](CONFIGURATION.md)

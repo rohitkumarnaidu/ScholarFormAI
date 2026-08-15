@@ -18,7 +18,7 @@ keywords:
 footnotes:
 - "This work was supported by JSPS KAKENHI Grant No. 24K12345."
 - "Presented in part at the 2025 International Conference on Biomedical Informatics."
-corresponding_author: Akiko Tanaka (tanaka@compbio.u-tokyo.ac.jp)
+corresponding_author: Akiko Tanaka (<tanaka@compbio.u-tokyo.ac.jp>)
 orcid:
 - 0000-0002-1234-5678
 - 0000-0003-8765-4321

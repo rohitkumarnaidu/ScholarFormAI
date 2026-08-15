@@ -38,22 +38,8 @@ markdown_extensions:
 - toc
 nav:
 - Home: README.md
-- Getting Started:
-  - Quickstart: docs/guides/USER_GUIDE.md
-  - Installation: docs/getting-started/installation.md
-  - Configuration: docs/operations/CONFIGURATION.md
 - Guides:
-  - User Guide: docs/guides/USER_GUIDE.md
-  - Developer Guide: docs/guides/DEVELOPER_GUIDE.md
-  - Migration Guide: docs/guides/MIGRATION_GUIDE.md
-  - Upgrade Guide: docs/guides/UPGRADE_GUIDE.md
-  - Internationalization: docs/guides/INTERNATIONALIZATION.md
-  - Style Guide: docs/guides/STYLE_GUIDE.md
-  - Testing: docs/guides/TESTING.md
-- Tutorials:
-  - CLI Project: docs/tutorials/cli-project.md
-  - API Integration: docs/tutorials/api-integration.md
-  - Custom Template: docs/tutorials/custom-template.md
+  - Developer Guide: guides/DEVELOPER_GUIDE.md
 - Examples:
   - React Integration: examples/sample-projects/react-integration/README.md
   - Python CLI Starter: examples/starter-kits/python-cli/README.md
@@ -73,31 +59,21 @@ nav:
   - Terms: TERMS.md
   - Accessibility: ACCESSIBILITY.md
 - Architecture:
-  - Architecture Overview: docs/architecture/ARCHITECTURE.md
-  - System Design: docs/architecture/SYSTEM_DESIGN.md
-  - AI Architecture: docs/ai/AI.md
-  - Agents: docs/ai/AGENTS.md
-  - Memory: docs/ai/MEMORY.md
-  - RAG: docs/ai/RAG.md
-  - Database: docs/database/DATABASE.md
-  - Authentication: docs/security/AUTHENTICATION.md
-  - Authorization: docs/security/AUTHORIZATION.md
+  - Architecture Overview: architecture/ARCHITECTURE.md
+  - System Design: architecture/SYSTEM_DESIGN.md
+  - AI Architecture: ai/AI.md
+  - Agents: ai/AGENTS.md
+  - Memory: ai/MEMORY.md
+  - RAG: ai/RAG.md
+  - Database: database/DATABASE.md
+  - Authentication: security/AUTHENTICATION.md
+  - Authorization: security/AUTHORIZATION.md
 - API Docs:
-  - API Reference: docs/api/API_REFERENCE.md
-  - Error Codes: docs/api/ERROR_CODES.md
-- CLI Docs:
-  - CLI Reference: docs/cli/CLI_REFERENCE.md
-- SDK Docs:
-  - SDK Guide: docs/sdk/SDK_GUIDE.md
-  - Plugin Guide: docs/sdk/PLUGIN_GUIDE.md
+  - API Reference: api/API_REFERENCE.md
 - Deployment:
-  - Deployment Guide: docs/operations/DEPLOYMENT.md
-  - Operations: docs/operations/OPERATIONS.md
-  - Runbooks: docs/operations/RUNBOOKS.md
-  - Monitoring: docs/operations/MONITORING.md
-  - Observability: docs/operations/OBSERVABILITY.md
-  - Performance: docs/operations/PERFORMANCE.md
-  - Benchmarks: docs/operations/BENCHMARKS.md
-- FAQ & Troubleshooting:
-  - FAQ: docs/support/FAQ.md
-  - Troubleshooting: docs/support/TROUBLESHOOTING.md
+  - Deployment Guide: operations/DEPLOYMENT.md
+  - Operations: operations/OPERATIONS.md
+  - Monitoring: operations/MONITORING.md
+  - Observability: operations/OBSERVABILITY.md
+  - Performance: operations/PERFORMANCE.md
+  - Benchmarks: operations/BENCHMARKS.md

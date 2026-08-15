@@ -43,5 +43,6 @@ sequenceDiagram
 - **Fault Tolerance:** Failed tasks are automatically retried with exponential backoff.
 
 ## Related Documents
+
 - [Architecture](ARCHITECTURE.md)
 - [Agents](../ai/AGENTS.md)

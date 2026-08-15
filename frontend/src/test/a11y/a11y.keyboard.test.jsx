@@ -24,6 +24,15 @@ vi.mock('@/utils/notifications', () => ({
     STORAGE_KEY: 'sf_notifs',
 }));
 
+vi.mock('@/context/NotificationContext', () => ({
+    useNotifications: vi.fn(() => ({
+        notifications: [],
+        unreadCount: 0,
+        markAsRead: vi.fn(),
+        markAllAsRead: vi.fn(),
+    })),
+}));
+
 const SkipLink = () => (
     <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50 focus:p-4 focus:bg-white focus:text-black">
         Skip to main content

@@ -54,6 +54,7 @@ graph TD
    - Raw documents and formatted outputs are stored in object storage.
 
 ## Related Documents
+
 - [System Design](SYSTEM_DESIGN.md)
 - [Database Schema](../database/DATABASE.md)
 - [AI Overview](../ai/AI.md)

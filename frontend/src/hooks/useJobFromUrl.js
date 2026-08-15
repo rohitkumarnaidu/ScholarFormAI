@@ -4,7 +4,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useDocument } from '../context/DocumentContext';
-import { getJobSummary } from '@/src/services/api.documents';
+import { getJobSummary } from '@/services/api.documents';
 
 const normalizeSummaryToJob = (summary, fallbackId) => {
     const filename = summary?.filename

@@ -18,6 +18,7 @@ We utilize OpenTelemetry to instrument all services, propagating trace context v
 - **AI Agents**: Custom spans trace the lifecycle of LLM calls, tracking prompt preparation, generation latency, and response parsing.
 
 ### Trace Visualization (Jaeger / Tempo)
+
 Traces are exported to our backend tracing system (Jaeger or Grafana Tempo). This allows us to visualize bottlenecks, such as a long-running PyMuPDF extraction followed by an LLM synthesis step.
 
 ## Centralized Logging
@@ -30,5 +31,6 @@ All logs are output in JSON format to stdout/stderr and collected via Promtail/F
 - **Frontend Logs**: Client-side errors are captured and sent to a centralized logging endpoint.
 
 ## Cross-References
+
 - [Monitoring Dashboards](MONITORING.md)
 - [Deployment Configuration](DEPLOYMENT.md)

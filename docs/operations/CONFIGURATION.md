@@ -9,7 +9,7 @@ The primary configuration mechanism is `.env` files. In production, these are in
 ### Backend (`backend/.env`)
 
 | Variable | Description | Example |
-|----------|-------------|---------|
+| ---------- | ------------- | --------- |
 | `ENVIRONMENT` | Deployment environment | `production`, `staging`, `development` |
 | `DATABASE_URL` | PostgreSQL connection string | `postgresql+asyncpg://user:pass@db:5432/scholarform` |
 | `REDIS_URL` | Redis connection string | `redis://redis:6379/0` |
@@ -28,6 +28,7 @@ The primary configuration mechanism is `.env` files. In production, these are in
 ## Secret Management
 
 Never commit API keys or `SECRET_KEY` to source control.
+
 - **Local**: Use `.env` files (excluded via `.gitignore`).
 - **CI/CD**: Use GitHub Actions Secrets.
 - **Production**: Use AWS Secrets Manager, HashiCorp Vault, or Kubernetes Secrets.
@@ -37,5 +38,6 @@ Never commit API keys or `SECRET_KEY` to source control.
 We use Redis-backed feature flags to enable or disable beta features (like the Synthesis Agent) dynamically without redeploying.
 
 ## Cross-References
+
 - [Deployment Guide](DEPLOYMENT.md)
 - [Operations Overview](OPERATIONS.md)

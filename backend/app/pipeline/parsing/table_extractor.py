@@ -42,6 +42,14 @@ _load_error = None if TABLE_TRANSFORMER_AVAILABLE else "Missing torch, transform
 
 if not TABLE_TRANSFORMER_AVAILABLE:
     logger.info("Table Transformer dependencies not installed. Install with: pip install transformers torch timm Pillow")
+    torch = Any
+    
+    class _DummyImage:
+        Image = Any
+    Image = _DummyImage
+else:
+    import torch
+    from PIL import Image
 
 # --------------------------------------------------------------------------- #
 #  Constants

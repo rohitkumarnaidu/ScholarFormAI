@@ -23,6 +23,15 @@ vi.mock('next/navigation', () => ({
     })),
 }));
 
+vi.mock('@/context/NotificationContext', () => ({
+    useNotifications: vi.fn(() => ({
+        notifications: [],
+        unreadCount: 0,
+        markAsRead: vi.fn(),
+        markAllAsRead: vi.fn(),
+    })),
+}));
+
 describe('NotificationBell', () => {
     it('renders notification button', () => {
         render(<NotificationBell />);

@@ -66,5 +66,6 @@ scholarform plugin publish
 - Network requests are strictly disabled by default. If your plugin requires external API access, declare it in `plugin.json` under `permissions`.
 
 ## Read More
+
 - [Developer Guide](../guides/DEVELOPER_GUIDE.md)
 - [API Reference](../api/API_REFERENCE.md)

@@ -45,7 +45,7 @@ We developed a hierarchical figure-group model supporting four layout types:
 
 **Figure 3: Freeform panel arrangement.** (A) Top-left: architecture diagram; (B) Top-right: latency graph; (C) Bottom-span: comparison table.
 
-## Figure 4: Sequential pipeline stages.
+## Figure 4: Sequential pipeline stages
 
 Stage 1 (left) shows data ingestion; Stage 2 (center) shows preprocessing; Stage 3 (right) shows classification output.
 

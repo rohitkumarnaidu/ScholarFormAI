@@ -19,6 +19,14 @@ from app.pipeline.safety import safe_function
 
 logger = logging.getLogger(__name__)
 
+try:
+    import torch
+    from transformers import AutoModel, AutoTokenizer
+except ImportError:
+    torch = None
+    AutoModel = None
+    AutoTokenizer = None
+
 
 class TransformerPatternDetector:
     """
@@ -67,8 +75,8 @@ class TransformerPatternDetector:
                 self.model_name,
                 e,
             )
-                self.tokenizer = None
-                self.model = None
+            self.tokenizer = None
+            self.model = None
 
         self.embeddings_cache = {}
         self.clusters = None

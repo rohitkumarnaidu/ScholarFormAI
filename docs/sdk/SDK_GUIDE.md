@@ -5,6 +5,7 @@ Welcome to the ScholarFormAI SDK Guide. This document provides an overview of ho
 ## Supported Languages
 
 We currently offer official SDKs for the following languages:
+
 - **Python** (>= 3.8)
 - **Node.js** (>= 16)
 - **Go** (>= 1.19)
@@ -69,5 +70,6 @@ formatMyDoc();
 3. **Use Asynchronous Methods**: For large documents, prefer asynchronous submission and webhooks to avoid timeouts.
 
 ## Related Documentation
+
 - [API Reference](../api/API_REFERENCE.md)
 - [Plugin Guide](PLUGIN_GUIDE.md)
