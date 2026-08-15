@@ -4,71 +4,13 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { loadNotifications, saveNotifications, STORAGE_KEY } from '@/utils/notifications';
-import { supabase } from '@/lib/supabaseClient';
-import { useAuth } from '@/context/AuthContext';
+import { useNotifications } from '@/context/NotificationContext';
 
 export default function NotificationBell() {
     const [isOpen, setIsOpen] = useState(false);
-    const [notifications, setNotifications] = useState([]);
     const dropdownRef = useRef(null);
     const router = useRouter();
-    const { user } = useAuth();
-
-    useEffect(() => {
-        setNotifications(loadNotifications());
-
-        const handleStorage = (e) => {
-            if (e.key === STORAGE_KEY) {
-                setNotifications(loadNotifications());
-            }
-        };
-        window.addEventListener('storage', handleStorage);
-
-        const checkInterval = setInterval(() => {
-            setNotifications(loadNotifications());
-        }, 30000);
-
-        return () => {
-            window.removeEventListener('storage', handleStorage);
-            clearInterval(checkInterval);
-        };
-    }, []);
-
-    useEffect(() => {
-        if (!user?.id || !supabase) return;
-
-        const channel = supabase
-            .channel(`public:notifications:${user.id}`)
-            .on(
-                'postgres_changes',
-                {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'notifications',
-                    filter: `user_id=eq.${user.id}`,
-                },
-                (payload) => {
-                    const newNotification = {
-                        id: payload.new.id || String(Date.now()),
-                        type: payload.new.type || 'info',
-                        message: payload.new.message,
-                        read: payload.new.read || false,
-                        timestamp: payload.new.created_at || new Date().toISOString(),
-                    };
-                    setNotifications((prev) => {
-                        const updated = [newNotification, ...prev].slice(0, 50);
-                        saveNotifications(updated);
-                        return updated;
-                    });
-                }
-            )
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(channel);
-        };
-    }, [user?.id]);
+    const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
     useEffect(() => {
         const handleClick = (e) => {
@@ -80,7 +22,6 @@ export default function NotificationBell() {
         return () => document.removeEventListener('mousedown', handleClick);
     }, []);
 
-    const unreadCount = notifications.filter((n) => !n.read).length;
     const recentItems = notifications.slice(0, 5);
 
     const formatTime = (ts) => {
@@ -97,7 +38,6 @@ export default function NotificationBell() {
 
     return (
         <div className="relative" ref={dropdownRef}>
-            {/* B-RR-05: improved aria-label includes unread count, added focus ring */}
             <button
                 onClick={() => setIsOpen((open) => !open)}
                 className="relative h-10 w-10 inline-flex items-center justify-center rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
@@ -107,7 +47,6 @@ export default function NotificationBell() {
             >
                 <span className="material-symbols-outlined">notifications</span>
                 {unreadCount > 0 && (
-                    /* B-RR-05: role="status" announces the count to screen readers */
                     <span
                         role="status"
                         aria-label={`${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}`}
@@ -127,9 +66,9 @@ export default function NotificationBell() {
                     <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-white/10 ">
                         <p className="text-sm font-semibold text-slate-900 dark:text-white">Notifications</p>
                         {unreadCount > 0 && (
-                            <span className="text-xs px-2 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full">
-                                {unreadCount} new
-                            </span>
+                            <button onClick={() => markAllAsRead()} className="text-xs text-primary hover:underline">
+                                Mark all as read
+                            </button>
                         )}
                     </div>
 
@@ -139,7 +78,6 @@ export default function NotificationBell() {
                             <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">No notifications</p>
                         </div>
                     ) : (
-                        /* B-RR-05: aria-live="polite" announces newly added items to screen readers */
                         <ul
                             className="max-h-72 overflow-y-auto divide-y divide-slate-100 dark:divide-white/10"
                             role="list"
@@ -151,12 +89,13 @@ export default function NotificationBell() {
                                 <li
                                     key={n.id}
                                     role="menuitem"
-                                    className={`px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/10 transition-colors ${!n.read ? 'bg-blue-50/50 dark:bg-white/5 ' : ''}`}
+                                    onClick={() => markAsRead(n.id)}
+                                    className={`px-4 py-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-white/10 transition-colors ${!n.read_at ? 'bg-blue-50/50 dark:bg-white/5 ' : ''}`}
                                 >
-                                    <p className={`text-sm ${n.read ? 'text-slate-500' : 'text-slate-900 dark:text-blue-300 font-medium'} line-clamp-2`}>
-                                        {n.message}
+                                    <p className={`text-sm ${n.read_at ? 'text-slate-500' : 'text-slate-900 dark:text-blue-300 font-medium'} line-clamp-2`}>
+                                        {n.body || n.message}
                                     </p>
-                                    <p className="text-xs text-slate-400 mt-1">{formatTime(n.timestamp)}</p>
+                                    <p className="text-xs text-slate-400 mt-1">{formatTime(n.created_at || n.timestamp)}</p>
                                 </li>
                             ))}
                         </ul>

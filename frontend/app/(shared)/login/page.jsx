@@ -222,7 +222,7 @@ function LoginContent() {
                             </button>
 
                             <div className="mt-6 text-center text-sm font-medium text-white/60">
-                                Don't have an account?{' '}
+                                Don&apos;t have an account?{' '}
                                 <Link href={`/signup${nextPath ? `?next=${encodeURIComponent(nextPath)}` : ''}`} className="text-accent-400 hover:text-accent-300 font-bold transition-colors">
                                     Sign up
                                 </Link>

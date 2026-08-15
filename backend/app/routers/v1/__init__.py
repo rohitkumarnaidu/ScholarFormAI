@@ -24,7 +24,10 @@ from . import (
     synthesis,
     templates,
     updates,
+    update_admin,
+    update_github_webhook,
     webhooks,
+    notifications,
 )
 
 v1_router = APIRouter(prefix="/api/v1")
@@ -49,6 +52,9 @@ for router_module, prefix, tags in [
     (format.router, "/format", ["Formatting v1"]),
     (issues.router, "/issues", ["Issues v1"]),
     (updates.router, "/updates", ["Updates v1"]),
+    (update_admin.router, "/admin/updates", ["Admin Updates v1"]),
+    (update_github_webhook.router, "", []),
+    (notifications.router, "/notifications", ["Notifications v1"]),
 ]:
     try:
         if tags:

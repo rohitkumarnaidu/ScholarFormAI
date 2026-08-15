@@ -6,6 +6,7 @@ export async function register() {
     // We only instrument in nodejs environment
     const { NodeSDK } = await import('@opentelemetry/sdk-node');
     const { OTLPTraceExporter } = await import('@opentelemetry/exporter-trace-otlp-http');
+    // @ts-ignore - TS thinks Resource is not exported but it is available at runtime
     const { Resource } = await import('@opentelemetry/resources');
     const { SemanticResourceAttributes } = await import('@opentelemetry/semantic-conventions');
 

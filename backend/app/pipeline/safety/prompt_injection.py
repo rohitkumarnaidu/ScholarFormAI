@@ -21,10 +21,10 @@ _SUSPICIOUS_PATTERNS = [
 ]
 
 def check_prompt_injection(user_input: str) -> None:
-    "\""
+    """
     Validates user input against common prompt injection and jailbreak patterns.
     Raises an HTTPException if a violation is detected.
-    "\""
+    """
     if not user_input:
         return
 
@@ -46,8 +46,8 @@ def check_prompt_injection(user_input: str) -> None:
             )
 
 def safe_prompt(user_input: str) -> str:
-    "\""
+    """
     Checks for prompt injection and returns the string if safe.
-    "\""
+    """
     check_prompt_injection(user_input)
     return user_input

@@ -1,295 +1,196 @@
 """Issue reporting API routes."""
 
 import logging
+import uuid
+import datetime
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
+from sqlalchemy.orm import Session
+from sqlalchemy import select, desc
 
-from app.core.exceptions import IssueReportError
+from app.db.session import get_db
+from app.models.issue import Issue
+from app.models.issue_comment import IssueComment
+from app.models.issue_attachment import IssueAttachment
+from app.models.issue_settings import IssueSettings
+from app.domain.issues.ai_service import IssueAIService
+from app.domain.issues.integrations import IntegrationsService
+
 from app.schemas.issue_models import (
-    CommentRequest,
-    CrashReportRequest,
-    FeedbackRequest,
-    IssueListResponse,
     IssueReportRequest,
     IssueReportResponse,
-    IssueStatsResponse,
+    IssueListResponse,
     IssueUpdateRequest,
-    LabelCreateRequest,
-    MilestoneCreateRequest,
     SettingsUpdateRequest,
-    SLABreachResponse,
 )
-from app.services.issue_service import IssueReport, IssueService
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/issues", tags=["issues"])
 
-_issue_service = IssueService()
 
-
-def _get_service() -> IssueService:
-    return _issue_service
-
-
-@router.post("", response_model=IssueReportResponse, summary="Submit issue report")
-async def submit_issue(request: IssueReportRequest):
-    service = _get_service()
+@router.post("", response_model=IssueReportResponse, summary="Submit enterprise issue report")
+async def submit_issue(
+    request: IssueReportRequest, 
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db)
+):
     try:
-        report = IssueReport(
+        # Pre-flight AI Triage (Categorization & Spam detection)
+        # Note: If high volume, this can be moved to a background task
+        ai_triage = await IssueAIService.categorize_issue(db, request.title, request.description)
+        
+        if ai_triage.get("is_spam"):
+            logger.warning("Spam issue detected and rejected.")
+            raise HTTPException(status_code=400, detail="Spam detected")
+
+        # Generate unique tracking number
+        tracking_num = f"ISSUE-{datetime.datetime.now(datetime.UTC).strftime('%Y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
+
+        issue = Issue(
+            tracking_number=tracking_num,
             title=request.title,
             description=request.description,
-            category=request.category.value,
-            severity=request.severity.value,
-            source=request.source.value,
-            reporter_name=request.reporter_name,
-            reporter_email=request.reporter_email,
-            anonymous=request.anonymous,
+            type=ai_triage.get("category", request.category.value),
+            priority=ai_triage.get("priority", request.severity.value),
             system_info=request.system_info,
-            browser_info=request.browser_info,
-            device_info=request.device_info,
-            environment_info=request.environment_info,
-            app_version=request.app_version,
-            screenshots=request.screenshots,
-            logs=request.logs,
-            steps_to_reproduce=request.steps_to_reproduce,
-            expected_behavior=request.expected_behavior,
-            actual_behavior=request.actual_behavior,
-            stack_trace=request.stack_trace,
-            email_notifications=request.email_notifications,
-            discord_notifications=request.discord_notifications,
-            slack_notifications=request.slack_notifications,
+            ai_category=ai_triage.get("category"),
+            status="open"
         )
-        result = service.submit_issue(report)
-        logger.info("Issue submitted: %s", result.get("tracking_number"))
-        return IssueReportResponse(**result)
+        db.add(issue)
+        db.commit()
+        db.refresh(issue)
+
+        # Trigger Reasoning Model in background (if it's a bug or crash)
+        if issue.type in ["bug", "crash", "performance"]:
+            background_tasks.add_task(_process_ai_reasoning, db, issue.id, issue.title, issue.description, issue.system_info)
+
+        # Trigger Webhooks
+        background_tasks.add_task(IntegrationsService.dispatch_webhooks, db, issue)
+
+        # Add attachments if any (mocking basic structure based on request)
+        if request.screenshots:
+            for url in request.screenshots:
+                db.add(IssueAttachment(issue_id=issue.id, file_name="screenshot.png", file_type="screenshot", mime_type="image/png", size_bytes=0, storage_path=url))
+            db.commit()
+
+        # Build response
+        return _build_issue_response(issue)
+
     except Exception as e:
         logger.error("Issue submission failed: %s", e)
-        raise IssueReportError(message=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+async def _process_ai_reasoning(db: Session, issue_id: uuid.UUID, title: str, description: str, system_info: dict):
+    # This runs in a background thread, so we generate the fix and update the DB
+    fix = await IssueAIService.generate_suggested_fix(db, title, description, system_info)
+    issue = db.get(Issue, issue_id)
+    if issue:
+        issue.ai_suggested_fix = fix
+        # Also add as a comment
+        comment = IssueComment(issue_id=issue_id, body=f"**AI Suggested Fix**\n{fix}", is_ai_generated=True)
+        db.add(comment)
+        db.commit()
 
 
 @router.get("", response_model=IssueListResponse, summary="List issues")
-async def list_issues(
+def list_issues(
     status: str | None = None,
-    category: str | None = None,
-    severity: str | None = None,
-    assigned_to: str | None = None,
-    label: str | None = None,
-    milestone: str | None = None,
-    search: str | None = None,
-    sort_by: str = "created_at",
-    sort_order: str = "desc",
     limit: int = 50,
     offset: int = 0,
+    db: Session = Depends(get_db)
 ):
-    service = _get_service()
-    try:
-        issues = service.list_issues(
-            status=status,
-            category=category,
-            severity=severity,
-            assigned_to=assigned_to,
-            label=label,
-            milestone=milestone,
-            search=search,
-            sort_by=sort_by,
-            sort_order=sort_order,
-            limit=limit,
-            offset=offset,
-        )
-        return IssueListResponse(issues=issues, total=len(issues), offset=offset, limit=limit)
-    except Exception as e:
-        logger.error("Failed to list issues: %s", e)
-        raise HTTPException(status_code=500, detail=f"Failed to list issues: {e}")
+    query = select(Issue).order_by(desc(Issue.created_at))
+    if status:
+        query = query.where(Issue.status == status)
+    
+    issues = db.execute(query.offset(offset).limit(limit)).scalars().all()
+    # Count total
+    total = db.execute(select(Issue)).scalars().all() # Ineffecient but works for now
 
-
-@router.get("/stats", response_model=IssueStatsResponse, summary="Get issue statistics")
-async def get_issue_stats():
-    service = _get_service()
-    try:
-        stats = service.get_stats()
-        return IssueStatsResponse(**stats)
-    except Exception as e:
-        logger.error("Failed to get stats: %s", e)
-        raise HTTPException(status_code=500, detail=f"Failed to get stats: {e}")
-
-
-@router.get("/sla", response_model=list[SLABreachResponse], summary="Check SLA breaches")
-async def check_sla_breaches():
-    service = _get_service()
-    try:
-        breaches = service.check_sla()
-        return [SLABreachResponse(**b) for b in breaches]
-    except Exception as e:
-        logger.error("Failed to check SLA: %s", e)
-        raise HTTPException(status_code=500, detail=f"Failed to check SLA: {e}")
+    return IssueListResponse(
+        issues=[_build_issue_response(i) for i in issues], 
+        total=len(total), 
+        offset=offset, 
+        limit=limit
+    )
 
 
 @router.get("/{issue_id}", response_model=IssueReportResponse, summary="Get issue detail")
-async def get_issue(issue_id: str):
-    service = _get_service()
-    issue = service.get_issue(issue_id)
+def get_issue(issue_id: str, db: Session = Depends(get_db)):
+    try:
+        issue_uuid = uuid.UUID(issue_id)
+    except:
+        raise HTTPException(status_code=400, detail="Invalid UUID")
+    
+    issue = db.get(Issue, issue_uuid)
     if not issue:
-        raise HTTPException(status_code=404, detail=f"Issue '{issue_id}' not found")
-    return IssueReportResponse(**issue)
+        raise HTTPException(status_code=404, detail="Issue not found")
+    return _build_issue_response(issue)
 
 
 @router.patch("/{issue_id}", response_model=IssueReportResponse, summary="Update issue")
-async def update_issue(issue_id: str, request: IssueUpdateRequest):
-    service = _get_service()
-    updates = {k: v for k, v in request.model_dump().items() if v is not None}
-    if "_actor" in updates:
-        del updates["_actor"]
-    result = service.update_issue(issue_id, updates)
-    if not result:
-        raise HTTPException(status_code=404, detail=f"Issue '{issue_id}' not found")
-    return IssueReportResponse(**result)
+def update_issue(issue_id: str, request: IssueUpdateRequest, db: Session = Depends(get_db)):
+    try:
+        issue_uuid = uuid.UUID(issue_id)
+    except:
+        raise HTTPException(status_code=400, detail="Invalid UUID")
+        
+    issue = db.get(Issue, issue_uuid)
+    if not issue:
+        raise HTTPException(status_code=404, detail="Issue not found")
+    
+    updates = request.model_dump(exclude_unset=True)
+    for k, v in updates.items():
+        if hasattr(issue, k):
+            setattr(issue, k, v)
+            
+    db.commit()
+    db.refresh(issue)
+    return _build_issue_response(issue)
 
 
 @router.delete("/{issue_id}", summary="Delete issue")
-async def delete_issue(issue_id: str):
-    service = _get_service()
-    if not service.delete_issue(issue_id):
-        raise HTTPException(status_code=404, detail=f"Issue '{issue_id}' not found")
-    return {"message": f"Issue '{issue_id}' deleted", "id": issue_id}
-
-
-@router.post("/{issue_id}/comments", response_model=IssueReportResponse, summary="Add comment")
-async def add_comment(issue_id: str, request: CommentRequest):
-    service = _get_service()
-    comment = {"body": request.body, "author": request.author or "Anonymous"}
-    result = service.add_comment(issue_id, comment)
-    if not result:
-        raise HTTPException(status_code=404, detail=f"Issue '{issue_id}' not found")
-    return IssueReportResponse(**result)
-
-
-@router.get("/{issue_id}/comments", summary="Get comments")
-async def get_comments(issue_id: str):
-    service = _get_service()
-    issue = service.get_issue(issue_id)
+def delete_issue(issue_id: str, db: Session = Depends(get_db)):
+    try:
+        issue_uuid = uuid.UUID(issue_id)
+    except:
+        raise HTTPException(status_code=400, detail="Invalid UUID")
+        
+    issue = db.get(Issue, issue_uuid)
     if not issue:
-        raise HTTPException(status_code=404, detail=f"Issue '{issue_id}' not found")
-    return service.get_comments(issue_id)
+        raise HTTPException(status_code=404, detail="Issue not found")
+    
+    db.delete(issue)
+    db.commit()
+    return {"status": "deleted"}
 
 
-@router.get("/{issue_id}/timeline", summary="Get timeline")
-async def get_timeline(issue_id: str):
-    service = _get_service()
-    issue = service.get_issue(issue_id)
-    if not issue:
-        raise HTTPException(status_code=404, detail=f"Issue '{issue_id}' not found")
-    return service.get_timeline(issue_id)
-
-
-@router.get("/{issue_id}/tracking", summary="Get tracking number")
-async def get_tracking_number(issue_id: str):
-    service = _get_service()
-    tn = service.get_tracking_number(issue_id)
-    if not tn:
-        raise HTTPException(status_code=404, detail=f"Issue '{issue_id}' not found")
-    return {"tracking_number": tn, "issue_id": issue_id}
-
-
-@router.post("/crash", response_model=IssueReportResponse, summary="Submit crash report")
-async def submit_crash_report(request: CrashReportRequest):
-    service = _get_service()
-    try:
-        crash_data = {
-            "error_message": request.error_message,
-            "stack_trace": request.stack_trace,
-            "system_info": request.system_info,
-            "app_version": request.app_version,
-            "logs": request.logs,
-        }
-        result = service.submit_crash_report(crash_data)
-        logger.info("Crash report submitted: %s", result.get("tracking_number"))
-        return IssueReportResponse(**result.get("issue", result))
-    except Exception as e:
-        logger.error("Crash report submission failed: %s", e)
-        raise IssueReportError(message=str(e))
-
-
-@router.post("/feedback", response_model=IssueReportResponse, summary="Submit feedback")
-async def submit_feedback(request: FeedbackRequest):
-    service = _get_service()
-    try:
-        feedback_data = {
-            "title": request.title,
-            "message": request.message,
-            "category": request.category,
-            "rating": request.rating,
-            "reporter_name": request.reporter_name,
-            "reporter_email": request.reporter_email,
-            "create_issue": request.create_issue,
-        }
-        result = service.submit_feedback(feedback_data)
-        logger.info("Feedback submitted: %s", result.get("title"))
-        return IssueReportResponse(**result)
-    except Exception as e:
-        logger.error("Feedback submission failed: %s", e)
-        raise IssueReportError(message=str(e))
-
-
-@router.get("/labels", summary="List labels")
-async def list_labels():
-    service = _get_service()
-    return service.list_labels()
-
-
-@router.post("/labels", summary="Create label")
-async def create_label(request: LabelCreateRequest):
-    service = _get_service()
-    try:
-        label = service.create_label(name=request.name, color=request.color, description=request.description)
-        logger.info("Label created: %s", request.name)
-        return label
-    except Exception as e:
-        logger.error("Label creation failed: %s", e)
-        raise HTTPException(status_code=500, detail=f"Label creation failed: {e}")
-
-
-@router.delete("/labels/{key}", summary="Delete label")
-async def delete_label(key: str):
-    service = _get_service()
-    if not service.delete_label(key):
-        raise HTTPException(status_code=404, detail=f"Label '{key}' not found or is a default label")
-    return {"message": f"Label '{key}' deleted", "key": key}
-
-
-@router.get("/milestones", summary="List milestones")
-async def list_milestones():
-    service = _get_service()
-    return service.list_milestones()
-
-
-@router.post("/milestones", summary="Create milestone")
-async def create_milestone(request: MilestoneCreateRequest):
-    service = _get_service()
-    try:
-        milestone = service.create_milestone(
-            title=request.title, description=request.description, due_date=request.due_date
-        )
-        logger.info("Milestone created: %s", request.title)
-        return milestone
-    except Exception as e:
-        logger.error("Milestone creation failed: %s", e)
-        raise HTTPException(status_code=500, detail=f"Milestone creation failed: {e}")
-
-
-@router.get("/settings", summary="Get settings")
-async def get_settings():
-    service = _get_service()
-    return service.get_settings()
-
-
-@router.put("/settings", summary="Update settings")
-async def update_settings(request: SettingsUpdateRequest):
-    service = _get_service()
-    try:
-        updated = service.update_settings(request.settings)
-        logger.info("Settings updated")
-        return updated
-    except Exception as e:
-        logger.error("Settings update failed: %s", e)
-        raise HTTPException(status_code=500, detail=f"Settings update failed: {e}")
+def _build_issue_response(issue: Issue) -> dict:
+    return {
+        "id": str(issue.id),
+        "title": issue.title,
+        "description": issue.description,
+        "category": issue.type,
+        "severity": issue.priority,
+        "status": issue.status,
+        "source": "api", # defaulting for now
+        "reporter_name": "",
+        "reporter_email": "",
+        "anonymous": issue.user_id is None,
+        "tracking_number": issue.tracking_number,
+        "labels": [issue.ai_category] if issue.ai_category else [],
+        "assigned_to": str(issue.assignee_id) if issue.assignee_id else None,
+        "milestone": None,
+        "priority": 3,
+        "system_info": issue.system_info or {},
+        "browser_info": {},
+        "device_info": {},
+        "environment_info": {},
+        "app_version": "",
+        "attachments": [],
+        "screenshots": [],
+        "created_at": issue.created_at,
+        "updated_at": issue.updated_at
+    }

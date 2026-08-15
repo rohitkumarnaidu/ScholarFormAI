@@ -24,3 +24,16 @@ from app.models.review import ReviewMetadata, ReviewStatus
 from app.models.suggestion import Suggestion
 from app.models.table import Table, TableCell
 from app.models.user import User
+from app.models.update import (
+    UpdateApplication,
+    UpdateChannel,
+    UpdateRelease,
+    UpdateArtifact,
+    UpdateTelemetry,
+)
+from app.models.issue import Issue
+from app.models.issue_comment import IssueComment
+from app.models.issue_attachment import IssueAttachment
+from app.models.issue_settings import IssueSettings
+from app.models.notification import Notification
+from app.models.notification_preference import NotificationPreference

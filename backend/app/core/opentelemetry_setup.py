@@ -20,7 +20,7 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 def init_telemetry(app: FastAPI | None = None, service_name: str = "scholarform-backend"):
-    "\""Initialize OpenTelemetry tracing."\""
+    """Initialize OpenTelemetry tracing."""
     if not OTEL_INSTALLED:
         logger.warning("OpenTelemetry packages not found. Tracing disabled.")
         return
