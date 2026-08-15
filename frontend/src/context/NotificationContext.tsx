@@ -97,7 +97,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
   const markAsRead = async (id: string) => {
     if (!session?.access_token) return;
     try {
-      await fetch(`/api/v1/notifications/${id}/read`, {
+      await fetch(`/api/v1/notifications/${encodeURIComponent(id)}/read`, {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${session.access_token}` }
       });
