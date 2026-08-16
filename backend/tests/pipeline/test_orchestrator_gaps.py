@@ -488,7 +488,8 @@ class TestParallelExtractionGaps:
                             doc,
                             {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True},
                         )
-        assert "docling_layout" not in doc.metadata.ai_hints
+        assert "docling_layout" in doc.metadata.ai_hints
+        assert doc.metadata.ai_hints["docling_layout"]["confidence"] == 0.0
 
     def test_docling_timeout(self, orch, tmp_path):
         """Lines 826-830: Docling future times out."""
@@ -1169,12 +1170,13 @@ class TestEditFlowGaps:
         ]
         with patch.object(orch, "_update_status"):
             with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
-                with patch("app.pipeline.orchestrator.validate_document") as mock_val:
-                    mock_val.return_value = MagicMock()
-                    with patch("app.pipeline.orchestrator.safe_model_dump", return_value={"valid": True}):
-                        with patch("app.pipeline.orchestrator.Formatter") as mock_fmt:
-                            mock_fmt.return_value.process.return_value = None
-                            result = orch.run_edit_flow("job1", {"sections": {"body": ["Text"]}}, "ieee")
+                with patch("app.db.supabase_client.get_supabase_client", return_value=sb):
+                    with patch("app.pipeline.orchestrator.validate_document") as mock_val:
+                        mock_val.return_value = MagicMock()
+                        with patch("app.pipeline.orchestrator.safe_model_dump", return_value={"valid": True}):
+                            with patch("app.pipeline.orchestrator.Formatter") as mock_fmt:
+                                mock_fmt.return_value.process.return_value = None
+                                result = orch.run_edit_flow("job1", {"sections": {"body": ["Text"]}}, "ieee")
         assert result["status"] == "success"
 
     def test_edit_flow_cancelled_with_update_status_error(self, orch):
@@ -1182,8 +1184,9 @@ class TestEditFlowGaps:
         sb = MagicMock()
         sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = asyncio.CancelledError("cancel")
         with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
-            with patch.object(orch, "_update_status", side_effect=Exception("cleanup fail")):
-                result = orch.run_edit_flow("job1", {"sections": {}}, "ieee")
+            with patch("app.db.supabase_client.get_supabase_client", return_value=sb):
+                with patch.object(orch, "_update_status", side_effect=Exception("cleanup fail")):
+                    result = orch.run_edit_flow("job1", {"sections": {}}, "ieee")
         assert result["status"] == "cancelled"
 
     def test_edit_flow_general_error(self, orch):
@@ -1191,6 +1194,7 @@ class TestEditFlowGaps:
         sb = MagicMock()
         sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = Exception("unexpected")
         with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
-            with patch.object(orch, "_update_status"):
-                result = orch.run_edit_flow("job1", {"sections": {}}, "ieee")
+            with patch("app.db.supabase_client.get_supabase_client", return_value=sb):
+                with patch.object(orch, "_update_status"):
+                    result = orch.run_edit_flow("job1", {"sections": {}}, "ieee")
         assert result["status"] == "error"
