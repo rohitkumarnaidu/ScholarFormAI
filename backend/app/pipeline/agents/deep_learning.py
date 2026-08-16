@@ -52,6 +52,9 @@ class TransformerPatternDetector:
         self.tokenizer = None
         self.model = None
         self._initialized = False
+        self.embeddings_cache = {}
+        self.clusters = None
+        self.cluster_centers = None
 
     def _ensure_initialized(self):
         if self._initialized:
@@ -77,10 +80,6 @@ class TransformerPatternDetector:
             )
             self.tokenizer = None
             self.model = None
-
-        self.embeddings_cache = {}
-        self.clusters = None
-        self.cluster_centers = None
 
     @safe_function(fallback_value=np.zeros(768), error_message="TransformerPatternDetector.encode_document")
     def encode_document(self, text: str, max_length: int = 512) -> np.ndarray:
