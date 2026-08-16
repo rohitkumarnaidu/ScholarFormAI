@@ -73,7 +73,7 @@ class TestConvertToDocx:
         with patch("os.path.exists", return_value=True), patch("os.makedirs"), patch("shutil.copy2") as m_copy:
             result = ic.convert_to_docx(INPUT + ".docx", "job1")
             m_copy.assert_called_once()
-            assert result == TMP + r"\job1\input.docx"
+            assert result == TMP + "/job1/input.docx"
 
     def test_pandoc_strategy_calls_run_pandoc(self):
         ic = InputConverter()
@@ -98,13 +98,13 @@ class TestConvertToDocx:
                 with patch("os.remove"):
                     with patch("os.rename") as m_rename:
                         ic.convert_to_docx(INPUT + ".doc", "job1")
-                        m_rename.assert_called_once_with(TMP + r"\job1\file.docx", TMP + r"\job1\input.docx")
+                        m_rename.assert_called_once_with(TMP + "/job1/file.docx", TMP + "/job1/input.docx")
 
     def test_libreoffice_lo_output_not_found_raises(self):
         ic = InputConverter(temp_dir=TMP)
         with patch("os.path.exists", return_value=True), patch("os.makedirs"):
             with patch.object(ic, "_run_libreoffice"):
-                lo_path = TMP + r"\job1\file.docx"
+                lo_path = TMP + "/job1/file.docx"
                 with patch("os.path.exists") as m2:
                     m2.side_effect = lambda p: lo_path not in p
                     with pytest.raises(ConversionError, match="failed to produce"):
@@ -268,8 +268,8 @@ class TestHandlePdf:
             with patch.object(ic, "_run_libreoffice"):
                 with patch("os.remove"):
                     with patch("os.rename"):
-                        result = ic._handle_pdf(PDF, TMP + r"\job1", "job1", enable_ocr=False)
-                        assert result == TMP + r"\job1\input.docx"
+                        result = ic._handle_pdf(PDF, TMP + "/job1", "job1", enable_ocr=False)
+                        assert result == TMP + "/job1/input.docx"
 
     def test_ocr_disabled_by_profile(self):
         ic = InputConverter(temp_dir=TMP)
@@ -282,8 +282,8 @@ class TestHandlePdf:
                     with patch.object(ic, "_run_libreoffice"):
                         with patch("os.remove"):
                             with patch("os.rename"):
-                                result = ic._handle_pdf(PDF, TMP + r"\job1", "job1", enable_ocr=True)
-                                assert result == TMP + r"\job1\input.docx"
+                                result = ic._handle_pdf(PDF, TMP + "/job1", "job1", enable_ocr=True)
+                                assert result == TMP + "/job1/input.docx"
 
     def test_ocr_enabled_scanned_success(self):
         ic = InputConverter(temp_dir=TMP)
@@ -297,9 +297,9 @@ class TestHandlePdf:
                 m_ocr.is_scanned.return_value = True
                 m_ocr_cls.return_value = m_ocr
                 with patch("os.path.exists", return_value=True), patch("os.makedirs"):
-                    result = ic._handle_pdf(PDF, TMP + r"\job1", "job1", enable_ocr=True)
+                    result = ic._handle_pdf(PDF, TMP + "/job1", "job1", enable_ocr=True)
                     m_ocr.convert_to_docx.assert_called_once()
-                    assert result == TMP + r"\job1\input.docx"
+                    assert result == TMP + "/job1/input.docx"
 
     def test_ocr_enabled_scanned_fails_fallsback(self):
         ic = InputConverter(temp_dir=TMP)
@@ -317,8 +317,8 @@ class TestHandlePdf:
                     with patch.object(ic, "_run_libreoffice"):
                         with patch("os.remove"):
                             with patch("os.rename"):
-                                result = ic._handle_pdf(PDF, TMP + r"\job1", "job1", enable_ocr=True)
-                                assert result == TMP + r"\job1\input.docx"
+                                result = ic._handle_pdf(PDF, TMP + "/job1", "job1", enable_ocr=True)
+                                assert result == TMP + "/job1/input.docx"
 
     def test_ocr_enabled_not_scanned(self):
         ic = InputConverter(temp_dir=TMP)
@@ -335,8 +335,8 @@ class TestHandlePdf:
                     with patch.object(ic, "_run_libreoffice"):
                         with patch("os.remove"):
                             with patch("os.rename"):
-                                result = ic._handle_pdf(PDF, TMP + r"\job1", "job1", enable_ocr=True)
-                                assert result == TMP + r"\job1\input.docx"
+                                result = ic._handle_pdf(PDF, TMP + "/job1", "job1", enable_ocr=True)
+                                assert result == TMP + "/job1/input.docx"
 
     def test_ocr_enabled_no_backends(self):
         ic = InputConverter(temp_dir=TMP)
@@ -350,8 +350,8 @@ class TestHandlePdf:
                     with patch.object(ic, "_run_libreoffice"):
                         with patch("os.remove"):
                             with patch("os.rename"):
-                                result = ic._handle_pdf(PDF, TMP + r"\job1", "job1", enable_ocr=True)
-                                assert result == TMP + r"\job1\input.docx"
+                                result = ic._handle_pdf(PDF, TMP + "/job1", "job1", enable_ocr=True)
+                                assert result == TMP + "/job1/input.docx"
 
 
 # ===========================================================================
@@ -370,7 +370,7 @@ class TestConvertToPdf:
         with patch("os.path.exists", return_value=True), patch("os.makedirs"), patch("shutil.copy2") as m_copy:
             result = ic.convert_to_pdf(PDF, "job1")
             m_copy.assert_called_once()
-            assert result == TMP + r"\job1\input.pdf"
+            assert result == TMP + "/job1/input.pdf"
 
     def test_non_pdf_converts_via_libreoffice(self):
         ic = InputConverter(temp_dir=TMP)
@@ -380,7 +380,7 @@ class TestConvertToPdf:
                     with patch("os.rename"):
                         result = ic.convert_to_pdf(INPUT + ".docx", "job1")
                         m_lo.assert_called_once()
-                        assert result == TMP + r"\job1\input.pdf"
+                        assert result == TMP + "/job1/input.pdf"
 
     def test_lo_output_not_found_raises(self):
         ic = InputConverter(temp_dir=TMP)
