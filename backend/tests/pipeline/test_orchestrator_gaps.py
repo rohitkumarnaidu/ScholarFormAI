@@ -391,7 +391,7 @@ class TestPipelineInternalOptions:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=None),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=None), patch("app.db.repositories.base.get_supabase_client", return_value=None),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -987,7 +987,7 @@ class TestPersistenceEdgeCases:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=None),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=None), patch("app.db.repositories.base.get_supabase_client", return_value=None),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -1017,7 +1017,7 @@ class TestPersistenceEdgeCases:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=None),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=None), patch("app.db.repositories.base.get_supabase_client", return_value=None),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -1050,7 +1050,7 @@ class TestPersistenceEdgeCases:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=None),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=None), patch("app.db.repositories.base.get_supabase_client", return_value=None),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -1150,7 +1150,7 @@ class TestCancelledErrorHandler:
         input_path.write_text("dummy")
         with patch.object(orch, "_update_status"), patch("app.pipeline.orchestrator.ParserFactory") as mock_pf:
             mock_pf.side_effect = asyncio.CancelledError("cancel")
-            with patch("app.pipeline.orchestrator.get_supabase_client", return_value=None):
+            with patch("app.pipeline.orchestrator.get_supabase_client", return_value=None), patch("app.db.repositories.base.get_supabase_client", return_value=None):
                 result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
         assert result["status"] == "cancelled"
 
@@ -1169,8 +1169,7 @@ class TestEditFlowGaps:
             MagicMock(data=[{"id": 1, "structured_data": {"old": "data"}}]),
         ]
         with patch.object(orch, "_update_status"):
-            with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
-                with patch("app.db.repositories.base.get_supabase_client", return_value=sb):
+            with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb):
                     with patch("app.pipeline.orchestrator.validate_document") as mock_val:
                         mock_val.return_value = MagicMock()
                         with patch("app.pipeline.orchestrator.safe_model_dump", return_value={"valid": True}):
@@ -1183,7 +1182,7 @@ class TestEditFlowGaps:
         """Lines 1343-1344: update_status raises in CancelledError handler."""
         sb = MagicMock()
         sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = asyncio.CancelledError("cancel")
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
+        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             with patch("app.db.repositories.base.get_supabase_client", return_value=sb):
                 with patch.object(orch, "_update_status", side_effect=Exception("cleanup fail")):
                     result = orch.run_edit_flow("job1", {"sections": {}}, "ieee")
@@ -1193,7 +1192,7 @@ class TestEditFlowGaps:
         """Line 1346-1350: generic Exception handler in edit flow."""
         sb = MagicMock()
         sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = Exception("unexpected")
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
+        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             with patch("app.db.repositories.base.get_supabase_client", return_value=sb):
                 with patch.object(orch, "_update_status"):
                     result = orch.run_edit_flow("job1", {"sections": {}}, "ieee")
