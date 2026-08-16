@@ -17,8 +17,8 @@ from app.pipeline.input_conversion.converter import ConversionError, InputConver
 # Helpers
 # ===========================================================================
 
-INPUT = r"C:\path\file"
-TMP = r"C:\Users\test\AppData\Local\Temp"
+INPUT = "/path/file"
+TMP = "/tmp/local/temp"
 
 
 @pytest.fixture
@@ -76,7 +76,7 @@ class TestConvertToDocxGaps:
         with patch("os.path.exists", return_value=True), patch("os.makedirs"), patch("shutil.copy2") as m_copy:
             result = ic.convert_to_docx(INPUT + ".docx", "job1")
             m_copy.assert_called_once()
-            assert result == TMP + r"\job1\input.docx"
+            assert result == TMP + "/job1/input.docx"
 
     def test_pandoc_strategy_calls_run_pandoc(self):
         ic = InputConverter()
@@ -123,8 +123,8 @@ class TestConvertToDocxGaps:
                 with patch("os.remove"):
                     with patch("os.rename") as m_rename:
                         result = ic.convert_to_docx(INPUT + ".doc", "job1")
-                        m_rename.assert_called_once_with(TMP + r"\job1\file.docx", TMP + r"\job1\input.docx")
-                        assert result == TMP + r"\job1\input.docx"
+                        m_rename.assert_called_once_with(TMP + "/job1/file.docx", TMP + "/job1/input.docx")
+                        assert result == TMP + "/job1/input.docx"
 
     def test_libreoffice_odt_strategy(self):
         """ODT file uses libreoffice strategy."""
@@ -160,10 +160,10 @@ class TestConvertToDocxGaps:
         """PDF file calls _handle_pdf."""
         ic = InputConverter()
         with patch("os.path.exists", return_value=True), patch("os.makedirs"):
-            with patch.object(ic, "_handle_pdf", return_value=r"D:\out.docx") as m_h:
+            with patch.object(ic, "_handle_pdf", return_value="/out.docx") as m_h:
                 result = ic.convert_to_docx(INPUT + ".pdf", "job1")
                 m_h.assert_called_once()
-                assert result == r"D:\out.docx"
+                assert result == "/out.docx"
 
     def test_path_absolute_conversion(self):
         """Input path is made absolute."""
@@ -179,7 +179,7 @@ class TestConvertToDocxGaps:
         ic = InputConverter(temp_dir=TMP)
         with patch("os.path.exists", return_value=True), patch("os.makedirs") as m_mkdir, patch("shutil.copy2"):
             ic.convert_to_docx(INPUT + ".docx", "job1")
-            m_mkdir.assert_called_once_with(TMP + r"\job1", exist_ok=True)
+            m_mkdir.assert_called_once_with(TMP + "/job1", exist_ok=True)
 
 
 # ===========================================================================
@@ -190,7 +190,7 @@ class TestConvertToDocxGaps:
 class TestHandlePdfGaps:
     """Full _handle_pdf coverage."""
 
-    PDF = r"C:\docs\input.pdf"
+    PDF = "/docs/input.pdf"
 
     def test_ocr_disabled_by_param(self):
         """Line 121: enable_ocr=False disables OCR."""
@@ -199,8 +199,8 @@ class TestHandlePdfGaps:
             with patch.object(ic, "_run_libreoffice"):
                 with patch("os.remove"):
                     with patch("os.rename"):
-                        result = ic._handle_pdf(self.PDF, TMP + r"\job1", "job1", enable_ocr=False)
-                        assert result == TMP + r"\job1\input.docx"
+                        result = ic._handle_pdf(self.PDF, TMP + "/job1", "job1", enable_ocr=False)
+                        assert result == TMP + "/job1/input.docx"
 
     def test_ocr_disabled_by_profile(self):
         """Line 120-125: profile disabled disables OCR."""
@@ -213,8 +213,8 @@ class TestHandlePdfGaps:
                     with patch.object(ic, "_run_libreoffice"):
                         with patch("os.remove"):
                             with patch("os.rename"):
-                                result = ic._handle_pdf(self.PDF, TMP + r"\job1", "job1", enable_ocr=True)
-                                assert result == TMP + r"\job1\input.docx"
+                                result = ic._handle_pdf(self.PDF, TMP + "/job1", "job1", enable_ocr=True)
+                                assert result == TMP + "/job1/input.docx"
 
     def test_ocr_disabled_by_profile_ocr(self):
         """Line 120: ocr_enabled=False in profile disables OCR."""
@@ -228,8 +228,8 @@ class TestHandlePdfGaps:
                     with patch.object(ic, "_run_libreoffice"):
                         with patch("os.remove"):
                             with patch("os.rename"):
-                                result = ic._handle_pdf(self.PDF, TMP + r"\job1", "job1", enable_ocr=True)
-                                assert result == TMP + r"\job1\input.docx"
+                                result = ic._handle_pdf(self.PDF, TMP + "/job1", "job1", enable_ocr=True)
+                                assert result == TMP + "/job1/input.docx"
 
     def test_ocr_enabled_scanned_success(self):
         """Lines 130-140: OCR enabled, scanned, success."""
@@ -244,9 +244,9 @@ class TestHandlePdfGaps:
                 m_ocr.is_scanned.return_value = True
                 m_ocr_cls.return_value = m_ocr
                 with patch("os.path.exists", return_value=True), patch("os.makedirs"):
-                    result = ic._handle_pdf(self.PDF, TMP + r"\job1", "job1", enable_ocr=True)
+                    result = ic._handle_pdf(self.PDF, TMP + "/job1", "job1", enable_ocr=True)
                     m_ocr.convert_to_docx.assert_called_once()
-                    assert result == TMP + r"\job1\input.docx"
+                    assert result == TMP + "/job1/input.docx"
 
     def test_ocr_enabled_scanned_ocr_error_fallback(self):
         """Lines 141-142: OCR fails with OCRError, falls back to LibreOffice."""
@@ -267,8 +267,8 @@ class TestHandlePdfGaps:
                     with patch.object(ic, "_run_libreoffice"):
                         with patch("os.remove"):
                             with patch("os.rename"):
-                                result = ic._handle_pdf(self.PDF, TMP + r"\job1", "job1", enable_ocr=True)
-                                assert result == TMP + r"\job1\input.docx"
+                                result = ic._handle_pdf(self.PDF, TMP + "/job1", "job1", enable_ocr=True)
+                                assert result == TMP + "/job1/input.docx"
 
     def test_ocr_enabled_scanned_generic_exception_fallback(self):
         """Lines 143-144: OCR fails with generic Exception, falls back."""
@@ -287,8 +287,8 @@ class TestHandlePdfGaps:
                     with patch.object(ic, "_run_libreoffice"):
                         with patch("os.remove"):
                             with patch("os.rename"):
-                                result = ic._handle_pdf(self.PDF, TMP + r"\job1", "job1", enable_ocr=True)
-                                assert result == TMP + r"\job1\input.docx"
+                                result = ic._handle_pdf(self.PDF, TMP + "/job1", "job1", enable_ocr=True)
+                                assert result == TMP + "/job1/input.docx"
 
     def test_ocr_enabled_not_scanned(self):
         """Lines 130-144: OCR enabled but not scanned, falls to LibreOffice."""
@@ -306,8 +306,8 @@ class TestHandlePdfGaps:
                     with patch.object(ic, "_run_libreoffice"):
                         with patch("os.remove"):
                             with patch("os.rename"):
-                                result = ic._handle_pdf(self.PDF, TMP + r"\job1", "job1", enable_ocr=True)
-                                assert result == TMP + r"\job1\input.docx"
+                                result = ic._handle_pdf(self.PDF, TMP + "/job1", "job1", enable_ocr=True)
+                                assert result == TMP + "/job1/input.docx"
 
     def test_ocr_enabled_no_backends(self):
         """Lines 145-150: OCR enabled but no backends available."""
@@ -322,8 +322,8 @@ class TestHandlePdfGaps:
                     with patch.object(ic, "_run_libreoffice"):
                         with patch("os.remove"):
                             with patch("os.rename"):
-                                result = ic._handle_pdf(self.PDF, TMP + r"\job1", "job1", enable_ocr=True)
-                                assert result == TMP + r"\job1\input.docx"
+                                result = ic._handle_pdf(self.PDF, TMP + "/job1", "job1", enable_ocr=True)
+                                assert result == TMP + "/job1/input.docx"
 
     def test_ocr_enabled_unsupported_backends_filtered(self):
         """Only tesseract/paddle backends are supported."""
@@ -339,7 +339,7 @@ class TestHandlePdfGaps:
                 m_ocr.convert_to_docx.return_value = True
                 m_ocr_cls.return_value = m_ocr
                 with patch("os.path.exists", return_value=True), patch("os.makedirs"):
-                    ic._handle_pdf(self.PDF, TMP + r"\job1", "job1", enable_ocr=True)
+                    ic._handle_pdf(self.PDF, TMP + "/job1", "job1", enable_ocr=True)
                     # tesseract and paddle only
                     m_ocr.convert_to_docx.assert_called_once()
                     # backends should be ["tesseract", "paddle"]
@@ -353,9 +353,9 @@ class TestHandlePdfGaps:
             with patch.object(ic, "_run_libreoffice"):
                 with patch("os.remove"):
                     with patch("os.rename") as m_rename:
-                        result = ic._handle_pdf(self.PDF, TMP + r"\job1", "job1", enable_ocr=False)
+                        result = ic._handle_pdf(self.PDF, TMP + "/job1", "job1", enable_ocr=False)
                         m_rename.assert_not_called()
-                        assert result == TMP + r"\job1\input.docx"
+                        assert result == TMP + "/job1/input.docx"
 
     def test_libreoffice_output_not_found_raises(self):
         """Lines 165-166: LO output not found raises."""
@@ -365,19 +365,19 @@ class TestHandlePdfGaps:
                 with patch("os.path.exists") as m2:
                     m2.side_effect = lambda p: "input.docx" not in p
                     with pytest.raises(ConversionError, match="output not found"):
-                        ic._handle_pdf(self.PDF, TMP + r"\job1", "job1", enable_ocr=False)
+                        ic._handle_pdf(self.PDF, TMP + "/job1", "job1", enable_ocr=False)
 
     def test_libreoffice_output_different_path_renamed(self):
         """LO output renamed to input.docx when stems differ."""
         ic = InputConverter(temp_dir=TMP)
         pdf_path = r"C:\docs\different.pdf"
         lo_output = TMP + r"\job1\different.docx"
-        expected = TMP + r"\job1\input.docx"
+        expected = TMP + "/job1/input.docx"
         with patch("os.makedirs"), patch.object(ic, "_run_libreoffice"):
             with patch("os.path.exists", side_effect=lambda p: p in (lo_output, expected)):
                 with patch("os.remove"):
                     with patch("os.rename") as m_rename:
-                        result = ic._handle_pdf(pdf_path, TMP + r"\job1", "job1", enable_ocr=False)
+                        result = ic._handle_pdf(pdf_path, TMP + "/job1", "job1", enable_ocr=False)
                         m_rename.assert_called_once_with(lo_output, expected)
                         assert result == expected
 
@@ -400,7 +400,7 @@ class TestConvertToPdfGaps:
         with patch("os.path.exists", return_value=True), patch("os.makedirs"), patch("shutil.copy2") as m_copy:
             result = ic.convert_to_pdf(INPUT + ".pdf", "job1")
             m_copy.assert_called_once()
-            assert result == TMP + r"\job1\input.pdf"
+            assert result == TMP + "/job1/input.pdf"
 
     def test_docx_converts_via_libreoffice(self):
         ic = InputConverter(temp_dir=TMP)
@@ -410,7 +410,7 @@ class TestConvertToPdfGaps:
                     with patch("os.rename"):
                         result = ic.convert_to_pdf(INPUT + ".docx", "job1")
                         m_lo.assert_called_once()
-                        assert result == TMP + r"\job1\input.pdf"
+                        assert result == TMP + "/job1/input.pdf"
 
     def test_lo_output_not_found_raises(self):
         ic = InputConverter(temp_dir=TMP)
