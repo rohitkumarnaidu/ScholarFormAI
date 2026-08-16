@@ -28,9 +28,11 @@ class TestReferenceParser:
         assert result.references == []
 
     def test_process_with_reference_entries(self, parser):
-        from app.models import PipelineDocument
+        from app.models import PipelineDocument, Block, BlockType
 
-        doc = PipelineDocument(document_id="t", blocks=[])
+        doc = PipelineDocument(document_id="t", blocks=[
+            Block(block_id="b1", index=1, text="[1] A. B. Author, 'Title', Venue, 2026.", block_type=BlockType.REFERENCE_ENTRY)
+        ])
         result = parser.process(doc)
         assert len(result.references) >= 1
 
