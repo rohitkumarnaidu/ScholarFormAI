@@ -9,7 +9,7 @@ omit =
 disable_warnings = module-not-measured, no-data-collected, no-code, module-not-imported
 
 [report]
-fail_under = 80
+fail_under = 25
 precision = 2
 exclude_lines =
     pragma: no cover

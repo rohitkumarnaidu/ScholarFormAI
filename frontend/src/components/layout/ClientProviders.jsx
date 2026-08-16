@@ -9,6 +9,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { ToastProvider } from '@/context/ToastContext';
 import { DocumentProvider } from '@/context/DocumentContext';
 import { UserPreferencesProvider } from '@/context/UserPreferencesContext';
+import { NotificationProvider } from '@/context/NotificationContext';
 import FocusManager from '@/components/layout/FocusManager';
 import DynamicMeta from '@/components/layout/DynamicMeta';
 import { useState } from 'react';
@@ -29,11 +30,13 @@ export default function ClientProviders({ children }) {
                 <ToastProvider>
                     <AuthProvider>
                         <UserPreferencesProvider>
-                            <DocumentProvider>
-                                <FocusManager />
-                                <DynamicMeta />
-                                {children}
-                            </DocumentProvider>
+                            <NotificationProvider>
+                                <DocumentProvider>
+                                    <FocusManager />
+                                    <DynamicMeta />
+                                    {children}
+                                </DocumentProvider>
+                            </NotificationProvider>
                         </UserPreferencesProvider>
                     </AuthProvider>
                 </ToastProvider>

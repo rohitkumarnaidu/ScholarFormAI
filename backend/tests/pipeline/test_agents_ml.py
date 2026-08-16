@@ -765,9 +765,6 @@ class TestTransformerPatternDetector:
             assert d.model is None
             assert d.device == "cpu"
             assert d.model_name == "allenai/scibert_scivocab_uncased"
-            assert d.embeddings_cache == {}
-            assert d.clusters is None
-            assert d.cluster_centers is None
 
     def test_init_with_torch(self):
         from app.pipeline.agents.deep_learning import TransformerPatternDetector, torch

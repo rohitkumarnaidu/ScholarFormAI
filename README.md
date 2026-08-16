@@ -1,5 +1,5 @@
 # ScholarForm AI
-    
+
 <div align="center">
   <p>
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
@@ -108,7 +108,7 @@ Version 2.0 plans include peer review simulations and CRDTs for collaborative ed
 
 ## 💬 Community, Contributing & Security
 
-We welcome contributions from the community to help make ScholarForm AI the premier open-source tool for academic publishing. 
+We welcome contributions from the community to help make ScholarForm AI the premier open-source tool for academic publishing.
 
 - **[Contributing Guidelines](CONTRIBUTING.md):** Learn how to set up your environment, follow our standards, and submit pull requests.
 - **[Code of Conduct](CODE_OF_CONDUCT.md):** We are committed to fostering a welcoming and inclusive environment.

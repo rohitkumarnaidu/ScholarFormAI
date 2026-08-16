@@ -15,26 +15,28 @@ Our security updates follow semantic versioning. We actively provide security pa
 
 ## Reporting a Vulnerability
 
-We deeply appreciate the efforts of security researchers and our community in keeping ScholarForm AI safe. 
+We deeply appreciate the efforts of security researchers and our community in keeping ScholarForm AI safe.
 
 If you discover a security vulnerability, **please do not report it through public GitHub issues or discussions.**
 
 Instead, please report it via one of the following methods:
+
 1. **Email:** Send a detailed report to [security@scholarform.ai](mailto:security@scholarform.ai).
 2. **GitHub Security Advisory:** Use the "Report a vulnerability" feature in the GitHub Security tab.
 
 ### Expected Response Timeline
 
-*   **Acknowledgment:** Within 24 hours of submission.
-*   **Initial Triage & Assessment:** Within 72 hours.
-*   **Resolution & Patch Delivery:** Dependent on severity (Critical: < 48 hours, High: < 7 days).
+* **Acknowledgment:** Within 24 hours of submission.
+* **Initial Triage & Assessment:** Within 72 hours.
+* **Resolution & Patch Delivery:** Dependent on severity (Critical: < 48 hours, High: < 7 days).
 
 ## SLSA Level 3 & Supply Chain Security
 
 ScholarForm AI is built with Supply-chain Levels for Software Artifacts (SLSA) Level 3 compliance in mind:
-*   All builds are verifiable and hermetic.
-*   Source code history is immutable and protected (see [BRANCH_PROTECTION.md](docs/BRANCH_PROTECTION.md)).
-*   All dependencies are scanned automatically via automated workflows.
+
+* All builds are verifiable and hermetic.
+* Source code history is immutable and protected (see [BRANCH_PROTECTION.md](docs/BRANCH_PROTECTION.md)).
+* All dependencies are scanned automatically via automated workflows.
 
 ## Safe Harbor
 

@@ -19,7 +19,7 @@ last_updated: July 2026
 
 | Role | Name | Area | GitHub | Contact |
 | ------ | ------ | ------ | -------- | --------- |
-| **Project Lead (BDFL)** | Rohit Kumar Naidu | Overall direction, architecture, releases | [@rohitkumarnaidu](https://github.com/rohitkumarnaidu) | rohit@scholarform.ai |
+| **Project Lead (BDFL)** | Rohit Kumar Naidu | Overall direction, architecture, releases | [@rohitkumarnaidu](https://github.com/rohitkumarnaidu) | <rohit@scholarform.ai> |
 | **Backend Lead** | _(open)_ | API design, pipeline, AI/ML services, database | — | — |
 | **Frontend Lead** | _(open)_ | Next.js app, component library, design system | — | — |
 | **DevOps Lead** | _(open)_ | CI/CD, deployment, monitoring, infrastructure | — | — |
@@ -149,7 +149,7 @@ Maintainers are assigned to review rotations weekly:
 | **GitHub Issues** | Bug reports, feature requests, questions | [github.com/rohitkumarnaidu/ScholarFormAI/issues](https://github.com/rohitkumarnaidu/ScholarFormAI/issues) |
 | **GitHub Discussions** | General discussion, Q&A, ideas | [github.com/rohitkumarnaidu/ScholarFormAI/discussions](https://github.com/rohitkumarnaidu/ScholarFormAI/discussions) |
 | **Discord** | Real-time chat, maintainer coordination | Invite-only for maintainers; public channel for contributors |
-| **Email** | Security disclosures, legal, press | security@scholarform.ai |
+| **Email** | Security disclosures, legal, press | <security@scholarform.ai> |
 
 ### Escalation Path
 
@@ -172,4 +172,4 @@ Issue filed → Triaged (72h) → Assigned to area lead →
 
 ---
 
-*Last updated: July 2026*
+_Last updated: July 2026_

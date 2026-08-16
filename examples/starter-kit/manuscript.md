@@ -2,7 +2,7 @@
 
 **Author:** Alex Mercer¹, Elena Rostova²  
 **Affiliation:** ¹Department of Computer Science, Tech University; ²Institute for Information Systems, National Lab  
-**Email:** amercer@techuniv.edu, e.rostova@nationallab.gov  
+**Email:** <amercer@techuniv.edu>, <e.rostova@nationallab.gov>  
 
 ---
 

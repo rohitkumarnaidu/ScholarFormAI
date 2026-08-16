@@ -67,9 +67,9 @@ git commit -s -m "feat(parser): add support for LaTeX tables"
 
 Bugs are tracked as GitHub issues. When creating an issue, please provide:
 
-* **Environment specifics:** OS, Node/Python versions, Docker version.
-* **Steps to reproduce:** Be as detailed as possible. Provide a sample document if it relates to formatting.
-* **Expected vs Actual behavior.**
+- **Environment specifics:** OS, Node/Python versions, Docker version.
+- **Steps to reproduce:** Be as detailed as possible. Provide a sample document if it relates to formatting.
+- **Expected vs Actual behavior.**
 
 ## 5. Security Vulnerabilities
 

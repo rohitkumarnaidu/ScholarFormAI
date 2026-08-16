@@ -12,7 +12,9 @@ Explain the *motivation* and *context* behind this change.
 **Fixes:** # (Issue Number)
 
 ## 🔄 Type of Change
+
 _Please check the relevant options._
+
 - [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
 - [ ] ✨ New feature (non-breaking change which adds functionality)
 - [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
@@ -32,8 +34,9 @@ Include details on your test configuration (e.g., OS, Python/Node versions).
 - [ ] Manual end-to-end testing performed
 
 _Test Configuration details:_
-* OS: 
-* Node/Python version: 
+
+- OS:
+- Node/Python version:
 
 ## 🚨 Breaking Changes (If Applicable)
 <!-- 
@@ -41,7 +44,9 @@ If this PR introduces a breaking change, please describe the impact and the migr
 -->
 
 ## ✅ Enterprise Checklist
+
 _Please verify the following before submitting:_
+
 - [ ] 📖 I have read the [CONTRIBUTING.md](../CONTRIBUTING.md) document.
 - [ ] ✒️ I have signed off my commits (`git commit -s`) to comply with the DCO.
 - [ ] 🎨 My code follows the project's style and architectural guidelines.

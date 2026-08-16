@@ -14,6 +14,7 @@
 **Fix for each file**: Move all imports INSIDE test functions or pytest fixtures.
 
 Example — `tests/pipeline/test_orchestrator.py`:
+
 ```python
 # BAD (current):
 from app.pipeline.orchestrator import Orchestrator
@@ -24,6 +25,7 @@ def test_something():
 ```
 
 **Files to fix** (9 files in `tests/pipeline/`):
+
 1. `test_orchestrator.py`
 2. `test_classifier.py`
 3. `test_formatter.py`
@@ -191,7 +193,8 @@ Run command: `pytest tests/test_<file>.py --no-cov -q` (expect <30s each)
 
 ## Execution Strategy
 
-### Sequential order (since parallel task tool is broken):
+### Sequential order (since parallel task tool is broken)
+
 1. **Phase 0 first** — unblocks everything
 2. **Phases 1-3** (services + utils + middleware) — fast, independent, no pipeline import issues
 3. **Phase 4** (pipeline low-hanging) — uses lazy imports, should run fine
@@ -199,8 +202,9 @@ Run command: `pytest tests/test_<file>.py --no-cov -q` (expect <30s each)
 5. **Phase 6** (agents) — last pipeline work
 6. **Phase 7** (routers) — uses TestClient, no pipeline imports
 
-### Key Mocking Patterns:
-- **LLM calls**: `patch("app.services.llm_service.generate")` 
+### Key Mocking Patterns
+
+- **LLM calls**: `patch("app.services.llm_service.generate")`
 - **DB calls**: `patch("app.db.session.get_db")`
 - **HTTP calls**: `patch("httpx.AsyncClient")` with `__aenter__.return_value.get`
 - **File I/O**: `patch("builtins.open", mock_open(read_data=...))`

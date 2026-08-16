@@ -5,6 +5,7 @@ This sample project demonstrates how to integrate the ScholarFormAI document for
 ## Overview
 
 This example uses:
+
 - React 18
 - Tailwind CSS
 - Axios for API requests
@@ -12,17 +13,20 @@ This example uses:
 ## Quick Start
 
 1. Install dependencies:
+
    ```bash
    npm install
    ```
 
 2. Set your ScholarFormAI API Key:
+
    ```bash
    cp .env.example .env
    # Edit .env and set VITE_SCHOLARFORM_API_KEY
    ```
 
 3. Run the development server:
+
    ```bash
    npm run dev
    ```

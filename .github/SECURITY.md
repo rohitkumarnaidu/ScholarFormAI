@@ -1,7 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
 <!-- Copyright (c) 2026 ScholarForm AI -->
 
-
 # Security Policy
 
 ## Supported Versions
@@ -18,7 +17,7 @@ We take security seriously. Please report vulnerabilities privately.
 
 ### Disclosure Contact
 
-- **Email**: scholarform-security@googlegroups.com
+- **Email**: <scholarform-security@googlegroups.com>
 - **PGP Key**: Available at `docs/pgp/scholarform-security.asc`
 - **Response SLA**: Initial acknowledgment within 72 hours
 

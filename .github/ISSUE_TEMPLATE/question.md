@@ -15,4 +15,5 @@ Provide any relevant context, logs, or screenshots that might help us understand
 
 **Have you checked the documentation?**
 Please confirm that you've searched the README, docs, and existing issues.
+
 - [ ] Yes, I have checked the documentation.
