@@ -419,7 +419,7 @@ class TestAtomicCompletion:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -457,7 +457,7 @@ class TestAtomicCompletion:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -496,7 +496,7 @@ class TestAtomicCompletion:
         out_path.write_text("output")
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -706,7 +706,7 @@ class TestKeywordExtraction:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -816,7 +816,7 @@ class TestIntegrationScenarios:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -946,7 +946,7 @@ class TestIntegrationScenarios:
         orch.converter.convert_to_docx.return_value = str(tmp_path / "converted.docx")
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),

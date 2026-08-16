@@ -246,7 +246,7 @@ class PipelineOrchestrator:
             import traceback
 
             error_msg = str(e)
-            logger.error("Pipeline Error: %s", error_msg)
+            logger.error("Pipeline Error: %s\n%s", error_msg, traceback.format_exc())
             if doc_obj is not None:
                 try:
                     self._persist_partial_result(job_id, doc_obj, sb)
