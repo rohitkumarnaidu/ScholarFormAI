@@ -28,8 +28,8 @@ describe('useJobFromUrl', () => {
     });
 
     it('returns the job from context when id matches', async () => {
-        const { useParams } = await import('next/navigation');
-        useParams.mockReturnValue({ jobId: '123' });
+        const { useSearchParams } = await import('next/navigation');
+        useSearchParams.mockReturnValue(new URLSearchParams('?jobId=123'));
 
         const { useDocument } = await import('../context/DocumentContext');
         useDocument.mockReturnValue({ job: mockJob, setJob: vi.fn() });
@@ -42,8 +42,8 @@ describe('useJobFromUrl', () => {
     });
 
     it('fetches job when context id does not match', async () => {
-        const { useParams } = await import('next/navigation');
-        useParams.mockReturnValue({ jobId: '999' });
+        const { useSearchParams } = await import('next/navigation');
+        useSearchParams.mockReturnValue(new URLSearchParams('?jobId=999'));
 
         const { useDocument } = await import('../context/DocumentContext');
         useDocument.mockReturnValue({ job: mockJob, setJob: vi.fn() });
@@ -55,8 +55,8 @@ describe('useJobFromUrl', () => {
     });
 
     it('returns empty state when no jobId', async () => {
-        const { useParams } = await import('next/navigation');
-        useParams.mockReturnValue({ jobId: undefined });
+        const { useSearchParams } = await import('next/navigation');
+        useSearchParams.mockReturnValue(new URLSearchParams());
 
         const { useDocument } = await import('../context/DocumentContext');
         useDocument.mockReturnValue({ job: null, setJob: vi.fn() });

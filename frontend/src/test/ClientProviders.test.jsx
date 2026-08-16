@@ -9,6 +9,7 @@ vi.mock('@/context/ThemeContext', () => ({
 
 vi.mock('@/context/AuthContext', () => ({
     AuthProvider: ({ children }) => <div data-testid="auth">{children}</div>,
+    useAuth: () => ({ session: null, user: null }),
 }));
 
 vi.mock('@/context/ToastContext', () => ({
