@@ -91,19 +91,21 @@ class TestPdfOCR:
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
 
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
-            with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", side_effect=Exception("Poppler missing")):
-                ocr = PdfOCR()
-                with pytest.raises(OCRError, match="Failed to convert"):
-                    ocr.extract_text("/fake.pdf")
+            with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
+                with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", side_effect=Exception("Poppler missing")):
+                    ocr = PdfOCR()
+                    with pytest.raises(OCRError, match="Failed to convert"):
+                        ocr.extract_text("/fake.pdf")
 
     def test_extract_text_no_images(self):
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
 
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
-            with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", return_value=[]):
-                ocr = PdfOCR()
-                with pytest.raises(OCRError, match="no renderable pages"):
-                    ocr.extract_text("/fake.pdf")
+            with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
+                with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", return_value=[]):
+                    ocr = PdfOCR()
+                    with pytest.raises(OCRError, match="no renderable pages"):
+                        ocr.extract_text("/fake.pdf")
 
     def test_extract_text_tesseract_success(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
