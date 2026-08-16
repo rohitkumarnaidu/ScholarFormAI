@@ -18,6 +18,13 @@ import pytest
 import requests
 
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
+
+# Mock optional dependencies globally so that patch() works in CI where they are missing
+import sys
+from unittest.mock import MagicMock
+if 'sentence_transformers' not in sys.modules:
+    sys.modules['sentence_transformers'] = MagicMock()
+
 if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
 if Path.cwd() != BACKEND_ROOT:
