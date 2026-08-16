@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import sys
 from unittest.mock import MagicMock, patch
+
 import pytest
 
 _torch_mock = MagicMock()
@@ -36,15 +37,22 @@ for _mod_name, _mod_obj in [
     sys.modules[_mod_name] = _mod_obj
 
 import importlib.util
+
 _original_find_spec = importlib.util.find_spec
+
+
 def _mock_find_spec(name, package=None):
     if name in ["torch", "transformers", "PIL"]:
         return MagicMock()
     return _original_find_spec(name, package=package)
+
+
 importlib.util.find_spec = _mock_find_spec
 
 import importlib
+
 import app.pipeline.parsing.table_extractor
+
 importlib.reload(app.pipeline.parsing.table_extractor)
 app.pipeline.parsing.table_extractor.AutoImageProcessor = MagicMock()
 app.pipeline.parsing.table_extractor.TableTransformerForObjectDetection = MagicMock()
