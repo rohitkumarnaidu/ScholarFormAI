@@ -11,7 +11,7 @@ from app.pipeline.parsing.parser_factory import ParserFactory
 @pytest.fixture
 def factory():
     with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
-        mock_s.ENABLE_NOUGAT_PARSER = False
+        mock_s.ENABLE_LLM_PDF_PARSER = False
         yield ParserFactory()
 
 
@@ -25,30 +25,30 @@ class TestParserFactoryInit:
     def test_init_skips_failed_parsers(self):
         with patch("app.pipeline.parsing.parser_factory.DocxParser", side_effect=Exception("fail")):
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
-                mock_s.ENABLE_NOUGAT_PARSER = False
+                mock_s.ENABLE_LLM_PDF_PARSER = False
                 f = ParserFactory()
                 assert all(not isinstance(p, MagicMock) for p in f.parsers)
 
-    def test_init_enables_nougat_when_configured(self):
+    def test_init_enables_llm_pdf_when_configured(self):
         with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
-            mock_s.ENABLE_NOUGAT_PARSER = True
-            with patch("app.pipeline.parsing.nougat_parser.NougatParser") as mock_n:
+            mock_s.ENABLE_LLM_PDF_PARSER = True
+            with patch("app.pipeline.parsing.llm_pdf_parser.LLMPDFParser") as mock_n:
                 mock_n.return_value = MagicMock()
                 ParserFactory()
                 assert mock_n.called
 
-    def test_init_nougat_import_error(self):
+    def test_init_llm_pdf_import_error(self):
         with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
-            mock_s.ENABLE_NOUGAT_PARSER = True
-            with patch("builtins.__import__", side_effect=ImportError("no nougat")):
+            mock_s.ENABLE_LLM_PDF_PARSER = True
+            with patch("builtins.__import__", side_effect=ImportError("no llm pdf")):
                 f = ParserFactory()
                 names = {p.__class__.__name__ for p in f.parsers}
-                assert "NougatParser" not in names
+                assert "LLMPDFParser" not in names
 
     def test_init_with_pytest_env(self):
         with patch.dict("os.environ", {"PYTEST_CURRENT_TEST": "test_something.py::test_func"}):
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
-                mock_s.ENABLE_NOUGAT_PARSER = False
+                mock_s.ENABLE_LLM_PDF_PARSER = False
                 f = ParserFactory()
                 assert len(f.parsers) >= 2
 
