@@ -305,11 +305,20 @@ class TestOrchestratorCheckCancelled:
     def test_cancelled_raises(self, orch):
         import asyncio
 
-        sb = MagicMock()
-        sb.table.return_value.select.return_value.eq.return_value.execute.return_value.data = [{"status": "CANCELLED"}]
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
-            with pytest.raises(asyncio.CancelledError):
-                orch._check_cancelled("job1")
+        mock_resp = MagicMock()
+        mock_resp.data = [{"status": "CANCELLED"}]
+        with patch(
+            "app.pipeline.orchestrator.get_supabase_client",
+            return_value=MagicMock(),
+        ):
+            with patch(
+                "app.pipeline.orchestrator.orchestrator.DocumentRepository"
+            ) as mock_repo_cls:
+                mock_repo = MagicMock()
+                mock_repo_cls.return_value = mock_repo
+                mock_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = mock_resp
+                with pytest.raises(asyncio.CancelledError):
+                    orch._check_cancelled("job1")
 
     def test_no_supabase(self, orch):
         with patch("app.pipeline.orchestrator.get_supabase_client", return_value=None):
