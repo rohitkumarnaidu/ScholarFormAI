@@ -53,8 +53,8 @@ class TestInputConverterInit:
 # convert_to_docx
 # ===========================================================================
 
-INPUT = r"C:\path\file"
-TMP = r"C:\Users\test\AppData\Local\Temp"
+INPUT = "/path/file"
+TMP = "/tmp/local/temp"
 
 
 class TestConvertToDocx:
@@ -113,10 +113,10 @@ class TestConvertToDocx:
     def test_pdf_strategy_calls_handle_pdf(self):
         ic = InputConverter()
         with patch("os.path.exists", return_value=True), patch("os.makedirs"):
-            with patch.object(ic, "_handle_pdf", return_value=r"D:\out.docx") as m_h:
+            with patch.object(ic, "_handle_pdf", return_value="/out.docx") as m_h:
                 result = ic.convert_to_docx(INPUT + ".pdf", "job1")
                 m_h.assert_called_once()
-                assert result == r"D:\out.docx"
+                assert result == "/out.docx"
 
 
 # ===========================================================================
@@ -258,7 +258,7 @@ class TestRunLibreofficeToPdf:
 # _handle_pdf
 # ===========================================================================
 
-PDF = r"C:\docs\input.pdf"
+PDF = "/docs/input.pdf"
 
 
 class TestHandlePdf:
