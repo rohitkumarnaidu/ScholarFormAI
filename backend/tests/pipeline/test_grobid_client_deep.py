@@ -478,6 +478,7 @@ class TestGROBIDClientMarkLastGood:
 
         caplog.set_level(logging.WARNING)
         client.base_urls = ["http://url1:8070"]
+        client._last_good_base_url = "http://url1:8070"
         client._mark_last_good_base_url("http://url1:8070", reason="test")
         assert len(caplog.records) == 0
 
