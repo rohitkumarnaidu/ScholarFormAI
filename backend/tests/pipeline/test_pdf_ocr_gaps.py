@@ -462,9 +462,10 @@ class TestOcrTesseractGaps:
 
     def test_empty_images_list(self):
         with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
-            ocr = PdfOCR()
-            result = ocr._ocr_tesseract([])
-            assert result == []
+            with patch("app.pipeline.ocr.pdf_ocr.pytesseract", MagicMock()):
+                ocr = PdfOCR()
+                result = ocr._ocr_tesseract([])
+                assert result == []
 
 
 # ===================================================================
@@ -624,9 +625,10 @@ class TestOcrPaddleGaps:
         with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.PaddleOCR", MagicMock()):
                 with patch("app.pipeline.ocr.pdf_ocr.NUMPY_AVAILABLE", True):
-                    ocr = PdfOCR()
-                    result = ocr._ocr_paddle([])
-                    assert result == []
+                    with patch("app.pipeline.ocr.pdf_ocr.np", MagicMock()):
+                        ocr = PdfOCR()
+                        result = ocr._ocr_paddle([])
+                        assert result == []
 
     def test_entry_with_empty_text_skipped(self):
         with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", True):
