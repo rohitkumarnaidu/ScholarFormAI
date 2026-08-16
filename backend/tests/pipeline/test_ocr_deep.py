@@ -266,9 +266,11 @@ class TestPdfOCR:
     def test_ocr_paddle_success(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
 
+        mock_np = MagicMock()
+        mock_np.array.return_value = MagicMock()
         with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.NUMPY_AVAILABLE", True):
-                with patch("app.pipeline.ocr.pdf_ocr.np.array", return_value=MagicMock()):
+                with patch("app.pipeline.ocr.pdf_ocr.np", mock_np):
                     mock_paddle = MagicMock()
                     mock_paddle.ocr.return_value = [[[[0.1, 0.2, 0.3, 0.4], ("Hello", 0.95)]]]
                     with patch("app.pipeline.ocr.pdf_ocr.PaddleOCR", return_value=mock_paddle):
@@ -279,9 +281,11 @@ class TestPdfOCR:
     def test_ocr_paddle_page_exception(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
 
+        mock_np = MagicMock()
+        mock_np.array.return_value = MagicMock()
         with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.NUMPY_AVAILABLE", True):
-                with patch("app.pipeline.ocr.pdf_ocr.np.array", return_value=MagicMock()):
+                with patch("app.pipeline.ocr.pdf_ocr.np", mock_np):
                     mock_paddle = MagicMock()
                     mock_paddle.ocr.side_effect = Exception("Paddle error on page")
                     with patch("app.pipeline.ocr.pdf_ocr.PaddleOCR", return_value=mock_paddle):
