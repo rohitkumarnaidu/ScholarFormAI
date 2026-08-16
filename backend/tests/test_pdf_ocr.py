@@ -122,6 +122,7 @@ class TestExtractText:
 
     @patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True)
     @patch("app.pipeline.ocr.pdf_ocr.convert_from_path")
+    @patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True)
     def test_raises_when_convert_fails(self, mock_convert):
         mock_convert.side_effect = Exception("Poppler missing")
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
@@ -132,6 +133,7 @@ class TestExtractText:
 
     @patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True)
     @patch("app.pipeline.ocr.pdf_ocr.convert_from_path")
+    @patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True)
     def test_raises_when_no_pages(self, mock_convert):
         mock_convert.return_value = []
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
