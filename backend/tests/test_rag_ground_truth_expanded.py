@@ -47,7 +47,10 @@ EXPANDED_GROUND_TRUTH = [
     {
         "query": "How does Harvard style format corporate author citations?",
         "relevant_docs": [
-            {"text": "Harvard style abbreviates commonly known corporate author names after first mention.", "relevance": 3},
+            {
+                "text": "Harvard style abbreviates commonly known corporate author names after first mention.",
+                "relevance": 3,
+            },
             {"text": "Harvard style: corporate authors are cited by organisation name.", "relevance": 2},
             {"text": "Harvard referencing uses author-date format for all sources.", "relevance": 1},
         ],
@@ -80,7 +83,10 @@ EXPANDED_GROUND_TRUTH = [
     {
         "query": "What are the specific formatting requirements for supplementary materials in academic journal submissions across all major publishers including margin specifications, font sizes, file formats, naming conventions, cover letter contents, and ORCID iD registration policies for corresponding authors as of the 2025 guidelines?",
         "relevant_docs": [
-            {"text": "Most major publishers accept supplementary materials as PDF, DOCX, or ZIP files.", "relevance": 3},
+            {
+                "text": "Most major publishers accept supplementary materials as PDF, DOCX, or ZIP files.",
+                "relevance": 3,
+            },
             {"text": "Supplementary material naming conventions vary by publisher: Suppl., S1, etc.", "relevance": 2},
         ],
         "irrelevant_docs": [
@@ -178,7 +184,10 @@ EXPANDED_GROUND_TRUTH = [
         "relevant_docs": [
             {"text": "Springer tables should be numbered consecutively with Arabic numerals.", "relevance": 3},
             {"text": "Springer table headers can span multiple columns with merged cells.", "relevance": 2},
-            {"text": "Springer formatting: tables must be in editable Word format with clear row/column structure.", "relevance": 2},
+            {
+                "text": "Springer formatting: tables must be in editable Word format with clear row/column structure.",
+                "relevance": 2,
+            },
         ],
         "irrelevant_docs": [
             {"text": "Taylor & Francis prefers tables as separate image files.", "relevance": 0},
@@ -199,7 +208,10 @@ EXPANDED_GROUND_TRUTH = [
         "query": "How should inline and displayed equations be numbered in IMRaD-structured papers?",
         "relevant_docs": [
             {"text": "Equations are numbered sequentially in parentheses (1), (2) within each paper.", "relevance": 3},
-            {"text": "In IMRaD papers, equation numbers appear on the right side of displayed equations.", "relevance": 2},
+            {
+                "text": "In IMRaD papers, equation numbers appear on the right side of displayed equations.",
+                "relevance": 2,
+            },
             {"text": "AMS style uses section-based equation numbering like (1.1), (1.2).", "relevance": 1},
         ],
         "irrelevant_docs": [
@@ -220,7 +232,10 @@ EXPANDED_GROUND_TRUTH = [
     {
         "query": "What information must be included in a data availability statement for PLOS ONE?",
         "relevant_docs": [
-            {"text": "PLOS ONE requires data availability statements including repository names and DOIs.", "relevance": 3},
+            {
+                "text": "PLOS ONE requires data availability statements including repository names and DOIs.",
+                "relevance": 3,
+            },
             {"text": "PLOS ONE data policy mandates all underlying data be freely available.", "relevance": 2},
             {"text": "PLOS ONE data availability statements must explain any restrictions on access.", "relevance": 2},
         ],
@@ -232,8 +247,14 @@ EXPANDED_GROUND_TRUTH = [
     {
         "query": "What sections should a professional academic resume/CV template include for science faculty positions?",
         "relevant_docs": [
-            {"text": "Academic CVs include Education, Research Experience, Publications, and References.", "relevance": 3},
-            {"text": "Science faculty CVs include a Research Statement and Teaching Philosophy section.", "relevance": 2},
+            {
+                "text": "Academic CVs include Education, Research Experience, Publications, and References.",
+                "relevance": 3,
+            },
+            {
+                "text": "Science faculty CVs include a Research Statement and Teaching Philosophy section.",
+                "relevance": 2,
+            },
             {"text": "Academic resumes typically list publications in reverse chronological order.", "relevance": 1},
         ],
         "irrelevant_docs": [
@@ -243,20 +264,35 @@ EXPANDED_GROUND_TRUTH = [
     {
         "query": "How do you structure a grant proposal template for NIH funding applications?",
         "relevant_docs": [
-            {"text": "NIH grant proposals require Specific Aims, Research Strategy, and Budget sections.", "relevance": 3},
-            {"text": "NIH Research Strategy includes Significance, Innovation, and Approach subsections.", "relevance": 2},
+            {
+                "text": "NIH grant proposals require Specific Aims, Research Strategy, and Budget sections.",
+                "relevance": 3,
+            },
+            {
+                "text": "NIH Research Strategy includes Significance, Innovation, and Approach subsections.",
+                "relevance": 2,
+            },
             {"text": "NIH requires biographical sketches for all key personnel.", "relevance": 1},
         ],
         "irrelevant_docs": [
-            {"text": "NSF proposals use a different format with Intellectual Merit and Broader Impacts.", "relevance": 0},
+            {
+                "text": "NSF proposals use a different format with Intellectual Merit and Broader Impacts.",
+                "relevance": 0,
+            },
         ],
     },
     {
         "query": "What are the standard sections in a PhD thesis template across UK and US universities?",
         "relevant_docs": [
-            {"text": "PhD thesis structure: Abstract, Acknowledgements, TOC, Introduction, Literature Review, Methods, Results, Discussion, Conclusion, References, Appendices.", "relevance": 3},
+            {
+                "text": "PhD thesis structure: Abstract, Acknowledgements, TOC, Introduction, Literature Review, Methods, Results, Discussion, Conclusion, References, Appendices.",
+                "relevance": 3,
+            },
             {"text": "UK theses often include a Declaration of Originality and Impact Statement.", "relevance": 2},
-            {"text": "US dissertations typically include a single comprehensive literature review chapter.", "relevance": 1},
+            {
+                "text": "US dissertations typically include a single comprehensive literature review chapter.",
+                "relevance": 1,
+            },
         ],
         "irrelevant_docs": [
             {"text": "Master's theses are typically shorter and may omit a full literature review.", "relevance": 0},
@@ -267,7 +303,10 @@ EXPANDED_GROUND_TRUTH = [
         "relevant_docs": [
             {"text": "Springer LNCS proceedings use the Lecture Notes in Computer Science template.", "relevance": 3},
             {"text": "Springer proceedings require structured abstract, keywords, and references.", "relevance": 2},
-            {"text": "Springer Nature proceedings templates enforce strict page limits and font sizes.", "relevance": 1},
+            {
+                "text": "Springer Nature proceedings templates enforce strict page limits and font sizes.",
+                "relevance": 1,
+            },
         ],
         "irrelevant_docs": [
             {"text": "Springer journal articles use a different template from proceedings papers.", "relevance": 0},
@@ -278,7 +317,10 @@ EXPANDED_GROUND_TRUTH = [
         "relevant_docs": [
             {"text": "Industry reports use Executive Summary format with bullet-point findings.", "relevance": 3},
             {"text": "Academic manuscripts follow IMRaD structure with formal citation styles.", "relevance": 2},
-            {"text": "Industry report templates prioritise visual data presentation over textual analysis.", "relevance": 1},
+            {
+                "text": "Industry report templates prioritise visual data presentation over textual analysis.",
+                "relevance": 1,
+            },
         ],
         "irrelevant_docs": [
             {"text": "Both formats require table of contents and references sections.", "relevance": 0},
@@ -342,6 +384,7 @@ EXPANDED_GROUND_TRUTH = [
 # Fixtures for expanded dataset
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def expanded_ground_truth_data():
     """Provide the expanded ground truth for querying."""
@@ -351,6 +394,7 @@ def expanded_ground_truth_data():
 # ---------------------------------------------------------------------------
 # Dataset Integrity Tests
 # ---------------------------------------------------------------------------
+
 
 class TestExpandedGroundTruthDataset:
     """Verify the expanded ground truth dataset is internally consistent."""
@@ -392,12 +436,19 @@ class TestExpandedGroundTruthDataset:
         for item in EXPANDED_GROUND_TRUTH:
             query = item["query"].lower()
             for doc in item["relevant_docs"]:
-                if "recipe" in query or "tyre" in query or "hydroponic" in query or "puppy" in query or "smartphone" in query:
+                if (
+                    "recipe" in query
+                    or "tyre" in query
+                    or "hydroponic" in query
+                    or "puppy" in query
+                    or "smartphone" in query
+                ):
                     assert doc["relevance"] == 1, "Negative query should have relevance=1"
 
     @pytest.mark.ai_quality
     @pytest.mark.rag
     def test_combined_dataset_reaches_fifty_plus(self):
         from test_rag_ground_truth import GROUND_TRUTH as GT
+
         combined = GT + EXPANDED_GROUND_TRUTH
         assert len(combined) >= 50, f"Combined dataset has {len(combined)} queries, expected >= 50"

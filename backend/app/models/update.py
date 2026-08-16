@@ -8,6 +8,7 @@ from sqlalchemy.orm import relationship
 
 from app.db.base import Base
 
+
 class UpdateApplication(Base):
     __tablename__ = "update_applications"
 

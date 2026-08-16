@@ -7,6 +7,7 @@ class TestSecurityHeadersMiddleware:
     @pytest.fixture
     def middleware(self):
         from app.middleware.security_headers import SecurityHeadersMiddleware
+
         return SecurityHeadersMiddleware
 
     async def test_sets_standard_security_headers(self, middleware):
@@ -71,6 +72,7 @@ class TestMaxBodySizeMiddleware:
     @pytest.fixture
     def mw_class(self):
         from app.middleware.security_headers import MaxBodySizeMiddleware
+
         return MaxBodySizeMiddleware
 
     async def test_under_limit_passes_through(self, mw_class):

@@ -87,10 +87,7 @@ class TestCursorPageBuilding:
     def test_next_cursor_generated_when_more_items(self):
         from app.utils.pagination import build_cursor_response
 
-        items = [
-            {"id": str(i), "created_at": f"2026-07-08T{12 - i // 60:02d}:{i % 60:02d}:00"}
-            for i in range(51)
-        ]
+        items = [{"id": str(i), "created_at": f"2026-07-08T{12 - i // 60:02d}:{i % 60:02d}:00"} for i in range(51)]
         params = type("_", (), {"limit": 50, "cursor": None, "order_dir": "desc"})()
         result = build_cursor_response(items, params)
         assert len(result["items"]) == 50
@@ -223,14 +220,32 @@ def client():
 class TestV2DocumentsEndpoint:
     def test_v2_list_documents(self, client):
         mock_query = _make_chainable_query()
-        mock_query.execute.return_value = MagicMock(data=[
-            {"id": "doc-1", "filename": "paper.docx", "template": "IEEE", "status": "COMPLETED", "progress": 100,
-             "current_stage": "DONE", "error_message": None, "created_at": "2026-07-08T12:00:00",
-             "updated_at": "2026-07-08T12:30:00"},
-            {"id": "doc-2", "filename": "draft.docx", "template": "APA", "status": "PROCESSING", "progress": 50,
-             "current_stage": "FORMATTING", "error_message": None, "created_at": "2026-07-08T11:00:00",
-             "updated_at": "2026-07-08T11:30:00"},
-        ])
+        mock_query.execute.return_value = MagicMock(
+            data=[
+                {
+                    "id": "doc-1",
+                    "filename": "paper.docx",
+                    "template": "IEEE",
+                    "status": "COMPLETED",
+                    "progress": 100,
+                    "current_stage": "DONE",
+                    "error_message": None,
+                    "created_at": "2026-07-08T12:00:00",
+                    "updated_at": "2026-07-08T12:30:00",
+                },
+                {
+                    "id": "doc-2",
+                    "filename": "draft.docx",
+                    "template": "APA",
+                    "status": "PROCESSING",
+                    "progress": 50,
+                    "current_stage": "FORMATTING",
+                    "error_message": None,
+                    "created_at": "2026-07-08T11:00:00",
+                    "updated_at": "2026-07-08T11:30:00",
+                },
+            ]
+        )
 
         client.mock_sb.table.return_value = mock_query
 
@@ -264,11 +279,21 @@ class TestV2DocumentsEndpoint:
 
     def test_v2_list_documents_with_filters(self, client):
         mock_query = _make_chainable_query()
-        mock_query.execute.return_value = MagicMock(data=[
-            {"id": "doc-1", "filename": "paper.docx", "template": "IEEE", "status": "COMPLETED", "progress": 100,
-             "current_stage": "DONE", "error_message": None, "created_at": "2026-07-08T12:00:00",
-             "updated_at": "2026-07-08T12:30:00"},
-        ])
+        mock_query.execute.return_value = MagicMock(
+            data=[
+                {
+                    "id": "doc-1",
+                    "filename": "paper.docx",
+                    "template": "IEEE",
+                    "status": "COMPLETED",
+                    "progress": 100,
+                    "current_stage": "DONE",
+                    "error_message": None,
+                    "created_at": "2026-07-08T12:00:00",
+                    "updated_at": "2026-07-08T12:30:00",
+                },
+            ]
+        )
 
         client.mock_sb.table.return_value = mock_query
 
@@ -284,11 +309,21 @@ class TestV2DocumentsEndpoint:
         from app.utils.pagination import encode_cursor
 
         mock_query = _make_chainable_query()
-        mock_query.execute.return_value = MagicMock(data=[
-            {"id": "doc-3", "filename": "older.docx", "template": "Springer", "status": "COMPLETED", "progress": 100,
-             "current_stage": "DONE", "error_message": None, "created_at": "2026-07-07T10:00:00",
-             "updated_at": "2026-07-07T10:30:00"},
-        ])
+        mock_query.execute.return_value = MagicMock(
+            data=[
+                {
+                    "id": "doc-3",
+                    "filename": "older.docx",
+                    "template": "Springer",
+                    "status": "COMPLETED",
+                    "progress": 100,
+                    "current_stage": "DONE",
+                    "error_message": None,
+                    "created_at": "2026-07-07T10:00:00",
+                    "updated_at": "2026-07-07T10:30:00",
+                },
+            ]
+        )
 
         client.mock_sb.table.return_value = mock_query
         cursor = encode_cursor("2026-07-08T12:00:00")

@@ -10,6 +10,7 @@ class TestCleanup:
     @pytest.mark.asyncio
     async def test_cleanup_no_upload_dir(self):
         from app.utils.cleanup import cleanup_old_uploads
+
         with patch("app.utils.cleanup.os.path.exists", return_value=False):
             with patch("app.utils.cleanup.asyncio.sleep", side_effect=asyncio.sleep):
                 task = asyncio.create_task(cleanup_old_uploads())
@@ -19,6 +20,7 @@ class TestCleanup:
     @pytest.mark.asyncio
     async def test_cleanup_deletes_old_files(self):
         from app.utils.cleanup import cleanup_old_uploads
+
         with patch("app.utils.cleanup.os.path.exists", return_value=True):
             with patch("app.utils.cleanup.os.listdir", return_value=["old.docx"]):
                 with patch("app.utils.cleanup.os.path.isfile", return_value=True):
@@ -35,6 +37,7 @@ class TestCleanup:
     @pytest.mark.asyncio
     async def test_cleanup_skips_current(self):
         from app.utils.cleanup import cleanup_old_uploads
+
         with patch("app.utils.cleanup.os.path.exists", return_value=True):
             with patch("app.utils.cleanup.os.listdir", return_value=["new.docx"]):
                 with patch("app.utils.cleanup.os.path.isfile", return_value=True):
@@ -50,6 +53,7 @@ class TestCleanup:
     @pytest.mark.asyncio
     async def test_cleanup_os_error_handled(self):
         from app.utils.cleanup import cleanup_old_uploads
+
         with patch("app.utils.cleanup.os.path.exists", return_value=True):
             with patch("app.utils.cleanup.os.listdir", return_value=["bad.docx"]):
                 with patch("app.utils.cleanup.os.path.isfile", return_value=True):
@@ -64,6 +68,7 @@ class TestCleanup:
     @pytest.mark.asyncio
     async def test_cleanup_unexpected_exception_caught(self):
         from app.utils.cleanup import cleanup_old_uploads
+
         with patch("app.utils.cleanup.os.path.exists", side_effect=Exception("boom")):
             with patch("app.utils.cleanup.logger") as mock_log:
                 with patch("app.utils.cleanup.asyncio.sleep", side_effect=asyncio.sleep):
@@ -75,6 +80,7 @@ class TestCleanup:
     @pytest.mark.asyncio
     async def test_cleanup_skips_directories(self):
         from app.utils.cleanup import cleanup_old_uploads
+
         with patch("app.utils.cleanup.os.path.exists", return_value=True):
             with patch("app.utils.cleanup.os.listdir", return_value=["subdir"]):
                 with patch("app.utils.cleanup.os.path.isfile", return_value=False):
@@ -88,6 +94,7 @@ class TestCleanup:
     @pytest.mark.asyncio
     async def test_cleanup_logs_deleted_count(self):
         from app.utils.cleanup import cleanup_old_uploads
+
         with patch("app.utils.cleanup.os.path.exists", return_value=True):
             with patch("app.utils.cleanup.os.listdir", return_value=["old.docx"]):
                 with patch("app.utils.cleanup.os.path.isfile", return_value=True):

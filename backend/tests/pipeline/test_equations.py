@@ -18,16 +18,21 @@ class TestEquationStandardizer:
             mock_etree.parse.return_value = MagicMock()
             mock_etree.XSLT.return_value = MagicMock()
             from app.pipeline.equations.standardizer import EquationStandardizer
+
             yield EquationStandardizer(xsl_path="/fake/omml2mml.xsl")
 
     def test_process_no_equations(self, standardizer):
         from app.models import PipelineDocument
-        doc = PipelineDocument(document_id="t", )
+
+        doc = PipelineDocument(
+            document_id="t",
+        )
         result = standardizer.process(doc)
         assert result is doc
 
     def test_process_omml_conversion_success(self, standardizer):
         from app.models import Equation, PipelineDocument
+
         standardizer._convert_omml_to_mathml = MagicMock(return_value="<math>result</math>")
         eq = Equation(equation_id=generate_equation_id(1), index=1, omml="<m:oMath>...</m:oMath>")
         doc = PipelineDocument(document_id="t", equations=[eq])
@@ -36,6 +41,7 @@ class TestEquationStandardizer:
 
     def test_process_omml_conversion_failure(self, standardizer):
         from app.models import Equation, PipelineDocument
+
         standardizer._convert_omml_to_mathml = MagicMock(return_value="")
         eq = Equation(equation_id=generate_equation_id(1), index=1, omml="<bad>xml</bad>")
         doc = PipelineDocument(document_id="t", equations=[eq])
@@ -44,6 +50,7 @@ class TestEquationStandardizer:
 
     def test_process_adds_stage_info(self, standardizer):
         from app.models import Equation, PipelineDocument
+
         standardizer._convert_omml_to_mathml = MagicMock(return_value="<math>ok</math>")
         eq = Equation(equation_id=generate_equation_id(1), index=1, omml="<m:oMath>x</m:oMath>")
         doc = PipelineDocument(document_id="t", equations=[eq])
@@ -56,19 +63,23 @@ class TestEquationStandardizer:
             mock_etree.parse.return_value = MagicMock()
             mock_etree.XSLT.side_effect = Exception("no xslt")
             from app.pipeline.equations.standardizer import EquationStandardizer
+
             s = EquationStandardizer(xsl_path="/fake/omml2mml.xsl")
             assert s._xslt is None
 
     def test_convert_xslt_not_found(self):
         from app.pipeline.equations.standardizer import EquationStandardizer
+
         s = EquationStandardizer(xsl_path="/nonexistent/omml2mml.xsl")
         result = s._convert_omml_to_mathml("<xml/>")
         assert result == ""
 
     def test_convert_xml_syntax_error(self, standardizer):
         standardizer._xslt = MagicMock()
+
         class FakeXMLSyntaxError(Exception):
             pass
+
         with patch("app.pipeline.equations.standardizer.etree") as mock_etree:
             mock_etree.XMLSyntaxError = FakeXMLSyntaxError
             mock_etree.fromstring.side_effect = FakeXMLSyntaxError("bad xml")
@@ -77,6 +88,7 @@ class TestEquationStandardizer:
 
     def test_process_exception_handled(self, standardizer):
         from app.models import Equation, PipelineDocument
+
         standardizer._convert_omml_to_mathml = MagicMock(side_effect=Exception("unexpected"))
         eq = Equation(equation_id=generate_equation_id(1), index=1, omml="<m:oMath>x</m:oMath>")
         doc = PipelineDocument(document_id="t", equations=[eq])
@@ -89,6 +101,7 @@ class TestEquationStandardizer:
             mock_etree.parse.return_value = MagicMock()
             mock_etree.XSLT.return_value = MagicMock()
             from app.pipeline.equations.standardizer import get_equation_standardizer
+
             s1 = get_equation_standardizer()
             s2 = get_equation_standardizer()
             assert s1 is s2

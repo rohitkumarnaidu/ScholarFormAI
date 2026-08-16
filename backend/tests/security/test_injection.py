@@ -10,6 +10,7 @@ Covers:
 - Path traversal in file downloads
 - Command injection in template names
 """
+
 from __future__ import annotations
 
 import pytest
@@ -21,7 +22,7 @@ XSS_PAYLOADS = [
     "javascript:alert(1)",
     "<body onload=alert('test')>",
     "<iframe src='javascript:alert(1)'>",
-    "\"><script>alert(String.fromCharCode(88,83,83))</script>",
+    '"><script>alert(String.fromCharCode(88,83,83))</script>',
 ]
 
 SQL_INJECTION_PAYLOADS = [
@@ -150,15 +151,10 @@ class TestOWASPInjectionCombined:
     @pytest.mark.skip(reason="Requires database connection for health endpoint")
     @pytest.mark.parametrize(
         ("payload_type", "payload"),
-        [
-            ("xss", p) for p in XSS_PAYLOADS[:3]
-        ] + [
-            ("sqli", p) for p in SQL_INJECTION_PAYLOADS[:3]
-        ] + [
-            ("traversal", p) for p in PATH_TRAVERSAL_PAYLOADS[:3]
-        ] + [
-            ("cmdi", p) for p in COMMAND_INJECTION_PAYLOADS[:3]
-        ],
+        [("xss", p) for p in XSS_PAYLOADS[:3]]
+        + [("sqli", p) for p in SQL_INJECTION_PAYLOADS[:3]]
+        + [("traversal", p) for p in PATH_TRAVERSAL_PAYLOADS[:3]]
+        + [("cmdi", p) for p in COMMAND_INJECTION_PAYLOADS[:3]],
     )
     def test_health_endpoint_resilient_to_injection(self, payload_type, payload):
         """Health endpoint should be resilient to all injection types."""

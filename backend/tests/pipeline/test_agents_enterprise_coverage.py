@@ -15,11 +15,13 @@ pytestmark = [pytest.mark.pipeline]
 # StreamingAgentCallback — deep edge case tests
 # ==============================================================================
 
+
 class TestStreamingAgentCallbackDeep:
     """Additional edge-case tests for StreamingAgentCallback."""
 
     def test_truncated_tool_input_on_tool_start(self):
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         cb = MagicMock()
         handler = StreamingAgentCallback(callback_fn=cb)
         handler.on_tool_start({"name": "t"}, "a" * 200)
@@ -28,6 +30,7 @@ class TestStreamingAgentCallbackDeep:
 
     def test_truncated_output_on_tool_end(self):
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         cb = MagicMock()
         handler = StreamingAgentCallback(callback_fn=cb)
         handler.on_tool_end("a" * 500)
@@ -36,6 +39,7 @@ class TestStreamingAgentCallbackDeep:
 
     def test_truncated_log_on_agent_action(self):
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         cb = MagicMock()
         handler = StreamingAgentCallback(callback_fn=cb)
         action = MagicMock()
@@ -48,6 +52,7 @@ class TestStreamingAgentCallbackDeep:
 
     def test_agent_finish_empty_return_values(self):
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         cb = MagicMock()
         handler = StreamingAgentCallback(callback_fn=cb)
         finish = MagicMock()
@@ -58,6 +63,7 @@ class TestStreamingAgentCallbackDeep:
 
     def test_llm_start_empty_prompts(self):
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         cb = MagicMock()
         handler = StreamingAgentCallback(callback_fn=cb)
         handler.on_llm_start({}, [])
@@ -66,6 +72,7 @@ class TestStreamingAgentCallbackDeep:
 
     def test_agent_action_none_log(self):
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         cb = MagicMock()
         handler = StreamingAgentCallback(callback_fn=cb)
         action = MagicMock()
@@ -78,6 +85,7 @@ class TestStreamingAgentCallbackDeep:
 
     def test_tool_start_no_name_key(self):
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         cb = MagicMock()
         handler = StreamingAgentCallback(callback_fn=cb)
         handler.on_tool_start({"not_name": "val"}, "input")
@@ -86,6 +94,7 @@ class TestStreamingAgentCallbackDeep:
 
     def test_chain_start_no_name_key(self):
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         cb = MagicMock()
         handler = StreamingAgentCallback(callback_fn=cb)
         handler.on_chain_start({"not_name": "val"}, {})
@@ -94,6 +103,7 @@ class TestStreamingAgentCallbackDeep:
 
     def test_agent_finish_large_output_truncated(self):
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         cb = MagicMock()
         handler = StreamingAgentCallback(callback_fn=cb)
         finish = MagicMock()
@@ -104,6 +114,7 @@ class TestStreamingAgentCallbackDeep:
 
     def test_tool_end_empty_output(self):
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         cb = MagicMock()
         handler = StreamingAgentCallback(callback_fn=cb)
         handler.on_tool_end("")
@@ -115,29 +126,33 @@ class TestStreamingAgentCallbackDeep:
 # CustomLLMFactory — deep edge case tests
 # ==============================================================================
 
+
 class TestCustomLLMFactoryDeep:
     """Additional edge-case tests for CustomLLMFactory."""
 
     def _factory(self):
         from app.pipeline.agents.llm_factory import CustomLLMFactory
+
         return CustomLLMFactory
 
     def _mod(self):
         import app.pipeline.agents.llm_factory
+
         return app.pipeline.agents.llm_factory
 
     # -- _create_litellm paths --
 
     def test_litellm_with_api_key_and_base_from_kwargs(self):
         mod = self._mod()
-        with patch.object(mod, "LITELLM_AVAILABLE", True), \
-             patch.object(mod, "_llm_generate", MagicMock()) as mock_gen, \
-             patch.object(mod, "_get_api_key", return_value="fallback_key"):
+        with (
+            patch.object(mod, "LITELLM_AVAILABLE", True),
+            patch.object(mod, "_llm_generate", MagicMock()) as mock_gen,
+            patch.object(mod, "_get_api_key", return_value="fallback_key"),
+        ):
             mock_gen.return_value = "ok"
             CustomLLMFactory = self._factory()
             llm = CustomLLMFactory.create_llm(
-                provider="openai", model="gpt-4",
-                api_key="kwarg_key", api_base="http://custom.base"
+                provider="openai", model="gpt-4", api_key="kwarg_key", api_base="http://custom.base"
             )
             assert llm is not None
             Response = llm.invoke("hello")
@@ -148,15 +163,14 @@ class TestCustomLLMFactoryDeep:
 
     def test_litellm_with_base_url_fallback(self):
         mod = self._mod()
-        with patch.object(mod, "LITELLM_AVAILABLE", True), \
-             patch.object(mod, "_llm_generate", MagicMock()) as mock_gen, \
-             patch.object(mod, "_get_api_key", return_value="key"):
+        with (
+            patch.object(mod, "LITELLM_AVAILABLE", True),
+            patch.object(mod, "_llm_generate", MagicMock()) as mock_gen,
+            patch.object(mod, "_get_api_key", return_value="key"),
+        ):
             mock_gen.return_value = "ok"
             CustomLLMFactory = self._factory()
-            llm = CustomLLMFactory.create_llm(
-                provider="openai", model="gpt-4",
-                base_url="http://fallback.base"
-            )
+            llm = CustomLLMFactory.create_llm(provider="openai", model="gpt-4", base_url="http://fallback.base")
             assert llm is not None
             Response = llm.invoke("hello")
             assert Response.content == "ok"
@@ -165,9 +179,11 @@ class TestCustomLLMFactoryDeep:
 
     def test_litellm_anthropic_provider(self):
         mod = self._mod()
-        with patch.object(mod, "LITELLM_AVAILABLE", True), \
-             patch.object(mod, "_llm_generate", MagicMock()) as mock_gen, \
-             patch.object(mod, "_get_api_key", return_value="key"):
+        with (
+            patch.object(mod, "LITELLM_AVAILABLE", True),
+            patch.object(mod, "_llm_generate", MagicMock()) as mock_gen,
+            patch.object(mod, "_get_api_key", return_value="key"),
+        ):
             mock_gen.return_value = "ok"
             CustomLLMFactory = self._factory()
             llm = CustomLLMFactory.create_llm(provider="anthropic", model="claude-3-sonnet-20240229")
@@ -178,9 +194,11 @@ class TestCustomLLMFactoryDeep:
 
     def test_litellm_api_key_from_get_api_key_fallback(self):
         mod = self._mod()
-        with patch.object(mod, "LITELLM_AVAILABLE", True), \
-             patch.object(mod, "_llm_generate", MagicMock()) as mock_gen, \
-             patch.object(mod, "_get_api_key", return_value="env_key"):
+        with (
+            patch.object(mod, "LITELLM_AVAILABLE", True),
+            patch.object(mod, "_llm_generate", MagicMock()) as mock_gen,
+            patch.object(mod, "_get_api_key", return_value="env_key"),
+        ):
             mock_gen.return_value = "ok"
             CustomLLMFactory = self._factory()
             llm = CustomLLMFactory.create_llm(provider="openai", model="gpt-4")
@@ -191,8 +209,7 @@ class TestCustomLLMFactoryDeep:
 
     def test_litellm_unsupported_provider_with_litellm_available(self):
         mod = self._mod()
-        with patch.object(mod, "LITELLM_AVAILABLE", True), \
-             patch.object(mod, "_llm_generate", MagicMock()):
+        with patch.object(mod, "LITELLM_AVAILABLE", True), patch.object(mod, "_llm_generate", MagicMock()):
             CustomLLMFactory = self._factory()
             with pytest.raises(ValueError, match="Unsupported provider"):
                 CustomLLMFactory.create_llm(provider="unknown_provider", model="x")
@@ -201,10 +218,12 @@ class TestCustomLLMFactoryDeep:
 
     def test_force_langchain_openai_with_mocked_chat(self):
         mod = self._mod()
-        with patch.object(mod, "LITELLM_AVAILABLE", True), \
-             patch.object(mod, "ChatOpenAI", MagicMock()) as mock_chat, \
-             patch.object(mod, "_llm_generate", MagicMock()), \
-             patch.object(mod, "settings") as mock_settings:
+        with (
+            patch.object(mod, "LITELLM_AVAILABLE", True),
+            patch.object(mod, "ChatOpenAI", MagicMock()) as mock_chat,
+            patch.object(mod, "_llm_generate", MagicMock()),
+            patch.object(mod, "settings") as mock_settings,
+        ):
             mock_settings.OPENAI_API_KEY = "test-key"
             fake_instance = MagicMock()
             mock_chat.return_value = fake_instance
@@ -214,10 +233,12 @@ class TestCustomLLMFactoryDeep:
 
     def test_force_langchain_ollama_with_mocked_ollama(self):
         mod = self._mod()
-        with patch.object(mod, "LITELLM_AVAILABLE", True), \
-             patch.object(mod, "Ollama", MagicMock()) as mock_ollama, \
-             patch.object(mod, "_llm_generate", MagicMock()), \
-             patch.object(mod, "settings") as mock_settings:
+        with (
+            patch.object(mod, "LITELLM_AVAILABLE", True),
+            patch.object(mod, "Ollama", MagicMock()) as mock_ollama,
+            patch.object(mod, "_llm_generate", MagicMock()),
+            patch.object(mod, "settings") as mock_settings,
+        ):
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
             fake_instance = MagicMock()
             mock_ollama.return_value = fake_instance
@@ -236,11 +257,13 @@ class TestCustomLLMFactoryDeep:
         fake_openai_mod = types.ModuleType("langchain_openai")
         fake_openai_mod.ChatOpenAI = fake_chat_cls
 
-        with patch.object(mod, "LITELLM_AVAILABLE", False), \
-             patch.object(mod, "_llm_generate", None), \
-             patch.object(mod, "ChatOpenAI", None), \
-             patch.object(mod, "settings") as mock_settings, \
-             patch.dict("sys.modules", {"langchain_openai": fake_openai_mod}):
+        with (
+            patch.object(mod, "LITELLM_AVAILABLE", False),
+            patch.object(mod, "_llm_generate", None),
+            patch.object(mod, "ChatOpenAI", None),
+            patch.object(mod, "settings") as mock_settings,
+            patch.dict("sys.modules", {"langchain_openai": fake_openai_mod}),
+        ):
             mock_settings.OPENAI_API_KEY = "test-key"
             CustomLLMFactory = self._factory()
             llm = CustomLLMFactory.create_llm(provider="openai", model="gpt-4")
@@ -253,12 +276,14 @@ class TestCustomLLMFactoryDeep:
         fake_openai_mod = types.ModuleType("langchain_openai")
         fake_openai_mod.ChatOpenAI = fake_chat_cls
 
-        with patch.object(mod, "LITELLM_AVAILABLE", False), \
-             patch.object(mod, "_llm_generate", None), \
-             patch.object(mod, "ChatOpenAI", None), \
-             patch.object(mod, "settings") as mock_settings, \
-             patch.object(mod, "os") as mock_os, \
-             patch.dict("sys.modules", {"langchain_openai": fake_openai_mod}):
+        with (
+            patch.object(mod, "LITELLM_AVAILABLE", False),
+            patch.object(mod, "_llm_generate", None),
+            patch.object(mod, "ChatOpenAI", None),
+            patch.object(mod, "settings") as mock_settings,
+            patch.object(mod, "os") as mock_os,
+            patch.dict("sys.modules", {"langchain_openai": fake_openai_mod}),
+        ):
             mock_settings.OPENAI_API_KEY = ""
             mock_os.getenv.return_value = "env-key"
             CustomLLMFactory = self._factory()
@@ -276,15 +301,15 @@ class TestCustomLLMFactoryDeep:
         fake_anthropic_mod = types.ModuleType("langchain_anthropic")
         fake_anthropic_mod.ChatAnthropic = fake_chat
 
-        with patch.object(mod, "LITELLM_AVAILABLE", False), \
-             patch.object(mod, "_llm_generate", None), \
-             patch.object(mod, "settings") as mock_settings, \
-             patch.dict("sys.modules", {"langchain_anthropic": fake_anthropic_mod}):
+        with (
+            patch.object(mod, "LITELLM_AVAILABLE", False),
+            patch.object(mod, "_llm_generate", None),
+            patch.object(mod, "settings") as mock_settings,
+            patch.dict("sys.modules", {"langchain_anthropic": fake_anthropic_mod}),
+        ):
             mock_settings.ANTHROPIC_API_KEY = "ant-key"
             CustomLLMFactory = self._factory()
-            llm = CustomLLMFactory.create_llm(
-                provider="anthropic", model="claude-3-sonnet-20240229"
-            )
+            llm = CustomLLMFactory.create_llm(provider="anthropic", model="claude-3-sonnet-20240229")
             assert llm is fake_instance
             fake_chat.assert_called_once()
 
@@ -294,16 +319,16 @@ class TestCustomLLMFactoryDeep:
         fake_anthropic_mod = types.ModuleType("langchain_anthropic")
         fake_anthropic_mod.ChatAnthropic = fake_chat
 
-        with patch.object(mod, "LITELLM_AVAILABLE", False), \
-             patch.object(mod, "_llm_generate", None), \
-             patch.object(mod, "settings") as mock_settings, \
-             patch.dict("sys.modules", {"langchain_anthropic": fake_anthropic_mod}):
+        with (
+            patch.object(mod, "LITELLM_AVAILABLE", False),
+            patch.object(mod, "_llm_generate", None),
+            patch.object(mod, "settings") as mock_settings,
+            patch.dict("sys.modules", {"langchain_anthropic": fake_anthropic_mod}),
+        ):
             mock_settings.ANTHROPIC_API_KEY = ""
             CustomLLMFactory = self._factory()
             with pytest.raises(ValueError, match="ANTHROPIC_API_KEY not set"):
-                CustomLLMFactory.create_llm(
-                    provider="anthropic", model="claude-3-sonnet-20240229"
-                )
+                CustomLLMFactory.create_llm(provider="anthropic", model="claude-3-sonnet-20240229")
 
     # -- _create_langchain ollama with Ollama=None --
 
@@ -317,14 +342,19 @@ class TestCustomLLMFactoryDeep:
         fake_llms_mod.Ollama = fake_ollama_cls
         fake_community_mod.llms = fake_llms_mod
 
-        with patch.object(mod, "LITELLM_AVAILABLE", False), \
-             patch.object(mod, "_llm_generate", None), \
-             patch.object(mod, "Ollama", None), \
-             patch.object(mod, "settings") as mock_settings, \
-             patch.dict("sys.modules", {
-                 "langchain_community": fake_community_mod,
-                 "langchain_community.llms": fake_llms_mod,
-             }):
+        with (
+            patch.object(mod, "LITELLM_AVAILABLE", False),
+            patch.object(mod, "_llm_generate", None),
+            patch.object(mod, "Ollama", None),
+            patch.object(mod, "settings") as mock_settings,
+            patch.dict(
+                "sys.modules",
+                {
+                    "langchain_community": fake_community_mod,
+                    "langchain_community.llms": fake_llms_mod,
+                },
+            ),
+        ):
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
             CustomLLMFactory = self._factory()
             llm = CustomLLMFactory.create_llm(provider="ollama", model="llama2")
@@ -334,9 +364,12 @@ class TestCustomLLMFactoryDeep:
     # -- edge cases --
 
     def test_create_langchain_unsupported_provider(self):
-        with patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
-             patch("app.pipeline.agents.llm_factory._llm_generate", None):
+        with (
+            patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False),
+            patch("app.pipeline.agents.llm_factory._llm_generate", None),
+        ):
             from app.pipeline.agents.llm_factory import CustomLLMFactory
+
             with pytest.raises(ValueError, match="Unsupported provider"):
                 CustomLLMFactory.create_llm(provider="not_a_provider", model="x")
 
@@ -344,10 +377,12 @@ class TestCustomLLMFactoryDeep:
         """_create_langchain anthropic raises ImportError when langchain_anthropic not importable."""
         mod = self._mod()
         # Remove langchain_anthropic from sys.modules and prevent re-import
-        with patch.object(mod, "LITELLM_AVAILABLE", False), \
-             patch.object(mod, "_llm_generate", None), \
-             patch.object(mod, "settings") as mock_settings, \
-             patch.dict("sys.modules", {"langchain_anthropic": None}):
+        with (
+            patch.object(mod, "LITELLM_AVAILABLE", False),
+            patch.object(mod, "_llm_generate", None),
+            patch.object(mod, "settings") as mock_settings,
+            patch.dict("sys.modules", {"langchain_anthropic": None}),
+        ):
             mock_settings.ANTHROPIC_API_KEY = "ant-key"
             CustomLLMFactory = self._factory()
             with pytest.raises(ImportError, match="langchain-anthropic not installed"):
@@ -359,15 +394,16 @@ class TestCustomLLMFactoryDeep:
         fake_anthropic_mod = types.ModuleType("langchain_anthropic")
         fake_anthropic_mod.ChatAnthropic = fake_chat
 
-        with patch.object(mod, "LITELLM_AVAILABLE", False), \
-             patch.object(mod, "_llm_generate", None), \
-             patch.object(mod, "settings") as mock_settings, \
-             patch.dict("sys.modules", {"langchain_anthropic": fake_anthropic_mod}):
+        with (
+            patch.object(mod, "LITELLM_AVAILABLE", False),
+            patch.object(mod, "_llm_generate", None),
+            patch.object(mod, "settings") as mock_settings,
+            patch.dict("sys.modules", {"langchain_anthropic": fake_anthropic_mod}),
+        ):
             mock_settings.ANTHROPIC_API_KEY = ""
             CustomLLMFactory = self._factory()
             llm = CustomLLMFactory.create_llm(
-                provider="anthropic", model="claude-3-sonnet-20240229",
-                api_key="kwarg-ant-key"
+                provider="anthropic", model="claude-3-sonnet-20240229", api_key="kwarg-ant-key"
             )
             assert llm is fake_chat.return_value
             # verify the api_key in kwargs was passed correctly
@@ -380,6 +416,7 @@ class TestGetAvailableProvidersDeep:
 
     def _factory(self):
         from app.pipeline.agents.llm_factory import CustomLLMFactory
+
         return CustomLLMFactory
 
     def _make_anthropic_fake(self):
@@ -390,10 +427,12 @@ class TestGetAvailableProvidersDeep:
     def test_all_providers_available(self):
         mod = __import__("app.pipeline.agents.llm_factory", fromlist=["_"])
         fake_anthropic = self._make_anthropic_fake()
-        with patch.object(mod, "settings") as mock_settings, \
-             patch.object(mod, "LITELLM_AVAILABLE", True), \
-             patch.dict("sys.modules", {"langchain_anthropic": fake_anthropic}), \
-             patch("requests.get") as mock_get:
+        with (
+            patch.object(mod, "settings") as mock_settings,
+            patch.object(mod, "LITELLM_AVAILABLE", True),
+            patch.dict("sys.modules", {"langchain_anthropic": fake_anthropic}),
+            patch("requests.get") as mock_get,
+        ):
             mock_settings.NVIDIA_API_KEY = "nv-key"
             mock_settings.OPENAI_API_KEY = "sk-key"
             mock_settings.ANTHROPIC_API_KEY = "ant-key"
@@ -413,11 +452,13 @@ class TestGetAvailableProvidersDeep:
 
     def test_no_providers_all_fail(self):
         mod = __import__("app.pipeline.agents.llm_factory", fromlist=["_"])
-        with patch.object(mod, "settings") as mock_settings, \
-             patch.object(mod, "LITELLM_AVAILABLE", False), \
-             patch.object(mod, "_llm_generate", None), \
-             self._mock_anthropic_fail(), \
-             patch("requests.get") as mock_get:
+        with (
+            patch.object(mod, "settings") as mock_settings,
+            patch.object(mod, "LITELLM_AVAILABLE", False),
+            patch.object(mod, "_llm_generate", None),
+            self._mock_anthropic_fail(),
+            patch("requests.get") as mock_get,
+        ):
             mock_settings.NVIDIA_API_KEY = ""
             mock_settings.OPENAI_API_KEY = ""
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
@@ -429,11 +470,13 @@ class TestGetAvailableProvidersDeep:
 
     def test_ollama_exception_caught(self):
         mod = __import__("app.pipeline.agents.llm_factory", fromlist=["_"])
-        with patch.object(mod, "settings") as mock_settings, \
-             patch.object(mod, "LITELLM_AVAILABLE", False), \
-             patch.object(mod, "_llm_generate", None), \
-             self._mock_anthropic_fail(), \
-             patch("requests.get") as mock_get:
+        with (
+            patch.object(mod, "settings") as mock_settings,
+            patch.object(mod, "LITELLM_AVAILABLE", False),
+            patch.object(mod, "_llm_generate", None),
+            self._mock_anthropic_fail(),
+            patch("requests.get") as mock_get,
+        ):
             mock_settings.NVIDIA_API_KEY = ""
             mock_settings.OPENAI_API_KEY = ""
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
@@ -445,11 +488,13 @@ class TestGetAvailableProvidersDeep:
 
     def test_ollama_not_200(self):
         mod = __import__("app.pipeline.agents.llm_factory", fromlist=["_"])
-        with patch.object(mod, "settings") as mock_settings, \
-             patch.object(mod, "LITELLM_AVAILABLE", False), \
-             patch.object(mod, "_llm_generate", None), \
-             self._mock_anthropic_fail(), \
-             patch("requests.get") as mock_get:
+        with (
+            patch.object(mod, "settings") as mock_settings,
+            patch.object(mod, "LITELLM_AVAILABLE", False),
+            patch.object(mod, "_llm_generate", None),
+            self._mock_anthropic_fail(),
+            patch("requests.get") as mock_get,
+        ):
             mock_settings.NVIDIA_API_KEY = ""
             mock_settings.OPENAI_API_KEY = ""
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
@@ -461,10 +506,12 @@ class TestGetAvailableProvidersDeep:
 
     def test_litellm_only(self):
         mod = __import__("app.pipeline.agents.llm_factory", fromlist=["_"])
-        with patch.object(mod, "settings") as mock_settings, \
-             patch.object(mod, "LITELLM_AVAILABLE", True), \
-             self._mock_anthropic_fail(), \
-             patch("requests.get") as mock_get:
+        with (
+            patch.object(mod, "settings") as mock_settings,
+            patch.object(mod, "LITELLM_AVAILABLE", True),
+            self._mock_anthropic_fail(),
+            patch("requests.get") as mock_get,
+        ):
             mock_settings.NVIDIA_API_KEY = ""
             mock_settings.OPENAI_API_KEY = ""
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
@@ -476,11 +523,13 @@ class TestGetAvailableProvidersDeep:
 
     def test_anthropic_import_error_caught(self):
         mod = __import__("app.pipeline.agents.llm_factory", fromlist=["_"])
-        with patch.object(mod, "settings") as mock_settings, \
-             patch.object(mod, "LITELLM_AVAILABLE", False), \
-             patch.object(mod, "_llm_generate", None), \
-             patch.dict("sys.modules", {"langchain_anthropic": None}), \
-             patch("requests.get") as mock_get:
+        with (
+            patch.object(mod, "settings") as mock_settings,
+            patch.object(mod, "LITELLM_AVAILABLE", False),
+            patch.object(mod, "_llm_generate", None),
+            patch.dict("sys.modules", {"langchain_anthropic": None}),
+            patch("requests.get") as mock_get,
+        ):
             mock_settings.NVIDIA_API_KEY = ""
             mock_settings.OPENAI_API_KEY = "sk-key"
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
@@ -494,11 +543,13 @@ class TestGetAvailableProvidersDeep:
     def test_anthropic_no_key_after_successful_import(self):
         mod = __import__("app.pipeline.agents.llm_factory", fromlist=["_"])
         fake_anthropic = self._make_anthropic_fake()
-        with patch.object(mod, "settings") as mock_settings, \
-             patch.object(mod, "LITELLM_AVAILABLE", False), \
-             patch.object(mod, "_llm_generate", None), \
-             patch.dict("sys.modules", {"langchain_anthropic": fake_anthropic}), \
-             patch("requests.get") as mock_get:
+        with (
+            patch.object(mod, "settings") as mock_settings,
+            patch.object(mod, "LITELLM_AVAILABLE", False),
+            patch.object(mod, "_llm_generate", None),
+            patch.dict("sys.modules", {"langchain_anthropic": fake_anthropic}),
+            patch("requests.get") as mock_get,
+        ):
             mock_settings.NVIDIA_API_KEY = ""
             mock_settings.OPENAI_API_KEY = "sk-key"
             mock_settings.ANTHROPIC_API_KEY = ""
@@ -512,11 +563,13 @@ class TestGetAvailableProvidersDeep:
 
     def test_providers_with_nvidia_and_openai(self):
         mod = __import__("app.pipeline.agents.llm_factory", fromlist=["_"])
-        with patch.object(mod, "settings") as mock_settings, \
-             patch.object(mod, "LITELLM_AVAILABLE", False), \
-             patch.object(mod, "_llm_generate", None), \
-             self._mock_anthropic_fail(), \
-             patch("requests.get") as mock_get:
+        with (
+            patch.object(mod, "settings") as mock_settings,
+            patch.object(mod, "LITELLM_AVAILABLE", False),
+            patch.object(mod, "_llm_generate", None),
+            self._mock_anthropic_fail(),
+            patch("requests.get") as mock_get,
+        ):
             mock_settings.NVIDIA_API_KEY = "nv-key"
             mock_settings.OPENAI_API_KEY = "sk-key"
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
@@ -534,6 +587,7 @@ class TestRecommendedModelsDeep:
 
     def test_all_providers(self):
         from app.pipeline.agents.llm_factory import CustomLLMFactory
+
         assert len(CustomLLMFactory.get_recommended_models("openai")) == 3
         assert len(CustomLLMFactory.get_recommended_models("anthropic")) == 3
         assert len(CustomLLMFactory.get_recommended_models("ollama")) == 4
@@ -562,6 +616,7 @@ class TestIsMockedConstructorDeep:
 
     def test_various_values(self):
         from app.pipeline.agents.llm_factory import _is_mocked_constructor
+
         assert _is_mocked_constructor(MagicMock()) is True
         assert _is_mocked_constructor(MagicMock(spec=int)) is True
         assert _is_mocked_constructor(None) is False
@@ -592,8 +647,7 @@ class TestLiteLLMShimDeep:
         with patch.object(mod, "_llm_generate") as mock_gen:
             mock_gen.return_value = "ok"
             shim = mod._LiteLLMShim(
-                model="claude-3", temperature=0.0,
-                api_key="custom-key", api_base="https://custom.api"
+                model="claude-3", temperature=0.0, api_key="custom-key", api_base="https://custom.api"
             )
             shim.invoke("hello")
             call_kwargs = mock_gen.call_args[1]

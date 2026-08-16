@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 class TestCalculateMedianFontSize:
     def test_returns_median(self):
         from app.pipeline.normalization.normalizer import Normalizer
+
         n = Normalizer()
         blocks = []
         for size in [10, 12, 14]:
@@ -15,11 +16,13 @@ class TestCalculateMedianFontSize:
 
     def test_returns_none_for_empty(self):
         from app.pipeline.normalization.normalizer import Normalizer
+
         n = Normalizer()
         assert n._calculate_median_font_size([]) is None
 
     def test_skips_empty_text_blocks(self):
         from app.pipeline.normalization.normalizer import Normalizer
+
         n = Normalizer()
         b = MagicMock()
         b.style.font_size = 14
@@ -30,6 +33,7 @@ class TestCalculateMedianFontSize:
 class TestRepairCommonCorruptions:
     def test_fixes_number_word_merges(self):
         from app.pipeline.normalization.normalizer import Normalizer
+
         n = Normalizer()
         cases = {
             "2ethodology": "2 Methodology",
@@ -45,11 +49,13 @@ class TestRepairCommonCorruptions:
 
     def test_passes_clean_text(self):
         from app.pipeline.normalization.normalizer import Normalizer
+
         n = Normalizer()
         assert n._repair_common_corruptions("Introduction") == "Introduction"
 
     def test_empty_string(self):
         from app.pipeline.normalization.normalizer import Normalizer
+
         n = Normalizer()
         assert n._repair_common_corruptions("") == ""
 
@@ -58,6 +64,7 @@ class TestSanitizeEmptyOrphanBlocks:
     def test_removes_empty_body_block(self):
         from app.models.block import BlockType
         from app.pipeline.normalization.normalizer import Normalizer
+
         n = Normalizer()
         b = MagicMock()
         b.text.strip.return_value = ""
@@ -68,6 +75,7 @@ class TestSanitizeEmptyOrphanBlocks:
 
     def test_keeps_block_with_figure(self):
         from app.pipeline.normalization.normalizer import Normalizer
+
         n = Normalizer()
         b = MagicMock()
         b.text.strip.return_value = ""
@@ -78,6 +86,7 @@ class TestSanitizeEmptyOrphanBlocks:
 
     def test_keeps_non_empty_block(self):
         from app.pipeline.normalization.normalizer import Normalizer
+
         n = Normalizer()
         b = MagicMock()
         b.text.strip.return_value = "real content"
@@ -88,6 +97,7 @@ class TestSanitizeEmptyOrphanBlocks:
 
     def test_keeps_block_with_list_level(self):
         from app.pipeline.normalization.normalizer import Normalizer
+
         n = Normalizer()
         b = MagicMock()
         b.text.strip.return_value = ""
@@ -98,6 +108,7 @@ class TestSanitizeEmptyOrphanBlocks:
 
     def test_keeps_block_with_anchor_flag(self):
         from app.pipeline.normalization.normalizer import Normalizer
+
         n = Normalizer()
         b = MagicMock()
         b.text.strip.return_value = ""
@@ -108,6 +119,7 @@ class TestSanitizeEmptyOrphanBlocks:
 
     def test_keeps_heading_blocks(self):
         from app.pipeline.normalization.normalizer import Normalizer
+
         n = Normalizer()
         b = MagicMock()
         b.text.strip.return_value = ""
@@ -118,6 +130,7 @@ class TestSanitizeEmptyOrphanBlocks:
 
     def test_keeps_equation_block(self):
         from app.pipeline.normalization.normalizer import Normalizer
+
         n = Normalizer()
         b = MagicMock()
         b.text.strip.return_value = ""

@@ -73,7 +73,11 @@ class TestCircuitBreakerLegacy:
         assert flaky() is None
 
     def test_fallback_also_fails_returns_empty_dict(self):
-        @circuit_breaker(failure_threshold=1, recovery_timeout=60, fallback_function=lambda: (_ for _ in ()).throw(ValueError("fb fail")))
+        @circuit_breaker(
+            failure_threshold=1,
+            recovery_timeout=60,
+            fallback_function=lambda: (_ for _ in ()).throw(ValueError("fb fail")),
+        )
         def flaky():
             raise ValueError("boom")
 
@@ -116,7 +120,9 @@ class TestCircuitBreakerPybreaker:
         with patch("app.pipeline.safety.circuit_breaker._PYBREAKER", True):
             with patch("app.pipeline.safety.circuit_breaker.pybreaker") as mock_pb:
                 mock_pb.CircuitBreakerError = type("Error", (Exception,), {})
-                mock_pb.CircuitBreakerListener = type("Listener", (object,), {"state_change": lambda s,c,o,n: None, "failure": lambda s,c,e: None})
+                mock_pb.CircuitBreakerListener = type(
+                    "Listener", (object,), {"state_change": lambda s, c, o, n: None, "failure": lambda s, c, e: None}
+                )
                 mock_pb.CircuitBreaker.return_value.call.side_effect = lambda f, *a, **kw: f(*a, **kw)
                 yield mock_pb
 
@@ -149,7 +155,11 @@ class TestCircuitBreakerPybreaker:
     def test_fallback_failure_returns_empty(self, _patch_pybreaker):
         _patch_pybreaker.CircuitBreaker.return_value.call.side_effect = ValueError("nope")
 
-        @circuit_breaker(failure_threshold=1, recovery_timeout=60, fallback_function=lambda: (_ for _ in ()).throw(ValueError("fb fail")))
+        @circuit_breaker(
+            failure_threshold=1,
+            recovery_timeout=60,
+            fallback_function=lambda: (_ for _ in ()).throw(ValueError("fb fail")),
+        )
         def fail():
             raise ValueError("nope")
 

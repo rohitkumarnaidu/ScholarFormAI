@@ -78,7 +78,7 @@ class TestExtractJson:
         assert _extract_json("}") is None
 
     def test_code_fence_multiline(self):
-        text = "```json\n{\n\"key\": \"value\"\n}\n```"
+        text = '```json\n{\n"key": "value"\n}\n```'
         result = _extract_json(text)
         assert json.loads(result)["key"] == "value"
 
@@ -125,16 +125,18 @@ class TestParse:
     @pytest.mark.asyncio
     async def test_successful_parse(self):
         tp = TaskParser()
-        raw_text = json.dumps({
-            "doc_type": "research_paper",
-            "template": "ieee",
-            "sections": ["Intro", "Methods", "Conclusion"],
-            "tone": "academic",
-            "length": "long",
-            "citation_style": "apa",
-            "title": "My Paper",
-            "keywords": ["ml", "ai"],
-        })
+        raw_text = json.dumps(
+            {
+                "doc_type": "research_paper",
+                "template": "ieee",
+                "sections": ["Intro", "Methods", "Conclusion"],
+                "tone": "academic",
+                "length": "long",
+                "citation_style": "apa",
+                "title": "My Paper",
+                "keywords": ["ml", "ai"],
+            }
+        )
         with patch("app.pipeline.generation.task_parser.generate") as mock_gen:
             mock_gen.return_value = raw_text
             result = await tp.parse("write a paper about ML")

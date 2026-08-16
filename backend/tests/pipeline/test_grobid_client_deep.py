@@ -60,17 +60,20 @@ def mock_settings():
 @pytest.fixture
 def client(mock_settings):
     from app.pipeline.services.grobid_client import GROBIDClient
+
     return GROBIDClient()
 
 
 class TestGROBIDClientInitEdgeCases:
     def test_remote_hosted_detection(self, mock_settings):
         from app.pipeline.services.grobid_client import GROBIDClient
+
         c = GROBIDClient(base_url="https://grobid.example.com")
         assert c._remote_hosted is True
 
     def test_localhost_detection(self, mock_settings):
         from app.pipeline.services.grobid_client import GROBIDClient
+
         c = GROBIDClient(base_url="http://127.0.0.1:8070")
         assert c._remote_hosted is False
 
@@ -78,6 +81,7 @@ class TestGROBIDClientInitEdgeCases:
         mock_settings.EXTERNAL_CIRCUIT_BREAKER_ENABLED = True
         with patch("app.pipeline.services.grobid_client.pybreaker") as mock_pybreaker:
             from app.pipeline.services.grobid_client import GROBIDClient
+
             mock_breaker = MagicMock()
             mock_pybreaker.CircuitBreaker.return_value = mock_breaker
             c = GROBIDClient()
@@ -86,30 +90,35 @@ class TestGROBIDClientInitEdgeCases:
     def test_health_path_normalization(self, mock_settings):
         mock_settings.get_service_health_path.return_value = "api/health"
         from app.pipeline.services.grobid_client import GROBIDClient
+
         c = GROBIDClient()
         assert c.health_path.startswith("/")
 
     def test_timeout_remote_hosted(self, mock_settings):
         mock_settings.GROBID_TIMEOUT = 120
         from app.pipeline.services.grobid_client import GROBIDClient
+
         c = GROBIDClient(base_url="https://remote.example.com")
         assert c.timeout <= 90
 
     def test_timeout_local(self, mock_settings):
         mock_settings.GROBID_TIMEOUT = 50
         from app.pipeline.services.grobid_client import GROBIDClient
+
         c = GROBIDClient(base_url="http://localhost:8070")
         assert c.timeout <= 30
 
     def test_empty_base_urls_fallback(self, mock_settings):
         mock_settings.get_grobid_urls.return_value = []
         from app.pipeline.services.grobid_client import GROBIDClient
+
         c = GROBIDClient()
         assert len(c.base_urls) >= 1
         assert "localhost" in c.base_urls[0]
 
     def test_base_url_override(self, mock_settings):
         from app.pipeline.services.grobid_client import GROBIDClient
+
         c = GROBIDClient(base_url="http://custom:8070")
         assert "custom" in c.base_url
 
@@ -207,6 +216,7 @@ class TestGROBIDClientProcessHeaderEdgeCases:
     @patch("app.pipeline.services.grobid_client.requests.request")
     def test_request_exception_retries(self, mock_request, client, tmp_path):
         from requests import RequestException
+
         pdf = tmp_path / "test.pdf"
         pdf.write_text("dummy")
         mock_request.side_effect = [
@@ -240,7 +250,11 @@ class TestGROBIDClientProcessHeaderEdgeCases:
 
 
 class TestGROBIDClientProcessReferencesEdgeCases:
-    @patch.object(__import__("app.pipeline.services.grobid_client", fromlist=["GROBIDClient"]).GROBIDClient, "is_available", return_value=True)
+    @patch.object(
+        __import__("app.pipeline.services.grobid_client", fromlist=["GROBIDClient"]).GROBIDClient,
+        "is_available",
+        return_value=True,
+    )
     @patch("app.pipeline.services.grobid_client.requests.request")
     def test_transient_status_retries_references(self, mock_request, mock_avail, client, tmp_path):
         pdf = tmp_path / "test.pdf"
@@ -252,10 +266,15 @@ class TestGROBIDClientProcessReferencesEdgeCases:
         result = client.process_references(str(pdf))
         assert result == []
 
-    @patch.object(__import__("app.pipeline.services.grobid_client", fromlist=["GROBIDClient"]).GROBIDClient, "is_available", return_value=True)
+    @patch.object(
+        __import__("app.pipeline.services.grobid_client", fromlist=["GROBIDClient"]).GROBIDClient,
+        "is_available",
+        return_value=True,
+    )
     @patch("app.pipeline.services.grobid_client.requests.request")
     def test_request_exception_refs_retries(self, mock_request, mock_avail, client, tmp_path):
         from requests import RequestException
+
         pdf = tmp_path / "test.pdf"
         pdf.write_text("dummy")
         mock_request.side_effect = [
@@ -272,16 +291,32 @@ class TestGROBIDClientProcessReferencesEdgeCases:
 
 
 class TestGROBIDClientExtractMetadataEdgeCases:
-    @patch.object(__import__("app.pipeline.services.grobid_client", fromlist=["GROBIDClient"]).GROBIDClient, "is_available", return_value=True)
-    @patch.object(__import__("app.pipeline.services.grobid_client", fromlist=["GROBIDClient"]).GROBIDClient, "process_header_document")
+    @patch.object(
+        __import__("app.pipeline.services.grobid_client", fromlist=["GROBIDClient"]).GROBIDClient,
+        "is_available",
+        return_value=True,
+    )
+    @patch.object(
+        __import__("app.pipeline.services.grobid_client", fromlist=["GROBIDClient"]).GROBIDClient,
+        "process_header_document",
+    )
     def test_empty_metadata_returns_empty(self, mock_header, mock_avail, client):
         mock_header.return_value = {}
         result = client.extract_metadata("test.pdf")
         assert result == {}
 
-    @patch.object(__import__("app.pipeline.services.grobid_client", fromlist=["GROBIDClient"]).GROBIDClient, "is_available", return_value=True)
-    @patch.object(__import__("app.pipeline.services.grobid_client", fromlist=["GROBIDClient"]).GROBIDClient, "process_header_document")
-    @patch.object(__import__("app.pipeline.services.grobid_client", fromlist=["GROBIDClient"]).GROBIDClient, "process_references")
+    @patch.object(
+        __import__("app.pipeline.services.grobid_client", fromlist=["GROBIDClient"]).GROBIDClient,
+        "is_available",
+        return_value=True,
+    )
+    @patch.object(
+        __import__("app.pipeline.services.grobid_client", fromlist=["GROBIDClient"]).GROBIDClient,
+        "process_header_document",
+    )
+    @patch.object(
+        __import__("app.pipeline.services.grobid_client", fromlist=["GROBIDClient"]).GROBIDClient, "process_references"
+    )
     def test_references_are_empty_list(self, mock_refs, mock_header, mock_avail, client):
         mock_header.return_value = {"title": "Test"}
         mock_refs.return_value = []
@@ -326,6 +361,7 @@ class TestGROBIDClientTEIParsingEdgeCases:
 class TestGROBIDClientExtractAuthors:
     def test_full_extraction(self, client):
         import xml.etree.ElementTree as ET
+
         root = ET.fromstring(SAMPLE_TEI)
         authors, affiliations = client._extract_authors(root)
         assert len(authors) == 1
@@ -336,6 +372,7 @@ class TestGROBIDClientExtractAuthors:
     def test_no_authors(self, client):
         xml = """<?xml version="1.0"?><TEI xmlns="http://www.tei-c.org/ns/1.0"><teiHeader><fileDesc><titleStmt><title>Test</title></titleStmt><sourceDesc/></fileDesc></teiHeader></TEI>"""
         import xml.etree.ElementTree as ET
+
         root = ET.fromstring(xml)
         authors, affiliations = client._extract_authors(root)
         assert authors == []
@@ -345,6 +382,7 @@ class TestGROBIDClientExtractAuthors:
 class TestGROBIDClientExtractAbstract:
     def test_full_abstract(self, client):
         import xml.etree.ElementTree as ET
+
         root = ET.fromstring(SAMPLE_TEI)
         abstract = client._extract_abstract(root)
         assert "Abstract text" in abstract
@@ -352,6 +390,7 @@ class TestGROBIDClientExtractAbstract:
     def test_no_abstract(self, client):
         xml = """<?xml version="1.0"?><TEI xmlns="http://www.tei-c.org/ns/1.0"><teiHeader><fileDesc><titleStmt><title>T</title></titleStmt></fileDesc></teiHeader></TEI>"""
         import xml.etree.ElementTree as ET
+
         root = ET.fromstring(xml)
         assert client._extract_abstract(root) == ""
 
@@ -359,6 +398,7 @@ class TestGROBIDClientExtractAbstract:
 class TestGROBIDClientExtractKeywords:
     def test_full_keywords(self, client):
         import xml.etree.ElementTree as ET
+
         root = ET.fromstring(SAMPLE_TEI)
         kw = client._extract_keywords(root)
         assert len(kw) == 2
@@ -367,6 +407,7 @@ class TestGROBIDClientExtractKeywords:
     def test_no_keywords(self, client):
         xml = """<?xml version="1.0"?><TEI xmlns="http://www.tei-c.org/ns/1.0"><teiHeader/></TEI>"""
         import xml.etree.ElementTree as ET
+
         root = ET.fromstring(xml)
         assert client._extract_keywords(root) == []
 
@@ -381,35 +422,46 @@ class TestGROBIDClientConfidenceEdgeCases:
         assert score == pytest.approx(0.6, abs=0.01)
 
     def test_one_author(self, client):
-        score = client._calculate_confidence("Full Title Here", [
-            {"given": "John", "family": "Doe"},
-        ])
+        score = client._calculate_confidence(
+            "Full Title Here",
+            [
+                {"given": "John", "family": "Doe"},
+            ],
+        )
         assert score >= 0.8
 
     def test_two_authors_complete(self, client):
-        score = client._calculate_confidence("Full Title Here", [
-            {"given": "John", "family": "Doe"},
-            {"given": "Jane", "family": "Smith"},
-        ])
+        score = client._calculate_confidence(
+            "Full Title Here",
+            [
+                {"given": "John", "family": "Doe"},
+                {"given": "Jane", "family": "Smith"},
+            ],
+        )
         assert score == pytest.approx(1.0, abs=0.01)
 
     def test_two_authors_incomplete(self, client):
-        score = client._calculate_confidence("Full Title Here", [
-            {"given": "", "family": "Doe"},
-            {"given": "Jane", "family": ""},
-        ])
+        score = client._calculate_confidence(
+            "Full Title Here",
+            [
+                {"given": "", "family": "Doe"},
+                {"given": "Jane", "family": ""},
+            ],
+        )
         assert 0.8 <= score <= 0.95
 
 
 class TestGROBIDException:
     def test_exception_message(self):
         from app.pipeline.services.grobid_client import GROBIDException
+
         exc = GROBIDException("Custom message")
         assert "Custom message" in str(exc)
         assert exc.service == "GROBID"
 
     def test_default_message(self):
         from app.pipeline.services.grobid_client import GROBIDException
+
         exc = GROBIDException()
         assert "GROBID" in str(exc)
 
@@ -423,6 +475,7 @@ class TestGROBIDClientMarkLastGood:
 
     def test_same_url_does_not_log(self, client, caplog):
         import logging
+
         caplog.set_level(logging.WARNING)
         client.base_urls = ["http://url1:8070"]
         client._mark_last_good_base_url("http://url1:8070", reason="test")

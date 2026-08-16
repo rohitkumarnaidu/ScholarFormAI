@@ -12,7 +12,7 @@ from app.pipeline.safety.llm_validator import guard_llm_output
 @guard_llm_output(schema=InstructionSetSchema, error_return_value={"blocks": [], "fallback": True})
 def dummy_llm_call():
     # Simulate a raw LLM text response
-    raw_json = '''
+    raw_json = """
     {
       "blocks": [
         {
@@ -22,14 +22,15 @@ def dummy_llm_call():
         }
       ]
     }
-    '''
+    """
     return raw_json
+
 
 if __name__ == "__main__":
     result = dummy_llm_call()
     print("GUARDRAILS OUTPUT:")
     print(json.dumps(result, indent=2))
-    
+
     if "blocks" in result and len(result["blocks"]) > 0:
         print("\n✅ Guardrails Validation Passed!")
         sys.exit(0)

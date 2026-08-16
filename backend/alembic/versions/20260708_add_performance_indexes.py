@@ -4,6 +4,7 @@ Revision ID: 20260708_add_performance_indexes
 Revises: 20260629_0001
 Create Date: 2026-07-08 00:00:00.000000
 """
+
 import contextlib
 
 import sqlalchemy as sa
@@ -46,4 +47,5 @@ def downgrade() -> None:
     op.drop_index("idx_documents_status", table_name="documents")
     op.drop_index("idx_documents_user_id", table_name="documents")
 
-__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']
+
+__all__ = ["revision", "down_revision", "branch_labels", "depends_on", "upgrade", "downgrade"]

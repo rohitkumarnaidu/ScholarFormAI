@@ -14,6 +14,7 @@ from starlette.requests import Request
 
 # ── Shared helpers ─────────────────────────────────────────────────────
 
+
 def _mock_request(path: str = "/api/v1/documents") -> Request:
     scope = {
         "type": "http",
@@ -34,77 +35,95 @@ def _mock_request(path: str = "/api/v1/documents") -> Request:
 # app/routers/v1/_helpers.py
 # ═══════════════════════════════════════════════════════════════════════
 
+
 class TestHelpersResolvePersona:
     def test_formatter_path(self):
         from app.routers.v1._helpers import _resolve_persona
+
         assert _resolve_persona("/api/v1/documents/upload") == "formatter"
 
     def test_authoring_path(self):
         from app.routers.v1._helpers import _resolve_persona
+
         assert _resolve_persona("/api/v1/generator/sessions") == "authoring"
 
     def test_synthesis_path(self):
         from app.routers.v1._helpers import _resolve_persona
+
         assert _resolve_persona("/api/v1/synthesis/sessions") == "synthesis"
 
     def test_billing_path(self):
         from app.routers.v1._helpers import _resolve_persona
+
         assert _resolve_persona("/api/v1/billing/webhook") == "billing"
 
     def test_templates_path(self):
         from app.routers.v1._helpers import _resolve_persona
+
         assert _resolve_persona("/api/v1/templates/list") == "templates"
 
     def test_unknown_path_falls_to_platform(self):
         from app.routers.v1._helpers import _resolve_persona
+
         assert _resolve_persona("/api/v1/health") == "platform"
 
     def test_case_insensitive(self):
         from app.routers.v1._helpers import _resolve_persona
+
         assert _resolve_persona("/API/V1/DOCUMENTS") == "formatter"
 
     def test_none_path(self):
         from app.routers.v1._helpers import _resolve_persona
+
         assert _resolve_persona(None) == "platform"
 
     def test_empty_path(self):
         from app.routers.v1._helpers import _resolve_persona
+
         assert _resolve_persona("") == "platform"
 
 
 class TestHelpersMetricSafeLabel:
     def test_simple(self):
         from app.routers.v1._helpers import _metric_safe_label
+
         assert _metric_safe_label("hello") == "hello"
 
     def test_strips_and_lowercases(self):
         from app.routers.v1._helpers import _metric_safe_label
+
         assert _metric_safe_label("  Hello World  ") == "hello_world"
 
     def test_replaces_special_chars(self):
         from app.routers.v1._helpers import _metric_safe_label
+
         assert _metric_safe_label("user@name#1") == "user_name_1"
 
     def test_empty_string(self):
         from app.routers.v1._helpers import _metric_safe_label
+
         assert _metric_safe_label("") == "unknown"
 
     def test_only_special_chars(self):
         from app.routers.v1._helpers import _metric_safe_label
+
         assert _metric_safe_label("!!!") == "unknown"
 
     def test_none(self):
         from app.routers.v1._helpers import _metric_safe_label
+
         assert _metric_safe_label(None) == "unknown"
 
     def test_already_safe(self):
         from app.routers.v1._helpers import _metric_safe_label
+
         assert _metric_safe_label("generation_session_create") == "generation_session_create"
 
 
 class TestHelpersBuildSuccessResponse:
     def test_build_success_response(self):
         from app.routers.v1._helpers import build_success_response
+
         req = _mock_request()
         resp = build_success_response(req, {"ok": True})
         assert resp.status_code == 200
@@ -113,6 +132,7 @@ class TestHelpersBuildSuccessResponse:
 
     def test_build_success_response_custom_status(self):
         from app.routers.v1._helpers import build_success_response
+
         req = _mock_request()
         resp = build_success_response(req, {"id": "abc"}, status_code=201)
         assert resp.status_code == 201
@@ -123,6 +143,7 @@ class TestHelpersBuildSuccessResponse:
 class TestHelpersBuildErrorResponse:
     def test_build_error_response_no_details(self):
         from app.routers.v1._helpers import build_error_response
+
         req = _mock_request()
         resp = build_error_response(req, status_code=404, code="NOT_FOUND", message="Missing")
         assert resp.status_code == 404
@@ -131,8 +152,11 @@ class TestHelpersBuildErrorResponse:
 
     def test_build_error_response_with_details(self):
         from app.routers.v1._helpers import build_error_response
+
         req = _mock_request()
-        resp = build_error_response(req, status_code=422, code="VALIDATION_ERROR", message="Bad", details={"field": "name"})
+        resp = build_error_response(
+            req, status_code=422, code="VALIDATION_ERROR", message="Bad", details={"field": "name"}
+        )
         assert resp.status_code == 422
         body = json.loads(resp.body)
         assert body["error"]["details"]["field"] == "name"
@@ -141,6 +165,7 @@ class TestHelpersBuildErrorResponse:
 class TestHelpersHttpExceptionToResponse:
     def test_http_exception_with_string_detail(self):
         from app.routers.v1._helpers import http_exception_to_response
+
         req = _mock_request()
         exc = HTTPException(status_code=404, detail="not found")
         resp = http_exception_to_response(req, exc)
@@ -150,6 +175,7 @@ class TestHelpersHttpExceptionToResponse:
 
     def test_http_exception_with_dict_detail(self):
         from app.routers.v1._helpers import http_exception_to_response
+
         req = _mock_request()
         exc = HTTPException(status_code=422, detail={"field": "email", "reason": "invalid"})
         resp = http_exception_to_response(req, exc)
@@ -159,6 +185,7 @@ class TestHelpersHttpExceptionToResponse:
 
     def test_http_exception_with_code_map(self):
         from app.routers.v1._helpers import http_exception_to_response
+
         req = _mock_request()
         exc = HTTPException(status_code=429, detail="too fast")
         resp = http_exception_to_response(req, exc, code_map={429: "CUSTOM_RATE_LIMIT"})
@@ -168,6 +195,7 @@ class TestHelpersHttpExceptionToResponse:
 
     def test_http_exception_fallsback_to_default_codes(self):
         from app.routers.v1._helpers import http_exception_to_response
+
         req = _mock_request()
         exc = HTTPException(status_code=403, detail="forbidden")
         resp = http_exception_to_response(req, exc)
@@ -177,6 +205,7 @@ class TestHelpersHttpExceptionToResponse:
 class TestHelpersDEFAULT_ERROR_CODES:
     def test_has_expected_keys(self):
         from app.routers.v1._helpers import DEFAULT_ERROR_CODES
+
         assert DEFAULT_ERROR_CODES[400] == "BAD_REQUEST"
         assert DEFAULT_ERROR_CODES[500] == "INTERNAL_SERVER_ERROR"
         assert DEFAULT_ERROR_CODES[404] == "NOT_FOUND"
@@ -184,6 +213,7 @@ class TestHelpersDEFAULT_ERROR_CODES:
 
     def test_all_standard_codes_present(self):
         from app.routers.v1._helpers import DEFAULT_ERROR_CODES
+
         for code in (400, 401, 403, 404, 409, 413, 422, 429, 500, 501, 502, 503):
             assert code in DEFAULT_ERROR_CODES
 
@@ -192,17 +222,21 @@ class TestHelpersDEFAULT_ERROR_CODES:
 # app/routers/v1/billing.py
 # ═══════════════════════════════════════════════════════════════════════
 
+
 class TestBillingLookupUserIdByCustomer:
     def test_none_customer_id(self):
         from app.routers.v1.billing import _lookup_user_id_by_customer
+
         assert _lookup_user_id_by_customer(None, None) is None
 
     def test_empty_customer_id(self):
         from app.routers.v1.billing import _lookup_user_id_by_customer
+
         assert _lookup_user_id_by_customer(None, "") is None
 
     def test_found_user(self):
         from app.routers.v1.billing import _lookup_user_id_by_customer
+
         mock_sb = MagicMock()
         mock_result = MagicMock()
         mock_result.data = {"id": "u-123"}
@@ -211,6 +245,7 @@ class TestBillingLookupUserIdByCustomer:
 
     def test_no_data(self):
         from app.routers.v1.billing import _lookup_user_id_by_customer
+
         mock_sb = MagicMock()
         mock_result = MagicMock()
         mock_result.data = None
@@ -219,6 +254,7 @@ class TestBillingLookupUserIdByCustomer:
 
     def test_exception_returns_none(self):
         from app.routers.v1.billing import _lookup_user_id_by_customer
+
         mock_sb = MagicMock()
         mock_sb.table.side_effect = Exception("DB down")
         assert _lookup_user_id_by_customer(mock_sb, "cus_789") is None
@@ -227,41 +263,50 @@ class TestBillingLookupUserIdByCustomer:
 class TestBillingGetUserIdFromMetadata:
     def test_with_user_id(self):
         from app.routers.v1.billing import _get_user_id_from_metadata
+
         assert _get_user_id_from_metadata({"metadata": {"user_id": "u123"}}) == "u123"
 
     def test_no_metadata(self):
         from app.routers.v1.billing import _get_user_id_from_metadata
+
         assert _get_user_id_from_metadata({}) is None
 
     def test_metadata_not_dict(self):
         from app.routers.v1.billing import _get_user_id_from_metadata
+
         assert _get_user_id_from_metadata({"metadata": "string"}) is None
 
     def test_metadata_missing_user_id(self):
         from app.routers.v1.billing import _get_user_id_from_metadata
+
         assert _get_user_id_from_metadata({"metadata": {"other": "val"}}) is None
 
     def test_metadata_none(self):
         from app.routers.v1.billing import _get_user_id_from_metadata
+
         assert _get_user_id_from_metadata({"metadata": None}) is None
 
 
 class TestBillingLegacyProfileUpdates:
     def test_empty_updates(self):
         from app.routers.v1.billing import _legacy_profile_updates
+
         assert _legacy_profile_updates({}) == {}
 
     def test_plan_tier_mapped_to_plan(self):
         from app.routers.v1.billing import _legacy_profile_updates
+
         assert _legacy_profile_updates({"plan_tier": "pro"}) == {"plan": "pro"}
 
     def test_other_keys_ignored(self):
         from app.routers.v1.billing import _legacy_profile_updates
+
         result = _legacy_profile_updates({"plan_tier": "free", "billing_status": "active"})
         assert result == {"plan": "free"}
 
     def test_no_plan_tier(self):
         from app.routers.v1.billing import _legacy_profile_updates
+
         assert _legacy_profile_updates({"billing_status": "canceled"}) == {}
 
 
@@ -269,18 +314,22 @@ class TestBillingLegacyProfileUpdates:
 # app/routers/v1/synthesis.py
 # ═══════════════════════════════════════════════════════════════════════
 
+
 class TestSynthesisParseConfig:
     def test_empty_string_returns_empty_dict(self):
         from app.routers.v1.synthesis import _parse_config
+
         assert _parse_config("") == {}
         assert _parse_config(None) == {}
 
     def test_valid_json(self):
         from app.routers.v1.synthesis import _parse_config
+
         assert _parse_config('{"key": "value"}') == {"key": "value"}
 
     def test_invalid_json_raises(self):
         from app.routers.v1.synthesis import _parse_config
+
         with pytest.raises(HTTPException) as exc:
             _parse_config("{invalid}")
         assert exc.value.status_code == 422
@@ -290,17 +339,20 @@ class TestSynthesisParseConfig:
 class TestSynthesisAssertSessionOwner:
     def test_owner_matches(self):
         from app.routers.v1.synthesis import _assert_session_owner
+
         session = {"user_id": "u123"}
         user = MagicMock(id="u123")
         _assert_session_owner(session, user)
 
     def test_owner_matches_string_user(self):
         from app.routers.v1.synthesis import _assert_session_owner
+
         session = {"user_id": "u123"}
         _assert_session_owner(session, "u123")
 
     def test_owner_different_raises(self):
         from app.routers.v1.synthesis import _assert_session_owner
+
         session = {"user_id": "u123"}
         user = MagicMock(id="other")
         with pytest.raises(HTTPException) as exc:
@@ -309,12 +361,14 @@ class TestSynthesisAssertSessionOwner:
 
     def test_no_session_user_passes(self):
         from app.routers.v1.synthesis import _assert_session_owner
+
         session = {"user_id": None}
         user = MagicMock(id="u123")
         _assert_session_owner(session, user)
 
     def test_session_user_id_none_passes(self):
         from app.routers.v1.synthesis import _assert_session_owner
+
         session = {}
         _assert_session_owner(session, "u123")
 
@@ -323,15 +377,18 @@ class TestSynthesisAssertSessionOwner:
 # app/routers/v1/providers.py
 # ═══════════════════════════════════════════════════════════════════════
 
+
 class TestProvidersConstants:
     def test_ssrf_blocked_hosts(self):
         from app.routers.v1.providers import SSRF_BLOCKED_HOSTS
+
         assert "169.254.169.254" in SSRF_BLOCKED_HOSTS
         assert "metadata.google.internal" in SSRF_BLOCKED_HOSTS
         assert "100.100.100.200" in SSRF_BLOCKED_HOSTS
 
     def test_ssrf_blocked_schemes(self):
         from app.routers.v1.providers import SSRF_BLOCKED_SCHEMES
+
         assert "file" in SSRF_BLOCKED_SCHEMES
         assert "ftp" in SSRF_BLOCKED_SCHEMES
         assert "dict" in SSRF_BLOCKED_SCHEMES
@@ -339,20 +396,24 @@ class TestProvidersConstants:
 
     def test_max_custom_providers(self):
         from app.routers.v1.providers import MAX_CUSTOM_PROVIDERS_PER_USER
+
         assert MAX_CUSTOM_PROVIDERS_PER_USER == 25
 
 
 class TestProvidersSanitizeURL:
     def test_normal_url(self):
         from app.routers.v1.providers import _sanitize_url
+
         assert _sanitize_url("https://api.example.com") == "https://api.example.com"
 
     def test_strips_trailing_slash(self):
         from app.routers.v1.providers import _sanitize_url
+
         assert _sanitize_url("https://api.example.com/") == "https://api.example.com"
 
     def test_blocked_scheme_raises(self):
         from app.routers.v1.providers import _sanitize_url
+
         with pytest.raises(HTTPException) as exc:
             _sanitize_url("file:///etc/passwd")
         assert exc.value.status_code == 422
@@ -360,6 +421,7 @@ class TestProvidersSanitizeURL:
 
     def test_blocked_host_raises(self):
         from app.routers.v1.providers import _sanitize_url
+
         with pytest.raises(HTTPException) as exc:
             _sanitize_url("http://169.254.169.254/latest")
         assert exc.value.status_code == 422
@@ -367,11 +429,13 @@ class TestProvidersSanitizeURL:
 
     def test_ftp_blocked(self):
         from app.routers.v1.providers import _sanitize_url
+
         with pytest.raises(HTTPException):
             _sanitize_url("ftp://files.example.com")
 
     def test_non_http_scheme_raises(self):
         from app.routers.v1.providers import _sanitize_url
+
         with pytest.raises(HTTPException) as exc:
             _sanitize_url("redis://localhost:6379")
         assert exc.value.status_code == 422
@@ -379,6 +443,7 @@ class TestProvidersSanitizeURL:
 
     def test_metadata_google_com_internal_blocked(self):
         from app.routers.v1.providers import _sanitize_url
+
         with pytest.raises(HTTPException):
             _sanitize_url("http://metadata.google.internal/computeMetadata/v1/")
 
@@ -386,20 +451,24 @@ class TestProvidersSanitizeURL:
 class TestProvidersGetUserId:
     def test_user_with_id_attr(self):
         from app.routers.v1.providers import _get_user_id
+
         user = MagicMock(id="u-123")
         assert _get_user_id(user) == "u-123"
 
     def test_user_as_string(self):
         from app.routers.v1.providers import _get_user_id
+
         assert _get_user_id("u-456") == "u-456"
 
     def test_user_with_int_id(self):
         from app.routers.v1.providers import _get_user_id
+
         user = MagicMock(id=42)
         assert _get_user_id(user) == "42"
 
     def test_user_no_id_fallsback_to_str(self):
         from app.routers.v1.providers import _get_user_id
+
         assert _get_user_id("raw-user") == "raw-user"
 
 
@@ -407,20 +476,24 @@ class TestProvidersCustomProviderCreateValidator:
     def test_validate_base_url_calls_sanitize(self):
         with pytest.raises(HTTPException):
             from app.routers.v1.providers import CustomProviderCreate
+
             CustomProviderCreate(name="test", base_url="ftp://bad.com")
 
     def test_validate_base_url_valid(self):
         from app.routers.v1.providers import CustomProviderCreate
+
         p = CustomProviderCreate(name="test", base_url="https://valid.com")
         assert p.base_url == "https://valid.com"
 
     def test_validate_models_strips_whitespace(self):
         from app.routers.v1.providers import CustomProviderCreate
+
         p = CustomProviderCreate(name="test", base_url="https://valid.com", models=["  model-1  ", "", "  model-2  "])
         assert p.models == ["model-1", "model-2"]
 
     def test_validate_models_truncates_long_names(self):
         from app.routers.v1.providers import CustomProviderCreate
+
         long_name = "x" * 300
         p = CustomProviderCreate(name="test", base_url="https://valid.com", models=[long_name])
         assert len(p.models[0]) == 200
@@ -429,26 +502,31 @@ class TestProvidersCustomProviderCreateValidator:
 class TestProvidersCustomProviderUpdateValidator:
     def test_validate_base_url_none_passes(self):
         from app.routers.v1.providers import CustomProviderUpdate
+
         p = CustomProviderUpdate()
         assert p.base_url is None
 
     def test_validate_base_url_valid(self):
         from app.routers.v1.providers import CustomProviderUpdate
+
         p = CustomProviderUpdate(base_url="https://valid.com")
         assert p.base_url == "https://valid.com"
 
     def test_validate_base_url_blocked_raises(self):
         with pytest.raises(HTTPException):
             from app.routers.v1.providers import CustomProviderUpdate
+
             CustomProviderUpdate(base_url="file:///etc/passwd")
 
     def test_validate_models_none_passes(self):
         from app.routers.v1.providers import CustomProviderUpdate
+
         p = CustomProviderUpdate()
         assert p.models is None
 
     def test_validate_models_strips(self):
         from app.routers.v1.providers import CustomProviderUpdate
+
         p = CustomProviderUpdate(models=["  m1  ", "", " m2 "])
         assert p.models == ["m1", "m2"]
 
@@ -456,11 +534,13 @@ class TestProvidersCustomProviderUpdateValidator:
 class TestProvidersSyncModelsRequestValidator:
     def test_validate_models_strips(self):
         from app.routers.v1.providers import SyncModelsRequest
+
         r = SyncModelsRequest(models=["  a  ", "  b  "])
         assert r.models == ["a", "b"]
 
     def test_validate_models_capped_at_100(self):
         from app.routers.v1.providers import SyncModelsRequest
+
         many = [str(i) for i in range(100)]
         r = SyncModelsRequest(models=many)
         assert len(r.models) == 100
@@ -470,10 +550,12 @@ class TestProvidersSyncModelsRequestValidator:
 # app/routers/v1/api_keys.py
 # ═══════════════════════════════════════════════════════════════════════
 
+
 class TestApiKeysApplyRateLimitHeaders:
     def test_sets_all_headers(self):
         from app.routers.v1.api_keys import apply_rate_limit_headers
         from app.services.api_key_rate_limiter import RateLimitResult
+
         response = MagicMock()
         response.headers = {}
         result = RateLimitResult(allowed=True, limit=100, remaining=50, reset_at=1000.0, retry_after=None)
@@ -485,6 +567,7 @@ class TestApiKeysApplyRateLimitHeaders:
     def test_sets_retry_after_when_present(self):
         from app.routers.v1.api_keys import apply_rate_limit_headers
         from app.services.api_key_rate_limiter import RateLimitResult
+
         response = MagicMock()
         response.headers = {}
         result = RateLimitResult(allowed=False, limit=10, remaining=0, reset_at=2000.0, retry_after=30.5)
@@ -495,6 +578,7 @@ class TestApiKeysApplyRateLimitHeaders:
     def test_no_retry_after_when_none(self):
         from app.routers.v1.api_keys import apply_rate_limit_headers
         from app.services.api_key_rate_limiter import RateLimitResult
+
         response = MagicMock()
         response.headers = {}
         result = RateLimitResult(allowed=True, limit=1000, remaining=999, reset_at=5000.0, retry_after=None)
@@ -505,40 +589,49 @@ class TestApiKeysApplyRateLimitHeaders:
 class TestApiKeysPydanticSchemas:
     def test_create_api_key_valid(self):
         from app.routers.v1.api_keys import CreateApiKeyRequest
+
         r = CreateApiKeyRequest(provider="openai", api_key="sk-xxxxxxxxxxxx1234")
         assert r.provider == "openai"
         assert r.api_key == "sk-xxxxxxxxxxxx1234"
 
     def test_create_api_key_min_length_enforced(self):
         from app.routers.v1.api_keys import CreateApiKeyRequest
+
         with pytest.raises(ValidationError):
             CreateApiKeyRequest(provider="test", api_key="short")
 
     def test_create_api_key_optional_fields(self):
         from app.routers.v1.api_keys import CreateApiKeyRequest
-        r = CreateApiKeyRequest(provider="openai", api_key="sk-xxxxxxxxxxxx1234", key_label="my key", rate_limit_per_minute=10)
+
+        r = CreateApiKeyRequest(
+            provider="openai", api_key="sk-xxxxxxxxxxxx1234", key_label="my key", rate_limit_per_minute=10
+        )
         assert r.key_label == "my key"
         assert r.rate_limit_per_minute == 10
 
     def test_update_api_key_valid(self):
         from app.routers.v1.api_keys import UpdateApiKeyRequest
+
         r = UpdateApiKeyRequest(is_active=False, key_label="updated")
         assert r.is_active is False
         assert r.key_label == "updated"
 
     def test_update_api_key_all_none(self):
         from app.routers.v1.api_keys import UpdateApiKeyRequest
+
         r = UpdateApiKeyRequest()
         assert r.is_active is None
         assert r.key_label is None
 
     def test_test_api_key_valid(self):
         from app.routers.v1.api_keys import TestApiKeyRequest
+
         r = TestApiKeyRequest(provider="groq", api_key="gsk_xxxxxxxxxxxx")
         assert r.provider == "groq"
 
     def test_test_api_key_min_length(self):
         from app.routers.v1.api_keys import TestApiKeyRequest
+
         with pytest.raises(ValidationError):
             TestApiKeyRequest(provider="groq", api_key="short")
 
@@ -546,6 +639,7 @@ class TestApiKeysPydanticSchemas:
 # ═══════════════════════════════════════════════════════════════════════
 # app/routers/v1/stream.py
 # ═══════════════════════════════════════════════════════════════════════
+
 
 class TestStreamEmitEvent:
     def _run_emit(self, *args, **kwargs):
@@ -556,6 +650,7 @@ class TestStreamEmitEvent:
             patch("app.routers.v1.stream.asyncio.get_running_loop", return_value=mock_loop),
         ):
             from app.routers.v1.stream import emit_event
+
             emit_event(*args, **kwargs)
         return mock_pubsub, mock_loop
 
@@ -573,6 +668,7 @@ class TestStreamEmitEvent:
             patch("app.routers.v1.stream.get_request_id_context", return_value="req-123"),
         ):
             from app.routers.v1.stream import emit_event
+
             emit_event("job-2", "done", {"status": "completed"})
 
     def test_emit_event_request_id_from_data_used(self):
@@ -585,15 +681,23 @@ class TestStreamEmitEvent:
 # app/routers/v1/templates.py — Schema models
 # ═══════════════════════════════════════════════════════════════════════
 
+
 class TestTemplatesApiKeyResponse:
     def test_response_model_fields(self):
         from app.routers.v1.api_keys import ApiKeyResponse
+
         r = ApiKeyResponse(
-            id="k-1", provider="openai", key_label="label",
-            is_active=True, rate_limit_per_minute=10,
-            rate_limit_per_hour=100, daily_quota=1000,
-            total_requests=5, last_request_at=None,
-            created_at="2026-01-01", key_preview="sk-...xyz",
+            id="k-1",
+            provider="openai",
+            key_label="label",
+            is_active=True,
+            rate_limit_per_minute=10,
+            rate_limit_per_hour=100,
+            daily_quota=1000,
+            total_requests=5,
+            last_request_at=None,
+            created_at="2026-01-01",
+            key_preview="sk-...xyz",
         )
         assert r.id == "k-1"
         assert r.key_preview == "sk-...xyz"
@@ -604,9 +708,11 @@ class TestTemplatesApiKeyResponse:
 # app/routers/preview.py — uncovered constants
 # ═══════════════════════════════════════════════════════════════════════
 
+
 class TestPreviewSessionPattern:
     def test_session_pattern_matches_valid(self):
         from app.routers.preview import _SESSION_PATTERN
+
         assert _SESSION_PATTERN.match("abc-123_def")
         assert _SESSION_PATTERN.match("ABCDEFG")
         assert _SESSION_PATTERN.match("a" * 64)
@@ -614,6 +720,7 @@ class TestPreviewSessionPattern:
 
     def test_session_pattern_rejects_invalid(self):
         from app.routers.preview import _SESSION_PATTERN
+
         assert not _SESSION_PATTERN.match("")
         assert not _SESSION_PATTERN.match("ab")
         assert not _SESSION_PATTERN.match("x" * 65)
@@ -624,6 +731,7 @@ class TestPreviewSessionPattern:
 # ═══════════════════════════════════════════════════════════════════════
 # app/routers/v1/stream.py — event_generator
 # ═══════════════════════════════════════════════════════════════════════
+
 
 class TestStreamEventGenerator:
     """Covers app/routers/v1/stream.py event_generator (lines 28-54)."""
@@ -763,6 +871,7 @@ class TestStreamEmitEventFallback:
             patch("app.routers.v1.stream.make_event", return_value={"fake": "event"}),
         ):
             from app.routers.v1.stream import emit_event
+
             emit_event("job-1", "test", {})
 
             mock_run.assert_called_once()
@@ -771,6 +880,7 @@ class TestStreamEmitEventFallback:
 # ═══════════════════════════════════════════════════════════════════════
 # app/routers/v1/synthesis.py — lazy singleton getters
 # ═══════════════════════════════════════════════════════════════════════
+
 
 class TestSynthesisGetOrchestrator:
     """Covers _get_orchestrator cached path (line 47->49 branch)."""
@@ -815,6 +925,7 @@ class TestSynthesisGetSynthesizer:
 # app/routers/v1/synthesis.py — _get_orchestrator creation path (line 48-49)
 # ═══════════════════════════════════════════════════════════════════════
 
+
 class TestSynthesisGetOrchestratorCreate:
     """Covers _get_orchestrator creation path (lines 48-49)."""
 
@@ -836,11 +947,13 @@ class TestSynthesisGetOrchestratorCreate:
 # app/routers/v1/feedback.py — FeedbackRequest schema
 # ═══════════════════════════════════════════════════════════════════════
 
+
 class TestFeedbackSchema:
     """Covers FeedbackRequest Pydantic model (lines 26-32)."""
 
     def test_valid_feedback(self):
         from app.routers.v1.feedback import FeedbackRequest
+
         fb = FeedbackRequest(
             document_id="doc-1",
             field="abstract",
@@ -852,6 +965,7 @@ class TestFeedbackSchema:
 
     def test_with_comments(self):
         from app.routers.v1.feedback import FeedbackRequest
+
         fb = FeedbackRequest(
             document_id="doc-2",
             field="title",
@@ -863,6 +977,7 @@ class TestFeedbackSchema:
 
     def test_requires_all_required_fields(self):
         from app.routers.v1.feedback import FeedbackRequest
+
         with pytest.raises(ValidationError):
             FeedbackRequest(document_id="doc-1")
 
@@ -871,11 +986,13 @@ class TestFeedbackSchema:
 # app/routers/v1/suggestions.py — GenerateSuggestionRequest schema
 # ═══════════════════════════════════════════════════════════════════════
 
+
 class TestSuggestionsSchema:
     """Covers GenerateSuggestionRequest Pydantic model (lines 24-29)."""
 
     def test_valid_request(self):
         from app.routers.v1.suggestions import GenerateSuggestionRequest
+
         req = GenerateSuggestionRequest(
             document_id="doc-1",
             block={"text": "hello"},
@@ -886,6 +1003,7 @@ class TestSuggestionsSchema:
 
     def test_with_session_id(self):
         from app.routers.v1.suggestions import GenerateSuggestionRequest
+
         req = GenerateSuggestionRequest(
             document_id="doc-1",
             block={"text": "hello"},
@@ -896,6 +1014,7 @@ class TestSuggestionsSchema:
 
     def test_requires_required_fields(self):
         from app.routers.v1.suggestions import GenerateSuggestionRequest
+
         with pytest.raises(ValidationError):
             GenerateSuggestionRequest(document_id="doc-1")
 
@@ -904,11 +1023,13 @@ class TestSuggestionsSchema:
 # app/routers/v1/api_keys.py — uncovered Pydantic schemas
 # ═══════════════════════════════════════════════════════════════════════
 
+
 class TestApiKeysUsageStatsResponse:
     """Covers UsageStatsResponse model (lines 65-69)."""
 
     def test_valid_stats(self):
         from app.routers.v1.api_keys import UsageStatsResponse
+
         stats = UsageStatsResponse(
             provider="openai",
             total_requests=100,
@@ -921,6 +1042,7 @@ class TestApiKeysUsageStatsResponse:
 
     def test_required_fields(self):
         from app.routers.v1.api_keys import UsageStatsResponse
+
         with pytest.raises(ValidationError):
             UsageStatsResponse()
 
@@ -930,6 +1052,7 @@ class TestApiKeysProviderInfo:
 
     def test_valid_provider_info(self):
         from app.routers.v1.api_keys import ProviderInfo
+
         info = ProviderInfo(
             name="openai",
             default_rpm=60,
@@ -943,6 +1066,7 @@ class TestApiKeysProviderInfo:
 
     def test_required_fields(self):
         from app.routers.v1.api_keys import ProviderInfo
+
         with pytest.raises(ValidationError):
             ProviderInfo()
 
@@ -951,12 +1075,14 @@ class TestApiKeysProviderInfo:
 # app/routers/deprecation.py — DeprecatedRoute.get_route_handler
 # ═══════════════════════════════════════════════════════════════════════
 
+
 class TestDeprecatedRouteGetRouteHandler:
     """Covers DeprecatedRoute.get_route_handler (lines 38-55)
     with mocked original handler to avoid FastAPI routing internals."""
 
     def _make_route(self, successor_map, path="/api/v1/old/test"):
         from app.routers.deprecation import DeprecatedRoute
+
         route = DeprecatedRoute.__new__(DeprecatedRoute)
         route.successor_map = successor_map
         route.path_format = path
@@ -973,6 +1099,7 @@ class TestDeprecatedRouteGetRouteHandler:
 
     def test_successor_path_normalizes_trailing_slash(self):
         from app.routers.deprecation import DeprecatedRoute
+
         route = DeprecatedRoute.__new__(DeprecatedRoute)
         route.successor_map = {"/api/v1/old/": "/api/v2/new/"}
         route.path_format = "/api/v1/old/"
@@ -1013,23 +1140,28 @@ class TestDeprecatedRouteGetRouteHandler:
 # app/routers/deprecation.py — normalize_path edge cases
 # ═══════════════════════════════════════════════════════════════════════
 
+
 class TestNormalizePathEdgeCases:
     """Covers normalize_path edge branches (lines 24-27)."""
 
     def test_empty_string(self):
         from app.routers.deprecation import normalize_path
+
         assert normalize_path("") == ""
 
     def test_single_slash(self):
         from app.routers.deprecation import normalize_path
+
         assert normalize_path("/") == "/"
 
     def test_no_trailing_slash(self):
         from app.routers.deprecation import normalize_path
+
         assert normalize_path("/api/v1/keys") == "/api/v1/keys"
 
     def test_multiple_trailing_slashes(self):
         from app.routers.deprecation import normalize_path
+
         assert normalize_path("/api/v1/keys//") == "/api/v1/keys"
 
 
@@ -1037,21 +1169,25 @@ class TestNormalizePathEdgeCases:
 # app/routers/v1/synthesis.py — _parse_config edge cases
 # ═══════════════════════════════════════════════════════════════════════
 
+
 class TestSynthesisParseConfigEdgeCases:
     """Covers remaining _parse_config branches (lines 65-71)."""
 
     def test_whitespace_string_raises(self):
         from app.routers.v1.synthesis import _parse_config
+
         with pytest.raises(HTTPException) as exc:
             _parse_config("  ")
         assert exc.value.status_code == 422
 
     def test_none_input(self):
         from app.routers.v1.synthesis import _parse_config
+
         assert _parse_config(None) == {}
 
     def test_invalid_json_string(self):
         from app.routers.v1.synthesis import _parse_config
+
         with pytest.raises(HTTPException) as exc:
             _parse_config("not-json")
         assert exc.value.status_code == 422
@@ -1061,16 +1197,15 @@ class TestSynthesisParseConfigEdgeCases:
 # app/routers/v1/health.py — endpoint helper function coverage
 # ═══════════════════════════════════════════════════════════════════════
 
+
 class TestHealthSchemas:
     """Covers the health check endpoint patterns."""
 
     def test_health_endpoint_path_exists(self):
         from app.routers.v1.health import router
+
         paths = [r.path for r in router.routes]
         assert "" in paths
         assert "/live" in paths
         assert "/ready" in paths
         assert "/admin" in paths
-
-
-

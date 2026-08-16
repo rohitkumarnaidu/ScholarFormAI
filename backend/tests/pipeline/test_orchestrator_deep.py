@@ -48,6 +48,7 @@ def _make_sb():
 # Phase 4.1a: Figure Analysis Stage
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestFigureAnalysisStage:
     def _make_doc(self, figures=None):
         return PipelineDocument(
@@ -143,11 +144,16 @@ class TestFigureAnalysisStage:
 # Phase 4.1b: Semantic parser error paths
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestSemanticParserErrors:
     def _make_doc(self):
-        return PipelineDocument(document_id="doc1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="test"),
-        ], metadata=DocumentMetadata())
+        return PipelineDocument(
+            document_id="doc1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="test"),
+            ],
+            metadata=DocumentMetadata(),
+        )
 
     def test_semantic_parser_timeout(self, orch):
         doc = self._make_doc()
@@ -177,10 +183,14 @@ class TestSemanticParserErrors:
         assert result.blocks[0].metadata.get("semantic_intent") is None
 
     def test_semantic_parser_partial_results(self, orch):
-        doc = PipelineDocument(document_id="doc1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="a"),
-            Block(block_id="b2", index=2, block_type=BlockType.BODY, text="b"),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="doc1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="a"),
+                Block(block_id="b2", index=2, block_type=BlockType.BODY, text="b"),
+            ],
+            metadata=DocumentMetadata(),
+        )
         results = [{"predicted_section_type": "introduction", "confidence_score": 0.9}]
         with patch.object(orch, "_run_with_timeout", return_value=results):
             with patch("app.pipeline.orchestrator.settings") as mock_s:
@@ -195,15 +205,20 @@ class TestSemanticParserErrors:
 # Phase 4.1c: Runtime flags edge cases
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestRuntimeFlagsEdgeCases:
     def test_flags_all_false(self, orch):
         with patch("app.pipeline.orchestrator.settings") as mock_s:
             mock_s.DEFAULT_FAST_MODE = False
             mock_s.LOW_MEMORY_MODE = False
-            flags = orch._resolve_runtime_flags({
-                "fast_mode": False, "semantic_parser": False,
-                "crossref_enrichment": False, "ai_reasoning": False,
-            })
+            flags = orch._resolve_runtime_flags(
+                {
+                    "fast_mode": False,
+                    "semantic_parser": False,
+                    "crossref_enrichment": False,
+                    "ai_reasoning": False,
+                }
+            )
         assert flags["fast_mode"] is False
         assert flags["semantic_parser"] is False
         assert flags["crossref_enrichment"] is False
@@ -213,10 +228,14 @@ class TestRuntimeFlagsEdgeCases:
         with patch("app.pipeline.orchestrator.settings") as mock_s:
             mock_s.DEFAULT_FAST_MODE = False
             mock_s.LOW_MEMORY_MODE = False
-            flags = orch._resolve_runtime_flags({
-                "fast_mode": True, "semantic_parser": True,
-                "crossref_enrichment": True, "ai_reasoning": True,
-            })
+            flags = orch._resolve_runtime_flags(
+                {
+                    "fast_mode": True,
+                    "semantic_parser": True,
+                    "crossref_enrichment": True,
+                    "ai_reasoning": True,
+                }
+            )
         assert flags["fast_mode"] is True
         assert flags["semantic_parser"] is True
         assert flags["crossref_enrichment"] is True
@@ -242,6 +261,7 @@ class TestRuntimeFlagsEdgeCases:
 # ══════════════════════════════════════════════════════════════════════════════
 # Phase 4.1d: SHA256 edge cases
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestSHA256EdgeCases:
     def test_sha256_file_not_found(self, orch):
@@ -276,6 +296,7 @@ class TestSHA256EdgeCases:
 # Phase 4.1e: Persist partial result edge cases
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestPersistPartialEdgeCases:
     def test_persist_partial_null_sb_and_doc(self, orch):
         orch._persist_partial_result("job1", None, None)
@@ -308,14 +329,19 @@ class TestPersistPartialEdgeCases:
 # Phase 4.1f: Pipeline error handler paths
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestPipelineErrorHandlers:
     def _run_shallow_pipeline(self, orch, tmp_path, config_fn):
         input_path = tmp_path / "test.pdf"
         input_path.write_text("dummy")
         parser = MagicMock()
-        doc = PipelineDocument(document_id="job1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Hello"),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="job1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Hello"),
+            ],
+            metadata=DocumentMetadata(),
+        )
         doc.generated_doc = MagicMock()
         parser.parse.return_value = doc
         with (
@@ -364,15 +390,20 @@ class TestPipelineErrorHandlers:
 # Phase 4.1g: Atomic completion / Persistence logic
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestAtomicCompletion:
     def test_output_ready_with_generated_doc_fallback(self, orch, tmp_path):
         sb = _make_sb()
         input_path = tmp_path / "test.pdf"
         input_path.write_text("dummy")
         parser = MagicMock()
-        doc = PipelineDocument(document_id="job1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t"),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="job1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t"),
+            ],
+            metadata=DocumentMetadata(),
+        )
         doc.generated_doc = MagicMock()
         doc.output_path = str(tmp_path / "nonexistent.docx")
         parser.parse.return_value = doc
@@ -406,9 +437,13 @@ class TestAtomicCompletion:
         input_path = tmp_path / "test.pdf"
         input_path.write_text("dummy")
         parser = MagicMock()
-        doc = PipelineDocument(document_id="job1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t"),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="job1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t"),
+            ],
+            metadata=DocumentMetadata(),
+        )
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
@@ -438,9 +473,13 @@ class TestAtomicCompletion:
         input_path = tmp_path / "test.pdf"
         input_path.write_text("dummy")
         parser = MagicMock()
-        doc = PipelineDocument(document_id="job1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t"),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="job1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t"),
+            ],
+            metadata=DocumentMetadata(),
+        )
         doc.generated_doc = MagicMock()
         parser.parse.return_value = doc
         out_path = tmp_path / "out.docx"
@@ -466,9 +505,13 @@ class TestAtomicCompletion:
         ):
             mock_pf.return_value.get_parser.return_value = parser
             mock_set.GROBID_ENABLED = False
+
             def _fake_update_hash(*args, **kwargs):
                 raise Exception("hash fail")
-            with patch("app.services.document_service.DocumentService.update_output_hash", side_effect=_fake_update_hash):
+
+            with patch(
+                "app.services.document_service.DocumentService.update_output_hash", side_effect=_fake_update_hash
+            ):
                 result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
         assert result["status"] == "success"
 
@@ -476,6 +519,7 @@ class TestAtomicCompletion:
 # ══════════════════════════════════════════════════════════════════════════════
 # Phase 4.1h: Edit flow error paths
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestEditFlowErrors:
     def test_edit_flow_no_generated_doc(self, orch):
@@ -498,7 +542,9 @@ class TestEditFlowErrors:
                                     with patch("os.makedirs"):
                                         with patch("os.path.splitext", return_value=("test", ".docx")):
                                             with patch("os.path.abspath", return_value="/tmp/output/test_edited.docx"):
-                                                result = orch.run_edit_flow("job1", {"sections": {"body": ["Edited"]}}, "ieee")
+                                                result = orch.run_edit_flow(
+                                                    "job1", {"sections": {"body": ["Edited"]}}, "ieee"
+                                                )
         assert result["status"] == "success"
 
     def test_edit_flow_version_numbering(self, orch):
@@ -528,7 +574,9 @@ class TestEditFlowErrors:
                                         with patch("os.path.abspath", return_value="/tmp/output/test_edited.docx"):
                                             with patch.object(orch, "_compute_sha256", return_value="hash"):
                                                 with patch("app.pipeline.orchestrator.AIExplainer"):
-                                                    result = orch.run_edit_flow("job1", {"sections": {"body": ["Text"]}}, "ieee")
+                                                    result = orch.run_edit_flow(
+                                                        "job1", {"sections": {"body": ["Text"]}}, "ieee"
+                                                    )
         assert result["status"] == "success"
 
     def test_edit_flow_invalid_version_string(self, orch):
@@ -558,7 +606,9 @@ class TestEditFlowErrors:
                                         with patch("os.path.abspath", return_value="/tmp/output/test_edited.docx"):
                                             with patch.object(orch, "_compute_sha256", return_value="hash"):
                                                 with patch("app.pipeline.orchestrator.AIExplainer"):
-                                                    result = orch.run_edit_flow("job1", {"sections": {"body": ["Text"]}}, "ieee")
+                                                    result = orch.run_edit_flow(
+                                                        "job1", {"sections": {"body": ["Text"]}}, "ieee"
+                                                    )
         assert result["status"] == "success"
 
     def test_edit_flow_no_versions(self, orch):
@@ -586,7 +636,9 @@ class TestEditFlowErrors:
                                         with patch("os.path.abspath", return_value="/tmp/output/test_edited.docx"):
                                             with patch.object(orch, "_compute_sha256", return_value="hash"):
                                                 with patch("app.pipeline.orchestrator.AIExplainer"):
-                                                    result = orch.run_edit_flow("job1", {"sections": {"body": ["Text"]}}, "ieee")
+                                                    result = orch.run_edit_flow(
+                                                        "job1", {"sections": {"body": ["Text"]}}, "ieee"
+                                                    )
         assert result["status"] == "success"
 
     def test_edit_flow_cancelled_during_update(self, orch):
@@ -601,6 +653,7 @@ class TestEditFlowErrors:
 # ══════════════════════════════════════════════════════════════════════════════
 # Phase 4.1i: Keyword extraction
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestKeywordExtraction:
     def _run_pipeline_with_doc(self, orch, tmp_path, doc, **overrides):
@@ -637,19 +690,31 @@ class TestKeywordExtraction:
             return orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
 
     def test_keywords_from_metadata_abstract(self, orch, tmp_path):
-        doc = PipelineDocument(document_id="job1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="body"),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="job1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="body"),
+            ],
+            metadata=DocumentMetadata(),
+        )
         doc.metadata.ai_hints = {}
         doc.metadata.abstract = "This research explores machine learning and AI."
         self._run_pipeline_with_doc(orch, tmp_path, doc)
         assert len(doc.metadata.keywords) > 0
 
     def test_keywords_from_abstract_block(self, orch, tmp_path):
-        doc = PipelineDocument(document_id="job1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.ABSTRACT,
-                  text="This paper studies neural network architectures for NLP."),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="job1",
+            blocks=[
+                Block(
+                    block_id="b1",
+                    index=1,
+                    block_type=BlockType.ABSTRACT,
+                    text="This paper studies neural network architectures for NLP.",
+                ),
+            ],
+            metadata=DocumentMetadata(),
+        )
         doc.metadata.ai_hints = {}
         doc.metadata.abstract = ""
         self._run_pipeline_with_doc(orch, tmp_path, doc)
@@ -657,18 +722,26 @@ class TestKeywordExtraction:
         assert doc.metadata.ai_hints.get("keywords") is not None
 
     def test_keywords_extraction_failure_does_not_crash(self, orch, tmp_path):
-        doc = PipelineDocument(document_id="job1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="body"),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="job1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="body"),
+            ],
+            metadata=DocumentMetadata(),
+        )
         doc.metadata.ai_hints = {}
         with patch("app.pipeline.orchestrator.extract_keywords", side_effect=Exception("kw fail")):
             result = self._run_pipeline_with_doc(orch, tmp_path, doc)
         assert result["status"] == "success"
 
     def test_keywords_no_abstract_or_block(self, orch, tmp_path):
-        doc = PipelineDocument(document_id="job1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="body"),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="job1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="body"),
+            ],
+            metadata=DocumentMetadata(),
+        )
         doc.metadata.abstract = ""
         doc.metadata.ai_hints = {}
         result = self._run_pipeline_with_doc(orch, tmp_path, doc)
@@ -679,13 +752,18 @@ class TestKeywordExtraction:
 # Phase 4.1j: GROBID/Docling parallel extraction + AI reasoning
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestIntegrationScenarios:
     """Tests for GROBID/Docling parallel pass, Agent V2 cache, AI reasoning etc."""
 
     def _mk_doc(self, job_id="job1"):
-        doc = PipelineDocument(document_id=job_id, blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t"),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id=job_id,
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t"),
+            ],
+            metadata=DocumentMetadata(),
+        )
         doc.metadata.ai_hints = {}
         return doc
 
@@ -730,11 +808,19 @@ class TestIntegrationScenarios:
         doc = self._mk_doc()
         doc.generated_doc = MagicMock()
         with patch.object(orch.grobid_client, "is_available", return_value=True):
-            with patch.object(orch.grobid_client, "process_header_document", return_value={"title": "Test", "authors": [{"name": "A"}]}):
+            with patch.object(
+                orch.grobid_client,
+                "process_header_document",
+                return_value={"title": "Test", "authors": [{"name": "A"}]},
+            ):
                 with patch.object(orch.docling_client, "is_available", return_value=True):
-                    with patch.object(orch.docling_client, "analyze_layout", return_value={"elements": [{"type": "text"}]}):
+                    with patch.object(
+                        orch.docling_client, "analyze_layout", return_value={"elements": [{"type": "text"}]}
+                    ):
                         with patch.object(orch, "_should_skip_docling_for_digital_pdf", return_value=False):
-                            self._run_pipeline(orch, tmp_path, doc, {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True})
+                            self._run_pipeline(
+                                orch, tmp_path, doc, {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True}
+                            )
         assert doc.metadata.ai_hints.get("grobid_metadata", {}).get("title") == "Test"
         assert doc.metadata.ai_hints.get("docling_layout", {}).get("elements") is not None
 
@@ -758,16 +844,24 @@ class TestIntegrationScenarios:
     def test_grobid_timeout(self, orch, tmp_path):
         doc = self._mk_doc()
         doc.generated_doc = MagicMock()
+
         def _slow(*a, **kw):
             time.sleep(10)
             return {"title": "Test"}
+
         with patch.object(orch.grobid_client, "is_available", return_value=True):
             with patch.object(orch.grobid_client, "process_header_document", side_effect=_slow):
                 with patch.object(orch, "_should_skip_docling_for_digital_pdf", return_value=True):
-                    self._run_pipeline(orch, tmp_path, doc, {
-                        "GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True,
-                        "PIPELINE_GROBID_TIMEOUT_SECONDS": 1,
-                    })
+                    self._run_pipeline(
+                        orch,
+                        tmp_path,
+                        doc,
+                        {
+                            "GROBID_ENABLED": True,
+                            "USE_DOCLING_FALLBACK": True,
+                            "PIPELINE_GROBID_TIMEOUT_SECONDS": 1,
+                        },
+                    )
         assert "grobid_metadata" not in doc.metadata.ai_hints
 
     def test_agent_v2_cache_skip(self, orch, tmp_path):
@@ -776,7 +870,9 @@ class TestIntegrationScenarios:
         doc.metadata.ai_hints["grobid_metadata"] = {"title": "Existing"}
         doc.metadata.ai_hints["docling_layout"] = {"elements": []}
         with patch.object(orch.grobid_client, "is_available", return_value=True):
-            with patch.object(orch.grobid_client, "process_header_document", return_value={"title": "SHOULD NOT BE CALLED"}):
+            with patch.object(
+                orch.grobid_client, "process_header_document", return_value={"title": "SHOULD NOT BE CALLED"}
+            ):
                 self._run_pipeline(orch, tmp_path, doc, {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True})
         assert doc.metadata.ai_hints["grobid_metadata"]["title"] == "Existing"
 
@@ -785,9 +881,15 @@ class TestIntegrationScenarios:
         doc.metadata.title = ""
         with patch.object(orch.grobid_client, "is_available", return_value=False):
             with patch.object(orch, "_should_skip_docling_for_digital_pdf", return_value=True):
-                with patch.object(orch, "_extract_pymupdf_fallback_metadata", return_value={
-                    "source": "pymupdf", "page_count": 3, "title": "PyMuPDF Title",
-                }):
+                with patch.object(
+                    orch,
+                    "_extract_pymupdf_fallback_metadata",
+                    return_value={
+                        "source": "pymupdf",
+                        "page_count": 3,
+                        "title": "PyMuPDF Title",
+                    },
+                ):
                     self._run_pipeline(orch, tmp_path, doc, {"PYMUPDF_FALLBACK": True})
         assert doc.metadata.ai_hints.get("pymupdf_fallback", {}).get("source") == "pymupdf"
         assert doc.metadata.title == "PyMuPDF Title"
@@ -884,7 +986,9 @@ class TestIntegrationScenarios:
             mock_cr_inst = MagicMock()
             mock_cr_inst.validate_citation.return_value = {"valid": True, "doi": "10.1234/test"}
             mock_cr.return_value = mock_cr_inst
-            self._run_pipeline(orch, tmp_path, doc, {"CROSSREF_MAX_WORKERS": 2}, fast_mode=False, crossref_enrichment=True)
+            self._run_pipeline(
+                orch, tmp_path, doc, {"CROSSREF_MAX_WORKERS": 2}, fast_mode=False, crossref_enrichment=True
+            )
         assert doc.references[0].metadata["crossref_validation"]["valid"] is True
 
     def test_crossref_exception_handled(self, orch, tmp_path):

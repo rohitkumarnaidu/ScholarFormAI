@@ -9,12 +9,14 @@ import pytest
 @pytest.fixture
 def parser():
     from app.pipeline.generation.content_parser import ContentParser
+
     return ContentParser()
 
 
 @pytest.fixture
 def constants():
     from app.pipeline.generation.content_parser import TYPE_ALIASES, VALID_BLOCK_TYPES
+
     return VALID_BLOCK_TYPES, TYPE_ALIASES
 
 
@@ -182,6 +184,7 @@ class TestParse:
 
     def test_parse_logs_count(self, parser, caplog):
         import logging
+
         caplog.set_level(logging.INFO)
         response = '[{"type": "BODY", "content": "Text"}]'
         parser.parse(response, "report")

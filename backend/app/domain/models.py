@@ -40,6 +40,7 @@ class DomainAuthor:
 
     def to_pydantic(self) -> Any:
         from app.schemas.models import Author
+
         fn = self.first_name
         ln = self.last_name
         if not fn and not ln and self.name:

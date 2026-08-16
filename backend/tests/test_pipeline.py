@@ -18,8 +18,8 @@ class TestPipeline:
     @pytest.mark.pipeline
     def test_orchestrator_initialization(self):
         """Test pipeline orchestrator can be initialized."""
-        with patch('app.pipeline.orchestrator.get_reasoning_engine'):
-            with patch('app.pipeline.orchestrator.get_rag_engine'):
+        with patch("app.pipeline.orchestrator.get_reasoning_engine"):
+            with patch("app.pipeline.orchestrator.get_rag_engine"):
                 from app.pipeline.orchestrator import PipelineOrchestrator
 
                 orchestrator = PipelineOrchestrator()
@@ -50,7 +50,7 @@ class TestPipeline:
     @pytest.mark.pipeline
     def test_pipeline_error_handling(self):
         """Test pipeline handles errors gracefully."""
-        with patch('app.pipeline.orchestrator.get_reasoning_engine') as mock_reasoning:
+        with patch("app.pipeline.orchestrator.get_reasoning_engine") as mock_reasoning:
             mock_reasoning.return_value.generate_instruction_set.side_effect = Exception("Test error")
 
             from app.pipeline.orchestrator import PipelineOrchestrator
@@ -68,11 +68,11 @@ class TestPipeline:
         doc.save(str(doc_path))
 
         with (
-            patch('app.pipeline.orchestrator.get_reasoning_engine') as mock_reasoning,
-            patch('app.pipeline.orchestrator.get_rag_engine') as mock_rag,
-            patch('app.pipeline.orchestrator.GROBIDClient') as mock_grobid,
-            patch('app.pipeline.orchestrator.DoclingClient') as mock_docling,
-            patch('app.pipeline.orchestrator.get_supabase_client', return_value=None),
+            patch("app.pipeline.orchestrator.get_reasoning_engine") as mock_reasoning,
+            patch("app.pipeline.orchestrator.get_rag_engine") as mock_rag,
+            patch("app.pipeline.orchestrator.GROBIDClient") as mock_grobid,
+            patch("app.pipeline.orchestrator.DoclingClient") as mock_docling,
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=None),
         ):
             mock_reasoning.return_value = MagicMock()
             mock_rag.return_value = MagicMock()
@@ -95,11 +95,11 @@ class TestPipeline:
     def test_pipeline_run_with_missing_file(self, tmp_path):
         """Test pipeline handles missing input file."""
         with (
-            patch('app.pipeline.orchestrator.get_reasoning_engine') as mock_reasoning,
-            patch('app.pipeline.orchestrator.get_rag_engine') as mock_rag,
-            patch('app.pipeline.orchestrator.GROBIDClient') as mock_grobid,
-            patch('app.pipeline.orchestrator.DoclingClient') as mock_docling,
-            patch('app.pipeline.orchestrator.get_supabase_client', return_value=None),
+            patch("app.pipeline.orchestrator.get_reasoning_engine") as mock_reasoning,
+            patch("app.pipeline.orchestrator.get_rag_engine") as mock_rag,
+            patch("app.pipeline.orchestrator.GROBIDClient") as mock_grobid,
+            patch("app.pipeline.orchestrator.DoclingClient") as mock_docling,
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=None),
         ):
             mock_reasoning.return_value = MagicMock()
             mock_rag.return_value = MagicMock()
@@ -121,11 +121,11 @@ class TestPipeline:
     def test_pipeline_stage_interface_check(self):
         """Test stage interface validation."""
         with (
-            patch('app.pipeline.orchestrator.get_reasoning_engine'),
-            patch('app.pipeline.orchestrator.get_rag_engine'),
-            patch('app.pipeline.orchestrator.GROBIDClient'),
-            patch('app.pipeline.orchestrator.DoclingClient'),
-            patch('app.pipeline.orchestrator.get_supabase_client', return_value=None),
+            patch("app.pipeline.orchestrator.get_reasoning_engine"),
+            patch("app.pipeline.orchestrator.get_rag_engine"),
+            patch("app.pipeline.orchestrator.GROBIDClient"),
+            patch("app.pipeline.orchestrator.DoclingClient"),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=None),
         ):
             from app.pipeline.orchestrator import PipelineOrchestrator
 
@@ -150,11 +150,11 @@ class TestPipeline:
         corrupted.write_bytes(b"\x00\x01\x02CORRUPTED")
 
         with (
-            patch('app.pipeline.orchestrator.get_reasoning_engine'),
-            patch('app.pipeline.orchestrator.get_rag_engine'),
-            patch('app.pipeline.orchestrator.GROBIDClient'),
-            patch('app.pipeline.orchestrator.DoclingClient'),
-            patch('app.pipeline.orchestrator.get_supabase_client', return_value=None),
+            patch("app.pipeline.orchestrator.get_reasoning_engine"),
+            patch("app.pipeline.orchestrator.get_rag_engine"),
+            patch("app.pipeline.orchestrator.GROBIDClient"),
+            patch("app.pipeline.orchestrator.DoclingClient"),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=None),
         ):
             from app.pipeline.orchestrator import PipelineOrchestrator
 

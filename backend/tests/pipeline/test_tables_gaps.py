@@ -20,6 +20,7 @@ from app.pipeline.tables.renderer import TableRenderer
 # TABLE EXTRACTOR — Lines 31-138, 142-144, 151-159, 163-167, 171-177
 # ===================================================================
 
+
 class TestTableExtractorGaps:
     """Covers all extractor lines."""
 
@@ -191,7 +192,7 @@ class TestTableExtractorGaps:
         tbl_xml._inner_mock = inner_ref
 
         def findall_side_effect(ns):
-            return [tbl_xml] if ns.endswith('}tbl') else []
+            return [tbl_xml] if ns.endswith("}tbl") else []
 
         cell._element = MagicMock()
         cell._element.findall.side_effect = findall_side_effect
@@ -349,9 +350,11 @@ class TestTableExtractorGaps:
     def test_contains_header_keywords_mixed_case(self, extractor):
         assert extractor._contains_header_keywords(["name", "VALUE"]) is True
 
+
 # ===================================================================
 # TABLE CAPTION MATCHER — Lines 37-44, 53-163, 167-175, 179-180
 # ===================================================================
+
 
 class TestTableCaptionMatcherGaps:
     """Covers all caption_matcher lines."""
@@ -385,22 +388,31 @@ class TestTableCaptionMatcherGaps:
 
     def test_no_tables_early_return(self, matcher):
         from app.models import Block, BlockType, PipelineDocument
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY),
+            ],
+        )
         result = matcher.process(doc)
         assert result is doc
 
     def test_no_blocks_early_return(self, matcher):
         from app.models import PipelineDocument, Table
-        doc = PipelineDocument(document_id="t", tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0),
+            ],
+        )
         result = matcher.process(doc)
         assert result is doc
 
     def test_empty_blocks_and_tables(self, matcher):
         from app.models import PipelineDocument
+
         doc = PipelineDocument(document_id="t")
         result = matcher.process(doc)
         assert result is doc
@@ -408,13 +420,18 @@ class TestTableCaptionMatcherGaps:
     def test_references_boundary_excludes_candidates_after(self, matcher):
         """Caption candidates after refs heading are excluded (lines 69-70, 116-117)."""
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="x1", index=0, text="Data.", block_type=BlockType.BODY),
-            Block(block_id="ref", index=1, text="References", block_type=BlockType.REFERENCES_HEADING),
-            Block(block_id="c1", index=2, text="Table 1. After.", block_type=BlockType.BODY),
-        ], tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="x1", index=0, text="Data.", block_type=BlockType.BODY),
+                Block(block_id="ref", index=1, text="References", block_type=BlockType.REFERENCES_HEADING),
+                Block(block_id="c1", index=2, text="Table 1. After.", block_type=BlockType.BODY),
+            ],
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0),
+            ],
+        )
         result = matcher.process(doc)
         # Caption at index 2 is after refs, so excluded from block_map.
         # No other caption candidate available, so no match.
@@ -422,121 +439,170 @@ class TestTableCaptionMatcherGaps:
 
     def test_heading_excluded_from_block_map(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="h1", index=0, text="Table 1. Intro", block_type=BlockType.HEADING_1),
-            Block(block_id="b1", index=1, text="Body.", block_type=BlockType.BODY),
-        ], tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=1),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="h1", index=0, text="Table 1. Intro", block_type=BlockType.HEADING_1),
+                Block(block_id="b1", index=1, text="Body.", block_type=BlockType.BODY),
+            ],
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=1),
+            ],
+        )
         result = matcher.process(doc)
         assert result.tables[0].caption_text is None
 
     def test_already_assigned_block_id_skipped(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="shared", index=0, text="Table 1. Shared.", block_type=BlockType.BODY),
-            Block(block_id="b1", index=1, text="Body.", block_type=BlockType.BODY),
-            Block(block_id="b2", index=2, text="Body.", block_type=BlockType.BODY),
-        ], tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=1),
-            Table(table_id="t2", num_rows=1, num_cols=1, index=1, block_index=2),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="shared", index=0, text="Table 1. Shared.", block_type=BlockType.BODY),
+                Block(block_id="b1", index=1, text="Body.", block_type=BlockType.BODY),
+                Block(block_id="b2", index=2, text="Body.", block_type=BlockType.BODY),
+            ],
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=1),
+                Table(table_id="t2", num_rows=1, num_cols=1, index=1, block_index=2),
+            ],
+        )
         result = matcher.process(doc)
         assert result.tables[0].caption_text == "Table 1. Shared."
         assert result.tables[1].caption_text is None
 
     def test_references_heading_skipped_as_caption(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="rh", index=0, text="Table 1. Refs", block_type=BlockType.REFERENCES_HEADING),
-            Block(block_id="b1", index=1, text="Body.", block_type=BlockType.BODY),
-        ], tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=1),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="rh", index=0, text="Table 1. Refs", block_type=BlockType.REFERENCES_HEADING),
+                Block(block_id="b1", index=1, text="Body.", block_type=BlockType.BODY),
+            ],
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=1),
+            ],
+        )
         result = matcher.process(doc)
         assert result.tables[0].caption_text is None
 
     def test_prev_table_boundary(self, matcher):
         """Caption before prev_table_idx excluded (line 118)."""
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="c1", index=0, text="Table 1. First.", block_type=BlockType.BODY),
-            Block(block_id="x1", index=1, text="Data.", block_type=BlockType.BODY),
-            Block(block_id="c2", index=2, text="Table 2. Second.", block_type=BlockType.BODY),
-            Block(block_id="x2", index=3, text="Data.", block_type=BlockType.BODY),
-        ], tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=1),
-            Table(table_id="t2", num_rows=1, num_cols=1, index=1, block_index=3),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="c1", index=0, text="Table 1. First.", block_type=BlockType.BODY),
+                Block(block_id="x1", index=1, text="Data.", block_type=BlockType.BODY),
+                Block(block_id="c2", index=2, text="Table 2. Second.", block_type=BlockType.BODY),
+                Block(block_id="x2", index=3, text="Data.", block_type=BlockType.BODY),
+            ],
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=1),
+                Table(table_id="t2", num_rows=1, num_cols=1, index=1, block_index=3),
+            ],
+        )
         result = matcher.process(doc)
         assert result.tables[0].caption_text == "Table 1. First."
         assert result.tables[1].caption_text == "Table 2. Second."
 
     def test_equal_distance_tiebreaker_prefers_above(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="above", index=0, text="Table 1. Above.", block_type=BlockType.BODY),
-            Block(block_id="body", index=1, text="Body.", block_type=BlockType.BODY),
-            Block(block_id="below", index=2, text="Table 1. Below.", block_type=BlockType.BODY),
-        ], tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=1),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="above", index=0, text="Table 1. Above.", block_type=BlockType.BODY),
+                Block(block_id="body", index=1, text="Body.", block_type=BlockType.BODY),
+                Block(block_id="below", index=2, text="Table 1. Below.", block_type=BlockType.BODY),
+            ],
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=1),
+            ],
+        )
         result = matcher.process(doc)
         assert result.tables[0].caption_text == "Table 1. Above."
 
     def test_missing_caption_sets_metadata(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="b1", index=0, text="No caption.", block_type=BlockType.BODY),
-        ], tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="b1", index=0, text="No caption.", block_type=BlockType.BODY),
+            ],
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0),
+            ],
+        )
         result = matcher.process(doc)
         assert result.tables[0].metadata.get("caption_status") == "Missing"
 
     def test_existing_caption_preserved(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY),
-        ], tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0,
-                  caption_text="Already set."),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY),
+            ],
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0, caption_text="Already set."),
+            ],
+        )
         result = matcher.process(doc)
         assert "caption_status" not in result.tables[0].metadata
 
     def test_table_list_pos_fallback_linear_search(self, matcher):
         """block_index not in list_index_map triggers linear search (lines 84-91)."""
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="c1", index=0, text="Table 1. Caption.", block_type=BlockType.BODY),
-            Block(block_id="b1", index=10, text="Body.", block_type=BlockType.BODY),
-        ], tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=5),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="c1", index=0, text="Table 1. Caption.", block_type=BlockType.BODY),
+                Block(block_id="b1", index=10, text="Body.", block_type=BlockType.BODY),
+            ],
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=5),
+            ],
+        )
         result = matcher.process(doc)
         assert result.tables[0].caption_text == "Table 1. Caption."
 
     def test_table_list_pos_fallback_to_end(self, matcher):
         """block_index > all indices => pos = len(blocks)-1 (line 91)."""
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="c1", index=0, text="Table 1. Caption.", block_type=BlockType.BODY),
-            Block(block_id="b1", index=1, text="Body.", block_type=BlockType.BODY),
-        ], tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=99),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="c1", index=0, text="Table 1. Caption.", block_type=BlockType.BODY),
+                Block(block_id="b1", index=1, text="Body.", block_type=BlockType.BODY),
+            ],
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=99),
+            ],
+        )
         result = matcher.process(doc)
         assert result.tables[0].caption_text == "Table 1. Caption."
 
     def test_caption_block_type_changed(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="c1", index=0, text="Table 1. Type.", block_type=BlockType.BODY),
-            Block(block_id="b1", index=1, text="Body.", block_type=BlockType.BODY),
-        ], tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=1),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="c1", index=0, text="Table 1. Type.", block_type=BlockType.BODY),
+                Block(block_id="b1", index=1, text="Body.", block_type=BlockType.BODY),
+            ],
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=1),
+            ],
+        )
         result = matcher.process(doc)
         cap_block = next(b for b in result.blocks if b.block_id == "c1")
         assert cap_block.block_type == BlockType.TABLE_CAPTION
@@ -544,11 +610,16 @@ class TestTableCaptionMatcherGaps:
 
     def test_per_table_exception_caught(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="b1", index=0, text="Table 1. Test.", block_type=BlockType.BODY),
-        ], tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="b1", index=0, text="Table 1. Test.", block_type=BlockType.BODY),
+            ],
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0),
+            ],
+        )
         with patch.object(matcher, "caption_regex") as mock_regex:
             mock_regex.match.side_effect = Exception("regex fail")
             result = matcher.process(doc)
@@ -556,11 +627,16 @@ class TestTableCaptionMatcherGaps:
 
     def test_top_level_exception_caught(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY),
-        ], tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY),
+            ],
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0),
+            ],
+        )
         with patch.object(matcher, "_find_references_start_index", side_effect=Exception("boom")):
             result = matcher.process(doc)
             stages = {s.stage_name: s.status for s in result.processing_history}
@@ -568,26 +644,36 @@ class TestTableCaptionMatcherGaps:
 
     def test_success_stage_added(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="c1", index=0, text="Table 1. Match.", block_type=BlockType.BODY),
-            Block(block_id="x1", index=1, text="Body.", block_type=BlockType.BODY),
-        ], tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=1),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="c1", index=0, text="Table 1. Match.", block_type=BlockType.BODY),
+                Block(block_id="x1", index=1, text="Body.", block_type=BlockType.BODY),
+            ],
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=1),
+            ],
+        )
         result = matcher.process(doc)
         stages = {s.stage_name: s.status for s in result.processing_history}
         assert stages.get("table_caption_matching") == "success"
 
     def test_search_window_respected(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
+
         matcher.search_window_above = 1
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="c1", index=0, text="Table 1. Far.", block_type=BlockType.BODY),
-            Block(block_id="x1", index=1, text="Mid.", block_type=BlockType.BODY),
-            Block(block_id="x2", index=2, text="Body.", block_type=BlockType.BODY),
-        ], tables=[
-            Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=2),
-        ])
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="c1", index=0, text="Table 1. Far.", block_type=BlockType.BODY),
+                Block(block_id="x1", index=1, text="Mid.", block_type=BlockType.BODY),
+                Block(block_id="x2", index=2, text="Body.", block_type=BlockType.BODY),
+            ],
+            tables=[
+                Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=2),
+            ],
+        )
         result = matcher.process(doc)
         assert result.tables[0].caption_text is None
 
@@ -595,6 +681,7 @@ class TestTableCaptionMatcherGaps:
 
     def test_find_refs_via_block_type(self, matcher):
         from app.models import Block, BlockType
+
         blocks = [
             Block(block_id="r1", index=5, text="References", block_type=BlockType.REFERENCES_HEADING),
         ]
@@ -602,6 +689,7 @@ class TestTableCaptionMatcherGaps:
 
     def test_find_refs_via_keyword_heading_1(self, matcher):
         from app.models import Block, BlockType
+
         blocks = [
             Block(block_id="r1", index=3, text="References ", block_type=BlockType.HEADING_1),
         ]
@@ -609,6 +697,7 @@ class TestTableCaptionMatcherGaps:
 
     def test_find_refs_via_bibliography(self, matcher):
         from app.models import Block, BlockType
+
         blocks = [
             Block(block_id="b1", index=7, text="Bibliography ", block_type=BlockType.HEADING_2),
         ]
@@ -616,6 +705,7 @@ class TestTableCaptionMatcherGaps:
 
     def test_find_refs_via_works_cited(self, matcher):
         from app.models import Block, BlockType
+
         blocks = [
             Block(block_id="b1", index=9, text="Works Cited ", block_type=BlockType.HEADING_3),
         ]
@@ -623,6 +713,7 @@ class TestTableCaptionMatcherGaps:
 
     def test_find_refs_keyword_non_heading(self, matcher):
         from app.models import Block, BlockType
+
         blocks = [
             Block(block_id="b1", index=4, text="references", block_type=BlockType.BODY),
         ]
@@ -630,6 +721,7 @@ class TestTableCaptionMatcherGaps:
 
     def test_find_refs_none(self, matcher):
         from app.models import Block, BlockType
+
         blocks = [
             Block(block_id="b1", index=0, text="Introduction", block_type=BlockType.HEADING_1),
         ]
@@ -639,13 +731,16 @@ class TestTableCaptionMatcherGaps:
 
     def test_match_table_captions_convenience(self):
         from app.models import PipelineDocument
+
         doc = PipelineDocument(document_id="t", blocks=[], tables=[])
         result = match_table_captions(doc)
         assert result is doc
 
+
 # ===================================================================
 # TABLE RENDERER — Lines 23, 29-86
 # ===================================================================
+
 
 class TestTableRendererGaps:
     """Covers all renderer lines."""
@@ -657,10 +752,13 @@ class TestTableRendererGaps:
     @pytest.fixture
     def simple_table(self):
         from app.models import Table, TableCell
+
         return Table(
             table_id="tbl_001",
-            num_rows=2, num_cols=2,
-            index=0, block_index=0,
+            num_rows=2,
+            num_cols=2,
+            index=0,
+            block_index=0,
             cells=[
                 TableCell(row=0, col=0, text="A1", bold=True),
                 TableCell(row=0, col=1, text="B1", bold=True),
@@ -687,6 +785,7 @@ class TestTableRendererGaps:
 
     def test_no_rows_returns(self, renderer):
         from app.models import Table
+
         doc = MagicMock()
         tbl = Table(table_id="e", num_rows=0, num_cols=0, index=0, block_index=0)
         renderer.render(doc, tbl)
@@ -694,9 +793,9 @@ class TestTableRendererGaps:
 
     def test_no_cols_returns(self, renderer):
         from app.models import Table
+
         doc = MagicMock()
-        tbl = Table(table_id="e", num_rows=1, num_cols=0, index=0, block_index=0,
-                     data=[[]], rows=[[]])
+        tbl = Table(table_id="e", num_rows=1, num_cols=0, index=0, block_index=0, data=[[]], rows=[[]])
         renderer.render(doc, tbl)
         doc.add_table.assert_not_called()
 
@@ -779,6 +878,7 @@ class TestTableRendererGaps:
 
         def raise_on_set(inst, val):
             raise Exception("style fail")
+
         type(word_tbl).style = property(fget=lambda s: "mock", fset=raise_on_set)
         renderer.render(doc, simple_table)
         doc.add_table.assert_called_once()
@@ -804,6 +904,7 @@ class TestTableRendererGaps:
 
     def test_cell_empty_text(self, renderer, simple_table):
         from app.models import TableCell
+
         doc = MagicMock()
         doc.styles = {"Table Grid": MagicMock()}
         word_tbl = MagicMock()
@@ -819,6 +920,7 @@ class TestTableRendererGaps:
 
     def test_cell_out_of_bounds_skipped(self, renderer, simple_table):
         from app.models import TableCell
+
         doc = MagicMock()
         doc.styles = {"Table Grid": MagicMock()}
         word_tbl = MagicMock()
@@ -847,6 +949,7 @@ class TestTableRendererGaps:
 
     def test_nested_table_rendering(self, renderer, simple_table):
         from app.models import Table, TableCell
+
         doc = MagicMock()
         doc.styles = {"Table Grid": MagicMock()}
         word_tbl = MagicMock()
@@ -857,15 +960,21 @@ class TestTableRendererGaps:
         doc.add_table.return_value = word_tbl
         doc.add_paragraph.return_value = MagicMock()
 
-        nested = Table(table_id="n1", num_rows=1, num_cols=1, index=1, block_index=1,
-                       data=[["inner"]], cells=[TableCell(row=0, col=0, text="inner")])
-        simple_table.cells = [
-            TableCell(row=0, col=0, text="parent", metadata={"nested_tables": [nested]})
-        ]
+        nested = Table(
+            table_id="n1",
+            num_rows=1,
+            num_cols=1,
+            index=1,
+            block_index=1,
+            data=[["inner"]],
+            cells=[TableCell(row=0, col=0, text="inner")],
+        )
+        simple_table.cells = [TableCell(row=0, col=0, text="parent", metadata={"nested_tables": [nested]})]
         renderer.render(doc, simple_table)
 
     def test_nested_table_failure_adds_fallback(self, renderer, simple_table):
         from app.models import Table, TableCell
+
         doc = MagicMock()
         doc.styles = {"Table Grid": MagicMock()}
         word_tbl = MagicMock()
@@ -876,15 +985,19 @@ class TestTableRendererGaps:
         doc.add_table.return_value = word_tbl
         doc.add_paragraph.return_value = MagicMock()
 
-        failing_nested = Table(table_id="bad_nest", num_rows=1, num_cols=1,
-                               index=1, block_index=1,
-                               data=[["x"]], cells=[TableCell(row=0, col=0, text="x")])
-        simple_table.cells = [
-            TableCell(row=0, col=0, text="parent",
-                      metadata={"nested_tables": [failing_nested]})
-        ]
+        failing_nested = Table(
+            table_id="bad_nest",
+            num_rows=1,
+            num_cols=1,
+            index=1,
+            block_index=1,
+            data=[["x"]],
+            cells=[TableCell(row=0, col=0, text="x")],
+        )
+        simple_table.cells = [TableCell(row=0, col=0, text="parent", metadata={"nested_tables": [failing_nested]})]
 
         original_render = renderer.render
+
         def render_side_effect(d, tbl, number=None):
             if d is c00:
                 raise Exception("nested fail")

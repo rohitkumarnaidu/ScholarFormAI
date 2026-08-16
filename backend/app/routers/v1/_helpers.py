@@ -138,6 +138,7 @@ async def run_enveloped(
             duration_seconds=monotonic() - started_at,
         )
         import traceback
+
         err_msg = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))
         if logger is not None:
             logger.exception("Unhandled error while processing %s: %s", operation_name, err_msg)

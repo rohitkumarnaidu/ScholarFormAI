@@ -22,6 +22,7 @@ import pytest
 #  Fixtures & helpers
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def mock_pdf_exporter():
     me = MagicMock(name="PDFExporter")
@@ -152,6 +153,7 @@ def _make_exporter(mock_pdf=None, mock_latex=None):
     with patch("app.pipeline.export.exporter.PDFExporter", return_value=mock_pdf or MagicMock()):
         with patch("app.pipeline.export.exporter.LaTeXExporter", return_value=mock_latex or MagicMock()):
             from app.pipeline.export.exporter import Exporter
+
             return Exporter()
 
 
@@ -159,11 +161,13 @@ def _make_exporter(mock_pdf=None, mock_latex=None):
 #  __init__
 # ===================================================================
 
+
 class TestInit:
     def test_creates_pdf_and_latex_exporters(self):
         with patch("app.pipeline.export.exporter.PDFExporter") as m_pdf_cls:
             with patch("app.pipeline.export.exporter.LaTeXExporter") as m_tex_cls:
                 from app.pipeline.export.exporter import Exporter
+
                 ex = Exporter()
         m_pdf_cls.assert_called_once()
         m_tex_cls.assert_called_once()
@@ -174,6 +178,7 @@ class TestInit:
 # ===================================================================
 #  _get_export_formats
 # ===================================================================
+
 
 class TestGetExportFormats:
     def test_default_formats(self):
@@ -232,6 +237,7 @@ class TestGetExportFormats:
 # ===================================================================
 #  _build_markdown
 # ===================================================================
+
 
 class TestBuildMarkdown:
     def test_includes_title(self):
@@ -344,6 +350,7 @@ class TestBuildMarkdown:
 #  _build_export_payload
 # ===================================================================
 
+
 class TestBuildExportPayload:
     def test_payload_structure(self):
         ex = _make_exporter()
@@ -391,6 +398,7 @@ class TestBuildExportPayload:
 #  export  (Word doc save)
 # ===================================================================
 
+
 class TestExport:
     @patch("app.pipeline.export.exporter.os.makedirs")
     def test_saves_word_doc(self, mock_makedirs):
@@ -410,6 +418,7 @@ class TestExport:
 # ===================================================================
 #  export_json
 # ===================================================================
+
 
 class TestExportJson:
     @patch("app.pipeline.export.exporter.json.dump")
@@ -437,6 +446,7 @@ class TestExportJson:
 #  export_markdown
 # ===================================================================
 
+
 class TestExportMarkdown:
     @patch("builtins.open", new_callable=mock_open)
     @patch("app.pipeline.export.exporter.os.makedirs")
@@ -462,6 +472,7 @@ class TestExportMarkdown:
 # ===================================================================
 #  export_jats
 # ===================================================================
+
 
 class TestExportJats:
     @patch("builtins.open", new_callable=mock_open)
@@ -493,6 +504,7 @@ class TestExportJats:
 # ===================================================================
 #  export_html
 # ===================================================================
+
 
 class TestExportHtml:
     @patch("builtins.open", new_callable=mock_open)
@@ -566,6 +578,7 @@ class TestExportHtml:
 #  export_latex
 # ===================================================================
 
+
 class TestExportLatex:
     def test_delegates_to_latex_exporter(self):
         mock_tex = MagicMock(name="latex")
@@ -573,9 +586,7 @@ class TestExportLatex:
         ex = _make_exporter(mock_latex=mock_tex)
         doc = _make_doc()
         result = ex.export_latex(doc, "/out/test.tex")
-        mock_tex.convert_to_latex.assert_called_once_with(
-            doc.output_path, os.path.dirname("/out/test.tex")
-        )
+        mock_tex.convert_to_latex.assert_called_once_with(doc.output_path, os.path.dirname("/out/test.tex"))
         assert result == "/out/test.tex"
 
     def test_no_output_path_returns_none(self):
@@ -607,6 +618,7 @@ class TestExportLatex:
 # ===================================================================
 #  process  (main pipeline entry)
 # ===================================================================
+
 
 class TestProcess:
     @patch("app.pipeline.export.exporter.os.makedirs")
@@ -724,6 +736,7 @@ class TestProcess:
 # ===================================================================
 #  Integration via tmp_path  (real file I/O)
 # ===================================================================
+
 
 class TestIntegrationWithTempDir:
     def test_export_writes_to_disk(self, tmp_path):

@@ -14,14 +14,17 @@ import pytest
 
 # ── Pipeline Semaphore ─────────────────────────────────────────────────────────
 
+
 class TestPipelineSemaphore:
     def _cleanup(self):
         from app.pipeline.orchestrator import _pipeline_semaphore
+
         while _pipeline_semaphore._value < 5:
             _pipeline_semaphore.release()
 
     def test_allows_up_to_five_concurrent(self):
         from app.pipeline.orchestrator import _MAX_CONCURRENT_JOBS, _pipeline_semaphore
+
         assert _MAX_CONCURRENT_JOBS == 5
         acquired = []
         for _ in range(5):
@@ -33,6 +36,7 @@ class TestPipelineSemaphore:
 
     def test_blocks_sixth_concurrent(self):
         from app.pipeline.orchestrator import _pipeline_semaphore
+
         self._cleanup()
         acquired = []
         for _ in range(5):
@@ -44,6 +48,7 @@ class TestPipelineSemaphore:
 
     def test_release_allows_new_job(self):
         from app.pipeline.orchestrator import _pipeline_semaphore
+
         self._cleanup()
         _pipeline_semaphore.acquire(blocking=False)
         _pipeline_semaphore.acquire(blocking=False)
@@ -54,6 +59,7 @@ class TestPipelineSemaphore:
 
     def test_acquire_timeout_raises_on_full(self):
         from app.pipeline.orchestrator import _pipeline_semaphore
+
         self._cleanup()
         for _ in range(5):
             _pipeline_semaphore.acquire(blocking=False)
@@ -66,6 +72,7 @@ class TestPipelineSemaphore:
 
     def test_semaphore_threadsafe(self):
         from app.pipeline.orchestrator import _pipeline_semaphore
+
         self._cleanup()
         acquired = []
 
@@ -85,10 +92,12 @@ class TestPipelineSemaphore:
 
 # ── Same-file concurrent upload ────────────────────────────────────────────────
 
+
 class TestConcurrentUpload:
     def test_same_file_hash_detection(self):
         """Two uploads of the same file should detect collision via SHA-256."""
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         orch = MagicMock(spec=PipelineOrchestrator)
         orch._compute_sha256 = MagicMock(return_value="abc123def")
         same_hash = orch._compute_sha256("dummy.pdf")
@@ -122,6 +131,7 @@ class TestConcurrentUpload:
 
 # ── Celery task deduplication ──────────────────────────────────────────────────
 
+
 class TestCeleryDeduplication:
     def test_same_document_key_prevents_duplicate(self):
         """Simulate celery task dedup via cache key."""
@@ -141,10 +151,12 @@ class TestCeleryDeduplication:
 
 # ── Timeout vs completion ──────────────────────────────────────────────────────
 
+
 class TestTimeoutRace:
     def test_timeout_wins_if_exceeded(self):
         """If a stage takes longer than the timeout, TimeoutError is raised."""
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         orch = PipelineOrchestrator.__new__(PipelineOrchestrator)
 
         def slow_func():
@@ -156,6 +168,7 @@ class TestTimeoutRace:
     def test_completion_before_timeout(self):
         """If a stage completes before the timeout, the result is returned."""
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         orch = PipelineOrchestrator.__new__(PipelineOrchestrator)
 
         def fast_func():
@@ -166,6 +179,7 @@ class TestTimeoutRace:
 
 
 # ── Concurrent LLM calls ──────────────────────────────────────────────────────
+
 
 class TestConcurrentLLMCalls:
     @pytest.mark.asyncio
@@ -186,6 +200,7 @@ class TestConcurrentLLMCalls:
 
 # ── Concurrent RAG queries ────────────────────────────────────────────────────
 
+
 class TestConcurrentRAG:
     @pytest.mark.asyncio
     async def test_concurrent_rag_queries_isolated(self):
@@ -202,6 +217,7 @@ class TestConcurrentRAG:
 
 
 # ── SSE isolation ─────────────────────────────────────────────────────────────
+
 
 class TestSSEIsolation:
     @pytest.mark.asyncio
@@ -224,10 +240,12 @@ class TestSSEIsolation:
 
 # ── Rate limiter bucket ───────────────────────────────────────────────────────
 
+
 class TestRateLimiterBucket:
     def test_concurrent_bucket_increments(self):
         """Concurrent increments to the same rate-limit bucket should be thread-safe."""
         import threading as _t
+
         bucket = {"count": 0}
         lock = _t.Lock()
 
@@ -245,16 +263,19 @@ class TestRateLimiterBucket:
 
 # ── Simultaneous document creation ─────────────────────────────────────────────
 
+
 class TestSimultaneousDocumentCreation:
     def test_same_file_name_create(self):
         """Simultaneous creation with the same filename should generate unique IDs."""
         from app.models import DocumentMetadata, PipelineDocument
+
         doc1 = PipelineDocument(document_id="a", metadata=DocumentMetadata())
         doc2 = PipelineDocument(document_id="b", metadata=DocumentMetadata())
         assert doc1.document_id != doc2.document_id
 
 
 # ── Concurrent template updates ────────────────────────────────────────────────
+
 
 class TestConcurrentTemplateUpdates:
     def test_concurrent_updates_no_corruption(self):
@@ -281,11 +302,13 @@ class TestConcurrentTemplateUpdates:
 
 # ── Session state races ───────────────────────────────────────────────────────
 
+
 class TestSessionStateRaces:
     @pytest.mark.asyncio
     async def test_agent_chat_session_state_race(self):
         """Concurrent message writes to the same session should not corrupt."""
         from app.services.generator_session_service import GeneratorSessionService
+
         mock_svc = MagicMock(spec=GeneratorSessionService)
         mock_svc.add_message = AsyncMock()
         mock_svc._cache_lock = asyncio.Lock()
@@ -302,6 +325,7 @@ class TestSessionStateRaces:
 
 
 # ── Parallel ChromaDB writes ───────────────────────────────────────────────────
+
 
 class TestParallelChromaDBWrites:
     @pytest.mark.asyncio
@@ -322,6 +346,7 @@ class TestParallelChromaDBWrites:
 
 
 # ── Async generator race ───────────────────────────────────────────────────────
+
 
 class TestAsyncGeneratorRace:
     @pytest.mark.asyncio

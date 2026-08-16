@@ -72,6 +72,7 @@ class TestContractLoader:
     def test_load_contract_convenience(self):
         with pytest.MonkeyPatch.context():
             import app.pipeline.contracts.loader as cl
+
             original = cl._default_pipeline_loader.contracts_dir
             cl._default_pipeline_loader.contracts_dir = FIXTURES_DIR
             try:

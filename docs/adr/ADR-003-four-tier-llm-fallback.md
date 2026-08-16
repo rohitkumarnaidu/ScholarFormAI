@@ -26,15 +26,17 @@ We implemented a **four-tier fallback chain** that resolves providers in order o
 
 The system attempts each tier in sequence. If a provider returns an error, times out, or exceeds rate limits, the next tier is tried automatically. The entire chain is wrapped in a circuit breaker that prevents repeated calls to a failing provider.
 
-```python
-# Conceptual flow
-providers = ["nvidia_nim", "groq", "openrouter", "ollama"]
-for provider in providers:
-    try:
-        return await generate_with_provider(provider, prompt)
-    except (ProviderError, TimeoutError, RateLimitError):
-        continue
-raise AllProvidersExhaustedError()
+```mermaid
+flowchart TD
+    Start([Start Generation]) --> TryNvidia{Try NVIDIA NIM}
+    TryNvidia -- Success --> Return[Return Result]
+    TryNvidia -- Error/Timeout --> TryGroq{Try Groq}
+    TryGroq -- Success --> Return
+    TryGroq -- Error/Timeout --> TryOpenRouter{Try OpenRouter}
+    TryOpenRouter -- Success --> Return
+    TryOpenRouter -- Error/Timeout --> TryOllama{Try Ollama}
+    TryOllama -- Success --> Return
+    TryOllama -- Error/Timeout --> Fail([All Providers Exhausted])
 ```
 
 **Single-provider** approaches were rejected because every major LLM provider has experienced outages that would block document processing. **Dual failover** was rejected because it still leaves a single point of failure when both share the same upstream dependency (e.g., both rely on OpenAI-compatible APIs).

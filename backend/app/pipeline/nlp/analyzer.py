@@ -206,6 +206,7 @@ def extract_keywords(text: str, top_k: int = 8) -> list[str]:
                 continue
             try:
                 import yake
+
                 extractor = yake.KeywordExtractor(lan="en", n=2, top=max(top_k * 2, 10))
                 yake_candidates = [kw for kw, _score in extractor.extract_keywords(text) if kw]
                 if yake_candidates:
@@ -220,6 +221,7 @@ def extract_keywords(text: str, top_k: int = 8) -> list[str]:
             try:
                 if not yake_candidates and YAKE_AVAILABLE:
                     import yake
+
                     extractor = yake.KeywordExtractor(lan="en", n=2, top=max(top_k * 2, 10))
                     yake_candidates = [kw for kw, _score in extractor.extract_keywords(text) if kw]
 

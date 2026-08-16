@@ -10,12 +10,14 @@ from unittest.mock import patch
 class TestToolMarketplace:
     def test_init_creates_cache_dir(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         tm = ToolMarketplace(local_cache_dir=str(tmp_path / "tm"))
         assert tm.cache_dir.exists()
         assert tm.installed_tools == {}
 
     def test_publish_tool(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         tm = ToolMarketplace(local_cache_dir=str(tmp_path))
         result = tm.publish_tool("my_tool", "print('hello')", "A test tool", "author1")
         assert result["success"] is True
@@ -23,6 +25,7 @@ class TestToolMarketplace:
 
     def test_publish_tool_exception(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         ToolMarketplace(local_cache_dir=str(tmp_path))
         tm2 = ToolMarketplace(local_cache_dir=str(tmp_path / "broken"))
         with patch("builtins.open", side_effect=OSError("disk full")):
@@ -31,6 +34,7 @@ class TestToolMarketplace:
 
     def test_search_tools_by_query(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         tm = ToolMarketplace(local_cache_dir=str(tmp_path))
         tm.publish_tool("alpha_tool", "c1", "Alpha desc", "a1", tags=["nlp"])
         tm.publish_tool("beta_tool", "c2", "Beta desc", "a2", tags=["cv"])
@@ -42,6 +46,7 @@ class TestToolMarketplace:
 
     def test_search_tools_by_tags(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         tm = ToolMarketplace(local_cache_dir=str(tmp_path))
         tm.publish_tool("t1", "c", "d", "a", tags=["nlp", "text"])
         tm.publish_tool("t2", "c", "d", "a", tags=["cv"])
@@ -51,6 +56,7 @@ class TestToolMarketplace:
 
     def test_search_tools_limit(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         tm = ToolMarketplace(local_cache_dir=str(tmp_path))
         for i in range(5):
             tm.publish_tool(f"t{i}", "c", "d", "a")
@@ -59,6 +65,7 @@ class TestToolMarketplace:
 
     def test_install_tool(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         tm = ToolMarketplace(local_cache_dir=str(tmp_path))
         tm.publish_tool("my_tool", "print('hi')", "desc", "author")
         result = tm.install_tool("my_tool")
@@ -67,6 +74,7 @@ class TestToolMarketplace:
 
     def test_install_tool_not_found(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         tm = ToolMarketplace(local_cache_dir=str(tmp_path))
         result = tm.install_tool("nonexistent")
         assert result["success"] is False
@@ -74,6 +82,7 @@ class TestToolMarketplace:
 
     def test_install_tool_integrity_fail(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         tm = ToolMarketplace(local_cache_dir=str(tmp_path))
         tm.publish_tool("my_tool", "code", "desc", "author")
         # Tamper with published file
@@ -86,6 +95,7 @@ class TestToolMarketplace:
 
     def test_uninstall_tool(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         tm = ToolMarketplace(local_cache_dir=str(tmp_path))
         tm.installed_tools["my_tool"] = {"version": "1.0"}
         assert tm.uninstall_tool("my_tool") is True
@@ -93,11 +103,13 @@ class TestToolMarketplace:
 
     def test_uninstall_tool_not_installed(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         tm = ToolMarketplace(local_cache_dir=str(tmp_path))
         assert tm.uninstall_tool("missing") is False
 
     def test_get_installed_tools(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         tm = ToolMarketplace(local_cache_dir=str(tmp_path))
         tm.installed_tools["t1"] = {"version": "1.0", "installed_at": "now", "description": "desc"}
         tools = tm.get_installed_tools()
@@ -106,11 +118,13 @@ class TestToolMarketplace:
 
     def test_rate_tool(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         tm = ToolMarketplace(local_cache_dir=str(tmp_path))
         assert tm.rate_tool("my_tool", 5) is True
 
     def test_get_tool_stats(self, tmp_path):
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         tm = ToolMarketplace(local_cache_dir=str(tmp_path))
         stats = tm.get_tool_stats("my_tool")
         assert stats["name"] == "my_tool"

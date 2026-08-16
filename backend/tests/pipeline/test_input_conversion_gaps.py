@@ -36,6 +36,7 @@ def temp_dir():
 # __init__ gap coverage (line 41)
 # ===========================================================================
 
+
 class TestInitGaps:
     """Line 41: temp_dir assignment."""
 
@@ -55,6 +56,7 @@ class TestInitGaps:
 # ===========================================================================
 # convert_to_docx gap coverage (lines 58-108)
 # ===========================================================================
+
 
 class TestConvertToDocxGaps:
     """Full convert_to_docx coverage."""
@@ -121,10 +123,7 @@ class TestConvertToDocxGaps:
                 with patch("os.remove"):
                     with patch("os.rename") as m_rename:
                         result = ic.convert_to_docx(INPUT + ".doc", "job1")
-                        m_rename.assert_called_once_with(
-                            TMP + r"\job1\file.docx",
-                            TMP + r"\job1\input.docx"
-                        )
+                        m_rename.assert_called_once_with(TMP + r"\job1\file.docx", TMP + r"\job1\input.docx")
                         assert result == TMP + r"\job1\input.docx"
 
     def test_libreoffice_odt_strategy(self):
@@ -173,7 +172,7 @@ class TestConvertToDocxGaps:
             with patch("os.makedirs"):
                 with patch("shutil.copy2"):
                     ic.convert_to_docx("relative.docx", "job1")
-                        # Should not raise
+                    # Should not raise
 
     def test_job_dir_created(self):
         """Job directory is created."""
@@ -186,6 +185,7 @@ class TestConvertToDocxGaps:
 # ===========================================================================
 # _handle_pdf gap coverage (lines 115-168)
 # ===========================================================================
+
 
 class TestHandlePdfGaps:
     """Full _handle_pdf coverage."""
@@ -258,6 +258,7 @@ class TestHandlePdfGaps:
         with patch("app.services.enhancement_manager.enhancement_manager", enh_mock):
             with patch("app.pipeline.ocr.pdf_ocr.PdfOCR") as m_ocr_cls:
                 from app.pipeline.ocr.pdf_ocr import OCRError
+
                 m_ocr = MagicMock()
                 m_ocr.is_scanned.return_value = True
                 m_ocr.convert_to_docx.side_effect = OCRError("OCR engine failed")
@@ -385,6 +386,7 @@ class TestHandlePdfGaps:
 # convert_to_pdf gap coverage (lines 182-214)
 # ===========================================================================
 
+
 class TestConvertToPdfGaps:
     """Full convert_to_pdf coverage."""
 
@@ -453,6 +455,7 @@ class TestConvertToPdfGaps:
 # _run_libreoffice_to_pdf gap coverage (lines 218-236)
 # ===========================================================================
 
+
 class TestRunLibreofficeToPdfGaps:
     """Full _run_libreoffice_to_pdf coverage."""
 
@@ -500,6 +503,7 @@ class TestRunLibreofficeToPdfGaps:
 # _run_pandoc gap coverage (lines 245-255)
 # ===========================================================================
 
+
 class TestRunPandocGaps:
     """Full _run_pandoc coverage."""
 
@@ -515,8 +519,7 @@ class TestRunPandocGaps:
             m_run.return_value = MagicMock()
             ic._run_pandoc("/in.md", "/out.docx")
             m_run.assert_called_once_with(
-                ["pandoc", "/in.md", "-o", "/out.docx"],
-                check=True, capture_output=True, timeout=120
+                ["pandoc", "/in.md", "-o", "/out.docx"], check=True, capture_output=True, timeout=120
             )
 
     def test_pandoc_timeout(self):
@@ -544,6 +547,7 @@ class TestRunPandocGaps:
 # ===========================================================================
 # _run_libreoffice gap coverage (lines 260-278)
 # ===========================================================================
+
 
 class TestRunLibreofficeGaps:
     """Full _run_libreoffice coverage."""
@@ -591,6 +595,7 @@ class TestRunLibreofficeGaps:
 # ===========================================================================
 # _get_libreoffice_cmd gap coverage (lines 282-296)
 # ===========================================================================
+
 
 class TestGetLibreofficeCmdGaps:
     """Full _get_libreoffice_cmd coverage."""
@@ -662,6 +667,7 @@ class TestGetLibreofficeCmdGaps:
 # ===========================================================================
 # Integration-style conversion flow tests
 # ===========================================================================
+
 
 class TestConversionFlow:
     """End-to-end conversion scenarios."""

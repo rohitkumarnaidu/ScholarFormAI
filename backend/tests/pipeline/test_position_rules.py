@@ -19,10 +19,13 @@ from app.pipeline.structure_detection.position_rules import (
 def _b(text: str = "", index: int = 1, bid: str | None = None):
 
     from app.models import Block, BlockType
+
     return Block(block_id=bid or f"b{index}", text=text, index=index, block_type=BlockType.BODY)
+
 
 def _empty(index: int):
     return _b("", index)
+
 
 class TestIsFirstNonEmptyBlock:
     def test_true_when_first(self):
@@ -45,6 +48,7 @@ class TestIsFirstNonEmptyBlock:
         blocks = [_empty(1), _empty(2)]
         assert is_first_non_empty_block(blocks[0], blocks) is False
 
+
 class TestIsIsolatedLine:
     def test_isolated_with_empty_neighbors(self):
         blocks = [_empty(1), _b("Alone", 2), _empty(3)]
@@ -65,6 +69,7 @@ class TestIsIsolatedLine:
     def test_block_not_in_list_returns_false(self):
         lone = _b("Orphan", 99, bid="orphan")
         assert is_isolated_line(lone, []) is False
+
 
 class TestCountEmptyBlocksBefore:
     def test_none(self):
@@ -87,6 +92,7 @@ class TestCountEmptyBlocksBefore:
         lone = _b("Orphan", 99, bid="orphan")
         assert count_empty_blocks_before(lone, []) == 0
 
+
 class TestCountEmptyBlocksAfter:
     def test_none(self):
         blocks = [_b("A", 1)]
@@ -107,6 +113,7 @@ class TestCountEmptyBlocksAfter:
     def test_multiple_empties_after(self):
         blocks = [_b("A", 1), _empty(2), _empty(3)]
         assert count_empty_blocks_after(blocks[0], blocks) == 2
+
 
 class TestGetBlockPositionRatio:
     def test_start(self):
@@ -129,6 +136,7 @@ class TestGetBlockPositionRatio:
         lone = _b("Orphan", 99, bid="orphan")
         blocks = [_b("A", 1)]
         assert get_block_position_ratio(lone, blocks) == 0.0
+
 
 class TestAnalyzePosition:
     def test_first_block(self):
@@ -174,6 +182,7 @@ class TestAnalyzePosition:
         assert "empty_after" in result
         assert "position_ratio" in result
         assert "position_hints" in result
+
 
 class TestBoostHeadingConfidenceByPosition:
     def test_first_block_boost(self):

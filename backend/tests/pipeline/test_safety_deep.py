@@ -13,6 +13,7 @@ pytestmark = [pytest.mark.pipeline]
 class TestCircuitBreaker:
     def test_circuit_breaker_open_exception(self):
         from app.pipeline.safety.circuit_breaker import CircuitBreakerOpenException
+
         exc = CircuitBreakerOpenException("test")
         assert isinstance(exc, Exception)
         assert "test" in str(exc)
@@ -20,24 +21,28 @@ class TestCircuitBreaker:
     def test_pybreaker_available(self):
         with patch("app.pipeline.safety.circuit_breaker._PYBREAKER", True):
             from app.pipeline.safety.circuit_breaker import circuit_breaker
+
             call_count = [0]
 
             @circuit_breaker(failure_threshold=3, recovery_timeout=60)
             def my_func():
                 call_count[0] += 1
                 return "ok"
+
             assert my_func() == "ok"
             assert call_count[0] == 1
 
     def test_pybreaker_failure_and_trip(self):
         with patch("app.pipeline.safety.circuit_breaker._PYBREAKER", True):
             from app.pipeline.safety.circuit_breaker import CircuitBreakerOpenException, circuit_breaker
+
             call_count = [0]
 
             @circuit_breaker(failure_threshold=2, recovery_timeout=60)
             def fail_func():
                 call_count[0] += 1
                 raise ValueError("fail")
+
             with pytest.raises(ValueError):
                 fail_func()
             with pytest.raises(CircuitBreakerOpenException):
@@ -54,6 +59,7 @@ class TestCircuitBreaker:
             @circuit_breaker(failure_threshold=1, recovery_timeout=60, fallback_function=fallback)
             def fail_func():
                 raise ValueError("boom")
+
             result = fail_func()
             assert result == "fallback_ok"
 
@@ -67,6 +73,7 @@ class TestCircuitBreaker:
             @circuit_breaker(failure_threshold=1, recovery_timeout=60, fallback_function=fallback)
             def fail_func():
                 raise ValueError("boom")
+
             result = fail_func()
             assert result == {}
 
@@ -108,6 +115,7 @@ class TestCircuitBreaker:
             @circuit_breaker(failure_threshold=3, recovery_timeout=60)
             def my_func():
                 return "legacy_ok"
+
             assert my_func() == "legacy_ok"
 
     def test_legacy_fallback_failure(self):
@@ -117,6 +125,7 @@ class TestCircuitBreaker:
             @circuit_breaker(failure_threshold=1, recovery_timeout=60)
             def fail_func():
                 raise ValueError("fail")
+
             with pytest.raises(ValueError):
                 fail_func()
             with pytest.raises(CircuitBreakerOpenException):
@@ -165,6 +174,7 @@ class TestCircuitBreaker:
             @circuit_breaker(failure_threshold=1, recovery_timeout=60, fallback_function=fallback)
             def fail_func():
                 raise ValueError("boom")
+
             result = fail_func()
             assert result == "fb"
 
@@ -178,6 +188,7 @@ class TestCircuitBreaker:
             @circuit_breaker(failure_threshold=1, recovery_timeout=60, fallback_function=fallback)
             def fail_func():
                 raise ValueError("boom")
+
             result = fail_func()
             assert result == {}
 
@@ -189,22 +200,26 @@ class TestRetryGuard:
         @retry_with_backoff(max_retries=2, base_delay=0.01)
         def my_func():
             return "ok"
+
         assert my_func() == "ok"
 
     def test_retry_sync_eventual_failure(self):
         from app.pipeline.safety.retry_guard import retry_with_backoff
+
         call_count = [0]
 
         @retry_with_backoff(max_retries=2, base_delay=0.01)
         def fail_func():
             call_count[0] += 1
             raise ValueError("fail")
+
         with pytest.raises(ValueError):
             fail_func()
         assert call_count[0] == 3
 
     def test_retry_sync_succeeds_on_retry(self):
         from app.pipeline.safety.retry_guard import retry_with_backoff
+
         call_count = [0]
 
         @retry_with_backoff(max_retries=3, base_delay=0.01)
@@ -213,6 +228,7 @@ class TestRetryGuard:
             if call_count[0] < 2:
                 raise ValueError("not yet")
             return "ok"
+
         assert flaky() == "ok"
         assert call_count[0] == 2
 
@@ -223,18 +239,21 @@ class TestRetryGuard:
         @retry_with_backoff(max_retries=2, base_delay=0.01)
         async def my_func():
             return "async_ok"
+
         result = await my_func()
         assert result == "async_ok"
 
     @pytest.mark.asyncio
     async def test_retry_async_failure(self):
         from app.pipeline.safety.retry_guard import retry_with_backoff
+
         call_count = [0]
 
         @retry_with_backoff(max_retries=2, base_delay=0.01)
         async def fail_func():
             call_count[0] += 1
             raise ValueError("fail")
+
         with pytest.raises(ValueError):
             await fail_func()
         assert call_count[0] == 3
@@ -244,6 +263,7 @@ class TestRetryGuard:
 
         def ok_func():
             return "ok"
+
         result = execute_with_retry(ok_func, max_retries=2, backoff_factor=0.01)
         assert result == "ok"
 
@@ -252,11 +272,13 @@ class TestRetryGuard:
 
         def fail_func():
             raise ValueError("fail")
+
         with pytest.raises(ValueError):
             execute_with_retry(fail_func, max_retries=1, backoff_factor=0.01)
 
     def test_retry_guard_alias(self):
         from app.pipeline.safety.retry_guard import retry_guard
+
         assert retry_guard is not None
 
     def test_base_delay_override(self):
@@ -265,12 +287,14 @@ class TestRetryGuard:
         @retry_with_backoff(max_retries=1, base_delay=0.05)
         def my_func():
             return "ok"
+
         assert my_func() == "ok"
 
 
 class TestSafeExecution:
     def test_safe_execution_context_no_error(self):
         from app.pipeline.safety.safe_execution import safe_execution
+
         result = []
         with safe_execution("test_op"):
             result.append(1)
@@ -278,6 +302,7 @@ class TestSafeExecution:
 
     def test_safe_execution_context_with_error(self):
         from app.pipeline.safety.safe_execution import safe_execution
+
         result = []
         with safe_execution("crash_op"):
             result.append(1)
@@ -287,6 +312,7 @@ class TestSafeExecution:
 
     def test_safe_execution_custom_log_level(self):
         from app.pipeline.safety.safe_execution import safe_execution
+
         with safe_execution("custom", log_level=40):
             raise ValueError("test")
 
@@ -296,6 +322,7 @@ class TestSafeExecution:
         @safe_function(fallback_value="fallback", error_message="Failed")
         def ok_func():
             return "ok"
+
         assert ok_func() == "ok"
 
     def test_safe_function_with_error(self):
@@ -304,6 +331,7 @@ class TestSafeExecution:
         @safe_function(fallback_value="fallback", error_message="Failed")
         def fail_func():
             raise ValueError("boom")
+
         assert fail_func() == "fallback"
 
     def test_safe_function_no_error_message(self):
@@ -312,6 +340,7 @@ class TestSafeExecution:
         @safe_function(fallback_value=0)
         def my_func():
             return 42
+
         assert my_func() == 42
 
     def test_safe_async_function_success(self):
@@ -320,7 +349,9 @@ class TestSafeExecution:
         @safe_async_function(fallback_value="fallback", error_message="Failed")
         async def ok_func():
             return "async_ok"
+
         import asyncio
+
         result = asyncio.run(ok_func())
         assert result == "async_ok"
 
@@ -330,7 +361,9 @@ class TestSafeExecution:
         @safe_async_function(fallback_value="fallback", error_message="Failed")
         async def fail_func():
             raise ValueError("boom")
+
         import asyncio
+
         result = asyncio.run(fail_func())
         assert result == "fallback"
 
@@ -348,6 +381,7 @@ class TestValidatorGuard:
         @validate_output(schema=TestSchema)
         def my_func():
             return {"name": "test", "value": 42}
+
         result = my_func()
         assert result["name"] == "test"
         assert result["value"] == 42
@@ -364,6 +398,7 @@ class TestValidatorGuard:
         @validate_output(schema=TestSchema, error_return_value="error")
         def my_func():
             return {"name": "test", "value": "not_a_number"}
+
         result = my_func()
         assert result == "error" or result == {}
 
@@ -378,6 +413,7 @@ class TestValidatorGuard:
         @validate_output(schema=TestSchema)
         def my_func():
             return TestSchema(name="hello")
+
         result = my_func()
         assert result["name"] == "hello"
 
@@ -387,6 +423,7 @@ class TestValidatorGuard:
         @validate_output(schema={"name": str, "value": int})
         def my_func():
             return {"name": "test", "value": 42}
+
         result = my_func()
         assert result["name"] == "test"
 
@@ -396,6 +433,7 @@ class TestValidatorGuard:
         @validate_output(schema={"name": str, "value": int}, error_return_value={})
         def my_func():
             return {"name": "test"}
+
         result = my_func()
         assert result == {}
 
@@ -405,6 +443,7 @@ class TestValidatorGuard:
         @validate_output(schema=None, error_return_value="error")
         def my_func():
             raise RuntimeError("fail")
+
         result = my_func()
         assert result == "error" or result == {}
 
@@ -414,6 +453,7 @@ class TestValidatorGuard:
         @validate_output(schema=None)
         def my_func():
             return "raw"
+
         result = my_func()
         assert result == "raw"
 
@@ -421,20 +461,24 @@ class TestValidatorGuard:
 class TestLLMValidator:
     def test_guard_llm_output_no_guardrails(self):
         from app.pipeline.safety.llm_validator import guard_llm_output
+
         with patch("app.pipeline.safety.llm_validator.HAS_GUARDRAILS", False):
 
             @guard_llm_output(schema=None)
             def my_func():
                 return "ok"
+
             assert my_func() == "ok"
 
     def test_guard_llm_output_with_guardrails_not_basemodel(self):
         from app.pipeline.safety.llm_validator import guard_llm_output
+
         with patch("app.pipeline.safety.llm_validator.HAS_GUARDRAILS", True):
 
             @guard_llm_output(schema=str)
             def my_func():
                 return "ok"
+
             assert my_func() == "ok"
 
     def test_guard_llm_output_returns_pydantic(self):
@@ -498,6 +542,7 @@ class TestLLMValidator:
             @guard_llm_output(schema=TestModel)
             def my_func():
                 return TestModel(name="native")
+
             result = my_func()
             assert result["name"] == "native"
 
@@ -514,6 +559,7 @@ class TestLLMValidator:
             @guard_llm_output(schema=TestModel)
             def my_func():
                 return 42
+
             result = my_func()
             assert result == 42
 
@@ -546,6 +592,7 @@ class TestLLMValidator:
         import importlib
 
         import app.pipeline.safety.llm_validator
+
         with patch.dict("sys.modules", {"app.pipeline.safety.validator_guard": None}):
             importlib.reload(app.pipeline.safety.llm_validator)
             from app.pipeline.safety.llm_validator import guard_llm_output
@@ -553,4 +600,5 @@ class TestLLMValidator:
             @guard_llm_output(schema=None)
             def my_func():
                 return "fallback"
+
             assert my_func() == "fallback"

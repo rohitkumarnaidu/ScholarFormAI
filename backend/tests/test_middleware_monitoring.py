@@ -7,6 +7,7 @@ class TestMonitoringMiddleware:
     @pytest.mark.asyncio
     async def test_sets_request_id(self):
         from app.middleware.monitoring import MonitoringMiddleware
+
         mw = MonitoringMiddleware(MagicMock())
         request = MagicMock()
         request.headers = {}
@@ -25,6 +26,7 @@ class TestMonitoringMiddleware:
     @pytest.mark.asyncio
     async def test_uses_x_request_id_from_header(self):
         from app.middleware.monitoring import MonitoringMiddleware
+
         mw = MonitoringMiddleware(MagicMock())
         request = MagicMock()
         request.headers = {"x-request-id": "from-header"}
@@ -41,6 +43,7 @@ class TestMonitoringMiddleware:
     @pytest.mark.asyncio
     async def test_exception_logged(self):
         from app.middleware.monitoring import MonitoringMiddleware
+
         mw = MonitoringMiddleware(MagicMock())
         request = MagicMock()
         request.headers = {}

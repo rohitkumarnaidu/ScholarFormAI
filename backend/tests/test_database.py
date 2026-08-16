@@ -17,8 +17,8 @@ class TestDatabaseLayer:
     @pytest.mark.database
     def test_supabase_client_creation(self):
         """Test Supabase client can be created."""
-        with patch('app.db.supabase_client.create_client') as mock_create_client:
-            with patch('app.db.supabase_client.settings') as mock_settings:
+        with patch("app.db.supabase_client.create_client") as mock_create_client:
+            with patch("app.db.supabase_client.settings") as mock_settings:
                 mock_settings.SUPABASE_URL = "http://localhost:8000"
                 mock_settings.SUPABASE_SERVICE_ROLE_KEY = "test_key"
 
@@ -31,7 +31,7 @@ class TestDatabaseLayer:
     @pytest.mark.database
     def test_graceful_degradation_on_connection_failure(self):
         """Test graceful degradation when database unavailable."""
-        with patch('app.db.supabase_client.create_client') as mock_create_client:
+        with patch("app.db.supabase_client.create_client") as mock_create_client:
             mock_create_client.side_effect = Exception("Connection failed")
 
             from app.db.supabase_client import get_supabase_client
@@ -42,7 +42,7 @@ class TestDatabaseLayer:
     @pytest.mark.database
     def test_missing_credentials(self):
         """Test client creation fails gracefully with missing credentials."""
-        with patch('app.db.supabase_client.settings') as mock_settings:
+        with patch("app.db.supabase_client.settings") as mock_settings:
             mock_settings.SUPABASE_URL = ""
             mock_settings.SUPABASE_SERVICE_ROLE_KEY = ""
 
@@ -54,8 +54,8 @@ class TestDatabaseLayer:
     @pytest.mark.database
     def test_supabase_client_returns_singleton(self):
         """Test that get_supabase_client returns the same instance when not refreshed."""
-        with patch('app.db.supabase_client.create_client') as mock_create:
-            with patch('app.db.supabase_client.settings') as mock_settings:
+        with patch("app.db.supabase_client.create_client") as mock_create:
+            with patch("app.db.supabase_client.settings") as mock_settings:
                 mock_settings.SUPABASE_URL = "http://localhost:8000"
                 mock_settings.SUPABASE_SERVICE_ROLE_KEY = "test_key"
                 mock_create.return_value = MagicMock()
@@ -72,7 +72,7 @@ class TestDatabaseLayer:
         mock_client = MagicMock()
         mock_client.table.return_value.insert.return_value.execute.return_value = MagicMock(data=[{"id": "1"}])
 
-        with patch('app.db.supabase_client.get_supabase_client', return_value=mock_client):
+        with patch("app.db.supabase_client.get_supabase_client", return_value=mock_client):
             from app.db.supabase_client import get_supabase_client
 
             client = get_supabase_client()
@@ -86,7 +86,7 @@ class TestDatabaseLayer:
         mock_data = [{"id": "1", "title": "Doc 1"}, {"id": "2", "title": "Doc 2"}]
         mock_client.table.return_value.select.return_value.execute.return_value = MagicMock(data=mock_data)
 
-        with patch('app.db.supabase_client.get_supabase_client', return_value=mock_client):
+        with patch("app.db.supabase_client.get_supabase_client", return_value=mock_client):
             from app.db.supabase_client import get_supabase_client
 
             client = get_supabase_client()
@@ -99,7 +99,7 @@ class TestDatabaseLayer:
         mock_client = MagicMock()
         mock_client.table.return_value.update.return_value.eq.return_value.execute.return_value = MagicMock(data=[])
 
-        with patch('app.db.supabase_client.get_supabase_client', return_value=mock_client):
+        with patch("app.db.supabase_client.get_supabase_client", return_value=mock_client):
             from app.db.supabase_client import get_supabase_client
 
             client = get_supabase_client()
@@ -112,7 +112,7 @@ class TestDatabaseLayer:
         mock_client = MagicMock()
         mock_client.table.return_value.delete.return_value.eq.return_value.execute.return_value = MagicMock(data=[])
 
-        with patch('app.db.supabase_client.get_supabase_client', return_value=mock_client):
+        with patch("app.db.supabase_client.get_supabase_client", return_value=mock_client):
             from app.db.supabase_client import get_supabase_client
 
             client = get_supabase_client()
@@ -125,7 +125,7 @@ class TestDatabaseLayer:
         mock_client = MagicMock()
         mock_client.table.return_value.select.return_value.execute.side_effect = Exception("DB error")
 
-        with patch('app.db.supabase_client.get_supabase_client', return_value=mock_client):
+        with patch("app.db.supabase_client.get_supabase_client", return_value=mock_client):
             from app.db.supabase_client import get_supabase_client
 
             client = get_supabase_client()
@@ -135,7 +135,7 @@ class TestDatabaseLayer:
     @pytest.mark.database
     def test_supabase_client_none_client_handling(self):
         """Test operations when client is None."""
-        with patch('app.db.supabase_client.get_supabase_client', return_value=None):
+        with patch("app.db.supabase_client.get_supabase_client", return_value=None):
             from app.db.supabase_client import get_supabase_client
 
             client = get_supabase_client()

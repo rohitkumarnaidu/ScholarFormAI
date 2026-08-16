@@ -6,22 +6,26 @@ import pytest
 class TestReviewManagerInit:
     def test_valid_thresholds(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         rm = ReviewManager(review_threshold=0.70, critical_threshold=0.45)
         assert rm.review_threshold == 0.70
         assert rm.critical_threshold == 0.45
 
     def test_critical_lt_review_required(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         with pytest.raises(ValueError):
             ReviewManager(review_threshold=0.45, critical_threshold=0.70)
 
     def test_thresholds_out_of_range(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         with pytest.raises(ValueError):
             ReviewManager(review_threshold=1.5, critical_threshold=0.5)
 
     def test_equal_thresholds_raises(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         with pytest.raises(ValueError):
             ReviewManager(review_threshold=0.7, critical_threshold=0.7)
 
@@ -29,6 +33,7 @@ class TestReviewManagerInit:
 class TestReviewManagerEvaluate:
     def test_all_high_confidence(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         rm = ReviewManager()
         doc = MagicMock()
         block = MagicMock()
@@ -45,6 +50,7 @@ class TestReviewManagerEvaluate:
 
     def test_critical_confidence(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         rm = ReviewManager(critical_threshold=0.45)
         doc = MagicMock()
         block = MagicMock()
@@ -61,6 +67,7 @@ class TestReviewManagerEvaluate:
 
     def test_review_confidence(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         rm = ReviewManager(review_threshold=0.70, critical_threshold=0.45)
         doc = MagicMock()
         block = MagicMock()
@@ -77,6 +84,7 @@ class TestReviewManagerEvaluate:
 
     def test_confidence_from_classification_confidence_fallback(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         rm = ReviewManager(critical_threshold=0.45)
         doc = MagicMock()
         block = MagicMock()
@@ -93,6 +101,7 @@ class TestReviewManagerEvaluate:
 
     def test_nlp_confidence_fallback(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         rm = ReviewManager(critical_threshold=0.45)
         doc = MagicMock()
         block = MagicMock()
@@ -109,6 +118,7 @@ class TestReviewManagerEvaluate:
 
     def test_semantic_advice_triggers_review(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         rm = ReviewManager(review_threshold=0.70, critical_threshold=0.45)
         doc = MagicMock()
         doc.blocks = []
@@ -120,6 +130,7 @@ class TestReviewManagerEvaluate:
 
     def test_no_confidence_defaults_to_ok(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         rm = ReviewManager()
         doc = MagicMock()
         block = MagicMock()
@@ -136,6 +147,7 @@ class TestReviewManagerEvaluate:
 
     def test_flags_limited_to_five(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         rm = ReviewManager(review_threshold=0.95, critical_threshold=0.90)
         doc = MagicMock()
         blocks = []
@@ -155,6 +167,7 @@ class TestReviewManagerEvaluate:
 
     def test_invalid_confidence_clamped(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         rm = ReviewManager()
         doc = MagicMock()
         block = MagicMock()

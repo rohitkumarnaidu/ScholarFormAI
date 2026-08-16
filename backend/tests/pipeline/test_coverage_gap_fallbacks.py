@@ -14,109 +14,133 @@ pytestmark = [pytest.mark.pipeline]
 # APA 7 Fallback Formatter (apafallback.py)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestAPA7Formatter:
     """Coverage gap: apafallback.py was 0%"""
 
     def test_init_default(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f.hanging_indent is True
 
     def test_init_no_hanging(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
         assert f.hanging_indent is False
 
     def test_format_intext_citation_parenthetical(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f.format_intext_citation(["Smith, J."], year=2020)
         assert result == "(Smith, 2020)"
 
     def test_format_intext_citation_narrative(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f.format_intext_citation(["Smith, J."], year=2020, narrative=True)
         assert result == "Smith (2020)"
 
     def test_format_intext_citation_with_page(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f.format_intext_citation(["Smith, J."], year=2020, page="42")
         assert result == "(Smith, 2020, p. 42)"
 
     def test_format_intext_citation_narrative_with_page(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f.format_intext_citation(["Smith, J."], year=2020, page="42", narrative=True)
         assert result == "Smith (2020, p. 42)"
 
     def test_format_intext_citation_no_year(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f.format_intext_citation(["Smith, J."])
         assert result == "(Smith, n.d.)"
 
     def test_format_intext_authors_empty(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._format_intext_authors([]) == "Unknown"
 
     def test_format_intext_authors_one(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._format_intext_authors(["Smith, J."]) == "Smith"
 
     def test_format_intext_authors_two(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f._format_intext_authors(["Smith, J.", "Doe, A."])
         assert result == "Smith and Doe"
 
     def test_format_intext_authors_three_plus(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f._format_intext_authors(["Smith, J.", "Doe, A.", "Lee, K."])
         assert result == "Smith et al."
 
     def test_extract_surname_empty(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._extract_surname("") == "Unknown"
 
     def test_extract_surname_comma_format(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._extract_surname("Smith, J.") == "Smith"
 
     def test_extract_surname_prefix(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._extract_surname("van der Waals, J.") == "van der Waals"
 
     def test_extract_surname_single(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._extract_surname("Smith") == "Smith"
 
     def test_extract_surname_reversed(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._extract_surname("John Smith") == "Smith"
 
     def test_extract_surname_last_as_given_with_prefix(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f._extract_surname("Ludwig van Beethoven")
         assert result == "van Beethoven"
 
     def test_format_reference_entry_journal(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
         result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="A Study",
-            journal="J. Science", volume="10", issue="2", pages="100-110",
-            doi="10.1234/abc"
+            ["Smith, J."],
+            year=2020,
+            title="A Study",
+            journal="J. Science",
+            volume="10",
+            issue="2",
+            pages="100-110",
+            doi="10.1234/abc",
         )
         assert "Smith, J." in result
         assert "(2020)." in result
@@ -126,19 +150,24 @@ class TestAPA7Formatter:
 
     def test_format_reference_entry_journal_no_doi(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
         result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="A Study",
-            journal="J. Science", volume="10", issue="2", pages="100-110"
+            ["Smith, J."], year=2020, title="A Study", journal="J. Science", volume="10", issue="2", pages="100-110"
         )
         assert "doi.org" not in result
 
     def test_format_reference_entry_book(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
         result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="My Book",
-            publisher="Academic Press", reference_type="book", doi="10.1234/book"
+            ["Smith, J."],
+            year=2020,
+            title="My Book",
+            publisher="Academic Press",
+            reference_type="book",
+            doi="10.1234/book",
         )
         assert "My Book" in result
         assert "Academic Press" in result
@@ -146,20 +175,25 @@ class TestAPA7Formatter:
 
     def test_format_reference_entry_book_with_edition(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
         result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="My Book",
-            publisher="Academic Press", reference_type="book", edition="3rd"
+            ["Smith, J."], year=2020, title="My Book", publisher="Academic Press", reference_type="book", edition="3rd"
         )
         assert "3rd ed." in result
 
     def test_format_reference_entry_book_chapter(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
         result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="My Chapter",
-            book_title="Big Book", pages="50-70", publisher="Press",
-            reference_type="book_chapter"
+            ["Smith, J."],
+            year=2020,
+            title="My Chapter",
+            book_title="Big Book",
+            pages="50-70",
+            publisher="Press",
+            reference_type="book_chapter",
         )
         assert "My Chapter" in result
         assert "Big Book" in result
@@ -167,30 +201,34 @@ class TestAPA7Formatter:
 
     def test_format_reference_entry_book_chapter_no_pages(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
         result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="My Chapter",
-            book_title="Big Book", reference_type="book_chapter"
+            ["Smith, J."], year=2020, title="My Chapter", book_title="Big Book", reference_type="book_chapter"
         )
         assert "Big Book" in result
 
     def test_format_reference_entry_conference_paper(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
         result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="Paper",
-            conference="ICML 2020", reference_type="conference_paper",
-            doi="10.1234/conf"
+            ["Smith, J."],
+            year=2020,
+            title="Paper",
+            conference="ICML 2020",
+            reference_type="conference_paper",
+            doi="10.1234/conf",
         )
         assert "Paper" in result
         assert "ICML 2020" in result
 
     def test_format_reference_entry_thesis(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
         result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="My Thesis",
-            publisher="MIT", reference_type="thesis"
+            ["Smith, J."], year=2020, title="My Thesis", publisher="MIT", reference_type="thesis"
         )
         assert "My Thesis" in result
         assert "Doctoral dissertation" in result
@@ -198,21 +236,23 @@ class TestAPA7Formatter:
 
     def test_format_reference_entry_thesis_no_publisher(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
-        result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="My Thesis",
-            reference_type="thesis"
-        )
+        result = f.format_reference_entry(["Smith, J."], year=2020, title="My Thesis", reference_type="thesis")
         assert "Doctoral dissertation" in result
         assert "Unknown Institution" not in result
 
     def test_format_reference_entry_web_page(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
         result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="My Page",
-            publisher="Website Co.", url="https://example.com",
-            reference_type="web_page"
+            ["Smith, J."],
+            year=2020,
+            title="My Page",
+            publisher="Website Co.",
+            url="https://example.com",
+            reference_type="web_page",
         )
         assert "My Page" in result
         assert "Website Co." in result
@@ -220,56 +260,57 @@ class TestAPA7Formatter:
 
     def test_format_reference_entry_web_page_no_url(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
-        result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="My Page",
-            reference_type="web_page"
-        )
+        result = f.format_reference_entry(["Smith, J."], year=2020, title="My Page", reference_type="web_page")
         assert "Website" in result
 
     def test_format_reference_entry_default(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
         result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="Other",
-            journal="Some Journal", reference_type="other"
+            ["Smith, J."], year=2020, title="Other", journal="Some Journal", reference_type="other"
         )
         assert "Some Journal" in result
 
     def test_format_reference_entry_default_no_venue(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
-        result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="Other",
-            reference_type="other"
-        )
+        result = f.format_reference_entry(["Smith, J."], year=2020, title="Other", reference_type="other")
         assert "Other" in result
         assert "(2020)." in result
 
     def test_format_authors_empty(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._format_authors([]) == "Unknown"
 
     def test_format_authors_one(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._format_authors(["Smith, J."]) == "Smith, J."
 
     def test_format_authors_two(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f._format_authors(["Smith, J.", "Doe, A."])
         assert result == "Smith, J., & Doe, A."
 
     def test_format_authors_three(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f._format_authors(["Smith, J.", "Doe, A.", "Lee, K."])
         assert "&" in result
 
     def test_format_authors_twenty_one_plus(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         authors = [f"Author{i}, A." for i in range(21)]
         result = f._format_authors(authors)
@@ -278,52 +319,62 @@ class TestAPA7Formatter:
 
     def test_format_single_author_comma_given(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._format_single_author("Smith, John") == "Smith, J."
 
     def test_format_single_author_comma_initial(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._format_single_author("Smith, J.") == "Smith, J."
 
     def test_format_single_author_single_word(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._format_single_author("Unknown") == "Unknown"
 
     def test_format_single_author_reversed(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._format_single_author("John Smith") == "Smith, J."
 
     def test_format_single_author_empty(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._format_single_author("") == "Unknown"
 
     def test_format_single_author_comma_no_given(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._format_single_author("Smith,") == "Smith"
 
     def test_format_title_empty(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._format_title("") == ""
 
     def test_format_title_adds_period(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f._format_title("My Title")
         assert result == "My Title."
 
     def test_format_title_preserves_period(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._format_title("My Title.") == "My Title."
 
     def test_format_journal_article_full(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f._format_journal_article("J. Sci.", "10", "2", "100-110")
         assert "*J. Sci.*" in result
@@ -333,47 +384,55 @@ class TestAPA7Formatter:
 
     def test_format_journal_article_no_pages(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f._format_journal_article("J. Sci.", "10", "2", None)
         assert "100-110" not in result
 
     def test_format_journal_article_no_issue(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f._format_journal_article("J. Sci.", "10", None, "100-110")
         assert "(2)" not in result
 
     def test_format_journal_article_no_journal(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f._format_journal_article(None, "10", "2", "100-110")
         assert result == "*10*(2) 100-110."
 
     def test_format_journal_article_empty(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._format_journal_article(None, None, None, None) == ""
 
     def test_format_doi_empty(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         assert f._format_doi(None) == ""
         assert f._format_doi("") == ""
 
     def test_format_doi_https(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f._format_doi("https://doi.org/10.1234/abc")
         assert result == "https://doi.org/10.1234/abc"
 
     def test_format_doi_plain(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         result = f._format_doi("10.1234/abc")
         assert result == "https://doi.org/10.1234/abc"
 
     def test_sort_references(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         refs = [
             {"authors": ["Zeta, B."], "title": "Z"},
@@ -384,6 +443,7 @@ class TestAPA7Formatter:
 
     def test_sort_references_no_authors(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter()
         refs = [{"title": "Z"}, {"title": "A"}]
         sorted_refs = f.sort_references(refs)
@@ -394,51 +454,65 @@ class TestAPA7Formatter:
 # Vancouver Fallback Formatter (vancouver_fallback.py)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestVancouverFormatter:
     """Coverage gap: vancouver_fallback.py was 0%"""
 
     def test_init(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         assert f._ref_counter == 0
 
     def test_format_intext_citation_empty(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         assert f.format_intext_citation([]) == ""
 
     def test_format_intext_citation_single(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         assert f.format_intext_citation([1]) == "[1]"
 
     def test_format_intext_citation_multiple(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         assert f.format_intext_citation([1, 3, 5]) == "[1,3,5]"
 
     def test_format_intext_citation_consecutive(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         assert f.format_intext_citation([1, 2, 3]) == "[1-3]"
 
     def test_format_intext_citation_mixed(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         assert f.format_intext_citation([1, 2, 5, 6, 7]) == "[1-2,5-7]"
 
     def test_format_intext_citation_unsorted(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         assert f.format_intext_citation([3, 1, 2]) == "[1-3]"
 
     def test_format_reference_entry_journal_full(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         result = f.format_reference_entry(
-            ["Smith J", "Doe A"], title="A Study",
-            journal="J Sci", year=2020, volume="10", issue="2",
-            pages="100-110", doi="10.1234/abc"
+            ["Smith J", "Doe A"],
+            title="A Study",
+            journal="J Sci",
+            year=2020,
+            volume="10",
+            issue="2",
+            pages="100-110",
+            doi="10.1234/abc",
         )
         assert "Smith J, Doe A" in result
         assert "A Study." in result
@@ -450,19 +524,17 @@ class TestVancouverFormatter:
 
     def test_format_reference_entry_journal_minimal(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
-        result = f.format_reference_entry(
-            ["Smith J"], title="A Study"
-        )
+        result = f.format_reference_entry(["Smith J"], title="A Study")
         assert "A Study." in result
 
     def test_format_reference_entry_book(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         result = f.format_reference_entry(
-            ["Smith J"], title="My Book",
-            publisher="Academic Press", year=2020,
-            reference_type="book"
+            ["Smith J"], title="My Book", publisher="Academic Press", year=2020, reference_type="book"
         )
         assert "My Book." in result
         assert "Academic Press." in result
@@ -470,22 +542,25 @@ class TestVancouverFormatter:
 
     def test_format_reference_entry_book_with_edition(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         result = f.format_reference_entry(
-            ["Smith J"], title="My Book",
-            publisher="Academic Press", year=2020,
-            edition="3rd", reference_type="book"
+            ["Smith J"], title="My Book", publisher="Academic Press", year=2020, edition="3rd", reference_type="book"
         )
         assert "3rd ed." in result
 
     def test_format_reference_entry_book_chapter(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         result = f.format_reference_entry(
-            ["Smith J"], title="My Chapter",
-            book_title="Big Book", year=2020,
-            publisher="Press", pages="50-70",
-            reference_type="book_chapter"
+            ["Smith J"],
+            title="My Chapter",
+            book_title="Big Book",
+            year=2020,
+            publisher="Press",
+            pages="50-70",
+            reference_type="book_chapter",
         )
         assert "My Chapter." in result
         assert "Big Book" in result
@@ -494,20 +569,17 @@ class TestVancouverFormatter:
 
     def test_format_reference_entry_book_chapter_no_book_title(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
-        result = f.format_reference_entry(
-            ["Smith J"], title="My Chapter",
-            pages="50-70", reference_type="book_chapter"
-        )
+        result = f.format_reference_entry(["Smith J"], title="My Chapter", pages="50-70", reference_type="book_chapter")
         assert "p. 50-70" in result
 
     def test_format_reference_entry_thesis(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         result = f.format_reference_entry(
-            ["Smith J"], title="My Thesis",
-            year=2020, publisher="MIT",
-            reference_type="thesis"
+            ["Smith J"], title="My Thesis", year=2020, publisher="MIT", reference_type="thesis"
         )
         assert "My Thesis." in result
         assert "[Dissertation]" in result
@@ -515,59 +587,53 @@ class TestVancouverFormatter:
 
     def test_format_reference_entry_thesis_no_publisher(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
-        result = f.format_reference_entry(
-            ["Smith J"], title="My Thesis",
-            year=2020, reference_type="thesis"
-        )
+        result = f.format_reference_entry(["Smith J"], title="My Thesis", year=2020, reference_type="thesis")
         assert "Unknown Institution" in result
 
     def test_format_reference_entry_conference_paper(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         result = f.format_reference_entry(
-            ["Smith J"], title="My Paper",
-            conference="ICML 2020", year=2020,
-            reference_type="conference_paper"
+            ["Smith J"], title="My Paper", conference="ICML 2020", year=2020, reference_type="conference_paper"
         )
         assert "My Paper." in result
         assert "ICML 2020" in result
 
     def test_format_reference_entry_conference_paper_no_conf(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
-        result = f.format_reference_entry(
-            ["Smith J"], title="My Paper",
-            year=2020, reference_type="conference_paper"
-        )
+        result = f.format_reference_entry(["Smith J"], title="My Paper", year=2020, reference_type="conference_paper")
         assert "My Paper." in result
 
     def test_format_reference_entry_default_type(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
-        result = f.format_reference_entry(
-            ["Smith J"], title="Other", year=2020,
-            reference_type="technical_report"
-        )
+        result = f.format_reference_entry(["Smith J"], title="Other", year=2020, reference_type="technical_report")
         assert "Other." in result
 
     def test_format_reference_entry_doi_http(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         result = f.format_reference_entry(
-            ["Smith J"], title="A Study",
-            doi="https://doi.org/10.1234/abc",
-            reference_type="journal_article"
+            ["Smith J"], title="A Study", doi="https://doi.org/10.1234/abc", reference_type="journal_article"
         )
         assert "doi: abc." in result
 
     def test_format_authors_empty(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         assert f._format_authors([]) == "Unknown"
 
     def test_format_authors_up_to_six(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         authors = ["A", "B", "C", "D", "E", "F"]
         result = f._format_authors(authors)
@@ -576,6 +642,7 @@ class TestVancouverFormatter:
 
     def test_format_authors_seven_plus(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         authors = ["A", "B", "C", "D", "E", "F", "G", "H"]
         result = f._format_authors(authors)
@@ -583,28 +650,33 @@ class TestVancouverFormatter:
 
     def test_format_doi_empty(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         assert f._format_doi(None) == ""
         assert f._format_doi("") == ""
 
     def test_format_doi_plain(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         assert f._format_doi("10.1234/abc") == "doi: 10.1234/abc."
 
     def test_format_doi_http(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         assert f._format_doi("https://doi.org/10.1234/abc") == "doi: abc."
 
     def test_format_doi_http_no_slash(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         result = f._format_doi("https://example.com/")
         assert "doi:" in result
 
     def test_sort_references_with_index(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         refs = [{"index": 3}, {"index": 1}, {"index": 2}]
         sorted_refs = f.sort_references(refs)
@@ -612,6 +684,7 @@ class TestVancouverFormatter:
 
     def test_sort_references_without_index(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         refs = [{"title": "B"}, {"title": "A"}]
         sorted_refs = f.sort_references(refs)
@@ -619,6 +692,7 @@ class TestVancouverFormatter:
 
     def test_sort_references_empty(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         assert f.sort_references([]) == []
 
@@ -627,11 +701,13 @@ class TestVancouverFormatter:
 # Caption Matcher (caption_matcher.py)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestTableCaptionMatcher:
     """Coverage gap: caption_matcher.py was 7.95%"""
 
     def test_init(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         m = TableCaptionMatcher()
         assert m.search_window_above == 2
         assert m.search_window_below == 1
@@ -639,6 +715,7 @@ class TestTableCaptionMatcher:
 
     def test_init_custom_window(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         m = TableCaptionMatcher(search_window_above=3, search_window_below=2)
         assert m.search_window_above == 3
         assert m.search_window_below == 2
@@ -646,6 +723,7 @@ class TestTableCaptionMatcher:
     def test_process_no_tables(self):
         from app.models import PipelineDocument
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         doc = MagicMock(spec=PipelineDocument)
         doc.tables = []
         doc.blocks = [MagicMock()]
@@ -656,6 +734,7 @@ class TestTableCaptionMatcher:
     def test_process_no_blocks(self):
         from app.models import PipelineDocument
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         doc = MagicMock(spec=PipelineDocument)
         doc.tables = [MagicMock()]
         doc.blocks = []
@@ -669,12 +748,24 @@ class TestTableCaptionMatcher:
 
         doc = MagicMock(spec=PipelineDocument)
         blocks = [
-            MagicMock(spec=Block, block_id="b1", block_type=BlockType.BODY,
-                      text="Table 1: Results", index=0, metadata={},
-                      is_heading=lambda: False),
-            MagicMock(spec=Block, block_id="b2", block_type=BlockType.BODY,
-                      text="data row", index=1, metadata={},
-                      is_heading=lambda: False),
+            MagicMock(
+                spec=Block,
+                block_id="b1",
+                block_type=BlockType.BODY,
+                text="Table 1: Results",
+                index=0,
+                metadata={},
+                is_heading=lambda: False,
+            ),
+            MagicMock(
+                spec=Block,
+                block_id="b2",
+                block_type=BlockType.BODY,
+                text="data row",
+                index=1,
+                metadata={},
+                is_heading=lambda: False,
+            ),
         ]
 
         table = MagicMock(spec=Table)
@@ -699,12 +790,24 @@ class TestTableCaptionMatcher:
 
         doc = MagicMock(spec=PipelineDocument)
         blocks = [
-            MagicMock(spec=Block, block_id="b1", block_type=BlockType.BODY,
-                      text="data row", index=0, metadata={},
-                      is_heading=lambda: False),
-            MagicMock(spec=Block, block_id="b2", block_type=BlockType.BODY,
-                      text="Table 1: Results", index=1, metadata={},
-                      is_heading=lambda: False),
+            MagicMock(
+                spec=Block,
+                block_id="b1",
+                block_type=BlockType.BODY,
+                text="data row",
+                index=0,
+                metadata={},
+                is_heading=lambda: False,
+            ),
+            MagicMock(
+                spec=Block,
+                block_id="b2",
+                block_type=BlockType.BODY,
+                text="Table 1: Results",
+                index=1,
+                metadata={},
+                is_heading=lambda: False,
+            ),
         ]
 
         table = MagicMock(spec=Table)
@@ -729,12 +832,24 @@ class TestTableCaptionMatcher:
 
         doc = MagicMock(spec=PipelineDocument)
         blocks = [
-            MagicMock(spec=Block, block_id="b1", block_type=BlockType.HEADING_1,
-                      text="Table 1: Results", index=0, metadata={},
-                      is_heading=lambda: True),
-            MagicMock(spec=Block, block_id="b2", block_type=BlockType.BODY,
-                      text="data", index=1, metadata={},
-                      is_heading=lambda: False),
+            MagicMock(
+                spec=Block,
+                block_id="b1",
+                block_type=BlockType.HEADING_1,
+                text="Table 1: Results",
+                index=0,
+                metadata={},
+                is_heading=lambda: True,
+            ),
+            MagicMock(
+                spec=Block,
+                block_id="b2",
+                block_type=BlockType.BODY,
+                text="data",
+                index=1,
+                metadata={},
+                is_heading=lambda: False,
+            ),
         ]
 
         table = MagicMock(spec=Table)
@@ -756,9 +871,15 @@ class TestTableCaptionMatcher:
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
 
         doc = MagicMock(spec=PipelineDocument)
-        block = MagicMock(spec=Block, block_id="b1", block_type=BlockType.BODY,
-                          text="some text", index=0, metadata={},
-                          is_heading=lambda: False)
+        block = MagicMock(
+            spec=Block,
+            block_id="b1",
+            block_type=BlockType.BODY,
+            text="some text",
+            index=0,
+            metadata={},
+            is_heading=lambda: False,
+        )
 
         table = MagicMock(spec=Table)
         table.block_index = 0
@@ -779,9 +900,15 @@ class TestTableCaptionMatcher:
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
 
         doc = MagicMock(spec=PipelineDocument)
-        block = MagicMock(spec=Block, block_id="b1", block_type=BlockType.BODY,
-                          text="some text", index=0, metadata={},
-                          is_heading=lambda: False)
+        block = MagicMock(
+            spec=Block,
+            block_id="b1",
+            block_type=BlockType.BODY,
+            text="some text",
+            index=0,
+            metadata={},
+            is_heading=lambda: False,
+        )
 
         table = MagicMock(spec=Table)
         table.block_index = 0
@@ -799,6 +926,7 @@ class TestTableCaptionMatcher:
 
     def test_caption_regex_matches(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         m = TableCaptionMatcher()
         assert m.caption_regex.match("Table 1: Results")
         assert m.caption_regex.match("TABLE 2. Data")
@@ -812,29 +940,34 @@ class TestTableCaptionMatcher:
     def test_find_references_start_index_by_heading(self):
         from app.models import Block, BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
-        block = MagicMock(spec=Block, block_type=BlockType.REFERENCES_HEADING,
-                          text="References", index=10, is_heading=lambda: True)
+
+        block = MagicMock(
+            spec=Block, block_type=BlockType.REFERENCES_HEADING, text="References", index=10, is_heading=lambda: True
+        )
         m = TableCaptionMatcher()
         assert m._find_references_start_index([block]) == 10
 
     def test_find_references_start_index_by_keyword(self):
         from app.models import Block, BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
-        block = MagicMock(spec=Block, block_type=BlockType.HEADING_1,
-                          text="References", index=10, is_heading=lambda: True)
+
+        block = MagicMock(
+            spec=Block, block_type=BlockType.HEADING_1, text="References", index=10, is_heading=lambda: True
+        )
         m = TableCaptionMatcher()
         assert m._find_references_start_index([block]) == 10
 
     def test_find_references_start_index_not_found(self):
         from app.models import Block, BlockType
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
-        block = MagicMock(spec=Block, block_type=BlockType.BODY,
-                          text="Some text", index=5, is_heading=lambda: False)
+
+        block = MagicMock(spec=Block, block_type=BlockType.BODY, text="Some text", index=5, is_heading=lambda: False)
         m = TableCaptionMatcher()
         assert m._find_references_start_index([block]) is None
 
     def test_match_table_captions_convenience(self):
         from app.pipeline.tables.caption_matcher import match_table_captions
+
         doc = MagicMock()
         doc.tables = []
         result = match_table_captions(doc)
@@ -842,6 +975,7 @@ class TestTableCaptionMatcher:
 
     def test_process_exception_handling(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         doc = MagicMock()
         doc.blocks = [MagicMock()]
         doc.tables = [MagicMock()]
@@ -856,6 +990,7 @@ class TestTableCaptionMatcher:
 # Table Extractor (extractor.py)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestTableExtractor:
     """Coverage gap: extractor.py was 8.46%"""
 
@@ -863,6 +998,7 @@ class TestTableExtractor:
     def mock_docx_table(self):
         """Build a mock docx Table with 2 rows x 2 cols."""
         import docx
+
         cell_00 = MagicMock()
         cell_00.text = "Header1"
         cell_00.paragraphs = []
@@ -892,6 +1028,7 @@ class TestTableExtractor:
 
     def test_extract(self, mock_docx_table):
         from app.pipeline.tables.extractor import TableExtractor
+
         extractor = TableExtractor()
         result = extractor.extract(mock_docx_table, "tbl_1", 0, 0)
         assert result.table_id == "tbl_1"
@@ -903,6 +1040,7 @@ class TestTableExtractor:
 
     def test_extract_with_bold_header(self, mock_docx_table):
         from app.pipeline.tables.extractor import TableExtractor
+
         row0 = mock_docx_table.rows[0]
         for cell in row0.cells:
             run = MagicMock()
@@ -917,6 +1055,7 @@ class TestTableExtractor:
 
     def test_extract_header_keywords(self, mock_docx_table):
         from app.pipeline.tables.extractor import TableExtractor
+
         cell_00 = mock_docx_table.rows[0].cells[0]
         cell_00.text = "Name"
         cell_01 = mock_docx_table.rows[0].cells[1]
@@ -928,6 +1067,7 @@ class TestTableExtractor:
 
     def test_extract_uneven_rows(self, mock_docx_table):
         from app.pipeline.tables.extractor import TableExtractor
+
         cell_01 = mock_docx_table.rows[0].cells[1]
         cell_01.text = ""
 
@@ -938,6 +1078,7 @@ class TestTableExtractor:
 
     def test_normalize_cell_text(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         e = TableExtractor()
         assert e._normalize_cell_text("  hello  ") == "hello"
         assert e._normalize_cell_text("") == ""
@@ -945,6 +1086,7 @@ class TestTableExtractor:
 
     def test_contains_header_keywords(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         e = TableExtractor()
         assert e._contains_header_keywords(["Name", "Date", "Value"]) is True
         assert e._contains_header_keywords(["x", "y", "z"]) is False
@@ -952,6 +1094,7 @@ class TestTableExtractor:
 
     def test_deep_xml_text_normal(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         e = TableExtractor()
         cell = MagicMock()
         cell._tc = MagicMock()
@@ -960,6 +1103,7 @@ class TestTableExtractor:
 
     def test_deep_xml_text_exception(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         e = TableExtractor()
         cell = MagicMock()
         cell._tc.iter.side_effect = Exception("boom")
@@ -967,6 +1111,7 @@ class TestTableExtractor:
 
     def test_is_cell_bold_true(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         e = TableExtractor()
         run = MagicMock()
         run.bold = True
@@ -978,6 +1123,7 @@ class TestTableExtractor:
 
     def test_is_cell_bold_false(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         e = TableExtractor()
         run = MagicMock()
         run.bold = False
@@ -992,11 +1138,13 @@ class TestTableExtractor:
 # Table Renderer (renderer.py)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestTableRenderer:
     """Coverage gap: renderer.py was 13.04%"""
 
     def test_render_no_table(self):
         from app.pipeline.tables.renderer import TableRenderer
+
         doc = MagicMock()
         renderer = TableRenderer()
         renderer.render(doc, None)
@@ -1005,6 +1153,7 @@ class TestTableRenderer:
     def test_render_no_rows(self):
         from app.models import Table
         from app.pipeline.tables.renderer import TableRenderer
+
         doc = MagicMock()
         table = MagicMock(spec=Table)
         table.rows = []
@@ -1137,17 +1286,21 @@ class TestTableRenderer:
 # Document Validator v3 (validator_v3.py)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestDocumentValidatorV3:
     """Coverage gap: validator_v3.py was 15.67%"""
 
     @pytest.fixture
     def validator(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
-        with patch("app.pipeline.validation.validator_v3.ContractLoader"), \
-             patch("app.pipeline.validation.validator_v3.SectionOrderValidator"), \
-             patch("app.pipeline.validation.validator_v3.CrossReferenceEngine"), \
-             patch("app.pipeline.validation.validator_v3.CrossRefClient"), \
-             patch("app.pipeline.validation.validator_v3.ReviewManager"):
+
+        with (
+            patch("app.pipeline.validation.validator_v3.ContractLoader"),
+            patch("app.pipeline.validation.validator_v3.SectionOrderValidator"),
+            patch("app.pipeline.validation.validator_v3.CrossReferenceEngine"),
+            patch("app.pipeline.validation.validator_v3.CrossRefClient"),
+            patch("app.pipeline.validation.validator_v3.ReviewManager"),
+        ):
             yield DocumentValidator()
 
     def test_init(self, validator):
@@ -1196,6 +1349,7 @@ class TestDocumentValidatorV3:
 
     def test_validate_full_happy_path(self, validator):
         from app.models import PipelineDocument
+
         doc = MagicMock(spec=PipelineDocument)
         doc.references = []
         doc.figures = []
@@ -1204,17 +1358,20 @@ class TestDocumentValidatorV3:
         doc.get_section_names.return_value = []
         doc.get_stats.return_value = {"blocks": 0}
 
-        with patch.object(validator, "_check_sections", return_value=([], [])), \
-             patch.object(validator, "_check_figures", return_value=([], [])), \
-             patch.object(validator, "_check_references", return_value=([], [])), \
-             patch.object(validator, "_check_tables", return_value=([], [])), \
-             patch.object(validator, "_check_reference_integrity", return_value=([], [])):
+        with (
+            patch.object(validator, "_check_sections", return_value=([], [])),
+            patch.object(validator, "_check_figures", return_value=([], [])),
+            patch.object(validator, "_check_references", return_value=([], [])),
+            patch.object(validator, "_check_tables", return_value=([], [])),
+            patch.object(validator, "_check_reference_integrity", return_value=([], [])),
+        ):
             validator.integrity_engine.validate_integrity.return_value = []
             result = validator.validate(doc)
         assert result.is_valid is True
 
     def test_validate_with_fast_mode(self, validator):
         from app.models import PipelineDocument
+
         doc = MagicMock(spec=PipelineDocument)
         doc.references = []
         doc.figures = []
@@ -1223,17 +1380,20 @@ class TestDocumentValidatorV3:
         doc.get_section_names.return_value = []
         doc.get_stats.return_value = {"blocks": 0}
 
-        with patch.object(validator, "_check_sections", return_value=([], [])), \
-             patch.object(validator, "_check_figures", return_value=([], [])), \
-             patch.object(validator, "_check_references", return_value=([], [])), \
-             patch.object(validator, "_check_tables", return_value=([], [])), \
-             patch.object(validator, "_check_reference_integrity") as mock_doi:
+        with (
+            patch.object(validator, "_check_sections", return_value=([], [])),
+            patch.object(validator, "_check_figures", return_value=([], [])),
+            patch.object(validator, "_check_references", return_value=([], [])),
+            patch.object(validator, "_check_tables", return_value=([], [])),
+            patch.object(validator, "_check_reference_integrity") as mock_doi,
+        ):
             validator.integrity_engine.validate_integrity.return_value = []
             validator.validate(doc)
         mock_doi.assert_not_called()
 
     def test_validate_with_errors(self, validator):
         from app.models import PipelineDocument
+
         doc = MagicMock(spec=PipelineDocument)
         doc.references = []
         doc.figures = []
@@ -1242,22 +1402,26 @@ class TestDocumentValidatorV3:
         doc.get_section_names.return_value = []
         doc.get_stats.return_value = {"blocks": 0}
 
-        with patch.object(validator, "_check_sections", return_value=(["Missing required section"], [])), \
-             patch.object(validator, "_check_figures", return_value=([], [])), \
-             patch.object(validator, "_check_references", return_value=([], [])), \
-             patch.object(validator, "_check_tables", return_value=([], [])), \
-             patch.object(validator, "_check_reference_integrity", return_value=([], [])):
+        with (
+            patch.object(validator, "_check_sections", return_value=(["Missing required section"], [])),
+            patch.object(validator, "_check_figures", return_value=([], [])),
+            patch.object(validator, "_check_references", return_value=([], [])),
+            patch.object(validator, "_check_tables", return_value=([], [])),
+            patch.object(validator, "_check_reference_integrity", return_value=([], [])),
+        ):
             validator.integrity_engine.validate_integrity.return_value = ["Dangling ref"]
             result = validator.validate(doc)
         assert result.is_valid is False
 
     def test_check_sections(self, validator):
         from app.models import PipelineDocument
+
         doc = MagicMock(spec=PipelineDocument)
         doc.template = MagicMock()
         doc.template.template_name = "ieee"
-        with patch.object(validator.order_validator, "validate_order",
-                          return_value=["Missing required section", "Reorder warning"]):
+        with patch.object(
+            validator.order_validator, "validate_order", return_value=["Missing required section", "Reorder warning"]
+        ):
             errors, warnings = validator._check_sections(doc)
         assert "Missing required section" in errors
         assert "Reorder warning" in warnings
@@ -1265,13 +1429,13 @@ class TestDocumentValidatorV3:
     def test_check_sections_fallback_publisher(self, validator):
         doc = MagicMock()
         doc.template = None
-        with patch.object(validator.order_validator, "validate_order",
-                          return_value=[]):
+        with patch.object(validator.order_validator, "validate_order", return_value=[]):
             errors, warnings = validator._check_sections(doc)
         assert errors == []
 
     def test_check_sections_exception(self, validator):
         from app.models import PipelineDocument
+
         doc = MagicMock(spec=PipelineDocument)
         doc.template = MagicMock()
         doc.template.template_name = "ieee"
@@ -1281,6 +1445,7 @@ class TestDocumentValidatorV3:
 
     def test_check_figures(self, validator):
         from app.models import Figure
+
         fig1 = MagicMock(spec=Figure)
         fig1.has_caption.return_value = True
         fig1.figure_id = "fig1"
@@ -1311,6 +1476,7 @@ class TestDocumentValidatorV3:
 
     def test_check_references_with_issues(self, validator):
         from app.models import Reference
+
         ref1 = MagicMock(spec=Reference)
         ref1.citation_key = "ref1"
         ref1.year = None
@@ -1325,6 +1491,7 @@ class TestDocumentValidatorV3:
 
     def test_check_references_partial(self, validator):
         from app.models import Reference
+
         ref = MagicMock(spec=Reference)
         ref.citation_key = "ref1"
         ref.year = 2020
@@ -1339,6 +1506,7 @@ class TestDocumentValidatorV3:
 
     def test_check_tables(self, validator):
         from app.models import Table
+
         tbl1 = MagicMock(spec=Table)
         tbl1.caption_text = "Table 1: Results"
         tbl2 = MagicMock(spec=Table)
@@ -1365,6 +1533,7 @@ class TestDocumentValidatorV3:
 
     def test_check_reference_integrity_valid_doi(self, validator):
         from app.models import Reference
+
         ref = MagicMock(spec=Reference)
         ref.citation_key = "ref1"
         ref.doi = "10.1234/abc"
@@ -1387,6 +1556,7 @@ class TestDocumentValidatorV3:
 
     def test_check_reference_integrity_low_confidence(self, validator):
         from app.models import Reference
+
         ref = MagicMock(spec=Reference)
         ref.citation_key = "ref1"
         ref.doi = "10.1234/abc"
@@ -1407,6 +1577,7 @@ class TestDocumentValidatorV3:
 
     def test_check_reference_integrity_invalid_doi(self, validator):
         from app.models import Reference
+
         ref = MagicMock(spec=Reference)
         ref.citation_key = "ref1"
         ref.doi = "10.1234/abc"
@@ -1423,6 +1594,7 @@ class TestDocumentValidatorV3:
 
     def test_check_reference_integrity_metadata_fetch_fails(self, validator):
         from app.models import Reference
+
         ref = MagicMock(spec=Reference)
         ref.citation_key = "ref1"
         ref.doi = "10.1234/abc"
@@ -1439,6 +1611,7 @@ class TestDocumentValidatorV3:
 
     def test_check_reference_integrity_validate_fails(self, validator):
         from app.models import Reference
+
         ref = MagicMock(spec=Reference)
         ref.citation_key = "ref1"
         ref.doi = "10.1234/abc"
@@ -1456,13 +1629,13 @@ class TestDocumentValidatorV3:
         doc = MagicMock()
         doc.references = [MagicMock()]
         validator.crossref_client.validate_doi.side_effect = Exception("API down")
-        with patch("app.pipeline.validation.validator_v3.safe_function",
-                   lambda **kw: lambda f: f):
+        with patch("app.pipeline.validation.validator_v3.safe_function", lambda **kw: lambda f: f):
             errors, warnings = validator._check_reference_integrity(doc)
         assert any("CrossRef validation failed" in w for w in warnings)
 
     def test_integrity_violations_dangling(self, validator):
         from app.models import PipelineDocument
+
         doc = MagicMock(spec=PipelineDocument)
         doc.references = []
         doc.figures = []
@@ -1471,20 +1644,21 @@ class TestDocumentValidatorV3:
         doc.get_section_names.return_value = []
         doc.get_stats.return_value = {"blocks": 0}
 
-        validator.integrity_engine.validate_integrity.return_value = [
-            "Dangling reference to Figure 2"
-        ]
+        validator.integrity_engine.validate_integrity.return_value = ["Dangling reference to Figure 2"]
 
-        with patch.object(validator, "_check_sections", return_value=([], [])), \
-             patch.object(validator, "_check_figures", return_value=([], [])), \
-             patch.object(validator, "_check_references", return_value=([], [])), \
-             patch.object(validator, "_check_tables", return_value=([], [])), \
-             patch.object(validator, "_check_reference_integrity", return_value=([], [])):
+        with (
+            patch.object(validator, "_check_sections", return_value=([], [])),
+            patch.object(validator, "_check_figures", return_value=([], [])),
+            patch.object(validator, "_check_references", return_value=([], [])),
+            patch.object(validator, "_check_tables", return_value=([], [])),
+            patch.object(validator, "_check_reference_integrity", return_value=([], [])),
+        ):
             result = validator.validate(doc)
         assert any("Dangling" in e for e in result.errors)
 
     def test_validate_document_convenience(self):
         from app.models import PipelineDocument
+
         doc = MagicMock(spec=PipelineDocument)
         doc.references = []
         doc.figures = []
@@ -1497,6 +1671,7 @@ class TestDocumentValidatorV3:
             instance = mock_cls.return_value
             instance.validate.return_value = MagicMock(is_valid=True)
             from app.pipeline.validation.validator_v3 import validate_document
+
             result = validate_document(doc)
             assert result.is_valid is True
 
@@ -1505,23 +1680,27 @@ class TestDocumentValidatorV3:
 # AI Explainer (ai_explainer.py)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestAIExplainer:
     """Coverage gap: ai_explainer.py was 14.29%"""
 
     def test_init(self):
         from app.pipeline.validation.ai_explainer import AIExplainer
+
         e = AIExplainer()
         assert "missing_sections" in e.explanation_map
         assert "citation_format" in e.explanation_map
 
     def test_explain_results_empty(self):
         from app.pipeline.validation.ai_explainer import AIExplainer
+
         e = AIExplainer()
         result = e.explain_results({"errors": []})
         assert result == []
 
     def test_explain_results_missing_sections(self):
         from app.pipeline.validation.ai_explainer import AIExplainer
+
         e = AIExplainer()
         result = e.explain_results({"errors": ["missing section: Introduction"]}, "IEEE")
         assert any("missing" in r.lower() for r in result)
@@ -1529,41 +1708,39 @@ class TestAIExplainer:
 
     def test_explain_results_reference_error(self):
         from app.pipeline.validation.ai_explainer import AIExplainer
+
         e = AIExplainer()
         result = e.explain_results({"errors": ["reference missing DOI"]}, "APA")
         assert any("reference" in r.lower() for r in result)
 
     def test_explain_results_general_error(self):
         from app.pipeline.validation.ai_explainer import AIExplainer
+
         e = AIExplainer()
         result = e.explain_results({"errors": ["some other error"]}, "IEEE")
         assert len(result) == 1
 
     def test_explain_results_dict_errors(self):
         from app.pipeline.validation.ai_explainer import AIExplainer
+
         e = AIExplainer()
-        result = e.explain_results({
-            "errors": [{"category": "citation_format", "message": "wrong style"}]
-        }, "IEEE")
+        result = e.explain_results({"errors": [{"category": "citation_format", "message": "wrong style"}]}, "IEEE")
         assert any("citations" in r.lower() for r in result)
 
     def test_explain_results_dict_unknown_category(self):
         from app.pipeline.validation.ai_explainer import AIExplainer
+
         e = AIExplainer()
-        result = e.explain_results({
-            "errors": [{"category": "unknown_cat", "message": "weird issue"}]
-        }, "IEEE")
+        result = e.explain_results({"errors": [{"category": "unknown_cat", "message": "weird issue"}]}, "IEEE")
         assert len(result) == 1
 
     def test_explain_results_mixed_errors(self):
         from app.pipeline.validation.ai_explainer import AIExplainer
+
         e = AIExplainer()
-        result = e.explain_results({
-            "errors": [
-                "missing section: Methods",
-                {"category": "figure_captions", "message": "no labels"}
-            ]
-        }, "Nature")
+        result = e.explain_results(
+            {"errors": ["missing section: Methods", {"category": "figure_captions", "message": "no labels"}]}, "Nature"
+        )
         assert len(result) == 2
 
 
@@ -1571,28 +1748,33 @@ class TestAIExplainer:
 # Review Manager (review_manager.py)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestReviewManager:
     """Coverage gap: review_manager.py was 7.95%"""
 
     def test_init_defaults(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         rm = ReviewManager()
         assert rm.review_threshold == 0.70
         assert rm.critical_threshold == 0.45
 
     def test_init_custom(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         rm = ReviewManager(review_threshold=0.8, critical_threshold=0.3)
         assert rm.review_threshold == 0.8
         assert rm.critical_threshold == 0.3
 
     def test_init_critical_gte_review(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         with pytest.raises(ValueError, match="must be less than"):
             ReviewManager(review_threshold=0.5, critical_threshold=0.5)
 
     def test_init_invalid_threshold(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         with pytest.raises(ValueError, match="between 0.0 and 1.0"):
             ReviewManager(review_threshold=1.5, critical_threshold=0.5)
 
@@ -1773,60 +1955,65 @@ class TestReviewManager:
 # Extra edge-case tests to push coverage past 90%
 # ══════════════════════════════════════════════════════════════════════════════
 
-class TestCoverageEdgeCases:
 
+class TestCoverageEdgeCases:
     # --- APA additional edge cases ---
 
     def test_apa_book_chapter_no_publisher_no_pages(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
         result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="My Chapter",
-            book_title="Big Book", reference_type="book_chapter"
+            ["Smith, J."], year=2020, title="My Chapter", book_title="Big Book", reference_type="book_chapter"
         )
         assert "Big Book" in result
         assert "pp." not in result
 
     def test_apa_thesis_with_publisher_and_doi(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
         result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="My Thesis",
-            publisher="MIT", doi="10.1234/thesis", reference_type="thesis"
+            ["Smith, J."], year=2020, title="My Thesis", publisher="MIT", doi="10.1234/thesis", reference_type="thesis"
         )
         assert "MIT" in result
         assert "https://doi.org/10.1234/thesis" in result
 
     def test_apa_default_empty(self):
         from app.pipeline.references.csl.apafallback import APA7Formatter
+
         f = APA7Formatter(hanging_indent=False)
-        result = f.format_reference_entry(
-            ["Smith, J."], year=2020, title="Misc",
-            reference_type="patent"
-        )
+        result = f.format_reference_entry(["Smith, J."], year=2020, title="Misc", reference_type="patent")
         assert "Misc" in result
 
     # --- Vancouver additional edge cases ---
 
     def test_vancouver_journal_no_pages_no_doi(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         result = f.format_reference_entry(
-            ["Smith J"], title="Title",
-            journal="J Sci", year=2020, volume="10", issue="2",
-            reference_type="journal_article"
+            ["Smith J"],
+            title="Title",
+            journal="J Sci",
+            year=2020,
+            volume="10",
+            issue="2",
+            reference_type="journal_article",
         )
         assert "Title" in result
         assert result.endswith(".")
 
     def test_vancouver_doi_invalid_format(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         result = f._format_doi("httpinvalid")
         assert "doi:" in result
 
     def test_vancouver_doi_http_no_slash(self):
         from app.pipeline.references.csl.vancouver_fallback import VancouverFormatter
+
         f = VancouverFormatter()
         result = f._format_doi("http://")
         assert "doi:" in result
@@ -1836,11 +2023,14 @@ class TestCoverageEdgeCases:
     def test_validator_integrity_warning(self):
         from app.models import PipelineDocument
         from app.pipeline.validation.validator_v3 import DocumentValidator
-        with patch("app.pipeline.validation.validator_v3.ContractLoader"), \
-             patch("app.pipeline.validation.validator_v3.SectionOrderValidator"), \
-             patch("app.pipeline.validation.validator_v3.CrossReferenceEngine"), \
-             patch("app.pipeline.validation.validator_v3.CrossRefClient"), \
-             patch("app.pipeline.validation.validator_v3.ReviewManager"):
+
+        with (
+            patch("app.pipeline.validation.validator_v3.ContractLoader"),
+            patch("app.pipeline.validation.validator_v3.SectionOrderValidator"),
+            patch("app.pipeline.validation.validator_v3.CrossReferenceEngine"),
+            patch("app.pipeline.validation.validator_v3.CrossRefClient"),
+            patch("app.pipeline.validation.validator_v3.ReviewManager"),
+        ):
             v = DocumentValidator()
             doc = MagicMock(spec=PipelineDocument)
             doc.references = []
@@ -1851,25 +2041,28 @@ class TestCoverageEdgeCases:
             doc.get_stats.return_value = {"blocks": 0}
             doc.blocks = []
 
-            v.integrity_engine.validate_integrity.return_value = [
-                "Cross-reference mismatch in Section 3"
-            ]
+            v.integrity_engine.validate_integrity.return_value = ["Cross-reference mismatch in Section 3"]
 
-            with patch.object(v, "_check_sections", return_value=([], [])), \
-                 patch.object(v, "_check_figures", return_value=([], [])), \
-                 patch.object(v, "_check_references", return_value=([], [])), \
-                 patch.object(v, "_check_tables", return_value=([], [])), \
-                 patch.object(v, "_check_reference_integrity", return_value=([], [])):
+            with (
+                patch.object(v, "_check_sections", return_value=([], [])),
+                patch.object(v, "_check_figures", return_value=([], [])),
+                patch.object(v, "_check_references", return_value=([], [])),
+                patch.object(v, "_check_tables", return_value=([], [])),
+                patch.object(v, "_check_reference_integrity", return_value=([], [])),
+            ):
                 result = v.validate(doc)
         assert any("Cross-reference mismatch" in w for w in result.warnings)
 
     def test_validator_template_exception(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
-        with patch("app.pipeline.validation.validator_v3.ContractLoader"), \
-             patch("app.pipeline.validation.validator_v3.SectionOrderValidator"), \
-             patch("app.pipeline.validation.validator_v3.CrossReferenceEngine"), \
-             patch("app.pipeline.validation.validator_v3.CrossRefClient"), \
-             patch("app.pipeline.validation.validator_v3.ReviewManager"):
+
+        with (
+            patch("app.pipeline.validation.validator_v3.ContractLoader"),
+            patch("app.pipeline.validation.validator_v3.SectionOrderValidator"),
+            patch("app.pipeline.validation.validator_v3.CrossReferenceEngine"),
+            patch("app.pipeline.validation.validator_v3.CrossRefClient"),
+            patch("app.pipeline.validation.validator_v3.ReviewManager"),
+        ):
             v = DocumentValidator()
             doc = MagicMock()
             doc.template = MagicMock()
@@ -1882,6 +2075,7 @@ class TestCoverageEdgeCases:
 
     def test_extractor_deep_xml_fallback(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         e = TableExtractor()
         cell = MagicMock()
         cell._tc = MagicMock()

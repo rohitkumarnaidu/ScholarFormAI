@@ -18,7 +18,6 @@ from app.pipeline.structure_detection.heading_rules import (
 
 
 def _b(
-
     text: str,
     index: int = 1,
     font_size: float = 12.0,
@@ -143,7 +142,11 @@ class TestStyleEdgeCases:
     """Cover length penalties, period penalty, font-size branches, uppercase."""
 
     def test_length_penalty_extreme(self):
-        block = _b("Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident sunt.", index=0, font_size=12.0)
+        block = _b(
+            "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident sunt.",
+            index=0,
+            font_size=12.0,
+        )
         ok, score = is_likely_heading_by_style(block, avg_font_size=12.0)
         assert score == -0.7  # -0.4(extreme) + -0.3(period)
         assert ok is False
@@ -390,7 +393,6 @@ def _pad_blocks(block: Block, index: int) -> list:
     if index == 0:
         return [block]
     return [_b("", i, font_size=12.0) for i in range(index)] + [block]
-
 
 
 class TestParserHints:

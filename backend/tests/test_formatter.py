@@ -4,6 +4,7 @@
 """
 Tests for Formatter — ensures it produces a valid .docx artifact.
 """
+
 from __future__ import annotations
 
 import io
@@ -41,7 +42,6 @@ def _add_word_hyperlink(paragraph, text: str, url: str) -> None:
 
 
 class TestFormatterOutput:
-
     def test_formatter_process_sets_generated_doc(self, minimal_doc):
         """Formatter.process() sets document.generated_doc."""
         formatter = Formatter(templates_dir="app/templates", contracts_dir="app/pipeline/contracts")
@@ -76,6 +76,7 @@ class TestFormatterOutput:
     def test_formatter_output_is_valid_zip(self, full_doc, tmp_path):
         """A .docx saved by the formatter is a valid ZIP/OOXML file."""
         import zipfile
+
         formatter = Formatter(templates_dir="app/templates", contracts_dir="app/pipeline/contracts")
         formatter.process(full_doc)
         out = tmp_path / "output.docx"
@@ -116,9 +117,15 @@ class TestFormatterOutput:
         formatter = Formatter(templates_dir="app/templates", contracts_dir="app/pipeline/contracts")
         minimal_doc.blocks = [
             Block(block_id="b1", index=1, block_type=BlockType.TITLE, text="Paper Title", section_name="abstract"),
-            Block(block_id="b2", index=2, block_type=BlockType.BODY, text="Abstract paragraph.", section_name="abstract"),
-            Block(block_id="b3", index=3, block_type=BlockType.HEADING_1, text="Introduction", section_name="introduction"),
-            Block(block_id="b4", index=4, block_type=BlockType.BODY, text="Body paragraph.", section_name="introduction"),
+            Block(
+                block_id="b2", index=2, block_type=BlockType.BODY, text="Abstract paragraph.", section_name="abstract"
+            ),
+            Block(
+                block_id="b3", index=3, block_type=BlockType.HEADING_1, text="Introduction", section_name="introduction"
+            ),
+            Block(
+                block_id="b4", index=4, block_type=BlockType.BODY, text="Body paragraph.", section_name="introduction"
+            ),
         ]
         minimal_doc.formatting_options = {
             "template_engine": "legacy",

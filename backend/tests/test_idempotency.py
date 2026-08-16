@@ -13,6 +13,7 @@ from starlette.testclient import TestClient
 
 # ── Idempotency store (in-memory, simulates the cache layer) ───────────────────
 
+
 class _IdempotencyStore:
     def __init__(self):
         self._store: dict[str, tuple[float, dict]] = {}
@@ -43,6 +44,7 @@ class _IdempotencyStore:
 
 # ── Idempotency decorator / helper (simulates backend idempotency logic) ───────
 
+
 def _idempotent_handler(store: _IdempotencyStore, key: str, request_payload: dict):
     """Simulate the idempotency check that endpoint logic would use."""
     existing = store.get(key)
@@ -57,6 +59,7 @@ def _idempotent_handler(store: _IdempotencyStore, key: str, request_payload: dic
 
 
 # ── Tests ──────────────────────────────────────────────────────────────────────
+
 
 class TestIdempotencyKey:
     @pytest.fixture
@@ -161,6 +164,7 @@ class TestIdempotencyKey:
 
 # ── Endpoint-level tests ───────────────────────────────────────────────────────
 
+
 class TestIdempotencyAtEndpoints:
     @pytest.fixture
     def app_with_endpoint(self):
@@ -176,6 +180,7 @@ class TestIdempotencyAtEndpoints:
             if existing:
                 if existing["payload"] != request:
                     from fastapi import HTTPException as H
+
                     raise H(422, detail="Payload mismatch")
                 return existing["response"]
             result = {"document_id": "doc-upload-123"}
@@ -239,6 +244,7 @@ class TestIdempotencyAtEndpoints:
     def test_idempotency_key_logging_middleware(self):
         """Verify that RequestIdMiddleware logs idempotency keys on matching paths."""
         from app.middleware.request_id import _should_log_idempotency
+
         assert _should_log_idempotency("/api/v1/documents/upload") is True
         assert _should_log_idempotency("/api/v1/generator/sessions") is True
         assert _should_log_idempotency("/api/v1/synthesis/sessions") is True

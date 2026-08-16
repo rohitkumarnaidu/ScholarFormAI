@@ -79,14 +79,16 @@ class TestConcurrentUserScenarios:
             patch.object(DocumentService, "create_document", mock_create),
         ):
             start = time.perf_counter()
-            results = await asyncio.gather(*[
-                DocumentService.create_document(
-                    user_id=f"user-{i}",
-                    filename=f"paper-{i}.docx",
-                    file_data=io.BytesIO(b"mock content"),
-                )
-                for i in range(n_users)
-            ])
+            results = await asyncio.gather(
+                *[
+                    DocumentService.create_document(
+                        user_id=f"user-{i}",
+                        filename=f"paper-{i}.docx",
+                        file_data=io.BytesIO(b"mock content"),
+                    )
+                    for i in range(n_users)
+                ]
+            )
             elapsed = time.perf_counter() - start
 
         assert len(results) == n_users
@@ -147,17 +149,16 @@ class TestConcurrentUserScenarios:
             patch.object(DocumentService, "list_documents", mock_list_docs),
         ):
             uploads = [
-                DocumentService.create_document(user_id=f"mix-user-{i}", filename=f"mix-{i}.docx", file_data=io.BytesIO(b"data"))
+                DocumentService.create_document(
+                    user_id=f"mix-user-{i}", filename=f"mix-{i}.docx", file_data=io.BytesIO(b"data")
+                )
                 for i in range(3)
             ]
             sessions = [
                 GeneratorSessionService.create_session(user_id=f"mix-gen-{i}", session_type="manuscript")
                 for i in range(3)
             ]
-            queries = [
-                DocumentService.list_documents(user_id="query-user", limit=20)
-                for _ in range(4)
-            ]
+            queries = [DocumentService.list_documents(user_id="query-user", limit=20) for _ in range(4)]
 
             start = time.perf_counter()
             all_results = await asyncio.gather(*uploads, *sessions, *queries)
@@ -215,10 +216,9 @@ class TestConcurrentUserScenarios:
 
         with patch.object(DocumentService, "get_document", mock_get):
             start = time.perf_counter()
-            results = await asyncio.gather(*[
-                DocumentService.get_document(doc_id=f"dl-{i}", user_id="dl-user")
-                for i in range(n_downloads)
-            ])
+            results = await asyncio.gather(
+                *[DocumentService.get_document(doc_id=f"dl-{i}", user_id="dl-user") for i in range(n_downloads)]
+            )
             elapsed = time.perf_counter() - start
 
         assert len(results) == n_downloads
@@ -234,12 +234,16 @@ class TestConcurrentUserScenarios:
         class _SortableEntry:
             def __init__(self, name):
                 self.name = name
+
             def __lt__(self, other):
                 return self.name < other.name
+
             def is_dir(self):
                 return True
 
-        mock_entries = [_SortableEntry(t) for t in ("ieee", "apa", "mla", "nature", "springer", "chicago", "harvard", "vancouver")]
+        mock_entries = [
+            _SortableEntry(t) for t in ("ieee", "apa", "mla", "nature", "springer", "chicago", "harvard", "vancouver")
+        ]
 
         n_calls = 10
         with (
@@ -248,10 +252,7 @@ class TestConcurrentUserScenarios:
         ):
             mock_iter.return_value = mock_entries
             start = time.perf_counter()
-            results = await asyncio.gather(*[
-                _list_builtin_templates()
-                for _ in range(n_calls)
-            ])
+            results = await asyncio.gather(*[_list_builtin_templates() for _ in range(n_calls)])
             elapsed = time.perf_counter() - start
 
         assert len(results) == n_calls
@@ -283,7 +284,11 @@ class TestConcurrentUserScenarios:
                 ops.append(DocumentService.get_document(doc_id=f"rw-{i}", user_id="rw-user"))
                 op_types.append("read")
             for i in range(n_writes):
-                ops.append(DocumentService.create_document(user_id="rw-user", filename=f"rw-{i}.docx", file_data=io.BytesIO(b"data")))
+                ops.append(
+                    DocumentService.create_document(
+                        user_id="rw-user", filename=f"rw-{i}.docx", file_data=io.BytesIO(b"data")
+                    )
+                )
                 op_types.append("write")
 
             start = time.perf_counter()

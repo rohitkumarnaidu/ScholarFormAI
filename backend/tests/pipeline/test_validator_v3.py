@@ -7,7 +7,9 @@ from unittest.mock import MagicMock, patch
 
 
 class TestDocumentValidator:
-    def _make_doc(self, blocks=None, figures=None, tables=None, references=None, template=None, formatting_options=None):
+    def _make_doc(
+        self, blocks=None, figures=None, tables=None, references=None, template=None, formatting_options=None
+    ):
         doc = MagicMock()
         doc.blocks = blocks or []
         doc.figures = figures or []
@@ -39,6 +41,7 @@ class TestDocumentValidator:
 
     def test_as_bool_various_inputs(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         dv = DocumentValidator.__new__(DocumentValidator)
         assert dv._as_bool(None) is False
         assert dv._as_bool(True) is True
@@ -57,6 +60,7 @@ class TestDocumentValidator:
     @patch("app.pipeline.validation.validator_v3.CrossReferenceEngine.validate_integrity", return_value=[])
     def test_validate_success(self, mock_int, mock_tbl, mock_ref, mock_fig, mock_sec):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         dv = DocumentValidator()
         doc = self._make_doc()
         result = dv.validate(doc)
@@ -65,11 +69,14 @@ class TestDocumentValidator:
 
     def test_validate_with_section_errors(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
-        with patch.object(DocumentValidator, "_check_sections", return_value=(["Missing required section"], [])), \
-             patch.object(DocumentValidator, "_check_figures", return_value=([], [])), \
-             patch.object(DocumentValidator, "_check_references", return_value=([], [])), \
-             patch.object(DocumentValidator, "_check_tables", return_value=([], [])), \
-             patch("app.pipeline.validation.validator_v3.CrossReferenceEngine.validate_integrity", return_value=[]):
+
+        with (
+            patch.object(DocumentValidator, "_check_sections", return_value=(["Missing required section"], [])),
+            patch.object(DocumentValidator, "_check_figures", return_value=([], [])),
+            patch.object(DocumentValidator, "_check_references", return_value=([], [])),
+            patch.object(DocumentValidator, "_check_tables", return_value=([], [])),
+            patch("app.pipeline.validation.validator_v3.CrossReferenceEngine.validate_integrity", return_value=[]),
+        ):
             dv = DocumentValidator()
             doc = self._make_doc()
             result = dv.validate(doc)
@@ -84,6 +91,7 @@ class TestDocumentValidator:
     @patch("app.pipeline.validation.validator_v3.CrossReferenceEngine.validate_integrity", return_value=[])
     def test_review_manager_called(self, mock_int, mock_tbl, mock_ref, mock_fig, mock_sec, mock_review):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         dv = DocumentValidator()
         doc = self._make_doc()
         dv.validate(doc)
@@ -91,6 +99,7 @@ class TestDocumentValidator:
 
     def test_check_figures_no_caption(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         dv = DocumentValidator.__new__(DocumentValidator)
         fig = MagicMock()
         fig.figure_id = "f1"
@@ -102,6 +111,7 @@ class TestDocumentValidator:
 
     def test_check_figures_with_caption(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         dv = DocumentValidator.__new__(DocumentValidator)
         fig = MagicMock()
         fig.figure_id = "f2"
@@ -112,6 +122,7 @@ class TestDocumentValidator:
 
     def test_check_references_empty_with_section(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         dv = DocumentValidator.__new__(DocumentValidator)
         doc = self._make_doc(references=[])
         doc.get_section_names.return_value = {"references"}
@@ -121,6 +132,7 @@ class TestDocumentValidator:
 
     def test_check_references_missing_fields(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         dv = DocumentValidator.__new__(DocumentValidator)
         ref = self._make_ref(year=None, authors="", title=None)
         doc = self._make_doc(references=[ref])
@@ -130,6 +142,7 @@ class TestDocumentValidator:
 
     def test_check_tables_missing_caption(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         dv = DocumentValidator.__new__(DocumentValidator)
         tbl = MagicMock()
         tbl.caption_text = None
@@ -140,6 +153,7 @@ class TestDocumentValidator:
 
     def test_check_tables_with_caption(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         dv = DocumentValidator.__new__(DocumentValidator)
         tbl = MagicMock()
         tbl.caption_text = "Table 1: Data"
@@ -149,27 +163,33 @@ class TestDocumentValidator:
 
     def test_fast_mode_skips_doi_checks(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         dv = DocumentValidator()
         doc = self._make_doc(formatting_options={"fast_mode": True})
-        with patch.object(DocumentValidator, "_check_sections", return_value=([], [])), \
-             patch.object(DocumentValidator, "_check_figures", return_value=([], [])), \
-             patch.object(DocumentValidator, "_check_references", return_value=([], [])), \
-             patch.object(DocumentValidator, "_check_tables", return_value=([], [])), \
-             patch("app.pipeline.validation.validator_v3.CrossReferenceEngine.validate_integrity", return_value=[]), \
-             patch.object(DocumentValidator, "_check_reference_integrity") as mock_doi:
+        with (
+            patch.object(DocumentValidator, "_check_sections", return_value=([], [])),
+            patch.object(DocumentValidator, "_check_figures", return_value=([], [])),
+            patch.object(DocumentValidator, "_check_references", return_value=([], [])),
+            patch.object(DocumentValidator, "_check_tables", return_value=([], [])),
+            patch("app.pipeline.validation.validator_v3.CrossReferenceEngine.validate_integrity", return_value=[]),
+            patch.object(DocumentValidator, "_check_reference_integrity") as mock_doi,
+        ):
             dv.validate(doc)
             mock_doi.assert_not_called()
 
     def test_process_calls_validate(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         dv = DocumentValidator()
         doc = self._make_doc()
-        with patch.object(DocumentValidator, "_check_sections", return_value=([], [])), \
-             patch.object(DocumentValidator, "_check_figures", return_value=([], [])), \
-             patch.object(DocumentValidator, "_check_references", return_value=([], [])), \
-             patch.object(DocumentValidator, "_check_tables", return_value=([], [])), \
-             patch("app.pipeline.validation.validator_v3.CrossReferenceEngine.validate_integrity", return_value=[]), \
-             patch.object(DocumentValidator, "_check_reference_integrity", return_value=([], [])):
+        with (
+            patch.object(DocumentValidator, "_check_sections", return_value=([], [])),
+            patch.object(DocumentValidator, "_check_figures", return_value=([], [])),
+            patch.object(DocumentValidator, "_check_references", return_value=([], [])),
+            patch.object(DocumentValidator, "_check_tables", return_value=([], [])),
+            patch("app.pipeline.validation.validator_v3.CrossReferenceEngine.validate_integrity", return_value=[]),
+            patch.object(DocumentValidator, "_check_reference_integrity", return_value=([], [])),
+        ):
             result = dv.process(doc)
             assert result is doc
 
@@ -180,6 +200,7 @@ class TestDocumentValidator:
     @patch("app.pipeline.validation.validator_v3.CrossReferenceEngine.validate_integrity", return_value=[])
     def test_document_validated_flag_set(self, mock_int, mock_tbl, mock_ref, mock_fig, mock_sec):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         dv = DocumentValidator()
         doc = self._make_doc()
         dv.validate(doc)
@@ -187,11 +208,14 @@ class TestDocumentValidator:
 
     def test_validate_document_convenience(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator, validate_document
+
         doc = self._make_doc()
-        with patch.object(DocumentValidator, "_check_sections", return_value=([], [])), \
-             patch.object(DocumentValidator, "_check_figures", return_value=([], [])), \
-             patch.object(DocumentValidator, "_check_references", return_value=([], [])), \
-             patch.object(DocumentValidator, "_check_tables", return_value=([], [])), \
-             patch("app.pipeline.validation.validator_v3.CrossReferenceEngine.validate_integrity", return_value=[]):
+        with (
+            patch.object(DocumentValidator, "_check_sections", return_value=([], [])),
+            patch.object(DocumentValidator, "_check_figures", return_value=([], [])),
+            patch.object(DocumentValidator, "_check_references", return_value=([], [])),
+            patch.object(DocumentValidator, "_check_tables", return_value=([], [])),
+            patch("app.pipeline.validation.validator_v3.CrossReferenceEngine.validate_integrity", return_value=[]),
+        ):
             result = validate_document(doc)
             assert isinstance(result.is_valid, bool)

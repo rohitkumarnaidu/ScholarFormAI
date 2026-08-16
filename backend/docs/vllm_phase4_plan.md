@@ -23,6 +23,20 @@
 4. Shift 20% live traffic with auto rollback on SLO breach.
 5. Promote vLLM to primary provider, keep existing fallback chain active.
 
+```mermaid
+sequenceDiagram
+    participant Prod as Production Traffic
+    participant GPU as GPU Serving (vLLM)
+    participant Eval as Evaluation
+    
+    Note over GPU: 1. Provision GPU environment
+    Prod-->>GPU: 2. Mirror 5% prompts (Shadow)
+    GPU-->>Eval: 3. Validate parity (Quality, Latency, Cost)
+    Prod->>GPU: 4. Shift 20% live traffic
+    Note over Prod,GPU: Auto-rollback on SLO breach
+    Prod->>GPU: 5. Promote to Primary Provider
+```
+
 ## Operational Checks
 
 - Keep OpenRouter and Ollama fallbacks enabled.

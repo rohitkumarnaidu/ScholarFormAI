@@ -8,6 +8,7 @@ import pytest
 def renderer():
     with patch("app.services.preview_renderer.TEMPLATE_ROOT"), patch("app.services.preview_renderer.settings"):
         from app.services.preview_renderer import PreviewRenderer
+
         r = PreviewRenderer()
         r._redis = None
         r._redis_enabled = False
@@ -162,17 +163,21 @@ class TestClassifyBlocks:
         assert blocks[0]["type"] == "abstract_heading"
 
     def test_caption(self, renderer):
-        blocks = renderer._classify_blocks([
-            {"raw_type": "paragraph", "text": "Long enough to not be a title, ends with a period."},
-            {"raw_type": "paragraph", "text": "Figure 1: Data"},
-        ])
+        blocks = renderer._classify_blocks(
+            [
+                {"raw_type": "paragraph", "text": "Long enough to not be a title, ends with a period."},
+                {"raw_type": "paragraph", "text": "Figure 1: Data"},
+            ]
+        )
         assert blocks[1]["type"] == "caption"
 
     def test_heading(self, renderer):
-        blocks = renderer._classify_blocks([
-            {"raw_type": "paragraph", "text": "Title at index 0."},
-            {"raw_type": "paragraph", "text": "## Introduction"},
-        ])
+        blocks = renderer._classify_blocks(
+            [
+                {"raw_type": "paragraph", "text": "Title at index 0."},
+                {"raw_type": "paragraph", "text": "## Introduction"},
+            ]
+        )
         assert blocks[1]["type"] == "heading"
 
     def test_paragraph(self, renderer):
@@ -199,10 +204,12 @@ class TestRenderBlocks:
         assert 'class="doc-paragraph"' in html
 
     def test_list_items_wrapped(self, renderer):
-        html = renderer._render_blocks([
-            {"type": "list_item", "text": "a"},
-            {"type": "list_item", "text": "b"},
-        ])
+        html = renderer._render_blocks(
+            [
+                {"type": "list_item", "text": "a"},
+                {"type": "list_item", "text": "b"},
+            ]
+        )
         assert "<ul" in html
         assert "</ul>" in html
 

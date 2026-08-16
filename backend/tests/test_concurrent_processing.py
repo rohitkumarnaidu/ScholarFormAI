@@ -13,6 +13,7 @@ import pytest
 
 # ── 3A: Concurrent Pipeline Tests ──────────────────────────────────────────
 
+
 class TestConcurrentPipeline:
     """Verify pipeline handles concurrent requests safely."""
 
@@ -116,7 +117,9 @@ class TestConcurrentPipeline:
         lock = threading.Lock()
 
         mock_sb = MagicMock()
-        mock_sb.table.return_value.insert.return_value.execute.return_value.data = [{"id": "mock-doc", "status": "PROCESSING"}]
+        mock_sb.table.return_value.insert.return_value.execute.return_value.data = [
+            {"id": "mock-doc", "status": "PROCESSING"}
+        ]
 
         n_writes = 10
 
@@ -188,6 +191,7 @@ class TestConcurrentPipeline:
 
 # ── 3B: Race Condition Tests ───────────────────────────────────────────────
 
+
 class TestRaceConditions:
     """Verify no data races under concurrent access."""
 
@@ -204,12 +208,15 @@ class TestRaceConditions:
                 None,
             ]
             results = await asyncio.gather(
-                *[ds.DocumentService.create_document(
-                    doc_id=doc_id,
-                    user_id="test-user",
-                    filename="same_file.docx",
-                    template="none",
-                ) for _ in range(2)],
+                *[
+                    ds.DocumentService.create_document(
+                        doc_id=doc_id,
+                        user_id="test-user",
+                        filename="same_file.docx",
+                        template="none",
+                    )
+                    for _ in range(2)
+                ],
             )
 
         created = [r for r in results if r is not None]
@@ -268,7 +275,6 @@ class TestRaceConditions:
             patch.object(MetricsManager, "record_llm_duration", return_value=None),
             patch.object(MetricsManager, "record_llm_cache_hit", return_value=None),
         ):
-
             n_threads = 10
             calls_per_thread = 50
 

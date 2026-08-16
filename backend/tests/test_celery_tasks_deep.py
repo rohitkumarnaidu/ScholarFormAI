@@ -19,59 +19,66 @@ class TestTaskRetryConfig:
 
     def test_process_document_retry_config(self):
         import app.tasks.celery_tasks as ct
+
         task = ct.celery_app.tasks.get("interactive.process_document_async")
         assert task is not None
         assert task.max_retries == 3
 
     def test_process_generation_retry_config(self):
         import app.tasks.celery_tasks as ct
+
         task = ct.celery_app.tasks.get("interactive.process_generation_async")
         assert task is not None
         assert task.max_retries == 3
 
     def test_process_synthesis_retry_config(self):
         import app.tasks.celery_tasks as ct
+
         task = ct.celery_app.tasks.get("interactive.process_synthesis_async")
         assert task is not None
         assert task.max_retries == 3
 
     def test_agent_pipeline_retry_config(self):
         import app.tasks.celery_tasks as ct
+
         task = ct.celery_app.tasks.get("interactive.process_agent_pipeline_async")
         assert task is not None
         assert task.max_retries == 3
 
     def test_agent_rewrite_retry_config(self):
         import app.tasks.celery_tasks as ct
+
         task = ct.celery_app.tasks.get("interactive.process_agent_rewrite_async")
         assert task is not None
         assert task.max_retries == 3
 
     def test_edit_document_retry_config(self):
         import app.tasks.celery_tasks as ct
+
         task = ct.celery_app.tasks.get("interactive.process_edit_document_async")
         assert task is not None
         assert task.max_retries == 3
 
     def test_cleanup_uploads_retry_config(self):
         import app.tasks.celery_tasks as ct
+
         task = ct.celery_app.tasks.get("batch.cleanup_uploads")
         assert task is not None
         assert task.max_retries == 3
 
     def test_all_tasks_have_autoretry(self):
         import app.tasks.celery_tasks as ct
+
         for name, task in ct.celery_app.tasks.items():
             if name.startswith("_") or not hasattr(task, "autoretry_for"):
                 continue
-            assert task.autoretry_for is not None or task.max_retries > 0, (
-                f"Task {name} missing retry config"
-            )
+            assert task.autoretry_for is not None or task.max_retries > 0, f"Task {name} missing retry config"
 
 
 class TestRetryBackoff:
     def test_retry_backoff_params(self):
         import app.tasks.celery_tasks as ct
+
         task = ct.celery_app.tasks.get("interactive.process_document_async")
         assert task.retry_backoff is True
         assert task.retry_backoff_max == 300
@@ -79,12 +86,14 @@ class TestRetryBackoff:
 
     def test_synthesis_retry_backoff(self):
         import app.tasks.celery_tasks as ct
+
         task = ct.celery_app.tasks.get("interactive.process_synthesis_async")
         assert task.retry_backoff is True
         assert task.retry_backoff_max == 300
 
     def test_agent_resume_retry_backoff(self):
         import app.tasks.celery_tasks as ct
+
         task = ct.celery_app.tasks.get("interactive.process_agent_resume_async")
         assert task.retry_backoff is True
         assert task.retry_backoff_max == 300
@@ -93,26 +102,31 @@ class TestRetryBackoff:
 class TestTimeoutConfig:
     def test_soft_time_limit_configured(self):
         import app.tasks.celery_tasks as ct
+
         conf = ct.celery_app.conf
         assert conf.task_soft_time_limit == 600
 
     def test_hard_time_limit_configured(self):
         import app.tasks.celery_tasks as ct
+
         conf = ct.celery_app.conf
         assert conf.task_time_limit == 900
 
     def test_acks_late_enabled(self):
         import app.tasks.celery_tasks as ct
+
         conf = ct.celery_app.conf
         assert conf.task_acks_late is True
 
     def test_reject_on_worker_lost(self):
         import app.tasks.celery_tasks as ct
+
         conf = ct.celery_app.conf
         assert conf.task_reject_on_worker_lost is True
 
     def test_track_started_enabled(self):
         import app.tasks.celery_tasks as ct
+
         conf = ct.celery_app.conf
         assert conf.task_track_started is True
 
@@ -200,7 +214,9 @@ class TestPathValidation:
     def test_cleanup_accepts_valid_paths(self):
         from app.tasks.celery_tasks import cleanup_uploads_task
 
-        with patch("app.tasks.celery_tasks.cleanup_stranded_uploads", return_value={"deleted_files": 0, "removed_dirs": 0}):
+        with patch(
+            "app.tasks.celery_tasks.cleanup_stranded_uploads", return_value={"deleted_files": 0, "removed_dirs": 0}
+        ):
             with patch("app.tasks.celery_tasks.settings.RETENTION_DAYS", 30):
                 result = cleanup_uploads_task(upload_dir="uploads", retention_days=7)
 

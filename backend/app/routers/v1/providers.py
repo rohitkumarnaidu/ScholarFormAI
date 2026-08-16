@@ -301,6 +301,7 @@ async def get_providers(
 import json
 from app.cache.redis_cache import get_redis_cache
 
+
 @router.get("/builtin")
 async def get_builtin():
     cache = get_redis_cache()
@@ -308,12 +309,12 @@ async def get_builtin():
         cached = cache.get("api:providers:builtin")
         if cached:
             return json.loads(cached)
-            
+
     builtin = get_builtin_providers()
-    
+
     if cache.client:
         cache.set("api:providers:builtin", json.dumps({"providers": builtin}), ttl=86400)
-        
+
     return {"providers": builtin}
 
 
@@ -465,7 +466,6 @@ async def list_custom_providers(
     query = select(CustomProvider).where(CustomProvider.user_id == user_id).order_by(CustomProvider.created_at.desc())
     rows = db.execute(query).scalars().all()
     return [_format_custom_provider_response(cp) for cp in rows]
-
 
 
 def _format_custom_provider_response(cp: Any) -> CustomProviderResponse:

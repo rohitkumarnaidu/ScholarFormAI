@@ -23,11 +23,13 @@ class _TestSchema(BaseModel):
 class TestModuleLevel:
     def test_HAS_GUARDRAILS_is_boolean(self):
         import app.pipeline.safety.llm_validator as lv
+
         assert isinstance(lv.HAS_GUARDRAILS, bool)
 
     def test_guardrails_path_active_when_HAS_GUARDRAILS(self):
         """guard_llm_output enters the Guardrails branch when HAS_GUARDRAILS=True and schema is BaseModel."""
         import app.pipeline.safety.llm_validator as lv
+
         with (
             patch.object(lv, "HAS_GUARDRAILS", True),
             patch.object(lv, "Guard") as mock_guard_cls,
@@ -42,6 +44,7 @@ class TestModuleLevel:
     def test_fallback_path_when_HAS_GUARDRAILS_False(self):
         """guard_llm_output uses fallback_validate_output when HAS_GUARDRAILS=False."""
         import app.pipeline.safety.llm_validator as lv
+
         with (
             patch.object(lv, "HAS_GUARDRAILS", False),
             patch.object(lv, "fallback_validate_output") as mock_fallback,
@@ -55,6 +58,7 @@ class TestModuleLevel:
     def test_fallback_path_when_not_BaseModel(self):
         """guard_llm_output falls back when schema is not a BaseModel subclass."""
         import app.pipeline.safety.llm_validator as lv
+
         with (
             patch.object(lv, "HAS_GUARDRAILS", True),
             patch.object(lv, "fallback_validate_output") as mock_fallback,
@@ -67,6 +71,7 @@ class TestModuleLevel:
     def test_fallback_path_when_schema_is_not_a_type(self):
         """guard_llm_output falls back when schema is not a type at all."""
         import app.pipeline.safety.llm_validator as lv
+
         with (
             patch.object(lv, "HAS_GUARDRAILS", True),
             patch.object(lv, "fallback_validate_output") as mock_fallback,
@@ -79,17 +84,20 @@ class TestModuleLevel:
     def test_fallback_validate_output_from_validator_guard(self):
         with patch("app.pipeline.safety.llm_validator.fallback_validate_output") as mock_fb:
             import app.pipeline.safety.llm_validator as lv
+
             lv.fallback_validate_output = mock_fb
 
 
 class TestFallbackValidateOutput:
     def test_imported_from_validator_guard(self):
         import app.pipeline.safety.llm_validator as lv
+
         assert callable(lv.fallback_validate_output)
 
     def _extreme_fallback_env(self, lv):
         """Temporarily force extreme fallback by hiding validator_guard."""
         import importlib
+
         orig_module = sys.modules.get("app.pipeline.safety.validator_guard")
         sys.modules["app.pipeline.safety.validator_guard"] = None
         importlib.reload(lv)
@@ -98,6 +106,7 @@ class TestFallbackValidateOutput:
     def _restore_validator_guard(self, lv, orig_module):
         """Restore validator_guard module after extreme fallback test."""
         import importlib
+
         if orig_module:
             sys.modules["app.pipeline.safety.validator_guard"] = orig_module
         else:
@@ -106,6 +115,7 @@ class TestFallbackValidateOutput:
 
     def test_extreme_fallback_works(self):
         import app.pipeline.safety.llm_validator as lv
+
         orig = self._extreme_fallback_env(lv)
 
         @lv.fallback_validate_output(schema=_TestSchema)
@@ -120,6 +130,7 @@ class TestFallbackValidateOutput:
 
     def test_extreme_fallback_exception_returns_error_value(self):
         import app.pipeline.safety.llm_validator as lv
+
         orig = self._extreme_fallback_env(lv)
 
         @lv.fallback_validate_output(schema=_TestSchema, error_return_value={"fallback": True})
@@ -133,6 +144,7 @@ class TestFallbackValidateOutput:
 
     def test_extreme_fallback_exception_no_error_value(self):
         import app.pipeline.safety.llm_validator as lv
+
         orig = self._extreme_fallback_env(lv)
 
         @lv.fallback_validate_output(schema=_TestSchema)
@@ -336,6 +348,7 @@ class TestGuardLlmOutputGuardrails:
         mock_loop = MagicMock()
 
         import app.pipeline.safety.llm_validator as lv
+
         with patch.object(lv, "asyncio") as mock_asyncio:
             mock_asyncio.get_running_loop.side_effect = RuntimeError("no loop")
             mock_asyncio.new_event_loop.return_value = mock_loop

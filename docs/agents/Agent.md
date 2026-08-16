@@ -37,10 +37,19 @@ Generator Mode B uses an 11-step AI agent pipeline implemented in `pipeline/gene
 
 ## Agent State Machine
 
-```
-IDLE → TASK_PARSING → RESEARCHING → OUTLINING
-  → PENDING_APPROVAL → WRITING → CITING
-  → SCORING → REVIEWING → REFINING → EXPORTING → DONE
+```mermaid
+stateDiagram-v2
+    IDLE --> TASK_PARSING
+    TASK_PARSING --> RESEARCHING
+    RESEARCHING --> OUTLINING
+    OUTLINING --> PENDING_APPROVAL
+    PENDING_APPROVAL --> WRITING
+    WRITING --> CITING
+    CITING --> SCORING
+    SCORING --> REVIEWING
+    REVIEWING --> REFINING
+    REFINING --> EXPORTING
+    EXPORTING --> DONE
 ```
 
 ## Key Components

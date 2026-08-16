@@ -19,19 +19,18 @@ This guide walks through deploying ScholarForm AI to production across all requi
 
 ## Architecture Overview
 
-```
-┌─────────────┐     ┌──────────────┐     ┌────────────┐
-│   Browser   │────▶│  Vercel      │────▶│  Render    │
-│  (User)     │     │  (Frontend)  │     │  (Backend) │
-└─────────────┘     └──────────────┘     └─────┬──────┘
-                                               │
-                    ┌──────────────────────────┼──────────┐
-                    │                          │          │
-                    ▼                          ▼          ▼
-             ┌──────────┐            ┌───────────┐ ┌────────┐
-             │ Supabase │            │   Redis   │ │ Sentry │
-             │ (DB+Auth)│            │ (Upstash) │ │ (Errors)│
-             └──────────┘            └───────────┘ └────────┘
+```mermaid
+flowchart LR
+    Browser[Browser<br>User] --> Vercel[Vercel<br>Frontend]
+    Vercel --> Render[Render<br>Backend]
+    
+    Supabase[Supabase<br>DB+Auth]
+    Redis[Redis<br>Upstash]
+    Sentry[Sentry<br>Errors]
+    
+    Render --> Supabase
+    Render --> Redis
+    Render --> Sentry
 ```
 
 ## Prerequisites

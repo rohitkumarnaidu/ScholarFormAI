@@ -90,9 +90,12 @@ class TestExporter:
     def test_build_markdown_with_all_metadata(self):
         block = MagicMock(index=0, block_type="body", text="Hello world")
         doc = self._make_doc(
-            title="Test Title", authors=["John Doe", "Jane Smith"],
-            affiliations=["MIT"], doi="10.1234/test",
-            abstract="An abstract.", keywords=["kw1", "kw2"],
+            title="Test Title",
+            authors=["John Doe", "Jane Smith"],
+            affiliations=["MIT"],
+            doi="10.1234/test",
+            abstract="An abstract.",
+            keywords=["kw1", "kw2"],
             blocks=[block],
         )
         md = Exporter()._build_markdown(doc)
@@ -234,17 +237,20 @@ class TestLaTeXExporter:
 
     def test_resolve_pandoc_configured(self):
         import app.pipeline.export.latex_exporter as le
+
         with patch.dict(os.environ, {"PANDOC_PATH": "/custom/pandoc"}, clear=True):
             assert le._resolve_pandoc_binary() == "/custom/pandoc"
 
     def test_resolve_pandoc_blank(self):
         import app.pipeline.export.latex_exporter as le
+
         with patch.dict(os.environ, {"PANDOC_PATH": ""}, clear=True):
             with patch("app.pipeline.export.latex_exporter.shutil.which", return_value=None):
                 assert le._resolve_pandoc_binary() is None
 
     def test_resolve_pandoc_via_shutil(self):
         import app.pipeline.export.latex_exporter as le
+
         with patch.dict(os.environ, {"PANDOC_PATH": ""}, clear=True):
             with patch("app.pipeline.export.latex_exporter.shutil.which", return_value="/usr/bin/pandoc"):
                 assert le._resolve_pandoc_binary() == "/usr/bin/pandoc"
@@ -254,41 +260,47 @@ class TestLaTeXExporter:
             LaTeXExporter().convert_to_latex("/nonexistent", str(tmp_path))
 
     def test_convert_pandoc_not_found(self, tmp_path):
-        f = tmp_path / "in.docx"; f.write_text("d")
+        f = tmp_path / "in.docx"
+        f.write_text("d")
         with patch("app.pipeline.export.latex_exporter._resolve_pandoc_binary", return_value=None):
             with pytest.raises(RuntimeError, match="Pandoc is not installed"):
                 LaTeXExporter().convert_to_latex(str(f), str(tmp_path))
 
     def test_convert_timeout(self, tmp_path):
-        f = tmp_path / "in.docx"; f.write_text("d")
+        f = tmp_path / "in.docx"
+        f.write_text("d")
         with patch("app.pipeline.export.latex_exporter._resolve_pandoc_binary", return_value="/pandoc"):
             with patch("app.pipeline.export.latex_exporter._convert_via_pandoc", return_value=False):
                 with pytest.raises(RuntimeError, match="Pandoc conversion failed"):
                     LaTeXExporter(5).convert_to_latex(str(f), str(tmp_path))
 
     def test_convert_oserror(self, tmp_path):
-        f = tmp_path / "in.docx"; f.write_text("d")
+        f = tmp_path / "in.docx"
+        f.write_text("d")
         with patch("app.pipeline.export.latex_exporter._resolve_pandoc_binary", return_value="/pandoc"):
             with patch("app.pipeline.export.latex_exporter._convert_via_pandoc", return_value=False):
                 with pytest.raises(RuntimeError, match="Pandoc conversion failed"):
                     LaTeXExporter().convert_to_latex(str(f), str(tmp_path))
 
     def test_convert_nonzero_return(self, tmp_path):
-        f = tmp_path / "in.docx"; f.write_text("d")
+        f = tmp_path / "in.docx"
+        f.write_text("d")
         with patch("app.pipeline.export.latex_exporter._resolve_pandoc_binary", return_value="/pandoc"):
             with patch("app.pipeline.export.latex_exporter._convert_via_pandoc", return_value=False):
                 with pytest.raises(RuntimeError, match="Pandoc conversion failed"):
                     LaTeXExporter().convert_to_latex(str(f), str(tmp_path))
 
     def test_convert_output_not_created(self, tmp_path):
-        f = tmp_path / "in.docx"; f.write_text("d")
+        f = tmp_path / "in.docx"
+        f.write_text("d")
         with patch("app.pipeline.export.latex_exporter._resolve_pandoc_binary", return_value="/pandoc"):
             with patch("app.pipeline.export.latex_exporter._convert_via_pandoc", return_value=False):
                 with pytest.raises(RuntimeError, match="Pandoc conversion failed"):
                     LaTeXExporter().convert_to_latex(str(f), str(tmp_path))
 
     def test_convert_success(self, tmp_path):
-        f = tmp_path / "in.docx"; f.write_text("d")
+        f = tmp_path / "in.docx"
+        f.write_text("d")
         with patch("app.pipeline.export.latex_exporter._resolve_pandoc_binary", return_value="/pandoc"):
             with patch("app.pipeline.export.latex_exporter._convert_via_pandoc", return_value=True):
                 result = LaTeXExporter().convert_to_latex(str(f), str(tmp_path))
@@ -326,14 +338,16 @@ class TestPDFExporter:
         assert PDFExporter(libreoffice_path=None).convert_to_pdf("/nonexistent", "/tmp") is None
 
     def test_convert_libreoffice_success(self, tmp_path):
-        f = tmp_path / "in.docx"; f.write_text("d")
+        f = tmp_path / "in.docx"
+        f.write_text("d")
         (tmp_path / "in.pdf").write_text("pdf")
         r = MagicMock(returncode=0, stderr="", stdout="")
         with patch("app.pipeline.export.pdf_exporter.subprocess.run", return_value=r):
             assert PDFExporter("/soffice").convert_to_pdf(str(f), str(tmp_path)) == str(tmp_path / "in.pdf")
 
     def test_convert_libreoffice_fails_weasyprint_works(self, tmp_path):
-        f = tmp_path / "in.docx"; f.write_text("d")
+        f = tmp_path / "in.docx"
+        f.write_text("d")
         pdf = str(tmp_path / "in.pdf")
         r = MagicMock(returncode=1, stderr="e", stdout="")
         with patch("app.pipeline.export.pdf_exporter.subprocess.run", return_value=r):
@@ -341,7 +355,8 @@ class TestPDFExporter:
                 assert PDFExporter("/soffice").convert_to_pdf(str(f), str(tmp_path)) == pdf
 
     def test_convert_all_fail(self, tmp_path):
-        f = tmp_path / "in.docx"; f.write_text("d")
+        f = tmp_path / "in.docx"
+        f.write_text("d")
         r = MagicMock(returncode=1, stderr="e", stdout="")
         with patch("app.pipeline.export.pdf_exporter.subprocess.run", return_value=r):
             with patch.object(PDFExporter, "_weasyprint_fallback", return_value=None):
@@ -353,18 +368,21 @@ class TestPDFExporter:
 
     def test_weasyprint_success(self, tmp_path):
         import types
+
         wp_mod = types.ModuleType("weasyprint")
         wp_mod.HTML = MagicMock()
         docx_mod = types.ModuleType("docx")
         docx_mod.Document = MagicMock()
         docx_mod.Document.return_value.paragraphs = []
-        pdf = tmp_path / "o.pdf"; pdf.write_text("pdf")
+        pdf = tmp_path / "o.pdf"
+        pdf.write_text("pdf")
         with patch.dict("sys.modules", {"weasyprint": wp_mod, "docx": docx_mod}):
             r = PDFExporter()._weasyprint_fallback("/in.docx", str(pdf))
             assert r == str(pdf)
 
     def test_weasyprint_exception(self, tmp_path):
         import types
+
         wp_mod = types.ModuleType("weasyprint")
         wp_mod.HTML = MagicMock()
         docx_mod = types.ModuleType("docx")
@@ -373,13 +391,15 @@ class TestPDFExporter:
             assert PDFExporter()._weasyprint_fallback("/in.docx", str(tmp_path / "o.pdf")) is None
 
     def test_libreoffice_not_found_fallback(self, tmp_path):
-        f = tmp_path / "in.docx"; f.write_text("d")
+        f = tmp_path / "in.docx"
+        f.write_text("d")
         pdf = str(tmp_path / "in.pdf")
         with patch.object(PDFExporter, "_weasyprint_fallback", return_value=pdf):
             assert PDFExporter(libreoffice_path=None).convert_to_pdf(str(f), str(tmp_path)) == pdf
 
     def test_docx2pdf_fallback(self, tmp_path):
-        f = tmp_path / "in.docx"; f.write_text("d")
+        f = tmp_path / "in.docx"
+        f.write_text("d")
         r = MagicMock(returncode=1, stderr="e", stdout="")
         with patch("app.pipeline.export.pdf_exporter.subprocess.run", return_value=r):
             with patch.object(PDFExporter, "_weasyprint_fallback", return_value=None):
@@ -420,6 +440,7 @@ class TestJATSGenerator:
 
     def test_publication_date_datetime(self):
         from datetime import datetime
+
         xml = JATSGenerator().to_xml(self._doc(publication_date=datetime(2024, 6, 15)))
         assert "<year>2024</year>" in xml
         assert "<month>06</month>" in xml

@@ -21,21 +21,29 @@ import pytest
 #  we need the real module for these tests.
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture(autouse=True)
 def _clean_stubs():
     key = "app.pipeline.generation.document_generator"
-    
+
     # Save original modules to restore them later
     saved = {}
-    keys_to_clean = [key, "app.routers.v1.stream", "app.realtime.events", "app.realtime.pubsub", "app.routers.v1.generator"]
+    keys_to_clean = [
+        key,
+        "app.routers.v1.stream",
+        "app.realtime.events",
+        "app.realtime.pubsub",
+        "app.routers.v1.generator",
+    ]
     for k in keys_to_clean:
         if k in sys.modules:
             saved[k] = sys.modules.pop(k)
 
     from unittest.mock import MagicMock as _MM
+
     sys.modules["app.routers.v1.generator"] = _MM()
     yield
-    
+
     # Restore original modules
     for k in keys_to_clean:
         if k in sys.modules:
@@ -48,6 +56,7 @@ def _clean_stubs():
 #  Helpers
 # ---------------------------------------------------------------------------
 
+
 def _fresh_module():
     """Return a freshly-loaded document_generator module with
     get_supabase_client already mocked.  Must be called inside
@@ -55,6 +64,7 @@ def _fresh_module():
     import importlib
 
     import app.pipeline.generation.document_generator as m
+
     importlib.reload(m)
     return m
 
@@ -92,6 +102,7 @@ def _default_doc_service_mock():
 # ---------------------------------------------------------------------------
 #  Fixture — every test gets a clean instance with all external deps mocked
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def dc():
@@ -131,6 +142,7 @@ SAMPLE_BLOCKS = [
 # ═══════════════════════════════════════════════════════════════════════════
 # _normalize_status
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 class TestNormalizeStatus:
     def test_pending(self, dc):
@@ -178,6 +190,7 @@ class TestNormalizeStatus:
 # _now_iso
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestNowIso:
     def test_returns_iso_string(self, dc):
         _, dg = dc
@@ -188,11 +201,13 @@ class TestNowIso:
 # _default_session_config
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestDefaultSessionConfig:
     def test_returns_correct_config(self, dc):
         _, dg = dc
-        c = dg._default_session_config(doc_type="paper", template="ieee",
-                                        metadata={"t": "T"}, options={"wc": 3}, user_id="u1")
+        c = dg._default_session_config(
+            doc_type="paper", template="ieee", metadata={"t": "T"}, options={"wc": 3}, user_id="u1"
+        )
         assert c["doc_type"] == "paper"
         assert c["template"] == "ieee"
         assert c["stage"] == "queued"
@@ -202,12 +217,17 @@ class TestDefaultSessionConfig:
 # _session_record_to_status
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestSessionRecordToStatus:
     def test_basic(self, dc):
         _, dg = dc
-        s = {"id": "j1", "status": "COMPLETED", "progress": 100,
-             "config_json": {"stage": "done", "message": "Done.", "output_path": "/p/doc.docx"},
-             "outline_json": ["Intro"]}
+        s = {
+            "id": "j1",
+            "status": "COMPLETED",
+            "progress": 100,
+            "config_json": {"stage": "done", "message": "Done.", "output_path": "/p/doc.docx"},
+            "outline_json": ["Intro"],
+        }
         r = dg._session_record_to_status(s)
         assert r["job_id"] == "j1"
         assert r["status"] == "done"
@@ -249,6 +269,7 @@ class TestSessionRecordToStatus:
 # _get_session_record
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestGetSessionRecord:
     def test_supabase_returns_data(self, dc):
         _, dg = dc
@@ -286,6 +307,7 @@ class TestGetSessionRecord:
 # get_session
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestGetSession:
     def test_returns_none_for_missing(self, dc):
         _, dg = dc
@@ -298,6 +320,7 @@ class TestGetSession:
 # update_status
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestUpdateStatus:
     def test_updates_db_and_volatile(self, dc):
         _, dg = dc
@@ -306,8 +329,9 @@ class TestUpdateStatus:
 
     def test_with_error_and_outline(self, dc):
         _, dg = dc
-        dg.update_status("job-1", status="failed", progress=0,
-                          stage="error", message="fail", error="err", outline=["Intro"])
+        dg.update_status(
+            "job-1", status="failed", progress=0, stage="error", message="fail", error="err", outline=["Intro"]
+        )
         assert dg._volatile_sessions["job-1"]["config_json"]["error"] == "err"
 
     def test_with_output_path(self, dc):
@@ -325,10 +349,12 @@ class TestUpdateStatus:
 # start_job
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestStartJob:
     def test_creates_session(self, dc):
         _, dg = dc
         import asyncio
+
         jid = asyncio.run(dg.start_job("paper", "ieee", {"title": "T"}, {}, "u1"))
         assert uuid.UUID(jid)
 
@@ -341,6 +367,7 @@ class TestStartJob:
             sb.table.return_value.insert.side_effect = Exception("DB down")
             msb.return_value = sb
             import asyncio
+
             jid = asyncio.run(dg.start_job("resume", "modern", {}, {}, None))
             assert jid in dg._volatile_sessions
 
@@ -354,6 +381,7 @@ class TestStartJob:
             mod.DocumentService = _default_doc_service_mock()
             dg = mod.DocumentGenerator()
             import asyncio
+
             jid = asyncio.run(dg.start_job("report", "default", {}, {}, "u1"))
             assert jid in dg._volatile_sessions
 
@@ -362,13 +390,16 @@ class TestStartJob:
 # run_pipeline
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestRunPipeline:
     def _make_session_data(self):
         return {
             "id": "j1",
             "config_json": {
-                "doc_type": "paper", "template": "ieee",
-                "metadata": {"title": "T"}, "options": {},
+                "doc_type": "paper",
+                "template": "ieee",
+                "metadata": {"title": "T"},
+                "options": {},
             },
         }
 
@@ -388,9 +419,11 @@ class TestRunPipeline:
                     cp_i = MagicMock()
                     cp_i.parse.return_value = SAMPLE_BLOCKS
                     cp.return_value = cp_i
-                    with patch.object(mod, "Formatter") as fm, \
-                         patch.object(mod, "Exporter") as em, \
-                         patch.object(mod, "asyncio") as _asyncio:
+                    with (
+                        patch.object(mod, "Formatter") as fm,
+                        patch.object(mod, "Exporter") as em,
+                        patch.object(mod, "asyncio") as _asyncio,
+                    ):
                         loop = MagicMock()
                         loop.run_in_executor.return_value = "LLM text"
                         _asyncio.get_event_loop.return_value = loop
@@ -406,6 +439,7 @@ class TestRunPipeline:
                             dg._mod = mod
                             dg._volatile_sessions["j1"] = {}
                             import asyncio
+
                             asyncio.run(dg.run_pipeline("j1"))
 
     def test_job_not_found_returns_early(self):
@@ -416,6 +450,7 @@ class TestRunPipeline:
             mod.DocumentService = _default_doc_service_mock()
             dg = mod.DocumentGenerator()
             import asyncio
+
             asyncio.run(dg.run_pipeline("nonexistent"))
 
     def test_pipeline_exception_triggers_failure(self):
@@ -433,12 +468,14 @@ class TestRunPipeline:
                 pb_i.build.side_effect = ValueError("boom")
                 pb.return_value = pb_i
                 import asyncio
+
                 asyncio.run(dg.run_pipeline("j1"))
 
 
 # ═══════════════════════════════════════════════════════════════════════════
 # get_status
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 class TestGetStatus:
     def test_from_session(self, dc):
@@ -454,8 +491,11 @@ class TestGetStatus:
             mod.emit_event = MagicMock()
             ds = _default_doc_service_mock()
             ds.get_document.return_value = {
-                "id": "j1", "status": "COMPLETED", "current_stage": "DONE",
-                "progress": 100, "output_path": "/out/doc.docx",
+                "id": "j1",
+                "status": "COMPLETED",
+                "current_stage": "DONE",
+                "progress": 100,
+                "output_path": "/out/doc.docx",
             }
             mod.DocumentService = ds
             dg = mod.DocumentGenerator()
@@ -474,11 +514,15 @@ class TestGetStatus:
     def test_outline_from_result(self, dc):
         _, dg = dc
         sb, t = _default_supabase_mock()
-        t.execute.return_value = MagicMock(data={
-            "id": "j1", "status": "COMPLETED", "progress": 100,
-            "config_json": {"stage": "done", "message": "Done"},
-            "outline_json": [],
-        })
+        t.execute.return_value = MagicMock(
+            data={
+                "id": "j1",
+                "status": "COMPLETED",
+                "progress": 100,
+                "config_json": {"stage": "done", "message": "Done"},
+                "outline_json": [],
+            }
+        )
         dg._mod.DocumentService.get_document_result.return_value = {
             "structured_data": {"outline": ["Intro"]},
         }
@@ -495,8 +539,11 @@ class TestGetStatus:
             mod.emit_event = MagicMock()
             ds = _default_doc_service_mock()
             ds.get_document.return_value = {
-                "id": "j1", "status": "FAILED", "error_message": "boom",
-                "current_stage": "ERROR", "progress": 0,
+                "id": "j1",
+                "status": "FAILED",
+                "error_message": "boom",
+                "current_stage": "ERROR",
+                "progress": 0,
             }
             mod.DocumentService = ds
             dg = mod.DocumentGenerator()
@@ -508,6 +555,7 @@ class TestGetStatus:
 # ═══════════════════════════════════════════════════════════════════════════
 # get_download_path
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 class TestGetDownloadPath:
     def test_from_session(self, dc):
@@ -522,7 +570,9 @@ class TestGetDownloadPath:
             mod.emit_event = MagicMock()
             ds = _default_doc_service_mock()
             ds.get_document.return_value = {
-                "id": "j1", "status": "COMPLETED", "output_path": "/out/doc.docx",
+                "id": "j1",
+                "status": "COMPLETED",
+                "output_path": "/out/doc.docx",
             }
             mod.DocumentService = ds
             dg = mod.DocumentGenerator()
@@ -559,6 +609,7 @@ class TestGetDownloadPath:
 # _update
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestUpdate:
     def test_queued(self, dc):
         _, dg = dc
@@ -576,6 +627,7 @@ class TestUpdate:
 # ═══════════════════════════════════════════════════════════════════════════
 # _emit
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 class TestEmit:
     def test_calls_emit_event(self, dc):
@@ -595,6 +647,7 @@ class TestEmit:
 # _llm_generate
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestLlmGenerate:
     def _llm_mock(self, module, side_effect=None):
         """Patch app.services.llm_service so the dynamic imports in _llm_generate get mocks."""
@@ -613,6 +666,7 @@ class TestLlmGenerate:
         _, dg = dc
         with self._llm_mock(dg._mod):
             import asyncio
+
             r = asyncio.run(dg._llm_generate("prompt", "j1"))
             assert r == "NVIDIA response"
 
@@ -625,6 +679,7 @@ class TestLlmGenerate:
         svc.LLM_DEEPSEEK.complete.return_value = "DeepSeek response"
         with patch.dict("sys.modules", {"app.services.llm_service": svc}, clear=False):
             import asyncio
+
             r = asyncio.run(dg._llm_generate("prompt", "j1"))
             assert r == "DeepSeek response"
 
@@ -640,6 +695,7 @@ class TestLlmGenerate:
             svc.LLM_DEEPSEEK.complete.side_effect = Exception("also down")
             with patch.dict("sys.modules", {"app.services.llm_service": svc}, clear=False):
                 import asyncio
+
                 r = asyncio.run(dg._llm_generate("prompt", "j1"))
                 assert "Fallback" in r
                 assert "Introduction" in r
@@ -648,6 +704,7 @@ class TestLlmGenerate:
 # ═══════════════════════════════════════════════════════════════════════════
 # _rule_based_skeleton
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 class TestRuleBasedSkeleton:
     def test_academic_paper(self, dc):
@@ -670,14 +727,14 @@ class TestRuleBasedSkeleton:
 # _format_and_export
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestFormatAndExport:
     def test_success(self, dc):
         _, dg = dc
         mod = dg._mod
         Path("/tmp/gen_out/t.docx")
         mod.GENERATED_DIR = Path("/tmp/gen_out")
-        with patch.object(mod, "Formatter") as fm, \
-             patch.object(mod, "Exporter") as em:
+        with patch.object(mod, "Formatter") as fm, patch.object(mod, "Exporter") as em:
             f_i = MagicMock()
             f_i.process.side_effect = lambda d: setattr(d, "generated_doc", MagicMock()) or d
             fm.return_value = f_i
@@ -686,17 +743,19 @@ class TestFormatAndExport:
             em.return_value = e_i
             with patch.object(Path, "exists", return_value=True):
                 import asyncio
-                r = asyncio.run(dg._format_and_export(SAMPLE_BLOCKS, "ieee", "j1",
-                                                       {"title": "T", "authors": ["A"], "keywords": ["k"]},
-                                                       "paper"))
+
+                r = asyncio.run(
+                    dg._format_and_export(
+                        SAMPLE_BLOCKS, "ieee", "j1", {"title": "T", "authors": ["A"], "keywords": ["k"]}, "paper"
+                    )
+                )
                 assert str(r).endswith("j1.docx")
 
     def test_skip_empty_blocks(self, dc):
         _, dg = dc
         mod = dg._mod
         mod.GENERATED_DIR = Path("/tmp/gen_out")
-        with patch.object(mod, "Formatter") as fm, \
-             patch.object(mod, "Exporter") as em:
+        with patch.object(mod, "Formatter") as fm, patch.object(mod, "Exporter") as em:
             f_i = MagicMock()
             f_i.process.side_effect = lambda d: setattr(d, "generated_doc", MagicMock()) or d
             fm.return_value = f_i
@@ -705,15 +764,14 @@ class TestFormatAndExport:
             em.return_value = e_i
             with patch.object(Path, "exists", return_value=True):
                 import asyncio
-                asyncio.run(dg._format_and_export([{"type": "", "content": "  "}],
-                                                    "ieee", "j1", {}, "paper"))
+
+                asyncio.run(dg._format_and_export([{"type": "", "content": "  "}], "ieee", "j1", {}, "paper"))
 
     def test_no_generated_doc_raises(self, dc):
         _, dg = dc
         mod = dg._mod
         mod.GENERATED_DIR = Path("/tmp/gen_out")
-        with patch.object(mod, "Formatter") as fm, \
-             patch.object(mod, "Exporter") as em:
+        with patch.object(mod, "Formatter") as fm, patch.object(mod, "Exporter") as em:
             f_i = MagicMock()
             f_i.process.return_value = None
             fm.return_value = f_i
@@ -721,6 +779,7 @@ class TestFormatAndExport:
             em.return_value = e_i
             with patch.object(Path, "exists", return_value=True):
                 import asyncio
+
                 with pytest.raises(RuntimeError, match="Formatting failed"):
                     asyncio.run(dg._format_and_export(SAMPLE_BLOCKS, "ieee", "j1", {}, "paper"))
 
@@ -728,8 +787,7 @@ class TestFormatAndExport:
         _, dg = dc
         mod = dg._mod
         mod.GENERATED_DIR = Path("/tmp/gen_out")
-        with patch.object(mod, "Formatter") as fm, \
-             patch.object(mod, "Exporter") as em:
+        with patch.object(mod, "Formatter") as fm, patch.object(mod, "Exporter") as em:
             f_i = MagicMock()
             f_i.process.side_effect = lambda d: setattr(d, "generated_doc", MagicMock()) or d
             fm.return_value = f_i
@@ -738,6 +796,7 @@ class TestFormatAndExport:
             em.return_value = e_i
             with patch.object(Path, "exists", return_value=False):
                 import asyncio
+
                 with pytest.raises(RuntimeError, match="Export failed"):
                     asyncio.run(dg._format_and_export(SAMPLE_BLOCKS, "ieee", "j1", {}, "paper"))
 
@@ -746,22 +805,24 @@ class TestFormatAndExport:
 # _extract_outline
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestExtractOutline:
     def test_extracts_headings(self, dc):
         _, dg = dc
-        r = dg._extract_outline([
-            {"type": "TITLE", "content": "Title"},
-            {"type": "HEADING_1", "content": "Intro"},
-            {"type": "BODY", "content": "text"},
-            {"type": "HEADING_2", "content": "Sub"},
-            {"type": "ABSTRACT", "content": "Abstract"},
-        ])
+        r = dg._extract_outline(
+            [
+                {"type": "TITLE", "content": "Title"},
+                {"type": "HEADING_1", "content": "Intro"},
+                {"type": "BODY", "content": "text"},
+                {"type": "HEADING_2", "content": "Sub"},
+                {"type": "ABSTRACT", "content": "Abstract"},
+            ]
+        )
         assert r == ["Title", "Intro", "Sub", "Abstract"]
 
     def test_dedup(self, dc):
         _, dg = dc
-        r = dg._extract_outline([{"type": "HEADING_1", "content": "Intro"},
-                                  {"type": "HEADING_2", "content": "intro"}])
+        r = dg._extract_outline([{"type": "HEADING_1", "content": "Intro"}, {"type": "HEADING_2", "content": "intro"}])
         assert len(r) == 1
 
     def test_limits_to_50(self, dc):
@@ -775,14 +836,14 @@ class TestExtractOutline:
 
     def test_blank_content_skipped(self, dc):
         _, dg = dc
-        r = dg._extract_outline([{"type": "HEADING_1", "content": "  "},
-                                  {"type": "HEADING_2", "content": ""}])
+        r = dg._extract_outline([{"type": "HEADING_1", "content": "  "}, {"type": "HEADING_2", "content": ""}])
         assert r == []
 
 
 # ═══════════════════════════════════════════════════════════════════════════
 # _compute_sha256
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 class TestComputeSha256:
     def test_returns_hex(self, dc, tmp_path):
@@ -796,12 +857,14 @@ class TestComputeSha256:
 # get_generator
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestGetGenerator:
     def _build_module(self):
         """Build without patching supabase (not needed for this test)."""
         import importlib
 
         import app.pipeline.generation.document_generator as m
+
         if "app.pipeline.generation.document_generator" in sys.modules:
             pass
         return importlib.reload(m)
@@ -828,6 +891,7 @@ class TestGetGenerator:
 # Gap tests — cover remaining partial/intermittent branches
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestBranchGaps:
     """Targeted tests for branches coverage shows as missed or partial."""
 
@@ -851,6 +915,7 @@ class TestBranchGaps:
             mod.DocumentService = _default_doc_service_mock()
             dg = mod.DocumentGenerator()
             import asyncio
+
             jid = asyncio.run(dg.start_job("paper", "ieee", {"title": "T"}, {}, "u1"))
             assert jid in dg._volatile_sessions
 
@@ -865,6 +930,7 @@ class TestBranchGaps:
             mod.DocumentService = _default_doc_service_mock()
             dg = mod.DocumentGenerator()
             import asyncio
+
             sb.table.return_value.insert.return_value = sb
             sb.execute.return_value = MagicMock(data=[{"id": "j1"}])
             jid = asyncio.run(dg.start_job("paper", "ieee", {}, {}, "u1"))
@@ -873,22 +939,25 @@ class TestBranchGaps:
     def test_update_output_hash_handles_exception(self):
         """run_pipeline: _compute_sha256 exception is caught (lines 304-308)."""
         sb, t = _default_supabase_mock()
-        t.execute.return_value = MagicMock(data={
-            "id": "j1",
-            "config_json": {"doc_type": "paper", "template": "ieee",
-                          "metadata": {"title": "T"}, "options": {}},
-        })
+        t.execute.return_value = MagicMock(
+            data={
+                "id": "j1",
+                "config_json": {"doc_type": "paper", "template": "ieee", "metadata": {"title": "T"}, "options": {}},
+            }
+        )
         with patch("app.db.supabase_client.get_supabase_client", return_value=sb):
             mod = _fresh_module()
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
             mod.DocumentService = _default_doc_service_mock()
             mod.DocumentService.update_output_hash.side_effect = Exception("hash fail")
-            with patch.object(mod, "PromptBuilder") as pb, \
-                 patch.object(mod, "ContentParser") as cp, \
-                 patch.object(mod, "Formatter") as fm, \
-                 patch.object(mod, "Exporter") as em, \
-                 patch.object(mod, "asyncio") as _asyncio:
+            with (
+                patch.object(mod, "PromptBuilder") as pb,
+                patch.object(mod, "ContentParser") as cp,
+                patch.object(mod, "Formatter") as fm,
+                patch.object(mod, "Exporter") as em,
+                patch.object(mod, "asyncio") as _asyncio,
+            ):
                 pb_i = MagicMock()
                 pb_i.build.return_value = "prompt"
                 pb.return_value = pb_i
@@ -910,6 +979,7 @@ class TestBranchGaps:
                     dg._mod = mod
                     dg._volatile_sessions["j1"] = {}
                     import asyncio
+
                     asyncio.run(dg.run_pipeline("j1"))
 
     def test_llm_generate_nvidia_empty_response(self, dc):
@@ -923,6 +993,7 @@ class TestBranchGaps:
         dg._volatile_sessions["j1"] = {"config_json": {"doc_type": "paper", "metadata": {"title": "T"}}}
         with patch.dict("sys.modules", {"app.services.llm_service": svc}, clear=False):
             import asyncio
+
             r = asyncio.run(dg._llm_generate("prompt", "j1"))
             assert r == "DeepSeek"
 
@@ -939,6 +1010,7 @@ class TestBranchGaps:
         }
         with patch.dict("sys.modules", {"app.services.llm_service": svc}, clear=False):
             import asyncio
+
             r = asyncio.run(dg._llm_generate("prompt", "j1"))
             assert "Introduction" in r
 
@@ -950,8 +1022,7 @@ class TestBranchGaps:
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
             mod.DocumentService = _default_doc_service_mock()
-            with patch.object(mod, "Formatter") as fm, \
-                 patch.object(mod, "Exporter") as em:
+            with patch.object(mod, "Formatter") as fm, patch.object(mod, "Exporter") as em:
                 fm_i = MagicMock()
                 fm_i.process.side_effect = lambda d: setattr(d, "generated_doc", MagicMock()) or d
                 fm.return_value = fm_i
@@ -962,7 +1033,13 @@ class TestBranchGaps:
                     dg = mod.DocumentGenerator()
                     dg._mod = mod
                     import asyncio
-                    asyncio.run(dg._format_and_export(
-                        [{"type": "BODY", "content": "text", "level": "not_a_number"}],
-                        "ieee", "j1", {"title": "T"}, "paper",
-                    ))
+
+                    asyncio.run(
+                        dg._format_and_export(
+                            [{"type": "BODY", "content": "text", "level": "not_a_number"}],
+                            "ieee",
+                            "j1",
+                            {"title": "T"},
+                            "paper",
+                        )
+                    )

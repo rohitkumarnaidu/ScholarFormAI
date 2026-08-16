@@ -1451,57 +1451,68 @@ The LLM service (`app/services/llm_service.py:185-244`) defends against prompt i
 
 **Production (Standard) — recommended starting point**:
 
-```
-┌─ Render Web Service ─────────────────────┐
-│ FastAPI (4 vCPU, 8GB)                    │
-│  ├─ LOW_MEMORY_MODE=true                  │
-│  ├─ PRELOAD_AI_MODELS=false               │
-│  ├─ DEFAULT_FAST_MODE=true                │
-│  ├─ RAG_EMBEDDING_PROVIDER=huggingface_api│
-│  └─ SSE streaming via Redis               │
-├─ Render Celery Worker ────────────────────┤
-│ Background pipeline tasks (2 vCPU, 4GB)   │
-├─ Render Redis ────────────────────────────┤
-│ Pub/sub + LLM cache + rate limiting       │
-├─ HF Spaces ───────────────────────────────┤
-│ GROBID (1.5GB) + Docling (2GB) + LLMClassifier  │
-│ Auto-sleep on idle                        │
-├─ NVIDIA NIM API ──────────────────────────┤
-│ Primary LLM tier                          │
-├─ Groq API ────────────────────────────────┤
-│ Fallback LLM tier                         │
-├─ Supabase ────────────────────────────────┤
-│ Primary DB + file storage                 │
-└───────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    subgraph Web [Render Web Service]
+        FastAPI["FastAPI (4 vCPU, 8GB)<br>LOW_MEMORY_MODE=true<br>PRELOAD_AI_MODELS=false<br>DEFAULT_FAST_MODE=true<br>RAG_EMBEDDING_PROVIDER=huggingface_api<br>SSE streaming via Redis"]
+    end
+    
+    subgraph Worker [Render Celery Worker]
+        Celery["Background pipeline tasks (2 vCPU, 4GB)"]
+    end
+    
+    subgraph Redis [Render Redis]
+        PubSub["Pub/sub + LLM cache + rate limiting"]
+    end
+    
+    subgraph HF [HF Spaces]
+        Spaces["GROBID (1.5GB) + Docling (2GB) + LLMClassifier<br>Auto-sleep on idle"]
+    end
+    
+    subgraph NIM [NVIDIA NIM API]
+        Primary["Primary LLM tier"]
+    end
+    
+    subgraph Groq [Groq API]
+        Fallback["Fallback LLM tier"]
+    end
+    
+    subgraph DB [Supabase]
+        PrimaryDB["Primary DB + file storage"]
+    end
+
+    Web --> Redis
+    Worker --> Redis
+    Worker --> HF
+    Web --> NIM
+    Web --> Groq
+    Web --> DB
+    Worker --> DB
 ```
 
 **Enterprise — maximum throughput and resilience**:
 
-```
-┌─ Load Balancer ──────────────────────────────┐
-├─ Web Service Cluster (×3) ───────────────────┤
-│ FastAPI (16 vCPU, 32GB each)                 │
-│  LOW_MEMORY_MODE=false                       │
-│  PRELOAD_AI_MODELS=true                      │
-│  All local models: BGE-M3 + LLMClassifier          │
-├─ Celery Worker Pool (×2) ────────────────────┤
-│ Background pipeline (8 vCPU, 16GB each)      │
-├─ GPU Worker ─────────────────────────────────┤
-│ A10G: LLM-based PDF parsing + Ollama 70B (local LLM)   │
-├─ Redis Cluster ──────────────────────────────┤
-│ 3 nodes: caching + pub/sub + rate limiting   │
-├─ GROBID Cluster (×2) ────────────────────────┤
-│ Java services behind internal LB (3GB each)  │
-├─ Docling Cluster (×2) ───────────────────────┤
-│ Python services behind internal LB (4GB each)│
-├─ NVIDIA NIM API ─────────────────────────────┤
-├─ Groq API ───────────────────────────────────┤
-├─ OpenRouter API ─────────────────────────────┤
-├─ Ollama (local, 70B) ────────────────────────┤
-│ 4th-tier LLM fallback on GPU                 │
-├─ ChromaDB (persistent) ──────────────────────┤
-├─ Supabase ───────────────────────────────────┤
-└──────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    LB[Load Balancer] --> Web["Web Service Cluster (×3)<br>FastAPI (16 vCPU, 32GB each)<br>LOW_MEMORY_MODE=false<br>PRELOAD_AI_MODELS=true<br>All local models: BGE-M3 + LLMClassifier"]
+    LB --> Worker["Celery Worker Pool (×2)<br>Background pipeline (8 vCPU, 16GB each)"]
+    
+    Worker --> GPU["GPU Worker<br>A10G: LLM-based PDF parsing + Ollama 70B (local LLM)"]
+    
+    Web --> Redis["Redis Cluster<br>3 nodes: caching + pub/sub + rate limiting"]
+    Worker --> Redis
+    
+    Worker --> GROBID["GROBID Cluster (×2)<br>Java services behind internal LB (3GB each)"]
+    Worker --> Docling["Docling Cluster (×2)<br>Python services behind internal LB (4GB each)"]
+    
+    Web --> NIM["NVIDIA NIM API"]
+    Web --> Groq["Groq API"]
+    Web --> OpenRouter["OpenRouter API"]
+    GPU --> Ollama["Ollama (local, 70B)<br>4th-tier LLM fallback on GPU"]
+    Web --> Chroma["ChromaDB (persistent)"]
+    Worker --> Chroma
+    Web --> Supabase["Supabase"]
+    Worker --> Supabase
 ```
 
 ### 19.3 Horizontal Scaling Strategy
@@ -2070,17 +2081,16 @@ curl -s http://localhost:8000/api/v1/health/ready | jq .
 
 ### 23.3 Data Flow Description for Sensitive Data Through AI Pipeline
 
-```
-User Upload ──→ API Gateway ──→ PipelineOrchestrator ──→ LLM/External Services ──→ Output
-    │               │                    │                        │                    │
-    │         [Auth check]          [Dedup check]            [PII stripped]       [Validated]
-    │         get_current_user()    SHA-256 hash            sanitize_for_llm()   guard_llm_output()
-    │               │                    │                        │                    │
-    v               v                    v                        v                    v
-Sensitive data:  ┌──────────┐     ┌──────────────┐        ┌───────────────┐    ┌──────────┐
-Manuscript text, │ JWT token│     │ File metadata │         │ Cleaned text │     │ Final    │
-PII, API keys    └──────────┘     └──────────────┘        └───────────────┘    │ document │
-                                                                               └──────────┘
+```mermaid
+flowchart TD
+    Upload[User Upload<br>Sensitive data:<br>Manuscript text, PII, API keys] --> API[API Gateway<br>Auth check: get_current_user()]
+    API --> JWT[JWT token]
+    API --> Orch[PipelineOrchestrator<br>Dedup check: SHA-256 hash]
+    Orch --> Meta[File metadata]
+    Orch --> External[LLM/External Services<br>PII stripped: sanitize_for_llm()]
+    External --> Clean[Cleaned text]
+    External --> Out[Output<br>Validated: guard_llm_output()]
+    Out --> Final[Final document]
 ```
 
 **Detailed data flow for sensitive manuscript content**:
@@ -2130,28 +2140,22 @@ PII, API keys    └──────────┘     └──────�
 
 ### 23.4 Encryption Key Hierarchy
 
-```
-┌─────────────────────────────────────────────────────┐
-│  Environment Variable / Vault                        │
-│  FERNET_MASTER_KEY (base64, 32 bytes)                │
-│  → Used to encrypt all user API keys                 │
-└──────────────────────┬──────────────────────────────┘
-                       │
-                       ▼
-┌─────────────────────────────────────────────────────┐
-│  EncryptionService.decrypt_key(encrypted_key)        │
-│  → Fernet(fmaster_key).decrypt(encrypted_key)       │
-│  → Returns raw API key string (in memory only)      │
-└──────────────────────┬──────────────────────────────┘
-                       │
-                       ▼
-┌─────────────────────────────────────────────────────┐
-│  resolve_user_api_key(provider, user_id)             │
-│  1. Lookup user_api_keys WHERE user_id + provider    │
-│  2. If found: EncryptionService.decrypt_key()        │
-│  3. If not found: return env var fallback            │
-│  4. Key used for a single LLM call, then GC'd        │
-└─────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    subgraph Vault [Environment Variable / Vault]
+        Master["FERNET_MASTER_KEY (base64, 32 bytes)<br>→ Used to encrypt all user API keys"]
+    end
+    
+    subgraph Service [EncryptionService]
+        Decrypt["decrypt_key(encrypted_key)<br>→ Fernet(fmaster_key).decrypt(encrypted_key)<br>→ Returns raw API key string (in memory only)"]
+    end
+    
+    subgraph Resolver [API Key Resolver]
+        Resolve["resolve_user_api_key(provider, user_id)<br>1. Lookup user_api_keys WHERE user_id + provider<br>2. If found: EncryptionService.decrypt_key()<br>3. If not found: return env var fallback<br>4. Key used for a single LLM call, then GC'd"]
+    end
+    
+    Vault --> Service
+    Service --> Resolver
 ```
 
 ---

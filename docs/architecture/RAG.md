@@ -10,32 +10,14 @@ RAG features are in **planning stage** for v2.0.
 
 ## Architecture (Planned)
 
-```
-User Manuscript
-      │
-      ▼
-┌─────────────┐     ┌─────────────┐
-│  Query      │────▶│  Embedding  │
-│  Processor  │     │  Model      │
-└─────────────┘     └──────┬──────┘
-                           │
-                           ▼
-                   ┌─────────────┐     ┌─────────────┐
-                   │  Vector DB  │◀────│  Knowledge  │
-                   │  (Chroma)   │     │  Base       │
-                   └──────┬──────┘     └─────────────┘
-                           │
-                           ▼
-                   ┌─────────────┐
-                   │  LLM        │
-                   │  (Optional) │
-                   └──────┬──────┘
-                           │
-                           ▼
-                   ┌─────────────┐
-                   │  Enhanced   │
-                   │  Manuscript │
-                   └─────────────┘
+```mermaid
+flowchart TD
+    User[User Manuscript] --> Query[Query Processor]
+    Query --> Embed[Embedding Model]
+    KB[Knowledge Base] --> DB[(Vector DB<br>Chroma)]
+    Embed --> DB
+    DB --> LLM[LLM<br>Optional]
+    LLM --> Enhanced[Enhanced Manuscript]
 ```
 
 ## Use Cases

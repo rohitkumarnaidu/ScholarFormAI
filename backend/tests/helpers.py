@@ -32,12 +32,18 @@ def make_doc(**overrides):
     return doc
 
 
-def make_block(text: str = "Test paragraph text.", index: int = 1,
-               block_type: str = "body", font_size: float = 12.0,
-               bold: bool = False, conf: float = 1.0,
-               **overrides):
+def make_block(
+    text: str = "Test paragraph text.",
+    index: int = 1,
+    block_type: str = "body",
+    font_size: float = 12.0,
+    bold: bool = False,
+    conf: float = 1.0,
+    **overrides,
+):
     """Create a MagicMock Block with sensible defaults."""
     from app.models import BlockType
+
     b = MagicMock()
     b.text = text
     b.index = index
@@ -50,21 +56,19 @@ def make_block(text: str = "Test paragraph text.", index: int = 1,
     b.style.bold = bold
     b.metadata = overrides.pop("metadata", {})
     b.classification_confidence = conf
-    b.is_heading = block_type in (BlockType.HEADING_1, BlockType.HEADING_2,
-                                  BlockType.HEADING_3, BlockType.TITLE)
+    b.is_heading = block_type in (BlockType.HEADING_1, BlockType.HEADING_2, BlockType.HEADING_3, BlockType.TITLE)
     b.section_name = text if b.is_heading else ""
     for k, v in overrides.items():
         setattr(b, k, v)
     return b
 
 
-def make_section_block(heading_text: str = "Section 1", level: int = 1,
-                       **overrides):
+def make_section_block(heading_text: str = "Section 1", level: int = 1, **overrides):
     """Create a heading block for a section."""
     from app.models import BlockType
+
     bt = BlockType.HEADING_1 if level == 1 else BlockType.HEADING_2
-    return make_block(text=heading_text, block_type=bt,
-                      metadata={"level": level}, **overrides)
+    return make_block(text=heading_text, block_type=bt, metadata={"level": level}, **overrides)
 
 
 def make_sb():

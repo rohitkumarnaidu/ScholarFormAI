@@ -121,6 +121,7 @@ class TestTexParserContent:
 
     def test_paragraphs_extracted_from_body(self, parser):
         import re
+
         content = r"\begin{document}First para.\n\nSecond para.\end{document}"
         doc_match = re.search(r"\\begin\{document\}(.*?)\\end\{document\}", content, re.DOTALL)
         doc_match.group(1)

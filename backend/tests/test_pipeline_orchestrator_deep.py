@@ -25,6 +25,7 @@ from app.pipeline.orchestrator import (
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_orchestrator(**kwargs):
     with (
         patch("app.pipeline.orchestrator.get_reasoning_engine") as mock_re,
@@ -93,18 +94,14 @@ class TestEngineHelpers:
         mock_resolve.return_value = "rag_engine"
         result = get_rag_engine()
         assert result == "rag_engine"
-        mock_resolve.assert_called_once_with(
-            "app.pipeline.intelligence.rag_engine", "get_rag_engine"
-        )
+        mock_resolve.assert_called_once_with("app.pipeline.intelligence.rag_engine", "get_rag_engine")
 
     @patch("app.pipeline.orchestrator.resolve_optional_callable")
     def test_get_reasoning_engine(self, mock_resolve):
         mock_resolve.return_value = "reasoning_engine"
         result = get_reasoning_engine()
         assert result == "reasoning_engine"
-        mock_resolve.assert_called_once_with(
-            "app.pipeline.intelligence.reasoning_engine", "get_reasoning_engine"
-        )
+        mock_resolve.assert_called_once_with("app.pipeline.intelligence.reasoning_engine", "get_reasoning_engine")
 
 
 class TestStageInterfaceCheck:
@@ -116,17 +113,20 @@ class TestStageInterfaceCheck:
         class Good:
             def process(self, doc):
                 return doc
+
         orch._check_stage_interface(Good(), "process", "TestStage")
 
     def test_invalid_stage_raises(self, orch):
         class Bad:
             pass
+
         with pytest.raises(RuntimeError, match="does not implement required method"):
             orch._check_stage_interface(Bad(), "process", "BadStage")
 
     def test_error_message_includes_type_name(self, orch):
         class Foo:
             pass
+
         with pytest.raises(RuntimeError, match="Foo"):
             orch._check_stage_interface(Foo(), "run", "MyStage")
 
@@ -171,8 +171,7 @@ class TestRecordStageTransition:
     def test_duration_metrics_exception_swallowed(self, orch):
         orch._record_stage_transition("doc-1", "parsing", "PROCESSING")
         with patch(
-            "app.middleware.prometheus_metrics.MetricsManager.record_pipeline_stage_duration",
-            side_effect=Exception
+            "app.middleware.prometheus_metrics.MetricsManager.record_pipeline_stage_duration", side_effect=Exception
         ):
             orch._record_stage_transition("doc-1", "parsing", "COMPLETED")
 
@@ -231,8 +230,10 @@ class TestUpdateStatus:
 
     def test_inserts_new_record(self, orch):
         sb = MockSupabase(existing_data=[])
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), \
-             patch("app.routers.v1.stream.emit_event"):
+        with (
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.routers.v1.stream.emit_event"),
+        ):
             orch._update_status("doc-1", "parsing", "COMPLETED", "Done")
             tables = [o[1] for o in sb.ops if o[0] == "table"]
             inserts = [o[1] for o in sb.ops if o[0] == "insert"]
@@ -241,8 +242,10 @@ class TestUpdateStatus:
 
     def test_updates_existing_record(self, orch):
         sb = MockSupabase(existing_data=[{"id": 1}])
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), \
-             patch("app.routers.v1.stream.emit_event"):
+        with (
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.routers.v1.stream.emit_event"),
+        ):
             orch._update_status("doc-1", "parsing", "COMPLETED", "Done")
             ops = [o[0] for o in sb.ops]
             assert "update" in ops
@@ -250,8 +253,10 @@ class TestUpdateStatus:
 
     def test_sets_completed_status_on_persistence(self, orch):
         sb = MockSupabase(existing_data=[])
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), \
-             patch("app.routers.v1.stream.emit_event"):
+        with (
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.routers.v1.stream.emit_event"),
+        ):
             orch._update_status("doc-1", "PERSISTENCE", "COMPLETED", "All done")
             updates = [o[1] for o in sb.ops if o[0] == "update"]
             has_completed = any(d.get("status") == "COMPLETED" for d in updates if isinstance(d, dict))
@@ -259,8 +264,10 @@ class TestUpdateStatus:
 
     def test_sets_failed_status(self, orch):
         sb = MockSupabase(existing_data=[])
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), \
-             patch("app.routers.v1.stream.emit_event"):
+        with (
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.routers.v1.stream.emit_event"),
+        ):
             orch._update_status("doc-1", "parsing", "FAILED", "Error")
             updates = [o[1] for o in sb.ops if o[0] == "update"]
             has_error_msg = any("error_message" in d for d in updates if isinstance(d, dict))
@@ -268,8 +275,10 @@ class TestUpdateStatus:
 
     def test_with_progress(self, orch):
         sb = MockSupabase(existing_data=[])
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), \
-             patch("app.routers.v1.stream.emit_event"):
+        with (
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.routers.v1.stream.emit_event"),
+        ):
             orch._update_status("doc-1", "parsing", "PROCESSING", progress=50)
             updates = [o[1] for o in sb.ops if o[0] == "update"]
             has_progress = any("progress" in d for d in updates if isinstance(d, dict))
@@ -277,16 +286,20 @@ class TestUpdateStatus:
 
     def test_emit_event_called(self, orch):
         sb = MockSupabase(existing_data=[])
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), \
-             patch("app.routers.v1.stream.emit_event") as mock_emit:
+        with (
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.routers.v1.stream.emit_event") as mock_emit,
+        ):
             orch._update_status("doc-1", "parsing", "COMPLETED", "Done", progress=100)
             mock_emit.assert_called_once()
 
     def test_exception_during_update_logged(self, orch):
         sb = MagicMock()
         sb.table.side_effect = Exception("DB down")
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), \
-             patch("app.routers.v1.stream.emit_event"):
+        with (
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.routers.v1.stream.emit_event"),
+        ):
             orch._update_status("doc-1", "parsing", "COMPLETED")
 
     def test_transient_error_retry(self, orch):
@@ -295,24 +308,32 @@ class TestUpdateStatus:
         class RetrySB:
             def table(self, name):
                 return self
+
             def select(self, *a):
                 return self
+
             def update(self, d):
                 return self
+
             def insert(self, d):
                 return self
+
             def match(self, filters):
                 return self
+
             def eq(self, c, v):
                 return self
+
             def execute(self):
                 call_count[0] += 1
                 if call_count[0] == 1:
                     raise Exception("RemoteProtocolError: server disconnected")
                 return MagicMock(data=[])
 
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=RetrySB()), \
-             patch("app.routers.v1.stream.emit_event"):
+        with (
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=RetrySB()),
+            patch("app.routers.v1.stream.emit_event"),
+        ):
             orch._update_status("doc-1", "parsing", "COMPLETED", "Done")
             assert call_count[0] >= 2
 
@@ -386,6 +407,7 @@ class TestRunWithTimeout:
     def test_function_completes(self, orch):
         def fast():
             return 42
+
         result = orch._run_with_timeout(fast, 5)
         assert result == 42
 
@@ -397,12 +419,14 @@ class TestRunWithTimeout:
         def slow():
             time.sleep(10)
             return "done"
+
         with pytest.raises(TimeoutError, match="timed out"):
             orch._run_with_timeout(slow, 1)
 
     def test_function_raises(self, orch):
         def crash():
             raise ValueError("boom")
+
         with pytest.raises(ValueError, match="boom"):
             orch._run_with_timeout(crash, 5)
 
@@ -451,20 +475,24 @@ class TestUpdateStatusEdgeCases:
 
     def test_document_id_coerced(self, orch):
         sb = MockSupabase(existing_data=[])
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), \
-             patch("app.routers.v1.stream.emit_event"):
+        with (
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.routers.v1.stream.emit_event"),
+        ):
             orch._update_status(123, "parsing", "COMPLETED")
 
     def test_phase_null_handled(self, orch):
         sb = MockSupabase(existing_data=[])
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), \
-             patch("app.routers.v1.stream.emit_event"):
+        with (
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.routers.v1.stream.emit_event"),
+        ):
             orch._update_status("doc-1", None, "COMPLETED")
 
 
 def teardown_module():
     import shutil
-    for d in ["temp_test_orch", "temp_test_failures", "temp_test_timeout",
-              "temp_test_concurrent", "temp_test_cancel"]:
+
+    for d in ["temp_test_orch", "temp_test_failures", "temp_test_timeout", "temp_test_concurrent", "temp_test_cancel"]:
         if os.path.exists(d):
             shutil.rmtree(d, ignore_errors=True)

@@ -19,6 +19,7 @@ from app.pipeline.tables.renderer import TableRenderer
 # CAPTION MATCHER TESTS
 # ===================================================================
 
+
 class TestTableCaptionMatcher:
     @pytest.fixture
     def matcher(self):
@@ -27,21 +28,28 @@ class TestTableCaptionMatcher:
 
     def test_process_empty_document(self, matcher):
         from app.models import PipelineDocument
+
         doc = PipelineDocument(document_id="t", blocks=[])
         result = matcher.process(doc)
         assert result is doc
 
     def test_process_no_tables_returns_early(self, matcher):
         from app.models import Block, BlockType, PipelineDocument
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="b1", index=1, text="Results are in Table 1.", block_type=BlockType.BODY),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="b1", index=1, text="Results are in Table 1.", block_type=BlockType.BODY),
+            ],
+        )
         result = matcher.process(doc)
         assert result is doc
 
     def test_process_with_tables_and_captions(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t",
+
+        doc = PipelineDocument(
+            document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Table 1. Performance comparison.", block_type=BlockType.BODY),
                 Block(block_id="b2", index=1, text="Some body text.", block_type=BlockType.BODY),
@@ -55,7 +63,9 @@ class TestTableCaptionMatcher:
 
     def test_adds_stage_info(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t",
+
+        doc = PipelineDocument(
+            document_id="t",
             blocks=[Block(block_id="b1", index=0, text="Table 1. Testing.", block_type=BlockType.BODY)],
             tables=[Table(table_id="t1", num_rows=0, num_cols=0, index=0, block_index=0)],
         )
@@ -70,7 +80,9 @@ class TestTableCaptionMatcher:
 
     def test_caption_above_table_is_matched(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t",
+
+        doc = PipelineDocument(
+            document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Table 1. Accuracy metrics.", block_type=BlockType.BODY),
                 Block(block_id="b2", index=1, text="Some data.", block_type=BlockType.BODY),
@@ -82,7 +94,9 @@ class TestTableCaptionMatcher:
 
     def test_multiple_tables_multiple_captions(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t",
+
+        doc = PipelineDocument(
+            document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Table 1. First table.", block_type=BlockType.BODY),
                 Block(block_id="b2", index=1, text="Body text.", block_type=BlockType.BODY),
@@ -100,7 +114,9 @@ class TestTableCaptionMatcher:
 
     def test_headings_are_not_captions(self, matcher):
         from app.models import Block, BlockType, PipelineDocument, Table
-        doc = PipelineDocument(document_id="t",
+
+        doc = PipelineDocument(
+            document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Table 1. Introduction", block_type=BlockType.HEADING_1),
                 Block(block_id="b2", index=1, text="Body text.", block_type=BlockType.BODY),
@@ -110,9 +126,11 @@ class TestTableCaptionMatcher:
         result = matcher.process(doc)
         assert result.tables[0].caption_text is None
 
+
 # ===================================================================
 # EXTRACTOR TESTS
 # ===================================================================
+
 
 class TestTableExtractor:
     @pytest.fixture
@@ -154,6 +172,7 @@ class TestTableExtractor:
     def _make_docx_table(self, data, header_row=False, nested_at=None):
         """Build a MagicMock docx Table from a 2D list of strings."""
         from unittest.mock import MagicMock
+
         tbl = MagicMock()
         rows = []
         for r_idx, row_data in enumerate(data):
@@ -328,9 +347,11 @@ class TestTableExtractor:
         assert result.data[0][0] == "café"
         assert result.data[1][1] == "α β γ"
 
+
 # ===================================================================
 # RENDERER TESTS
 # ===================================================================
+
 
 class TestTableRenderer:
     @pytest.fixture
@@ -352,6 +373,7 @@ class TestTableRenderer:
 
     def test_skip_when_no_rows(self, renderer):
         from app.models import Table
+
         doc = MagicMock()
         tbl = Table(table_id="empty", num_rows=0, num_cols=0, index=0, block_index=0)
         renderer.render(doc, tbl)
@@ -395,9 +417,17 @@ class TestTableRenderer:
 
     def test_nested_table_rendering(self, renderer, simple_table):
         from app.models import Table, TableCell
+
         doc = self._make_mock_doc()
-        nested = Table(table_id="n1", num_rows=1, num_cols=1, index=1, block_index=1,
-                       data=[["inner"]], cells=[TableCell(row=0, col=0, text="inner")])
+        nested = Table(
+            table_id="n1",
+            num_rows=1,
+            num_cols=1,
+            index=1,
+            block_index=1,
+            data=[["inner"]],
+            cells=[TableCell(row=0, col=0, text="inner")],
+        )
         simple_table.cells[0].metadata["nested_tables"] = [nested]
 
         # Need cells access on word_table for population
@@ -445,6 +475,7 @@ class TestTableRenderer:
 
     def test_cell_population_error_does_not_crash(self, renderer, simple_table):
         from app.models import TableCell
+
         doc = self._make_mock_doc()
         word_tbl = MagicMock()
         doc.add_table.return_value = word_tbl

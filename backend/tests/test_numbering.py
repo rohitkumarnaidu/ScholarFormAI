@@ -3,8 +3,7 @@ from unittest.mock import MagicMock
 import pytest
 
 
-def _make_block(block_type="heading_1", text="Introduction", level=1,
-                section_name="introduction", is_heading=True):
+def _make_block(block_type="heading_1", text="Introduction", level=1, section_name="introduction", is_heading=True):
     block = MagicMock()
     block.block_type = block_type
     block.text = text
@@ -28,6 +27,7 @@ def contract_loader():
 class TestApplyNumbering:
     def test_heading_numbering_increments(self, contract_loader):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         engine = NumberingEngine(contract_loader)
         doc = MagicMock()
         doc.blocks = [
@@ -51,6 +51,7 @@ class TestApplyNumbering:
 
     def test_no_double_numbering(self, contract_loader):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         engine = NumberingEngine(contract_loader)
         doc = MagicMock()
         doc.blocks = [
@@ -65,6 +66,7 @@ class TestApplyNumbering:
 
     def test_figure_numbering(self, contract_loader):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         engine = NumberingEngine(contract_loader)
         doc = MagicMock()
         doc.blocks = []
@@ -80,6 +82,7 @@ class TestApplyNumbering:
 
     def test_table_numbering(self, contract_loader):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         engine = NumberingEngine(contract_loader)
         doc = MagicMock()
         doc.blocks = []
@@ -95,6 +98,7 @@ class TestApplyNumbering:
 
     def test_equation_numbering_parentheses(self, contract_loader):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         contract_loader.load.return_value = {
             "numbering": {},
             "equations": {"scope": "global", "brackets": "()"},
@@ -114,6 +118,7 @@ class TestApplyNumbering:
 
     def test_equation_numbering_brackets(self, contract_loader):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         contract_loader.load.return_value = {
             "numbering": {},
             "equations": {"scope": "global", "brackets": "[]"},
@@ -131,6 +136,7 @@ class TestApplyNumbering:
 
     def test_equation_numbering_no_brackets(self, contract_loader):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         contract_loader.load.return_value = {
             "numbering": {},
             "equations": {"scope": "global", "brackets": "{}"},
@@ -148,6 +154,7 @@ class TestApplyNumbering:
 
     def test_no_equation_rules(self, contract_loader):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         contract_loader.load.return_value = {"numbering": {}}
         engine = NumberingEngine(contract_loader)
         doc = MagicMock()
@@ -164,5 +171,6 @@ class TestApplyNumbering:
 class TestInit:
     def test_stores_contract_loader(self, contract_loader):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         engine = NumberingEngine(contract_loader)
         assert engine.contract_loader is contract_loader

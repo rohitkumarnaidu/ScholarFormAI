@@ -20,20 +20,22 @@ VALID_EXTENSIONS = {".docx", ".doc", ".pdf", ".odt", ".rtf", ".tex", ".txt", ".h
 
 
 class TestFileUploadExtensionValidation:
-
     @pytest.mark.parametrize("ext", DANGEROUS_EXTENSIONS)
     def test_dangerous_extension_rejected(self, ext):
         from app.routers.v1.documents_impl import ACCEPTED_EXTENSIONS
+
         assert ext not in ACCEPTED_EXTENSIONS
 
     @pytest.mark.parametrize("ext", [".exe.pdf", ".bat.docx", ".sh.txt", ".com.md", ".jar.html"])
     def test_extension_masquerading_rejected(self, ext):
         from app.routers.v1.documents_impl import ACCEPTED_EXTENSIONS
+
         assert ext not in ACCEPTED_EXTENSIONS, f"Masqueraded extension '{ext}' should not be in accepted list"
 
     @pytest.mark.parametrize("ext", sorted(VALID_EXTENSIONS))
     def test_valid_extension_accepted(self, ext):
         from app.routers.v1.documents_impl import ACCEPTED_EXTENSIONS
+
         assert ext in ACCEPTED_EXTENSIONS
 
     @pytest.mark.asyncio
@@ -41,6 +43,7 @@ class TestFileUploadExtensionValidation:
         from fastapi import HTTPException
 
         from app.routers.v1.documents_impl import _validate_magic_bytes
+
         mock_file = MagicMock()
         mock_file.filename = "empty.pdf"
         mock_file.read = AsyncMock(return_value=b"")
@@ -53,6 +56,7 @@ class TestFileUploadExtensionValidation:
         from fastapi import HTTPException
 
         from app.routers.v1.documents_impl import _validate_magic_bytes
+
         mock_file = MagicMock()
         mock_file.filename = "malware.xyz"
         mock_file.read = AsyncMock(return_value=b"some content")
@@ -63,12 +67,12 @@ class TestFileUploadExtensionValidation:
 
 
 class TestFileUploadMagicBytesValidation:
-
     @pytest.mark.asyncio
     async def test_pdf_with_wrong_magic_bytes_rejected(self):
         from fastapi import HTTPException
 
         from app.routers.v1.documents_impl import _validate_magic_bytes
+
         mock_file = MagicMock()
         mock_file.filename = "fake.pdf"
         mock_file.read = AsyncMock(return_value=b"This is not a PDF but has pdf extension!")
@@ -80,6 +84,7 @@ class TestFileUploadMagicBytesValidation:
     @pytest.mark.asyncio
     async def test_docx_with_zip_magic_bytes_accepted(self):
         from app.routers.v1.documents_impl import _validate_magic_bytes
+
         mock_file = MagicMock()
         mock_file.filename = "valid.docx"
         payload = b"\x50\x4b\x03\x04" + b"\x00" * 100
@@ -90,6 +95,7 @@ class TestFileUploadMagicBytesValidation:
     @pytest.mark.asyncio
     async def test_pdf_with_pdf_magic_bytes_accepted(self):
         from app.routers.v1.documents_impl import _validate_magic_bytes
+
         mock_file = MagicMock()
         mock_file.filename = "valid.pdf"
         payload = b"%PDF-1.4\n%\xc7\xec\x8f\xa2\n" + b"\x00" * 100
@@ -100,6 +106,7 @@ class TestFileUploadMagicBytesValidation:
     @pytest.mark.asyncio
     async def test_text_files_no_magic_check_needed(self):
         from app.routers.v1.documents_impl import _validate_magic_bytes
+
         mock_file = MagicMock()
         mock_file.filename = "paper.txt"
         payload = b"Hello world this is a text file\nWith multiple lines."
@@ -112,6 +119,7 @@ class TestFileUploadMagicBytesValidation:
         from fastapi import HTTPException
 
         from app.routers.v1.documents_impl import _validate_magic_bytes
+
         mock_file = MagicMock()
         mock_file.filename = "binary.txt"
         payload = bytes(range(256))
@@ -123,6 +131,7 @@ class TestFileUploadMagicBytesValidation:
     @pytest.mark.asyncio
     async def test_rtf_with_rtf_magic_bytes_accepted(self):
         from app.routers.v1.documents_impl import _validate_magic_bytes
+
         mock_file = MagicMock()
         mock_file.filename = "doc.rtf"
         payload = b"{\\rtf1\\ansi\\deff0 Hello\\par}"
@@ -132,11 +141,11 @@ class TestFileUploadMagicBytesValidation:
 
 
 class TestFilePathTraversalPrevention:
-
     def test_upload_path_traversal_rejected(self):
         import os
 
         from app.routers.v1.documents_impl import UPLOAD_DIR
+
         safe_path = os.path.abspath(UPLOAD_DIR)
         malicious = os.path.join(safe_path, "..", "..", "etc", "passwd")
         normalized = os.path.normpath(malicious)
@@ -146,11 +155,13 @@ class TestFilePathTraversalPrevention:
         import os
 
         from app.routers.v1.documents_impl import UPLOAD_DIR
+
         safe_path = os.path.abspath(UPLOAD_DIR)
         assert safe_path == os.path.abspath(UPLOAD_DIR)
 
     def test_file_id_regex_rejects_path_traversal(self):
         import re
+
         pattern = r"^[a-zA-Z0-9-]+$"
         assert re.match(pattern, "safe-file-id-123") is not None
         assert re.match(pattern, "../../etc/passwd") is None
@@ -162,6 +173,7 @@ class TestFilePathTraversalPrevention:
         import os
 
         from app.routers.v1.documents_impl import UPLOAD_DIR
+
         upload_dir_abs = os.path.abspath(UPLOAD_DIR)
         safe = os.path.join(upload_dir_abs, "file.docx")
         assert safe.startswith(upload_dir_abs)
@@ -170,9 +182,9 @@ class TestFilePathTraversalPrevention:
 
 
 class TestFileSizeValidation:
-
     def test_max_file_size_setting_exists(self):
         from app.config.settings import settings
+
         assert hasattr(settings, "MAX_FILE_SIZE")
 
     def test_chunk_5mb_limit_enforced(self):
@@ -185,13 +197,17 @@ class TestFileSizeValidation:
 
 
 class TestFileUploadVirusScan:
-
     @pytest.mark.asyncio
     async def test_virus_scan_clean_passes(self):
         from app.routers.v1.documents_impl import _scan_uploaded_file
-        with patch("app.routers.v1.documents_impl.virus_scanner.scan", AsyncMock(return_value={"clean": True, "engine": "clamav", "result": "clean"})):
+
+        with patch(
+            "app.routers.v1.documents_impl.virus_scanner.scan",
+            AsyncMock(return_value={"clean": True, "engine": "clamav", "result": "clean"}),
+        ):
             import os
             import tempfile
+
             with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as f:
                 f.write(b"clean content")
                 tmp = f.name
@@ -207,9 +223,14 @@ class TestFileUploadVirusScan:
         from fastapi import HTTPException
 
         from app.routers.v1.documents_impl import _scan_uploaded_file
-        with patch("app.routers.v1.documents_impl.virus_scanner.scan", AsyncMock(return_value={"clean": False, "engine": "clamav", "result": "Win.Trojan.Agent-123"})):
+
+        with patch(
+            "app.routers.v1.documents_impl.virus_scanner.scan",
+            AsyncMock(return_value={"clean": False, "engine": "clamav", "result": "Win.Trojan.Agent-123"}),
+        ):
             import os
             import tempfile
+
             with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as f:
                 f.write(b"malicious content")
                 tmp = f.name
@@ -225,11 +246,13 @@ class TestFileUploadVirusScan:
     @pytest.mark.asyncio
     async def test_virus_scanner_unavailable_returns_clean(self):
         from app.utils.virus_scanner import scan_file
+
         with patch("app.utils.virus_scanner.settings") as ms:
             ms.CLAMAV_HOST = "127.0.0.1"
             ms.CLAMAV_PORT = 3310
             import os
             import tempfile
+
             with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as f:
                 f.write(b"test")
                 tmp = f.name
@@ -242,21 +265,25 @@ class TestFileUploadVirusScan:
 
     def test_virus_scanner_parse_found_threat(self):
         from app.utils.virus_scanner import _parse_scan_result
+
         result = _parse_scan_result("/path/file.txt: Win.Trojan.Agent-123 FOUND")
         assert result["clean"] is False
         assert "Trojan" in result["result"]
 
     def test_virus_scanner_parse_clean(self):
         from app.utils.virus_scanner import _parse_scan_result
+
         result = _parse_scan_result("/path/file.txt: OK")
         assert result["clean"] is True
 
     def test_virus_scanner_parse_empty(self):
         from app.utils.virus_scanner import _parse_scan_result
+
         result = _parse_scan_result("")
         assert result["clean"] is True
 
     def test_virus_scanner_parse_error_raises(self):
         from app.utils.virus_scanner import _parse_scan_result
+
         with pytest.raises(RuntimeError):
             _parse_scan_result("/path/file: ERROR: Could not open file")

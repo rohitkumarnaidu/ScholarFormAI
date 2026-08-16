@@ -42,8 +42,9 @@ def test_feedback_submission(client, authenticated_user):
     sb.table.return_value = table
 
     memory = MagicMock()
-    with patch("app.routers.v1.feedback.memory", memory), patch(
-        "app.routers.v1.feedback.get_supabase_client", return_value=sb
+    with (
+        patch("app.routers.v1.feedback.memory", memory),
+        patch("app.routers.v1.feedback.get_supabase_client", return_value=sb),
     ):
         response = client.post("/api/v1/feedback/", json=payload)
 

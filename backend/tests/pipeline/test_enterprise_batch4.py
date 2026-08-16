@@ -11,12 +11,18 @@ import pytest
 # agents/metrics.py — PerformanceTracker + ProcessingMetrics
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestProcessingMetrics:
     def test_dataclass_defaults(self):
         from app.pipeline.agents.metrics import ProcessingMetrics
+
         m = ProcessingMetrics(
-            document_id="doc1", orchestrator_type="agent",
-            start_time=100.0, end_time=200.0, duration_seconds=100.0, success=True,
+            document_id="doc1",
+            orchestrator_type="agent",
+            start_time=100.0,
+            end_time=200.0,
+            duration_seconds=100.0,
+            success=True,
         )
         assert m.tools_used == []
         assert m.retry_count == 0
@@ -25,10 +31,16 @@ class TestProcessingMetrics:
 
     def test_to_dict(self):
         from app.pipeline.agents.metrics import ProcessingMetrics
+
         m = ProcessingMetrics(
-            document_id="doc1", orchestrator_type="agent",
-            start_time=100.0, end_time=200.0, duration_seconds=100.0, success=True,
-            metadata_extracted=True, tools_used=["extract_metadata"],
+            document_id="doc1",
+            orchestrator_type="agent",
+            start_time=100.0,
+            end_time=200.0,
+            duration_seconds=100.0,
+            success=True,
+            metadata_extracted=True,
+            tools_used=["extract_metadata"],
         )
         d = m.to_dict()
         assert d["document_id"] == "doc1"
@@ -40,15 +52,18 @@ class TestPerformanceTracker:
     @pytest.fixture
     def tracker(self, tmp_path):
         from app.pipeline.agents.metrics import PerformanceTracker
+
         return PerformanceTracker(metrics_dir=str(tmp_path))
 
     @pytest.fixture
     def tracker_with_metrics(self, tmp_path):
         from app.pipeline.agents.metrics import PerformanceTracker
+
         return PerformanceTracker(metrics_dir=str(tmp_path))
 
     def test_init_creates_dir(self, tmp_path):
         from app.pipeline.agents.metrics import PerformanceTracker
+
         PerformanceTracker(metrics_dir=str(tmp_path / "my_metrics"))
         assert (tmp_path / "my_metrics").exists()
 
@@ -135,14 +150,17 @@ class TestPerformanceTracker:
     def test_processing_metrics_from_end_tracking(self, tracker_with_metrics):
         t = tracker_with_metrics
         t.start_tracking("doc1", "agent")
-        result = t.end_tracking(success=True, document=MagicMock(
-            metadata=MagicMock(title="Test"),
-            blocks=[MagicMock()],
-            references=[MagicMock()],
-            figures=[],
-            validation_errors=[],
-            validation_warnings=["warn"],
-        ))
+        result = t.end_tracking(
+            success=True,
+            document=MagicMock(
+                metadata=MagicMock(title="Test"),
+                blocks=[MagicMock()],
+                references=[MagicMock()],
+                figures=[],
+                validation_errors=[],
+                validation_warnings=["warn"],
+            ),
+        )
         assert result.metadata_extracted is True
         assert result.references_count == 1
 
@@ -151,14 +169,17 @@ class TestPerformanceTracker:
 # agents/memory.py — AgentMemory
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestAgentMemory:
     @pytest.fixture
     def memory(self, tmp_path):
         from app.pipeline.agents.memory import AgentMemory
+
         return AgentMemory(memory_dir=str(tmp_path / "agent_memory"))
 
     def test_init_creates_dir(self, tmp_path):
         from app.pipeline.agents.memory import AgentMemory
+
         AgentMemory(memory_dir=str(tmp_path / "test_mem"))
         assert (tmp_path / "test_mem").exists()
 
@@ -231,16 +252,19 @@ class TestAgentMemory:
 # agents/adaptive.py — AdaptiveStrategy
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestAdaptiveStrategy:
     @pytest.fixture
     def strategy(self):
         from app.pipeline.agents.adaptive import AdaptiveStrategy
         from app.pipeline.agents.metrics import PerformanceTracker
+
         tracker = MagicMock(spec=PerformanceTracker)
         return AdaptiveStrategy(tracker)
 
     def test_init_requires_tracker(self):
         from app.pipeline.agents.adaptive import AdaptiveStrategy
+
         with pytest.raises(ValueError, match="tracker must not be None"):
             AdaptiveStrategy(tracker=None)
 
@@ -282,6 +306,7 @@ class TestAdaptiveStrategy:
     def test_adapt_with_ml_detector(self):
         from app.pipeline.agents.adaptive import AdaptiveStrategy
         from app.pipeline.agents.metrics import PerformanceTracker
+
         tracker = MagicMock(spec=PerformanceTracker)
         ml_detector = MagicMock()
         ml_detector.patterns = [{"success_rate": 0.9, "common_tools": ["tool1"]}]
@@ -295,14 +320,17 @@ class TestAdaptiveStrategy:
 # agents/dashboard.py — ComparisonDashboard
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestComparisonDashboard:
     @pytest.fixture
     def dashboard(self):
         from app.pipeline.agents.dashboard import ComparisonDashboard
         from app.pipeline.agents.metrics import PerformanceTracker
+
         tracker = MagicMock(spec=PerformanceTracker)
         tracker.get_summary.return_value = {
-            "total_runs": 2, "agent": {"total": 1, "successful": 1},
+            "total_runs": 2,
+            "agent": {"total": 1, "successful": 1},
             "legacy": {"total": 1, "successful": 0},
         }
         tracker.get_comparison.return_value = {"agent_vs_legacy": {}}
@@ -330,15 +358,18 @@ class TestComparisonDashboard:
 # agents/streaming.py — StreamingAgentCallback
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestStreamingAgentCallback:
     @pytest.fixture
     def callback(self):
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         fn = MagicMock()
         return StreamingAgentCallback(callback_fn=fn), fn
 
     def test_default_callback_logs_event(self):
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         cb = StreamingAgentCallback()
         cb._default_callback("test", {"msg": "hello"})
         assert len(cb.events) == 1
@@ -371,7 +402,9 @@ class TestStreamingAgentCallback:
     def test_on_tool_end(self, callback):
         cb, fn = callback
         cb.on_tool_end("output result")
-        fn.assert_called_once_with("tool_end", {"message": "Tool execution complete", "output_preview": "output result"})
+        fn.assert_called_once_with(
+            "tool_end", {"message": "Tool execution complete", "output_preview": "output result"}
+        )
 
     def test_on_tool_error(self, callback):
         cb, fn = callback
@@ -411,6 +444,7 @@ class TestStreamingAgentCallback:
 
     def test_get_events_with_default_callback(self):
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         cb = StreamingAgentCallback()
         cb.on_llm_start({}, ["prompt"])
         events = cb.get_events()
@@ -419,6 +453,7 @@ class TestStreamingAgentCallback:
 
     def test_clear_events(self):
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         cb = StreamingAgentCallback()
         cb.on_llm_start({}, ["prompt"])
         cb.clear_events()
@@ -429,19 +464,23 @@ class TestStreamingAgentCallback:
 # agents/llm_factory.py — CustomLLMFactory
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestCustomLLMFactory:
     def test_get_available_providers(self):
         from app.pipeline.agents.llm_factory import CustomLLMFactory
+
         providers = CustomLLMFactory.get_available_providers()
         assert isinstance(providers, list)
 
     def test_get_recommended_models_openai(self):
         from app.pipeline.agents.llm_factory import CustomLLMFactory
+
         models = CustomLLMFactory.get_recommended_models("openai")
         assert "gpt-4" in models
 
     def test_get_recommended_models_unknown(self):
         from app.pipeline.agents.llm_factory import CustomLLMFactory
+
         models = CustomLLMFactory.get_recommended_models("nonexistent")
         assert models == []
 
@@ -450,6 +489,7 @@ class TestCustomLLMFactory:
 # agents/document_agent.py — DocumentAgent
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestDocumentAgent:
     @pytest.fixture
     def agent(self, monkeypatch):
@@ -457,6 +497,7 @@ class TestDocumentAgent:
         with patch("app.pipeline.agents.document_agent.settings") as mock_settings:
             mock_settings.GROBID_URL = "http://localhost:8070"
             from app.pipeline.agents.document_agent import DocumentAgent
+
             with patch.object(DocumentAgent, "_initialize_executor"):
                 a = DocumentAgent(llm_provider="openai", enable_memory=False, enable_streaming=False)
                 return a
@@ -472,23 +513,27 @@ class TestDocumentAgent:
         assert result is False
 
     def test_should_fallback_high_error_rate(self, agent):
-        result = agent._should_fallback({
-            "intermediate_steps": [
-                ("tool1", "SUCCESS"),
-                ("tool2", "ERROR: failed"),
-                ("tool3", "ERROR: failed"),
-            ]
-        })
+        result = agent._should_fallback(
+            {
+                "intermediate_steps": [
+                    ("tool1", "SUCCESS"),
+                    ("tool2", "ERROR: failed"),
+                    ("tool3", "ERROR: failed"),
+                ]
+            }
+        )
         assert result is True
 
     def test_should_fallback_low_error_rate(self, agent):
-        result = agent._should_fallback({
-            "intermediate_steps": [
-                ("tool1", "SUCCESS"),
-                ("tool2", "SUCCESS"),
-                ("tool3", "ERROR: fail"),
-            ]
-        })
+        result = agent._should_fallback(
+            {
+                "intermediate_steps": [
+                    ("tool1", "SUCCESS"),
+                    ("tool2", "SUCCESS"),
+                    ("tool3", "ERROR: fail"),
+                ]
+            }
+        )
         assert result is False
 
     def test_process_document_returns_dict(self, agent):
@@ -515,6 +560,7 @@ class TestDocumentAgent:
 # intelligence/reasoning_engine.py — ReasoningEngine (unit tests, no LLMs)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestReasoningEngine:
     @pytest.fixture
     def engine(self):
@@ -522,6 +568,7 @@ class TestReasoningEngine:
             ms.PIPELINE_REASONING_TIMEOUT_SECONDS = 30
             ms.OLLAMA_BASE_URL = "http://localhost:11434"
             from app.pipeline.intelligence.reasoning_engine import ReasoningEngine
+
             with patch.object(ReasoningEngine, "_check_ollama_health", return_value=False):
                 e = ReasoningEngine(timeout=30, model="deepseek-r1:8b")
                 return e
@@ -632,10 +679,12 @@ class TestReasoningEngine:
 # intelligence/semantic_parser.py — SemanticParser
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestSemanticParser:
     @pytest.fixture
     def parser(self):
         from app.pipeline.intelligence.semantic_parser import SemanticParser
+
         with patch.object(SemanticParser, "_load_model"):
             return SemanticParser(model_name="__heuristic_fallback__")
 
@@ -652,7 +701,9 @@ class TestSemanticParser:
         assert result == []
 
     def test_heuristic_classify_long_text_is_body(self, parser):
-        result = parser._heuristic_classify("This is a very long body paragraph that should be classified as body text since it exceeds the 150 character threshold for heading detection. More text to make it long enough.")
+        result = parser._heuristic_classify(
+            "This is a very long body paragraph that should be classified as body text since it exceeds the 150 character threshold for heading detection. More text to make it long enough."
+        )
         assert result["type"] == "BODY"
 
     def test_heuristic_classify_short_text_heading(self, parser):
@@ -749,10 +800,12 @@ class TestSemanticParser:
 # orchestrator.py — PipelineOrchestrator (utility methods)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestPipelineOrchestrator:
     @pytest.fixture
     def orch(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         with patch.multiple(
             "app.pipeline.orchestrator",
             InputConverter=MagicMock,
@@ -889,11 +942,22 @@ class TestPipelineOrchestrator:
         assert result == {}
 
     def test_log_quality_summary(self, orch):
-        orch._log_quality_summary("job1", {
-            "quality_score": 85.0, "avg_confidence": 0.8, "min_confidence": 0.6,
-            "block_count": 10, "heading_candidates": 3, "figures": 1, "tables": 0,
-            "errors": 1, "warnings": 2, "low_conf_blocks": 0, "review_status": "pending",
-        })
+        orch._log_quality_summary(
+            "job1",
+            {
+                "quality_score": 85.0,
+                "avg_confidence": 0.8,
+                "min_confidence": 0.6,
+                "block_count": 10,
+                "heading_candidates": 3,
+                "figures": 1,
+                "tables": 0,
+                "errors": 1,
+                "warnings": 2,
+                "low_conf_blocks": 0,
+                "review_status": "pending",
+            },
+        )
 
     def test_check_stage_interface_method_name(self, orch):
         instance = MagicMock()

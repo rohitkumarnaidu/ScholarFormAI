@@ -100,9 +100,11 @@ class TestGROBIDClientImportFallbacks:
 
     def test_defusedxml_not_available(self):
         import app.pipeline.services.grobid_client as mod
+
         with patch.dict("sys.modules", {"defusedxml": None}):
             importlib.reload(mod)
             import xml.etree.ElementTree as stdlib_et
+
             assert mod.ET is stdlib_et
         importlib.reload(mod)
 
@@ -148,8 +150,10 @@ class TestGROBIDClientRequest:
     @patch("app.pipeline.services.grobid_client.pybreaker")
     def test_request_with_circuit_breaker(self, mock_pybreaker, mock_req, mock_settings):
         mock_settings.EXTERNAL_CIRCUIT_BREAKER_ENABLED = True
+
         def real_call(fn):
             return fn()
+
         mock_pybreaker.CircuitBreaker.return_value.call.side_effect = real_call
         c = GROBIDClient()
         assert c.breaker is not None
@@ -323,6 +327,7 @@ class TestGROBIDClientAuthorExtraction:
           </teiHeader>
         </TEI>"""
         import xml.etree.ElementTree as ET
+
         root = ET.fromstring(xml)
         authors, affiliations = client._extract_authors(root)
         assert authors == []
@@ -353,6 +358,7 @@ class TestGROBIDClientAuthorExtraction:
           </teiHeader>
         </TEI>"""
         import xml.etree.ElementTree as ET
+
         root = ET.fromstring(xml)
         authors, affiliations = client._extract_authors(root)
         assert authors[0]["given"] == "John"
@@ -384,6 +390,7 @@ class TestGROBIDClientAuthorExtraction:
           </teiHeader>
         </TEI>"""
         import xml.etree.ElementTree as ET
+
         root = ET.fromstring(xml)
         authors, affiliations = client._extract_authors(root)
         assert authors[0]["affiliation"] == ""
@@ -403,6 +410,7 @@ class TestGROBIDClientAbstract:
           </teiHeader>
         </TEI>"""
         import xml.etree.ElementTree as ET
+
         root = ET.fromstring(xml)
         abstract = client._extract_abstract(root)
         assert abstract == "Direct abstract text here."
@@ -427,6 +435,7 @@ class TestGROBIDClientKeywords:
           </teiHeader>
         </TEI>"""
         import xml.etree.ElementTree as ET
+
         root = ET.fromstring(xml)
         keywords = client._extract_keywords(root)
         assert keywords == ["machine learning", "NLP"]
@@ -436,15 +445,21 @@ class TestGROBIDClientConfidence:
     """Coverage gaps: 474->476"""
 
     def test_single_author_does_not_get_two_author_bonus(self, client):
-        score = client._calculate_confidence("Long Title Here", [
-            {"given": "John", "family": "Smith"},
-        ])
+        score = client._calculate_confidence(
+            "Long Title Here",
+            [
+                {"given": "John", "family": "Smith"},
+            ],
+        )
         assert score == pytest.approx(0.9, abs=0.01)
 
     def test_incomplete_single_author_no_completeness_bonus(self, client):
-        score = client._calculate_confidence("Long Title Here", [
-            {"given": "John", "family": ""},
-        ])
+        score = client._calculate_confidence(
+            "Long Title Here",
+            [
+                {"given": "John", "family": ""},
+            ],
+        )
         expected = 0.4 + 0.2 + 0.2
         assert score == pytest.approx(expected, abs=0.01)
 

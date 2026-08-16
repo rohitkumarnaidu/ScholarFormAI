@@ -237,10 +237,13 @@ class TestGROBIDClientTEIParsing:
 
 class TestGROBIDClientConfidence:
     def test_confidence_full(self, client):
-        score = client._calculate_confidence("Long Title Here", [
-            {"given": "John", "family": "Smith"},
-            {"given": "Jane", "family": "Doe"},
-        ])
+        score = client._calculate_confidence(
+            "Long Title Here",
+            [
+                {"given": "John", "family": "Smith"},
+                {"given": "Jane", "family": "Doe"},
+            ],
+        )
         assert score == pytest.approx(1.0, abs=0.01)
 
     def test_confidence_no_title(self, client):
@@ -252,7 +255,10 @@ class TestGROBIDClientConfidence:
         assert score == 0.4
 
     def test_confidence_one_author_incomplete(self, client):
-        score = client._calculate_confidence("Good Title Here", [
-            {"given": "", "family": "Smith"},
-        ])
+        score = client._calculate_confidence(
+            "Good Title Here",
+            [
+                {"given": "", "family": "Smith"},
+            ],
+        )
         assert score > 0.0

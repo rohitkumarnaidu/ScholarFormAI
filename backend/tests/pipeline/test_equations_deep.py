@@ -13,6 +13,7 @@ pytestmark = [pytest.mark.pipeline]
 class TestEquationStandardizer:
     def test_init_default_xsl_path(self):
         from app.pipeline.equations.standardizer import EquationStandardizer
+
         with patch("os.path.exists", return_value=False):
             s = EquationStandardizer()
             assert s.xsl_path is not None
@@ -20,10 +21,12 @@ class TestEquationStandardizer:
 
     def test_init_with_custom_path(self):
         from app.pipeline.equations.standardizer import EquationStandardizer
+
         with patch("os.path.exists", return_value=True), patch("lxml.etree.parse") as mock_parse:
             mock_xslt = MagicMock()
             mock_parse.return_value = mock_xslt
             from lxml import etree
+
             with patch.object(etree, "XSLT") as mock_xslt_cls:
                 mock_xslt_cls.return_value = MagicMock()
                 s = EquationStandardizer(xsl_path="/custom/omml2mml.xsl")
@@ -31,6 +34,7 @@ class TestEquationStandardizer:
 
     def test_init_xslt_load_failure(self):
         from app.pipeline.equations.standardizer import EquationStandardizer
+
         with patch("os.path.exists", return_value=True):
             with patch("lxml.etree.parse", side_effect=Exception("Parse error")):
                 s = EquationStandardizer(xsl_path="/bad/path.xsl")
@@ -38,6 +42,7 @@ class TestEquationStandardizer:
 
     def test_init_xslt_not_found(self):
         from app.pipeline.equations.standardizer import EquationStandardizer
+
         with patch("os.path.exists", return_value=False):
             s = EquationStandardizer(xsl_path="/nonexistent.xsl")
             assert s._xslt is None
@@ -45,6 +50,7 @@ class TestEquationStandardizer:
     def test_process_no_equations(self):
         from app.models.pipeline_document import PipelineDocument
         from app.pipeline.equations.standardizer import EquationStandardizer
+
         doc = PipelineDocument(document_id="test")
         s = EquationStandardizer()
         with patch.object(s, "_convert_omml_to_mathml"):
@@ -55,9 +61,9 @@ class TestEquationStandardizer:
         from app.models.equation import Equation
         from app.models.pipeline_document import PipelineDocument
         from app.pipeline.equations.standardizer import EquationStandardizer
+
         doc = PipelineDocument(
-            document_id="test",
-            equations=[Equation(equation_id="e1", omml="<m:oMath>...</m:oMath>", index=0)]
+            document_id="test", equations=[Equation(equation_id="e1", omml="<m:oMath>...</m:oMath>", index=0)]
         )
         s = EquationStandardizer()
         with patch.object(s, "_convert_omml_to_mathml", return_value="<math>converted</math>"):
@@ -69,10 +75,8 @@ class TestEquationStandardizer:
         from app.models.equation import Equation
         from app.models.pipeline_document import PipelineDocument
         from app.pipeline.equations.standardizer import EquationStandardizer
-        doc = PipelineDocument(
-            document_id="test",
-            equations=[Equation(equation_id="e1", omml="<bad>", index=0)]
-        )
+
+        doc = PipelineDocument(document_id="test", equations=[Equation(equation_id="e1", omml="<bad>", index=0)])
         s = EquationStandardizer()
         with patch.object(s, "_convert_omml_to_mathml", return_value=""):
             result = s.process(doc)
@@ -82,9 +86,9 @@ class TestEquationStandardizer:
         from app.models.equation import Equation
         from app.models.pipeline_document import PipelineDocument
         from app.pipeline.equations.standardizer import EquationStandardizer
+
         doc = PipelineDocument(
-            document_id="test",
-            equations=[Equation(equation_id="e1", omml="<m:oMath>...</m:oMath>", index=0)]
+            document_id="test", equations=[Equation(equation_id="e1", omml="<m:oMath>...</m:oMath>", index=0)]
         )
         s = EquationStandardizer()
         with patch.object(s, "_convert_omml_to_mathml", side_effect=Exception("Convert error")):
@@ -95,12 +99,13 @@ class TestEquationStandardizer:
         from app.models.equation import Equation
         from app.models.pipeline_document import PipelineDocument
         from app.pipeline.equations.standardizer import EquationStandardizer
+
         doc = PipelineDocument(
             document_id="test",
             equations=[
                 Equation(equation_id="e1", omml="<m:oMath>ok</m:oMath>", index=0),
                 Equation(equation_id="e2", omml="<m:oMath>bad</m:oMath>", index=1),
-            ]
+            ],
         )
         s = EquationStandardizer()
         with patch.object(s, "_convert_omml_to_mathml", side_effect=["<math>ok</math>", ""]):
@@ -110,6 +115,7 @@ class TestEquationStandardizer:
 
     def test_convert_omml_to_mathml_no_xslt(self):
         from app.pipeline.equations.standardizer import EquationStandardizer
+
         s = EquationStandardizer()
         s._xslt = None
         result = s._convert_omml_to_mathml("<m:oMath>test</m:oMath>")
@@ -135,15 +141,18 @@ class TestEquationStandardizer:
 
     def test_convert_omml_to_mathml_xml_syntax_error(self):
         from app.pipeline.equations.standardizer import EquationStandardizer
+
         s = EquationStandardizer()
         s._xslt = MagicMock()
         from lxml.etree import XMLSyntaxError
+
         with patch("lxml.etree.fromstring", side_effect=XMLSyntaxError("bad xml", None, 0, 0)):
             result = s._convert_omml_to_mathml("<bad>")
             assert result == ""
 
     def test_convert_omml_to_mathml_general_exception(self):
         from app.pipeline.equations.standardizer import EquationStandardizer
+
         s = EquationStandardizer()
         s._xslt = MagicMock()
         with patch("lxml.etree.fromstring", side_effect=Exception("General error")):
@@ -152,6 +161,7 @@ class TestEquationStandardizer:
 
     def test_convert_omml_no_default_ns(self):
         from app.pipeline.equations.standardizer import EquationStandardizer
+
         s = EquationStandardizer()
         mock_xslt = MagicMock()
         mock_result = MagicMock()
@@ -169,6 +179,7 @@ class TestEquationStandardizer:
 
     def test_get_equation_standardizer(self):
         from app.pipeline.equations.standardizer import _standardizer, get_equation_standardizer
+
         _standardizer = None
         s = get_equation_standardizer()
         assert s is not None
@@ -177,6 +188,7 @@ class TestEquationStandardizer:
 
     def test_convert_omml_to_mathml_with_omml_ns(self):
         from app.pipeline.equations.standardizer import EquationStandardizer
+
         s = EquationStandardizer()
         mock_xslt = MagicMock()
         mock_result = MagicMock()
@@ -196,10 +208,8 @@ class TestEquationStandardizer:
         from app.models.equation import Equation
         from app.models.pipeline_document import PipelineDocument
         from app.pipeline.equations.standardizer import EquationStandardizer
-        doc = PipelineDocument(
-            document_id="test",
-            equations=[Equation(equation_id="e1", omml=None, index=0)]
-        )
+
+        doc = PipelineDocument(document_id="test", equations=[Equation(equation_id="e1", omml=None, index=0)])
         s = EquationStandardizer()
         result = s.process(doc)
         assert result.equations[0].mathml is None

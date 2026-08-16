@@ -25,6 +25,7 @@ def _make_table(rows=None, caption_text=None, index=0, table_id="tbl_001"):
 class TestRender:
     def test_no_table_model(self):
         from app.pipeline.tables.renderer import TableRenderer
+
         renderer = TableRenderer()
         doc = MagicMock()
         renderer.render(doc, None)
@@ -32,6 +33,7 @@ class TestRender:
 
     def test_empty_rows(self):
         from app.pipeline.tables.renderer import TableRenderer
+
         renderer = TableRenderer()
         doc = MagicMock()
         tbl = MagicMock()
@@ -42,6 +44,7 @@ class TestRender:
 
     def test_no_cols(self):
         from app.pipeline.tables.renderer import TableRenderer
+
         renderer = TableRenderer()
         doc = MagicMock()
         tbl = _make_table(rows=[[]])
@@ -50,6 +53,7 @@ class TestRender:
 
     def test_basic_render(self):
         from app.pipeline.tables.renderer import TableRenderer
+
         renderer = TableRenderer()
         doc = MagicMock()
         doc.add_table.return_value = MagicMock()
@@ -61,6 +65,7 @@ class TestRender:
 
     def test_caption_added(self):
         from app.pipeline.tables.renderer import TableRenderer
+
         renderer = TableRenderer()
         doc = MagicMock()
         doc.add_paragraph.return_value = MagicMock()
@@ -73,6 +78,7 @@ class TestRender:
 
     def test_caption_matching_format(self):
         from app.pipeline.tables.renderer import TableRenderer
+
         renderer = TableRenderer()
         doc = MagicMock()
         doc.add_paragraph.return_value = MagicMock()
@@ -85,6 +91,7 @@ class TestRender:
 
     def test_render_with_style(self):
         from app.pipeline.tables.renderer import TableRenderer
+
         renderer = TableRenderer()
         doc = MagicMock()
         doc.styles = ["Table Grid"]
@@ -93,10 +100,11 @@ class TestRender:
         tbl = _make_table()
         renderer.render(doc, tbl)
         word_table = doc.add_table.return_value
-        assert word_table.style == 'Table Grid'
+        assert word_table.style == "Table Grid"
 
     def test_render_exception_raised(self):
         from app.pipeline.tables.renderer import TableRenderer
+
         renderer = TableRenderer()
         doc = MagicMock()
         doc.add_table.side_effect = Exception("render error")
@@ -107,6 +115,7 @@ class TestRender:
 
     def test_nested_table_rendering(self):
         from app.pipeline.tables.renderer import TableRenderer
+
         renderer = TableRenderer()
         doc = MagicMock()
         doc.add_table.return_value = MagicMock()

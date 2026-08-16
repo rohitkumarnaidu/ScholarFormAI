@@ -6,8 +6,10 @@ import pytest
 @pytest.fixture
 def mkblock():
     from app.models.block import Block, BlockType
+
     def _block(text="Test", btype=BlockType.BODY, idx=0):
         return Block(block_id=f"b{idx}", text=text, block_type=btype, index=idx)
+
     return _block
 
 
@@ -41,6 +43,7 @@ def _make_doc(mkblock):
 class TestGetExportFormats:
     def test_default_formats(self):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = MagicMock()
         doc.formatting_options = {}
@@ -51,6 +54,7 @@ class TestGetExportFormats:
 
     def test_docx_always_present(self):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = MagicMock()
         doc.formatting_options = {"export_formats": ["json"]}
@@ -59,6 +63,7 @@ class TestGetExportFormats:
 
     def test_custom_formats(self):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = MagicMock()
         doc.formatting_options = {"export_formats": ["pdf", "html"]}
@@ -68,6 +73,7 @@ class TestGetExportFormats:
 
     def test_non_list_formats(self):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = MagicMock()
         doc.formatting_options = {"export_formats": "pdf"}
@@ -78,8 +84,11 @@ class TestGetExportFormats:
 class TestBuildExportPayload:
     def test_basic_payload(self, mkblock):
         from app.pipeline.export.exporter import Exporter
-        with patch("app.pipeline.export.exporter.safe_model_dump",
-                   side_effect=lambda x: {"title": "Test Paper"} if hasattr(x, "title") else {}):
+
+        with patch(
+            "app.pipeline.export.exporter.safe_model_dump",
+            side_effect=lambda x: {"title": "Test Paper"} if hasattr(x, "title") else {},
+        ):
             exporter = Exporter()
             doc = _make_doc(mkblock)
             payload = exporter._build_export_payload(doc)
@@ -89,8 +98,11 @@ class TestBuildExportPayload:
 
     def test_exported_at_exists(self, mkblock):
         from app.pipeline.export.exporter import Exporter
-        with patch("app.pipeline.export.exporter.safe_model_dump",
-                   side_effect=lambda x: {"title": "Test"} if hasattr(x, "title") else {}):
+
+        with patch(
+            "app.pipeline.export.exporter.safe_model_dump",
+            side_effect=lambda x: {"title": "Test"} if hasattr(x, "title") else {},
+        ):
             exporter = Exporter()
             doc = _make_doc(mkblock)
             payload = exporter._build_export_payload(doc)
@@ -100,6 +112,7 @@ class TestBuildExportPayload:
 class TestBuildMarkdown:
     def test_basic_markdown(self, mkblock):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
         md = exporter._build_markdown(doc)
@@ -111,6 +124,7 @@ class TestBuildMarkdown:
 
     def test_no_metadata_title(self, mkblock):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
         doc.metadata.title = None
@@ -120,6 +134,7 @@ class TestBuildMarkdown:
     def test_skips_reference_blocks(self, mkblock):
         from app.models.block import BlockType
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
         doc.blocks.append(mkblock("References", BlockType.REFERENCES_HEADING, idx=3))
@@ -130,6 +145,7 @@ class TestBuildMarkdown:
     def test_heading_blocks(self, mkblock):
         from app.models.block import BlockType
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
         doc.blocks = [
@@ -141,6 +157,7 @@ class TestBuildMarkdown:
 
     def test_references_section(self, mkblock):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
         ref = MagicMock()
@@ -154,6 +171,7 @@ class TestBuildMarkdown:
 
     def test_empty_blocks_skipped(self, mkblock):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
         doc.blocks = [mkblock("", idx=0)]
@@ -164,18 +182,19 @@ class TestBuildMarkdown:
 class TestExportJson:
     def test_success(self, mkblock):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
 
         m = mock_open()
         with patch("builtins.open", m), patch("os.makedirs"):
-            with patch("app.pipeline.export.exporter.safe_model_dump",
-                       side_effect=lambda x: {}):
+            with patch("app.pipeline.export.exporter.safe_model_dump", side_effect=lambda x: {}):
                 result = exporter.export_json(doc, "/tmp/out.json")
         assert result == "/tmp/out.json"
 
     def test_exception_returns_none(self, mkblock):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
 
@@ -187,6 +206,7 @@ class TestExportJson:
 class TestExportMarkdown:
     def test_success(self, mkblock):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
 
@@ -197,6 +217,7 @@ class TestExportMarkdown:
 
     def test_exception_returns_none(self, mkblock):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
 
@@ -208,6 +229,7 @@ class TestExportMarkdown:
 class TestExportHtml:
     def test_success(self, mkblock):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
 
@@ -218,6 +240,7 @@ class TestExportHtml:
 
     def test_ol_list_handling(self, mkblock):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
         doc.blocks = [mkblock("1. First item", idx=0), mkblock("2. Second item", idx=1)]
@@ -229,6 +252,7 @@ class TestExportHtml:
 class TestExportJats:
     def test_success(self, mkblock):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
 
@@ -240,6 +264,7 @@ class TestExportJats:
 
     def test_exception_returns_none(self, mkblock):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
 
@@ -251,6 +276,7 @@ class TestExportJats:
 class TestProcess:
     def test_process_with_docx_and_output(self, mkblock):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
         doc.generated_doc = MagicMock()
@@ -262,6 +288,7 @@ class TestProcess:
 
     def test_process_no_output_path(self, mkblock):
         from app.pipeline.export.exporter import Exporter
+
         exporter = Exporter()
         doc = _make_doc(mkblock)
         doc.output_path = None

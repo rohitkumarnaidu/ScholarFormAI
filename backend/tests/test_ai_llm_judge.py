@@ -26,6 +26,7 @@ _DEFAULT_RUBRIC = {
 def _keyword_overlap(claim: str, source: str) -> float:
     """Fraction of claim keywords (>=4 chars) found in source."""
     import re
+
     claim_tokens = set(re.findall(r"\b[a-zA-Z]{4,}\b", claim.lower()))
     if not claim_tokens:
         return 0.0
@@ -39,6 +40,7 @@ def _keyword_overlap(claim: str, source: str) -> float:
 def _sentence_similarity(a: str, b: str) -> float:
     """Average keyword overlap across sentence pairs."""
     import re
+
     sentences_a = re.split(r"(?<=[.!?])\s+", a)
     sentences_b = re.split(r"(?<=[.!?])\s+", b)
     if not sentences_a or not sentences_b:
@@ -67,6 +69,7 @@ def _extract_requirements(rubric: dict) -> list[str]:
 def _check_instruction_adherence(output: str, rubric: dict) -> float:
     """Score how well output follows rubric instructions."""
     import re
+
     requirements = _extract_requirements(rubric)
     if not requirements:
         return 1.0
@@ -87,16 +90,35 @@ def _check_instruction_adherence(output: str, rubric: dict) -> float:
 def _coherence_score(text: str) -> float:
     """Score coherence based on sentence transitions and structure."""
     import re
+
     sentences = re.split(r"(?<=[.!?])\s+", text.strip())
     if len(sentences) < 2:
         return 1.0  # single sentence or empty is trivially coherent
     # Check for transition words and referential continuity
     transitions = {
-        "however", "therefore", "furthermore", "moreover", "consequently",
-        "additionally", "in addition", "specifically", "for example",
-        "for instance", "in contrast", "on the other hand", "as a result",
-        "first", "second", "third", "finally", "subsequently", "notably",
-        "importantly", "conversely", "meanwhile", "nevertheless",
+        "however",
+        "therefore",
+        "furthermore",
+        "moreover",
+        "consequently",
+        "additionally",
+        "in addition",
+        "specifically",
+        "for example",
+        "for instance",
+        "in contrast",
+        "on the other hand",
+        "as a result",
+        "first",
+        "second",
+        "third",
+        "finally",
+        "subsequently",
+        "notably",
+        "importantly",
+        "conversely",
+        "meanwhile",
+        "nevertheless",
     }
     transition_count = 0
     for s in sentences:

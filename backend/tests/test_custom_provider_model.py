@@ -4,6 +4,7 @@ import uuid
 class TestCustomProviderModel:
     def test_to_dict_returns_expected_keys(self):
         from app.models.custom_provider import CustomProvider
+
         cp = CustomProvider(
             user_id=uuid.uuid4(),
             name="Test Provider",
@@ -25,6 +26,7 @@ class TestCustomProviderModel:
 
     def test_to_dict_default_values(self):
         from app.models.custom_provider import CustomProvider
+
         cp = CustomProvider(
             user_id=uuid.uuid4(),
             name="Minimal",
@@ -39,6 +41,7 @@ class TestCustomProviderModel:
 
     def test_default_is_active_true(self):
         from app.models.custom_provider import CustomProvider
+
         cp = CustomProvider(
             user_id=uuid.uuid4(),
             name="Test",
@@ -48,6 +51,7 @@ class TestCustomProviderModel:
 
     def test_default_models_empty_list(self):
         from app.models.custom_provider import CustomProvider
+
         cp = CustomProvider(
             user_id=uuid.uuid4(),
             name="Test",
@@ -57,6 +61,7 @@ class TestCustomProviderModel:
 
     def test_auto_generates_uuid(self):
         from app.models.custom_provider import CustomProvider
+
         cp = CustomProvider(
             user_id=uuid.uuid4(),
             name="Test",
@@ -69,6 +74,7 @@ class TestCustomProviderModel:
         from datetime import datetime
 
         from app.models.custom_provider import CustomProvider
+
         cp = CustomProvider(
             user_id=uuid.uuid4(),
             name="Test",
@@ -80,10 +86,12 @@ class TestCustomProviderModel:
 
     def test_table_name(self):
         from app.models.custom_provider import CustomProvider
+
         assert CustomProvider.__tablename__ == "custom_providers"
 
     def test_to_dict_with_none_timestamps(self):
         from app.models.custom_provider import CustomProvider
+
         cp = CustomProvider(
             user_id=uuid.uuid4(),
             name="Test",

@@ -4,10 +4,12 @@ from __future__ import annotations
 class TestDocumentResult:
     def test_tablename(self):
         from app.models.document_result import DocumentResult
+
         assert DocumentResult.__tablename__ == "document_results"
 
     def test_has_id_column(self):
         from app.models.document_result import DocumentResult
+
         assert hasattr(DocumentResult, "id")
         assert hasattr(DocumentResult, "document_id")
         assert hasattr(DocumentResult, "structured_data")
@@ -15,6 +17,7 @@ class TestDocumentResult:
 
     def test_columns_defined(self):
         from app.models.document_result import DocumentResult
+
         cols = DocumentResult.__table__.columns
         assert "id" in cols
         assert "document_id" in cols
@@ -23,5 +26,6 @@ class TestDocumentResult:
 
     def test_document_id_indexed(self):
         from app.models.document_result import DocumentResult
+
         col = DocumentResult.__table__.columns["document_id"]
         assert col.index is True

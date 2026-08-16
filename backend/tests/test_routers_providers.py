@@ -38,8 +38,20 @@ class TestGetProviders:
     def test_success(self, client):
         with patch("app.routers.v1.providers.list_available_models") as mock_list:
             mock_list.return_value = [
-                {"provider_id": "openai", "name": "OpenAI", "models": ["gpt-4o"], "key_configured": True, "is_custom": False},
-                {"provider_id": "anthropic", "name": "Anthropic", "models": ["claude-3"], "key_configured": False, "is_custom": False},
+                {
+                    "provider_id": "openai",
+                    "name": "OpenAI",
+                    "models": ["gpt-4o"],
+                    "key_configured": True,
+                    "is_custom": False,
+                },
+                {
+                    "provider_id": "anthropic",
+                    "name": "Anthropic",
+                    "models": ["claude-3"],
+                    "key_configured": False,
+                    "is_custom": False,
+                },
             ]
             response = client.get("/api/v1/providers")
         assert response.status_code == 200
@@ -80,13 +92,16 @@ class TestCreateCustomProvider:
                 "created_at": None,
                 "updated_at": None,
             }
-            response = client.post("/api/v1/providers/custom", json={
-                "name": "My Local LLM",
-                "base_url": "http://localhost:8080/v1",
-                "models": ["model-x", "model-y"],
-                "is_local": True,
-                "description": "My test server",
-            })
+            response = client.post(
+                "/api/v1/providers/custom",
+                json={
+                    "name": "My Local LLM",
+                    "base_url": "http://localhost:8080/v1",
+                    "models": ["model-x", "model-y"],
+                    "is_local": True,
+                    "description": "My test server",
+                },
+            )
         assert response.status_code == 201
         data = response.json()
         assert data["name"] == "My Local LLM"
@@ -95,35 +110,56 @@ class TestCreateCustomProvider:
     def test_strips_trailing_slash(self, client):
         with patch("app.models.custom_provider.CustomProvider.to_dict") as mock_to_dict:
             mock_to_dict.return_value = {
-                "id": "cp-2", "name": "Test", "base_url": "http://localhost:8080/v1",
-                "models": [], "is_local": False, "description": None,
-                "is_active": True, "created_at": None, "updated_at": None,
-            }
-            response = client.post("/api/v1/providers/custom", json={
+                "id": "cp-2",
                 "name": "Test",
-                "base_url": "http://localhost:8080/v1/",
-            })
+                "base_url": "http://localhost:8080/v1",
+                "models": [],
+                "is_local": False,
+                "description": None,
+                "is_active": True,
+                "created_at": None,
+                "updated_at": None,
+            }
+            response = client.post(
+                "/api/v1/providers/custom",
+                json={
+                    "name": "Test",
+                    "base_url": "http://localhost:8080/v1/",
+                },
+            )
         assert response.status_code == 201
 
     def test_encrypts_api_key(self, client):
         with patch("app.models.custom_provider.CustomProvider.to_dict") as mock_to_dict:
             mock_to_dict.return_value = {
-                "id": "cp-3", "name": "Key Test", "base_url": "http://localhost:8080/v1",
-                "models": [], "is_local": False, "description": None,
-                "is_active": True, "created_at": None, "updated_at": None,
-            }
-            response = client.post("/api/v1/providers/custom", json={
+                "id": "cp-3",
                 "name": "Key Test",
                 "base_url": "http://localhost:8080/v1",
-                "api_key": "sk-secret-key",
-            })
+                "models": [],
+                "is_local": False,
+                "description": None,
+                "is_active": True,
+                "created_at": None,
+                "updated_at": None,
+            }
+            response = client.post(
+                "/api/v1/providers/custom",
+                json={
+                    "name": "Key Test",
+                    "base_url": "http://localhost:8080/v1",
+                    "api_key": "sk-secret-key",
+                },
+            )
         assert response.status_code == 201
         client.mock_encryption.encrypt.assert_called_once_with("sk-secret-key")
 
     def test_missing_name_returns_422(self, client):
-        response = client.post("/api/v1/providers/custom", json={
-            "base_url": "http://localhost:8080/v1",
-        })
+        response = client.post(
+            "/api/v1/providers/custom",
+            json={
+                "base_url": "http://localhost:8080/v1",
+            },
+        )
         assert response.status_code == 422
 
 
@@ -131,9 +167,15 @@ class TestListCustomProviders:
     def test_success(self, client):
         mock_cp = MagicMock()
         mock_cp.to_dict.return_value = {
-            "id": "cp-1", "name": "My Provider", "base_url": "http://localhost:8080/v1",
-            "models": ["m1"], "is_local": False, "description": None,
-            "is_active": True, "created_at": "2024-01-01T00:00:00", "updated_at": "2024-01-01T00:00:00",
+            "id": "cp-1",
+            "name": "My Provider",
+            "base_url": "http://localhost:8080/v1",
+            "models": ["m1"],
+            "is_local": False,
+            "description": None,
+            "is_active": True,
+            "created_at": "2024-01-01T00:00:00",
+            "updated_at": "2024-01-01T00:00:00",
         }
         client.mock_db.execute.return_value.scalars.return_value.all.return_value = [mock_cp]
 
@@ -155,9 +197,15 @@ class TestGetCustomProvider:
     def test_found(self, client):
         mock_cp = MagicMock()
         mock_cp.to_dict.return_value = {
-            "id": "cp-1", "name": "My Provider", "base_url": "http://localhost:8080/v1",
-            "models": [], "is_local": False, "description": None,
-            "is_active": True, "created_at": None, "updated_at": None,
+            "id": "cp-1",
+            "name": "My Provider",
+            "base_url": "http://localhost:8080/v1",
+            "models": [],
+            "is_local": False,
+            "description": None,
+            "is_active": True,
+            "created_at": None,
+            "updated_at": None,
         }
         client.mock_db.execute.return_value.scalar_one_or_none.return_value = mock_cp
 
@@ -175,18 +223,27 @@ class TestUpdateCustomProvider:
     def test_success(self, client):
         mock_cp = MagicMock()
         mock_cp.to_dict.return_value = {
-            "id": "cp-1", "name": "Updated Name", "base_url": "http://localhost:8080/v1",
-            "models": ["m1", "m2"], "is_local": True, "description": "updated",
-            "is_active": True, "created_at": None, "updated_at": None,
-        }
-        client.mock_db.execute.return_value.scalar_one_or_none.return_value = mock_cp
-
-        response = client.put("/api/v1/providers/custom/cp-1", json={
+            "id": "cp-1",
             "name": "Updated Name",
+            "base_url": "http://localhost:8080/v1",
             "models": ["m1", "m2"],
             "is_local": True,
             "description": "updated",
-        })
+            "is_active": True,
+            "created_at": None,
+            "updated_at": None,
+        }
+        client.mock_db.execute.return_value.scalar_one_or_none.return_value = mock_cp
+
+        response = client.put(
+            "/api/v1/providers/custom/cp-1",
+            json={
+                "name": "Updated Name",
+                "models": ["m1", "m2"],
+                "is_local": True,
+                "description": "updated",
+            },
+        )
         assert response.status_code == 200
         assert response.json()["name"] == "Updated Name"
         assert mock_cp.name == "Updated Name"
@@ -263,7 +320,9 @@ class TestTestProviderConnection:
             mock_client_instance.__aenter__.return_value.get = AsyncMock(return_value=mock_resp)
             mock_async_client.return_value = mock_client_instance
 
-            response = client.post("/api/v1/providers/test?provider_id=openai&base_url=https://api.openai.com/v1&api_key=sk-test")
+            response = client.post(
+                "/api/v1/providers/test?provider_id=openai&base_url=https://api.openai.com/v1&api_key=sk-test"
+            )
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "valid"
@@ -279,7 +338,9 @@ class TestTestProviderConnection:
             mock_client_instance.__aenter__.return_value.get = AsyncMock(return_value=mock_resp)
             mock_async_client.return_value = mock_client_instance
 
-            response = client.post("/api/v1/providers/test?provider_id=openai&base_url=https://api.openai.com/v1&api_key=sk-test")
+            response = client.post(
+                "/api/v1/providers/test?provider_id=openai&base_url=https://api.openai.com/v1&api_key=sk-test"
+            )
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "valid"
@@ -291,7 +352,9 @@ class TestTestProviderConnection:
             mock_client_instance.__aenter__.return_value.get = AsyncMock(side_effect=ConnectionError("refused"))
             mock_async_client.return_value = mock_client_instance
 
-            response = client.post("/api/v1/providers/test?provider_id=openai&base_url=https://api.openai.com/v1&api_key=sk-test")
+            response = client.post(
+                "/api/v1/providers/test?provider_id=openai&base_url=https://api.openai.com/v1&api_key=sk-test"
+            )
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "error"

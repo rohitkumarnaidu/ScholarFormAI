@@ -29,9 +29,11 @@ def engine(tmp_path):
 # _load_chromadb
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestLoadChromadb:
     def test_already_loaded_returns_early(self):
         from app.pipeline.intelligence.rag_engine import _load_chromadb, chromadb
+
         assert _load_chromadb() is chromadb or True
 
     def test_import_already_attempted_returns_none(self):
@@ -40,6 +42,7 @@ class TestLoadChromadb:
             patch("app.pipeline.intelligence.rag_engine._CHROMADB_IMPORT_ATTEMPTED", True),
         ):
             from app.pipeline.intelligence.rag_engine import _load_chromadb
+
             result = _load_chromadb()
             assert result is None
 
@@ -48,10 +51,12 @@ class TestLoadChromadb:
 # _DeterministicEmbeddingModel
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestDeterministicEmbeddingModel:
     @pytest.fixture
     def model(self):
         from app.pipeline.intelligence.rag_engine import _DeterministicEmbeddingModel
+
         return _DeterministicEmbeddingModel(dimension=64)
 
     def test_get_dimension(self, model):
@@ -90,25 +95,30 @@ class TestDeterministicEmbeddingModel:
 # _HuggingFaceAPIEmbeddingModel
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestHuggingFaceAPIEmbeddingModel:
     def test_bge_m3_dimension(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         m = _HuggingFaceAPIEmbeddingModel(model_id="BAAI/bge-m3")
         assert m.dimension == 1024
 
     def test_get_dimension(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         m = _HuggingFaceAPIEmbeddingModel()
         assert m.get_sentence_embedding_dimension() == 384
 
     def test_encode_no_token(self):
         with patch.dict(os.environ, {}, clear=True):
             from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
             m = _HuggingFaceAPIEmbeddingModel()
             assert m.token is None
 
     def test_encode_list_returns_list(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         with patch("app.pipeline.intelligence.rag_engine.requests.post") as mock_post:
             mock_response = MagicMock()
             mock_response.status_code = 200
@@ -122,6 +132,7 @@ class TestHuggingFaceAPIEmbeddingModel:
 
     def test_api_error_returns_empty(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         with patch("app.pipeline.intelligence.rag_engine.requests.post", side_effect=Exception("api down")):
             with patch.dict(os.environ, {"HF_TOKEN": "test-token"}, clear=False):
                 m = _HuggingFaceAPIEmbeddingModel()
@@ -133,30 +144,36 @@ class TestHuggingFaceAPIEmbeddingModel:
 # _coerce_embedding_vector — static edge cases
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestCoerceEmbeddingVector:
     def test_none_returns_empty(self):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         result = RagEngine._coerce_embedding_vector(None)
         assert result == []
 
     def test_numpy_array_uses_tolist(self):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         arr = np.array([0.1, 0.2, 0.3])
         result = RagEngine._coerce_embedding_vector(arr)
         assert result == [0.1, 0.2, 0.3]
 
     def test_nested_list_unwraps(self):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         result = RagEngine._coerce_embedding_vector([[0.1, 0.2, 0.3]])
         assert result == [0.1, 0.2, 0.3]
 
     def test_non_iterable_returns_empty(self):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         result = RagEngine._coerce_embedding_vector(42)
         assert result == []
 
     def test_uncastable_element_returns_empty(self):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         result = RagEngine._coerce_embedding_vector([0.1, "bad", 0.3])
         assert result == []
 
@@ -164,6 +181,7 @@ class TestCoerceEmbeddingVector:
 # ═══════════════════════════════════════════════════════════════════════════
 # add_guideline — without patching it away
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 class TestAddGuideline:
     def test_add_guideline_with_metadata(self, engine):
@@ -224,6 +242,7 @@ class TestAddGuideline:
 # query_guidelines — ChromaDB success path
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestQueryGuidelinesChromadb:
     def test_chromadb_returns_guidelines(self, engine):
         mock_collection = MagicMock()
@@ -242,13 +261,12 @@ class TestQueryGuidelinesChromadb:
 # _seed_if_empty — list payload & valid item
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestSeedIfEmpty:
     def test_list_payload(self, engine):
         engine.knowledge_base.clear()
         engine.chroma_enabled = False
-        payload = [
-            {"publisher": "IEEE", "section": "formatting", "text": "Use 10pt.", "embedding": [0.1]}
-        ]
+        payload = [{"publisher": "IEEE", "section": "formatting", "text": "Use 10pt.", "embedding": [0.1]}]
         with patch("app.pipeline.intelligence.rag_engine.os.path.exists", return_value=True):
             with patch("app.pipeline.intelligence.rag_engine.json.load", return_value=payload):
                 engine._seed_if_empty()
@@ -266,9 +284,7 @@ class TestSeedIfEmpty:
         engine.knowledge_base.clear()
         engine.chroma_enabled = False
         payload = {
-            "guidelines": [
-                {"publisher": "ACM", "section": "style", "text": "Double space.", "embedding": [0.1]}
-            ]
+            "guidelines": [{"publisher": "ACM", "section": "style", "text": "Double space.", "embedding": [0.1]}]
         }
         with patch("app.pipeline.intelligence.rag_engine.os.path.exists", return_value=True):
             with patch("app.pipeline.intelligence.rag_engine.json.load", return_value=payload):
@@ -279,6 +295,7 @@ class TestSeedIfEmpty:
 # ═══════════════════════════════════════════════════════════════════════════
 # _is_reusable_embedding_model
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 class TestIsReusableEmbeddingModel:
     @pytest.fixture
@@ -334,9 +351,11 @@ class TestIsReusableEmbeddingModel:
 # _load_embedding_model — model_store reuse, primary→fallback cascade
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestLoadEmbeddingModelCascade:
     def test_primary_fails_fallback_succeeds(self, tmp_path):
         from app.pipeline.intelligence.rag_engine import FALLBACK_MODEL, PRIMARY_MODEL
+
         mock_model = MagicMock()
         mock_model.get_sentence_embedding_dimension.return_value = 384
         mock_model.encode.return_value = [0.1] * 384
@@ -358,7 +377,8 @@ class TestLoadEmbeddingModelCascade:
         assert engine.embedding_model is not None
 
     def test_model_store_reuse_fails_validation(self, tmp_path):
-        with patch("app.pipeline.intelligence.rag_engine.RagEngine._is_reusable_embedding_model",
-                   return_value=(False, None)):
+        with patch(
+            "app.pipeline.intelligence.rag_engine.RagEngine._is_reusable_embedding_model", return_value=(False, None)
+        ):
             engine = _make_engine(tmp_path, model_store_is_loaded=True)
             assert engine.embedding_model is not None

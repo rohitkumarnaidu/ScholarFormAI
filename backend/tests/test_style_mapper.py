@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 class TestStyleMapper:
     def test_known_style(self):
         from app.pipeline.formatting.style_mapper import StyleMapper
+
         loader = MagicMock()
         loader.load.return_value = {"styles": {"BLOCK_HEADING_1": "Heading1"}}
         mapper = StyleMapper(loader)
@@ -14,6 +15,7 @@ class TestStyleMapper:
 
     def test_missing_style_defaults_to_normal(self):
         from app.pipeline.formatting.style_mapper import StyleMapper
+
         loader = MagicMock()
         loader.load.return_value = {"styles": {}}
         mapper = StyleMapper(loader)
@@ -24,6 +26,7 @@ class TestStyleMapper:
 
     def test_already_prefixed_key(self):
         from app.pipeline.formatting.style_mapper import StyleMapper
+
         loader = MagicMock()
         loader.load.return_value = {"styles": {"BLOCK_PARAGRAPH": "BodyText"}}
         mapper = StyleMapper(loader)
@@ -34,6 +37,7 @@ class TestStyleMapper:
 
     def test_contract_loaded_with_publisher(self):
         from app.pipeline.formatting.style_mapper import StyleMapper
+
         loader = MagicMock()
         mapper = StyleMapper(loader)
         block = MagicMock()

@@ -20,11 +20,11 @@ Academic publishing demands strict adherence to specific typographical and layou
 
 To address this challenge, ScholarFormAI introduces an intelligent document processing pipeline that parses unstructured Markdown and DOCX manuscripts, resolves cross-references, formats inline and display mathematics, generates properly styled tables, and compiles citations against BibTeX libraries.
 
-```
-+------------------+     +-----------------------+     +------------------------+
-| Input Manuscript | --> | Layout Parser & OCR   | --> | Jinja2 & DOCX Compiler | --> Formatted Output
-| (MD / DOCX / TeX)|     | (GROBID / Local Models)|     | (IEEE / APA / Springer) |
-+------------------+     +-----------------------+     +------------------------+
+```mermaid
+flowchart LR
+    Input["Input Manuscript<br>(MD / DOCX / TeX)"] --> Parser["Layout Parser & OCR<br>(GROBID / Local Models)"]
+    Parser --> Compiler["Jinja2 & DOCX Compiler<br>(IEEE / APA / Springer)"]
+    Compiler --> Output["Formatted Output"]
 ```
 
 ## 2. Methodology

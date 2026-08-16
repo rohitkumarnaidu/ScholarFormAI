@@ -13,11 +13,13 @@ try:
     from opentelemetry.sdk.resources import Resource
     from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
     from opentelemetry.instrumentation.celery import CeleryInstrumentor
+
     OTEL_INSTALLED = True
 except ImportError:
     OTEL_INSTALLED = False
 
 logger = logging.getLogger(__name__)
+
 
 def init_telemetry(app: FastAPI | None = None, service_name: str = "scholarform-backend"):
     """Initialize OpenTelemetry tracing."""
@@ -31,25 +33,23 @@ def init_telemetry(app: FastAPI | None = None, service_name: str = "scholarform-
         return
 
     endpoint = os.getenv("OTLP_ENDPOINT", "http://localhost:4318/v1/traces")
-    
-    resource = Resource.create(attributes={
-        "service.name": service_name,
-        "environment": os.getenv("ENVIRONMENT", "development")
-    })
-    
+
+    resource = Resource.create(
+        attributes={"service.name": service_name, "environment": os.getenv("ENVIRONMENT", "development")}
+    )
+
     provider = TracerProvider(resource=resource)
     processor = BatchSpanProcessor(OTLPSpanExporter(endpoint=endpoint))
     provider.add_span_processor(processor)
     trace.set_tracer_provider(provider)
-    
+
     if app:
         FastAPIInstrumentor.instrument_app(app)
         logger.info(f"OpenTelemetry FastAPI tracing initialized (endpoint: {endpoint})")
-    
+
     # Try instrumenting Celery
     try:
         CeleryInstrumentor().instrument()
         logger.info("OpenTelemetry Celery tracing initialized.")
     except Exception as e:
         logger.warning(f"Failed to instrument Celery: {e}")
-

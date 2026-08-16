@@ -13,6 +13,7 @@ Covers:
 - Table parsing
 - Image extraction
 """
+
 from __future__ import annotations
 
 import pytest
@@ -54,7 +55,9 @@ class TestValidDocxParsing:
 
     def test_parse_valid_docx_extracts_headings(self, parser, sample_docx):
         result = parser.parse(sample_docx, document_id="test-2")
-        heading_blocks = [b for b in result.blocks if 'heading' in str(b.block_type).lower() or b.metadata.get('is_heading')]
+        heading_blocks = [
+            b for b in result.blocks if "heading" in str(b.block_type).lower() or b.metadata.get("is_heading")
+        ]
         assert len(heading_blocks) >= 0
 
     def test_parse_valid_docx_extracts_paragraphs(self, parser, sample_docx):
@@ -260,9 +263,7 @@ class TestImageExtraction:
         doc.add_paragraph("Below is an image.")
 
         img_path = tmp_path / "test_image.png"
-        img_path.write_bytes(
-            b"\x89PNG\r\n\x1a\n" + b"\x00" * 100
-        )
+        img_path.write_bytes(b"\x89PNG\r\n\x1a\n" + b"\x00" * 100)
         doc.add_picture(str(img_path), width=Inches(2))
 
         doc.add_paragraph("After image paragraph.")

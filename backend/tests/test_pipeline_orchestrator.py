@@ -11,6 +11,7 @@ Covers:
 - Concurrent pipeline execution
 - Pipeline cancellation
 """
+
 from __future__ import annotations
 
 import os
@@ -37,13 +38,11 @@ class TestPipelineExecution:
             mock_rag.return_value = MagicMock()
             mock_grobid.return_value = MagicMock()
             mock_docling.return_value = MagicMock()
-            orchestrator = PipelineOrchestrator(
-                templates_dir="app/templates",
-                temp_dir="temp_test_orchestrator"
-            )
+            orchestrator = PipelineOrchestrator(templates_dir="app/templates", temp_dir="temp_test_orchestrator")
             yield orchestrator
 
         import shutil
+
         temp_dir = "temp_test_orchestrator"
         if os.path.exists(temp_dir):
             shutil.rmtree(temp_dir, ignore_errors=True)
@@ -82,13 +81,11 @@ class TestStageFailureHandling:
             mock_rag.return_value = MagicMock()
             mock_grobid.return_value = MagicMock()
             mock_docling.return_value = MagicMock()
-            orchestrator = PipelineOrchestrator(
-                templates_dir="app/templates",
-                temp_dir="temp_test_failures"
-            )
+            orchestrator = PipelineOrchestrator(templates_dir="app/templates", temp_dir="temp_test_failures")
             yield orchestrator
 
         import shutil
+
         if os.path.exists("temp_test_failures"):
             shutil.rmtree("temp_test_failures", ignore_errors=True)
 
@@ -137,13 +134,11 @@ class TestStageTimeoutHandling:
             mock_rag.return_value = MagicMock()
             mock_grobid.return_value = MagicMock()
             mock_docling.return_value = MagicMock()
-            orchestrator = PipelineOrchestrator(
-                templates_dir="app/templates",
-                temp_dir="temp_test_timeout"
-            )
+            orchestrator = PipelineOrchestrator(templates_dir="app/templates", temp_dir="temp_test_timeout")
             yield orchestrator
 
         import shutil
+
         if os.path.exists("temp_test_timeout"):
             shutil.rmtree("temp_test_timeout", ignore_errors=True)
 
@@ -167,13 +162,11 @@ class TestConcurrentPipelineExecution:
             mock_rag.return_value = MagicMock()
             mock_grobid.return_value = MagicMock()
             mock_docling.return_value = MagicMock()
-            orchestrator = PipelineOrchestrator(
-                templates_dir="app/templates",
-                temp_dir="temp_test_concurrent"
-            )
+            orchestrator = PipelineOrchestrator(templates_dir="app/templates", temp_dir="temp_test_concurrent")
             yield orchestrator
 
         import shutil
+
         if os.path.exists("temp_test_concurrent"):
             shutil.rmtree("temp_test_concurrent", ignore_errors=True)
 
@@ -182,6 +175,7 @@ class TestConcurrentPipelineExecution:
 
     def test_semaphore_limits_concurrency(self, orchestrator):
         from app.pipeline.orchestrator import _MAX_CONCURRENT_JOBS, _pipeline_semaphore
+
         assert _MAX_CONCURRENT_JOBS == 5
         assert _pipeline_semaphore._value == _MAX_CONCURRENT_JOBS
 
@@ -202,13 +196,11 @@ class TestPipelineCancellation:
             mock_rag.return_value = MagicMock()
             mock_grobid.return_value = MagicMock()
             mock_docling.return_value = MagicMock()
-            orchestrator = PipelineOrchestrator(
-                templates_dir="app/templates",
-                temp_dir="temp_test_cancel"
-            )
+            orchestrator = PipelineOrchestrator(templates_dir="app/templates", temp_dir="temp_test_cancel")
             yield orchestrator
 
         import shutil
+
         if os.path.exists("temp_test_cancel"):
             shutil.rmtree("temp_test_cancel", ignore_errors=True)
 

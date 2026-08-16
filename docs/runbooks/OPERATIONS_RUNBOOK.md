@@ -40,39 +40,40 @@ last_updated: July 2026
 
 ### Architecture
 
-```
-                         ┌──────────────────────┐
-                         │   Frontend (Next.js)  │
-                         │   scholarform.ai      │
-                         │   Render / Vercel     │
-                         └─────────┬────────────┘
-                                   │ HTTPS / WSS
-                         ┌─────────▼────────────┐
-                         │  Backend (FastAPI)    │
-                         │  uvicorn (1-4 workers)│
-                         │  Render Web Service   │
-                         └──┬──────┬──────┬─────┘
-                            │      │      │
-              ┌─────────────┘      │      └──────────────┐
-              ▼                    ▼                      ▼
-   ┌──────────────────┐  ┌──────────────┐  ┌─────────────────────┐
-   │  PostgreSQL       │  │  Redis 7     │  │  Celery Workers     │
-   │  Supabase (PITR)  │  │  Cache/Queue │  │  interactive + batch│
-   │  Continuous B/U   │  │  allkeys-lru │  │  Render Worker      │
-   └──────────────────┘  └──────────────┘  └─────────┬───────────┘
-                                                      │
-                    ┌─────────────────────────────────┤
-                    ▼              ▼              ▼           ▼
-           ┌────────────┐ ┌──────────┐ ┌────────┐ ┌──────────────┐
-           │  GROBID     │ │ Docling  │ │  OCR   │ │  ClamAV      │
-           │  0.8.0      │ │ Service  │ │ Service│ │  Malware     │
-           │  4GB heap   │ └──────────┘ └────────┘ │  Scanner     │
-           └────────────┘                           └──────────────┘
-                    ▼              ▼              ▼           ▼
-           ┌────────────┐ ┌──────────┐ ┌────────┐ ┌──────────────┐
-           │  LLMPDFParser     │ │ LLMClassifier │ │ Docx   │ │  Ollama /    │
-           │  Parser     │ │ Classif.│ │ Conv.  │ │  Local LLM   │
-           └────────────┘ └──────────┘ └────────┘ └──────────────┘
+```mermaid
+flowchart TD
+    Front[Frontend - Next.js<br>scholarform.ai<br>Render / Vercel]
+    Back[Backend - FastAPI<br>uvicorn 1-4 workers<br>Render Web Service]
+    
+    Front -- HTTPS / WSS --> Back
+    
+    DB[(PostgreSQL<br>Supabase PITR)]
+    Redis[(Redis 7<br>Cache/Queue)]
+    Worker[Celery Workers<br>interactive + batch<br>Render Worker]
+    
+    Back --> DB
+    Back --> Redis
+    Back --> Worker
+    
+    Grobid[GROBID 0.8.0<br>4GB heap]
+    Docling[Docling Service]
+    OCR[OCR Service]
+    ClamAV[ClamAV<br>Malware Scanner]
+    
+    Worker --> Grobid
+    Worker --> Docling
+    Worker --> OCR
+    Worker --> ClamAV
+    
+    LLM_PDF[LLMPDFParser]
+    LLM_Class[LLMClassifier]
+    DocxConv[Docx Conv.]
+    Ollama[Ollama / Local LLM]
+    
+    Grobid -.-> LLM_PDF
+    Docling -.-> LLM_Class
+    OCR -.-> DocxConv
+    ClamAV -.-> Ollama
 ```
 
 ### Service Dependencies

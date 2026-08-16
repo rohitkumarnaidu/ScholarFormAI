@@ -30,6 +30,7 @@ from app.pipeline.formatting.formatter import Formatter
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def mock_sub_components():
     """Return mocks for the 6 sub-components so no real filesystem is needed."""
@@ -85,6 +86,7 @@ def word_doc():
 # Initialization & process
 # ---------------------------------------------------------------------------
 
+
 class TestInit:
     def test_initializes_sub_components(self, mock_sub_components):
         f = Formatter(templates_dir="/t", contracts_dir="/c")
@@ -111,6 +113,7 @@ class TestInit:
 # ---------------------------------------------------------------------------
 # _coerce_bool_option  (static, no mocks)
 # ---------------------------------------------------------------------------
+
 
 class TestCoerceBoolOption:
     def test_none_returns_default(self):
@@ -154,6 +157,7 @@ class TestCoerceBoolOption:
 # _resolve_bool_option
 # ---------------------------------------------------------------------------
 
+
 class TestResolveBoolOption:
     def test_none_options_returns_default(self, formatter):
         assert formatter._resolve_bool_option(None, "x", default=True) is True
@@ -176,6 +180,7 @@ class TestResolveBoolOption:
 # _resolve_page_size
 # ---------------------------------------------------------------------------
 
+
 class TestResolvePageSize:
     def test_from_options(self, formatter):
         assert formatter._resolve_page_size("ieee", {"page_size": "A4"}) == "A4"
@@ -195,6 +200,7 @@ class TestResolvePageSize:
 # ---------------------------------------------------------------------------
 # _resolve_line_spacing
 # ---------------------------------------------------------------------------
+
 
 class TestResolveLineSpacing:
     def test_from_options(self, formatter):
@@ -231,6 +237,7 @@ class TestResolveLineSpacing:
 # _prepare_references
 # ---------------------------------------------------------------------------
 
+
 class TestPrepareReferences:
     def test_no_references_noop(self, formatter):
         doc = PipelineDocument(document_id="d", blocks=[], references=[])
@@ -239,8 +246,12 @@ class TestPrepareReferences:
 
     def test_already_formatted_skipped(self, formatter):
         ref = Reference(
-            reference_id="r1", block_id="b1", formatted_text="Already formatted.",
-            raw_text="raw", citation_key="ck", index=0,
+            reference_id="r1",
+            block_id="b1",
+            formatted_text="Already formatted.",
+            raw_text="raw",
+            citation_key="ck",
+            index=0,
         )
         doc = PipelineDocument(document_id="d", blocks=[], references=[ref])
         formatter._prepare_references(doc, "ieee")
@@ -248,23 +259,24 @@ class TestPrepareReferences:
 
     def test_empty_formatted_text_replaced(self, formatter):
         formatter.reference_formatter.format_reference.return_value = "Formatted Ref"
-        ref = Reference(reference_id="r1", block_id="b1", formatted_text="", raw_text="raw",
-                        citation_key="ck", index=0)
+        ref = Reference(reference_id="r1", block_id="b1", formatted_text="", raw_text="raw", citation_key="ck", index=0)
         doc = PipelineDocument(document_id="d", blocks=[], references=[ref])
         formatter._prepare_references(doc, "ieee")
         assert ref.formatted_text == "Formatted Ref"
 
     def test_whitespace_only_skipped(self, formatter):
-        ref = Reference(reference_id="r1", block_id="b1", formatted_text="   ", raw_text="raw",
-                        citation_key="ck", index=0)
+        ref = Reference(
+            reference_id="r1", block_id="b1", formatted_text="   ", raw_text="raw", citation_key="ck", index=0
+        )
         doc = PipelineDocument(document_id="d", blocks=[], references=[ref])
         formatter._prepare_references(doc, "ieee")
         formatter.reference_formatter.format_reference.assert_called_once()
 
     def test_exception_falls_back_to_raw(self, formatter):
         formatter.reference_formatter.format_reference.side_effect = Exception("boom")
-        ref = Reference(reference_id="r1", block_id="b1", formatted_text="", raw_text="fallback",
-                        citation_key="ck", index=0)
+        ref = Reference(
+            reference_id="r1", block_id="b1", formatted_text="", raw_text="fallback", citation_key="ck", index=0
+        )
         doc = PipelineDocument(document_id="d", blocks=[], references=[ref])
         formatter._prepare_references(doc, "ieee")
         assert ref.formatted_text == "fallback"
@@ -273,6 +285,7 @@ class TestPrepareReferences:
 # ---------------------------------------------------------------------------
 # _render_equation
 # ---------------------------------------------------------------------------
+
 
 class TestRenderEquation:
     def test_creates_omath_para(self, formatter, word_doc):
@@ -316,6 +329,7 @@ class TestRenderEquation:
 # _apply_initial_layout
 # ---------------------------------------------------------------------------
 
+
 class TestApplyInitialLayout:
     def test_sets_margins(self, formatter, word_doc):
         formatter.contract_loader.load.return_value = {
@@ -344,6 +358,7 @@ class TestApplyInitialLayout:
 # ---------------------------------------------------------------------------
 # _get_target_columns
 # ---------------------------------------------------------------------------
+
 
 class TestGetTargetColumns:
     def test_default_columns(self, formatter):
@@ -375,6 +390,7 @@ class TestGetTargetColumns:
 # _apply_page_size
 # ---------------------------------------------------------------------------
 
+
 class TestApplyPageSize:
     def test_letter(self, formatter, word_doc):
         formatter._apply_page_size(word_doc, "Letter")
@@ -384,6 +400,7 @@ class TestApplyPageSize:
 
     def test_a4(self, formatter, word_doc):
         from docx.shared import Mm
+
         formatter._apply_page_size(word_doc, "A4")
         s = word_doc.sections[0]
         assert abs(s.page_width - Mm(210)) < 10000  # Allow emu rounding
@@ -405,6 +422,7 @@ class TestApplyPageSize:
 # _add_cover_page
 # ---------------------------------------------------------------------------
 
+
 class TestAddCoverPage:
     def test_adds_title_author_date(self, formatter, word_doc, minimal_doc):
         formatter._add_cover_page(word_doc, minimal_doc)
@@ -423,9 +441,7 @@ class TestAddCoverPage:
         assert "Unknown Author" in word_doc.paragraphs[0].text
 
     def test_no_title_uses_filename(self, formatter, word_doc):
-        doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(), original_filename="paper.docx"
-        )
+        doc = PipelineDocument(document_id="d", metadata=DocumentMetadata(), original_filename="paper.docx")
         formatter._add_cover_page(word_doc, doc)
         assert "paper.docx" in word_doc.paragraphs[0].text
 
@@ -437,6 +453,7 @@ class TestAddCoverPage:
 # ---------------------------------------------------------------------------
 # _add_table_of_contents
 # ---------------------------------------------------------------------------
+
 
 class TestAddTableOfContents:
     def test_adds_toc_field(self, formatter, word_doc):
@@ -470,6 +487,7 @@ class TestAddTableOfContents:
 # _add_page_numbers
 # ---------------------------------------------------------------------------
 
+
 class TestAddPageNumbers:
     def test_adds_page_field_to_footer(self, formatter, word_doc):
         formatter._add_page_numbers(word_doc)
@@ -500,6 +518,7 @@ class TestAddPageNumbers:
 # _add_page_borders
 # ---------------------------------------------------------------------------
 
+
 class TestAddPageBorders:
     def test_adds_pgborders(self, formatter, word_doc):
         formatter._add_page_borders(word_doc)
@@ -523,6 +542,7 @@ class TestAddPageBorders:
 # ---------------------------------------------------------------------------
 # _add_line_numbers
 # ---------------------------------------------------------------------------
+
 
 class TestAddLineNumbers:
     def test_adds_ln_num_type(self, formatter, word_doc):
@@ -549,6 +569,7 @@ class TestAddLineNumbers:
 # _paragraph_has_field_code
 # ---------------------------------------------------------------------------
 
+
 class TestParagraphHasFieldCode:
     def test_field_present(self, formatter, word_doc):
         p = word_doc.add_paragraph()
@@ -569,6 +590,7 @@ class TestParagraphHasFieldCode:
 # ---------------------------------------------------------------------------
 # _remove_paragraph & _prepend_paragraph
 # ---------------------------------------------------------------------------
+
 
 class TestRemoveParagraph:
     def test_removes_from_body(self, formatter, word_doc):
@@ -609,6 +631,7 @@ class TestPrependParagraph:
 # _document_contains_text
 # ---------------------------------------------------------------------------
 
+
 class TestDocumentContainsText:
     def test_text_found(self, formatter, word_doc):
         word_doc.add_paragraph("Hello World")
@@ -630,81 +653,129 @@ class TestDocumentContainsText:
 # _build_footnote_lookup
 # ---------------------------------------------------------------------------
 
+
 class TestBuildFootnoteLookup:
     def test_no_footnote_blocks(self, formatter):
-        doc = PipelineDocument(document_id="d", blocks=[
-            Block(block_id="b1", index=0, block_type=BlockType.BODY, text="Hello"),
-        ])
+        doc = PipelineDocument(
+            document_id="d",
+            blocks=[
+                Block(block_id="b1", index=0, block_type=BlockType.BODY, text="Hello"),
+            ],
+        )
         assert formatter._build_footnote_lookup(doc) == {}
 
     def test_footnote_block_included(self, formatter):
-        doc = PipelineDocument(document_id="d", blocks=[
-            Block(block_id="b1", index=0, block_type=BlockType.FOOTNOTE, text="A note",
-                  metadata={"footnote_id": "fn1"}),
-        ])
+        doc = PipelineDocument(
+            document_id="d",
+            blocks=[
+                Block(
+                    block_id="b1",
+                    index=0,
+                    block_type=BlockType.FOOTNOTE,
+                    text="A note",
+                    metadata={"footnote_id": "fn1"},
+                ),
+            ],
+        )
         lookup = formatter._build_footnote_lookup(doc)
         assert "fn1" in lookup
         assert lookup["fn1"]["text"] == "A note"
         assert lookup["fn1"]["word_id"] == 1
 
     def test_is_footnote_metadata(self, formatter):
-        doc = PipelineDocument(document_id="d", blocks=[
-            Block(block_id="b1", index=0, block_type=BlockType.BODY, text="Note text",
-                  metadata={"is_footnote": True, "footnote_id": "f1"}),
-        ])
+        doc = PipelineDocument(
+            document_id="d",
+            blocks=[
+                Block(
+                    block_id="b1",
+                    index=0,
+                    block_type=BlockType.BODY,
+                    text="Note text",
+                    metadata={"is_footnote": True, "footnote_id": "f1"},
+                ),
+            ],
+        )
         lookup = formatter._build_footnote_lookup(doc)
         assert "f1" in lookup
 
     def test_empty_text_skipped(self, formatter):
-        doc = PipelineDocument(document_id="d", blocks=[
-            Block(block_id="b1", index=0, block_type=BlockType.FOOTNOTE, text="",
-                  metadata={"footnote_id": "fn1"}),
-        ])
+        doc = PipelineDocument(
+            document_id="d",
+            blocks=[
+                Block(block_id="b1", index=0, block_type=BlockType.FOOTNOTE, text="", metadata={"footnote_id": "fn1"}),
+            ],
+        )
         assert formatter._build_footnote_lookup(doc) == {}
 
     def test_whitespace_only_skipped(self, formatter):
-        doc = PipelineDocument(document_id="d", blocks=[
-            Block(block_id="b1", index=0, block_type=BlockType.FOOTNOTE, text="   ",
-                  metadata={"footnote_id": "fn1"}),
-        ])
+        doc = PipelineDocument(
+            document_id="d",
+            blocks=[
+                Block(
+                    block_id="b1", index=0, block_type=BlockType.FOOTNOTE, text="   ", metadata={"footnote_id": "fn1"}
+                ),
+            ],
+        )
         assert formatter._build_footnote_lookup(doc) == {}
 
     def test_duplicate_raw_id_skipped(self, formatter):
-        doc = PipelineDocument(document_id="d", blocks=[
-            Block(block_id="b1", index=0, block_type=BlockType.FOOTNOTE, text="First",
-                  metadata={"footnote_id": "dup"}),
-            Block(block_id="b2", index=1, block_type=BlockType.FOOTNOTE, text="Second",
-                  metadata={"footnote_id": "dup"}),
-        ])
+        doc = PipelineDocument(
+            document_id="d",
+            blocks=[
+                Block(
+                    block_id="b1", index=0, block_type=BlockType.FOOTNOTE, text="First", metadata={"footnote_id": "dup"}
+                ),
+                Block(
+                    block_id="b2",
+                    index=1,
+                    block_type=BlockType.FOOTNOTE,
+                    text="Second",
+                    metadata={"footnote_id": "dup"},
+                ),
+            ],
+        )
         lookup = formatter._build_footnote_lookup(doc)
         assert len(lookup) == 1
         assert lookup["dup"]["text"] == "First"
 
     def test_uses_endnote_id_when_footnote_id_missing(self, formatter):
-        doc = PipelineDocument(document_id="d", blocks=[
-            Block(block_id="b1", index=0, block_type=BlockType.FOOTNOTE, text="Note",
-                  metadata={"endnote_id": "en1"}),
-        ])
+        doc = PipelineDocument(
+            document_id="d",
+            blocks=[
+                Block(
+                    block_id="b1", index=0, block_type=BlockType.FOOTNOTE, text="Note", metadata={"endnote_id": "en1"}
+                ),
+            ],
+        )
         lookup = formatter._build_footnote_lookup(doc)
         assert "en1" in lookup
 
     def test_sequential_word_ids(self, formatter):
-        doc = PipelineDocument(document_id="d", blocks=[
-            Block(block_id="b1", index=0, block_type=BlockType.FOOTNOTE, text="First",
-                  metadata={"footnote_id": "f1"}),
-            Block(block_id="b2", index=2, block_type=BlockType.FOOTNOTE, text="Second",
-                  metadata={"footnote_id": "f2"}),
-            Block(block_id="b3", index=1, block_type=BlockType.BODY, text="ignore"),
-        ])
+        doc = PipelineDocument(
+            document_id="d",
+            blocks=[
+                Block(
+                    block_id="b1", index=0, block_type=BlockType.FOOTNOTE, text="First", metadata={"footnote_id": "f1"}
+                ),
+                Block(
+                    block_id="b2", index=2, block_type=BlockType.FOOTNOTE, text="Second", metadata={"footnote_id": "f2"}
+                ),
+                Block(block_id="b3", index=1, block_type=BlockType.BODY, text="ignore"),
+            ],
+        )
         lookup = formatter._build_footnote_lookup(doc)
         assert lookup["f1"]["word_id"] == 1
         assert lookup["f2"]["word_id"] == 2
 
     def test_no_id_falls_back_to_counter(self, formatter):
-        doc = PipelineDocument(document_id="d", blocks=[
-            Block(block_id="b1", index=0, block_type=BlockType.FOOTNOTE, text="Note",
-                  metadata={"is_footnote": True}),
-        ])
+        doc = PipelineDocument(
+            document_id="d",
+            blocks=[
+                Block(
+                    block_id="b1", index=0, block_type=BlockType.FOOTNOTE, text="Note", metadata={"is_footnote": True}
+                ),
+            ],
+        )
         lookup = formatter._build_footnote_lookup(doc)
         key = list(lookup.keys())[0]
         assert lookup[key]["word_id"] == 1
@@ -713,6 +784,7 @@ class TestBuildFootnoteLookup:
 # ---------------------------------------------------------------------------
 # _add_hyperlink
 # ---------------------------------------------------------------------------
+
 
 class TestAddHyperlink:
     def test_adds_hyperlink_element(self, formatter, word_doc):
@@ -734,6 +806,7 @@ class TestAddHyperlink:
 # _append_footnote_reference
 # ---------------------------------------------------------------------------
 
+
 class TestAppendFootnoteReference:
     def test_appends_footnote_ref(self, formatter, word_doc):
         p = word_doc.add_paragraph()
@@ -753,6 +826,7 @@ class TestAppendFootnoteReference:
 # _write_inline_content
 # ---------------------------------------------------------------------------
 
+
 class TestWriteInlineContent:
     def test_writes_plain_text(self, formatter, word_doc):
         p = word_doc.add_paragraph()
@@ -770,17 +844,13 @@ class TestWriteInlineContent:
     def test_hyperlink_no_label_skipped(self, formatter, word_doc):
         p = word_doc.add_paragraph()
         with patch.object(formatter, "_add_hyperlink") as mock_add:
-            formatter._write_inline_content(
-                p, "text", [{"text": "", "url": "https://example.com"}], [], {}
-            )
+            formatter._write_inline_content(p, "text", [{"text": "", "url": "https://example.com"}], [], {})
         mock_add.assert_not_called()
 
     def test_hyperlink_no_url_skipped(self, formatter, word_doc):
         p = word_doc.add_paragraph()
         with patch.object(formatter, "_add_hyperlink") as mock_add:
-            formatter._write_inline_content(
-                p, "text", [{"text": "Label", "url": ""}], [], {}
-            )
+            formatter._write_inline_content(p, "text", [{"text": "Label", "url": ""}], [], {})
         mock_add.assert_not_called()
 
     def test_footnote_ref_appended(self, formatter, word_doc):
@@ -804,23 +874,20 @@ class TestWriteInlineContent:
     def test_hyperlink_after_text(self, formatter, word_doc):
         p = word_doc.add_paragraph()
         with patch.object(formatter, "_add_hyperlink"):
-            formatter._write_inline_content(
-                p, "prefixLink", [{"text": "Link", "url": "https://x.com"}], [], {}
-            )
+            formatter._write_inline_content(p, "prefixLink", [{"text": "Link", "url": "https://x.com"}], [], {})
         assert "prefix" in p.text
 
     def test_remaining_text_after_hyperlink(self, formatter, word_doc):
         p = word_doc.add_paragraph()
         with patch.object(formatter, "_add_hyperlink"):
-            formatter._write_inline_content(
-                p, "Click Here now", [{"text": "Here", "url": "https://x.com"}], [], {}
-            )
+            formatter._write_inline_content(p, "Click Here now", [{"text": "Here", "url": "https://x.com"}], [], {})
         assert " now" in p.text
 
 
 # ---------------------------------------------------------------------------
 # _clear_paragraph_content
 # ---------------------------------------------------------------------------
+
 
 class TestClearParagraphContent:
     def test_removes_all_but_pPr(self, formatter, word_doc):
@@ -836,6 +903,7 @@ class TestClearParagraphContent:
 # ---------------------------------------------------------------------------
 # _find_matching_paragraph
 # ---------------------------------------------------------------------------
+
 
 class TestFindMatchingParagraph:
     def test_exact_match(self, formatter, word_doc):
@@ -870,6 +938,7 @@ class TestFindMatchingParagraph:
 # _replace_paragraph_inline_content
 # ---------------------------------------------------------------------------
 
+
 class TestReplaceParagraphInlineContent:
     def test_clears_and_writes(self, formatter, word_doc):
         p = word_doc.add_paragraph("Old text")
@@ -884,6 +953,7 @@ class TestReplaceParagraphInlineContent:
 # ---------------------------------------------------------------------------
 # _remove_static_page_number_placeholders
 # ---------------------------------------------------------------------------
+
 
 class TestRemoveStaticPageNumberPlaceholders:
     def test_removes_page_n_pattern(self, formatter, word_doc):
@@ -914,6 +984,7 @@ class TestRemoveStaticPageNumberPlaceholders:
 # ---------------------------------------------------------------------------
 # _remove_static_toc_block
 # ---------------------------------------------------------------------------
+
 
 class TestRemoveStaticTocBlock:
     def test_removes_toc_text_only(self, formatter, word_doc):
@@ -957,6 +1028,7 @@ class TestRemoveStaticTocBlock:
 # _ensure_dynamic_toc
 # ---------------------------------------------------------------------------
 
+
 class TestEnsureDynamicToc:
     def test_adds_if_missing(self, formatter, word_doc):
         formatter._ensure_dynamic_toc(word_doc)
@@ -973,6 +1045,7 @@ class TestEnsureDynamicToc:
 # ---------------------------------------------------------------------------
 # _install_post_save_hook
 # ---------------------------------------------------------------------------
+
 
 class TestInstallPostSaveHook:
     def test_installs_hook(self, formatter, word_doc):
@@ -1005,20 +1078,30 @@ class TestInstallPostSaveHook:
 # _patch_docx_payload
 # ---------------------------------------------------------------------------
 
+
 class TestPatchDocxPayload:
     def _make_docx_bytes(self, has_footnote_ref=True):
         buf = io.BytesIO()
         with ZipFile(buf, "w") as zf:
             doc_xml = (
                 '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
-                '<w:body><w:p></w:p></w:body></w:document>'
+                "<w:body><w:p></w:p></w:body></w:document>"
             )
             if has_footnote_ref:
                 doc_xml = doc_xml.replace("</w:p>", '<w:footnoteReference w:id="1"/></w:p>')
             zf.writestr("word/document.xml", doc_xml.encode())
-            zf.writestr("[Content_Types].xml", b'<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"></Types>')
-            zf.writestr("word/_rels/document.xml.rels", b'<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"></Relationships>')
-            zf.writestr("word/settings.xml", b'<?xml version="1.0"?><w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"></w:settings>')
+            zf.writestr(
+                "[Content_Types].xml",
+                b'<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"></Types>',
+            )
+            zf.writestr(
+                "word/_rels/document.xml.rels",
+                b'<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"></Relationships>',
+            )
+            zf.writestr(
+                "word/settings.xml",
+                b'<?xml version="1.0"?><w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"></w:settings>',
+            )
         return buf.getvalue()
 
     def test_no_footnote_ref_returns_unchanged(self, formatter):
@@ -1037,6 +1120,7 @@ class TestPatchDocxPayload:
 # _build_footnotes_part
 # ---------------------------------------------------------------------------
 
+
 class TestBuildFootnotesPart:
     def test_creates_footnotes_xml(self, formatter):
         lookup = {"1": {"word_id": 1, "text": "First note"}}
@@ -1050,8 +1134,7 @@ class TestBuildFootnotesPart:
     def test_includes_separator_and_continuation(self, formatter):
         xml_bytes = formatter._build_footnotes_part({"1": {"word_id": 1, "text": "N"}})
         root = ET.fromstring(xml_bytes)
-        types = [fn.get("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}type") or ""
-                 for fn in root]
+        types = [fn.get("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}type") or "" for fn in root]
         assert "separator" in types
         assert "continuationSeparator" in types
 
@@ -1071,9 +1154,12 @@ class TestBuildFootnotesPart:
 # _patch_content_types
 # ---------------------------------------------------------------------------
 
+
 class TestPatchContentTypes:
     def test_adds_override(self, formatter):
-        xml = b'<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"></Types>'
+        xml = (
+            b'<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"></Types>'
+        )
         result = formatter._patch_content_types(xml)
         assert "/word/footnotes.xml" in result.decode("utf-8")
 
@@ -1090,6 +1176,7 @@ class TestPatchContentTypes:
 # ---------------------------------------------------------------------------
 # _patch_document_relationships
 # ---------------------------------------------------------------------------
+
 
 class TestPatchDocumentRelationships:
     def test_adds_footnotes_relationship(self, formatter):
@@ -1121,12 +1208,13 @@ class TestPatchDocumentRelationships:
             b"</Relationships>"
         )
         result = formatter._patch_document_relationships(xml)
-        assert b'rId2' in result
+        assert b"rId2" in result
 
 
 # ---------------------------------------------------------------------------
 # _patch_settings_xml
 # ---------------------------------------------------------------------------
+
 
 class TestPatchSettingsXml:
     def test_adds_footnote_pr(self, formatter):
@@ -1139,7 +1227,7 @@ class TestPatchSettingsXml:
     def test_skips_if_already_present(self, formatter):
         xml = (
             b'<?xml version="1.0"?><w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
-            b"<w:footnotePr><w:numFmt w:val=\"decimal\"/></w:footnotePr>"
+            b'<w:footnotePr><w:numFmt w:val="decimal"/></w:footnotePr>'
             b"</w:settings>"
         )
         result = formatter._patch_settings_xml(xml)
@@ -1154,6 +1242,7 @@ class TestPatchSettingsXml:
 # ---------------------------------------------------------------------------
 # _set_columns
 # ---------------------------------------------------------------------------
+
 
 class TestSetColumns:
     def test_sets_single_column(self, formatter, word_doc):
@@ -1186,6 +1275,7 @@ class TestSetColumns:
 # _load_contract
 # ---------------------------------------------------------------------------
 
+
 class TestLoadContract:
     def test_missing_file_returns_empty(self, formatter):
         with patch("os.path.exists", return_value=False):
@@ -1202,8 +1292,7 @@ class TestLoadContract:
         assert result["layout"]["margins"]["top"] == 2
 
     def test_exception_returns_empty(self, formatter):
-        with patch("os.path.exists", return_value=True), \
-             patch("builtins.open", side_effect=PermissionError("denied")):
+        with patch("os.path.exists", return_value=True), patch("builtins.open", side_effect=PermissionError("denied")):
             result = formatter._load_contract("/path/contract.yaml")
         assert result == {}
 
@@ -1211,6 +1300,7 @@ class TestLoadContract:
 # ---------------------------------------------------------------------------
 # _is_bullet_list_item / _is_numbered_list_item / _clean_list_text
 # ---------------------------------------------------------------------------
+
 
 class TestListDetection:
     @pytest.mark.parametrize("marker", ["\u2022", "-", "*", "\u00b7", "\u25e6", "\u25aa", "\u25ab"])
@@ -1253,6 +1343,7 @@ class TestListDetection:
 # _calculate_image_size
 # ---------------------------------------------------------------------------
 
+
 class TestCalculateImageSize:
     def test_fits_naturally(self, formatter):
         fig = Figure(figure_id="f1", index=0, width=480, height=320)
@@ -1290,13 +1381,19 @@ class TestCalculateImageSize:
 # _render_figure
 # ---------------------------------------------------------------------------
 
+
 class TestRenderFigure:
     def test_export_path_image(self, formatter, word_doc, tmp_path):
         img_path = tmp_path / "test.png"
         img_path.write_bytes(b"fake_png_bytes")
         fig = Figure(
-            figure_id="f1", index=0, number=1, export_path=str(img_path),
-            width=96, height=96, caption_text="Test Caption",
+            figure_id="f1",
+            index=0,
+            number=1,
+            export_path=str(img_path),
+            width=96,
+            height=96,
+            caption_text="Test Caption",
         )
         with patch.object(formatter, "_calculate_image_size", return_value=(Inches(3), Inches(3))):
             formatter._render_figure(word_doc, fig, 1)
@@ -1304,8 +1401,13 @@ class TestRenderFigure:
 
     def test_image_data_path(self, formatter, word_doc):
         fig = Figure(
-            figure_id="f1", index=0, number=1, image_data=b"fake_png_bytes",
-            width=96, height=96, caption_text="Data Caption",
+            figure_id="f1",
+            index=0,
+            number=1,
+            image_data=b"fake_png_bytes",
+            width=96,
+            height=96,
+            caption_text="Data Caption",
         )
         with patch.object(formatter, "_calculate_image_size", return_value=(Inches(3), Inches(3))):
             formatter._render_figure(word_doc, fig, 1)
@@ -1319,8 +1421,13 @@ class TestRenderFigure:
 
     def test_caption_with_existing_prefix(self, formatter, word_doc):
         fig = Figure(
-            figure_id="f1", index=0, number=1, image_data=b"data",
-            width=96, height=96, caption_text="Figure 1: My Fig",
+            figure_id="f1",
+            index=0,
+            number=1,
+            image_data=b"data",
+            width=96,
+            height=96,
+            caption_text="Figure 1: My Fig",
         )
         with patch.object(formatter, "_calculate_image_size", return_value=(Inches(3), Inches(3))):
             formatter._render_figure(word_doc, fig, 1)
@@ -1329,8 +1436,13 @@ class TestRenderFigure:
 
     def test_caption_without_prefix(self, formatter, word_doc):
         fig = Figure(
-            figure_id="f1", index=0, number=1, image_data=b"data",
-            width=96, height=96, caption_text="My Fig",
+            figure_id="f1",
+            index=0,
+            number=1,
+            image_data=b"data",
+            width=96,
+            height=96,
+            caption_text="My Fig",
         )
         with patch.object(formatter, "_calculate_image_size", return_value=(Inches(3), Inches(3))):
             formatter._render_figure(word_doc, fig, 1)
@@ -1339,7 +1451,9 @@ class TestRenderFigure:
 
     def test_export_path_failure_falls_back(self, formatter, word_doc):
         fig = Figure(
-            figure_id="f1", index=0, export_path="/nonexistent/image.png",
+            figure_id="f1",
+            index=0,
+            export_path="/nonexistent/image.png",
             caption_text="Fallback",
         )
         formatter._render_figure(word_doc, fig, 1)
@@ -1352,6 +1466,7 @@ class TestRenderFigure:
 # _render_block
 # ---------------------------------------------------------------------------
 
+
 class TestRenderBlock:
     def test_renders_normal_paragraph(self, formatter, word_doc):
         formatter.style_mapper.get_style_name.return_value = "Normal"
@@ -1360,14 +1475,12 @@ class TestRenderBlock:
         assert len(word_doc.paragraphs) >= 1
 
     def test_skips_empty_block_with_figure(self, formatter, word_doc):
-        block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="",
-                      metadata={"has_figure": True})
+        block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="", metadata={"has_figure": True})
         formatter._render_block(word_doc, block, "ieee")
         assert len(word_doc.paragraphs) == 0
 
     def test_skips_empty_block_with_equation(self, formatter, word_doc):
-        block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="",
-                      metadata={"has_equation": True})
+        block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="", metadata={"has_equation": True})
         formatter._render_block(word_doc, block, "ieee")
         assert len(word_doc.paragraphs) == 0
 
@@ -1407,11 +1520,10 @@ class TestRenderBlock:
 # _apply_spacing_from_contract
 # ---------------------------------------------------------------------------
 
+
 class TestApplySpacingFromContract:
     def test_heading_spacing_applied(self, formatter, word_doc):
-        formatter.contract_loader.load.return_value = {
-            "layout": {"spacing": {"heading": {"before": 12, "after": 6}}}
-        }
+        formatter.contract_loader.load.return_value = {"layout": {"spacing": {"heading": {"before": 12, "after": 6}}}}
         block = Block(block_id="b1", index=0, block_type=BlockType.HEADING_1, text="H1")
         p = word_doc.add_paragraph()
         formatter._apply_spacing_from_contract(p, block, "ieee")
@@ -1419,9 +1531,7 @@ class TestApplySpacingFromContract:
         assert p.paragraph_format.space_after == Pt(6)
 
     def test_paragraph_spacing_applied(self, formatter, word_doc):
-        formatter.contract_loader.load.return_value = {
-            "layout": {"spacing": {"paragraph": {"before": 3, "after": 6}}}
-        }
+        formatter.contract_loader.load.return_value = {"layout": {"spacing": {"paragraph": {"before": 3, "after": 6}}}}
         block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="Body")
         p = word_doc.add_paragraph()
         formatter._apply_spacing_from_contract(p, block, "ieee")
@@ -1449,6 +1559,7 @@ class TestApplySpacingFromContract:
 # _apply_global_line_spacing
 # ---------------------------------------------------------------------------
 
+
 class TestApplyGlobalLineSpacing:
     def test_applies_to_all_paragraphs(self, formatter, word_doc):
         word_doc.add_paragraph("One")
@@ -1470,12 +1581,12 @@ class TestApplyGlobalLineSpacing:
 # _prepend_front_matter
 # ---------------------------------------------------------------------------
 
+
 class TestPrependFrontMatter:
     def test_as_cover_page(self, formatter, word_doc):
         doc = PipelineDocument(
             document_id="d",
-            metadata=DocumentMetadata(title="My Paper", authors=["Alice", "Bob"],
-                                       affiliations=["MIT"]),
+            metadata=DocumentMetadata(title="My Paper", authors=["Alice", "Bob"], affiliations=["MIT"]),
         )
         formatter._prepend_front_matter(word_doc, doc, as_cover_page=True)
         text = " ".join(p.text for p in word_doc.paragraphs)
@@ -1486,8 +1597,7 @@ class TestPrependFrontMatter:
     def test_inline_mode(self, formatter, word_doc):
         doc = PipelineDocument(
             document_id="d",
-            metadata=DocumentMetadata(title="Inline", authors=["Author"],
-                                       affiliations=["Org"]),
+            metadata=DocumentMetadata(title="Inline", authors=["Author"], affiliations=["Org"]),
         )
         formatter._prepend_front_matter(word_doc, doc, as_cover_page=False)
         text = " ".join(p.text for p in word_doc.paragraphs)
@@ -1516,6 +1626,7 @@ class TestPrependFrontMatter:
 # _post_process_template_render
 # ---------------------------------------------------------------------------
 
+
 class TestPostProcessTemplateRender:
     def test_no_docx_returns_early(self, formatter):
         rendered = MagicMock()
@@ -1541,8 +1652,7 @@ class TestPostProcessTemplateRender:
 
         with patch.object(formatter, "_apply_initial_layout") as mock_layout:
             with patch.object(formatter, "_apply_page_size") as mock_size:
-                formatter._post_process_template_render(doc, source_doc, "ieee", {},
-                                                         footnote_lookup={})
+                formatter._post_process_template_render(doc, source_doc, "ieee", {}, footnote_lookup={})
         mock_layout.assert_called_once()
         mock_size.assert_called_once()
 
@@ -1565,6 +1675,5 @@ class TestPostProcessTemplateRender:
         with patch.object(formatter, "_document_contains_text", return_value=False):
             with patch.object(formatter, "_prepend_front_matter") as mock_front:
                 with patch.object(formatter, "_prepend_paragraph"):
-                    formatter._post_process_template_render(doc, source_doc, "ieee", {},
-                                                             footnote_lookup={})
+                    formatter._post_process_template_render(doc, source_doc, "ieee", {}, footnote_lookup={})
         mock_front.assert_called_once()

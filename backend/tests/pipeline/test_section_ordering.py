@@ -22,22 +22,30 @@ def mock_contract_loader():
     }
     return loader
 
+
 def _h(text: str, section_name: str, index: int, bid: str):
     from app.models import Block, BlockType
+
     return Block(
-        block_id=bid, text=text, index=index,
+        block_id=bid,
+        text=text,
+        index=index,
         block_type=BlockType.HEADING_1,
         section_name=section_name,
         level=1,
     )
 
+
 def _body(text: str, index: int, bid: str):
     from app.models import Block, BlockType
+
     return Block(block_id=bid, text=text, index=index, block_type=BlockType.BODY)
+
 
 class TestSectionOrderValidator:
     def test_valid_order_no_violations(self, mock_contract_loader):
         from app.models import PipelineDocument
+
         validator = SectionOrderValidator(mock_contract_loader)
         doc = PipelineDocument(
             document_id="doc1",
@@ -56,6 +64,7 @@ class TestSectionOrderValidator:
 
     def test_missing_required_section(self, mock_contract_loader):
         from app.models import PipelineDocument
+
         validator = SectionOrderValidator(mock_contract_loader)
         doc = PipelineDocument(
             document_id="doc1",
@@ -69,6 +78,7 @@ class TestSectionOrderValidator:
 
     def test_out_of_order_section(self, mock_contract_loader):
         from app.models import PipelineDocument
+
         validator = SectionOrderValidator(mock_contract_loader)
         doc = PipelineDocument(
             document_id="doc1",
@@ -83,6 +93,7 @@ class TestSectionOrderValidator:
 
     def test_no_headings_no_violations(self, mock_contract_loader):
         from app.models import PipelineDocument
+
         validator = SectionOrderValidator(mock_contract_loader)
         doc = PipelineDocument(
             document_id="doc1",
@@ -93,6 +104,7 @@ class TestSectionOrderValidator:
 
     def test_empty_document(self, mock_contract_loader):
         from app.models import PipelineDocument
+
         validator = SectionOrderValidator(mock_contract_loader)
         doc = PipelineDocument(document_id="doc1")
         violations = validator.validate_order(doc, "ieee")

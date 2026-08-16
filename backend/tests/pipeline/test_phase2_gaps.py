@@ -27,6 +27,7 @@ from app.models import DocumentMetadata, Equation
 # 1. app/pipeline/equations/standardizer.py  — remaining uncovered lines
 # =============================================================================
 
+
 class TestEquationStandardizerGaps:
     """Closes gaps in EquationStandardizer (standardizer.py: 58-60, 76-78, 97-104, 101, 109-111)."""
 
@@ -36,9 +37,12 @@ class TestEquationStandardizerGaps:
         from app.pipeline.equations.standardizer import EquationStandardizer
 
         s = EquationStandardizer()
-        eq = Equation(equation_id="e1", index=0,
-                      omml="<m:oMath xmlns:m='http://schemas.openxmlformats.org/officeDocument/2006/math'><m:r><m:t>x</m:t></m:r></m:oMath>",
-                      metadata={"existing": "value"})
+        eq = Equation(
+            equation_id="e1",
+            index=0,
+            omml="<m:oMath xmlns:m='http://schemas.openxmlformats.org/officeDocument/2006/math'><m:r><m:t>x</m:t></m:r></m:oMath>",
+            metadata={"existing": "value"},
+        )
         doc = PipelineDocument(document_id="d1", equations=[eq])
 
         with patch.object(s, "_convert_omml_to_mathml", return_value="<math><mi>x</mi></math>"):
@@ -53,13 +57,12 @@ class TestEquationStandardizerGaps:
         from app.pipeline.equations.standardizer import EquationStandardizer
 
         s = EquationStandardizer()
-        doc = PipelineDocument(document_id="d1", equations=[
-            Equation(equation_id="e1", index=0, omml="<math/>")
-        ])
+        doc = PipelineDocument(document_id="d1", equations=[Equation(equation_id="e1", index=0, omml="<math/>")])
 
         # Make add_processing_stage raise on the success path call (line 71),
         # succeed on the error handler call (line 78) so the handler completes.
         from app.models.pipeline_document import PipelineDocument as PD
+
         with patch.object(PD, "add_processing_stage", side_effect=[RuntimeError("boom"), None]):
             result = s.process(doc)
 
@@ -86,6 +89,7 @@ class TestEquationStandardizerGaps:
     def test_omml_namespace_not_found(self, caplog):
         """Lines 100-101: nsmap has NO default ns key and OMML ns absent -> debug log."""
         import logging
+
         caplog.set_level(logging.DEBUG)
         import lxml.etree as etree
 
@@ -121,9 +125,11 @@ class TestEquationStandardizerGaps:
 
         assert result == ""
 
+
 # =============================================================================
 # 2. app/pipeline/parsing/md_parser.py  — remaining uncovered lines
 # =============================================================================
+
 
 class TestMdParserGaps:
     """Closes gaps in MarkdownParser (md_parser.py: 80-81, 87, 141-130, 143-144, 164-165, 199-200,
@@ -302,9 +308,11 @@ class TestMdParserGaps:
         result = parser._strip_markdown("$$\\int_a^b f(x) dx$$")
         assert "$$" in result
 
+
 # =============================================================================
 # 3. app/pipeline/parsing/html_parser.py  — remaining uncovered lines
 # =============================================================================
+
 
 class TestHtmlParserGaps:
     """Closes gaps in HtmlParser (html_parser.py: 26-27, 83-87, 88-89, 90-91, 95, 166->161,
@@ -425,7 +433,9 @@ class TestHtmlParserGaps:
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
-        soup = BeautifulSoup('<html><body><p>Visit <a href="">here</a> or <a href="https://x.com">X</a></p></body></html>', "html.parser")
+        soup = BeautifulSoup(
+            '<html><body><p>Visit <a href="">here</a> or <a href="https://x.com">X</a></p></body></html>', "html.parser"
+        )
         blocks, _ = parser._extract_content(soup)
         assert len(blocks) == 1
         links = blocks[0].metadata.get("links", [])
@@ -452,7 +462,9 @@ class TestHtmlParserGaps:
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
-        soup = BeautifulSoup("<html><body><code>   </code><code class='language-py'>print()</code></body></html>", "html.parser")
+        soup = BeautifulSoup(
+            "<html><body><code>   </code><code class='language-py'>print()</code></body></html>", "html.parser"
+        )
         blocks, _ = parser._extract_content(soup)
         codes = [b for b in blocks if b.metadata.get("is_code_block")]
         assert len(codes) == 1
@@ -504,7 +516,9 @@ class TestHtmlParserGaps:
         from app.pipeline.parsing.html_parser import HtmlParser
 
         parser = HtmlParser()
-        soup = BeautifulSoup("<html><body><table><tr><td>  </td></tr><tr><td></td></tr></table></body></html>", "html.parser")
+        soup = BeautifulSoup(
+            "<html><body><table><tr><td>  </td></tr><tr><td></td></tr></table></body></html>", "html.parser"
+        )
         blocks, _ = parser._extract_content(soup)
         tables = [b for b in blocks if b.metadata.get("is_table")]
         assert len(tables) == 0
@@ -528,9 +542,11 @@ class TestHtmlParserGaps:
         blocks, figures = parser._extract_content(soup)
         assert len(blocks) == 0
 
+
 # =============================================================================
 # 4. app/pipeline/parsing/parser_factory.py  — remaining uncovered lines
 # =============================================================================
+
 
 class TestParserFactoryGaps:
     """Closes gaps in ParserFactory (parser_factory.py: 53-54, 55-56, 67-68, 73-74, 79-82, 83-84, 89-90, 95-96)."""
@@ -541,6 +557,7 @@ class TestParserFactoryGaps:
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
                 mock_s.ENABLE_NOUGAT_PARSER = False
                 from app.pipeline.parsing.parser_factory import ParserFactory
+
                 f = ParserFactory()
         names = {p.__class__.__name__ for p in f.parsers}
         assert "PdfParser" not in names
@@ -551,6 +568,7 @@ class TestParserFactoryGaps:
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
                 mock_s.ENABLE_NOUGAT_PARSER = False
                 from app.pipeline.parsing.parser_factory import ParserFactory
+
                 f = ParserFactory()
         names = {p.__class__.__name__ for p in f.parsers}
         assert "PdfParser" not in names
@@ -563,6 +581,7 @@ class TestParserFactoryGaps:
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
                 mock_s.ENABLE_NOUGAT_PARSER = True
                 from app.pipeline.parsing.parser_factory import ParserFactory
+
                 f = ParserFactory()
         names = {p.__class__.__name__ for p in f.parsers}
         assert "NougatParser" not in names
@@ -573,6 +592,7 @@ class TestParserFactoryGaps:
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
                 mock_s.ENABLE_NOUGAT_PARSER = False
                 from app.pipeline.parsing.parser_factory import ParserFactory
+
                 f = ParserFactory()
         names = {p.__class__.__name__ for p in f.parsers}
         assert "TxtParser" not in names
@@ -583,6 +603,7 @@ class TestParserFactoryGaps:
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
                 mock_s.ENABLE_NOUGAT_PARSER = False
                 from app.pipeline.parsing.parser_factory import ParserFactory
+
                 f = ParserFactory()
         names = {p.__class__.__name__ for p in f.parsers}
         assert "HtmlParser" not in names
@@ -593,6 +614,7 @@ class TestParserFactoryGaps:
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
                 mock_s.ENABLE_NOUGAT_PARSER = False
                 from app.pipeline.parsing.parser_factory import ParserFactory
+
                 f = ParserFactory()
         names = {p.__class__.__name__ for p in f.parsers}
         assert "HtmlParser" not in names
@@ -603,6 +625,7 @@ class TestParserFactoryGaps:
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
                 mock_s.ENABLE_NOUGAT_PARSER = False
                 from app.pipeline.parsing.parser_factory import ParserFactory
+
                 f = ParserFactory()
         names = {p.__class__.__name__ for p in f.parsers}
         assert "MarkdownParser" not in names
@@ -613,13 +636,16 @@ class TestParserFactoryGaps:
             with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
                 mock_s.ENABLE_NOUGAT_PARSER = False
                 from app.pipeline.parsing.parser_factory import ParserFactory
+
                 f = ParserFactory()
         names = {p.__class__.__name__ for p in f.parsers}
         assert "TexParser" not in names
 
+
 # =============================================================================
 # 5. app/pipeline/references/parser.py  — remaining uncovered lines
 # =============================================================================
+
 
 class TestReferenceParserGaps:
     """Closes gaps in ReferenceParser (parser.py: 62, 70-71, 74-81, 148->150, 152, 160-162, 174, 212-213)."""
@@ -631,12 +657,11 @@ class TestReferenceParserGaps:
 
         parser = ReferenceParser()
         blocks = [
-            Block(block_id="b1", text="[1] Real ref, Journal, 2020.", index=1,
-                  block_type=BlockType.REFERENCE_ENTRY),
-            Block(block_id="b2", text="   ", index=2,
-                  block_type=BlockType.REFERENCE_ENTRY),
-            Block(block_id="b3", text="[2] Another ref, Proc. Conf., 2021.", index=3,
-                  block_type=BlockType.REFERENCE_ENTRY),
+            Block(block_id="b1", text="[1] Real ref, Journal, 2020.", index=1, block_type=BlockType.REFERENCE_ENTRY),
+            Block(block_id="b2", text="   ", index=2, block_type=BlockType.REFERENCE_ENTRY),
+            Block(
+                block_id="b3", text="[2] Another ref, Proc. Conf., 2021.", index=3, block_type=BlockType.REFERENCE_ENTRY
+            ),
         ]
         doc = PipelineDocument(document_id="doc1", blocks=blocks)
         result = parser.process(doc)
@@ -649,17 +674,19 @@ class TestReferenceParserGaps:
 
         parser = ReferenceParser()
         blocks = [
-            Block(block_id="b1", text="[1] Good ref, Journal, 2020.", index=1,
-                  block_type=BlockType.REFERENCE_ENTRY),
-            Block(block_id="b2", text="[2] Another, Proc., 2021.", index=2,
-                  block_type=BlockType.REFERENCE_ENTRY),
+            Block(block_id="b1", text="[1] Good ref, Journal, 2020.", index=1, block_type=BlockType.REFERENCE_ENTRY),
+            Block(block_id="b2", text="[2] Another, Proc., 2021.", index=2, block_type=BlockType.REFERENCE_ENTRY),
         ]
         doc = PipelineDocument(document_id="doc1", blocks=blocks)
 
-        with patch.object(parser, "_parse_single_reference", side_effect=[
-            RuntimeError("fail on first"),
-            MagicMock(block_id="b2"),
-        ]):
+        with patch.object(
+            parser,
+            "_parse_single_reference",
+            side_effect=[
+                RuntimeError("fail on first"),
+                MagicMock(block_id="b2"),
+            ],
+        ):
             result = parser.process(doc)
             # The first failed, second succeeded
             assert len(result.references) == 1
@@ -671,8 +698,7 @@ class TestReferenceParserGaps:
 
         parser = ReferenceParser()
         blocks = [
-            Block(block_id="b1", text="[1] A ref, Journal, 2020.", index=1,
-                  block_type=BlockType.REFERENCE_ENTRY),
+            Block(block_id="b1", text="[1] A ref, Journal, 2020.", index=1, block_type=BlockType.REFERENCE_ENTRY),
         ]
         doc = PipelineDocument(document_id="doc1", blocks=blocks)
 
@@ -744,8 +770,12 @@ class TestReferenceParserGaps:
         from app.pipeline.references.parser import parse_references
 
         blocks = [
-            Block(block_id="b1", text="[1] A. Author, \"Title,\" Journal, 2020.", index=1,
-                  block_type=BlockType.REFERENCE_ENTRY),
+            Block(
+                block_id="b1",
+                text='[1] A. Author, "Title," Journal, 2020.',
+                index=1,
+                block_type=BlockType.REFERENCE_ENTRY,
+            ),
         ]
         doc = PipelineDocument(document_id="doc1", blocks=blocks)
 

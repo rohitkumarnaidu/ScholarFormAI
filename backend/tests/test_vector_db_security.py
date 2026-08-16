@@ -12,6 +12,7 @@ class TestRAGDataLeakage:
     @patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None)
     def test_rag_cannot_query_unrelated_document_data(self, mock_load, tmp_path):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         persist = tmp_path / "rag_test"
         persist.mkdir()
         engine = RagEngine(persist_directory=str(persist), auto_seed=False)
@@ -30,6 +31,7 @@ class TestVectorDatabasePoisoning:
     @patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None)
     def test_malicious_document_injection_resisted(self, mock_load, tmp_path):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         persist = tmp_path / "rag_poison"
         persist.mkdir()
         engine = RagEngine(persist_directory=str(persist), auto_seed=False)
@@ -47,6 +49,7 @@ class TestQueryInjection:
     @patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None)
     def test_embedding_manipulation_does_not_crash(self, mock_load, tmp_path):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         persist = tmp_path / "rag_inject"
         persist.mkdir()
         engine = RagEngine(persist_directory=str(persist), auto_seed=False)
@@ -66,6 +69,7 @@ class TestQueryInjection:
     @patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None)
     def test_zero_length_query_returns_empty(self, mock_load, tmp_path):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         persist = tmp_path / "rag_empty"
         persist.mkdir()
         engine = RagEngine(persist_directory=str(persist), auto_seed=False)
@@ -81,6 +85,7 @@ class TestCrossUserDataLeakage:
         import tempfile
 
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         with tempfile.TemporaryDirectory() as d1, tempfile.TemporaryDirectory() as d2:
             engine1 = RagEngine(persist_directory=d1, auto_seed=False)
             engine2 = RagEngine(persist_directory=d2, auto_seed=False)
@@ -99,6 +104,7 @@ class TestIndexCorruption:
     @patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None)
     def test_corrupted_index_file_does_not_crash(self, mock_load, tmp_path):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         persist = tmp_path / "rag_corrupt"
         persist.mkdir()
         kb_file = persist / "kb.json"
@@ -112,6 +118,7 @@ class TestIndexCorruption:
     @patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None)
     def test_empty_index_returns_empty(self, mock_load, tmp_path):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         persist = tmp_path / "rag_empty_idx"
         persist.mkdir()
         engine = RagEngine(persist_directory=str(persist), auto_seed=False)
@@ -124,6 +131,7 @@ class TestEmbeddingModelAdversarial:
     @patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None)
     def test_adversarial_embedding_text_handled(self, mock_load, tmp_path):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         persist = tmp_path / "rag_adv"
         persist.mkdir()
         engine = RagEngine(persist_directory=str(persist), auto_seed=False)
@@ -142,6 +150,7 @@ class TestLargePayload:
     @patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None)
     def test_oversized_document_handled(self, mock_load, tmp_path):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         persist = tmp_path / "rag_large"
         persist.mkdir()
         engine = RagEngine(persist_directory=str(persist), auto_seed=False)
@@ -155,6 +164,7 @@ class TestNamespaceAccess:
     @patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None)
     def test_empty_publisher_returns_empty(self, mock_load, tmp_path):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         persist = tmp_path / "rag_ns"
         persist.mkdir()
         engine = RagEngine(persist_directory=str(persist), auto_seed=False)
@@ -167,6 +177,7 @@ class TestNamespaceAccess:
     @patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None)
     def test_query_rules_handles_unknown_template(self, mock_load, tmp_path):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         persist = tmp_path / "rag_qt"
         persist.mkdir()
         engine = RagEngine(persist_directory=str(persist), auto_seed=False)

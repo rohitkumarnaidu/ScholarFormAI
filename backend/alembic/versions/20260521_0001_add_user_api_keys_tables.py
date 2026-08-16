@@ -9,6 +9,7 @@ Create Date: 2026-05-21 00:00:00.000000
 
 Adds tables for user-managed API key storage and usage analytics.
 """
+
 from collections.abc import Sequence
 from typing import Union
 
@@ -70,4 +71,5 @@ def downgrade() -> None:
     op.drop_index("ix_user_api_keys_user_id", table_name="user_api_keys")
     op.drop_table("user_api_keys")
 
-__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']
+
+__all__ = ["revision", "down_revision", "branch_labels", "depends_on", "upgrade", "downgrade"]

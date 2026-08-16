@@ -9,6 +9,7 @@ import pytest
 # 2A: Latency Assertions (~8 tests)
 # ---------------------------------------------------------------------------
 
+
 class TestLatencyAssertions:
     """Verify LLM response times stay within SLA bounds."""
 
@@ -59,6 +60,7 @@ class TestLatencyAssertions:
                                         model="nvidia_nim/llama-3",
                                     )
             from app.services.llm_service import _provider_timeout_seconds
+
             assert _provider_timeout_seconds() == 10
 
     @pytest.mark.llm
@@ -118,6 +120,7 @@ class TestLatencyAssertions:
     @pytest.mark.sla
     def test_negative_timeout_clamped(self):
         from app.services.llm_service import _provider_timeout_seconds
+
         with patch("app.services.llm_service.settings.LLM_PROVIDER_TIMEOUT_SECONDS", -5):
             assert _provider_timeout_seconds() == 3
 
@@ -125,6 +128,7 @@ class TestLatencyAssertions:
 # ---------------------------------------------------------------------------
 # 2B: Timeout Handling (~6 tests)
 # ---------------------------------------------------------------------------
+
 
 class TestTimeoutHandling:
     """LLM calls should timeout gracefully."""
@@ -167,13 +171,13 @@ class TestTimeoutHandling:
         with patch.object(llm, "LITELLM_AVAILABLE", True):
             with patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None):
                 with patch.object(llm.settings, "NVIDIA_API_KEY", "key"):
-                        with pytest.raises(TimeoutError, match="stream timeout"):
-                            llm.generate(
-                                [{"role": "user", "content": "stream test"}],
-                                model="nvidia_nim/llama-3",
-                                timeout=1,
-                                stream=True,
-                            )
+                    with pytest.raises(TimeoutError, match="stream timeout"):
+                        llm.generate(
+                            [{"role": "user", "content": "stream test"}],
+                            model="nvidia_nim/llama-3",
+                            timeout=1,
+                            stream=True,
+                        )
 
     @pytest.mark.llm
     @pytest.mark.sla
@@ -191,6 +195,7 @@ class TestTimeoutHandling:
                     with patch.object(llm.settings, "OPENROUTER_API_KEY", "or-key"):
                         with patch.object(llm.settings, "OPENROUTER_API_BASE", "https://or.com"):
                             from app.services.llm_service import LLMUnavailableError
+
                             with pytest.raises(LLMUnavailableError):
                                 llm.generate_with_fallback(
                                     [{"role": "user", "content": "timeout test"}],
@@ -203,10 +208,12 @@ class TestTimeoutHandling:
         """generate_with_model should propagate timeout to underlying call."""
         with patch.object(llm, "_call_with_provider_circuit", side_effect=TimeoutError("model timeout")):
             with patch("app.services.provider_registry.resolve_model_provider", return_value="nvidia"):
-                with patch("app.services.provider_registry.get_provider_info",
-                           return_value={"base_url": "https://nv.com"}):
+                with patch(
+                    "app.services.provider_registry.get_provider_info", return_value={"base_url": "https://nv.com"}
+                ):
                     with patch.object(llm, "resolve_user_api_key", return_value="key"):
                         from app.services.llm_service import LLMUnavailableError
+
                         with pytest.raises(LLMUnavailableError, match="model timeout"):
                             llm.generate_with_model(
                                 [{"role": "user", "content": "timeout"}],
@@ -245,6 +252,7 @@ class TestTimeoutHandling:
 # 2C: Concurrent Request Performance (~6 tests)
 # ---------------------------------------------------------------------------
 
+
 class TestConcurrentRequestPerformance:
     """Multiple simultaneous requests should be handled without errors."""
 
@@ -252,6 +260,7 @@ class TestConcurrentRequestPerformance:
     @pytest.mark.sla
     def test_concurrent_requests_no_errors(self, llm):
         """Multiple concurrent LLM calls should all succeed."""
+
         def mock_gen(*args, **kw):
             return "concurrent result"
 
@@ -334,6 +343,7 @@ class TestConcurrentRequestPerformance:
     def test_concurrent_provider_breaker_reuse(self):
         """Multiple concurrent accesses to same provider should reuse breaker."""
         from app.services.llm_service import _PROVIDER_BREAKERS, _provider_breaker
+
         _PROVIDER_BREAKERS.clear()
 
         with patch("app.services.llm_service._breaker_enabled", return_value=True):
@@ -381,7 +391,9 @@ class TestConcurrentRequestPerformance:
     def test_concurrent_fallback_chain(self, llm):
         """Concurrent fallback requests should all resolve correctly."""
         mock_responses = [
-            "result_a", "result_b", "result_c",
+            "result_a",
+            "result_b",
+            "result_c",
         ]
         response_index = [0]
         lock = threading.Lock()
@@ -397,6 +409,7 @@ class TestConcurrentRequestPerformance:
                 with patch.object(llm.settings, "GROQ_API_KEY", "gq-key"):
                     with patch.object(llm.settings, "OPENROUTER_API_KEY", None):
                         from app.services.llm_service import generate_with_fallback
+
                         with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
                             futures = [
                                 ex.submit(generate_with_fallback, [{"role": "user", "content": f"req-{i}"}])
@@ -409,6 +422,7 @@ class TestConcurrentRequestPerformance:
 # ---------------------------------------------------------------------------
 # 2D: Provider-Specific Latency Profiles (~4 tests)
 # ---------------------------------------------------------------------------
+
 
 class TestProviderLatencyProfiles:
     """Different providers should have distinct latency profiles."""
@@ -446,6 +460,7 @@ class TestProviderLatencyProfiles:
             raise RuntimeError("tier fail")
 
         from app.services.llm_service import generate_with_fallback
+
         nvidia_key_present = True
         groq_key_present = True
 
@@ -466,6 +481,7 @@ class TestProviderLatencyProfiles:
                     with patch.object(llm.settings, "GROQ_API_KEY", "gq-key"):
                         with patch.object(llm.settings, "OPENROUTER_API_KEY", None):
                             from app.services.llm_service import LLMUnavailableError
+
                             with pytest.raises(LLMUnavailableError):
                                 generate_with_fallback([{"role": "user", "content": "accumulate"}])
         assert len(fail_times) >= 2, "Should have attempted multiple tiers"
@@ -478,7 +494,6 @@ class TestProviderLatencyProfiles:
         mock_choice = MagicMock()
         mock_choice.message.content = "fresh response"
         mock_response.choices = [mock_choice]
-
 
         def measure_cache_miss():
             llm.completion = MagicMock(return_value=mock_response)
@@ -533,9 +548,11 @@ class TestProviderLatencyProfiles:
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture(autouse=True)
 def reset_breaker_cache():
     import app.services.llm_service as llm
+
     llm._PROVIDER_BREAKERS.clear()
 
 
@@ -544,5 +561,6 @@ def llm():
     import importlib
 
     import app.services.llm_service as m
+
     importlib.reload(m)
     return m

@@ -270,7 +270,6 @@ class TestCircuitBreakerAdvanced:
         """State change listener is invoked on transitions."""
         from app.pipeline.safety.circuit_breaker import circuit_breaker
 
-
         with patch("app.pipeline.safety.circuit_breaker._PYBREAKER", False):
 
             @circuit_breaker(failure_threshold=1, recovery_timeout=0.05)
@@ -296,6 +295,7 @@ class TestCircuitBreakerAdvanced:
     def test_fallback_exception_returns_empty_dict(self):
         """When both circuit and fallback fail, return empty dict."""
         with patch("app.pipeline.safety.circuit_breaker._PYBREAKER", False):
+
             def bad_fallback(*args, **kwargs):
                 raise RuntimeError("fallback also failed")
 
@@ -310,6 +310,7 @@ class TestCircuitBreakerAdvanced:
         """Test using real pybreaker if available."""
         try:
             import pybreaker
+
             pybreaker_available = True
         except ImportError:
             pybreaker_available = False

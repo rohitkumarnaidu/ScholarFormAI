@@ -21,6 +21,7 @@ def _b(text: str, index: int = 1, font_size: float = 12.0, bold: bool = False):
     style = TextStyle(font_size=font_size, bold=bold)
     return Block(block_id=f"b{index}", text=text, index=index, block_type=BlockType.BODY, style=style)
 
+
 class TestDetectNumberingPattern:
     def test_decimal_single(self):
         result = detect_numbering_pattern("1. Introduction")
@@ -46,6 +47,7 @@ class TestDetectNumberingPattern:
     def test_empty_text(self):
         assert detect_numbering_pattern("") is None
 
+
 class TestDetectTitle:
     def test_first_block_is_title(self):
         blocks = [_b("My Paper Title", 1)]
@@ -67,6 +69,7 @@ class TestDetectTitle:
         blocks = [_b("", 1)]
         assert detect_title(blocks[0], blocks) is False
 
+
 class TestMatchesSectionKeyword:
     def test_abstract(self):
         assert matches_section_keyword("Abstract") is True
@@ -85,6 +88,7 @@ class TestMatchesSectionKeyword:
 
     def test_case_insensitive(self):
         assert matches_section_keyword("ABSTRACT") is True
+
 
 class TestIsLikelyHeadingByStyle:
     def test_bold_heading(self):
@@ -116,6 +120,7 @@ class TestIsLikelyHeadingByStyle:
         assert result is False
         assert confidence == 0.3
 
+
 class TestInferHeadingLevel:
     def test_level_1_from_keyword(self):
         block = _b("Introduction", 1)
@@ -131,6 +136,7 @@ class TestInferHeadingLevel:
         level = infer_heading_level(block)
         assert 1 <= level <= 4
 
+
 class TestGetCapitalizationRatio:
     def test_all_capitalized(self):
         ratio = get_capitalization_ratio("Introduction Methods Results")
@@ -142,6 +148,7 @@ class TestGetCapitalizationRatio:
 
     def test_empty_string(self):
         assert get_capitalization_ratio("") == 0.0
+
 
 class TestAnalyzeHeadingCandidate:
     def test_heading_candidate_found(self):

@@ -65,7 +65,7 @@ class PipelinePhases:
                 {
                     "raw_text": raw_text,
                     "original_file_path": input_path,
-                }
+                },
             )
 
         self.orchestrator._update_status(job_id, "EXTRACTION", "COMPLETED", "Text extracted.", progress=20)
@@ -219,10 +219,9 @@ class PipelinePhases:
         else:
             logger.critical("Formatter failed to produce generated_doc for job %s", job_id)
             if sb:
-                DocumentRepository().update_sync(job_id, {
-                    "status": "FAILED",
-                    "error_message": "Formatting failed: No document artifact generated."
-                })
+                DocumentRepository().update_sync(
+                    job_id, {"status": "FAILED", "error_message": "Formatting failed: No document artifact generated."}
+                )
             raise Exception("Formatting stage failed to generate output artifact.")
         return output_path
 
@@ -279,13 +278,13 @@ class PipelinePhases:
                             pass
                 except Exception as hash_exc:
                     logger.warning("Failed to persist output hash: %s", hash_exc)
-            
+
             DocumentRepository().update_sync(
                 job_id,
                 {
                     "status": "COMPLETED",
                     "output_path": output_path,
-                }
+                },
             )
             self.orchestrator._update_status(
                 job_id,
@@ -304,7 +303,7 @@ class PipelinePhases:
                     {
                         "status": "FAILED",
                         "error_message": "Output file generation failed.",
-                    }
+                    },
                 )
             self.orchestrator._update_status(
                 job_id,

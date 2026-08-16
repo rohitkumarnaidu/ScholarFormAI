@@ -7,6 +7,7 @@ class TestRecordCall:
     @pytest.fixture
     def metrics(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m._persistence_enabled = False
         return m
@@ -43,6 +44,7 @@ class TestRecordFallback:
     @pytest.fixture
     def metrics(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m._persistence_enabled = False
         return m
@@ -58,6 +60,7 @@ class TestGetSummary:
     @pytest.fixture
     def metrics(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m._persistence_enabled = False
         return m
@@ -79,6 +82,7 @@ class TestGetModelComparison:
     @pytest.fixture
     def metrics(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m._persistence_enabled = False
         return m
@@ -103,6 +107,7 @@ class TestExportMetrics:
     @pytest.fixture
     def metrics(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m._persistence_enabled = False
         return m
@@ -116,6 +121,7 @@ class TestExportMetrics:
 class TestGetModelMetrics:
     def test_returns_global_instance(self):
         from app.services.model_metrics import get_model_metrics
+
         m1 = get_model_metrics()
         m2 = get_model_metrics()
         assert m1 is m2

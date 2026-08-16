@@ -58,11 +58,10 @@
 
 ### Cache Layers
 
-```
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│  In-Memory    │────▶│   Redis      │────▶│  Supabase    │
-│  (per-worker) │     │  (shared)    │     │  (persistent)│
-└──────────────┘     └──────────────┘     └──────────────┘
+```mermaid
+flowchart LR
+    Mem[In-Memory<br>per-worker] --> Redis[Redis<br>shared]
+    Redis --> DB[Supabase<br>persistent]
 ```
 
 ### Redis Cache (`backend/app/cache/redis_cache.py`)
@@ -314,11 +313,10 @@ Two layered rate limiters:
 
 ### RateLimitMiddleware (`backend/app/middleware/rate_limit.py`)
 
-```
-┌─────────────┐     ┌──────────┐     ┌─────────────┐
-│  In-Memory   │────▶│  Redis    │────▶│  Max(count) │
-│  (always)    │     │ (optional)│     │  per window │
-└─────────────┘     └──────────┘     └─────────────┘
+```mermaid
+flowchart LR
+    Mem[In-Memory<br>always] --> Redis[Redis<br>optional]
+    Redis --> Max[Max count<br>per window]
 ```
 
 | Parameter | Default | Configuration |
@@ -628,19 +626,14 @@ When `true`:
 
 ### Deployment Topology (`render.yaml`)
 
-```
-Internet ──▶ Load Balancer
-                │
-        ┌───────┴───────┐
-        │               │
-   Web Service    Celery Worker
-   (uvicorn)      (2 concurrency)
-        │               │
-        └───────┬───────┘
-                │
-           Redis Server
-                │
-           Supabase
+```mermaid
+flowchart TD
+    Inet[Internet] --> LB[Load Balancer]
+    LB --> Web[Web Service<br>uvicorn]
+    LB --> Worker[Celery Worker<br>2 concurrency]
+    Web --> Redis[Redis Server]
+    Worker --> Redis
+    Redis --> Supa[Supabase]
 ```
 
 ### vLLM Adoption Path

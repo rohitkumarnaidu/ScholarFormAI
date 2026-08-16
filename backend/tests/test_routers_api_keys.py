@@ -41,47 +41,70 @@ def client():
     app.dependency_overrides = {}
 
 
-
 class TestCreateApiKey:
     def test_success(self, client):
         key_dict = {
-            "id": "key-1", "provider": "openai", "key_label": "My Key",
-            "is_active": True, "rate_limit_per_minute": 60,
-            "rate_limit_per_hour": 1000, "daily_quota": 10000,
-            "total_requests": 0, "last_request_at": None,
-            "created_at": "2024-01-01T00:00:00", "key_preview": "sk-...abc",
+            "id": "key-1",
+            "provider": "openai",
+            "key_label": "My Key",
+            "is_active": True,
+            "rate_limit_per_minute": 60,
+            "rate_limit_per_hour": 1000,
+            "daily_quota": 10000,
+            "total_requests": 0,
+            "last_request_at": None,
+            "created_at": "2024-01-01T00:00:00",
+            "key_preview": "sk-...abc",
         }
         client.mock_service.create_key.return_value = MagicMock(to_dict=lambda mask_key=True: key_dict)
 
-        response = client.post("/api/v1/keys", json={
-            "provider": "openai", "api_key": "sk-test-key-12345",
-        })
+        response = client.post(
+            "/api/v1/keys",
+            json={
+                "provider": "openai",
+                "api_key": "sk-test-key-12345",
+            },
+        )
         assert response.status_code == 201
         assert response.json()["provider"] == "openai"
 
     def test_value_error(self, client):
         client.mock_service.create_key.side_effect = ValueError("Invalid provider")
-        response = client.post("/api/v1/keys", json={
-            "provider": "unknown", "api_key": "sk-test-key-12345",
-        })
+        response = client.post(
+            "/api/v1/keys",
+            json={
+                "provider": "unknown",
+                "api_key": "sk-test-key-12345",
+            },
+        )
         assert response.status_code == 400
         assert "Invalid provider" in response.json()["error"]["message"]
 
     def test_short_key(self, client):
-        response = client.post("/api/v1/keys", json={
-            "provider": "openai", "api_key": "short",
-        })
+        response = client.post(
+            "/api/v1/keys",
+            json={
+                "provider": "openai",
+                "api_key": "short",
+            },
+        )
         assert response.status_code == 422
 
 
 class TestListApiKeys:
     def test_success(self, client):
         key_dict = {
-            "id": "key-1", "provider": "openai", "key_label": None,
-            "is_active": True, "rate_limit_per_minute": 60,
-            "rate_limit_per_hour": 1000, "daily_quota": 10000,
-            "total_requests": 0, "last_request_at": None,
-            "created_at": None, "key_preview": "sk-...abc",
+            "id": "key-1",
+            "provider": "openai",
+            "key_label": None,
+            "is_active": True,
+            "rate_limit_per_minute": 60,
+            "rate_limit_per_hour": 1000,
+            "daily_quota": 10000,
+            "total_requests": 0,
+            "last_request_at": None,
+            "created_at": None,
+            "key_preview": "sk-...abc",
         }
         client.mock_service.list_keys.return_value = [MagicMock(to_dict=lambda mask_key=True: key_dict)]
 
@@ -100,11 +123,17 @@ class TestListApiKeys:
 class TestGetApiKey:
     def test_found(self, client):
         key_dict = {
-            "id": "key-1", "provider": "anthropic", "key_label": None,
-            "is_active": True, "rate_limit_per_minute": 60,
-            "rate_limit_per_hour": 1000, "daily_quota": 10000,
-            "total_requests": 0, "last_request_at": None,
-            "created_at": None, "key_preview": "sk-...xyz",
+            "id": "key-1",
+            "provider": "anthropic",
+            "key_label": None,
+            "is_active": True,
+            "rate_limit_per_minute": 60,
+            "rate_limit_per_hour": 1000,
+            "daily_quota": 10000,
+            "total_requests": 0,
+            "last_request_at": None,
+            "created_at": None,
+            "key_preview": "sk-...xyz",
         }
         client.mock_service.get_key.return_value = MagicMock(to_dict=lambda mask_key=True: key_dict)
 
@@ -121,11 +150,17 @@ class TestGetApiKey:
 class TestUpdateApiKey:
     def test_success(self, client):
         key_dict = {
-            "id": "key-1", "provider": "openai", "key_label": "Updated",
-            "is_active": False, "rate_limit_per_minute": 30,
-            "rate_limit_per_hour": 500, "daily_quota": 5000,
-            "total_requests": 0, "last_request_at": None,
-            "created_at": None, "key_preview": "sk-...abc",
+            "id": "key-1",
+            "provider": "openai",
+            "key_label": "Updated",
+            "is_active": False,
+            "rate_limit_per_minute": 30,
+            "rate_limit_per_hour": 500,
+            "daily_quota": 5000,
+            "total_requests": 0,
+            "last_request_at": None,
+            "created_at": None,
+            "key_preview": "sk-...abc",
         }
         client.mock_service.update_key.return_value = MagicMock(to_dict=lambda mask_key=True: key_dict)
 
@@ -163,6 +198,7 @@ class TestUsageStats:
         }
         with patch("app.routers.v1.api_keys.ApiKeyService", return_value=service):
             import asyncio
+
             result = asyncio.run(get_usage_stats(hours=48, db=MagicMock(), user=MagicMock()))
         assert "openai" in result
 
@@ -201,9 +237,7 @@ class TestUsageStats:
         service = MagicMock()
         service.get_key.return_value = None
 
-        with (
-            patch("app.routers.v1.api_keys.ApiKeyService", return_value=service),pytest.raises(Exception)
-        ):
+        with patch("app.routers.v1.api_keys.ApiKeyService", return_value=service), pytest.raises(Exception):
             asyncio.run(get_key_usage(key_id="nonexistent", db=MagicMock(), user=MagicMock()))
 
 
@@ -218,6 +252,7 @@ class TestProviders:
             import asyncio
 
             from app.routers.v1.api_keys import get_supported_providers
+
             result = asyncio.run(get_supported_providers())
         assert "openai" in result
         assert result["openai"].default_rpm == 60
@@ -227,16 +262,24 @@ class TestProviders:
 
 class TestTestApiKey:
     def test_skipped_provider(self, client):
-        response = client.post("/api/v1/keys/test", json={
-            "provider": "custom", "api_key": "sk-test-key-12345",
-        })
+        response = client.post(
+            "/api/v1/keys/test",
+            json={
+                "provider": "custom",
+                "api_key": "sk-test-key-12345",
+            },
+        )
         assert response.status_code == 200
         assert response.json()["status"] == "skipped"
 
     def test_short_key(self, client):
-        response = client.post("/api/v1/keys/test", json={
-            "provider": "openai", "api_key": "short",
-        })
+        response = client.post(
+            "/api/v1/keys/test",
+            json={
+                "provider": "openai",
+                "api_key": "short",
+            },
+        )
         assert response.status_code == 422
 
     def test_openai_valid(self, client):
@@ -246,9 +289,13 @@ class TestTestApiKey:
         mock_cm = AsyncMock(__aenter__=AsyncMock(return_value=mock_http))
 
         with patch("httpx.AsyncClient", return_value=mock_cm):
-            response = client.post("/api/v1/keys/test", json={
-                "provider": "openai", "api_key": "sk-test-key-12345",
-            })
+            response = client.post(
+                "/api/v1/keys/test",
+                json={
+                    "provider": "openai",
+                    "api_key": "sk-test-key-12345",
+                },
+            )
         assert response.status_code == 200
         assert response.json()["status"] == "valid"
 
@@ -259,8 +306,12 @@ class TestTestApiKey:
         mock_cm = AsyncMock(__aenter__=AsyncMock(return_value=mock_http))
 
         with patch("httpx.AsyncClient", return_value=mock_cm):
-            response = client.post("/api/v1/keys/test", json={
-                "provider": "openai", "api_key": "sk-bad-key",
-            })
+            response = client.post(
+                "/api/v1/keys/test",
+                json={
+                    "provider": "openai",
+                    "api_key": "sk-bad-key",
+                },
+            )
         assert response.status_code == 200
         assert response.json()["status"] == "invalid"

@@ -10,6 +10,7 @@ class TestActivityServiceUtcNowIso:
     @pytest.fixture
     def svc(self):
         from app.services.activity_service import ActivityService
+
         return ActivityService
 
     def test_returns_iso_string(self, svc):
@@ -22,10 +23,12 @@ class TestActivityServiceComputePeriodStart:
     @pytest.fixture
     def svc(self):
         from app.services.activity_service import ActivityService
+
         return ActivityService
 
     def test_7d(self, svc):
         from datetime import datetime, timedelta
+
         result = svc._compute_period_start("7d")
         assert result is not None
         diff = datetime.now(UTC) - result
@@ -33,6 +36,7 @@ class TestActivityServiceComputePeriodStart:
 
     def test_30d(self, svc):
         from datetime import datetime, timedelta
+
         result = svc._compute_period_start("30d")
         assert result is not None
         diff = datetime.now(UTC) - result
@@ -40,6 +44,7 @@ class TestActivityServiceComputePeriodStart:
 
     def test_90d(self, svc):
         from datetime import datetime, timedelta
+
         result = svc._compute_period_start("90d")
         assert result is not None
         diff = datetime.now(UTC) - result
@@ -50,6 +55,7 @@ class TestActivityServiceComputePeriodStart:
 
     def test_unknown_defaults_7d(self, svc):
         from datetime import datetime, timedelta
+
         result = svc._compute_period_start("invalid")
         assert result is not None
         diff = datetime.now(UTC) - result
@@ -60,6 +66,7 @@ class TestRecordActivity:
     @pytest.fixture
     def svc(self):
         from app.services.activity_service import ActivityService
+
         svc = ActivityService
         svc._table_available = None
         svc._table_warning_logged = False
@@ -96,9 +103,7 @@ class TestRecordActivity:
     async def test_missing_table_sets_flag(self, mock_to_thread, mock_get_sb, svc):
         mock_sb = MagicMock()
         mock_get_sb.return_value = mock_sb
-        error_text = (
-            '{"message": "Could not find the table \'user_activity\' in schema \'public\'"}'
-        )
+        error_text = "{\"message\": \"Could not find the table 'user_activity' in schema 'public'\"}"
         mock_to_thread.side_effect = Exception(error_text)
         await svc.record_activity("user-1", "upload")
         assert svc._table_available is False
@@ -117,6 +122,7 @@ class TestGetRecentActivities:
     @pytest.fixture
     def svc(self):
         from app.services.activity_service import ActivityService
+
         return ActivityService
 
     @patch("app.services.activity_service.get_supabase_client")
@@ -134,6 +140,7 @@ class TestGetRecentActivities:
     @patch("app.services.activity_service.get_supabase_client", return_value=None)
     async def test_raises_when_supabase_none(self, mock_get_sb, svc):
         from app.exceptions import DatabaseUnavailableError
+
         with pytest.raises(DatabaseUnavailableError):
             await svc.get_recent_activities("user-1")
 
@@ -153,6 +160,7 @@ class TestGetRecentActivities:
         mock_get_sb.return_value = mock_sb
         mock_to_thread.side_effect = Exception("Other error")
         from app.exceptions import DatabaseUnavailableError
+
         with pytest.raises(DatabaseUnavailableError):
             await svc.get_recent_activities("user-1")
 
@@ -161,6 +169,7 @@ class TestGetActivitySummary:
     @pytest.fixture
     def svc(self):
         from app.services.activity_service import ActivityService
+
         return ActivityService
 
     @patch("app.services.activity_service.get_supabase_client")
@@ -183,6 +192,7 @@ class TestGetActivitySummary:
     @patch("app.services.activity_service.get_supabase_client", return_value=None)
     async def test_raises_when_supabase_none(self, mock_get_sb, svc):
         from app.exceptions import DatabaseUnavailableError
+
         with pytest.raises(DatabaseUnavailableError):
             await svc.get_activity_summary("user-1")
 
@@ -203,6 +213,7 @@ class TestGetActivitySummary:
         mock_get_sb.return_value = mock_sb
         mock_to_thread.side_effect = Exception("DB error")
         from app.exceptions import DatabaseUnavailableError
+
         with pytest.raises(DatabaseUnavailableError):
             await svc.get_activity_summary("user-1")
 
@@ -221,10 +232,12 @@ class TestGetActivitySummary:
 class TestActivityServiceModule:
     def test_activity_service_instance(self):
         from app.services.activity_service import activity_service
+
         assert activity_service is not None
 
     def test_activity_types(self):
         from app.services.activity_service import ACTIVITY_TYPES
+
         assert "upload" in ACTIVITY_TYPES
         assert "format" in ACTIVITY_TYPES
         assert "edit" in ACTIVITY_TYPES
@@ -238,6 +251,7 @@ class TestRecordActivityInnerClosure:
     @pytest.mark.asyncio
     async def test_run_insert_success(self):
         from app.services.activity_service import ActivityService
+
         svc = ActivityService
         svc._table_available = None
         svc._table_warning_logged = False
@@ -251,11 +265,12 @@ class TestRecordActivityInnerClosure:
     @pytest.mark.asyncio
     async def test_run_insert_missing_table(self):
         from app.services.activity_service import ActivityService
+
         svc = ActivityService
         svc._table_available = None
         svc._table_warning_logged = False
         mock_sb = MagicMock()
-        error_text = '{"message": "Could not find the table \'user_activity\' in schema \'public\'"}'
+        error_text = "{\"message\": \"Could not find the table 'user_activity' in schema 'public'\"}"
         mock_sb.table.return_value.insert.return_value.execute.side_effect = Exception(error_text)
         with patch("app.services.activity_service.get_supabase_client", return_value=mock_sb):
             with patch("app.services.activity_service.asyncio.to_thread", side_effect=_INLINE_TO_THREAD):
@@ -267,6 +282,7 @@ class TestGetRecentActivitiesInnerClosure:
     @pytest.mark.asyncio
     async def test_run_query_success(self):
         from app.services.activity_service import ActivityService
+
         mock_sb = MagicMock()
         mock_result = MagicMock()
         mock_result.data = [{"id": "1", "activity_type": "upload"}]
@@ -279,8 +295,11 @@ class TestGetRecentActivitiesInnerClosure:
     @pytest.mark.asyncio
     async def test_missing_table_returns_empty(self):
         from app.services.activity_service import ActivityService
+
         mock_sb = MagicMock()
-        mock_sb.table.return_value.select.return_value.eq.return_value.order.return_value.limit.return_value.execute.side_effect = Exception("Could not find the table 'user_activity'")
+        mock_sb.table.return_value.select.return_value.eq.return_value.order.return_value.limit.return_value.execute.side_effect = Exception(
+            "Could not find the table 'user_activity'"
+        )
         with patch("app.services.activity_service.get_supabase_client", return_value=mock_sb):
             with patch("app.services.activity_service.asyncio.to_thread", side_effect=_INLINE_TO_THREAD):
                 result = await ActivityService.get_recent_activities("user-1")
@@ -291,6 +310,7 @@ class TestGetActivitySummaryInnerClosure:
     @pytest.mark.asyncio
     async def test_run_query_with_gte(self):
         from app.services.activity_service import ActivityService
+
         mock_sb = MagicMock()
         mock_result = MagicMock()
         mock_result.data = [

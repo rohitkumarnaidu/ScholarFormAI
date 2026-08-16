@@ -207,14 +207,8 @@ def _build_structural_summary(output_path: Path, golden: dict[str, Any]) -> dict
     paragraphs = [paragraph.text.strip() for paragraph in rendered.paragraphs if paragraph.text.strip()]
     full_text = "\n".join(paragraphs)
 
-    actual_hierarchy = [
-        heading
-        for heading in golden["heading_hierarchy"]
-        if heading["text"] in full_text
-    ]
-    reference_count = sum(
-        1 for reference_text in golden.get("reference_entries", []) if reference_text in full_text
-    )
+    actual_hierarchy = [heading for heading in golden["heading_hierarchy"] if heading["text"] in full_text]
+    reference_count = sum(1 for reference_text in golden.get("reference_entries", []) if reference_text in full_text)
 
     return {
         "section_count": len(actual_hierarchy),

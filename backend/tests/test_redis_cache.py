@@ -9,16 +9,19 @@ class TestRedisCache:
     @pytest.fixture
     def cache(self):
         from app.cache.redis_cache import RedisCache
+
         return RedisCache()
 
     def test_init_sets_client_none(self):
         from app.cache.redis_cache import RedisCache
+
         c = RedisCache()
         assert c._client is None
         assert c._initialized is False
 
     def test_init_with_redis_url(self):
         from app.cache.redis_cache import RedisCache
+
         c = RedisCache(redis_url="redis://myhost:6379")
         assert c._init_kwargs["redis_url"] == "redis://myhost:6379"
 
@@ -48,8 +51,7 @@ class TestRedisCache:
             assert cache._client is None
 
     def test_ensure_client_connection_success(self, cache):
-        with patch("app.config.settings.settings") as mock_settings, \
-             patch("redis.Redis.from_url") as mock_from_url:
+        with patch("app.config.settings.settings") as mock_settings, patch("redis.Redis.from_url") as mock_from_url:
             mock_settings.REDIS_ENABLED = True
             mock_settings.REDIS_URL = "redis://localhost:6379"
             mock_redis = MagicMock()
@@ -60,8 +62,7 @@ class TestRedisCache:
             assert result is not None
 
     def test_ensure_client_connection_failure(self, cache):
-        with patch("app.config.settings.settings") as mock_settings, \
-             patch("redis.Redis.from_url") as mock_from_url:
+        with patch("app.config.settings.settings") as mock_settings, patch("redis.Redis.from_url") as mock_from_url:
             mock_settings.REDIS_ENABLED = True
             mock_settings.REDIS_URL = "redis://localhost:6379"
             mock_from_url.side_effect = ConnectionError("no redis")
@@ -198,6 +199,7 @@ class TestRedisCache:
 
     def test_get_redis_cache_returns_singleton(self):
         from app.cache.redis_cache import get_redis_cache, redis_cache
+
         assert get_redis_cache() is redis_cache
 
     def test_ensure_client_settings_exception(self, cache):
@@ -212,8 +214,7 @@ class TestRedisCache:
             assert result is None
 
     def test_ensure_client_redis_url_from_settings(self, cache):
-        with patch("app.config.settings.settings") as mock_settings, \
-             patch("redis.Redis.from_url") as mock_from_url:
+        with patch("app.config.settings.settings") as mock_settings, patch("redis.Redis.from_url") as mock_from_url:
             mock_settings.REDIS_ENABLED = True
             mock_settings.REDIS_URL = None
             mock_settings.REDIS_HOST = "myhost"

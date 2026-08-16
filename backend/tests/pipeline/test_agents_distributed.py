@@ -13,6 +13,7 @@ pytestmark = [pytest.mark.pipeline]
 class TestAgentRole:
     def test_enum_values(self):
         from app.pipeline.agents.distributed import AgentRole
+
         assert AgentRole.COORDINATOR.value == "coordinator"
         assert AgentRole.METADATA_SPECIALIST.value == "metadata_specialist"
         assert AgentRole.LAYOUT_SPECIALIST.value == "layout_specialist"
@@ -21,12 +22,14 @@ class TestAgentRole:
 
     def test_enum_members(self):
         from app.pipeline.agents.distributed import AgentRole
+
         assert len(AgentRole) == 5
 
 
 class TestAgentTask:
     def test_create_task(self):
         from app.pipeline.agents.distributed import AgentRole, AgentTask
+
         task = AgentTask(task_id="test_1", role=AgentRole.METADATA_SPECIALIST, document_path="/path/doc.pdf")
         assert task.task_id == "test_1"
         assert task.role == AgentRole.METADATA_SPECIALIST
@@ -35,13 +38,17 @@ class TestAgentTask:
 
     def test_create_task_with_parameters(self):
         from app.pipeline.agents.distributed import AgentRole, AgentTask
-        task = AgentTask(task_id="test_2", role=AgentRole.LAYOUT_SPECIALIST, document_path="/path/doc.pdf", parameters={"fast": True})
+
+        task = AgentTask(
+            task_id="test_2", role=AgentRole.LAYOUT_SPECIALIST, document_path="/path/doc.pdf", parameters={"fast": True}
+        )
         assert task.parameters == {"fast": True}
 
 
 class TestSpecialistAgentInit:
     def test_init_valid(self):
         from app.pipeline.agents.distributed import AgentRole, SpecialistAgent
+
         agent = SpecialistAgent(AgentRole.METADATA_SPECIALIST, tools=["tool1"])
         assert agent.role == AgentRole.METADATA_SPECIALIST
         assert agent.tools == ["tool1"]
@@ -49,11 +56,13 @@ class TestSpecialistAgentInit:
 
     def test_init_no_tools(self):
         from app.pipeline.agents.distributed import AgentRole, SpecialistAgent
+
         agent = SpecialistAgent(AgentRole.LAYOUT_SPECIALIST, tools=None)
         assert agent.tools == []
 
     def test_init_invalid_role(self):
         from app.pipeline.agents.distributed import SpecialistAgent
+
         try:
             SpecialistAgent("not_a_role", tools=[])
             raise AssertionError()
@@ -64,6 +73,7 @@ class TestSpecialistAgentInit:
 class TestSpecialistAgentProcess:
     def test_process_none_task(self):
         from app.pipeline.agents.distributed import AgentRole, SpecialistAgent
+
         agent = SpecialistAgent(AgentRole.METADATA_SPECIALIST, tools=[])
         result = agent.process(None)
         assert result["error"] == "task is None"
@@ -71,6 +81,7 @@ class TestSpecialistAgentProcess:
 
     def test_process_metadata(self):
         from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
+
         agent = SpecialistAgent(AgentRole.METADATA_SPECIALIST, tools=[])
         task = AgentTask("m1", AgentRole.METADATA_SPECIALIST, "/doc.pdf")
         result = agent.process(task)
@@ -80,6 +91,7 @@ class TestSpecialistAgentProcess:
 
     def test_process_layout(self):
         from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
+
         agent = SpecialistAgent(AgentRole.LAYOUT_SPECIALIST, tools=[])
         task = AgentTask("l1", AgentRole.LAYOUT_SPECIALIST, "/doc.pdf")
         result = agent.process(task)
@@ -88,6 +100,7 @@ class TestSpecialistAgentProcess:
 
     def test_process_validation(self):
         from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
+
         agent = SpecialistAgent(AgentRole.VALIDATION_SPECIALIST, tools=[])
         task = AgentTask("v1", AgentRole.VALIDATION_SPECIALIST, "/doc.pdf")
         result = agent.process(task)
@@ -96,6 +109,7 @@ class TestSpecialistAgentProcess:
 
     def test_process_references(self):
         from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
+
         agent = SpecialistAgent(AgentRole.REFERENCE_SPECIALIST, tools=[])
         task = AgentTask("r1", AgentRole.REFERENCE_SPECIALIST, "/doc.pdf")
         result = agent.process(task)
@@ -104,6 +118,7 @@ class TestSpecialistAgentProcess:
 
     def test_process_unknown_role(self):
         from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
+
         agent = SpecialistAgent(AgentRole.METADATA_SPECIALIST, tools=[])
         agent.role = AgentRole.COORDINATOR
         task = AgentTask("u1", AgentRole.COORDINATOR, "/doc.pdf")
@@ -112,6 +127,7 @@ class TestSpecialistAgentProcess:
 
     def test_process_exception_safe(self):
         from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
+
         agent = SpecialistAgent(AgentRole.METADATA_SPECIALIST, tools=[])
         task = AgentTask("fail", AgentRole.METADATA_SPECIALIST, "/doc.pdf")
         original = agent._process_metadata
@@ -124,6 +140,7 @@ class TestSpecialistAgentProcess:
 class TestSpecialistAgentSubprocessors:
     def test_process_metadata_structure(self):
         from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
+
         agent = SpecialistAgent(AgentRole.METADATA_SPECIALIST, tools=[])
         task = AgentTask("m1", AgentRole.METADATA_SPECIALIST, "/doc.pdf")
         result = agent._process_metadata(task)
@@ -132,6 +149,7 @@ class TestSpecialistAgentSubprocessors:
 
     def test_process_layout_structure(self):
         from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
+
         agent = SpecialistAgent(AgentRole.LAYOUT_SPECIALIST, tools=[])
         task = AgentTask("l1", AgentRole.LAYOUT_SPECIALIST, "/doc.pdf")
         result = agent._process_layout(task)
@@ -139,6 +157,7 @@ class TestSpecialistAgentSubprocessors:
 
     def test_process_validation_structure(self):
         from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
+
         agent = SpecialistAgent(AgentRole.VALIDATION_SPECIALIST, tools=[])
         task = AgentTask("v1", AgentRole.VALIDATION_SPECIALIST, "/doc.pdf")
         result = agent._process_validation(task)
@@ -146,6 +165,7 @@ class TestSpecialistAgentSubprocessors:
 
     def test_process_references_structure(self):
         from app.pipeline.agents.distributed import AgentRole, AgentTask, SpecialistAgent
+
         agent = SpecialistAgent(AgentRole.REFERENCE_SPECIALIST, tools=[])
         task = AgentTask("r1", AgentRole.REFERENCE_SPECIALIST, "/doc.pdf")
         result = agent._process_references(task)
@@ -155,6 +175,7 @@ class TestSpecialistAgentSubprocessors:
 class TestDistributedCoordinatorInit:
     def test_init_defaults(self):
         from app.pipeline.agents.distributed import AgentRole, DistributedCoordinator
+
         dc = DistributedCoordinator()
         assert dc.max_workers == 4
         assert len(dc.specialists) == 4
@@ -165,11 +186,13 @@ class TestDistributedCoordinatorInit:
 
     def test_init_custom_max_workers(self):
         from app.pipeline.agents.distributed import DistributedCoordinator
+
         dc = DistributedCoordinator(max_workers=8)
         assert dc.max_workers == 8
 
     def test_init_invalid_max_workers(self):
         from app.pipeline.agents.distributed import DistributedCoordinator
+
         try:
             DistributedCoordinator(max_workers=0)
             raise AssertionError()
@@ -179,6 +202,7 @@ class TestDistributedCoordinatorInit:
     def test_init_specialist_initialization_failure(self):
         with patch("app.pipeline.agents.distributed.SpecialistAgent", side_effect=RuntimeError("init fail")):
             from app.pipeline.agents.distributed import DistributedCoordinator
+
             dc = DistributedCoordinator()
             assert len(dc.specialists) == 0
 
@@ -186,6 +210,7 @@ class TestDistributedCoordinatorInit:
 class TestDistributedCoordinatorProcessDocument:
     def test_process_document_valid(self):
         from app.pipeline.agents.distributed import DistributedCoordinator
+
         dc = DistributedCoordinator()
         result = dc.process_document("/path/doc.pdf")
         assert result["document_path"] == "/path/doc.pdf"
@@ -194,6 +219,7 @@ class TestDistributedCoordinatorProcessDocument:
 
     def test_process_document_empty_path(self):
         from app.pipeline.agents.distributed import DistributedCoordinator
+
         dc = DistributedCoordinator()
         result = dc.process_document("")
         assert result["success"] is False
@@ -201,6 +227,7 @@ class TestDistributedCoordinatorProcessDocument:
 
     def test_process_document_no_specialists(self):
         from app.pipeline.agents.distributed import DistributedCoordinator
+
         dc = DistributedCoordinator()
         dc.specialists = {}
         result = dc.process_document("/path/doc.pdf")
@@ -211,6 +238,7 @@ class TestDistributedCoordinatorProcessDocument:
 class TestDistributedCoordinatorProcessParallel:
     def test_process_parallel(self):
         from app.pipeline.agents.distributed import AgentRole, AgentTask, DistributedCoordinator
+
         dc = DistributedCoordinator()
         tasks = [
             AgentTask("m1", AgentRole.METADATA_SPECIALIST, "/doc.pdf"),
@@ -221,6 +249,7 @@ class TestDistributedCoordinatorProcessParallel:
 
     def test_process_parallel_future_exception(self):
         from app.pipeline.agents.distributed import AgentRole, AgentTask, DistributedCoordinator
+
         dc = DistributedCoordinator()
         dc.specialists[AgentRole.METADATA_SPECIALIST].process = MagicMock(side_effect=RuntimeError("task fail"))
         tasks = [
@@ -228,6 +257,7 @@ class TestDistributedCoordinatorProcessParallel:
         ]
         with patch("app.pipeline.agents.distributed.as_completed") as mock_ac:
             from concurrent.futures import Future
+
             f = Future()
             f.set_exception(RuntimeError("future fail"))
             mock_ac.return_value = [f]
@@ -245,6 +275,7 @@ class TestDistributedCoordinatorProcessParallel:
 class TestDistributedCoordinatorGetStatistics:
     def test_get_statistics(self):
         from app.pipeline.agents.distributed import DistributedCoordinator
+
         dc = DistributedCoordinator()
         stats = dc.get_statistics()
         assert "specialists" in stats
@@ -253,6 +284,7 @@ class TestDistributedCoordinatorGetStatistics:
 
     def test_get_statistics_with_task_counts(self):
         from app.pipeline.agents.distributed import AgentRole, DistributedCoordinator
+
         dc = DistributedCoordinator()
         dc.specialists[AgentRole.METADATA_SPECIALIST].task_count = 5
         stats = dc.get_statistics()
@@ -260,6 +292,7 @@ class TestDistributedCoordinatorGetStatistics:
 
     def test_get_statistics_exception_safe(self):
         from app.pipeline.agents.distributed import DistributedCoordinator
+
         dc = DistributedCoordinator()
         dc.specialists = None
         result = dc.get_statistics()

@@ -15,6 +15,7 @@ from starlette.testclient import TestClient
 
 # ── FeatureFlagMiddleware ───────────────────────────────────────────────────────
 
+
 class TestFeatureFlagMiddleware:
     @pytest.fixture
     def app(self):
@@ -35,6 +36,7 @@ class TestFeatureFlagMiddleware:
         ):
             mock_svc.return_value.get_all_flags.return_value = mock_flags
             from app.middleware.feature_flags import FeatureFlagMiddleware
+
             app.add_middleware(FeatureFlagMiddleware)
             client = TestClient(app)
             resp = client.get("/ping")
@@ -50,6 +52,7 @@ class TestFeatureFlagMiddleware:
         with patch("app.middleware.feature_flags.get_feature_flag_service") as mock_svc:
             mock_svc.return_value.get_all_flags.return_value = mock_flags
             from app.middleware.feature_flags import FeatureFlagMiddleware
+
             app.add_middleware(FeatureFlagMiddleware)
             client = TestClient(app)
             resp = client.get("/ping")
@@ -62,6 +65,7 @@ class TestFeatureFlagMiddleware:
         with patch("app.middleware.feature_flags.get_feature_flag_service") as mock_svc:
             mock_svc.return_value.get_all_flags.return_value = mock_flags
             from app.middleware.feature_flags import FeatureFlagMiddleware
+
             app.add_middleware(FeatureFlagMiddleware)
             client = TestClient(app)
             resp = client.get("/ping")
@@ -72,6 +76,7 @@ class TestFeatureFlagMiddleware:
         with patch("app.middleware.feature_flags.get_feature_flag_service") as mock_svc:
             mock_svc.return_value.get_all_flags.return_value = {}
             from app.middleware.feature_flags import FeatureFlagMiddleware
+
             app.add_middleware(FeatureFlagMiddleware)
             client = TestClient(app)
             resp = client.get("/ping")
@@ -85,6 +90,7 @@ class TestFeatureFlagMiddleware:
             svc_instance = mock_svc.return_value
             svc_instance.get_all_flags.return_value = db_flags
             from app.middleware.feature_flags import FeatureFlagMiddleware
+
             app.add_middleware(FeatureFlagMiddleware)
             client = TestClient(app)
             resp = client.get("/ping")
@@ -93,6 +99,7 @@ class TestFeatureFlagMiddleware:
 
 
 # ── MonitoringMiddleware ────────────────────────────────────────────────────────
+
 
 class TestMonitoringMiddleware:
     @pytest.fixture
@@ -108,6 +115,7 @@ class TestMonitoringMiddleware:
     def test_records_timing_header(self, app):
         with patch("app.middleware.monitoring.logger"):
             from app.middleware.monitoring import MonitoringMiddleware
+
             app.add_middleware(MonitoringMiddleware)
             client = TestClient(app)
             resp = client.get("/ping")
@@ -117,6 +125,7 @@ class TestMonitoringMiddleware:
 
     def test_sets_request_id_in_state(self, app):
         from app.middleware.monitoring import MonitoringMiddleware
+
         collected = {}
 
         @app.middleware("http")
@@ -133,6 +142,7 @@ class TestMonitoringMiddleware:
     def test_logs_request_start_and_complete(self, app):
         with patch("app.middleware.monitoring.logger") as mock_log:
             from app.middleware.monitoring import MonitoringMiddleware
+
             app.add_middleware(MonitoringMiddleware)
             client = TestClient(app)
             resp = client.get("/ping")
@@ -145,6 +155,7 @@ class TestMonitoringMiddleware:
 
     def test_uses_existing_request_id_header(self, app):
         from app.middleware.monitoring import MonitoringMiddleware
+
         collected = {}
 
         @app.middleware("http")
@@ -166,6 +177,7 @@ class TestMonitoringMiddleware:
 
         with patch("app.middleware.monitoring.logger") as mock_log:
             from app.middleware.monitoring import MonitoringMiddleware
+
             app.add_middleware(MonitoringMiddleware)
             client = TestClient(app)
             with pytest.raises(RuntimeError):
@@ -176,9 +188,11 @@ class TestMonitoringMiddleware:
 
 # ── RBAC ────────────────────────────────────────────────────────────────────────
 
+
 class TestRBAC:
     def test_require_role_rejects_insufficient(self):
         from app.middleware.rbac import require_role
+
         guard = require_role("admin")
         mock_user = MagicMock()
         mock_user.role = "free"
@@ -188,6 +202,7 @@ class TestRBAC:
 
     def test_require_role_allows_sufficient(self):
         from app.middleware.rbac import require_role
+
         guard = require_role("free")
         mock_user = MagicMock()
         mock_user.role = "admin"
@@ -198,14 +213,17 @@ class TestRBAC:
 
     def test_role_hierarchy_admin_gte_pro(self):
         from app.middleware.rbac import ROLE_HIERARCHY
+
         assert ROLE_HIERARCHY["admin"] > ROLE_HIERARCHY["pro"]
 
     def test_role_hierarchy_pro_gte_free(self):
         from app.middleware.rbac import ROLE_HIERARCHY
+
         assert ROLE_HIERARCHY["pro"] > ROLE_HIERARCHY["free"]
 
     def test_role_not_in_hierarchy_defaults_free(self):
         from app.middleware.rbac import resolve_user_role
+
         mock_user = MagicMock()
         mock_user.role = "some_unknown_role"
         mock_user.app_metadata = {}
@@ -214,6 +232,7 @@ class TestRBAC:
 
     def test_unknown_user_role_resolves_to_free_then_rejected(self):
         from app.middleware.rbac import require_role, resolve_user_role
+
         mock_user = MagicMock()
         mock_user.role = "completely_unknown"
         mock_user.app_metadata = None
@@ -226,6 +245,7 @@ class TestRBAC:
 
     def test_normalize_role_resolves_aliases(self):
         from app.middleware.rbac import _normalize_role
+
         assert _normalize_role("guest") == "free"
         assert _normalize_role("premium") == "pro"
         assert _normalize_role("superadmin") == "admin"
@@ -233,6 +253,7 @@ class TestRBAC:
 
     def test_resolve_user_role_defaults_free(self):
         from app.middleware.rbac import resolve_user_role
+
         mock_user = MagicMock()
         mock_user.role = None
         mock_user.app_metadata = None
@@ -240,6 +261,7 @@ class TestRBAC:
 
     def test_resolve_user_role_from_app_metadata(self):
         from app.middleware.rbac import resolve_user_role
+
         mock_user = MagicMock()
         mock_user.role = "authenticated"
         mock_user.app_metadata = {"role": "admin"}
@@ -247,16 +269,19 @@ class TestRBAC:
 
     def test_require_role_validates_parameter(self):
         from app.middleware.rbac import require_role
+
         with pytest.raises(ValueError, match="Unsupported role"):
             require_role("does_not_exist")
 
 
 # ── RequestIdMiddleware ────────────────────────────────────────────────────────
 
+
 class TestRequestIdMiddleware:
     @pytest.mark.asyncio
     async def test_adds_x_request_id_to_response(self):
         from app.middleware.request_id import RequestIdMiddleware
+
         app = AsyncMock()
         mw = RequestIdMiddleware(app)
         scope = {"type": "http", "method": "GET", "path": "/test", "headers": []}
@@ -275,6 +300,7 @@ class TestRequestIdMiddleware:
     @pytest.mark.asyncio
     async def test_preserves_existing_x_request_id(self):
         from app.middleware.request_id import RequestIdMiddleware
+
         app = AsyncMock()
         mw = RequestIdMiddleware(app)
         scope = {
@@ -289,6 +315,7 @@ class TestRequestIdMiddleware:
     @pytest.mark.asyncio
     async def test_non_http_passes_through(self):
         from app.middleware.request_id import RequestIdMiddleware
+
         app = AsyncMock()
         mw = RequestIdMiddleware(app)
         scope = {"type": "websocket"}
@@ -298,6 +325,7 @@ class TestRequestIdMiddleware:
     @pytest.mark.asyncio
     async def test_idempotency_key_stored_for_post(self):
         from app.middleware.request_id import RequestIdMiddleware
+
         app = AsyncMock()
         mw = RequestIdMiddleware(app)
         scope = {
@@ -312,6 +340,7 @@ class TestRequestIdMiddleware:
 
 
 # ── Middleware ordering ────────────────────────────────────────────────────────
+
 
 class TestMiddlewareOrdering:
     def test_request_id_before_rbac(self):
@@ -353,6 +382,7 @@ class TestMiddlewareOrdering:
 
 # ── CSP nonce ──────────────────────────────────────────────────────────────────
 
+
 class TestCSPNonce:
     @pytest.fixture
     def app(self):
@@ -366,6 +396,7 @@ class TestCSPNonce:
 
     def test_nonce_generated_per_request(self, app):
         from app.middleware.security_headers import SecurityHeadersMiddleware
+
         nonces = []
 
         @app.middleware("http")
@@ -384,6 +415,7 @@ class TestCSPNonce:
 
     def test_csp_header_present(self, app):
         from app.middleware.security_headers import SecurityHeadersMiddleware
+
         app.add_middleware(SecurityHeadersMiddleware)
         client = TestClient(app)
         resp = client.get("/test")
@@ -392,6 +424,7 @@ class TestCSPNonce:
 
     def test_csp_docs_route_has_additional_sources(self, app):
         from app.middleware.security_headers import SecurityHeadersMiddleware
+
         app.add_middleware(SecurityHeadersMiddleware)
 
         @app.get("/docs")
@@ -406,6 +439,7 @@ class TestCSPNonce:
 
     def test_security_headers_present(self, app):
         from app.middleware.security_headers import SecurityHeadersMiddleware
+
         app.add_middleware(SecurityHeadersMiddleware)
         client = TestClient(app)
         resp = client.get("/test")

@@ -4,6 +4,7 @@
 """
 Tests for ORM models: api_key, api_key_usage_log, block, figure, table, reference.
 """
+
 from __future__ import annotations
 
 import uuid
@@ -155,7 +156,9 @@ class TestTableModel:
             TableCell(text="Header 2", row=0, col=1, is_header=True),
             TableCell(text="Data 1", row=1, col=0, is_header=False),
         ]
-        table = Table(table_id="tbl-001", caption_text="Test table", cells=cells, num_rows=2, num_cols=2, index=0, block_index=0)
+        table = Table(
+            table_id="tbl-001", caption_text="Test table", cells=cells, num_rows=2, num_cols=2, index=0, block_index=0
+        )
         assert table.table_id == "tbl-001"
         assert len(table.cells) == 3
         assert table.cells[0].is_header is True

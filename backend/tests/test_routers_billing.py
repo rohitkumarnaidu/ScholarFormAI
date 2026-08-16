@@ -267,11 +267,13 @@ class TestStripeWebhook:
 class TestHelpers:
     def test_get_user_id_from_metadata(self):
         from app.routers.v1.billing import _get_user_id_from_metadata
+
         assert _get_user_id_from_metadata({"metadata": {"user_id": "u1"}}) == "u1"
         assert _get_user_id_from_metadata({"metadata": None}) is None
         assert _get_user_id_from_metadata({}) is None
 
     def test_legacy_profile_updates(self):
         from app.routers.v1.billing import _legacy_profile_updates
+
         assert _legacy_profile_updates({"plan_tier": "pro"}) == {"plan": "pro"}
         assert _legacy_profile_updates({"billing_status": "active"}) == {}

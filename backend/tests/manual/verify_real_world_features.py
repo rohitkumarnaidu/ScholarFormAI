@@ -8,13 +8,14 @@ import unittest
 from unittest.mock import patch
 
 # Add backend to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 
 # Parsing imports with availability flags
 MD_AVAILABLE = False
 try:
     from app.models import BlockType
     from app.pipeline.parsing.md_parser import MarkdownParser
+
     MD_AVAILABLE = True
 except ImportError:
     pass  # intentionally ignored
@@ -22,6 +23,7 @@ except ImportError:
 PDF_AVAILABLE = False
 try:
     from app.pipeline.parsing.pdf_parser import PdfParser
+
     PDF_AVAILABLE = True
 except ImportError:
     pass  # intentionally ignored
@@ -31,12 +33,13 @@ try:
     from bs4 import BeautifulSoup
 
     from app.pipeline.parsing.html_parser import HtmlParser
+
     HTML_AVAILABLE = True
 except ImportError:
     pass  # intentionally ignored
 
+
 class TestRealWorldFeatures(unittest.TestCase):
-    
     @unittest.skipUnless(MD_AVAILABLE, "MarkdownParser not available")
     def test_markdown_math_protection(self):
         """Test that Math $...$ is preserved during stripping."""
@@ -45,7 +48,7 @@ class TestRealWorldFeatures(unittest.TestCase):
         cleaned = parser._strip_markdown(text)
         print(f"DEBUG MATH: '{cleaned}'")
         assert cleaned == "Equation is $E=mc^2$."
-        
+
         text_block = "Block equation: $$x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$$"
         cleaned_block = parser._strip_markdown(text_block)
         assert cleaned_block == text_block
@@ -67,7 +70,7 @@ Introduction.
 [^1]: This is a footnote.
         """
         blocks, _ = parser._extract_content(content)
-        
+
         # Check for Footnote block
         footnote_blocks = [b for b in blocks if b.block_type == BlockType.FOOTNOTE]
         assert len(footnote_blocks) > 0, "No footnote blocks found"
@@ -77,25 +80,25 @@ Introduction.
     def test_pdf_header_footer_logic(self):
         """Test the _is_header_footer heuristic."""
         # Patch PYMUPDF_AVAILABLE
-        with patch('app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE', True):
+        with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             parser = PdfParser()
-            page_rect = [0, 0, 100, 1000] # 100x1000 page
-            
+            page_rect = [0, 0, 100, 1000]  # 100x1000 page
+
             # Top 7% = 70px. Bottom 7% = 70px (from bottom). y > 930.
-            
+
             # Header block (y1=50 <= 70) -> TRUE
             assert parser._is_header_footer([10, 10, 90, 50], page_rect)
-            
+
             # Footer block (y0=950 >= 930) -> TRUE
             assert parser._is_header_footer([10, 950, 90, 990], page_rect)
-            
+
             # Body block (y=[200, 300]) -> FALSE
             assert not parser._is_header_footer([10, 200, 90, 300], page_rect)
 
     @unittest.skipUnless(HTML_AVAILABLE, "HtmlParser not available")
     def test_html_script_cleaning(self):
         """Test that <script> and <style> tags are removed."""
-        with patch('app.pipeline.parsing.html_parser.BS4_AVAILABLE', True):
+        with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", True):
             parser = HtmlParser()
             html_content = """
             <html>
@@ -108,18 +111,19 @@ Introduction.
                 </body>
             </html>
             """
-            soup = BeautifulSoup(html_content, 'html.parser')
-            
+            soup = BeautifulSoup(html_content, "html.parser")
+
             # Call internal method to process soup
             parser._extract_content(soup)
-            
+
             # Check script/style removal
-            assert len(soup.find_all('script')) == 0
-            assert len(soup.find_all('style')) == 0
-            
+            assert len(soup.find_all("script")) == 0
+            assert len(soup.find_all("style")) == 0
+
             # Check content extraction (indirectly, just ensure it didn't crash)
-            # Currently _extract_content returns lists, but modifies soup in-place? 
+            # Currently _extract_content returns lists, but modifies soup in-place?
             # Yes, decompose() modifies the soup tree in-place.
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main(verbosity=2)

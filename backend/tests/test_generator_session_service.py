@@ -8,46 +8,55 @@ import pytest
 class TestTTlHelpers:
     def test_now_iso_format(self):
         from app.services.generator_session_service import GeneratorSessionService
+
         iso = GeneratorSessionService._now_iso()
         assert re.match(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}", iso)
 
     def test_session_ttl_default(self):
         from app.services.generator_session_service import GeneratorSessionService
+
         ttl = GeneratorSessionService._session_ttl_seconds()
         assert ttl == 2.0
 
     def test_session_ttl_from_settings(self):
         from app.services.generator_session_service import GeneratorSessionService
+
         with patch("app.services.generator_session_service.settings") as mock_s:
             mock_s.GENERATOR_SESSION_CACHE_TTL_SECONDS = 10
             assert GeneratorSessionService._session_ttl_seconds() == 10.0
 
     def test_session_ttl_clamps_negative(self):
         from app.services.generator_session_service import GeneratorSessionService
+
         with patch("app.services.generator_session_service.settings") as mock_s:
             mock_s.GENERATOR_SESSION_CACHE_TTL_SECONDS = -5
             assert GeneratorSessionService._session_ttl_seconds() == 0.0
 
     def test_messages_ttl_default(self):
         from app.services.generator_session_service import GeneratorSessionService
+
         assert GeneratorSessionService._messages_ttl_seconds() == 1.0
 
     def test_list_ttl_default(self):
         from app.services.generator_session_service import GeneratorSessionService
+
         assert GeneratorSessionService._session_list_ttl_seconds() == 3.0
 
     def test_document_ttl_default(self):
         from app.services.generator_session_service import GeneratorSessionService
+
         assert GeneratorSessionService._latest_document_ttl_seconds() == 2.0
 
     def test_ttl_bad_value_returns_fallback(self):
         from app.services.generator_session_service import GeneratorSessionService
+
         with patch("app.services.generator_session_service.settings") as mock_s:
             del mock_s.GENERATOR_SESSION_CACHE_TTL_SECONDS
             assert GeneratorSessionService._session_ttl_seconds() == 2.0
 
     def test_clone(self):
         from app.services.generator_session_service import GeneratorSessionService
+
         original = {"a": [1, 2, {"b": 3}]}
         cloned = GeneratorSessionService._clone(original)
         assert cloned == original
@@ -65,6 +74,7 @@ class TestCacheHelpers:
     @pytest.mark.asyncio
     async def test_get_cached_expired(self, svc):
         from app.services.generator_session_service import _CACHE_MISS
+
         svc._session_cache["k1"] = (time.monotonic() - 10, {"id": "s1"})
         result = await svc._get_cached(svc._session_cache, "k1", 30)
         assert result is _CACHE_MISS
@@ -73,6 +83,7 @@ class TestCacheHelpers:
     @pytest.mark.asyncio
     async def test_get_cached_ttl_zero(self, svc):
         from app.services.generator_session_service import _CACHE_MISS
+
         svc._session_cache["k1"] = (time.monotonic() + 60, {"id": "s1"})
         result = await svc._get_cached(svc._session_cache, "k1", 0)
         assert result is _CACHE_MISS
@@ -80,6 +91,7 @@ class TestCacheHelpers:
     @pytest.mark.asyncio
     async def test_get_cached_missing(self, svc):
         from app.services.generator_session_service import _CACHE_MISS
+
         result = await svc._get_cached(svc._session_cache, "nonexistent", 30)
         assert result is _CACHE_MISS
 
@@ -159,8 +171,11 @@ class TestCreateSession:
     @pytest.mark.asyncio
     async def test_insert_api_error(self, svc):
         from postgrest import APIError
+
         mock_client = MagicMock()
-        mock_client.table.return_value.insert.return_value.execute.side_effect = APIError({"message": "insert failed", "code": "PGRST204"})
+        mock_client.table.return_value.insert.return_value.execute.side_effect = APIError(
+            {"message": "insert failed", "code": "PGRST204"}
+        )
         with patch("app.services.generator_session_service.get_supabase_client", return_value=mock_client):
             with pytest.raises(Exception, match="Failed to create session"):
                 await svc.create_session("u", "t", {})
@@ -433,9 +448,12 @@ class TestSaveDocumentVersion:
     @pytest.mark.asyncio
     async def test_version_lookup_api_error(self, svc):
         from postgrest import APIError
+
         mock_client = MagicMock()
         mock_q = MagicMock()
-        mock_q.order.return_value.limit.return_value.execute.side_effect = APIError({"message": "lookup failed", "code": "PGRST204"})
+        mock_q.order.return_value.limit.return_value.execute.side_effect = APIError(
+            {"message": "lookup failed", "code": "PGRST204"}
+        )
         mock_client.table.return_value.select.return_value.eq.return_value = mock_q
         with patch("app.services.generator_session_service.get_supabase_client", return_value=mock_client):
             with pytest.raises(Exception, match="Failed to get latest version"):
@@ -498,5 +516,6 @@ class TestGetLatestDocument:
 @pytest.fixture
 def svc():
     from app.services.generator_session_service import GeneratorSessionService
+
     s = GeneratorSessionService()
     return s

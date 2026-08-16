@@ -24,14 +24,17 @@ class TestTemplateToCsl:
 class TestExtractJson:
     def test_extracts_from_clean_json(self):
         from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
         assert MultiDocSynthesizer._extract_json('{"a":1}') == '{"a":1}'
 
     def test_extracts_from_fenced(self):
         from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
         assert MultiDocSynthesizer._extract_json('```json\n{"a":1}\n```') == '{"a":1}'
 
     def test_returns_none_when_no_braces(self):
         from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
         assert MultiDocSynthesizer._extract_json("no braces") is None
 
 
@@ -57,12 +60,14 @@ class TestChunkText:
 class TestFakeUpload:
     def test_filename(self):
         from app.pipeline.synthesis.synthesizer import _FakeUpload
+
         f = _FakeUpload("test.pdf")
         assert f.filename == "test.pdf"
 
     @pytest.mark.asyncio
     async def test_read(self):
         from app.pipeline.synthesis.synthesizer import _FakeUpload
+
         f = _FakeUpload("test.pdf")
         data = await f.read()
         assert data == b""
@@ -70,6 +75,7 @@ class TestFakeUpload:
 
 def _make_synth():
     from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
     return MultiDocSynthesizer(
         session_service=MagicMock(),
         vector_store=MagicMock(),

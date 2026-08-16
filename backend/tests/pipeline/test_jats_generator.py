@@ -31,6 +31,7 @@ class TestJATSGenerator:
 
     def test_to_xml_basic(self):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         doc = self._make_doc()
         gen = JATSGenerator()
         xml = gen.to_xml(doc)
@@ -46,6 +47,7 @@ class TestJATSGenerator:
         from lxml import etree
 
         from app.pipeline.export.jats_generator import JATSGenerator
+
         doc = self._make_doc()
         doc.metadata.authors = []
         gen = JATSGenerator()
@@ -56,6 +58,7 @@ class TestJATSGenerator:
 
     def test_no_abstract_skips(self):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         doc = self._make_doc()
         doc.metadata.abstract = None
         gen = JATSGenerator()
@@ -64,6 +67,7 @@ class TestJATSGenerator:
 
     def test_string_publication_date(self):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         doc = self._make_doc()
         doc.metadata.publication_date = "2024-06-15"
         gen = JATSGenerator()
@@ -72,6 +76,7 @@ class TestJATSGenerator:
 
     def test_references_added(self):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         ref = MagicMock()
         ref.reference_id = "ref1"
         ref.raw_text = "A reference text"
@@ -84,6 +89,7 @@ class TestJATSGenerator:
 
     def test_no_references_skipped(self):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         doc = self._make_doc(references=[])
         gen = JATSGenerator()
         xml = gen.to_xml(doc)
@@ -91,6 +97,7 @@ class TestJATSGenerator:
 
     def test_heading_and_body_blocks(self):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         heading = self._make_block(text="Introduction", semantic_intent="heading")
         body = self._make_block(text="This is the intro body.", semantic_intent="body")
         doc = self._make_doc(blocks=[heading, body])
@@ -102,6 +109,7 @@ class TestJATSGenerator:
 
     def test_inline_equation(self):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         eq = MagicMock()
         eq.mathml = "<math><mi>x</mi></math>"
         eq.is_block = False
@@ -114,6 +122,7 @@ class TestJATSGenerator:
 
     def test_block_equation(self):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         eq = MagicMock()
         eq.mathml = "<math><mi>y</mi></math>"
         eq.is_block = True
@@ -125,6 +134,7 @@ class TestJATSGenerator:
 
     def test_bad_mathml_skips(self):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         eq = MagicMock()
         eq.mathml = "<<<invalid>>>"
         eq.is_block = True

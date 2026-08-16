@@ -7,6 +7,7 @@ class TestHTTPSRedirectMiddleware:
     @pytest.mark.asyncio
     async def test_passes_https_requests(self):
         from app.middleware.https_redirect import HTTPSRedirectMiddleware
+
         mock_app = AsyncMock()
         mock_app.return_value = MagicMock(status_code=200)
         mw = HTTPSRedirectMiddleware(mock_app)
@@ -19,6 +20,7 @@ class TestHTTPSRedirectMiddleware:
     @pytest.mark.asyncio
     async def test_redirects_http(self):
         from app.middleware.https_redirect import HTTPSRedirectMiddleware
+
         mock_app = AsyncMock()
         mw = HTTPSRedirectMiddleware(mock_app)
         mock_request = MagicMock()
@@ -32,6 +34,7 @@ class TestHTTPSRedirectMiddleware:
     @pytest.mark.asyncio
     async def test_skips_localhost(self):
         from app.middleware.https_redirect import HTTPSRedirectMiddleware
+
         mock_app = AsyncMock()
         mock_app.return_value = MagicMock(status_code=200)
         mw = HTTPSRedirectMiddleware(mock_app)
@@ -45,6 +48,7 @@ class TestHTTPSRedirectMiddleware:
     @pytest.mark.asyncio
     async def test_skips_health_endpoints(self):
         from app.middleware.https_redirect import HTTPSRedirectMiddleware
+
         mock_app = AsyncMock()
         mock_app.return_value = MagicMock(status_code=200)
         mw = HTTPSRedirectMiddleware(mock_app)
@@ -61,6 +65,7 @@ class TestHSTSMiddleware:
     @pytest.mark.asyncio
     async def test_adds_hsts_on_https(self):
         from app.middleware.https_redirect import HSTSMiddleware
+
         mock_app = AsyncMock()
         mock_response = MagicMock()
         mock_response.headers = {}
@@ -76,6 +81,7 @@ class TestHSTSMiddleware:
     @pytest.mark.asyncio
     async def test_skips_hsts_on_http(self):
         from app.middleware.https_redirect import HSTSMiddleware
+
         mock_app = AsyncMock()
         mock_response = MagicMock()
         mock_response.headers = {}
@@ -89,6 +95,7 @@ class TestHSTSMiddleware:
     @pytest.mark.asyncio
     async def test_adds_security_headers(self):
         from app.middleware.https_redirect import HSTSMiddleware
+
         mock_app = AsyncMock()
         mock_response = MagicMock()
         mock_response.headers = {}

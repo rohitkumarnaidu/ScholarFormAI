@@ -26,36 +26,43 @@ from app.pipeline.nlp.analyzer import (
 
 def _doc(blocks=None) -> Document:
     from app.models import PipelineDocument as Document
+
     return Document(document_id="test-id", blocks=blocks or [])
+
 
 def _block(text="Hello world", **kw) -> Block:
     from app.models import Block
+
     defaults = {"block_id": "b1", "index": 0, "text": text}
     defaults.update(kw)
     return Block(**defaults)
+
 
 # ===================================================================
 # Module-level import error paths (lines 22-24, 26-29, 32-33)
 # ===================================================================
 
-class TestModuleLevelImports:
 
+class TestModuleLevelImports:
     def test_yake_import_failure_path(self):
         """Force yake ImportError via module reload to cover lines 22-24."""
         import app.pipeline.nlp.analyzer as mod
+
         saved = {}
         for key in list(sys.modules):
-            if key == 'yake' or key.startswith('yake.'):
+            if key == "yake" or key.startswith("yake."):
                 saved[key] = sys.modules.pop(key)
         try:
             seen_yake = [False]
             orig_import = builtins.__import__
+
             def mock_import(name, *args, **kw):
-                if name == 'yake':
+                if name == "yake":
                     seen_yake[0] = True
                     raise ImportError("simulated yake missing")
                 return orig_import(name, *args, **kw)
-            with patch('builtins.__import__', mock_import):
+
+            with patch("builtins.__import__", mock_import):
                 importlib.reload(mod)
                 assert mod.YAKE_AVAILABLE is False
                 assert mod.yake is None
@@ -67,14 +74,16 @@ class TestModuleLevelImports:
 
     def test_nlp_available_flag(self):
         from app.pipeline.nlp import analyzer as _an
+
         assert _an.NLP_AVAILABLE is not None
+
 
 # ===================================================================
 # ContentAnalyzer.__init__ (line 41)
 # ===================================================================
 
-class TestContentAnalyzerInit:
 
+class TestContentAnalyzerInit:
     def test_init_sets_nlp_none(self):
         ca = ContentAnalyzer()
         assert ca.nlp is None
@@ -85,17 +94,19 @@ class TestContentAnalyzerInit:
         result = ca.process(doc)
         assert result is doc
 
+
 # ===================================================================
 # process — exhaustive branch coverage (lines 50-79)
 # ===================================================================
 
-class TestProcessBranches:
 
+class TestProcessBranches:
     def setup_method(self):
         self.ca = ContentAnalyzer()
 
     def test_block_without_hints_skipped(self):
         from app.models import BlockType
+
         b = _block(text="Ordinary paragraph text without section keywords", block_type=BlockType.BODY)
         doc = _doc(blocks=[b])
         self.ca.process(doc)
@@ -103,6 +114,7 @@ class TestProcessBranches:
 
     def test_section_conf_only_no_other_hints(self):
         from app.models import BlockType
+
         b = _block(text="Methods", block_type=BlockType.HEADING_1)
         doc = _doc(blocks=[b])
         self.ca.process(doc)
@@ -113,6 +125,7 @@ class TestProcessBranches:
 
     def test_caption_only_no_section_conf(self):
         from app.models import BlockType
+
         b = _block(text="Figure 1. Results", block_type=BlockType.BODY)
         doc = _doc(blocks=[b])
         self.ca.process(doc)
@@ -122,6 +135,7 @@ class TestProcessBranches:
 
     def test_readability_from_block_type(self):
         from app.models import BlockType
+
         b = _block(
             text="Background " * 50 + "results " * 50 + "study " * 20,
             block_type=BlockType.ABSTRACT_BODY,
@@ -133,6 +147,7 @@ class TestProcessBranches:
 
     def test_readability_from_methods_detect(self):
         from app.models import BlockType
+
         b = _block(
             text="Background " * 50 + "results " * 50 + "study " * 20,
             block_type=BlockType.BODY,
@@ -144,6 +159,7 @@ class TestProcessBranches:
 
     def test_no_hints_for_empty_text(self):
         from app.models import BlockType
+
         b = _block(text="", block_type=BlockType.BODY)
         doc = _doc(blocks=[b])
         self.ca.process(doc)
@@ -151,18 +167,20 @@ class TestProcessBranches:
 
     def test_metadata_already_exists_merged(self):
         from app.models import Block
+
         b = Block(block_id="b1", index=0, text="Introduction", metadata={"existing": 1})
         doc = _doc(blocks=[b])
         self.ca.process(doc)
         assert b.metadata["existing"] == 1
         assert "ai_hints" in b.metadata
 
+
 # ===================================================================
 # _estimate_section_confidence (lines 83-109)
 # ===================================================================
 
-class TestEstimateSectionConfidenceGaps:
 
+class TestEstimateSectionConfidenceGaps:
     def setup_method(self):
         self.ca = ContentAnalyzer()
 
@@ -174,9 +192,15 @@ class TestEstimateSectionConfidenceGaps:
 
     def test_known_header_exact(self):
         for header, conf in [
-            ("abstract", 0.95), ("introduction", 0.9), ("methods", 0.8),
-            ("methodology", 0.8), ("results", 0.8), ("discussion", 0.8),
-            ("conclusion", 0.8), ("references", 0.95), ("bibliography", 0.95),
+            ("abstract", 0.95),
+            ("introduction", 0.9),
+            ("methods", 0.8),
+            ("methodology", 0.8),
+            ("results", 0.8),
+            ("discussion", 0.8),
+            ("conclusion", 0.8),
+            ("references", 0.95),
+            ("bibliography", 0.95),
         ]:
             b = _block(text=header)
             result = self.ca._estimate_section_confidence(b)
@@ -195,12 +219,13 @@ class TestEstimateSectionConfidenceGaps:
     def test_unknown_header_returns_none(self):
         assert self.ca._estimate_section_confidence(_block(text="Appendix A")) is None
 
+
 # ===================================================================
 # _is_potential_caption (line 112)
 # ===================================================================
 
-class TestIsPotentialCaptionGaps:
 
+class TestIsPotentialCaptionGaps:
     def setup_method(self):
         self.ca = ContentAnalyzer()
 
@@ -226,12 +251,13 @@ class TestIsPotentialCaptionGaps:
     def test_empty_text(self):
         assert not self.ca._is_potential_caption("")
 
+
 # ===================================================================
 # _evaluate_caption_quality (lines 116-124)
 # ===================================================================
 
-class TestEvaluateCaptionQualityGaps:
 
+class TestEvaluateCaptionQualityGaps:
     def setup_method(self):
         self.ca = ContentAnalyzer()
 
@@ -249,12 +275,13 @@ class TestEvaluateCaptionQualityGaps:
         text = "Figure 1. The image below shows a complex diagram of the proposed architecture with multiple components"
         assert self.ca._evaluate_caption_quality(text) == "Good"
 
+
 # ===================================================================
 # _check_readability (lines 129-139)
 # ===================================================================
 
-class TestCheckReadabilityGaps:
 
+class TestCheckReadabilityGaps:
     def setup_method(self):
         self.ca = ContentAnalyzer()
 
@@ -275,14 +302,15 @@ class TestCheckReadabilityGaps:
         text = "This is a normal sentence with enough words to test readability. It has moderate length overall for this analysis."
         assert self.ca._check_readability(text) == "Standard"
 
+
 # ===================================================================
 # methods_detect_abstract (line 144)
 # ===================================================================
 
-class TestMethodsDetectAbstractGaps:
 
+class TestMethodsDetectAbstractGaps:
     def test_matches_background_and_results_long(self):
-        text = ("background " * 30 + "results " * 30)
+        text = "background " * 30 + "results " * 30
         assert methods_detect_abstract(text) is True
 
     def test_only_background_not_enough(self):
@@ -297,12 +325,13 @@ class TestMethodsDetectAbstractGaps:
     def test_empty(self):
         assert methods_detect_abstract("") is False
 
+
 # ===================================================================
 # _get_keybert_model (lines 149-164)
 # ===================================================================
 
-class TestGetKeybertModelGaps:
 
+class TestGetKeybertModelGaps:
     def test_keybert_not_available_returns_none(self):
         with patch("importlib.util.find_spec", return_value=None):
             assert _get_keybert_model() is None
@@ -311,10 +340,12 @@ class TestGetKeybertModelGaps:
         with patch("importlib.util.find_spec", return_value=True):
             with patch("app.pipeline.nlp.analyzer._KEYBERT_MODEL", None):
                 orig_import = builtins.__import__
+
                 def fake_import(name, *args, **kw):
                     if "keybert" in name:
                         raise ImportError("no keybert")
                     return orig_import(name, *args, **kw)
+
                 with patch("builtins.__import__", fake_import):
                     assert _get_keybert_model() is None
 
@@ -330,6 +361,7 @@ class TestGetKeybertModelGaps:
 
     def test_keybert_cached(self):
         import app.pipeline.nlp.analyzer as _an
+
         _an._KEYBERT_MODEL = None
         mock_model = MagicMock()
         fake_keybert = MagicMock()
@@ -346,12 +378,15 @@ class TestGetKeybertModelGaps:
         with patch("importlib.util.find_spec", return_value=True):
             with patch("app.pipeline.nlp.analyzer._KEYBERT_MODEL", None):
                 orig_import = builtins.__import__
+
                 def fake_import(name, *args, **kw):
                     if "keybert" in name:
                         raise RuntimeError("unexpected error")
                     return orig_import(name, *args, **kw)
+
                 with patch("builtins.__import__", fake_import):
                     assert _get_keybert_model() is None
+
 
 # ===================================================================
 # extract_keywords — exhaustive branch coverage (lines 172-250)
@@ -359,8 +394,8 @@ class TestGetKeybertModelGaps:
 
 ENH_PATH = "app.services.enhancement_manager.enhancement_manager"
 
-class TestExtractKeywordsGaps:
 
+class TestExtractKeywordsGaps:
     def test_empty_text_returns_empty(self):
         assert extract_keywords("") == []
         assert extract_keywords(None) == []
@@ -502,8 +537,7 @@ class TestExtractKeywordsGaps:
             m.profile.enabled = True
             m.profile.keyword_enabled = True
             m.get_keyword_backends.return_value = ["keyllm", "basic"]
-            with patch("app.pipeline.nlp.analyzer._extract_keywords_with_keyllm",
-                       return_value=["llm_kw1", "llm_kw2"]):
+            with patch("app.pipeline.nlp.analyzer._extract_keywords_with_keyllm", return_value=["llm_kw1", "llm_kw2"]):
                 result = extract_keywords("machine learning text")
                 assert result == ["llm_kw1", "llm_kw2"]
 
@@ -512,8 +546,7 @@ class TestExtractKeywordsGaps:
             m.profile.enabled = True
             m.profile.keyword_enabled = True
             m.get_keyword_backends.return_value = ["keyllm", "basic"]
-            with patch("app.pipeline.nlp.analyzer._extract_keywords_with_keyllm",
-                       return_value=[]):
+            with patch("app.pipeline.nlp.analyzer._extract_keywords_with_keyllm", return_value=[]):
                 result = extract_keywords("machine learning text")
                 assert len(result) > 0
 
@@ -522,8 +555,7 @@ class TestExtractKeywordsGaps:
             m.profile.enabled = True
             m.profile.keyword_enabled = True
             m.get_keyword_backends.return_value = ["keyllm", "basic"]
-            with patch("app.pipeline.nlp.analyzer._extract_keywords_with_keyllm",
-                       side_effect=Exception("llm crash")):
+            with patch("app.pipeline.nlp.analyzer._extract_keywords_with_keyllm", side_effect=Exception("llm crash")):
                 result = extract_keywords("machine learning text")
                 assert len(result) > 0
 
@@ -560,12 +592,13 @@ class TestExtractKeywordsGaps:
                 result = extract_keywords("machine learning text analysis for classification")
                 assert len(result) > 0
 
+
 # ===================================================================
 # _parse_keyword_payload — exhaustive branch coverage (lines 254-290)
 # ===================================================================
 
-class TestParseKeywordPayloadGaps:
 
+class TestParseKeywordPayloadGaps:
     def test_empty_string(self):
         assert _parse_keyword_payload("", 5) == []
 
@@ -579,15 +612,15 @@ class TestParseKeywordPayloadGaps:
         assert _parse_keyword_payload('{"items": ["x", "y"]}', 5) == ["x", "y"]
 
     def test_code_block_format(self):
-        raw = "```json\n[\"kw1\", \"kw2\"]\n```"
+        raw = '```json\n["kw1", "kw2"]\n```'
         assert _parse_keyword_payload(raw, 5) == ["kw1", "kw2"]
 
     def test_code_block_no_json_tag(self):
-        raw = "```\n[\"kw1\"]\n```"
+        raw = '```\n["kw1"]\n```'
         assert _parse_keyword_payload(raw, 5) == ["kw1"]
 
     def test_bracket_fallback_extraction(self):
-        raw = "Here are the keywords: [\"kw1\", \"kw2\"]"
+        raw = 'Here are the keywords: ["kw1", "kw2"]'
         assert _parse_keyword_payload(raw, 5) == ["kw1", "kw2"]
 
     def test_no_brackets_returns_empty(self):
@@ -614,54 +647,49 @@ class TestParseKeywordPayloadGaps:
         assert _parse_keyword_payload('["", "a"]', 5) == ["a"]
 
     def test_bracket_extraction_not_json(self):
-        raw = 'not json [broken, still, not, json]'
+        raw = "not json [broken, still, not, json]"
         assert _parse_keyword_payload(raw, 5) == []
 
     def test_start_brace_no_end_brace(self):
-        raw = 'prefix [not closed'
+        raw = "prefix [not closed"
         assert _parse_keyword_payload(raw, 5) == []
+
 
 # ===================================================================
 # _extract_keywords_with_keyllm — exhaustive branch coverage (lines 294-307)
 # ===================================================================
 
-class TestExtractKeywordsWithKeyllmGaps:
 
+class TestExtractKeywordsWithKeyllmGaps:
     def test_successful_extraction(self):
-        with patch("app.pipeline.nlp.analyzer.generate_with_fallback",
-                   return_value={"text": '["kw1", "kw2", "kw3"]'}):
+        with patch("app.pipeline.nlp.analyzer.generate_with_fallback", return_value={"text": '["kw1", "kw2", "kw3"]'}):
             result = _extract_keywords_with_keyllm("sample text", 3)
             assert result == ["kw1", "kw2", "kw3"]
 
     def test_none_result_returns_empty(self):
-        with patch("app.pipeline.nlp.analyzer.generate_with_fallback",
-                   return_value=None):
+        with patch("app.pipeline.nlp.analyzer.generate_with_fallback", return_value=None):
             result = _extract_keywords_with_keyllm("sample text", 3)
             assert result == []
 
     def test_empty_text_result_returns_empty(self):
-        with patch("app.pipeline.nlp.analyzer.generate_with_fallback",
-                   return_value={"text": ""}):
+        with patch("app.pipeline.nlp.analyzer.generate_with_fallback", return_value={"text": ""}):
             result = _extract_keywords_with_keyllm("sample text", 3)
             assert result == []
 
     def test_malformed_response_returns_empty(self):
-        with patch("app.pipeline.nlp.analyzer.generate_with_fallback",
-                   return_value={"text": "bad response"}):
+        with patch("app.pipeline.nlp.analyzer.generate_with_fallback", return_value={"text": "bad response"}):
             result = _extract_keywords_with_keyllm("sample text", 3)
             assert result == []
 
     def test_prompt_truncated_to_3500(self):
         long_text = "word " * 5000
-        with patch("app.pipeline.nlp.analyzer.generate_with_fallback",
-                   return_value={"text": '["kw1"]'}) as m:
+        with patch("app.pipeline.nlp.analyzer.generate_with_fallback", return_value={"text": '["kw1"]'}) as m:
             _extract_keywords_with_keyllm(long_text, 3)
             call_arg = m.call_args[0][0]
             user_content = call_arg[1]["content"]
             assert len(user_content) < 4000
 
     def test_result_as_none_text_key(self):
-        with patch("app.pipeline.nlp.analyzer.generate_with_fallback",
-                   return_value={"text": None}):
+        with patch("app.pipeline.nlp.analyzer.generate_with_fallback", return_value={"text": None}):
             result = _extract_keywords_with_keyllm("sample", 3)
             assert result == []

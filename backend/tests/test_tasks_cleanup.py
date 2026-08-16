@@ -20,6 +20,7 @@ def test_cleanup_zero_retention_falls_back_to_settings_default(tmp_path):
     upload_dir.mkdir()
     result = cleanup_stranded_uploads(str(upload_dir), retention_days=0)
     import app.config.settings as s
+
     assert result["retention_days"] == int(s.settings.RETENTION_DAYS)
 
 

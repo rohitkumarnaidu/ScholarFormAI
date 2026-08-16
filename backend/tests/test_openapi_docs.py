@@ -14,6 +14,7 @@ pytestmark = pytest.mark.skipif(
     reason="OpenAPI docs are disabled outside DEBUG mode",
 )
 
+
 def _trigger_lazy_routers(client: TestClient) -> None:
     """Hit a v1 path to trigger the lazy router loader middleware."""
     client.get("/api/v1/health", follow_redirects=False)
@@ -31,7 +32,9 @@ def test_openapi_json_is_exposed() -> None:
     assert isinstance(payload.get("paths"), dict)
     v1_paths = [p for p in payload["paths"] if p.startswith("/api/v1/")]
     assert len(v1_paths) > 0, f"No /api/v1/ paths found in OpenAPI schema. Paths: {list(payload['paths'].keys())}"
-    assert "/api/v1/documents/upload" in payload["paths"], f"/api/v1/documents/upload not found. Available v1 paths: {v1_paths}"
+    assert "/api/v1/documents/upload" in payload["paths"], (
+        f"/api/v1/documents/upload not found. Available v1 paths: {v1_paths}"
+    )
 
 
 def test_swagger_docs_ui_is_exposed() -> None:

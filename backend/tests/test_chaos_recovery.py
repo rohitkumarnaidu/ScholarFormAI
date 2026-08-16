@@ -14,6 +14,7 @@ class TestDatabaseFailure:
     @patch("app.services.document_service.get_supabase_client", return_value=None)
     async def test_supabase_connection_failure_graceful_fallback(self, mock_client):
         from app.services.document_service import DocumentService
+
         result = await DocumentService.search_documents("test", "user1")
         assert result == []
 
@@ -21,11 +22,13 @@ class TestDatabaseFailure:
     @patch("app.services.document_service.get_supabase_client", return_value=None)
     async def test_database_timeout_raises(self, mock_client):
         from app.services.document_service import DocumentService
+
         with pytest.raises(DatabaseUnavailableError):
             await DocumentService.get_document("550e8400-e29b-41d4-a716-446655440000")
 
     def test_partial_data_does_not_crash(self):
         from app.services.document_service import DocumentService
+
         invalid_doc_id = "550e8400-e29b-41d4-a716-446655440000"
         assert DocumentService._is_valid_uuid(invalid_doc_id) is True
         assert DocumentService._should_query_document_tables(invalid_doc_id, "test") is True
@@ -36,6 +39,7 @@ class TestRedisFailure:
         with patch("app.middleware.rate_limit.redis") as mock_redis:
             mock_redis.side_effect = ConnectionError("Redis unreachable")
             from app.middleware.rate_limit import RateLimitMiddleware
+
             instance = RateLimitMiddleware
             assert instance is not None
 
@@ -52,6 +56,7 @@ class TestRedisFailure:
                     with patch("app.services.llm_service._generate_fallback") as mock_fb:
                         mock_fb.return_value = "fallback response"
                         from app.services.llm_service import generate
+
                         result = generate([{"role": "user", "content": "hi"}], model="nvidia_nim/test")
                         assert result == "fallback response"
 
@@ -67,6 +72,7 @@ class TestRedisFailure:
                 with patch("app.services.llm_service._generate_fallback") as mock_fb:
                     mock_fb.return_value = "clean response"
                     from app.services.llm_service import generate
+
                     result = generate([{"role": "user", "content": "hi"}], model="nvidia_nim/test")
                     assert result == "clean response"
 
@@ -90,6 +96,7 @@ class TestAIProviderFailure:
             ]
             with patch("app.services.llm_service.resolve_user_api_key", return_value=None):
                 from app.services.llm_service import generate_with_fallback
+
                 result = generate_with_fallback([{"role": "user", "content": "test"}])
                 assert result["tier"] == 2
                 assert result["text"] == "groq response"
@@ -108,6 +115,7 @@ class TestAIProviderFailure:
         with patch("app.services.llm_service.generate", side_effect=Exception("Provider down")):
             with patch("app.services.llm_service.resolve_user_api_key", return_value=None):
                 from app.services.llm_service import generate_with_fallback
+
                 with pytest.raises(Exception) as excinfo:
                     generate_with_fallback([{"role": "user", "content": "test"}])
                 assert "All LLM tiers failed" in str(excinfo.value)
@@ -128,6 +136,7 @@ class TestAIProviderFailure:
                     mock_fb.return_value = "partial"
                     with patch("app.services.llm_service.resolve_user_api_key", return_value=None):
                         from app.services.llm_service import generate_with_fallback
+
                         result = generate_with_fallback([{"role": "user", "content": "test"}])
                         assert result["text"] == "partial"
 
@@ -139,6 +148,7 @@ class TestAIProviderFailure:
         mock_settings.LLM_CACHE_TTL_SECONDS = 3600
         mock_settings.EXTERNAL_CIRCUIT_BREAKER_ENABLED = False
         from app.services.llm_service import sanitize_for_llm
+
         garbage_inputs = [
             "\x00\x01\x02\x03" * 100,
             "\uffff\ufffe\ufffd",
@@ -159,6 +169,7 @@ class TestQueueCeleryFailure:
 
     def test_worker_crash_recovery(self):
         from app.services.document_service import DocumentService
+
         assert DocumentService._is_transient_supabase_error(ConnectionError("server disconnected")) is True
         assert DocumentService._is_transient_supabase_error(ConnectionError("connection reset")) is True
         assert DocumentService._is_transient_supabase_error(ValueError("schema error")) is False
@@ -167,6 +178,7 @@ class TestQueueCeleryFailure:
     @pytest.mark.asyncio
     async def test_retry_backoff_timing(self):
         from app.services.document_service import DocumentService
+
         with patch.object(DocumentService, "_execute_with_transient_retry", new_callable=AsyncMock) as mock_retry:
             mock_result = MagicMock()
             mock_result.data = {"id": "test"}
@@ -185,6 +197,7 @@ class TestNetworkIssues:
         mock_settings.LLM_PROVIDER_TIMEOUT_SECONDS = 120
         mock_settings.EXTERNAL_CIRCUIT_BREAKER_ENABLED = False
         from app.services.llm_service import _provider_timeout_seconds
+
         timeout = _provider_timeout_seconds()
         assert timeout <= 60
 
@@ -193,6 +206,7 @@ class TestNetworkIssues:
         mock_settings.SUPABASE_URL = None
         mock_settings.SUPABASE_SERVICE_ROLE_KEY = None
         from app.db.supabase_client import check_supabase_health, get_supabase_client
+
         client = get_supabase_client(refresh=True)
         assert client is None
         health = check_supabase_health()
@@ -203,6 +217,7 @@ class TestNetworkIssues:
         mock_settings.SUPABASE_URL = "https://nonexistent.example.com"
         mock_settings.SUPABASE_SERVICE_ROLE_KEY = "test-key"
         from app.db.supabase_client import check_supabase_health
+
         health = check_supabase_health()
         assert health["status"] in ("unhealthy", "unconfigured")
 
@@ -211,7 +226,9 @@ class TestCircuitBreakerRecovery:
     @patch("app.pipeline.safety.circuit_breaker._PYBREAKER", False)
     def test_circuit_breaker_half_open_to_closed(self):
         from app.pipeline.safety.circuit_breaker import CircuitBreakerOpenException, circuit_breaker
+
         call_count = 0
+
         @circuit_breaker(failure_threshold=2, recovery_timeout=0.05)
         def fragile_op():
             nonlocal call_count
@@ -219,6 +236,7 @@ class TestCircuitBreakerRecovery:
             if call_count < 3:
                 raise ValueError("transient")
             return "success"
+
         with pytest.raises(ValueError, match="transient"):
             fragile_op()
         with pytest.raises(ValueError, match="transient"):
@@ -227,6 +245,7 @@ class TestCircuitBreakerRecovery:
         with pytest.raises(CircuitBreakerOpenException):
             fragile_op()
         import time
+
         time.sleep(0.06)
         result = fragile_op()
         assert result == "success"
@@ -234,11 +253,13 @@ class TestCircuitBreakerRecovery:
     @patch("app.pipeline.safety.circuit_breaker._PYBREAKER", False)
     def test_exponential_backoff_timing(self):
         from app.services.document_service import DocumentService
+
         assert DocumentService._is_transient_supabase_error(Exception("connection refused")) is True
         assert DocumentService._is_transient_supabase_error(Exception("read timed out")) is True
 
     def test_idempotent_retry(self):
         from app.services.document_service import DocumentService
+
         result = DocumentService.generate_signed_download_url(
             file_url="https://storage.example.com/doc.docx",
             file_path="/path/doc.docx",
@@ -257,5 +278,6 @@ class TestCircuitBreakerRecovery:
         with patch("app.db.supabase_client._client_initialized", False):
             with patch("app.db.supabase_client._supabase_client", None):
                 from app.db.supabase_client import get_supabase_client
+
                 client = get_supabase_client(refresh=True)
                 assert client is None or client is not None

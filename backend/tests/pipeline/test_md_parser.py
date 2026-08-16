@@ -13,6 +13,7 @@ def parser():
 
     return MarkdownParser()
 
+
 class TestMarkdownParserSupportsFormat:
     def test_supports_md(self, parser):
         assert parser.supports_format(".md")
@@ -20,6 +21,7 @@ class TestMarkdownParserSupportsFormat:
 
     def test_not_supports_other(self, parser):
         assert not parser.supports_format(".pdf")
+
 
 class TestMarkdownParserParse:
     def test_parse_simple(self, parser, tmp_path):
@@ -58,6 +60,7 @@ class TestMarkdownParserParse:
         assert meta.title == "Test"
         assert meta.keywords == ["a", "b", "c"]
         assert "Body" in content
+
 
 class TestMarkdownParserExtractContent:
     def test_heading_h1(self, parser):

@@ -19,6 +19,14 @@ Our release pipeline is fully automated and adheres to Enterprise Open Source st
 3. **Automated Testing:** Extensive E2E, integration, and security scans (including SLSA Level 3 compliance checks) are executed.
 4. **Final Release:** Upon successful validation, the final version is tagged, and artifacts (Docker images, NPM packages, PyPI packages) are published. The [CHANGELOG.md](CHANGELOG.md) is updated.
 
+```mermaid
+flowchart LR
+    Freeze[Feature Freeze<br>Bug fixes only] --> RC[Tag Release Candidate]
+    RC --> Test[Automated Testing<br>E2E, Security, SLSA 3]
+    Test -->|Fail| RC
+    Test -->|Pass| Release[Final Release<br>Tag & Publish Artifacts]
+```
+
 ## Long-Term Support (LTS)
 
 To support our enterprise integrators and academic institutions, ScholarForm AI designates specific minor versions as LTS releases.

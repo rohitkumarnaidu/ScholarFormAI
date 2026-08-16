@@ -22,12 +22,14 @@ pytestmark = [pytest.mark.security]
 # CSRF Deep Tests (10)
 # ─────────────────────────────────────────────
 
+
 class TestCSRFDeep:
     _CSRF_SECRET = b"test-secret-for-csrf-testing-at-least-32-bytes!"
 
     def test_csrf_token_format(self):
         with patch("app.middleware.csrf._get_csrf_secret", return_value=self._CSRF_SECRET):
             from app.middleware.csrf import _get_csrf_secret, generate_csrf_token
+
             token = generate_csrf_token()
             decoded = base64.urlsafe_b64decode(token.encode()).decode()
             parts = decoded.split(":")
@@ -43,6 +45,7 @@ class TestCSRFDeep:
     def test_csrf_token_user_binding(self):
         with patch("app.middleware.csrf._get_csrf_secret", return_value=self._CSRF_SECRET):
             from app.middleware.csrf import generate_csrf_token, validate_csrf_token
+
             token = generate_csrf_token()
             assert validate_csrf_token(token) is True
             assert validate_csrf_token("") is False
@@ -50,6 +53,7 @@ class TestCSRFDeep:
     def test_csrf_token_expiry(self):
         with patch("app.middleware.csrf._get_csrf_secret", return_value=self._CSRF_SECRET):
             from app.middleware.csrf import _get_csrf_secret, validate_csrf_token
+
             secret = _get_csrf_secret()
             old_ts = str(int(time.time()) - 7200)
             raw = f"{old_ts}:{secrets.token_hex(32)}"
@@ -61,6 +65,7 @@ class TestCSRFDeep:
     async def test_csrf_missing_cookie_403(self):
         with patch("app.middleware.csrf._get_csrf_secret", return_value=self._CSRF_SECRET):
             from app.middleware.csrf import CSRFMiddleware
+
             call_next = AsyncMock()
             request = MagicMock()
             request.method = "POST"
@@ -75,6 +80,7 @@ class TestCSRFDeep:
     async def test_csrf_missing_header_403(self):
         with patch("app.middleware.csrf._get_csrf_secret", return_value=self._CSRF_SECRET):
             from app.middleware.csrf import CSRFMiddleware
+
             call_next = AsyncMock()
             request = MagicMock()
             request.method = "POST"
@@ -89,6 +95,7 @@ class TestCSRFDeep:
     async def test_csrf_cookie_httponly(self):
         with patch("app.middleware.csrf._get_csrf_secret", return_value=self._CSRF_SECRET):
             from app.middleware.csrf import CSRF_COOKIE_NAME, CSRFMiddleware
+
             call_next = AsyncMock(return_value=MagicMock(headers={}))
             request = MagicMock()
             request.method = "GET"
@@ -114,6 +121,7 @@ class TestCSRFDeep:
     @pytest.mark.asyncio
     async def test_csrf_cookie_samesite_lax(self):
         from app.middleware.csrf import CSRF_COOKIE_NAME, CSRFMiddleware
+
         call_next = AsyncMock(return_value=MagicMock(headers={}))
         request = MagicMock()
         request.method = "GET"
@@ -132,6 +140,7 @@ class TestCSRFDeep:
     @pytest.mark.asyncio
     async def test_csrf_cookie_secure_in_prod(self):
         from app.middleware.csrf import CSRF_COOKIE_NAME, CSRFMiddleware
+
         with patch("app.middleware.csrf.settings.DEBUG", False):
             call_next = AsyncMock(return_value=MagicMock(headers={}))
             request = MagicMock()
@@ -151,6 +160,7 @@ class TestCSRFDeep:
     @pytest.mark.asyncio
     async def test_csrf_token_rotation(self):
         from app.middleware.csrf import generate_csrf_token
+
         token1 = generate_csrf_token()
         token2 = generate_csrf_token()
         assert token1 != token2
@@ -158,6 +168,7 @@ class TestCSRFDeep:
     @pytest.mark.asyncio
     async def test_csrf_safe_methods_skip_validation(self):
         from app.middleware.csrf import CSRFMiddleware
+
         for method in ("GET", "HEAD", "OPTIONS"):
             call_next = AsyncMock(return_value=MagicMock(headers={}))
             request = MagicMock()
@@ -175,15 +186,18 @@ class TestCSRFDeep:
 
 _FERNET_KEY = "9i6456Do-kfa42dcxz4XtNAQxhtv8JsCPAa8mf_uEkY="
 
+
 class TestEncryptionDeep:
     def test_encryption_key_required(self):
         from app.services.encryption_service import EncryptionService
+
         with patch.dict("os.environ", {}, clear=True):
             with pytest.raises(RuntimeError, match="ENCRYPTION_KEY is not set"):
                 EncryptionService(key=None)
 
     def test_encryption_decryption_roundtrip(self):
         from app.services.encryption_service import EncryptionService
+
         svc = EncryptionService(key=_FERNET_KEY)
         original = "sk-test-api-key-12345"
         encrypted = svc.encrypt(original)
@@ -193,6 +207,7 @@ class TestEncryptionDeep:
 
     def test_encryption_differs_each_call(self):
         from app.services.encryption_service import EncryptionService
+
         svc = EncryptionService(key=_FERNET_KEY)
         plaintext = "same-plaintext-value"
         encrypted1 = svc.encrypt(plaintext)
@@ -201,6 +216,7 @@ class TestEncryptionDeep:
 
     def test_encryption_invalid_key(self):
         from app.services.encryption_service import EncryptionService
+
         with pytest.raises(Exception):
             EncryptionService(key="not-a-valid-fernet-key")
 
@@ -208,6 +224,7 @@ class TestEncryptionDeep:
         from cryptography.fernet import Fernet
 
         from app.services.encryption_service import EncryptionService
+
         svc = EncryptionService(key=_FERNET_KEY)
         assert isinstance(svc.fernet, Fernet)
 
@@ -215,6 +232,7 @@ class TestEncryptionDeep:
         from cryptography.fernet import Fernet
 
         from app.services.encryption_service import EncryptionService
+
         key = EncryptionService.generate_key()
         assert isinstance(key, str)
         assert len(key) > 20
@@ -226,9 +244,11 @@ class TestEncryptionDeep:
 # JWT Blacklist Tests (6)
 # ─────────────────────────────────────────────
 
+
 class TestJWTBlacklist:
     def test_blacklist_token_blocks(self):
         from app.cache.redis_cache import RedisCache
+
         cache = RedisCache()
         with patch.object(cache, "get", return_value=None):
             with patch.object(cache, "set", return_value=True) as mock_set:
@@ -238,6 +258,7 @@ class TestJWTBlacklist:
 
     def test_blacklist_expired_token_cleanup(self):
         from app.cache.redis_cache import RedisCache
+
         cache = RedisCache()
         with patch.object(cache, "get", return_value="1"):
             assert cache.is_token_blacklisted("jti-123") is True
@@ -246,12 +267,14 @@ class TestJWTBlacklist:
 
     def test_is_token_blacklisted_not_found(self):
         from app.cache.redis_cache import RedisCache
+
         cache = RedisCache()
         with patch.object(cache, "get", return_value=None):
             assert cache.is_token_blacklisted("nonexistent-jti") is False
 
     def test_blacklist_twice_still_blocks(self):
         from app.cache.redis_cache import RedisCache
+
         cache = RedisCache()
         with patch.object(cache, "set", return_value=True) as mock_set:
             cache.blacklist_token("jti-456", ttl=3600)
@@ -260,6 +283,7 @@ class TestJWTBlacklist:
 
     def test_blacklist_persists_across_calls(self):
         from app.cache.redis_cache import RedisCache
+
         cache = RedisCache()
         with patch.object(cache, "get", side_effect=["1", "1", None]):
             assert cache.is_token_blacklisted("jti-persist") is True
@@ -270,13 +294,21 @@ class TestJWTBlacklist:
         from fastapi import HTTPException
 
         from app.utils.dependencies import get_current_user
+
         credentials = MagicMock()
         credentials.credentials = "revoked-token"
         request = MagicMock()
         request.query_params.get.return_value = None
-        with patch("app.utils.dependencies.AuthService.decode_token",
-                   return_value={"jti": "revoked-jti", "sub": "user-1", "email": "a@b.com",
-                                 "role": "authenticated", "app_metadata": {}}):
+        with patch(
+            "app.utils.dependencies.AuthService.decode_token",
+            return_value={
+                "jti": "revoked-jti",
+                "sub": "user-1",
+                "email": "a@b.com",
+                "role": "authenticated",
+                "app_metadata": {},
+            },
+        ):
             with patch("app.utils.dependencies.AuthService.get_user_id_from_payload", return_value="user-1"):
                 with patch("app.cache.redis_cache.RedisCache.is_token_blacklisted", return_value=True):
                     with pytest.raises(HTTPException) as exc:
@@ -288,9 +320,11 @@ class TestJWTBlacklist:
 # Path Traversal Tests (6)
 # ─────────────────────────────────────────────
 
+
 class TestPathTraversal:
     def test_validate_path_safety_normal(self):
         from app.tasks.celery_tasks import ALLOWED_DIRECTORIES, validate_path_safety
+
         allowed = ALLOWED_DIRECTORIES[0]
         result = validate_path_safety(allowed)
         assert result == allowed
@@ -299,6 +333,7 @@ class TestPathTraversal:
         import os
 
         from app.tasks.celery_tasks import validate_path_safety
+
         allowed = os.path.abspath("data/uploads")
         with pytest.raises(ValueError) as exc:
             validate_path_safety(f"{allowed}/../../etc/passwd")
@@ -307,16 +342,19 @@ class TestPathTraversal:
 
     def test_validate_path_safety_absolute(self):
         from app.tasks.celery_tasks import validate_path_safety
+
         with pytest.raises(ValueError):
             validate_path_safety("/etc/passwd")
 
     def test_validate_path_safety_symlink(self):
         from app.tasks.celery_tasks import validate_path_safety
+
         with pytest.raises(ValueError):
             validate_path_safety("/tmp")
 
     def test_validate_path_safety_empty(self):
         from app.tasks.celery_tasks import validate_path_safety
+
         with pytest.raises(ValueError, match="Path is empty"):
             validate_path_safety("")
 
@@ -324,6 +362,7 @@ class TestPathTraversal:
         import os
 
         from app.tasks.celery_tasks import validate_path_safety
+
         if os.name == "nt":
             pytest.skip("Null byte path traversal behavior differs on Windows (null is not a terminator)")
         with pytest.raises(ValueError):
@@ -334,13 +373,16 @@ class TestPathTraversal:
 # Ownership Tests (6)
 # ─────────────────────────────────────────────
 
+
 class TestOwnership:
     @pytest.mark.asyncio
     async def test_verify_session_ownership_owner(self):
         from app.routers.v1.generator import verify_session_ownership
+
         mock_service = MagicMock()
         mock_service.get_session = AsyncMock(return_value={"id": "sess-1", "user_id": "user-abc"})
         import app.routers.v1.generator
+
         with patch.object(app.routers.v1.generator, "_session_service", mock_service):
             session = await verify_session_ownership("sess-1", "user-abc")
             assert session["user_id"] == "user-abc"
@@ -350,9 +392,11 @@ class TestOwnership:
         from fastapi import HTTPException
 
         from app.routers.v1.generator import verify_session_ownership
+
         mock_service = MagicMock()
         mock_service.get_session = AsyncMock(return_value={"id": "sess-1", "user_id": "user-abc"})
         import app.routers.v1.generator
+
         with patch.object(app.routers.v1.generator, "_session_service", mock_service):
             with pytest.raises(HTTPException) as exc:
                 await verify_session_ownership("sess-1", "user-xyz")
@@ -363,9 +407,11 @@ class TestOwnership:
         from fastapi import HTTPException
 
         from app.routers.v1.generator import verify_session_ownership
+
         mock_service = MagicMock()
         mock_service.get_session = AsyncMock(return_value=None)
         import app.routers.v1.generator
+
         with patch.object(app.routers.v1.generator, "_session_service", mock_service):
             with pytest.raises(HTTPException) as exc:
                 await verify_session_ownership("nonexistent", "user-abc")
@@ -374,8 +420,8 @@ class TestOwnership:
     @pytest.mark.asyncio
     async def test_verify_document_ownership(self):
         from app.services.document_service import DocumentService
-        with patch.object(DocumentService, "get_document",
-                          side_effect=[{"id": "doc-1", "user_id": "user-abc"}, None]):
+
+        with patch.object(DocumentService, "get_document", side_effect=[{"id": "doc-1", "user_id": "user-abc"}, None]):
             result = await DocumentService.get_document("doc-1", user_id="user-abc")
             assert result is not None
             assert result["user_id"] == "user-abc"
@@ -385,8 +431,10 @@ class TestOwnership:
     @pytest.mark.asyncio
     async def test_verify_template_ownership_shareable(self):
         from app.services.document_service import DocumentService
-        with patch.object(DocumentService, "get_document",
-                          return_value={"id": "doc-1", "user_id": "user-abc", "template": "ieee"}):
+
+        with patch.object(
+            DocumentService, "get_document", return_value={"id": "doc-1", "user_id": "user-abc", "template": "ieee"}
+        ):
             doc = await DocumentService.get_document("doc-1")
             assert doc["template"] == "ieee"
 
@@ -395,9 +443,11 @@ class TestOwnership:
         from fastapi import HTTPException
 
         from app.routers.v1.generator import verify_session_ownership
+
         mock_service = MagicMock()
         mock_service.get_session = AsyncMock(return_value={"id": "sess-2", "user_id": "creator"})
         import app.routers.v1.generator
+
         with patch.object(app.routers.v1.generator, "_session_service", mock_service):
             session = await verify_session_ownership("sess-2", "creator")
             assert session["id"] == "sess-2"
@@ -410,9 +460,11 @@ class TestOwnership:
         from fastapi import HTTPException
 
         from app.routers.v1.generator import verify_session_ownership
+
         mock_service = MagicMock()
         mock_service.get_session = AsyncMock(return_value={"id": "sess-1", "user_id": "user-abc"})
         import app.routers.v1.generator
+
         with patch.object(app.routers.v1.generator, "_session_service", mock_service):
             with pytest.raises(HTTPException) as exc:
                 await verify_session_ownership("sess-1", "")
@@ -423,9 +475,11 @@ class TestOwnership:
         from fastapi import HTTPException
 
         from app.routers.v1.generator import verify_session_ownership
+
         mock_service = MagicMock()
         mock_service.get_session = AsyncMock(return_value=None)
         import app.routers.v1.generator
+
         with patch.object(app.routers.v1.generator, "_session_service", mock_service):
             with pytest.raises(HTTPException) as exc:
                 await verify_session_ownership("deleted-sess", "user-abc")
@@ -436,12 +490,16 @@ class TestOwnership:
         from fastapi import HTTPException
 
         from app.routers.v1.generator import verify_session_ownership
+
         mock_service = MagicMock()
-        mock_service.get_session = AsyncMock(side_effect=[
-            {"id": "sess-1", "user_id": "user-abc"},
-            {"id": "sess-1", "user_id": "user-xyz"},
-        ])
+        mock_service.get_session = AsyncMock(
+            side_effect=[
+                {"id": "sess-1", "user_id": "user-abc"},
+                {"id": "sess-1", "user_id": "user-xyz"},
+            ]
+        )
         import app.routers.v1.generator
+
         with patch.object(app.routers.v1.generator, "_session_service", mock_service):
             session = await verify_session_ownership("sess-1", "user-abc")
             assert session["user_id"] == "user-abc"
@@ -455,10 +513,12 @@ class TestOwnership:
 # Rate Limiting Deep Tests (6)
 # ─────────────────────────────────────────────
 
+
 class TestRateLimitDeep:
     @pytest.mark.asyncio
     async def test_tier_rate_limit_free_60_per_min(self):
         from app.middleware.tier_rate_limit import TierRateLimitMiddleware
+
         mw = TierRateLimitMiddleware(MagicMock())
         mw._redis = MagicMock()
         mw._redis.incr.side_effect = lambda k: 61 if "ratelimit:user:" in k else 1
@@ -467,16 +527,17 @@ class TestRateLimitDeep:
         request.url.path = "/api/v1/documents/upload"
         request.headers = {"authorization": "Bearer valid"}
         request.client.host = "1.2.3.4"
-        with patch("app.middleware.tier_rate_limit.verify_jwt",
-                   return_value={"sub": "free-user", "role": "authenticated"}):
-            with patch("app.middleware.tier_rate_limit.resolve_user_role",
-                       return_value="free"):
+        with patch(
+            "app.middleware.tier_rate_limit.verify_jwt", return_value={"sub": "free-user", "role": "authenticated"}
+        ):
+            with patch("app.middleware.tier_rate_limit.resolve_user_role", return_value="free"):
                 response = await mw.dispatch(request, AsyncMock(return_value=MagicMock(status_code=200)))
         assert response.status_code == 429
 
     @pytest.mark.asyncio
     async def test_tier_rate_limit_pro_300_per_min(self):
         from app.middleware.tier_rate_limit import TierRateLimitMiddleware
+
         mw = TierRateLimitMiddleware(MagicMock())
         mw._redis = MagicMock()
         mw._redis.incr.side_effect = lambda k: 200 if "ratelimit:user:" in k else 1
@@ -485,10 +546,8 @@ class TestRateLimitDeep:
         request.url.path = "/api/v1/documents/upload"
         request.headers = {"authorization": "Bearer valid"}
         request.client.host = "1.2.3.4"
-        with patch("app.middleware.tier_rate_limit.verify_jwt",
-                   return_value={"sub": "pro-user", "role": "pro"}):
-            with patch("app.middleware.tier_rate_limit.resolve_user_role",
-                       return_value="pro"):
+        with patch("app.middleware.tier_rate_limit.verify_jwt", return_value={"sub": "pro-user", "role": "pro"}):
+            with patch("app.middleware.tier_rate_limit.resolve_user_role", return_value="pro"):
                 call_next = AsyncMock(return_value=MagicMock(status_code=200))
                 response = await mw.dispatch(request, call_next)
         assert response.status_code == 200
@@ -496,6 +555,7 @@ class TestRateLimitDeep:
     @pytest.mark.asyncio
     async def test_tier_rate_limit_admin_unlimited(self):
         from app.middleware.tier_rate_limit import TierRateLimitMiddleware
+
         mw = TierRateLimitMiddleware(MagicMock())
         mw._redis = MagicMock()
         request = MagicMock()
@@ -503,10 +563,11 @@ class TestRateLimitDeep:
         request.url.path = "/api/v1/documents/upload"
         request.headers = {"authorization": "Bearer valid"}
         request.client.host = "1.2.3.4"
-        with patch("app.middleware.tier_rate_limit.verify_jwt",
-                   return_value={"sub": "admin-user", "role": "admin", "app_metadata": {"role": "admin"}}):
-            with patch("app.middleware.tier_rate_limit.resolve_user_role",
-                       return_value="admin"):
+        with patch(
+            "app.middleware.tier_rate_limit.verify_jwt",
+            return_value={"sub": "admin-user", "role": "admin", "app_metadata": {"role": "admin"}},
+        ):
+            with patch("app.middleware.tier_rate_limit.resolve_user_role", return_value="admin"):
                 call_next = AsyncMock(return_value=MagicMock(status_code=200))
                 response = await mw.dispatch(request, call_next)
         assert response.status_code == 200
@@ -514,6 +575,7 @@ class TestRateLimitDeep:
     @pytest.mark.asyncio
     async def test_tier_rate_limit_exceeded_429(self):
         from app.middleware.rate_limit import RateLimitMiddleware
+
         rl = RateLimitMiddleware(MagicMock(), requests_per_minute=1)
         call_next = AsyncMock(return_value=MagicMock(status_code=200))
         first_req = MagicMock()
@@ -532,6 +594,7 @@ class TestRateLimitDeep:
     @pytest.mark.asyncio
     async def test_tier_rate_limit_different_tiers(self):
         from app.middleware.tier_rate_limit import TierRateLimitMiddleware
+
         mw = TierRateLimitMiddleware(MagicMock())
         mw._redis = MagicMock()
         mw._redis.incr.side_effect = lambda k: 61 if "ratelimit:user:" in k else 1
@@ -543,16 +606,20 @@ class TestRateLimitDeep:
 
         free_req = MagicMock(**{k: v for k, v in base_request.__dict__.items() if k != "_spec_parsers"})
         pro_req = MagicMock(**{k: v for k, v in base_request.__dict__.items() if k != "_spec_parsers"})
-        free_req.method = "POST"; free_req.url.path = "/api/v1/documents/upload"
-        free_req.headers = {"authorization": "Bearer valid"}; free_req.client.host = "1.2.3.4"
-        pro_req.method = "POST"; pro_req.url.path = "/api/v1/documents/upload"
-        pro_req.headers = {"authorization": "Bearer valid"}; pro_req.client.host = "1.2.3.4"
+        free_req.method = "POST"
+        free_req.url.path = "/api/v1/documents/upload"
+        free_req.headers = {"authorization": "Bearer valid"}
+        free_req.client.host = "1.2.3.4"
+        pro_req.method = "POST"
+        pro_req.url.path = "/api/v1/documents/upload"
+        pro_req.headers = {"authorization": "Bearer valid"}
+        pro_req.client.host = "1.2.3.4"
 
-        with patch("app.middleware.tier_rate_limit.verify_jwt",
-                   side_effect=[{"sub": "free-u", "role": "authenticated"},
-                                {"sub": "pro-u", "role": "pro"}]):
-            with patch("app.middleware.tier_rate_limit.resolve_user_role",
-                       side_effect=["free", "pro"]):
+        with patch(
+            "app.middleware.tier_rate_limit.verify_jwt",
+            side_effect=[{"sub": "free-u", "role": "authenticated"}, {"sub": "pro-u", "role": "pro"}],
+        ):
+            with patch("app.middleware.tier_rate_limit.resolve_user_role", side_effect=["free", "pro"]):
                 free_resp = await mw.dispatch(free_req, AsyncMock(return_value=MagicMock(status_code=200)))
                 mw._redis.incr.side_effect = lambda k: 61 if "free-u" in k else 1
                 pro_resp = await mw.dispatch(pro_req, AsyncMock(return_value=MagicMock(status_code=200)))
@@ -562,6 +629,7 @@ class TestRateLimitDeep:
     @pytest.mark.asyncio
     async def test_tier_rate_limit_resets_after_window(self):
         from app.middleware.tier_rate_limit import TierRateLimitMiddleware
+
         mw = TierRateLimitMiddleware(MagicMock())
         mw._redis = MagicMock()
         call_count = [0]
@@ -578,10 +646,10 @@ class TestRateLimitDeep:
         request.url.path = "/api/v1/documents/upload"
         request.headers = {"authorization": "Bearer valid"}
         request.client.host = "1.2.3.4"
-        with patch("app.middleware.tier_rate_limit.verify_jwt",
-                   return_value={"sub": "reset-user", "role": "authenticated"}):
-            with patch("app.middleware.tier_rate_limit.resolve_user_role",
-                       return_value="free"):
+        with patch(
+            "app.middleware.tier_rate_limit.verify_jwt", return_value={"sub": "reset-user", "role": "authenticated"}
+        ):
+            with patch("app.middleware.tier_rate_limit.resolve_user_role", return_value="free"):
                 call_next = AsyncMock(return_value=MagicMock(status_code=200))
                 await mw.dispatch(request, call_next)
                 mw._redis.expire.assert_called()

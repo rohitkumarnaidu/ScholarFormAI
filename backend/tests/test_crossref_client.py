@@ -15,7 +15,6 @@ from app.pipeline.services.crossref_client import CrossRefClient, CrossRefExcept
 
 
 class TestCrossRefClient:
-    
     @pytest.fixture
     def client(self):
         return CrossRefClient(email="test@example.com")
@@ -25,7 +24,7 @@ class TestCrossRefClient:
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json.return_value = {"message": {"title": ["Test Title"]}}
-        
+
         with patch.object(client._client, "get", new=AsyncMock(return_value=mock_response)):
             assert await client.validate_doi("10.1000/182") is True
 
@@ -33,7 +32,7 @@ class TestCrossRefClient:
         """Test validate_doi returns False when DOI not found."""
         mock_response = MagicMock()
         mock_response.status_code = 404
-        
+
         with patch.object(client._client, "get", new=AsyncMock(return_value=mock_response)):
             assert await client.validate_doi("10.1000/nonexistent") is False
 
@@ -43,7 +42,7 @@ class TestCrossRefClient:
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json.return_value = {"message": expected_data}
-        
+
         with patch.object(client._client, "get", new=AsyncMock(return_value=mock_response)):
             data = await client.get_metadata("10.1000/182")
             assert data == expected_data
@@ -52,33 +51,29 @@ class TestCrossRefClient:
         """Test get_metadata raises exception on API error."""
         mock_response = MagicMock()
         mock_response.status_code = 500
-        
+
         with patch.object(client._client, "get", new=AsyncMock(return_value=mock_response)):
             with pytest.raises(CrossRefException):
                 await client.get_metadata("10.1000/error")
 
     def test_calculate_confidence(self, client):
         """Test confidence score calculation."""
-        ref_data = {
-            "title": "A Great Paper",
-            "year": 2023,
-            "authors": ["Doe, John"]
-        }
-        
+        ref_data = {"title": "A Great Paper", "year": 2023, "authors": ["Doe, John"]}
+
         # 1. Perfect Match
         cr_data_perfect = {
             "title": ["A Great Paper"],
             "published-print": {"date-parts": [[2023]]},
-            "author": [{"family": "Doe", "given": "John"}]
+            "author": [{"family": "Doe", "given": "John"}],
         }
         score = client.calculate_confidence(ref_data, cr_data_perfect)
         assert score >= 0.9  # Should be 1.0 ideally
-        
+
         # 2. Partial Match (Different Year)
         cr_data_diff_year = {
             "title": ["A Great Paper"],
             "published-print": {"date-parts": [[2020]]},
-            "author": [{"family": "Doe"}]
+            "author": [{"family": "Doe"}],
         }
         score = client.calculate_confidence(ref_data, cr_data_diff_year)
         # 0.5 (title) + 0.2 (author) = 0.7
@@ -88,7 +83,7 @@ class TestCrossRefClient:
         cr_data_none = {
             "title": ["Completely Different"],
             "published-print": {"date-parts": [[1990]]},
-            "author": [{"family": "Smith"}]
+            "author": [{"family": "Smith"}],
         }
         score = client.calculate_confidence(ref_data, cr_data_none)
         assert score < 0.2
@@ -98,17 +93,17 @@ class TestCrossRefClient:
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json.return_value = {"message": {}}
-        
+
         with patch.object(client._client, "get", new=AsyncMock(return_value=mock_response)):
             with patch("time.time", side_effect=[100.0, 100.0, 100.01, 100.01]):
                 with patch("asyncio.sleep", new=AsyncMock()) as mock_sleep:
                     # First request (should not sleep)
                     await client.get_metadata("doi1")
                     mock_sleep.assert_not_called()
-                    
+
                     # Second request (0.01s elapsed < 0.025s limit) -> should sleep
                     await client.get_metadata("doi2")
-                    
+
                     # Verify sleep was called with roughly 0.015s
                     mock_sleep.assert_called_once()
                     args, _ = mock_sleep.call_args
@@ -119,10 +114,12 @@ class TestCrossRefClient:
 # Services version of CrossRefClient (app/services/crossref_client.py)
 # ---------------------------------------------------------------------------
 
+
 class TestCrossRefClientServices:
     @pytest.fixture
     def client(self):
         from app.services.crossref_client import CrossRefClient
+
         return CrossRefClient(contact_email="test@example.com")
 
     def test_init_sets_headers(self, client):
@@ -142,6 +139,7 @@ class TestCrossRefClientServices:
     @patch("app.services.crossref_client.redis_client")
     def test_get_cache_redis_hit(self, mock_redis, client):
         import json
+
         mock_redis.get.return_value = json.dumps({"doi": "10.1234/redis"})
         result = client._get_cache("test-query")
         assert result["doi"] == "10.1234/redis"
@@ -163,6 +161,7 @@ class TestCrossRefClientServices:
     @patch("app.services.crossref_client.redis_client")
     def test_set_cache_redis(self, mock_redis, client):
         import json
+
         client._set_cache("test-key", {"doi": "10.1234/save"})
         mock_redis.setex.assert_called_once_with(
             "crossref:test-key",
@@ -185,13 +184,15 @@ class TestCrossRefClientServices:
         mock_response.status_code = 200
         mock_response.json.return_value = {
             "message": {
-                "items": [{
-                    "DOI": "10.1234/test",
-                    "title": ["Test Paper"],
-                    "author": [{"given": "John", "family": "Doe"}],
-                    "score": 85.0,
-                    "URL": "https://doi.org/10.1234/test",
-                }]
+                "items": [
+                    {
+                        "DOI": "10.1234/test",
+                        "title": ["Test Paper"],
+                        "author": [{"given": "John", "family": "Doe"}],
+                        "score": 85.0,
+                        "URL": "https://doi.org/10.1234/test",
+                    }
+                ]
             }
         }
         mock_get.return_value = mock_response
@@ -214,9 +215,7 @@ class TestCrossRefClientServices:
     @patch("app.services.crossref_client.requests.get")
     def test_fetch_api_rate_limited_then_succeeds(self, mock_get, client):
         responses = [MagicMock(status_code=429), MagicMock(status_code=200)]
-        responses[1].json.return_value = {
-            "message": {"items": [{"DOI": "10.1234/rl"}]}
-        }
+        responses[1].json.return_value = {"message": {"items": [{"DOI": "10.1234/rl"}]}}
         mock_get.side_effect = responses
         with patch("app.services.crossref_client.time.sleep"):
             result = client._fetch_api("Rate Limited")
@@ -261,7 +260,7 @@ class TestCrossRefClientServices:
 class TestGetCrossRefClient:
     def test_returns_singleton(self):
         from app.services.crossref_client import get_crossref_client
+
         c1 = get_crossref_client()
         c2 = get_crossref_client()
         assert c1 is c2
-

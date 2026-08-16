@@ -20,6 +20,7 @@ _SUSPICIOUS_PATTERNS = [
     re.compile(r"simulated\s+environment", re.IGNORECASE),
 ]
 
+
 def check_prompt_injection(user_input: str) -> None:
     """
     Validates user input against common prompt injection and jailbreak patterns.
@@ -32,8 +33,7 @@ def check_prompt_injection(user_input: str) -> None:
     if len(user_input) > 100000:
         logger.warning("Prompt injection filter triggered: Input too large.")
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Input exceeds maximum allowed length for AI processing."
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Input exceeds maximum allowed length for AI processing."
         )
 
     # 2. Heuristics matching
@@ -42,8 +42,9 @@ def check_prompt_injection(user_input: str) -> None:
             logger.warning(f"Prompt injection filter triggered: Matched pattern {pattern.pattern}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Your input triggered the AI security filter and cannot be processed."
+                detail="Your input triggered the AI security filter and cannot be processed.",
             )
+
 
 def safe_prompt(user_input: str) -> str:
     """

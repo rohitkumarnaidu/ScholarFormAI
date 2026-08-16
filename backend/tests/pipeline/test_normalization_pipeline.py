@@ -14,25 +14,34 @@ def _b(text: str, index: int, bid: str = None, bold: bool = False, font_size: fl
     from app.models.block import TextStyle
 
     return Block(
-        block_id=bid or f"b{index}", text=text, index=index,
+        block_id=bid or f"b{index}",
+        text=text,
+        index=index,
         block_type=BlockType.UNKNOWN,
         style=TextStyle(bold=bold, font_size=font_size),
     )
 
+
 def _body(text: str, index: int, bid: str = None):
     from app.models import Block, BlockType
+
     return Block(
-        block_id=bid or f"b{index}", text=text, index=index,
+        block_id=bid or f"b{index}",
+        text=text,
+        index=index,
         block_type=BlockType.BODY,
     )
+
 
 @pytest.fixture
 def normalizer():
     return Normalizer()
 
+
 class TestNormalizerProcess:
     def test_normalize_blocks_basic(self, normalizer):
         from app.models import DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(
             document_id="doc1",
             blocks=[_b("Hello \u2014 world", 1)],
@@ -44,6 +53,7 @@ class TestNormalizerProcess:
 
     def test_normalize_metadata_title(self, normalizer):
         from app.models import DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(title="\u201cQuoted Title\u201d"),
@@ -53,6 +63,7 @@ class TestNormalizerProcess:
 
     def test_normalize_metadata_authors(self, normalizer):
         from app.models import DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(authors=["  Smith, J.  ", ""]),
@@ -63,6 +74,7 @@ class TestNormalizerProcess:
 
     def test_normalize_metadata_abstract(self, normalizer):
         from app.models import DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(abstract="  This   is   abstract.  "),
@@ -72,6 +84,7 @@ class TestNormalizerProcess:
 
     def test_normalize_metadata_keywords(self, normalizer):
         from app.models import DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(keywords=["  ML  ", ""]),
@@ -82,6 +95,7 @@ class TestNormalizerProcess:
 
     def test_normalize_metadata_journal(self, normalizer):
         from app.models import DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(journal="  IEEE Trans.  "),
@@ -91,6 +105,7 @@ class TestNormalizerProcess:
 
     def test_normalize_metadata_corresponding_author(self, normalizer):
         from app.models import DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(corresponding_author="  Smith  "),
@@ -100,6 +115,7 @@ class TestNormalizerProcess:
 
     def test_normalize_metadata_email(self, normalizer):
         from app.models import DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(email="  a@b.com  "),
@@ -107,9 +123,11 @@ class TestNormalizerProcess:
         result = normalizer.process(doc)
         assert result.metadata.email == "a@b.com"
 
+
 class TestNormalizerSplitLogic:
     def test_abstract_split(self, normalizer):
         from app.models import PipelineDocument
+
         doc = PipelineDocument(
             document_id="doc1",
             blocks=[_b("AbstractThis paper presents...", 1)],
@@ -120,6 +138,7 @@ class TestNormalizerSplitLogic:
 
     def test_numbered_heading_split(self, normalizer):
         from app.models import PipelineDocument
+
         doc = PipelineDocument(
             document_id="doc1",
             blocks=[_b("1 IntroductionScientific research is important...", 1)],
@@ -130,6 +149,7 @@ class TestNormalizerSplitLogic:
 
     def test_numbered_heading_no_split_short_body(self, normalizer):
         from app.models import PipelineDocument
+
         doc = PipelineDocument(
             document_id="doc1",
             blocks=[_b("1 IntroductionHi", 1)],
@@ -139,6 +159,7 @@ class TestNormalizerSplitLogic:
 
     def test_keyword_split(self, normalizer):
         from app.models import PipelineDocument
+
         doc = PipelineDocument(
             document_id="doc1",
             blocks=[_b("IntroductionThis research explores machine learning methods...", 1)],
@@ -149,6 +170,7 @@ class TestNormalizerSplitLogic:
 
     def test_no_split_on_figure_block(self, normalizer):
         from app.models import PipelineDocument
+
         doc = PipelineDocument(
             document_id="doc1",
             blocks=[_b("Figure 1. Results", 1, bid="f1")],
@@ -156,6 +178,7 @@ class TestNormalizerSplitLogic:
         doc.blocks[0].metadata["has_figure"] = True
         result = normalizer.process(doc)
         assert len(result.blocks) == 1
+
 
 class TestNormalizerTextRepair:
     def test_repair_ethodology(self, normalizer):
@@ -176,12 +199,18 @@ class TestNormalizerTextRepair:
     def test_repair_no_change(self, normalizer):
         assert normalizer._repair_common_corruptions("Normal text") == "Normal text"
 
+
 class TestNormalizerTables:
     def test_normalize_table_cells(self, normalizer):
         from app.models import PipelineDocument, Table
+
         cell = TableCell(text="  Hello  \nworld  ", row=0, col=0)
         table = Table(
-            table_id="t1", num_rows=1, num_cols=1, index=1, block_index=0,
+            table_id="t1",
+            num_rows=1,
+            num_cols=1,
+            index=1,
+            block_index=0,
             cells=[cell],
             rows=[["  Hello  \nworld  "]],
         )
@@ -192,17 +221,24 @@ class TestNormalizerTables:
 
     def test_normalize_table_caption(self, normalizer):
         from app.models import PipelineDocument, Table
+
         table = Table(
-            table_id="t1", num_rows=1, num_cols=1, index=1, block_index=0,
+            table_id="t1",
+            num_rows=1,
+            num_cols=1,
+            index=1,
+            block_index=0,
             caption_text="  Table caption  ",
         )
         doc = PipelineDocument(document_id="doc1", tables=[table])
         result = normalizer.process(doc)
         assert result.tables[0].caption_text == "Table caption"
 
+
 class TestNormalizerBlockSplittingMultiLine:
     def test_consecutive_heading_merge(self, normalizer):
         from app.models import PipelineDocument
+
         blocks = [
             _b("Introduction", 1, bold=True, font_size=14.0),
             _b("Background", 2, bold=True, font_size=14.0),
@@ -214,6 +250,7 @@ class TestNormalizerBlockSplittingMultiLine:
 
     def test_duplicate_blocks_removed(self, normalizer):
         from app.models import PipelineDocument
+
         blocks = [
             _b("Same text", 1),
             _b("Same text", 2),
@@ -226,15 +263,18 @@ class TestNormalizerBlockSplittingMultiLine:
     def test_duplicate_blocks_not_identical_style(self, normalizer):
         from app.models import Block, BlockType, PipelineDocument
         from app.models.block import TextStyle
+
         b1 = Block(block_id="b1", text="Intro", index=1, block_type=BlockType.UNKNOWN, style=TextStyle(bold=True))
         b2 = Block(block_id="b2", text="Intro", index=2, block_type=BlockType.UNKNOWN, style=TextStyle(bold=False))
         doc = PipelineDocument(document_id="doc1", blocks=[b1, b2])
         result = normalizer.process(doc)
         assert len(result.blocks) == 2
 
+
 class TestNormalizerEmptyOrphanRemoval:
     def test_empty_body_block_removed(self, normalizer):
         from app.models import PipelineDocument
+
         blocks = [_body("", 1), _body("Content", 2)]
         PipelineDocument(document_id="doc1", blocks=blocks)
         result = normalizer._sanitize_empty_orphan_blocks(blocks)
@@ -265,9 +305,11 @@ class TestNormalizerEmptyOrphanRemoval:
 
     def test_empty_non_body_preserved(self, normalizer):
         from app.models import Block, BlockType
+
         block = Block(block_id="b1", text="", index=1, block_type=BlockType.HEADING_1)
         result = normalizer._sanitize_empty_orphan_blocks([block])
         assert len(result) == 1
+
 
 class TestNormalizerMedianFont:
     def test_median_font_with_blocks(self, normalizer):
@@ -287,10 +329,12 @@ class TestNormalizerMedianFont:
         median = normalizer._calculate_median_font_size(blocks)
         assert median == 12.0
 
+
 class TestNormalizerConvenience:
     def test_normalize_document_convenience(self, normalizer):
         from app.models import DocumentMetadata, PipelineDocument
         from app.pipeline.normalization.normalizer import normalize_document
+
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(title="  Test  "),

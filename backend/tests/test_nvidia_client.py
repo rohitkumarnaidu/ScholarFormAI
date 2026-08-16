@@ -10,6 +10,7 @@ class TestNvidiaClient:
         with patch("app.services.nvidia_client.os.getenv", return_value=None):
             with patch("app.services.nvidia_client.settings.NVIDIA_API_KEY", ""):
                 from app.services.nvidia_client import NvidiaClient
+
                 client = NvidiaClient()
                 assert client.api_key == ""
 
@@ -18,11 +19,13 @@ class TestNvidiaClient:
             with patch("app.services.nvidia_client.LITELLM_AVAILABLE", False):
                 with patch("app.services.nvidia_client._OPENAI_AVAILABLE", False):
                     from app.services.nvidia_client import NvidiaClient
+
                     client = NvidiaClient()
                     assert client.api_key == "sk-test"
 
     def test_chat_no_key_returns_empty(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.api_key = ""
         client.llama_70b = "meta/llama-3.3-70b-instruct"
@@ -32,6 +35,7 @@ class TestNvidiaClient:
 
     def test_chat_direct_client_success(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.api_key = "sk-test"
         client.llama_70b = "meta/llama-3.3-70b-instruct"
@@ -46,6 +50,7 @@ class TestNvidiaClient:
 
     def test_chat_direct_client_empty_choices(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.api_key = "sk-test"
         client.llama_70b = "meta/llama-3.3-70b-instruct"
@@ -58,6 +63,7 @@ class TestNvidiaClient:
 
     def test_analyze_document_structure(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.api_key = "sk-test"
         client.llama_70b = "meta/llama-3.3-70b-instruct"
@@ -69,6 +75,7 @@ class TestNvidiaClient:
 
     def test_analyze_document_structure_empty_response(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.api_key = "sk-test"
         client.llama_70b = "meta/llama-3.3-70b-instruct"
@@ -79,6 +86,7 @@ class TestNvidiaClient:
 
     def test_validate_template_compliance(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.api_key = "sk-test"
         client.llama_70b = "meta/llama-3.3-70b-instruct"
@@ -89,6 +97,7 @@ class TestNvidiaClient:
 
     def test_validate_template_compliance_not_compliant(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.api_key = "sk-test"
         client.llama_70b = "meta/llama-3.3-70b-instruct"
@@ -99,6 +108,7 @@ class TestNvidiaClient:
 
     def test_get_nvidia_client(self):
         from app.services.nvidia_client import get_nvidia_client
+
         with patch("app.services.nvidia_client.NvidiaClient") as mock_cls:
             mock_cls.return_value = MagicMock()
             client = get_nvidia_client()
@@ -109,6 +119,7 @@ class TestNvidiaClient:
             with patch("app.services.nvidia_client.LITELLM_AVAILABLE", True):
                 with patch("app.services.nvidia_client._llm_generate", return_value="litellm ok"):
                     from app.services.nvidia_client import NvidiaClient
+
                     client = NvidiaClient.__new__(NvidiaClient)
                     client.api_key = "key"
                     client.llama_70b = "meta/llama-3.3-70b-instruct"
@@ -121,6 +132,7 @@ class TestNvidiaClient:
             with patch("app.services.nvidia_client.LITELLM_AVAILABLE", True):
                 with patch("app.services.nvidia_client._llm_generate", side_effect=Exception("fail")):
                     from app.services.nvidia_client import NvidiaClient
+
                     client = NvidiaClient.__new__(NvidiaClient)
                     client.api_key = "key"
                     client.llama_70b = "meta/llama-3.3-70b-instruct"
@@ -134,6 +146,7 @@ class TestNvidiaClient:
 
     def test_chat_no_client_available(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.api_key = "key"
         client.llama_70b = "meta/llama-3.3-70b-instruct"
@@ -145,6 +158,7 @@ class TestNvidiaClient:
 
     def test_chat_direct_client_raises(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.api_key = "key"
         client.llama_70b = "meta/llama-3.3-70b-instruct"
@@ -156,6 +170,7 @@ class TestNvidiaClient:
 
     def test_validate_compliance_ambiguous(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.api_key = "sk-test"
         client.llama_70b = "meta/llama-3.3-70b-instruct"
@@ -166,6 +181,7 @@ class TestNvidiaClient:
 
     def test_chat_clamps_temperature(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.api_key = "key"
         client.llama_70b = "meta/llama-3.3-70b-instruct"
@@ -181,6 +197,7 @@ class TestNvidiaClient:
 
     def test_chat_with_usage_logging(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.api_key = "key"
         client.llama_70b = "meta/llama-3.3-70b-instruct"
@@ -199,6 +216,7 @@ class TestNvidiaClient:
 
     def test_chat_vision_model(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.api_key = "key"
         client.llama_70b = "meta/llama-3.3-70b-instruct"
@@ -213,6 +231,7 @@ class TestNvidiaClient:
 
     def test_analyze_figure_success(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.chat = MagicMock(return_value="figure shows a sigmoid curve")
         mock_file = MagicMock()
@@ -224,6 +243,7 @@ class TestNvidiaClient:
 
     def test_analyze_figure_empty_response_uses_caption(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.chat = MagicMock(return_value="")
         mock_file = MagicMock()
@@ -235,6 +255,7 @@ class TestNvidiaClient:
 
     def test_analyze_figure_exception_returns_caption(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.chat = MagicMock(side_effect=Exception("vision fail"))
         mock_file = MagicMock()
@@ -245,6 +266,7 @@ class TestNvidiaClient:
 
     def test_analyze_figure_no_caption(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.chat = MagicMock(side_effect=Exception("vision fail"))
         mock_file = MagicMock()
@@ -255,6 +277,7 @@ class TestNvidiaClient:
 
     def test_analyze_figure_image_too_large(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.chat = MagicMock(return_value="analysis")
         mock_img = MagicMock()
@@ -268,6 +291,7 @@ class TestNvidiaClient:
 
     def test_analyze_figure_rgba_to_rgb(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.chat = MagicMock(return_value="analysis")
         mock_img = MagicMock()
@@ -281,6 +305,7 @@ class TestNvidiaClient:
 
     def test_chat_direct_with_vision_model_removes_nvidia_prefix(self):
         from app.services.nvidia_client import NvidiaClient
+
         client = NvidiaClient.__new__(NvidiaClient)
         client.api_key = "key"
         client.llama_70b = "meta/llama-3.3-70b-instruct"

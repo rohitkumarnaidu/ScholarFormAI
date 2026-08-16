@@ -231,10 +231,13 @@ class PipelineOrchestrator:
             try:
                 self._update_status(job_id, "SYSTEM", "FAILED", "Interrupted by server shutdown", progress=0)
                 if sb:
-                    DocumentRepository().update_sync(job_id, {
+                    DocumentRepository().update_sync(
+                        job_id,
+                        {
                             "status": "FAILED",
                             "error_message": "Interrupted by server shutdown",
-                        })
+                        },
+                    )
             except Exception:
                 pass  # intentionally ignored
             return {"status": "cancelled", "message": "Interrupted by server shutdown"}
@@ -259,19 +262,25 @@ class PipelineOrchestrator:
                     pass  # intentionally ignored
                 self._update_status(job_id, "PERSISTENCE", "COMPLETED", "Completed with warnings.", progress=100)
                 if sb:
-                    DocumentRepository().update_sync(job_id, {
+                    DocumentRepository().update_sync(
+                        job_id,
+                        {
                             "status": "COMPLETED_WITH_WARNINGS",
                             "error_message": f"Validation Warning: {error_msg}",
                             "output_path": output_path,
-                        })
+                        },
+                    )
                 response["status"] = "success"
             else:
                 self._update_status(job_id, "PERSISTENCE", "FAILED", error_msg, progress=0)
                 if sb:
-                    DocumentRepository().update_sync(job_id, {
+                    DocumentRepository().update_sync(
+                        job_id,
+                        {
                             "status": "FAILED",
                             "error_message": error_msg,
-                        })
+                        },
+                    )
                 response["status"] = "error"
                 response["message"] = f"Pipeline failed: {error_msg}"
             logger.error("Pipeline Error Traceback: %s", traceback.format_exc())
@@ -349,7 +358,8 @@ class PipelineOrchestrator:
             existing = DocumentResultRepository()._table().select("*").eq("document_id", job_id).execute()
             if existing.data:
                 versions = (
-                    DocumentVersionRepository()._table()
+                    DocumentVersionRepository()
+                    ._table()
                     .select("version_number")
                     .eq("document_id", job_id)
                     .order("version_number", desc=True)
@@ -366,17 +376,17 @@ class PipelineOrchestrator:
                         next_version = f"v_{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}"
                 else:
                     next_version = "v1"
-                DocumentVersionRepository().insert_sync({
+                DocumentVersionRepository().insert_sync(
+                    {
                         "document_id": job_id,
                         "version_number": next_version,
                         "edited_structured_data": existing.data[0]["structured_data"],
                         "output_path": source_output_path,
                         "created_at": "now()",
-                    })
+                    }
+                )
                 DocumentResultRepository().upsert_sync(
-                    job_id,
-                    structured_data=edited_structured_data,
-                    validation_results=validation_results
+                    job_id, structured_data=edited_structured_data, validation_results=validation_results
                 )
             else:
                 from app.pipeline.orchestrator import AIExplainer
@@ -393,10 +403,13 @@ class PipelineOrchestrator:
                     }
                 )
 
-            DocumentRepository().update_sync(job_id, {
+            DocumentRepository().update_sync(
+                job_id,
+                {
                     "output_path": output_path,
                     "updated_at": "now()",
-                })
+                },
+            )
 
             self._update_status(job_id, "PERSISTENCE", "COMPLETED", "Edit re-formatted.", progress=100)
             return {"status": "success", "output_path": output_path}
@@ -463,12 +476,8 @@ class PipelineOrchestrator:
             _run_with_retry(
                 "upsert",
                 lambda: ProcessingStatusRepository().upsert_sync(
-                    doc_id=document_id,
-                    phase=phase,
-                    status=status,
-                    progress_percentage=progress,
-                    message=message
-                )
+                    doc_id=document_id, phase=phase, status=status, progress_percentage=progress, message=message
+                ),
             )
 
             doc_data = {"current_stage": phase, "updated_at": "now()"}
@@ -481,9 +490,7 @@ class PipelineOrchestrator:
                 doc_data["status"] = status
             if progress is not None:
                 doc_data["progress"] = progress
-            _run_with_retry(
-                "doc_update", lambda: DocumentRepository().update_sync(document_id, doc_data)
-            )
+            _run_with_retry("doc_update", lambda: DocumentRepository().update_sync(document_id, doc_data))
             emit_event(
                 document_id,
                 "status_update",
@@ -529,7 +536,11 @@ class PipelineOrchestrator:
                 "updated_at": "now()",
             }
             if existing.data:
-                DocumentResultRepository().upsert_sync(job_id, structured_data=payload.get("structured_data"), validation_results=payload.get("validation_results"))
+                DocumentResultRepository().upsert_sync(
+                    job_id,
+                    structured_data=payload.get("structured_data"),
+                    validation_results=payload.get("validation_results"),
+                )
             else:
                 payload["created_at"] = "now()"
                 DocumentResultRepository().insert_sync(payload)

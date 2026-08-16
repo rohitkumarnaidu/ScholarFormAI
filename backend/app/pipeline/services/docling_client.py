@@ -168,7 +168,7 @@ class DoclingClient:
     def _ensure_initialized(self):
         if self._initialized:
             return
-        
+
         self._initialized = True
         docling_converter = _load_docling_converter()
         if docling_converter is None:

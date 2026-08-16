@@ -9,6 +9,7 @@ from unittest.mock import MagicMock, patch
 class TestFigureAnalyzer:
     def test_init_defaults(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
+
         fa = FigureAnalyzer()
         assert fa.min_width == 300
         assert fa.min_height == 300
@@ -16,6 +17,7 @@ class TestFigureAnalyzer:
 
     def test_init_custom(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
+
         fa = FigureAnalyzer(min_width=500, min_height=400, min_dpi=200)
         assert fa.min_width == 500
         assert fa.min_height == 400
@@ -23,12 +25,14 @@ class TestFigureAnalyzer:
 
     def test_downsample_file_not_found(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
+
         fa = FigureAnalyzer()
         with patch("os.path.exists", return_value=False):
             assert fa.downsample_if_needed("/nonexistent.png") is None
 
     def test_downsample_under_max_size(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
+
         fa = FigureAnalyzer()
         with (
             patch("os.path.exists", return_value=True),
@@ -38,6 +42,7 @@ class TestFigureAnalyzer:
 
     def test_downsample_success(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
+
         fa = FigureAnalyzer()
         mock_img = MagicMock()
         mock_img.__enter__.return_value = mock_img
@@ -54,6 +59,7 @@ class TestFigureAnalyzer:
 
     def test_downsample_exception(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
+
         fa = FigureAnalyzer()
         with (
             patch("os.path.exists", return_value=True),
@@ -65,6 +71,7 @@ class TestFigureAnalyzer:
 
     def test_analyze_file_not_found(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
+
         fa = FigureAnalyzer()
         with patch("os.path.exists", return_value=False):
             result = fa.analyze_image("/nonexistent.png")
@@ -72,6 +79,7 @@ class TestFigureAnalyzer:
 
     def test_analyze_success(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
+
         fa = FigureAnalyzer()
         mock_img = MagicMock()
         mock_img.__enter__.return_value = mock_img
@@ -91,6 +99,7 @@ class TestFigureAnalyzer:
 
     def test_analyze_low_resolution(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
+
         fa = FigureAnalyzer(min_width=500, min_height=500)
         mock_img = MagicMock()
         mock_img.__enter__.return_value = mock_img
@@ -108,6 +117,7 @@ class TestFigureAnalyzer:
 
     def test_analyze_low_dpi(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
+
         fa = FigureAnalyzer(min_dpi=300)
         mock_img = MagicMock()
         mock_img.__enter__.return_value = mock_img
@@ -125,6 +135,7 @@ class TestFigureAnalyzer:
 
     def test_analyze_dpi_as_single_value(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
+
         fa = FigureAnalyzer()
         mock_img = MagicMock()
         mock_img.__enter__.return_value = mock_img
@@ -141,6 +152,7 @@ class TestFigureAnalyzer:
 
     def test_analyze_exception(self):
         from app.pipeline.figures.analyzer import FigureAnalyzer
+
         fa = FigureAnalyzer()
         with (
             patch("os.path.exists", return_value=True),

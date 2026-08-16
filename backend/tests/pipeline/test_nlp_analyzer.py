@@ -1,4 +1,3 @@
-
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
@@ -34,6 +33,7 @@ def _block(text="Hello world", **kw) -> Block:
 # ContentAnalyzer — process
 # ===================================================================
 
+
 class TestContentAnalyzerProcess:
     def test_empty_document(self):
         doc = _doc()
@@ -61,7 +61,10 @@ class TestContentAnalyzerProcess:
         assert "caption_quality" in b.metadata.get("ai_hints", {})
 
     def test_readability_for_abstract_body(self):
-        b = _block(text="Background and results are both present in this sufficiently long text", block_type=BlockType.ABSTRACT_BODY)
+        b = _block(
+            text="Background and results are both present in this sufficiently long text",
+            block_type=BlockType.ABSTRACT_BODY,
+        )
         doc = _doc(blocks=[b])
         ContentAnalyzer().process(doc)
         assert "readability" in b.metadata.get("ai_hints", {})
@@ -74,8 +77,7 @@ class TestContentAnalyzerProcess:
         assert "readability" in b.metadata.get("ai_hints", {})
 
     def test_metadata_no_ai_hints_key_added(self):
-        b = Block(block_id="b1", index=0, text="Introduction",
-                  metadata={"existing": "value"})
+        b = Block(block_id="b1", index=0, text="Introduction", metadata={"existing": "value"})
         doc = _doc(blocks=[b])
         ContentAnalyzer().process(doc)
         assert "existing" in b.metadata
@@ -100,6 +102,7 @@ class TestContentAnalyzerProcess:
 # _estimate_section_confidence
 # ===================================================================
 
+
 class TestEstimateSectionConfidence:
     def test_empty_text_returns_none(self):
         b = _block(text="")
@@ -111,9 +114,15 @@ class TestEstimateSectionConfidence:
 
     def test_known_header_returned(self):
         for header, conf in [
-            ("abstract", 0.95), ("introduction", 0.9), ("methods", 0.8),
-            ("methodology", 0.8), ("results", 0.8), ("discussion", 0.8),
-            ("conclusion", 0.8), ("references", 0.95), ("bibliography", 0.95),
+            ("abstract", 0.95),
+            ("introduction", 0.9),
+            ("methods", 0.8),
+            ("methodology", 0.8),
+            ("results", 0.8),
+            ("discussion", 0.8),
+            ("conclusion", 0.8),
+            ("references", 0.95),
+            ("bibliography", 0.95),
         ]:
             b = _block(text=header)
             result = _ca()._estimate_section_confidence(b)
@@ -133,6 +142,7 @@ class TestEstimateSectionConfidence:
 # ===================================================================
 # _is_potential_caption
 # ===================================================================
+
 
 class TestIsPotentialCaption:
     def test_fig_prefix(self):
@@ -159,6 +169,7 @@ class TestIsPotentialCaption:
 # _evaluate_caption_quality
 # ===================================================================
 
+
 class TestEvaluateCaptionQuality:
     def test_short_caption(self):
         result = _ca()._evaluate_caption_quality("Figure 1")
@@ -170,7 +181,8 @@ class TestEvaluateCaptionQuality:
 
     def test_good_caption(self):
         result = _ca()._evaluate_caption_quality(
-            "Figure 1. Experimental results showing significant improvement in accuracy")
+            "Figure 1. Experimental results showing significant improvement in accuracy"
+        )
         assert result == "Good"
 
     def test_vague_word_short_caption(self):
@@ -185,6 +197,7 @@ class TestEvaluateCaptionQuality:
 # ===================================================================
 # _check_readability
 # ===================================================================
+
 
 class TestCheckReadability:
     def test_empty_text(self):
@@ -214,6 +227,7 @@ class TestCheckReadability:
 # methods_detect_abstract
 # ===================================================================
 
+
 class TestMethodsDetectAbstract:
     def test_matches(self):
         text = "Background info about the study and results from the experiment " * 10
@@ -230,6 +244,7 @@ class TestMethodsDetectAbstract:
 # _get_keybert_model
 # ===================================================================
 
+
 class TestGetKeybertModel:
     def test_keybert_not_available_returns_none(self):
         with patch("importlib.util.find_spec", return_value=None):
@@ -240,16 +255,20 @@ class TestGetKeybertModel:
             with patch("app.pipeline.nlp.analyzer._KEYBERT_MODEL", None):
                 # Trigger ImportError during KeyBERT import
                 import builtins
+
                 original_import = builtins.__import__
+
                 def fake_import(name, *args, **kw):
                     if "keybert" in name:
                         raise ImportError("no module")
                     return original_import(name, *args, **kw)
+
                 with patch("builtins.__import__", fake_import):
                     assert _get_keybert_model() is None
 
     def test_keybert_success(self):
         import sys
+
         mock_model = MagicMock()
         fake_keybert = MagicMock()
         fake_keybert.KeyBERT.return_value = mock_model
@@ -261,9 +280,11 @@ class TestGetKeybertModel:
 
     def test_keybert_cached(self):
         import sys
+
         mock_model = MagicMock()
         fake_keybert = MagicMock()
         from app.pipeline.nlp import analyzer as _m
+
         _m._KEYBERT_MODEL = None
         with patch.dict(sys.modules, {"keybert": fake_keybert}):
             with patch("importlib.util.find_spec", return_value=True):
@@ -279,6 +300,7 @@ class TestGetKeybertModel:
 # ===================================================================
 
 ENH_PATH = "app.services.enhancement_manager.enhancement_manager"
+
 
 class TestExtractKeywords:
     def test_empty_text_returns_empty(self):
@@ -390,8 +412,7 @@ class TestExtractKeywords:
             m.profile.enabled = True
             m.profile.keyword_enabled = True
             m.get_keyword_backends.return_value = ["keyllm", "basic"]
-            with patch("app.pipeline.nlp.analyzer._extract_keywords_with_keyllm",
-                       return_value=["kw1", "kw2", "kw3"]):
+            with patch("app.pipeline.nlp.analyzer._extract_keywords_with_keyllm", return_value=["kw1", "kw2", "kw3"]):
                 result = extract_keywords("machine learning text analysis")
                 assert result == ["kw1", "kw2", "kw3"]
 
@@ -400,8 +421,7 @@ class TestExtractKeywords:
             m.profile.enabled = True
             m.profile.keyword_enabled = True
             m.get_keyword_backends.return_value = ["keyllm", "basic"]
-            with patch("app.pipeline.nlp.analyzer._extract_keywords_with_keyllm",
-                       side_effect=Exception("llm crash")):
+            with patch("app.pipeline.nlp.analyzer._extract_keywords_with_keyllm", side_effect=Exception("llm crash")):
                 result = extract_keywords("machine learning text analysis")
                 assert len(result) > 0
 
@@ -423,6 +443,7 @@ class TestExtractKeywords:
 # ===================================================================
 # _parse_keyword_payload
 # ===================================================================
+
 
 class TestParseKeywordPayload:
     def test_empty(self):
@@ -448,7 +469,7 @@ class TestParseKeywordPayload:
         assert result == ["kw1", "kw2"]
 
     def test_bracket_extraction_fallback(self):
-        raw = "Here are the keywords: [\"kw1\", \"kw2\"]"
+        raw = 'Here are the keywords: ["kw1", "kw2"]'
         result = _parse_keyword_payload(raw, 5)
         assert result == ["kw1", "kw2"]
 
@@ -485,35 +506,31 @@ class TestParseKeywordPayload:
 # _extract_keywords_with_keyllm
 # ===================================================================
 
+
 class TestExtractKeywordsWithKeyllm:
     def test_success(self):
-        with patch("app.pipeline.nlp.analyzer.generate_with_fallback",
-                   return_value={"text": '["kw1", "kw2", "kw3"]'}):
+        with patch("app.pipeline.nlp.analyzer.generate_with_fallback", return_value={"text": '["kw1", "kw2", "kw3"]'}):
             result = _extract_keywords_with_keyllm("sample text", 3)
             assert result == ["kw1", "kw2", "kw3"]
 
     def test_none_result(self):
-        with patch("app.pipeline.nlp.analyzer.generate_with_fallback",
-                   return_value=None):
+        with patch("app.pipeline.nlp.analyzer.generate_with_fallback", return_value=None):
             result = _extract_keywords_with_keyllm("sample text", 3)
             assert result == []
 
     def test_empty_text_result(self):
-        with patch("app.pipeline.nlp.analyzer.generate_with_fallback",
-                   return_value={"text": ""}):
+        with patch("app.pipeline.nlp.analyzer.generate_with_fallback", return_value={"text": ""}):
             result = _extract_keywords_with_keyllm("sample text", 3)
             assert result == []
 
     def test_malformed_response(self):
-        with patch("app.pipeline.nlp.analyzer.generate_with_fallback",
-                   return_value={"text": "bad response"}):
+        with patch("app.pipeline.nlp.analyzer.generate_with_fallback", return_value={"text": "bad response"}):
             result = _extract_keywords_with_keyllm("sample text", 3)
             assert result == []
 
     def test_prompt_truncated_to_3500(self):
         long_text = "word " * 5000
-        with patch("app.pipeline.nlp.analyzer.generate_with_fallback",
-                   return_value={"text": '["kw1"]'}) as m:
+        with patch("app.pipeline.nlp.analyzer.generate_with_fallback", return_value={"text": '["kw1"]'}) as m:
             _extract_keywords_with_keyllm(long_text, 3)
             call_arg = m.call_args[0][0]
             user_content = call_arg[1]["content"]

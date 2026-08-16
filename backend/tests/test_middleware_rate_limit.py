@@ -12,6 +12,7 @@ class TestRateLimitInMemory:
             mock_settings.REDIS_ENABLED = False
             mock_settings.UPLOADS_PER_MINUTE = 10
             from app.middleware.rate_limit import RateLimitMiddleware
+
             app = MagicMock()
             mw = RateLimitMiddleware(app, requests_per_minute=60)
             mw._redis_warning_logged = False
@@ -49,6 +50,7 @@ class TestRateLimitRedis:
     async def test_redis_count_disabled(self):
         with patch("app.middleware.rate_limit.REDIS_ENABLED", False):
             from app.middleware.rate_limit import RateLimitMiddleware
+
             mw = RateLimitMiddleware(MagicMock(), requests_per_minute=60)
             count = await mw._redis_count("key")
         assert count is None
@@ -58,6 +60,7 @@ class TestRateLimitRedis:
         with patch("app.middleware.rate_limit.REDIS_ENABLED", True):
             with patch("app.middleware.rate_limit.redis", None):
                 from app.middleware.rate_limit import RateLimitMiddleware
+
                 mw = RateLimitMiddleware(MagicMock(), requests_per_minute=60)
                 count = await mw._redis_count("key")
         assert count is None
@@ -70,6 +73,7 @@ class TestRateLimitRedis:
         with patch("app.middleware.rate_limit.REDIS_ENABLED", True):
             with patch("app.middleware.rate_limit.redis", mock_redis):
                 from app.middleware.rate_limit import RateLimitMiddleware
+
                 mw = RateLimitMiddleware(MagicMock(), requests_per_minute=60)
                 count = await mw._redis_count("ratelimit:general:ip:12345")
         assert count == 1
@@ -80,6 +84,7 @@ class TestRateLimitRedis:
             with patch("app.middleware.rate_limit.redis", MagicMock()) as mock_redis:
                 mock_redis.incr.side_effect = Exception("redis error")
                 from app.middleware.rate_limit import RateLimitMiddleware
+
                 mw = RateLimitMiddleware(MagicMock(), requests_per_minute=60)
                 mw._redis_warning_logged = False
                 count = await mw._redis_count("key")
@@ -93,6 +98,7 @@ class TestRateLimitRedis:
         with patch("app.middleware.rate_limit.REDIS_ENABLED", True):
             with patch("app.middleware.rate_limit.redis", mock_redis):
                 from app.middleware.rate_limit import RateLimitMiddleware
+
                 mw = RateLimitMiddleware(MagicMock(), requests_per_minute=60)
                 count = await mw._redis_count("key")
         assert count == 1
@@ -102,6 +108,7 @@ class TestRateLimitDispatch:
     @pytest.mark.asyncio
     async def test_dispatch_health_path_passes(self):
         from app.middleware.rate_limit import RateLimitMiddleware
+
         mw = RateLimitMiddleware(MagicMock(), requests_per_minute=60)
         mock_request = MagicMock()
         mock_request.url.path = "/health"
@@ -114,6 +121,7 @@ class TestRateLimitDispatch:
     @pytest.mark.asyncio
     async def test_dispatch_under_limit(self):
         from app.middleware.rate_limit import RateLimitMiddleware
+
         mw = RateLimitMiddleware(MagicMock(), requests_per_minute=60)
         mock_request = MagicMock()
         mock_request.url.path = "/api/v1/documents"
@@ -127,6 +135,7 @@ class TestRateLimitDispatch:
     @pytest.mark.asyncio
     async def test_dispatch_over_limit(self):
         from app.middleware.rate_limit import RateLimitMiddleware
+
         mw = RateLimitMiddleware(MagicMock(), requests_per_minute=1)
         mock_request = MagicMock()
         mock_request.url.path = "/api/v1/documents"
@@ -142,6 +151,7 @@ class TestRateLimitDispatch:
     @pytest.mark.asyncio
     async def test_dispatch_upload_with_auth(self):
         from app.middleware.rate_limit import RateLimitMiddleware
+
         mw = RateLimitMiddleware(MagicMock(), requests_per_minute=60)
         mock_request = MagicMock()
         mock_request.url.path = "/api/v1/documents/upload"
@@ -155,6 +165,7 @@ class TestRateLimitDispatch:
     @pytest.mark.asyncio
     async def test_dispatch_upload_over_limit(self):
         from app.middleware.rate_limit import RateLimitMiddleware
+
         mw = RateLimitMiddleware(MagicMock(), requests_per_minute=60)
         mw.uploads_per_minute = 1
         mock_request = MagicMock()
@@ -171,6 +182,7 @@ class TestRateLimitDispatch:
     @pytest.mark.asyncio
     async def test_dispatch_unknown_client(self):
         from app.middleware.rate_limit import RateLimitMiddleware
+
         mw = RateLimitMiddleware(MagicMock(), requests_per_minute=60)
         mock_request = MagicMock()
         mock_request.url.path = "/api/v1/documents"

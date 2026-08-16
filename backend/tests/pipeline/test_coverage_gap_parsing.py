@@ -25,14 +25,15 @@ pytestmark = [pytest.mark.pipeline]
 # pdf_parser.py — gap coverage
 # ══════════════════════════════════════════════════════════════════════════════
 
-class TestPdfParserGaps:
 
+class TestPdfParserGaps:
     # ── _build_ocr_blocks edge cases ────────────────────────────────────────
 
     def test_build_ocr_blocks_single_paragraph(self):
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 blocks = p._build_ocr_blocks("Just one paragraph.", "tesseract")
                 assert len(blocks) == 1
@@ -42,6 +43,7 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 blocks = p._build_ocr_blocks("Line1\nLine2\n\n\n  \nLine3", "tesseract")
                 assert len(blocks) >= 2
@@ -53,6 +55,7 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
         return p
 
@@ -174,6 +177,7 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 # 792 - (792*0.07) = 736.56
                 assert p._is_header_footer([0, 750, 100, 792], [0, 0, 612, 792]) is True
@@ -184,6 +188,7 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 assert p._normalize_margin_text(None) == ""
                 assert p._normalize_margin_text("") == ""
@@ -192,6 +197,7 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 result = p._normalize_margin_text("Page iii of v")
                 assert result == "page of"
@@ -200,6 +206,7 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 result = p._normalize_margin_text("Header Text")
                 assert result == "header text"
@@ -210,6 +217,7 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 assert p._sanitize_cell_text("hello\n\n\nworld") == "hello   world"
                 assert p._sanitize_cell_text("") == ""
@@ -220,6 +228,7 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 assert p._build_table_model([[""]], 1, 100) is not None
 
@@ -227,6 +236,7 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 assert p._build_table_model([], 1, 100) is None
 
@@ -243,6 +253,7 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 page = MagicMock()
                 page.rect = MagicMock(x0=0, y0=0, x1=612, y1=792)
@@ -257,6 +268,7 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 page = MagicMock()
                 page.rect = MagicMock(x0=0, y0=0, x1=612, y1=792)
@@ -271,6 +283,7 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 page = MagicMock()
                 page.rect = MagicMock(x0=0, y0=0, x1=612, y1=792)
@@ -287,13 +300,21 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 page = MagicMock()
                 page.rect = MagicMock(x0=0, y0=0, x1=612, y1=792)
                 page.find_tables.return_value = []
                 page.get_text.return_value = {
                     "blocks": [
-                        {"type": 1, "image": b"imgdata", "ext": "jpg", "width": 100, "height": 200, "bbox": [0, 0, 100, 200]}
+                        {
+                            "type": 1,
+                            "image": b"imgdata",
+                            "ext": "jpg",
+                            "width": 100,
+                            "height": 200,
+                            "bbox": [0, 0, 100, 200],
+                        }
                     ]
                 }
                 page.get_images.return_value = []
@@ -305,14 +326,13 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 page = MagicMock()
                 page.rect = MagicMock(x0=0, y0=0, x1=612, y1=792)
                 page.find_tables.return_value = []
                 page.get_text.return_value = {
-                    "blocks": [
-                        {"type": 0, "lines": [{"spans": [{"text": "text", "size": 11, "flags": 0}]}]}
-                    ]
+                    "blocks": [{"type": 0, "lines": [{"spans": [{"text": "text", "size": 11, "flags": 0}]}]}]
                 }
                 page.get_images.return_value = []
                 pdf_doc = self._make_content_test_pdf_doc(page)
@@ -324,15 +344,12 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 page = MagicMock()
                 page.rect = MagicMock(x0=0, y0=0, x1=612, y1=792)
                 page.find_tables.return_value = []
-                page.get_text.return_value = {
-                    "blocks": [
-                        {"type": 1, "image": "not_bytes", "ext": "png"}
-                    ]
-                }
+                page.get_text.return_value = {"blocks": [{"type": 1, "image": "not_bytes", "ext": "png"}]}
                 page.get_images.return_value = []
                 pdf_doc = self._make_content_test_pdf_doc(page)
                 blocks, figs, tables = p._extract_content(pdf_doc)
@@ -342,6 +359,7 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 page = MagicMock()
                 page.rect = MagicMock(x0=0, y0=0, x1=612, y1=792)
@@ -360,6 +378,7 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 page = MagicMock()
                 page.rect = MagicMock(x0=0, y0=0, x1=612, y1=792)
@@ -378,6 +397,7 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 page = MagicMock()
                 page.rect = MagicMock(x0=0, y0=0, x1=612, y1=792)
@@ -404,12 +424,23 @@ class TestPdfParserGaps:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 p = PdfParser()
                 pages = []
                 text_block = {
                     "type": 0,
                     "bbox": (100, 300, 400, 350),
-                    "lines": [{"spans": [{"text": "Repeated text that is long enough to trigger suppression", "size": 11, "flags": 0}]}],
+                    "lines": [
+                        {
+                            "spans": [
+                                {
+                                    "text": "Repeated text that is long enough to trigger suppression",
+                                    "size": 11,
+                                    "flags": 0,
+                                }
+                            ]
+                        }
+                    ],
                 }
                 for _ in range(2):
                     pg = MagicMock()
@@ -431,16 +462,18 @@ class TestPdfParserGaps:
 # detector.py — gap coverage
 # ══════════════════════════════════════════════════════════════════════════════
 
-class TestDetectorGaps:
 
+class TestDetectorGaps:
     def _make_detector(self):
         with patch("app.pipeline.structure_detection.detector.ContractLoader"):
             from app.pipeline.structure_detection.detector import StructureDetector
+
             return StructureDetector()
 
     def test_detect_structure_convenience(self):
         from app.models import PipelineDocument as Document
         from app.pipeline.structure_detection.detector import detect_structure
+
         doc = Document(document_id="t", blocks=[])
         with patch("app.pipeline.structure_detection.detector.ContractLoader"):
             result = detect_structure(doc)
@@ -450,10 +483,17 @@ class TestDetectorGaps:
         sd = self._make_detector()
         from app.models import DocumentMetadata
         from app.models import PipelineDocument as Document
+
         doc = Document(
             document_id="t",
             blocks=[],
-            metadata=DocumentMetadata(ai_hints={"docling_layout": {"elements": [{"text": "Title", "type": "title", "font_size": 20, "bbox": {"page": 1, "y0": 50}}]}}),
+            metadata=DocumentMetadata(
+                ai_hints={
+                    "docling_layout": {
+                        "elements": [{"text": "Title", "type": "title", "font_size": 20, "bbox": {"page": 1, "y0": 50}}]
+                    }
+                }
+            ),
         )
         sd.process(doc)
         assert "structure_detection" in [s.stage_name for s in doc.processing_history]
@@ -463,6 +503,7 @@ class TestDetectorGaps:
         from app.models import Block, TextStyle
         from app.models import PipelineDocument as Document
         from app.models.pipeline_document import TemplateInfo
+
         block = Block(block_id="b1", index=0, text="1. Introduction", style=TextStyle(bold=True))
         doc = Document(
             document_id="t",
@@ -481,6 +522,7 @@ class TestDetectorGaps:
     def test_detect_structure_with_docling_title_detected(self):
         sd = self._make_detector()
         from app.models import Block, TextStyle
+
         block = Block(block_id="b1", index=0, text="Paper Title", style=TextStyle())
         result = sd._detect_structure_with_docling(
             [block],
@@ -496,6 +538,7 @@ class TestDetectorGaps:
     def test_detect_structure_with_docling_heading_detected(self):
         sd = self._make_detector()
         from app.models import Block, TextStyle
+
         block = Block(block_id="b2", index=100, text="Introduction", style=TextStyle())
         result = sd._detect_structure_with_docling(
             [block],
@@ -511,6 +554,7 @@ class TestDetectorGaps:
     def test_detect_structure_with_docling_token_overlap_match(self):
         sd = self._make_detector()
         from app.models import Block, TextStyle
+
         block = Block(block_id="b3", index=200, text="Background and Related Work", style=TextStyle())
         result = sd._detect_structure_with_docling(
             [block],
@@ -525,6 +569,7 @@ class TestDetectorGaps:
     def test_detect_structure_with_docling_fallback_to_standard(self):
         sd = self._make_detector()
         from app.models import Block, TextStyle
+
         block = Block(block_id="b4", index=300, text="Some random text", style=TextStyle())
         result = sd._detect_structure_with_docling(
             [block],
@@ -536,9 +581,11 @@ class TestDetectorGaps:
         )
         # Elements don't match any block so _detect_heading_candidates fallback runs
         assert len(result) >= 0
+
     def test_detect_heading_candidates_author_affiliation(self):
         sd = self._make_detector()
         from app.models import Block, TextStyle
+
         title_block = Block(block_id="t1", index=0, text="The Paper Title", style=TextStyle())
         author_block = Block(block_id="a1", index=100, text="John A. Doe, Jane B. Smith", style=TextStyle())
         aff_block = Block(block_id="af1", index=200, text="University of Science and Technology", style=TextStyle())
@@ -550,14 +597,15 @@ class TestDetectorGaps:
     def test_detect_heading_candidates_skip_header_footer(self):
         sd = self._make_detector()
         from app.models import Block, TextStyle
-        b = Block(block_id="hf1", index=0, text="Header content", style=TextStyle(),
-                  metadata={"is_header": True})
+
+        b = Block(block_id="hf1", index=0, text="Header content", style=TextStyle(), metadata={"is_header": True})
         result = sd._detect_heading_candidates([b])
         assert result == []
 
     def test_assign_section_names_headers_footers_skipped(self):
         sd = self._make_detector()
         from app.models import Block
+
         h_block = Block(block_id="h1", index=0, text="Header", metadata={"is_header": True})
         sd._assign_section_names([h_block], [])
         assert h_block.section_name is None
@@ -565,8 +613,10 @@ class TestDetectorGaps:
     def test_assign_section_names_with_numbering(self):
         sd = self._make_detector()
         from app.models import Block
-        heading = Block(block_id="hd1", index=0, text="1. Introduction",
-                        metadata={"numbering_info": {"remainder": "Introduction"}})
+
+        heading = Block(
+            block_id="hd1", index=0, text="1. Introduction", metadata={"numbering_info": {"remainder": "Introduction"}}
+        )
         candidates = [{"block": heading, "block_id": "hd1", "level": 1}]
         sd._assign_section_names([heading], candidates)
         assert heading.section_name == "Introduction"
@@ -574,6 +624,7 @@ class TestDetectorGaps:
     def test_assign_section_names_title_level(self):
         sd = self._make_detector()
         from app.models import Block
+
         heading = Block(block_id="h0", index=0, text="The Title")
         candidates = [{"block": heading, "block_id": "h0", "level": 0}]
         sd._assign_section_names([heading], candidates)
@@ -582,6 +633,7 @@ class TestDetectorGaps:
     def test_build_hierarchy_with_parent(self):
         sd = self._make_detector()
         from app.models import Block
+
         l1 = Block(block_id="l1", index=0, text="Intro")
         l2 = Block(block_id="l2", index=100, text="Background")
         candidates = [
@@ -594,6 +646,7 @@ class TestDetectorGaps:
     def test_build_hierarchy_skip_header_footer(self):
         sd = self._make_detector()
         from app.models import Block
+
         hf = Block(block_id="hf", index=0, text="Header", metadata={"is_header": True})
         candidates = [{"block": hf, "block_id": "hf", "level": 1}]
         sd._build_hierarchy([hf], candidates)
@@ -602,6 +655,7 @@ class TestDetectorGaps:
     def test_canonicalize_sections(self):
         sd = self._make_detector()
         from app.models import Block
+
         block = Block(block_id="b", index=0, text="Related Work", section_name="Related Work")
         sd.contract_loader.get_canonical_name.return_value = "Background"
         sd._canonicalize_sections([block], "ieee")
@@ -610,6 +664,7 @@ class TestDetectorGaps:
     def test_canonicalize_sections_fails_gracefully(self):
         sd = self._make_detector()
         from app.models import Block
+
         block = Block(block_id="b", index=0, text="Intro", section_name="Intro")
         sd.contract_loader.get_canonical_name.side_effect = Exception("fail")
         sd._canonicalize_sections([block], "ieee")
@@ -618,6 +673,7 @@ class TestDetectorGaps:
     def test_validate_hierarchy_jump_detected(self):
         sd = self._make_detector()
         from app.models import Block, BlockType
+
         b1 = Block(block_id="b1", index=0, text="L1", level=1)
         b1.block_type = BlockType.HEADING_1
         b2 = Block(block_id="b2", index=100, text="L3", level=3)
@@ -629,6 +685,7 @@ class TestDetectorGaps:
     def test_validate_hierarchy_skip_header_footer(self):
         sd = self._make_detector()
         from app.models import Block, BlockType
+
         hf = Block(block_id="hf", index=0, text="Header", level=1, metadata={"is_header": True})
         hf.block_type = BlockType.HEADING_1
         sd._validate_hierarchy([hf])
@@ -637,6 +694,7 @@ class TestDetectorGaps:
     def test_validate_hierarchy_no_jump(self):
         sd = self._make_detector()
         from app.models import Block, BlockType
+
         b1 = Block(block_id="b1", index=0, text="L1", level=1)
         b1.block_type = BlockType.HEADING_1
         b2 = Block(block_id="b2", index=100, text="L2", level=2)
@@ -647,6 +705,7 @@ class TestDetectorGaps:
     def test_calculate_avg_font_size_with_text(self):
         sd = self._make_detector()
         from app.models import Block, TextStyle
+
         b1 = Block(block_id="b1", index=0, text="hello", style=TextStyle(font_size=12.0))
         b2 = Block(block_id="b2", index=100, text="world", style=TextStyle(font_size=14.0))
         result = sd._calculate_avg_font_size([b1, b2])
@@ -655,6 +714,7 @@ class TestDetectorGaps:
     def test_calculate_avg_font_size_all_empty(self):
         sd = self._make_detector()
         from app.models import Block, TextStyle
+
         b = Block(block_id="b1", index=0, text="", style=TextStyle(font_size=12.0))
         result = sd._calculate_avg_font_size([b])
         assert result is None
@@ -662,6 +722,7 @@ class TestDetectorGaps:
     def test_detect_heading_candidates_empty_text_skipped(self):
         sd = self._make_detector()
         from app.models import Block, TextStyle
+
         b = Block(block_id="b1", index=0, text="   ", style=TextStyle())
         result = sd._detect_heading_candidates([b])
         assert result == []
@@ -669,6 +730,7 @@ class TestDetectorGaps:
     def test_detect_heading_candidates_title_detected(self):
         sd = self._make_detector()
         from app.models import Block, TextStyle
+
         b = Block(block_id="b1", index=0, text="Short Title", style=TextStyle())
         result = sd._detect_heading_candidates([b])
         assert len(result) >= 1
@@ -677,6 +739,7 @@ class TestDetectorGaps:
     def test_process_fallback_from_docling_empty(self):
         sd = self._make_detector()
         from app.models import Block, DocumentMetadata, PipelineDocument, TextStyle
+
         b = Block(block_id="b1", index=0, text="Introduction", style=TextStyle(bold=True))
         doc = PipelineDocument(
             document_id="t",
@@ -692,16 +755,18 @@ class TestDetectorGaps:
 # normalizer.py — gap coverage
 # ══════════════════════════════════════════════════════════════════════════════
 
-class TestNormalizerGaps:
 
+class TestNormalizerGaps:
     def _make_normalizer(self):
         from app.pipeline.normalization.normalizer import Normalizer
+
         return Normalizer()
 
     # ── _sanitize_empty_orphan_blocks ───────────────────────────────────────
 
     def test_sanitize_empty_orphan_removes_body(self):
         from app.models import Block, BlockType
+
         n = self._make_normalizer()
         b1 = Block(block_id="b1", index=0, text="", block_type=BlockType.BODY)
         b2 = Block(block_id="b2", index=100, text="Real content")
@@ -710,6 +775,7 @@ class TestNormalizerGaps:
 
     def test_sanitize_empty_orphan_removes_unknown(self):
         from app.models import Block, BlockType
+
         n = self._make_normalizer()
         b = Block(block_id="b1", index=0, text="", block_type=BlockType.UNKNOWN)
         result = n._sanitize_empty_orphan_blocks([b])
@@ -717,6 +783,7 @@ class TestNormalizerGaps:
 
     def test_sanitize_empty_orphan_preserves_with_figure(self):
         from app.models import Block, BlockType
+
         n = self._make_normalizer()
         b = Block(block_id="b1", index=0, text="", block_type=BlockType.BODY, metadata={"has_figure": True})
         result = n._sanitize_empty_orphan_blocks([b])
@@ -724,6 +791,7 @@ class TestNormalizerGaps:
 
     def test_sanitize_empty_orphan_preserves_with_equation(self):
         from app.models import Block, BlockType
+
         n = self._make_normalizer()
         b = Block(block_id="b1", index=0, text="", block_type=BlockType.BODY, metadata={"has_equation": True})
         result = n._sanitize_empty_orphan_blocks([b])
@@ -731,6 +799,7 @@ class TestNormalizerGaps:
 
     def test_sanitize_empty_orphan_preserves_with_list_level(self):
         from app.models import Block, BlockType
+
         n = self._make_normalizer()
         b = Block(block_id="b1", index=0, text="", block_type=BlockType.BODY, metadata={"list_level": 1})
         result = n._sanitize_empty_orphan_blocks([b])
@@ -738,6 +807,7 @@ class TestNormalizerGaps:
 
     def test_sanitize_empty_orphan_preserves_with_anchor(self):
         from app.models import Block, BlockType
+
         n = self._make_normalizer()
         b = Block(block_id="b1", index=0, text="", block_type=BlockType.BODY, metadata={"anchor": True})
         result = n._sanitize_empty_orphan_blocks([b])
@@ -745,6 +815,7 @@ class TestNormalizerGaps:
 
     def test_sanitize_empty_orphan_preserves_heading_type(self):
         from app.models import Block, BlockType
+
         n = self._make_normalizer()
         b = Block(block_id="b1", index=0, text="", block_type=BlockType.HEADING_1)
         result = n._sanitize_empty_orphan_blocks([b])
@@ -754,6 +825,7 @@ class TestNormalizerGaps:
 
     def test_normalize_metadata_all_fields(self):
         from app.models import DocumentMetadata
+
         n = self._make_normalizer()
         meta = DocumentMetadata(
             title="  Title  ",
@@ -777,6 +849,7 @@ class TestNormalizerGaps:
 
     def test_normalize_metadata_partial(self):
         from app.models import DocumentMetadata
+
         n = self._make_normalizer()
         meta = DocumentMetadata(title=None, authors=[], affiliations=[], keywords=[])
         result = n._normalize_metadata(meta)
@@ -788,6 +861,7 @@ class TestNormalizerGaps:
 
     def test_calculate_median_font_size_some_empty(self):
         from app.models import Block, TextStyle
+
         n = self._make_normalizer()
         b1 = Block(block_id="b1", index=0, text="   ", style=TextStyle(font_size=12.0))
         b2 = Block(block_id="b2", index=100, text="content", style=TextStyle(font_size=14.0))
@@ -796,6 +870,7 @@ class TestNormalizerGaps:
 
     def test_calculate_median_font_size_all_missing(self):
         from app.models import Block, TextStyle
+
         n = self._make_normalizer()
         b = Block(block_id="b1", index=0, text="content", style=TextStyle())
         result = n._calculate_median_font_size([b])
@@ -826,14 +901,20 @@ class TestNormalizerGaps:
 
     def test_normalize_blocks_keyword_split(self):
         from app.models import Block, TextStyle
+
         n = self._make_normalizer()
-        b = Block(block_id="b1", index=0, text="IntroductionThis is the intro text that is long enough to warrant splitting into two blocks because the threshold is 30 chars for keyword splits.",
-                  style=TextStyle())
+        b = Block(
+            block_id="b1",
+            index=0,
+            text="IntroductionThis is the intro text that is long enough to warrant splitting into two blocks because the threshold is 30 chars for keyword splits.",
+            style=TextStyle(),
+        )
         blocks = n._normalize_blocks([b])
         assert len(blocks) >= 2
 
     def test_normalize_blocks_keyword_split_too_short_body(self):
         from app.models import Block, TextStyle
+
         n = self._make_normalizer()
         b = Block(block_id="b1", index=0, text="IntroductionShort.", style=TextStyle())
         blocks = n._normalize_blocks([b])
@@ -841,6 +922,7 @@ class TestNormalizerGaps:
 
     def test_normalize_blocks_abstract_split(self):
         from app.models import Block, TextStyle
+
         n = self._make_normalizer()
         b = Block(block_id="b1", index=0, text="Abstract: This paper describes a novel method.", style=TextStyle())
         blocks = n._normalize_blocks([b])
@@ -850,6 +932,7 @@ class TestNormalizerGaps:
 
     def test_normalize_blocks_figure_block_skips_split(self):
         from app.models import Block, TextStyle
+
         n = self._make_normalizer()
         b = Block(block_id="b1", index=0, text="IntroductionText", style=TextStyle(), metadata={"has_figure": True})
         blocks = n._normalize_blocks([b])
@@ -857,14 +940,17 @@ class TestNormalizerGaps:
 
     def test_normalize_blocks_list_item_skips_numbered_split(self):
         from app.models import Block, TextStyle
+
         n = self._make_normalizer()
-        b = Block(block_id="b1", index=0, text="1. IntroductionSome body text.",
-                  style=TextStyle(), metadata={"list_level": 0})
+        b = Block(
+            block_id="b1", index=0, text="1. IntroductionSome body text.", style=TextStyle(), metadata={"list_level": 0}
+        )
         blocks = n._normalize_blocks([b])
         assert len(blocks) == 1
 
     def test_normalize_blocks_merge_heading_consolidation(self):
         from app.models import Block, TextStyle
+
         n = self._make_normalizer()
         b1 = Block(block_id="b1", index=0, text="Introduction", style=TextStyle(bold=True, font_size=14.0))
         b2 = Block(block_id="b2", index=100, text="And Background", style=TextStyle(bold=True, font_size=13.0))
@@ -874,6 +960,7 @@ class TestNormalizerGaps:
 
     def test_normalize_blocks_no_merge_when_long(self):
         from app.models import Block, TextStyle
+
         n = self._make_normalizer()
         b1 = Block(block_id="b1", index=0, text="A" * 100, style=TextStyle(bold=True, font_size=14.0))
         b2 = Block(block_id="b2", index=100, text="B" * 100, style=TextStyle(bold=True, font_size=13.0))
@@ -882,6 +969,7 @@ class TestNormalizerGaps:
 
     def test_normalize_blocks_no_merge_not_heading(self):
         from app.models import Block, TextStyle
+
         n = self._make_normalizer()
         b1 = Block(block_id="b1", index=0, text="Short", style=TextStyle())
         b2 = Block(block_id="b2", index=100, text="Text", style=TextStyle())
@@ -890,6 +978,7 @@ class TestNormalizerGaps:
 
     def test_normalize_blocks_duplicate_consecutive_filter(self):
         from app.models import Block, TextStyle
+
         n = self._make_normalizer()
         b1 = Block(block_id="b1", index=0, text="Same text", style=TextStyle())
         b2 = Block(block_id="b2", index=100, text="Same text", style=TextStyle())
@@ -899,6 +988,7 @@ class TestNormalizerGaps:
 
     def test_normalize_blocks_empty_after_split_filtered(self):
         from app.models import Block, TextStyle
+
         n = self._make_normalizer()
         b = Block(block_id="b1", index=0, text="   ", style=TextStyle())
         blocks = n._normalize_blocks([b])
@@ -909,6 +999,7 @@ class TestNormalizerGaps:
     def test_normalize_document_convenience(self):
         from app.models import PipelineDocument as Document
         from app.pipeline.normalization.normalizer import normalize_document
+
         doc = Document(document_id="t", blocks=[])
         result = normalize_document(doc)
         assert result.document_id == "t"
@@ -917,11 +1008,20 @@ class TestNormalizerGaps:
         from app.models import Block, Table, TableCell
         from app.models import PipelineDocument as Document
         from app.pipeline.normalization.normalizer import normalize_document
+
         block = Block(block_id="b1", index=0, text="  Hello World  ")
         cell = TableCell(row=0, col=0, text="  Cell  ")
-        table = Table(table_id="t1", index=0, block_index=0, page_number=1,
-                      num_rows=1, num_cols=1, cells=[cell],
-                      data=[["Cell"]], rows=[["Cell"]])
+        table = Table(
+            table_id="t1",
+            index=0,
+            block_index=0,
+            page_number=1,
+            num_rows=1,
+            num_cols=1,
+            cells=[cell],
+            data=[["Cell"]],
+            rows=[["Cell"]],
+        )
         doc = Document(document_id="t", blocks=[block], tables=[table])
         result = normalize_document(doc)
         assert result.blocks[0].text == "Hello World"
@@ -932,6 +1032,7 @@ class TestNormalizerGaps:
     def test_process_duplicate_indices_causes_assertion(self):
         from app.models import Block, PipelineDocument
         from app.pipeline.normalization.normalizer import Normalizer
+
         n = Normalizer()
         b1 = Block(block_id="b1", index=0, text="a")
         b2 = Block(block_id="b2", index=0, text="b")
@@ -942,9 +1043,11 @@ class TestNormalizerGaps:
     def test_process_non_integer_index_in_document(self):
         from app.models import PipelineDocument
         from app.pipeline.normalization.normalizer import Normalizer
+
         n = Normalizer()
         # Directly set the document's blocks to bypass pydantic validation
         doc = PipelineDocument(document_id="t", blocks=[])
+
         # Create a block with a string index to test the isinstance check
         class BadBlock:
             def __init__(self):
@@ -962,6 +1065,7 @@ class TestNormalizerGaps:
                 self.section_name = None
                 self.level = None
                 self.parent_id = None
+
         doc.blocks = [BadBlock()]
         with pytest.raises(AssertionError, match="Non-integer"):
             n.process(doc)
@@ -971,12 +1075,13 @@ class TestNormalizerGaps:
 # base_parser.py — gap coverage
 # ══════════════════════════════════════════════════════════════════════════════
 
-class TestBaseParserGaps:
 
+class TestBaseParserGaps:
     def test_abstract_methods_have_correct_signatures(self):
         import inspect
 
         from app.pipeline.parsing.base_parser import BaseParser
+
         sig_parse = inspect.signature(BaseParser.parse)
         params = list(sig_parse.parameters.keys())
         assert "self" in params
@@ -990,19 +1095,24 @@ class TestBaseParserGaps:
 
     def test_concrete_must_implement_both_methods(self):
         from app.pipeline.parsing.base_parser import BaseParser
+
         class PartialParser(BaseParser):
             def parse(self, file_path, document_id):
                 pass
+
         with pytest.raises(TypeError):
             PartialParser()
 
     def test_supports_format_dispatch(self):
         from app.pipeline.parsing.base_parser import BaseParser
+
         class DispatchParser(BaseParser):
             def parse(self, file_path, document_id):
                 return None
+
             def supports_format(self, file_extension):
                 return file_extension == ".pdf"
+
         p = DispatchParser()
         assert p.supports_format(".pdf") is True
         assert p.supports_format(".docx") is False
@@ -1012,8 +1122,8 @@ class TestBaseParserGaps:
 # ocr_engine.py — gap coverage
 # ══════════════════════════════════════════════════════════════════════════════
 
-class TestOCREngineGaps:
 
+class TestOCREngineGaps:
     def _patch_surya_module(self):
         """Patch surya module imports with create=True since they're in try/except at module level."""
         return [
@@ -1031,6 +1141,7 @@ class TestOCREngineGaps:
 
     def test_detect_text_basic(self):
         from app.pipeline.parsing.ocr_engine import OCREngine
+
         patches = self._patch_surya_module()
         for p in patches:
             p.start()
@@ -1055,6 +1166,7 @@ class TestOCREngineGaps:
 
     def test_detect_text_with_languages(self):
         from app.pipeline.parsing.ocr_engine import OCREngine
+
         patches = self._patch_surya_module()
         for p in patches:
             p.start()
@@ -1072,6 +1184,7 @@ class TestOCREngineGaps:
 
     def test_detect_layout_basic(self):
         from app.pipeline.parsing.ocr_engine import OCREngine
+
         patches = self._patch_surya_module()
         for p in patches:
             p.start()
@@ -1095,14 +1208,17 @@ class TestOCREngineGaps:
 
     def test_detect_layout_no_confidence(self):
         from app.pipeline.parsing.ocr_engine import OCREngine
+
         patches = self._patch_surya_module()
         for p in patches:
             p.start()
         try:
             with patch("app.pipeline.parsing.ocr_engine.SURYA_AVAILABLE", True):
+
                 class FakeRegion:
                     label = "Figure"
                     bbox = [0, 0, 200, 150]
+
                 page_layout = MagicMock()
                 page_layout.bboxes = [FakeRegion()]
                 mock_layout = MagicMock(return_value=[page_layout])
@@ -1116,6 +1232,7 @@ class TestOCREngineGaps:
 
     def test_detect_reading_order_basic(self):
         from app.pipeline.parsing.ocr_engine import OCREngine
+
         patches = self._patch_surya_module()
         for p in patches:
             p.start()
@@ -1138,14 +1255,17 @@ class TestOCREngineGaps:
 
     def test_detect_reading_order_with_default_label(self):
         from app.pipeline.parsing.ocr_engine import OCREngine
+
         patches = self._patch_surya_module()
         for p in patches:
             p.start()
         try:
             with patch("app.pipeline.parsing.ocr_engine.SURYA_AVAILABLE", True):
+
                 class FakeOrderItem:
                     bbox = [0, 0, 50, 20]
                     position = 1
+
                 page_order = MagicMock()
                 page_order.bboxes = [FakeOrderItem()]
                 mock_order = MagicMock(return_value=[page_order])
@@ -1159,6 +1279,7 @@ class TestOCREngineGaps:
 
     def test_is_scanned_pdf_edge_cases(self):
         from app.pipeline.parsing.ocr_engine import OCREngine
+
         patches = self._patch_surya_module()
         for p in patches:
             p.start()
@@ -1175,6 +1296,7 @@ class TestOCREngineGaps:
 
     def test_get_ocr_engine_returns_instance_when_available(self):
         from app.pipeline.parsing.ocr_engine import get_ocr_engine
+
         patches = self._patch_surya_module()
         for p in patches:
             p.start()
@@ -1195,6 +1317,7 @@ class TestOCREngineGaps:
     def test_get_ocr_engine_import_error(self):
         from app.pipeline.parsing import ocr_engine as ocr_mod
         from app.pipeline.parsing.ocr_engine import get_ocr_engine
+
         ocr_mod._ocr_engine = None
         eng = get_ocr_engine()
         assert eng is None
@@ -1202,6 +1325,7 @@ class TestOCREngineGaps:
     def test_ensure_detection_loaded_model_store_has(self):
         """Cache hit: model_store already has surya_det_model."""
         from app.pipeline.parsing.ocr_engine import OCREngine
+
         patches = self._patch_surya_module()
         for p in patches:
             p.start()
@@ -1222,6 +1346,7 @@ class TestOCREngineGaps:
     def test_ensure_detection_loaded_model_store_miss(self):
         """Cache miss: model store doesn't have model, loading fresh."""
         from app.pipeline.parsing.ocr_engine import OCREngine
+
         patches = self._patch_surya_module()
         for p in patches:
             p.start()
@@ -1245,6 +1370,7 @@ class TestOCREngineGaps:
 
     def test_ensure_recognition_loaded_model_store_has(self):
         from app.pipeline.parsing.ocr_engine import OCREngine
+
         patches = self._patch_surya_module()
         for p in patches:
             p.start()
@@ -1264,6 +1390,7 @@ class TestOCREngineGaps:
 
     def test_ensure_recognition_loaded_model_store_miss(self):
         from app.pipeline.parsing.ocr_engine import OCREngine
+
         patches = self._patch_surya_module()
         for p in patches:
             p.start()
@@ -1287,6 +1414,7 @@ class TestOCREngineGaps:
 
     def test_ensure_ordering_loaded_model_store_has(self):
         from app.pipeline.parsing.ocr_engine import OCREngine
+
         patches = self._patch_surya_module()
         for p in patches:
             p.start()
@@ -1306,6 +1434,7 @@ class TestOCREngineGaps:
 
     def test_ensure_ordering_loaded_model_store_miss(self):
         from app.pipeline.parsing.ocr_engine import OCREngine
+
         patches = self._patch_surya_module()
         for p in patches:
             p.start()

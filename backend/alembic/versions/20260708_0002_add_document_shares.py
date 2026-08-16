@@ -4,6 +4,7 @@ Revision ID: 20260708_0002_add_document_shares
 Revises: 20260708_add_performance_indexes
 Create Date: 2026-07-08 00:00:00.000000
 """
+
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
@@ -19,7 +20,12 @@ def upgrade() -> None:
     op.create_table(
         "document_shares",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("document_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("documents.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "document_id",
+            postgresql.UUID(as_uuid=True),
+            sa.ForeignKey("documents.id", ondelete="CASCADE"),
+            nullable=False,
+        ),
         sa.Column("shared_with_user_id", sa.String(), nullable=False),
         sa.Column("permission", sa.String(), nullable=False, server_default="view"),
         sa.Column("shared_by_user_id", sa.String(), nullable=False),
@@ -34,4 +40,5 @@ def upgrade() -> None:
 def downgrade() -> None:
     op.drop_table("document_shares")
 
-__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']
+
+__all__ = ["revision", "down_revision", "branch_labels", "depends_on", "upgrade", "downgrade"]

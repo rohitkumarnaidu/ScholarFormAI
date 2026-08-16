@@ -1,4 +1,3 @@
-
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
@@ -85,7 +84,8 @@ class TestReferenceToCslJson:
             issn="1234-5678",
             url="https://example.org",
             edition="3rd",
-            note="See also ...")
+            note="See also ...",
+        )
         result = _reference_to_csl_json(ref)
 
         assert result["id"] == "r1"
@@ -128,10 +128,7 @@ class TestReferenceToCslJson:
 
     def test_container_precedence_journal_over_conference(self):
         """journal takes priority over conference and book_title."""
-        ref = self._ref(
-            journal="The Jrnl",
-            conference="The Conf",
-            book_title="The Book")
+        ref = self._ref(journal="The Jrnl", conference="The Conf", book_title="The Book")
         result = _reference_to_csl_json(ref)
         assert result["container-title"] == "The Jrnl"
 
@@ -218,9 +215,7 @@ class TestFormatWithCiteproc:
     @patch("app.pipeline.formatting.reference_formatter.CitationStylesBibliography")
     @patch("app.pipeline.formatting.reference_formatter.CiteProcJSON")
     @patch("app.pipeline.formatting.reference_formatter._resolve_csl_path")
-    def test_empty_bib_entries_returns_none(
-        self, m_resolve, m_cpj, m_csb, m_cit, m_ci, fmt
-    ):
+    def test_empty_bib_entries_returns_none(self, m_resolve, m_cpj, m_csb, m_cit, m_ci, fmt):
         """bibliography() returns [] → return None."""
         m_resolve.return_value = "/fake/styles.csl"
         mock_style = MagicMock()
@@ -241,9 +236,7 @@ class TestFormatWithCiteproc:
     @patch("app.pipeline.formatting.reference_formatter.CitationStylesBibliography")
     @patch("app.pipeline.formatting.reference_formatter.CiteProcJSON")
     @patch("app.pipeline.formatting.reference_formatter._resolve_csl_path")
-    def test_empty_rendered_string_returns_none(
-        self, m_resolve, m_cpj, m_csb, m_cit, m_ci, fmt
-    ):
+    def test_empty_rendered_string_returns_none(self, m_resolve, m_cpj, m_csb, m_cit, m_ci, fmt):
         """bib_entries[0] is blank after strip → return None."""
         m_resolve.return_value = "/fake/styles.csl"
         mock_style = MagicMock()
@@ -322,9 +315,10 @@ class TestReferenceFormatterCiteproc:
 
     def test_citeproc_success_returns_citeproc_result(self, fmt):
         """_format_with_citeproc returns string → returned as-is."""
-        with patch.object(
-            fmt, "_format_with_citeproc", return_value="Citeproc OK"
-        ) as m_cp, patch.object(fmt, "_format_legacy") as m_legacy:
+        with (
+            patch.object(fmt, "_format_with_citeproc", return_value="Citeproc OK") as m_cp,
+            patch.object(fmt, "_format_legacy") as m_legacy,
+        ):
             ref = self._ref()
             result = fmt.format_reference(ref, "ieee")
 
@@ -334,11 +328,10 @@ class TestReferenceFormatterCiteproc:
 
     def test_citeproc_none_falls_back_to_legacy(self, fmt):
         """_format_with_citeproc returns None → falls to _format_legacy."""
-        with patch.object(
-            fmt, "_format_with_citeproc", return_value=None
-        ) as m_cp, patch.object(
-            fmt, "_format_legacy", return_value="Legacy OK"
-        ) as m_legacy:
+        with (
+            patch.object(fmt, "_format_with_citeproc", return_value=None) as m_cp,
+            patch.object(fmt, "_format_legacy", return_value="Legacy OK") as m_legacy,
+        ):
             ref = self._ref()
             result = fmt.format_reference(ref, "ieee")
 
@@ -348,11 +341,10 @@ class TestReferenceFormatterCiteproc:
 
     def test_citeproc_exception_falls_back_to_legacy(self, fmt):
         """_format_with_citeproc raises → caught, logs, falls to legacy."""
-        with patch.object(
-            fmt, "_format_with_citeproc", side_effect=ValueError("boom")
-        ) as m_cp, patch.object(
-            fmt, "_format_legacy", return_value="Legacy OK"
-        ) as m_legacy:
+        with (
+            patch.object(fmt, "_format_with_citeproc", side_effect=ValueError("boom")) as m_cp,
+            patch.object(fmt, "_format_legacy", return_value="Legacy OK") as m_legacy,
+        ):
             ref = self._ref()
             result = fmt.format_reference(ref, "ieee")
 
@@ -362,12 +354,14 @@ class TestReferenceFormatterCiteproc:
 
     def test_citeproc_flag_false_skips_citeproc(self, fmt):
         """CITEPROC_AVAILABLE=False → direct to legacy, no citeproc call."""
-        with patch(
-            "app.pipeline.formatting.reference_formatter.CITEPROC_AVAILABLE",
-            False,
-        ), patch.object(fmt, "_format_with_citeproc") as m_cp, patch.object(
-            fmt, "_format_legacy", return_value="Legacy OK"
-        ) as m_legacy:
+        with (
+            patch(
+                "app.pipeline.formatting.reference_formatter.CITEPROC_AVAILABLE",
+                False,
+            ),
+            patch.object(fmt, "_format_with_citeproc") as m_cp,
+            patch.object(fmt, "_format_legacy", return_value="Legacy OK") as m_legacy,
+        ):
             ref = self._ref()
             result = fmt.format_reference(ref, "ieee")
 
@@ -428,25 +422,23 @@ class TestResolveCslPathFile:
 class TestReferenceTypeToCslAll:
     """Map every ReferenceType value to the expected CSL type string."""
 
-    @pytest.mark.parametrize("ref_type,expected", [
-        (ReferenceType.JOURNAL_ARTICLE, "article-journal"),
-        (ReferenceType.CONFERENCE_PAPER, "paper-conference"),
-        (ReferenceType.BOOK, "book"),
-        (ReferenceType.BOOK_CHAPTER, "chapter"),
-        (ReferenceType.THESIS, "thesis"),
-        (ReferenceType.TECHNICAL_REPORT, "report"),
-        (ReferenceType.PATENT, "patent"),
-        (ReferenceType.WEB_PAGE, "webpage"),
-        (ReferenceType.PREPRINT, "article"),
-        (ReferenceType.UNKNOWN, "article"),
-    ])
+    @pytest.mark.parametrize(
+        "ref_type,expected",
+        [
+            (ReferenceType.JOURNAL_ARTICLE, "article-journal"),
+            (ReferenceType.CONFERENCE_PAPER, "paper-conference"),
+            (ReferenceType.BOOK, "book"),
+            (ReferenceType.BOOK_CHAPTER, "chapter"),
+            (ReferenceType.THESIS, "thesis"),
+            (ReferenceType.TECHNICAL_REPORT, "report"),
+            (ReferenceType.PATENT, "patent"),
+            (ReferenceType.WEB_PAGE, "webpage"),
+            (ReferenceType.PREPRINT, "article"),
+            (ReferenceType.UNKNOWN, "article"),
+        ],
+    )
     def test_mapping(self, ref_type, expected):
-        ref = Reference(
-            reference_id="r1",
-            citation_key="k",
-            raw_text="t",
-            index=0,
-            reference_type=ref_type)
+        ref = Reference(reference_id="r1", citation_key="k", raw_text="t", index=0, reference_type=ref_type)
         assert _reference_type_to_csl(ref) == expected
 
 

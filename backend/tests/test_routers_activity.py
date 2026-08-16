@@ -27,20 +27,14 @@ class TestGetRecentActivity:
     @pytest.mark.asyncio
     async def test_default_limit(self, mock_request, mock_user):
         with patch("app.routers.v1.activity.activity_service") as mock_svc:
-            mock_svc.get_recent_activities = AsyncMock(
-                return_value=[{"id": "a1", "activity_type": "upload"}]
-            )
+            mock_svc.get_recent_activities = AsyncMock(return_value=[{"id": "a1", "activity_type": "upload"}])
 
             from app.routers.v1.activity import get_recent_activity
 
-            resp = await get_recent_activity(
-                request=mock_request, limit=20, current_user=mock_user
-            )
+            resp = await get_recent_activity(request=mock_request, limit=20, current_user=mock_user)
 
         assert resp.status_code == 200
-        mock_svc.get_recent_activities.assert_called_once_with(
-            user_id="user-123", limit=20
-        )
+        mock_svc.get_recent_activities.assert_called_once_with(user_id="user-123", limit=20)
 
     @pytest.mark.asyncio
     async def test_custom_limit(self, mock_request, mock_user):
@@ -49,32 +43,22 @@ class TestGetRecentActivity:
 
             from app.routers.v1.activity import get_recent_activity
 
-            resp = await get_recent_activity(
-                request=mock_request, limit=5, current_user=mock_user
-            )
+            resp = await get_recent_activity(request=mock_request, limit=5, current_user=mock_user)
 
         assert resp.status_code == 200
-        mock_svc.get_recent_activities.assert_called_once_with(
-            user_id="user-123", limit=5
-        )
+        mock_svc.get_recent_activities.assert_called_once_with(user_id="user-123", limit=5)
 
     @pytest.mark.asyncio
     async def test_max_limit(self, mock_request, mock_user):
         with patch("app.routers.v1.activity.activity_service") as mock_svc:
-            mock_svc.get_recent_activities = AsyncMock(
-                return_value=[{"id": f"a{i}"} for i in range(100)]
-            )
+            mock_svc.get_recent_activities = AsyncMock(return_value=[{"id": f"a{i}"} for i in range(100)])
 
             from app.routers.v1.activity import get_recent_activity
 
-            resp = await get_recent_activity(
-                request=mock_request, limit=100, current_user=mock_user
-            )
+            resp = await get_recent_activity(request=mock_request, limit=100, current_user=mock_user)
 
         assert resp.status_code == 200
-        mock_svc.get_recent_activities.assert_called_once_with(
-            user_id="user-123", limit=100
-        )
+        mock_svc.get_recent_activities.assert_called_once_with(user_id="user-123", limit=100)
 
     @pytest.mark.asyncio
     async def test_empty_result(self, mock_request, mock_user):
@@ -83,12 +67,11 @@ class TestGetRecentActivity:
 
             from app.routers.v1.activity import get_recent_activity
 
-            resp = await get_recent_activity(
-                request=mock_request, limit=20, current_user=mock_user
-            )
+            resp = await get_recent_activity(request=mock_request, limit=20, current_user=mock_user)
 
         assert resp.status_code == 200
         import json
+
         body = json.loads(resp.body.decode())
         assert body["data"]["total"] == 0
 
@@ -104,12 +87,11 @@ class TestGetRecentActivity:
 
             from app.routers.v1.activity import get_recent_activity
 
-            resp = await get_recent_activity(
-                request=mock_request, limit=20, current_user=mock_user
-            )
+            resp = await get_recent_activity(request=mock_request, limit=20, current_user=mock_user)
 
         assert resp.status_code == 200
         import json
+
         body = json.loads(resp.body.decode())
         assert body["data"]["total"] == 3
 
@@ -124,9 +106,7 @@ class TestGetRecentActivity:
 
             from app.routers.v1.activity import get_recent_activity
 
-            resp = await get_recent_activity(
-                request=mock_request, limit=20, current_user=mock_user
-            )
+            resp = await get_recent_activity(request=mock_request, limit=20, current_user=mock_user)
 
         assert resp.status_code == 503
         body = resp.body.decode()
@@ -135,15 +115,11 @@ class TestGetRecentActivity:
     @pytest.mark.asyncio
     async def test_unauthorized_returns_401(self, mock_request, mock_user):
         with patch("app.routers.v1.activity.activity_service") as mock_svc:
-            mock_svc.get_recent_activities = AsyncMock(
-                side_effect=HTTPException(401, "Unauthorized")
-            )
+            mock_svc.get_recent_activities = AsyncMock(side_effect=HTTPException(401, "Unauthorized"))
 
             from app.routers.v1.activity import get_recent_activity
 
-            resp = await get_recent_activity(
-                request=mock_request, limit=20, current_user=mock_user
-            )
+            resp = await get_recent_activity(request=mock_request, limit=20, current_user=mock_user)
 
         assert resp.status_code == 401
         body = resp.body.decode()
@@ -182,14 +158,10 @@ class TestGetActivitySummary:
 
             from app.routers.v1.activity import get_activity_summary
 
-            resp = await get_activity_summary(
-                request=mock_request, period="7d", current_user=mock_user
-            )
+            resp = await get_activity_summary(request=mock_request, period="7d", current_user=mock_user)
 
         assert resp.status_code == 200
-        mock_svc.get_activity_summary.assert_called_once_with(
-            user_id="user-456", period="7d"
-        )
+        mock_svc.get_activity_summary.assert_called_once_with(user_id="user-456", period="7d")
 
     @pytest.mark.asyncio
     async def test_custom_period_30d(self, mock_request, mock_user):
@@ -205,14 +177,10 @@ class TestGetActivitySummary:
 
             from app.routers.v1.activity import get_activity_summary
 
-            resp = await get_activity_summary(
-                request=mock_request, period="30d", current_user=mock_user
-            )
+            resp = await get_activity_summary(request=mock_request, period="30d", current_user=mock_user)
 
         assert resp.status_code == 200
-        mock_svc.get_activity_summary.assert_called_once_with(
-            user_id="user-456", period="30d"
-        )
+        mock_svc.get_activity_summary.assert_called_once_with(user_id="user-456", period="30d")
 
     @pytest.mark.asyncio
     async def test_custom_period_90d(self, mock_request, mock_user):
@@ -228,14 +196,10 @@ class TestGetActivitySummary:
 
             from app.routers.v1.activity import get_activity_summary
 
-            resp = await get_activity_summary(
-                request=mock_request, period="90d", current_user=mock_user
-            )
+            resp = await get_activity_summary(request=mock_request, period="90d", current_user=mock_user)
 
         assert resp.status_code == 200
-        mock_svc.get_activity_summary.assert_called_once_with(
-            user_id="user-456", period="90d"
-        )
+        mock_svc.get_activity_summary.assert_called_once_with(user_id="user-456", period="90d")
 
     @pytest.mark.asyncio
     async def test_period_all(self, mock_request, mock_user):
@@ -251,14 +215,10 @@ class TestGetActivitySummary:
 
             from app.routers.v1.activity import get_activity_summary
 
-            resp = await get_activity_summary(
-                request=mock_request, period="all", current_user=mock_user
-            )
+            resp = await get_activity_summary(request=mock_request, period="all", current_user=mock_user)
 
         assert resp.status_code == 200
-        mock_svc.get_activity_summary.assert_called_once_with(
-            user_id="user-456", period="all"
-        )
+        mock_svc.get_activity_summary.assert_called_once_with(user_id="user-456", period="all")
 
     @pytest.mark.asyncio
     async def test_empty_activity_breakdown(self, mock_request, mock_user):
@@ -274,12 +234,11 @@ class TestGetActivitySummary:
 
             from app.routers.v1.activity import get_activity_summary
 
-            resp = await get_activity_summary(
-                request=mock_request, period="7d", current_user=mock_user
-            )
+            resp = await get_activity_summary(request=mock_request, period="7d", current_user=mock_user)
 
         assert resp.status_code == 200
         import json
+
         body = json.loads(resp.body.decode())
         assert body["data"]["total_activities"] == 0
         assert body["data"]["most_frequent"] is None
@@ -296,9 +255,7 @@ class TestGetActivitySummary:
 
             from app.routers.v1.activity import get_activity_summary
 
-            resp = await get_activity_summary(
-                request=mock_request, period="7d", current_user=mock_user
-            )
+            resp = await get_activity_summary(request=mock_request, period="7d", current_user=mock_user)
 
         assert resp.status_code == 503
         body = resp.body.decode()
@@ -307,15 +264,11 @@ class TestGetActivitySummary:
     @pytest.mark.asyncio
     async def test_unauthorized_returns_401(self, mock_request, mock_user):
         with patch("app.routers.v1.activity.activity_service") as mock_svc:
-            mock_svc.get_activity_summary = AsyncMock(
-                side_effect=HTTPException(401, "Unauthorized")
-            )
+            mock_svc.get_activity_summary = AsyncMock(side_effect=HTTPException(401, "Unauthorized"))
 
             from app.routers.v1.activity import get_activity_summary
 
-            resp = await get_activity_summary(
-                request=mock_request, period="7d", current_user=mock_user
-            )
+            resp = await get_activity_summary(request=mock_request, period="7d", current_user=mock_user)
 
         assert resp.status_code == 401
         body = resp.body.decode()
@@ -324,15 +277,11 @@ class TestGetActivitySummary:
     @pytest.mark.asyncio
     async def test_unhandled_exception_returns_500(self, mock_request, mock_user):
         with patch("app.routers.v1.activity.activity_service") as mock_svc:
-            mock_svc.get_activity_summary = AsyncMock(
-                side_effect=ValueError("Something unexpected")
-            )
+            mock_svc.get_activity_summary = AsyncMock(side_effect=ValueError("Something unexpected"))
 
             from app.routers.v1.activity import get_activity_summary
 
-            resp = await get_activity_summary(
-                request=mock_request, period="7d", current_user=mock_user
-            )
+            resp = await get_activity_summary(request=mock_request, period="7d", current_user=mock_user)
 
         assert resp.status_code == 500
         body = resp.body.decode()

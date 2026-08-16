@@ -11,6 +11,7 @@ class TestDependencies:
         from fastapi import HTTPException
 
         from app.utils.dependencies import get_current_user
+
         request = MagicMock()
         request.query_params.get.return_value = None
         with pytest.raises(HTTPException) as exc:
@@ -21,6 +22,7 @@ class TestDependencies:
         from fastapi import HTTPException
 
         from app.utils.dependencies import get_current_user
+
         request = MagicMock()
         request.query_params.get.return_value = "some_token"
         with pytest.raises(HTTPException) as exc:
@@ -29,11 +31,15 @@ class TestDependencies:
 
     def test_get_current_user_valid_token(self):
         from app.utils.dependencies import get_current_user
+
         credentials = MagicMock()
         credentials.credentials = "valid_token"
         request = MagicMock()
         request.query_params.get.return_value = None
-        with patch("app.utils.dependencies.AuthService.decode_token", return_value={"email": "test@test.com", "role": "authenticated", "app_metadata": {}}):
+        with patch(
+            "app.utils.dependencies.AuthService.decode_token",
+            return_value={"email": "test@test.com", "role": "authenticated", "app_metadata": {}},
+        ):
             with patch("app.utils.dependencies.AuthService.get_user_id_from_payload", return_value="user_1"):
                 user = get_current_user(request, credentials)
                 assert user.id == "user_1"
@@ -43,6 +49,7 @@ class TestDependencies:
         from fastapi import HTTPException
 
         from app.utils.dependencies import get_current_user
+
         credentials = MagicMock()
         credentials.credentials = "expired"
         request = MagicMock()
@@ -54,22 +61,28 @@ class TestDependencies:
 
     def test_get_optional_user_no_credentials(self):
         from app.utils.dependencies import get_optional_user
+
         request = MagicMock()
         result = get_optional_user(request, None)
         assert result is None
 
     def test_get_optional_user_valid(self):
         from app.utils.dependencies import get_optional_user
+
         credentials = MagicMock()
         credentials.credentials = "valid"
         request = MagicMock()
-        with patch("app.utils.dependencies.AuthService.decode_token", return_value={"email": "a@b.com", "role": "user", "app_metadata": {}}):
+        with patch(
+            "app.utils.dependencies.AuthService.decode_token",
+            return_value={"email": "a@b.com", "role": "user", "app_metadata": {}},
+        ):
             with patch("app.utils.dependencies.AuthService.get_user_id_from_payload", return_value="u1"):
                 user = get_optional_user(request, credentials)
                 assert user is not None
 
     def test_get_optional_user_failure_returns_none(self):
         from app.utils.dependencies import get_optional_user
+
         credentials = MagicMock()
         credentials.credentials = "bad"
         request = MagicMock()
@@ -79,6 +92,7 @@ class TestDependencies:
 
     def test_require_admin_user_admin_role(self):
         from app.utils.dependencies import require_admin_user
+
         user = MagicMock()
         user.role = "admin"
         user.app_metadata = {}
@@ -89,6 +103,7 @@ class TestDependencies:
         from fastapi import HTTPException
 
         from app.utils.dependencies import require_admin_user
+
         user = MagicMock()
         user.role = "user"
         user.app_metadata = {}
@@ -98,6 +113,7 @@ class TestDependencies:
 
     def test_has_admin_scope_via_app_metadata_role(self):
         from app.utils.dependencies import _has_admin_scope
+
         user = MagicMock()
         user.role = "user"
         user.app_metadata = {"role": "admin"}
@@ -105,6 +121,7 @@ class TestDependencies:
 
     def test_has_admin_scope_via_roles_list(self):
         from app.utils.dependencies import _has_admin_scope
+
         user = MagicMock()
         user.role = "user"
         user.app_metadata = {"roles": ["admin", "editor"]}
@@ -112,6 +129,7 @@ class TestDependencies:
 
     def test_has_admin_scope_via_roles_str(self):
         from app.utils.dependencies import _has_admin_scope
+
         user = MagicMock()
         user.role = "user"
         user.app_metadata = {"roles": "admin"}
@@ -119,6 +137,7 @@ class TestDependencies:
 
     def test_has_admin_scope_false(self):
         from app.utils.dependencies import _has_admin_scope
+
         user = MagicMock()
         user.role = "user"
         user.app_metadata = {}
@@ -126,6 +145,7 @@ class TestDependencies:
 
     def test_has_admin_scope_service_role(self):
         from app.utils.dependencies import _has_admin_scope
+
         user = MagicMock()
         user.role = "service_role"
         user.app_metadata = {}
@@ -133,6 +153,7 @@ class TestDependencies:
 
     def test_has_admin_scope_non_dict_metadata(self):
         from app.utils.dependencies import _has_admin_scope
+
         user = MagicMock()
         user.role = "user"
         user.app_metadata = None

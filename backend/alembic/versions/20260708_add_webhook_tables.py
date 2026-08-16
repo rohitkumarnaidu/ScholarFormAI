@@ -4,6 +4,7 @@ Revision ID: 20260708_add_webhook_tables
 Revises: 20260708_add_v2_pagination_index
 Create Date: 2026-07-08 00:00:00.000000
 """
+
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 
@@ -66,4 +67,5 @@ def downgrade() -> None:
     op.drop_index("idx_webhook_subs_user_id", table_name="webhook_subscriptions")
     op.drop_table("webhook_subscriptions")
 
-__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']
+
+__all__ = ["revision", "down_revision", "branch_labels", "depends_on", "upgrade", "downgrade"]

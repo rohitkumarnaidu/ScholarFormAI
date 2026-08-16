@@ -11,6 +11,7 @@ hc._reset_readiness_cache_for_tests()
 @pytest.fixture(autouse=True)
 def reset_caches():
     from app.services import health_checks as hc
+
     hc._reset_readiness_cache_for_tests()
 
 
@@ -98,8 +99,10 @@ class TestServiceUrls:
 
     def test_resolver_exception(self, health_checks):
         hc = health_checks
+
         def raiser():
             raise ValueError("boom")
+
         with patch.object(hc.settings, "get_grobid_urls", raiser):
             urls = hc._service_urls("get_grobid_urls")
         assert urls == []
@@ -126,8 +129,10 @@ class TestServiceHealthPath:
 
     def test_resolver_exception_fallback(self, health_checks):
         hc = health_checks
+
         def raiser(name):
             raise RuntimeError("fail")
+
         with patch.object(hc.settings, "get_service_health_path", raiser):
             assert hc._service_health_path("grobid") == "/"
 
@@ -264,6 +269,7 @@ class TestGetHealthPayload:
     async def test_expired_cache(self, health_checks):
         hc = health_checks
         from time import monotonic
+
         hc._health_cache_payload = {"status": "healthy"}
         hc._health_cache_status_code = 200
         hc._health_cache_expiry = monotonic() - 10
@@ -316,6 +322,7 @@ class TestGetHealthPayload:
 
         async def mock_get(*a, **kw):
             import httpx
+
             raise httpx.RequestError("timeout")
 
         mock_client = MagicMock()
@@ -361,7 +368,9 @@ class TestGetReadinessPayload:
                 with patch.object(hc, "should_enable_scibert", return_value=False):
                     with patch.object(hc.settings, "ENABLE_NOUGAT_PARSER", False):
                         with patch.object(hc, "_service_urls", return_value=["http://mock:8080"]):
-                            with patch.object(hc, "_probe_service_targets", AsyncMock(return_value={"status": "ready"})):
+                            with patch.object(
+                                hc, "_probe_service_targets", AsyncMock(return_value={"status": "ready"})
+                            ):
                                 with patch("app.services.llm_service.check_health", AsyncMock(return_value="ok")):
                                     payload, code = await hc._build_readiness_payload()
         assert "ready" in payload
@@ -376,7 +385,9 @@ class TestGetReadinessPayload:
                 with patch.object(hc, "should_enable_scibert", return_value=False):
                     with patch.object(hc.settings, "ENABLE_NOUGAT_PARSER", False):
                         with patch.object(hc, "_service_urls", return_value=["http://mock:8080"]):
-                            with patch.object(hc, "_probe_service_targets", AsyncMock(return_value={"status": "ready"})):
+                            with patch.object(
+                                hc, "_probe_service_targets", AsyncMock(return_value={"status": "ready"})
+                            ):
                                 with patch("app.services.llm_service.check_health", AsyncMock(return_value="ok")):
                                     payload, code = await hc._build_readiness_payload()
         assert payload["checks"]["grobid"] == "ready"
@@ -390,7 +401,9 @@ class TestGetReadinessPayload:
                 with patch.object(hc, "should_enable_scibert", return_value=False):
                     with patch.object(hc.settings, "ENABLE_NOUGAT_PARSER", False):
                         with patch.object(hc, "_service_urls", return_value=["http://mock:8080"]):
-                            with patch.object(hc, "_probe_service_targets", AsyncMock(return_value={"status": "unavailable"})):
+                            with patch.object(
+                                hc, "_probe_service_targets", AsyncMock(return_value={"status": "unavailable"})
+                            ):
                                 with patch("app.services.llm_service.check_health", AsyncMock(return_value="ok")):
                                     payload, code = await hc._build_readiness_payload()
         assert payload["ready"] is False
@@ -404,7 +417,9 @@ class TestGetReadinessPayload:
                 with patch.object(hc, "should_enable_scibert", return_value=False):
                     with patch.object(hc.settings, "ENABLE_NOUGAT_PARSER", False):
                         with patch.object(hc, "_service_urls", return_value=["http://mock:8080"]):
-                            with patch.object(hc, "_probe_service_targets", AsyncMock(return_value={"status": "ready"})):
+                            with patch.object(
+                                hc, "_probe_service_targets", AsyncMock(return_value={"status": "ready"})
+                            ):
                                 with patch("app.services.llm_service.check_health", AsyncMock(return_value="ok")):
                                     payload, code = await hc._build_readiness_payload()
         assert payload["ready"] is False
@@ -418,7 +433,9 @@ class TestGetReadinessPayload:
                 with patch.object(hc, "should_enable_scibert", return_value=False):
                     with patch.object(hc.settings, "ENABLE_NOUGAT_PARSER", True):
                         with patch.object(hc, "_service_urls", return_value=["http://mock:8080"]):
-                            with patch.object(hc, "_probe_service_targets", AsyncMock(return_value={"status": "ready"})):
+                            with patch.object(
+                                hc, "_probe_service_targets", AsyncMock(return_value={"status": "ready"})
+                            ):
                                 with patch("app.services.llm_service.check_health", AsyncMock(return_value="ok")):
                                     payload, code = await hc._build_readiness_payload()
         assert payload["checks"]["nougat"] == "ready"
@@ -430,8 +447,14 @@ class TestGetReadinessPayload:
             with patch.object(hc.settings, "GROBID_ENABLED", False):
                 with patch.object(hc, "should_enable_scibert", return_value=False):
                     with patch.object(hc.settings, "ENABLE_NOUGAT_PARSER", True):
-                        with patch.object(hc, "_service_urls", side_effect=lambda method: [] if "nougat" in method else ["http://mock:8080"]):
-                            with patch.object(hc, "_probe_service_targets", AsyncMock(return_value={"status": "ready"})):
+                        with patch.object(
+                            hc,
+                            "_service_urls",
+                            side_effect=lambda method: [] if "nougat" in method else ["http://mock:8080"],
+                        ):
+                            with patch.object(
+                                hc, "_probe_service_targets", AsyncMock(return_value={"status": "ready"})
+                            ):
                                 with patch("app.services.llm_service.check_health", AsyncMock(return_value="ok")):
                                     payload, code = await hc._build_readiness_payload()
         assert payload["checks"]["nougat"] == "local_or_unconfigured"
@@ -443,8 +466,16 @@ class TestGetReadinessPayload:
             with patch.object(hc.settings, "GROBID_ENABLED", False):
                 with patch.object(hc, "should_enable_scibert", return_value=True):
                     with patch.object(hc.settings, "ENABLE_NOUGAT_PARSER", False):
-                        with patch.object(hc, "_service_urls", side_effect=lambda method: ["http://scibert:5000"] if "scibert" in method else ["http://mock:8080"]):
-                            with patch.object(hc, "_probe_service_targets", AsyncMock(return_value={"status": "ready"})):
+                        with patch.object(
+                            hc,
+                            "_service_urls",
+                            side_effect=lambda method: (
+                                ["http://scibert:5000"] if "scibert" in method else ["http://mock:8080"]
+                            ),
+                        ):
+                            with patch.object(
+                                hc, "_probe_service_targets", AsyncMock(return_value={"status": "ready"})
+                            ):
                                 with patch("app.services.llm_service.check_health", AsyncMock(return_value="ok")):
                                     payload, code = await hc._build_readiness_payload()
         assert payload["checks"]["ai_models"] == "remote"
@@ -457,9 +488,15 @@ class TestGetReadinessPayload:
             with patch.object(hc.settings, "GROBID_ENABLED", False):
                 with patch.object(hc, "should_enable_scibert", return_value=True):
                     with patch.object(hc.settings, "ENABLE_NOUGAT_PARSER", False):
-                        with patch.object(hc, "_service_urls", side_effect=lambda method: [] if "scibert" in method else ["http://mock:8080"]):
+                        with patch.object(
+                            hc,
+                            "_service_urls",
+                            side_effect=lambda method: [] if "scibert" in method else ["http://mock:8080"],
+                        ):
                             with patch("app.services.model_store.model_store.get_model", return_value="scibert_obj"):
-                                with patch.object(hc, "_probe_service_targets", AsyncMock(return_value={"status": "ready"})):
+                                with patch.object(
+                                    hc, "_probe_service_targets", AsyncMock(return_value={"status": "ready"})
+                                ):
                                     with patch("app.services.llm_service.check_health", AsyncMock(return_value="ok")):
                                         payload, code = await hc._build_readiness_payload()
         assert payload["checks"]["ai_models"] == "loaded"
@@ -471,5 +508,6 @@ def health_checks():
     import importlib
 
     import app.services.health_checks as hc_mod
+
     importlib.reload(hc_mod)
     return hc_mod

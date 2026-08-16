@@ -5,6 +5,7 @@ const mockJob = { id: '123', status: 'COMPLETED', originalFileName: 'test.docx' 
 
 vi.mock('next/navigation', () => ({
     useParams: vi.fn(() => ({ jobId: '123' })),
+    useSearchParams: vi.fn(() => new URLSearchParams()),
 }));
 
 vi.mock('../context/DocumentContext', () => ({

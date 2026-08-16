@@ -5,6 +5,7 @@
 SQL Injection E2E Tests — validates injection patterns through API
 parameter guards, sanitization functions, and combined attacks.
 """
+
 from __future__ import annotations
 
 import pytest
@@ -40,23 +41,28 @@ class TestDocumentServiceIsValidUuid:
     def test_rejects_sql_injection(self, sqli_payload):
         """SQL injection strings must not pass UUID validation."""
         from app.services.document_service import DocumentService
+
         assert DocumentService._is_valid_uuid(sqli_payload) is False
         assert DocumentService._should_query_document_tables(sqli_payload, "get_document") is False
 
     def test_accepts_valid_uuid(self):
         """Valid UUIDs should pass validation."""
         from app.services.document_service import DocumentService
+
         assert DocumentService._is_valid_uuid("550e8400-e29b-41d4-a716-446655440000") is True
-        assert DocumentService._should_query_document_tables(
-            "550e8400-e29b-41d4-a716-446655440000", "get_document"
-        ) is True
+        assert (
+            DocumentService._should_query_document_tables("550e8400-e29b-41d4-a716-446655440000", "get_document")
+            is True
+        )
 
     def test_rejects_empty_string(self):
         from app.services.document_service import DocumentService
+
         assert DocumentService._is_valid_uuid("") is False
 
     def test_rejects_none(self):
         from app.services.document_service import DocumentService
+
         assert DocumentService._is_valid_uuid(None) is False
 
 
@@ -67,6 +73,7 @@ class TestQueryParameterSanitization:
     def test_clean_metadata_rejects_sqli(self, sqli_payload):
         """SQL injection in metadata fields should be sanitized."""
         from app.utils.text_utils import clean_metadata_field
+
         sanitized = clean_metadata_field(sqli_payload)
         assert isinstance(sanitized, str)
 
@@ -74,12 +81,14 @@ class TestQueryParameterSanitization:
     def test_uuid_guard_rejects_sqli(self, sqli_payload):
         """Document ID endpoint should reject SQL injection via UUID guard."""
         from app.services.document_service import DocumentService
+
         assert DocumentService._is_valid_uuid(sqli_payload) is False
 
     @pytest.mark.parametrize("sqli_payload", SQLI_PATTERNS)
     def test_should_not_query_with_sqli(self, sqli_payload):
         """Template filter parameter should not pass SQL injection to backend."""
         from app.services.document_service import DocumentService
+
         assert DocumentService._should_query_document_tables(sqli_payload, "get_document") is False
 
 
@@ -90,6 +99,7 @@ class TestCombinedAttacks:
     def test_is_valid_uuid_rejects_combined(self, combined_payload):
         """Combined path traversal + SQL injection should be rejected by UUID guard."""
         from app.services.document_service import DocumentService
+
         assert DocumentService._is_valid_uuid(combined_payload) is False
         assert DocumentService._should_query_document_tables(combined_payload, "get_document") is False
 
@@ -97,6 +107,7 @@ class TestCombinedAttacks:
     def test_sanitize_rejects_combined(self, combined_payload):
         """Combined attacks in metadata should be sanitized."""
         from app.utils.text_utils import clean_metadata_field
+
         sanitized = clean_metadata_field(combined_payload)
         assert isinstance(sanitized, str)
 
@@ -108,6 +119,7 @@ class TestTemplateFilterSQLInjection:
     def test_list_templates_with_sqli_name(self, sqli_payload):
         """Listing templates with SQL injection in name should be safe."""
         from app.routers.v1.templates import _canonical_template_id, _template_display_name
+
         canonical = _canonical_template_id(sqli_payload)
         assert isinstance(canonical, str)
         display = _template_display_name(canonical)
@@ -117,4 +129,5 @@ class TestTemplateFilterSQLInjection:
     def test_uuid_guard_on_template_id(self, sqli_payload):
         """Template ID with SQL injection should be rejected by UUID guard."""
         from app.services.document_service import DocumentService
+
         assert DocumentService._is_valid_uuid(sqli_payload) is False

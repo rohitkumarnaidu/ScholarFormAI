@@ -18,8 +18,10 @@ import pytest
 sys.modules["app.routers.v1.generator"] = MagicMock()
 sys.modules["app.routers.v1.synthesis"] = MagicMock()
 
+
 def _make_synthesizer(**kwargs):
     from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
     with (
         patch("app.pipeline.synthesis.synthesizer.RedisPubSub") as mock_pubsub_cls,
         patch("app.pipeline.synthesis.synthesizer.get_crossref_client") as mock_crossref_fn,
@@ -61,23 +63,29 @@ def _make_synthesizer(**kwargs):
             "csl_engine": mock_csl,
         }
 
+
 def _make_mock_block(text: str = "", section_name: str | None = None, page_number: int | None = 1):
     from app.models import Block
+
     b = MagicMock(spec=Block)
     b.text = text
     b.section_name = section_name
     b.page_number = page_number
     return b
 
+
 def _make_mock_doc(blocks: list | None = None):
     from app.models import PipelineDocument
+
     doc = MagicMock(spec=PipelineDocument)
     doc.blocks = blocks or []
     return doc
 
+
 OUTLINE = {"title": "Synthesis Report", "sections": [{"title": "Intro", "key_points": ["kp1"]}]}
 SECTIONS = [{"title": "Intro", "content": "Generated content [REF: Smith2020] here."}]
 REFERENCES = ["[1] Smith, J. (2023). A Paper."]
+
 
 class TestRunGaps:
     """Cover uncovered branches in run()."""
@@ -90,15 +98,27 @@ class TestRunGaps:
         out_path = "/tmp/out.docx"
 
         with (
-            patch.object(synth, "_validate_files", new_callable=AsyncMock,
-                         return_value=([{"path": "a.docx", "filename": "a.docx"}], ["Some warning"])),
-            patch.object(synth, "_extract_documents", new_callable=AsyncMock,
-                         return_value=[{"filename": "a.docx", "sections": ["Intro"]}]),
+            patch.object(
+                synth,
+                "_validate_files",
+                new_callable=AsyncMock,
+                return_value=([{"path": "a.docx", "filename": "a.docx"}], ["Some warning"]),
+            ),
+            patch.object(
+                synth,
+                "_extract_documents",
+                new_callable=AsyncMock,
+                return_value=[{"filename": "a.docx", "sections": ["Intro"]}],
+            ),
             patch.object(synth, "_build_chunks", return_value=[]),
             patch.object(synth, "_cross_doc_analysis", new_callable=AsyncMock, return_value={}),
             patch.object(synth, "_generate_outline", new_callable=AsyncMock, return_value=OUTLINE),
             patch.object(synth, "_generate_sections", new_callable=AsyncMock, return_value=SECTIONS),
-            patch.object(synth, "_insert_citations", return_value={"sections": SECTIONS, "references": REFERENCES, "citations": []}),
+            patch.object(
+                synth,
+                "_insert_citations",
+                return_value={"sections": SECTIONS, "references": REFERENCES, "citations": []},
+            ),
             patch.object(synth, "_render_document", return_value=out_path),
         ):
             result = await synth.run("session1", ["a.docx", "b.docx"], "default")
@@ -112,15 +132,27 @@ class TestRunGaps:
         out_path = "/tmp/out.docx"
 
         with (
-            patch.object(synth, "_validate_files", new_callable=AsyncMock,
-                         return_value=([{"path": "a.docx", "filename": "a.docx"}], [])),
-            patch.object(synth, "_extract_documents", new_callable=AsyncMock,
-                         return_value=[{"filename": "a.docx", "sections": []}]),
+            patch.object(
+                synth,
+                "_validate_files",
+                new_callable=AsyncMock,
+                return_value=([{"path": "a.docx", "filename": "a.docx"}], []),
+            ),
+            patch.object(
+                synth,
+                "_extract_documents",
+                new_callable=AsyncMock,
+                return_value=[{"filename": "a.docx", "sections": []}],
+            ),
             patch.object(synth, "_build_chunks", return_value=[]),
             patch.object(synth, "_cross_doc_analysis", new_callable=AsyncMock, return_value={}),
             patch.object(synth, "_generate_outline", new_callable=AsyncMock, return_value=OUTLINE),
             patch.object(synth, "_generate_sections", new_callable=AsyncMock, return_value=SECTIONS),
-            patch.object(synth, "_insert_citations", return_value={"sections": SECTIONS, "references": REFERENCES, "citations": []}),
+            patch.object(
+                synth,
+                "_insert_citations",
+                return_value={"sections": SECTIONS, "references": REFERENCES, "citations": []},
+            ),
             patch.object(synth, "_render_document", return_value=out_path),
         ):
             result = await synth.run("session1", ["a.docx", "b.docx"], "default")
@@ -134,15 +166,27 @@ class TestRunGaps:
         out_path = "/tmp/out.docx"
 
         with (
-            patch.object(synth, "_validate_files", new_callable=AsyncMock,
-                         return_value=([{"path": "a.docx", "filename": "a.docx"}], [])),
-            patch.object(synth, "_extract_documents", new_callable=AsyncMock,
-                         return_value=[{"filename": "a.docx", "sections": ["Intro", "Methods", "Results"]}]),
+            patch.object(
+                synth,
+                "_validate_files",
+                new_callable=AsyncMock,
+                return_value=([{"path": "a.docx", "filename": "a.docx"}], []),
+            ),
+            patch.object(
+                synth,
+                "_extract_documents",
+                new_callable=AsyncMock,
+                return_value=[{"filename": "a.docx", "sections": ["Intro", "Methods", "Results"]}],
+            ),
             patch.object(synth, "_build_chunks", return_value=[]),
             patch.object(synth, "_cross_doc_analysis", new_callable=AsyncMock, return_value={}),
             patch.object(synth, "_generate_outline", new_callable=AsyncMock, return_value=OUTLINE),
             patch.object(synth, "_generate_sections", new_callable=AsyncMock, return_value=SECTIONS),
-            patch.object(synth, "_insert_citations", return_value={"sections": SECTIONS, "references": REFERENCES, "citations": []}),
+            patch.object(
+                synth,
+                "_insert_citations",
+                return_value={"sections": SECTIONS, "references": REFERENCES, "citations": []},
+            ),
             patch.object(synth, "_render_document", return_value=out_path),
         ):
             result = await synth.run("session1", ["a.docx", "b.docx"], "default")
@@ -157,19 +201,32 @@ class TestRunGaps:
         analysis = {"overlaps": ["topic_a"], "gaps": ["missing_data"], "unique_points": {"a.docx": ["point"]}}
 
         with (
-            patch.object(synth, "_validate_files", new_callable=AsyncMock,
-                         return_value=([{"path": "a.docx", "filename": "a.docx"}], [])),
-            patch.object(synth, "_extract_documents", new_callable=AsyncMock,
-                         return_value=[{"filename": "a.docx", "sections": ["Intro"]}]),
+            patch.object(
+                synth,
+                "_validate_files",
+                new_callable=AsyncMock,
+                return_value=([{"path": "a.docx", "filename": "a.docx"}], []),
+            ),
+            patch.object(
+                synth,
+                "_extract_documents",
+                new_callable=AsyncMock,
+                return_value=[{"filename": "a.docx", "sections": ["Intro"]}],
+            ),
             patch.object(synth, "_build_chunks", return_value=[]),
             patch.object(synth, "_cross_doc_analysis", new_callable=AsyncMock, return_value=analysis),
             patch.object(synth, "_generate_outline", new_callable=AsyncMock, return_value=OUTLINE),
             patch.object(synth, "_generate_sections", new_callable=AsyncMock, return_value=SECTIONS),
-            patch.object(synth, "_insert_citations", return_value={"sections": SECTIONS, "references": REFERENCES, "citations": []}),
+            patch.object(
+                synth,
+                "_insert_citations",
+                return_value={"sections": SECTIONS, "references": REFERENCES, "citations": []},
+            ),
             patch.object(synth, "_render_document", return_value=out_path),
         ):
             result = await synth.run("session1", ["a.docx", "b.docx"], "default")
             assert result == out_path
+
 
 class TestInsertCitationsGaps:
     """Cover remaining branches in _insert_citations."""
@@ -255,6 +312,7 @@ class TestInsertCitationsGaps:
         style_arg = deps["csl_engine"].format_references.call_args[1]["style"]
         assert style_arg == "apa"
 
+
 class TestRenderDocumentGaps:
     """Cover remaining branches in _render_document."""
 
@@ -322,6 +380,7 @@ class TestRenderDocumentGaps:
     def test_paragraph_splitting(self, mock_resolve, mock_mkdir, mock_exp_cls, mock_fmt_cls):
         """Section content with double newlines splits into multiple paragraphs."""
         from app.models import BlockType
+
         mock_fmt = MagicMock()
         mock_fmt_cls.return_value = mock_fmt
         mock_exp = MagicMock()
@@ -344,6 +403,7 @@ class TestRenderDocumentGaps:
     def test_empty_para_skipped(self, mock_resolve, mock_mkdir, mock_exp_cls, mock_fmt_cls):
         """Empty paragraphs from split are skipped."""
         from app.models import BlockType
+
         mock_fmt = MagicMock()
         mock_fmt_cls.return_value = mock_fmt
         mock_exp = MagicMock()
@@ -366,6 +426,7 @@ class TestRenderDocumentGaps:
     def test_reference_blocks(self, mock_resolve, mock_mkdir, mock_exp_cls, mock_fmt_cls):
         """Reference section with entries is rendered."""
         from app.models import BlockType
+
         mock_fmt = MagicMock()
         mock_fmt_cls.return_value = mock_fmt
         mock_exp = MagicMock()
@@ -400,6 +461,7 @@ class TestRenderDocumentGaps:
         doc_arg = mock_fmt.process.call_args[0][0]
         assert doc_arg.template.template_name == "apa"
         assert doc_arg.formatting_options["export_formats"] == ["docx"]
+
 
 class TestGenerateSectionsGaps:
     """Cover remaining branches in _generate_sections."""
@@ -439,6 +501,7 @@ class TestGenerateSectionsGaps:
             result = await synth._generate_sections(OUTLINE, "sid")
             assert result[0]["content"] == "Content."
 
+
 class TestCrossDocAnalysisGaps:
     """Cover remaining branches in _cross_doc_analysis."""
 
@@ -463,6 +526,7 @@ class TestCrossDocAnalysisGaps:
             call_args = mock_llm.await_args
             assert call_args is not None
 
+
 class TestStreamChunksGaps:
     """Cover edge cases in _stream_chunks."""
 
@@ -480,6 +544,7 @@ class TestStreamChunksGaps:
         synth, deps = _make_synthesizer()
         await synth._stream_chunks("sid", "evt", "st", 50, "Hello", extra=None)
         deps["pubsub"].publish.assert_awaited_once()
+
 
 class TestUpdateStatusGaps:
     """Cover edge cases in _update_status."""
@@ -509,6 +574,7 @@ class TestUpdateStatusGaps:
         await synth._update_status("sid", "processing", 50, "msg", {})
         deps["pubsub"].publish.assert_awaited_once()
 
+
 class TestEmitEventGaps:
     """Cover edge cases in _emit_event."""
 
@@ -519,16 +585,19 @@ class TestEmitEventGaps:
         await synth._emit_event("sid", "test_event", None, None, None)
         deps["pubsub"].publish.assert_awaited_once()
 
+
 class TestBuildChunksGaps:
     """Cover edge cases in _build_chunks."""
 
     def test_page_number_tracking(self):
         """Page number tracking across blocks."""
         synth, _ = _make_synthesizer()
-        doc = _make_mock_doc(blocks=[
-            _make_mock_block("Text A", "Section", 1),
-            _make_mock_block("Text B", "Section", 2),
-        ])
+        doc = _make_mock_doc(
+            blocks=[
+                _make_mock_block("Text A", "Section", 1),
+                _make_mock_block("Text B", "Section", 2),
+            ]
+        )
         docs = [{"filename": "f.pdf", "doc_obj": doc}]
         chunks = synth._build_chunks(docs)
         assert len(chunks) >= 1
@@ -536,10 +605,12 @@ class TestBuildChunksGaps:
     def test_section_change_with_buffer(self):
         """Section change flushes buffer."""
         synth, _ = _make_synthesizer()
-        doc = _make_mock_doc(blocks=[
-            _make_mock_block("A" * 200, "Section A", 1),
-            _make_mock_block("B" * 200, "Section B", 2),
-        ])
+        doc = _make_mock_doc(
+            blocks=[
+                _make_mock_block("A" * 200, "Section A", 1),
+                _make_mock_block("B" * 200, "Section B", 2),
+            ]
+        )
         docs = [{"filename": "f.pdf", "doc_obj": doc}]
         chunks = synth._build_chunks(docs)
         sections = {c["section"] for c in chunks}
@@ -549,13 +620,16 @@ class TestBuildChunksGaps:
     def test_buffer_exceeds_threshold(self):
         """Buffer > 1000 chars triggers flush."""
         synth, _ = _make_synthesizer()
-        doc = _make_mock_doc(blocks=[
-            _make_mock_block("A" * 600, "Section", 1),
-            _make_mock_block("B" * 600, "Section", 1),
-        ])
+        doc = _make_mock_doc(
+            blocks=[
+                _make_mock_block("A" * 600, "Section", 1),
+                _make_mock_block("B" * 600, "Section", 1),
+            ]
+        )
         docs = [{"filename": "f.pdf", "doc_obj": doc}]
         chunks = synth._build_chunks(docs)
         assert len(chunks) >= 1
+
 
 class TestLlmTextGaps:
     """Cover edge cases in _llm_text."""
@@ -579,6 +653,7 @@ class TestLlmTextGaps:
             await synth._llm_text("sys", "usr msg")
             mock_san.assert_called_once_with("usr msg")
 
+
 class TestLlmJsonGaps:
     """Cover _llm_json: extract_json returns None case."""
 
@@ -590,37 +665,44 @@ class TestLlmJsonGaps:
             result = await synth._llm_json("sys", "usr")
             assert result is None
 
+
 class TestExtractJsonGaps:
     """Cover edge cases in _extract_json."""
 
     def test_code_block_with_language(self):
         from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
         result = MultiDocSynthesizer._extract_json('```json\n{"a": 1}\n```')
         assert result is not None
         assert json.loads(result) == {"a": 1}
 
     def test_code_block_without_language(self):
         from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
         result = MultiDocSynthesizer._extract_json('```\n{"b": 2}\n```')
         assert result is not None
         assert json.loads(result) == {"b": 2}
 
     def test_no_braces(self):
         from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
         result = MultiDocSynthesizer._extract_json("no braces here")
         assert result is None
 
     def test_only_opening_brace(self):
         from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
         result = MultiDocSynthesizer._extract_json('{"key": "value')
         assert result is None
 
     def test_reversed_braces(self):
         from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
         result = MultiDocSynthesizer._extract_json("}invalid{")
         assert result is None
 
     def test_code_block_with_case_variation(self):
         from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
         result = MultiDocSynthesizer._extract_json('```JSON\n{"x": 1}\n```')
         assert json.loads(result) == {"x": 1}

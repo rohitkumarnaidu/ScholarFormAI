@@ -35,6 +35,7 @@ class TestFigureAnalysisStage:
 
     def test_skipped_in_fast_mode(self):
         from app.pipeline.orchestrator import _get_figure_analyzer
+
         analyzer = _get_figure_analyzer()
         assert analyzer is not None
         assert hasattr(analyzer, "analyze_image")
@@ -42,6 +43,7 @@ class TestFigureAnalysisStage:
 
     def test_run_figure_analysis_stage_adds_metadata(self, doc_with_figure):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         orch = PipelineOrchestrator(templates_dir="app/templates")
         result = orch._run_figure_analysis_stage(doc_with_figure)
         hints = result.metadata.ai_hints
@@ -54,10 +56,12 @@ class TestFigureAnalysisStage:
 
     def test_run_figure_analysis_stage_figure_missing_path(self):
         from app.models import PipelineDocument
+
         doc = PipelineDocument(document_id="test", blocks=[])
         doc.figures = [Figure(figure_id="fig_no_path", index=0, export_path=None)]
         doc.metadata.ai_hints = {}
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         orch = PipelineOrchestrator(templates_dir="app/templates")
         result = orch._run_figure_analysis_stage(doc)
         hints = result.metadata.ai_hints
@@ -67,13 +71,16 @@ class TestFigureAnalysisStage:
 
     def test_run_figure_analysis_stage_empty_figures(self):
         from app.models import PipelineDocument
+
         doc = PipelineDocument(document_id="test", blocks=[])
         doc.figures = []
         doc.metadata.ai_hints = {}
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         orch = PipelineOrchestrator(templates_dir="app/templates")
         result = orch._run_figure_analysis_stage(doc)
         assert "figure_analysis" not in (result.metadata.ai_hints or {})
+
 
 class TestFigureRenderer:
     @pytest.fixture
@@ -161,6 +168,9 @@ class TestFigureRenderer:
         doc = MagicMock()
         fig = Figure(figure_id="f1", index=0)
         renderer.render(doc, fig, 1)
-        with_caption_style = [c for c in doc.add_paragraph.call_args_list
-                              if c[1].get("style") == "Caption" or (c[0] and "Caption" in str(c[0]))]
+        with_caption_style = [
+            c
+            for c in doc.add_paragraph.call_args_list
+            if c[1].get("style") == "Caption" or (c[0] and "Caption" in str(c[0]))
+        ]
         assert len(with_caption_style) == 0

@@ -7,6 +7,7 @@ Global Rate Limiting Behavior Tests.
 Tests actual rate limiting behavior through the FastAPI app,
 not just hasattr checks on app.state.
 """
+
 from __future__ import annotations
 
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -49,7 +50,8 @@ def client():
     with (
         patch("app.routers.v1.documents_impl.DocumentService", mock_service),
         patch("app.routers.v1.documents_impl._require_db", return_value=None),
-        patch("app.middleware.rate_limit.redis", mock_redis),TestClient(app) as test_client
+        patch("app.middleware.rate_limit.redis", mock_redis),
+        TestClient(app) as test_client,
     ):
         yield test_client
 
@@ -61,7 +63,9 @@ class TestGlobalRateLimitingBehavior:
 
     def test_health_endpoint_not_rate_limited(self, client):
         """Health endpoint should never be rate limited."""
-        pytest.skip("Health endpoint rate limit exemption requires SlowAPI @limiter.exempt decorator on the route; skipped in test environment with global SlowAPI limiter active.")
+        pytest.skip(
+            "Health endpoint rate limit exemption requires SlowAPI @limiter.exempt decorator on the route; skipped in test environment with global SlowAPI limiter active."
+        )
         for _ in range(200):
             response = client.get("/api/v1/health")
             assert response.status_code == 200
@@ -81,9 +85,7 @@ class TestGlobalRateLimitingBehavior:
         for middleware in _walk_middleware(app.middleware_stack):
             if hasattr(middleware, "request_counts"):
                 ip = "test.client"
-                middleware.request_counts[ip] = [
-                    __import__("time").time()
-                ] * (middleware.requests_per_minute + 1)
+                middleware.request_counts[ip] = [__import__("time").time()] * (middleware.requests_per_minute + 1)
                 break
 
         response = client.get("/api/v1/templates")
@@ -99,9 +101,7 @@ class TestGlobalRateLimitingBehavior:
         for middleware in _walk_middleware(app.middleware_stack):
             if hasattr(middleware, "request_counts"):
                 ip = "test.client.2"
-                middleware.request_counts[ip] = [
-                    __import__("time").time()
-                ] * (middleware.requests_per_minute + 1)
+                middleware.request_counts[ip] = [__import__("time").time()] * (middleware.requests_per_minute + 1)
                 break
 
         response = client.get("/api/v1/templates")

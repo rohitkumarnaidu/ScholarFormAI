@@ -56,12 +56,12 @@ class TransformerPatternDetector:
     def _ensure_initialized(self):
         if self._initialized:
             return
-            
+
         self._initialized = True
         try:
             import torch
             from transformers import AutoModel, AutoTokenizer
-            
+
             logger.info(f"Loading transformer model: {self.model_name}")
             self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)  # nosec
             self.model = AutoModel.from_pretrained(self.model_name).to(self.device)  # nosec

@@ -16,6 +16,7 @@ pytestmark = [pytest.mark.pipeline]
 # DocumentAgent — constructor edge cases
 # ==============================================================================
 
+
 class TestDocumentAgentInit:
     """Constructor edge cases beyond what test_agents_gaps_2 covers."""
 
@@ -32,9 +33,8 @@ class TestDocumentAgentInit:
         mock_create_llm.return_value = mock_llm
         mock_cb = MagicMock()
         from app.pipeline.agents.document_agent import DocumentAgent
-        agent = DocumentAgent(
-            enable_memory=False, enable_streaming=True, streaming_callback=mock_cb
-        )
+
+        agent = DocumentAgent(enable_memory=False, enable_streaming=True, streaming_callback=mock_cb)
         assert agent.streaming_callback is not None
         mock_scb_cls.assert_called_once_with(callback_fn=mock_cb)
 
@@ -42,13 +42,12 @@ class TestDocumentAgentInit:
     @patch("app.pipeline.agents.document_agent.ChatOpenAI")
     @patch("app.pipeline.agents.document_agent.CustomLLMFactory.create_llm")
     @patch("app.pipeline.agents.document_agent.AgentMemory")
-    def test_init_custom_grobid_url(
-        self, mock_mem_cls, mock_create_llm, mock_chat, mock_settings
-    ):
+    def test_init_custom_grobid_url(self, mock_mem_cls, mock_create_llm, mock_chat, mock_settings):
         mock_chat.side_effect = Exception("no key")
         mock_llm = MagicMock()
         mock_create_llm.return_value = mock_llm
         from app.pipeline.agents.document_agent import DocumentAgent
+
         agent = DocumentAgent(grobid_url="http://custom:8070", enable_memory=False)
         tools = agent.tools
         assert len(tools) == 5
@@ -57,49 +56,45 @@ class TestDocumentAgentInit:
     @patch("app.pipeline.agents.document_agent.ChatOpenAI")
     @patch("app.pipeline.agents.document_agent.CustomLLMFactory.create_llm")
     @patch("app.pipeline.agents.document_agent.AgentMemory")
-    def test_init_mock_call_count_path(
-        self, mock_mem_cls, mock_create_llm, mock_chat, mock_settings
-    ):
+    def test_init_mock_call_count_path(self, mock_mem_cls, mock_create_llm, mock_chat, mock_settings):
         mock_create_llm.return_value = MagicMock()
         mock_llm = MagicMock()
         mock_chat.return_value = mock_llm
         mock_chat.call_count = 0
         from app.pipeline.agents.document_agent import DocumentAgent
+
         agent = DocumentAgent(llm_provider="openai", enable_memory=False)
         assert agent.llm is not None
 
     @patch("app.pipeline.agents.document_agent.settings")
     @patch("app.pipeline.agents.document_agent.ChatOpenAI")
     @patch("app.pipeline.agents.document_agent.CustomLLMFactory.create_llm")
-    def test_init_chatopenai_success(
-        self, mock_create_llm, mock_chat, mock_settings
-    ):
+    def test_init_chatopenai_success(self, mock_create_llm, mock_chat, mock_settings):
         mock_llm = MagicMock()
         mock_chat.return_value = mock_llm
         mock_settings.OPENAI_API_KEY = "sk-test"
         from app.pipeline.agents.document_agent import DocumentAgent
+
         agent = DocumentAgent(llm_provider="openai", enable_memory=False)
         assert agent.llm is mock_llm
 
     @patch("app.pipeline.agents.document_agent.settings")
     @patch("app.pipeline.agents.document_agent.ChatOpenAI", None)
     @patch("app.pipeline.agents.document_agent.CustomLLMFactory.create_llm")
-    def test_init_chatopenai_none_factory_fallback(
-        self, mock_create_llm, mock_settings
-    ):
+    def test_init_chatopenai_none_factory_fallback(self, mock_create_llm, mock_settings):
         mock_llm = MagicMock()
         mock_create_llm.return_value = mock_llm
         from app.pipeline.agents.document_agent import DocumentAgent
+
         agent = DocumentAgent(llm_provider="openai", enable_memory=False)
         assert agent.llm is mock_llm
-        mock_create_llm.assert_called_once_with(
-            provider="openai", model="gpt-4", temperature=0.0
-        )
+        mock_create_llm.assert_called_once_with(provider="openai", model="gpt-4", temperature=0.0)
 
 
 # ==============================================================================
 # DocumentAgent._initialize_executor
 # ==============================================================================
+
 
 class TestInitializeExecutor:
     """Paths through _initialize_executor."""
@@ -107,6 +102,7 @@ class TestInitializeExecutor:
     @patch("app.pipeline.agents.document_agent.settings")
     def test_init_with_mocked_constructor(self, mock_settings):
         from app.pipeline.agents.document_agent import DocumentAgent
+
         agent = DocumentAgent.__new__(DocumentAgent)
         agent.llm = MagicMock()
         agent.tools = [MagicMock() for _ in range(3)]
@@ -126,6 +122,7 @@ class TestInitializeExecutor:
     def test_init_python_314_path(self, mock_settings):
         with patch("app.pipeline.agents.document_agent.sys.version_info", (3, 14)):
             from app.pipeline.agents.document_agent import DocumentAgent
+
             agent = DocumentAgent.__new__(DocumentAgent)
             agent.llm = MagicMock()
             agent.tools = [MagicMock() for _ in range(5)]
@@ -140,6 +137,7 @@ class TestInitializeExecutor:
     @patch("app.pipeline.agents.document_agent.settings")
     def test_init_react_import_error(self, mock_settings):
         from app.pipeline.agents.document_agent import DocumentAgent
+
         agent = DocumentAgent.__new__(DocumentAgent)
         agent.llm = MagicMock()
         agent.tools = [MagicMock() for _ in range(5)]
@@ -149,6 +147,7 @@ class TestInitializeExecutor:
         agent.executor = None
         # Patch create_react_agent import to raise
         import builtins
+
         original_import = builtins.__import__
         error_msg = "No module named 'langchain.agents'"
 
@@ -165,6 +164,7 @@ class TestInitializeExecutor:
     @patch("app.pipeline.agents.document_agent.settings")
     def test_init_react_with_streaming(self, mock_settings):
         from app.pipeline.agents.document_agent import DocumentAgent
+
         agent = DocumentAgent.__new__(DocumentAgent)
         agent.llm = MagicMock()
         agent.tools = [MagicMock() for _ in range(5)]
@@ -175,6 +175,7 @@ class TestInitializeExecutor:
         agent.streaming_callback = streaming_cb
         # This will fall through to the try/except import block
         import builtins
+
         original_import = builtins.__import__
 
         def mock_import(name, *args, **kwargs):
@@ -191,21 +192,21 @@ class TestInitializeExecutor:
 # DocumentAgent.process_document
 # ==============================================================================
 
+
 class TestProcessDocument:
     """Tests for the sync process_document method."""
 
     @patch("app.pipeline.agents.document_agent.settings")
     def test_process_document_success(self, mock_settings):
         from app.pipeline.agents.document_agent import DocumentAgent
+
         agent = DocumentAgent.__new__(DocumentAgent)
         agent.memory = None
         agent.streaming_callback = None
         agent.max_retries = 3
         agent._agent_import_error = None
         agent.executor = None
-        agent._execute_with_retry = MagicMock(
-            return_value={"output": "analysis result", "intermediate_steps": []}
-        )
+        agent._execute_with_retry = MagicMock(return_value={"output": "analysis result", "intermediate_steps": []})
         result = agent.process_document("/path/doc.pdf")
         assert result["success"] is True
         assert result["analysis"] == "analysis result"
@@ -214,6 +215,7 @@ class TestProcessDocument:
     @patch("app.pipeline.agents.document_agent.settings")
     def test_process_document_fallback(self, mock_settings):
         from app.pipeline.agents.document_agent import DocumentAgent
+
         agent = DocumentAgent.__new__(DocumentAgent)
         agent.memory = None
         agent.streaming_callback = None
@@ -238,12 +240,14 @@ class TestProcessDocument:
 # DocumentAgent.run (async)
 # ==============================================================================
 
+
 class TestRun:
     """Tests for the async run method."""
 
     @pytest.fixture
     def agent(self):
         from app.pipeline.agents.document_agent import DocumentAgent
+
         a = DocumentAgent.__new__(DocumentAgent)
         a.max_retries = 3
         a.memory = None
@@ -263,13 +267,12 @@ class TestRun:
     @pytest.mark.asyncio
     async def test_run_with_executor(self, agent, mock_doc):
         from app.pipeline.agents.document_agent import ValidationTool
+
         validation_tool = MagicMock(spec=ValidationTool)
         validation_tool.name = "validate_document"
         agent.tools = [validation_tool]
         agent.executor = MagicMock()
-        agent._execute_with_retry = MagicMock(
-            return_value={"output": "analysis", "intermediate_steps": []}
-        )
+        agent._execute_with_retry = MagicMock(return_value={"output": "analysis", "intermediate_steps": []})
         result = await agent.run(mock_doc, "job_001")
         assert result["success"] is True
         assert result["analysis"] == "analysis"
@@ -302,9 +305,7 @@ class TestRun:
         agent.memory = MagicMock()
         agent.memory.get_best_pattern.return_value = {"pattern": "test"}
         agent.executor = MagicMock()
-        agent._execute_with_retry = MagicMock(
-            return_value={"output": "analysis", "intermediate_steps": []}
-        )
+        agent._execute_with_retry = MagicMock(return_value={"output": "analysis", "intermediate_steps": []})
         result = await agent.run(mock_doc, "job_001")
         assert result["success"] is True
         agent.memory.get_best_pattern.assert_called_once_with(
@@ -330,44 +331,38 @@ class TestRun:
         agent._execute_with_retry = MagicMock(side_effect=RuntimeError("fail"))
         result = await agent.run(mock_doc, "job_001")
         assert result["success"] is False
-        agent.memory.remember_error.assert_called_once_with(
-            "agent_processing", "fail"
-        )
+        agent.memory.remember_error.assert_called_once_with("agent_processing", "fail")
 
     @pytest.mark.asyncio
     async def test_run_with_streaming(self, agent, mock_doc):
         agent.executor = MagicMock()
         agent.streaming_callback = MagicMock()
         agent.streaming_callback.get_events.return_value = [{"type": "test"}]
-        agent._execute_with_retry = MagicMock(
-            return_value={"output": "analysis", "intermediate_steps": []}
-        )
+        agent._execute_with_retry = MagicMock(return_value={"output": "analysis", "intermediate_steps": []})
         result = await agent.run(mock_doc, "job_001")
         assert result["streaming_events"] == [{"type": "test"}]
 
     @pytest.mark.asyncio
     async def test_run_no_document(self, agent):
         from app.pipeline.agents.document_agent import ValidationTool
+
         vt = MagicMock(spec=ValidationTool)
         vt.name = "validate_document"
         agent.tools = [vt]
         agent.executor = MagicMock()
-        agent._execute_with_retry = MagicMock(
-            return_value={"output": "analysis", "intermediate_steps": []}
-        )
+        agent._execute_with_retry = MagicMock(return_value={"output": "analysis", "intermediate_steps": []})
         result = await agent.run(None, "job_001")
         assert result["success"] is True
 
     @pytest.mark.asyncio
     async def test_run_validation_tool_set(self, agent, mock_doc):
         from app.pipeline.agents.document_agent import ValidationTool
+
         vt = MagicMock(spec=ValidationTool)
         vt.name = "validate_document"
         agent.tools = [vt]
         agent.executor = MagicMock()
-        agent._execute_with_retry = MagicMock(
-            return_value={"output": "analysis", "intermediate_steps": []}
-        )
+        agent._execute_with_retry = MagicMock(return_value={"output": "analysis", "intermediate_steps": []})
         await agent.run(mock_doc, "job_001")
         vt.set_document.assert_called_once_with("doc_123", mock_doc)
 
@@ -376,11 +371,13 @@ class TestRun:
 # DocumentAgent._execute_with_retry
 # ==============================================================================
 
+
 class TestExecuteWithRetry:
     """Tests for _execute_with_retry method."""
 
     def _make(self):
         from app.pipeline.agents.document_agent import DocumentAgent
+
         a = DocumentAgent.__new__(DocumentAgent)
         a.max_retries = 3
         a.memory = None
@@ -457,11 +454,13 @@ class TestExecuteWithRetry:
 # DocumentAgent._run_direct_fallback — edge cases
 # ==============================================================================
 
+
 class TestRunDirectFallbackEdge:
     """Edge cases for _run_direct_fallback."""
 
     def _make(self, tools):
         from app.pipeline.agents.document_agent import DocumentAgent
+
         a = DocumentAgent.__new__(DocumentAgent)
         a.tools = tools
         a.memory = None
@@ -474,6 +473,7 @@ class TestRunDirectFallbackEdge:
     def test_fallback_with_validation_tool_and_document(self):
         from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
         from app.pipeline.agents.tools.validation_tool import ValidationTool
+
         vt = MagicMock(spec=ValidationTool)
         vt.name = "validation"
         vt._run.return_value = "valid"
@@ -488,6 +488,7 @@ class TestRunDirectFallbackEdge:
 
     def test_fallback_no_validation_tool_without_document(self):
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
+
         ft = MagicMock(spec=FigureAnalysisTool)
         ft.name = "figures"
         ft._run.return_value = "figs"
@@ -497,6 +498,7 @@ class TestRunDirectFallbackEdge:
 
     def test_fallback_missing_metadata_tool(self):
         from app.pipeline.agents.tools.reference_tool import ReferenceExtractionTool
+
         rt = MagicMock(spec=ReferenceExtractionTool)
         rt.name = "refs"
         rt._run.return_value = "refs"
@@ -509,9 +511,11 @@ class TestRunDirectFallbackEdge:
 # DocumentAgent._should_fallback — edge cases
 # ==============================================================================
 
+
 class TestShouldFallbackEdge:
     def _make(self):
         from app.pipeline.agents.document_agent import DocumentAgent
+
         a = DocumentAgent.__new__(DocumentAgent)
         a.tools = []
         a.memory = None
@@ -550,6 +554,7 @@ class TestShouldFallbackEdge:
 # CustomLLMFactory — edge cases
 # ==============================================================================
 
+
 class TestCreateLLMEdge:
     """Edge cases for CustomLLMFactory.create_llm."""
 
@@ -565,6 +570,7 @@ class TestCreateLLMEdge:
         ):
             mock_settings.OPENAI_API_KEY = "sk-key"
             from app.pipeline.agents.llm_factory import CustomLLMFactory
+
             llm = CustomLLMFactory.create_llm(provider="openai", model="gpt-4")
             assert llm is mock_llm
 
@@ -580,6 +586,7 @@ class TestCreateLLMEdge:
         ):
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
             from app.pipeline.agents.llm_factory import CustomLLMFactory
+
             llm = CustomLLMFactory.create_llm(provider="ollama", model="llama2")
             assert llm is mock_llm
 
@@ -591,6 +598,7 @@ class TestCreateLLMEdge:
         ):
             mock_gen.return_value = "ok"
             from app.pipeline.agents.llm_factory import CustomLLMFactory
+
             llm = CustomLLMFactory.create_llm(provider="anthropic", model="claude-3-opus")
             result = llm.invoke("hello")
             assert result.content == "ok"
@@ -599,16 +607,16 @@ class TestCreateLLMEdge:
         mock_llm = MagicMock()
         mock_cls = MagicMock(return_value=mock_llm)
         with (
-            patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
-             patch("app.pipeline.agents.llm_factory._llm_generate", None),
+            patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False),
+            patch("app.pipeline.agents.llm_factory._llm_generate", None),
             patch("app.pipeline.agents.llm_factory.ChatOpenAI", mock_cls),
             patch("app.pipeline.agents.llm_factory.settings") as mock_settings,
         ):
             mock_settings.OPENAI_API_KEY = "sk-key"
             from app.pipeline.agents.llm_factory import CustomLLMFactory
+
             llm = CustomLLMFactory.create_llm(
-                provider="openai", model="gpt-4", temperature=0.5,
-                api_key="override", base_url="http://proxy"
+                provider="openai", model="gpt-4", temperature=0.5, api_key="override", base_url="http://proxy"
             )
             assert llm is mock_llm
             call_kwargs = mock_cls.call_args.kwargs
@@ -618,16 +626,15 @@ class TestCreateLLMEdge:
         mock_llm = MagicMock()
         mock_cls = MagicMock(return_value=mock_llm)
         with (
-            patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False), \
-             patch("app.pipeline.agents.llm_factory._llm_generate", None),
+            patch("app.pipeline.agents.llm_factory.LITELLM_AVAILABLE", False),
+            patch("app.pipeline.agents.llm_factory._llm_generate", None),
             patch("app.pipeline.agents.llm_factory.Ollama", mock_cls),
             patch("app.pipeline.agents.llm_factory.settings") as mock_settings,
         ):
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
             from app.pipeline.agents.llm_factory import CustomLLMFactory
-            llm = CustomLLMFactory.create_llm(
-                provider="ollama", model="llama2", base_url="http://custom:11434"
-            )
+
+            llm = CustomLLMFactory.create_llm(provider="ollama", model="llama2", base_url="http://custom:11434")
             assert llm is mock_llm
             call_kwargs = mock_cls.call_args.kwargs
             assert "base_url" in call_kwargs
@@ -640,9 +647,8 @@ class TestCreateLLMEdge:
         ):
             mock_gen.return_value = "ok"
             from app.pipeline.agents.llm_factory import CustomLLMFactory
-            llm = CustomLLMFactory.create_llm(
-                provider="openai", model="gpt-4", base_url="http://proxy"
-            )
+
+            llm = CustomLLMFactory.create_llm(provider="openai", model="gpt-4", base_url="http://proxy")
             result = llm("hello")
             assert result == "ok"
 
@@ -653,9 +659,8 @@ class TestCreateLLMEdge:
         ):
             mock_gen.return_value = "ok"
             from app.pipeline.agents.llm_factory import CustomLLMFactory
-            llm = CustomLLMFactory.create_llm(
-                provider="openai", model="gpt-4", api_key="direct-key"
-            )
+
+            llm = CustomLLMFactory.create_llm(provider="openai", model="gpt-4", api_key="direct-key")
             result = llm("hello")
             assert result == "ok"
 
@@ -663,6 +668,7 @@ class TestCreateLLMEdge:
 # ==============================================================================
 # CustomLLMFactory.get_available_providers
 # ==============================================================================
+
 
 class TestGetAvailableProvidersExtended:
     """Extended paths for get_available_providers."""
@@ -674,6 +680,7 @@ class TestGetAvailableProvidersExtended:
             mock_settings.ANTHROPIC_API_KEY = ""
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
             from app.pipeline.agents.llm_factory import CustomLLMFactory
+
             providers = CustomLLMFactory.get_available_providers()
             assert "nvidia" in providers
 
@@ -687,6 +694,7 @@ class TestGetAvailableProvidersExtended:
             mock_settings.ANTHROPIC_API_KEY = "ant-key"
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
             import builtins
+
             original_import = builtins.__import__
 
             def mock_import(name, *args, **kwargs):
@@ -696,6 +704,7 @@ class TestGetAvailableProvidersExtended:
 
             with patch("builtins.__import__", side_effect=mock_import):
                 from app.pipeline.agents.llm_factory import CustomLLMFactory
+
                 providers = CustomLLMFactory.get_available_providers()
             assert "anthropic" not in providers
 
@@ -710,6 +719,7 @@ class TestGetAvailableProvidersExtended:
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
             mock_get.side_effect = ConnectionError("refused")
             from app.pipeline.agents.llm_factory import CustomLLMFactory
+
             providers = CustomLLMFactory.get_available_providers()
             assert "ollama" not in providers
 
@@ -723,6 +733,7 @@ class TestGetAvailableProvidersExtended:
             mock_settings.ANTHROPIC_API_KEY = ""
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
             from app.pipeline.agents.llm_factory import CustomLLMFactory
+
             providers = CustomLLMFactory.get_available_providers()
             assert "litellm" in providers
 
@@ -731,14 +742,14 @@ class TestGetAvailableProvidersExtended:
 # _LiteLLMShim — edge cases
 # ==============================================================================
 
+
 class TestLiteLLMShimEdge:
     """Edge cases for _LiteLLMShim."""
 
     def test_init_with_all_params(self):
         from app.pipeline.agents.llm_factory import _LiteLLMShim
-        shim = _LiteLLMShim(
-            model="gpt-4", temperature=0.5, api_key="key", api_base="http://base"
-        )
+
+        shim = _LiteLLMShim(model="gpt-4", temperature=0.5, api_key="key", api_base="http://base")
         assert shim.model == "gpt-4"
         assert shim.temperature == 0.5
         assert shim.api_key == "key"
@@ -748,6 +759,7 @@ class TestLiteLLMShimEdge:
         with patch("app.pipeline.agents.llm_factory._llm_generate") as mock_gen:
             mock_gen.return_value = "result"
             from app.pipeline.agents.llm_factory import _LiteLLMShim
+
             shim = _LiteLLMShim(model="m", temperature=0.0)
             output = shim("hello")
             assert output == "result"
@@ -756,9 +768,8 @@ class TestLiteLLMShimEdge:
         with patch("app.pipeline.agents.llm_factory._llm_generate") as mock_gen:
             mock_gen.return_value = "text"
             from app.pipeline.agents.llm_factory import _LiteLLMShim
-            shim = _LiteLLMShim(
-                model="gpt-4", temperature=0.7, api_key="k", api_base="b"
-            )
+
+            shim = _LiteLLMShim(model="gpt-4", temperature=0.7, api_key="k", api_base="b")
             shim.invoke("prompt")
             mock_gen.assert_called_once()
             kwargs = mock_gen.call_args.kwargs
@@ -769,6 +780,7 @@ class TestLiteLLMShimEdge:
 
     def test_response_content(self):
         from app.pipeline.agents.llm_factory import _LiteLLMShim
+
         response = _LiteLLMShim._Response("hello")
         assert response.content == "hello"
 
@@ -777,11 +789,13 @@ class TestLiteLLMShimEdge:
 # _FallbackPromptTemplate — edge cases
 # ==============================================================================
 
+
 class TestFallbackPromptTemplateEdge:
     """Edge case: _FallbackPromptTemplate direct tests."""
 
     def test_fallback_format_handles_missing_key(self):
         from app.pipeline.agents.document_agent import _FallbackPromptTemplate
+
         pt = _FallbackPromptTemplate("Hello {name}")
         with pytest.raises(KeyError):
             pt.format(wrong="World")
@@ -791,11 +805,13 @@ class TestFallbackPromptTemplateEdge:
 # AgentMemory — remaining edge cases
 # ==============================================================================
 
+
 class TestAgentMemoryEdge:
     """Edge cases to boost memory.py from 97% to ~100%."""
 
     def test_load_json_invalid_returns_default(self, tmp_path):
         from app.pipeline.agents.memory import AgentMemory
+
         d = tmp_path / "mem"
         d.mkdir()
         f = d / "patterns.json"
@@ -805,6 +821,7 @@ class TestAgentMemoryEdge:
 
     def test_remember_error_updates_solution_on_duplicate(self, tmp_path):
         from app.pipeline.agents.memory import AgentMemory
+
         mem = AgentMemory(str(tmp_path))
         mem.remember_error("err", "msg")
         mem.remember_error("err", "msg", solution="new_sol")
@@ -812,6 +829,7 @@ class TestAgentMemoryEdge:
 
     def test_get_error_solution_substring_match(self, tmp_path):
         from app.pipeline.agents.memory import AgentMemory
+
         mem = AgentMemory(str(tmp_path))
         mem.remember_error("parse", "failed_to_parse", solution="retry")
         result = mem.get_error_solution("parse", "Document failed_to_parse PDF")
@@ -822,12 +840,14 @@ class TestAgentMemoryEdge:
 # StreamingAgentCallback — remaining edge cases
 # ==============================================================================
 
+
 class TestStreamingAgentCallbackEdge:
     """Edge cases to boost streaming.py beyond 81%."""
 
     def test_on_llm_error_with_exception(self):
         cb = MagicMock()
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         handler = StreamingAgentCallback(callback_fn=cb)
         handler.on_llm_error(ValueError("test error"))
         cb.assert_called_once()
@@ -836,6 +856,7 @@ class TestStreamingAgentCallbackEdge:
     def test_on_tool_error_with_runtime_error(self):
         cb = MagicMock()
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         handler = StreamingAgentCallback(callback_fn=cb)
         handler.on_tool_error(RuntimeError("tool crash"))
         cb.assert_called_once()
@@ -844,6 +865,7 @@ class TestStreamingAgentCallbackEdge:
     def test_on_chain_error_with_exception(self):
         cb = MagicMock()
         from app.pipeline.agents.streaming import StreamingAgentCallback
+
         handler = StreamingAgentCallback(callback_fn=cb)
         handler.on_chain_error(RuntimeError("chain fail"))
         cb.assert_called_once()

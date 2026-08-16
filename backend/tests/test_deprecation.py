@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 class TestBuildDeprecationHeaders:
     def test_build_with_successor(self):
         from app.routers.deprecation import build_deprecation_headers
+
         headers = build_deprecation_headers("/api/v2/keys")
         assert headers["Deprecation"] == "true"
         assert "Sunset" in headers
@@ -12,32 +13,38 @@ class TestBuildDeprecationHeaders:
 
     def test_build_without_successor(self):
         from app.routers.deprecation import build_deprecation_headers
+
         headers = build_deprecation_headers(None)
         assert headers["Deprecation"] == "true"
         assert "Link" not in headers
 
     def test_deprecation_date_constant(self):
         from app.routers.deprecation import DEPRECATION_DATE
+
         assert DEPRECATION_DATE == "2026-05-01"
 
 
 class TestNormalizePath:
     def test_strips_trailing_slash(self):
         from app.routers.deprecation import normalize_path
+
         assert normalize_path("/api/v1/keys/") == "/api/v1/keys"
 
     def test_keeps_path_without_trailing_slash(self):
         from app.routers.deprecation import normalize_path
+
         assert normalize_path("/api/v1/keys") == "/api/v1/keys"
 
     def test_keeps_root(self):
         from app.routers.deprecation import normalize_path
+
         assert normalize_path("/") == "/"
 
 
 class TestDeprecatedRoute:
     def test_successor_path_from_map(self):
         from app.routers.deprecation import DeprecatedRoute
+
         route = DeprecatedRoute.__new__(DeprecatedRoute)
         route.successor_map = {"/v1/old": "/v2/new"}
         route.path_format = "/v1/old"
@@ -46,6 +53,7 @@ class TestDeprecatedRoute:
 
     def test_successor_path_no_match(self):
         from app.routers.deprecation import DeprecatedRoute
+
         route = DeprecatedRoute.__new__(DeprecatedRoute)
         route.successor_map = {"/v1/other": "/v2/new"}
         route.path_format = "/v1/old"
@@ -54,6 +62,7 @@ class TestDeprecatedRoute:
 
     def test_successor_path_empty_map(self):
         from app.routers.deprecation import DeprecatedRoute
+
         route = DeprecatedRoute.__new__(DeprecatedRoute)
         route.successor_map = {}
         route.path_format = "/v1/old"
@@ -62,6 +71,7 @@ class TestDeprecatedRoute:
 
     def test_successor_path_uses_normalized(self):
         from app.routers.deprecation import DeprecatedRoute
+
         route = DeprecatedRoute.__new__(DeprecatedRoute)
         route.successor_map = {"/v1/old/": "/v2/new"}
         route.path_format = "/v1/old/"

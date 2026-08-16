@@ -31,9 +31,11 @@ def test_metrics_enhancements_endpoint_returns_profile_for_admin():
 
 
 def test_pdf_ocr_backend_normalization_filters_unavailable_backends():
-    with patch.object(pdf_ocr, "TESSERACT_AVAILABLE", False), \
-         patch.object(pdf_ocr, "PADDLE_AVAILABLE", True), \
-         patch.object(pdf_ocr, "NUMPY_AVAILABLE", True):
+    with (
+        patch.object(pdf_ocr, "TESSERACT_AVAILABLE", False),
+        patch.object(pdf_ocr, "PADDLE_AVAILABLE", True),
+        patch.object(pdf_ocr, "NUMPY_AVAILABLE", True),
+    ):
         ocr = pdf_ocr.PdfOCR()
         normalized = ocr._normalize_backends(["tesseract", "paddle", "unknown", "paddle"])
         assert normalized == ["paddle"]

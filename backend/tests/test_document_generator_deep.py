@@ -5,6 +5,7 @@
 """
 Deep tests for DocumentGenerator — orchestrator of generate-from-scratch jobs.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -20,10 +21,12 @@ _GENERATOR_MODULE = "app.pipeline.generation.document_generator"
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
+
 @pytest.fixture(autouse=True)
 def _auto_mocks():
     """Reset class-level state on DocumentService between tests."""
     from app.services.document_service import DocumentService
+
     DocumentService._supports_file_hash = None
     DocumentService._supports_output_hash = None
     return
@@ -42,11 +45,13 @@ def _fake_block(block_type: str, content: str, level: int = 0) -> dict:
 
 # ── Test suite ───────────────────────────────────────────────────────────────
 
+
 class TestNormalizeStatus:
     """_normalize_status static method."""
 
     def test_exact_matches(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         cases = [
             ("PENDING", "pending"),
             ("PROCESSING", "processing"),
@@ -64,16 +69,19 @@ class TestNormalizeStatus:
 
     def test_none_and_empty_fall_back_to_processing(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         assert DocumentGenerator._normalize_status(None) == "processing"
         assert DocumentGenerator._normalize_status("") == "processing"
 
     def test_unknown_status_fall_back_to_processing(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         assert DocumentGenerator._normalize_status("SUPERCALIFRAGILISTIC") == "processing"
         assert DocumentGenerator._normalize_status("random_string") == "processing"
 
     def test_whitespace_stripped_before_match(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         assert DocumentGenerator._normalize_status("  FAILED  ") == "failed"
         assert DocumentGenerator._normalize_status("\tCOMPLETED\n") == "done"
 
@@ -83,6 +91,7 @@ class TestNowIso:
 
     def test_returns_utc_iso_format(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         result = DocumentGenerator._now_iso()
         # ISO-8601 — must end in Z or have a +00:00 offset
         assert isinstance(result, str)
@@ -97,6 +106,7 @@ class TestDefaultSessionConfig:
 
     def test_returns_expected_dict(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         dg = DocumentGenerator()
         config = dg._default_session_config(
             doc_type="thesis",
@@ -117,6 +127,7 @@ class TestDefaultSessionConfig:
 
     def test_all_params_preserved(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         dg = DocumentGenerator()
         config = dg._default_session_config(
             doc_type="resume",
@@ -134,6 +145,7 @@ class TestSessionRecordToStatus:
 
     def test_with_outline(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         dg = DocumentGenerator()
         session = {
             "id": "job-1",
@@ -155,6 +167,7 @@ class TestSessionRecordToStatus:
 
     def test_without_outline(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         dg = DocumentGenerator()
         session = {
             "id": "job-2",
@@ -167,6 +180,7 @@ class TestSessionRecordToStatus:
 
     def test_outline_is_non_list_becomes_empty(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         dg = DocumentGenerator()
         session = {
             "id": "j",
@@ -180,6 +194,7 @@ class TestSessionRecordToStatus:
 
     def test_outline_items_stripped_and_filtered(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         dg = DocumentGenerator()
         session = {
             "id": "j",
@@ -193,6 +208,7 @@ class TestSessionRecordToStatus:
 
     def test_progress_clamped_to_0_100(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         dg = DocumentGenerator()
         session = {"id": "j", "status": "done", "progress": 999, "config_json": {}}
         result = dg._session_record_to_status(session)
@@ -201,6 +217,7 @@ class TestSessionRecordToStatus:
 
     def test_fallback_keys_when_config_missing(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         dg = DocumentGenerator()
         session = {"id": "j"}
         result = dg._session_record_to_status(session)
@@ -221,6 +238,7 @@ class TestGetSessionRecord:
             )
             mock_sb.return_value = sb
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             result = dg._get_session_record("s1")
             assert result == {"id": "s1", "status": "done"}
@@ -228,6 +246,7 @@ class TestGetSessionRecord:
     def test_supabase_none_falls_to_volatile(self):
         with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["v1"] = {"id": "v1", "status": "pending"}
             result = dg._get_session_record("v1")
@@ -241,6 +260,7 @@ class TestGetSessionRecord:
             )
             mock_sb.return_value = sb
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["v2"] = {"id": "v2"}
             result = dg._get_session_record("v2")
@@ -254,6 +274,7 @@ class TestGetSessionRecord:
             )
             mock_sb.return_value = sb
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             result = dg._get_session_record("missing")
             assert result is None
@@ -261,6 +282,7 @@ class TestGetSessionRecord:
     def test_not_in_any_store_returns_none(self):
         with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             result = dg._get_session_record("ghost")
             assert result is None
@@ -272,6 +294,7 @@ class TestGetSession:
     def test_delegates_to_get_session_record(self):
         with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["s"] = {"id": "s"}
             assert dg.get_session("s") == {"id": "s"}
@@ -284,6 +307,7 @@ class TestUpdateStatus:
     def test_updates_volatile_when_supabase_none(self):
         with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["j1"] = {"id": "j1", "config_json": {}}
             dg.update_status("j1", status="done", progress=100, stage="done", message="OK")
@@ -297,6 +321,7 @@ class TestUpdateStatus:
             sb = MagicMock()
             mock_sb.return_value = sb
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["j2"] = {"id": "j2", "config_json": {}}
             dg.update_status("j2", status="failed", progress=0, error="boom")
@@ -308,6 +333,7 @@ class TestUpdateStatus:
             sb.table.return_value.update.return_value.eq.return_value.execute.side_effect = RuntimeError("fail")
             mock_sb.return_value = sb
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["j3"] = {"id": "j3", "config_json": {}}
             dg.update_status("j3", status="processing", progress=50)
@@ -316,6 +342,7 @@ class TestUpdateStatus:
     def test_with_outline_payload(self):
         with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["j4"] = {"id": "j4", "config_json": {}}
             dg.update_status("j4", status="processing", progress=50, outline=["A", "B"])
@@ -324,6 +351,7 @@ class TestUpdateStatus:
     def test_empty_outline_items_filtered(self):
         with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["j4b"] = {"id": "j4b", "config_json": {}}
             dg.update_status("j4b", status="processing", progress=50, outline=["", "  ", "Real"])
@@ -332,6 +360,7 @@ class TestUpdateStatus:
     def test_creates_record_if_not_found(self):
         with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg.update_status("new-job", status="pending", progress=0)
             assert dg._volatile_sessions["new-job"]["status"] == "pending"
@@ -339,6 +368,7 @@ class TestUpdateStatus:
     def test_progress_clamped(self):
         with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["jc"] = {"id": "jc", "config_json": {}}
             dg.update_status("jc", status="done", progress=200)
@@ -351,6 +381,7 @@ class TestGetStatus:
     def test_from_session_record(self):
         with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["gs1"] = {
                 "id": "gs1",
@@ -371,6 +402,7 @@ class TestGetStatus:
                     "structured_data": {"outline": ["Intro", "Methods"]},
                 }
                 from app.pipeline.generation.document_generator import DocumentGenerator
+
                 dg = DocumentGenerator()
                 dg._volatile_sessions["gs2"] = {
                     "id": "gs2",
@@ -394,6 +426,7 @@ class TestGetStatus:
                     "structured_data": {"outline": ["Intro"]},
                 }
                 from app.pipeline.generation.document_generator import DocumentGenerator
+
                 dg = DocumentGenerator()
                 status = dg.get_status("gs3")
                 assert status["status"] == "done"
@@ -405,6 +438,7 @@ class TestGetStatus:
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 MockDS.get_document.return_value = None
                 from app.pipeline.generation.document_generator import DocumentGenerator
+
                 dg = DocumentGenerator()
                 with pytest.raises(KeyError, match="not found"):
                     dg.get_status("unknown")
@@ -427,6 +461,7 @@ class TestGetStatus:
                     }
                     MockDS.get_document_result.return_value = None
                     from app.pipeline.generation.document_generator import DocumentGenerator
+
                     dg = DocumentGenerator()
                     status = dg.get_status(f"job_{db_status}")
                     assert status["status"] == expected, f"failed for {db_status}"
@@ -438,6 +473,7 @@ class TestGetDownloadPath:
     def test_returns_path_for_completed_volatile(self):
         with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["gd1"] = {
                 "id": "gd1",
@@ -454,6 +490,7 @@ class TestGetDownloadPath:
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 MockDS.get_document.return_value = None
                 from app.pipeline.generation.document_generator import DocumentGenerator
+
                 dg = DocumentGenerator()
                 dg._volatile_sessions["gd2"] = {
                     "id": "gd2",
@@ -471,6 +508,7 @@ class TestGetDownloadPath:
                     "output_path": "/real/output.docx",
                 }
                 from app.pipeline.generation.document_generator import DocumentGenerator
+
                 dg = DocumentGenerator()
                 result = dg.get_download_path("gd3")
                 assert isinstance(result, Path)
@@ -481,6 +519,7 @@ class TestGetDownloadPath:
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 MockDS.get_document.return_value = None
                 from app.pipeline.generation.document_generator import DocumentGenerator
+
                 dg = DocumentGenerator()
                 assert dg.get_download_path("ghost") is None
 
@@ -492,6 +531,7 @@ class TestGetDownloadPath:
                     "output_path": None,
                 }
                 from app.pipeline.generation.document_generator import DocumentGenerator
+
                 dg = DocumentGenerator()
                 assert dg.get_download_path("failed-job") is None
 
@@ -508,6 +548,7 @@ class TestStartJob:
                         MockUuid.uuid4.return_value = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
                         MockDS.create_document.return_value = {"id": "doc-id"}
                         from app.pipeline.generation.document_generator import DocumentGenerator
+
                         dg = DocumentGenerator()
                         job_id = await dg.start_job(
                             doc_type="academic_paper",
@@ -533,6 +574,7 @@ class TestStartJob:
                         MockUuid.uuid4.return_value = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
                         MockDS.create_document.return_value = None
                         from app.pipeline.generation.document_generator import DocumentGenerator
+
                         dg = DocumentGenerator()
                         job_id = await dg.start_job("report", "none", {}, {}, "u2")
                         assert job_id in dg._volatile_sessions
@@ -545,6 +587,7 @@ class TestStartJob:
                     with patch(f"{_GENERATOR_MODULE}.emit_event"):
                         MockUuid.uuid4.return_value = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
                         from app.pipeline.generation.document_generator import DocumentGenerator
+
                         dg = DocumentGenerator()
                         await dg.start_job("resume", "modern", {"name": "A"}, {}, "u3")
                         MockDS.create_document.assert_called_once()
@@ -561,6 +604,7 @@ class TestStartJob:
                         MockUuid.uuid4.return_value = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
                         MockDS.create_document.return_value = None
                         from app.pipeline.generation.document_generator import DocumentGenerator
+
                         dg = DocumentGenerator()
                         await dg.start_job("thesis", "plain", {}, {}, "u4")
                         mock_emit.assert_called_once_with(
@@ -634,6 +678,7 @@ class TestRunPipeline:
 
         with patch(f"{_GENERATOR_MODULE}.GENERATED_DIR", tmp_path / "generated"):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"] = {
                 "id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
@@ -653,6 +698,7 @@ class TestRunPipeline:
     @pytest.mark.asyncio
     async def test_job_not_found_logs_and_returns(self, mock_all):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         dg = DocumentGenerator()
         await dg.run_pipeline("nonexistent")
         mock_all["PromptBuilder"].assert_not_called()
@@ -665,6 +711,7 @@ class TestRunPipeline:
         mock_all["PromptBuilder"].return_value = pb_instance
 
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         dg = DocumentGenerator()
         dg._volatile_sessions["aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"] = {
             "id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
@@ -704,6 +751,7 @@ class TestRunPipeline:
         with patch(f"{_GENERATOR_MODULE}.DocumentGenerator._compute_sha256", side_effect=OSError("no hash")):
             with patch(f"{_GENERATOR_MODULE}.GENERATED_DIR", tmp_path / "gen"):
                 from app.pipeline.generation.document_generator import DocumentGenerator
+
                 dg = DocumentGenerator()
                 dg._volatile_sessions["aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"] = {
                     "id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
@@ -724,6 +772,7 @@ class TestInternalUpdate:
             emit_event=MagicMock(),
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["u1"] = {"id": "u1", "config_json": {}}
             dg._update("u1", "done", 100, "Complete", output_path="/p/docx")
@@ -738,6 +787,7 @@ class TestInternalUpdate:
             emit_event=MagicMock(),
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["u2"] = {"id": "u2", "config_json": {}}
             dg._update("u2", "error", 0, "Something broke", error="critical failure")
@@ -752,6 +802,7 @@ class TestInternalUpdate:
             emit_event=MagicMock(),
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["u3"] = {"id": "u3", "config_json": {}}
             dg._update("u3", "queued", 0, "Waiting")
@@ -766,6 +817,7 @@ class TestInternalUpdate:
             emit_event=MagicMock(),
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["u4"] = {"id": "u4", "config_json": {}}
             dg._update("u4", "formatting", 75, "Formatting...")
@@ -779,6 +831,7 @@ class TestEmit:
     def test_emits_event(self):
         with patch(f"{_GENERATOR_MODULE}.emit_event") as mock_emit:
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._emit("j1", phase="TEST", status="OK")
             mock_emit.assert_called_once_with("j1", "status_update", {"phase": "TEST", "status": "OK"})
@@ -786,6 +839,7 @@ class TestEmit:
     def test_emission_exception_caught(self):
         with patch(f"{_GENERATOR_MODULE}.emit_event", side_effect=RuntimeError("SSE down")):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             # should not raise
             dg._emit("j2", phase="X")
@@ -801,6 +855,7 @@ class TestLlmGenerate:
             get_supabase_client=MagicMock(return_value=None),
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             with patch("app.services.llm_service.LLM_NVIDIA") as mock_nvidia:
                 mock_nvidia.complete.return_value = "NVIDIA response text"
                 dg = DocumentGenerator()
@@ -814,6 +869,7 @@ class TestLlmGenerate:
             get_supabase_client=MagicMock(return_value=None),
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             with patch("app.services.llm_service.LLM_NVIDIA") as mock_nvidia:
                 with patch("app.services.llm_service.LLM_DEEPSEEK") as mock_deepseek:
                     mock_nvidia.complete.return_value = ""
@@ -829,6 +885,7 @@ class TestLlmGenerate:
             get_supabase_client=MagicMock(return_value=None),
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             with patch("app.services.llm_service.LLM_NVIDIA") as mock_nvidia:
                 with patch("app.services.llm_service.LLM_DEEPSEEK") as mock_deepseek:
                     mock_nvidia.complete.return_value = "   "
@@ -844,6 +901,7 @@ class TestLlmGenerate:
             get_supabase_client=MagicMock(return_value=None),
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             with patch("app.services.llm_service.LLM_NVIDIA") as mock_nvidia:
                 with patch("app.services.llm_service.LLM_DEEPSEEK") as mock_deepseek:
                     mock_nvidia.complete.side_effect = RuntimeError("NVIDIA down")
@@ -865,6 +923,7 @@ class TestLlmGenerate:
             get_supabase_client=MagicMock(return_value=None),
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             with patch("app.services.llm_service.LLM_NVIDIA") as mock_nvidia:
                 with patch("app.services.llm_service.LLM_DEEPSEEK") as mock_deepseek:
                     mock_nvidia.complete.return_value = None
@@ -885,6 +944,7 @@ class TestLlmGenerate:
             get_supabase_client=MagicMock(return_value=None),
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             with patch("app.services.llm_service.LLM_NVIDIA") as mock_nvidia:
                 with patch("app.services.llm_service.LLM_DEEPSEEK") as mock_deepseek:
                     mock_nvidia.complete.side_effect = RuntimeError("x")
@@ -904,6 +964,7 @@ class TestRuleBasedSkeleton:
 
     def test_academic_paper_contains_expected_sections(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         result = DocumentGenerator._rule_based_skeleton("academic_paper", {"title": "My Research"})
         blocks = json.loads(result)
         types = [b["type"] for b in blocks]
@@ -914,6 +975,7 @@ class TestRuleBasedSkeleton:
 
     def test_resume_contains_expected_sections(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         result = DocumentGenerator._rule_based_skeleton("resume", {"name": "Alice", "summary": "Expert Python dev."})
         blocks = json.loads(result)
         assert blocks[0]["type"] == "TITLE"
@@ -922,6 +984,7 @@ class TestRuleBasedSkeleton:
 
     def test_unknown_type_falls_to_academic_paper(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         result = DocumentGenerator._rule_based_skeleton("blog_post", {"title": "Blog"})
         blocks = json.loads(result)
         assert blocks[0]["type"] == "TITLE"
@@ -929,12 +992,14 @@ class TestRuleBasedSkeleton:
 
     def test_title_uses_name_fallback(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         result = DocumentGenerator._rule_based_skeleton("academic_paper", {"name": "Fallback Name"})
         blocks = json.loads(result)
         assert "Fallback Name" in blocks[0]["content"]
 
     def test_abstract_from_metadata(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         result = DocumentGenerator._rule_based_skeleton(
             "academic_paper", {"title": "X", "abstract": "Custom abstract."}
         )
@@ -967,6 +1032,7 @@ class TestFormatAndExport:
             GENERATED_DIR=output_dir,
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             raw_blocks = [
                 {"type": "TITLE", "content": "  My Title  ", "level": 0},
@@ -1000,6 +1066,7 @@ class TestFormatAndExport:
             GENERATED_DIR=output_dir,
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             raw_blocks = [
                 {"type": "BODY", "content": "", "level": 0},
@@ -1030,11 +1097,15 @@ class TestFormatAndExport:
             GENERATED_DIR=output_dir,
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             with pytest.raises(RuntimeError, match="Formatting failed"):
                 await dg._format_and_export(
                     raw_blocks=[{"type": "TITLE", "content": "X", "level": 0}],
-                    template="t", job_id="fail", metadata={}, doc_type="paper",
+                    template="t",
+                    job_id="fail",
+                    metadata={},
+                    doc_type="paper",
                 )
 
     @pytest.mark.asyncio
@@ -1054,11 +1125,15 @@ class TestFormatAndExport:
             GENERATED_DIR=output_dir,
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             with pytest.raises(RuntimeError, match="Export failed"):
                 await dg._format_and_export(
                     raw_blocks=[{"type": "TITLE", "content": "X", "level": 0}],
-                    template="t", job_id="missing-file", metadata={}, doc_type="paper",
+                    template="t",
+                    job_id="missing-file",
+                    metadata={},
+                    doc_type="paper",
                 )
 
     @pytest.mark.asyncio
@@ -1081,6 +1156,7 @@ class TestFormatAndExport:
             GENERATED_DIR=output_dir,
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             await dg._format_and_export(
                 raw_blocks=[
@@ -1088,7 +1164,10 @@ class TestFormatAndExport:
                     {"type": "HEADING_2", "content": "H2", "level": 2},
                     {"type": "BODY", "content": "Text", "level": None},
                 ],
-                template="t", job_id="levels", metadata={}, doc_type="paper",
+                template="t",
+                job_id="levels",
+                metadata={},
+                doc_type="paper",
             )
             # formatter received a PipelineDocument with blocks
             call_doc = formatter_instance.process.call_args[0][0]
@@ -1101,6 +1180,7 @@ class TestExtractOutline:
 
     def test_extracts_headings_and_title_abstract(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         blocks = [
             _fake_block("TITLE", "My Paper"),
             _fake_block("ABSTRACT", "Abstract text"),
@@ -1113,6 +1193,7 @@ class TestExtractOutline:
 
     def test_deduplicates_case_insensitively(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         blocks = [
             _fake_block("HEADING_1", "Introduction"),
             _fake_block("HEADING_1", "INTRODUCTION"),
@@ -1123,24 +1204,28 @@ class TestExtractOutline:
 
     def test_limited_to_50(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         blocks = [_fake_block("HEADING_1", f"Section {i}") for i in range(100)]
         outline = DocumentGenerator._extract_outline(blocks)
         assert len(outline) == 50
 
     def test_empty_when_no_headings(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         blocks = [_fake_block("BODY", "Just text"), _fake_block("BULLET", "Item")]
         outline = DocumentGenerator._extract_outline(blocks)
         assert outline == []
 
     def test_strips_content_whitespace(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         blocks = [_fake_block("HEADING_1", "  Spaced Out  ")]
         outline = DocumentGenerator._extract_outline(blocks)
         assert outline == ["Spaced Out"]
 
     def test_heading_types_included(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         blocks = [
             _fake_block("HEADING_1", "H1"),
             _fake_block("HEADING_2", "H2"),
@@ -1151,6 +1236,7 @@ class TestExtractOutline:
 
     def test_non_heading_types_excluded(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         blocks = [
             _fake_block("BULLET", "Item"),
             _fake_block("FIGURE_CAPTION", "Fig"),
@@ -1166,6 +1252,7 @@ class TestComputeSha256:
 
     def test_computes_correct_hash(self, tmp_path):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         f = tmp_path / "sample.bin"
         f.write_bytes(b"hello world")
         expected = hashlib.sha256(b"hello world").hexdigest()
@@ -1173,6 +1260,7 @@ class TestComputeSha256:
 
     def test_larger_file(self, tmp_path):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         f = tmp_path / "large.bin"
         data = b"x" * (2 * 1024 * 1024 + 13)  # > 2 chunks
         f.write_bytes(data)
@@ -1181,6 +1269,7 @@ class TestComputeSha256:
 
     def test_raises_on_missing_file(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         with pytest.raises(FileNotFoundError):
             DocumentGenerator._compute_sha256(Path("/nonexistent/path/file.bin"))
 
@@ -1190,12 +1279,15 @@ class TestGetGenerator:
 
     def test_returns_document_generator_instance(self):
         from app.pipeline.generation.document_generator import get_generator
+
         instance = get_generator()
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         assert isinstance(instance, DocumentGenerator)
 
     def test_returns_same_instance(self):
         from app.pipeline.generation.document_generator import get_generator
+
         a = get_generator()
         b = get_generator()
         assert a is b
@@ -1207,16 +1299,19 @@ class TestEdgeCases:
     def test_emit_swallows_exception(self):
         with patch(f"{_GENERATOR_MODULE}.emit_event", side_effect=Exception("SSE fail")):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._emit("e1", phase="X")  # no raise
 
     def test_normalize_very_long_string(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         result = DocumentGenerator._normalize_status("  VERY_LONG_STATUS_STRING_THAT_IS_NOT_MAPPED  ")
         assert result == "processing"
 
     def test_session_record_progress_clamped_below_zero(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         dg = DocumentGenerator()
         session = {"id": "j", "status": "done", "progress": -50, "config_json": {}}
         result = dg._session_record_to_status(session)
@@ -1225,6 +1320,7 @@ class TestEdgeCases:
     def test_update_status_does_not_overwrite_unset_fields(self):
         with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             dg._volatile_sessions["ec1"] = {
                 "id": "ec1",
@@ -1253,25 +1349,31 @@ class TestEdgeCases:
             GENERATED_DIR=output_dir,
         ):
             from app.pipeline.generation.document_generator import DocumentGenerator
+
             dg = DocumentGenerator()
             await dg._format_and_export(
                 raw_blocks=[
                     {"type": "HEADING_1", "content": "H", "level": "not-a-number"},
                     {"type": "BODY", "content": "Text", "level": 0},
                 ],
-                template="t", job_id="ec_out", metadata={}, doc_type="paper",
+                template="t",
+                job_id="ec_out",
+                metadata={},
+                doc_type="paper",
             )
             call_doc = formatter_instance.process.call_args[0][0]
             assert call_doc.blocks[0].level is None
 
     def test_rule_based_skeleton_resume_with_empty_metadata(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         result = DocumentGenerator._rule_based_skeleton("resume", {})
         blocks = json.loads(result)
         assert blocks[0]["content"] == "Document Title"
 
     def test_rule_based_skeleton_abstract_fallback(self):
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         result = DocumentGenerator._rule_based_skeleton("academic_paper", {"title": "T"})
         blocks = json.loads(result)
         abstract_blocks = [b for b in blocks if b["type"] == "ABSTRACT"]
@@ -1286,6 +1388,7 @@ class TestEdgeCases:
                         MockUuid.uuid4.return_value = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
                         MockDS.create_document.return_value = None
                         from app.pipeline.generation.document_generator import DocumentGenerator
+
                         dg = DocumentGenerator()
                         job_id = await dg.start_job("paper", "t", {}, {}, user_id="")
                         assert job_id in dg._volatile_sessions

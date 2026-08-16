@@ -7,6 +7,7 @@ class TestMetricsDB:
     @pytest.mark.asyncio
     async def test_success(self):
         from app.routers.v1.metrics import get_database_metrics
+
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
         mock_sb = MagicMock()
@@ -21,6 +22,7 @@ class TestMetricsDB:
     @pytest.mark.asyncio
     async def test_unavailable(self):
         from app.routers.v1.metrics import get_database_metrics
+
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
         with patch("app.routers.v1.metrics.get_supabase_client", return_value=None):
@@ -30,6 +32,7 @@ class TestMetricsDB:
     @pytest.mark.asyncio
     async def test_db_query_exception(self):
         from app.routers.v1.metrics import get_database_metrics
+
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
         mock_sb = MagicMock()
@@ -44,16 +47,20 @@ class TestLogFrontendError:
     @pytest.mark.asyncio
     async def test_success(self):
         from app.routers.v1.metrics import log_frontend_error
+
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
         result = await log_frontend_error(
-            mock_request, {"message": "test", "stack": "trace", "url": "/page", "timestamp": "now"}, current_user=None,
+            mock_request,
+            {"message": "test", "stack": "trace", "url": "/page", "timestamp": "now"},
+            current_user=None,
         )
         assert result is not None
 
     @pytest.mark.asyncio
     async def test_minimal_payload(self):
         from app.routers.v1.metrics import log_frontend_error
+
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
         result = await log_frontend_error(mock_request, {"message": "test"}, current_user=None)
@@ -64,13 +71,16 @@ class TestHealthCheck:
     @pytest.mark.asyncio
     async def test_success(self):
         from app.routers.v1.metrics import health_check
+
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
         mock_sb = MagicMock()
         mock_sb.table.return_value.select.return_value.limit.return_value.execute()
 
-        with (patch("app.routers.v1.metrics.get_supabase_client", return_value=mock_sb),
-              patch("app.services.llm_service.check_health") as mock_llm):
+        with (
+            patch("app.routers.v1.metrics.get_supabase_client", return_value=mock_sb),
+            patch("app.services.llm_service.check_health") as mock_llm,
+        ):
             mock_llm.return_value = {"nvidia": "healthy", "deepseek": "healthy"}
             result = await health_check(mock_request)
         assert result is not None
@@ -78,11 +88,14 @@ class TestHealthCheck:
     @pytest.mark.asyncio
     async def test_degraded(self):
         from app.routers.v1.metrics import health_check
+
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
 
-        with (patch("app.routers.v1.metrics.get_supabase_client", return_value=None),
-              patch("app.services.llm_service.check_health") as mock_llm):
+        with (
+            patch("app.routers.v1.metrics.get_supabase_client", return_value=None),
+            patch("app.services.llm_service.check_health") as mock_llm,
+        ):
             mock_llm.return_value = {"nvidia": "unhealthy", "deepseek": "unhealthy"}
             result = await health_check(mock_request)
         assert result is not None
@@ -90,11 +103,14 @@ class TestHealthCheck:
     @pytest.mark.asyncio
     async def test_llm_check_exception(self):
         from app.routers.v1.metrics import health_check
+
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
 
-        with (patch("app.routers.v1.metrics.get_supabase_client", return_value=None),
-              patch("app.services.llm_service.check_health", side_effect=Exception("llm error"))):
+        with (
+            patch("app.routers.v1.metrics.get_supabase_client", return_value=None),
+            patch("app.services.llm_service.check_health", side_effect=Exception("llm error")),
+        ):
             result = await health_check(mock_request)
         assert result is not None
 
@@ -103,6 +119,7 @@ class TestMetricsDashboard:
     @pytest.mark.asyncio
     async def test_success(self):
         from app.routers.v1.metrics import get_metrics_dashboard
+
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
         mock_sb = MagicMock()
@@ -122,6 +139,7 @@ class TestMetricsDashboard:
     @pytest.mark.asyncio
     async def test_exception_handled(self):
         from app.routers.v1.metrics import get_metrics_dashboard
+
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
 
@@ -139,13 +157,17 @@ class TestEnhancementsMetrics:
     @pytest.mark.asyncio
     async def test_success(self):
         from app.routers.v1.metrics import get_enhancement_metrics
+
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
 
         mock_profile = MagicMock()
         mock_profile.to_dict.return_value = {
-            "enabled": True, "queue_provider": "redis", "queue_available": True,
-            "ocr_backends": ["tesseract"], "keyword_backends": ["rake"],
+            "enabled": True,
+            "queue_provider": "redis",
+            "queue_available": True,
+            "ocr_backends": ["tesseract"],
+            "keyword_backends": ["rake"],
         }
 
         with patch("app.routers.v1.metrics.enhancement_manager") as mock_em:
@@ -158,6 +180,7 @@ class TestVLLMReadiness:
     @pytest.mark.asyncio
     async def test_success(self):
         from app.routers.v1.metrics import get_vllm_readiness
+
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
 

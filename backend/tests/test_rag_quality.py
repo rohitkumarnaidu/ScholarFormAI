@@ -8,6 +8,7 @@ import pytest
 #  IR metric helpers
 # ---------------------------------------------------------------------------
 
+
 def _dcg(relevances: list[float]) -> float:
     """Discounted cumulative gain at each rank."""
     dcg = 0.0
@@ -52,9 +53,11 @@ def _mrr(ranked_results: list[list[float]]) -> float:
 #  Fixture
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def rag_engine(tmp_path):
     from app.pipeline.intelligence.rag_engine import RagEngine
+
     persist = str(tmp_path / "rag_test")
     with (
         patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None),
@@ -76,6 +79,7 @@ def rag_engine(tmp_path):
 # ---------------------------------------------------------------------------
 #  NDCG tests
 # ---------------------------------------------------------------------------
+
 
 class TestNDCG:
     """Normalized Discounted Cumulative Gain — ranking quality."""
@@ -172,7 +176,7 @@ class TestMRR:
     def test_mrr_varying_positions(self):
         ranked = [[0, 1, 0], [0, 0, 1], [1, 0, 0]]
         mrr = _mrr([list(map(float, r)) for r in ranked])
-        expected = (1/2 + 1/3 + 1.0) / 3
+        expected = (1 / 2 + 1 / 3 + 1.0) / 3
         assert mrr == pytest.approx(expected, abs=1e-6)
 
     @pytest.mark.rag
@@ -278,6 +282,7 @@ class TestEmbeddingQuality:
     @pytest.mark.ai_quality
     def test_embedding_dimension_match(self, rag_engine):
         from app.pipeline.intelligence.rag_engine import _DeterministicEmbeddingModel
+
         model = _DeterministicEmbeddingModel(dimension=128)
         vec = model.encode("test text")
         assert len(vec) == 128
@@ -285,6 +290,7 @@ class TestEmbeddingQuality:
     @pytest.mark.ai_quality
     def test_embedding_identity(self, rag_engine):
         from app.pipeline.intelligence.rag_engine import _DeterministicEmbeddingModel
+
         model = _DeterministicEmbeddingModel(dimension=64)
         v1 = model.encode("hello world")
         v2 = model.encode("hello world")
@@ -293,6 +299,7 @@ class TestEmbeddingQuality:
     @pytest.mark.ai_quality
     def test_embedding_different_inputs_different(self, rag_engine):
         from app.pipeline.intelligence.rag_engine import _DeterministicEmbeddingModel
+
         model = _DeterministicEmbeddingModel(dimension=64)
         v1 = model.encode("hello world")
         v2 = model.encode("goodbye world")
@@ -302,6 +309,7 @@ class TestEmbeddingQuality:
     @pytest.mark.ai_quality
     def test_embedding_similar_texts_have_similar_vectors(self, rag_engine):
         from app.pipeline.intelligence.rag_engine import _DeterministicEmbeddingModel
+
         model = _DeterministicEmbeddingModel(dimension=256)
         v1 = np.array(model.encode("machine learning algorithms"))
         v2 = np.array(model.encode("deep learning algorithms"))
@@ -314,6 +322,7 @@ class TestEmbeddingQuality:
     @pytest.mark.ai_quality
     def test_embedding_similarity_distribution(self, rag_engine):
         from app.pipeline.intelligence.rag_engine import _DeterministicEmbeddingModel
+
         model = _DeterministicEmbeddingModel(dimension=128)
         texts = [
             "margin size 1 inch",

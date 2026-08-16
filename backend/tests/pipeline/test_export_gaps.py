@@ -20,11 +20,13 @@ from app.pipeline.export.pdf_exporter import PDFExporter
 # exporter.py gap coverage
 # ===========================================================================
 
+
 class TestExporterProcessEdgeCases:
     """Cover uncovered branches in Exporter.process()."""
 
     def _make_doc(self, output_path="/tmp/output.docx", formatting_options=None):
         from app.models import PipelineDocument
+
         doc = MagicMock(spec=PipelineDocument)
         doc.document_id = "doc1"
         doc.original_filename = "test.docx"
@@ -68,7 +70,9 @@ class TestExporterProcessEdgeCases:
 
     def test_process_markdown_export(self):
         """Lines 46-47: md export from output_path."""
-        doc = self._make_doc(output_path="/tmp/output.docx", formatting_options={"export_formats": ["docx", "markdown"]})
+        doc = self._make_doc(
+            output_path="/tmp/output.docx", formatting_options={"export_formats": ["docx", "markdown"]}
+        )
         e = Exporter()
         with patch.object(e, "export") as mock_exp, patch.object(e, "export_markdown") as mock_md:
             mock_exp.return_value = "/tmp/output.docx"
@@ -89,7 +93,10 @@ class TestExporterProcessEdgeCases:
         """Lines 54-55: PDF export failure caught."""
         doc = self._make_doc(output_path="/tmp/output.docx", formatting_options={"export_formats": ["docx", "pdf"]})
         e = Exporter()
-        with patch.object(e, "export") as mock_exp, patch.object(e.pdf_exporter, "convert_to_pdf", side_effect=Exception("fail")):
+        with (
+            patch.object(e, "export") as mock_exp,
+            patch.object(e.pdf_exporter, "convert_to_pdf", side_effect=Exception("fail")),
+        ):
             mock_exp.return_value = "/tmp/output.docx"
             result = e.process(doc)
             assert result is doc
@@ -118,7 +125,7 @@ class TestExporterProcessEdgeCases:
         """Cover all format branches at once."""
         doc = self._make_doc(
             output_path="/tmp/output.docx",
-            formatting_options={"export_formats": ["docx", "json", "markdown", "pdf", "html", "latex"]}
+            formatting_options={"export_formats": ["docx", "json", "markdown", "pdf", "html", "latex"]},
         )
         e = Exporter()
         with (
@@ -143,11 +150,13 @@ class TestExporterProcessEdgeCases:
             mock_tex.assert_called_once()
             assert result is doc
 
+
 class TestExporterHtmlBranches:
     """Cover uncovered branches in export_html."""
 
     def _make_doc(self, title="Doc", blocks=None, references=None):
         from app.models import PipelineDocument
+
         doc = MagicMock(spec=PipelineDocument)
         doc.document_id = "d1"
         doc.output_path = "/tmp/out.docx"
@@ -234,11 +243,13 @@ class TestExporterHtmlBranches:
         with open(out) as f:
             assert "<title>Document</title>" in f.read()
 
+
 class TestExporterLatexBranches:
     """Cover uncovered branches in export_latex."""
 
     def _make_doc(self, output_path="/tmp/in.docx", template=None):
         from app.models import PipelineDocument
+
         doc = MagicMock(spec=PipelineDocument)
         doc.document_id = "d1"
         doc.output_path = output_path
@@ -310,12 +321,14 @@ class TestExporterLatexBranches:
                 result = e.export_latex(doc, str(tmp_path / "out.tex"))
                 assert result is None
 
+
 class TestExporterGetExportFormatsGaps:
     """Cover remaining branches in _get_export_formats."""
 
     def test_empty_format_name_skipped(self):
         """Line 200: empty format name filtered."""
         from app.models import PipelineDocument
+
         doc = MagicMock(spec=PipelineDocument)
         doc.formatting_options = {"export_formats": ["docx", "", "json"]}
         doc.document_id = "d1"
@@ -327,6 +340,7 @@ class TestExporterGetExportFormatsGaps:
     def test_duplicate_format_deduplicated(self):
         """Duplicate format names removed."""
         from app.models import PipelineDocument
+
         doc = MagicMock(spec=PipelineDocument)
         doc.formatting_options = {"export_formats": ["docx", "json", "docx"]}
         doc.document_id = "d1"
@@ -334,13 +348,26 @@ class TestExporterGetExportFormatsGaps:
         assert result.count("docx") == 1
         assert result.count("json") == 1
 
+
 class TestExporterBuildMarkdownGaps:
     """Cover remaining branches in _build_markdown."""
 
     _UNSET = object()
 
-    def _make_doc(self, title="Paper", authors=None, template=_UNSET, keywords=None, abstract=None, affiliations=None, doi=None, blocks=None, references=None):
+    def _make_doc(
+        self,
+        title="Paper",
+        authors=None,
+        template=_UNSET,
+        keywords=None,
+        abstract=None,
+        affiliations=None,
+        doi=None,
+        blocks=None,
+        references=None,
+    ):
         from app.models import PipelineDocument
+
         doc = MagicMock(spec=PipelineDocument)
         doc.document_id = "d1"
         doc.original_filename = "test.docx"
@@ -394,17 +421,29 @@ class TestExporterBuildMarkdownGaps:
         md = Exporter()._build_markdown(self._make_doc(title="Paper", authors=[], keywords=["ai", "nlp"]))
         assert "**Keywords:** ai, nlp" in md
 
+
 # ===========================================================================
 # jats_generator.py gap coverage
 # ===========================================================================
+
 
 class TestJATSGeneratorGaps:
     """Cover all uncovered lines in jats_generator.py."""
 
     _DEFAULT_AUTHORS = ["John Doe"]
 
-    def _doc(self, title="Test", authors=_DEFAULT_AUTHORS, publication_date=None, volume=None,
-             issue=None, abstract=None, blocks=None, references=None, equations=None):
+    def _doc(
+        self,
+        title="Test",
+        authors=_DEFAULT_AUTHORS,
+        publication_date=None,
+        volume=None,
+        issue=None,
+        abstract=None,
+        blocks=None,
+        references=None,
+        equations=None,
+    ):
         doc = MagicMock()
         doc.metadata.title = title
         doc.metadata.authors = authors if authors is not self._DEFAULT_AUTHORS else ["John Doe"]
@@ -526,7 +565,8 @@ class TestJATSGeneratorGaps:
         """Lines 149-159: disp-formula with mathml."""
         eq = MagicMock(
             mathml="<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>E</mi></math>",
-            equation_id="eq1", is_block=True
+            equation_id="eq1",
+            is_block=True,
         )
         xml = JATSGenerator().to_xml(self._doc(equations=[eq]))
         assert "disp-formula" in xml
@@ -537,7 +577,8 @@ class TestJATSGeneratorGaps:
         """inline-formula for non-block equation."""
         eq = MagicMock(
             mathml="<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>x</mi></math>",
-            equation_id="eq2", is_block=False
+            equation_id="eq2",
+            is_block=False,
         )
         xml = JATSGenerator().to_xml(self._doc(equations=[eq]))
         assert "inline-formula" in xml
@@ -549,9 +590,11 @@ class TestJATSGeneratorGaps:
         xml = JATSGenerator().to_xml(self._doc(equations=[eq]))
         assert "disp-formula" in xml
 
+
 # ===========================================================================
 # latex_exporter.py gap coverage
 # ===========================================================================
+
 
 class TestEscapeLatex:
     """Cover escape_latex function."""
@@ -578,6 +621,7 @@ class TestEscapeLatex:
         assert r"\textbackslash{}" in r
         assert r"\textasciitilde{}" in r
 
+
 class TestResolvePandocBinary:
     """Cover _resolve_pandoc_binary."""
 
@@ -594,6 +638,7 @@ class TestResolvePandocBinary:
         with patch.dict(os.environ, {}, clear=True):
             with patch("app.pipeline.export.latex_exporter.shutil.which", return_value="/usr/bin/pandoc"):
                 assert _resolve_pandoc_binary() == "/usr/bin/pandoc"
+
 
 class TestConvertViaPandoc:
     """Cover _convert_via_pandoc."""
@@ -630,13 +675,26 @@ class TestConvertViaPandoc:
             with patch("subprocess.run", side_effect=OSError("exec format error")):
                 assert _convert_via_pandoc("/in.docx", str(tmp_path / "out.tex"), 120) is False
 
+
 class TestLaTeXExporterExportFromDocument:
     """Cover export_from_document and all _write_* methods."""
 
-    def _make_doc(self, title="Paper", authors=None, abstract=None, keywords=None,
-                  blocks=None, figures=None, tables=None, equations=None,
-                  references=None, template_name="default", publication_date=None):
+    def _make_doc(
+        self,
+        title="Paper",
+        authors=None,
+        abstract=None,
+        keywords=None,
+        blocks=None,
+        figures=None,
+        tables=None,
+        equations=None,
+        references=None,
+        template_name="default",
+        publication_date=None,
+    ):
         from app.models import PipelineDocument
+
         doc = MagicMock(spec=PipelineDocument)
         doc.template = MagicMock(template_name=template_name) if template_name else None
         meta = MagicMock()
@@ -656,6 +714,7 @@ class TestLaTeXExporterExportFromDocument:
     @staticmethod
     def _block(block_id="b1", index=0, text="Hello", block_type="body"):
         from app.models import Block
+
         b = MagicMock(spec=Block)
         b.block_id = block_id
         b.index = index
@@ -778,8 +837,9 @@ class TestLaTeXExporterExportFromDocument:
 
     def test_write_figures_with_image_data(self, tmp_path):
         """Lines 234-248: figure with image data."""
-        fig = MagicMock(index=0, caption_text="Fig 1. Results", image_data=b"pngdata",
-                        image_format="png", label="fig:results")
+        fig = MagicMock(
+            index=0, caption_text="Fig 1. Results", image_data=b"pngdata", image_format="png", label="fig:results"
+        )
         doc = self._make_doc(figures=[fig])
         lines = []
         LaTeXExporter()._write_figures(lines, doc, out_dir=tmp_path)
@@ -822,10 +882,16 @@ class TestLaTeXExporterExportFromDocument:
 
     def test_write_tables_with_rows(self, tmp_path):
         """Lines 251-269: table with rows, header, caption."""
-        tbl = Table(table_id="t1", num_rows=2, num_cols=2, index=0, block_index=0,
-                    caption_text="Table 1. Data",
-                    data=[["A", "B"], ["1", "2"]],
-                    rows=[["A", "B"], ["1", "2"]])
+        tbl = Table(
+            table_id="t1",
+            num_rows=2,
+            num_cols=2,
+            index=0,
+            block_index=0,
+            caption_text="Table 1. Data",
+            data=[["A", "B"], ["1", "2"]],
+            rows=[["A", "B"], ["1", "2"]],
+        )
         doc = self._make_doc(tables=[tbl])
         lines = []
         LaTeXExporter()._write_tables(lines, doc)
@@ -839,8 +905,7 @@ class TestLaTeXExporterExportFromDocument:
 
     def test_write_tables_no_rows(self, tmp_path):
         """Table without rows still produces table shell."""
-        tbl = Table(table_id="t1", num_rows=0, num_cols=0, index=0, block_index=0,
-                    caption_text="T1", data=[], rows=[])
+        tbl = Table(table_id="t1", num_rows=0, num_cols=0, index=0, block_index=0, caption_text="T1", data=[], rows=[])
         doc = self._make_doc(tables=[tbl])
         lines = []
         LaTeXExporter()._write_tables(lines, doc)
@@ -850,8 +915,7 @@ class TestLaTeXExporterExportFromDocument:
 
     def test_write_tables_no_caption(self):
         """Table without caption uses 'Table' as default."""
-        tbl = Table(table_id="t1", num_rows=0, num_cols=0, index=0, block_index=0,
-                    caption_text=None, data=[], rows=[])
+        tbl = Table(table_id="t1", num_rows=0, num_cols=0, index=0, block_index=0, caption_text=None, data=[], rows=[])
         doc = self._make_doc(tables=[tbl])
         lines = []
         LaTeXExporter()._write_tables(lines, doc)
@@ -860,7 +924,14 @@ class TestLaTeXExporterExportFromDocument:
 
     def test_write_equations(self):
         """Lines 272-282: equations."""
-        eq1 = Equation(equation_id="e1", index=0, text=r"\begin{equation}E=mc^2\end{equation}", mathml=None, omml=None, is_block=True)
+        eq1 = Equation(
+            equation_id="e1",
+            index=0,
+            text=r"\begin{equation}E=mc^2\end{equation}",
+            mathml=None,
+            omml=None,
+            is_block=True,
+        )
         eq2 = Equation(equation_id="e2", index=1, text="x+y", mathml=None, omml=None, is_block=True)
         doc = self._make_doc(equations=[eq1, eq2])
         lines = []
@@ -898,10 +969,22 @@ class TestLaTeXExporterExportFromDocument:
 
     def test_write_bibtex_with_metadata(self, tmp_path):
         """Lines 287-321: full bibtex with metadata."""
-        ref = Reference(reference_id="r1", citation_key="R1", raw_text="Smith 2023",
-                        index=0, year=2023, authors=["Smith"], title="Paper",
-                        metadata={"authors": "Smith, J.", "title": "Paper Title",
-                                  "year": 2023, "journal": "JMLR", "doi": "10.1234/abc"})
+        ref = Reference(
+            reference_id="r1",
+            citation_key="R1",
+            raw_text="Smith 2023",
+            index=0,
+            year=2023,
+            authors=["Smith"],
+            title="Paper",
+            metadata={
+                "authors": "Smith, J.",
+                "title": "Paper Title",
+                "year": 2023,
+                "journal": "JMLR",
+                "doi": "10.1234/abc",
+            },
+        )
         doc = self._make_doc(references=[ref])
         bib_path = tmp_path / "refs.bib"
         LaTeXExporter()._write_bibtex(doc, bib_path)
@@ -915,8 +998,16 @@ class TestLaTeXExporterExportFromDocument:
 
     def test_write_bibtex_without_title(self, tmp_path):
         """Lines 317-318: no title, use @misc with note."""
-        ref = Reference(reference_id="r1", citation_key="R1", raw_text="Smith 2023",
-                        index=0, year=2023, authors=["Smith"], title=None, metadata={})
+        ref = Reference(
+            reference_id="r1",
+            citation_key="R1",
+            raw_text="Smith 2023",
+            index=0,
+            year=2023,
+            authors=["Smith"],
+            title=None,
+            metadata={},
+        )
         doc = self._make_doc(references=[ref])
         bib_path = tmp_path / "refs.bib"
         LaTeXExporter()._write_bibtex(doc, bib_path)
@@ -926,10 +1017,15 @@ class TestLaTeXExporterExportFromDocument:
 
     def test_write_bibtex_multiple_entries(self, tmp_path):
         """Multiple references produce multiple bib entries."""
-        r1 = Reference(reference_id="r1", citation_key="R1", raw_text="First", index=0,
-                       title="Paper A", metadata={"title": "Paper A", "authors": "Alice"})
-        r2 = Reference(reference_id="r2", citation_key="R2", raw_text="Second", index=1,
-                       title=None, metadata={})
+        r1 = Reference(
+            reference_id="r1",
+            citation_key="R1",
+            raw_text="First",
+            index=0,
+            title="Paper A",
+            metadata={"title": "Paper A", "authors": "Alice"},
+        )
+        r2 = Reference(reference_id="r2", citation_key="R2", raw_text="Second", index=1, title=None, metadata={})
         doc = self._make_doc(references=[r1, r2])
         bib_path = tmp_path / "refs.bib"
         LaTeXExporter()._write_bibtex(doc, bib_path)
@@ -947,8 +1043,14 @@ class TestLaTeXExporterExportFromDocument:
 
     def test_export_from_document_with_references(self, tmp_path):
         """export_from_document with references includes bibliography."""
-        ref = Reference(reference_id="r1", citation_key="R1", raw_text="Smith 2023",
-                        index=0, title="Paper", metadata={"title": "Paper"})
+        ref = Reference(
+            reference_id="r1",
+            citation_key="R1",
+            raw_text="Smith 2023",
+            index=0,
+            title="Paper",
+            metadata={"title": "Paper"},
+        )
         doc = self._make_doc(title="Test", references=[ref])
         exporter = LaTeXExporter()
         result = exporter.export_from_document(doc, str(tmp_path))
@@ -957,8 +1059,14 @@ class TestLaTeXExporterExportFromDocument:
 
     def test_export_from_document_ieee_template_with_refs(self, tmp_path):
         """IEEE template uses bibliography command."""
-        ref = Reference(reference_id="r1", citation_key="R1", raw_text="Smith 2023",
-                        index=0, title="Paper", metadata={"title": "Paper"})
+        ref = Reference(
+            reference_id="r1",
+            citation_key="R1",
+            raw_text="Smith 2023",
+            index=0,
+            title="Paper",
+            metadata={"title": "Paper"},
+        )
         doc = self._make_doc(title="Test", template_name="ieee", references=[ref])
         exporter = LaTeXExporter()
         result = exporter.export_from_document(doc, str(tmp_path))
@@ -973,9 +1081,11 @@ class TestLaTeXExporterExportFromDocument:
         content = Path(result).read_text(encoding="utf-8")
         assert r"\documentclass[11pt,a4paper]{article}" in content
 
+
 # ===========================================================================
 # pdf_exporter.py gap coverage
 # ===========================================================================
+
 
 class TestPDFExporterGaps:
     """Cover uncovered lines in pdf_exporter.py."""
@@ -983,6 +1093,7 @@ class TestPDFExporterGaps:
     def test_weasyprint_with_paragraphs(self, tmp_path):
         """Lines 54-56: paragraphs built from docx paragraphs."""
         import types
+
         wp_mod = types.ModuleType("weasyprint")
         wp_mod.HTML = MagicMock()
         docx_mod = types.ModuleType("docx")
@@ -1001,6 +1112,7 @@ class TestPDFExporterGaps:
     def test_weasyprint_empty_paragraphs(self, tmp_path):
         """Lines 58-61: empty paragraphs add empty <p>."""
         import types
+
         wp_mod = types.ModuleType("weasyprint")
         wp_mod.HTML = MagicMock()
         docx_mod = types.ModuleType("docx")
@@ -1017,6 +1129,7 @@ class TestPDFExporterGaps:
     def test_weasyprint_no_paragraphs(self, tmp_path):
         """No paragraphs at all."""
         import types
+
         wp_mod = types.ModuleType("weasyprint")
         wp_mod.HTML = MagicMock()
         docx_mod = types.ModuleType("docx")
@@ -1031,6 +1144,7 @@ class TestPDFExporterGaps:
     def test_weasyprint_pdf_not_created_returns_none(self, tmp_path):
         """Line 72: PDF not created returns None."""
         import types
+
         wp_mod = types.ModuleType("weasyprint")
         wp_mod.HTML = MagicMock()
         docx_mod = types.ModuleType("docx")
@@ -1058,6 +1172,7 @@ class TestPDFExporterGaps:
     def test_docx2pdf_fallback_success(self, tmp_path):
         """Lines 127-129: docx2pdf fallback succeeds."""
         import types
+
         d2p_mod = types.ModuleType("docx2pdf")
         d2p_mod.convert = MagicMock()
         f = tmp_path / "in.docx"
@@ -1076,6 +1191,7 @@ class TestPDFExporterGaps:
     def test_docx2pdf_fallback_fails_raises(self, tmp_path):
         """Line 130-133: docx2pdf fails, RuntimeError raised."""
         import types
+
         d2p_mod = types.ModuleType("docx2pdf")
         d2p_mod.convert = MagicMock(side_effect=Exception("docx2pdf error"))
         f = tmp_path / "in.docx"
@@ -1092,6 +1208,7 @@ class TestPDFExporterGaps:
     def test_docx2pdf_fallback_pdf_not_found_raises(self, tmp_path):
         """Line 130: PDF not found after docx2pdf conversion."""
         import types
+
         d2p_mod = types.ModuleType("docx2pdf")
         d2p_mod.convert = MagicMock()
         f = tmp_path / "in.docx"

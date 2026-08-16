@@ -15,6 +15,7 @@ Strict SLO gate (configured via environment variables):
 - LOCUST_TARGET_RPS (default: 100)
 - LOCUST_MAX_FAIL_RATIO (default: 0.0)
 """
+
 from __future__ import annotations
 
 import json
@@ -177,9 +178,6 @@ def enforce_slo_thresholds(environment, **kwargs):
     if violations:
         print("Locust SLO check failed:", "; ".join(violations))
     else:
-        print(
-            "Locust SLO check passed: "
-            f"p95={p95_ms:.2f}ms, fail_ratio={fail_ratio:.4f}, rps={current_rps:.2f}"
-        )
+        print(f"Locust SLO check passed: p95={p95_ms:.2f}ms, fail_ratio={fail_ratio:.4f}, rps={current_rps:.2f}")
 
     environment.process_exit_code = 1 if violations else 0

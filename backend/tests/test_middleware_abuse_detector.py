@@ -12,6 +12,7 @@ class TestAbuseDetector:
         with patch("app.middleware.abuse_detector.RedisCache") as mock_cache:
             mock_cache.return_value.client = mock_redis
             from app.middleware.abuse_detector import AbuseDetector
+
             detector = AbuseDetector()
             count = detector._increment_bucket("test:ip", window_seconds=300)
             assert count == 1
@@ -24,6 +25,7 @@ class TestAbuseDetector:
         with patch("app.middleware.abuse_detector.RedisCache") as mock_cache:
             mock_cache.return_value.client = mock_redis
             from app.middleware.abuse_detector import AbuseDetector
+
             detector = AbuseDetector()
             detector._redis_warning_logged = False
             count = detector._increment_bucket("test:ip", window_seconds=300)
@@ -33,6 +35,7 @@ class TestAbuseDetector:
         with patch("app.middleware.abuse_detector.RedisCache") as mock_cache:
             mock_cache.return_value.client = None
             from app.middleware.abuse_detector import AbuseDetector
+
             detector = AbuseDetector()
             count = detector._increment_bucket("test:ip", window_seconds=300)
             assert count == 1
@@ -41,6 +44,7 @@ class TestAbuseDetector:
         with patch("app.middleware.abuse_detector.RedisCache") as mock_cache:
             mock_cache.return_value.client = None
             from app.middleware.abuse_detector import AbuseDetector
+
             detector = AbuseDetector()
             detector._increment_bucket("test:ip", window_seconds=300)
             count = detector._increment_bucket("test:ip", window_seconds=300)
@@ -50,6 +54,7 @@ class TestAbuseDetector:
         with patch("app.middleware.abuse_detector.RedisCache") as mock_cache:
             mock_cache.return_value.client = None
             from app.middleware.abuse_detector import AbuseDetector
+
             detector = AbuseDetector()
             old = time.time() - 600
             detector._memory[("test:ip", "300")] = [old]
@@ -63,6 +68,7 @@ class TestAbuseDetector:
             with patch("app.middleware.abuse_detector.audit_log_service") as mock_audit:
                 mock_audit.log = AsyncMock()
                 from app.middleware.abuse_detector import AbuseDetector
+
                 detector = AbuseDetector()
                 await detector.record_generation_request("1.2.3.4")
                 mock_audit.log.assert_not_called()
@@ -74,6 +80,7 @@ class TestAbuseDetector:
             with patch("app.middleware.abuse_detector.audit_log_service") as mock_audit:
                 mock_audit.log = AsyncMock()
                 from app.middleware.abuse_detector import AbuseDetector
+
                 detector = AbuseDetector()
                 for _ in range(11):
                     await detector.record_generation_request("1.2.3.4")
@@ -87,6 +94,7 @@ class TestAbuseDetector:
             with patch("app.middleware.abuse_detector.audit_log_service") as mock_audit:
                 mock_audit.log = AsyncMock()
                 from app.middleware.abuse_detector import AbuseDetector
+
                 detector = AbuseDetector()
                 for _ in range(12):
                     await detector.record_generation_request("")
@@ -99,6 +107,7 @@ class TestAbuseDetector:
             with patch("app.middleware.abuse_detector.audit_log_service") as mock_audit:
                 mock_audit.log = AsyncMock()
                 from app.middleware.abuse_detector import AbuseDetector
+
                 detector = AbuseDetector()
                 await detector.record_llm_call("user-123")
                 mock_audit.log.assert_not_called()
@@ -110,6 +119,7 @@ class TestAbuseDetector:
             with patch("app.middleware.abuse_detector.audit_log_service") as mock_audit:
                 mock_audit.log = AsyncMock()
                 from app.middleware.abuse_detector import AbuseDetector
+
                 detector = AbuseDetector()
                 for _ in range(51):
                     await detector.record_llm_call("user-123")
@@ -123,6 +133,7 @@ class TestAbuseDetector:
             with patch("app.middleware.abuse_detector.audit_log_service") as mock_audit:
                 mock_audit.log = AsyncMock()
                 from app.middleware.abuse_detector import AbuseDetector
+
                 detector = AbuseDetector()
                 for _ in range(51):
                     await detector.record_llm_call(None)

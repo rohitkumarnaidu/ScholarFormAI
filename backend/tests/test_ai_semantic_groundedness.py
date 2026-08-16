@@ -33,7 +33,7 @@ def _mock_embed(text: str) -> list[float]:
     ngrams = set()
     for n in (2, 3):
         for i in range(len(normalized) - n + 1):
-            ngrams.add(normalized[i:i + n])
+            ngrams.add(normalized[i : i + n])
     if not ngrams:
         return [0.0] * _EMBEDDING_DIM
     # Hash each n-gram into a position and value
@@ -73,6 +73,7 @@ def _embedding_groundedness(text: str, sources: list[str], threshold: float = 0.
       - confidence: confidence based on similarity strength
     """
     import re
+
     if not text.strip():
         return {
             "claim_scores": [],
@@ -155,7 +156,9 @@ class TestEmbeddingGroundedness:
 
     @pytest.mark.ai_quality
     def test_verbatim_quote_near_perfect_grounding(self):
-        source_text = "Quantum entanglement allows particles to be correlated in ways that classical physics cannot explain."
+        source_text = (
+            "Quantum entanglement allows particles to be correlated in ways that classical physics cannot explain."
+        )
         result = _embedding_groundedness(source_text, [source_text])
         assert result["mean_similarity"] >= 0.8, f"Verbatim should have high similarity: {result['mean_similarity']}"
         assert result["grounded"] is True
@@ -369,8 +372,10 @@ class TestPerformance:
 #  Helper used for comparison in test_synonym_usage_detected_as_grounded
 # ---------------------------------------------------------------------------
 
+
 def _keyword_overlap_simple(text: str, source: str) -> float:
     import re
+
     text_tokens = set(re.findall(r"\b[a-zA-Z]{4,}\b", text.lower()))
     source_tokens = set(re.findall(r"\b[a-zA-Z]{4,}\b", source.lower()))
     if not text_tokens:

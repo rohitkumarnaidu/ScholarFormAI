@@ -8,6 +8,7 @@ Backup verification script — checks that Supabase backups are accessible and v
 Usage:
     python scripts/verify_backup.py
 """
+
 import logging
 import os
 import sys
@@ -45,7 +46,7 @@ def verify_backup() -> bool:
             for table in critical_tables:
                 result = conn.execute(
                     text("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = :table_name)"),
-                    {"table_name": table}
+                    {"table_name": table},
                 )
                 exists = result.scalar()
                 status = "✅" if exists else "❌"

@@ -11,6 +11,7 @@ from app.models.issue_settings import IssueSettings
 
 logger = logging.getLogger(__name__)
 
+
 class IntegrationsService:
     @staticmethod
     async def dispatch_webhooks(db: Session, issue: Issue) -> None:
@@ -19,14 +20,14 @@ class IntegrationsService:
         """
         result = db.execute(select(IssueSettings).limit(1))
         settings = result.scalar_one_or_none()
-        
+
         if not settings:
             return
 
         async with httpx.AsyncClient() as client:
             if settings.slack_webhook_url:
                 await IntegrationsService._send_slack(client, settings.slack_webhook_url, issue)
-                
+
             if settings.discord_webhook_url:
                 await IntegrationsService._send_discord(client, settings.discord_webhook_url, issue)
 

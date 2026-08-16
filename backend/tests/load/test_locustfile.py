@@ -9,6 +9,7 @@ and provides a smoke-test that skips without a running backend.
 
 Run full load tests with: locust -f tests/load/locustfile.py --headless -u 10 -t 30s
 """
+
 from __future__ import annotations
 
 import socket
@@ -28,6 +29,7 @@ _LOCUST_AVAILABLE = False
 _LOCUST_ERROR = None
 try:
     from locust import HttpUser, User
+
     _LOCUST_AVAILABLE = True
 except RecursionError as exc:
     _LOCUST_ERROR = f"Locust incompatible with this Python version (gevent/SSL conflict): {exc}"
@@ -41,6 +43,7 @@ def _locustfile_available():
         return False
     try:
         from tests.load import locustfile
+
         return locustfile is not None
     except Exception:
         return False
@@ -60,6 +63,7 @@ def locustfile_module():
     if not _LOCUST_AVAILABLE:
         pytest.skip(_LOCUST_ERROR or "Locust not available")
     from tests.load import locustfile
+
     return locustfile
 
 
@@ -107,11 +111,13 @@ class TestLocustSmokeBackend:
     def test_health_endpoint(self):
         """Smoke test: /health returns 200."""
         import requests
+
         resp = requests.get(f"{BASE_URL}/health", timeout=5)
         assert resp.status_code == 200
 
     def test_templates_endpoint(self):
         """Smoke test: /api/v1/templates returns 200."""
         import requests
+
         resp = requests.get(f"{BASE_URL}/api/v1/templates", timeout=5)
         assert resp.status_code == 200

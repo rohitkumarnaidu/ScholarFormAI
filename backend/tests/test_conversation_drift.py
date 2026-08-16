@@ -17,12 +17,13 @@ import pytest
 #  Helpers
 # ===================================================================
 
+
 def _build_turns(n: int, base_topic: str = "academic formatting") -> list[dict[str, str]]:
     """Build *n* user/assistant turn pairs on a consistent topic."""
     messages = [{"role": "system", "content": f"You are a {base_topic} assistant."}]
     for i in range(n):
-        messages.append({"role": "user", "content": f"Turn {i+1}: adjust the {base_topic} settings."})
-        messages.append({"role": "assistant", "content": f"Response {i+1}: applied {base_topic} changes."})
+        messages.append({"role": "user", "content": f"Turn {i + 1}: adjust the {base_topic} settings."})
+        messages.append({"role": "assistant", "content": f"Response {i + 1}: applied {base_topic} changes."})
     return messages
 
 
@@ -56,6 +57,7 @@ def _topic_change_detected(messages: list[dict[str, str]]) -> bool:
 #  Fixtures
 # ===================================================================
 
+
 @pytest.fixture
 def mock_llm():
     with patch("app.services.llm_service.generate") as mock_gen:
@@ -66,6 +68,7 @@ def mock_llm():
 # ===================================================================
 #  2A — Semantic Drift Measurement
 # ===================================================================
+
 
 class TestSemanticDrift:
     """Measure and threshold semantic drift across conversation turns."""
@@ -166,6 +169,7 @@ class TestSemanticDrift:
 #  2B — Context Retention
 # ===================================================================
 
+
 class TestContextRetention:
     """Key information from early turns must remain accessible in later turns."""
 
@@ -173,10 +177,11 @@ class TestContextRetention:
     @pytest.mark.ai_quality
     def test_early_fact_retained_5_turns(self, mock_llm):
         from app.services.llm_service import _extract_prompts
+
         messages = [{"role": "system", "content": "Citation style: APA 7th. Journal: Nature Genetics."}]
         for i in range(5):
-            messages.append({"role": "user", "content": f"Edit section {i+1}."})
-            messages.append({"role": "assistant", "content": f"Section {i+1} done."})
+            messages.append({"role": "user", "content": f"Edit section {i + 1}."})
+            messages.append({"role": "assistant", "content": f"Section {i + 1} done."})
         messages.append({"role": "user", "content": "What citation style and journal?"})
         system, user = _extract_prompts(messages)
         assert "APA" in system
@@ -186,10 +191,11 @@ class TestContextRetention:
     @pytest.mark.ai_quality
     def test_early_fact_retained_10_turns(self, mock_llm):
         from app.services.llm_service import _extract_prompts
+
         messages = [{"role": "system", "content": "Margin: 1 inch. Font: Times New Roman 12pt."}]
         for i in range(10):
-            messages.append({"role": "user", "content": f"Request {i+1}."})
-            messages.append({"role": "assistant", "content": f"Response {i+1}."})
+            messages.append({"role": "user", "content": f"Request {i + 1}."})
+            messages.append({"role": "assistant", "content": f"Response {i + 1}."})
         messages.append({"role": "user", "content": "What are the margin and font settings?"})
         system, user = _extract_prompts(messages)
         assert "1 inch" in system
@@ -199,10 +205,11 @@ class TestContextRetention:
     @pytest.mark.ai_quality
     def test_early_fact_retained_20_turns(self, mock_llm):
         from app.services.llm_service import _extract_prompts
+
         messages = [{"role": "system", "content": "Target word count: 5000. Abstract required: yes."}]
         for i in range(20):
-            messages.append({"role": "user", "content": f"Q{i+1}"})
-            messages.append({"role": "assistant", "content": f"A{i+1}"})
+            messages.append({"role": "user", "content": f"Q{i + 1}"})
+            messages.append({"role": "assistant", "content": f"A{i + 1}"})
         system, _ = _extract_prompts(messages)
         assert "5000" in system
         assert "Abstract" in system
@@ -211,6 +218,7 @@ class TestContextRetention:
     @pytest.mark.ai_quality
     def test_context_window_within_limit(self):
         from app.services.llm_service import MAX_LLM_INPUT_LENGTH, _extract_prompts
+
         messages = [{"role": "system", "content": "S" * 1000}]
         for _i in range(10):
             messages.append({"role": "user", "content": "X" * 500})
@@ -223,13 +231,20 @@ class TestContextRetention:
     @pytest.mark.ai_quality
     def test_user_preference_survives_edits(self, mock_llm):
         from app.services.llm_service import _extract_prompts
+
         messages = [
             {"role": "system", "content": "You format academic manuscripts."},
             {"role": "user", "content": "I prefer IEEE citation style."},
             {"role": "assistant", "content": "IEEE style set."},
         ]
-        edits = ["Fix abstract", "Update references", "Check margins", "Add keywords",
-                 "Format tables", "Number sections"]
+        edits = [
+            "Fix abstract",
+            "Update references",
+            "Check margins",
+            "Add keywords",
+            "Format tables",
+            "Number sections",
+        ]
         for e in edits:
             messages.append({"role": "user", "content": e})
             messages.append({"role": "assistant", "content": f"{e} done."})
@@ -241,12 +256,13 @@ class TestContextRetention:
     @pytest.mark.ai_quality
     def test_author_list_preserved(self, mock_llm):
         from app.services.llm_service import _extract_prompts
+
         messages = [
             {"role": "system", "content": "Authors: Alice Smith, Bob Jones. Do not change."},
         ]
         for i in range(5):
-            messages.append({"role": "user", "content": f"Edit page {i+1}."})
-            messages.append({"role": "assistant", "content": f"Page {i+1} formatted."})
+            messages.append({"role": "user", "content": f"Edit page {i + 1}."})
+            messages.append({"role": "assistant", "content": f"Page {i + 1} formatted."})
         system, _ = _extract_prompts(messages)
         assert "Alice Smith" in system
         assert "Bob Jones" in system
@@ -255,6 +271,7 @@ class TestContextRetention:
     @pytest.mark.ai_quality
     def test_context_retention_with_mixed_roles(self, mock_llm):
         from app.services.llm_service import _extract_prompts
+
         messages = [
             {"role": "system", "content": "Formatting rules: APA 7th."},
             {"role": "user", "content": "Set title."},
@@ -270,6 +287,7 @@ class TestContextRetention:
     @pytest.mark.ai_quality
     def test_multiple_system_prompts_merged(self, mock_llm):
         from app.services.llm_service import _extract_prompts
+
         messages = [
             {"role": "system", "content": "Rule A: use IEEE citation style."},
             {"role": "system", "content": "Rule B: target journal is Nature."},
@@ -284,6 +302,7 @@ class TestContextRetention:
     @pytest.mark.ai_quality
     def test_system_prompt_preserved_50_turns(self, mock_llm):
         from app.services.llm_service import _extract_prompts
+
         messages = [{"role": "system", "content": "CRITICAL: Preserve original author list at all times."}]
         for i in range(50):
             messages.append({"role": "user", "content": f"T{i}"})

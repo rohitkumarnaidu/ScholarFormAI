@@ -6,6 +6,7 @@
 Backend tests for the Document Generator pipeline.
 Tests: PromptBuilder, ContentParser, DocumentGenerator, and the generator router.
 """
+
 from __future__ import annotations
 
 import json
@@ -14,9 +15,11 @@ import pytest
 
 # ─── PromptBuilder tests ────────────────────────────────────────────────────
 
+
 class TestPromptBuilder:
     def setup_method(self):
         from app.pipeline.generation.prompt_builder import PromptBuilder
+
         self.pb = PromptBuilder()
 
     def test_academic_paper_contains_title(self):
@@ -77,16 +80,20 @@ class TestPromptBuilder:
 
 # ─── ContentParser tests ─────────────────────────────────────────────────────
 
+
 class TestContentParser:
     def setup_method(self):
         from app.pipeline.generation.content_parser import ContentParser
+
         self.cp = ContentParser()
 
     def test_parse_plain_json(self):
-        raw = json.dumps([
-            {"type": "TITLE", "content": "My Paper", "level": 0},
-            {"type": "BODY", "content": "Introduction text.", "level": 0},
-        ])
+        raw = json.dumps(
+            [
+                {"type": "TITLE", "content": "My Paper", "level": 0},
+                {"type": "BODY", "content": "Introduction text.", "level": 0},
+            ]
+        )
         blocks = self.cp.parse(raw, "academic_paper")
         assert len(blocks) == 2
         assert blocks[0]["type"] == "TITLE"
@@ -125,11 +132,13 @@ class TestContentParser:
 
 # ─── DocumentGenerator unit tests ────────────────────────────────────────────
 
+
 class TestDocumentGenerator:
     def setup_method(self):
         from unittest.mock import patch
 
         from app.pipeline.generation.document_generator import DocumentGenerator
+
         self._ds_patch = patch("app.pipeline.generation.document_generator.DocumentService")
         self._ds_mock = self._ds_patch.start()
         self._ds_mock.create_document.return_value = {"id": "test"}
@@ -142,6 +151,7 @@ class TestDocumentGenerator:
 
     def teardown_method(self):
         import unittest.mock
+
         unittest.mock.patch.stopall()
 
     @pytest.mark.asyncio
@@ -159,9 +169,11 @@ class TestDocumentGenerator:
     @pytest.mark.asyncio
     async def test_get_status_for_valid_job(self):
         job_id = await self.dg.start_job(
-            doc_type="resume", template="none",
+            doc_type="resume",
+            template="none",
             metadata={"name": "Test User"},
-            options={}, user_id="user1",
+            options={},
+            user_id="user1",
         )
         status = self.dg.get_status(job_id)
         assert status["job_id"] == job_id
@@ -182,9 +194,11 @@ class TestDocumentGenerator:
 
 # ─── Router schema validation tests ──────────────────────────────────────────
 
+
 class TestGeneratorSchemas:
     def test_generate_request_valid(self):
         from app.schemas.document import GenerateRequest, GenerationOptions
+
         req = GenerateRequest(
             doc_type="academic_paper",
             template="ieee",
@@ -196,6 +210,7 @@ class TestGeneratorSchemas:
 
     def test_generate_request_defaults(self):
         from app.schemas.document import GenerateRequest
+
         req = GenerateRequest(
             doc_type="resume",
             template="none",
@@ -206,6 +221,7 @@ class TestGeneratorSchemas:
 
     def test_generate_response_shape(self):
         from app.schemas.document import GenerateResponse
+
         resp = GenerateResponse(job_id="abc-123", status="pending", message="Queued")
         assert resp.job_id == "abc-123"
         assert resp.status == "pending"

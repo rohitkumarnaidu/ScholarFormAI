@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 class TestLooksLikeHeading:
     def test_heading_candidate_metadata(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         block = MagicMock()
         block.text = "Some text"
@@ -12,6 +13,7 @@ class TestLooksLikeHeading:
 
     def test_all_caps_short_text(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         block = MagicMock()
         block.text = "INTRODUCTION"
@@ -20,6 +22,7 @@ class TestLooksLikeHeading:
 
     def test_title_case_short_text(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         block = MagicMock()
         block.text = "Related Work"
@@ -28,6 +31,7 @@ class TestLooksLikeHeading:
 
     def text_ending_with_colon(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         block = MagicMock()
         block.text = "Methods:"
@@ -36,6 +40,7 @@ class TestLooksLikeHeading:
 
     def test_long_text_not_heading(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         block = MagicMock()
         block.text = "This is a very long paragraph that clearly is not a heading " * 5
@@ -47,6 +52,7 @@ class TestResolveHeadingType:
     def test_level_2(self):
         from app.models import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         block = MagicMock()
         block.metadata = {"level": 2}
@@ -57,6 +63,7 @@ class TestResolveHeadingType:
     def test_default_level_1(self):
         from app.models import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         block = MagicMock()
         block.metadata = {}
@@ -69,6 +76,7 @@ class TestMapScibertLabel:
     def test_title_mapping(self):
         from app.models import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         block = MagicMock()
         block.text = "My Paper"
@@ -78,6 +86,7 @@ class TestMapScibertLabel:
     def test_abstract_heading(self):
         from app.models import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         block = MagicMock()
         block.text = "Abstract"
@@ -87,6 +96,7 @@ class TestMapScibertLabel:
     def test_abstract_body(self):
         from app.models import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         block = MagicMock()
         block.text = "This paper discusses..."
@@ -98,11 +108,13 @@ class TestMapScibertLabel:
 class TestIsLikelyAffiliation:
     def test_university_keyword(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         assert cc._is_likely_affiliation("University of Cambridge")
 
     def test_no_match(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         assert not cc._is_likely_affiliation("John Smith")
 
@@ -110,6 +122,7 @@ class TestIsLikelyAffiliation:
 class TestFindFirstSectionIndex:
     def test_finds_heading_candidate(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b1 = MagicMock()
         b1.text = "John Smith"
@@ -124,6 +137,7 @@ class TestFindFirstSectionIndex:
 
     def test_finds_fallback_keyword(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.text = "Introduction"
@@ -133,6 +147,7 @@ class TestFindFirstSectionIndex:
 
     def test_limits_front_matter_to_30(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         blocks = [MagicMock(text="Block", metadata={}) for _ in range(35)]
         idx = cc._find_first_section_index(blocks)
@@ -140,6 +155,7 @@ class TestFindFirstSectionIndex:
 
     def test_breaks_on_long_text(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.text = "X" * 400
@@ -151,6 +167,7 @@ class TestFindFirstSectionIndex:
 class TestFindReferencesStartIndex:
     def test_finds_references_heading(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.text = "References"
@@ -161,6 +178,7 @@ class TestFindReferencesStartIndex:
 
     def test_skips_non_heading(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.text = "References"
@@ -170,6 +188,7 @@ class TestFindReferencesStartIndex:
 
     def test_skips_long_text(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.text = "See references for more info on this topic"
@@ -182,16 +201,19 @@ class TestFindReferencesStartIndex:
 class TestMatchGrobidAuthor:
     def test_full_name_match(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         assert cc._match_grobid_author("John Smith", [{"full_name": "John Smith", "given": "John", "family": "Smith"}])
 
     def test_no_match(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         assert not cc._match_grobid_author("Unknown Text", [{"full_name": "John Smith"}])
 
     def test_family_name_match(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         assert cc._match_grobid_author("Smith", [{"full_name": "", "given": "John", "family": "Smith"}])
 
@@ -199,11 +221,13 @@ class TestMatchGrobidAuthor:
 class TestMatchGrobidAffiliation:
     def test_full_match(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         assert cc._match_grobid_affiliation("MIT", ["MIT"])
 
     def test_no_match(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         assert not cc._match_grobid_affiliation("Google", ["MIT"])
 
@@ -212,6 +236,7 @@ class TestNlpClassifyFallback:
     def test_footnote_detected(self):
         from app.models import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         block = MagicMock()
         block.block_type = BlockType.UNKNOWN
@@ -223,6 +248,7 @@ class TestNlpClassifyFallback:
     def test_equation_detected(self):
         from app.models import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         block = MagicMock()
         block.block_type = BlockType.UNKNOWN
@@ -234,6 +260,7 @@ class TestNlpClassifyFallback:
     def test_already_classified_skipped(self):
         from app.models import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         block = MagicMock()
         block.block_type = BlockType.TITLE
@@ -246,6 +273,7 @@ class TestNlpClassifyFallback:
 class TestProcess:
     def test_empty_blocks_returns_doc(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         doc = MagicMock()
         doc.blocks = []
@@ -256,6 +284,7 @@ class TestProcess:
 
     def test_exception_handled(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         doc = MagicMock()
         doc.blocks = [MagicMock()]
@@ -272,6 +301,7 @@ class TestProcess:
 class TestConvenienceFunction:
     def test_classify_content(self):
         from app.pipeline.classification.classifier import classify_content
+
         with patch("app.pipeline.classification.classifier.ContentClassifier.process") as mock_proc:
             doc = MagicMock()
             mock_proc.return_value = doc

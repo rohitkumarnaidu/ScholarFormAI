@@ -24,6 +24,7 @@ from app.utils.dependencies import get_current_user, get_optional_user
 # Shared fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture(autouse=True)
 def mock_heavy_services():
     """Mock all external/AI services to avoid real network calls during smoke tests."""
@@ -34,9 +35,10 @@ def mock_heavy_services():
         patch("app.db.supabase_client.get_supabase_client", return_value=AsyncMock()),
         patch("app.services.llm_service.generate_with_fallback", new=AsyncMock(return_value="Mocked LLM response")),
         patch("app.middleware.rate_limit.redis", MagicMock()),
-        patch("app.services.preview_renderer.preview_renderer.render_preview",
-              return_value={"html": "<p>Mocked</p>", "latency_ms": 5, "warnings": []}),
-
+        patch(
+            "app.services.preview_renderer.preview_renderer.render_preview",
+            return_value={"html": "<p>Mocked</p>", "latency_ms": 5, "warnings": []},
+        ),
     ):
         yield
 
@@ -57,6 +59,7 @@ def client():
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def assert_envelope(payload: dict, expect_success: bool = True):
     assert "data" in payload
@@ -87,6 +90,7 @@ def assert_template_schema(tpl: dict):
 # ===================================================================
 # 2.3 — Health endpoints
 # ===================================================================
+
 
 class TestHealthSmoke:
     def test_root_returns_running(self, client):
@@ -141,6 +145,7 @@ class TestHealthSmoke:
 # 2.1 — Templates endpoint
 # ===================================================================
 
+
 class TestTemplatesSmoke:
     def test_get_template_list_returns_envelope(self, client):
         resp = client.get("/api/v1/templates")
@@ -171,7 +176,9 @@ class TestTemplatesSmoke:
         assert resp.status_code == 422
 
     def test_csl_search_with_query_returns_envelope(self, client):
-        with patch("app.routers.v1.templates.search_styles", new=AsyncMock(return_value=[{"id": "ieee", "title": "IEEE"}])):
+        with patch(
+            "app.routers.v1.templates.search_styles", new=AsyncMock(return_value=[{"id": "ieee", "title": "IEEE"}])
+        ):
             resp = client.get("/api/v1/templates/csl/search", params={"q": "ieee"})
             assert resp.status_code == 200
             assert_envelope(resp.json())
@@ -195,7 +202,9 @@ class TestTemplatesSmoke:
 
     def test_custom_templates_list_returns_envelope(self, client):
         with patch("app.routers.v1.templates._require_db", return_value=MagicMock()) as mock_db:
-            mock_db.return_value.table.return_value.select.return_value.eq.return_value.order.return_value.execute.return_value = MagicMock(data=[])
+            mock_db.return_value.table.return_value.select.return_value.eq.return_value.order.return_value.execute.return_value = MagicMock(
+                data=[]
+            )
             resp = client.get("/api/v1/templates/custom")
             assert resp.status_code == 200
             assert_envelope(resp.json())
@@ -209,6 +218,7 @@ class TestTemplatesSmoke:
 # ===================================================================
 # 2.2 — Document upload endpoint
 # ===================================================================
+
 
 class TestDocumentUploadSmoke:
     def test_upload_requires_file(self, client):
@@ -230,21 +240,34 @@ class TestDocumentUploadSmoke:
         fake_docx = BytesIO(b"fake docx content")
         fake_docx.name = "test.docx"
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.create_document",
-                  new=AsyncMock(return_value={"id": "job-001", "status": "PROCESSING"})),
+            patch(
+                "app.routers.v1.documents_impl.DocumentService.create_document",
+                new=AsyncMock(return_value={"id": "job-001", "status": "PROCESSING"}),
+            ),
             patch("app.routers.v1.documents_impl._require_db", return_value=MagicMock()),
             patch("app.routers.v1.documents_impl._enforce_daily_upload_quota", return_value=None),
-            patch("app.routers.v1.documents_impl._validate_magic_bytes",
-                  new=AsyncMock(return_value=b"fake docx content")),
-            patch("app.routers.v1.documents_impl._scan_uploaded_file",
-                  new=AsyncMock(return_value={"clean": True, "result": "clean"})),
+            patch(
+                "app.routers.v1.documents_impl._validate_magic_bytes", new=AsyncMock(return_value=b"fake docx content")
+            ),
+            patch(
+                "app.routers.v1.documents_impl._scan_uploaded_file",
+                new=AsyncMock(return_value={"clean": True, "result": "clean"}),
+            ),
             patch("app.pipeline.orchestrator.PipelineOrchestrator"),
-            patch("app.services.enhancement_manager.enhancement_manager.dispatch_document_pipeline",
-                  return_value={"mode": "inline"}),
+            patch(
+                "app.services.enhancement_manager.enhancement_manager.dispatch_document_pipeline",
+                return_value={"mode": "inline"},
+            ),
         ):
             resp = client.post(
                 "/api/v1/documents/upload",
-                files={"file": ("test.docx", fake_docx, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")},
+                files={
+                    "file": (
+                        "test.docx",
+                        fake_docx,
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    )
+                },
                 data={"template": "ieee"},
             )
             assert resp.status_code in (200, 202)
@@ -260,23 +283,31 @@ class TestDocumentUploadSmoke:
 # 2.4 — Generator session CRUD
 # ===================================================================
 
+
 class TestGeneratorSessionSmoke:
     def test_create_agent_session_requires_prompt(self, client):
-        with patch("app.services.generator_session_service.GeneratorSessionService.create_session",
-                   new=AsyncMock(return_value="session-001")):
-            with patch("app.services.generator_session_service.GeneratorSessionService.add_message",
-                       new=AsyncMock(return_value=None)):
+        with patch(
+            "app.services.generator_session_service.GeneratorSessionService.create_session",
+            new=AsyncMock(return_value="session-001"),
+        ):
+            with patch(
+                "app.services.generator_session_service.GeneratorSessionService.add_message",
+                new=AsyncMock(return_value=None),
+            ):
                 resp = client.post("/api/v1/generator/sessions", json={"session_type": "agent"})
                 assert resp.status_code == 422
 
     def test_create_agent_session_returns_session_id(self, client):
         with (
-            patch("app.services.generator_session_service.GeneratorSessionService.create_session",
-                  new=AsyncMock(return_value="session-001")),
-            patch("app.services.generator_session_service.GeneratorSessionService.add_message",
-                  new=AsyncMock(return_value=None)),
-            patch("app.services.audit_log_service.audit_log_service.log",
-                  new=AsyncMock(return_value=None)),
+            patch(
+                "app.services.generator_session_service.GeneratorSessionService.create_session",
+                new=AsyncMock(return_value="session-001"),
+            ),
+            patch(
+                "app.services.generator_session_service.GeneratorSessionService.add_message",
+                new=AsyncMock(return_value=None),
+            ),
+            patch("app.services.audit_log_service.audit_log_service.log", new=AsyncMock(return_value=None)),
             patch("app.routers.v1.generator._dispatch_agent_task", return_value=None),
         ):
             resp = client.post(
@@ -290,8 +321,10 @@ class TestGeneratorSessionSmoke:
             assert payload["data"]["status"] == "started"
 
     def test_get_nonexistent_session_returns_404(self, client):
-        with patch("app.services.generator_session_service.GeneratorSessionService.get_session",
-                   new=AsyncMock(return_value=None)):
+        with patch(
+            "app.services.generator_session_service.GeneratorSessionService.get_session",
+            new=AsyncMock(return_value=None),
+        ):
             resp = client.get("/api/v1/generator/sessions/nonexistent-id")
             assert resp.status_code == 404
             payload = resp.json()
@@ -308,10 +341,14 @@ class TestGeneratorSessionSmoke:
             "updated_at": datetime.now(UTC).isoformat(),
             "user_id": "user-123",
         }
-        with patch("app.services.generator_session_service.GeneratorSessionService.get_session",
-                   new=AsyncMock(return_value=mock_session)):
-            with patch("app.services.generator_session_service.GeneratorSessionService.get_latest_document",
-                       new=AsyncMock(return_value=None)):
+        with patch(
+            "app.services.generator_session_service.GeneratorSessionService.get_session",
+            new=AsyncMock(return_value=mock_session),
+        ):
+            with patch(
+                "app.services.generator_session_service.GeneratorSessionService.get_latest_document",
+                new=AsyncMock(return_value=None),
+            ):
                 resp = client.get("/api/v1/generator/sessions/session-001")
                 assert resp.status_code == 200
                 payload = resp.json()
@@ -322,8 +359,10 @@ class TestGeneratorSessionSmoke:
                 assert data["session_type"] == "agent"
 
     def test_list_sessions_returns_list(self, client):
-        with patch("app.services.generator_session_service.GeneratorSessionService.list_sessions",
-                   new=AsyncMock(return_value=[])):
+        with patch(
+            "app.services.generator_session_service.GeneratorSessionService.list_sessions",
+            new=AsyncMock(return_value=[]),
+        ):
             resp = client.get("/api/v1/generator/sessions")
             assert resp.status_code == 200
             payload = resp.json()
@@ -331,8 +370,10 @@ class TestGeneratorSessionSmoke:
             assert isinstance(payload["data"]["sessions"], list)
 
     def test_stop_session_returns_404_for_missing(self, client):
-        with patch("app.services.generator_session_service.GeneratorSessionService.get_session",
-                   new=AsyncMock(return_value=None)):
+        with patch(
+            "app.services.generator_session_service.GeneratorSessionService.get_session",
+            new=AsyncMock(return_value=None),
+        ):
             resp = client.post("/api/v1/generator/sessions/no-such-session/stop")
             assert resp.status_code == 404
 
@@ -340,6 +381,7 @@ class TestGeneratorSessionSmoke:
 # ===================================================================
 # 2.5 — Preview endpoint
 # ===================================================================
+
 
 class TestPreviewSmoke:
     def test_live_preview_returns_html(self, client):
@@ -351,8 +393,10 @@ class TestPreviewSmoke:
         assert data["html"] == "<p>Mocked</p>"
 
     def test_live_preview_with_empty_content(self, client):
-        with patch("app.services.preview_renderer.preview_renderer.render_preview",
-                   return_value={"html": "", "latency_ms": 0, "warnings": ["Empty content"]}):
+        with patch(
+            "app.services.preview_renderer.preview_renderer.render_preview",
+            return_value={"html": "", "latency_ms": 0, "warnings": ["Empty content"]},
+        ):
             resp = client.post("/api/v1/preview/live", json={"content": "", "templateId": "ieee"})
             assert resp.status_code == 200
             data = resp.json()
@@ -366,6 +410,7 @@ class TestPreviewSmoke:
 # ===================================================================
 # 2.6 — Deprecation header contract test
 # ===================================================================
+
 
 class TestDeprecationSmoke:
     def test_active_endpoints_have_no_deprecation(self, client):
@@ -402,6 +447,7 @@ class TestDeprecationSmoke:
 # 2.7 — Document download + signed URL contract test
 # ===================================================================
 
+
 class TestDocumentsSmoke:
     def test_list_documents_returns_envelope(self, client):
         with patch("app.routers.v1.documents_impl.DocumentService") as MockSvc:
@@ -415,15 +461,17 @@ class TestDocumentsSmoke:
             assert "documents" in payload["data"]
 
     def test_download_requires_valid_job(self, client):
-        with patch("app.routers.v1.documents_impl.DocumentService.get_document",
-                   new=AsyncMock(return_value=None)):
+        with patch("app.routers.v1.documents_impl.DocumentService.get_document", new=AsyncMock(return_value=None)):
             resp = client.get("/api/v1/documents/bad-id/download")
             assert resp.status_code == 404
 
     def test_signed_download_requires_token_and_expires(self, client):
-        with patch("app.routers.v1.documents_impl.DocumentService.get_document",
-                   new=AsyncMock(return_value={"id": "doc-001", "user_id": "user-123",
-                                                "filename": "test.docx", "status": "COMPLETED"})):
+        with patch(
+            "app.routers.v1.documents_impl.DocumentService.get_document",
+            new=AsyncMock(
+                return_value={"id": "doc-001", "user_id": "user-123", "filename": "test.docx", "status": "COMPLETED"}
+            ),
+        ):
             resp = client.get("/api/v1/documents/doc-001/download", params={"token": "abc", "format": "docx"})
             assert resp.status_code == 400
             assert "token and expires" in resp.json()["error"]["message"].lower()
@@ -432,16 +480,18 @@ class TestDocumentsSmoke:
         output_path = tmp_path / "output.docx"
         output_path.write_text("fake docx content")
         doc_mock = {
-            "id": "doc-001", "user_id": None,
-            "filename": "test.docx", "status": "COMPLETED",
+            "id": "doc-001",
+            "user_id": None,
+            "filename": "test.docx",
+            "status": "COMPLETED",
             "output_path": str(output_path),
         }
         with (
-            patch("app.routers.v1.documents_impl.DocumentService.get_document",
-                  new=AsyncMock(return_value=doc_mock)),
-            patch("app.routers.v1.documents_impl.DocumentService.generate_signed_download_url",
-                  return_value={"url": "https://storage.example.com/doc-001.docx",
-                                "expires": 3600}),
+            patch("app.routers.v1.documents_impl.DocumentService.get_document", new=AsyncMock(return_value=doc_mock)),
+            patch(
+                "app.routers.v1.documents_impl.DocumentService.generate_signed_download_url",
+                return_value={"url": "https://storage.example.com/doc-001.docx", "expires": 3600},
+            ),
             patch("app.config.settings.settings.SIGNED_URL_SECRET", "test-secret"),
         ):
             resp = client.get("/api/v1/documents/doc-001/download", params={"format": "docx"})

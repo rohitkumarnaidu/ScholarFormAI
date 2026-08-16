@@ -174,7 +174,9 @@ def test_csl_fetch_exception_returns_502(client):
 
 def test_list_custom_templates_db_error(client, authenticated_user):
     sb = MagicMock()
-    sb.table.return_value.select.return_value.eq.return_value.order.return_value.execute.side_effect = Exception("db fail")
+    sb.table.return_value.select.return_value.eq.return_value.order.return_value.execute.side_effect = Exception(
+        "db fail"
+    )
     with patch("app.routers.v1.templates.get_supabase_client", return_value=sb):
         response = client.get("/api/v1/templates/custom")
     assert response.status_code == 500
@@ -213,7 +215,9 @@ def test_update_custom_template_not_found(client, authenticated_user):
 
 def test_update_custom_template_db_error(client, authenticated_user):
     sb = MagicMock()
-    sb.table.return_value.update.return_value.eq.return_value.eq.return_value.execute.side_effect = Exception("update fail")
+    sb.table.return_value.update.return_value.eq.return_value.eq.return_value.execute.side_effect = Exception(
+        "update fail"
+    )
     with patch("app.routers.v1.templates.get_supabase_client", return_value=sb):
         response = client.put(
             "/api/v1/templates/custom/tpl-1",
@@ -224,7 +228,9 @@ def test_update_custom_template_db_error(client, authenticated_user):
 
 def test_delete_custom_template_not_found(client, authenticated_user):
     sb = MagicMock()
-    sb.table.return_value.select.return_value.eq.return_value.eq.return_value.maybe_single.return_value.execute.return_value = MagicMock(data=None)
+    sb.table.return_value.select.return_value.eq.return_value.eq.return_value.maybe_single.return_value.execute.return_value = MagicMock(
+        data=None
+    )
     with patch("app.routers.v1.templates.get_supabase_client", return_value=sb):
         response = client.delete("/api/v1/templates/custom/tpl-missing")
     assert response.status_code == 404
@@ -232,7 +238,9 @@ def test_delete_custom_template_not_found(client, authenticated_user):
 
 def test_delete_custom_template_db_error(client, authenticated_user):
     sb = MagicMock()
-    sb.table.return_value.select.return_value.eq.return_value.eq.return_value.maybe_single.return_value.execute.side_effect = Exception("delete fail")
+    sb.table.return_value.select.return_value.eq.return_value.eq.return_value.maybe_single.return_value.execute.side_effect = Exception(
+        "delete fail"
+    )
     with patch("app.routers.v1.templates.get_supabase_client", return_value=sb):
         response = client.delete("/api/v1/templates/custom/tpl-1")
     assert response.status_code == 500
@@ -241,6 +249,7 @@ def test_delete_custom_template_db_error(client, authenticated_user):
 class TestHelpers:
     def test_canonical_template_id(self):
         from app.routers.v1.templates import _canonical_template_id
+
         assert _canonical_template_id("My Template") == "my_template"
         assert _canonical_template_id(" IEEE ") == "ieee"
         assert _canonical_template_id("") == ""
@@ -248,6 +257,7 @@ class TestHelpers:
 
     def test_template_display_name(self):
         from app.routers.v1.templates import _template_display_name
+
         assert _template_display_name("none") == "None"
         assert _template_display_name("ieee") == "IEEE"
         assert _template_display_name("apa") == "APA"
@@ -256,9 +266,11 @@ class TestHelpers:
 
     def test_require_db_unavailable(self):
         from app.routers.v1.templates import _require_db
+
         with patch("app.routers.v1.templates.get_supabase_client", return_value=None):
             import pytest
             from fastapi import HTTPException
+
             with pytest.raises(HTTPException) as exc:
                 _require_db()
             assert exc.value.status_code == 503
@@ -268,12 +280,14 @@ class TestHelpers:
         from fastapi import HTTPException
 
         from app.routers.v1.templates import _require_user
+
         with pytest.raises(HTTPException) as exc:
             _require_user(None)
         assert exc.value.status_code == 401
 
     def test_require_user_valid(self):
         from app.routers.v1.templates import _require_user
+
         user = MagicMock()
         result = _require_user(user)
         assert result == user
@@ -283,6 +297,7 @@ class TestHelpers:
         from fastapi import HTTPException
 
         from app.routers.v1.templates import _extract_template_payload
+
         with pytest.raises(HTTPException) as exc:
             _extract_template_payload("not a dict")
         assert exc.value.status_code == 422
@@ -292,6 +307,7 @@ class TestHelpers:
         from fastapi import HTTPException
 
         from app.routers.v1.templates import _extract_template_payload
+
         with pytest.raises(HTTPException) as exc:
             _extract_template_payload({"config": {}})
         assert exc.value.status_code == 422
@@ -302,33 +318,34 @@ class TestHelpers:
         from fastapi import HTTPException
 
         from app.routers.v1.templates import _extract_template_payload
+
         with pytest.raises(HTTPException) as exc:
             _extract_template_payload({"name": "Test", "config": ["not", "object"]})
         assert exc.value.status_code == 422
 
     def test_extract_payload_config_from_top_level(self):
         from app.routers.v1.templates import _extract_template_payload
+
         result = _extract_template_payload({"name": "Test", "config": {"k": "v"}})
         assert result["config"] == {"k": "v"}
         assert result["name"] == "Test"
 
     def test_extract_payload_config_from_template_key(self):
         from app.routers.v1.templates import _extract_template_payload
-        result = _extract_template_payload({
-            "template": {"name": "Nested", "settings": {"font": "serif"}}
-        })
+
+        result = _extract_template_payload({"template": {"name": "Nested", "settings": {"font": "serif"}}})
         assert result["config"] == {"font": "serif"}
         assert result["name"] == "Nested"
 
     def test_extract_payload_description_none(self):
         from app.routers.v1.templates import _extract_template_payload
-        result = _extract_template_payload({
-            "template": {"name": "Desc", "description": None, "config": {}}
-        })
+
+        result = _extract_template_payload({"template": {"name": "Desc", "description": None, "config": {}}})
         assert result["description"] == ""
 
     def test_extract_payload_id_fallback_to_uuid(self):
         from app.routers.v1.templates import _extract_template_payload
+
         result = _extract_template_payload({"name": "NoId", "config": {}})
         assert result["id"] is not None
         assert isinstance(result["id"], str)
@@ -338,5 +355,6 @@ class TestHelpers:
             import asyncio
 
             from app.routers.v1.templates import _list_builtin_templates
+
             result = asyncio.run(_list_builtin_templates())
             assert result == {"templates": []}

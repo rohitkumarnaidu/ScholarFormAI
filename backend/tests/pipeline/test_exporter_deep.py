@@ -4,7 +4,7 @@
 """
 Deep test suite for Exporter pipeline stage.
 Covers process(), export_json, export_markdown, export_csv, export_html,
-export_latex, export_jats, format export, _build_export_payload, 
+export_latex, export_jats, format export, _build_export_payload,
 _get_export_formats, error handling.
 """
 
@@ -23,9 +23,11 @@ def exporter():
 
     return Exporter()
 
+
 @pytest.fixture
 def doc(tmp_path):
     from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
+
     out = tmp_path / "out.docx"
     meta = DocumentMetadata(title="Test Paper")
     doc = PipelineDocument(
@@ -39,6 +41,7 @@ def doc(tmp_path):
         formatting_options={"export_formats": ["json", "markdown"]},
     )
     return doc
+
 
 class TestExporterProcess:
     def test_process_json_and_md(self, exporter, doc, tmp_path):
@@ -62,8 +65,10 @@ class TestExporterProcess:
 
     def test_process_default_formats(self, exporter):
         from app.models import PipelineDocument
-        doc = PipelineDocument(document_id="d1", output_path="test.docx",
-                               formatting_options={"export_formats": ["docx", "json"]})
+
+        doc = PipelineDocument(
+            document_id="d1", output_path="test.docx", formatting_options={"export_formats": ["docx", "json"]}
+        )
         doc.generated_doc = MagicMock()
         with (
             patch.object(exporter, "export") as m1,
@@ -77,6 +82,7 @@ class TestExporterProcess:
 
     def test_process_empty_document(self, exporter):
         from app.models import PipelineDocument
+
         doc = PipelineDocument(document_id="empty", output_path="out.docx")
         doc.generated_doc = MagicMock()
         with patch.object(exporter, "export") as mock_exp:
@@ -90,9 +96,11 @@ class TestExporterProcess:
             result = exporter.process(doc)
             assert result is doc
 
+
 class TestGetExportFormats:
     def test_from_options(self):
         from app.models import PipelineDocument
+
         exporter = Exporter()
         doc = PipelineDocument(document_id="d1", formatting_options={"export_formats": ["latex"]})
         result = exporter._get_export_formats(doc)
@@ -100,6 +108,7 @@ class TestGetExportFormats:
 
     def test_default_formats(self):
         from app.models import PipelineDocument
+
         exporter = Exporter()
         doc = PipelineDocument(document_id="d2")
         result = exporter._get_export_formats(doc)
@@ -109,10 +118,12 @@ class TestGetExportFormats:
 
     def test_single_string_converted_to_list(self):
         from app.models import PipelineDocument
+
         exporter = Exporter()
         doc = PipelineDocument(document_id="d3", formatting_options={"export_formats": "pdf"})
         result = exporter._get_export_formats(doc)
         assert "pdf" in result
+
 
 class TestBuildExportPayload:
     def test_payload_structure(self, exporter, doc):
@@ -127,9 +138,11 @@ class TestBuildExportPayload:
 
     def test_payload_empty_document(self, exporter):
         from app.models import PipelineDocument
+
         doc = PipelineDocument(document_id="e1")
         payload = exporter._build_export_payload(doc)
         assert "metadata" in payload
+
 
 class TestExportJson:
     def test_json_written(self, exporter, doc, tmp_path):
@@ -153,6 +166,7 @@ class TestExportJson:
             result = exporter.export_json(doc, "/invalid/path.json")
             assert result is None
 
+
 class TestExportMarkdown:
     def test_markdown_written(self, exporter, doc, tmp_path):
         p = tmp_path / "test.md"
@@ -174,10 +188,12 @@ class TestExportMarkdown:
 
     def test_markdown_empty_document(self, exporter, tmp_path):
         from app.models import PipelineDocument
+
         p = tmp_path / "empty.md"
         doc = PipelineDocument(document_id="e1")
         result = exporter.export_markdown(doc, str(p))
         assert result == str(p)
+
 
 class TestExportHtml:
     def test_html_written(self, exporter, doc, tmp_path):
@@ -198,6 +214,7 @@ class TestExportHtml:
             result = exporter.export_html(doc, "/invalid/path.html")
             assert result is None
 
+
 class TestExportLatex:
     def test_latex_written(self, exporter, doc, tmp_path):
         p = tmp_path / "test.tex"
@@ -215,6 +232,7 @@ class TestExportLatex:
             result = exporter.export_latex(doc, "/invalid/path.tex")
             assert result is None
 
+
 class TestExportJats:
     def test_jats_written(self, exporter, doc, tmp_path):
         p = tmp_path / "test.xml"
@@ -230,6 +248,7 @@ class TestExportJats:
             result = exporter.export_jats(doc, "/invalid/path.xml")
             assert result is None
 
+
 class TestProcessingHistory:
     def test_stage_added_to_history(self, exporter, doc, tmp_path):
         with (
@@ -241,16 +260,20 @@ class TestProcessingHistory:
             result = exporter.process(doc)
             assert result.updated_at is not None
 
+
 class TestEdgeCases:
     def test_output_path_none_does_not_crash(self, exporter):
         from app.models import PipelineDocument
+
         doc = PipelineDocument(document_id="np")
         result = exporter.process(doc)
         assert result is doc
 
     def test_generated_doc_none(self, exporter, tmp_path):
         from app.models import PipelineDocument
-        doc = PipelineDocument(document_id="nd", output_path=str(tmp_path / "out.docx"),
-                               formatting_options={"export_formats": ["docx"]})
+
+        doc = PipelineDocument(
+            document_id="nd", output_path=str(tmp_path / "out.docx"), formatting_options={"export_formats": ["docx"]}
+        )
         result = exporter.process(doc)
         assert result is doc

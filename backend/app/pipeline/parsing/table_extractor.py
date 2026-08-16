@@ -27,6 +27,7 @@ TABLE_TRANSFORMER_AVAILABLE = False
 _load_error: str | None = None
 import importlib.util
 
+
 def _check_dependencies():
     try:
         return (
@@ -37,15 +38,19 @@ def _check_dependencies():
     except Exception:
         return False
 
+
 TABLE_TRANSFORMER_AVAILABLE = _check_dependencies()
 _load_error = None if TABLE_TRANSFORMER_AVAILABLE else "Missing torch, transformers, or PIL"
 
 if not TABLE_TRANSFORMER_AVAILABLE:
-    logger.info("Table Transformer dependencies not installed. Install with: pip install transformers torch timm Pillow")
+    logger.info(
+        "Table Transformer dependencies not installed. Install with: pip install transformers torch timm Pillow"
+    )
     torch = Any
-    
+
     class _DummyImage:
         Image = Any
+
     Image = _DummyImage
 else:
     import torch

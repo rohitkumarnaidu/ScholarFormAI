@@ -478,7 +478,7 @@ async def lifespan(app: FastAPI):
             _preload_preview_css,
             timeout_seconds=5.0,
         )
-    print('YIELDING FROM MAIN LIFESPAN!')
+    print("YIELDING FROM MAIN LIFESPAN!")
     yield  # App is running
 
     # ── SHUTDOWN ──
@@ -509,6 +509,7 @@ app = FastAPI(
 )
 
 from app.core.opentelemetry_setup import init_telemetry
+
 init_telemetry(app)
 
 if SLOWAPI_AVAILABLE and Limiter is not None and get_remote_address is not None:
@@ -685,9 +686,9 @@ else:
 @app.middleware("http")
 async def lazy_router_loader(request: Request, call_next):
     path = request.url.path or ""
-    if (
-        path.startswith("/api/v1/") or path.startswith("/api/v2/") or path.startswith("/api/preview")
-    ) and not getattr(app.state, "_routers_loaded", False):
+    if (path.startswith("/api/v1/") or path.startswith("/api/v2/") or path.startswith("/api/preview")) and not getattr(
+        app.state, "_routers_loaded", False
+    ):
         await _ensure_routers_loaded(app)
     return await call_next(request)
 
@@ -743,6 +744,7 @@ async def health_check():
 
 
 from fastapi import WebSocket
+
 
 @app.websocket("/ws")
 async def dummy_ws(websocket: WebSocket):

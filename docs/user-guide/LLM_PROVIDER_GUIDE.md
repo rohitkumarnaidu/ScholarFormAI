@@ -59,35 +59,31 @@ ScholarForm AI integrates with **10 built-in LLM providers** out of the box and 
 
 ### Layered Design
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Chat UI / Pipeline                     │
-└─────────────────────┬───────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────┐
-│              llm_service.py (Unified Layer)               │
-│  ┌────────────────────────────────────────────────────┐   │
-│  │  generate()           generate_with_model()        │   │
-│  │  generate_with_fallback()    check_health()        │   │
-│  └────────────────────────────────────────────────────┘   │
-└─────────────────────┬───────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────┐
-│           provider_registry.py (Provider Definitions)     │
-│  ┌────────────────────────────────────────────────────┐   │
-│  │  BUILTIN_PROVIDERS      list_available_models()    │   │
-│  │  resolve_model_provider()  normalize_model_name()  │   │
-│  │  cache_discovered_models()                         │   │
-│  └────────────────────────────────────────────────────┘   │
-└─────────────────────┬───────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────┐
-│              Provider API Clients / LiteLLM               │
-│  ┌──────────┬──────────┬──────────┬──────────────────┐   │
-│  │ OpenAI   │ Anthropic│ Groq     │ NVIDIA (direct)  │   │
-│  │ Client   │ Client   │ Client   │ nvidia_client.py │   │
-│  └──────────┴──────────┴──────────┴──────────────────┘   │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    UI[Chat UI / Pipeline]
+    
+    subgraph UnifiedLayer [llm_service.py]
+        Methods[generate()<br>generate_with_model()<br>generate_with_fallback()<br>check_health()]
+    end
+    
+    subgraph Registry [provider_registry.py]
+        RegDefs[BUILTIN_PROVIDERS<br>list_available_models()<br>resolve_model_provider()<br>normalize_model_name()<br>cache_discovered_models()]
+    end
+    
+    subgraph Clients [Provider API Clients / LiteLLM]
+        OpenAI[OpenAI Client]
+        Anthropic[Anthropic Client]
+        Groq[Groq Client]
+        Nvidia[NVIDIA direct<br>nvidia_client.py]
+    end
+
+    UI --> UnifiedLayer
+    UnifiedLayer --> Registry
+    Registry --> OpenAI
+    Registry --> Anthropic
+    Registry --> Groq
+    Registry --> Nvidia
 ```
 
 ### Provider Registry (`provider_registry.py`)

@@ -13,18 +13,21 @@ pytestmark = [pytest.mark.pipeline]
 class TestPdfOCR:
     def test_init_defaults(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         ocr = PdfOCR()
         assert ocr.text_threshold == 300
         assert ocr.paddle_language == "en"
 
     def test_init_custom(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         ocr = PdfOCR(text_threshold=500, paddle_language="zh")
         assert ocr.text_threshold == 500
         assert ocr.paddle_language == "zh"
 
     def test_is_scanned_pdfminer_unavailable(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PDFMINER_AVAILABLE", False):
             ocr = PdfOCR()
             result = ocr.is_scanned("/fake.pdf")
@@ -32,6 +35,7 @@ class TestPdfOCR:
 
     def test_is_scanned_below_threshold(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PDFMINER_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.pdf_extract_text", return_value="short text"):
                 ocr = PdfOCR(text_threshold=300)
@@ -40,6 +44,7 @@ class TestPdfOCR:
 
     def test_is_scanned_above_threshold(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PDFMINER_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.pdf_extract_text", return_value="A" * 500):
                 ocr = PdfOCR(text_threshold=300)
@@ -48,6 +53,7 @@ class TestPdfOCR:
 
     def test_is_scanned_exception(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PDFMINER_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.pdf_extract_text", side_effect=Exception("PDF error")):
                 ocr = PdfOCR()
@@ -56,6 +62,7 @@ class TestPdfOCR:
 
     def test_is_scanned_none_text(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PDFMINER_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.pdf_extract_text", return_value=None):
                 ocr = PdfOCR()
@@ -64,6 +71,7 @@ class TestPdfOCR:
 
     def test_extract_text_pdf2image_unavailable(self):
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", False):
             ocr = PdfOCR()
             with pytest.raises(OCRError, match="pdf2image is unavailable"):
@@ -71,6 +79,7 @@ class TestPdfOCR:
 
     def test_extract_text_no_backends(self):
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", False):
                 with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", False):
@@ -80,6 +89,7 @@ class TestPdfOCR:
 
     def test_extract_text_convert_failure(self):
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", side_effect=Exception("Poppler missing")):
                 ocr = PdfOCR()
@@ -88,6 +98,7 @@ class TestPdfOCR:
 
     def test_extract_text_no_images(self):
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", return_value=[]):
                 ocr = PdfOCR()
@@ -96,6 +107,7 @@ class TestPdfOCR:
 
     def test_extract_text_tesseract_success(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
                 with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", return_value=[MagicMock()]):
@@ -107,6 +119,7 @@ class TestPdfOCR:
 
     def test_extract_text_tesseract_empty_fallback(self):
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
                 with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", True):
@@ -119,16 +132,20 @@ class TestPdfOCR:
 
     def test_extract_text_tesseract_exception(self):
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
                 with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", return_value=[MagicMock()]):
-                    with patch("app.pipeline.ocr.pdf_ocr.pytesseract.image_to_string", side_effect=Exception("Tesseract error")):
+                    with patch(
+                        "app.pipeline.ocr.pdf_ocr.pytesseract.image_to_string", side_effect=Exception("Tesseract error")
+                    ):
                         ocr = PdfOCR()
                         with pytest.raises(OCRError, match="All OCR backends failed"):
                             ocr.extract_text("/fake.pdf", backends=["tesseract"])
 
     def test_normalize_backends_default(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", True):
                 with patch("app.pipeline.ocr.pdf_ocr.NUMPY_AVAILABLE", True):
@@ -138,6 +155,7 @@ class TestPdfOCR:
 
     def test_normalize_backends_custom_order(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", True):
                 with patch("app.pipeline.ocr.pdf_ocr.NUMPY_AVAILABLE", True):
@@ -147,6 +165,7 @@ class TestPdfOCR:
 
     def test_normalize_backends_deduplicates(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
             ocr = PdfOCR()
             result = ocr._normalize_backends(["tesseract", "tesseract"])
@@ -154,12 +173,14 @@ class TestPdfOCR:
 
     def test_normalize_backends_unsupported_skipped(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         ocr = PdfOCR()
         result = ocr._normalize_backends(["unsupported"])
         assert result == []
 
     def test_normalize_backends_tesseract_unavailable(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", False):
             ocr = PdfOCR()
             result = ocr._normalize_backends(["tesseract"])
@@ -167,6 +188,7 @@ class TestPdfOCR:
 
     def test_normalize_backends_paddle_unavailable(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", False):
             ocr = PdfOCR()
             result = ocr._normalize_backends(["paddle"])
@@ -174,17 +196,20 @@ class TestPdfOCR:
 
     def test_combine_pages(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         result = PdfOCR._combine_pages(["Page 1", "Page 2", ""])
         assert result == "Page 1\n\nPage 2"
 
     def test_sanitize_text(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         result = PdfOCR._sanitize_text("Hello\nWorld\tTest\x00Bad")
         assert "\x00" not in result
         assert "Hello" in result
 
     def test_ocr_tesseract_unavailable(self):
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", False):
             ocr = PdfOCR()
             with pytest.raises(OCRError, match="Tesseract backend unavailable"):
@@ -192,6 +217,7 @@ class TestPdfOCR:
 
     def test_ocr_tesseract_success(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.pytesseract.image_to_string", return_value="Hello"):
                 ocr = PdfOCR()
@@ -200,14 +226,18 @@ class TestPdfOCR:
 
     def test_ocr_tesseract_page_exception(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
-            with patch("app.pipeline.ocr.pdf_ocr.pytesseract.image_to_string", side_effect=Exception("OCR error on page")):
+            with patch(
+                "app.pipeline.ocr.pdf_ocr.pytesseract.image_to_string", side_effect=Exception("OCR error on page")
+            ):
                 ocr = PdfOCR()
                 pages = ocr._ocr_tesseract([MagicMock()])
                 assert pages == [""]
 
     def test_ocr_paddle_unavailable(self):
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", False):
             ocr = PdfOCR()
             with pytest.raises(OCRError, match="PaddleOCR backend unavailable"):
@@ -215,6 +245,7 @@ class TestPdfOCR:
 
     def test_ocr_paddle_numpy_unavailable(self):
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
+
         with (
             patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", True),
             patch("app.pipeline.ocr.pdf_ocr.PaddleOCR", MagicMock()),
@@ -226,6 +257,7 @@ class TestPdfOCR:
 
     def test_ocr_paddle_success(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.NUMPY_AVAILABLE", True):
                 with patch("app.pipeline.ocr.pdf_ocr.np.array", return_value=MagicMock()):
@@ -238,6 +270,7 @@ class TestPdfOCR:
 
     def test_ocr_paddle_page_exception(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.NUMPY_AVAILABLE", True):
                 with patch("app.pipeline.ocr.pdf_ocr.np.array", return_value=MagicMock()):
@@ -250,6 +283,7 @@ class TestPdfOCR:
 
     def test_convert_to_docx_docx_unavailable(self):
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.DOCX_AVAILABLE", False):
             ocr = PdfOCR()
             with pytest.raises(OCRError, match="python-docx is unavailable"):
@@ -257,6 +291,7 @@ class TestPdfOCR:
 
     def test_convert_to_docx_success(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.DOCX_AVAILABLE", True):
             with patch.object(PdfOCR, "extract_text", return_value=("Hello world", "tesseract")):
                 mock_doc = MagicMock()
@@ -268,6 +303,7 @@ class TestPdfOCR:
 
     def test_convert_to_docx_save_failure(self):
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
+
         with patch("app.pipeline.ocr.pdf_ocr.DOCX_AVAILABLE", True):
             with patch.object(PdfOCR, "extract_text", return_value=("Hello", "tesseract")):
                 mock_doc = MagicMock()
@@ -279,6 +315,7 @@ class TestPdfOCR:
 
     def test_ocrexception(self):
         from app.pipeline.ocr.pdf_ocr import OCRError
+
         exc = OCRError("test error")
         assert isinstance(exc, Exception)
         assert "test error" in str(exc)

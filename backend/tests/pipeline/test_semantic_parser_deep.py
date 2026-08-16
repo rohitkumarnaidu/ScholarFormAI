@@ -27,7 +27,9 @@ class TestRemoteRequestException:
         p.remote_base_urls = ["https://ex.com"]
         p.remote_max_retries = 2
 
-        with patch("app.pipeline.intelligence.semantic_parser.requests.post", side_effect=RequestException("conn reset")):
+        with patch(
+            "app.pipeline.intelligence.semantic_parser.requests.post", side_effect=RequestException("conn reset")
+        ):
             with patch("app.pipeline.intelligence.semantic_parser.time.sleep"):
                 result = p._predict_block_types_remote(["text"])
                 assert result is None
@@ -109,7 +111,9 @@ class TestPredictBlockTypeEdgeCases:
 
         with patch.object(p, "_predict_block_types_remote", return_value=None):
             with patch.object(p, "_load_local_model"):
-                with patch.object(p, "_heuristic_classify", return_value={"type": "BODY", "confidence": 0.5}) as mock_heur:
+                with patch.object(
+                    p, "_heuristic_classify", return_value={"type": "BODY", "confidence": 0.5}
+                ) as mock_heur:
                     result = p._predict_block_type("text")
                     assert result["type"] == "BODY"
                     mock_heur.assert_called_once()
@@ -207,7 +211,9 @@ class TestAnalyzeBlocksEdgeCases:
             patch("app.pipeline.intelligence.semantic_parser.HAS_LANGDETECT", True),
             patch("app.pipeline.intelligence.semantic_parser.detect_language", return_value="en"),
             patch.object(p, "_repair_fragmented_headings", return_value=blocks),
-            patch.object(p, "_predict_block_types_batch", return_value=[{"type": "ABSTRACT", "confidence": 0.9}]) as mock_batch,
+            patch.object(
+                p, "_predict_block_types_batch", return_value=[{"type": "ABSTRACT", "confidence": 0.9}]
+            ) as mock_batch,
         ):
             result = p.analyze_blocks(blocks)
 

@@ -25,6 +25,7 @@ def _mock_llm_module():
     import importlib
 
     import app.services.llm_service as m
+
     importlib.reload(m)
     return m
 
@@ -39,6 +40,7 @@ def _simulate_delay(ms: float):
 @pytest.fixture(autouse=True)
 def reset_breakers():
     import app.services.llm_service as llm
+
     llm._PROVIDER_BREAKERS.clear()
 
 
@@ -185,6 +187,7 @@ class TestLLMLatencyBenchmark:
     @pytest.mark.slow
     def test_concurrent_llm_calls_5_all_complete(self, llm):
         """5 concurrent LLM calls all complete successfully."""
+
         def mock_gen(*args, **kw):
             return "concurrent result"
 
@@ -284,8 +287,8 @@ class TestLLMLatencyBenchmark:
                 elapsed = time.perf_counter() - start
                 latencies.append(elapsed * 1000)
 
-        first_half = latencies[:n_calls // 2]
-        second_half = latencies[n_calls // 2:]
+        first_half = latencies[: n_calls // 2]
+        second_half = latencies[n_calls // 2 :]
         degradation = statistics.median(second_half) - statistics.median(first_half)
         assert degradation < 100, f"Latency degradation of {degradation:.1f}ms across {n_calls} calls"
 
@@ -308,7 +311,7 @@ class TestLLMLatencyBenchmark:
                         [{"role": "user", "content": "rate limit test"}],
                     )
         elapsed = time.perf_counter() - start
-        assert elapsed < 0.5, f"Rate-limit rejection took {elapsed*1000:.1f}ms"
+        assert elapsed < 0.5, f"Rate-limit rejection took {elapsed * 1000:.1f}ms"
 
     @pytest.mark.performance
     @pytest.mark.slow
@@ -343,6 +346,7 @@ class TestLLMLatencyBenchmark:
     @pytest.mark.slow
     def test_parallel_vs_sequential_throughput(self, llm):
         """Parallel throughput > sequential throughput for 8 calls with simulated latency."""
+
         def slow_gen(messages, model, temperature, max_tokens, timeout, api_key, api_base):
             target = time.perf_counter() + 0.01
             while time.perf_counter() < target:
@@ -373,6 +377,4 @@ class TestLLMLatencyBenchmark:
             par_elapsed = time.perf_counter() - start_par
 
         assert len(results) == n_calls
-        assert par_elapsed < seq_elapsed, (
-            f"Parallel {par_elapsed:.3f}s not faster than sequential {seq_elapsed:.3f}s"
-        )
+        assert par_elapsed < seq_elapsed, f"Parallel {par_elapsed:.3f}s not faster than sequential {seq_elapsed:.3f}s"

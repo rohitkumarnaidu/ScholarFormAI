@@ -22,6 +22,7 @@ def doc():
 class TestJATSGenerator:
     def test_basic_xml(self, doc):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         gen = JATSGenerator()
         xml = gen.to_xml(doc)
         assert "<article" in xml
@@ -33,6 +34,7 @@ class TestJATSGenerator:
 
     def test_no_authors_adds_placeholder(self, doc):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         gen = JATSGenerator()
         doc.metadata.authors = []
         xml = gen.to_xml(doc)
@@ -40,6 +42,7 @@ class TestJATSGenerator:
 
     def test_references(self, doc):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         gen = JATSGenerator()
         ref = MagicMock()
         ref.reference_id = "ref1"
@@ -53,6 +56,7 @@ class TestJATSGenerator:
 
     def test_no_references(self, doc):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         gen = JATSGenerator()
         doc.references = []
         xml = gen.to_xml(doc)
@@ -60,6 +64,7 @@ class TestJATSGenerator:
 
     def test_blocks_in_body(self, doc):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         gen = JATSGenerator()
         block = MagicMock()
         block.text = "Introduction content"
@@ -70,6 +75,7 @@ class TestJATSGenerator:
 
     def test_heading_creates_sec(self, doc):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         gen = JATSGenerator()
         heading = MagicMock()
         heading.text = "Methods"
@@ -83,6 +89,7 @@ class TestJATSGenerator:
 
     def test_equation_with_mathml(self, doc):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         gen = JATSGenerator()
         eq = MagicMock()
         eq.mathml = "<mml:math><mml:mi>x</mml:mi></mml:math>"
@@ -95,6 +102,7 @@ class TestJATSGenerator:
 
     def test_publication_date_string(self, doc):
         from app.pipeline.export.jats_generator import JATSGenerator
+
         gen = JATSGenerator()
         doc.metadata.publication_date = "2024-06-15"
         xml = gen.to_xml(doc)

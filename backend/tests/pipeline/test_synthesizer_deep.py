@@ -14,15 +14,23 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+
 @pytest.fixture(autouse=True)
 def _patch_validation():
-    with patch("app.pipeline.synthesis.synthesizer.ACCEPTED_EXTENSIONS", {'.pdf', '.docx', '.doc', '.md', '.html', '.txt', '.tex', '.odt', '.rtf'}), \
-         patch("app.pipeline.synthesis.synthesizer._validate_magic_bytes", new_callable=AsyncMock):
+    with (
+        patch(
+            "app.pipeline.synthesis.synthesizer.ACCEPTED_EXTENSIONS",
+            {".pdf", ".docx", ".doc", ".md", ".html", ".txt", ".tex", ".odt", ".rtf"},
+        ),
+        patch("app.pipeline.synthesis.synthesizer._validate_magic_bytes", new_callable=AsyncMock),
+    ):
         yield
+
 
 OUTLINE = {"title": "Synthesis", "sections": [{"title": "Intro", "chunks": ["chunk1"]}]}
 SECTIONS = [{"title": "Intro", "content": "Generated content.", "citations": []}]
 REFERENCES = ["Author (2024). Title. Journal, 1(1), 1-10."]
+
 
 @pytest.fixture
 def mock_session_service():
@@ -32,6 +40,7 @@ def mock_session_service():
     m.save_document_version = AsyncMock()
     return m
 
+
 @pytest.fixture
 def mock_vector_store():
     m = MagicMock()
@@ -39,11 +48,13 @@ def mock_vector_store():
     m.add_chunks = MagicMock()
     return m
 
+
 @pytest.fixture
 def mock_llm():
     m = AsyncMock()
     m.generate = AsyncMock(return_value="LLM output")
     return m
+
 
 @pytest.fixture
 def mock_orchestrator():
@@ -51,11 +62,13 @@ def mock_orchestrator():
     m._run_extraction_stage = MagicMock()
     return m
 
+
 @pytest.fixture
 def mock_pubsub():
     m = AsyncMock()
     m.publish = AsyncMock()
     return m
+
 
 @pytest.fixture
 def mock_crossref():
@@ -63,9 +76,11 @@ def mock_crossref():
     m.search.return_value = [{"DOI": "10.1000/test", "title": ["Test"]}]
     return m
 
+
 @pytest.fixture
 def synt(mock_session_service, mock_vector_store, mock_llm, mock_orchestrator, mock_pubsub):
     from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
     return MultiDocSynthesizer(
         session_service=mock_session_service,
         vector_store=mock_vector_store,
@@ -74,12 +89,17 @@ def synt(mock_session_service, mock_vector_store, mock_llm, mock_orchestrator, m
         pubsub=mock_pubsub,
     )
 
+
 class TestInit:
     def test_initializes(self, mock_session_service, mock_vector_store, mock_llm, mock_orchestrator, mock_pubsub):
         from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
         s = MultiDocSynthesizer(
-            session_service=mock_session_service, vector_store=mock_vector_store,
-            llm_service=mock_llm, pipeline_orchestrator=mock_orchestrator, pubsub=mock_pubsub,
+            session_service=mock_session_service,
+            vector_store=mock_vector_store,
+            llm_service=mock_llm,
+            pipeline_orchestrator=mock_orchestrator,
+            pubsub=mock_pubsub,
         )
         assert s.session_service is mock_session_service
         assert s.vector_store is mock_vector_store
@@ -87,18 +107,33 @@ class TestInit:
         assert s.pipeline_orchestrator is mock_orchestrator
         assert s.pubsub is mock_pubsub
 
+
 class TestRun:
     @pytest.mark.asyncio
     async def test_run_full_pipeline(self, synt, mock_session_service, tmp_path):
         out_path = str(tmp_path / "out.docx")
         with (
-            patch.object(synt, "_validate_files", new_callable=AsyncMock, return_value=([{"path": "a.docx", "filename": "a.docx"}], [])),
-            patch.object(synt, "_extract_documents", new_callable=AsyncMock, return_value=[{"filename": "a.docx", "sections": ["Intro"]}]),
+            patch.object(
+                synt,
+                "_validate_files",
+                new_callable=AsyncMock,
+                return_value=([{"path": "a.docx", "filename": "a.docx"}], []),
+            ),
+            patch.object(
+                synt,
+                "_extract_documents",
+                new_callable=AsyncMock,
+                return_value=[{"filename": "a.docx", "sections": ["Intro"]}],
+            ),
             patch.object(synt, "_build_chunks", return_value=[]),
             patch.object(synt, "_cross_doc_analysis", new_callable=AsyncMock, return_value={"topics": ["AI"]}),
             patch.object(synt, "_generate_outline", new_callable=AsyncMock, return_value=OUTLINE),
             patch.object(synt, "_generate_sections", new_callable=AsyncMock, return_value=SECTIONS),
-            patch.object(synt, "_insert_citations", return_value={"sections": SECTIONS, "references": REFERENCES, "citations": []}),
+            patch.object(
+                synt,
+                "_insert_citations",
+                return_value={"sections": SECTIONS, "references": REFERENCES, "citations": []},
+            ),
             patch.object(synt, "_render_document", return_value=out_path),
         ):
             result = await synt.run("session1", ["a.docx", "b.docx"], "default")
@@ -111,12 +146,21 @@ class TestRun:
         out_path = "/tmp/out.docx"
         with (
             patch.object(synt, "_validate_files", new_callable=AsyncMock, return_value=([{"path": "a.docx"}], [])),
-            patch.object(synt, "_extract_documents", new_callable=AsyncMock, return_value=[{"filename": "a.docx", "sections": []}]),
+            patch.object(
+                synt,
+                "_extract_documents",
+                new_callable=AsyncMock,
+                return_value=[{"filename": "a.docx", "sections": []}],
+            ),
             patch.object(synt, "_build_chunks", return_value=[]),
             patch.object(synt, "_cross_doc_analysis", new_callable=AsyncMock, return_value={}),
             patch.object(synt, "_generate_outline", new_callable=AsyncMock, return_value=OUTLINE),
             patch.object(synt, "_generate_sections", new_callable=AsyncMock, return_value=SECTIONS),
-            patch.object(synt, "_insert_citations", return_value={"sections": SECTIONS, "references": REFERENCES, "citations": []}),
+            patch.object(
+                synt,
+                "_insert_citations",
+                return_value={"sections": SECTIONS, "references": REFERENCES, "citations": []},
+            ),
             patch.object(synt, "_render_document", return_value=out_path),
         ):
             result = await synt.run("session1", ["a.docx", "b.docx"], "default")
@@ -127,6 +171,7 @@ class TestRun:
         with patch.object(synt, "_validate_files", new_callable=AsyncMock, side_effect=RuntimeError("pipeline failed")):
             with pytest.raises(RuntimeError):
                 await synt.run("session1", ["a.docx", "b.docx"], "default")
+
 
 class TestValidateFiles:
     @pytest.mark.asyncio
@@ -171,17 +216,23 @@ class TestValidateFiles:
         contents = iter([b"same", b"same"])
         with (
             patch("pathlib.Path.read_bytes", side_effect=lambda: next(contents)),
-            patch("pathlib.Path.exists", return_value=True),pytest.raises(Exception, match="2 unique")
+            patch("pathlib.Path.exists", return_value=True),
+            pytest.raises(Exception, match="2 unique"),
         ):
             await synt._validate_files(["a.docx", "b.docx"])
+
 
 class TestExtractDocuments:
     @pytest.mark.asyncio
     async def test_extracts(self, synt):
         from app.models import Block, PipelineDocument
-        doc = PipelineDocument(document_id="d1", blocks=[
-            Block(block_id="b1", index=0, text="Content", section_name="Intro"),
-        ])
+
+        doc = PipelineDocument(
+            document_id="d1",
+            blocks=[
+                Block(block_id="b1", index=0, text="Content", section_name="Intro"),
+            ],
+        )
         synt.pipeline_orchestrator._run_extraction_stage.return_value = doc
         result = await synt._extract_documents("s1", [{"path": "/tmp/a.docx", "filename": "a.docx"}])
         assert len(result) == 1
@@ -191,9 +242,11 @@ class TestExtractDocuments:
     @pytest.mark.asyncio
     async def test_extract_empty_blocks(self, synt):
         from app.models import PipelineDocument
+
         synt.pipeline_orchestrator._run_extraction_stage.return_value = PipelineDocument(document_id="d1")
         result = await synt._extract_documents("s1", [{"path": "/tmp/a.docx", "filename": "a.docx"}])
         assert result[0]["text"] == ""
+
 
 class TestChunking:
     def test_chunk_text(self, synt):
@@ -212,12 +265,17 @@ class TestChunking:
 
     def test_build_chunks(self, synt):
         from app.models import Block, BlockType, PipelineDocument
-        doc = PipelineDocument(document_id="d1", blocks=[
-            Block(block_id="b1", index=0, text="Hello world", block_type=BlockType.BODY, section_name="Intro"),
-        ])
+
+        doc = PipelineDocument(
+            document_id="d1",
+            blocks=[
+                Block(block_id="b1", index=0, text="Hello world", block_type=BlockType.BODY, section_name="Intro"),
+            ],
+        )
         docs = [{"text": "Hello world", "filename": "a.docx", "sections": ["Intro"], "doc_obj": doc}]
         result = synt._build_chunks(docs)
         assert len(result) >= 1
+
 
 class TestCrossDocAnalysis:
     @pytest.mark.asyncio
@@ -231,6 +289,7 @@ class TestCrossDocAnalysis:
         with patch.object(synt, "_llm_json", new_callable=AsyncMock, return_value={}):
             result = await synt._cross_doc_analysis([])
             assert isinstance(result, dict)
+
 
 class TestGenerateOutline:
     @pytest.mark.asyncio
@@ -246,6 +305,7 @@ class TestGenerateOutline:
             result = await synt._generate_outline("s1", analysis, "default")
             assert result is not None
 
+
 class TestGenerateSections:
     @pytest.mark.asyncio
     async def test_generates_sections(self, synt):
@@ -259,6 +319,7 @@ class TestGenerateSections:
         result = await synt._generate_sections({"sections": []}, "s1")
         assert result == []
 
+
 class TestInsertCitations:
     def test_insert_citations(self, synt):
         result = synt._insert_citations(SECTIONS, "default")
@@ -268,6 +329,7 @@ class TestInsertCitations:
     def test_insert_citations_empty(self, synt):
         result = synt._insert_citations([], "default")
         assert result["sections"] == []
+
 
 class TestLLMHelpers:
     @pytest.mark.asyncio
@@ -289,6 +351,7 @@ class TestLLMHelpers:
             result = await synt._llm_json("system prompt", "user prompt")
             assert result is None
 
+
 class TestExtractJson:
     def test_extract_json_valid(self, synt):
         assert synt._extract_json('{"a": 1}') == '{"a": 1}'
@@ -302,6 +365,7 @@ class TestExtractJson:
     def test_extract_json_empty(self, synt):
         assert synt._extract_json("") is None
 
+
 class TestTemplateToCsl:
     def test_default_template(self, synt):
         result = synt._template_to_csl("default")
@@ -314,6 +378,7 @@ class TestTemplateToCsl:
     def test_unknown_template(self, synt):
         result = synt._template_to_csl("unknown")
         assert result is not None
+
 
 class TestEventPublishing:
     @pytest.mark.asyncio
@@ -331,15 +396,18 @@ class TestEventPublishing:
         await synt._emit_event("s1", "stage_update", "writing", 75, "Writing...")
         mock_pubsub.publish.assert_called_once()
 
+
 class TestRenderDocument:
     def test_render(self, synt, tmp_path):
         from app.pipeline.export.exporter import Exporter
         from app.pipeline.formatting.formatter import Formatter
+
         with patch.object(Formatter, "process") as mock_fmt:
             mock_fmt.return_value = MagicMock()
             with patch.object(Exporter, "process") as mock_exp:
                 mock_exp.return_value = None
                 result = synt._render_document("s1", "default", OUTLINE, SECTIONS, REFERENCES)
                 assert result is not None
+
 
 # Done

@@ -32,6 +32,7 @@ def _make_mock_page(*, blocks=None, tables=None, images=None, rect=None):
     page.get_images.return_value = images or []
     return page
 
+
 def _make_text_block(text, bbox=(50, 50, 550, 80), size=11.0, flags=0, lines=None):
     if lines is not None:
         return {"type": 0, "bbox": bbox, "lines": lines}
@@ -40,6 +41,7 @@ def _make_text_block(text, bbox=(50, 50, 550, 80), size=11.0, flags=0, lines=Non
         "bbox": bbox,
         "lines": [{"spans": [{"text": text, "size": size, "flags": flags}]}],
     }
+
 
 def _make_image_block(image_data, ext="png", bbox=(100, 100, 200, 200), width=100, height=100):
     return {
@@ -51,11 +53,13 @@ def _make_image_block(image_data, ext="png", bbox=(100, 100, 200, 200), width=10
         "height": height,
     }
 
+
 @pytest.fixture
 def pdf_parser():
     with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
         with patch("app.pipeline.parsing.pdf_parser.fitz") as mock_fitz:
             yield PdfParser(), mock_fitz
+
 
 # ════════════════════════════════════════════════════════════
 # Gap 85-86 — fitz.open raises → ValueError
@@ -69,6 +73,7 @@ class TestParseOpenFailure:
                 p = PdfParser()
                 with pytest.raises(ValueError, match="Failed to open PDF file"):
                     p.parse(str(f), "doc1")
+
 
 # ════════════════════════════════════════════════════════════
 # Gap 99 — non‑str document_id → str conversion
@@ -90,6 +95,7 @@ class TestParseNonStringId:
                 p = PdfParser()
                 result = p.parse(str(f), 42)
         assert result.document_id == "42"
+
 
 # ════════════════════════════════════════════════════════════
 # Gaps 141→143, 143→145, 145→147, 147→151
@@ -123,40 +129,46 @@ class TestExtractMetadataBranches:
         doc.metadata = {"keywords": "kw1, , kw3, "}
         assert p._extract_metadata(doc).keywords == ["kw1", "kw3"]
 
+
 # ════════════════════════════════════════════════════════════
 # Gap 159 — _should_attempt_ocr_fallback with page_count <= 0
 # ════════════════════════════════════════════════════════════
 class TestShouldAttemptOcrFallbackEdge:
     def test_zero_pages(self, pdf_parser):
         from app.models import Block
+
         p, _ = pdf_parser
         assert p._should_attempt_ocr_fallback([Block(block_id="b1", index=0, text="x")], 0) is False
 
     def test_negative_pages(self, pdf_parser):
         from app.models import Block
+
         p, _ = pdf_parser
         assert p._should_attempt_ocr_fallback([Block(block_id="b1", index=0, text="x")], -1) is False
 
     def test_very_low_chars_per_page(self, pdf_parser):
         from app.models import Block
+
         p, _ = pdf_parser
         assert p._should_attempt_ocr_fallback([Block(block_id="b1", index=0, text="a")], 3) is True
 
     def test_chars_300_low_cpp(self, pdf_parser):
         from app.models import Block
+
         p, _ = pdf_parser
         assert p._should_attempt_ocr_fallback([Block(block_id="b1", index=0, text="x" * 300)], 10) is True
 
     def test_chars_295_one_page(self, pdf_parser):
         from app.models import Block
+
         p, _ = pdf_parser
         assert p._should_attempt_ocr_fallback([Block(block_id="b1", index=0, text="x" * 295)], 1) is True
+
 
 # ════════════════════════════════════════════════════════════
 # Gaps 180-182, 186, 193, 197-199, 203-214, 215-216, 218-220
 # ════════════════════════════════════════════════════════════
 class TestOcrFallbackBranches:
-
     # Gap 180-182 — import fails
     def test_import_error_fallback(self, pdf_parser):
         p, _ = pdf_parser
@@ -205,6 +217,7 @@ class TestOcrFallbackBranches:
     # Gap 193 — no supported backends
     def test_no_supported_backends(self, pdf_parser):
         from app.models import Block
+
         p, _ = pdf_parser
         pdf_doc = MagicMock()
         pdf_doc.__len__.return_value = 5
@@ -222,6 +235,7 @@ class TestOcrFallbackBranches:
     # Gap 188-189 — _should_attempt_ocr_fallback returns False
     def test_should_not_attempt_ocr(self, pdf_parser):
         from app.models import Block
+
         p, _ = pdf_parser
         pdf_doc = MagicMock()
         pdf_doc.__len__.return_value = 5
@@ -239,6 +253,7 @@ class TestOcrFallbackBranches:
     # Gap 197-199 — not scanned and blocks exist
     def test_not_scanned_keeps_parsed(self, pdf_parser):
         from app.models import Block
+
         p, _ = pdf_parser
         pdf_doc = MagicMock()
         pdf_doc.__len__.return_value = 5
@@ -258,6 +273,7 @@ class TestOcrFallbackBranches:
     # Gaps 203-214 — OCR success
     def test_ocr_success(self, pdf_parser):
         from app.models import Block
+
         p, _ = pdf_parser
         pdf_doc = MagicMock()
         pdf_doc.__len__.return_value = 5
@@ -280,6 +296,7 @@ class TestOcrFallbackBranches:
     # Gap 204-205 — OCR text empty
     def test_ocr_empty_result(self, pdf_parser):
         from app.models import Block
+
         p, _ = pdf_parser
         pdf_doc = MagicMock()
         pdf_doc.__len__.return_value = 5
@@ -300,6 +317,7 @@ class TestOcrFallbackBranches:
     # Gap 215-216 — OCRError caught
     def test_ocr_ocrorror(self, pdf_parser):
         from app.models import Block
+
         p, _ = pdf_parser
         pdf_doc = MagicMock()
         pdf_doc.__len__.return_value = 5
@@ -320,6 +338,7 @@ class TestOcrFallbackBranches:
     # Gaps 218-220 — unexpected exception caught
     def test_ocr_unexpected_exception(self, pdf_parser):
         from app.models import Block
+
         p, _ = pdf_parser
         pdf_doc = MagicMock()
         pdf_doc.__len__.return_value = 5
@@ -336,6 +355,7 @@ class TestOcrFallbackBranches:
                     result, backend = p._maybe_apply_ocr_fallback("test.pdf", pdf_doc, blocks)
         assert result == blocks
         assert backend is None
+
 
 # ════════════════════════════════════════════════════════════
 # Gap 233 — _build_ocr_blocks paragraph vs line split paths
@@ -355,6 +375,7 @@ class TestBuildOcrBlocksEdge:
         blocks = p._build_ocr_blocks("Line1\nLine2\nLine3", "paddle")
         assert len(blocks) == 1
         assert blocks[0].metadata.get("ocr_backend") == "paddle"
+
 
 # ════════════════════════════════════════════════════════════
 # Gaps 273→272, 277→275, 279-280 — _calculate_font_stats
@@ -380,10 +401,12 @@ class TestCalculateFontStatsEdge:
         pdf.__len__.return_value = 1
         pg = MagicMock()
         pg.get_text.return_value = {
-            "blocks": [{
-                "type": 0,
-                "lines": [{"spans": [{"size": 0, "text": "no"}, {"size": 0, "text": "size"}]}],
-            }]
+            "blocks": [
+                {
+                    "type": 0,
+                    "lines": [{"spans": [{"size": 0, "text": "no"}, {"size": 0, "text": "size"}]}],
+                }
+            ]
         }
         pdf.__getitem__.return_value = pg
         assert p._calculate_font_stats(pdf) == 11.0
@@ -401,6 +424,7 @@ class TestCalculateFontStatsEdge:
                 "blocks": [{"type": 0, "lines": [{"spans": [{"size": 12.0, "text": "ok"}]}]}],
             }
             return pg
+
         pdf.__getitem__.side_effect = getitem
         assert p._calculate_font_stats(pdf) == 12.0
 
@@ -416,9 +440,11 @@ class TestCalculateFontStatsEdge:
             pg = MagicMock()
             pg.get_text.return_value = {"blocks": []}
             return pg
+
         pdf.__getitem__.side_effect = getitem
         p._calculate_font_stats(pdf)
         assert call_count == 5
+
 
 # ════════════════════════════════════════════════════════════
 # Gaps 294, 297 → exit — _is_header_footer edge cases
@@ -438,6 +464,7 @@ class TestIsHeaderFooterEdge:
         p, _ = pdf_parser
         assert p._is_header_footer([0, 0, 100, 30], [0, 0, 612, 0]) is False
         assert p._is_header_footer([0, 0, 100, 30], [0, 10, 612, 5]) is False
+
 
 # ════════════════════════════════════════════════════════════
 # Gaps 338, 344 — _build_table_model edge cases
@@ -460,11 +487,11 @@ class TestBuildTableModelEdge:
         assert tbl is not None
         assert tbl.has_header is False
 
+
 # ════════════════════════════════════════════════════════════
 # Gaps 414→417, 422→427, 423→425, 432→408, 440-441 — tables
 # ════════════════════════════════════════════════════════════
 class TestTableExtractionBranches:
-
     @staticmethod
     def _run(tmp_path, mock_table):
         f = tmp_path / "tbl.pdf"
@@ -549,6 +576,7 @@ class TestTableExtractionBranches:
                     doc = p.parse(str(f), "doc1")
         assert doc is not None
 
+
 # ════════════════════════════════════════════════════════════
 # Gaps 448-450 — get_text raises → empty dict fallback
 # ════════════════════════════════════════════════════════════
@@ -572,11 +600,11 @@ class TestTextDictException:
                     doc = p.parse(str(f), "doc1")
         assert doc is not None
 
+
 # ════════════════════════════════════════════════════════════
 # Gaps 457→456, 462→475, 470-473, 476
 # ════════════════════════════════════════════════════════════
 class TestTextBlockProcessing:
-
     # Gap 457→456: non-text block skipped
     def test_non_text_block_skipped(self, tmp_path):
         f = tmp_path / "nontext.pdf"
@@ -649,11 +677,11 @@ class TestTextBlockProcessing:
                     doc = p.parse(str(f), "doc1")
         assert len(doc.blocks) >= 1
 
+
 # ════════════════════════════════════════════════════════════
 # Gaps 493→497, 499, 501, 503→485, 508→456
 # ════════════════════════════════════════════════════════════
 class TestSpanProcessingEdge:
-
     @staticmethod
     def _run_parse(tmp_path, blocks, body_size=None):
         f = tmp_path / "span.pdf"
@@ -722,6 +750,7 @@ class TestSpanProcessingEdge:
         doc = self._run_parse(tmp_path, [_make_text_block("text", size=0, flags=0)])
         assert doc.blocks[0].style.font_size is None
 
+
 import contextlib
 
 
@@ -729,7 +758,6 @@ import contextlib
 # Gaps 513→525, 521-523, 525→532, 529→532, 534
 # ════════════════════════════════════════════════════════════
 class TestMarginAndDuplicateSuppression:
-
     @staticmethod
     def _run_multi_parse(tmp_path, pages):
         f = tmp_path / "multi.pdf"
@@ -774,11 +802,11 @@ class TestMarginAndDuplicateSuppression:
         doc = self._run_multi_parse(tmp_path, [_make_mock_page(blocks=[block]), _make_mock_page(blocks=[block])])
         assert len(doc.blocks) <= 2
 
+
 # ════════════════════════════════════════════════════════════
 # Gaps 560→562, 563, 565→580
 # ════════════════════════════════════════════════════════════
 class TestBboxAndHeaderFooterMetadata:
-
     def test_header_footer_metadata_set(self, tmp_path):
         f = tmp_path / "hfmeta.pdf"
         f.write_text("dummy")
@@ -839,11 +867,11 @@ class TestBboxAndHeaderFooterMetadata:
                     doc = p.parse(str(f), "doc1")
         assert "bbox" not in doc.blocks[0].metadata
 
+
 # ════════════════════════════════════════════════════════════
 # Gaps 581-588 — heading detection branches
 # ════════════════════════════════════════════════════════════
 class TestHeadingDetection:
-
     @pytest.mark.parametrize(
         ("size", "is_bold", "body", "expected_level"),
         [
@@ -896,11 +924,11 @@ class TestHeadingDetection:
                         doc = p.parse(str(f), "doc1")
         assert doc.blocks[0].metadata.get("potential_heading") in (None, False)
 
+
 # ════════════════════════════════════════════════════════════
 # Gaps 601-607 — table anchor assignment
 # ════════════════════════════════════════════════════════════
 class TestTableAnchorAssignment:
-
     @staticmethod
     def _run(tmp_path, page):
         f = tmp_path / "anchor.pdf"
@@ -950,11 +978,11 @@ class TestTableAnchorAssignment:
         doc = self._run(tmp_path, page)
         assert len(doc.tables) == 1
 
+
 # ════════════════════════════════════════════════════════════
 # Gaps 620, 624, 651-652, 654-663, 672-673 — image extraction
 # ════════════════════════════════════════════════════════════
 class TestImageExtractionGaps:
-
     # Gap 620: image_data is None → continue
     def test_image_no_data_skipped(self, tmp_path):
         f = tmp_path / "noimgdata.pdf"
@@ -1027,8 +1055,12 @@ class TestImageExtractionGaps:
         f.write_text("dummy")
         page = _make_mock_page(images=[(1,)])
         img_rect = MagicMock()
-        img_rect.x0 = 50; img_rect.y0 = 100; img_rect.x1 = 250; img_rect.y1 = 400
-        img_rect.width = 200; img_rect.height = 300
+        img_rect.x0 = 50
+        img_rect.y0 = 100
+        img_rect.x1 = 250
+        img_rect.y1 = 400
+        img_rect.width = 200
+        img_rect.height = 300
         page.get_image_rects.return_value = [img_rect]
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz") as mf:
@@ -1069,11 +1101,11 @@ class TestImageExtractionGaps:
                     doc = p.parse(str(f), "doc1")
         assert len(doc.figures) == 0
 
+
 # ════════════════════════════════════════════════════════════
 # Gaps 680-718 — image block fallback
 # ════════════════════════════════════════════════════════════
 class TestImageBlockFallback:
-
     def test_fallback_extracts_image_blocks(self, tmp_path):
         f = tmp_path / "fb_img.pdf"
         f.write_text("dummy")
@@ -1199,14 +1231,16 @@ class TestImageBlockFallback:
         f = tmp_path / "fb_exc.pdf"
         f.write_text("dummy")
         page = _make_mock_page(
-            blocks=[{
-                "type": 1,
-                "image": b"data",
-                "ext": "png",
-                "width": "bad-value",
-                "height": 100,
-                "bbox": (100, 100, 200, 200),
-            }],
+            blocks=[
+                {
+                    "type": 1,
+                    "image": b"data",
+                    "ext": "png",
+                    "width": "bad-value",
+                    "height": 100,
+                    "bbox": (100, 100, 200, 200),
+                }
+            ],
             images=[],
         )
         page.get_image_rects.return_value = []

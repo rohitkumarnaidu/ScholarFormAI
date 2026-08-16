@@ -12,12 +12,13 @@ import pytest
 # NLG Metric Implementations
 # ---------------------------------------------------------------------------
 
+
 def _tokenize(text: str) -> list[str]:
     return text.lower().split()
 
 
 def _ngrams(tokens: Sequence[str], n: int) -> set[tuple[str, ...]]:
-    return set(tuple(tokens[i:i + n]) for i in range(len(tokens) - n + 1))
+    return set(tuple(tokens[i : i + n]) for i in range(len(tokens) - n + 1))
 
 
 def _lcs_length(a: list[str], b: list[str]) -> int:
@@ -36,7 +37,7 @@ def _lcs_length(a: list[str], b: list[str]) -> int:
 def _count_ngrams(tokens: Sequence[str], n: int) -> dict[tuple[str, ...], int]:
     counts: dict[tuple[str, ...], int] = {}
     for i in range(len(tokens) - n + 1):
-        gram = tuple(tokens[i:i + n])
+        gram = tuple(tokens[i : i + n])
         counts[gram] = counts.get(gram, 0) + 1
     return counts
 
@@ -122,7 +123,7 @@ def _build_embedding(word: str) -> list[float]:
     vec = [0.0] * 48
     padded = f"#{word}#"
     for i in range(len(padded) - 2):
-        tri = padded[i:i+3]
+        tri = padded[i : i + 3]
         h = hash(tri) & 0xFFFFFFFF
         for j in range(4):
             idx = ((h >> (j * 8)) & 0xFF) % 48
@@ -177,6 +178,7 @@ def _bertscore_sim(reference: str, candidate: str) -> float:
 # ---------------------------------------------------------------------------
 # Tests: ROUGE-N
 # ---------------------------------------------------------------------------
+
 
 class TestRougeN:
     @pytest.mark.ai_quality

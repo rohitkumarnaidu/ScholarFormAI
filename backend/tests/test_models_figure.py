@@ -139,72 +139,89 @@ class TestFigureSerialization:
 class TestFigureTypeEnum:
     def test_diagram_value(self):
         from app.models.figure import FigureType
+
         assert FigureType.DIAGRAM.value == "diagram"
 
     def test_chart_value(self):
         from app.models.figure import FigureType
+
         assert FigureType.CHART.value == "chart"
 
     def test_graph_value(self):
         from app.models.figure import FigureType
+
         assert FigureType.GRAPH.value == "graph"
 
     def test_photograph_value(self):
         from app.models.figure import FigureType
+
         assert FigureType.PHOTOGRAPH.value == "photograph"
 
     def test_screenshot_value(self):
         from app.models.figure import FigureType
+
         assert FigureType.SCREENSHOT.value == "screenshot"
 
     def test_illustration_value(self):
         from app.models.figure import FigureType
+
         assert FigureType.ILLUSTRATION.value == "illustration"
 
     def test_unknown_value(self):
         from app.models.figure import FigureType
+
         assert FigureType.UNKNOWN.value == "unknown"
 
 
 class TestImageFormatEnum:
     def test_png_value(self):
         from app.models.figure import ImageFormat
+
         assert ImageFormat.PNG.value == "png"
 
     def test_jpeg_value(self):
         from app.models.figure import ImageFormat
+
         assert ImageFormat.JPEG.value == "jpeg"
 
     def test_jpg_value(self):
         from app.models.figure import ImageFormat
+
         assert ImageFormat.JPG.value == "jpg"
 
     def test_gif_value(self):
         from app.models.figure import ImageFormat
+
         assert ImageFormat.GIF.value == "gif"
 
     def test_bmp_value(self):
         from app.models.figure import ImageFormat
+
         assert ImageFormat.BMP.value == "bmp"
 
     def test_tiff_value(self):
         from app.models.figure import ImageFormat
+
         assert ImageFormat.TIFF.value == "tiff"
 
     def test_svg_value(self):
         from app.models.figure import ImageFormat
+
         assert ImageFormat.SVG.value == "svg"
 
     def test_emf_value(self):
         from app.models.figure import ImageFormat
+
         assert ImageFormat.EMF.value == "emf"
 
     def test_wmf_value(self):
         from app.models.figure import ImageFormat
+
         assert ImageFormat.WMF.value == "wmf"
 
     def test_unknown_value(self):
         from app.models.figure import ImageFormat
+
         assert ImageFormat.UNKNOWN.value == "unknown"
 
 

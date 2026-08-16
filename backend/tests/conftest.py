@@ -4,6 +4,7 @@
 """
 conftest.py — shared pytest fixtures for ScholarForm AI backend tests.
 """
+
 from __future__ import annotations
 
 import os
@@ -196,7 +197,7 @@ def reset_dependency_overrides():
     except (ImportError, TypeError):
         yield
         return
-    
+
     app.dependency_overrides.clear()
     yield
     app.dependency_overrides.clear()
@@ -213,6 +214,7 @@ from app.models import (
 
 # ── Document fixtures ──────────────────────────────────────────────────────────
 
+
 @pytest.fixture
 def minimal_doc() -> PipelineDocument:
     """Bare-minimum PipelineDocument with title + one body block."""
@@ -225,9 +227,9 @@ def minimal_doc() -> PipelineDocument:
         ),
     )
     doc.blocks = [
-        Block(block_id="b1", index=1, block_type=BlockType.TITLE,  text="Test Manuscript"),
+        Block(block_id="b1", index=1, block_type=BlockType.TITLE, text="Test Manuscript"),
         Block(block_id="b2", index=2, block_type=BlockType.HEADING_1, text="Introduction"),
-        Block(block_id="b3", index=3, block_type=BlockType.BODY,   text="Body content here."),
+        Block(block_id="b3", index=3, block_type=BlockType.BODY, text="Body content here."),
     ]
     return doc
 
@@ -255,9 +257,6 @@ def full_doc(minimal_doc: PipelineDocument) -> PipelineDocument:
     return minimal_doc
 
 
-
-
-
-
 import fastapi.routing
+
 old_merge = fastapi.routing._merge_lifespan_context

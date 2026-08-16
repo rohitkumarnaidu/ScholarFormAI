@@ -9,6 +9,7 @@ class TestABTestingFramework:
     @pytest.fixture
     def ab(self):
         from app.services.ab_testing import ABTestingFramework
+
         return ABTestingFramework()
 
     def test_init(self, ab):
@@ -103,6 +104,7 @@ class TestABTestingFramework:
 
     def test_get_ab_testing(self):
         from app.services.ab_testing import _ab_testing, get_ab_testing
+
         _ab_testing = None
         with patch("app.services.ab_testing.get_or_create") as mock_gc:
             mock_gc.return_value = "ab_instance"
@@ -116,8 +118,12 @@ class TestABTestingFramework:
         mock_ds.invoke.return_value = MagicMock(content="ds analysis")
         blocks = [{"text": "Block zero text for classification"}] * 7
         with patch.object(ab, "_run_nvidia_test", return_value={"response": "nv", "latency": 0.3, "success": True}):
-            with patch.object(ab, "_run_deepseek_test", return_value={"response": "ds", "latency": 0.5, "success": True}):
-                with patch.object(ab, "_compare_results", return_value={"both_succeeded": True, "latency_winner": "NVIDIA"}):
+            with patch.object(
+                ab, "_run_deepseek_test", return_value={"response": "ds", "latency": 0.5, "success": True}
+            ):
+                with patch.object(
+                    ab, "_compare_results", return_value={"both_succeeded": True, "latency_winner": "NVIDIA"}
+                ):
                     result = ab.run_ab_test(mock_nv, mock_ds, blocks, "ieee")
         assert result["nvidia"] is not None
         assert result["deepseek"] is not None
@@ -159,15 +165,18 @@ class TestABTestingFramework:
         blocks = [{"text": "test"}]
         captured_target = []
         import threading as _tmod
+
         orig_start = _tmod.Thread.start
+
         def capture_and_start(self_):
             captured_target.append(self_._target)
             return orig_start(self_)
+
         with patch.object(ab, "_run_nvidia_test", return_value={"latency": 0.3, "success": True}):
             with patch.object(ab, "_run_deepseek_test", return_value={"latency": 0.5, "success": True}):
-                with patch.object(ab, "_compare_results", return_value={
-                    "both_succeeded": True, "latency_winner": "NVIDIA"
-                }):
+                with patch.object(
+                    ab, "_compare_results", return_value={"both_succeeded": True, "latency_winner": "NVIDIA"}
+                ):
                     with patch("app.db.supabase_client.get_supabase_client", return_value=mock_sb):
                         with patch.object(_tmod.Thread, "start", capture_and_start):
                             ab.run_ab_test(mock_nv, mock_ds, blocks, "ieee")
@@ -178,6 +187,7 @@ class TestABTestingFramework:
 
     def test_run_ab_test_persist_failure_logged(self, ab):
         import threading as _tmod
+
         mock_nv = MagicMock()
         mock_ds = MagicMock()
         mock_sb = MagicMock()
@@ -185,14 +195,16 @@ class TestABTestingFramework:
         blocks = [{"text": "test"}]
         captured_target = []
         orig_start = _tmod.Thread.start
+
         def capture_and_start(self_):
             captured_target.append(self_._target)
             return orig_start(self_)
+
         with patch.object(ab, "_run_nvidia_test", return_value={"latency": 0.3, "success": True}):
             with patch.object(ab, "_run_deepseek_test", return_value={"latency": 0.5, "success": True}):
-                with patch.object(ab, "_compare_results", return_value={
-                    "both_succeeded": True, "latency_winner": "NVIDIA"
-                }):
+                with patch.object(
+                    ab, "_compare_results", return_value={"both_succeeded": True, "latency_winner": "NVIDIA"}
+                ):
                     with patch("app.db.supabase_client.get_supabase_client", return_value=mock_sb):
                         with patch.object(_tmod.Thread, "start", capture_and_start):
                             with patch("app.services.ab_testing.logger") as mock_log:
@@ -201,27 +213,29 @@ class TestABTestingFramework:
             if fn and "persist" in getattr(fn, "__name__", ""):
                 fn()
         assert any(
-            "Failed to persist" in str(c) and "persist failed" in str(c)
-            for c in mock_log.warning.call_args_list
+            "Failed to persist" in str(c) and "persist failed" in str(c) for c in mock_log.warning.call_args_list
         ), "Expected warning about persist failure"
 
     def test_run_ab_test_persist_sb_none_returns(self, ab):
         import threading as _tmod
+
         mock_nv = MagicMock()
         mock_ds = MagicMock()
         blocks = [{"text": "test"}]
         persist_fn = []
         orig_start = _tmod.Thread.start
+
         def capture_and_start(self_):
             fn = self_._target
             if fn and "persist" in getattr(fn, "__name__", ""):
                 persist_fn.append(fn)
             return orig_start(self_)
+
         with patch.object(ab, "_run_nvidia_test", return_value={"latency": 0.3, "success": True}):
             with patch.object(ab, "_run_deepseek_test", return_value={"latency": 0.5, "success": True}):
-                with patch.object(ab, "_compare_results", return_value={
-                    "both_succeeded": True, "latency_winner": "NVIDIA"
-                }):
+                with patch.object(
+                    ab, "_compare_results", return_value={"both_succeeded": True, "latency_winner": "NVIDIA"}
+                ):
                     with patch("app.db.supabase_client.get_supabase_client", return_value=None):
                         with patch.object(_tmod.Thread, "start", capture_and_start):
                             ab.run_ab_test(mock_nv, mock_ds, blocks, "ieee")

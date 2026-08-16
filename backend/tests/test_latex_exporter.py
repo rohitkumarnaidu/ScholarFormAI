@@ -4,48 +4,58 @@ from unittest.mock import MagicMock, patch
 class TestEscapeLatex:
     def test_no_special_chars(self):
         from app.pipeline.export.latex_exporter import escape_latex
+
         assert escape_latex("Hello World") == "Hello World"
 
     def test_ampersand(self):
         from app.pipeline.export.latex_exporter import escape_latex
+
         assert escape_latex("A & B") == "A \\& B"
 
     def test_percent(self):
         from app.pipeline.export.latex_exporter import escape_latex
+
         assert escape_latex("100%") == "100\\%"
 
     def test_dollar(self):
         from app.pipeline.export.latex_exporter import escape_latex
+
         assert escape_latex("$10") == "\\$10"
 
     def test_underscore(self):
         from app.pipeline.export.latex_exporter import escape_latex
+
         assert escape_latex("test_method") == "test\\_method"
 
     def test_backslash(self):
         from app.pipeline.export.latex_exporter import escape_latex
+
         assert "textbackslash" in escape_latex("a\\b")
 
     def test_multiple_chars(self):
         from app.pipeline.export.latex_exporter import escape_latex
+
         assert escape_latex("&%$#_{}") != "&%$#_{}"
 
 
 class TestResolvePandocBinary:
     def test_from_env(self):
         from app.pipeline.export.latex_exporter import _resolve_pandoc_binary
+
         with patch.dict("os.environ", {"PANDOC_PATH": "/custom/pandoc"}, clear=False):
             result = _resolve_pandoc_binary()
         assert result == "/custom/pandoc"
 
     def test_from_shutil(self):
         from app.pipeline.export.latex_exporter import _resolve_pandoc_binary
+
         with patch("shutil.which", return_value="/usr/bin/pandoc"):
             result = _resolve_pandoc_binary()
         assert result is not None
 
     def test_not_found(self):
         from app.pipeline.export.latex_exporter import _resolve_pandoc_binary
+
         with patch.dict("os.environ", {}, clear=True), patch("shutil.which", return_value=None):
             result = _resolve_pandoc_binary()
         assert result is None
@@ -54,12 +64,19 @@ class TestResolvePandocBinary:
 class TestWriteBibtex:
     def test_writes_article_entries(self, tmp_path):
         from app.pipeline.export.latex_exporter import LaTeXExporter
+
         exporter = LaTeXExporter()
         doc = MagicMock()
         ref = MagicMock()
         ref.formatted_text = "Smith, J. (2020). A paper."
         ref.raw_text = None
-        ref.metadata = {"authors": "Smith, J.", "title": "A paper", "year": "2020", "journal": "Journal X", "doi": "10.1234/abc"}
+        ref.metadata = {
+            "authors": "Smith, J.",
+            "title": "A paper",
+            "year": "2020",
+            "journal": "Journal X",
+            "doi": "10.1234/abc",
+        }
         doc.references = [ref]
         bib_path = tmp_path / "manuscript.bib"
         exporter._write_bibtex(doc, bib_path)
@@ -70,6 +87,7 @@ class TestWriteBibtex:
 
     def test_writes_misc_entry_when_no_title(self, tmp_path):
         from app.pipeline.export.latex_exporter import LaTeXExporter
+
         exporter = LaTeXExporter()
         doc = MagicMock()
         ref = MagicMock()
@@ -84,6 +102,7 @@ class TestWriteBibtex:
 
     def test_no_references(self, tmp_path):
         from app.pipeline.export.latex_exporter import LaTeXExporter
+
         exporter = LaTeXExporter()
         doc = MagicMock()
         doc.references = []
@@ -95,6 +114,7 @@ class TestWriteBibtex:
 class TestWriteTitleAuthors:
     def test_with_authors(self):
         from app.pipeline.export.latex_exporter import LaTeXExporter
+
         exporter = LaTeXExporter()
         doc = MagicMock()
         doc.metadata.title = "Test Paper"
@@ -110,6 +130,7 @@ class TestWriteTitleAuthors:
 
     def test_with_publication_date(self):
         from app.pipeline.export.latex_exporter import LaTeXExporter
+
         exporter = LaTeXExporter()
         doc = MagicMock()
         doc.metadata.title = "Paper"
@@ -124,6 +145,7 @@ class TestWriteTitleAuthors:
 class TestWriteAbstract:
     def test_with_abstract_and_keywords(self):
         from app.pipeline.export.latex_exporter import LaTeXExporter
+
         exporter = LaTeXExporter()
         doc = MagicMock()
         doc.metadata.abstract = "This is an abstract."
@@ -139,6 +161,7 @@ class TestWriteSections:
     def test_headings(self):
         from app.models.block import Block, BlockType
         from app.pipeline.export.latex_exporter import LaTeXExporter
+
         exporter = LaTeXExporter()
         doc = MagicMock()
         doc.blocks = [
@@ -156,6 +179,7 @@ class TestWriteSections:
     def test_skips_references_and_figures(self):
         from app.models.block import Block, BlockType
         from app.pipeline.export.latex_exporter import LaTeXExporter
+
         exporter = LaTeXExporter()
         doc = MagicMock()
         doc.blocks = [
@@ -169,6 +193,7 @@ class TestWriteSections:
 class TestWriteEquations:
     def test_equation_block(self):
         from app.pipeline.export.latex_exporter import LaTeXExporter
+
         exporter = LaTeXExporter()
         doc = MagicMock()
         eq = MagicMock()
@@ -185,6 +210,7 @@ class TestWriteEquations:
 
     def test_equation_passthrough(self):
         from app.pipeline.export.latex_exporter import LaTeXExporter
+
         exporter = LaTeXExporter()
         doc = MagicMock()
         eq = MagicMock()
@@ -201,6 +227,7 @@ class TestWriteEquations:
 class TestJournalTemplates:
     def test_all_templates_have_required_keys(self):
         from app.pipeline.export.latex_exporter import JOURNAL_TEMPLATES
+
         for name, tpl in JOURNAL_TEMPLATES.items():
             assert "documentclass" in tpl, f"{name} missing documentclass"
             assert "packages" in tpl, f"{name} missing packages"
@@ -208,12 +235,14 @@ class TestJournalTemplates:
 
     def test_default_exists(self):
         from app.pipeline.export.latex_exporter import JOURNAL_TEMPLATES
+
         assert "default" in JOURNAL_TEMPLATES
 
 
 class TestExportFromDocument:
     def test_basic_export(self, tmp_path):
         from app.pipeline.export.latex_exporter import LaTeXExporter
+
         exporter = LaTeXExporter()
         doc = MagicMock()
         doc.metadata.title = "Test"

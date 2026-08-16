@@ -5,31 +5,34 @@
 Tests for the Settings class — safe defaults, threshold clamping, and
 absence of secrets does not crash the process.
 """
+
 from __future__ import annotations
 
 import pytest
 
 
 class TestSettingsDefaults:
-
     def _fresh_settings(self, env_overrides: dict | None = None):
         """Import Settings in a clean env context."""
         # Reload settings module with patched env
         import importlib
 
         import app.config.settings as mod
+
         importlib.reload(mod)
         return mod.Settings()
 
     def test_algorithm_default_is_hs256(self):
         """JWT algorithm default must be HS256."""
         from app.config.settings import Settings
+
         s = Settings()
         assert s.ALGORITHM == "HS256"
 
     def test_cors_origins_has_localhost(self):
         """CORS origins include localhost by default."""
         from app.config.settings import Settings
+
         s = Settings()
         assert "localhost" in s.CORS_ORIGINS
 
@@ -39,14 +42,17 @@ class TestSettingsDefaults:
         from importlib import reload
 
         from app.config import settings
+
         reload(settings)
         from app.config.settings import Settings
+
         s = Settings()
         assert s.DEFAULT_TEMPLATE == "ieee"
 
     def test_confidence_thresholds_are_between_0_and_1(self):
         """All confidence thresholds must be in [0, 1]."""
         from app.config.settings import Settings
+
         s = Settings()
         for attr in (
             "HEADING_STYLE_THRESHOLD",
@@ -61,6 +67,7 @@ class TestSettingsDefaults:
     def test_grobid_defaults(self):
         """GROBID defaults are sane and usable."""
         from app.config.settings import Settings
+
         s = Settings()
         assert s.GROBID_BASE_URL
         assert s.GROBID_BASE_URL.startswith("http")
@@ -96,6 +103,7 @@ class TestSettingsDefaults:
     def test_validate_does_not_raise(self):
         """Settings.validate() must never raise even if all secrets are unset."""
         from app.config.settings import settings
+
         try:
             settings.validate()
         except Exception as exc:

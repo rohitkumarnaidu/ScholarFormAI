@@ -23,6 +23,7 @@ from app.pipeline.synthesis.synthesizer import _REF_PATTERN, MultiDocSynthesizer
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_synthesizer(**kwargs):
     """Build a MultiDocSynthesizer with all dependencies mocked."""
     with (
@@ -91,6 +92,7 @@ def _make_mock_doc(blocks: list | None = None):
 # _FakeUpload
 # -------------------------------------------------------------------------------
 
+
 class TestFakeUpload:
     def test_filename(self):
         fu = _FakeUpload("test.pdf")
@@ -105,6 +107,7 @@ class TestFakeUpload:
 # -------------------------------------------------------------------------------
 # __init__
 # -------------------------------------------------------------------------------
+
 
 class TestInit:
     def test_defaults(self):
@@ -164,6 +167,7 @@ class TestInit:
 # _emit_event
 # -------------------------------------------------------------------------------
 
+
 class TestEmitEvent:
     @pytest.fixture
     def synth_fixture(self):
@@ -205,6 +209,7 @@ class TestEmitEvent:
 # -------------------------------------------------------------------------------
 # _update_status
 # -------------------------------------------------------------------------------
+
 
 class TestUpdateStatus:
     async def test_basic(self):
@@ -259,6 +264,7 @@ class TestUpdateStatus:
 # -------------------------------------------------------------------------------
 # _validate_files
 # -------------------------------------------------------------------------------
+
 
 class TestValidateFiles:
     @patch("app.pipeline.synthesis.synthesizer._validate_magic_bytes")
@@ -370,6 +376,7 @@ class TestValidateFiles:
 # _chunk_text
 # -------------------------------------------------------------------------------
 
+
 class TestChunkText:
     def test_single_chunk(self):
         synth, _ = _make_synthesizer()
@@ -428,13 +435,16 @@ class TestChunkText:
 # _build_chunks
 # -------------------------------------------------------------------------------
 
+
 class TestBuildChunks:
     def test_single_doc_multiple_blocks(self):
         synth, _ = _make_synthesizer()
-        doc = _make_mock_doc(blocks=[
-            _make_mock_block("Intro text", "Introduction", 1),
-            _make_mock_block("Methods text", "Methods", 2),
-        ])
+        doc = _make_mock_doc(
+            blocks=[
+                _make_mock_block("Intro text", "Introduction", 1),
+                _make_mock_block("Methods text", "Methods", 2),
+            ]
+        )
         extracted = [{"filename": "paper.pdf", "doc_obj": doc}]
         chunks = synth._build_chunks(extracted)
         assert len(chunks) >= 2
@@ -442,12 +452,16 @@ class TestBuildChunks:
 
     def test_multiple_docs(self):
         synth, _ = _make_synthesizer()
-        doc1 = _make_mock_doc(blocks=[
-            _make_mock_block("Doc1 text" * 200, "SectionA", 1),
-        ])
-        doc2 = _make_mock_doc(blocks=[
-            _make_mock_block("Doc2 text" * 200, "SectionB", 1),
-        ])
+        doc1 = _make_mock_doc(
+            blocks=[
+                _make_mock_block("Doc1 text" * 200, "SectionA", 1),
+            ]
+        )
+        doc2 = _make_mock_doc(
+            blocks=[
+                _make_mock_block("Doc2 text" * 200, "SectionB", 1),
+            ]
+        )
         extracted = [
             {"filename": "doc1.pdf", "doc_obj": doc1},
             {"filename": "doc2.pdf", "doc_obj": doc2},
@@ -466,11 +480,13 @@ class TestBuildChunks:
 
     def test_section_transition(self):
         synth, _ = _make_synthesizer()
-        doc = _make_mock_doc(blocks=[
-            _make_mock_block("A" * 100, "Intro", 1),
-            _make_mock_block("B" * 100, "Intro", 1),
-            _make_mock_block("C" * 100, "Methods", 2),
-        ])
+        doc = _make_mock_doc(
+            blocks=[
+                _make_mock_block("A" * 100, "Intro", 1),
+                _make_mock_block("B" * 100, "Intro", 1),
+                _make_mock_block("C" * 100, "Methods", 2),
+            ]
+        )
         extracted = [{"filename": "f.pdf", "doc_obj": doc}]
         chunks = synth._build_chunks(extracted)
         sections = {c["section"] for c in chunks}
@@ -479,10 +495,12 @@ class TestBuildChunks:
 
     def test_block_without_section_uses_previous(self):
         synth, _ = _make_synthesizer()
-        doc = _make_mock_doc(blocks=[
-            _make_mock_block("First", "Intro", 1),
-            _make_mock_block("Second", None, 1),
-        ])
+        doc = _make_mock_doc(
+            blocks=[
+                _make_mock_block("First", "Intro", 1),
+                _make_mock_block("Second", None, 1),
+            ]
+        )
         extracted = [{"filename": "f.pdf", "doc_obj": doc}]
         chunks = synth._build_chunks(extracted)
         for c in chunks:
@@ -490,11 +508,13 @@ class TestBuildChunks:
 
     def test_all_empty_text_skipped(self):
         synth, _ = _make_synthesizer()
-        doc = _make_mock_doc(blocks=[
-            _make_mock_block(""),
-            _make_mock_block("   ", "S", 1),
-            _make_mock_block(None, "S", 1),
-        ])
+        doc = _make_mock_doc(
+            blocks=[
+                _make_mock_block(""),
+                _make_mock_block("   ", "S", 1),
+                _make_mock_block(None, "S", 1),
+            ]
+        )
         extracted = [{"filename": "f.pdf", "doc_obj": doc}]
         chunks = synth._build_chunks(extracted)
         assert chunks == []
@@ -503,6 +523,7 @@ class TestBuildChunks:
 # -------------------------------------------------------------------------------
 # _extract_json
 # -------------------------------------------------------------------------------
+
 
 class TestExtractJson:
     def test_bare_json_object(self):
@@ -521,7 +542,7 @@ class TestExtractJson:
         assert json.loads(result) == {"x": 42}
 
     def test_with_prefix_text(self):
-        text = "Here is the result:\n```json\n{\"a\": [1,2]}\n```\nEnd."
+        text = 'Here is the result:\n```json\n{"a": [1,2]}\n```\nEnd.'
         result = MultiDocSynthesizer._extract_json(text)
         assert json.loads(result) == {"a": [1, 2]}
 
@@ -547,6 +568,7 @@ class TestExtractJson:
 # -------------------------------------------------------------------------------
 # _llm_json
 # -------------------------------------------------------------------------------
+
 
 class TestLlmJson:
     async def test_success(self):
@@ -589,6 +611,7 @@ class TestLlmJson:
 # _llm_text
 # -------------------------------------------------------------------------------
 
+
 class TestLlmText:
     @patch("app.pipeline.synthesis.synthesizer.generate_with_fallback")
     async def test_basic(self, mock_gen):
@@ -620,6 +643,7 @@ class TestLlmText:
 # _template_to_csl
 # -------------------------------------------------------------------------------
 
+
 class TestTemplateToCsl:
     def test_default_is_ieee(self):
         synth, _ = _make_synthesizer()
@@ -650,6 +674,7 @@ class TestTemplateToCsl:
 # -------------------------------------------------------------------------------
 # _insert_citations
 # -------------------------------------------------------------------------------
+
 
 class TestInsertCitations:
     def test_no_refs_no_sections(self):
@@ -758,6 +783,7 @@ class TestInsertCitations:
 # -------------------------------------------------------------------------------
 # _render_document
 # -------------------------------------------------------------------------------
+
 
 class TestRenderDocument:
     @patch("app.pipeline.formatting.formatter.Formatter")
@@ -875,6 +901,7 @@ class TestRenderDocument:
 # _stream_chunks
 # -------------------------------------------------------------------------------
 
+
 class TestStreamChunks:
     async def test_basic_chunking(self):
         synth, deps = _make_synthesizer()
@@ -911,6 +938,7 @@ class TestStreamChunks:
 # -------------------------------------------------------------------------------
 # _cross_doc_analysis
 # -------------------------------------------------------------------------------
+
 
 class TestCrossDocAnalysis:
     async def test_success_path(self):
@@ -961,6 +989,7 @@ class TestCrossDocAnalysis:
 # _generate_outline
 # -------------------------------------------------------------------------------
 
+
 class TestGenerateOutline:
     async def test_success(self):
         synth, deps = _make_synthesizer()
@@ -995,6 +1024,7 @@ class TestGenerateOutline:
 # -------------------------------------------------------------------------------
 # _generate_sections
 # -------------------------------------------------------------------------------
+
 
 class TestGenerateSections:
     async def test_basic(self):
@@ -1050,6 +1080,7 @@ class TestGenerateSections:
 # _extract_documents
 # -------------------------------------------------------------------------------
 
+
 class TestExtractDocuments:
     async def test_basic(self):
         synth, deps = _make_synthesizer()
@@ -1057,10 +1088,12 @@ class TestExtractDocuments:
             {"path": r"C:\a.pdf", "filename": "a.pdf", "hash": "abc", "size": 10},
             {"path": r"C:\b.pdf", "filename": "b.pdf", "hash": "def", "size": 20},
         ]
-        mock_doc = _make_mock_doc(blocks=[
-            _make_mock_block("Text A", "Intro", 1),
-            _make_mock_block("Text B", "Methods", 2),
-        ])
+        mock_doc = _make_mock_doc(
+            blocks=[
+                _make_mock_block("Text A", "Intro", 1),
+                _make_mock_block("Text B", "Methods", 2),
+            ]
+        )
         mock_tt = AsyncMock(return_value=mock_doc)
 
         with (
@@ -1082,9 +1115,11 @@ class TestExtractDocuments:
             {"path": r"C:\a.pdf", "filename": "a.pdf", "hash": "abc", "size": 10},
             {"path": r"C:\b.pdf", "filename": "b.pdf", "hash": "def", "size": 20},
         ]
-        mock_doc = _make_mock_doc(blocks=[
-            _make_mock_block("Text", "Intro", 1),
-        ])
+        mock_doc = _make_mock_doc(
+            blocks=[
+                _make_mock_block("Text", "Intro", 1),
+            ]
+        )
         mock_tt = AsyncMock(return_value=mock_doc)
 
         with (
@@ -1119,6 +1154,7 @@ class TestExtractDocuments:
 # run (full pipeline)
 # -------------------------------------------------------------------------------
 
+
 class TestRun:
     @patch("app.pipeline.synthesis.synthesizer._validate_magic_bytes")
     @patch("pathlib.Path.read_bytes")
@@ -1133,9 +1169,11 @@ class TestRun:
             {"path": "/b.pdf", "filename": "b.pdf", "hash": "bbb", "size": 7},
         ]
 
-        mock_doc = _make_mock_doc(blocks=[
-            _make_mock_block("Paper text", "Intro", 1),
-        ])
+        mock_doc = _make_mock_doc(
+            blocks=[
+                _make_mock_block("Paper text", "Intro", 1),
+            ]
+        )
 
         deps["vector_store"].query.return_value = [
             {"text": "src", "source_doc": "a.pdf", "section": "Intro"},
@@ -1207,8 +1245,7 @@ class TestRun:
 
         # Verify error update was emitted
         error_calls = [
-            c for c in deps["session_service"].update_session.await_args_list
-            if c[1].get("status") == "failed"
+            c for c in deps["session_service"].update_session.await_args_list if c[1].get("status") == "failed"
         ]
         assert len(error_calls) >= 1
 
@@ -1256,6 +1293,7 @@ class TestRun:
 # -------------------------------------------------------------------------------
 # _REF_PATTERN
 # -------------------------------------------------------------------------------
+
 
 class TestRefPattern:
     def test_basic_match(self):

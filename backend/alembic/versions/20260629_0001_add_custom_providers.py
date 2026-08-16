@@ -4,6 +4,7 @@ Revision ID: 20260629_0001
 Revises: 20260521_0001
 Create Date: 2026-06-29 00:00:00.000000
 """
+
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import JSON, UUID
 
@@ -42,4 +43,6 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.drop_table("custom_providers")
-__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']
+
+
+__all__ = ["revision", "down_revision", "branch_labels", "depends_on", "upgrade", "downgrade"]

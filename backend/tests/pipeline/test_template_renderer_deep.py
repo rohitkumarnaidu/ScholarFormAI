@@ -59,6 +59,7 @@ def _make_doc(blocks=None, references=None, metadata=None, formatting_options=No
 # 1. docxtpl not available
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestDocxTplNotAvailable:
     """render() must raise ImportError when _DOCXTPL_AVAILABLE = False."""
 
@@ -82,6 +83,7 @@ class TestDocxTplNotAvailable:
 # ══════════════════════════════════════════════════════════════════════════════
 # 2. Render edge cases
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestRenderEdgeCases:
     """Edge cases in render() beyond docxtpl availability."""
@@ -147,6 +149,7 @@ class TestRenderEdgeCases:
 # 3. has_renderable_template
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestHasRenderableTemplate:
     """has_renderable_template must detect Jinja2 source or marker-bearing DOCX."""
 
@@ -183,6 +186,7 @@ class TestHasRenderableTemplate:
 # ══════════════════════════════════════════════════════════════════════════════
 # 4. build_context edge cases
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestBuildContext:
     """build_context fallback and edge case paths."""
@@ -347,6 +351,7 @@ class TestBuildContext:
 # 5. _build_template_from_jinja_source
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestBuildTemplateFromJinjaSource:
     """Wrap plain-text Jinja2 source in a minimal DOCX container."""
 
@@ -372,7 +377,10 @@ class TestBuildTemplateFromJinjaSource:
         source = tmp_path / "template.jinja2"
         source.write_text("{{ title }}")
         with (
-            patch("app.pipeline.formatting.template_renderer.tempfile.NamedTemporaryFile", side_effect=Exception("temp fail")),
+            patch(
+                "app.pipeline.formatting.template_renderer.tempfile.NamedTemporaryFile",
+                side_effect=Exception("temp fail"),
+            ),
             patch.object(renderer, "_build_fallback_template", return_value=Path("fallback.docx")),
         ):
             result = renderer._build_template_from_jinja_source(source)
@@ -391,6 +399,7 @@ class TestBuildTemplateFromJinjaSource:
 # ══════════════════════════════════════════════════════════════════════════════
 # 6. _has_template_markers
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestHasTemplateMarkers:
     """Detect Jinja2 markers {{ }} and {% %} inside DOCX XML."""
@@ -452,6 +461,7 @@ class TestHasTemplateMarkers:
 # 7. _build_fallback_template
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestBuildFallbackTemplate:
     """Create a minimal DOCX with all expected Jinja2 markers."""
 
@@ -475,7 +485,10 @@ class TestBuildFallbackTemplate:
 
     def test_exception_raised(self, renderer):
         with (
-            patch("app.pipeline.formatting.template_renderer.tempfile.NamedTemporaryFile", side_effect=Exception("no temp")),
+            patch(
+                "app.pipeline.formatting.template_renderer.tempfile.NamedTemporaryFile",
+                side_effect=Exception("no temp"),
+            ),
         ):
             with pytest.raises(Exception, match="no temp"):
                 renderer._build_fallback_template()
@@ -484,6 +497,7 @@ class TestBuildFallbackTemplate:
 # ══════════════════════════════════════════════════════════════════════════════
 # 8. _collect_sections
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestCollectSections:
     """Group non-reference content into heading sections."""
@@ -577,6 +591,7 @@ class TestCollectSections:
 # 9. _collect_references
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestCollectReferences:
     """Collect and sort references from the document."""
 
@@ -648,6 +663,7 @@ class TestCollectReferences:
 # 10. _resolve_template_path
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestResolveTemplatePath:
     """Resolve the best available template path."""
 
@@ -711,6 +727,7 @@ class TestResolveTemplatePath:
 # 11. _resolve_bool_option
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestResolveBoolOption:
     """Resolve boolean option from dict with fallback key list."""
 
@@ -744,6 +761,7 @@ class TestResolveBoolOption:
 # 12. _coerce_bool (additional edge cases)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestCoerceBool:
     """Edge cases for the static _coerce_bool helper."""
 
@@ -769,6 +787,7 @@ class TestCoerceBool:
 # ══════════════════════════════════════════════════════════════════════════════
 # 13. _block_type_token
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestBlockTypeToken:
     """Static helper that normalises block type to lowercase string."""
@@ -797,6 +816,7 @@ class TestBlockTypeToken:
 # ══════════════════════════════════════════════════════════════════════════════
 # 14. _first_block_text / _all_block_text (helpers for build_context)
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestFirstBlockText:
     def test_finds_matching_block(self, renderer):

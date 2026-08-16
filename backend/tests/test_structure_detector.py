@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 class TestConstructor:
     def test_sets_defaults(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         detector = StructureDetector(contracts_dir="/tmp")
         assert detector.avg_font_size is None
         assert detector.detected_headings == []
@@ -13,6 +14,7 @@ class TestConstructor:
 class TestCalculateAvgFontSize:
     def test_returns_median(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         detector = StructureDetector(contracts_dir="/tmp")
         b1 = MagicMock()
         b1.style.font_size = 12.0
@@ -28,6 +30,7 @@ class TestCalculateAvgFontSize:
 
     def test_returns_none_when_no_font_sizes(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         detector = StructureDetector(contracts_dir="/tmp")
         b = MagicMock()
         b.style.font_size = None
@@ -37,6 +40,7 @@ class TestCalculateAvgFontSize:
 
     def test_skips_empty_text(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         detector = StructureDetector(contracts_dir="/tmp")
         b = MagicMock()
         b.style.font_size = 12.0
@@ -48,6 +52,7 @@ class TestCalculateAvgFontSize:
 class TestValidateHierarchy:
     def test_no_jump_if_sequential(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         detector = StructureDetector(contracts_dir="/tmp")
         b1 = MagicMock()
         b1.metadata = {}
@@ -66,6 +71,7 @@ class TestValidateHierarchy:
 
     def test_detects_jump(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         detector = StructureDetector(contracts_dir="/tmp")
         b1 = MagicMock()
         b1.metadata = {}
@@ -85,6 +91,7 @@ class TestValidateHierarchy:
 
     def test_skips_header_footer(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         detector = StructureDetector(contracts_dir="/tmp")
         b = MagicMock()
         b.metadata = {"is_header": True}
@@ -99,6 +106,7 @@ class TestValidateHierarchy:
 class TestBuildHierarchy:
     def test_parent_assignment(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         detector = StructureDetector(contracts_dir="/tmp")
         h1 = {"block_id": "b1", "level": 1}
         h2 = {"block_id": "b2", "level": 2}
@@ -115,6 +123,7 @@ class TestBuildHierarchy:
 
     def test_no_parent_for_level_1(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         detector = StructureDetector(contracts_dir="/tmp")
         h1 = {"block_id": "b1", "level": 1}
         b1 = MagicMock()
@@ -126,6 +135,7 @@ class TestBuildHierarchy:
 
     def test_skips_header_footer(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         detector = StructureDetector(contracts_dir="/tmp")
         h1 = {"block_id": "b1", "level": 1}
         b1 = MagicMock()
@@ -139,6 +149,7 @@ class TestBuildHierarchy:
 class TestAssignSectionNames:
     def test_section_inheritance(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         detector = StructureDetector(contracts_dir="/tmp")
         h = MagicMock()
         h.block_id = "h1"
@@ -159,6 +170,7 @@ class TestAssignSectionNames:
 
     def test_title_level_0(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         detector = StructureDetector(contracts_dir="/tmp")
         h = MagicMock()
         h.block_id = "h1"
@@ -169,6 +181,3 @@ class TestAssignSectionNames:
         heading_candidates = [{"block_id": "h1", "level": 0, "block": h}]
         detector._assign_section_names([h], heading_candidates)
         assert h.section_name == "title"
-
-
-

@@ -4,7 +4,8 @@ from unittest.mock import MagicMock, patch
 class TestFindLibreOffice:
     def test_windows_paths(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
-        exporter = PDFExporter(libreoffice_path="skip") # to avoid auto-find in init
+
+        exporter = PDFExporter(libreoffice_path="skip")  # to avoid auto-find in init
         with patch("platform.system", return_value="Windows"):
             with patch("os.path.exists", side_effect=[False, True]):
                 result = exporter._find_libreoffice()
@@ -12,6 +13,7 @@ class TestFindLibreOffice:
 
     def test_windows_not_found(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="skip")
         with patch("platform.system", return_value="Windows"), patch("os.path.exists", return_value=False):
             result = exporter._find_libreoffice()
@@ -19,6 +21,7 @@ class TestFindLibreOffice:
 
     def test_macos_path(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="skip")
         with patch("platform.system", return_value="Darwin"):
             result = exporter._find_libreoffice()
@@ -26,6 +29,7 @@ class TestFindLibreOffice:
 
     def test_linux_default(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="skip")
         with patch("platform.system", return_value="Linux"):
             result = exporter._find_libreoffice()
@@ -35,6 +39,7 @@ class TestFindLibreOffice:
 class TestConvertToPdf:
     def test_file_not_found(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="/fake/soffice")
         with patch("os.path.exists", return_value=False):
             result = exporter.convert_to_pdf("/nonexistent.docx", "/tmp")
@@ -42,6 +47,7 @@ class TestConvertToPdf:
 
     def test_libreoffice_success(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="/fake/soffice")
         with patch("os.path.exists", return_value=True), patch("subprocess.run") as mock_run:
             mock_result = MagicMock()
@@ -52,6 +58,7 @@ class TestConvertToPdf:
 
     def test_libreoffice_failure_falls_to_weasyprint(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="/fake/soffice")
         with patch("os.path.exists", return_value=True), patch("subprocess.run") as mock_run:
             mock_result = MagicMock()
@@ -64,6 +71,7 @@ class TestConvertToPdf:
 
     def test_no_libreoffice_uses_weasyprint(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path=None)
         with patch("os.path.exists", return_value=True):
             with patch.object(exporter, "_weasyprint_fallback", return_value="/tmp/test.pdf"):
@@ -75,6 +83,7 @@ class TestWeasyprintFallback:
     def _setup_weasyprint_mocks(self):
         """Set up mock weasyprint module to avoid system DLL issues."""
         import sys
+
         mock_wp = MagicMock()
         mock_wp.HTML = MagicMock()
         mock_wp.HTML.return_value.write_pdf = MagicMock()
@@ -83,10 +92,12 @@ class TestWeasyprintFallback:
 
     def _teardown_weasyprint_mocks(self):
         import sys
+
         sys.modules.pop("weasyprint", None)
 
     def test_missing_deps_returns_none(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter()
         with patch("builtins.__import__", side_effect=ImportError("no module")):
             result = exporter._weasyprint_fallback("/tmp/test.docx", "/tmp/test.pdf")
@@ -96,6 +107,7 @@ class TestWeasyprintFallback:
         self._setup_weasyprint_mocks()
         try:
             from app.pipeline.export.pdf_exporter import PDFExporter
+
             exporter = PDFExporter()
             mock_docx = MagicMock()
             para = MagicMock()
@@ -111,6 +123,7 @@ class TestWeasyprintFallback:
         self._setup_weasyprint_mocks()
         try:
             from app.pipeline.export.pdf_exporter import PDFExporter
+
             exporter = PDFExporter()
             mock_docx = MagicMock()
             mock_docx.return_value.paragraphs = []
@@ -124,6 +137,7 @@ class TestWeasyprintFallback:
         mock_wp = self._setup_weasyprint_mocks()
         try:
             from app.pipeline.export.pdf_exporter import PDFExporter
+
             exporter = PDFExporter()
             mock_docx = MagicMock()
             para = MagicMock()

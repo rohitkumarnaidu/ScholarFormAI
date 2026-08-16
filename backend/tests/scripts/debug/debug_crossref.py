@@ -5,6 +5,7 @@
 """
 Debug script to verify CrossRef DOI validation with real API calls.
 """
+
 import logging
 
 from app.pipeline.services.crossref_client import CrossRefClient
@@ -13,9 +14,10 @@ from app.pipeline.services.crossref_client import CrossRefClient
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("debug_crossref")
 
+
 def test_crossref():
     client = CrossRefClient(email="test@example.com")
-    
+
     # 1. Valid DOI
     doi_valid = "10.1126/science.169.3946.635"  # Codd's Relational Model paper
     print(f"\nChecking valid DOI: {doi_valid}")
@@ -27,18 +29,18 @@ def test_crossref():
             print("[OK] Exists: True")
             print(f"   Title: {metadata.get('title', [''])[0]}")
             print(f"   Publisher: {metadata.get('publisher')}")
-            
+
             # Confidence check
             ref_data = {
                 "title": "A Relational Model of Data for Large Shared Data Banks",
                 "year": 1970,
-                "authors": ["Codd"] 
+                "authors": ["Codd"],
             }
             conf = client.calculate_confidence(ref_data, metadata)
             print(f"   Confidence Score: {conf:.2f}")
         except Exception as e:
-             print(f"[FAIL] Exists: False (Error: {e})")
-            
+            print(f"[FAIL] Exists: False (Error: {e})")
+
     except Exception as e:
         print(f"[ERR] Error: {e}")
 
@@ -47,9 +49,10 @@ def test_crossref():
     print(f"\nChecking invalid DOI: {doi_invalid}")
     try:
         is_valid = client.validate_doi(doi_invalid)
-        print(f"[OK] Exists: {is_valid}") # Should be False
+        print(f"[OK] Exists: {is_valid}")  # Should be False
     except Exception as e:
         print(f"[ERR] Error: {e}")
+
 
 if __name__ == "__main__":
     test_crossref()

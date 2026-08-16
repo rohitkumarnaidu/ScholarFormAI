@@ -15,6 +15,7 @@ from unittest.mock import MagicMock, patch
 
 from app.pipeline.intelligence.reasoning_engine import ReasoningEngine
 
+
 @pytest.fixture
 def engine():
     with patch("app.pipeline.intelligence.reasoning_engine.requests.get") as mock_get:
@@ -23,6 +24,7 @@ def engine():
             with patch.dict("os.environ", {"PYTEST_CURRENT_TEST": "1"}, clear=False):
                 return ReasoningEngine()
 
+
 @pytest.fixture
 def sample_blocks():
     return [
@@ -30,9 +32,11 @@ def sample_blocks():
         {"block_id": "b2", "text": "This paper presents a novel approach.", "index": 1},
     ]
 
+
 # ═══════════════════════════════════════════════════════════════════════════
 # _validate_json_schema — edge cases
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 class TestValidateJsonSchema:
     def test_not_dict(self, engine):
@@ -65,6 +69,7 @@ class TestValidateJsonSchema:
 # _normalize_semantic_type — uncovered branches
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestNormalizeSemanticType:
     def test_none_value_returns_body(self, engine):
         assert engine._normalize_semantic_type(None) == "BODY"
@@ -86,6 +91,7 @@ class TestNormalizeSemanticType:
 # _normalize_confidence — edge cases
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestNormalizeConfidence:
     def test_uncastable_value_returns_default(self, engine):
         result = engine._normalize_confidence("not_a_number")
@@ -104,6 +110,7 @@ class TestNormalizeConfidence:
 # _normalize_instruction_payload — uncovered branches
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestNormalizeInstructionPayload:
     def test_instructions_fallback_when_blocks_not_list(self, engine):
         data = {"instructions": [{"block_id": "b1", "semantic_type": "TITLE", "confidence": 0.9}]}
@@ -119,7 +126,11 @@ class TestNormalizeInstructionPayload:
         assert engine._normalize_instruction_payload(data, []) is None
 
     def test_canonical_section_name_included(self, engine):
-        data = {"blocks": [{"block_id": "b1", "semantic_type": "TITLE", "confidence": 0.9, "canonical_section_name": "Intro"}]}
+        data = {
+            "blocks": [
+                {"block_id": "b1", "semantic_type": "TITLE", "confidence": 0.9, "canonical_section_name": "Intro"}
+            ]
+        }
         result = engine._normalize_instruction_payload(data, [{"block_id": "b1"}])
         assert result["blocks"][0]["canonical_section_name"] == "Intro"
 
@@ -138,6 +149,7 @@ class TestNormalizeInstructionPayload:
 # _rule_based_fallback — heuristic paths
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestRuleBasedFallback:
     def test_abstract_keyword_in_text(self, engine):
         result = engine._rule_based_fallback([{"block_id": "b1", "text": "Abstract: This paper studies..."}])
@@ -151,6 +163,7 @@ class TestRuleBasedFallback:
 # ═══════════════════════════════════════════════════════════════════════════
 # generate_instruction_set — cancellation paths and METRICS_AVAILABLE=False
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 class TestGenerateInstructionSetGaps:
     def test_cancelled_before_start(self, engine, sample_blocks):
@@ -196,7 +209,9 @@ class TestGenerateInstructionSetGaps:
         """NVIDIA success with METRICS_AVAILABLE=False."""
         engine.nvidia_available = True
         engine.nvidia_client = MagicMock()
-        engine.nvidia_client.chat.return_value = '{"blocks": [{"block_id": "b0", "semantic_type": "TITLE", "confidence": 0.9}]}'
+        engine.nvidia_client.chat.return_value = (
+            '{"blocks": [{"block_id": "b0", "semantic_type": "TITLE", "confidence": 0.9}]}'
+        )
         with (
             patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", False),
             patch("app.pipeline.intelligence.reasoning_engine.METRICS_AVAILABLE", False),
@@ -225,6 +240,7 @@ class TestGenerateInstructionSetGaps:
 # _generate_with_nvidia — edge cases
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestGenerateWithNvidiaGaps:
     def test_cancelled_at_start(self, engine):
         engine.nvidia_available = True
@@ -245,7 +261,9 @@ class TestGenerateWithNvidiaGaps:
     def test_heading_level_hint(self, engine):
         engine.nvidia_available = True
         engine.nvidia_client = MagicMock()
-        engine.nvidia_client.chat.return_value = '{"blocks": [{"block_id": "b1", "semantic_type": "HEADING_1", "confidence": 0.9}]}'
+        engine.nvidia_client.chat.return_value = (
+            '{"blocks": [{"block_id": "b1", "semantic_type": "HEADING_1", "confidence": 0.9}]}'
+        )
         with patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", False):
             result = engine._generate_with_nvidia(
                 [{"block_id": "b1", "text": "Intro", "metadata": {"heading_level": 2}}], ""
@@ -258,12 +276,12 @@ class TestGenerateWithNvidiaGaps:
         with (
             patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", True),
             patch("app.pipeline.intelligence.reasoning_engine.LITELLM_AVAILABLE", True),
-            patch("app.pipeline.intelligence.reasoning_engine._llm_generate",
-                  return_value='{"blocks": [{"block_id": "b1", "semantic_type": "TITLE", "confidence": 0.9}]}'),
+            patch(
+                "app.pipeline.intelligence.reasoning_engine._llm_generate",
+                return_value='{"blocks": [{"block_id": "b1", "semantic_type": "TITLE", "confidence": 0.9}]}',
+            ),
         ):
-            result = engine._generate_with_nvidia(
-                [{"block_id": "b1", "text": "Title"}], ""
-            )
+            result = engine._generate_with_nvidia([{"block_id": "b1", "text": "Title"}], "")
             assert result is not None
             assert "blocks" in result
 
@@ -271,9 +289,7 @@ class TestGenerateWithNvidiaGaps:
         engine.nvidia_available = True
         engine.nvidia_client = None
         with patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", False):
-            result = engine._generate_with_nvidia(
-                [{"block_id": "b1", "text": "Title"}], ""
-            )
+            result = engine._generate_with_nvidia([{"block_id": "b1", "text": "Title"}], "")
             assert result is None
 
     def test_json_regex_recovery(self, engine):
@@ -282,15 +298,14 @@ class TestGenerateWithNvidiaGaps:
         engine.nvidia_client = MagicMock()
         engine.nvidia_client.chat.return_value = 'prefix {"blocks": []} suffix'
         with patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", False):
-            result = engine._generate_with_nvidia(
-                [{"block_id": "b1", "text": "Title"}], ""
-            )
+            result = engine._generate_with_nvidia([{"block_id": "b1", "text": "Title"}], "")
             assert result is None  # empty merged_blocks
 
 
 # ═══════════════════════════════════════════════════════════════════════════
 # _call_ollama — whole method
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 class TestCallOllama:
     def test_success(self, engine):
@@ -312,6 +327,7 @@ class TestCallOllama:
 # _generate_with_deepseek — litsLLM path & edge cases
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestGenerateWithDeepseekGaps:
     def test_litellm_path_success(self, engine):
         engine.llm = None
@@ -320,12 +336,12 @@ class TestGenerateWithDeepseekGaps:
         with (
             patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", True),
             patch("app.pipeline.intelligence.reasoning_engine.LITELLM_AVAILABLE", True),
-            patch("app.pipeline.intelligence.reasoning_engine._llm_generate",
-                  return_value='{"blocks": [{"block_id": "b1", "semantic_type": "TITLE", "confidence": 0.9}]}'),
+            patch(
+                "app.pipeline.intelligence.reasoning_engine._llm_generate",
+                return_value='{"blocks": [{"block_id": "b1", "semantic_type": "TITLE", "confidence": 0.9}]}',
+            ),
         ):
-            result = engine._generate_with_deepseek(
-                [{"block_id": "b1", "text": "Title"}], "rules", max_retries=1
-            )
+            result = engine._generate_with_deepseek([{"block_id": "b1", "text": "Title"}], "rules", max_retries=1)
             assert result is not None
 
     def test_no_source_available_returns_fallback(self, engine):
@@ -337,7 +353,5 @@ class TestGenerateWithDeepseekGaps:
             patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", False),
             patch("app.pipeline.intelligence.reasoning_engine.LITELLM_AVAILABLE", False),
         ):
-            result = engine._generate_with_deepseek(
-                [{"block_id": "b1", "text": "Title"}], "rules", max_retries=0
-            )
+            result = engine._generate_with_deepseek([{"block_id": "b1", "text": "Title"}], "rules", max_retries=0)
             assert result["fallback"] is True  # rule_based_fallback

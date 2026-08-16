@@ -39,6 +39,7 @@ class Test3A_TimeoutHandling:
     def client(self):
         from app.main import app
         from app.utils.dependencies import get_current_user
+
         mock_user = MagicMock()
         mock_user.id = "user-timeout"
         mock_user.role = "authenticated"
@@ -47,7 +48,8 @@ class Test3A_TimeoutHandling:
         with (
             patch("app.routers.v1.documents_impl._require_db"),
             patch("app.routers.v1.documents_impl.DocumentService"),
-            patch("app.db.supabase_client.get_supabase_client", return_value=MagicMock()),TestClient(app) as c
+            patch("app.db.supabase_client.get_supabase_client", return_value=MagicMock()),
+            TestClient(app) as c,
         ):
             c.headers.update({"Authorization": "Bearer test-token"})
             yield c
@@ -58,10 +60,12 @@ class Test3A_TimeoutHandling:
 
     def test_timeout_error_schema_has_consistent_envelope(self):
         from app.routers.v1._helpers import build_error_response
+
         mock_req = MagicMock()
         mock_req.state.request_id = "req-to"
-        resp = build_error_response(mock_req, status_code=504, code="GATEWAY_TIMEOUT",
-                                     message="Upstream service timed out")
+        resp = build_error_response(
+            mock_req, status_code=504, code="GATEWAY_TIMEOUT", message="Upstream service timed out"
+        )
         body = self._response_json(resp)
         assert resp.status_code == 504
         assert body["error"]["code"] == "GATEWAY_TIMEOUT"
@@ -72,6 +76,7 @@ class Test3A_TimeoutHandling:
 
     def test_timeout_response_has_code_from_default_map(self):
         from app.routers.v1._helpers import DEFAULT_ERROR_CODES
+
         assert 504 not in DEFAULT_ERROR_CODES
 
     def test_gateway_timeout_is_considered_server_error(self):
@@ -81,12 +86,11 @@ class Test3A_TimeoutHandling:
 
     def test_timeout_body_consistent_with_other_errors(self):
         from app.routers.v1._helpers import build_error_response
+
         mock_req = MagicMock()
         mock_req.state.request_id = "req-compare"
-        to_resp = build_error_response(mock_req, status_code=504, code="GATEWAY_TIMEOUT",
-                                        message="Upstream timed out")
-        err_resp = build_error_response(mock_req, status_code=500, code="INTERNAL_SERVER_ERROR",
-                                         message="Server error")
+        to_resp = build_error_response(mock_req, status_code=504, code="GATEWAY_TIMEOUT", message="Upstream timed out")
+        err_resp = build_error_response(mock_req, status_code=500, code="INTERNAL_SERVER_ERROR", message="Server error")
         to_body = self._response_json(to_resp)
         err_body = self._response_json(err_resp)
         for key in ("request_id", "timestamp", "error"):
@@ -110,10 +114,12 @@ class Test3A_TimeoutHandling:
 
     def test_timeout_error_does_not_leak_internals(self):
         from app.routers.v1._helpers import build_error_response
+
         mock_req = MagicMock()
         mock_req.state.request_id = "req-safe"
-        resp = build_error_response(mock_req, status_code=504, code="GATEWAY_TIMEOUT",
-                                     message="Upstream service timed out")
+        resp = build_error_response(
+            mock_req, status_code=504, code="GATEWAY_TIMEOUT", message="Upstream service timed out"
+        )
         body = self._response_json(resp)
         assert "trace" not in body["error"].get("message", "").lower()
 
@@ -156,17 +162,18 @@ class Test3B_RetryBehavior:
 
     def test_post_with_idempotency_key_prevents_duplicates(self):
         from app.routers.v1._helpers import build_error_response, build_success_response
+
         mock_req = MagicMock()
         mock_req.state.request_id = "req-ik"
         first = build_success_response(mock_req, {"status": "created"})
-        second = build_error_response(mock_req, status_code=409, code="CONFLICT",
-                                       message="Duplicate request detected")
+        second = build_error_response(mock_req, status_code=409, code="CONFLICT", message="Duplicate request detected")
         assert first.status_code == 200
         assert second.status_code == 409
         assert self._response_json(second)["error"]["code"] == "CONFLICT"
 
     def test_idempotent_retry_returns_original_result(self):
         from app.routers.v1._helpers import build_success_response
+
         mock_req = MagicMock()
         mock_req.state.request_id = "req-retry"
         resp1 = build_success_response(mock_req, {"id": "doc-1", "status": "completed"})
@@ -176,6 +183,7 @@ class Test3B_RetryBehavior:
 
     def test_non_idempotent_operation_changes_state(self):
         from app.routers.v1._helpers import build_success_response
+
         mock_req = MagicMock()
         mock_req.state.request_id = "req-state"
 

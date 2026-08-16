@@ -13,6 +13,7 @@ start = time.time()
 print("Importing app.pipeline.services.docling_client...")
 try:
     from app.pipeline.services.docling_client import DoclingClient
+
     print(f"Imported DoclingClient in {time.time() - start:.2f}s")
 except ImportError as e:
     print(f"Failed to import: {e}")

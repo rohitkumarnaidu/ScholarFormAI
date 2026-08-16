@@ -42,37 +42,20 @@ ScholarForm AI uses ChromaDB as the primary vector store for retrieval-augmented
 
 ## 2. Architecture
 
-```
-+--------------------+       +---------------------+
-|   Contract YAML    | ----> |  ingest_guidelines   |
-| (pipeline/contracts)|      |  .py                |
-+--------------------+       +----------+----------+
-                                         |
-                                         v
-+--------------------+       +---------------------+
-| default_guidelines | ----> |     RagEngine        |
-| .json (auto-seed)  |       |                     |
-+--------------------+       |  +---------------+  |
-                             |  |   ChromaDB    |  |
-+--------------------+       |  | Persistent    |  |
-|   Pipeline         |       |  | Client        |  |
-| Orchestrator       | <--- |  | (guidelines   |  |
-| (formatting step)  |       |  |  collection)  |  |
-+--------------------+       |  +-------+-------+  |
-                             |          |          |
-                             |  +-------v-------+  |
-                             |  |  kb.json       |  |
-                             |  |  (native       |  |
-                             |  |   fallback)    |  |
-                             |  +---------------+  |
-                             +---------------------+
-                                      |
-                                      v
-+--------------------+       +---------------------+
-|   LLM Prompt       |       |  Formatting         |
-|   (context         | <---- |  Pipeline           |
-|    assembly)       |       |  (query_rules())    |
-+--------------------+       +---------------------+
+```mermaid
+flowchart TD
+    Contract[Contract YAML<br>pipeline/contracts] --> Ingest[ingest_guidelines.py]
+    Default[default_guidelines.json<br>auto-seed] --> RagEngine[RagEngine]
+    Ingest --> RagEngine
+    
+    subgraph RagEngine[RagEngine]
+        Chroma[ChromaDB<br>Persistent Client]
+        Native[kb.json<br>native fallback]
+    end
+    
+    Orchestrator[Pipeline Orchestrator<br>formatting step] --> RagEngine
+    RagEngine --> Prompt[LLM Prompt<br>context assembly]
+    Prompt --> Pipeline[Formatting Pipeline<br>query_rules]
 ```
 
 ### 2.1 Dual-Backend Design
@@ -235,40 +218,25 @@ For future expansion: the `_chunk_text` method in `MultiDocSynthesizer` supports
 
 ## 6. Query Flow
 
-```
-User Intent: "Format abstract for IEEE"
-                    |
-                    v
-           query_guidelines("IEEE", "format abstract", top_k=3)
-                    |
-        +-----------+-----------+
-        |                       |
-        v                       v
-   ChromaDB Path          Native Fallback Path
-        |                       |
-   collection.query(       encode(intent)
-     query_texts=[...],        |
-     n_results=3,         cosine_similarity(
-     where={                 intent_emb,
-       "publisher":           item_emb
-       "IEEE"            )
-     }                  sort by score desc
-   )                    top_k
-        |                       |
-        +-----------+-----------+
-                    |
-                    v
-         [guideline texts]
-                    |
-                    v
-         query_rules("IEEE", "abstract")
-                    |
-                    v
-    [{"text": "...", "metadata": {"publisher": "IEEE", "section": "abstract"}}]
-                    |
-                    v
-            Context Assembly
-          (injected into LLM prompt)
+```mermaid
+flowchart TD
+    UserIntent["User Intent: 'Format abstract for IEEE'"] --> QueryGuidelines["query_guidelines('IEEE', 'format abstract', top_k=3)"]
+    QueryGuidelines --> Split
+    
+    Split{ } --> ChromaPath[ChromaDB Path]
+    Split --> NativePath[Native Fallback Path]
+    
+    ChromaPath --> ChromaQuery["collection.query(<br>query_texts=[...],<br>n_results=3,<br>where={'publisher': 'IEEE'}<br>)"]
+    NativePath --> Encode["encode(intent)"]
+    Encode --> CosineSim["cosine_similarity(intent_emb, item_emb)<br>sort by score desc<br>top_k"]
+    
+    ChromaQuery --> Merge{ }
+    CosineSim --> Merge
+    
+    Merge --> GuidelineTexts["[guideline texts]"]
+    GuidelineTexts --> QueryRules["query_rules('IEEE', 'abstract')"]
+    QueryRules --> FormattedDicts["[{'text': '...', 'metadata': {'publisher': 'IEEE', 'section': 'abstract'}}]"]
+    FormattedDicts --> ContextAssembly["Context Assembly<br>(injected into LLM prompt)"]
 ```
 
 ### 6.1 ChromaDB Query

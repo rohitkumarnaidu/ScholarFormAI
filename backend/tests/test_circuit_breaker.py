@@ -4,6 +4,7 @@
 """
 Tests for the circuit breaker decorator — public API behavior.
 """
+
 from __future__ import annotations
 
 import contextlib
@@ -17,12 +18,13 @@ from app.pipeline.safety.circuit_breaker import (
 
 
 class TestCircuitBreakerAPI:
-
     def test_starts_closed(self):
         """Fresh function allows calls."""
+
         @circuit_breaker(failure_threshold=3, recovery_timeout=60)
         def ok():
             return "ok"
+
         assert ok() == "ok"
 
     def test_open_circuit_uses_fallback(self):
@@ -44,6 +46,7 @@ class TestCircuitBreakerAPI:
 
     def test_open_without_fallback_raises_open_exception(self):
         """Open circuit without fallback → CircuitBreakerOpenException or the underlying exception."""
+
         @circuit_breaker(failure_threshold=2, recovery_timeout=9999)
         def bad():
             raise OSError("io")

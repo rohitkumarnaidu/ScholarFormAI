@@ -36,6 +36,7 @@ from app.pipeline.agents.streaming import StreamingAgentCallback
 # Helpers
 # =============================================================================
 
+
 def _make_tracker(summary: dict[str, Any]) -> MagicMock:
     """Build a mock PerformanceTracker that returns the given summary."""
     tracker = MagicMock()
@@ -55,6 +56,7 @@ def _make_ml_detector(patterns: list | None = None, pattern_summary: dict | None
 # =============================================================================
 # AdaptiveStrategy
 # =============================================================================
+
 
 class TestAdaptiveStrategy:
     """Tests for AdaptiveStrategy."""
@@ -181,11 +183,7 @@ class TestAdaptiveStrategy:
 
     def test_adapt_uses_ml_patterns_when_available(self):
         summary = {"agent": {"success_rate": 1.0, "avg_duration": 60, "fallback_rate": 0}}
-        pattern_summary = {
-            "patterns": [
-                {"success_rate": 0.9, "common_tools": ["tool_a", "tool_b"]}
-            ]
-        }
+        pattern_summary = {"patterns": [{"success_rate": 0.9, "common_tools": ["tool_a", "tool_b"]}]}
         ml = _make_ml_detector(patterns=[{"dummy": True}], pattern_summary=pattern_summary)
         strategy = AdaptiveStrategy(_make_tracker(summary), ml_detector=ml)
         strategy.adapt()
@@ -276,9 +274,7 @@ class TestAdaptiveStrategy:
         strategy = AdaptiveStrategy(_make_tracker({}))
         ml = _make_ml_detector(
             patterns=[{"dummy": True}],
-            pattern_summary={
-                "patterns": [{"success_rate": 0.9, "common_tools": ["a", "b"]}]
-            },
+            pattern_summary={"patterns": [{"success_rate": 0.9, "common_tools": ["a", "b"]}]},
         )
         strategy.ml_detector = ml
         strategy._adapt_from_ml_patterns()
@@ -303,6 +299,7 @@ class TestAdaptiveStrategy:
 # =============================================================================
 # AutoScalingManager
 # =============================================================================
+
 
 class TestAutoScalingManager:
     """Tests for AutoScalingManager."""
@@ -360,7 +357,7 @@ class TestAutoScalingManager:
         mock_psutil.cpu_percent.return_value = 45.0
         cpu_mem = MagicMock()
         cpu_mem.percent = 60.0
-        cpu_mem.available = 4 * 1024 ** 3
+        cpu_mem.available = 4 * 1024**3
         mock_psutil.virtual_memory.return_value = cpu_mem
 
         mgr = AutoScalingManager()
@@ -527,10 +524,14 @@ class TestAutoScalingManager:
         mgr = AutoScalingManager(min_workers=2, max_workers=8)
         mgr.scale_up()
         mgr.scale_up()
-        with patch.object(mgr, "metrics_history", [
-            {"cpu_percent": 50.0, "memory_percent": 60.0},
-            {"cpu_percent": 70.0, "memory_percent": 80.0},
-        ]):
+        with patch.object(
+            mgr,
+            "metrics_history",
+            [
+                {"cpu_percent": 50.0, "memory_percent": 60.0},
+                {"cpu_percent": 70.0, "memory_percent": 80.0},
+            ],
+        ):
             stats = mgr.get_statistics()
         assert stats["current_workers"] == 4
         assert stats["total_scaling_events"] == 2
@@ -559,6 +560,7 @@ class TestAutoScalingManager:
 # =============================================================================
 # RealTimeAdaptiveAgent
 # =============================================================================
+
 
 class TestRealTimeAdaptiveAgent:
     """Tests for RealTimeAdaptiveAgent."""
@@ -737,9 +739,7 @@ class TestRealTimeAdaptiveAgent:
     def test_adapt_realtime_strategy_fallback_on_errors(self):
         agent = RealTimeAdaptiveAgent()
         agent.start_processing("doc_1")
-        agent.current_metrics["errors_encountered"] = [
-            {"tool": "t1"}, {"tool": "t2"}
-        ]
+        agent.current_metrics["errors_encountered"] = [{"tool": "t1"}, {"tool": "t2"}]
         agent._adapt_realtime()
         assert agent.current_metrics["current_strategy"] == "fallback"
         assert agent.params["retry_enabled"] is False
@@ -758,9 +758,7 @@ class TestRealTimeAdaptiveAgent:
         agent = RealTimeAdaptiveAgent()
         agent.start_processing("doc_1")
         agent.current_metrics["current_strategy"] = "fallback"
-        agent.current_metrics["errors_encountered"] = [
-            {"tool": "t1"}, {"tool": "t2"}
-        ]
+        agent.current_metrics["errors_encountered"] = [{"tool": "t1"}, {"tool": "t2"}]
         agent._adapt_realtime()
         # Should not switch again
         assert agent.current_metrics["current_strategy"] == "fallback"
@@ -824,8 +822,10 @@ class TestRealTimeAdaptiveAgent:
 # StreamingAgentCallback
 # =============================================================================
 
+
 class _MockAgentAction:
     """Minimal mock for AgentAction."""
+
     def __init__(self, tool: str = "test_tool", tool_input: str = "", log: str = ""):
         self.tool = tool
         self.tool_input = tool_input
@@ -834,12 +834,14 @@ class _MockAgentAction:
 
 class _MockAgentFinish:
     """Minimal mock for AgentFinish."""
+
     def __init__(self, return_values: dict[str, Any] | None = None):
         self.return_values = return_values or {"output": "done"}
 
 
 class _MockLLMResult:
     """Minimal mock for LLMResult."""
+
     def __init__(self, generations_count: int = 1):
         self.generations = [MagicMock() for _ in range(generations_count)]
 
@@ -1008,6 +1010,7 @@ class TestStreamingAgentCallback:
 
     def test_callbacks_with_custom_function(self):
         received: list = []
+
         def my_cb(evt: str, data: dict) -> None:
             received.append((evt, data))
 

@@ -33,17 +33,20 @@ class TestMetricEmission:
     def test_prometheus_metrics_registered(self):
         with patch("app.middleware.prometheus_metrics.PIPELINE_REQUESTS_TOTAL") as mock:
             from app.middleware.prometheus_metrics import MetricsManager
+
             MetricsManager.record_pipeline_start()
             mock.labels.assert_called_once_with(status="active")
 
     def test_llm_failure_metric_recorded(self):
         with patch("app.middleware.prometheus_metrics.LLM_FAILURES_TOTAL") as mock:
             from app.middleware.prometheus_metrics import MetricsManager
+
             MetricsManager.record_llm_failure("nvidia")
             mock.labels.assert_called_once_with(provider="nvidia")
 
     def test_metrics_are_thread_safe(self):
         from app.middleware.prometheus_metrics import MetricsManager
+
         with patch("app.middleware.prometheus_metrics.ACTIVE_USERS") as mock:
             MetricsManager.record_user_activity("user1")
             mock.set.assert_called()
@@ -52,6 +55,7 @@ class TestMetricEmission:
 class TestRequestIDPropagation:
     def test_log_extra_includes_context(self):
         from app.utils.logging_context import log_extra
+
         extra = log_extra(job_id="test-job")
         assert isinstance(extra, dict)
         assert extra.get("job_id") == "test-job"
@@ -72,6 +76,7 @@ class TestErrorLogging:
             mock_settings.OLLAMA_BASE_URL = "http://localhost:11434"
             with patch("app.services.llm_service._call_with_provider_circuit", side_effect=Exception("API error")):
                 from app.services.llm_service import generate_with_fallback
+
                 with pytest.raises(Exception):
                     generate_with_fallback([{"role": "user", "content": "test"}])
 
@@ -94,6 +99,7 @@ class TestHealthEndpoint:
             mock_ctx.__aenter__.return_value.get.return_value = mock_resp
             mock_httpx.return_value = mock_ctx
             from app.services.health_checks import get_health_payload
+
             payload, status_code = await get_health_payload(force_refresh=True)
             assert isinstance(payload, dict)
             assert "status" in payload
@@ -112,6 +118,7 @@ class TestHealthEndpoint:
         with patch("app.services.health_checks._probe_service_targets") as mock_probe:
             mock_probe.return_value = {"status": "ready"}
             from app.services.health_checks import get_readiness_payload
+
             payload, status_code = await get_readiness_payload(force_refresh=True)
             assert isinstance(payload, dict)
             assert "ready" in payload
@@ -120,6 +127,7 @@ class TestHealthEndpoint:
 class TestAuditLog:
     def test_audit_log_for_security_events(self):
         from app.services.document_service import DocumentService
+
         with patch("app.services.document_service.logger") as mock_logger:
             DocumentService.generate_signed_download_url(
                 file_url="https://storage.example.com/doc.docx",
@@ -133,18 +141,21 @@ class TestPerformanceMetrics:
     def test_latency_metric_observed(self):
         with patch("app.middleware.prometheus_metrics.PIPELINE_DURATION_SECONDS") as mock:
             from app.middleware.prometheus_metrics import MetricsManager
+
             MetricsManager.record_pipeline_completion(1.5, True)
             mock.labels.assert_called_once_with(status="success")
 
     def test_error_rate_metric_incremented(self):
         with patch("app.middleware.prometheus_metrics.LLM_FAILURES_TOTAL") as mock:
             from app.middleware.prometheus_metrics import MetricsManager
+
             MetricsManager.record_llm_failure("groq")
             mock.labels.assert_called_once_with(provider="groq")
 
     def test_llm_duration_buckets_recorded(self):
         with patch("app.middleware.prometheus_metrics.LLM_REQUEST_DURATION_SECONDS") as mock:
             from app.middleware.prometheus_metrics import MetricsManager
+
             MetricsManager.record_llm_duration("nvidia", "test-model", 2.5)
             mock.labels.assert_called_once_with(provider="nvidia", model="test-model")
 
@@ -153,5 +164,6 @@ class MyHandler(logging.Handler):
     def __init__(self):
         super().__init__()
         self.records = []
+
     def emit(self, record):
         self.records.append(record)

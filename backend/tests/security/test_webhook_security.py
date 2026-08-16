@@ -82,6 +82,7 @@ class TestWebhookReplayProtection:
     @pytest.mark.asyncio
     async def test_replay_same_payload_dispatched_twice(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         sub = _make_sub()
@@ -111,6 +112,7 @@ class TestWebhookReplayProtection:
     @pytest.mark.asyncio
     async def test_different_payload_with_same_event_type_allowed(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         sub = _make_sub()
@@ -128,9 +130,7 @@ class TestWebhookReplayProtection:
                 with patch.object(svc, "_deliver", new_callable=AsyncMock) as mock_deliver:
                     mock_deliver.return_value = (200, "OK")
                     with patch.object(svc, "_calculate_retry_delay", return_value=0):
-                        result = await svc.dispatch_event(
-                            "test.event", {"different": "payload"}, user_id="user-123"
-                        )
+                        result = await svc.dispatch_event("test.event", {"different": "payload"}, user_id="user-123")
 
         assert result == 1
 
@@ -148,6 +148,7 @@ class TestWebhookPayloadIntegrity:
 
     def test_signature_changes_when_payload_changes(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         sig1 = svc._sign_payload('{"a":1}', "secret")
@@ -156,6 +157,7 @@ class TestWebhookPayloadIntegrity:
 
     def test_signature_changes_when_secret_changes(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         sig1 = svc._sign_payload('{"a":1}', "secret-a")
@@ -164,6 +166,7 @@ class TestWebhookPayloadIntegrity:
 
     def test_verify_hmac_sha256_correctness(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         payload = '{"event":"test"}'
@@ -179,6 +182,7 @@ class TestWebhookPayloadIntegrity:
 
     def test_tampered_payload_rejected_by_receiver_logic(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         payload = '{"amount":100}'
@@ -200,12 +204,11 @@ class TestWebhookUrlValidation:
     @pytest.mark.asyncio
     async def test_webhook_url_must_be_https(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         find_table = _mock_table_chain()
-        find_table.execute.return_value = SimpleNamespace(data=[
-            _make_sub(url="http://example.com/hook")
-        ])
+        find_table.execute.return_value = SimpleNamespace(data=[_make_sub(url="http://example.com/hook")])
         find_sb = _mock_supabase(find_table)
         log_table = _mock_table_chain()
         log_table.execute.return_value = SimpleNamespace(data=[{"id": "log-1"}])
@@ -230,9 +233,7 @@ class TestWebhookUrlValidation:
         svc = WebhookService()
 
         find_table = _mock_table_chain()
-        find_table.execute.return_value = SimpleNamespace(data=[
-            _make_sub(url="http://10.0.0.1:8000/hook")
-        ])
+        find_table.execute.return_value = SimpleNamespace(data=[_make_sub(url="http://10.0.0.1:8000/hook")])
         log_table = _mock_table_chain()
         log_table.execute.return_value = SimpleNamespace(data=[{"id": "log-1"}])
 
@@ -249,6 +250,7 @@ class TestWebhookUrlValidation:
 
 def httpx_error():
     import httpx
+
     return httpx.RequestError("Connection refused")
 
 
@@ -260,6 +262,7 @@ class TestWebhookSecretKey:
 
     def test_empty_secret_still_produces_valid_signature(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
         sig = svc._sign_payload('{"a":1}', "")
         assert len(sig) == 64
@@ -267,6 +270,7 @@ class TestWebhookSecretKey:
 
     def test_signature_length_and_format(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
         sig = svc._sign_payload('{"a":1}', "secret123")
         assert len(sig) == 64
@@ -275,6 +279,7 @@ class TestWebhookSecretKey:
     @pytest.mark.asyncio
     async def test_decrypt_failure_skips_subscription(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         sub = _make_sub(secret="encrypted-bad")
@@ -300,6 +305,7 @@ class TestWebhookPayloadBoundaries:
     @pytest.mark.asyncio
     async def test_empty_payload_dispatched(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         sub = _make_sub()
@@ -320,6 +326,7 @@ class TestWebhookPayloadBoundaries:
     @pytest.mark.asyncio
     async def test_large_payload_does_not_crash(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         sub = _make_sub()
@@ -349,6 +356,7 @@ class TestWebhookRateLimiting:
     @pytest.mark.asyncio
     async def test_concurrent_dispatch_isolation(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         sub_a = _make_sub(id="wh-a", url="https://a.example.com/hook")
@@ -372,6 +380,7 @@ class TestWebhookRateLimiting:
     @pytest.mark.asyncio
     async def test_multiple_sequential_dispatches(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         sub = _make_sub()
@@ -456,6 +465,7 @@ class TestWebhookTimeoutRetry:
 
     def test_retry_delay_exponential_backoff(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         assert svc._calculate_retry_delay(0) == 60
@@ -477,6 +487,7 @@ class TestWebhookEventTypeValidation:
     @pytest.mark.asyncio
     async def test_non_matching_event_type_not_delivered(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         # Mock always returns the sub — the query filter `.contains("events", "some.other")`
@@ -504,6 +515,7 @@ class TestWebhookEventTypeValidation:
     @pytest.mark.asyncio
     async def test_inactive_subscription_skipped(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         sub = _make_sub(is_active=False)
@@ -528,6 +540,7 @@ class TestWebhookEventTypeValidation:
     @pytest.mark.asyncio
     async def test_unknown_event_type_returns_zero(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         find_table = _mock_table_chain()
@@ -552,6 +565,7 @@ class TestWebhookPayloadSize:
     @pytest.mark.asyncio
     async def test_payload_response_body_truncated(self):
         from app.services.webhook_service import WebhookService
+
         svc = WebhookService()
 
         sub = _make_sub()

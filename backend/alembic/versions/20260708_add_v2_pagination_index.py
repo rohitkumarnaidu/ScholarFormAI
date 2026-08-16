@@ -4,6 +4,7 @@ Revision ID: 20260708_add_v2_pagination_index
 Revises: 20260708_0002_add_document_shares
 Create Date: 2026-07-08 00:00:00.000000
 """
+
 import sqlalchemy as sa
 
 from alembic import op
@@ -31,4 +32,5 @@ def downgrade() -> None:
     op.drop_index("idx_documents_user_updated", table_name="documents")
     op.drop_index("idx_documents_user_created", table_name="documents")
 
-__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']
+
+__all__ = ["revision", "down_revision", "branch_labels", "depends_on", "upgrade", "downgrade"]

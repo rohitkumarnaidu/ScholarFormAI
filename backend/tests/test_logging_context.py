@@ -9,6 +9,7 @@ import pytest
 class TestLoggingContext:
     def test_bind_and_get_request_id(self):
         from app.utils.logging_context import bind_context, get_request_id_context, reset_context
+
         tokens = bind_context(request_id="req_123")
         assert get_request_id_context() == "req_123"
         reset_context(tokens)
@@ -16,6 +17,7 @@ class TestLoggingContext:
 
     def test_bind_and_get_job_id(self):
         from app.utils.logging_context import bind_context, get_job_id_context, reset_context
+
         tokens = bind_context(job_id="job_456")
         assert get_job_id_context() == "job_456"
         reset_context(tokens)
@@ -23,6 +25,7 @@ class TestLoggingContext:
 
     def test_bind_and_get_session_id(self):
         from app.utils.logging_context import bind_context, get_session_id_context, reset_context
+
         tokens = bind_context(session_id="sess_789")
         assert get_session_id_context() == "sess_789"
         reset_context(tokens)
@@ -30,12 +33,14 @@ class TestLoggingContext:
 
     def test_log_context_manager(self):
         from app.utils.logging_context import get_request_id_context, log_context
+
         with log_context(request_id="ctx_req"):
             assert get_request_id_context() == "ctx_req"
         assert get_request_id_context() is None
 
     def test_log_extra(self):
         from app.utils.logging_context import bind_context, log_extra, reset_context
+
         tokens = bind_context(request_id="r1", job_id="j1")
         extra = log_extra()
         assert extra["request_id"] == "r1"
@@ -44,11 +49,13 @@ class TestLoggingContext:
 
     def test_log_extra_with_overrides(self):
         from app.utils.logging_context import log_extra
+
         extra = log_extra(job_id="override_job")
         assert extra["job_id"] == "override_job"
 
     def test_log_context_filter_adds_fields(self):
         from app.utils.logging_context import LogContextFilter, bind_context, reset_context
+
         tokens = bind_context(request_id="req_filter", job_id="job_filter")
         filt = LogContextFilter()
         record = logging.LogRecord("name", logging.INFO, "path", 1, "msg", (), None)
@@ -59,6 +66,7 @@ class TestLoggingContext:
 
     def test_log_context_filter_preserves_existing(self):
         from app.utils.logging_context import LogContextFilter
+
         filt = LogContextFilter()
         record = logging.LogRecord("name", logging.INFO, "path", 1, "msg", (), None)
         record.request_id = "already_set"
@@ -67,16 +75,19 @@ class TestLoggingContext:
 
     def test_bind_with_no_args(self):
         from app.utils.logging_context import bind_context, reset_context
+
         tokens = bind_context()
         assert tokens == {}
         reset_context(tokens)  # should not raise
 
     def test_reset_with_empty_dict(self):
         from app.utils.logging_context import reset_context
+
         reset_context({})  # should not raise
 
     def test_log_context_no_args(self):
         from app.utils.logging_context import log_context
+
         with log_context():
             pass  # should not raise
 
@@ -85,6 +96,7 @@ class TestLoggingContext:
         from unittest.mock import MagicMock
 
         from app.utils.logging_context import bind_request_context
+
         conn = MagicMock()
         conn.state.request_id = None
         conn.headers = {}
@@ -98,6 +110,7 @@ class TestLoggingContext:
         from unittest.mock import MagicMock
 
         from app.utils.logging_context import bind_request_context
+
         conn = MagicMock()
         conn.state.request_id = None
         conn.headers = {"x-request-id": "from-header"}
@@ -111,6 +124,7 @@ class TestLoggingContext:
         from unittest.mock import MagicMock
 
         from app.utils.logging_context import bind_request_context
+
         conn = MagicMock()
         conn.state.request_id = "state-id"
         conn.headers = {}
@@ -124,6 +138,7 @@ class TestLoggingContext:
         from unittest.mock import MagicMock
 
         from app.utils.logging_context import bind_request_context
+
         conn = MagicMock()
         conn.state.request_id = None
         conn.headers = {}
@@ -136,6 +151,7 @@ class TestLoggingContext:
         from unittest.mock import MagicMock
 
         from app.utils.logging_context import bind_request_context
+
         conn = MagicMock()
         conn.state.request_id = None
         conn.headers = {}
@@ -145,8 +161,10 @@ class TestLoggingContext:
 
     def test_extract_user_id_various_types(self):
         from app.utils.logging_context import extract_user_id
+
         class ObjWithId:
             id = "user_obj_123"
+
         class ObjWithoutId:
             name = "no_id"
 
@@ -158,6 +176,7 @@ class TestLoggingContext:
 
     def test_user_id_context_binding(self):
         from app.utils.logging_context import get_user_id_context, log_context
+
         with log_context(user_id="user_ctx_456"):
             assert get_user_id_context() == "user_ctx_456"
         assert get_user_id_context() is None
@@ -167,6 +186,7 @@ class TestLoggingContext:
         from starlette.requests import Request
 
         from app.utils.logging_context import bind_request_context, get_user_id_context
+
         request = Request({"type": "http", "headers": []})
         agen = bind_request_context(request)
         try:
@@ -188,4 +208,3 @@ class TestLoggingContext:
                 self.name = "test"
 
         assert extract_user_id(CustomObjWithoutId()) is None
-

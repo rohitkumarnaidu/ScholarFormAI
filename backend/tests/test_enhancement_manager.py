@@ -6,21 +6,25 @@ import pytest
 class TestCoerceBool:
     def test_none_returns_default(self):
         from app.services.enhancement_manager import _coerce_bool
+
         assert _coerce_bool(None) is False
         assert _coerce_bool(None, True) is True
 
     def test_bool_passthrough(self):
         from app.services.enhancement_manager import _coerce_bool
+
         assert _coerce_bool(True) is True
         assert _coerce_bool(False) is False
 
     def test_numeric(self):
         from app.services.enhancement_manager import _coerce_bool
+
         assert _coerce_bool(1) is True
         assert _coerce_bool(0) is False
 
     def test_string_values(self):
         from app.services.enhancement_manager import _coerce_bool
+
         assert _coerce_bool("true") is True
         assert _coerce_bool("yes") is True
         assert _coerce_bool("on") is True
@@ -32,16 +36,19 @@ class TestCoerceBool:
 class TestModuleAvailable:
     def test_found(self):
         from app.services.enhancement_manager import _module_available
+
         with patch("importlib.util.find_spec", return_value=object()):
             assert _module_available("some_module") is True
 
     def test_not_found(self):
         from app.services.enhancement_manager import _module_available
+
         with patch("importlib.util.find_spec", return_value=None):
             assert _module_available("some_module") is False
 
     def test_find_spec_raises(self):
         from app.services.enhancement_manager import _module_available
+
         with patch("importlib.util.find_spec", side_effect=ValueError):
             assert _module_available("some_module") is False
 
@@ -49,21 +56,25 @@ class TestModuleAvailable:
 class TestSplitCsv:
     def test_none_or_empty(self):
         from app.services.enhancement_manager import _split_csv
+
         assert _split_csv(None, ["a"]) == ["a"]
         assert _split_csv("", ["a"]) == ["a"]
 
     def parses_csv(self):
         from app.services.enhancement_manager import _split_csv
+
         result = _split_csv("a,b,c", ["x"])
         assert result == ["a", "b", "c"]
 
     def test_strips_and_lowers(self):
         from app.services.enhancement_manager import _split_csv
+
         result = _split_csv("  Alpha , BETA ", ["x"])
         assert result == ["alpha", "beta"]
 
     def test_filters_empty(self):
         from app.services.enhancement_manager import _split_csv
+
         result = _split_csv("a,,b,", ["x"])
         assert result == ["a", "b"]
 
@@ -71,10 +82,16 @@ class TestSplitCsv:
 class TestEnhancementProfile:
     def test_to_dict(self):
         from app.services.enhancement_manager import EnhancementProfile
+
         p = EnhancementProfile(
-            enabled=True, queue_enabled=False, queue_provider="local",
-            queue_available=False, ocr_enabled=True, ocr_backends=["tesseract"],
-            keyword_enabled=True, keyword_backends=["basic"],
+            enabled=True,
+            queue_enabled=False,
+            queue_provider="local",
+            queue_available=False,
+            ocr_enabled=True,
+            ocr_backends=["tesseract"],
+            keyword_enabled=True,
+            keyword_backends=["basic"],
         )
         d = p.to_dict()
         assert d["enabled"] is True
@@ -87,6 +104,7 @@ class TestProfile:
     @pytest.fixture
     def mgr(self):
         from app.services.enhancement_manager import EnhancementManager
+
         m = EnhancementManager()
         m._profile = None
         return m
@@ -103,9 +121,7 @@ class TestProfile:
         assert p2 is not p1
 
     def test_is_celery_active(self, mgr):
-        mgr._profile = MagicMock(
-            enabled=True, queue_enabled=True, queue_provider="celery", queue_available=True
-        )
+        mgr._profile = MagicMock(enabled=True, queue_enabled=True, queue_provider="celery", queue_available=True)
         assert mgr.is_celery_queue_active() is True
 
     def test_is_celery_not_active_when_disabled(self, mgr):
@@ -121,9 +137,7 @@ class TestProfile:
             assert mgr._queue_threshold_seconds() == 10.0
 
     def test_should_queue_job_celery_active(self, mgr):
-        mgr._profile = MagicMock(
-            enabled=True, queue_enabled=True, queue_provider="celery", queue_available=True
-        )
+        mgr._profile = MagicMock(enabled=True, queue_enabled=True, queue_provider="celery", queue_available=True)
         assert mgr.should_queue_job(20.0) is True
         assert mgr.should_queue_job(3.0) is False
         assert mgr.should_queue_job(None) is True
@@ -145,10 +159,9 @@ class TestDispatchDocumentPipeline:
     @pytest.fixture
     def mgr(self):
         from app.services.enhancement_manager import EnhancementManager
+
         m = EnhancementManager()
-        m._profile = MagicMock(
-            enabled=True, queue_enabled=True, queue_provider="celery", queue_available=True
-        )
+        m._profile = MagicMock(enabled=True, queue_enabled=True, queue_provider="celery", queue_available=True)
         return m
 
     def test_celery_path(self, mgr):
@@ -158,8 +171,11 @@ class TestDispatchDocumentPipeline:
         mock_task.apply_async.return_value = MagicMock(id="task-1")
         with patch("app.tasks.celery_tasks.process_document_task", mock_task):
             result = mgr.dispatch_document_pipeline(
-                background_tasks=bt, orchestrator=orc,
-                input_path="/in", job_id="j1", template_name="ieee",
+                background_tasks=bt,
+                orchestrator=orc,
+                input_path="/in",
+                job_id="j1",
+                template_name="ieee",
             )
         assert result == {"mode": "celery", "task_id": "task-1"}
         bt.add_task.assert_not_called()
@@ -171,8 +187,11 @@ class TestDispatchDocumentPipeline:
         mock_task.apply_async.side_effect = RuntimeError("celery down")
         with patch("app.tasks.celery_tasks.process_document_task", mock_task):
             result = mgr.dispatch_document_pipeline(
-                background_tasks=bt, orchestrator=orc,
-                input_path="/in", job_id="j1", template_name="ieee",
+                background_tasks=bt,
+                orchestrator=orc,
+                input_path="/in",
+                job_id="j1",
+                template_name="ieee",
             )
         assert result == {"mode": "background", "task_id": None}
         bt.add_task.assert_called_once()
@@ -182,8 +201,11 @@ class TestDispatchDocumentPipeline:
         bt = MagicMock()
         orc = MagicMock()
         result = mgr.dispatch_document_pipeline(
-            background_tasks=bt, orchestrator=orc,
-            input_path="/in", job_id="j1", template_name="ieee",
+            background_tasks=bt,
+            orchestrator=orc,
+            input_path="/in",
+            job_id="j1",
+            template_name="ieee",
         )
         assert result == {"mode": "background", "task_id": None}
 
@@ -192,10 +214,9 @@ class TestDispatchGenerationPipeline:
     @pytest.fixture
     def mgr(self):
         from app.services.enhancement_manager import EnhancementManager
+
         m = EnhancementManager()
-        m._profile = MagicMock(
-            enabled=True, queue_enabled=True, queue_provider="celery", queue_available=True
-        )
+        m._profile = MagicMock(enabled=True, queue_enabled=True, queue_provider="celery", queue_available=True)
         return m
 
     def test_celery_path(self, mgr):
@@ -204,7 +225,9 @@ class TestDispatchGenerationPipeline:
         mock_task.apply_async.return_value = MagicMock(id="gen-1")
         with patch("app.tasks.celery_tasks.process_generation_task", mock_task):
             result = mgr.dispatch_generation_pipeline(
-                background_tasks=bt, run_pipeline=MagicMock(), job_id="j1",
+                background_tasks=bt,
+                run_pipeline=MagicMock(),
+                job_id="j1",
             )
         assert result == {"mode": "celery", "task_id": "gen-1"}
 
@@ -215,7 +238,9 @@ class TestDispatchGenerationPipeline:
         run_pipe = MagicMock()
         with patch("app.tasks.celery_tasks.process_generation_task", mock_task):
             result = mgr.dispatch_generation_pipeline(
-                background_tasks=bt, run_pipeline=run_pipe, job_id="j1",
+                background_tasks=bt,
+                run_pipeline=run_pipe,
+                job_id="j1",
             )
         assert result == {"mode": "background", "task_id": None}
         bt.add_task.assert_called_once_with(run_pipe, "j1")
@@ -225,10 +250,9 @@ class TestDispatchEditFlow:
     @pytest.fixture
     def mgr(self):
         from app.services.enhancement_manager import EnhancementManager
+
         m = EnhancementManager()
-        m._profile = MagicMock(
-            enabled=True, queue_enabled=True, queue_provider="celery", queue_available=True
-        )
+        m._profile = MagicMock(enabled=True, queue_enabled=True, queue_provider="celery", queue_available=True)
         return m
 
     def test_celery_path(self, mgr):
@@ -237,8 +261,11 @@ class TestDispatchEditFlow:
         mock_task.apply_async.return_value = MagicMock(id="edit-1")
         with patch("app.tasks.celery_tasks.process_edit_document_task", mock_task):
             result = mgr.dispatch_edit_flow(
-                background_tasks=bt, orchestrator=MagicMock(),
-                job_id="j1", edited_structured_data={"key": "val"}, template_name="ieee",
+                background_tasks=bt,
+                orchestrator=MagicMock(),
+                job_id="j1",
+                edited_structured_data={"key": "val"},
+                template_name="ieee",
             )
         assert result == {"mode": "celery", "task_id": "edit-1"}
 
@@ -250,13 +277,18 @@ class TestDispatchEditFlow:
         mock_task.apply_async.side_effect = RuntimeError("celery down")
         with patch("app.tasks.celery_tasks.process_edit_document_task", mock_task):
             result = mgr.dispatch_edit_flow(
-                background_tasks=bt, orchestrator=orc,
-                job_id="j1", edited_structured_data={}, template_name="ieee",
+                background_tasks=bt,
+                orchestrator=orc,
+                job_id="j1",
+                edited_structured_data={},
+                template_name="ieee",
             )
         assert result == {"mode": "background", "task_id": None}
         bt.add_task.assert_called_once_with(
             orc.run_edit_flow,
-            job_id="j1", edited_structured_data={}, template_name="ieee",
+            job_id="j1",
+            edited_structured_data={},
+            template_name="ieee",
         )
 
 
@@ -264,10 +296,9 @@ class TestDispatchSynthesisPipeline:
     @pytest.fixture
     def mgr(self):
         from app.services.enhancement_manager import EnhancementManager
+
         m = EnhancementManager()
-        m._profile = MagicMock(
-            enabled=True, queue_enabled=True, queue_provider="celery", queue_available=True
-        )
+        m._profile = MagicMock(enabled=True, queue_enabled=True, queue_provider="celery", queue_available=True)
         return m
 
     def test_celery_path(self, mgr):
@@ -276,8 +307,11 @@ class TestDispatchSynthesisPipeline:
         mock_task.apply_async.return_value = MagicMock(id="syn-1")
         with patch("app.tasks.celery_tasks.process_synthesis_task", mock_task):
             result = mgr.dispatch_synthesis_pipeline(
-                background_tasks=bt, run_pipeline=MagicMock(),
-                session_id="s1", file_paths=["/a.pdf"], template="ieee",
+                background_tasks=bt,
+                run_pipeline=MagicMock(),
+                session_id="s1",
+                file_paths=["/a.pdf"],
+                template="ieee",
             )
         assert result == {"mode": "celery", "task_id": "syn-1"}
 
@@ -288,12 +322,18 @@ class TestDispatchSynthesisPipeline:
         mock_task.apply_async.side_effect = RuntimeError("celery down")
         with patch("app.tasks.celery_tasks.process_synthesis_task", mock_task):
             result = mgr.dispatch_synthesis_pipeline(
-                background_tasks=bt, run_pipeline=run_pipe,
-                session_id="s1", file_paths=["/a.pdf"], template="ieee",
+                background_tasks=bt,
+                run_pipeline=run_pipe,
+                session_id="s1",
+                file_paths=["/a.pdf"],
+                template="ieee",
             )
         assert result == {"mode": "background", "task_id": None}
         bt.add_task.assert_called_once_with(
-            run_pipe, "s1", ["/a.pdf"], "ieee",
+            run_pipe,
+            "s1",
+            ["/a.pdf"],
+            "ieee",
         )
 
 
@@ -301,6 +341,7 @@ class TestBuildProfile:
     @pytest.fixture
     def mgr(self):
         from app.services.enhancement_manager import EnhancementManager
+
         m = EnhancementManager()
         m._profile = None
         return m

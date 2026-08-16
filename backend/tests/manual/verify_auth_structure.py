@@ -8,7 +8,7 @@ import sys
 from pprint import pformat
 
 # Add backend directory to path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from app.services.auth_service import AuthService
 
@@ -30,15 +30,16 @@ class Logger:
     def close(self):
         self.log.close()
 
+
 async def verify_auth_structure():
     sys.stdout = Logger("verify_result_internal.log")
-    sys.stderr = sys.stdout # Capture errors too
-    
+    sys.stderr = sys.stdout  # Capture errors too
+
     print("--- 🔐 Verifying Auth Response Structure ---")
-    
+
     email = "structural_test_user_2@example.com"
     password = "TestPassword123!"
-    
+
     print(f"1. Attempting Signup for {email}...")
     try:
         await AuthService.signup(email, password, "Test User", "Test Inst")
@@ -51,33 +52,34 @@ async def verify_auth_structure():
         response = await AuthService.login(email, password)
         print("   ✅ Login successful!")
         print(f"   👉 Response Type: {type(response)}")
-        
+
         # Check if it's a Pydantic model or object
-        if hasattr(response, 'session'):
+        if hasattr(response, "session"):
             print("   👉 Has .session attribute: Yes")
             print(f"   👉 Session Type: {type(response.session)}")
             # Try to see if session has access_token
-            if response.session and hasattr(response.session, 'access_token'):
-                 print("   👉 Session.access_token: Present")
+            if response.session and hasattr(response.session, "access_token"):
+                print("   👉 Session.access_token: Present")
             else:
-                 print("   ❌ Session.access_token: MISSING")
+                print("   ❌ Session.access_token: MISSING")
         else:
             print("   ❌ Has .session attribute: NO")
-            
+
         print("\n   👉 Full Response Dump:")
         try:
             # Try varying dumping methods
-            if hasattr(response, 'model_dump'):
+            if hasattr(response, "model_dump"):
                 print(pformat(response.model_dump()))
-            elif hasattr(response, 'dict'):
+            elif hasattr(response, "dict"):
                 print(pformat(response.dict()))
             else:
                 print(pformat(vars(response)))
         except:
             print(str(response))
-            
+
     except Exception as e:
         print(f"   ❌ Login failed: {e}")
+
 
 if __name__ == "__main__":
     if sys.platform == "win32":

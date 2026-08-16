@@ -1,4 +1,3 @@
-
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
@@ -21,16 +20,25 @@ def classifier():
     return ContentClassifier()
 
 
-def block(block_id: str, index: int, block_type=BlockType.BODY, text="",
-           level=None, section_name="", metadata=None, **kw):
+def block(
+    block_id: str, index: int, block_type=BlockType.BODY, text="", level=None, section_name="", metadata=None, **kw
+):
     return Block(
-        block_id=block_id, index=index, block_type=block_type, text=text,
-        level=level, section_name=section_name, metadata=metadata or {}, **kw)
+        block_id=block_id,
+        index=index,
+        block_type=block_type,
+        text=text,
+        level=level,
+        section_name=section_name,
+        metadata=metadata or {},
+        **kw,
+    )
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # _map_llm_label — uncovered branches
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestMapScibertLabelGaps:
     def test_author_info_with_affiliation_text(self, classifier):
@@ -68,16 +76,22 @@ class TestMapScibertLabelGaps:
 # _predict_llm_batch — language detection exception path
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestPredictScibertBatchGaps:
     def test_lang_detect_raises_exception_falls_to_en(self):
         """When detect_language raises, detected_lang should become 'en'."""
         from app.pipeline.intelligence.semantic_parser import SemanticParser
+
         parser = SemanticParser()
         parser._llm_classifier = MagicMock()
         parser._llm_classifier.classify_batch.return_value = [{"type": "BODY", "confidence": 0.95}]
         with patch("app.pipeline.intelligence.semantic_parser.should_enable_llm_classification", return_value=True):
             with patch("app.pipeline.intelligence.semantic_parser.HAS_LANGDETECT", True, create=True):
-                with patch("app.pipeline.intelligence.semantic_parser.detect_language", side_effect=Exception("lang fail"), create=True):
+                with patch(
+                    "app.pipeline.intelligence.semantic_parser.detect_language",
+                    side_effect=Exception("lang fail"),
+                    create=True,
+                ):
                     result = parser.analyze_blocks([block("b", 0, text="Hello World")])
         assert result[0]["detected_language"] == "en"
         assert result[0]["predicted_section_type"] == "BODY"
@@ -87,6 +101,7 @@ class TestPredictScibertBatchGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 # _apply_llm_predictions — confidence parsing failure
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestApplyScibertPredictionsGaps:
     def test_bad_confidence_value_sets_zero(self, classifier):
@@ -133,15 +148,18 @@ class TestApplyScibertPredictionsGaps:
 # _run_classification — front matter / email / author confidence / fallback
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestRunClassificationGaps:
     def test_email_author_without_affiliation(self, classifier):
         """Email line without affiliation indicators → AUTHOR."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
                 block("b1", 0, BlockType.BODY, text="alice@mit.edu"),
-            ])
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -153,11 +171,13 @@ class TestRunClassificationGaps:
         """Email line with affiliation keywords (but not email-specific method) → AFFILIATION
         via the keyword rule (Department) before the email rule fires."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
                 block("b1", 0, BlockType.BODY, text="alice@mit.edu, Department of CS"),
-            ])
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -169,11 +189,13 @@ class TestRunClassificationGaps:
     def test_author_with_comma_gets_bonus_confidence(self, classifier):
         """Author with comma → bonus confidence."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
                 block("b1", 0, BlockType.BODY, text="Alice Johnson, PhD"),
-            ])
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -184,11 +206,13 @@ class TestRunClassificationGaps:
     def test_author_with_academic_keyword_excluded(self, classifier):
         """Text containing author exclusion keywords → skip author rule."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
                 block("b1", 0, BlockType.BODY, text="Department of Physics"),
-            ])
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -199,11 +223,13 @@ class TestRunClassificationGaps:
         """Fallback affiliation detection in front matter.
         Uses text that avoids the keyword rules but triggers affiliation_indicators."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
                 block("b1", 0, BlockType.BODY, text="Research School of Something"),
-            ])
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -214,11 +240,13 @@ class TestRunClassificationGaps:
     def test_short_clean_name_gets_boosted_confidence(self, classifier):
         """2-4 word capitalized text matches the AUTHOR rule (regex_author_rule_enhanced), not the fallback."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
                 block("b1", 0, BlockType.BODY, text="Bob Smith"),
-            ])
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -230,12 +258,15 @@ class TestRunClassificationGaps:
     def test_long_name_gets_medium_confidence(self, classifier):
         """7+ capitalized words (avoids AUTHOR keyword rule) → fallback heuristic_front."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
                 block("b1", 0, BlockType.BODY, text="One Two Three Four Five Six Seven Eight"),
-            ])
+            ],
+        )
         from app.config.settings import settings
+
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -245,13 +276,23 @@ class TestRunClassificationGaps:
     def test_footnote_preserved_during_classification(self, classifier):
         """Block with is_footnote metadata in body zone → preserved (hard guard skips reclassification)."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
-                block("b1", 0, BlockType.HEADING_1, text="Intro", metadata={"is_heading_candidate": True}, level=1, section_name="introduction"),
+                block(
+                    "b1",
+                    0,
+                    BlockType.HEADING_1,
+                    text="Intro",
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name="introduction",
+                ),
                 block("b2", 1, BlockType.BODY, text="Some text"),
                 block("b3", 2, BlockType.FOOTNOTE, text="A footnote", metadata={"is_footnote": True}),
-            ])
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -261,13 +302,21 @@ class TestRunClassificationGaps:
     def test_supplemental_heading_not_appendix(self, classifier):
         """A heading with 'supplement' in section_name → APPENDIX_HEADING."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
-                block("b1", 0, BlockType.BODY, text="Supplementary Materials",
-                      metadata={"is_heading_candidate": True}, level=1,
-                      section_name="supplementary"),
-            ])
+                block(
+                    "b1",
+                    0,
+                    BlockType.BODY,
+                    text="Supplementary Materials",
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name="supplementary",
+                ),
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -279,14 +328,16 @@ class TestRunClassificationGaps:
         """After references heading, a block with is_heading_candidate + level 1 → HEADING_1.
         References start at index 0, so block at index 1 is post-references heading."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
-                block("b1", 0, BlockType.BODY, text="References",
-                      metadata={"is_heading_candidate": True}),
-                block("b2", 1, BlockType.BODY, text="Appendix A: Data",
-                      level=1, metadata={"is_heading_candidate": True}),
-            ])
+                block("b1", 0, BlockType.BODY, text="References", metadata={"is_heading_candidate": True}),
+                block(
+                    "b2", 1, BlockType.BODY, text="Appendix A: Data", level=1, metadata={"is_heading_candidate": True}
+                ),
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=0):
@@ -296,13 +347,14 @@ class TestRunClassificationGaps:
     def test_references_zone_non_heading_entry(self, classifier):
         """After references heading, a non-heading-candidate block → REFERENCE_ENTRY."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
-                block("b1", 0, BlockType.BODY, text="References",
-                      metadata={"is_heading_candidate": True}),
+                block("b1", 0, BlockType.BODY, text="References", metadata={"is_heading_candidate": True}),
                 block("b2", 1, BlockType.BODY, text="[1] Author. Title.", metadata={}),
-            ])
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=1):
@@ -313,16 +365,36 @@ class TestRunClassificationGaps:
         """Heading candidates with level 2, 3, 4 map correctly in body zone.
         Note: body zone reads level from metadata (block.metadata.get('level', 1))."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
-                block("b1", 0, BlockType.BODY, text="Subsection",
-                      metadata={"is_heading_candidate": True, "level": 2}, section_name="methods"),
-                block("b2", 1, BlockType.BODY, text="Subsubsection",
-                      metadata={"is_heading_candidate": True, "level": 3}, section_name="methods"),
-                block("b3", 2, BlockType.BODY, text="Sub4",
-                      metadata={"is_heading_candidate": True, "level": 4}, section_name="methods"),
-            ])
+                block(
+                    "b1",
+                    0,
+                    BlockType.BODY,
+                    text="Subsection",
+                    metadata={"is_heading_candidate": True, "level": 2},
+                    section_name="methods",
+                ),
+                block(
+                    "b2",
+                    1,
+                    BlockType.BODY,
+                    text="Subsubsection",
+                    metadata={"is_heading_candidate": True, "level": 3},
+                    section_name="methods",
+                ),
+                block(
+                    "b3",
+                    2,
+                    BlockType.BODY,
+                    text="Sub4",
+                    metadata={"is_heading_candidate": True, "level": 4},
+                    section_name="methods",
+                ),
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -336,12 +408,15 @@ class TestRunClassificationGaps:
 # Post-loop classification (NLP fallback + UNKNOWN handling)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestPostLoopClassificationGaps:
     def test_standard_heading_detected(self, classifier):
         """Post-loop: UNKNOWN block containing standard heading text → HEADING_1."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
-            blocks=[block("b1", 0, BlockType.UNKNOWN, text="Introduction")])
+            document_id="d",
+            metadata=DocumentMetadata(),
+            blocks=[block("b1", 0, BlockType.UNKNOWN, text="Introduction")],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -352,8 +427,10 @@ class TestPostLoopClassificationGaps:
     def test_standard_heading_with_colon(self, classifier):
         """Post-loop: heading with colon removed before match."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
-            blocks=[block("b1", 0, BlockType.UNKNOWN, text="Introduction:")])
+            document_id="d",
+            metadata=DocumentMetadata(),
+            blocks=[block("b1", 0, BlockType.UNKNOWN, text="Introduction:")],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -365,10 +442,12 @@ class TestPostLoopClassificationGaps:
         with structure_context. The nlp_confidence path is only reached for blocks
         that stay UNKNOWN through the main loop (e.g. after an exception)."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
-            blocks=[block("b1", 0, BlockType.UNKNOWN, text="Some random text",
-                         metadata={"nlp_confidence": 0.7})])
+            document_id="d",
+            metadata=DocumentMetadata(),
+            blocks=[block("b1", 0, BlockType.UNKNOWN, text="Some random text", metadata={"nlp_confidence": 0.7})],
+        )
         from app.config.settings import settings
+
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -381,9 +460,12 @@ class TestPostLoopClassificationGaps:
     def test_unknown_without_nlp_uses_low_confidence(self, classifier):
         """UNKNOWN block without nlp_confidence in body zone → BODY with HEURISTIC_CONFIDENCE_HIGH."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
-            blocks=[block("b1", 0, BlockType.UNKNOWN, text="Some random text")])
+            document_id="d",
+            metadata=DocumentMetadata(),
+            blocks=[block("b1", 0, BlockType.UNKNOWN, text="Some random text")],
+        )
         from app.config.settings import settings
+
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -401,6 +483,7 @@ class TestPostLoopClassificationGaps:
         ]
         doc = PipelineDocument(document_id="d", metadata=DocumentMetadata(), blocks=blocks)
         from app.config.settings import settings
+
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=2):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -413,8 +496,10 @@ class TestPostLoopClassificationGaps:
         Only applies to blocks that remain UNKNOWN through the main loop.
         In body zone, UNKNOWN becomes BODY before the fallback runs."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
-            blocks=[block("b1", 0, BlockType.UNKNOWN, text="1 This is a footnote")])
+            document_id="d",
+            metadata=DocumentMetadata(),
+            blocks=[block("b1", 0, BlockType.UNKNOWN, text="1 This is a footnote")],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -426,6 +511,7 @@ class TestPostLoopClassificationGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 # _find_first_section_index — edge cases
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestFindFirstSectionIndexGaps:
     def test_index_limit_30(self, classifier):
@@ -467,25 +553,36 @@ class TestFindFirstSectionIndexGaps:
 # _find_references_start_index — edge cases
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestFindReferencesStartIndexGaps:
     def test_references_in_text_found(self, classifier):
         blocks = [
-            block("b1", 0, BlockType.BODY, text="References",
-                  metadata={"is_heading_candidate": True}),
+            block("b1", 0, BlockType.BODY, text="References", metadata={"is_heading_candidate": True}),
         ]
         assert classifier._find_references_start_index(blocks) == 0
 
     def test_references_keyword_section_name(self, classifier):
         blocks = [
-            block("b1", 0, BlockType.BODY, text="Refs", section_name="bibliography",
-                  metadata={"is_heading_candidate": True}),
+            block(
+                "b1",
+                0,
+                BlockType.BODY,
+                text="Refs",
+                section_name="bibliography",
+                metadata={"is_heading_candidate": True},
+            ),
         ]
         assert classifier._find_references_start_index(blocks) == 0
 
     def test_long_text_skipped(self, classifier):
         blocks = [
-            block("b1", 0, BlockType.BODY, text="References and more... " + "A" * 60,
-                  metadata={"is_heading_candidate": True}),
+            block(
+                "b1",
+                0,
+                BlockType.BODY,
+                text="References and more... " + "A" * 60,
+                metadata={"is_heading_candidate": True},
+            ),
         ]
         assert classifier._find_references_start_index(blocks) is None
 
@@ -496,6 +593,7 @@ class TestFindReferencesStartIndexGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 # _match_grobid_author — edge cases
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestMatchGrobidAuthorGaps:
     def test_family_in_text_long_enough(self, classifier):
@@ -514,6 +612,7 @@ class TestMatchGrobidAuthorGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 # _match_grobid_affiliation — edge cases
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestMatchGrobidAffiliationGaps:
     def test_exact_text_match(self, classifier):
@@ -536,6 +635,7 @@ class TestMatchGrobidAffiliationGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 # classify_content convenience function
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestClassifyContentGaps:
     def test_returns_document(self):

@@ -254,8 +254,13 @@ class TestVancouverFormatterIntegration:
 
     def test_seven_authors_et_al(self):
         authors = [
-            "Smith J.", "Doe A.", "Lee B.", "Kim C.",
-            "Chen D.", "Wang E.", "Liu F.",
+            "Smith J.",
+            "Doe A.",
+            "Lee B.",
+            "Kim C.",
+            "Chen D.",
+            "Wang E.",
+            "Liu F.",
         ]
         entry = self.fmt.format_reference_entry(
             authors=authors,

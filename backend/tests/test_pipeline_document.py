@@ -8,6 +8,7 @@ import pytest
 class TestPipelineDocument:
     def test_document_metadata_defaults(self):
         from app.models.pipeline_document import DocumentMetadata
+
         md = DocumentMetadata()
         assert md.title is None
         assert md.authors == []
@@ -15,21 +16,28 @@ class TestPipelineDocument:
 
     def test_document_metadata_full(self):
         from app.models.pipeline_document import DocumentMetadata
+
         md = DocumentMetadata(
-            title="Test", authors=["Alice"], affiliations=["MIT"],
-            abstract="An abstract", keywords=["test"], doi="10.1234/test",
+            title="Test",
+            authors=["Alice"],
+            affiliations=["MIT"],
+            abstract="An abstract",
+            keywords=["test"],
+            doi="10.1234/test",
         )
         assert md.title == "Test"
         assert md.doi == "10.1234/test"
 
     def test_template_info_defaults(self):
         from app.models.pipeline_document import TemplateInfo
+
         t = TemplateInfo(template_name="ieee")
         assert t.template_name == "ieee"
         assert t.template_version == "1.0"
 
     def test_processing_stage_defaults(self):
         from app.models.pipeline_document import ProcessingStage
+
         ps = ProcessingStage(stage_name="parse", status="completed")
         assert ps.stage_name == "parse"
         assert ps.status == "completed"
@@ -37,6 +45,7 @@ class TestPipelineDocument:
 
     def test_create_pipeline_document(self):
         from app.models.pipeline_document import DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(
             document_id="doc1",
             metadata=DocumentMetadata(title="Test Paper"),
@@ -48,16 +57,19 @@ class TestPipelineDocument:
 
     def test_validate_document_id_empty(self):
         from app.models.pipeline_document import PipelineDocument
+
         with pytest.raises(Exception):
             PipelineDocument(document_id="")
 
     def test_validate_document_id_whitespace(self):
         from app.models.pipeline_document import PipelineDocument
+
         with pytest.raises(Exception):
             PipelineDocument(document_id="   ")
 
     def test_add_processing_stage(self):
         from app.models.pipeline_document import PipelineDocument
+
         doc = PipelineDocument(document_id="d1")
         doc.add_processing_stage("parse", "completed", "Done", 100)
         assert len(doc.processing_history) == 1
@@ -65,6 +77,7 @@ class TestPipelineDocument:
 
     def test_add_processing_stage_updates_timestamp(self):
         from app.models.pipeline_document import PipelineDocument
+
         doc = PipelineDocument(document_id="d1")
         old_updated = doc.updated_at
         doc.add_processing_stage("validate", "processing")
@@ -72,6 +85,7 @@ class TestPipelineDocument:
 
     def test_add_processing_stage_exception_handled(self):
         from app.models.pipeline_document import PipelineDocument
+
         doc = PipelineDocument(document_id="d1")
         with patch("app.models.pipeline_document.ProcessingStage") as mock_ps:
             mock_ps.side_effect = ValueError("bad stage")
@@ -81,6 +95,7 @@ class TestPipelineDocument:
     def test_get_block_by_id(self):
         from app.models.block import Block
         from app.models.pipeline_document import PipelineDocument
+
         doc = PipelineDocument(document_id="d1")
         b = Block(block_id="b1", text="Hello", index=0)
         doc.blocks.append(b)
@@ -89,12 +104,14 @@ class TestPipelineDocument:
 
     def test_get_block_by_id_empty(self):
         from app.models.pipeline_document import PipelineDocument
+
         doc = PipelineDocument(document_id="d1")
         assert doc.get_block_by_id("") is None
 
     def test_get_figure_by_id(self):
         from app.models.figure import Figure
         from app.models.pipeline_document import PipelineDocument
+
         doc = PipelineDocument(document_id="d1")
         f = Figure(figure_id="f1", caption="Fig 1", image_path="/img.png", index=0)
         doc.figures.append(f)
@@ -104,6 +121,7 @@ class TestPipelineDocument:
     def test_get_equation_by_id(self):
         from app.models.equation import Equation
         from app.models.pipeline_document import PipelineDocument
+
         doc = PipelineDocument(document_id="d1")
         e = Equation(equation_id="e1", latex="x=y", index=0)
         doc.equations.append(e)
@@ -113,6 +131,7 @@ class TestPipelineDocument:
     def test_get_blocks_by_type(self):
         from app.models.block import Block
         from app.models.pipeline_document import PipelineDocument
+
         doc = PipelineDocument(document_id="d1")
         doc.blocks.append(Block(block_id="b1", text="A", index=0, block_type="body"))
         doc.blocks.append(Block(block_id="b2", text="B", index=1, block_type="heading_1"))
@@ -123,6 +142,7 @@ class TestPipelineDocument:
     def test_get_blocks_in_section(self):
         from app.models.block import Block
         from app.models.pipeline_document import PipelineDocument
+
         doc = PipelineDocument(document_id="d1")
         b1 = Block(block_id="b1", text="Intro text", index=0, section_name="Introduction")
         b2 = Block(block_id="b2", text="Method", index=1, section_name="Methods")
@@ -134,6 +154,7 @@ class TestPipelineDocument:
     def test_get_section_names(self):
         from app.models.block import Block
         from app.models.pipeline_document import PipelineDocument
+
         doc = PipelineDocument(document_id="d1")
         doc.blocks.append(Block(block_id="b1", text="A", index=0, section_name="Intro"))
         doc.blocks.append(Block(block_id="b2", text="B", index=1, section_name="Methods"))
@@ -145,6 +166,7 @@ class TestPipelineDocument:
     def test_get_stats(self):
         from app.models.block import Block
         from app.models.pipeline_document import PipelineDocument
+
         doc = PipelineDocument(document_id="d1")
         doc.blocks.append(Block(block_id="b1", text="A", index=0))
         stats = doc.get_stats()
@@ -154,6 +176,7 @@ class TestPipelineDocument:
 
     def test_get_stats_exception_returns_defaults(self):
         from app.models.pipeline_document import PipelineDocument
+
         doc = PipelineDocument(document_id="d1")
         with patch.object(doc, "blocks", side_effect=Exception("boom")):
             stats = doc.get_stats()
@@ -162,6 +185,7 @@ class TestPipelineDocument:
     def test_create_with_full_data(self):
         from app.models.block import Block
         from app.models.pipeline_document import DocumentMetadata, PipelineDocument, TemplateInfo
+
         doc = PipelineDocument(
             document_id="d1",
             original_filename="paper.docx",

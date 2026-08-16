@@ -196,9 +196,7 @@ class TestEnsureLoaded:
     @patch("app.services.model_store.model_store")
     @patch("app.pipeline.parsing.table_extractor.AutoImageProcessor.from_pretrained")
     @patch("app.pipeline.parsing.table_extractor.TableTransformerForObjectDetection.from_pretrained")
-    def test_loads_both_from_scratch(
-        self, mock_ttod_fp, mock_aip_fp, mock_ms
-    ):
+    def test_loads_both_from_scratch(self, mock_ttod_fp, mock_aip_fp, mock_ms):
         mock_ms.is_loaded.return_value = False
         mock_aip_fp.return_value = MagicMock()
         mock_ttod_fp.return_value = det_model = MagicMock()
@@ -216,9 +214,7 @@ class TestEnsureLoaded:
     @patch("app.services.model_store.model_store")
     @patch("app.pipeline.parsing.table_extractor.AutoImageProcessor.from_pretrained")
     @patch("app.pipeline.parsing.table_extractor.TableTransformerForObjectDetection.from_pretrained")
-    def test_detection_cached_structure_loaded(
-        self, mock_ttod_fp, mock_aip_fp, mock_ms
-    ):
+    def test_detection_cached_structure_loaded(self, mock_ttod_fp, mock_aip_fp, mock_ms):
         def is_loaded(key):
             return key == "table_detection_model"
 
@@ -243,9 +239,7 @@ class TestEnsureLoaded:
     @patch("app.services.model_store.model_store")
     @patch("app.pipeline.parsing.table_extractor.AutoImageProcessor.from_pretrained")
     @patch("app.pipeline.parsing.table_extractor.TableTransformerForObjectDetection.from_pretrained")
-    def test_structure_cached_detection_loaded(
-        self, mock_ttod_fp, mock_aip_fp, mock_ms
-    ):
+    def test_structure_cached_detection_loaded(self, mock_ttod_fp, mock_aip_fp, mock_ms):
         def is_loaded(key):
             return key == "table_structure_model"
 
@@ -302,9 +296,7 @@ class TestDetectTables:
 
     def _setup_detection(self, detection_dict):
         self.ext._detection_processor.return_value = {"pixel_values": MagicMock()}
-        self.ext._detection_processor.post_process_object_detection.return_value = [
-            detection_dict
-        ]
+        self.ext._detection_processor.post_process_object_detection.return_value = [detection_dict]
 
     def test_multiple_tables_returned(self):
         det = build_detection_dict(
@@ -330,15 +322,11 @@ class TestDetectTables:
 
         self.ext.detect_tables(self.img, threshold=0.6)
 
-        args, kwargs = (
-            self.ext._detection_processor.post_process_object_detection.call_args
-        )
+        args, kwargs = self.ext._detection_processor.post_process_object_detection.call_args
         assert kwargs["threshold"] == 0.6
 
     def test_unknown_label_falls_back(self):
-        det = build_detection_dict(
-            scores=(0.90,), labels=(99,), boxes=((5, 5, 50, 50),)
-        )
+        det = build_detection_dict(scores=(0.90,), labels=(99,), boxes=((5, 5, 50, 50),))
         self._setup_detection(det)
         self.ext._detection_model.config.id2label = {}
 
@@ -368,9 +356,7 @@ class TestExtractTableStructure:
 
     def _setup_structure(self, structure_dict):
         self.ext._structure_processor.return_value = {"pixel_values": MagicMock()}
-        self.ext._structure_processor.post_process_object_detection.return_value = [
-            structure_dict
-        ]
+        self.ext._structure_processor.post_process_object_detection.return_value = [structure_dict]
 
     def test_rows_columns_and_headers(self):
         # label ids: 0=row, 1=column, 2=header
@@ -421,22 +407,16 @@ class TestExtractTableStructure:
         assert result["data"] == [[""]]
 
     def test_custom_threshold(self):
-        struct = build_structure_dict(
-            scores=(0.5,), label_ids=(0,), boxes=((0, 0, 50, 50),)
-        )
+        struct = build_structure_dict(scores=(0.5,), label_ids=(0,), boxes=((0, 0, 50, 50),))
         self._setup_structure(struct)
 
         self.ext.extract_table_structure(self.img, threshold=0.4)
 
-        args, kwargs = (
-            self.ext._structure_processor.post_process_object_detection.call_args
-        )
+        args, kwargs = self.ext._structure_processor.post_process_object_detection.call_args
         assert kwargs["threshold"] == 0.4
 
     def test_unknown_label_skipped(self):
-        struct = build_structure_dict(
-            scores=(0.9,), label_ids=(42,), boxes=((0, 0, 10, 10),)
-        )
+        struct = build_structure_dict(scores=(0.9,), label_ids=(42,), boxes=((0, 0, 10, 10),))
         self._setup_structure(struct)
         self.ext._structure_model.config.id2label = {42: "garbage"}
 
@@ -483,9 +463,7 @@ class TestExtractTablesFromPage:
             "headers": [],
             "data": [["x", "y", "z"]],
         }
-        self.ext.extract_table_structure = MagicMock(
-            side_effect=[structure_1, structure_2]
-        )
+        self.ext.extract_table_structure = MagicMock(side_effect=[structure_1, structure_2])
 
         result = self.ext.extract_tables_from_page(self.img)
 
@@ -509,9 +487,7 @@ class TestExtractTablesFromPage:
             {"bbox": (0, 0, 50, 50), "score": 0.9, "label": "table"},
         ]
         self.ext.detect_tables = MagicMock(return_value=detections)
-        self.ext.extract_table_structure = MagicMock(
-            side_effect=ValueError("crop failed")
-        )
+        self.ext.extract_table_structure = MagicMock(side_effect=ValueError("crop failed"))
 
         result = self.ext.extract_tables_from_page(self.img)
 
@@ -538,9 +514,7 @@ class TestExtractTablesFromPage:
             "data": [["ok"]],
         }
         self.ext.detect_tables = MagicMock(return_value=detections)
-        self.ext.extract_table_structure = MagicMock(
-            side_effect=[good_structure, RuntimeError("OOM")]
-        )
+        self.ext.extract_table_structure = MagicMock(side_effect=[good_structure, RuntimeError("OOM")])
 
         result = self.ext.extract_tables_from_page(self.img)
 
@@ -557,8 +531,7 @@ class TestExtractTablesFromPage:
 class TestToTableModel:
     def _make_table_data(self, detection=None, structure=None):
         return {
-            "detection": detection
-            or {"bbox": (0, 0, 100, 100), "score": 0.95, "label": "table"},
+            "detection": detection or {"bbox": (0, 0, 100, 100), "score": 0.95, "label": "table"},
             "structure": structure
             or {
                 "num_rows": 2,
@@ -602,9 +575,7 @@ class TestToTableModel:
                 "data": [["Name", "Value"], ["Temp", "42"]],
             }
         )
-        result = extractor.to_table_model(
-            table_data, table_index=1, block_index=5, page_number=2
-        )
+        result = extractor.to_table_model(table_data, table_index=1, block_index=5, page_number=2)
 
         assert result.table_id == "tbl_001"
         assert result.has_header is True
@@ -632,9 +603,7 @@ class TestToTableModel:
                 "data": [],
             }
         )
-        result = extractor.to_table_model(
-            table_data, table_index=2, block_index=10
-        )
+        result = extractor.to_table_model(table_data, table_index=2, block_index=10)
 
         assert result.table_id == "tbl_002"
         assert result.num_rows == 0
@@ -646,9 +615,7 @@ class TestToTableModel:
 
     @patch("app.utils.id_generator.generate_block_id", return_value="blk_003")
     def test_metadata_contains_detection_score(self, mock_gid, extractor):
-        table_data = self._make_table_data(
-            detection={"bbox": (0, 0, 50, 50), "score": 0.9876, "label": "table"}
-        )
+        table_data = self._make_table_data(detection={"bbox": (0, 0, 50, 50), "score": 0.9876, "label": "table"})
         result = extractor.to_table_model(table_data, table_index=3, block_index=15)
 
         meta = result.metadata
@@ -728,9 +695,7 @@ class TestDetectTablesLazyLoading:
         Even if _loaded is False, detect_tables should work once we mock the
         internal chain after _ensure_loaded completes.
         """
-        det = build_detection_dict(
-            scores=(0.9,), labels=(0,), boxes=((0, 0, 50, 50),)
-        )
+        det = build_detection_dict(scores=(0.9,), labels=(0,), boxes=((0, 0, 50, 50),))
 
         ext = TableExtractor.__new__(TableExtractor)
         ext._loaded = False

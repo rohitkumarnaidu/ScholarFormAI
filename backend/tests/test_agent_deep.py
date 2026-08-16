@@ -17,6 +17,7 @@ def AP():
         patch("app.pipeline.generation.agent.CitationAssemblyService"),
     ):
         from app.pipeline.generation.agent import AgentPipeline
+
         return AgentPipeline
 
 
@@ -145,10 +146,10 @@ class TestExtractJson:
         assert AP._extract_json("hello world") is None
 
     def test_unmatched_braces(self, AP):
-        assert AP._extract_json('{a: 1') is None
+        assert AP._extract_json("{a: 1") is None
 
     def test_only_closing_brace(self, AP):
-        assert AP._extract_json('}') is None
+        assert AP._extract_json("}") is None
 
 
 class TestExtractOutlineSections:
@@ -407,7 +408,10 @@ class TestEmitSse:
             mock_me.return_value = {"event": "data"}
             await agent._emit_sse("s1", stage="test", progress=50, message="hello")
             mock_me.assert_called_once_with(
-                "stage_update", session_id="s1", stage="test", progress=50,
+                "stage_update",
+                session_id="s1",
+                stage="test",
+                progress=50,
                 payload={"stage": "test", "progress": 50, "message": "hello"},
             )
             agent.pubsub.publish.assert_called_once_with("session:s1", {"event": "data"})
@@ -449,7 +453,9 @@ class TestStreamChunks:
     async def test_with_extra(self, agent):
         with patch("app.pipeline.generation.agent.make_event") as mock_me:
             mock_me.return_value = {"event": "data"}
-            await agent._stream_chunks("s1", event_type="chunk", stage="w", progress=50, text="hi", extra={"reset": True})
+            await agent._stream_chunks(
+                "s1", event_type="chunk", stage="w", progress=50, text="hi", extra={"reset": True}
+            )
             payload = mock_me.call_args[1]["payload"]
             assert payload["reset"] is True
 
@@ -459,7 +465,9 @@ class TestUpdateStatus:
     async def test_basic_update(self, agent):
         agent.session_service.update_session = AsyncMock()
         with patch.object(agent, "_emit_sse") as mock_sse:
-            await agent._update_status("s1", status="processing", progress=50, message="working", config={"stage": "test"})
+            await agent._update_status(
+                "s1", status="processing", progress=50, message="working", config={"stage": "test"}
+            )
             agent.session_service.update_session.assert_called_once()
             kwargs = agent.session_service.update_session.call_args.kwargs
             assert kwargs["status"] == "processing"
@@ -479,7 +487,9 @@ class TestUpdateStatus:
     async def test_includes_outline(self, agent):
         agent.session_service.update_session = AsyncMock()
         with patch.object(agent, "_emit_sse"):
-            await agent._update_status("s1", status="done", progress=100, message="done", config={}, outline={"sections": []})
+            await agent._update_status(
+                "s1", status="done", progress=100, message="done", config={}, outline={"sections": []}
+            )
             assert agent.session_service.update_session.call_args.kwargs["outline_json"] == {"sections": []}
 
 
@@ -569,7 +579,12 @@ class TestGenerateSection:
             mock_text.return_value = "section content"
             result = await agent._generate_section("s1", "Intro", "some prompt")
             assert result == "section content"
-            mock_text.assert_called_once_with("s1", "You are an academic writing assistant. Draft the 'Intro' section.", "some prompt", max_tokens=1400)
+            mock_text.assert_called_once_with(
+                "s1",
+                "You are an academic writing assistant. Draft the 'Intro' section.",
+                "some prompt",
+                max_tokens=1400,
+            )
             mock_stream.assert_called_once()
 
 
@@ -591,7 +606,9 @@ class TestGenerateOutline:
             patch.object(agent, "_stream_chunks"),
         ):
             mock_json.return_value = None
-            result = await agent._generate_outline("s1", {"title": "My Paper", "sections": ["Intro", "Methods"]}, [], [])
+            result = await agent._generate_outline(
+                "s1", {"title": "My Paper", "sections": ["Intro", "Methods"]}, [], []
+            )
             assert result["title"] == "My Paper"
             assert len(result["sections"]) == 2
 
@@ -672,6 +689,7 @@ class TestRunWebResearch:
     @pytest.mark.asyncio
     async def test_import_failure(self, agent):
         import builtins
+
         original_import = builtins.__import__
 
         def mock_import(name, *args, **kwargs):
@@ -695,9 +713,11 @@ class TestRunWebResearch:
     @pytest.mark.asyncio
     async def test_tool_run_fallback(self, agent):
         with patch("langchain_community.tools.DuckDuckGoSearchResults") as mock_ddg:
+
             class NoInvoke:
                 def run(self, query=""):
                     return "results"
+
             mock_ddg.return_value = NoInvoke()
             result = await agent._run_web_research({"title": "test", "keywords": ["ai"]})
             assert result == "results"
@@ -713,8 +733,13 @@ class TestBoostQuality:
             mock_mwl.return_value = 180
             mock_select.return_value = []
             result = await agent._boost_quality(
-                session_id="s1", task_spec={}, template_rules=[], outline={},
-                sections_map={"A": "text"}, references=[], config={"output_path": "/out", "quality": {}},
+                session_id="s1",
+                task_spec={},
+                template_rules=[],
+                outline={},
+                sections_map={"A": "text"},
+                references=[],
+                config={"output_path": "/out", "quality": {}},
             )
             assert result[0] == {"A": "text"}
             assert result[3] == {}
@@ -741,8 +766,13 @@ class TestBoostQuality:
             with patch.object(agent, "_apply_quality_floor") as mock_floor:
                 mock_floor.return_value = {"Intro": "Improved with filler"}
                 result = await agent._boost_quality(
-                    session_id="s1", task_spec={"length": "medium"}, template_rules=[], outline={},
-                    sections_map={"Intro": "old"}, references=[], config={"output_path": "/out", "quality": {}},
+                    session_id="s1",
+                    task_spec={"length": "medium"},
+                    template_rules=[],
+                    outline={},
+                    sections_map={"Intro": "old"},
+                    references=[],
+                    config={"output_path": "/out", "quality": {}},
                 )
                 assert "Intro" in result[0]
 
@@ -759,8 +789,13 @@ class TestBoostQuality:
             mock_select.return_value = ["Intro"]
             mock_cancel.return_value = True
             result = await agent._boost_quality(
-                session_id="s1", task_spec={}, template_rules=[], outline={},
-                sections_map={"Intro": "old"}, references=["[1] Ref"], config={"output_path": "/out", "quality": {}},
+                session_id="s1",
+                task_spec={},
+                template_rules=[],
+                outline={},
+                sections_map={"Intro": "old"},
+                references=["[1] Ref"],
+                config={"output_path": "/out", "quality": {}},
             )
             assert result is None
 
@@ -784,9 +819,13 @@ class TestBoostQuality:
             agent.quality_target = 70
 
             result = await agent._boost_quality(
-                session_id="s1", task_spec={"length": "medium", "sections": ["Intro"]},
-                template_rules=[], outline={}, sections_map={"Intro": "old"},
-                references=["[1] Ref"], config={"output_path": "/out", "quality": {}},
+                session_id="s1",
+                task_spec={"length": "medium", "sections": ["Intro"]},
+                template_rules=[],
+                outline={},
+                sections_map={"Intro": "old"},
+                references=["[1] Ref"],
+                config={"output_path": "/out", "quality": {}},
             )
             assert result is not None
 
@@ -878,11 +917,13 @@ class TestResume:
             mock_gsp.return_value = "prompt text"
             agent.citations.assemble = AsyncMock(return_value=({"Intro": "section"}, "refs\nline2"))
             agent.pipeline_orchestrator._export_document.return_value = "/out/output.docx"
-            agent.session_service.get_session = AsyncMock(return_value={
-                "config_json": {"template": "IEEE", "sections": ["Intro"]},
-                "outline_json": {"sections": [{"title": "Intro"}]},
-                "progress": 40,
-            })
+            agent.session_service.get_session = AsyncMock(
+                return_value={
+                    "config_json": {"template": "IEEE", "sections": ["Intro"]},
+                    "outline_json": {"sections": [{"title": "Intro"}]},
+                    "progress": 40,
+                }
+            )
             agent.session_service.update_session = AsyncMock()
             agent.session_service.save_document_version = AsyncMock()
             agent.quality_scorer.score.return_value = {"overall_score": 95}
@@ -903,11 +944,13 @@ class TestResume:
             mock_rtr.return_value = [{"rule": "x"}]
             agent.citations.assemble = AsyncMock(return_value=({"Intro": "text"}, ""))
             agent.pipeline_orchestrator._export_document.return_value = "/out/o.docx"
-            agent.session_service.get_session = AsyncMock(return_value={
-                "config_json": {},
-                "outline_json": {},
-                "progress": 40,
-            })
+            agent.session_service.get_session = AsyncMock(
+                return_value={
+                    "config_json": {},
+                    "outline_json": {},
+                    "progress": 40,
+                }
+            )
             agent.session_service.update_session = AsyncMock()
             agent.session_service.save_document_version = AsyncMock()
             agent.quality_scorer.score.return_value = {"overall_score": 85}
@@ -932,18 +975,24 @@ class TestRewriteSection:
         ):
             mock_text.return_value = "Rewritten content"
             mock_render.return_value = "/out/rewritten.docx"
-            agent.session_service.get_session = AsyncMock(return_value={
-                "config_json": {},
-                "outline_json": {},
-                "progress": 90,
-                "status": "completed",
-            })
-            agent.session_service.get_latest_document = AsyncMock(return_value={
-                "content_json": {"outline": {}, "sections": {"Intro": "old"}},
-            })
-            agent.session_service.get_messages = AsyncMock(return_value=[
-                {"role": "user", "content": "write paper"},
-            ])
+            agent.session_service.get_session = AsyncMock(
+                return_value={
+                    "config_json": {},
+                    "outline_json": {},
+                    "progress": 90,
+                    "status": "completed",
+                }
+            )
+            agent.session_service.get_latest_document = AsyncMock(
+                return_value={
+                    "content_json": {"outline": {}, "sections": {"Intro": "old"}},
+                }
+            )
+            agent.session_service.get_messages = AsyncMock(
+                return_value=[
+                    {"role": "user", "content": "write paper"},
+                ]
+            )
             agent.session_service.update_session = AsyncMock()
             agent.session_service.save_document_version = AsyncMock()
             agent.citations.assemble = AsyncMock(return_value=({"Intro": "Rewritten"}, "refs"))
@@ -963,15 +1012,19 @@ class TestRewriteSection:
             mock_text.return_value = "Rewritten content"
             mock_render.return_value = "/out/rewritten.docx"
             mock_san.return_value = "sanitized"
-            agent.session_service.get_session = AsyncMock(return_value={
-                "config_json": {"citation_style": "apa"},
-                "outline_json": {},
-                "progress": 90,
-                "status": "completed",
-            })
-            agent.session_service.get_latest_document = AsyncMock(return_value={
-                "content_json": {"outline": {}, "sections": {"Intro": "old"}},
-            })
+            agent.session_service.get_session = AsyncMock(
+                return_value={
+                    "config_json": {"citation_style": "apa"},
+                    "outline_json": {},
+                    "progress": 90,
+                    "status": "completed",
+                }
+            )
+            agent.session_service.get_latest_document = AsyncMock(
+                return_value={
+                    "content_json": {"outline": {}, "sections": {"Intro": "old"}},
+                }
+            )
             agent.session_service.get_messages = AsyncMock(return_value=[])
             agent.session_service.update_session = AsyncMock()
             agent.session_service.save_document_version = AsyncMock()

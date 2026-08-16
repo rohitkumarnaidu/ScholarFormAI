@@ -7,6 +7,7 @@ class TestGetFlag:
     @pytest.fixture
     def svc(self):
         from app.services.feature_flags import FeatureFlagService
+
         return FeatureFlagService()
 
     def test_returns_default_for_unknown(self, svc):
@@ -26,11 +27,14 @@ class TestGetFlag:
         mock_redis.get.return_value = '"redis_value"'
         svc._redis = mock_redis
         import redis as real_redis
+
         orig_isinstance = isinstance
+
         def isinstance_passthrough(obj, klass):
             if klass is real_redis.Redis:
                 return True
             return orig_isinstance(obj, klass)
+
         with patch("builtins.isinstance", isinstance_passthrough):
             result = svc.get_flag("test_flag")
         assert result == "redis_value"
@@ -59,6 +63,7 @@ class TestSetFlag:
     @pytest.fixture
     def svc(self):
         from app.services.feature_flags import FeatureFlagService
+
         return FeatureFlagService()
 
     def test_sets_in_cache(self, svc):
@@ -69,11 +74,14 @@ class TestSetFlag:
         mock_redis = MagicMock()
         svc._redis = mock_redis
         import redis as real_redis
+
         orig = isinstance
+
         def isinstance_patch(obj, klass):
             if klass is real_redis.Redis:
                 return True
             return orig(obj, klass)
+
         with patch("builtins.isinstance", isinstance_patch):
             svc.set_flag("my_flag", True)
         mock_redis.setex.assert_called_once_with("flag:my_flag", 300, "true")
@@ -90,6 +98,7 @@ class TestGetAllFlags:
     @pytest.fixture
     def svc(self):
         from app.services.feature_flags import FeatureFlagService
+
         return FeatureFlagService()
 
     def test_returns_all_defaults_plus_cache(self, svc):
@@ -110,6 +119,7 @@ class TestGetAllFlags:
 class TestGetFeatureFlag:
     def test_convenience_function(self):
         from app.services.feature_flags import get_feature_flag
+
         svc = MagicMock()
         svc.get_flag.return_value = True
         with patch("app.services.feature_flags.get_feature_flag_service", return_value=svc):
@@ -121,6 +131,7 @@ class TestGetFeatureFlag:
 class TestGetFeatureFlagService:
     def test_returns_singleton(self):
         from app.services.feature_flags import get_feature_flag_service
+
         s1 = get_feature_flag_service()
         s2 = get_feature_flag_service()
         assert s1 is s2

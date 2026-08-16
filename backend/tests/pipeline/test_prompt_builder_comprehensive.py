@@ -9,12 +9,15 @@ import pytest
 @pytest.fixture
 def builder():
     from app.pipeline.generation.prompt_builder import PromptBuilder
+
     return PromptBuilder()
 
 
 class TestBuild:
     def test_academic_paper(self, builder):
-        result = builder.build("academic_paper", {"title": "Test", "authors": ["Alice"]}, {"include_placeholder_content": True})
+        result = builder.build(
+            "academic_paper", {"title": "Test", "authors": ["Alice"]}, {"include_placeholder_content": True}
+        )
         assert "academic document generator" in result
         assert "Test" in result
 
@@ -29,7 +32,9 @@ class TestBuild:
         assert "Carol" in result
 
     def test_report(self, builder):
-        result = builder.build("report", {"title": "Tech Report", "organization": "Acme"}, {"include_placeholder_content": False})
+        result = builder.build(
+            "report", {"title": "Tech Report", "organization": "Acme"}, {"include_placeholder_content": False}
+        )
         assert "technical report writer" in result
         assert "Tech Report" in result
 

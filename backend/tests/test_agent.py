@@ -4,77 +4,94 @@ from unittest.mock import AsyncMock, MagicMock, patch
 class TestCountWords:
     def test_empty_string(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._count_words("") == 0
 
     def test_none(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._count_words(None) == 0
 
     def test_basic_count(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._count_words("hello world") == 2
 
     def test_multiple_spaces(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._count_words("hello   world") == 2
 
 
 class TestHasCitation:
     def test_numeric_bracket_citation(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._has_citation("as shown in [1]")
 
     def test_multiple_numeric_citations(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._has_citation("see [1, 2, 3]")
 
     def test_parenthetical_author_year(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._has_citation("(Smith, 2020)")
 
     def test_bracket_author_year(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._has_citation("[Smith, 2020]")
 
     def test_no_citation(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert not AgentPipeline._has_citation("This is plain text")
 
     def test_none_text(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert not AgentPipeline._has_citation(None)
 
     def test_empty_text(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert not AgentPipeline._has_citation("")
 
 
 class TestExtractJson:
     def test_extracts_from_clean_json(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._extract_json('{"key": "val"}') == '{"key": "val"}'
 
     def test_extracts_from_fenced_json(self):
         from app.pipeline.generation.agent import AgentPipeline
-        text = "```json\n{\"key\": \"val\"}\n```"
+
+        text = '```json\n{"key": "val"}\n```'
         assert AgentPipeline._extract_json(text) == '{"key": "val"}'
 
     def test_returns_none_when_no_braces(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._extract_json("no braces") is None
 
     def test_returns_none_when_unmatched(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._extract_json("{no closing") is None
 
     def test_returns_none_for_none(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._extract_json(None) is None
 
 
 class TestExtractOutlineSections:
     def test_from_dict_outline(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         outline = {"sections": [{"title": "Intro", "number": 1}]}
         result = AgentPipeline._extract_outline_sections(outline)
         assert len(result) == 1
@@ -82,20 +99,24 @@ class TestExtractOutlineSections:
 
     def test_from_list_outline(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         result = AgentPipeline._extract_outline_sections(["Intro", "Methods"])
         assert len(result) == 2
         assert result[0]["title"] == "Intro"
 
     def test_empty_outline(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._extract_outline_sections({}) == []
 
     def test_none_outline(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._extract_outline_sections(None) == []
 
     def test_filters_empty_sections(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         outline = {"sections": [None, {}, {"title": "Intro"}]}
         result = AgentPipeline._extract_outline_sections(outline)
         assert len(result) == 1
@@ -104,28 +125,31 @@ class TestExtractOutlineSections:
 class TestNormalizeSections:
     def test_dict_input(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         result = AgentPipeline._normalize_sections({"Intro": "text"})
         assert result == {"Intro": "text"}
 
     def test_list_input(self):
         from app.pipeline.generation.agent import AgentPipeline
-        result = AgentPipeline._normalize_sections([
-            {"title": "Intro", "content": "text"}
-        ])
+
+        result = AgentPipeline._normalize_sections([{"title": "Intro", "content": "text"}])
         assert result == {"Intro": "text"}
 
     def test_empty_input(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._normalize_sections({}) == {}
 
     def test_none_input(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         assert AgentPipeline._normalize_sections(None) == {}
 
 
 class TestEnsureOutlineNumbers:
     def test_adds_numbers_to_sections(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         outline = {"sections": [{"title": "Intro"}, {"title": "Methods"}]}
         result = AgentPipeline._ensure_outline_numbers(outline)
         assert result["sections"][0]["number"] == 1
@@ -133,6 +157,7 @@ class TestEnsureOutlineNumbers:
 
     def test_handles_string_sections(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         outline = {"sections": ["Intro", "Methods"]}
         result = AgentPipeline._ensure_outline_numbers(outline)
         assert result["sections"][0]["number"] == 1
@@ -140,11 +165,13 @@ class TestEnsureOutlineNumbers:
 
     def test_no_sections_key(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         result = AgentPipeline._ensure_outline_numbers({})
         assert result == {}
 
     def test_none_sections(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         result = AgentPipeline._ensure_outline_numbers({"sections": None})
         assert result == {"sections": None}
 
@@ -188,6 +215,7 @@ class TestSelectLowSections:
 class TestApplyQualityFloor:
     def test_expands_short_section(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         ap = _make_agent()
         sections = {"Intro": "short"}
         result = ap._apply_quality_floor(sections, ["Intro"], min_words=10)
@@ -195,6 +223,7 @@ class TestApplyQualityFloor:
 
     def test_skips_references_section(self):
         from app.pipeline.generation.agent import AgentPipeline
+
         ap = _make_agent()
         sections = {"references": ""}
         result = ap._apply_quality_floor(sections, ["references"], min_words=10)
@@ -240,10 +269,12 @@ class TestResume:
     @patch("app.pipeline.generation.agent.AgentPipeline._emit_sse")
     async def test_resume_happy_path(self, mock_sse, mock_upd, mock_gsp):
         ap = _make_agent()
-        ap.session_service.get_session = AsyncMock(return_value={
-            "config_json": {"sections": ["Intro"]},
-            "outline_json": {"sections": [{"title": "Intro"}]},
-        })
+        ap.session_service.get_session = AsyncMock(
+            return_value={
+                "config_json": {"sections": ["Intro"]},
+                "outline_json": {"sections": [{"title": "Intro"}]},
+            }
+        )
         ap.session_service.save_document_version = AsyncMock()
         ap.session_service.update_session = AsyncMock()
         ap._is_canceled = AsyncMock(return_value=False)
@@ -261,12 +292,14 @@ class TestRewriteSection:
     @patch("app.pipeline.generation.agent.AgentPipeline._emit_sse")
     async def test_rewrite_section_basic(self, mock_sse):
         ap = _make_agent()
-        ap.session_service.get_session = AsyncMock(return_value={
-            "config_json": {"citation_style": "ieee"},
-            "outline_json": {},
-            "progress": 90,
-            "status": "processing",
-        })
+        ap.session_service.get_session = AsyncMock(
+            return_value={
+                "config_json": {"citation_style": "ieee"},
+                "outline_json": {},
+                "progress": 90,
+                "status": "processing",
+            }
+        )
         ap.session_service.get_latest_document = AsyncMock(return_value={})
         ap.session_service.get_messages = AsyncMock(return_value=[])
         ap.session_service.update_session = AsyncMock()
@@ -292,6 +325,7 @@ class TestGenerateSection:
 
 def _make_agent():
     from app.pipeline.generation.agent import AgentPipeline
+
     session_service = MagicMock()
     pipeline_orchestrator = MagicMock()
     return AgentPipeline(session_service, pipeline_orchestrator, pubsub=MagicMock())

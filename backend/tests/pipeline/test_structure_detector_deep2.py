@@ -12,15 +12,18 @@ pytestmark = [pytest.mark.pipeline]
 
 @pytest.fixture
 def detector():
-    with patch("app.pipeline.structure_detection.detector.ContractLoader"), \
-         patch("app.pipeline.structure_detection.detector.safe_execution") as mock_se, \
-         patch("app.pipeline.structure_detection.detector.safe_function") as mock_sf:
+    with (
+        patch("app.pipeline.structure_detection.detector.ContractLoader"),
+        patch("app.pipeline.structure_detection.detector.safe_execution") as mock_se,
+        patch("app.pipeline.structure_detection.detector.safe_function") as mock_sf,
+    ):
         ctx_mgr = MagicMock()
         ctx_mgr.__enter__.return_value = None
         ctx_mgr.__exit__.return_value = None
         mock_se.return_value = ctx_mgr
         mock_sf.return_value = lambda f: f
         from app.pipeline.structure_detection.detector import StructureDetector
+
         det = StructureDetector(contracts_dir="/fake/contracts")
         det.avg_font_size = 12.0
         yield det
@@ -30,6 +33,7 @@ def detector():
 def doc_with_blocks():
     from app.models import DocumentMetadata, TemplateInfo
     from app.models import PipelineDocument as Document
+
     blocks_list = [
         _b("My Research Paper", index=0, bid="b0"),
         _b("John Smith", index=1, bid="b1"),
@@ -42,18 +46,24 @@ def doc_with_blocks():
         _b("Methods description.", index=8, bid="b8"),
     ]
     meta = DocumentMetadata()
-    return Document(document_id="test_doc", blocks=blocks_list, metadata=meta, template=TemplateInfo(template_name="IEEE"))
+    return Document(
+        document_id="test_doc", blocks=blocks_list, metadata=meta, template=TemplateInfo(template_name="IEEE")
+    )
 
 
 def _b(text: str, index: int = 0, bid: str | None = None, font_size: float = 12.0, bold: bool = False):
     from app.models import Block, BlockType, TextStyle
+
     style = TextStyle(font_size=font_size, bold=bold)
-    return Block(block_id=bid or f"b{index}", text=text, index=index, block_type=BlockType.UNKNOWN, style=style, metadata={})
+    return Block(
+        block_id=bid or f"b{index}", text=text, index=index, block_type=BlockType.UNKNOWN, style=style, metadata={}
+    )
 
 
 class TestCalculateAvgFontSize:
     def test_with_font_sizes(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         det = StructureDetector.__new__(StructureDetector)
         blocks = [
             _b("Title", font_size=18.0),
@@ -66,16 +76,32 @@ class TestCalculateAvgFontSize:
     def test_no_font_sizes(self):
         from app.models import Block, BlockType, TextStyle
         from app.pipeline.structure_detection.detector import StructureDetector
+
         det = StructureDetector.__new__(StructureDetector)
         blocks = [
-            Block(block_id="b0", text="Text", index=0, block_type=BlockType.UNKNOWN, style=TextStyle(font_size=None), metadata={}),
-            Block(block_id="b1", text="", index=1, block_type=BlockType.UNKNOWN, style=TextStyle(font_size=None), metadata={}),
+            Block(
+                block_id="b0",
+                text="Text",
+                index=0,
+                block_type=BlockType.UNKNOWN,
+                style=TextStyle(font_size=None),
+                metadata={},
+            ),
+            Block(
+                block_id="b1",
+                text="",
+                index=1,
+                block_type=BlockType.UNKNOWN,
+                style=TextStyle(font_size=None),
+                metadata={},
+            ),
         ]
         result = det._calculate_avg_font_size(blocks)
         assert result is None
 
     def test_only_empty_text_blocks(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         det = StructureDetector.__new__(StructureDetector)
         blocks = [_b("", font_size=12.0), _b("", font_size=14.0)]
         result = det._calculate_avg_font_size(blocks)
@@ -91,6 +117,7 @@ class TestDetectHeadingCandidates:
 
     def test_header_footer_skipped(self, detector):
         from app.models import Block, BlockType
+
         blocks = [
             Block(block_id="hdr", index=0, text="Header", block_type=BlockType.UNKNOWN, metadata={"is_header": True}),
             _b("Real Title", index=1),
@@ -147,6 +174,7 @@ class TestDetectHeadingCandidates:
 class TestAssignSectionNames:
     def test_assigns_section_names(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         det = StructureDetector.__new__(StructureDetector)
         blocks = [_b("Intro", index=0, bid="b0"), _b("Body", index=1, bid="b1")]
         headings = [{"block_id": "b0", "level": 1, "block": blocks[0]}]
@@ -156,8 +184,10 @@ class TestAssignSectionNames:
 
     def test_title_section_name(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         det = StructureDetector.__new__(StructureDetector)
         from app.models import BlockType
+
         blocks = [_b("Title", index=0, bid="b0")]
         blocks[0].block_type = BlockType.TITLE
         headings = [{"block_id": "b0", "level": 0, "block": blocks[0]}]
@@ -166,8 +196,10 @@ class TestAssignSectionNames:
 
     def test_header_footer_no_section(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         det = StructureDetector.__new__(StructureDetector)
         from app.models import Block, BlockType
+
         blocks = [
             Block(block_id="hdr", index=0, text="Header", block_type=BlockType.UNKNOWN, metadata={"is_header": True}),
             _b("Intro", index=1, bid="b1"),
@@ -178,6 +210,7 @@ class TestAssignSectionNames:
 
     def test_numbering_removed_from_section_name(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         det = StructureDetector.__new__(StructureDetector)
         blocks = [_b("1. Introduction", index=0, bid="b0")]
         headings = [{"block_id": "b0", "level": 1, "block": blocks[0]}]
@@ -187,6 +220,7 @@ class TestAssignSectionNames:
 
     def test_no_current_section_non_heading(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         det = StructureDetector.__new__(StructureDetector)
         blocks = [_b("Intro", index=0, bid="b0"), _b("Body", index=1, bid="b1")]
         det._assign_section_names(blocks, [])
@@ -196,6 +230,7 @@ class TestAssignSectionNames:
 class TestBuildHierarchy:
     def test_parent_child_relationship(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         det = StructureDetector.__new__(StructureDetector)
         blocks = [
             _b("1. Intro", index=0, bid="b0"),
@@ -213,8 +248,10 @@ class TestBuildHierarchy:
 
     def test_header_skipped(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         det = StructureDetector.__new__(StructureDetector)
         from app.models import Block, BlockType
+
         blocks = [
             Block(block_id="hdr", index=0, text="H", block_type=BlockType.UNKNOWN, metadata={"is_header": True}),
             _b("Intro", index=1, bid="b1"),
@@ -227,8 +264,10 @@ class TestBuildHierarchy:
 class TestValidateHierarchy:
     def test_no_jump(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         det = StructureDetector.__new__(StructureDetector)
         from app.models import Block, BlockType
+
         b1 = Block(block_id="b1", index=0, text="Intro", block_type=BlockType.HEADING_1, level=1)
         b2 = Block(block_id="b2", index=1, text="Sub", block_type=BlockType.HEADING_2, level=2)
         det._validate_hierarchy([b1, b2])
@@ -236,8 +275,10 @@ class TestValidateHierarchy:
 
     def test_jump_detected(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         det = StructureDetector.__new__(StructureDetector)
         from app.models import Block, BlockType
+
         b1 = Block(block_id="b1", index=0, text="Intro", block_type=BlockType.HEADING_1, level=1)
         b2 = Block(block_id="b2", index=1, text="Jump", block_type=BlockType.HEADING_3, level=3)
         det._validate_hierarchy([b1, b2])
@@ -245,16 +286,20 @@ class TestValidateHierarchy:
 
     def test_jump_from_zero(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         det = StructureDetector.__new__(StructureDetector)
         from app.models import Block, BlockType
+
         b1 = Block(block_id="b2", index=0, text="Jump", block_type=BlockType.HEADING_2, level=2)
         det._validate_hierarchy([b1])
         assert b1.is_valid is False
 
     def test_header_skipped_in_validation(self):
         from app.pipeline.structure_detection.detector import StructureDetector
+
         det = StructureDetector.__new__(StructureDetector)
         from app.models import Block, BlockType
+
         hdr = Block(block_id="h", index=0, text="H", block_type=BlockType.BODY, metadata={"is_header": True})
         b1 = Block(block_id="b1", index=1, text="Intro", block_type=BlockType.HEADING_1, level=1)
         det._validate_hierarchy([hdr, b1])
@@ -265,19 +310,24 @@ class TestCanonicalizeSections:
     def test_canonicalize_success(self, detector):
         detector.contract_loader.get_canonical_name.return_value = "References"
         from app.models import Block, BlockType
-        block = Block(block_id="b1", index=0, text="Bibliography", block_type=BlockType.HEADING_1, section_name="Bibliography")
+
+        block = Block(
+            block_id="b1", index=0, text="Bibliography", block_type=BlockType.HEADING_1, section_name="Bibliography"
+        )
         detector._canonicalize_sections([block], "IEEE")
         assert block.section_name == "References"
 
     def test_canonicalize_exception(self, detector):
         detector.contract_loader.get_canonical_name.side_effect = Exception("Fail")
         from app.models import Block, BlockType
+
         block = Block(block_id="b1", index=0, text="Intro", block_type=BlockType.HEADING_1, section_name="Introduction")
         detector._canonicalize_sections([block], "IEEE")
         assert block.section_name == "Introduction"
 
     def test_canonicalize_none_section(self, detector):
         from app.models import Block, BlockType
+
         block = Block(block_id="b1", index=0, text="NoSection", block_type=BlockType.BODY)
         detector._canonicalize_sections([block], "IEEE")
         detector.contract_loader.get_canonical_name.assert_not_called()
@@ -291,8 +341,20 @@ class TestDetectStructureWithDocling:
     def test_docling_normal_flow(self, detector):
         layout_data = {
             "elements": [
-                {"text": "My Paper", "type": "title", "font_size": 24, "bbox": {"page": 1, "y0": 100}, "confidence": 0.95},
-                {"text": "1. Introduction", "type": "section_header", "font_size": 16, "bbox": {"page": 1, "y0": 200}, "confidence": 0.9},
+                {
+                    "text": "My Paper",
+                    "type": "title",
+                    "font_size": 24,
+                    "bbox": {"page": 1, "y0": 100},
+                    "confidence": 0.95,
+                },
+                {
+                    "text": "1. Introduction",
+                    "type": "section_header",
+                    "font_size": 16,
+                    "bbox": {"page": 1, "y0": 200},
+                    "confidence": 0.9,
+                },
             ]
         }
         blocks = [
@@ -346,7 +408,12 @@ class TestDetectStructureWithDocling:
     def test_docling_token_overlap_match(self, detector):
         layout_data = {
             "elements": [
-                {"text": "Methods and Materials", "type": "section_header", "font_size": 16, "bbox": {"page": 1, "y0": 200}},
+                {
+                    "text": "Methods and Materials",
+                    "type": "section_header",
+                    "font_size": 16,
+                    "bbox": {"page": 1, "y0": 200},
+                },
             ]
         }
         blocks = [_b("Methods Materials", index=0, bid="b0")]
@@ -356,14 +423,17 @@ class TestDetectStructureWithDocling:
 
 class TestDetectStructureConvenience:
     def test_detect_structure_function(self):
-        with patch("app.pipeline.structure_detection.detector.ContractLoader"), \
-             patch("app.pipeline.structure_detection.detector.safe_execution") as mock_se, \
-             patch("app.pipeline.structure_detection.detector.safe_function") as mock_sf:
+        with (
+            patch("app.pipeline.structure_detection.detector.ContractLoader"),
+            patch("app.pipeline.structure_detection.detector.safe_execution") as mock_se,
+            patch("app.pipeline.structure_detection.detector.safe_function") as mock_sf,
+        ):
             mock_se.return_value.__enter__ = MagicMock()
             mock_se.return_value.__exit__ = MagicMock()
             mock_sf.return_value = lambda f: f
             from app.models import PipelineDocument as Document
             from app.pipeline.structure_detection.detector import detect_structure
+
             doc = Document(document_id="test")
             result = detect_structure(doc)
             assert result is doc
@@ -375,13 +445,15 @@ class TestProcess:
             mock_norm = MagicMock()
             mock_norm.process.return_value = doc_with_blocks
             mock_norm_cls.return_value = mock_norm
-            with patch.object(detector, "_calculate_avg_font_size", return_value=12.0), \
-                 patch.object(detector, "_detect_heading_candidates", return_value=[]), \
-                 patch.object(detector, "_assign_section_names"), \
-                 patch.object(detector, "_build_hierarchy"), \
-                 patch.object(detector, "_canonicalize_sections"), \
-                 patch.object(detector, "_validate_hierarchy"), \
-                 patch.object(detector, "process", wraps=detector.process):
+            with (
+                patch.object(detector, "_calculate_avg_font_size", return_value=12.0),
+                patch.object(detector, "_detect_heading_candidates", return_value=[]),
+                patch.object(detector, "_assign_section_names"),
+                patch.object(detector, "_build_hierarchy"),
+                patch.object(detector, "_canonicalize_sections"),
+                patch.object(detector, "_validate_hierarchy"),
+                patch.object(detector, "process", wraps=detector.process),
+            ):
                 result = detector.process(doc_with_blocks)
                 assert result is doc_with_blocks
                 assert "structure_detection" in [s.stage_name for s in result.processing_history]
@@ -394,13 +466,15 @@ class TestProcess:
             mock_norm = MagicMock()
             mock_norm.process.return_value = doc_with_blocks
             mock_norm_cls.return_value = mock_norm
-            with patch.object(detector, "_calculate_avg_font_size", return_value=12.0), \
-                 patch.object(detector, "_detect_structure_with_docling", return_value=[]), \
-                 patch.object(detector, "_detect_heading_candidates", return_value=[]), \
-                 patch.object(detector, "_assign_section_names"), \
-                 patch.object(detector, "_build_hierarchy"), \
-                 patch.object(detector, "_canonicalize_sections"), \
-                 patch.object(detector, "_validate_hierarchy"):
+            with (
+                patch.object(detector, "_calculate_avg_font_size", return_value=12.0),
+                patch.object(detector, "_detect_structure_with_docling", return_value=[]),
+                patch.object(detector, "_detect_heading_candidates", return_value=[]),
+                patch.object(detector, "_assign_section_names"),
+                patch.object(detector, "_build_hierarchy"),
+                patch.object(detector, "_canonicalize_sections"),
+                patch.object(detector, "_validate_hierarchy"),
+            ):
                 result = detector.process(doc_with_blocks)
                 assert result is doc_with_blocks
 
@@ -412,12 +486,14 @@ class TestProcess:
             mock_norm = MagicMock()
             mock_norm.process.return_value = doc_with_blocks
             mock_norm_cls.return_value = mock_norm
-            with patch.object(detector, "_calculate_avg_font_size", return_value=12.0), \
-                 patch.object(detector, "_detect_structure_with_docling", return_value=[]), \
-                 patch.object(detector, "_detect_heading_candidates", return_value=[]), \
-                 patch.object(detector, "_assign_section_names"), \
-                 patch.object(detector, "_build_hierarchy"), \
-                 patch.object(detector, "_canonicalize_sections"), \
-                 patch.object(detector, "_validate_hierarchy"):
+            with (
+                patch.object(detector, "_calculate_avg_font_size", return_value=12.0),
+                patch.object(detector, "_detect_structure_with_docling", return_value=[]),
+                patch.object(detector, "_detect_heading_candidates", return_value=[]),
+                patch.object(detector, "_assign_section_names"),
+                patch.object(detector, "_build_hierarchy"),
+                patch.object(detector, "_canonicalize_sections"),
+                patch.object(detector, "_validate_hierarchy"),
+            ):
                 result = detector.process(doc_with_blocks)
                 assert result is doc_with_blocks

@@ -6,6 +6,7 @@ from unittest.mock import patch
 class TestPreviewRenderer:
     def _make_renderer(self):
         from app.services.preview_renderer import PreviewRenderer
+
         renderer = PreviewRenderer.__new__(PreviewRenderer)
         renderer._redis = None
         renderer._redis_enabled = False
@@ -17,12 +18,14 @@ class TestPreviewRenderer:
 
     def test_init_redis_disabled(self):
         from app.services.preview_renderer import PreviewRenderer
+
         with patch("app.services.preview_renderer.settings.REDIS_ENABLED", False):
             renderer = PreviewRenderer()
             assert renderer._redis is None
 
     def test_init_redis_enabled_fails_gracefully(self):
         from app.services.preview_renderer import PreviewRenderer
+
         with patch("app.services.preview_renderer.settings.REDIS_ENABLED", True):
             with patch("app.services.preview_renderer.redis.from_url", side_effect=Exception("no redis")):
                 with patch("app.services.preview_renderer.settings.REDIS_URL", "redis://localhost"):
@@ -92,60 +95,72 @@ class TestPreviewRenderer:
 
     def test_classify_blocks_abstract(self):
         renderer = self._make_renderer()
-        blocks = renderer._classify_blocks([
-            {"raw_type": "paragraph", "text": "Abstract"},
-            {"raw_type": "paragraph", "text": "This is the abstract text"},
-        ])
+        blocks = renderer._classify_blocks(
+            [
+                {"raw_type": "paragraph", "text": "Abstract"},
+                {"raw_type": "paragraph", "text": "This is the abstract text"},
+            ]
+        )
         assert blocks[0]["type"] == "abstract_heading"
         assert blocks[1]["type"] == "abstract_body"
 
     def test_classify_blocks_heading(self):
         renderer = self._make_renderer()
-        blocks = renderer._classify_blocks([
-            {"raw_type": "paragraph", "text": "Title."},
-            {"raw_type": "paragraph", "text": "1.1 Introduction"},
-        ])
+        blocks = renderer._classify_blocks(
+            [
+                {"raw_type": "paragraph", "text": "Title."},
+                {"raw_type": "paragraph", "text": "1.1 Introduction"},
+            ]
+        )
         assert blocks[1]["type"] == "heading"
 
     def test_classify_blocks_caption(self):
         renderer = self._make_renderer()
-        blocks = renderer._classify_blocks([
-            {"raw_type": "paragraph", "text": "Figure 1: Test."},
-        ])
+        blocks = renderer._classify_blocks(
+            [
+                {"raw_type": "paragraph", "text": "Figure 1: Test."},
+            ]
+        )
         assert blocks[0]["type"] == "caption"
 
     def test_classify_blocks_paragraph(self):
         renderer = self._make_renderer()
-        blocks = renderer._classify_blocks([
-            {"raw_type": "paragraph", "text": "Some paragraph text."},
-        ])
+        blocks = renderer._classify_blocks(
+            [
+                {"raw_type": "paragraph", "text": "Some paragraph text."},
+            ]
+        )
         assert blocks[0]["type"] == "paragraph"
 
     def test_render_blocks(self):
         renderer = self._make_renderer()
-        html = renderer._render_blocks([
-            {"type": "title", "text": "Title"},
-            {"type": "heading", "text": "Heading", "level": 2},
-            {"type": "paragraph", "text": "Para"},
-        ])
+        html = renderer._render_blocks(
+            [
+                {"type": "title", "text": "Title"},
+                {"type": "heading", "text": "Heading", "level": 2},
+                {"type": "paragraph", "text": "Para"},
+            ]
+        )
         assert "doc-title" in html
         assert "doc-heading" in html
         assert "doc-paragraph" in html
 
     def test_render_blocks_list(self):
         renderer = self._make_renderer()
-        html = renderer._render_blocks([
-            {"type": "list_item", "text": "Item 1"},
-            {"type": "list_item", "text": "Item 2"},
-            {"type": "paragraph", "text": "After list"},
-        ])
+        html = renderer._render_blocks(
+            [
+                {"type": "list_item", "text": "Item 1"},
+                {"type": "list_item", "text": "Item 2"},
+                {"type": "paragraph", "text": "After list"},
+            ]
+        )
         assert "doc-list" in html
         assert "<li>Item 1</li>" in html
 
     def test_render_preview_empty(self):
         renderer = self._make_renderer()
         renderer._template_names = {"ieee", "apa"}
-        with patch.object(renderer, '_get_template_css', return_value="/* css */"):
+        with patch.object(renderer, "_get_template_css", return_value="/* css */"):
             result = renderer.render_preview("", "ieee")
             assert "html" in result
             assert "empty_content" in result["warnings"]
@@ -153,7 +168,7 @@ class TestPreviewRenderer:
     def test_render_preview_with_content(self):
         renderer = self._make_renderer()
         renderer._template_names = {"ieee", "apa"}
-        with patch.object(renderer, '_get_template_css', return_value="/* css */"):
+        with patch.object(renderer, "_get_template_css", return_value="/* css */"):
             result = renderer.render_preview("Hello World", "ieee")
             assert result["html"] is not None
             assert "Hello World" in result["html"]
@@ -161,8 +176,8 @@ class TestPreviewRenderer:
     def test_render_preview_unknown_template(self):
         renderer = self._make_renderer()
         renderer._template_names = {"apa"}
-        with patch.object(renderer, '_get_template_css', return_value="/* css */"):
-            with patch.object(renderer, '_normalize_template', side_effect=lambda x: x):
+        with patch.object(renderer, "_get_template_css", return_value="/* css */"):
+            with patch.object(renderer, "_normalize_template", side_effect=lambda x: x):
                 with patch("app.services.preview_renderer.settings.DEFAULT_TEMPLATE", "apa"):
                     result = renderer.render_preview("test", "ieee")
                     assert "unknown_template" in str(result["warnings"])
@@ -170,10 +185,11 @@ class TestPreviewRenderer:
     def test_preload_template_css(self):
         renderer = self._make_renderer()
         renderer._template_names = {"ieee"}
-        with patch.object(renderer, '_get_template_css', return_value="css"):
+        with patch.object(renderer, "_get_template_css", return_value="css"):
             renderer.preload_template_css()
             assert "ieee" in renderer._css_cache
 
     def test_global_preload_function(self):
         from app.services.preview_renderer import preview_renderer
+
         assert preview_renderer is not None

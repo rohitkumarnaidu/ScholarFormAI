@@ -1,4 +1,3 @@
-
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
@@ -24,6 +23,7 @@ from app.pipeline.orchestrator import PipelineOrchestrator
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_sb():
     sb = MagicMock()
     sb.table.return_value.select.return_value.match.return_value.execute.return_value.data = []
@@ -45,6 +45,7 @@ def _make_doc(job_id="job1"):
 # ---------------------------------------------------------------------------
 # Fixture
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def orch():
@@ -69,6 +70,7 @@ def sb():
 # Lines 141-142: MetricsManager exception swallowed in _record_stage_transition
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestMetricsExceptions:
     def test_record_stage_transition_metrics_error(self, orch):
         orch._stage_start_times[("job1", "EXTRACTION")] = time.perf_counter() - 1.0
@@ -80,6 +82,7 @@ class TestMetricsExceptions:
 # ══════════════════════════════════════════════════════════════════════════════
 # Lines 167->exit, 173, 185->187, 233, 240, 257-258: _update_status branches
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestUpdateStatusTransientErrors:
     def test_non_transient_error_raises(self, orch):
@@ -99,6 +102,7 @@ class TestUpdateStatusTransientErrors:
             MagicMock(data=[{"id": 1}]),
         ]
         call_count = 0
+
         def _get_sb(refresh=False):
             nonlocal call_count
             call_count += 1
@@ -115,7 +119,9 @@ class TestUpdateStatusTransientErrors:
         sb = MagicMock()
         err = Exception("RemoteProtocolError: server disconnected")
         sb.table.return_value.select.return_value.match.return_value.execute.side_effect = [
-            err, err, err,
+            err,
+            err,
+            err,
         ]
         with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
             with patch.dict("sys.modules", {"app.routers.v1.stream": MagicMock()}):
@@ -154,6 +160,7 @@ class TestUpdateStatusPaths:
 # Line 381: Empty PDF in _should_skip_docling_for_digital_pdf
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestSkipDoclingGaps:
     def test_skip_docling_empty_pdf(self, orch, tmp_path):
         pdf = tmp_path / "empty.pdf"
@@ -174,6 +181,7 @@ class TestSkipDoclingGaps:
 # Lines 398-399: fitz import exception in _extract_pymupdf_fallback_metadata
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestPyMuPDFGaps:
     def test_extract_fallback_import_exception(self, orch):
         with patch("builtins.__import__", side_effect=ImportError("no fitz")):
@@ -185,6 +193,7 @@ class TestPyMuPDFGaps:
 # Lines 459->463, 462: _build_quality_summary edge cases
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestQualitySummaryGaps:
     def test_classification_confidence_skip_fallback(self, orch):
         """Line 459->463: classification_confidence is not None → skip nlp_confidence."""
@@ -192,7 +201,10 @@ class TestQualitySummaryGaps:
             document_id="doc1",
             blocks=[
                 Block(
-                    block_id="b1", index=1, block_type=BlockType.BODY, text="t",
+                    block_id="b1",
+                    index=1,
+                    block_type=BlockType.BODY,
+                    text="t",
                     metadata={"classification_confidence": 0.75},
                 ),
             ],
@@ -222,6 +234,7 @@ class TestQualitySummaryGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 # Lines 599, 614-616: _run_figure_analysis_stage branch gaps
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestFigureAnalysisGaps:
     def test_figure_image_data_no_export_path(self, orch):
@@ -262,6 +275,7 @@ class TestFigureAnalysisGaps:
 # Line 677: formatting_options not None
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestRuntimeFlagsGaps:
     def test_formatting_options_not_none(self, orch):
         with patch("app.pipeline.orchestrator.settings") as mock_s:
@@ -275,6 +289,7 @@ class TestRuntimeFlagsGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 # Lines 735->743: Nougat fallback also returns empty blocks
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestNougatFallbackGaps:
     def test_nougat_fallback_also_empty(self, orch, tmp_path, sb):
@@ -318,6 +333,7 @@ class TestNougatFallbackGaps:
             mock_set.GROBID_ENABLED = False
             # Make NougatParser return another empty doc
             from app.pipeline.parsing.nougat_parser import NougatParser
+
             with patch.object(NougatParser, "parse", return_value=empty_doc):
                 result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
         assert result["status"] == "success"
@@ -326,6 +342,7 @@ class TestNougatFallbackGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 # Lines 743->746, 746->753: template_name falsy, sb None
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestPipelineInternalOptions:
     def test_no_template_name(self, orch, tmp_path):
@@ -403,6 +420,7 @@ class TestPipelineInternalOptions:
 # Parallel extraction + metadata fallback gaps
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestParallelExtractionGaps:
     def _run_pipeline(self, orch, tmp_path, doc, settings_overrides=None, **options):
         sb = _make_sb()
@@ -449,9 +467,11 @@ class TestParallelExtractionGaps:
             with patch.object(orch.grobid_client, "process_header_document", side_effect=Exception("GROBID crash")):
                 with patch.object(orch, "_should_skip_docling_for_digital_pdf", return_value=True):
                     result = self._run_pipeline(
-                        orch, tmp_path, doc,
+                        orch,
+                        tmp_path,
+                        doc,
                         {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True},
-        )
+                    )
         assert "grobid_metadata" not in doc.metadata.ai_hints
 
     def test_docling_exception_in_run(self, orch, tmp_path):
@@ -463,9 +483,11 @@ class TestParallelExtractionGaps:
                 with patch.object(orch.docling_client, "is_available", return_value=True):
                     with patch.object(orch.docling_client, "analyze_layout", side_effect=Exception("Docling crash")):
                         result = self._run_pipeline(
-                            orch, tmp_path, doc,
+                            orch,
+                            tmp_path,
+                            doc,
                             {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True},
-        )
+                        )
         assert "docling_layout" not in doc.metadata.ai_hints
 
     def test_docling_timeout(self, orch, tmp_path):
@@ -475,14 +497,21 @@ class TestParallelExtractionGaps:
         with patch.object(orch.grobid_client, "is_available", return_value=False):
             with patch.object(type(orch), "_should_skip_docling_for_digital_pdf", return_value=False):
                 with patch.object(orch.docling_client, "is_available", return_value=True):
+
                     def _slow(*a, **kw):
                         time.sleep(10)
                         return {"elements": []}
+
                     with patch.object(orch.docling_client, "analyze_layout", side_effect=_slow):
                         result = self._run_pipeline(
-                            orch, tmp_path, doc,
-                            {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True,
-                             "PIPELINE_DOCLING_TIMEOUT_SECONDS": 1},
+                            orch,
+                            tmp_path,
+                            doc,
+                            {
+                                "GROBID_ENABLED": True,
+                                "USE_DOCLING_FALLBACK": True,
+                                "PIPELINE_DOCLING_TIMEOUT_SECONDS": 1,
+                            },
                         )
         assert "docling_layout" not in doc.metadata.ai_hints
 
@@ -495,8 +524,11 @@ class TestParallelExtractionGaps:
             with patch.object(orch.grobid_client, "process_header_document", return_value={"title": "Test"}):
                 with patch.object(orch, "_should_skip_docling_for_digital_pdf", return_value=True):
                     result = self._run_pipeline(
-                        orch, tmp_path, doc,
-                        {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True},)
+                        orch,
+                        tmp_path,
+                        doc,
+                        {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True},
+                    )
         assert doc.metadata is not None
         assert doc.metadata.ai_hints.get("grobid_metadata", {}).get("title") == "Test"
 
@@ -508,10 +540,15 @@ class TestParallelExtractionGaps:
         with patch.object(orch.grobid_client, "is_available", return_value=False):
             with patch.object(orch, "_should_skip_docling_for_digital_pdf", return_value=False):
                 with patch.object(orch.docling_client, "is_available", return_value=True):
-                    with patch.object(orch.docling_client, "analyze_layout", return_value={"elements": [{"type": "text"}]}):
+                    with patch.object(
+                        orch.docling_client, "analyze_layout", return_value={"elements": [{"type": "text"}]}
+                    ):
                         result = self._run_pipeline(
-                            orch, tmp_path, doc,
-                            {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True},)
+                            orch,
+                            tmp_path,
+                            doc,
+                            {"GROBID_ENABLED": True, "USE_DOCLING_FALLBACK": True},
+                        )
         assert doc.metadata is not None
         assert doc.metadata.ai_hints.get("docling_layout", {}).get("elements") is not None
 
@@ -521,13 +558,21 @@ class TestParallelExtractionGaps:
         doc.metadata = None
         with patch.object(orch.grobid_client, "is_available", return_value=False):
             with patch.object(orch, "_should_skip_docling_for_digital_pdf", return_value=True):
-                with patch.object(orch, "_extract_pymupdf_fallback_metadata", return_value={
-                    "source": "pymupdf", "page_count": 3, "title": "PyMuPDF Title",
-                }):
+                with patch.object(
+                    orch,
+                    "_extract_pymupdf_fallback_metadata",
+                    return_value={
+                        "source": "pymupdf",
+                        "page_count": 3,
+                        "title": "PyMuPDF Title",
+                    },
+                ):
                     result = self._run_pipeline(
-                        orch, tmp_path, doc,
+                        orch,
+                        tmp_path,
+                        doc,
                         {"PYMUPDF_FALLBACK": True},
-        )
+                    )
         assert doc.metadata is not None
         assert doc.metadata.ai_hints.get("pymupdf_fallback", {}).get("source") == "pymupdf"
 
@@ -538,12 +583,21 @@ class TestParallelExtractionGaps:
         doc.metadata.title = "Existing Title"
         with patch.object(orch.grobid_client, "is_available", return_value=False):
             with patch.object(orch, "_should_skip_docling_for_digital_pdf", return_value=True):
-                with patch.object(orch, "_extract_pymupdf_fallback_metadata", return_value={
-                    "source": "pymupdf", "page_count": 3, "title": "PyMuPDF Title",
-                }):
+                with patch.object(
+                    orch,
+                    "_extract_pymupdf_fallback_metadata",
+                    return_value={
+                        "source": "pymupdf",
+                        "page_count": 3,
+                        "title": "PyMuPDF Title",
+                    },
+                ):
                     result = self._run_pipeline(
-                        orch, tmp_path, doc,
-                        {"PYMUPDF_FALLBACK": True},)
+                        orch,
+                        tmp_path,
+                        doc,
+                        {"PYMUPDF_FALLBACK": True},
+                    )
         assert doc.metadata.title == "Existing Title"
         assert doc.metadata.ai_hints.get("pymupdf_fallback", {}).get("title") == "PyMuPDF Title"
 
@@ -551,6 +605,7 @@ class TestParallelExtractionGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 # Lines 886-887, 894-895: StructureDetector + SemanticParser failures
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestPipelineStageFailures:
     def _run_pipeline(self, orch, tmp_path, doc, settings_overrides=None, **options):
@@ -606,16 +661,20 @@ class TestPipelineStageFailures:
                     mock_s.PIPELINE_GROBID_TIMEOUT_SECONDS = 5
                     mock_s.PIPELINE_DOCLING_TIMEOUT_SECONDS = 5
                     result = self._run_pipeline(
-                        orch, tmp_path, doc,
+                        orch,
+                        tmp_path,
+                        doc,
                         {"DEFAULT_FAST_MODE": False},
-                        fast_mode=False, semantic_parser=True,
-        )
+                        fast_mode=False,
+                        semantic_parser=True,
+                    )
         assert result["status"] == "success"
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # Lines 920->926: keyword extraction — detected_keywords is empty
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestKeywordExtractionGaps:
     def test_keywords_detected_empty(self, orch, tmp_path):
@@ -658,6 +717,7 @@ class TestKeywordExtractionGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 # Lines 968->exit, 970->exit, 973, 976-979: CrossRef validation branches
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestCrossrefValidationGaps:
     def _run_pipeline_crossref(self, orch, tmp_path, doc, settings_overrides=None, **options):
@@ -705,9 +765,12 @@ class TestCrossrefValidationGaps:
             mock_cr_inst.validate_citation.return_value = {"valid": True, "doi": "10.1234/test"}
             mock_cr.return_value = mock_cr_inst
             result = self._run_pipeline_crossref(
-                orch, tmp_path, doc,
+                orch,
+                tmp_path,
+                doc,
                 {"CROSSREF_MAX_WORKERS": 2},
-                fast_mode=False, crossref_enrichment=True,
+                fast_mode=False,
+                crossref_enrichment=True,
             )
         assert result["status"] == "success"
         mock_cr_inst.validate_citation.assert_not_called()
@@ -716,17 +779,19 @@ class TestCrossrefValidationGaps:
         """Line 970->exit: validate_citation returns falsy → skip."""
         doc = _make_doc()
         doc.generated_doc = MagicMock()
-        doc.references = [
-        ]
+        doc.references = []
         with patch("app.services.crossref_client.get_crossref_client") as mock_cr:
             mock_cr_inst = MagicMock()
             mock_cr_inst.validate_citation.return_value = None
             mock_cr.return_value = mock_cr_inst
             result = self._run_pipeline_crossref(
-                orch, tmp_path, doc,
+                orch,
+                tmp_path,
+                doc,
                 {"CROSSREF_MAX_WORKERS": 2},
-                fast_mode=False, crossref_enrichment=True,
-        )
+                fast_mode=False,
+                crossref_enrichment=True,
+            )
         assert result["status"] == "success"
 
     def test_crossref_ref_no_metadata(self, orch, tmp_path):
@@ -734,13 +799,17 @@ class TestCrossrefValidationGaps:
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         ref = Reference(reference_id="r1", index=1, citation_key="cit1", raw_text="Some citation")
+
         class NonDictMeta:
             def __init__(self):
                 self._d = {}
+
             def __setitem__(self, k, v):
                 self._d[k] = v
+
             def get(self, k, default=None):
                 return self._d.get(k, default)
+
         ref.metadata = NonDictMeta()
         doc.references = [ref]
         with patch("app.services.crossref_client.get_crossref_client") as mock_cr:
@@ -748,10 +817,13 @@ class TestCrossrefValidationGaps:
             mock_cr_inst.validate_citation.return_value = {"valid": True, "doi": "10.1234/test"}
             mock_cr.return_value = mock_cr_inst
             result = self._run_pipeline_crossref(
-                orch, tmp_path, doc,
+                orch,
+                tmp_path,
+                doc,
                 {"CROSSREF_MAX_WORKERS": 2},
-                fast_mode=False, crossref_enrichment=True,
-        )
+                fast_mode=False,
+                crossref_enrichment=True,
+            )
         assert result["status"] == "success"
         assert ref.metadata.get("crossref_validation", {}).get("valid") is True
 
@@ -759,15 +831,20 @@ class TestCrossrefValidationGaps:
         """Lines 976-979: ref.metadata is not a dict — try __setitem__ else setattr."""
         doc = _make_doc()
         doc.generated_doc = MagicMock()
+
         class DictLike:
             def __init__(self):
                 self._d = {}
+
             def __setitem__(self, k, v):
                 self._d[k] = v
+
             def __getitem__(self, k):
                 return self._d[k]
+
             def get(self, k, default=None):
                 return self._d.get(k, default)
+
         meta = DictLike()
         ref = Reference(reference_id="r1", index=1, citation_key="cit1", raw_text="Some citation")
         ref.metadata = meta
@@ -777,16 +854,20 @@ class TestCrossrefValidationGaps:
             mock_cr_inst.validate_citation.return_value = {"valid": True, "doi": "10.1234/test"}
             mock_cr.return_value = mock_cr_inst
             result = self._run_pipeline_crossref(
-                orch, tmp_path, doc,
+                orch,
+                tmp_path,
+                doc,
                 {"CROSSREF_MAX_WORKERS": 2},
-                fast_mode=False, crossref_enrichment=True,
-        )
+                fast_mode=False,
+                crossref_enrichment=True,
+            )
         assert result["status"] == "success"
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # Lines 1007-1009: query_rules fallback path in AI reasoning
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestAIReasoningQueryRules:
     def _run_pipeline_rag(self, orch, tmp_path, doc, settings_overrides=None, **options):
@@ -838,10 +919,13 @@ class TestAIReasoningQueryRules:
         with patch("app.pipeline.orchestrator.get_rag_engine", return_value=rag_inst):
             with patch("app.pipeline.orchestrator.get_reasoning_engine", return_value=reasoner_inst):
                 result = self._run_pipeline_rag(
-                    orch, tmp_path, doc,
+                    orch,
+                    tmp_path,
+                    doc,
                     {},
-                    fast_mode=False, ai_reasoning=True,
-        )
+                    fast_mode=False,
+                    ai_reasoning=True,
+                )
         assert result["status"] == "success"
         rag_inst.query_rules.assert_called()
 
@@ -855,10 +939,13 @@ class TestAIReasoningQueryRules:
         with patch("app.pipeline.orchestrator.get_rag_engine", return_value=rag_inst):
             with patch("app.pipeline.orchestrator.get_reasoning_engine", return_value=reasoner_inst):
                 result = self._run_pipeline_rag(
-                    orch, tmp_path, doc,
+                    orch,
+                    tmp_path,
+                    doc,
                     {},
-                    fast_mode=False, ai_reasoning=True,
-        )
+                    fast_mode=False,
+                    ai_reasoning=True,
+                )
         assert result["status"] == "success"
 
     def test_reasoning_generates_rules_context(self, orch, tmp_path):
@@ -873,10 +960,13 @@ class TestAIReasoningQueryRules:
         with patch("app.pipeline.orchestrator.get_rag_engine", return_value=rag_inst):
             with patch("app.pipeline.orchestrator.get_reasoning_engine", return_value=reasoner_inst):
                 result = self._run_pipeline_rag(
-                    orch, tmp_path, doc,
+                    orch,
+                    tmp_path,
+                    doc,
                     {},
-                    fast_mode=False, ai_reasoning=True,
-        )
+                    fast_mode=False,
+                    ai_reasoning=True,
+                )
         assert result["status"] == "success"
 
 
@@ -884,6 +974,7 @@ class TestAIReasoningQueryRules:
 # Lines 1092->1097, 1115->1120, 1138->1152, 1144-1147, 1159-1160:
 # Persistence / completion edge cases
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestPersistenceEdgeCases:
     def test_formatting_failure_no_sb(self, orch, tmp_path):
@@ -1050,6 +1141,7 @@ class TestPersistenceEdgeCases:
 # Lines 1168->1175: sb is None in CancelledError handler
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestCancelledErrorHandler:
     def test_cancelled_no_sb(self, orch, tmp_path):
         """Line 1168->1175: sb is None in cancelled handler."""
@@ -1065,6 +1157,7 @@ class TestCancelledErrorHandler:
 # ══════════════════════════════════════════════════════════════════════════════
 # Lines 1273->1290: Edit flow — formatted_doc is falsy
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestEditFlowGaps:
     def test_edit_flow_no_formatted_doc(self, orch):

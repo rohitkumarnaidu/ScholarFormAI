@@ -69,45 +69,31 @@ class TestAPA7FormatterIntextCitations:
         self.fmt = APA7Formatter()
 
     def test_parenthetical_one_author(self):
-        result = self.fmt.format_intext_citation(
-            ["Smith, John"], year=2020
-        )
+        result = self.fmt.format_intext_citation(["Smith, John"], year=2020)
         assert result == "(Smith, 2020)"
 
     def test_parenthetical_two_authors(self):
-        result = self.fmt.format_intext_citation(
-            ["Smith, John", "Doe, Jane"], year=2020
-        )
+        result = self.fmt.format_intext_citation(["Smith, John", "Doe, Jane"], year=2020)
         assert result == "(Smith and Doe, 2020)"
 
     def test_parenthetical_three_authors(self):
-        result = self.fmt.format_intext_citation(
-            ["Smith, John", "Doe, Jane", "Lee, Bob"], year=2020
-        )
+        result = self.fmt.format_intext_citation(["Smith, John", "Doe, Jane", "Lee, Bob"], year=2020)
         assert result == "(Smith et al., 2020)"
 
     def test_parenthetical_with_page(self):
-        result = self.fmt.format_intext_citation(
-            ["Smith, John"], year=2020, page="45"
-        )
+        result = self.fmt.format_intext_citation(["Smith, John"], year=2020, page="45")
         assert result == "(Smith, 2020, p. 45)"
 
     def test_narrative_one_author(self):
-        result = self.fmt.format_intext_citation(
-            ["Smith, John"], year=2020, narrative=True
-        )
+        result = self.fmt.format_intext_citation(["Smith, John"], year=2020, narrative=True)
         assert result == "Smith (2020)"
 
     def test_narrative_with_page(self):
-        result = self.fmt.format_intext_citation(
-            ["Smith, John"], year=2020, page="45", narrative=True
-        )
+        result = self.fmt.format_intext_citation(["Smith, John"], year=2020, page="45", narrative=True)
         assert result == "Smith (2020, p. 45)"
 
     def test_no_year(self):
-        result = self.fmt.format_intext_citation(
-            ["Smith, John"]
-        )
+        result = self.fmt.format_intext_citation(["Smith, John"])
         assert "n.d." in result
 
     def test_no_authors(self):

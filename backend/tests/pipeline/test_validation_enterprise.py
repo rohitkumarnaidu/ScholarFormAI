@@ -23,6 +23,7 @@ from app.pipeline.validation.validator_v3 import DocumentValidator, ValidationRe
 # Fixtures
 # ═══════════════════════════════════════════════════════════════════════════════
 
+
 @pytest.fixture
 def validator():
     with (
@@ -32,6 +33,7 @@ def validator():
         patch("app.pipeline.validation.validator_v3.CrossRefClient"),
     ):
         return DocumentValidator(contracts_dir="app/pipeline/contracts")
+
 
 @pytest.fixture
 def doc():
@@ -48,9 +50,18 @@ def doc():
         metadata=DocumentMetadata(title="Test", authors=["Alice"]),
         template=TemplateInfo(template_name="IEEE"),
         references=[
-            Reference(reference_id="r1", block_id="r1", block_index=1, index=1,
-                      citation_key="smith2024", year="2024", authors=["Smith, J."],
-                      title="A paper", doi="10.1234/test", raw_text="[1] Smith, J."),
+            Reference(
+                reference_id="r1",
+                block_id="r1",
+                block_index=1,
+                index=1,
+                citation_key="smith2024",
+                year="2024",
+                authors=["Smith, J."],
+                title="A paper",
+                doi="10.1234/test",
+                raw_text="[1] Smith, J.",
+            ),
         ],
         figures=[
             Figure(figure_id="fig1", index=0, caption_text="Figure caption"),
@@ -60,9 +71,11 @@ def doc():
     doc.tables = []
     return doc
 
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # DocumentValidator
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestValidatorInit:
     def test_initializes_components(self):
@@ -74,6 +87,7 @@ class TestValidatorInit:
         ):
             DocumentValidator(contracts_dir="app/pipeline/contracts")
         mock_cl.assert_called_once_with(contracts_dir="app/pipeline/contracts")
+
 
 class TestAsBool:
     def test_none_returns_default(self):
@@ -102,6 +116,7 @@ class TestAsBool:
         assert DocumentValidator._as_bool("maybe") is False
         assert DocumentValidator._as_bool("maybe", default=True) is True
 
+
 class TestValidatorProcess:
     def test_process_calls_validate(self, validator, doc):
         with patch.object(validator, "validate", return_value=ValidationResult(is_valid=True)) as mock_v:
@@ -113,6 +128,7 @@ class TestValidatorProcess:
         with patch.object(validator, "validate", side_effect=Exception("crash")):
             result = validator.process(doc)
         assert result == doc
+
 
 class TestValidate:
     def test_valid_document(self, validator, doc):
@@ -180,6 +196,7 @@ class TestValidate:
             validator.validate(doc)
         mock_cr.assert_called_once()
 
+
 class TestCheckSections:
     def test_uses_template_publisher(self, validator, doc):
         validator.order_validator.validate_order.return_value = []
@@ -207,6 +224,7 @@ class TestCheckSections:
         errs, warns = validator._check_sections(doc)
         assert any("Section order check skipped" in w for w in warns)
 
+
 class TestCheckFigures:
     def test_missing_caption_warns(self, validator, doc):
         doc.figures[0].caption_text = ""
@@ -216,6 +234,7 @@ class TestCheckFigures:
     def test_caption_present_no_warning(self, validator, doc):
         errs, warns = validator._check_figures(doc)
         assert len(warns) == 0
+
 
 class TestCheckReferences:
     def test_no_references_section_returns_empty(self, validator, doc):
@@ -246,6 +265,7 @@ class TestCheckReferences:
         errs, warns = validator._check_references(doc)
         assert any("missing title" in w for w in warns)
 
+
 class TestCheckTables:
     def test_no_tables_no_warnings(self, validator, doc):
         doc.tables = []
@@ -265,6 +285,7 @@ class TestCheckTables:
         doc.tables = [mock_table]
         errs, warns = validator._check_tables(doc)
         assert len(warns) == 0
+
 
 class TestCheckReferenceIntegrity:
     def test_no_references_returns_empty(self, validator, doc):
@@ -321,6 +342,7 @@ class TestCheckReferenceIntegrity:
         assert isinstance(errs, list)
         assert isinstance(warns, list)
 
+
 class TestValidateDocumentConvenience:
     def test_creates_validator_and_validates(self, doc):
         with (
@@ -330,13 +352,16 @@ class TestValidateDocumentConvenience:
             mock_v_cls.return_value = mock_v
             mock_v.validate.return_value = ValidationResult(is_valid=True)
             from app.pipeline.validation.validator_v3 import validate_document
+
             result = validate_document(doc)
         mock_v.validate.assert_called_once_with(doc)
         assert result.is_valid is True
 
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # ReviewManager
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestReviewManagerInit:
     def test_default_thresholds(self):
@@ -356,6 +381,7 @@ class TestReviewManagerInit:
     def test_thresholds_out_of_range(self):
         with pytest.raises(ValueError, match="Thresholds must be between"):
             ReviewManager(review_threshold=1.5, critical_threshold=0.5)
+
 
 class TestReviewManagerEvaluate:
     @pytest.fixture

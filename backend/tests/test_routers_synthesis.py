@@ -39,7 +39,10 @@ def client():
         patch("app.routers.v1.synthesis._session_service", mock_session_svc),
         patch("app.routers.v1.synthesis._vector_store", mock_vector_store),
         patch("app.routers.v1.synthesis._get_synthesizer"),
-        patch("app.routers.v1.synthesis.enhancement_manager.dispatch_synthesis_pipeline", return_value={"mode": "immediate"}),
+        patch(
+            "app.routers.v1.synthesis.enhancement_manager.dispatch_synthesis_pipeline",
+            return_value={"mode": "immediate"},
+        ),
         patch("app.routers.v1.synthesis._pubsub.publish", new=AsyncMock()),
     ):
         with TestClient(app) as test_client:
@@ -115,18 +118,22 @@ class TestGetSession:
 
     def test_access_denied(self, client):
         client.mock_session_svc.get_session.return_value = {
-            "id": "sess-1", "user_id": "other-user",
+            "id": "sess-1",
+            "user_id": "other-user",
         }
         response = client.get("/api/v1/synthesis/sessions/sess-1")
         assert response.status_code == 403
 
     def test_success(self, client):
         client.mock_session_svc.get_session.return_value = {
-            "id": "sess-1", "user_id": "user-123",
-            "status": "processing", "session_type": "multi_doc",
+            "id": "sess-1",
+            "user_id": "user-123",
+            "status": "processing",
+            "session_type": "multi_doc",
             "config_json": {"template": "ieee"},
             "outline_json": None,
-            "created_at": "now", "updated_at": "now",
+            "created_at": "now",
+            "updated_at": "now",
         }
         response = client.get("/api/v1/synthesis/sessions/sess-1")
         assert response.status_code == 200
@@ -141,14 +148,16 @@ class TestSessionEvents:
 
     def test_access_denied(self, client):
         client.mock_session_svc.get_session.return_value = {
-            "id": "sess-1", "user_id": "other-user",
+            "id": "sess-1",
+            "user_id": "other-user",
         }
         response = client.get("/api/v1/synthesis/sessions/sess-1/events")
         assert response.status_code == 403
 
     def test_connected_event(self, client):
         client.mock_session_svc.get_session.return_value = {
-            "id": "sess-1", "user_id": "user-123",
+            "id": "sess-1",
+            "user_id": "user-123",
         }
         with patch("app.routers.v1.synthesis._pubsub.subscribe") as mock_sub:
             mock_sub.return_value = _async_iter([])
@@ -170,7 +179,8 @@ class TestSessionMessages:
 
     def test_access_denied(self, client):
         client.mock_session_svc.get_session.return_value = {
-            "id": "sess-1", "user_id": "other-user",
+            "id": "sess-1",
+            "user_id": "other-user",
         }
         response = client.post(
             "/api/v1/synthesis/sessions/sess-1/messages",
@@ -180,7 +190,8 @@ class TestSessionMessages:
 
     def test_empty_message(self, client):
         client.mock_session_svc.get_session.return_value = {
-            "id": "sess-1", "user_id": "user-123",
+            "id": "sess-1",
+            "user_id": "user-123",
         }
         response = client.post(
             "/api/v1/synthesis/sessions/sess-1/messages",
@@ -190,7 +201,8 @@ class TestSessionMessages:
 
     def test_success(self, client):
         client.mock_session_svc.get_session.return_value = {
-            "id": "sess-1", "user_id": "user-123",
+            "id": "sess-1",
+            "user_id": "user-123",
         }
         client.mock_vector_store.query.return_value = [
             {"source_doc": "a.pdf", "section": "intro", "text": "Some context"},
@@ -212,19 +224,23 @@ class TestSessionMessages:
 class TestHelpers:
     def test_parse_config_valid(self):
         from app.routers.v1.synthesis import _parse_config
+
         assert _parse_config('{"key": "val"}') == {"key": "val"}
 
     def test_parse_config_empty(self):
         from app.routers.v1.synthesis import _parse_config
+
         assert _parse_config("") == {}
 
     def test_parse_config_invalid(self):
         from app.routers.v1.synthesis import _parse_config
+
         with pytest.raises(Exception):
             _parse_config("{bad json}")
 
     def test_assert_session_owner_match(self):
         from app.routers.v1.synthesis import _assert_session_owner
+
         session = {"user_id": "u1"}
         user = MagicMock()
         user.id = "u1"
@@ -232,6 +248,7 @@ class TestHelpers:
 
     def test_assert_session_owner_mismatch(self):
         from app.routers.v1.synthesis import _assert_session_owner
+
         session = {"user_id": "other"}
         user = MagicMock()
         user.id = "u1"
@@ -241,6 +258,7 @@ class TestHelpers:
     def test_get_orchestrator_lazy_init(self):
         import app.routers.v1.synthesis as syn
         from app.routers.v1.synthesis import _get_orchestrator
+
         syn._orchestrator = None
         orch = _get_orchestrator()
         assert orch is not None
@@ -248,6 +266,7 @@ class TestHelpers:
     def test_get_synthesizer_lazy_init(self):
         import app.routers.v1.synthesis as syn
         from app.routers.v1.synthesis import _get_synthesizer
+
         syn._orchestrator = None
         syn._synthesizer = None
         with patch("app.routers.v1.synthesis.MultiDocSynthesizer") as mock_synth_cls:
@@ -260,4 +279,5 @@ def _async_iter(items):
     async def gen():
         for item in items:
             yield item
+
     return gen()

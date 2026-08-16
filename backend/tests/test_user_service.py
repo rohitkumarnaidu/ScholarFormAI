@@ -7,6 +7,7 @@ class TestGetUserById:
     @pytest.mark.asyncio
     async def test_returns_user(self):
         from app.services.user_service import UserService
+
         mock_client = MagicMock()
         mock_q = MagicMock()
         mock_q.maybe_single.return_value.execute.return_value = MagicMock(data={"id": "user-1", "email": "a@b.com"})
@@ -18,6 +19,7 @@ class TestGetUserById:
     @pytest.mark.asyncio
     async def test_returns_none_when_missing(self):
         from app.services.user_service import UserService
+
         mock_client = MagicMock()
         mock_q = MagicMock()
         mock_q.maybe_single.return_value.execute.return_value = MagicMock(data=None)
@@ -29,6 +31,7 @@ class TestGetUserById:
     @pytest.mark.asyncio
     async def test_supabase_none_raises(self):
         from app.services.user_service import UserService
+
         with patch("app.services.user_service.get_supabase_client", return_value=None):
             with pytest.raises(Exception, match="Supabase client"):
                 await UserService.get_user_by_id("user-1")
@@ -38,6 +41,7 @@ class TestUpdateUserProfile:
     @pytest.mark.asyncio
     async def test_updates_profile(self):
         from app.services.user_service import UserService
+
         mock_client = MagicMock()
         mock_result = MagicMock()
         mock_result.data = [{"id": "user-1", "email": "a@b.com"}]
@@ -49,6 +53,7 @@ class TestUpdateUserProfile:
     @pytest.mark.asyncio
     async def test_empty_data_returns_none(self):
         from app.services.user_service import UserService
+
         mock_client = MagicMock()
         mock_result = MagicMock()
         mock_result.data = None
@@ -60,6 +65,7 @@ class TestUpdateUserProfile:
     @pytest.mark.asyncio
     async def test_supabase_none_raises(self):
         from app.services.user_service import UserService
+
         with patch("app.services.user_service.get_supabase_client", return_value=None):
             with pytest.raises(Exception, match="Supabase client"):
                 await UserService.update_user_profile("u", "e", "n", "i")
@@ -69,6 +75,7 @@ class TestGetUserByEmail:
     @pytest.mark.asyncio
     async def test_returns_user(self):
         from app.services.user_service import UserService
+
         mock_client = MagicMock()
         mock_q = MagicMock()
         mock_q.maybe_single.return_value.execute.return_value = MagicMock(data={"id": "user-1", "email": "a@b.com"})
@@ -80,6 +87,7 @@ class TestGetUserByEmail:
     @pytest.mark.asyncio
     async def test_supabase_none_raises(self):
         from app.services.user_service import UserService
+
         with patch("app.services.user_service.get_supabase_client", return_value=None):
             with pytest.raises(Exception, match="Supabase client"):
                 await UserService.get_user_by_email("a@b.com")
@@ -89,6 +97,7 @@ class TestGetUserByEmail:
         from postgrest import APIError
 
         from app.services.user_service import DatabaseUnavailableError, UserService
+
         mock_client = MagicMock()
         mock_q = MagicMock()
         mock_q.maybe_single.return_value.execute.side_effect = APIError({"message": "db fail"})
@@ -100,6 +109,7 @@ class TestGetUserByEmail:
     @pytest.mark.asyncio
     async def test_generic_exception_raises(self):
         from app.services.user_service import DatabaseUnavailableError, UserService
+
         mock_client = MagicMock()
         mock_q = MagicMock()
         mock_q.maybe_single.return_value.execute.side_effect = ValueError("unexpected")
@@ -115,6 +125,7 @@ class TestGetUserByIdErrorPaths:
         from postgrest import APIError
 
         from app.services.user_service import DatabaseUnavailableError, UserService
+
         mock_client = MagicMock()
         mock_q = MagicMock()
         mock_q.maybe_single.return_value.execute.side_effect = APIError({"message": "db fail"})
@@ -126,6 +137,7 @@ class TestGetUserByIdErrorPaths:
     @pytest.mark.asyncio
     async def test_generic_exception_raises(self):
         from app.services.user_service import DatabaseUnavailableError, UserService
+
         mock_client = MagicMock()
         mock_q = MagicMock()
         mock_q.maybe_single.return_value.execute.side_effect = RuntimeError("unexpected")
@@ -141,6 +153,7 @@ class TestUpdateUserProfileErrorPaths:
         from postgrest import APIError
 
         from app.services.user_service import DatabaseUnavailableError, UserService
+
         mock_client = MagicMock()
         mock_client.table.return_value.upsert.return_value.execute.side_effect = APIError({"message": "db fail"})
         with patch("app.services.user_service.get_supabase_client", return_value=mock_client):
@@ -150,6 +163,7 @@ class TestUpdateUserProfileErrorPaths:
     @pytest.mark.asyncio
     async def test_generic_exception_raises(self):
         from app.services.user_service import DatabaseUnavailableError, UserService
+
         mock_client = MagicMock()
         mock_client.table.return_value.upsert.return_value.execute.side_effect = RuntimeError("unexpected")
         with patch("app.services.user_service.get_supabase_client", return_value=mock_client):

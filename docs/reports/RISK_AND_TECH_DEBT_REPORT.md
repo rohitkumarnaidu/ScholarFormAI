@@ -50,19 +50,13 @@ The table below catalogs all identified technical debt items, including their im
 
 The Enterprise Risk Register categorizes system risks into five critical operational domains: Security, Data Loss, Availability & Performance, Maintainability & Architecture, and Community & Onboarding.
 
-```
- ┌────────────────────────────────────────────────────────────────────────┐
- │                      ENTERPRISE RISK REGISTER                          │
- ├───────────────────┬───────────────────┬────────────────────────────────┤
- │ Risk Category     │ Highest Severity  │ Primary Technical Trigger      │
- ├───────────────────┼───────────────────┼────────────────────────────────┤
- │ Security          │ High              │ Docker non-root permission     │
- │ Data Loss         │ Critical          │ Sanitization newline stripping │
- │ Availability      │ Critical          │ DB generator connection leak   │
- │ Maintainability   │ High              │ Monolithic documents_impl.py   │
- │ Community/Onboard │ High              │ Documentation path drift       │
- └───────────────────┴───────────────────┴────────────────────────────────┘
-```
+| Risk Category | Highest Severity | Primary Technical Trigger |
+| :--- | :--- | :--- |
+| Security | High | Docker non-root permission |
+| Data Loss | Critical | Sanitization newline stripping |
+| Availability | Critical | DB generator connection leak |
+| Maintainability | High | Monolithic documents_impl.py |
+| Community/Onboard | High | Documentation path drift |
 
 ### 2.1 Security Risks
 

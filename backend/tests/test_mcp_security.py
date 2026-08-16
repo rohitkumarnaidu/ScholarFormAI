@@ -4,14 +4,15 @@ pytestmark = [pytest.mark.security]
 
 
 class TestToolAccessControl:
-
     def test_tool_registry_requires_authentication(self):
         from app.pipeline.agents.custom_tools import ToolRegistry
+
         registry = ToolRegistry()
         assert registry.list_tools() == []
 
     def test_tool_creation_respects_name_boundary(self):
         from app.pipeline.agents.custom_tools import ToolRegistry
+
         registry = ToolRegistry()
 
         def dummy_fn(inputs):
@@ -29,6 +30,7 @@ class TestToolAccessControl:
 
     def test_tool_parameter_sanitized_via_schema(self):
         from app.pipeline.agents.custom_tools import ToolRegistry
+
         registry = ToolRegistry()
 
         captured = {}
@@ -51,6 +53,7 @@ class TestToolAccessControl:
     def test_tool_output_does_not_leak_sensitive_data(self):
         """Tool outputs are not sanitized — known gap. This test verifies current behavior."""
         from app.pipeline.agents.custom_tools import ToolRegistry
+
         registry = ToolRegistry()
 
         def leaking_fn(inputs):
@@ -70,10 +73,10 @@ class TestToolAccessControl:
 
 
 class TestToolDataLeakage:
-
     def test_tool_execution_error_masks_error_message(self):
         """Tool errors include full exception text — known gap for error sanitization."""
         from app.pipeline.agents.custom_tools import ToolRegistry
+
         registry = ToolRegistry()
 
         def error_fn(inputs):
@@ -93,6 +96,7 @@ class TestToolDataLeakage:
 
     def test_tool_registry_global_isolates_tools(self):
         from app.pipeline.agents.custom_tools import list_custom_tools
+
         tools_before = list_custom_tools()
         from app.pipeline.agents.custom_tools import register_custom_tool
 
@@ -113,6 +117,7 @@ class TestToolDataLeakage:
         from pydantic import BaseModel
 
         from app.pipeline.agents.custom_tools import ToolRegistry
+
         registry = ToolRegistry()
 
         def dummy(inputs):
@@ -136,6 +141,7 @@ class TestToolDataLeakage:
         import tempfile
 
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         with tempfile.TemporaryDirectory() as tmpdir:
             marketplace = ToolMarketplace(
                 marketplace_url="https://api.example.com",
@@ -145,27 +151,30 @@ class TestToolDataLeakage:
             __import__("hashlib").sha256(tool_code.encode()).hexdigest()
             tool_file = os.path.join(tmpdir, "my_tool_v1.0.0.json")
             with open(tool_file, "w") as f:
-                json.dump({
-                    "name": "my_tool",
-                    "code": tool_code,
-                    "code_hash": "tampered_hash",
-                    "version": "1.0.0",
-                    "description": "A tool",
-                    "author": "test",
-                    "tags": [],
-                    "published_at": "2026-01-01T00:00:00",
-                }, f)
+                json.dump(
+                    {
+                        "name": "my_tool",
+                        "code": tool_code,
+                        "code_hash": "tampered_hash",
+                        "version": "1.0.0",
+                        "description": "A tool",
+                        "author": "test",
+                        "tags": [],
+                        "published_at": "2026-01-01T00:00:00",
+                    },
+                    f,
+                )
             result = marketplace.install_tool("my_tool", version="1.0.0")
             assert result["success"] is False
             assert "integrity" in result.get("error", "").lower()
 
 
 class TestToolMarketplaceSecurity:
-
     def test_marketplace_publish_requires_code_hash(self):
         import tempfile
 
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         with tempfile.TemporaryDirectory() as tmpdir:
             marketplace = ToolMarketplace(
                 marketplace_url="https://api.example.com",
@@ -185,6 +194,7 @@ class TestToolMarketplaceSecurity:
         import tempfile
 
         from app.pipeline.agents.tool_marketplace import ToolMarketplace
+
         with tempfile.TemporaryDirectory() as tmpdir:
             marketplace = ToolMarketplace(
                 marketplace_url="https://api.example.com",

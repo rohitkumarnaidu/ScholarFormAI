@@ -10,6 +10,7 @@ def _mkblock(text="Some text", btype=BlockType.BODY, idx=0, bid="b1"):
 class TestFindReferencesStartIndex:
     def test_finds_by_block_type(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         matcher = TableCaptionMatcher()
         blocks = [
             _mkblock("Intro", BlockType.HEADING_1, 0, "b1"),
@@ -21,6 +22,7 @@ class TestFindReferencesStartIndex:
 
     def test_finds_by_keyword_fallback(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         matcher = TableCaptionMatcher()
         blocks = [
             _mkblock("Intro", BlockType.HEADING_1, 0, "b1"),
@@ -31,6 +33,7 @@ class TestFindReferencesStartIndex:
 
     def test_bibliography_keyword(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         matcher = TableCaptionMatcher()
         blocks = [
             _mkblock("Bibliography", BlockType.HEADING_1, 0, "b1"),
@@ -40,6 +43,7 @@ class TestFindReferencesStartIndex:
 
     def test_no_references_found(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         matcher = TableCaptionMatcher()
         blocks = [
             _mkblock("Intro", BlockType.HEADING_1, 0, "b1"),
@@ -52,18 +56,21 @@ class TestFindReferencesStartIndex:
 class TestCaptionRegex:
     def test_matches_numeric(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         matcher = TableCaptionMatcher()
         assert matcher.caption_regex.match("Table 1: Results")
         assert matcher.caption_regex.match("TABLE 2. Data")
 
     def test_matches_roman_numeral(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         matcher = TableCaptionMatcher()
         assert matcher.caption_regex.match("Table I: Introduction")
         assert matcher.caption_regex.match("Table IV: Methods")
 
     def test_no_match(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         matcher = TableCaptionMatcher()
         assert not matcher.caption_regex.match("Figure 1: Test")
         assert not matcher.caption_regex.match("Just some text")
@@ -72,6 +79,7 @@ class TestCaptionRegex:
 class TestProcess:
     def test_no_tables(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         matcher = TableCaptionMatcher()
         doc = MagicMock()
         doc.blocks = [_mkblock("Text")]
@@ -84,6 +92,7 @@ class TestProcess:
 
     def test_no_blocks(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         matcher = TableCaptionMatcher()
         doc = MagicMock()
         doc.blocks = []
@@ -96,6 +105,7 @@ class TestProcess:
 
     def test_matches_caption_to_table(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         matcher = TableCaptionMatcher()
         doc = MagicMock()
         doc.blocks = [
@@ -116,6 +126,7 @@ class TestProcess:
 
     def test_caption_after_table(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         matcher = TableCaptionMatcher()
         doc = MagicMock()
         doc.blocks = [
@@ -135,6 +146,7 @@ class TestProcess:
 
     def test_missing_caption_marked(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         matcher = TableCaptionMatcher()
         doc = MagicMock()
         doc.blocks = [
@@ -154,6 +166,7 @@ class TestProcess:
 
     def test_exception_handling(self):
         from app.pipeline.tables.caption_matcher import TableCaptionMatcher
+
         matcher = TableCaptionMatcher()
         doc = MagicMock()
         doc.blocks = [_mkblock("Text")]
@@ -169,6 +182,7 @@ class TestProcess:
 class TestMatchTableCaptionsConvenience:
     def test_convenience_function(self):
         from app.pipeline.tables.caption_matcher import match_table_captions
+
         doc = MagicMock()
         doc.blocks = []
         doc.tables = []

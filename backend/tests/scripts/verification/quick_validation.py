@@ -37,12 +37,13 @@ except Exception as e:
 # Check contract loading
 try:
     from app.pipeline.contracts.loader import ContractLoader
+
     loader = ContractLoader()
-    
-    print("\n" + "="*60)
+
+    print("\n" + "=" * 60)
     print("PHASE 1: CONTRACT LOADING VERIFICATION")
-    print("="*60)
-    
+    print("=" * 60)
+
     templates = ["none", "ieee", "apa", "springer"]
     for template in templates:
         try:
@@ -53,46 +54,49 @@ try:
                 print(f"   └─ Spacing rules: {len(spacing)} types defined")
         except Exception as e:
             print(f"❌ {template.upper():10} - Failed: {e}")
-    
+
 except Exception as e:
     print(f"❌ Contract loader failed: {e}")
 
 # Check formatter architecture
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("PHASE 2: ARCHITECTURAL PURITY SCAN")
-print("="*60)
+print("=" * 60)
 
 try:
     import subprocess
-    
+
     # Check for special-case conditionals
     result = subprocess.run(
-        ["powershell", "-Command", 
-         "Get-Content app/pipeline/formatting/formatter.py | Select-String 'if template_name == \"none\"' | Measure-Object | Select-Object -ExpandProperty Count"],
+        [
+            "powershell",
+            "-Command",
+            "Get-Content app/pipeline/formatting/formatter.py | Select-String 'if template_name == \"none\"' | Measure-Object | Select-Object -ExpandProperty Count",
+        ],
         cwd=Path(__file__).parent,
         capture_output=True,
-        text=True
+        text=True,
     )
-    
+
     count = int(result.stdout.strip()) if result.stdout.strip() else 0
-    
+
     if count == 0:
         print("✅ ZERO special-case 'none' formatting conditionals")
     else:
         print(f"❌ Found {count} special-case conditionals - FREEZE BLOCKED")
-    
+
     print("✅ Contract-driven spacing method verified")
     print("✅ Anchor skip logic verified")
     print("✅ Caption deduplication verified")
-    
+
 except Exception as e:
     print(f" ️  Could not run grep scan: {e}")
     print("   Manual verification required")
 
 # Structural integrity check
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("PHASE 3: STRUCTURAL INTEGRITY")
-print("="*60)
+print("=" * 60)
 
 print("✅ block.index mutations: NONE (verified in code review)")
 print("✅ Block reordering: NONE (rendering only)")
@@ -100,9 +104,9 @@ print("✅ Anchor metadata: PRESERVED (skip rendering, keep in pipeline)")
 print("✅ Pipeline structure: UNCHANGED")
 
 # Visual validation readiness
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("PHASE 4: VISUAL VALIDATION STATUS")
-print("="*60)
+print("=" * 60)
 
 print("""
 Manual visual validation required with real documents:
@@ -123,9 +127,9 @@ Expected Results:
 """)
 
 # Cross-template symmetry
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("PHASE 5: TEMPLATE SYMMETRY")
-print("="*60)
+print("=" * 60)
 
 print("✅ All templates load via contract_loader")
 print("✅ No template bypasses")
@@ -133,9 +137,9 @@ print("✅ No special-case handling")
 print("✅ Perfect architectural symmetry")
 
 # Final decision
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("FREEZE DECISION MATRIX")
-print("="*60)
+print("=" * 60)
 
 criteria = {
     "Architectural purity": "✅ PASS",
@@ -143,15 +147,15 @@ criteria = {
     "Special-case conditionals": "✅ ZERO",
     "Structural integrity": "✅ VERIFIED",
     "Template symmetry": "✅ PASS",
-    "Visual validation": "⏳ PENDING USER TESTING"
+    "Visual validation": "⏳ PENDING USER TESTING",
 }
 
 for criterion, status in criteria.items():
     print(f"{criterion:30} {status}")
 
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("VALIDATION SUMMARY")
-print("="*60)
+print("=" * 60)
 
 print("""
 ✅ Automated checks: PASSED
@@ -165,9 +169,9 @@ Status: READY FOR VISUAL TESTING
 Next: User provides test documents for final validation
 """)
 
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("TO COMPLETE FREEZE VALIDATION:")
-print("="*60)
+print("=" * 60)
 print("""
 1. Upload 5 test documents (or use existing samples)
 2. Run formatter on each with 'none' template

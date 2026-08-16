@@ -16,6 +16,7 @@ from app.main import app
 
 client = TestClient(app)
 
+
 def test_rate_limiting_upload():
     """
     Verify that upload requests remain bounded by configured rate limiting behavior.
@@ -33,7 +34,7 @@ def test_rate_limiting_upload():
     }
     token = jwt.encode(payload, settings.SUPABASE_JWT_SECRET, algorithm=settings.ALGORITHM)
     headers = {"Authorization": f"Bearer {token}"}
-    
+
     # Use a real DOCX payload so extension/content validation does not short-circuit.
     docx_fixture = Path("app/templates/ieee/template.docx")
     file_bytes = docx_fixture.read_bytes()
@@ -81,6 +82,7 @@ def test_rate_limiting_upload():
     if not rate_limited:
         assert accepted_or_expected == 12
 
+
 def test_file_size_limit(monkeypatch):
     """
     Verify that uploads larger than the configured limit are rejected.
@@ -98,6 +100,7 @@ def test_file_size_limit(monkeypatch):
     assert "Maximum size" in payload["error"]["message"]
     mock_create.assert_not_called()
 
+
 def test_cors_headers():
     """
     Verify CORS headers are present.
@@ -110,4 +113,3 @@ def test_cors_headers():
     assert response.status_code == 200
     assert response.headers["access-control-allow-origin"] == "http://localhost:5173"
     assert "POST" in response.headers["access-control-allow-methods"]
-

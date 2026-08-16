@@ -69,6 +69,7 @@ def grobid_mock_settings():
 @pytest.fixture
 def grobid_client(grobid_mock_settings):
     from app.pipeline.services.grobid_client import GROBIDClient
+
     return GROBIDClient()
 
 
@@ -79,6 +80,7 @@ class TestGROBIDClientInitCoverage:
         """health_path length == 1 skips rstrip (target line 75 false branch)."""
         grobid_mock_settings.get_service_health_path.return_value = "/"
         from app.pipeline.services.grobid_client import GROBIDClient
+
         c = GROBIDClient()
         assert c.health_path == "/"
 
@@ -87,6 +89,7 @@ class TestGROBIDClientInitCoverage:
         grobid_mock_settings.EXTERNAL_CIRCUIT_BREAKER_ENABLED = True
         with patch("app.pipeline.services.grobid_client.pybreaker", None):
             from app.pipeline.services.grobid_client import GROBIDClient
+
             c = GROBIDClient()
             assert c.breaker is None
 
@@ -97,6 +100,7 @@ class TestGROBIDClientInitCoverage:
             mock_breaker = MagicMock()
             mock_pybreaker.CircuitBreaker.return_value = mock_breaker
             from app.pipeline.services.grobid_client import GROBIDClient
+
             c = GROBIDClient(base_url="https://remote-grobid.example.com")
             assert c.breaker is not None
             assert c._remote_hosted is True
@@ -173,6 +177,7 @@ class TestGROBIDClientProcessReferencesCoverage:
     def test_non_transient_status_breaks(self, mock_request, grobid_client, tmp_path):
         """Non-transient status (404) breaks out immediately (target line 282)."""
         from app.pipeline.services.grobid_client import GROBIDClient
+
         pdf = tmp_path / "test.pdf"
         pdf.write_text("dummy")
         with patch.object(GROBIDClient, "is_available", return_value=True):
@@ -184,6 +189,7 @@ class TestGROBIDClientProcessReferencesCoverage:
     def test_generic_exception_refs_retries_then_breaks(self, mock_request, grobid_client, tmp_path):
         """Generic exception exhausts retries in refs (target lines 287-298)."""
         from app.pipeline.services.grobid_client import GROBIDClient
+
         pdf = tmp_path / "test.pdf"
         pdf.write_text("dummy")
         with patch.object(GROBIDClient, "is_available", return_value=True):
@@ -195,6 +201,7 @@ class TestGROBIDClientProcessReferencesCoverage:
     def test_refs_endpoint_failover(self, mock_request, grobid_client, tmp_path):
         """References failover between endpoints (target lines 298-306)."""
         from app.pipeline.services.grobid_client import GROBIDClient
+
         pdf = tmp_path / "test.pdf"
         pdf.write_text("dummy")
         grobid_client.base_urls = ["http://url1:8070", "http://url2:8070"]
@@ -213,6 +220,7 @@ class TestGROBIDClientParsingBranchCoverage:
     def test_extract_authors_no_persname(self, grobid_client):
         """Author element without persName (target 404->414)."""
         import xml.etree.ElementTree as ET
+
         xml = """<?xml version="1.0"?><TEI xmlns="http://www.tei-c.org/ns/1.0"><teiHeader>
           <fileDesc><titleStmt><title>T</title></titleStmt>
           <sourceDesc><biblStruct><analytic>
@@ -235,6 +243,7 @@ class TestGROBIDClientParsingBranchCoverage:
     def test_extract_abstract_direct_text(self, grobid_client):
         """Abstract with direct text, no <p> tags (target lines 438-439)."""
         import xml.etree.ElementTree as ET
+
         xml = """<?xml version="1.0"?><TEI xmlns="http://www.tei-c.org/ns/1.0"><teiHeader>
           <fileDesc><titleStmt><title>T</title></titleStmt><sourceDesc/></fileDesc>
           <profileDesc><abstract>Direct abstract text here.</abstract></profileDesc></teiHeader></TEI>"""
@@ -245,6 +254,7 @@ class TestGROBIDClientParsingBranchCoverage:
     def test_extract_keywords_with_empty_term(self, grobid_client):
         """Keywords with empty term element (target line 447 false branch)."""
         import xml.etree.ElementTree as ET
+
         xml = """<?xml version="1.0"?><TEI xmlns="http://www.tei-c.org/ns/1.0"><teiHeader>
           <fileDesc><titleStmt><title>T</title></titleStmt><sourceDesc/></fileDesc>
           <profileDesc><textClass><keywords>
@@ -257,10 +267,13 @@ class TestGROBIDClientParsingBranchCoverage:
 
     def test_calculate_confidence_incomplete_names(self, grobid_client):
         """Partial name completeness (target line 474 false branch)."""
-        score = grobid_client._calculate_confidence("Long Title Here", [
-            {"given": "John", "family": ""},
-            {"given": "", "family": "Doe"},
-        ])
+        score = grobid_client._calculate_confidence(
+            "Long Title Here",
+            [
+                {"given": "John", "family": ""},
+                {"given": "", "family": "Doe"},
+            ],
+        )
         assert 0.8 <= score <= 0.95
 
 
@@ -270,6 +283,7 @@ class TestGROBIDExtractMetadataEdgeCases:
     def test_extract_metadata_empty_header_no_refs(self, grobid_client):
         """Metadata with empty header returns {} before refs."""
         from app.pipeline.services.grobid_client import GROBIDClient
+
         with patch.object(GROBIDClient, "is_available", return_value=True):
             with patch.object(grobid_client, "process_header_document", return_value={}):
                 result = grobid_client.extract_metadata("test.pdf")
@@ -278,6 +292,7 @@ class TestGROBIDExtractMetadataEdgeCases:
     def test_extract_metadata_none_refs(self, grobid_client):
         """None references become empty list."""
         from app.pipeline.services.grobid_client import GROBIDClient
+
         with patch.object(GROBIDClient, "is_available", return_value=True):
             with patch.object(grobid_client, "process_header_document", return_value={"title": "Test"}):
                 with patch.object(grobid_client, "process_references", return_value=None):
@@ -288,6 +303,7 @@ class TestGROBIDExtractMetadataEdgeCases:
 # ==============================================================================
 # Docling Client Supplementary Tests
 # ==============================================================================
+
 
 @pytest.fixture
 def docling_mock_settings():
@@ -303,12 +319,14 @@ class TestDoclingClientModuleCoverage:
         """DOCLING_AVAILABLE=False returns None early (target line 67)."""
         with patch("app.pipeline.services.docling_client.DOCLING_AVAILABLE", False):
             from app.pipeline.services.docling_client import _load_docling_converter
+
             result = _load_docling_converter()
             assert result is None
 
     def test_load_converter_import_exception(self):
         """Docling import raises exception (target lines 75-77)."""
         import app.pipeline.services.docling_client as docling_mod
+
         with patch("app.pipeline.services.docling_client.DOCLING_AVAILABLE", True):
             with patch("app.pipeline.services.docling_client.importlib.util.find_spec", return_value=True):
                 with patch("builtins.__import__", side_effect=Exception("Import failed")):
@@ -320,6 +338,7 @@ class TestDoclingClientModuleCoverage:
         with patch("app.pipeline.services.docling_client.settings.USE_DOCLING_FALLBACK", True, create=True):
             with patch("app.pipeline.services.docling_client.settings.LOW_MEMORY_MODE", True):
                 from app.pipeline.services.docling_client import _docling_enabled
+
                 assert _docling_enabled() is False
 
 
@@ -334,6 +353,7 @@ class TestDoclingClientAnalyzeLayoutEdgeCoverage:
             mock_conv_cls.return_value = mock_conv
             mock_load.return_value = mock_conv_cls
             from app.pipeline.services.docling_client import DoclingClient
+
             c = DoclingClient()
             c.converter = None
             result = c.analyze_layout("test.pdf")
@@ -347,6 +367,7 @@ class TestDoclingClientAnalyzeLayoutEdgeCoverage:
             mock_conv_cls.return_value = mock_conv
             mock_load.return_value = mock_conv_cls
             from app.pipeline.services.docling_client import DoclingClient
+
             c = DoclingClient()
             mock_doc = MagicMock()
             type(mock_doc).texts = PropertyMock(side_effect=Exception("Iteration error"))
@@ -365,6 +386,7 @@ class TestDoclingClientAnalyzeLayoutEdgeCoverage:
             mock_conv_cls.return_value = mock_conv
             mock_load.return_value = mock_conv_cls
             from app.pipeline.services.docling_client import DoclingClient
+
             c = DoclingClient()
             mock_doc = MagicMock()
             mock_doc.texts = []
@@ -391,6 +413,7 @@ class TestDoclingClientHeadersFootersCoverage:
     def test_detect_headers_footers_empty_page(self):
         """Empty page in element grouping skips processing."""
         from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
+
         c = DoclingClient()
         p1_body = LayoutElement(text="Body", bbox=BoundingBox(0, 200, 100, 400, page=1), element_type="text")
         p2_body = LayoutElement(text="P2 Body", bbox=BoundingBox(0, 200, 100, 400, page=2), element_type="text")
@@ -405,6 +428,7 @@ class TestDoclingClientExtractElementsCoverage:
     def test_extract_elements_bbox_no_page(self):
         """BBox without page attribute defaults to 0."""
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_item = MagicMock()
@@ -426,11 +450,13 @@ class TestDoclingClientExtractElementsCoverage:
 # CrossRef Client Supplementary Tests (proper async)
 # ==============================================================================
 
+
 class TestCrossRefClientInit:
     """Test __init__ paths."""
 
     def test_init_with_email(self):
         from app.pipeline.services.crossref_client import CrossRefClient
+
         client = CrossRefClient(email="researcher@example.com")
         assert "User-Agent" in client.headers
         assert "researcher@example.com" in client.headers["User-Agent"]
@@ -438,6 +464,7 @@ class TestCrossRefClientInit:
 
     def test_init_without_email(self):
         from app.pipeline.services.crossref_client import CrossRefClient
+
         client = CrossRefClient()
         assert client.headers == {}
         assert client.last_request_time == 0.0
@@ -449,6 +476,7 @@ class TestCrossRefClientAsync:
     @pytest.fixture
     def crossref_client(self):
         from app.pipeline.services.crossref_client import CrossRefClient
+
         return CrossRefClient(email="test@example.com")
 
     async def test_validate_doi_found(self, crossref_client):
@@ -459,6 +487,7 @@ class TestCrossRefClientAsync:
 
     async def test_validate_doi_not_found(self, crossref_client):
         from app.pipeline.services.crossref_client import CrossRefException
+
         with patch.object(crossref_client, "get_metadata") as mock_get:
             mock_get.side_effect = CrossRefException("Not found")
             result = await crossref_client.validate_doi("10.1234/missing")
@@ -486,6 +515,7 @@ class TestCrossRefClientAsync:
 
     async def test_get_metadata_404(self, crossref_client):
         from app.pipeline.services.crossref_client import CrossRefException
+
         mock_response = MagicMock()
         mock_response.status_code = 404
         with patch.object(crossref_client._client, "get", new=AsyncMock(return_value=mock_response)):
@@ -494,6 +524,7 @@ class TestCrossRefClientAsync:
 
     async def test_get_metadata_api_error(self, crossref_client):
         from app.pipeline.services.crossref_client import CrossRefException
+
         mock_response = MagicMock()
         mock_response.status_code = 500
         with patch.object(crossref_client._client, "get", new=AsyncMock(return_value=mock_response)):
@@ -504,7 +535,10 @@ class TestCrossRefClientAsync:
         import httpx
 
         from app.pipeline.services.crossref_client import CrossRefException
-        with patch.object(crossref_client._client, "get", new=AsyncMock(side_effect=httpx.RequestError("No connection"))):
+
+        with patch.object(
+            crossref_client._client, "get", new=AsyncMock(side_effect=httpx.RequestError("No connection"))
+        ):
             with pytest.raises(CrossRefException, match="Network error"):
                 await crossref_client.get_metadata("10.1234/netfail")
 
@@ -535,6 +569,7 @@ class TestCrossRefClientConfidenceBranchCoverage:
     @pytest.fixture
     def crossref_client(self):
         from app.pipeline.services.crossref_client import CrossRefClient
+
         return CrossRefClient()
 
     def test_year_mismatch(self, crossref_client):
@@ -557,7 +592,11 @@ class TestCrossRefClientConfidenceBranchCoverage:
     def test_author_not_found(self, crossref_client):
         """Author in reference but not matching crossref."""
         ref_data = {"authors": ["Smith, John"], "title": "Title", "year": 2020}
-        cr_data = {"title": ["Title"], "published-print": {"date-parts": [[2020]]}, "author": [{"family": "Doe", "given": "Jane"}]}
+        cr_data = {
+            "title": ["Title"],
+            "published-print": {"date-parts": [[2020]]},
+            "author": [{"family": "Doe", "given": "Jane"}],
+        }
         score = crossref_client.calculate_confidence(ref_data, cr_data)
         assert score == pytest.approx(0.8, abs=0.01)
 
@@ -593,10 +632,12 @@ class TestCrossRefException:
 
     def test_default_message(self):
         from app.pipeline.services.crossref_client import CrossRefException
+
         exc = CrossRefException()
         assert "CrossRef" in str(exc)
 
     def test_custom_message(self):
         from app.pipeline.services.crossref_client import CrossRefException
+
         exc = CrossRefException("Custom error message")
         assert "Custom" in str(exc)

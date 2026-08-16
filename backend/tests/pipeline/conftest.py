@@ -17,9 +17,11 @@ import pytest
 # python-docx mock helpers
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class MockDocxCell:
     """Simulates a python-docx Cell."""
+
     text: str = ""
     paragraphs: list = field(default_factory=list)
     bold: bool = False
@@ -48,12 +50,14 @@ class MockDocxCell:
 @dataclass
 class MockDocxRow:
     """Simulates a python-docx Row."""
+
     cells: list[MockDocxCell] = field(default_factory=list)
 
 
 @dataclass
 class MockDocxTable:
     """Simulates a python-docx Table."""
+
     rows: list[MockDocxRow] = field(default_factory=list)
 
 
@@ -86,6 +90,7 @@ def make_mock_table(
             if key in nested_tables_at:
                 nested_tables_data = nested_tables_at[key]
                 from unittest.mock import MagicMock
+
                 tbl_elements = []
                 for nt_data in nested_tables_data:
                     inner_tbl = make_mock_table(nt_data)
@@ -102,7 +107,7 @@ def make_mock_table(
                     tbl_elements.append(mock_tbl_xml)
 
                 # Override findall to return our nested table XML elements
-                cell._element.findall.side_effect = lambda ns, elems=tbl_elements: elems if ns.endswith('}tbl') else []
+                cell._element.findall.side_effect = lambda ns, elems=tbl_elements: elems if ns.endswith("}tbl") else []
 
                 # For the DocxTableWrapper constructor: need the parent chain
                 cell._parent._parent._parent = MagicMock()
@@ -117,10 +122,12 @@ def make_mock_table(
 # PIL image helpers
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def temp_image(tmp_path):
     """Create a temporary PNG image for figure analysis tests."""
     from PIL import Image
+
     path = tmp_path / "test_figure.png"
     img = Image.new("RGB", (800, 600), color=(255, 255, 255))
     img.save(str(path))
@@ -131,6 +138,7 @@ def temp_image(tmp_path):
 def temp_image_low_res(tmp_path):
     """Create a low-resolution image."""
     from PIL import Image
+
     path = tmp_path / "low_res.png"
     img = Image.new("RGB", (100, 80), color=(0, 0, 0))
     img.save(str(path))
@@ -141,6 +149,7 @@ def temp_image_low_res(tmp_path):
 def temp_jpeg_image(tmp_path):
     """Create a temporary JPEG image."""
     from PIL import Image
+
     path = tmp_path / "test_figure.jpg"
     img = Image.new("RGB", (1024, 768), color=(128, 128, 128))
     img.save(str(path), "JPEG", quality=95)
@@ -151,15 +160,18 @@ def temp_jpeg_image(tmp_path):
 # Document / Block / Table / Figure fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def doc_empty():
     from app.models import PipelineDocument
+
     return PipelineDocument(document_id="test_doc", blocks=[])
 
 
 @pytest.fixture
 def simple_table():
     from app.models import Table, TableCell
+
     return Table(
         table_id="tbl_001",
         num_rows=2,
@@ -183,12 +195,14 @@ def simple_table():
 @pytest.fixture
 def simple_figure():
     from app.models import Figure
+
     return Figure(figure_id="fig_001", index=0)
 
 
 @pytest.fixture
 def doc_with_blocks():
     from app.models import Block, BlockType, PipelineDocument
+
     return PipelineDocument(
         document_id="doc_blocks",
         blocks=[

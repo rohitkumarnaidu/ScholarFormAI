@@ -20,6 +20,7 @@ from app.pipeline.figures.caption_matcher import CaptionMatcher, link_figures
 # FIGURE ANALYZER — Lines 33-55, 67-106
 # ===================================================================
 
+
 class TestFigureAnalyzerGaps:
     """Covers all analyzer lines including downsample_if_needed and analyze_image."""
 
@@ -38,6 +39,7 @@ class TestFigureAnalyzerGaps:
         """Line 37-38: file size <= max_size_bytes."""
         path = tmp_path / "small.png"
         from PIL import Image
+
         img = Image.new("RGB", (100, 100))
         img.save(str(path))
         result = analyzer.downsample_if_needed(str(path), max_size_bytes=50_000_000)
@@ -47,6 +49,7 @@ class TestFigureAnalyzerGaps:
         """Lines 40-51: file exceeds max_size, thumbnail created."""
         path = tmp_path / "large.png"
         from PIL import Image
+
         img = Image.new("RGB", (2000, 2000), color=(128, 128, 128))
         img.save(str(path))
         result = analyzer.downsample_if_needed(str(path), max_size_bytes=1)
@@ -60,6 +63,7 @@ class TestFigureAnalyzerGaps:
         """Lines 52-55: exception during downsample returns original path."""
         path = tmp_path / "corrupt.png"
         from PIL import Image
+
         img = Image.new("RGB", (100, 100))
         img.save(str(path))
         with patch("PIL.Image.open", side_effect=Exception("corrupt")):
@@ -70,6 +74,7 @@ class TestFigureAnalyzerGaps:
         """Save with JPEG extension."""
         path = tmp_path / "large.jpg"
         from PIL import Image
+
         img = Image.new("RGB", (2000, 2000), color=(128, 128, 128))
         img.save(str(path), "JPEG", quality=95)
         result = analyzer.downsample_if_needed(str(path), max_size_bytes=1)
@@ -90,6 +95,7 @@ class TestFigureAnalyzerGaps:
         """Lines 70-103: normal analysis."""
         path = tmp_path / "test.png"
         from PIL import Image
+
         img = Image.new("RGB", (800, 600), color=(255, 255, 255))
         img.save(str(path))
         result = analyzer.analyze_image(str(path))
@@ -103,6 +109,7 @@ class TestFigureAnalyzerGaps:
         """Lines 86-87: width/height < min requirements."""
         path = tmp_path / "low.png"
         from PIL import Image
+
         img = Image.new("RGB", (100, 80), color=(0, 0, 0))
         img.save(str(path))
         result = analyzer.analyze_image(str(path))
@@ -113,6 +120,7 @@ class TestFigureAnalyzerGaps:
         """Lines 89-90: DPI below threshold."""
         path = tmp_path / "low_dpi.png"
         from PIL import Image
+
         img = Image.new("RGB", (800, 600), color=(255, 255, 255))
         img.save(str(path), dpi=(72, 72))
         analyzer_with_dpi = FigureAnalyzer(min_width=100, min_height=100, min_dpi=200)
@@ -124,6 +132,7 @@ class TestFigureAnalyzerGaps:
         """Line 92: aspect ratio calculation."""
         path = tmp_path / "ratio.png"
         from PIL import Image
+
         img = Image.new("RGB", (400, 200))
         img.save(str(path))
         result = analyzer.analyze_image(str(path))
@@ -133,6 +142,7 @@ class TestFigureAnalyzerGaps:
         """Lines 77-81: dpi as tuple vs scalar."""
         path = tmp_path / "dpi_tuple.png"
         from PIL import Image
+
         img = Image.new("RGB", (800, 600))
         img.save(str(path), dpi=(150, 150))
         result = analyzer.analyze_image(str(path))
@@ -142,6 +152,7 @@ class TestFigureAnalyzerGaps:
         """Line 81: dpi as scalar (not tuple)."""
         path = tmp_path / "dpi_scalar.png"
         from PIL import Image
+
         img = Image.new("RGB", (800, 600))
         img.save(str(path))
         result = analyzer.analyze_image(str(path))
@@ -150,6 +161,7 @@ class TestFigureAnalyzerGaps:
     def test_analyze_dpi_default_72(self, analyzer, tmp_path):
         path = tmp_path / "dpi_default.png"
         from PIL import Image
+
         img = Image.new("RGB", (800, 600))
         img.save(str(path))
         result = analyzer.analyze_image(str(path))
@@ -174,6 +186,7 @@ class TestFigureAnalyzerGaps:
         """When dpi is a scalar (int), not a tuple."""
         path = tmp_path / "dpi_int.png"
         from PIL import Image
+
         img = Image.new("RGB", (800, 600))
         img.save(str(path))
         with patch("PIL.Image.open") as mock_open:
@@ -189,6 +202,7 @@ class TestFigureAnalyzerGaps:
     def test_analyze_no_issues(self, analyzer, tmp_path):
         path = tmp_path / "good.png"
         from PIL import Image
+
         img = Image.new("RGB", (1000, 1000))
         img.save(str(path), dpi=(300, 300))
         analyzer_hq = FigureAnalyzer(min_width=100, min_height=100, min_dpi=72)
@@ -204,9 +218,11 @@ class TestFigureAnalyzerGaps:
         assert figure_analyzer.min_height == 300
         assert figure_analyzer.min_dpi == 150
 
+
 # ===================================================================
 # FIGURE CAPTION MATCHER — Lines 44-64, 70-128, 140-174, 180-190, 199-249, 253-254
 # ===================================================================
+
 
 class TestCaptionMatcherGaps:
     """Covers all caption_matcher lines."""
@@ -231,14 +247,12 @@ class TestCaptionMatcherGaps:
 
     def test_init_vision_enabled_success(self):
         mock_client = MagicMock()
-        with patch("app.services.nvidia_client.get_nvidia_client",
-                   return_value=mock_client):
+        with patch("app.services.nvidia_client.get_nvidia_client", return_value=mock_client):
             matcher = CaptionMatcher(enable_vision=True)
             assert matcher.vision_client is mock_client
 
     def test_init_vision_enabled_failure(self):
-        with patch("app.services.nvidia_client.get_nvidia_client",
-                   side_effect=Exception("no client")):
+        with patch("app.services.nvidia_client.get_nvidia_client", side_effect=Exception("no client")):
             matcher = CaptionMatcher(enable_vision=True)
             assert matcher.vision_client is None
 
@@ -254,23 +268,33 @@ class TestCaptionMatcherGaps:
 
     def test_process_no_figures_returns_early(self, matcher):
         from app.models import Block, BlockType, PipelineDocument
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY),
+            ],
+        )
         result = matcher.process(doc)
         assert result is doc
 
     def test_process_no_blocks_but_figures(self, matcher):
         from app.models import Figure, PipelineDocument
-        doc = PipelineDocument(document_id="t", figures=[
-            Figure(figure_id="f1", index=0),
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            figures=[
+                Figure(figure_id="f1", index=0),
+            ],
+        )
         result = matcher.process(doc)
         assert result is doc
 
     def test_process_with_figures_and_captions(self, matcher):
         from app.models import Block, BlockType, Figure, PipelineDocument
-        doc = PipelineDocument(document_id="t",
+
+        doc = PipelineDocument(
+            document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Figure 1. Results.", block_type=BlockType.BODY),
                 Block(block_id="b2", index=1, text="Body.", block_type=BlockType.BODY),
@@ -284,7 +308,9 @@ class TestCaptionMatcherGaps:
 
     def test_process_with_exception(self, matcher):
         from app.models import Block, BlockType, Figure, PipelineDocument
-        doc = PipelineDocument(document_id="t",
+
+        doc = PipelineDocument(
+            document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Figure 1. Test.", block_type=BlockType.BODY),
             ],
@@ -292,8 +318,7 @@ class TestCaptionMatcherGaps:
                 Figure(figure_id="f1", index=0, metadata={"block_index": 0}),
             ],
         )
-        with patch.object(matcher, "_find_caption_candidates",
-                          side_effect=Exception("boom")):
+        with patch.object(matcher, "_find_caption_candidates", side_effect=Exception("boom")):
             result = matcher.process(doc)
             assert result is doc
             stages = [s for s in result.processing_history if s.stage_name == "figure_linking"]
@@ -301,7 +326,9 @@ class TestCaptionMatcherGaps:
 
     def test_process_success_stage_added(self, matcher):
         from app.models import Block, BlockType, Figure, PipelineDocument
-        doc = PipelineDocument(document_id="t",
+
+        doc = PipelineDocument(
+            document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Figure 1. Test.", block_type=BlockType.BODY),
                 Block(block_id="b2", index=1, text="Body.", block_type=BlockType.BODY),
@@ -317,6 +344,7 @@ class TestCaptionMatcherGaps:
     def test_process_vision_enhanced_count_in_message(self, matcher, tmp_path):
         """Vision-enhanced count included in success message (lines 115-117)."""
         from app.models import Block, BlockType, Figure, PipelineDocument
+
         mock_vision = MagicMock()
         mock_vision.analyze_figure.return_value = "A chart"
         matcher.vision_client = mock_vision
@@ -324,14 +352,14 @@ class TestCaptionMatcherGaps:
 
         img_path = tmp_path / "fig.png"
         img_path.write_text("fake")
-        doc = PipelineDocument(document_id="t",
+        doc = PipelineDocument(
+            document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Figure 1. Test.", block_type=BlockType.BODY),
                 Block(block_id="b2", index=1, text="Body.", block_type=BlockType.BODY),
             ],
             figures=[
-                Figure(figure_id="f1", index=0, metadata={"block_index": 1},
-                       export_path=str(img_path)),
+                Figure(figure_id="f1", index=0, metadata={"block_index": 1}, export_path=str(img_path)),
             ],
         )
         result = matcher.process(doc)
@@ -340,7 +368,9 @@ class TestCaptionMatcherGaps:
 
     def test_process_updates_updated_at(self, matcher):
         from app.models import Block, BlockType, Figure, PipelineDocument
-        doc = PipelineDocument(document_id="t",
+
+        doc = PipelineDocument(
+            document_id="t",
             blocks=[
                 Block(block_id="b1", index=0, text="Figure 1. Test.", block_type=BlockType.BODY),
                 Block(block_id="b2", index=1, text="Body.", block_type=BlockType.BODY),
@@ -357,6 +387,7 @@ class TestCaptionMatcherGaps:
 
     def test_enhance_skipped_no_export_path(self, matcher):
         from app.models import Figure
+
         mock_vision = MagicMock()
         matcher.vision_client = mock_vision
         matcher.enable_vision = True
@@ -367,6 +398,7 @@ class TestCaptionMatcherGaps:
 
     def test_enhance_skipped_export_path_not_exists(self, matcher):
         from app.models import Figure
+
         mock_vision = MagicMock()
         matcher.vision_client = mock_vision
         matcher.enable_vision = True
@@ -377,6 +409,7 @@ class TestCaptionMatcherGaps:
 
     def test_enhance_generates_caption_when_missing(self, matcher, tmp_path):
         from app.models import Figure
+
         mock_vision = MagicMock()
         mock_vision.analyze_figure.return_value = "A bar chart showing revenue."
         matcher.vision_client = mock_vision
@@ -393,6 +426,7 @@ class TestCaptionMatcherGaps:
 
     def test_enhance_with_existing_caption(self, matcher, tmp_path):
         from app.models import Figure
+
         mock_vision = MagicMock()
         mock_vision.analyze_figure.return_value = "Detailed analysis."
         matcher.vision_client = mock_vision
@@ -400,8 +434,9 @@ class TestCaptionMatcherGaps:
 
         img_path = tmp_path / "fig.png"
         img_path.write_text("fake")
-        figures = [Figure(figure_id="f1", index=0, export_path=str(img_path),
-                          caption_text="Figure 1: Existing caption.")]
+        figures = [
+            Figure(figure_id="f1", index=0, export_path=str(img_path), caption_text="Figure 1: Existing caption.")
+        ]
         result = matcher._enhance_captions_with_vision(figures)
         assert result == 1
         assert figures[0].metadata.get("caption_source") == "manual_with_vision"
@@ -409,6 +444,7 @@ class TestCaptionMatcherGaps:
 
     def test_enhance_exception_does_not_crash(self, matcher, tmp_path):
         from app.models import Figure
+
         mock_vision = MagicMock()
         mock_vision.analyze_figure.side_effect = Exception("vision fail")
         matcher.vision_client = mock_vision
@@ -422,6 +458,7 @@ class TestCaptionMatcherGaps:
 
     def test_enhance_vision_returns_none(self, matcher, tmp_path):
         from app.models import Figure
+
         mock_vision = MagicMock()
         mock_vision.analyze_figure.return_value = None
         matcher.vision_client = mock_vision
@@ -436,6 +473,7 @@ class TestCaptionMatcherGaps:
     def test_enhance_empty_caption_text_generates(self, matcher, tmp_path):
         """Empty string caption_text triggers vision generation (line 159)."""
         from app.models import Figure
+
         mock_vision = MagicMock()
         mock_vision.analyze_figure.return_value = "A diagram of architecture."
         matcher.vision_client = mock_vision
@@ -443,8 +481,7 @@ class TestCaptionMatcherGaps:
 
         img_path = tmp_path / "fig.png"
         img_path.write_text("fake")
-        figures = [Figure(figure_id="f1", index=0, export_path=str(img_path),
-                          caption_text="")]
+        figures = [Figure(figure_id="f1", index=0, export_path=str(img_path), caption_text="")]
         result = matcher._enhance_captions_with_vision(figures)
         assert result == 1
         assert figures[0].metadata.get("caption_source") == "vision_generated"
@@ -453,6 +490,7 @@ class TestCaptionMatcherGaps:
 
     def test_find_caption_candidates_body_blocks(self, matcher):
         from app.models import Block, BlockType
+
         blocks = [
             Block(block_id="b1", index=0, text="Figure 1. Test.", block_type=BlockType.BODY),
             Block(block_id="b2", index=1, text="Body.", block_type=BlockType.BODY),
@@ -464,6 +502,7 @@ class TestCaptionMatcherGaps:
     def test_find_caption_candidates_heading_skipped(self, matcher):
         """Heading blocks are skipped (line 184-185)."""
         from app.models import Block, BlockType
+
         blocks = [
             Block(block_id="b1", index=0, text="Figure 1. Analysis", block_type=BlockType.HEADING_1),
             Block(block_id="b2", index=1, text="Figure 2. Real caption.", block_type=BlockType.BODY),
@@ -473,6 +512,7 @@ class TestCaptionMatcherGaps:
 
     def test_find_caption_candidates_no_matches(self, matcher):
         from app.models import Block, BlockType
+
         blocks = [
             Block(block_id="b1", index=0, text="Introduction", block_type=BlockType.BODY),
         ]
@@ -487,6 +527,7 @@ class TestCaptionMatcherGaps:
 
     def test_match_candidates_basic(self, matcher):
         from app.models import Block, BlockType, Figure
+
         blocks = [
             Block(block_id="b1", index=0, text="Figure 1. Caption.", block_type=BlockType.BODY),
             Block(block_id="b2", index=1, text="Body.", block_type=BlockType.BODY),
@@ -499,6 +540,7 @@ class TestCaptionMatcherGaps:
 
     def test_match_candidates_already_assigned(self, matcher):
         from app.models import Block, BlockType, Figure
+
         blocks = [
             Block(block_id="b1", index=0, text="Figure 1. Cap1.", block_type=BlockType.BODY),
             Block(block_id="b2", index=1, text="Figure 2. Cap2.", block_type=BlockType.BODY),
@@ -515,6 +557,7 @@ class TestCaptionMatcherGaps:
 
     def test_match_candidates_figure_no_block_index(self, matcher):
         from app.models import Block, BlockType, Figure
+
         blocks = [
             Block(block_id="b1", index=0, text="Figure 1. Cap.", block_type=BlockType.BODY),
         ]
@@ -524,6 +567,7 @@ class TestCaptionMatcherGaps:
 
     def test_match_candidates_figure_block_index_not_in_map(self, matcher):
         from app.models import Block, BlockType, Figure
+
         blocks = [
             Block(block_id="b1", index=0, text="Figure 1. Cap.", block_type=BlockType.BODY),
         ]
@@ -533,6 +577,7 @@ class TestCaptionMatcherGaps:
 
     def test_match_candidates_beyond_max_distance(self, matcher):
         from app.models import Block, BlockType, Figure
+
         blocks = [
             Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY),
             Block(block_id="b2", index=1, text="Body.", block_type=BlockType.BODY),
@@ -546,6 +591,7 @@ class TestCaptionMatcherGaps:
 
     def test_match_candidates_tiebreaker_prefers_above(self, matcher):
         from app.models import Block, BlockType, Figure
+
         blocks = [
             Block(block_id="b1", index=0, text="Body above.", block_type=BlockType.BODY),
             Block(block_id="b2", index=1, text="Figure 1. Caption.", block_type=BlockType.BODY),
@@ -562,6 +608,7 @@ class TestCaptionMatcherGaps:
     def test_match_candidates_tiebreaker_equal_distance_both_above(self, matcher):
         """When both above with same abs distance, first encountered wins."""
         from app.models import Block, BlockType, Figure
+
         blocks = [
             Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY),
             Block(block_id="b2", index=1, text="Figure 1. Cap.", block_type=BlockType.BODY),
@@ -577,6 +624,7 @@ class TestCaptionMatcherGaps:
     def test_match_candidates_no_caption_block_in_map(self, matcher):
         """Caption index not in block_map (line 214)."""
         from app.models import Block, BlockType, Figure
+
         blocks = [
             Block(block_id="b1", index=0, text="Figure 1. Cap.", block_type=BlockType.BODY),
         ]
@@ -587,6 +635,7 @@ class TestCaptionMatcherGaps:
     def test_match_candidates_no_caption_list_index(self, matcher):
         """Caption index not in list_index_map (line 214)."""
         from app.models import Block, BlockType, Figure
+
         blocks = [
             Block(block_id="b1", index=0, text="Figure 1. Cap.", block_type=BlockType.BODY),
         ]
@@ -598,6 +647,7 @@ class TestCaptionMatcherGaps:
     def test_match_candidates_figure_block_index_none(self, matcher):
         """figure.metadata block_index is None (line 227)."""
         from app.models import Block, BlockType, Figure
+
         blocks = [
             Block(block_id="b1", index=0, text="Figure 1. Cap.", block_type=BlockType.BODY),
         ]
@@ -608,6 +658,7 @@ class TestCaptionMatcherGaps:
     def test_match_candidates_current_dist_less_than_min(self, matcher):
         """New figure is closer than current best (lines 237-238)."""
         from app.models import Block, BlockType, Figure
+
         blocks = [
             Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY),
             Block(block_id="b2", index=1, text="Figure 1. Cap.", block_type=BlockType.BODY),
@@ -627,7 +678,9 @@ class TestCaptionMatcherGaps:
 
     def test_link_figures_convenience(self):
         from app.models import Block, BlockType, Figure, PipelineDocument
-        doc = PipelineDocument(document_id="t",
+
+        doc = PipelineDocument(
+            document_id="t",
             blocks=[Block(block_id="b1", index=0, text="Figure 1. Test.", block_type=BlockType.BODY)],
             figures=[Figure(figure_id="f1", index=0, metadata={"block_index": 0})],
         )
@@ -636,21 +689,25 @@ class TestCaptionMatcherGaps:
 
     def test_link_figures_with_vision(self):
         from app.models import Block, BlockType, Figure, PipelineDocument
-        doc = PipelineDocument(document_id="t",
+
+        doc = PipelineDocument(
+            document_id="t",
             blocks=[Block(block_id="b1", index=0, text="Body.", block_type=BlockType.BODY)],
             figures=[Figure(figure_id="f1", index=0, metadata={"block_index": 0})],
         )
         result = link_figures(doc, enable_vision=True)
         assert result is not None
 
+
 # ===================================================================
 # Global figure_analyzer instance coverage (line 109)
 # ===================================================================
 
-class TestFigureAnalyzerGlobalInstance:
 
+class TestFigureAnalyzerGlobalInstance:
     def test_global_instance_exists(self):
         from app.pipeline.figures.analyzer import figure_analyzer
+
         assert isinstance(figure_analyzer, FigureAnalyzer)
         assert figure_analyzer.min_width == 300
         assert figure_analyzer.min_height == 300

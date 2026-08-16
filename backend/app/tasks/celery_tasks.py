@@ -26,17 +26,23 @@ logger = logging.getLogger(__name__)
 from celery.signals import setup_logging as celery_setup_logging
 from celery.signals import worker_process_init
 
+
 @celery_setup_logging.connect
 def config_loggers(*args, **kwargs):
     from app.config.settings import settings
+
     if settings.ENABLE_STRUCTURED_LOGGING:
         from app.config.logging_config import setup_logging
+
         setup_logging()
+
 
 @worker_process_init.connect
 def config_telemetry(*args, **kwargs):
     from app.core.opentelemetry_setup import init_telemetry
+
     init_telemetry()
+
 
 # Configure Celery
 celery_app = Celery(
@@ -47,7 +53,7 @@ celery_app = Celery(
 celery_app.conf.task_queues = (
     Queue("interactive"),
     Queue("batch"),
-    Queue("dlq")  # Dead-letter queue
+    Queue("dlq"),  # Dead-letter queue
 )
 celery_app.conf.task_routes = {
     "interactive.*": {"queue": "interactive"},

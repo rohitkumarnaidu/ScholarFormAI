@@ -93,9 +93,7 @@ class TestMemoryProfiling:
         )
 
         peak_buffered = chunk_size
-        assert peak_buffered < STREAMING_MEMORY_LIMIT_MB * MB, (
-            f"Single chunk {peak_buffered / MB:.1f}MB exceeds limit"
-        )
+        assert peak_buffered < STREAMING_MEMORY_LIMIT_MB * MB, f"Single chunk {peak_buffered / MB:.1f}MB exceeds limit"
 
     @pytest.mark.performance
     @pytest.mark.slow
@@ -109,15 +107,17 @@ class TestMemoryProfiling:
 
             n_guidelines = 1000
             for i in range(n_guidelines):
-                engine.knowledge_base.append({
-                    "content": f"Academic formatting guideline {i}: " + "rules " * 100,
-                    "embedding": [float(j % 100) / 100.0 for j in range(128)],
-                    "metadata": {
-                        "source": f"style-guide-{i % 10}",
-                        "section": "formatting",
-                        "page": i % 50,
-                    },
-                })
+                engine.knowledge_base.append(
+                    {
+                        "content": f"Academic formatting guideline {i}: " + "rules " * 100,
+                        "embedding": [float(j % 100) / 100.0 for j in range(128)],
+                        "metadata": {
+                            "source": f"style-guide-{i % 10}",
+                            "section": "formatting",
+                            "page": i % 50,
+                        },
+                    }
+                )
 
             total_size = _estimate_object_size(engine.knowledge_base)
             total_size_mb = total_size / MB
@@ -168,6 +168,7 @@ class TestMemoryProfiling:
             assert len(remaining) == 0, f"Upload dir not empty after cleanup: {remaining}"
         finally:
             import shutil
+
             shutil.rmtree(upload_dir, ignore_errors=True)
 
     @pytest.mark.performance
@@ -215,10 +216,7 @@ class TestMemoryProfiling:
                     3600,
                 )
 
-            stored_sizes = [
-                cache_entry_size + len(f"test:llm:cache:{i}")
-                for i in range(n_entries)
-            ]
+            stored_sizes = [cache_entry_size + len(f"test:llm:cache:{i}") for i in range(n_entries)]
             total_stored = sum(stored_sizes)
             total_stored_mb = total_stored / MB
 
@@ -241,6 +239,4 @@ class TestMemoryProfiling:
         )
 
         single_size_mb = single_payload_size / MB
-        assert single_size_mb < WEBOOK_MEMORY_LIMIT_MB / 2, (
-            f"Single webhook payload {single_size_mb:.1f}MB too large"
-        )
+        assert single_size_mb < WEBOOK_MEMORY_LIMIT_MB / 2, f"Single webhook payload {single_size_mb:.1f}MB too large"

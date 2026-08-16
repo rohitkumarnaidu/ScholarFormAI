@@ -24,6 +24,7 @@ def mock_ai_models():
 @pytest.fixture
 def client():
     from app.schemas.user import User
+
     user = User(id="user-123", email="test@example.com", role="authenticated")
     app.dependency_overrides[get_current_user] = lambda: user
     with TestClient(app) as tc:
@@ -47,7 +48,9 @@ class TestSignup:
         return {**defaults, **kw}
 
     def test_success(self, client):
-        with patch("app.routers.v1.auth.AuthService.signup", new=AsyncMock(return_value={"id": "new-user", "email": "a@b.com"})):
+        with patch(
+            "app.routers.v1.auth.AuthService.signup", new=AsyncMock(return_value={"id": "new-user", "email": "a@b.com"})
+        ):
             resp = client.post("/api/v1/auth/signup", json=self._payload())
         assert resp.status_code == 200
         assert resp.json()["error"] is None
@@ -67,7 +70,9 @@ class TestSignup:
 
 class TestLogin:
     def test_success(self, client):
-        with patch("app.routers.v1.auth.AuthService.login", new=AsyncMock(return_value={"token": "jwt", "user": {"id": "u1"}})):
+        with patch(
+            "app.routers.v1.auth.AuthService.login", new=AsyncMock(return_value={"token": "jwt", "user": {"id": "u1"}})
+        ):
             resp = client.post("/api/v1/auth/login", json={"email": "a@b.com", "password": _VALID_PW})
         assert resp.status_code == 200
         assert resp.json()["data"]["token"] == "jwt"
@@ -115,15 +120,25 @@ class TestVerifyOTP:
 class TestResetPassword:
     def test_success(self, client):
         with patch("app.routers.v1.auth.AuthService.reset_password", new=AsyncMock(return_value={"message": "done"})):
-            resp = client.post("/api/v1/auth/reset-password", json={
-                "email": "a@b.com", "otp": "123456", "new_password": _VALID_PW,
-            })
+            resp = client.post(
+                "/api/v1/auth/reset-password",
+                json={
+                    "email": "a@b.com",
+                    "otp": "123456",
+                    "new_password": _VALID_PW,
+                },
+            )
         assert resp.status_code == 200
 
     def test_weak_new_password(self, client):
-        resp = client.post("/api/v1/auth/reset-password", json={
-            "email": "a@b.com", "otp": "123456", "new_password": _WEAK_PW,
-        })
+        resp = client.post(
+            "/api/v1/auth/reset-password",
+            json={
+                "email": "a@b.com",
+                "otp": "123456",
+                "new_password": _WEAK_PW,
+            },
+        )
         assert resp.status_code == 422
 
     def test_missing_fields(self, client):

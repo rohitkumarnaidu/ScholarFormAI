@@ -1,4 +1,5 @@
 """Validate all 8 files parse correctly."""
+
 import ast
 import os
 
@@ -31,7 +32,7 @@ for fname in FILES:
             end = min(len(lines), e.lineno + 3)
             for i in range(start, end):
                 marker = ">>>" if i == e.lineno - 1 else "   "
-                print(f"  {marker} {i+1}: {lines[i][:200]}")
+                print(f"  {marker} {i + 1}: {lines[i][:200]}")
         all_ok = False
     except Exception as e:
         print(f"ERROR in {fname}: {e}")

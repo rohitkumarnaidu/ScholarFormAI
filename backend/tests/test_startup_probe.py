@@ -85,7 +85,8 @@ def test_lifespan_sets_grobid_probe_state_even_when_failed():
     with (
         patch("app.main._probe_grobid_startup", new=AsyncMock(return_value=False)),
         patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser", return_value=MagicMock()),
-        patch("app.pipeline.intelligence.rag_engine.get_rag_engine", return_value=MagicMock()),TestClient(app) as client
+        patch("app.pipeline.intelligence.rag_engine.get_rag_engine", return_value=MagicMock()),
+        TestClient(app) as client,
     ):
         assert client.app.state.grobid_startup_probe_ok is False
         response = client.get("/api/v1/health")

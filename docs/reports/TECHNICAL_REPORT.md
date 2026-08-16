@@ -14,61 +14,37 @@ ScholarForm AI is a distributed document formatting platform employing a **micro
 
 ### 1.1 System Decomposition
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     CLIENT LAYER                                │
-│  ┌───────────────────────────────────────────────────────────┐  │
-│  │  Next.js 16 (App Router) — 36 Pages, 28+ Components       │  │
-│  │  React 19 / Tailwind CSS 3 / TanStack Query 5              │  │
-│  │  WebSocket (live preview) / SSE (streaming)                │  │
-│  └───────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     API GATEWAY (FastAPI)                        │
-│  ┌───────────────────────────────────────────────────────────┐  │
-│  │  Middleware Stack (11 layers): CORS → RequestID → HSTS    │  │
-│  │  → Rate Limit → Security Headers → CSRF → RBAC → Audit   │  │
-│  │  15 Route Modules / 34 REST Endpoints / Pydantic Schemas  │  │
-│  │  JWKS JWT Verification / API Key Fernet Encryption        │  │
-│  └───────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                  APPLICATION LAYER (Services)                    │
-│  ┌───────────────────────────────────────────────────────────┐  │
-│  │  27 Business Logic Services:                              │  │
-│  │  • Auth / User / API Key / Session                        │  │
-│  │  • Document CRUD / Generation / Enhancement               │  │
-│  │  • LLM Proxy / Provider Registry / Model Store            │  │
-│  │  • Citation Assembly / Crossref Client / CSL Engine       │  │
-│  │  • Quality Scoring / Suggestion / Feedback                │  │
-│  │  • Webhook / Encryption / Audit Log / Health Checks       │  │
-│  │  • Analytics / Feature Flags / A/B Testing                │  │
-│  └───────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-            ┌─────────────────┼─────────────────┐
-            ▼                 ▼                  ▼
-┌───────────────────┐ ┌──────────────┐ ┌────────────────────┐
-│  PIPELINE LAYER    │ │ DATA LAYER   │ │ AI MICROSERVICES   │
-│  22 Sub-Packages   │ │              │ │ (Hugging Face)     │
-│ ┌───────────────┐ │ │ Supabase     │ │ ┌────────────────┐ │
-│ │Parser Pipeline│ │ │ • PostgreSQL │ │ │GROBID Service  │ │
-│ │Structure Det. │ │ │ • Auth (JWT) │ │ │Docling Service │ │
-│ │Classifier     │ │ │ • Storage    │ │ │LLM-based PDF parsing      │ │
-│ │Formatter      │ │ │ • RLS        │ │ │PaddleOCR       │ │
-│ │Validator      │ │ │              │ │ │LLMClassifier Service │ │
-│ │Exporter       │ │ │ Redis        │ │ └────────────────┘ │
-│ │Generator Agent│ │ │ • Celery     │ │                    │
-│ │Multi-Doc Synth│ │ │ • Rate Limit │ │ LLM Providers:     │
-│ └───────────────┘ │ │ • Cache      │ │ • NVIDIA NIM       │
-└───────────────────┘ │              │ │ • Groq             │
-                      │ ChromaDB     │ │ • Ollama           │
-                      │ • RAG Vectors│ └────────────────────┘
-                      └──────────────┘
+```mermaid
+flowchart TD
+    subgraph Client [CLIENT LAYER]
+        Next["Next.js 16 (App Router) — 36 Pages, 28+ Components<br>React 19 / Tailwind CSS 3 / TanStack Query 5<br>WebSocket (live preview) / SSE (streaming)"]
+    end
+    
+    subgraph Gateway [API GATEWAY]
+        FastAPI["FastAPI Gateway<br>Middleware Stack (11 layers): CORS → RequestID → HSTS<br>→ Rate Limit → Security Headers → CSRF → RBAC → Audit<br>15 Route Modules / 34 REST Endpoints / Pydantic Schemas<br>JWKS JWT Verification / API Key Fernet Encryption"]
+    end
+    
+    subgraph AppLayer [APPLICATION LAYER]
+        Services["27 Business Logic Services:<br>• Auth / User / API Key / Session<br>• Document CRUD / Generation / Enhancement<br>• LLM Proxy / Provider Registry / Model Store<br>• Citation Assembly / Crossref Client / CSL Engine<br>• Quality Scoring / Suggestion / Feedback<br>• Webhook / Encryption / Audit Log / Health Checks<br>• Analytics / Feature Flags / A/B Testing"]
+    end
+    
+    subgraph Pipeline [PIPELINE LAYER]
+        PipeServ["22 Sub-Packages:<br>• Parser Pipeline<br>• Structure Det.<br>• Classifier<br>• Formatter<br>• Validator<br>• Exporter<br>• Generator Agent<br>• Multi-Doc Synth"]
+    end
+    
+    subgraph Data [DATA LAYER]
+        DB["<b>Supabase</b><br>• PostgreSQL, Auth (JWT), Storage, RLS<br><br><b>Redis</b><br>• Celery, Rate Limit, Cache<br><br><b>ChromaDB</b><br>• RAG Vectors"]
+    end
+    
+    subgraph AI [AI MICROSERVICES]
+        Models["<b>Hugging Face Spaces:</b><br>GROBID Service, Docling Service, LLM-based PDF parsing, PaddleOCR, LLMClassifier Service<br><br><b>LLM Providers:</b><br>NVIDIA NIM, Groq, Ollama"]
+    end
+
+    Client --> Gateway
+    Gateway --> AppLayer
+    AppLayer --> Pipeline
+    AppLayer --> Data
+    AppLayer --> AI
 ```
 
 ### 1.2 Directory Structure
@@ -165,46 +141,39 @@ ScholarFormAI/
 
 ### 3.1 Document Formatting Pipeline (12 Stages)
 
-```
-Upload ──→ ┌──────────────────────────────────────────────────────┐
-           │ 1. File Validation (MIME + Magic Byte + Extension)   │
-           │ 2. Virus Scan (ClamAV)                               │
-           │ 3. PDF: GROBID → Docling → PyMuPDF (3-tier)         │
-           │    TXT: Direct read                                  │
-           │    DOCX: python-docx                                 │
-           │    MD/HTML/TEX: Dedicated parsers                    │
-           │ 4. Structure Detection                                │
-           │ 5. Block Classification (LLMClassifier optional)           │
-           │ 6. NLP Enhancement (YAKE keyword + spaCy NER)       │
-           │ 7. Caption Matching (tables + figures)               │
-           │ 8. Figure Quality Analysis (optional)                │
-           │ 9. Numbering Engine (sections, equations, refs)       │
-           │ 10. Cross-Reference Validation                        │
-           │ 11. Template Formatting (python-docx, 17 templates)  │
-           │ 12. DOCX/PDF Export + Supabase Storage Upload        │
-           └──────────────────────────────────────────────────────┘
-                              │
-                              ▼
-                    SSE Events → Frontend
-                    { stage, progress, status }
+```mermaid
+flowchart TD
+    Upload[Upload] --> V1[1. File Validation<br>MIME + Magic Byte + Extension]
+    V1 --> V2[2. Virus Scan<br>ClamAV]
+    V2 --> V3["3. Parsing<br><b>PDF:</b> GROBID → Docling → PyMuPDF (3-tier)<br><b>TXT:</b> Direct read<br><b>DOCX:</b> python-docx<br><b>MD/HTML/TEX:</b> Dedicated parsers"]
+    V3 --> V4[4. Structure Detection]
+    V4 --> V5[5. Block Classification<br>LLMClassifier optional]
+    V5 --> V6[6. NLP Enhancement<br>YAKE keyword + spaCy NER]
+    V6 --> V7[7. Caption Matching<br>tables + figures]
+    V7 --> V8[8. Figure Quality Analysis<br>optional]
+    V8 --> V9[9. Numbering Engine<br>sections, equations, refs]
+    V9 --> V10[10. Cross-Reference Validation]
+    V10 --> V11[11. Template Formatting<br>python-docx, 17 templates]
+    V11 --> V12[12. Export & Storage<br>DOCX/PDF Export + Supabase Storage Upload]
+    
+    V12 --> SSE[SSE Events → Frontend<br>{ stage, progress, status }]
 ```
 
 ### 3.2 AI Agent Generation Pipeline (11 Stages)
 
-```
-Prompt ──→ ┌──────────────────────────────────────────────────────┐
-           │ 1. Task Parser (extract intent, format, constraints) │
-           │ 2. Outline Generator (section structure)             │
-           │ 3. User Approval (SSE stream to frontend)            │
-           │ 4. Section-by-Section Writer (3-tier LLM fallback)  │
-           │ 5. Citation Assembler (CSL engine + Crossref)        │
-           │ 6. Quality Scorer (hallucination, relevance, style)  │
-           │ 7. Reference Formatter (17 template styles)          │
-           │ 8. Multi-Doc Synthesizer (ChromaDB RAG, 2–6 PDFs)   │
-           │ 9. Template Renderer                                 │
-           │ 10. DOCX/PDF Export                                  │
-           │ 11. SSE Streaming (real-time token output)           │
-           └──────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    Prompt[Prompt] --> V1[1. Task Parser<br>extract intent, format, constraints]
+    V1 --> V2[2. Outline Generator<br>section structure]
+    V2 --> V3[3. User Approval<br>SSE stream to frontend]
+    V3 --> V4[4. Section-by-Section Writer<br>3-tier LLM fallback]
+    V4 --> V5[5. Citation Assembler<br>CSL engine + Crossref]
+    V5 --> V6[6. Quality Scorer<br>hallucination, relevance, style]
+    V6 --> V7[7. Reference Formatter<br>17 template styles]
+    V7 --> V8[8. Multi-Doc Synthesizer<br>ChromaDB RAG, 2–6 PDFs]
+    V8 --> V9[9. Template Renderer]
+    V9 --> V10[10. DOCX/PDF Export]
+    V10 --> V11[11. SSE Streaming<br>real-time token output]
 ```
 
 ### 3.3 Design Patterns
@@ -284,32 +253,21 @@ Prompt ──→ ┌────────────────────
 
 ### 5.3 Rate Limiting Architecture
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                   RATE LIMITING STACK                     │
-│                                                          │
-│  Layer 1: SlowAPI (Global)                              │
-│    • 60 requests/minute per IP                          │
-│    • Applied before any route handler                   │
-│                                                          │
-│  Layer 2: Rate Limit Middleware (Sliding Window)        │
-│    • 2 requests/second burst per IP                     │
-│    • Redis-backed sliding window counter                │
-│    • 429 response with Retry-After header               │
-│                                                          │
-│  Layer 3: Tier Rate Limit (Token Bucket)               │
-│    • Guest: 5 uploads/day, 100 API calls/hour           │
-│    • Free: 50 uploads/day, 500 API calls/hour           │
-│    • Pro: 500 uploads/day, 5000 API calls/hour          │
-│    • Admin: Custom limits                               │
-│                                                          │
-│  Layer 4: Auth Rate Limit (SlowAPI per-endpoint)       │
-│    • Login/Signup: 10/minute                            │
-│    • Forgot/Reset password: 5/minute                    │
-│                                                          │
-│  Layer 5: Webhook Rate Limit                            │
-│    • Outbound: 100 hooks/hour per user                 │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    subgraph Layers [RATE LIMITING STACK]
+        L1["<b>Layer 1: SlowAPI (Global)</b><br>• 60 requests/minute per IP<br>• Applied before any route handler"]
+        
+        L2["<b>Layer 2: Rate Limit Middleware (Sliding Window)</b><br>• 2 requests/second burst per IP<br>• Redis-backed sliding window counter<br>• 429 response with Retry-After header"]
+        
+        L3["<b>Layer 3: Tier Rate Limit (Token Bucket)</b><br>• Guest: 5 uploads/day, 100 API calls/hour<br>• Free: 50 uploads/day, 500 API calls/hour<br>• Pro: 500 uploads/day, 5000 API calls/hour<br>• Admin: Custom limits"]
+        
+        L4["<b>Layer 4: Auth Rate Limit (SlowAPI per-endpoint)</b><br>• Login/Signup: 10/minute<br>• Forgot/Reset password: 5/minute"]
+        
+        L5["<b>Layer 5: Webhook Rate Limit</b><br>• Outbound: 100 hooks/hour per user"]
+        
+        L1 --> L2 --> L3 --> L4 --> L5
+    end
 ```
 
 ---
@@ -374,18 +332,23 @@ Prompt ──→ ┌────────────────────
 
 ### 7.2 CI/CD Pipeline
 
-```
-Git Push ──→ ┌─────────────────────────────────────────────────┐
-             │ 1. Pre-commit Hooks (ruff, eslint, commitlint)  │
-             │ 2. GitHub Actions Triggered                      │
-             │    ├─→ CodeQL + Dependency Review (parallel)     │
-             │    ├─→ Backend CI (ruff → mypy → pytest)         │
-             │    ├─→ Frontend CI (eslint → prettier → test)    │
-             │    └─→ E2E Tests (Playwright)                    │
-             │ 3. Merge Queue Validation                        │
-             │ 4. Docker Build + Cosign Sign + SBOM Attach      │
-             │ 5. Deploy (Frontend: Vercel / Backend: Render)   │
-             └─────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    Push[Git Push] --> Hooks[1. Pre-commit Hooks<br>ruff, eslint, commitlint]
+    Hooks --> Actions[2. GitHub Actions Triggered]
+    
+    Actions --> CodeQL[CodeQL + Dependency Review]
+    Actions --> BackendCI[Backend CI<br>ruff → mypy → pytest]
+    Actions --> FrontendCI[Frontend CI<br>eslint → prettier → test]
+    Actions --> E2E[E2E Tests<br>Playwright]
+    
+    CodeQL --> Merge[3. Merge Queue Validation]
+    BackendCI --> Merge
+    FrontendCI --> Merge
+    E2E --> Merge
+    
+    Merge --> Docker[4. Docker Build + Cosign Sign + SBOM Attach]
+    Docker --> Deploy[5. Deploy<br>Frontend: Vercel / Backend: Render]
 ```
 
 ### 7.3 Monitoring & Observability

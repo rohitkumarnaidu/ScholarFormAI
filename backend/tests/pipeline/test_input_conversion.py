@@ -13,6 +13,7 @@ from app.pipeline.input_conversion.converter import ConversionError, InputConver
 # ConversionError
 # ===========================================================================
 
+
 class TestConversionError:
     def test_is_exception(self):
         assert issubclass(ConversionError, Exception)
@@ -25,6 +26,7 @@ class TestConversionError:
 # ===========================================================================
 # InputConverter.__init__
 # ===========================================================================
+
 
 class TestInputConverterInit:
     def test_default_temp_dir(self):
@@ -53,6 +55,7 @@ class TestInputConverterInit:
 
 INPUT = r"C:\path\file"
 TMP = r"C:\Users\test\AppData\Local\Temp"
+
 
 class TestConvertToDocx:
     def test_input_file_not_found(self):
@@ -95,10 +98,7 @@ class TestConvertToDocx:
                 with patch("os.remove"):
                     with patch("os.rename") as m_rename:
                         ic.convert_to_docx(INPUT + ".doc", "job1")
-                        m_rename.assert_called_once_with(
-                            TMP + r"\job1\file.docx",
-                            TMP + r"\job1\input.docx"
-                        )
+                        m_rename.assert_called_once_with(TMP + r"\job1\file.docx", TMP + r"\job1\input.docx")
 
     def test_libreoffice_lo_output_not_found_raises(self):
         ic = InputConverter(temp_dir=TMP)
@@ -122,6 +122,7 @@ class TestConvertToDocx:
 # ===========================================================================
 # _get_libreoffice_cmd
 # ===========================================================================
+
 
 class TestGetLibreofficeCmd:
     def test_returns_first_found(self):
@@ -150,6 +151,7 @@ class TestGetLibreofficeCmd:
 # _run_pandoc
 # ===========================================================================
 
+
 class TestRunPandoc:
     def test_pandoc_not_installed(self):
         ic = InputConverter()
@@ -162,8 +164,7 @@ class TestRunPandoc:
         with patch("shutil.which", return_value="pandoc"), patch("subprocess.run") as m_run:
             ic._run_pandoc("/in.md", "/out.docx")
             m_run.assert_called_once_with(
-                ["pandoc", "/in.md", "-o", "/out.docx"],
-                check=True, capture_output=True, timeout=120
+                ["pandoc", "/in.md", "-o", "/out.docx"], check=True, capture_output=True, timeout=120
             )
 
     def test_pandoc_timeout(self):
@@ -184,6 +185,7 @@ class TestRunPandoc:
 # ===========================================================================
 # _run_libreoffice
 # ===========================================================================
+
 
 class TestRunLibreoffice:
     def test_soffice_not_installed(self):
@@ -222,6 +224,7 @@ class TestRunLibreoffice:
 # _run_libreoffice_to_pdf
 # ===========================================================================
 
+
 class TestRunLibreofficeToPdf:
     def test_soffice_not_installed(self):
         ic = InputConverter()
@@ -256,6 +259,7 @@ class TestRunLibreofficeToPdf:
 # ===========================================================================
 
 PDF = r"C:\docs\input.pdf"
+
 
 class TestHandlePdf:
     def test_ocr_disabled_uses_libreoffice(self):
@@ -354,6 +358,7 @@ class TestHandlePdf:
 # convert_to_pdf
 # ===========================================================================
 
+
 class TestConvertToPdf:
     def test_input_not_found(self):
         ic = InputConverter()
@@ -389,9 +394,11 @@ class TestConvertToPdf:
 # Helpers
 # ===========================================================================
 
+
 class TimeoutExpiredMock(subprocess.TimeoutExpired):
     def __init__(self, cmd, timeout):
         super().__init__(cmd, timeout)
+
 
 class CalledProcessErrorMock(subprocess.CalledProcessError):
     def __init__(self, returncode, cmd):

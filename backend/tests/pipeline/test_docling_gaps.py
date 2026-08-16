@@ -41,10 +41,12 @@ class TestDoclingUtilities:
 
     def test_load_converter_import_exception(self):
         orig_import = __import__
+
         def fake_import(name, *args, **kw):
             if "docling" in name:
                 raise ImportError("docling not available")
             return orig_import(name, *args, **kw)
+
         with patch("app.pipeline.services.docling_client.DOCLING_AVAILABLE", True):
             with patch("builtins.__import__", side_effect=fake_import):
                 assert _load_docling_converter() is None

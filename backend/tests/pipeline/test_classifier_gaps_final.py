@@ -1,4 +1,3 @@
-
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
@@ -21,16 +20,25 @@ def classifier():
     return ContentClassifier()
 
 
-def block(block_id: str, index: int, block_type=BlockType.BODY, text="",
-           level=None, section_name="", metadata=None, **kw):
+def block(
+    block_id: str, index: int, block_type=BlockType.BODY, text="", level=None, section_name="", metadata=None, **kw
+):
     return Block(
-        block_id=block_id, index=index, block_type=block_type, text=text,
-        level=level, section_name=section_name, metadata=metadata or {}, **kw)
+        block_id=block_id,
+        index=index,
+        block_type=block_type,
+        text=text,
+        level=level,
+        section_name=section_name,
+        metadata=metadata or {},
+        **kw,
+    )
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # _looks_like_heading — line 85
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestLooksLikeHeadingGaps:
     def test_long_text_ending_with_colon(self, classifier):
@@ -43,12 +51,16 @@ class TestLooksLikeHeadingGaps:
 # _resolve_heading_type — lines 95, 97, 99
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestResolveHeadingTypeGaps:
-    @pytest.mark.parametrize("level,expected", [
-        (2, BlockType.HEADING_2),
-        (3, BlockType.HEADING_3),
-        (4, BlockType.HEADING_4),
-    ])
+    @pytest.mark.parametrize(
+        "level,expected",
+        [
+            (2, BlockType.HEADING_2),
+            (3, BlockType.HEADING_3),
+            (4, BlockType.HEADING_4),
+        ],
+    )
     def test_level_mapping(self, classifier, level, expected):
         """Each heading level maps to the correct BlockType."""
         b = block("b", 0, metadata={"level": level}, level=level)
@@ -59,6 +71,7 @@ class TestResolveHeadingTypeGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 # _map_llm_label — lines 113-115, 119, 121, 123, 125, 127, 133-139
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestMapScibertLabelRemainingGaps:
     def test_abstract_heading(self, classifier):
@@ -126,6 +139,7 @@ class TestMapScibertLabelRemainingGaps:
 # _predict_llm_batch — lines 143, 145, 155->169, 157->168, 175-177
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestPredictScibertBatchRemainingGaps:
     def test_scibert_disabled(self, classifier):
         """When SciBERT is disabled, return None."""
@@ -148,9 +162,12 @@ class TestPredictScibertBatchRemainingGaps:
                 mock_get_llm.return_value = mock_llm
                 result = classifier._predict_llm_batch([block("b", 0, text="hello")])
         assert result is None
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # _apply_llm_predictions — lines 190, 193->188, 200, 204, 228
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestApplyScibertPredictionsRemainingGaps:
     def test_first_loop_break(self, classifier):
@@ -190,6 +207,7 @@ class TestApplyScibertPredictionsRemainingGaps:
 # process — lines 254-261
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestProcessGaps:
     def test_process_exception_recovery(self, classifier):
         """Exception in _run_classification is caught, stage is recorded as error."""
@@ -206,12 +224,13 @@ class TestProcessGaps:
 #                       563-564
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestRunClassificationRemainingGaps:
     def test_empty_text_continue(self, classifier):
         """Block with empty text is skipped (stays UNKNOWN)."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
-            blocks=[block("b0", 0, BlockType.UNKNOWN, text="")])
+            document_id="d", metadata=DocumentMetadata(), blocks=[block("b0", 0, BlockType.UNKNOWN, text="")]
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -223,7 +242,8 @@ class TestRunClassificationRemainingGaps:
         doc = PipelineDocument(
             document_id="d",
             metadata=DocumentMetadata(ai_hints={"grobid_metadata": {"title": "My Paper", "confidence": 0.95}}),
-            blocks=[block("b0", 0, BlockType.BODY, text="My Paper")])
+            blocks=[block("b0", 0, BlockType.BODY, text="My Paper")],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -235,13 +255,16 @@ class TestRunClassificationRemainingGaps:
         """Front-matter block matching GROBID author gets AUTHOR type."""
         doc = PipelineDocument(
             document_id="d",
-            metadata=DocumentMetadata(ai_hints={
-                "grobid_metadata": {"authors": [{"full_name": "John Smith"}], "confidence": 0.9},
-            }),
+            metadata=DocumentMetadata(
+                ai_hints={
+                    "grobid_metadata": {"authors": [{"full_name": "John Smith"}], "confidence": 0.9},
+                }
+            ),
             blocks=[
                 block("b0", 0, BlockType.TITLE, text="Title"),
                 block("b1", 1, BlockType.BODY, text="John Smith"),
-            ])
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -253,17 +276,20 @@ class TestRunClassificationRemainingGaps:
         """Front-matter block matching GROBID affiliation gets AFFILIATION type."""
         doc = PipelineDocument(
             document_id="d",
-            metadata=DocumentMetadata(ai_hints={
-                "grobid_metadata": {
-                    "authors": [{"full_name": "Jane Doe"}],
-                    "affiliations": ["MIT University"],
-                    "confidence": 0.9,
-                },
-            }),
+            metadata=DocumentMetadata(
+                ai_hints={
+                    "grobid_metadata": {
+                        "authors": [{"full_name": "Jane Doe"}],
+                        "affiliations": ["MIT University"],
+                        "confidence": 0.9,
+                    },
+                }
+            ),
             blocks=[
                 block("b0", 0, BlockType.TITLE, text="Title"),
                 block("b1", 1, BlockType.BODY, text="MIT University"),
-            ])
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -274,11 +300,13 @@ class TestRunClassificationRemainingGaps:
     def test_email_with_affiliation(self, classifier):
         """Email line with affiliation indicator text → AFFILIATION via email rule."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", 0, BlockType.TITLE, text="Title"),
                 block("b1", 1, BlockType.BODY, text="alice@school.edu"),
-            ])
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -289,11 +317,13 @@ class TestRunClassificationRemainingGaps:
     def test_short_name_fallback_confidence(self, classifier):
         """Short istitle name (1-4 words) in fallback gets boosted confidence."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", 0, BlockType.TITLE, text="Title"),
                 block("b1", 1, BlockType.BODY, text="Testing"),
-            ])
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=10):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -304,13 +334,21 @@ class TestRunClassificationRemainingGaps:
     def test_abstract_heading_in_body_zone(self, classifier):
         """Heading with 'abstract' in section_name → ABSTRACT_HEADING."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", 0, BlockType.TITLE, text="Title"),
-                block("b1", 1, BlockType.BODY, text="Abstract",
-                      metadata={"is_heading_candidate": True}, level=1,
-                      section_name="abstract"),
-            ])
+                block(
+                    "b1",
+                    1,
+                    BlockType.BODY,
+                    text="Abstract",
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name="abstract",
+                ),
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -320,34 +358,53 @@ class TestRunClassificationRemainingGaps:
     def test_keywords_heading_in_body_zone(self, classifier):
         """Heading with 'key words' in section_name → KEYWORDS_HEADING."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", 0, BlockType.TITLE, text="Title"),
-                block("b1", 1, BlockType.BODY, text="Keywords",
-                      metadata={"is_heading_candidate": True}, level=1,
-                      section_name="key words"),
-            ])
+                block(
+                    "b1",
+                    1,
+                    BlockType.BODY,
+                    text="Keywords",
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name="key words",
+                ),
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
                     classifier.process(doc)
         assert doc.blocks[1].block_type == BlockType.KEYWORDS_HEADING
 
-    @pytest.mark.parametrize("section,text,expected_type,expected_intent", [
-        ("acknowledgements", "Funding provided by NSF", BlockType.FUNDING, "FUNDING"),
-        ("acknowledgements", "No conflict of interest", BlockType.CONFLICT_OF_INTEREST, "CONFLICT_OF_INTEREST"),
-        ("acknowledgements", "We thank our colleagues", BlockType.ACKNOWLEDGEMENTS, "ACKNOWLEDGEMENTS"),
-    ])
+    @pytest.mark.parametrize(
+        "section,text,expected_type,expected_intent",
+        [
+            ("acknowledgements", "Funding provided by NSF", BlockType.FUNDING, "FUNDING"),
+            ("acknowledgements", "No conflict of interest", BlockType.CONFLICT_OF_INTEREST, "CONFLICT_OF_INTEREST"),
+            ("acknowledgements", "We thank our colleagues", BlockType.ACKNOWLEDGEMENTS, "ACKNOWLEDGEMENTS"),
+        ],
+    )
     def test_acknowledgements_heading_types(self, classifier, section, text, expected_type, expected_intent):
         """Acknowledgements heading text triggers FUNDING / CONFLICT_OF_INTEREST / ACKNOWLEDGEMENTS."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", 0, BlockType.TITLE, text="Title"),
-                block("b1", 1, BlockType.BODY, text=text,
-                      metadata={"is_heading_candidate": True}, level=1,
-                      section_name=section),
-            ])
+                block(
+                    "b1",
+                    1,
+                    BlockType.BODY,
+                    text=text,
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name=section,
+                ),
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -383,14 +440,22 @@ class TestRunClassificationRemainingGaps:
         b2 = block("b2", 2, BlockType.BODY, text="footnote text", metadata={})
         b2.metadata = FickleMeta()
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", 0, BlockType.TITLE, text="Title"),
-                block("b1", 1, BlockType.BODY, text="Intro",
-                      metadata={"is_heading_candidate": True}, level=1,
-                      section_name="introduction"),
+                block(
+                    "b1",
+                    1,
+                    BlockType.BODY,
+                    text="Intro",
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name="introduction",
+                ),
                 b2,
-            ])
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -400,14 +465,22 @@ class TestRunClassificationRemainingGaps:
     def test_abstract_body_section(self, classifier):
         """Non-heading block after abstract heading → ABSTRACT_BODY."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", 0, BlockType.TITLE, text="Title"),
-                block("b1", 1, BlockType.BODY, text="Abstract",
-                      metadata={"is_heading_candidate": True}, level=1,
-                      section_name="abstract"),
+                block(
+                    "b1",
+                    1,
+                    BlockType.BODY,
+                    text="Abstract",
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name="abstract",
+                ),
                 block("b2", 2, BlockType.BODY, text="This is the abstract"),
-            ])
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -418,14 +491,22 @@ class TestRunClassificationRemainingGaps:
     def test_keywords_body_section(self, classifier):
         """Non-heading block after keywords heading → KEYWORDS_BODY."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", 0, BlockType.TITLE, text="Title"),
-                block("b1", 1, BlockType.BODY, text="Keywords",
-                      metadata={"is_heading_candidate": True}, level=1,
-                      section_name="key words"),
+                block(
+                    "b1",
+                    1,
+                    BlockType.BODY,
+                    text="Keywords",
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name="key words",
+                ),
                 block("b2", 2, BlockType.BODY, text="kw1, kw2"),
-            ])
+            ],
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=1):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -436,16 +517,26 @@ class TestRunClassificationRemainingGaps:
     def test_main_loop_exception_handling(self, classifier):
         """Exception in main loop is caught; block stays UNKNOWN then handled by post-loop."""
         blocks = [
-            block("b0", 0, BlockType.BODY, text="Introduction",
-                  metadata={"is_heading_candidate": True}, level=1,
-                  section_name="introduction"),
-            block("b1", 1, BlockType.UNKNOWN, text="some text",
-                  metadata={"is_heading_candidate": True, "level": 1},
-                  section_name="test"),
+            block(
+                "b0",
+                0,
+                BlockType.BODY,
+                text="Introduction",
+                metadata={"is_heading_candidate": True},
+                level=1,
+                section_name="introduction",
+            ),
+            block(
+                "b1",
+                1,
+                BlockType.UNKNOWN,
+                text="some text",
+                metadata={"is_heading_candidate": True, "level": 1},
+                section_name="test",
+            ),
         ]
         object.__setattr__(blocks[1], "section_name", 123)
-        doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(), blocks=blocks)
+        doc = PipelineDocument(document_id="d", metadata=DocumentMetadata(), blocks=blocks)
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -457,12 +548,13 @@ class TestRunClassificationRemainingGaps:
 # Post-loop inline — lines 587, 611-628
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestPostLoopRemainingGaps:
     def test_empty_text_skipped_in_post_loop(self, classifier):
         """Empty-text UNKNOWN block is skipped in post-loop (line 587)."""
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
-            blocks=[block("b0", 0, BlockType.UNKNOWN, text="")])
+            document_id="d", metadata=DocumentMetadata(), blocks=[block("b0", 0, BlockType.UNKNOWN, text="")]
+        )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -472,17 +564,28 @@ class TestPostLoopRemainingGaps:
     def test_unknown_without_nlp_in_post_loop(self, classifier):
         """UNKNOWN block with no nlp_confidence → BODY + HEURISTIC_CONFIDENCE_LOW."""
         from app.config.settings import settings
+
         blocks = [
-            block("b0", 0, BlockType.BODY, text="Intro",
-                  metadata={"is_heading_candidate": True}, level=1,
-                  section_name="introduction"),
-            block("b1", 1, BlockType.UNKNOWN, text="some text",
-                  metadata={"is_heading_candidate": True, "level": 1},
-                  section_name="test"),
+            block(
+                "b0",
+                0,
+                BlockType.BODY,
+                text="Intro",
+                metadata={"is_heading_candidate": True},
+                level=1,
+                section_name="introduction",
+            ),
+            block(
+                "b1",
+                1,
+                BlockType.UNKNOWN,
+                text="some text",
+                metadata={"is_heading_candidate": True, "level": 1},
+                section_name="test",
+            ),
         ]
         object.__setattr__(blocks[1], "section_name", 123)
-        doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(), blocks=blocks)
+        doc = PipelineDocument(document_id="d", metadata=DocumentMetadata(), blocks=blocks)
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -494,17 +597,26 @@ class TestPostLoopRemainingGaps:
     def test_unknown_with_nlp_in_post_loop(self, classifier):
         """UNKNOWN block with nlp_confidence > 0 → BODY with NLP confidence."""
         blocks = [
-            block("b0", 0, BlockType.BODY, text="Intro",
-                  metadata={"is_heading_candidate": True}, level=1,
-                  section_name="introduction"),
-            block("b1", 1, BlockType.UNKNOWN, text="some text",
-                  metadata={"is_heading_candidate": True, "level": 1,
-                            "nlp_confidence": 0.7},
-                  section_name="test"),
+            block(
+                "b0",
+                0,
+                BlockType.BODY,
+                text="Intro",
+                metadata={"is_heading_candidate": True},
+                level=1,
+                section_name="introduction",
+            ),
+            block(
+                "b1",
+                1,
+                BlockType.UNKNOWN,
+                text="some text",
+                metadata={"is_heading_candidate": True, "level": 1, "nlp_confidence": 0.7},
+                section_name="test",
+            ),
         ]
         object.__setattr__(blocks[1], "section_name", 123)
-        doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(), blocks=blocks)
+        doc = PipelineDocument(document_id="d", metadata=DocumentMetadata(), blocks=blocks)
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
             with patch.object(classifier, "_find_first_section_index", return_value=0):
                 with patch.object(classifier, "_find_references_start_index", return_value=None):
@@ -518,14 +630,13 @@ class TestPostLoopRemainingGaps:
 # _find_first_section_index — lines 679-681, 686->668
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestFindFirstSectionIndexRemainingGaps:
     def test_title_heading_candidate_skipped(self, classifier):
         """TITLE block with is_heading_candidate is skipped; next heading found."""
         blocks = [
-            block("b0", 0, BlockType.TITLE, text="Title",
-                  metadata={"is_heading_candidate": True}),
-            block("b1", 1, BlockType.BODY, text="Introduction",
-                  metadata={"is_heading_candidate": True}),
+            block("b0", 0, BlockType.TITLE, text="Title", metadata={"is_heading_candidate": True}),
+            block("b1", 1, BlockType.BODY, text="Introduction", metadata={"is_heading_candidate": True}),
         ]
         result = classifier._find_first_section_index(blocks)
         assert result == 1
@@ -533,8 +644,9 @@ class TestFindFirstSectionIndexRemainingGaps:
     def test_fallback_too_long_skipped(self, classifier):
         """Fallback detection skips text with >12 words (line 686→668)."""
         blocks = [
-            block("b0", 0, BlockType.BODY,
-                  text="one two three four five six seven eight nine ten eleven twelve thirteen"),
+            block(
+                "b0", 0, BlockType.BODY, text="one two three four five six seven eight nine ten eleven twelve thirteen"
+            ),
         ]
         result = classifier._find_first_section_index(blocks)
         assert result == 1  # no heading found, min(12, 1)
@@ -544,11 +656,11 @@ class TestFindFirstSectionIndexRemainingGaps:
 # _nlp_classify_fallback — lines 793-818
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestNlpClassifyFallbackGaps:
     def test_skip_protected_block(self, classifier):
         """Protected structural blocks are skipped by NLP fallback."""
-        b = block("b1", 0, BlockType.UNKNOWN, text="1 A footnote",
-                  metadata={"is_footnote": True})
+        b = block("b1", 0, BlockType.UNKNOWN, text="1 A footnote", metadata={"is_footnote": True})
         classifier._nlp_classify_fallback([b])
         assert b.block_type == BlockType.UNKNOWN
 

@@ -14,6 +14,7 @@ pytestmark = [pytest.mark.pipeline]
 class TestFederatedLearningNodeInit:
     def test_init_valid(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         storage = str(tmp_path / "fl")
         node = FederatedLearningNode("node1", storage_dir=storage)
         assert node.node_id == "node1"
@@ -24,6 +25,7 @@ class TestFederatedLearningNodeInit:
 
     def test_init_empty_node_id(self):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         try:
             FederatedLearningNode("")
             raise AssertionError()
@@ -32,6 +34,7 @@ class TestFederatedLearningNodeInit:
 
     def test_init_whitespace_node_id(self):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         try:
             FederatedLearningNode("   ")
             raise AssertionError()
@@ -40,11 +43,13 @@ class TestFederatedLearningNodeInit:
 
     def test_init_with_coordinator_url(self):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", coordinator_url="http://coord:8000", storage_dir=".")
         assert node.coordinator_url == "http://coord:8000"
 
     def test_init_storage_dir_creation_failure(self):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         with patch("pathlib.Path.mkdir", side_effect=PermissionError("no permission")):
             try:
                 FederatedLearningNode("node1", storage_dir="/invalid/path")
@@ -56,6 +61,7 @@ class TestFederatedLearningNodeInit:
 class TestFederatedLearningNodeLoadGlobalModel:
     def test_load_default_when_missing(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f1"))
         model = node._load_global_model()
         assert model["version"] == 0
@@ -64,16 +70,20 @@ class TestFederatedLearningNodeLoadGlobalModel:
 
     def test_load_valid_file(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         storage = tmp_path / "f2"
         storage.mkdir()
         model_file = storage / "global_model.json"
-        model_file.write_text(json.dumps({"version": 5, "patterns": [{"p": 1}], "statistics": {}, "last_updated": "now"}))
+        model_file.write_text(
+            json.dumps({"version": 5, "patterns": [{"p": 1}], "statistics": {}, "last_updated": "now"})
+        )
         node = FederatedLearningNode("node1", storage_dir=str(storage))
         assert node.global_model["version"] == 5
         assert node.global_model["patterns"] == [{"p": 1}]
 
     def test_load_corrupt_file(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         storage = tmp_path / "f3"
         storage.mkdir()
         model_file = storage / "global_model.json"
@@ -83,6 +93,7 @@ class TestFederatedLearningNodeLoadGlobalModel:
 
     def test_load_non_dict_file(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         storage = tmp_path / "f4"
         storage.mkdir()
         model_file = storage / "global_model.json"
@@ -94,6 +105,7 @@ class TestFederatedLearningNodeLoadGlobalModel:
 class TestFederatedLearningNodeSaveGlobalModel:
     def test_save_global_model(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         storage = str(tmp_path / "f5")
         node = FederatedLearningNode("node1", storage_dir=storage)
         node.global_model["version"] = 42
@@ -103,6 +115,7 @@ class TestFederatedLearningNodeSaveGlobalModel:
 
     def test_save_global_model_exception(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f6"))
         with patch("builtins.open", side_effect=PermissionError("denied")):
             node._save_global_model()
@@ -111,6 +124,7 @@ class TestFederatedLearningNodeSaveGlobalModel:
 class TestFederatedLearningNodeRecordLocalUpdate:
     def test_record_update(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         storage = str(tmp_path / "f7")
         node = FederatedLearningNode("node1", storage_dir=storage)
         node.record_local_update("pattern", {"key": "value"})
@@ -120,6 +134,7 @@ class TestFederatedLearningNodeRecordLocalUpdate:
 
     def test_record_update_empty_type(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         storage = str(tmp_path / "f8")
         node = FederatedLearningNode("node1", storage_dir=storage)
         node.record_local_update("", {"key": "value"})
@@ -127,6 +142,7 @@ class TestFederatedLearningNodeRecordLocalUpdate:
 
     def test_record_update_non_dict_data(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         storage = str(tmp_path / "f9")
         node = FederatedLearningNode("node1", storage_dir=storage)
         node.record_local_update("metric", "not_a_dict")
@@ -134,6 +150,7 @@ class TestFederatedLearningNodeRecordLocalUpdate:
 
     def test_record_update_file_write_exception(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         storage = str(tmp_path / "f10")
         node = FederatedLearningNode("node1", storage_dir=storage)
         with patch("builtins.open", side_effect=PermissionError("denied")):
@@ -142,6 +159,7 @@ class TestFederatedLearningNodeRecordLocalUpdate:
 
     def test_record_update_creates_jsonl(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         storage = str(tmp_path / "f11")
         node = FederatedLearningNode("node1", storage_dir=storage)
         node.record_local_update("pattern", {"k": "v"})
@@ -152,6 +170,7 @@ class TestFederatedLearningNodeRecordLocalUpdate:
 
     def test_record_update_multiple(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         storage = str(tmp_path / "f12")
         node = FederatedLearningNode("node1", storage_dir=storage)
         node.record_local_update("pattern", {"i": 1})
@@ -162,6 +181,7 @@ class TestFederatedLearningNodeRecordLocalUpdate:
 class TestFederatedLearningNodeGetLocalUpdates:
     def test_get_all_updates(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         storage = str(tmp_path / "f13")
         node = FederatedLearningNode("node1", storage_dir=storage)
         node.record_local_update("pattern", {"i": 1})
@@ -171,6 +191,7 @@ class TestFederatedLearningNodeGetLocalUpdates:
 
     def test_get_updates_since_version(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         storage = str(tmp_path / "f14")
         node = FederatedLearningNode("node1", storage_dir=storage)
         node.record_local_update("pattern", {"i": 1})
@@ -182,6 +203,7 @@ class TestFederatedLearningNodeGetLocalUpdates:
 
     def test_get_updates_empty(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         storage = str(tmp_path / "f15")
         node = FederatedLearningNode("node1", storage_dir=storage)
         updates = node.get_local_updates()
@@ -189,6 +211,7 @@ class TestFederatedLearningNodeGetLocalUpdates:
 
     def test_get_updates_exception_safe(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f16"))
         node.local_updates = [{"version": 1}]
         node.local_updates = None
@@ -199,6 +222,7 @@ class TestFederatedLearningNodeGetLocalUpdates:
 class TestFederatedLearningNodePushUpdates:
     def test_push_no_coordinator(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f17"))
         result = node.push_updates_to_coordinator()
         assert result is False
@@ -206,7 +230,10 @@ class TestFederatedLearningNodePushUpdates:
     def test_push_requests_unavailable(self, tmp_path):
         with patch("app.pipeline.agents.federated_learning._REQUESTS_AVAILABLE", False):
             from app.pipeline.agents.federated_learning import FederatedLearningNode
-            node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f18"), coordinator_url="http://coord:8000")
+
+            node = FederatedLearningNode(
+                "node1", storage_dir=str(tmp_path / "f18"), coordinator_url="http://coord:8000"
+            )
             result = node.push_updates_to_coordinator()
             assert result is False
 
@@ -217,7 +244,10 @@ class TestFederatedLearningNodePushUpdates:
                 mock_response.status_code = 200
                 mock_requests.post.return_value = mock_response
                 from app.pipeline.agents.federated_learning import FederatedLearningNode
-                node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f19"), coordinator_url="http://coord:8000")
+
+                node = FederatedLearningNode(
+                    "node1", storage_dir=str(tmp_path / "f19"), coordinator_url="http://coord:8000"
+                )
                 node.record_local_update("pattern", {"k": "v"})
                 result = node.push_updates_to_coordinator()
                 assert result is True
@@ -231,7 +261,10 @@ class TestFederatedLearningNodePushUpdates:
                 mock_response.text = "Internal Server Error"
                 mock_requests.post.return_value = mock_response
                 from app.pipeline.agents.federated_learning import FederatedLearningNode
-                node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f20"), coordinator_url="http://coord:8000")
+
+                node = FederatedLearningNode(
+                    "node1", storage_dir=str(tmp_path / "f20"), coordinator_url="http://coord:8000"
+                )
                 result = node.push_updates_to_coordinator()
                 assert result is False
 
@@ -240,7 +273,10 @@ class TestFederatedLearningNodePushUpdates:
             with patch("app.pipeline.agents.federated_learning._requests") as mock_requests:
                 mock_requests.post.side_effect = RuntimeError("connection failed")
                 from app.pipeline.agents.federated_learning import FederatedLearningNode
-                node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f21"), coordinator_url="http://coord:8000")
+
+                node = FederatedLearningNode(
+                    "node1", storage_dir=str(tmp_path / "f21"), coordinator_url="http://coord:8000"
+                )
                 result = node.push_updates_to_coordinator()
                 assert result is False
 
@@ -248,6 +284,7 @@ class TestFederatedLearningNodePushUpdates:
 class TestFederatedLearningNodePullGlobalModel:
     def test_pull_no_coordinator(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f22"))
         result = node.pull_global_model()
         assert result is False
@@ -255,7 +292,10 @@ class TestFederatedLearningNodePullGlobalModel:
     def test_pull_requests_unavailable(self, tmp_path):
         with patch("app.pipeline.agents.federated_learning._REQUESTS_AVAILABLE", False):
             from app.pipeline.agents.federated_learning import FederatedLearningNode
-            node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f23"), coordinator_url="http://coord:8000")
+
+            node = FederatedLearningNode(
+                "node1", storage_dir=str(tmp_path / "f23"), coordinator_url="http://coord:8000"
+            )
             result = node.pull_global_model()
             assert result is False
 
@@ -264,9 +304,15 @@ class TestFederatedLearningNodePullGlobalModel:
             with patch("app.pipeline.agents.federated_learning._requests") as mock_requests:
                 mock_response = MagicMock()
                 mock_response.status_code = 200
-                mock_response.json.return_value = {"version": 10, "patterns": [], "statistics": {}, "last_updated": "now"}
+                mock_response.json.return_value = {
+                    "version": 10,
+                    "patterns": [],
+                    "statistics": {},
+                    "last_updated": "now",
+                }
                 mock_requests.get.return_value = mock_response
                 from app.pipeline.agents.federated_learning import FederatedLearningNode
+
                 storage = str(tmp_path / "f24")
                 node = FederatedLearningNode("node1", storage_dir=storage)
                 node.coordinator_url = "http://coord:8000"
@@ -279,9 +325,15 @@ class TestFederatedLearningNodePullGlobalModel:
             with patch("app.pipeline.agents.federated_learning._requests") as mock_requests:
                 mock_response = MagicMock()
                 mock_response.status_code = 200
-                mock_response.json.return_value = {"version": 0, "patterns": [], "statistics": {}, "last_updated": "now"}
+                mock_response.json.return_value = {
+                    "version": 0,
+                    "patterns": [],
+                    "statistics": {},
+                    "last_updated": "now",
+                }
                 mock_requests.get.return_value = mock_response
                 from app.pipeline.agents.federated_learning import FederatedLearningNode
+
                 storage = str(tmp_path / "f25")
                 node = FederatedLearningNode("node1", storage_dir=storage)
                 node.coordinator_url = "http://coord:8000"
@@ -296,7 +348,10 @@ class TestFederatedLearningNodePullGlobalModel:
                 mock_response.status_code = 404
                 mock_requests.get.return_value = mock_response
                 from app.pipeline.agents.federated_learning import FederatedLearningNode
-                node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f26"), coordinator_url="http://coord:8000")
+
+                node = FederatedLearningNode(
+                    "node1", storage_dir=str(tmp_path / "f26"), coordinator_url="http://coord:8000"
+                )
                 result = node.pull_global_model()
                 assert result is False
 
@@ -308,7 +363,10 @@ class TestFederatedLearningNodePullGlobalModel:
                 mock_response.json.return_value = ["not", "a", "dict"]
                 mock_requests.get.return_value = mock_response
                 from app.pipeline.agents.federated_learning import FederatedLearningNode
-                node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f27"), coordinator_url="http://coord:8000")
+
+                node = FederatedLearningNode(
+                    "node1", storage_dir=str(tmp_path / "f27"), coordinator_url="http://coord:8000"
+                )
                 result = node.pull_global_model()
                 assert result is False
 
@@ -317,7 +375,10 @@ class TestFederatedLearningNodePullGlobalModel:
             with patch("app.pipeline.agents.federated_learning._requests") as mock_requests:
                 mock_requests.get.side_effect = RuntimeError("timeout")
                 from app.pipeline.agents.federated_learning import FederatedLearningNode
-                node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f28"), coordinator_url="http://coord:8000")
+
+                node = FederatedLearningNode(
+                    "node1", storage_dir=str(tmp_path / "f28"), coordinator_url="http://coord:8000"
+                )
                 result = node.pull_global_model()
                 assert result is False
 
@@ -325,12 +386,14 @@ class TestFederatedLearningNodePullGlobalModel:
 class TestFederatedLearningNodeAggregateUpdates:
     def test_aggregate_updates_non_list(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f29"))
         result = node.aggregate_updates("not_a_list")
         assert "version" in result
 
     def test_aggregate_updates_empty(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f30"))
         result = node.aggregate_updates([])
         assert result["patterns"] == []
@@ -339,6 +402,7 @@ class TestFederatedLearningNodeAggregateUpdates:
 
     def test_aggregate_updates_with_patterns(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f31"))
         updates = [
             {"node_id": "n1", "update_type": "pattern", "data": {"p": 1}},
@@ -350,10 +414,19 @@ class TestFederatedLearningNodeAggregateUpdates:
 
     def test_aggregate_updates_with_metrics(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f32"))
         updates = [
-            {"node_id": "n1", "update_type": "metric", "data": {"document_count": 10, "avg_duration": 5.0, "success_rate": 0.9}},
-            {"node_id": "n2", "update_type": "metric", "data": {"document_count": 20, "avg_duration": 15.0, "success_rate": 0.8}},
+            {
+                "node_id": "n1",
+                "update_type": "metric",
+                "data": {"document_count": 10, "avg_duration": 5.0, "success_rate": 0.9},
+            },
+            {
+                "node_id": "n2",
+                "update_type": "metric",
+                "data": {"document_count": 20, "avg_duration": 15.0, "success_rate": 0.8},
+            },
         ]
         result = node.aggregate_updates(updates)
         assert result["statistics"]["total_documents"] == 30
@@ -363,6 +436,7 @@ class TestFederatedLearningNodeAggregateUpdates:
 
     def test_aggregate_updates_skips_non_dict(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f33"))
         updates = [
             {"node_id": "n1", "update_type": "pattern", "data": {"p": 1}},
@@ -374,6 +448,7 @@ class TestFederatedLearningNodeAggregateUpdates:
 
     def test_aggregate_updates_non_dict_data_skipped(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f34"))
         updates = [
             {"node_id": "n1", "update_type": "pattern", "data": "not_a_dict"},
@@ -385,12 +460,14 @@ class TestFederatedLearningNodeAggregateUpdates:
 class TestFederatedLearningNodeAggregatePatterns:
     def test_aggregate_patterns_empty(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f35"))
         result = node._aggregate_patterns([])
         assert result == []
 
     def test_aggregate_patterns_truncates_to_10(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f36"))
         patterns = [{"id": i} for i in range(20)]
         result = node._aggregate_patterns(patterns)
@@ -400,12 +477,14 @@ class TestFederatedLearningNodeAggregatePatterns:
 class TestFederatedLearningNodeAggregateMetrics:
     def test_aggregate_metrics_empty(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f37"))
         result = node._aggregate_metrics([])
         assert result == {}
 
     def test_aggregate_metrics_exception(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f38"))
         result = node._aggregate_metrics([None])
         assert result == {}
@@ -414,6 +493,7 @@ class TestFederatedLearningNodeAggregateMetrics:
 class TestFederatedLearningNodeSync:
     def test_sync_both_success(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f39"), coordinator_url="http://coord:8000")
         with patch.object(node, "push_updates_to_coordinator", return_value=True):
             with patch.object(node, "pull_global_model", return_value=True):
@@ -421,6 +501,7 @@ class TestFederatedLearningNodeSync:
 
     def test_sync_push_fails(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f40"), coordinator_url="http://coord:8000")
         with patch.object(node, "push_updates_to_coordinator", return_value=False):
             with patch.object(node, "pull_global_model", return_value=True):
@@ -428,6 +509,7 @@ class TestFederatedLearningNodeSync:
 
     def test_sync_both_fail(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f41"), coordinator_url="http://coord:8000")
         with patch.object(node, "push_updates_to_coordinator", return_value=False):
             with patch.object(node, "pull_global_model", return_value=False):
@@ -437,6 +519,7 @@ class TestFederatedLearningNodeSync:
 class TestFederatedLearningNodeGetStatus:
     def test_get_status(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         storage = str(tmp_path / "f42")
         node = FederatedLearningNode("node1", storage_dir=storage)
         node.record_local_update("pattern", {"k": "v"})
@@ -448,12 +531,14 @@ class TestFederatedLearningNodeGetStatus:
 
     def test_get_status_with_coordinator(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f43"), coordinator_url="http://coord:8000")
         status = node.get_status()
         assert status["coordinator_connected"] is True
 
     def test_get_status_exception_safe(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedLearningNode
+
         node = FederatedLearningNode("node1", storage_dir=str(tmp_path / "f44"))
         node.global_model = None
         status = node.get_status()
@@ -464,6 +549,7 @@ class TestFederatedLearningNodeGetStatus:
 class TestFederatedCoordinatorInit:
     def test_init_defaults(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         storage = str(tmp_path / "fc1")
         coord = FederatedCoordinator(storage_dir=storage)
         assert coord.storage_dir.exists()
@@ -473,6 +559,7 @@ class TestFederatedCoordinatorInit:
 
     def test_init_storage_failure(self):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         with patch("pathlib.Path.mkdir", side_effect=PermissionError("no permission")):
             try:
                 FederatedCoordinator(storage_dir="/invalid/path")
@@ -484,20 +571,25 @@ class TestFederatedCoordinatorInit:
 class TestFederatedCoordinatorLoadGlobalModel:
     def test_load_default_when_missing(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         coord = FederatedCoordinator(storage_dir=str(tmp_path / "fc2"))
         model = coord._load_global_model()
         assert model["version"] == 0
 
     def test_load_valid_file(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         storage = tmp_path / "fc3"
         storage.mkdir()
-        (storage / "global_model.json").write_text(json.dumps({"version": 3, "patterns": [], "statistics": {}, "last_updated": "now"}))
+        (storage / "global_model.json").write_text(
+            json.dumps({"version": 3, "patterns": [], "statistics": {}, "last_updated": "now"})
+        )
         coord = FederatedCoordinator(storage_dir=str(storage))
         assert coord.global_model["version"] == 3
 
     def test_load_corrupt_file(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         storage = tmp_path / "fc4"
         storage.mkdir()
         (storage / "global_model.json").write_text("corrupt")
@@ -506,6 +598,7 @@ class TestFederatedCoordinatorLoadGlobalModel:
 
     def test_load_non_dict(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         storage = tmp_path / "fc5"
         storage.mkdir()
         (storage / "global_model.json").write_text(json.dumps(["list"]))
@@ -516,6 +609,7 @@ class TestFederatedCoordinatorLoadGlobalModel:
 class TestFederatedCoordinatorReceiveUpdates:
     def test_receive_updates_valid(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         storage = str(tmp_path / "fc6")
         coord = FederatedCoordinator(storage_dir=storage)
         result = coord.receive_updates("node1", [{"update_type": "pattern", "data": {"p": 1}}])
@@ -525,18 +619,21 @@ class TestFederatedCoordinatorReceiveUpdates:
 
     def test_receive_updates_empty_node_id(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         coord = FederatedCoordinator(storage_dir=str(tmp_path / "fc7"))
         result = coord.receive_updates("", [{"update_type": "pattern"}])
         assert result is False
 
     def test_receive_updates_non_list(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         coord = FederatedCoordinator(storage_dir=str(tmp_path / "fc8"))
         result = coord.receive_updates("node1", "not_a_list")
         assert result is False
 
     def test_receive_updates_skips_non_dict(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         storage = str(tmp_path / "fc9")
         coord = FederatedCoordinator(storage_dir=storage)
         result = coord.receive_updates("node1", [{"valid": True}, "invalid", {"also_valid": True}])
@@ -545,6 +642,7 @@ class TestFederatedCoordinatorReceiveUpdates:
 
     def test_receive_updates_file_exception(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         coord = FederatedCoordinator(storage_dir=str(tmp_path / "fc10"))
         with patch("builtins.open", side_effect=PermissionError("denied")):
             result = coord.receive_updates("node1", [{"update_type": "pattern"}])
@@ -554,11 +652,16 @@ class TestFederatedCoordinatorReceiveUpdates:
 class TestFederatedCoordinatorAggregateAndUpdate:
     def test_aggregate_and_update(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         storage = str(tmp_path / "fc11")
         coord = FederatedCoordinator(storage_dir=storage)
         coord.all_updates = [
             {"node_id": "n1", "update_type": "pattern", "data": {"p": 1}},
-            {"node_id": "n2", "update_type": "metric", "data": {"document_count": 10, "avg_duration": 5.0, "success_rate": 0.9}},
+            {
+                "node_id": "n2",
+                "update_type": "metric",
+                "data": {"document_count": 10, "avg_duration": 5.0, "success_rate": 0.9},
+            },
         ]
         result = coord.aggregate_and_update()
         assert result["version"] == 1
@@ -568,10 +671,14 @@ class TestFederatedCoordinatorAggregateAndUpdate:
 
     def test_aggregate_and_update_exception(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         storage = str(tmp_path / "fc12")
         coord = FederatedCoordinator(storage_dir=storage)
         with patch.object(coord, "global_model", {"version": 0}):
-            with patch("app.pipeline.agents.federated_learning.FederatedLearningNode.aggregate_updates", side_effect=RuntimeError("agg fail")):
+            with patch(
+                "app.pipeline.agents.federated_learning.FederatedLearningNode.aggregate_updates",
+                side_effect=RuntimeError("agg fail"),
+            ):
                 result = coord.aggregate_and_update()
                 assert result == {"version": 0}
 
@@ -579,12 +686,14 @@ class TestFederatedCoordinatorAggregateAndUpdate:
 class TestFederatedCoordinatorGetGlobalModel:
     def test_get_global_model(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         coord = FederatedCoordinator(storage_dir=str(tmp_path / "fc13"))
         model = coord.get_global_model()
         assert model["version"] == 0
 
     def test_get_global_model_returns_copy(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         coord = FederatedCoordinator(storage_dir=str(tmp_path / "fc14"))
         model = coord.get_global_model()
         model["version"] = 999
@@ -594,6 +703,7 @@ class TestFederatedCoordinatorGetGlobalModel:
 class TestFederatedCoordinatorGetStatistics:
     def test_get_statistics(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         coord = FederatedCoordinator(storage_dir=str(tmp_path / "fc15"))
         coord.registered_nodes.add("node1")
         coord.all_updates = [{"u": 1}, {"u": 2}]
@@ -604,6 +714,7 @@ class TestFederatedCoordinatorGetStatistics:
 
     def test_get_statistics_exception_safe(self, tmp_path):
         from app.pipeline.agents.federated_learning import FederatedCoordinator
+
         coord = FederatedCoordinator(storage_dir=str(tmp_path / "fc16"))
         coord.registered_nodes = None
         stats = coord.get_statistics()

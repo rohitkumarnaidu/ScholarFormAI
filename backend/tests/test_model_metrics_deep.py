@@ -11,6 +11,7 @@ import pytest
 class TestRecordCall:
     def test_record_nvidia_success(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m.record_call("nvidia", True, 0.5)
         assert m.metrics["nvidia"]["total_calls"] == 1
@@ -19,6 +20,7 @@ class TestRecordCall:
 
     def test_record_nvidia_failure(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m.record_call("nvidia", False, 1.2)
         assert m.metrics["nvidia"]["failed_calls"] == 1
@@ -26,6 +28,7 @@ class TestRecordCall:
 
     def test_record_deepseek_with_quality(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m.record_call("deepseek", True, 0.8, quality_score=0.95)
         assert m.metrics["deepseek"]["total_calls"] == 1
@@ -34,18 +37,21 @@ class TestRecordCall:
 
     def test_record_rules_success(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m.record_call("rules", True, 0.1)
         assert m.metrics["rules"]["successful_calls"] == 1
 
     def test_record_unknown_model(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m.record_call("unknown_model", True, 0.5)
         assert "unknown_model" not in m.metrics
 
     def test_record_multiple_calls_avg_latency(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m.record_call("nvidia", True, 1.0)
         m.record_call("nvidia", True, 3.0)
@@ -56,6 +62,7 @@ class TestRecordCall:
 class TestPersistMetric:
     def test_persistence_disabled_skips(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m._persistence_enabled = False
         with patch("threading.Thread") as mock_t:
@@ -64,6 +71,7 @@ class TestPersistMetric:
 
     def test_persistence_enabled_spawns_thread(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         with patch("threading.Thread") as mock_t:
             mock_t.return_value = MagicMock()
@@ -72,15 +80,18 @@ class TestPersistMetric:
 
     def test_persist_thread_supabase_success(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         mock_sb = MagicMock()
         with patch("app.db.supabase_client.get_supabase_client", return_value=mock_sb):
             with patch("threading.Thread") as mock_t:
                 real_target = None
+
                 def capture_target(**kw):
                     nonlocal real_target
                     real_target = kw.get("target")
                     return MagicMock()
+
                 mock_t.side_effect = capture_target
                 m._persist_metric("nvidia", 0.5, True, 0.9)
             if real_target:
@@ -88,14 +99,17 @@ class TestPersistMetric:
 
     def test_persist_thread_supabase_unavailable(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         with patch("app.db.supabase_client.get_supabase_client", return_value=None):
             with patch("threading.Thread") as mock_t:
                 real_target = None
+
                 def capture_target(**kw):
                     nonlocal real_target
                     real_target = kw.get("target")
                     return MagicMock()
+
                 mock_t.side_effect = capture_target
                 m._persist_metric("nvidia", 0.5, True, None)
             if real_target:
@@ -103,6 +117,7 @@ class TestPersistMetric:
 
     def test_persist_missing_table_disables(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         mock_sb = MagicMock()
         mock_sb.table.return_value.insert.return_value.execute.side_effect = RuntimeError(
@@ -111,10 +126,12 @@ class TestPersistMetric:
         with patch("app.db.supabase_client.get_supabase_client", return_value=mock_sb):
             with patch("threading.Thread") as mock_t:
                 real_target = None
+
                 def capture_target(**kw):
                     nonlocal real_target
                     real_target = kw.get("target")
                     return MagicMock()
+
                 mock_t.side_effect = capture_target
                 m._persist_metric("nvidia", 0.5, True, None)
             if real_target:
@@ -125,6 +142,7 @@ class TestPersistMetric:
 class TestRecordFallback:
     def test_records_fallback_event(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m.record_fallback("nvidia", "deepseek", "timeout")
         assert len(m.fallback_chain) == 1
@@ -136,6 +154,7 @@ class TestRecordFallback:
 class TestGetSummary:
     def test_summary_structure(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m.record_call("nvidia", True, 0.5)
         m.record_fallback("nvidia", "deepseek", "timeout")
@@ -147,6 +166,7 @@ class TestGetSummary:
 
     def test_fallback_rate_zero(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         summary = m.get_summary()
         assert summary["total_fallbacks"] == 0
@@ -155,6 +175,7 @@ class TestGetSummary:
 class TestGetModelComparison:
     def test_comparison_structure(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m.record_call("nvidia", True, 0.3)
         m.record_call("deepseek", True, 0.7)
@@ -166,6 +187,7 @@ class TestGetModelComparison:
 
     def test_empty_metrics(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         cmp = m.get_model_comparison()
         assert cmp["nvidia_vs_deepseek"]["nvidia_success_rate"] >= 0
@@ -174,6 +196,7 @@ class TestGetModelComparison:
 class TestExportMetrics:
     def test_exports_to_json_file(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m.record_call("nvidia", True, 0.5)
         with patch("builtins.open", mock_open()) as mock_f:
@@ -182,6 +205,7 @@ class TestExportMetrics:
 
     def test_exported_data_has_expected_keys(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m.record_call("nvidia", True, 0.5)
         with patch("builtins.open", mock_open()) as mock_f:
@@ -192,6 +216,7 @@ class TestExportMetrics:
 class TestGetModelMetrics:
     def test_returns_singleton(self):
         from app.services.model_metrics import _model_metrics, get_model_metrics
+
         _model_metrics = None
         s1 = get_model_metrics()
         s2 = get_model_metrics()
@@ -199,6 +224,7 @@ class TestGetModelMetrics:
 
     def test_uses_get_or_create(self):
         from app.services.model_metrics import _model_metrics, get_model_metrics
+
         _model_metrics = None
         with patch("app.services.model_metrics.get_or_create", return_value="mock_instance"):
             result = get_model_metrics()
@@ -208,12 +234,14 @@ class TestGetModelMetrics:
 class TestQualityScores:
     def test_quality_scores_empty_no_error(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         summary = m.get_summary()
         assert summary["avg_quality_scores"]["nvidia"] == 0.0
 
     def test_quality_scores_averaged(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         m.record_call("nvidia", True, 0.5, quality_score=0.8)
         m.record_call("nvidia", True, 0.4, quality_score=0.9)
@@ -224,6 +252,7 @@ class TestQualityScores:
 class TestAutomationLevel:
     def test_high_automation(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         for _ in range(50):
             m.record_call("nvidia", True, 0.3)
@@ -233,6 +262,7 @@ class TestAutomationLevel:
 
     def test_low_automation(self):
         from app.services.model_metrics import ModelMetrics
+
         m = ModelMetrics()
         for _ in range(5):
             m.record_call("nvidia", True, 0.3)

@@ -7,6 +7,7 @@ class TestHTTPSRedirectMiddleware:
     @pytest.fixture
     def middleware(self):
         from app.middleware.https_redirect import HTTPSRedirectMiddleware
+
         return HTTPSRedirectMiddleware(MagicMock())
 
     @pytest.mark.asyncio
@@ -55,6 +56,7 @@ class TestHTTPSRedirectMiddleware:
         request.url.replace.return_value = request.url
         call_next = AsyncMock()
         from starlette.responses import RedirectResponse
+
         result = await middleware.dispatch(request, call_next)
         assert isinstance(result, RedirectResponse)
 
@@ -74,6 +76,7 @@ class TestHSTSMiddleware:
     @pytest.fixture
     def middleware(self):
         from app.middleware.https_redirect import HSTSMiddleware
+
         return HSTSMiddleware(MagicMock())
 
     @pytest.mark.asyncio
@@ -111,6 +114,7 @@ class TestHSTSMiddleware:
 
     def test_custom_hsts_params(self):
         from app.middleware.https_redirect import HSTSMiddleware
+
         mw = HSTSMiddleware(MagicMock(), max_age=12345, include_subdomains=False, preload=False)
         assert mw.max_age == 12345
         assert mw.include_subdomains is False

@@ -24,40 +24,48 @@ def doc():
 class TestAsBool:
     def test_none_defaults_false(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         assert DocumentValidator._as_bool(None) is False
 
     def test_none_with_custom_default(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         assert DocumentValidator._as_bool(None, True) is True
 
     def test_bool_passthrough(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         assert DocumentValidator._as_bool(True) is True
         assert DocumentValidator._as_bool(False) is False
 
     def test_int_conversion(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         assert DocumentValidator._as_bool(1) is True
         assert DocumentValidator._as_bool(0) is False
 
     def test_string_true_variants(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         for s in ["1", "true", "True", "yes", "on"]:
             assert DocumentValidator._as_bool(s) is True, f"'{s}' should be True"
 
     def test_string_false_variants(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         for s in ["0", "false", "False", "no", "off"]:
             assert DocumentValidator._as_bool(s) is False, f"'{s}' should be False"
 
     def test_unrecognized_string_defaults(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         assert DocumentValidator._as_bool("maybe") is False
 
 
 class TestCheckFigures:
     def test_no_figures(self, doc):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         validator = DocumentValidator()
         validator.contract_loader = MagicMock()
         validator.order_validator = MagicMock()
@@ -69,6 +77,7 @@ class TestCheckFigures:
 
     def test_figure_missing_caption(self, doc):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         validator = DocumentValidator()
         validator.contract_loader = MagicMock()
         validator.order_validator = MagicMock()
@@ -85,6 +94,7 @@ class TestCheckFigures:
 class TestCheckReferences:
     def test_no_references_no_section(self, doc):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         validator = DocumentValidator()
         validator.contract_loader = MagicMock()
         validator.order_validator = MagicMock()
@@ -98,6 +108,7 @@ class TestCheckReferences:
 
     def test_references_section_but_no_entries(self, doc):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         validator = DocumentValidator()
         validator.contract_loader = MagicMock()
         validator.order_validator = MagicMock()
@@ -110,6 +121,7 @@ class TestCheckReferences:
 
     def test_ref_missing_fields(self, doc):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         validator = DocumentValidator()
         validator.contract_loader = MagicMock()
         validator.order_validator = MagicMock()
@@ -130,6 +142,7 @@ class TestCheckReferences:
 class TestCheckTables:
     def test_tables_missing_captions(self, doc):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         validator = DocumentValidator()
         validator.contract_loader = MagicMock()
         validator.order_validator = MagicMock()
@@ -145,6 +158,7 @@ class TestCheckTables:
 class TestValidate:
     def test_valid_document(self, doc):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         validator = DocumentValidator()
         validator.contract_loader = MagicMock()
         validator.order_validator = MagicMock()
@@ -159,6 +173,7 @@ class TestValidate:
 
     def test_invalid_document_with_errors(self, doc):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         validator = DocumentValidator()
         validator.contract_loader = MagicMock()
         validator.order_validator = MagicMock()
@@ -173,6 +188,7 @@ class TestValidate:
 
     def test_fast_mode_skips_crossref(self, doc):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         validator = DocumentValidator()
         validator.contract_loader = MagicMock()
         validator.order_validator = MagicMock()
@@ -189,6 +205,7 @@ class TestValidate:
 class TestProcess:
     def test_process_wraps_validate(self, doc):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         validator = DocumentValidator()
         validator.contract_loader = MagicMock()
         validator.order_validator = MagicMock()
@@ -202,6 +219,7 @@ class TestProcess:
 class TestValidateDocumentConvenience:
     def test_convenience_function(self, doc):
         from app.pipeline.validation.validator_v3 import validate_document
+
         with patch("app.pipeline.validation.validator_v3.DocumentValidator") as mock_dv:
             instance = mock_dv.return_value
             instance.validate.return_value = MagicMock()

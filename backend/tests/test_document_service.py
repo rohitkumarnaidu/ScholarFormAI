@@ -6,15 +6,18 @@ import pytest
 class TestTransientError:
     def test_transient_by_type_name(self):
         from app.services.document_service import DocumentService
+
         exc = type("RemoteProtocolError", (Exception,), {})()
         assert DocumentService._is_transient_supabase_error(exc) is True
 
     def test_non_transient_type(self):
         from app.services.document_service import DocumentService
+
         assert DocumentService._is_transient_supabase_error(ValueError()) is False
 
     def test_transient_by_message_marker(self):
         from app.services.document_service import DocumentService
+
         exc = RuntimeError("Server disconnected")
         assert DocumentService._is_transient_supabase_error(exc) is True
         exc2 = RuntimeError("permanent failure")
@@ -22,6 +25,7 @@ class TestTransientError:
 
     def test_transient_connection_refused(self):
         from app.services.document_service import DocumentService
+
         exc = OSError("connection refused")
         assert DocumentService._is_transient_supabase_error(exc) is True
 
@@ -29,30 +33,36 @@ class TestTransientError:
 class TestValidUuid:
     def test_valid_uuid(self):
         from app.services.document_service import DocumentService
+
         assert DocumentService._is_valid_uuid("550e8400-e29b-41d4-a716-446655440000") is True
 
     def test_invalid_uuid(self):
         from app.services.document_service import DocumentService
+
         assert DocumentService._is_valid_uuid("not-a-uuid") is False
 
     def test_empty_string(self):
         from app.services.document_service import DocumentService
+
         assert DocumentService._is_valid_uuid("") is False
 
 
 class TestShouldQuery:
     def test_valid_uuid_returns_true(self):
         from app.services.document_service import DocumentService
+
         assert DocumentService._should_query_document_tables("550e8400-e29b-41d4-a716-446655440000", "test") is True
 
     def test_invalid_uuid_returns_false(self):
         from app.services.document_service import DocumentService
+
         assert DocumentService._should_query_document_tables("bad-id", "test") is False
 
 
 class TestBuildSignedDownloadScope:
     def test_basic_scope(self):
         from app.services.document_service import DocumentService
+
         scope = DocumentService._build_signed_download_scope(
             file_path="/files/doc.pdf", download_format="docx", expires=9999999999
         )
@@ -60,6 +70,7 @@ class TestBuildSignedDownloadScope:
 
     def test_normalizes_format(self):
         from app.services.document_service import DocumentService
+
         scope = DocumentService._build_signed_download_scope(
             file_path="/f.pdf", download_format="  PDF  ", expires=1000
         )
@@ -69,6 +80,7 @@ class TestBuildSignedDownloadScope:
 class TestGenerateSignedDownloadUrl:
     def test_generates_url(self):
         from app.services.document_service import DocumentService
+
         result = DocumentService.generate_signed_download_url(
             file_url="https://storage.com/file.pdf",
             file_path="/files/file.pdf",
@@ -83,47 +95,45 @@ class TestGenerateSignedDownloadUrl:
 
     def test_empty_secret_raises(self):
         from app.services.document_service import DocumentService
+
         with pytest.raises(ValueError, match="SIGNED_URL_SECRET"):
-            DocumentService.generate_signed_download_url(
-                file_url="https://s.com/f.pdf", file_path="/f.pdf", secret=""
-            )
+            DocumentService.generate_signed_download_url(file_url="https://s.com/f.pdf", file_path="/f.pdf", secret="")
 
 
 class TestVerifySignedDownload:
     def test_verify_valid(self):
         from app.services.document_service import DocumentService
+
         result = DocumentService.generate_signed_download_url(
             file_url="https://s.com/f.pdf", file_path="/f.pdf", secret="s", expires_in_seconds=3600
         )
         token = result["url"].split("token=")[1].split("&")[0]
         expires = result["url"].split("expires=")[1]
-        assert DocumentService.verify_signed_download(
-            file_path="/f.pdf", token=token, expires=expires, secret="s"
-        ) is True
+        assert (
+            DocumentService.verify_signed_download(file_path="/f.pdf", token=token, expires=expires, secret="s") is True
+        )
 
     def test_expired_returns_false(self):
         from app.services.document_service import DocumentService
-        assert DocumentService.verify_signed_download(
-            file_path="/f.pdf", token="t", expires=1, secret="s"
-        ) is False
+
+        assert DocumentService.verify_signed_download(file_path="/f.pdf", token="t", expires=1, secret="s") is False
 
     def test_empty_params_returns_false(self):
         from app.services.document_service import DocumentService
-        assert DocumentService.verify_signed_download(
-            file_path="/f.pdf", token="", expires="1000", secret=""
-        ) is False
+
+        assert DocumentService.verify_signed_download(file_path="/f.pdf", token="", expires="1000", secret="") is False
 
     def test_invalid_expires_returns_false(self):
         from app.services.document_service import DocumentService
-        assert DocumentService.verify_signed_download(
-            file_path="/f.pdf", token="t", expires="bad", secret="s"
-        ) is False
+
+        assert DocumentService.verify_signed_download(file_path="/f.pdf", token="t", expires="bad", secret="s") is False
 
 
 class TestExecuteWithTransientRetry:
     @pytest.mark.asyncio
     async def test_success_on_first_try(self):
         from app.services.document_service import DocumentService
+
         op = MagicMock(return_value="ok")
         result = await DocumentService._execute_with_transient_retry("test", op)
         assert result == "ok"
@@ -132,7 +142,9 @@ class TestExecuteWithTransientRetry:
     @pytest.mark.asyncio
     async def test_retries_on_transient_error(self):
         from app.services.document_service import DocumentService
+
         call_count = [0]
+
         def op():
             call_count[0] += 1
             if call_count[0] < 3:
@@ -149,6 +161,7 @@ class TestExecuteWithTransientRetry:
     @pytest.mark.asyncio
     async def test_raises_on_non_transient_error(self):
         from app.services.document_service import DocumentService
+
         op = MagicMock(side_effect=ValueError("permanent"))
         with pytest.raises(ValueError):
             await DocumentService._execute_with_transient_retry("test", op)
@@ -239,6 +252,7 @@ class TestCreateDocument:
 @pytest.fixture
 def ds():
     from app.services.document_service import DocumentService
+
     ds = DocumentService()
     ds._supports_file_hash = None
     ds._file_hash_warning_logged = False
@@ -251,6 +265,7 @@ class TestCountDocuments:
     @pytest.fixture(autouse=True)
     def _reset_class_state(self):
         from app.services.document_service import DocumentService
+
         DocumentService._supports_output_hash = None
         DocumentService._supports_file_hash = None
 
@@ -317,7 +332,9 @@ class TestCountUploadsToday:
     @pytest.mark.asyncio
     async def test_zero_when_none(self, ds):
         mock_client = MagicMock()
-        mock_client.table.return_value.select.return_value.eq.return_value.gte.return_value.lt.return_value.execute.return_value = MagicMock(count=0)
+        mock_client.table.return_value.select.return_value.eq.return_value.gte.return_value.lt.return_value.execute.return_value = MagicMock(
+            count=0
+        )
         with patch("app.services.document_service.get_supabase_client", return_value=mock_client):
             result = await ds.count_uploads_today("user-1")
         assert result == 0
@@ -349,7 +366,9 @@ class TestUpdateDocument:
     @pytest.mark.asyncio
     async def test_api_error_raises(self, ds):
         mock_client = MagicMock()
-        mock_client.table.return_value.update.return_value.eq.return_value.execute.side_effect = type("APIError", (Exception,), {})({"message": "fail"})
+        mock_client.table.return_value.update.return_value.eq.return_value.execute.side_effect = type(
+            "APIError", (Exception,), {}
+        )({"message": "fail"})
         with patch("app.services.document_service.get_supabase_client", return_value=mock_client):
             with pytest.raises(Exception):
                 await ds.update_document("doc-1", {})
@@ -359,6 +378,7 @@ class TestDeleteDocument:
     @pytest.mark.asyncio
     async def test_deletes_successfully(self, ds):
         from app.services.document_service import DocumentService
+
         mock_client = MagicMock()
         mock_exec = MagicMock()
         mock_exec.data = [{"id": "doc-1"}]
@@ -375,6 +395,7 @@ class TestDeleteDocument:
     @pytest.mark.asyncio
     async def test_doc_not_found_raises(self, ds):
         from app.services.document_service import DocumentService
+
         with patch("app.services.document_service.get_supabase_client", return_value=MagicMock()):
             with patch.object(DocumentService, "get_document", return_value=None):
                 with pytest.raises(Exception):
@@ -391,6 +412,7 @@ class TestUpdateOutputHash:
     @pytest.fixture(autouse=True)
     def _reset_class_state(self):
         from app.services.document_service import DocumentService
+
         DocumentService._supports_output_hash = None
         DocumentService._supports_file_hash = None
 
@@ -422,6 +444,7 @@ class TestUpdateOutputHash:
     @pytest.mark.asyncio
     async def test_missing_column_handled(self, ds):
         from app.services.document_service import DocumentService
+
         mock_client = MagicMock()
         err = type("E", (Exception,), {})('column "output_hash" does not exist (PGRST204)')
         mock_client.table.return_value.update.return_value.eq.return_value.execute.side_effect = err
@@ -435,10 +458,13 @@ class TestExecuteWithTransientRetryExtended:
     @pytest.mark.asyncio
     async def test_exhausts_retries(self):
         from app.services.document_service import DocumentService
+
         call_count = [0]
+
         def op():
             call_count[0] += 1
             raise ConnectionError("Server disconnected")
+
         with patch.object(DocumentService, "_is_transient_supabase_error", return_value=True):
             with patch("app.services.document_service.get_supabase_client", return_value=MagicMock()):
                 with patch("asyncio.sleep", AsyncMock()):
@@ -449,13 +475,16 @@ class TestExecuteWithTransientRetryExtended:
     @pytest.mark.asyncio
     async def test_refreshes_client_on_retry(self):
         from app.services.document_service import DocumentService
+
         call_count = [0]
         client_mock = MagicMock()
+
         def op():
             call_count[0] += 1
             if call_count[0] < 2:
                 raise ConnectionError("Server disconnected")
             return "ok"
+
         with patch.object(DocumentService, "_is_transient_supabase_error", return_value=True):
             with patch("app.services.document_service.get_supabase_client", return_value=client_mock):
                 with patch("asyncio.sleep", AsyncMock()):
@@ -468,6 +497,7 @@ class TestGetDocument:
     @pytest.mark.asyncio
     async def test_returns_document(self, ds):
         from app.services.document_service import DocumentService
+
         mock_client = MagicMock()
         doc_data = {"id": "doc-1", "filename": "test.pdf"}
         chain = MagicMock()
@@ -483,6 +513,7 @@ class TestGetDocument:
     @pytest.mark.asyncio
     async def test_not_found_returns_none(self, ds):
         from app.services.document_service import DocumentService
+
         mock_client = MagicMock()
         chain = MagicMock()
         chain.execute.return_value = MagicMock(data=None)
@@ -497,6 +528,7 @@ class TestGetDocument:
     @pytest.mark.asyncio
     async def test_should_query_returns_none(self, ds):
         from app.services.document_service import DocumentService
+
         with patch.object(DocumentService, "_should_query_document_tables", return_value=False):
             result = await ds.get_document("doc-1")
         assert result is None

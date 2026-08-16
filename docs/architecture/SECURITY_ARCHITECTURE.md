@@ -2,45 +2,20 @@
 
 ## 1. Defense-in-Depth Overview
 
-```
-+──────────────────────────────────────────────────────────────────────+
-│                        EDGE / INFRASTRUCTURE                        │
-│  TLS 1.3  │  Render Firewall  │  Docker Isolation  │  Vuln Scanner │
-+──────────────────────────────────────────────────────────────────────+
-                                    │
-+──────────────────────────────────────────────────────────────────────+
-│                     FRONTEND (Next.js 16 App Router)                 │
-│  Edge Middleware (JWT verify)  │  CSP (nonce)  │  XSS Prevention    │
-│  `next.config.mjs` Security Headers  │  `sanitizePayload`           │
-+──────────────────────────────────────────────────────────────────────+
-                                    │
-+──────────────────────────────────────────────────────────────────────+
-│               BACKEND MIDDLEWARE STACK (app.main.py)                 │
-│  CORS  →  Request ID  →  HTTPS Redirect + HSTS                      │
-│  SlowAPI (global)  →  Rate Limit (sliding) →  Tier Rate (guest)     │
-│  Security Headers  →  Max Body Size (60MB)                          │
-│  CSRF  →  Feature Flags  →  Monitoring                              │
-│  Lazy Router Loader  →  Audit Write Ops                             │
-+──────────────────────────────────────────────────────────────────────+
-                                    │
-+──────────────────────────────────────────────────────────────────────+
-│                    AUTHENTICATION LAYER                              │
-│  Supabase Auth (JWT)  │  JWKS Verifier  │  RBAC  │  API Key Fernet  │
-+──────────────────────────────────────────────────────────────────────+
-                                    │
-+──────────────────────────────────────────────────────────────────────+
-│                    APPLICATION SERVICES                              │
-│  Input Validation (Pydantic)  │  Sanitize Payload                   │
-│  Prompt Injection Guard       │  Abuse Detector                     │
-│  Virus Scanner (ClamAV)       │  Webhook Signatures                 │
-│  SSRF Protection              │  Audit Logging                      │
-+──────────────────────────────────────────────────────────────────────+
-                                    │
-+──────────────────────────────────────────────────────────────────────+
-│                         DATA LAYER                                  │
-│  Supabase RLS  │  Fernet Encryption  │  Redis (rate, cache)         │
-│  ChromaDB (RAG)  │  Encrypted File Storage                         │
-+──────────────────────────────────────────────────────────────────────+
+```mermaid
+flowchart TD
+    Edge["EDGE / INFRASTRUCTURE<br>TLS 1.3 | Render Firewall | Docker Isolation | Vuln Scanner"]
+    Frontend["FRONTEND (Next.js 16 App Router)<br>Edge Middleware (JWT verify) | CSP (nonce) | XSS Prevention<br>next.config.mjs Security Headers | sanitizePayload"]
+    Backend["BACKEND MIDDLEWARE STACK (app.main.py)<br>CORS → Request ID → HTTPS Redirect + HSTS<br>SlowAPI (global) → Rate Limit (sliding) → Tier Rate (guest)<br>Security Headers → Max Body Size (60MB)<br>CSRF → Feature Flags → Monitoring<br>Lazy Router Loader → Audit Write Ops"]
+    AuthLayer["AUTHENTICATION LAYER<br>Supabase Auth (JWT) | JWKS Verifier | RBAC | API Key Fernet"]
+    AppServices["APPLICATION SERVICES<br>Input Validation (Pydantic) | Sanitize Payload<br>Prompt Injection Guard | Abuse Detector<br>Virus Scanner (ClamAV) | Webhook Signatures<br>SSRF Protection | Audit Logging"]
+    DataLayer["DATA LAYER<br>Supabase RLS | Fernet Encryption | Redis (rate, cache)<br>ChromaDB (RAG) | Encrypted File Storage"]
+    
+    Edge --> Frontend
+    Frontend --> Backend
+    Backend --> AuthLayer
+    AuthLayer --> AppServices
+    AppServices --> DataLayer
 ```
 
 Security is implemented across six concentric layers: edge infrastructure, frontend, backend middleware, authentication/authorization, application services, and data. Each layer operates independently — a failure in any single layer does not compromise the whole.
@@ -851,26 +826,30 @@ Run via: `python -m atheris fuzz/fuzz_document_title.py --corpus-dir fuzz/corpus
 
 The security event detection pipeline aggregates signals from multiple log sources and routes them through a SIEM correlation engine:
 
-```
-+------------------+     +------------------+     +------------------+
-|  Log Sources     |     |  Collection      |     |  Correlation     |
-+------------------+     +------------------+     +------------------+
-| AuditLogService  |────>│                  |     |                  |
-| Rate Limit       |────>│  Structured      |────>│  Correlation ID  |
-| Middleware       |     │  Logging         |     │  Pattern Matcher |
-| Supabase Auth    |────>│  (JSON/stdout)    |     │                  |
-| Prometheus       |────>│                  |     │  │ SIEM Rules    ││
-| Render Logs      |────>│                  |     │  │ (15 patterns) ││
-+------------------+     +------------------+     │  +──────────────+│
-                                                   +──────────────────+
-                                                           │
-                                                           v
-                                                   +------------------+
-                                                   │  Alert Manager   │
-                                                   │  PagerDuty       │
-                                                   │  Slack           │
-                                                   │  Email           │
-                                                   +------------------+
+```mermaid
+flowchart LR
+    subgraph Sources[Log Sources]
+        Audit[AuditLogService]
+        Rate[Rate Limit Middleware]
+        Auth[Supabase Auth]
+        Prom[Prometheus]
+        Render[Render Logs]
+    end
+
+    subgraph Collection[Collection]
+        Logging[Structured Logging<br>JSON/stdout]
+    end
+
+    subgraph Correlation[Correlation]
+        Matcher[Correlation ID<br>Pattern Matcher]
+        Rules[SIEM Rules<br>15 patterns]
+        Matcher --- Rules
+    end
+
+    Sources --> Logging
+    Logging --> Matcher
+    
+    Matcher --> Alerts[Alert Manager<br>PagerDuty<br>Slack<br>Email]
 ```
 
 **SIEM correlation patterns (15 rules):**

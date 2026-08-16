@@ -14,22 +14,31 @@ from app.pipeline.classification.classifier import ContentClassifier, classify_c
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def classifier():
     return ContentClassifier()
 
 
-def block(block_id: str, index: int, block_type=BlockType.BODY, text="",
-           level=None, section_name="", metadata=None, **kw):
+def block(
+    block_id: str, index: int, block_type=BlockType.BODY, text="", level=None, section_name="", metadata=None, **kw
+):
     return Block(
-        block_id=block_id, index=index, block_type=block_type, text=text,
-        level=level, section_name=section_name, metadata=metadata or {}, **kw,
+        block_id=block_id,
+        index=index,
+        block_type=block_type,
+        text=text,
+        level=level,
+        section_name=section_name,
+        metadata=metadata or {},
+        **kw,
     )
 
 
 # ---------------------------------------------------------------------------
 # Init
 # ---------------------------------------------------------------------------
+
 
 class TestInit:
     def test_sets_keyword_sets(self, classifier):
@@ -44,6 +53,7 @@ class TestInit:
 # ---------------------------------------------------------------------------
 # _looks_like_heading
 # ---------------------------------------------------------------------------
+
 
 class TestLooksLikeHeading:
     def test_is_heading_candidate_meta(self, classifier):
@@ -69,6 +79,7 @@ class TestLooksLikeHeading:
 # _resolve_heading_type
 # ---------------------------------------------------------------------------
 
+
 class TestResolveHeadingType:
     def test_level_1(self, classifier):
         assert classifier._resolve_heading_type(block("b", 0, level=1))[0] == BlockType.HEADING_1
@@ -83,6 +94,7 @@ class TestResolveHeadingType:
 # ---------------------------------------------------------------------------
 # _map_llm_label
 # ---------------------------------------------------------------------------
+
 
 class TestMapLLMLabel:
     def test_title(self, classifier):
@@ -101,7 +113,11 @@ class TestMapLLMLabel:
         assert classifier._map_llm_label("REFERENCES", b)[0] == BlockType.REFERENCES_HEADING
 
     def test_references_entry(self, classifier):
-        b = block("b1", 0, text="[1] Author, J. (2024). A very long paper title indeed that exceeds the fifty character minimum threshold.")
+        b = block(
+            "b1",
+            0,
+            text="[1] Author, J. (2024). A very long paper title indeed that exceeds the fifty character minimum threshold.",
+        )
         assert classifier._map_llm_label("REFERENCES", b)[0] == BlockType.REFERENCE_ENTRY
 
     def test_figure_caption(self, classifier):
@@ -137,6 +153,7 @@ class TestMapLLMLabel:
 # ---------------------------------------------------------------------------
 # _predict_llm_batch
 # ---------------------------------------------------------------------------
+
 
 class TestPredictLlmBatch:
     def test_disabled_returns_none(self, classifier):
@@ -179,6 +196,7 @@ class TestPredictLlmBatch:
 # ---------------------------------------------------------------------------
 # _apply_llm_predictions
 # ---------------------------------------------------------------------------
+
 
 class TestApplyLlmPredictions:
     def test_no_predictions_noop(self, classifier):
@@ -229,6 +247,7 @@ class TestApplyLlmPredictions:
 # _is_likely_affiliation
 # ---------------------------------------------------------------------------
 
+
 class TestIsLikelyAffiliation:
     def test_university(self, classifier):
         assert classifier._is_likely_affiliation("University of Wonderland") is True
@@ -249,6 +268,7 @@ class TestIsLikelyAffiliation:
 # ---------------------------------------------------------------------------
 # _match_grobid_author
 # ---------------------------------------------------------------------------
+
 
 class TestMatchGrobidAuthor:
     def test_matches_full_name(self, classifier):
@@ -274,6 +294,7 @@ class TestMatchGrobidAuthor:
 # _match_grobid_affiliation
 # ---------------------------------------------------------------------------
 
+
 class TestMatchGrobidAffiliation:
     def test_exact_match(self, classifier):
         assert classifier._match_grobid_affiliation("MIT", ["MIT"]) is True
@@ -292,6 +313,7 @@ class TestMatchGrobidAffiliation:
 # ---------------------------------------------------------------------------
 # _find_first_section_index
 # ---------------------------------------------------------------------------
+
 
 class TestFindFirstSectionIndex:
     def test_finds_first_heading(self, classifier):
@@ -331,18 +353,19 @@ class TestFindFirstSectionIndex:
 # _find_references_start_index
 # ---------------------------------------------------------------------------
 
+
 class TestFindReferencesStartIndex:
     def test_finds_by_text(self, classifier):
         blocks = [
-            block("b1", 0, BlockType.BODY, text="References",
-                  metadata={"is_heading_candidate": True}),
+            block("b1", 0, BlockType.BODY, text="References", metadata={"is_heading_candidate": True}),
         ]
         assert classifier._find_references_start_index(blocks) == 0
 
     def test_finds_by_section_name(self, classifier):
         blocks = [
-            block("b1", 0, BlockType.BODY, text="Refs", section_name="references",
-                  metadata={"is_heading_candidate": True}),
+            block(
+                "b1", 0, BlockType.BODY, text="Refs", section_name="references", metadata={"is_heading_candidate": True}
+            ),
         ]
         assert classifier._find_references_start_index(blocks) == 0
 
@@ -354,8 +377,13 @@ class TestFindReferencesStartIndex:
 
     def test_long_text_skipped(self, classifier):
         blocks = [
-            block("b1", 0, BlockType.BODY, text="References and related literature... " + "A" * 50,
-                  metadata={"is_heading_candidate": True}),
+            block(
+                "b1",
+                0,
+                BlockType.BODY,
+                text="References and related literature... " + "A" * 50,
+                metadata={"is_heading_candidate": True},
+            ),
         ]
         assert classifier._find_references_start_index(blocks) is None
 
@@ -367,10 +395,12 @@ class TestFindReferencesStartIndex:
 # Deterministic captions
 # ---------------------------------------------------------------------------
 
+
 class TestDeterministicCaptions:
     def test_figure_caption(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.BODY, text="Figure 1: Results")],
         )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
@@ -381,7 +411,8 @@ class TestDeterministicCaptions:
 
     def test_table_caption(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.BODY, text="Table 1: Data")],
         )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
@@ -395,10 +426,12 @@ class TestDeterministicCaptions:
 # Front matter
 # ---------------------------------------------------------------------------
 
+
 class TestFrontMatter:
     def test_title_position_first(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.BODY, text="My Paper")],
         )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
@@ -422,9 +455,7 @@ class TestFrontMatter:
     def test_grobid_author(self, classifier):
         doc = PipelineDocument(
             document_id="d",
-            metadata=DocumentMetadata(ai_hints={
-                "grobid_metadata": {"authors": [{"full_name": "Alice Johnson"}]}
-            }),
+            metadata=DocumentMetadata(ai_hints={"grobid_metadata": {"authors": [{"full_name": "Alice Johnson"}]}}),
             blocks=[
                 block("b1", 0, BlockType.TITLE, text="Title"),
                 block("b2", 100, BlockType.BODY, text="Alice Johnson"),
@@ -439,12 +470,14 @@ class TestFrontMatter:
     def test_grobid_affiliation(self, classifier):
         doc = PipelineDocument(
             document_id="d",
-            metadata=DocumentMetadata(ai_hints={
-                "grobid_metadata": {
-                    "authors": [{"full_name": "Alice Johnson"}],
-                    "affiliations": ["Massachusetts Institute of Technology"]
+            metadata=DocumentMetadata(
+                ai_hints={
+                    "grobid_metadata": {
+                        "authors": [{"full_name": "Alice Johnson"}],
+                        "affiliations": ["Massachusetts Institute of Technology"],
+                    }
                 }
-            }),
+            ),
             blocks=[
                 block("b1", 0, BlockType.TITLE, text="Title"),
                 block("b2", 100, BlockType.AUTHOR, text="Alice Johnson"),
@@ -459,7 +492,8 @@ class TestFrontMatter:
 
     def test_regex_author_rule(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b1", 0, BlockType.TITLE, text="Title"),
                 block("b2", 100, BlockType.BODY, text="Alice Johnson"),
@@ -473,7 +507,8 @@ class TestFrontMatter:
 
     def test_affiliation_by_keyword(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b1", 0, BlockType.TITLE, text="Title"),
                 block("b2", 100, BlockType.AUTHOR, text="Alice Johnson"),
@@ -491,14 +526,15 @@ class TestFrontMatter:
 # Body zone headings
 # ---------------------------------------------------------------------------
 
+
 class TestBodyZone:
     def test_heading_candidate(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
-                block("b1", 0, BlockType.BODY, text="Introduction",
-                      metadata={"is_heading_candidate": True}, level=1),
+                block("b1", 0, BlockType.BODY, text="Introduction", metadata={"is_heading_candidate": True}, level=1),
             ],
         )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
@@ -509,12 +545,19 @@ class TestBodyZone:
 
     def test_abstract_heading(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
-                block("b1", 0, BlockType.BODY, text="Abstract",
-                      metadata={"is_heading_candidate": True}, level=1,
-                      section_name="abstract"),
+                block(
+                    "b1",
+                    0,
+                    BlockType.BODY,
+                    text="Abstract",
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name="abstract",
+                ),
             ],
         )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
@@ -525,12 +568,19 @@ class TestBodyZone:
 
     def test_abstract_body(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
-                block("b1", 0, BlockType.BODY, text="Abstract",
-                      metadata={"is_heading_candidate": True}, level=1,
-                      section_name="abstract"),
+                block(
+                    "b1",
+                    0,
+                    BlockType.BODY,
+                    text="Abstract",
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name="abstract",
+                ),
                 block("b2", 100, BlockType.BODY, text="This paper presents..."),
             ],
         )
@@ -542,12 +592,19 @@ class TestBodyZone:
 
     def test_keywords_heading(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
-                block("b1", 0, BlockType.BODY, text="Keywords",
-                      metadata={"is_heading_candidate": True}, level=1,
-                      section_name="keywords"),
+                block(
+                    "b1",
+                    0,
+                    BlockType.BODY,
+                    text="Keywords",
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name="keywords",
+                ),
             ],
         )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
@@ -558,12 +615,19 @@ class TestBodyZone:
 
     def test_keywords_body(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
-                block("b1", 0, BlockType.BODY, text="Keywords",
-                      metadata={"is_heading_candidate": True}, level=1,
-                      section_name="keywords"),
+                block(
+                    "b1",
+                    0,
+                    BlockType.BODY,
+                    text="Keywords",
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name="keywords",
+                ),
                 block("b2", 100, BlockType.BODY, text="machine learning, NLP"),
             ],
         )
@@ -575,12 +639,19 @@ class TestBodyZone:
 
     def test_acknowledgements_heading(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
-                block("b1", 0, BlockType.BODY, text="Acknowledgements",
-                      metadata={"is_heading_candidate": True}, level=1,
-                      section_name="acknowledgements"),
+                block(
+                    "b1",
+                    0,
+                    BlockType.BODY,
+                    text="Acknowledgements",
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name="acknowledgements",
+                ),
             ],
         )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
@@ -591,12 +662,19 @@ class TestBodyZone:
 
     def test_funding_heading(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
-                block("b1", 0, BlockType.BODY, text="Funding",
-                      metadata={"is_heading_candidate": True}, level=1,
-                      section_name="acknowledgements"),
+                block(
+                    "b1",
+                    0,
+                    BlockType.BODY,
+                    text="Funding",
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name="acknowledgements",
+                ),
             ],
         )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
@@ -607,12 +685,19 @@ class TestBodyZone:
 
     def test_conflict_of_interest_heading(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
-                block("b1", 0, BlockType.BODY, text="Conflicts of Interest",
-                      metadata={"is_heading_candidate": True}, level=1,
-                      section_name="acknowledgements"),
+                block(
+                    "b1",
+                    0,
+                    BlockType.BODY,
+                    text="Conflicts of Interest",
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name="acknowledgements",
+                ),
             ],
         )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
@@ -623,12 +708,19 @@ class TestBodyZone:
 
     def test_appendix_heading(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
-                block("b1", 0, BlockType.BODY, text="Appendix",
-                      metadata={"is_heading_candidate": True}, level=1,
-                      section_name="appendix"),
+                block(
+                    "b1",
+                    0,
+                    BlockType.BODY,
+                    text="Appendix",
+                    metadata={"is_heading_candidate": True},
+                    level=1,
+                    section_name="appendix",
+                ),
             ],
         )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
@@ -643,14 +735,15 @@ class TestBodyZone:
 # References zone
 # ---------------------------------------------------------------------------
 
+
 class TestReferencesZone:
     def test_heading_and_entry(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[
                 block("b0", -1, BlockType.TITLE, text="Title"),
-                block("b1", 0, BlockType.BODY, text="References",
-                      metadata={"is_heading_candidate": True}),
+                block("b1", 0, BlockType.BODY, text="References", metadata={"is_heading_candidate": True}),
                 block("b2", 100, BlockType.BODY, text="[1] Author. Title."),
             ],
         )
@@ -665,6 +758,7 @@ class TestReferencesZone:
 # ---------------------------------------------------------------------------
 # NLP fallback
 # ---------------------------------------------------------------------------
+
 
 class TestNlpFallback:
     def test_footnote_pattern(self, classifier):
@@ -692,6 +786,7 @@ class TestNlpFallback:
 # process
 # ---------------------------------------------------------------------------
 
+
 class TestProcess:
     def test_returns_document(self, classifier):
         doc = PipelineDocument(document_id="d", metadata=DocumentMetadata(), blocks=[])
@@ -703,7 +798,8 @@ class TestProcess:
 
     def test_adds_processing_stage(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.BODY, text="Hello")],
         )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
@@ -720,7 +816,8 @@ class TestProcess:
 
     def test_skips_header_blocks(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.BODY, text="Header", metadata={"is_header": True})],
         )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
@@ -731,7 +828,8 @@ class TestProcess:
 
     def test_preserves_title(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.TITLE, text="My Paper")],
         )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
@@ -742,7 +840,8 @@ class TestProcess:
 
     def test_body_default(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.BODY, text="Regular paragraph.")],
         )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
@@ -753,7 +852,8 @@ class TestProcess:
 
     def test_post_loop_numbered_heading(self, classifier):
         doc = PipelineDocument(
-            document_id="d", metadata=DocumentMetadata(),
+            document_id="d",
+            metadata=DocumentMetadata(),
             blocks=[block("b1", 0, BlockType.UNKNOWN, text="1. Introduction")],
         )
         with patch.object(classifier, "_predict_llm_batch", return_value=None):
@@ -766,6 +866,7 @@ class TestProcess:
 # ---------------------------------------------------------------------------
 # classify_content convenience
 # ---------------------------------------------------------------------------
+
 
 class TestClassifyContent:
     def test_returns_document(self):

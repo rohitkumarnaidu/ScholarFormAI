@@ -6,6 +6,7 @@ import pytest
 class TestInMemoryCount:
     def test_limits_basic(self):
         from app.middleware.rate_limit import RateLimitMiddleware
+
         mock_app = AsyncMock()
         rl = RateLimitMiddleware(mock_app, requests_per_minute=60)
         count = rl._in_memory_count("1.2.3.4")
@@ -15,6 +16,7 @@ class TestInMemoryCount:
 
     def test_separate_ip_counts(self):
         from app.middleware.rate_limit import RateLimitMiddleware
+
         mock_app = AsyncMock()
         rl = RateLimitMiddleware(mock_app)
         c1 = rl._in_memory_count("ip1")
@@ -24,6 +26,7 @@ class TestInMemoryCount:
 
     def test_upload_separate_from_general(self):
         from app.middleware.rate_limit import RateLimitMiddleware
+
         mock_app = AsyncMock()
         rl = RateLimitMiddleware(mock_app)
         general = rl._in_memory_count("ip1")
@@ -36,6 +39,7 @@ class TestDispatch:
     @pytest.mark.asyncio
     async def test_health_never_limited(self):
         from app.middleware.rate_limit import RateLimitMiddleware
+
         mock_app = AsyncMock()
         mock_app.return_value = MagicMock(status_code=200)
         rl = RateLimitMiddleware(mock_app)
@@ -49,6 +53,7 @@ class TestDispatch:
     @pytest.mark.asyncio
     async def test_normal_request_passes(self):
         from app.middleware.rate_limit import RateLimitMiddleware
+
         mock_app = AsyncMock()
         mock_app.return_value = MagicMock(status_code=200)
         rl = RateLimitMiddleware(mock_app, requests_per_minute=60)
@@ -62,6 +67,7 @@ class TestDispatch:
     @pytest.mark.asyncio
     async def test_rate_limited(self):
         from app.middleware.rate_limit import RateLimitMiddleware
+
         mock_app = AsyncMock()
         mock_app.return_value = MagicMock(status_code=200)
         rl = RateLimitMiddleware(mock_app, requests_per_minute=1)
@@ -77,6 +83,7 @@ class TestDispatch:
     @pytest.mark.asyncio
     async def test_upload_limit_stricter(self):
         from app.middleware.rate_limit import RateLimitMiddleware
+
         mock_app = AsyncMock()
         mock_app.return_value = MagicMock(status_code=200)
         rl = RateLimitMiddleware(mock_app)
@@ -98,6 +105,7 @@ class TestRedisCount:
     async def test_redis_fallback_returns_none_when_disabled(self):
         with patch("app.middleware.rate_limit.REDIS_ENABLED", False):
             from app.middleware.rate_limit import RateLimitMiddleware
+
             mock_app = AsyncMock()
             rl = RateLimitMiddleware(mock_app)
             count = await rl._redis_count("key")
@@ -112,6 +120,7 @@ class TestRedisCount:
                 mock_client.expire.return_value = True
                 mock_redis.return_value = mock_client
                 from app.middleware.rate_limit import RateLimitMiddleware
+
                 mock_app = AsyncMock()
                 rl = RateLimitMiddleware(mock_app)
                 count = await rl._redis_count("key")
@@ -125,6 +134,7 @@ class TestRedisCount:
                 mock_client.incr.side_effect = ConnectionError("fail")
                 mock_redis.return_value = mock_client
                 from app.middleware.rate_limit import RateLimitMiddleware
+
                 mock_app = AsyncMock()
                 rl = RateLimitMiddleware(mock_app)
                 count = await rl._redis_count("key")

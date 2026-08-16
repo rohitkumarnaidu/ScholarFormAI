@@ -25,6 +25,7 @@ pytestmark = [pytest.mark.pipeline]
 #  PIPELINE ORCHESTRATOR TESTS
 # ==============================================================================
 
+
 @pytest.fixture
 def orch():
     with (
@@ -36,6 +37,7 @@ def orch():
         patch("app.pipeline.orchestrator.DoclingClient"),
     ):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         o = PipelineOrchestrator(templates_dir="app/templates", temp_dir="/tmp/test_cov_gap")
         return o
 
@@ -50,6 +52,7 @@ def _make_sb():
 
 def _make_doc(job_id="job1"):
     from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
+
     doc = PipelineDocument(
         document_id=job_id,
         blocks=[Block(block_id="b1", index=1, block_type=BlockType.BODY, text="body text")],
@@ -63,30 +66,37 @@ def _make_doc(job_id="job1"):
 # _get_figure_analyzer
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestGetFigureAnalyzer:
     def test_figure_analyzer_lazy_init(self):
         from app.pipeline.orchestrator.stages import _figure_analyzer_instance, _get_figure_analyzer
+
         old = _figure_analyzer_instance
         try:
             import app.pipeline.orchestrator.stages as mod
+
             mod._figure_analyzer_instance = None
             with patch("app.pipeline.figures.analyzer.figure_analyzer", "mock_analyzer"):
                 result = _get_figure_analyzer()
                 assert result == "mock_analyzer"
         finally:
             import app.pipeline.orchestrator.stages as mod
+
             mod._figure_analyzer_instance = old
 
     def test_figure_analyzer_returns_cached(self):
         from app.pipeline.orchestrator.stages import _figure_analyzer_instance, _get_figure_analyzer
+
         old = _figure_analyzer_instance
         try:
             import app.pipeline.orchestrator.stages as mod
+
             mod._figure_analyzer_instance = "cached"
             result = _get_figure_analyzer()
             assert result == "cached"
         finally:
             import app.pipeline.orchestrator.stages as mod
+
             mod._figure_analyzer_instance = old
 
 
@@ -94,35 +104,42 @@ class TestGetFigureAnalyzer:
 # _coerce_bool
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestCoerceBool:
     def test_none_returns_default(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         assert PipelineOrchestrator._coerce_bool(None, True) is True
         assert PipelineOrchestrator._coerce_bool(None, False) is False
 
     def test_bool_passthrough(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         assert PipelineOrchestrator._coerce_bool(True) is True
         assert PipelineOrchestrator._coerce_bool(False) is False
 
     def test_int_float(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         assert PipelineOrchestrator._coerce_bool(1) is True
         assert PipelineOrchestrator._coerce_bool(0.0) is False
         assert PipelineOrchestrator._coerce_bool(0) is False
 
     def test_string_truthy(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         for s in ["1", "true", "yes", "on"]:
             assert PipelineOrchestrator._coerce_bool(s) is True, f"'{s}' should be True"
 
     def test_string_falsy(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         for s in ["0", "false", "no", "off"]:
             assert PipelineOrchestrator._coerce_bool(s) is False, f"'{s}' should be False"
 
     def test_unknown_type_returns_default(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         assert PipelineOrchestrator._coerce_bool([], default=True) is True
         assert PipelineOrchestrator._coerce_bool({}, default=False) is False
 
@@ -131,9 +148,11 @@ class TestCoerceBool:
 # _check_stage_interface
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestCheckStageInterface:
     def test_missing_method_raises(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         orch = MagicMock(spec=PipelineOrchestrator)
         instance = MagicMock(spec=["something"])
         with pytest.raises(RuntimeError, match="does not implement required method"):
@@ -141,6 +160,7 @@ class TestCheckStageInterface:
 
     def test_has_method_ok(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         instance = MagicMock()
         instance.process = MagicMock()
         PipelineOrchestrator._check_stage_interface(None, instance, "process", "TestStage")
@@ -149,6 +169,7 @@ class TestCheckStageInterface:
 # ──────────────────────────────────────────────────────────────────────────────
 # _record_stage_transition
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestRecordStageTransition:
     def test_processing_records_start_time(self, orch):
@@ -181,6 +202,7 @@ class TestRecordStageTransition:
 # ──────────────────────────────────────────────────────────────────────────────
 # _update_status
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestUpdateStatus:
     def test_sb_unavailable(self, orch):
@@ -258,11 +280,13 @@ class TestUpdateStatus:
             MagicMock(data=[{"id": 1}]),
         ]
         call_count = [0]
+
         def _get_sb(refresh=False):
             call_count[0] += 1
             if refresh:
                 return None
             return sb
+
         with patch("app.pipeline.orchestrator.get_supabase_client", side_effect=_get_sb):
             with patch.dict("sys.modules", {"app.routers.v1.stream": MagicMock()}):
                 orch._update_status("job1", "EXTRACTION", "COMPLETED")
@@ -288,6 +312,7 @@ class TestUpdateStatus:
 # ──────────────────────────────────────────────────────────────────────────────
 # _check_cancelled
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestCheckCancelled:
     def test_sb_none(self, orch):
@@ -317,6 +342,7 @@ class TestCheckCancelled:
 # ──────────────────────────────────────────────────────────────────────────────
 # _persist_partial_result
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestPersistPartialResult:
     def test_no_sb_no_doc(self, orch):
@@ -348,6 +374,7 @@ class TestPersistPartialResult:
 # _run_with_timeout
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestRunWithTimeout:
     def test_normal_execution(self, orch):
         result = orch._run_with_timeout(lambda x: x * 2, 10, 21)
@@ -356,17 +383,22 @@ class TestRunWithTimeout:
     def test_timeout_error(self, orch):
         def slow():
             import time
+
             time.sleep(100)
             return 42
+
         with pytest.raises(TimeoutError):
             orch._run_with_timeout(slow, 0.01)
 
     def test_cancel_event_set_on_timeout(self, orch):
         cancel_event = threading.Event()
+
         def slow():
             import time
+
             time.sleep(100)
             return 42
+
         with pytest.raises(TimeoutError):
             orch._run_with_timeout(slow, 0.01, cancel_event=cancel_event)
         assert cancel_event.is_set()
@@ -375,6 +407,7 @@ class TestRunWithTimeout:
 # ──────────────────────────────────────────────────────────────────────────────
 # _resolve_runtime_flags
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestResolveRuntimeFlags:
     def test_pytest_override(self, orch):
@@ -413,6 +446,7 @@ class TestResolveRuntimeFlags:
 # ──────────────────────────────────────────────────────────────────────────────
 # _should_skip_docling_for_digital_pdf
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestShouldSkipDocling:
     def test_force_docling(self, orch):
@@ -459,11 +493,14 @@ class TestShouldSkipDocling:
             mock_s.PIPELINE_DOCLING_FORCE = False
             mock_s.PIPELINE_DOCLING_SKIP_DIGITAL_PDF = True
             import builtins
+
             orig_import = builtins.__import__
+
             def fake_import(name, *args, **kwargs):
                 if name == "fitz":
                     raise ImportError("no fitz")
                 return orig_import(name, *args, **kwargs)
+
             with patch("builtins.__import__", side_effect=fake_import):
                 assert orch._should_skip_docling_for_digital_pdf("/test.pdf") is False
 
@@ -472,14 +509,18 @@ class TestShouldSkipDocling:
 # _extract_pymupdf_fallback_metadata
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestExtractPyMuPDF:
     def test_import_exception(self, orch):
         import builtins
+
         real_import = builtins.__import__
+
         def fake_import(name, *args, **kwargs):
             if name == "fitz":
                 raise ImportError("no fitz")
             return real_import(name, *args, **kwargs)
+
         with patch("builtins.__import__", side_effect=fake_import), patch("os.path.exists", return_value=True):
             result = orch._extract_pymupdf_fallback_metadata("/test.pdf")
         assert result == {}
@@ -511,10 +552,14 @@ class TestExtractPyMuPDF:
 # _sync_block_confidence
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestSyncBlockConfidence:
     def test_classification_confidence_in_metadata(self, orch):
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
-        block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": 0.85})
+
+        block = Block(
+            block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": 0.85}
+        )
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         doc.metadata.ai_hints = {}
         orch._sync_block_confidence(doc)
@@ -522,6 +567,7 @@ class TestSyncBlockConfidence:
 
     def test_no_classification_confidence_fallback(self, orch):
         from app.models import Block, DocumentMetadata, PipelineDocument
+
         block = MagicMock(spec=Block)
         block.block_id = "b1"
         block.metadata = {}
@@ -534,6 +580,7 @@ class TestSyncBlockConfidence:
 
     def test_nlp_confidence_metadata_fallback(self, orch):
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
+
         block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"nlp_confidence": 0.65})
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         doc.metadata.ai_hints = {}
@@ -542,14 +589,24 @@ class TestSyncBlockConfidence:
 
     def test_type_error_skipped(self, orch):
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
-        block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": "not-a-number"})
+
+        block = Block(
+            block_id="b1",
+            index=0,
+            block_type=BlockType.BODY,
+            text="t",
+            metadata={"classification_confidence": "not-a-number"},
+        )
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         orch._sync_block_confidence(doc)
         assert "nlp_confidence" not in block.metadata or block.metadata.get("nlp_confidence") == 0.0
 
     def test_negative_clamped(self, orch):
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
-        block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": -0.5})
+
+        block = Block(
+            block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": -0.5}
+        )
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         doc.metadata.ai_hints = {}
         orch._sync_block_confidence(doc)
@@ -557,7 +614,10 @@ class TestSyncBlockConfidence:
 
     def test_above_one_clamped(self, orch):
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
-        block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": 1.5})
+
+        block = Block(
+            block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": 1.5}
+        )
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         doc.metadata.ai_hints = {}
         orch._sync_block_confidence(doc)
@@ -565,6 +625,7 @@ class TestSyncBlockConfidence:
 
     def test_semantic_intent_set(self, orch):
         from app.models import Block, DocumentMetadata, PipelineDocument
+
         block = MagicMock(spec=Block)
         block.block_id = "b1"
         block.metadata = {"classification_confidence": 0.9}
@@ -580,10 +641,18 @@ class TestSyncBlockConfidence:
 # _build_quality_summary
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestBuildQualitySummary:
     def test_heading_candidates_count(self, orch):
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
-        block = Block(block_id="b1", index=0, block_type=BlockType.HEADING_1, text="Intro", metadata={"is_heading_candidate": True, "classification_confidence": 0.9})
+
+        block = Block(
+            block_id="b1",
+            index=0,
+            block_type=BlockType.HEADING_1,
+            text="Intro",
+            metadata={"is_heading_candidate": True, "classification_confidence": 0.9},
+        )
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         doc.template = None
         with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 85.0}):
@@ -592,7 +661,10 @@ class TestBuildQualitySummary:
 
     def test_no_heading_candidates(self, orch):
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
-        block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="body", metadata={"classification_confidence": 0.9})
+
+        block = Block(
+            block_id="b1", index=0, block_type=BlockType.BODY, text="body", metadata={"classification_confidence": 0.9}
+        )
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         doc.template = None
         with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 85.0}):
@@ -601,6 +673,7 @@ class TestBuildQualitySummary:
 
     def test_no_figures_or_tables_lowers_asset_score(self, orch):
         from app.models import DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(document_id="d1", blocks=[], metadata=DocumentMetadata())
         doc.template = None
         doc.figures = []
@@ -612,6 +685,7 @@ class TestBuildQualitySummary:
 
     def test_metadata_not_dict(self, orch):
         from app.models import Block, DocumentMetadata, PipelineDocument
+
         block = MagicMock(spec=Block)
         block.metadata = None
         block.classification_confidence = 0.85
@@ -623,7 +697,10 @@ class TestBuildQualitySummary:
 
     def test_value_error_on_float_conversion(self, orch):
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
-        block = Block(block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": "bad"})
+
+        block = Block(
+            block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": "bad"}
+        )
         doc = PipelineDocument(document_id="d1", blocks=[block], metadata=DocumentMetadata())
         doc.template = None
         with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 80.0}):
@@ -632,9 +709,14 @@ class TestBuildQualitySummary:
 
     def test_low_conf_blocks_counted(self, orch):
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
+
         blocks = [
-            Block(block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": 0.3}),
-            Block(block_id="b2", index=1, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": 0.9}),
+            Block(
+                block_id="b1", index=0, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": 0.3}
+            ),
+            Block(
+                block_id="b2", index=1, block_type=BlockType.BODY, text="t", metadata={"classification_confidence": 0.9}
+            ),
         ]
         doc = PipelineDocument(document_id="d1", blocks=blocks, metadata=DocumentMetadata())
         doc.template = None
@@ -644,6 +726,7 @@ class TestBuildQualitySummary:
 
     def test_errors_and_warnings_penalty(self, orch):
         from app.models import DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(document_id="d1", blocks=[], metadata=DocumentMetadata())
         doc.template = None
         with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 80.0}):
@@ -653,6 +736,7 @@ class TestBuildQualitySummary:
 
     def test_template_name_from_doc(self, orch):
         from app.models import DocumentMetadata, PipelineDocument, TemplateInfo
+
         doc = PipelineDocument(document_id="d1", blocks=[], metadata=DocumentMetadata())
         doc.template = TemplateInfo(template_name="ACM")
         with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 90.0}):
@@ -662,6 +746,7 @@ class TestBuildQualitySummary:
 # ──────────────────────────────────────────────────────────────────────────────
 # _compute_sha256
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestComputeSha256:
     def test_sha256_computation(self, orch, tmp_path):
@@ -675,6 +760,7 @@ class TestComputeSha256:
 # ──────────────────────────────────────────────────────────────────────────────
 # _run_extraction_stage
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestRunExtractionStage:
     def test_direct_parse_format(self, orch, tmp_path):
@@ -702,9 +788,11 @@ class TestRunExtractionStage:
 # _run_semantic_parsing
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestRunSemanticParsing:
     def test_successful_semantic_parsing(self, orch):
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(
             document_id="d1",
             blocks=[Block(block_id="b1", index=0, block_type=BlockType.BODY, text="test")],
@@ -727,6 +815,7 @@ class TestRunSemanticParsing:
 # _run_classification
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestRunClassification:
     def test_classification_runs(self, orch):
         doc = _make_doc()
@@ -741,6 +830,7 @@ class TestRunClassification:
 # ──────────────────────────────────────────────────────────────────────────────
 # _run_validation_stage
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestRunValidation:
     def test_validation_runs(self, orch):
@@ -757,9 +847,11 @@ class TestRunValidation:
 # _run_figure_analysis_stage — additional edge cases
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestFigureAnalysisAdditional:
     def test_downsample_returns_same_path(self, orch):
         from app.models import DocumentMetadata, Figure, PipelineDocument
+
         fig = Figure(figure_id="f1", index=1, export_path="/tmp/fig.png", caption_text="Fig")
         doc = PipelineDocument(document_id="d1", blocks=[], metadata=DocumentMetadata(), figures=[fig])
         doc.metadata.ai_hints = {}
@@ -774,9 +866,12 @@ class TestFigureAnalysisAdditional:
 
     def test_metadata_is_dict_without_ai_hints(self, orch):
         from app.models import Figure, PipelineDocument
+
         fig = Figure(figure_id="f1", index=1, export_path="/tmp/fig.png", caption_text="Fig")
         doc = PipelineDocument(
-            document_id="figdoc", blocks=[], figures=[fig],
+            document_id="figdoc",
+            blocks=[],
+            figures=[fig],
         )
         object.__setattr__(doc, "metadata", {"existing": "value"})
         mock_analyzer = MagicMock()
@@ -789,6 +884,7 @@ class TestFigureAnalysisAdditional:
 
     def test_metadata_has_ai_hints_attr(self, orch):
         from app.models import DocumentMetadata, Figure, PipelineDocument
+
         fig = Figure(figure_id="f1", index=1, export_path="/tmp/fig.png", caption_text="Fig")
         doc = PipelineDocument(document_id="figdoc", blocks=[], metadata=DocumentMetadata(), figures=[fig])
         doc.metadata.ai_hints = {"existing": "data"}
@@ -809,6 +905,7 @@ class TestFigureAnalysisAdditional:
 
     def test_figure_with_image_data_and_no_export_path(self, orch):
         from app.models import DocumentMetadata, Figure, PipelineDocument
+
         fig = Figure(figure_id="f2", index=1, export_path=None, image_data=b"imgdata", caption_text="Fig")
         doc = PipelineDocument(document_id="figdoc", blocks=[], metadata=DocumentMetadata(), figures=[fig])
         doc.metadata.ai_hints = {}
@@ -822,6 +919,7 @@ class TestFigureAnalysisAdditional:
 # ──────────────────────────────────────────────────────────────────────────────
 # _run_formatting_stage
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestRunFormatting:
     def test_formatting_runs(self, orch):
@@ -839,6 +937,7 @@ class TestRunFormatting:
 # _export_document
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestExportDocument:
     def test_export_creates_dir_and_output(self, orch, tmp_path):
         doc = _make_doc()
@@ -853,11 +952,14 @@ class TestExportDocument:
 # run_pipeline
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestRunPipeline:
     def test_semaphore_timeout(self, orch):
         import threading
+
         def fake_acquire(timeout=None):
             return False
+
         with patch.object(threading.Semaphore, "acquire", side_effect=fake_acquire):
             with patch.object(orch, "_update_status"):
                 result = orch.run_pipeline("/tmp/test.pdf", "job1")
@@ -900,6 +1002,7 @@ class TestRunPipeline:
 # ──────────────────────────────────────────────────────────────────────────────
 # run_edit_flow
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestRunEditFlow:
     def test_sb_unavailable(self, orch):
@@ -993,10 +1096,13 @@ class TestRunEditFlow:
 #  RAG ENGINE TESTS
 # ==============================================================================
 
+
 def _make_rag_engine(temp_dir=None, model_name=None):
     import tempfile as _tf
+
     persist_dir = temp_dir or _tf.mkdtemp()
     from app.pipeline.intelligence.rag_engine import RagEngine
+
     with patch.object(RagEngine, "_load_embedding_model"):
         re = RagEngine(persist_directory=persist_dir)
     re.chroma_enabled = False
@@ -1009,12 +1115,15 @@ def _make_rag_engine(temp_dir=None, model_name=None):
 # _load_chromadb
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestLoadChromadb:
     def test_chromadb_already_loaded(self):
         from app.pipeline.intelligence.rag_engine import _load_chromadb
+
         globals().get("chromadb")
         try:
             import app.pipeline.intelligence.rag_engine as rag_mod
+
             rag_mod.chromadb = "already_loaded"
             rag_mod._CHROMADB_AVAILABLE = False
             result = _load_chromadb()
@@ -1025,6 +1134,7 @@ class TestLoadChromadb:
 
     def test_chromadb_import_already_attempted(self):
         import app.pipeline.intelligence.rag_engine as rag_mod
+
         old = rag_mod._CHROMADB_IMPORT_ATTEMPTED
         try:
             rag_mod.chromadb = None
@@ -1036,6 +1146,7 @@ class TestLoadChromadb:
 
     def test_chromadb_import_succeeds(self):
         import app.pipeline.intelligence.rag_engine as rag_mod
+
         old_cdb = rag_mod.chromadb
         old_attempted = rag_mod._CHROMADB_IMPORT_ATTEMPTED
         old_available = rag_mod._CHROMADB_AVAILABLE
@@ -1044,6 +1155,7 @@ class TestLoadChromadb:
             rag_mod._CHROMADB_IMPORT_ATTEMPTED = False
             rag_mod._CHROMADB_AVAILABLE = False
             import types
+
             fake_chromadb = types.ModuleType("chromadb")
             with patch.dict("sys.modules", {"chromadb": fake_chromadb}):
                 with patch.object(rag_mod, "chromadb", None):
@@ -1055,6 +1167,7 @@ class TestLoadChromadb:
 
     def test_chromadb_import_fails(self):
         import app.pipeline.intelligence.rag_engine as rag_mod
+
         old_chromadb = rag_mod.chromadb
         old_attempted = rag_mod._CHROMADB_IMPORT_ATTEMPTED
         old_available = rag_mod._CHROMADB_AVAILABLE
@@ -1063,11 +1176,14 @@ class TestLoadChromadb:
             rag_mod._CHROMADB_IMPORT_ATTEMPTED = False
             rag_mod._CHROMADB_AVAILABLE = False
             import builtins
+
             orig_import = builtins.__import__
+
             def fake_import(name, *args, **kwargs):
                 if name == "chromadb":
                     raise ImportError("chromadb not installed")
                 return orig_import(name, *args, **kwargs)
+
             with patch("builtins.__import__", side_effect=fake_import):
                 result = rag_mod._load_chromadb()
             assert result is None
@@ -1082,24 +1198,29 @@ class TestLoadChromadb:
 # _DeterministicEmbeddingModel
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestDeterministicEmbeddingModel:
     def test_init_with_custom_dimension(self):
         from app.pipeline.intelligence.rag_engine import _DeterministicEmbeddingModel
+
         m = _DeterministicEmbeddingModel(dimension=64)
         assert m.dimension == 64
 
     def test_init_min_dimension(self):
         from app.pipeline.intelligence.rag_engine import _DeterministicEmbeddingModel
+
         m = _DeterministicEmbeddingModel(dimension=8)
         assert m.dimension == 32
 
     def test_get_sentence_embedding_dimension(self):
         from app.pipeline.intelligence.rag_engine import _DeterministicEmbeddingModel
+
         m = _DeterministicEmbeddingModel(128)
         assert m.get_sentence_embedding_dimension() == 128
 
     def test_encode_single_string(self):
         from app.pipeline.intelligence.rag_engine import _DeterministicEmbeddingModel
+
         m = _DeterministicEmbeddingModel(32)
         result = m.encode("hello world")
         assert len(result) == 32
@@ -1107,6 +1228,7 @@ class TestDeterministicEmbeddingModel:
 
     def test_encode_empty_string(self):
         from app.pipeline.intelligence.rag_engine import _DeterministicEmbeddingModel
+
         m = _DeterministicEmbeddingModel(32)
         result = m.encode("")
         assert len(result) == 32
@@ -1114,6 +1236,7 @@ class TestDeterministicEmbeddingModel:
 
     def test_encode_list(self):
         from app.pipeline.intelligence.rag_engine import _DeterministicEmbeddingModel
+
         m = _DeterministicEmbeddingModel(32)
         result = m.encode(["hello", "world"])
         assert len(result) == 2
@@ -1121,6 +1244,7 @@ class TestDeterministicEmbeddingModel:
 
     def test_encode_tuple(self):
         from app.pipeline.intelligence.rag_engine import _DeterministicEmbeddingModel
+
         m = _DeterministicEmbeddingModel(32)
         result = m.encode(("hello", "world"))
         assert len(result) == 2
@@ -1129,6 +1253,7 @@ class TestDeterministicEmbeddingModel:
 # ──────────────────────────────────────────────────────────────────────────────
 # _coerce_embedding_vector
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestCoerceEmbeddingVector:
     def test_none(self):
@@ -1153,6 +1278,7 @@ class TestCoerceEmbeddingVector:
 
     def test_numpy_array(self):
         import numpy as np
+
         re = _make_rag_engine()
         result = re._coerce_embedding_vector(np.array([0.5, 0.6, 0.7]))
         assert len(result) == 3
@@ -1161,6 +1287,7 @@ class TestCoerceEmbeddingVector:
 # ──────────────────────────────────────────────────────────────────────────────
 # _is_reusable_embedding_model
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestIsReusableEmbeddingModel:
     def test_none(self):
@@ -1223,6 +1350,7 @@ class TestIsReusableEmbeddingModel:
 # _activate_deterministic_embedding
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestActivateDeterministicEmbedding:
     def test_store_failure_does_not_block(self):
         re = _make_rag_engine()
@@ -1242,9 +1370,11 @@ class TestActivateDeterministicEmbedding:
 # _load_embedding_model — heavy coverage
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestLoadEmbeddingModel:
     def _make_rag_no_load(self, temp_dir=None):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         with patch.object(RagEngine, "_load_embedding_model"):
             return RagEngine(persist_directory=temp_dir or tempfile.mkdtemp(), auto_seed=False)
 
@@ -1306,11 +1436,14 @@ class TestLoadEmbeddingModel:
             mock_settings.LOW_MEMORY_MODE = False
             mock_settings.RAG_USE_TRANSFORMERS = True
             import builtins
+
             orig_import = builtins.__import__
+
             def fake_import(name, *args, **kwargs):
                 if "sentence_transformers" in name:
                     raise ImportError("no sentence transformers")
                 return orig_import(name, *args, **kwargs)
+
             with patch("builtins.__import__", side_effect=fake_import):
                 re._load_embedding_model()
         assert re.embedding_model is not None
@@ -1389,32 +1522,38 @@ class TestLoadEmbeddingModel:
 # _HuggingFaceAPIEmbeddingModel
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestHuggingFaceAPIEmbeddingModel:
     def test_init_default(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         with patch.dict(os.environ, {}, clear=True):
             m = _HuggingFaceAPIEmbeddingModel()
             assert m.dimension == 384
 
     def test_init_bge_m3(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         with patch.dict(os.environ, {}, clear=True):
             m = _HuggingFaceAPIEmbeddingModel(model_id="BAAI/bge-m3")
             assert m.dimension == 1024
 
     def test_init_custom_url(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         with patch.dict(os.environ, {"RAG_EMBEDDING_API_URL": "https://custom.url/model"}, clear=True):
             m = _HuggingFaceAPIEmbeddingModel()
             assert "custom.url" in m.api_url
 
     def test_normalize_embedding_api_url_empty(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         url = _HuggingFaceAPIEmbeddingModel._normalize_embedding_api_url("", "test-model")
         assert "test-model" in url
 
     def test_normalize_embedding_api_url_missing_pipeline(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         url = _HuggingFaceAPIEmbeddingModel._normalize_embedding_api_url(
             "https://router.huggingface.co/hf-inference/models/test-model",
             "test-model",
@@ -1423,6 +1562,7 @@ class TestHuggingFaceAPIEmbeddingModel:
 
     def test_normalize_embedding_api_url_valid(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         url = _HuggingFaceAPIEmbeddingModel._normalize_embedding_api_url(
             "https://router.huggingface.co/hf-inference/models/test-model/pipeline/feature-extraction",
             "test-model",
@@ -1431,17 +1571,20 @@ class TestHuggingFaceAPIEmbeddingModel:
 
     def test_default_feature_extraction_url(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         url = _HuggingFaceAPIEmbeddingModel._default_feature_extraction_url("test-model")
         assert "test-model" in url
         assert "feature-extraction" in url
 
     def test_get_sentence_embedding_dimension(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         m = _HuggingFaceAPIEmbeddingModel()
         assert m.get_sentence_embedding_dimension() == 384
 
     def test_encode_no_token(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         with patch.dict(os.environ, {}, clear=True):
             m = _HuggingFaceAPIEmbeddingModel()
             m.token = ""
@@ -1450,6 +1593,7 @@ class TestHuggingFaceAPIEmbeddingModel:
 
     def test_encode_http_500_retry_then_fail(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         with patch.dict(os.environ, {}, clear=True):
             m = _HuggingFaceAPIEmbeddingModel()
             m.token = "fake"
@@ -1464,6 +1608,7 @@ class TestHuggingFaceAPIEmbeddingModel:
 
     def test_encode_http_400_sentence_similarity_recovers(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         with patch.dict(os.environ, {}, clear=True):
             m = _HuggingFaceAPIEmbeddingModel()
             m.token = "fake"
@@ -1475,6 +1620,7 @@ class TestHuggingFaceAPIEmbeddingModel:
             resp.text = "SentenceSimilarityPipeline"
             resp.json.return_value = [[0.1, 0.2]]
             call_count = [0]
+
             def side_effect(*a, **kw):
                 call_count[0] += 1
                 if call_count[0] == 1:
@@ -1483,12 +1629,14 @@ class TestHuggingFaceAPIEmbeddingModel:
                 resp2.status_code = 200
                 resp2.json.return_value = [[0.1, 0.2]]
                 return resp2
+
             with patch("requests.post", side_effect=side_effect):
                 result = m.encode("hello")
                 assert len(result) > 0
 
     def test_encode_http_200_single(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         with patch.dict(os.environ, {}, clear=True):
             m = _HuggingFaceAPIEmbeddingModel()
             m.token = "fake"
@@ -1501,6 +1649,7 @@ class TestHuggingFaceAPIEmbeddingModel:
 
     def test_encode_http_200_list(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         with patch.dict(os.environ, {}, clear=True):
             m = _HuggingFaceAPIEmbeddingModel()
             m.token = "fake"
@@ -1513,12 +1662,14 @@ class TestHuggingFaceAPIEmbeddingModel:
 
     def test_encode_exception_retry(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         with patch.dict(os.environ, {}, clear=True):
             m = _HuggingFaceAPIEmbeddingModel()
             m.token = "fake"
             m.max_retries = 2
             m.retry_backoff_seconds = 0.01
             call_count = [0]
+
             def side_effect(*a, **kw):
                 call_count[0] += 1
                 if call_count[0] == 1:
@@ -1527,12 +1678,14 @@ class TestHuggingFaceAPIEmbeddingModel:
                 resp.status_code = 200
                 resp.json.return_value = [[0.1, 0.2]]
                 return resp
+
             with patch("requests.post", side_effect=side_effect):
                 result = m.encode("hello")
                 assert len(result) > 0
 
     def test_encode_all_exceptions_fail(self):
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         with patch.dict(os.environ, {}, clear=True):
             m = _HuggingFaceAPIEmbeddingModel()
             m.token = "fake"
@@ -1546,6 +1699,7 @@ class TestHuggingFaceAPIEmbeddingModel:
 # ──────────────────────────────────────────────────────────────────────────────
 # add_guideline — edge cases
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestAddGuideline:
     def test_chroma_enabled_no_embedding(self):
@@ -1578,6 +1732,7 @@ class TestAddGuideline:
 # ──────────────────────────────────────────────────────────────────────────────
 # query_guidelines — edge cases
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestQueryGuidelines:
     def test_chroma_query_fallback_native(self):
@@ -1621,7 +1776,9 @@ class TestQueryGuidelines:
             {"text": "Rule 1", "metadata": {"publisher": "IEEE"}, "embedding": [0.5] * 128},
             {"text": "Rule 2", "metadata": {"publisher": "IEEE"}, "embedding": [0.5] * 256},
         ]
-        with patch.object(re, "_coerce_embedding_vector", side_effect=lambda x: x if isinstance(x, list) and len(x) > 0 else []):
+        with patch.object(
+            re, "_coerce_embedding_vector", side_effect=lambda x: x if isinstance(x, list) and len(x) > 0 else []
+        ):
             results = re.query_guidelines("IEEE", "test", top_k=1)
             assert len(results) == 1
 
@@ -1632,7 +1789,11 @@ class TestQueryGuidelines:
         re.knowledge_base = [
             {"text": "Rule", "metadata": {"publisher": "IEEE"}, "embedding": [0.0] * 256},
         ]
-        with patch.object(re, "_coerce_embedding_vector", side_effect=lambda x: x if isinstance(x, list) else x.tolist() if hasattr(x, 'tolist') else []):
+        with patch.object(
+            re,
+            "_coerce_embedding_vector",
+            side_effect=lambda x: x if isinstance(x, list) else x.tolist() if hasattr(x, "tolist") else [],
+        ):
             results = re.query_guidelines("IEEE", "test", top_k=1)
             assert results == []
 
@@ -1648,11 +1809,16 @@ class TestQueryGuidelines:
 # query_rules — edge cases
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestQueryRules:
     def test_normal_flow(self):
         re = _make_rag_engine()
         re.knowledge_base = [
-            {"text": "Abstract must be concise", "metadata": {"publisher": "IEEE", "section": "abstract"}, "embedding": [0.5] * 256},
+            {
+                "text": "Abstract must be concise",
+                "metadata": {"publisher": "IEEE", "section": "abstract"},
+                "embedding": [0.5] * 256,
+            },
         ]
         re.active_model_name = "deterministic-hash-v1"
         with patch.object(re, "query_guidelines", return_value=["Abstract must be concise"]):
@@ -1679,6 +1845,7 @@ class TestQueryRules:
 # _save_native / _load_native
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestNativePersistence:
     def test_save_and_load(self):
         re = _make_rag_engine()
@@ -1700,6 +1867,7 @@ class TestNativePersistence:
 # ──────────────────────────────────────────────────────────────────────────────
 # reset
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestReset:
     def test_chroma_enabled_exception(self):
@@ -1735,6 +1903,7 @@ class TestReset:
 # _seed_if_empty — edge cases
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestSeedIfEmpty:
     def test_knowledge_base_not_empty(self):
         re = _make_rag_engine()
@@ -1768,7 +1937,12 @@ class TestSeedIfEmpty:
         os.path.join(os.path.dirname(os.path.dirname(re.kb_file)), "default_guidelines.json")
         with patch("os.path.exists", return_value=True):
             with patch("builtins.open", MagicMock()):
-                with patch("json.load", return_value={"guidelines": [{"publisher": "IEEE", "section": "abstract", "text": "Abstract rules"}]}):
+                with patch(
+                    "json.load",
+                    return_value={
+                        "guidelines": [{"publisher": "IEEE", "section": "abstract", "text": "Abstract rules"}]
+                    },
+                ):
                     with patch.object(re, "add_guideline"):
                         re._seed_if_empty()
 
@@ -1780,7 +1954,9 @@ class TestSeedIfEmpty:
         re.chroma_enabled = False
         with patch("os.path.exists", return_value=True):
             with patch("builtins.open", MagicMock()):
-                with patch("json.load", return_value=[{"publisher": "IEEE", "section": "abstract", "text": "Abstract rules"}]):
+                with patch(
+                    "json.load", return_value=[{"publisher": "IEEE", "section": "abstract", "text": "Abstract rules"}]
+                ):
                     with patch.object(re, "add_guideline"):
                         re._seed_if_empty()
 
@@ -1805,12 +1981,15 @@ class TestSeedIfEmpty:
 # get_rag_engine
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestGetRagEngine:
     def test_singleton_creates_new(self):
         from app.pipeline.intelligence.rag_engine import _rag_engine, get_rag_engine
+
         old = _rag_engine
         try:
             import app.pipeline.intelligence.rag_engine as rag_mod
+
             rag_mod._rag_engine = None
             with patch.object(rag_mod, "RagEngine") as MockRE:
                 instance = MagicMock()
@@ -1819,18 +1998,22 @@ class TestGetRagEngine:
                 assert result is instance
         finally:
             import app.pipeline.intelligence.rag_engine as rag_mod
+
             rag_mod._rag_engine = old
 
     def test_singleton_returns_existing(self):
         from app.pipeline.intelligence.rag_engine import _rag_engine, get_rag_engine
+
         old = _rag_engine
         try:
             import app.pipeline.intelligence.rag_engine as rag_mod
+
             rag_mod._rag_engine = "existing"
             result = get_rag_engine()
             assert result == "existing"
         finally:
             import app.pipeline.intelligence.rag_engine as rag_mod
+
             rag_mod._rag_engine = old
 
 
@@ -1838,9 +2021,11 @@ class TestGetRagEngine:
 # RagEngine.__init__ — persist_directory logic
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestRagEngineInit:
     def test_default_persist_directory(self):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         with patch.object(RagEngine, "_load_embedding_model"):
             re = RagEngine(auto_seed=False)
             assert "db" in re.persist_directory
@@ -1848,6 +2033,7 @@ class TestRagEngineInit:
 
     def test_custom_persist_directory(self, tmp_path):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         custom = str(tmp_path / "custom_store")
         with patch.object(RagEngine, "_load_embedding_model"):
             re = RagEngine(persist_directory=custom, auto_seed=False)
@@ -1855,6 +2041,7 @@ class TestRagEngineInit:
 
     def test_auto_seed_explicit_false(self, tmp_path):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         with patch.object(RagEngine, "_load_embedding_model"):
             with patch.object(RagEngine, "_seed_if_empty") as mock_seed:
                 RagEngine(persist_directory=str(tmp_path), auto_seed=True)
@@ -1862,6 +2049,7 @@ class TestRagEngineInit:
 
     def test_chroma_fallback_native_on_error(self, tmp_path):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         with patch("app.pipeline.intelligence.rag_engine.chromadb") as mock_cdb:
             mock_cdb.PersistentClient.side_effect = Exception("ChromaDB unavailable")
             with patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None):
@@ -1873,6 +2061,7 @@ class TestRagEngineInit:
 
     def test_known_compat_error_silent(self, tmp_path):
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         with patch("app.pipeline.intelligence.rag_engine.chromadb") as mock_cdb:
             mock_cdb.PersistentClient.side_effect = Exception("no such column: collections.topic")
             with patch.object(RagEngine, "_load_embedding_model"):
@@ -1883,6 +2072,7 @@ class TestRagEngineInit:
         import numpy as np
 
         from app.pipeline.intelligence.rag_engine import RagEngine
+
         with patch("app.pipeline.intelligence.rag_engine.chromadb") as mock_cdb:
             mock_cdb.PersistentClient.side_effect = Exception("np.float_ error")
             with patch("app.pipeline.intelligence.rag_engine.np") as mock_np:
@@ -1898,6 +2088,7 @@ class TestRagEngineInit:
 # ==============================================================================
 #  ADDITIONAL PIPELINE ORCHESTRATOR COVERAGE — deep pipeline branches
 # ==============================================================================
+
 
 def _run_pipeline_core(orch, tmp_path, doc, sb, **overrides):
     """Helper: runs _run_pipeline_internal with all stages mocked."""
@@ -1943,6 +2134,7 @@ class TestPipelineNougatAndTemplate:
     def test_nougat_fallback_success(self, orch, tmp_path):
         """Lines 730-741: Nougat OCR produces blocks."""
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(
             document_id="job1",
             blocks=[Block(block_id="b1", index=1, block_type=BlockType.BODY, text="")],
@@ -1995,6 +2187,7 @@ class TestPipelineNougatAndTemplate:
     def test_nougat_fallback_exception(self, orch, tmp_path):
         """Lines 740-741: Nougat OCR raises exception."""
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(
             document_id="job1",
             blocks=[Block(block_id="b1", index=1, block_type=BlockType.BODY, text="")],
@@ -2039,6 +2232,7 @@ class TestPipelineNougatAndTemplate:
     def test_no_template_name(self, orch, tmp_path):
         """Line 743->746: template_name is None."""
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(
             document_id="job1",
             blocks=[Block(block_id="b1", index=1, block_type=BlockType.BODY, text="content")],
@@ -2081,6 +2275,7 @@ class TestPipelineParallelExtraction:
     def test_has_grobid_and_docling(self, orch, tmp_path):
         """Lines 759-765: AI Extraction already completed."""
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
+
         md = DocumentMetadata()
         md.ai_hints = {"grobid_metadata": {"title": "Test"}, "docling_layout": {"elements": []}}
         doc = PipelineDocument(
@@ -2299,7 +2494,9 @@ class TestPipelineParallelExtraction:
             mock_set.USE_DOCLING_FALLBACK = False
             mock_set.PYMUPDF_FALLBACK = True
             mock_set.PIPELINE_GROBID_TIMEOUT_SECONDS = 0.001
-            with patch.object(orch, "_extract_pymupdf_fallback_metadata", return_value={"title": "Fallback Title", "page_count": 5}):
+            with patch.object(
+                orch, "_extract_pymupdf_fallback_metadata", return_value={"title": "Fallback Title", "page_count": 5}
+            ):
                 result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
         assert result["status"] in ("success", "processing", "error")
 
@@ -2351,6 +2548,7 @@ class TestPipelineStageFailuresDeep:
     def test_crossref_enrichment(self, orch, tmp_path):
         """Lines 952-983: CrossRef validation."""
         from app.models import Reference
+
         doc = _make_doc()
         doc.generated_doc = MagicMock()
         doc.references = [Reference(reference_id="r1", index=0, citation_key="test2024", raw_text="Test ref")]
@@ -3057,9 +3255,17 @@ class TestPipelineAdditionalBranches:
     def test_keyword_extraction_from_block(self, orch, tmp_path):
         """Lines 912-917: Extracts keywords from abstract block."""
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(
             document_id="job1",
-            blocks=[Block(block_id="b1", index=1, block_type=BlockType.ABSTRACT_BODY, text="This is an abstract about AI research.")],
+            blocks=[
+                Block(
+                    block_id="b1",
+                    index=1,
+                    block_type=BlockType.ABSTRACT_BODY,
+                    text="This is an abstract about AI research.",
+                )
+            ],
             metadata=DocumentMetadata(),
         )
         doc.metadata.ai_hints = {}
@@ -3239,6 +3445,7 @@ class TestPipelineAdditionalBranches:
 class TestGetRagReasoningEngines:
     def test_get_rag_engine_resolves(self):
         from app.pipeline.orchestrator import get_rag_engine
+
         with patch("app.pipeline.orchestrator.resolve_optional_callable") as mock_resolve:
             mock_resolve.return_value = "rag_engine_instance"
             result = get_rag_engine()
@@ -3250,6 +3457,7 @@ class TestGetRagReasoningEngines:
 
     def test_get_reasoning_engine_resolves(self):
         from app.pipeline.orchestrator import get_reasoning_engine
+
         with patch("app.pipeline.orchestrator.resolve_optional_callable") as mock_resolve:
             mock_resolve.return_value = "reasoning_engine_instance"
             result = get_reasoning_engine()
@@ -3360,6 +3568,7 @@ class TestRunSemanticParsingBranches:
     def test_semantic_blocks_shorter(self, orch):
         """Line 575->574: semantic_blocks shorter than doc blocks."""
         from app.models import Block, BlockType, DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(
             document_id="d1",
             blocks=[
@@ -3386,6 +3595,7 @@ class TestRunFigureAnalysisStageAdditional:
     def test_metadata_dict_with_setdefault(self, orch):
         """Line 614->617: metadata is dict with setdefault."""
         from app.models import Block, BlockType, Figure, PipelineDocument
+
         fig = Figure(figure_id="f1", index=1, export_path="/tmp/fig.png", caption_text="Fig")
         doc = PipelineDocument(
             document_id="figdoc",
@@ -3423,6 +3633,7 @@ class TestLogQualitySummary:
 # ──────────────────────────────────────────────────────────────────────────────
 # RagEngine error-path tests
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 class TestRagEngineErrorPaths:
     """pytest.raises error-path tests for RagEngine."""
@@ -3503,6 +3714,7 @@ class TestRagEngineErrorPaths:
 # PipelineOrchestrator additional error-path tests
 # ──────────────────────────────────────────────────────────────────────────────
 
+
 class TestOrchestratorErrorPaths:
     """pytest.raises error-path tests for PipelineOrchestrator."""
 
@@ -3517,6 +3729,7 @@ class TestOrchestratorErrorPaths:
     def test_build_quality_summary_no_blocks_safe(self, orch):
         """_build_quality_summary with no blocks does not crash."""
         from app.models import DocumentMetadata, PipelineDocument
+
         doc = PipelineDocument(document_id="empty", blocks=[], metadata=DocumentMetadata())
         with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 0.0}):
             summary = orch._build_quality_summary(doc, {"errors": [], "warnings": []})

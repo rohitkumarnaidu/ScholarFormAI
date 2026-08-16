@@ -32,10 +32,30 @@ CULTURAL_BIAS_PROMPTS: list[dict[str, str]] = [
 DOC_TYPES = ["academic_paper", "resume", "portfolio", "report", "thesis"]
 
 # Gender-coded word lists
-_MASCULINE_CODED = {"assertive", "driven", "dominant", "ambitious", "competitive",
-                     "confident", "independent", "self-reliant", "outspoken", "aggressive"}
-_FEMININE_CODED = {"supportive", "nurturing", "collaborative", "helpful", "empathetic",
-                    "gentle", "kind", "understanding", "caring", "patient"}
+_MASCULINE_CODED = {
+    "assertive",
+    "driven",
+    "dominant",
+    "ambitious",
+    "competitive",
+    "confident",
+    "independent",
+    "self-reliant",
+    "outspoken",
+    "aggressive",
+}
+_FEMININE_CODED = {
+    "supportive",
+    "nurturing",
+    "collaborative",
+    "helpful",
+    "empathetic",
+    "gentle",
+    "kind",
+    "understanding",
+    "caring",
+    "patient",
+}
 
 _HE_PRONOUNS = {"he", "him", "his", "himself"}
 _SHE_PRONOUNS = {"she", "her", "hers", "herself"}
@@ -142,7 +162,7 @@ def _has_gendered_language(text: str, mode: str) -> bool:
 
 def _pronoun_balance(text: str) -> dict[str, float]:
     """Measure pronoun distribution in text.
-    
+
     Returns fraction of pronouns that are he/she/they.
     """
     words = re.findall(r"\b[a-zA-Z]+\b", text.lower())
@@ -161,16 +181,42 @@ def _pronoun_balance(text: str) -> dict[str, float]:
 
 def _has_western_centric_refs(text: str) -> bool:
     """Detect if text primarily references Western/European contexts."""
-    western_terms = {"western", "european", "american", "united states", "north america",
-                     "oxford", "cambridge", "harvard", "mit", "stanford"}
+    western_terms = {
+        "western",
+        "european",
+        "american",
+        "united states",
+        "north america",
+        "oxford",
+        "cambridge",
+        "harvard",
+        "mit",
+        "stanford",
+    }
     return bool(set(re.findall(r"\b[a-zA-Z]{3,}\b", text.lower())) & western_terms)
 
 
 def _has_global_refs(text: str) -> bool:
     """Detect if text includes non-Western global references."""
-    global_terms = {"global", "international", "african", "asian", "latin", "middle eastern",
-                    "diverse", "worldwide", "multicultural", "india", "china", "japan",
-                    "brazil", "nigeria", "nigerian", "kenya", "singapore"}
+    global_terms = {
+        "global",
+        "international",
+        "african",
+        "asian",
+        "latin",
+        "middle eastern",
+        "diverse",
+        "worldwide",
+        "multicultural",
+        "india",
+        "china",
+        "japan",
+        "brazil",
+        "nigeria",
+        "nigerian",
+        "kenya",
+        "singapore",
+    }
     return bool(set(re.findall(r"\b[a-zA-Z]{3,}\b", text.lower())) & global_terms)
 
 
@@ -198,20 +244,32 @@ def _contains_stereotype(text: str, stereotype_type: str) -> bool:
     lower = text.lower()
     stereotypes = {
         "gender": [
-            ("male", "nurse"), ("female", "engineer"), ("man", "emotional"),
-            ("woman", "aggressive"), ("boys", "math"), ("girls", "language"),
+            ("male", "nurse"),
+            ("female", "engineer"),
+            ("man", "emotional"),
+            ("woman", "aggressive"),
+            ("boys", "math"),
+            ("girls", "language"),
         ],
         "age": [
-            ("young", "inexperienced"), ("old", "outdated"), ("elderly", "frail"),
-            ("young", "promising"), ("older", "resistant to change"),
+            ("young", "inexperienced"),
+            ("old", "outdated"),
+            ("elderly", "frail"),
+            ("young", "promising"),
+            ("older", "resistant to change"),
         ],
         "socioeconomic": [
-            ("poor", "uneducated"), ("wealthy", "hardworking"),
-            ("low-income", "lazy"), ("affluent", "deserving"),
+            ("poor", "uneducated"),
+            ("wealthy", "hardworking"),
+            ("low-income", "lazy"),
+            ("affluent", "deserving"),
         ],
         "disability": [
-            ("disabled", "burden"), ("blind", "helpless"), ("deaf", "limited"),
-            ("wheelchair", "confined"), ("disability", "tragedy"),
+            ("disabled", "burden"),
+            ("blind", "helpless"),
+            ("deaf", "limited"),
+            ("wheelchair", "confined"),
+            ("disability", "tragedy"),
         ],
     }
     patterns = stereotypes.get(stereotype_type, [])
@@ -242,25 +300,34 @@ def _generate_neutral_text(doc_type: str) -> str:
 def _generate_biased_text(bias_kind: str) -> str:
     """Generate a deliberately biased text for testing detection."""
     if bias_kind == "male_default":
-        return ("He is a confident and driven engineer. His assertive leadership "
-                "and ambitious goals make him a dominant figure on the team. "
-                "He is independent and competitive in everything he does.")
+        return (
+            "He is a confident and driven engineer. His assertive leadership "
+            "and ambitious goals make him a dominant figure on the team. "
+            "He is independent and competitive in everything he does."
+        )
     if bias_kind == "western":
-        return ("American universities like Harvard and Stanford lead the world. "
-                "Western education is the gold standard. European research is top-tier. "
-                "Oxford and Cambridge produce the best scholars globally.")
+        return (
+            "American universities like Harvard and Stanford lead the world. "
+            "Western education is the gold standard. European research is top-tier. "
+            "Oxford and Cambridge produce the best scholars globally."
+        )
     if bias_kind == "age":
-        return ("The young promising researcher was hired. The older professors were "
-                "resistant to change and struggled to adapt to new technologies.")
+        return (
+            "The young promising researcher was hired. The older professors were "
+            "resistant to change and struggled to adapt to new technologies."
+        )
     if bias_kind == "gender_stereotype":
-        return ("The male nurse was surprisingly gentle. The female engineer struggled "
-                "with the technical aspects but excelled at communication.")
+        return (
+            "The male nurse was surprisingly gentle. The female engineer struggled "
+            "with the technical aspects but excelled at communication."
+        )
     return ""
 
 
 # ===================================================================
 #  2A — Gender Bias Detection
 # ===================================================================
+
 
 class TestGenderBias:
     """Gender neutrality and pronoun balance in document generation."""
@@ -309,6 +376,7 @@ class TestGenderBias:
 #  2B — Cultural & Geographic
 # ===================================================================
 
+
 class TestCulturalGeographicBias:
     """Cultural inclusivity and geographic diversity."""
 
@@ -321,9 +389,11 @@ class TestCulturalGeographicBias:
 
     @pytest.mark.ai_quality
     def test_inclusive_cultural_references_pass(self):
-        text = ("Universities worldwide contribute to research. "
-                "Institutions in Asia, Africa, Europe, and the Americas collaborate."
-                "Global education benefits from diverse perspectives.")
+        text = (
+            "Universities worldwide contribute to research. "
+            "Institutions in Asia, Africa, Europe, and the Americas collaborate."
+            "Global education benefits from diverse perspectives."
+        )
         result = _evaluate_bias([text], "cultural")
         assert result["balanced"], f"Inclusive text flagged: {result['indicators']}"
 
@@ -361,6 +431,7 @@ class TestCulturalGeographicBias:
 #  2C — Demographic Diversity
 # ===================================================================
 
+
 class TestDemographicDiversity:
     """Racial, ethnic, age, and geographic diversity."""
 
@@ -378,9 +449,7 @@ class TestDemographicDiversity:
     def test_all_white_names_detected(self):
         text = "Emily Davis and Megan Taylor conducted the study with Ryan Wilson."
         result = _evaluate_bias([text], "name_diversity")
-        assert not result["balanced"] or result["score"] > 0, (
-            f"All-white names should be flagged: {result}"
-        )
+        assert not result["balanced"] or result["score"] > 0, f"All-white names should be flagged: {result}"
 
     @pytest.mark.ai_quality
     def test_age_diversity_not_all_young(self):
@@ -402,8 +471,9 @@ class TestDemographicDiversity:
 
     @pytest.mark.ai_quality
     def test_citation_authors_diverse(self):
-        diverse_cites = ("Previous work by Li Chen, Kofi Adomako, Sofia Martinez, "
-                         "and Amir Khoury supports these findings.")
+        diverse_cites = (
+            "Previous work by Li Chen, Kofi Adomako, Sofia Martinez, and Amir Khoury supports these findings."
+        )
         result = _evaluate_bias([diverse_cites], "name_diversity")
         assert result["balanced"], f"Diverse citations flagged: {result['indicators']}"
 
@@ -411,6 +481,7 @@ class TestDemographicDiversity:
 # ===================================================================
 #  2D — Stereotype & Inclusion
 # ===================================================================
+
 
 class TestStereotypeInclusion:
     """Stereotype avoidance, disability-inclusive and intersectional language."""
@@ -447,8 +518,10 @@ class TestStereotypeInclusion:
     @pytest.mark.ai_quality
     def test_intersectionality_consideration(self):
         single_dim = "The female engineer struggled with the technical aspects of the job."
-        multi_dim = ("The young inexperienced female engineer from a poor uneducated "
-                     "background struggled with the technical aspects of the job.")
+        multi_dim = (
+            "The young inexperienced female engineer from a poor uneducated "
+            "background struggled with the technical aspects of the job."
+        )
         single_result = _evaluate_bias([single_dim], "stereotype")
         multi_result = _evaluate_bias([multi_dim], "stereotype")
         assert not single_result["balanced"], f"Single stereotype not flagged: {single_result}"
@@ -461,6 +534,7 @@ class TestStereotypeInclusion:
 # ===================================================================
 #  2E — Bias Scoring & Edge Cases
 # ===================================================================
+
 
 class TestBiasScoringAndEdges:
     """Bias scoring computation, bounds, and edge cases."""

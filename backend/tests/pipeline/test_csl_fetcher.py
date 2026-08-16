@@ -99,11 +99,13 @@ class TestCslFetcherFetchStyle:
     def test_empty_slug_raises(self):
         with pytest.raises(ValueError, match="slug is required"):
             import asyncio
+
             asyncio.run(csl_fetcher.fetch_style(""))
 
     def test_blank_slug_raises(self):
         with pytest.raises(ValueError, match="slug is required"):
             import asyncio
+
             asyncio.run(csl_fetcher.fetch_style("   "))
 
     @patch("app.pipeline.services.csl_fetcher.httpx.AsyncClient")

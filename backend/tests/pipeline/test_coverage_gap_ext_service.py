@@ -19,8 +19,8 @@ pytestmark = [pytest.mark.pipeline]
 # app/pipeline/safety/llm_validator.py  (73% -> 90%+)
 # ══════════════════════════════════════════════════════════════════════════════
 
-class TestLLMValidatorCoverageGaps:
 
+class TestLLMValidatorCoverageGaps:
     LV_KEY = "app.pipeline.safety.llm_validator"
     VG_KEY = "app.pipeline.safety.validator_guard"
     GR_KEY = "guardrails"
@@ -30,6 +30,7 @@ class TestLLMValidatorCoverageGaps:
         """Context that patches sys.modules for llm_validator reload, auto-restores."""
         with patch.dict("sys.modules", sys_mods, clear=False):
             import app.pipeline.safety.llm_validator as _lv_mod
+
             yield importlib.reload(_lv_mod)
 
     def test_python_314_disables_guardrails(self):
@@ -47,39 +48,35 @@ class TestLLMValidatorCoverageGaps:
         """Lines 44-45: extreme fallback catches exception and returns error_return_value."""
         with self._llm_env({self.GR_KEY: None, self.VG_KEY: None}) as mod:
             deco = mod.guard_llm_output(str, error_return_value="fallback_val")
+
             @deco
             def fn():
                 raise ValueError("boom")
+
             assert fn() == "fallback_val"
 
     def test_extreme_fallback_success_path(self):
         """Line 43: extreme fallback success path returns function result."""
         with self._llm_env({self.GR_KEY: None, self.VG_KEY: None}) as mod:
             deco = mod.guard_llm_output(str)
+
             @deco
             def fn():
                 return 99
+
             assert fn() == 99
-
-
-
-
-
-
-
-
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # app/pipeline/services/csl_engine.py  (9% -> 50%+)
 # ══════════════════════════════════════════════════════════════════════════════
 
-class TestCSLEngineNoCiteproc:
 
+class TestCSLEngineNoCiteproc:
     def engine(self):
         from app.pipeline.services.csl_engine import CSLEngine
-        return CSLEngine(templates_dir="/nonexistent_templates_dir_xyz")
 
+        return CSLEngine(templates_dir="/nonexistent_templates_dir_xyz")
 
     def test_supports_10k_plus_styles(self):
         eng = self.engine()
@@ -87,23 +84,19 @@ class TestCSLEngineNoCiteproc:
 
     def test_init_default_templates_dir(self):
         from app.pipeline.services.csl_engine import CSLEngine
+
         eng = CSLEngine()
         assert str(eng.templates_dir).endswith("templates")
 
     def test_init_custom_templates_dir(self):
         from app.pipeline.services.csl_engine import CSLEngine
+
         eng = CSLEngine(templates_dir="/custom/path")
         assert str(eng.templates_dir) == str(Path("/custom/path"))
 
-
-
-
-
-
-
-
     def test_resolve_style_path_explicit_found(self, tmp_path):
         from app.pipeline.services.csl_engine import CSLEngine
+
         f = tmp_path / "custom.csl"
         f.write_text("test", encoding="utf-8")
         eng = CSLEngine()
@@ -120,7 +113,6 @@ class TestCSLEngineNoCiteproc:
         with pytest.raises(FileNotFoundError):
             eng.resolve_style_path("ieee")
 
-
     def test_resolve_style_path_style_path_is_file_raises(self):
         eng = self.engine()
         with pytest.raises(FileNotFoundError):
@@ -133,20 +125,41 @@ class TestCSLEngineNoCiteproc:
 
     def test_format_reference_single_ieee(self):
         from app.models import Reference
+
         eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Smith, J."], title="A Paper", year=2020,
-                        journal="Journal of Testing", volume="10", issue="2", pages="1-10")
+        ref = Reference(
+            reference_id="r1",
+            citation_key="k1",
+            raw_text="t",
+            index=0,
+            authors=["Smith, J."],
+            title="A Paper",
+            year=2020,
+            journal="Journal of Testing",
+            volume="10",
+            issue="2",
+            pages="1-10",
+        )
         result = eng.format_reference(ref, style="ieee")
         assert "Smith" in result
 
     def test_format_references_fallback_ieee(self):
         from app.models import Reference
+
         eng = self.engine()
         refs = [
-            Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                      authors=["Doe, J."], title="Paper One", year=2021,
-                      journal="Journal A", volume="5", pages="1-10"),
+            Reference(
+                reference_id="r1",
+                citation_key="k1",
+                raw_text="t",
+                index=0,
+                authors=["Doe, J."],
+                title="Paper One",
+                year=2021,
+                journal="Journal A",
+                volume="5",
+                pages="1-10",
+            ),
         ]
         result = eng.format_references(refs, style="ieee")
         assert len(result) == 1
@@ -154,25 +167,43 @@ class TestCSLEngineNoCiteproc:
 
     def test_format_references_fallback_apa(self):
         from app.models import Reference
+
         eng = self.engine()
         refs = [
-            Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                      authors=["Smith, J."], title="Test Title", year=2020,
-                      journal="J. Testing", volume="10", issue="2", pages="1-10",
-                      doi="10.1234/test"),
+            Reference(
+                reference_id="r1",
+                citation_key="k1",
+                raw_text="t",
+                index=0,
+                authors=["Smith, J."],
+                title="Test Title",
+                year=2020,
+                journal="J. Testing",
+                volume="10",
+                issue="2",
+                pages="1-10",
+                doi="10.1234/test",
+            ),
         ]
         result = eng.format_references(refs, style="apa")
         assert len(result) == 1
         assert "Smith" in result[0]
 
-
     def test_format_references_fallback_mla(self):
         from app.models import Reference
+
         eng = self.engine()
         refs = [
-            Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                      authors=["Mla Author"], title="MLA Study", year=2019,
-                      publisher="MLA Press"),
+            Reference(
+                reference_id="r1",
+                citation_key="k1",
+                raw_text="t",
+                index=0,
+                authors=["Mla Author"],
+                title="MLA Study",
+                year=2019,
+                publisher="MLA Press",
+            ),
         ]
         result = eng.format_references(refs, style="mla")
         assert len(result) == 1
@@ -180,11 +211,21 @@ class TestCSLEngineNoCiteproc:
 
     def test_format_references_fallback_chicago(self):
         from app.models import Reference
+
         eng = self.engine()
         refs = [
-            Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                      authors=["Chicago Writer"], title="Chicago Book", year=2018,
-                      publisher="Chicago Press", volume="2", pages="100-200"),
+            Reference(
+                reference_id="r1",
+                citation_key="k1",
+                raw_text="t",
+                index=0,
+                authors=["Chicago Writer"],
+                title="Chicago Book",
+                year=2018,
+                publisher="Chicago Press",
+                volume="2",
+                pages="100-200",
+            ),
         ]
         result = eng.format_references(refs, style="chicago")
         assert len(result) == 1
@@ -192,10 +233,18 @@ class TestCSLEngineNoCiteproc:
 
     def test_format_references_fallback_harvard(self):
         from app.models import Reference
+
         eng = self.engine()
         refs = [
-            Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                      authors=["Harvard Author"], title="Harvard Work", year=2023),
+            Reference(
+                reference_id="r1",
+                citation_key="k1",
+                raw_text="t",
+                index=0,
+                authors=["Harvard Author"],
+                title="Harvard Work",
+                year=2023,
+            ),
         ]
         result = eng.format_references(refs, style="harvard")
         assert len(result) == 1
@@ -203,37 +252,54 @@ class TestCSLEngineNoCiteproc:
 
     def test_format_references_unknown_style_defaults_ieee(self):
         from app.models import Reference
+
         eng = self.engine()
         refs = [
-            Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                      authors=["Default, A."], title="Default Paper", year=2020),
+            Reference(
+                reference_id="r1",
+                citation_key="k1",
+                raw_text="t",
+                index=0,
+                authors=["Default, A."],
+                title="Default Paper",
+                year=2020,
+            ),
         ]
         result = eng.format_references(refs, style="unknown_style_xyz")
         assert len(result) == 1
 
     def test_format_references_no_authors(self):
         from app.models import Reference
+
         eng = self.engine()
         refs = [
-            Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                      title="No Author"),
+            Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0, title="No Author"),
         ]
         result = eng.format_references(refs, style="ieee")
         assert "Unknown Author" in result[0]
 
     def test_format_references_with_doi(self):
         from app.models import Reference
+
         eng = self.engine()
         refs = [
-            Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                      authors=["Doe, J."], title="DOI Paper", year=2020,
-                      doi="10.1234/abc"),
+            Reference(
+                reference_id="r1",
+                citation_key="k1",
+                raw_text="t",
+                index=0,
+                authors=["Doe, J."],
+                title="DOI Paper",
+                year=2020,
+                doi="10.1234/abc",
+            ),
         ]
         result = eng.format_references(refs, style="ieee")
         assert "doi:" in result[0]
 
     def test_format_references_missing_fields(self):
         from app.models import Reference
+
         eng = self.engine()
         refs = [
             Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0),
@@ -243,13 +309,26 @@ class TestCSLEngineNoCiteproc:
 
     def test_reference_to_csl_json_journal(self):
         from app.models import Reference, ReferenceType
+
         eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        reference_type=ReferenceType.JOURNAL_ARTICLE,
-                        title="Journal Paper", authors=["Smith, J."],
-                        journal="Journal A", year=2020, volume="10", issue="2",
-                        pages="1-10", doi="10.1234/abc", url="https://example.com",
-                        isbn="978-3-16-148410-0", issn="1234-5678")
+        ref = Reference(
+            reference_id="r1",
+            citation_key="k1",
+            raw_text="t",
+            index=0,
+            reference_type=ReferenceType.JOURNAL_ARTICLE,
+            title="Journal Paper",
+            authors=["Smith, J."],
+            journal="Journal A",
+            year=2020,
+            volume="10",
+            issue="2",
+            pages="1-10",
+            doi="10.1234/abc",
+            url="https://example.com",
+            isbn="978-3-16-148410-0",
+            issn="1234-5678",
+        )
         js = eng._reference_to_csl_json(ref, 1)
         assert js["type"] == "article-journal"
         assert js["title"] == "Journal Paper"
@@ -262,31 +341,54 @@ class TestCSLEngineNoCiteproc:
 
     def test_reference_to_csl_json_book(self):
         from app.models import Reference, ReferenceType
+
         eng = self.engine()
-        ref = Reference(reference_id="r2", citation_key="k2", raw_text="t", index=1,
-                        reference_type=ReferenceType.BOOK,
-                        title="A Book", authors=["Author, A."],
-                        book_title="Book Title", publisher="Pub Co", year=2019)
+        ref = Reference(
+            reference_id="r2",
+            citation_key="k2",
+            raw_text="t",
+            index=1,
+            reference_type=ReferenceType.BOOK,
+            title="A Book",
+            authors=["Author, A."],
+            book_title="Book Title",
+            publisher="Pub Co",
+            year=2019,
+        )
         js = eng._reference_to_csl_json(ref, 2)
         assert js["type"] == "book"
         assert js["publisher"] == "Pub Co"
 
     def test_reference_to_csl_json_conference(self):
         from app.models import Reference, ReferenceType
+
         eng = self.engine()
-        ref = Reference(reference_id="r3", citation_key="k3", raw_text="t", index=2,
-                        reference_type=ReferenceType.CONFERENCE_PAPER,
-                        title="Conf Paper", authors=["Conf, A."],
-                        conference="Test Conference 2020")
+        ref = Reference(
+            reference_id="r3",
+            citation_key="k3",
+            raw_text="t",
+            index=2,
+            reference_type=ReferenceType.CONFERENCE_PAPER,
+            title="Conf Paper",
+            authors=["Conf, A."],
+            conference="Test Conference 2020",
+        )
         js = eng._reference_to_csl_json(ref, 3)
         assert js["type"] == "paper-conference"
         assert js["container-title"] == "Test Conference 2020"
 
     def test_reference_to_csl_json_unknown_type_defaults_article(self):
         from app.models import Reference, ReferenceType
+
         eng = self.engine()
-        ref = Reference(reference_id="r4", citation_key="k4", raw_text="t", index=3,
-                        reference_type=ReferenceType.UNKNOWN, title="Misc")
+        ref = Reference(
+            reference_id="r4",
+            citation_key="k4",
+            raw_text="t",
+            index=3,
+            reference_type=ReferenceType.UNKNOWN,
+            title="Misc",
+        )
         js = eng._reference_to_csl_json(ref, 4)
         assert js["type"] == "article"
 
@@ -334,10 +436,22 @@ class TestCSLEngineNoCiteproc:
 
     def test_ieee_fallback_full(self):
         from app.models import Reference
+
         eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Doe, J."], title="Paper", journal="Journal",
-                        volume="10", issue="2", pages="1-10", year=2020, doi="10.1234/abc")
+        ref = Reference(
+            reference_id="r1",
+            citation_key="k1",
+            raw_text="t",
+            index=0,
+            authors=["Doe, J."],
+            title="Paper",
+            journal="Journal",
+            volume="10",
+            issue="2",
+            pages="1-10",
+            year=2020,
+            doi="10.1234/abc",
+        )
         result = eng._format_ieee_fallback(ref)
         assert "Doe" in result
         assert "Paper" in result
@@ -347,6 +461,7 @@ class TestCSLEngineNoCiteproc:
 
     def test_ieee_fallback_minimal(self):
         from app.models import Reference
+
         eng = self.engine()
         ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0)
         result = eng._format_ieee_fallback(ref)
@@ -355,56 +470,104 @@ class TestCSLEngineNoCiteproc:
     def test_ieee_fallback_already_ends_with_period(self):
         """Branch 475->477: formatted already ends with '.' (no year, pages with dot)."""
         from app.models import Reference
+
         eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Doe, J."], title="Paper", journal="Journal",
-                        volume="10", pages="100-110.")
+        ref = Reference(
+            reference_id="r1",
+            citation_key="k1",
+            raw_text="t",
+            index=0,
+            authors=["Doe, J."],
+            title="Paper",
+            journal="Journal",
+            volume="10",
+            pages="100-110.",
+        )
         result = eng._format_ieee_fallback(ref)
         assert result.endswith(".")
 
     def test_apa_fallback_single_author(self):
         from app.models import Reference
+
         eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Smith, J."], title="APA Paper", year=2020,
-                        journal="APA Journal", volume="10", issue="2", pages="1-10")
+        ref = Reference(
+            reference_id="r1",
+            citation_key="k1",
+            raw_text="t",
+            index=0,
+            authors=["Smith, J."],
+            title="APA Paper",
+            year=2020,
+            journal="APA Journal",
+            volume="10",
+            issue="2",
+            pages="1-10",
+        )
         result = eng._format_apa_fallback(ref)
         assert "Smith" in result
         assert "(2020)" in result
 
     def test_apa_fallback_no_year(self):
         from app.models import Reference
+
         eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Smith, J."], title="No Year")
+        ref = Reference(
+            reference_id="r1", citation_key="k1", raw_text="t", index=0, authors=["Smith, J."], title="No Year"
+        )
         result = eng._format_apa_fallback(ref)
         assert "(n.d.)" in result
 
     def test_apa_fallback_with_http_doi(self):
         from app.models import Reference
+
         eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Smith, J."], title="DOI Test", year=2022,
-                        doi="https://doi.org/10.1234/test")
+        ref = Reference(
+            reference_id="r1",
+            citation_key="k1",
+            raw_text="t",
+            index=0,
+            authors=["Smith, J."],
+            title="DOI Test",
+            year=2022,
+            doi="https://doi.org/10.1234/test",
+        )
         result = eng._format_apa_fallback(ref)
         assert "https://doi.org/" in result
 
     def test_apa_fallback_with_non_http_doi(self):
         from app.models import Reference
+
         eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Smith, J."], title="DOI Test 2", year=2022,
-                        doi="10.1234/test")
+        ref = Reference(
+            reference_id="r1",
+            citation_key="k1",
+            raw_text="t",
+            index=0,
+            authors=["Smith, J."],
+            title="DOI Test 2",
+            year=2022,
+            doi="10.1234/test",
+        )
         result = eng._format_apa_fallback(ref)
         assert "https://doi.org/10.1234/test" in result
 
     def test_apa_fallback_volume_only_no_issue(self):
         """Line 491: elif ref.volume branch (volume without issue)."""
         from app.models import Reference
+
         eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        authors=["Smith, J."], title="Vol Only", year=2020,
-                        journal="J", volume="15", pages="1-5")
+        ref = Reference(
+            reference_id="r1",
+            citation_key="k1",
+            raw_text="t",
+            index=0,
+            authors=["Smith, J."],
+            title="Vol Only",
+            year=2020,
+            journal="J",
+            volume="15",
+            pages="1-5",
+        )
         result = eng._format_apa_fallback(ref)
         assert "15" in result
 
@@ -424,51 +587,48 @@ class TestCSLEngineNoCiteproc:
         eng = self.engine()
         assert eng._format_apa_authors([]) == "Unknown Author"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     def test_citeproc_not_available_flag(self):
         from app.pipeline.services.csl_engine import CITEPROC_AVAILABLE
-        assert isinstance(CITEPROC_AVAILABLE, bool)
 
+        assert isinstance(CITEPROC_AVAILABLE, bool)
 
     def test_csl_json_multiple_authors_empty_filtered(self):
         from app.models import Reference, ReferenceType
+
         eng = self.engine()
-        ref = Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                        reference_type=ReferenceType.WEB_PAGE, title="Web Ref",
-                        authors=["Valid Author", "", "  "])
+        ref = Reference(
+            reference_id="r1",
+            citation_key="k1",
+            raw_text="t",
+            index=0,
+            reference_type=ReferenceType.WEB_PAGE,
+            title="Web Ref",
+            authors=["Valid Author", "", "  "],
+        )
         js = eng._reference_to_csl_json(ref, 1)
         assert js["type"] == "webpage"
         assert len(js["author"]) == 1
 
     def test_format_references_citeproc_fallback_on_error(self):
         from app.models import Reference
+
         eng = self.engine()
         refs = [
-            Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                      authors=["Test, A."], title="Test", year=2021),
+            Reference(
+                reference_id="r1",
+                citation_key="k1",
+                raw_text="t",
+                index=0,
+                authors=["Test, A."],
+                title="Test",
+                year=2021,
+            ),
         ]
         result = eng.format_references(refs, style="ieee")
         assert len(result) == 1
 
 
 class TestCSLEngineWithCiteproc:
-
     def test_citeproc_available_true(self):
         fake_citeproc = MagicMock()
         fake_citeproc.Citation = MagicMock()
@@ -480,12 +640,16 @@ class TestCSLEngineWithCiteproc:
         fake_source = MagicMock()
         fake_source_json = MagicMock()
         fake_source_json.CiteProcJSON = MagicMock()
-        with patch.dict("sys.modules", {
-            "citeproc": fake_citeproc,
-            "citeproc.source": fake_source,
-            "citeproc.source.json": fake_source_json,
-        }):
+        with patch.dict(
+            "sys.modules",
+            {
+                "citeproc": fake_citeproc,
+                "citeproc.source": fake_source,
+                "citeproc.source.json": fake_source_json,
+            },
+        ):
             import app.pipeline.services.csl_engine as _ce_mod
+
             mod = importlib.reload(_ce_mod)
             assert mod.CITEPROC_AVAILABLE is True
 
@@ -503,12 +667,16 @@ class TestCSLEngineWithCiteproc:
         fake_source = MagicMock()
         fake_source_json = MagicMock()
         fake_source_json.CiteProcJSON = MagicMock()
-        with patch.dict("sys.modules", {
-            "citeproc": fake_citeproc,
-            "citeproc.source": fake_source,
-            "citeproc.source.json": fake_source_json,
-        }):
+        with patch.dict(
+            "sys.modules",
+            {
+                "citeproc": fake_citeproc,
+                "citeproc.source": fake_source,
+                "citeproc.source.json": fake_source_json,
+            },
+        ):
             import app.pipeline.services.csl_engine as _ce_mod
+
             mod = importlib.reload(_ce_mod)
             eng = mod.CSLEngine(templates_dir=str(tmp_path))
             ieee_dir = tmp_path / "ieee"
@@ -516,9 +684,17 @@ class TestCSLEngineWithCiteproc:
             (ieee_dir / "styles.csl").write_text("<style/>", encoding="utf-8")
             eng.resolve_style_path = MagicMock(return_value=ieee_dir / "styles.csl")
             from app.models import Reference
+
             refs = [
-                Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                          authors=["Smith, J."], title="A Paper", year=2020),
+                Reference(
+                    reference_id="r1",
+                    citation_key="k1",
+                    raw_text="t",
+                    index=0,
+                    authors=["Smith, J."],
+                    title="A Paper",
+                    year=2020,
+                ),
             ]
             result = eng.format_references(refs, style="ieee")
             assert len(result) == 1
@@ -538,12 +714,16 @@ class TestCSLEngineWithCiteproc:
         fake_source = MagicMock()
         fake_source_json = MagicMock()
         fake_source_json.CiteProcJSON = MagicMock()
-        with patch.dict("sys.modules", {
-            "citeproc": fake_citeproc,
-            "citeproc.source": fake_source,
-            "citeproc.source.json": fake_source_json,
-        }):
+        with patch.dict(
+            "sys.modules",
+            {
+                "citeproc": fake_citeproc,
+                "citeproc.source": fake_source,
+                "citeproc.source.json": fake_source_json,
+            },
+        ):
             import app.pipeline.services.csl_engine as _ce_mod
+
             mod = importlib.reload(_ce_mod)
             eng = mod.CSLEngine(templates_dir=str(tmp_path))
             ieee_dir = tmp_path / "ieee"
@@ -551,11 +731,10 @@ class TestCSLEngineWithCiteproc:
             (ieee_dir / "styles.csl").write_text("<style/>", encoding="utf-8")
             eng.resolve_style_path = MagicMock(return_value=ieee_dir / "styles.csl")
             from app.models import Reference
+
             refs = [
-                Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                          authors=["A"], title="T"),
-                Reference(reference_id="r2", citation_key="k2", raw_text="t", index=1,
-                          authors=["B"], title="U"),
+                Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0, authors=["A"], title="T"),
+                Reference(reference_id="r2", citation_key="k2", raw_text="t", index=1, authors=["B"], title="U"),
             ]
             with pytest.raises(RuntimeError):
                 eng._format_with_citeproc(refs, style="ieee", style_path=None)
@@ -563,18 +742,21 @@ class TestCSLEngineWithCiteproc:
     def test_citeproc_available_false_direct_fallback(self):
         """Branch 334->344: when CITEPROC_AVAILABLE is False, direct to fallback."""
         # Make citeproc import fail
-        with patch.dict("sys.modules", {"citeproc": None,
-                                        "citeproc.source": None,
-                                        "citeproc.source.json": None,
-                                        "citeproc.formatter": None}):
+        with patch.dict(
+            "sys.modules",
+            {"citeproc": None, "citeproc.source": None, "citeproc.source.json": None, "citeproc.formatter": None},
+        ):
             import app.pipeline.services.csl_engine as _ce_mod
+
             mod = importlib.reload(_ce_mod)
             assert mod.CITEPROC_AVAILABLE is False
             eng = mod.CSLEngine(templates_dir="/nonexistent")
             from app.models import Reference
+
             refs = [
-                Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                          authors=["A"], title="T", year=2021),
+                Reference(
+                    reference_id="r1", citation_key="k1", raw_text="t", index=0, authors=["A"], title="T", year=2021
+                ),
             ]
             result = eng.format_references(refs, style="ieee")
             assert len(result) == 1
@@ -593,21 +775,33 @@ class TestCSLEngineWithCiteproc:
         fake_source = MagicMock()
         fake_source_json = MagicMock()
         fake_source_json.CiteProcJSON = MagicMock()
-        with patch.dict("sys.modules", {
-            "citeproc": fake_citeproc,
-            "citeproc.source": fake_source,
-            "citeproc.source.json": fake_source_json,
-        }):
+        with patch.dict(
+            "sys.modules",
+            {
+                "citeproc": fake_citeproc,
+                "citeproc.source": fake_source,
+                "citeproc.source.json": fake_source_json,
+            },
+        ):
             import app.pipeline.services.csl_engine as _ce_mod
+
             mod = importlib.reload(_ce_mod)
             eng = mod.CSLEngine(templates_dir=str(tmp_path))
             ieee_dir = tmp_path / "ieee"
             ieee_dir.mkdir(parents=True)
             (ieee_dir / "styles.csl").write_text("<style/>", encoding="utf-8")
             from app.models import Reference
+
             refs = [
-                Reference(reference_id="r1", citation_key="k1", raw_text="t", index=0,
-                          authors=["Fallback, A."], title="Fallback Paper", year=2022),
+                Reference(
+                    reference_id="r1",
+                    citation_key="k1",
+                    raw_text="t",
+                    index=0,
+                    authors=["Fallback, A."],
+                    title="Fallback Paper",
+                    year=2022,
+                ),
             ]
             result = eng.format_references(refs, style="ieee")
             assert len(result) == 1
@@ -618,16 +812,18 @@ class TestCSLEngineWithCiteproc:
 # app/pipeline/services/csl_fetcher.py  (14% -> 50%+)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 @pytest.fixture(autouse=True)
 def reset_csl_caches():
     from app.pipeline.services import csl_fetcher
+
     csl_fetcher.reset_csl_cache_for_tests()
 
 
 class TestCSLFetcherCoverageGaps:
-
     def _mod(self):
         from app.pipeline.services import csl_fetcher
+
         return csl_fetcher
 
     def test_search_cache_ttl_default(self):

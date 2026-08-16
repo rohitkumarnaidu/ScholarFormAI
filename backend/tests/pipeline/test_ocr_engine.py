@@ -19,6 +19,7 @@ _sentinel = object()
 #  Fixtures
 # --------------------------------------------------------------------------- #
 
+
 @pytest.fixture(autouse=True)
 def _reset_singleton():
     """Reset the module-level singleton before each test."""
@@ -29,9 +30,15 @@ def _reset_singleton():
 def surya_available():
     """Make Surya appear available by setting stubs directly on the module."""
     surya_names = [
-        "run_ocr", "batch_text_detection", "batch_layout_detection",
-        "batch_ordering", "load_det_model", "load_det_processor",
-        "load_rec_model", "load_rec_processor", "load_order_model",
+        "run_ocr",
+        "batch_text_detection",
+        "batch_layout_detection",
+        "batch_ordering",
+        "load_det_model",
+        "load_det_processor",
+        "load_rec_model",
+        "load_rec_processor",
+        "load_order_model",
         "load_order_processor",
     ]
     saved = {}
@@ -62,6 +69,7 @@ def model_store():
 # --------------------------------------------------------------------------- #
 #  Helper factories
 # --------------------------------------------------------------------------- #
+
 
 def _make_text_line(text="hello", confidence=0.95, bbox=None):
     line = MagicMock()
@@ -111,6 +119,7 @@ def _make_order_page(items=None):
 #  Module-level defaults
 # --------------------------------------------------------------------------- #
 
+
 class TestModuleDefaults:
     """Verify module-level constants when Surya is absent."""
 
@@ -131,6 +140,7 @@ class TestModuleDefaults:
 # --------------------------------------------------------------------------- #
 #  Construction & singleton (Surya available)
 # --------------------------------------------------------------------------- #
+
 
 class TestConstruction:
     """OCREngine creation when Surya is mocked as available."""
@@ -159,21 +169,40 @@ class TestConstruction:
 #  Lazy model loading
 # --------------------------------------------------------------------------- #
 
+
 @pytest.mark.parametrize(
     ("flag_attr", "method", "load_model_attr", "load_proc_attr", "model_key", "proc_key", "attr_model", "attr_proc"),
     [
-        ("_loaded_det", OCREngine._ensure_detection_loaded,
-         "load_det_model", "load_det_processor",
-         "surya_det_model", "surya_det_processor",
-         "_det_model", "_det_processor"),
-        ("_loaded_rec", OCREngine._ensure_recognition_loaded,
-         "load_rec_model", "load_rec_processor",
-         "surya_rec_model", "surya_rec_processor",
-         "_rec_model", "_rec_processor"),
-        ("_loaded_order", OCREngine._ensure_ordering_loaded,
-         "load_order_model", "load_order_processor",
-         "surya_order_model", "surya_order_processor",
-         "_order_model", "_order_processor"),
+        (
+            "_loaded_det",
+            OCREngine._ensure_detection_loaded,
+            "load_det_model",
+            "load_det_processor",
+            "surya_det_model",
+            "surya_det_processor",
+            "_det_model",
+            "_det_processor",
+        ),
+        (
+            "_loaded_rec",
+            OCREngine._ensure_recognition_loaded,
+            "load_rec_model",
+            "load_rec_processor",
+            "surya_rec_model",
+            "surya_rec_processor",
+            "_rec_model",
+            "_rec_processor",
+        ),
+        (
+            "_loaded_order",
+            OCREngine._ensure_ordering_loaded,
+            "load_order_model",
+            "load_order_processor",
+            "surya_order_model",
+            "surya_order_processor",
+            "_order_model",
+            "_order_processor",
+        ),
     ],
 )
 class TestLazyLoading:
@@ -181,11 +210,19 @@ class TestLazyLoading:
 
     # -- Already loaded (early return) ----------------------------------- #
 
-    def test_already_loaded(self, surya_available, model_store,
-                            flag_attr, method,
-                            load_model_attr, load_proc_attr,
-                            model_key, proc_key,
-                            attr_model, attr_proc):
+    def test_already_loaded(
+        self,
+        surya_available,
+        model_store,
+        flag_attr,
+        method,
+        load_model_attr,
+        load_proc_attr,
+        model_key,
+        proc_key,
+        attr_model,
+        attr_proc,
+    ):
         engine = OCREngine()
         setattr(engine, flag_attr, True)
         method(engine)
@@ -193,11 +230,19 @@ class TestLazyLoading:
 
     # -- Load from store ------------------------------------------------- #
 
-    def test_load_from_store(self, surya_available, model_store,
-                             flag_attr, method,
-                             load_model_attr, load_proc_attr,
-                             model_key, proc_key,
-                             attr_model, attr_proc):
+    def test_load_from_store(
+        self,
+        surya_available,
+        model_store,
+        flag_attr,
+        method,
+        load_model_attr,
+        load_proc_attr,
+        model_key,
+        proc_key,
+        attr_model,
+        attr_proc,
+    ):
         fake_model = MagicMock(name=f"cached_{model_key}")
         fake_proc = MagicMock(name=f"cached_{proc_key}")
         model_store.is_loaded.return_value = True
@@ -215,11 +260,19 @@ class TestLazyLoading:
 
     # -- Load fresh ------------------------------------------------------ #
 
-    def test_load_fresh(self, surya_available, model_store,
-                        flag_attr, method,
-                        load_model_attr, load_proc_attr,
-                        model_key, proc_key,
-                        attr_model, attr_proc):
+    def test_load_fresh(
+        self,
+        surya_available,
+        model_store,
+        flag_attr,
+        method,
+        load_model_attr,
+        load_proc_attr,
+        model_key,
+        proc_key,
+        attr_model,
+        attr_proc,
+    ):
         fake_model = MagicMock(name=f"fresh_{model_key}")
         fake_proc = MagicMock(name=f"fresh_{proc_key}")
         load_model_fn = getattr(ocr_module, load_model_attr)
@@ -239,11 +292,19 @@ class TestLazyLoading:
 
     # -- Lazy flag set after loading ------------------------------------- #
 
-    def test_flag_set_after_load(self, surya_available, model_store,
-                                  flag_attr, method,
-                                  load_model_attr, load_proc_attr,
-                                  model_key, proc_key,
-                                  attr_model, attr_proc):
+    def test_flag_set_after_load(
+        self,
+        surya_available,
+        model_store,
+        flag_attr,
+        method,
+        load_model_attr,
+        load_proc_attr,
+        model_key,
+        proc_key,
+        attr_model,
+        attr_proc,
+    ):
         engine = OCREngine()
         assert getattr(engine, flag_attr) is False
         method(engine)
@@ -253,6 +314,7 @@ class TestLazyLoading:
 # --------------------------------------------------------------------------- #
 #  Public API — detect_text
 # --------------------------------------------------------------------------- #
+
 
 class TestDetectText:
     """OCR text extraction."""
@@ -292,12 +354,9 @@ class TestDetectText:
             (["en", "fr"], ["en", "fr"]),
         ],
     )
-    def test_languages(self, surya_available, model_store,
-                       languages, expected_per_image):
+    def test_languages(self, surya_available, model_store, languages, expected_per_image):
         images = [MagicMock(), MagicMock(), MagicMock()]
-        ocr_module.run_ocr.return_value = [
-            _make_page_result() for _ in images
-        ]
+        ocr_module.run_ocr.return_value = [_make_page_result() for _ in images]
 
         engine = OCREngine()
         engine.detect_text(images, languages=languages)
@@ -320,6 +379,7 @@ class TestDetectText:
 #  Public API — detect_layout
 # --------------------------------------------------------------------------- #
 
+
 class TestDetectLayout:
     """Page layout region detection."""
 
@@ -339,13 +399,19 @@ class TestDetectLayout:
         assert len(result) == 1
         assert len(result[0]) == 3
         assert result[0][0] == {
-            "label": "Text", "bbox": [0, 0, 100, 50], "confidence": 0.95,
+            "label": "Text",
+            "bbox": [0, 0, 100, 50],
+            "confidence": 0.95,
         }
         assert result[0][1] == {
-            "label": "Figure", "bbox": [100, 0, 200, 100], "confidence": 0.88,
+            "label": "Figure",
+            "bbox": [100, 0, 200, 100],
+            "confidence": 0.88,
         }
         assert result[0][2] == {
-            "label": "Table", "bbox": [0, 100, 150, 200], "confidence": 0.91,
+            "label": "Table",
+            "bbox": [0, 100, 150, 200],
+            "confidence": 0.91,
         }
         ocr_module.batch_text_detection.assert_called_once()
         ocr_module.batch_layout_detection.assert_called_once()
@@ -386,6 +452,7 @@ class TestDetectLayout:
 # --------------------------------------------------------------------------- #
 #  Public API — detect_reading_order
 # --------------------------------------------------------------------------- #
+
 
 class TestDetectReadingOrder:
     """Reading-order detection."""
@@ -451,6 +518,7 @@ class TestDetectReadingOrder:
 #  is_scanned_pdf
 # --------------------------------------------------------------------------- #
 
+
 class TestIsScannedPDF:
     """Heuristic for detecting scanned / image-based PDFs."""
 
@@ -488,6 +556,7 @@ class TestIsScannedPDF:
 #  Integration of lazy-loading paths inside public methods
 # --------------------------------------------------------------------------- #
 
+
 class TestLazyLoadingIntegration:
     """Verify that public methods correctly trigger lazy loading."""
 
@@ -512,7 +581,9 @@ class TestLazyLoadingIntegration:
         assert engine._loaded_order is False
 
     def test_detect_reading_order_triggers_detection_and_ordering(
-        self, surya_available, model_store,
+        self,
+        surya_available,
+        model_store,
     ):
         ocr_module.batch_ordering.return_value = [_make_order_page()]
         engine = OCREngine()

@@ -8,6 +8,7 @@ class TestAnalyticsServiceInit:
     def test_disabled_when_no_api_key(self):
         with patch.dict("os.environ", {}, clear=True):
             from app.services.analytics_service import AnalyticsService
+
             svc = AnalyticsService()
         assert svc._enabled is False
         assert svc._posthog is None
@@ -15,6 +16,7 @@ class TestAnalyticsServiceInit:
     def test_disabled_when_empty_api_key(self):
         with patch.dict("os.environ", {"POSTHOG_API_KEY": ""}, clear=True):
             from app.services.analytics_service import AnalyticsService
+
             svc = AnalyticsService()
         assert svc._enabled is False
         assert svc._posthog is None
@@ -25,6 +27,7 @@ class TestAnalyticsServiceInit:
             patch("posthog.Posthog") as MockPosthog,
         ):
             from app.services.analytics_service import AnalyticsService
+
             svc = AnalyticsService()
         assert svc._enabled is True
         assert svc._posthog is not None
@@ -36,10 +39,13 @@ class TestAnalyticsServiceInit:
 
     def test_uses_custom_host_when_set(self):
         with (
-            patch.dict("os.environ", {"POSTHOG_API_KEY": "phc_test", "POSTHOG_HOST": "https://eu.posthog.com"}, clear=True),
+            patch.dict(
+                "os.environ", {"POSTHOG_API_KEY": "phc_test", "POSTHOG_HOST": "https://eu.posthog.com"}, clear=True
+            ),
             patch("posthog.Posthog") as MockPosthog,
         ):
             from app.services.analytics_service import AnalyticsService
+
             svc = AnalyticsService()
         assert svc._enabled is True
         MockPosthog.assert_called_once_with(
@@ -54,9 +60,11 @@ class TestAnalyticsServiceInit:
             patch.dict("sys.modules", {"posthog": None}),
         ):
             import sys
+
             if "app.services.analytics_service" in sys.modules:
                 del sys.modules["app.services.analytics_service"]
             from app.services.analytics_service import AnalyticsService
+
             svc = AnalyticsService()
         assert svc._enabled is False
         assert svc._posthog is None
@@ -67,6 +75,7 @@ class TestAnalyticsServiceInit:
             patch("posthog.Posthog", side_effect=RuntimeError("bad key")),
         ):
             from app.services.analytics_service import AnalyticsService
+
             svc = AnalyticsService()
         assert svc._enabled is False
         assert svc._posthog is None
@@ -79,6 +88,7 @@ class TestAnalyticsServiceCapture:
             patch("posthog.Posthog") as MockPosthog,
         ):
             from app.services.analytics_service import AnalyticsService
+
             svc = AnalyticsService()
             svc.capture("user-1", "test_event", {"key": "val"})
         MockPosthog.return_value.capture.assert_called_once_with(
@@ -94,16 +104,20 @@ class TestAnalyticsServiceCapture:
             patch("app.services.analytics_service.logger") as mock_logger,
         ):
             from app.services.analytics_service import AnalyticsService
+
             svc = AnalyticsService()
             svc.capture("user-1", "test_event", {"key": "val"})
         mock_logger.info.assert_any_call(
             "Analytics event: %s [user=%s, props=%s]",
-            "test_event", "user-1", {"key": "val"},
+            "test_event",
+            "user-1",
+            {"key": "val"},
         )
 
     def test_capture_does_not_send_to_posthog_when_disabled(self):
         with patch.dict("os.environ", {}, clear=True):
             from app.services.analytics_service import AnalyticsService
+
             svc = AnalyticsService()
             svc.capture("user-1", "test_event")
         assert svc._enabled is False
@@ -116,6 +130,7 @@ class TestAnalyticsServiceCapture:
             patch("app.services.analytics_service.logger") as mock_logger,
         ):
             from app.services.analytics_service import AnalyticsService
+
             svc = AnalyticsService()
             mock_posthog = svc._posthog
             mock_posthog.capture.side_effect = RuntimeError("posthog down")
@@ -124,7 +139,9 @@ class TestAnalyticsServiceCapture:
         assert mock_logger.warning.call_args[0][0] == "Analytics capture failed: %s"
         mock_logger.info.assert_any_call(
             "Analytics event: %s [user=%s, props=%s]",
-            "test_event", "user-1", None,
+            "test_event",
+            "user-1",
+            None,
         )
 
     def test_capture_without_properties(self):
@@ -133,11 +150,14 @@ class TestAnalyticsServiceCapture:
             patch("app.services.analytics_service.logger") as mock_logger,
         ):
             from app.services.analytics_service import AnalyticsService
+
             svc = AnalyticsService()
             svc.capture("user-1", "simple_event")
         mock_logger.info.assert_called_once_with(
             "Analytics event: %s [user=%s, props=%s]",
-            "simple_event", "user-1", None,
+            "simple_event",
+            "user-1",
+            None,
         )
 
     def test_capture_truncates_long_distinct_id_in_log(self):
@@ -146,21 +166,26 @@ class TestAnalyticsServiceCapture:
             patch("app.services.analytics_service.logger") as mock_logger,
         ):
             from app.services.analytics_service import AnalyticsService
+
             svc = AnalyticsService()
             svc.capture("user-abcdef123456", "event")
         mock_logger.info.assert_called_once_with(
             "Analytics event: %s [user=%s, props=%s]",
-            "event", "user-abc", None,
+            "event",
+            "user-abc",
+            None,
         )
 
 
 class TestAnalyticsServiceSingleton:
     def test_singleton_is_analytics_service_instance(self):
         from app.services.analytics_service import AnalyticsService, analytics_service
+
         assert isinstance(analytics_service, AnalyticsService)
 
     def test_singleton_capture_works(self):
         from app.services.analytics_service import analytics_service
+
         with patch.object(analytics_service, "capture") as mock_capture:
             analytics_service.capture("u1", "e1", {"k": "v"})
             mock_capture.assert_called_once_with("u1", "e1", {"k": "v"})

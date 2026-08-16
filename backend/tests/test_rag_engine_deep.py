@@ -28,6 +28,7 @@ except ImportError:
 #  Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_engine(
     tmp_path,
     low_memory=False,
@@ -91,17 +92,20 @@ def engine(tmp_path):
 #  _load_chromadb  (module-level function)
 # ===================================================================
 
+
 class TestLoadChromadb:
     """Tests for the lazy chromadb loader."""
 
     def test_already_loaded_returns_chromadb(self):
         from app.pipeline.intelligence.rag_engine import _load_chromadb
+
         with patch("app.pipeline.intelligence.rag_engine.chromadb", "fake_mod"):
             result = _load_chromadb()
             assert result == "fake_mod"
 
     def test_import_attempted_returns_none(self):
         from app.pipeline.intelligence.rag_engine import _load_chromadb
+
         with (
             patch("app.pipeline.intelligence.rag_engine.chromadb", None),
             patch("app.pipeline.intelligence.rag_engine._CHROMADB_IMPORT_ATTEMPTED", True),
@@ -152,12 +156,14 @@ class TestLoadChromadb:
 #  _DeterministicEmbeddingModel
 # ===================================================================
 
+
 class TestDeterministicEmbeddingModel:
     """Cover every method of the deterministic fallback embedding model."""
 
     @pytest.fixture
     def model(self):
         from app.pipeline.intelligence.rag_engine import _DeterministicEmbeddingModel
+
         return _DeterministicEmbeddingModel(dimension=64)
 
     def test_dimension(self, model):
@@ -165,6 +171,7 @@ class TestDeterministicEmbeddingModel:
 
     def test_min_dimension(self):
         from app.pipeline.intelligence.rag_engine import _DeterministicEmbeddingModel
+
         m = _DeterministicEmbeddingModel(dimension=8)
         assert m.get_sentence_embedding_dimension() >= 32
 
@@ -208,30 +215,35 @@ class TestDeterministicEmbeddingModel:
 #  _HuggingFaceAPIEmbeddingModel
 # ===================================================================
 
+
 class TestHuggingFaceAPIEmbeddingModel:
     """Cover remote HuggingFace API embedding model."""
 
     def test_default_dimension(self):
         with patch.dict(os.environ, {"HF_TOKEN": "test-token"}, clear=False):
             from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
             m = _HuggingFaceAPIEmbeddingModel()
             assert m.dimension == 384
 
     def test_bge_m3_dimension(self):
         with patch.dict(os.environ, {"HF_TOKEN": "test-token"}, clear=False):
             from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
             m = _HuggingFaceAPIEmbeddingModel(model_id="BAAI/bge-m3")
             assert m.dimension == 1024
 
     def test_no_token_returns_empty(self):
         with patch.dict(os.environ, {"HF_TOKEN": ""}, clear=False):
             from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
             m = _HuggingFaceAPIEmbeddingModel()
             assert m.encode("test") == []
 
     def test_successful_encode_single(self):
         with patch.dict(os.environ, {"HF_TOKEN": "tok"}, clear=False):
             from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
             m = _HuggingFaceAPIEmbeddingModel()
             with patch("app.pipeline.intelligence.rag_engine.requests.post") as mp:
                 mp.return_value.status_code = 200
@@ -242,6 +254,7 @@ class TestHuggingFaceAPIEmbeddingModel:
     def test_successful_encode_list(self):
         with patch.dict(os.environ, {"HF_TOKEN": "tok"}, clear=False):
             from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
             m = _HuggingFaceAPIEmbeddingModel()
             with patch("app.pipeline.intelligence.rag_engine.requests.post") as mp:
                 mp.return_value.status_code = 200
@@ -252,6 +265,7 @@ class TestHuggingFaceAPIEmbeddingModel:
     def test_http_error_returns_empty(self):
         with patch.dict(os.environ, {"HF_TOKEN": "tok"}, clear=False):
             from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
             m = _HuggingFaceAPIEmbeddingModel()
             with patch("app.pipeline.intelligence.rag_engine.requests.post") as mp:
                 mp.return_value.status_code = 500
@@ -261,6 +275,7 @@ class TestHuggingFaceAPIEmbeddingModel:
     def test_retry_on_server_error(self):
         with patch.dict(os.environ, {"HF_TOKEN": "tok"}, clear=False):
             from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
             m = _HuggingFaceAPIEmbeddingModel()
             m.max_retries = 2
             with patch("app.pipeline.intelligence.rag_engine.requests.post") as mp:
@@ -273,6 +288,7 @@ class TestHuggingFaceAPIEmbeddingModel:
     def test_retry_on_exception(self):
         with patch.dict(os.environ, {"HF_TOKEN": "tok"}, clear=False):
             from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
             m = _HuggingFaceAPIEmbeddingModel()
             m.max_retries = 2
             with patch("app.pipeline.intelligence.rag_engine.requests.post") as mp:
@@ -282,11 +298,16 @@ class TestHuggingFaceAPIEmbeddingModel:
                     assert result == [0.5]
 
     def test_url_normalization_adds_pipeline(self):
-        with patch.dict(os.environ, {
-            "HF_TOKEN": "tok",
-            "RAG_EMBEDDING_API_URL": "https://router.huggingface.co/hf-inference/models/test-model",
-        }, clear=False):
+        with patch.dict(
+            os.environ,
+            {
+                "HF_TOKEN": "tok",
+                "RAG_EMBEDDING_API_URL": "https://router.huggingface.co/hf-inference/models/test-model",
+            },
+            clear=False,
+        ):
             from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
             m = _HuggingFaceAPIEmbeddingModel()
             assert "/pipeline/feature-extraction" in m.api_url
 
@@ -294,6 +315,7 @@ class TestHuggingFaceAPIEmbeddingModel:
 # ===================================================================
 #  RagEngine — _coerce_embedding_vector
 # ===================================================================
+
 
 class TestCoerceEmbeddingVector:
     """Static method for converting embedding types."""
@@ -324,6 +346,7 @@ class TestCoerceEmbeddingVector:
 #  RagEngine.__init__
 # ===================================================================
 
+
 class TestInit:
     """Constructor behavior under various conditions."""
 
@@ -352,6 +375,7 @@ class TestInit:
             mst.return_value = mock_model
 
             from app.pipeline.intelligence.rag_engine import RagEngine
+
             with patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None):
                 e = RagEngine(auto_seed=False)
             assert e.auto_seed is False
@@ -371,6 +395,7 @@ class TestInit:
             mst.return_value = mock_model
 
             from app.pipeline.intelligence.rag_engine import RagEngine
+
             with patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None):
                 e = RagEngine()
             assert e.auto_seed is True
@@ -418,6 +443,7 @@ class TestInit:
             mst.return_value = mock_model
 
             from app.pipeline.intelligence.rag_engine import RagEngine
+
             e = RagEngine(persist_directory=persist, auto_seed=False)
             assert e.chroma_enabled is False
             assert e.backend == "native"
@@ -427,6 +453,7 @@ class TestInit:
 # ===================================================================
 #  _is_reusable_embedding_model
 # ===================================================================
+
 
 class TestReusableEmbeddingModel:
     """Validation of pre-loaded embedding models."""
@@ -471,6 +498,7 @@ class TestReusableEmbeddingModel:
 #  _activate_deterministic_embedding
 # ===================================================================
 
+
 class TestActivateDeterministicEmbedding:
     """Fallback to deterministic hash embedding."""
 
@@ -478,6 +506,7 @@ class TestActivateDeterministicEmbedding:
         model_store = MagicMock()
         engine._activate_deterministic_embedding(model_store, "OOM")
         from app.pipeline.intelligence.rag_engine import DETERMINISTIC_FALLBACK_MODEL
+
         assert engine.active_model_name == DETERMINISTIC_FALLBACK_MODEL
         assert engine.embedding_model is not None
 
@@ -497,22 +526,26 @@ class TestActivateDeterministicEmbedding:
 #  _load_embedding_model (model loading chain)
 # ===================================================================
 
+
 class TestLoadEmbeddingModel:
     """Model loading priority and fallback."""
 
     def test_low_memory_uses_deterministic(self, tmp_path):
         e = _make_engine(tmp_path, low_memory=True, use_transformers=True)
         from app.pipeline.intelligence.rag_engine import DETERMINISTIC_FALLBACK_MODEL
+
         assert e.active_model_name == DETERMINISTIC_FALLBACK_MODEL
 
     def test_use_transformers_false_uses_deterministic(self, tmp_path):
         e = _make_engine(tmp_path, low_memory=False, use_transformers=False)
         from app.pipeline.intelligence.rag_engine import DETERMINISTIC_FALLBACK_MODEL
+
         assert e.active_model_name == DETERMINISTIC_FALLBACK_MODEL
 
     def test_no_hf_provider_uses_deterministic(self, tmp_path):
         e = _make_engine(tmp_path, low_memory=True, use_transformers=False)
         from app.pipeline.intelligence.rag_engine import DETERMINISTIC_FALLBACK_MODEL
+
         assert e.active_model_name == DETERMINISTIC_FALLBACK_MODEL
 
     def test_sentence_transformer_import_fails(self, tmp_path):
@@ -521,6 +554,7 @@ class TestLoadEmbeddingModel:
 
         e = _make_engine(tmp_path, st_side_effect=fail_import)
         from app.pipeline.intelligence.rag_engine import DETERMINISTIC_FALLBACK_MODEL
+
         assert e.active_model_name == DETERMINISTIC_FALLBACK_MODEL
 
     def test_primary_model_fails_fallback_succeeds(self, tmp_path):
@@ -543,11 +577,13 @@ class TestLoadEmbeddingModel:
 
         e = _make_engine(tmp_path, st_side_effect=side_effect)
         from app.pipeline.intelligence.rag_engine import DETERMINISTIC_FALLBACK_MODEL
+
         assert e.active_model_name == DETERMINISTIC_FALLBACK_MODEL
 
     def test_reuses_model_from_model_store(self, tmp_path):
         e = _make_engine(tmp_path, model_store_is_loaded=True)
         from app.pipeline.intelligence.rag_engine import FALLBACK_MODEL
+
         assert e.active_model_name == FALLBACK_MODEL  # 384d → fallback name
 
     def test_reuse_invalid_model_triggers_reload(self, tmp_path):
@@ -571,15 +607,18 @@ class TestLoadEmbeddingModel:
 
             persist = str(tmp_path / "reuse_invalid")
             from app.pipeline.intelligence.rag_engine import RagEngine
+
             with patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None):
                 e = RagEngine(persist_directory=persist, auto_seed=False)
                 from app.pipeline.intelligence.rag_engine import PRIMARY_MODEL
+
                 assert e.active_model_name == PRIMARY_MODEL
 
 
 # ===================================================================
 #  _seed_if_empty
 # ===================================================================
+
 
 class TestSeedIfEmpty:
     """Auto-seeding from default_guidelines.json."""
@@ -698,6 +737,7 @@ class TestSeedIfEmpty:
 #  add_guideline
 # ===================================================================
 
+
 class TestAddGuideline:
     """Adding guideline rules."""
 
@@ -731,6 +771,7 @@ class TestAddGuideline:
 # ===================================================================
 #  query_guidelines
 # ===================================================================
+
 
 class TestQueryGuidelines:
     """Retrieving guidelines via ChromaDB or native fallback."""
@@ -801,6 +842,7 @@ class TestQueryGuidelines:
 #  query_rules (phase-2 interface adapter)
 # ===================================================================
 
+
 class TestQueryRules:
     """Interface required by PipelineOrchestrator."""
 
@@ -826,6 +868,7 @@ class TestQueryRules:
 # ===================================================================
 #  Persistence (_save_native / _load_native)
 # ===================================================================
+
 
 class TestPersistence:
     """Native JSON persistence."""
@@ -853,6 +896,7 @@ class TestPersistence:
 # ===================================================================
 #  reset
 # ===================================================================
+
 
 class TestReset:
     """Clearing all indexed guidelines."""
@@ -887,6 +931,7 @@ class TestReset:
 #  get_rag_engine (singleton)
 # ===================================================================
 
+
 class TestGetRagEngine:
     """Singleton factory."""
 
@@ -905,10 +950,12 @@ class TestGetRagEngine:
             mst.return_value = mock_model
 
             from app.pipeline.intelligence.rag_engine import _rag_engine, get_rag_engine
+
             # Ensure singleton is None before test
             test_rag = _rag_engine
             try:
                 import app.pipeline.intelligence.rag_engine as rag_mod
+
                 rag_mod._rag_engine = None
                 with patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None):
                     result = get_rag_engine()
@@ -932,6 +979,7 @@ class TestGetRagEngine:
 
             import app.pipeline.intelligence.rag_engine as rag_mod
             from app.pipeline.intelligence.rag_engine import get_rag_engine
+
             orig = rag_mod._rag_engine
             try:
                 rag_mod._rag_engine = None

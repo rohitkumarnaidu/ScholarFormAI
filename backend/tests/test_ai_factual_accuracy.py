@@ -117,12 +117,8 @@ def _verify_claim_against_source(claim: str, source_text: str) -> dict[str, Any]
             evidence.append(token)
 
     # Check for contradiction (negation + same token)
-    contradict_patterns = [
-        r"\bnot\b.*\b" + re.escape(t) + r"\b" for t in list(claim_tokens)[:3]
-    ]
-    contradicted = any(
-        re.search(p, source_lower) for p in contradict_patterns
-    )
+    contradict_patterns = [r"\bnot\b.*\b" + re.escape(t) + r"\b" for t in list(claim_tokens)[:3]]
+    contradicted = any(re.search(p, source_lower) for p in contradict_patterns)
 
     supported = overlap_ratio >= 0.6 and not contradicted
     partially = 0.3 <= overlap_ratio < 0.6 and not contradicted
@@ -162,6 +158,7 @@ def _accuracy_score(verifications: list[dict[str, Any]]) -> dict[str, float]:
 # ===================================================================
 #  3A — DOI & Citation Metadata
 # ===================================================================
+
 
 class TestDOICitationAccuracy:
     """DOI resolution and citation metadata verification."""
@@ -214,6 +211,7 @@ class TestDOICitationAccuracy:
 #  3B — Claim Verification
 # ===================================================================
 
+
 class TestClaimVerification:
     """Verify factual claims against source documents."""
 
@@ -230,18 +228,14 @@ class TestClaimVerification:
         source = "The control group did not show any significant improvement."
         claim = "The control group showed significant improvement."
         result = _verify_claim_against_source(claim, source)
-        assert result["contradicted"] or not result["supported"], (
-            f"Contradicted claim not detected: {result}"
-        )
+        assert result["contradicted"] or not result["supported"], f"Contradicted claim not detected: {result}"
 
     @pytest.mark.ai_quality
     def test_claim_partially_supported(self):
         source = "The model achieved 94% accuracy on the validation set."
         claim = "The model achieved 94% accuracy on the validation set and 97% on the test set."
         result = _verify_claim_against_source(claim, source)
-        assert result["partially_supported"] or result["supported"], (
-            f"Partial support not detected: {result}"
-        )
+        assert result["partially_supported"] or result["supported"], f"Partial support not detected: {result}"
 
     @pytest.mark.ai_quality
     def test_claim_with_no_source_evidence(self):
@@ -256,9 +250,7 @@ class TestClaimVerification:
         source = "Smith et al. (2023) studied the effects of AI on healthcare."
         claim = "FabricatedAuthor (2024) claimed that AI systems hallucinate frequently."
         result = _verify_claim_against_source(claim, source)
-        assert not result["supported"], (
-            f"Fabricated author claim should not be fully supported: {result}"
-        )
+        assert not result["supported"], f"Fabricated author claim should not be fully supported: {result}"
         assert result["confidence"] < 0.5
 
     @pytest.mark.ai_quality
@@ -273,6 +265,7 @@ class TestClaimVerification:
 # ===================================================================
 #  3C — Numerical & Count Accuracy
 # ===================================================================
+
 
 class TestNumericalAccuracy:
     """Numerical claim accuracy and citation count verification."""
@@ -319,6 +312,7 @@ class TestNumericalAccuracy:
 #  3D — Edge Cases & Scoring
 # ===================================================================
 
+
 class TestAccuracyEdgeCasesAndScoring:
     """Edge case handling and accuracy scoring aggregation."""
 
@@ -326,6 +320,7 @@ class TestAccuracyEdgeCasesAndScoring:
     def test_api_timeout_handled_gracefully(self):
         def _timeout_api(doi):
             raise TimeoutError("API timeout")
+
         doi = "10.1038/s41586-023-06559-5"
         try:
             result = _check_citation_accuracy(doi, MOCK_CITATION_METADATA)
@@ -364,7 +359,8 @@ class TestAccuracyEdgeCasesAndScoring:
         empty = _accuracy_score([])
         assert empty["accuracy"] == 0.0
         assert empty["avg_confidence"] == 0.0
-        single = _accuracy_score([{"supported": True, "partially_supported": False,
-                                    "contradicted": False, "confidence": 0.75}])
+        single = _accuracy_score(
+            [{"supported": True, "partially_supported": False, "contradicted": False, "confidence": 0.75}]
+        )
         assert single["accuracy"] == 100.0
         assert single["avg_confidence"] == 0.75

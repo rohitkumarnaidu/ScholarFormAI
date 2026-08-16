@@ -10,18 +10,20 @@ from fastapi.testclient import TestClient
 @pytest.fixture(autouse=True)
 def mock_ai_models():
     """Mock AI model pre-loading to speed up tests."""
-    with patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser") as mock_parser, \
-         patch("app.pipeline.intelligence.rag_engine.get_rag_engine") as mock_rag:
-        
+    with (
+        patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser") as mock_parser,
+        patch("app.pipeline.intelligence.rag_engine.get_rag_engine") as mock_rag,
+    ):
         # Setup parser mock
         parser_instance = MagicMock()
         mock_parser.return_value = parser_instance
-        
+
         # Setup RAG mock
         rag_instance = MagicMock()
         mock_rag.return_value = rag_instance
-        
+
         yield
+
 
 @pytest.fixture
 def client():
@@ -30,38 +32,43 @@ def client():
     from app.main import app
     from app.services.document_service import DocumentService
     from app.utils.dependencies import get_current_user, get_optional_user
-    
+
     # We patch the class itself because router uses static methods
     mock_service = MagicMock(spec=DocumentService)
-    
+
     # Mock Redis to avoid RateLimiter errors
     mock_redis = MagicMock()
     mock_redis.incr = AsyncMock(return_value=1)
     mock_redis.expire = AsyncMock(return_value=True)
-    
+
     # Setup a mock user
     mock_user = MagicMock()
     mock_user.id = "mock-user-123"
-    
+
     # Dependencies inside app.main or routers
     app.dependency_overrides[get_optional_user] = lambda: mock_user
     app.dependency_overrides[get_current_user] = lambda: mock_user
-    
+
     # Use patch(..., mock_service) so DocumentService IS the mock object
-    with patch("app.routers.v1.documents_impl.DocumentService", mock_service), \
-         patch("app.routers.v1.documents_impl._require_db", return_value=None), \
-         patch("app.middleware.rate_limit.redis", mock_redis), TestClient(app) as c:
+    with (
+        patch("app.routers.v1.documents_impl.DocumentService", mock_service),
+        patch("app.routers.v1.documents_impl._require_db", return_value=None),
+        patch("app.middleware.rate_limit.redis", mock_redis),
+        TestClient(app) as c,
+    ):
         c.mock_service = mock_service
         c.mock_user = mock_user
         yield c
-            
+
     app.dependency_overrides = {}
+
 
 def test_root_contract(client):
     """Simple test to verify collection and basic app connectivity."""
     response = client.get("/")
     assert response.status_code == 200
     assert "ScholarForm AI" in response.json()["message"]
+
 
 @pytest.mark.contract
 class TestEndpointContracts:
@@ -82,7 +89,7 @@ class TestEndpointContracts:
                 "current_stage": "EXPORT",
                 "created_at": "2024-02-23T00:00:00Z",
                 "updated_at": "2024-02-23T00:05:00Z",
-                "export_formats": ["docx", "pdf"]
+                "export_formats": ["docx", "pdf"],
             }
         ]
         client.mock_service.count_documents.return_value = 1
@@ -108,7 +115,7 @@ class TestEndpointContracts:
             "error_message": None,
             "user_id": client.mock_user.id,
             "created_at": "2024-02-23T10:00:00+00:00",
-            "updated_at": "2024-02-23T10:00:00+00:00"
+            "updated_at": "2024-02-23T10:00:00+00:00",
         }
         client.mock_service.get_processing_statuses.return_value = [
             {
@@ -116,7 +123,7 @@ class TestEndpointContracts:
                 "status": "success",
                 "message": "File received",
                 "progress": 100,
-                "updated_at": "2024-02-23T09:55:00+00:00"
+                "updated_at": "2024-02-23T09:55:00+00:00",
             }
         ]
 
@@ -137,11 +144,11 @@ class TestEndpointContracts:
             "template": "APA",
             "status": "COMPLETED",
             "created_at": "2024-02-23T12:00:00+00:00",
-            "user_id": client.mock_user.id
+            "user_id": client.mock_user.id,
         }
         client.mock_service.get_document_result.return_value = {
             "structured_data": {"blocks": [{"text": "Hello"}]},
-            "validation_results": {"errors": [], "warnings": ["Missing DOI"]}
+            "validation_results": {"errors": [], "warnings": ["Missing DOI"]},
         }
 
         response = client.get(f"/api/v1/documents/{job_id}/preview")
@@ -156,7 +163,7 @@ class TestEndpointContracts:
         response = client.post(
             "/api/v1/documents/upload",
             files={"file": ("malicious.js", b"console.log('hi')", "text/javascript")},
-            data={"template": "IEEE"}
+            data={"template": "IEEE"},
         )
         assert response.status_code == 400
         payload = response.json()
@@ -173,4 +180,3 @@ class TestEndpointContracts:
         assert payload["data"] is None
         assert payload["error"]["code"] == "DOCUMENT_NOT_FOUND"
         assert payload["error"]["message"] == "Document job not found"
-

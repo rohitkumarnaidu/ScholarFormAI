@@ -31,6 +31,17 @@ We operate on a model of **Lazy Consensus**.
 - If an objection is raised, the maintainers will attempt to resolve it through discussion.
 - If consensus cannot be reached, the Steering Committee will call for a vote. A simple majority among the Steering Committee is required to pass a binding decision.
 
+```mermaid
+flowchart TD
+    Proposal[Proposal made<br>Issue, PR, RFC] --> Wait{Wait 72 hours}
+    Wait -->|No objections| Approved[Assumed Approved<br>Lazy Consensus]
+    Wait -->|Objection raised| Discussion[Maintainers Discussion]
+    Discussion -->|Consensus reached| Resolve[Resolved]
+    Discussion -->|No consensus| Vote[Steering Committee Vote]
+    Vote -->|Simple Majority| Approved
+    Vote -->|Fails| Rejected[Proposal Rejected]
+```
+
 ## 3. RFC (Request for Comments)
 
 For major architectural changes—such as introducing new Agentic AI paradigms, altering the core PDF extraction pipeline, or changing the database schema—an RFC must be submitted.

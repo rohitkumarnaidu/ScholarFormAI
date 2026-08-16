@@ -18,10 +18,22 @@ def _make_doc(**overrides):
     defaults = dict(
         document_id="jats1",
         blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.TITLE, text="Paper Title", section_name="title",
-                  metadata={"semantic_intent": "heading"}),
-            Block(block_id="b2", index=2, block_type=BlockType.BODY, text="Body content.", section_name="body",
-                  metadata={"semantic_intent": "body"}),
+            Block(
+                block_id="b1",
+                index=1,
+                block_type=BlockType.TITLE,
+                text="Paper Title",
+                section_name="title",
+                metadata={"semantic_intent": "heading"},
+            ),
+            Block(
+                block_id="b2",
+                index=2,
+                block_type=BlockType.BODY,
+                text="Body content.",
+                section_name="body",
+                metadata={"semantic_intent": "body"},
+            ),
         ],
         metadata=DocumentMetadata(
             title="Test Paper",
@@ -35,9 +47,17 @@ def _make_doc(**overrides):
         template=TemplateInfo(template_name="default"),
         equations=[],
         references=[
-            Reference(reference_id="r1", index=1, block_id="r1", block_index=1,
-                      citation_key="alice2024", year="2024", authors=["Alice"],
-                      title="A paper", raw_text="[1] Alice et al. (2024)"),
+            Reference(
+                reference_id="r1",
+                index=1,
+                block_id="r1",
+                block_index=1,
+                citation_key="alice2024",
+                year="2024",
+                authors=["Alice"],
+                title="A paper",
+                raw_text="[1] Alice et al. (2024)",
+            ),
         ],
     )
     defaults.update(overrides)
@@ -45,8 +65,8 @@ def _make_doc(**overrides):
     doc.template = defaults["template"]
     return doc
 
-class TestJATSGenerator:
 
+class TestJATSGenerator:
     # ── to_xml ──────────────────────────────────────────────────────────
 
     def test_to_xml_basic(self):
@@ -81,7 +101,7 @@ class TestJATSGenerator:
 
     def test_to_xml_special_chars(self):
         doc = _make_doc()
-        doc.metadata.title = "Title & <Special> \"Chars\""
+        doc.metadata.title = 'Title & <Special> "Chars"'
         gen = JATSGenerator()
         xml = gen.to_xml(doc)
         assert "Title" in xml
@@ -105,6 +125,7 @@ class TestJATSGenerator:
         doc = _make_doc(references=[])
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("back")
         gen._add_references(parent, doc)
         assert len(list(parent)) == 0
@@ -115,6 +136,7 @@ class TestJATSGenerator:
         doc.references[0].metadata = {}
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("back")
         gen._add_references(parent, doc)
         ref_list = parent[0]
@@ -126,6 +148,7 @@ class TestJATSGenerator:
         doc.references[0].metadata = {"doi": "10.1234/test"}
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("back")
         gen._add_references(parent, doc)
         mixed = parent[0][1][0]
@@ -138,6 +161,7 @@ class TestJATSGenerator:
         doc.references[0].metadata = {}
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("back")
         gen._add_references(parent, doc)
         assert parent[0][1][0].text == "Reference text unavailable"
@@ -148,6 +172,7 @@ class TestJATSGenerator:
         doc.references[0].metadata = {}
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("back")
         gen._add_references(parent, doc)
         assert parent[0][1].attrib.get("id", "").startswith("ref_")
@@ -157,6 +182,7 @@ class TestJATSGenerator:
         doc.references[0].metadata = {"some_key": "value"}
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("back")
         gen._add_references(parent, doc)
         assert len(parent[0][1][0].findall("pub-id")) == 0
@@ -166,6 +192,7 @@ class TestJATSGenerator:
         doc.references[0].metadata = None
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("back")
         gen._add_references(parent, doc)
 
@@ -176,6 +203,7 @@ class TestJATSGenerator:
         doc.metadata.title = None
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, doc)
         assert "Untitled Manuscript" in etree.tostring(parent, encoding="unicode")
@@ -185,6 +213,7 @@ class TestJATSGenerator:
         doc.metadata.authors = []
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, doc)
         assert "<given-names>Unknown</given-names>" in etree.tostring(parent, encoding="unicode")
@@ -194,6 +223,7 @@ class TestJATSGenerator:
         doc.metadata.authors = ["JohnDoe"]
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, doc)
         xml = etree.tostring(parent, encoding="unicode")
@@ -205,6 +235,7 @@ class TestJATSGenerator:
         doc.metadata.authors = ["John A. Doe III"]
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, doc)
         assert "<surname>III</surname>" in etree.tostring(parent, encoding="unicode")
@@ -212,6 +243,7 @@ class TestJATSGenerator:
     def test_metadata_pub_date_datetime(self):
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, _make_doc())
         xml = etree.tostring(parent, encoding="unicode")
@@ -224,6 +256,7 @@ class TestJATSGenerator:
         doc.metadata.publication_date = "2023-05-20"
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, doc)
         xml = etree.tostring(parent, encoding="unicode")
@@ -236,6 +269,7 @@ class TestJATSGenerator:
         doc.metadata.publication_date = "invalid-date"
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, doc)
         etree.tostring(parent, encoding="unicode")
@@ -245,6 +279,7 @@ class TestJATSGenerator:
         doc.metadata.publication_date = None
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, doc)
         assert "pub-date" not in etree.tostring(parent, encoding="unicode")
@@ -254,6 +289,7 @@ class TestJATSGenerator:
         doc.metadata.publication_date = "2023"
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, doc)
         xml = etree.tostring(parent, encoding="unicode")
@@ -265,6 +301,7 @@ class TestJATSGenerator:
         doc.metadata.publication_date = "2023-08"
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, doc)
         xml = etree.tostring(parent, encoding="unicode")
@@ -274,6 +311,7 @@ class TestJATSGenerator:
     def test_volume_present(self):
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, _make_doc())
         assert "<volume>10</volume>" in etree.tostring(parent, encoding="unicode")
@@ -283,6 +321,7 @@ class TestJATSGenerator:
         doc.metadata.volume = None
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, doc)
         assert "<volume>" not in etree.tostring(parent, encoding="unicode")
@@ -290,6 +329,7 @@ class TestJATSGenerator:
     def test_issue_present(self):
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, _make_doc())
         assert "<issue>2</issue>" in etree.tostring(parent, encoding="unicode")
@@ -299,6 +339,7 @@ class TestJATSGenerator:
         doc.metadata.issue = None
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, doc)
         assert "<issue>" not in etree.tostring(parent, encoding="unicode")
@@ -306,6 +347,7 @@ class TestJATSGenerator:
     def test_abstract_present(self):
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, _make_doc())
         xml = etree.tostring(parent, encoding="unicode")
@@ -317,6 +359,7 @@ class TestJATSGenerator:
         doc.metadata.abstract = None
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, doc)
         assert "<abstract>" not in etree.tostring(parent, encoding="unicode")
@@ -327,6 +370,7 @@ class TestJATSGenerator:
         doc = _make_doc(blocks=[])
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("body")
         gen._add_body(parent, doc)
         assert "<body/>" in etree.tostring(parent, encoding="unicode")
@@ -335,10 +379,17 @@ class TestJATSGenerator:
         from lxml import etree
 
         from app.models import BlockType
+
         doc = _make_doc()
         doc.blocks = [
-            BClass(block_id="b1", index=1, block_type=BlockType.TITLE, text="Heading", section_name="title",
-                   metadata={"semantic_intent": "heading"})
+            BClass(
+                block_id="b1",
+                index=1,
+                block_type=BlockType.TITLE,
+                text="Heading",
+                section_name="title",
+                metadata={"semantic_intent": "heading"},
+            )
         ]
         gen = JATSGenerator()
         parent = etree.Element("body")
@@ -349,11 +400,19 @@ class TestJATSGenerator:
 
     def test_body_body_block(self):
         from app.models import BlockType
+
         doc = _make_doc()
         from lxml import etree
+
         doc.blocks = [
-            BClass(block_id="b1", index=1, block_type=BlockType.BODY, text="Body text", section_name="body",
-                   metadata={"semantic_intent": "body"})
+            BClass(
+                block_id="b1",
+                index=1,
+                block_type=BlockType.BODY,
+                text="Body text",
+                section_name="body",
+                metadata={"semantic_intent": "body"},
+            )
         ]
         gen = JATSGenerator()
         parent = etree.Element("body")
@@ -363,6 +422,7 @@ class TestJATSGenerator:
     def test_body_mixed_blocks(self):
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("body")
         gen._add_body(parent, _make_doc())
         xml = etree.tostring(parent, encoding="unicode")
@@ -373,12 +433,25 @@ class TestJATSGenerator:
         from lxml import etree
 
         from app.models import BlockType
+
         doc = _make_doc()
         doc.blocks = [
-            BClass(block_id="b1", index=1, block_type=BlockType.BODY, text="First text",
-                   section_name="body", metadata={"semantic_intent": "body"}),
-            BClass(block_id="b2", index=2, block_type=BlockType.HEADING_1, text="Late heading",
-                   section_name="section", metadata={"semantic_intent": "heading"}),
+            BClass(
+                block_id="b1",
+                index=1,
+                block_type=BlockType.BODY,
+                text="First text",
+                section_name="body",
+                metadata={"semantic_intent": "body"},
+            ),
+            BClass(
+                block_id="b2",
+                index=2,
+                block_type=BlockType.HEADING_1,
+                text="Late heading",
+                section_name="section",
+                metadata={"semantic_intent": "heading"},
+            ),
         ]
         gen = JATSGenerator()
         parent = etree.Element("body")
@@ -391,10 +464,12 @@ class TestJATSGenerator:
         from lxml import etree
 
         from app.models import BlockType
+
         doc = _make_doc()
         doc.blocks = [
-            BClass(block_id="b1", index=1, block_type=BlockType.BODY, text="Default body",
-                   section_name="body", metadata={})
+            BClass(
+                block_id="b1", index=1, block_type=BlockType.BODY, text="Default body", section_name="body", metadata={}
+            )
         ]
         gen = JATSGenerator()
         parent = etree.Element("body")
@@ -403,11 +478,16 @@ class TestJATSGenerator:
 
     def test_body_equations_disp_formula(self):
         from lxml import etree
+
         doc = _make_doc()
         doc.equations = [
-            EClass(equation_id="eq1", index=1, block_id="b1",
-                   mathml="<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>x</mi></math>",
-                   is_block=True)
+            EClass(
+                equation_id="eq1",
+                index=1,
+                block_id="b1",
+                mathml="<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>x</mi></math>",
+                is_block=True,
+            )
         ]
         gen = JATSGenerator()
         parent = etree.Element("body")
@@ -416,11 +496,16 @@ class TestJATSGenerator:
 
     def test_body_equations_inline_formula(self):
         from lxml import etree
+
         doc = _make_doc()
         doc.equations = [
-            EClass(equation_id="eq2", index=2, block_id="b2",
-                   mathml="<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>y</mi></math>",
-                   is_block=False)
+            EClass(
+                equation_id="eq2",
+                index=2,
+                block_id="b2",
+                mathml="<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>y</mi></math>",
+                is_block=False,
+            )
         ]
         gen = JATSGenerator()
         parent = etree.Element("body")
@@ -429,10 +514,9 @@ class TestJATSGenerator:
 
     def test_body_equations_no_mathml(self):
         from lxml import etree
+
         doc = _make_doc()
-        doc.equations = [
-            EClass(equation_id="eq3", index=3, block_id="b3", mathml=None, is_block=True)
-        ]
+        doc.equations = [EClass(equation_id="eq3", index=3, block_id="b3", mathml=None, is_block=True)]
         gen = JATSGenerator()
         parent = etree.Element("body")
         gen._add_body(parent, doc)
@@ -440,11 +524,9 @@ class TestJATSGenerator:
 
     def test_body_equation_malformed_mathml(self):
         from lxml import etree
+
         doc = _make_doc()
-        doc.equations = [
-            EClass(equation_id="eq4", index=4, block_id="b4",
-                   mathml="<<<malformed>>>", is_block=True)
-        ]
+        doc.equations = [EClass(equation_id="eq4", index=4, block_id="b4", mathml="<<<malformed>>>", is_block=True)]
         gen = JATSGenerator()
         parent = etree.Element("body")
         gen._add_body(parent, doc)
@@ -452,14 +534,23 @@ class TestJATSGenerator:
 
     def test_body_multiple_equations(self):
         from lxml import etree
+
         doc = _make_doc()
         doc.equations = [
-            EClass(equation_id="eq1", index=1, block_id="b1",
-                   mathml="<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>a</mi></math>",
-                   is_block=True),
-            EClass(equation_id="eq2", index=2, block_id="b2",
-                   mathml="<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>b</mi></math>",
-                   is_block=False),
+            EClass(
+                equation_id="eq1",
+                index=1,
+                block_id="b1",
+                mathml="<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>a</mi></math>",
+                is_block=True,
+            ),
+            EClass(
+                equation_id="eq2",
+                index=2,
+                block_id="b2",
+                mathml="<math xmlns='http://www.w3.org/1998/Math/MathML'><mi>b</mi></math>",
+                is_block=False,
+            ),
         ]
         gen = JATSGenerator()
         parent = etree.Element("body")
@@ -472,6 +563,7 @@ class TestJATSGenerator:
     def test_output_is_valid_xml(self):
         gen = JATSGenerator()
         from lxml import etree
+
         root = etree.fromstring(gen.to_xml(_make_doc()).encode())
         assert root.tag == "article"
 
@@ -489,12 +581,14 @@ class TestJATSGenerator:
     def test_output_article_type_attribute(self):
         gen = JATSGenerator()
         from lxml import etree
+
         root = etree.fromstring(gen.to_xml(_make_doc()).encode())
         assert root.attrib.get("article-type") == "research-article"
 
     def test_output_dtd_version_attribute(self):
         gen = JATSGenerator()
         from lxml import etree
+
         root = etree.fromstring(gen.to_xml(_make_doc()).encode())
         assert root.attrib.get("dtd-version") == "1.2"
 
@@ -505,6 +599,7 @@ class TestJATSGenerator:
         doc.metadata.volume = "0"
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, doc)
         assert "<volume>0</volume>" in etree.tostring(parent, encoding="unicode")
@@ -514,6 +609,7 @@ class TestJATSGenerator:
         doc.metadata.authors = [f"Author {i}" for i in range(20)]
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, doc)
         xml = etree.tostring(parent, encoding="unicode")
@@ -536,12 +632,30 @@ class TestJATSGenerator:
     def test_reference_list_multi(self):
         doc = _make_doc()
         doc.references = [
-            RClass(reference_id="r1", block_id="r1", block_index=1, index=1,
-                   citation_key="a2024", year="2024", authors=["A"],
-                   title="Paper A", raw_text="[1] A", metadata={}),
-            RClass(reference_id="r2", block_id="r2", block_index=2, index=2,
-                   citation_key="b2024", year="2024", authors=["B"],
-                   title="Paper B", raw_text="[2] B", metadata={"doi": "10.1234/b"}),
+            RClass(
+                reference_id="r1",
+                block_id="r1",
+                block_index=1,
+                index=1,
+                citation_key="a2024",
+                year="2024",
+                authors=["A"],
+                title="Paper A",
+                raw_text="[1] A",
+                metadata={},
+            ),
+            RClass(
+                reference_id="r2",
+                block_id="r2",
+                block_index=2,
+                index=2,
+                citation_key="b2024",
+                year="2024",
+                authors=["B"],
+                title="Paper B",
+                raw_text="[2] B",
+                metadata={"doi": "10.1234/b"},
+            ),
         ]
         gen = JATSGenerator()
         xml = gen.to_xml(doc)
@@ -550,10 +664,17 @@ class TestJATSGenerator:
 
     def test_body_section_heading_without_text(self):
         from app.models import BlockType
+
         doc = _make_doc()
         doc.blocks = [
-            BClass(block_id="b1", index=1, block_type=BlockType.HEADING_1, text="",
-                   section_name="section", metadata={"semantic_intent": "heading"}),
+            BClass(
+                block_id="b1",
+                index=1,
+                block_type=BlockType.HEADING_1,
+                text="",
+                section_name="section",
+                metadata={"semantic_intent": "heading"},
+            ),
         ]
         gen = JATSGenerator()
         xml = gen.to_xml(doc)
@@ -564,6 +685,7 @@ class TestJATSGenerator:
         doc.metadata.publication_date = ""
         gen = JATSGenerator()
         from lxml import etree
+
         parent = etree.Element("front")
         gen._add_metadata(parent, doc)
         assert "pub-date" not in etree.tostring(parent, encoding="unicode")
@@ -578,9 +700,7 @@ class TestJATSGenerator:
 
     def test_body_equation_empty_mathml_string(self):
         doc = _make_doc()
-        doc.equations = [
-            EClass(equation_id="eq1", index=1, block_id="b1", mathml="", is_block=True)
-        ]
+        doc.equations = [EClass(equation_id="eq1", index=1, block_id="b1", mathml="", is_block=True)]
         gen = JATSGenerator()
         xml = gen.to_xml(doc)
         assert isinstance(xml, str)
@@ -598,4 +718,3 @@ class TestJATSGenerator:
         gen = JATSGenerator()
         xml = gen.to_xml(doc)
         assert isinstance(xml, str)
-

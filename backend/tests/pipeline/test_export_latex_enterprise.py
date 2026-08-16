@@ -49,7 +49,9 @@ def _make_doc(**overrides):
     doc.template = defaults["template"]
     return doc
 
+
 # ── escape_latex ───────────────────────────────────────────────────────
+
 
 class TestEscapeLatex:
     def test_ampersand(self):
@@ -95,7 +97,9 @@ class TestEscapeLatex:
         with pytest.raises(TypeError):
             escape_latex(None)
 
+
 # ── _resolve_pandoc_binary ─────────────────────────────────────────────
+
 
 class TestResolvePandoc:
     def test_env_var_set(self):
@@ -116,7 +120,9 @@ class TestResolvePandoc:
             with patch("shutil.which", return_value="/usr/bin/pandoc"):
                 assert _resolve_pandoc_binary() == "/usr/bin/pandoc"
 
+
 # ── _convert_via_pandoc ────────────────────────────────────────────────
+
 
 class TestConvertViaPandoc:
     def test_pandoc_not_found(self):
@@ -163,7 +169,9 @@ class TestConvertViaPandoc:
         ):
             assert _convert_via_pandoc("in.docx", "out.tex", 120) is False
 
+
 # ── LaTeXExporter.convert_to_latex ─────────────────────────────────────
+
 
 class TestConvertToLatex:
     def test_file_not_found(self):
@@ -217,7 +225,9 @@ class TestConvertToLatex:
             result = exporter.convert_to_latex("/tmp/my_manuscript.docx", "/tmp/out")
             assert "my_manuscript.tex" in result
 
+
 # ── LaTeXExporter.export_from_document ─────────────────────────────────
+
 
 class TestExportFromDocument:
     def test_default_template(self):
@@ -234,7 +244,19 @@ class TestExportFromDocument:
             assert result.endswith("manuscript.tex")
 
     def test_all_templates(self):
-        for template_name in ["ieee", "acm", "apa", "springer", "nature", "elsevier", "mla", "chicago", "vancouver", "harvard", "default"]:
+        for template_name in [
+            "ieee",
+            "acm",
+            "apa",
+            "springer",
+            "nature",
+            "elsevier",
+            "mla",
+            "chicago",
+            "vancouver",
+            "harvard",
+            "default",
+        ]:
             exporter = LaTeXExporter()
             doc = _make_doc()
             doc.template.template_name = template_name
@@ -278,12 +300,24 @@ class TestExportFromDocument:
 
     def test_with_references(self):
         from app.models import Reference
+
         exporter = LaTeXExporter()
-        doc = _make_doc(references=[
-            Reference(reference_id="r1", index=1, block_id="r1", block_index=1,
-                      citation_key="ref1", year="2024", authors=["A"],
-                      title="Paper", raw_text="[1] Ref", metadata={"title": "Paper", "authors": "A", "year": "2024"}),
-        ])
+        doc = _make_doc(
+            references=[
+                Reference(
+                    reference_id="r1",
+                    index=1,
+                    block_id="r1",
+                    block_index=1,
+                    citation_key="ref1",
+                    year="2024",
+                    authors=["A"],
+                    title="Paper",
+                    raw_text="[1] Ref",
+                    metadata={"title": "Paper", "authors": "A", "year": "2024"},
+                ),
+            ]
+        )
         with (
             patch("pathlib.Path.mkdir"),
             patch.object(Path, "write_text"),
@@ -294,7 +328,9 @@ class TestExportFromDocument:
             result = exporter.export_from_document(doc, "/tmp/out")
             assert result.endswith(".tex")
 
+
 # ── _write_title_authors ───────────────────────────────────────────────
+
 
 class TestWriteTitleAuthors:
     def test_title_and_authors(self):
@@ -350,6 +386,7 @@ class TestWriteTitleAuthors:
 
     def test_date_datetime_formatted(self):
         from datetime import datetime
+
         exporter = LaTeXExporter()
         doc = _make_doc()
         doc.metadata.publication_date = datetime(2024, 6, 15)
@@ -367,7 +404,9 @@ class TestWriteTitleAuthors:
         assert r"\&" in content
         assert r"\%" in content
 
+
 # ── _write_abstract ────────────────────────────────────────────────────
+
 
 class TestWriteAbstract:
     def test_abstract_present(self):
@@ -412,13 +451,16 @@ class TestWriteAbstract:
         assert r"\&" in content
         assert r"\%" in content
 
+
 # ── _write_sections ────────────────────────────────────────────────────
+
 
 class TestWriteSections:
     def _make_section_doc(self, blocks_data):
         """Helper to build doc with custom blocks using real Block instances."""
         from app.models import Block, PipelineDocument
         from app.models.pipeline_document import DocumentMetadata, TemplateInfo
+
         doc = PipelineDocument(
             document_id="t1",
             blocks=[Block(**b) for b in blocks_data],
@@ -456,18 +498,22 @@ class TestWriteSections:
         assert "Body text." in "\n".join(lines)
 
     def test_reference_types_skipped(self):
-        doc = self._make_section_doc([
-            dict(block_id="r1", index=1, text="Ref text", block_type="reference_entry"),
-        ])
+        doc = self._make_section_doc(
+            [
+                dict(block_id="r1", index=1, text="Ref text", block_type="reference_entry"),
+            ]
+        )
         exporter = LaTeXExporter()
         lines = []
         exporter._write_sections(lines, doc)
         assert "Ref text" not in "\n".join(lines)
 
     def test_empty_text_skipped(self):
-        doc = self._make_section_doc([
-            dict(block_id="b1", index=1, text="", block_type="body"),
-        ])
+        doc = self._make_section_doc(
+            [
+                dict(block_id="b1", index=1, text="", block_type="body"),
+            ]
+        )
         exporter = LaTeXExporter()
         lines = []
         exporter._write_sections(lines, doc)
@@ -499,17 +545,22 @@ class TestWriteSections:
 
     def test_blocks_sorted_by_index(self):
         from app.models import Block, BlockType
+
         exporter = LaTeXExporter()
-        doc = _make_doc(blocks=[
-            Block(block_id="b2", index=2, block_type=BlockType.BODY, text="Second"),
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="First"),
-        ])
+        doc = _make_doc(
+            blocks=[
+                Block(block_id="b2", index=2, block_type=BlockType.BODY, text="Second"),
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="First"),
+            ]
+        )
         lines = []
         exporter._write_sections(lines, doc)
         content = "\n".join(lines)
         assert content.index("First") < content.index("Second")
 
+
 # ── _write_figures ─────────────────────────────────────────────────────
+
 
 class TestWriteFigures:
     def test_no_figures(self):
@@ -521,10 +572,13 @@ class TestWriteFigures:
 
     def test_figure_with_caption_and_label(self):
         from app.models import Figure
+
         exporter = LaTeXExporter()
-        doc = _make_doc(figures=[
-            Figure(figure_id="fig1", index=0, caption_text="A figure", label="fig:1"),
-        ])
+        doc = _make_doc(
+            figures=[
+                Figure(figure_id="fig1", index=0, caption_text="A figure", label="fig:1"),
+            ]
+        )
         lines = []
         exporter._write_figures(lines, doc)
         content = "\n".join(lines)
@@ -534,11 +588,15 @@ class TestWriteFigures:
 
     def test_figure_with_image_data(self):
         from app.models import Figure
+
         exporter = LaTeXExporter()
-        doc = _make_doc(figures=[
-            Figure(figure_id="fig1", index=0, caption_text="Fig",
-                   image_data=b"imgdata", image_format=ImageFormat.PNG),
-        ])
+        doc = _make_doc(
+            figures=[
+                Figure(
+                    figure_id="fig1", index=0, caption_text="Fig", image_data=b"imgdata", image_format=ImageFormat.PNG
+                ),
+            ]
+        )
         lines = []
         with patch.object(Path, "write_bytes"), patch.object(Path, "exists", return_value=False):
             exporter._write_figures(lines, doc, out_dir=Path("/tmp/out"))
@@ -546,35 +604,46 @@ class TestWriteFigures:
 
     def test_figure_no_image_data(self):
         from app.models import Figure
+
         exporter = LaTeXExporter()
-        doc = _make_doc(figures=[
-            Figure(figure_id="fig1", index=0, caption_text="Only caption"),
-        ])
+        doc = _make_doc(
+            figures=[
+                Figure(figure_id="fig1", index=0, caption_text="Only caption"),
+            ]
+        )
         lines = []
         exporter._write_figures(lines, doc)
         assert r"\includegraphics" not in "\n".join(lines)
 
     def test_figure_without_label(self):
         from app.models import Figure
+
         exporter = LaTeXExporter()
-        doc = _make_doc(figures=[
-            Figure(figure_id="fig1", index=0, caption_text="No label"),
-        ])
+        doc = _make_doc(
+            figures=[
+                Figure(figure_id="fig1", index=0, caption_text="No label"),
+            ]
+        )
         lines = []
         exporter._write_figures(lines, doc)
         assert r"\label" not in "\n".join(lines)
 
     def test_figure_caption_empty(self):
         from app.models import Figure
+
         exporter = LaTeXExporter()
-        doc = _make_doc(figures=[
-            Figure(figure_id="fig1", index=0, caption_text=None),
-        ])
+        doc = _make_doc(
+            figures=[
+                Figure(figure_id="fig1", index=0, caption_text=None),
+            ]
+        )
         lines = []
         exporter._write_figures(lines, doc)
         assert r"\caption{Figure}" in "\n".join(lines)
 
+
 # ── _write_tables ──────────────────────────────────────────────────────
+
 
 class TestWriteTables:
     def _make_table_mock(self, index=0, caption_text="Table", rows=None, rows_data=None):
@@ -621,7 +690,9 @@ class TestWriteTables:
         hlines = [l for l in lines if r"\hline" in l]
         assert len(hlines) >= 2
 
+
 # ── _write_equations ───────────────────────────────────────────────────
+
 
 class TestWriteEquations:
     def test_no_equations(self):
@@ -633,11 +704,13 @@ class TestWriteEquations:
 
     def test_equation_with_text(self):
         from app.models import Equation
+
         exporter = LaTeXExporter()
-        doc = _make_doc(equations=[
-            Equation(equation_id="eq1", index=1, block_id="b1",
-                     text="x = y"),
-        ])
+        doc = _make_doc(
+            equations=[
+                Equation(equation_id="eq1", index=1, block_id="b1", text="x = y"),
+            ]
+        )
         lines = []
         exporter._write_equations(lines, doc)
         content = "\n".join(lines)
@@ -646,11 +719,13 @@ class TestWriteEquations:
 
     def test_equation_with_align(self):
         from app.models import Equation
+
         exporter = LaTeXExporter()
-        doc = _make_doc(equations=[
-            Equation(equation_id="eq2", index=2, block_id="b2",
-                     text=r"\begin{align}x &= y\end{align}"),
-        ])
+        doc = _make_doc(
+            equations=[
+                Equation(equation_id="eq2", index=2, block_id="b2", text=r"\begin{align}x &= y\end{align}"),
+            ]
+        )
         lines = []
         exporter._write_equations(lines, doc)
         content = "\n".join(lines)
@@ -659,25 +734,33 @@ class TestWriteEquations:
 
     def test_equation_empty_text(self):
         from app.models import Equation
+
         exporter = LaTeXExporter()
-        doc = _make_doc(equations=[
-            Equation(equation_id="eq3", index=3, block_id="b3", text=""),
-        ])
+        doc = _make_doc(
+            equations=[
+                Equation(equation_id="eq3", index=3, block_id="b3", text=""),
+            ]
+        )
         lines = []
         exporter._write_equations(lines, doc)
         assert len(lines) == 0
 
     def test_equation_whitespace_only(self):
         from app.models import Equation
+
         exporter = LaTeXExporter()
-        doc = _make_doc(equations=[
-            Equation(equation_id="eq4", index=4, block_id="b4", text="   "),
-        ])
+        doc = _make_doc(
+            equations=[
+                Equation(equation_id="eq4", index=4, block_id="b4", text="   "),
+            ]
+        )
         lines = []
         exporter._write_equations(lines, doc)
         assert len(lines) == 0
 
+
 # ── _write_bibtex ──────────────────────────────────────────────────────
+
 
 class TestWriteBibtex:
     def test_no_references(self):
@@ -689,13 +772,30 @@ class TestWriteBibtex:
 
     def test_with_metadata_article(self):
         from app.models import Reference
+
         exporter = LaTeXExporter()
-        doc = _make_doc(references=[
-            Reference(reference_id="r1", index=1, block_id="r1", block_index=1,
-                      citation_key="ref1", year="2024", authors=["A"],
-                      title="Paper", raw_text="[1] Ref",
-                      metadata={"title": "Paper", "authors": "A Author", "year": "2024", "journal": "J", "doi": "10.1234/test"}),
-        ])
+        doc = _make_doc(
+            references=[
+                Reference(
+                    reference_id="r1",
+                    index=1,
+                    block_id="r1",
+                    block_index=1,
+                    citation_key="ref1",
+                    year="2024",
+                    authors=["A"],
+                    title="Paper",
+                    raw_text="[1] Ref",
+                    metadata={
+                        "title": "Paper",
+                        "authors": "A Author",
+                        "year": "2024",
+                        "journal": "J",
+                        "doi": "10.1234/test",
+                    },
+                ),
+            ]
+        )
         bib = MagicMock(spec=Path)
         exporter._write_bibtex(doc, bib)
         bib.write_text.assert_called_once()
@@ -707,12 +807,24 @@ class TestWriteBibtex:
 
     def test_without_metadata_misc(self):
         from app.models import Reference
+
         exporter = LaTeXExporter()
-        doc = _make_doc(references=[
-            Reference(reference_id="r1", index=1, block_id="r1", block_index=1,
-                      citation_key="ref1", year="2024", authors=["A"],
-                      title="Paper", raw_text="[1] Some text", metadata={}),
-        ])
+        doc = _make_doc(
+            references=[
+                Reference(
+                    reference_id="r1",
+                    index=1,
+                    block_id="r1",
+                    block_index=1,
+                    citation_key="ref1",
+                    year="2024",
+                    authors=["A"],
+                    title="Paper",
+                    raw_text="[1] Some text",
+                    metadata={},
+                ),
+            ]
+        )
         bib = MagicMock(spec=Path)
         exporter._write_bibtex(doc, bib)
         bib.write_text.assert_called_once()
@@ -721,27 +833,60 @@ class TestWriteBibtex:
 
     def test_no_formatted_or_raw_text(self):
         from app.models import Reference
+
         exporter = LaTeXExporter()
-        doc = _make_doc(references=[
-            Reference(reference_id="r1", index=1, block_id="r1", block_index=1,
-                      citation_key="ref1", year="2024", authors=["A"],
-                      title="", raw_text="", metadata={}),
-        ])
+        doc = _make_doc(
+            references=[
+                Reference(
+                    reference_id="r1",
+                    index=1,
+                    block_id="r1",
+                    block_index=1,
+                    citation_key="ref1",
+                    year="2024",
+                    authors=["A"],
+                    title="",
+                    raw_text="",
+                    metadata={},
+                ),
+            ]
+        )
         bib = MagicMock(spec=Path)
         exporter._write_bibtex(doc, bib)
         bib.write_text.assert_not_called()
 
     def test_multiple_references(self):
         from app.models import Reference
+
         exporter = LaTeXExporter()
-        doc = _make_doc(references=[
-            Reference(reference_id="r1", index=1, block_id="r1", block_index=1,
-                      citation_key="r1", year="2024", authors=["A"],
-                      title="P1", raw_text="[1]", metadata={"title": "P1", "authors": "A"}),
-            Reference(reference_id="r2", index=2, block_id="r2", block_index=2,
-                      citation_key="r2", year="2024", authors=["B"],
-                      title="P2", raw_text="[2]", metadata={"title": "P2", "authors": "B"}),
-        ])
+        doc = _make_doc(
+            references=[
+                Reference(
+                    reference_id="r1",
+                    index=1,
+                    block_id="r1",
+                    block_index=1,
+                    citation_key="r1",
+                    year="2024",
+                    authors=["A"],
+                    title="P1",
+                    raw_text="[1]",
+                    metadata={"title": "P1", "authors": "A"},
+                ),
+                Reference(
+                    reference_id="r2",
+                    index=2,
+                    block_id="r2",
+                    block_index=2,
+                    citation_key="r2",
+                    year="2024",
+                    authors=["B"],
+                    title="P2",
+                    raw_text="[2]",
+                    metadata={"title": "P2", "authors": "B"},
+                ),
+            ]
+        )
         bib = MagicMock(spec=Path)
         exporter._write_bibtex(doc, bib)
         bib.write_text.assert_called_once()

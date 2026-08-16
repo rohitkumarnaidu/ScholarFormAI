@@ -1,8 +1,7 @@
 from unittest.mock import MagicMock, patch
 
 
-def _make_block(text="Some text", block_type="BODY", index=0,
-                block_id="b1", is_heading=False, section_name=None):
+def _make_block(text="Some text", block_type="BODY", index=0, block_id="b1", is_heading=False, section_name=None):
     block = MagicMock()
     block.text = text
     block.block_type = block_type
@@ -14,8 +13,7 @@ def _make_block(text="Some text", block_type="BODY", index=0,
     return block
 
 
-def _make_figure(figure_id="f1", export_path=None, caption_text="",
-                 block_index=0):
+def _make_figure(figure_id="f1", export_path=None, caption_text="", block_index=0):
     fig = MagicMock()
     fig.figure_id = figure_id
     fig.export_path = export_path
@@ -28,6 +26,7 @@ def _make_figure(figure_id="f1", export_path=None, caption_text="",
 class TestFindCaptionCandidates:
     def test_finds_caption(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         matcher = CaptionMatcher()
         blocks = [_make_block("Figure 1: Test", index=0)]
         candidates = matcher._find_caption_candidates(blocks)
@@ -35,6 +34,7 @@ class TestFindCaptionCandidates:
 
     def test_skips_headings(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         matcher = CaptionMatcher()
         blocks = [_make_block("Figure 1: Analysis", index=0, is_heading=True)]
         candidates = matcher._find_caption_candidates(blocks)
@@ -42,6 +42,7 @@ class TestFindCaptionCandidates:
 
     def test_skips_non_matching(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         matcher = CaptionMatcher()
         blocks = [_make_block("Just some text", index=0)]
         candidates = matcher._find_caption_candidates(blocks)
@@ -49,6 +50,7 @@ class TestFindCaptionCandidates:
 
     def test_matches_variations(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         matcher = CaptionMatcher()
         blocks = [
             _make_block("Fig. 1: Caption", index=0),
@@ -61,6 +63,7 @@ class TestFindCaptionCandidates:
 class TestMatchCandidates:
     def test_basic_match(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         matcher = CaptionMatcher()
         blocks = [
             _make_block("", index=0),  # figure placeholder
@@ -73,6 +76,7 @@ class TestMatchCandidates:
 
     def test_too_far_apart(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         matcher = CaptionMatcher(max_distance=1)
         blocks = [_make_block("", index=i) for i in range(5)]
         blocks.append(_make_block("Figure 1: Caption", index=5))
@@ -82,6 +86,7 @@ class TestMatchCandidates:
 
     def test_no_figures(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         matcher = CaptionMatcher()
         blocks = [_make_block("Figure 1: Cap", index=0)]
         matches = matcher._match_candidates(blocks, [], [0])
@@ -89,6 +94,7 @@ class TestMatchCandidates:
 
     def test_skip_already_assigned(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         matcher = CaptionMatcher()
         blocks = [
             _make_block("", index=0),
@@ -104,6 +110,7 @@ class TestMatchCandidates:
 
     def test_prefers_figure_above_caption(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         matcher = CaptionMatcher(max_distance=5)
         blocks = [
             _make_block("", index=0),
@@ -126,6 +133,7 @@ class FakeVisionClient:
 class TestProcess:
     def test_process_empty_document(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         doc = MagicMock()
         doc.blocks = []
         doc.figures = []
@@ -138,6 +146,7 @@ class TestProcess:
 
     def test_process_with_match(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         doc = MagicMock()
         doc.blocks = [
             _make_block("", index=0),
@@ -153,6 +162,7 @@ class TestProcess:
 
     def test_process_exception_handling(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         doc = MagicMock()
         doc.blocks = [_make_block("Figure 1: Cap", index=0)]
         doc.figures = [_make_figure(figure_id="f1")]
@@ -165,6 +175,7 @@ class TestProcess:
 
     def test_vision_enhancement(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         doc = MagicMock()
         doc.blocks = [
             _make_block("", index=0),
@@ -182,6 +193,7 @@ class TestProcess:
 
     def test_vision_generates_caption_when_missing(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         doc = MagicMock()
         doc.blocks = [
             _make_block("", index=0),
@@ -199,6 +211,7 @@ class TestProcess:
 
     def test_vision_skipped_when_no_path(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         doc = MagicMock()
         doc.blocks = [
             _make_block("", index=0),
@@ -217,6 +230,7 @@ class TestProcess:
 class TestLinkFigures:
     def test_convenience_function(self):
         from app.pipeline.figures.caption_matcher import link_figures
+
         doc = MagicMock()
         doc.blocks = []
         doc.figures = []

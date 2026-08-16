@@ -9,6 +9,7 @@ Usage:
     python scripts/verify_migration.py          # Check if migration is needed
     python scripts/verify_migration.py --diff    # Show column differences
 """
+
 import argparse
 import os
 import sys

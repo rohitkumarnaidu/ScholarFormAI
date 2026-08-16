@@ -22,6 +22,7 @@ from app.pipeline.intelligence.reasoning_engine import (
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def engine():
     with patch("app.pipeline.intelligence.reasoning_engine.requests.get") as mock_get:
@@ -42,6 +43,7 @@ def sample_blocks():
 # ---------------------------------------------------------------------------
 # _check_ollama_health — all branches
 # ---------------------------------------------------------------------------
+
 
 class TestCheckOllamaHealth:
     """Cover every branch in _check_ollama_health."""
@@ -70,9 +72,7 @@ class TestCheckOllamaHealth:
         """Default fallback_model found in model list."""
         with patch("app.pipeline.intelligence.reasoning_engine.requests.get") as mock_get:
             mock_get.return_value.status_code = 200
-            mock_get.return_value.json.return_value = {
-                "models": [{"name": "deepseek-r1:8b"}]
-            }
+            mock_get.return_value.json.return_value = {"models": [{"name": "deepseek-r1:8b"}]}
             with patch("app.pipeline.intelligence.reasoning_engine.ChatOllama"):
                 with patch.dict("os.environ", {"PYTEST_CURRENT_TEST": "1"}, clear=False):
                     engine = ReasoningEngine()
@@ -82,9 +82,7 @@ class TestCheckOllamaHealth:
         """DeepSeek model auto-selected when default not found."""
         with patch("app.pipeline.intelligence.reasoning_engine.requests.get") as mock_get:
             mock_get.return_value.status_code = 200
-            mock_get.return_value.json.return_value = {
-                "models": [{"name": "deepseek-r1:7b"}]
-            }
+            mock_get.return_value.json.return_value = {"models": [{"name": "deepseek-r1:7b"}]}
             with patch("app.pipeline.intelligence.reasoning_engine.ChatOllama"):
                 with patch.dict("os.environ", {"PYTEST_CURRENT_TEST": "1"}, clear=False):
                     engine = ReasoningEngine(model="mistral:7b")
@@ -95,9 +93,7 @@ class TestCheckOllamaHealth:
         """No deepseek but other models available -> use first."""
         with patch("app.pipeline.intelligence.reasoning_engine.requests.get") as mock_get:
             mock_get.return_value.status_code = 200
-            mock_get.return_value.json.return_value = {
-                "models": [{"name": "llama3:8b"}]
-            }
+            mock_get.return_value.json.return_value = {"models": [{"name": "llama3:8b"}]}
             with patch("app.pipeline.intelligence.reasoning_engine.ChatOllama"):
                 with patch.dict("os.environ", {"PYTEST_CURRENT_TEST": "1"}, clear=False):
                     engine = ReasoningEngine(model="mistral:7b")
@@ -156,6 +152,7 @@ class TestCheckOllamaHealth:
 # _call_nvidia_litellm — full coverage
 # ---------------------------------------------------------------------------
 
+
 class TestCallNvidiaLiteLLM:
     """Cover _call_nvidia_litellm method."""
 
@@ -178,8 +175,7 @@ class TestCallNvidiaLiteLLM:
         with (
             patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", True),
             patch("app.pipeline.intelligence.reasoning_engine.LITELLM_AVAILABLE", True),
-            patch("app.pipeline.intelligence.reasoning_engine._llm_generate",
-                  return_value="") as mock_gen,
+            patch("app.pipeline.intelligence.reasoning_engine._llm_generate", return_value="") as mock_gen,
         ):
             result = engine._call_nvidia_litellm([{"role": "user", "content": "hi"}])
             assert result is None
@@ -191,8 +187,10 @@ class TestCallNvidiaLiteLLM:
         with (
             patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", True),
             patch("app.pipeline.intelligence.reasoning_engine.LITELLM_AVAILABLE", True),
-            patch("app.pipeline.intelligence.reasoning_engine._llm_generate",
-                  return_value='{"blocks": [{"block_id": "b1"}]}'),
+            patch(
+                "app.pipeline.intelligence.reasoning_engine._llm_generate",
+                return_value='{"blocks": [{"block_id": "b1"}]}',
+            ),
         ):
             result = engine._call_nvidia_litellm([{"role": "user", "content": "hi"}])
             assert result == {"blocks": [{"block_id": "b1"}]}
@@ -203,8 +201,10 @@ class TestCallNvidiaLiteLLM:
         with (
             patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", True),
             patch("app.pipeline.intelligence.reasoning_engine.LITELLM_AVAILABLE", True),
-            patch("app.pipeline.intelligence.reasoning_engine._llm_generate",
-                  return_value='text before {"blocks": []} text after'),
+            patch(
+                "app.pipeline.intelligence.reasoning_engine._llm_generate",
+                return_value='text before {"blocks": []} text after',
+            ),
         ):
             result = engine._call_nvidia_litellm([{"role": "user", "content": "hi"}])
             assert result == {"blocks": []}
@@ -215,8 +215,7 @@ class TestCallNvidiaLiteLLM:
         with (
             patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", True),
             patch("app.pipeline.intelligence.reasoning_engine.LITELLM_AVAILABLE", True),
-            patch("app.pipeline.intelligence.reasoning_engine._llm_generate",
-                  return_value="plain text"),
+            patch("app.pipeline.intelligence.reasoning_engine._llm_generate", return_value="plain text"),
         ):
             result = engine._call_nvidia_litellm([{"role": "user", "content": "hi"}])
             assert result is None
@@ -225,6 +224,7 @@ class TestCallNvidiaLiteLLM:
 # ---------------------------------------------------------------------------
 # generate_instruction_set — metrics recording coverage
 # ---------------------------------------------------------------------------
+
 
 class TestGenerateInstructionSetMetrics:
     """Cover the METRICS_AVAILABLE recording paths."""
@@ -241,8 +241,7 @@ class TestGenerateInstructionSetMetrics:
             patch.object(engine, "_generate_with_nvidia", return_value=normalized),
             patch.object(engine, "_validate_json_schema", return_value=True),
             patch("app.pipeline.intelligence.reasoning_engine.METRICS_AVAILABLE", True),
-            patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics",
-                  return_value=mock_metrics),
+            patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics", return_value=mock_metrics),
         ):
             result = engine.generate_instruction_set(sample_blocks, "rules")
             assert result["fallback"] is False
@@ -262,11 +261,11 @@ class TestGenerateInstructionSetMetrics:
             patch.object(engine, "_normalize_instruction_payload", return_value={"blocks": []}),
             patch.object(engine, "_validate_json_schema", return_value=False),
             patch.object(engine, "_is_cancelled", return_value=False),
-            patch.object(engine, "_rule_based_fallback",
-                         return_value={"blocks": [], "fallback": True, "confidence": 0.5}),
+            patch.object(
+                engine, "_rule_based_fallback", return_value={"blocks": [], "fallback": True, "confidence": 0.5}
+            ),
             patch("app.pipeline.intelligence.reasoning_engine.METRICS_AVAILABLE", True),
-            patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics",
-                  return_value=mock_metrics),
+            patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics", return_value=mock_metrics),
         ):
             engine.generate_instruction_set(sample_blocks, "rules")
             assert mock_metrics.record_call.call_count >= 1
@@ -281,11 +280,11 @@ class TestGenerateInstructionSetMetrics:
         with (
             patch.object(engine, "_generate_with_nvidia", side_effect=RuntimeError("failed")),
             patch.object(engine, "_is_cancelled", return_value=False),
-            patch.object(engine, "_rule_based_fallback",
-                         return_value={"blocks": [], "fallback": True, "confidence": 0.5}),
+            patch.object(
+                engine, "_rule_based_fallback", return_value={"blocks": [], "fallback": True, "confidence": 0.5}
+            ),
             patch("app.pipeline.intelligence.reasoning_engine.METRICS_AVAILABLE", True),
-            patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics",
-                  return_value=mock_metrics),
+            patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics", return_value=mock_metrics),
         ):
             engine.generate_instruction_set(sample_blocks, "rules")
             assert mock_metrics.record_call.call_count >= 1
@@ -303,8 +302,7 @@ class TestGenerateInstructionSetMetrics:
             patch.object(engine, "_generate_with_deepseek", return_value=normalized),
             patch.object(engine, "_validate_json_schema", return_value=True),
             patch("app.pipeline.intelligence.reasoning_engine.METRICS_AVAILABLE", True),
-            patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics",
-                  return_value=mock_metrics),
+            patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics", return_value=mock_metrics),
         ):
             result = engine.generate_instruction_set(sample_blocks, "rules")
             assert result["fallback"] is False
@@ -320,13 +318,16 @@ class TestGenerateInstructionSetMetrics:
         engine.llm = MagicMock()
         mock_metrics = MagicMock()
 
-        fallback_result = {"blocks": [{"block_id": "b0", "semantic_type": "BODY_TEXT", "confidence": 0.5}], "fallback": True, "confidence": 0.5}
+        fallback_result = {
+            "blocks": [{"block_id": "b0", "semantic_type": "BODY_TEXT", "confidence": 0.5}],
+            "fallback": True,
+            "confidence": 0.5,
+        }
 
         with (
             patch.object(engine, "_generate_with_deepseek", return_value=fallback_result),
             patch("app.pipeline.intelligence.reasoning_engine.METRICS_AVAILABLE", True),
-            patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics",
-                  return_value=mock_metrics),
+            patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics", return_value=mock_metrics),
         ):
             result = engine.generate_instruction_set(sample_blocks, "rules")
             assert result["model"] == "rule_based"
@@ -343,8 +344,7 @@ class TestGenerateInstructionSetMetrics:
         with (
             patch.object(engine, "_generate_with_deepseek", return_value=None),
             patch("app.pipeline.intelligence.reasoning_engine.METRICS_AVAILABLE", True),
-            patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics",
-                  return_value=mock_metrics),
+            patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics", return_value=mock_metrics),
             patch("app.pipeline.intelligence.reasoning_engine.logger"),
         ):
             result = engine.generate_instruction_set(sample_blocks, "rules")
@@ -362,8 +362,7 @@ class TestGenerateInstructionSetMetrics:
         with (
             patch.object(engine, "_generate_with_deepseek", side_effect=RuntimeError("fail")),
             patch("app.pipeline.intelligence.reasoning_engine.METRICS_AVAILABLE", True),
-            patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics",
-                  return_value=mock_metrics),
+            patch("app.pipeline.intelligence.reasoning_engine.get_model_metrics", return_value=mock_metrics),
             patch("app.pipeline.intelligence.reasoning_engine.logger"),
         ):
             result = engine.generate_instruction_set(sample_blocks, "rules")
@@ -376,6 +375,7 @@ class TestGenerateInstructionSetMetrics:
 # _generate_with_nvidia — extras and edge cases
 # ---------------------------------------------------------------------------
 
+
 class TestGenerateWithNvidiaGaps:
     """Cover remaining branches in _generate_with_nvidia."""
 
@@ -386,13 +386,22 @@ class TestGenerateWithNvidiaGaps:
     def test_metadata_hints_code_block(self, engine):
         """Code block metadata generates CODE hint."""
         self._setup_nvidia(engine)
-        engine.nvidia_client.chat.return_value = '{"blocks": [{"block_id": "b1", "semantic_type": "TITLE", "confidence": 0.9}]}'
+        engine.nvidia_client.chat.return_value = (
+            '{"blocks": [{"block_id": "b1", "semantic_type": "TITLE", "confidence": 0.9}]}'
+        )
         with patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", False):
             result = engine._generate_with_nvidia(
-                [{"block_id": "b1", "text": "Code", "metadata": {
-                    "is_code_block": True,
-                    "code_language": "python",
-                }}], ""
+                [
+                    {
+                        "block_id": "b1",
+                        "text": "Code",
+                        "metadata": {
+                            "is_code_block": True,
+                            "code_language": "python",
+                        },
+                    }
+                ],
+                "",
             )
         assert result is not None
         assert len(result["blocks"]) == 1
@@ -400,7 +409,9 @@ class TestGenerateWithNvidiaGaps:
     def test_metadata_hints_table(self, engine):
         """Table metadata generates TABLE hint."""
         self._setup_nvidia(engine)
-        engine.nvidia_client.chat.return_value = '{"blocks": [{"block_id": "b1", "semantic_type": "TABLE", "confidence": 0.9}]}'
+        engine.nvidia_client.chat.return_value = (
+            '{"blocks": [{"block_id": "b1", "semantic_type": "TABLE", "confidence": 0.9}]}'
+        )
         with patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", False):
             result = engine._generate_with_nvidia(
                 [{"block_id": "b1", "text": "Table data", "metadata": {"is_table": True}}], ""
@@ -410,7 +421,9 @@ class TestGenerateWithNvidiaGaps:
     def test_metadata_hints_list_item(self, engine):
         """List item metadata generates LIST_ITEM hint."""
         self._setup_nvidia(engine)
-        engine.nvidia_client.chat.return_value = '{"blocks": [{"block_id": "b1", "semantic_type": "LIST_ITEM", "confidence": 0.9}]}'
+        engine.nvidia_client.chat.return_value = (
+            '{"blocks": [{"block_id": "b1", "semantic_type": "LIST_ITEM", "confidence": 0.9}]}'
+        )
         with patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", False):
             result = engine._generate_with_nvidia(
                 [{"block_id": "b1", "text": "Item", "metadata": {"is_list_item": True}}], ""
@@ -420,7 +433,9 @@ class TestGenerateWithNvidiaGaps:
     def test_metadata_hints_font_size(self, engine):
         """Font size metadata generates Size hint."""
         self._setup_nvidia(engine)
-        engine.nvidia_client.chat.return_value = '{"blocks": [{"block_id": "b1", "semantic_type": "BODY", "confidence": 0.9}]}'
+        engine.nvidia_client.chat.return_value = (
+            '{"blocks": [{"block_id": "b1", "semantic_type": "BODY", "confidence": 0.9}]}'
+        )
         with patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", False):
             result = engine._generate_with_nvidia(
                 [{"block_id": "b1", "text": "Text", "metadata": {"font_size": 14.0}}], ""
@@ -430,7 +445,9 @@ class TestGenerateWithNvidiaGaps:
     def test_metadata_hints_bold_style(self, engine):
         """Bold style generates BOLD hint."""
         self._setup_nvidia(engine)
-        engine.nvidia_client.chat.return_value = '{"blocks": [{"block_id": "b1", "semantic_type": "BODY", "confidence": 0.9}]}'
+        engine.nvidia_client.chat.return_value = (
+            '{"blocks": [{"block_id": "b1", "semantic_type": "BODY", "confidence": 0.9}]}'
+        )
         with patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", False):
             result = engine._generate_with_nvidia(
                 [{"block_id": "b1", "text": "Bold", "metadata": {}, "style": {"bold": True}}], ""
@@ -441,16 +458,17 @@ class TestGenerateWithNvidiaGaps:
         """_llm_generate fails, nvidia_client fallback succeeds."""
         engine.nvidia_available = True
         engine.nvidia_client = MagicMock()
-        engine.nvidia_client.chat.return_value = '{"blocks": [{"block_id": "b1", "semantic_type": "TITLE", "confidence": 0.9}]}'
+        engine.nvidia_client.chat.return_value = (
+            '{"blocks": [{"block_id": "b1", "semantic_type": "TITLE", "confidence": 0.9}]}'
+        )
         with (
             patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", True),
             patch("app.pipeline.intelligence.reasoning_engine.LITELLM_AVAILABLE", True),
-            patch("app.pipeline.intelligence.reasoning_engine._llm_generate",
-                  side_effect=RuntimeError("llm service down")),
+            patch(
+                "app.pipeline.intelligence.reasoning_engine._llm_generate", side_effect=RuntimeError("llm service down")
+            ),
         ):
-            result = engine._generate_with_nvidia(
-                [{"block_id": "b1", "text": "Title", "metadata": {}}], ""
-            )
+            result = engine._generate_with_nvidia([{"block_id": "b1", "text": "Title", "metadata": {}}], "")
         assert result is not None
         assert len(result["blocks"]) == 1
 
@@ -460,9 +478,7 @@ class TestGenerateWithNvidiaGaps:
         engine.nvidia_client = MagicMock()
         engine.nvidia_client.chat.return_value = '["not", "a", "dict"]'
         with patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", False):
-            result = engine._generate_with_nvidia(
-                [{"block_id": "b1", "text": "T", "metadata": {}}], ""
-            )
+            result = engine._generate_with_nvidia([{"block_id": "b1", "text": "T", "metadata": {}}], "")
         assert result is None
 
     def test_parsed_no_blocks_returns_none(self, engine):
@@ -471,9 +487,7 @@ class TestGenerateWithNvidiaGaps:
         engine.nvidia_client = MagicMock()
         engine.nvidia_client.chat.return_value = '{"other": "data"}'
         with patch("app.pipeline.intelligence.reasoning_engine._LLM_SERVICE_AVAILABLE", False):
-            result = engine._generate_with_nvidia(
-                [{"block_id": "b1", "text": "T", "metadata": {}}], ""
-            )
+            result = engine._generate_with_nvidia([{"block_id": "b1", "text": "T", "metadata": {}}], "")
         assert result is None
 
 
@@ -489,7 +503,9 @@ class TestGenerateWithDeepSeekGaps:
             patch("time.sleep"),
         ):
             result = engine._generate_with_deepseek(
-                [{"block_id": "b1", "text": "Title"}], "", max_retries=0,
+                [{"block_id": "b1", "text": "Title"}],
+                "",
+                max_retries=0,
             )
         assert result["fallback"] is True
 
@@ -502,13 +518,16 @@ class TestGenerateWithDeepSeekGaps:
         engine.llm = mock_llm
         with patch("app.pipeline.intelligence.reasoning_engine.logger"):
             result = engine._generate_with_deepseek(
-                [{"block_id": "b1", "text": "Title"}], "", max_retries=0,
+                [{"block_id": "b1", "text": "Title"}],
+                "",
+                max_retries=0,
             )
         assert result["fallback"] is True
 
     def test_cancelled_during_retry_sleep(self, engine):
         """Cancelled during retry sleep -> rule fallback."""
         import threading
+
         event = threading.Event()
 
         mock_llm = MagicMock()
@@ -522,7 +541,9 @@ class TestGenerateWithDeepSeekGaps:
             patch("time.sleep", side_effect=set_event),
         ):
             result = engine._generate_with_deepseek(
-                [{"block_id": "b1", "text": "Title"}], "", max_retries=1,
+                [{"block_id": "b1", "text": "Title"}],
+                "",
+                max_retries=1,
                 cancellation_event=event,
             )
         assert result["fallback"] is True
@@ -531,6 +552,7 @@ class TestGenerateWithDeepSeekGaps:
 # ---------------------------------------------------------------------------
 # __init__ — remaining variations
 # ---------------------------------------------------------------------------
+
 
 class TestInitGaps:
     """Cover remaining __init__ edge cases."""
@@ -556,8 +578,7 @@ class TestInitGaps:
         with patch("app.pipeline.intelligence.reasoning_engine.requests.get") as mock_get:
             mock_get.return_value.status_code = 200
             mock_get.return_value.json.return_value = {"models": [{"name": "deepseek-r1:8b"}]}
-            with patch("app.pipeline.intelligence.reasoning_engine.ChatOllama",
-                       side_effect=Exception("init failed")):
+            with patch("app.pipeline.intelligence.reasoning_engine.ChatOllama", side_effect=Exception("init failed")):
                 with patch.dict("os.environ", {"PYTEST_CURRENT_TEST": "1"}, clear=False):
                     engine = ReasoningEngine()
                     assert engine.ollama_available is False
@@ -583,8 +604,7 @@ class TestInitGaps:
                         ms.ENABLE_NVIDIA_REASONER = True
                         ms.NVIDIA_API_KEY = "test"
                         ms.OLLAMA_BASE_URL = "http://localhost:11434"
-                        with patch("app.services.nvidia_client.get_nvidia_client",
-                                   return_value=None):
+                        with patch("app.services.nvidia_client.get_nvidia_client", return_value=None):
                             engine = ReasoningEngine()
                             assert engine.nvidia_available is False
 
@@ -599,8 +619,9 @@ class TestInitGaps:
                         ms.ENABLE_NVIDIA_REASONER = True
                         ms.NVIDIA_API_KEY = "test"
                         ms.OLLAMA_BASE_URL = "http://localhost:11434"
-                        with patch("app.services.nvidia_client.get_nvidia_client",
-                                   side_effect=Exception("import error")):
+                        with patch(
+                            "app.services.nvidia_client.get_nvidia_client", side_effect=Exception("import error")
+                        ):
                             engine = ReasoningEngine()
                             assert engine.nvidia_available is False
 
@@ -608,6 +629,7 @@ class TestInitGaps:
 # ---------------------------------------------------------------------------
 # _instruction_set_circuit_fallback
 # ---------------------------------------------------------------------------
+
 
 class TestInstructionSetCircuitFallback:
     """Circuit breaker fallback function."""
@@ -623,6 +645,7 @@ class TestInstructionSetCircuitFallback:
 # get_reasoning_engine (singleton)
 # ---------------------------------------------------------------------------
 
+
 class TestGetReasoningEngine:
     def test_returns_engine(self):
         with patch("app.pipeline.intelligence.reasoning_engine.requests.get") as mock_get:
@@ -634,6 +657,7 @@ class TestGetReasoningEngine:
 
     def test_singleton(self):
         import app.pipeline.intelligence.reasoning_engine as re_mod
+
         re_mod._reasoning_engine = None
         with patch("app.pipeline.intelligence.reasoning_engine.requests.get") as mock_get:
             mock_get.return_value.status_code = 200
@@ -647,6 +671,7 @@ class TestGetReasoningEngine:
 # ---------------------------------------------------------------------------
 # Normalize confidence edge
 # ---------------------------------------------------------------------------
+
 
 class TestNormalizeConfidenceGaps:
     """Remaining normalize_confidence edge cases."""

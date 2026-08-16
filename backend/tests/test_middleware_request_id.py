@@ -6,20 +6,24 @@ import pytest
 class TestShouldLogIdempotency:
     def test_upload_path(self):
         from app.middleware.request_id import _should_log_idempotency
+
         assert _should_log_idempotency("/upload") is True
 
     def test_generator_session(self):
         from app.middleware.request_id import _should_log_idempotency
+
         assert _should_log_idempotency("/generator/sessions") is True
 
     def test_other_path(self):
         from app.middleware.request_id import _should_log_idempotency
+
         assert _should_log_idempotency("/api/v1/documents") is False
 
 
 class TestGetRequestId:
     def test_existing_state_id(self):
         from app.middleware.request_id import get_request_id
+
         request = MagicMock()
         request.state.request_id = "existing-id"
         result = get_request_id(request)
@@ -27,6 +31,7 @@ class TestGetRequestId:
 
     def test_generates_new_id(self):
         from app.middleware.request_id import get_request_id
+
         request = MagicMock()
         request.state.request_id = None
         result = get_request_id(request)
@@ -38,6 +43,7 @@ class TestRequestIdMiddleware:
     @pytest.mark.asyncio
     async def test_non_http_scope_passes(self):
         from app.middleware.request_id import RequestIdMiddleware
+
         app = AsyncMock()
         mw = RequestIdMiddleware(app)
         scope = {"type": "websocket"}
@@ -49,6 +55,7 @@ class TestRequestIdMiddleware:
     @pytest.mark.asyncio
     async def test_http_sets_request_id(self):
         from app.middleware.request_id import RequestIdMiddleware
+
         app = AsyncMock()
         mw = RequestIdMiddleware(app)
         scope = {
@@ -65,6 +72,7 @@ class TestRequestIdMiddleware:
     @pytest.mark.asyncio
     async def test_idempotency_key_logged_for_post(self):
         from app.middleware.request_id import RequestIdMiddleware
+
         app = AsyncMock()
         mw = RequestIdMiddleware(app)
         headers = [(b"x-request-id", b"req-123"), (b"idempotency-key", b"idem-456")]
@@ -84,6 +92,7 @@ class TestRequestIdMiddleware:
     @pytest.mark.asyncio
     async def test_response_gets_x_request_id(self):
         from app.middleware.request_id import RequestIdMiddleware
+
         sent_messages = []
 
         async def send_wrapper(msg):
@@ -107,6 +116,7 @@ class TestRequestIdMiddleware:
     async def test_context_reset_after_request(self):
         from app.middleware.request_id import RequestIdMiddleware
         from app.utils.logging_context import get_request_id_context
+
         app = AsyncMock()
         mw = RequestIdMiddleware(app)
         scope = {

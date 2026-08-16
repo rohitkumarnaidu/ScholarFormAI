@@ -11,7 +11,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.schemas.models import FormatRequest, Manuscript
-from app.api.routes import format_manuscript
+from app.routers.v1.format import format_manuscript
 from app.main import _load_optional_routers, app
 from app.models import DocumentMetadata
 from app.models import PipelineDocument as Document
@@ -107,6 +107,7 @@ def test_format_temp_file_cleanup_on_success():
 
     captured_paths = []
     from app.services.formatter import ManuscriptFormatter
+
     orig_format = ManuscriptFormatter.format
 
     def mock_format(self, manuscript, style, output_path, options=None):
@@ -117,7 +118,9 @@ def test_format_temp_file_cleanup_on_success():
         asyncio.run(format_manuscript(req))
         assert len(captured_paths) == 1
         output_path = captured_paths[0]
-        assert not os.path.exists(output_path), f"Temp output file {output_path} was not cleaned up after format execution!"
+        assert not os.path.exists(output_path), (
+            f"Temp output file {output_path} was not cleaned up after format execution!"
+        )
 
 
 def test_format_temp_file_cleanup_on_exception():
@@ -169,5 +172,6 @@ def test_template_renderer_temp_file_cleanup():
         renderer.render(doc, "non_existent_style")
         assert len(created_temp_templates) == 1
         temp_tpl_path = created_temp_templates[0]
-        assert not temp_tpl_path.exists(), f"Temporary fallback DOCX template {temp_tpl_path} was not deleted after render!"
-
+        assert not temp_tpl_path.exists(), (
+            f"Temporary fallback DOCX template {temp_tpl_path} was not deleted after render!"
+        )

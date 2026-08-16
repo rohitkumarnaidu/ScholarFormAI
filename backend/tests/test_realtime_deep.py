@@ -14,15 +14,18 @@ pytestmark = pytest.mark.asyncio
 # Realtime Events — fill remaining branches
 # ═══════════════════════════════════════════════════════════════════
 
+
 class TestMakeEventEdgeCases:
     def test_no_kwargs_returns_minimal(self):
         from app.realtime.events import make_event
+
         result = make_event("test")
         assert result["event_type"] == "test"
         assert result["payload"] == {}
 
     def test_kwargs_merged_into_event(self):
         from app.realtime.events import make_event
+
         result = make_event("progress", job_id="j1", stage="parse", progress=50)
         assert result["job_id"] == "j1"
         assert result["stage"] == "parse"
@@ -33,6 +36,7 @@ class TestMakeEventEdgeCases:
 # RedisPubSub — additional coverage
 # ═══════════════════════════════════════════════════════════════════
 
+
 class TestRedisPubSubAdditional:
     @pytest.fixture
     def pubsub(self):
@@ -40,6 +44,7 @@ class TestRedisPubSubAdditional:
             mock_s.REDIS_URL = "redis://localhost:6379"
             mock_s.REDIS_ENABLED = False
             from app.realtime.pubsub import RedisPubSub
+
             ps = RedisPubSub()
             ps._redis_warning_logged = False
             ps._force_fallback = False
@@ -269,6 +274,7 @@ class TestRedisPubSubDisconnected:
             mock_s.REDIS_URL = "redis://localhost:6379"
             mock_s.REDIS_ENABLED = True
             from app.realtime.pubsub import RedisPubSub
+
             ps = RedisPubSub()
             ps._redis_warning_logged = False
             ps._force_fallback = False

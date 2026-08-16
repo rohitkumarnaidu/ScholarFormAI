@@ -19,7 +19,7 @@ from app.pipeline.services.docling_client import (
 
 class TestBoundingBox:
     """Test BoundingBox class."""
-    
+
     def test_initialization(self):
         bbox = BoundingBox(x0=10, y0=20, x1=100, y1=80, page=0)
         assert bbox.x0 == 10
@@ -27,20 +27,20 @@ class TestBoundingBox:
         assert bbox.x1 == 100
         assert bbox.y1 == 80
         assert bbox.page == 0
-    
+
     def test_width_height(self):
         bbox = BoundingBox(x0=10, y0=20, x1=110, y1=120)
         assert bbox.width == 100
         assert bbox.height == 100
-    
+
     def test_center_y(self):
         bbox = BoundingBox(x0=0, y0=100, x1=100, y1=200)
         assert bbox.center_y == 150
-    
+
     def test_to_dict(self):
         bbox = BoundingBox(x0=10, y0=20, x1=110, y1=120, page=1)
         bbox_dict = bbox.to_dict()
-        
+
         assert bbox_dict["x0"] == 10
         assert bbox_dict["y0"] == 20
         assert bbox_dict["x1"] == 110
@@ -52,7 +52,7 @@ class TestBoundingBox:
 
 class TestLayoutElement:
     """Test LayoutElement class."""
-    
+
     def test_initialization(self):
         bbox = BoundingBox(x0=10, y0=20, x1=100, y1=80)
         element = LayoutElement(
@@ -64,14 +64,14 @@ class TestLayoutElement:
             is_italic=False,
             confidence=0.95,
         )
-        
+
         assert element.text == "Sample Text"
         assert element.element_type == "paragraph"
         assert element.font_size == 12.0
         assert element.is_bold is True
         assert element.is_italic is False
         assert element.confidence == 0.95
-    
+
     def test_to_dict(self):
         bbox = BoundingBox(x0=10, y0=20, x1=100, y1=80)
         element = LayoutElement(
@@ -80,7 +80,7 @@ class TestLayoutElement:
             element_type="title",
             font_size=18.0,
         )
-        
+
         elem_dict = element.to_dict()
         assert elem_dict["text"] == "Title"
         assert elem_dict["type"] == "title"
@@ -90,33 +90,33 @@ class TestLayoutElement:
 
 class TestDoclingClient:
     """Test DoclingClient class."""
-    
+
     def test_initialization(self):
         client = DoclingClient()
         assert client is not None
-    
+
     def test_is_available(self):
         client = DoclingClient()
         # Availability depends on whether docling is installed
         assert isinstance(client.is_available(), bool)
-    
+
     @pytest.mark.skipif(not DOCLING_AVAILABLE, reason="Docling not installed")
     def test_analyze_layout_with_docling(self):
         """Test layout analysis when Docling is available."""
         client = DoclingClient()
-        
+
         # This test requires a real PDF file
         # For now, we'll test the structure
         if client.is_available():
             # Would need a sample PDF for full test
             pass
-    
+
     def test_analyze_layout_without_docling(self):
         """Test layout analysis fallback when Docling unavailable."""
-        with patch('app.pipeline.services.docling_client.DOCLING_AVAILABLE', False):
+        with patch("app.pipeline.services.docling_client.DOCLING_AVAILABLE", False):
             client = DoclingClient()
             result = client.analyze_layout("dummy.pdf")
-            
+
             # Should return empty layout
             assert result["elements"] == []
             assert result["headers"] == []
@@ -124,19 +124,19 @@ class TestDoclingClient:
             assert result["tables"] == []
             assert result["figures"] == []
             assert result["confidence"] == 0.0
-    
+
     def test_analyze_layout_file_not_found(self):
         """Test handling of missing PDF file."""
         client = DoclingClient()
         result = client.analyze_layout("/nonexistent/file.pdf")
-        
+
         # Should return empty layout on error
         assert result["confidence"] == 0.0
-    
+
     def test_detect_headers_footers(self):
         """Test header/footer detection logic."""
         client = DoclingClient()
-        
+
         # Create mock elements at different positions
         elements = [
             # Header (top 10%)
@@ -158,18 +158,18 @@ class TestDoclingClient:
                 element_type="paragraph",
             ),
         ]
-        
+
         headers, footers = client._detect_headers_footers(elements)
-        
+
         assert len(headers) == 1
         assert headers[0].text == "Header Text"
         assert len(footers) == 1
         assert footers[0].text == "Footer Text"
-    
+
     def test_calculate_confidence(self):
         """Test confidence calculation."""
         client = DoclingClient()
-        
+
         elements = [
             LayoutElement(
                 text="Text 1",
@@ -184,20 +184,20 @@ class TestDoclingClient:
                 confidence=0.8,
             ),
         ]
-        
+
         confidence = client._calculate_confidence(elements)
         assert abs(confidence - 0.85) < 0.001  # Use tolerance for floating point
-    
+
     def test_calculate_confidence_empty(self):
         """Test confidence calculation with no elements."""
         client = DoclingClient()
         confidence = client._calculate_confidence([])
         assert confidence == 0.0
-    
+
     def test_find_title_with_logo_tolerance(self):
         """Test title detection with logo at top."""
         client = DoclingClient()
-        
+
         elements = [
             # Logo (ignored - above threshold)
             LayoutElement(
@@ -221,17 +221,17 @@ class TestDoclingClient:
                 font_size=14.0,
             ),
         ]
-        
+
         title = client.find_title_with_logo_tolerance(elements, logo_y_threshold=150.0)
-        
+
         assert title is not None
         assert title.text == "Research Paper Title"
         assert title.font_size == 18.0
-    
+
     def test_find_title_no_elements_below_threshold(self):
         """Test title detection when all elements are above threshold."""
         client = DoclingClient()
-        
+
         elements = [
             LayoutElement(
                 text="Logo",
@@ -240,15 +240,15 @@ class TestDoclingClient:
                 font_size=24.0,
             ),
         ]
-        
+
         title = client.find_title_with_logo_tolerance(elements, logo_y_threshold=150.0)
         assert title is None
-    
+
     def test_empty_layout(self):
         """Test empty layout structure."""
         client = DoclingClient()
         empty = client._empty_layout()
-        
+
         assert empty["elements"] == []
         assert empty["headers"] == []
         assert empty["footers"] == []
@@ -260,15 +260,16 @@ class TestDoclingClient:
 @pytest.mark.integration
 class TestDoclingIntegration:
     """Integration tests requiring Docling library."""
-    
+
     def test_docling_import(self):
         """Test that Docling can be imported."""
         try:
             from docling.document_converter import DocumentConverter
+
             assert DocumentConverter is not None
         except ImportError:
             assert DOCLING_AVAILABLE is False
-    
+
     def test_client_initialization_with_docling(self):
         """Test client initializes properly with Docling."""
         client = DoclingClient()

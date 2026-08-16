@@ -21,6 +21,7 @@ from app.pipeline.export.exporter import Exporter
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_doc(**overrides):
     """Build a minimal PipelineDocument mock with all attributes the exporter touches."""
     from app.models import Block, BlockType, PipelineDocument
@@ -33,7 +34,9 @@ def _make_doc(**overrides):
             [
                 Block(block_id="b1", index=1, block_type=BlockType.TITLE, text="Paper Title", section_name="abstract"),
                 Block(block_id="b2", index=2, block_type=BlockType.BODY, text="Body content.", section_name="body"),
-                Block(block_id="b3", index=3, block_type=BlockType.HEADING_1, text="Introduction", section_name="intro"),
+                Block(
+                    block_id="b3", index=3, block_type=BlockType.HEADING_1, text="Introduction", section_name="intro"
+                ),
             ],
         ),
         metadata=DocumentMetadata(
@@ -61,6 +64,7 @@ def _make_doc(**overrides):
     doc.processing_history = overrides.get("processing_history", [])
     return doc
 
+
 @pytest.fixture
 def exporter():
     with (
@@ -69,13 +73,16 @@ def exporter():
     ):
         return Exporter()
 
+
 @pytest.fixture
 def doc():
     return _make_doc()
 
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # __init__
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestInit:
     def test_creates_sub_exporters(self):
@@ -87,9 +94,11 @@ class TestInit:
             assert isinstance(e.pdf_exporter, MagicMock)
             assert isinstance(e.latex_exporter, MagicMock)
 
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # process()
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestProcess:
     def test_docx_export_called_when_format_includes_docx(self, exporter, doc):
@@ -213,9 +222,11 @@ class TestProcess:
         mock_pdf.assert_not_called()
         mock_jats.assert_not_called()
 
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # export()  — save word doc to disk
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestExport:
     def test_saves_word_doc(self, exporter):
@@ -230,9 +241,11 @@ class TestExport:
         result = exporter.export(None, "/tmp/out/test.docx")
         assert result is None
 
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # export_json()
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestExportJson:
     def test_writes_json_with_payload(self, exporter, doc):
@@ -252,9 +265,11 @@ class TestExportJson:
             result = exporter.export_json(doc, "/tmp/out/doc.json")
         assert result is None
 
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # export_markdown()
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestExportMarkdown:
     def test_writes_markdown(self, exporter, doc):
@@ -271,9 +286,11 @@ class TestExportMarkdown:
             result = exporter.export_markdown(doc, "/tmp/out/doc.md")
         assert result is None
 
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # export_jats()
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestExportJats:
     def test_writes_xml(self, exporter, doc):
@@ -305,9 +322,11 @@ class TestExportJats:
             result = exporter.export_jats(doc, "/tmp/out/doc.xml")
         assert result is None
 
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # export_html()
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestExportHtml:
     def test_writes_html_document(self, exporter, doc):
@@ -316,7 +335,9 @@ class TestExportHtml:
 
         def fake_open(path, mode="r", **kw):
             m = MagicMock()
-            m.__enter__.return_value.write.side_effect = lambda data: written_data.update({path: written_data.get(path, "") + data}) or len(data)
+            m.__enter__.return_value.write.side_effect = lambda data: (
+                written_data.update({path: written_data.get(path, "") + data}) or len(data)
+            )
             m.__enter__.return_value.read.return_value = ""
             return m
 
@@ -349,9 +370,11 @@ class TestExportHtml:
             result = exporter.export_html(doc, "/tmp/out/doc.html")
         assert result is None
 
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # export_latex()
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestExportLatex:
     def test_returns_none_when_no_output_path(self, exporter, doc):
@@ -390,9 +413,11 @@ class TestExportLatex:
         result = exporter.export_latex(doc, "/tmp/out/doc.tex")
         assert result is None
 
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # _get_export_formats()
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestGetExportFormats:
     def test_default_formats(self, exporter, doc):
@@ -432,17 +457,32 @@ class TestGetExportFormats:
         result = exporter._get_export_formats(doc)
         assert result == ["docx", "json"]
 
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # _build_export_payload()
 # ═══════════════════════════════════════════════════════════════════════════════
 
+
 class TestBuildExportPayload:
     def test_includes_all_keys(self, exporter, doc):
         payload = exporter._build_export_payload(doc)
-        keys = {"document_id", "template", "metadata", "blocks", "references",
-                "figures", "tables", "equations", "processing_history",
-                "original_filename", "source_path", "output_path",
-                "stats", "validation", "exported_at"}
+        keys = {
+            "document_id",
+            "template",
+            "metadata",
+            "blocks",
+            "references",
+            "figures",
+            "tables",
+            "equations",
+            "processing_history",
+            "original_filename",
+            "source_path",
+            "output_path",
+            "stats",
+            "validation",
+            "exported_at",
+        }
         assert keys.issubset(payload.keys())
 
     def test_template_name_none_when_no_template(self, exporter, doc):
@@ -474,9 +514,11 @@ class TestBuildExportPayload:
         assert payload["equations"] == []
         assert payload["processing_history"] == []
 
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # _build_markdown()
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestBuildMarkdown:
     def test_title_from_metadata(self, exporter, doc):
@@ -557,6 +599,7 @@ class TestBuildMarkdown:
 
     def test_skips_reference_blocks(self, exporter, doc):
         from app.models import Block, BlockType
+
         doc.blocks = [
             Block(block_id="r1", index=10, block_type=BlockType.REFERENCE_ENTRY, text="[1] Ref text"),
         ]
@@ -565,6 +608,7 @@ class TestBuildMarkdown:
 
     def test_skips_empty_text_blocks(self, exporter, doc):
         from app.models import Block, BlockType
+
         doc.blocks = [
             Block(block_id="e1", index=5, block_type=BlockType.BODY, text=""),
         ]
@@ -574,7 +618,10 @@ class TestBuildMarkdown:
     def test_includes_references_section(self, exporter, doc):
         doc.references = [
             Reference(
-                reference_id="r1", block_id="r1", block_index=1, index=1,
+                reference_id="r1",
+                block_id="r1",
+                block_index=1,
+                index=1,
                 raw_text="[1] Author, J. (2024). A paper.",
                 formatted_text="[1] Author, J. (2024). A paper.",
                 citation_key="auth2024",
@@ -587,7 +634,10 @@ class TestBuildMarkdown:
     def test_references_use_formatted_text_fallback(self, exporter, doc):
         doc.references = [
             Reference(
-                reference_id="r1", block_id="r1", block_index=1, index=1,
+                reference_id="r1",
+                block_id="r1",
+                block_index=1,
+                index=1,
                 formatted_text=None,
                 raw_text="[1] Raw ref",
                 citation_key="raw2024",
@@ -599,7 +649,10 @@ class TestBuildMarkdown:
     def test_skips_empty_references(self, exporter, doc):
         doc.references = [
             Reference(
-                reference_id="r1", block_id="r1", block_index=1, index=1,
+                reference_id="r1",
+                block_id="r1",
+                block_index=1,
+                index=1,
                 formatted_text="",
                 raw_text="",
                 citation_key="empty",
@@ -613,9 +666,11 @@ class TestBuildMarkdown:
         md = exporter._build_markdown(doc)
         assert "## References" not in md
 
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # Integration: process() → full pipeline
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestProcessIntegration:
     def test_all_export_formats_triggered(self, exporter, doc):

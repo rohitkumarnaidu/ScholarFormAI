@@ -13,6 +13,7 @@ pytestmark = [pytest.mark.pipeline]
 class TestValidationResult:
     def test_validation_result_defaults(self):
         from app.pipeline.validation.validator_v3 import ValidationResult
+
         r = ValidationResult(is_valid=True)
         assert r.is_valid is True
         assert r.errors == []
@@ -24,6 +25,7 @@ class TestValidationResult:
 class TestDocumentValidator:
     def test_init(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         with patch("app.pipeline.validation.validator_v3.ContractLoader"):
             with patch("app.pipeline.validation.validator_v3.SectionOrderValidator"):
                 with patch("app.pipeline.validation.validator_v3.CrossReferenceEngine"):
@@ -36,16 +38,19 @@ class TestDocumentValidator:
 
     def test_as_bool_none(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         assert DocumentValidator._as_bool(None) is False
         assert DocumentValidator._as_bool(None, True) is True
 
     def test_as_bool_bool(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         assert DocumentValidator._as_bool(True) is True
         assert DocumentValidator._as_bool(False) is False
 
     def test_as_bool_number(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         assert DocumentValidator._as_bool(1) is True
         assert DocumentValidator._as_bool(0) is False
         assert DocumentValidator._as_bool(0.0) is False
@@ -53,6 +58,7 @@ class TestDocumentValidator:
 
     def test_as_bool_string_true(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         assert DocumentValidator._as_bool("true") is True
         assert DocumentValidator._as_bool("1") is True
         assert DocumentValidator._as_bool("yes") is True
@@ -60,6 +66,7 @@ class TestDocumentValidator:
 
     def test_as_bool_string_false(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         assert DocumentValidator._as_bool("false") is False
         assert DocumentValidator._as_bool("0") is False
         assert DocumentValidator._as_bool("no") is False
@@ -67,11 +74,13 @@ class TestDocumentValidator:
 
     def test_as_bool_unknown_string(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         assert DocumentValidator._as_bool("maybe") is False
         assert DocumentValidator._as_bool("maybe", True) is True
 
     def test_process(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         with patch.object(DocumentValidator, "validate"):
             with patch("app.pipeline.validation.validator_v3.ContractLoader"):
@@ -84,6 +93,7 @@ class TestDocumentValidator:
 
     def test_validate_success(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         doc.figures = []
         doc.references = []
@@ -109,6 +119,7 @@ class TestDocumentValidator:
 
     def test_validate_with_errors(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         doc.figures = []
         doc.references = []
@@ -134,6 +145,7 @@ class TestDocumentValidator:
 
     def test_validate_integrity_dangling(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         doc.figures = []
         doc.references = []
@@ -152,12 +164,15 @@ class TestDocumentValidator:
                                 with patch("app.pipeline.validation.validator_v3.CrossReferenceEngine"):
                                     with patch("app.pipeline.validation.validator_v3.CrossRefClient"):
                                         v = DocumentValidator()
-                                        v.integrity_engine.validate_integrity.return_value = ["Dangling reference to fig_1"]
+                                        v.integrity_engine.validate_integrity.return_value = [
+                                            "Dangling reference to fig_1"
+                                        ]
                                         result = v.validate(doc)
                                         assert "Dangling" in str(result.errors)
 
     def test_validate_fast_mode_skips_doi(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         doc.figures = []
         doc.references = [MagicMock()]
@@ -183,6 +198,7 @@ class TestDocumentValidator:
 
     def test_check_sections_error(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         doc.template.template_name = "IEEE"
         with patch("app.pipeline.validation.validator_v3.ContractLoader"):
@@ -197,6 +213,7 @@ class TestDocumentValidator:
 
     def test_check_sections_warning(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         doc.template.template_name = "IEEE"
         with patch("app.pipeline.validation.validator_v3.ContractLoader"):
@@ -211,6 +228,7 @@ class TestDocumentValidator:
 
     def test_check_sections_no_template(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         doc.template = None
         with patch("app.pipeline.validation.validator_v3.ContractLoader"):
@@ -224,6 +242,7 @@ class TestDocumentValidator:
 
     def test_check_sections_order_exception(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         doc.template.template_name = "IEEE"
         with patch("app.pipeline.validation.validator_v3.ContractLoader"):
@@ -238,6 +257,7 @@ class TestDocumentValidator:
 
     def test_check_figures_missing_caption(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         fig = MagicMock()
         fig.has_caption.return_value = False
@@ -254,6 +274,7 @@ class TestDocumentValidator:
 
     def test_check_references_empty_with_section(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         doc.references = []
         doc.get_section_names.return_value = ["references"]
@@ -267,6 +288,7 @@ class TestDocumentValidator:
 
     def test_check_references_empty_no_section(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         doc.references = []
         doc.get_section_names.return_value = []
@@ -280,6 +302,7 @@ class TestDocumentValidator:
 
     def test_check_references_missing_fields(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         ref = MagicMock()
         ref.year = None
@@ -299,6 +322,7 @@ class TestDocumentValidator:
 
     def test_check_tables_missing_caption(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         table = MagicMock()
         table.caption_text = None
@@ -313,6 +337,7 @@ class TestDocumentValidator:
 
     def test_check_reference_integrity_no_refs(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         doc.references = []
         with patch("app.pipeline.validation.validator_v3.ContractLoader"):
@@ -326,6 +351,7 @@ class TestDocumentValidator:
 
     def test_check_reference_integrity_with_doi(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         ref = MagicMock()
         ref.has_doi.return_value = True
@@ -348,6 +374,7 @@ class TestDocumentValidator:
 
     def test_check_reference_integrity_invalid_doi(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         ref = MagicMock()
         ref.has_doi.return_value = True
@@ -367,6 +394,7 @@ class TestDocumentValidator:
 
     def test_check_reference_integrity_low_confidence(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         ref = MagicMock()
         ref.has_doi.return_value = True
@@ -388,6 +416,7 @@ class TestDocumentValidator:
 
     def test_check_reference_integrity_validation_exception(self):
         from app.pipeline.validation.validator_v3 import DocumentValidator
+
         doc = MagicMock()
         ref = MagicMock()
         ref.has_doi.return_value = True
@@ -407,6 +436,7 @@ class TestDocumentValidator:
 
     def test_validate_document_convenience(self):
         from app.pipeline.validation.validator_v3 import validate_document
+
         doc = MagicMock()
         doc.figures = []
         doc.references = []
@@ -424,6 +454,7 @@ class TestDocumentValidator:
 
     def test_validate_document_crash_fallback(self):
         from app.pipeline.validation.validator_v3 import ValidationResult, validate_document
+
         doc = MagicMock()
         doc.figures = []
         doc.references = []
@@ -443,12 +474,14 @@ class TestDocumentValidator:
 class TestReviewManager:
     def test_init_defaults(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         rm = ReviewManager()
         assert rm.review_threshold == 0.70
         assert rm.critical_threshold == 0.45
 
     def test_init_invalid_thresholds(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         with pytest.raises(ValueError, match="critical_threshold"):
             ReviewManager(review_threshold=0.3, critical_threshold=0.5)
         with pytest.raises(ValueError, match="Thresholds must be between"):
@@ -460,70 +493,91 @@ class TestReviewManager:
         from app.models.block import Block, BlockType
         from app.models.pipeline_document import PipelineDocument
         from app.pipeline.validation.review_manager import ReviewManager
+
         doc = PipelineDocument(
             document_id="test",
-            blocks=[Block(block_id="b1", text="OK", index=0, block_type=BlockType.BODY, classification_confidence=0.95)]
+            blocks=[
+                Block(block_id="b1", text="OK", index=0, block_type=BlockType.BODY, classification_confidence=0.95)
+            ],
         )
         rm = ReviewManager()
         result = rm.evaluate(doc)
         from app.models.review import ReviewStatus
+
         assert result.review.status == ReviewStatus.OK
 
     def test_evaluate_review_threshold(self):
         from app.models.block import Block, BlockType
         from app.models.pipeline_document import PipelineDocument
         from app.pipeline.validation.review_manager import ReviewManager
+
         doc = PipelineDocument(
             document_id="test",
-            blocks=[Block(block_id="b1", text="Ambiguous", index=0, block_type=BlockType.BODY, classification_confidence=0.6)]
+            blocks=[
+                Block(
+                    block_id="b1", text="Ambiguous", index=0, block_type=BlockType.BODY, classification_confidence=0.6
+                )
+            ],
         )
         rm = ReviewManager()
         result = rm.evaluate(doc)
         from app.models.review import ReviewStatus
+
         assert result.review.status == ReviewStatus.REVIEW
 
     def test_evaluate_critical(self):
         from app.models.block import Block, BlockType
         from app.models.pipeline_document import PipelineDocument
         from app.pipeline.validation.review_manager import ReviewManager
+
         doc = PipelineDocument(
             document_id="test",
-            blocks=[Block(block_id="b1", text="Bad", index=0, block_type=BlockType.BODY, classification_confidence=0.3)]
+            blocks=[
+                Block(block_id="b1", text="Bad", index=0, block_type=BlockType.BODY, classification_confidence=0.3)
+            ],
         )
         rm = ReviewManager()
         result = rm.evaluate(doc)
         from app.models.review import ReviewStatus
+
         assert result.review.status == ReviewStatus.CRITICAL
 
     def test_evaluate_confidence_from_metadata(self):
         from app.models.block import Block, BlockType
         from app.models.pipeline_document import PipelineDocument
         from app.pipeline.validation.review_manager import ReviewManager
+
         block = Block(block_id="b1", text="Test", index=0, block_type=BlockType.BODY)
         block.metadata["classification_confidence"] = 0.3
         doc = PipelineDocument(document_id="test", blocks=[block])
         rm = ReviewManager()
         result = rm.evaluate(doc)
         from app.models.review import ReviewStatus
+
         assert result.review.status == ReviewStatus.CRITICAL
 
     def test_evaluate_confidence_from_nlp_metadata(self):
         from app.models.block import Block, BlockType
         from app.models.pipeline_document import PipelineDocument
         from app.pipeline.validation.review_manager import ReviewManager
+
         block = Block(block_id="b1", text="Test", index=0, block_type=BlockType.BODY)
         block.metadata["nlp_confidence"] = 0.5
         doc = PipelineDocument(document_id="test", blocks=[block])
         rm = ReviewManager()
         result = rm.evaluate(doc)
         from app.models.review import ReviewStatus
+
         assert result.review.status == ReviewStatus.REVIEW
 
     def test_evaluate_invalid_confidence(self):
         from app.models.block import Block, BlockType
         from app.models.pipeline_document import PipelineDocument
         from app.pipeline.validation.review_manager import ReviewManager
-        block = Block.model_construct(block_id="b1", text="Test", index=0, block_type=BlockType.BODY, classification_confidence="invalid")
+
+        block = Block.model_construct(
+            block_id="b1", text="Test", index=0, block_type=BlockType.BODY, classification_confidence="invalid"
+        )
         doc = PipelineDocument(document_id="test", blocks=[block])
         rm = ReviewManager()
         result = rm.evaluate(doc)
@@ -533,21 +587,29 @@ class TestReviewManager:
         from app.models.block import Block, BlockType
         from app.models.pipeline_document import PipelineDocument
         from app.pipeline.validation.review_manager import ReviewManager
+
         doc = PipelineDocument(
             document_id="test",
-            blocks=[Block(block_id="b1", text="Test", index=0, block_type=BlockType.BODY, classification_confidence=0.9)]
+            blocks=[
+                Block(block_id="b1", text="Test", index=0, block_type=BlockType.BODY, classification_confidence=0.9)
+            ],
         )
         doc.metadata.ai_hints["semantic_advice"] = {"confidence": 0.5}
         rm = ReviewManager()
         result = rm.evaluate(doc)
         from app.models.review import ReviewStatus
+
         assert result.review.status == ReviewStatus.REVIEW
 
     def test_evaluate_flags_limited_to_five(self):
         from app.models.block import Block, BlockType
         from app.models.pipeline_document import PipelineDocument
         from app.pipeline.validation.review_manager import ReviewManager
-        blocks = [Block(block_id=f"b{i}", text="Low", index=i, block_type=BlockType.BODY, classification_confidence=0.3) for i in range(10)]
+
+        blocks = [
+            Block(block_id=f"b{i}", text="Low", index=i, block_type=BlockType.BODY, classification_confidence=0.3)
+            for i in range(10)
+        ]
         doc = PipelineDocument(document_id="test", blocks=blocks)
         rm = ReviewManager()
         result = rm.evaluate(doc)

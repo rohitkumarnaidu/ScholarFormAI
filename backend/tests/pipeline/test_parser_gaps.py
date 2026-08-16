@@ -14,6 +14,7 @@ from app.pipeline.parsing.parser import DocxParser
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_run(
     text: str = "",
     bold: bool | None = False,
@@ -80,7 +81,11 @@ def _make_docx_mock(
     """Build a MagicMock that looks like a python-docx Document."""
     docx = MagicMock()
     docx.core_properties = MagicMock(
-        title=None, author=None, subject=None, keywords=None, created=None,
+        title=None,
+        author=None,
+        subject=None,
+        keywords=None,
+        created=None,
     )
     docx.element.body = body_elements if body_elements is not None else []
     docx.sections = sections if sections is not None else []
@@ -91,6 +96,7 @@ def _make_docx_mock(
 # ---------------------------------------------------------------------------
 # Parse() method – missing branches
 # ---------------------------------------------------------------------------
+
 
 class TestParseGaps:
     """Cover gaps in DocxParser.parse() and surrounding logic."""
@@ -105,7 +111,9 @@ class TestParseGaps:
             p = DocxParser()
 
             hf_block = Block(
-                block_id="hf_001", text="Header", index=0,
+                block_id="hf_001",
+                text="Header",
+                index=0,
                 block_type=BlockType.UNKNOWN,
             )
             with patch.object(p, "_extract_headers_and_footers", return_value=[hf_block]):
@@ -123,7 +131,9 @@ class TestParseGaps:
             p = DocxParser()
 
             note = Block(
-                block_id="fn_001", text="A footnote", index=0,
+                block_id="fn_001",
+                text="A footnote",
+                index=0,
                 block_type=BlockType.UNKNOWN,
             )
             note.metadata["is_footnote"] = True
@@ -167,8 +177,10 @@ class TestParseGaps:
             fake_table = MagicMock(spec=Table)
             fake_table.table_id = "tbl_000"
 
-            with patch("app.pipeline.parsing.parser.DocxTable") as mock_tbl_cls, \
-                 patch("app.pipeline.parsing.parser.TableExtractor") as mock_ext_cls:
+            with (
+                patch("app.pipeline.parsing.parser.DocxTable") as mock_tbl_cls,
+                patch("app.pipeline.parsing.parser.TableExtractor") as mock_ext_cls,
+            ):
                 mock_tbl = MagicMock()
                 mock_tbl_cls.return_value = mock_tbl
                 mock_extractor = MagicMock()
@@ -195,16 +207,20 @@ class TestParseGaps:
             p = DocxParser()
 
             fake_block = Block(
-                block_id="b001", text="With image", index=0,
+                block_id="b001",
+                text="With image",
+                index=0,
                 block_type=BlockType.UNKNOWN,
             )
             fake_figure = MagicMock(spec=Figure)
             fake_figure.metadata = {}
 
-            with patch("app.pipeline.parsing.parser.DocxParagraph") as mock_para_cls, \
-                 patch.object(p, "_extract_paragraph", return_value=fake_block), \
-                 patch.object(p, "_extract_inline_images", return_value=[fake_figure]), \
-                 patch.object(p, "_extract_equations", return_value=[]):
+            with (
+                patch("app.pipeline.parsing.parser.DocxParagraph") as mock_para_cls,
+                patch.object(p, "_extract_paragraph", return_value=fake_block),
+                patch.object(p, "_extract_inline_images", return_value=[fake_figure]),
+                patch.object(p, "_extract_equations", return_value=[]),
+            ):
                 mock_para_cls.return_value = MagicMock()
                 doc = p.parse(str(f), "doc1")
                 assert len(doc.figures) == 1
@@ -225,14 +241,18 @@ class TestParseGaps:
             fake_eqn = MagicMock(spec=Equation)
             fake_eqn.metadata = {}
             fake_block = Block(
-                block_id="b001", text="E=mc2", index=0,
+                block_id="b001",
+                text="E=mc2",
+                index=0,
                 block_type=BlockType.UNKNOWN,
             )
 
-            with patch("app.pipeline.parsing.parser.DocxParagraph"), \
-                 patch.object(p, "_extract_paragraph", return_value=fake_block), \
-                 patch.object(p, "_extract_inline_images", return_value=[]), \
-                 patch.object(p, "_extract_equations", return_value=[fake_eqn]):
+            with (
+                patch("app.pipeline.parsing.parser.DocxParagraph"),
+                patch.object(p, "_extract_paragraph", return_value=fake_block),
+                patch.object(p, "_extract_inline_images", return_value=[]),
+                patch.object(p, "_extract_equations", return_value=[fake_eqn]),
+            ):
                 doc = p.parse(str(f), "doc1")
                 assert len(doc.equations) == 1
                 assert fake_block.metadata.get("has_equation") is True
@@ -242,6 +262,7 @@ class TestParseGaps:
 # _extract_core_properties – line 339
 # ---------------------------------------------------------------------------
 
+
 class TestCorePropertiesGaps:
     """Cover the created-date branch."""
 
@@ -250,7 +271,10 @@ class TestCorePropertiesGaps:
         p = DocxParser()
         docx = MagicMock()
         docx.core_properties = MagicMock(
-            title="T", author="A", subject="S", keywords="kw1; kw2",
+            title="T",
+            author="A",
+            subject="S",
+            keywords="kw1; kw2",
             created=datetime(2024, 1, 15, tzinfo=UTC),
         )
         meta = p._extract_core_properties(docx)
@@ -262,6 +286,7 @@ class TestCorePropertiesGaps:
 # ---------------------------------------------------------------------------
 # _extract_footnotes_and_endnotes – lines 184-270
 # ---------------------------------------------------------------------------
+
 
 class TestFootnotesEndnotesGaps:
     """Cover footnote/endnote extraction with real content and edge-cases."""
@@ -372,6 +397,7 @@ class TestFootnotesEndnotesGaps:
 # _extract_headers_and_footers – lines 282-301
 # ---------------------------------------------------------------------------
 
+
 class TestHeaderFooterGaps:
     """Cover header/footer extraction with content."""
 
@@ -434,6 +460,7 @@ class TestHeaderFooterGaps:
 # _extract_paragraph – hyperlinks / footnote_refs / list_info gaps
 # ---------------------------------------------------------------------------
 
+
 class TestParagraphMetadataGaps:
     """Cover hyperlinks, footnote_refs, and list_info truthy branches."""
 
@@ -460,6 +487,7 @@ class TestParagraphMetadataGaps:
 # ---------------------------------------------------------------------------
 # _extract_hyperlinks – edge cases (lines 484-500)
 # ---------------------------------------------------------------------------
+
 
 class TestHyperlinksGaps:
     """Cover missing r_id, empty text, KeyError, and outer exception."""
@@ -552,6 +580,7 @@ class TestHyperlinksGaps:
 # _extract_note_references – lines 509-512
 # ---------------------------------------------------------------------------
 
+
 class TestNoteReferencesGaps:
     """Cover missing note_id and exception branches."""
 
@@ -578,12 +607,14 @@ class TestNoteReferencesGaps:
 # _get_list_info – lines 525-551
 # ---------------------------------------------------------------------------
 
+
 class TestListInfoGaps:
     """Cover missing ilvl, missing numId, style fallback, and exception."""
 
     def test_numpr_no_ilvl(self):
         """Line 528: numPr exists but ilvl missing -> default level 0."""
         from lxml import etree
+
         p = DocxParser()
         para = MagicMock()
         xml = '<w:pPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:numPr><w:numId w:val="7"/></w:numPr></w:pPr>'
@@ -599,6 +630,7 @@ class TestListInfoGaps:
     def test_numpr_with_numid(self):
         """Lines 531->534: numId is present -> list_id set."""
         from lxml import etree
+
         p = DocxParser()
         para = MagicMock()
         xml = '<w:pPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:numPr><w:ilvl w:val="2"/><w:numId w:val="5"/></w:numPr></w:pPr>'
@@ -613,6 +645,7 @@ class TestListInfoGaps:
     def test_style_fallback_no_number(self):
         """Lines 538->552: pStyle matches but no trailing number -> level 0."""
         from lxml import etree
+
         p = DocxParser()
         para = MagicMock()
         xml = '<w:pPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:pStyle w:val="ListBullet"/></w:pPr>'
@@ -627,6 +660,7 @@ class TestListInfoGaps:
     def test_style_fallback_with_number(self):
         """Lines 540->552: style name has trailing number -> level = number - 1."""
         from lxml import etree
+
         p = DocxParser()
         para = MagicMock()
         xml = '<w:pPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:pStyle w:val="ListNumber3"/></w:pPr>'
@@ -640,6 +674,7 @@ class TestListInfoGaps:
     def test_style_fallback_only_number_matches(self):
         """Lines 540->552: style name only matches on 'number' keyword."""
         from lxml import etree
+
         p = DocxParser()
         para = MagicMock()
         xml = '<w:pPr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:pStyle w:val="Numbered1"/></w:pPr>'
@@ -663,6 +698,7 @@ class TestListInfoGaps:
 # _extract_paragraph_style – lines 578-603
 # ---------------------------------------------------------------------------
 
+
 class TestParagraphStyleGaps:
     """Cover empty-run skip, None checks, and style fallback branches."""
 
@@ -672,8 +708,12 @@ class TestParagraphStyleGaps:
         para = _make_paragraph(text="real", style_name="Normal")
         empty_run = _make_run(text="   ", bold=None, italic=None, underline=None)
         content_run = _make_run(
-            text="real", bold=False, italic=False, underline=False,
-            font_name=None, font_size_pt=None,
+            text="real",
+            bold=False,
+            italic=False,
+            underline=False,
+            font_name=None,
+            font_size_pt=None,
         )
         para.runs = [empty_run, content_run]
 
@@ -722,8 +762,13 @@ class TestParagraphStyleGaps:
         """Line 597: no runs, style.font.italic is True."""
         p = DocxParser()
         para = _make_paragraph(
-            text="styled", style_name="Body", runs=[],
-            font_bold=False, font_italic=True, font_name="Arial", font_size_pt=12.0,
+            text="styled",
+            style_name="Body",
+            runs=[],
+            font_bold=False,
+            font_italic=True,
+            font_name="Arial",
+            font_size_pt=12.0,
         )
         block = p._extract_paragraph(para)
         assert block.style.italic is True
@@ -751,6 +796,7 @@ class TestParagraphStyleGaps:
 # _extract_inline_images – lines 629-658
 # ---------------------------------------------------------------------------
 
+
 class TestInlineImagesGaps:
     """Cover the inline image extraction loop body."""
 
@@ -764,7 +810,7 @@ class TestInlineImagesGaps:
         inline_shape = MagicMock()
         run._element.findall.side_effect = [
             [inline_shape],  # inline
-            [],              # anchor
+            [],  # anchor
         ]
         run.part = MagicMock()
         para.runs = [run]
@@ -814,6 +860,7 @@ class TestInlineImagesGaps:
 # ---------------------------------------------------------------------------
 # _extract_image_from_inline – lines 702-728
 # ---------------------------------------------------------------------------
+
 
 class TestImageFromInlineGaps:
     """Cover extent dimension edge-cases and exception handler."""
@@ -900,6 +947,7 @@ class TestImageFromInlineGaps:
 # _extract_table – lines 765-773
 # ---------------------------------------------------------------------------
 
+
 class TestTableGaps:
     """Cover the _extract_table method."""
 
@@ -922,12 +970,13 @@ class TestTableGaps:
             # Verify correct arguments passed to extract()
             call_args = mock_extractor.extract.call_args
             assert call_args[0][0] is table_mock  # docx_table
-            assert call_args[0][3] == 42          # block_index
+            assert call_args[0][3] == 42  # block_index
 
 
 # ---------------------------------------------------------------------------
 # _extract_equations – lines 789-804
 # ---------------------------------------------------------------------------
+
 
 class TestEquationExtractionGaps:
     """Cover oMathPara loop, inline skip, and math element extraction."""
@@ -947,9 +996,9 @@ class TestEquationExtractionGaps:
         # call 2: qn('m:oMath') -> [] (no inline)
         # call 3: any-check inside inline loop -> [] (none match)
         para._element.findall.side_effect = [
-            [om_para],   # oMathPara
-            [],           # oMath (inline)
-            [],           #  nested oMath inside oMathPara (inline skip check)
+            [om_para],  # oMathPara
+            [],  # oMath (inline)
+            [],  #  nested oMath inside oMathPara (inline skip check)
         ]
 
         fake_eqn = MagicMock(spec=Equation)
@@ -979,9 +1028,9 @@ class TestEquationExtractionGaps:
         # call 2: oMath -> [om_math] (one inline equation)
         # call 3: nested path -> [om_math] (om_math is in the list, so "any" is True -> continue)
         para._element.findall.side_effect = [
-            [],            # oMathPara (no block)
-            [om_math],     # oMath (inline found)
-            [om_math],     # nested: om IS b_om -> any -> True -> continue
+            [],  # oMathPara (no block)
+            [om_math],  # oMath (inline found)
+            [om_math],  # nested: om IS b_om -> any -> True -> continue
         ]
 
         equations = p._extract_equations(para)
@@ -996,9 +1045,9 @@ class TestEquationExtractionGaps:
         para._element = MagicMock()
 
         para._element.findall.side_effect = [
-            [],            # oMathPara -> no block
-            [om_math],     # oMath -> inline
-            [],            # nested -> not found -> any() is False -> proceed
+            [],  # oMathPara -> no block
+            [om_math],  # oMath -> inline
+            [],  # nested -> not found -> any() is False -> proceed
         ]
 
         fake_eqn = MagicMock(spec=Equation)
@@ -1012,6 +1061,7 @@ class TestEquationExtractionGaps:
 # ---------------------------------------------------------------------------
 # _extract_math_element – lines 810-834
 # ---------------------------------------------------------------------------
+
 
 class TestMathElementGaps:
     """Cover text extraction, fallback, and exception handling."""
@@ -1039,8 +1089,8 @@ class TestMathElementGaps:
 
         # First findall (m:t) returns empty; second (w:t) returns content
         om_element.findall.side_effect = [
-            [],                                      # m:t -> empty
-            [MagicMock(text="fallback eq")],          # w:t -> found
+            [],  # m:t -> empty
+            [MagicMock(text="fallback eq")],  # w:t -> found
         ]
 
         with patch("lxml.etree.tostring", return_value="<math>...</math>"):
@@ -1074,6 +1124,7 @@ class TestMathElementGaps:
 # ---------------------------------------------------------------------------
 # _extract_body_content – miscellaneous edge cases
 # ---------------------------------------------------------------------------
+
 
 class TestBodyContentGaps:
     """Cover edge cases in _extract_body_content."""

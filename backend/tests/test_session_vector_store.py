@@ -10,11 +10,13 @@ class TestDeterministicEmbeddingModel:
     @pytest.fixture
     def model(self):
         from app.services.session_vector_store import _DeterministicEmbeddingModel
+
         m = _DeterministicEmbeddingModel(dimension=64)
         return m
 
     def test_default_dimension(self):
         from app.services.session_vector_store import _DeterministicEmbeddingModel
+
         m = _DeterministicEmbeddingModel()
         assert m._dimension >= 64
 
@@ -64,6 +66,7 @@ class TestSessionVectorStore:
     def store(self):
         with patch("pathlib.Path.mkdir"), patch("app.services.session_vector_store.model_store"):
             from app.services.session_vector_store import SessionVectorStore
+
             s = SessionVectorStore(persist_directory="/tmp/test_store")
             s._chroma = None
             s._client = None
@@ -74,6 +77,7 @@ class TestSessionVectorStore:
         with patch("pathlib.Path.mkdir") as mock_mkdir:
             with patch("app.services.session_vector_store.model_store"):
                 from app.services.session_vector_store import SessionVectorStore
+
                 SessionVectorStore(persist_directory="/tmp/test_store")
             mock_mkdir.assert_called_once_with(parents=True, exist_ok=True)
 
@@ -83,6 +87,7 @@ class TestSessionVectorStore:
 
     def test_load_chroma_returns_none_on_import_error(self, store):
         import builtins
+
         original_import = builtins.__import__
 
         def fake_import(name, *args, **kwargs):
@@ -112,6 +117,7 @@ class TestSessionVectorStore:
 
     def test_get_embedding_model_deterministic_fallback(self, store):
         import builtins
+
         original_import = builtins.__import__
 
         def fake_import(name, *args, **kwargs):
@@ -124,6 +130,7 @@ class TestSessionVectorStore:
                 with patch("builtins.__import__", side_effect=fake_import):
                     model = store._get_embedding_model()
                 from app.services.session_vector_store import _DeterministicEmbeddingModel
+
                 assert isinstance(model, _DeterministicEmbeddingModel)
 
     def test_create_collection(self, store):
@@ -216,7 +223,9 @@ class TestSessionVectorStore:
             mock_redis.setex.assert_any_call("vector_session:session_123:ttl", 3600, "active")
 
     def test_persist_redis_ttl_exception_handled(self, store):
-        with patch("app.cache.redis_cache.RedisCache.client", new_callable=PropertyMock, side_effect=Exception("Redis error")):
+        with patch(
+            "app.cache.redis_cache.RedisCache.client", new_callable=PropertyMock, side_effect=Exception("Redis error")
+        ):
             store._persist_redis_ttl("s1", 3600)
 
     def test_delete_collection_cleans_redis_key(self, store):
@@ -256,7 +265,9 @@ class TestPurgeExpiredVectorSessionsTask:
 
         with patch.object(redis_cache, "_client", mock_redis), patch.object(redis_cache, "_initialized", True):
             with patch("app.services.session_vector_store.SessionVectorStore._load_chroma", return_value=MagicMock()):
-                with patch("app.services.session_vector_store.SessionVectorStore._get_client", return_value=mock_chroma_client):
+                with patch(
+                    "app.services.session_vector_store.SessionVectorStore._get_client", return_value=mock_chroma_client
+                ):
                     with patch("app.services.session_vector_store.SessionVectorStore.delete_collection") as mock_del:
                         from app.tasks.celery_tasks import purge_expired_vector_sessions
 
@@ -275,7 +286,9 @@ class TestPurgeExpiredVectorSessionsTask:
 
         with patch.object(redis_cache, "_client", mock_redis), patch.object(redis_cache, "_initialized", True):
             with patch("app.services.session_vector_store.SessionVectorStore._load_chroma", return_value=MagicMock()):
-                with patch("app.services.session_vector_store.SessionVectorStore._get_client", return_value=mock_chroma_client):
+                with patch(
+                    "app.services.session_vector_store.SessionVectorStore._get_client", return_value=mock_chroma_client
+                ):
                     with patch("app.services.session_vector_store.SessionVectorStore.delete_collection") as mock_del:
                         from app.tasks.celery_tasks import purge_expired_vector_sessions
 
@@ -283,4 +296,3 @@ class TestPurgeExpiredVectorSessionsTask:
                         assert res["status"] == "success"
                         assert res["purged_collections"] == 1
                         mock_del.assert_called_once_with("s1")
-

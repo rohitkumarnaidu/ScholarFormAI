@@ -215,15 +215,9 @@ class TestDoclingClientDetectHeadersFooters:
         page_height * 0.1  # y1 < 100
         page_height * 0.9  # y0 > 900
 
-        header_elem = LayoutElement(
-            text="Header", bbox=BoundingBox(0, 0, 500, 50), element_type="text"
-        )
-        body_elem = LayoutElement(
-            text="Body", bbox=BoundingBox(0, 200, 500, 300), element_type="text"
-        )
-        footer_elem = LayoutElement(
-            text="Footer", bbox=BoundingBox(0, 950, 500, 1000), element_type="text"
-        )
+        header_elem = LayoutElement(text="Header", bbox=BoundingBox(0, 0, 500, 50), element_type="text")
+        body_elem = LayoutElement(text="Body", bbox=BoundingBox(0, 200, 500, 300), element_type="text")
+        footer_elem = LayoutElement(text="Footer", bbox=BoundingBox(0, 950, 500, 1000), element_type="text")
 
         headers, footers = c._detect_headers_footers([header_elem, body_elem, footer_elem])
         assert len(headers) == 1

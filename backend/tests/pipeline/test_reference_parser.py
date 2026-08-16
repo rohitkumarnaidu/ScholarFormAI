@@ -13,6 +13,7 @@ def parser():
 
     return ReferenceParser()
 
+
 class TestReferenceParser:
     def test_parse_ieee_with_quotes(self, parser):
         text = '[1] J. Smith, "Deep Learning," MIT Press, 2016.'
@@ -64,11 +65,17 @@ class TestReferenceParser:
 
     def test_process_creates_references(self, parser):
         from app.models import Block, BlockType, PipelineDocument
+
         blocks = [
-            Block(block_id="b1", text="[1] Author, \"Title,\" Journal, 2020.",
-                  index=1, block_type=BlockType.REFERENCE_ENTRY),
-            Block(block_id="b2", text="[2] Author2, \"Title2,\" Journal2, 2021.",
-                  index=2, block_type=BlockType.REFERENCE_ENTRY),
+            Block(
+                block_id="b1", text='[1] Author, "Title," Journal, 2020.', index=1, block_type=BlockType.REFERENCE_ENTRY
+            ),
+            Block(
+                block_id="b2",
+                text='[2] Author2, "Title2," Journal2, 2021.',
+                index=2,
+                block_type=BlockType.REFERENCE_ENTRY,
+            ),
         ]
         doc = PipelineDocument(document_id="doc1", blocks=blocks)
         result = parser.process(doc)
@@ -76,6 +83,7 @@ class TestReferenceParser:
 
     def test_process_empty_blocks(self, parser):
         from app.models import PipelineDocument
+
         doc = PipelineDocument(document_id="doc1", blocks=[])
         result = parser.process(doc)
         assert len(result.references) == 0

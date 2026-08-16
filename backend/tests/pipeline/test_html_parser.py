@@ -17,11 +17,13 @@ class TestHtmlParserInit:
     def test_import_error_when_bs4_missing(self):
         with patch("app.pipeline.parsing.html_parser.BS4_AVAILABLE", False):
             from app.pipeline.parsing.html_parser import HtmlParser
+
             with pytest.raises(ImportError, match="BeautifulSoup4"):
                 HtmlParser()
 
     def test_init_success(self):
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         assert p.block_counter == 0
         assert p.figure_counter == 0
@@ -30,12 +32,14 @@ class TestHtmlParserInit:
 class TestHtmlParserSupportsFormat:
     def test_supports_html(self):
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         assert p.supports_format(".html")
         assert p.supports_format(".htm")
 
     def test_not_supports_other(self):
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         assert not p.supports_format(".pdf")
 
@@ -43,6 +47,7 @@ class TestHtmlParserSupportsFormat:
 class TestHtmlParserExtractMetadata:
     def test_extract_title(self):
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         soup = MagicMock()
         title_tag = MagicMock()
@@ -55,6 +60,7 @@ class TestHtmlParserExtractMetadata:
         from bs4 import BeautifulSoup
 
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         soup = BeautifulSoup('<html><head><meta name="author" content="John Doe"></head></html>', "html.parser")
         meta = p._extract_metadata(soup)
@@ -64,6 +70,7 @@ class TestHtmlParserExtractMetadata:
         from bs4 import BeautifulSoup
 
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         soup = BeautifulSoup('<html><head><meta name="description" content="An abstract"></head></html>', "html.parser")
         meta = p._extract_metadata(soup)
@@ -73,6 +80,7 @@ class TestHtmlParserExtractMetadata:
         from bs4 import BeautifulSoup
 
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         soup = BeautifulSoup('<html><head><meta name="keywords" content="kw1, kw2, kw3"></head></html>', "html.parser")
         meta = p._extract_metadata(soup)
@@ -84,6 +92,7 @@ class TestHtmlParserExtractContent:
         from bs4 import BeautifulSoup
 
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><h1>Title</h1><h2>Section</h2></body></html>", "html.parser")
         blocks, figures = p._extract_content(soup)
@@ -96,6 +105,7 @@ class TestHtmlParserExtractContent:
         from bs4 import BeautifulSoup
 
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><p>First paragraph.</p><p>Second paragraph.</p></body></html>", "html.parser")
         blocks, _ = p._extract_content(soup)
@@ -106,6 +116,7 @@ class TestHtmlParserExtractContent:
         from bs4 import BeautifulSoup
 
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><p><b>Bold text</b> normal</p></body></html>", "html.parser")
         blocks, _ = p._extract_content(soup)
@@ -115,6 +126,7 @@ class TestHtmlParserExtractContent:
         from bs4 import BeautifulSoup
 
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><p><i>Italic</i> text</p></body></html>", "html.parser")
         blocks, _ = p._extract_content(soup)
@@ -124,6 +136,7 @@ class TestHtmlParserExtractContent:
         from bs4 import BeautifulSoup
 
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><p>Visit <a href='https://x.com'>X</a></p></body></html>", "html.parser")
         blocks, _ = p._extract_content(soup)
@@ -133,6 +146,7 @@ class TestHtmlParserExtractContent:
         from bs4 import BeautifulSoup
 
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><ul><li>Item A</li><li>Item B</li></ul></body></html>", "html.parser")
         blocks, _ = p._extract_content(soup)
@@ -143,6 +157,7 @@ class TestHtmlParserExtractContent:
         from bs4 import BeautifulSoup
 
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><ol><li>First</li></ol></body></html>", "html.parser")
         blocks, _ = p._extract_content(soup)
@@ -152,8 +167,11 @@ class TestHtmlParserExtractContent:
         from bs4 import BeautifulSoup
 
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
-        soup = BeautifulSoup('<html><body><code class="language-python">print("hi")</code></body></html>', "html.parser")
+        soup = BeautifulSoup(
+            '<html><body><code class="language-python">print("hi")</code></body></html>', "html.parser"
+        )
         blocks, _ = p._extract_content(soup)
         codes = [b for b in blocks if b.metadata.get("is_code_block")]
         assert len(codes) >= 1
@@ -163,6 +181,7 @@ class TestHtmlParserExtractContent:
         from bs4 import BeautifulSoup
 
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><table><tr><td>A</td><td>B</td></tr></table></body></html>", "html.parser")
         blocks, _ = p._extract_content(soup)
@@ -173,6 +192,7 @@ class TestHtmlParserExtractContent:
         from bs4 import BeautifulSoup
 
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         soup = BeautifulSoup("<html><body><img src='img.png' alt='Photo'></body></html>", "html.parser")
         blocks, figures = p._extract_content(soup)
@@ -183,13 +203,17 @@ class TestHtmlParserExtractContent:
         from bs4 import BeautifulSoup
 
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
-        soup = BeautifulSoup("<html><body><script>alert('x')</script><p>Text</p><style>.c{}</style></body></html>", "html.parser")
+        soup = BeautifulSoup(
+            "<html><body><script>alert('x')</script><p>Text</p><style>.c{}</style></body></html>", "html.parser"
+        )
         blocks, _ = p._extract_content(soup)
         assert len(blocks) == 1
 
     def test_extraction_exception_handled(self, bs4_mocked):
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         soup = MagicMock()
         body = MagicMock()
@@ -202,6 +226,7 @@ class TestHtmlParserExtractContent:
 class TestHtmlParserParse:
     def test_parse_full(self, tmp_path):
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         f = tmp_path / "test.html"
         f.write_text("<html><body><h1>Title</h1><p>Body</p></body></html>")
@@ -211,6 +236,7 @@ class TestHtmlParserParse:
 
     def test_parse_file_not_found(self):
         from app.pipeline.parsing.html_parser import HtmlParser
+
         p = HtmlParser()
         with pytest.raises(FileNotFoundError):
             p.parse("/nonexistent.html", "doc1")

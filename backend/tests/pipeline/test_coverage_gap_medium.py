@@ -18,9 +18,9 @@ pytestmark = [pytest.mark.pipeline]
 # app/pipeline/parsing/parser.py
 # ════════════════════════════════════════════════════════════
 class TestDocxParserCoverageGaps:
-
     def test_extract_core_properties_keywords_semicolon(self):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         docx = MagicMock()
         docx.core_properties = MagicMock(
@@ -36,10 +36,13 @@ class TestDocxParserCoverageGaps:
 
     def test_extract_core_properties_empty_keywords_filtered(self):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         docx = MagicMock()
         docx.core_properties = MagicMock(
-            title=None, author=None, subject=None,
+            title=None,
+            author=None,
+            subject=None,
             keywords="kw1, , kw2",
             created=None,
         )
@@ -48,6 +51,7 @@ class TestDocxParserCoverageGaps:
 
     def test_extract_footnotes_exception_handler(self):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         docx = MagicMock()
         part = MagicMock()
@@ -59,6 +63,7 @@ class TestDocxParserCoverageGaps:
 
     def test_extract_endnotes_exception_handler(self):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         docx = MagicMock()
         part = MagicMock()
@@ -70,6 +75,7 @@ class TestDocxParserCoverageGaps:
 
     def test_extract_headers_and_footers_exception(self):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         docx = MagicMock()
         docx.sections = MagicMock()
@@ -79,6 +85,7 @@ class TestDocxParserCoverageGaps:
 
     def test_extract_hyperlinks_key_error_continue(self):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         para = MagicMock()
         hyperlink1 = MagicMock()
@@ -89,13 +96,17 @@ class TestDocxParserCoverageGaps:
         hyperlink2.findall.return_value = [MagicMock(findall=MagicMock(return_value=[MagicMock(text="link2")]))]
         para._element.findall.return_value = [hyperlink1, hyperlink2]
         para.part = MagicMock()
-        rels = {"rId_bad": MagicMock(target_ref="https://bad.com"), "rId_good": MagicMock(target_ref="https://good.com")}
+        rels = {
+            "rId_bad": MagicMock(target_ref="https://bad.com"),
+            "rId_good": MagicMock(target_ref="https://good.com"),
+        }
         para.part.rels = rels
         links = p._extract_hyperlinks(para)
         assert len(links) >= 0
 
     def test_extract_note_references_exception(self):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         para = MagicMock()
         para._element.findall.side_effect = Exception("find failed")
@@ -104,6 +115,7 @@ class TestDocxParserCoverageGaps:
 
     def test_get_list_info_exception(self):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         para = MagicMock()
         para._element.find.side_effect = Exception("find failed")
@@ -112,6 +124,7 @@ class TestDocxParserCoverageGaps:
 
     def test_extract_paragraph_style_attribute_error(self):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         para = MagicMock()
         para.text = "test"
@@ -127,6 +140,7 @@ class TestDocxParserCoverageGaps:
 
     def test_extract_inline_images_part_error(self):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         para = MagicMock()
         run = MagicMock()
@@ -134,8 +148,8 @@ class TestDocxParserCoverageGaps:
         inline_shape = MagicMock()
         inline_shape.find.return_value = None
         run._element.findall.side_effect = lambda x, ns=None: {
-            './/{http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing}inline': [inline_shape],
-            './/{http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing}anchor': [],
+            ".//{http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing}inline": [inline_shape],
+            ".//{http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing}anchor": [],
         }.get(x, [])
         para.runs = [run]
         figures = p._extract_inline_images(para)
@@ -145,6 +159,7 @@ class TestDocxParserCoverageGaps:
         from lxml import etree
 
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         para = MagicMock()
         ns = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
@@ -153,12 +168,14 @@ class TestDocxParserCoverageGaps:
             f'<m:oMathPara xmlns:m="{m_ns}" xmlns:w="{ns}"><m:oMath><m:t>a+b</m:t></m:oMath></m:oMathPara>'
         )
         om_inline = om_para[0]
+
         def findall_side_effect(tag):
             if tag.endswith("}oMathPara"):
                 return [om_para]
             if tag.endswith("}oMath"):
                 return [om_inline]
             return []
+
         para._element.findall = findall_side_effect
         equations = p._extract_equations(para)
         assert len(equations) >= 1
@@ -167,22 +184,20 @@ class TestDocxParserCoverageGaps:
         from lxml import etree
 
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         para = MagicMock()
         m_ns = "http://schemas.openxmlformats.org/officeDocument/2006/math"
         w_ns = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-        om = etree.fromstring(
-            f'<m:oMath xmlns:m="{m_ns}" xmlns:w="{w_ns}"><w:t>x=y</w:t></m:oMath>'
-        )
-        para._element.findall = lambda tag: (
-            [] if "oMathPara" in tag else [om]
-        )
+        om = etree.fromstring(f'<m:oMath xmlns:m="{m_ns}" xmlns:w="{w_ns}"><w:t>x=y</w:t></m:oMath>')
+        para._element.findall = lambda tag: [] if "oMathPara" in tag else [om]
         equations = p._extract_equations(para)
         assert len(equations) == 1
         assert equations[0].text == "x=y"
 
     def test_extract_paragraph_footnote_refs_metadata(self):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         para = MagicMock()
         para.text = "text"
@@ -205,10 +220,12 @@ class TestDocxParserCoverageGaps:
 
     def test_extract_body_content_with_inline_images_and_equations(self, tmp_path):
         from app.pipeline.parsing.parser import DocxParser
+
         f = tmp_path / "rich.docx"
         f.write_text("dummy")
         with patch("app.pipeline.parsing.parser.DocxDocument") as mock_docx_cls:
             from docx.oxml.text.paragraph import CT_P
+
             docx = MagicMock()
             docx.core_properties = MagicMock(title=None, author=None, subject=None, keywords=None, created=None)
             p_elem = MagicMock(spec=CT_P)
@@ -241,8 +258,9 @@ class TestDocxParserCoverageGaps:
             mock_docx_cls.return_value = docx
             with patch("app.pipeline.parsing.parser.DocxParagraph", return_value=para):
                 with patch.object(DocxParser, "_extract_inline_images", return_value=[MagicMock(figure_id="f1")]):
-                    with patch.object(DocxParser, "_extract_equations",
-                                      return_value=[MagicMock(equation_id="e1", block_id=None)]):
+                    with patch.object(
+                        DocxParser, "_extract_equations", return_value=[MagicMock(equation_id="e1", block_id=None)]
+                    ):
                         p = DocxParser()
                         blocks, figures, tables, equations = p._extract_body_content(docx)
                         assert len(blocks) >= 1
@@ -251,6 +269,7 @@ class TestDocxParserCoverageGaps:
 
     def test_parse_with_headers_footers_and_notes(self, tmp_path):
         from app.pipeline.parsing.parser import DocxParser
+
         f = tmp_path / "full.docx"
         f.write_text("dummy")
         with patch("app.pipeline.parsing.parser.DocxDocument") as mock_docx_cls:
@@ -260,14 +279,34 @@ class TestDocxParserCoverageGaps:
             docx.sections = []
             docx.part = MagicMock(footnotes_part=None, endnotes_part=None)
             mock_docx_cls.return_value = docx
-            with patch.object(DocxParser, "_extract_headers_and_footers",
-                              return_value=[MagicMock(block_id="hf1", text="Header", index=0,
-                                                      block_type=MagicMock(value="unknown"),
-                                                      style=MagicMock(), metadata={})]):
-                with patch.object(DocxParser, "_extract_footnotes_and_endnotes",
-                                  return_value=[MagicMock(block_id="n1", text="Note", index=1,
-                                                          block_type=MagicMock(value="unknown"),
-                                                          style=MagicMock(), metadata={})]):
+            with patch.object(
+                DocxParser,
+                "_extract_headers_and_footers",
+                return_value=[
+                    MagicMock(
+                        block_id="hf1",
+                        text="Header",
+                        index=0,
+                        block_type=MagicMock(value="unknown"),
+                        style=MagicMock(),
+                        metadata={},
+                    )
+                ],
+            ):
+                with patch.object(
+                    DocxParser,
+                    "_extract_footnotes_and_endnotes",
+                    return_value=[
+                        MagicMock(
+                            block_id="n1",
+                            text="Note",
+                            index=1,
+                            block_type=MagicMock(value="unknown"),
+                            style=MagicMock(),
+                            metadata={},
+                        )
+                    ],
+                ):
                     p = DocxParser()
                     doc = p.parse(str(f), "doc1")
                     assert doc is not None
@@ -277,7 +316,6 @@ class TestDocxParserCoverageGaps:
 # app/pipeline/parsing/pdf_parser.py
 # ════════════════════════════════════════════════════════════
 class TestPdfParserCoverageGaps:
-
     def test_calculate_font_stats_exception_continue(self):
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", True):
             with patch("app.pipeline.parsing.pdf_parser.fitz"):
@@ -382,7 +420,14 @@ class TestPdfParserCoverageGaps:
                 page.rect = MagicMock(x0=0, y0=0, x1=612, y1=792)
                 page.get_text.return_value = {
                     "blocks": [
-                        {"type": 1, "image": b"\x89PNG\x0d\x0a\x1a\x0a", "ext": "png", "width": 100, "height": 80, "bbox": [100, 100, 200, 180]},
+                        {
+                            "type": 1,
+                            "image": b"\x89PNG\x0d\x0a\x1a\x0a",
+                            "ext": "png",
+                            "width": 100,
+                            "height": 80,
+                            "bbox": [100, 100, 200, 180],
+                        },
                     ]
                 }
                 page.get_images.return_value = []
@@ -404,8 +449,22 @@ class TestPdfParserCoverageGaps:
                 page.rect = MagicMock(x0=0, y0=0, x1=612, y1=792)
                 page.get_text.return_value = {
                     "blocks": [
-                        {"type": 1, "image": b"\x89PNG\x0d\x0a\x1a\x0a", "ext": "png", "width": 100, "height": 80, "bbox": [100, 100, 200, 180]},
-                        {"type": 1, "image": b"\x89PNG\x0d\x0a\x1a\x0a", "ext": "png", "width": 50, "height": 50, "bbox": [300, 300, 350, 350]},
+                        {
+                            "type": 1,
+                            "image": b"\x89PNG\x0d\x0a\x1a\x0a",
+                            "ext": "png",
+                            "width": 100,
+                            "height": 80,
+                            "bbox": [100, 100, 200, 180],
+                        },
+                        {
+                            "type": 1,
+                            "image": b"\x89PNG\x0d\x0a\x1a\x0a",
+                            "ext": "png",
+                            "width": 50,
+                            "height": 50,
+                            "bbox": [300, 300, 350, 350],
+                        },
                     ]
                 }
                 page.get_images.return_value = []
@@ -628,7 +687,13 @@ class TestPdfParserCoverageGaps:
                 page.rect.__getitem__.side_effect = lambda i: [0, 0, 612, 792][i]
                 page.rect.__len__.return_value = 4
                 page.get_text.return_value = {
-                    "blocks": [{"type": 0, "bbox": [50, 50, 550, 80], "lines": [{"spans": [{"text": "Heading 1", "size": 20.0, "flags": 16}]}]}]
+                    "blocks": [
+                        {
+                            "type": 0,
+                            "bbox": [50, 50, 550, 80],
+                            "lines": [{"spans": [{"text": "Heading 1", "size": 20.0, "flags": 16}]}],
+                        }
+                    ]
                 }
                 page.get_images.return_value = []
                 page.find_tables.return_value = []
@@ -686,12 +751,12 @@ class TestPdfParserCoverageGaps:
 # app/pipeline/parsing/parser_factory.py
 # ════════════════════════════════════════════════════════════
 class TestParserFactoryCoverageGaps:
-
     def test_init_in_pytest_and_nougat_disabled(self):
         with patch("app.pipeline.parsing.parser_factory.settings") as mock_s:
             mock_s.ENABLE_NOUGAT_PARSER = True
             with patch.dict("os.environ", {"PYTEST_CURRENT_TEST": "x"}):
                 from app.pipeline.parsing.parser_factory import ParserFactory
+
                 with patch("app.pipeline.parsing.parser_factory.DocxParser") as mp:
                     mp.return_value = MagicMock()
                     with patch("app.pipeline.parsing.parser_factory.PdfParser") as mp2:
@@ -704,6 +769,7 @@ class TestParserFactoryCoverageGaps:
             mock_s.ENABLE_NOUGAT_PARSER = False
             with patch("app.pipeline.parsing.parser_factory.DocxParser", side_effect=Exception("fail")):
                 from app.pipeline.parsing.parser_factory import ParserFactory
+
                 f = ParserFactory()
                 names = {p.__class__.__name__ for p in f.parsers}
                 assert "DocxParser" not in names
@@ -715,6 +781,7 @@ class TestParserFactoryCoverageGaps:
                 md.return_value = MagicMock()
                 with patch("app.pipeline.parsing.parser_factory.PdfParser", side_effect=ImportError("no fitz")):
                     from app.pipeline.parsing.parser_factory import ParserFactory
+
                     ParserFactory()
 
     def test_init_pdf_parser_exception(self):
@@ -724,6 +791,7 @@ class TestParserFactoryCoverageGaps:
                 md.return_value = MagicMock()
                 with patch("app.pipeline.parsing.parser_factory.PdfParser", side_effect=Exception("weird")):
                     from app.pipeline.parsing.parser_factory import ParserFactory
+
                     ParserFactory()
 
     @pytest.mark.skip(reason="NougatParser removed from parsing package")
@@ -736,6 +804,7 @@ class TestParserFactoryCoverageGaps:
                     mp.return_value = MagicMock()
                     with patch("app.pipeline.parsing.nougat_parser.NougatParser", side_effect=Exception("fail")):
                         from app.pipeline.parsing.parser_factory import ParserFactory
+
                         ParserFactory()
 
     def test_init_txt_parser_exception(self):
@@ -747,6 +816,7 @@ class TestParserFactoryCoverageGaps:
                     mp.return_value = MagicMock()
                     with patch("app.pipeline.parsing.parser_factory.TxtParser", side_effect=Exception("fail")):
                         from app.pipeline.parsing.parser_factory import ParserFactory
+
                         ParserFactory()
 
     def test_init_html_parser_import_error(self):
@@ -760,6 +830,7 @@ class TestParserFactoryCoverageGaps:
                         mt.return_value = MagicMock()
                         with patch("app.pipeline.parsing.parser_factory.HtmlParser", side_effect=ImportError("no bs4")):
                             from app.pipeline.parsing.parser_factory import ParserFactory
+
                             ParserFactory()
 
     def test_init_html_parser_exception(self):
@@ -773,6 +844,7 @@ class TestParserFactoryCoverageGaps:
                         mt.return_value = MagicMock()
                         with patch("app.pipeline.parsing.parser_factory.HtmlParser", side_effect=Exception("fail")):
                             from app.pipeline.parsing.parser_factory import ParserFactory
+
                             ParserFactory()
 
     def test_init_markdown_parser_exception(self):
@@ -786,8 +858,11 @@ class TestParserFactoryCoverageGaps:
                         mt.return_value = MagicMock()
                         with patch("app.pipeline.parsing.parser_factory.HtmlParser") as mh:
                             mh.return_value = MagicMock()
-                            with patch("app.pipeline.parsing.parser_factory.MarkdownParser", side_effect=Exception("fail")):
+                            with patch(
+                                "app.pipeline.parsing.parser_factory.MarkdownParser", side_effect=Exception("fail")
+                            ):
                                 from app.pipeline.parsing.parser_factory import ParserFactory
+
                                 ParserFactory()
 
     def test_init_tex_parser_exception(self):
@@ -803,8 +878,11 @@ class TestParserFactoryCoverageGaps:
                             mh.return_value = MagicMock()
                             with patch("app.pipeline.parsing.parser_factory.MarkdownParser") as mm:
                                 mm.return_value = MagicMock()
-                                with patch("app.pipeline.parsing.parser_factory.TexParser", side_effect=Exception("fail")):
+                                with patch(
+                                    "app.pipeline.parsing.parser_factory.TexParser", side_effect=Exception("fail")
+                                ):
                                     from app.pipeline.parsing.parser_factory import ParserFactory
+
                                     ParserFactory()
 
     def test_get_parser_no_parsers_available(self):
@@ -814,9 +892,14 @@ class TestParserFactoryCoverageGaps:
                 with patch("app.pipeline.parsing.parser_factory.PdfParser", side_effect=Exception("fail")):
                     with patch("app.pipeline.parsing.parser_factory.TxtParser", side_effect=Exception("fail")):
                         with patch("app.pipeline.parsing.parser_factory.HtmlParser", side_effect=Exception("fail")):
-                            with patch("app.pipeline.parsing.parser_factory.MarkdownParser", side_effect=Exception("fail")):
-                                with patch("app.pipeline.parsing.parser_factory.TexParser", side_effect=Exception("fail")):
+                            with patch(
+                                "app.pipeline.parsing.parser_factory.MarkdownParser", side_effect=Exception("fail")
+                            ):
+                                with patch(
+                                    "app.pipeline.parsing.parser_factory.TexParser", side_effect=Exception("fail")
+                                ):
                                     from app.pipeline.parsing.parser_factory import ParserFactory
+
                                     f = ParserFactory()
                                     result = f.get_parser("/path/file.docx")
                                     assert result is None
@@ -826,16 +909,21 @@ class TestParserFactoryCoverageGaps:
 # app/pipeline/references/formatter_engine.py
 # ════════════════════════════════════════════════════════════
 class TestFormatterEngineCoverageGaps:
-
     def test_format_single_conference_paper(self):
         from app.models import Reference, ReferenceType
         from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
+
         cl = MagicMock()
         cl.load.return_value = {"references": {}}
         engine = ReferenceFormatterEngine(contract_loader=cl)
         ref = Reference(
-            reference_id="r1", citation_key="k1", raw_text="test", index=0,
-            authors=["Author1"], title="Conf Paper", year=2023,
+            reference_id="r1",
+            citation_key="k1",
+            raw_text="test",
+            index=0,
+            authors=["Author1"],
+            title="Conf Paper",
+            year=2023,
             reference_type=ReferenceType.CONFERENCE_PAPER,
         )
         rules = {
@@ -848,12 +936,18 @@ class TestFormatterEngineCoverageGaps:
     def test_format_single_conference_paper_no_conference_field(self):
         from app.models import Reference, ReferenceType
         from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
+
         cl = MagicMock()
         cl.load.return_value = {"references": {}}
         engine = ReferenceFormatterEngine(contract_loader=cl)
         ref = Reference(
-            reference_id="r1", citation_key="k1", raw_text="test", index=0,
-            authors=["Author1"], title="Conf Paper", year=2023,
+            reference_id="r1",
+            citation_key="k1",
+            raw_text="test",
+            index=0,
+            authors=["Author1"],
+            title="Conf Paper",
+            year=2023,
             reference_type=ReferenceType.CONFERENCE_PAPER,
         )
         ref.conference = None
@@ -868,6 +962,7 @@ class TestFormatterEngineCoverageGaps:
     def test_format_all_csl_with_style_path_fallback(self):
         from app.models import Reference, ReferenceType
         from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
+
         cl = MagicMock()
         cl.load.return_value = {
             "references": {
@@ -883,8 +978,13 @@ class TestFormatterEngineCoverageGaps:
         csl.format_references.side_effect = ValueError("CSL failed")
         engine = ReferenceFormatterEngine(contract_loader=cl, csl_engine=csl)
         ref = Reference(
-            reference_id="r1", citation_key="k1", raw_text="test", index=0,
-            authors=["A"], title="T", year=2020,
+            reference_id="r1",
+            citation_key="k1",
+            raw_text="test",
+            index=0,
+            authors=["A"],
+            title="T",
+            year=2020,
             reference_type=ReferenceType.JOURNAL_ARTICLE,
         )
         result = engine.format_all([ref], "APA")
@@ -893,6 +993,7 @@ class TestFormatterEngineCoverageGaps:
     def test_process_no_template_defaults_to_ieee(self):
         from app.models import PipelineDocument, Reference
         from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
+
         cl = MagicMock()
         cl.load.return_value = {"references": {}}
         csl = MagicMock()
@@ -909,6 +1010,7 @@ class TestFormatterEngineCoverageGaps:
 
     def test_format_all_empty_references_no_csl_call(self):
         from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
+
         cl = MagicMock()
         csl = MagicMock()
         engine = ReferenceFormatterEngine(contract_loader=cl, csl_engine=csl)
@@ -921,7 +1023,6 @@ class TestFormatterEngineCoverageGaps:
 # app/pipeline/safety/safe_execution.py
 # ════════════════════════════════════════════════════════════
 class TestSafeExecutionCoverageGaps:
-
     @pytest.mark.asyncio
     async def test_safe_async_function_returns_fallback_on_error(self):
         from app.pipeline.safety.safe_execution import safe_async_function
@@ -960,16 +1061,21 @@ class TestSafeExecutionCoverageGaps:
 # Error-path tests
 # ════════════════════════════════════════════════════════════
 
+
 class TestDocxParserErrorPaths:
     """Error-path tests for DocxParser."""
 
     def test_extract_core_properties_all_none(self):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         docx = MagicMock()
         docx.core_properties = MagicMock(
-            title=None, author=None, subject=None,
-            keywords=None, created=None,
+            title=None,
+            author=None,
+            subject=None,
+            keywords=None,
+            created=None,
         )
         meta = p._extract_core_properties(docx)
         assert meta.title is None
@@ -978,6 +1084,7 @@ class TestDocxParserErrorPaths:
 
     def test_extract_paragraph_none_style_handled(self):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         para = MagicMock()
         para.text = "test"
@@ -992,6 +1099,7 @@ class TestDocxParserErrorPaths:
 
     def test_extract_inline_images_no_runs_returns_empty(self):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         para = MagicMock()
         para.runs = []
@@ -1000,12 +1108,14 @@ class TestDocxParserErrorPaths:
 
     def test_parse_nonexistent_file_raises(self, tmp_path):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         with pytest.raises((FileNotFoundError, IOError)):
             p.parse(str(tmp_path / "nonexistent.docx"), "doc1")
 
     def test_get_list_info_no_numbering_returns_none(self):
         from app.pipeline.parsing.parser import DocxParser
+
         p = DocxParser()
         para = MagicMock()
         para._element = MagicMock()
@@ -1043,6 +1153,7 @@ class TestParserFactoryErrorPaths:
 
     def test_get_parser_unsupported_format_raises(self):
         from app.pipeline.parsing.parser_factory import ParserFactory
+
         pf = ParserFactory()
         # get_parser is decorated with @safe_function which returns None on error
         result = pf.get_parser("unsupported.xyz")
@@ -1054,11 +1165,13 @@ class TestFormatterEngineErrorPaths:
 
     def test_format_all_none_contract_loader_raises(self):
         from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
+
         with pytest.raises((TypeError, ValueError)):
             ReferenceFormatterEngine(contract_loader=None, csl_engine=MagicMock())
 
     def test_process_none_doc_raises(self):
         from app.pipeline.references.formatter_engine import ReferenceFormatterEngine
+
         cl = MagicMock()
         csl = MagicMock()
         engine = ReferenceFormatterEngine(contract_loader=cl, csl_engine=csl)

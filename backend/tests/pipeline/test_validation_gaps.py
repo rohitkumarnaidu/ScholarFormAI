@@ -1,4 +1,3 @@
-
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
@@ -35,6 +34,7 @@ def _block(block_id="b1", index=0, text="Hello", **kw) -> Block:
 # DocumentValidator - __init__ gap coverage
 # ===========================================================================
 
+
 class TestDocumentValidatorInitGaps:
     """Lines 44-47: __init__ dependencies."""
 
@@ -54,6 +54,7 @@ class TestDocumentValidatorInitGaps:
 # ===========================================================================
 # DocumentValidator - _as_bool gap coverage
 # ===========================================================================
+
 
 class TestAsBoolGaps:
     """Lines 51-63: remaining _as_bool branches."""
@@ -105,6 +106,7 @@ class TestAsBoolGaps:
 # DocumentValidator - process gap coverage
 # ===========================================================================
 
+
 class TestProcessGaps:
     """Lines 67-69: process with safe_execution."""
 
@@ -127,6 +129,7 @@ class TestProcessGaps:
 # ===========================================================================
 # DocumentValidator - validate gap coverage (lines 79-143)
 # ===========================================================================
+
 
 class TestValidateGaps:
     """Full validate method coverage."""
@@ -249,6 +252,7 @@ class TestValidateGaps:
 # DocumentValidator - _check_sections gap coverage (lines 151-175)
 # ===========================================================================
 
+
 class TestCheckSectionsGaps:
     """Full _check_sections coverage."""
 
@@ -277,8 +281,7 @@ class TestCheckSectionsGaps:
         assert any("Section order check skipped" in w for w in warnings)
 
     def test_template_name_extracted_for_publisher(self):
-        doc = _doc(blocks=[_block(section_name="Intro")],
-                   template=TemplateInfo(template_name="ACM"))
+        doc = _doc(blocks=[_block(section_name="Intro")], template=TemplateInfo(template_name="ACM"))
         v = DocumentValidator()
         v.order_validator.validate_order = MagicMock(return_value=[])
         errors, warnings = v._check_sections(doc)
@@ -313,6 +316,7 @@ class TestCheckSectionsGaps:
 # ===========================================================================
 # DocumentValidator - _check_figures gap coverage (lines 178-185)
 # ===========================================================================
+
 
 class TestCheckFiguresGaps:
     """Full _check_figures coverage."""
@@ -362,6 +366,7 @@ class TestCheckFiguresGaps:
 # DocumentValidator - _check_references gap coverage (lines 188-211)
 # ===========================================================================
 
+
 class TestCheckReferencesGaps:
     """Full _check_references coverage."""
 
@@ -381,9 +386,15 @@ class TestCheckReferencesGaps:
             assert "References section found but no reference entries parsed" in warnings
 
     def test_ref_missing_year(self):
-        ref = Reference(reference_id="r1", citation_key="R1",
-                        raw_text="Ref text", index=0,
-                        year=None, authors=["Smith"], title="Paper")
+        ref = Reference(
+            reference_id="r1",
+            citation_key="R1",
+            raw_text="Ref text",
+            index=0,
+            year=None,
+            authors=["Smith"],
+            title="Paper",
+        )
         doc = _doc(references=[ref])
         v = DocumentValidator()
         with patch.object(PipelineDocument, "get_section_names", return_value=[]):
@@ -391,9 +402,9 @@ class TestCheckReferencesGaps:
             assert any("R1" in w and "year" in w for w in warnings)
 
     def test_ref_missing_authors_error(self):
-        ref = Reference(reference_id="r1", citation_key="R1",
-                        raw_text="Ref text", index=0,
-                        year=2023, authors=[], title="Paper")
+        ref = Reference(
+            reference_id="r1", citation_key="R1", raw_text="Ref text", index=0, year=2023, authors=[], title="Paper"
+        )
         doc = _doc(references=[ref])
         v = DocumentValidator()
         with patch.object(PipelineDocument, "get_section_names", return_value=[]):
@@ -401,9 +412,9 @@ class TestCheckReferencesGaps:
             assert any("R1" in e and "authors" in e for e in errors)
 
     def test_ref_missing_title_warning(self):
-        ref = Reference(reference_id="r1", citation_key="R1",
-                        raw_text="Ref text", index=0,
-                        year=2023, authors=["Smith"], title=None)
+        ref = Reference(
+            reference_id="r1", citation_key="R1", raw_text="Ref text", index=0, year=2023, authors=["Smith"], title=None
+        )
         doc = _doc(references=[ref])
         v = DocumentValidator()
         with patch.object(PipelineDocument, "get_section_names", return_value=[]):
@@ -411,9 +422,15 @@ class TestCheckReferencesGaps:
             assert any("R1" in w and "title" in w for w in warnings)
 
     def test_ref_all_fields_ok(self):
-        ref = Reference(reference_id="r1", citation_key="R1",
-                        raw_text="Ref text", index=0,
-                        year=2023, authors=["Smith"], title="Paper")
+        ref = Reference(
+            reference_id="r1",
+            citation_key="R1",
+            raw_text="Ref text",
+            index=0,
+            year=2023,
+            authors=["Smith"],
+            title="Paper",
+        )
         doc = _doc(references=[ref])
         v = DocumentValidator()
         with patch.object(PipelineDocument, "get_section_names", return_value=[]):
@@ -423,8 +440,18 @@ class TestCheckReferencesGaps:
 
     def test_multiple_references_mixed_issues(self):
         refs = [
-            Reference(reference_id="r1", citation_key="R1", raw_text="Ref1", index=0, year=None, authors=[], title=None),
-            Reference(reference_id="r2", citation_key="R2", raw_text="Ref2", index=1, year=2023, authors=["Smith"], title="Paper"),
+            Reference(
+                reference_id="r1", citation_key="R1", raw_text="Ref1", index=0, year=None, authors=[], title=None
+            ),
+            Reference(
+                reference_id="r2",
+                citation_key="R2",
+                raw_text="Ref2",
+                index=1,
+                year=2023,
+                authors=["Smith"],
+                title="Paper",
+            ),
         ]
         doc = _doc(references=refs)
         v = DocumentValidator()
@@ -438,28 +465,26 @@ class TestCheckReferencesGaps:
 # DocumentValidator - _check_tables gap coverage (lines 214-220)
 # ===========================================================================
 
+
 class TestCheckTablesGaps:
     """Full _check_tables coverage."""
 
     def test_table_with_caption(self):
-        tbl = Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0,
-                    caption_text="Table 1. Results")
+        tbl = Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0, caption_text="Table 1. Results")
         doc = _doc(tables=[tbl])
         v = DocumentValidator()
         errors, warnings = v._check_tables(doc)
         assert warnings == []
 
     def test_table_without_caption(self):
-        tbl = Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0,
-                    caption_text=None)
+        tbl = Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0, caption_text=None)
         doc = _doc(tables=[tbl])
         v = DocumentValidator()
         errors, warnings = v._check_tables(doc)
         assert any("missing caption" in w for w in warnings)
 
     def test_table_empty_caption(self):
-        tbl = Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0,
-                    caption_text="")
+        tbl = Table(table_id="t1", num_rows=1, num_cols=1, index=0, block_index=0, caption_text="")
         doc = _doc(tables=[tbl])
         v = DocumentValidator()
         errors, warnings = v._check_tables(doc)
@@ -483,6 +508,7 @@ class TestCheckTablesGaps:
 # DocumentValidator - _check_reference_integrity gap coverage (lines 227-269)
 # ===========================================================================
 
+
 class TestCheckReferenceIntegrityGaps:
     """Full _check_reference_integrity coverage."""
 
@@ -494,8 +520,7 @@ class TestCheckReferenceIntegrityGaps:
         assert warnings == []
 
     def test_reference_without_doi_skipped(self):
-        ref = Reference(reference_id="r1", citation_key="R1",
-                        raw_text="Ref", index=0, doi=None)
+        ref = Reference(reference_id="r1", citation_key="R1", raw_text="Ref", index=0, doi=None)
         doc = _doc(references=[ref])
         v = DocumentValidator()
         errors, warnings = v._check_reference_integrity(doc)
@@ -503,10 +528,16 @@ class TestCheckReferenceIntegrityGaps:
         assert warnings == []
 
     def test_valid_doi_high_confidence(self):
-        ref = Reference(reference_id="r1", citation_key="R1",
-                        raw_text="Ref", index=0,
-                        doi="10.1234/test", title="Paper",
-                        year=2023, authors=["Smith"])
+        ref = Reference(
+            reference_id="r1",
+            citation_key="R1",
+            raw_text="Ref",
+            index=0,
+            doi="10.1234/test",
+            title="Paper",
+            year=2023,
+            authors=["Smith"],
+        )
         doc = _doc(references=[ref])
         v = DocumentValidator()
         v.crossref_client.validate_doi = MagicMock(return_value=True)
@@ -519,8 +550,7 @@ class TestCheckReferenceIntegrityGaps:
         assert ref.metadata["validation"]["confidence"] == 0.85
 
     def test_invalid_doi(self):
-        ref = Reference(reference_id="r1", citation_key="R1",
-                        raw_text="Ref", index=0, doi="10.1234/bad")
+        ref = Reference(reference_id="r1", citation_key="R1", raw_text="Ref", index=0, doi="10.1234/bad")
         doc = _doc(references=[ref])
         v = DocumentValidator()
         v.crossref_client.validate_doi = MagicMock(return_value=False)
@@ -530,10 +560,16 @@ class TestCheckReferenceIntegrityGaps:
         assert ref.metadata["validation"]["confidence"] == 0.0
 
     def test_low_confidence_warning(self):
-        ref = Reference(reference_id="r1", citation_key="R1",
-                        raw_text="Ref", index=0,
-                        doi="10.1234/low", title="Paper",
-                        year=2023, authors=["Smith"])
+        ref = Reference(
+            reference_id="r1",
+            citation_key="R1",
+            raw_text="Ref",
+            index=0,
+            doi="10.1234/low",
+            title="Paper",
+            year=2023,
+            authors=["Smith"],
+        )
         doc = _doc(references=[ref])
         v = DocumentValidator()
         v.crossref_client.validate_doi = MagicMock(return_value=True)
@@ -544,10 +580,16 @@ class TestCheckReferenceIntegrityGaps:
 
     def test_confidence_exactly_at_threshold(self):
         """Confidence == 0.5 is NOT below threshold, so no low confidence warning."""
-        ref = Reference(reference_id="r1", citation_key="R1",
-                        raw_text="Ref", index=0,
-                        doi="10.1234/test", title="Paper",
-                        year=2023, authors=["Smith"])
+        ref = Reference(
+            reference_id="r1",
+            citation_key="R1",
+            raw_text="Ref",
+            index=0,
+            doi="10.1234/test",
+            title="Paper",
+            year=2023,
+            authors=["Smith"],
+        )
         doc = _doc(references=[ref])
         v = DocumentValidator()
         v.crossref_client.validate_doi = MagicMock(return_value=True)
@@ -557,8 +599,7 @@ class TestCheckReferenceIntegrityGaps:
         assert "low confidence" not in " ".join(warnings).lower()
 
     def test_metadata_fetch_exception(self):
-        ref = Reference(reference_id="r1", citation_key="R1",
-                        raw_text="Ref", index=0, doi="10.1234/test")
+        ref = Reference(reference_id="r1", citation_key="R1", raw_text="Ref", index=0, doi="10.1234/test")
         doc = _doc(references=[ref])
         v = DocumentValidator()
         v.crossref_client.validate_doi = MagicMock(return_value=True)
@@ -567,8 +608,7 @@ class TestCheckReferenceIntegrityGaps:
         assert any("Failed to fetch metadata" in w for w in warnings)
 
     def test_validate_doi_exception(self):
-        ref = Reference(reference_id="r1", citation_key="R1",
-                        raw_text="Ref", index=0, doi="10.1234/test")
+        ref = Reference(reference_id="r1", citation_key="R1", raw_text="Ref", index=0, doi="10.1234/test")
         doc = _doc(references=[ref])
         v = DocumentValidator()
         v.crossref_client.validate_doi = MagicMock(side_effect=ValueError("bad request"))
@@ -585,11 +625,17 @@ class TestCheckReferenceIntegrityGaps:
 
     def test_existing_validation_metadata_not_overwritten(self):
         """Existing metadata validation dict is preserved."""
-        ref = Reference(reference_id="r1", citation_key="R1",
-                        raw_text="Ref", index=0,
-                        doi="10.1234/test", title="Paper",
-                        year=2023, authors=["Smith"],
-                        metadata={"existing": "value"})
+        ref = Reference(
+            reference_id="r1",
+            citation_key="R1",
+            raw_text="Ref",
+            index=0,
+            doi="10.1234/test",
+            title="Paper",
+            year=2023,
+            authors=["Smith"],
+            metadata={"existing": "value"},
+        )
         doc = _doc(references=[ref])
         v = DocumentValidator()
         v.crossref_client.validate_doi = MagicMock(return_value=True)
@@ -603,6 +649,7 @@ class TestCheckReferenceIntegrityGaps:
 # ===========================================================================
 # validate_document convenience function (lines 278-279)
 # ===========================================================================
+
 
 class TestValidateDocumentConvenience:
     """Cover validate_document function."""
@@ -624,6 +671,7 @@ class TestValidateDocumentConvenience:
 # ===========================================================================
 # ReviewManager - __init__ gap coverage (lines 17-27)
 # ===========================================================================
+
 
 class TestReviewManagerInitGaps:
     """Lines 17-27: full __init__ validation."""
@@ -672,6 +720,7 @@ class TestReviewManagerInitGaps:
 # ===========================================================================
 # ReviewManager - evaluate gap coverage (lines 34-119)
 # ===========================================================================
+
 
 class TestReviewManagerEvaluateGaps:
     """Full evaluate method coverage."""
@@ -726,24 +775,21 @@ class TestReviewManagerEvaluateGaps:
         assert doc.review.status == ReviewStatus.OK
 
     def test_confidence_from_metadata_classification(self):
-        b = Block(block_id="b1", index=0, text="test",
-                  metadata={"classification_confidence": 0.35})
+        b = Block(block_id="b1", index=0, text="test", metadata={"classification_confidence": 0.35})
         doc = self._make_doc(blocks=[b])
         rm = ReviewManager()
         rm.evaluate(doc)
         assert doc.review.status == ReviewStatus.CRITICAL
 
     def test_confidence_from_metadata_nlp(self):
-        b = Block(block_id="b1", index=0, text="test",
-                  metadata={"nlp_confidence": 0.55})
+        b = Block(block_id="b1", index=0, text="test", metadata={"nlp_confidence": 0.55})
         doc = self._make_doc(blocks=[b])
         rm = ReviewManager()
         rm.evaluate(doc)
         assert doc.review.status == ReviewStatus.REVIEW
 
     def test_non_numeric_confidence_defaults_to_1(self):
-        b = Block(block_id="b1", index=0, text="test",
-                  metadata={"classification_confidence": "bad"})
+        b = Block(block_id="b1", index=0, text="test", metadata={"classification_confidence": "bad"})
         doc = self._make_doc(blocks=[b])
         rm = ReviewManager()
         rm.evaluate(doc)
@@ -764,17 +810,20 @@ class TestReviewManagerEvaluateGaps:
         assert doc.review.lowest_confidence >= 0.0
 
     def test_semantic_intent_from_metadata(self):
-        b = Block(block_id="b1", index=0, text="test",
-                  metadata={"semantic_intent": "ACKNOWLEDGMENTS"},
-                  classification_confidence=0.3)
+        b = Block(
+            block_id="b1",
+            index=0,
+            text="test",
+            metadata={"semantic_intent": "ACKNOWLEDGMENTS"},
+            classification_confidence=0.3,
+        )
         doc = self._make_doc(blocks=[b])
         rm = ReviewManager()
         rm.evaluate(doc)
         assert any("ACKNOWLEDGMENTS" in f for f in doc.review.flags)
 
     def test_semantic_intent_fallback(self):
-        b = Block(block_id="b1", index=0, text="test",
-                  classification_confidence=0.3)
+        b = Block(block_id="b1", index=0, text="test", classification_confidence=0.3)
         doc = self._make_doc(blocks=[b])
         rm = ReviewManager()
         rm.evaluate(doc)
@@ -812,8 +861,7 @@ class TestReviewManagerEvaluateGaps:
         assert doc.review.status == ReviewStatus.OK
 
     def test_flags_limited_to_5_critical_first(self):
-        blocks = [_block(block_id=f"b{i}", classification_confidence=0.3,
-                         semantic_intent=f"S{i}") for i in range(10)]
+        blocks = [_block(block_id=f"b{i}", classification_confidence=0.3, semantic_intent=f"S{i}") for i in range(10)]
         doc = self._make_doc(blocks=blocks)
         rm = ReviewManager()
         rm.evaluate(doc)
@@ -892,9 +940,13 @@ class TestReviewManagerEvaluateGaps:
 
     def test_confidence_extraction_order(self):
         """metadata.classification_confidence > block attr > metadata.nlp_confidence."""
-        b = Block(block_id="b1", index=0, text="test",
-                  metadata={"classification_confidence": 0.3, "nlp_confidence": 0.9},
-                  classification_confidence=0.95)
+        b = Block(
+            block_id="b1",
+            index=0,
+            text="test",
+            metadata={"classification_confidence": 0.3, "nlp_confidence": 0.9},
+            classification_confidence=0.95,
+        )
         doc = self._make_doc(blocks=[b])
         rm = ReviewManager()
         rm.evaluate(doc)
@@ -904,8 +956,7 @@ class TestReviewManagerEvaluateGaps:
 
     def test_confidence_from_metadata_without_classification_key(self):
         """metadata is dict but has no classification_confidence."""
-        b = Block(block_id="b1", index=0, text="test",
-                  metadata={"other": "value"})
+        b = Block(block_id="b1", index=0, text="test", metadata={"other": "value"})
         doc = self._make_doc(blocks=[b])
         rm = ReviewManager()
         rm.evaluate(doc)
@@ -914,8 +965,7 @@ class TestReviewManagerEvaluateGaps:
 
     def test_block_semantic_intent_fallback_to_unknown(self):
         """Block with no semantic_intent attribute or metadata key falls back."""
-        b = Block(block_id="b1", index=0, text="test",
-                  classification_confidence=0.3)
+        b = Block(block_id="b1", index=0, text="test", classification_confidence=0.3)
         b.metadata = {}
         doc = self._make_doc(blocks=[b])
         rm = ReviewManager()
@@ -926,6 +976,7 @@ class TestReviewManagerEvaluateGaps:
 # ===========================================================================
 # AIExplainer gap coverage (lines 14, 25-49)
 # ===========================================================================
+
 
 class TestAIExplainerGaps:
     """Full AIExplainer coverage."""
@@ -945,9 +996,7 @@ class TestAIExplainerGaps:
 
     def test_explain_missing_section_error(self):
         explainer = AIExplainer()
-        result = explainer.explain_results({
-            "errors": ["Missing required section: Abstract"]
-        })
+        result = explainer.explain_results({"errors": ["Missing required section: Abstract"]})
         assert len(result) == 1
         assert "missing" in result[0].lower()
         assert "IEEE" in result[0]
@@ -955,53 +1004,49 @@ class TestAIExplainerGaps:
 
     def test_explain_reference_error(self):
         explainer = AIExplainer()
-        result = explainer.explain_results({
-            "errors": ["Reference R1 missing DOI"]
-        })
+        result = explainer.explain_results({"errors": ["Reference R1 missing DOI"]})
         assert len(result) == 1
         assert "reference" in result[0].lower()
 
     def test_explain_general_string_error(self):
         explainer = AIExplainer()
-        result = explainer.explain_results({
-            "errors": ["Formatting issue detected"]
-        })
+        result = explainer.explain_results({"errors": ["Formatting issue detected"]})
         assert len(result) == 1
         assert "formatting error" in result[0]
 
     def test_explain_dict_error(self):
         explainer = AIExplainer()
-        result = explainer.explain_results({
-            "errors": [{"category": "figure_captions", "message": "Fig 1 missing caption"}]
-        })
+        result = explainer.explain_results(
+            {"errors": [{"category": "figure_captions", "message": "Fig 1 missing caption"}]}
+        )
         assert len(result) == 1
         assert "Figures detected" in result[0]
 
     def test_explain_dict_error_unknown_category(self):
         explainer = AIExplainer()
-        result = explainer.explain_results({
-            "errors": [{"category": "unknown_category", "message": "Something is off"}]
-        })
+        result = explainer.explain_results(
+            {"errors": [{"category": "unknown_category", "message": "Something is off"}]}
+        )
         assert len(result) == 1
         assert "formatting error" in result[0].lower()
 
     def test_explain_custom_publisher(self):
         explainer = AIExplainer()
-        result = explainer.explain_results({
-            "errors": ["Missing required section: Abstract"]
-        }, publisher="ACM")
+        result = explainer.explain_results({"errors": ["Missing required section: Abstract"]}, publisher="ACM")
         assert "ACM" in result[0]
 
     def test_explain_multiple_errors_different_types(self):
         explainer = AIExplainer()
-        result = explainer.explain_results({
-            "errors": [
-                "Missing required section: Abstract",
-                {"category": "figure_captions", "message": "Fig 1 missing caption"},
-                "Formatting issue detected",
-                {"category": "reference_completeness", "message": "Missing DOI"},
-            ]
-        })
+        result = explainer.explain_results(
+            {
+                "errors": [
+                    "Missing required section: Abstract",
+                    {"category": "figure_captions", "message": "Fig 1 missing caption"},
+                    "Formatting issue detected",
+                    {"category": "reference_completeness", "message": "Missing DOI"},
+                ]
+            }
+        )
         assert len(result) == 4
 
     def test_explain_no_errors_key(self):
@@ -1012,24 +1057,18 @@ class TestAIExplainerGaps:
     def test_explain_section_string_error(self):
         """String error containing 'section' triggers missing_sections."""
         explainer = AIExplainer()
-        result = explainer.explain_results({
-            "errors": ["Section error in formatting"]
-        })
+        result = explainer.explain_results({"errors": ["Section error in formatting"]})
         assert "section" in result[0].lower()
 
     def test_explain_dict_error_no_message(self):
         """Dict error without message field."""
         explainer = AIExplainer()
-        result = explainer.explain_results({
-            "errors": [{"category": "figure_captions"}]
-        })
+        result = explainer.explain_results({"errors": [{"category": "figure_captions"}]})
         assert len(result) == 1
         assert "Figures detected" in result[0]
 
     def test_explain_dict_error_citation_format(self):
         explainer = AIExplainer()
-        result = explainer.explain_results({
-            "errors": [{"category": "citation_format", "message": "Wrong style"}]
-        })
+        result = explainer.explain_results({"errors": [{"category": "citation_format", "message": "Wrong style"}]})
         assert len(result) == 1
         assert "citation" in result[0].lower()

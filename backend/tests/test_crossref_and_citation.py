@@ -7,6 +7,7 @@ class TestCrossRefClient:
     @pytest.fixture
     def client(self):
         from app.services.crossref_client import CrossRefClient
+
         return CrossRefClient(contact_email="test@example.com")
 
     def test_validate_citation_too_short(self, client):
@@ -24,9 +25,19 @@ class TestCrossRefClient:
     def test_trim_cache(self, client):
         with patch("app.services.crossref_client.requests.get") as mock_get:
             mock_get.return_value.status_code = 200
-            mock_get.return_value.json.return_value = {"message": {"items": [
-                {"DOI": "10.123/test", "title": ["Test"], "author": [], "score": 1.0, "URL": "https://doi.org/test"}
-            ]}}
+            mock_get.return_value.json.return_value = {
+                "message": {
+                    "items": [
+                        {
+                            "DOI": "10.123/test",
+                            "title": ["Test"],
+                            "author": [],
+                            "score": 1.0,
+                            "URL": "https://doi.org/test",
+                        }
+                    ]
+                }
+            }
             for i in range(2500):
                 client._api_cache[f"key_{i}"] = {"data": i}
             client.validate_citation("test query")
@@ -37,6 +48,7 @@ class TestCitationAssemblyService:
     @pytest.fixture
     def svc(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         svc = CitationAssemblyService()
         svc.crossref = MagicMock()
         svc.csl_engine = MagicMock()
@@ -76,11 +88,13 @@ class TestCitationAssemblyService:
 
     def test_normalize(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         result = CitationAssemblyService._normalize("  Hello   World ")
         assert result == "Hello World"
 
     def test_replace_citations(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         svc = CitationAssemblyService()
         svc.crossref = MagicMock()
         svc.csl_engine = MagicMock()

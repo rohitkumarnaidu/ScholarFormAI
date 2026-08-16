@@ -5,18 +5,18 @@
 import os
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 
 from app.pipeline.parsing.md_parser import MarkdownParser
 
 parser = MarkdownParser()
 print("Checking methods on MarkdownParser...")
-if hasattr(parser, '_create_paragraph_block'):
+if hasattr(parser, "_create_paragraph_block"):
     print("SUCCESS: _create_paragraph_block exists.")
 else:
     print("ERROR: _create_paragraph_block is MISSING.")
 
-if hasattr(parser, '_create_paragraph_block_internal'):
+if hasattr(parser, "_create_paragraph_block_internal"):
     print("WARNING: _create_paragraph_block_internal still exists.")
 else:
     print("CLEAN: _create_paragraph_block_internal is gone.")

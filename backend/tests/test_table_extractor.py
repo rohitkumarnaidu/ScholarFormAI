@@ -26,10 +26,10 @@ def _make_docx_row(cells_texts, bold_first=False):
 class TestExtract:
     def test_basic_table(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         extractor = TableExtractor()
         table = MagicMock()
-        table.rows = [_make_docx_row(["Header 1", "Header 2"]),
-                       _make_docx_row(["Data 1", "Data 2"])]
+        table.rows = [_make_docx_row(["Header 1", "Header 2"]), _make_docx_row(["Data 1", "Data 2"])]
 
         result = extractor.extract(table, "tbl_001", 0, 0)
         assert result.table_id == "tbl_001"
@@ -40,28 +40,27 @@ class TestExtract:
 
     def test_header_detection_by_bold(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         extractor = TableExtractor()
         table = MagicMock()
-        table.rows = [_make_docx_row(["Name", "Value"], bold_first=True),
-                       _make_docx_row(["Alice", "42"])]
+        table.rows = [_make_docx_row(["Name", "Value"], bold_first=True), _make_docx_row(["Alice", "42"])]
 
         result = extractor.extract(table, "tbl_002", 1, 1)
         assert result.has_header is True
 
     def test_header_detection_by_keywords(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         extractor = TableExtractor()
         table = MagicMock()
-        table.rows = [_make_docx_row(["Name", "Date"]),
-                       _make_docx_row(["Alice", "2024"])]
+        table.rows = [_make_docx_row(["Name", "Date"]), _make_docx_row(["Alice", "2024"])]
 
         result = extractor.extract(table, "tbl_003", 2, 2)
         assert result.has_header is True
 
-
-
     def test_empty_cell_deep_fallback(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         extractor = TableExtractor()
         cell = _make_docx_cell("")
         # Mock deep extraction to return hidden text
@@ -76,6 +75,7 @@ class TestExtract:
 
     def test_empty_data_returns_empty_table(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         extractor = TableExtractor()
         table = MagicMock()
         table.rows = []
@@ -88,12 +88,14 @@ class TestExtract:
 class TestIsCellBold:
     def test_bold_true(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         extractor = TableExtractor()
         cell = _make_docx_cell("Text", bold=True)
         assert extractor._is_cell_bold(cell) is True
 
     def test_bold_false(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         extractor = TableExtractor()
         cell = _make_docx_cell("Text", bold=False)
         assert extractor._is_cell_bold(cell) is False
@@ -102,16 +104,19 @@ class TestIsCellBold:
 class TestContainsHeaderKeywords:
     def test_common_header(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         extractor = TableExtractor()
         assert extractor._contains_header_keywords(["Name", "Date"]) is True
 
     def test_no_header(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         extractor = TableExtractor()
         assert extractor._contains_header_keywords(["Alice", "42"]) is False
 
     def test_partial_match(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         extractor = TableExtractor()
         assert extractor._contains_header_keywords(["Qty", "Amount"]) is True
 
@@ -119,11 +124,13 @@ class TestContainsHeaderKeywords:
 class TestNormalizeCellText:
     def test_strips_whitespace(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         extractor = TableExtractor()
         assert extractor._normalize_cell_text("  hello  ") == "hello"
 
     def test_empty(self):
         from app.pipeline.tables.extractor import TableExtractor
+
         extractor = TableExtractor()
         assert extractor._normalize_cell_text("") == ""
         assert extractor._normalize_cell_text(None) == ""

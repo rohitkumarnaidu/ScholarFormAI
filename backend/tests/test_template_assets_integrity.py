@@ -59,9 +59,7 @@ def test_template_docx_contains_jinja_markers(template_name: str):
     renderer = TemplateRenderer(templates_dir=str(TEMPLATES_ROOT))
     template_path = TEMPLATES_ROOT / template_name / "template.docx"
     assert template_path.exists(), f"Missing template DOCX: {template_path}"
-    assert renderer._has_template_markers(template_path), (
-        f"Template {template_name} has no detectable Jinja markers"
-    )
+    assert renderer._has_template_markers(template_path), f"Template {template_name} has no detectable Jinja markers"
 
 
 @pytest.mark.parametrize("template_name", TEMPLATE_NAMES)

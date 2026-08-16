@@ -21,6 +21,7 @@ class TestDoclingClientInitEdgeCases:
     def test_init_docling_converter_none(self):
         with patch("app.pipeline.services.docling_client._load_docling_converter", return_value=None):
             from app.pipeline.services.docling_client import DoclingClient
+
             c = DoclingClient()
             assert c.is_available() is False
             assert c.converter is None
@@ -30,6 +31,7 @@ class TestDoclingClientInitEdgeCases:
         mock_conv_cls.side_effect = Exception("Init error")
         with patch("app.pipeline.services.docling_client._load_docling_converter", return_value=mock_conv_cls):
             from app.pipeline.services.docling_client import DoclingClient
+
             c = DoclingClient()
             assert c.is_available() is False
 
@@ -51,6 +53,7 @@ class TestDoclingClientAnalyzeLayoutDeep:
             mock_doc.num_pages = 1
             mock_conv.convert.return_value.document = mock_doc
             from app.pipeline.services.docling_client import DoclingClient
+
             c = DoclingClient()
             result = c.analyze_layout("test.pdf")
             assert len(result["elements"]) == 1
@@ -65,6 +68,7 @@ class TestDoclingClientAnalyzeLayoutDeep:
             mock_load.return_value = mock_conv_cls
             mock_conv.convert.side_effect = Exception("Boom")
             from app.pipeline.services.docling_client import DoclingClient
+
             c = DoclingClient()
             result = c.analyze_layout("test.pdf")
             assert result["elements"] == []
@@ -82,6 +86,7 @@ class TestDoclingClientAnalyzeLayoutDeep:
             type(mock_doc).num_pages = PropertyMock(return_value=3)
             mock_conv.convert.return_value.document = mock_doc
             from app.pipeline.services.docling_client import DoclingClient
+
             c = DoclingClient()
             result = c.analyze_layout("test.pdf")
             assert result["pages"] == 3
@@ -103,6 +108,7 @@ class TestDoclingClientAnalyzeLayoutDeep:
             mock_doc.num_pages = 1
             mock_conv.convert.return_value.document = mock_doc
             from app.pipeline.services.docling_client import DoclingClient
+
             c = DoclingClient()
             result = c.analyze_layout("test.pdf")
             assert len(result["elements"]) == 1
@@ -120,6 +126,7 @@ class TestDoclingClientAnalyzeLayoutDeep:
             mock_doc.num_pages = 0
             mock_conv.convert.return_value.document = mock_doc
             from app.pipeline.services.docling_client import DoclingClient
+
             c = DoclingClient()
             result = c.analyze_layout("test.pdf")
             assert result["elements"] == []
@@ -129,6 +136,7 @@ class TestDoclingClientAnalyzeLayoutDeep:
         with patch("app.pipeline.services.docling_client._load_docling_converter") as mock_load:
             mock_load.return_value = MagicMock()
             from app.pipeline.services.docling_client import DoclingClient
+
             c = DoclingClient()
             c.converter = None
             result = c.analyze_layout("test.pdf")
@@ -138,6 +146,7 @@ class TestDoclingClientAnalyzeLayoutDeep:
 class TestDoclingClientExtractElements:
     def test_extract_elements_basic(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_item = MagicMock()
@@ -156,6 +165,7 @@ class TestDoclingClientExtractElements:
 
     def test_extract_elements_no_bbox_skips(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_item = MagicMock()
@@ -166,6 +176,7 @@ class TestDoclingClientExtractElements:
 
     def test_extract_elements_exception(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_doc.iterate_items.side_effect = Exception("Iteration error")
@@ -174,6 +185,7 @@ class TestDoclingClientExtractElements:
 
     def test_extract_elements_with_prov_data(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_item = MagicMock()
@@ -197,6 +209,7 @@ class TestDoclingClientExtractElements:
 
     def test_extract_elements_with_partial_prov(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_item = MagicMock()
@@ -222,6 +235,7 @@ class TestDoclingClientExtractElements:
 class TestDoclingClientDetectHeadersFooters:
     def test_headers_and_footers(self):
         from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
+
         c = DoclingClient()
         el1 = LayoutElement(text="Header", bbox=BoundingBox(0, 0, 100, 30), element_type="text")
         el2 = LayoutElement(text="Body", bbox=BoundingBox(0, 300, 100, 350), element_type="text")
@@ -234,6 +248,7 @@ class TestDoclingClientDetectHeadersFooters:
 
     def test_empty_elements(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         headers, footers = c._detect_headers_footers([])
         assert headers == []
@@ -241,6 +256,7 @@ class TestDoclingClientDetectHeadersFooters:
 
     def test_multiple_pages(self):
         from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
+
         c = DoclingClient()
         p1_header = LayoutElement(text="P1 Header", bbox=BoundingBox(0, 0, 100, 20, page=1), element_type="text")
         p1_body = LayoutElement(text="P1 Body", bbox=BoundingBox(0, 200, 100, 400, page=1), element_type="text")
@@ -254,6 +270,7 @@ class TestDoclingClientDetectHeadersFooters:
 class TestDoclingClientExtractTables:
     def test_extracts_tables(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_item = MagicMock()
@@ -272,6 +289,7 @@ class TestDoclingClientExtractTables:
 
     def test_no_tables(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_item = MagicMock()
@@ -282,6 +300,7 @@ class TestDoclingClientExtractTables:
 
     def test_exception(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_doc.iterate_items.side_effect = Exception("Error")
@@ -292,6 +311,7 @@ class TestDoclingClientExtractTables:
 class TestDoclingClientExtractFigures:
     def test_extracts_figures(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_item = MagicMock()
@@ -309,6 +329,7 @@ class TestDoclingClientExtractFigures:
 
     def test_no_figures(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_item = MagicMock()
@@ -319,6 +340,7 @@ class TestDoclingClientExtractFigures:
 
     def test_exception(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_doc.iterate_items.side_effect = Exception("Error")
@@ -327,6 +349,7 @@ class TestDoclingClientExtractFigures:
 
     def test_picture_label(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         mock_doc = MagicMock()
         mock_item = MagicMock()
@@ -345,17 +368,20 @@ class TestDoclingClientExtractFigures:
 class TestDoclingClientCalculateConfidence:
     def test_empty(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         assert c._calculate_confidence([]) == 0.0
 
     def test_single_element(self):
         from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
+
         c = DoclingClient()
         elem = LayoutElement(text="A", bbox=BoundingBox(0, 0, 10, 10), element_type="text", confidence=0.8)
         assert c._calculate_confidence([elem]) == 0.8
 
     def test_multiple_elements(self):
         from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
+
         c = DoclingClient()
         e1 = LayoutElement(text="A", bbox=BoundingBox(0, 0, 10, 10), element_type="text", confidence=0.9)
         e2 = LayoutElement(text="B", bbox=BoundingBox(0, 0, 10, 10), element_type="text", confidence=0.7)
@@ -365,6 +391,7 @@ class TestDoclingClientCalculateConfidence:
 class TestDoclingClientEmptyLayout:
     def test_empty_layout(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         result = c._empty_layout()
         assert result["elements"] == []
@@ -378,6 +405,7 @@ class TestDoclingClientEmptyLayout:
 class TestDoclingClientFindTitle:
     def test_no_candidates_returns_none(self):
         from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
+
         c = DoclingClient()
         elem = LayoutElement(text="Logo", bbox=BoundingBox(0, 0, 100, 50), element_type="text")
         result = c.find_title_with_logo_tolerance([elem], logo_y_threshold=100)
@@ -385,6 +413,7 @@ class TestDoclingClientFindTitle:
 
     def test_selects_largest_font(self):
         from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
+
         c = DoclingClient()
         small = LayoutElement(text="Small", bbox=BoundingBox(0, 200, 100, 250), element_type="text", font_size=12)
         large = LayoutElement(text="Large", bbox=BoundingBox(0, 200, 100, 250), element_type="text", font_size=24)
@@ -394,11 +423,13 @@ class TestDoclingClientFindTitle:
 
     def test_empty_elements(self):
         from app.pipeline.services.docling_client import DoclingClient
+
         c = DoclingClient()
         assert c.find_title_with_logo_tolerance([]) is None
 
     def test_font_size_none_handling(self):
         from app.pipeline.services.docling_client import BoundingBox, DoclingClient, LayoutElement
+
         c = DoclingClient()
         elem = LayoutElement(text="No font", bbox=BoundingBox(0, 200, 100, 250), element_type="text")
         result = c.find_title_with_logo_tolerance([elem], logo_y_threshold=50)
@@ -409,41 +440,48 @@ class TestDoclingClientFindTitle:
 class TestDoclingClientModule:
     def test_docling_available_flag(self):
         from app.pipeline.services.docling_client import DOCLING_AVAILABLE
+
         assert DOCLING_AVAILABLE is not None
 
     def test_docling_enabled_settings(self):
         with patch("app.pipeline.services.docling_client.settings.USE_DOCLING_FALLBACK", True, create=True):
             with patch("app.pipeline.services.docling_client.settings.LOW_MEMORY_MODE", False):
                 from app.pipeline.services.docling_client import _docling_enabled
+
                 assert _docling_enabled() is True
 
     def test_docling_disabled_by_setting(self):
         with patch("app.pipeline.services.docling_client.settings.USE_DOCLING_FALLBACK", False, create=True):
             from app.pipeline.services.docling_client import _docling_enabled
+
             assert _docling_enabled() is False
 
     def test_docling_disabled_low_memory(self):
         with patch("app.pipeline.services.docling_client.settings.USE_DOCLING_FALLBACK", True, create=True):
             with patch("app.pipeline.services.docling_client.settings.LOW_MEMORY_MODE", True):
                 from app.pipeline.services.docling_client import _docling_enabled
+
                 assert _docling_enabled() is False
 
 
 class TestBoundingBoxEdgeCases:
     def test_zero_dimensions(self):
         from app.pipeline.services.docling_client import BoundingBox
+
         b = BoundingBox(0, 0, 0, 0)
         assert b.width == 0
         assert b.height == 0
 
     def test_negative_coords(self):
         from app.pipeline.services.docling_client import BoundingBox
+
         b = BoundingBox(-10, -20, 100, 200)
         assert b.width == 110
         assert b.height == 220
 
     def test_center_y(self):
         from app.pipeline.services.docling_client import BoundingBox
+
         b = BoundingBox(0, 100, 100, 200)
         assert b.center_y == 150
 
@@ -451,11 +489,13 @@ class TestBoundingBoxEdgeCases:
 class TestLayoutElementEdgeCases:
     def test_default_confidence(self):
         from app.pipeline.services.docling_client import BoundingBox, LayoutElement
+
         e = LayoutElement(text="Test", bbox=BoundingBox(0, 0, 10, 10), element_type="text")
         assert e.confidence == 1.0
 
     def test_is_bold_italic_defaults(self):
         from app.pipeline.services.docling_client import BoundingBox, LayoutElement
+
         e = LayoutElement(text="Test", bbox=BoundingBox(0, 0, 10, 10), element_type="text")
         assert e.is_bold is False
         assert e.is_italic is False

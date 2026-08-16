@@ -25,43 +25,81 @@ EXPECTED_ENDPOINTS: dict[str, dict[str, list[str]]] = {
     "Documents v1": {
         "prefix": "/api/v1/documents",
         "paths": [
-            "", "/upload", "/upload/chunked", "/batch-upload",
-            "/{jobId}/status", "/{jobId}/summary", "/{jobId}/edit",
-            "/{jobId}/preview", "/{jobId}/compare", "/{jobId}/download",
+            "",
+            "/upload",
+            "/upload/chunked",
+            "/batch-upload",
+            "/{jobId}/status",
+            "/{jobId}/summary",
+            "/{jobId}/edit",
+            "/{jobId}/preview",
+            "/{jobId}/compare",
+            "/{jobId}/download",
             "/{jobId}",
         ],
         "methods": [
-            "GET", "POST", "POST", "POST",
-            "GET", "GET", "POST",
-            "GET", "GET", "GET",
+            "GET",
+            "POST",
+            "POST",
+            "POST",
+            "GET",
+            "GET",
+            "POST",
+            "GET",
+            "GET",
+            "GET",
             "DELETE",
         ],
     },
     "Templates v1": {
         "prefix": "/api/v1/templates",
-        "paths": ["", "/csl/search", "/csl/fetch", "/csl/{styleId}", "/custom", "/custom", "/custom/{templateId}", "/custom/{templateId}"],
+        "paths": [
+            "",
+            "/csl/search",
+            "/csl/fetch",
+            "/csl/{styleId}",
+            "/custom",
+            "/custom",
+            "/custom/{templateId}",
+            "/custom/{templateId}",
+        ],
         "methods": ["GET", "GET", "GET", "GET", "GET", "POST", "PUT", "DELETE"],
     },
     "Generator v1": {
         "prefix": "/api/v1/generator",
         "paths": [
-            "/sessions", "/sessions", "/sessions/{sessionId}",
-            "/sessions/{sessionId}/messages", "/sessions/{sessionId}/document",
-            "/sessions/{sessionId}/download", "/sessions/{sessionId}/events",
-            "/sessions/{sessionId}/messages", "/sessions/{sessionId}/outline/approve",
+            "/sessions",
+            "/sessions",
+            "/sessions/{sessionId}",
+            "/sessions/{sessionId}/messages",
+            "/sessions/{sessionId}/document",
+            "/sessions/{sessionId}/download",
+            "/sessions/{sessionId}/events",
+            "/sessions/{sessionId}/messages",
+            "/sessions/{sessionId}/outline/approve",
             "/sessions/{sessionId}/stop",
         ],
         "methods": [
-            "POST", "GET", "GET",
-            "GET", "GET",
-            "GET", "GET",
-            "POST", "POST",
+            "POST",
+            "GET",
+            "GET",
+            "GET",
+            "GET",
+            "GET",
+            "GET",
+            "POST",
+            "POST",
             "POST",
         ],
     },
     "Synthesis v1": {
         "prefix": "/api/v1/synthesis",
-        "paths": ["/sessions", "/sessions/{sessionId}", "/sessions/{sessionId}/events", "/sessions/{sessionId}/messages"],
+        "paths": [
+            "/sessions",
+            "/sessions/{sessionId}",
+            "/sessions/{sessionId}/events",
+            "/sessions/{sessionId}/messages",
+        ],
         "methods": ["POST", "GET", "GET", "POST"],
     },
     "Feedback v1": {
@@ -77,27 +115,55 @@ EXPECTED_ENDPOINTS: dict[str, dict[str, list[str]]] = {
     "providers": {
         "prefix": "/api/v1/providers",
         "paths": [
-            "/health", "", "/builtin", "/{provider_id}/models",
-            "/{provider_id}/models/sync", "/custom", "/custom",
-            "/custom/{provider_id}", "/custom/{provider_id}", "/custom/{provider_id}",
+            "/health",
+            "",
+            "/builtin",
+            "/{provider_id}/models",
+            "/{provider_id}/models/sync",
+            "/custom",
+            "/custom",
+            "/custom/{provider_id}",
+            "/custom/{provider_id}",
+            "/custom/{provider_id}",
             "/test",
         ],
         "methods": [
-            "GET", "GET", "GET", "GET",
-            "POST", "GET", "POST",
-            "GET", "PUT", "DELETE",
+            "GET",
+            "GET",
+            "GET",
+            "GET",
+            "POST",
+            "GET",
+            "POST",
+            "GET",
+            "PUT",
+            "DELETE",
             "POST",
         ],
     },
     "api_keys": {
         "prefix": "/api/v1/keys",
         "paths": [
-            "", "", "/{key_id}", "/{key_id}", "/{key_id}",
-            "/usage", "/{key_id}/usage", "/providers", "/test",
+            "",
+            "",
+            "/{key_id}",
+            "/{key_id}",
+            "/{key_id}",
+            "/usage",
+            "/{key_id}/usage",
+            "/providers",
+            "/test",
         ],
         "methods": [
-            "POST", "GET", "GET", "PUT", "DELETE",
-            "GET", "GET", "GET", "POST",
+            "POST",
+            "GET",
+            "GET",
+            "PUT",
+            "DELETE",
+            "GET",
+            "GET",
+            "GET",
+            "POST",
         ],
     },
     "Streaming v1": {
@@ -118,14 +184,22 @@ EXPECTED_ENDPOINTS: dict[str, dict[str, list[str]]] = {
     "suggestions": {
         "prefix": "/api/v1/suggestions",
         "paths": [
-            "/document/{document_id}", "/generate", "/history",
-            "/{suggestion_id}/accept", "/{suggestion_id}/apply",
-            "/{suggestion_id}/dismiss", "/{suggestion_id}/reject",
+            "/document/{document_id}",
+            "/generate",
+            "/history",
+            "/{suggestion_id}/accept",
+            "/{suggestion_id}/apply",
+            "/{suggestion_id}/dismiss",
+            "/{suggestion_id}/reject",
         ],
         "methods": [
-            "GET", "POST", "GET",
-            "POST", "POST",
-            "POST", "POST",
+            "GET",
+            "POST",
+            "GET",
+            "POST",
+            "POST",
+            "POST",
+            "POST",
         ],
     },
     "activity": {
@@ -166,6 +240,7 @@ def openapi_schema():
     # Import app.main inside the fixture body to avoid module-level import side effects
     with _patched_dependencies():
         from app.main import _load_optional_routers, app
+
         # V1 routers are loaded lazily via middleware; force-load before generating schema
         _load_optional_routers(app)
         schema = app.openapi()
@@ -181,6 +256,7 @@ def spec_paths(openapi_schema: dict[str, Any]) -> dict[str, Any]:
 def _patch_env():
     """Set minimal env vars to prevent startup failures."""
     import os
+
     os.environ.setdefault("ALGORITHM", "HS256")
     os.environ.setdefault("SUPABASE_URL", "http://localhost:8000")
     os.environ.setdefault("SUPABASE_KEY", "fake-key")
@@ -204,7 +280,8 @@ def _patched_dependencies():
         get_remote_address=MagicMock(return_value="127.0.0.1"),
         SLOWAPI_AVAILABLE=False,
         sentry_sdk=None,
-        SENTRY_AVAILABLE=False, create=True
+        SENTRY_AVAILABLE=False,
+        create=True,
     )
 
 
@@ -240,9 +317,7 @@ def test_all_endpoints_have_operation_ids(openapi_schema: dict[str, Any]):
         for method in ("get", "post", "put", "delete", "patch", "head", "options"):
             operation = methods.get(method)
             if operation:
-                assert "operationId" in operation, (
-                    f"Missing operationId for {method.upper()} {path_key}"
-                )
+                assert "operationId" in operation, f"Missing operationId for {method.upper()} {path_key}"
                 assert "summary" in operation
 
 
@@ -277,14 +352,11 @@ def test_all_expected_endpoints_exist(openapi_schema: dict[str, Any], tag: str):
         path_key = _openapi_path_key(prefix, subpath)
         # Handle duplicate path keys (same path, different methods)
         actual = paths_schema.get(path_key)
-        assert actual is not None, (
-            f"Missing endpoint {expected_method} {path_key} (group: {tag})"
-        )
+        assert actual is not None, f"Missing endpoint {expected_method} {path_key} (group: {tag})"
         method_lower = expected_method.lower()
         operation = actual.get(method_lower)
         assert operation is not None, (
-            f"Missing method {expected_method} for {path_key} in group {tag}. "
-            f"Available methods: {list(actual.keys())}"
+            f"Missing method {expected_method} for {path_key} in group {tag}. Available methods: {list(actual.keys())}"
         )
 
 
@@ -329,9 +401,7 @@ def test_health_ready_response_schema(openapi_schema: dict[str, Any]):
     get_op = ready_path.get("get", {})
     responses = get_op.get("responses", {})
     assert "200" in responses, "Missing 200 response for GET /api/v1/health/ready"
-    assert "422" in responses, (
-        "Missing 422 response for GET /api/v1/health/ready"
-    )
+    assert "422" in responses, "Missing 422 response for GET /api/v1/health/ready"
 
 
 @pytest.mark.contract
@@ -460,9 +530,7 @@ def test_error_responses_have_code_field(openapi_schema: dict[str, Any]):
                 if resp:
                     checked += 1
                     description = resp.get("description", "")
-                    assert description, (
-                        f"Missing description for {status_code} {method.upper()} {path_key}"
-                    )
+                    assert description, f"Missing description for {status_code} {method.upper()} {path_key}"
     assert checked >= 10, f"Expected >=10 error responses across schema, got {checked}"
 
 
@@ -499,13 +567,9 @@ def test_openapi_schema_validates_against_self(openapi_schema: dict[str, Any]):
     paths = openapi_schema.get("paths", {})
     for path_key, methods in paths.items():
         for method in methods:
-            assert method in valid_http_methods, (
-                f"Invalid HTTP method '{method}' for {path_key}"
-            )
+            assert method in valid_http_methods, f"Invalid HTTP method '{method}' for {path_key}"
             operation = methods[method]
-            assert isinstance(operation, dict), (
-                f"Operation at {method.upper()} {path_key} must be a dict"
-            )
+            assert isinstance(operation, dict), f"Operation at {method.upper()} {path_key} must be a dict"
             assert "operationId" in operation
             assert "responses" in operation
 
@@ -522,9 +586,7 @@ def test_openapi_schema_no_empty_responses(openapi_schema: dict[str, Any]):
             for status_code, resp in operation.get("responses", {}).items():
                 has_desc = bool(resp.get("description"))
                 has_content = bool(resp.get("content"))
-                assert has_desc or has_content, (
-                    f"Response {status_code} at {method.upper()} {path_key} is empty"
-                )
+                assert has_desc or has_content, f"Response {status_code} at {method.upper()} {path_key} is empty"
 
 
 # ── Tags Consistency ────────────────────────────────────────────────────────
@@ -548,9 +610,7 @@ def test_all_paths_have_tags(openapi_schema: dict[str, Any]):
                 continue  # keys router has no explicit tags
             if path_key.startswith("/api/v1/activity"):
                 continue  # activity router may lack tags
-            assert tags, (
-                f"Operation {method.upper()} {path_key} has no tags"
-            )
+            assert tags, f"Operation {method.upper()} {path_key} has no tags"
 
 
 @pytest.mark.contract

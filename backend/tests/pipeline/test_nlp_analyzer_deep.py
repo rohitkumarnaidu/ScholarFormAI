@@ -27,20 +27,40 @@ def analyzer():
 
     return ContentAnalyzer()
 
+
 @pytest.fixture
 def doc_empty():
     from app.models import PipelineDocument
+
     return PipelineDocument(document_id="nlp0", blocks=[])
+
 
 @pytest.fixture
 def doc_with_blocks():
     from app.models import Block, BlockType, PipelineDocument
-    return PipelineDocument(document_id="nlp1", blocks=[
-        Block(block_id="b1", index=0, text="Introduction", block_type=BlockType.HEADING_1),
-        Block(block_id="b2", index=1, text="This paper presents a novel approach to natural language processing using deep learning methods.", block_type=BlockType.BODY),
-        Block(block_id="b3", index=2, text="Figure 1. Architecture of the proposed model.", block_type=BlockType.BODY),
-        Block(block_id="b4", index=3, text="this study introduces background context and results analysis across multiple datasets", block_type=BlockType.ABSTRACT_BODY),
-    ])
+
+    return PipelineDocument(
+        document_id="nlp1",
+        blocks=[
+            Block(block_id="b1", index=0, text="Introduction", block_type=BlockType.HEADING_1),
+            Block(
+                block_id="b2",
+                index=1,
+                text="This paper presents a novel approach to natural language processing using deep learning methods.",
+                block_type=BlockType.BODY,
+            ),
+            Block(
+                block_id="b3", index=2, text="Figure 1. Architecture of the proposed model.", block_type=BlockType.BODY
+            ),
+            Block(
+                block_id="b4",
+                index=3,
+                text="this study introduces background context and results analysis across multiple datasets",
+                block_type=BlockType.ABSTRACT_BODY,
+            ),
+        ],
+    )
+
 
 class TestContentAnalyzerProcess:
     def test_process_empty_document(self, analyzer, doc_empty):
@@ -68,9 +88,11 @@ class TestContentAnalyzerProcess:
         result = analyzer.process(doc_with_blocks)
         assert [b.block_id for b in result.blocks] == original_ids
 
+
 class TestSectionConfidence:
     def test_exact_match_abstract(self, analyzer):
         from app.models import Block, BlockType
+
         block = Block(block_id="b1", index=0, text="Abstract", block_type=BlockType.HEADING_1)
         result = analyzer._estimate_section_confidence(block)
         assert result["section"] == "Abstract"
@@ -78,27 +100,32 @@ class TestSectionConfidence:
 
     def test_numbered_introduction(self, analyzer):
         from app.models import Block, BlockType
+
         block = Block(block_id="b2", index=1, text="1. Introduction", block_type=BlockType.HEADING_1)
         result = analyzer._estimate_section_confidence(block)
         assert result["section"] == "Introduction"
 
     def test_references_match(self, analyzer):
         from app.models import Block, BlockType
+
         block = Block(block_id="b3", index=2, text="References", block_type=BlockType.HEADING_1)
         result = analyzer._estimate_section_confidence(block)
         assert result["confidence"] == 0.95
 
     def test_unknown_section_returns_none(self, analyzer):
         from app.models import Block, BlockType
+
         block = Block(block_id="b4", index=3, text="Random heading", block_type=BlockType.HEADING_1)
         result = analyzer._estimate_section_confidence(block)
         assert result is None
 
     def test_empty_text_returns_none(self, analyzer):
         from app.models import Block, BlockType
+
         block = Block(block_id="b5", index=4, text="", block_type=BlockType.HEADING_1)
         result = analyzer._estimate_section_confidence(block)
         assert result is None
+
 
 class TestCaptionQuality:
     def test_good_caption(self, analyzer):
@@ -121,6 +148,7 @@ class TestCaptionQuality:
     def test_is_potential_caption_false(self, analyzer):
         assert analyzer._is_potential_caption("Introduction") is False
         assert analyzer._is_potential_caption("") is False
+
 
 class TestReadability:
     def test_standard_readability(self, analyzer):
@@ -153,6 +181,7 @@ class TestReadability:
         result = analyzer._check_readability("")
         assert result == "N/A"
 
+
 class TestMethodsDetectAbstract:
     def test_detects_abstract_text(self):
         text = "This study provides background on the topic and presents results from multiple experiments. " * 5
@@ -163,6 +192,7 @@ class TestMethodsDetectAbstract:
 
     def test_empty_text_not_abstract(self):
         assert methods_detect_abstract("") is False
+
 
 class TestExtractKeywordsBasic:
     def test_basic_keyword_extraction(self):
@@ -181,6 +211,7 @@ class TestExtractKeywordsBasic:
             result = extract_keywords(text)
             assert len(result) > 0
 
+
 class TestExtractKeywordsYake:
     @patch("app.pipeline.nlp.analyzer.YAKE_AVAILABLE", True)
     @patch("app.pipeline.nlp.analyzer.yake")
@@ -196,6 +227,7 @@ class TestExtractKeywordsYake:
 
             result = extract_keywords("deep learning nlp text analysis")
             assert len(result) > 0
+
 
 class TestParseKeywordPayload:
     def test_parse_json_array(self):
@@ -226,24 +258,32 @@ class TestParseKeywordPayload:
         result = _parse_keyword_payload('["a", "b", "c", "d", "e", "f"]', 3)
         assert len(result) == 3
 
+
 class TestKeybertModel:
     @patch("app.pipeline.nlp.analyzer.importlib.util.find_spec", return_value=None)
     def test_keybert_unavailable_returns_none(self, mock_spec):
         import app.pipeline.nlp.analyzer as _an
+
         _an._KEYBERT_MODEL = None
         assert _get_keybert_model() is None
+
 
 class TestEdgeCases:
     def test_process_no_ai_hints_for_empty_block(self, analyzer):
         from app.models import Block, BlockType, PipelineDocument
-        doc = PipelineDocument(document_id="ec1", blocks=[
-            Block(block_id="b1", index=0, text="", block_type=BlockType.HEADING_1),
-        ])
+
+        doc = PipelineDocument(
+            document_id="ec1",
+            blocks=[
+                Block(block_id="b1", index=0, text="", block_type=BlockType.HEADING_1),
+            ],
+        )
         result = analyzer.process(doc)
         assert result.blocks[0].metadata.get("ai_hints") is None
 
     def test_process_sets_default_metadata(self, analyzer):
         from app.models import Block, PipelineDocument
+
         block = Block(block_id="b1", index=0, text="Introduction")
         doc = PipelineDocument(document_id="ec2", blocks=[block])
         result = analyzer.process(doc)

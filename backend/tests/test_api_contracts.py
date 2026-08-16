@@ -315,13 +315,15 @@ def test_v1_documents_status_missing_contract(client: TestClient):
 def test_v1_documents_download_invalid_format_contract(client: TestClient):
     with patch(
         "app.routers.v1.documents_impl.DocumentService.get_document",
-        new=AsyncMock(return_value={
-            "id": "job-download",
-            "filename": "paper.docx",
-            "status": "COMPLETED",
-            "user_id": client.mock_user.id,
-            "output_path": "unused.docx",
-        }),
+        new=AsyncMock(
+            return_value={
+                "id": "job-download",
+                "filename": "paper.docx",
+                "status": "COMPLETED",
+                "user_id": client.mock_user.id,
+                "output_path": "unused.docx",
+            }
+        ),
     ):
         response = client.get("/api/v1/documents/job-download/download?format=txt")
 
@@ -346,7 +348,9 @@ def test_v1_documents_signed_download_allows_tokenized_access_without_user(clien
     }
 
     with (
-        patch("app.routers.v1.documents_impl.DocumentService.get_document", new=AsyncMock(return_value=document_record)),
+        patch(
+            "app.routers.v1.documents_impl.DocumentService.get_document", new=AsyncMock(return_value=document_record)
+        ),
         patch("app.routers.v1.documents_impl.settings.SIGNED_URL_SECRET", "test-secret"),
     ):
         link_response = client.get("/api/v1/documents/job-download/download?format=docx")
@@ -1196,4 +1200,3 @@ def test_v1_billing_checkout_event_contract_and_audit(client: TestClient):
     assert payload["data"] == {"received": True}
     assert payload["error"] is None
     _assert_audit_action_called(audit_mock, "billing_change", "billing")
-

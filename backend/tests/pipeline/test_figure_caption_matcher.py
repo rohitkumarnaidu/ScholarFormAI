@@ -35,6 +35,7 @@ class TestCaptionMatcher:
 
     def test_no_figures(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         doc = self._make_doc(figures=[])
         m = CaptionMatcher()
         result = m.process(doc)
@@ -42,6 +43,7 @@ class TestCaptionMatcher:
 
     def test_match_caption(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cap_block = self._make_block(index=0, text="Figure 1: Test", block_id="cap1")
         body_block = self._make_block(index=1, text="Body", block_id="body1")
         fig = self._make_figure(figure_id="f1", metadata={"block_index": 1})
@@ -54,6 +56,7 @@ class TestCaptionMatcher:
 
     def test_caption_candidates_skip_headings(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         heading = self._make_block(index=0, text="Figure 1: Overview", block_id="h1", is_heading=True)
         m = CaptionMatcher()
         candidates = m._find_caption_candidates([heading])
@@ -61,6 +64,7 @@ class TestCaptionMatcher:
 
     def test_vision_enhancement_skipped_no_path(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         fig = self._make_figure(figure_id="f1", export_path=None)
         m = CaptionMatcher()
         count = m._enhance_captions_with_vision([fig])
@@ -69,6 +73,7 @@ class TestCaptionMatcher:
     @patch("app.pipeline.figures.caption_matcher.os.path.exists", return_value=True)
     def test_vision_enhancement_calls_client(self, mock_exists):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         vision = MagicMock()
         vision.analyze_figure.return_value = "A chart showing data"
         m = CaptionMatcher()
@@ -81,6 +86,7 @@ class TestCaptionMatcher:
     @patch("app.pipeline.figures.caption_matcher.os.path.exists", return_value=True)
     def test_vision_enhancement_existing_caption(self, mock_exists):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         vision = MagicMock()
         vision.analyze_figure.return_value = "Enhanced description"
         m = CaptionMatcher()
@@ -92,6 +98,7 @@ class TestCaptionMatcher:
 
     def test_convenience_function(self):
         from app.pipeline.figures.caption_matcher import link_figures
+
         doc = MagicMock()
         doc.blocks = []
         doc.figures = []
@@ -102,11 +109,13 @@ class TestCaptionMatcher:
 
     def test_enable_vision_init(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         m = CaptionMatcher(enable_vision=True)
         assert m.enable_vision is True
 
     def test_vision_enhancement_exception(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         vision = MagicMock()
         vision.analyze_figure.side_effect = RuntimeError("vision failed")
         m = CaptionMatcher()

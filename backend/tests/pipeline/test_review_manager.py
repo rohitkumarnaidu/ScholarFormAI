@@ -30,6 +30,7 @@ class TestReviewManager:
 
     def test_init_validates_thresholds(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         with pytest.raises(ValueError, match="critical_threshold"):
             ReviewManager(review_threshold=0.5, critical_threshold=0.6)
         with pytest.raises(ValueError, match="Thresholds must be between"):
@@ -37,6 +38,7 @@ class TestReviewManager:
 
     def test_ok_status(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         doc = self._make_doc(blocks=[self._make_block(confidence=0.95)])
         rm = ReviewManager(review_threshold=0.7, critical_threshold=0.45)
         result = rm.evaluate(doc)
@@ -44,6 +46,7 @@ class TestReviewManager:
 
     def test_review_status(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         doc = self._make_doc(blocks=[self._make_block(confidence=0.6)])
         rm = ReviewManager(review_threshold=0.7, critical_threshold=0.45)
         result = rm.evaluate(doc)
@@ -51,6 +54,7 @@ class TestReviewManager:
 
     def test_critical_status(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         doc = self._make_doc(blocks=[self._make_block(confidence=0.3)])
         rm = ReviewManager(review_threshold=0.7, critical_threshold=0.45)
         result = rm.evaluate(doc)
@@ -58,6 +62,7 @@ class TestReviewManager:
 
     def test_ai_hints_confidence(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         doc = self._make_doc(blocks=[self._make_block(confidence=0.95)])
         doc.metadata.ai_hints = {"semantic_advice": {"confidence": 0.5}}
         rm = ReviewManager(review_threshold=0.7, critical_threshold=0.45)
@@ -66,6 +71,7 @@ class TestReviewManager:
 
     def test_confidence_from_nlp_fallback(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         b = self._make_block(block_id="b1")
         b.classification_confidence = None
         b.metadata = {"nlp_confidence": 0.3}
@@ -76,6 +82,7 @@ class TestReviewManager:
 
     def test_confidence_from_attribute(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         b = MagicMock()
         b.block_id = "b1"
         b.metadata = {}
@@ -88,6 +95,7 @@ class TestReviewManager:
 
     def test_flags_limited_to_5(self):
         from app.pipeline.validation.review_manager import ReviewManager
+
         blocks = [self._make_block(block_id=f"b{i}", confidence=0.3) for i in range(10)]
         doc = self._make_doc(blocks=blocks)
         rm = ReviewManager(review_threshold=0.7, critical_threshold=0.45)

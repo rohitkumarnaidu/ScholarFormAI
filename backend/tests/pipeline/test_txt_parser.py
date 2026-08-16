@@ -134,6 +134,7 @@ class TestTxtParserExtractBlocks:
         f = tmp_path / "id.txt"
         f.write_text("Test")
         from uuid import UUID
+
         doc = parser.parse(str(f), UUID("12345678-1234-5678-1234-567812345678"))
         assert isinstance(doc.document_id, str)
 

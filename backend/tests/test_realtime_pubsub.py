@@ -28,6 +28,7 @@ class TestRedisPubSub:
             mock_settings.REDIS_URL = "redis://localhost:6379"
             mock_settings.REDIS_ENABLED = False
             from app.realtime.pubsub import RedisPubSub
+
             ps = RedisPubSub()
             ps._redis_warning_logged = False
             ps._force_fallback = False
@@ -118,6 +119,7 @@ class TestRedisPubSub:
             mock_settings.REDIS_URL = "redis://localhost:6379"
             mock_settings.REDIS_ENABLED = True
             from app.realtime.pubsub import RedisPubSub
+
             ps = RedisPubSub()
             ps._redis_warning_logged = False
             mock_client = AsyncMock()
@@ -134,6 +136,7 @@ class TestRedisPubSub:
             mock_settings.REDIS_URL = "redis://localhost:6379"
             mock_settings.REDIS_ENABLED = True
             from app.realtime.pubsub import RedisPubSub
+
             ps = RedisPubSub()
             ps._redis_warning_logged = False
             with patch("app.realtime.pubsub.aioredis") as mock_aioredis:

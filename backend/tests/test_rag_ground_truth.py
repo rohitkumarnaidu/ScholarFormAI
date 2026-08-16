@@ -133,7 +133,10 @@ GROUND_TRUTH = [
         "query": "Cambridge University Press book proposal format",
         "relevant_docs": [
             {"text": "CUP book proposals require a synopsis, chapter outline, and sample chapter.", "relevance": 3},
-            {"text": "Cambridge University Press proposals include market analysis and competing titles.", "relevance": 2},
+            {
+                "text": "Cambridge University Press proposals include market analysis and competing titles.",
+                "relevance": 2,
+            },
         ],
         "irrelevant_docs": [
             {"text": "Oxford University Press proposals require a different submission system.", "relevance": 0},
@@ -143,7 +146,10 @@ GROUND_TRUTH = [
         "query": "Taylor and Francis figure copyright permission",
         "relevant_docs": [
             {"text": "Taylor & Francis requires written permission for previously published figures.", "relevance": 3},
-            {"text": "Taylor & Francis figure permissions must include the copyright holder signature.", "relevance": 2},
+            {
+                "text": "Taylor & Francis figure permissions must include the copyright holder signature.",
+                "relevance": 2,
+            },
         ],
         "irrelevant_docs": [
             {"text": "Springer allows use of figures under CC-BY license without permission.", "relevance": 0},
@@ -227,6 +233,7 @@ GROUND_TRUTH = [
 # IR metric helpers (same as test_rag_quality.py)
 # ---------------------------------------------------------------------------
 
+
 def _dcg(relevances: list[float]) -> float:
     dcg = 0.0
     for i, rel in enumerate(relevances):
@@ -282,6 +289,7 @@ def _mrr(ranked_results: list[list[float]]) -> float:
 # Build ranked relevance lists from the ground truth dataset
 # ---------------------------------------------------------------------------
 
+
 def _ranked_relevances(gt_item) -> list[float]:
     """Simulate a ranked retrieval: relevant docs first, then irrelevant."""
     rel_scores = sorted((d["relevance"] for d in gt_item["relevant_docs"]), reverse=True)
@@ -297,9 +305,11 @@ def _total_relevant(gt_item) -> int:
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def rag_engine(tmp_path):
     from app.pipeline.intelligence.rag_engine import RagEngine
+
     persist = str(tmp_path / "rag_ground_truth")
     with (
         patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None),
@@ -335,6 +345,7 @@ def populated_rag(rag_engine):
 # ---------------------------------------------------------------------------
 # 1A: Ground Truth Dataset Integrity
 # ---------------------------------------------------------------------------
+
 
 class TestGroundTruthDataset:
     """Verify the ground truth dataset is internally consistent."""
@@ -387,6 +398,7 @@ class TestGroundTruthDataset:
 # ---------------------------------------------------------------------------
 # 1B: Precision@k and Recall@k Tests (~10 tests)
 # ---------------------------------------------------------------------------
+
 
 class TestPrecisionAtK:
     """Precision@k measures: proportion of top-k results that are relevant."""
@@ -561,6 +573,7 @@ class TestRecallAtK:
 # 1C: Mean Reciprocal Rank (MRR) Tests (~5 tests)
 # ---------------------------------------------------------------------------
 
+
 class TestMRRGroundTruth:
     """Mean Reciprocal Rank — first relevant result position."""
 
@@ -614,6 +627,7 @@ class TestMRRGroundTruth:
 # ---------------------------------------------------------------------------
 # 1D: Cross-Publisher Relevance Tests (~5 tests)
 # ---------------------------------------------------------------------------
+
 
 class TestCrossPublisherRelevance:
     """Verify publisher isolation in ground truth retrieval."""
@@ -673,6 +687,7 @@ class TestCrossPublisherRelevance:
 # ---------------------------------------------------------------------------
 # 1E: Retrieval Robustness Tests (~6 tests)
 # ---------------------------------------------------------------------------
+
 
 class TestRetrievalRobustness:
     """Robustness of ground truth retrieval against weird queries."""

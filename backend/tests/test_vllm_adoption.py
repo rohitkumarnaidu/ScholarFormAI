@@ -44,15 +44,15 @@ class MockPromCollector:
     def collect(self):
         class MockMetric:
             name = "mock_metric"
-        mock = type("M", (), {"samples": [
-            type("S", (), {"name": "mock_metric_total", "value": self._value})()
-        ]})()
+
+        mock = type("M", (), {"samples": [type("S", (), {"name": "mock_metric_total", "value": self._value})()]})()
         return [mock]
 
 
 class TestGetLlmRequestsTotal:
     def test_returns_total(self):
         from app.services.vllm_adoption import get_llm_requests_total
+
         mock_collector = MockPromCollector(1500.0)
         with patch("app.middleware.prometheus_metrics.LLM_REQUESTS_TOTAL", mock_collector):
             result = get_llm_requests_total()
@@ -62,6 +62,7 @@ class TestGetLlmRequestsTotal:
 class TestGetLlmTokensTotal:
     def test_returns_total(self):
         from app.services.vllm_adoption import get_llm_tokens_total
+
         mock_collector = MockPromCollector(2500000.0)
         with patch("app.middleware.prometheus_metrics.AGENT_LLM_TOKENS_TOTAL", mock_collector):
             result = get_llm_tokens_total()
@@ -71,6 +72,7 @@ class TestGetLlmTokensTotal:
 class TestBuildVllmAdoptionReport:
     def test_returns_report(self):
         from app.services.vllm_adoption import build_vllm_adoption_report
+
         with patch("app.services.vllm_adoption.settings") as mock_s:
             mock_s.VLLM_ADOPTION_ENABLED = True
             mock_s.VLLM_TARGET_MODEL = "test/model"
@@ -89,6 +91,7 @@ class TestBuildVllmAdoptionReport:
 
     def test_hold_when_thresholds_not_met(self):
         from app.services.vllm_adoption import build_vllm_adoption_report
+
         with patch("app.services.vllm_adoption.settings") as mock_s:
             mock_s.VLLM_ADOPTION_ENABLED = True
             mock_s.VLLM_TARGET_MODEL = "test/model"

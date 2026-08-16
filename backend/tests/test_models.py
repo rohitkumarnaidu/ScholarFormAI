@@ -97,19 +97,16 @@ class TestTable:
         assert tbl.num_rows == 3
 
     def test_has_caption(self):
-        tbl = Table(table_id="tbl_001", num_rows=2, num_cols=2, index=0, block_index=0,
-                    caption_text="Table 1: Results")
+        tbl = Table(table_id="tbl_001", num_rows=2, num_cols=2, index=0, block_index=0, caption_text="Table 1: Results")
         assert tbl.has_caption()
 
     def test_has_caption_empty(self):
-        tbl = Table(table_id="tbl_001", num_rows=2, num_cols=2, index=0, block_index=0,
-                    caption_text="")
+        tbl = Table(table_id="tbl_001", num_rows=2, num_cols=2, index=0, block_index=0, caption_text="")
         assert not tbl.has_caption()
 
     def test_get_cell(self):
         cell = TableCell(row=1, col=2, text="Value")
-        tbl = Table(table_id="tbl_001", num_rows=3, num_cols=3, index=0, block_index=0,
-                     cells=[cell])
+        tbl = Table(table_id="tbl_001", num_rows=3, num_cols=3, index=0, block_index=0, cells=[cell])
         result = tbl.get_cell(1, 2)
         assert result is not None
         assert result.text == "Value"
@@ -123,13 +120,11 @@ class TestTable:
         assert tbl.get_cell(-1, 0) is None
 
     def test_get_display_label_with_label(self):
-        tbl = Table(table_id="tbl_001", num_rows=2, num_cols=2, index=0, block_index=0,
-                    label="Table 1")
+        tbl = Table(table_id="tbl_001", num_rows=2, num_cols=2, index=0, block_index=0, label="Table 1")
         assert tbl.get_display_label() == "Table 1"
 
     def test_get_display_label_with_number(self):
-        tbl = Table(table_id="tbl_001", num_rows=2, num_cols=2, index=0, block_index=0,
-                    number=3)
+        tbl = Table(table_id="tbl_001", num_rows=2, num_cols=2, index=0, block_index=0, number=3)
         assert tbl.get_display_label() == "Table 3"
 
     def test_get_display_label_fallback(self):
@@ -137,8 +132,7 @@ class TestTable:
         assert "Table tbl_001" in tbl.get_display_label()
 
     def test_get_row_data_from_rows(self):
-        tbl = Table(table_id="tbl_001", num_rows=2, num_cols=2, index=0, block_index=0,
-                     rows=[["a", "b"], ["c", "d"]])
+        tbl = Table(table_id="tbl_001", num_rows=2, num_cols=2, index=0, block_index=0, rows=[["a", "b"], ["c", "d"]])
         assert tbl.get_row_data(0) == ["a", "b"]
 
     def test_get_row_data_negative(self):
@@ -152,58 +146,58 @@ class TestTable:
 
 class TestReference:
     def test_create_reference(self):
-        ref = Reference(reference_id="ref_001", citation_key="Smith2020",
-                        raw_text="Smith, J. (2020). A paper.", index=0)
+        ref = Reference(
+            reference_id="ref_001", citation_key="Smith2020", raw_text="Smith, J. (2020). A paper.", index=0
+        )
         assert ref.reference_id == "ref_001"
         assert ref.citation_key == "Smith2020"
 
     def test_get_primary_author(self):
-        ref = Reference(reference_id="ref_001", citation_key="Smith2020",
-                        raw_text="", index=0, authors=["Smith, J.", "Doe, A."])
+        ref = Reference(
+            reference_id="ref_001", citation_key="Smith2020", raw_text="", index=0, authors=["Smith, J.", "Doe, A."]
+        )
         assert ref.get_primary_author() == "Smith, J."
 
     def test_get_primary_author_empty(self):
-        ref = Reference(reference_id="ref_001", citation_key="Smith2020",
-                        raw_text="", index=0)
+        ref = Reference(reference_id="ref_001", citation_key="Smith2020", raw_text="", index=0)
         assert ref.get_primary_author() is None
 
     def test_get_author_list_under_limit(self):
-        ref = Reference(reference_id="ref_001", citation_key="Smith2020",
-                        raw_text="", index=0, authors=["Smith, J."])
+        ref = Reference(reference_id="ref_001", citation_key="Smith2020", raw_text="", index=0, authors=["Smith, J."])
         assert ref.get_author_list() == "Smith, J."
 
     def test_get_author_list_et_al(self):
-        ref = Reference(reference_id="ref_001", citation_key="Smith2020",
-                        raw_text="", index=0,
-                        authors=["Smith, J.", "Doe, A.", "Lee, K.", "Wang, L."])
+        ref = Reference(
+            reference_id="ref_001",
+            citation_key="Smith2020",
+            raw_text="",
+            index=0,
+            authors=["Smith, J.", "Doe, A.", "Lee, K.", "Wang, L."],
+        )
         assert "et al." in ref.get_author_list(max_authors=3)
 
     def test_get_author_list_empty(self):
-        ref = Reference(reference_id="ref_001", citation_key="Smith2020",
-                        raw_text="", index=0)
+        ref = Reference(reference_id="ref_001", citation_key="Smith2020", raw_text="", index=0)
         assert ref.get_author_list() == "Unknown"
 
     def test_get_short_citation(self):
-        ref = Reference(reference_id="ref_001", citation_key="Smith2020",
-                        raw_text="", index=0)
+        ref = Reference(reference_id="ref_001", citation_key="Smith2020", raw_text="", index=0)
         assert ref.get_short_citation() == "Smith2020"
 
     def test_has_doi(self):
-        ref = Reference(reference_id="ref_001", citation_key="Smith2020",
-                        raw_text="", index=0, doi="10.1234/abc")
+        ref = Reference(reference_id="ref_001", citation_key="Smith2020", raw_text="", index=0, doi="10.1234/abc")
         assert ref.has_doi()
 
     def test_has_no_doi(self):
-        ref = Reference(reference_id="ref_001", citation_key="Smith2020",
-                        raw_text="", index=0)
+        ref = Reference(reference_id="ref_001", citation_key="Smith2020", raw_text="", index=0)
         assert not ref.has_doi()
 
     def test_reference_type_default(self):
-        ref = Reference(reference_id="ref_001", citation_key="Smith2020",
-                        raw_text="", index=0)
+        ref = Reference(reference_id="ref_001", citation_key="Smith2020", raw_text="", index=0)
         assert ref.reference_type == ReferenceType.UNKNOWN
 
     def test_citation_style(self):
-        ref = Reference(reference_id="ref_001", citation_key="Smith2020",
-                        raw_text="", index=0, style=CitationStyle.IEEE)
+        ref = Reference(
+            reference_id="ref_001", citation_key="Smith2020", raw_text="", index=0, style=CitationStyle.IEEE
+        )
         assert ref.style == CitationStyle.IEEE

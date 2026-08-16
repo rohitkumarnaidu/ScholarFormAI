@@ -16,11 +16,13 @@ pytestmark = [pytest.mark.pipeline]
 # classifier.py — ContentClassifier (52% → 70%+)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestClassifierCoverageGaps:
     """Targets uncovered branches in ContentClassifier."""
 
     def test_looks_like_heading_via_metadata(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.text = "anything"
         b.metadata = {"is_heading_candidate": True}
@@ -28,6 +30,7 @@ class TestClassifierCoverageGaps:
 
     def test_looks_like_heading_potential(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.text = "anything"
         b.metadata = {"potential_heading": True}
@@ -35,6 +38,7 @@ class TestClassifierCoverageGaps:
 
     def test_looks_like_heading_upper(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.text = "SHORT ALL CAPS"
         b.metadata = {}
@@ -42,6 +46,7 @@ class TestClassifierCoverageGaps:
 
     def test_looks_like_heading_title_lower_false(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.text = "lowercase heading but still short"
         b.metadata = {}
@@ -49,6 +54,7 @@ class TestClassifierCoverageGaps:
 
     def test_looks_like_heading_empty(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.text = ""
         b.metadata = {}
@@ -56,174 +62,215 @@ class TestClassifierCoverageGaps:
 
     def test_resolve_heading_type_block_level(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.metadata = {}
         b.level = 3
         bt, _ = ContentClassifier()._resolve_heading_type(b)
         from app.models.block import BlockType
+
         assert bt == BlockType.HEADING_3
 
     def test_resolve_heading_type_heading_level(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.metadata = {"heading_level": 2}
         b.level = 1
         bt, _ = ContentClassifier()._resolve_heading_type(b)
         from app.models.block import BlockType
+
         assert bt == BlockType.HEADING_2
 
     def test_map_llm_label_title(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.text = "Title"
         bt, si = ContentClassifier()._map_llm_label("TITLE", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.TITLE
 
     def test_map_llm_label_author_info_affiliation(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.text = "University of Testing"
         bt, si = ContentClassifier()._map_llm_label("AUTHOR_INFO", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.AFFILIATION
 
     def test_map_llm_label_author_info_author(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.text = "John Smith"
         bt, si = ContentClassifier()._map_llm_label("AUTHOR_INFO", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.AUTHOR
 
     def test_map_llm_label_abstract_heading(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.text = "Abstract"
         b.metadata = {}
         bt, si = ContentClassifier()._map_llm_label("ABSTRACT", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.ABSTRACT_HEADING
 
     def test_map_llm_label_abstract_body(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.text = "This paper presents a novel approach with many details that make it a body text not a heading"
         b.metadata = {}
         bt, si = ContentClassifier()._map_llm_label("ABSTRACT", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.ABSTRACT_BODY
 
     def test_map_llm_label_references_heading(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.text = "References"
         b.metadata = {}
         bt, si = ContentClassifier()._map_llm_label("REFERENCES", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.REFERENCES_HEADING
 
     def test_map_llm_label_references_entry(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.text = "1. J. Smith, A Very Long Paper Title That Exceeds Fifty Characters In Total Length"
         b.metadata = {}
         bt, si = ContentClassifier()._map_llm_label("REFERENCES", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.REFERENCE_ENTRY
 
     def test_map_llm_label_figure_caption(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         bt, si = ContentClassifier()._map_llm_label("FIGURE_CAPTION", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.FIGURE_CAPTION
 
     def test_map_llm_label_table_caption(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         bt, si = ContentClassifier()._map_llm_label("TABLE_CAPTION", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.TABLE_CAPTION
 
     def test_map_llm_label_acknowledgements(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         bt, si = ContentClassifier()._map_llm_label("ACKNOWLEDGEMENTS", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.ACKNOWLEDGEMENTS
 
     def test_map_llm_label_equation(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         bt, si = ContentClassifier()._map_llm_label("EQUATION", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.EQUATION
 
     def test_map_llm_label_methodology_heading(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.metadata = {"level": 1}
         b.level = None
         b.text = "Methodology"
         bt, si = ContentClassifier()._map_llm_label("METHODOLOGY", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.HEADING_1
 
     def test_map_llm_label_methodology_body(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.text = "Long body text about methodology that goes way over the threshold"
         b.metadata = {}
         bt, si = ContentClassifier()._map_llm_label("METHODOLOGY", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.BODY
 
     def test_map_llm_label_conclusion_heading(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.metadata = {"level": 2}
         b.text = "Conclusion"
         bt, si = ContentClassifier()._map_llm_label("CONCLUSION", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.HEADING_2
 
     def test_map_llm_label_heading(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.metadata = {"level": 1}
         bt, si = ContentClassifier()._map_llm_label("HEADING", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.HEADING_1
 
     def test_map_llm_label_body(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         bt, si = ContentClassifier()._map_llm_label("BODY", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.BODY
 
     def test_map_llm_label_unknown_default(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         bt, si = ContentClassifier()._map_llm_label("SOME_UNKNOWN_LABEL", b)
         from app.models.block import BlockType
+
         assert bt == BlockType.BODY
 
     def test_predict_llm_batch_disabled(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=False):
             result = ContentClassifier()._predict_llm_batch([MagicMock()])
             assert result is None
 
     def test_predict_llm_batch_empty_blocks(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
             result = ContentClassifier()._predict_llm_batch([])
             assert result == []
 
     def test_predict_llm_batch_success(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
             with patch("app.pipeline.classification.classifier.get_llm_classifier") as mock_get:
                 mock_clf = mock_get.return_value
@@ -236,6 +283,7 @@ class TestClassifierCoverageGaps:
 
     def test_predict_llm_batch_exception(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         with patch("app.pipeline.classification.classifier.should_enable_llm_classification", return_value=True):
             with patch("app.pipeline.classification.classifier.get_llm_classifier") as mock_get:
                 mock_get.side_effect = Exception("Not available")
@@ -244,11 +292,13 @@ class TestClassifierCoverageGaps:
 
     def test_apply_llm_predictions_none(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         cc._apply_llm_predictions([MagicMock()], None)
 
     def test_apply_llm_predictions_fewer_predictions_than_blocks(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b1 = MagicMock()
         b1.metadata = {}
@@ -260,6 +310,7 @@ class TestClassifierCoverageGaps:
 
     def test_apply_llm_predictions_empty_pred(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -268,6 +319,7 @@ class TestClassifierCoverageGaps:
 
     def test_apply_llm_predictions_no_label(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -276,6 +328,7 @@ class TestClassifierCoverageGaps:
 
     def test_apply_llm_predictions_low_confidence(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -285,6 +338,7 @@ class TestClassifierCoverageGaps:
 
     def test_apply_llm_predictions_protected_block(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {"is_header": True}
@@ -294,6 +348,7 @@ class TestClassifierCoverageGaps:
 
     def test_apply_llm_predictions_not_overrideable_type(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -303,6 +358,7 @@ class TestClassifierCoverageGaps:
 
     def test_apply_llm_predictions_same_body(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -312,6 +368,7 @@ class TestClassifierCoverageGaps:
 
     def test_apply_llm_predictions_confidence_parse_error(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -322,6 +379,7 @@ class TestClassifierCoverageGaps:
     def test_find_first_section_index_title_skip(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         b1 = MagicMock()
         b1.metadata = {"is_heading_candidate": True}
         b1.block_type = BlockType.TITLE
@@ -335,6 +393,7 @@ class TestClassifierCoverageGaps:
 
     def test_find_first_section_index_long_text_break(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.metadata = {}
         b.text = "A" * 301
@@ -343,6 +402,7 @@ class TestClassifierCoverageGaps:
 
     def test_find_first_section_index_fallback_numbered(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.metadata = {}
         b.text = "1. Introduction"
@@ -351,6 +411,7 @@ class TestClassifierCoverageGaps:
 
     def test_find_first_section_index_fallback_keyword_abstract(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b = MagicMock()
         b.metadata = {}
         b.text = "Abstract"
@@ -359,6 +420,7 @@ class TestClassifierCoverageGaps:
 
     def test_find_first_section_index_i_limit(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         blocks = []
         for _i in range(31):
             b = MagicMock()
@@ -371,6 +433,7 @@ class TestClassifierCoverageGaps:
 
     def test_find_references_start_index_text_match(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b1 = MagicMock()
         b1.metadata = {"is_heading_candidate": True}
         b1.text = "References"
@@ -380,6 +443,7 @@ class TestClassifierCoverageGaps:
 
     def test_find_references_start_index_long_text(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         b1 = MagicMock()
         b1.metadata = {"is_heading_candidate": True}
         b1.text = "A" * 60
@@ -389,43 +453,54 @@ class TestClassifierCoverageGaps:
 
     def test_match_grobid_author_full_name(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         authors = [{"full_name": "John Smith", "given": "John", "family": "Smith"}]
         assert ContentClassifier()._match_grobid_author("John Smith", authors) is True
 
     def test_match_grobid_author_given_family(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         authors = [{"full_name": "", "given": "John", "family": "Smith"}]
         assert ContentClassifier()._match_grobid_author("John Smith", authors) is True
 
     def test_match_grobid_author_family_only_short(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         authors = [{"full_name": "", "given": "", "family": "Li"}]
         assert ContentClassifier()._match_grobid_author("John Li", authors) is False
 
     def test_match_grobid_author_family_only_long(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         authors = [{"full_name": "", "given": "", "family": "Williams"}]
         assert ContentClassifier()._match_grobid_author("Dr. Williams", authors) is True
 
     def test_match_grobid_affiliation_exact(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         affiliations = ["Massachusetts Institute of Technology"]
-        assert ContentClassifier()._match_grobid_affiliation("MIT - Massachusetts Institute of Technology", affiliations) is True
+        assert (
+            ContentClassifier()._match_grobid_affiliation("MIT - Massachusetts Institute of Technology", affiliations)
+            is True
+        )
 
     def test_match_grobid_affiliation_partial_overlap(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         affiliations = ["Stanford University, Palo Alto, California 94305"]
         text = "Stanford University, Palo Alto, California"
         assert ContentClassifier()._match_grobid_affiliation(text, affiliations) is True
 
     def test_match_grobid_affiliation_no_match(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         affiliations = ["Some Other University"]
         assert ContentClassifier()._match_grobid_affiliation("MIT", affiliations) is False
 
     def test_nlp_classify_fallback_footnote_digit_pattern(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -438,6 +513,7 @@ class TestClassifierCoverageGaps:
     def test_nlp_classify_fallback_footnote_bracket(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -450,6 +526,7 @@ class TestClassifierCoverageGaps:
     def test_nlp_classify_fallback_footnote_asterisk(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -462,6 +539,7 @@ class TestClassifierCoverageGaps:
     def test_nlp_classify_fallback_equation_hyphens(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -474,6 +552,7 @@ class TestClassifierCoverageGaps:
     def test_nlp_classify_fallback_equation_sum(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -486,6 +565,7 @@ class TestClassifierCoverageGaps:
     def test_nlp_classify_fallback_table_tabs(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -498,6 +578,7 @@ class TestClassifierCoverageGaps:
     def test_nlp_classify_fallback_table_pipes(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -508,6 +589,7 @@ class TestClassifierCoverageGaps:
 
     def test_nlp_classify_fallback_skips_protected(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = "UNKNOWN"
@@ -517,6 +599,7 @@ class TestClassifierCoverageGaps:
 
     def test_nlp_classify_fallback_empty_text(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = "UNKNOWN"
@@ -549,6 +632,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_title_in_front_matter(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -564,6 +648,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_figure_caption(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -579,6 +664,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_table_caption(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -593,6 +679,7 @@ class TestClassifierCoverageGaps:
 
     def test_classification_loop_empty_text(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -606,6 +693,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_grobid_title_match(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -622,6 +710,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_grobid_title_not_matching(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -638,6 +727,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_grobid_author_match(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         t = MagicMock()
         t.metadata = {}
@@ -668,6 +758,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_grobid_affiliation_match(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         t = MagicMock()
         t.metadata = {}
@@ -705,6 +796,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_author_regex(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         t = MagicMock()
         t.metadata = {}
@@ -727,6 +819,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_affiliation_rule(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         t = MagicMock()
         t.metadata = {}
@@ -749,6 +842,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_email_pattern(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         t = MagicMock()
         t.metadata = {}
@@ -771,6 +865,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_email_affiliation(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         t = MagicMock()
         t.metadata = {}
@@ -793,6 +888,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_references_heading(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -819,6 +915,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_abstract_heading_in_body(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -836,6 +933,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_keywords_heading(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -853,6 +951,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_funding_heading(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -870,6 +969,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_conflict_heading(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -887,6 +987,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_acknowledgements_heading(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -904,6 +1005,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_appendix_heading(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -921,6 +1023,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_abstract_body(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -945,6 +1048,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_keywords_body(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -970,6 +1074,7 @@ class TestClassifierCoverageGaps:
         """_nlp_classify_fallback detects footnote patterns via regex."""
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.block_type = BlockType.UNKNOWN
@@ -982,6 +1087,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_references_heading_candidate_level_1(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         h = MagicMock()
         h.metadata = {"is_heading_candidate": True}
@@ -1008,6 +1114,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_fallback_confidence_nlp(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         fn = MagicMock()
         fn.metadata = {"nlp_confidence": 0.75}
@@ -1023,6 +1130,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_fallback_last_resort(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         fn = MagicMock()
         fn.metadata = {}
@@ -1038,6 +1146,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_standard_heading_regex(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -1053,6 +1162,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_unnumbered_standard_heading(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -1068,6 +1178,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_unnumbered_standard_heading_colon(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {}
@@ -1083,6 +1194,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_heading_level_2(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b2 = MagicMock()
         b2.metadata = {"is_heading_candidate": True, "level": 2}
@@ -1100,6 +1212,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_heading_level_3(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {"is_heading_candidate": True, "level": 3}
@@ -1117,6 +1230,7 @@ class TestClassifierCoverageGaps:
     def test_classification_loop_heading_level_4(self):
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {"is_heading_candidate": True, "level": 4}
@@ -1133,6 +1247,7 @@ class TestClassifierCoverageGaps:
 
     def test_classification_loop_process_exception(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         doc = self._make_doc([])
         with patch.object(cc, "_run_classification", side_effect=Exception("boom")):
@@ -1141,6 +1256,7 @@ class TestClassifierCoverageGaps:
 
     def test_classification_loop_empty_blocks(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         doc = self._make_doc([])
         result = self._run_process(cc, doc)
@@ -1148,6 +1264,7 @@ class TestClassifierCoverageGaps:
 
     def test_classification_loop_protected_footer(self):
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         b = MagicMock()
         b.metadata = {"is_footer": True}
@@ -1162,6 +1279,7 @@ class TestClassifierCoverageGaps:
         """Tests the _is_likely_affiliation fallback path (no explicit University/etc)."""
         from app.models.block import BlockType
         from app.pipeline.classification.classifier import ContentClassifier
+
         cc = ContentClassifier()
         t = MagicMock()
         t.metadata = {}
@@ -1186,17 +1304,20 @@ class TestClassifierCoverageGaps:
 # formatter.py — Formatter (71% → 80%+)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestFormatterCoverageGaps:
     """Targets uncovered branches in Formatter."""
 
     def test_resolve_page_size_from_options(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         result = f._resolve_page_size("ieee", {"page_size": "Legal"})
         assert result == "Legal"
 
     def test_resolve_page_size_from_contract(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         with patch.object(f.contract_loader, "load", return_value={"layout": {"page_size": "A4"}}):
             result = f._resolve_page_size("ieee", {})
@@ -1204,6 +1325,7 @@ class TestFormatterCoverageGaps:
 
     def test_resolve_page_size_fallback_letter(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         with patch.object(f.contract_loader, "load", return_value={"layout": {}}):
             result = f._resolve_page_size("ieee", {})
@@ -1211,10 +1333,13 @@ class TestFormatterCoverageGaps:
 
     def test_get_target_columns_override(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
-        with patch.object(f.contract_loader, "load", return_value={
-            "layout": {"default_columns": 1, "section_overrides": {"abstract": 2}}
-        }):
+        with patch.object(
+            f.contract_loader,
+            "load",
+            return_value={"layout": {"default_columns": 1, "section_overrides": {"abstract": 2}}},
+        ):
             b = MagicMock()
             b.section_name = "Abstract"
             result = f._get_target_columns(b, "ieee")
@@ -1222,6 +1347,7 @@ class TestFormatterCoverageGaps:
 
     def test_get_target_columns_default(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         with patch.object(f.contract_loader, "load", return_value={"layout": {"default_columns": 2}}):
             b = MagicMock()
@@ -1231,34 +1357,41 @@ class TestFormatterCoverageGaps:
 
     def test_coerce_bool_option_none_default(self):
         from app.pipeline.formatting.formatter import Formatter
+
         assert Formatter._coerce_bool_option(None, True) is True
 
     def test_coerce_bool_option_int(self):
         from app.pipeline.formatting.formatter import Formatter
+
         assert Formatter._coerce_bool_option(1, False) is True
         assert Formatter._coerce_bool_option(0, True) is False
 
     def test_coerce_bool_option_float(self):
         from app.pipeline.formatting.formatter import Formatter
+
         assert Formatter._coerce_bool_option(0.0, True) is False
 
     def test_coerce_bool_option_string_on(self):
         from app.pipeline.formatting.formatter import Formatter
+
         assert Formatter._coerce_bool_option("yes", False) is True
         assert Formatter._coerce_bool_option("on", False) is True
 
     def test_coerce_bool_option_string_off(self):
         from app.pipeline.formatting.formatter import Formatter
+
         assert Formatter._coerce_bool_option("no", True) is False
         assert Formatter._coerce_bool_option("off", True) is False
         assert Formatter._coerce_bool_option("", True) is False
 
     def test_coerce_bool_option_unknown_fallback(self):
         from app.pipeline.formatting.formatter import Formatter
+
         assert Formatter._coerce_bool_option("maybe", False) is True
 
     def test_is_numbered_list_item_alpha(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         assert f._is_numbered_list_item("a. item") is True
         assert f._is_numbered_list_item("a) item") is True
@@ -1266,39 +1399,46 @@ class TestFormatterCoverageGaps:
 
     def test_is_numbered_list_item_false_no_match(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         assert f._is_numbered_list_item("normal text") is False
         assert f._is_numbered_list_item("") is False
 
     def test_paragraph_has_field_code_none(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         assert f._paragraph_has_field_code(None, "PAGE") is False
 
     def test_apply_spacing_from_contract_empty_rules(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         with patch.object(f.contract_loader, "load", return_value={"layout": {}}):
             f._apply_spacing_from_contract(MagicMock(), MagicMock(), "ieee")
 
     def test_apply_spacing_from_contract_heading(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
-        with patch.object(f.contract_loader, "load", return_value={
-            "layout": {"spacing": {"heading": {"before": 12, "after": 6}}}
-        }):
+        with patch.object(
+            f.contract_loader, "load", return_value={"layout": {"spacing": {"heading": {"before": 12, "after": 6}}}}
+        ):
             b = MagicMock()
             b.is_heading.return_value = True
             p = MagicMock()
             f._apply_spacing_from_contract(p, b, "ieee")
-            import pytest; pytest.skip("needs Pt import")
+            import pytest
+
+            pytest.skip("needs Pt import")
 
     def test_apply_spacing_from_contract_references(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
-        with patch.object(f.contract_loader, "load", return_value={
-            "layout": {"spacing": {"references": {"before": 6, "after": 6}}}
-        }):
+        with patch.object(
+            f.contract_loader, "load", return_value={"layout": {"spacing": {"references": {"before": 6, "after": 6}}}}
+        ):
             b = MagicMock()
             b.is_heading.return_value = False
             b.block_type = "REFERENCE_ENTRY"
@@ -1307,6 +1447,7 @@ class TestFormatterCoverageGaps:
 
     def test_render_block_empty_with_figure(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         doc = MagicMock()
         b = MagicMock()
@@ -1317,6 +1458,7 @@ class TestFormatterCoverageGaps:
 
     def test_render_block_empty_with_equation(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         doc = MagicMock()
         b = MagicMock()
@@ -1327,6 +1469,7 @@ class TestFormatterCoverageGaps:
 
     def test_render_block_style_exception_uses_fallback(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         doc = MagicMock()
         doc.add_paragraph.side_effect = [Exception("Style not found"), MagicMock()]
@@ -1341,6 +1484,7 @@ class TestFormatterCoverageGaps:
 
     def test_render_block_empty_after_exception(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         doc = MagicMock()
         doc.add_paragraph.side_effect = [Exception("fail"), MagicMock()]
@@ -1354,8 +1498,10 @@ class TestFormatterCoverageGaps:
 
     def test_build_footnote_lookup_duplicate(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         from app.models.block import BlockType
+
         b1 = MagicMock()
         b1.block_type = BlockType.FOOTNOTE
         b1.text = "First footnote"
@@ -1373,6 +1519,7 @@ class TestFormatterCoverageGaps:
 
     def test_build_footnote_lookup_endnote(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         b = MagicMock()
         b.block_type = "BODY"
@@ -1386,8 +1533,10 @@ class TestFormatterCoverageGaps:
 
     def test_build_footnote_lookup_empty_text(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         from app.models.block import BlockType
+
         b = MagicMock()
         b.block_type = BlockType.FOOTNOTE
         b.text = ""
@@ -1400,25 +1549,33 @@ class TestFormatterCoverageGaps:
 
     def test_add_table_of_contents_prepend(self):
         import pytest
+
         pytest.skip("Requires python-docx runtime with proper lxml stubs")
 
     def test_resolve_bool_option_not_dict(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         assert f._resolve_bool_option(None, "key", default=True) is True
 
     def test_resolve_bool_option_empty_dict(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         assert f._resolve_bool_option({}, "key", default=True) is True
 
     def test_resolve_bool_option_aliases(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
-        assert f._resolve_bool_option({"add_cover_page": True}, "cover_page", aliases=("add_cover_page",), default=False) is True
+        assert (
+            f._resolve_bool_option({"add_cover_page": True}, "cover_page", aliases=("add_cover_page",), default=False)
+            is True
+        )
 
     def test_remove_static_toc_block_not_found(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         doc = MagicMock()
         doc.paragraphs = []
@@ -1426,6 +1583,7 @@ class TestFormatterCoverageGaps:
 
     def test_remove_static_toc_block_with_empty(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         p1 = MagicMock()
         p1.text = "Table of Contents"
@@ -1445,6 +1603,7 @@ class TestFormatterCoverageGaps:
 
     def test_ensure_dynamic_toc_already_present(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         doc = MagicMock()
         doc._body._element.xml = 'TOC \\o "1-3" \\h \\z \\u'
@@ -1452,6 +1611,7 @@ class TestFormatterCoverageGaps:
 
     def test_ensure_dynamic_toc_missing(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         doc = MagicMock()
         doc._body._element.xml = "no toc here"
@@ -1460,6 +1620,7 @@ class TestFormatterCoverageGaps:
 
     def test_remove_static_page_number_placeholders_no_match(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         doc = MagicMock()
         p = MagicMock()
@@ -1469,17 +1630,20 @@ class TestFormatterCoverageGaps:
 
     def test_document_contains_text_empty_needle(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         assert f._document_contains_text(MagicMock(), "") is False
 
     def test_load_contract_not_exists(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         result = f._load_contract("/nonexistent/path.yaml")
         assert result == {}
 
     def test_load_contract_parse_error(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         with patch("builtins.open", MagicMock(side_effect=Exception("parse error"))):
             result = f._load_contract("/some/path.yaml")
@@ -1487,6 +1651,7 @@ class TestFormatterCoverageGaps:
 
     def test_apply_global_line_spacing_none(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         with patch.object(f, "_resolve_line_spacing", return_value=None):
             doc = MagicMock()
@@ -1494,24 +1659,28 @@ class TestFormatterCoverageGaps:
 
     def test_resolve_line_spacing_invalid_value(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         result = f._resolve_line_spacing("ieee", {"line_spacing": "invalid"})
         assert result is None
 
     def test_resolve_line_spacing_negative(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         result = f._resolve_line_spacing("ieee", {"line_spacing": -1.0})
         assert result is None
 
     def test_resolve_line_spacing_add_line_spacing(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         result = f._resolve_line_spacing("ieee", {"add_line_spacing": 1.5})
         assert result == 1.5
 
     def test_resolve_line_spacing_from_contract(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         with patch.object(f.contract_loader, "load", return_value={"layout": {"line_spacing": 2.0}}):
             result = f._resolve_line_spacing("ieee", {})
@@ -1519,12 +1688,14 @@ class TestFormatterCoverageGaps:
 
     def test_resolve_line_spacing_empty_false(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         result = f._resolve_line_spacing("ieee", {"line_spacing": ""})
         assert result is None
 
     def test_apply_initial_layout_no_layout(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         with patch.object(f.contract_loader, "load", return_value={}):
             doc = MagicMock()
@@ -1532,6 +1703,7 @@ class TestFormatterCoverageGaps:
 
     def test_render_equation_with_number(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         eqn = MagicMock()
         eqn.text = "x = y"
@@ -1541,6 +1713,7 @@ class TestFormatterCoverageGaps:
 
     def test_render_equation_empty_text(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         eqn = MagicMock()
         eqn.text = ""
@@ -1550,6 +1723,7 @@ class TestFormatterCoverageGaps:
 
     def test_prepend_front_matter_as_cover_page(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         doc = MagicMock()
         doc_obj = MagicMock()
@@ -1563,6 +1737,7 @@ class TestFormatterCoverageGaps:
 
     def test_prepend_front_matter_no_affiliations(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         doc = MagicMock()
         doc_obj = MagicMock()
@@ -1575,10 +1750,12 @@ class TestFormatterCoverageGaps:
 
     def test_format_legacy_path_template_error(self):
         import pytest
+
         pytest.skip("Requires full python-docx runtime with proper lxml stubs")
 
     def test_format_legacy_none_template(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         doc = MagicMock()
         doc.template = MagicMock()
@@ -1598,6 +1775,7 @@ class TestFormatterCoverageGaps:
 
     def test_format_fallback_no_template_path(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir="/nonexistent_templates", contracts_dir=".")
         doc = MagicMock()
         doc.template = MagicMock()
@@ -1618,10 +1796,12 @@ class TestFormatterCoverageGaps:
 
     def test_write_inline_content_hyperlink_before_text(self):
         import pytest
+
         pytest.skip("Requires python-docx runtime lxml stubs for OxmlElement")
 
     def test_write_inline_content_remaining_text(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         paragraph = MagicMock()
         f._write_inline_content(
@@ -1634,6 +1814,7 @@ class TestFormatterCoverageGaps:
 
     def test_write_inline_content_no_content(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         paragraph = MagicMock()
         f._write_inline_content(
@@ -1646,6 +1827,7 @@ class TestFormatterCoverageGaps:
 
     def test_write_inline_content_hyperlink_missing_url(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         paragraph = MagicMock()
         f._write_inline_content(
@@ -1658,6 +1840,7 @@ class TestFormatterCoverageGaps:
 
     def test_write_inline_content_hyperlink_missing_label(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         paragraph = MagicMock()
         f._write_inline_content(
@@ -1670,11 +1853,13 @@ class TestFormatterCoverageGaps:
 
     def test_remove_paragraph_none(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         f._remove_paragraph(None)
 
     def test_prepend_paragraph_style_exception(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         doc = MagicMock()
         doc.add_paragraph.side_effect = [Exception("style fail"), MagicMock()]
@@ -1684,6 +1869,7 @@ class TestFormatterCoverageGaps:
 
     def test_prepend_paragraph_no_text(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         doc = MagicMock()
         doc._body._element = MagicMock()
@@ -1692,6 +1878,7 @@ class TestFormatterCoverageGaps:
 
     def test_patch_saved_docx_with_footnotes_fileobj(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         target = MagicMock()
         target.read.return_value = b"docx content with w:footnoteReference"
@@ -1702,6 +1889,7 @@ class TestFormatterCoverageGaps:
 
     def test_patch_saved_docx_empty_payload(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         target = MagicMock()
         target.read.return_value = b""
@@ -1711,6 +1899,7 @@ class TestFormatterCoverageGaps:
 
     def test_install_post_save_hook_already_installed(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         rendered = MagicMock()
         rendered._scholarform_save_hook_installed = True
@@ -1718,15 +1907,18 @@ class TestFormatterCoverageGaps:
 
     def test_install_post_save_hook_no_footnote_lookup(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         rendered = MagicMock()
         f._install_post_save_hook(rendered, {})
 
     def test_patch_docx_payload_no_references(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         from io import BytesIO
         from zipfile import ZipFile
+
         buf = BytesIO()
         with ZipFile(buf, "w") as z:
             z.writestr("word/document.xml", b"<xml>no references</xml>")
@@ -1736,6 +1928,7 @@ class TestFormatterCoverageGaps:
 
     def test_post_process_template_render_no_docx(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         rendered = MagicMock()
         rendered.docx = None
@@ -1743,6 +1936,7 @@ class TestFormatterCoverageGaps:
 
     def test_patch_content_types_existing(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         xml = b'<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Override PartName="/word/footnotes.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml"/></Types>'
         result = f._patch_content_types(xml)
@@ -1750,6 +1944,7 @@ class TestFormatterCoverageGaps:
 
     def test_patch_document_relationships_existing(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         xml = b'<?xml version="1.0"?><Relationships xmlns=""><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footnotes" Target="footnotes.xml"/></Relationships>'
         result = f._patch_document_relationships(xml)
@@ -1757,18 +1952,21 @@ class TestFormatterCoverageGaps:
 
     def test_patch_document_relationships_empty(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         result = f._patch_document_relationships(b"")
         assert b"Relationships" in result
 
     def test_patch_settings_xml_empty(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         result = f._patch_settings_xml(b"")
         assert result == b""
 
     def test_patch_settings_xml_existing(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         xml = b'<?xml version="1.0"?><w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:footnotePr/></w:settings>'
         result = f._patch_settings_xml(xml)
@@ -1776,6 +1974,7 @@ class TestFormatterCoverageGaps:
 
     def test_set_columns_no_existing(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         section = MagicMock()
         section._sectPr.xpath.return_value = []
@@ -1783,6 +1982,7 @@ class TestFormatterCoverageGaps:
 
     def test_set_columns_existing(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         section = MagicMock()
         cols = MagicMock()
@@ -1791,6 +1991,7 @@ class TestFormatterCoverageGaps:
 
     def test_set_columns_single_no_space(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         section = MagicMock()
         section._sectPr.xpath.return_value = []
@@ -1798,6 +1999,7 @@ class TestFormatterCoverageGaps:
 
     def test_find_matching_paragraph_exact(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         p = MagicMock()
         p.text = "Hello World"
@@ -1808,6 +2010,7 @@ class TestFormatterCoverageGaps:
 
     def test_find_matching_paragraph_substring(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         p1 = MagicMock()
         p1.text = "Some other text"
@@ -1820,6 +2023,7 @@ class TestFormatterCoverageGaps:
 
     def test_find_matching_paragraph_none(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         doc = MagicMock()
         doc.paragraphs = []
@@ -1828,6 +2032,7 @@ class TestFormatterCoverageGaps:
 
     def test_find_matching_paragraph_empty_needle(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         doc = MagicMock()
         doc.paragraphs = [MagicMock()]
@@ -1836,8 +2041,10 @@ class TestFormatterCoverageGaps:
 
     def test_clear_paragraph_content_removes_non_pPr(self):
         from app.pipeline.formatting.formatter import Formatter
+
         f = Formatter(templates_dir=".", contracts_dir=".")
         from docx.oxml.ns import qn
+
         p = MagicMock()
         p._p = MagicMock()
         child1 = MagicMock()
@@ -1852,6 +2059,7 @@ class TestFormatterCoverageGaps:
 # synthesizer.py — MultiDocSynthesizer (82% → 90%+)
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestSynthesizerCoverageGaps:
     """Targets uncovered branches in MultiDocSynthesizer."""
 
@@ -1860,10 +2068,13 @@ class TestSynthesizerCoverageGaps:
 
     @pytest.fixture(scope="class")
     def syn_cls(self):
-        with patch("app.pipeline.synthesis.synthesizer.RedisPubSub"), \
-             patch("app.pipeline.synthesis.synthesizer.get_crossref_client"), \
-             patch("app.pipeline.synthesis.synthesizer.CSLEngine"):
+        with (
+            patch("app.pipeline.synthesis.synthesizer.RedisPubSub"),
+            patch("app.pipeline.synthesis.synthesizer.get_crossref_client"),
+            patch("app.pipeline.synthesis.synthesizer.CSLEngine"),
+        ):
             from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
             TestSynthesizerCoverageGaps._md_cls = MultiDocSynthesizer
             return MultiDocSynthesizer, MultiDocSynthesizer(
                 session_service=MagicMock(),
@@ -1888,10 +2099,13 @@ class TestSynthesizerCoverageGaps:
     @pytest.fixture
     def syn(self, syn_and_cls):
         return syn_and_cls[1]
-        with patch("app.pipeline.synthesis.synthesizer.RedisPubSub"), \
-             patch("app.pipeline.synthesis.synthesizer.get_crossref_client"), \
-             patch("app.pipeline.synthesis.synthesizer.CSLEngine"):
+        with (
+            patch("app.pipeline.synthesis.synthesizer.RedisPubSub"),
+            patch("app.pipeline.synthesis.synthesizer.get_crossref_client"),
+            patch("app.pipeline.synthesis.synthesizer.CSLEngine"),
+        ):
             from app.pipeline.synthesis.synthesizer import MultiDocSynthesizer
+
             s = MultiDocSynthesizer(
                 session_service=MagicMock(),
                 vector_store=MagicMock(),
@@ -1954,7 +2168,7 @@ class TestSynthesizerCoverageGaps:
 
     def test_extract_json_fence_no_lang(self, syn_and_cls):
         cls, _ = syn_and_cls
-        result = cls._extract_json("```\n{\"a\":1}\n```")
+        result = cls._extract_json('```\n{"a":1}\n```')
         assert result == '{"a":1}'
 
     def test_extract_json_only_brackets(self, syn_and_cls):
@@ -1990,7 +2204,12 @@ class TestSynthesizerCoverageGaps:
     def test_insert_citations_multiple_authors(self, syn_and_cls):
         cls, _ = syn_and_cls
         s = MagicMock()
-        s.crossref.validate_citation.return_value = {"authors": "Smith, J, Doe, J", "title": "Paper", "doi": "", "url": ""}
+        s.crossref.validate_citation.return_value = {
+            "authors": "Smith, J, Doe, J",
+            "title": "Paper",
+            "doi": "",
+            "url": "",
+        }
         sections = [{"title": "Intro", "content": "[REF: Smith 2020]"}]
         result = cls._insert_citations(s, sections, "ieee")
         assert len(result["citations"]) == 1
@@ -2023,6 +2242,7 @@ class TestSynthesizerCoverageGaps:
         s = MagicMock()
         s._chunk_text = MagicMock(return_value=[])
         from app.models import Block, BlockType, PipelineDocument
+
         blocks = [
             Block(block_id="b1", index=0, text="Some text", block_type=BlockType.BODY, section_name="Intro"),
         ]
@@ -2036,6 +2256,7 @@ class TestSynthesizerCoverageGaps:
         s = MagicMock()
         s._chunk_text = MagicMock(return_value=[])
         from app.models import PipelineDocument
+
         doc = PipelineDocument(document_id="d1", blocks=[])
         extracted = [{"filename": "empty.docx", "doc_obj": doc}]
         chunks = cls._build_chunks(s, extracted)
@@ -2093,6 +2314,7 @@ class TestSynthesizerCoverageGaps:
     @pytest.mark.asyncio
     async def test_stream_chunks_with_extra(self, syn):
         import pytest
+
         pytest.skip("state-dependent; passes in isolation")
 
     @pytest.mark.asyncio

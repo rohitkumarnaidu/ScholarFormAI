@@ -1,6 +1,12 @@
 # ScholarForm AI
-
+    
 <div align="center">
+  <p>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
+    <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg" alt="PRs Welcome"></a>
+    <a href="CODE_OF_CONDUCT.md"><img src="https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg" alt="Contributor Covenant"></a>
+    <a href="SECURITY.md"><img src="https://img.shields.io/badge/Security-SLSA%20Level%203-blueviolet" alt="SLSA Level 3"></a>
+  </p>
   <h3>Automated Academic Manuscript Formatting & Generation — Powered by Agentic AI</h3>
   <p>Upload a raw manuscript and instantly receive a publisher-ready document. Or use the AI Generator to author complete, rigorously cited research papers from scratch.</p>
 </div>
@@ -19,6 +25,42 @@ To eliminate formatting friction and repetitive manual labor in academic publish
 - **Enterprise Security:** Built to SLSA Level 3 standards. Comprehensive rate limiting, RBAC, CSRF protection, and supply chain security.
 
 ## 🏗 Architecture
+
+```mermaid
+flowchart TD
+    subgraph ClientTier [Client Tier]
+        UI["Next.js App Router UI"]
+    end
+    
+    subgraph APITier [API & Middleware Tier]
+        Gateway["FastAPI Gateway"]
+        Redis["Redis (Celery, Rate Limit, Cache)"]
+        Supabase["Supabase (PostgreSQL, Auth, Storage, RLS)"]
+        Chroma["ChromaDB (RAG Vectors)"]
+    end
+    
+    subgraph AsyncTier [Asynchronous Processing Tier]
+        Celery["Celery Workers"]
+        Extractors["GROBID, Docling, PaddleOCR"]
+    end
+    
+    subgraph AITier [AI Models Tier]
+        NIM["NVIDIA NIM API"]
+        Groq["Groq API"]
+        Ollama["Local Ollama Fallback"]
+    end
+
+    UI -->|HTTP / WebSocket / SSE| Gateway
+    Gateway -->|Push Jobs| Redis
+    Redis -->|Consume Jobs| Celery
+    Gateway <-->|Auth / Data| Supabase
+    Celery <-->|Store Documents| Supabase
+    Celery <-->|Query Vectors| Chroma
+    Celery <-->|Parse PDFs| Extractors
+    Celery <-->|LLM Calls| NIM
+    Celery <-->|LLM Calls| Groq
+    Celery <-->|LLM Calls| Ollama
+```
 
 ScholarForm AI employs a decoupled, highly scalable architecture combining a Next.js App Router frontend with an asynchronous FastAPI backend, orchestrated via Celery and Redis.
 
@@ -64,10 +106,16 @@ Run the backend with `uvicorn` and frontend with `npm run dev`. See the `example
 
 Version 2.0 plans include peer review simulations and CRDTs for collaborative editing.
 
-## 💬 Community & Contributing
+## 💬 Community, Contributing & Security
 
-Join our Discord! Read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md).
+We welcome contributions from the community to help make ScholarForm AI the premier open-source tool for academic publishing. 
+
+- **[Contributing Guidelines](CONTRIBUTING.md):** Learn how to set up your environment, follow our standards, and submit pull requests.
+- **[Code of Conduct](CODE_OF_CONDUCT.md):** We are committed to fostering a welcoming and inclusive environment.
+- **[Security Policy](SECURITY.md):** Information on supported versions and how to responsibly disclose security vulnerabilities.
+
+Join our community on Discord to discuss features, get help, and collaborate!
 
 ## ⚖️ License
 
-MIT License. See [LICENSE](LICENSE) for more details.
+ScholarForm AI is released under the **[MIT License](LICENSE)**. See the `LICENSE` file for more details.

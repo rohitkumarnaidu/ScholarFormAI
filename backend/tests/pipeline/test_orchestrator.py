@@ -53,9 +53,11 @@ def doc_with_blocks():
 
 # ── Init ────────────────────────────────────────────────────────────────────
 
+
 class TestOrchestratorInit:
     def test_init_defaults(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         with (
             patch("app.pipeline.orchestrator.InputConverter"),
             patch("app.pipeline.orchestrator.ContentAnalyzer"),
@@ -77,6 +79,7 @@ class TestOrchestratorInit:
 
     def test_init_custom_paths(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         with (
             patch("app.pipeline.orchestrator.InputConverter"),
             patch("app.pipeline.orchestrator.ContentAnalyzer"),
@@ -92,6 +95,7 @@ class TestOrchestratorInit:
 
     def test_init_creates_temp_dir(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         with (
             patch("app.pipeline.orchestrator.InputConverter"),
             patch("app.pipeline.orchestrator.ContentAnalyzer"),
@@ -107,6 +111,7 @@ class TestOrchestratorInit:
 
 # ── Stage interface check ───────────────────────────────────────────────────
 
+
 class TestOrchestratorStageInterface:
     def test_check_stage_interface_passes(self, orch):
         obj = MagicMock()
@@ -121,25 +126,30 @@ class TestOrchestratorStageInterface:
 
 # ── Coerce bool ──────────────────────────────────────────────────────────────
 
+
 class TestOrchestratorCoerceBool:
     def test_none(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         assert PipelineOrchestrator._coerce_bool(None, True) is True
         assert PipelineOrchestrator._coerce_bool(None, False) is False
 
     def test_bool_passthrough(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         assert PipelineOrchestrator._coerce_bool(True, False) is True
         assert PipelineOrchestrator._coerce_bool(False, True) is False
 
     def test_int_float(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         assert PipelineOrchestrator._coerce_bool(1, False) is True
         assert PipelineOrchestrator._coerce_bool(0, True) is False
         assert PipelineOrchestrator._coerce_bool(0.0, True) is False
 
     def test_string_true(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         assert PipelineOrchestrator._coerce_bool("true", False) is True
         assert PipelineOrchestrator._coerce_bool("yes", False) is True
         assert PipelineOrchestrator._coerce_bool("1", False) is True
@@ -147,6 +157,7 @@ class TestOrchestratorCoerceBool:
 
     def test_string_false(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         assert PipelineOrchestrator._coerce_bool("false", True) is False
         assert PipelineOrchestrator._coerce_bool("no", True) is False
         assert PipelineOrchestrator._coerce_bool("0", True) is False
@@ -154,11 +165,13 @@ class TestOrchestratorCoerceBool:
 
     def test_unknown(self):
         from app.pipeline.orchestrator import PipelineOrchestrator
+
         assert PipelineOrchestrator._coerce_bool("maybe", True) is True
         assert PipelineOrchestrator._coerce_bool("maybe", False) is False
 
 
 # ── Resolve runtime flags ───────────────────────────────────────────────────
+
 
 class TestOrchestratorRuntimeFlags:
     def test_default_fast_mode_false(self, orch):
@@ -198,6 +211,7 @@ class TestOrchestratorRuntimeFlags:
 
 # ── SHA256 ───────────────────────────────────────────────────────────────────
 
+
 class TestOrchestratorSHA256:
     def test_compute_sha256(self, orch, tmp_path):
         f = tmp_path / "test.txt"
@@ -216,6 +230,7 @@ class TestOrchestratorSHA256:
 
 # ── Record stage transition / Prometheus metrics ─────────────────────────────
 
+
 class TestOrchestratorMetrics:
     def test_record_stage_transition_processing(self, orch):
         orch._record_stage_transition("job1", "EXTRACTION", "PROCESSING")
@@ -232,6 +247,7 @@ class TestOrchestratorMetrics:
 
 
 # ── Update status (Supabase) ────────────────────────────────────────────────
+
 
 class TestOrchestratorUpdateStatus:
     def test_update_status_no_supabase(self, orch):
@@ -264,6 +280,7 @@ class TestOrchestratorUpdateStatus:
     def test_update_status_transient_error_retry(self, orch):
         sb = MagicMock()
         from httpx import RemoteProtocolError
+
         mock_execute = MagicMock()
         mock_execute.side_effect = [
             RemoteProtocolError("Server disconnected"),
@@ -277,6 +294,7 @@ class TestOrchestratorUpdateStatus:
 
 # ── Check cancelled ─────────────────────────────────────────────────────────
 
+
 class TestOrchestratorCheckCancelled:
     def test_not_cancelled(self, orch):
         sb = MagicMock()
@@ -286,6 +304,7 @@ class TestOrchestratorCheckCancelled:
 
     def test_cancelled_raises(self, orch):
         import asyncio
+
         sb = MagicMock()
         sb.table.return_value.select.return_value.eq.return_value.execute.return_value.data = [{"status": "CANCELLED"}]
         with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
@@ -304,6 +323,7 @@ class TestOrchestratorCheckCancelled:
 
 
 # ── Persist partial result ──────────────────────────────────────────────────
+
 
 class TestOrchestratorPersistPartial:
     def test_persist_partial_result_no_sb(self, orch):
@@ -337,6 +357,7 @@ class TestOrchestratorPersistPartial:
 
 # ── Run with timeout ────────────────────────────────────────────────────────
 
+
 class TestOrchestratorRunWithTimeout:
     def test_run_with_timeout_success(self, orch):
         result = orch._run_with_timeout(lambda x: x.upper(), 5, "hello")
@@ -345,23 +366,29 @@ class TestOrchestratorRunWithTimeout:
     def test_run_with_timeout_timeout(self, orch):
         def slow_func():
             import time
+
             time.sleep(10)
             return "done"
+
         with pytest.raises(TimeoutError, match="timed out"):
             orch._run_with_timeout(slow_func, 1)
 
     def test_run_with_timeout_cancel_event(self, orch):
         cancel_event = threading.Event()
+
         def slow_func():
             import time
+
             time.sleep(10)
             return "done"
+
         with pytest.raises(TimeoutError):
             orch._run_with_timeout(slow_func, 1, cancel_event=cancel_event)
         assert cancel_event.is_set()
 
 
 # ── Skip docling for digital PDF ────────────────────────────────────────────
+
 
 class TestOrchestratorSkipDocling:
     def test_skip_docling_force(self, orch):
@@ -385,7 +412,10 @@ class TestOrchestratorSkipDocling:
             mock_s.PIPELINE_DOCLING_SKIP_DIGITAL_PDF = True
             with patch("fitz.open") as mock_fitz:
                 mock_page = MagicMock()
-                mock_page.get_text.return_value = "Hello world, this is a digital PDF with enough text to qualify for skipping the Docling layout pass completely. " * 5
+                mock_page.get_text.return_value = (
+                    "Hello world, this is a digital PDF with enough text to qualify for skipping the Docling layout pass completely. "
+                    * 5
+                )
                 mock_doc = MagicMock()
                 mock_doc.__len__.return_value = 1
                 mock_doc.__getitem__.return_value = mock_page
@@ -420,6 +450,7 @@ class TestOrchestratorSkipDocling:
 
 # ── PyMuPDF fallback metadata ───────────────────────────────────────────────
 
+
 class TestOrchestratorPyMuPDF:
     def test_extract_fallback_no_fitz(self, orch):
         result = orch._extract_pymupdf_fallback_metadata("/nonexistent/path.pdf")
@@ -450,41 +481,77 @@ class TestOrchestratorPyMuPDF:
 
 # ── Sync block confidence ────────────────────────────────────────────────────
 
+
 class TestOrchestratorSyncConfidence:
     def test_sync_block_confidence(self, orch):
-        doc = PipelineDocument(document_id="doc1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t",
-                  metadata={"classification_confidence": 0.85}),
-            Block(block_id="b2", index=2, block_type=BlockType.BODY, text="t",
-                  metadata={"classification_confidence": 0.45}),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="doc1",
+            blocks=[
+                Block(
+                    block_id="b1",
+                    index=1,
+                    block_type=BlockType.BODY,
+                    text="t",
+                    metadata={"classification_confidence": 0.85},
+                ),
+                Block(
+                    block_id="b2",
+                    index=2,
+                    block_type=BlockType.BODY,
+                    text="t",
+                    metadata={"classification_confidence": 0.45},
+                ),
+            ],
+            metadata=DocumentMetadata(),
+        )
         orch._sync_block_confidence(doc)
         assert doc.blocks[0].metadata["nlp_confidence"] == 0.85
         assert doc.blocks[1].metadata["nlp_confidence"] == 0.45
 
     def test_sync_block_confidence_fallback_nlp_confidence(self, orch):
-        doc = PipelineDocument(document_id="doc1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t",
-                  metadata={"nlp_confidence": 0.72}),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="doc1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t", metadata={"nlp_confidence": 0.72}),
+            ],
+            metadata=DocumentMetadata(),
+        )
         orch._sync_block_confidence(doc)
         assert doc.blocks[0].metadata["nlp_confidence"] == 0.72
 
     def test_sync_block_confidence_clamps(self, orch):
-        doc = PipelineDocument(document_id="doc1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t",
-                  metadata={"classification_confidence": 1.5}),
-            Block(block_id="b2", index=2, block_type=BlockType.BODY, text="t",
-                  metadata={"classification_confidence": -0.5}),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="doc1",
+            blocks=[
+                Block(
+                    block_id="b1",
+                    index=1,
+                    block_type=BlockType.BODY,
+                    text="t",
+                    metadata={"classification_confidence": 1.5},
+                ),
+                Block(
+                    block_id="b2",
+                    index=2,
+                    block_type=BlockType.BODY,
+                    text="t",
+                    metadata={"classification_confidence": -0.5},
+                ),
+            ],
+            metadata=DocumentMetadata(),
+        )
         orch._sync_block_confidence(doc)
         assert doc.blocks[0].metadata["nlp_confidence"] == 1.0
         assert doc.blocks[1].metadata["nlp_confidence"] == 0.0
 
     def test_sync_block_confidence_no_conf(self, orch):
-        doc = PipelineDocument(document_id="doc1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t"),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="doc1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t"),
+            ],
+            metadata=DocumentMetadata(),
+        )
         orch._sync_block_confidence(doc)
         assert "nlp_confidence" not in doc.blocks[0].metadata
 
@@ -497,10 +564,19 @@ class TestOrchestratorSyncConfidence:
         assert doc.blocks[0].metadata["semantic_intent"] == "introduction"
 
     def test_sync_block_confidence_invalid_value(self, orch):
-        doc = PipelineDocument(document_id="doc1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t",
-                  metadata={"classification_confidence": "not_a_number"}),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="doc1",
+            blocks=[
+                Block(
+                    block_id="b1",
+                    index=1,
+                    block_type=BlockType.BODY,
+                    text="t",
+                    metadata={"classification_confidence": "not_a_number"},
+                ),
+            ],
+            metadata=DocumentMetadata(),
+        )
         orch._sync_block_confidence(doc)
         assert "nlp_confidence" not in doc.blocks[0].metadata
 
@@ -510,16 +586,26 @@ class TestOrchestratorSyncConfidence:
 
 # ── Build quality summary ────────────────────────────────────────────────────
 
+
 class TestOrchestratorQualitySummary:
     def test_build_quality_summary(self, orch):
-        doc = PipelineDocument(document_id="doc1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t",
-                  metadata={"nlp_confidence": 0.9}),
-            Block(block_id="b2", index=2, block_type=BlockType.HEADING_1, text="Section",
-                  metadata={"nlp_confidence": 0.8, "is_heading_candidate": True}),
-        ], metadata=DocumentMetadata(), figures=[
-            Figure(figure_id="f1", index=1, export_path="fig.png", caption_text="Figure"),
-        ])
+        doc = PipelineDocument(
+            document_id="doc1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t", metadata={"nlp_confidence": 0.9}),
+                Block(
+                    block_id="b2",
+                    index=2,
+                    block_type=BlockType.HEADING_1,
+                    text="Section",
+                    metadata={"nlp_confidence": 0.8, "is_heading_candidate": True},
+                ),
+            ],
+            metadata=DocumentMetadata(),
+            figures=[
+                Figure(figure_id="f1", index=1, export_path="fig.png", caption_text="Figure"),
+            ],
+        )
         validation_results = {"errors": [], "warnings": []}
         with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 85.0}):
             summary = orch._build_quality_summary(doc, validation_results)
@@ -538,10 +624,13 @@ class TestOrchestratorQualitySummary:
         assert summary["tables"] == 0
 
     def test_build_quality_summary_with_errors(self, orch):
-        doc = PipelineDocument(document_id="doc1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t",
-                  metadata={"nlp_confidence": 0.3}),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="doc1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t", metadata={"nlp_confidence": 0.3}),
+            ],
+            metadata=DocumentMetadata(),
+        )
         validation_results = {"errors": ["err1"], "warnings": ["warn1"]}
         with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 50.0}):
             summary = orch._build_quality_summary(doc, validation_results)
@@ -551,17 +640,28 @@ class TestOrchestratorQualitySummary:
 
 # ── Log quality summary ──────────────────────────────────────────────────────
 
+
 class TestOrchestratorLogQuality:
     def test_log_quality_summary(self, orch):
-        summary = {"quality_score": 85.0, "avg_confidence": 0.8, "min_confidence": 0.5,
-                   "block_count": 10, "heading_candidates": 3, "figures": 2, "tables": 1,
-                   "errors": 0, "warnings": 1, "review_status": "N/A"}
+        summary = {
+            "quality_score": 85.0,
+            "avg_confidence": 0.8,
+            "min_confidence": 0.5,
+            "block_count": 10,
+            "heading_candidates": 3,
+            "figures": 2,
+            "tables": 1,
+            "errors": 0,
+            "warnings": 1,
+            "review_status": "N/A",
+        }
         with patch("app.pipeline.orchestrator.logger") as mock_log:
             orch._log_quality_summary("job1", summary)
         assert mock_log.info.call_count >= 2
 
 
 # ── Pipeline stage methods ──────────────────────────────────────────────────
+
 
 class TestOrchestratorPipelineStages:
     def test_run_extraction_stage_pdf(self, orch):
@@ -630,9 +730,13 @@ class TestOrchestratorPipelineStages:
         assert result is doc
 
     def test_run_semantic_parsing_fast_mode(self, orch):
-        doc = PipelineDocument(document_id="doc1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t"),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="doc1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t"),
+            ],
+            metadata=DocumentMetadata(),
+        )
         with patch("app.pipeline.orchestrator.settings") as mock_s:
             mock_s.PIPELINE_SEMANTIC_TIMEOUT_SECONDS = 10
             with patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser") as mock_sp:
@@ -644,9 +748,13 @@ class TestOrchestratorPipelineStages:
         assert result.blocks[0].metadata["semantic_intent"] == "introduction"
 
     def test_run_semantic_parsing_fallback(self, orch):
-        doc = PipelineDocument(document_id="doc1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t"),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="doc1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="t"),
+            ],
+            metadata=DocumentMetadata(),
+        )
         with patch("app.pipeline.orchestrator.settings") as mock_s:
             mock_s.PIPELINE_SEMANTIC_TIMEOUT_SECONDS = 10
             with patch("app.pipeline.intelligence.semantic_parser.get_semantic_parser") as mock_sp:
@@ -657,6 +765,7 @@ class TestOrchestratorPipelineStages:
 
 
 # ── Export document ─────────────────────────────────────────────────────────
+
 
 class TestOrchestratorExport:
     def test_export_document(self, orch, tmp_path):
@@ -679,6 +788,7 @@ class TestOrchestratorExport:
 
 
 # ── Run pipeline ────────────────────────────────────────────────────────────
+
 
 class TestOrchestratorRunPipeline:
     def test_run_pipeline_busy_semaphore(self, orch):
@@ -712,6 +822,7 @@ class TestOrchestratorRunPipeline:
 
 # ── Run pipeline internal (complete flow) ───────────────────────────────────
 
+
 class TestOrchestratorRunPipelineInternal:
     @patch("app.pipeline.orchestrator.ParserFactory")
     @patch("app.pipeline.orchestrator.get_supabase_client")
@@ -724,9 +835,13 @@ class TestOrchestratorRunPipelineInternal:
         mock_sb.return_value = sb
 
         parser = MagicMock()
-        doc = PipelineDocument(document_id="job1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Hello world"),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="job1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Hello world"),
+            ],
+            metadata=DocumentMetadata(),
+        )
         doc.generated_doc = MagicMock()
         parser.parse.return_value = doc
         mock_pf.return_value.get_parser.return_value = parser
@@ -738,18 +853,32 @@ class TestOrchestratorRunPipelineInternal:
                         with patch.object(orch, "_export_document", return_value=str(tmp_path / "out.docx")):
                             with patch.object(orch, "analyzer"):
                                 with patch.object(orch, "_update_status"):
-                                    with patch("app.pipeline.orchestrator.execute_with_retry", side_effect=lambda fn, doc: doc):
+                                    with patch(
+                                        "app.pipeline.orchestrator.execute_with_retry", side_effect=lambda fn, doc: doc
+                                    ):
                                         with patch("app.pipeline.orchestrator.CaptionMatcher"):
                                             with patch("app.pipeline.orchestrator.TableCaptionMatcher"):
                                                 with patch("app.pipeline.orchestrator.ReferenceParser"):
                                                     with patch("app.pipeline.orchestrator.AIExplainer"):
-                                                        with patch("app.pipeline.orchestrator.build_structured_data", return_value={"data": "test"}):
-                                                            with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 95.0}):
-                                                                with patch.object(orch, "_compute_sha256", return_value="abc123"):
+                                                        with patch(
+                                                            "app.pipeline.orchestrator.build_structured_data",
+                                                            return_value={"data": "test"},
+                                                        ):
+                                                            with patch(
+                                                                "app.pipeline.orchestrator.compute_quality_score",
+                                                                return_value={"overall_score": 95.0},
+                                                            ):
+                                                                with patch.object(
+                                                                    orch, "_compute_sha256", return_value="abc123"
+                                                                ):
                                                                     with patch.object(orch, "_check_cancelled"):
-                                                                        with patch("app.pipeline.orchestrator.settings") as mock_set:
+                                                                        with patch(
+                                                                            "app.pipeline.orchestrator.settings"
+                                                                        ) as mock_set:
                                                                             mock_set.GROBID_ENABLED = False
-                                                                            result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
+                                                                            result = orch._run_pipeline_internal(
+                                                                                str(input_path), "job1", "ieee", {}
+                                                                            )
         assert result["status"] == "success"
 
     @patch("app.pipeline.orchestrator.ParserFactory")
@@ -774,12 +903,19 @@ class TestOrchestratorRunPipelineInternal:
                                 with patch("app.pipeline.orchestrator.CaptionMatcher"):
                                     with patch("app.pipeline.orchestrator.TableCaptionMatcher"):
                                         with patch("app.pipeline.orchestrator.ReferenceParser"):
-                                            with patch("app.pipeline.orchestrator.build_structured_data", return_value={}):
-                                                with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 0.0}):
+                                            with patch(
+                                                "app.pipeline.orchestrator.build_structured_data", return_value={}
+                                            ):
+                                                with patch(
+                                                    "app.pipeline.orchestrator.compute_quality_score",
+                                                    return_value={"overall_score": 0.0},
+                                                ):
                                                     with patch.object(orch, "_check_cancelled"):
                                                         with patch("app.pipeline.orchestrator.settings") as mock_set:
                                                             mock_set.GROBID_ENABLED = False
-                                                            result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
+                                                            result = orch._run_pipeline_internal(
+                                                                str(input_path), "job1", "ieee", {}
+                                                            )
         assert result["status"] == "processing"
 
     @patch("app.pipeline.orchestrator.ParserFactory")
@@ -791,9 +927,13 @@ class TestOrchestratorRunPipelineInternal:
         mock_sb.return_value = sb
 
         parser = MagicMock()
-        doc = PipelineDocument(document_id="job1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Hello"),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="job1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Hello"),
+            ],
+            metadata=DocumentMetadata(),
+        )
         doc.generated_doc = MagicMock()
         parser.parse.return_value = doc
         mock_pf.return_value.get_parser.return_value = parser
@@ -804,18 +944,35 @@ class TestOrchestratorRunPipelineInternal:
                     with patch.object(orch, "_run_formatting_stage", return_value=doc):
                         with patch.object(orch, "_export_document", return_value=str(tmp_path / "out.docx")):
                             with patch.object(orch, "_update_status"):
-                                with patch("app.pipeline.orchestrator.execute_with_retry", side_effect=lambda fn, doc: doc):
+                                with patch(
+                                    "app.pipeline.orchestrator.execute_with_retry", side_effect=lambda fn, doc: doc
+                                ):
                                     with patch("app.pipeline.orchestrator.CaptionMatcher"):
                                         with patch("app.pipeline.orchestrator.TableCaptionMatcher"):
                                             with patch("app.pipeline.orchestrator.ReferenceParser"):
                                                 with patch("app.pipeline.orchestrator.AIExplainer"):
-                                                    with patch("app.pipeline.orchestrator.build_structured_data", return_value={}):
-                                                        with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 90.0}):
-                                                            with patch.object(orch, "_compute_sha256", return_value="abc"):
+                                                    with patch(
+                                                        "app.pipeline.orchestrator.build_structured_data",
+                                                        return_value={},
+                                                    ):
+                                                        with patch(
+                                                            "app.pipeline.orchestrator.compute_quality_score",
+                                                            return_value={"overall_score": 90.0},
+                                                        ):
+                                                            with patch.object(
+                                                                orch, "_compute_sha256", return_value="abc"
+                                                            ):
                                                                 with patch.object(orch, "_check_cancelled"):
-                                                                    with patch("app.pipeline.orchestrator.settings") as mock_set:
+                                                                    with patch(
+                                                                        "app.pipeline.orchestrator.settings"
+                                                                    ) as mock_set:
                                                                         mock_set.GROBID_ENABLED = False
-                                                                        result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {"fast_mode": True})
+                                                                        result = orch._run_pipeline_internal(
+                                                                            str(input_path),
+                                                                            "job1",
+                                                                            "ieee",
+                                                                            {"fast_mode": True},
+                                                                        )
         assert result["status"] == "success"
 
     @patch("app.pipeline.orchestrator.ParserFactory")
@@ -827,15 +984,23 @@ class TestOrchestratorRunPipelineInternal:
         mock_sb.return_value = sb
 
         parser = MagicMock()
-        empty_doc = PipelineDocument(document_id="job1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text=""),
-        ], metadata=DocumentMetadata())
+        empty_doc = PipelineDocument(
+            document_id="job1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text=""),
+            ],
+            metadata=DocumentMetadata(),
+        )
         parser.parse.return_value = empty_doc
         mock_pf.return_value.get_parser.return_value = parser
 
-        doc = PipelineDocument(document_id="job1", blocks=[
-            Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Nougat content"),
-        ], metadata=DocumentMetadata())
+        doc = PipelineDocument(
+            document_id="job1",
+            blocks=[
+                Block(block_id="b1", index=1, block_type=BlockType.BODY, text="Nougat content"),
+            ],
+            metadata=DocumentMetadata(),
+        )
         doc.generated_doc = MagicMock()
 
         with patch.object(orch, "_run_structure_detection", return_value=doc):
@@ -844,29 +1009,53 @@ class TestOrchestratorRunPipelineInternal:
                     with patch.object(orch, "_run_formatting_stage", return_value=doc):
                         with patch.object(orch, "_export_document", return_value=str(tmp_path / "out.docx")):
                             with patch.object(orch, "_update_status"):
-                                with patch("app.pipeline.orchestrator.execute_with_retry", side_effect=lambda fn, doc: doc):
+                                with patch(
+                                    "app.pipeline.orchestrator.execute_with_retry", side_effect=lambda fn, doc: doc
+                                ):
                                     with patch("app.pipeline.parsing.nougat_parser.NougatParser") as mock_np:
-                                        nougat_doc = PipelineDocument(document_id="job1", blocks=[
-                                            Block(block_id="n1", index=1, block_type=BlockType.BODY, text="Nougat content"),
-                                        ], metadata=DocumentMetadata())
+                                        nougat_doc = PipelineDocument(
+                                            document_id="job1",
+                                            blocks=[
+                                                Block(
+                                                    block_id="n1",
+                                                    index=1,
+                                                    block_type=BlockType.BODY,
+                                                    text="Nougat content",
+                                                ),
+                                            ],
+                                            metadata=DocumentMetadata(),
+                                        )
                                         mock_np.return_value.parse.return_value = nougat_doc
                                         with patch("app.pipeline.orchestrator.CaptionMatcher"):
                                             with patch("app.pipeline.orchestrator.TableCaptionMatcher"):
                                                 with patch("app.pipeline.orchestrator.ReferenceParser"):
                                                     with patch("app.pipeline.orchestrator.AIExplainer"):
-                                                        with patch("app.pipeline.orchestrator.build_structured_data", return_value={}):
-                                                            with patch("app.pipeline.orchestrator.compute_quality_score", return_value={"overall_score": 85.0}):
-                                                                with patch.object(orch, "_compute_sha256", return_value="abc"):
+                                                        with patch(
+                                                            "app.pipeline.orchestrator.build_structured_data",
+                                                            return_value={},
+                                                        ):
+                                                            with patch(
+                                                                "app.pipeline.orchestrator.compute_quality_score",
+                                                                return_value={"overall_score": 85.0},
+                                                            ):
+                                                                with patch.object(
+                                                                    orch, "_compute_sha256", return_value="abc"
+                                                                ):
                                                                     with patch.object(orch, "_check_cancelled"):
-                                                                        with patch("app.pipeline.orchestrator.settings") as mock_set:
+                                                                        with patch(
+                                                                            "app.pipeline.orchestrator.settings"
+                                                                        ) as mock_set:
                                                                             mock_set.GROBID_ENABLED = False
-                                                                            result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
+                                                                            result = orch._run_pipeline_internal(
+                                                                                str(input_path), "job1", "ieee", {}
+                                                                            )
         assert result["status"] == "success"
 
     @patch("app.pipeline.orchestrator.ParserFactory")
     @patch("app.pipeline.orchestrator.get_supabase_client")
     def test_internal_cancelled_error(self, mock_sb, mock_pf, orch, tmp_path):
         import asyncio
+
         input_path = tmp_path / "test.pdf"
         input_path.write_text("dummy")
         sb = MagicMock()
@@ -882,16 +1071,19 @@ class TestOrchestratorRunPipelineInternal:
 
 # ── Run edit flow ───────────────────────────────────────────────────────────
 
+
 class TestOrchestratorEditFlow:
     def test_edit_flow_success(self, orch, tmp_path):
         sb = MagicMock()
-        execute_results = iter([
-            MagicMock(data=[{"filename": "test.docx", "output_path": "/original/output.docx"}]),
-            MagicMock(data=[{"id": 1, "structured_data": {"old": "data"}}]),
-            MagicMock(data=[{"version_number": "v2"}]),
-            MagicMock(),
-            MagicMock(),
-        ])
+        execute_results = iter(
+            [
+                MagicMock(data=[{"filename": "test.docx", "output_path": "/original/output.docx"}]),
+                MagicMock(data=[{"id": 1, "structured_data": {"old": "data"}}]),
+                MagicMock(data=[{"version_number": "v2"}]),
+                MagicMock(),
+                MagicMock(),
+            ]
+        )
         sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = execute_results
 
         with patch.object(orch, "_update_status"):
@@ -909,7 +1101,9 @@ class TestOrchestratorEditFlow:
                                     with patch("os.path.splitext", return_value=("test", ".docx")):
                                         with patch("os.path.abspath", return_value="/tmp/output/test_edited.docx"):
                                             with patch.object(orch, "_compute_sha256", return_value="hash"):
-                                                result = orch.run_edit_flow("job1", {"sections": {"body": ["Edited text"]}}, "ieee")
+                                                result = orch.run_edit_flow(
+                                                    "job1", {"sections": {"body": ["Edited text"]}}, "ieee"
+                                                )
         assert result["status"] == "success"
 
     def test_edit_flow_no_supabase(self, orch):
@@ -926,6 +1120,7 @@ class TestOrchestratorEditFlow:
 
     def test_edit_flow_cancelled(self, orch):
         import asyncio
+
         sb = MagicMock()
         sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = asyncio.CancelledError("cancel")
         with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
@@ -935,12 +1130,14 @@ class TestOrchestratorEditFlow:
 
     def test_edit_flow_no_existing_result(self, orch):
         sb = MagicMock()
-        execute_results = iter([
-            MagicMock(data=[{"filename": "test.docx", "output_path": "/original/output.docx"}]),
-            MagicMock(data=[]),
-            MagicMock(),
-            MagicMock(),
-        ])
+        execute_results = iter(
+            [
+                MagicMock(data=[{"filename": "test.docx", "output_path": "/original/output.docx"}]),
+                MagicMock(data=[]),
+                MagicMock(),
+                MagicMock(),
+            ]
+        )
         sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = execute_results
 
         with patch.object(orch, "_update_status"):
@@ -959,5 +1156,7 @@ class TestOrchestratorEditFlow:
                                         with patch("os.path.splitext", return_value=("test", ".docx")):
                                             with patch("os.path.abspath", return_value="/tmp/output/test_edited.docx"):
                                                 with patch.object(orch, "_compute_sha256", return_value="hash"):
-                                                    result = orch.run_edit_flow("job1", {"sections": {"body": ["Text"]}}, "ieee")
+                                                    result = orch.run_edit_flow(
+                                                        "job1", {"sections": {"body": ["Text"]}}, "ieee"
+                                                    )
         assert result["status"] == "success"

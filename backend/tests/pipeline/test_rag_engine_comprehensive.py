@@ -19,6 +19,7 @@ import pytest
 #  Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_engine(
     tmp_path,
     low_memory=False,
@@ -152,20 +153,20 @@ class TestNumpyCompat:
 
             from app.pipeline.intelligence.rag_engine import RagEngine
 
-            orig_float = getattr(np, 'float_', None)
-            orig_int = getattr(np, 'int_', None)
+            orig_float = getattr(np, "float_", None)
+            orig_int = getattr(np, "int_", None)
 
-            if hasattr(np, 'float_'):
+            if hasattr(np, "float_"):
                 del np.float_
-            if hasattr(np, 'int_'):
+            if hasattr(np, "int_"):
                 del np.int_
 
             try:
                 persist = str(tmp_path / "numpy_test")
                 with patch("app.pipeline.intelligence.rag_engine._load_chromadb", return_value=None):
                     RagEngine(persist_directory=persist, auto_seed=False)
-                    assert hasattr(np, 'float_')
-                    assert hasattr(np, 'int_')
+                    assert hasattr(np, "float_")
+                    assert hasattr(np, "int_")
             finally:
                 if orig_float is not None:
                     np.float_ = orig_float
@@ -197,6 +198,7 @@ class TestChromaDbInitGaps:
             mst.return_value = mock_model
 
             from app.pipeline.intelligence.rag_engine import RagEngine
+
             engine = RagEngine(persist_directory=persist, auto_seed=False)
             assert engine.backend == "native"
 
@@ -221,6 +223,7 @@ class TestChromaDbInitGaps:
             mst.return_value = mock_model
 
             from app.pipeline.intelligence.rag_engine import RagEngine
+
             engine = RagEngine(persist_directory=persist, auto_seed=False)
             assert engine.backend == "native"
 
@@ -243,6 +246,7 @@ class TestChromaDbInitGaps:
             mst.return_value = mock_model
 
             from app.pipeline.intelligence.rag_engine import RagEngine
+
             engine = RagEngine(persist_directory=persist, auto_seed=False)
             assert engine.backend == "native"
 
@@ -254,6 +258,7 @@ class TestHuggingFaceAPIEmbeddingModelGaps:
         """400 with SentenceSimilarityPipeline triggers endpoint recovery."""
         with patch.dict(os.environ, {"HF_TOKEN": "tok"}, clear=False):
             from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
             m = _HuggingFaceAPIEmbeddingModel()
             m.api_url = "https://router.huggingface.co/hf-inference/models/test-model"
             m.max_retries = 2
@@ -275,6 +280,7 @@ class TestHuggingFaceAPIEmbeddingModelGaps:
         """400 without SentenceSimilarityPipeline does not recover."""
         with patch.dict(os.environ, {"HF_TOKEN": "tok"}, clear=False):
             from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
             m = _HuggingFaceAPIEmbeddingModel()
             m.api_url = "https://router.huggingface.co/hf-inference/models/test-model"
 
@@ -290,6 +296,7 @@ class TestHuggingFaceAPIEmbeddingModelGaps:
         """500-599 errors retry then return empty."""
         with patch.dict(os.environ, {"HF_TOKEN": "tok"}, clear=False):
             from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
             m = _HuggingFaceAPIEmbeddingModel()
             m.max_retries = 2
 
@@ -307,6 +314,7 @@ class TestHuggingFaceAPIEmbeddingModelGaps:
         """500 on final retry returns empty."""
         with patch.dict(os.environ, {"HF_TOKEN": "tok"}, clear=False):
             from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
             m = _HuggingFaceAPIEmbeddingModel()
             m.max_retries = 1
 
@@ -323,6 +331,7 @@ class TestHuggingFaceAPIEmbeddingModelGaps:
         """Exception logs error and returns empty after retries exhausted."""
         with patch.dict(os.environ, {"HF_TOKEN": "tok"}, clear=False):
             from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
             m = _HuggingFaceAPIEmbeddingModel()
             m.max_retries = 2
 
@@ -335,12 +344,14 @@ class TestHuggingFaceAPIEmbeddingModelGaps:
     def test_normalize_embedding_api_url_empty(self):
         """Empty URL returns default."""
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         url = _HuggingFaceAPIEmbeddingModel._normalize_embedding_api_url("", "test-model")
         assert "router.huggingface.co" in url
 
     def test_normalize_embedding_api_url_adds_pipeline(self):
         """URL without pipeline path gets it added."""
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         url = _HuggingFaceAPIEmbeddingModel._normalize_embedding_api_url(
             "https://router.huggingface.co/hf-inference/models/test-model", "test"
         )
@@ -349,6 +360,7 @@ class TestHuggingFaceAPIEmbeddingModelGaps:
     def test_normalize_embedding_api_url_already_has_pipeline(self):
         """URL already with pipeline path is kept as-is."""
         from app.pipeline.intelligence.rag_engine import _HuggingFaceAPIEmbeddingModel
+
         url = _HuggingFaceAPIEmbeddingModel._normalize_embedding_api_url(
             "https://router.huggingface.co/hf-inference/models/test-model/pipeline/feature-extraction", "test"
         )
@@ -565,6 +577,7 @@ class TestGetRagEngineGaps:
             mst.return_value = mock_model
 
             import app.pipeline.intelligence.rag_engine as rag_mod
+
             rag_mod._rag_engine = None
             from app.pipeline.intelligence.rag_engine import get_rag_engine
 

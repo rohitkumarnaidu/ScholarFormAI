@@ -87,23 +87,18 @@ Before expanding test coverage, three core infrastructure defects in the test ex
 
 The ScholarFormAI testing model is structured into 5 distinct verification tiers:
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│ TIER 5: Adversarial & Security Coverage Hardening                      │
-│ (Zip bombs, prompt injection, corrupt DOCX, zero-byte, RLS bypass)    │
-├────────────────────────────────────────────────────────────────────────┤
-│ TIER 4: E2E User Flow Testing (Playwright Cross-Browser)               │
-│ (Upload manuscript -> format -> preview diff -> download PDF/LaTeX)    │
-├────────────────────────────────────────────────────────────────────────┤
-│ TIER 3: Performance, Load & Concurrency Testing                        │
-│ (Locust stress testing, connection pool stability, memory leak audit)  │
-├────────────────────────────────────────────────────────────────────────┤
-│ TIER 2: Component Integration Testing                                  │
-│ (FastAPI TestClient, Supabase DB sessions, ChromaDB, Celery dispatch) │
-├────────────────────────────────────────────────────────────────────────┤
-│ TIER 1: Isolated Unit Testing                                          │
-│ (Domain services, parsers, validators, style registry, SDK models)     │
-└────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart BT
+    Tier1["<b>TIER 1: Isolated Unit Testing</b><br>(Domain services, parsers, validators, style registry, SDK models)"]
+    Tier2["<b>TIER 2: Component Integration Testing</b><br>(FastAPI TestClient, Supabase DB sessions, ChromaDB, Celery dispatch)"]
+    Tier3["<b>TIER 3: Performance, Load & Concurrency Testing</b><br>(Locust stress testing, connection pool stability, memory leak audit)"]
+    Tier4["<b>TIER 4: E2E User Flow Testing (Playwright Cross-Browser)</b><br>(Upload manuscript -> format -> preview diff -> download PDF/LaTeX)"]
+    Tier5["<b>TIER 5: Adversarial & Security Coverage Hardening</b><br>(Zip bombs, prompt injection, corrupt DOCX, zero-byte, RLS bypass)"]
+
+    Tier1 --> Tier2
+    Tier2 --> Tier3
+    Tier3 --> Tier4
+    Tier4 --> Tier5
 ```
 
 ### Tier 1: Isolated Unit Testing

@@ -12,8 +12,11 @@ class TestCitationAssemblyExtractCitations:
     @pytest.fixture
     def service(self):
         from app.services.citation_assembly_service import CitationAssemblyService
-        with patch("app.services.citation_assembly_service.get_crossref_client"), \
-             patch("app.services.citation_assembly_service.CSLEngine"):
+
+        with (
+            patch("app.services.citation_assembly_service.get_crossref_client"),
+            patch("app.services.citation_assembly_service.CSLEngine"),
+        ):
             yield CitationAssemblyService()
 
     async def test_empty_content(self, service):
@@ -76,6 +79,7 @@ class TestCitationAssemblyNormalize:
     @pytest.fixture
     def service(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         return CitationAssemblyService()
 
     def test_trims_whitespace(self, service):
@@ -99,8 +103,11 @@ class TestCitationAssemblyLookupCitations:
     @pytest.fixture
     def service(self):
         from app.services.citation_assembly_service import CitationAssemblyService
-        with patch("app.services.citation_assembly_service.get_crossref_client") as mock_gcc, \
-             patch("app.services.citation_assembly_service.CSLEngine"):
+
+        with (
+            patch("app.services.citation_assembly_service.get_crossref_client") as mock_gcc,
+            patch("app.services.citation_assembly_service.CSLEngine"),
+        ):
             mock_client = MagicMock()
             mock_client.validate_citation.return_value = {"title": "Test Paper"}
             mock_gcc.return_value = mock_client
@@ -131,8 +138,11 @@ class TestCitationAssemblyFormatReferences:
     @pytest.fixture
     def service(self):
         from app.services.citation_assembly_service import CitationAssemblyService
-        with patch("app.services.citation_assembly_service.get_crossref_client"), \
-             patch("app.services.citation_assembly_service.CSLEngine") as mock_csl:
+
+        with (
+            patch("app.services.citation_assembly_service.get_crossref_client"),
+            patch("app.services.citation_assembly_service.CSLEngine") as mock_csl,
+        ):
             engine = MagicMock()
             engine.format_references.return_value = ["[1] Smith, J. (2020). Test."]
             mock_csl.return_value = engine
@@ -174,6 +184,7 @@ class TestCitationAssemblyReplaceCitations:
     @pytest.fixture
     def service(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         return CitationAssemblyService()
 
     def test_empty_text(self, service):
@@ -207,8 +218,11 @@ class TestCitationAssemblyAssemble:
     @pytest.fixture
     def service(self):
         from app.services.citation_assembly_service import CitationAssemblyService
-        with patch("app.services.citation_assembly_service.get_crossref_client") as mock_gcc, \
-             patch("app.services.citation_assembly_service.CSLEngine") as mock_csl:
+
+        with (
+            patch("app.services.citation_assembly_service.get_crossref_client") as mock_gcc,
+            patch("app.services.citation_assembly_service.CSLEngine") as mock_csl,
+        ):
             mock_client = MagicMock()
             mock_client.validate_citation.return_value = {"title": "Paper"}
             mock_gcc.return_value = mock_client
@@ -227,8 +241,11 @@ class TestCitationAssemblyAssemble:
 class TestCitationAssemblyInit:
     def test_initializes_crossref_and_csl(self):
         from app.services.citation_assembly_service import CitationAssemblyService
-        with patch("app.services.citation_assembly_service.get_crossref_client") as mock_gcc, \
-             patch("app.services.citation_assembly_service.CSLEngine") as mock_csl:
+
+        with (
+            patch("app.services.citation_assembly_service.get_crossref_client") as mock_gcc,
+            patch("app.services.citation_assembly_service.CSLEngine") as mock_csl,
+        ):
             mock_gcc.return_value = MagicMock()
             mock_csl.return_value = MagicMock()
             svc = CitationAssemblyService()

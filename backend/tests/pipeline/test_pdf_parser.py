@@ -14,6 +14,7 @@ def pdf_parser():
         with patch("app.pipeline.parsing.pdf_parser.fitz") as mock_fitz:
             yield PdfParser(), mock_fitz
 
+
 @pytest.fixture
 def mock_page():
     page = MagicMock()
@@ -22,6 +23,7 @@ def mock_page():
     page.get_images.return_value = []
     page.find_tables.return_value = []
     return page
+
 
 class TestPdfParserInit:
     def test_init_available(self):
@@ -34,6 +36,7 @@ class TestPdfParserInit:
             with pytest.raises(ImportError, match="PyMuPDF"):
                 PdfParser()
 
+
 class TestPdfParserSupportsFormat:
     def test_supports_pdf(self, pdf_parser):
         p, _ = pdf_parser
@@ -42,6 +45,7 @@ class TestPdfParserSupportsFormat:
     def test_not_supports_other(self, pdf_parser):
         p, _ = pdf_parser
         assert not p.supports_format(".docx")
+
 
 class TestPdfParserMetadata:
     def test_extract_metadata_with_all_fields(self, pdf_parser):
@@ -72,6 +76,7 @@ class TestPdfParserMetadata:
         pdf_doc.metadata = None
         meta = p._extract_metadata(pdf_doc)
         assert meta.title is None
+
 
 class TestPdfParserHelpers:
     def test_is_header_footer_top(self, pdf_parser):
@@ -116,10 +121,12 @@ class TestPdfParserHelpers:
         pdf_doc.__len__.return_value = 1
         page = MagicMock()
         page.get_text.return_value = {
-            "blocks": [{
-                "type": 0,
-                "lines": [{"spans": [{"size": 12.0, "text": "Hello world"}]}],
-            }]
+            "blocks": [
+                {
+                    "type": 0,
+                    "lines": [{"spans": [{"size": 12.0, "text": "Hello world"}]}],
+                }
+            ]
         }
         pdf_doc.__getitem__.return_value = page
         result = p._calculate_font_stats(pdf_doc)
@@ -127,11 +134,13 @@ class TestPdfParserHelpers:
 
     def test_should_attempt_ocr_fallback_true(self, pdf_parser):
         from app.models import Block
+
         p, _ = pdf_parser
         assert p._should_attempt_ocr_fallback([Block(block_id="b1", index=0, text="hi")], 5) is True
 
     def test_should_attempt_ocr_fallback_false(self, pdf_parser):
         from app.models import Block
+
         p, _ = pdf_parser
         text = "A" * 500
         assert p._should_attempt_ocr_fallback([Block(block_id="b1", index=0, text=text)], 5) is False
@@ -158,6 +167,7 @@ class TestPdfParserHelpers:
     def test_build_table_model_empty(self, pdf_parser):
         p, _ = pdf_parser
         assert p._build_table_model([], 1, 100) is None
+
 
 class TestPdfParserParse:
     def test_parse_file_not_found(self, pdf_parser):
@@ -213,6 +223,7 @@ class TestPdfParserParse:
 
     def test_parse_extracts_content(self, tmp_path):
         from app.models import Block
+
         f = tmp_path / "content.pdf"
         f.write_text("dummy")
         test_blocks = [Block(block_id="b1", index=0, text="Hello PDF world")]
@@ -242,21 +253,39 @@ class TestPdfParserParse:
                 pdf_doc.metadata = {}
                 page1 = MagicMock()
                 page1.rect = MagicMock()
-                page1.rect.x0 = 0; page1.rect.y0 = 0; page1.rect.x1 = 612; page1.rect.y1 = 792
+                page1.rect.x0 = 0
+                page1.rect.y0 = 0
+                page1.rect.x1 = 612
+                page1.rect.y1 = 792
                 page1.rect.__getitem__.side_effect = lambda i: [0, 0, 612, 792][i]
                 page1.rect.__len__.return_value = 4
                 page1.get_text.return_value = {
-                    "blocks": [{"type": 0, "bbox": [0, 0, 100, 20], "lines": [{"spans": [{"text": "Header", "size": 10, "flags": 0}]}]}]
+                    "blocks": [
+                        {
+                            "type": 0,
+                            "bbox": [0, 0, 100, 20],
+                            "lines": [{"spans": [{"text": "Header", "size": 10, "flags": 0}]}],
+                        }
+                    ]
                 }
                 page1.get_images.return_value = []
                 page1.find_tables.return_value = []
                 page2 = MagicMock()
                 page2.rect = MagicMock()
-                page2.rect.x0 = 0; page2.rect.y0 = 0; page2.rect.x1 = 612; page2.rect.y1 = 792
+                page2.rect.x0 = 0
+                page2.rect.y0 = 0
+                page2.rect.x1 = 612
+                page2.rect.y1 = 792
                 page2.rect.__getitem__.side_effect = lambda i: [0, 0, 612, 792][i]
                 page2.rect.__len__.return_value = 4
                 page2.get_text.return_value = {
-                    "blocks": [{"type": 0, "bbox": [0, 0, 100, 20], "lines": [{"spans": [{"text": "Header", "size": 10, "flags": 0}]}]}]
+                    "blocks": [
+                        {
+                            "type": 0,
+                            "bbox": [0, 0, 100, 20],
+                            "lines": [{"spans": [{"text": "Header", "size": 10, "flags": 0}]}],
+                        }
+                    ]
                 }
                 page2.get_images.return_value = []
                 page2.find_tables.return_value = []

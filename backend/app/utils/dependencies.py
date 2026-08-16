@@ -129,16 +129,17 @@ class RequireRole:
     Usage:
         @router.get("/protected", dependencies=[Depends(RequireRole({"editor", "manager"}))])
     """
+
     def __init__(self, allowed_roles: set[str]):
         self.allowed_roles = {r.lower() for r in allowed_roles}
 
     def __call__(self, user: User = Depends(get_current_user)) -> User:
         user_roles = set()
-        
+
         # Base role
         if getattr(user, "role", None):
             user_roles.add(str(user.role).strip().lower())
-            
+
         # App metadata roles
         app_meta = getattr(user, "app_metadata", {})
         if isinstance(app_meta, dict):
@@ -150,14 +151,13 @@ class RequireRole:
             elif isinstance(roles, list):
                 for r in roles:
                     user_roles.add(str(r).strip().lower())
-                    
+
         # Admin / System accounts bypass specific role checks
         if "admin" in user_roles or "service_role" in user_roles:
             return user
-            
+
         if not self.allowed_roles.intersection(user_roles):
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, 
-                detail=f"Access forbidden: requires one of {self.allowed_roles}"
+                status_code=status.HTTP_403_FORBIDDEN, detail=f"Access forbidden: requires one of {self.allowed_roles}"
             )
         return user

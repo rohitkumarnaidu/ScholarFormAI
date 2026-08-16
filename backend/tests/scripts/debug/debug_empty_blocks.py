@@ -11,18 +11,18 @@ normalizer = Normalizer()
 detector = StructureDetector()
 classifier = ContentClassifier()
 
-doc = parser.parse('uploads/132dbdae-b6e3-4936-bdb5-bc398ed0ac19.docx', 'test')
+doc = parser.parse("uploads/132dbdae-b6e3-4936-bdb5-bc398ed0ac19.docx", "test")
 doc = normalizer.process(doc)
 doc = detector.process(doc)
 
-print(f'Before classification: {len(doc.blocks)} blocks')
+print(f"Before classification: {len(doc.blocks)} blocks")
 doc = classifier.process(doc)
-print(f'After classification: {len(doc.blocks)} blocks')
+print(f"After classification: {len(doc.blocks)} blocks")
 
-empty_blocks = [b for b in doc.blocks if b.text.strip() == '']
-print(f'\nEmpty blocks found: {len(empty_blocks)}')
+empty_blocks = [b for b in doc.blocks if b.text.strip() == ""]
+print(f"\nEmpty blocks found: {len(empty_blocks)}")
 for b in empty_blocks:
-    print(f'  Block: {b.block_id}')
-    print(f'    Type: {b.block_type}')
-    print(f'    Index: {b.index}')
-    print(f'    Metadata: {b.metadata}')
+    print(f"  Block: {b.block_id}")
+    print(f"    Type: {b.block_type}")
+    print(f"    Index: {b.index}")
+    print(f"    Metadata: {b.metadata}")

@@ -1,4 +1,3 @@
-
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
@@ -40,7 +39,8 @@ def _make_ref(reference_id, index, citation_key="cit1", raw_text="Raw", formatte
         index=index,
         citation_key=citation_key,
         raw_text=raw_text,
-        formatted_text=formatted_text)
+        formatted_text=formatted_text,
+    )
 
 
 def _make_doc(blocks=None, references=None, metadata=None, formatting_options=None, original_filename="manuscript.pdf"):
@@ -50,12 +50,14 @@ def _make_doc(blocks=None, references=None, metadata=None, formatting_options=No
         references=references or [],
         metadata=metadata or DocumentMetadata(),
         formatting_options=formatting_options or {},
-        original_filename=original_filename)
+        original_filename=original_filename,
+    )
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # _coerce_bool — remaining edge cases
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestCoerceBoolGaps:
     def test_none_with_true_default(self, renderer):
@@ -99,6 +101,7 @@ class TestCoerceBoolGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 # render — edge case: None template_name is stripped to ieee
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestRenderGaps:
     def test_none_template_name_defaults(self, renderer):
@@ -168,6 +171,7 @@ class TestRenderGaps:
 # has_renderable_template — edge cases
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestHasRenderableTemplateGaps:
     def test_none_template_name(self, renderer, tmp_path):
         renderer.templates_dir = tmp_path
@@ -204,26 +208,25 @@ class TestHasRenderableTemplateGaps:
 # build_context — more edge paths
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestBuildContextGaps:
     def test_abstract_from_metadata_empty_string(self, renderer):
         doc = _make_doc(
-            metadata=DocumentMetadata(abstract=""),
-            blocks=[_make_block("b1", 0, "abstract_body", "Block abstract")])
+            metadata=DocumentMetadata(abstract=""), blocks=[_make_block("b1", 0, "abstract_body", "Block abstract")]
+        )
         ctx = renderer.build_context(doc)
         assert ctx["abstract"] == "Block abstract"
 
     def test_keywords_raw_split_with_spaces(self, renderer):
         doc = _make_doc(
             metadata=DocumentMetadata(keywords=[]),
-            blocks=[_make_block("b1", 0, "keywords_body", "  kw1  ,  kw2  ,  kw3  ")])
+            blocks=[_make_block("b1", 0, "keywords_body", "  kw1  ,  kw2  ,  kw3  ")],
+        )
         ctx = renderer.build_context(doc)
         assert ctx["keywords"] == ["kw1", "kw2", "kw3"]
 
     def test_title_fallback_chain_all_empty(self, renderer):
-        doc = _make_doc(
-            metadata=DocumentMetadata(title=""),
-            blocks=[],
-            original_filename=None)
+        doc = _make_doc(metadata=DocumentMetadata(title=""), blocks=[], original_filename=None)
         ctx = renderer.build_context(doc)
         assert ctx["title"] == "Untitled Manuscript"
 
@@ -285,6 +288,7 @@ class TestBuildContextGaps:
 # _resolve_template_path — edge cases
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestResolveTemplatePathGaps:
     def test_style_dir_does_not_exist(self, renderer, tmp_path):
         renderer.templates_dir = tmp_path
@@ -311,6 +315,7 @@ class TestResolveTemplatePathGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 # _has_template_markers — additional edge cases
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestHasTemplateMarkersGaps:
     def test_zip_read_exception_returns_false(self, renderer):
@@ -354,6 +359,7 @@ class TestHasTemplateMarkersGaps:
 # _build_fallback_template — error path
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestBuildFallbackTemplateGaps:
     def test_name_error_during_save_raises(self, renderer):
         with (
@@ -373,6 +379,7 @@ class TestBuildFallbackTemplateGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 # _collect_sections — edge: footnote/endnote in metadata, footnote/endnote as bool check
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestCollectSectionsGaps:
     def test_metadata_none_is_footnote(self, renderer):
@@ -418,6 +425,7 @@ class TestCollectSectionsGaps:
 # _collect_references — additional edge cases
 # ══════════════════════════════════════════════════════════════════════════════
 
+
 class TestCollectReferencesGaps:
     def test_no_references_empty_blocks(self, renderer):
         doc = _make_doc(references=[], blocks=[])
@@ -441,6 +449,7 @@ class TestCollectReferencesGaps:
 # ══════════════════════════════════════════════════════════════════════════════
 # _block_type_token — remaining edge cases
 # ══════════════════════════════════════════════════════════════════════════════
+
 
 class TestBlockTypeTokenGaps:
     def test_enum_value(self, renderer):

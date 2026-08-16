@@ -17,40 +17,31 @@ ScholarForm AI employs two complementary real-time paradigms:
 
 ### 2.1 Pipeline
 
-```
-                    +----------------------------------------------+
-                                  Backend Process                 
-                                                                  
-  AgentPipeline --?   make_event() --? RedisPubSub.publish()      
-  DocumentGenerator                      (channel: "job:{id}"    
-  MultiDocSynth.                          or "session:{id}")     
-                           ?                                      
-                      Redis (or in-memory Queue fallback)         
-                                                                 
-                           ?                                      
-                      RedisPubSub.subscribe(channel)               
-                                                                 
-                           ?                                      
-                      async generator --? sse_starlette            
-                      EventSourceResponse                          
-                    +----------------------------------------------+
-                             text/event-stream
-                           ?
-+--------------------------------------------------------------+
-                     Frontend                                 
-                                                              
-  EventSource (native browser API)                            
-                                                            
-       ?                                                     
-  useSSEStream (base hook)                                    
-                                                            
-       +-- useGeneratorSessionStream (agent pipeline)         
-       +-- useSessionEventStream (general session, synthesis) 
-       +-- useSynthesisSessionStream (multi-doc synthesis)    
-                                                              
-  OR: ReadableStream reader (api.generation.js)               
-       +-- streamGenerationStatus(fetch-based, no EventSource) 
-+--------------------------------------------------------------+
+```mermaid
+flowchart TD
+    subgraph Backend[Backend Process]
+        Sources["AgentPipeline<br>DocumentGenerator<br>MultiDocSynth"] --> MakeEvent[make_event]
+        MakeEvent --> PubSubPub["RedisPubSub.publish()<br>(channel: 'job:{id}' or 'session:{id}')"]
+        PubSubPub --> Redis[Redis or in-memory Queue fallback]
+        Redis --> PubSubSub[RedisPubSub.subscribe]
+        PubSubSub --> AsyncGen[async generator]
+        AsyncGen --> SseStarlette[sse_starlette EventSourceResponse]
+    end
+
+    subgraph Frontend[Frontend]
+        EventSource[EventSource native browser API]
+        ReadableStream[ReadableStream reader api.generation.js]
+        UseSSEStream[useSSEStream base hook]
+        StreamGenStatus[streamGenerationStatus fetch-based]
+        Hooks["useGeneratorSessionStream<br>useSessionEventStream<br>useSynthesisSessionStream"]
+        
+        EventSource --> UseSSEStream
+        UseSSEStream --> Hooks
+        ReadableStream --> StreamGenStatus
+    end
+
+    SseStarlette -- "text/event-stream" --> EventSource
+    SseStarlette -- "text/event-stream" --> ReadableStream
 ```
 
 **Key detail**: Two distinct SSE transport mechanisms exist on the frontend:
@@ -301,24 +292,11 @@ This endpoint is exposed via `getPreviewHtml()` in `api.preview.v1.js`.
 
 The `RedisPubSub` class (`backend/app/realtime/pubsub.py`) abstracts Redis pub/sub with transparent in-memory fallback:
 
-```
-         +---------------------+
-            RedisPubSub        
-            (singleton-per-    
-             asyncio-loop)     
-         +---------------------+
-                  
-        +--------------------+
-        ?                    ?
-+--------------+   +----------------+
-   Redis            In-memory      
-  (aioredis)        asyncio.Queue  
-                    (fallback)     
-  channel:                         
-  "job:{id}"        channel ? set  
-  "session:{id}"     of Queues      
-  "preview:{id}"                    
-+--------------+   +----------------+
+```mermaid
+flowchart TD
+    RedisPubSub["RedisPubSub<br>(singleton-per-asyncio-loop)"] --> Split{ }
+    Split --> Redis["Redis (aioredis)<br>channel:<br>'job:{id}'<br>'session:{id}'<br>'preview:{id}'"]
+    Split --> InMemory["In-memory asyncio.Queue (fallback)<br>channel → set of Queues"]
 ```
 
 **Design choices:**
@@ -941,12 +919,18 @@ ate(sse_connection_open_total[5m]) > 20 and rate(sse_connection_closed_total[5m]
 
 **WebSocket sticky sessions are not required** because all real-time state lives in Redis pub/sub:
 
-`
-Worker A (ws://host1/ws/preview/{id})    Worker B (ws://host2/ws/preview/{id})
-  |                                         |
-  |-- send(content) --->  --->  Redis  <--  |-- send(content)
-  |<-- pub/sub ---------|  "preview:{id}"  |<-- pub/sub
-`
+```mermaid
+flowchart TD
+    Redis[("Redis<br>'preview:{id}'")]
+    WorkerA["Worker A<br>(ws://host1/ws/preview/{id})"]
+    WorkerB["Worker B<br>(ws://host2/ws/preview/{id})"]
+    
+    WorkerA -- "send(content)" --> Redis
+    Redis -- "pub/sub" --> WorkerA
+    
+    WorkerB -- "send(content)" --> Redis
+    Redis -- "pub/sub" --> WorkerB
+```
 
 Any worker handles any client. Workers subscribe to preview:{sessionId} on connect; _forward_updates() broadcasts to all subscribers.
 
@@ -1306,27 +1290,12 @@ If client is re-routed to Worker B:
 
 Redis pub/sub is the backbone for cross-worker event broadcasting. The following diagram shows event propagation across three workers:
 
-```
-                    +-----------------------------+
-                               Redis              
-                      +-----------------------+   
-                        pub/sub channels:       
-                        "job:{id}"              
-                        "session:{id}"          
-                        "preview:{id}"          
-                      +-----------------------+   
-                    +-----------------------------+
-                               
-             +------------------+------------------+
-                                                 
-     +---------------+ +---------------+ +---------------+
-        Worker A        Worker B        Worker C    
-       (Celery)        (Web/API)       (Web/API)    
-                                                    
-      AgentPipeline   SSE clients     WS clients    
-      _emit_sse()     event_generator preview_ws()  
-      publish()       subscribe()     subscribe()   
-     +---------------+ +---------------+ +---------------+
+```mermaid
+flowchart TD
+    Redis["Redis<br>pub/sub channels:<br>'job:{id}'<br>'session:{id}'<br>'preview:{id}'"] --> Split{ }
+    Split --> WorkerA["Worker A (Celery)<br>AgentPipeline _emit_sse()<br>publish()"]
+    Split --> WorkerB["Worker B (Web/API)<br>SSE clients event_generator<br>subscribe()"]
+    Split --> WorkerC["Worker C (Web/API)<br>WS clients preview_ws()<br>subscribe()"]
 ```
 
 **Key considerations for multi-worker Redis pub/sub**:

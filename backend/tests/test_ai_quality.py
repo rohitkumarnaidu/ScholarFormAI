@@ -17,6 +17,7 @@ import pytest
 #  1A — Response Quality Scoring
 # ===================================================================
 
+
 class TestResponseQualityScoring:
     """Quality scoring using compute_quality_score and QualityScorer."""
 
@@ -29,13 +30,16 @@ class TestResponseQualityScoring:
 
         data = {
             "metadata": {"abstract": "A novel approach to AI."},
-            "references": [{"title": "Ref1"}, {"title": "Ref2"}, {"title": "Ref3"},
-                           {"title": "Ref4"}, {"title": "Ref5"}],
-            "headings": [{"text": "Introduction"}, {"text": "Methods"},
-                         {"text": "Results"}, {"text": "Conclusion"}],
+            "references": [
+                {"title": "Ref1"},
+                {"title": "Ref2"},
+                {"title": "Ref3"},
+                {"title": "Ref4"},
+                {"title": "Ref5"},
+            ],
+            "headings": [{"text": "Introduction"}, {"text": "Methods"}, {"text": "Results"}, {"text": "Conclusion"}],
             "blocks": [
-                {"block_type": "body", "section_name": "introduction",
-                 "text": "Some intro text here."},
+                {"block_type": "body", "section_name": "introduction", "text": "Some intro text here."},
             ],
         }
         validation = {"errors": [], "warnings": [], "citation_target": 5}
@@ -47,6 +51,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_compute_quality_score_empty(self):
         from app.services.quality_score_service import compute_quality_score
+
         result = compute_quality_score({}, "ieee", {})
         assert result["overall_score"] == 0
         assert result["template_compliance"] == 0
@@ -55,6 +60,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_compute_quality_score_missing_sections_extracted(self):
         from app.services.quality_score_service import compute_quality_score
+
         data = {
             "metadata": {"abstract": "A."},
             "references": [],
@@ -69,6 +75,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_compute_quality_score_citation_score(self):
         from app.services.quality_score_service import compute_quality_score
+
         data = {
             "metadata": {"abstract": "A."},
             "references": [{"title": "R1"}, {"title": "R2"}],
@@ -84,6 +91,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_compute_quality_score_infer_provider(self):
         from app.services.quality_score_service import compute_quality_score
+
         data = {
             "metadata": {"abstract": "A."},
             "references": [],
@@ -100,6 +108,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_quality_scorer_empty_content(self):
         from app.pipeline.generation.quality_scorer import QualityScorer
+
         scorer = QualityScorer()
         result = scorer.score({}, "ieee", {})
         assert result["overall_score"] == 0
@@ -108,6 +117,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_quality_scorer_word_count_zero(self):
         from app.pipeline.generation.quality_scorer import QualityScorer
+
         assert QualityScorer._word_count("") == 0
         assert QualityScorer._word_count(None) == 0
         assert QualityScorer._word_count("   ") == 0
@@ -116,6 +126,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_quality_scorer_word_count_typical(self):
         from app.pipeline.generation.quality_scorer import QualityScorer
+
         assert QualityScorer._word_count("hello world") == 2
         assert QualityScorer._word_count("a b c d e f") == 6
 
@@ -123,6 +134,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_quality_scorer_citation_count(self):
         from app.pipeline.generation.quality_scorer import QualityScorer
+
         text = "As shown in [1], [2, 3], and (Smith, 2023)..."
         assert QualityScorer._count_citations(text) >= 3
 
@@ -130,6 +142,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_quality_scorer_citation_count_empty(self):
         from app.pipeline.generation.quality_scorer import QualityScorer
+
         assert QualityScorer._count_citations("") == 0
         assert QualityScorer._count_citations(None) == 0
 
@@ -137,6 +150,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_quality_scorer_section_balance_equal(self):
         from app.pipeline.generation.quality_scorer import QualityScorer
+
         sections = {"Intro": "word " * 100, "Methods": "word " * 100}
         balance = QualityScorer._section_balance(sections, ["Intro", "Methods"])
         assert balance >= 80.0
@@ -145,6 +159,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_quality_scorer_section_balance_unequal(self):
         from app.pipeline.generation.quality_scorer import QualityScorer
+
         sections = {"Intro": "x", "Methods": "y " * 500}
         balance = QualityScorer._section_balance(sections, ["Intro", "Methods"])
         assert balance < 80.0
@@ -153,6 +168,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_quality_scorer_percentage(self):
         from app.pipeline.generation.quality_scorer import QualityScorer
+
         assert QualityScorer._percentage(3, 4) == 75.0
         assert QualityScorer._percentage(0, 5) == 0.0
         assert QualityScorer._percentage(5, 0) == 0.0
@@ -161,6 +177,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_quality_scorer_citation_score(self):
         from app.pipeline.generation.quality_scorer import QualityScorer
+
         assert QualityScorer._citation_score(5, 1) == 100.0
         assert QualityScorer._citation_score(0, 5) == 0.0
         assert QualityScorer._citation_score(0, 0) == 0.0
@@ -169,6 +186,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_quality_scorer_full_score_roundtrip(self):
         from app.pipeline.generation.quality_scorer import QualityScorer
+
         scorer = QualityScorer()
         content = {
             "sections": [
@@ -189,6 +207,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_quality_scorer_no_sections_input(self):
         from app.pipeline.generation.quality_scorer import QualityScorer
+
         scorer = QualityScorer()
         result = scorer.score({"not_sections": "value"}, "ieee", {})
         assert isinstance(result["overall_score"], float)
@@ -197,6 +216,7 @@ class TestResponseQualityScoring:
     @pytest.mark.ai_quality
     def test_quality_scorer_very_long_text(self):
         from app.pipeline.generation.quality_scorer import QualityScorer
+
         scorer = QualityScorer()
         content = {"sections": [{"title": "Intro", "content": "word " * 10000}]}
         result = scorer.score(content, "ieee", {"sections": ["Intro"]})
@@ -212,24 +232,42 @@ GOLDEN_PROMPTS = [
         "doc_type": "academic_paper",
         "metadata": {"title": "Test Paper", "authors": ["Alice"], "sections": [{"name": "Intro", "include": True}]},
         "options": {},
-        "required_elements": ["Paper Details", "Instructions", "Return ONLY a valid JSON array",
-                              "TITLE", "AUTHOR_INFO", "BODY"],
+        "required_elements": [
+            "Paper Details",
+            "Instructions",
+            "Return ONLY a valid JSON array",
+            "TITLE",
+            "AUTHOR_INFO",
+            "BODY",
+        ],
         "forbidden_elements": ["{unset_variable}", "self.", "__"],
     },
     {
         "doc_type": "resume",
-        "metadata": {"name": "Bob", "skills": ["Python"], "education": [{"degree": "BSc", "institution": "MIT", "year": "2024"}]},
+        "metadata": {
+            "name": "Bob",
+            "skills": ["Python"],
+            "education": [{"degree": "BSc", "institution": "MIT", "year": "2024"}],
+        },
         "options": {},
-        "required_elements": ["Candidate Details", "Return ONLY a valid JSON array",
-                              "TITLE", "CONTACT_INFO", "SUMMARY"],
+        "required_elements": [
+            "Candidate Details",
+            "Return ONLY a valid JSON array",
+            "TITLE",
+            "CONTACT_INFO",
+            "SUMMARY",
+        ],
         "forbidden_elements": ["{unset_variable}", "self."],
     },
     {
         "doc_type": "report",
-        "metadata": {"title": "Report", "authors": ["Charlie"], "sections": [{"name": "Exec Summary", "include": True}]},
+        "metadata": {
+            "title": "Report",
+            "authors": ["Charlie"],
+            "sections": [{"name": "Exec Summary", "include": True}],
+        },
         "options": {},
-        "required_elements": ["Report Details", "Return ONLY a valid JSON array",
-                              "TITLE", "AUTHOR_INFO", "ABSTRACT"],
+        "required_elements": ["Report Details", "Return ONLY a valid JSON array", "TITLE", "AUTHOR_INFO", "ABSTRACT"],
         "forbidden_elements": ["{unset_variable}", "self."],
     },
 ]
@@ -243,6 +281,7 @@ class TestGoldenPromptVerification:
     @pytest.mark.parametrize("config", GOLDEN_PROMPTS, ids=[c["doc_type"] for c in GOLDEN_PROMPTS])
     def test_golden_prompt_has_required_elements(self, config):
         from app.pipeline.generation.prompt_builder import PromptBuilder
+
         builder = PromptBuilder()
         prompt = builder.build(config["doc_type"], config["metadata"], config["options"])
         for elem in config["required_elements"]:
@@ -253,6 +292,7 @@ class TestGoldenPromptVerification:
     @pytest.mark.parametrize("config", GOLDEN_PROMPTS, ids=[c["doc_type"] for c in GOLDEN_PROMPTS])
     def test_golden_prompt_no_forbidden_elements(self, config):
         from app.pipeline.generation.prompt_builder import PromptBuilder
+
         builder = PromptBuilder()
         prompt = builder.build(config["doc_type"], config["metadata"], config["options"])
         for elem in config["forbidden_elements"]:
@@ -262,6 +302,7 @@ class TestGoldenPromptVerification:
     @pytest.mark.ai_quality
     def test_golden_prompt_length_stable(self):
         from app.pipeline.generation.prompt_builder import PromptBuilder
+
         builder = PromptBuilder()
         prompt = builder.build("academic_paper", {"title": "Stable Test", "authors": ["A"]}, {})
         assert 500 < len(prompt) < 2000
@@ -270,6 +311,7 @@ class TestGoldenPromptVerification:
     @pytest.mark.ai_quality
     def test_golden_section_prompt_consistent(self):
         from app.pipeline.generation.section_prompts import get_section_prompt
+
         ctx = {"task_spec": {"topic": "AI"}, "template_rules": [], "outline": []}
         p1 = get_section_prompt("Introduction", ctx)
         p2 = get_section_prompt("Introduction", ctx)
@@ -279,6 +321,7 @@ class TestGoldenPromptVerification:
     @pytest.mark.ai_quality
     def test_golden_prompt_no_placeholder_bleed(self):
         from app.pipeline.generation.prompt_builder import PromptBuilder
+
         builder = PromptBuilder()
         prompt = builder.build("academic_paper", {"title": "Test"}, {})
         assert "%s" not in prompt
@@ -289,9 +332,10 @@ class TestGoldenPromptVerification:
     @pytest.mark.ai_quality
     def test_golden_output_has_no_contradictions(self):
         from app.pipeline.generation.prompt_builder import PromptBuilder
+
         builder = PromptBuilder()
         prompt = builder.build("academic_paper", {"title": "Test"}, {})
-        sentences = re.split(r'(?<=[.!?])\s+', prompt)
+        sentences = re.split(r"(?<=[.!?])\s+", prompt)
         for s in sentences:
             lower = s.lower()
             assert not ("do not include" in lower and "include" in lower.replace("do not include", ""))
@@ -300,6 +344,7 @@ class TestGoldenPromptVerification:
 # ===================================================================
 #  1C — Confidence Calibration
 # ===================================================================
+
 
 class TestConfidenceCalibration:
     """guard_llm_output confidence bounds and output quality."""

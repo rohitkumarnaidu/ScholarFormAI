@@ -6,6 +6,7 @@ import pytest
 class TestGenerateWithModel:
     def test_unknown_model(self):
         from app.services.llm_service import LLMUnavailableError, generate_with_model
+
         with patch("app.services.provider_registry.resolve_model_provider", return_value=None):
             with pytest.raises(LLMUnavailableError, match="Unknown model"):
                 generate_with_model([{"role": "user", "content": "Hi"}], "nonexistent-model")
@@ -116,6 +117,7 @@ class TestGenerateWithModel:
 class TestGenerateOpenaiCompat:
     def test_returns_content(self):
         from app.services.llm_service import _generate_openai_compat
+
         mock_resp = MagicMock()
         mock_choice = MagicMock()
         mock_choice.message.content = "response text"
@@ -133,6 +135,7 @@ class TestGenerateOpenaiCompat:
 
     def test_returns_empty_on_no_choices(self):
         from app.services.llm_service import _generate_openai_compat
+
         mock_resp = MagicMock()
         mock_resp.choices = []
         mock_client = MagicMock()
@@ -148,6 +151,7 @@ class TestGenerateOpenaiCompat:
 
     def test_default_api_key_if_missing(self):
         from app.services.llm_service import _generate_openai_compat
+
         with patch("openai.OpenAI") as mock_openai:
             _generate_openai_compat(
                 messages=[{"role": "user", "content": "Hi"}],
@@ -160,6 +164,7 @@ class TestGenerateOpenaiCompat:
 
     def test_passes_correct_params(self):
         from app.services.llm_service import _generate_openai_compat
+
         mock_client = MagicMock()
         with patch("openai.OpenAI", return_value=mock_client):
             _generate_openai_compat(
@@ -179,6 +184,7 @@ class TestGenerateOpenaiCompat:
 
     def test_clamps_temperature(self):
         from app.services.llm_service import _generate_openai_compat
+
         mock_resp = MagicMock()
         mock_choice = MagicMock()
         mock_choice.message.content = "ok"
@@ -211,6 +217,7 @@ class TestGenerateOpenaiCompat:
 class TestResolveUserApiKey:
     def test_uses_env_var_when_no_user_id(self):
         from app.services.llm_service import resolve_user_api_key
+
         mock_settings = MagicMock()
         mock_settings.OPENAI_API_KEY = "sk-env-key"
         with patch("app.services.llm_service.settings", mock_settings):
@@ -219,6 +226,7 @@ class TestResolveUserApiKey:
 
     def test_returns_none_when_no_key(self):
         from app.services.llm_service import resolve_user_api_key
+
         mock_settings = MagicMock()
         mock_settings.OPENAI_API_KEY = None
         with patch("app.services.llm_service.settings", mock_settings):
@@ -227,11 +235,13 @@ class TestResolveUserApiKey:
 
     def test_unknown_provider_returns_none(self):
         from app.services.llm_service import resolve_user_api_key
+
         result = resolve_user_api_key("unknown_provider")
         assert result is None
 
     def test_user_key_priority(self):
         from app.services.llm_service import resolve_user_api_key
+
         mock_db_session = MagicMock()
         mock_key_service = MagicMock()
         mock_key = MagicMock()
@@ -250,6 +260,7 @@ class TestResolveUserApiKey:
 
     def test_user_key_exception_falls_back_to_env(self):
         from app.services.llm_service import resolve_user_api_key
+
         mock_db_session = MagicMock()
         mock_db_session.close.side_effect = RuntimeError("close error")
 
@@ -264,6 +275,7 @@ class TestResolveUserApiKey:
 
     def test_deepseek_key_resolved(self):
         from app.services.llm_service import resolve_user_api_key
+
         mock_settings = MagicMock()
         mock_settings.DEEPSEEK_API_KEY = "sk-deepseek"
         with patch("app.services.llm_service.settings", mock_settings):
@@ -272,6 +284,7 @@ class TestResolveUserApiKey:
 
     def test_google_key_resolved(self):
         from app.services.llm_service import resolve_user_api_key
+
         mock_settings = MagicMock()
         mock_settings.GOOGLE_API_KEY = "google-key"
         with patch("app.services.llm_service.settings", mock_settings):
@@ -280,6 +293,7 @@ class TestResolveUserApiKey:
 
     def test_cohere_key_resolved(self):
         from app.services.llm_service import resolve_user_api_key
+
         mock_settings = MagicMock()
         mock_settings.COHERE_API_KEY = "cohere-key"
         with patch("app.services.llm_service.settings", mock_settings):
@@ -288,6 +302,7 @@ class TestResolveUserApiKey:
 
     def test_mistral_key_resolved(self):
         from app.services.llm_service import resolve_user_api_key
+
         mock_settings = MagicMock()
         mock_settings.MISTRAL_API_KEY = "mistral-key"
         with patch("app.services.llm_service.settings", mock_settings):

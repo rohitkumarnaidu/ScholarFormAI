@@ -8,6 +8,7 @@ import pytest
 class TestCitationAssemblyService:
     def test_init(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         with patch("app.services.citation_assembly_service.get_crossref_client"):
             with patch("app.services.citation_assembly_service.CSLEngine"):
                 svc = CitationAssemblyService()
@@ -16,6 +17,7 @@ class TestCitationAssemblyService:
     @pytest.mark.asyncio
     async def test_extract_citations_empty(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         with patch("app.services.citation_assembly_service.get_crossref_client"):
             with patch("app.services.citation_assembly_service.CSLEngine"):
                 svc = CitationAssemblyService()
@@ -25,6 +27,7 @@ class TestCitationAssemblyService:
     @pytest.mark.asyncio
     async def test_extract_citations_author_year(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         with patch("app.services.citation_assembly_service.get_crossref_client"):
             with patch("app.services.citation_assembly_service.CSLEngine"):
                 svc = CitationAssemblyService()
@@ -34,6 +37,7 @@ class TestCitationAssemblyService:
     @pytest.mark.asyncio
     async def test_extract_citations_numeric(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         with patch("app.services.citation_assembly_service.get_crossref_client"):
             with patch("app.services.citation_assembly_service.CSLEngine"):
                 svc = CitationAssemblyService()
@@ -45,6 +49,7 @@ class TestCitationAssemblyService:
     @pytest.mark.asyncio
     async def test_lookup_citations_empty(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         with patch("app.services.citation_assembly_service.get_crossref_client"):
             with patch("app.services.citation_assembly_service.CSLEngine"):
                 svc = CitationAssemblyService()
@@ -54,6 +59,7 @@ class TestCitationAssemblyService:
     @pytest.mark.asyncio
     async def test_lookup_citations_success(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         mock_crossref = MagicMock()
         mock_crossref.validate_citation.return_value = {"doi": "10.1234/test", "title": "Test"}
         with patch("app.services.citation_assembly_service.get_crossref_client", return_value=mock_crossref):
@@ -66,6 +72,7 @@ class TestCitationAssemblyService:
     @pytest.mark.asyncio
     async def test_lookup_citations_failure(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         mock_crossref = MagicMock()
         mock_crossref.validate_citation.side_effect = Exception("not found")
         with patch("app.services.citation_assembly_service.get_crossref_client", return_value=mock_crossref):
@@ -77,11 +84,13 @@ class TestCitationAssemblyService:
 
     def test_normalize(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         result = CitationAssemblyService._normalize("  Hello   World  ")
         assert result == "Hello World"
 
     def test_replace_citations_empty(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         with patch("app.services.citation_assembly_service.get_crossref_client"):
             with patch("app.services.citation_assembly_service.CSLEngine"):
                 svc = CitationAssemblyService()
@@ -90,6 +99,7 @@ class TestCitationAssemblyService:
 
     def test_replace_citations_author_year(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         with patch("app.services.citation_assembly_service.get_crossref_client"):
             with patch("app.services.citation_assembly_service.CSLEngine"):
                 svc = CitationAssemblyService()
@@ -98,6 +108,7 @@ class TestCitationAssemblyService:
 
     def test_replace_citations_numeric(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         with patch("app.services.citation_assembly_service.get_crossref_client"):
             with patch("app.services.citation_assembly_service.CSLEngine"):
                 svc = CitationAssemblyService()
@@ -107,6 +118,7 @@ class TestCitationAssemblyService:
     @pytest.mark.asyncio
     async def test_format_references_empty(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         with patch("app.services.citation_assembly_service.get_crossref_client"):
             with patch("app.services.citation_assembly_service.CSLEngine"):
                 svc = CitationAssemblyService()
@@ -116,6 +128,7 @@ class TestCitationAssemblyService:
     @pytest.mark.asyncio
     async def test_format_references_with_data(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         mock_csl = MagicMock()
         mock_csl.format_references.return_value = ["1. J. Doe, Test, 2024.", ""]
         with patch("app.services.citation_assembly_service.get_crossref_client"):
@@ -128,6 +141,7 @@ class TestCitationAssemblyService:
     @pytest.mark.asyncio
     async def test_assemble(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         mock_crossref = MagicMock()
         mock_crossref.validate_citation.return_value = {"doi": "10.1234/abc", "title": "ABC"}
         mock_csl = MagicMock()
@@ -143,6 +157,7 @@ class TestCitationAssemblyService:
     @pytest.mark.asyncio
     async def test_extract_citations_bracket_author_year(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         with patch("app.services.citation_assembly_service.get_crossref_client"):
             with patch("app.services.citation_assembly_service.CSLEngine"):
                 svc = CitationAssemblyService()
@@ -151,6 +166,7 @@ class TestCitationAssemblyService:
 
     def test_replace_citations_author_year_bracket(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         with patch("app.services.citation_assembly_service.get_crossref_client"):
             with patch("app.services.citation_assembly_service.CSLEngine"):
                 svc = CitationAssemblyService()
@@ -159,6 +175,7 @@ class TestCitationAssemblyService:
 
     def test_replace_citations_unmapped_preserved(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         with patch("app.services.citation_assembly_service.get_crossref_client"):
             with patch("app.services.citation_assembly_service.CSLEngine"):
                 svc = CitationAssemblyService()
@@ -168,6 +185,7 @@ class TestCitationAssemblyService:
     @pytest.mark.asyncio
     async def test_format_references_handles_empty_authors(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         mock_csl = MagicMock()
         mock_csl.format_references.return_value = ["1. Untitled"]
         with patch("app.services.citation_assembly_service.get_crossref_client"):
@@ -178,5 +196,6 @@ class TestCitationAssemblyService:
 
     def test_normalize_various(self):
         from app.services.citation_assembly_service import CitationAssemblyService
+
         assert CitationAssemblyService._normalize(123) == "123"
         assert CitationAssemblyService._normalize("  a   b  ") == "a b"

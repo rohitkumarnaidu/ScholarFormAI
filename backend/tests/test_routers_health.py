@@ -9,6 +9,7 @@ class TestHealthRouter:
         from fastapi.testclient import TestClient
 
         from app.main import app
+
         app.dependency_overrides.clear()
         with TestClient(app) as c:
             yield c
@@ -35,6 +36,7 @@ class TestReadyEndpoint:
     @pytest.mark.asyncio
     async def test_ready_success(self):
         from app.routers.v1.health import ready
+
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
         with patch("app.routers.v1.health.get_readiness_payload", return_value=({"db": "healthy"}, 200)):
@@ -44,6 +46,7 @@ class TestReadyEndpoint:
     @pytest.mark.asyncio
     async def test_ready_exception(self):
         from app.routers.v1.health import ready
+
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
         with patch("app.routers.v1.health.get_readiness_payload", side_effect=Exception("fail")):
@@ -53,6 +56,7 @@ class TestReadyEndpoint:
     @pytest.mark.asyncio
     async def test_health_build_success_response(self):
         from app.routers.v1.health import health
+
         mock_request = MagicMock()
         mock_request.state.request_id = "req-1"
         result = await health(mock_request)

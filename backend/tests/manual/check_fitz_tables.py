@@ -4,8 +4,9 @@
 
 try:
     import fitz
+
     print(f"PyMuPDF Version: {fitz.__version__}")
-    
+
     # Check if find_tables exists
     doc = fitz.open()
     page = doc.new_page()
@@ -13,7 +14,7 @@ try:
         print("SUCCESS: find_tables is available")
     else:
         print("FAILURE: find_tables is NOT available")
-        
+
 except ImportError:
     print("PyMuPDF not installed")
 except Exception as e:

@@ -35,15 +35,14 @@ def _orchestrator_available():
             patch("app.pipeline.orchestrator.get_supabase_client", return_value=None),
         ):
             from app.pipeline.orchestrator import PipelineOrchestrator
-            PipelineOrchestrator(
-                templates_dir="app/templates",
-                temp_dir="temp_stress_check"
-            )
+
+            PipelineOrchestrator(templates_dir="app/templates", temp_dir="temp_stress_check")
             return True
     except Exception:
         return False
     finally:
         import shutil
+
         if os.path.exists("temp_stress_check"):
             shutil.rmtree("temp_stress_check", ignore_errors=True)
 
@@ -63,13 +62,11 @@ def orchestrator():
 
         from app.pipeline.orchestrator import PipelineOrchestrator
 
-        orchestrator = PipelineOrchestrator(
-            templates_dir="app/templates",
-            temp_dir="temp_stress_test"
-        )
+        orchestrator = PipelineOrchestrator(templates_dir="app/templates", temp_dir="temp_stress_test")
         yield orchestrator
 
     import shutil
+
     if os.path.exists("temp_stress_test"):
         shutil.rmtree("temp_stress_test", ignore_errors=True)
 
@@ -252,8 +249,17 @@ class TestProductionStressValidation:
     def test_all_templates_with_minimal(self, orchestrator, minimal_docx, tmp_path):
         """Test minimal document against all available templates."""
         templates = [
-            "none", "ieee", "apa", "mla", "chicago", "harvard",
-            "vancouver", "nature", "springer", "elsevier", "acm",
+            "none",
+            "ieee",
+            "apa",
+            "mla",
+            "chicago",
+            "harvard",
+            "vancouver",
+            "nature",
+            "springer",
+            "elsevier",
+            "acm",
             "numeric",
         ]
 

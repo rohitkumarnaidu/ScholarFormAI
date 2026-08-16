@@ -144,6 +144,7 @@ def _consistency_report(results: list[dict[str, Any]]) -> dict[str, float]:
 
 # Deterministic mock generation functions for testing
 
+
 def _deterministic_formatter(text: str) -> str:
     """A deterministic function (no randomness)."""
     return f"Formatted: {text.strip()}"
@@ -157,6 +158,7 @@ def _near_deterministic_formatter(text: str) -> str:
 
 _call_counter: int = 0
 
+
 def _non_deterministic_formatter(text: str) -> str:
     """Non-deterministic: returns different outputs."""
     global _call_counter
@@ -167,6 +169,7 @@ def _non_deterministic_formatter(text: str) -> str:
 # ===================================================================
 #  4A — Determinism
 # ===================================================================
+
 
 class TestDeterminism:
     """Same input should produce semantically similar output."""
@@ -183,6 +186,7 @@ class TestDeterminism:
     def test_determinism_over_5_consecutive_calls(self):
         def gen(text):
             return _deterministic_formatter(text)
+
         result = _check_determinism(gen, "Abstract on AI safety", num_runs=5)
         assert result["deterministic"], f"Not deterministic: {result}"
         assert result["avg_similarity"] >= 0.95
@@ -191,6 +195,7 @@ class TestDeterminism:
     def test_determinism_over_10_consecutive_calls(self):
         def gen(text):
             return _deterministic_formatter(text)
+
         result = _check_determinism(gen, "Abstract on quantum computing", num_runs=10)
         assert result["deterministic"], f"Not deterministic over 10 runs: {result}"
 
@@ -198,6 +203,7 @@ class TestDeterminism:
     def test_temperature_zero_near_identical(self):
         def temperature_zero(text):
             return f"Output for: {text}"
+
         r1 = temperature_zero("Write an introduction.")
         r2 = temperature_zero("Write an introduction.")
         assert r1 == r2, "Temperature=0 should produce identical outputs"
@@ -216,6 +222,7 @@ class TestDeterminism:
 #  4B — Consistency Across Calls
 # ===================================================================
 
+
 class TestCrossCallConsistency:
     """Content, format, length, and style consistency."""
 
@@ -223,6 +230,7 @@ class TestCrossCallConsistency:
     def test_factual_consistency_no_contradiction(self):
         def gen(text):
             return f"Abstract: {text} The study found significant results."
+
         r1 = gen("AI in healthcare")
         r2 = gen("AI in healthcare")
         assert r1 == r2, "Factual content should not contradict across calls"
@@ -231,6 +239,7 @@ class TestCrossCallConsistency:
     def test_format_consistency_across_calls(self):
         def gen_with_format(text):
             return f"## Abstract\n\n{text}\n\n## Keywords\n\n{text.lower().replace(' ', ', ')}"
+
         r1 = gen_with_format("Deep learning")
         r2 = gen_with_format("Deep learning")
         fmt_sim = _format_similarity(r1, r2)
@@ -240,6 +249,7 @@ class TestCrossCallConsistency:
     def test_length_consistency_across_calls(self):
         def gen_reproducible(text):
             return f"Introduction:\n{text}\nMethods:\n{text}\nResults:\n{text}"
+
         r1 = gen_reproducible("test data")
         r2 = gen_reproducible("test data")
         len_sim = min(len(r1), len(r2)) / max(len(r1), len(r2), 1)
@@ -272,6 +282,7 @@ class TestCrossCallConsistency:
 #  4C — Edge Cases & Scoring
 # ===================================================================
 
+
 class TestConsistencyEdgeCasesAndScoring:
     """Edge case handling and consistency scoring."""
 
@@ -279,6 +290,7 @@ class TestConsistencyEdgeCasesAndScoring:
     def test_empty_input_handled_consistently(self):
         def gen(text):
             return f"Result: {text}" if text else ""
+
         r1 = gen("")
         r2 = gen("")
         assert r1 == r2, "Empty input should produce identical output"
@@ -286,8 +298,10 @@ class TestConsistencyEdgeCasesAndScoring:
     @pytest.mark.ai_quality
     def test_very_long_input_handled_consistently(self):
         long_text = "word " * 5000
+
         def gen(text):
             return f"Summary: {text[:100]}..."
+
         r1 = gen(long_text)
         r2 = gen(long_text)
         assert r1 == r2, "Long input should produce identical output"
@@ -345,5 +359,6 @@ class TestConsistencyEdgeCasesAndScoring:
     def test_non_deterministic_detected(self):
         def gen(text):
             return _non_deterministic_formatter(text)
+
         result = _check_determinism(gen, "test", num_runs=3)
         assert not result["deterministic"], f"Non-deterministic should be detected: {result}"

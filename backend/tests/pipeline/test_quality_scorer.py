@@ -9,6 +9,7 @@ import pytest
 @pytest.fixture
 def scorer():
     from app.pipeline.generation.quality_scorer import QualityScorer
+
     return QualityScorer()
 
 

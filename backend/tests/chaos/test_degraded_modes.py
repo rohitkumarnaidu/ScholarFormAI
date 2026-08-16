@@ -27,6 +27,7 @@ class TestNoRedisDegradedMode:
         with patch("app.middleware.rate_limit.redis") as mock_redis:
             mock_redis.side_effect = ConnectionError("Redis unreachable")
             from app.middleware.rate_limit import RateLimitMiddleware
+
             assert RateLimitMiddleware is not None
 
     def test_no_redis_caching_noops_gracefully(self):
@@ -100,8 +101,13 @@ class TestNoGROBID:
 
         orchestrator = PipelineOrchestrator()
         with patch.object(orchestrator.grobid_client, "is_available", return_value=False):
-            with patch("app.pipeline.orchestrator.PipelineOrchestrator._extract_pymupdf_fallback_metadata", return_value={"source": "pymupdf"}):
-                with patch.object(orchestrator, "_extract_pymupdf_fallback_metadata", return_value={"source": "pymupdf"}):
+            with patch(
+                "app.pipeline.orchestrator.PipelineOrchestrator._extract_pymupdf_fallback_metadata",
+                return_value={"source": "pymupdf"},
+            ):
+                with patch.object(
+                    orchestrator, "_extract_pymupdf_fallback_metadata", return_value={"source": "pymupdf"}
+                ):
                     result = orchestrator._extract_pymupdf_fallback_metadata("test.pdf")
                     assert isinstance(result, dict)
                     assert result.get("source") == "pymupdf"
@@ -139,6 +145,7 @@ class TestNoSupabase:
         with patch("app.services.document_crud_service.get_supabase_client", return_value=None):
             with pytest.raises(DatabaseUnavailableError):
                 import asyncio
+
                 asyncio.run(DocumentCrudService().get_document("550e8400-e29b-41d4-a716-446655440000"))
 
 
@@ -178,6 +185,7 @@ class TestAllAIDegraded:
     def test_sentry_unavailable_app_continues(self):
         """Sentry unavailable — app continues with logging only."""
         import logging
+
         logger = logging.getLogger("test.sentry")
         try:
             raise Exception("Sentry init failed")

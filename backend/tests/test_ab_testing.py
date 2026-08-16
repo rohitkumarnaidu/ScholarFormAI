@@ -7,6 +7,7 @@ class TestRunABTest:
     @pytest.fixture
     def framework(self):
         from app.services.ab_testing import ABTestingFramework
+
         return ABTestingFramework()
 
     def test_compare_results_both_successful(self, framework):
@@ -66,7 +67,6 @@ class TestRunABTest:
         assert summary["nvidia_wins"] == 1
         assert summary["deepseek_wins"] == 1
 
-
     def test_compare_results_both_none(self, framework):
         cmp = framework._compare_results(None, None)
         assert cmp["both_succeeded"] is False
@@ -91,23 +91,23 @@ class TestRunABTest:
 
     def test_run_ab_test_nvidia_only(self, framework):
         nvidia = MagicMock()
-        nvidia.chat.return_value = 'ok'
+        nvidia.chat.return_value = "ok"
         result = framework.run_ab_test(nvidia, None, [{"text": "Hello"}], "rules")
         assert result["nvidia"] is not None
         assert result["deepseek"] is None
 
     def test_run_ab_test_deepseek_only(self, framework):
         deepseek = MagicMock()
-        deepseek.invoke.return_value = MagicMock(content='ok')
+        deepseek.invoke.return_value = MagicMock(content="ok")
         result = framework.run_ab_test(None, deepseek, [{"text": "Hello"}], "rules")
         assert result["nvidia"] is None
         assert result["deepseek"] is not None
 
     def test_run_ab_test_persist_failure_logged(self, framework):
         nvidia = MagicMock()
-        nvidia.chat.return_value = 'ok'
+        nvidia.chat.return_value = "ok"
         deepseek = MagicMock()
-        deepseek.invoke.return_value = MagicMock(content='ok')
+        deepseek.invoke.return_value = MagicMock(content="ok")
         with patch("app.db.supabase_client.get_supabase_client", return_value=MagicMock()):
             result = framework.run_ab_test(nvidia, deepseek, [{"text": "Hello"}], "rules")
         assert result["nvidia"]["success"] is True
@@ -122,6 +122,7 @@ class TestRunABTest:
 class TestGetABTesting:
     def test_returns_singleton(self):
         from app.services.ab_testing import get_ab_testing
+
         a1 = get_ab_testing()
         a2 = get_ab_testing()
         assert a1 is a2

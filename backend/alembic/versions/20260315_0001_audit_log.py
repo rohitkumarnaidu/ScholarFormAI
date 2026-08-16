@@ -8,6 +8,7 @@ Revises: 20260311_0001
 Create Date: 2026-03-15 12:00:00.000000
 
 """
+
 from collections.abc import Sequence
 from typing import Union
 
@@ -43,4 +44,5 @@ def downgrade() -> None:
     """Downgrade schema."""
     op.drop_table("audit_log")
 
-__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']
+
+__all__ = ["revision", "down_revision", "branch_labels", "depends_on", "upgrade", "downgrade"]

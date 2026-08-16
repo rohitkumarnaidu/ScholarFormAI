@@ -20,6 +20,7 @@ def _force_gc():
 
 # ── 2A: Memory Usage Tests ─────────────────────────────────────────────────
 
+
 class TestMemoryUsage:
     """Verify memory stays bounded during heavy operations."""
 
@@ -54,7 +55,7 @@ class TestMemoryUsage:
 
         assert result is not None
         assert len(result.blocks) >= 500
-        assert peak < 100 * 1024 * 1024, f"Peak memory {peak/1024/1024:.1f}MB > 100MB limit"
+        assert peak < 100 * 1024 * 1024, f"Peak memory {peak / 1024 / 1024:.1f}MB > 100MB limit"
 
     @pytest.mark.skip(reason="Requires real PipelineOrchestrator with all deps")
     @pytest.mark.performance
@@ -102,7 +103,7 @@ class TestMemoryUsage:
         current, peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()
 
-        assert peak < 150 * 1024 * 1024, f"Peak memory {peak/1024/1024:.1f}MB > 150MB limit"
+        assert peak < 150 * 1024 * 1024, f"Peak memory {peak / 1024 / 1024:.1f}MB > 150MB limit"
 
     @pytest.mark.skip(reason="Requires RagEngine embedding model")
     @pytest.mark.performance
@@ -127,7 +128,7 @@ class TestMemoryUsage:
             current, peak = tracemalloc.get_traced_memory()
             tracemalloc.stop()
 
-            assert peak < 100 * 1024 * 1024, f"RAG memory {peak/1024/1024:.1f}MB > 100MB limit"
+            assert peak < 100 * 1024 * 1024, f"RAG memory {peak / 1024 / 1024:.1f}MB > 100MB limit"
 
     @pytest.mark.skip(reason="Requires event_emitter from stream module with all deps")
     @pytest.mark.performance
@@ -147,6 +148,7 @@ class TestMemoryUsage:
                 memory_snapshots.append(len(str(message.get("text", "")).encode("utf-8")))
 
         import asyncio
+
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
@@ -214,7 +216,7 @@ class TestMemoryUsage:
         current, peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()
 
-        assert peak < 200 * 1024 * 1024, f"Celery peak memory {peak/1024/1024:.1f}MB > 200MB limit"
+        assert peak < 200 * 1024 * 1024, f"Celery peak memory {peak / 1024 / 1024:.1f}MB > 200MB limit"
 
     @pytest.mark.skip(reason="Requires real PipelineOrchestrator with all deps")
     @pytest.mark.performance
@@ -268,12 +270,12 @@ class TestMemoryUsage:
         initial_mem = memory_after_each[0]
         max_growth = max(abs(m - initial_mem) for m in memory_after_each[3:])
         assert max_growth < 50 * 1024 * 1024, (
-            f"Memory grew by {max_growth/1024/1024:.1f}MB across 20 files, "
-            f"suggesting a leak"
+            f"Memory grew by {max_growth / 1024 / 1024:.1f}MB across 20 files, suggesting a leak"
         )
 
 
 # ── 2B: Connection Pool Performance ────────────────────────────────────────
+
 
 class TestConnectionPoolPerformance:
     """Verify connection pools are properly managed."""
@@ -287,6 +289,7 @@ class TestConnectionPoolPerformance:
 
         with patch("app.services.document_service.get_supabase_client", return_value=mock_client):
             import app.services.document_service as ds
+
             with patch.object(ds.DocumentService, "list_documents", new_callable=AsyncMock) as mock_list:
                 mock_list.return_value = []
                 result = await ds.DocumentService.list_documents(user_id="test-user")
@@ -353,6 +356,4 @@ class TestConnectionPoolPerformance:
             for _ in range(100):
                 await ds.DocumentService.list_documents(user_id="test-user")
 
-        assert len(connections_seen) <= 110, (
-            f"Connection pool grew to {len(connections_seen)} unique connections"
-        )
+        assert len(connections_seen) <= 110, f"Connection pool grew to {len(connections_seen)} unique connections"

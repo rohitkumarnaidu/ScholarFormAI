@@ -6,6 +6,7 @@ Comprehensive tests targeting uncovered utility, middleware, and service files.
 Covers exceptions, deprecation, id_generator, singleton, cleanup, serialization,
 text_utils, security_headers, request_id, and logging_config.
 """
+
 from __future__ import annotations
 
 import logging
@@ -214,6 +215,7 @@ class TestCleanup:
     async def test_cleanup_uploads_directory_not_found(self):
         async def break_sleep(_duration):
             raise KeyboardInterrupt()
+
         with patch("app.utils.cleanup.os.path.exists", return_value=False):
             with patch("app.utils.cleanup.asyncio.sleep", break_sleep):
                 with pytest.raises(KeyboardInterrupt):
@@ -223,6 +225,7 @@ class TestCleanup:
     async def test_cleanup_uploads_exception_handling(self):
         async def break_sleep(_duration):
             raise KeyboardInterrupt()
+
         with patch("app.utils.cleanup.os.path.exists", side_effect=OSError("permission")):
             with patch("app.utils.cleanup.asyncio.sleep", break_sleep):
                 with pytest.raises(KeyboardInterrupt):
@@ -374,13 +377,13 @@ from app.utils.text_utils import (
 
 class TestTextUtils:
     def test_normalize_unicode_quotes(self):
-        assert normalize_unicode("\u201CHello\u201D") == '"Hello"'
+        assert normalize_unicode("\u201cHello\u201d") == '"Hello"'
 
     def test_normalize_unicode_dashes(self):
         assert normalize_unicode("\u2014dash") == "--dash"
 
     def test_normalize_unicode_spaces(self):
-        assert normalize_unicode("\u00A0nbsp") == " nbsp"
+        assert normalize_unicode("\u00a0nbsp") == " nbsp"
 
     def test_normalize_unicode_bullets(self):
         assert "\u2022" in normalize_unicode("\u2022")

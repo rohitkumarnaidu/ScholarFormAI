@@ -16,6 +16,7 @@ class TestFindLibreOffice:
             patch("os.path.exists", side_effect=lambda p: p.endswith("soffice.exe")),
         ):
             from app.pipeline.export.pdf_exporter import PDFExporter
+
             result = PDFExporter(libreoffice_path="")._find_libreoffice()
             assert result
             assert "soffice.exe" in result
@@ -26,17 +27,20 @@ class TestFindLibreOffice:
             patch("os.path.exists", return_value=False),
         ):
             from app.pipeline.export.pdf_exporter import PDFExporter
+
             assert PDFExporter(libreoffice_path="")._find_libreoffice() is None
 
     def test_macos(self):
         with patch("platform.system", return_value="Darwin"):
             from app.pipeline.export.pdf_exporter import PDFExporter
+
             result = PDFExporter(libreoffice_path="")._find_libreoffice()
             assert "LibreOffice.app" in result
 
     def test_linux(self):
         with patch("platform.system", return_value="Linux"):
             from app.pipeline.export.pdf_exporter import PDFExporter
+
             assert PDFExporter(libreoffice_path="")._find_libreoffice() == "libreoffice"
 
 
@@ -45,6 +49,7 @@ class TestInit:
         with patch("app.pipeline.export.pdf_exporter.settings") as mock_settings:
             mock_settings.LIBREOFFICE_PATH = ""
             from app.pipeline.export.pdf_exporter import PDFExporter
+
             exporter = PDFExporter(libreoffice_path="/custom/soffice")
             assert exporter.libreoffice_path == "/custom/soffice"
 
@@ -52,6 +57,7 @@ class TestInit:
         with patch("app.pipeline.export.pdf_exporter.settings") as mock_settings:
             mock_settings.LIBREOFFICE_PATH = ""
             from app.pipeline.export.pdf_exporter import PDFExporter
+
             with patch.object(PDFExporter, "_find_libreoffice", return_value="/found/soffice"):
                 exporter = PDFExporter()
                 assert exporter.libreoffice_path == "/found/soffice"
@@ -60,16 +66,15 @@ class TestInit:
         with patch("app.pipeline.export.pdf_exporter.settings") as mock_settings:
             mock_settings.LIBREOFFICE_PATH = "/settings/soffice"
             from app.pipeline.export.pdf_exporter import PDFExporter
+
             exporter = PDFExporter()
             assert "settings" in exporter.libreoffice_path
-
-
-
 
 
 class TestWeasyPrintFallback:
     def test_import_fails_returns_none(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="")
         with patch("docx.Document", side_effect=Exception("no docx")):
             result = exporter._weasyprint_fallback("/tmp/in.docx", "/tmp/out.pdf")
@@ -79,12 +84,14 @@ class TestWeasyPrintFallback:
 class TestConvertToPdf:
     def test_file_not_found(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="/usr/bin/soffice")
         with patch("os.path.exists", return_value=False):
             assert exporter.convert_to_pdf("/nonexistent.docx", "/tmp") is None
 
     def test_libreoffice_success(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="/usr/bin/soffice")
         with (
             patch("os.path.exists", side_effect=lambda p: p.endswith(".docx") or p.endswith(".pdf")),
@@ -98,6 +105,7 @@ class TestConvertToPdf:
 
     def test_libreoffice_fails_fallback_succeeds(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="/usr/bin/soffice")
         with (
             patch("os.path.exists", side_effect=lambda p: p.endswith(".docx") or p.endswith(".pdf")),
@@ -111,6 +119,7 @@ class TestConvertToPdf:
 
     def test_libreoffice_timeout_fallback_succeeds(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="/usr/bin/soffice")
         with (
             patch("os.path.exists", side_effect=lambda p: p.endswith(".docx") or p.endswith(".pdf")),
@@ -122,6 +131,7 @@ class TestConvertToPdf:
 
     def test_libreoffice_not_found(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="")
         with (
             patch("os.path.exists", side_effect=lambda p: p.endswith(".docx") or p.endswith(".pdf")),
@@ -132,6 +142,7 @@ class TestConvertToPdf:
 
     def test_all_engines_fail(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="/usr/bin/soffice")
         with (
             patch("os.path.exists", side_effect=lambda p: p.endswith(".docx") or p.endswith(".pdf")),
@@ -146,6 +157,7 @@ class TestConvertToPdf:
 
     def test_libreoffice_oserror(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="/usr/bin/soffice")
         with (
             patch("os.path.exists", side_effect=lambda p: p.endswith(".docx") or p.endswith(".pdf")),
@@ -157,6 +169,7 @@ class TestConvertToPdf:
 
     def test_docx2pdf_fallback_success(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="/usr/bin/soffice")
         with (
             patch("os.path.exists", side_effect=lambda p: p.endswith(".docx") or p.endswith(".pdf")),
@@ -172,6 +185,7 @@ class TestConvertToPdf:
 
     def test_docx2pdf_fails_runtime_error(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
+
         exporter = PDFExporter(libreoffice_path="/usr/bin/soffice")
         with (
             patch("os.path.exists", side_effect=lambda p: p.endswith(".docx") or p.endswith(".pdf")),

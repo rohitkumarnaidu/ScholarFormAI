@@ -55,7 +55,7 @@ class TestSingleServiceFailure:
         start = time.time()
         with patch("time.sleep", side_effect=lambda s: None), safe_execution("CPU Intensive Pass"):
             for _ in range(100):
-                _ = [i ** 2 for i in range(1000)]
+                _ = [i**2 for i in range(1000)]
         elapsed = time.time() - start
         assert elapsed < 2.0, f"CPU pressure simulation took {elapsed:.2f}s, expected <2s"
 
@@ -277,6 +277,7 @@ class TestResourceExhaustionSystematic:
     def test_connection_pool_exhaustion(self):
         """Simulate connection pool exhaustion — verify timeout raises on full pool."""
         import concurrent.futures
+
         pool = ThreadPoolExecutor(max_workers=1)
         blocker = threading.Event()
         pool.submit(blocker.wait)

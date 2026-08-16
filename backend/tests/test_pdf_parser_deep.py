@@ -14,6 +14,7 @@ from app.models import Block, BlockType
 def pdf_parser():
     with patch("app.pipeline.parsing.pdf_parser.fitz"):
         from app.pipeline.parsing.pdf_parser import PdfParser
+
         parser = PdfParser()
         parser.block_counter = 0
         parser.figure_counter = 0
@@ -23,9 +24,14 @@ def pdf_parser():
 
 class MockRect:
     def __init__(self, x0=0, y0=0, x1=612, y1=792):
-        self.x0 = x0; self.y0 = y0; self.x1 = x1; self.y1 = y1
+        self.x0 = x0
+        self.y0 = y0
+        self.x1 = x1
+        self.y1 = y1
+
     def __getitem__(self, i):
         return [self.x0, self.y0, self.x1, self.y1][i]
+
     def __len__(self):
         return 4
 
@@ -56,6 +62,7 @@ class TestInit:
         with patch("app.pipeline.parsing.pdf_parser.PYMUPDF_AVAILABLE", False):
             with pytest.raises(ImportError, match="PyMuPDF"):
                 from app.pipeline.parsing.pdf_parser import PdfParser
+
                 PdfParser()
 
     def test_initializes_counters(self, pdf_parser):
@@ -169,13 +176,18 @@ class TestCalculateFontStats:
     def test_returns_weighted_mode(self, pdf_parser, mock_pdf_doc, mock_page):
         mock_page.get_text.return_value = {
             "blocks": [
-                {"type": 0, "lines": [
-                    {"spans": [
-                        {"size": 11.0, "text": "a" * 100, "flags": 0, "font": "Times"},
-                        {"size": 11.0, "text": "b" * 50, "flags": 0, "font": "Times"},
-                        {"size": 14.0, "text": "c" * 20, "flags": 0, "font": "Times"},
-                    ]}
-                ]}
+                {
+                    "type": 0,
+                    "lines": [
+                        {
+                            "spans": [
+                                {"size": 11.0, "text": "a" * 100, "flags": 0, "font": "Times"},
+                                {"size": 11.0, "text": "b" * 50, "flags": 0, "font": "Times"},
+                                {"size": 14.0, "text": "c" * 20, "flags": 0, "font": "Times"},
+                            ]
+                        }
+                    ],
+                }
             ]
         }
         result = pdf_parser._calculate_font_stats(mock_pdf_doc)
@@ -343,15 +355,20 @@ class TestParse:
 
     def test_adds_processing_stage(self, pdf_parser, tmp_path, mock_pdf_doc, mock_page):
         import app.models
+
         with (
             patch("app.pipeline.parsing.pdf_parser.fitz.open") as mock_open,
             patch.object(app.models.PipelineDocument, "add_processing_stage") as mock_aps,
         ):
             mock_open.return_value = mock_pdf_doc
             mock_page.get_text.return_value = {
-                "blocks": [{"type": 0, "bbox": [50, 300, 500, 320], "lines": [
-                    {"spans": [{"text": "Hello World", "size": 12.0, "flags": 0, "font": "Times"}]}
-                ]}]
+                "blocks": [
+                    {
+                        "type": 0,
+                        "bbox": [50, 300, 500, 320],
+                        "lines": [{"spans": [{"text": "Hello World", "size": 12.0, "flags": 0, "font": "Times"}]}],
+                    }
+                ]
             }
             p = tmp_path / "test.pdf"
             p.write_text("dummy")
@@ -368,9 +385,13 @@ class TestExtractContent:
 
     def test_extracts_text_block(self, pdf_parser, mock_pdf_doc, mock_page):
         mock_page.get_text.return_value = {
-            "blocks": [{"type": 0, "bbox": [50, 300, 500, 320], "lines": [
-                {"spans": [{"text": "Hello World", "size": 12.0, "flags": 0, "font": "Times"}]}
-            ]}]
+            "blocks": [
+                {
+                    "type": 0,
+                    "bbox": [50, 300, 500, 320],
+                    "lines": [{"spans": [{"text": "Hello World", "size": 12.0, "flags": 0, "font": "Times"}]}],
+                }
+            ]
         }
         blocks, figures, tables = pdf_parser._extract_content(mock_pdf_doc)
         assert len(blocks) == 1
@@ -379,9 +400,13 @@ class TestExtractContent:
 
     def test_skips_text_in_table_region(self, pdf_parser, mock_pdf_doc, mock_page):
         mock_page.get_text.return_value = {
-            "blocks": [{"type": 0, "bbox": [50, 300, 500, 320], "lines": [
-                {"spans": [{"text": "Inside Table", "size": 11.0, "flags": 0, "font": "Times"}]}
-            ]}]
+            "blocks": [
+                {
+                    "type": 0,
+                    "bbox": [50, 300, 500, 320],
+                    "lines": [{"spans": [{"text": "Inside Table", "size": 11.0, "flags": 0, "font": "Times"}]}],
+                }
+            ]
         }
         table_mock = MagicMock()
         table_mock.bbox = [0, 290, 600, 330]
@@ -395,18 +420,26 @@ class TestExtractContent:
         pdf_parser._calculate_font_stats = MagicMock(return_value=11.0)
         mock_page.get_text.return_value = {
             "blocks": [
-                {"type": 0, "bbox": [50, 100, 500, 130], "lines": [
-                    {"spans": [{"text": "Big Heading", "size": 20.0, "flags": 16, "font": "Times"}]}
-                ]},
-                {"type": 0, "bbox": [50, 200, 500, 220], "lines": [
-                    {"spans": [{"text": "Medium Heading", "size": 15.0, "flags": 0, "font": "Times"}]}
-                ]},
-                {"type": 0, "bbox": [50, 300, 500, 320], "lines": [
-                    {"spans": [{"text": "Small Heading", "size": 12.5, "flags": 16, "font": "Times"}]}
-                ]},
-                {"type": 0, "bbox": [50, 400, 500, 420], "lines": [
-                    {"spans": [{"text": "Body text here", "size": 11.0, "flags": 0, "font": "Times"}]}
-                ]},
+                {
+                    "type": 0,
+                    "bbox": [50, 100, 500, 130],
+                    "lines": [{"spans": [{"text": "Big Heading", "size": 20.0, "flags": 16, "font": "Times"}]}],
+                },
+                {
+                    "type": 0,
+                    "bbox": [50, 200, 500, 220],
+                    "lines": [{"spans": [{"text": "Medium Heading", "size": 15.0, "flags": 0, "font": "Times"}]}],
+                },
+                {
+                    "type": 0,
+                    "bbox": [50, 300, 500, 320],
+                    "lines": [{"spans": [{"text": "Small Heading", "size": 12.5, "flags": 16, "font": "Times"}]}],
+                },
+                {
+                    "type": 0,
+                    "bbox": [50, 400, 500, 420],
+                    "lines": [{"spans": [{"text": "Body text here", "size": 11.0, "flags": 0, "font": "Times"}]}],
+                },
             ]
         }
         blocks, _, _ = pdf_parser._extract_content(mock_pdf_doc)
@@ -419,12 +452,16 @@ class TestExtractContent:
     def test_header_footer_suppression(self, pdf_parser, mock_pdf_doc, mock_page):
         mock_page.get_text.return_value = {
             "blocks": [
-                {"type": 0, "bbox": [50, 5, 500, 25], "lines": [
-                    {"spans": [{"text": "Page Header", "size": 10.0, "flags": 0, "font": "Times"}]}
-                ]},
-                {"type": 0, "bbox": [50, 770, 500, 790], "lines": [
-                    {"spans": [{"text": "Page Footer", "size": 10.0, "flags": 0, "font": "Times"}]}
-                ]},
+                {
+                    "type": 0,
+                    "bbox": [50, 5, 500, 25],
+                    "lines": [{"spans": [{"text": "Page Header", "size": 10.0, "flags": 0, "font": "Times"}]}],
+                },
+                {
+                    "type": 0,
+                    "bbox": [50, 770, 500, 790],
+                    "lines": [{"spans": [{"text": "Page Footer", "size": 10.0, "flags": 0, "font": "Times"}]}],
+                },
             ]
         }
         blocks, _, _ = pdf_parser._extract_content(mock_pdf_doc)
@@ -476,12 +513,16 @@ class TestExtractContent:
         long_text = "This is a long repeated text that should be suppressed " * 3
         mock_page.get_text.return_value = {
             "blocks": [
-                {"type": 0, "bbox": [50, 300, 500, 320], "lines": [
-                    {"spans": [{"text": long_text, "size": 11.0, "flags": 0, "font": "Times"}]}
-                ]},
-                {"type": 0, "bbox": [50, 350, 500, 370], "lines": [
-                    {"spans": [{"text": long_text, "size": 11.0, "flags": 0, "font": "Times"}]}
-                ]},
+                {
+                    "type": 0,
+                    "bbox": [50, 300, 500, 320],
+                    "lines": [{"spans": [{"text": long_text, "size": 11.0, "flags": 0, "font": "Times"}]}],
+                },
+                {
+                    "type": 0,
+                    "bbox": [50, 350, 500, 370],
+                    "lines": [{"spans": [{"text": long_text, "size": 11.0, "flags": 0, "font": "Times"}]}],
+                },
             ]
         }
         blocks, _, _ = pdf_parser._extract_content(mock_pdf_doc)

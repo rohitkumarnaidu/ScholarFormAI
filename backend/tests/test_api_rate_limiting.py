@@ -37,6 +37,7 @@ class Test2A_RateLimitHeaders:
     def authed_client(self):
         from app.main import app
         from app.utils.dependencies import get_current_user
+
         mock_user = MagicMock()
         mock_user.id = "user-rl-header"
         mock_user.role = "authenticated"
@@ -56,7 +57,8 @@ class Test2A_RateLimitHeaders:
         with (
             patch("app.db.session.get_db", return_value=mock_db),
             patch("app.routers.v1.api_keys.ApiKeyService"),
-            patch("app.routers.v1.api_keys.get_api_key_rate_limiter", return_value=mock_rl_result),TestClient(app) as c
+            patch("app.routers.v1.api_keys.get_api_key_rate_limiter", return_value=mock_rl_result),
+            TestClient(app) as c,
         ):
             c.headers.update({"Authorization": "Bearer test-token"})
             yield c
@@ -71,13 +73,20 @@ class Test2A_RateLimitHeaders:
     def test_rate_limit_remaining_decreases(self, authed_client):
         mock_rl = MagicMock()
         mock_rl.check_rate_limit.return_value = MagicMock(
-            allowed=True, limit=100, remaining=95,
-            reset_at=1234567890.0, retry_after=None,
+            allowed=True,
+            limit=100,
+            remaining=95,
+            reset_at=1234567890.0,
+            retry_after=None,
         )
         with patch("app.routers.v1.api_keys.get_api_key_rate_limiter", return_value=mock_rl):
-            resp = authed_client.post("/api/v1/keys/test", json={
-                "provider": "openai", "api_key": "sk-test-key-12345",
-            })
+            resp = authed_client.post(
+                "/api/v1/keys/test",
+                json={
+                    "provider": "openai",
+                    "api_key": "sk-test-key-12345",
+                },
+            )
         if "X-RateLimit-Remaining" in resp.headers:
             remaining = int(resp.headers["X-RateLimit-Remaining"])
             assert remaining <= 100
@@ -88,6 +97,7 @@ class Test2A_RateLimitHeaders:
             reset = resp.headers["X-RateLimit-Reset"]
             assert reset.lstrip("-").isdigit(), f"Reset not numeric: {reset}"
             import time
+
             now = time.time()
             reset_val = int(reset)
             assert reset_val > now - 86400, f"Reset {reset_val} too far in past"
@@ -95,6 +105,7 @@ class Test2A_RateLimitHeaders:
     def test_retry_after_header_on_rate_limited(self):
         from app.routers.v1.api_keys import apply_rate_limit_headers
         from app.services.api_key_rate_limiter import RateLimitResult
+
         response = MagicMock()
         response.headers = {}
         result = RateLimitResult(allowed=False, limit=10, remaining=0, reset_at=2000.0, retry_after=30.0)
@@ -104,6 +115,7 @@ class Test2A_RateLimitHeaders:
     def test_retry_after_minimum_one(self):
         from app.routers.v1.api_keys import apply_rate_limit_headers
         from app.services.api_key_rate_limiter import RateLimitResult
+
         response = MagicMock()
         response.headers = {}
         result = RateLimitResult(allowed=False, limit=10, remaining=0, reset_at=2000.0, retry_after=0.0)
@@ -114,8 +126,11 @@ class Test2A_RateLimitHeaders:
         for path in ("/api/v1/keys",):
             mock_rl = MagicMock()
             mock_rl.check_rate_limit.return_value = MagicMock(
-                allowed=True, limit=100, remaining=50,
-                reset_at=1234567890.0, retry_after=None,
+                allowed=True,
+                limit=100,
+                remaining=50,
+                reset_at=1234567890.0,
+                retry_after=None,
             )
             with patch("app.routers.v1.api_keys.get_api_key_rate_limiter", return_value=mock_rl):
                 resp = authed_client.get(path)
@@ -135,20 +150,20 @@ class Test2B_RateLimitEnforcement:
 
     def test_exceeding_limit_returns_429(self):
         from app.routers.v1._helpers import build_error_response
+
         mock_req = MagicMock()
         mock_req.state.request_id = "req-rate"
-        resp = build_error_response(mock_req, status_code=429, code="RATE_LIMITED",
-                                     message="Too many requests")
+        resp = build_error_response(mock_req, status_code=429, code="RATE_LIMITED", message="Too many requests")
         assert resp.status_code == 429
         body = self._rj(resp)
         assert body["error"]["code"] == "RATE_LIMITED"
 
     def test_rate_limited_response_envelope(self):
         from app.routers.v1._helpers import build_error_response
+
         mock_req = MagicMock()
         mock_req.state.request_id = "req-rate2"
-        resp = build_error_response(mock_req, status_code=429, code="RATE_LIMITED",
-                                     message="Rate limit exceeded")
+        resp = build_error_response(mock_req, status_code=429, code="RATE_LIMITED", message="Rate limit exceeded")
         body = self._rj(resp)
         assert "request_id" in body
         assert "timestamp" in body
@@ -164,6 +179,7 @@ class Test2B_RateLimitEnforcement:
     def test_different_endpoints_have_separate_limits(self):
         from app.routers.v1.api_keys import apply_rate_limit_headers
         from app.services.api_key_rate_limiter import RateLimitResult
+
         r1 = MagicMock()
         r1.headers = {}
         r2 = MagicMock()
@@ -177,6 +193,7 @@ class Test2B_RateLimitEnforcement:
 
     def test_authenticated_users_have_higher_limits(self):
         from app.services.api_key_rate_limiter import RateLimitResult
+
         anon = RateLimitResult(allowed=True, limit=20, remaining=19, reset_at=1000.0, retry_after=None)
         authed = RateLimitResult(allowed=True, limit=100, remaining=99, reset_at=1000.0, retry_after=None)
         assert authed.limit >= anon.limit
@@ -185,6 +202,7 @@ class Test2B_RateLimitEnforcement:
         import time
 
         from app.services.api_key_rate_limiter import RateLimitResult
+
         future = time.time() + 60
         result = RateLimitResult(allowed=True, limit=100, remaining=0, reset_at=future, retry_after=60.0)
         assert result.retry_after > 0
@@ -192,6 +210,7 @@ class Test2B_RateLimitEnforcement:
 
     def test_concurrent_requests_same_limits(self):
         from app.services.api_key_rate_limiter import RateLimitResult
+
         r1 = RateLimitResult(allowed=True, limit=100, remaining=50, reset_at=1000.0, retry_after=None)
         r2 = RateLimitResult(allowed=True, limit=100, remaining=50, reset_at=1000.0, retry_after=None)
         assert r1.limit == r2.limit

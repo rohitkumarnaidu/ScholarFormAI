@@ -29,6 +29,7 @@ def _make_figure(figure_id, block_index, export_path=None, caption_text=""):
 class TestCaptionMatcher:
     def test_init_defaults(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher()
         assert cm.max_distance == 2
         assert cm.enable_vision is False
@@ -36,6 +37,7 @@ class TestCaptionMatcher:
 
     def test_init_custom_max_distance(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher(max_distance=5)
         assert cm.max_distance == 5
 
@@ -43,6 +45,7 @@ class TestCaptionMatcher:
         mock_client = MagicMock()
         with patch("app.services.nvidia_client.get_nvidia_client", return_value=mock_client):
             from app.pipeline.figures.caption_matcher import CaptionMatcher
+
             cm = CaptionMatcher(enable_vision=True)
             assert cm.enable_vision is True
             assert cm.vision_client is mock_client
@@ -50,21 +53,25 @@ class TestCaptionMatcher:
     def test_init_vision_enabled_exception(self):
         with patch("app.services.nvidia_client.get_nvidia_client", side_effect=Exception("no GPU")):
             from app.pipeline.figures.caption_matcher import CaptionMatcher
+
             cm = CaptionMatcher(enable_vision=True)
             assert cm.vision_client is None
 
     def test_find_caption_candidates_empty(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher()
         assert cm._find_caption_candidates([]) == []
 
     def test_find_caption_candidates_heading_skipped(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher()
         assert cm._find_caption_candidates([_make_block(0, "Figure 1 Analysis", is_heading=True)]) == []
 
     def test_find_caption_candidates_matches(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher()
         blocks = [
             _make_block(3, "Figure 1: Experimental results"),
@@ -75,16 +82,19 @@ class TestCaptionMatcher:
 
     def test_find_caption_candidates_case_insensitive(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher()
         assert cm._find_caption_candidates([_make_block(1, "figure 10: Lowercase")]) == [1]
 
     def test_match_candidates_empty_candidates(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher()
         assert cm._match_candidates([], [], []) == []
 
     def test_match_candidates_basic_match(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher(max_distance=2)
         fig = _make_figure("F1", 5)
         fig_block = _make_block(5, "Figure block content")
@@ -97,6 +107,7 @@ class TestCaptionMatcher:
 
     def test_match_candidates_beyond_max_distance(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher(max_distance=2)
         fig = _make_figure("F1", 0)
         # 4 blocks between fig and caption → list distance 4 > 2
@@ -112,6 +123,7 @@ class TestCaptionMatcher:
 
     def test_match_candidates_no_block_index(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher()
         fig = MagicMock()
         fig.figure_id = "F1"
@@ -122,6 +134,7 @@ class TestCaptionMatcher:
 
     def test_match_candidates_already_assigned_figure(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher(max_distance=2)
         fig = _make_figure("F1", 0)
         fig_block = _make_block(0, "fig")
@@ -133,6 +146,7 @@ class TestCaptionMatcher:
 
     def test_match_candidates_tiebreak_prefers_above(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher(max_distance=3)
         fig_above = _make_figure("F1", 0)
         fig_below = _make_figure("F2", 4)
@@ -148,6 +162,7 @@ class TestCaptionMatcher:
 
     def test_process_no_figures(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher()
         doc = MagicMock()
         doc.blocks = [MagicMock()]
@@ -157,6 +172,7 @@ class TestCaptionMatcher:
 
     def test_process_with_matches(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher(max_distance=2)
         fig_block = _make_block(0, "image here")
         cap_block = _make_block(1, "Figure 1: Results")
@@ -174,6 +190,7 @@ class TestCaptionMatcher:
 
     def test_process_exception(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher()
         doc = MagicMock()
         doc.blocks = [MagicMock()]
@@ -181,17 +198,14 @@ class TestCaptionMatcher:
         with patch.object(cm, "_find_caption_candidates", side_effect=RuntimeError("boom")):
             result = cm.process(doc)
         assert result is doc
-        doc.add_processing_stage.assert_called_once_with(
-            stage_name="figure_linking",
-            status="error",
-            message=ANY
-        )
+        doc.add_processing_stage.assert_called_once_with(stage_name="figure_linking", status="error", message=ANY)
 
     def test_process_with_vision_enhancement(self):
         mock_client = MagicMock()
         mock_client.analyze_figure.return_value = "A bar chart showing growth"
         with patch("app.services.nvidia_client.get_nvidia_client", return_value=mock_client):
             from app.pipeline.figures.caption_matcher import CaptionMatcher
+
             cm = CaptionMatcher(enable_vision=True)
             fig_block = _make_block(0, "image")
             cap_block = _make_block(1, "Figure 1: Basic")
@@ -207,6 +221,7 @@ class TestCaptionMatcher:
 
     def test_enhance_captions_no_export_path(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher()
         cm.vision_client = MagicMock()
         fig = _make_figure("F1", 1, export_path=None)
@@ -214,6 +229,7 @@ class TestCaptionMatcher:
 
     def test_enhance_captions_export_path_missing(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher()
         cm.vision_client = MagicMock()
         fig = _make_figure("F1", 1, export_path="/nonexistent.png")
@@ -222,6 +238,7 @@ class TestCaptionMatcher:
 
     def test_enhance_captions_vision_fails(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher()
         mock_client = MagicMock()
         mock_client.analyze_figure.side_effect = Exception("vision error")
@@ -232,6 +249,7 @@ class TestCaptionMatcher:
 
     def test_enhance_captions_existing_caption(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher()
         mock_client = MagicMock()
         mock_client.analyze_figure.return_value = "A bar chart"
@@ -245,6 +263,7 @@ class TestCaptionMatcher:
 
     def test_enhance_captions_empty_caption(self):
         from app.pipeline.figures.caption_matcher import CaptionMatcher
+
         cm = CaptionMatcher()
         mock_client = MagicMock()
         mock_client.analyze_figure.return_value = "Some chart"
@@ -257,6 +276,7 @@ class TestCaptionMatcher:
 
     def test_link_figures_convenience(self):
         from app.pipeline.figures.caption_matcher import link_figures
+
         doc = MagicMock()
         doc.blocks = []
         doc.figures = []
@@ -265,6 +285,7 @@ class TestCaptionMatcher:
 
     def test_link_figures_vision_default(self):
         from app.pipeline.figures.caption_matcher import link_figures
+
         doc = MagicMock()
         doc.blocks = []
         doc.figures = []

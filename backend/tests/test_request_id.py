@@ -5,8 +5,10 @@ import pytest
 
 @pytest.fixture(autouse=True)
 def _reset_context():
-    with patch("app.middleware.request_id.bind_context") as mock_bind, \
-         patch("app.middleware.request_id.reset_context") as mock_reset:
+    with (
+        patch("app.middleware.request_id.bind_context") as mock_bind,
+        patch("app.middleware.request_id.reset_context") as mock_reset,
+    ):
         mock_bind.return_value = ("token",)
         yield mock_bind, mock_reset
 
@@ -15,6 +17,7 @@ class TestRequestIdMiddleware:
     @pytest.fixture
     def middleware_class(self):
         from app.middleware.request_id import RequestIdMiddleware
+
         return RequestIdMiddleware
 
     async def test_non_http_passes_through(self, middleware_class, _reset_context):
@@ -61,14 +64,16 @@ class TestRequestIdMiddleware:
         }
 
         async def fake_send_wrapper(scope, receive, send_wrapped):
-            await send_wrapped({"type": "http.response.start", "status": 200, "headers": [(b"content-type", b"text/plain")]})
+            await send_wrapped(
+                {"type": "http.response.start", "status": 200, "headers": [(b"content-type", b"text/plain")]}
+            )
             await send_wrapped({"type": "http.response.body", "body": b""})
 
         app.side_effect = fake_send_wrapper
         mw = middleware_class(app)
         await mw(scope, receive, send)
         found_ex_request_id = False
-        for call in send.call_args_list if hasattr(send, 'call_args_list') else []:
+        for call in send.call_args_list if hasattr(send, "call_args_list") else []:
             msg = call[0][0]
             if msg["type"] == "http.response.start":
                 hdrs = dict(msg.get("headers", []))
@@ -148,12 +153,14 @@ class TestRequestIdMiddleware:
 class TestGetRequestId:
     def test_returns_from_state(self):
         from app.middleware.request_id import get_request_id
+
         request = MagicMock()
         request.state.request_id = "existing-id"
         assert get_request_id(request) == "existing-id"
 
     def test_creates_new_uuid_when_missing(self):
         from app.middleware.request_id import get_request_id
+
         request = MagicMock()
         del request.state.request_id
         result = get_request_id(request)
@@ -164,12 +171,14 @@ class TestGetRequestId:
 class TestShouldLogIdempotency:
     def test_matching_suffix_returns_true(self):
         from app.middleware.request_id import _should_log_idempotency
+
         assert _should_log_idempotency("/upload")
         assert _should_log_idempotency("/generator/sessions")
         assert _should_log_idempotency("/synthesis/sessions")
 
     def test_non_matching_returns_false(self):
         from app.middleware.request_id import _should_log_idempotency
+
         assert not _should_log_idempotency("/api/v1/health")
         assert not _should_log_idempotency("/process")
         assert not _should_log_idempotency("/")

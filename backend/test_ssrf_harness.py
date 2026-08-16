@@ -2,6 +2,7 @@
 Empirical SSRF Adversarial Test Harness for ScholarFormAI backend
 Tests `_sanitize_url` in app.routers.v1.providers against SSRF payloads.
 """
+
 import os
 import sys
 
@@ -21,34 +22,28 @@ MALICIOUS_PAYLOADS = [
     ("http://[::1]/", "Loopback IPv6 ([::1])", "Loopback"),
     ("http://127.0.0.1:8080/v1", "Loopback with port 8080", "Loopback"),
     ("http://sub.localhost/", "Subdomain of localhost", "Loopback"),
-
     # 2. Numeric Encodings
     ("http://0x7f000001/", "Hex encoded IP 0x7f000001", "Numeric Encodings"),
     ("http://0177.0.0.1/", "Octal encoded IP 0177.0.0.1", "Numeric Encodings"),
     ("http://2130706433/", "DWORD integer IP 2130706433", "Numeric Encodings"),
     ("http://0x7f.0.0.1/", "Mixed hex/dec IP", "Numeric Encodings"),
-
     # 3. IPv4-mapped IPv6
     ("http://[::ffff:127.0.0.1]/", "IPv4-mapped IPv6 loopback [::ffff:127.0.0.1]", "IPv4-mapped IPv6"),
     ("http://[::ffff:10.0.0.1]/", "IPv4-mapped IPv6 private [::ffff:10.0.0.1]", "IPv4-mapped IPv6"),
-
     # 4. Private Networks
     ("http://10.0.0.1/", "Private network 10.0.0.1 (Class A)", "Private Networks"),
     ("http://172.16.0.1/", "Private network 172.16.0.1 (Class B)", "Private Networks"),
     ("http://192.168.1.1/", "Private network 192.168.1.1 (Class C)", "Private Networks"),
     ("http://100.64.0.1/", "CGNAT network 100.64.0.1", "Private Networks"),
-
     # 5. Cloud Metadata
     ("http://169.254.169.254/", "AWS/GCP/Azure link-local metadata IP", "Cloud Metadata"),
     ("http://metadata.google.internal/", "GCP metadata domain", "Cloud Metadata"),
-
     # 6. Dangerous Schemes
     ("file:///etc/passwd", "file:// scheme", "Dangerous Schemes"),
     ("gopher://127.0.0.1:25/", "gopher:// scheme", "Dangerous Schemes"),
     ("ftp://example.com/", "ftp:// scheme", "Dangerous Schemes"),
     ("dict://127.0.0.1/", "dict:// scheme", "Dangerous Schemes"),
     ("data:text/html,secret", "data: scheme", "Dangerous Schemes"),
-
     # 7. Userinfo Credentials
     ("http://admin:secret@127.0.0.1/", "Userinfo credentials pointing to 127.0.0.1", "Userinfo Credentials"),
 ]

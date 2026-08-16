@@ -83,5 +83,6 @@ class TestContractLoader:
 class TestLoadContractConvenience:
     def test_load_contract_convenience(self):
         from app.pipeline.contracts.loader import load_contract
+
         contract = load_contract("ieee")
         assert isinstance(contract, dict)

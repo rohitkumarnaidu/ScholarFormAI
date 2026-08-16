@@ -9,6 +9,7 @@ class TestSuggestionServiceBuildPrompt:
     @pytest.fixture
     def svc(self):
         from app.services.suggestion_service import SuggestionService
+
         return SuggestionService
 
     def test_style_prompt(self, svc):
@@ -38,6 +39,7 @@ class TestUtcNowIso:
     @pytest.fixture
     def svc(self):
         from app.services.suggestion_service import SuggestionService
+
         return SuggestionService
 
     def test_returns_iso(self, svc):
@@ -79,7 +81,10 @@ class TestGenerateSuggestion:
 
     @patch("app.services.suggestion_service.get_supabase_client")
     @patch("app.services.suggestion_service.asyncio.to_thread")
-    @patch.object(__import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService, "_call_llm_for_suggestion")
+    @patch.object(
+        __import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService,
+        "_call_llm_for_suggestion",
+    )
     async def test_generates_and_saves(self, mock_llm, mock_to_thread, mock_get_sb, svc):
         mock_llm.return_value = "Improved text"
         mock_sb = MagicMock()
@@ -99,7 +104,10 @@ class TestGenerateSuggestion:
 
     @patch("app.services.suggestion_service.get_supabase_client")
     @patch("app.services.suggestion_service.asyncio.to_thread")
-    @patch.object(__import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService, "_call_llm_for_suggestion")
+    @patch.object(
+        __import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService,
+        "_call_llm_for_suggestion",
+    )
     async def test_llm_fails_uses_original(self, mock_llm, mock_to_thread, mock_get_sb, svc):
         mock_llm.return_value = None
         mock_sb = MagicMock()
@@ -139,10 +147,14 @@ class TestGenerateSuggestion:
         assert result is None
 
     @patch("app.services.suggestion_service.get_supabase_client", return_value=None)
-    @patch.object(__import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService, "_call_llm_for_suggestion")
+    @patch.object(
+        __import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService,
+        "_call_llm_for_suggestion",
+    )
     async def test_no_supabase_raises(self, mock_llm, mock_get_sb, svc):
         mock_llm.return_value = "Improved"
         from app.exceptions import DatabaseUnavailableError
+
         with pytest.raises(DatabaseUnavailableError):
             await svc.generate_suggestion(
                 document_id="doc-1",
@@ -152,7 +164,10 @@ class TestGenerateSuggestion:
 
     @patch("app.services.suggestion_service.get_supabase_client")
     @patch("app.services.suggestion_service.asyncio.to_thread")
-    @patch.object(__import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService, "_call_llm_for_suggestion")
+    @patch.object(
+        __import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService,
+        "_call_llm_for_suggestion",
+    )
     async def test_missing_table_sets_flag(self, mock_llm, mock_to_thread, mock_get_sb, svc):
         mock_llm.return_value = "Improved"
         mock_sb = MagicMock()
@@ -186,6 +201,7 @@ class TestGetSuggestions:
     @patch("app.services.suggestion_service.get_supabase_client", return_value=None)
     async def test_no_supabase_raises(self, mock_get_sb, svc):
         from app.exceptions import DatabaseUnavailableError
+
         with pytest.raises(DatabaseUnavailableError):
             await svc.get_suggestions("doc-1")
 
@@ -233,6 +249,7 @@ class TestUpdateSuggestionStatus:
     @patch("app.services.suggestion_service.get_supabase_client", return_value=None)
     async def test_no_supabase_raises(self, mock_get_sb, svc):
         from app.exceptions import DatabaseUnavailableError
+
         with pytest.raises(DatabaseUnavailableError):
             await svc._update_suggestion_status("s1", "accepted")
 
@@ -243,6 +260,7 @@ class TestUpdateSuggestionStatus:
         mock_get_sb.return_value = mock_sb
         mock_to_thread.side_effect = Exception("Update failed")
         from app.exceptions import DatabaseUnavailableError
+
         with pytest.raises(DatabaseUnavailableError):
             await svc._update_suggestion_status("s1", "accepted")
 
@@ -263,20 +281,29 @@ class TestAcceptRejectDismiss:
     def svc(self):
         return __import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService
 
-    @patch.object(__import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService, "_update_suggestion_status")
+    @patch.object(
+        __import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService,
+        "_update_suggestion_status",
+    )
     async def test_accept(self, mock_update, svc):
         mock_update.return_value = {"id": "s1", "status": "accepted"}
         result = await svc.accept_suggestion("s1")
         mock_update.assert_called_with("s1", "accepted")
         assert result["status"] == "accepted"
 
-    @patch.object(__import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService, "_update_suggestion_status")
+    @patch.object(
+        __import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService,
+        "_update_suggestion_status",
+    )
     async def test_reject(self, mock_update, svc):
         mock_update.return_value = {"id": "s1", "status": "rejected"}
         await svc.reject_suggestion("s1")
         mock_update.assert_called_with("s1", "rejected")
 
-    @patch.object(__import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService, "_update_suggestion_status")
+    @patch.object(
+        __import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService,
+        "_update_suggestion_status",
+    )
     async def test_dismiss(self, mock_update, svc):
         mock_update.return_value = {"id": "s1", "status": "dismissed"}
         await svc.dismiss_suggestion("s1")
@@ -302,6 +329,7 @@ class TestGetSuggestionHistory:
     @patch("app.services.suggestion_service.get_supabase_client", return_value=None)
     async def test_no_supabase_raises(self, mock_get_sb, svc):
         from app.exceptions import DatabaseUnavailableError
+
         with pytest.raises(DatabaseUnavailableError):
             await svc.get_suggestion_history("user-1")
 
@@ -345,6 +373,7 @@ class TestApplySuggestion:
     @patch("app.services.suggestion_service.get_supabase_client", return_value=None)
     async def test_no_supabase_raises(self, mock_get_sb, svc):
         from app.exceptions import DatabaseUnavailableError
+
         with pytest.raises(DatabaseUnavailableError):
             await svc.apply_suggestion("s1", "doc-1")
 
@@ -359,13 +388,17 @@ class TestGenerateSuggestionEdgeCases:
 
     @patch("app.services.suggestion_service.get_supabase_client")
     @patch("app.services.suggestion_service.asyncio.to_thread")
-    @patch.object(__import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService, "_call_llm_for_suggestion")
+    @patch.object(
+        __import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService,
+        "_call_llm_for_suggestion",
+    )
     async def test_insert_other_error_raises(self, mock_llm, mock_to_thread, mock_get_sb, svc):
         mock_llm.return_value = "Improved"
         mock_sb = MagicMock()
         mock_get_sb.return_value = mock_sb
         mock_to_thread.side_effect = Exception("DB constraint violation")
         from app.exceptions import DatabaseUnavailableError
+
         with pytest.raises(DatabaseUnavailableError):
             await svc.generate_suggestion(
                 document_id="doc-1",
@@ -375,7 +408,10 @@ class TestGenerateSuggestionEdgeCases:
 
     @patch("app.services.suggestion_service.get_supabase_client")
     @patch("app.services.suggestion_service.asyncio.to_thread")
-    @patch.object(__import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService, "_call_llm_for_suggestion")
+    @patch.object(
+        __import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService,
+        "_call_llm_for_suggestion",
+    )
     async def test_insert_return_no_data(self, mock_llm, mock_to_thread, mock_get_sb, svc):
         mock_llm.return_value = "Improved"
         mock_sb = MagicMock()
@@ -393,7 +429,10 @@ class TestGenerateSuggestionEdgeCases:
 
     @patch("app.services.suggestion_service.get_supabase_client")
     @patch("app.services.suggestion_service.asyncio.to_thread")
-    @patch.object(__import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService, "_call_llm_for_suggestion")
+    @patch.object(
+        __import__("app.services.suggestion_service", fromlist=["SuggestionService"]).SuggestionService,
+        "_call_llm_for_suggestion",
+    )
     async def test_missing_table_warn_once(self, mock_llm, mock_to_thread, mock_get_sb, svc):
         svc._table_warning_logged = True
         mock_llm.return_value = "Improved"
@@ -420,6 +459,7 @@ class TestGetSuggestionsEdgeCases:
         mock_get_sb.return_value = mock_sb
         mock_to_thread.side_effect = Exception("Server error")
         from app.exceptions import DatabaseUnavailableError
+
         with pytest.raises(DatabaseUnavailableError):
             await svc.get_suggestions("doc-1")
 
@@ -436,6 +476,7 @@ class TestGetSuggestionHistoryEdgeCases:
         mock_get_sb.return_value = mock_sb
         mock_to_thread.side_effect = Exception("Server error")
         from app.exceptions import DatabaseUnavailableError
+
         with pytest.raises(DatabaseUnavailableError):
             await svc.get_suggestion_history("user-1")
 
@@ -469,6 +510,7 @@ class TestApplySuggestionDeep:
         mock_get_sb.return_value = mock_sb
         mock_to_thread.side_effect = Exception("Fetch failed")
         from app.exceptions import DatabaseUnavailableError
+
         with pytest.raises(DatabaseUnavailableError):
             await svc.apply_suggestion("s1", "doc-1")
 
@@ -598,15 +640,18 @@ class TestApplySuggestionDeep:
 class TestSuggestionServiceModule:
     def test_suggestion_service_instance(self):
         from app.services.suggestion_service import suggestion_service
+
         assert suggestion_service is not None
 
     def test_suggestion_types(self):
         from app.services.suggestion_service import SUGGESTION_TYPES
+
         assert "style" in SUGGESTION_TYPES
         assert "grammar" in SUGGESTION_TYPES
 
     def test_suggestion_statuses(self):
         from app.services.suggestion_service import SUGGESTION_STATUSES
+
         assert "pending" in SUGGESTION_STATUSES
         assert "accepted" in SUGGESTION_STATUSES
 
@@ -619,6 +664,7 @@ class TestSuggestionServiceInnerClosures:
     @pytest.mark.asyncio
     async def test_run_insert_success(self):
         from app.services.suggestion_service import SuggestionService
+
         svc = SuggestionService
         svc._table_available = None
         svc._table_warning_logged = False
@@ -640,6 +686,7 @@ class TestSuggestionServiceInnerClosures:
     @pytest.mark.asyncio
     async def test_get_suggestions_run_query_success(self):
         from app.services.suggestion_service import SuggestionService
+
         mock_sb = MagicMock()
         mock_result = MagicMock()
         mock_result.data = [{"id": "s1"}]
@@ -652,6 +699,7 @@ class TestSuggestionServiceInnerClosures:
     @pytest.mark.asyncio
     async def test_get_suggestions_run_query_with_status(self):
         from app.services.suggestion_service import SuggestionService
+
         mock_sb = MagicMock()
         mock_eq = MagicMock()
         mock_eq.execute.return_value = MagicMock(data=[{"id": "s1", "status": "pending"}])
@@ -665,6 +713,7 @@ class TestSuggestionServiceInnerClosures:
     @pytest.mark.asyncio
     async def test_update_suggestion_status_run_update(self):
         from app.services.suggestion_service import SuggestionService
+
         mock_sb = MagicMock()
         mock_result = MagicMock()
         mock_result.data = [{"id": "s1", "status": "rejected"}]
@@ -677,6 +726,7 @@ class TestSuggestionServiceInnerClosures:
     @pytest.mark.asyncio
     async def test_get_suggestion_history_run_query(self):
         from app.services.suggestion_service import SuggestionService
+
         mock_sb = MagicMock()
         mock_result = MagicMock()
         mock_result.data = [{"id": "s1"}]
@@ -689,6 +739,7 @@ class TestSuggestionServiceInnerClosures:
     @pytest.mark.asyncio
     async def test_apply_suggestion_run_fetch(self):
         from app.services.suggestion_service import SuggestionService
+
         mock_sb = MagicMock()
         mock_result = MagicMock()
         mock_result.data = {"id": "s1", "status": "accepted", "suggested_text": "improved"}

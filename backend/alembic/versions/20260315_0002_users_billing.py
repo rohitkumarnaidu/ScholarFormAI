@@ -8,6 +8,7 @@ Revises: 20260315_0001
 Create Date: 2026-03-15 12:05:00.000000
 
 """
+
 from collections.abc import Sequence
 from typing import Union
 
@@ -58,4 +59,5 @@ def downgrade() -> None:
     if "plan_tier" in existing:
         op.drop_column("profiles", "plan_tier")
 
-__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']
+
+__all__ = ["revision", "down_revision", "branch_labels", "depends_on", "upgrade", "downgrade"]

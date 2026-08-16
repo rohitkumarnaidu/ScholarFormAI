@@ -232,20 +232,25 @@ class UpdateService:
                 result["error"] = "Application not found"
                 return result
 
-            channel_obj = self.db.query(UpdateChannel).filter(
-                UpdateChannel.app_id == app_obj.id, 
-                UpdateChannel.name == target_channel,
-                UpdateChannel.is_active == True
-            ).first()
+            channel_obj = (
+                self.db.query(UpdateChannel)
+                .filter(
+                    UpdateChannel.app_id == app_obj.id,
+                    UpdateChannel.name == target_channel,
+                    UpdateChannel.is_active == True,
+                )
+                .first()
+            )
             if not channel_obj:
                 result["error"] = "Channel not found"
                 return result
 
             # Find latest release in channel
-            releases = self.db.query(UpdateRelease).filter(
-                UpdateRelease.app_id == app_obj.id,
-                UpdateRelease.channel_id == channel_obj.id
-            ).all()
+            releases = (
+                self.db.query(UpdateRelease)
+                .filter(UpdateRelease.app_id == app_obj.id, UpdateRelease.channel_id == channel_obj.id)
+                .all()
+            )
 
             if not releases:
                 return result
@@ -253,11 +258,15 @@ class UpdateService:
             releases.sort(key=lambda r: self._parse_version(r.version), reverse=True)
             latest_release = releases[0]
 
-            artifact = self.db.query(UpdateArtifact).filter(
-                UpdateArtifact.release_id == latest_release.id,
-                UpdateArtifact.os == os_name,
-                UpdateArtifact.arch == arch_name
-            ).first()
+            artifact = (
+                self.db.query(UpdateArtifact)
+                .filter(
+                    UpdateArtifact.release_id == latest_release.id,
+                    UpdateArtifact.os == os_name,
+                    UpdateArtifact.arch == arch_name,
+                )
+                .first()
+            )
 
             if not artifact:
                 return result
@@ -288,7 +297,7 @@ class UpdateService:
                 "os": os_name,
                 "arch": arch_name,
                 "current_version": c_version,
-                "mode": mode.value
+                "mode": mode.value,
             }
             try:
                 with httpx.Client(timeout=10.0) as client:
@@ -297,7 +306,7 @@ class UpdateService:
                     data = resp.json()
                     if data.get("status") == UpdateStatus.UPDATE_AVAILABLE.value:
                         self._pending_update = data.get("update")
-                    
+
                     self._settings["last_check"] = checked_at
                     self._save_settings()
                     return data
@@ -335,10 +344,10 @@ class UpdateService:
                 with client.stream("GET", url, headers=headers) as resp:
                     if resp.status_code not in (200, 206):
                         resp.raise_for_status()
-                    
+
                     total = int(resp.headers.get("content-length", 0)) + downloaded_bytes
                     mode = "ab" if resp.status_code == 206 else "wb"
-                    
+
                     with open(temp_path, mode) as f:
                         for chunk in resp.iter_bytes(chunk_size=8192):
                             f.write(chunk)
@@ -393,7 +402,9 @@ class UpdateService:
                 if item.is_file():
                     shutil.copy2(str(item), str(backup_dir / item.name))
                 elif item.is_dir():
-                    shutil.copytree(str(item), str(backup_dir / item.name), ignore=shutil.ignore_patterns("__pycache__", ".git"))
+                    shutil.copytree(
+                        str(item), str(backup_dir / item.name), ignore=shutil.ignore_patterns("__pycache__", ".git")
+                    )
 
             # Log success
             entry = UpdateHistoryEntry(
@@ -449,7 +460,7 @@ class UpdateService:
                 installed_at=datetime.now(UTC).isoformat(),
                 success=True,
                 rolled_back=True,
-                rollback_version=self.current_version
+                rollback_version=self.current_version,
             )
             self._add_history_entry(entry)
             self.current_version = prev_version

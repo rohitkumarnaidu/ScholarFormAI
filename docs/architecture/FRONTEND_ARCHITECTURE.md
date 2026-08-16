@@ -1183,21 +1183,13 @@ afterEach(() => {
 
 Every component test follows the **render → act → assert** cycle:
 
-```
-┌──────────────────────────────────────────────────┐
-│  RENDER                                           │
-│  render(<Button variant="primary">Submit</Button>)│
-│  → container rendered in jsdom DOM               │
-├──────────────────────────────────────────────────┤
-│  ACT                                              │
-│  await user.click(screen.getByRole('button'))     │
-│  → event dispatched, state transitions applied    │
-│  → React batched updates processed               │
-├──────────────────────────────────────────────────┤
-│  ASSERT                                           │
-│  expect(screen.getByText('Clicked!')).toBeInTheDocument()
-│  → assertion against updated DOM                 │
-└──────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    Render["<b>RENDER</b><br>render(&lt;Button variant='primary'&gt;Submit&lt;/Button&gt;)<br>→ container rendered in jsdom DOM"]
+    Act["<b>ACT</b><br>await user.click(screen.getByRole('button'))<br>→ event dispatched, state transitions applied<br>→ React batched updates processed"]
+    Assert["<b>ASSERT</b><br>expect(screen.getByText('Clicked!')).toBeInTheDocument()<br>→ assertion against updated DOM"]
+
+    Render --> Act --> Assert
 ```
 
 **Standard test template**:

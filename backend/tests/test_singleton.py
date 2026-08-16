@@ -71,13 +71,16 @@ class TestGetOrCreateCatching:
 class TestResolveOptionalCallable:
     def test_none_module(self):
         from app.utils.singleton import resolve_optional_callable
+
         assert resolve_optional_callable("nonexistent.module", "func") is None
 
     def test_none_callable(self):
         from app.utils.singleton import resolve_optional_callable
+
         assert resolve_optional_callable("os", "nonexistent_func") is None
 
     def test_valid_callable(self):
         from app.utils.singleton import resolve_optional_callable
+
         result = resolve_optional_callable("os", "getcwd")
         assert isinstance(result, str)  # getcwd() returns a string

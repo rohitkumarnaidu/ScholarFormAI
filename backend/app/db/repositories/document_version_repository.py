@@ -23,7 +23,14 @@ class DocumentVersionRepository(BaseRepository):
     def select_sync(self, document_id: str, version_number: int) -> dict[str, Any] | None:
         client = self._get_client()
         try:
-            result = client.table(self.TABLE_NAME).select("*").eq("document_id", document_id).eq("version_number", version_number).maybe_single().execute()
+            result = (
+                client.table(self.TABLE_NAME)
+                .select("*")
+                .eq("document_id", document_id)
+                .eq("version_number", version_number)
+                .maybe_single()
+                .execute()
+            )
             return result.data if result and result.data else None
         except Exception as e:
             logger.error("select_sync failed: %s", e)

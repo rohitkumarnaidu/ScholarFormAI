@@ -4,9 +4,11 @@ import pytest
 class TestCircuitBreaker:
     def test_decorates_function(self):
         from app.pipeline.safety.circuit_breaker import circuit_breaker
+
         @circuit_breaker(failure_threshold=5, recovery_timeout=30)
         def my_func():
             return "ok"
+
         assert my_func() == "ok"
 
 
@@ -14,6 +16,7 @@ class TestRetryGuard:
     @pytest.mark.asyncio
     async def test_async_retry_success(self):
         from app.pipeline.safety.retry_guard import retry_with_backoff
+
         calls = []
 
         @retry_with_backoff(max_retries=2, base_delay=0.01)
@@ -109,12 +112,14 @@ class TestValidateOutput:
 class TestSafeExecution:
     def test_context_manager_does_not_raise(self):
         from app.pipeline.safety.safe_execution import safe_execution
+
         with safe_execution("test_op"):
             pass
         assert True
 
     def test_context_manager_suppresses_exception(self):
         from app.pipeline.safety.safe_execution import safe_execution
+
         with safe_execution("test_fail"):
             raise ValueError("caught")
         assert True

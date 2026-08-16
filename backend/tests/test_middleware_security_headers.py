@@ -7,6 +7,7 @@ class TestSecurityHeadersMiddleware:
     @pytest.mark.asyncio
     async def test_default_headers(self):
         from app.middleware.security_headers import SecurityHeadersMiddleware
+
         mw = SecurityHeadersMiddleware(MagicMock())
         request = MagicMock()
         request.url.path = "/api/v1/documents"
@@ -24,6 +25,7 @@ class TestSecurityHeadersMiddleware:
     @pytest.mark.asyncio
     async def test_docs_route_allows_cdn(self):
         from app.middleware.security_headers import SecurityHeadersMiddleware
+
         mw = SecurityHeadersMiddleware(MagicMock())
         request = MagicMock()
         request.url.path = "/docs"
@@ -37,6 +39,7 @@ class TestSecurityHeadersMiddleware:
     @pytest.mark.asyncio
     async def test_redoc_route_allows_cdn(self):
         from app.middleware.security_headers import SecurityHeadersMiddleware
+
         mw = SecurityHeadersMiddleware(MagicMock())
         request = MagicMock()
         request.url.path = "/redoc"
@@ -50,6 +53,7 @@ class TestSecurityHeadersMiddleware:
     @pytest.mark.asyncio
     async def test_openapi_json_allows_cdn(self):
         from app.middleware.security_headers import SecurityHeadersMiddleware
+
         mw = SecurityHeadersMiddleware(MagicMock())
         request = MagicMock()
         request.url.path = "/openapi.json"
@@ -65,6 +69,7 @@ class TestMaxBodySizeMiddleware:
     @pytest.mark.asyncio
     async def test_non_http_scope_passes(self):
         from app.middleware.security_headers import MaxBodySizeMiddleware
+
         app = AsyncMock()
         mw = MaxBodySizeMiddleware(app)
         scope = {"type": "websocket"}
@@ -76,6 +81,7 @@ class TestMaxBodySizeMiddleware:
     @pytest.mark.asyncio
     async def test_content_length_under_limit(self):
         from app.middleware.security_headers import MaxBodySizeMiddleware
+
         app = AsyncMock()
         mw = MaxBodySizeMiddleware(app, max_size=1000)
         scope = {
@@ -90,9 +96,12 @@ class TestMaxBodySizeMiddleware:
     @pytest.mark.asyncio
     async def test_content_length_over_limit(self):
         from app.middleware.security_headers import MaxBodySizeMiddleware
+
         sent = []
+
         async def send_fn(msg):
             sent.append(msg)
+
         mw = MaxBodySizeMiddleware(AsyncMock(), max_size=100)
         scope = {
             "type": "http",
@@ -107,6 +116,7 @@ class TestMaxBodySizeMiddleware:
     @pytest.mark.asyncio
     async def test_no_content_length_header(self):
         from app.middleware.security_headers import MaxBodySizeMiddleware
+
         app = AsyncMock()
         mw = MaxBodySizeMiddleware(app)
         scope = {
@@ -121,6 +131,7 @@ class TestMaxBodySizeMiddleware:
     @pytest.mark.asyncio
     async def test_invalid_content_length(self):
         from app.middleware.security_headers import MaxBodySizeMiddleware
+
         app = AsyncMock()
         mw = MaxBodySizeMiddleware(app)
         scope = {

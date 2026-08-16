@@ -16,41 +16,46 @@ class TestStructureDetector:
 
     def test_process_empty_document(self, detector):
         from app.models import PipelineDocument
+
         doc = PipelineDocument(document_id="t", blocks=[])
         result = detector.process(doc)
         assert len(result.blocks) == 0
 
     def test_process_adds_stage_info(self, detector):
         from app.models import PipelineDocument
-        doc = PipelineDocument(document_id="t", blocks=[
-        ])
+
+        doc = PipelineDocument(document_id="t", blocks=[])
         result = detector.process(doc)
         stages = [s.stage_name for s in result.processing_history]
         assert "structure_detection" in stages
 
     def test_process_assigns_block_types(self, detector):
         from app.models import PipelineDocument, Block
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="b1", text="A block", index=0)
-        ])
+
+        doc = PipelineDocument(document_id="t", blocks=[Block(block_id="b1", text="A block", index=0)])
         result = detector.process(doc)
         assert result.blocks[0].block_type is not None
         assert result.blocks[0].section_name is not None
 
     def test_process_preserves_title_block(self, detector):
         from app.models import BlockType, PipelineDocument, Block
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="b1", text="Title", index=0, block_type=BlockType.TITLE)
-        ])
+
+        doc = PipelineDocument(
+            document_id="t", blocks=[Block(block_id="b1", text="Title", index=0, block_type=BlockType.TITLE)]
+        )
         result = detector.process(doc)
         assert result.blocks[0].block_type == BlockType.TITLE
 
     def test_process_abstract_section(self, detector):
         from app.models import PipelineDocument, Block, BlockType
-        doc = PipelineDocument(document_id="t", blocks=[
-            Block(block_id="b1", text="Abstract", index=0, block_type=BlockType.HEADING_1, level=1),
-            Block(block_id="b2", text="Some text", index=1, block_type=BlockType.BODY)
-        ])
+
+        doc = PipelineDocument(
+            document_id="t",
+            blocks=[
+                Block(block_id="b1", text="Abstract", index=0, block_type=BlockType.HEADING_1, level=1),
+                Block(block_id="b2", text="Some text", index=1, block_type=BlockType.BODY),
+            ],
+        )
         result = detector.process(doc)
         assert result.blocks[0].section_name is not None
         assert result.blocks[1].section_name is not None

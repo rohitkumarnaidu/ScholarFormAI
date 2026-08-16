@@ -30,16 +30,12 @@ router = APIRouter(prefix="/issues", tags=["issues"])
 
 
 @router.post("", response_model=IssueReportResponse, summary="Submit enterprise issue report")
-async def submit_issue(
-    request: IssueReportRequest, 
-    background_tasks: BackgroundTasks,
-    db: Session = Depends(get_db)
-):
+async def submit_issue(request: IssueReportRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     try:
         # Pre-flight AI Triage (Categorization & Spam detection)
         # Note: If high volume, this can be moved to a background task
         ai_triage = await IssueAIService.categorize_issue(db, request.title, request.description)
-        
+
         if ai_triage.get("is_spam"):
             logger.warning("Spam issue detected and rejected.")
             raise HTTPException(status_code=400, detail="Spam detected")
@@ -55,7 +51,7 @@ async def submit_issue(
             priority=ai_triage.get("priority", request.severity.value),
             system_info=request.system_info,
             ai_category=ai_triage.get("category"),
-            status="open"
+            status="open",
         )
         db.add(issue)
         db.commit()
@@ -63,7 +59,9 @@ async def submit_issue(
 
         # Trigger Reasoning Model in background (if it's a bug or crash)
         if issue.type in ["bug", "crash", "performance"]:
-            background_tasks.add_task(_process_ai_reasoning, db, issue.id, issue.title, issue.description, issue.system_info)
+            background_tasks.add_task(
+                _process_ai_reasoning, db, issue.id, issue.title, issue.description, issue.system_info
+            )
 
         # Trigger Webhooks
         background_tasks.add_task(IntegrationsService.dispatch_webhooks, db, issue)
@@ -71,7 +69,16 @@ async def submit_issue(
         # Add attachments if any (mocking basic structure based on request)
         if request.screenshots:
             for url in request.screenshots:
-                db.add(IssueAttachment(issue_id=issue.id, file_name="screenshot.png", file_type="screenshot", mime_type="image/png", size_bytes=0, storage_path=url))
+                db.add(
+                    IssueAttachment(
+                        issue_id=issue.id,
+                        file_name="screenshot.png",
+                        file_type="screenshot",
+                        mime_type="image/png",
+                        size_bytes=0,
+                        storage_path=url,
+                    )
+                )
             db.commit()
 
         # Build response
@@ -95,25 +102,17 @@ async def _process_ai_reasoning(db: Session, issue_id: uuid.UUID, title: str, de
 
 
 @router.get("", response_model=IssueListResponse, summary="List issues")
-def list_issues(
-    status: str | None = None,
-    limit: int = 50,
-    offset: int = 0,
-    db: Session = Depends(get_db)
-):
+def list_issues(status: str | None = None, limit: int = 50, offset: int = 0, db: Session = Depends(get_db)):
     query = select(Issue).order_by(desc(Issue.created_at))
     if status:
         query = query.where(Issue.status == status)
-    
+
     issues = db.execute(query.offset(offset).limit(limit)).scalars().all()
     # Count total
-    total = db.execute(select(Issue)).scalars().all() # Ineffecient but works for now
+    total = db.execute(select(Issue)).scalars().all()  # Ineffecient but works for now
 
     return IssueListResponse(
-        issues=[_build_issue_response(i) for i in issues], 
-        total=len(total), 
-        offset=offset, 
-        limit=limit
+        issues=[_build_issue_response(i) for i in issues], total=len(total), offset=offset, limit=limit
     )
 
 
@@ -123,7 +122,7 @@ def get_issue(issue_id: str, db: Session = Depends(get_db)):
         issue_uuid = uuid.UUID(issue_id)
     except:
         raise HTTPException(status_code=400, detail="Invalid UUID")
-    
+
     issue = db.get(Issue, issue_uuid)
     if not issue:
         raise HTTPException(status_code=404, detail="Issue not found")
@@ -136,16 +135,16 @@ def update_issue(issue_id: str, request: IssueUpdateRequest, db: Session = Depen
         issue_uuid = uuid.UUID(issue_id)
     except:
         raise HTTPException(status_code=400, detail="Invalid UUID")
-        
+
     issue = db.get(Issue, issue_uuid)
     if not issue:
         raise HTTPException(status_code=404, detail="Issue not found")
-    
+
     updates = request.model_dump(exclude_unset=True)
     for k, v in updates.items():
         if hasattr(issue, k):
             setattr(issue, k, v)
-            
+
     db.commit()
     db.refresh(issue)
     return _build_issue_response(issue)
@@ -157,11 +156,11 @@ def delete_issue(issue_id: str, db: Session = Depends(get_db)):
         issue_uuid = uuid.UUID(issue_id)
     except:
         raise HTTPException(status_code=400, detail="Invalid UUID")
-        
+
     issue = db.get(Issue, issue_uuid)
     if not issue:
         raise HTTPException(status_code=404, detail="Issue not found")
-    
+
     db.delete(issue)
     db.commit()
     return {"status": "deleted"}
@@ -175,7 +174,7 @@ def _build_issue_response(issue: Issue) -> dict:
         "category": issue.type,
         "severity": issue.priority,
         "status": issue.status,
-        "source": "api", # defaulting for now
+        "source": "api",  # defaulting for now
         "reporter_name": "",
         "reporter_email": "",
         "anonymous": issue.user_id is None,
@@ -192,5 +191,5 @@ def _build_issue_response(issue: Issue) -> dict:
         "attachments": [],
         "screenshots": [],
         "created_at": issue.created_at,
-        "updated_at": issue.updated_at
+        "updated_at": issue.updated_at,
     }

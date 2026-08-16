@@ -7,6 +7,7 @@ class TestApiKeyService:
     @pytest.fixture
     def svc(self):
         from app.services.api_key_service import ApiKeyService
+
         db = MagicMock()
         svc = ApiKeyService(db)
         svc.encryption = MagicMock()
@@ -83,6 +84,7 @@ class TestApiKeyService:
 
     def test_get_supported_providers(self, svc):
         from app.services.api_key_service import ApiKeyService
+
         providers = ApiKeyService.get_supported_providers()
         assert "openai" in providers
         assert "anthropic" in providers

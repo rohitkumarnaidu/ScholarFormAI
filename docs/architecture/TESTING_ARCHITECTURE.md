@@ -11,7 +11,22 @@
 
 ### 1.1 Test Strategy
 
-ScholarForm AI employs a **multi-layered, enterprise-grade testing strategy**:
+ScholarForm AI employs a **multi-layered, enterprise-grade testing strategy**, structured as a comprehensive testing pyramid:
+
+```mermaid
+flowchart TD
+    subgraph TestingPyramid [Enterprise Testing Pyramid]
+        direction BT
+        Unit["Unit Tests (pytest + Vitest)<br>Fast, Isolated, Logic-focused<br>~10,000+ tests"]
+        Integration["Integration Tests<br>Service boundaries, API Contracts<br>~2,500+ tests"]
+        E2E["E2E & Pipeline Tests<br>Playwright, End-to-end workflows<br>~5,200+ tests"]
+        Specialized["Specialized Tests<br>Security, Performance, AI Quality, Chaos, Mutation, A11y<br>~1,000+ tests"]
+        
+        Unit --> Integration
+        Integration --> E2E
+        E2E --> Specialized
+    end
+```
 
 | Layer | Tool | Scope | Count |
 | ------- | ------ | ------- | ------- |

@@ -16,9 +16,11 @@ def engine():
 
     return CSLEngine(templates_dir=str(Path(__file__).resolve().parent.parent.parent / "app" / "templates"))
 
+
 @pytest.fixture
 def sample_ref():
     from app.models import Reference, ReferenceType
+
     return Reference(
         reference_id="ref1",
         citation_key="key1",
@@ -35,6 +37,7 @@ def sample_ref():
         reference_type=ReferenceType.BOOK,
     )
 
+
 class TestCSLEngineCapabilities:
     def test_get_capabilities(self, engine):
         caps = engine.get_capabilities()
@@ -44,6 +47,7 @@ class TestCSLEngineCapabilities:
 
     def test_supports_10k_plus_styles(self, engine):
         assert engine.supports_10k_plus_styles() is True
+
 
 class TestCSLEngineResolveStylePath:
     def test_default_ieee_path(self, engine):
@@ -57,6 +61,7 @@ class TestCSLEngineResolveStylePath:
     def test_unknown_style_raises(self, engine):
         with pytest.raises(FileNotFoundError):
             engine.resolve_style_path("unknown_style_xyz")
+
 
 class TestCSLEngineToCslName:
     def test_comma_separated(self, engine):
@@ -81,6 +86,7 @@ class TestCSLEngineToCslName:
         result = engine._to_csl_name("   ")
         assert result["literal"] == "Unknown Author"
 
+
 class TestCSLEngineRefToCslJson:
     def test_basic_conversion(self, engine, sample_ref):
         result = engine._reference_to_csl_json(sample_ref, index=1)
@@ -92,11 +98,13 @@ class TestCSLEngineRefToCslJson:
 
     def test_missing_fields(self, engine):
         from app.models import Reference
+
         ref = Reference(reference_id="r1", citation_key="k", raw_text="t", index=1)
         result = engine._reference_to_csl_json(ref, index=1)
         assert result["type"] == "article"
         assert "author" not in result
         assert "issued" not in result
+
 
 class TestCSLEngineFormatFallback:
     def test_ieee_fallback(self, engine, sample_ref):
@@ -114,28 +122,45 @@ class TestCSLEngineFormatFallback:
 
     def test_apa_single_author(self, engine):
         from app.models import Reference
+
         ref = Reference(
-            reference_id="r1", title="A Book", authors=["Smith, J."],
-            year=2020, citation_key="k", raw_text="t", index=1,
+            reference_id="r1",
+            title="A Book",
+            authors=["Smith, J."],
+            year=2020,
+            citation_key="k",
+            raw_text="t",
+            index=1,
         )
         result = engine._format_apa_fallback(ref)
         assert "Smith" in result
 
     def test_apa_two_authors(self, engine):
         from app.models import Reference
+
         ref = Reference(
-            reference_id="r1", title="A Book", authors=["Smith, J.", "Doe, A."],
-            year=2020, citation_key="k", raw_text="t", index=1,
+            reference_id="r1",
+            title="A Book",
+            authors=["Smith, J.", "Doe, A."],
+            year=2020,
+            citation_key="k",
+            raw_text="t",
+            index=1,
         )
         result = engine._format_apa_fallback(ref)
         assert "&" in result
 
     def test_apa_three_authors(self, engine):
         from app.models import Reference
+
         ref = Reference(
-            reference_id="r1", title="A Book",
+            reference_id="r1",
+            title="A Book",
             authors=["Smith, J.", "Doe, A.", "Lee, K."],
-            year=2020, citation_key="k", raw_text="t", index=1,
+            year=2020,
+            citation_key="k",
+            raw_text="t",
+            index=1,
         )
         result = engine._format_apa_fallback(ref)
         assert result.count(",") >= 2
@@ -150,6 +175,7 @@ class TestCSLEngineFormatFallback:
     def test_format_reference_single_apa(self, engine, sample_ref):
         result = engine.format_reference(sample_ref, style="apa")
         assert "Deep Learning" in result
+
 
 class TestCSLEngineApaAuthors:
     def test_no_authors(self, engine):

@@ -8,6 +8,7 @@ Revises: 1f7c085e7ef2
 Create Date: 2026-03-11 23:55:00.000000
 
 """
+
 from collections.abc import Sequence
 from typing import Union
 
@@ -76,4 +77,4 @@ def downgrade() -> None:
     op.drop_table("generator_sessions")
 
 
-__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']
+__all__ = ["revision", "down_revision", "branch_labels", "depends_on", "upgrade", "downgrade"]

@@ -36,14 +36,17 @@ def client():
 class TestParseConfig:
     def test_empty(self):
         from app.routers.v1.generator import _parse_config
+
         assert _parse_config("") == {}
 
     def test_valid_json(self):
         from app.routers.v1.generator import _parse_config
+
         assert _parse_config('{"key":"val"}') == {"key": "val"}
 
     def test_invalid_json_raises(self):
         from app.routers.v1.generator import _parse_config
+
         with pytest.raises(HTTPException) as exc:
             _parse_config("{bad}")
         assert exc.value.status_code == 422
@@ -53,25 +56,30 @@ class TestParseConfig:
 class TestDetectSectionRewrite:
     def test_no_trigger(self):
         from app.routers.v1.generator import _detect_section_rewrite
+
         assert _detect_section_rewrite("hello world", []) is None
 
     def test_rewrite_trigger_found(self):
         from app.routers.v1.generator import _detect_section_rewrite
+
         result = _detect_section_rewrite("please rewrite the introduction", ["Introduction", "Methods"])
         assert result == "Introduction"
 
     def test_expand_trigger_found(self):
         from app.routers.v1.generator import _detect_section_rewrite
+
         result = _detect_section_rewrite("expand the results section", ["Results"])
         assert result == "Results"
 
     def test_matches_section_name_directly(self):
         from app.routers.v1.generator import _detect_section_rewrite
+
         result = _detect_section_rewrite("rewrite discussion", ["Discussion", "Conclusion"])
         assert result == "Discussion"
 
     def test_aliases_intro(self):
         from app.routers.v1.generator import _detect_section_rewrite
+
         assert _detect_section_rewrite("rewrite the background", []) == "Introduction"
         assert _detect_section_rewrite("rewrite the abstract", []) == "Abstract"
         assert _detect_section_rewrite("revise methodology", []) == "Methods"
@@ -79,27 +87,32 @@ class TestDetectSectionRewrite:
 
     def test_no_match_with_sections(self):
         from app.routers.v1.generator import _detect_section_rewrite
+
         result = _detect_section_rewrite("rewrite something", ["Acknowledgments"])
         assert result is None
 
     def test_trigger_not_at_start(self):
         from app.routers.v1.generator import _detect_section_rewrite
+
         assert _detect_section_rewrite("can you update the literature review", []) == "Literature Review"
 
 
 class TestAssertSessionOwner:
     def test_owner_matches(self):
         from app.routers.v1.generator import _assert_session_owner
+
         user = MagicMock()
         user.id = "u1"
         _assert_session_owner({"user_id": "u1"}, user)
 
     def test_owner_matches_string_user(self):
         from app.routers.v1.generator import _assert_session_owner
+
         _assert_session_owner({"user_id": "u1"}, "u1")
 
     def test_owner_different_raises(self):
         from app.routers.v1.generator import _assert_session_owner
+
         user = MagicMock()
         user.id = "u2"
         with pytest.raises(HTTPException) as exc:
@@ -109,6 +122,7 @@ class TestAssertSessionOwner:
 
     def test_no_session_user_passes(self):
         from app.routers.v1.generator import _assert_session_owner
+
         user = MagicMock()
         user.id = "u1"
         _assert_session_owner({}, user)
@@ -117,6 +131,7 @@ class TestAssertSessionOwner:
 class TestSerializeSession:
     def test_full_session(self):
         from app.routers.v1.generator import _serialize_session
+
         session = {
             "id": "s1",
             "status": "done",
@@ -133,18 +148,21 @@ class TestSerializeSession:
 
     def test_minimal_session(self):
         from app.routers.v1.generator import _serialize_session
+
         result = _serialize_session({"id": "s2"})
         assert result["id"] == "s2"
         assert result["prompt"] is None
 
     def test_config_fallback_keys(self):
         from app.routers.v1.generator import _serialize_session
+
         s = _serialize_session({"config_json": {"prompt": "p", "template_id": "apa"}})
         assert s["prompt"] == "p"
         assert s["template"] == "apa"
 
     def test_config_content_fallback(self):
         from app.routers.v1.generator import _serialize_session
+
         s = _serialize_session({"config_json": {"content": "c", "template_id": "mla"}})
         assert s["prompt"] == "c"
         assert s["template"] == "mla"
@@ -154,6 +172,7 @@ class TestAssertGenerationOwner:
     @pytest.mark.asyncio
     async def test_through_generator_owner_matches(self):
         from app.routers.v1.generator import _assert_generation_owner
+
         mock_gen = MagicMock()
         mock_gen.get_session.return_value = {"user_id": "u1"}
         with patch("app.routers.v1.generator.get_generator", return_value=mock_gen):
@@ -162,6 +181,7 @@ class TestAssertGenerationOwner:
     @pytest.mark.asyncio
     async def test_through_generator_not_owner_raises(self):
         from app.routers.v1.generator import _assert_generation_owner
+
         mock_gen = MagicMock()
         mock_gen.get_session.return_value = {"user_id": "u1"}
         with patch("app.routers.v1.generator.get_generator", return_value=mock_gen):
@@ -172,22 +192,32 @@ class TestAssertGenerationOwner:
     @pytest.mark.asyncio
     async def test_through_document_service(self):
         from app.routers.v1.generator import _assert_generation_owner
+
         mock_gen = MagicMock()
         mock_gen.get_session.return_value = None
         with (
             patch("app.routers.v1.generator.get_generator", return_value=mock_gen),
-            patch("app.routers.v1.generator.DocumentService.get_document", new_callable=AsyncMock, return_value={"user_id": "u1"}),
+            patch(
+                "app.routers.v1.generator.DocumentService.get_document",
+                new_callable=AsyncMock,
+                return_value={"user_id": "u1"},
+            ),
         ):
             await _assert_generation_owner("job-1", "u1")
 
     @pytest.mark.asyncio
     async def test_through_document_not_owner_raises(self):
         from app.routers.v1.generator import _assert_generation_owner
+
         mock_gen = MagicMock()
         mock_gen.get_session.return_value = None
         with (
             patch("app.routers.v1.generator.get_generator", return_value=mock_gen),
-            patch("app.routers.v1.generator.DocumentService.get_document", new_callable=AsyncMock, return_value={"user_id": "u1"}),
+            patch(
+                "app.routers.v1.generator.DocumentService.get_document",
+                new_callable=AsyncMock,
+                return_value={"user_id": "u1"},
+            ),
         ):
             with pytest.raises(HTTPException) as exc:
                 await _assert_generation_owner("job-1", "u2")
@@ -196,6 +226,7 @@ class TestAssertGenerationOwner:
     @pytest.mark.asyncio
     async def test_no_record_passes(self):
         from app.routers.v1.generator import _assert_generation_owner
+
         mock_gen = MagicMock()
         mock_gen.get_session.return_value = None
         with (
@@ -208,6 +239,7 @@ class TestAssertGenerationOwner:
 class TestDispatchAgentTask:
     def test_pipeline_queued(self):
         from app.routers.v1.generator import _dispatch_agent_task
+
         bt = MagicMock()
         em = MagicMock()
         em.should_queue_job.return_value = True
@@ -221,6 +253,7 @@ class TestDispatchAgentTask:
 
     def test_resume_queued(self):
         from app.routers.v1.generator import _dispatch_agent_task
+
         bt = MagicMock()
         em = MagicMock()
         em.should_queue_job.return_value = True
@@ -233,6 +266,7 @@ class TestDispatchAgentTask:
 
     def test_rewrite_queued(self):
         from app.routers.v1.generator import _dispatch_agent_task
+
         bt = MagicMock()
         em = MagicMock()
         em.should_queue_job.return_value = True
@@ -245,6 +279,7 @@ class TestDispatchAgentTask:
 
     def test_pipeline_background(self):
         from app.routers.v1.generator import _dispatch_agent_task
+
         bt = MagicMock()
         em = MagicMock()
         em.should_queue_job.return_value = False
@@ -256,6 +291,7 @@ class TestDispatchAgentTask:
 
     def test_resume_background(self):
         from app.routers.v1.generator import _dispatch_agent_task
+
         bt = MagicMock()
         em = MagicMock()
         em.should_queue_job.return_value = False
@@ -267,6 +303,7 @@ class TestDispatchAgentTask:
 
     def test_rewrite_background(self):
         from app.routers.v1.generator import _dispatch_agent_task
+
         bt = MagicMock()
         em = MagicMock()
         em.should_queue_job.return_value = False
@@ -281,6 +318,7 @@ class TestDownloadGeneratedArtifact:
     @pytest.mark.asyncio
     async def test_unsupported_format(self):
         from app.routers.v1.generator import _download_generated_artifact
+
         with pytest.raises(HTTPException) as exc:
             await _download_generated_artifact("job-1", "txt", MagicMock())
         assert exc.value.status_code == 400
@@ -288,6 +326,7 @@ class TestDownloadGeneratedArtifact:
     @pytest.mark.asyncio
     async def test_job_not_found(self):
         from app.routers.v1.generator import _download_generated_artifact
+
         mock_gen = MagicMock()
         mock_gen.get_status.side_effect = KeyError("not found")
         user = MagicMock()
@@ -303,6 +342,7 @@ class TestDownloadGeneratedArtifact:
     @pytest.mark.asyncio
     async def test_job_not_done(self):
         from app.routers.v1.generator import _download_generated_artifact
+
         mock_gen = MagicMock()
         mock_gen.get_status.return_value = {"status": "processing", "progress": 50}
         user = MagicMock()
@@ -319,6 +359,7 @@ class TestDownloadGeneratedArtifact:
     @pytest.mark.asyncio
     async def test_file_not_found(self):
         from app.routers.v1.generator import _download_generated_artifact
+
         mock_gen = MagicMock()
         mock_gen.get_status.return_value = {"status": "done", "progress": 100}
         mock_gen.get_download_path.return_value = None
@@ -335,6 +376,7 @@ class TestDownloadGeneratedArtifact:
     @pytest.mark.asyncio
     async def test_docx_download_success(self, tmp_path):
         from app.routers.v1.generator import _download_generated_artifact
+
         file_path = tmp_path / "output.docx"
         file_path.write_bytes(b"PKdocx")
         mock_gen = MagicMock()
@@ -353,6 +395,7 @@ class TestDownloadGeneratedArtifact:
     @pytest.mark.asyncio
     async def test_pdf_download_success(self, tmp_path):
         from app.routers.v1.generator import _download_generated_artifact
+
         docx_path = tmp_path / "output.docx"
         docx_path.write_bytes(b"PKdocx")
         pdf_path = tmp_path / "output.pdf"
@@ -373,6 +416,7 @@ class TestDownloadGeneratedArtifact:
     @pytest.mark.asyncio
     async def test_pdf_export_converts(self, tmp_path):
         from app.routers.v1.generator import _download_generated_artifact
+
         docx_path = tmp_path / "output.docx"
         docx_path.write_bytes(b"PKdocx")
         pdf_target = tmp_path / "output.pdf"
@@ -401,6 +445,7 @@ class TestDownloadGeneratedArtifact:
     @pytest.mark.asyncio
     async def test_pdf_export_failure_raises_500(self, tmp_path):
         from app.routers.v1.generator import _download_generated_artifact
+
         docx_path = tmp_path / "output.docx"
         docx_path.write_bytes(b"PKdocx")
         mock_gen = MagicMock()
@@ -423,6 +468,7 @@ class TestDownloadGeneratedArtifact:
     @pytest.mark.asyncio
     async def test_pdf_export_runtime_error(self, tmp_path):
         from app.routers.v1.generator import _download_generated_artifact
+
         docx_path = tmp_path / "output.docx"
         docx_path.write_bytes(b"PKdocx")
         mock_gen = MagicMock()
@@ -445,7 +491,9 @@ class TestDownloadGeneratedArtifact:
 
 class TestGenerationEndpoints:
     def test_start_generation_malformed_json(self, client):
-        response = client.post("/api/v1/generator/sessions", content=b"not json", headers={"content-type": "application/json"})
+        response = client.post(
+            "/api/v1/generator/sessions", content=b"not json", headers={"content-type": "application/json"}
+        )
         assert response.status_code == 422
 
     def test_start_generation_missing_prompt(self, client):
@@ -479,7 +527,7 @@ class TestGenerationEndpoints:
             files=[
                 ("files", ("test1.pdf", b"%PDF-1.4 dummy pdf", "application/pdf")),
                 ("files", ("test2.bad", b"dummy bad file", "application/octet-stream")),
-            ]
+            ],
         )
         assert response.status_code == 400
         assert "Unsupported file type" in response.json()["error"]["message"]
@@ -504,8 +552,14 @@ class TestGenerationEndpoints:
 
     def test_list_sessions(self, client):
         sessions = [
-            {"id": "s1", "status": "done", "session_type": "agent",
-             "config_json": {"user_prompt": "test"}, "created_at": "now", "updated_at": "now"}
+            {
+                "id": "s1",
+                "status": "done",
+                "session_type": "agent",
+                "config_json": {"user_prompt": "test"},
+                "created_at": "now",
+                "updated_at": "now",
+            }
         ]
         with patch(
             "app.routers.v1.generator._session_service.list_sessions",

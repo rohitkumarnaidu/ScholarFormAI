@@ -12,6 +12,7 @@ import pytest
 # FigureAnalysisTool — app.pipeline.agents.tools.figure_tool
 # ==============================================================================
 
+
 class TestFigureAnalysisTool:
     @patch("app.pipeline.parsing.llm_pdf_parser.LLMPDFParser")
     def test_success_with_figures(self, mock_llm_cls):
@@ -25,6 +26,7 @@ class TestFigureAnalysisTool:
         }
         mock_llm_cls.return_value = mock_client
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
+
         tool = FigureAnalysisTool()
         result = json.loads(tool._run("test.pdf"))
         assert result["status"] == "success"
@@ -37,6 +39,7 @@ class TestFigureAnalysisTool:
         mock_client.analyze_layout.return_value = {"elements": [{"type": "paragraph", "text": "text"}]}
         mock_llm_cls.return_value = mock_client
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
+
         tool = FigureAnalysisTool()
         result = json.loads(tool._run("test.pdf"))
         assert result["figures"]["total_count"] == 0
@@ -47,6 +50,7 @@ class TestFigureAnalysisTool:
         mock_client.analyze_layout.return_value = None
         mock_llm_cls.return_value = mock_client
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
+
         tool = FigureAnalysisTool()
         assert "ERROR" in tool._run("test.pdf")
 
@@ -56,20 +60,25 @@ class TestFigureAnalysisTool:
         mock_client.analyze_layout.side_effect = RuntimeError("failed")
         mock_llm_cls.return_value = mock_client
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
+
         tool = FigureAnalysisTool()
         assert "ERROR" in tool._run("test.pdf")
 
     @patch("app.pipeline.parsing.llm_pdf_parser.LLMPDFParser")
     def test_arun_raises_not_implemented(self, mock_llm_cls):
         from app.pipeline.agents.tools.figure_tool import FigureAnalysisTool
+
         tool = FigureAnalysisTool()
         with pytest.raises(NotImplementedError):
-            import asyncio; asyncio.run(tool._arun("test.pdf"))
+            import asyncio
+
+            asyncio.run(tool._arun("test.pdf"))
 
 
 # ==============================================================================
 # LayoutAnalysisTool — app.pipeline.agents.tools.layout_tool
 # ==============================================================================
+
 
 class TestLayoutAnalysisTool:
     @patch("app.pipeline.parsing.llm_pdf_parser.LLMPDFParser")
@@ -85,6 +94,7 @@ class TestLayoutAnalysisTool:
         }
         mock_llm_cls.return_value = mock_client
         from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
+
         tool = LayoutAnalysisTool()
         result = json.loads(tool._run("test.pdf"))
         assert result["status"] == "success"
@@ -100,6 +110,7 @@ class TestLayoutAnalysisTool:
         mock_client.analyze_layout.return_value = None
         mock_llm_cls.return_value = mock_client
         from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
+
         tool = LayoutAnalysisTool()
         assert "ERROR" in tool._run("test.pdf")
 
@@ -109,37 +120,47 @@ class TestLayoutAnalysisTool:
         mock_client.analyze_layout.side_effect = RuntimeError("failed")
         mock_llm_cls.return_value = mock_client
         from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
+
         tool = LayoutAnalysisTool()
         assert "ERROR" in tool._run("test.pdf")
 
     @patch("app.pipeline.parsing.llm_pdf_parser.LLMPDFParser")
     def test_arun_not_implemented(self, mock_llm_cls):
         from app.pipeline.agents.tools.layout_tool import LayoutAnalysisTool
+
         tool = LayoutAnalysisTool()
         with pytest.raises(NotImplementedError):
-            import asyncio; asyncio.run(tool._arun("test.pdf"))
+            import asyncio
+
+            asyncio.run(tool._arun("test.pdf"))
 
 
 # ==============================================================================
 # MetadataExtractionTool — app.pipeline.agents.tools.metadata_tool
 # ==============================================================================
 
+
 class TestMetadataExtractionTool:
     def _make_tool(self):
         from app.pipeline.agents.tools.metadata_tool import MetadataExtractionTool
+
         return MetadataExtractionTool()
 
     def test_cache_hit(self):
-        with patch("app.pipeline.agents.tools.metadata_tool.GROBIDClient"), \
-             patch("app.cache.redis_cache.redis_cache") as mock_cache:
+        with (
+            patch("app.pipeline.agents.tools.metadata_tool.GROBIDClient"),
+            patch("app.cache.redis_cache.redis_cache") as mock_cache,
+        ):
             mock_cache.get_grobid_result.return_value = {"cached": True}
             tool = self._make_tool()
             result = json.loads(tool._run("/nonexistent/file.pdf"))
             assert result == {"cached": True}
 
     def test_grobid_unavailable(self):
-        with patch("app.pipeline.agents.tools.metadata_tool.GROBIDClient") as mock_gc_cls, \
-             patch("app.cache.redis_cache.redis_cache") as mock_cache:
+        with (
+            patch("app.pipeline.agents.tools.metadata_tool.GROBIDClient") as mock_gc_cls,
+            patch("app.cache.redis_cache.redis_cache") as mock_cache,
+        ):
             mock_cache.get_grobid_result.return_value = None
             mock_client = MagicMock()
             mock_client.is_available.return_value = False
@@ -148,15 +169,22 @@ class TestMetadataExtractionTool:
             assert "ERROR" in tool._run("/nonexistent/file.pdf")
 
     def test_successful_extraction(self):
-        with patch("app.pipeline.agents.tools.metadata_tool.GROBIDClient") as mock_gc_cls, \
-             patch("app.cache.redis_cache.redis_cache") as mock_cache:
+        with (
+            patch("app.pipeline.agents.tools.metadata_tool.GROBIDClient") as mock_gc_cls,
+            patch("app.cache.redis_cache.redis_cache") as mock_cache,
+        ):
             mock_cache.get_grobid_result.return_value = None
             mock_client = MagicMock()
             mock_client.is_available.return_value = True
             mock_client.extract_metadata.return_value = {
-                "title": "Test Paper", "authors": ["A"], "abstract": "abs",
-                "affiliations": [], "publication_date": "2024", "doi": "10.1234",
-                "keywords": ["ml"], "references": ["ref1"]
+                "title": "Test Paper",
+                "authors": ["A"],
+                "abstract": "abs",
+                "affiliations": [],
+                "publication_date": "2024",
+                "doi": "10.1234",
+                "keywords": ["ml"],
+                "references": ["ref1"],
             }
             mock_gc_cls.return_value = mock_client
             tool = self._make_tool()
@@ -166,8 +194,10 @@ class TestMetadataExtractionTool:
             assert result["metadata"]["reference_count"] == 1
 
     def test_metadata_none(self):
-        with patch("app.pipeline.agents.tools.metadata_tool.GROBIDClient") as mock_gc_cls, \
-             patch("app.cache.redis_cache.redis_cache") as mock_cache:
+        with (
+            patch("app.pipeline.agents.tools.metadata_tool.GROBIDClient") as mock_gc_cls,
+            patch("app.cache.redis_cache.redis_cache") as mock_cache,
+        ):
             mock_cache.get_grobid_result.return_value = None
             mock_client = MagicMock()
             mock_client.is_available.return_value = True
@@ -177,8 +207,10 @@ class TestMetadataExtractionTool:
             assert "ERROR" in tool._run("/nonexistent/file.pdf")
 
     def test_exception_handling(self):
-        with patch("app.pipeline.agents.tools.metadata_tool.GROBIDClient"), \
-             patch("app.cache.redis_cache.redis_cache") as mock_cache:
+        with (
+            patch("app.pipeline.agents.tools.metadata_tool.GROBIDClient"),
+            patch("app.cache.redis_cache.redis_cache") as mock_cache,
+        ):
             mock_cache.get_grobid_result.side_effect = RuntimeError("boom")
             tool = self._make_tool()
             assert "ERROR" in tool._run("/nonexistent/file.pdf")
@@ -188,6 +220,7 @@ class TestMetadataExtractionTool:
 # ReferenceExtractionTool — app.pipeline.agents.tools.reference_tool
 # ==============================================================================
 
+
 class TestReferenceExtractionTool:
     @patch("app.pipeline.agents.tools.reference_tool.GROBIDClient")
     def test_grobid_unavailable(self, mock_gc_cls):
@@ -195,6 +228,7 @@ class TestReferenceExtractionTool:
         mock_client.is_available.return_value = False
         mock_gc_cls.return_value = mock_client
         from app.pipeline.agents.tools.reference_tool import ReferenceExtractionTool
+
         tool = ReferenceExtractionTool()
         assert "ERROR" in tool._run("test.pdf")
 
@@ -205,6 +239,7 @@ class TestReferenceExtractionTool:
         mock_client.extract_metadata.return_value = {}
         mock_gc_cls.return_value = mock_client
         from app.pipeline.agents.tools.reference_tool import ReferenceExtractionTool
+
         tool = ReferenceExtractionTool()
         assert "ERROR" in tool._run("test.pdf")
 
@@ -220,6 +255,7 @@ class TestReferenceExtractionTool:
         }
         mock_gc_cls.return_value = mock_client
         from app.pipeline.agents.tools.reference_tool import ReferenceExtractionTool
+
         tool = ReferenceExtractionTool()
         result = json.loads(tool._run("test.pdf"))
         assert result["status"] == "success"
@@ -232,6 +268,7 @@ class TestReferenceExtractionTool:
         mock_client.is_available.side_effect = RuntimeError("boom")
         mock_gc_cls.return_value = mock_client
         from app.pipeline.agents.tools.reference_tool import ReferenceExtractionTool
+
         tool = ReferenceExtractionTool()
         assert "ERROR" in tool._run("test.pdf")
 
@@ -239,6 +276,7 @@ class TestReferenceExtractionTool:
 # ==============================================================================
 # ValidationTool — app.pipeline.agents.tools.validation_tool
 # ==============================================================================
+
 
 def _make_mock_doc(**kwargs):
     doc = MagicMock()
@@ -254,6 +292,7 @@ class TestValidationTool:
     @patch("app.pipeline.agents.tools.validation_tool.DocumentValidator")
     def test_document_not_in_cache(self, mock_dv_cls):
         from app.pipeline.agents.tools.validation_tool import ValidationTool
+
         tool = ValidationTool()
         assert "ERROR" in tool._run("unknown_id")
 
@@ -267,6 +306,7 @@ class TestValidationTool:
         validator.validate.return_value = valid_result
         mock_dv_cls.return_value = validator
         from app.pipeline.agents.tools.validation_tool import ValidationTool
+
         tool = ValidationTool()
         doc = _make_mock_doc(doc_id="d1")
         tool.set_document("d1", doc)
@@ -286,6 +326,7 @@ class TestValidationTool:
         validator.validate.return_value = valid_result
         mock_dv_cls.return_value = validator
         from app.pipeline.agents.tools.validation_tool import ValidationTool
+
         tool = ValidationTool()
         doc = _make_mock_doc(doc_id="d1")
         tool.set_document("d1", doc)
@@ -300,6 +341,7 @@ class TestValidationTool:
         validator.validate.side_effect = RuntimeError("validation failed")
         mock_dv_cls.return_value = validator
         from app.pipeline.agents.tools.validation_tool import ValidationTool
+
         tool = ValidationTool()
         doc = _make_mock_doc(doc_id="d1")
         tool.set_document("d1", doc)

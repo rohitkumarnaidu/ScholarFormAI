@@ -20,6 +20,7 @@ from pydantic import BaseModel
 # llm_validator.py — lines 16-17 (py ≥3.14), 29-31 (ImportError), 73 (loop), 109 (scalar)
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestLlmValidator:
     def test_guard_llm_output_fallback_error(self):
         """guard_llm_output fallback returns error_return_value on exception."""
@@ -30,9 +31,11 @@ class TestLlmValidator:
 
         with patch.object(lv, "HAS_GUARDRAILS", False):
             decorator = lv.guard_llm_output(TestSchema, error_return_value={"fallback": True})
+
             @decorator
             def failing_func():
                 raise ValueError("boom")
+
             result = failing_func()
             assert result == {"fallback": True}
 
@@ -55,6 +58,7 @@ class TestLlmValidator:
             # Don't patch get_running_loop → it raises RuntimeError in sync test
 
             decorator = lv.guard_llm_output(TestSchema)
+
             @decorator
             def my_func():
                 return '{"name": "test"}'
@@ -78,6 +82,7 @@ class TestLlmValidator:
             guard_instance.parse.return_value = MagicMock(validated_output=None)
 
             decorator = lv.guard_llm_output(TestSchema, error_return_value={})
+
             @decorator
             def my_func():
                 return TestSchema(name="test")
@@ -103,6 +108,7 @@ class TestLlmValidator:
             guard_instance.parse.return_value = outcome
 
             decorator = lv.guard_llm_output(TestSchema)
+
             @decorator
             def my_func():
                 return {"name": "test"}
@@ -125,6 +131,7 @@ class TestLlmValidator:
             mock_guard_cls.for_pydantic.return_value = guard_instance
 
             decorator = lv.guard_llm_output(TestSchema)
+
             @decorator
             def my_func():
                 return 42
@@ -137,9 +144,11 @@ class TestLlmValidator:
         import app.pipeline.safety.llm_validator as lv
 
         decorator = lv.guard_llm_output(dict, error_return_value=None)
+
         @decorator
         def my_func():
             raise ValueError("fail")
+
         result = my_func()
         assert result == {}
 
@@ -162,6 +171,7 @@ class TestLlmValidator:
             guard_instance.parse.return_value = outcome
 
             decorator = lv.guard_llm_output(TestSchema)
+
             @decorator
             def my_func():
                 return '{"name": "test"}'
@@ -188,6 +198,7 @@ class TestLlmValidator:
             guard_instance.parse.return_value = outcome
 
             decorator = lv.guard_llm_output(TestSchema)
+
             @decorator
             def my_func():
                 return '{"name": "test"}'
@@ -214,6 +225,7 @@ class TestLlmValidator:
             guard_instance.parse.return_value = outcome
 
             decorator = lv.guard_llm_output(TestSchema, error_return_value={"err": True})
+
             @decorator
             def my_func():
                 return '{"name": "test"}'
@@ -238,6 +250,7 @@ class TestLlmValidator:
             guard_instance.parse.side_effect = ValueError("parse error")
 
             decorator = lv.guard_llm_output(TestSchema, error_return_value={"safe": True})
+
             @decorator
             def my_func():
                 return '{"name": "test"}'
@@ -245,9 +258,11 @@ class TestLlmValidator:
             result = my_func()
             assert result == {"safe": True}
 
+
 # ═══════════════════════════════════════════════════════════════════════════
 # style_mapper.py — line 26 (bt already starts with BLOCK_)
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 class TestStyleMapper:
     def test_block_type_already_prefixed(self):
@@ -286,29 +301,36 @@ class TestStyleMapper:
         style = mapper.get_style_name(block, "ieee")
         assert style == "Normal"
 
+
 # ═══════════════════════════════════════════════════════════════════════════
 # safe_execution.py — lines 68-73
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestSafeExecution:
     def test_safe_function_decorator_fallback(self):
         from app.pipeline.safety.safe_execution import safe_function
+
         @safe_function(fallback_value="default")
         def failing():
             raise ValueError("fail")
+
         result = failing()
         assert result == "default"
 
     def test_safe_function_decorator_success(self):
         from app.pipeline.safety.safe_execution import safe_function
+
         @safe_function(fallback_value="default")
         def working():
             return "ok"
+
         result = working()
         assert result == "ok"
 
     def test_safe_execution_context_suppresses(self):
         from app.pipeline.safety.safe_execution import safe_execution
+
         with safe_execution("test_op"):
             raise ValueError("suppressed")
         # Should not propagate
@@ -317,6 +339,7 @@ class TestSafeExecution:
         import asyncio
 
         from app.pipeline.safety.safe_execution import safe_async_function
+
         @safe_async_function(fallback_value="fallback")
         async def failing_async():
             raise ValueError("async fail")
@@ -328,6 +351,7 @@ class TestSafeExecution:
         import asyncio
 
         from app.pipeline.safety.safe_execution import safe_async_function
+
         @safe_async_function(fallback_value="fallback")
         async def working_async():
             return "ok"
@@ -335,9 +359,11 @@ class TestSafeExecution:
         result = asyncio.run(working_async())
         assert result == "ok"
 
+
 # ═══════════════════════════════════════════════════════════════════════════
 # circuit_breaker.py — 90% remaining gaps
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 class TestCircuitBreaker:
     def test_circuit_breaker_fallback_fails_returns_empty_dict(self):
@@ -368,18 +394,23 @@ class TestCircuitBreaker:
             with patch.dict("sys.modules", {"pybreaker": None}, clear=False):
                 pass  # Already imported, just test the flag path
 
+
 # ═══════════════════════════════════════════════════════════════════════════
 # pdf_ocr.py — import fallback paths
 # ═══════════════════════════════════════════════════════════════════════════
 
+
 class TestPdfOcr:
     def test_pdf_extract_text_exists(self):
         from app.pipeline.ocr.pdf_ocr import pdf_extract_text
+
         assert callable(pdf_extract_text)
+
 
 # ═══════════════════════════════════════════════════════════════════════════
 # figures/caption_matcher.py — line 243
 # ═══════════════════════════════════════════════════════════════════════════
+
 
 class TestFiguresCaptionMatcher:
     pass

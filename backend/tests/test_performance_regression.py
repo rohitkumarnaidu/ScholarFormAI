@@ -10,6 +10,7 @@ import pytest
 
 # ── 1A: Database Query Performance ──────────────────────────────────────────
 
+
 class TestDatabaseQueryPerformance:
     """Measure DB query latency against SLO thresholds."""
 
@@ -74,7 +75,9 @@ class TestDatabaseQueryPerformance:
             return mock
 
         mock_sb = MagicMock()
-        mock_sb.table.return_value.select.return_value.eq.return_value.order.return_value.range.return_value.execute = counting_execute
+        mock_sb.table.return_value.select.return_value.eq.return_value.order.return_value.range.return_value.execute = (
+            counting_execute
+        )
 
         with patch("app.services.document_service.get_supabase_client", return_value=mock_sb):
             start = time.perf_counter()
@@ -111,8 +114,10 @@ class TestDatabaseQueryPerformance:
         class _SortableEntry:
             def __init__(self, name):
                 self.name = name
+
             def __lt__(self, other):
                 return self.name < other.name
+
             def is_dir(self):
                 return True
 
@@ -128,6 +133,7 @@ class TestDatabaseQueryPerformance:
 
 
 # ── 1B: Pipeline Performance ────────────────────────────────────────────────
+
 
 class TestPipelinePerformance:
     """Measure pipeline stage latency against SLO thresholds."""
@@ -191,6 +197,7 @@ class TestPipelinePerformance:
 
 # ── 1C: LLM Service Performance ────────────────────────────────────────────
 
+
 class TestLLMServicePerformance:
     """Measure LLM service latency against SLO thresholds."""
 
@@ -233,7 +240,7 @@ class TestLLMServicePerformance:
             )
             elapsed = time.perf_counter() - start
             assert result == "cached response"
-            assert elapsed < 0.05, f"Cache hit took {elapsed*1000:.1f}ms (expected < 50ms)"
+            assert elapsed < 0.05, f"Cache hit took {elapsed * 1000:.1f}ms (expected < 50ms)"
 
     @pytest.mark.performance
     @pytest.mark.unit
@@ -287,4 +294,4 @@ class TestLLMServicePerformance:
             )
             elapsed = time.perf_counter() - start
             assert result == "streaming token"
-            assert elapsed < 0.5, f"Stream TTFT was {elapsed*1000:.1f}ms (expected < 500ms)"
+            assert elapsed < 0.5, f"Stream TTFT was {elapsed * 1000:.1f}ms (expected < 500ms)"

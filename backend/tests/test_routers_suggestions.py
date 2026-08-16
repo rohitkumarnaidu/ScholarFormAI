@@ -70,12 +70,20 @@ class TestGenerateSuggestion:
         client.mock_svc.generate_suggestion.return_value = {"id": "sg-2"}
         response = client.post(
             "/api/v1/suggestions/generate",
-            json={"document_id": "doc-1", "block": {"text": "old"}, "suggestion_type": "clarity", "session_id": "sess-1"},
+            json={
+                "document_id": "doc-1",
+                "block": {"text": "old"},
+                "suggestion_type": "clarity",
+                "session_id": "sess-1",
+            },
         )
         assert response.status_code == 201
         client.mock_svc.generate_suggestion.assert_called_with(
-            document_id="doc-1", block={"text": "old"}, suggestion_type="clarity",
-            user_id="user-123", session_id="sess-1",
+            document_id="doc-1",
+            block={"text": "old"},
+            suggestion_type="clarity",
+            user_id="user-123",
+            session_id="sess-1",
         )
 
 

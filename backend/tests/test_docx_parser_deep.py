@@ -207,6 +207,7 @@ class TestCoreProperties:
 
     def test_created_date(self, parser):
         from datetime import datetime
+
         dt = datetime(2024, 6, 15)
         docx = self._make_mock_docx(created=dt)
         meta = parser._extract_core_properties(docx)
@@ -282,10 +283,12 @@ class TestParagraphStyleExtraction:
         assert style.font_size == 12.0
 
     def test_skips_empty_runs(self, parser):
-        para = self._make_paragraph([
-            {"text": "  ", "bold": None, "italic": None},
-            {"text": "actual", "bold": True},
-        ])
+        para = self._make_paragraph(
+            [
+                {"text": "  ", "bold": None, "italic": None},
+                {"text": "actual", "bold": True},
+            ]
+        )
         style = parser._extract_paragraph_style(para)
         assert style.bold is True
 
@@ -365,40 +368,50 @@ class TestHyperlinkExtraction:
         assert result == []
 
     def test_single_hyperlink(self, parser):
-        para = self._make_paragraph_with_hyperlinks([
-            {"r_id": "rId1", "url": "https://example.com", "text_chunks": "Example"},
-        ])
+        para = self._make_paragraph_with_hyperlinks(
+            [
+                {"r_id": "rId1", "url": "https://example.com", "text_chunks": "Example"},
+            ]
+        )
         result = parser._extract_hyperlinks(para)
         assert len(result) == 1
         assert result[0]["text"] == "Example"
         assert result[0]["url"] == "https://example.com"
 
     def test_multiple_hyperlinks(self, parser):
-        para = self._make_paragraph_with_hyperlinks([
-            {"r_id": "rId1", "url": "https://a.com", "text_chunks": "Link A"},
-            {"r_id": "rId2", "url": "https://b.com", "text_chunks": "Link B"},
-        ])
+        para = self._make_paragraph_with_hyperlinks(
+            [
+                {"r_id": "rId1", "url": "https://a.com", "text_chunks": "Link A"},
+                {"r_id": "rId2", "url": "https://b.com", "text_chunks": "Link B"},
+            ]
+        )
         result = parser._extract_hyperlinks(para)
         assert len(result) == 2
 
     def test_hyperlink_no_text_skipped(self, parser):
-        para = self._make_paragraph_with_hyperlinks([
-            {"r_id": "rId1", "url": "https://a.com", "text_chunks": ""},
-        ])
+        para = self._make_paragraph_with_hyperlinks(
+            [
+                {"r_id": "rId1", "url": "https://a.com", "text_chunks": ""},
+            ]
+        )
         result = parser._extract_hyperlinks(para)
         assert result == []
 
     def test_hyperlink_missing_rid_skipped(self, parser):
-        para = self._make_paragraph_with_hyperlinks([
-            {"r_id": None, "url": "https://a.com", "text_chunks": "Link"},
-        ])
+        para = self._make_paragraph_with_hyperlinks(
+            [
+                {"r_id": None, "url": "https://a.com", "text_chunks": "Link"},
+            ]
+        )
         result = parser._extract_hyperlinks(para)
         assert result == []
 
     def test_hyperlink_bad_relation_skipped(self, parser):
-        para = self._make_paragraph_with_hyperlinks([
-            {"r_id": "rId99", "url": None, "text_chunks": "Link"},
-        ])
+        para = self._make_paragraph_with_hyperlinks(
+            [
+                {"r_id": "rId99", "url": None, "text_chunks": "Link"},
+            ]
+        )
         result = parser._extract_hyperlinks(para)
         assert result == []
 
@@ -469,6 +482,7 @@ class TestListInfo:
             if "numPr" in path:
                 if numpr_data is not None:
                     numpr = MagicMock()
+
                     def numpr_find(sub):
                         if "ilvl" in sub:
                             if "ilvl" in numpr_data:
@@ -483,6 +497,7 @@ class TestListInfo:
                                 return numId
                             return None
                         return None
+
                     numpr.find.side_effect = numpr_find
                     return numpr
                 return None
@@ -593,20 +608,21 @@ class TestInlineImageExtraction:
     def parser(self):
         return DocxParser()
 
-    def _make_run(self, has_inline=False, has_anchor=False, inline_element=None,
-                  anchor_element=None, part=None):
+    def _make_run(self, has_inline=False, has_anchor=False, inline_element=None, anchor_element=None, part=None):
         run = MagicMock()
         element = MagicMock()
 
         if has_inline:
             element.findall.return_value = [inline_element or MagicMock()]
         elif has_anchor:
+
             def findall_side_effect(ns):
                 if "inline" in ns:
                     return []
                 if "anchor" in ns:
                     return [anchor_element or MagicMock()]
                 return []
+
             element.findall.side_effect = findall_side_effect
         else:
             element.findall.return_value = []
@@ -665,6 +681,7 @@ class TestInlineImageExtraction:
             if "anchor" in ns:
                 return [MagicMock()]
             return []
+
         element.findall.side_effect = findall_side_effect
         run._element = element
         run.part = MagicMock()
@@ -719,6 +736,7 @@ class TestImageFromInline:
             if "extent" in path:
                 return extent
             return None
+
         inline.find.side_effect = find_side_effect
 
         result = parser._extract_image_from_inline(inline, part)
@@ -799,14 +817,13 @@ class TestHeadersAndFooters:
         block.metadata = {}
         return block
 
-    def _make_section(self, has_header=True, has_footer=True,
-                      header_texts=None, footer_texts=None):
+    def _make_section(self, has_header=True, has_footer=True, header_texts=None, footer_texts=None):
         section = MagicMock()
 
         if has_header:
             header = MagicMock()
             h_paragraphs = []
-            for t in (header_texts or []):
+            for t in header_texts or []:
                 p = MagicMock()
                 p.text = t
                 p.alignment = None
@@ -819,7 +836,7 @@ class TestHeadersAndFooters:
         if has_footer:
             footer = MagicMock()
             f_paragraphs = []
-            for t in (footer_texts or []):
+            for t in footer_texts or []:
                 p = MagicMock()
                 p.text = t
                 p.alignment = None

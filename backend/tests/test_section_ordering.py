@@ -27,6 +27,7 @@ def contract_loader():
 class TestSectionOrderValidator:
     def test_valid_order(self, contract_loader):
         from app.pipeline.formatting.section_ordering import SectionOrderValidator
+
         validator = SectionOrderValidator(contract_loader)
         doc = MagicMock()
         doc.blocks = [
@@ -43,6 +44,7 @@ class TestSectionOrderValidator:
 
     def test_missing_required_section(self, contract_loader):
         from app.pipeline.formatting.section_ordering import SectionOrderValidator
+
         validator = SectionOrderValidator(contract_loader)
         doc = MagicMock()
         doc.blocks = [
@@ -56,6 +58,7 @@ class TestSectionOrderValidator:
 
     def test_out_of_order(self, contract_loader):
         from app.pipeline.formatting.section_ordering import SectionOrderValidator
+
         validator = SectionOrderValidator(contract_loader)
         doc = MagicMock()
         doc.blocks = [
@@ -68,6 +71,7 @@ class TestSectionOrderValidator:
 
     def test_duplicate_section_ignored(self, contract_loader):
         from app.pipeline.formatting.section_ordering import SectionOrderValidator
+
         validator = SectionOrderValidator(contract_loader)
         doc = MagicMock()
         doc.blocks = [
@@ -81,6 +85,7 @@ class TestSectionOrderValidator:
 
     def test_non_heading_blocks_skipped(self, contract_loader):
         from app.pipeline.formatting.section_ordering import SectionOrderValidator
+
         validator = SectionOrderValidator(contract_loader)
         doc = MagicMock()
         doc.blocks = [
@@ -93,6 +98,7 @@ class TestSectionOrderValidator:
 
     def test_empty_document(self, contract_loader):
         from app.pipeline.formatting.section_ordering import SectionOrderValidator
+
         validator = SectionOrderValidator(contract_loader)
         doc = MagicMock()
         doc.blocks = []

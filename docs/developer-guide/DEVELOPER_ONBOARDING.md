@@ -86,37 +86,36 @@ npm run dev
 
 ## Architecture Overview
 
-```
-┌─────────────────────────────────────────────────────┐
-│                    Frontend (Next.js)                │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
-│  │ Formatter│  │ Generator│  │ Admin Dashboard  │  │
-│  └────┬─────┘  └────┬─────┘  └────────┬─────────┘  │
-│       └──────────────┼────────────────┘             │
-│                      │ REST API                     │
-└──────────────────────┼──────────────────────────────┘
-                       │
-┌──────────────────────┼──────────────────────────────┐
-│              Backend (FastAPI)                       │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
-│  │Documents │  │Templates │  │ API Key Manager  │  │
-│  └────┬─────┘  └────┬─────┘  └────────┬─────────┘  │
-│       └──────────────┼────────────────┘             │
-│                      │                              │
-│  ┌───────────────────┼──────────────────────────┐  │
-│  │           Pipeline Engine                    │  │
-│  │  Parse → Normalize → Analyze → Format → Export│ │
-│  └───────────────────┼──────────────────────────┘  │
-└──────────────────────┼──────────────────────────────┘
-                       │
-        ┌──────────────┼──────────────┐
-        │              │              │
-   ┌────┴────┐   ┌────┴────┐   ┌────┴────┐
-   │Supabase │   │  Redis  │   │  LLMs   │
-   │(Postgres│   │ (Cache) │   │(OpenAI, │
-   │  + Auth)│   │         │   │Anthropic│
-   └─────────┘   └─────────┘   │ etc.)   │
-                               └─────────┘
+```mermaid
+flowchart TD
+    subgraph Frontend [Frontend - Next.js]
+        F_Fmt[Formatter]
+        F_Gen[Generator]
+        F_Admin[Admin Dashboard]
+    end
+
+    subgraph Backend [Backend - FastAPI]
+        B_Doc[Documents]
+        B_Tpl[Templates]
+        B_API[API Key Manager]
+        B_Pipe[Pipeline Engine<br>Parse -> Normalize -> Analyze -> Format -> Export]
+    end
+
+    subgraph Data [Data & External Services]
+        DB[(Supabase<br>Postgres + Auth)]
+        Cache[(Redis<br>Cache)]
+        LLM[LLMs<br>OpenAI, Anthropic, etc.]
+    end
+
+    F_Fmt --> Backend
+    F_Gen --> Backend
+    F_Admin --> Backend
+    
+    Backend --> B_Pipe
+    
+    B_Pipe --> DB
+    B_Pipe --> Cache
+    B_Pipe --> LLM
 ```
 
 ---

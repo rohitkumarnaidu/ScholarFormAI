@@ -15,6 +15,7 @@ class TestNumberingEnginePerSection:
 
     def test_per_section_equation_numbering(self):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         engine = NumberingEngine(scope="per_section")
         blocks = [
             Mock(block_id="s1", block_type="heading_1", text="Section 1", section_number=1),
@@ -30,6 +31,7 @@ class TestNumberingEnginePerSection:
 
     def test_per_section_single_section(self):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         engine = NumberingEngine(scope="per_section")
         blocks = [
             Mock(block_id="s1", block_type="heading_1", text="Section 1", section_number=1),
@@ -40,6 +42,7 @@ class TestNumberingEnginePerSection:
 
     def test_per_section_no_headings(self):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         engine = NumberingEngine(scope="per_section")
         blocks = [
             Mock(block_id="e1", block_type="equation", text="x=1"),
@@ -51,6 +54,7 @@ class TestNumberingEnginePerSection:
 
     def test_set_scope_method(self):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         engine = NumberingEngine(scope="global")
         assert engine.scope == "global"
         engine.set_scope("per_section")
@@ -58,6 +62,7 @@ class TestNumberingEnginePerSection:
 
     def test_equation_numbering_with_body_blocks(self):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         engine = NumberingEngine(scope="per_section")
         blocks = [
             Mock(block_id="s1", block_type="heading_1", text="Intro", section_number=1),
@@ -76,6 +81,7 @@ class TestNumberingEngineTableNumbering:
 
     def test_global_table_numbering(self):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         engine = NumberingEngine()
         blocks = [
             Mock(block_id="t1", block_type="table_caption", text="Table caption 1"),
@@ -87,6 +93,7 @@ class TestNumberingEngineTableNumbering:
 
     def test_per_section_table_numbering(self):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         engine = NumberingEngine(scope="per_section")
         blocks = [
             Mock(block_id="s1", block_type="heading_1", text="Results", section_number=1),
@@ -100,6 +107,7 @@ class TestNumberingEngineTableNumbering:
 
     def test_table_numbering_with_heading_text(self):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         engine = NumberingEngine(scope="per_section")
         blocks = [
             Mock(block_id="s1", block_type="heading_1", text="1 Results", section_number=1),
@@ -110,6 +118,7 @@ class TestNumberingEngineTableNumbering:
 
     def test_empty_blocks_table_numbering(self):
         from app.pipeline.formatting.numbering import NumberingEngine
+
         engine = NumberingEngine()
         result = engine.number_tables([], scope="global")
         assert result == []
@@ -120,6 +129,7 @@ class TestCrossReferenceEngineAutoResolve:
 
     def test_auto_resolve_flag(self):
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
+
         engine = CrossReferenceEngine(auto_resolve=True)
         assert engine.auto_resolve is True
         engine2 = CrossReferenceEngine()
@@ -127,6 +137,7 @@ class TestCrossReferenceEngineAutoResolve:
 
     def test_resolve_equation_references(self):
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
+
         engine = CrossReferenceEngine()
         blocks = [
             Mock(block_id="b1", text="See Equation (3) for details"),
@@ -139,6 +150,7 @@ class TestCrossReferenceEngineAutoResolve:
 
     def test_resolve_figure_references(self):
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
+
         engine = CrossReferenceEngine()
         blocks = [
             Mock(block_id="b1", text="See Figure 1 below"),
@@ -151,6 +163,7 @@ class TestCrossReferenceEngineAutoResolve:
 
     def test_resolve_table_references(self):
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
+
         engine = CrossReferenceEngine()
         blocks = [
             Mock(block_id="b1", text="See Table 1.2 for data"),
@@ -161,6 +174,7 @@ class TestCrossReferenceEngineAutoResolve:
 
     def test_resolve_no_maps(self):
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
+
         engine = CrossReferenceEngine()
         blocks = [Mock(block_id="b1", text="Some text")]
         result = engine.resolve_references(blocks)
@@ -168,6 +182,7 @@ class TestCrossReferenceEngineAutoResolve:
 
     def test_resolve_multiple_maps(self):
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
+
         engine = CrossReferenceEngine()
         blocks = [
             Mock(
@@ -191,6 +206,7 @@ class TestCrossReferenceEngineAutoResolve:
 
     def test_no_change_when_map_missing(self):
         from app.pipeline.integrity.cross_ref import CrossReferenceEngine
+
         engine = CrossReferenceEngine()
         blocks = [Mock(block_id="b1", text="See Equation (99)")]
         equation_map = {1: "(1)"}
@@ -203,12 +219,25 @@ class TestCSLEngineExpanded:
 
     def test_all_styles_in_map(self):
         from app.pipeline.services.csl_engine import CSLEngine
-        expected = {"ieee", "apa", "vancouver", "mla", "chicago", "harvard",
-                    "nature", "springer", "acm", "elsevier", "numeric"}
+
+        expected = {
+            "ieee",
+            "apa",
+            "vancouver",
+            "mla",
+            "chicago",
+            "harvard",
+            "nature",
+            "springer",
+            "acm",
+            "elsevier",
+            "numeric",
+        }
         assert expected.issubset(set(CSLEngine.DEFAULT_STYLE_MAP.keys()))
 
     def test_get_capabilities_lists_builtins(self):
         from app.pipeline.services.csl_engine import CSLEngine
+
         engine = CSLEngine()
         caps = engine.get_capabilities()
         assert "built_in_styles" in caps
@@ -216,6 +245,7 @@ class TestCSLEngineExpanded:
 
     def test_resolve_style_apa(self):
         from app.pipeline.services.csl_engine import CSLEngine
+
         engine = CSLEngine()
         result = engine.resolve_style("apa")
         assert result["style"] == "apa"
@@ -224,6 +254,7 @@ class TestCSLEngineExpanded:
 
     def test_resolve_style_ieee(self):
         from app.pipeline.services.csl_engine import CSLEngine
+
         engine = CSLEngine()
         result = engine.resolve_style("ieee")
         assert result["style"] == "ieee"
@@ -231,6 +262,7 @@ class TestCSLEngineExpanded:
 
     def test_resolve_style_vancouver(self):
         from app.pipeline.services.csl_engine import CSLEngine
+
         engine = CSLEngine()
         result = engine.resolve_style("vancouver")
         assert result["style"] == "vancouver"
@@ -238,6 +270,7 @@ class TestCSLEngineExpanded:
 
     def test_resolve_style_numeric_default(self):
         from app.pipeline.services.csl_engine import CSLEngine
+
         engine = CSLEngine()
         result = engine.resolve_style("unknown_style")
         assert result["style"] == "unknown_style"
@@ -245,6 +278,7 @@ class TestCSLEngineExpanded:
 
     def test_caching(self):
         from app.pipeline.services.csl_engine import CSLEngine
+
         engine = CSLEngine()
         engine.resolve_style("apa")
         result2 = engine.resolve_style("apa")
@@ -253,6 +287,7 @@ class TestCSLEngineExpanded:
     def test_fallback_formatters_all_styles(self):
         from app.models import Reference
         from app.pipeline.services.csl_engine import CSLEngine
+
         engine = CSLEngine()
         ref = Reference(
             reference_id="r1",

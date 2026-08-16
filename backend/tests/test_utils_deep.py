@@ -232,26 +232,32 @@ class TestBindRequestContext:
 # ID Generator — fill remaining branches
 # ═══════════════════════════════════════════════════════════════════
 
+
 class TestIdGeneratorFormats:
     def test_block_id_format(self):
         from app.utils.id_generator import generate_block_id
+
         assert generate_block_id(1) == "blk_001"
         assert generate_block_id(42) == "blk_042"
 
     def test_figure_id_format(self):
         from app.utils.id_generator import generate_figure_id
+
         assert generate_figure_id(0) == "fig_000"
 
     def test_table_id_format(self):
         from app.utils.id_generator import generate_table_id
+
         assert generate_table_id(10) == "tbl_010"
 
     def test_reference_id_format(self):
         from app.utils.id_generator import generate_reference_id
+
         assert generate_reference_id(23) == "ref_023"
 
     def test_equation_id_format(self):
         from app.utils.id_generator import generate_equation_id
+
         assert generate_equation_id(99) == "eqn_099"
 
 
@@ -259,10 +265,12 @@ class TestIdGeneratorFormats:
 # Cleanup — additional edge cases
 # ═══════════════════════════════════════════════════════════════════
 
+
 class TestCleanupAdditional:
     @pytest.mark.asyncio
     async def test_cleanup_logs_no_old_files(self):
         from app.utils.cleanup import cleanup_old_uploads
+
         with patch("app.utils.cleanup.os.path.exists", return_value=True):
             with patch("app.utils.cleanup.os.listdir", return_value=["recent.docx"]):
                 with patch("app.utils.cleanup.os.path.isfile", return_value=True):
@@ -273,13 +281,12 @@ class TestCleanupAdditional:
                                     task = asyncio.create_task(cleanup_old_uploads())
                                     await asyncio.sleep(0)
                                     task.cancel()
-                                    mock_log.info.assert_any_call(
-                                        "Cleanup complete. No old files found."
-                                    )
+                                    mock_log.info.assert_any_call("Cleanup complete. No old files found.")
 
     @pytest.mark.asyncio
     async def test_cleanup_empty_directory(self):
         from app.utils.cleanup import cleanup_old_uploads
+
         with patch("app.utils.cleanup.os.path.exists", return_value=True):
             with patch("app.utils.cleanup.os.listdir", return_value=[]):
                 with patch("app.utils.cleanup.logger") as mock_log:
@@ -293,6 +300,7 @@ class TestCleanupAdditional:
 # ═══════════════════════════════════════════════════════════════════
 # Background Tasks — fill remaining branches
 # ═══════════════════════════════════════════════════════════════════
+
 
 class TestBackgroundTasksAdditional:
     def test_sync_wrapper_creates_new_event_loop(self):
@@ -315,6 +323,7 @@ class TestBackgroundTasksAdditional:
 
     def test_mark_job_as_failed_no_job_id(self):
         from app.utils.background_tasks import _mark_job_as_failed
+
         with patch("app.services.document_service.DocumentService.mark_document_failed") as mock_md:
             _mark_job_as_failed("job1", "error")
             mock_md.assert_called_once()
@@ -324,9 +333,11 @@ class TestBackgroundTasksAdditional:
 # Singleton — fill remaining branches
 # ═══════════════════════════════════════════════════════════════════
 
+
 class TestSingletonAdditional:
     def test_get_or_create_safe_custom_log_level(self):
         from app.utils.singleton import get_or_create_safe
+
         logger = MagicMock()
         factory = MagicMock(side_effect=Exception("fail"))
         result = get_or_create_safe(None, factory, logger=logger, name="test", log_level="warning")
@@ -335,18 +346,21 @@ class TestSingletonAdditional:
 
     def test_get_or_create_catching_unhandled_exception_raises(self):
         from app.utils.singleton import get_or_create_catching
+
         factory = MagicMock(side_effect=TypeError("unhandled"))
         with pytest.raises(TypeError):
             get_or_create_catching(None, factory, exceptions=(ValueError,))
 
     def test_resolve_optional_callable_module_error(self):
         from app.utils.singleton import resolve_optional_callable
+
         with patch("app.utils.singleton._load_callable", side_effect=ImportError("no module")):
             result = resolve_optional_callable("bad.module", "func")
         assert result is None
 
     def test_resolve_optional_callable_call_error(self):
         from app.utils.singleton import resolve_optional_callable
+
         with patch("app.utils.singleton._load_callable") as mock_load:
             mock_fn = MagicMock(side_effect=RuntimeError("call fail"))
             mock_load.return_value = mock_fn
@@ -358,12 +372,14 @@ class TestSingletonAdditional:
 # Dependencies — fill remaining branches
 # ═══════════════════════════════════════════════════════════════════
 
+
 class TestDependenciesAdditional:
     def test_get_current_user_invalid_token_error(self):
         import jwt
         from fastapi import HTTPException
 
         from app.utils.dependencies import get_current_user
+
         credentials = MagicMock()
         credentials.credentials = "bad-token"
         request = MagicMock()
@@ -377,21 +393,29 @@ class TestDependenciesAdditional:
         from fastapi import HTTPException
 
         from app.utils.dependencies import get_current_user
+
         credentials = MagicMock()
         credentials.credentials = "fail"
         request = MagicMock()
         request.query_params.get.return_value = None
-        with patch("app.utils.dependencies.AuthService.decode_token", side_effect=HTTPException(status_code=401, detail="auth fail")):
+        with patch(
+            "app.utils.dependencies.AuthService.decode_token",
+            side_effect=HTTPException(status_code=401, detail="auth fail"),
+        ):
             with pytest.raises(HTTPException) as exc:
                 get_current_user(request, credentials)
         assert exc.value.status_code == 401
 
     def test_get_optional_user_includes_role_and_metadata(self):
         from app.utils.dependencies import get_optional_user
+
         credentials = MagicMock()
         credentials.credentials = "tok"
         request = MagicMock()
-        with patch("app.utils.dependencies.AuthService.decode_token", return_value={"email": "a@b.com", "role": "premium", "app_metadata": {"plan": "pro"}}):
+        with patch(
+            "app.utils.dependencies.AuthService.decode_token",
+            return_value={"email": "a@b.com", "role": "premium", "app_metadata": {"plan": "pro"}},
+        ):
             with patch("app.utils.dependencies.AuthService.get_user_id_from_payload", return_value="u1"):
                 user = get_optional_user(request, credentials)
                 assert user.role == "premium"
@@ -399,8 +423,8 @@ class TestDependenciesAdditional:
 
     def test_has_admin_scope_roles_list_no_admin(self):
         from app.utils.dependencies import _has_admin_scope
+
         user = MagicMock()
         user.role = "user"
         user.app_metadata = {"roles": ["editor", "viewer"]}
         assert _has_admin_scope(user) is False
-

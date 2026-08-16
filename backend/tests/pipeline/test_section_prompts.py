@@ -9,6 +9,7 @@ import pytest
 @pytest.fixture(scope="module")
 def section_prompts():
     from app.pipeline.generation.section_prompts import SECTION_PROMPTS, _truncate, get_section_prompt
+
     return SECTION_PROMPTS, _truncate, get_section_prompt
 
 
@@ -83,7 +84,12 @@ class TestTruncate:
 class TestGetSectionPrompt:
     def test_known_section(self, section_prompts):
         sp, _, gsp = section_prompts
-        context = {"task_spec": {"title": "Test"}, "template_rules": [], "outline": {"sections": []}, "previous_sections": {}}
+        context = {
+            "task_spec": {"title": "Test"},
+            "template_rules": [],
+            "outline": {"sections": []},
+            "previous_sections": {},
+        }
         result = gsp("Introduction", context)
         assert sp["Introduction"] in result
         assert "Document context" in result
@@ -153,13 +159,23 @@ class TestGetSectionPrompt:
 
     def test_outline_included(self, section_prompts):
         _, _, gsp = section_prompts
-        context = {"task_spec": {}, "template_rules": [], "outline": {"sections": [{"title": "Intro"}]}, "previous_sections": {}}
+        context = {
+            "task_spec": {},
+            "template_rules": [],
+            "outline": {"sections": [{"title": "Intro"}]},
+            "previous_sections": {},
+        }
         result = gsp("Results", context)
         assert '"sections"' in result or "Intro" in result
 
     def test_template_rules_included(self, section_prompts):
         _, _, gsp = section_prompts
-        context = {"task_spec": {}, "template_rules": [{"rule": "use IEEE style"}], "outline": {}, "previous_sections": {}}
+        context = {
+            "task_spec": {},
+            "template_rules": [{"rule": "use IEEE style"}],
+            "outline": {},
+            "previous_sections": {},
+        }
         result = gsp("Conclusion", context)
         assert "IEEE" in result or "rule" in result
 

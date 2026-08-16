@@ -8,6 +8,7 @@ Revises: 5ab5f4f9e36d
 Create Date: 2026-02-13 19:46:48.331380
 
 """
+
 from collections.abc import Sequence
 from typing import Union
 
@@ -16,8 +17,8 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = '1f7c085e7ef2'
-down_revision: str | Sequence[str] | None = '5ab5f4f9e36d'
+revision: str = "1f7c085e7ef2"
+down_revision: str | Sequence[str] | None = "5ab5f4f9e36d"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
@@ -29,7 +30,7 @@ def upgrade() -> None:
     inspector = sa.inspect(bind)
     existing = {col["name"] for col in inspector.get_columns("documents")}
     if "template" not in existing:
-        op.add_column('documents', sa.Column('template', sa.String(), nullable=True, server_default=None))
+        op.add_column("documents", sa.Column("template", sa.String(), nullable=True, server_default=None))
 
 
 def downgrade() -> None:
@@ -39,6 +40,7 @@ def downgrade() -> None:
     inspector = sa.inspect(bind)
     existing = {col["name"] for col in inspector.get_columns("documents")}
     if "template" in existing:
-        op.drop_column('documents', 'template')
+        op.drop_column("documents", "template")
 
-__all__ = ['revision', 'down_revision', 'branch_labels', 'depends_on', 'upgrade', 'downgrade']
+
+__all__ = ["revision", "down_revision", "branch_labels", "depends_on", "upgrade", "downgrade"]

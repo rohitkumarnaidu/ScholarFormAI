@@ -11,6 +11,7 @@ class TestFeatureFlagMiddleware:
             mock_svc.get_all_flags.return_value = {"new_upload_flow": True}
             mock_svc_factory.return_value = mock_svc
             from app.middleware.feature_flags import FeatureFlagMiddleware
+
             mw = FeatureFlagMiddleware(MagicMock())
             request = MagicMock()
             request.app.debug = False
@@ -28,6 +29,7 @@ class TestFeatureFlagMiddleware:
             mock_svc.get_all_flags.return_value = {"flag_a": True}
             mock_svc_factory.return_value = mock_svc
             from app.middleware.feature_flags import FeatureFlagMiddleware
+
             mw = FeatureFlagMiddleware(MagicMock())
             request = MagicMock()
             request.app.debug = True
@@ -46,6 +48,7 @@ class TestFeatureFlagMiddleware:
             mock_svc.get_all_flags.return_value = {}
             mock_svc_factory.return_value = mock_svc
             from app.middleware.feature_flags import FeatureFlagMiddleware
+
             mw = FeatureFlagMiddleware(MagicMock())
             request = MagicMock()
             request.app.debug = False
@@ -63,6 +66,7 @@ class TestFeatureFlagMiddleware:
             mock_svc.get_all_flags.return_value = {}
             mock_svc_factory.return_value = mock_svc
             from app.middleware.feature_flags import FeatureFlagMiddleware
+
             mw = FeatureFlagMiddleware(MagicMock())
             request = MagicMock()
             request.app.debug = False
@@ -79,6 +83,7 @@ class TestFeatureFlagMiddleware:
             mock_svc.get_all_flags.return_value = {}
             mock_svc_factory.return_value = mock_svc
             from app.middleware.feature_flags import FeatureFlagMiddleware
+
             mw = FeatureFlagMiddleware(MagicMock())
             request = MagicMock()
             request.app.debug = False

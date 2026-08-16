@@ -16,6 +16,7 @@ from app.services.document_service import DocumentService
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _result(*, data=None, count=None):
     r = MagicMock(spec=[])
     r.data = data
@@ -46,6 +47,7 @@ def _self_chain(execute_return=None):
 # ---------------------------------------------------------------------------
 # Static helpers
 # ---------------------------------------------------------------------------
+
 
 class TestIsTransientSupabaseError:
     def test_known_error_type(self):
@@ -146,6 +148,7 @@ class TestIsValidUuid:
 
     def test_uuid_object_passed(self):
         import uuid
+
         assert DocumentService._is_valid_uuid(uuid.uuid4()) is True
 
     def test_integer(self):
@@ -168,19 +171,25 @@ class TestShouldQueryDocumentTables:
 class TestBuildSignedDownloadScope:
     def test_basic_scope(self):
         scope = DocumentService._build_signed_download_scope(
-            file_path="/uploads/doc.docx", download_format="docx", expires=1234567890,
+            file_path="/uploads/doc.docx",
+            download_format="docx",
+            expires=1234567890,
         )
         assert scope == "/uploads/doc.docx|docx|1234567890"
 
     def test_normalizes_format(self):
         scope = DocumentService._build_signed_download_scope(
-            file_path="/path/file.pdf", download_format="  PDF ", expires=100,
+            file_path="/path/file.pdf",
+            download_format="  PDF ",
+            expires=100,
         )
         assert scope == "/path/file.pdf|pdf|100"
 
     def test_none_format_defaults_to_docx(self):
         scope = DocumentService._build_signed_download_scope(
-            file_path="/path/file", download_format=None, expires=100,
+            file_path="/path/file",
+            download_format=None,
+            expires=100,
         )
         assert scope == "/path/file|docx|100"
 
@@ -189,8 +198,10 @@ class TestGenerateSignedDownloadUrl:
     def test_generates_url(self):
         result = DocumentService.generate_signed_download_url(
             file_url="https://storage.example.com/files/doc.pdf?token=abc",
-            file_path="/files/doc.pdf", secret="my-secret-key",
-            expires_in_seconds=3600, download_format="pdf",
+            file_path="/files/doc.pdf",
+            secret="my-secret-key",
+            expires_in_seconds=3600,
+            download_format="pdf",
         )
         assert "url" in result
         assert "expires" in result
@@ -201,23 +212,31 @@ class TestGenerateSignedDownloadUrl:
     def test_no_secret_raises(self):
         with pytest.raises(ValueError, match="SIGNED_URL_SECRET is required"):
             DocumentService.generate_signed_download_url(
-                file_url="https://example.com/f", file_path="/f", secret="",
+                file_url="https://example.com/f",
+                file_path="/f",
+                secret="",
             )
 
     def test_uses_custom_expiry(self):
         result = DocumentService.generate_signed_download_url(
-            file_url="https://example.com/f", file_path="/f",
-            secret="secret", expires_in_seconds=60,
+            file_url="https://example.com/f",
+            file_path="/f",
+            secret="secret",
+            expires_in_seconds=60,
         )
         assert result["expires"] > int(time.time())
         assert result["expires"] < int(time.time()) + 120
 
     def test_integrity_signature_changes_with_file_path(self):
         r1 = DocumentService.generate_signed_download_url(
-            file_url="https://example.com/a", file_path="/a", secret="s",
+            file_url="https://example.com/a",
+            file_path="/a",
+            secret="s",
         )
         r2 = DocumentService.generate_signed_download_url(
-            file_url="https://example.com/b", file_path="/b", secret="s",
+            file_url="https://example.com/b",
+            file_path="/b",
+            secret="s",
         )
         assert r1["url"] != r2["url"]
 
@@ -225,47 +244,87 @@ class TestGenerateSignedDownloadUrl:
 class TestVerifySignedDownload:
     def test_valid_token(self):
         result = DocumentService.generate_signed_download_url(
-            file_url="https://example.com/f", file_path="/f",
-            secret="s", expires_in_seconds=3600,
+            file_url="https://example.com/f",
+            file_path="/f",
+            secret="s",
+            expires_in_seconds=3600,
         )
         url = result["url"]
         import urllib.parse
+
         parsed = urllib.parse.urlparse(url)
         qs = urllib.parse.parse_qs(parsed.query)
-        assert DocumentService.verify_signed_download(
-            file_path="/f", token=qs["token"][0], expires=qs["expires"][0], secret="s",
-        ) is True
+        assert (
+            DocumentService.verify_signed_download(
+                file_path="/f",
+                token=qs["token"][0],
+                expires=qs["expires"][0],
+                secret="s",
+            )
+            is True
+        )
 
     def test_expired_token(self):
-        assert DocumentService.verify_signed_download(
-            file_path="/f", token="any", expires="1", secret="s",
-        ) is False
+        assert (
+            DocumentService.verify_signed_download(
+                file_path="/f",
+                token="any",
+                expires="1",
+                secret="s",
+            )
+            is False
+        )
 
     def test_invalid_token(self):
         expires = int(time.time()) + 3600
-        assert DocumentService.verify_signed_download(
-            file_path="/f", token="wrong", expires=str(expires), secret="s",
-        ) is False
+        assert (
+            DocumentService.verify_signed_download(
+                file_path="/f",
+                token="wrong",
+                expires=str(expires),
+                secret="s",
+            )
+            is False
+        )
 
     def test_empty_secret(self):
-        assert DocumentService.verify_signed_download(
-            file_path="/f", token="t", expires="9999999999", secret="",
-        ) is False
+        assert (
+            DocumentService.verify_signed_download(
+                file_path="/f",
+                token="t",
+                expires="9999999999",
+                secret="",
+            )
+            is False
+        )
 
     def test_empty_token(self):
-        assert DocumentService.verify_signed_download(
-            file_path="/f", token="", expires="9999999999", secret="s",
-        ) is False
+        assert (
+            DocumentService.verify_signed_download(
+                file_path="/f",
+                token="",
+                expires="9999999999",
+                secret="s",
+            )
+            is False
+        )
 
     def test_bad_expires_string(self):
-        assert DocumentService.verify_signed_download(
-            file_path="/f", token="t", expires="not-a-number", secret="s",
-        ) is False
+        assert (
+            DocumentService.verify_signed_download(
+                file_path="/f",
+                token="t",
+                expires="not-a-number",
+                secret="s",
+            )
+            is False
+        )
 
 
 # ---------------------------------------------------------------------------
 # get_document
 # ---------------------------------------------------------------------------
+
 
 class TestGetDocument:
     @pytest.mark.asyncio
@@ -287,7 +346,8 @@ class TestGetDocument:
                 mock_get.return_value = MagicMock()
                 with patch.object(DocumentService, "_execute_with_transient_retry", return_value=mock_result):
                     result = await DocumentService.get_document(
-                        "550e8400-e29b-41d4-a716-446655440000", "user-1",
+                        "550e8400-e29b-41d4-a716-446655440000",
+                        "user-1",
                     )
         assert result == {"id": "doc-1", "user_id": "user-1"}
 
@@ -318,7 +378,9 @@ class TestGetDocument:
         with patch.object(DocumentService, "_should_query_document_tables", return_value=True):
             with patch("app.services.document_service.get_supabase_client") as mock_get:
                 mock_get.return_value = MagicMock()
-                with patch.object(DocumentService, "_execute_with_transient_retry", side_effect=RuntimeError("unexpected")):
+                with patch.object(
+                    DocumentService, "_execute_with_transient_retry", side_effect=RuntimeError("unexpected")
+                ):
                     with pytest.raises(DatabaseUnavailableError):
                         await DocumentService.get_document("550e8400-e29b-41d4-a716-446655440000")
 
@@ -326,6 +388,7 @@ class TestGetDocument:
 # ---------------------------------------------------------------------------
 # list_documents
 # ---------------------------------------------------------------------------
+
 
 class TestListDocuments:
     @pytest.mark.asyncio
@@ -422,6 +485,7 @@ class TestListDocuments:
 # count_documents
 # ---------------------------------------------------------------------------
 
+
 class TestCountDocuments:
     @pytest.mark.asyncio
     async def test_returns_count(self):
@@ -471,6 +535,7 @@ class TestCountDocuments:
 # count_uploads_today
 # ---------------------------------------------------------------------------
 
+
 class TestCountUploadsToday:
     @pytest.mark.asyncio
     async def test_returns_count(self):
@@ -482,7 +547,9 @@ class TestCountUploadsToday:
     @pytest.mark.asyncio
     async def test_gte_and_lt_used(self):
         mock_client = MagicMock()
-        mock_client.table.return_value.select.return_value.eq.return_value.gte.return_value.lt.return_value.execute.return_value = _result(count=0)
+        mock_client.table.return_value.select.return_value.eq.return_value.gte.return_value.lt.return_value.execute.return_value = _result(
+            count=0
+        )
 
         def run_to_thread(fn, *a, **kw):
             return fn(*a, **kw) if callable(fn) else fn
@@ -515,6 +582,7 @@ class TestCountUploadsToday:
 # create_document
 # ---------------------------------------------------------------------------
 
+
 class TestCreateDocument:
     @pytest.mark.asyncio
     async def test_creates_and_returns(self):
@@ -523,7 +591,9 @@ class TestCreateDocument:
             with patch("app.services.document_service.asyncio.to_thread", return_value=mock_result):
                 result = await DocumentService.create_document(
                     doc_id="550e8400-e29b-41d4-a716-446655440000",
-                    user_id="user-1", filename="test.docx", template="ieee",
+                    user_id="user-1",
+                    filename="test.docx",
+                    template="ieee",
                 )
         assert result == {"id": "doc-1", "status": "PROCESSING"}
 
@@ -534,7 +604,9 @@ class TestCreateDocument:
             with patch("app.services.document_service.asyncio.to_thread", return_value=mock_result):
                 result = await DocumentService.create_document(
                     doc_id="550e8400-e29b-41d4-a716-446655440000",
-                    user_id="user-1", filename="test.docx", template=None,
+                    user_id="user-1",
+                    filename="test.docx",
+                    template=None,
                 )
         assert result is None
 
@@ -549,7 +621,9 @@ class TestCreateDocument:
             with patch("app.services.document_service.asyncio.to_thread", side_effect=fake_thread) as mock_thread:
                 await DocumentService.create_document(
                     doc_id="550e8400-e29b-41d4-a716-446655440000",
-                    user_id=None, filename="test.docx", template=None,
+                    user_id=None,
+                    filename="test.docx",
+                    template=None,
                 )
         payload = mock_thread.call_args[0][1]
         assert "user_id" not in payload
@@ -562,7 +636,10 @@ class TestCreateDocument:
             with patch("app.services.document_service.asyncio.to_thread", return_value=mock_result) as mock_thread:
                 await DocumentService.create_document(
                     doc_id="550e8400-e29b-41d4-a716-446655440000",
-                    user_id="u", filename="f", template=None, file_hash="abc123",
+                    user_id="u",
+                    filename="f",
+                    template=None,
+                    file_hash="abc123",
                 )
         payload = mock_thread.call_args[0][1]
         assert payload.get("file_hash") == "abc123"
@@ -587,7 +664,10 @@ class TestCreateDocument:
             with patch("app.services.document_service.asyncio.to_thread", side_effect=fake_to_thread):
                 result = await DocumentService.create_document(
                     doc_id="550e8400-e29b-41d4-a716-446655440000",
-                    user_id="u", filename="f", template=None, file_hash="abc123",
+                    user_id="u",
+                    filename="f",
+                    template=None,
+                    file_hash="abc123",
                 )
         assert result == {"id": "x"}
         assert DocumentService._supports_file_hash is False
@@ -602,7 +682,10 @@ class TestCreateDocument:
                 with pytest.raises(DatabaseUnavailableError):
                     await DocumentService.create_document(
                         doc_id="550e8400-e29b-41d4-a716-446655440000",
-                        user_id="u", filename="f", template=None, file_hash="abc123",
+                        user_id="u",
+                        filename="f",
+                        template=None,
+                        file_hash="abc123",
                     )
 
     @pytest.mark.asyncio
@@ -611,7 +694,9 @@ class TestCreateDocument:
             with pytest.raises(DatabaseUnavailableError):
                 await DocumentService.create_document(
                     doc_id="550e8400-e29b-41d4-a716-446655440000",
-                    user_id="u", filename="f", template=None,
+                    user_id="u",
+                    filename="f",
+                    template=None,
                 )
 
     @pytest.mark.asyncio
@@ -634,13 +719,17 @@ class TestCreateDocument:
                 with pytest.raises(DatabaseUnavailableError):
                     await DocumentService.create_document(
                         doc_id="550e8400-e29b-41d4-a716-446655440000",
-                        user_id="u", filename="f", template=None, file_hash="abc123",
+                        user_id="u",
+                        filename="f",
+                        template=None,
+                        file_hash="abc123",
                     )
 
 
 # ---------------------------------------------------------------------------
 # update_document
 # ---------------------------------------------------------------------------
+
 
 class TestUpdateDocument:
     @pytest.mark.asyncio
@@ -649,7 +738,8 @@ class TestUpdateDocument:
         with patch("app.services.document_service.get_supabase_client", return_value=MagicMock()):
             with patch("app.services.document_service.asyncio.to_thread", return_value=mock_result):
                 result = await DocumentService.update_document(
-                    "550e8400-e29b-41d4-a716-446655440000", {"status": "COMPLETED"},
+                    "550e8400-e29b-41d4-a716-446655440000",
+                    {"status": "COMPLETED"},
                 )
         assert result == {"id": "doc-1", "status": "COMPLETED"}
 
@@ -659,7 +749,8 @@ class TestUpdateDocument:
         with patch("app.services.document_service.get_supabase_client", return_value=MagicMock()):
             with patch("app.services.document_service.asyncio.to_thread", return_value=mock_result):
                 result = await DocumentService.update_document(
-                    "550e8400-e29b-41d4-a716-446655440000", {"status": "COMPLETED"},
+                    "550e8400-e29b-41d4-a716-446655440000",
+                    {"status": "COMPLETED"},
                 )
         assert result is None
 
@@ -681,6 +772,7 @@ class TestUpdateDocument:
 # ---------------------------------------------------------------------------
 # delete_document
 # ---------------------------------------------------------------------------
+
 
 class TestDeleteDocument:
     @pytest.mark.asyncio
@@ -754,6 +846,7 @@ class TestDeleteDocument:
 # update_output_hash
 # ---------------------------------------------------------------------------
 
+
 class TestUpdateOutputHash:
     @pytest.mark.asyncio
     async def test_success(self):
@@ -809,6 +902,7 @@ class TestUpdateOutputHash:
 # mark_document_failed  (never raises)
 # ---------------------------------------------------------------------------
 
+
 class TestMarkDocumentFailed:
     @pytest.mark.asyncio
     async def test_marks_failed(self):
@@ -816,7 +910,8 @@ class TestMarkDocumentFailed:
         with patch("app.services.document_service.get_supabase_client", return_value=MagicMock()):
             with patch("app.services.document_service.asyncio.to_thread", return_value=mock_result):
                 result = await DocumentService.mark_document_failed(
-                    "550e8400-e29b-41d4-a716-446655440000", "error msg",
+                    "550e8400-e29b-41d4-a716-446655440000",
+                    "error msg",
                 )
         assert result is None
 
@@ -834,7 +929,8 @@ class TestMarkDocumentFailed:
             with patch("app.services.document_service.asyncio.to_thread", side_effect=Exception("db error")):
                 with patch("app.services.document_service.logger") as mock_log:
                     await DocumentService.mark_document_failed(
-                        "550e8400-e29b-41d4-a716-446655440000", "err",
+                        "550e8400-e29b-41d4-a716-446655440000",
+                        "err",
                     )
         mock_log.error.assert_called_once()
 
@@ -843,13 +939,16 @@ class TestMarkDocumentFailed:
 # mark_document_completed  (never raises)
 # ---------------------------------------------------------------------------
 
+
 class TestMarkDocumentCompleted:
     @pytest.mark.asyncio
     async def test_marks_completed(self):
         with patch("app.services.document_service.get_supabase_client", return_value=MagicMock()):
             with patch("app.services.document_service.asyncio.to_thread", return_value=_result(data=None)):
                 result = await DocumentService.mark_document_completed(
-                    "550e8400-e29b-41d4-a716-446655440000", "/tmp/out.docx", raw_text="full text",
+                    "550e8400-e29b-41d4-a716-446655440000",
+                    "/tmp/out.docx",
+                    raw_text="full text",
                 )
         assert result is None
 
@@ -871,7 +970,9 @@ class TestMarkDocumentCompleted:
         with patch("app.services.document_service.get_supabase_client", return_value=mock_client):
             with patch("app.services.document_service.asyncio.to_thread", side_effect=fake_to_thread):
                 await DocumentService.mark_document_completed(
-                    "550e8400-e29b-41d4-a716-446655440000", "/tmp/out.docx", raw_text=None,
+                    "550e8400-e29b-41d4-a716-446655440000",
+                    "/tmp/out.docx",
+                    raw_text=None,
                 )
 
         update_call = mock_client.table.return_value.update.call_args[0][0]
@@ -884,7 +985,8 @@ class TestMarkDocumentCompleted:
             with patch("app.services.document_service.asyncio.to_thread", side_effect=Exception("db error")):
                 with patch("app.services.document_service.logger") as mock_log:
                     await DocumentService.mark_document_completed(
-                        "550e8400-e29b-41d4-a716-446655440000", "/tmp/out.docx",
+                        "550e8400-e29b-41d4-a716-446655440000",
+                        "/tmp/out.docx",
                     )
         mock_log.error.assert_called_once()
 
@@ -892,6 +994,7 @@ class TestMarkDocumentCompleted:
 # ---------------------------------------------------------------------------
 # get_document_result
 # ---------------------------------------------------------------------------
+
 
 class TestGetDocumentResult:
     @pytest.mark.asyncio
@@ -950,13 +1053,15 @@ class TestGetDocumentResult:
 # upsert_document_result
 # ---------------------------------------------------------------------------
 
+
 class TestUpsertDocumentResult:
     @pytest.mark.asyncio
     async def test_upserts(self):
         with patch("app.services.document_service.get_supabase_client", return_value=MagicMock()):
             with patch("app.services.document_service.asyncio.to_thread", return_value=_result(data=None)):
                 result = await DocumentService.upsert_document_result(
-                    "550e8400-e29b-41d4-a716-446655440000", structured_data={"key": "val"},
+                    "550e8400-e29b-41d4-a716-446655440000",
+                    structured_data={"key": "val"},
                 )
         assert result is None
 
@@ -987,7 +1092,8 @@ class TestUpsertDocumentResult:
         with patch("app.services.document_service.get_supabase_client", return_value=client):
             with patch("app.services.document_service.asyncio.to_thread", side_effect=fake_to_thread):
                 await DocumentService.upsert_document_result(
-                    "550e8400-e29b-41d4-a716-446655440000", validation_results={"score": 0.9},
+                    "550e8400-e29b-41d4-a716-446655440000",
+                    validation_results={"score": 0.9},
                 )
 
         payload = client.upsert.call_args[0][0]
@@ -1011,6 +1117,7 @@ class TestUpsertDocumentResult:
 # ---------------------------------------------------------------------------
 # get_processing_statuses
 # ---------------------------------------------------------------------------
+
 
 class TestGetProcessingStatuses:
     @pytest.mark.asyncio
@@ -1051,6 +1158,7 @@ class TestGetProcessingStatuses:
 # upsert_processing_status
 # ---------------------------------------------------------------------------
 
+
 class TestUpsertProcessingStatus:
     @pytest.mark.asyncio
     async def test_upserts_with_all_fields(self):
@@ -1064,8 +1172,10 @@ class TestUpsertProcessingStatus:
             with patch("app.services.document_service.asyncio.to_thread", side_effect=fake_to_thread):
                 await DocumentService.upsert_processing_status(
                     "550e8400-e29b-41d4-a716-446655440000",
-                    phase="EXTRACTION", status="running",
-                    progress_percentage=50, message="extracting text",
+                    phase="EXTRACTION",
+                    status="running",
+                    progress_percentage=50,
+                    message="extracting text",
                 )
 
         payload = client.upsert.call_args[0][0]
@@ -1087,7 +1197,8 @@ class TestUpsertProcessingStatus:
             with patch("app.services.document_service.asyncio.to_thread", side_effect=fake_to_thread):
                 await DocumentService.upsert_processing_status(
                     "550e8400-e29b-41d4-a716-446655440000",
-                    phase="EXTRACTION", status="running",
+                    phase="EXTRACTION",
+                    status="running",
                 )
 
         payload = client.upsert.call_args[0][0]
@@ -1099,7 +1210,9 @@ class TestUpsertProcessingStatus:
         with patch("app.services.document_service.get_supabase_client", return_value=None):
             with pytest.raises(DatabaseUnavailableError):
                 await DocumentService.upsert_processing_status(
-                    "550e8400-e29b-41d4-a716-446655440000", "EXTRACTION", "running",
+                    "550e8400-e29b-41d4-a716-446655440000",
+                    "EXTRACTION",
+                    "running",
                 )
 
     @pytest.mark.asyncio
@@ -1109,5 +1222,7 @@ class TestUpsertProcessingStatus:
             with patch("app.services.document_service.asyncio.to_thread", side_effect=Exception("fail")):
                 with pytest.raises(DatabaseUnavailableError):
                     await DocumentService.upsert_processing_status(
-                        "550e8400-e29b-41d4-a716-446655440000", "EXTRACTION", "running",
+                        "550e8400-e29b-41d4-a716-446655440000",
+                        "EXTRACTION",
+                        "running",
                     )

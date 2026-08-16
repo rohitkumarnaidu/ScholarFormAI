@@ -19,19 +19,17 @@ This guide covers the complete monitoring and observability stack for ScholarFor
 
 ## Monitoring Stack Overview
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Monitoring Stack                          │
-├─────────────────┬───────────────────┬───────────────────────┤
-│   Prometheus    │     Grafana       │       Sentry          │
-│  (Metrics)      │   (Dashboards)    │   (Error Tracking)    │
-├─────────────────┼───────────────────┼───────────────────────┤
-│   /metrics      │  JSON dashboards  │  Backend + Frontend   │
-│   endpoint      │  + alert rules    │  exception capture    │
-├─────────────────┼───────────────────┼───────────────────────┤
-│   posthog       │  Structured Logs  │   Uptime Checks       │
-│  (Analytics)    │  (JSON stdout)    │   (Health endpoint)   │
-└─────────────────┴───────────────────┴───────────────────────┘
+```mermaid
+flowchart TD
+    subgraph Stack [Monitoring Stack]
+        Prometheus["Prometheus<br>(Metrics)<br>/metrics endpoint"]
+        Grafana["Grafana<br>(Dashboards)<br>JSON dashboards + alert rules"]
+        Sentry["Sentry<br>(Error Tracking)<br>Backend + Frontend exception capture"]
+        
+        Posthog["Posthog<br>(Analytics)"]
+        Logs["Structured Logs<br>(JSON stdout)"]
+        Uptime["Uptime Checks<br>(Health endpoint)"]
+    end
 ```
 
 ### Component Responsibilities

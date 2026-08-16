@@ -16,26 +16,27 @@ from app.utils.dependencies import get_current_user, get_optional_user
 
 client = TestClient(app)
 
+
 class TestAPIEndpoints:
     """Test suite for API endpoints."""
-    
+
     @pytest.mark.integration
     def test_root_endpoint(self):
         """Test root endpoint returns correct message."""
         response = client.get("/")
         assert response.status_code == 200
         assert response.json() == {"message": "ScholarForm AI Backend is running"}
-    
+
     @pytest.mark.integration
     def test_health_endpoint(self):
         """Test health check endpoint returns correct structure."""
-        with patch('app.db.supabase_client.check_supabase_health') as mock_sb_health:
-            with patch('httpx.AsyncClient') as mock_httpx:
-                with patch('app.services.model_store.model_store.get_model') as mock_get_model:
+        with patch("app.db.supabase_client.check_supabase_health") as mock_sb_health:
+            with patch("httpx.AsyncClient") as mock_httpx:
+                with patch("app.services.model_store.model_store.get_model") as mock_get_model:
                     # Mock successful health checks
                     mock_sb_health.return_value = {"status": "healthy"}
-                    
-                    # Mock httpx Ollama check 
+
+                    # Mock httpx Ollama check
                     mock_response = AsyncMock()
                     mock_response.status_code = 200
                     mock_client = AsyncMock()
@@ -43,27 +44,27 @@ class TestAPIEndpoints:
                     mock_client.__aexit__ = AsyncMock(return_value=False)
                     mock_client.get = AsyncMock(return_value=mock_response)
                     mock_httpx.return_value = mock_client
-                    
+
                     # Mock model store
                     mock_get_model.return_value = True
-                    
+
                     response = client.get("/health")
-                    
+
                     assert response.status_code == 200
                     data = response.json()
                     assert "status" in data
                     assert "version" in data
                     assert "components" in data
-    
+
     @pytest.mark.integration
     def test_health_endpoint_degraded_database(self):
         """Test health endpoint when database is unavailable."""
-        with patch('app.db.supabase_client.check_supabase_health') as mock_sb_health:
-            with patch('httpx.AsyncClient') as mock_httpx:
-                with patch('app.services.model_store.model_store.get_model') as mock_get_model:
+        with patch("app.db.supabase_client.check_supabase_health") as mock_sb_health:
+            with patch("httpx.AsyncClient") as mock_httpx:
+                with patch("app.services.model_store.model_store.get_model") as mock_get_model:
                     # Mock database failure
                     mock_sb_health.return_value = {"status": "unhealthy"}
-                    
+
                     # Mock httpx success
                     mock_response = AsyncMock()
                     mock_response.status_code = 200
@@ -72,52 +73,52 @@ class TestAPIEndpoints:
                     mock_client.__aexit__ = AsyncMock(return_value=False)
                     mock_client.get = AsyncMock(return_value=mock_response)
                     mock_httpx.return_value = mock_client
-                    
+
                     mock_get_model.return_value = True
-                    
+
                     response = client.get("/health")
-                    
+
                     data = response.json()
                     assert data["status"] == "degraded"
                     assert "supabase_db" in data["components"]
-    
+
     @pytest.mark.integration
     def test_health_endpoint_ollama_unavailable(self):
         """Test health endpoint when Ollama is unavailable."""
-        with patch('app.db.supabase_client.check_supabase_health') as mock_sb_health:
-            with patch('httpx.AsyncClient') as mock_httpx:
-                with patch('app.services.model_store.model_store.get_model') as mock_get_model:
+        with patch("app.db.supabase_client.check_supabase_health") as mock_sb_health:
+            with patch("httpx.AsyncClient") as mock_httpx:
+                with patch("app.services.model_store.model_store.get_model") as mock_get_model:
                     # Mock Supabase healthy
                     mock_sb_health.return_value = {"status": "healthy"}
-                    
+
                     # Mock Ollama failure
                     mock_client = AsyncMock()
                     mock_client.__aenter__ = AsyncMock(return_value=mock_client)
                     mock_client.__aexit__ = AsyncMock(return_value=False)
                     mock_client.get = AsyncMock(side_effect=Exception("Ollama unavailable"))
                     mock_httpx.return_value = mock_client
-                    
+
                     mock_get_model.return_value = True
-                    
+
                     response = client.get("/health")
-                    
+
                     data = response.json()
                     assert data["status"] == "degraded"
                     assert "ollama" in data["components"]
-    
+
     @pytest.mark.integration
     def test_cors_headers(self):
         """Test CORS headers are present."""
         response = client.options("/", headers={"Origin": "http://localhost:5173"})
         # CORS middleware should add headers
         assert response.status_code in [200, 405]  # OPTIONS may not be explicitly defined
-    
+
     @pytest.mark.integration
     def test_rate_limiting_not_applied_to_health(self):
         """Test rate limiting skips health endpoint."""
-        with patch('app.db.supabase_client.check_supabase_health') as mock_sb_health:
-            with patch('httpx.AsyncClient') as mock_httpx:
-                with patch('app.services.model_store.model_store.get_model') as mock_get_model:
+        with patch("app.db.supabase_client.check_supabase_health") as mock_sb_health:
+            with patch("httpx.AsyncClient") as mock_httpx:
+                with patch("app.services.model_store.model_store.get_model") as mock_get_model:
                     mock_sb_health.return_value = {"status": "healthy"}
                     mock_response = AsyncMock()
                     mock_response.status_code = 200
@@ -127,7 +128,7 @@ class TestAPIEndpoints:
                     mock_client.get = AsyncMock(return_value=mock_response)
                     mock_httpx.return_value = mock_client
                     mock_get_model.return_value = True
-                    
+
                     # Make multiple rapid requests to /health
                     for _ in range(20):
                         response = client.get("/health")
@@ -136,10 +137,12 @@ class TestAPIEndpoints:
     @pytest.mark.integration
     def test_ready_endpoint_no_nameerror(self):
         """Regression: /ready should return structured JSON (no datetime NameError)."""
-        with patch('app.db.supabase_client.check_supabase_health') as mock_sb_health:
-            with patch('httpx.AsyncClient') as mock_httpx:
-                with patch('app.services.model_store.model_store.get_model') as mock_get_model:
-                    with patch('app.services.llm_service.check_health', new=AsyncMock(return_value={"nvidia": "healthy"})):
+        with patch("app.db.supabase_client.check_supabase_health") as mock_sb_health:
+            with patch("httpx.AsyncClient") as mock_httpx:
+                with patch("app.services.model_store.model_store.get_model") as mock_get_model:
+                    with patch(
+                        "app.services.llm_service.check_health", new=AsyncMock(return_value={"nvidia": "healthy"})
+                    ):
                         mock_sb_health.return_value = {"status": "healthy"}
                         mock_response = AsyncMock()
                         mock_response.status_code = 200
@@ -275,9 +278,7 @@ class TestAPIEndpoints:
                         "raw_text": "Original text",
                         "output_path": str(output_path),
                     }
-                    mock_get_result.return_value = {
-                        "structured_data": {"blocks": [{"text": "Formatted text"}]}
-                    }
+                    mock_get_result.return_value = {"structured_data": {"blocks": [{"text": "Formatted text"}]}}
 
                     compare_response = client.get("/api/v1/documents/job-download/compare")
                     assert compare_response.status_code == 200
@@ -287,10 +288,14 @@ class TestAPIEndpoints:
                     assert download_link.status_code == 200
                     signed_url = download_link.json()["data"]["url"]
                     from urllib.parse import urlparse
+
                     parsed = urlparse(signed_url)
                     download_response = client.get(f"{parsed.path}?{parsed.query}")
                     assert download_response.status_code == 200
-                    assert "application/vnd.openxmlformats-officedocument.wordprocessingml.document" in download_response.headers.get("content-type", "")
+                    assert (
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        in download_response.headers.get("content-type", "")
+                    )
         finally:
             app.dependency_overrides.pop(get_optional_user, None)
 
@@ -339,6 +344,7 @@ class TestAPIEndpoints:
                     assert link_response.status_code == 200
                     signed_url = link_response.json()["data"]["url"]
                     from urllib.parse import urlparse
+
                     parsed = urlparse(signed_url)
                     response = client.get(f"{parsed.path}?{parsed.query}")
 
@@ -356,9 +362,13 @@ class TestAPIEndpoints:
         app.dependency_overrides[get_current_user] = lambda: mock_user
         try:
             with patch("app.routers.v1.documents_impl._require_db", return_value=None):
-                with patch("app.routers.v1.documents_impl.DocumentService.create_document", return_value={"id": "job-x"}):
+                with patch(
+                    "app.routers.v1.documents_impl.DocumentService.create_document", return_value={"id": "job-x"}
+                ):
                     with patch("app.routers.v1.documents_impl.PipelineOrchestrator") as mock_orchestrator:
-                        with patch("app.utils.background_tasks.run_pipeline_with_timeout", return_value=None) as mock_run_pipeline:
+                        with patch(
+                            "app.utils.background_tasks.run_pipeline_with_timeout", return_value=None
+                        ) as mock_run_pipeline:
                             response = client.post(
                                 "/api/v1/documents/upload/chunked",
                                 data={
@@ -391,12 +401,15 @@ class TestAPIEndpoints:
         """Infected uploads must fail validation before document creation or pipeline dispatch."""
         monkeypatch.chdir(tmp_path)
 
-        with patch("app.routers.v1.documents_impl._require_db", return_value=None), patch(
-            "app.routers.v1.documents_impl.virus_scanner.scan",
-            new=AsyncMock(return_value={"clean": False, "engine": "clamav", "result": "Eicar-Test-Signature"}),
-        ), patch("app.routers.v1.documents_impl.DocumentService.create_document") as mock_create_document, patch(
-            "app.routers.v1.documents_impl.enhancement_manager.dispatch_document_pipeline"
-        ) as mock_dispatch:
+        with (
+            patch("app.routers.v1.documents_impl._require_db", return_value=None),
+            patch(
+                "app.routers.v1.documents_impl.virus_scanner.scan",
+                new=AsyncMock(return_value={"clean": False, "engine": "clamav", "result": "Eicar-Test-Signature"}),
+            ),
+            patch("app.routers.v1.documents_impl.DocumentService.create_document") as mock_create_document,
+            patch("app.routers.v1.documents_impl.enhancement_manager.dispatch_document_pipeline") as mock_dispatch,
+        ):
             response = client.post(
                 "/api/v1/documents/upload",
                 files={
@@ -419,5 +432,3 @@ class TestAPIEndpoints:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "-m", "integration"])
-
-
