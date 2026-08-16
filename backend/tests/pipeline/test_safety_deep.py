@@ -537,7 +537,10 @@ class TestLLMValidator:
         class TestModel(BaseModel):
             name: str
 
-        with patch("app.pipeline.safety.llm_validator.HAS_GUARDRAILS", True):
+        with (
+            patch("app.pipeline.safety.llm_validator.HAS_GUARDRAILS", True),
+            patch("app.pipeline.safety.llm_validator.Guard") as mock_guard,
+        ):
 
             @guard_llm_output(schema=TestModel)
             def my_func():
@@ -554,7 +557,10 @@ class TestLLMValidator:
         class TestModel(BaseModel):
             name: str
 
-        with patch("app.pipeline.safety.llm_validator.HAS_GUARDRAILS", True):
+        with (
+            patch("app.pipeline.safety.llm_validator.HAS_GUARDRAILS", True),
+            patch("app.pipeline.safety.llm_validator.Guard") as mock_guard,
+        ):
 
             @guard_llm_output(schema=TestModel)
             def my_func():
