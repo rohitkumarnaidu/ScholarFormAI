@@ -50,6 +50,7 @@ class TestInputConverter:
         with (
             patch("shutil.which", return_value=None),
             patch("os.name", "nt"),
+            patch("os.path.exists", return_value=True),
         ):
             cmd = InputConverter()._get_libreoffice_cmd()
             assert cmd is not None
