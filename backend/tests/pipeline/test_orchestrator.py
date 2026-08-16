@@ -1097,36 +1097,50 @@ class TestOrchestratorRunPipelineInternal:
 
 class TestOrchestratorEditFlow:
     def test_edit_flow_success(self, orch, tmp_path):
-        sb = MagicMock()
-        execute_results = iter(
-            [
-                MagicMock(data=[{"filename": "test.docx", "output_path": "/original/output.docx"}]),
-                MagicMock(data=[{"id": 1, "structured_data": {"old": "data"}}]),
-                MagicMock(data=[{"version_number": "v2"}]),
-                MagicMock(),
-                MagicMock(),
-            ]
-        )
-        sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = execute_results
+        input_path = tmp_path / "test.docx"
+        input_path.write_text("dummy")
 
-        with patch.object(orch, "_update_status"):
-            with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
-                with patch("app.pipeline.orchestrator.validate_document") as mock_val:
-                    mock_val.return_value = MagicMock()
-                    with patch("app.pipeline.orchestrator.safe_model_dump", return_value={"valid": True}):
-                        with patch("app.pipeline.orchestrator.Formatter") as mock_fmt:
-                            fmt_instance = mock_fmt.return_value
-                            pipeline_doc = MagicMock()
-                            pipeline_doc.generated_doc = MagicMock()
-                            fmt_instance.process.return_value = pipeline_doc
-                            with patch("app.pipeline.orchestrator.Exporter"):
-                                with patch("os.makedirs"):
-                                    with patch("os.path.splitext", return_value=("test", ".docx")):
-                                        with patch("os.path.abspath", return_value="/tmp/output/test_edited.docx"):
-                                            with patch.object(orch, "_compute_sha256", return_value="hash"):
-                                                result = orch.run_edit_flow(
-                                                    "job1", {"sections": {"body": ["Edited text"]}}, "ieee"
-                                                )
+        doc_resp = MagicMock()
+        doc_resp.data = [{"filename": "test.docx", "output_path": "/original/output.docx"}]
+        result_resp = MagicMock()
+        result_resp.data = [{"id": 1, "structured_data": {"old": "data"}}]
+        version_resp = MagicMock()
+        version_resp.data = [{"version_number": "v2"}]
+
+        with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls, \
+             patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_result_repo_cls, \
+             patch("app.pipeline.orchestrator.orchestrator.DocumentVersionRepository") as mock_ver_repo_cls:
+
+            mock_doc_repo = MagicMock()
+            mock_doc_repo_cls.return_value = mock_doc_repo
+            mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = doc_resp
+
+            mock_result_repo = MagicMock()
+            mock_result_repo_cls.return_value = mock_result_repo
+            mock_result_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = result_resp
+
+            mock_ver_repo = MagicMock()
+            mock_ver_repo_cls.return_value = mock_ver_repo
+            mock_ver_repo._table.return_value.select.return_value.eq.return_value.order.return_value.limit.return_value.execute.return_value = version_resp
+
+            with patch.object(orch, "_update_status"):
+                with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
+                    with patch("app.pipeline.orchestrator.validate_document") as mock_val:
+                        mock_val.return_value = MagicMock()
+                        with patch("app.pipeline.orchestrator.safe_model_dump", return_value={"valid": True}):
+                            with patch("app.pipeline.orchestrator.Formatter") as mock_fmt:
+                                fmt_instance = mock_fmt.return_value
+                                pipeline_doc = MagicMock()
+                                pipeline_doc.generated_doc = MagicMock()
+                                fmt_instance.process.return_value = pipeline_doc
+                                with patch("app.pipeline.orchestrator.Exporter"):
+                                    with patch("os.makedirs"):
+                                        with patch("os.path.splitext", return_value=("test", ".docx")):
+                                            with patch("os.path.abspath", return_value="/tmp/output/test_edited.docx"):
+                                                with patch.object(orch, "_compute_sha256", return_value="hash"):
+                                                    result = orch.run_edit_flow(
+                                                        "job1", {"sections": {"body": ["Edited text"]}}, "ieee"
+                                                    )
         assert result["status"] == "success"
 
     def test_edit_flow_no_supabase(self, orch):
@@ -1135,51 +1149,62 @@ class TestOrchestratorEditFlow:
         assert result["status"] == "error"
 
     def test_edit_flow_no_original(self, orch):
-        sb = MagicMock()
-        sb.table.return_value.select.return_value.eq.return_value.execute.return_value.data = []
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
-            result = orch.run_edit_flow("job1", {"sections": {}}, "ieee")
+        doc_resp = MagicMock()
+        doc_resp.data = []
+        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
+            with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls:
+                mock_doc_repo = MagicMock()
+                mock_doc_repo_cls.return_value = mock_doc_repo
+                mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = doc_resp
+                result = orch.run_edit_flow("job1", {"sections": {}}, "ieee")
         assert result["status"] == "error"
 
     def test_edit_flow_cancelled(self, orch):
         import asyncio
 
-        sb = MagicMock()
-        sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = asyncio.CancelledError("cancel")
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
-            with patch.object(orch, "_update_status"):
-                result = orch.run_edit_flow("job1", {"sections": {}}, "ieee")
+        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
+            with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls:
+                mock_doc_repo = MagicMock()
+                mock_doc_repo_cls.return_value = mock_doc_repo
+                mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.side_effect = asyncio.CancelledError("cancel")
+                with patch.object(orch, "_update_status"):
+                    result = orch.run_edit_flow("job1", {"sections": {}}, "ieee")
         assert result["status"] == "cancelled"
 
     def test_edit_flow_no_existing_result(self, orch):
-        sb = MagicMock()
-        execute_results = iter(
-            [
-                MagicMock(data=[{"filename": "test.docx", "output_path": "/original/output.docx"}]),
-                MagicMock(data=[]),
-                MagicMock(),
-                MagicMock(),
-            ]
-        )
-        sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = execute_results
+        doc_resp = MagicMock()
+        doc_resp.data = [{"filename": "test.docx", "output_path": "/original/output.docx"}]
+        result_resp = MagicMock()
+        result_resp.data = []
 
-        with patch.object(orch, "_update_status"):
-            with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
-                with patch("app.pipeline.orchestrator.validate_document") as mock_val:
-                    mock_val.return_value = MagicMock()
-                    with patch("app.pipeline.orchestrator.safe_model_dump", return_value={"valid": True}):
-                        with patch("app.pipeline.orchestrator.Formatter") as mock_fmt:
-                            fmt_instance = mock_fmt.return_value
-                            pipeline_doc = MagicMock()
-                            pipeline_doc.generated_doc = MagicMock()
-                            fmt_instance.process.return_value = pipeline_doc
-                            with patch("app.pipeline.orchestrator.Exporter"):
-                                with patch("app.pipeline.orchestrator.AIExplainer"):
-                                    with patch("os.makedirs"):
-                                        with patch("os.path.splitext", return_value=("test", ".docx")):
-                                            with patch("os.path.abspath", return_value="/tmp/output/test_edited.docx"):
-                                                with patch.object(orch, "_compute_sha256", return_value="hash"):
-                                                    result = orch.run_edit_flow(
-                                                        "job1", {"sections": {"body": ["Text"]}}, "ieee"
-                                                    )
+        with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls, \
+             patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_result_repo_cls:
+
+            mock_doc_repo = MagicMock()
+            mock_doc_repo_cls.return_value = mock_doc_repo
+            mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = doc_resp
+
+            mock_result_repo = MagicMock()
+            mock_result_repo_cls.return_value = mock_result_repo
+            mock_result_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = result_resp
+
+            with patch.object(orch, "_update_status"):
+                with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
+                    with patch("app.pipeline.orchestrator.validate_document") as mock_val:
+                        mock_val.return_value = MagicMock()
+                        with patch("app.pipeline.orchestrator.safe_model_dump", return_value={"valid": True}):
+                            with patch("app.pipeline.orchestrator.Formatter") as mock_fmt:
+                                fmt_instance = mock_fmt.return_value
+                                pipeline_doc = MagicMock()
+                                pipeline_doc.generated_doc = MagicMock()
+                                fmt_instance.process.return_value = pipeline_doc
+                                with patch("app.pipeline.orchestrator.Exporter"):
+                                    with patch("app.pipeline.orchestrator.AIExplainer"):
+                                        with patch("os.makedirs"):
+                                            with patch("os.path.splitext", return_value=("test", ".docx")):
+                                                with patch("os.path.abspath", return_value="/tmp/output/test_edited.docx"):
+                                                    with patch.object(orch, "_compute_sha256", return_value="hash"):
+                                                        result = orch.run_edit_flow(
+                                                            "job1", {"sections": {"body": ["Text"]}}, "ieee"
+                                                        )
         assert result["status"] == "success"
