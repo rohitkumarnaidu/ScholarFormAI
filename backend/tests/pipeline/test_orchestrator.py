@@ -256,40 +256,41 @@ class TestOrchestratorUpdateStatus:
                 orch._update_status("job1", "EXTRACTION", "PROCESSING", "Working...")
 
     def test_update_status_success(self, orch):
-        sb = MagicMock()
-        sb.table.return_value.select.return_value.match.return_value.execute.return_value.data = []
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
-            with patch.dict(sys.modules, {"app.routers.v1.stream": MagicMock()}):
-                # Should complete without raising - errors are caught internally
-                orch._update_status("job1", "EXTRACTION", "COMPLETED", "Done", progress=50)
+        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
+            with patch("app.pipeline.orchestrator.orchestrator.ProcessingStatusRepository") as mock_ps_repo:
+                with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo:
+                    with patch.dict(sys.modules, {"app.routers.v1.stream": MagicMock()}):
+                        orch._update_status("job1", "EXTRACTION", "COMPLETED", "Done", progress=50)
+                        mock_ps_repo.return_value.upsert_sync.assert_called_once()
+                        mock_doc_repo.return_value.update_sync.assert_called_once()
 
     def test_update_status_existing_record(self, orch):
-        sb = MagicMock()
-        sb.table.return_value.select.return_value.match.return_value.execute.return_value.data = [{"id": 1}]
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
-            with patch.dict(sys.modules, {"app.routers.v1.stream": MagicMock()}):
-                orch._update_status("job1", "EXTRACTION", "COMPLETED", "Done", progress=50)
+        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
+            with patch("app.pipeline.orchestrator.orchestrator.ProcessingStatusRepository"):
+                with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository"):
+                    with patch.dict(sys.modules, {"app.routers.v1.stream": MagicMock()}):
+                        orch._update_status("job1", "EXTRACTION", "COMPLETED", "Done", progress=50)
 
     def test_update_status_failed(self, orch):
-        sb = MagicMock()
-        sb.table.return_value.select.return_value.match.return_value.execute.return_value.data = []
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
-            with patch.dict(sys.modules, {"app.routers.v1.stream": MagicMock()}):
-                orch._update_status("job1", "EXTRACTION", "FAILED", "Error occurred", progress=0)
+        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
+            with patch("app.pipeline.orchestrator.orchestrator.ProcessingStatusRepository"):
+                with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository"):
+                    with patch.dict(sys.modules, {"app.routers.v1.stream": MagicMock()}):
+                        orch._update_status("job1", "EXTRACTION", "FAILED", "Error occurred", progress=0)
 
     def test_update_status_transient_error_retry(self, orch):
-        sb = MagicMock()
         from httpx import RemoteProtocolError
-
-        mock_execute = MagicMock()
-        mock_execute.side_effect = [
-            RemoteProtocolError("Server disconnected"),
-            MagicMock(data=[]),
-        ]
-        sb.table.return_value.select.return_value.match.return_value.execute = mock_execute
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
-            with patch.dict(sys.modules, {"app.routers.v1.stream": MagicMock()}):
-                orch._update_status("job1", "EXTRACTION", "COMPLETED", "Done")
+        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
+            with patch("app.pipeline.orchestrator.orchestrator.ProcessingStatusRepository") as mock_ps_repo:
+                with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo:
+                    mock_ps_repo.return_value.upsert_sync.side_effect = [
+                        RemoteProtocolError("Server disconnected"),
+                        True,
+                    ]
+                    with patch.dict(sys.modules, {"app.routers.v1.stream": MagicMock()}):
+                        with patch("time.sleep"):  # don't actually sleep in test
+                            orch._update_status("job1", "EXTRACTION", "COMPLETED", "Done")
+                        assert mock_ps_repo.return_value.upsert_sync.call_count == 2
 
 
 # ── Check cancelled ─────────────────────────────────────────────────────────
@@ -297,10 +298,14 @@ class TestOrchestratorUpdateStatus:
 
 class TestOrchestratorCheckCancelled:
     def test_not_cancelled(self, orch):
-        sb = MagicMock()
-        sb.table.return_value.select.return_value.eq.return_value.execute.return_value.data = [{"status": "PROCESSING"}]
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
-            orch._check_cancelled("job1")
+        mock_resp = MagicMock()
+        mock_resp.data = [{"status": "PROCESSING"}]
+        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
+            with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_repo_cls:
+                mock_repo = MagicMock()
+                mock_repo_cls.return_value = mock_repo
+                mock_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = mock_resp
+                orch._check_cancelled("job1")
 
     def test_cancelled_raises(self, orch):
         import asyncio
