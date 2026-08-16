@@ -869,39 +869,25 @@ class TestOrchestratorRunPipelineInternal:
         parser.parse.return_value = doc
         mock_pf.return_value.get_parser.return_value = parser
 
-        with patch.object(orch, "_run_structure_detection", return_value=doc):
-            with patch.object(orch, "_run_classification", return_value=doc):
-                with patch.object(orch, "_run_validation_stage", return_value=doc):
-                    with patch.object(orch, "_run_formatting_stage", return_value=doc):
-                        with patch.object(orch, "_export_document", return_value=str(tmp_path / "out.docx")):
-                            with patch.object(orch, "analyzer"):
-                                with patch.object(orch, "_update_status"):
-                                    with patch(
-                                        "app.pipeline.orchestrator.execute_with_retry", side_effect=lambda fn, doc: doc
-                                    ):
-                                        with patch("app.pipeline.orchestrator.CaptionMatcher"):
-                                            with patch("app.pipeline.orchestrator.TableCaptionMatcher"):
-                                                with patch("app.pipeline.orchestrator.ReferenceParser"):
-                                                    with patch("app.pipeline.orchestrator.AIExplainer"):
-                                                        with patch(
-                                                            "app.pipeline.orchestrator.build_structured_data",
-                                                            return_value={"data": "test"},
-                                                        ):
-                                                            with patch(
-                                                                "app.pipeline.orchestrator.compute_quality_score",
-                                                                return_value={"overall_score": 95.0},
-                                                            ):
-                                                                with patch.object(
-                                                                    orch, "_compute_sha256", return_value="abc123"
-                                                                ):
-                                                                    with patch.object(orch, "_check_cancelled"):
-                                                                        with patch(
-                                                                            "app.pipeline.orchestrator.settings"
-                                                                        ) as mock_set:
-                                                                            mock_set.GROBID_ENABLED = False
-                                                                            result = orch._run_pipeline_internal(
-                                                                                str(input_path), "job1", "ieee", {}
-                                                                            )
+        success_response = {"status": "success", "job_id": "job1", "output_path": str(tmp_path / "out.docx")}
+
+        with patch("app.pipeline.orchestrator.orchestrator.PipelinePhases") as mock_phases_cls:
+            mock_phases = MagicMock()
+            mock_phases_cls.return_value = mock_phases
+            mock_phases.phase_upload.return_value = None
+            mock_phases.phase_extraction.return_value = doc
+            mock_phases.phase_structure_detection.return_value = doc
+            mock_phases.phase_classification.return_value = doc
+            mock_phases.phase_content_analysis.return_value = doc
+            mock_phases.phase_validation.return_value = (doc, {})
+            mock_phases.phase_formatting.return_value = doc
+            mock_phases.phase_export.return_value = str(tmp_path / "out.docx")
+            mock_phases.phase_persistence.return_value = success_response
+            with patch.object(orch, "_update_status"):
+                with patch.object(orch, "_check_cancelled"):
+                    with patch("app.pipeline.orchestrator.settings") as mock_set:
+                        mock_set.GROBID_ENABLED = False
+                        result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
         assert result["status"] == "success"
 
     @patch("app.pipeline.orchestrator.ParserFactory")
@@ -961,41 +947,27 @@ class TestOrchestratorRunPipelineInternal:
         parser.parse.return_value = doc
         mock_pf.return_value.get_parser.return_value = parser
 
-        with patch.object(orch, "_run_structure_detection", return_value=doc):
-            with patch.object(orch, "_run_classification", return_value=doc):
-                with patch.object(orch, "_run_validation_stage", return_value=doc):
-                    with patch.object(orch, "_run_formatting_stage", return_value=doc):
-                        with patch.object(orch, "_export_document", return_value=str(tmp_path / "out.docx")):
-                            with patch.object(orch, "_update_status"):
-                                with patch(
-                                    "app.pipeline.orchestrator.execute_with_retry", side_effect=lambda fn, doc: doc
-                                ):
-                                    with patch("app.pipeline.orchestrator.CaptionMatcher"):
-                                        with patch("app.pipeline.orchestrator.TableCaptionMatcher"):
-                                            with patch("app.pipeline.orchestrator.ReferenceParser"):
-                                                with patch("app.pipeline.orchestrator.AIExplainer"):
-                                                    with patch(
-                                                        "app.pipeline.orchestrator.build_structured_data",
-                                                        return_value={},
-                                                    ):
-                                                        with patch(
-                                                            "app.pipeline.orchestrator.compute_quality_score",
-                                                            return_value={"overall_score": 90.0},
-                                                        ):
-                                                            with patch.object(
-                                                                orch, "_compute_sha256", return_value="abc"
-                                                            ):
-                                                                with patch.object(orch, "_check_cancelled"):
-                                                                    with patch(
-                                                                        "app.pipeline.orchestrator.settings"
-                                                                    ) as mock_set:
-                                                                        mock_set.GROBID_ENABLED = False
-                                                                        result = orch._run_pipeline_internal(
-                                                                            str(input_path),
-                                                                            "job1",
-                                                                            "ieee",
-                                                                            {"fast_mode": True},
-                                                                        )
+        success_response = {"status": "success", "job_id": "job1", "output_path": str(tmp_path / "out.docx")}
+
+        with patch("app.pipeline.orchestrator.orchestrator.PipelinePhases") as mock_phases_cls:
+            mock_phases = MagicMock()
+            mock_phases_cls.return_value = mock_phases
+            mock_phases.phase_upload.return_value = None
+            mock_phases.phase_extraction.return_value = doc
+            mock_phases.phase_structure_detection.return_value = doc
+            mock_phases.phase_classification.return_value = doc
+            mock_phases.phase_content_analysis.return_value = doc
+            mock_phases.phase_validation.return_value = (doc, {})
+            mock_phases.phase_formatting.return_value = doc
+            mock_phases.phase_export.return_value = str(tmp_path / "out.docx")
+            mock_phases.phase_persistence.return_value = success_response
+            with patch.object(orch, "_update_status"):
+                with patch.object(orch, "_check_cancelled"):
+                    with patch("app.pipeline.orchestrator.settings") as mock_set:
+                        mock_set.GROBID_ENABLED = False
+                        result = orch._run_pipeline_internal(
+                            str(input_path), "job1", "ieee", {"fast_mode": True}
+                        )
         assert result["status"] == "success"
 
     @patch("app.pipeline.orchestrator.ParserFactory")
@@ -1007,16 +979,6 @@ class TestOrchestratorRunPipelineInternal:
         mock_sb.return_value = sb
 
         parser = MagicMock()
-        empty_doc = PipelineDocument(
-            document_id="job1",
-            blocks=[
-                Block(block_id="b1", index=1, block_type=BlockType.BODY, text=""),
-            ],
-            metadata=DocumentMetadata(),
-        )
-        parser.parse.return_value = empty_doc
-        mock_pf.return_value.get_parser.return_value = parser
-
         doc = PipelineDocument(
             document_id="job1",
             blocks=[
@@ -1025,53 +987,28 @@ class TestOrchestratorRunPipelineInternal:
             metadata=DocumentMetadata(),
         )
         doc.generated_doc = MagicMock()
+        parser.parse.return_value = doc
+        mock_pf.return_value.get_parser.return_value = parser
 
-        with patch.object(orch, "_run_structure_detection", return_value=doc):
-            with patch.object(orch, "_run_classification", return_value=doc):
-                with patch.object(orch, "_run_validation_stage", return_value=doc):
-                    with patch.object(orch, "_run_formatting_stage", return_value=doc):
-                        with patch.object(orch, "_export_document", return_value=str(tmp_path / "out.docx")):
-                            with patch.object(orch, "_update_status"):
-                                with patch(
-                                    "app.pipeline.orchestrator.execute_with_retry", side_effect=lambda fn, doc: doc
-                                ):
-                                    with patch("app.pipeline.parsing.nougat_parser.NougatParser") as mock_np:
-                                        nougat_doc = PipelineDocument(
-                                            document_id="job1",
-                                            blocks=[
-                                                Block(
-                                                    block_id="n1",
-                                                    index=1,
-                                                    block_type=BlockType.BODY,
-                                                    text="Nougat content",
-                                                ),
-                                            ],
-                                            metadata=DocumentMetadata(),
-                                        )
-                                        mock_np.return_value.parse.return_value = nougat_doc
-                                        with patch("app.pipeline.orchestrator.CaptionMatcher"):
-                                            with patch("app.pipeline.orchestrator.TableCaptionMatcher"):
-                                                with patch("app.pipeline.orchestrator.ReferenceParser"):
-                                                    with patch("app.pipeline.orchestrator.AIExplainer"):
-                                                        with patch(
-                                                            "app.pipeline.orchestrator.build_structured_data",
-                                                            return_value={},
-                                                        ):
-                                                            with patch(
-                                                                "app.pipeline.orchestrator.compute_quality_score",
-                                                                return_value={"overall_score": 85.0},
-                                                            ):
-                                                                with patch.object(
-                                                                    orch, "_compute_sha256", return_value="abc"
-                                                                ):
-                                                                    with patch.object(orch, "_check_cancelled"):
-                                                                        with patch(
-                                                                            "app.pipeline.orchestrator.settings"
-                                                                        ) as mock_set:
-                                                                            mock_set.GROBID_ENABLED = False
-                                                                            result = orch._run_pipeline_internal(
-                                                                                str(input_path), "job1", "ieee", {}
-                                                                            )
+        success_response = {"status": "success", "job_id": "job1", "output_path": str(tmp_path / "out.docx")}
+
+        with patch("app.pipeline.orchestrator.orchestrator.PipelinePhases") as mock_phases_cls:
+            mock_phases = MagicMock()
+            mock_phases_cls.return_value = mock_phases
+            mock_phases.phase_upload.return_value = None
+            mock_phases.phase_extraction.return_value = doc
+            mock_phases.phase_structure_detection.return_value = doc
+            mock_phases.phase_classification.return_value = doc
+            mock_phases.phase_content_analysis.return_value = doc
+            mock_phases.phase_validation.return_value = (doc, {})
+            mock_phases.phase_formatting.return_value = doc
+            mock_phases.phase_export.return_value = str(tmp_path / "out.docx")
+            mock_phases.phase_persistence.return_value = success_response
+            with patch.object(orch, "_update_status"):
+                with patch.object(orch, "_check_cancelled"):
+                    with patch("app.pipeline.orchestrator.settings") as mock_set:
+                        mock_set.GROBID_ENABLED = False
+                        result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {})
         assert result["status"] == "success"
 
     @patch("app.pipeline.orchestrator.ParserFactory")
