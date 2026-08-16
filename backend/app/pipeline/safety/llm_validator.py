@@ -111,7 +111,7 @@ def guard_llm_output(schema: type[BaseModel], error_return_value: Any | None = N
                 # .parse() raises an error or returns a ValidationOutcome
                 validated_output = _parse_with_guardrails(raw_result_str)
 
-                if validated_output and validated_output.validated_output:
+                if validated_output and getattr(validated_output, 'validation_passed', False) and validated_output.validated_output:
                     val = validated_output.validated_output
                     if hasattr(val, "model_dump") or hasattr(val, "dict") or isinstance(val, dict):
                         return safe_model_dump(val)
