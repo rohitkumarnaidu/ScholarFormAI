@@ -214,19 +214,20 @@ class TestExtractKeywordsBasic:
 
 class TestExtractKeywordsYake:
     @patch("app.pipeline.nlp.analyzer.YAKE_AVAILABLE", True)
-    @patch("app.pipeline.nlp.analyzer.yake")
-    def test_yake_keywords_used(self, mock_yake):
+    def test_yake_keywords_used(self):
+        mock_yake = MagicMock()
         mock_extractor = MagicMock()
         mock_yake.KeywordExtractor.return_value = mock_extractor
         mock_extractor.extract_keywords.return_value = [("deep learning", 0.1), ("NLP", 0.2)]
 
-        with patch("app.services.enhancement_manager.enhancement_manager") as mock_em:
-            mock_em.profile.enabled = True
-            mock_em.profile.keyword_enabled = True
-            mock_em.get_keyword_backends.return_value = ["yake", "basic"]
+        with patch.dict("sys.modules", {"yake": mock_yake}):
+            with patch("app.services.enhancement_manager.enhancement_manager") as mock_em:
+                mock_em.profile.enabled = True
+                mock_em.profile.keyword_enabled = True
+                mock_em.get_keyword_backends.return_value = ["yake", "basic"]
 
-            result = extract_keywords("deep learning nlp text analysis")
-            assert len(result) > 0
+                result = extract_keywords("deep learning nlp text analysis")
+                assert len(result) > 0
 
 
 class TestParseKeywordPayload:
