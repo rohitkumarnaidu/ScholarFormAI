@@ -264,28 +264,29 @@ class PipelinePhases:
             output_ready = True
 
         if output_ready:
-            if output_path and os.path.exists(output_path):
-                try:
-                    res = DocumentRepository.update_output_hash(job_id, PipelineStages.compute_sha256(output_path))
-                    if asyncio.iscoroutine(res):
-                        try:
-                            loop = asyncio.get_event_loop()
-                            if loop.is_running():
-                                asyncio.create_task(res)
-                            else:
-                                loop.run_until_complete(res)
-                        except Exception:
-                            pass
-                except Exception as hash_exc:
-                    logger.warning("Failed to persist output hash: %s", hash_exc)
+            if sb:
+                if output_path and os.path.exists(output_path):
+                    try:
+                        res = DocumentRepository().update_output_hash(job_id, PipelineStages.compute_sha256(output_path))
+                        if asyncio.iscoroutine(res):
+                            try:
+                                loop = asyncio.get_event_loop()
+                                if loop.is_running():
+                                    asyncio.create_task(res)
+                                else:
+                                    loop.run_until_complete(res)
+                            except Exception:
+                                pass
+                    except Exception as hash_exc:
+                        logger.warning("Failed to persist output hash: %s", hash_exc)
 
-            DocumentRepository().update_sync(
-                job_id,
-                {
-                    "status": "COMPLETED",
-                    "output_path": output_path,
-                },
-            )
+                DocumentRepository().update_sync(
+                    job_id,
+                    {
+                        "status": "COMPLETED",
+                        "output_path": output_path,
+                    },
+                )
             self.orchestrator._update_status(
                 job_id,
                 "PERSISTENCE",

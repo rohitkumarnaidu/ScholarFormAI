@@ -252,8 +252,8 @@ class DocumentRepository(BaseRepository):
 
     def update_sync(self, doc_id: str, updates: dict[str, Any]) -> dict[str, Any] | None:
         doc_id = str(doc_id)
-        client = self._get_client()
         try:
+            client = self._get_client()
             result = client.table("documents").update(updates).eq("id", str(doc_id)).execute()
             return result.data[0] if result.data else None
         except Exception as e:
