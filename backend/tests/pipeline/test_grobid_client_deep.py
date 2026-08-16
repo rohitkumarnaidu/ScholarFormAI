@@ -145,7 +145,7 @@ class TestGROBIDClientOrderedBaseUrls:
     def test_last_good_expired(self, client):
         client.base_urls = ["http://url1:8070", "http://url2:8070"]
         client._last_good_base_url = "http://url2:8070"
-        client._last_good_at = 0
+        client._last_good_at = -999999
         ordered = client._ordered_base_urls()
         assert ordered[0] != "http://url2:8070"
 
