@@ -267,7 +267,9 @@ class PipelinePhases:
             if sb:
                 if output_path and os.path.exists(output_path):
                     try:
-                        res = DocumentRepository().update_output_hash(job_id, PipelineStages.compute_sha256(output_path))
+                        res = DocumentRepository().update_output_hash(
+                            job_id, PipelineStages.compute_sha256(output_path)
+                        )
                         if asyncio.iscoroutine(res):
                             try:
                                 loop = asyncio.get_event_loop()
