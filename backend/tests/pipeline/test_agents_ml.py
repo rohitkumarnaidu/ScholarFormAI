@@ -966,6 +966,7 @@ class TestTransformerPatternDetector:
         from app.pipeline.agents.deep_learning import TransformerPatternDetector
 
         d = TransformerPatternDetector()
+        d._ensure_initialized()
         d.cluster_centers = None
         filepath = str(tmp_path / "model.json")
         d.save_model(filepath)
@@ -977,6 +978,7 @@ class TestTransformerPatternDetector:
         from app.pipeline.agents.deep_learning import TransformerPatternDetector
 
         d = TransformerPatternDetector()
+        d._ensure_initialized()
         d.cluster_centers = np.array([[1.0, 2.0], [3.0, 4.0]])
         d.embeddings_cache["doc1"] = np.array([5.0, 6.0])
         filepath = str(tmp_path / "model_w_cache.json")
