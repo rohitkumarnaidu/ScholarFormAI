@@ -584,6 +584,7 @@ class TestGenerateSection:
                 "You are an academic writing assistant. Draft the 'Intro' section.",
                 "some prompt",
                 max_tokens=1400,
+                user_id=None,
             )
             mock_stream.assert_called_once()
 
