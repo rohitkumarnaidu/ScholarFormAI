@@ -344,18 +344,32 @@ class TestOrchestratorPersistPartial:
     def test_persist_partial_result_insert(self, orch):
         doc = MagicMock()
         sb = MagicMock()
-        sb.table.return_value.select.return_value.eq.return_value.execute.return_value.data = []
+        mock_resp = MagicMock()
+        mock_resp.data = []
         with patch("app.pipeline.orchestrator.build_structured_data", return_value={"key": "val"}):
-            orch._persist_partial_result("job1", doc, sb)
-        sb.table.return_value.insert.assert_called_once()
+            with patch(
+                "app.pipeline.orchestrator.orchestrator.DocumentResultRepository"
+            ) as mock_repo_cls:
+                mock_repo = MagicMock()
+                mock_repo_cls.return_value = mock_repo
+                mock_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = mock_resp
+                orch._persist_partial_result("job1", doc, sb)
+        mock_repo.insert_sync.assert_called_once()
 
     def test_persist_partial_result_update(self, orch):
         doc = MagicMock()
         sb = MagicMock()
-        sb.table.return_value.select.return_value.eq.return_value.execute.return_value.data = [{"id": 1}]
+        mock_resp = MagicMock()
+        mock_resp.data = [{"id": 1}]
         with patch("app.pipeline.orchestrator.build_structured_data", return_value={"key": "val"}):
-            orch._persist_partial_result("job1", doc, sb)
-        sb.table.return_value.update.assert_called_once()
+            with patch(
+                "app.pipeline.orchestrator.orchestrator.DocumentResultRepository"
+            ) as mock_repo_cls:
+                mock_repo = MagicMock()
+                mock_repo_cls.return_value = mock_repo
+                mock_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = mock_resp
+                orch._persist_partial_result("job1", doc, sb)
+        mock_repo.upsert_sync.assert_called_once()
 
     def test_persist_partial_result_error(self, orch):
         doc = MagicMock()
