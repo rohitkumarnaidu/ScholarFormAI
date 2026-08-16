@@ -792,6 +792,7 @@ class TestTransformerPatternDetector:
         from app.pipeline.agents.deep_learning import TransformerPatternDetector
 
         d = TransformerPatternDetector()
+        d._ensure_initialized()
         d.embeddings_cache["cached text"] = np.ones(768) * 0.5
         emb = d.encode_document("cached text")
         assert np.allclose(emb, 0.5)
