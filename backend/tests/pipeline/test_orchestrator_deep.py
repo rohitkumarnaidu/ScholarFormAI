@@ -31,6 +31,11 @@ def orch():
         patch("app.pipeline.orchestrator.ReferenceFormatterEngine"),
         patch("app.pipeline.orchestrator.GROBIDClient"),
         patch("app.pipeline.orchestrator.DoclingClient"),
+        patch("app.pipeline.orchestrator.orchestrator.DocumentRepository"),
+        patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository"),
+        patch("app.pipeline.orchestrator.orchestrator.ProcessingStatusRepository"),
+        patch("app.pipeline.orchestrator.phases.DocumentRepository"),
+        patch("app.pipeline.orchestrator.phases.DocumentResultRepository")
     ):
         o = PipelineOrchestrator(templates_dir="app/templates", temp_dir="/tmp/test_temp_deep")
         return o
@@ -415,12 +420,6 @@ class TestAtomicCompletion:
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
             patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
-            patch("app.pipeline.orchestrator.orchestrator.DocumentRepository"),
-            patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository"),
-            patch("app.pipeline.orchestrator.orchestrator.ProcessingStatusRepository"),
-            patch("app.pipeline.orchestrator.phases.DocumentRepository"),
-            patch("app.pipeline.orchestrator.phases.DocumentResultRepository"),
-            patch("app.pipeline.orchestrator.phases.ProcessingStatusRepository"),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -459,12 +458,6 @@ class TestAtomicCompletion:
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
             patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
-            patch("app.pipeline.orchestrator.orchestrator.DocumentRepository"),
-            patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository"),
-            patch("app.pipeline.orchestrator.orchestrator.ProcessingStatusRepository"),
-            patch("app.pipeline.orchestrator.phases.DocumentRepository"),
-            patch("app.pipeline.orchestrator.phases.DocumentResultRepository"),
-            patch("app.pipeline.orchestrator.phases.ProcessingStatusRepository"),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -504,12 +497,6 @@ class TestAtomicCompletion:
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
             patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
-            patch("app.pipeline.orchestrator.orchestrator.DocumentRepository"),
-            patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository"),
-            patch("app.pipeline.orchestrator.orchestrator.ProcessingStatusRepository"),
-            patch("app.pipeline.orchestrator.phases.DocumentRepository"),
-            patch("app.pipeline.orchestrator.phases.DocumentResultRepository"),
-            patch("app.pipeline.orchestrator.phases.ProcessingStatusRepository"),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
