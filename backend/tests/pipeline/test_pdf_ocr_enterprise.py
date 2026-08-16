@@ -26,11 +26,12 @@ class TestPdfOCR:
         assert ocr.paddle_language == "ch"
 
     def test_normalize_backends_default(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR
+        with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
+            from app.pipeline.ocr.pdf_ocr import PdfOCR
 
-        ocr = PdfOCR()
-        backends = ocr._normalize_backends(None)
-        assert "tesseract" in backends
+            ocr = PdfOCR()
+            backends = ocr._normalize_backends(None)
+            assert "tesseract" in backends
 
     def test_normalize_backends_custom_order(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
@@ -40,11 +41,12 @@ class TestPdfOCR:
         assert backends[0] == "paddle" if "paddle" in backends else True
 
     def test_normalize_backends_dedup(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR
+        with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
+            from app.pipeline.ocr.pdf_ocr import PdfOCR
 
-        ocr = PdfOCR()
-        backends = ocr._normalize_backends(["tesseract", "tesseract"])
-        assert backends == ["tesseract"]
+            ocr = PdfOCR()
+            backends = ocr._normalize_backends(["tesseract", "tesseract"])
+            assert backends == ["tesseract"]
 
     def test_normalize_backends_unknown_ignored(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
