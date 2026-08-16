@@ -32,7 +32,7 @@ if Path.cwd() != BACKEND_ROOT:
 
 os.environ["AMF_ENVIRONMENT"] = "test"
 os.environ["AMF_SECRET_KEY"] = "test-secret-key"
-os.environ["ENCRYPTION_KEY"] = "dGVzdC1lbmNyeXB0aW9uLWtleS1mb3ItdGVzdHMtb25seQ=="  # dummy test-only key
+os.environ["ENCRYPTION_KEY"] = "MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI="  # dummy test-only key
 os.environ["SUPABASE_URL"] = "http://localhost:8000"
 os.environ["SUPABASE_ANON_KEY"] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy_anon_key"
 os.environ["SUPABASE_SERVICE_ROLE_KEY"] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy_service_key"
