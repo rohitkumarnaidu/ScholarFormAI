@@ -110,10 +110,12 @@ class TestPdfOCR:
     def test_extract_text_tesseract_success(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
 
+        mock_tess = MagicMock()
+        mock_tess.image_to_string.return_value = "Hello world"
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
-                with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", return_value=[MagicMock()]):
-                    with patch("app.pipeline.ocr.pdf_ocr.pytesseract.image_to_string", return_value="Hello world"):
+                with patch("app.pipeline.ocr.pdf_ocr.pytesseract", mock_tess):
+                    with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", return_value=[MagicMock()]):
                         ocr = PdfOCR()
                         text, backend = ocr.extract_text("/fake.pdf")
                         assert "Hello" in text
@@ -122,12 +124,14 @@ class TestPdfOCR:
     def test_extract_text_tesseract_empty_fallback(self):
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
 
+        mock_tess = MagicMock()
+        mock_tess.image_to_string.return_value = ""
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
                 with patch("app.pipeline.ocr.pdf_ocr.PADDLE_AVAILABLE", True):
                     with patch("app.pipeline.ocr.pdf_ocr.NUMPY_AVAILABLE", True):
-                        with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", return_value=[MagicMock()]):
-                            with patch("app.pipeline.ocr.pdf_ocr.pytesseract.image_to_string", return_value=""):
+                        with patch("app.pipeline.ocr.pdf_ocr.pytesseract", mock_tess):
+                            with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", return_value=[MagicMock()]):
                                 ocr = PdfOCR()
                                 with pytest.raises(OCRError, match="All OCR backends failed"):
                                     ocr.extract_text("/fake.pdf", backends=["tesseract"])
@@ -135,12 +139,12 @@ class TestPdfOCR:
     def test_extract_text_tesseract_exception(self):
         from app.pipeline.ocr.pdf_ocr import OCRError, PdfOCR
 
+        mock_tess = MagicMock()
+        mock_tess.image_to_string.side_effect = Exception("Tesseract error")
         with patch("app.pipeline.ocr.pdf_ocr.PDF2IMAGE_AVAILABLE", True):
             with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
-                with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", return_value=[MagicMock()]):
-                    with patch(
-                        "app.pipeline.ocr.pdf_ocr.pytesseract.image_to_string", side_effect=Exception("Tesseract error")
-                    ):
+                with patch("app.pipeline.ocr.pdf_ocr.pytesseract", mock_tess):
+                    with patch("app.pipeline.ocr.pdf_ocr.convert_from_path", return_value=[MagicMock()]):
                         ocr = PdfOCR()
                         with pytest.raises(OCRError, match="All OCR backends failed"):
                             ocr.extract_text("/fake.pdf", backends=["tesseract"])
@@ -220,8 +224,10 @@ class TestPdfOCR:
     def test_ocr_tesseract_success(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
 
+        mock_tess = MagicMock()
+        mock_tess.image_to_string.return_value = "Hello"
         with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
-            with patch("app.pipeline.ocr.pdf_ocr.pytesseract.image_to_string", return_value="Hello"):
+            with patch("app.pipeline.ocr.pdf_ocr.pytesseract", mock_tess):
                 ocr = PdfOCR()
                 pages = ocr._ocr_tesseract([MagicMock()])
                 assert pages == ["Hello"]
@@ -229,10 +235,10 @@ class TestPdfOCR:
     def test_ocr_tesseract_page_exception(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
 
+        mock_tess = MagicMock()
+        mock_tess.image_to_string.side_effect = Exception("OCR error on page")
         with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
-            with patch(
-                "app.pipeline.ocr.pdf_ocr.pytesseract.image_to_string", side_effect=Exception("OCR error on page")
-            ):
+            with patch("app.pipeline.ocr.pdf_ocr.pytesseract", mock_tess):
                 ocr = PdfOCR()
                 pages = ocr._ocr_tesseract([MagicMock()])
                 assert pages == [""]
