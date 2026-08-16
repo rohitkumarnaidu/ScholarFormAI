@@ -89,7 +89,7 @@ class TestUpdateStatusTransientErrors:
         """Line 173: _is_transient_db_error returns False → raise immediately."""
         sb = MagicMock()
         sb.table.return_value.select.return_value.match.return_value.execute.side_effect = Exception("disk full")
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
+        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             with patch.dict("sys.modules", {"app.routers.v1.stream": MagicMock()}):
                 orch._update_status("job1", "EXTRACTION", "COMPLETED")
 
@@ -123,7 +123,7 @@ class TestUpdateStatusTransientErrors:
             err,
             err,
         ]
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
+        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             with patch.dict("sys.modules", {"app.routers.v1.stream": MagicMock()}):
                 orch._update_status("job1", "EXTRACTION", "COMPLETED")
 
@@ -133,7 +133,7 @@ class TestUpdateStatusPaths:
         """Line 233: phase == PERSISTENCE and status == COMPLETED."""
         sb = MagicMock()
         sb.table.return_value.select.return_value.match.return_value.execute.return_value.data = []
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
+        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             with patch.dict("sys.modules", {"app.routers.v1.stream": MagicMock()}):
                 orch._update_status("job1", "PERSISTENCE", "COMPLETED", "Done", progress=100)
 
@@ -141,7 +141,7 @@ class TestUpdateStatusPaths:
         """Line 240: status is neither COMPLETED nor FAILED → pass through."""
         sb = MagicMock()
         sb.table.return_value.select.return_value.match.return_value.execute.return_value.data = []
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
+        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             with patch.dict("sys.modules", {"app.routers.v1.stream": MagicMock()}):
                 orch._update_status("job1", "UPLOAD", "PROCESSING", "Uploading...", progress=10)
 
@@ -151,7 +151,7 @@ class TestUpdateStatusPaths:
         sb.table.return_value.select.return_value.match.return_value.execute.return_value.data = []
         mock_stream = MagicMock()
         mock_stream.emit_event.side_effect = Exception("SSE failure")
-        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb):
+        with patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             with patch.dict("sys.modules", {"app.routers.v1.stream": mock_stream}):
                 orch._update_status("job1", "EXTRACTION", "COMPLETED", "Done")
 
@@ -311,7 +311,7 @@ class TestNougatFallbackGaps:
 
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -356,7 +356,7 @@ class TestPipelineInternalOptions:
         sb = _make_sb()
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -430,7 +430,7 @@ class TestParallelExtractionGaps:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -617,7 +617,7 @@ class TestPipelineStageFailures:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
             patch.object(orch, "_run_formatting_stage", return_value=doc),
@@ -691,7 +691,7 @@ class TestKeywordExtractionGaps:
             parser.parse.return_value = doc
             with (
                 patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-                patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+                patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
                 patch.object(orch, "_run_structure_detection", return_value=doc),
                 patch.object(orch, "_run_classification", return_value=doc),
                 patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -729,7 +729,7 @@ class TestCrossrefValidationGaps:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -880,7 +880,7 @@ class TestAIReasoningQueryRules:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -1083,7 +1083,7 @@ class TestPersistenceEdgeCases:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -1115,7 +1115,7 @@ class TestPersistenceEdgeCases:
         parser.parse.return_value = formatted_doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=formatted_doc),
             patch.object(orch, "_run_classification", return_value=formatted_doc),
             patch.object(orch, "_run_validation_stage", return_value=formatted_doc),
