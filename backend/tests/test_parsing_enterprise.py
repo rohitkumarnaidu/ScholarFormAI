@@ -996,11 +996,13 @@ class TestMarkdownParserEnterprise:
         p = MarkdownParser()
         f = tmp_path / "bad.md"
         f.write_text("dummy")
-        with patch(
-            "builtins.open", side_effect=[UnicodeDecodeError("utf-8", b"", 0, 1, "bad"), PermissionError("denied")]
+        with (
+            patch(
+                "builtins.open", side_effect=[UnicodeDecodeError("utf-8", b"", 0, 1, "bad"), PermissionError("denied")]
+            ),
+            pytest.raises(ValueError, match="Failed to read Markdown"),
         ):
-            with pytest.raises(ValueError, match="Failed to read Markdown"):
-                p.parse(str(f), "doc1")
+            p.parse(str(f), "doc1")
 
     def test_extract_frontmatter_malformed_line_skipped(self):
         from app.pipeline.parsing.md_parser import MarkdownParser
@@ -1311,8 +1313,6 @@ def _inject_torch_mocks():
     for _mod_name, _mod_obj in [
         ("torch", _torch_mock),
         ("transformers", _transformers_mock),
-        ("PIL", _pil_mock),
-        ("PIL.Image", _pil_image_mock),
         ("timm", _timm_mock),
     ]:
         sys.modules[_mod_name] = _mod_obj
@@ -1322,11 +1322,11 @@ class TestTableExtractorEnterprise:
     @pytest.fixture(autouse=True)
     def _inject_mocks(self):
         _saved = {}
-        for _mod_name in ["torch", "transformers", "PIL", "PIL.Image", "timm"]:
+        for _mod_name in ["torch", "transformers", "timm"]:
             _saved[_mod_name] = sys.modules.get(_mod_name)
         _inject_torch_mocks()
         yield
-        for _mod_name in ["torch", "transformers", "PIL", "PIL.Image", "timm"]:
+        for _mod_name in ["torch", "transformers", "timm"]:
             if _saved[_mod_name] is not None:
                 sys.modules[_mod_name] = _saved[_mod_name]
             elif _mod_name in sys.modules:

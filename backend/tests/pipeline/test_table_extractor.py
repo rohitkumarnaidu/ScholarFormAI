@@ -31,8 +31,6 @@ _pil_image_mock = MagicMock()
 for _mod_name, _mod_obj in [
     ("torch", _torch_mock),
     ("transformers", _transformers_mock),
-    ("PIL", _pil_mock),
-    ("PIL.Image", _pil_image_mock),
 ]:
     sys.modules[_mod_name] = _mod_obj
 
@@ -42,7 +40,7 @@ _original_find_spec = importlib.util.find_spec
 
 
 def _mock_find_spec(name, package=None):
-    if name in ["torch", "transformers", "PIL"]:
+    if name in ["torch", "transformers"]:
         return MagicMock()
     return _original_find_spec(name, package=package)
 
