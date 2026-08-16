@@ -118,6 +118,11 @@ def guard_llm_output(schema: type[BaseModel], error_return_value: Any | None = N
                 ):
                     val = validated_output.validated_output
                     if hasattr(val, "model_dump") or hasattr(val, "dict") or isinstance(val, dict):
+                        if isinstance(val, dict):
+                            try:
+                                schema(**val)
+                            except Exception:
+                                return error_return_value or {}
                         return safe_model_dump(val)
                     return val
 
