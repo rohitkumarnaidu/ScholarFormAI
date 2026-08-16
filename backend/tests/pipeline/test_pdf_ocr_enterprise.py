@@ -49,11 +49,12 @@ class TestPdfOCR:
             assert backends == ["tesseract"]
 
     def test_normalize_backends_unknown_ignored(self):
-        from app.pipeline.ocr.pdf_ocr import PdfOCR
+        with patch("app.pipeline.ocr.pdf_ocr.TESSERACT_AVAILABLE", True):
+            from app.pipeline.ocr.pdf_ocr import PdfOCR
 
-        ocr = PdfOCR()
-        backends = ocr._normalize_backends(["invalid", "tesseract"])
-        assert backends == ["tesseract"]
+            ocr = PdfOCR()
+            backends = ocr._normalize_backends(["invalid", "tesseract"])
+            assert backends == ["tesseract"]
 
     def test_normalize_backends_removes_unavailable_tesseract(self):
         from app.pipeline.ocr.pdf_ocr import PdfOCR
