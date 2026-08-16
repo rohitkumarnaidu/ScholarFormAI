@@ -41,7 +41,21 @@ class TestFigureAnalysisStage:
         assert hasattr(analyzer, "analyze_image")
         assert hasattr(analyzer, "downsample_if_needed")
 
-    def test_run_figure_analysis_stage_adds_metadata(self, doc_with_figure):
+    @patch("app.pipeline.orchestrator.stages._get_figure_analyzer")
+    def test_run_figure_analysis_stage_adds_metadata(self, mock_get_analyzer, doc_with_figure):
+        mock_analyzer = MagicMock()
+        mock_analyzer.analyze_image.return_value = {
+            "valid": True,
+            "width": 800,
+            "height": 600,
+            "dpi": "300x300",
+            "format": "PNG",
+            "mode": "RGB",
+            "aspect_ratio": 1.33,
+            "issues": [],
+        }
+        mock_analyzer.downsample_if_needed.return_value = None
+        mock_get_analyzer.return_value = mock_analyzer
         from app.pipeline.orchestrator import PipelineOrchestrator
 
         orch = PipelineOrchestrator(templates_dir="app/templates")
@@ -54,7 +68,10 @@ class TestFigureAnalysisStage:
         assert analysis["width"] == 800
         assert analysis["height"] == 600
 
-    def test_run_figure_analysis_stage_figure_missing_path(self):
+    @patch("app.pipeline.orchestrator.stages._get_figure_analyzer")
+    def test_run_figure_analysis_stage_figure_missing_path(self, mock_get_analyzer):
+        mock_analyzer = MagicMock()
+        mock_get_analyzer.return_value = mock_analyzer
         from app.models import PipelineDocument
 
         doc = PipelineDocument(document_id="test", blocks=[])
