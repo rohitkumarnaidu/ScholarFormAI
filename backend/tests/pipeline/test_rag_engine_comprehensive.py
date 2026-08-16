@@ -11,6 +11,9 @@ from __future__ import annotations
 import json
 import os
 from unittest.mock import MagicMock, patch
+import sys
+if 'sentence_transformers' not in sys.modules:
+    sys.modules['sentence_transformers'] = MagicMock()
 
 import numpy as np
 import pytest
