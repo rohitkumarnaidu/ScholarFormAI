@@ -12,22 +12,18 @@ from __future__ import annotations
 
 import sys
 from unittest.mock import MagicMock, patch
-
 import pytest
 
-# ---------------------------------------------------------------------------
-#  Inject mock external dependencies into sys.modules *before* importing the
-#  module under test.  This guarantees the ``try/except ImportError`` in
-#  table_extractor.py sets ``TABLE_TRANSFORMER_AVAILABLE = True`` and binds
-#  torch / transformers / PIL names in the module namespace regardless of
-#  whether those packages are actually installed in the test environment.
-# ---------------------------------------------------------------------------
 _torch_mock = MagicMock()
 _torch_mock.cuda.is_available.return_value = False
 _torch_mock.no_grad.return_value.__enter__.return_value = None
 _torch_mock.no_grad.return_value.__exit__.return_value = None
 
 _transformers_mock = MagicMock()
+# Add the class to transformers mock so it doesn't raise AttributeError
+_transformers_mock.TableTransformerForObjectDetection = MagicMock()
+_transformers_mock.AutoImageProcessor = MagicMock()
+
 _pil_mock = MagicMock()
 _pil_image_mock = MagicMock()
 
@@ -37,8 +33,21 @@ for _mod_name, _mod_obj in [
     ("PIL", _pil_mock),
     ("PIL.Image", _pil_image_mock),
 ]:
-    if _mod_name not in sys.modules:
-        sys.modules[_mod_name] = _mod_obj
+    sys.modules[_mod_name] = _mod_obj
+
+import importlib.util
+_original_find_spec = importlib.util.find_spec
+def _mock_find_spec(name, package=None):
+    if name in ["torch", "transformers", "PIL"]:
+        return MagicMock()
+    return _original_find_spec(name, package=package)
+importlib.util.find_spec = _mock_find_spec
+
+import importlib
+import app.pipeline.parsing.table_extractor
+importlib.reload(app.pipeline.parsing.table_extractor)
+app.pipeline.parsing.table_extractor.AutoImageProcessor = MagicMock()
+app.pipeline.parsing.table_extractor.TableTransformerForObjectDetection = MagicMock()
 
 from app.pipeline.parsing.table_extractor import (
     DETECTION_MODEL,
@@ -194,8 +203,8 @@ class TestEnsureLoaded:
     """Exercises all four code paths inside _ensure_loaded."""
 
     @patch("app.services.model_store.model_store")
-    @patch("app.pipeline.parsing.table_extractor.AutoImageProcessor.from_pretrained")
-    @patch("app.pipeline.parsing.table_extractor.TableTransformerForObjectDetection.from_pretrained")
+    @patch("transformers.AutoImageProcessor.from_pretrained")
+    @patch("transformers.TableTransformerForObjectDetection.from_pretrained")
     def test_loads_both_from_scratch(self, mock_ttod_fp, mock_aip_fp, mock_ms):
         mock_ms.is_loaded.return_value = False
         mock_aip_fp.return_value = MagicMock()
@@ -212,8 +221,8 @@ class TestEnsureLoaded:
         assert mock_ms.set_model.call_count == 4
 
     @patch("app.services.model_store.model_store")
-    @patch("app.pipeline.parsing.table_extractor.AutoImageProcessor.from_pretrained")
-    @patch("app.pipeline.parsing.table_extractor.TableTransformerForObjectDetection.from_pretrained")
+    @patch("transformers.AutoImageProcessor.from_pretrained")
+    @patch("transformers.TableTransformerForObjectDetection.from_pretrained")
     def test_detection_cached_structure_loaded(self, mock_ttod_fp, mock_aip_fp, mock_ms):
         def is_loaded(key):
             return key == "table_detection_model"
@@ -237,8 +246,8 @@ class TestEnsureLoaded:
         mock_ttod_fp.assert_called_once_with(STRUCTURE_MODEL)
 
     @patch("app.services.model_store.model_store")
-    @patch("app.pipeline.parsing.table_extractor.AutoImageProcessor.from_pretrained")
-    @patch("app.pipeline.parsing.table_extractor.TableTransformerForObjectDetection.from_pretrained")
+    @patch("transformers.AutoImageProcessor.from_pretrained")
+    @patch("transformers.TableTransformerForObjectDetection.from_pretrained")
     def test_structure_cached_detection_loaded(self, mock_ttod_fp, mock_aip_fp, mock_ms):
         def is_loaded(key):
             return key == "table_structure_model"
