@@ -218,6 +218,7 @@ class TestChromaDBLoad:
         from app.pipeline.intelligence.rag_engine import _load_chromadb
 
         with (
+            patch.dict("sys.modules", {"chromadb": MagicMock()}),
             patch("app.pipeline.intelligence.rag_engine._CHROMADB_IMPORT_ATTEMPTED", False),
             patch("app.pipeline.intelligence.rag_engine.chromadb", None),
             patch("app.pipeline.intelligence.rag_engine._CHROMADB_AVAILABLE", False),
