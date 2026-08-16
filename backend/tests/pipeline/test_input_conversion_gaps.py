@@ -370,8 +370,8 @@ class TestHandlePdfGaps:
     def test_libreoffice_output_different_path_renamed(self):
         """LO output renamed to input.docx when stems differ."""
         ic = InputConverter(temp_dir=TMP)
-        pdf_path = r"C:\docs\different.pdf"
-        lo_output = TMP + r"\job1\different.docx"
+        pdf_path = "/docs/different.pdf"
+        lo_output = TMP + "/job1/different.docx"
         expected = TMP + "/job1/input.docx"
         with patch("os.makedirs"), patch.object(ic, "_run_libreoffice"):
             with patch("os.path.exists", side_effect=lambda p: p in (lo_output, expected)):
