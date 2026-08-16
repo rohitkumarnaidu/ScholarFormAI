@@ -29,7 +29,9 @@ def validate_output(
                 result = func(*args, **kwargs)
 
                 # Check Pydantic validation
-                if isinstance(schema, type) and issubclass(schema, BaseModel):
+                if isinstance(schema, type) and (
+                    issubclass(schema, BaseModel) or hasattr(schema, "model_fields") or hasattr(schema, "__fields__")
+                ):
                     if isinstance(result, dict):
                         # Attempt to parse
                         try:

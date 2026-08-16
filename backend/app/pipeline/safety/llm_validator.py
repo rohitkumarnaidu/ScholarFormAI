@@ -45,6 +45,12 @@ except ImportError:
             def wrapper(*args, **kwargs) -> Any:
                 try:
                     res = func(*args, **kwargs)
+                    if isinstance(res, dict) and isinstance(schema, type):
+                        # Force validation
+                        try:
+                            schema(**res)
+                        except Exception:
+                            return error_return_value or {}
                     return res
                 except Exception:
                     return error_return_value or {}
