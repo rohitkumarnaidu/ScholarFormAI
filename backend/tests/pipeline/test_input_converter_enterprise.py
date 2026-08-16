@@ -50,7 +50,7 @@ class TestInputConverter:
         with (
             patch("shutil.which", return_value=None),
             patch("os.name", "nt"),
-            patch("os.path.exists", return_value=True),
+            patch("os.path.exists", side_effect=lambda p: p.endswith("soffice.exe")),
         ):
             cmd = InputConverter()._get_libreoffice_cmd()
             assert cmd is not None
@@ -66,7 +66,7 @@ class TestInputConverter:
         from app.pipeline.input_conversion.converter import InputConverter
 
         with (
-            patch("os.path.exists", return_value=True),
+            patch("os.path.exists", side_effect=lambda p: p.endswith("soffice.exe")),
             patch("os.path.abspath", return_value="/tmp/f.xzy"),
             pytest.raises(Exception),
         ):
@@ -76,7 +76,7 @@ class TestInputConverter:
         from app.pipeline.input_conversion.converter import InputConverter
 
         with (
-            patch("os.path.exists", return_value=True),
+            patch("os.path.exists", side_effect=lambda p: p.endswith("soffice.exe")),
             patch("os.path.abspath", return_value="/tmp/f.docx"),
             patch("shutil.copy2") as mock_copy,
             patch("os.makedirs"),
@@ -89,7 +89,7 @@ class TestInputConverter:
         from app.pipeline.input_conversion.converter import InputConverter
 
         with (
-            patch("os.path.exists", return_value=True),
+            patch("os.path.exists", side_effect=lambda p: p.endswith("soffice.exe")),
             patch("os.path.abspath", return_value="/tmp/f.md"),
             patch("os.makedirs"),
             patch("shutil.which", return_value="/usr/bin/pandoc"),
@@ -103,7 +103,7 @@ class TestInputConverter:
         from app.pipeline.input_conversion.converter import InputConverter
 
         with (
-            patch("os.path.exists", return_value=True),
+            patch("os.path.exists", side_effect=lambda p: p.endswith("soffice.exe")),
             patch("os.path.abspath", return_value="/tmp/f.md"),
             patch("os.makedirs"),
             patch("shutil.which", return_value=None),
@@ -115,7 +115,7 @@ class TestInputConverter:
         from app.pipeline.input_conversion.converter import InputConverter
 
         with (
-            patch("os.path.exists", return_value=True),
+            patch("os.path.exists", side_effect=lambda p: p.endswith("soffice.exe")),
             patch("os.path.abspath", return_value="/tmp/f.md"),
             patch("os.makedirs"),
             patch("shutil.which", return_value="/usr/bin/pandoc"),
@@ -129,7 +129,7 @@ class TestInputConverter:
 
         err = subprocess.CalledProcessError(1, "pandoc", stderr=b"parse error")
         with (
-            patch("os.path.exists", return_value=True),
+            patch("os.path.exists", side_effect=lambda p: p.endswith("soffice.exe")),
             patch("os.path.abspath", return_value="/tmp/f.md"),
             patch("os.makedirs"),
             patch("shutil.which", return_value="/usr/bin/pandoc"),
@@ -172,7 +172,7 @@ class TestInputConverter:
         from app.pipeline.input_conversion.converter import InputConverter
 
         with (
-            patch("os.path.exists", return_value=True),
+            patch("os.path.exists", side_effect=lambda p: p.endswith("soffice.exe")),
             patch("os.path.abspath", return_value="/tmp/f.doc"),
             patch("os.makedirs"),
             patch("shutil.which", return_value="/usr/bin/soffice"),
@@ -186,7 +186,7 @@ class TestInputConverter:
 
         err = subprocess.CalledProcessError(1, "soffice", stderr=b"error")
         with (
-            patch("os.path.exists", return_value=True),
+            patch("os.path.exists", side_effect=lambda p: p.endswith("soffice.exe")),
             patch("os.path.abspath", return_value="/tmp/f.doc"),
             patch("os.makedirs"),
             patch("shutil.which", return_value="/usr/bin/soffice"),
@@ -225,7 +225,7 @@ class TestInputConverter:
         mock_pdf_ocr = MagicMock()
         mock_pdf_ocr.is_scanned.return_value = True
         with (
-            patch("os.path.exists", return_value=True),
+            patch("os.path.exists", side_effect=lambda p: p.endswith("soffice.exe")),
             patch("os.path.abspath", return_value="/tmp/f.pdf"),
             patch("os.makedirs"),
             patch("app.services.enhancement_manager.enhancement_manager", mock_enh_mgr),
@@ -313,7 +313,7 @@ class TestInputConverter:
         from app.pipeline.input_conversion.converter import InputConverter
 
         with (
-            patch("os.path.exists", return_value=True),
+            patch("os.path.exists", side_effect=lambda p: p.endswith("soffice.exe")),
             patch("os.path.abspath", return_value="/tmp/f.pdf"),
             patch("os.makedirs"),
             patch("shutil.copy2") as mock_copy,
@@ -341,7 +341,7 @@ class TestInputConverter:
         from app.pipeline.input_conversion.converter import InputConverter
 
         with (
-            patch("os.path.exists", return_value=True),
+            patch("os.path.exists", side_effect=lambda p: p.endswith("soffice.exe")),
             patch("os.path.abspath", return_value="/tmp/f.docx"),
             patch("os.makedirs"),
             patch("shutil.which", return_value="/usr/bin/soffice"),
@@ -369,7 +369,7 @@ class TestInputConverter:
 
         err = subprocess.CalledProcessError(1, "soffice", stderr=b"error")
         with (
-            patch("os.path.exists", return_value=True),
+            patch("os.path.exists", side_effect=lambda p: p.endswith("soffice.exe")),
             patch("os.path.abspath", return_value="/tmp/f.docx"),
             patch("os.makedirs"),
             patch("shutil.which", return_value="/usr/bin/soffice"),
