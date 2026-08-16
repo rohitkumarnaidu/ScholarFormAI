@@ -182,10 +182,11 @@ class TestParse:
         with pytest.raises(ValueError, match="does not contain a JSON array"):
             parser.parse("text without brackets", "paper")
 
-    def test_parse_logs_count(self, parser, caplog):
-        import logging
-
-        caplog.set_level(logging.INFO)
-        response = '[{"type": "BODY", "content": "Text"}]'
-        parser.parse(response, "report")
-        assert any("parsed 1 blocks" in r.message for r in caplog.records)
+    def test_parse_logs_count(self, parser):
+        from unittest.mock import patch
+        with patch("app.pipeline.generation.content_parser.logger.info") as mock_info:
+            response = '[{"type": "BODY", "content": "Text"}]'
+            parser.parse(response, "report")
+            assert mock_info.call_count == 1
+            args, _ = mock_info.call_args
+            assert "ContentParser: parsed %d blocks for doc_type='%s'" in args
