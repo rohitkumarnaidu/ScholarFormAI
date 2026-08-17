@@ -17,7 +17,9 @@ from pathlib import Path
 from typing import Any
 
 from app.config.settings import settings
+from app.db.repositories.document_repository import DocumentRepository  # noqa: F401
 from app.db.repositories.generator_session_repository import GeneratorSessionRepository
+from app.db.supabase_client import get_supabase_client  # noqa: F401
 from app.models.block import Block, BlockType
 from app.models.pipeline_document import DocumentMetadata, PipelineDocument, TemplateInfo
 from app.pipeline.export.exporter import Exporter
