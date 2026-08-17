@@ -1082,7 +1082,8 @@ class TestDocumentGeneratorLLmGenerateEdgeCases:
 
     @pytest.mark.asyncio
     async def test_llm_generate_all_failures(self):
-        with patch("app.pipeline.generation.document_generator.get_supabase_client", return_value=None):
+        with patch("app.pipeline.generation.document_generator.get_supabase_client", return_value=None), \
+             patch("app.pipeline.generation.document_generator.GeneratorSessionRepository.get_session", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
 
             dg = DocumentGenerator()
