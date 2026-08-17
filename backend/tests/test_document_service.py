@@ -244,7 +244,7 @@ class TestCreateDocument:
         mock_result.data = [{"id": "doc-1"}]
         mock_client.table.return_value.insert.return_value.execute.return_value = mock_result
         with patch("app.services.document_service.get_supabase_client", return_value=mock_client):
-            ds._supports_file_hash = True
+            ds.__class__._supports_file_hash = True
             result = await ds.create_document("doc-1", "user-1", "test.pdf", "ieee")
         assert result == {"id": "doc-1"}
 
@@ -253,12 +253,11 @@ class TestCreateDocument:
 def ds():
     from app.services.document_service import DocumentService
 
-    ds = DocumentService()
-    ds._supports_file_hash = None
-    ds._file_hash_warning_logged = False
-    ds._supports_output_hash = None
-    ds._output_hash_warning_logged = False
-    return ds
+    DocumentService._supports_file_hash = None
+    DocumentService._file_hash_warning_logged = False
+    DocumentService._supports_output_hash = None
+    DocumentService._output_hash_warning_logged = False
+    return DocumentService()
 
 
 class TestCountDocuments:
@@ -423,7 +422,7 @@ class TestUpdateOutputHash:
 
     @pytest.mark.asyncio
     async def test_supports_false_returns_false(self, ds):
-        ds._supports_output_hash = False
+        ds.__class__._supports_output_hash = False
         result = await ds.update_output_hash("doc-1", "abc123")
         assert result is False
 
