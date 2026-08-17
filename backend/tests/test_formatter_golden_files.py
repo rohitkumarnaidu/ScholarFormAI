@@ -34,11 +34,14 @@ FORMATTER = Formatter(templates_dir="app/templates", contracts_dir="app/pipeline
 
 
 def _split_frontmatter(raw_text: str) -> tuple[dict[str, Any], str]:
-    if not raw_text.startswith("---\n"):
+    # Find the first and second occurrence of ---\n
+    parts = raw_text.split("---\n", 2)
+    if len(parts) < 3:
         return {}, raw_text
-
-    _, frontmatter, body = raw_text.split("---\n", 2)
-    return yaml.safe_load(frontmatter) or {}, body
+    
+    frontmatter_text = parts[1]
+    body = parts[2]
+    return yaml.safe_load(frontmatter_text) or {}, body
 
 
 def _extract_markdown_hyperlinks(text: str) -> tuple[str, list[dict[str, str]]]:
