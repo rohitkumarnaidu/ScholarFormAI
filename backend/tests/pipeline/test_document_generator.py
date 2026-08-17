@@ -300,7 +300,7 @@ class TestGetSessionRecord:
 
     def test_not_found_returns_none(self, dc):
         _, dg = dc
-        with patch.object(dg._mod, "get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             assert dg._get_session_record("x") is None
 
 
@@ -313,7 +313,7 @@ class TestGetSession:
     def test_returns_none_for_missing(self, dc):
         _, dg = dc
         # override supabase mock to return nothing
-        with patch.object(dg._mod, "get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             assert dg.get_session("x") is None
 
 
@@ -363,7 +363,7 @@ class TestStartJob:
         _, dg = dc
         dg._mod.DocumentService.create_document.return_value = None
         # Make supabase insert fail so volatile is used
-        with patch.object(dg._mod, "get_supabase_client") as msb:
+        with patch("app.db.repositories.base.get_supabase_client") as msb:
             sb = MagicMock()
             sb.table.return_value.insert.side_effect = Exception("DB down")
             msb.return_value = sb
@@ -508,7 +508,7 @@ class TestGetStatus:
         _, dg = dc
         sb, t = _default_supabase_mock()
         t.execute.return_value = MagicMock(data=None)
-        with patch.object(dg._mod, "get_supabase_client", return_value=sb):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             dg._mod.DocumentService.get_document.return_value = None
             with pytest.raises(KeyError):
                 dg.get_status("j1")
@@ -529,7 +529,7 @@ class TestGetStatus:
         dg._mod.DocumentService.get_document_result.return_value = {
             "structured_data": {"outline": ["Intro"]},
         }
-        with patch.object(dg._mod, "get_supabase_client", return_value=sb):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             r = dg.get_status("j1")
             assert "Intro" in r["outline"]
 
@@ -636,15 +636,13 @@ class TestUpdate:
 class TestEmit:
     def test_calls_emit_event(self, dc):
         _, dg = dc
-        with patch("app.routers.v1.stream.emit_event") as mock_emit:
-            dg._emit("j1", phase="T", status="OK", message="t")
-            mock_emit.assert_called()
+        dg._emit("j1", phase="T", status="OK", message="t")
+        dg._mod.emit_event.assert_called()
 
     def test_suppresses_exception(self, dc):
         _, dg = dc
-        with patch("app.routers.v1.stream.emit_event") as mock_emit:
-            mock_emit.side_effect = Exception("SSE down")
-            dg._emit("j1", phase="T", status="OK")
+        dg._mod.emit_event.side_effect = Exception("SSE down")
+        dg._emit("j1", phase="T", status="OK")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -691,7 +689,7 @@ class TestLlmGenerate:
         _, dg = dc
         dg._volatile_sessions["j1"] = {"config_json": {"doc_type": "paper", "metadata": {"title": "Fallback"}}}
         # Override supabase mock to return nothing so _get_session_record falls to volatile
-        with patch.object(dg._mod, "get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             svc = MagicMock()
             svc.LLM_NVIDIA = MagicMock()
             svc.LLM_NVIDIA.complete.side_effect = Exception("all down")
@@ -902,7 +900,7 @@ class TestBranchGaps:
     def test_update_supabase_exception(self, dc):
         """_update: supabase.execute() raises → catches and logs (lines 183-184)."""
         _, dg = dc
-        with patch.object(dg._mod, "get_supabase_client") as msb:
+        with patch("app.db.repositories.base.get_supabase_client") as msb:
             sb = MagicMock()
             sb.table.return_value.update.return_value.eq.return_value.execute.side_effect = Exception("DB err")
             msb.return_value = sb
