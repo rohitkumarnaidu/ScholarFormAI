@@ -231,7 +231,7 @@ platformdirs==4.11.0
 pluggy==1.6.0
 polyfactory==3.3.0
 postgrest==2.31.0
-posthog==7.34.0
+posthog==7.39.0
 pre_commit==4.6.1
 preshed==3.0.13
 prometheus-fastapi-instrumentator==8.1.0
