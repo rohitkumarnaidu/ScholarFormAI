@@ -35,7 +35,7 @@ def orch():
         patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository"),
         patch("app.pipeline.orchestrator.orchestrator.ProcessingStatusRepository"),
         patch("app.pipeline.orchestrator.phases.DocumentRepository"),
-        patch("app.pipeline.orchestrator.phases.DocumentResultRepository")
+        patch("app.pipeline.orchestrator.phases.DocumentResultRepository"),
     ):
         o = PipelineOrchestrator(templates_dir="app/templates", temp_dir="/tmp/test_temp_deep")
         return o
@@ -335,6 +335,7 @@ class TestPersistPartialEdgeCases:
                 orch._persist_partial_result("job1", doc, sb)
             mock_repo.insert_sync.assert_called_once()
 
+
 # ══════════════════════════════════════════════════════════════════════════════
 # Phase 4.1f: Pipeline error handler paths
 # ══════════════════════════════════════════════════════════════════════════════
@@ -419,7 +420,8 @@ class TestAtomicCompletion:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -457,7 +459,8 @@ class TestAtomicCompletion:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -496,7 +499,8 @@ class TestAtomicCompletion:
         out_path.write_text("output")
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -533,21 +537,28 @@ class TestAtomicCompletion:
 
 class TestEditFlowErrors:
     def test_edit_flow_no_generated_doc(self, orch):
-        with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls, \
-             patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_result_repo_cls, \
-             patch("app.pipeline.orchestrator.orchestrator.DocumentVersionRepository") as mock_ver_repo_cls:
-
+        with (
+            patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls,
+            patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_result_repo_cls,
+            patch("app.pipeline.orchestrator.orchestrator.DocumentVersionRepository") as mock_ver_repo_cls,
+        ):
             mock_doc_repo = MagicMock()
             mock_doc_repo_cls.return_value = mock_doc_repo
-            mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(data=[{"filename": "test.docx", "output_path": "/orig/output.docx"}])
+            mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(
+                data=[{"filename": "test.docx", "output_path": "/orig/output.docx"}]
+            )
 
             mock_result_repo = MagicMock()
             mock_result_repo_cls.return_value = mock_result_repo
-            mock_result_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(data=[{"id": 1, "structured_data": {"old": "data"}}])
+            mock_result_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(
+                data=[{"id": 1, "structured_data": {"old": "data"}}]
+            )
 
             mock_ver_repo = MagicMock()
             mock_ver_repo_cls.return_value = mock_ver_repo
-            mock_ver_repo._table.return_value.select.return_value.eq.return_value.order.return_value.limit.return_value.execute.return_value = MagicMock(data=[{"version_number": "v2"}])
+            mock_ver_repo._table.return_value.select.return_value.eq.return_value.order.return_value.limit.return_value.execute.return_value = MagicMock(
+                data=[{"version_number": "v2"}]
+            )
 
             with patch.object(orch, "_update_status"):
                 with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
@@ -562,28 +573,37 @@ class TestEditFlowErrors:
                                     with patch("app.pipeline.orchestrator.Exporter"):
                                         with patch("os.makedirs"):
                                             with patch("os.path.splitext", return_value=("test", ".docx")):
-                                                with patch("os.path.abspath", return_value="/tmp/output/test_edited.docx"):
+                                                with patch(
+                                                    "os.path.abspath", return_value="/tmp/output/test_edited.docx"
+                                                ):
                                                     result = orch.run_edit_flow(
                                                         "job1", {"sections": {"body": ["Edited"]}}, "ieee"
                                                     )
         assert result["status"] == "success"
 
     def test_edit_flow_version_numbering(self, orch):
-        with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls, \
-             patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_result_repo_cls, \
-             patch("app.pipeline.orchestrator.orchestrator.DocumentVersionRepository") as mock_ver_repo_cls:
-
+        with (
+            patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls,
+            patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_result_repo_cls,
+            patch("app.pipeline.orchestrator.orchestrator.DocumentVersionRepository") as mock_ver_repo_cls,
+        ):
             mock_doc_repo = MagicMock()
             mock_doc_repo_cls.return_value = mock_doc_repo
-            mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(data=[{"filename": "test.docx", "output_path": "/orig/output.docx"}])
+            mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(
+                data=[{"filename": "test.docx", "output_path": "/orig/output.docx"}]
+            )
 
             mock_result_repo = MagicMock()
             mock_result_repo_cls.return_value = mock_result_repo
-            mock_result_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(data=[{"id": 1, "structured_data": {"old": "data"}}])
+            mock_result_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(
+                data=[{"id": 1, "structured_data": {"old": "data"}}]
+            )
 
             mock_ver_repo = MagicMock()
             mock_ver_repo_cls.return_value = mock_ver_repo
-            mock_ver_repo._table.return_value.select.return_value.eq.return_value.order.return_value.limit.return_value.execute.return_value = MagicMock(data=[{"version_number": "v2"}])
+            mock_ver_repo._table.return_value.select.return_value.eq.return_value.order.return_value.limit.return_value.execute.return_value = MagicMock(
+                data=[{"version_number": "v2"}]
+            )
 
             with patch.object(orch, "_update_status"):
                 with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
@@ -606,21 +626,28 @@ class TestEditFlowErrors:
         assert result["status"] == "success"
 
     def test_edit_flow_invalid_version_string(self, orch):
-        with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls, \
-             patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_result_repo_cls, \
-             patch("app.pipeline.orchestrator.orchestrator.DocumentVersionRepository") as mock_ver_repo_cls:
-
+        with (
+            patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls,
+            patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_result_repo_cls,
+            patch("app.pipeline.orchestrator.orchestrator.DocumentVersionRepository") as mock_ver_repo_cls,
+        ):
             mock_doc_repo = MagicMock()
             mock_doc_repo_cls.return_value = mock_doc_repo
-            mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(data=[{"filename": "test.docx", "output_path": "/orig/output.docx"}])
+            mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(
+                data=[{"filename": "test.docx", "output_path": "/orig/output.docx"}]
+            )
 
             mock_result_repo = MagicMock()
             mock_result_repo_cls.return_value = mock_result_repo
-            mock_result_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(data=[{"id": 1, "structured_data": {"old": "data"}}])
+            mock_result_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(
+                data=[{"id": 1, "structured_data": {"old": "data"}}]
+            )
 
             mock_ver_repo = MagicMock()
             mock_ver_repo_cls.return_value = mock_ver_repo
-            mock_ver_repo._table.return_value.select.return_value.eq.return_value.order.return_value.limit.return_value.execute.return_value = MagicMock(data=[{"version_number": "abc"}])
+            mock_ver_repo._table.return_value.select.return_value.eq.return_value.order.return_value.limit.return_value.execute.return_value = MagicMock(
+                data=[{"version_number": "abc"}]
+            )
 
             with patch.object(orch, "_update_status"):
                 with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
@@ -643,21 +670,28 @@ class TestEditFlowErrors:
         assert result["status"] == "success"
 
     def test_edit_flow_no_versions(self, orch):
-        with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls, \
-             patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_result_repo_cls, \
-             patch("app.pipeline.orchestrator.orchestrator.DocumentVersionRepository") as mock_ver_repo_cls:
-
+        with (
+            patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls,
+            patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_result_repo_cls,
+            patch("app.pipeline.orchestrator.orchestrator.DocumentVersionRepository") as mock_ver_repo_cls,
+        ):
             mock_doc_repo = MagicMock()
             mock_doc_repo_cls.return_value = mock_doc_repo
-            mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(data=[{"filename": "test.docx", "output_path": "/orig/output.docx"}])
+            mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(
+                data=[{"filename": "test.docx", "output_path": "/orig/output.docx"}]
+            )
 
             mock_result_repo = MagicMock()
             mock_result_repo_cls.return_value = mock_result_repo
-            mock_result_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(data=[{"id": 1, "structured_data": {"old": "data"}}])
+            mock_result_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(
+                data=[{"id": 1, "structured_data": {"old": "data"}}]
+            )
 
             mock_ver_repo = MagicMock()
             mock_ver_repo_cls.return_value = mock_ver_repo
-            mock_ver_repo._table.return_value.select.return_value.eq.return_value.order.return_value.limit.return_value.execute.return_value = MagicMock(data=[])
+            mock_ver_repo._table.return_value.select.return_value.eq.return_value.order.return_value.limit.return_value.execute.return_value = MagicMock(
+                data=[]
+            )
 
             with patch.object(orch, "_update_status"):
                 with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
@@ -684,7 +718,10 @@ class TestEditFlowErrors:
             mock_doc_repo = MagicMock()
             mock_doc_repo_cls.return_value = mock_doc_repo
             import asyncio
-            mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.side_effect = asyncio.CancelledError("cancel")
+
+            mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.side_effect = (
+                asyncio.CancelledError("cancel")
+            )
             with patch.object(orch, "_update_status"):
                 with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
                     result = orch.run_edit_flow("job1", {"sections": {"body": ["Text"]}}, "ieee")
@@ -706,7 +743,8 @@ class TestKeywordExtraction:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -816,7 +854,8 @@ class TestIntegrationScenarios:
         parser.parse.return_value = doc
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),
@@ -946,7 +985,8 @@ class TestIntegrationScenarios:
         orch.converter.convert_to_docx.return_value = str(tmp_path / "converted.docx")
         with (
             patch("app.pipeline.orchestrator.ParserFactory") as mock_pf,
-            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb), patch("app.db.repositories.base.get_supabase_client", return_value=sb),
+            patch("app.pipeline.orchestrator.get_supabase_client", return_value=sb),
+            patch("app.db.repositories.base.get_supabase_client", return_value=sb),
             patch.object(orch, "_run_structure_detection", return_value=doc),
             patch.object(orch, "_run_classification", return_value=doc),
             patch.object(orch, "_run_validation_stage", return_value=doc),

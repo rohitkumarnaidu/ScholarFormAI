@@ -280,6 +280,7 @@ class TestOrchestratorUpdateStatus:
 
     def test_update_status_transient_error_retry(self, orch):
         from httpx import RemoteProtocolError
+
         with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
             with patch("app.pipeline.orchestrator.orchestrator.ProcessingStatusRepository") as mock_ps_repo:
                 with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo:
@@ -316,9 +317,7 @@ class TestOrchestratorCheckCancelled:
             "app.pipeline.orchestrator.get_supabase_client",
             return_value=MagicMock(),
         ):
-            with patch(
-                "app.pipeline.orchestrator.orchestrator.DocumentRepository"
-            ) as mock_repo_cls:
+            with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_repo_cls:
                 mock_repo = MagicMock()
                 mock_repo_cls.return_value = mock_repo
                 mock_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = mock_resp
@@ -352,9 +351,7 @@ class TestOrchestratorPersistPartial:
         mock_resp = MagicMock()
         mock_resp.data = []
         with patch("app.pipeline.orchestrator.build_structured_data", return_value={"key": "val"}):
-            with patch(
-                "app.pipeline.orchestrator.orchestrator.DocumentResultRepository"
-            ) as mock_repo_cls:
+            with patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_repo_cls:
                 mock_repo = MagicMock()
                 mock_repo_cls.return_value = mock_repo
                 mock_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = mock_resp
@@ -367,9 +364,7 @@ class TestOrchestratorPersistPartial:
         mock_resp = MagicMock()
         mock_resp.data = [{"id": 1}]
         with patch("app.pipeline.orchestrator.build_structured_data", return_value={"key": "val"}):
-            with patch(
-                "app.pipeline.orchestrator.orchestrator.DocumentResultRepository"
-            ) as mock_repo_cls:
+            with patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_repo_cls:
                 mock_repo = MagicMock()
                 mock_repo_cls.return_value = mock_repo
                 mock_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = mock_resp
@@ -970,9 +965,7 @@ class TestOrchestratorRunPipelineInternal:
                 with patch.object(orch, "_check_cancelled"):
                     with patch("app.pipeline.orchestrator.settings") as mock_set:
                         mock_set.GROBID_ENABLED = False
-                        result = orch._run_pipeline_internal(
-                            str(input_path), "job1", "ieee", {"fast_mode": True}
-                        )
+                        result = orch._run_pipeline_internal(str(input_path), "job1", "ieee", {"fast_mode": True})
         assert result["status"] == "success"
 
     @patch("app.pipeline.orchestrator.ParserFactory")
@@ -1049,10 +1042,11 @@ class TestOrchestratorEditFlow:
         version_resp = MagicMock()
         version_resp.data = [{"version_number": "v2"}]
 
-        with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls, \
-             patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_result_repo_cls, \
-             patch("app.pipeline.orchestrator.orchestrator.DocumentVersionRepository") as mock_ver_repo_cls:
-
+        with (
+            patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls,
+            patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_result_repo_cls,
+            patch("app.pipeline.orchestrator.orchestrator.DocumentVersionRepository") as mock_ver_repo_cls,
+        ):
             mock_doc_repo = MagicMock()
             mock_doc_repo_cls.return_value = mock_doc_repo
             mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = doc_resp
@@ -1108,7 +1102,9 @@ class TestOrchestratorEditFlow:
             with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls:
                 mock_doc_repo = MagicMock()
                 mock_doc_repo_cls.return_value = mock_doc_repo
-                mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.side_effect = asyncio.CancelledError("cancel")
+                mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.side_effect = (
+                    asyncio.CancelledError("cancel")
+                )
                 with patch.object(orch, "_update_status"):
                     result = orch.run_edit_flow("job1", {"sections": {}}, "ieee")
         assert result["status"] == "cancelled"
@@ -1119,9 +1115,10 @@ class TestOrchestratorEditFlow:
         result_resp = MagicMock()
         result_resp.data = []
 
-        with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls, \
-             patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_result_repo_cls:
-
+        with (
+            patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_doc_repo_cls,
+            patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_result_repo_cls,
+        ):
             mock_doc_repo = MagicMock()
             mock_doc_repo_cls.return_value = mock_doc_repo
             mock_doc_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = doc_resp
@@ -1144,7 +1141,9 @@ class TestOrchestratorEditFlow:
                                     with patch("app.pipeline.orchestrator.AIExplainer"):
                                         with patch("os.makedirs"):
                                             with patch("os.path.splitext", return_value=("test", ".docx")):
-                                                with patch("os.path.abspath", return_value="/tmp/output/test_edited.docx"):
+                                                with patch(
+                                                    "os.path.abspath", return_value="/tmp/output/test_edited.docx"
+                                                ):
                                                     with patch.object(orch, "_compute_sha256", return_value="hash"):
                                                         result = orch.run_edit_flow(
                                                             "job1", {"sections": {"body": ["Text"]}}, "ieee"

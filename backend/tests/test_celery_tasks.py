@@ -162,8 +162,6 @@ class TestProcessDocumentTask:
             result = cleanup_uploads_task()
         assert result["retention_days"] == 30
 
-
-
     def test_perfect(self):
         def _macro_f1(y_true, y_pred):
             labels = sorted(set(y_true) | set(y_pred))

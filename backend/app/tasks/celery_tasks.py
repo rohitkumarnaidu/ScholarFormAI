@@ -23,6 +23,7 @@ from app.tasks.cleanup import cleanup_stranded_uploads
 
 logger = logging.getLogger(__name__)
 
+
 def _mark_document_failed(doc_id: str, error_message: str):
     coro = DocumentService.mark_document_failed(doc_id, error_message)
     try:
@@ -30,6 +31,7 @@ def _mark_document_failed(doc_id: str, error_message: str):
         loop.create_task(coro)
     except RuntimeError:
         asyncio.run(coro)
+
 
 from celery.signals import setup_logging as celery_setup_logging
 from celery.signals import worker_process_init

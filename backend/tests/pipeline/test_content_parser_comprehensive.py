@@ -184,6 +184,7 @@ class TestParse:
 
     def test_parse_logs_count(self, parser):
         from unittest.mock import patch
+
         with patch("app.pipeline.generation.content_parser.logger.info") as mock_info:
             response = '[{"type": "BODY", "content": "Text"}]'
             parser.parse(response, "report")

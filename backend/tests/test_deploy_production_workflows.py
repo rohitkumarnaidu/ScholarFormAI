@@ -20,6 +20,3 @@ def test_deploy_production_workflow_is_manual_and_health_guarded():
     assert "--connect-timeout 5" in workflow_text
     assert "--max-time 10" in workflow_text
     assert "exit 1" in workflow_text
-
-
-

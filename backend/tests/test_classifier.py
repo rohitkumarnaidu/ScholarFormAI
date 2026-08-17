@@ -71,6 +71,7 @@ class TestResolveHeadingType:
         result, name = cc._resolve_heading_type(block)
         assert result == BlockType.HEADING_1
 
+
 class TestIsLikelyAffiliation:
     def test_university_keyword(self):
         from app.pipeline.classification.classifier import ContentClassifier

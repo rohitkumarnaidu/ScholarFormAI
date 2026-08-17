@@ -15,7 +15,6 @@ if hasattr(fastapi.routing, "_IncludedRouter"):
     fastapi.routing._IncludedRouter.path = property(lambda self: getattr(self, "prefix", ""))
 
 
-
 import os
 import socket
 import sys

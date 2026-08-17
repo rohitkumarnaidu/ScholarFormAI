@@ -514,7 +514,6 @@ class TestGetStatus:
                 dg.get_status("j1")
 
     @pytest.mark.skip(reason="Outdated test for refactored orchestrator")
-
     def test_outline_from_result(self, dc):
         _, dg = dc
         sb, t = _default_supabase_mock()

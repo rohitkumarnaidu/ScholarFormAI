@@ -93,5 +93,3 @@ class TestRepairFragmentedHeadingsEdgeCases:
         ]
         result = p._repair_fragmented_headings(blocks)
         assert len(result) == 2
-
-

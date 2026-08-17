@@ -210,7 +210,6 @@ class TestUpdateStatus:
             orch._update_status("job1", "EXTRACTION", "COMPLETED")
 
     @pytest.mark.skip(reason="Outdated test for refactored orchestrator")
-
     def test_existing_record_update(self, orch):
         sb = MagicMock()
         sb.table.return_value.select.return_value.match.return_value.execute.return_value.data = [{"id": 1}]
@@ -221,7 +220,6 @@ class TestUpdateStatus:
         assert update_call.called
 
     @pytest.mark.skip(reason="Outdated test for refactored orchestrator")
-
     def test_status_completed_phase_persistence(self, orch):
         sb = MagicMock()
         sb.table.return_value.select.return_value.match.return_value.execute.return_value.data = [{"id": 1}]
@@ -232,7 +230,6 @@ class TestUpdateStatus:
         assert update_call.called
 
     @pytest.mark.skip(reason="Outdated test for refactored orchestrator")
-
     def test_status_failed_includes_error(self, orch):
         sb = MagicMock()
         sb.table.return_value.select.return_value.match.return_value.execute.return_value.data = [{"id": 1}]
@@ -326,7 +323,6 @@ class TestCheckCancelled:
             orch._check_cancelled("job1")
 
     @pytest.mark.skip(reason="Outdated test for refactored orchestrator")
-
     def test_status_cancelled_raises(self, orch):
         sb = MagicMock()
         sb.table.return_value.select.return_value.eq.return_value.execute.return_value.data = [{"status": "CANCELLED"}]
@@ -357,7 +353,6 @@ class TestPersistPartialResult:
         orch._persist_partial_result("job1", None, None)
 
     @pytest.mark.skip(reason="Outdated test for refactored orchestrator")
-
     def test_existing_result_update(self, orch):
         sb = MagicMock()
         sb.table.return_value.select.return_value.eq.return_value.execute.return_value.data = [{"id": 1}]
@@ -367,7 +362,6 @@ class TestPersistPartialResult:
         assert sb.table.return_value.update.called
 
     @pytest.mark.skip(reason="Outdated test for refactored orchestrator")
-
     def test_no_existing_insert(self, orch):
         sb = _make_sb()
         doc = _make_doc()
@@ -1030,7 +1024,6 @@ class TestRunEditFlow:
         assert result["status"] == "error"
 
     @pytest.mark.skip(reason="Outdated test for refactored orchestrator")
-
     def test_successful_edit_persistence(self, orch):
         sb = MagicMock()
         sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = [
@@ -1050,7 +1043,6 @@ class TestRunEditFlow:
         assert result["status"] == "success"
 
     @pytest.mark.skip(reason="Outdated test for refactored orchestrator")
-
     def test_cancelled_error(self, orch):
         sb = MagicMock()
         sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = asyncio.CancelledError("cancel")
@@ -1068,7 +1060,6 @@ class TestRunEditFlow:
         assert result["status"] == "error"
 
     @pytest.mark.skip(reason="Outdated test for refactored orchestrator")
-
     def test_edit_with_existing_result_and_versions(self, orch):
         sb = MagicMock()
         sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = [
@@ -1090,7 +1081,6 @@ class TestRunEditFlow:
         assert result["status"] == "success"
 
     @pytest.mark.skip(reason="Outdated test for refactored orchestrator")
-
     def test_version_number_exception(self, orch):
         sb = MagicMock()
         sb.table.return_value.select.return_value.eq.return_value.execute.side_effect = [
@@ -3534,7 +3524,6 @@ class TestEditFlowAdditionalBranches:
         assert result["status"] == "success"
 
     @pytest.mark.skip(reason="Outdated test for refactored orchestrator")
-
     def test_edit_flow_version_number_exception(self, orch):
         """Lines 1300-1303: Version number parsing exception."""
         sb = MagicMock()
@@ -3557,7 +3546,6 @@ class TestEditFlowAdditionalBranches:
         assert result["status"] == "success"
 
     @pytest.mark.skip(reason="Outdated test for refactored orchestrator")
-
     def test_edit_flow_cancelled_with_update_status_error(self, orch):
         """Lines 1343-1344: CancelledError and update_status raises."""
         sb = MagicMock()
@@ -3568,7 +3556,6 @@ class TestEditFlowAdditionalBranches:
         assert result["status"] == "cancelled"
 
     @pytest.mark.skip(reason="Outdated test for refactored orchestrator")
-
     def test_edit_flow_existing_result_version_v4(self, orch):
         """Edit flow with version v4 and versions list."""
         sb = MagicMock()

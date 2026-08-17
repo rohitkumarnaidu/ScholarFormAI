@@ -347,16 +347,21 @@ class TestCheckCancelled:
         with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
             with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_repo_cls:
                 mock_repo = mock_repo_cls.return_value
-                mock_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(data=[{"status": "PROCESSING"}])
+                mock_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(
+                    data=[{"status": "PROCESSING"}]
+                )
                 result = orch._check_cancelled("job-1")
                 assert result is None
 
     def test_cancelled_raises(self, orch):
         import asyncio
+
         with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
             with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_repo_cls:
                 mock_repo = mock_repo_cls.return_value
-                mock_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(data=[{"status": "CANCELLED"}])
+                mock_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(
+                    data=[{"status": "CANCELLED"}]
+                )
                 with pytest.raises(asyncio.CancelledError):
                     orch._check_cancelled("job-1")
 
@@ -369,7 +374,9 @@ class TestCheckCancelled:
         with patch("app.pipeline.orchestrator.get_supabase_client", return_value=MagicMock()):
             with patch("app.pipeline.orchestrator.orchestrator.DocumentRepository") as mock_repo_cls:
                 mock_repo = mock_repo_cls.return_value
-                mock_repo._table.return_value.select.return_value.eq.return_value.execute.side_effect = Exception("DB error")
+                mock_repo._table.return_value.select.return_value.eq.return_value.execute.side_effect = Exception(
+                    "DB error"
+                )
                 result = orch._check_cancelled("job-1")
                 assert result is None
 
@@ -396,7 +403,9 @@ class TestPersistPartialResult:
     def test_persists_to_existing_record(self, orch):
         with patch("app.pipeline.orchestrator.orchestrator.DocumentResultRepository") as mock_repo_cls:
             mock_repo = mock_repo_cls.return_value
-            mock_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(data=[{"id": 1}])
+            mock_repo._table.return_value.select.return_value.eq.return_value.execute.return_value = MagicMock(
+                data=[{"id": 1}]
+            )
             with patch("app.pipeline.orchestrator.build_structured_data", return_value={}):
                 orch._persist_partial_result("job-1", MagicMock(), MagicMock())
             mock_repo.upsert_sync.assert_called_once()

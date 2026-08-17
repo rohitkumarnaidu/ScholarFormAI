@@ -141,7 +141,6 @@ class TestConvertToPdf:
             assert result == "/tmp/out/doc.pdf"
 
     @pytest.mark.skip(reason="docx2pdf may not be installed in CI")
-
     def test_all_engines_fail(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
 
@@ -170,7 +169,6 @@ class TestConvertToPdf:
             assert result == "/tmp/out/doc.pdf"
 
     @pytest.mark.skip(reason="docx2pdf may not be installed in CI")
-
     def test_docx2pdf_fallback_success(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
 
@@ -188,7 +186,6 @@ class TestConvertToPdf:
             assert result.endswith(".pdf")
 
     @pytest.mark.skip(reason="docx2pdf may not be installed in CI")
-
     def test_docx2pdf_fails_runtime_error(self):
         from app.pipeline.export.pdf_exporter import PDFExporter
 

@@ -355,7 +355,9 @@ class TestExtractKeywords:
             m.profile.keyword_enabled = True
             m.get_keyword_backends.return_value = ["yake", "basic"]
             with patch("app.pipeline.nlp.analyzer.YAKE_AVAILABLE", True):
-                with patch.dict("sys.modules", {"yake": MagicMock(KeywordExtractor=MagicMock(side_effect=Exception("yake crash")))}):
+                with patch.dict(
+                    "sys.modules", {"yake": MagicMock(KeywordExtractor=MagicMock(side_effect=Exception("yake crash")))}
+                ):
                     result = extract_keywords("machine learning text analysis")
                     assert len(result) > 0
 
@@ -401,7 +403,9 @@ class TestExtractKeywords:
             m.get_keyword_backends.return_value = ["keybert", "basic"]
             with patch("app.pipeline.nlp.analyzer._get_keybert_model", return_value=mock_model):
                 with patch("app.pipeline.nlp.analyzer.YAKE_AVAILABLE", True):
-                    with patch.dict("sys.modules", {"yake": MagicMock(KeywordExtractor=MagicMock(return_value=mock_yake))}):
+                    with patch.dict(
+                        "sys.modules", {"yake": MagicMock(KeywordExtractor=MagicMock(return_value=mock_yake))}
+                    ):
                         extract_keywords("machine learning text analysis")
                         mock_model.extract_keywords.assert_called_once()
                         args = mock_model.extract_keywords.call_args

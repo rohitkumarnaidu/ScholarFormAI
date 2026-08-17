@@ -439,7 +439,9 @@ class TestExtractKeywordsGaps:
             m.profile.keyword_enabled = True
             m.get_keyword_backends.return_value = ["yake", "basic"]
             with patch("app.pipeline.nlp.analyzer.YAKE_AVAILABLE", True):
-                with patch.dict("sys.modules", {"yake": MagicMock(KeywordExtractor=MagicMock(side_effect=Exception("yake crash")))}):
+                with patch.dict(
+                    "sys.modules", {"yake": MagicMock(KeywordExtractor=MagicMock(side_effect=Exception("yake crash")))}
+                ):
                     result = extract_keywords("machine learning text analysis")
                     assert len(result) > 0
 
@@ -507,7 +509,9 @@ class TestExtractKeywordsGaps:
             m.get_keyword_backends.return_value = ["keybert", "basic"]
             with patch("app.pipeline.nlp.analyzer._get_keybert_model", return_value=mock_model):
                 with patch("app.pipeline.nlp.analyzer.YAKE_AVAILABLE", True):
-                    with patch.dict("sys.modules", {"yake": MagicMock(KeywordExtractor=MagicMock(return_value=mock_yake))}):
+                    with patch.dict(
+                        "sys.modules", {"yake": MagicMock(KeywordExtractor=MagicMock(return_value=mock_yake))}
+                    ):
                         extract_keywords("machine learning text analysis")
                         args = mock_model.extract_keywords.call_args
                         assert args[1]["candidates"] == ["ml", "text"]
@@ -572,7 +576,9 @@ class TestExtractKeywordsGaps:
             m.get_keyword_backends.return_value = ["keybert"]
             with patch("app.pipeline.nlp.analyzer._get_keybert_model", return_value=mock_model):
                 with patch("app.pipeline.nlp.analyzer.YAKE_AVAILABLE", True):
-                    with patch.dict("sys.modules", {"yake": MagicMock(KeywordExtractor=MagicMock(return_value=mock_yake))}):
+                    with patch.dict(
+                        "sys.modules", {"yake": MagicMock(KeywordExtractor=MagicMock(return_value=mock_yake))}
+                    ):
                         result = extract_keywords("machine learning text")
                         assert "safety_kw" in result
 
