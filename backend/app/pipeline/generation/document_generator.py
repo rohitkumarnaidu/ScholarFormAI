@@ -16,9 +16,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from app.db.repositories.document_repository import DocumentRepository
+from app.config.settings import settings
 from app.db.repositories.generator_session_repository import GeneratorSessionRepository
-from app.db.supabase_client import get_supabase_client
 from app.models.block import Block, BlockType
 from app.models.pipeline_document import DocumentMetadata, PipelineDocument, TemplateInfo
 from app.pipeline.export.exporter import Exporter
@@ -27,8 +26,6 @@ from app.pipeline.generation.content_parser import ContentParser
 from app.pipeline.generation.prompt_builder import PromptBuilder
 from app.services.document_service import DocumentService
 from app.utils.singleton import get_or_create
-
-from app.config.settings import settings
 
 logger = logging.getLogger(__name__)
 
@@ -58,6 +55,10 @@ class DocumentGenerator:
     """Orchestrates document generation from metadata."""
 
     def _run_sync(self, coro):
+        import inspect
+
+        if not inspect.isawaitable(coro):
+            return coro
         try:
             loop = asyncio.get_running_loop()
             return loop.run_until_complete(coro)
