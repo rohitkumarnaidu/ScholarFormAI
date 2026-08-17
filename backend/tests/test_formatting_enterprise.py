@@ -83,7 +83,7 @@ class TestTemplateRendererRender:
         with (
             patch("app.pipeline.formatting.template_renderer._DOCXTPL_AVAILABLE", True),
             patch("app.pipeline.formatting.template_renderer.DocxTemplate") as mock_dt,
-            patch.object(tr, "_resolve_template_path", return_value=Path("/tmp/test.docx")),
+            patch.object(tr, "_resolve_template_path_with_flag", return_value=(Path("/tmp/test.docx"), False)),
             patch.object(tr, "build_context", return_value={"title": "Test"}),
         ):
             mock_tpl = MagicMock()
@@ -114,7 +114,8 @@ class TestTemplateRendererRender:
         doc.formatting_options = {}
         with (
             patch("app.pipeline.formatting.template_renderer._DOCXTPL_AVAILABLE", True),
-            patch.object(tr, "_resolve_template_path", side_effect=OSError("no such file")),
+            patch.object(tr, "_resolve_template_path_with_flag", return_value=(Path("/tmp/test.docx"), False)),
+            patch.object(tr, "build_context", side_effect=OSError("no such file")),
             patch("app.pipeline.formatting.template_renderer.logger") as mock_log,
         ):
             with pytest.raises(OSError):
