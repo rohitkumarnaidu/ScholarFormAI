@@ -217,7 +217,6 @@ def client():
     app.dependency_overrides = {}
 
 
-@pytest.mark.skip(reason="SlowAPI broken with FastAPI >= 0.137")
 class TestV2DocumentsEndpoint:
     def test_v2_list_documents(self, client):
         mock_query = _make_chainable_query()

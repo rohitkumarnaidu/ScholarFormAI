@@ -7,6 +7,15 @@ conftest.py — shared pytest fixtures for ScholarForm AI backend tests.
 
 from __future__ import annotations
 
+import fastapi.routing
+
+# Monkeypatch for slowapi compatibility with FastAPI >= 0.137
+if hasattr(fastapi.routing, "_IncludedRouter"):
+    fastapi.routing._IncludedRouter.endpoint = property(lambda self: lambda *a, **k: None)
+    fastapi.routing._IncludedRouter.path = property(lambda self: getattr(self, "prefix", ""))
+
+
+
 import os
 import socket
 import sys
@@ -20,10 +29,9 @@ import requests
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
 
 # Mock optional dependencies globally so that patch() works in CI where they are missing
-import sys
-from unittest.mock import MagicMock
-if 'sentence_transformers' not in sys.modules:
-    sys.modules['sentence_transformers'] = MagicMock()
+
+if "sentence_transformers" not in sys.modules:
+    sys.modules["sentence_transformers"] = MagicMock()
 
 if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
