@@ -231,7 +231,7 @@ class TestGetSessionRecord:
     """_get_session_record — Supabase + volatile fallback."""
 
     def test_supabase_returns_data(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client") as mock_sb:
+        with patch("app.db.repositories.base.get_supabase_client") as mock_sb:
             sb = MagicMock()
             sb.table.return_value.select.return_value.eq.return_value.maybe_single.return_value.execute.return_value = (
                 _make_supabase_result({"id": "s1", "status": "done"})
@@ -244,7 +244,7 @@ class TestGetSessionRecord:
             assert result == {"id": "s1", "status": "done"}
 
     def test_supabase_none_falls_to_volatile(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
 
             dg = DocumentGenerator()
@@ -253,7 +253,7 @@ class TestGetSessionRecord:
             assert result == {"id": "v1", "status": "pending"}
 
     def test_supabase_exception_falls_to_volatile(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client") as mock_sb:
+        with patch("app.db.repositories.base.get_supabase_client") as mock_sb:
             sb = MagicMock()
             sb.table.return_value.select.return_value.eq.return_value.maybe_single.return_value.execute.side_effect = (
                 RuntimeError("DB down")
@@ -262,12 +262,12 @@ class TestGetSessionRecord:
             from app.pipeline.generation.document_generator import DocumentGenerator
 
             dg = DocumentGenerator()
-            dg._volatile_sessions["v2"] = {"id": "v2"}
+            dg._volatile_sessions["v2"] = {"id": "v2", "status": "volatile_only"}
             result = dg._get_session_record("v2")
-            assert result == {"id": "v2"}
+            assert result == {"id": "v2", "status": "volatile_only"}
 
     def test_supabase_empty_data_returns_none(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client") as mock_sb:
+        with patch("app.db.repositories.base.get_supabase_client") as mock_sb:
             sb = MagicMock()
             sb.table.return_value.select.return_value.eq.return_value.maybe_single.return_value.execute.return_value = (
                 _make_supabase_result(None)
@@ -280,7 +280,7 @@ class TestGetSessionRecord:
             assert result is None
 
     def test_not_in_any_store_returns_none(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
 
             dg = DocumentGenerator()
@@ -292,7 +292,7 @@ class TestGetSession:
     """get_session — public wrapper."""
 
     def test_delegates_to_get_session_record(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
 
             dg = DocumentGenerator()
@@ -305,7 +305,7 @@ class TestUpdateStatus:
     """update_status — DB + volatile merge."""
 
     def test_updates_volatile_when_supabase_none(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
 
             dg = DocumentGenerator()
@@ -317,7 +317,7 @@ class TestUpdateStatus:
             assert dg._volatile_sessions["j1"]["config_json"]["stage"] == "done"
 
     def test_updates_db_when_supabase_available(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client") as mock_sb:
+        with patch("app.db.repositories.base.get_supabase_client") as mock_sb:
             sb = MagicMock()
             mock_sb.return_value = sb
             from app.pipeline.generation.document_generator import DocumentGenerator
@@ -328,7 +328,7 @@ class TestUpdateStatus:
             sb.table.return_value.update.return_value.eq.return_value.execute.assert_called_once()
 
     def test_db_exception_logged_not_raised(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client") as mock_sb:
+        with patch("app.db.repositories.base.get_supabase_client") as mock_sb:
             sb = MagicMock()
             sb.table.return_value.update.return_value.eq.return_value.execute.side_effect = RuntimeError("fail")
             mock_sb.return_value = sb
@@ -340,7 +340,7 @@ class TestUpdateStatus:
             assert dg._volatile_sessions["j3"]["status"] == "processing"
 
     def test_with_outline_payload(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
 
             dg = DocumentGenerator()
@@ -349,7 +349,7 @@ class TestUpdateStatus:
             assert dg._volatile_sessions["j4"]["outline_json"] == ["A", "B"]
 
     def test_empty_outline_items_filtered(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
 
             dg = DocumentGenerator()
@@ -358,7 +358,7 @@ class TestUpdateStatus:
             assert dg._volatile_sessions["j4b"]["outline_json"] == ["Real"]
 
     def test_creates_record_if_not_found(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
 
             dg = DocumentGenerator()
@@ -366,7 +366,7 @@ class TestUpdateStatus:
             assert dg._volatile_sessions["new-job"]["status"] == "pending"
 
     def test_progress_clamped(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
 
             dg = DocumentGenerator()
@@ -379,7 +379,7 @@ class TestGetStatus:
     """get_status — reads from session then falls back to DocumentService."""
 
     def test_from_session_record(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
 
             dg = DocumentGenerator()
@@ -396,7 +396,7 @@ class TestGetStatus:
             assert status["outline"] == ["Intro"]
 
     def test_fetches_outline_from_document_result_when_missing_in_status(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 MockDS.get_document_result.return_value = {
                     "structured_data": {"outline": ["Intro", "Methods"]},
@@ -414,7 +414,7 @@ class TestGetStatus:
                 assert "Intro" in status["outline"]
 
     def test_fallback_to_document_service(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 MockDS.get_document.return_value = {
                     "status": "COMPLETED",
@@ -434,7 +434,7 @@ class TestGetStatus:
                 assert status["outline"] == ["Intro"]
 
     def test_raises_key_error_for_unknown(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 MockDS.get_document.return_value = None
                 from app.pipeline.generation.document_generator import DocumentGenerator
@@ -444,7 +444,7 @@ class TestGetStatus:
                     dg.get_status("unknown")
 
     def test_maps_document_statuses_correctly(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 for db_status, expected in [
                     ("PENDING", "pending"),
@@ -471,7 +471,7 @@ class TestGetDownloadPath:
     """get_download_path — returns Path for completed, else None."""
 
     def test_returns_path_for_completed_volatile(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
 
             dg = DocumentGenerator()
@@ -486,7 +486,7 @@ class TestGetDownloadPath:
             assert "test.docx" in str(result)
 
     def test_none_for_pending_volatile(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 MockDS.get_document.return_value = None
                 from app.pipeline.generation.document_generator import DocumentGenerator
@@ -501,7 +501,7 @@ class TestGetDownloadPath:
                 assert dg.get_download_path("gd2") is None
 
     def test_fallback_to_document_service(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 MockDS.get_document.return_value = {
                     "status": "COMPLETED",
@@ -515,7 +515,7 @@ class TestGetDownloadPath:
                 assert "output.docx" in str(result)
 
     def test_returns_none_when_document_missing(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 MockDS.get_document.return_value = None
                 from app.pipeline.generation.document_generator import DocumentGenerator
@@ -524,7 +524,7 @@ class TestGetDownloadPath:
                 assert dg.get_download_path("ghost") is None
 
     def test_returns_none_for_failed_document(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 MockDS.get_document.return_value = {
                     "status": "FAILED",
@@ -541,7 +541,7 @@ class TestStartJob:
 
     @pytest.mark.asyncio
     async def test_returns_uuid_and_creates_volatile_session(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 with patch(f"{_GENERATOR_MODULE}.uuid") as MockUuid:
                     with patch(f"{_GENERATOR_MODULE}.emit_event"):
@@ -564,7 +564,7 @@ class TestStartJob:
 
     @pytest.mark.asyncio
     async def test_supabase_insert_failure_stores_in_volatile(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client") as mock_sb_getter:
+        with patch("app.db.repositories.base.get_supabase_client") as mock_sb_getter:
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 with patch(f"{_GENERATOR_MODULE}.uuid") as MockUuid:
                     with patch(f"{_GENERATOR_MODULE}.emit_event"):
@@ -581,7 +581,7 @@ class TestStartJob:
 
     @pytest.mark.asyncio
     async def test_calls_document_service_create(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 with patch(f"{_GENERATOR_MODULE}.uuid") as MockUuid:
                     with patch(f"{_GENERATOR_MODULE}.emit_event"):
@@ -597,7 +597,7 @@ class TestStartJob:
 
     @pytest.mark.asyncio
     async def test_emits_queued_event(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 with patch(f"{_GENERATOR_MODULE}.uuid") as MockUuid:
                     with patch(f"{_GENERATOR_MODULE}.emit_event") as mock_emit:
@@ -626,7 +626,7 @@ class TestRunPipeline:
     @pytest.fixture
     def mock_all(self):
         """Patch all external dependencies and return them."""
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None) as mock_sb:
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None) as mock_sb:
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 with patch(f"{_GENERATOR_MODULE}.PromptBuilder") as MockPB:
                     with patch(f"{_GENERATOR_MODULE}.ContentParser") as MockCP:
@@ -1318,7 +1318,7 @@ class TestEdgeCases:
         assert result["progress"] == 0
 
     def test_update_status_does_not_overwrite_unset_fields(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             from app.pipeline.generation.document_generator import DocumentGenerator
 
             dg = DocumentGenerator()
@@ -1381,7 +1381,7 @@ class TestEdgeCases:
 
     @pytest.mark.asyncio
     async def test_start_job_user_id_none(self):
-        with patch(f"{_GENERATOR_MODULE}.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             with patch(f"{_GENERATOR_MODULE}.DocumentService") as MockDS:
                 with patch(f"{_GENERATOR_MODULE}.uuid") as MockUuid:
                     with patch(f"{_GENERATOR_MODULE}.emit_event"):

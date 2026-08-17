@@ -20,6 +20,7 @@ from app.config.settings import settings
 from app.db.repositories.document_repository import DocumentRepository  # noqa: F401
 from app.db.repositories.generator_session_repository import GeneratorSessionRepository
 from app.db.supabase_client import get_supabase_client  # noqa: F401
+from app.routers.v1.stream import emit_event  # noqa: F401
 from app.models.block import Block, BlockType
 from app.models.pipeline_document import DocumentMetadata, PipelineDocument, TemplateInfo
 from app.pipeline.export.exporter import Exporter
@@ -440,8 +441,6 @@ class DocumentGenerator:
 
     def _emit(self, job_id: str, **payload: Any) -> None:
         try:
-            from app.routers.v1.stream import emit_event
-
             emit_event(job_id, "status_update", payload)
         except Exception as exc:
             logger.debug("SSE emission failed for generation job %s: %s", job_id, exc)

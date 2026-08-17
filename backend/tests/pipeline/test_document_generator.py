@@ -113,7 +113,7 @@ def dc():
             mod, dg = dc
             dg.some_method(...)
     """
-    with patch("app.db.supabase_client.get_supabase_client") as msb:
+    with patch("app.db.repositories.base.get_supabase_client") as msb:
         sb, _ = _default_supabase_mock()
         msb.return_value = sb
         mod = _fresh_module()
@@ -279,7 +279,7 @@ class TestGetSessionRecord:
     def test_supabase_exception_falls_to_volatile(self):
         sb, t = _default_supabase_mock()
         t.execute.side_effect = Exception("DB down")
-        with patch("app.db.supabase_client.get_supabase_client", return_value=sb):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             mod = _fresh_module()
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
@@ -289,7 +289,7 @@ class TestGetSessionRecord:
             assert dg._get_session_record("j1") == {"id": "j1", "status": "processing"}
 
     def test_supabase_none_uses_volatile(self):
-        with patch("app.db.supabase_client.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             mod = _fresh_module()
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
@@ -375,7 +375,7 @@ class TestStartJob:
     def test_supabase_insert_fails_uses_volatile(self):
         sb, _ = _default_supabase_mock()
         sb.table.return_value.insert.side_effect = Exception("DB down")
-        with patch("app.db.supabase_client.get_supabase_client", return_value=sb):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             mod = _fresh_module()
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
@@ -407,7 +407,7 @@ class TestRunPipeline:
     def test_success_flow(self):
         sb, t = _default_supabase_mock()
         t.execute.return_value = MagicMock(data=self._make_session_data())
-        with patch("app.db.supabase_client.get_supabase_client", return_value=sb):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             mod = _fresh_module()
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
@@ -444,7 +444,7 @@ class TestRunPipeline:
                             asyncio.run(dg.run_pipeline("j1"))
 
     def test_job_not_found_returns_early(self):
-        with patch("app.db.supabase_client.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             mod = _fresh_module()
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
@@ -455,7 +455,7 @@ class TestRunPipeline:
             asyncio.run(dg.run_pipeline("nonexistent"))
 
     def test_pipeline_exception_triggers_failure(self):
-        with patch("app.db.supabase_client.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             mod = _fresh_module()
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
@@ -487,7 +487,7 @@ class TestGetStatus:
     def test_from_document_fallback(self):
         sb, t = _default_supabase_mock()
         t.execute.return_value = MagicMock(data=None)
-        with patch("app.db.supabase_client.get_supabase_client", return_value=sb):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             mod = _fresh_module()
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
@@ -536,7 +536,7 @@ class TestGetStatus:
     def test_failed_status_has_error(self):
         sb, t = _default_supabase_mock()
         t.execute.return_value = MagicMock(data=None)
-        with patch("app.db.supabase_client.get_supabase_client", return_value=sb):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             mod = _fresh_module()
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
@@ -568,7 +568,7 @@ class TestGetDownloadPath:
     def test_from_document_fallback(self):
         sb, t = _default_supabase_mock()
         t.execute.return_value = MagicMock(data=None)
-        with patch("app.db.supabase_client.get_supabase_client", return_value=sb):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             mod = _fresh_module()
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
@@ -585,7 +585,7 @@ class TestGetDownloadPath:
     def test_not_completed(self):
         sb, t = _default_supabase_mock()
         t.execute.return_value = MagicMock(data=None)
-        with patch("app.db.supabase_client.get_supabase_client", return_value=sb):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             mod = _fresh_module()
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
@@ -598,7 +598,7 @@ class TestGetDownloadPath:
     def test_no_document(self):
         sb, t = _default_supabase_mock()
         t.execute.return_value = MagicMock(data=None)
-        with patch("app.db.supabase_client.get_supabase_client", return_value=sb):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             mod = _fresh_module()
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
@@ -912,7 +912,7 @@ class TestBranchGaps:
         """start_job: sb is None → skip DB (line 245)."""
         sb, _ = _default_supabase_mock()
         sb.table.return_value.insert.side_effect = Exception("DB")
-        with patch("app.db.supabase_client.get_supabase_client", return_value=None):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=None):
             mod = _fresh_module()
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
@@ -925,7 +925,7 @@ class TestBranchGaps:
 
     def test_start_job_supabase_returns_none(self):
         """start_job: sb is not None but execute raises → DB path still enters try block."""
-        with patch("app.db.supabase_client.get_supabase_client") as msb:
+        with patch("app.db.repositories.base.get_supabase_client") as msb:
             sb = MagicMock()
             msb.return_value = sb
             mod = _fresh_module()
@@ -949,7 +949,7 @@ class TestBranchGaps:
                 "config_json": {"doc_type": "paper", "template": "ieee", "metadata": {"title": "T"}, "options": {}},
             }
         )
-        with patch("app.db.supabase_client.get_supabase_client", return_value=sb):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             mod = _fresh_module()
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
@@ -1021,7 +1021,7 @@ class TestBranchGaps:
     def test_format_export_invalid_level(self):
         """_format_and_export: level fails int() → level_value is None."""
         sb, t = _default_supabase_mock()
-        with patch("app.db.supabase_client.get_supabase_client", return_value=sb):
+        with patch("app.db.repositories.base.get_supabase_client", return_value=sb):
             mod = _fresh_module()
             mod.GENERATED_DIR = Path("/tmp")
             mod.emit_event = MagicMock()
