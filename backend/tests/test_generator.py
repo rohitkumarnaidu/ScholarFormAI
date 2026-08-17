@@ -147,6 +147,8 @@ class TestDocumentGenerator:
         self._ds_mock.upsert_document_result.return_value = None
         self._supa_patch = patch("app.pipeline.generation.document_generator.get_supabase_client", return_value=None)
         self._supa_patch.start()
+        self._supa_base_patch = patch("app.db.repositories.base.get_supabase_client", return_value=None)
+        self._supa_base_patch.start()
         self.dg = DocumentGenerator()
 
     def teardown_method(self):
