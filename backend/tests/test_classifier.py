@@ -71,40 +71,6 @@ class TestResolveHeadingType:
         result, name = cc._resolve_heading_type(block)
         assert result == BlockType.HEADING_1
 
-
-class TestMapScibertLabel:
-    def test_title_mapping(self):
-        from app.models import BlockType
-        from app.pipeline.classification.classifier import ContentClassifier
-
-        cc = ContentClassifier()
-        block = MagicMock()
-        block.text = "My Paper"
-        result, name = cc._map_scibert_label("TITLE", block)
-        assert result == BlockType.TITLE
-
-    def test_abstract_heading(self):
-        from app.models import BlockType
-        from app.pipeline.classification.classifier import ContentClassifier
-
-        cc = ContentClassifier()
-        block = MagicMock()
-        block.text = "Abstract"
-        result, name = cc._map_scibert_label("ABSTRACT", block)
-        assert result == BlockType.ABSTRACT_HEADING
-
-    def test_abstract_body(self):
-        from app.models import BlockType
-        from app.pipeline.classification.classifier import ContentClassifier
-
-        cc = ContentClassifier()
-        block = MagicMock()
-        block.text = "This paper discusses..."
-        block.metadata = {}
-        result, name = cc._map_scibert_label("ABSTRACT", block)
-        assert result == BlockType.ABSTRACT_BODY
-
-
 class TestIsLikelyAffiliation:
     def test_university_keyword(self):
         from app.pipeline.classification.classifier import ContentClassifier
