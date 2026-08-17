@@ -68,7 +68,7 @@ numpy>=1.26.4
 
 # ─── LLM Clients (light) ───────────────────────────────────────────────────────
 litellm>=1.81.13
-openai==2.41.1
+openai==3.0.0
 groq
 anthropic
 langchain-core==1.2.31
