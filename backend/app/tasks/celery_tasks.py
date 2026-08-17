@@ -23,6 +23,14 @@ from app.tasks.cleanup import cleanup_stranded_uploads
 
 logger = logging.getLogger(__name__)
 
+def _mark_document_failed(doc_id: str, error_message: str):
+    coro = DocumentService.mark_document_failed(doc_id, error_message)
+    try:
+        loop = asyncio.get_running_loop()
+        loop.create_task(coro)
+    except RuntimeError:
+        asyncio.run(coro)
+
 from celery.signals import setup_logging as celery_setup_logging
 from celery.signals import worker_process_init
 
@@ -137,7 +145,7 @@ def process_document_task(document_id: str, use_agent: bool = True):
         logger.error("Async processing failed for %s: %s", document_id, exc, exc_info=True)
         # Mark as FAILED — never raises
         with contextlib.suppress(Exception):
-            asyncio.run(DocumentService.mark_document_failed(document_id, str(exc)))
+            _mark_document_failed(document_id, str(exc))
         return False
 
 
@@ -156,7 +164,7 @@ def process_generation_task(job_id: str):
         return True
     except Exception as exc:
         logger.error("Generation task failed for %s: %s", job_id, exc, exc_info=True)
-        DocumentService.mark_document_failed(str(job_id), str(exc))
+        _mark_document_failed(str(job_id), str(exc))
         return False
 
 
@@ -208,7 +216,7 @@ def process_agent_pipeline_task(session_id: str, user_prompt: str):
         return True
     except Exception as exc:
         logger.error("Agent pipeline failed for %s: %s", session_id, exc, exc_info=True)
-        DocumentService.mark_document_failed(str(session_id), str(exc))
+        _mark_document_failed(str(session_id), str(exc))
         return False
 
 
@@ -233,7 +241,7 @@ def process_agent_resume_task(session_id: str):
         return True
     except Exception as exc:
         logger.error("Agent resume failed for %s: %s", session_id, exc, exc_info=True)
-        DocumentService.mark_document_failed(str(session_id), str(exc))
+        _mark_document_failed(str(session_id), str(exc))
         return False
 
 
@@ -258,7 +266,7 @@ def process_agent_rewrite_task(session_id: str, section_name: str, instruction: 
         return True
     except Exception as exc:
         logger.error("Agent rewrite failed for %s: %s", session_id, exc, exc_info=True)
-        DocumentService.mark_document_failed(str(session_id), str(exc))
+        _mark_document_failed(str(session_id), str(exc))
         return False
 
 
@@ -283,7 +291,7 @@ def process_edit_document_task(job_id: str, edited_structured_data: dict, templa
         return ok
     except Exception as exc:
         logger.error("Edit task failed for %s: %s", job_id, exc, exc_info=True)
-        DocumentService.mark_document_failed(str(job_id), f"Edit flow failed: {exc}")
+        _mark_document_failed(str(job_id), f"Edit flow failed: {exc}")
         return False
 
 

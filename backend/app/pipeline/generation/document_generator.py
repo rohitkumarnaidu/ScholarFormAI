@@ -57,7 +57,14 @@ _BLOCK_TYPE_MAP: dict[str, BlockType] = {
 class DocumentGenerator:
     """Orchestrates document generation from metadata."""
 
-    def __init__(self) -> None:
+    def _run_sync(self, coro):
+        try:
+            loop = asyncio.get_running_loop()
+            return loop.run_until_complete(coro)
+        except RuntimeError:
+            return asyncio.run(coro)
+
+    def __init__(self, use_llm: bool = True) -> None:
         # Volatile fallback only used when Supabase is unavailable in local/test mode.
         self._volatile_sessions: dict[str, dict[str, Any]] = {}
 
@@ -310,14 +317,14 @@ class DocumentGenerator:
         if state:
             status_payload = self._session_record_to_status(state)
             if not status_payload["outline"]:
-                result = DocumentService.get_document_result(job_id)
+                result = self._run_sync(DocumentService.get_document_result(job_id))
                 if result and isinstance(result.get("structured_data"), dict):
                     raw_outline = result["structured_data"].get("outline") or []
                     if isinstance(raw_outline, list):
                         status_payload["outline"] = [str(item).strip() for item in raw_outline if str(item).strip()]
             return status_payload
 
-        doc = DocumentService.get_document(job_id)
+        doc = self._run_sync(DocumentService.get_document(job_id))
         if not doc:
             raise KeyError(f"generation job not found: '{job_id}'")
 
@@ -337,7 +344,7 @@ class DocumentGenerator:
         output_path = doc.get("output_path")
 
         outline: list[str] = []
-        result = DocumentService.get_document_result(job_id)
+        result = self._run_sync(DocumentService.get_document_result(job_id))
         if result and isinstance(result.get("structured_data"), dict):
             raw_outline = result["structured_data"].get("outline") or []
             if isinstance(raw_outline, list):
@@ -361,7 +368,7 @@ class DocumentGenerator:
             if status_payload.get("status") == "done" and status_payload.get("output_path"):
                 return Path(str(status_payload["output_path"]))
 
-        doc = DocumentService.get_document(job_id)
+        doc = self._run_sync(DocumentService.get_document(job_id))
         if not doc:
             return None
         status = str(doc.get("status") or "").upper()

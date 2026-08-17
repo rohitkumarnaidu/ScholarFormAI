@@ -81,16 +81,14 @@ def with_timeout(timeout_seconds: int = 300):
 def _mark_job_as_failed(job_id: str, error_message: str) -> None:
     """
     Mark a job as failed in the database via DocumentService.
-
-    Old ORM equivalent:
-        with SessionLocal() as db:
-            doc = db.query(Document).filter_by(id=job_id).first()
-            if doc:
-                doc.status = "FAILED"; doc.error_message = error_message
-                db.commit()
     """
     try:
-        DocumentService.mark_document_failed(str(job_id), error_message)
+        coro = DocumentService.mark_document_failed(str(job_id), error_message)
+        try:
+            loop = asyncio.get_running_loop()
+            loop.create_task(coro)
+        except RuntimeError:
+            asyncio.run(coro)
         logger.info("Marked job %s as FAILED: %s", job_id, error_message)
     except Exception as e:
         logger.error("Failed to mark job %s as failed: %s", job_id, e, exc_info=True)
