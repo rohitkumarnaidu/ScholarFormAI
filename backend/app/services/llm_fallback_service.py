@@ -170,9 +170,7 @@ def generate(
         elif model.startswith("openrouter/"):
             kwargs["api_base"] = _settings().OPENROUTER_API_BASE
 
-        from litellm import completion
-
-        response = completion(**kwargs)
+        response = _call_litellm_completion(**kwargs)
         choices = response.choices
         if not choices:
             logger.warning("llm_service.generate: empty choices from %s", model, extra=log_extra())
@@ -271,6 +269,12 @@ def generate_with_model(
     except Exception as exc:
         _record_failure(provider)
         raise LLMUnavailableError(f"{provider} failed: {exc}") from exc
+
+
+def _call_litellm_completion(**kwargs):
+    from litellm import completion
+
+    return completion(**kwargs)
 
 
 def _generate_openai_compat(**kwargs) -> str:

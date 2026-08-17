@@ -383,7 +383,7 @@ class TestGenerate:
         mock_response.choices = [mock_choice]
 
         llm_module = llm
-        with patch("app.services.llm_fallback_service.completion", return_value=mock_response, create=True) as mock_comp:
+        with patch("app.services.llm_fallback_service._call_litellm_completion", return_value=mock_response, create=True) as mock_comp:
             with patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None):
                 with patch("app.cache.redis_cache.redis_cache.set_llm_result"):
                     with patch.object(llm_module.settings, "NVIDIA_API_KEY", "test-key"):
@@ -413,7 +413,7 @@ class TestGenerate:
             pytest.skip("LiteLLM not available")
         mock_response = MagicMock()
         mock_response.choices = []
-        with patch("app.services.llm_fallback_service.completion", return_value=mock_response, create=True):
+        with patch("app.services.llm_fallback_service._call_litellm_completion", return_value=mock_response, create=True):
             with patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None):
                 with patch.object(llm.settings, "NVIDIA_API_KEY", "test-key"):
                     result = generate(
