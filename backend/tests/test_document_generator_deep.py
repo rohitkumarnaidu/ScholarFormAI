@@ -29,7 +29,8 @@ def _auto_mocks():
 
     DocumentService._supports_file_hash = None
     DocumentService._supports_output_hash = None
-    return
+    with patch("app.db.repositories.base.get_supabase_client", return_value=None):
+        yield
 
 
 def _make_supabase_result(data=None):
