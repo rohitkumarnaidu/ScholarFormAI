@@ -586,7 +586,9 @@ class TestExportLatex:
         ex = _make_exporter(mock_latex=mock_tex)
         doc = _make_doc()
         result = ex.export_latex(doc, "/out/test.tex")
-        mock_tex.convert_to_latex.assert_called_once_with(doc.output_path, os.path.dirname("/out/test.tex"))
+        mock_tex.convert_to_latex.assert_called_once_with(
+            doc.output_path, os.path.dirname("/out/test.tex"), template_name="ieee"
+        )
         assert result == "/out/test.tex"
 
     def test_no_output_path_returns_none(self):
