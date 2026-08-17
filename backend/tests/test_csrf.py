@@ -33,7 +33,7 @@ class TestGetCsrfSecret:
                 from app.middleware.csrf import _get_csrf_secret
 
                 result = _get_csrf_secret()
-        assert result == b"csrf-fallback-secret-do-not-use-in-production"
+        assert result is None
 
 
 class TestGenerateToken:
