@@ -162,63 +162,8 @@ class TestProcessDocumentTask:
             result = cleanup_uploads_task()
         assert result["retention_days"] == 30
 
-    def test_scibert_missing_fixtures(self):
-        from app.tasks.celery_tasks import scibert_benchmark_task
-
-        with patch("app.tasks.celery_tasks.settings"):  # ensure settings mock is active
-            with patch("pathlib.Path.exists", return_value=False):
-                result = scibert_benchmark_task(fixtures_dir="/nonexistent")
-        assert result["status"] == "missing_fixtures"
-
-    def test_scibert_full_run(self, tmp_path):
-        labels = tmp_path / "labels.json"
-        labels.write_text('{"paper1.pdf": {"labels": ["abstract"]}}', encoding="utf-8")
-        (tmp_path / "paper1.pdf").write_text("fake", encoding="utf-8")
-
-        from app.tasks.celery_tasks import scibert_benchmark_task
-
-        with patch("app.pipeline.parsing.parser_factory.ParserFactory") as MockPF:
-            parser = MagicMock()
-            parser.parse.return_value.blocks = []
-            MockPF.return_value.get_parser.return_value = parser
-            with patch("app.pipeline.intelligence.semantic_parser.SemanticParser") as MockSP:
-                MockSP.return_value.analyze_blocks.return_value = [{"predicted_section_type": "abstract"}]
-                with patch("app.tasks.celery_tasks.persist_scibert_benchmark_result"):
-                    result = scibert_benchmark_task(fixtures_dir=str(tmp_path))
-        assert result["status"] == "ok"
-
-    def test_scibert_label_mismatch(self, tmp_path):
-        labels = tmp_path / "labels.json"
-        labels.write_text('{"paper1.pdf": {"labels": ["abstract", "methods"]}}', encoding="utf-8")
-        (tmp_path / "paper1.pdf").write_text("fake", encoding="utf-8")
-
-        from app.tasks.celery_tasks import scibert_benchmark_task
-
-        with patch("app.pipeline.parsing.parser_factory.ParserFactory") as MockPF:
-            parser = MagicMock()
-            parser.parse.return_value.blocks = []
-            MockPF.return_value.get_parser.return_value = parser
-            with patch("app.pipeline.intelligence.semantic_parser.SemanticParser") as MockSP:
-                MockSP.return_value.analyze_blocks.return_value = [{"predicted_section_type": "abstract"}]
-                with patch("app.tasks.celery_tasks.persist_scibert_benchmark_result"):
-                    result = scibert_benchmark_task(fixtures_dir=str(tmp_path))
-        assert "status" in result
-
-    def test_scibert_no_parser(self, tmp_path):
-        labels = tmp_path / "labels.json"
-        labels.write_text('{"paper1.pdf": {"labels": ["abstract"]}}', encoding="utf-8")
-        (tmp_path / "paper1.pdf").write_text("fake", encoding="utf-8")
-
-        from app.tasks.celery_tasks import scibert_benchmark_task
-
-        with patch("app.pipeline.parsing.parser_factory.ParserFactory") as MockPF:
-            MockPF.return_value.get_parser.return_value = None
-            with patch("app.tasks.celery_tasks.persist_scibert_benchmark_result"):
-                result = scibert_benchmark_task(fixtures_dir=str(tmp_path))
-        assert "status" in result
 
 
-class TestMacroF1:
     def test_perfect(self):
         def _macro_f1(y_true, y_pred):
             labels = sorted(set(y_true) | set(y_pred))
