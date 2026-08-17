@@ -82,7 +82,7 @@ function ProvidersPageInner() {
             toast.error('Failed to discover models — network error');
         }
         setDiscovering(null);
-    }, [user, toast, discovering]);
+    }, [user, discovering]);
 
     useEffect(() => {
         if (!loading && !isLoggedIn) router.push('/login?next=/providers');
@@ -115,7 +115,7 @@ function ProvidersPageInner() {
             toast.error('Failed to load providers — check your connection');
         }
         setProvidersLoading(false);
-    }, [user, toast]);
+    }, [user]);
 
     useEffect(() => {
         if (isLoggedIn) loadProviders();
@@ -164,7 +164,7 @@ function ProvidersPageInner() {
             setTestResults(prev => ({ ...prev, [providerId]: { status: 'error', message: 'Connection failed — server unreachable' } }));
         }
         setTestingId(null);
-    }, [user, toast]);
+    }, [user]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

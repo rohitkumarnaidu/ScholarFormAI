@@ -160,14 +160,18 @@ class TestDefaultSessionConfig:
 
 
 class TestGetSession:
-    def test_returns_none_when_not_found(self):
+    @patch("app.pipeline.generation.document_generator.GeneratorSessionRepository")
+    def test_returns_none_when_not_found(self, mock_repo_class):
+        mock_repo_class.return_value.get_session.return_value = None
         from app.pipeline.generation.document_generator import DocumentGenerator
 
         gen = DocumentGenerator()
         result = gen.get_session("nonexistent")
         assert result is None
 
-    def test_returns_volatile_session(self):
+    @patch("app.pipeline.generation.document_generator.GeneratorSessionRepository")
+    def test_returns_volatile_session(self, mock_repo_class):
+        mock_repo_class.return_value.get_session.return_value = None
         from app.pipeline.generation.document_generator import DocumentGenerator
 
         gen = DocumentGenerator()
@@ -177,7 +181,9 @@ class TestGetSession:
 
 
 class TestUpdateStatus:
-    def test_updates_volatile_sessions(self):
+    @patch("app.pipeline.generation.document_generator.GeneratorSessionRepository")
+    def test_updates_volatile_sessions(self, mock_repo_class):
+        mock_repo_class.return_value.get_session.return_value = None
         from app.pipeline.generation.document_generator import DocumentGenerator
 
         gen = DocumentGenerator()
@@ -186,7 +192,9 @@ class TestUpdateStatus:
         assert gen._volatile_sessions["job1"]["status"] == "processing"
         assert gen._volatile_sessions["job1"]["progress"] == 50
 
-    def test_clamps_progress(self):
+    @patch("app.pipeline.generation.document_generator.GeneratorSessionRepository")
+    def test_clamps_progress(self, mock_repo_class):
+        mock_repo_class.return_value.get_session.return_value = None
         from app.pipeline.generation.document_generator import DocumentGenerator
 
         gen = DocumentGenerator()
@@ -194,7 +202,9 @@ class TestUpdateStatus:
         gen.update_status("job1", status="done", progress=150)
         assert gen._volatile_sessions["job1"]["progress"] == 100
 
-    def test_negative_progress_clamped(self):
+    @patch("app.pipeline.generation.document_generator.GeneratorSessionRepository")
+    def test_negative_progress_clamped(self, mock_repo_class):
+        mock_repo_class.return_value.get_session.return_value = None
         from app.pipeline.generation.document_generator import DocumentGenerator
 
         gen = DocumentGenerator()
@@ -204,9 +214,11 @@ class TestUpdateStatus:
 
 
 class TestGetStatus:
+    @patch("app.pipeline.generation.document_generator.GeneratorSessionRepository")
     @patch("app.pipeline.generation.document_generator.DocumentService")
-    def test_uses_session_record(self, mock_ds):
+    def test_uses_session_record(self, mock_ds, mock_repo_class):
         mock_ds.get_document_result.return_value = None
+        mock_repo_class.return_value.get_session.return_value = None
         from app.pipeline.generation.document_generator import DocumentGenerator
 
         gen = DocumentGenerator()
@@ -219,9 +231,11 @@ class TestGetStatus:
         status = gen.get_status("job1")
         assert status["status"] == "done"
 
+    @patch("app.pipeline.generation.document_generator.GeneratorSessionRepository")
     @patch("app.pipeline.generation.document_generator.DocumentService")
-    def test_raises_on_not_found(self, mock_ds):
+    def test_raises_on_not_found(self, mock_ds, mock_repo_class):
         mock_ds.get_document.return_value = None
+        mock_repo_class.return_value.get_session.return_value = None
         from app.pipeline.generation.document_generator import DocumentGenerator
 
         gen = DocumentGenerator()

@@ -5,7 +5,7 @@
 
 import { forwardRef } from 'react';
 
-const cx = (...classes) => classes.filter(Boolean).join(' ');
+import { cn } from '@/src/lib/utils';
 
 const Skeleton = forwardRef(function Skeleton(
     {

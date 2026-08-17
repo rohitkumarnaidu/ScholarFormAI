@@ -178,7 +178,7 @@ export default function TemplateEditor() {
             lineSpacing: prev.lineSpacing,
         }));
         setSaving(false);
-    }, [settings, savedTemplates.length, addToast]);
+    }, [settings, savedTemplates.length]);
 
     useEffect(() => {
         const handleKeyDown = (e) => {

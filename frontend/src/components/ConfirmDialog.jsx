@@ -40,11 +40,7 @@ export function ConfirmProvider({ children }) {
         }
     }, [state.open, handleKeyDown]);
 
-    const variantStyles = {
-        danger: 'bg-red-600 hover:bg-red-700 focus:ring-red-500/30',
-        warning: 'bg-amber-600 hover:bg-amber-700 focus:ring-amber-500/30',
-        info: 'bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500/30',
-    };
+    
 
     return (
         <ConfirmContext.Provider value={confirm}>

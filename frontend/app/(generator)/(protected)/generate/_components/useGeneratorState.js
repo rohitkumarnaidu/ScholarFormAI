@@ -129,7 +129,7 @@ export function useGeneratorState() {
             if (draft.currentStep && draft.currentStep >= 1 && draft.currentStep <= 3) {
                 setStep(draft.currentStep);
             }
-            showToast({ message: 'Draft restored from your last session.', type: 'info' });
+            toast.info('Draft restored from your last session.');
         }
         // Only run once on mount
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -175,10 +175,7 @@ export function useGeneratorState() {
             metadata,
         });
         if (!validation.success) {
-            showToast({
-                message: getFirstZodError(validation.error?.issues, 'Generator input is invalid.'),
-                type: 'error',
-            });
+            toast.error(getFirstZodError(validation.error?.issues, 'Generator input is invalid.'));
             return;
         }
         const payload = validation.data;
@@ -258,11 +255,11 @@ export function useGeneratorState() {
                 status: 'failed',
                 error: error?.message || 'Failed to start generation.',
             }));
-            showToast({ message: 'Failed to start generation: ' + (error?.message || 'Unknown error'), type: 'error' });
+            toast.error('Failed to start generation: ' + (error?.message || 'Unknown error'));
         } finally {
             setIsSubmitting(false);
         }
-    }, [isSubmitting, docType, template, metadata, clearDraft, showToast]);
+    }, [isSubmitting, docType, template, metadata, clearDraft]);
 
     // ── Download ─────────────────────────────────────────────────────
     const handleDownload = useCallback(async (format = 'docx') => {
@@ -282,15 +279,15 @@ export function useGeneratorState() {
             document.body.appendChild(a);
             a.click();
             a.remove();
-            showToast({ message: 'Download started!', type: 'success' });
+            toast.success('Download started!');
         } catch (error) {
-            showToast({ message: 'Download failed: ' + (error?.message || 'Unknown error'), type: 'error' });
+            toast.error('Download failed: ' + (error?.message || 'Unknown error'));
         } finally {
             if (cleanup) {
                 setTimeout(cleanup, 0);
             }
         }
-    }, [jobStatus.jobId, showToast]);
+    }, [jobStatus.jobId]);
 
     // ── Reset ────────────────────────────────────────────────────────
     const handleReset = useCallback(() => {

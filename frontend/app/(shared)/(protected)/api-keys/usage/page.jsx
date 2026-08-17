@@ -45,7 +45,7 @@ function ApiKeysUsageInner() {
 
         fetchUsage();
         fetchKeys();
-    }, [isLoggedIn, hours, user?.access_token, toast]);
+    }, [isLoggedIn, hours, user?.access_token]);
 
     const totalRequests = Object.values(usage).reduce((sum, u) => sum + u.total_requests, 0);
     const totalTokens = Object.values(usage).reduce((sum, u) => sum + u.total_tokens, 0);

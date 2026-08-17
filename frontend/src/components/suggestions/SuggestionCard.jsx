@@ -5,7 +5,7 @@
 
 import React, { memo, useState, useCallback } from 'react';
 
-const cx = (...classes) => classes.filter(Boolean).join(' ');
+import { cn } from '@/src/lib/utils';
 
 const TYPE_COLORS = {
     style: { badge: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', label: 'Style' },

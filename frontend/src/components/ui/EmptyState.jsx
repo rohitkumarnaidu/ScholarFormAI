@@ -6,7 +6,7 @@
 import { forwardRef } from 'react';
 import Button from './Button';
 
-const cx = (...classes) => classes.filter(Boolean).join(' ');
+import { cn } from '@/src/lib/utils';
 
 const EmptyState = forwardRef(function EmptyState(
     {

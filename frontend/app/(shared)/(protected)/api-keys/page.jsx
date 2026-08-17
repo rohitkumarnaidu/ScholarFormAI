@@ -49,7 +49,7 @@ function ApiKeysPageInner() {
         } catch (e) {
             toast.error('Failed to load API keys — check your connection');
         }
-    }, [user?.access_token, toast]);
+    }, [user?.access_token]);
 
     useEffect(() => {
         if (isLoggedIn) fetchKeys();

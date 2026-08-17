@@ -1,7 +1,7 @@
 import React, { memo, useState, useCallback, useEffect, useRef } from 'react';
 import ConfirmDialog from '../ui/ConfirmDialog';
 
-const cx = (...classes) => classes.filter(Boolean).join(' ');
+import { cn } from '@/src/lib/utils';
 
 const BatchActions = memo(function BatchActions({
     selectedIds = [],

@@ -6,7 +6,7 @@
 import React, { memo, useMemo } from 'react';
 import Skeleton from '@/components/ui/Skeleton';
 
-const cx = (...classes) => classes.filter(Boolean).join(' ');
+import { cn } from '@/src/lib/utils';
 
 const COLOR_MAP = {
     'current-month': 'bg-primary hover:bg-blue-600',

@@ -5,7 +5,7 @@
 
 import { forwardRef } from 'react';
 
-const cx = (...classes) => classes.filter(Boolean).join(' ');
+import { cn } from '@/src/lib/utils';
 
 const Card = forwardRef(function Card({ className, glass = false, children, ...props }, ref) {
     return (

@@ -5,7 +5,7 @@
 
 import { forwardRef } from 'react';
 
-const cx = (...classes) => classes.filter(Boolean).join(' ');
+import { cn } from '@/src/lib/utils';
 
 const STATUS_STYLES = {
     completed: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',

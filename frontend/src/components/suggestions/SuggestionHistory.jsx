@@ -6,7 +6,7 @@
 import React, { memo, useState, useMemo, useCallback } from 'react';
 import EmptyState from '@/components/ui/EmptyState';
 
-const cx = (...classes) => classes.filter(Boolean).join(' ');
+import { cn } from '@/src/lib/utils';
 
 const STATUS_TABS = [
     { key: 'all', label: 'All' },
