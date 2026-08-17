@@ -1006,7 +1006,7 @@ class TestDocumentGeneratorStartJobErrors:
     async def test_start_job_supabase_none(self):
         with (
             patch("app.pipeline.generation.document_generator.DocumentService") as MockDS,
-            patch("app.pipeline.generation.document_generator.get_supabase_client", return_value=None),
+            patch("app.pipeline.generation.document_generator.GeneratorSessionRepository.insert_session", return_value=False),
             patch("app.pipeline.generation.document_generator.emit_event"),
         ):
             MockDS.create_document.return_value = None
