@@ -25,7 +25,8 @@ class TestGenerateWithModel:
         mock_encryption.decrypt.return_value = "decrypted-key"
 
         with patch("app.services.provider_registry.resolve_model_provider", return_value="custom_cp-1"):
-            with patch("app.db.session.get_db", return_value=iter([mock_db])):
+            with patch("app.db.session.SessionLocal") as mock_session:
+                mock_session.return_value.__enter__.return_value = mock_db
                 with patch("app.services.encryption_service.get_encryption_service", return_value=mock_encryption):
                     with patch("app.services.llm_service._generate_openai_compat", return_value="custom response"):
                         result = generate_with_model(
@@ -44,7 +45,8 @@ class TestGenerateWithModel:
         mock_db.execute.return_value.scalar_one_or_none.return_value = None
 
         with patch("app.services.provider_registry.resolve_model_provider", return_value="custom_cp-1"):
-            with patch("app.db.session.get_db", return_value=iter([mock_db])):
+            with patch("app.db.session.SessionLocal") as mock_session:
+                mock_session.return_value.__enter__.return_value = mock_db
                 with pytest.raises(LLMUnavailableError, match="not found"):
                     generate_with_model([{"role": "user", "content": "Hi"}], "custom_cp-1/my-model")
 
