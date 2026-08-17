@@ -300,16 +300,19 @@ class TestRunPipeline:
         assert True  # exception caught internally
 
 
+@patch("app.pipeline.generation.document_generator.GeneratorSessionRepository")
+@patch("app.pipeline.generation.document_generator.DocumentService")
 class TestGetDownloadPath:
-    @patch("app.pipeline.generation.document_generator.DocumentService")
-    def test_returns_none_when_not_found(self, mock_ds):
+    def test_returns_none_when_not_found(self, mock_ds, mock_repo):
+        mock_repo.return_value.get_session.return_value = None
         mock_ds.get_document.return_value = None
         from app.pipeline.generation.document_generator import DocumentGenerator
 
         gen = DocumentGenerator()
         assert gen.get_download_path("nonexistent") is None
 
-    def test_returns_path_when_done(self):
+    def test_returns_path_when_done(self, mock_ds, mock_repo):
+        mock_repo.return_value.get_session.return_value = None
         from app.pipeline.generation.document_generator import DocumentGenerator
 
         gen = DocumentGenerator()
