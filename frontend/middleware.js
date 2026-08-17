@@ -123,11 +123,13 @@ export default async function middleware(request) {
         return NextResponse.redirect(url);
     }
 
-    if (!getAdminRole(verifiedUser)) {
-        return new NextResponse(
-            JSON.stringify({ success: false, message: 'Forbidden: Admin access required' }),
-            { status: 403, headers: { 'content-type': 'application/json' } }
-        );
+    if (pathname.startsWith('/admin-dashboard') || pathname.startsWith('/issues/admin')) {
+        if (!getAdminRole(verifiedUser)) {
+            return new NextResponse(
+                JSON.stringify({ success: false, message: 'Forbidden: Admin access required' }),
+                { status: 403, headers: { 'content-type': 'application/json' } }
+            );
+        }
     }
 
     return NextResponse.next();
@@ -136,6 +138,7 @@ export default async function middleware(request) {
 export const config = {
     matcher: [
         '/admin-dashboard/:path*',
+        '/issues/admin/:path*',
         '/dashboard/:path*',
         '/upload/:path*',
         '/batch-upload/:path*',

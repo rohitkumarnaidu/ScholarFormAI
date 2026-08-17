@@ -117,7 +117,7 @@ def _verify_claim_against_source(claim: str, source_text: str) -> dict[str, Any]
             evidence.append(token)
 
     # Check for contradiction (negation + same token)
-    contradict_patterns = [r"\bnot\b.*\b" + re.escape(t) + r"\b" for t in list(claim_tokens)[:3]]
+    contradict_patterns = [r"\bnot\b.*\b" + re.escape(t) + r"\b" for t in claim_tokens]
     contradicted = any(re.search(p, source_lower) for p in contradict_patterns)
 
     supported = overlap_ratio >= 0.6 and not contradicted
