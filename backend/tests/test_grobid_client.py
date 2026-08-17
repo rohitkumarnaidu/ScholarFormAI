@@ -169,7 +169,7 @@ class TestGROBIDClient:
         assert client.is_available() is True
         mock_request.assert_called_once_with(
             "GET",
-            "http://localhost:8070/api/isalive",
+            "http://localhost:8070/health",
             timeout=(2.0, 3.0),
         )
 
