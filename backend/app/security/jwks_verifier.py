@@ -144,6 +144,12 @@ def verify_jwt(token: str) -> dict:
         header = jwt.get_unverified_header(token)
         alg = (header.get("alg") or "").upper()
         if alg.startswith("HS"):
+            if _resolve_jwks_url() is not None:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="HS256 tokens not allowed when JWKS is configured",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
             return _decode_with_secret(token, expected_issuer=expected_issuer)
         return _decode_with_jwks(token, expected_issuer=expected_issuer, refresh=False)
     except _RetryableJWTError:
