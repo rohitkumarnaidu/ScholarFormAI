@@ -44,12 +44,12 @@ export default function UpgradeModal({ isOpen, onClose, title = "Upgrade to Pro"
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-900 border border-gray-100 dark:border-gray-800"
+            className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-900 border border-slate-100 dark:border-slate-800"
           >
             <button
               onClick={onClose}
               aria-label="Close upgrade modal"
-              className="absolute right-4 top-4 rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 transition-colors"
+              className="absolute right-4 top-4 rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300 transition-colors"
             >
               <X className="h-5 w-5" />
             </button>
@@ -61,7 +61,7 @@ export default function UpgradeModal({ isOpen, onClose, title = "Upgrade to Pro"
               <h2 className="mb-2 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
                 {title}
               </h2>
-              <p className="text-gray-500 dark:text-gray-400">
+              <p className="text-slate-500 dark:text-slate-400">
                 Unlock the full power of ScholarForm AI to accelerate your academic workflow.
               </p>
             </div>
@@ -72,7 +72,7 @@ export default function UpgradeModal({ isOpen, onClose, title = "Upgrade to Pro"
                   <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
                     <Check className="h-4 w-4" />
                   </div>
-                  <span className="text-gray-700 dark:text-gray-300">{feature}</span>
+                  <span className="text-slate-700 dark:text-slate-300">{feature}</span>
                 </div>
               ))}
             </div>
@@ -86,7 +86,7 @@ export default function UpgradeModal({ isOpen, onClose, title = "Upgrade to Pro"
               </button>
               <button
                 onClick={onClose}
-                className="w-full rounded-xl py-3 font-medium text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors active:scale-95"
+                className="w-full rounded-xl py-3 font-medium text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors active:scale-95"
               >
                 Maybe Later
               </button>

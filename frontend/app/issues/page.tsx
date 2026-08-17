@@ -42,7 +42,7 @@ const categoryColors: Record<string, string> = {
   "ai-feedback": "bg-indigo-100 text-indigo-700",
   documentation: "bg-cyan-100 text-cyan-700",
   question: "bg-green-100 text-green-700",
-  other: "bg-gray-100 text-gray-700",
+  other: "bg-slate-100 text-slate-700",
 };
 
 const severityColors: Record<string, string> = {
@@ -58,9 +58,9 @@ const statusColors: Record<string, string> = {
   triaged: "bg-purple-100 text-purple-700",
   "in-progress": "bg-amber-100 text-amber-700",
   resolved: "bg-green-100 text-green-700",
-  closed: "bg-gray-100 text-gray-700",
-  duplicate: "bg-gray-100 text-gray-700",
-  "wont-fix": "bg-gray-100 text-gray-700",
+  closed: "bg-slate-100 text-slate-700",
+  duplicate: "bg-slate-100 text-slate-700",
+  "wont-fix": "bg-slate-100 text-slate-700",
   "needs-info": "bg-orange-100 text-orange-700",
 };
 

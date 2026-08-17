@@ -99,7 +99,7 @@ const ModelSelector = ({ selectedModel, onModelChange, userToken }) => {
                                 <button key={`${m.providerId}-${m.model}-${i}`}
                                     onClick={() => handleSelect(m.model)}
                                     className={`w-full flex items-center gap-2 px-3 py-2 text-xs text-left hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors ${selectedModel === m.model ? 'bg-indigo-50 dark:bg-indigo-500/10' : ''}`}>
-                                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${m.isConfigured ? 'bg-emerald-500' : 'bg-gray-300'}`} />
+                                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${m.isConfigured ? 'bg-emerald-500' : 'bg-slate-300'}`} />
                                     <span className="flex-1 truncate">{m.model}</span>
                                     <span className="flex items-center gap-1 text-[10px] text-zinc-400 shrink-0">
                                         <span className="material-symbols-outlined text-[12px]">{m.icon}</span>
@@ -123,7 +123,7 @@ const ModelSelector = ({ selectedModel, onModelChange, userToken }) => {
                                     onClick={() => handleSelect(m.model)}
                                     disabled
                                     className="w-full flex items-center gap-2 px-3 py-2 text-xs text-left text-zinc-400 cursor-not-allowed opacity-60">
-                                    <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-gray-300" />
+                                    <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-slate-300" />
                                     <span className="flex-1 truncate">{m.model}</span>
                                     <span className="flex items-center gap-1 text-[10px]">
                                         <span className="material-symbols-outlined text-[12px]">{m.icon}</span>

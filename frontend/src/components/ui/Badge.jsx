@@ -24,7 +24,7 @@ const Badge = forwardRef(function Badge(
     return (
         <span
             ref={ref}
-            className={cx('inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold', style, className)}
+            className={cn('inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold', style, className)}
             {...props}
         >
             {children || normalizedStatus}

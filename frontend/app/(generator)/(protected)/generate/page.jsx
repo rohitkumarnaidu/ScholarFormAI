@@ -68,7 +68,7 @@ export default function DocumentGeneratorPage() {
                     <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-500 dark:from-white dark:to-gray-400 bg-clip-text text-transparent mb-2">
                         Generate from Scratch
                     </h1>
-                    <p className="text-gray-500 text-sm">No file upload needed - describe your document, the AI writes it.</p>
+                    <p className="text-slate-500 text-sm">No file upload needed - describe your document, the AI writes it.</p>
                 </div>
 
                 <StepIndicator steps={steps} currentStep={step} />
@@ -85,7 +85,7 @@ export default function DocumentGeneratorPage() {
                                 id="btn-back"
                                 onClick={goBack}
                                 disabled={step === 1}
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-gray-300 text-sm font-medium hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition min-h-[44px]"
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition min-h-[44px]"
                             >
                                 <span className="material-symbols-outlined text-base">arrow_back</span>
                                 Back

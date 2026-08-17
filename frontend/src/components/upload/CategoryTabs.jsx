@@ -19,7 +19,7 @@ const CategoryTabs = memo(function CategoryTabs() {
                             className="w-[200px] sm:w-[220px] py-2.5 rounded-lg text-slate-500 dark:text-slate-400 text-sm font-medium bg-slate-200/50 dark:bg-white/5 cursor-not-allowed opacity-80 inline-flex items-center justify-center gap-2 whitespace-nowrap"
                         >
                             <span>Resume</span>
-                            <span className="text-xs bg-gray-200 dark:bg-white/10 px-2 py-0.5 rounded">
+                            <span className="text-xs bg-slate-200 dark:bg-white/10 px-2 py-0.5 rounded">
                                 Coming Soon
                             </span>
                         </button>
@@ -29,7 +29,7 @@ const CategoryTabs = memo(function CategoryTabs() {
                             className="w-[200px] sm:w-[220px] py-2.5 rounded-lg text-slate-500 dark:text-slate-400 text-sm font-medium bg-slate-200/50 dark:bg-white/5 cursor-not-allowed opacity-80 inline-flex items-center justify-center gap-2 whitespace-nowrap"
                         >
                             <span>Portfolio</span>
-                            <span className="text-xs bg-gray-200 dark:bg-white/10 px-2 py-0.5 rounded">
+                            <span className="text-xs bg-slate-200 dark:bg-white/10 px-2 py-0.5 rounded">
                                 Coming Soon
                             </span>
                         </button>

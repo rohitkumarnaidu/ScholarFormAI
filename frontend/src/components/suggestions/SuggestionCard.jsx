@@ -55,22 +55,22 @@ const SuggestionCard = memo(function SuggestionCard({ suggestion, onAccept, onRe
     }, [onDismiss, suggestion.id]);
 
     return (
-        <div className={cx(
+        <div className={cn(
             'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm transition-all duration-200',
             animatingOut ? 'opacity-0 scale-95' : 'opacity-100 animate-in fade-in slide-in-from-right duration-300'
         )}>
             <div className="flex items-start justify-between mb-3">
-                <span className={cx('inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider', typeInfo.badge)}>
+                <span className={cn('inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider', typeInfo.badge)}>
                     {typeInfo.label}
                 </span>
-                <span className={cx('text-xs font-bold', scoreInfo.text)}>
+                <span className={cn('text-xs font-bold', scoreInfo.text)}>
                     {typeof suggestion.score === 'number' ? `${Math.round(suggestion.score)}%` : 'N/A'}
                 </span>
             </div>
 
             <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full mb-3">
                 <div
-                    className={cx('h-full rounded-full transition-all', scoreInfo.bar)}
+                    className={cn('h-full rounded-full transition-all', scoreInfo.bar)}
                     style={{ width: `${scoreWidth}%` }}
                 />
             </div>
@@ -78,7 +78,7 @@ const SuggestionCard = memo(function SuggestionCard({ suggestion, onAccept, onRe
             {suggestion.originalText && (
                 <div className="mb-2">
                     <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-0.5">Original</p>
-                    <p className={cx(
+                    <p className={cn(
                         'text-sm text-slate-600 dark:text-slate-300 line-through',
                         !expanded && showExpand ? 'line-clamp-2' : ''
                     )}>

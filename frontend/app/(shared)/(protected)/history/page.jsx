@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 import { useDocument } from '@/src/context/DocumentContext';
 import { isCompleted, isFailed } from '@/src/constants/status';
-import DeleteConfirmDialog from '@/src/components/DeleteConfirmDialog';
+import ConfirmDialog from '@/src/components/ui/ConfirmDialog';
 import { deleteDocument, useDocuments } from '@/src/services/api';
 
 const Checkbox = ({ checked, onChange, disabled, label }) => (
@@ -440,10 +440,13 @@ export default function History() {
                 </div>
             )}
 
-            <DeleteConfirmDialog
-                isOpen={Boolean(documentToDelete)}
-                isDeleting={isDeleting}
-                documentName={resolveFilename(documentToDelete)}
+            <ConfirmDialog
+                open={Boolean(documentToDelete)}
+                isLoading={isDeleting}
+                title="Delete Document"
+                description={`Are you sure you want to delete ${resolveFilename(documentToDelete) || 'this document'}? This action cannot be undone.`}
+                confirmLabel="Delete"
+                danger={true}
                 onCancel={() => {
                     if (!isDeleting) {
                         setDocumentToDelete(null);

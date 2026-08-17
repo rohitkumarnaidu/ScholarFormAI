@@ -44,7 +44,7 @@ export default function StylesPage() {
           Citation Styles
         </h1>
         <p className="mt-2 text-slate-600 dark:text-slate-400">
-          AMF supports {styles.length} major academic citation styles
+          ScholarForm AI supports {styles.length} major academic citation styles
         </p>
       </div>
 

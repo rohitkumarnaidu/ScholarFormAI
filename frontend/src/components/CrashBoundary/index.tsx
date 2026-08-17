@@ -67,17 +67,17 @@ export class CrashBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-2xl w-full border border-red-200 dark:border-red-900">
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
+          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl p-8 max-w-2xl w-full border border-red-200 dark:border-red-900">
             <h1 className="text-2xl font-bold text-red-600 dark:text-red-500 mb-4">
               Something went wrong.
             </h1>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
+            <p className="text-slate-600 dark:text-slate-300 mb-6">
               The application encountered an unexpected error.
             </p>
             
-            <div className="bg-gray-100 dark:bg-gray-950 rounded p-4 mb-6 overflow-auto max-h-48">
-              <pre className="text-sm text-gray-800 dark:text-gray-200 font-mono">
+            <div className="bg-slate-100 dark:bg-slate-950 rounded p-4 mb-6 overflow-auto max-h-48">
+              <pre className="text-sm text-slate-800 dark:text-slate-200 font-mono">
                 {this.state.error?.message}
               </pre>
             </div>
@@ -85,7 +85,7 @@ export class CrashBoundary extends Component<Props, State> {
             <div className="flex gap-4">
               <button
                 onClick={() => window.location.reload()}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded transition-colors"
+                className="bg-slate-200 hover:bg-slate-300 text-slate-800 font-medium py-2 px-4 rounded transition-colors"
               >
                 Reload Page
               </button>

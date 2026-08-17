@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '@/src/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useToast } from '@/src/components/Toast';
+import { toast } from 'sonner';
 import { useConfirm } from '@/src/components/ConfirmDialog';
 import { useDebounce } from '@/src/hooks/useDebounce';
 import { fetchWithRetry } from '@/src/utils/fetchWithRetry';
@@ -39,7 +39,7 @@ function sanitizeUrl(str) {
 function ProvidersPageInner() {
     const { user, isLoggedIn, loading } = useAuth();
     const router = useRouter();
-    const toast = useToast();
+    
     const confirm = useConfirm();
     const formRef = useRef(null);
     const [dirty, setDirty] = useState(false);
@@ -333,27 +333,27 @@ function ProvidersPageInner() {
     );
 
     if (loading) return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-8">
             <div className="max-w-6xl mx-auto px-4">
                 <div className="mb-8">
-                    <div className="h-9 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-2" />
-                    <div className="h-5 w-72 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                    <div className="h-9 w-48 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-2" />
+                    <div className="h-5 w-72 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {[1,2,3,4,5,6].map(i => (
-                        <div key={i} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
+                        <div key={i} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
                             <div className="flex items-start gap-3 mb-4">
-                                <div className="w-10 h-10 rounded-lg bg-gray-200 dark:bg-gray-700 animate-pulse" />
+                                <div className="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-700 animate-pulse" />
                                 <div className="flex-1">
-                                    <div className="h-5 w-28 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-1" />
-                                    <div className="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                                    <div className="h-5 w-28 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-1" />
+                                    <div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
                                 </div>
                             </div>
                             <div className="space-y-2 mb-4">
-                                <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
-                                <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                                <div className="h-4 w-full bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                                <div className="h-4 w-3/4 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
                             </div>
-                            <div className="h-9 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                            <div className="h-9 w-full bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
                         </div>
                     ))}
                 </div>
@@ -362,18 +362,18 @@ function ProvidersPageInner() {
     );
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-8">
             <div className="max-w-6xl mx-auto px-4">
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Providers</h1>
-                        <p className="text-gray-600 dark:text-gray-400 mt-1">
+                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Providers</h1>
+                        <p className="text-slate-600 dark:text-slate-400 mt-1">
                             Configure AI model providers, API keys, and custom endpoints.
                         </p>
                     </div>
                     <div className="flex gap-3">
-                        <a href="/api-keys" className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition text-sm font-medium">
+                        <a href="/api-keys" className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition text-sm font-medium">
                             Manage Keys
                         </a>
                         <button onClick={() => { resetForm(); setShowAddForm(true); }}
@@ -387,54 +387,54 @@ function ProvidersPageInner() {
                 <div className="mb-6">
                     <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
                         placeholder="Search providers or models..."
-                        className="w-full max-w-md px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                        className="w-full max-w-md px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
                 </div>
 
                 {/* Add/Edit Form */}
                 {showAddForm && (
-                    <div className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                        <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                    <div className="mb-8 p-6 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h2 className="text-xl font-semibold mb-4 text-slate-900 dark:text-white">
                             {editingProvider ? `Edit: ${editingProvider.name}` : 'Add Custom Provider'}
                         </h2>
                         <form onSubmit={editingProvider ? handleUpdate : handleSubmit} ref={formRef} className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name *</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Name *</label>
                                     <input type="text" value={form.name} onChange={e => { setForm({ ...form, name: e.target.value }); setDirty(true); }}
                                         placeholder="My Local LLM"
-                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+                                        className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white" />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Base URL *</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Base URL *</label>
                                     <input type="url" value={form.base_url} onChange={e => { setForm({ ...form, base_url: e.target.value }); setDirty(true); }}
                                         placeholder="http://localhost:8000/v1"
-                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-mono text-sm" />
+                                        className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-mono text-sm" />
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">API Key (optional for local models)</label>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">API Key (optional for local models)</label>
                                 <input type="password" value={form.api_key} onChange={e => { setForm({ ...form, api_key: e.target.value }); setDirty(true); }}
                                     placeholder={editingProvider ? '(leave blank to keep existing)' : 'sk-...'}
-                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-mono text-sm" />
+                                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-mono text-sm" />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Models (comma-separated)</label>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Models (comma-separated)</label>
                                 <input type="text" value={form.models} onChange={e => { setForm({ ...form, models: e.target.value }); setDirty(true); }}
                                     placeholder="gpt-4o-mini, llama-3.1-8b, codestral"
-                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-mono text-sm" />
+                                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-mono text-sm" />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
                                     <input type="text" value={form.description} onChange={e => { setForm({ ...form, description: e.target.value }); setDirty(true); }}
                                         placeholder="My local vLLM server"
-                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm" />
+                                        className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm" />
                                 </div>
                                 <div className="flex items-center pt-6">
                                     <label className="flex items-center gap-3 cursor-pointer">
                                         <input type="checkbox" checked={form.is_local} onChange={e => { setForm({ ...form, is_local: e.target.checked }); setDirty(true); }}
-                                            className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" />
-                                        <span className="text-sm text-gray-700 dark:text-gray-300">Local model (no API key needed)</span>
+                                            className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500" />
+                                        <span className="text-sm text-slate-700 dark:text-slate-300">Local model (no API key needed)</span>
                                     </label>
                                 </div>
                             </div>
@@ -443,7 +443,7 @@ function ProvidersPageInner() {
                                     {editingProvider ? 'Update Provider' : 'Add Provider'}
                                 </button>
                                 <button type="button" onClick={() => { if (dirty) { confirm('Discard unsaved changes?', 'Unsaved Changes', 'Discard', 'warning').then(ok => { if (ok) resetForm(); }); } else { resetForm(); } }}
-                                    className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition text-sm">
+                                    className="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition text-sm">
                                     Cancel {dirty && <span className="ml-1.5 w-2 h-2 bg-amber-400 rounded-full inline-block" title="Unsaved changes" />}
                                 </button>
                             </div>
@@ -455,19 +455,19 @@ function ProvidersPageInner() {
                 {providersLoading && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                         {[1,2,3,4,5,6].map(i => (
-                            <div key={i} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
+                            <div key={i} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
                                 <div className="flex items-start gap-3 mb-4">
-                                    <div className="w-10 h-10 rounded-lg bg-gray-200 dark:bg-gray-700 animate-pulse" />
+                                    <div className="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-700 animate-pulse" />
                                     <div className="flex-1">
-                                        <div className="h-5 w-28 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-1" />
-                                        <div className="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                                        <div className="h-5 w-28 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-1" />
+                                        <div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
                                     </div>
                                 </div>
                                 <div className="space-y-2 mb-4">
-                                    <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
-                                    <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                                    <div className="h-4 w-full bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                                    <div className="h-4 w-3/4 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
                                 </div>
-                                <div className="h-9 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                                <div className="h-9 w-full bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
                             </div>
                         ))}
                     </div>
@@ -493,19 +493,19 @@ function ProvidersPageInner() {
 
                         return (
                             <div key={p.provider_id}
-                                className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 hover:shadow-md transition-shadow">
+                                className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 hover:shadow-md transition-shadow">
                                 {/* Header */}
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white text-lg ${isCustom ? 'bg-violet-500' : p.key_configured ? 'bg-emerald-500' : 'bg-gray-400'}`}>
+                                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white text-lg ${isCustom ? 'bg-violet-500' : p.key_configured ? 'bg-emerald-500' : 'bg-slate-400'}`}>
                                             <span className="material-symbols-outlined text-[22px]">
                                                 {PROVIDER_ICONS[p.provider_id] || (isCustom ? 'extension' : 'cloud')}
                                             </span>
                                         </div>
                                         <div>
-                                            <h3 className="font-semibold text-gray-900 dark:text-white">{p.name}</h3>
-                                            <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${isCustom ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300' : p.key_configured ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-500'}`}>
-                                                <span className={`w-1.5 h-1.5 rounded-full ${isCustom ? 'bg-violet-500' : p.key_configured ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                                            <h3 className="font-semibold text-slate-900 dark:text-white">{p.name}</h3>
+                                            <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${isCustom ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300' : p.key_configured ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'}`}>
+                                                <span className={`w-1.5 h-1.5 rounded-full ${isCustom ? 'bg-violet-500' : p.key_configured ? 'bg-emerald-500' : 'bg-slate-400'}`} />
                                                 {isCustom ? 'Custom' : p.key_configured ? 'Configured' : 'Not Configured'}
                                             </span>
                                         </div>
@@ -513,12 +513,12 @@ function ProvidersPageInner() {
                                     {isCustom && (
                                         <div className="flex gap-1">
                                             <button onClick={() => startEdit(customProviders.find(c => c.id === p.custom_provider_id))}
-                                                className="p-1.5 text-gray-400 hover:text-indigo-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition"
+                                                className="p-1.5 text-slate-400 hover:text-indigo-500 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition"
                                                 title="Edit">
                                                 <span className="material-symbols-outlined text-[18px]">edit</span>
                                             </button>
                                             <button onClick={() => handleDelete(p.custom_provider_id)}
-                                                className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition"
+                                                className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition"
                                                 title="Delete">
                                                 <span className="material-symbols-outlined text-[18px]">delete</span>
                                             </button>
@@ -528,24 +528,24 @@ function ProvidersPageInner() {
 
                                 {/* Details */}
                                 <div className="space-y-2 text-sm mb-4">
-                                    <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
                                         <span className="material-symbols-outlined text-[16px]">link</span>
                                         <span className="truncate">{typeof p.base_url === 'string' ? p.base_url : ''}</span>
                                     </div>
                                     {p.models && p.models.length > 0 && (
                                         <div>
-                                            <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 mb-1">
+                                            <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mb-1">
                                                 <span className="material-symbols-outlined text-[16px]">model_training</span>
                                                 <span>{p.models.length} model{p.models.length !== 1 ? 's' : ''}</span>
                                             </div>
                                             <div className="flex flex-wrap gap-1">
                                                 {(p.models || []).slice(0, 5).map(m => (
-                                                    <span key={m} className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded text-[10px] font-mono">
+                                                    <span key={m} className="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded text-[10px] font-mono">
                                                         {m}
                                                     </span>
                                                 ))}
                                                 {(p.models || []).length > 5 && (
-                                                    <span className="px-2 py-0.5 text-gray-400 text-[10px]">+{p.models.length - 5}</span>
+                                                    <span className="px-2 py-0.5 text-slate-400 text-[10px]">+{p.models.length - 5}</span>
                                                 )}
                                             </div>
                                         </div>
@@ -554,7 +554,7 @@ function ProvidersPageInner() {
                                         <div className="mt-2">
                                             <button onClick={() => handleDiscoverModels(p.provider_id, typeof p.base_url === 'string' ? p.base_url : '')}
                                                 disabled={discovering === p.provider_id}
-                                                className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-indigo-500 transition disabled:opacity-50">
+                                                className="flex items-center gap-1 text-[10px] text-slate-400 hover:text-indigo-500 transition disabled:opacity-50">
                                                 <span className="material-symbols-outlined text-[14px]">{discovering === p.provider_id ? 'progress_activity' : 'travel_explore'}</span>
                                                 {discovering === p.provider_id ? 'Discovering...' : 'Discover Models'}
                                             </button>
@@ -563,7 +563,7 @@ function ProvidersPageInner() {
                                                     <p className="text-[10px] font-medium text-indigo-600 dark:text-indigo-400 mb-1">Live API Models ({discoveredModels[p.provider_id].length})</p>
                                                     <div className="flex flex-wrap gap-1 max-h-24 overflow-y-auto mb-2">
                                                         {discoveredModels[p.provider_id].map(m => (
-                                                            <span key={m} className="px-1.5 py-0.5 bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 rounded text-[9px] font-mono border border-indigo-200 dark:border-indigo-700">{m}</span>
+                                                            <span key={m} className="px-1.5 py-0.5 bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 rounded text-[9px] font-mono border border-indigo-200 dark:border-indigo-700">{m}</span>
                                                         ))}
                                                     </div>
                                                     <button onClick={() => handleUseDiscovered(p.provider_id, discoveredModels[p.provider_id])}
@@ -583,7 +583,7 @@ function ProvidersPageInner() {
                                         const baseUrl = typeof p.base_url === 'string' ? p.base_url : '';
                                         handleTest(testKey, baseUrl, '');
                                     }} disabled={isTesting}
-                                        className={`flex-1 py-2 text-xs font-medium rounded-lg border transition ${isTesting ? 'bg-gray-100 dark:bg-gray-700 text-gray-400' : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'}`}>
+                                        className={`flex-1 py-2 text-xs font-medium rounded-lg border transition ${isTesting ? 'bg-slate-100 dark:bg-slate-700 text-slate-400' : 'bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600'}`}>
                                         {isTesting ? 'Testing...' : 'Test Connection'}
                                     </button>
                                     {!isCustom && (
@@ -599,20 +599,20 @@ function ProvidersPageInner() {
 
                                 {/* Inline API Key Form */}
                                 {!isCustom && keyFormProvider === p.provider_id && (
-                                    <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 space-y-2">
-                                        <p className="text-[11px] font-medium text-gray-600 dark:text-gray-400">Enter API Key for {p.name}</p>
+                                    <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 space-y-2">
+                                        <p className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Enter API Key for {p.name}</p>
                                         <input type="password" value={keyFormValue} onChange={e => setKeyFormValue(e.target.value)}
                                             placeholder="sk-..."
-                                            className="w-full px-2.5 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-mono focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                                            className="w-full px-2.5 py-1.5 text-xs border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-mono focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                                             autoFocus
                                             onKeyDown={e => { if (e.key === 'Enter') handleInlineKeySave(p.provider_id); }} />
                                         <div className="flex gap-1.5">
                                             <button onClick={() => handleInlineKeySave(p.provider_id)}
                                                 className="flex-1 py-1.5 text-[10px] font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Save Key</button>
                                             <button onClick={() => handleInlineKeyTest(p.provider_id)} disabled={keyFormTesting || !keyFormValue.trim()}
-                                                className="flex-1 py-1.5 text-[10px] font-medium bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition disabled:opacity-50">{keyFormTesting ? 'Testing...' : 'Test'}</button>
+                                                className="flex-1 py-1.5 text-[10px] font-medium bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition disabled:opacity-50">{keyFormTesting ? 'Testing...' : 'Test'}</button>
                                             <button onClick={() => { setKeyFormProvider(null); setKeyFormValue(''); }}
-                                                className="py-1.5 px-2 text-[10px] font-medium text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition">Cancel</button>
+                                                className="py-1.5 px-2 text-[10px] font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition">Cancel</button>
                                         </div>
                                     </div>
                                 )}
@@ -623,13 +623,13 @@ function ProvidersPageInner() {
                                         <div className="flex items-center gap-2">
                                             <span className={`w-2 h-2 rounded-full ${testResult.status === 'valid' ? 'bg-emerald-500' : 'bg-red-500'}`} />
                                             <span className="font-medium">{testResult.status === 'valid' ? 'Connected' : testResult.status === 'error' ? 'Error' : 'Failed'}</span>
-                                            <span className="text-gray-400">({testResult.response_time_ms}ms)</span>
+                                            <span className="text-slate-400">({testResult.response_time_ms}ms)</span>
                                         </div>
-                                        <p className="mt-1 text-gray-500 dark:text-gray-400">{testResult.message}</p>
+                                        <p className="mt-1 text-slate-500 dark:text-slate-400">{testResult.message}</p>
                                         {testResult.models_found && testResult.models_found.length > 0 && (
                                             <div className="mt-2 flex flex-wrap gap-1">
                                                 {testResult.models_found.map(m => (
-                                                    <span key={m} className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[10px]">{m}</span>
+                                                    <span key={m} className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[10px]">{m}</span>
                                                 ))}
                                             </div>
                                         )}
@@ -642,9 +642,9 @@ function ProvidersPageInner() {
 
                 {/* Empty State */}
                 {filteredProviders.length === 0 && (
-                    <div className="p-12 text-center bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-                        <span className="material-symbols-outlined text-5xl text-gray-300 dark:text-gray-600 mb-4">cloud_off</span>
-                        <p className="text-gray-500 dark:text-gray-400">No providers match your search.</p>
+                    <div className="p-12 text-center bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <span className="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-4">cloud_off</span>
+                        <p className="text-slate-500 dark:text-slate-400">No providers match your search.</p>
                     </div>
                 )}
                 </>)}
@@ -655,8 +655,8 @@ function ProvidersPageInner() {
                             <span className="material-symbols-outlined text-2xl text-indigo-600 dark:text-indigo-400">code</span>
                         </div>
                         <div>
-                            <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-1">Open Source Contributor?</h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                            <h3 className="font-semibold text-lg text-slate-900 dark:text-white mb-1">Open Source Contributor?</h3>
+                            <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
                                 Set provider API keys in your <code className="px-1.5 py-0.5 bg-indigo-100 dark:bg-indigo-900/30 rounded text-indigo-700 dark:text-indigo-300 font-mono text-xs">backend/.env</code> file to run all features locally without adding keys via the UI.
                             </p>
                             <a href="/contributing" className="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300">

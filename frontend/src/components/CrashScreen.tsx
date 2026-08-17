@@ -47,10 +47,10 @@ export default function CrashScreen({ error }: CrashScreenProps) {
           <AlertTriangle className="h-10 w-10 text-red-600 dark:text-red-400" />
         </div>
 
-        <h1 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 className="mb-2 text-2xl font-bold text-slate-900 dark:text-white">
           Something went wrong
         </h1>
-        <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">
+        <p className="mb-6 text-sm text-slate-500 dark:text-slate-400">
           An unexpected error occurred. Our team has been notified if you choose to report it.
         </p>
 
@@ -64,13 +64,13 @@ export default function CrashScreen({ error }: CrashScreenProps) {
           <div className="mb-6">
             <button
               onClick={() => setShowStack(!showStack)}
-              className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
+              className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-700"
             >
               {showStack ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
               {showStack ? "Hide" : "Show"} stack trace
             </button>
             {showStack && (
-              <pre className="mt-2 max-h-40 overflow-auto rounded-lg bg-gray-100 p-3 text-left text-xs text-gray-700 dark:bg-primary-900 dark:text-gray-300">
+              <pre className="mt-2 max-h-40 overflow-auto rounded-lg bg-slate-100 p-3 text-left text-xs text-slate-700 dark:bg-primary-900 dark:text-slate-300">
                 {error.stack}
               </pre>
             )}
@@ -95,7 +95,7 @@ export default function CrashScreen({ error }: CrashScreenProps) {
 
           <button
             onClick={() => window.location.reload()}
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
           >
             <RefreshCw className="h-4 w-4" />
             Reload page
@@ -103,7 +103,7 @@ export default function CrashScreen({ error }: CrashScreenProps) {
 
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
           >
             <Home className="h-4 w-4" />
             Go Home

@@ -8,7 +8,7 @@ const features = [
   {
     icon: 'description',
     title: 'Multiple Input Formats',
-    description: 'Write in Markdown, LaTeX, or plain text. AMF handles the conversion to beautifully formatted DOCX.',
+    description: 'Write in Markdown, LaTeX, or plain text. ScholarForm AI handles the conversion to beautifully formatted DOCX.',
     className: 'md:col-span-2 lg:col-span-2',
   },
   {
@@ -164,17 +164,17 @@ export default function Home() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-            className="mt-24 grid grid-cols-3 gap-8 rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm shadow-sm md:text-base lg:text-lg"
+            className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm shadow-sm md:text-base lg:text-lg"
           >
-            <div>
+            <div className="pb-6 md:pb-0 md:pr-8">
               <div className="mb-2 text-4xl font-black text-slate-900 md:text-5xl lg:text-6xl"><Counter from={0} to={9} suffix="+" /></div>
               <div className="font-medium text-slate-500 uppercase tracking-wider text-xs">Citation Styles</div>
             </div>
-            <div className="border-x border-slate-200">
+            <div className="py-6 border-y md:py-0 md:border-y-0 md:border-x border-slate-200 md:px-8">
               <div className="mb-2 text-4xl font-black text-slate-900 md:text-5xl lg:text-6xl"><Counter from={0} to={3} /></div>
               <div className="font-medium text-slate-500 uppercase tracking-wider text-xs">Input Formats</div>
             </div>
-            <div>
+            <div className="pt-6 md:pt-0 md:pl-8">
               <div className="mb-2 text-4xl font-black text-primary md:text-5xl lg:text-6xl"><Counter from={0} to={100} suffix="%" /></div>
               <div className="font-medium text-slate-500 uppercase tracking-wider text-xs">Style Compliant</div>
             </div>
@@ -192,7 +192,7 @@ export default function Home() {
             className="mb-20 text-center"
           >
             <motion.h2 variants={itemVariants} className="mb-6 text-4xl font-extrabold text-slate-900 md:text-5xl tracking-tight">
-              Why Choose AMF?
+              Why Choose ScholarForm AI?
             </motion.h2>
             <motion.p variants={itemVariants} className="mx-auto max-w-3xl text-lg text-slate-600 font-medium">
               Academic formatting should be about content, not wrestling with style guides.

@@ -85,7 +85,7 @@ const UsageChart = memo(function UsageChart({ data, days = 7, height = 180, load
                             >
                                 <div
                                     title={`${point.label || ''}: ${point.value}`}
-                                    className={cx(
+                                    className={cn(
                                         'w-full max-w-[32px] rounded-t-sm transition-all duration-300',
                                         isCurrentMonth ? COLOR_MAP['current-month'] : COLOR_MAP.default
                                     )}

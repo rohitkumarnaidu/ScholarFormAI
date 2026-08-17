@@ -81,21 +81,21 @@ export default function FeedbackWidget() {
 
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 data-[state=open]:animate-in data-[state=closed]:animate-out" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[85vh] w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border border-gray-200 bg-white p-6 shadow-2xl data-[state=open]:animate-in data-[state=closed]:animate-out">
-          <Dialog.Close className="absolute right-4 top-4 text-gray-400 hover:text-gray-600">
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[85vh] w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border border-slate-200 bg-white p-6 shadow-2xl data-[state=open]:animate-in data-[state=closed]:animate-out">
+          <Dialog.Close className="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
             <X className="h-4 w-4" />
           </Dialog.Close>
 
-          <Dialog.Title className="text-lg font-semibold text-gray-900">
+          <Dialog.Title className="text-lg font-semibold text-slate-900">
             Send Feedback
           </Dialog.Title>
-          <Dialog.Description className="mt-1 text-sm text-gray-500">
-            Help us improve AMF with your feedback.
+          <Dialog.Description className="mt-1 text-sm text-slate-500">
+            Help us improve ScholarForm AI with your feedback.
           </Dialog.Description>
 
           <form onSubmit={handleSubmit(onSubmit)} className="mt-5 space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Rating</label>
+              <label className="block text-sm font-medium text-slate-700">Rating</label>
               <div className="mt-1 flex gap-1">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -106,7 +106,7 @@ export default function FeedbackWidget() {
                   >
                     <Star
                       className={`h-6 w-6 ${
-                        star <= rating ? "fill-amber-400 text-amber-400" : "text-gray-300"
+                        star <= rating ? "fill-amber-400 text-amber-400" : "text-slate-300"
                       }`}
                     />
                   </button>
@@ -115,10 +115,10 @@ export default function FeedbackWidget() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Category</label>
+              <label className="block text-sm font-medium text-slate-700">Category</label>
               <select
                 {...register("category")}
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
               >
                 {categories.map((c) => (
                   <option key={c.value} value={c.value}>{c.label}</option>
@@ -127,12 +127,12 @@ export default function FeedbackWidget() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Message</label>
+              <label className="block text-sm font-medium text-slate-700">Message</label>
               <textarea
                 {...register("message")}
                 rows={4}
                 placeholder="Tell us what you think..."
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm resize-none"
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm resize-none"
               />
               {errors.message && (
                 <p className="mt-1 text-xs text-red-600">{errors.message.message}</p>
@@ -142,19 +142,19 @@ export default function FeedbackWidget() {
             {!anonymous && (
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Name (optional)</label>
+                  <label className="block text-sm font-medium text-slate-700">Name (optional)</label>
                   <input
                     {...register("reporter_name")}
                     placeholder="Your name"
-                    className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Email (optional)</label>
+                  <label className="block text-sm font-medium text-slate-700">Email (optional)</label>
                   <input
                     {...register("reporter_email")}
                     placeholder="email@example.com"
-                    className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
                   />
                   {errors.reporter_email && (
                     <p className="mt-1 text-xs text-red-600">{errors.reporter_email.message}</p>
@@ -167,9 +167,9 @@ export default function FeedbackWidget() {
               <input
                 type="checkbox"
                 {...register("anonymous")}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
               />
-              <span className="text-sm text-gray-700">Submit anonymously</span>
+              <span className="text-sm text-slate-700">Submit anonymously</span>
             </label>
 
             <button

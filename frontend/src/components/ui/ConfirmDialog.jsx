@@ -84,7 +84,7 @@ const ConfirmDialog = forwardRef(function ConfirmDialog(
                 }}
                 role="dialog"
                 aria-modal="true"
-                className={cx('relative w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xl', className)}
+                className={cn('relative w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-2xl', className)}
                 {...props}
             >
                 <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h3>

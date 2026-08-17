@@ -63,33 +63,33 @@ class TestMetadataExtractionTool:
 class TestLayoutAnalysisTool:
     """Test the layout analysis tool."""
 
-    @patch("app.pipeline.agents.tools.layout_tool.DoclingClient")
-    def test_layout_tool_success(self, mock_docling_class):
+    @patch.object(LayoutAnalysisTool, "_get_layout_analyzer")
+    def test_layout_tool_success(self, mock_get_analyzer):
         """Test successful layout analysis."""
         mock_client = MagicMock()
         mock_client.analyze_layout.return_value = {
-            "blocks": [
-                {"block_type": "heading_1", "text": "Introduction", "font_size": 16},
-                {"block_type": "paragraph", "text": "This is content.", "font_size": 12},
-                {"block_type": "figure", "text": "Figure 1"},
+            "elements": [
+                {"type": "heading_1", "text": "Introduction", "level": 1},
+                {"type": "paragraph", "text": "This is content."},
+                {"type": "figure", "text": "Figure 1"},
             ]
         }
-        mock_docling_class.return_value = mock_client
+        mock_get_analyzer.return_value = mock_client
 
         tool = LayoutAnalysisTool()
         result = tool._run("test.pdf")
 
         assert "success" in result
-        assert "total_blocks" in result
+        assert "total_elements" in result
         assert "has_figures" in result
         mock_client.analyze_layout.assert_called_once_with("test.pdf")
 
-    @patch("app.pipeline.agents.tools.layout_tool.DoclingClient")
-    def test_layout_tool_failure(self, mock_docling_class):
+    @patch.object(LayoutAnalysisTool, "_get_layout_analyzer")
+    def test_layout_tool_failure(self, mock_get_analyzer):
         """Test layout analysis failure."""
         mock_client = MagicMock()
         mock_client.analyze_layout.side_effect = Exception("Analysis failed")
-        mock_docling_class.return_value = mock_client
+        mock_get_analyzer.return_value = mock_client
 
         tool = LayoutAnalysisTool()
         result = tool._run("test.pdf")

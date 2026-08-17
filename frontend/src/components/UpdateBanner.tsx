@@ -42,7 +42,7 @@ export default function UpdateBanner() {
     } p-4`}>
       <button
         onClick={() => setDismissed(true)}
-        className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+        className="absolute top-2 right-2 text-slate-400 hover:text-slate-600"
         aria-label="Dismiss"
       >
         <X className="h-4 w-4" />
@@ -56,15 +56,15 @@ export default function UpdateBanner() {
         </div>
 
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-gray-900">
+          <p className="text-sm font-semibold text-slate-900">
             {update?.is_security ? "Security Update Available" : update?.is_mandatory ? "Mandatory Update Required" : "Update Available"}
           </p>
-          <p className="text-xs text-gray-600 mt-0.5">
+          <p className="text-xs text-slate-600 mt-0.5">
             v{update?.version} is available (current: v{checkResult.current_version})
             {update?.channel && ` • ${update.channel} channel`}
           </p>
           {update?.changelog && update.changelog.length > 0 && (
-            <ul className="mt-1 text-xs text-gray-500 list-disc list-inside">
+            <ul className="mt-1 text-xs text-slate-500 list-disc list-inside">
               {update.changelog.slice(0, 3).map((item, i) => (
                 <li key={i} className="truncate">{item}</li>
               ))}
@@ -83,7 +83,7 @@ export default function UpdateBanner() {
             </a>
             <button
               onClick={() => setDismissed(true)}
-              className="text-xs text-gray-500 hover:text-gray-700 px-2 py-1"
+              className="text-xs text-slate-500 hover:text-slate-700 px-2 py-1"
             >
               Later
             </button>

@@ -16,12 +16,12 @@ export default function IssueSettingsPage() {
   return (
     <div className="p-8 max-w-3xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Issue Ecosystem Settings</h1>
-        <p className="text-gray-600 dark:text-gray-400">Configure AI capabilities and webhooks for the reporting ecosystem.</p>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Issue Ecosystem Settings</h1>
+        <p className="text-slate-600 dark:text-slate-400">Configure AI capabilities and webhooks for the reporting ecosystem.</p>
       </div>
 
       <form onSubmit={handleSave} className="space-y-8">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border border-gray-200 dark:border-gray-700 space-y-4">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow border border-slate-200 dark:border-slate-700 space-y-4">
           <h2 className="text-xl font-semibold border-b pb-2">AI Model Capabilities</h2>
           
           <div>
@@ -29,12 +29,12 @@ export default function IssueSettingsPage() {
             <select 
               value={triageModel} 
               onChange={e => setTriageModel(e.target.value)}
-              className="w-full border-gray-300 rounded p-2 text-sm"
+              className="w-full border-slate-300 rounded p-2 text-sm"
             >
               <option value="gpt-4o-mini">GPT-4o Mini (Recommended)</option>
               <option value="llama-3-8b">Llama 3 8B</option>
             </select>
-            <p className="text-xs text-gray-500 mt-1">Used for spam detection and auto-labeling.</p>
+            <p className="text-xs text-slate-500 mt-1">Used for spam detection and auto-labeling.</p>
           </div>
 
           <div>
@@ -42,7 +42,7 @@ export default function IssueSettingsPage() {
             <select 
               value={reasoningModel} 
               onChange={e => setReasoningModel(e.target.value)}
-              className="w-full border-gray-300 rounded p-2 text-sm"
+              className="w-full border-slate-300 rounded p-2 text-sm"
             >
               <option value="claude-3-5-sonnet">Claude 3.5 Sonnet (Recommended)</option>
               <option value="gpt-4o">GPT-4o</option>
@@ -54,11 +54,11 @@ export default function IssueSettingsPage() {
                 Warning: This model is not recommended for code-level reasoning. For accurate 'Suggested Fixes', please select a frontier model.
               </p>
             )}
-            <p className="text-xs text-gray-500 mt-1">Used for analyzing stack traces and proposing code fixes.</p>
+            <p className="text-xs text-slate-500 mt-1">Used for analyzing stack traces and proposing code fixes.</p>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border border-gray-200 dark:border-gray-700 space-y-4">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow border border-slate-200 dark:border-slate-700 space-y-4">
           <h2 className="text-xl font-semibold border-b pb-2">Integrations</h2>
           
           <div>
@@ -68,7 +68,7 @@ export default function IssueSettingsPage() {
               value={slackUrl}
               onChange={e => setSlackUrl(e.target.value)}
               placeholder="https://hooks.slack.com/services/..."
-              className="w-full border-gray-300 rounded p-2 text-sm"
+              className="w-full border-slate-300 rounded p-2 text-sm"
             />
           </div>
         </div>

@@ -46,7 +46,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
             <div className="space-y-6">
                 <div>
                     <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-1">Document Details</h2>
-                    <p className="text-slate-500 dark:text-gray-400 text-sm">Fill in the details for your {docType === 'thesis' ? 'thesis chapter' : 'academic paper'}.</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Fill in the details for your {docType === 'thesis' ? 'thesis chapter' : 'academic paper'}.</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="md:col-span-2">
@@ -73,7 +73,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                         <label className="text-slate-900 dark:text-slate-100 text-sm font-medium mb-1.5 block">Language</label>
                         <select id="meta-language" value={metadata.language || 'english'} onChange={(event) => setValue('language', event.target.value)} className={inputCls}>
                             {['english', 'spanish', 'french', 'german', 'portuguese', 'arabic'].map((language) => (
-                                <option key={language} value={language} className="bg-background-light dark:bg-gray-900 text-slate-900 dark:text-slate-100">
+                                <option key={language} value={language} className="bg-background-light dark:bg-slate-900 text-slate-900 dark:text-slate-100">
                                     {language.charAt(0).toUpperCase() + language.slice(1)}
                                 </option>
                             ))}
@@ -88,7 +88,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                                 key={section.name}
                                 id={`section-${section.name.toLowerCase().replace(/\s+/g, '-')}`}
                                 onClick={() => toggleSection(index)}
-                                className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition min-h-[44px] ${section.include ? 'border-primary/50 bg-primary/10 text-blue-300' : 'border-white/10 bg-white/5 text-gray-500 hover:text-gray-300'}`}
+                                className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition min-h-[44px] ${section.include ? 'border-primary/50 bg-primary/10 text-blue-300' : 'border-white/10 bg-white/5 text-slate-500 hover:text-slate-300'}`}
                             >
                                 <span className="material-symbols-outlined text-base">{section.include ? 'check_box' : 'check_box_outline_blank'}</span>
                                 {section.name}
@@ -100,7 +100,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                     <input id="option-placeholder" type="checkbox" checked={metadata.include_placeholder !== false} onChange={(event) => setValue('include_placeholder', event.target.checked)} className="w-4 h-4 accent-primary" />
                     <div>
                         <p className="text-slate-900 dark:text-slate-100 text-sm font-medium">Include placeholder content</p>
-                        <p className="text-gray-500 text-xs">AI will write full paragraphs for each section (recommended)</p>
+                        <p className="text-slate-500 text-xs">AI will write full paragraphs for each section (recommended)</p>
                     </div>
                 </div>
             </div>
@@ -116,7 +116,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
             <div className="space-y-6">
                 <div>
                     <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-1">Your Details</h2>
-                    <p className="text-slate-500 dark:text-gray-400 text-sm">Fill in your information for the AI to generate your professional CV.</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Fill in your information for the AI to generate your professional CV.</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[
@@ -220,7 +220,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
         <div className="space-y-6">
             <div>
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-1">Document Details</h2>
-                <p className="text-slate-500 dark:text-gray-400 text-sm">Provide details for your {docType.replace('_', ' ')}.</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">Provide details for your {docType.replace('_', ' ')}.</p>
             </div>
             <div className="grid grid-cols-1 gap-4">
                 <div>

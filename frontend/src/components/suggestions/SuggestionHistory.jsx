@@ -65,7 +65,7 @@ const SuggestionHistory = memo(function SuggestionHistory({
                         <button
                             key={tab.key}
                             onClick={() => handleFilterChange(tab.key)}
-                            className={cx(
+                            className={cn(
                                 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors',
                                 activeFilter === tab.key
                                     ? 'bg-primary text-white'
@@ -92,13 +92,13 @@ const SuggestionHistory = memo(function SuggestionHistory({
                         <div key={item.id} className="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
                             <div className="flex items-start justify-between mb-2">
                                 <div className="flex gap-2 items-center">
-                                    <span className={cx(
+                                    <span className={cn(
                                         'inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider',
                                         TYPE_COLORS[item.type] || 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
                                     )}>
                                         {item.type || 'Unknown'}
                                     </span>
-                                    <span className={cx(
+                                    <span className={cn(
                                         'inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold',
                                         STATUS_COLORS[item.status] || 'bg-slate-100 text-slate-600'
                                     )}>

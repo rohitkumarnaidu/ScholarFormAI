@@ -54,7 +54,7 @@ const BatchActions = memo(function BatchActions({
     return (
         <>
             <div
-                className={cx(
+                className={cn(
                     'fixed bottom-0 left-0 right-0 z-40 p-4',
                     animatingIn ? 'animate-in slide-in-from-bottom-full duration-300' : ''
                 )}

@@ -5,7 +5,7 @@
 import usePageTitle from '@/src/hooks/usePageTitle';
 import { useEffect, useState, useCallback } from 'react';
 import { getCustomTemplates, saveCustomTemplate } from '@/src/services/api';
-import { useToast } from '@/src/context/ToastContext';
+import { toast } from 'sonner';
 import { useAuth } from '@/src/context/AuthContext';
 
 const CUSTOM_TEMPLATES_KEY = 'scholarform_custom_templates';
@@ -72,7 +72,7 @@ export default function TemplateEditor() {
     const [settings, setSettings] = useState(DEFAULT_SETTINGS);
     const [savedTemplates, setSavedTemplates] = useState([]);
     const [saving, setSaving] = useState(false);
-    const { addToast } = useToast();
+    
 
     useEffect(() => {
         const localTemplates = readLocalTemplates();
@@ -164,10 +164,10 @@ export default function TemplateEditor() {
         try {
             await saveCustomTemplate(template);
             saveTemplateLocal(template);
-            addToast(`Saved "${templateName}" to cloud successfully.`, 'success');
+            toast.success();
         } catch (error) {
             saveTemplateLocal(template);
-            addToast(`Saved "${templateName}" locally (API unavailable).`, 'warning');
+            toast.warning();
             console.warn('Template API save failed. Falling back to localStorage.', error);
         }
 

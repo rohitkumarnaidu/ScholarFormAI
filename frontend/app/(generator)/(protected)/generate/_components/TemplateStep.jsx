@@ -28,7 +28,7 @@ export default function TemplateStep({ selected, onSelect, templates }) {
     return (
         <div>
             <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">Choose a Template</h2>
-            <p className="text-slate-500 dark:text-gray-400 mb-6">Pick the journal or style template for your document.</p>
+            <p className="text-slate-500 dark:text-slate-400 mb-6">Pick the journal or style template for your document.</p>
             <div className="flex flex-col sm:flex-row gap-3 mb-6">
                 <input
                     id="template-search"
@@ -45,7 +45,7 @@ export default function TemplateStep({ selected, onSelect, templates }) {
                             onClick={() => setActiveCategory(category)}
                             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition min-h-[36px] ${activeCategory === category
                                 ? 'bg-blue-600 text-white'
-                                : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-gray-400 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
+                                : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white'
                                 }`}
                         >
                             {category}
@@ -64,7 +64,7 @@ export default function TemplateStep({ selected, onSelect, templates }) {
                             : 'border-glass-border bg-white/5 hover:border-glass-border/50 hover:bg-white/8'
                             }`}
                     >
-                        <span className={`text-xs font-bold uppercase tracking-wider ${selected === entry.id ? 'text-primary-light' : 'text-gray-500'}`}>
+                        <span className={`text-xs font-bold uppercase tracking-wider ${selected === entry.id ? 'text-primary-light' : 'text-slate-500'}`}>
                             {entry.category}
                         </span>
                         <span className="text-slate-900 dark:text-slate-100 font-semibold text-sm">{entry.name}</span>

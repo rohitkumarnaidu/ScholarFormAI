@@ -21,8 +21,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'AMF - Automated Manuscript Formatter',
-    template: '%s | AMF',
+    default: 'ScholarForm AI - Automated Manuscript Formatter',
+    template: '%s | ScholarForm AI',
   },
   description:
     'Enterprise-grade automated formatting of academic manuscripts into professionally styled DOCX documents. Supports APA, MLA, Chicago, IEEE, and more.',

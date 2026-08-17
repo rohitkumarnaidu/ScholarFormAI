@@ -37,9 +37,9 @@ export default function DashboardWidget() {
   const isLatest = checkResult?.status === "up-to-date";
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+        <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
           <Package className="h-4 w-4 text-blue-500" />
           Updates
         </h3>
@@ -56,22 +56,22 @@ export default function DashboardWidget() {
       {versionInfo && (
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-gray-500">Current Version</span>
-            <span className="font-medium text-gray-900">{versionInfo.current_version}</span>
+            <span className="text-slate-500">Current Version</span>
+            <span className="font-medium text-slate-900">{versionInfo.current_version}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-500">Channel</span>
-            <span className="font-medium text-gray-900 capitalize">{versionInfo.channel}</span>
+            <span className="text-slate-500">Channel</span>
+            <span className="font-medium text-slate-900 capitalize">{versionInfo.channel}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-500">Auto-Check</span>
-            <span className={`font-medium ${versionInfo.auto_check ? "text-green-600" : "text-gray-400"}`}>
+            <span className="text-slate-500">Auto-Check</span>
+            <span className={`font-medium ${versionInfo.auto_check ? "text-green-600" : "text-slate-400"}`}>
               {versionInfo.auto_check ? "Enabled" : "Disabled"}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-500">Last Check</span>
-            <span className="text-gray-600">
+            <span className="text-slate-500">Last Check</span>
+            <span className="text-slate-600">
               {versionInfo.last_check
                 ? new Date(versionInfo.last_check).toLocaleDateString()
                 : "Never"}
@@ -106,7 +106,7 @@ export default function DashboardWidget() {
 
       <a
         href="/settings"
-        className="mt-4 block text-center text-xs text-gray-500 hover:text-gray-700 underline underline-offset-2"
+        className="mt-4 block text-center text-xs text-slate-500 hover:text-slate-700 underline underline-offset-2"
       >
         Update Settings
       </a>

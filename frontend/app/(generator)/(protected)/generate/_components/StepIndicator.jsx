@@ -13,7 +13,7 @@ export default function StepIndicator({ steps, currentStep }) {
 
                 return (
                     <div key={stepItem.label} className="flex items-center">
-                        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition ${isDone ? 'text-green-400' : isCurrent ? 'text-primary-light bg-primary/10' : 'text-gray-600'}`}>
+                        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition ${isDone ? 'text-green-400' : isCurrent ? 'text-primary-light bg-primary/10' : 'text-slate-600'}`}>
                             <span className="material-symbols-outlined text-sm">{isDone ? 'check_circle' : stepItem.icon}</span>
                             <span className="hidden sm:inline">{stepItem.label}</span>
                         </div>

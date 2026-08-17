@@ -11,7 +11,7 @@ const Card = forwardRef(function Card({ className, glass = false, children, ...p
     return (
         <div
             ref={ref}
-            className={cx(
+            className={cn(
                 'rounded-2xl border p-4 sm:p-5',
                 glass
                     ? 'bg-glass-surface backdrop-blur-xl border-glass-border'

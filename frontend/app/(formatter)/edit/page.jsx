@@ -17,7 +17,7 @@ import { TableHeader } from '@tiptap/extension-table-header';
 import { CharacterCount } from '@tiptap/extension-character-count';
 
 import { useDocument } from '@/src/context/DocumentContext';
-import { useToast } from '@/src/context/ToastContext';
+import { toast } from 'sonner';
 import Skeleton from '@/src/components/ui/Skeleton';
 const Minimap = dynamic(() => import('@/src/components/ui/Minimap'), { ssr: false, loading: () => null });
 import { useUnsavedChanges } from '@/src/hooks/useUnsavedChanges';
@@ -60,7 +60,7 @@ export default function Edit() {
         router.push(href);
     }, [router]);
     const { setJob } = useDocument();
-    const { addToast } = useToast();
+    
     const { job, isLoading: isJobLoading, error: jobLoadError } = useJobFromUrl();
     const [content, setContent] = useState('');
     const [title, setTitle] = useState('');
@@ -185,7 +185,7 @@ export default function Edit() {
 
         } catch (error) {
             console.error("Save failed:", error);
-            addToast('Failed to save edit. Please try again.', 'error');
+            toast.error();
         } finally {
             setIsSaving(false);
         }

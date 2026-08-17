@@ -96,21 +96,21 @@ export const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({
   }
 
   return (
-    <div className="fixed bottom-4 right-4 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 z-50 overflow-hidden flex flex-col">
-      <div className="bg-gray-50 dark:bg-gray-900 p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-        <h3 className="font-semibold text-gray-900 dark:text-white">Report an Issue</h3>
-        <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+    <div className="fixed bottom-4 right-4 w-80 bg-white dark:bg-slate-800 rounded-lg shadow-2xl border border-slate-200 dark:border-slate-700 z-50 overflow-hidden flex flex-col">
+      <div className="bg-slate-50 dark:bg-slate-900 p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+        <h3 className="font-semibold text-slate-900 dark:text-white">Report an Issue</h3>
+        <button onClick={() => setIsOpen(false)} className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
           &times;
         </button>
       </div>
       
       <form onSubmit={handleSubmit} className="p-4 space-y-4 flex-1 overflow-y-auto">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Type</label>
           <select 
             value={category} 
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-sm"
+            className="w-full bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md p-2 text-sm"
           >
             <option value="bug">Bug Report</option>
             <option value="feature-request">Feature Request</option>
@@ -119,29 +119,29 @@ export const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Title</label>
           <input 
             type="text" 
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-sm"
+            className="w-full bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md p-2 text-sm"
             placeholder="Brief description"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Details</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Details</label>
           <textarea 
             required
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md p-2 text-sm h-24 resize-none"
+            className="w-full bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md p-2 text-sm h-24 resize-none"
             placeholder="Please provide steps to reproduce or details..."
           />
         </div>
         
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-slate-500">
           A screenshot and short screen recording will be automatically attached to help us debug.
         </p>
 

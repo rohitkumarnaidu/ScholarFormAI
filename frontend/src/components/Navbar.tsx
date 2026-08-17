@@ -24,7 +24,7 @@ export function Navbar() {
             <FileText className="h-5 w-5 text-white" />
           </div>
           <span className="text-lg font-bold text-primary-800 dark:text-white">
-            AMF
+            ScholarForm AI
           </span>
         </Link>
 
@@ -43,7 +43,7 @@ export function Navbar() {
             </Link>
           ))}
           <a
-            href="https://github.com/amf/automated-manuscript-formatter"
+            href="https://github.com/rohitkumarnaidu/ScholarFormAI"
             target="_blank"
             rel="noopener noreferrer"
             className="ml-2 rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-primary-800"
@@ -69,6 +69,9 @@ export function Navbar() {
 
         <button
           onClick={() => setOpen(!open)}
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+          aria-label="Toggle Navigation"
           className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden dark:text-slate-400 dark:hover:bg-primary-800"
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -76,7 +79,7 @@ export function Navbar() {
       </div>
 
       {open && (
-        <div className="border-t border-slate-200 px-4 pb-4 md:hidden dark:border-slate-800">
+        <div id="mobile-menu" className="border-t border-slate-200 px-4 pb-4 md:hidden dark:border-slate-800">
           {links.map((link) => (
             <Link
               key={link.href}

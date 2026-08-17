@@ -4,7 +4,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useToast } from '@/context/ToastContext';
+import { toast } from 'sonner';
 import {
     generateDocument,
     streamGenerationStatus,
@@ -64,7 +64,7 @@ const STEPS = [
 
 // ── Hook ────────────────────────────────────────────────────────────────
 export function useGeneratorState() {
-    const { showToast } = useToast();
+    
 
     const [step, setStep] = useState(1);
     const [docType, setDocType] = useState('');

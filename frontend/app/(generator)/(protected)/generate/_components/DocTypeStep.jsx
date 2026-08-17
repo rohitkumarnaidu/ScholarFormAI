@@ -15,7 +15,7 @@ export default function DocTypeStep({ selected, onSelect }) {
     return (
         <div>
             <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">Choose Document Type</h2>
-            <p className="text-slate-500 dark:text-gray-400 mb-8">Select the type of document you want to generate.</p>
+            <p className="text-slate-500 dark:text-slate-400 mb-8">Select the type of document you want to generate.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {DOC_TYPES.map((docType) => (
                     <button
@@ -32,7 +32,7 @@ export default function DocTypeStep({ selected, onSelect }) {
                         </div>
                         <div>
                             <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm">{docType.label}</p>
-                            <p className="text-slate-500 dark:text-gray-400 text-xs mt-1 leading-relaxed">{docType.description}</p>
+                            <p className="text-slate-500 dark:text-slate-400 text-xs mt-1 leading-relaxed">{docType.description}</p>
                         </div>
                         {selected === docType.id && (
                             <span className="absolute top-3 right-3 material-symbols-outlined text-primary-light text-base">check_circle</span>

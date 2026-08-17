@@ -27,7 +27,7 @@ const Skeleton = forwardRef(function Skeleton(
     return (
         <div
             ref={ref}
-            className={cx(
+            className={cn(
                 'bg-slate-200 dark:bg-slate-800',
                 shimmer ? 'animate-pulse' : '',
                 rounded,

@@ -20,12 +20,12 @@ export default function GenerateStep({ status, progress, stage, message, error, 
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-1">
                     {status === 'done' ? 'Document Ready!' : status === 'failed' ? 'Generation Failed' : 'Generating Your Document...'}
                 </h2>
-                <p className="text-slate-500 dark:text-gray-400 text-sm">{message || 'AI is working on your document...'}</p>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">{message || 'AI is working on your document...'}</p>
             </div>
 
             {status !== 'failed' && (
                 <div>
-                    <div className="flex justify-between text-xs text-gray-500 mb-2">
+                    <div className="flex justify-between text-xs text-slate-500 mb-2">
                         <span>{stage ? stage.charAt(0).toUpperCase() + stage.slice(1) : 'Queued'}</span>
                         <span>{progress}%</span>
                     </div>
@@ -45,7 +45,7 @@ export default function GenerateStep({ status, progress, stage, message, error, 
                             <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${isDone ? 'bg-green-500' : isActive ? 'bg-primary' : 'bg-white/10'}`}>
                                 <span className="material-symbols-outlined text-white text-sm">{isDone ? 'check' : entry.icon}</span>
                             </div>
-                            <span className={`text-sm ${isDone ? 'text-green-300' : isActive ? 'text-blue-300' : 'text-gray-600'}`}>{entry.label}</span>
+                            <span className={`text-sm ${isDone ? 'text-green-300' : isActive ? 'text-blue-300' : 'text-slate-600'}`}>{entry.label}</span>
                             {isActive && <span className="ml-auto text-xs text-primary-light animate-pulse">In progress...</span>}
                         </div>
                     );
@@ -55,7 +55,7 @@ export default function GenerateStep({ status, progress, stage, message, error, 
             {outline?.length > 0 && (
                 <div className="p-4 rounded-xl bg-white/5 border border-white/10">
                     <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Generated Structure Preview</h3>
-                    <ul className="space-y-1.5 text-sm text-gray-300 max-h-56 overflow-y-auto pr-2">
+                    <ul className="space-y-1.5 text-sm text-slate-300 max-h-56 overflow-y-auto pr-2">
                         {outline.map((item, index) => (
                             <li key={`${item}-${index}`} className="flex gap-2">
                                 <span className="text-primary-light">{index + 1}.</span>

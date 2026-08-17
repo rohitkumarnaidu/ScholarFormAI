@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/src/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useToast } from '@/src/components/Toast';
+import { toast } from 'sonner';
 import { useConfirm } from '@/src/components/ConfirmDialog';
 import { useDebounce } from '@/src/hooks/useDebounce';
 import { fetchWithRetry } from '@/src/utils/fetchWithRetry';
@@ -20,13 +20,13 @@ const PROVIDERS = [
     { id: 'mistral', name: 'Mistral', icon: 'air', color: 'bg-indigo-500' },
     { id: 'openrouter', name: 'OpenRouter', icon: 'alt_route', color: 'bg-cyan-500' },
     { id: 'nvidia', name: 'NVIDIA NIM', icon: 'speed', color: 'bg-lime-500' },
-    { id: 'ollama', name: 'Ollama', icon: 'dns', color: 'bg-gray-500' },
+    { id: 'ollama', name: 'Ollama', icon: 'dns', color: 'bg-slate-500' },
 ];
 
 function ApiKeysPageInner() {
     const { user, isLoggedIn, loading } = useAuth();
     const router = useRouter();
-    const toast = useToast();
+    
     const confirm = useConfirm();
     const [keys, setKeys] = useState([]);
     const [showForm, setShowForm] = useState(false);
@@ -116,16 +116,16 @@ function ApiKeysPageInner() {
         (k.key_label || '').toLowerCase().includes(debouncedSearch.toLowerCase())
     );
 
-    const providerMeta = (id) => PROVIDERS.find(p => p.id === id) || { name: id, icon: 'key', color: 'bg-gray-500' };
+    const providerMeta = (id) => PROVIDERS.find(p => p.id === id) || { name: id, icon: 'key', color: 'bg-slate-500' };
 
     if (loading) return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-8">
             <div className="max-w-4xl mx-auto px-4">
-                <div className="mb-8"><div className="h-9 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-2" /><div className="h-5 w-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" /></div>
+                <div className="mb-8"><div className="h-9 w-32 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-2" /><div className="h-5 w-64 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" /></div>
                 <div className="space-y-4">
                     {[1,2,3].map(i => (
-                        <div key={i} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
-                            <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-lg bg-gray-200 dark:bg-gray-700 animate-pulse" /><div className="flex-1"><div className="h-5 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-1" /><div className="h-4 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" /></div></div>
+                        <div key={i} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+                            <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-700 animate-pulse" /><div className="flex-1"><div className="h-5 w-32 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-1" /><div className="h-4 w-48 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" /></div></div>
                         </div>
                     ))}
                 </div>
@@ -134,17 +134,17 @@ function ApiKeysPageInner() {
     );
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-8">
             <div className="max-w-4xl mx-auto px-4">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">API Keys</h1>
-                        <p className="text-gray-600 dark:text-gray-400 mt-1">
+                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">API Keys</h1>
+                        <p className="text-slate-600 dark:text-slate-400 mt-1">
                             Manage your LLM provider API keys. Keys are encrypted at rest.
                         </p>
                     </div>
                     <div className="flex gap-3">
-                        <a href="/providers" className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition text-sm font-medium">
+                        <a href="/providers" className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition text-sm font-medium">
                             Provider Dashboard
                         </a>
                         <button onClick={() => { setShowForm(!showForm); setTestResult(null); }}
@@ -158,39 +158,39 @@ function ApiKeysPageInner() {
                     <div className="mb-6">
                         <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
                             placeholder="Search by provider or label..."
-                            className="w-full max-w-md px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                            className="w-full max-w-md px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
                     </div>
                 )}
 
                 {showForm && (
-                    <form onSubmit={handleSubmit} className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                        <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Add New API Key</h2>
+                    <form onSubmit={handleSubmit} className="mb-8 p-6 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h2 className="text-xl font-semibold mb-4 text-slate-900 dark:text-white">Add New API Key</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Provider</label>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Provider</label>
                                 <select value={newKey.provider} onChange={e => setNewKey({ ...newKey, provider: e.target.value })}
-                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white">
                                     {PROVIDERS.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Label (optional)</label>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Label (optional)</label>
                                 <input type="text" value={newKey.key_label} onChange={e => setNewKey({ ...newKey, key_label: e.target.value })}
                                     placeholder="My OpenAI Key"
-                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+                                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white" />
                             </div>
                         </div>
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">API Key</label>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">API Key</label>
                             <input type="password" value={newKey.api_key} onChange={e => setNewKey({ ...newKey, api_key: e.target.value })}
                                 placeholder="sk-..."
-                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-mono text-sm" />
+                                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-mono text-sm" />
                         </div>
                         <div className="flex gap-3 flex-wrap">
                             <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium">Save Key</button>
                             <button type="button" onClick={() => handleTest(newKey.provider, newKey.api_key)}
                                 disabled={testing || !newKey.api_key}
-                                className="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition text-sm font-medium disabled:opacity-50">
+                                className="px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition text-sm font-medium disabled:opacity-50">
                                 {testing === newKey.provider ? 'Testing...' : 'Test Connection'}
                             </button>
                         </div>
@@ -199,8 +199,8 @@ function ApiKeysPageInner() {
                                 <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${testResult.status === 'valid' ? 'bg-emerald-500' : 'bg-red-500'}`} />
                                 <div>
                                     <span className="font-medium">{testResult.status === 'valid' ? 'Connected' : testResult.status === 'error' ? 'Error' : 'Failed'}</span>
-                                    <span className="text-gray-400 ml-2 text-xs">({testResult.response_time_ms}ms)</span>
-                                    {testResult.message && <p className="mt-0.5 text-gray-500 dark:text-gray-400">{testResult.message}</p>}
+                                    <span className="text-slate-400 ml-2 text-xs">({testResult.response_time_ms}ms)</span>
+                                    {testResult.message && <p className="mt-0.5 text-slate-500 dark:text-slate-400">{testResult.message}</p>}
                                 </div>
                             </div>
                         )}
@@ -209,9 +209,9 @@ function ApiKeysPageInner() {
 
                 <div className="space-y-3">
                     {filteredKeys.length === 0 ? (
-                        <div className="p-12 text-center bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-                            <span className="material-symbols-outlined text-5xl text-gray-300 dark:text-gray-600 mb-4">key_off</span>
-                            <p className="text-gray-500 dark:text-gray-400">
+                        <div className="p-12 text-center bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <span className="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-4">key_off</span>
+                            <p className="text-slate-500 dark:text-slate-400">
                                 {keys.length === 0 ? 'No API keys configured yet.' : 'No keys match your search.'}
                             </p>
                             {keys.length === 0 && (
@@ -223,31 +223,31 @@ function ApiKeysPageInner() {
                     ) : filteredKeys.map(k => {
                         const meta = providerMeta(k.provider);
                         return (
-                            <div key={k.id} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:shadow-sm transition-shadow">
+                            <div key={k.id} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 hover:shadow-sm transition-shadow">
                                 <div className="flex items-start justify-between gap-4">
                                     <div className="flex items-center gap-3 min-w-0">
                                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white text-lg shrink-0 ${meta.color}`}>
                                             <span className="material-symbols-outlined text-[22px]">{meta.icon}</span>
                                         </div>
                                         <div className="min-w-0">
-                                            <h3 className="font-semibold text-gray-900 dark:text-white truncate">{k.key_label || meta.name}</h3>
+                                            <h3 className="font-semibold text-slate-900 dark:text-white truncate">{k.key_label || meta.name}</h3>
                                             <div className="flex items-center gap-2 mt-0.5">
-                                                <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">{k.key_preview}</span>
-                                                <span className="text-[10px] text-gray-400">·</span>
-                                                <span className="text-xs text-gray-500">{meta.name}</span>
+                                                <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{k.key_preview}</span>
+                                                <span className="text-[10px] text-slate-400">·</span>
+                                                <span className="text-xs text-slate-500">{meta.name}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3 shrink-0">
                                         {k.total_requests > 0 && (
-                                            <span className="text-[11px] text-gray-400 whitespace-nowrap">{k.total_requests.toLocaleString()} req</span>
+                                            <span className="text-[11px] text-slate-400 whitespace-nowrap">{k.total_requests.toLocaleString()} req</span>
                                         )}
-                                        <span className={`px-2 py-0.5 text-[10px] font-medium rounded-full ${k.is_active ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-500'}`}>
+                                        <span className={`px-2 py-0.5 text-[10px] font-medium rounded-full ${k.is_active ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'}`}>
                                             {k.is_active ? 'Active' : 'Inactive'}
                                         </span>
-                                        <span className="text-[10px] text-gray-400 hidden sm:inline">{k.rate_limit_per_minute}/min</span>
+                                        <span className="text-[10px] text-slate-400 hidden sm:inline">{k.rate_limit_per_minute}/min</span>
                                         <button onClick={() => handleDelete(k.id, k.key_label || meta.name)}
-                                            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition" title="Delete key">
+                                            className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition" title="Delete key">
                                             <span className="material-symbols-outlined text-[18px]">delete</span>
                                         </button>
                                     </div>
@@ -263,11 +263,11 @@ function ApiKeysPageInner() {
                             <span className="material-symbols-outlined text-2xl text-indigo-600 dark:text-indigo-400">lock</span>
                         </div>
                         <div>
-                            <h3 className="font-semibold text-lg text-gray-900 dark:text-white mb-1">Enterprise-Grade Security</h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                            <h3 className="font-semibold text-lg text-slate-900 dark:text-white mb-1">Enterprise-Grade Security</h3>
+                            <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
                                 Your API keys are encrypted using <strong>AES-256-GCM</strong> before storage. We never log, expose, or share full key values. Rate limits and usage quotas are enforced per key.
                             </p>
-                            <div className="flex flex-wrap gap-4 text-xs text-gray-500 dark:text-gray-400">
+                            <div className="flex flex-wrap gap-4 text-xs text-slate-500 dark:text-slate-400">
                                 {PROVIDERS.map(p => (
                                     <span key={p.id} className="flex items-center gap-1">
                                         <span className={`w-1.5 h-1.5 rounded-full ${p.color}`} />

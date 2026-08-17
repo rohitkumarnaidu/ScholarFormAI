@@ -9,7 +9,7 @@ import { useAuth } from '@/src/context/AuthContext';
 import { getUserTier, getRemainingQuota } from '@/src/lib/planTier';
 import { SettingsSchema } from '@/src/lib/schemas';
 import { z } from 'zod';
-import { useToast } from '@/src/context/ToastContext';
+import { toast } from 'sonner';
 import { ConfirmDialog } from '@/src/components/ui';
 import { fetchWithAuth } from '@/src/services/api.core';
 
@@ -38,7 +38,7 @@ export default function SettingsPage() {
     usePageTitle('Settings');
     const { theme, setTheme } = useTheme();
     const { user } = useAuth();
-    const { addToast } = useToast();
+    
     const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     const initialTab = searchParams?.get('tab') || 'general';
     const [activeTab, setActiveTab] = useState(initialTab);
@@ -104,7 +104,7 @@ export default function SettingsPage() {
                 method: 'POST',
             });
             
-            addToast('Your subscription has been cancelled successfully.', 'success');
+            toast.success();
             // Ideally trigger user refresh here
         } catch (err) {
             setError(err.message || 'Error cancelling subscription');

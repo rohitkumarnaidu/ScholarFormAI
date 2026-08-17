@@ -5,7 +5,7 @@
 
 import { forwardRef } from 'react';
 
-const cx = (...classes) => classes.filter(Boolean).join(' ');
+
 
 const VARIANT_CLASSES = {
     primary: 'bg-primary hover:bg-primary-hover text-white shadow-lg shadow-primary/25 border border-transparent',
@@ -43,7 +43,7 @@ const Button = forwardRef(function Button(
             ref={ref}
             type={type}
             disabled={isDisabled}
-            className={cx(
+            className={cn(
                 'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed',
                 VARIANT_CLASSES[variant] || VARIANT_CLASSES.primary,
                 SIZE_CLASSES[size] || SIZE_CLASSES.md,

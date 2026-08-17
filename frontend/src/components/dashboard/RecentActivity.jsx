@@ -45,7 +45,7 @@ function ActivityIcon({ type }) {
         export: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400',
     };
     return (
-        <div className={cx('w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold shrink-0', colorMap[type] || 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400')}>
+        <div className={cn('w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold shrink-0', colorMap[type] || 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400')}>
             {icon}
         </div>
     );
