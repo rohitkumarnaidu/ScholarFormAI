@@ -26,7 +26,7 @@ const FormattingOptions = memo(function FormattingOptions({
                 <Sliders className="text-primary" />
                 2. Formatting Options
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-slate-700/70 bg-slate-50 hover:bg-white hover:shadow-sm dark:hover:shadow-none dark:hover:bg-white/10 transition-all">
                         <div className="flex items-center gap-2">

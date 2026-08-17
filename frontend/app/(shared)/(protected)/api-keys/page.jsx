@@ -167,7 +167,7 @@ function ApiKeysPageInner() {
                 {showForm && (
                     <form onSubmit={handleSubmit} className="mb-8 p-6 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
                         <h2 className="text-xl font-semibold mb-4 text-slate-900 dark:text-white">Add New API Key</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Provider</label>
                                 <select value={newKey.provider} onChange={e => setNewKey({ ...newKey, provider: e.target.value })}

@@ -48,7 +48,7 @@ export default function StylesPage() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {styles.map((style) => (
           <button
             key={style.id}
@@ -85,7 +85,7 @@ export default function StylesPage() {
           <p className="mt-2 text-slate-600 dark:text-slate-400">
             {selected.description}
           </p>
-          <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+          <div className="mt-4 grid gap-3 text-sm sm:grid-cols-1 md:grid-cols-2">
             <div className="rounded-lg bg-white p-3 dark:bg-primary-800">
               <span className="text-slate-500">Style ID</span>
               <p className="font-mono font-medium text-primary-700 dark:text-white">

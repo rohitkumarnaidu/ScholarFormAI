@@ -220,7 +220,7 @@ export default function Profile() {
 
     return (
         <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
-            <main className="max-w-[960px] mx-auto px-4 sm:px-6 py-8 sm:py-10 flex flex-col gap-8 w-full animate-in fade-in duration-500">
+            <main className="max-w-full max-w-[960px] mx-auto px-4 sm:px-6 py-8 sm:py-10 flex flex-col gap-8 w-full animate-in fade-in duration-500">
                 <div className="flex flex-col gap-2">
                     <h1 className="text-slate-900 dark:text-white text-3xl sm:text-4xl font-black leading-tight tracking-tight">Account Settings</h1>
                     <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg font-normal">Manage your academic profile, subscription details, and personal preferences.</p>
@@ -368,7 +368,7 @@ export default function Profile() {
 
                 <section className="flex flex-col gap-4">
                     <h2 className="text-slate-900 dark:text-white text-xl font-bold px-1 tracking-tight">Account Actions</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-3 gap-4">
                         <button onClick={() => setShowPasswordForm(!showPasswordForm)}
                             className="flex items-center justify-between p-5 bg-glass-surface backdrop-blur-xl border border-glass-border rounded-xl hover:border-primary/50 hover:shadow-md transition-all group text-left min-h-[64px]">
                             <div className="flex items-center gap-4">

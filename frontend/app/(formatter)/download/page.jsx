@@ -179,14 +179,14 @@ export default function Download() {
         <div className="min-h-screen flex flex-col bg-background-light dark:bg-background-dark animate-in zoom-in-95 duration-300">
             
             <main className="px-4 sm:px-6 lg:px-10 flex flex-1 justify-center py-8 sm:py-12 min-h-[calc(100vh-200px)] animate-in zoom-in-95 duration-500 relative">
-                <div className="layout-content-container flex flex-col max-w-[800px] flex-1">
+                <div className="layout-content-container flex flex-col max-w-full max-w-[800px] flex-1">
                     {/* Success Header */}
                     <div className="flex flex-col items-center mb-8">
                         <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 shadow-sm">
                             <CheckCircle className="text-4xl" />
                         </div>
                         <h1 className="text-[#0d131b] dark:text-slate-50 tracking-light text-[28px] sm:text-[32px] font-bold leading-tight px-4 text-center pb-2">Formatting Complete!</h1>
-                        <p className="text-[#4c6c9a] dark:text-slate-400 text-base text-center max-w-[500px]">Your manuscript has been successfully processed and is ready for submission.</p>
+                        <p className="text-[#4c6c9a] dark:text-slate-400 text-base text-center max-w-full max-w-[500px]">Your manuscript has been successfully processed and is ready for submission.</p>
                     </div>
 
                     {/* Main Success Card */}
@@ -310,7 +310,7 @@ export default function Download() {
 
                     {/* Secondary Action Button Group */}
                     <div className="mt-10 mb-16 sm:mb-20 flex justify-center">
-                        <div className="flex flex-col sm:flex-row gap-4 px-4 py-3 w-full max-w-[800px] justify-center flex-wrap">
+                        <div className="flex flex-col sm:flex-row gap-4 px-4 py-3 w-full max-w-full max-w-[800px] justify-center flex-wrap">
                             <button onClick={handleUploadAnother} className="flex w-full sm:w-auto min-w-[160px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-6 bg-slate-200 dark:bg-slate-800 text-[#0d131b] dark:text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] grow transition-colors hover:bg-slate-300 dark:hover:bg-slate-700">
                                 <FileUp className="text-xl" />
                                 <span className="truncate">Upload Another</span>

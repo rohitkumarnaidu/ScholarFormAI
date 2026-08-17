@@ -341,7 +341,7 @@ function ProvidersPageInner() {
                     <div className="h-9 w-48 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-2" />
                     <div className="h-5 w-72 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {[1,2,3,4,5,6].map(i => (
                         <div key={i} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
                             <div className="flex items-start gap-3 mb-4">
@@ -399,7 +399,7 @@ function ProvidersPageInner() {
                             {editingProvider ? `Edit: ${editingProvider.name}` : 'Add Custom Provider'}
                         </h2>
                         <form onSubmit={editingProvider ? handleUpdate : handleSubmit} ref={formRef} className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Name *</label>
                                     <input type="text" value={form.name} onChange={e => { setForm({ ...form, name: e.target.value }); setDirty(true); }}
@@ -425,7 +425,7 @@ function ProvidersPageInner() {
                                     placeholder="gpt-4o-mini, llama-3.1-8b, codestral"
                                     className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-mono text-sm" />
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
                                     <input type="text" value={form.description} onChange={e => { setForm({ ...form, description: e.target.value }); setDirty(true); }}
@@ -455,7 +455,7 @@ function ProvidersPageInner() {
 
                 {/* Loading / Error States */}
                 {providersLoading && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                    <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                         {[1,2,3,4,5,6].map(i => (
                             <div key={i} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
                                 <div className="flex items-start gap-3 mb-4">
@@ -486,7 +486,7 @@ function ProvidersPageInner() {
                 )}
                 {/* Provider Grid */}
                 {!providersLoading && !providersError && (<>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredProviders.map((p) => {
                         const isCustom = p.is_custom;
                         const testKey = isCustom ? `custom_${p.custom_provider_id}` : p.provider_id;

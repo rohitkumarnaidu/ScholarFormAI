@@ -217,7 +217,7 @@ export default function Preview({
 
             <div className="flex flex-1 flex-col xl:flex-row overflow-hidden">
                 <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-background-dark p-4 sm:p-6 lg:p-8 flex justify-center">
-                    <div className="w-full max-w-[850px] transition-transform duration-200" style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'top center' }}>
+                    <div className="w-full max-w-full max-w-[850px] transition-transform duration-200" style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'top center' }}>
                         <article className="manuscript-paper bg-white dark:bg-slate-900 min-h-[700px] lg:min-h-[1100px] p-5 sm:p-8 lg:p-16 rounded-sm border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden pointer-events-none select-none">
                             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-6 sm:mb-8">
                                 {title.replace(/_/g, ' ')}

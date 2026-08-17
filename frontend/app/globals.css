@@ -94,6 +94,14 @@ html {
     }
 
     @media (prefers-reduced-motion: reduce) {
+        *,
+        ::before,
+        ::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
 
         .animate-in,
         .animate-pulse,
@@ -101,14 +109,14 @@ html {
         .animate-ping,
         .fade-in-up,
         .stagger-fade {
-            animation: none;
-            transition: none;
+            animation: none !important;
+            transition: none !important;
         }
 
         .scroll-reveal {
-            opacity: 1;
-            transform: none;
-            transition: none;
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
         }
     }
 

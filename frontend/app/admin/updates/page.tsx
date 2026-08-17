@@ -63,7 +63,7 @@ export default function AdminUpdatesDashboard() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-2">
               <div className="rounded-lg bg-blue-100 p-2"><Layers className="h-5 w-5 text-blue-600" /></div>

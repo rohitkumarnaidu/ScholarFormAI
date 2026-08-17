@@ -37,7 +37,7 @@ export default function Footer({ variant = 'app' }) {
     if (variant === 'landing') {
         return (
             <footer className="app-footer pt-20 pb-10 relative overflow-hidden">
-                <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div className="max-w-full max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
                         <div className="md:col-span-4">
                             <div className="flex items-center gap-2 sm:gap-3 mb-6">
@@ -156,7 +156,7 @@ export default function Footer({ variant = 'app' }) {
     }
 
     return (
-        <footer className="app-footer max-w-[1280px] mx-auto px-4 sm:px-6 py-8 sm:py-10 mt-10 sm:mt-12">
+        <footer className="app-footer max-w-full max-w-[1280px] mx-auto px-4 sm:px-6 py-8 sm:py-10 mt-10 sm:mt-12">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6">
                 <div className="flex items-center gap-2 text-slate-400" suppressHydrationWarning>
                     <BookOpen className="text-xl" />

@@ -55,7 +55,7 @@ function ApiKeysUsageInner() {
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-8">
             <div className="max-w-4xl mx-auto px-4">
                 <div className="mb-8"><div className="h-9 w-48 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-2" /><div className="h-5 w-64 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" /></div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                     {[1,2,3].map(i => <div key={i} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6"><div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-2" /><div className="h-8 w-20 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" /></div>)}
                 </div>
                 <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6"><div className="h-6 w-40 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-4" />{[1,2,3].map(i => <div key={i} className="h-12 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-2" />)}</div>
@@ -89,7 +89,7 @@ function ApiKeysUsageInner() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                     <div className="p-6 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
                         <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-2">
                             <BarChart className="text-[18px]" />
@@ -178,7 +178,7 @@ function ApiKeysUsageInner() {
                                             </div>
                                             <span className="text-xs text-slate-400">{key.total_requests.toLocaleString()} total requests</span>
                                         </div>
-                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-500 dark:text-slate-400 mb-2">
+                                        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-500 dark:text-slate-400 mb-2">
                                             <span>{key.rate_limit_per_minute}/min</span>
                                             <span>{key.rate_limit_per_hour}/hour</span>
                                             <span>{key.daily_quota.toLocaleString()}/day</span>

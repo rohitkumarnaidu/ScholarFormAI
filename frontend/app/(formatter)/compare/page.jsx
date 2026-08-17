@@ -312,7 +312,7 @@ export default function Compare() {
     return (
         <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-50 min-h-screen flex flex-col animate-in zoom-in-95 duration-300">
 
-            <main className="flex-1 flex flex-col max-w-[1600px] mx-auto w-full px-4 sm:px-6 lg:px-10 py-6 animate-in fade-in duration-500">
+            <main className="flex-1 flex flex-col max-w-full max-w-[1600px] mx-auto w-full px-4 sm:px-6 lg:px-10 py-6 animate-in fade-in duration-500">
                 {/* Section Header */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-2">
                     <div>
@@ -409,7 +409,7 @@ export default function Compare() {
                             <iframe
                                 title="Authoritative backend diff"
                                 srcDoc={htmlDiffDocument}
-                                sandbox="allow-same-origin allow-scripts"
+                                sandbox="allow-scripts"
                                 className="w-full min-h-[420px] sm:min-h-[620px] h-full border-0 bg-white dark:bg-slate-900"
                             />
                         </div>

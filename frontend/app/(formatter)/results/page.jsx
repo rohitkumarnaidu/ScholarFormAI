@@ -44,9 +44,9 @@ function ValidationResults() {
     }, []);
 
     useEffect(() => {
-        console.log('Results page effect: job:', job);
+        if(process.env.NODE_ENV === "development") console.log('Results page effect: job:', job);
         if (!job?.id) {
-            console.log('Results page effect: no job id, clearing resolvedResult');
+            if(process.env.NODE_ENV === "development") console.log('Results page effect: no job id, clearing resolvedResult');
             setResolvedResult(null);
             setResultLoadError('');
             setIsLoadingResult(false);
@@ -56,14 +56,14 @@ function ValidationResults() {
         let isCancelled = false;
         
         if (!job.result) {
-            console.log('Results page effect: fetching preview');
+            if(process.env.NODE_ENV === "development") console.log('Results page effect: fetching preview');
             setIsLoadingResult(true);
             setResultLoadError('');
             getPreview(job.id, { debounceMs: 0 })
                 .then((data) => {
                     if (isCancelled) return;
                     const validation = data?.validation_results || null;
-                    console.log('Results page effect: preview loaded:', validation);
+                    if(process.env.NODE_ENV === "development") console.log('Results page effect: preview loaded:', validation);
                     setResolvedResult(validation);
                     if (validation) {
                         setJob((previousJob) => ({ ...(previousJob || {}), result: validation }));
@@ -78,7 +78,7 @@ function ValidationResults() {
                     if (!isCancelled) setIsLoadingResult(false);
                 });
         } else {
-            console.log('Results page effect: using job.result directly', job.result);
+            if(process.env.NODE_ENV === "development") console.log('Results page effect: using job.result directly', job.result);
             setResolvedResult(job.result);
         }
         
@@ -109,7 +109,7 @@ function ValidationResults() {
                         </div>
                         <Skeleton className="h-10 w-32" />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         <Skeleton className="h-[120px] w-full" />
                         <Skeleton className="h-[120px] w-full" />
                         <Skeleton className="h-[120px] w-full" />
@@ -165,13 +165,13 @@ function ValidationResults() {
                         </div>
                         <Skeleton className="h-10 w-32" />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         <Skeleton className="h-[120px] w-full" />
                         <Skeleton className="h-[120px] w-full" />
                         <Skeleton className="h-[120px] w-full" />
                         <Skeleton className="h-[120px] w-full" />
                     </div>
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
                         <div className="lg:col-span-1 flex flex-col gap-6">
                             <Skeleton className="h-[300px] w-full" />
                             <Skeleton className="h-[200px] w-full" />
@@ -279,7 +279,7 @@ function ValidationResults() {
 
                 <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col lg:flex-row gap-6 items-start lg:items-center">
                     <div className="flex-1 space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-3 gap-6">
                             <div className="space-y-1">
                                 <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Filename</p>
                                 <p className="text-slate-900 dark:text-slate-100 font-semibold break-all">{job.originalFileName}</p>
@@ -350,7 +350,7 @@ function ValidationResults() {
                                         Document Quality Analysis
                                     </h2>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
+                                <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-4 gap-6 items-start">
                                     {/* Overall Score Ring */}
                                     <div className="flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700/50">
                                         <div className="relative w-24 h-24 mb-2">
@@ -368,7 +368,7 @@ function ValidationResults() {
                                         </span>
                                     </div>
                                     
-                                    <div className="col-span-1 md:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="col-span-1 md:col-span-3 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
                                         {/* Template Compliance */}
                                         {(() => {
                                             const tc = jobSummary.template_compliance ?? null;
@@ -449,7 +449,7 @@ function ValidationResults() {
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 rounded-xl p-6 flex flex-col">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-red-700 dark:text-red-400 font-bold text-sm">Errors</span>

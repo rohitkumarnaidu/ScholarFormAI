@@ -122,7 +122,7 @@ function UploadContent() {
 
     return (
         <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
-            <main className="max-w-[1280px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
+            <main className="max-w-full max-w-[1280px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
                 <div className="mb-8">
                     <h1 className="text-slate-900 dark:text-white text-3xl sm:text-4xl font-black leading-tight tracking-[-0.033em]">
                         Upload Manuscript

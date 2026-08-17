@@ -216,7 +216,7 @@ export default function AdminPage() {
             )}
 
             {stats && (
-              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-1 md:grid-cols-2">
                 {/* By Category chart */}
                 <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white p-5">
                   <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-100">

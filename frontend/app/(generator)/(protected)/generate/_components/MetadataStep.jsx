@@ -179,10 +179,10 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                     </div>
                     {education.map((item, index) => (
                         <div key={`education-${index}`} className="grid grid-cols-1 md:grid-cols-3 gap-2 bg-white/5 border border-white/10 rounded-xl p-3">
-                            <input type="text" placeholder="Institution" value={item.institution || ''} onChange={(event) => updateArrayItem('education', index, 'institution', event.target.value)} className={resumeInputCls} />
-                            <input type="text" placeholder="Degree" value={item.degree || ''} onChange={(event) => updateArrayItem('education', index, 'degree', event.target.value)} className={resumeInputCls} />
+                            <input type="text" aria-label="Institution" placeholder="Institution" value={item.institution || ''} onChange={(event) => updateArrayItem('education', index, 'institution', event.target.value)} className={resumeInputCls} />
+                            <input type="text" aria-label="Degree" placeholder="Degree" value={item.degree || ''} onChange={(event) => updateArrayItem('education', index, 'degree', event.target.value)} className={resumeInputCls} />
                             <div className="flex gap-2">
-                                <input type="text" placeholder="Year" value={item.year || ''} onChange={(event) => updateArrayItem('education', index, 'year', event.target.value)} className={`${resumeInputCls} flex-1`} />
+                                <input type="text" aria-label="Year" placeholder="Year" value={item.year || ''} onChange={(event) => updateArrayItem('education', index, 'year', event.target.value)} className={`${resumeInputCls} flex-1`} />
                                 {education.length > 1 && (
                                     <button type="button" onClick={() => removeArrayItem('education', index)} className="px-2 rounded-lg bg-red-500/20 text-red-300 hover:bg-red-500/30 transition" aria-label="Remove education entry">
                                         <Trash2 className="text-base" />
@@ -198,12 +198,12 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                         <button type="button" id="btn-add-experience" onClick={() => addArrayItem('experience', { company: '', role: '', duration: '', bullets_raw: '' })} className="text-xs px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-slate-700 dark:text-white transition min-h-[36px]">Add Experience</button>
                     </div>
                     {experience.map((item, index) => (
-                        <div key={`experience-${index}`} className="grid grid-cols-1 md:grid-cols-2 gap-2 bg-white/5 border border-white/10 rounded-xl p-3">
-                            <input type="text" placeholder="Company" value={item.company || ''} onChange={(event) => updateArrayItem('experience', index, 'company', event.target.value)} className={resumeInputCls} />
-                            <input type="text" placeholder="Role" value={item.role || ''} onChange={(event) => updateArrayItem('experience', index, 'role', event.target.value)} className={resumeInputCls} />
-                            <input type="text" placeholder="Duration (e.g. 2021-2024)" value={item.duration || ''} onChange={(event) => updateArrayItem('experience', index, 'duration', event.target.value)} className={resumeInputCls} />
+                        <div key={`experience-${index}`} className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-2 bg-white/5 border border-white/10 rounded-xl p-3">
+                            <input type="text" aria-label="Company" placeholder="Company" value={item.company || ''} onChange={(event) => updateArrayItem('experience', index, 'company', event.target.value)} className={resumeInputCls} />
+                            <input type="text" aria-label="Role" placeholder="Role" value={item.role || ''} onChange={(event) => updateArrayItem('experience', index, 'role', event.target.value)} className={resumeInputCls} />
+                            <input type="text" aria-label="Duration" placeholder="Duration (e.g. 2021-2024)" value={item.duration || ''} onChange={(event) => updateArrayItem('experience', index, 'duration', event.target.value)} className={resumeInputCls} />
                             <div className="flex gap-2">
-                                <input type="text" placeholder="Bullets (comma separated)" value={item.bullets_raw || ''} onChange={(event) => updateArrayItem('experience', index, 'bullets_raw', event.target.value)} className={`${resumeInputCls} flex-1`} />
+                                <input type="text" aria-label="Bullets" placeholder="Bullets (comma separated)" value={item.bullets_raw || ''} onChange={(event) => updateArrayItem('experience', index, 'bullets_raw', event.target.value)} className={`${resumeInputCls} flex-1`} />
                                 {experience.length > 1 && (
                                     <button type="button" onClick={() => removeArrayItem('experience', index)} className="px-2 rounded-lg bg-red-500/20 text-red-300 hover:bg-red-500/30 transition" aria-label="Remove experience entry">
                                         <Trash2 className="text-base" />

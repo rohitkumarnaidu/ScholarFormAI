@@ -1,3 +1,4 @@
+import DOMPurify from 'dompurify';
 'use client';
 
 interface PreviewPanelProps {
@@ -32,7 +33,7 @@ export function PreviewPanel({ html }: PreviewPanelProps) {
       <div className="max-h-[600px] overflow-y-auto p-8">
         <div
           className="prose prose-sm max-w-none"
-          dangerouslySetInnerHTML={{ __html: html }}
+          dangerouslySetInnerHTML={{ __html: typeof window !== 'undefined' ? DOMPurify.sanitize(html) : html }}
         />
       </div>
     </div>

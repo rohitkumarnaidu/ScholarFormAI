@@ -70,7 +70,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
     };
 
     ws.current.onclose = () => {
-      console.log('Notification WebSocket closed, reconnecting in 5s...');
+      if(process.env.NODE_ENV === "development") console.log('Notification WebSocket closed, reconnecting in 5s...');
       setTimeout(connectWebSocket, 5000);
     };
   }, [user, session]);

@@ -123,7 +123,7 @@ export default function PreviewPane({ html, isLoading }) {
                 aria-label="Document preview"
             >
                 {sanitized ? (
-                    <div className="mx-auto max-w-[780px] min-h-full bg-white rounded-lg shadow-lg border border-slate-200 p-6 sm:p-10 lg:p-14 transition-opacity duration-200 preview-document">
+                    <div className="mx-auto max-w-full max-w-[780px] min-h-full bg-white rounded-lg shadow-lg border border-slate-200 p-6 sm:p-10 lg:p-14 transition-opacity duration-200 preview-document">
                         <div
                             className="prose max-w-none prose-slate prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg font-serif text-[15px] text-slate-900"
                             dangerouslySetInnerHTML={{ __html: sanitized }}

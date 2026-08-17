@@ -234,7 +234,7 @@ export default function SettingsPage() {
             </div>
 
             {/* Quick Actions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-4">
               <button
                 onClick={handleRollback}
                 disabled={installing}

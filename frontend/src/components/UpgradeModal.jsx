@@ -3,13 +3,60 @@
 
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Sparkles, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function UpgradeModal({ isOpen, onClose, title = "Upgrade to Pro" }) {
   const router = useRouter();
+  const dialogRef = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const dialogNode = dialogRef.current;
+    if (!dialogNode) return;
+
+    const handleTab = (e) => {
+        if (e.key !== 'Tab') return;
+        const focusableElements = dialogNode.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusableElements.length === 0) return;
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) {
+            if (document.activeElement === firstElement || !dialogNode.contains(document.activeElement)) {
+                lastElement.focus();
+                e.preventDefault();
+            }
+        } else {
+            if (document.activeElement === lastElement || !dialogNode.contains(document.activeElement)) {
+                firstElement.focus();
+                e.preventDefault();
+            }
+        }
+    };
+
+    const handleEscape = (e) => {
+        if (e.key === 'Escape') onClose?.();
+    };
+
+    document.addEventListener('keydown', handleTab);
+    document.addEventListener('keydown', handleEscape);
+    setTimeout(() => {
+        const focusableElements = dialogNode.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        focusableElements[0]?.focus();
+    }, 50);
+
+    return () => {
+        document.removeEventListener('keydown', handleTab);
+        document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -36,8 +83,10 @@ export default function UpgradeModal({ isOpen, onClose, title = "Upgrade to Pro"
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
             onClick={onClose}
+            aria-hidden="true"
           />
           <motion.div
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="upgrade-modal-title"
@@ -61,7 +110,7 @@ export default function UpgradeModal({ isOpen, onClose, title = "Upgrade to Pro"
               <h2 className="mb-2 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
                 {title}
               </h2>
-              <p className="text-slate-500 dark:text-slate-400">
+              <p className="text-slate-500 dark:text-slate-300">
                 Unlock the full power of ScholarForm AI to accelerate your academic workflow.
               </p>
             </div>
@@ -86,7 +135,7 @@ export default function UpgradeModal({ isOpen, onClose, title = "Upgrade to Pro"
               </button>
               <button
                 onClick={onClose}
-                className="w-full rounded-xl py-3 font-medium text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors active:scale-95"
+                className="w-full rounded-xl py-3 font-medium text-slate-500 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors active:scale-95"
               >
                 Maybe Later
               </button>

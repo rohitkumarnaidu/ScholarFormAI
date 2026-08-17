@@ -306,7 +306,7 @@ export default function History() {
 
             {/* Page Content */}
             <main className="flex flex-1 justify-center py-6 sm:py-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="layout-content-container flex flex-col w-full max-w-[1280px] px-4 sm:px-6 md:px-10">
+                <div className="layout-content-container flex flex-col w-full max-w-full max-w-[1280px] px-4 sm:px-6 md:px-10">
                     {/* PageHeading */}
                     <div className="flex flex-wrap justify-between items-end gap-4 mb-8">
                         <div className="flex flex-col gap-2">

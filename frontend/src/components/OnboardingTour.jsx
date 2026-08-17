@@ -145,7 +145,7 @@ export default function OnboardingTour() {
           translateY: targetRect.isCenter ? '-50%' : 0,
         }}
         transition={{ type: 'spring', damping: 20, stiffness: 150 }}
-        className="absolute pointer-events-auto w-[calc(100vw-32px)] sm:w-full sm:max-w-[380px] bg-white dark:bg-slate-900 shadow-2xl rounded-2xl border border-slate-200 dark:border-slate-800 p-6 z-20"
+        className="absolute pointer-events-auto w-[calc(100vw-32px)] sm:w-full sm:max-w-full max-w-[380px] bg-white dark:bg-slate-900 shadow-2xl rounded-2xl border border-slate-200 dark:border-slate-800 p-6 z-20"
         style={{
           left: targetRect.isCenter ? '50%' : '16px',
           right: '16px',

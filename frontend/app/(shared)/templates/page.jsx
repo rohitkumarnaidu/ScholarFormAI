@@ -181,7 +181,7 @@ export default function Templates() {
         <div className="bg-background-light dark:bg-background-dark font-display text-[#0d131b] dark:text-slate-200 min-h-screen flex flex-col">
             
             <main className="px-4 sm:px-6 lg:px-10 flex flex-1 justify-center py-8 sm:py-10">
-                <div className="layout-content-container flex flex-col max-w-[1200px] flex-1">
+                <div className="layout-content-container flex flex-col max-w-full max-w-[1200px] flex-1">
                     {/* Header Section */}
                     <div className="flex flex-col gap-6 p-4">
                         <div className="flex flex-wrap justify-between items-end gap-3">
@@ -226,7 +226,7 @@ export default function Templates() {
 
                     {/* Skeleton Loading State */}
                     {isLoading && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+                        <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
                             {Array.from({ length: 6 }).map((_, i) => (
                                 <div key={i} className="flex flex-col gap-4 p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 animate-pulse">
                                     <div className="flex justify-between items-start">
@@ -249,7 +249,7 @@ export default function Templates() {
 
                     {/* Template Grid */}
                     {!isLoading && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+                        <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
                             {paginatedTemplates.map((template) => (
                                 <div
                                     key={template.id}

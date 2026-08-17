@@ -56,14 +56,14 @@ function ErrorContent() {
 
     return (
         <main className="flex-1 flex flex-col items-center justify-center px-4 py-12">
-            <div className="max-w-[640px] w-full bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-[#e7ecf3] dark:border-slate-800 overflow-hidden">
+            <div className="max-w-full max-w-[640px] w-full bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-[#e7ecf3] dark:border-slate-800 overflow-hidden">
                 <div className="flex flex-col items-center gap-6 px-4 sm:px-8 pt-10 pb-6">
                     <div className="flex items-center justify-center w-24 h-24 rounded-full bg-red-50 dark:bg-red-900/20 text-red-500">
                         <AlertTriangle className="text-6xl" />
                     </div>
                     <div className="flex flex-col items-center gap-3 text-center">
                         <h1 className="text-[#0d131b] dark:text-white text-3xl font-bold leading-tight tracking-tight">{title}</h1>
-                        <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed max-w-[480px]">
+                        <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed max-w-full max-w-[480px]">
                             {message}
                         </p>
                     </div>

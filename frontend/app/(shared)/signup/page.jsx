@@ -166,7 +166,7 @@ function SignupContent() {
 
                 {/* Right Side: Clean Form Card */}
                 <div className="w-full lg:w-[50%] flex items-center justify-center py-12 lg:py-0">
-                    <div className="w-full max-w-[460px] animate-in fade-in slide-in-from-right-8 duration-700">
+                    <div className="w-full max-w-full max-w-[460px] animate-in fade-in slide-in-from-right-8 duration-700">
                         <div className="w-full bg-white border border-slate-200 shadow-lg rounded-2xl p-8">
                             
                             <div className="mb-6">

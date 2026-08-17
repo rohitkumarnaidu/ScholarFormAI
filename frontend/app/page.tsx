@@ -166,7 +166,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-            className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm shadow-sm md:text-base lg:text-lg"
+            className="mt-24 grid grid-cols-1 md:grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm shadow-sm md:text-base lg:text-lg"
           >
             <div className="pb-6 md:pb-0 md:pr-8">
               <div className="mb-2 text-4xl font-black text-slate-900 md:text-5xl lg:text-6xl"><Counter from={0} to={9} suffix="+" /></div>
@@ -202,7 +202,7 @@ export default function Home() {
             </motion.p>
           </motion.div>
           
-          <div className="grid gap-6 md:grid-cols-3 md:grid-rows-2">
+          <div className="grid gap-6 md:grid-cols-1 md:grid-cols-3 md:grid-rows-2">
             {features.map((feature, idx) => (
               <motion.div
                 key={feature.title}

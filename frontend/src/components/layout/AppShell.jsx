@@ -123,7 +123,7 @@ export default function AppShell({ children, section = 'shared' }) {
             {/* Mobile Sidebar Back-drop */}
             {isMobileSidebarOpen && (
                 <div className="lg:hidden fixed inset-0 z-[60] flex">
-                    <div className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileSidebarOpen(false)} />
+                    <div className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileSidebarOpen(false)} aria-hidden="true" />
                     <div className={`sidebar-mobile relative flex flex-col w-[260px] h-full shadow-2xl animate-in slide-in-from-left duration-300 border-r border-black/5 dark:border-white/10 ${glassClasses}`}>
                         <Suspense fallback={<div className="w-full h-full bg-white/20 dark:bg-slate-950/20" />}>
                             <Sidebar section={section} onClose={() => setIsMobileSidebarOpen(false)} isCollapsed={false} />

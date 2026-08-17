@@ -7,7 +7,7 @@ export default function FormatterLoading() {
             <div className="max-w-4xl mx-auto space-y-6">
                 <div className="h-8 w-48 bg-slate-200 dark:bg-slate-800 rounded-lg animate-pulse" />
                 <div className="h-64 bg-slate-200 dark:bg-slate-800 rounded-xl animate-pulse" />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="h-32 bg-slate-200 dark:bg-slate-800 rounded-xl animate-pulse" />
                     <div className="h-32 bg-slate-200 dark:bg-slate-800 rounded-xl animate-pulse" />
                 </div>

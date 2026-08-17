@@ -112,12 +112,12 @@ export function LandingHero() {
     return (
         <section ref={heroRef} className="relative overflow-hidden py-12 lg:py-18 w-full border-b border-slate-100 dark:border-slate-800">
             <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-                <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-primary/5 dark:bg-primary/10 blur-2xl hidden sm:block" />
-                <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-blue-900/5 blur-2xl hidden sm:block" />
+                <div className="absolute -top-40 -right-40 w-full max-w-[600px] h-[600px] rounded-full bg-primary/5 dark:bg-primary/10 blur-2xl hidden sm:block" />
+                <div className="absolute -bottom-40 -left-40 w-full max-w-[500px] h-[500px] rounded-full bg-blue-900/5 blur-2xl hidden sm:block" />
             </div>
 
-            <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+            <div className="max-w-full max-w-[1200px] mx-auto px-4 sm:px-6">
+                <div className="grid grid-cols-1 lg:grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12 items-center">
                     <div className="flex flex-col gap-6 fade-in-up">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider w-fit">
                             <Sparkles className="text-sm" />
@@ -266,13 +266,13 @@ export function FeatureGrid() {
 
     return (
         <section className="py-20 w-full cv-auto scroll-mt-20 bg-gradient-to-b from-transparent via-primary/[0.04] to-transparent theme-dark-neutral" id="features">
-            <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
+            <div className="max-w-full max-w-[1200px] mx-auto px-4 sm:px-6">
                 <div className="text-center max-w-3xl mx-auto mb-16">
                     <h2 className="text-primary font-bold text-sm tracking-widest uppercase mb-3">Powerful Capabilities</h2>
                     <h3 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">Designed to meet the rigorous standards of global academic publishing.</h3>
                     <p className="text-slate-600 dark:text-slate-400">Our platform combines machine learning with human-grade formatting rules to ensure your research is presented perfectly every time.</p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {features.map((f) => {
                         const c = colorMap[f.color];
                         return (
@@ -350,14 +350,14 @@ export function TemplatePreview() {
 
     return (
         <section className="py-20 w-full cv-auto scroll-mt-20 bg-gradient-to-b from-slate-50/70 to-transparent theme-dark-neutral" id="templates">
-            <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
+            <div className="max-w-full max-w-[1200px] mx-auto px-4 sm:px-6">
                 <div className="text-center max-w-3xl mx-auto mb-16">
                     <h2 className="text-primary font-bold text-sm tracking-widest uppercase mb-3">Journal Library</h2>
                     <h3 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">One-click formatting for 1,000+ journals.</h3>
                     <p className="text-slate-600 dark:text-slate-400">Our library is constantly updated with the latest formatting requirements from major academic publishers.</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                     {templates.map((t) => (
                         <Link key={t.title} href="/templates" className={`flex flex-col gap-4 p-5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 ${t.hoverShadow} ${t.hoverBorder} transition-all duration-300 group relative overflow-hidden hover:-translate-y-1`}>
                             <div className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${t.gradient} rounded-l-xl`} />
@@ -389,14 +389,14 @@ export function TemplatePreview() {
 export function PricingSection() {
     return (
         <section className="py-20 w-full cv-auto scroll-mt-20 bg-gradient-to-b from-transparent via-indigo-50/60 to-transparent theme-dark-neutral" id="pricing">
-            <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
+            <div className="max-w-full max-w-[1200px] mx-auto px-4 sm:px-6">
                 <div className="text-center max-w-3xl mx-auto mb-16">
                     <h2 className="text-primary font-bold text-sm tracking-widest uppercase mb-3">Pricing</h2>
                     <h3 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">Simple, transparent pricing for every researcher.</h3>
                     <p className="text-slate-600 dark:text-slate-400">Start for free. Upgrade when you need more power. No hidden fees.</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                     <div className="flex flex-col p-8 bg-background-light dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all">
                         <div className="mb-6">
                             <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-1">Starter</h4>
@@ -510,7 +510,7 @@ export function PricingSection() {
 export function CTASection() {
     return (
         <section className="py-16 w-full cv-auto">
-            <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
+            <div className="max-w-full max-w-[1200px] mx-auto px-4 sm:px-6">
                 <div className="relative bg-gradient-to-br from-slate-900 via-slate-950 to-black theme-dark-cta rounded-3xl p-8 md:p-16 overflow-hidden">
                     <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/20 rounded-full blur-3xl hidden sm:block" />
                     <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-blue-900/20 dark:bg-white/10 rounded-full blur-3xl hidden sm:block" />
@@ -548,8 +548,8 @@ export function AboutSection() {
 
     return (
         <section id="about" className="py-20 w-full cv-auto bg-gradient-to-b from-slate-50/65 to-transparent theme-dark-neutral">
-            <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="max-w-full max-w-[1200px] mx-auto px-4 sm:px-6">
+                <div className="grid grid-cols-1 lg:grid-cols-1 md:grid-cols-2 gap-16 items-center">
                     <div className="flex flex-col gap-6">
                         <h2 className="text-primary font-bold text-sm tracking-widest uppercase">About ScholarForm AI</h2>
                         <h3 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white leading-tight">
@@ -561,7 +561,7 @@ export function AboutSection() {
                         <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
                             We combine deep learning models trained on thousands of published papers with rule-based validation engines that catch every formatting detail. From citation styles to figure placement, margin sizes to heading hierarchy — we handle it all so you can focus on what matters: your research.
                         </p>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-6 mt-4">
                             <div ref={researchers.ref} className="text-center">
                                 <p className="text-3xl font-black text-primary">{researchers.count >= 1000 ? `${(researchers.count / 1000).toFixed(researchers.count >= 25000 ? 0 : 1)}k+` : `${researchers.count}+`}</p>
                                 <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Researchers</p>

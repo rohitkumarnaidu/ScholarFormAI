@@ -108,7 +108,7 @@ function ResetPasswordContent() {
 
                 {/* Right Side: Glassmorphic Form Card */}
                 <div className="w-full lg:w-[45%] flex items-center justify-center lg:h-full">
-                    <div className="w-full max-w-[420px] z-10 animate-in fade-in slide-in-from-right-8 duration-700">
+                    <div className="w-full max-w-full max-w-[420px] z-10 animate-in fade-in slide-in-from-right-8 duration-700">
                         <div className="w-full bg-white/5 border border-white/10 backdrop-blur-md rounded-3xl p-8 relative">
 
                             <div className="mb-6">

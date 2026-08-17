@@ -75,7 +75,7 @@ const ConfirmDialog = forwardRef(function ConfirmDialog(
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm" onClick={onCancel} />
+            <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm" onClick={onCancel} aria-hidden="true" />
             <div
                 ref={(node) => {
                     localRef.current = node;
@@ -89,7 +89,7 @@ const ConfirmDialog = forwardRef(function ConfirmDialog(
             >
                 <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
                 {description ? (
-                    <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{description}</p>
+                    <p className="mt-2 text-sm text-slate-500 dark:text-slate-300">{description}</p>
                 ) : null}
                 <div className="mt-5 flex justify-end gap-2">
                     <Button variant="secondary" onClick={onCancel} disabled={isLoading}>{cancelLabel}</Button>

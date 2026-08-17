@@ -1056,7 +1056,8 @@ class TestDocumentGeneratorGetStatus:
             assert status["status"] == "done"
 
     def test_get_status_raises_on_not_found(self):
-        with patch("app.pipeline.generation.document_generator.DocumentService") as MockDS:
+        with patch("app.pipeline.generation.document_generator.DocumentService") as MockDS, \
+             patch("app.pipeline.generation.document_generator.GeneratorSessionRepository.get_session", return_value=None):
             MockDS.get_document.return_value = None
             from app.pipeline.generation.document_generator import DocumentGenerator
 

@@ -206,7 +206,7 @@ export default function TemplateEditor() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-1 md:grid-cols-3 gap-6">
                     <section className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-5">
                         <h2 className="text-lg font-bold text-slate-900 dark:text-white">Formatting Settings</h2>
 
@@ -220,7 +220,7 @@ export default function TemplateEditor() {
                             />
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold mb-2">Font Family</label>
                                 <select
@@ -290,7 +290,7 @@ export default function TemplateEditor() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold mb-2">Line Spacing</label>
                                 <input

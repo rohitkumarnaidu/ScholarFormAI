@@ -524,7 +524,7 @@ export default function IssuesPage() {
                 {errors.title && <p className="mt-1 text-xs text-red-600">{errors.title.message}</p>}
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Category *</label>
                   <select {...register("category")} className="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm">
@@ -565,7 +565,7 @@ export default function IssuesPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Expected behavior</label>
                   <textarea
@@ -586,7 +586,7 @@ export default function IssuesPage() {
 
               <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
                 <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Reporter info (optional)</p>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
                     <input

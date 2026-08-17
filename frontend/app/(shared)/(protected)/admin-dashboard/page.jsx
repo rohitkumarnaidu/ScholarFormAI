@@ -135,7 +135,7 @@ export default function AdminDashboard() {
                         <Server className="text-green-500" />
                         Service Health
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                         <HealthStatusIndicator
                             status={dbMetrics?.status || 'unknown'}
                             label="Database (Supabase)"
@@ -165,7 +165,7 @@ export default function AdminDashboard() {
                         <LineChart className="text-primary" />
                         Key Metrics
                     </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 stagger-children">
+                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 stagger-children">
                         <MetricsCard title="Total Documents" value={dbMetrics?.document_count ?? '—'} icon="description" color="primary" isLoading={loading} />
                         <MetricsCard title="Processing Success" value={typeof dashboardData?.successRatePct === 'number' ? `${dashboardData.successRatePct.toFixed(1)}%` : '—'} icon="check_circle" color="green" subtitle="Completion rate" isLoading={loading} />
                         <MetricsCard title="Avg Confidence" value={typeof dashboardData?.avgConfidencePct === 'number' ? `${dashboardData.avgConfidencePct.toFixed(1)}%` : '—'} icon="psychology" color="purple" subtitle="Quality score average" isLoading={loading} />
@@ -181,7 +181,7 @@ export default function AdminDashboard() {
                             AI Performance
                         </h2>
                         <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
                                     <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Model</p>
                                     <p className="text-lg font-semibold text-slate-900 dark:text-white">{dashboardData.modelLabel || 'N/A'}</p>
@@ -197,7 +197,7 @@ export default function AdminDashboard() {
                                     </p>
                                 </div>
                             </div>
-                            <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700 grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Automation Level</p>
                                     <p className="text-lg font-semibold text-slate-900 dark:text-white">{dashboardData.automationLevel || 'Unknown'}</p>
@@ -212,7 +212,7 @@ export default function AdminDashboard() {
                             {dashboardData.abTesting && (
                                 <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
                                     <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">A/B Testing Results</h3>
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {Object.entries(dashboardData.abTesting).map(([variant, stats]) => (
                                             <div key={variant} className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
                                                 <p className="text-xs font-medium text-slate-500 uppercase">{variant}</p>
@@ -232,7 +232,7 @@ export default function AdminDashboard() {
                         <Users className="text-purple-500" />
                         Admin Role Telemetry
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Identity card */}
                         <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
                             <div className="flex items-center gap-3 mb-4">
@@ -292,13 +292,13 @@ export default function AdminDashboard() {
                     <div className="animate-in fade-in duration-500">
                         <section className="mb-8">
                             <Skeleton className="h-6 w-40 mb-4" />
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-3 gap-4">
                                 {[1, 2, 3].map(i => <Skeleton key={i} className="h-24 w-full" rounded="rounded-xl" />)}
                             </div>
                         </section>
                         <section className="mb-8">
                             <Skeleton className="h-6 w-32 mb-4" />
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                 {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-32 w-full" rounded="rounded-xl" />)}
                             </div>
                         </section>

@@ -70,7 +70,7 @@ StatsCard.displayName = 'StatsCard';
 function DashboardStats({ stats, loading }) {
     if (loading) {
         return (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(5)].map((_, i) => (
                     <div key={i} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
                         <div className="h-48 w-full bg-slate-200 dark:bg-slate-700 animate-pulse" />
@@ -89,7 +89,7 @@ function DashboardStats({ stats, loading }) {
 
     return (
         <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <StatsCard title="Total Documents" value={String(s.totalDocuments ?? 0)} description="All manuscripts processed" icon="description" iconColor="text-blue-600" bgColor="bg-blue-50 dark:bg-blue-950/30" />
                 <StatsCard title="Formatted This Month" value={String(s.formattedThisMonth ?? 0)} description="Documents formatted this month" icon="auto_awesome" iconColor="text-green-600" bgColor="bg-green-50 dark:bg-green-950/30" />
                 <StatsCard title="Success Rate" value={successRate} description="Percentage of successful formatting jobs" icon="check_circle" iconColor="text-emerald-600" bgColor="bg-emerald-50 dark:bg-emerald-950/30" />

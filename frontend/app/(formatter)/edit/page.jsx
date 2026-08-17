@@ -232,7 +232,7 @@ export default function Edit() {
                     <Skeleton className="h-8 w-24" />
                 </div>
                 <main className="flex-1 p-8 flex justify-center">
-                    <div className="w-full max-w-[850px] space-y-4">
+                    <div className="w-full max-w-full max-w-[850px] space-y-4">
                         <Skeleton className="h-[200px] w-full" rounded="rounded-xl" />
                         <Skeleton className="h-[100px] w-full" rounded="rounded-xl" />
                         <Skeleton className="h-[300px] w-full" rounded="rounded-xl" />
@@ -306,7 +306,7 @@ export default function Edit() {
                 <div className="flex flex-1 flex-col xl:flex-row overflow-hidden">
                     {/* Editor View */}
                     <main ref={editorScrollRef} className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-4 sm:p-6 lg:p-8 flex justify-center scroll-smooth">
-                        <div className="w-full max-w-[850px]">
+                        <div className="w-full max-w-full max-w-[850px]">
                             {/* Validation Message Banner */}
                             {validationMessage && (
                                 <div className={`mb-6 p-4 rounded-xl border animate-in fade-in slide-in-from-top duration-300 ${validationMessage.type === 'success'

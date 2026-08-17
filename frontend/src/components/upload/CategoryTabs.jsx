@@ -8,7 +8,7 @@ const CategoryTabs = memo(function CategoryTabs() {
         <div className="flex flex-col items-center gap-4">
             <h2 className="text-lg font-bold text-slate-900 dark:text-white text-center">Select Category</h2>
             <div className="w-full flex justify-center">
-                <div className="w-full max-w-[920px] overflow-x-auto pb-1">
+                <div className="w-full max-w-full max-w-[920px] overflow-x-auto pb-1">
                     <div className="flex min-w-max justify-center gap-2 bg-slate-100 border border-slate-200 dark:border-slate-700/70 p-1.5 rounded-xl shadow-inner mx-auto">
                         <button className="w-[200px] sm:w-[220px] py-2.5 rounded-lg bg-primary text-white text-sm font-bold shadow-sm transition-all whitespace-nowrap">
                             Documents

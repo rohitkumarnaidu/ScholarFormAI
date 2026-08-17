@@ -140,7 +140,7 @@ export default function FeedbackWidget() {
             </div>
 
             {!anonymous && (
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-slate-700">Name (optional)</label>
                   <input
